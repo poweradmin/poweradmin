@@ -115,47 +115,72 @@ clean_pgsql() {
     fi
 
     docker exec -i -e PGPASSWORD="$DB_PASSWORD" "$PGSQL_CONTAINER" psql -U "$DB_USER" -d "$DB_NAME" << 'EOSQL'
--- Delete zone templates and their records
-DELETE FROM zone_templ_records WHERE true;
-DELETE FROM zone_templ WHERE true;
-
--- Delete zone ownership records
-DELETE FROM zones WHERE true;
-
--- Delete test users (keep admin)
-DELETE FROM users WHERE username != 'admin';
-
--- Delete permission template items for templates 2-5
-DELETE FROM perm_templ_items WHERE templ_id > 1;
-
--- Delete permission templates (keep Administrator)
-DELETE FROM perm_templ WHERE id > 1;
-
--- Delete all records and domains (if tables exist)
+-- Clean all tables safely (check existence before deleting)
 DO $$
 BEGIN
-    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'records') THEN
+    -- Delete zone templates and their records
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'zone_templ_records') THEN
+        DELETE FROM zone_templ_records WHERE true;
+    END IF;
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'zone_templ') THEN
+        DELETE FROM zone_templ WHERE true;
+    END IF;
+
+    -- Delete zone ownership records
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'zones') THEN
+        DELETE FROM zones WHERE true;
+    END IF;
+
+    -- Delete test users (keep admin)
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'users') THEN
+        DELETE FROM users WHERE username != 'admin';
+    END IF;
+
+    -- Delete permission template items for templates 2-5
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'perm_templ_items') THEN
+        DELETE FROM perm_templ_items WHERE templ_id > 1;
+    END IF;
+
+    -- Delete permission templates (keep Administrator)
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'perm_templ') THEN
+        DELETE FROM perm_templ WHERE id > 1;
+    END IF;
+
+    -- Delete all records and domains
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'records') THEN
         DELETE FROM records;
     END IF;
-    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'domains') THEN
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'domains') THEN
         DELETE FROM domains;
     END IF;
 END $$;
 
--- Reset sequences
-SELECT setval('perm_templ_id_seq', 1);
-SELECT setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1));
+-- Reset sequences safely
 DO $$
 BEGIN
+    IF EXISTS (SELECT FROM pg_class WHERE relname = 'perm_templ_id_seq') THEN
+        PERFORM setval('perm_templ_id_seq', 1);
+    END IF;
+    IF EXISTS (SELECT FROM pg_class WHERE relname = 'users_id_seq') THEN
+        IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'users') THEN
+            PERFORM setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1));
+        ELSE
+            PERFORM setval('users_id_seq', 1);
+        END IF;
+    END IF;
     IF EXISTS (SELECT FROM pg_class WHERE relname = 'domains_id_seq') THEN
         PERFORM setval('domains_id_seq', 1);
     END IF;
     IF EXISTS (SELECT FROM pg_class WHERE relname = 'records_id_seq') THEN
         PERFORM setval('records_id_seq', 1);
     END IF;
+    IF EXISTS (SELECT FROM pg_class WHERE relname = 'zones_id_seq') THEN
+        PERFORM setval('zones_id_seq', 1);
+    END IF;
+    IF EXISTS (SELECT FROM pg_class WHERE relname = 'zone_templ_id_seq') THEN
+        PERFORM setval('zone_templ_id_seq', 1);
+    END IF;
 END $$;
-SELECT setval('zones_id_seq', 1);
-SELECT setval('zone_templ_id_seq', 1);
 EOSQL
 
     echo -e "${GREEN}PostgreSQL cleaned${NC}"
@@ -210,6 +235,44 @@ import_mysql() {
         return 1
     fi
 
+    # Check if PowerDNS schema exists in pdns database, import if needed
+    local has_domains_table=$(docker exec "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_name = 'domains';" 2>/dev/null || echo "0")
+
+    if [ "$has_domains_table" = "0" ]; then
+        echo -e "${YELLOW}PowerDNS schema not found in '$DB_NAME' database, importing...${NC}"
+        local pdns_schema="$SCRIPT_DIR/pdns/modules/gmysqlbackend/schema.mysql.sql"
+        if [ -f "$pdns_schema" ]; then
+            if docker exec -i "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < "$pdns_schema" 2>/dev/null; then
+                echo -e "${GREEN}PowerDNS schema imported${NC}"
+            else
+                echo -e "${RED}PowerDNS schema import failed${NC}"
+                return 1
+            fi
+        else
+            echo -e "${RED}PowerDNS schema file not found at $pdns_schema${NC}"
+            return 1
+        fi
+    fi
+
+    # Check if Poweradmin schema exists in poweradmin database, import if needed
+    local has_users_table=$(docker exec "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$MYSQL_DB_NAME' AND table_name = 'users';" 2>/dev/null || echo "0")
+
+    if [ "$has_users_table" = "0" ]; then
+        echo -e "${YELLOW}Poweradmin schema not found in '$MYSQL_DB_NAME' database, importing...${NC}"
+        local poweradmin_schema="$SCRIPT_DIR/../../sql/poweradmin-mysql-db-structure.sql"
+        if [ -f "$poweradmin_schema" ]; then
+            if docker exec -i "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" "$MYSQL_DB_NAME" < "$poweradmin_schema" 2>/dev/null; then
+                echo -e "${GREEN}Poweradmin schema imported${NC}"
+            else
+                echo -e "${RED}Poweradmin schema import failed${NC}"
+                return 1
+            fi
+        else
+            echo -e "${RED}Poweradmin schema file not found at $poweradmin_schema${NC}"
+            return 1
+        fi
+    fi
+
     # Import users, permissions, and zones
     if docker exec -i "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" "$MYSQL_DB_NAME" < "$SQL_DIR/test-users-permissions-mysql.sql" 2>/dev/null; then
         echo -e "${GREEN}MySQL/MariaDB users and zones imported${NC}"
@@ -243,6 +306,44 @@ import_pgsql() {
     if [ ! -f "$SQL_DIR/test-users-permissions-pgsql.sql" ]; then
         echo -e "${RED}PostgreSQL SQL file not found: $SQL_DIR/test-users-permissions-pgsql.sql${NC}"
         return 1
+    fi
+
+    # Check if PowerDNS schema exists, import if needed
+    local has_domains_table=$(docker exec -e PGPASSWORD="$DB_PASSWORD" "$PGSQL_CONTAINER" psql -U "$DB_USER" -d "$DB_NAME" -tAc "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'domains');" 2>/dev/null || echo "f")
+
+    if [ "$has_domains_table" != "t" ]; then
+        echo -e "${YELLOW}PowerDNS schema not found, importing...${NC}"
+        local pdns_schema="$SCRIPT_DIR/pdns/modules/gpgsqlbackend/schema.pgsql.sql"
+        if [ -f "$pdns_schema" ]; then
+            if docker exec -i -e PGPASSWORD="$DB_PASSWORD" "$PGSQL_CONTAINER" psql -U "$DB_USER" -d "$DB_NAME" < "$pdns_schema" > /dev/null 2>&1; then
+                echo -e "${GREEN}PowerDNS schema imported${NC}"
+            else
+                echo -e "${RED}PowerDNS schema import failed${NC}"
+                return 1
+            fi
+        else
+            echo -e "${RED}PowerDNS schema file not found at $pdns_schema${NC}"
+            return 1
+        fi
+    fi
+
+    # Check if Poweradmin schema exists, import if needed
+    local has_users_table=$(docker exec -e PGPASSWORD="$DB_PASSWORD" "$PGSQL_CONTAINER" psql -U "$DB_USER" -d "$DB_NAME" -tAc "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'users');" 2>/dev/null || echo "f")
+
+    if [ "$has_users_table" != "t" ]; then
+        echo -e "${YELLOW}Poweradmin schema not found, importing...${NC}"
+        local poweradmin_schema="$SCRIPT_DIR/../../sql/poweradmin-pgsql-db-structure.sql"
+        if [ -f "$poweradmin_schema" ]; then
+            if docker exec -i -e PGPASSWORD="$DB_PASSWORD" "$PGSQL_CONTAINER" psql -U "$DB_USER" -d "$DB_NAME" < "$poweradmin_schema" > /dev/null 2>&1; then
+                echo -e "${GREEN}Poweradmin schema imported${NC}"
+            else
+                echo -e "${RED}Poweradmin schema import failed${NC}"
+                return 1
+            fi
+        else
+            echo -e "${RED}Poweradmin schema file not found at $poweradmin_schema${NC}"
+            return 1
+        fi
     fi
 
     # Import users, permissions, and zones
@@ -406,18 +507,23 @@ show_summary() {
     echo "  ldap-viewer  | testpass123  | Read Only       | Yes"
     echo ""
     echo -e "${GREEN}Test Domains Created:${NC}"
-    echo "  Type   | Domain                              | Owner(s)"
-    echo "  -------|-------------------------------------|------------------"
-    echo "  MASTER | admin-zone.example.com              | admin"
-    echo "  MASTER | manager-zone.example.com            | manager"
-    echo "  MASTER | client-zone.example.com             | client"
-    echo "  MASTER | shared-zone.example.com             | manager, client"
-    echo "  MASTER | viewer-zone.example.com             | viewer"
-    echo "  NATIVE | native-zone.example.org             | manager"
-    echo "  SLAVE  | slave-zone.example.net              | admin"
-    echo "  MASTER | 2.0.192.in-addr.arpa (reverse)      | admin"
-    echo "  MASTER | 8.b.d.0.1.0.0.2.ip6.arpa (IPv6)     | admin"
-    echo "  MASTER | xn--verstt-eua3l.info (IDN)         | manager"
+    echo "  Type   | Domain                                          | Owner(s)"
+    echo "  -------|------------------------------------------------|------------------"
+    echo "  MASTER | admin-zone.example.com                          | admin"
+    echo "  MASTER | manager-zone.example.com                        | manager"
+    echo "  MASTER | client-zone.example.com                         | client"
+    echo "  MASTER | shared-zone.example.com                         | manager, client"
+    echo "  MASTER | viewer-zone.example.com                         | viewer"
+    echo "  NATIVE | native-zone.example.org                         | manager"
+    echo "  NATIVE | secondary-native.example.org                    | manager"
+    echo "  SLAVE  | slave-zone.example.net                          | admin"
+    echo "  SLAVE  | external-slave.example.net                      | admin"
+    echo "  MASTER | 2.0.192.in-addr.arpa (reverse IPv4)             | admin"
+    echo "  MASTER | 168.192.in-addr.arpa (reverse IPv4)             | admin"
+    echo "  MASTER | 8.b.d.0.1.0.0.2.ip6.arpa (reverse IPv6)         | admin"
+    echo "  MASTER | xn--verstt-eua3l.info (IDN)                     | manager"
+    echo "  MASTER | very-long-subdomain-name-for-testing...         | client"
+    echo "  MASTER | another.very.deeply.nested.subdomain...         | client"
     echo ""
     echo -e "${GREEN}Permission Templates:${NC}"
     echo "  ID | Name           | Permissions"
@@ -427,6 +533,13 @@ show_summary() {
     echo "   3 | Client Editor  | zone_content_view_own, zone_content_edit_own_as_client"
     echo "   4 | Read Only      | zone_content_view_own, search"
     echo "   5 | No Access      | (none)"
+    echo ""
+    echo -e "${GREEN}Zone Templates:${NC}"
+    echo "  Name                     | Owner   | Description"
+    echo "  -------------------------|---------|----------------------------------"
+    echo "  Basic Web Zone           | admin   | www, mail, MX records"
+    echo "  Full Zone Template       | admin   | A, MX, CNAME, SPF, DMARC records"
+    echo "  Manager Custom Template  | manager | Custom template for manager user"
     echo ""
     echo -e "${GREEN}Access URLs:${NC}"
     echo "  MySQL:    http://localhost:8080 (nginx)"

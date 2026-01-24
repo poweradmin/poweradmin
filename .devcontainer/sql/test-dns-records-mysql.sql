@@ -280,3 +280,89 @@ WHERE @zone_id IS NOT NULL
     WHERE r.domain_id = @zone_id AND r.type = 'A' AND r.name = @zone_name
     LIMIT 1
   );
+
+-- =============================================================================
+-- SECONDARY NATIVE ZONE RECORDS
+-- =============================================================================
+
+SET @zone_name = 'secondary-native.example.org';
+SET @zone_id = (SELECT id FROM domains WHERE name = @zone_name LIMIT 1);
+
+INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT @zone_id, name_col, type_col, content_col, ttl_col, prio_col, disabled_col
+FROM (
+    SELECT @zone_name as name_col, 'A' as type_col, '192.0.2.80' as content_col, 3600 as ttl_col, 0 as prio_col, 0 as disabled_col
+    UNION ALL SELECT CONCAT('www.', @zone_name), 'A', '192.0.2.80', 3600, 0, 0
+    UNION ALL SELECT @zone_name, 'MX', CONCAT('mail.', @zone_name), 3600, 10, 0
+    UNION ALL SELECT CONCAT('mail.', @zone_name), 'A', '192.0.2.85', 3600, 0, 0
+) AS records_data
+WHERE @zone_id IS NOT NULL
+  AND NOT EXISTS (
+    SELECT 1 FROM records r
+    WHERE r.domain_id = @zone_id AND r.type = 'A' AND r.name = @zone_name
+    LIMIT 1
+  );
+
+-- =============================================================================
+-- ADDITIONAL IPv4 REVERSE ZONE: 168.192.in-addr.arpa
+-- =============================================================================
+
+SET @zone_name = '168.192.in-addr.arpa';
+SET @zone_id = (SELECT id FROM domains WHERE name = @zone_name LIMIT 1);
+
+INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT @zone_id, name_col, type_col, content_col, ttl_col, prio_col, disabled_col
+FROM (
+    SELECT CONCAT('1.1.', @zone_name) as name_col, 'PTR' as type_col, 'router.example.com.' as content_col, 3600 as ttl_col, 0 as prio_col, 0 as disabled_col
+    UNION ALL SELECT CONCAT('100.1.', @zone_name), 'PTR', 'server1.example.com.', 3600, 0, 0
+    UNION ALL SELECT CONCAT('101.1.', @zone_name), 'PTR', 'server2.example.com.', 3600, 0, 0
+) AS records_data
+WHERE @zone_id IS NOT NULL
+  AND NOT EXISTS (
+    SELECT 1 FROM records r
+    WHERE r.domain_id = @zone_id AND r.type = 'PTR' AND r.name = CONCAT('1.1.', @zone_name)
+    LIMIT 1
+  );
+
+-- =============================================================================
+-- LONG DOMAIN NAME ZONE RECORDS (for UI width testing)
+-- =============================================================================
+
+SET @zone_name = 'very-long-subdomain-name-for-testing-ui-column-widths.example.com';
+SET @zone_id = (SELECT id FROM domains WHERE name = @zone_name LIMIT 1);
+
+INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT @zone_id, name_col, type_col, content_col, ttl_col, prio_col, disabled_col
+FROM (
+    SELECT @zone_name as name_col, 'A' as type_col, '192.0.2.180' as content_col, 3600 as ttl_col, 0 as prio_col, 0 as disabled_col
+    UNION ALL SELECT CONCAT('www.', @zone_name), 'A', '192.0.2.180', 3600, 0, 0
+    UNION ALL SELECT CONCAT('this-is-another-very-long-subdomain-name.', @zone_name), 'A', '192.0.2.181', 3600, 0, 0
+    UNION ALL SELECT @zone_name, 'TXT', '"This is a very long TXT record content for testing UI column width handling in the record list display"', 3600, 0, 0
+) AS records_data
+WHERE @zone_id IS NOT NULL
+  AND NOT EXISTS (
+    SELECT 1 FROM records r
+    WHERE r.domain_id = @zone_id AND r.type = 'A' AND r.name = @zone_name
+    LIMIT 1
+  );
+
+-- =============================================================================
+-- DEEPLY NESTED DOMAIN NAME ZONE RECORDS (for UI width testing)
+-- =============================================================================
+
+SET @zone_name = 'another.very.deeply.nested.subdomain.structure.example.com';
+SET @zone_id = (SELECT id FROM domains WHERE name = @zone_name LIMIT 1);
+
+INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT @zone_id, name_col, type_col, content_col, ttl_col, prio_col, disabled_col
+FROM (
+    SELECT @zone_name as name_col, 'A' as type_col, '192.0.2.190' as content_col, 3600 as ttl_col, 0 as prio_col, 0 as disabled_col
+    UNION ALL SELECT CONCAT('www.', @zone_name), 'A', '192.0.2.190', 3600, 0, 0
+    UNION ALL SELECT CONCAT('api.', @zone_name), 'A', '192.0.2.191', 3600, 0, 0
+) AS records_data
+WHERE @zone_id IS NOT NULL
+  AND NOT EXISTS (
+    SELECT 1 FROM records r
+    WHERE r.domain_id = @zone_id AND r.type = 'A' AND r.name = @zone_name
+    LIMIT 1
+  );

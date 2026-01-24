@@ -5,6 +5,7 @@
 -- This script creates:
 -- - 5 permission templates with various permission levels
 -- - 6 test users with different roles
+-- - 4 LDAP test users
 -- - Multiple test domains (master, slave, native, reverse, IDN)
 -- - Zone ownership records
 -- - Zone templates for quick zone creation
@@ -146,8 +147,6 @@ ON CONFLICT (id) DO UPDATE SET fullname = EXCLUDED.fullname;
 -- =============================================================================
 -- API KEYS (for automated API testing)
 -- =============================================================================
--- API key for testing: test-api-key-for-automated-testing-12345
--- This key is linked to the admin user for full API access
 
 INSERT INTO api_keys (name, secret_key, created_by, disabled, expires_at)
 SELECT 'API Test Key', 'test-api-key-for-automated-testing-12345', 1, false, NULL
@@ -157,240 +156,273 @@ WHERE NOT EXISTS (SELECT 1 FROM api_keys WHERE secret_key = 'test-api-key-for-au
 -- TEST DOMAINS (PowerDNS tables)
 -- =============================================================================
 
-INSERT INTO domains (id, name, type, notified_serial)
-VALUES (1, 'admin-zone.example.com', 'MASTER', 2024010101)
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+-- Master zones (forward)
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('admin-zone.example.com', 'MASTER', 2024010101)
+ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO domains (id, name, type, notified_serial)
-VALUES (2, 'manager-zone.example.com', 'MASTER', 2024010101)
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('manager-zone.example.com', 'MASTER', 2024010101)
+ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO domains (id, name, type, notified_serial)
-VALUES (3, 'client-zone.example.com', 'MASTER', 2024010101)
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('client-zone.example.com', 'MASTER', 2024010101)
+ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO domains (id, name, type, notified_serial)
-VALUES (4, 'shared-zone.example.com', 'MASTER', 2024010101)
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('shared-zone.example.com', 'MASTER', 2024010101)
+ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO domains (id, name, type, notified_serial)
-VALUES (5, 'viewer-zone.example.com', 'MASTER', 2024010101)
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('viewer-zone.example.com', 'MASTER', 2024010101)
+ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO domains (id, name, type, notified_serial)
-VALUES (6, 'native-zone.example.org', 'NATIVE', 2024010101)
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+-- Native zones
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('native-zone.example.org', 'NATIVE', 2024010101)
+ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO domains (id, name, type, master)
-VALUES (7, 'slave-zone.example.net', 'SLAVE', '192.0.2.1')
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('secondary-native.example.org', 'NATIVE', 2024010101)
+ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO domains (id, name, type, notified_serial)
-VALUES (8, '2.0.192.in-addr.arpa', 'MASTER', 2024010101)
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+-- Slave zones
+INSERT INTO domains (name, type, master)
+VALUES ('slave-zone.example.net', 'SLAVE', '192.0.2.1')
+ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO domains (id, name, type, notified_serial)
-VALUES (9, '8.b.d.0.1.0.0.2.ip6.arpa', 'MASTER', 2024010101)
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+INSERT INTO domains (name, type, master)
+VALUES ('external-slave.example.net', 'SLAVE', '192.0.2.2')
+ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO domains (id, name, type, notified_serial)
-VALUES (10, 'xn--verstt-eua3l.info', 'MASTER', 2024010101)
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+-- IPv4 reverse zones
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('2.0.192.in-addr.arpa', 'MASTER', 2024010101)
+ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('168.192.in-addr.arpa', 'MASTER', 2024010101)
+ON CONFLICT (name) DO NOTHING;
+
+-- IPv6 reverse zone
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('8.b.d.0.1.0.0.2.ip6.arpa', 'MASTER', 2024010101)
+ON CONFLICT (name) DO NOTHING;
+
+-- IDN zone
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('xn--verstt-eua3l.info', 'MASTER', 2024010101)
+ON CONFLICT (name) DO NOTHING;
+
+-- Long domain names for UI testing
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('very-long-subdomain-name-for-testing-ui-column-widths.example.com', 'MASTER', 2024010101)
+ON CONFLICT (name) DO NOTHING;
+
+INSERT INTO domains (name, type, notified_serial)
+VALUES ('another.very.deeply.nested.subdomain.structure.example.com', 'MASTER', 2024010101)
+ON CONFLICT (name) DO NOTHING;
 
 -- =============================================================================
 -- ZONE OWNERSHIP (Poweradmin zones table)
+-- Uses name-based lookups for safety
 -- =============================================================================
 
+-- Admin owns admin-zone.example.com
 INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-SELECT 1, 1, 'Admin test zone', 0
-WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 1 AND owner = 1);
+SELECT d.id, u.id, 'Admin test zone', 0
+FROM domains d, users u
+WHERE d.name = 'admin-zone.example.com' AND u.username = 'admin'
+  AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
+-- Manager owns manager-zone.example.com
 INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-SELECT 2, 2, 'Manager test zone', 0
-WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 2 AND owner = 2);
+SELECT d.id, u.id, 'Manager test zone', 0
+FROM domains d, users u
+WHERE d.name = 'manager-zone.example.com' AND u.username = 'manager'
+  AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
+-- Client owns client-zone.example.com
 INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-SELECT 3, 3, 'Client test zone', 0
-WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 3 AND owner = 3);
+SELECT d.id, u.id, 'Client test zone', 0
+FROM domains d, users u
+WHERE d.name = 'client-zone.example.com' AND u.username = 'client'
+  AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
+-- Shared zone (manager)
 INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-SELECT 4, 2, 'Shared zone (manager)', 0
-WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 4 AND owner = 2);
+SELECT d.id, u.id, 'Shared zone (manager)', 0
+FROM domains d, users u
+WHERE d.name = 'shared-zone.example.com' AND u.username = 'manager'
+  AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
+-- Shared zone (client)
 INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-SELECT 4, 3, 'Shared zone (client)', 0
-WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 4 AND owner = 3);
+SELECT d.id, u.id, 'Shared zone (client)', 0
+FROM domains d, users u
+WHERE d.name = 'shared-zone.example.com' AND u.username = 'client'
+  AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
+-- Viewer owns viewer-zone.example.com
 INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-SELECT 5, 4, 'Viewer test zone', 0
-WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 5 AND owner = 4);
+SELECT d.id, u.id, 'Viewer test zone', 0
+FROM domains d, users u
+WHERE d.name = 'viewer-zone.example.com' AND u.username = 'viewer'
+  AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
+-- Manager owns native zones
 INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-SELECT 6, 2, 'Native zone', 0
-WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 6 AND owner = 2);
+SELECT d.id, u.id, 'Native zone', 0
+FROM domains d, users u
+WHERE d.name IN ('native-zone.example.org', 'secondary-native.example.org') AND u.username = 'manager'
+  AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
+-- Admin owns slave zones
 INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-SELECT 7, 1, 'Slave zone', 0
-WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 7 AND owner = 1);
+SELECT d.id, u.id, 'Slave zone', 0
+FROM domains d, users u
+WHERE d.name IN ('slave-zone.example.net', 'external-slave.example.net') AND u.username = 'admin'
+  AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
+-- Admin owns reverse zones
 INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-SELECT 8, 1, 'Reverse IPv4 zone', 0
-WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 8 AND owner = 1);
+SELECT d.id, u.id, 'Reverse zone', 0
+FROM domains d, users u
+WHERE d.name LIKE '%.arpa' AND u.username = 'admin'
+  AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
+-- Manager owns IDN zone
 INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-SELECT 9, 1, 'Reverse IPv6 zone', 0
-WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 9 AND owner = 1);
+SELECT d.id, u.id, 'IDN zone', 0
+FROM domains d, users u
+WHERE d.name = 'xn--verstt-eua3l.info' AND u.username = 'manager'
+  AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
+-- Client owns long domain name zones
 INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
-SELECT 10, 2, 'IDN zone', 0
-WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 10 AND owner = 2);
+SELECT d.id, u.id, 'Long domain name zone', 0
+FROM domains d, users u
+WHERE (d.name LIKE 'very-long-%' OR d.name LIKE 'another.very%') AND u.username = 'client'
+  AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
 -- =============================================================================
--- BASIC SOA AND NS RECORDS FOR EACH ZONE
+-- SOA AND NS RECORDS FOR ALL MASTER/NATIVE ZONES
 -- =============================================================================
 
--- admin-zone.example.com
+-- Add SOA records for master/native zones
 INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 1, 'admin-zone.example.com', 'SOA', 'ns1.example.com admin.example.com 2024010101 10800 3600 604800 3600', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 1 AND type = 'SOA');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 1, 'admin-zone.example.com', 'NS', 'ns1.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 1 AND type = 'NS' AND content = 'ns1.example.com');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 1, 'admin-zone.example.com', 'NS', 'ns2.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 1 AND type = 'NS' AND content = 'ns2.example.com');
+SELECT d.id, d.name, 'SOA',
+       'ns1.example.com. hostmaster.example.com. ' || to_char(current_date, 'YYYYMMDD') || '01 10800 3600 604800 86400',
+       86400, 0, false
+FROM domains d
+WHERE d.type IN ('MASTER', 'NATIVE')
+  AND NOT EXISTS (SELECT 1 FROM records r WHERE r.domain_id = d.id AND r.type = 'SOA');
 
--- manager-zone.example.com
+-- Add NS records (ns1)
 INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 2, 'manager-zone.example.com', 'SOA', 'ns1.example.com admin.example.com 2024010101 10800 3600 604800 3600', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 2 AND type = 'SOA');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 2, 'manager-zone.example.com', 'NS', 'ns1.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 2 AND type = 'NS' AND content = 'ns1.example.com');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 2, 'manager-zone.example.com', 'NS', 'ns2.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 2 AND type = 'NS' AND content = 'ns2.example.com');
+SELECT d.id, d.name, 'NS', 'ns1.example.com.', 86400, 0, false
+FROM domains d
+WHERE d.type IN ('MASTER', 'NATIVE')
+  AND NOT EXISTS (SELECT 1 FROM records r WHERE r.domain_id = d.id AND r.type = 'NS' AND r.content = 'ns1.example.com.');
 
--- client-zone.example.com
+-- Add NS records (ns2)
 INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 3, 'client-zone.example.com', 'SOA', 'ns1.example.com admin.example.com 2024010101 10800 3600 604800 3600', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 3 AND type = 'SOA');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 3, 'client-zone.example.com', 'NS', 'ns1.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 3 AND type = 'NS' AND content = 'ns1.example.com');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 3, 'client-zone.example.com', 'NS', 'ns2.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 3 AND type = 'NS' AND content = 'ns2.example.com');
+SELECT d.id, d.name, 'NS', 'ns2.example.com.', 86400, 0, false
+FROM domains d
+WHERE d.type IN ('MASTER', 'NATIVE')
+  AND NOT EXISTS (SELECT 1 FROM records r WHERE r.domain_id = d.id AND r.type = 'NS' AND r.content = 'ns2.example.com.');
 
--- shared-zone.example.com
+-- Add basic A records for forward zones
 INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 4, 'shared-zone.example.com', 'SOA', 'ns1.example.com admin.example.com 2024010101 10800 3600 604800 3600', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 4 AND type = 'SOA');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 4, 'shared-zone.example.com', 'NS', 'ns1.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 4 AND type = 'NS' AND content = 'ns1.example.com');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 4, 'shared-zone.example.com', 'NS', 'ns2.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 4 AND type = 'NS' AND content = 'ns2.example.com');
-
--- viewer-zone.example.com
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 5, 'viewer-zone.example.com', 'SOA', 'ns1.example.com admin.example.com 2024010101 10800 3600 604800 3600', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 5 AND type = 'SOA');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 5, 'viewer-zone.example.com', 'NS', 'ns1.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 5 AND type = 'NS' AND content = 'ns1.example.com');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 5, 'viewer-zone.example.com', 'NS', 'ns2.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 5 AND type = 'NS' AND content = 'ns2.example.com');
-
--- native-zone.example.org
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 6, 'native-zone.example.org', 'SOA', 'ns1.example.com admin.example.com 2024010101 10800 3600 604800 3600', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 6 AND type = 'SOA');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 6, 'native-zone.example.org', 'NS', 'ns1.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 6 AND type = 'NS' AND content = 'ns1.example.com');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 6, 'native-zone.example.org', 'NS', 'ns2.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 6 AND type = 'NS' AND content = 'ns2.example.com');
-
--- Reverse zones
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 8, '2.0.192.in-addr.arpa', 'SOA', 'ns1.example.com admin.example.com 2024010101 10800 3600 604800 3600', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 8 AND type = 'SOA');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 8, '2.0.192.in-addr.arpa', 'NS', 'ns1.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 8 AND type = 'NS' AND content = 'ns1.example.com');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 8, '2.0.192.in-addr.arpa', 'NS', 'ns2.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 8 AND type = 'NS' AND content = 'ns2.example.com');
-
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 9, '8.b.d.0.1.0.0.2.ip6.arpa', 'SOA', 'ns1.example.com admin.example.com 2024010101 10800 3600 604800 3600', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 9 AND type = 'SOA');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 9, '8.b.d.0.1.0.0.2.ip6.arpa', 'NS', 'ns1.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 9 AND type = 'NS' AND content = 'ns1.example.com');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 9, '8.b.d.0.1.0.0.2.ip6.arpa', 'NS', 'ns2.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 9 AND type = 'NS' AND content = 'ns2.example.com');
-
--- IDN zone
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 10, 'xn--verstt-eua3l.info', 'SOA', 'ns1.example.com admin.example.com 2024010101 10800 3600 604800 3600', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 10 AND type = 'SOA');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 10, 'xn--verstt-eua3l.info', 'NS', 'ns1.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 10 AND type = 'NS' AND content = 'ns1.example.com');
-INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT 10, 'xn--verstt-eua3l.info', 'NS', 'ns2.example.com', 86400, 0, false
-WHERE NOT EXISTS (SELECT 1 FROM records WHERE domain_id = 10 AND type = 'NS' AND content = 'ns2.example.com');
+SELECT d.id, 'www.' || d.name, 'A', '192.0.2.1', 3600, 0, false
+FROM domains d
+WHERE d.type IN ('MASTER', 'NATIVE')
+  AND d.name NOT LIKE '%.arpa'
+  AND d.name NOT LIKE 'xn--%'
+  AND NOT EXISTS (SELECT 1 FROM records r WHERE r.domain_id = d.id AND r.name = 'www.' || d.name AND r.type = 'A');
 
 -- =============================================================================
 -- ZONE TEMPLATES
 -- =============================================================================
 
-INSERT INTO zone_templ (id, name, descr, owner)
-VALUES (1, 'Basic Zone', 'Basic zone template with standard SOA and NS records', 1)
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, descr = EXCLUDED.descr;
+-- Basic Web Zone Template (owned by admin)
+INSERT INTO zone_templ (name, descr, owner)
+SELECT 'Basic Web Zone', 'Basic zone template with www, mail, and common records', u.id
+FROM users u WHERE u.username = 'admin'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ WHERE name = 'Basic Web Zone');
 
-INSERT INTO zone_templ (id, name, descr, owner)
-VALUES (2, 'Web Hosting', 'Zone template for web hosting with A, MX, and TXT records', 2)
-ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, descr = EXCLUDED.descr;
-
--- Zone template records
+-- Insert template records for Basic Web Zone
 INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
-SELECT 1, '[ZONE]', 'SOA', 'ns1.example.com admin.example.com 0 10800 3600 604800 3600', 86400, 0
-WHERE NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = 1 AND type = 'SOA');
-INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
-SELECT 1, '[ZONE]', 'NS', 'ns1.example.com', 86400, 0
-WHERE NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = 1 AND type = 'NS' AND content = 'ns1.example.com');
-INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
-SELECT 1, '[ZONE]', 'NS', 'ns2.example.com', 86400, 0
-WHERE NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = 1 AND type = 'NS' AND content = 'ns2.example.com');
+SELECT zt.id, '[ZONE]', 'A', '192.0.2.1', 3600, 0
+FROM zone_templ zt WHERE zt.name = 'Basic Web Zone'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = zt.id AND name = '[ZONE]' AND type = 'A');
 
 INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
-SELECT 2, '[ZONE]', 'SOA', 'ns1.example.com admin.example.com 0 10800 3600 604800 3600', 86400, 0
-WHERE NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = 2 AND type = 'SOA');
+SELECT zt.id, 'www.[ZONE]', 'A', '192.0.2.1', 3600, 0
+FROM zone_templ zt WHERE zt.name = 'Basic Web Zone'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = zt.id AND name = 'www.[ZONE]' AND type = 'A');
+
 INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
-SELECT 2, '[ZONE]', 'NS', 'ns1.example.com', 86400, 0
-WHERE NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = 2 AND type = 'NS' AND content = 'ns1.example.com');
+SELECT zt.id, 'mail.[ZONE]', 'A', '192.0.2.10', 3600, 0
+FROM zone_templ zt WHERE zt.name = 'Basic Web Zone'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = zt.id AND name = 'mail.[ZONE]' AND type = 'A');
+
 INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
-SELECT 2, '[ZONE]', 'NS', 'ns2.example.com', 86400, 0
-WHERE NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = 2 AND type = 'NS' AND content = 'ns2.example.com');
+SELECT zt.id, '[ZONE]', 'MX', 'mail.[ZONE]', 3600, 10
+FROM zone_templ zt WHERE zt.name = 'Basic Web Zone'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = zt.id AND name = '[ZONE]' AND type = 'MX');
+
+-- Full Zone Template (owned by admin)
+INSERT INTO zone_templ (name, descr, owner)
+SELECT 'Full Zone Template', 'Comprehensive template with SPF, DMARC, and common services', u.id
+FROM users u WHERE u.username = 'admin'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ WHERE name = 'Full Zone Template');
+
 INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
-SELECT 2, '[ZONE]', 'A', '192.0.2.1', 3600, 0
-WHERE NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = 2 AND type = 'A');
+SELECT zt.id, '[ZONE]', 'A', '192.0.2.1', 3600, 0
+FROM zone_templ zt WHERE zt.name = 'Full Zone Template'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = zt.id AND name = '[ZONE]' AND type = 'A');
+
 INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
-SELECT 2, 'www.[ZONE]', 'A', '192.0.2.1', 3600, 0
-WHERE NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = 2 AND name = 'www.[ZONE]');
+SELECT zt.id, 'www.[ZONE]', 'CNAME', '[ZONE]', 3600, 0
+FROM zone_templ zt WHERE zt.name = 'Full Zone Template'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = zt.id AND name = 'www.[ZONE]' AND type = 'CNAME');
+
 INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
-SELECT 2, '[ZONE]', 'MX', 'mail.[ZONE]', 3600, 10
-WHERE NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = 2 AND type = 'MX');
+SELECT zt.id, '[ZONE]', 'TXT', '"v=spf1 mx ~all"', 3600, 0
+FROM zone_templ zt WHERE zt.name = 'Full Zone Template'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = zt.id AND name = '[ZONE]' AND type = 'TXT');
+
 INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
-SELECT 2, 'mail.[ZONE]', 'A', '192.0.2.10', 3600, 0
-WHERE NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = 2 AND name = 'mail.[ZONE]');
+SELECT zt.id, '_dmarc.[ZONE]', 'TXT', '"v=DMARC1; p=none; rua=mailto:dmarc@[ZONE]"', 3600, 0
+FROM zone_templ zt WHERE zt.name = 'Full Zone Template'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = zt.id AND name = '_dmarc.[ZONE]' AND type = 'TXT');
+
+INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
+SELECT zt.id, 'mail.[ZONE]', 'A', '192.0.2.10', 3600, 0
+FROM zone_templ zt WHERE zt.name = 'Full Zone Template'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = zt.id AND name = 'mail.[ZONE]' AND type = 'A');
+
+INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
+SELECT zt.id, '[ZONE]', 'MX', 'mail.[ZONE]', 3600, 10
+FROM zone_templ zt WHERE zt.name = 'Full Zone Template'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = zt.id AND name = '[ZONE]' AND type = 'MX');
+
+-- Manager's custom template
+INSERT INTO zone_templ (name, descr, owner)
+SELECT 'Manager Custom Template', 'Custom template owned by manager user', u.id
+FROM users u WHERE u.username = 'manager'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ WHERE name = 'Manager Custom Template');
+
+INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
+SELECT zt.id, '[ZONE]', 'A', '192.0.2.100', 3600, 0
+FROM zone_templ zt WHERE zt.name = 'Manager Custom Template'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = zt.id AND name = '[ZONE]' AND type = 'A');
+
+INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio)
+SELECT zt.id, 'www.[ZONE]', 'A', '192.0.2.100', 3600, 0
+FROM zone_templ zt WHERE zt.name = 'Manager Custom Template'
+  AND NOT EXISTS (SELECT 1 FROM zone_templ_records WHERE zone_templ_id = zt.id AND name = 'www.[ZONE]' AND type = 'A');
 
 -- =============================================================================
 -- SYNC SEQUENCES

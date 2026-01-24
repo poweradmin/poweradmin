@@ -143,12 +143,83 @@ INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabl
     (6, 'native-zone.example.org', 'MX', 'mail.native-zone.example.org', 3600, 10, 0);
 
 -- =============================================================================
--- RECORDS FOR xn--verstt-eua3l.info (IDN) (domain_id=10)
+-- RECORDS FOR xn--verstt-eua3l.info (IDN)
 -- =============================================================================
 
-INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled) VALUES
-    (10, 'xn--verstt-eua3l.info', 'A', '192.0.2.150', 3600, 0, 0),
-    (10, 'www.xn--verstt-eua3l.info', 'A', '192.0.2.150', 3600, 0, 0),
-    (10, 'xn--verstt-eua3l.info', 'AAAA', '2001:db8:150::1', 3600, 0, 0),
-    (10, 'mail.xn--verstt-eua3l.info', 'A', '192.0.2.151', 3600, 0, 0),
-    (10, 'xn--verstt-eua3l.info', 'MX', 'mail.xn--verstt-eua3l.info', 3600, 10, 0);
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'xn--verstt-eua3l.info', 'A', '192.0.2.150', 3600, 0, 0
+FROM domains d WHERE d.name = 'xn--verstt-eua3l.info';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'www.xn--verstt-eua3l.info', 'A', '192.0.2.150', 3600, 0, 0
+FROM domains d WHERE d.name = 'xn--verstt-eua3l.info';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'xn--verstt-eua3l.info', 'AAAA', '2001:db8:150::1', 3600, 0, 0
+FROM domains d WHERE d.name = 'xn--verstt-eua3l.info';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'mail.xn--verstt-eua3l.info', 'A', '192.0.2.151', 3600, 0, 0
+FROM domains d WHERE d.name = 'xn--verstt-eua3l.info';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'xn--verstt-eua3l.info', 'MX', 'mail.xn--verstt-eua3l.info', 3600, 10, 0
+FROM domains d WHERE d.name = 'xn--verstt-eua3l.info';
+
+-- =============================================================================
+-- RECORDS FOR secondary-native.example.org
+-- =============================================================================
+
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'secondary-native.example.org', 'A', '192.0.2.80', 3600, 0, 0
+FROM domains d WHERE d.name = 'secondary-native.example.org';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'www.secondary-native.example.org', 'A', '192.0.2.80', 3600, 0, 0
+FROM domains d WHERE d.name = 'secondary-native.example.org';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'mail.secondary-native.example.org', 'A', '192.0.2.85', 3600, 0, 0
+FROM domains d WHERE d.name = 'secondary-native.example.org';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'secondary-native.example.org', 'MX', 'mail.secondary-native.example.org', 3600, 10, 0
+FROM domains d WHERE d.name = 'secondary-native.example.org';
+
+-- =============================================================================
+-- PTR RECORDS FOR 168.192.in-addr.arpa
+-- =============================================================================
+
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, '1.1.168.192.in-addr.arpa', 'PTR', 'router.example.com.', 3600, 0, 0
+FROM domains d WHERE d.name = '168.192.in-addr.arpa';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, '100.1.168.192.in-addr.arpa', 'PTR', 'server1.example.com.', 3600, 0, 0
+FROM domains d WHERE d.name = '168.192.in-addr.arpa';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, '101.1.168.192.in-addr.arpa', 'PTR', 'server2.example.com.', 3600, 0, 0
+FROM domains d WHERE d.name = '168.192.in-addr.arpa';
+
+-- =============================================================================
+-- RECORDS FOR very-long-subdomain-name-for-testing-ui-column-widths.example.com
+-- =============================================================================
+
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'very-long-subdomain-name-for-testing-ui-column-widths.example.com', 'A', '192.0.2.180', 3600, 0, 0
+FROM domains d WHERE d.name = 'very-long-subdomain-name-for-testing-ui-column-widths.example.com';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'www.very-long-subdomain-name-for-testing-ui-column-widths.example.com', 'A', '192.0.2.180', 3600, 0, 0
+FROM domains d WHERE d.name = 'very-long-subdomain-name-for-testing-ui-column-widths.example.com';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'this-is-another-very-long-subdomain-name.very-long-subdomain-name-for-testing-ui-column-widths.example.com', 'A', '192.0.2.181', 3600, 0, 0
+FROM domains d WHERE d.name = 'very-long-subdomain-name-for-testing-ui-column-widths.example.com';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'very-long-subdomain-name-for-testing-ui-column-widths.example.com', 'TXT', '"This is a very long TXT record content for testing UI column width handling"', 3600, 0, 0
+FROM domains d WHERE d.name = 'very-long-subdomain-name-for-testing-ui-column-widths.example.com';
+
+-- =============================================================================
+-- RECORDS FOR another.very.deeply.nested.subdomain.structure.example.com
+-- =============================================================================
+
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'another.very.deeply.nested.subdomain.structure.example.com', 'A', '192.0.2.190', 3600, 0, 0
+FROM domains d WHERE d.name = 'another.very.deeply.nested.subdomain.structure.example.com';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'www.another.very.deeply.nested.subdomain.structure.example.com', 'A', '192.0.2.190', 3600, 0, 0
+FROM domains d WHERE d.name = 'another.very.deeply.nested.subdomain.structure.example.com';
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'api.another.very.deeply.nested.subdomain.structure.example.com', 'A', '192.0.2.191', 3600, 0, 0
+FROM domains d WHERE d.name = 'another.very.deeply.nested.subdomain.structure.example.com';

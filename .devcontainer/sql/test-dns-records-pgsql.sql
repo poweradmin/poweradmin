@@ -219,5 +219,81 @@ BEGIN
     END IF;
 END $$;
 
+-- =============================================================================
+-- RECORDS FOR secondary-native.example.org
+-- =============================================================================
+
+DO $$
+DECLARE
+    zone_id_var INTEGER;
+BEGIN
+    SELECT id INTO zone_id_var FROM domains WHERE name = 'secondary-native.example.org' LIMIT 1;
+
+    IF zone_id_var IS NOT NULL AND NOT EXISTS (SELECT 1 FROM records WHERE domain_id = zone_id_var AND type = 'A' AND name = 'secondary-native.example.org') THEN
+        INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled) VALUES
+            (zone_id_var, 'secondary-native.example.org', 'A', '192.0.2.80', 3600, 0, false),
+            (zone_id_var, 'www.secondary-native.example.org', 'A', '192.0.2.80', 3600, 0, false),
+            (zone_id_var, 'mail.secondary-native.example.org', 'A', '192.0.2.85', 3600, 0, false),
+            (zone_id_var, 'secondary-native.example.org', 'MX', 'mail.secondary-native.example.org', 3600, 10, false);
+    END IF;
+END $$;
+
+-- =============================================================================
+-- PTR RECORDS FOR 168.192.in-addr.arpa
+-- =============================================================================
+
+DO $$
+DECLARE
+    zone_id_var INTEGER;
+BEGIN
+    SELECT id INTO zone_id_var FROM domains WHERE name = '168.192.in-addr.arpa' LIMIT 1;
+
+    IF zone_id_var IS NOT NULL AND NOT EXISTS (SELECT 1 FROM records WHERE domain_id = zone_id_var AND type = 'PTR') THEN
+        INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled) VALUES
+            (zone_id_var, '1.1.168.192.in-addr.arpa', 'PTR', 'router.example.com.', 3600, 0, false),
+            (zone_id_var, '100.1.168.192.in-addr.arpa', 'PTR', 'server1.example.com.', 3600, 0, false),
+            (zone_id_var, '101.1.168.192.in-addr.arpa', 'PTR', 'server2.example.com.', 3600, 0, false);
+    END IF;
+END $$;
+
+-- =============================================================================
+-- RECORDS FOR very-long-subdomain-name-for-testing-ui-column-widths.example.com
+-- =============================================================================
+
+DO $$
+DECLARE
+    zone_id_var INTEGER;
+    zone_name_var VARCHAR := 'very-long-subdomain-name-for-testing-ui-column-widths.example.com';
+BEGIN
+    SELECT id INTO zone_id_var FROM domains WHERE name = zone_name_var LIMIT 1;
+
+    IF zone_id_var IS NOT NULL AND NOT EXISTS (SELECT 1 FROM records WHERE domain_id = zone_id_var AND type = 'A' AND name = zone_name_var) THEN
+        INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled) VALUES
+            (zone_id_var, zone_name_var, 'A', '192.0.2.180', 3600, 0, false),
+            (zone_id_var, 'www.' || zone_name_var, 'A', '192.0.2.180', 3600, 0, false),
+            (zone_id_var, 'this-is-another-very-long-subdomain-name.' || zone_name_var, 'A', '192.0.2.181', 3600, 0, false),
+            (zone_id_var, zone_name_var, 'TXT', '"This is a very long TXT record content for testing UI column width handling"', 3600, 0, false);
+    END IF;
+END $$;
+
+-- =============================================================================
+-- RECORDS FOR another.very.deeply.nested.subdomain.structure.example.com
+-- =============================================================================
+
+DO $$
+DECLARE
+    zone_id_var INTEGER;
+    zone_name_var VARCHAR := 'another.very.deeply.nested.subdomain.structure.example.com';
+BEGIN
+    SELECT id INTO zone_id_var FROM domains WHERE name = zone_name_var LIMIT 1;
+
+    IF zone_id_var IS NOT NULL AND NOT EXISTS (SELECT 1 FROM records WHERE domain_id = zone_id_var AND type = 'A' AND name = zone_name_var) THEN
+        INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled) VALUES
+            (zone_id_var, zone_name_var, 'A', '192.0.2.190', 3600, 0, false),
+            (zone_id_var, 'www.' || zone_name_var, 'A', '192.0.2.190', 3600, 0, false),
+            (zone_id_var, 'api.' || zone_name_var, 'A', '192.0.2.191', 3600, 0, false);
+    END IF;
+END $$;
+
 -- Update sequences
 SELECT setval('records_id_seq', COALESCE((SELECT MAX(id) FROM records), 1));
