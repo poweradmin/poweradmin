@@ -23,6 +23,9 @@ return [
         'password_encryption' => 'bcrypt',
         'login_token_validation' => false,
         'global_token_validation' => false,
+        'password_reset' => [
+            'enabled' => true,
+        ],
         'mfa' => [
             'enabled' => true,
             'enforced' => false,
