@@ -27,7 +27,10 @@ INSERT OR REPLACE INTO perm_templ (id, name, descr) VALUES
 
 -- Ensure Administrator template (ID 1) has überuser permission
 -- This grants full system access
-INSERT OR IGNORE INTO perm_templ_items (templ_id, perm_id) VALUES (1, 53);
+-- Use SELECT-based insert to avoid conflicts with auto-increment id
+INSERT INTO perm_templ_items (templ_id, perm_id)
+SELECT 1, 53
+WHERE NOT EXISTS (SELECT 1 FROM perm_templ_items WHERE templ_id = 1 AND perm_id = 53);
 
 -- Zone Manager (Template 2) permissions
 INSERT OR IGNORE INTO perm_templ_items (templ_id, perm_id) VALUES (2, 41);

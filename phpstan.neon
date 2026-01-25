@@ -2,7 +2,5 @@ parameters:
   excludePaths:
     - vendor
   ignoreErrors:
-    # Ignore errors in test files related to mocking
-    - '#Call to an undefined method .+::expects\(\).#'
     # Ignore constructor unused parameter errors
     - '#Constructor of class .+ has an unused parameter \$_config.#'
