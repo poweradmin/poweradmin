@@ -265,6 +265,22 @@ services:
     ports:
       - 8443:443
 
+  # =============================================================================
+  # Mail Server (for testing email functionality)
+  # =============================================================================
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    networks:
+      - internal
+    ports:
+      - "8025:8025"   # Web UI
+      - "1025:1025"   # SMTP
+    environment:
+      - MP_SMTP_AUTH_ACCEPT_ANY=true
+      - MP_SMTP_AUTH_ALLOW_INSECURE=true
+
 volumes:
   mysql_data: { }
   pgsql_data: { }

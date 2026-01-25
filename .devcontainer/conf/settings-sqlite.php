@@ -71,6 +71,7 @@ return [
      */
     'misc' => [
         'record_comments_sync' => true,
+        'email_previews_enabled' => true,
     ],
 
     /**
@@ -107,5 +108,22 @@ return [
      */
     'ldap' => [
         'enabled' => false,
+    ],
+
+    /**
+     * Mail Settings (using Mailpit for testing)
+     * Mailpit UI: http://localhost:8025
+     */
+    'mail' => [
+        'enabled' => true,
+        'transport' => 'smtp',
+        'host' => 'mailpit',
+        'port' => 1025,
+        'encryption' => '',
+        'auth' => false,
+        'username' => '',
+        'password' => '',
+        'from' => 'poweradmin@example.com',
+        'from_name' => 'Poweradmin',
     ],
 ];
