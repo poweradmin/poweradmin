@@ -1,3 +1,12 @@
+# 3.23.0 (2026-01-23)
+
+ * Add `=` assignment operator (allows to set variables in expression or to replace the short-form of the set tag)
+ * Add sequence, mapping, and object destructuring
+ * Add `?.` null-safe operator
+ * Add `===` and `!==` operators (equivalent to the `same as` and `not same as` tests)
+ * Fix opcache preload warning for unlinked anonymous class
+ * Fix spread operator behavior
+
 # 3.22.2 (2025-12-14)
 
  * Fix "cycle" with non-countable ArrayAccess + Traversable objects
@@ -66,6 +75,7 @@
 
 # 3.18.0 (2024-12-29)
 
+ * Support for invoking closures
  * Fix unary operator precedence change
  * Ignore `SyntaxError` exceptions from undefined handlers when using the `guard` tag
  * Add a way to stream template rendering (`TemplateWrapper::stream()` and `TemplateWrapper::streamBlock()`)
@@ -74,7 +84,6 @@
 
  * Fix the null coalescing operator when the test returns null
  * Fix the Elvis operator when used as '? :' instead of '?:'
- * Support for invoking closures
 
 # 3.17.0 (2024-12-10)
 
