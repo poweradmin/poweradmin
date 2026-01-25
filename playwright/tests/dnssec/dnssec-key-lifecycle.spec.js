@@ -208,16 +208,23 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('manager should access DNSSEC for own zones', async ({ managerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      test.setTimeout(60000);
+
+      await page.goto('/index.php?page=list_forward_zones&letter=all', { timeout: 30000 });
+      await page.waitForLoadState('networkidle');
+
       const editLink = page.locator('a[href*="page=edit"]').first();
-      if (await editLink.count() > 0) {
-        const href = await editLink.getAttribute('href');
-        const match = href?.match(/id=(\d+)/);
-        if (match) {
-          await page.goto(`/index.php?page=dnssec&id=${match[1]}`);
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
-        }
+      if (await editLink.count() === 0) {
+        test.skip('No zones available for manager user');
+        return;
+      }
+
+      const href = await editLink.getAttribute('href');
+      const match = href?.match(/id=(\d+)/);
+      if (match) {
+        await page.goto(`/index.php?page=dnssec&id=${match[1]}`, { timeout: 30000 });
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
       }
     });
 

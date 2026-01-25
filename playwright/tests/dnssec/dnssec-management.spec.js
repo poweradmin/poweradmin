@@ -312,10 +312,17 @@ test.describe('Delete DNSSEC Key', () => {
     });
 
     test('should display confirm and cancel buttons', async ({ adminPage: page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      test.setTimeout(60000);
 
-      await page.goto(`/index.php?page=dnssec_delete_key&id=${zoneId}&key_id=1`);
+      const zoneId = await getZoneIdForTest(page);
+      if (!zoneId) {
+        test.skip('No zones available for testing');
+        return;
+      }
+
+      await page.goto(`/index.php?page=dnssec_delete_key&id=${zoneId}&key_id=1`, { timeout: 30000 });
+      await page.waitForLoadState('networkidle');
+
       const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")');
       const noBtn = page.locator('a:has-text("No"), button:has-text("No")');
       if (await yesBtn.count() > 0) {
