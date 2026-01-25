@@ -10,46 +10,48 @@ import { test, expect } from '../../fixtures/test-fixtures.js';
 test.describe('Zone List Sorting', () => {
   test.describe('Column Header Sorting', () => {
     test('should have sortable name column header', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      // Use letter=all to ensure zones are displayed and headers are visible
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
-      // Check for sorting link on name column
-      const nameHeader = page.locator('th a[href*="sortby=name"], th a:has-text("Name")');
+      // Check for sorting link on name column (template uses zone_sort_by parameter)
+      const nameHeader = page.locator('th a[href*="zone_sort_by=name"]');
       const hasSortableNameHeader = await nameHeader.count() > 0;
 
       expect(hasSortableNameHeader).toBeTruthy();
     });
 
     test('should have sortable type column header', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      // Use letter=all to ensure zones are displayed and headers are visible
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
-      // Check for sorting link on type column
-      const typeHeader = page.locator('th a[href*="sortby=type"], th:has-text("Type")');
+      // Check for sorting link on type column (template uses zone_sort_by parameter)
+      const typeHeader = page.locator('th a[href*="zone_sort_by=type"]');
       const hasSortableTypeHeader = await typeHeader.count() > 0;
 
       expect(hasSortableTypeHeader).toBeTruthy();
     });
 
     test('should have sortable owner column header', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      // Use letter=all to ensure zones are displayed and headers are visible
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
-      // Check for sorting link on owner column - this was added by the fix
-      const ownerHeader = page.locator('th a[href*="sortby=owner"], th:has-text("Owner")');
-      const bodyText = await page.locator('body').textContent();
-
+      // Check for sorting link on owner column (template uses zone_sort_by parameter)
+      const ownerHeader = page.locator('th a[href*="zone_sort_by=owner"]');
       const hasSortableOwnerHeader = await ownerHeader.count() > 0;
-      const hasOwnerColumn = bodyText.toLowerCase().includes('owner');
 
-      expect(hasSortableOwnerHeader || hasOwnerColumn).toBeTruthy();
+      expect(hasSortableOwnerHeader).toBeTruthy();
     });
 
     test('should have sortable records count column', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      // Use letter=all to ensure zones are displayed and headers are visible
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
-      const recordsHeader = page.locator('th a[href*="sortby=count_records"], th:has-text("Records")');
+      // Check for sorting link on records column (template uses zone_sort_by parameter)
+      const recordsHeader = page.locator('th a[href*="zone_sort_by=count_records"]');
       const hasSortableRecordsHeader = await recordsHeader.count() > 0;
 
       expect(hasSortableRecordsHeader).toBeTruthy();
@@ -58,7 +60,7 @@ test.describe('Zone List Sorting', () => {
 
   test.describe('Sort Direction', () => {
     test('should support ascending sort direction', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones&sortby=name&sortdir=ASC');
+      await page.goto('/index.php?page=list_forward_zones&letter=all&zone_sort_by=name&zone_sort_by_direction=ASC');
       await page.waitForLoadState('networkidle');
 
       // Page should load without errors
@@ -67,7 +69,7 @@ test.describe('Zone List Sorting', () => {
     });
 
     test('should support descending sort direction', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones&sortby=name&sortdir=DESC');
+      await page.goto('/index.php?page=list_forward_zones&letter=all&zone_sort_by=name&zone_sort_by_direction=DESC');
       await page.waitForLoadState('networkidle');
 
       // Page should load without errors
@@ -76,10 +78,10 @@ test.describe('Zone List Sorting', () => {
     });
 
     test('should toggle sort direction on header click', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
-      const sortLink = page.locator('th a[href*="sortby=name"]').first();
+      const sortLink = page.locator('th a[href*="zone_sort_by=name"]').first();
 
       if (await sortLink.count() > 0) {
         const initialHref = await sortLink.getAttribute('href');
@@ -88,24 +90,26 @@ test.describe('Zone List Sorting', () => {
 
         // URL should contain sort parameters
         const url = page.url();
-        expect(url).toMatch(/sortby=name/);
+        expect(url).toMatch(/zone_sort_by=name/);
       }
     });
   });
 
   test.describe('Sort by Owner (Fix #781)', () => {
     test('should allow sorting zones by owner', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones&sortby=owner&sortdir=ASC');
+      await page.goto('/index.php?page=list_forward_zones&letter=all&zone_sort_by=owner&zone_sort_by_direction=ASC');
       await page.waitForLoadState('networkidle');
 
-      // Page should load successfully
+      // Page should load successfully - check for zone content and no error alerts
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/zone|forward/i);
-      expect(bodyText.toLowerCase()).not.toContain('invalid');
+      // Check there's no error alert about invalid sort parameters
+      const errorAlert = page.locator('.alert-danger:has-text("invalid")');
+      expect(await errorAlert.count()).toBe(0);
     });
 
     test('should allow reverse sort by owner', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones&sortby=owner&sortdir=DESC');
+      await page.goto('/index.php?page=list_forward_zones&letter=all&zone_sort_by=owner&zone_sort_by_direction=DESC');
       await page.waitForLoadState('networkidle');
 
       // Page should load successfully
@@ -116,11 +120,11 @@ test.describe('Zone List Sorting', () => {
 
   test.describe('Sort Persistence', () => {
     test('should maintain sort parameters when paginating', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones&sortby=name&sortdir=DESC');
+      await page.goto('/index.php?page=list_forward_zones&letter=all&zone_sort_by=name&zone_sort_by_direction=DESC');
       await page.waitForLoadState('networkidle');
 
       // Check if pagination links maintain sort parameters
-      const paginationLinks = page.locator('.pagination a[href*="sortby"]');
+      const paginationLinks = page.locator('.pagination a[href*="zone_sort_by"]');
       const hasSortInPagination = await paginationLinks.count() >= 0;
 
       expect(hasSortInPagination).toBeTruthy();
@@ -129,7 +133,7 @@ test.describe('Zone List Sorting', () => {
 
   test.describe('Reverse Zones Sorting', () => {
     test('should allow sorting reverse zones by name', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_reverse_zones&sortby=name&sortdir=ASC');
+      await page.goto('/index.php?page=list_reverse_zones&letter=all&zone_sort_by=name&zone_sort_by_direction=ASC');
       await page.waitForLoadState('networkidle');
 
       const bodyText = await page.locator('body').textContent();
@@ -137,7 +141,7 @@ test.describe('Zone List Sorting', () => {
     });
 
     test('should allow sorting reverse zones by owner', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_reverse_zones&sortby=owner&sortdir=ASC');
+      await page.goto('/index.php?page=list_reverse_zones&letter=all&zone_sort_by=owner&zone_sort_by_direction=ASC');
       await page.waitForLoadState('networkidle');
 
       const bodyText = await page.locator('body').textContent();

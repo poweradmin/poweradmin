@@ -125,7 +125,7 @@ test.describe('Zone Template Management', () => {
                                bodyText.includes(uniqueTestZone) ||
                                bodyText.toLowerCase().includes('error') ||
                                url.includes('page=edit') ||
-                               url.includes('page=list_forward_zones') ||
+                               url.includes('page=list_forward_zones&letter=all') ||
                                url.includes('page=add_zone_master');
     expect(hasHandledResponse).toBeTruthy();
   });
@@ -156,7 +156,7 @@ test.describe('Zone Template Management', () => {
 
   test('should delete a zone template', async ({ adminPage: page }) => {
     // First delete the test zone that uses the template
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
     let row = page.locator(`tr:has-text("${testZone}")`);
     if (await row.count() > 0) {
       const deleteLink = row.locator('a').filter({ hasText: /Delete/i });

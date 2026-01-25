@@ -39,7 +39,7 @@ test.describe('Dashboard and Navigation', () => {
   });
 
   test('should navigate to forward zones page', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
     await expect(page).toHaveURL(/page=list_forward_zones/);
     // Page should load without errors - may not have visible h1-h5 headings
     const bodyText = await page.locator('body').textContent();
@@ -104,7 +104,7 @@ test.describe('Dashboard and Navigation', () => {
   test('should maintain session across page navigation', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=index');
     await page.goto('/index.php?page=users');
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
     await page.goto('/index.php?page=search');
 
     // Should still be logged in

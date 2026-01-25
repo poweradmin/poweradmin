@@ -113,7 +113,7 @@ test.describe('User Permissions After Login', () => {
     });
 
     test('should have access to zone list', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await expect(page).toHaveURL(/page=list_forward_zones/);
     });
 
@@ -145,7 +145,7 @@ test.describe('User Permissions After Login', () => {
     });
 
     test('should have access to zone list', async ({ managerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await expect(page).toHaveURL(/page=list_forward_zones/);
     });
 
@@ -193,7 +193,7 @@ test.describe('User Permissions After Login', () => {
     });
 
     test('should have access to zone list (own zones)', async ({ clientPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await expect(page).toHaveURL(/page=list_forward_zones/);
     });
 
@@ -230,7 +230,7 @@ test.describe('User Permissions After Login', () => {
     });
 
     test('should have access to zone list (view only)', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await expect(page).toHaveURL(/page=list_forward_zones/);
     });
 

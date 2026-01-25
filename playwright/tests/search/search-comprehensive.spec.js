@@ -303,7 +303,7 @@ test.describe('Search Functionality', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
     const row = page.locator(`tr:has-text("${testDomain}")`);
 
     if (await row.count() > 0) {

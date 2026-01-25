@@ -18,7 +18,7 @@ test.describe('Zone Delete Confirmation', () => {
   test.describe('Single Zone Delete (delete_domain.html)', () => {
     test('should display warning alert', async ({ adminPage: page }) => {
       // Navigate to forward zones
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       // Check for delete links
       const deleteLinks = page.locator('a[href*="delete_domain"]');
@@ -32,7 +32,7 @@ test.describe('Zone Delete Confirmation', () => {
     });
 
     test('should display zone name being deleted', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const deleteLinks = page.locator('a[href*="delete_domain"]');
 
@@ -45,7 +45,7 @@ test.describe('Zone Delete Confirmation', () => {
     });
 
     test('should display zone details card', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const deleteLinks = page.locator('a[href*="delete_domain"]');
 
@@ -61,7 +61,7 @@ test.describe('Zone Delete Confirmation', () => {
     });
 
     test('should have confirm delete button', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       const deleteLinks = page.locator('a[href*="delete_domain"]');
@@ -80,7 +80,7 @@ test.describe('Zone Delete Confirmation', () => {
     });
 
     test('should have cancel button', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const deleteLinks = page.locator('a[href*="delete_domain"]');
 
@@ -94,7 +94,7 @@ test.describe('Zone Delete Confirmation', () => {
     });
 
     test('should include CSRF token', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const deleteLinks = page.locator('a[href*="delete_domain"]');
 
@@ -108,7 +108,7 @@ test.describe('Zone Delete Confirmation', () => {
     });
 
     test('should display breadcrumb navigation', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const deleteLinks = page.locator('a[href*="delete_domain"]');
 
@@ -121,7 +121,7 @@ test.describe('Zone Delete Confirmation', () => {
     });
 
     test('cancel should return to zones list', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const deleteLinks = page.locator('a[href*="delete_domain"]');
 
@@ -141,7 +141,7 @@ test.describe('Zone Delete Confirmation', () => {
 
   test.describe('Bulk Zone Delete (delete_domains.html)', () => {
     test('should display all selected zones in table', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       // Check for bulk delete functionality
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
@@ -152,7 +152,7 @@ test.describe('Zone Delete Confirmation', () => {
     });
 
     test('zones table should show name, owner, type columns', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const bodyText = await page.locator('body').textContent();
 
@@ -293,7 +293,7 @@ test.describe('Record Delete Confirmation', () => {
   test.describe('Single Record Delete (delete_record.html)', () => {
     test('should display record details when navigating to delete', async ({ adminPage: page }) => {
       // Navigate directly to a zone edit page
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       // Wait for page to load
       await page.waitForLoadState('networkidle');
@@ -304,7 +304,7 @@ test.describe('Record Delete Confirmation', () => {
     });
 
     test('should have delete record links in zone edit view', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       // Check for zone links
@@ -316,7 +316,7 @@ test.describe('Record Delete Confirmation', () => {
     });
 
     test('should show record type badges in zone view', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       const bodyText = await page.locator('body').textContent();
@@ -325,7 +325,7 @@ test.describe('Record Delete Confirmation', () => {
     });
 
     test('should have action buttons in zone list', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       const buttons = page.locator('a.btn, button.btn');
@@ -336,7 +336,7 @@ test.describe('Record Delete Confirmation', () => {
 
   test.describe('Bulk Record Delete (delete_records.html)', () => {
     test('should have bulk selection capability in zone edit', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       // Verify page loaded
@@ -345,7 +345,7 @@ test.describe('Record Delete Confirmation', () => {
     });
 
     test('should display record columns in zone list', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       const bodyText = await page.locator('body').textContent();
@@ -358,7 +358,7 @@ test.describe('Record Delete Confirmation', () => {
     });
 
     test('should have table structure for zones', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       const table = page.locator('table');
@@ -603,7 +603,7 @@ test.describe('Permission Template Delete Confirmation', () => {
 test.describe('Common Delete Confirmation Elements', () => {
   test.describe('UI Consistency', () => {
     test('delete pages should use danger button styling', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const deleteLinks = page.locator('a[href*="delete_domain"]');
 
@@ -617,7 +617,7 @@ test.describe('Common Delete Confirmation Elements', () => {
     });
 
     test('cancel buttons should use secondary styling', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const deleteLinks = page.locator('a[href*="delete_domain"]');
 
@@ -631,7 +631,7 @@ test.describe('Common Delete Confirmation Elements', () => {
     });
 
     test('delete pages should have trash icon', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const deleteLinks = page.locator('a[href*="delete_domain"]');
 
@@ -645,7 +645,7 @@ test.describe('Common Delete Confirmation Elements', () => {
     });
 
     test('warning alerts should have exclamation icon', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const deleteLinks = page.locator('a[href*="delete_domain"]');
 

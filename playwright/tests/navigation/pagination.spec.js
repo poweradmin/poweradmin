@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures/test-fixtures.js';
 
 test.describe('Pagination Functionality', () => {
   test('should display pagination controls when zone list exceeds page size', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Check for pagination controls
     const paginationExists = await page.locator('.pagination, nav[aria-label*="pagination"], a[href*="start="]').count() > 0;
@@ -16,7 +16,7 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should navigate to next page of zones', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Check if pagination exists
     const nextButton = page.locator('a:has-text("Next"), a:has-text("›"), a:has-text("»"), a[href*="start="]').first();
@@ -46,7 +46,7 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should display correct page numbers in pagination', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Check if page numbers are displayed
     const paginationContainer = page.locator('.pagination').first();
@@ -63,7 +63,7 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should maintain pagination when filtering zones', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Check if filter/search exists
     const filterInput = page.locator('input[name*="filter"], input[name*="search"]').first();
@@ -92,7 +92,7 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should display items per page selector if available', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Check for items per page dropdown
     const perPageSelector = page.locator('select[name*="per_page"], select[name*="limit"]').first();
@@ -105,7 +105,7 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should show total count of items', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Page should load successfully
     const bodyText = await page.locator('body').textContent();
@@ -127,7 +127,7 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should preserve sort order across pages', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Check if sorting is available
     const sortableHeader = page.locator('th a, th.sortable').first();

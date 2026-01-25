@@ -39,7 +39,7 @@ test.describe('Header Navigation', () => {
     });
 
     test('should have access to list zones', async ({ adminPage: page }) => {
-      const listZonesLink = page.locator('a[href*="page=list_forward_zones"]').first();
+      const listZonesLink = page.locator('a[href*="page=list_forward_zones&letter=all"]').first();
       if (await listZonesLink.count() > 0) {
         await expect(listZonesLink).toBeVisible();
       }

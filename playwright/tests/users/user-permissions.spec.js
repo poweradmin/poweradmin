@@ -49,7 +49,7 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should access all zones', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const bodyText = await page.locator('body').textContent();
       // Check for actual access denial messages, not UI elements containing "permission"
       const hasAccessError = bodyText.match(/you do not have|access denied|not authorized/i);
@@ -70,7 +70,7 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should delete any zone', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       // Check for delete links if zones exist
       const deleteLink = page.locator('a[href*="delete_domain"]').first();
       const hasZones = await page.locator('table tr').count() > 1;
@@ -82,7 +82,7 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should access DNSSEC settings', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const dnssecLink = page.locator('a[href*="page=dnssec"]').first();
       if (await dnssecLink.count() > 0) {
         await dnssecLink.click();
@@ -118,7 +118,7 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should delete own zones', async ({ managerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const deleteLink = page.locator('a[href*="delete_domain"]').first();
       // Manager should have delete option for own zones
       const bodyText = await page.locator('body').textContent();
@@ -167,7 +167,7 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should view assigned zones', async ({ clientPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
@@ -204,19 +204,19 @@ test.describe('User Permission Combinations', () => {
 
   test.describe('Viewer Permissions', () => {
     test('should view zones read-only', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
     test('should not have add zone button', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const addBtn = page.locator('input[value*="Add master"], input[value*="Add slave"]');
       expect(await addBtn.count()).toBe(0);
     });
 
     test('should not have delete zone option', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const deleteLink = page.locator('a[href*="delete_domain"]');
       expect(await deleteLink.count()).toBe(0);
     });
@@ -279,7 +279,7 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should not see zones', async ({ nopermPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });

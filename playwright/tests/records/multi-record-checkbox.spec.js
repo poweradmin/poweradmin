@@ -11,7 +11,7 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
   test.describe('Add Record Form Structure', () => {
     test('should have add more records button', async ({ adminPage: page }) => {
       // Navigate directly to a zone edit page
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       // Click on a zone name in the table (not dropdown links)
@@ -34,7 +34,7 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
     });
 
     test('should have checkbox for disabled records', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       const zoneLink = page.locator('table tbody tr td a[href*="page=edit"][href*="id="]').first();
@@ -59,7 +59,7 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
 
   test.describe('Checkbox State Reset', () => {
     test('new record row should have unchecked disabled checkbox', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       const zoneLink = page.locator('table tbody tr td a[href*="page=edit"][href*="id="]').first();
@@ -80,7 +80,7 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
     });
 
     test('should handle checkbox toggle correctly', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       const zoneLink = page.locator('table tbody tr td a[href*="page=edit"][href*="id="]').first();
@@ -105,7 +105,7 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
 
   test.describe('Form Input Types', () => {
     test('record form should have name input', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       const zoneLink = page.locator('table tbody tr td a[href*="page=edit"][href*="id="]').first();
@@ -122,7 +122,7 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
     });
 
     test('record form should have type selector', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       const zoneLink = page.locator('table tbody tr td a[href*="page=edit"][href*="id="]').first();
@@ -139,7 +139,7 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
     });
 
     test('record form should have content input', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       const zoneLink = page.locator('table tbody tr td a[href*="page=edit"][href*="id="]').first();
@@ -156,7 +156,7 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
     });
 
     test('record form should have TTL input', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await page.waitForLoadState('networkidle');
 
       const zoneLink = page.locator('table tbody tr td a[href*="page=edit"][href*="id="]').first();

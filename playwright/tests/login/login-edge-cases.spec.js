@@ -13,7 +13,7 @@ test.describe('Login Edge Cases', () => {
 
     test('should maintain session across pages', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await expect(page).toHaveURL(/list_forward_zones/);
       await page.goto('/index.php?page=search');
       await expect(page).toHaveURL(/page=search/);
@@ -28,12 +28,12 @@ test.describe('Login Edge Cases', () => {
     test('should not access protected pages after logout', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await logout(page);
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await expect(page).toHaveURL(/login/);
     });
 
     test('should redirect to login when session expires', async ({ page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await expect(page).toHaveURL(/login/);
     });
   });
@@ -144,7 +144,7 @@ test.describe('Login Edge Cases', () => {
 
     test('should handle forward button after logout', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await logout(page);
       await page.goBack();
       // Should redirect to login
@@ -182,7 +182,7 @@ test.describe('Login Edge Cases', () => {
     test('should clear session cookie on logout', async ({ page, context }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await logout(page);
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       await expect(page).toHaveURL(/login/);
     });
   });
@@ -194,7 +194,7 @@ test.describe('Login Edge Cases', () => {
       const page2 = await context.newPage();
 
       await loginAndWaitForDashboard(page1, users.admin.username, users.admin.password);
-      await page2.goto('/index.php?page=list_forward_zones');
+      await page2.goto('/index.php?page=list_forward_zones&letter=all');
       await expect(page2).toHaveURL(/list_forward_zones/);
 
       await context.close();
@@ -206,7 +206,7 @@ test.describe('Login Edge Cases', () => {
       const page2 = await context.newPage();
 
       await loginAndWaitForDashboard(page1, users.admin.username, users.admin.password);
-      await page2.goto('/index.php?page=list_forward_zones');
+      await page2.goto('/index.php?page=list_forward_zones&letter=all');
       await logout(page1);
 
       await page2.reload();

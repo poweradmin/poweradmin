@@ -88,13 +88,17 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(hasDuplicateError).toBeTruthy();
 
     // Cleanup - delete the test zone
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
     const row = page.locator('tr:has-text("duplicate-test.com")');
     if (await row.count() > 0) {
-      await row.locator('a').filter({ hasText: /Delete/i }).first().click();
-      const confirmButton = page.locator('button, input[type="submit"]').filter({ hasText: /Yes|Confirm|Delete/i });
-      if (await confirmButton.count() > 0) {
-        await confirmButton.first().click();
+      // Delete link uses href with page=delete_domain (icon-based, no text)
+      const deleteLink = row.locator('a[href*="page=delete_domain"]');
+      if (await deleteLink.count() > 0) {
+        await deleteLink.first().click();
+        const confirmButton = page.locator('button, input[type="submit"]').filter({ hasText: /Yes|Confirm|Delete/i });
+        if (await confirmButton.count() > 0) {
+          await confirmButton.first().click();
+        }
       }
     }
   });
@@ -123,7 +127,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Delete test zones
     const testPatterns = ['bulktest', 'tldtest', 'duplicate-test'];

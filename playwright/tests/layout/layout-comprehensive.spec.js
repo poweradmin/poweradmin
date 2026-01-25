@@ -29,7 +29,7 @@ test.describe('Layout - Footer', () => {
     });
 
     test('footer should be visible on zones page', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const footer = page.locator('footer, .footer, #footer');
       if (await footer.count() > 0) {
@@ -261,7 +261,7 @@ test.describe('Layout - Navigation', () => {
     });
 
     test('should not show add zone buttons', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const addBtn = page.locator('input[value*="Add master"], input[value*="Add slave"]');
       expect(await addBtn.count()).toBe(0);
@@ -277,7 +277,7 @@ test.describe('Layout - Navigation', () => {
 
   test.describe('Active Menu Highlighting', () => {
     test('should highlight current page in menu', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const activeLink = page.locator('.active, .current, [aria-current="page"]');
       // Check if there's active state styling

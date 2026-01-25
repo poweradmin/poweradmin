@@ -39,7 +39,7 @@ test.describe('Complete Domain Management Workflow', () => {
 
   test('should add essential DNS records to the domain', async ({ adminPage: page }) => {
     // Navigate to zones and find our test domain
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Check if test domain exists
     const bodyText = await page.locator('body').textContent();
@@ -48,8 +48,15 @@ test.describe('Complete Domain Management Workflow', () => {
       return;
     }
 
-    // Click on the domain to edit records
-    await page.locator(`tr:has-text("${testDomain}")`).locator('a').first().click();
+    // Click on the domain edit link (not the PTR link which is first)
+    const row = page.locator(`tr:has-text("${testDomain}")`);
+    const editLink = row.locator('a[href*="page=edit"]');
+    if (await editLink.count() > 0) {
+      await editLink.first().click();
+    } else {
+      // Fallback to zone name link
+      await row.locator(`a:has-text("${testDomain}")`).first().click();
+    }
 
     // Should be on zone edit page
     await expect(page).toHaveURL(/page=edit/);
@@ -74,7 +81,7 @@ test.describe('Complete Domain Management Workflow', () => {
   });
 
   test('should verify domain resolution and records', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Check if test domain exists
     const bodyText = await page.locator('body').textContent();
@@ -83,8 +90,14 @@ test.describe('Complete Domain Management Workflow', () => {
       return;
     }
 
-    // Find and click on test domain
-    await page.locator(`tr:has-text("${testDomain}")`).locator('a').first().click();
+    // Find and click on test domain edit link (not the PTR link)
+    const row = page.locator(`tr:has-text("${testDomain}")`);
+    const editLink = row.locator('a[href*="page=edit"]');
+    if (await editLink.count() > 0) {
+      await editLink.first().click();
+    } else {
+      await row.locator(`a:has-text("${testDomain}")`).first().click();
+    }
 
     // Check page loaded
     await expect(page).toHaveURL(/page=edit/);
@@ -107,7 +120,7 @@ test.describe('Complete Domain Management Workflow', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Find and delete the test domain
     const bodyText = await page.locator('body').textContent();

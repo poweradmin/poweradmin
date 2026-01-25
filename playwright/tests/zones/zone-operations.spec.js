@@ -49,7 +49,7 @@ test.describe('Zone Operations', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Get initial SOA
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const row = page.locator(`tr:has-text("${testDomain}")`);
       if (await row.count() > 0) {
         const editLink = row.locator('a[href*="page=edit"]').first();
@@ -59,7 +59,7 @@ test.describe('Zone Operations', () => {
         expect(bodyText).not.toMatch(/fatal|exception/i);
 
         // Cleanup
-        await page.goto('/index.php?page=list_forward_zones');
+        await page.goto('/index.php?page=list_forward_zones&letter=all');
         const deleteLink = page.locator(`tr:has-text("${testDomain}") a[href*="delete_domain"]`).first();
         if (await deleteLink.count() > 0) {
           await deleteLink.click();
@@ -72,7 +72,7 @@ test.describe('Zone Operations', () => {
 
   test.describe('Zone Type Operations', () => {
     test('should display zone type in list', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/master|slave|native/i);
     });
@@ -91,7 +91,7 @@ test.describe('Zone Operations', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Cleanup
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const deleteLink = page.locator(`tr:has-text("${testDomain}") a[href*="delete_domain"]`).first();
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
@@ -101,7 +101,7 @@ test.describe('Zone Operations', () => {
     });
 
     test('should display slave zone master IP', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const slaveRow = page.locator('tr:has-text("SLAVE")').first();
       if (await slaveRow.count() > 0) {
         const bodyText = await slaveRow.textContent();
@@ -148,7 +148,7 @@ test.describe('Zone Operations', () => {
 
   test.describe('Zone Ownership', () => {
     test('should display zone owner', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const bodyText = await page.locator('body').textContent();
       // Zone list should show owner information
       expect(bodyText).not.toMatch(/fatal|exception/i);
@@ -199,7 +199,7 @@ test.describe('Zone Operations', () => {
     });
 
     test('should sort zones by name', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const sortLink = page.locator('a[href*="zone_sort_by=name"]').first();
       if (await sortLink.count() > 0) {
         await sortLink.click();
@@ -209,7 +209,7 @@ test.describe('Zone Operations', () => {
     });
 
     test('should sort zones by type', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const sortLink = page.locator('a[href*="zone_sort_by=type"]').first();
       if (await sortLink.count() > 0) {
         await sortLink.click();
@@ -270,7 +270,7 @@ test.describe('Zone Operations', () => {
     });
 
     test('should display zone serial in list', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });

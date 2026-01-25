@@ -26,10 +26,17 @@ test.describe('DNS Record Types Management', () => {
 
   // Helper to navigate to test domain's records
   async function navigateToTestDomain(page) {
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
     const row = page.locator(`tr:has-text("${testDomain}")`);
     if (await row.count() > 0) {
-      await row.locator('a').first().click();
+      // Click the edit link (page=edit), not the PTR link which is now first
+      const editLink = row.locator('a[href*="page=edit"]');
+      if (await editLink.count() > 0) {
+        await editLink.first().click();
+      } else {
+        // Fallback to zone name link
+        await row.locator(`a:has-text("${testDomain}")`).first().click();
+      }
     }
   }
 
@@ -177,7 +184,7 @@ test.describe('DNS Record Types Management', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
     const row = page.locator(`tr:has-text("${testDomain}")`);
     if (await row.count() > 0) {
       const deleteLink = row.locator('a').filter({ hasText: /Delete/i });

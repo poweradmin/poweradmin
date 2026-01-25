@@ -28,7 +28,7 @@ test.describe('Master Zone Management', () => {
                        bodyText.toLowerCase().includes('added') ||
                        bodyText.toLowerCase().includes('created') ||
                        page.url().includes('page=edit') ||
-                       page.url().includes('page=list_forward_zones');
+                       page.url().includes('page=list_forward_zones&letter=all');
     expect(hasSuccess).toBeTruthy();
   });
 
@@ -52,7 +52,7 @@ test.describe('Master Zone Management', () => {
 
   test('should add a record to a master zone successfully', async ({ adminPage: page }) => {
     // First ensure we have a zone - go to zones list
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Check if test zone exists, if not create it
     let bodyText = await page.locator('body').textContent();
@@ -61,13 +61,20 @@ test.describe('Master Zone Management', () => {
       await page.goto('/index.php?page=add_zone_master');
       await page.locator('input[name*="zone"], input[name*="domain"], input[name*="name"]').first().fill(testZone);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
     }
 
     // Click on the zone to edit
     const zoneRow = page.locator(`tr:has-text("${testZone}")`);
     if (await zoneRow.count() > 0) {
-      await zoneRow.locator('a').first().click();
+      // Click on the zone name link (which goes to page=edit)
+      const editLink = zoneRow.locator('a[href*="page=edit"]').first();
+      if (await editLink.count() > 0) {
+        await editLink.click();
+      } else {
+        // Fallback: click first link with zone name
+        await zoneRow.locator(`a:has-text("${testZone}")`).first().click();
+      }
 
       // Should be on edit page
       await expect(page).toHaveURL(/page=edit/);
@@ -101,7 +108,7 @@ test.describe('Master Zone Management', () => {
   });
 
   test('should delete a master zone successfully', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Find zone and delete
     const zoneRow = page.locator(`tr:has-text("${testZone}")`);
@@ -155,7 +162,7 @@ test.describe('Master Zone Management', () => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
     // Delete forward zone from forward zones list
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
     const forwardZoneRow = page.locator(`tr:has-text("${testZone}")`);
     if (await forwardZoneRow.count() > 0) {
       const deleteLink = forwardZoneRow.locator('a').filter({ hasText: /Delete/i });

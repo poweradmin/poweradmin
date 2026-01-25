@@ -50,7 +50,7 @@ test.describe('Bulk and Batch Operations', () => {
   });
 
   test('should verify bulk registered domains exist', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Click "Show all" to show all zones regardless of letter filter
     const showAllBtn = page.locator('a, button').filter({ hasText: 'Show all' });

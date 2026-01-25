@@ -7,7 +7,7 @@ test.describe('Error Handling and Edge Cases', () => {
       await context.clearCookies();
 
       // Try to access a protected page
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       // Should redirect to login
       await expect(page).toHaveURL(/page=login/);
@@ -72,7 +72,7 @@ test.describe('Error Handling and Edge Cases', () => {
   test.describe('Browser Navigation', () => {
     test('should handle browser back button correctly', async ({ adminPage: page }) => {
       // Navigate to zones list
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       // Navigate to add zone
       await page.goto('/index.php?page=add_zone_master');

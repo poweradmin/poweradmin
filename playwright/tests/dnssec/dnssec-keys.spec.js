@@ -29,7 +29,7 @@ test.describe('DNSSEC Key Management', () => {
 
     test('manager should access DNSSEC page', async ({ managerPage: page }) => {
       // Find a zone the manager owns
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const row = page.locator('table tbody tr').first();
 
       if (await row.count() > 0) {
@@ -359,7 +359,7 @@ test.describe('DNSSEC Key Management', () => {
 
   test.describe('Navigation', () => {
     test('should navigate from zone list to DNSSEC', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const row = page.locator('table tbody tr').first();
       if (await row.count() > 0) {
@@ -399,7 +399,7 @@ test.describe('DNSSEC Key Management', () => {
 
   test.describe('Permission Tests', () => {
     test('viewer should not access DNSSEC management', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
 
       const row = page.locator('table tbody tr').first();
       if (await row.count() > 0) {

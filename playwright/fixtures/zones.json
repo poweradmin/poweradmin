@@ -35,17 +35,35 @@
     "owner": "manager",
     "description": "Native zone type for testing"
   },
+  "secondaryNative": {
+    "name": "secondary-native.example.org",
+    "type": "NATIVE",
+    "owner": "manager",
+    "description": "Secondary native zone for testing"
+  },
   "slave": {
     "name": "slave-zone.example.net",
     "type": "SLAVE",
     "owner": "admin",
     "description": "Slave zone for replication testing"
   },
+  "externalSlave": {
+    "name": "external-slave.example.net",
+    "type": "SLAVE",
+    "owner": "admin",
+    "description": "External slave zone for testing"
+  },
   "reverseIPv4": {
     "name": "2.0.192.in-addr.arpa",
     "type": "MASTER",
     "owner": "admin",
     "description": "IPv4 reverse zone for PTR records"
+  },
+  "reverseIPv4Additional": {
+    "name": "168.192.in-addr.arpa",
+    "type": "MASTER",
+    "owner": "admin",
+    "description": "Additional IPv4 reverse zone for PTR records"
   },
   "reverseIPv6": {
     "name": "8.b.d.0.1.0.0.2.ip6.arpa",
@@ -58,5 +76,17 @@
     "type": "MASTER",
     "owner": "manager",
     "description": "Internationalized domain name zone"
+  },
+  "longDomainName": {
+    "name": "very-long-subdomain-name-for-testing-ui-column-widths.example.com",
+    "type": "MASTER",
+    "owner": "client",
+    "description": "Long domain name zone for UI width testing"
+  },
+  "deeplyNested": {
+    "name": "another.very.deeply.nested.subdomain.structure.example.com",
+    "type": "MASTER",
+    "owner": "client",
+    "description": "Deeply nested domain zone for UI width testing"
   }
 }
