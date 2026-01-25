@@ -13,9 +13,11 @@ your-domain.com {
         level INFO
     }
 
-    # Security: Deny access to sensitive directories
-    @denied path /config* /lib* /tests* /vendor*
+    # Security matchers
     @bootstrap path /vendor/twbs/bootstrap* /vendor/twbs/bootstrap-icons*
+    @denied path /config* /lib* /tests* /vendor*
+    @hidden path .* *.sql *.md *.log *.yaml *.yml
+    @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
 
     # Allow Bootstrap files (override general vendor blocking)
     handle @bootstrap {
@@ -27,20 +29,18 @@ your-domain.com {
         respond "Forbidden" 403
     }
 
-    # Security: Deny access to hidden files and sensitive file types
-    @hidden path .* *.sql *.md *.log *.yaml *.yml
+    # Block hidden files and sensitive file types
     handle @hidden {
         respond "Forbidden" 403
     }
 
     # Static assets with caching
-    @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
     handle @static {
         header Cache-Control "public, max-age=31536000"
         file_server
     }
 
-    # Handle OPTIONS preflight requests for CORS
+    # CORS preflight requests
     @options method OPTIONS
     handle @options {
         header Access-Control-Allow-Origin "*"
@@ -51,6 +51,7 @@ your-domain.com {
     }
 
     # API endpoints with CORS
+    # PHP router parses REQUEST_URI directly for /api/* paths
     @api path /api*
     handle @api {
         header Access-Control-Allow-Origin "*"
@@ -58,26 +59,6 @@ your-domain.com {
         header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
         header Access-Control-Max-Age "3600"
 
-        # Forward API requests to index.php with page parameter (router handles leading slash)
-        rewrite * /index.php?page={path}&{query}
-        reverse_proxy localhost:9000 {
-            transport fastcgi {
-                split .php
-                read_timeout 180s
-                env HTTP_AUTHORIZATION {http.request.header.Authorization}
-            }
-            # Handle 204 No Content responses properly (fixes PHP-FPM/Caddy issue)
-            @empty status 204
-            handle_response @empty {
-                header Content-Length "0"
-                respond "" 204
-            }
-        }
-    }
-
-    # Handle PHP files - must be executed, not served as static text
-    @phpfiles path *.php
-    handle @phpfiles {
         php_fastcgi localhost:9000 {
             read_timeout 180s
             env HTTP_AUTHORIZATION {http.request.header.Authorization}
@@ -96,7 +77,7 @@ your-domain.com {
             }
         }
 
-        # Serve static files directly (CSS, JS, images, etc.)
+        # Serve static files directly
         file_server
     }
 }
