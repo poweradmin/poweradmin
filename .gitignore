@@ -57,6 +57,7 @@ playwright/.cache/
 AGENTS.md
 CLAUDE.md
 GEMINI.md
+/.claude/
 
 # Local configuration
 config/
