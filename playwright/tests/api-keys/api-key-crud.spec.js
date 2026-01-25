@@ -439,11 +439,14 @@ test.describe('Delete API Key', () => {
 
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
+        await page.waitForLoadState('networkidle');
 
-        const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep"), a[href*="api_keys"]:not([href*="delete"])');
+        // The cancel button is a visible link with btn class containing "No" or "keep"
+        const cancelBtn = page.locator('a.btn:has-text("No"), a.btn:has-text("keep")');
 
         if (await cancelBtn.count() > 0) {
           await cancelBtn.first().click();
+          await page.waitForLoadState('networkidle');
           await expect(page).toHaveURL(/api_keys/);
         }
       }
@@ -603,7 +606,7 @@ test.afterAll(async ({ browser }) => {
   const page = await context.newPage();
 
   const { loginAndWaitForDashboard } = await import('../../helpers/auth.js');
-  const users = (await import('../../fixtures/users.json', { assert: { type: 'json' } })).default;
+  const users = (await import('../../fixtures/users.json', { with: { type: 'json' } })).default;
 
   await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 

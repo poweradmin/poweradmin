@@ -8,30 +8,34 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 
 test.describe('PowerDNS Status Page', () => {
+  // PowerDNS status page may be slow due to API calls and supermaster connectivity checks
+  test.setTimeout(60000);
+
   test.describe('Page Access', () => {
     test('admin should access PowerDNS status page', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/powerdns|status|server|api.*not.*configured/i);
     });
 
     test('should display page title', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/powerdns.*server.*status|status|server/i);
     });
 
     test('should display breadcrumb navigation', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      // PowerDNS status page may be slow due to API calls
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
-      const breadcrumb = page.locator('nav[aria-label="breadcrumb"], .breadcrumb');
+      const breadcrumb = page.locator('nav[aria-label="breadcrumb"]');
       await expect(breadcrumb).toBeVisible();
     });
 
     test('should require admin authentication', async ({ managerPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
       const url = page.url();
@@ -47,7 +51,7 @@ test.describe('PowerDNS Status Page', () => {
     });
 
     test('should require login to access', async ({ page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       await expect(page).toHaveURL(/page=login/);
     });
@@ -55,7 +59,7 @@ test.describe('PowerDNS Status Page', () => {
 
   test.describe('API Configuration Check', () => {
     test('should show warning if API not configured', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
 
@@ -69,7 +73,7 @@ test.describe('PowerDNS Status Page', () => {
 
   test.describe('Server Status Display', () => {
     test('should display server running status', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
 
@@ -83,7 +87,7 @@ test.describe('PowerDNS Status Page', () => {
     });
 
     test('should show status indicator', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const statusIndicator = page.locator('.bg-success, .bg-danger').first();
       const bodyText = await page.locator('body').textContent();
@@ -98,7 +102,7 @@ test.describe('PowerDNS Status Page', () => {
 
   test.describe('Server Information Card', () => {
     test('should display server information section', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
 
@@ -110,7 +114,7 @@ test.describe('PowerDNS Status Page', () => {
     });
 
     test('should show PowerDNS version when available', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
 
@@ -124,7 +128,7 @@ test.describe('PowerDNS Status Page', () => {
 
   test.describe('Refresh Status', () => {
     test('should have refresh status button', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const refreshBtn = page.locator('button:has-text("Refresh"), button[type="submit"]:has-text("Refresh")');
       const bodyText = await page.locator('body').textContent();
@@ -138,7 +142,7 @@ test.describe('PowerDNS Status Page', () => {
     });
 
     test('should include CSRF token in refresh form', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const csrfToken = page.locator('input[name="csrf_token"]');
       const hasToken = await csrfToken.count() > 0;
@@ -150,7 +154,7 @@ test.describe('PowerDNS Status Page', () => {
 
   test.describe('Server Statistics', () => {
     test('should display server health section when running', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
 
@@ -163,7 +167,7 @@ test.describe('PowerDNS Status Page', () => {
     });
 
     test('should show query statistics when available', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
 
@@ -178,7 +182,7 @@ test.describe('PowerDNS Status Page', () => {
 
   test.describe('Metrics Navigator', () => {
     test('should have metrics tabs when available', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
 
@@ -191,7 +195,7 @@ test.describe('PowerDNS Status Page', () => {
     });
 
     test('should have view toggle button', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const toggleBtn = page.locator('#viewToggle, button:has-text("Toggle View")');
       const bodyText = await page.locator('body').textContent();
@@ -207,7 +211,7 @@ test.describe('PowerDNS Status Page', () => {
 
   test.describe('Error Handling', () => {
     test('should display error message when server not running', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
 
@@ -222,7 +226,7 @@ test.describe('PowerDNS Status Page', () => {
 
   test.describe('Slave Servers Section', () => {
     test('should show slave servers section when supermasters exist', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=pdns_status');
+      await page.goto('/index.php?page=pdns_status', { timeout: 30000 });
 
       const bodyText = await page.locator('body').textContent();
 

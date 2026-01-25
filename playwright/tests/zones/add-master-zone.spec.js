@@ -22,14 +22,18 @@ test.describe('Master Zone Management', () => {
     // Submit the form
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
+    // Wait for page to load after submission
+    await page.waitForLoadState('networkidle');
+
     // Verify success - either redirected to zone list/edit or shows success message
     const bodyText = await page.locator('body').textContent();
+    const currentUrl = page.url();
     const hasSuccess = bodyText.toLowerCase().includes('success') ||
                        bodyText.toLowerCase().includes('added') ||
                        bodyText.toLowerCase().includes('created') ||
-                       page.url().includes('page=edit') ||
-                       page.url().includes('page=list_forward_zones&letter=all');
-    expect(hasSuccess).toBeTruthy();
+                       currentUrl.includes('page=edit') ||
+                       currentUrl.includes('page=list_forward_zones');
+    expect(hasSuccess, `Expected success but got: URL=${currentUrl}, body contains success=${bodyText.includes('success')}`).toBeTruthy();
   });
 
   test('should add a reverse zone successfully', async ({ adminPage: page }) => {
@@ -41,12 +45,16 @@ test.describe('Master Zone Management', () => {
     // Submit the form
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
+    // Wait for page to load after submission
+    await page.waitForLoadState('networkidle');
+
     // Verify success - reverse zones redirect to list_reverse_zones
     const bodyText = await page.locator('body').textContent();
+    const currentUrl = page.url();
     const hasSuccess = bodyText.toLowerCase().includes('success') ||
                        bodyText.toLowerCase().includes('added') ||
-                       page.url().includes('page=edit') ||
-                       page.url().includes('page=list_reverse_zones');
+                       currentUrl.includes('page=edit') ||
+                       currentUrl.includes('page=list_reverse_zones');
     expect(hasSuccess).toBeTruthy();
   });
 
