@@ -9,11 +9,9 @@
         level INFO
     }
 
-    # Security matchers
-    @bootstrap path /vendor/twbs/bootstrap* /vendor/twbs/bootstrap-icons*
+    # Security: Deny access to sensitive directories
     @denied path /config* /lib* /tests* /vendor*
-    @hidden path .* *.sql *.md *.log *.yaml *.yml
-    @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
+    @bootstrap path /vendor/twbs/bootstrap* /vendor/twbs/bootstrap-icons*
 
     # Allow Bootstrap files (override general vendor blocking)
     handle @bootstrap {
@@ -25,18 +23,20 @@
         respond "Forbidden" 403
     }
 
-    # Block hidden files and sensitive file types
+    # Security: Deny access to hidden files and sensitive file types
+    @hidden path .* *.sql *.md *.log *.yaml *.yml
     handle @hidden {
         respond "Forbidden" 403
     }
 
     # Static assets with caching
+    @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
     handle @static {
         header Cache-Control "public, max-age=31536000"
         file_server
     }
 
-    # CORS preflight requests
+    # Handle OPTIONS preflight requests for CORS
     @options method OPTIONS
     handle @options {
         header Access-Control-Allow-Origin "*"
@@ -61,6 +61,15 @@
         }
     }
 
+    # Handle PHP files - must be executed, not served as static text
+    @phpfiles path *.php
+    handle @phpfiles {
+        php_fastcgi app-sqlite:9000 {
+            read_timeout 180s
+            env HTTP_AUTHORIZATION {http.request.header.Authorization}
+        }
+    }
+
     # Handle all other requests - Clean URL routing
     handle {
         # Route non-existent paths to PHP router
@@ -73,7 +82,7 @@
             }
         }
 
-        # Serve static files directly
+        # Serve static files directly (CSS, JS, images, etc.)
         file_server
     }
 }
