@@ -70,4 +70,32 @@ class DnsHelper
         $domainNameParts = array_slice($domainParts, 0, $domainPartsCount - 2);
         return implode('.', $domainNameParts);
     }
+
+    /**
+     * Strip zone suffix from record name for display
+     *
+     * This properly handles cases where the zone name appears within the hostname,
+     * by only stripping it from the end (e.g., "test.example.com.abc.example.com"
+     * in zone "example.com" becomes "test.example.com.abc").
+     *
+     * @param string $recordName The full record name (FQDN)
+     * @param string $zoneName The zone name
+     * @return string The hostname part without the zone suffix
+     */
+    public static function stripZoneSuffix(string $recordName, string $zoneName): string
+    {
+        // If record name equals zone name, it's the zone apex
+        if ($recordName === $zoneName) {
+            return '@';
+        }
+
+        // If record name ends with zone name preceded by a dot, strip it
+        $suffix = '.' . $zoneName;
+        if (str_ends_with($recordName, $suffix)) {
+            return substr($recordName, 0, -strlen($suffix));
+        }
+
+        // Otherwise return as-is (shouldn't happen with valid records)
+        return $recordName;
+    }
 }
