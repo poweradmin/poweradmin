@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -163,10 +163,6 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
     {
         if (!preg_match('/^[[:print:]]+$/', trim($content))) {
             return ValidationResult::failure(_('Invalid characters in content field.'));
-        }
-
-        if (preg_match('/[<>]/', trim($content))) {
-            return ValidationResult::failure(_('HTML tags are not allowed in content field.'));
         }
 
         // Check if we have multiple quoted strings (for long TXT records)
