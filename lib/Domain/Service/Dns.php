@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -194,7 +194,7 @@ class Dns
                 if (!self::is_valid_printable($name)) {
                     return false;
                 }
-                if (!self::is_valid_printable($content) || self::has_html_tags($content)) {
+                if (!self::is_valid_printable($content)) {
                     return false;
                 }
                 if (!self::is_properly_quoted($content)) {
@@ -548,23 +548,6 @@ class Dns
             return false;
         }
         return true;
-    }
-
-    /** Test if string has html opening and closing tags
-     *
-     * @param string $string Input string
-     * @return bool true if valid, false otherwise
-     */
-    public static function has_html_tags(string $string): bool
-    {
-        if (preg_match('/[<>]/', trim($string))) {
-            $error = new ErrorMessage(_('You cannot use html tags for this type of record.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
-            return true;
-        }
-        return false;
     }
 
     /** Verify that the content is properly quoted

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ class CoreRecordValidator implements DnsRecordValidatorInterface
             'A' => Dns::is_valid_ipv4($content, $answer),
             'AAAA' => Dns::is_valid_ipv6($content, $answer),
             'HINFO' => Dns::is_valid_rr_hinfo_content($content, $answer),
-            'TXT' => Dns::is_valid_printable($content, $answer) && !Dns::has_html_tags($content) && Dns::is_properly_quoted($content),
+            'TXT' => Dns::is_valid_printable($content, $answer) && Dns::is_properly_quoted($content),
             'MAILA', 'MAILB' => Dns::is_valid_meta_query_type($type, $answer),
             default => false,
         };
