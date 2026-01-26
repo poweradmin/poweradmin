@@ -98,7 +98,7 @@
             </div>
             <div>
                 <a class="btn btn-outline-secondary btn-sm {% if zones_linked_count == 0 %}disabled{% endif %}" 
-                   href="{% if zones_linked_count > 0 %}/zones/templates/{{ zone_templ_id }}/zones{% else %}#{% endif %}"
+                   href="{% if zones_linked_count > 0 %}{{ base_url_prefix }}/zones/templates/{{ zone_templ_id }}/zones{% else %}#{% endif %}"
                    {% if zones_linked_count == 0 %}title="{% trans %}No zones are using this template{% endtrans %}" tabindex="-1" aria-disabled="true"{% endif %}>
                     <i class="bi bi-list me-1 text-secondary"></i>{% trans %}View zones{% endtrans %}
                 </a>
