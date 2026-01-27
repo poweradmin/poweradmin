@@ -32,7 +32,7 @@
                 <strong><i class="bi bi-arrow-left-right me-2"></i>{% trans %}Batch PTR Records{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/batch-ptr{% if has_zone_id %}&id={{ zone_id }}{% endif %}" novalidate>
+                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/batch-ptr{% if has_zone_id %}?id={{ zone_id }}{% endif %}" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
                     <div class="mb-3">
