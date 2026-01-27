@@ -39,6 +39,7 @@ return [
         'show_pdns_status' => true,
         'show_record_comments' => true,
         'show_zone_comments' => false,
+        'enable_consistency_checks' => true,
     ],
 
     /**
@@ -107,5 +108,28 @@ return [
      */
     'ldap' => [
         'enabled' => false,
+    ],
+
+    /**
+     * WHOIS Settings
+     */
+    'whois' => [
+        'enabled' => true,
+        'restrict_to_admin' => false,
+    ],
+
+    /**
+     * RDAP Settings
+     */
+    'rdap' => [
+        'enabled' => true,
+        'restrict_to_admin' => false,
+    ],
+
+    /**
+     * DNS Wizard Settings
+     */
+    'dns_wizards' => [
+        'enabled' => true,
     ],
 ];

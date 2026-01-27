@@ -190,6 +190,25 @@ import_mysql() {
         return 1
     fi
 
+    # Check if Poweradmin schema exists, import if needed
+    local has_users_table=$(docker exec "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$MYSQL_DATABASE' AND table_name='users';" 2>/dev/null || echo "0")
+
+    if [ "$has_users_table" = "0" ]; then
+        echo -e "${YELLOW}📦 Poweradmin schema not found, importing...${NC}"
+        local poweradmin_schema="$DEVCONTAINER_DIR/../sql/poweradmin-mysql-db-structure.sql"
+        if [ -f "$poweradmin_schema" ]; then
+            if docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < "$poweradmin_schema" 2>/dev/null; then
+                echo -e "${GREEN}✅ Poweradmin schema imported${NC}"
+            else
+                echo -e "${RED}❌ Poweradmin schema import failed${NC}"
+                return 1
+            fi
+        else
+            echo -e "${RED}❌ Poweradmin schema file not found at $poweradmin_schema${NC}"
+            return 1
+        fi
+    fi
+
     # Capture output and exit status separately to avoid grep masking the real status
     # Note: We connect without specifying a database since the SQL uses USE statements
     local output
@@ -234,6 +253,25 @@ import_pgsql() {
     if [ ! -f "$SQL_DIR/test-users-permissions-pgsql.sql" ]; then
         echo -e "${RED}❌ PostgreSQL SQL file not found: $SQL_DIR/test-users-permissions-pgsql.sql${NC}"
         return 1
+    fi
+
+    # Check if Poweradmin schema exists, import if needed
+    local has_users_table=$(docker exec -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" -tAc "SELECT COUNT(*) FROM information_schema.tables WHERE table_name='users';" 2>/dev/null || echo "0")
+
+    if [ "$has_users_table" = "0" ]; then
+        echo -e "${YELLOW}📦 Poweradmin schema not found, importing...${NC}"
+        local poweradmin_schema="$DEVCONTAINER_DIR/../sql/poweradmin-pgsql-db-structure.sql"
+        if [ -f "$poweradmin_schema" ]; then
+            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$poweradmin_schema" > /dev/null 2>&1; then
+                echo -e "${GREEN}✅ Poweradmin schema imported${NC}"
+            else
+                echo -e "${RED}❌ Poweradmin schema import failed${NC}"
+                return 1
+            fi
+        else
+            echo -e "${RED}❌ Poweradmin schema file not found at $poweradmin_schema${NC}"
+            return 1
+        fi
     fi
 
     # Pass PGPASSWORD into the container environment
