@@ -74,6 +74,7 @@ commit_parsers = [
     # Skip internal changes not relevant to users
     { message = "^feat\\(deps\\)", skip = true },
     { message = "^fix\\(caddy\\)", skip = true },
+    { message = "^fix\\(e2e\\)", skip = true },
     { message = "^fix\\(test\\)", skip = true },
     { message = "^fix\\(webserver\\)", skip = true },
     { message = "^refactor\\(config\\)", skip = true },
