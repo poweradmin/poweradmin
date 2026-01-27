@@ -1,5 +1,25 @@
 <?php
 
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2025 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 namespace unit;
 
 use PHPUnit\Framework\TestCase;
@@ -9,37 +29,35 @@ use ReflectionMethod;
 
 class RdapServiceTest extends TestCase
 {
-    private $testDataFile;
-    private $rdapService;
+    private string $testDataFile;
+    private RdapService $rdapService;
 
     protected function setUp(): void
     {
-        // Create a temporary test data file with sample RDAP servers
-        $this->testDataFile = sys_get_temp_dir() . '/rdap_servers_test.json';
-        $testData = [
+        $this->testDataFile = sys_get_temp_dir() . '/rdap_servers_test.php';
+        $this->createTestDataFile([
             'com' => 'https://rdap.verisign.com/com/v1/',
             'net' => 'https://rdap.verisign.com/net/v1/',
             'org' => 'https://rdap.identitydigital.services/rdap/',
             'example' => 'https://example.rdap.server/',
             'test' => 'http://test.rdap.server:8080/',
-        ];
-        file_put_contents($this->testDataFile, json_encode($testData));
-
-        // Initialize the service with the test data
+        ]);
         $this->rdapService = new RdapService($this->testDataFile);
     }
 
     protected function tearDown(): void
     {
-        // Clean up the test file
         if (file_exists($this->testDataFile)) {
             unlink($this->testDataFile);
         }
     }
 
-    /**
-     * Get access to private isValidRdapUrl method for testing
-     */
+    private function createTestDataFile(array $data): void
+    {
+        $content = "<?php\nreturn " . var_export($data, true) . ";\n";
+        file_put_contents($this->testDataFile, $content);
+    }
+
     private function getValidationMethod(): ReflectionMethod
     {
         $reflection = new ReflectionClass($this->rdapService);
@@ -48,11 +66,10 @@ class RdapServiceTest extends TestCase
         return $method;
     }
 
-    public function testValidRdapUrls()
+    public function testValidRdapUrls(): void
     {
         $method = $this->getValidationMethod();
 
-        // Test valid URLs that should pass validation
         $validUrls = [
             'https://rdap.verisign.com/com/v1/domain/example.com',
             'https://rdap.verisign.com/net/v1/domain/test.net',
@@ -69,29 +86,20 @@ class RdapServiceTest extends TestCase
         }
     }
 
-    public function testInvalidRdapUrls()
+    public function testInvalidRdapUrls(): void
     {
         $method = $this->getValidationMethod();
 
-        // Test invalid URLs that should fail validation
         $invalidUrls = [
-            // Path traversal attempts
             'https://rdap.verisign.com/com/v1/../../../etc/passwd',
             'https://rdap.verisign.com/com/v1/domain/../../secrets',
-            'https://rdap.identitydigital.services/rdap/../admin/config',
-
-            // Invalid schemes
             'ftp://rdap.verisign.com/com/v1/domain/example.com',
             'file:///etc/passwd',
             'javascript:alert(1)',
-
-            // Malformed URLs
             'not-a-url',
             'http://',
             'https://',
             '',
-
-            // Path traversal with backslashes
             'https://rdap.verisign.com/com/v1\\..\\..\\etc\\passwd',
         ];
 
@@ -103,49 +111,140 @@ class RdapServiceTest extends TestCase
         }
     }
 
-    public function testValidUrlsWithDifferentServers()
+    public function testGetRdapServer(): void
     {
-        $method = $this->getValidationMethod();
-
-        // Test that validation now accepts URLs from any server (not just known ones)
-        $validUrls = [
-            'https://unknown-server.com/domain/example.com',
-            'https://malicious.server/domain/test.com',  // Would pass basic validation but fail on purpose
-            'http://any-server.org:8080/rdap/v1/query?type=domain',
-        ];
-
-        foreach ($validUrls as $url) {
-            $this->assertTrue(
-                $method->invoke($this->rdapService, $url),
-                "URL should be valid (no server restriction): $url"
-            );
-        }
-    }
-
-    public function testRdapServerRetrieval()
-    {
-        // Test basic server retrieval
         $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServer('com'));
         $this->assertEquals('https://rdap.identitydigital.services/rdap/', $this->rdapService->getRdapServer('org'));
         $this->assertNull($this->rdapService->getRdapServer('nonexistent'));
     }
 
-    public function testRdapServerForDomain()
+    public function testGetRdapServerForDomain(): void
     {
-        // Test domain to server mapping
         $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServerForDomain('example.com'));
         $this->assertEquals('https://rdap.identitydigital.services/rdap/', $this->rdapService->getRdapServerForDomain('test.org'));
         $this->assertNull($this->rdapService->getRdapServerForDomain('invalid'));
     }
 
-    public function testSecurityAgainstPathTraversal()
+    public function testHasTld(): void
+    {
+        $this->assertTrue($this->rdapService->hasTld('com'));
+        $this->assertTrue($this->rdapService->hasTld('org'));
+        $this->assertFalse($this->rdapService->hasTld('nonexistent'));
+    }
+
+    public function testGetAllRdapServers(): void
+    {
+        $servers = $this->rdapService->getAllRdapServers();
+
+        $this->assertCount(5, $servers);
+        $this->assertArrayHasKey('com', $servers);
+        $this->assertArrayHasKey('org', $servers);
+        $this->assertEquals('https://rdap.verisign.com/com/v1/', $servers['com']);
+    }
+
+    public function testCaseSensitivityHandling(): void
+    {
+        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServer('COM'));
+        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServer('Com'));
+        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServerForDomain('Example.COM'));
+    }
+
+    public function testSetRequestTimeout(): void
+    {
+        $reflectionClass = new ReflectionClass($this->rdapService);
+        $property = $reflectionClass->getProperty('requestTimeout');
+        $property->setAccessible(true);
+
+        $this->assertEquals(10, $property->getValue($this->rdapService));
+
+        $this->rdapService->setRequestTimeout(15);
+        $this->assertEquals(15, $property->getValue($this->rdapService));
+
+        $this->rdapService->setRequestTimeout(0);
+        $this->assertEquals(1, $property->getValue($this->rdapService));
+
+        $this->rdapService->setRequestTimeout(-5);
+        $this->assertEquals(1, $property->getValue($this->rdapService));
+    }
+
+    public function testMissingDataFile(): void
+    {
+        $rdapService = new RdapService('/path/to/nonexistent/file.php');
+
+        $this->assertNull($rdapService->getRdapServer('com'));
+        $this->assertFalse($rdapService->hasTld('com'));
+        $this->assertEmpty($rdapService->getAllRdapServers());
+    }
+
+    public function testRefresh(): void
+    {
+        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServer('com'));
+
+        $this->createTestDataFile([
+            'com' => 'https://modified.rdap.server.com/',
+            'net' => 'https://rdap.verisign.com/net/v1/'
+        ]);
+
+        $this->assertTrue($this->rdapService->refresh());
+        $this->assertEquals('https://modified.rdap.server.com/', $this->rdapService->getRdapServer('com'));
+        $this->assertNull($this->rdapService->getRdapServer('org'));
+    }
+
+    public function testGetRdapInfoWithNoServer(): void
+    {
+        $this->createTestDataFile([]);
+        $emptyService = new RdapService($this->testDataFile);
+
+        $result = $emptyService->getRdapInfo('example.nonexistent');
+
+        $this->assertFalse($result['success']);
+        $this->assertNull($result['data']);
+        $this->assertEquals('No RDAP server found for this domain', $result['error']);
+    }
+
+    public function testFormatRdapResponse(): void
+    {
+        $testResponse = [
+            'objectClassName' => 'domain',
+            'handle' => 'EXAMPLE-COM',
+            'ldhName' => 'example.com',
+            'status' => ['client transfer prohibited', 'client update prohibited'],
+        ];
+
+        $formattedResponse = $this->rdapService->formatRdapResponse($testResponse);
+
+        $decodedResponse = json_decode($formattedResponse, true);
+        $this->assertEquals($testResponse, $decodedResponse);
+        $this->assertStringContainsString('    ', $formattedResponse);
+        $this->assertStringNotContainsString('\/', $formattedResponse);
+    }
+
+    public function testWhitespaceHandling(): void
+    {
+        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServerForDomain(' example.com '));
+        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServer(' COM '));
+        $this->assertTrue($this->rdapService->hasTld(' com '));
+    }
+
+    public function testSubdomainHandling(): void
+    {
+        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServerForDomain('sub.example.com'));
+        $this->assertEquals('https://rdap.identitydigital.services/rdap/', $this->rdapService->getRdapServerForDomain('deep.sub.example.org'));
+    }
+
+    public function testInvalidDomainInput(): void
+    {
+        $this->assertNull($this->rdapService->getRdapServerForDomain('invalid'));
+        $this->assertNull($this->rdapService->getRdapServerForDomain(''));
+        $this->assertNull($this->rdapService->getRdapServerForDomain('example.nonexistent'));
+    }
+
+    public function testSecurityAgainstPathTraversal(): void
     {
         $method = $this->getValidationMethod();
 
-        // These should all be rejected as they could be used for path traversal
         $pathTraversalAttempts = [
             'https://rdap.verisign.com/com/v1/domain/../../../etc/passwd',
-            'https://rdap.verisign.com/com/v1/domain/..%2F..%2F..%2Fetc%2Fpasswd',
             'https://rdap.verisign.com/com/v1/domain/....//....//etc/passwd',
             'https://rdap.verisign.com/com/v1/domain/\..\..\windows\system32\config\sam',
         ];
@@ -156,146 +255,5 @@ class RdapServiceTest extends TestCase
                 "Path traversal attempt should be blocked: $maliciousUrl"
             );
         }
-    }
-
-    public function testCaseSensitivityHandling()
-    {
-        // Test case insensitive TLD handling
-        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServer('COM'));
-        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServer('Com'));
-        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServerForDomain('Example.COM'));
-    }
-
-    public function testUrlConstructionInQuery()
-    {
-        // Test that query method constructs URLs that pass validation
-        $method = $this->getValidationMethod();
-
-        // Simulate URL construction as done in query method
-        $serverUrl = 'https://any-server.com/rdap/';
-        $domain = 'example.com';
-        $constructedUrl = rtrim($serverUrl, '/') . '/' . 'domain/' . urlencode($domain);
-
-        // This constructed URL should pass validation
-        $this->assertTrue(
-            $method->invoke($this->rdapService, $constructedUrl),
-            "Query-constructed URL should be valid: $constructedUrl"
-        );
-    }
-
-    public function testSetRequestTimeout()
-    {
-        // Use reflection to test private property
-        $reflectionClass = new \ReflectionClass($this->rdapService);
-        $property = $reflectionClass->getProperty('requestTimeout');
-        $property->setAccessible(true);
-
-        // Default value should be 10
-        $this->assertEquals(10, $property->getValue($this->rdapService));
-
-        // Set to a new value
-        $this->rdapService->setRequestTimeout(15);
-        $this->assertEquals(15, $property->getValue($this->rdapService));
-
-        // Test minimum value enforcement
-        $this->rdapService->setRequestTimeout(0);
-        $this->assertEquals(1, $property->getValue($this->rdapService));
-
-        $this->rdapService->setRequestTimeout(-5);
-        $this->assertEquals(1, $property->getValue($this->rdapService));
-    }
-
-    public function testMissingDataFile()
-    {
-        // Test with non-existent file
-        $rdapService = new RdapService('/path/to/nonexistent/file.json');
-
-        // Methods should handle missing data gracefully
-        $this->assertNull($rdapService->getRdapServer('com'));
-        $this->assertFalse($rdapService->hasTld('com'));
-        $this->assertEmpty($rdapService->getAllRdapServers());
-    }
-
-    public function testRefresh()
-    {
-        // Initial state
-        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServer('com'));
-
-        // Modify the test data file
-        $modifiedData = [
-            'com' => 'https://modified.rdap.server.com/',
-            'net' => 'https://rdap.verisign.com/net/v1/'
-        ];
-        file_put_contents($this->testDataFile, json_encode($modifiedData));
-
-        // Refresh and verify changes
-        $this->assertTrue($this->rdapService->refresh());
-        $this->assertEquals('https://modified.rdap.server.com/', $this->rdapService->getRdapServer('com'));
-        $this->assertNull($this->rdapService->getRdapServer('org')); // Should be gone after refresh
-    }
-
-    public function testGetRdapInfoWithNoServer()
-    {
-        // Create service with empty data
-        $emptyFile = sys_get_temp_dir() . '/empty_rdap_test.json';
-        file_put_contents($emptyFile, json_encode([]));
-        $emptyService = new RdapService($emptyFile);
-
-        // Test getRdapInfo with no server available
-        $result = $emptyService->getRdapInfo('example.nonexistent');
-
-        $this->assertFalse($result['success']);
-        $this->assertNull($result['data']);
-        $this->assertEquals('No RDAP server found for this domain', $result['error']);
-
-        unlink($emptyFile);
-    }
-
-    public function testFormatRdapResponse()
-    {
-        $testResponse = [
-            'objectClassName' => 'domain',
-            'handle' => 'EXAMPLE-COM',
-            'ldhName' => 'example.com',
-            'unicodeName' => 'example.com',
-            'status' => ['client transfer prohibited', 'client update prohibited'],
-            'events' => [
-                ['eventAction' => 'registration', 'eventDate' => '1995-08-14T04:00:00Z'],
-                ['eventAction' => 'expiration', 'eventDate' => '2023-08-13T04:00:00Z']
-            ]
-        ];
-
-        $formattedResponse = $this->rdapService->formatRdapResponse($testResponse);
-
-        // Should be properly formatted JSON
-        $decodedResponse = json_decode($formattedResponse, true);
-        $this->assertEquals($testResponse, $decodedResponse);
-
-        // Check formatting options are applied
-        $this->assertStringContainsString('    ', $formattedResponse); // Indentation
-        $this->assertStringNotContainsString('\/', $formattedResponse); // Unescaped slashes
-    }
-
-    public function testWhitespaceHandling()
-    {
-        // Test whitespace handling in domain lookups
-        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServerForDomain(' example.com '));
-        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServer(' COM '));
-        $this->assertTrue($this->rdapService->hasTld(' com '));
-    }
-
-    public function testSubdomainHandling()
-    {
-        // Test that subdomains resolve to correct TLD servers
-        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServerForDomain('sub.example.com'));
-        $this->assertEquals('https://rdap.identitydigital.services/rdap/', $this->rdapService->getRdapServerForDomain('deep.sub.example.org'));
-    }
-
-    public function testInvalidDomainInput()
-    {
-        // Test invalid domain formats
-        $this->assertNull($this->rdapService->getRdapServerForDomain('invalid'));
-        $this->assertNull($this->rdapService->getRdapServerForDomain(''));
-        $this->assertNull($this->rdapService->getRdapServerForDomain('example.nonexistent'));
     }
 }

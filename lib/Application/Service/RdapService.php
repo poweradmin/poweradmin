@@ -34,17 +34,16 @@ class RdapService
     /**
      * RdapService constructor.
      *
-     * @param string $dataFile Path to the RDAP servers JSON file
+     * @param string $dataFile Path to the RDAP servers PHP data file
      */
     public function __construct(string $dataFile = '')
     {
-        // Default path to RDAP servers data file
-        $this->dataFile = $dataFile ?: __DIR__ . '/../../../data/rdap_servers.json';
+        $this->dataFile = $dataFile ?: __DIR__ . '/../../../data/rdap_servers.php';
         $this->loadRdapServers();
     }
 
     /**
-     * Load RDAP servers data from JSON file
+     * Load RDAP servers data from PHP file
      *
      * @return bool True if loading was successful, false otherwise
      */
@@ -54,13 +53,9 @@ class RdapService
             return false;
         }
 
-        $jsonData = file_get_contents($this->dataFile);
-        if ($jsonData === false) {
-            return false;
-        }
+        $servers = include $this->dataFile;
 
-        $servers = json_decode($jsonData, true);
-        if (json_last_error() !== JSON_ERROR_NONE || !is_array($servers)) {
+        if (!is_array($servers)) {
             return false;
         }
 
