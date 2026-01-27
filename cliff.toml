@@ -66,18 +66,23 @@ conventional_commits = true
 filter_unconventional = true
 split_commits = false
 commit_parsers = [
-    # Skip devcontainer-related commits
-    { message = "^feat\\(devcontainer\\)", skip = true },
-    { message = "^fix\\(devcontainer\\)", skip = true },
-    { message = "^chore\\(devcontainer\\)", skip = true },
-    { message = "^refactor\\(devcontainer\\)", skip = true },
-    { message = "^test\\(devcontainer\\)", skip = true },
-    # Standard commit parsers
+    # Skip development/CI scopes from release notes
+    { message = "\\(ci\\)", skip = true },
+    { message = "\\(dev\\)", skip = true },
+    { message = "\\(devcontainer\\)", skip = true },
+    { message = "\\(renovate\\)", skip = true },
+    { message = "\\(tests\\)", skip = true },
+    { message = "\\(build\\)", skip = true },
+    # Skip internal changes not relevant to users
+    { message = "^feat\\(deps\\)", skip = true },
+    { message = "^fix\\(caddy\\)", skip = true },
+    { message = "^fix\\(test\\)", skip = true },
+    { message = "^fix\\(webserver\\)", skip = true },
+    { message = "^refactor\\(config\\)", skip = true },
+    # Main commit types
     { message = "^feat", group = "1-✨ Features", default_scope = "general" },
-    { message = "^fix\\(ci\\)", skip = true },
     { message = "^fix", group = "2-🐛 Bug Fixes", default_scope = "general" },
     { message = "^perf", group = "3-⚡ Performance", default_scope = "general" },
-    { message = "^refactor\\(ci\\)", skip = true },
     { message = "^refactor", group = "4-♻️ Refactoring", default_scope = "general" },
     { message = "^doc", group = "Documentation", skip = true },
     { message = "^style", group = "Style", skip = true },
