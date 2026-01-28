@@ -84,8 +84,37 @@ class HttpClient implements ApiClient
                 $responseData = []; // Empty array for 204 No Content
             } else {
                 $responseData = json_decode($response, true);
+                $jsonError = json_last_error();
 
-                if (json_last_error() !== JSON_ERROR_NONE && !empty($response)) {
+                // Handle HTTP error responses (4xx, 5xx) before strict JSON validation
+                // PowerDNS may return plain text errors (e.g., "Not Found" for 404)
+                if ($responseCode >= 400) {
+                    $displayErrors = $this->shouldDisplayErrors();
+
+                    // For error responses, use parsed JSON if available, otherwise use raw response
+                    $errorResponse = ($jsonError === JSON_ERROR_NONE && $responseData !== null)
+                        ? $responseData
+                        : ['raw_response' => substr($response, 0, 255)];
+
+                    $errorDetails = [
+                        'url' => $url,
+                        'method' => $method,
+                        'http_code' => $responseCode,
+                        'response' => $errorResponse
+                    ];
+
+                    // Provide user-friendly messages for common HTTP errors
+                    $errorMessage = $this->getHttpErrorMessage($responseCode, $errorResponse, $displayErrors);
+
+                    // Don't log 404 errors as they are often expected (e.g., checking if zone exists)
+                    if ($responseCode !== 404) {
+                        $this->logApiError($errorMessage, $errorDetails);
+                    }
+                    throw new ApiErrorException($errorMessage, $responseCode, null, $errorDetails);
+                }
+
+                // For success responses, require valid JSON
+                if ($jsonError !== JSON_ERROR_NONE && !empty($response)) {
                     $errorMessage = 'Invalid JSON response from API';
                     $errorDetails = [
                         'url' => $url,
@@ -97,28 +126,6 @@ class HttpClient implements ApiClient
                     $this->logApiError($errorMessage, $errorDetails);
                     throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
                 }
-            }
-
-            if ($responseCode >= 400) {
-                $displayErrors = $this->shouldDisplayErrors();
-
-                $errorDetails = [
-                    'url' => $url,
-                    'method' => $method,
-                    'http_code' => $responseCode,
-                    'response' => $responseData
-                ];
-
-                $errorMessage = $displayErrors
-                    ? sprintf(
-                        'HTTP Error %d: %s',
-                        $responseCode,
-                        isset($responseData['error']) ? $responseData['error'] : 'API error'
-                    )
-                    : 'An API request failed';
-
-                $this->logApiError($errorMessage, $errorDetails);
-                throw new ApiErrorException($errorMessage, $responseCode, null, $errorDetails);
             }
 
             return [
@@ -181,6 +188,48 @@ class HttpClient implements ApiClient
     {
         $configManager = ConfigurationManager::getInstance();
         return (bool)$configManager->get('misc', 'display_errors');
+    }
+
+    /**
+     * Generate user-friendly error messages for HTTP error responses
+     *
+     * @param int $responseCode HTTP response code
+     * @param array $errorResponse Parsed error response or raw response
+     * @param bool $displayErrors Whether to display detailed errors
+     * @return string User-friendly error message
+     */
+    private function getHttpErrorMessage(int $responseCode, array $errorResponse, bool $displayErrors): string
+    {
+        // Try to get error message from JSON response
+        $apiError = $errorResponse['error'] ?? null;
+
+        // For raw text responses (e.g., "Not Found")
+        $rawResponse = $errorResponse['raw_response'] ?? null;
+
+        // Common HTTP error codes with user-friendly messages
+        $httpErrors = [
+            400 => 'Bad Request',
+            401 => 'Unauthorized - check API key configuration',
+            403 => 'Forbidden - API key may lack required permissions',
+            404 => 'Resource not found',
+            405 => 'Method not allowed',
+            500 => 'Internal Server Error',
+            502 => 'Bad Gateway',
+            503 => 'Service Unavailable',
+        ];
+
+        $statusText = $httpErrors[$responseCode] ?? 'Unknown error';
+
+        if ($displayErrors) {
+            if ($apiError) {
+                return sprintf('HTTP Error %d: %s', $responseCode, $apiError);
+            } elseif ($rawResponse) {
+                return sprintf('HTTP Error %d: %s', $responseCode, $rawResponse);
+            }
+            return sprintf('HTTP Error %d: %s', $responseCode, $statusText);
+        }
+
+        return 'An API request failed';
     }
 
     /**
