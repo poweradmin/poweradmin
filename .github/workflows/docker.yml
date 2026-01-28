@@ -1,14 +1,27 @@
 name: Docker Image Publish
 
 on:
-  push:
+  workflow_run:
+    workflows: ["validations"]
+    types:
+      - completed
     branches:
       - master
+      - develop
+      - release/3.x
+      - release/4.x
+  push:
     tags:
       - 'v*'
+    branches:
+      - release/3.x
+      - release/4.x
   pull_request:
     branches:
       - master
+      - develop
+      - release/3.x
+      - release/4.x
   workflow_dispatch:
 
 concurrency:
@@ -23,6 +36,7 @@ jobs:
   build-push:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     permissions:
       contents: write
       packages: write
@@ -33,11 +47,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.ref }}
 
       - name: Lint Dockerfile with hadolint
         uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: Dockerfile
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -69,8 +88,10 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }}
-            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+            type=raw,value=latest,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'master') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/master') }}
+            type=raw,value=dev,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'develop') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/develop') }}
+            type=raw,value=lts,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/3.x') }}
+            type=raw,value=stable,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.x') }}
 
       - name: Build and push
         id: build
