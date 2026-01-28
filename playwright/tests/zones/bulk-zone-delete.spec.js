@@ -216,6 +216,56 @@ test.describe('Bulk Zone Deletion', () => {
         }
       }
     });
+
+    test('should redirect to zones list with success message after deletion (issue #971)', async ({ adminPage: page }) => {
+      // Create temporary zone for deletion test
+      const tempZone = `issue971-${Date.now()}.example.com`;
+
+      // Create zone
+      await page.goto('/index.php?page=add_zone_master');
+      await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(tempZone);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await page.waitForLoadState('networkidle');
+
+      // Go to zones list and select for deletion
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      await page.waitForLoadState('networkidle');
+
+      const checkbox = page.locator(`tr:has-text("${tempZone}") input[type="checkbox"]`).first();
+      expect(await checkbox.count()).toBeGreaterThan(0);
+
+      await checkbox.check();
+
+      const deleteBtn = page.locator('button:has-text("Delete zone")').first();
+      expect(await deleteBtn.count()).toBeGreaterThan(0);
+      await deleteBtn.click();
+      await page.waitForLoadState('networkidle');
+
+      // Verify we're on the confirmation page
+      await expect(page).toHaveURL(/delete_domains/);
+
+      const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
+      expect(await yesBtn.count()).toBeGreaterThan(0);
+      await yesBtn.click();
+      await page.waitForLoadState('networkidle');
+
+      // CRITICAL: Verify that after clicking Yes, we are redirected to zones list (not an error page)
+      // This catches issue #971 where an error page was shown instead of redirect
+      await expect(page).toHaveURL(/list_forward_zones/);
+
+      // Verify NO error message is displayed
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toContain('An error occurred while processing the request');
+      expect(bodyText).not.toContain('Error:');
+
+      // Verify success message is displayed (without needing a refresh)
+      const successAlert = page.locator('.alert-success');
+      expect(await successAlert.count()).toBeGreaterThan(0);
+
+      // Verify zone is deleted
+      const zoneRow = page.locator(`tr:has-text("${tempZone}")`);
+      expect(await zoneRow.count()).toBe(0);
+    });
   });
 
   test.describe('Bulk Delete Permissions', () => {

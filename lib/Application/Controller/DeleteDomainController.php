@@ -111,10 +111,16 @@ class DeleteDomainController extends BaseController
                 $zone_info['type']
             ), $zone_id);
 
-            $this->recordCommentService->deleteCommentsByDomainId($zone_id);
+            // Delete associated comments - wrapped in try-catch to prevent
+            // comment deletion failures from breaking zone deletion
+            try {
+                $this->recordCommentService->deleteCommentsByDomainId($zone_id);
+            } catch (\Exception $e) {
+                error_log("Failed to delete comments for zone $zone_id: " . $e->getMessage());
+            }
 
             // Check if the zone is a reverse zone and redirect accordingly
-            if (DnsHelper::isReverseZone($zone_info['name'])) {
+            if (!empty($zone_info['name']) && DnsHelper::isReverseZone($zone_info['name'])) {
                 $this->setMessage('list_reverse_zones', 'success', _('Zone has been deleted successfully.'));
                 $this->redirect('index.php', ['page' => 'list_reverse_zones']);
             } else {

@@ -87,23 +87,33 @@ class DeleteDomainsController extends BaseController
 
         if ($delete_domains) {
             foreach ($deleted_zones as $deleted_zone) {
-                $this->logger->logInfo(sprintf(
-                    'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
-                    $_SERVER['REMOTE_ADDR'],
-                    $_SESSION["userlogin"],
-                    $deleted_zone['name'],
-                    $deleted_zone['type']
-                ), $deleted_zone['id']);
+                if (!empty($deleted_zone['name'])) {
+                    $this->logger->logInfo(sprintf(
+                        'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+                        $_SERVER['REMOTE_ADDR'],
+                        $_SESSION["userlogin"],
+                        $deleted_zone['name'],
+                        $deleted_zone['type']
+                    ), $deleted_zone['id']);
+                }
             }
 
+            // Delete associated comments - wrapped in try-catch to prevent
+            // comment deletion failures from breaking zone deletion
             foreach ($zone_ids as $zone_id) {
-                $this->recordCommentService->deleteCommentsByDomainId($zone_id);
+                try {
+                    $this->recordCommentService->deleteCommentsByDomainId($zone_id);
+                } catch (\Exception $e) {
+                    // Log the error but continue - zone deletion should not fail
+                    // because of comment cleanup issues
+                    error_log("Failed to delete comments for zone $zone_id: " . $e->getMessage());
+                }
             }
 
             // Determine if we should redirect to reverse or forward zones page
             $all_reverse = true;
             foreach ($deleted_zones as $zone) {
-                if (!DnsHelper::isReverseZone($zone['name'])) {
+                if (empty($zone['name']) || !DnsHelper::isReverseZone($zone['name'])) {
                     $all_reverse = false;
                     break;
                 }
