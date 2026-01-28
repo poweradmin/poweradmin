@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -31,7 +30,6 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -273,7 +271,6 @@ class DomainManager implements DomainManagerInterface
      */
     public function deleteDomains(array $domains): bool
     {
-        $pdnssec_use = $this->config->get('dnssec', 'enabled');
         $tableNameService = new TableNameService($this->config);
         $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
@@ -286,22 +283,6 @@ class DomainManager implements DomainManagerInterface
 
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if (is_numeric($id)) {
-                    $zone_type = $this->domainRepository->getDomainType($id);
-                    if ($pdnssec_use && $zone_type == 'MASTER') {
-                        $pdns_api_url = $this->config->get('pdns_api', 'url');
-                        $pdns_api_key = $this->config->get('pdns_api', 'key');
-
-                        $dnssecProvider = DnssecProviderFactory::create(
-                            $this->db,
-                            new FakeConfiguration($pdns_api_url, $pdns_api_key)
-                        );
-
-                        $zone_name = $this->domainRepository->getDomainNameById($id);
-                        if ($dnssecProvider->isZoneSecured($zone_name, $this->config)) {
-                            $dnssecProvider->unsecureZone($zone_name);
-                        }
-                    }
-
                     // Get zone_id before deleting zones record for sync cleanup
                     $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
                     $stmt->execute([':id' => $id]);
