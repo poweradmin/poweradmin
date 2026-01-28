@@ -299,6 +299,7 @@
                     <button type="submit" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
                         <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
                     </button>
+                    <span id="i18n-select-all-filtered" class="d-none">{% trans %}Select All Filtered{% endtrans %}</span>
                     <div id="selected-records-container"></div>
                 </form>
                 
@@ -1018,8 +1019,8 @@
             const selectAllFilteredBtn = document.createElement('button');
             selectAllFilteredBtn.type = 'button';
             selectAllFilteredBtn.classList.add('btn', 'btn-outline-secondary', 'btn-sm', 'ms-2');
-            selectAllFilteredBtn.innerHTML = '<i class="bi bi-check-all me-1"></i>' + 
-                                          (document.documentElement.lang === 'en' ? 'Select All Filtered' : '{% trans %}Select All Filtered{% endtrans %}');
+            selectAllFilteredBtn.innerHTML = '<i class="bi bi-check-all me-1"></i>' +
+                                          document.getElementById('i18n-select-all-filtered').textContent;
             
             // Insert the button after the delete button
             if (deleteButton.nextSibling) {
