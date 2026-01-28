@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -84,6 +85,25 @@ class DeleteDomainsController extends BaseController
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $deleted_zones = $dnsRecord->getZoneInfoFromIds($zone_ids);
+
+        // Handle DNSSEC before deletion - PowerDNS API modifies records directly,
+        // which would conflict with the deletion transaction
+        $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
+        if ($pdnssec_use) {
+            $perm_edit = Permission::getEditPermission($this->db);
+            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+            foreach ($deleted_zones as $zone) {
+                if ($zone['type'] == 'MASTER' && !empty($zone['name'])) {
+                    $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone['id']);
+                    if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+                        if ($dnssecProvider->isZoneSecured($zone['name'], $this->config)) {
+                            $dnssecProvider->unsecureZone($zone['name']);
+                        }
+                    }
+                }
+            }
+        }
+
         $delete_domains = $dnsRecord->deleteDomains($zone_ids);
 
         if ($delete_domains) {
