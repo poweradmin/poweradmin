@@ -114,7 +114,7 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
 
   test('should handle simple record names correctly', async ({ page }) => {
     // Navigate to forward zones page
-    await page.goto('/zones/forward');
+    await page.goto('/zones/forward?letter=all');
 
     const hasZones = await page.locator('table tbody tr').count() > 0;
 
@@ -123,7 +123,7 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
       return;
     }
 
-    // Click on first zone
+    // Click on first zone and store zone name before navigating
     const firstZoneRow = page.locator('table tbody tr').first();
     const editLink = firstZoneRow.locator('a[href*="/edit"]').first();
     const href = await editLink.getAttribute('href');
@@ -135,6 +135,11 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
     }
 
     const zoneId = zoneIdMatch[1];
+
+    // Store zone name before navigating away
+    const zoneNameCell = firstZoneRow.locator('td').nth(1);
+    const zoneName = (await zoneNameCell.textContent())?.trim();
+
     const timestamp = Date.now();
     const uniqueHostname = `simple${String(timestamp).slice(-6)}`;
 
@@ -175,10 +180,6 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
     // - When true: Shows hostname only, e.g., "simple123456"
     // - When false (default): Shows full FQDN, e.g., "simple123456.example.com"
     const nameValue = await page.locator('input[name*="name"]').first().inputValue();
-
-    // Get zone name from the page to construct expected full FQDN
-    const zoneNameCell = firstZoneRow.locator('td').nth(1);
-    const zoneName = (await zoneNameCell.textContent())?.trim();
 
     const expectedFullName = zoneName ? `${uniqueHostname}.${zoneName}` : uniqueHostname;
     const isHostnameOnly = nameValue === uniqueHostname;

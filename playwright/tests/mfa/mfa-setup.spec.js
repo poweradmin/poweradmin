@@ -264,6 +264,220 @@ test.describe('MFA App Setup Flow', () => {
         }
       }
     });
+
+    test('should have copy secret button', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/mfa/setup');
+
+      const setupAppBtn = page.locator('button[name="setup_app"]');
+
+      if (await setupAppBtn.count() > 0) {
+        await setupAppBtn.click();
+
+        const copyBtn = page.locator('button:has(.bi-clipboard), button[onclick*="copy"]');
+        const secretInput = page.locator('input[id="secret-key"], input[readonly]');
+
+        const hasCopyOption = await copyBtn.count() > 0 || await secretInput.count() > 0;
+        expect(hasCopyOption).toBeTruthy();
+      }
+    });
+
+    test('should have verify and enable MFA button', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/mfa/setup');
+
+      const setupAppBtn = page.locator('button[name="setup_app"]');
+
+      if (await setupAppBtn.count() > 0) {
+        await setupAppBtn.click();
+
+        const verifyBtn = page.locator('button[name="verify_app"], button:has-text("Verify")');
+        await expect(verifyBtn).toBeVisible();
+      }
+    });
+
+    test('should have cancel button', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/mfa/setup');
+
+      const setupAppBtn = page.locator('button[name="setup_app"]');
+
+      if (await setupAppBtn.count() > 0) {
+        await setupAppBtn.click();
+
+        const cancelBtn = page.locator('a:has-text("Cancel"), button:has-text("Cancel")');
+        await expect(cancelBtn).toBeVisible();
+      }
+    });
+
+    test('should display recommended authenticator apps', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/mfa/setup');
+
+      const setupAppBtn = page.locator('button[name="setup_app"]');
+
+      if (await setupAppBtn.count() > 0) {
+        await setupAppBtn.click();
+
+        const bodyText = await page.locator('body').textContent();
+        const hasAppRecommendations = bodyText.toLowerCase().includes('google authenticator') ||
+                                       bodyText.toLowerCase().includes('microsoft authenticator') ||
+                                       bodyText.toLowerCase().includes('authy') ||
+                                       bodyText.toLowerCase().includes('recommended');
+        expect(hasAppRecommendations).toBeTruthy();
+      }
+    });
+  });
+
+  test.describe('App Verification Validation', () => {
+    test('should reject empty verification code', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/mfa/setup');
+
+      const setupAppBtn = page.locator('button[name="setup_app"]');
+
+      if (await setupAppBtn.count() > 0) {
+        await setupAppBtn.click();
+
+        const verifyBtn = page.locator('button[name="verify_app"], button:has-text("Verify")');
+        await verifyBtn.click();
+
+        const bodyText = await page.locator('body').textContent();
+        const isOnSetupPage = bodyText.toLowerCase().includes('qr') ||
+                               bodyText.toLowerCase().includes('scan') ||
+                               bodyText.toLowerCase().includes('verification code') ||
+                               bodyText.toLowerCase().includes('invalid');
+        expect(isOnSetupPage).toBeTruthy();
+      }
+    });
+
+    test('should reject invalid verification code', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/mfa/setup');
+
+      const setupAppBtn = page.locator('button[name="setup_app"]');
+
+      if (await setupAppBtn.count() > 0) {
+        await setupAppBtn.click();
+
+        const codeInput = page.locator('input[name="verification_code"]');
+        await codeInput.fill('000000');
+
+        const verifyBtn = page.locator('button[name="verify_app"], button:has-text("Verify")');
+        await verifyBtn.click();
+
+        const bodyText = await page.locator('body').textContent();
+        const hasError = bodyText.toLowerCase().includes('invalid') ||
+                         bodyText.toLowerCase().includes('error') ||
+                         bodyText.toLowerCase().includes('incorrect') ||
+                         bodyText.toLowerCase().includes('verification code');
+        expect(hasError).toBeTruthy();
+      }
+    });
+
+    test('should enforce numeric input for verification code', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/mfa/setup');
+
+      const setupAppBtn = page.locator('button[name="setup_app"]');
+
+      if (await setupAppBtn.count() > 0) {
+        await setupAppBtn.click();
+
+        const codeInput = page.locator('input[name="verification_code"]');
+
+        const inputMode = await codeInput.getAttribute('inputmode');
+        const pattern = await codeInput.getAttribute('pattern');
+
+        expect(inputMode === 'numeric' || pattern === '[0-9]*').toBeTruthy();
+      }
+    });
+
+    test('should enforce 6-digit code length', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/mfa/setup');
+
+      const setupAppBtn = page.locator('button[name="setup_app"]');
+
+      if (await setupAppBtn.count() > 0) {
+        await setupAppBtn.click();
+
+        const codeInput = page.locator('input[name="verification_code"]');
+
+        const minLength = await codeInput.getAttribute('minlength');
+        const maxLength = await codeInput.getAttribute('maxlength');
+
+        expect(minLength === '6' && maxLength === '6').toBeTruthy();
+      }
+    });
+  });
+});
+
+test.describe('Email MFA Setup Flow', () => {
+  test.describe('Setup Email Page', () => {
+    test('should navigate to email setup when available', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/mfa/setup');
+
+      const setupEmailBtn = page.locator('button[name="setup_email"]');
+
+      if (await setupEmailBtn.count() > 0) {
+        await setupEmailBtn.click();
+
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText.toLowerCase()).toMatch(/email|verification|code|not available/i);
+      }
+    });
+
+    test('should display user email address', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/mfa/setup');
+
+      const setupEmailBtn = page.locator('button[name="setup_email"]');
+
+      if (await setupEmailBtn.count() > 0) {
+        await setupEmailBtn.click();
+
+        const bodyText = await page.locator('body').textContent();
+        const hasEmailInfo = bodyText.includes('@') ||
+                              bodyText.toLowerCase().includes('email') ||
+                              bodyText.toLowerCase().includes('sent');
+        expect(hasEmailInfo).toBeTruthy();
+      }
+    });
+  });
+});
+
+test.describe('MFA Disable Flow', () => {
+  test('should have disable MFA button when enabled', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto('/mfa/setup');
+
+    const disableBtn = page.locator('button[name="disable_mfa"]');
+    const setupBtn = page.locator('button[name="setup_app"]');
+
+    const hasDisable = await disableBtn.count() > 0;
+    const hasSetup = await setupBtn.count() > 0;
+
+    expect(hasDisable || hasSetup).toBeTruthy();
+  });
+
+  test('should show appropriate button state based on MFA status', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto('/mfa/setup');
+
+    const bodyText = await page.locator('body').textContent();
+    const isEnabled = bodyText.toLowerCase().includes('mfa is currently enabled');
+    const isDisabled = bodyText.toLowerCase().includes('mfa is currently disabled');
+
+    const disableBtn = page.locator('button[name="disable_mfa"]');
+    const setupBtn = page.locator('button[name="setup_app"]');
+
+    if (isEnabled) {
+      await expect(disableBtn).toBeVisible();
+    } else if (isDisabled) {
+      await expect(setupBtn).toBeVisible();
+    }
   });
 });
 

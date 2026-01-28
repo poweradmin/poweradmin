@@ -32,8 +32,8 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
   });
 
   test('should create IPv6 reverse zone successfully', async ({ page }) => {
-    // Navigate to add master zone page
-    await page.goto('index.php?page=add_zone_master');
+    // Navigate to add master zone page using modern URL
+    await page.goto('/zones/add/master');
     await page.waitForLoadState('networkidle');
 
     // Fill in the IPv6 reverse zone name
@@ -318,37 +318,49 @@ test.describe('IPv6 PTR - Short Nibble Sequence', () => {
   });
 
   test('should handle short nibble input correctly', async ({ page }) => {
-    // Create zone
-    await page.goto('index.php?page=add_zone_master');
+    // Create zone using modern URL
+    await page.goto('/zones/add/master');
     await page.waitForLoadState('networkidle');
     await page.locator('[data-testid="zone-name-input"]').fill(ipv6Zone);
     await page.locator('[data-testid="add-zone-button"]').click();
     await page.waitForLoadState('networkidle');
 
-    // Get zone ID from URL
+    // Get zone ID from URL (modern pattern: /zones/123/edit)
     const url = page.url();
-    const zoneIdMatch = url.match(/[?&]id=(\d+)/);
+    let zoneIdMatch = url.match(/\/zones\/(\d+)/);
     if (!zoneIdMatch) {
-      test.skip(true, 'Could not create zone');
+      // Fallback: find zone in reverse zones list
+      await page.goto('/zones/reverse?letter=all');
+      const zoneRow = page.locator(`tr:has-text("${ipv6Zone}")`);
+      if (await zoneRow.count() === 0) {
+        test.skip(true, 'Could not create zone');
+        return;
+      }
+      const editLink = zoneRow.locator('a[href*="/edit"]').first();
+      const href = await editLink.getAttribute('href');
+      zoneIdMatch = href?.match(/\/zones\/(\d+)/);
+    }
+    if (!zoneIdMatch) {
+      test.skip(true, 'Could not find zone ID');
       return;
     }
     zoneId = zoneIdMatch[1];
 
     // Add a PTR record with just a few nibbles
-    await page.goto(`index.php?page=add_record&id=${zoneId}`);
+    await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
 
     const shortNibbles = 'a.b.c.d';
     const ptrContent = 'short-nibble-test.example.com';
 
     await page.locator('select[name*="type"]').first().selectOption('PTR');
-    await page.locator('input[name*="[name]"]').first().fill(shortNibbles);
-    await page.locator('input[name*="[content]"]').first().fill(ptrContent);
+    await page.locator('input[name*="name"]').first().fill(shortNibbles);
+    await page.locator('input[name*="content"]').first().fill(ptrContent);
     await page.locator('button[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
 
-    // Verify record was added with correct name
-    await page.goto(`index.php?page=edit&id=${zoneId}`);
+    // Verify record was added
+    await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('networkidle');
 
     // Find the record
@@ -358,7 +370,7 @@ test.describe('IPv6 PTR - Short Nibble Sequence', () => {
 
     if (hasRecord) {
       // Check the name contains our nibbles
-      const nameInput = recordRow.locator('input[name*="[name]"]').first();
+      const nameInput = recordRow.locator('input[name*="name"]').first();
       const hasNameInput = await nameInput.count() > 0;
 
       if (hasNameInput) {
@@ -370,16 +382,16 @@ test.describe('IPv6 PTR - Short Nibble Sequence', () => {
     }
 
     // Cleanup - delete the zone
-    await page.goto('index.php?page=list_reverse_zones');
+    await page.goto('/zones/reverse?letter=all');
     await page.waitForLoadState('networkidle');
 
     const zoneRow = page.locator('table tbody tr').filter({ hasText: ipv6Zone });
     if (await zoneRow.count() > 0) {
-      const deleteLink = zoneRow.locator('a[href*="page=delete_domain"]').first();
+      const deleteLink = zoneRow.locator('a[href*="/delete"]').first();
       await deleteLink.click();
       await page.waitForLoadState('networkidle');
 
-      const confirmButton = page.locator('[data-testid="confirm-delete-zone"], button[type="submit"]').first();
+      const confirmButton = page.locator('input[value="Yes"], button:has-text("Yes"), [data-testid="confirm-delete-zone"]').first();
       await confirmButton.click();
     }
   });

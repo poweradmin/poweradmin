@@ -68,6 +68,23 @@ test.describe('Record CRUD Operations', () => {
 
       await page.locator('select[name*="type"]').first().selectOption('AAAA');
       await page.locator('input[name*="name"]').first().fill('ipv6');
+      await page.locator('input[name*="content"]').first().fill('2001:0db8:85a3:0000:0000:8a2e:0370:7334');
+
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+    });
+
+    test('should add AAAA record with compressed IPv6', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/records/add`);
+
+      await page.locator('select[name*="type"]').first().selectOption('AAAA');
+      await page.locator('input[name*="name"]').first().fill('ipv6-short');
       await page.locator('input[name*="content"]').first().fill('2001:db8::1');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
@@ -119,6 +136,27 @@ test.describe('Record CRUD Operations', () => {
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
+
+    test('should add MX record with high priority value', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/records/add`);
+
+      await page.locator('select[name*="type"]').first().selectOption('MX');
+      await page.locator('input[name*="content"]').first().fill('backup-mail.example.com');
+
+      const prioField = page.locator('input[name*="prio"], input[name*="priority"]').first();
+      if (await prioField.count() > 0) {
+        await prioField.fill('50');
+      }
+
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+    });
   });
 
   test.describe('Add Record - TXT Record', () => {
@@ -138,6 +176,40 @@ test.describe('Record CRUD Operations', () => {
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
+
+    test('should add TXT record with DMARC', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/records/add`);
+
+      await page.locator('select[name*="type"]').first().selectOption('TXT');
+      await page.locator('input[name*="name"]').first().fill('_dmarc');
+      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('v=DMARC1; p=reject; rua=mailto:dmarc@example.com');
+
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+    });
+
+    test('should add TXT record with special characters', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/records/add`);
+
+      await page.locator('select[name*="type"]').first().selectOption('TXT');
+      await page.locator('input[name*="name"]').first().fill('special');
+      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('test="value"; key=123');
+
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+    });
   });
 
   test.describe('Add Record - CNAME Record', () => {
@@ -151,6 +223,89 @@ test.describe('Record CRUD Operations', () => {
       await page.locator('select[name*="type"]').first().selectOption('CNAME');
       await page.locator('input[name*="name"]').first().fill('blog');
       await page.locator('input[name*="content"]').first().fill('www.example.com');
+
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+    });
+
+    test('should add CNAME pointing to external domain', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/records/add`);
+
+      await page.locator('select[name*="type"]').first().selectOption('CNAME');
+      await page.locator('input[name*="name"]').first().fill('external');
+      await page.locator('input[name*="content"]').first().fill('target.external.com');
+
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+    });
+  });
+
+  test.describe('Add Record - SRV Record', () => {
+    test('should add SRV record', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/records/add`);
+
+      await page.locator('select[name*="type"]').first().selectOption('SRV');
+      await page.locator('input[name*="name"]').first().fill('_sip._tcp');
+      await page.locator('input[name*="content"]').first().fill('10 5 5060 sip.example.com');
+
+      const prioField = page.locator('input[name*="prio"], input[name*="priority"]').first();
+      if (await prioField.count() > 0) {
+        await prioField.fill('0');
+      }
+
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+    });
+  });
+
+  test.describe('Add Record - CAA Record', () => {
+    test('should add CAA record', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/records/add`);
+
+      const typeSelector = page.locator('select[name*="type"]').first();
+      const options = await typeSelector.locator('option').allTextContents();
+
+      if (options.some(opt => opt.toUpperCase().includes('CAA'))) {
+        await typeSelector.selectOption('CAA');
+        await page.locator('input[name*="content"]').first().fill('0 issue "letsencrypt.org"');
+
+        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
+      }
+    });
+  });
+
+  test.describe('Add Record - NS Record', () => {
+    test('should add NS record for subdomain delegation', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/records/add`);
+
+      await page.locator('select[name*="type"]').first().selectOption('NS');
+      await page.locator('input[name*="name"]').first().fill('sub');
+      await page.locator('input[name*="content"]').first().fill('ns1.delegated.com');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
@@ -192,6 +347,48 @@ test.describe('Record CRUD Operations', () => {
         }
       }
     });
+
+    test('should update record content', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/edit`);
+
+      // Find an A record to edit
+      const editLink = page.locator('tr:has-text("A") a[href*="/records/"][href*="/edit"]').first();
+      if (await editLink.count() > 0) {
+        await editLink.click();
+
+        await page.locator('input[name*="content"]').first().fill('192.168.1.200');
+        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
+      }
+    });
+
+    test('should update record TTL', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/edit`);
+
+      const editLink = page.locator('a[href*="/records/"][href*="/edit"]').first();
+      if (await editLink.count() > 0) {
+        await editLink.click();
+
+        const ttlField = page.locator('input[name*="ttl"]').first();
+        if (await ttlField.count() > 0) {
+          await ttlField.fill('7200');
+          await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+          const bodyText = await page.locator('body').textContent();
+          expect(bodyText).not.toMatch(/fatal|exception/i);
+        }
+      }
+    });
   });
 
   test.describe('Delete Record', () => {
@@ -224,6 +421,25 @@ test.describe('Record CRUD Operations', () => {
         expect(bodyText.toLowerCase()).toMatch(/delete|confirm|sure/i);
       }
     });
+
+    test('should cancel delete and return to zone', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/edit`);
+
+      const deleteLink = page.locator('a[href*="/records/"][href*="/delete"]').first();
+      if (await deleteLink.count() > 0) {
+        await deleteLink.click();
+
+        const cancelBtn = page.locator('input[value="No"], button:has-text("No"), a:has-text("Cancel")').first();
+        if (await cancelBtn.count() > 0) {
+          await cancelBtn.click();
+          await expect(page).toHaveURL(/\/zones\/\d+\/edit/);
+        }
+      }
+    });
   });
 
   test.describe('TTL Validation', () => {
@@ -247,6 +463,31 @@ test.describe('Record CRUD Operations', () => {
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
+    });
+
+    test('should reject negative TTL value', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/records/add`);
+
+      await page.locator('select[name*="type"]').first().selectOption('A');
+      await page.locator('input[name*="name"]').first().fill('negative-ttl');
+      await page.locator('input[name*="content"]').first().fill('10.0.0.2');
+
+      const ttlField = page.locator('input[name*="ttl"]').first();
+      if (await ttlField.count() > 0) {
+        await ttlField.fill('-1');
+        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+        const url = page.url();
+        const bodyText = await page.locator('body').textContent();
+        const hasError = bodyText.toLowerCase().includes('error') ||
+                         bodyText.toLowerCase().includes('invalid') ||
+                         url.includes('/records/add');
+        expect(hasError).toBeTruthy();
+      }
     });
   });
 

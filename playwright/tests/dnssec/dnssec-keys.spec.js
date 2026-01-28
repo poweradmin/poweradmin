@@ -225,30 +225,210 @@ test.describe('DNSSEC Key Management', () => {
     });
   });
 
-  test.describe('DS Records', () => {
-    test('should display DS records when keys exist', async ({ page }) => {
+  test.describe('Activate/Deactivate Key', () => {
+    test('should display activate/deactivate links', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const zoneId = await getTestZoneId(page);
       if (!zoneId) return;
 
       await page.goto(`/zones/${zoneId}/dnssec`);
 
-      const bodyText = await page.locator('body').textContent();
-      // DS records should be shown if keys exist
-      expect(bodyText.toLowerCase()).toMatch(/ds|delegation|key|dnssec/i);
+      const activateLinks = page.locator('a[href*="/edit"], a[href*="/activate"], a[href*="/deactivate"]');
+      if (await activateLinks.count() > 0) {
+        await expect(activateLinks.first()).toBeVisible();
+      }
     });
 
-    test('should show DS record in copyable format', async ({ page }) => {
+    test('should access key edit page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const zoneId = await getTestZoneId(page);
       if (!zoneId) return;
 
       await page.goto(`/zones/${zoneId}/dnssec`);
 
-      const dsArea = page.locator('pre, code, textarea, .ds-record');
-      if (await dsArea.count() > 0) {
+      const editLink = page.locator('a[href*="/dnssec/keys/"][href*="/edit"]').first();
+      if (await editLink.count() > 0) {
+        await editLink.click();
+        await expect(page).toHaveURL(/.*dnssec.*edit/);
+      }
+    });
+
+    test('should toggle key status', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/dnssec`);
+
+      const editLink = page.locator('a[href*="/dnssec/keys/"][href*="/edit"]').first();
+      if (await editLink.count() > 0) {
+        await editLink.click();
+
+        const toggleBtn = page.locator('button:has-text("Activate"), button:has-text("Deactivate"), input[value*="Activate"], input[value*="Deactivate"]').first();
+        if (await toggleBtn.count() > 0) {
+          await toggleBtn.click();
+
+          const bodyText = await page.locator('body').textContent();
+          expect(bodyText).not.toMatch(/fatal|exception/i);
+        }
+      }
+    });
+  });
+
+  test.describe('Delete DNSSEC Key', () => {
+    test('should display delete key links', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/dnssec`);
+
+      const deleteLinks = page.locator('a[href*="/dnssec/keys/"][href*="/delete"]');
+      if (await deleteLinks.count() > 0) {
+        await expect(deleteLinks.first()).toBeVisible();
+      }
+    });
+
+    test('should access delete confirmation page', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/dnssec`);
+
+      const deleteLink = page.locator('a[href*="/dnssec/keys/"][href*="/delete"]').first();
+      if (await deleteLink.count() > 0) {
+        await deleteLink.click();
+        await expect(page).toHaveURL(/.*dnssec.*delete/);
+      }
+    });
+
+    test('should display delete confirmation', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/dnssec`);
+
+      const deleteLink = page.locator('a[href*="/dnssec/keys/"][href*="/delete"]').first();
+      if (await deleteLink.count() > 0) {
+        await deleteLink.click();
+        await expect(page).toHaveURL(/.*dnssec.*delete/);
+
         const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        expect(bodyText.toLowerCase()).toMatch(/delete|confirm|sure/i);
+      }
+    });
+
+    test('should cancel delete and return to DNSSEC page', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/dnssec`);
+
+      const deleteLink = page.locator('a[href*="/dnssec/keys/"][href*="/delete"]').first();
+      if (await deleteLink.count() > 0) {
+        await deleteLink.click();
+
+        const noBtn = page.locator('input[value="No"], button:has-text("No"), a:has-text("No")').first();
+        if (await noBtn.count() > 0) {
+          await noBtn.click();
+          await expect(page).toHaveURL(/.*dnssec/);
+        }
+      }
+    });
+  });
+
+  test.describe('DS and DNSKEY Records', () => {
+    test('should access DS records page', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/dnssec/ds-dnskey`);
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText.toLowerCase()).toMatch(/ds|dnskey|record/i);
+    });
+
+    test('should display DS record link from DNSSEC page', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/dnssec`);
+
+      const dsLink = page.locator('a[href*="/ds-dnskey"]');
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+    });
+
+    test('should navigate to DS records from DNSSEC page', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/dnssec`);
+
+      const dsLink = page.locator('a[href*="/ds-dnskey"]').first();
+      if (await dsLink.count() > 0) {
+        await dsLink.click();
+        await expect(page).toHaveURL(/.*ds-dnskey/);
+      }
+    });
+
+    test('should display DS record content', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/dnssec/ds-dnskey`);
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText.toLowerCase()).toMatch(/ds|dnskey|key|record|dnssec|not.*enabled|no.*key/i);
+    });
+  });
+
+  test.describe('Navigation', () => {
+    test('should navigate from zone list to DNSSEC', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/zones/forward?letter=all');
+
+      const row = page.locator('table tbody tr').first();
+      if (await row.count() > 0) {
+        const dnssecLink = row.locator('a[href*="/dnssec"]').first();
+        if (await dnssecLink.count() > 0) {
+          await dnssecLink.click();
+          await expect(page).toHaveURL(/.*dnssec/);
+        }
+      }
+    });
+
+    test('should navigate from zone edit to DNSSEC', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/edit`);
+
+      const dnssecLink = page.locator('a[href*="/dnssec"]').first();
+      if (await dnssecLink.count() > 0) {
+        await dnssecLink.click();
+        await expect(page).toHaveURL(/.*dnssec/);
+      }
+    });
+
+    test('should have back to zone link from DNSSEC page', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/dnssec`);
+
+      const backLink = page.locator('a[href*="/edit"], a:has-text("Back"), a:has-text("Zone")');
+      if (await backLink.count() > 0) {
+        await expect(backLink.first()).toBeVisible();
       }
     });
   });
@@ -266,6 +446,22 @@ test.describe('DNSSEC Key Management', () => {
 
           const addBtn = page.locator('a[href*="/dnssec/keys/add"]');
           expect(await addBtn.count()).toBe(0);
+        }
+      }
+    });
+
+    test('viewer should not access DNSSEC management', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
+      await page.goto('/zones/forward?letter=all');
+
+      const row = page.locator('table tbody tr').first();
+      if (await row.count() > 0) {
+        const dnssecLink = row.locator('a[href*="/dnssec"]');
+        const count = await dnssecLink.count();
+        if (count > 0) {
+          await dnssecLink.first().click();
+          const bodyText = await page.locator('body').textContent();
+          expect(bodyText.toLowerCase()).toMatch(/you do not have|access denied|not allowed|forbidden|dnssec/i);
         }
       }
     });

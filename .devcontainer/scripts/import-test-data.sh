@@ -232,6 +232,19 @@ import_mysql() {
             fi
         fi
 
+        # Import reverse zones and zone templates if the file exists
+        if [ -f "$SQL_DIR/test-reverse-zones-templates-mysql.sql" ]; then
+            echo -e "${YELLOW}📦 Importing reverse zones and zone templates...${NC}"
+            output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$SQL_DIR/test-reverse-zones-templates-mysql.sql" 2>&1)
+            exit_code=$?
+
+            if [ $exit_code -eq 0 ]; then
+                echo -e "${GREEN}✅ MySQL/MariaDB reverse zones and templates imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  Reverse zones/templates import had issues (may already exist)${NC}"
+            fi
+        fi
+
         return 0
     else
         echo -e "${RED}❌ MySQL/MariaDB import failed${NC}"
@@ -288,6 +301,16 @@ import_pgsql() {
             fi
         fi
 
+        # Import reverse zones and zone templates if the file exists
+        if [ -f "$SQL_DIR/test-reverse-zones-templates-pgsql.sql" ]; then
+            echo -e "${YELLOW}📦 Importing reverse zones and zone templates...${NC}"
+            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$SQL_DIR/test-reverse-zones-templates-pgsql.sql" > /dev/null 2>&1; then
+                echo -e "${GREEN}✅ PostgreSQL reverse zones and templates imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  Reverse zones/templates import had issues (may already exist)${NC}"
+            fi
+        fi
+
         return 0
     else
         echo -e "${RED}❌ PostgreSQL import failed${NC}"
@@ -340,6 +363,16 @@ import_sqlite() {
                 echo -e "${GREEN}✅ SQLite DNS records imported${NC}"
             else
                 echo -e "${YELLOW}⚠️  DNS records import had issues (may already exist)${NC}"
+            fi
+        fi
+
+        # Import reverse zones and zone templates if the file exists
+        if [ -f "$SQL_DIR/test-reverse-zones-templates-sqlite.sql" ]; then
+            echo -e "${YELLOW}📦 Importing reverse zones and zone templates...${NC}"
+            if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQL_DIR/test-reverse-zones-templates-sqlite.sql" > /dev/null 2>&1; then
+                echo -e "${GREEN}✅ SQLite reverse zones and templates imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  Reverse zones/templates import had issues (may already exist)${NC}"
             fi
         fi
 
@@ -500,10 +533,21 @@ main() {
         echo "  Password: Poweradmin123"
         echo ""
         echo -e "${BLUE}Test zones:${NC}"
+        echo "  Forward zones:"
         echo "  - admin-zone.example.com (owner: admin)"
         echo "  - manager-zone.example.com (owner: manager) - with comprehensive DNS records"
         echo "  - client-zone.example.com (owner: client) - with comprehensive DNS records"
         echo "  - shared-zone.example.com (owners: manager, client)"
+        echo ""
+        echo "  Reverse zones:"
+        echo "  - 2.0.192.in-addr.arpa (IPv4, owners: admin, manager)"
+        echo "  - 8.b.d.0.1.0.0.2.ip6.arpa (IPv6, owner: admin)"
+        echo ""
+        echo -e "${BLUE}Zone Templates:${NC}"
+        echo "  - Standard Web Zone (owner: admin) - www, mail, ftp, MX"
+        echo "  - Mail Server Zone (owner: admin) - MX, SPF"
+        echo "  - Minimal Zone (owner: admin) - empty"
+        echo "  - Manager Template (owner: manager) - empty"
         echo ""
         echo -e "${BLUE}DNS Records (manager-zone and client-zone):${NC}"
         echo "  - SOA, NS: Standard zone records"

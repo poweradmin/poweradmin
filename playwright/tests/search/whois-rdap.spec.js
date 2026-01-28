@@ -98,6 +98,25 @@ test.describe('WHOIS Lookup Page', () => {
         expect(bodyText.toLowerCase()).toContain('disabled');
       }
     });
+
+    test('should display help text or disabled message', async ({ page }) => {
+      await page.goto('/whois');
+
+      const bodyText = await page.locator('body').textContent();
+      const hasHelp = bodyText.toLowerCase().match(/enter.*domain|domain.*name|example\.com|disabled/i);
+      expect(hasHelp).toBeTruthy();
+    });
+
+    test('should include CSRF token when enabled', async ({ page }) => {
+      await page.goto('/whois');
+
+      const csrfToken = page.locator('input[name="_token"]');
+      const bodyText = await page.locator('body').textContent();
+
+      const hasToken = await csrfToken.count() > 0;
+      const isDisabled = bodyText.toLowerCase().includes('disabled');
+      expect(hasToken || isDisabled).toBeTruthy();
+    });
   });
 
   test.describe('Form Submission', () => {
@@ -202,11 +221,79 @@ test.describe('WHOIS Lookup Page', () => {
         expect(bodyText.toLowerCase()).toContain('disabled');
       }
     });
+
+    test('should show results or alert when enabled', async ({ page }) => {
+      await page.goto('/whois');
+
+      const domainInput = page.locator('input[name="domain"]');
+      const bodyText = await page.locator('body').textContent();
+
+      if (await domainInput.count() > 0) {
+        await domainInput.fill('example.com');
+
+        const lookupBtn = page.locator('button[type="submit"]:has-text("Lookup")');
+        await lookupBtn.click();
+
+        await page.waitForLoadState('networkidle');
+
+        const preElement = page.locator('.whois-results pre, pre');
+        const alertElement = page.locator('.alert');
+
+        const hasResults = await preElement.count() > 0;
+        const hasAlert = await alertElement.count() > 0;
+
+        expect(hasResults || hasAlert).toBeTruthy();
+      } else {
+        expect(bodyText.toLowerCase()).toContain('disabled');
+      }
+    });
+  });
+
+  test.describe('IDN Domain Support', () => {
+    test.beforeEach(async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    });
+
+    test('should accept internationalized domain names when enabled', async ({ page }) => {
+      await page.goto('/whois');
+
+      const domainInput = page.locator('input[name="domain"]');
+      const bodyText = await page.locator('body').textContent();
+
+      if (await domainInput.count() > 0) {
+        await domainInput.fill('beispiel.de');
+        await expect(domainInput).toHaveValue('beispiel.de');
+      } else {
+        expect(bodyText.toLowerCase()).toContain('disabled');
+      }
+    });
   });
 
   test.describe('UI Elements', () => {
     test.beforeEach(async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    });
+
+    test('should have search icon or disabled message', async ({ page }) => {
+      await page.goto('/whois');
+
+      const searchIcon = page.locator('.bi-search');
+      const bodyText = await page.locator('body').textContent();
+
+      const hasIcon = await searchIcon.count() > 0;
+      const isDisabled = bodyText.toLowerCase().includes('disabled');
+      expect(hasIcon || isDisabled).toBeTruthy();
+    });
+
+    test('should use input group styling or show disabled message', async ({ page }) => {
+      await page.goto('/whois');
+
+      const inputGroup = page.locator('.input-group');
+      const bodyText = await page.locator('body').textContent();
+
+      const hasInputGroup = await inputGroup.count() > 0;
+      const isDisabled = bodyText.toLowerCase().includes('disabled');
+      expect(hasInputGroup || isDisabled).toBeTruthy();
     });
 
     test('should have card layout or show disabled message', async ({ page }) => {

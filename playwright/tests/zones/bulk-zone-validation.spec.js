@@ -2,137 +2,134 @@ import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Run serially to avoid race conditions with zone cleanup
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Bulk Zone Registration Validation', () => {
+  const timestamp = Date.now();
+
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
   });
 
+  // Helper to clean up a zone
+  async function cleanupZone(page, zoneName) {
+    try {
+      await page.goto('/zones/forward?letter=all');
+      const zoneRow = page.locator(`tr:has-text("${zoneName}")`);
+      if (await zoneRow.count() > 0) {
+        await zoneRow.locator('a[href*="/delete"]').first().click();
+        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
+        if (await yesBtn.count() > 0) await yesBtn.click();
+      }
+    } catch (e) {
+      // Zone might not exist, continue
+    }
+  }
+
   test('should register single zone via bulk registration', async ({ page }) => {
-    await page.locator('[data-testid="bulk-registration-link"]').click();
+    const zoneName = `bulktest1-${timestamp}.com`;
+    await page.goto('/zones/bulk-registration');
 
-    // Enter single zone
-    await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill('bulktest1.com');
-
+    await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill(zoneName);
     await page.locator('button[type="submit"], input[type="submit"]').click();
+    await page.waitForLoadState('networkidle');
 
-    // Should show success message
-    await expect(page.locator('body')).toContainText(/success|added/i);
-    await expect(page.locator('body')).toContainText('bulktest1.com');
+    // Verify no errors occurred
+    const bodyText = await page.locator('body').textContent();
+    expect(bodyText).not.toMatch(/fatal|exception/i);
+
+    // Verify zone was created by checking zones list
+    await page.goto('/zones/forward?letter=all');
+    await expect(page.locator(`tr:has-text("${zoneName}")`)).toBeVisible();
 
     // Cleanup
-    await page.locator('[data-testid="list-forward-zones-link"]').click();
-    await page.locator('tr:has-text("bulktest1.com")').locator('[data-testid^="delete-zone-"]').click();
-    await page.locator('[data-testid="confirm-delete-zone"]').click();
+    await cleanupZone(page, zoneName);
   });
 
   test('should register multiple zones via bulk registration', async ({ page }) => {
-    await page.locator('[data-testid="bulk-registration-link"]').click();
+    const zones = [`bulktest1-${timestamp}.com`, `bulktest2-${timestamp}.org`, `bulktest3-${timestamp}.net`];
+    await page.goto('/zones/bulk-registration');
 
-    // Enter multiple zones (newline separated)
-    await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill('bulktest1.com\nbulktest2.org\nbulktest3.net');
-
+    await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill(zones.join('\n'));
     await page.locator('button[type="submit"], input[type="submit"]').click();
+    await page.waitForLoadState('networkidle');
 
-    // Should show success messages for all zones
-    await expect(page.locator('body')).toContainText(/success|added/i);
-    await expect(page.locator('body')).toContainText('bulktest1.com');
-    await expect(page.locator('body')).toContainText('bulktest2.org');
-    await expect(page.locator('body')).toContainText('bulktest3.net');
+    // Verify no errors occurred
+    const bodyText = await page.locator('body').textContent();
+    expect(bodyText).not.toMatch(/fatal|exception/i);
+
+    // Verify zones were created
+    await page.goto('/zones/forward?letter=all');
+    for (const zone of zones) {
+      await expect(page.locator(`tr:has-text("${zone}")`)).toBeVisible();
+    }
 
     // Cleanup
-    const zones = ['bulktest1.com', 'bulktest2.org', 'bulktest3.net'];
     for (const zone of zones) {
-      await page.locator('[data-testid="list-forward-zones-link"]').click();
-      await page.locator(`tr:has-text("${zone}")`).locator('[data-testid^="delete-zone-"]').click();
-      await page.locator('[data-testid="confirm-delete-zone"]').click();
+      await cleanupZone(page, zone);
     }
   });
 
   test('should show error for zone with invalid TLD', async ({ page }) => {
-    await page.locator('[data-testid="bulk-registration-link"]').click();
+    await page.goto('/zones/bulk-registration');
 
-    // Try to register zone with invalid/non-existent TLD
     await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill('invalidzone.invalidtld123');
-
     await page.locator('button[type="submit"], input[type="submit"]').click();
 
     // Should show error message
     await expect(page.locator('body')).toContainText(/error|invalid|failed/i);
 
-    // Should mention TLD or hostname issue
     const bodyText = await page.locator('body').textContent();
     const hasValidationError = bodyText.match(/invalid.*tld|invalid.*hostname|invalid.*domain|top level domain/i);
     expect(hasValidationError).toBeTruthy();
   });
 
   test('should show error for malformed domain name', async ({ page }) => {
-    await page.locator('[data-testid="bulk-registration-link"]').click();
+    await page.goto('/zones/bulk-registration');
 
-    // Try various invalid domain formats
     await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill('invalid..domain.com');
-
     await page.locator('button[type="submit"], input[type="submit"]').click();
 
-    // Should show error
     await expect(page.locator('body')).toContainText(/error|invalid|failed/i);
   });
 
   test('should handle mix of valid and invalid zones', async ({ page }) => {
-    await page.locator('[data-testid="bulk-registration-link"]').click();
+    const validZone = `validzone-${timestamp}.com`;
+    await page.goto('/zones/bulk-registration');
 
-    // Enter mix of valid and invalid zones
-    await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill('validzone1.com\ninvalidzone.invalidtld\nvalidzone2.org');
-
+    await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill(`${validZone}\ninvalidzone.invalidtld`);
     await page.locator('button[type="submit"], input[type="submit"]').click();
 
     const bodyText = await page.locator('body').textContent();
-
-    // Should show error for invalid zone
     const hasError = bodyText.match(/error|invalid|failed/i);
     expect(hasError).toBeTruthy();
 
-    // Valid zones might be added successfully (check for success message)
-    const hasSuccess = bodyText.match(/success|added/i);
-
-    if (hasSuccess) {
-      // If valid zones were added, cleanup
-      const validZones = ['validzone1.com', 'validzone2.org'];
-      for (const zone of validZones) {
-        try {
-          await page.locator('[data-testid="list-forward-zones-link"]').click();
-          const zoneRow = page.locator(`tr:has-text("${zone}")`);
-          if (await zoneRow.count() > 0) {
-            await zoneRow.locator('[data-testid^="delete-zone-"]').click();
-            await page.locator('[data-testid="confirm-delete-zone"]').click();
-          }
-        } catch (e) {
-          // Zone might not have been created, continue
-        }
-      }
-    }
+    // Cleanup if valid zone was created
+    await cleanupZone(page, validZone);
   });
 
   test('should validate zone name format', async ({ page }) => {
-    await page.locator('[data-testid="bulk-registration-link"]').click();
+    await page.goto('/zones/bulk-registration');
 
-    // Try zone with invalid characters
     await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill('invalid_zone!@#.com');
-
     await page.locator('button[type="submit"], input[type="submit"]').click();
 
-    // Should show validation error
     await expect(page.locator('body')).toContainText(/error|invalid|failed/i);
   });
 
   test('should prevent duplicate zone registration', async ({ page }) => {
-    // First, create a zone
-    await page.locator('[data-testid="add-master-zone-link"]').click();
-    await page.locator('[data-testid="zone-name-input"]').fill('duplicate-test.com');
+    const zoneName = `duplicate-test-${timestamp}.com`;
+
+    // First, create a zone via direct navigation
+    await page.goto('/zones/add/master');
+    await page.locator('[data-testid="zone-name-input"]').fill(zoneName);
     await page.locator('[data-testid="add-zone-button"]').click();
+    await page.waitForLoadState('networkidle');
 
     // Try to add same zone via bulk registration
-    await page.locator('[data-testid="bulk-registration-link"]').click();
-    await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill('duplicate-test.com');
+    await page.goto('/zones/bulk-registration');
+    await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill(zoneName);
     await page.locator('button[type="submit"], input[type="submit"]').click();
 
     // Should show error about duplicate
@@ -141,77 +138,48 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(hasDuplicateError).toBeTruthy();
 
     // Cleanup
-    await page.locator('[data-testid="list-forward-zones-link"]').click();
-    await page.locator('tr:has-text("duplicate-test.com")').locator('[data-testid^="delete-zone-"]').click();
-    await page.locator('[data-testid="confirm-delete-zone"]').click();
+    await cleanupZone(page, zoneName);
   });
 
   test('should handle empty bulk registration submission', async ({ page }) => {
-    await page.locator('[data-testid="bulk-registration-link"]').click();
+    await page.goto('/zones/bulk-registration');
 
-    // Submit empty form
     await page.locator('button[type="submit"], input[type="submit"]').click();
 
-    // Should show error or stay on form
     const currentUrl = page.url();
     expect(currentUrl).toMatch(/bulk|registration/i);
   });
 
   test('should trim whitespace from zone names', async ({ page }) => {
-    await page.locator('[data-testid="bulk-registration-link"]').click();
+    const zoneName = `whitespace-test-${timestamp}.com`;
+    await page.goto('/zones/bulk-registration');
 
-    // Enter zone with extra whitespace
-    await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill('  whitespace-test.com  \n  another-zone.org  ');
-
+    await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill(`  ${zoneName}  `);
     await page.locator('button[type="submit"], input[type="submit"]').click();
 
-    // Should process zones successfully (whitespace trimmed)
     const bodyText = await page.locator('body').textContent();
-
     if (bodyText.match(/success|added/i)) {
-      // Cleanup if zones were created
-      const zones = ['whitespace-test.com', 'another-zone.org'];
-      for (const zone of zones) {
-        try {
-          await page.locator('[data-testid="list-forward-zones-link"]').click();
-          const zoneRow = page.locator(`tr:has-text("${zone}")`);
-          if (await zoneRow.count() > 0) {
-            await zoneRow.locator('[data-testid^="delete-zone-"]').click();
-            await page.locator('[data-testid="confirm-delete-zone"]').click();
-          }
-        } catch (e) {
-          // Continue if zone doesn't exist
-        }
-      }
+      await cleanupZone(page, zoneName);
     }
   });
 
   test('should handle zones with various valid TLDs', async ({ page }) => {
-    await page.locator('[data-testid="bulk-registration-link"]').click();
+    const zones = [
+      `tldtest1-${timestamp}.com`,
+      `tldtest2-${timestamp}.net`,
+      `tldtest3-${timestamp}.org`,
+      `tldtest4-${timestamp}.io`,
+      `tldtest5-${timestamp}.dev`
+    ];
+    await page.goto('/zones/bulk-registration');
 
-    // Test various common TLDs
-    const zones = 'tldtest1.com\ntldtest2.net\ntldtest3.org\ntldtest4.io\ntldtest5.dev';
-    await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill(zones);
-
+    await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill(zones.join('\n'));
     await page.locator('button[type="submit"], input[type="submit"]').click();
 
-    // Should successfully create zones with valid TLDs
     const bodyText = await page.locator('body').textContent();
-
     if (bodyText.match(/success|added/i)) {
-      // Cleanup
-      const zoneList = ['tldtest1.com', 'tldtest2.net', 'tldtest3.org', 'tldtest4.io', 'tldtest5.dev'];
-      for (const zone of zoneList) {
-        try {
-          await page.locator('[data-testid="list-forward-zones-link"]').click();
-          const zoneRow = page.locator(`tr:has-text("${zone}")`);
-          if (await zoneRow.count() > 0) {
-            await zoneRow.locator('[data-testid^="delete-zone-"]').click();
-            await page.locator('[data-testid="confirm-delete-zone"]').click();
-          }
-        } catch (e) {
-          // Continue
-        }
+      for (const zone of zones) {
+        await cleanupZone(page, zone);
       }
     }
   });
