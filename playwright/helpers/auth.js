@@ -15,10 +15,10 @@
  */
 export async function login(page, username, password) {
   await page.goto('/index.php?page=login');
-  // Use Playwright's resilient locator APIs for better reliability
-  await page.getByLabel('Username').fill(username);
-  await page.getByLabel('Password').fill(password);
-  await page.getByRole('button', { name: /log in/i }).click();
+  // Use data-testid locators for reliability (defined in templates/default/login.html)
+  await page.getByTestId('username-input').fill(username);
+  await page.getByTestId('password-input').fill(password);
+  await page.getByTestId('login-button').click();
 }
 
 /**

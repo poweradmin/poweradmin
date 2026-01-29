@@ -268,6 +268,61 @@ test.describe('Bulk Zone Deletion', () => {
     });
   });
 
+  test.describe('Single Zone Delete via Actions Column', () => {
+    test('should delete zone via trash icon and show success message (issue #977)', async ({ adminPage: page }) => {
+      // Create temporary zone for deletion test
+      const tempZone = `issue977-${Date.now()}.example.com`;
+
+      // Create zone
+      await page.goto('/index.php?page=add_zone_master');
+      await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(tempZone);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await page.waitForLoadState('networkidle');
+
+      // Go to zones list
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      await page.waitForLoadState('networkidle');
+
+      // Find the zone row and click the trash icon (delete link in actions column)
+      const zoneRow = page.locator(`tr:has-text("${tempZone}")`);
+      expect(await zoneRow.count()).toBeGreaterThan(0);
+
+      const deleteLink = zoneRow.locator('a[href*="delete_domain"]').first();
+      expect(await deleteLink.count()).toBeGreaterThan(0);
+      await deleteLink.click();
+      await page.waitForLoadState('networkidle');
+
+      // Verify we're on the delete confirmation page (not an empty page)
+      await expect(page).toHaveURL(/delete_domain/);
+      const confirmPageText = await page.locator('body').textContent();
+      expect(confirmPageText.length).toBeGreaterThan(100); // Not an empty page
+      expect(confirmPageText).toContain(tempZone);
+
+      // Click Yes to confirm deletion
+      const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
+      expect(await yesBtn.count()).toBeGreaterThan(0);
+      await yesBtn.click();
+      await page.waitForLoadState('networkidle');
+
+      // CRITICAL: Verify that after clicking Yes, we are redirected to zones list (not an empty page)
+      // This catches issue #977 where an empty page was shown instead of redirect
+      await expect(page).toHaveURL(/list_forward_zones|list_reverse_zones/);
+
+      // Verify NO empty page or error
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText.length).toBeGreaterThan(100); // Not an empty page
+      expect(bodyText).not.toContain('An error occurred while processing the request');
+
+      // Verify success message is displayed (without needing a refresh)
+      const successAlert = page.locator('.alert-success');
+      expect(await successAlert.count()).toBeGreaterThan(0);
+
+      // Verify zone is deleted
+      const zoneRowAfter = page.locator(`tr:has-text("${tempZone}")`);
+      expect(await zoneRowAfter.count()).toBe(0);
+    });
+  });
+
   test.describe('Bulk Delete Permissions', () => {
     test('admin should access bulk delete', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_forward_zones&letter=all');
