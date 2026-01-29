@@ -51,39 +51,6 @@ DNSSEC operations.
 
 ![Zone editor with inline record management](https://docs.poweradmin.org/screenshots/light_zone_edit.png)
 
-## Requirements
-
-* PHP 8.1 or higher (including 8.2, 8.3, 8.4, etc.)
-* PHP extensions: intl, gettext, openssl, filter, tokenizer, pdo, xml, pdo-mysql/pdo-pgsql/pdo-sqlite, ldap (optional)
-* MySQL 5.7.x/8.x, MariaDB, PostgreSQL or SQLite database
-* PowerDNS authoritative server 4.0.0+ (including 4.x and 5.x series)
-
-## Tested on
-
-**Officially tested versions:**
-- **master (development)**: PHP 8.2, PowerDNS 4.9.8, MariaDB 10.11, PostgreSQL 16.3
-- **release/4.x (stable)**: PHP 8.2, PowerDNS 4.9.5, MariaDB 10.11, PostgreSQL 16.3
-- **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
-
-**User-reported compatibility:**
-- PowerDNS 4.8.x, 4.9.x, and 5.0.x series have been reported to work correctly by community users
-
-**Compatibility note:** Poweradmin operates primarily at the database level with PowerDNS, using the PowerDNS API only for DNSSEC operations. This design provides broad compatibility across PowerDNS versions, as the database schema remains relatively stable between releases.
-
-## Version Support
-
-Poweradmin maintains multiple release branches:
-
-| Branch | Status | Support |
-|--------|--------|---------|
-| `master` | Development | Experimental features, unstable |
-| `release/4.x` | Stable | Current release with new features |
-| `release/3.x` | LTS | Bug fixes and security updates for at least 2 years |
-
-### Long-Term Support (LTS)
-
-The **3.x branch** is designated as Long-Term Support (LTS). This branch will receive bug fixes and security updates for at least two years, providing a stable option for organizations that prefer stability over immediate upgrades to the 4.x series.
-
 ## Installation
 
 For detailed installation instructions, please visit [the official documentation](https://docs.poweradmin.org/installation/).
@@ -93,7 +60,7 @@ For detailed installation instructions, please visit [the official documentation
 * **Recommended method - via releases**:
     * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
 * **For specific needs - via Git**:
-    * **Warning**: The master branch is used for development and may be unstable. For production use, stick with the stable release/4.x branch or use the `stable` Docker tag.
+    * **Warning**: The master branch is used for pre-release integration testing and may be unstable. For production use, stick with the stable release/4.x branch or use the `stable` Docker tag.
 
 ### Docker Deployment
 
@@ -117,6 +84,42 @@ docker run -d \
 * **Security with Docker Secrets**: [DOCKER-SECRETS.md](DOCKER-SECRETS.md)
 
 Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets integration, FrankenPHP for enhanced performance.
+
+## Requirements
+
+* PHP 8.1 or higher (including 8.2, 8.3, 8.4, etc.)
+* PHP extensions: intl, gettext, openssl, filter, tokenizer, pdo, xml, pdo-mysql/pdo-pgsql/pdo-sqlite, ldap (optional)
+* MySQL 5.7.x/8.x, MariaDB, PostgreSQL or SQLite database
+* PowerDNS authoritative server 4.0.0+ (including 4.x and 5.x series)
+
+## Tested on
+
+**Officially tested versions:**
+- **master (pre-release)**: PHP 8.2, PowerDNS 4.9.8, MariaDB 10.11, PostgreSQL 16.3
+- **release/4.x (stable)**: PHP 8.2, PowerDNS 4.9.5, MariaDB 10.11, PostgreSQL 16.3
+- **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
+
+**User-reported compatibility:**
+- PowerDNS 4.8.x, 4.9.x, and 5.0.x series have been reported to work correctly by community users
+
+**Compatibility note:** Poweradmin operates primarily at the database level with PowerDNS, using the PowerDNS API only for DNSSEC operations. This design provides broad compatibility across PowerDNS versions, as the database schema remains relatively stable between releases.
+
+## Version Support
+
+Poweradmin maintains multiple release branches:
+
+| Branch | Status | Support |
+|--------|--------|---------|
+| `develop` | Development | Experimental features, unstable |
+| `master` | Pre-release | Integration testing before release |
+| `release/4.x` | Stable | Current release with new features |
+| `release/3.x` | LTS | Bug fixes and security updates for at least 2 years |
+
+### Long-Term Support (LTS)
+
+The **3.9.x branch** is designated as Long-Term Support (LTS), starting with version 3.9.8. This branch will receive bug fixes and security updates for at least two years, providing a stable option for organizations that prefer stability over immediate upgrades to the 4.x series.
+
+For more details, see the [Poweradmin in 2025: Year in Review](https://www.poweradmin.org/p/poweradmin-in-2025-year-in-review) blog post.
 
 ## Contributing
 
