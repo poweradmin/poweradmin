@@ -5,6 +5,7 @@
  */
 
 import zones from '../fixtures/zones.json' assert { type: 'json' };
+import punycode from 'punycode/';
 
 /**
  * Check if a zone name is a reverse DNS zone
@@ -14,6 +15,30 @@ import zones from '../fixtures/zones.json' assert { type: 'json' };
  */
 export function isReverseZone(zoneName) {
   return zoneName.endsWith('.in-addr.arpa') || zoneName.endsWith('.ip6.arpa');
+}
+
+/**
+ * Check if a domain name contains punycode (IDN)
+ *
+ * @param {string} domainName - Domain name to check
+ * @returns {boolean} - True if contains punycode
+ */
+export function isPunycode(domainName) {
+  return domainName.includes('xn--');
+}
+
+/**
+ * Convert punycode domain to UTF-8 (Unicode)
+ *
+ * @param {string} domainName - Punycode domain name (e.g., 'xn--verstt-eua3l.info')
+ * @returns {string} - UTF-8 domain name (e.g., 'vérstöt.info')
+ */
+export function punycodeToUtf8(domainName) {
+  try {
+    return punycode.toUnicode(domainName);
+  } catch {
+    return domainName;
+  }
 }
 
 /**
@@ -34,23 +59,34 @@ export async function findZoneIdByName(page, zoneName) {
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);
 
-  // Find the row containing the zone name
-  const row = page.locator(`tr:has-text("${zoneName}")`);
-
-  if (await row.count() === 0) {
-    return null;
+  // Build list of names to search for
+  // For IDN domains, the UI displays UTF-8 version, so we need to search for that too
+  const searchNames = [zoneName];
+  if (isPunycode(zoneName)) {
+    const utf8Name = punycodeToUtf8(zoneName);
+    if (utf8Name !== zoneName) {
+      searchNames.push(utf8Name);
+    }
   }
 
-  // Find edit link and extract ID
-  const editLink = row.locator('a[href*="page=edit"]').first();
-  if (await editLink.count() === 0) {
-    return null;
+  // Try to find the row with any of the search names
+  for (const name of searchNames) {
+    const row = page.locator(`tr:has-text("${name}")`);
+
+    if (await row.count() > 0) {
+      // Find edit link and extract ID
+      const editLink = row.locator('a[href*="page=edit"]').first();
+      if (await editLink.count() > 0) {
+        const href = await editLink.getAttribute('href');
+        const match = href?.match(/id=(\d+)/);
+        if (match) {
+          return match[1];
+        }
+      }
+    }
   }
 
-  const href = await editLink.getAttribute('href');
-  const match = href?.match(/id=(\d+)/);
-
-  return match ? match[1] : null;
+  return null;
 }
 
 /**
