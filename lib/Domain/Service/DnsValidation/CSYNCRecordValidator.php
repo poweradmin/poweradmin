@@ -246,12 +246,12 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
 
             // Check for prohibited types
             if (in_array($currentType, $prohibitedTypes)) {
-                return ValidationResult::failure(_('Type "' . $currentType . '" is prohibited in CSYNC records. DNSSEC-related records (DS, DNSKEY, CDS, CDNSKEY) and CSYNC records must not be synchronized.'));
+                return ValidationResult::failure(sprintf(_('Type "%s" is prohibited in CSYNC records. DNSSEC-related records (DS, DNSKEY, CDS, CDNSKEY) and CSYNC records must not be synchronized.'), $currentType));
             }
 
             // Store found types to check for duplicates
             if (in_array($currentType, $typesFound)) {
-                $warnings[] = _('Duplicate type "' . $currentType . '" specified in Type Bit Map. Each type should only be specified once.');
+                $warnings[] = sprintf(_('Duplicate type "%s" specified in Type Bit Map. Each type should only be specified once.'), $currentType);
             } else {
                 $typesFound[] = $currentType;
             }

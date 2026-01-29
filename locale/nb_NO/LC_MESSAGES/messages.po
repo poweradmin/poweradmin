@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-09-16 18:15+0300\n"
+"POT-Creation-Date: 2026-01-29 00:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,15 +107,19 @@ msgstr ""
 msgid "Invalid or unexpected input given."
 msgstr "Ugyldig eller uventet inndata gitt."
 
-#: lib/Domain/Model/UserManager.php:229
+#: lib/Domain/Model/UserManager.php:253
 msgid "You do not have the permission to delete this user."
 msgstr "Du har ikke tillatelse til å slette denne brukeren."
 
-#: lib/Application/Controller/EditUserController.php:244
+#: lib/Application/Controller/DeleteUserController.php:63
+msgid "You do not have permission to delete a superuser account."
+msgstr "Du har ikke tillatelse til å slette en superbrukerkonto."
+
+#: lib/Application/Controller/EditUserController.php:252
 msgid "User does not exist."
 msgstr "Brukeren eksisterer ikke."
 
-#: lib/Application/Controller/DeleteUserController.php:79
+#: lib/Application/Controller/DeleteUserController.php:88
 msgid "The user has been deleted successfully."
 msgstr "Brukeren har blitt slettet."
 
@@ -123,15 +127,15 @@ msgstr "Brukeren har blitt slettet."
 msgid "Zone comments feature is disabled in configuration."
 msgstr "Sonekommentarer er deaktivert i konfigurasjonen."
 
-#: lib/Application/Controller/EditCommentController.php:63
+#: lib/Application/Controller/EditCommentController.php:64
 msgid "You do not have the permission to view this comment."
 msgstr "Du har ikke tillatelse til å se denne kommentaren."
 
-#: lib/Domain/Service/Dns/RecordManager.php:381
+#: lib/Domain/Service/Dns/RecordManager.php:374
 msgid "You do not have the permission to edit this comment."
 msgstr "Du har ikke tillatelse til å redigere denne kommentaren."
 
-#: lib/Application/Controller/EditCommentController.php:94
+#: lib/Application/Controller/EditCommentController.php:95
 msgid "The comment has been updated successfully."
 msgstr "Kommentaren har blitt oppdatert."
 
@@ -143,29 +147,29 @@ msgstr "Ugyldig post-ID."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Du har ikke tillatelse til å slette poster i denne sonen."
 
-#: lib/Application/Controller/DeleteRecordController.php:189
+#: lib/Application/Controller/DeleteRecordController.php:190
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
 msgstr "Posten og tilhørende PTR- og A/AAAA-poster har blitt slettet."
 
-#: lib/Application/Controller/DeleteRecordController.php:191
+#: lib/Application/Controller/DeleteRecordController.php:192
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr "Posten og dens tilhørende PTR-post har blitt slettet."
 
-#: lib/Application/Controller/DeleteRecordController.php:193
+#: lib/Application/Controller/DeleteRecordController.php:194
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr "Posten og tilhørende A/AAAA-post har blitt slettet."
 
-#: lib/Application/Controller/DeleteRecordController.php:195
+#: lib/Application/Controller/DeleteRecordController.php:196
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr "Posten har blitt slettet. Ingen tilhørende PTR-post ble funnet."
 
-#: lib/Application/Controller/DeleteRecordController.php:197
+#: lib/Application/Controller/DeleteRecordController.php:198
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -175,7 +179,7 @@ msgstr "Posten har blitt slettet. Ingen tilsvarende A/AAAA-post ble funnet."
 msgid "The record has been deleted successfully."
 msgstr "Posten har blitt slettet."
 
-#: lib/Application/Controller/DeleteRecordController.php:203
+#: lib/Application/Controller/DeleteRecordController.php:204
 msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
@@ -183,7 +187,7 @@ msgstr ""
 "Posten og tilhørende PTR- og A/AAAA-poster ble slettet, men kommentaren ble "
 "bevart fordi lignende poster eksisterer."
 
-#: lib/Application/Controller/DeleteRecordController.php:205
+#: lib/Application/Controller/DeleteRecordController.php:206
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
@@ -191,7 +195,7 @@ msgstr ""
 "Posten og dens tilhørende PTR-post ble slettet, men kommentaren ble bevart "
 "fordi lignende poster eksisterer."
 
-#: lib/Application/Controller/DeleteRecordController.php:207
+#: lib/Application/Controller/DeleteRecordController.php:208
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
@@ -199,7 +203,7 @@ msgstr ""
 "Posten og tilhørende A/AAAA-post ble slettet, men kommentaren ble bevart "
 "fordi lignende poster eksisterer."
 
-#: lib/Application/Controller/DeleteRecordController.php:209
+#: lib/Application/Controller/DeleteRecordController.php:210
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
@@ -207,7 +211,7 @@ msgstr ""
 "Posten ble slettet, men kommentaren ble beholdt fordi det finnes lignende "
 "poster."
 
-#: lib/Domain/Service/Dns/RecordManager.php:232
+#: lib/Domain/Service/Dns/RecordManager.php:225
 msgid "You do not have the permission to edit this record."
 msgstr "Du har ikke tillatelse til å redigere denne posten."
 
@@ -231,7 +235,7 @@ msgstr "Verifiseringskode er påkrevd."
 msgid "MFA has been enabled successfully."
 msgstr "MFA har blitt aktivert."
 
-#: lib/Application/Controller/MfaVerifyController.php:187
+#: lib/Application/Controller/MfaVerifyController.php:235
 msgid "Invalid verification code. Please try again."
 msgstr "Ugyldig verifiseringskode. Vennligst prøv igjen."
 
@@ -309,7 +313,7 @@ msgstr "API-nøkkelnavn er påkrevd."
 msgid "Invalid expiration date format."
 msgstr "Ugyldig utløpsdatoformat."
 
-#: lib/Domain/Service/ApiKeyService.php:279
+#: lib/Domain/Service/ApiKeyService.php:278
 msgid "API key not found or you do not have permission to edit it."
 msgstr ""
 "API-nøkkel ikke funnet eller du har ikke tillatelse til å redigere den."
@@ -322,7 +326,7 @@ msgstr "API-nøkkel oppdatert."
 msgid "API key deleted successfully."
 msgstr "API-nøkkel slettet."
 
-#: lib/Domain/Service/ApiKeyService.php:227
+#: lib/Domain/Service/ApiKeyService.php:226
 msgid "API key not found or you do not have permission to delete it."
 msgstr "API-nøkkel ikke funnet eller du har ikke tillatelse til å slette den."
 
@@ -384,7 +388,7 @@ msgstr "Tillatelsesmalen har blitt oppdatert."
 msgid "You do not have the permission to perform searches."
 msgstr "Du har ikke tillatelse til å utføre søk."
 
-#: lib/Domain/Model/UserManager.php:739
+#: lib/Domain/Model/UserManager.php:763
 msgid "You do not have the permission to add a new user."
 msgstr "Du har ikke tillatelse til å legge til en ny bruker."
 
@@ -413,7 +417,7 @@ msgstr "Et passord ble generert, men vises ikke av sikkerhetshensyn."
 msgid "Please fill in all required fields correctly."
 msgstr "Vennligst fyll inn alle påkrevde felt korrekt."
 
-#: lib/Domain/Service/Dns/RecordManager.php:327
+#: lib/Domain/Service/Dns/RecordManager.php:320
 msgid "You do not have the permission to delete this record."
 msgstr "Du har ikke tillatelse til å slette denne posten."
 
@@ -453,7 +457,7 @@ msgstr "Soner har blitt oppdatert."
 msgid "You do not have permission to create new zone templates."
 msgstr "Du har ikke tillatelse til å opprette nye sonemaler."
 
-#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:802
+#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:803
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Sonemal med dette navnet eksisterer allerede, vennligst velg et annet."
 
@@ -567,19 +571,19 @@ msgstr ""
 msgid "Failed to sign zone. Check PowerDNS logs for details."
 msgstr "Kunne ikke signere sone. Sjekk PowerDNS-logger for detaljer."
 
-#: lib/Application/Controller/DnssecController.php:92
+#: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Sonen er ikke signert med DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:102
+#: lib/Application/Controller/DnssecController.php:103
 msgid "Zone has been unsigned successfully."
 msgstr "Sonen har blitt usignert."
 
-#: lib/Application/Controller/DnssecController.php:107
+#: lib/Application/Controller/DnssecController.php:108
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "Sone-usignering forespurt, men verifisering mislyktes."
 
-#: lib/Application/Controller/DnssecController.php:111
+#: lib/Application/Controller/DnssecController.php:112
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Kunne ikke usignere sone. Sjekk PowerDNS-logger for detaljer."
 
@@ -651,19 +655,19 @@ msgstr "Post lagt til. En tilhørende A-post ble også opprettet."
 msgid "The record was successfully added."
 msgstr "Posten ble lagt til."
 
-#: lib/Application/Controller/MfaVerifyController.php:112
+#: lib/Application/Controller/MfaVerifyController.php:115
 msgid "Invalid security token. Please try again."
 msgstr "Ugyldig sikkerhetstoken. Vennligst prøv igjen."
 
-#: lib/Application/Controller/MfaVerifyController.php:122
+#: lib/Application/Controller/MfaVerifyController.php:125
 msgid "No MFA record found. Please contact administrator."
 msgstr "Ingen MFA-post funnet. Vennligst kontakt administrator."
 
-#: lib/Application/Controller/MfaVerifyController.php:127
+#: lib/Application/Controller/MfaVerifyController.php:130
 msgid "An error occurred. Please try again."
 msgstr "En feil oppstod. Vennligst prøv igjen."
 
-#: lib/Application/Controller/MfaVerifyController.php:209
+#: lib/Application/Controller/MfaVerifyController.php:258
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -671,15 +675,15 @@ msgstr ""
 "E-postverifisering er ikke tilgjengelig fordi e-posttjenesten er deaktivert. "
 "Vennligst bruk en gjenopprettingskode."
 
-#: lib/Application/Controller/MfaVerifyController.php:219
+#: lib/Application/Controller/MfaVerifyController.php:268
 msgid "A new verification code has been sent to your email."
 msgstr "En ny verifiseringskode har blitt sendt til din e-post."
 
-#: lib/Application/Controller/MfaVerifyController.php:225
+#: lib/Application/Controller/MfaVerifyController.php:274
 msgid "Please use a recovery code instead."
 msgstr "Vennligst bruk en gjenopprettingskode i stedet."
 
-#: lib/Application/Controller/MfaVerifyController.php:230
+#: lib/Application/Controller/MfaVerifyController.php:279
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -687,7 +691,7 @@ msgstr ""
 "Kunne ikke sende verifiseringskode til din e-post. Vennligst bruk en "
 "gjenopprettingskode i stedet."
 
-#: lib/Domain/Service/Dns/RecordManager.php:113
+#: lib/Domain/Service/Dns/RecordManager.php:112
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Du har ikke tillatelse til å legge til en post i denne sonen."
 
@@ -717,19 +721,19 @@ msgstr ""
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Kunne ikke legge til noen poster. De inneholder kanskje ugyldige data."
 
-#: lib/Application/Controller/DeleteDomainsController.php:70
+#: lib/Application/Controller/DeleteDomainsController.php:71
 msgid "No zone selected for deletion."
 msgstr "Ingen sone valgt for sletting."
 
-#: lib/Application/Controller/DeleteDomainController.php:120
+#: lib/Application/Controller/DeleteDomainController.php:127
 msgid "Zone has been deleted successfully."
 msgstr "Sonen har blitt slettet."
 
-#: lib/Application/Controller/DeleteDomainsController.php:117
+#: lib/Application/Controller/DeleteDomainsController.php:147
 msgid "Zones have been deleted successfully."
 msgstr "Soner har blitt slettet."
 
-#: lib/Domain/Service/Dns/DomainManager.php:506
+#: lib/Domain/Service/Dns/DomainManager.php:494
 msgid "You do not have the permission to delete a zone."
 msgstr "Du har ikke tillatelse til å slette en sone."
 
@@ -758,7 +762,7 @@ msgstr ""
 "databasebruker har de nødvendige tillatelsene for å opprette og endre "
 "tabeller."
 
-#: lib/Domain/Service/Dns/DomainManager.php:216
+#: lib/Domain/Service/Dns/DomainManager.php:214
 msgid "You do not have the permission to add a master zone."
 msgstr "Du har ikke tillatelse til å legge til en hovedsone."
 
@@ -811,15 +815,15 @@ msgstr "Sonenøkkel har blitt aktivert."
 msgid "Failed to activate zone key."
 msgstr "Kunne ikke aktivere sonenøkkel."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:94
+#: lib/Application/Controller/DnssecDeleteKeyController.php:95
 msgid "Zone key has been deleted successfully."
 msgstr "Sonenøkkel har blitt slettet."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:97
+#: lib/Application/Controller/DnssecDeleteKeyController.php:98
 msgid "Failed to delete the zone key."
 msgstr "Kunne ikke slette sonenøkkelen."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:104
+#: lib/Application/Controller/DnssecDeleteKeyController.php:105
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "En feil oppstod under sletting av DNSSEC-nøkkelen: "
 
@@ -977,9 +981,13 @@ msgstr "Brukeren har blitt oppdatert."
 msgid "The user could not be updated."
 msgstr "Brukeren kunne ikke oppdateres."
 
-#: lib/Domain/Model/UserManager.php:394 lib/Domain/Model/UserManager.php:719
+#: lib/Domain/Model/UserManager.php:418 lib/Domain/Model/UserManager.php:743
 msgid "You do not have the permission to edit this user."
 msgstr "Du har ikke tillatelse til å redigere denne brukeren."
+
+#: lib/Application/Controller/EditUserController.php:178
+msgid "You do not have permission to edit a superuser account."
+msgstr "Du har ikke tillatelse til å redigere en superbrukerkonto."
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 msgid "You do not have the permission to delete permission templates."
@@ -1033,15 +1041,15 @@ msgstr "Du har ikke tillatelse til å se denne posten."
 msgid "You do not have permission to edit this record."
 msgstr "Du har ikke tillatelse til å redigere denne posten."
 
-#: lib/Application/Controller/EditRecordController.php:233
+#: lib/Application/Controller/EditRecordController.php:259
 msgid "The record has been updated successfully."
 msgstr "Posten har blitt oppdatert."
 
-#: lib/Application/Controller/DnssecController.php:64
+#: lib/Application/Controller/DnssecController.php:65
 msgid "You do not have permission to view this zone."
 msgstr "Du har ikke tillatelse til å se denne sonen."
 
-#: lib/Application/Controller/DnssecController.php:77
+#: lib/Application/Controller/DnssecController.php:78
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Du har ikke tillatelse til å administrere DNSSEC for denne sonen."
 
@@ -1078,7 +1086,7 @@ msgstr ""
 msgid "Zone key has been added successfully."
 msgstr "Sonenøkkel har blitt lagt til."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:348
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:349
 msgid "Failed to add new DNSSEC key."
 msgstr "Kunne ikke legge til ny DNSSEC nøkkel."
 
@@ -1123,7 +1131,7 @@ msgstr "Noen soner kunne ikke legges til."
 msgid "Page Not Found"
 msgstr "Side ikke funnet"
 
-#: lib/Application/Service/LdapAuthenticator.php:84
+#: lib/Application/Service/LdapAuthenticator.php:93
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Kontoen er midlertidig låst. Vennligst prøv igjen senere."
 
@@ -1131,7 +1139,7 @@ msgstr "Kontoen er midlertidig låst. Vennligst prøv igjen senere."
 msgid "The user account is disabled."
 msgstr "Brukerkontoen er deaktivert."
 
-#: lib/Application/Service/SqlAuthenticator.php:211
+#: lib/Application/Service/SqlAuthenticator.php:217
 msgid "Authentication failed!"
 msgstr "Autentisering mislyktes!"
 
@@ -1143,23 +1151,23 @@ msgstr "Økt utløpt, vennligst logg inn igjen."
 msgid "Failed to update password"
 msgstr "Kunne ikke oppdatere passord"
 
-#: lib/Application/Service/LdapAuthenticator.php:117
+#: lib/Application/Service/LdapAuthenticator.php:126
 msgid "Failed to connect to LDAP server!"
 msgstr "Kunne ikke koble til LDAP server!"
 
-#: lib/Application/Service/LdapAuthenticator.php:133
+#: lib/Application/Service/LdapAuthenticator.php:142
 msgid "Failed to bind to LDAP server!"
 msgstr "Kunne ikke binde til LDAP server!"
 
-#: lib/Application/Service/LdapAuthenticator.php:161
+#: lib/Application/Service/LdapAuthenticator.php:170
 msgid "Failed to search LDAP."
 msgstr "Kunne ikke søke i LDAP."
 
-#: lib/Application/Service/LdapAuthenticator.php:178
+#: lib/Application/Service/LdapAuthenticator.php:187
 msgid "Failed to authenticate against LDAP."
 msgstr "Kunne ikke autentisere mot LDAP."
 
-#: lib/Application/Service/LdapAuthenticator.php:212
+#: lib/Application/Service/LdapAuthenticator.php:221
 msgid "LDAP Authentication failed!"
 msgstr "LDAP autentisering mislyktes!"
 
@@ -1173,7 +1181,7 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nei"
 
-#: lib/Domain/Model/UserManager.php:270
+#: lib/Domain/Model/UserManager.php:294
 msgid "This template is assigned to at least one user."
 msgstr "Denne malen er tildelt minst én bruker."
 
@@ -1218,7 +1226,7 @@ msgstr "Kunne ikke aktivere DNSSEC nøkkel."
 msgid "Failed to deactivate DNSSEC key."
 msgstr "Kunne ikke deaktivere DNSSEC nøkkel."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:372
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:373
 msgid "Failed to remove DNSSEC key."
 msgstr "Kunne ikke fjerne DNSSEC nøkkel."
 
@@ -1226,15 +1234,15 @@ msgstr "Kunne ikke fjerne DNSSEC nøkkel."
 msgid "This is an invalid zone name."
 msgstr "Dette er et ugyldig sonenavn."
 
-#: lib/Domain/Model/UserManager.php:751
+#: lib/Domain/Model/UserManager.php:775
 msgid "Enter a valid email address."
 msgstr "Skriv inn en gyldig e-postadresse."
 
-#: lib/Domain/Model/UserManager.php:743
+#: lib/Domain/Model/UserManager.php:767
 msgid "Username exist already, please choose another one."
 msgstr "Brukernavnet eksisterer allerede, vennligst velg et annet."
 
-#: lib/Domain/Model/UserManager.php:747
+#: lib/Domain/Model/UserManager.php:771
 msgid "Enter a valid user name."
 msgstr "Skriv inn et gyldig brukernavn."
 
@@ -1278,31 +1286,31 @@ msgstr "Feil ved sletting av sonemalpost: "
 msgid "Error checking template ownership: "
 msgstr "Feil ved kontroll av maleierskap: "
 
-#: lib/Domain/Model/ZoneTemplate.php:727
+#: lib/Domain/Model/ZoneTemplate.php:728
 msgid "Error retrieving zones using template: "
 msgstr "Feil ved henting av soner som bruker mal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:781
+#: lib/Domain/Model/ZoneTemplate.php:782
 msgid "Failed to get list of zones using template: "
 msgstr "Kunne ikke hente liste over soner som bruker mal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:799
+#: lib/Domain/Model/ZoneTemplate.php:800
 msgid "You do not have the permission to edit a zone template."
 msgstr "Du har ikke tillatelse til å redigere en sonemal."
 
-#: lib/Domain/Model/ZoneTemplate.php:843
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid "Error unlinking zone from template: "
 msgstr "Feil ved frakobling av sone fra mal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:871
+#: lib/Domain/Model/ZoneTemplate.php:872
 msgid "Error retrieving zones: "
 msgstr "Feil ved henting av soner: "
 
-#: lib/Domain/Model/ZoneTemplate.php:890
+#: lib/Domain/Model/ZoneTemplate.php:891
 msgid "Error checking template name existence: "
 msgstr "Feil ved kontroll av malnavn eksistens: "
 
-#: lib/Domain/Model/ZoneTemplate.php:913
+#: lib/Domain/Model/ZoneTemplate.php:914
 msgid "Error checking template existence: "
 msgstr "Feil ved kontroll av mal eksistens: "
 
@@ -2006,7 +2014,7 @@ msgstr ""
 msgid "Invalid characters in name field."
 msgstr "Ugyldige tegn i navnfeltet."
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:141
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:167
 msgid "Invalid characters in content field."
 msgstr "Ugyldige tegn i innholdsfeltet."
 
@@ -4659,12 +4667,22 @@ msgid "Invalid Type \""
 msgstr "Ugyldig type \""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:249
-msgid "Type \""
-msgstr "Type \""
+#, php-format
+msgid ""
+"Type \"%s\" is prohibited in CSYNC records. DNSSEC-related records (DS, "
+"DNSKEY, CDS, CDNSKEY) and CSYNC records must not be synchronized."
+msgstr ""
+"Type \"%s\" er forbudt i CSYNC-poster. DNSSEC-relaterte poster (DS, DNSKEY, "
+"CDS, CDNSKEY) og CSYNC-poster må ikke synkroniseres."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:254
-msgid "Duplicate type \""
-msgstr "Duplikat type \""
+#, php-format
+msgid ""
+"Duplicate type \"%s\" specified in Type Bit Map. Each type should only be "
+"specified once."
+msgstr ""
+"Duplisert type \"%s\" spesifisert i Type Bit Map. Hver type skal kun "
+"spesifiseres én gang."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:262
 msgid ""
@@ -4784,36 +4802,27 @@ msgstr "Dette er ikke en gyldig IPv4-adresse."
 msgid "This is not a valid IPv6 address."
 msgstr "Dette er ikke en gyldig IPv6-adresse."
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:98
-msgid "IPv6 address should use lowercase for hexadecimal digits."
-msgstr "IPv6-adresse bør bruke små bokstaver for heksadesimale siffer."
-
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:107
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:102
 msgid "Invalid IPv4 part in IPv4-mapped IPv6 address."
 msgstr "Ugyldig IPv4-del i IPv4-mappet IPv6-adresse."
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:113
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:108
 msgid "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
 msgstr "IPv4-kompatible IPv6-adresser (::a.b.c.d) er utdaterte."
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:118
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:113
 msgid "Invalid IPv6 address: more than two consecutive colons."
 msgstr "Ugyldig IPv6-adresse: mer enn to påfølgende kolon."
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:122
 msgid "Invalid IPv6 address: must have 8 hextets when expanded."
 msgstr "Ugyldig IPv6-adresse: må ha 8 hexteter når utvidet."
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:132
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
 msgstr "Ugyldig IPv6-adresse: hver hextet må være 4 heksadesimale sifre."
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:142
-#, php-format
-msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-msgstr "IPv6-adressen er ikke i kanonisk form (RFC 5952). Kanonisk form: %s"
-
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:312
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:300
 #, php-format
 msgid "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
 msgstr ""
@@ -4887,7 +4896,7 @@ msgstr ""
 "contactphone-verdi må bare inneholde tall, mellomrom og vanlig telefonnummer-"
 "tegnsetting."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:465
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:487
 msgid "Value must be enclosed in double quotes."
 msgstr "Verdi må være omsluttet av doble anførselstegn."
 
@@ -5875,7 +5884,7 @@ msgstr ""
 "DMARC-post spesifiserer ikke noen rapporterings-URIer (rua eller ruf). Dette "
 "kan begrense din evne til å overvåke autentiseringsresultater."
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:111
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
@@ -5883,11 +5892,7 @@ msgstr ""
 "Dette er en DMARC-post som behandles gjennom TXT-posttype. DMARC-poster bør "
 "bruke TXT-posttype med innhold som starter med \"v=DMARC1\"."
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:145
-msgid "HTML tags are not allowed in content field."
-msgstr "HTML-tagger er ikke tillatt i innholdsfelt."
-
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:159
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
 msgstr "TXT-postinnhold må være omsluttet av anførselstegn."
 
@@ -5896,16 +5901,16 @@ msgid "Backslashes must precede all quotes (\") in TXT content"
 msgstr ""
 "Omvendte skråstreker må stå foran alle anførselstegn (\") i TXT-innhold"
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:173
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:197
+#, php-format
 msgid ""
-"TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or less. "
-"For longer content, split into multiple quoted strings separated by spaces."
+"TXT record content exceeds maximum length of %d bytes. Please reduce the "
+"content size."
 msgstr ""
-"TXT-poststreng overskrider 255 byte. TXT-strenger må være 255 byte eller "
-"mindre. For lengre innhold, del opp i flere strenger med anførselstegn "
-"separert med mellomrom."
+"TXT-postinnhold overskrider maksimal lengde på %d byte. Vennligst reduser "
+"innholdsstørrelsen."
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:192
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:218
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
@@ -5913,7 +5918,16 @@ msgstr ""
 "Hver TXT-poststreng må være 255 byte eller mindre. Del langt innhold i flere "
 "strenger."
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:250
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:227
+#, php-format
+msgid ""
+"Total TXT record content exceeds maximum length of %d bytes. Please reduce "
+"the content size."
+msgstr ""
+"Totalt TXT-postinnhold overskrider maksimal lengde på %d byte. Vennligst "
+"reduser innholdsstørrelsen."
+
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
 "Invalid value for priority field. TXT records must have priority value of 0."
 msgstr "Ugyldig verdi for prioritetsfelt. TXT-poster må ha prioritetsverdi 0."
@@ -6117,7 +6131,8 @@ msgid ""
 "SRV record content must have weight, port and target (3 fields). Priority "
 "should be in the priority field."
 msgstr ""
-"SRV-postinnhold må ha vekt, port og mål (3 felt). Prioritet skal være i prioritetsfeltet."
+"SRV-postinnhold må ha vekt, port og mål (3 felt). Prioritet skal være i "
+"prioritetsfeltet."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
@@ -6304,7 +6319,7 @@ msgstr "Legg anførselstegn rundt TXT-postinnhold."
 msgid "Invalid domain name format."
 msgstr "Ugyldig domenenavnformat."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:103
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:115
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
@@ -6312,7 +6327,7 @@ msgstr ""
 "Dette ser ut til å være et ENUM-domene. NAPTR-poster bør bruke E2U-"
 "tjenestefelt og følge RFC 6116."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:135
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:147
 msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
@@ -6320,7 +6335,7 @@ msgstr ""
 "Komplekse regexp-mønstre i NAPTR-poster kan være vanskelige å feilsøke og "
 "vedlikeholde."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:139
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:151
 msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
@@ -6328,7 +6343,7 @@ msgstr ""
 "Denne posten følger RFC 3403. Vær oppmerksom på at noen DNS-servere kanskje "
 "ikke støtter alle NAPTR-funksjoner fullt ut."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:170
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:182
 msgid ""
 "Invalid value for priority field. NAPTR records have priority within the "
 "content field and must have a priority value of 0."
@@ -6336,7 +6351,7 @@ msgstr ""
 "Ugyldig verdi for prioritetsfelt. NAPTR-poster har prioritet innenfor "
 "innholdsfeltet og må ha en prioritetsverdi på 0."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:189
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
 msgid ""
 "NAPTR record must contain order, preference, flags, service, regexp, and "
 "replacement values."
@@ -6344,31 +6359,31 @@ msgstr ""
 "NAPTR-post må inneholde rekkefølge, preferanse, flagg, tjeneste, regexp og "
 "erstatningsverdier."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:196
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:208
 msgid "NAPTR record order must be a number between 0 and 65535."
 msgstr "NAPTR-post rekkefølge må være et tall mellom 0 og 65535."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
 msgid "NAPTR record preference must be a number between 0 and 65535."
 msgstr "NAPTR-post preferanse må være et tall mellom 0 og 65535."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:207
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:219
 msgid "NAPTR record flags must be a quoted string."
 msgstr "NAPTR-post flagg må være en streng i anførselstegn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:225
 msgid "NAPTR record flags must contain only A, P, S, or U."
 msgstr "NAPTR-post flagg må kun inneholde A, P, S eller U."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:225
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:237
 msgid "NAPTR record service must be a quoted string."
 msgstr "NAPTR-post tjeneste må være en streng i anførselstegn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:244
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:256
 msgid "NAPTR record regexp must be a quoted string."
 msgstr "NAPTR-post regexp må være en streng i anførselstegn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:264
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:276
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
@@ -6376,29 +6391,21 @@ msgstr ""
 "NAPTR-post erstatning må være enten \".\" eller et gyldig fullstendig "
 "kvalifisert domenenavn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:270
-msgid ""
-"NAPTR record must have either a regexp or a replacement (with \".\"), but "
-"not both."
-msgstr ""
-"NAPTR-post må ha enten en regexp eller en erstatning (med \".\"), men ikke "
-"begge deler."
-
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "NAPTR-post med en regexp må ha \".\" som erstatning."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:309
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
-"and rs start with a letter and contain only alphanumeric characters (max 32 "
-"chars each)."
+"and rs start with a letter and contain alphanumeric characters, hyphens, "
+"colons, or plus signs (max 32 chars each)."
 msgstr ""
 "NAPTR-tjeneste må følge formatet: [protokoll][+rs][+rs]... hvor protokoll og "
-"rs starter med en bokstav og kun inneholder alfanumeriske tegn (maks 32 tegn "
-"hver)."
+"rs begynner med en bokstav og inneholder alfanumeriske tegn, bindestreker, "
+"kolon eller plusstegn (maks 32 tegn hver)."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:339
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
@@ -6406,11 +6413,11 @@ msgstr ""
 "Terminal-flagg \"S\", \"A\", \"U\" og \"P\" bør ikke kombineres med andre "
 "flagg."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
 msgstr "NAPTR regexp må starte med et skilleteikn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:367
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:389
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
@@ -6418,7 +6425,7 @@ msgstr ""
 "NAPTR regexp må ha formatet "
 "skilleteikn+mønster+skilleteikn+erstatning+skilleteikn+flagg."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:374
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:396
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
@@ -6426,7 +6433,7 @@ msgstr ""
 "NAPTR regexp-flagg (etter tredje skilleteikn) bør kun inneholde \"i\" eller "
 "være tomme."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:392
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
@@ -6434,15 +6441,15 @@ msgstr ""
 "Dette ser ut til å være en ENUM NAPTR-post (RFC 6116). Sørg for at domenet "
 "er under e164.arpa eller et privat ENUM-tre."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:393
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
 msgstr "ENUM-poster bør ha \"U\"-flagget for å indikere URI-utdata."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:420
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
 msgstr "NAPTR regexp inneholder potensielt farlig mønster: "
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:427
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
 msgstr "NAPTR regexp er for lang. Maksimal lengde er 1000 tegn."
 
@@ -6591,27 +6598,27 @@ msgstr "Kan ikke finne domene med den oppgitte ID-en."
 msgid "Unknown record type."
 msgstr "Ukjent oppføringstype."
 
-#: lib/Domain/Service/ApiKeyService.php:153
+#: lib/Domain/Service/ApiKeyService.php:152
 msgid "API functionality is disabled."
 msgstr "API-funksjonalitet er deaktivert."
 
-#: lib/Domain/Service/ApiKeyService.php:159
+#: lib/Domain/Service/ApiKeyService.php:158
 msgid "You do not have permission to create API keys."
 msgstr "Du har ikke tillatelse til å opprette API-nøkler."
 
-#: lib/Domain/Service/ApiKeyService.php:166 templates/default/api_keys.html:18
+#: lib/Domain/Service/ApiKeyService.php:165 templates/default/api_keys.html:18
 msgid "You have reached the maximum number of API keys allowed."
 msgstr "Du har nådd maksimalt antall tillatte API-nøkler."
 
-#: lib/Domain/Service/ApiKeyService.php:285
+#: lib/Domain/Service/ApiKeyService.php:284
 msgid "You do not have permission to update API keys."
 msgstr "Du har ikke tillatelse til å oppdatere API-nøkler."
 
-#: lib/Domain/Service/ApiKeyService.php:233
+#: lib/Domain/Service/ApiKeyService.php:232
 msgid "You do not have permission to delete API keys."
 msgstr "Du har ikke tillatelse til å slette API-nøkler."
 
-#: lib/Domain/Service/ApiKeyService.php:257
+#: lib/Domain/Service/ApiKeyService.php:256
 msgid "You do not have permission to regenerate API keys."
 msgstr "Du har ikke tillatelse til å regenerere API-nøkler."
 
@@ -6619,46 +6626,46 @@ msgstr "Du har ikke tillatelse til å regenerere API-nøkler."
 msgid "Unknown database type."
 msgstr "Ukjent databasetype."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:64
+#: lib/Domain/Service/ReverseRecordCreator.php:65
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "Det finnes ingen matchende reverse-sone for: %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:72
+#: lib/Domain/Service/ReverseRecordCreator.php:73
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "En PTR-oppføring for %s som peker til %s eksisterer allerede."
 
-#: lib/Domain/Service/Dns/RecordManager.php:105
+#: lib/Domain/Service/Dns/RecordManager.php:104
 msgid "You do not have the permission to add SOA record."
 msgstr "Du har ikke tillatelse til å legge til SOA-oppføring."
 
-#: lib/Domain/Service/Dns/RecordManager.php:109
+#: lib/Domain/Service/Dns/RecordManager.php:108
 msgid "You do not have the permission to add NS record."
 msgstr "Du har ikke tillatelse til å legge til NS-oppføring."
 
-#: lib/Domain/Service/Dns/RecordManager.php:156
+#: lib/Domain/Service/Dns/RecordManager.php:155
 msgid "A record with this hostname, type, and content already exists."
 msgstr ""
 "En oppføring med dette vertsnavnet, typen og innholdet eksisterer allerede."
 
-#: lib/Domain/Service/Dns/RecordManager.php:216
+#: lib/Domain/Service/Dns/RecordManager.php:209
 msgid "You do not have the permission to edit this SOA record."
 msgstr "Du har ikke tillatelse til å redigere denne SOA-oppføringen."
 
-#: lib/Domain/Service/Dns/RecordManager.php:221
+#: lib/Domain/Service/Dns/RecordManager.php:214
 msgid "You do not have the permission to edit this NS record."
 msgstr "Du har ikke tillatelse til å redigere denne NS-oppføringen."
 
-#: lib/Domain/Service/Dns/RecordManager.php:303
+#: lib/Domain/Service/Dns/RecordManager.php:296
 msgid "You do not have the permission to delete SOA records."
 msgstr "Du har ikke tillatelse til å slette SOA-oppføringer."
 
-#: lib/Domain/Service/Dns/RecordManager.php:316
+#: lib/Domain/Service/Dns/RecordManager.php:309
 msgid "You do not have the permission to delete NS records."
 msgstr "Du har ikke tillatelse til å slette NS-oppføringer."
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:429
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Ugyldig(e) argument(er) gitt til funksjonen %s %s"
@@ -6668,12 +6675,12 @@ msgid "There is already a supermaster with this IP address and hostname."
 msgstr ""
 "Det finnes allerede en supermaster med denne IP-adressen og vertsnavnet."
 
-#: lib/Domain/Service/Dns/DomainManager.php:212
+#: lib/Domain/Service/Dns/DomainManager.php:210
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Ugyldig(e) argument(er) gitt til funksjonen %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:411
+#: lib/Domain/Service/Dns/DomainManager.php:392
 msgid "The selected user already owns the zone."
 msgstr "Den valgte brukeren eier allerede sonen."
 
@@ -6853,7 +6860,7 @@ msgstr "Status"
 msgid "Inactive"
 msgstr "Inaktiv"
 
-#: templates/default/dnssec_delete_key.html:126
+#: templates/default/dnssec_delete_key.html:130
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -7161,7 +7168,7 @@ msgstr "Konto"
 msgid "Select the account that will own this supermaster"
 msgstr "Velg kontoen som skal eie denne overordnede serveren"
 
-#: templates/default/edit.html:503
+#: templates/default/edit.html:504
 msgid "Save changes"
 msgstr "Lagre endringer"
 
@@ -7311,7 +7318,7 @@ msgstr "Endre egenskaper for DNS-post"
 msgid "Comment"
 msgstr "Kommentar"
 
-#: templates/default/edit.html:610 templates/default/add_record.html:91
+#: templates/default/edit.html:611 templates/default/add_record.html:91
 msgid "Provide content"
 msgstr "Oppgi innhold"
 
@@ -7445,7 +7452,7 @@ msgstr "Legg til slave"
 
 #: templates/default/index.html:184 templates/default/index.html:188
 msgid "Supermaster"
-msgstr "Supermaster"
+msgstr "Primærserver"
 
 #: templates/default/index.html:185
 msgid "Add new supermaster server"
@@ -7608,7 +7615,7 @@ msgstr "Kontroller database"
 msgid "Check DB"
 msgstr "Kontroller DB"
 
-#: templates/default/edit_comment.html:18 templates/default/edit.html:485
+#: templates/default/edit_comment.html:18 templates/default/edit.html:486
 msgid "Edit comment"
 msgstr "Rediger kommentar"
 
@@ -7742,7 +7749,7 @@ msgstr "Totalt antall logger"
 msgid "Id"
 msgstr "ID"
 
-#: templates/default/list_log_users.html:49
+#: templates/default/list_log_users.html:50
 msgid "Event"
 msgstr "Hendelse"
 
@@ -8229,7 +8236,7 @@ msgid "Recommended bits for"
 msgstr "Anbefalte bits for"
 
 #: templates/default/dnssec_add_key.html:140
-#: install/helpers/InstallStepHandler.php:182
+#: install/helpers/InstallStepHandler.php:183
 msgid "Warning:"
 msgstr "Advarsel:"
 
@@ -8465,7 +8472,7 @@ msgstr "Ja, koble fra disse sonene"
 msgid "Permission templates"
 msgstr "Tillatelsesmaler"
 
-#: templates/default/add_perm_templ.html:6 templates/default/edit.html:765
+#: templates/default/add_perm_templ.html:6 templates/default/edit.html:766
 msgid "Add"
 msgstr "Legg til"
 
@@ -8891,39 +8898,39 @@ msgstr "Hvis du mister nøkkelen, må du regenerere den."
 msgid "Edit"
 msgstr "Rediger"
 
-#: templates/default/edit.html:25 templates/default/edit.html:518
+#: templates/default/edit.html:25 templates/default/edit.html:519
 msgid "Add new record"
 msgstr "Legg til ny post"
 
-#: templates/default/edit.html:28 templates/default/edit.html:521
+#: templates/default/edit.html:28 templates/default/edit.html:522
 msgid "Multi-record mode"
 msgstr "Flerpost-modus"
 
-#: templates/default/edit.html:31 templates/default/edit.html:524
+#: templates/default/edit.html:31 templates/default/edit.html:525
 msgid "Bulk add"
 msgstr "Masseinnlegging"
 
-#: templates/default/edit.html:43 templates/default/edit.html:536
+#: templates/default/edit.html:43 templates/default/edit.html:537
 msgid "Failed to add"
 msgstr "Kunne ikke legge til"
 
-#: templates/default/edit.html:43 templates/default/edit.html:536
+#: templates/default/edit.html:43 templates/default/edit.html:537
 msgid "record(s). Please check the record format."
 msgstr "post(er). Vennligst sjekk postformatet."
 
-#: templates/default/edit.html:45 templates/default/edit.html:538
+#: templates/default/edit.html:45 templates/default/edit.html:539
 msgid "Failed to add records. Please check the record format."
 msgstr "Kunne ikke legge til poster. Vennligst sjekk postformatet."
 
-#: templates/default/edit.html:48 templates/default/edit.html:541
+#: templates/default/edit.html:48 templates/default/edit.html:542
 msgid "Content validation failed:"
 msgstr "Innholdsvalidering feilet:"
 
-#: templates/default/edit.html:48 templates/default/edit.html:541
+#: templates/default/edit.html:48 templates/default/edit.html:542
 msgid "Invalid value for record type"
 msgstr "Ugyldig verdi for posttype"
 
-#: templates/default/edit.html:50 templates/default/edit.html:543
+#: templates/default/edit.html:50 templates/default/edit.html:544
 msgid "Please provide all required information."
 msgstr "Vennligst oppgi all nødvendig informasjon."
 
@@ -8935,23 +8942,23 @@ msgstr "Legg til PTR"
 msgid "Add A/AAAA"
 msgstr "Legg til A/AAAA"
 
-#: templates/default/edit.html:86 templates/default/edit.html:580
+#: templates/default/edit.html:86 templates/default/edit.html:581
 msgid "Invalid hostname format"
 msgstr "Ugyldig vertsnavnformat"
 
-#: templates/default/edit.html:114 templates/default/edit.html:608
+#: templates/default/edit.html:114 templates/default/edit.html:609
 msgid "This record already exists"
 msgstr "Denne posten eksisterer allerede"
 
-#: templates/default/edit.html:126 templates/default/edit.html:620
+#: templates/default/edit.html:126 templates/default/edit.html:621
 msgid "Invalid priority"
 msgstr "Ugyldig prioritet"
 
-#: templates/default/edit.html:133 templates/default/edit.html:627
+#: templates/default/edit.html:133 templates/default/edit.html:628
 msgid "Invalid TTL value"
 msgstr "Ugyldig TTL-verdi"
 
-#: templates/default/edit.html:135 templates/default/edit.html:629
+#: templates/default/edit.html:135 templates/default/edit.html:630
 msgid "Provide TTL"
 msgstr "Oppgi TTL"
 
@@ -8989,7 +8996,7 @@ msgstr "Denne sonen har ingen poster."
 
 #: templates/default/edit.html:249
 msgid "Filter:"
-msgstr "Filter:"
+msgstr "Filtrer:"
 
 #: templates/default/edit.html:255
 msgid "Search by name or content"
@@ -9011,73 +9018,73 @@ msgstr "Bruk"
 msgid "Delete record(s)"
 msgstr "Slett post(er)"
 
-#: templates/default/edit.html:308
+#: templates/default/edit.html:302
+msgid "Select All Filtered"
+msgstr "Velg alle filtrerte"
+
+#: templates/default/edit.html:309
 msgid "Showing"
 msgstr "Viser"
 
-#: templates/default/edit.html:308
+#: templates/default/edit.html:309
 msgid "of"
 msgstr "av"
 
-#: templates/default/edit.html:308
+#: templates/default/edit.html:309
 msgid "total records"
 msgstr "poster totalt"
 
-#: templates/default/edit.html:474 templates/default/search.html:93
+#: templates/default/edit.html:475 templates/default/search.html:93
 msgid "Comments"
 msgstr "Kommentarer"
 
-#: templates/default/edit.html:667
+#: templates/default/edit.html:668
 msgid "Save as new template"
 msgstr "Lagre som ny mal"
 
-#: templates/default/edit.html:670
+#: templates/default/edit.html:671
 msgid "Create a reusable template from this zone's records"
 msgstr "Opprett en gjenbrukbar mal fra denne sonens poster"
 
-#: templates/default/edit.html:676
+#: templates/default/edit.html:677
 msgid "Template Name"
 msgstr "Malnavn"
 
-#: templates/default/edit.html:678
+#: templates/default/edit.html:679
 msgid "Provide template name"
 msgstr "Oppgi malnavn"
 
-#: templates/default/edit.html:682
+#: templates/default/edit.html:683
 msgid "Template Description"
 msgstr "Malbeskrivelse"
 
-#: templates/default/edit.html:684
+#: templates/default/edit.html:685
 msgid "Optional description for this template"
 msgstr "Valgfri beskrivelse for denne malen"
 
-#: templates/default/edit.html:688
+#: templates/default/edit.html:689
 msgid "Save as template"
 msgstr "Lagre som mal"
 
-#: templates/default/edit.html:699
+#: templates/default/edit.html:700
 msgid "Zone Settings"
 msgstr "Soneinnstillinger"
 
-#: templates/default/edit.html:702
+#: templates/default/edit.html:703
 msgid "Owner of zone"
 msgstr "Eier av sone"
 
-#: templates/default/edit.html:705
+#: templates/default/edit.html:706
 msgid "No owner set for this zone."
 msgstr "Ingen eier satt for denne sonen."
 
-#: templates/default/edit.html:830
+#: templates/default/edit.html:831
 msgid "Change"
 msgstr "Endre"
 
-#: templates/default/edit.html:796 templates/default/add_zone_slave.html:33
+#: templates/default/edit.html:797 templates/default/add_zone_slave.html:33
 msgid "IP address of master NS"
 msgstr "IP-adresse til master NS"
-
-#: templates/default/edit.html:1022
-msgid "Select All Filtered"
-msgstr "Velg alle filtrerte"
 
 #: templates/default/users.html:10
 msgid "User Administration"
@@ -9455,7 +9462,7 @@ msgstr "privat"
 
 #: templates/default/list_zone_templ.html:73
 msgid "global"
-msgstr "global"
+msgstr "globalt"
 
 #: templates/default/list_zone_templ.html:81
 msgid "Zones need updating"
@@ -10080,11 +10087,11 @@ msgstr ""
 "supermaster. Å slette sonen nå vil bare resultere i midlertidig fjerning. "
 "Når supermasteren sender et varsel for denne sonen, vil den legges til igjen!"
 
-#: templates/default/delete_domain.html:73
+#: templates/default/delete_domain.html:76
 msgid "Yes, delete this zone"
 msgstr "Ja, slett denne sonen"
 
-#: templates/default/delete_domain.html:80
+#: templates/default/delete_domain.html:84
 msgid "No, keep this zone"
 msgstr "Nei, behold denne sonen"
 
@@ -10547,19 +10554,19 @@ msgstr "Veksle visning"
 msgid "Refresh"
 msgstr "Oppdater"
 
-#: templates/default/pdns_status.html:433
+#: templates/default/pdns_status.html:441
 msgid "Bytes"
 msgstr "Bytes"
 
-#: templates/default/pdns_status.html:406
+#: templates/default/pdns_status.html:410
 msgid "Metric"
 msgstr "Måling"
 
-#: templates/default/pdns_status.html:407
+#: templates/default/pdns_status.html:411
 msgid "Value"
 msgstr "Verdi"
 
-#: templates/default/pdns_status.html:457
+#: templates/default/pdns_status.html:465
 msgid "No detailed metrics available."
 msgstr "Ingen detaljerte målinger tilgjengelige."
 
@@ -10727,7 +10734,7 @@ msgstr "Slett malpost"
 msgid "You are about to delete a record from template"
 msgstr "Du er i ferd med å slette en post fra malen"
 
-#: templates/default/dnssec_delete_key.html:123
+#: templates/default/dnssec_delete_key.html:126
 msgid "Delete key"
 msgstr "Slett nøkkel"
 
@@ -10936,7 +10943,7 @@ msgstr "Databaseserver-port."
 
 #: install/templates/step4.html.twig:86
 msgid "Database"
-msgstr "Database"
+msgstr "Databank"
 
 #: install/templates/step4.html.twig:89
 msgid "Provide the name of the database"
@@ -11108,7 +11115,7 @@ msgstr "DNS-innstillinger"
 
 #: install/templates/step5.html.twig:90
 msgid "Hostmaster"
-msgstr "Hostmaster"
+msgstr "Vertsadministrator"
 
 #: install/templates/step5.html.twig:94
 msgid "Provide the DNS hostmaster"
@@ -11249,30 +11256,30 @@ msgstr ""
 "Konfigurer databasetilkobling, opprett administratorkonto og generer "
 "konfigurasjonsfil."
 
-#: install/helpers/InstallStepHandler.php:183
+#: install/helpers/InstallStepHandler.php:184
 msgid "Missing PowerDNS tables:"
 msgstr "Manglende PowerDNS-tabeller:"
 
-#: install/helpers/InstallStepHandler.php:184
+#: install/helpers/InstallStepHandler.php:185
 msgid "Poweradmin requires these PowerDNS tables to function properly."
 msgstr "Poweradmin krever disse PowerDNS-tabellene for å fungere riktig."
 
-#: install/helpers/InstallStepHandler.php:192
+#: install/helpers/InstallStepHandler.php:193
 msgid "Updating database... done!"
 msgstr "Oppdaterer database... ferdig!"
 
-#: install/helpers/InstallStepHandler.php:214
+#: install/helpers/InstallStepHandler.php:215
 msgid "Foreign Key Constraint Issues:"
 msgstr "Problemer med fremmednøkkelbegrensninger:"
 
-#: install/helpers/InstallStepHandler.php:216
+#: install/helpers/InstallStepHandler.php:217
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
 "Installasjonen kunne ikke fjerne eksisterende tabeller på grunn av "
 "fremmednøkkelbegrensninger"
 
-#: install/helpers/InstallStepHandler.php:217
+#: install/helpers/InstallStepHandler.php:218
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
@@ -11280,7 +11287,7 @@ msgstr ""
 "Dette kan skje under reinstallasjon hvis du har tilpassede begrensninger "
 "eller hvis tabeller refereres av andre tabeller"
 
-#: install/helpers/InstallStepHandler.php:218
+#: install/helpers/InstallStepHandler.php:219
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
@@ -11288,41 +11295,41 @@ msgstr ""
 "Du kan prøve å manuelt deaktivere fremmednøkkelkontroller før du kjører "
 "installasjonen:"
 
-#: install/helpers/InstallStepHandler.php:231
+#: install/helpers/InstallStepHandler.php:232
 msgid "Suggestions:"
 msgstr "Forslag:"
 
-#: install/helpers/InstallStepHandler.php:225
+#: install/helpers/InstallStepHandler.php:226
 msgid "Make sure the SQLite database file exists"
 msgstr "Sørg for at SQLite-databasefilen eksisterer"
 
-#: install/helpers/InstallStepHandler.php:226
+#: install/helpers/InstallStepHandler.php:227
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
 msgstr "Sjekk at webserveren har lese- og skrivetillatelser for databasefilen"
 
-#: install/helpers/InstallStepHandler.php:227
+#: install/helpers/InstallStepHandler.php:228
 msgid "Verify the full path to the database file is correct and accessible"
 msgstr "Bekreft at hele banen til databasefilen er riktig og tilgjengelig"
 
-#: install/helpers/InstallStepHandler.php:233
+#: install/helpers/InstallStepHandler.php:234
 msgid "Verify database credentials are correct"
 msgstr "Bekreft at databasepåloggingsdata er riktige"
 
-#: install/helpers/InstallStepHandler.php:234
+#: install/helpers/InstallStepHandler.php:235
 msgid "Check that the database user has sufficient privileges"
 msgstr "Sjekk at databasebrukeren har tilstrekkelige rettigheter"
 
-#: install/helpers/InstallStepHandler.php:235
+#: install/helpers/InstallStepHandler.php:236
 msgid "Ensure the database server is running and accessible"
 msgstr "Sørg for at databaseserveren kjører og er tilgjengelig"
 
-#: install/helpers/InstallStepHandler.php:240
+#: install/helpers/InstallStepHandler.php:241
 msgid "Database Error"
 msgstr "Databasefeil"
 
-#: install/helpers/DatabaseHelper.php:158
+#: install/helpers/DatabaseHelper.php:163
 #, php-format
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
@@ -11331,21 +11338,21 @@ msgstr ""
 "SQLite-databasefilen %s finnes ikke. Vennligst opprett databasefilen før du "
 "fortsetter."
 
-#: install/helpers/DatabaseHelper.php:166
+#: install/helpers/DatabaseHelper.php:171
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
 msgstr ""
 "SQLite-databasefilen %s er ikke lesbar. Vennligst sjekk filtillatelser."
 
-#: install/helpers/DatabaseHelper.php:174
+#: install/helpers/DatabaseHelper.php:179
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
 msgstr ""
 "SQLite-databasefilen %s er ikke skrivbar. Vennligst sjekk filtillatelser."
 
-#: install/helpers/DatabaseHelper.php:186
+#: install/helpers/DatabaseHelper.php:191
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
 msgstr "Kunne ikke få tilgang til SQLite-databasefilen %s: %s"
@@ -11380,31 +11387,49 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan ikke koble til PowerDNS-database \"%s\": %s"
 
-#, auto-english-fallback
+# OBSOLETE: msgid "Type \""
+# OBSOLETE: msgstr "Type \""
+
+# OBSOLETE: msgid "Duplicate type \""
+# OBSOLETE: msgstr "Duplikat type \""
+
+# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
+# OBSOLETE: msgstr "IPv6-adresse bør bruke små bokstaver for heksadesimale siffer."
+
 #, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
-# OBSOLETE: "once."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Duplikat %s mekanisme funnet. Hver mekanisme-type bør kun forekomme "
-# OBSOLETE: "maksimalt én gang."
+# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
+# OBSOLETE: msgstr "IPv6-adressen er ikke i kanonisk form (RFC 5952). Kanonisk form: %s"
+
+# OBSOLETE: msgid "HTML tags are not allowed in content field."
+# OBSOLETE: msgstr "HTML-tagger er ikke tillatt i innholdsfelt."
 
 #, auto-english-fallback
-#, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "Priority value in record parameter (%d) does not match priority in "
-# OBSOLETE: "content (%d)."
+# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
+# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
+# OBSOLETE: "spaces."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Prioritetsverdi i postparameter (%d) stemmer ikke overens med prioritet i "
-# OBSOLETE: "innhold (%d)."
+# OBSOLETE: "TXT-poststreng overskrider 255 byte. TXT-strenger må være 255 byte eller "
+# OBSOLETE: "mindre. For lengre innhold, del opp i flere strenger med anførselstegn "
+# OBSOLETE: "separert med mellomrom."
 
+#, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "SRV record content must have priority, weight, port and target (4 fields)."
-# OBSOLETE: msgstr "SRV-postinnhold må ha prioritet, vekt, port og mål (4 felt)."
+# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
+# OBSOLETE: "not both."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "NAPTR-post må ha enten en regexp eller en erstatning (med \".\"), men "
+# OBSOLETE: "ikke begge deler."
 
+#, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "Invalid value for the priority field of the SRV record. Must be 0-65535."
-# OBSOLETE: msgstr "Ugyldig verdi for prioritetsfeltet i SRV-posten. Må være 0-65535."
+# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
+# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
+# OBSOLETE: "characters (max 32 chars each)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "NAPTR-tjeneste må følge formatet: [protokoll][+rs][+rs]... hvor protokoll "
+# OBSOLETE: "og rs starter med en bokstav og kun inneholder alfanumeriske tegn (maks "
+# OBSOLETE: "32 tegn hver)."
 
 
 

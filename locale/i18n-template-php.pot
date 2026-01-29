@@ -1,14 +1,14 @@
 # Poweradmin translation template.
-# Copyright (C) 2025 Poweradmin Development Team
+# Copyright (C) 2026 Poweradmin Development Team
 # This file is distributed under the same license as the Poweradmin package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Poweradmin 4.0.2\n"
+"Project-Id-Version: Poweradmin 4.0.6\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-09-16 18:15+0300\n"
+"POT-Creation-Date: 2026-01-29 00:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -95,15 +95,19 @@ msgstr ""
 msgid "Invalid or unexpected input given."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:229
+#: lib/Domain/Model/UserManager.php:253
 msgid "You do not have the permission to delete this user."
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:244
+#: lib/Application/Controller/DeleteUserController.php:63
+msgid "You do not have permission to delete a superuser account."
+msgstr ""
+
+#: lib/Application/Controller/EditUserController.php:252
 msgid "User does not exist."
 msgstr ""
 
-#: lib/Application/Controller/DeleteUserController.php:79
+#: lib/Application/Controller/DeleteUserController.php:88
 msgid "The user has been deleted successfully."
 msgstr ""
 
@@ -111,15 +115,15 @@ msgstr ""
 msgid "Zone comments feature is disabled in configuration."
 msgstr ""
 
-#: lib/Application/Controller/EditCommentController.php:63
+#: lib/Application/Controller/EditCommentController.php:64
 msgid "You do not have the permission to view this comment."
 msgstr ""
 
-#: lib/Domain/Service/Dns/RecordManager.php:381
+#: lib/Domain/Service/Dns/RecordManager.php:374
 msgid "You do not have the permission to edit this comment."
 msgstr ""
 
-#: lib/Application/Controller/EditCommentController.php:94
+#: lib/Application/Controller/EditCommentController.php:95
 msgid "The comment has been updated successfully."
 msgstr ""
 
@@ -131,29 +135,29 @@ msgstr ""
 msgid "You do not have permission to delete records in this zone."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:189
+#: lib/Application/Controller/DeleteRecordController.php:190
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:191
+#: lib/Application/Controller/DeleteRecordController.php:192
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:193
+#: lib/Application/Controller/DeleteRecordController.php:194
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:195
+#: lib/Application/Controller/DeleteRecordController.php:196
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:197
+#: lib/Application/Controller/DeleteRecordController.php:198
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -163,31 +167,31 @@ msgstr ""
 msgid "The record has been deleted successfully."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:203
+#: lib/Application/Controller/DeleteRecordController.php:204
 msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:205
+#: lib/Application/Controller/DeleteRecordController.php:206
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:207
+#: lib/Application/Controller/DeleteRecordController.php:208
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:209
+#: lib/Application/Controller/DeleteRecordController.php:210
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
 msgstr ""
 
-#: lib/Domain/Service/Dns/RecordManager.php:232
+#: lib/Domain/Service/Dns/RecordManager.php:225
 msgid "You do not have the permission to edit this record."
 msgstr ""
 
@@ -211,7 +215,7 @@ msgstr ""
 msgid "MFA has been enabled successfully."
 msgstr ""
 
-#: lib/Application/Controller/MfaVerifyController.php:187
+#: lib/Application/Controller/MfaVerifyController.php:235
 msgid "Invalid verification code. Please try again."
 msgstr ""
 
@@ -279,7 +283,7 @@ msgstr ""
 msgid "Invalid expiration date format."
 msgstr ""
 
-#: lib/Domain/Service/ApiKeyService.php:279
+#: lib/Domain/Service/ApiKeyService.php:278
 msgid "API key not found or you do not have permission to edit it."
 msgstr ""
 
@@ -291,7 +295,7 @@ msgstr ""
 msgid "API key deleted successfully."
 msgstr ""
 
-#: lib/Domain/Service/ApiKeyService.php:227
+#: lib/Domain/Service/ApiKeyService.php:226
 msgid "API key not found or you do not have permission to delete it."
 msgstr ""
 
@@ -353,7 +357,7 @@ msgstr ""
 msgid "You do not have the permission to perform searches."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:739
+#: lib/Domain/Model/UserManager.php:763
 msgid "You do not have the permission to add a new user."
 msgstr ""
 
@@ -382,7 +386,7 @@ msgstr ""
 msgid "Please fill in all required fields correctly."
 msgstr ""
 
-#: lib/Domain/Service/Dns/RecordManager.php:327
+#: lib/Domain/Service/Dns/RecordManager.php:320
 msgid "You do not have the permission to delete this record."
 msgstr ""
 
@@ -422,7 +426,7 @@ msgstr ""
 msgid "You do not have permission to create new zone templates."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:802
+#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:803
 msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 
@@ -535,19 +539,19 @@ msgstr ""
 msgid "Failed to sign zone. Check PowerDNS logs for details."
 msgstr ""
 
-#: lib/Application/Controller/DnssecController.php:92
+#: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
 msgstr ""
 
-#: lib/Application/Controller/DnssecController.php:102
+#: lib/Application/Controller/DnssecController.php:103
 msgid "Zone has been unsigned successfully."
 msgstr ""
 
-#: lib/Application/Controller/DnssecController.php:107
+#: lib/Application/Controller/DnssecController.php:108
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr ""
 
-#: lib/Application/Controller/DnssecController.php:111
+#: lib/Application/Controller/DnssecController.php:112
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 
@@ -617,39 +621,39 @@ msgstr ""
 msgid "The record was successfully added."
 msgstr ""
 
-#: lib/Application/Controller/MfaVerifyController.php:112
+#: lib/Application/Controller/MfaVerifyController.php:115
 msgid "Invalid security token. Please try again."
 msgstr ""
 
-#: lib/Application/Controller/MfaVerifyController.php:122
+#: lib/Application/Controller/MfaVerifyController.php:125
 msgid "No MFA record found. Please contact administrator."
 msgstr ""
 
-#: lib/Application/Controller/MfaVerifyController.php:127
+#: lib/Application/Controller/MfaVerifyController.php:130
 msgid "An error occurred. Please try again."
 msgstr ""
 
-#: lib/Application/Controller/MfaVerifyController.php:209
+#: lib/Application/Controller/MfaVerifyController.php:258
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
 msgstr ""
 
-#: lib/Application/Controller/MfaVerifyController.php:219
+#: lib/Application/Controller/MfaVerifyController.php:268
 msgid "A new verification code has been sent to your email."
 msgstr ""
 
-#: lib/Application/Controller/MfaVerifyController.php:225
+#: lib/Application/Controller/MfaVerifyController.php:274
 msgid "Please use a recovery code instead."
 msgstr ""
 
-#: lib/Application/Controller/MfaVerifyController.php:230
+#: lib/Application/Controller/MfaVerifyController.php:279
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
 msgstr ""
 
-#: lib/Domain/Service/Dns/RecordManager.php:113
+#: lib/Domain/Service/Dns/RecordManager.php:112
 msgid "You do not have the permission to add a record to this zone."
 msgstr ""
 
@@ -677,19 +681,19 @@ msgstr ""
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 
-#: lib/Application/Controller/DeleteDomainsController.php:70
+#: lib/Application/Controller/DeleteDomainsController.php:71
 msgid "No zone selected for deletion."
 msgstr ""
 
-#: lib/Application/Controller/DeleteDomainController.php:120
+#: lib/Application/Controller/DeleteDomainController.php:127
 msgid "Zone has been deleted successfully."
 msgstr ""
 
-#: lib/Application/Controller/DeleteDomainsController.php:117
+#: lib/Application/Controller/DeleteDomainsController.php:147
 msgid "Zones have been deleted successfully."
 msgstr ""
 
-#: lib/Domain/Service/Dns/DomainManager.php:506
+#: lib/Domain/Service/Dns/DomainManager.php:494
 msgid "You do not have the permission to delete a zone."
 msgstr ""
 
@@ -713,7 +717,7 @@ msgid ""
 "the necessary permissions to create and alter tables."
 msgstr ""
 
-#: lib/Domain/Service/Dns/DomainManager.php:216
+#: lib/Domain/Service/Dns/DomainManager.php:214
 msgid "You do not have the permission to add a master zone."
 msgstr ""
 
@@ -765,15 +769,15 @@ msgstr ""
 msgid "Failed to activate zone key."
 msgstr ""
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:94
+#: lib/Application/Controller/DnssecDeleteKeyController.php:95
 msgid "Zone key has been deleted successfully."
 msgstr ""
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:97
+#: lib/Application/Controller/DnssecDeleteKeyController.php:98
 msgid "Failed to delete the zone key."
 msgstr ""
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:104
+#: lib/Application/Controller/DnssecDeleteKeyController.php:105
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr ""
 
@@ -931,8 +935,12 @@ msgstr ""
 msgid "The user could not be updated."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:394 lib/Domain/Model/UserManager.php:719
+#: lib/Domain/Model/UserManager.php:418 lib/Domain/Model/UserManager.php:743
 msgid "You do not have the permission to edit this user."
+msgstr ""
+
+#: lib/Application/Controller/EditUserController.php:178
+msgid "You do not have permission to edit a superuser account."
 msgstr ""
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
@@ -983,15 +991,15 @@ msgstr ""
 msgid "You do not have permission to edit this record."
 msgstr ""
 
-#: lib/Application/Controller/EditRecordController.php:233
+#: lib/Application/Controller/EditRecordController.php:259
 msgid "The record has been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/DnssecController.php:64
+#: lib/Application/Controller/DnssecController.php:65
 msgid "You do not have permission to view this zone."
 msgstr ""
 
-#: lib/Application/Controller/DnssecController.php:77
+#: lib/Application/Controller/DnssecController.php:78
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr ""
 
@@ -1025,7 +1033,7 @@ msgstr ""
 msgid "Zone key has been added successfully."
 msgstr ""
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:348
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:349
 msgid "Failed to add new DNSSEC key."
 msgstr ""
 
@@ -1070,7 +1078,7 @@ msgstr ""
 msgid "Page Not Found"
 msgstr ""
 
-#: lib/Application/Service/LdapAuthenticator.php:84
+#: lib/Application/Service/LdapAuthenticator.php:93
 msgid "Account is temporarily locked. Please try again later."
 msgstr ""
 
@@ -1078,7 +1086,7 @@ msgstr ""
 msgid "The user account is disabled."
 msgstr ""
 
-#: lib/Application/Service/SqlAuthenticator.php:211
+#: lib/Application/Service/SqlAuthenticator.php:217
 msgid "Authentication failed!"
 msgstr ""
 
@@ -1090,23 +1098,23 @@ msgstr ""
 msgid "Failed to update password"
 msgstr ""
 
-#: lib/Application/Service/LdapAuthenticator.php:117
+#: lib/Application/Service/LdapAuthenticator.php:126
 msgid "Failed to connect to LDAP server!"
 msgstr ""
 
-#: lib/Application/Service/LdapAuthenticator.php:133
+#: lib/Application/Service/LdapAuthenticator.php:142
 msgid "Failed to bind to LDAP server!"
 msgstr ""
 
-#: lib/Application/Service/LdapAuthenticator.php:161
+#: lib/Application/Service/LdapAuthenticator.php:170
 msgid "Failed to search LDAP."
 msgstr ""
 
-#: lib/Application/Service/LdapAuthenticator.php:178
+#: lib/Application/Service/LdapAuthenticator.php:187
 msgid "Failed to authenticate against LDAP."
 msgstr ""
 
-#: lib/Application/Service/LdapAuthenticator.php:212
+#: lib/Application/Service/LdapAuthenticator.php:221
 msgid "LDAP Authentication failed!"
 msgstr ""
 
@@ -1120,7 +1128,7 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:270
+#: lib/Domain/Model/UserManager.php:294
 msgid "This template is assigned to at least one user."
 msgstr ""
 
@@ -1163,7 +1171,7 @@ msgstr ""
 msgid "Failed to deactivate DNSSEC key."
 msgstr ""
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:372
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:373
 msgid "Failed to remove DNSSEC key."
 msgstr ""
 
@@ -1171,15 +1179,15 @@ msgstr ""
 msgid "This is an invalid zone name."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:751
+#: lib/Domain/Model/UserManager.php:775
 msgid "Enter a valid email address."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:743
+#: lib/Domain/Model/UserManager.php:767
 msgid "Username exist already, please choose another one."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:747
+#: lib/Domain/Model/UserManager.php:771
 msgid "Enter a valid user name."
 msgstr ""
 
@@ -1223,31 +1231,31 @@ msgstr ""
 msgid "Error checking template ownership: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:727
+#: lib/Domain/Model/ZoneTemplate.php:728
 msgid "Error retrieving zones using template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:781
+#: lib/Domain/Model/ZoneTemplate.php:782
 msgid "Failed to get list of zones using template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:799
+#: lib/Domain/Model/ZoneTemplate.php:800
 msgid "You do not have the permission to edit a zone template."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:843
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid "Error unlinking zone from template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:871
+#: lib/Domain/Model/ZoneTemplate.php:872
 msgid "Error retrieving zones: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:890
+#: lib/Domain/Model/ZoneTemplate.php:891
 msgid "Error checking template name existence: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:913
+#: lib/Domain/Model/ZoneTemplate.php:914
 msgid "Error checking template existence: "
 msgstr ""
 
@@ -1827,7 +1835,7 @@ msgstr ""
 msgid "Invalid characters in name field."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:141
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:167
 msgid "Invalid characters in content field."
 msgstr ""
 
@@ -4010,11 +4018,17 @@ msgid "Invalid Type \""
 msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:249
-msgid "Type \""
+#, php-format
+msgid ""
+"Type \"%s\" is prohibited in CSYNC records. DNSSEC-related records (DS, "
+"DNSKEY, CDS, CDNSKEY) and CSYNC records must not be synchronized."
 msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:254
-msgid "Duplicate type \""
+#, php-format
+msgid ""
+"Duplicate type \"%s\" specified in Type Bit Map. Each type should only be "
+"specified once."
 msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:262
@@ -4107,36 +4121,27 @@ msgstr ""
 msgid "This is not a valid IPv6 address."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:98
-msgid "IPv6 address should use lowercase for hexadecimal digits."
-msgstr ""
-
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:107
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:102
 msgid "Invalid IPv4 part in IPv4-mapped IPv6 address."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:113
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:108
 msgid "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:118
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:113
 msgid "Invalid IPv6 address: more than two consecutive colons."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:122
 msgid "Invalid IPv6 address: must have 8 hextets when expanded."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:132
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:142
-#, php-format
-msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-msgstr ""
-
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:312
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:300
 #, php-format
 msgid "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
 msgstr ""
@@ -4203,7 +4208,7 @@ msgid ""
 "number punctuation."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:465
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:487
 msgid "Value must be enclosed in double quotes."
 msgstr ""
 
@@ -5027,17 +5032,13 @@ msgid ""
 "limit your ability to monitor authentication results."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:111
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:145
-msgid "HTML tags are not allowed in content field."
-msgstr ""
-
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:159
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
 msgstr ""
 
@@ -5045,19 +5046,27 @@ msgstr ""
 msgid "Backslashes must precede all quotes (\") in TXT content"
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:173
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:197
+#, php-format
 msgid ""
-"TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or less. "
-"For longer content, split into multiple quoted strings separated by spaces."
+"TXT record content exceeds maximum length of %d bytes. Please reduce the "
+"content size."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:192
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:218
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:250
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:227
+#, php-format
+msgid ""
+"Total TXT record content exceeds maximum length of %d bytes. Please reduce "
+"the content size."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:286
 msgid ""
 "Invalid value for priority field. TXT records must have priority value of 0."
 msgstr ""
@@ -5389,120 +5398,114 @@ msgstr ""
 msgid "Invalid domain name format."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:103
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:115
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:135
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:147
 msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:139
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:151
 msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:170
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:182
 msgid ""
 "Invalid value for priority field. NAPTR records have priority within the "
 "content field and must have a priority value of 0."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:189
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
 msgid ""
 "NAPTR record must contain order, preference, flags, service, regexp, and "
 "replacement values."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:196
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:208
 msgid "NAPTR record order must be a number between 0 and 65535."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
 msgid "NAPTR record preference must be a number between 0 and 65535."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:207
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:219
 msgid "NAPTR record flags must be a quoted string."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:225
 msgid "NAPTR record flags must contain only A, P, S, or U."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:225
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:237
 msgid "NAPTR record service must be a quoted string."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:244
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:256
 msgid "NAPTR record regexp must be a quoted string."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:264
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:276
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:270
-msgid ""
-"NAPTR record must have either a regexp or a replacement (with \".\"), but "
-"not both."
-msgstr ""
-
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:309
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
-"and rs start with a letter and contain only alphanumeric characters (max 32 "
-"chars each)."
+"and rs start with a letter and contain alphanumeric characters, hyphens, "
+"colons, or plus signs (max 32 chars each)."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:339
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:367
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:389
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:374
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:396
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:392
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:393
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:420
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:427
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
 msgstr ""
 
@@ -5630,27 +5633,27 @@ msgstr ""
 msgid "Unknown record type."
 msgstr ""
 
-#: lib/Domain/Service/ApiKeyService.php:153
+#: lib/Domain/Service/ApiKeyService.php:152
 msgid "API functionality is disabled."
 msgstr ""
 
-#: lib/Domain/Service/ApiKeyService.php:159
+#: lib/Domain/Service/ApiKeyService.php:158
 msgid "You do not have permission to create API keys."
 msgstr ""
 
-#: lib/Domain/Service/ApiKeyService.php:166 templates/default/api_keys.html:18
+#: lib/Domain/Service/ApiKeyService.php:165 templates/default/api_keys.html:18
 msgid "You have reached the maximum number of API keys allowed."
 msgstr ""
 
-#: lib/Domain/Service/ApiKeyService.php:285
+#: lib/Domain/Service/ApiKeyService.php:284
 msgid "You do not have permission to update API keys."
 msgstr ""
 
-#: lib/Domain/Service/ApiKeyService.php:233
+#: lib/Domain/Service/ApiKeyService.php:232
 msgid "You do not have permission to delete API keys."
 msgstr ""
 
-#: lib/Domain/Service/ApiKeyService.php:257
+#: lib/Domain/Service/ApiKeyService.php:256
 msgid "You do not have permission to regenerate API keys."
 msgstr ""
 
@@ -5658,45 +5661,45 @@ msgstr ""
 msgid "Unknown database type."
 msgstr ""
 
-#: lib/Domain/Service/ReverseRecordCreator.php:64
+#: lib/Domain/Service/ReverseRecordCreator.php:65
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr ""
 
-#: lib/Domain/Service/ReverseRecordCreator.php:72
+#: lib/Domain/Service/ReverseRecordCreator.php:73
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr ""
 
-#: lib/Domain/Service/Dns/RecordManager.php:105
+#: lib/Domain/Service/Dns/RecordManager.php:104
 msgid "You do not have the permission to add SOA record."
 msgstr ""
 
-#: lib/Domain/Service/Dns/RecordManager.php:109
+#: lib/Domain/Service/Dns/RecordManager.php:108
 msgid "You do not have the permission to add NS record."
 msgstr ""
 
-#: lib/Domain/Service/Dns/RecordManager.php:156
+#: lib/Domain/Service/Dns/RecordManager.php:155
 msgid "A record with this hostname, type, and content already exists."
 msgstr ""
 
-#: lib/Domain/Service/Dns/RecordManager.php:216
+#: lib/Domain/Service/Dns/RecordManager.php:209
 msgid "You do not have the permission to edit this SOA record."
 msgstr ""
 
-#: lib/Domain/Service/Dns/RecordManager.php:221
+#: lib/Domain/Service/Dns/RecordManager.php:214
 msgid "You do not have the permission to edit this NS record."
 msgstr ""
 
-#: lib/Domain/Service/Dns/RecordManager.php:303
+#: lib/Domain/Service/Dns/RecordManager.php:296
 msgid "You do not have the permission to delete SOA records."
 msgstr ""
 
-#: lib/Domain/Service/Dns/RecordManager.php:316
+#: lib/Domain/Service/Dns/RecordManager.php:309
 msgid "You do not have the permission to delete NS records."
 msgstr ""
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:429
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr ""
@@ -5705,12 +5708,12 @@ msgstr ""
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr ""
 
-#: lib/Domain/Service/Dns/DomainManager.php:212
+#: lib/Domain/Service/Dns/DomainManager.php:210
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr ""
 
-#: lib/Domain/Service/Dns/DomainManager.php:411
+#: lib/Domain/Service/Dns/DomainManager.php:392
 msgid "The selected user already owns the zone."
 msgstr ""
 
@@ -5884,7 +5887,7 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: templates/default/dnssec_delete_key.html:126
+#: templates/default/dnssec_delete_key.html:130
 msgid "Cancel"
 msgstr ""
 
@@ -6182,7 +6185,7 @@ msgstr ""
 msgid "Select the account that will own this supermaster"
 msgstr ""
 
-#: templates/default/edit.html:503
+#: templates/default/edit.html:504
 msgid "Save changes"
 msgstr ""
 
@@ -6323,7 +6326,7 @@ msgstr ""
 msgid "Comment"
 msgstr ""
 
-#: templates/default/edit.html:610 templates/default/add_record.html:91
+#: templates/default/edit.html:611 templates/default/add_record.html:91
 msgid "Provide content"
 msgstr ""
 
@@ -6620,7 +6623,7 @@ msgstr ""
 msgid "Check DB"
 msgstr ""
 
-#: templates/default/edit_comment.html:18 templates/default/edit.html:485
+#: templates/default/edit_comment.html:18 templates/default/edit.html:486
 msgid "Edit comment"
 msgstr ""
 
@@ -6745,7 +6748,7 @@ msgstr ""
 msgid "Id"
 msgstr ""
 
-#: templates/default/list_log_users.html:49
+#: templates/default/list_log_users.html:50
 msgid "Event"
 msgstr ""
 
@@ -7211,7 +7214,7 @@ msgid "Recommended bits for"
 msgstr ""
 
 #: templates/default/dnssec_add_key.html:140
-#: install/helpers/InstallStepHandler.php:182
+#: install/helpers/InstallStepHandler.php:183
 msgid "Warning:"
 msgstr ""
 
@@ -7436,7 +7439,7 @@ msgstr ""
 msgid "Permission templates"
 msgstr ""
 
-#: templates/default/add_perm_templ.html:6 templates/default/edit.html:765
+#: templates/default/add_perm_templ.html:6 templates/default/edit.html:766
 msgid "Add"
 msgstr ""
 
@@ -7827,39 +7830,39 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: templates/default/edit.html:25 templates/default/edit.html:518
+#: templates/default/edit.html:25 templates/default/edit.html:519
 msgid "Add new record"
 msgstr ""
 
-#: templates/default/edit.html:28 templates/default/edit.html:521
+#: templates/default/edit.html:28 templates/default/edit.html:522
 msgid "Multi-record mode"
 msgstr ""
 
-#: templates/default/edit.html:31 templates/default/edit.html:524
+#: templates/default/edit.html:31 templates/default/edit.html:525
 msgid "Bulk add"
 msgstr ""
 
-#: templates/default/edit.html:43 templates/default/edit.html:536
+#: templates/default/edit.html:43 templates/default/edit.html:537
 msgid "Failed to add"
 msgstr ""
 
-#: templates/default/edit.html:43 templates/default/edit.html:536
+#: templates/default/edit.html:43 templates/default/edit.html:537
 msgid "record(s). Please check the record format."
 msgstr ""
 
-#: templates/default/edit.html:45 templates/default/edit.html:538
+#: templates/default/edit.html:45 templates/default/edit.html:539
 msgid "Failed to add records. Please check the record format."
 msgstr ""
 
-#: templates/default/edit.html:48 templates/default/edit.html:541
+#: templates/default/edit.html:48 templates/default/edit.html:542
 msgid "Content validation failed:"
 msgstr ""
 
-#: templates/default/edit.html:48 templates/default/edit.html:541
+#: templates/default/edit.html:48 templates/default/edit.html:542
 msgid "Invalid value for record type"
 msgstr ""
 
-#: templates/default/edit.html:50 templates/default/edit.html:543
+#: templates/default/edit.html:50 templates/default/edit.html:544
 msgid "Please provide all required information."
 msgstr ""
 
@@ -7871,23 +7874,23 @@ msgstr ""
 msgid "Add A/AAAA"
 msgstr ""
 
-#: templates/default/edit.html:86 templates/default/edit.html:580
+#: templates/default/edit.html:86 templates/default/edit.html:581
 msgid "Invalid hostname format"
 msgstr ""
 
-#: templates/default/edit.html:114 templates/default/edit.html:608
+#: templates/default/edit.html:114 templates/default/edit.html:609
 msgid "This record already exists"
 msgstr ""
 
-#: templates/default/edit.html:126 templates/default/edit.html:620
+#: templates/default/edit.html:126 templates/default/edit.html:621
 msgid "Invalid priority"
 msgstr ""
 
-#: templates/default/edit.html:133 templates/default/edit.html:627
+#: templates/default/edit.html:133 templates/default/edit.html:628
 msgid "Invalid TTL value"
 msgstr ""
 
-#: templates/default/edit.html:135 templates/default/edit.html:629
+#: templates/default/edit.html:135 templates/default/edit.html:630
 msgid "Provide TTL"
 msgstr ""
 
@@ -7945,72 +7948,72 @@ msgstr ""
 msgid "Delete record(s)"
 msgstr ""
 
-#: templates/default/edit.html:308
+#: templates/default/edit.html:302
+msgid "Select All Filtered"
+msgstr ""
+
+#: templates/default/edit.html:309
 msgid "Showing"
 msgstr ""
 
-#: templates/default/edit.html:308
+#: templates/default/edit.html:309
 msgid "of"
 msgstr ""
 
-#: templates/default/edit.html:308
+#: templates/default/edit.html:309
 msgid "total records"
 msgstr ""
 
-#: templates/default/edit.html:474 templates/default/search.html:93
+#: templates/default/edit.html:475 templates/default/search.html:93
 msgid "Comments"
 msgstr ""
 
-#: templates/default/edit.html:667
+#: templates/default/edit.html:668
 msgid "Save as new template"
 msgstr ""
 
-#: templates/default/edit.html:670
+#: templates/default/edit.html:671
 msgid "Create a reusable template from this zone's records"
 msgstr ""
 
-#: templates/default/edit.html:676
+#: templates/default/edit.html:677
 msgid "Template Name"
 msgstr ""
 
-#: templates/default/edit.html:678
+#: templates/default/edit.html:679
 msgid "Provide template name"
 msgstr ""
 
-#: templates/default/edit.html:682
+#: templates/default/edit.html:683
 msgid "Template Description"
 msgstr ""
 
-#: templates/default/edit.html:684
+#: templates/default/edit.html:685
 msgid "Optional description for this template"
 msgstr ""
 
-#: templates/default/edit.html:688
+#: templates/default/edit.html:689
 msgid "Save as template"
 msgstr ""
 
-#: templates/default/edit.html:699
+#: templates/default/edit.html:700
 msgid "Zone Settings"
 msgstr ""
 
-#: templates/default/edit.html:702
+#: templates/default/edit.html:703
 msgid "Owner of zone"
 msgstr ""
 
-#: templates/default/edit.html:705
+#: templates/default/edit.html:706
 msgid "No owner set for this zone."
 msgstr ""
 
-#: templates/default/edit.html:830
+#: templates/default/edit.html:831
 msgid "Change"
 msgstr ""
 
-#: templates/default/edit.html:796 templates/default/add_zone_slave.html:33
+#: templates/default/edit.html:797 templates/default/add_zone_slave.html:33
 msgid "IP address of master NS"
-msgstr ""
-
-#: templates/default/edit.html:1022
-msgid "Select All Filtered"
 msgstr ""
 
 #: templates/default/users.html:10
@@ -8968,11 +8971,11 @@ msgid ""
 "added again!"
 msgstr ""
 
-#: templates/default/delete_domain.html:73
+#: templates/default/delete_domain.html:76
 msgid "Yes, delete this zone"
 msgstr ""
 
-#: templates/default/delete_domain.html:80
+#: templates/default/delete_domain.html:84
 msgid "No, keep this zone"
 msgstr ""
 
@@ -9393,19 +9396,19 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: templates/default/pdns_status.html:433
+#: templates/default/pdns_status.html:441
 msgid "Bytes"
 msgstr ""
 
-#: templates/default/pdns_status.html:406
+#: templates/default/pdns_status.html:410
 msgid "Metric"
 msgstr ""
 
-#: templates/default/pdns_status.html:407
+#: templates/default/pdns_status.html:411
 msgid "Value"
 msgstr ""
 
-#: templates/default/pdns_status.html:457
+#: templates/default/pdns_status.html:465
 msgid "No detailed metrics available."
 msgstr ""
 
@@ -9564,7 +9567,7 @@ msgstr ""
 msgid "You are about to delete a record from template"
 msgstr ""
 
-#: templates/default/dnssec_delete_key.html:123
+#: templates/default/dnssec_delete_key.html:126
 msgid "Delete key"
 msgstr ""
 
@@ -10060,93 +10063,93 @@ msgid ""
 "configuration file."
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:183
+#: install/helpers/InstallStepHandler.php:184
 msgid "Missing PowerDNS tables:"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:184
+#: install/helpers/InstallStepHandler.php:185
 msgid "Poweradmin requires these PowerDNS tables to function properly."
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:192
+#: install/helpers/InstallStepHandler.php:193
 msgid "Updating database... done!"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:214
+#: install/helpers/InstallStepHandler.php:215
 msgid "Foreign Key Constraint Issues:"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:216
+#: install/helpers/InstallStepHandler.php:217
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:217
+#: install/helpers/InstallStepHandler.php:218
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:218
+#: install/helpers/InstallStepHandler.php:219
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:231
+#: install/helpers/InstallStepHandler.php:232
 msgid "Suggestions:"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:225
+#: install/helpers/InstallStepHandler.php:226
 msgid "Make sure the SQLite database file exists"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:226
+#: install/helpers/InstallStepHandler.php:227
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:227
+#: install/helpers/InstallStepHandler.php:228
 msgid "Verify the full path to the database file is correct and accessible"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:233
+#: install/helpers/InstallStepHandler.php:234
 msgid "Verify database credentials are correct"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:234
+#: install/helpers/InstallStepHandler.php:235
 msgid "Check that the database user has sufficient privileges"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:235
+#: install/helpers/InstallStepHandler.php:236
 msgid "Ensure the database server is running and accessible"
 msgstr ""
 
-#: install/helpers/InstallStepHandler.php:240
+#: install/helpers/InstallStepHandler.php:241
 msgid "Database Error"
 msgstr ""
 
-#: install/helpers/DatabaseHelper.php:158
+#: install/helpers/DatabaseHelper.php:163
 #, php-format
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
 msgstr ""
 
-#: install/helpers/DatabaseHelper.php:166
+#: install/helpers/DatabaseHelper.php:171
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
 msgstr ""
 
-#: install/helpers/DatabaseHelper.php:174
+#: install/helpers/DatabaseHelper.php:179
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
 msgstr ""
 
-#: install/helpers/DatabaseHelper.php:186
+#: install/helpers/DatabaseHelper.php:191
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
 msgstr ""
