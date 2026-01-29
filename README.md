@@ -60,7 +60,7 @@ For detailed installation instructions, please visit [the official documentation
 * **Recommended method - via releases**:
     * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
 * **For specific needs - via Git**:
-    * **Warning**: The master branch is used for development and may be unstable. For production use, stick with the stable release/4.x branch or use the `stable` Docker tag.
+    * **Warning**: The master branch is used for pre-release integration testing and may be unstable. For production use, stick with the stable release/4.x branch or use the `stable` Docker tag.
 
 ### Docker Deployment
 
@@ -95,7 +95,7 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 ## Tested on
 
 **Officially tested versions:**
-- **master (development)**: PHP 8.2, PowerDNS 4.9.8, MariaDB 10.11, PostgreSQL 16.3
+- **master (pre-release)**: PHP 8.2, PowerDNS 4.9.8, MariaDB 10.11, PostgreSQL 16.3
 - **release/4.x (stable)**: PHP 8.2, PowerDNS 4.9.5, MariaDB 10.11, PostgreSQL 16.3
 - **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
 
