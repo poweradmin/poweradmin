@@ -26,9 +26,8 @@ export default defineConfig({
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
 
-  // 2 workers locally for parallel file execution, 1 on CI for stability
-  // Session conflicts may occur if two files use the same user simultaneously
-  workers: process.env.CI ? 1 : 2,
+  // Use 1 worker to avoid session conflicts with PHP server-side sessions
+  workers: 1,
 
   // Reporter to use
   reporter: [
