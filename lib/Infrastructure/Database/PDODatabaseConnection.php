@@ -40,9 +40,10 @@ class PDODatabaseConnection implements DatabaseConnection
         }
 
         $dsn = $this->constructDSN($credentials);
+        $options = $this->buildDriverOptions($credentials);
 
         try {
-            $pdo = new PDOCommon($dsn, $credentials['db_user'], $credentials['db_pass'], []);
+            $pdo = new PDOCommon($dsn, $credentials['db_user'], $credentials['db_pass'], $options);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             if (isset($credentials['db_debug']) && $credentials['db_debug']) {
@@ -113,5 +114,31 @@ class PDODatabaseConnection implements DatabaseConnection
             'pgsql' => 5432,
             default => null,
         };
+    }
+
+    /**
+     * Build PDO driver options for the connection.
+     *
+     * For MySQL: Disables SSL certificate verification by default to maintain
+     * backwards compatibility with servers that don't use SSL or use self-signed
+     * certificates. This addresses issues with newer MariaDB connector libraries
+     * that enforce SSL verification by default.
+     *
+     * @param array $credentials Database credentials
+     * @return array PDO driver options
+     */
+    private function buildDriverOptions(array $credentials): array
+    {
+        $options = [];
+        $db_type = $credentials['db_type'];
+
+        if (in_array($db_type, ['mysql', 'mysqli'])) {
+            // Disable SSL certificate verification by default for backwards compatibility.
+            // Newer versions of MariaDB Connector/C enforce SSL verification which breaks
+            // connections to servers without SSL or with self-signed certificates.
+            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+        }
+
+        return $options;
     }
 }
