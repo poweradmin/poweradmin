@@ -73,6 +73,7 @@ commit_parsers = [
     { message = "\\(build\\)", skip = true },
     # Skip internal changes not relevant to users
     { message = "^feat\\(deps\\)", skip = true },
+    { message = "^fix\\(deps\\)", skip = true },
     { message = "^fix\\(caddy\\)", skip = true },
     { message = "^fix\\(e2e\\)", skip = true },
     { message = "^fix\\(test\\)", skip = true },
