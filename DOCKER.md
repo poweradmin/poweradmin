@@ -146,6 +146,11 @@ docker run -d --name poweradmin -p 80:80 \
 | `DB_NAME` | Database name (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_FILE` | SQLite database file path (unused for MySQL/PostgreSQL) | `/db/pdns.db` | No |
 | `PA_PDNS_DB_NAME` | Separate PowerDNS database name (**MySQL only**) | Empty | No |
+| `DB_SSL` | Enable SSL/TLS connection (**MySQL/PostgreSQL only**) | `false` | No |
+| `DB_SSL_VERIFY` | Verify server SSL certificate (requires `DB_SSL=true`) | `false` | No |
+| `DB_SSL_CA` | Path to CA certificate file for server verification | Empty | No |
+| `DB_SSL_KEY` | Path to client private key file (for client cert auth) | Empty | No |
+| `DB_SSL_CERT` | Path to client certificate file (for client cert auth) | Empty | No |
 | `PDNS_VERSION` | PowerDNS schema version to use (45, 46, 47, 48, 49) | `49` | No |
 
 ### DNS Configuration

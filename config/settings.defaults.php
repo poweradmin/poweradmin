@@ -26,6 +26,24 @@ return [
         'file' => '',          // Only used for SQLite, provide full path to database file (added in 2.1.6)
         'debug' => false,      // Show all SQL queries (added in 2.1.6)
         'pdns_db_name' => '',  // Separate database for PowerDNS (experimental, added in 3.8.0)
+
+        /**
+         * SSL/TLS Settings for database connections (added in 4.1.0)
+         *
+         * These settings control SSL/TLS encryption for MySQL/MariaDB and PostgreSQL connections.
+         * SQLite does not use SSL (file-based database).
+         *
+         * Note: SSL certificate verification is disabled by default for backwards
+         * compatibility with servers that don't use SSL or use self-signed certificates.
+         *
+         * MySQL/MariaDB: Uses PDO driver attributes for SSL configuration.
+         * PostgreSQL: Uses sslmode DSN parameter (disable, allow, prefer, require, verify-ca, verify-full).
+         */
+        'ssl' => false,              // Enable SSL/TLS connection
+        'ssl_verify' => false,       // Verify server SSL certificate (requires ssl=true)
+        'ssl_ca' => '',              // Path to CA certificate file for server verification
+        'ssl_key' => '',             // Path to client private key file (for client certificate auth)
+        'ssl_cert' => '',            // Path to client certificate file (for client certificate auth)
     ],
 
     /**

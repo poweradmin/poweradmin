@@ -501,6 +501,10 @@ generate_config() {
     # Ensure parent directory exists for custom config paths
     mkdir -p "$(dirname "${CONFIG_FILE}")"
 
+    # Convert database SSL boolean values to lowercase
+    local db_ssl=$(echo "${DB_SSL:-false}" | tr '[:upper:]' '[:lower:]')
+    local db_ssl_verify=$(echo "${DB_SSL_VERIFY:-false}" | tr '[:upper:]' '[:lower:]')
+
     cat > "${CONFIG_FILE}" << EOF
 <?php
 
@@ -513,6 +517,11 @@ return [
         'name' => '${DB_NAME:-}',
         'file' => '${DB_FILE:-/db/pdns.db}',
         'pdns_db_name' => '${PA_PDNS_DB_NAME:-}',
+        'ssl' => ${db_ssl},
+        'ssl_verify' => ${db_ssl_verify},
+        'ssl_ca' => '${DB_SSL_CA:-}',
+        'ssl_key' => '${DB_SSL_KEY:-}',
+        'ssl_cert' => '${DB_SSL_CERT:-}',
     ],
     'dns' => [
         'hostmaster' => '${DNS_HOSTMASTER:-hostmaster.example.com}',
