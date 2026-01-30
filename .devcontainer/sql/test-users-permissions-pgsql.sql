@@ -18,8 +18,10 @@
 
 -- Ensure Administrator template (ID 1) has überuser permission
 -- This grants full system access
-INSERT INTO perm_templ_items (templ_id, perm_id)
-SELECT 1, 53 WHERE NOT EXISTS (SELECT 1 FROM perm_templ_items WHERE templ_id = 1 AND perm_id = 53);
+-- First ensure only überuser permission exists for Administrator template
+DELETE FROM perm_templ_items WHERE templ_id = 1 AND perm_id != 53;
+INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (1, 53)
+ON CONFLICT DO NOTHING;
 
 -- Template 2: Zone Manager - Full management of own zones
 INSERT INTO perm_templ (id, name, descr)

@@ -20,8 +20,13 @@ USE poweradmin;
 
 -- Ensure Administrator template (ID 1) has überuser permission
 -- This grants full system access
-INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 1, 53 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 1 AND `perm_id` = 53);
+-- Using INSERT IGNORE to handle cases where permission already exists
+INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`) VALUES (1, 53);
+
+-- Also ensure the permission exists even if template was created without it
+-- This handles the case where Administrator template exists but lacks the permission
+DELETE FROM `perm_templ_items` WHERE `templ_id` = 1 AND `perm_id` != 53;
+INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`) VALUES (1, 53);
 
 -- Template 2: Zone Manager - Full management of own zones
 INSERT INTO `perm_templ` (`id`, `name`, `descr`)
