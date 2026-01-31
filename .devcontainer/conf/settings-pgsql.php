@@ -26,8 +26,8 @@ return [
     'security' => [
         'session_key' => 'YV4@SQ(Wa8l8L7fDlU3e_(XhuCyuuEifm68Xtuh!MNE#!L',
         'password_encryption' => 'bcrypt',
-        'login_token_validation' => false,
-        'global_token_validation' => false,
+        'login_token_validation' => true,
+        'global_token_validation' => true,
         'password_reset' => [
             'enabled' => true,
         ],
