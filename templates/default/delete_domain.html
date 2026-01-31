@@ -70,7 +70,7 @@
 
         <div class="mt-4">
             <form method="post" action="index.php?page=delete_domain&id={{ zone_id }}" style="display: inline;">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
                 <input type="hidden" name="confirm" value="1">
                 <button type="submit" class="btn btn-danger btn-sm" data-testid="confirm-delete-zone">
                     <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this zone{% endtrans %}

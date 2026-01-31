@@ -97,7 +97,7 @@
 
         <div class="mt-4">
             <form method="post" action="index.php?page=delete_record&id={{ record_id }}" id="delete_form" style="display: inline;">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
                 <input type="hidden" name="confirm" value="1">
                 {% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}
                 <input type="hidden" name="delete_ptr" id="delete_ptr_field" value="1">
