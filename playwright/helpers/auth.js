@@ -37,11 +37,12 @@ export async function loginAndWaitForDashboard(page, username, password, maxRetr
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     await login(page, username, password);
 
-    // Check if login succeeded or failed
+    // Wait for navigation to complete after form submission
+    await page.waitForLoadState('domcontentloaded');
+
+    // Check if login succeeded - URL should contain page=index or just be index.php
     const url = page.url();
-    if (url.includes('page=index')) {
-      // Already on dashboard
-      await page.waitForLoadState('domcontentloaded');
+    if (url.includes('page=index') || (url.includes('index.php') && !url.includes('page=login'))) {
       return;
     }
 
@@ -51,9 +52,17 @@ export async function loginAndWaitForDashboard(page, username, password, maxRetr
       await page.waitForLoadState('domcontentloaded');
       return; // Success
     } catch {
-      // Check if authentication failed
-      const hasError = await page.locator('text=Authentication failed').count() > 0;
-      if (hasError && attempt < maxRetries) {
+      // Check if authentication failed (various error messages)
+      const errorMessages = [
+        'Authentication failed',
+        'Invalid CSRF token',
+        'Invalid username or password',
+        'Session expired'
+      ];
+      const bodyText = await page.locator('body').textContent();
+      const hasRetryableError = errorMessages.some(msg => bodyText.includes(msg));
+
+      if (hasRetryableError && attempt < maxRetries) {
         // Wait before retry to let session conflicts resolve
         await page.waitForTimeout(1000 * attempt);
         continue;
