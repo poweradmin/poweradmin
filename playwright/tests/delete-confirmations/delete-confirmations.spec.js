@@ -99,7 +99,7 @@ test.describe('Zone Delete Confirmation', () => {
       if (await deleteLinks.count() > 0) {
         await deleteLinks.first().click();
 
-        const csrfToken = page.locator('input[name="csrf_token"], input[name="_token"]');
+        const csrfToken = page.locator('input[name="_token"]');
         const hasToken = await csrfToken.count() > 0;
         expect(hasToken).toBeTruthy();
       }
