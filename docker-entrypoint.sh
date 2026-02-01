@@ -361,9 +361,24 @@ create_admin_user() {
         "mysql")
             debug_log "Creating admin user in MySQL database"
 
+            # Build MySQL SSL options based on environment variables
+            local mysql_ssl_opts=""
+            local db_ssl=$(echo "${DB_SSL:-false}" | tr '[:upper:]' '[:lower:]')
+            local db_ssl_verify=$(echo "${DB_SSL_VERIFY:-false}" | tr '[:upper:]' '[:lower:]')
+
+            if [ "$db_ssl" != "true" ]; then
+                # SSL disabled - skip SSL entirely
+                mysql_ssl_opts="--skip-ssl"
+            elif [ "$db_ssl_verify" != "true" ]; then
+                # SSL enabled but verification disabled - skip certificate verification
+                mysql_ssl_opts="--skip-ssl-verify-server-cert"
+            fi
+
+            debug_log "MySQL SSL options: ${mysql_ssl_opts:-none}"
+
             # Check if user already exists
             local user_exists
-            user_exists=$(mysql -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
+            user_exists=$(mysql ${mysql_ssl_opts} -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
 
             if [ "${user_exists}" -gt 0 ]; then
                 log "Admin user '${admin_username}' already exists, skipping creation"
@@ -371,7 +386,7 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            if ! mysql -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+            if ! mysql ${mysql_ssl_opts} -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
                 insert_result=1
             fi
             ;;
