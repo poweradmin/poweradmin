@@ -140,9 +140,10 @@ class ApiPermissionServiceTest extends TestCase
         $stmt->method('execute')->willReturn(true);
 
         $callIndex = 0;
-        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex) {
+        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex): int {
             $results = [0, 0, 1, 1]; // not ueberuser, not view_others, has view_own, owns zone
-            return $results[$callIndex++] ?? 0;
+            $index = $callIndex++;
+            return array_key_exists($index, $results) ? $results[$index] : 0;
         });
 
         $this->db->method('prepare')->willReturn($stmt);
@@ -414,9 +415,10 @@ class ApiPermissionServiceTest extends TestCase
         $stmt->method('execute')->willReturn(true);
 
         $callIndex = 0;
-        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex) {
+        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex): int {
             $results = [0, 0, 1]; // not ueberuser, not view_others, has view_own
-            return $results[$callIndex++] ?? 0;
+            $index = $callIndex++;
+            return array_key_exists($index, $results) ? $results[$index] : 0;
         });
 
         $stmt->method('fetchAll')->willReturn([1, 2, 3]);
