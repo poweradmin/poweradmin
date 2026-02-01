@@ -527,6 +527,7 @@ return [
     'database' => [
         'type' => '${DB_TYPE}',
         'host' => '${DB_HOST:-}',
+        'port' => '${DB_PORT:-}',
         'user' => '${DB_USER:-}',
         'password' => '${DB_PASS:-}',
         'name' => '${DB_NAME:-}',
