@@ -179,17 +179,38 @@ test.describe('Permission Combinations', () => {
     test('should access edit template page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/permissions/templates');
-      const editLink = page.locator('a[href*="/edit"]').first();
+
+      // Use table-specific selector to avoid matching dropdown menu items
+      const table = page.locator('table');
+      if (await table.count() === 0) {
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
+        return;
+      }
+
+      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         await expect(page).toHaveURL(/.*permissions\/templates.*edit/);
+      } else {
+        // No templates to edit
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
       }
     });
 
     test('should display current template permissions', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/permissions/templates');
-      const editLink = page.locator('a[href*="/edit"]').first();
+
+      const table = page.locator('table');
+      if (await table.count() === 0) {
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
+        return;
+      }
+
+      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const checkboxes = page.locator('input[type="checkbox"]');
@@ -200,7 +221,15 @@ test.describe('Permission Combinations', () => {
     test('should update template permissions', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/permissions/templates');
-      const editLink = page.locator('a[href*="/edit"]').first();
+
+      const table = page.locator('table');
+      if (await table.count() === 0) {
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
+        return;
+      }
+
+      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
 

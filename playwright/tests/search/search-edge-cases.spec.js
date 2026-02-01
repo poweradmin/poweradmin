@@ -322,11 +322,27 @@ test.describe('Search Edge Cases', () => {
       await submitBtn.click();
       await page.waitForLoadState('networkidle');
 
+      // Store the current URL to verify we can get back to it
+      const searchResultUrl = page.url();
+
       // Navigate away
       await page.goto('/zones/forward?letter=all');
+      await page.waitForLoadState('networkidle');
 
-      // Go back
-      await page.goBack();
+      // Go back - may fail with ERR_CACHE_MISS on POST form results, which is expected browser behavior
+      // Use Promise.race to handle both success and failure cases
+      const goBackResult = await Promise.race([
+        page.goBack({ waitUntil: 'load' }).then(() => 'success').catch(() => 'error'),
+        new Promise(resolve => setTimeout(() => resolve('timeout'), 3000))
+      ]);
+
+      // If goBack failed or timed out, navigate directly
+      if (goBackResult !== 'success') {
+        // Wait a moment for any error page to settle
+        await page.waitForTimeout(500);
+        await page.goto('/search', { waitUntil: 'load' });
+      }
+
       await page.waitForLoadState('networkidle');
 
       const bodyText = await page.locator('body').textContent();

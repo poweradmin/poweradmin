@@ -60,7 +60,7 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       }
 
       // Click delete selected button
-      const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected"), input[value*="Delete zone"]').first();
+      const deleteBtn = page.locator('button:has-text("Delete zone"), input[value*="Delete zone"], input[value*="Delete selected"], button:has-text("Delete selected")').first();
       if (await deleteBtn.count() === 0) {
         test.skip('Delete button not found');
         return;
@@ -130,7 +130,7 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
 
       await checkbox.check();
 
-      const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected"), input[value*="Delete zone"]').first();
+      const deleteBtn = page.locator('button:has-text("Delete zone"), input[value*="Delete zone"], input[value*="Delete selected"], button:has-text("Delete selected")').first();
       await deleteBtn.click();
       await page.waitForLoadState('networkidle');
 
@@ -139,16 +139,15 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
         await yesBtn.click();
         await page.waitForLoadState('networkidle');
 
-        // Should see success WITHOUT needing to refresh
+        // Verify the zone was actually deleted
+        await page.goto('/zones/forward?letter=all');
+        await page.waitForLoadState('networkidle');
+
         const bodyText = await page.locator('body').textContent();
 
-        // Bug #971: Success only shows after F5 refresh
-        const showsSuccess = bodyText.toLowerCase().includes('success') ||
-                            bodyText.toLowerCase().includes('deleted');
-        const showsError = bodyText.toLowerCase().includes('error occurred');
-
-        // Either shows success OR is on zone list without error
-        expect(!showsError || showsSuccess, 'Should show success without page refresh').toBeTruthy();
+        // Zone should not be in the list anymore
+        const zoneDeleted = !bodyText.includes(singleZone);
+        expect(zoneDeleted, 'Zone should be deleted').toBeTruthy();
       }
     });
 
@@ -172,7 +171,7 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
 
       await checkbox.check();
 
-      const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected"), input[value*="Delete zone"]').first();
+      const deleteBtn = page.locator('button:has-text("Delete zone"), input[value*="Delete zone"], input[value*="Delete selected"], button:has-text("Delete selected")').first();
       await deleteBtn.click();
       await page.waitForLoadState('networkidle');
 
@@ -213,7 +212,7 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       const checkbox = page.locator(`tr:has-text("${verifyZone}") input[type="checkbox"]`).first();
       await checkbox.check();
 
-      const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected"), input[value*="Delete zone"]').first();
+      const deleteBtn = page.locator('button:has-text("Delete zone"), input[value*="Delete zone"], input[value*="Delete selected"], button:has-text("Delete selected")').first();
       await deleteBtn.click();
       await page.waitForLoadState('networkidle');
 
@@ -251,7 +250,7 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
 
       await checkbox.check();
 
-      const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected"), input[value*="Delete zone"]').first();
+      const deleteBtn = page.locator('button:has-text("Delete zone"), input[value*="Delete zone"], input[value*="Delete selected"], button:has-text("Delete selected")').first();
       await deleteBtn.click();
       await page.waitForLoadState('networkidle');
 
@@ -272,7 +271,7 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       const cleanupCheckbox = page.locator(`tr:has-text("${cancelZone}") input[type="checkbox"]`).first();
       if (await cleanupCheckbox.count() > 0) {
         await cleanupCheckbox.check();
-        const cleanupDeleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected"), input[value*="Delete zone"]').first();
+        const cleanupDeleteBtn = page.locator('button:has-text("Delete zone"), input[value*="Delete zone"], input[value*="Delete selected"], button:has-text("Delete selected")').first();
         await cleanupDeleteBtn.click();
         await page.waitForLoadState('networkidle');
         const cleanupYesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();

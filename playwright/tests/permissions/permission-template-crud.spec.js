@@ -159,10 +159,22 @@ test.describe('Permission Template CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/permissions/templates');
 
-      const editLink = page.locator('a[href*="/edit"]').first();
+      // Use table-specific selector to avoid matching dropdown menu items
+      const table = page.locator('table');
+      if (await table.count() === 0) {
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
+        return;
+      }
+
+      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         await expect(page).toHaveURL(/.*permissions\/templates\/\d+\/edit/);
+      } else {
+        // No templates to edit - this is acceptable
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
       }
     });
 
@@ -170,7 +182,14 @@ test.describe('Permission Template CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/permissions/templates');
 
-      const editLink = page.locator('a[href*="/edit"]').first();
+      const table = page.locator('table');
+      if (await table.count() === 0) {
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
+        return;
+      }
+
+      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
 
@@ -186,7 +205,14 @@ test.describe('Permission Template CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/permissions/templates');
 
-      const editLink = page.locator('a[href*="/edit"]').first();
+      const table = page.locator('table');
+      if (await table.count() === 0) {
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
+        return;
+      }
+
+      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
 
@@ -205,7 +231,14 @@ test.describe('Permission Template CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/permissions/templates');
 
-      const editLink = page.locator('a[href*="/edit"]').first();
+      const table = page.locator('table');
+      if (await table.count() === 0) {
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
+        return;
+      }
+
+      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
 
@@ -224,7 +257,14 @@ test.describe('Permission Template CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/permissions/templates');
 
-      const editLink = page.locator('a[href*="/edit"]').first();
+      const table = page.locator('table');
+      if (await table.count() === 0) {
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
+        return;
+      }
+
+      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
 

@@ -52,14 +52,14 @@ test.describe('DNS Record Management', () => {
     const hasForm = await page.locator('form').count() > 0;
 
     if (hasForm) {
-      // Should have record name field
-      await expect(page.locator('input[name*="name"], input[name*="record"]')).toBeVisible();
+      // Should have record name field (use first matching text input)
+      await expect(page.locator('input.name-field, input[name*="[name]"]').first()).toBeVisible();
 
       // Should have record type selector
-      await expect(page.locator('select[name*="type"], select[name*="record_type"]')).toBeVisible();
+      await expect(page.locator('select[name*="type"], select.record-type-select').first()).toBeVisible();
 
       // Should have record content/value field
-      await expect(page.locator('input[name*="content"], input[name*="value"], textarea[name*="content"]')).toBeVisible();
+      await expect(page.locator('input.record-content, input[name*="[content]"]').first()).toBeVisible();
     } else {
       console.log('No record form available - zone may not exist');
     }
