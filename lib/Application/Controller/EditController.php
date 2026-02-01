@@ -773,7 +773,7 @@ class EditController extends BaseController
             $header[] = 'Comment';
         }
 
-        fputcsv($output, $header);
+        fputcsv($output, $header, ',', '"', '\\');
 
         // CSV data
         foreach ($records as $record) {
@@ -791,7 +791,7 @@ class EditController extends BaseController
                 $row[] = $record['comment'] ?? '';
             }
 
-            fputcsv($output, $row);
+            fputcsv($output, $row, ',', '"', '\\');
         }
 
         fclose($output);
