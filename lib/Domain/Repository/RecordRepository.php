@@ -461,6 +461,10 @@ class RecordRepository implements RecordRepositoryInterface
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
 
+        // SQLite is strict about ambiguous column names when JOINs are used.
+        // Qualify ORDER BY columns to always refer to records table.
+        $sort_by_qualified = $records_table . '.' . $sort_by;
+
         // Prepare query parameters
         $params = [':zone_id' => $zone_id];
 
@@ -514,8 +518,16 @@ class RecordRepository implements RecordRepositoryInterface
         $query .= " WHERE $records_table.domain_id = :zone_id AND $records_table.type IS NOT NULL AND $records_table.type != ''" .
                  $search_condition . $type_condition . $content_condition;
 
-        // Sorting and limits
-        $query .= " ORDER BY $records_table.$sort_by $sort_direction LIMIT :row_amount OFFSET :row_start";
+        // Sorting (qualified) and limits
+        $query .= " ORDER BY $sort_by_qualified $sort_direction";
+
+        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'sqlite') {
+            // SQLite PDO can be picky with bound LIMIT/OFFSET; inline after validation
+            $query .= " LIMIT $row_amount OFFSET $row_start";
+        } else {
+            $query .= " LIMIT :row_amount OFFSET :row_start";
+        }
 
         $stmt = $this->db->prepare($query);
 
@@ -523,8 +535,10 @@ class RecordRepository implements RecordRepositoryInterface
         foreach ($params as $key => $value) {
             $stmt->bindValue($key, $value);
         }
-        $stmt->bindValue(':row_amount', $row_amount, PDO::PARAM_INT);
-        $stmt->bindValue(':row_start', $row_start, PDO::PARAM_INT);
+        if ($driver !== 'sqlite') {
+            $stmt->bindValue(':row_amount', $row_amount, PDO::PARAM_INT);
+            $stmt->bindValue(':row_start', $row_start, PDO::PARAM_INT);
+        }
 
         $stmt->execute();
         $records = [];
