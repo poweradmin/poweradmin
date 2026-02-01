@@ -552,7 +552,7 @@ msgstr "ゾーンが正常に更新されました。"
 
 #: lib/Application/Controller/EditController.php:804
 msgid "Zone saved successfully. No record changes were made, but SOA serial was incremented."
-msgstr ""
+msgstr "ゾーンは正常に保存されました。レコードの変更はありませんでしたが、SOAシリアルが増加しました。"
 
 #: lib/Application/Controller/EditController.php:813
 msgid "Zone has not been updated successfully."
@@ -4347,7 +4347,7 @@ msgstr "SRVレコードのドメイン名が無効です。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid "SRV record content must have weight, port and target (3 fields). Priority should be in the priority field."
-msgstr ""
+msgstr "SRVレコードの内容には重み、ポート、ターゲット（3つのフィールド）が必要です。優先度は優先度フィールドに入力してください。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
