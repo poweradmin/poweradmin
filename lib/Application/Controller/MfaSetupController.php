@@ -113,15 +113,14 @@ class MfaSetupController extends BaseController
             return;
         }
 
-        // Generate a new secret if one doesn't exist
-        if (!$userMfa->getSecret()) {
-            // Generate a proper secret for authenticator apps
-            $userMfa->setSecret($this->mfaService->generateSecretKey());
-            $userMfa->setType(UserMfa::TYPE_APP);
-            $this->mfaService->saveUserMfa($userMfa);
+        // Always generate a new TOTP secret for app-based MFA
+        // This ensures we have a proper Base32-encoded secret even if
+        // a previous email verification code was stored
+        $userMfa->setSecret($this->mfaService->generateSecretKey());
+        $userMfa->setType(UserMfa::TYPE_APP);
+        $this->mfaService->saveUserMfa($userMfa);
 
-            error_log("[MfaSetupController] Generated new secret for app-based MFA for user $userId");
-        }
+        error_log("[MfaSetupController] Generated new secret for app-based MFA for user $userId");
 
         // Display verification page
         $this->displayAppVerification($userMfa->getSecret());
