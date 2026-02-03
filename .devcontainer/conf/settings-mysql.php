@@ -32,8 +32,17 @@ return [
         'mfa' => [
             'enabled' => true,
             'enforced' => false,
-            'email_enabled' => false,
+            'email_enabled' => true,
         ],
+    ],
+
+    /**
+     * Mail Settings (Logger transport for development)
+     */
+    'mail' => [
+        'enabled' => true,
+        'transport' => 'logger',
+        'from' => 'poweradmin@example.com',
     ],
 
     /**
