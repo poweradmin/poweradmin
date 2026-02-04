@@ -28,6 +28,13 @@ return [
             'enforced' => false,
             'email_enabled' => true,
         ],
+        'password_reset' => [
+            'enabled' => true,
+            'token_lifetime' => 3600,
+        ],
+        'username_recovery' => [
+            'enabled' => true,
+        ],
     ],
 
     /**
