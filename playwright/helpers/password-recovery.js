@@ -14,7 +14,15 @@ export async function isPasswordRecoveryEnabled(page) {
 
   // Look for forgot password link on login page
   const forgotLink = page.locator('a[href*="forgot"], a:has-text("Forgot password"), a:has-text("forgot")');
-  return await forgotLink.count() > 0;
+  const isEnabled = await forgotLink.count() > 0;
+
+  // If enabled, navigate to the forgot password page for subsequent tests
+  if (isEnabled) {
+    await page.goto('/password/forgot');
+    await page.waitForLoadState('networkidle');
+  }
+
+  return isEnabled;
 }
 
 /**
