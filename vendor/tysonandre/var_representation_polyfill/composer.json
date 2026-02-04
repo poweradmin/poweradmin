@@ -1,0 +1,44 @@
+{
+    "name": "tysonandre/var_representation_polyfill",
+    "description": "Polyfill for var_representation: convert a variable to a string in a way that fixes the shortcomings of var_export",
+    "keywords": ["var_export", "var_representation"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tyson Andre"
+        }
+    ],
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "7.2.24"
+        }
+    },
+    "require": {
+        "php": "^7.2.0|^8.0.0",
+        "ext-tokenizer": "*"
+    },
+    "require-dev": {
+        "phan/phan": "^5.4.1",
+        "phpunit/phpunit": "^8.5.0"
+    },
+    "provide": {
+        "ext-var_representation": "*"
+    },
+    "suggest": {
+        "ext-var_representation": "For best performance"
+    },
+    "autoload": {
+        "psr-4": {"VarRepresentation\\": "src/VarRepresentation"},
+        "files": ["src/var_representation.php"]
+    },
+    "autoload-dev": {
+        "psr-4": {"VarRepresentation\\Tests\\": "tests/"}
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.1.3-dev"
+        }
+    }
+}
