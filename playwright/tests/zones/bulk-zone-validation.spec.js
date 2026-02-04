@@ -143,7 +143,8 @@ test.describe('Bulk Zone Registration Validation', () => {
 
     // Should show error about duplicate
     const bodyText = await page.locator('body').textContent();
-    const hasDuplicateError = bodyText.match(/already exists|duplicate|error/i);
+    // Match various duplicate zone error messages: "already exists", "already a zone", "duplicate", etc.
+    const hasDuplicateError = bodyText.match(/already|duplicate|error/i);
     expect(hasDuplicateError).toBeTruthy();
 
     // Cleanup
