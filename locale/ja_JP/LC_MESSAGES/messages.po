@@ -4360,7 +4360,7 @@ msgstr "SRVレコードのポートフィールドの値が無効です。1-6553
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
 msgid "Port %d differs from the standard port %d for %s service. This is allowed but unusual."
-msgstr "ポート%dは%sサービスの標準ポート%dと異なります。これは許可されていますが異常です。"
+msgstr "ポート%1$dは%3$sサービスの標準ポート%2$dと異なります。これは許可されていますが異常です。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."

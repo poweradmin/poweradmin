@@ -4360,7 +4360,7 @@ msgstr "SRV 记录端口字段的值无效。必须为 1-65535。"
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
 msgid "Port %d differs from the standard port %d for %s service. This is allowed but unusual."
-msgstr "端口 %d 与 %s 服务的标准端口 %d 不同。这是允许的，但不常见。"
+msgstr "端口 %1$d 与 %3$s 服务的标准端口 %2$d 不同。这是允许的，但不常见。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
