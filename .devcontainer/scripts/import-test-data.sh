@@ -49,7 +49,7 @@ PGSQL_DATABASE="${PGSQL_DATABASE:-pdns}"
 PGSQL_CONTAINER="${PGSQL_CONTAINER:-postgres}"
 
 SQLITE_CONTAINER="${SQLITE_CONTAINER:-sqlite}"
-SQLITE_DB_PATH="${SQLITE_DB_PATH:-/data/pdns.db}"
+SQLITE_DB_PATH="${SQLITE_DB_PATH:-/data/poweradmin.db}"
 
 echo -e "${BLUE}================================================${NC}"
 echo -e "${BLUE}  Poweradmin Test Data Import${NC}"
@@ -445,7 +445,7 @@ main() {
                 echo "  PGSQL_DATABASE      PostgreSQL database (default: pdns)"
                 echo "  PGSQL_CONTAINER     PostgreSQL container name (default: postgres)"
                 echo "  SQLITE_CONTAINER    SQLite container name (default: sqlite)"
-                echo "  SQLITE_DB_PATH      SQLite database path (default: /data/pdns.db)"
+                echo "  SQLITE_DB_PATH      SQLite database path (default: /data/poweradmin.db)"
                 exit 0
                 ;;
             *)
