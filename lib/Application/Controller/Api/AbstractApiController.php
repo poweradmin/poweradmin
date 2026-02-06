@@ -144,7 +144,7 @@ abstract class AbstractApiController extends BaseController
      * @param mixed $data The data to return
      * @param int $status HTTP status code
      * @param array $headers Additional headers to include
-     * @return JsonResponse
+     * @return JsonResponse|Response
      */
     protected function returnJsonResponse($data, int $status = 200, array $headers = []): JsonResponse|Response
     {
