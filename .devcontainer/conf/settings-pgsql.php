@@ -100,6 +100,7 @@ return [
      */
     'api' => [
         'enabled' => true,
+        'docs_enabled' => true,
     ],
 
     /**
