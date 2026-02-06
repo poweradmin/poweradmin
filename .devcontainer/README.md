@@ -69,7 +69,7 @@ Access Adminer at http://localhost:8090
 ### Direct Connection
 - **MariaDB**: user: `pdns`, pass: `poweradmin`, db: `pdns` (app tables in `poweradmin` db)
 - **PostgreSQL**: user: `pdns`, pass: `poweradmin`, db: `pdns`
-- **SQLite**: `/data/poweradmin.db` (mounted in containers)
+- **SQLite**: `/data/pdns.db` (mounted in containers)
 
 ## Test Credentials
 
