@@ -77,17 +77,40 @@ clean_mysql() {
     docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" << 'EOSQL'
 USE poweradmin;
 
+-- Delete zone template associations and sync data
+DELETE FROM zone_template_sync;
+DELETE FROM records_zone_templ;
+
 -- Delete zone ownership records
 DELETE FROM zones;
+
+-- Delete zone template records and templates
+DELETE FROM zone_templ_records;
+DELETE FROM zone_templ;
+
+-- Delete user-related data (cascades handle some, but be explicit)
+DELETE FROM oidc_user_links;
+DELETE FROM saml_user_links;
+DELETE FROM user_agreements;
+DELETE FROM user_mfa;
+DELETE FROM user_preferences;
+DELETE FROM api_keys;
+DELETE FROM login_attempts;
+DELETE FROM password_reset_tokens;
+DELETE FROM username_recovery_requests;
 
 -- Delete test users (keep admin if exists)
 DELETE FROM users WHERE username != 'admin';
 
--- Delete permission template items for templates 2-5
+-- Delete permission template items for non-default templates
 DELETE FROM perm_templ_items WHERE templ_id > 1;
 
 -- Delete permission templates (keep Administrator)
 DELETE FROM perm_templ WHERE id > 1;
+
+-- Clear logs
+DELETE FROM log_users;
+DELETE FROM log_zones;
 
 USE pdns;
 
@@ -111,17 +134,40 @@ clean_pgsql() {
     fi
 
     docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" << 'EOSQL'
+-- Delete zone template associations and sync data
+DELETE FROM zone_template_sync;
+DELETE FROM records_zone_templ;
+
 -- Delete zone ownership records
 DELETE FROM zones;
+
+-- Delete zone template records and templates
+DELETE FROM zone_templ_records;
+DELETE FROM zone_templ;
+
+-- Delete user-related data
+DELETE FROM oidc_user_links;
+DELETE FROM saml_user_links;
+DELETE FROM user_agreements;
+DELETE FROM user_mfa;
+DELETE FROM user_preferences;
+DELETE FROM api_keys;
+DELETE FROM login_attempts;
+DELETE FROM password_reset_tokens;
+DELETE FROM username_recovery_requests;
 
 -- Delete test users (keep admin if exists)
 DELETE FROM users WHERE username != 'admin';
 
--- Delete permission template items for templates 2-5
+-- Delete permission template items for non-default templates
 DELETE FROM perm_templ_items WHERE templ_id > 1;
 
 -- Delete permission templates (keep Administrator)
 DELETE FROM perm_templ WHERE id > 1;
+
+-- Clear logs
+DELETE FROM log_users;
+DELETE FROM log_zones;
 
 -- Delete all records
 DELETE FROM records;
@@ -131,10 +177,19 @@ DELETE FROM domains;
 
 -- Reset sequences
 SELECT setval('perm_templ_id_seq', 1);
+SELECT setval('perm_templ_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_templ_items), 1));
 SELECT setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1));
 SELECT setval('domains_id_seq', 1);
 SELECT setval('records_id_seq', 1);
 SELECT setval('zones_id_seq', 1);
+SELECT setval('zone_templ_id_seq', 1);
+SELECT setval('zone_templ_records_id_seq', 1);
+SELECT setval('records_zone_templ_id_seq', 1);
+SELECT setval('log_users_id_seq1', 1);
+SELECT setval('log_zones_id_seq1', 1);
+SELECT setval('api_keys_id_seq', 1);
+SELECT setval('user_mfa_id_seq', 1);
+SELECT setval('login_attempts_id_seq', 1);
 EOSQL
 
     echo -e "${GREEN}✅ PostgreSQL cleaned${NC}"
@@ -153,17 +208,40 @@ clean_sqlite() {
 -- Attach PowerDNS database
 ATTACH DATABASE '/data/pdns.db' AS pdns;
 
+-- Delete zone template associations and sync data
+DELETE FROM zone_template_sync;
+DELETE FROM records_zone_templ;
+
 -- Delete zone ownership records
 DELETE FROM zones;
+
+-- Delete zone template records and templates
+DELETE FROM zone_templ_records;
+DELETE FROM zone_templ;
+
+-- Delete user-related data
+DELETE FROM oidc_user_links;
+DELETE FROM saml_user_links;
+DELETE FROM user_agreements;
+DELETE FROM user_mfa;
+DELETE FROM user_preferences;
+DELETE FROM api_keys;
+DELETE FROM login_attempts;
+DELETE FROM password_reset_tokens;
+DELETE FROM username_recovery_requests;
 
 -- Delete test users (keep admin if exists)
 DELETE FROM users WHERE username != 'admin';
 
--- Delete permission template items for templates 2-5
+-- Delete permission template items for non-default templates
 DELETE FROM perm_templ_items WHERE templ_id > 1;
 
 -- Delete permission templates (keep Administrator)
 DELETE FROM perm_templ WHERE id > 1;
+
+-- Clear logs
+DELETE FROM log_users;
+DELETE FROM log_zones;
 
 -- Delete all records from PowerDNS database
 DELETE FROM pdns.records;

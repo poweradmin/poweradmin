@@ -19,7 +19,12 @@
     "test:e2e:firefox": "playwright test --project=firefox",
     "test:e2e:webkit": "playwright test --project=webkit",
     "test:e2e:all": "playwright test --project=chromium --project=firefox --project=webkit",
-    "test:e2e:report": "playwright show-report"
+    "test:e2e:report": "playwright show-report",
+    "test:api": "cd tests/api && ./run-tests.sh --db mysql test all",
+    "test:api:mysql": "cd tests/api && ./run-tests.sh --db mysql test all",
+    "test:api:pgsql": "cd tests/api && ./run-tests.sh --db pgsql test all",
+    "test:api:sqlite": "cd tests/api && ./run-tests.sh --db sqlite test all",
+    "test:api:all-dbs": "cd tests/api && ./run-tests.sh test:all-dbs"
   },
   "keywords": [],
   "author": "",
