@@ -49,6 +49,20 @@ WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'inactive');
 SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
 
 -- =============================================================================
+-- API KEY FOR AUTOMATED TESTING
+-- =============================================================================
+-- API key linked to admin user for API test suite (tests/api/)
+
+INSERT INTO "api_keys" ("name", "secret_key", "created_by", "disabled")
+SELECT 'Automated Testing Key', 'test-api-key-for-automated-testing-12345', u."id", false
+FROM "users" u
+WHERE u."username" = 'admin'
+  AND NOT EXISTS (SELECT 1 FROM "api_keys" WHERE "secret_key" = 'test-api-key-for-automated-testing-12345');
+
+-- Update sequence to avoid conflicts
+SELECT setval('api_keys_id_seq', COALESCE((SELECT MAX(id) FROM api_keys), 1));
+
+-- =============================================================================
 -- TEST DOMAINS
 -- =============================================================================
 

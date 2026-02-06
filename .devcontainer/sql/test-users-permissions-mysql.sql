@@ -48,6 +48,17 @@ SELECT 'inactive', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u
 WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'inactive');
 
 -- =============================================================================
+-- POWERADMIN DATABASE - API KEY FOR AUTOMATED TESTING
+-- =============================================================================
+-- API key linked to admin user for API test suite (tests/api/)
+
+INSERT INTO `api_keys` (`name`, `secret_key`, `created_by`, `disabled`)
+SELECT 'Automated Testing Key', 'test-api-key-for-automated-testing-12345', u.`id`, 0
+FROM `users` u
+WHERE u.`username` = 'admin'
+  AND NOT EXISTS (SELECT 1 FROM `api_keys` WHERE `secret_key` = 'test-api-key-for-automated-testing-12345');
+
+-- =============================================================================
 -- PDNS DATABASE - TEST DOMAINS
 -- =============================================================================
 
