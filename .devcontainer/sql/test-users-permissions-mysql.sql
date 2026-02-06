@@ -13,9 +13,57 @@
 -- =============================================================================
 -- POWERADMIN DATABASE - PERMISSION TEMPLATES
 -- =============================================================================
--- Templates #1-5 are preconfigured in the base schema (no additional templates needed)
+-- Recreate templates 1-5 in case they were modified/deleted by previous E2E tests
 
 USE poweradmin;
+
+-- Restore Administrator template (id=1) - may have been renamed by E2E tests
+INSERT INTO `perm_templ` (`id`, `name`, `descr`) VALUES
+    (1, 'Administrator', 'Administrator template with full rights.')
+ON DUPLICATE KEY UPDATE `name` = 'Administrator', `descr` = 'Administrator template with full rights.';
+
+-- Recreate templates 2-5 (deleted by --clean or E2E tests)
+INSERT INTO `perm_templ` (`id`, `name`, `descr`) VALUES
+    (2, 'Zone Manager', 'Full management of own zones including creation, editing, deletion, and templates.')
+ON DUPLICATE KEY UPDATE `name` = 'Zone Manager', `descr` = 'Full management of own zones including creation, editing, deletion, and templates.';
+
+INSERT INTO `perm_templ` (`id`, `name`, `descr`) VALUES
+    (3, 'DNS Editor', 'Edit own zone records but cannot modify SOA and NS records.')
+ON DUPLICATE KEY UPDATE `name` = 'DNS Editor', `descr` = 'Edit own zone records but cannot modify SOA and NS records.';
+
+INSERT INTO `perm_templ` (`id`, `name`, `descr`) VALUES
+    (4, 'Read Only', 'Read-only access to own zones with search capability.')
+ON DUPLICATE KEY UPDATE `name` = 'Read Only', `descr` = 'Read-only access to own zones with search capability.';
+
+INSERT INTO `perm_templ` (`id`, `name`, `descr`) VALUES
+    (5, 'No Access', 'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.')
+ON DUPLICATE KEY UPDATE `name` = 'No Access', `descr` = 'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.';
+
+-- Recreate Administrator permissions (template 1)
+INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`)
+SELECT 1, `id` FROM `perm_items` WHERE `name` = 'user_is_ueberuser';
+
+-- Recreate Zone Manager permissions (template 2)
+INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`)
+SELECT 2, `id` FROM `perm_items` WHERE `name` IN (
+    'zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
+    'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
+    'api_manage_keys', 'zone_delete_own'
+) AND NOT EXISTS (SELECT 1 FROM `perm_templ_items` pti WHERE pti.`templ_id` = 2 AND pti.`perm_id` = `perm_items`.`id`);
+
+-- Recreate DNS Editor permissions (template 3)
+INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`)
+SELECT 3, `id` FROM `perm_items` WHERE `name` IN (
+    'zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client'
+) AND NOT EXISTS (SELECT 1 FROM `perm_templ_items` pti WHERE pti.`templ_id` = 3 AND pti.`perm_id` = `perm_items`.`id`);
+
+-- Recreate Read Only permissions (template 4)
+INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`)
+SELECT 4, `id` FROM `perm_items` WHERE `name` IN (
+    'zone_content_view_own', 'search'
+) AND NOT EXISTS (SELECT 1 FROM `perm_templ_items` pti WHERE pti.`templ_id` = 4 AND pti.`perm_id` = `perm_items`.`id`);
+
+-- Template 5 (No Access) has no permissions
 
 -- =============================================================================
 -- POWERADMIN DATABASE - TEST USERS

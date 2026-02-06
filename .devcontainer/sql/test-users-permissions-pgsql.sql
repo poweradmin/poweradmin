@@ -12,7 +12,60 @@
 -- =============================================================================
 -- PERMISSION TEMPLATES
 -- =============================================================================
--- Templates #1-5 are preconfigured in the base schema (no additional templates needed)
+-- Recreate templates 1-5 in case they were modified/deleted by previous E2E tests
+
+-- Restore/recreate templates using upsert (ON CONFLICT)
+INSERT INTO "perm_templ" ("id", "name", "descr") VALUES
+    (1, 'Administrator', 'Administrator template with full rights.')
+ON CONFLICT ("id") DO UPDATE SET "name" = EXCLUDED."name", "descr" = EXCLUDED."descr";
+
+INSERT INTO "perm_templ" ("id", "name", "descr") VALUES
+    (2, 'Zone Manager', 'Full management of own zones including creation, editing, deletion, and templates.')
+ON CONFLICT ("id") DO UPDATE SET "name" = EXCLUDED."name", "descr" = EXCLUDED."descr";
+
+INSERT INTO "perm_templ" ("id", "name", "descr") VALUES
+    (3, 'DNS Editor', 'Edit own zone records but cannot modify SOA and NS records.')
+ON CONFLICT ("id") DO UPDATE SET "name" = EXCLUDED."name", "descr" = EXCLUDED."descr";
+
+INSERT INTO "perm_templ" ("id", "name", "descr") VALUES
+    (4, 'Read Only', 'Read-only access to own zones with search capability.')
+ON CONFLICT ("id") DO UPDATE SET "name" = EXCLUDED."name", "descr" = EXCLUDED."descr";
+
+INSERT INTO "perm_templ" ("id", "name", "descr") VALUES
+    (5, 'No Access', 'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.')
+ON CONFLICT ("id") DO UPDATE SET "name" = EXCLUDED."name", "descr" = EXCLUDED."descr";
+
+-- Reset sequence to avoid conflicts with future inserts
+SELECT setval('perm_templ_id_seq', GREATEST((SELECT MAX(id) FROM perm_templ), 5));
+
+-- Recreate Administrator permissions (template 1)
+INSERT INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 1, "id" FROM "perm_items" WHERE "name" = 'user_is_ueberuser'
+AND NOT EXISTS (SELECT 1 FROM "perm_templ_items" WHERE "templ_id" = 1 AND "perm_id" = "perm_items"."id");
+
+-- Recreate Zone Manager permissions (template 2)
+INSERT INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 2, "id" FROM "perm_items" WHERE "name" IN (
+    'zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
+    'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
+    'api_manage_keys', 'zone_delete_own'
+) AND NOT EXISTS (SELECT 1 FROM "perm_templ_items" WHERE "templ_id" = 2 AND "perm_id" = "perm_items"."id");
+
+-- Recreate DNS Editor permissions (template 3)
+INSERT INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 3, "id" FROM "perm_items" WHERE "name" IN (
+    'zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client'
+) AND NOT EXISTS (SELECT 1 FROM "perm_templ_items" WHERE "templ_id" = 3 AND "perm_id" = "perm_items"."id");
+
+-- Recreate Read Only permissions (template 4)
+INSERT INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 4, "id" FROM "perm_items" WHERE "name" IN (
+    'zone_content_view_own', 'search'
+) AND NOT EXISTS (SELECT 1 FROM "perm_templ_items" WHERE "templ_id" = 4 AND "perm_id" = "perm_items"."id");
+
+-- Template 5 (No Access) has no permissions
+
+SELECT setval('perm_templ_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_templ_items), 1));
 
 -- =============================================================================
 -- TEST USERS

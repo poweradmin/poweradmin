@@ -22,7 +22,44 @@ ATTACH DATABASE '/data/pdns.db' AS pdns;
 -- =============================================================================
 -- PERMISSION TEMPLATES
 -- =============================================================================
--- Templates #1-5 are preconfigured in the base schema (no additional templates needed)
+-- Recreate templates 1-5 in case they were modified/deleted by previous E2E tests
+
+INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
+    (1, 'Administrator', 'Administrator template with full rights.');
+INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
+    (2, 'Zone Manager', 'Full management of own zones including creation, editing, deletion, and templates.');
+INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
+    (3, 'DNS Editor', 'Edit own zone records but cannot modify SOA and NS records.');
+INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
+    (4, 'Read Only', 'Read-only access to own zones with search capability.');
+INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
+    (5, 'No Access', 'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.');
+
+-- Recreate Administrator permissions (template 1)
+INSERT OR IGNORE INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 1, "id" FROM "perm_items" WHERE "name" = 'user_is_ueberuser';
+
+-- Recreate Zone Manager permissions (template 2)
+INSERT OR IGNORE INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 2, "id" FROM "perm_items" WHERE "name" IN (
+    'zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
+    'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
+    'api_manage_keys', 'zone_delete_own'
+);
+
+-- Recreate DNS Editor permissions (template 3)
+INSERT OR IGNORE INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 3, "id" FROM "perm_items" WHERE "name" IN (
+    'zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client'
+);
+
+-- Recreate Read Only permissions (template 4)
+INSERT OR IGNORE INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 4, "id" FROM "perm_items" WHERE "name" IN (
+    'zone_content_view_own', 'search'
+);
+
+-- Template 5 (No Access) has no permissions
 
 -- =============================================================================
 -- TEST USERS
