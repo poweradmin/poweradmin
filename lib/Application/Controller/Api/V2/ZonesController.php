@@ -45,6 +45,7 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
 
 class ZonesController extends PublicApiController
@@ -755,7 +756,7 @@ class ZonesController extends PublicApiController
             ]
         )
     )]
-    private function deleteZone(): JsonResponse
+    private function deleteZone(): JsonResponse|Response
     {
         try {
             $userId = $this->getAuthenticatedUserId();

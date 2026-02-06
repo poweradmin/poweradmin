@@ -52,6 +52,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
 
 class ZonesRecordsController extends PublicApiController
@@ -788,7 +789,7 @@ class ZonesRecordsController extends PublicApiController
             ]
         )
     )]
-    private function deleteRecord(): JsonResponse
+    private function deleteRecord(): JsonResponse|Response
     {
         try {
             $userId = $this->getAuthenticatedUserId();
