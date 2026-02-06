@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller\Api;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -144,12 +143,14 @@ abstract class AbstractApiController extends BaseController
      * @param mixed $data The data to return
      * @param int $status HTTP status code
      * @param array $headers Additional headers to include
-     * @return JsonResponse|Response
+     * @return JsonResponse
      */
-    protected function returnJsonResponse($data, int $status = 200, array $headers = []): JsonResponse|Response
+    protected function returnJsonResponse($data, int $status = 200, array $headers = []): JsonResponse
     {
         if ($status === 204) {
-            return new Response('', 204, $headers);
+            $response = new JsonResponse(null, 204, $headers);
+            $response->setContent('');
+            return $response;
         }
 
         return new JsonResponse($data, $status, $headers);

@@ -40,7 +40,6 @@ use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 abstract class PublicApiController extends AbstractApiController
 {
@@ -189,9 +188,9 @@ abstract class PublicApiController extends AbstractApiController
      * @param string|null $message Optional message
      * @param int $status HTTP status code
      * @param array $additionalFields Additional response fields (pagination, meta, etc.)
-     * @return JsonResponse|Response The JSON response object
+     * @return JsonResponse The JSON response object
      */
-    protected function returnApiResponse($data, bool $success = true, ?string $message = null, int $status = 200, array $additionalFields = []): JsonResponse|Response
+    protected function returnApiResponse($data, bool $success = true, ?string $message = null, int $status = 200, array $additionalFields = []): JsonResponse
     {
         $response = [
             'success' => $success,

@@ -43,7 +43,6 @@ use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
 
 class ZonesController extends PublicApiController
@@ -648,7 +647,7 @@ class ZonesController extends PublicApiController
             ]
         )
     )]
-    private function deleteZone(): JsonResponse|Response
+    private function deleteZone(): JsonResponse
     {
         try {
             $userId = $this->getAuthenticatedUserId();

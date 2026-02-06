@@ -51,7 +51,6 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
 
 class ZonesRRSetsController extends PublicApiController
@@ -588,7 +587,7 @@ class ZonesRRSetsController extends PublicApiController
         response: 404,
         description: 'RRSet not found'
     )]
-    private function deleteRRSet(): JsonResponse|Response
+    private function deleteRRSet(): JsonResponse
     {
         try {
             $userId = $this->getAuthenticatedUserId();
