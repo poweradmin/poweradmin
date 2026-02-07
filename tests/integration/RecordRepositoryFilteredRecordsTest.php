@@ -50,7 +50,7 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
         // MySQL test database (port 3307)
         try {
             $this->mysqlConnection = new PDO(
-                'mysql:host=127.0.0.1;port=3307;dbname=pdns',
+                'mysql:host=127.0.0.1;port=3306;dbname=pdns',
                 'pdns',
                 'poweradmin',
                 [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
@@ -63,7 +63,7 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
         // PostgreSQL test database (port 5433)
         try {
             $this->pgsqlConnection = new PDO(
-                'pgsql:host=127.0.0.1;port=5433;dbname=pdns',
+                'pgsql:host=127.0.0.1;port=5432;dbname=pdns',
                 'pdns',
                 'poweradmin',
                 [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
