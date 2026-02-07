@@ -195,6 +195,8 @@ class RoutingConfigurationTest extends TestCase
                 );
             }
         }
+
+        $this->assertNotEmpty($patterns, 'Routes should be loaded');
     }
 
     public function testRoutePerformance(): void
