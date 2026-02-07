@@ -95,7 +95,7 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 ## Tested on
 
 **Officially tested versions:**
-- **master (pre-release)**: PHP 8.2, PowerDNS 4.9.8, MariaDB 10.11, PostgreSQL 16.3
+- **master (pre-release)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/4.x (stable)**: PHP 8.2, PowerDNS 4.9.5, MariaDB 10.11, PostgreSQL 16.3
 - **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
 
@@ -114,6 +114,10 @@ Poweradmin maintains multiple release branches:
 | `master` | Pre-release | Integration testing before release |
 | `release/4.x` | Stable | Current release with new features |
 | `release/3.x` | LTS | Bug fixes and security updates for at least 2 years |
+
+### PHP Version Support
+
+**Important:** Poweradmin **4.1.x will be the last version to support PHP 8.1**. Starting with version 4.2.x, the minimum required PHP version will be **8.2**. Users on PHP 8.1 should plan their PHP upgrade accordingly.
 
 ### Long-Term Support (LTS)
 
