@@ -150,6 +150,7 @@ JetBrains provides IDE licenses used for development of this project.
 * Gino Cremer
 * Arthur Mayer
 * Dylan Blanqué
+* Tony Johnson
 * trendymail
 
 For feature sponsorship, to speed up development of specific features, or to discuss ideas and issues, please [contact me](https://github.com/edmondas).
