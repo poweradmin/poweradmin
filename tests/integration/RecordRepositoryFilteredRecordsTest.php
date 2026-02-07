@@ -35,7 +35,6 @@ use PHPUnit\Framework\TestCase;
  * - ORDER BY with JOINs doesn't cause ambiguous column errors
  * - Pagination works correctly across all databases
  *
- * @group manual
  */
 class RecordRepositoryFilteredRecordsTest extends TestCase
 {
