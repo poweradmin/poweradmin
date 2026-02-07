@@ -1,6 +1,6 @@
 <?php
 
-namespace integration;
+namespace unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Routing\SymfonyRouter;
@@ -184,7 +184,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $this->assertEquals('Poweradmin\Application\Controller\Api\V1\ZonesRecordsController', $routeInfo['controller']);
         $this->assertEquals('api_v1_zone_record', $routeInfo['route']);
         $this->assertEquals([
-            'zone_id' => '123',
+            'id' => '123',
             'record_id' => '789'
         ], $routeInfo['parameters']);
     }
@@ -240,7 +240,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $this->assertEquals('/users/123/edit', $url);
 
         // Test API zone record URL generation
-        $url = $router->generateUrl('api_v1_zone_record', ['zone_id' => 456, 'record_id' => 789]);
+        $url = $router->generateUrl('api_v1_zone_record', ['id' => 456, 'record_id' => 789]);
         $this->assertEquals('/api/v1/zones/456/records/789', $url);
 
         // Test simple route without parameters

@@ -1,6 +1,6 @@
 <?php
 
-namespace integration;
+namespace unit;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
@@ -114,7 +114,7 @@ class RoutingConfigurationTest extends TestCase
 
         $zoneRecordRoute = $this->routes->get('api_v1_zone_record');
         $this->assertNotNull($zoneRecordRoute);
-        $this->assertEquals('\d+', $zoneRecordRoute->getRequirement('zone_id'));
+        $this->assertEquals('\d+', $zoneRecordRoute->getRequirement('id'));
         $this->assertEquals('\d+', $zoneRecordRoute->getRequirement('record_id'));
     }
 
@@ -166,7 +166,7 @@ class RoutingConfigurationTest extends TestCase
         $this->assertEquals('/zones/{zone_id}/records/{id}/edit', $recordEditRoute->getPath());
 
         $apiZoneRecordRoute = $this->routes->get('api_v1_zone_record');
-        $this->assertEquals('/api/v1/zones/{zone_id}/records/{record_id}', $apiZoneRecordRoute->getPath());
+        $this->assertEquals('/api/v1/zones/{id}/records/{record_id}', $apiZoneRecordRoute->getPath());
     }
 
     public function testNoRouteConflicts(): void
