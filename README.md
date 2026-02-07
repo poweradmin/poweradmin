@@ -111,9 +111,10 @@ Poweradmin maintains multiple release branches:
 | Branch | Status | Support |
 |--------|--------|---------|
 | `develop` | Development | Experimental features, unstable |
-| `master` | Pre-release | Integration testing before release |
-| `release/4.x` | Stable | Current release with new features |
-| `release/3.x` | LTS | Bug fixes and security updates for at least 2 years |
+| `master` | Pre-release | Integration testing, may be unstable |
+| `release/4.1.x` | Current | Latest release, stabilizing |
+| `release/4.x` | Stable | 4.0.x bug fixes and security updates |
+| `release/3.x` | LTS | Bug fixes and security updates until December 2027 |
 
 ### PHP Version Support
 
