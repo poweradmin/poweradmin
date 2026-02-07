@@ -46,7 +46,6 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
 
     protected function setUp(): void
     {
-        // MySQL test database (port 3307)
         try {
             $this->mysqlConnection = new PDO(
                 'mysql:host=127.0.0.1;port=3306;dbname=pdns',
@@ -59,7 +58,6 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
             $this->mysqlConnection = null;
         }
 
-        // PostgreSQL test database (port 5433)
         try {
             $this->pgsqlConnection = new PDO(
                 'pgsql:host=127.0.0.1;port=5432;dbname=pdns',
@@ -72,7 +70,6 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
             $this->pgsqlConnection = null;
         }
 
-        // SQLite in-memory database
         $this->sqliteConnection = new PDO(
             'sqlite::memory:',
             null,
@@ -85,42 +82,42 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
     protected function tearDown(): void
     {
         if ($this->mysqlConnection) {
-            $this->mysqlConnection->exec("DROP TABLE IF EXISTS comments");
-            $this->mysqlConnection->exec("DROP TABLE IF EXISTS records");
-            $this->mysqlConnection->exec("DROP TABLE IF EXISTS domains");
+            $this->mysqlConnection->exec("DROP TABLE IF EXISTS test_comments");
+            $this->mysqlConnection->exec("DROP TABLE IF EXISTS test_records");
+            $this->mysqlConnection->exec("DROP TABLE IF EXISTS test_domains");
         }
         if ($this->pgsqlConnection) {
-            $this->pgsqlConnection->exec("DROP TABLE IF EXISTS comments");
-            $this->pgsqlConnection->exec("DROP TABLE IF EXISTS records");
-            $this->pgsqlConnection->exec("DROP TABLE IF EXISTS domains");
+            $this->pgsqlConnection->exec("DROP TABLE IF EXISTS test_comments");
+            $this->pgsqlConnection->exec("DROP TABLE IF EXISTS test_records");
+            $this->pgsqlConnection->exec("DROP TABLE IF EXISTS test_domains");
         }
         // SQLite in-memory is automatically cleaned up
     }
 
     private function setupMySQLTables(PDO $db): void
     {
-        $db->exec("DROP TABLE IF EXISTS comments");
-        $db->exec("DROP TABLE IF EXISTS records");
-        $db->exec("DROP TABLE IF EXISTS domains");
+        $db->exec("DROP TABLE IF EXISTS test_comments");
+        $db->exec("DROP TABLE IF EXISTS test_records");
+        $db->exec("DROP TABLE IF EXISTS test_domains");
 
-        $db->exec("CREATE TABLE domains (
+        $db->exec("CREATE TABLE test_domains (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(255) NOT NULL
         )");
 
-        $db->exec("CREATE TABLE records (
+        $db->exec("CREATE TABLE test_records (
             id INT AUTO_INCREMENT PRIMARY KEY,
             domain_id INT NOT NULL,
             name VARCHAR(255),
             type VARCHAR(10),
-            content VARCHAR(65535),
+            content TEXT,
             ttl INT,
             prio INT,
             disabled TINYINT DEFAULT 0,
             auth TINYINT DEFAULT 1
         )");
 
-        $db->exec("CREATE TABLE comments (
+        $db->exec("CREATE TABLE test_comments (
             id INT AUTO_INCREMENT PRIMARY KEY,
             domain_id INT NOT NULL,
             name VARCHAR(255),
@@ -133,16 +130,16 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
 
     private function setupPgSQLTables(PDO $db): void
     {
-        $db->exec("DROP TABLE IF EXISTS comments");
-        $db->exec("DROP TABLE IF EXISTS records");
-        $db->exec("DROP TABLE IF EXISTS domains");
+        $db->exec("DROP TABLE IF EXISTS test_comments");
+        $db->exec("DROP TABLE IF EXISTS test_records");
+        $db->exec("DROP TABLE IF EXISTS test_domains");
 
-        $db->exec("CREATE TABLE domains (
+        $db->exec("CREATE TABLE test_domains (
             id SERIAL PRIMARY KEY,
             name VARCHAR(255) NOT NULL
         )");
 
-        $db->exec("CREATE TABLE records (
+        $db->exec("CREATE TABLE test_records (
             id SERIAL PRIMARY KEY,
             domain_id INT NOT NULL,
             name VARCHAR(255),
@@ -154,7 +151,7 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
             auth SMALLINT DEFAULT 1
         )");
 
-        $db->exec("CREATE TABLE comments (
+        $db->exec("CREATE TABLE test_comments (
             id SERIAL PRIMARY KEY,
             domain_id INT NOT NULL,
             name VARCHAR(255),
@@ -167,12 +164,12 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
 
     private function setupSQLiteTables(PDO $db): void
     {
-        $db->exec("CREATE TABLE domains (
+        $db->exec("CREATE TABLE test_domains (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL
         )");
 
-        $db->exec("CREATE TABLE records (
+        $db->exec("CREATE TABLE test_records (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             domain_id INTEGER NOT NULL,
             name TEXT,
@@ -184,7 +181,7 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
             auth INTEGER DEFAULT 1
         )");
 
-        $db->exec("CREATE TABLE comments (
+        $db->exec("CREATE TABLE test_comments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             domain_id INTEGER NOT NULL,
             name TEXT,
@@ -198,7 +195,7 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
     private function insertTestData(PDO $db): void
     {
         // Insert test domain
-        $db->exec("INSERT INTO domains (id, name) VALUES (1, 'example.com')");
+        $db->exec("INSERT INTO test_domains (id, name) VALUES (1, 'example.com')");
 
         // Insert test records with various types
         $records = [
@@ -214,7 +211,7 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
             [1, 'api.example.com', 'A', '192.0.2.4', 3600, 0],
         ];
 
-        $stmt = $db->prepare("INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt = $db->prepare("INSERT INTO test_records (domain_id, name, type, content, ttl, prio) VALUES (?, ?, ?, ?, ?, ?)");
         foreach ($records as $record) {
             $stmt->execute($record);
         }
@@ -226,7 +223,7 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
             [1, 'mail.example.com', 'A', 'Mail server'],
         ];
 
-        $stmt = $db->prepare("INSERT INTO comments (domain_id, name, type, comment) VALUES (?, ?, ?, ?)");
+        $stmt = $db->prepare("INSERT INTO test_comments (domain_id, name, type, comment) VALUES (?, ?, ?, ?)");
         foreach ($comments as $comment) {
             $stmt->execute($comment);
         }
@@ -246,22 +243,22 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
         string $sortDirection,
         bool $includeComments
     ): array {
-        $query = "SELECT records.id, records.domain_id, records.name, records.type,
-                 records.content, records.ttl, records.prio, records.disabled, records.auth";
+        $query = "SELECT test_records.id, test_records.domain_id, test_records.name, test_records.type,
+                 test_records.content, test_records.ttl, test_records.prio, test_records.disabled, test_records.auth";
 
         if ($includeComments) {
             $query .= ", c.comment";
         }
 
-        $query .= " FROM records";
+        $query .= " FROM test_records";
 
         if ($includeComments) {
-            $query .= " LEFT JOIN comments c ON records.domain_id = c.domain_id
-                      AND records.name = c.name AND records.type = c.type";
+            $query .= " LEFT JOIN test_comments c ON test_records.domain_id = c.domain_id
+                      AND test_records.name = c.name AND test_records.type = c.type";
         }
 
-        $query .= " WHERE records.domain_id = :zone_id AND records.type IS NOT NULL AND records.type != ''";
-        $query .= " ORDER BY records.$sortBy $sortDirection LIMIT :row_amount OFFSET :row_start";
+        $query .= " WHERE test_records.domain_id = :zone_id AND test_records.type IS NOT NULL AND test_records.type != ''";
+        $query .= " ORDER BY test_records.$sortBy $sortDirection LIMIT :row_amount OFFSET :row_start";
 
         $stmt = $db->prepare($query);
         $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
@@ -598,6 +595,8 @@ class RecordRepositoryFilteredRecordsTest extends TestCase
             'ASC',
             true
         );
+
+        $this->assertNotEmpty($sqliteResults);
 
         if ($this->mysqlConnection) {
             $mysqlResults = $this->executeFilteredRecordsQuery(
