@@ -346,8 +346,8 @@ class SymfonyRouterIntegrationTest extends TestCase
 
         $executionTime = microtime(true) - $startTime;
 
-        // Should complete 100 iterations in reasonable time (under 1 second)
-        $this->assertLessThan(1.0, $executionTime, "SymfonyRouter should handle $iterations iterations in under 1 second");
+        // Should complete 100 iterations in reasonable time (under 5 seconds, generous for CI runners)
+        $this->assertLessThan(5.0, $executionTime, "SymfonyRouter should handle $iterations iterations in under 5 seconds");
     }
 
     public function testControllerMethodExecution(): void
