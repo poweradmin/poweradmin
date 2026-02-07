@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mysql-test:
     image: mariadb:10.11
@@ -25,7 +23,7 @@ services:
       - test-network
 
   postgresql-test:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     container_name: poweradmin-postgresql-test
     environment:
       POSTGRES_DB: pdns
