@@ -9,8 +9,6 @@ permissions:
 
 jobs:
   version-bump:
-    # Only run for non-prerelease versions
-    if: "!github.event.release.prerelease"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
