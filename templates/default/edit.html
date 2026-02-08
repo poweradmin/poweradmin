@@ -199,6 +199,11 @@
                 <i class="bi bi-file-earmark-text me-1 text-white"></i>{% trans %}Bulk add{% endtrans %}
             </a>
             {% endif %}
+            {% if dns_wizards_enabled and not is_reverse_zone and (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and domain_type != "SLAVE" %}
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/wizard" class="btn btn-primary btn-sm" title="{% trans %}Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records{% endtrans %}">
+                <i class="bi bi-magic me-1 text-white"></i>{% trans %}Wizard{% endtrans %}
+            </a>
+            {% endif %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?export_csv=1" class="btn btn-secondary btn-sm">
                 <i class="bi bi-file-earmark-spreadsheet me-1 text-white"></i>{% trans %}CSV{% endtrans %}
             </a>
