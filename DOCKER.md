@@ -13,7 +13,7 @@ Poweradmin official Docker images are available at:
 
 - **`latest`** - Latest release from the `master` branch
 - **`next`** - Upcoming release from the `release/4.1.x` branch (stabilizing)
-- **`stable`** - Stable release from the `release/4.x` branch (recommended for production)
+- **`stable`** - Stable release from the `release/4.0.x` branch (recommended for production)
 - **`lts`** - Long-term support release from the `release/3.x` branch
 - **`dev`** - Development version from the `develop` branch (includes experimental features)
 - **`v*`** - Specific version tags (e.g., `v4.0.0`, `v4.1.0`)
