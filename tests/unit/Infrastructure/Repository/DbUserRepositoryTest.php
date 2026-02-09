@@ -383,7 +383,7 @@ class DbUserRepositoryTest extends TestCase
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(1);
+        $stmt->method('fetch')->willReturn(['permission' => 'user_is_ueberuser']);
 
         $this->db->method('prepare')->willReturn($stmt);
 
@@ -397,7 +397,7 @@ class DbUserRepositoryTest extends TestCase
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(0);
+        $stmt->method('fetch')->willReturn(false);
 
         $this->db->method('prepare')->willReturn($stmt);
 
