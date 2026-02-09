@@ -1,0 +1,91 @@
+{
+  "admin": {
+    "name": "admin-zone.example.com",
+    "type": "MASTER",
+    "owner": "admin",
+    "description": "Admin's test zone with basic records"
+  },
+  "manager": {
+    "name": "manager-zone.example.com",
+    "type": "MASTER",
+    "owner": "manager",
+    "description": "Manager's test zone with comprehensive DNS records"
+  },
+  "client": {
+    "name": "client-zone.example.com",
+    "type": "MASTER",
+    "owner": "client",
+    "description": "Client's test zone with comprehensive DNS records"
+  },
+  "shared": {
+    "name": "shared-zone.example.com",
+    "type": "MASTER",
+    "owner": ["manager", "client"],
+    "description": "Multi-owner zone shared between manager and client"
+  },
+  "viewer": {
+    "name": "viewer-zone.example.com",
+    "type": "MASTER",
+    "owner": "viewer",
+    "description": "Viewer's read-only test zone"
+  },
+  "native": {
+    "name": "native-zone.example.org",
+    "type": "NATIVE",
+    "owner": "manager",
+    "description": "Native zone type for replication testing"
+  },
+  "slave": {
+    "name": "slave-zone.example.net",
+    "type": "SLAVE",
+    "owner": "admin",
+    "description": "Slave zone requiring master server"
+  },
+  "reverseIPv4": {
+    "name": "2.0.192.in-addr.arpa",
+    "type": "MASTER",
+    "owner": "admin",
+    "description": "IPv4 reverse zone for PTR records"
+  },
+  "reverseIPv6": {
+    "name": "8.b.d.0.1.0.0.2.ip6.arpa",
+    "type": "MASTER",
+    "owner": "admin",
+    "description": "IPv6 reverse zone for PTR records"
+  },
+  "idnSwedish": {
+    "name": "xn--verstt-eua3l.info",
+    "displayName": "översätt.info",
+    "type": "MASTER",
+    "owner": "manager",
+    "description": "Swedish IDN zone (översätt = translate)"
+  },
+  "idnGerman": {
+    "name": "xn--mnchen-3ya.de",
+    "displayName": "münchen.de",
+    "type": "MASTER",
+    "owner": "admin",
+    "description": "German IDN zone (münchen = Munich)"
+  },
+  "idnRussian": {
+    "name": "xn--80aejmjbdxvpe2k.net",
+    "displayName": "автоэлектрик.net",
+    "type": "MASTER",
+    "owner": "manager",
+    "description": "Russian IDN zone (автоэлектрик = auto electrician)"
+  },
+  "idnKorean": {
+    "name": "xn--ob0bz7i69i99fm8qgkfwlc.com",
+    "displayName": "베스트공포닷컴.com",
+    "type": "MASTER",
+    "owner": "client",
+    "description": "Korean IDN zone (베스트공포닷컴 = best horror dotcom)"
+  },
+  "idnVietnamese": {
+    "name": "xn--chtnbin-rwa9e0573b.vn",
+    "displayName": "chợtânbiên.vn",
+    "type": "MASTER",
+    "owner": "viewer",
+    "description": "Vietnamese IDN zone (chợtânbiên = Tan Bien market)"
+  }
+}
