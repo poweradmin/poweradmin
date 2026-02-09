@@ -231,6 +231,62 @@ test.describe('Supermaster CRUD Operations', () => {
     });
   });
 
+  test.describe('IPv6 Supermaster Edit and Delete', () => {
+    test('should edit supermaster with IPv6 address', async ({ adminPage: page }) => {
+      const uniqueNs = `ns-ipv6-edit-${Date.now()}.example.com`;
+      await page.goto('/index.php?page=add_supermaster');
+      await page.locator('input[name*="ip"], input[name*="master"]').first().fill('2001:db8::200');
+      await page.locator('input[name*="nameserver"], input[name*="ns"]').first().fill(uniqueNs);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      await page.goto('/index.php?page=list_supermasters');
+      const row = page.locator('tr:has-text("2001:db8::200")');
+
+      if (await row.count() > 0) {
+        const editLink = row.locator('a[href*="edit_supermaster"]').first();
+        await editLink.click();
+
+        const ipField = page.locator('input[name="master_ip"]').first();
+        await expect(ipField).toHaveValue('2001:db8::200');
+
+        const nsField = page.locator('input[name="ns_name"]').first();
+        const updatedNs = `ns-ipv6-edited-${Date.now()}.example.com`;
+        await nsField.fill(updatedNs);
+        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText.toLowerCase()).not.toMatch(/not a valid ip|error/i);
+      }
+    });
+
+    test('should delete supermaster with IPv6 address', async ({ adminPage: page }) => {
+      const uniqueNs = `ns-ipv6-del-${Date.now()}.example.com`;
+      await page.goto('/index.php?page=add_supermaster');
+      await page.locator('input[name*="ip"], input[name*="master"]').first().fill('2001:db8::201');
+      await page.locator('input[name*="nameserver"], input[name*="ns"]').first().fill(uniqueNs);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      await page.goto('/index.php?page=list_supermasters');
+      const row = page.locator('tr:has-text("2001:db8::201")');
+
+      if (await row.count() > 0) {
+        const deleteLink = row.locator('a[href*="delete_supermaster"]').first();
+        await deleteLink.click();
+
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText.toLowerCase()).not.toMatch(/not a valid ip/i);
+
+        const yesBtn = page.locator('a:has-text("Yes"), input[value="Yes"], button:has-text("Yes")').first();
+        if (await yesBtn.count() > 0) {
+          await yesBtn.click();
+
+          const resultText = await page.locator('body').textContent();
+          expect(resultText.toLowerCase()).not.toMatch(/not a valid ip|error/i);
+        }
+      }
+    });
+  });
+
   // Cleanup
   test.afterAll(async ({ browser }) => {
     const page = await browser.newPage();
@@ -239,7 +295,7 @@ test.describe('Supermaster CRUD Operations', () => {
     await page.goto('/index.php?page=list_supermasters');
 
     // Delete test supermasters
-    const testIPs = ['192.168.100.1', '192.168.200.1', '192.168.250.1', '192.168.251.1'];
+    const testIPs = ['192.168.100.1', '192.168.200.1', '192.168.250.1', '192.168.251.1', '2001:db8::200', '2001:db8::201'];
 
     for (const ip of testIPs) {
       await page.goto('/index.php?page=list_supermasters');
