@@ -127,8 +127,17 @@ class LUARecordValidator implements DnsRecordValidatorInterface
             $warnings[] = _('WARNING: This LUA record contains potentially unsafe file or system operations. These may be blocked by PowerDNS security mechanisms.');
         }
 
+        // Extract Lua code from content (may have record type prefix)
+        $luaCode = trim($content);
+        $recordTypesPattern = 'A|AAAA|CNAME|MX|NS|PTR|SOA|SRV|TXT|CAA|DS|DNSKEY|NSEC|NSEC3|RRSIG|TLSA|URI|LOC|HINFO|' .
+                              'RP|AFSDB|ISDN|RT|X25|PX|GPOS|NAPTR|KX|CERT|DNAME|SINK|OPT|APL|SSHFP|IPSECKEY|DHCID|' .
+                              'NSEC3PARAM|HIP|CDS|CDNSKEY|OPENPGPKEY|CSYNC|ZONEMD|SVCB|HTTPS';
+        if (preg_match('/^(' . $recordTypesPattern . ')\s+(["\'])(.*)\\2$/s', $luaCode, $matches)) {
+            $luaCode = $matches[3];
+        }
+
         // Check for explicit return mode vs implicit return mode
-        if (substr(trim($content), 0, 1) === ';') {
+        if (substr(trim($luaCode), 0, 1) === ';') {
             $warnings[] = _('This LUA record uses explicit return mode (starts with semicolon). Ensure your Lua script explicitly returns the appropriate value.');
         } else {
             // Check if common PowerDNS Lua functions are used
@@ -195,10 +204,20 @@ class LUARecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('LUA record has mismatched braces. Check your syntax.'));
         }
 
+        // Check for record type prefix (e.g., A "...", AAAA "...", CNAME "...")
+        // and extract the inner Lua code for validation
+        $recordTypes = 'A|AAAA|CNAME|MX|NS|PTR|SOA|SRV|TXT|CAA|DS|DNSKEY|NSEC|NSEC3|RRSIG|TLSA|URI|LOC|HINFO|' .
+                      'RP|AFSDB|ISDN|RT|X25|PX|GPOS|NAPTR|KX|CERT|DNAME|SINK|OPT|APL|SSHFP|IPSECKEY|DHCID|' .
+                      'NSEC3PARAM|HIP|CDS|CDNSKEY|OPENPGPKEY|CSYNC|ZONEMD|SVCB|HTTPS';
+        $luaCode = $trimmedContent;
+        if (preg_match('/^(' . $recordTypes . ')\s+(["\'])(.*)\\2$/s', $trimmedContent, $matches)) {
+            $luaCode = $matches[3];
+        }
+
         // Check if this is explicit return mode (starts with semicolon)
-        if (substr($trimmedContent, 0, 1) === ';') {
+        if (substr(trim($luaCode), 0, 1) === ';') {
             // In explicit return mode, we should see "return" statements
-            if (!str_contains($trimmedContent, 'return')) {
+            if (!str_contains($luaCode, 'return')) {
                 return ValidationResult::failure(_('LUA record in explicit return mode (starts with semicolon) must contain at least one "return" statement.'));
             }
         } else {
@@ -209,12 +228,7 @@ class LUARecordValidator implements DnsRecordValidatorInterface
             // 3. Record type prefix: RECORDTYPE "function(...)" or RECORDTYPE function(...)
             $validPattern = false;
 
-            // Check for record type prefix (A, AAAA, CNAME, etc.) followed by function call
-            // Pattern: RECORDTYPE "function(...)" or RECORDTYPE function(...)
-            // Be specific about common DNS record types to avoid false matches
-            $recordTypes = 'A|AAAA|CNAME|MX|NS|PTR|SOA|SRV|TXT|CAA|DS|DNSKEY|NSEC|NSEC3|RRSIG|TLSA|URI|LOC|HINFO|' .
-                          'RP|AFSDB|ISDN|RT|X25|PX|GPOS|NAPTR|KX|CERT|DNAME|SINK|OPT|APL|SSHFP|IPSECKEY|DHCID|' .
-                          'NSEC3PARAM|HIP|CDS|CDNSKEY|OPENPGPKEY|CSYNC|ZONEMD|SVCB|HTTPS';
+            // Check for record type prefix followed by function call
             if (preg_match('/^(' . $recordTypes . ')\s+["\']?[a-zA-Z_][a-zA-Z0-9_]*\s*\(/', $trimmedContent)) {
                 $validPattern = true;
             }
