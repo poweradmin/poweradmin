@@ -60,6 +60,7 @@ package-lock.json
 *.trace.zip
 /blob-report/
 /playwright/.auth/
+/.playwright-mcp/
 
 # PHP tools
 /.php-cs-fixer.cache
