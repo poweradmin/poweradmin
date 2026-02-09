@@ -13,7 +13,7 @@
                 <strong><i class="bi bi-server me-2"></i>{% trans %}Edit Supermaster{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/supermasters/{{ old_master_ip }}/{{ old_ns_name }}/edit" novalidate>
+                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/supermasters/edit?master_ip={{ old_master_ip }}&ns_name={{ old_ns_name }}" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
                     <div class="mb-3">
