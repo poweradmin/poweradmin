@@ -265,10 +265,24 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "Compatibility check completed for PHP ${{ matrix.php-version }}" >> $GITHUB_STEP_SUMMARY
 
+  twig-csrf-check:
+    name: Twig CSRF Field Name Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Check for incorrect CSRF token field names
+      run: |
+        if grep -rn 'name="csrf_token"' templates/ --include='*.html'; then
+          echo "ERROR: Use name=\"_token\" instead of name=\"csrf_token\" for CSRF token fields"
+          exit 1
+        fi
+
   summary:
     name: Validation Summary
     runs-on: ubuntu-latest
-    needs: [syntax-check, security-audit, code-style, phpstan, psalm, unit-tests, compatibility]
+    needs: [syntax-check, security-audit, code-style, phpstan, psalm, unit-tests, compatibility, twig-csrf-check]
     if: always()
 
     steps:
@@ -323,6 +337,12 @@ jobs:
           echo "- ❌ PHP Compatibility (8.1, 8.2, 8.3, 8.4)" >> $GITHUB_STEP_SUMMARY
         fi
 
+        if [ "${{ needs.twig-csrf-check.result }}" == "success" ]; then
+          echo "- ✅ Twig CSRF Field Name Check" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- ❌ Twig CSRF Field Name Check" >> $GITHUB_STEP_SUMMARY
+        fi
+
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Workflow:** ${{ github.workflow }} (#${{ github.run_number }})" >> $GITHUB_STEP_SUMMARY
 
@@ -334,6 +354,7 @@ jobs:
         needs.phpstan.result != 'success' ||
         needs.psalm.result != 'success' ||
         needs.unit-tests.result != 'success' ||
-        needs.compatibility.result != 'success'
+        needs.compatibility.result != 'success' ||
+        needs.twig-csrf-check.result != 'success'
       run: exit 1
 
