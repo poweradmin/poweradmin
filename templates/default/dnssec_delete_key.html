@@ -120,7 +120,7 @@
 
         <div class="d-flex gap-2">
             <form method="post" action="index.php?page=dnssec_delete_key&id={{ zone_id }}&key_id={{ key_id }}" style="display: inline;">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
                 <input type="hidden" name="confirm" value="1">
                 <button type="submit" class="btn btn-danger btn-sm">
                     <i class="bi bi-trash text-white me-1"></i>{% trans %}Delete key{% endtrans %}
