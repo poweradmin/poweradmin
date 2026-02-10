@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# Import Test Data Script for Poweradmin 4.0.x
+# Import Test Data Script for Poweradmin
 # =============================================================================
 #
 # Purpose: Import comprehensive test data into running Docker databases
@@ -51,7 +51,7 @@ SQLITE_CONTAINER="${SQLITE_CONTAINER:-sqlite}"
 SQLITE_DB_PATH="${SQLITE_DB_PATH:-/data/pdns.db}"
 
 echo -e "${BLUE}================================================${NC}"
-echo -e "${BLUE}  Poweradmin 4.0.x Test Data Import${NC}"
+echo -e "${BLUE}  Poweradmin Test Data Import${NC}"
 echo -e "${BLUE}================================================${NC}"
 echo ""
 

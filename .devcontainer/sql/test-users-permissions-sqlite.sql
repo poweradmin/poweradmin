@@ -1,4 +1,4 @@
--- SQLite Test Data: Users, Permission Templates, Zones for 4.0.x Branch
+-- SQLite Test Data: Users, Permission Templates, Zones
 -- Purpose: Create comprehensive test data for development and testing
 -- Database: pdns.db (single database containing both PowerDNS and Poweradmin tables)
 --
