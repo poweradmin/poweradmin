@@ -1,4 +1,4 @@
-# LDAP Test Users for Poweradmin 4.x
+# LDAP Test Users for Poweradmin 4.0.x
 #
 # This LDIF file creates test users in the LDAP directory that correspond
 # to the database test users. Users can authenticate via LDAP instead of

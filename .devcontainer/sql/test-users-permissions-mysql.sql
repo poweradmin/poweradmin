@@ -1,4 +1,4 @@
--- MySQL Test Data: Users, Permission Templates, Zones for 4.x Branch
+-- MySQL Test Data: Users, Permission Templates, Zones for 4.0.x Branch
 -- Purpose: Create comprehensive test data for development and testing
 -- Databases: poweradmin (Poweradmin tables), pdns (PowerDNS tables)
 --

@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# Setup LDAP Test Environment for Poweradmin 4.x
+# Setup LDAP Test Environment for Poweradmin 4.0.x
 # =============================================================================
 #
 # Purpose: Load LDAP test users and verify the setup
@@ -40,7 +40,7 @@ LDAP_BASE_DN="dc=poweradmin,dc=org"
 LDIF_FILE="/app/.devcontainer/ldap/ldap-test-users.ldif"
 
 echo -e "${BLUE}================================================${NC}"
-echo -e "${BLUE}  Poweradmin 4.x LDAP Test Setup${NC}"
+echo -e "${BLUE}  Poweradmin 4.0.x LDAP Test Setup${NC}"
 echo -e "${BLUE}================================================${NC}"
 echo ""
 
