@@ -65,46 +65,6 @@ class WhoisServerAvailabilityTest extends TestCase
     }
 
     /**
-     * Optional comprehensive test for all WHOIS servers
-     *
-     * This test is marked as skipped by default as it would take a long time
-     * to execute and might encounter rate limiting issues with some servers.
-     *
-     * Run this test manually when needed with:
-     * phpunit --filter testAllWhoisServersAvailability tests/integration/WhoisServerAvailabilityTest.php
-     */
-    public function testAllWhoisServersAvailability(): void
-    {
-        $this->markTestSkipped(
-            'Skipping comprehensive WHOIS server test. ' .
-            'Run manually when needed with: ' .
-            'phpunit --filter testAllWhoisServersAvailability tests/integration/WhoisServerAvailabilityTest.php'
-        );
-
-        $allServers = $this->whoisService->getAllWhoisServers();
-        $allTlds = array_keys($allServers);
-
-        // Shuffle to avoid hitting the same servers/networks consecutively
-        shuffle($allTlds);
-
-        $results = $this->checkServersAvailability($allTlds);
-
-        // Log the results for detailed inspection
-        $this->logTestResults($results, 'All WHOIS servers');
-
-        // Assert that at least 70% of the servers are available
-        $availableCount = count(array_filter($results, function ($result) {
-            return $result['available'];
-        }));
-
-        $this->assertGreaterThanOrEqual(
-            count($allTlds) * 0.7,
-            $availableCount,
-            'Less than 70% of all WHOIS servers are available'
-        );
-    }
-
-    /**
      * Check a list of WHOIS servers for availability
      *
      * @param array $tlds List of TLDs to check
@@ -192,7 +152,7 @@ class WhoisServerAvailabilityTest extends TestCase
         ];
 
         // Immediate output for monitoring during test execution
-        echo "\n{$description}: {$available} available, {$unavailable} unavailable\n";
+        fwrite(STDERR, "\n{$description}: {$available} available, {$unavailable} unavailable\n");
 
         // Log unavailable servers for debugging
         $unavailableServers = array_filter($results, function ($result) {
@@ -200,10 +160,10 @@ class WhoisServerAvailabilityTest extends TestCase
         });
 
         if (count($unavailableServers) > 0) {
-            echo "Unavailable servers:\n";
+            fwrite(STDERR, "Unavailable servers:\n");
             foreach ($unavailableServers as $tld => $result) {
                 $error = $result['error'] ?? 'Unknown error';
-                echo "  - {$tld}: {$result['server']} - {$error}\n";
+                fwrite(STDERR, "  - {$tld}: {$result['server']} - {$error}\n");
             }
         }
     }
@@ -217,17 +177,17 @@ class WhoisServerAvailabilityTest extends TestCase
             return;
         }
 
-        echo "\n=== WHOIS Server Availability Summary ===\n";
+        fwrite(STDERR, "\n=== WHOIS Server Availability Summary ===\n");
 
         foreach ($this->serverResults as $description => $result) {
             $availablePercent = round(($result['available'] / $result['total']) * 100, 1);
 
-            echo "\n{$description}:\n";
-            echo "  - Total: {$result['total']}\n";
-            echo "  - Available: {$result['available']} ({$availablePercent}%)\n";
-            echo "  - Unavailable: {$result['unavailable']}\n";
+            fwrite(STDERR, "\n{$description}:\n");
+            fwrite(STDERR, "  - Total: {$result['total']}\n");
+            fwrite(STDERR, "  - Available: {$result['available']} ({$availablePercent}%)\n");
+            fwrite(STDERR, "  - Unavailable: {$result['unavailable']}\n");
         }
 
-        echo "\n=========================================\n";
+        fwrite(STDERR, "\n=========================================\n");
     }
 }

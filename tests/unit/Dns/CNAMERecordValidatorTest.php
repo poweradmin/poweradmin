@@ -416,4 +416,159 @@ class CNAMERecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
     }
+
+    public function testValidateWithCustomTldRejectedByDefault()
+    {
+        // Default config has empty custom_tlds, so dn42 should be rejected
+        $content = 'ns1.example.dn42'; // Custom TLD with numbers
+        $name = 'alias.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('CNAME target must be a fully qualified domain name', $result->getFirstError());
+    }
+
+    public function testValidateWithCustomTldWhitelisted()
+    {
+        // Create a new config mock that returns custom_tlds
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $configMock->method('get')
+            ->willReturnCallback(function ($section, $key, $default = null) {
+                if ($section === 'dns') {
+                    switch ($key) {
+                        case 'custom_tlds':
+                            return ['dn42', 'home', 'internal'];
+                        case 'top_level_tld_check':
+                        case 'strict_tld_check':
+                            return false;
+                        default:
+                            return 'example.com';
+                    }
+                }
+                return $default ?? 'example.com';
+            });
+
+        $validator = new CNAMERecordValidator($configMock, $this->dbMock);
+
+        $content = 'ns1.example.dn42'; // Custom TLD in whitelist
+        $name = 'alias.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+    }
+
+    public function testValidateWithCustomTldCaseInsensitive()
+    {
+        // Create a config mock with lowercase custom_tlds
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $configMock->method('get')
+            ->willReturnCallback(function ($section, $key, $default = null) {
+                if ($section === 'dns') {
+                    switch ($key) {
+                        case 'custom_tlds':
+                            return ['dn42']; // lowercase in config
+                        case 'top_level_tld_check':
+                        case 'strict_tld_check':
+                            return false;
+                        default:
+                            return 'example.com';
+                    }
+                }
+                return $default ?? 'example.com';
+            });
+
+        $validator = new CNAMERecordValidator($configMock, $this->dbMock);
+
+        // Test with uppercase TLD in target
+        $content = 'ns1.example.DN42'; // uppercase TLD
+        $name = 'alias.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateStandardTldWithCustomWhitelistConfigured()
+    {
+        // Create a config mock with custom_tlds
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $configMock->method('get')
+            ->willReturnCallback(function ($section, $key, $default = null) {
+                if ($section === 'dns') {
+                    switch ($key) {
+                        case 'custom_tlds':
+                            return ['dn42', 'home'];
+                        case 'top_level_tld_check':
+                        case 'strict_tld_check':
+                            return false;
+                        default:
+                            return 'example.com';
+                    }
+                }
+                return $default ?? 'example.com';
+            });
+
+        $validator = new CNAMERecordValidator($configMock, $this->dbMock);
+
+        // Standard TLD should still work
+        $content = 'www.example.com';
+        $name = 'alias.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+    }
+
+    public function testValidateWithEmptyCustomTldWhitelist()
+    {
+        // Create a config mock that explicitly returns empty array
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $configMock->method('get')
+            ->willReturnCallback(function ($section, $key, $default = null) {
+                if ($section === 'dns') {
+                    switch ($key) {
+                        case 'custom_tlds':
+                            return []; // Explicitly empty
+                        case 'top_level_tld_check':
+                        case 'strict_tld_check':
+                            return false;
+                        default:
+                            return 'example.com';
+                    }
+                }
+                return $default ?? 'example.com';
+            });
+
+        $validator = new CNAMERecordValidator($configMock, $this->dbMock);
+
+        // Custom TLD should be rejected when whitelist is empty
+        $content = 'ns1.example.dn42';
+        $name = 'alias.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('CNAME target must be a fully qualified domain name', $result->getFirstError());
+    }
 }

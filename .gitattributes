@@ -24,3 +24,4 @@ renovate.json export-ignore
 test-results/ export-ignore
 tests/ export-ignore
 transifex.yml export-ignore
+cliff.toml export-ignore

@@ -5,6 +5,9 @@ import { defineConfig, devices } from '@playwright/test';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
+  // Global setup to ensure test data exists before all tests run
+  globalSetup: './playwright/global-setup.js',
+
   testDir: './playwright/tests',
 
   // Maximum time one test can run for
@@ -13,7 +16,8 @@ export default defineConfig({
   // Test match pattern
   testMatch: /.*\.spec\.js/,
 
-  // Run tests in files in parallel
+  // Allow parallel test execution - read-only tests benefit from this
+  // Write tests are marked with test.describe.configure({ mode: 'serial' }) in their files
   fullyParallel: true,
 
   // Fail the build on CI if you accidentally left test.only in the source code
@@ -22,8 +26,9 @@ export default defineConfig({
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
 
-  // Opt out of parallel tests on CI
-  workers: process.env.CI ? 1 : undefined,
+  // 2 workers locally for parallel file execution, 1 on CI for stability
+  // Session conflicts may occur if two files use the same user simultaneously
+  workers: process.env.CI ? 1 : 2,
 
   // Reporter to use
   reporter: [
@@ -35,16 +40,17 @@ export default defineConfig({
   // Shared settings for all the projects below
   use: {
     // Base URL to use in actions like `await page.goto('/')`
-    baseURL: 'http://localhost:3000',
+    // Default to MySQL instance (port 8080). Override with BASE_URL env var for other databases:
+    // - MySQL:      BASE_URL=http://localhost:8080 (default)
+    // - PostgreSQL: BASE_URL=http://localhost:8081
+    // - SQLite:     BASE_URL=http://localhost:8082
+    baseURL: process.env.BASE_URL || 'http://localhost:8080',
 
-    // Collect trace when retrying the failed test
-    trace: 'on-first-retry',
-
-    // Screenshot on failure
-    screenshot: 'only-on-failure',
-
-    // Video on failure
-    video: 'retain-on-failure',
+    // Disable heavy features on CI for performance
+    // Re-enable locally by setting CI=false or when investigating failures
+    trace: process.env.CI ? 'off' : 'on-first-retry',
+    screenshot: process.env.CI ? 'off' : 'only-on-failure',
+    video: process.env.CI ? 'off' : 'retain-on-failure',
 
     // Maximum time each action such as `click()` can take
     actionTimeout: 10 * 1000,
@@ -54,21 +60,26 @@ export default defineConfig({
   },
 
   // Configure projects for major browsers
+  // Default command (npm run test:e2e) runs Chromium only for fast local feedback
+  // Use --project=firefox or --project=webkit to test other browsers
+  // Uncomment additional browsers below to run them by default
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // Uncomment to enable Firefox tests by default
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // Uncomment to enable WebKit tests by default
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
 
     // Mobile viewports for responsive testing
     // {
@@ -84,7 +95,7 @@ export default defineConfig({
   // Run your local dev server before starting the tests
   // webServer: {
   //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
+  //   url: 'http://localhost:8080',
   //   reuseExistingServer: !process.env.CI,
   // },
 });

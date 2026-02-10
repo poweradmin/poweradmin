@@ -40,7 +40,7 @@ jobs:
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
     - name: Cache Composer dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ${{ steps.composer-cache-dir.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -61,7 +61,7 @@ jobs:
       run: echo "key=${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}" >> $GITHUB_OUTPUT
 
     - name: Cache vendor directory
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: vendor
         key: ${{ steps.cache-key.outputs.key }}
@@ -96,7 +96,7 @@ jobs:
         php-version: '8.4'
 
     - name: Restore vendor cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: vendor
         key: ${{ needs.setup.outputs.cache-key }}
@@ -118,7 +118,7 @@ jobs:
         php-version: '8.4'
 
     - name: Restore vendor cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: vendor
         key: ${{ needs.setup.outputs.cache-key }}
@@ -140,7 +140,7 @@ jobs:
         php-version: '8.4'
 
     - name: Restore vendor cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: vendor
         key: ${{ needs.setup.outputs.cache-key }}
@@ -162,7 +162,7 @@ jobs:
         php-version: '8.4'
 
     - name: Restore vendor cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: vendor
         key: ${{ needs.setup.outputs.cache-key }}
@@ -185,7 +185,7 @@ jobs:
         php-version: '8.4'
 
     - name: Restore vendor cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: vendor
         key: ${{ needs.setup.outputs.cache-key }}
@@ -207,7 +207,7 @@ jobs:
         php-version: '8.4'
 
     - name: Restore vendor cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: vendor
         key: ${{ needs.setup.outputs.cache-key }}
@@ -239,7 +239,7 @@ jobs:
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
     - name: Cache Composer dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ${{ steps.composer-cache-dir.outputs.dir }}
         key: ${{ runner.os }}-php-${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.lock') }}

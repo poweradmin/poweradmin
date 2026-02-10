@@ -136,6 +136,45 @@ class HostnameValidatorTest extends TestCase
     }
 
     /**
+     * Test normalizeRecordName with IPv6 reverse zone nibbles (Issue #959)
+     */
+    public function testNormalizeRecordNameIPv6Nibbles(): void
+    {
+        // Short nibbles for IPv6 reverse zone
+        $name = "1.0.0.0.0.0.0.0";
+        $zone = "8.b.d.0.1.0.0.2.ip6.arpa";
+        $expected = "1.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa";
+        $this->assertEquals($expected, $this->validator->normalizeRecordName($name, $zone));
+    }
+
+    public function testNormalizeRecordNameIPv6FullNibbles(): void
+    {
+        // Full 24-nibble sequence
+        $name = "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0";
+        $zone = "8.b.d.0.1.0.0.2.ip6.arpa";
+        $expected = "1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa";
+        $this->assertEquals($expected, $this->validator->normalizeRecordName($name, $zone));
+    }
+
+    public function testNormalizeRecordNameIPv6EmptyReturnsZone(): void
+    {
+        // Empty name returns zone apex
+        $name = "";
+        $zone = "8.b.d.0.1.0.0.2.ip6.arpa";
+        $expected = "8.b.d.0.1.0.0.2.ip6.arpa";
+        $this->assertEquals($expected, $this->validator->normalizeRecordName($name, $zone));
+    }
+
+    public function testNormalizeRecordNameIPv6AlreadyFull(): void
+    {
+        // Name already includes zone suffix - should not double-append
+        $name = "1.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa";
+        $zone = "8.b.d.0.1.0.0.2.ip6.arpa";
+        $expected = "1.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa";
+        $this->assertEquals($expected, $this->validator->normalizeRecordName($name, $zone));
+    }
+
+    /**
      * Test the endsWith static function
      */
     public function testEndsWith()

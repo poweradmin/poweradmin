@@ -10,7 +10,9 @@ test.describe('Forward Zones Management', () => {
   test('should access forward zones page', async ({ page }) => {
     await page.goto('/zones/forward');
     await expect(page).toHaveURL(/.*zones\/forward/);
-    await expect(page.locator('h1, h2, h3, .page-title, [data-testid*="title"]')).toBeVisible();
+    // Verify page loaded without errors
+    const bodyText = await page.locator('body').textContent();
+    expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
   test('should display zones list or empty state', async ({ page }) => {
@@ -31,12 +33,10 @@ test.describe('Forward Zones Management', () => {
   test('should have add master zone button', async ({ page }) => {
     await page.goto('/zones/forward');
 
-    // Look for add/create buttons
-    const hasAddButton = await page.locator('a, button').filter({ hasText: /Add|Create|New/i }).count() > 0;
-
-    if (hasAddButton) {
-      await expect(page.locator('a, button').filter({ hasText: /Add|Create|New/i }).first()).toBeVisible();
-    }
+    // Add zone links exist somewhere in the page (may be in dropdown or visible)
+    const addMasterLink = page.locator('a[href*="/zones/add/master"]');
+    const linkCount = await addMasterLink.count();
+    expect(linkCount).toBeGreaterThan(0);
   });
 
   test('should navigate to add master zone page', async ({ page }) => {

@@ -12,7 +12,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Configuration
-CONFIG_FILE="${SCRIPT_DIR}/.env.api-test"
+# Default to MySQL config for devcontainer testing
+CONFIG_FILE="${CONFIG_FILE:-${SCRIPT_DIR}/.env.api-test.mysql}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -35,6 +36,7 @@ TEST_SLAVE_ZONE_ID=""
 TEST_REVERSE_ZONE_ID=""
 TEST_GROUP_ID=""
 TEST_USER_ID=""
+CREATED_REVERSE_ZONE=false
 
 ##############################################################################
 # Utility Functions
@@ -291,14 +293,31 @@ test_ptr_autocreation() {
         return 1
     fi
 
-    print_info "Creating reverse zone (2.0.192.in-addr.arpa)..."
+    print_info "Setting up reverse zone (2.0.192.in-addr.arpa)..."
     local reverse_zone='{"name":"2.0.192.in-addr.arpa","type":"MASTER"}'
 
-    if api_request_v2 "POST" "/zones" "$reverse_zone" 201 "Create reverse zone"; then
-        TEST_REVERSE_ZONE_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    # Try to create reverse zone, but it may already exist from test data
+    local rev_response
+    rev_response=$(curl -s -w "\n%{http_code}" \
+        -H "X-API-Key: $API_KEY" -H "Content-Type: application/json" -H "Accept: application/json" \
+        -X POST -d "$reverse_zone" "${API_BASE_URL}/api/v2/zones" 2>/dev/null)
+    local rev_code=$(echo "$rev_response" | tail -1)
+    local rev_body=$(echo "$rev_response" | sed '$d')
+
+    if [[ "$rev_code" == "201" ]]; then
+        TEST_REVERSE_ZONE_ID=$(echo "$rev_body" | grep -o '"zone_id":[^,}]*' | head -1 | sed 's/.*://; s/"//g; s/ //g')
+        CREATED_REVERSE_ZONE=true
         print_info "Created reverse zone ID: $TEST_REVERSE_ZONE_ID"
     else
-        print_info "Reverse zone might already exist or creation failed"
+        # Reverse zone already exists from test data - look it up via v1 API
+        print_info "Reverse zone already exists, looking up ID..."
+        local existing_zones
+        existing_zones=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+            "${API_BASE_URL}/api/v1/zones" 2>/dev/null | jq -r '[.data[]? | select(.name=="2.0.192.in-addr.arpa") | .zone_id // .id][0] // empty')
+        if [[ -n "$existing_zones" ]]; then
+            TEST_REVERSE_ZONE_ID="$existing_zones"
+            print_info "Found existing reverse zone ID: $TEST_REVERSE_ZONE_ID"
+        fi
     fi
 
     # Test 1: Create A record WITH PTR auto-creation
@@ -819,7 +838,7 @@ cleanup() {
         api_request_v2 "DELETE" "/zones/$TEST_SLAVE_ZONE_ID" "" 204 "Delete slave zone" || true
     fi
 
-    if [[ -n "$TEST_REVERSE_ZONE_ID" ]]; then
+    if [[ -n "$TEST_REVERSE_ZONE_ID" && "${CREATED_REVERSE_ZONE:-false}" == "true" ]]; then
         print_info "Deleting reverse zone $TEST_REVERSE_ZONE_ID..."
         api_request_v2 "DELETE" "/zones/$TEST_REVERSE_ZONE_ID" "" 204 "Delete reverse zone" || true
     fi
@@ -842,10 +861,42 @@ cleanup() {
 # Main Test Execution
 ##############################################################################
 
+cleanup_existing_test_zones() {
+    # Clean up any leftover test zones from previous runs
+    local test_zone_names=(
+        "rrset-test.example.com"
+        "ptr-test.example.com"
+        "bulk-test.example.com"
+        "slave-simple.example.com"
+        "slave-port.example.com"
+        "slave-multi.example.com"
+        "slave-ipv6.example.com"
+        "slave-mixed.example.com"
+        "slave-no-brackets.example.com"
+        "master-nomasters.example.com"
+    )
+
+    local all_zones
+    all_zones=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v1/zones" 2>/dev/null)
+
+    for zone_name in "${test_zone_names[@]}"; do
+        local zone_id
+        zone_id=$(echo "$all_zones" | jq -r ".data[]? | select(.name==\"$zone_name\") | .zone_id // .id" 2>/dev/null)
+        if [[ -n "$zone_id" ]]; then
+            curl -s -X DELETE -H "X-API-Key: $API_KEY" \
+                "${API_BASE_URL}/api/v2/zones/$zone_id" >/dev/null 2>&1 || true
+        fi
+    done
+}
+
 main() {
     print_header "PowerAdmin API v2 Enhancements Test Suite"
 
     load_config
+
+    # Clean up leftover zones from previous test runs
+    cleanup_existing_test_zones
 
     echo -e "\n${YELLOW}Starting tests...${NC}\n"
 

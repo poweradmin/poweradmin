@@ -38,13 +38,52 @@ load_env_file() {
     fi
 }
 
+# Database-specific config files (matching run-tests.sh pattern)
+CONFIG_MYSQL="$SCRIPT_DIR/.env.api-test.mysql"
+CONFIG_PGSQL="$SCRIPT_DIR/.env.api-test.pgsql"
+CONFIG_SQLITE="$SCRIPT_DIR/.env.api-test.sqlite"
+
+# Parse arguments (preserve other args for later processing)
+REMAINING_ARGS=()
+SHOW_HELP=false
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --db)
+            DB_TYPE="$2"
+            shift 2
+            ;;
+        -h|--help)
+            SHOW_HELP=true
+            shift
+            ;;
+        *)
+            REMAINING_ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+set -- "${REMAINING_ARGS[@]}"
+
+# Select config file based on --db flag (default: mysql)
+case ${DB_TYPE:-mysql} in
+    mysql|mariadb)   CONFIG_FILE="$CONFIG_MYSQL" ;;
+    pgsql|postgres)  CONFIG_FILE="$CONFIG_PGSQL" ;;
+    sqlite)          CONFIG_FILE="$CONFIG_SQLITE" ;;
+    *)
+        echo "Unknown database: $DB_TYPE. Use mysql, pgsql, or sqlite."
+        exit 1
+        ;;
+esac
+
 # Load environment files in order of preference
-# 1. .env.api-test (specific to API tests in tests/api/)
+# 1. Selected config file (default: .env.api-test.mysql)
 # 2. .env.test (general test environment in project root)
 # 3. .env.local (local overrides in project root)
 # 4. .env (general environment in project root)
 
-load_env_file "$SCRIPT_DIR/.env.api-test"
+if [[ -n "$CONFIG_FILE" && -f "$CONFIG_FILE" ]]; then
+    load_env_file "$CONFIG_FILE"
+fi
 for env_file in ".env.test" ".env.local" ".env"; do
     load_env_file "$PROJECT_ROOT/$env_file"
 done
@@ -178,7 +217,7 @@ This script tests the dynamic_update.php endpoint with various scenarios.
 
 Environment Configuration:
 The script loads configuration from environment files in this order:
-1. tests/api/.env.api-test (API test specific)
+1. Database-specific config (default: .env.api-test.mysql, use --db to change)
 2. .env.test (general test environment in project root)
 3. .env.local (local overrides in project root)
 4. .env (general environment in project root)
@@ -205,13 +244,21 @@ Compatibility with existing API test variables:
   TEST_TIMEOUT       Maps to CURL_TIMEOUT
 
 Options:
+  --db TYPE          Use database-specific config (mysql, pgsql, sqlite)
   -h, --help         Show this help message
 
-Setup:
-  cp tests/api/.env.api-test.example tests/api/.env.api-test
-  # Edit tests/api/.env.api-test with your configuration
+Setup (using database-specific configs):
+  # Configs are pre-configured for devcontainer ports:
+  # .env.api-test.mysql  -> port 8080
+  # .env.api-test.pgsql  -> port 8081
+  # .env.api-test.sqlite -> port 8082
 
-Example tests/api/.env.api-test file:
+  # Run with specific database:
+  ./dynamic_dns_api_test.sh --db mysql
+  ./dynamic_dns_api_test.sh --db pgsql
+  ./dynamic_dns_api_test.sh --db sqlite
+
+Example .env.api-test.mysql file:
   BASE_URL=https://poweradmin.example.com
   TEST_USERNAME=api_test_user
   TEST_PASSWORD=secure_password123
@@ -221,8 +268,8 @@ Example tests/api/.env.api-test file:
 EOF
 }
 
-# Check for help flag
-if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+# Show help if requested
+if [[ "$SHOW_HELP" == "true" ]]; then
     show_help
     exit 0
 fi

@@ -114,4 +114,93 @@ class DnsIdnServiceTest extends TestCase
         $result = DnsIdnService::isIdn('xn--mnchen-3ya.de');
         $this->assertTrue($result);
     }
+
+    /**
+     * Test toPunycode lowercases ASCII domain with mixed case
+     *
+     * @dataProvider mixedCaseAsciiDomainsProvider
+     */
+    public function testToPunycodeLowercasesAsciiDomain(string $input, string $expected): void
+    {
+        $result = DnsIdnService::toPunycode($input);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Data provider for mixed case ASCII domain tests
+     */
+    public static function mixedCaseAsciiDomainsProvider(): array
+    {
+        return [
+            'uppercase domain' => ['EXAMPLE.COM', 'example.com'],
+            'mixed case domain' => ['Example.COM', 'example.com'],
+            'mixed case with subdomain' => ['Www.Example.COM', 'www.example.com'],
+            'all lowercase (unchanged)' => ['example.com', 'example.com'],
+            'camelCase style' => ['MyDomain.Com', 'mydomain.com'],
+        ];
+    }
+
+    /**
+     * Test toPunycode lowercases IDN domain with mixed case
+     *
+     * @dataProvider mixedCaseIdnDomainsProvider
+     */
+    public function testToPunycodeLowercasesIdnDomain(string $input, string $expected): void
+    {
+        $result = DnsIdnService::toPunycode($input);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Data provider for mixed case IDN domain tests
+     */
+    public static function mixedCaseIdnDomainsProvider(): array
+    {
+        return [
+            'IDN with uppercase TLD' => ['münchen.DE', 'xn--mnchen-3ya.de'],
+            'IDN with mixed case' => ['München.De', 'xn--mnchen-3ya.de'],
+            'Cyrillic with uppercase' => ['ПРИМЕР.РФ', 'xn--e1afmkfd.xn--p1ai'],
+            'IDN uppercase umlaut' => ['MÜNCHEN.DE', 'xn--mnchen-3ya.de'],
+        ];
+    }
+
+    /**
+     * Test toPunycode with simulated user input (with whitespace)
+     *
+     * Note: toPunycode does NOT trim whitespace - caller must trim first
+     *
+     * @dataProvider userInputDomainsProvider
+     */
+    public function testToPunycodeWithUserInput(string $input, string $expected): void
+    {
+        // Simulate proper input handling: trim then convert
+        $result = DnsIdnService::toPunycode(trim($input));
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Data provider for user input simulation tests
+     */
+    public static function userInputDomainsProvider(): array
+    {
+        return [
+            'leading/trailing spaces with mixed case' => ['  Example.COM  ', 'example.com'],
+            'tabs and spaces' => ["\t Example.COM \t", 'example.com'],
+            'IDN with spaces' => ['  Ēxample.COM  ', 'xn--xample-o3a.com'],
+            'newlines' => ["\nExample.COM\n", 'example.com'],
+        ];
+    }
+
+    /**
+     * Test that toPunycode without trim does NOT handle whitespace
+     */
+    public function testToPunycodeDoesNotTrimWhitespace(): void
+    {
+        // idn_to_ascii returns false for invalid input with spaces
+        $result = DnsIdnService::toPunycode('  example.com  ');
+
+        // Result should be false (converted to empty string) or contain the spaces
+        // depending on PHP version - the key point is it doesn't work correctly
+        $this->assertNotEquals('example.com', $result);
+    }
 }

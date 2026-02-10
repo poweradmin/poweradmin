@@ -683,4 +683,94 @@ class LUARecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals($luaScript, $data['content']);
     }
+
+    /**
+     * Test validation with AAAA record type prefix and explicit return mode (issue #991)
+     *
+     * LUA records like `AAAA "; return who:toString()"` are valid PowerDNS syntax
+     * where the record type prefix is followed by explicit return mode content.
+     *
+     * @see https://github.com/poweradmin/poweradmin/issues/991
+     */
+    public function testValidateWithAAAAPrefixAndExplicitReturn(): void
+    {
+        $luaScript = 'AAAA "; return who:toString()"';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($luaScript, $data['content']);
+    }
+
+    /**
+     * Test validation with A record type prefix and explicit return mode (issue #991)
+     *
+     * @see https://github.com/poweradmin/poweradmin/issues/991
+     */
+    public function testValidateWithAPrefixAndExplicitReturn(): void
+    {
+        $luaScript = 'A "; return who:toString()"';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($luaScript, $data['content']);
+    }
+
+    /**
+     * Test validation with record type prefix and explicit return with conditional logic
+     *
+     * @see https://github.com/poweradmin/poweradmin/issues/991
+     */
+    public function testValidateWithRecordTypePrefixAndExplicitReturnConditional(): void
+    {
+        $luaScript = 'A ";if country(\'US\') then return \'192.0.2.1\' else return \'192.0.2.2\' end"';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($luaScript, $data['content']);
+    }
+
+    /**
+     * Test validation with record type prefix and explicit return mode but no return statement
+     *
+     * @see https://github.com/poweradmin/poweradmin/issues/991
+     */
+    public function testValidateWithRecordTypePrefixAndExplicitReturnNoReturn(): void
+    {
+        $luaScript = 'A ";print(\'hello\')"';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must contain at least one "return" statement', $result->getFirstError());
+    }
 }

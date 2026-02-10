@@ -25,16 +25,19 @@ test.describe('DNS Record Management', () => {
   // Test record management for a zone (if zones exist)
   test('should handle zone with no records', async ({ page }) => {
     // Navigate to zones and try to access first zone's records
-    await page.goto('/zones/forward');
+    await page.goto('/zones/forward?letter=all');
 
-    const hasZones = await page.locator('table tbody tr').count() > 0;
+    const editLinks = page.locator('table tbody tr a[href*="/edit"]');
+    const hasZones = await editLinks.count() > 0;
 
     if (hasZones) {
-      // Click on first zone link if available
-      await page.locator('table tbody tr').first().locator('a').first().click();
+      // Click on edit link for first zone
+      await editLinks.first().click();
+      await page.waitForLoadState('networkidle');
 
       // Should be on zone edit/records page
-      await expect(page).toHaveURL(/.*zones\/\d+\/edit/);
+      const url = page.url();
+      expect(url).toMatch(/zones\/\d+\/edit/);
     } else {
       // No zones available, skip this test
       console.log('No zones available for record testing');
@@ -49,14 +52,14 @@ test.describe('DNS Record Management', () => {
     const hasForm = await page.locator('form').count() > 0;
 
     if (hasForm) {
-      // Should have record name field
-      await expect(page.locator('input[name*="name"], input[name*="record"]')).toBeVisible();
+      // Should have record name field (use first matching text input)
+      await expect(page.locator('input.name-field, input[name*="[name]"]').first()).toBeVisible();
 
       // Should have record type selector
-      await expect(page.locator('select[name*="type"], select[name*="record_type"]')).toBeVisible();
+      await expect(page.locator('select[name*="type"], select.record-type-select').first()).toBeVisible();
 
       // Should have record content/value field
-      await expect(page.locator('input[name*="content"], input[name*="value"], textarea[name*="content"]')).toBeVisible();
+      await expect(page.locator('input.record-content, input[name*="[content]"]').first()).toBeVisible();
     } else {
       console.log('No record form available - zone may not exist');
     }

@@ -10,13 +10,14 @@
 --
 -- Total records added: ~26 per zone
 --
--- Important: This script attaches the PowerDNS database at /data/db/powerdns.db
--- since the domains and records tables are in a separate database file.
+-- Usage: docker exec -i sqlite sqlite3 /data/pdns.db < test-dns-records-sqlite.sql
 --
--- Usage: docker exec -i sqlite sqlite3 /data/poweradmin.db < test-dns-records-sqlite.sql
+-- For devcontainer: All tables (both Poweradmin and PowerDNS) are in /data/pdns.db.
+-- The script attaches the same database as 'pdns' alias for consistency with
+-- MySQL/PostgreSQL scripts that use separate databases.
 
--- Attach PowerDNS database
-ATTACH DATABASE '/data/db/powerdns.db' AS pdns;
+-- Attach database alias for consistent table references
+ATTACH DATABASE '/data/pdns.db' AS pdns;
 
 -- =============================================================================
 -- COMPREHENSIVE DNS RECORDS FOR manager-zone.example.com

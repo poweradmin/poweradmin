@@ -72,7 +72,7 @@ docker exec -i -e PGPASSWORD=poweradmin postgres psql -U pdns -d pdns < .devcont
 #### SQLite
 ```bash
 # Note: The SQLite script automatically attaches /data/db/powerdns.db
-docker exec -i sqlite sqlite3 /data/poweradmin.db < .devcontainer/sql/test-users-permissions-sqlite.sql
+docker exec -i sqlite sqlite3 /data/pdns.db < .devcontainer/sql/test-users-permissions-sqlite.sql
 ```
 
 ### Using Adminer Web UI

@@ -7,55 +7,101 @@
 -- - 5 test users with different permission levels
 -- - 4 test domains with various ownership patterns including multi-owner zones
 --
--- IMPORTANT: This script requires the PowerDNS database to be attached since
--- the domains and records tables are in a separate SQLite database file.
+-- Usage: sqlite3 /data/pdns.db < test-users-permissions-sqlite.sql
 --
--- Usage: sqlite3 /data/poweradmin.db < test-users-permissions-sqlite.sql
---
--- For devcontainer: The script automatically attaches /data/db/powerdns.db
--- and qualifies all PowerDNS table references with the 'pdns' alias.
+-- For devcontainer: All tables (both Poweradmin and PowerDNS) are in /data/pdns.db.
+-- The script attaches the same database as 'pdns' alias for consistency with
+-- MySQL/PostgreSQL scripts that use separate databases.
 
 -- =============================================================================
--- ATTACH POWERDNS DATABASE
+-- ATTACH DATABASE ALIAS
 -- =============================================================================
--- Attach the PowerDNS database so we can access domains and records tables
-ATTACH DATABASE '/data/db/powerdns.db' AS pdns;
+-- Create 'pdns' alias for consistent table references across database types
+ATTACH DATABASE '/data/pdns.db' AS pdns;
 
 -- =============================================================================
 -- PERMISSION TEMPLATES
 -- =============================================================================
--- Templates #1-5 are preconfigured in the base schema (no additional templates needed)
+-- Recreate templates 1-5 in case they were modified/deleted by previous E2E tests
+
+INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
+    (1, 'Administrator', 'Administrator template with full rights.');
+INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
+    (2, 'Zone Manager', 'Full management of own zones including creation, editing, deletion, and templates.');
+INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
+    (3, 'DNS Editor', 'Edit own zone records but cannot modify SOA and NS records.');
+INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
+    (4, 'Read Only', 'Read-only access to own zones with search capability.');
+INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
+    (5, 'No Access', 'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.');
+
+-- Recreate Administrator permissions (template 1)
+INSERT OR IGNORE INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 1, "id" FROM "perm_items" WHERE "name" = 'user_is_ueberuser';
+
+-- Recreate Zone Manager permissions (template 2)
+INSERT OR IGNORE INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 2, "id" FROM "perm_items" WHERE "name" IN (
+    'zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
+    'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
+    'api_manage_keys', 'zone_delete_own'
+);
+
+-- Recreate DNS Editor permissions (template 3)
+INSERT OR IGNORE INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 3, "id" FROM "perm_items" WHERE "name" IN (
+    'zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client'
+);
+
+-- Recreate Read Only permissions (template 4)
+INSERT OR IGNORE INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 4, "id" FROM "perm_items" WHERE "name" IN (
+    'zone_content_view_own', 'search'
+);
+
+-- Template 5 (No Access) has no permissions
 
 -- =============================================================================
 -- TEST USERS
 -- =============================================================================
--- Password for all users: "poweradmin123" (bcrypt hashed)
--- Use: password_hash('poweradmin123', PASSWORD_BCRYPT, ['cost' => 12])
+-- Password for all users: "Poweradmin123" (bcrypt hashed)
+-- Use: password_hash('Poweradmin123', PASSWORD_BCRYPT, ['cost' => 12])
 
 -- Use NOT EXISTS to skip users if they already exist
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
-SELECT 'admin', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'System Administrator', 'admin@example.com', 'Full system administrator with überuser access', 1, 1, 0, 'sql'
+SELECT 'admin', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'System Administrator', 'admin@example.com', 'Full system administrator with überuser access', 1, 1, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'admin');
 
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
-SELECT 'manager', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Zone Manager', 'manager@example.com', 'Can manage own zones and templates', 2, 1, 0, 'sql'
+SELECT 'manager', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'Zone Manager', 'manager@example.com', 'Can manage own zones and templates', 2, 1, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'manager');
 
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
-SELECT 'client', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Client User', 'client@example.com', 'Limited editing rights - cannot edit SOA/NS records', 3, 1, 0, 'sql'
+SELECT 'client', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'Client User', 'client@example.com', 'Limited editing rights - cannot edit SOA/NS records', 3, 1, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'client');
 
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
-SELECT 'viewer', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Read Only User', 'viewer@example.com', 'Read-only access to zones', 4, 1, 0, 'sql'
+SELECT 'viewer', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'Read Only User', 'viewer@example.com', 'Read-only access to zones', 4, 1, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'viewer');
 
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
-SELECT 'noperm', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'No Permission User', 'noperm@example.com', 'Active user with no permissions', 5, 1, 0, 'sql'
+SELECT 'noperm', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'No Permission User', 'noperm@example.com', 'Active user with no permissions', 5, 1, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'noperm');
 
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
-SELECT 'inactive', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Inactive User', 'inactive@example.com', 'Inactive account - cannot login', 5, 0, 0, 'sql'
+SELECT 'inactive', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'Inactive User', 'inactive@example.com', 'Inactive account - cannot login', 5, 0, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'inactive');
+
+-- =============================================================================
+-- API KEY FOR AUTOMATED TESTING
+-- =============================================================================
+-- API key linked to admin user for API test suite (tests/api/)
+
+INSERT INTO "api_keys" ("name", "secret_key", "created_by", "disabled")
+SELECT 'Automated Testing Key', 'test-api-key-for-automated-testing-12345', u."id", 0
+FROM "users" u
+WHERE u."username" = 'admin'
+  AND NOT EXISTS (SELECT 1 FROM "api_keys" WHERE "secret_key" = 'test-api-key-for-automated-testing-12345');
 
 -- =============================================================================
 -- TEST DOMAINS
@@ -68,6 +114,7 @@ INSERT OR IGNORE INTO pdns."domains" ("name", "type") VALUES
 ('client-zone.example.com', 'MASTER'),
 ('shared-zone.example.com', 'MASTER'),
 ('xn--verstt-eua3l.info', 'MASTER'),
+('xn--mnchen-3ya.de', 'MASTER'),
 ('xn--80aejmjbdxvpe2k.net', 'MASTER'),
 ('xn--ob0bz7i69i99fm8qgkfwlc.com', 'MASTER'),
 ('xn--chtnbin-rwa9e0573b.vn', 'MASTER'),
@@ -86,7 +133,7 @@ SELECT
     0
 FROM pdns."domains" d
 WHERE d."name" IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com',
-                   'xn--verstt-eua3l.info', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn',
+                   'xn--verstt-eua3l.info', 'xn--mnchen-3ya.de', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn',
                    'test858.example.com', '168.192.in-addr.arpa')
   AND NOT EXISTS (
     SELECT 1 FROM pdns."records" r WHERE r."domain_id" = d."id" AND r."type" = 'SOA'
@@ -97,7 +144,7 @@ INSERT INTO pdns."records" ("domain_id", "name", "type", "content", "ttl", "prio
 SELECT d."id", d."name", 'NS', 'ns1.example.com.', 86400, 0
 FROM pdns."domains" d
 WHERE d."name" IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com',
-                   'xn--verstt-eua3l.info', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn',
+                   'xn--verstt-eua3l.info', 'xn--mnchen-3ya.de', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn',
                    'test858.example.com', '168.192.in-addr.arpa')
   AND NOT EXISTS (
     SELECT 1 FROM pdns."records" r WHERE r."domain_id" = d."id" AND r."type" = 'NS' AND r."content" = 'ns1.example.com.'
@@ -107,7 +154,7 @@ INSERT INTO pdns."records" ("domain_id", "name", "type", "content", "ttl", "prio
 SELECT d."id", d."name", 'NS', 'ns2.example.com.', 86400, 0
 FROM pdns."domains" d
 WHERE d."name" IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com',
-                   'xn--verstt-eua3l.info', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn',
+                   'xn--verstt-eua3l.info', 'xn--mnchen-3ya.de', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn',
                    'test858.example.com', '168.192.in-addr.arpa')
   AND NOT EXISTS (
     SELECT 1 FROM pdns."records" r WHERE r."domain_id" = d."id" AND r."type" = 'NS' AND r."content" = 'ns2.example.com.'
@@ -189,6 +236,60 @@ WHERE d."name" = '168.192.in-addr.arpa' AND u."username" = 'admin'
   );
 
 -- =============================================================================
+-- IDN ZONES OWNERSHIP
+-- =============================================================================
+
+-- Swedish IDN (översätt.info) owned by manager
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
+SELECT d."id", u."id", 0
+FROM pdns."domains" d
+CROSS JOIN "users" u
+WHERE d."name" = 'xn--verstt-eua3l.info' AND u."username" = 'manager'
+  AND NOT EXISTS (
+    SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id"
+  );
+
+-- German IDN (münchen.de) owned by admin
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
+SELECT d."id", u."id", 0
+FROM pdns."domains" d
+CROSS JOIN "users" u
+WHERE d."name" = 'xn--mnchen-3ya.de' AND u."username" = 'admin'
+  AND NOT EXISTS (
+    SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id"
+  );
+
+-- Russian IDN (автоэлектрик.net) owned by manager
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
+SELECT d."id", u."id", 0
+FROM pdns."domains" d
+CROSS JOIN "users" u
+WHERE d."name" = 'xn--80aejmjbdxvpe2k.net' AND u."username" = 'manager'
+  AND NOT EXISTS (
+    SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id"
+  );
+
+-- Korean IDN (베스트공포닷컴.com) owned by client
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
+SELECT d."id", u."id", 0
+FROM pdns."domains" d
+CROSS JOIN "users" u
+WHERE d."name" = 'xn--ob0bz7i69i99fm8qgkfwlc.com' AND u."username" = 'client'
+  AND NOT EXISTS (
+    SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id"
+  );
+
+-- Vietnamese IDN (chợtânbiên.vn) owned by viewer
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
+SELECT d."id", u."id", 0
+FROM pdns."domains" d
+CROSS JOIN "users" u
+WHERE d."name" = 'xn--chtnbin-rwa9e0573b.vn' AND u."username" = 'viewer'
+  AND NOT EXISTS (
+    SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id"
+  );
+
+-- =============================================================================
 -- VERIFICATION QUERIES
 -- =============================================================================
 
@@ -243,12 +344,12 @@ ORDER BY d."name";
 -- -------------------
 -- Username  | Password       | Template        | Active | Description
 -- ----------|----------------|-----------------|--------|---------------------------
--- admin     | poweradmin123  | Administrator   | Yes    | Full system access (überuser)
--- manager   | poweradmin123  | Zone Manager    | Yes    | Can manage own zones (11 perms)
--- client    | poweradmin123  | Client Editor   | Yes    | Limited editing, no SOA/NS (4 perms)
--- viewer    | poweradmin123  | Read Only       | Yes    | View-only access (2 perms)
--- noperm    | poweradmin123  | No Access       | Yes    | Can login but has no permissions (0 perms)
--- inactive  | poweradmin123  | No Access       | No     | Cannot login - inactive account
+-- admin     | Poweradmin123  | Administrator   | Yes    | Full system access (überuser)
+-- manager   | Poweradmin123  | Zone Manager    | Yes    | Can manage own zones (11 perms)
+-- client    | Poweradmin123  | Client Editor   | Yes    | Limited editing, no SOA/NS (4 perms)
+-- viewer    | Poweradmin123  | Read Only       | Yes    | View-only access (2 perms)
+-- noperm    | Poweradmin123  | No Access       | Yes    | Can login but has no permissions (0 perms)
+-- inactive  | Poweradmin123  | No Access       | No     | Cannot login - inactive account
 --
 -- Test Domains Created:
 -- ---------------------
@@ -258,5 +359,15 @@ ORDER BY d."name";
 -- manager-zone.example.com    | manager
 -- client-zone.example.com     | client
 -- shared-zone.example.com     | manager, client (multi-owner)
+--
+-- IDN Zones (Internationalized Domain Names):
+-- -------------------------------------------
+-- Punycode                    | Display Name           | Owner
+-- ----------------------------|------------------------|--------
+-- xn--verstt-eua3l.info       | översätt.info          | manager (Swedish)
+-- xn--mnchen-3ya.de           | münchen.de             | admin (German)
+-- xn--80aejmjbdxvpe2k.net     | автоэлектрик.net       | manager (Russian)
+-- xn--ob0bz7i69i99fm8qgkfwlc.com | 베스트공포닷컴.com  | client (Korean)
+-- xn--chtnbin-rwa9e0573b.vn   | chợtânbiên.vn          | viewer (Vietnamese)
 --
 -- =============================================================================

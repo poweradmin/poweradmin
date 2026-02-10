@@ -47,19 +47,22 @@ test.describe('Dashboard and Navigation', () => {
   test('should navigate to forward zones page', async ({ page }) => {
     await page.goto('/zones/forward');
     await expect(page).toHaveURL(/.*zones\/forward/);
-    await expect(page.locator('h1, h2, h3, .page-title')).toBeVisible();
+    // Page uses card-header with strong element instead of h1-3
+    await expect(page.locator('.card-header strong, .card-header, .breadcrumb').first()).toBeVisible();
   });
 
   test('should navigate to reverse zones page', async ({ page }) => {
     await page.goto('/zones/reverse');
     await expect(page).toHaveURL(/.*zones\/reverse/);
-    await expect(page.locator('h1, h2, h3, .page-title')).toBeVisible();
+    // Page uses card-header with strong element instead of h1-3
+    await expect(page.locator('.card-header strong, .card-header, .breadcrumb').first()).toBeVisible();
   });
 
   test('should navigate to users page', async ({ page }) => {
     await page.goto('/users');
     await expect(page).toHaveURL(/.*users/);
-    await expect(page.locator('h1, h2, h3, .page-title')).toBeVisible();
+    // Page uses card-header with strong element instead of h1-3
+    await expect(page.locator('.card-header strong, .card-header, .breadcrumb').first()).toBeVisible();
   });
 
   test('should show dashboard cards or widgets', async ({ page }) => {
@@ -80,10 +83,10 @@ test.describe('Dashboard and Navigation', () => {
 
     const hasBreadcrumb = await page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]').count() > 0;
     if (hasBreadcrumb) {
-      await expect(page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]')).toBeVisible();
+      await expect(page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]').first()).toBeVisible();
     } else {
-      // Check for page title or heading
-      await expect(page.locator('h1, h2, h3, .page-title')).toBeVisible();
+      // Check for page content indicator (card-header or form)
+      await expect(page.locator('.card-header strong, .card-header, form').first()).toBeVisible();
     }
   });
 

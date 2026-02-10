@@ -9,9 +9,12 @@ test.describe('API Keys Management', () => {
 
   test('should access API keys page', async ({ page }) => {
     // Click Tools dropdown and navigate to API Keys
-    await page.locator('.dropdown-toggle:has-text("Tools")').click();
-    await expect(page.locator('.dropdown-menu')).toBeVisible();
-    await page.locator('.dropdown-menu >> text=API Keys').click();
+    const toolsDropdown = page.locator('.dropdown-toggle:has-text("Tools")');
+    await toolsDropdown.click();
+    // Wait for the specific dropdown menu that contains "API Keys"
+    const toolsMenu = page.locator('.dropdown-menu:has-text("API Keys")');
+    await expect(toolsMenu).toBeVisible();
+    await toolsMenu.locator('text=API Keys').click();
 
     await expect(page).toHaveURL(/.*settings\/api-keys/);
 

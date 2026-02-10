@@ -9,19 +9,28 @@
   },
   "scripts": {
     "test:e2e": "playwright test",
+    "test:e2e:mysql": "BASE_URL=http://localhost:8080 playwright test",
+    "test:e2e:pgsql": "BASE_URL=http://localhost:8081 playwright test",
+    "test:e2e:sqlite": "BASE_URL=http://localhost:8082 playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:chromium": "playwright test --project=chromium",
     "test:e2e:firefox": "playwright test --project=firefox",
     "test:e2e:webkit": "playwright test --project=webkit",
-    "test:e2e:report": "playwright show-report"
+    "test:e2e:all": "playwright test --project=chromium --project=firefox --project=webkit",
+    "test:e2e:report": "playwright show-report",
+    "test:api": "cd tests/api && ./run-tests.sh --db mysql test all",
+    "test:api:mysql": "cd tests/api && ./run-tests.sh --db mysql test all",
+    "test:api:pgsql": "cd tests/api && ./run-tests.sh --db pgsql test all",
+    "test:api:sqlite": "cd tests/api && ./run-tests.sh --db sqlite test all",
+    "test:api:all-dbs": "cd tests/api && ./run-tests.sh test:all-dbs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.56.1"
+    "@playwright/test": "^1.58.2"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

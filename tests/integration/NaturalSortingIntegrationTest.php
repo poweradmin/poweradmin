@@ -7,9 +7,6 @@ use PDOException;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Utility\NaturalSorting;
 
-/**
- * @group manual
- */
 class NaturalSortingIntegrationTest extends TestCase
 {
     private ?PDO $mysqlConnection;
@@ -73,13 +70,13 @@ class NaturalSortingIntegrationTest extends TestCase
     {
         // Use test database ports to avoid conflicts with production databases
         try {
-            $this->mysqlConnection = new PDO('mysql:host=127.0.0.1;port=3307;dbname=pdns', 'pdns', 'poweradmin');
+            $this->mysqlConnection = new PDO('mysql:host=127.0.0.1;port=3306;dbname=pdns', 'pdns', 'poweradmin');
         } catch (PDOException $e) {
             $this->mysqlConnection = null;
         }
 
         try {
-            $this->pgsqlConnection = new PDO('pgsql:host=127.0.0.1;port=5433;dbname=pdns', 'pdns', 'poweradmin');
+            $this->pgsqlConnection = new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin');
         } catch (PDOException $e) {
             $this->pgsqlConnection = null;
         }
@@ -245,8 +242,12 @@ class NaturalSortingIntegrationTest extends TestCase
         );
     }
 
-    private function runDatabaseTest(PDO $connection, string $dbType, string $direction, array $testData, array $expectedOrder, string $sortMethod): void
+    private function runDatabaseTest(?PDO $connection, string $dbType, string $direction, array $testData, array $expectedOrder, string $sortMethod): void
     {
+        if ($connection === null) {
+            $this->markTestSkipped("$dbType connection not available");
+        }
+
         $table = 'test_table';
 
         // Create table and insert test data

@@ -3,12 +3,16 @@
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use PoweradminInstall\SessionUtils;
 
 class SessionUtilsTest extends TestCase
 {
     protected function setUp(): void
     {
+        // Skip tests if install folder doesn't exist
+        if (!class_exists('PoweradminInstall\SessionUtils')) {
+            $this->markTestSkipped('Install folder not present - SessionUtils class not available');
+        }
+
         // Ensure we have a clean session state for each test
         if (!isset($_SESSION)) {
             $_SESSION = [];
@@ -43,7 +47,7 @@ class SessionUtilsTest extends TestCase
         $_SESSION['authenticated'] = true;
 
         // Execute the method
-        SessionUtils::clearMessages();
+        \PoweradminInstall\SessionUtils::clearMessages();
 
         // Assert that only messages were cleared
         /** @var array<string, mixed> $session */
@@ -69,7 +73,7 @@ class SessionUtilsTest extends TestCase
         $_SESSION['install_token'] = 'test-token';
         $_SESSION['user_id'] = 456;
 
-        SessionUtils::clearMessages();
+        \PoweradminInstall\SessionUtils::clearMessages();
 
         // Assert only messages were cleared
         /** @var array<string, mixed> $session */
@@ -89,7 +93,7 @@ class SessionUtilsTest extends TestCase
         $_SESSION = ['user_data' => 'should_remain'];
 
         // Should not throw errors when there are no messages to clear
-        SessionUtils::clearMessages();
+        \PoweradminInstall\SessionUtils::clearMessages();
 
         // Non-message data should remain
         $this->assertArrayHasKey('user_data', $_SESSION);

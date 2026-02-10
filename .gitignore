@@ -26,6 +26,7 @@ Thumbs.db
 /.buildpath
 /.project
 /.vscode
+.phpactor.json
 
 # phpDocumentor
 /docs
@@ -59,6 +60,7 @@ package-lock.json
 *.trace.zip
 /blob-report/
 /playwright/.auth/
+/.playwright-mcp/
 
 # PHP tools
 /.php-cs-fixer.cache

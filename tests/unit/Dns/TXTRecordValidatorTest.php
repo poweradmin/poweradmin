@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -199,7 +199,10 @@ class TXTRecordValidatorTest extends TestCase
     }
 
     /**
-     * Test validation with TXT record containing HTML tags (which should be invalid)
+     * Test validation with TXT record containing HTML tags (which should be valid)
+     * HTML tags are allowed in TXT records per RFC 1035. XSS prevention is handled
+     * by output escaping in templates, not by input validation.
+     * @see https://github.com/poweradmin/poweradmin/issues/953
      */
     public function testValidateWithHTMLTags()
     {
@@ -211,8 +214,7 @@ class TXTRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('HTML', $result->getFirstError());
+        $this->assertTrue($result->isValid());
     }
 
     /**
