@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -31,7 +30,6 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -100,9 +98,9 @@ class DomainManager implements DomainManagerInterface
             $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
             if (
-                ($domain && $zone_template) ||
-                (preg_match('/in-addr.arpa/i', $domain) && $zone_template) ||
-                $type == "SLAVE" && $domain && $slave_master
+                ($domain && $owner && $zone_template) ||
+                (preg_match('/in-addr.arpa/i', $domain) && $owner && $zone_template) ||
+                $type == "SLAVE" && $domain && $owner && $slave_master
             ) {
                 $stmt = $db->prepare("INSERT INTO $domains_table (name, type) VALUES (:domain, :type)");
                 $stmt->bindValue(':domain', $domain, PDO::PARAM_STR);
@@ -113,7 +111,7 @@ class DomainManager implements DomainManagerInterface
 
                 $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
                 $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-                $stmt->bindValue(':owner', $owner, $owner === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+                $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
                 $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
                 $stmt->execute();
 
@@ -246,10 +244,6 @@ class DomainManager implements DomainManagerInterface
                 $syncService->cleanupZoneSyncRecords($zoneId);
             }
 
-            // Clean up group ownership associations
-            $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
-            $stmt->execute([':id' => $id]);
-
             $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
             $stmt->execute([':id' => $id]);
 
@@ -277,7 +271,6 @@ class DomainManager implements DomainManagerInterface
      */
     public function deleteDomains(array $domains): bool
     {
-        $pdnssec_use = $this->config->get('dnssec', 'enabled');
         $tableNameService = new TableNameService($this->config);
         $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
@@ -290,22 +283,6 @@ class DomainManager implements DomainManagerInterface
 
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if (is_numeric($id)) {
-                    $zone_type = $this->domainRepository->getDomainType($id);
-                    if ($pdnssec_use && $zone_type == 'MASTER') {
-                        $pdns_api_url = $this->config->get('pdns_api', 'url');
-                        $pdns_api_key = $this->config->get('pdns_api', 'key');
-
-                        $dnssecProvider = DnssecProviderFactory::create(
-                            $this->db,
-                            new FakeConfiguration($pdns_api_url, $pdns_api_key)
-                        );
-
-                        $zone_name = $this->domainRepository->getDomainNameById($id);
-                        if ($dnssecProvider->isZoneSecured($zone_name, $this->config)) {
-                            $dnssecProvider->unsecureZone($zone_name);
-                        }
-                    }
-
                     // Get zone_id before deleting zones record for sync cleanup
                     $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
                     $stmt->execute([':id' => $id]);
@@ -316,10 +293,6 @@ class DomainManager implements DomainManagerInterface
                         $syncService = new ZoneTemplateSyncService($this->db, $this->config);
                         $syncService->cleanupZoneSyncRecords($zoneId);
                     }
-
-                    // Clean up group ownership associations
-                    $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
-                    $stmt->execute([':id' => $id]);
 
                     $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
                     $stmt->execute([':id' => $id]);
@@ -467,13 +440,20 @@ class DomainManager implements DomainManagerInterface
      * @param object $db Database connection
      * @param int $zone_id Zone ID
      *
-     * @return int Zone Template ID
+     * @return int Zone Template ID (0 if no template or zone not found)
      */
     public static function getZoneTemplate($db, int $zone_id): int
     {
         $stmt = $db->prepare("SELECT zone_templ_id FROM zones WHERE domain_id = :zone_id");
         $stmt->execute([':zone_id' => $zone_id]);
-        return $stmt->fetchColumn();
+        $result = $stmt->fetchColumn();
+
+        // Handle NULL (PostgreSQL) or false (no row found)
+        if ($result === null || $result === false) {
+            return 0;
+        }
+
+        return (int) $result;
     }
 
     /**
