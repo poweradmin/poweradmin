@@ -331,10 +331,38 @@ test.describe('DNSSEC Key Management', () => {
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
 
-        const noBtn = page.locator('input[value="No"], button:has-text("No"), a:has-text("No")').first();
-        if (await noBtn.count() > 0) {
-          await noBtn.click();
+        const cancelBtn = page.locator('a:has-text("Cancel"), button:has-text("Cancel")').first();
+        if (await cancelBtn.count() > 0) {
+          await cancelBtn.click();
           await expect(page).toHaveURL(/.*dnssec/);
+        }
+      }
+    });
+
+    test('should submit delete form without CSRF error', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/dnssec`);
+
+      const deleteLink = page.locator('a[href*="/dnssec/keys/"][href*="/delete"]').last();
+      if (await deleteLink.count() > 0) {
+        await deleteLink.click();
+        await expect(page).toHaveURL(/.*dnssec.*delete/);
+
+        // Verify the form uses correct CSRF field name (_token, not csrf_token)
+        const tokenField = page.locator('input[name="_token"]');
+        expect(await tokenField.count()).toBe(1);
+
+        // Submit the delete form
+        const deleteBtn = page.locator('button[type="submit"]:has-text("Delete")').first();
+        if (await deleteBtn.count() > 0) {
+          await deleteBtn.click();
+          await page.waitForLoadState('networkidle');
+
+          const bodyText = await page.locator('body').textContent();
+          expect(bodyText).not.toMatch(/Invalid CSRF token/i);
         }
       }
     });

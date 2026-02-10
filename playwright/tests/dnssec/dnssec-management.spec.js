@@ -321,13 +321,33 @@ test.describe('Delete DNSSEC Key', () => {
       await page.goto(`/zones/${zoneId}/dnssec/keys/1/delete`, { timeout: 30000 });
       await page.waitForLoadState('networkidle');
 
-      const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")');
-      const noBtn = page.locator('a:has-text("No"), button:has-text("No")');
-      if (await yesBtn.count() > 0) {
-        await expect(yesBtn.first()).toBeVisible();
+      const deleteBtn = page.locator('button[type="submit"]:has-text("Delete")');
+      const cancelBtn = page.locator('a:has-text("Cancel"), button:has-text("Cancel")');
+      if (await deleteBtn.count() > 0) {
+        await expect(deleteBtn.first()).toBeVisible();
       }
-      if (await noBtn.count() > 0) {
-        await expect(noBtn.first()).toBeVisible();
+      if (await cancelBtn.count() > 0) {
+        await expect(cancelBtn.first()).toBeVisible();
+      }
+    });
+
+    test('should use correct CSRF token field name', async ({ adminPage: page }) => {
+      const zoneId = await getZoneIdForTest(page);
+      if (!zoneId) {
+        test.skip('No zones available for testing');
+        return;
+      }
+
+      await page.goto(`/zones/${zoneId}/dnssec`);
+      const deleteLink = page.locator('a[href*="/delete"]').first();
+      if (await deleteLink.count() > 0) {
+        await deleteLink.click();
+
+        // CSRF token field must be named _token (not csrf_token)
+        const correctField = page.locator('input[name="_token"]');
+        const wrongField = page.locator('input[name="csrf_token"]');
+        expect(await correctField.count()).toBe(1);
+        expect(await wrongField.count()).toBe(0);
       }
     });
   });
