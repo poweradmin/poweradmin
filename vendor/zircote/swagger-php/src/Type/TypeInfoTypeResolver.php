@@ -62,9 +62,9 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
             if (!$type instanceof CompositeTypeInterface || $isNonZeroInt) {
                 if ($isNonZeroInt) {
                     $schema->type = 'int';
-                    $schema->not = $schema->_context->isVersion('3.1.x')
-                        ? ['const' => 0]
-                        : ['enum' => [0]];
+                    $schema->not = $schema->_context->isVersion('3.0.x')
+                        ? ['enum' => [0]]
+                        : ['const' => 0];
                 } elseif ($type instanceof BuiltinType || $type instanceof ObjectType) {
                     $schema->type = (string) $type;
                 } elseif ($type instanceof IntRangeType) {
@@ -86,6 +86,10 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
         }
 
         $this->type2ref($schema, $analysis, $sourceClass);
+
+        if ($schema->items instanceof OA\Items) {
+            $schema->type = 'array';
+        }
 
         if (!Generator::isDefault($schema->const) && Generator::isDefault($schema->type)) {
             if (!$this->mapNativeType($schema, gettype($schema->const))) {

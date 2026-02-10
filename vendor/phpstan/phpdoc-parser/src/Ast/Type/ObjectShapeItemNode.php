@@ -29,7 +29,6 @@ class ObjectShapeItemNode implements Node
 		$this->valueType = $valueType;
 	}
 
-
 	public function __toString(): string
 	{
 		if ($this->keyName !== null) {
@@ -42,6 +41,20 @@ class ObjectShapeItemNode implements Node
 		}
 
 		return (string) $this->valueType;
+	}
+
+	/**
+	 * @param array<string, mixed> $properties
+	 */
+	public static function __set_state(array $properties): self
+	{
+		$instance = new self($properties['keyName'], $properties['optional'], $properties['valueType']);
+		if (isset($properties['attributes'])) {
+			foreach ($properties['attributes'] as $key => $value) {
+				$instance->setAttribute($key, $value);
+			}
+		}
+		return $instance;
 	}
 
 }

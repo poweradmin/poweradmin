@@ -34,6 +34,8 @@ use Symfony\Component\Serializer\Mapping\ClassMetadataInterface;
  */
 class AttributeLoader implements LoaderInterface
 {
+    use AccessorCollisionResolverTrait;
+
     private const KNOWN_ATTRIBUTES = [
         DiscriminatorMap::class,
         Groups::class,
@@ -123,14 +125,21 @@ class AttributeLoader implements LoaderInterface
             if ($method->getDeclaringClass()->name !== $className) {
                 continue;
             }
+            $name = $method->name;
 
-            if (0 === stripos($method->name, 'get') && $method->getNumberOfRequiredParameters()) {
+            if (0 === stripos($name, 'get') && $method->getNumberOfRequiredParameters()) {
                 continue; /*  matches the BC behavior in `Symfony\Component\Serializer\Normalizer\ObjectNormalizer::extractAttributes` */
             }
 
-            $accessorOrMutator = preg_match('/^(get|is|has|set)(.+)$/i', $method->name, $matches);
-            if ($accessorOrMutator && !ctype_lower($matches[2][0])) {
-                $attributeName = lcfirst($matches[2]);
+            $attributeName = $this->getAttributeNameFromAccessor($reflectionClass, $method, true);
+            $accessorOrMutator = null !== $attributeName;
+            $hasProperty = $this->hasPropertyForAccessor($method->getDeclaringClass(), $name);
+            $attributeMetadata = null;
+
+            if ($hasProperty || $accessorOrMutator) {
+                if (null === $attributeName || 's' !== $name[0] && $hasProperty && $this->hasAttributeNameCollision($reflectionClass, $attributeName, $name)) {
+                    $attributeName = $name;
+                }
 
                 if (isset($attributesMetadata[$attributeName])) {
                     $attributeMetadata = $attributesMetadata[$attributeName];
@@ -142,38 +151,38 @@ class AttributeLoader implements LoaderInterface
 
             foreach ($this->loadAttributes($method) as $annotation) {
                 if ($annotation instanceof Groups) {
-                    if (!$accessorOrMutator) {
-                        throw new MappingException(\sprintf('Groups on "%s::%s()" cannot be added. Groups can only be added on methods beginning with "get", "is", "has" or "set".', $className, $method->name));
+                    if (!$attributeMetadata) {
+                        throw new MappingException(\sprintf('Groups on "%s::%s()" cannot be added. Groups can only be added on methods beginning with "get", "is", "has", "can" or "set".', $className, $method->name));
                     }
 
                     foreach ($annotation->getGroups() as $group) {
                         $attributeMetadata->addGroup($group);
                     }
                 } elseif ($annotation instanceof MaxDepth) {
-                    if (!$accessorOrMutator) {
-                        throw new MappingException(\sprintf('MaxDepth on "%s::%s()" cannot be added. MaxDepth can only be added on methods beginning with "get", "is", "has" or "set".', $className, $method->name));
+                    if (!$attributeMetadata) {
+                        throw new MappingException(\sprintf('MaxDepth on "%s::%s()" cannot be added. MaxDepth can only be added on methods beginning with "get", "is", "has", "can" or "set".', $className, $method->name));
                     }
 
                     $attributeMetadata->setMaxDepth($annotation->getMaxDepth());
                 } elseif ($annotation instanceof SerializedName) {
-                    if (!$accessorOrMutator) {
-                        throw new MappingException(\sprintf('SerializedName on "%s::%s()" cannot be added. SerializedName can only be added on methods beginning with "get", "is", "has" or "set".', $className, $method->name));
+                    if (!$attributeMetadata) {
+                        throw new MappingException(\sprintf('SerializedName on "%s::%s()" cannot be added. SerializedName can only be added on methods beginning with "get", "is", "has", "can" or "set".', $className, $method->name));
                     }
 
                     $attributeMetadata->setSerializedName($annotation->getSerializedName());
                 } elseif ($annotation instanceof SerializedPath) {
-                    if (!$accessorOrMutator) {
-                        throw new MappingException(\sprintf('SerializedPath on "%s::%s()" cannot be added. SerializedPath can only be added on methods beginning with "get", "is", "has" or "set".', $className, $method->name));
+                    if (!$attributeMetadata) {
+                        throw new MappingException(\sprintf('SerializedPath on "%s::%s()" cannot be added. SerializedPath can only be added on methods beginning with "get", "is", "has", "can" or "set".', $className, $method->name));
                     }
 
                     $attributeMetadata->setSerializedPath($annotation->getSerializedPath());
                 } elseif ($annotation instanceof Ignore) {
-                    if ($accessorOrMutator) {
+                    if ($attributeMetadata) {
                         $attributeMetadata->setIgnore(true);
                     }
                 } elseif ($annotation instanceof Context) {
-                    if (!$accessorOrMutator) {
-                        throw new MappingException(\sprintf('Context on "%s::%s()" cannot be added. Context can only be added on methods beginning with "get", "is", "has" or "set".', $className, $method->name));
+                    if (!$attributeMetadata) {
+                        throw new MappingException(\sprintf('Context on "%s::%s()" cannot be added. Context can only be added on methods beginning with "get", "is", "has", "can" or "set".', $className, $method->name));
                     }
 
                     $this->setAttributeContextsForGroups($annotation, $attributeMetadata);

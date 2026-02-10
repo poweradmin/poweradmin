@@ -33,7 +33,6 @@ class CallableTypeNode implements TypeNode
 		$this->templateTypes = $templateTypes;
 	}
 
-
 	public function __toString(): string
 	{
 		$returnType = $this->returnType;
@@ -45,6 +44,20 @@ class CallableTypeNode implements TypeNode
 			: '';
 		$parameters = implode(', ', $this->parameters);
 		return "{$this->identifier}{$template}({$parameters}): {$returnType}";
+	}
+
+	/**
+	 * @param array<string, mixed> $properties
+	 */
+	public static function __set_state(array $properties): self
+	{
+		$instance = new self($properties['identifier'], $properties['parameters'], $properties['returnType'], $properties['templateTypes']);
+		if (isset($properties['attributes'])) {
+			foreach ($properties['attributes'] as $key => $value) {
+				$instance->setAttribute($key, $value);
+			}
+		}
+		return $instance;
 	}
 
 }

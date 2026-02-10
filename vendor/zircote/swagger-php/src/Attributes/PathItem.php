@@ -22,8 +22,8 @@ class PathItem extends OA\PathItem
     public function __construct(
         ?string $path = null,
         string|object|null $ref = null,
-        ?string $summary = null,
-        ?string $description = null,
+        ?string $summary = Generator::UNDEFINED,
+        ?string $description = Generator::UNDEFINED,
         ?Get $get = null,
         ?Put $put = null,
         ?Post $post = null,
@@ -32,6 +32,7 @@ class PathItem extends OA\PathItem
         ?Head $head = null,
         ?Patch $patch = null,
         ?Trace $trace = null,
+        ?Query $query = null,
         ?array $servers = null,
         ?array $parameters = null,
         // annotation
@@ -41,11 +42,11 @@ class PathItem extends OA\PathItem
         parent::__construct([
             'path' => $path ?? Generator::UNDEFINED,
             'ref' => $ref ?? Generator::UNDEFINED,
-            'summary' => $summary ?? Generator::UNDEFINED,
-            'description' => $description ?? Generator::UNDEFINED,
+            'summary' => $summary,
+            'description' => $description,
             'x' => $x ?? Generator::UNDEFINED,
             'attachables' => $attachables ?? Generator::UNDEFINED,
-            'value' => $this->combine($get, $put, $post, $delete, $options, $head, $patch, $trace, $servers, $parameters),
+            'value' => $this->combine($get, $put, $post, $delete, $options, $head, $patch, $trace, $query, $servers, $parameters),
         ]);
     }
 }
