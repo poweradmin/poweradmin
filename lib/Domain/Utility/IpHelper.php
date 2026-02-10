@@ -29,6 +29,42 @@ class IpHelper
     private static ?IPAddressValidator $ipValidator = null;
 
     /**
+     * Calculate the block size for a given CIDR prefix (IPv4)
+     * Uses bit shifting instead of pow() for guaranteed int return type
+     *
+     * @param int $prefix CIDR prefix (0-32)
+     * @return int Block size (number of addresses in the subnet)
+     */
+    public static function getCidrBlockSize(int $prefix): int
+    {
+        return 1 << (32 - $prefix);
+    }
+
+    /**
+     * Calculate the netmask for a given CIDR prefix (IPv4)
+     *
+     * @param int $cidr CIDR prefix (0-32)
+     * @return int Netmask as integer
+     */
+    public static function getCidrNetmask(int $cidr): int
+    {
+        return ~((1 << (32 - $cidr)) - 1);
+    }
+
+    /**
+     * Check if a subnet number is properly aligned for a given prefix
+     *
+     * @param int $subnet Subnet number
+     * @param int $prefix CIDR prefix
+     * @return bool True if aligned, false otherwise
+     */
+    public static function isSubnetAligned(int $subnet, int $prefix): bool
+    {
+        $blockSize = self::getCidrBlockSize($prefix);
+        return $subnet % $blockSize === 0;
+    }
+
+    /**
      * Get the IP validator instance
      *
      * @return IPAddressValidator

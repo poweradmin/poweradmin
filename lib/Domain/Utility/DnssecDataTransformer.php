@@ -26,11 +26,11 @@ class DnssecDataTransformer implements DnssecTransformer
 {
     public function transformKey(mixed $key): array
     {
-        $ds = explode(" ", $key->getDs()[0] ?? "");
-        $dnsKey = explode(" ", $key->getDnsKey() ?? "");
+        $ds = array_pad(explode(" ", $key->getDs()[0] ?? ""), 1, "");
+        $dnsKey = array_pad(explode(" ", $key->getDnsKey() ?? ""), 3, "");
 
-        [$dsValue] = $ds;
-        [, , $dnsKeyValue] = $dnsKey;
+        $dsValue = $ds[0];
+        $dnsKeyValue = $dnsKey[2];
 
         return [
             $key->getId(),
