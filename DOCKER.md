@@ -11,11 +11,14 @@ Poweradmin official Docker images are available at:
 
 ### Image Tags
 
-- **`latest`** - Stable release from the `master` branch (recommended for production)
+- **`latest`** - Latest release from the `master` branch
+- **`next`** - Upcoming release from the `release/4.1.x` branch (stabilizing)
+- **`stable`** - Stable release from the `release/4.0.x` branch (recommended for production)
+- **`lts`** - Long-term support release from the `release/3.x` branch
 - **`dev`** - Development version from the `develop` branch (includes experimental features)
 - **`v*`** - Specific version tags (e.g., `v4.0.0`, `v4.1.0`)
 
-For production deployments, use the `latest` tag or a specific version tag. The `dev` tag is intended for testing upcoming features and should not be used in production.
+For production deployments, use the `stable` tag or a specific version tag. The `lts` tag provides long-term support with bug fixes and security updates only. The `dev` tag is intended for testing upcoming features and should not be used in production.
 
 ## Quick Start
 
@@ -139,11 +142,17 @@ docker run -d --name poweradmin -p 80:80 \
 |----------|-------------|---------|----------|
 | `DB_TYPE` | Database type: `sqlite`, `mysql`, or `pgsql` | `sqlite` | No |
 | `DB_HOST` | Database host (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
+| `DB_PORT` | Database port (unused for SQLite) | Empty (uses default: 3306 for MySQL, 5432 for PostgreSQL) | No |
 | `DB_USER` | Database username (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_PASS` | Database password (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_NAME` | Database name (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_FILE` | SQLite database file path (unused for MySQL/PostgreSQL) | `/db/pdns.db` | No |
 | `PA_PDNS_DB_NAME` | Separate PowerDNS database name (**MySQL only**) | Empty | No |
+| `DB_SSL` | Enable SSL/TLS connection (**MySQL/PostgreSQL only**) | `false` | No |
+| `DB_SSL_VERIFY` | Verify server SSL certificate (requires `DB_SSL=true`) | `false` | No |
+| `DB_SSL_CA` | Path to CA certificate file for server verification | Empty | No |
+| `DB_SSL_KEY` | Path to client private key file (for client cert auth) | Empty | No |
+| `DB_SSL_CERT` | Path to client certificate file (for client cert auth) | Empty | No |
 | `PDNS_VERSION` | PowerDNS schema version to use (45, 46, 47, 48, 49) | `49` | No |
 
 ### DNS Configuration
@@ -355,6 +364,67 @@ docker run -d --name poweradmin -p 80:80 \
 - **Scopes**: Automatically requests `openid profile email` scopes
 - **Redirect URI**: Set the authorized redirect URI in Google Cloud Console to match your deployment (e.g., `https://poweradmin.yourdomain.com/oidc/callback`)
 
+### OIDC Generic Provider
+
+Use this provider for Authentik, Keycloak, Okta, or any other standard OIDC-compliant identity provider.
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_OIDC_GENERIC_ENABLED` | Enable Generic OIDC provider | `false` | No |
+| `PA_OIDC_GENERIC_NAME` | Provider name | `Generic OIDC` | No |
+| `PA_OIDC_GENERIC_DISPLAY_NAME` | Display name for login button | `Sign in with OIDC` | No |
+| `PA_OIDC_GENERIC_CLIENT_ID` | Client ID from your OIDC provider | Empty | Yes if Generic enabled |
+| `PA_OIDC_GENERIC_CLIENT_SECRET` | Client secret from your OIDC provider | Empty | Yes if Generic enabled |
+| `PA_OIDC_GENERIC_AUTO_DISCOVERY` | Use OIDC auto-discovery via metadata URL | `false` | No |
+| `PA_OIDC_GENERIC_METADATA_URL` | OIDC discovery endpoint URL | Empty | Yes if auto_discovery enabled |
+| `PA_OIDC_GENERIC_AUTHORIZE_URL` | Authorization endpoint URL | Empty | Yes if auto_discovery disabled |
+| `PA_OIDC_GENERIC_TOKEN_URL` | Token endpoint URL | Empty | Yes if auto_discovery disabled |
+| `PA_OIDC_GENERIC_USERINFO_URL` | UserInfo endpoint URL | Empty | No |
+| `PA_OIDC_GENERIC_LOGOUT_URL` | Logout endpoint URL | Empty | No |
+| `PA_OIDC_GENERIC_SCOPES` | OAuth scopes to request | `openid profile email` | No |
+| `PA_OIDC_GENERIC_USERNAME_ATTR` | Username claim mapping | `preferred_username` | No |
+| `PA_OIDC_GENERIC_EMAIL_ATTR` | Email claim mapping | `email` | No |
+| `PA_OIDC_GENERIC_FIRST_NAME_ATTR` | First name claim mapping | `given_name` | No |
+| `PA_OIDC_GENERIC_LAST_NAME_ATTR` | Last name claim mapping | `family_name` | No |
+| `PA_OIDC_GENERIC_DISPLAY_NAME_ATTR` | Display name claim mapping | `name` | No |
+| `PA_OIDC_GENERIC_GROUPS_ATTR` | Groups claim mapping | `groups` | No |
+
+**Generic OIDC Configuration Notes:**
+
+- **Auto-discovery (recommended)**: Set `PA_OIDC_GENERIC_AUTO_DISCOVERY=true` and provide `PA_OIDC_GENERIC_METADATA_URL`. The provider will automatically fetch all endpoint URLs.
+- **Manual configuration**: If auto-discovery is disabled, you must provide at least `PA_OIDC_GENERIC_AUTHORIZE_URL` and `PA_OIDC_GENERIC_TOKEN_URL`.
+- **Redirect URI**: Configure your identity provider's callback URL to: `https://poweradmin.yourdomain.com/oidc/callback`
+
+**Example: Authentik Configuration**
+
+```bash
+docker run -d \
+  -e PA_OIDC_ENABLED=true \
+  -e PA_OIDC_GENERIC_ENABLED=true \
+  -e PA_OIDC_GENERIC_NAME="Authentik" \
+  -e PA_OIDC_GENERIC_DISPLAY_NAME="Sign in with Authentik" \
+  -e PA_OIDC_GENERIC_CLIENT_ID=your-authentik-client-id \
+  -e PA_OIDC_GENERIC_CLIENT_SECRET=your-authentik-client-secret \
+  -e PA_OIDC_GENERIC_AUTO_DISCOVERY=true \
+  -e PA_OIDC_GENERIC_METADATA_URL="https://authentik.example.com/application/o/poweradmin/.well-known/openid-configuration" \
+  poweradmin/poweradmin
+```
+
+**Example: Keycloak Configuration**
+
+```bash
+docker run -d \
+  -e PA_OIDC_ENABLED=true \
+  -e PA_OIDC_GENERIC_ENABLED=true \
+  -e PA_OIDC_GENERIC_NAME="Keycloak" \
+  -e PA_OIDC_GENERIC_DISPLAY_NAME="Sign in with Keycloak" \
+  -e PA_OIDC_GENERIC_CLIENT_ID=your-keycloak-client-id \
+  -e PA_OIDC_GENERIC_CLIENT_SECRET=your-keycloak-client-secret \
+  -e PA_OIDC_GENERIC_AUTO_DISCOVERY=true \
+  -e PA_OIDC_GENERIC_METADATA_URL="https://keycloak.example.com/realms/myrealm/.well-known/openid-configuration" \
+  poweradmin/poweradmin
+```
+
 ### SAML (Security Assertion Markup Language) Authentication
 
 | Variable | Description | Default | Required |
@@ -494,7 +564,7 @@ docker run -d --name poweradmin -p 80:80 \
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
-| `PA_CONFIG_PATH` | Path to custom settings.php file | Empty | No |
+| `PA_CONFIG_PATH` | Path to configuration file (supports immutable containers) | `/app/config/settings.php` | No |
 
 ## Docker Compose Example
 
@@ -955,6 +1025,93 @@ services:
 
 volumes:
   mysql_data:
+```
+
+### Immutable Container Deployment
+
+For enhanced security, you can run Poweradmin with a read-only root filesystem. Use `PA_CONFIG_PATH` to specify a configuration file location on a writable volume.
+
+```bash
+# Run with read-only filesystem - no volume pre-initialization needed
+docker run -d --name poweradmin -p 80:80 \
+  --read-only \
+  --tmpfs /tmp:rw,noexec,nosuid \
+  -v poweradmin-config:/config:rw \
+  -v poweradmin-db:/db:rw \
+  -e PA_CONFIG_PATH=/config/settings.php \
+  -e DB_TYPE=sqlite \
+  -e DB_FILE=/db/pdns.db \
+  poweradmin/poweradmin
+```
+
+Docker Compose example for immutable deployment:
+
+```yaml
+version: '3.8'
+services:
+  poweradmin:
+    image: poweradmin/poweradmin
+    read_only: true
+    ports:
+      - "80:80"
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
+    environment:
+      - PA_CONFIG_PATH=/config/settings.php
+      - DB_TYPE=mysql
+      - DB_HOST=mysql
+      - DB_USER=poweradmin
+      - DB_PASS=password
+      - DB_NAME=poweradmin
+    volumes:
+      - poweradmin-config:/config:rw
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=poweradmin
+      - MYSQL_USER=poweradmin
+      - MYSQL_PASSWORD=password
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  poweradmin-config:
+  mysql_data:
+```
+
+Kubernetes deployment with immutable container:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poweradmin
+spec:
+  template:
+    spec:
+      containers:
+        - name: poweradmin
+          image: poweradmin/poweradmin
+          securityContext:
+            readOnlyRootFilesystem: true
+          env:
+            - name: PA_CONFIG_PATH
+              value: /config/settings.php
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: poweradmin-config
+        - name: tmp
+          emptyDir: {}
 ```
 
 ## Performance Benefits

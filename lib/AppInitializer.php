@@ -70,10 +70,18 @@ class AppInitializer
      */
     private function checkConfigurationFile(): void
     {
-        if (!file_exists('config/settings.php')) {
+        $customConfigPath = getenv('PA_CONFIG_PATH');
+        $configFile = $customConfigPath !== false && $customConfigPath !== ''
+            ? $customConfigPath
+            : 'config/settings.php';
+
+        if (!file_exists($configFile)) {
             $messageService = new MessageService();
             $messageService->displayHtmlError(
-                _('No configuration file found. Please use the <a href="install/">installer</a> to create one, or create a config/settings.php file manually.')
+                sprintf(
+                    _('No configuration file found at %s. Please use the <a href="install/">installer</a> to create one, or create the configuration file manually.'),
+                    htmlspecialchars($configFile)
+                )
             );
         }
     }

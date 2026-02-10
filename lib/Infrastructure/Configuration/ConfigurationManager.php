@@ -90,7 +90,11 @@ class ConfigurationManager implements ConfigurationInterface
         }
 
         // Try to load user configuration file
-        $newConfigFile = __DIR__ . '/../../../config/settings.php';
+        // Support custom config path via environment variable for immutable container deployments
+        $customConfigPath = getenv('PA_CONFIG_PATH');
+        $newConfigFile = $customConfigPath !== false && $customConfigPath !== ''
+            ? $customConfigPath
+            : __DIR__ . '/../../../config/settings.php';
         $newConfigExists = false;
 
         if (file_exists($newConfigFile)) {

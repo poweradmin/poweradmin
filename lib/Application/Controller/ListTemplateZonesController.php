@@ -41,11 +41,13 @@ class ListTemplateZonesController extends BaseController
         // Set the current page for navigation highlighting
         $this->requestData['page'] = 'list_template_zones';
 
-        $zone_templ_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-        if (!$zone_templ_id) {
+        $id = $this->getSafeRequestValue('id');
+        if (empty($id)) {
             $this->showError(_('Invalid template ID.'));
             return;
         }
+
+        $zone_templ_id = (int)$id;
 
         if (!ZoneTemplate::zoneTemplIdExists($this->db, $zone_templ_id)) {
             $this->showError(_('Template does not exist.'));
@@ -89,7 +91,7 @@ class ListTemplateZonesController extends BaseController
         if ($totalZones > $itemsPerPage) {
             $presenter = new PaginationPresenter(
                 $pagination,
-                '/zones/template?id=' . $zone_templ_id . '&start={PageNumber}'
+                '/zones/templates/' . $zone_templ_id . '/zones?start={PageNumber}'
             );
             $paginationHtml = $presenter->present();
         }

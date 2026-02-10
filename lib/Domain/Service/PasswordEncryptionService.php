@@ -66,6 +66,6 @@ class PasswordEncryptionService
 
     private function computeIV(): string
     {
-        return openssl_random_pseudo_bytes(self::IV_LENGTH);
+        return random_bytes(self::IV_LENGTH);
     }
 }

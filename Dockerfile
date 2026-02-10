@@ -38,7 +38,10 @@
 #     -e PA_ADMIN_PASSWORD=your-secure-password \
 #     poweradmin
 
-FROM dunglas/frankenphp:latest-alpine
+FROM dunglas/frankenphp:1.11.1-php8.4-alpine
+
+# Update base packages to fix known security vulnerabilities
+RUN apk upgrade --no-cache
 
 # Update base packages to fix known security vulnerabilities
 RUN apk upgrade --no-cache
@@ -46,7 +49,7 @@ RUN apk upgrade --no-cache
 # Install required packages and PHP extensions
 RUN apk add --no-cache --virtual .build-deps \
     gettext-dev \
-    postgresql15-dev \
+    postgresql-dev \
     icu-dev \
     openldap-dev \
     libxml2-dev \
@@ -60,8 +63,8 @@ RUN apk add --no-cache --virtual .build-deps \
     bash \
     mariadb-client \
     mariadb-connector-c \
-    postgresql15-client \
-    postgresql15-dev \
+    postgresql-client \
+    postgresql-dev \
     libpq \
     libldap \
     libxml2 \
@@ -159,18 +162,25 @@ COPY <<EOF /etc/caddy/Caddyfile
 }
 EOF
 
+# Move Caddy data/config to /var/caddy to free up /config for user settings
+ENV XDG_CONFIG_HOME=/var/caddy
+ENV XDG_DATA_HOME=/var/caddy
+
 # Set proper ownership for www-data user
 RUN chown -R www-data:www-data /app /db \
-    && mkdir -p /data/caddy/locks /config/caddy \
-    && chown -R www-data:www-data /data/caddy /config/caddy
+    && mkdir -p /var/caddy/caddy \
+    && chown -R www-data:www-data /var/caddy
 
-USER www-data
+# Install su-exec for dropping privileges
+RUN apk add --no-cache su-exec
+
+# Run as root initially, entrypoint will drop to www-data
 
 EXPOSE 80
 
 # Override base image healthcheck to use port 80 instead of Caddy admin port 2019
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD wget -q --spider http://localhost:80/ || exit 1
+    CMD curl -sf http://localhost:80/ -o /dev/null || exit 1
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]

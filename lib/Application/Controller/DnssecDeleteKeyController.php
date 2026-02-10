@@ -61,10 +61,6 @@ class DnssecDeleteKeyController extends BaseController
         }
         $key_id = (int) $key_id;
 
-        $confirm = "-1";
-        if (isset($_GET['confirm']) && Validator::isNumber($_GET['confirm'])) {
-            $confirm = (string)$_GET['confirm']; // Convert to string for consistent comparison
-        }
 
         // Early permission check - validate DNSSEC access before any operations
         $perm_view = Permission::getViewPermission($this->db);
@@ -98,7 +94,8 @@ class DnssecDeleteKeyController extends BaseController
             return;
         }
 
-        if ($confirm == '1') {
+        if ($this->isPost()) {
+            $this->validateCsrfToken();
             try {
                 $result = $dnssecProvider->removeZoneKey($domain_name, $key_id);
 

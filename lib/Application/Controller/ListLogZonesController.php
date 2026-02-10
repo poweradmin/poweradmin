@@ -64,9 +64,9 @@ class ListLogZonesController extends BaseController
     {
         $selected_page = 1;
         if (isset($_GET['start'])) {
-            is_numeric($_GET['start']) ? $selected_page = $_GET['start'] : die("Unknown page.");
-            if ($selected_page < 0) {
-                die('Unknown page.');
+            is_numeric($_GET['start']) ? $selected_page = $_GET['start'] : die(_('Invalid page number.'));
+            if ($selected_page < 1) {
+                die(_('Page number must be at least 1.'));
             }
         }
 
@@ -77,14 +77,14 @@ class ListLogZonesController extends BaseController
             $number_of_logs = $this->dbZoneLogger->countLogsByDomain(DnsIdnService::toPunycode($_GET['name']));
             $number_of_pages = ceil($number_of_logs / $logs_per_page);
             if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
-                die('Unknown page');
+                die(_('Page number exceeds available pages.'));
             }
             $logs = $this->dbZoneLogger->getLogsForDomain(DnsIdnService::toPunycode($_GET['name']), $logs_per_page, ($selected_page - 1) * $logs_per_page);
         } else {
             $number_of_logs = $this->dbZoneLogger->countAllLogs();
             $number_of_pages = ceil($number_of_logs / $logs_per_page);
             if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
-                die('Unknown page');
+                die(_('Page number exceeds available pages.'));
             }
             $logs = $this->dbZoneLogger->getAllLogs($logs_per_page, ($selected_page - 1) * $logs_per_page);
         }

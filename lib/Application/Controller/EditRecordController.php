@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -150,13 +150,10 @@ class EditRecordController extends BaseController
             return;
         }
 
-        // Use the new hostname-only display if enabled
+        // Strip zone suffix from record name for display when display_hostname_only is enabled (fix for issue #958)
         $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
         if ($display_hostname_only) {
             $record['record_name'] = DnsHelper::stripZoneSuffix($record['name'], $zone_name);
-        } else {
-            // Legacy behavior - simple string replacement
-            $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
         }
 
         if (str_starts_with($zone_name, "xn--")) {
@@ -186,6 +183,7 @@ class EditRecordController extends BaseController
             'iface_record_comments' => $iface_record_comments,
             'comment' => $recordComment ? $recordComment->getComment() : '',
             'is_reverse_zone' => DnsHelper::isReverseZone($zone_name),
+            'display_hostname_only' => $display_hostname_only,
         ]);
     }
 
@@ -250,23 +248,50 @@ class EditRecordController extends BaseController
             $zid
         );
 
-        // Use per-record comment (linked by record ID via record_comment_links table)
-        $this->recordCommentService->updateCommentForRecord(
-            $zid,
-            $new_record_info['name'],
-            $new_record_info['type'],
-            $_POST['comment'] ?? '',
-            (int)$_POST['rid'],
-            $this->userContextService->getLoggedInUsername()
-        );
+        $showRecordComments = $this->config->get('interface', 'show_record_comments', false);
+        $nameOrTypeChanged = ($old_record_info['name'] !== $new_record_info['name'] ||
+                              $old_record_info['type'] !== $new_record_info['type']);
 
-        if ($this->config->get('misc', 'record_comments_sync')) {
-            $this->commentSyncService->updateRelatedRecordComments(
-                $dnsRecord,
-                $new_record_info,
-                $_POST['comment'] ?? '',
+        if ($showRecordComments) {
+            // Comments visible - use per-record comment (linked by record ID via record_comment_links table)
+            $commentValue = $_POST['comment'] ?? '';
+
+            $this->recordCommentService->updateCommentForRecord(
+                $zid,
+                $new_record_info['name'],
+                $new_record_info['type'],
+                $commentValue,
+                (int)$_POST['rid'],
                 $this->userContextService->getLoggedInUsername()
             );
+
+            if ($this->config->get('misc', 'record_comments_sync')) {
+                $this->commentSyncService->updateRelatedRecordComments(
+                    $dnsRecord,
+                    $new_record_info,
+                    $commentValue,
+                    $this->userContextService->getLoggedInUsername()
+                );
+            }
+        } elseif ($nameOrTypeChanged) {
+            // Comments hidden but record name/type changed - migrate existing comment
+            $existingComment = $this->recordCommentService->findComment(
+                $zid,
+                $old_record_info['name'],
+                $old_record_info['type']
+            );
+
+            if ($existingComment !== null) {
+                $this->recordCommentService->updateComment(
+                    $zid,
+                    $old_record_info['name'],
+                    $old_record_info['type'],
+                    $new_record_info['name'],
+                    $new_record_info['type'],
+                    $existingComment->getComment(),
+                    $this->userContextService->getLoggedInUsername()
+                );
+            }
         }
 
         if ($this->config->get('dnssec', 'enabled', false)) {

@@ -26,6 +26,24 @@ return [
         'file' => '',          // Only used for SQLite, provide full path to database file (added in 2.1.6)
         'debug' => false,      // Show all SQL queries (added in 2.1.6)
         'pdns_db_name' => '',  // Separate database for PowerDNS (added in 3.8.0)
+
+        /**
+         * SSL/TLS Settings for database connections (added in 4.1.0)
+         *
+         * These settings control SSL/TLS encryption for MySQL/MariaDB and PostgreSQL connections.
+         * SQLite does not use SSL (file-based database).
+         *
+         * Note: SSL certificate verification is disabled by default for backwards
+         * compatibility with servers that don't use SSL or use self-signed certificates.
+         *
+         * MySQL/MariaDB: Uses PDO driver attributes for SSL configuration.
+         * PostgreSQL: Uses sslmode DSN parameter (disable, allow, prefer, require, verify-ca, verify-full).
+         */
+        'ssl' => false,              // Enable SSL/TLS connection
+        'ssl_verify' => false,       // Verify server SSL certificate (requires ssl=true)
+        'ssl_ca' => '',              // Path to CA certificate file for server verification
+        'ssl_key' => '',             // Path to client private key file (for client certificate auth)
+        'ssl_cert' => '',            // Path to client certificate file (for client certificate auth)
     ],
 
     /**
@@ -110,7 +128,7 @@ return [
     'interface' => [
         'language' => 'en_EN',                // Default language for the interface
         'enabled_languages' => 'cs_CZ,de_DE,en_EN,es_ES,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,tr_TR,zh_CN', // Added in 3.8.0
-        'title' => 'Poweradmin',              // Title displayed in the browser (added in 2.1.5)
+        'title' => 'Poweradmin',              // Application title (browser tab and header logo). Useful for distinguishing multiple server instances. (added in 2.1.5)
         'session_timeout' => 1800,            // Session timeout in seconds (30 minutes)
         'rows_per_page' => 10,
         'theme' => 'default',                 // Theme name to use (default, custom, etc.) (added in 4.0.0)
@@ -134,6 +152,7 @@ return [
         'search_group_records' => false,      // Group records by name and content in search results (added in 3.8.0)
         'reverse_zone_sort' => 'natural',     // Reverse zone sorting algorithm: 'natural' (default) or 'hierarchical' (experimental) (added in 4.0.0)
         'show_pdns_status' => false,          // Show PowerDNS server status page and dashboard card (added in 4.0.0)
+        'show_forward_zone_associations' => true, // Show associated forward zones in reverse zone list (added in 4.0.5)
 
         // Zone Editing Features
         'add_reverse_record' => true,         // Enable checkbox to add PTR record from regular zone view (added in 2.1.7)
@@ -174,6 +193,7 @@ return [
         'third_level_check' => false,              // Prevent creation of third-level domains (added in 2.1.7)
         'txt_auto_quote' => false,                 // Automatically quote TXT records (added in 3.9.2)
         'prevent_duplicate_ptr' => true,           // Prevent creation of multiple PTR records for same IP in batch operations (added in 4.0.0)
+        'custom_tlds' => [],                       // Custom TLDs to allow in CNAME targets (e.g., ['dn42', 'home', 'internal'])
 
         // Record Type Settings (added in 4.0.0)
         // Set to null to use all default types, or provide an array of specific types to show

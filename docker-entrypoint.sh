@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-CONFIG_FILE="/app/config/settings.php"
+# Default paths (CONFIG_FILE is set after secrets are processed in main())
 DB_DIR="/db"
 
 log() {
@@ -20,19 +20,19 @@ process_secret_files() {
         VAR_NAME_FILE="${VAR_NAME}__FILE"
 
         # Check if both regular and __FILE versions are set (they are exclusive)
-        [ "${!VAR_NAME}" ] && {
+        if [ "${!VAR_NAME}" ]; then
             log "ERROR: Both ${VAR_NAME} and ${VAR_NAME_FILE} are set but are exclusive"
             exit 1
-        }
+        fi
 
         VAR_FILENAME="${!VAR_NAME_FILE}"
         log "Getting secret ${VAR_NAME} from ${VAR_FILENAME}"
 
         # Validate the secret file exists and is readable
-        [ ! -r "${VAR_FILENAME}" ] && {
+        if [ ! -r "${VAR_FILENAME}" ]; then
             log "ERROR: ${VAR_FILENAME} does not exist or is not readable"
             exit 1
-        }
+        fi
 
         # Read the secret file content and export as environment variable
         export "${VAR_NAME}"="$(<"${VAR_FILENAME}")"
@@ -76,10 +76,10 @@ init_sqlite_db() {
 
 # Validate required database configuration
 validate_database_config() {
-    [ -z "${DB_TYPE}" ] && {
+    if [ -z "${DB_TYPE}" ]; then
         log "ERROR: DB_TYPE environment variable is required. Supported types: sqlite, mysql, pgsql"
         exit 1
-    }
+    fi
     debug_log "Starting database validation with DB_TYPE=${DB_TYPE}"
     case "${DB_TYPE}" in
         "sqlite")
@@ -87,25 +87,25 @@ validate_database_config() {
             debug_log "Checking SQLite database file: ${db_file}"
             debug_log "File exists check: [ -f ${db_file} ] = $([ -f "${db_file}" ] && echo true || echo false)"
             debug_log "Directory writable check: [ -w $(dirname ${db_file}) ] = $([ -w "$(dirname "${db_file}")" ] && echo true || echo false)"
-            [ ! -f "${db_file}" ] && [ ! -w "$(dirname "${db_file}")" ] && {
+            if [ ! -f "${db_file}" ] && [ ! -w "$(dirname "${db_file}")" ]; then
                 log "ERROR: SQLite database file ${db_file} doesn't exist and directory is not writable"
                 exit 1
-            }
+            fi
             debug_log "SQLite validation passed"
             ;;
         "mysql"|"pgsql")
-            [ -z "${DB_HOST}" ] && {
+            if [ -z "${DB_HOST}" ]; then
                 log "ERROR: DB_HOST is required for ${DB_TYPE} database"
                 exit 1
-            }
-            [ -z "${DB_USER}" ] && {
+            fi
+            if [ -z "${DB_USER}" ]; then
                 log "ERROR: DB_USER is required for ${DB_TYPE} database"
                 exit 1
-            }
-            [ -z "${DB_NAME}" ] && {
+            fi
+            if [ -z "${DB_NAME}" ]; then
                 log "ERROR: DB_NAME is required for ${DB_TYPE} database"
                 exit 1
-            }
+            fi
             ;;
         *)
             log "ERROR: Unsupported database type: ${DB_TYPE}. Supported types: sqlite, mysql, pgsql"
@@ -120,18 +120,18 @@ validate_dns_config() {
     debug_log "DNS_NS1='${DNS_NS1}'"
     debug_log "DNS_NS2='${DNS_NS2}'"
     debug_log "DNS_HOSTMASTER='${DNS_HOSTMASTER}'"
-    [ -z "${DNS_NS1}" ] && {
+    if [ -z "${DNS_NS1}" ]; then
         log "WARNING: DNS_NS1 not set, using default: ns1.example.com"
         DNS_NS1="ns1.example.com"
-    }
-    [ -z "${DNS_NS2}" ] && {
+    fi
+    if [ -z "${DNS_NS2}" ]; then
         log "WARNING: DNS_NS2 not set, using default: ns2.example.com"
         DNS_NS2="ns2.example.com"
-    }
-    [ -z "${DNS_HOSTMASTER}" ] && {
+    fi
+    if [ -z "${DNS_HOSTMASTER}" ]; then
         log "WARNING: DNS_HOSTMASTER not set, using default: hostmaster@example.com"
         DNS_HOSTMASTER="hostmaster@example.com"
-    }
+    fi
     debug_log "DNS validation completed"
 }
 
@@ -139,14 +139,14 @@ validate_dns_config() {
 validate_mail_config() {
     local mail_enabled=$(echo "${PA_MAIL_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
     if [ "$mail_enabled" = "true" ] && [ "${PA_MAIL_TRANSPORT}" = "smtp" ]; then
-        [ -z "${PA_SMTP_HOST}" ] && {
+        if [ -z "${PA_SMTP_HOST}" ]; then
             log "ERROR: PA_SMTP_HOST is required when using SMTP transport"
             exit 1
-        }
-        [ -z "${PA_MAIL_FROM}" ] && {
+        fi
+        if [ -z "${PA_MAIL_FROM}" ]; then
             log "ERROR: PA_MAIL_FROM is required when mail is enabled"
             exit 1
-        }
+        fi
     fi
 }
 
@@ -167,10 +167,10 @@ validate_ldap_config() {
     if [ "$ldap_enabled" = "true" ]; then
         local required_ldap_vars=("PA_LDAP_URI" "PA_LDAP_BASE_DN")
         for var in "${required_ldap_vars[@]}"; do
-            [ -z "${!var}" ] && {
+            if [ -z "${!var}" ]; then
                 log "ERROR: ${var} is required when LDAP is enabled"
                 exit 1
-            }
+            fi
         done
     fi
 }
@@ -193,20 +193,20 @@ validate_saml_config() {
 
         # Validate Azure SAML configuration if enabled
         if [ "$azure_enabled" = "true" ]; then
-            [ -z "${PA_SAML_AZURE_X509_CERT}" ] && {
+            if [ -z "${PA_SAML_AZURE_X509_CERT}" ]; then
                 log "ERROR: PA_SAML_AZURE_X509_CERT is required when Azure SAML is enabled"
                 exit 1
-            }
+            fi
         fi
 
         # Validate Okta SAML configuration if enabled
         if [ "$okta_enabled" = "true" ]; then
             local required_okta_vars=("PA_SAML_OKTA_ENTITY_ID" "PA_SAML_OKTA_SSO_URL" "PA_SAML_OKTA_X509_CERT")
             for var in "${required_okta_vars[@]}"; do
-                [ -z "${!var}" ] && {
+                if [ -z "${!var}" ]; then
                     log "ERROR: ${var} is required when Okta SAML is enabled"
                     exit 1
-                }
+                fi
             done
         fi
 
@@ -214,10 +214,10 @@ validate_saml_config() {
         if [ "$auth0_enabled" = "true" ]; then
             local required_auth0_vars=("PA_SAML_AUTH0_ENTITY_ID" "PA_SAML_AUTH0_SSO_URL" "PA_SAML_AUTH0_X509_CERT")
             for var in "${required_auth0_vars[@]}"; do
-                [ -z "${!var}" ] && {
+                if [ -z "${!var}" ]; then
                     log "ERROR: ${var} is required when Auth0 SAML is enabled"
                     exit 1
-                }
+                fi
             done
         fi
 
@@ -225,10 +225,10 @@ validate_saml_config() {
         if [ "$keycloak_enabled" = "true" ]; then
             local required_keycloak_vars=("PA_SAML_KEYCLOAK_ENTITY_ID" "PA_SAML_KEYCLOAK_SSO_URL" "PA_SAML_KEYCLOAK_X509_CERT")
             for var in "${required_keycloak_vars[@]}"; do
-                [ -z "${!var}" ] && {
+                if [ -z "${!var}" ]; then
                     log "ERROR: ${var} is required when Keycloak SAML is enabled"
                     exit 1
-                }
+                fi
             done
         fi
 
@@ -236,11 +236,66 @@ validate_saml_config() {
         if [ "$generic_enabled" = "true" ]; then
             local required_generic_vars=("PA_SAML_GENERIC_ENTITY_ID" "PA_SAML_GENERIC_SSO_URL" "PA_SAML_GENERIC_X509_CERT")
             for var in "${required_generic_vars[@]}"; do
-                [ -z "${!var}" ] && {
+                if [ -z "${!var}" ]; then
                     log "ERROR: ${var} is required when Generic SAML is enabled"
                     exit 1
-                }
+                fi
             done
+        fi
+    fi
+}
+
+# Validate OIDC configuration if enabled
+validate_oidc_config() {
+    local oidc_enabled=$(echo "${PA_OIDC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    if [ "$oidc_enabled" = "true" ]; then
+        # Check if at least one provider is enabled
+        local azure_enabled=$(echo "${PA_OIDC_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        local google_enabled=$(echo "${PA_OIDC_GOOGLE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        local generic_enabled=$(echo "${PA_OIDC_GENERIC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+
+        if [ "$azure_enabled" != "true" ] && [ "$google_enabled" != "true" ] && [ "$generic_enabled" != "true" ]; then
+            log "ERROR: OIDC is enabled but no OIDC providers are configured. Enable at least one provider (PA_OIDC_*_ENABLED=true)"
+            exit 1
+        fi
+
+        # Validate Azure OIDC configuration if enabled
+        if [ "$azure_enabled" = "true" ]; then
+            if [ -z "${PA_OIDC_AZURE_CLIENT_ID}" ] || [ -z "${PA_OIDC_AZURE_CLIENT_SECRET}" ]; then
+                log "ERROR: PA_OIDC_AZURE_CLIENT_ID and PA_OIDC_AZURE_CLIENT_SECRET are required when Azure OIDC is enabled"
+                exit 1
+            fi
+        fi
+
+        # Validate Google OIDC configuration if enabled
+        if [ "$google_enabled" = "true" ]; then
+            if [ -z "${PA_OIDC_GOOGLE_CLIENT_ID}" ] || [ -z "${PA_OIDC_GOOGLE_CLIENT_SECRET}" ]; then
+                log "ERROR: PA_OIDC_GOOGLE_CLIENT_ID and PA_OIDC_GOOGLE_CLIENT_SECRET are required when Google OIDC is enabled"
+                exit 1
+            fi
+        fi
+
+        # Validate Generic OIDC configuration if enabled
+        if [ "$generic_enabled" = "true" ]; then
+            if [ -z "${PA_OIDC_GENERIC_CLIENT_ID}" ] || [ -z "${PA_OIDC_GENERIC_CLIENT_SECRET}" ]; then
+                log "ERROR: PA_OIDC_GENERIC_CLIENT_ID and PA_OIDC_GENERIC_CLIENT_SECRET are required when Generic OIDC is enabled"
+                exit 1
+            fi
+
+            # Check for either auto_discovery with metadata_url OR manual endpoint URLs
+            local auto_discovery=$(echo "${PA_OIDC_GENERIC_AUTO_DISCOVERY:-false}" | tr '[:upper:]' '[:lower:]')
+            if [ "$auto_discovery" = "true" ]; then
+                if [ -z "${PA_OIDC_GENERIC_METADATA_URL}" ]; then
+                    log "ERROR: PA_OIDC_GENERIC_METADATA_URL is required when PA_OIDC_GENERIC_AUTO_DISCOVERY is enabled"
+                    exit 1
+                fi
+            else
+                # Manual configuration - require essential endpoints
+                if [ -z "${PA_OIDC_GENERIC_AUTHORIZE_URL}" ] || [ -z "${PA_OIDC_GENERIC_TOKEN_URL}" ]; then
+                    log "ERROR: PA_OIDC_GENERIC_AUTHORIZE_URL and PA_OIDC_GENERIC_TOKEN_URL are required when auto_discovery is disabled"
+                    exit 1
+                fi
+            fi
         fi
     fi
 }
@@ -281,6 +336,8 @@ create_admin_user() {
     debug_log "Generated password hash for admin user"
 
     # Database-specific user creation
+    local insert_result=0
+
     case "${DB_TYPE}" in
         "sqlite")
             local db_file="${DB_FILE:-/db/pdns.db}"
@@ -296,15 +353,32 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            sqlite3 "${db_file}" "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"
+            if ! sqlite3 "${db_file}" "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+                insert_result=1
+            fi
             ;;
 
         "mysql")
             debug_log "Creating admin user in MySQL database"
 
+            # Build MySQL SSL options based on environment variables
+            local mysql_ssl_opts=""
+            local db_ssl=$(echo "${DB_SSL:-false}" | tr '[:upper:]' '[:lower:]')
+            local db_ssl_verify=$(echo "${DB_SSL_VERIFY:-false}" | tr '[:upper:]' '[:lower:]')
+
+            if [ "$db_ssl" != "true" ]; then
+                # SSL disabled - skip SSL entirely
+                mysql_ssl_opts="--skip-ssl"
+            elif [ "$db_ssl_verify" != "true" ]; then
+                # SSL enabled but verification disabled - skip certificate verification
+                mysql_ssl_opts="--skip-ssl-verify-server-cert"
+            fi
+
+            debug_log "MySQL SSL options: ${mysql_ssl_opts:-none}"
+
             # Check if user already exists
             local user_exists
-            user_exists=$(mysql -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
+            user_exists=$(mysql ${mysql_ssl_opts} -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
 
             if [ "${user_exists}" -gt 0 ]; then
                 log "Admin user '${admin_username}' already exists, skipping creation"
@@ -312,7 +386,9 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            mysql -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"
+            if ! mysql ${mysql_ssl_opts} -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+                insert_result=1
+            fi
             ;;
 
         "pgsql")
@@ -328,11 +404,13 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" -c "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"
+            if ! PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" -c "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+                insert_result=1
+            fi
             ;;
     esac
 
-    if [ $? -eq 0 ]; then
+    if [ $insert_result -eq 0 ]; then
         log "Admin user '${admin_username}' created successfully"
 
         # Display credentials prominently if password was generated
@@ -405,6 +483,8 @@ generate_config() {
     local oidc_azure_auto_discovery=$(echo "${PA_OIDC_AZURE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')
     local oidc_google_enabled=$(echo "${PA_OIDC_GOOGLE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local oidc_google_auto_discovery=$(echo "${PA_OIDC_GOOGLE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')
+    local oidc_generic_enabled=$(echo "${PA_OIDC_GENERIC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local oidc_generic_auto_discovery=$(echo "${PA_OIDC_GENERIC_AUTO_DISCOVERY:-false}" | tr '[:upper:]' '[:lower:]')
 
     # Convert SAML boolean values to lowercase
     local saml_enabled=$(echo "${PA_SAML_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
@@ -433,6 +513,13 @@ generate_config() {
         reverse_record_types="['$(echo "${PA_DNS_REVERSE_RECORD_TYPES}" | sed "s/,/','/g")']"
     fi
 
+    # Ensure parent directory exists for custom config paths
+    mkdir -p "$(dirname "${CONFIG_FILE}")"
+
+    # Convert database SSL boolean values to lowercase
+    local db_ssl=$(echo "${DB_SSL:-false}" | tr '[:upper:]' '[:lower:]')
+    local db_ssl_verify=$(echo "${DB_SSL_VERIFY:-false}" | tr '[:upper:]' '[:lower:]')
+
     cat > "${CONFIG_FILE}" << EOF
 <?php
 
@@ -440,11 +527,17 @@ return [
     'database' => [
         'type' => '${DB_TYPE}',
         'host' => '${DB_HOST:-}',
+        'port' => '${DB_PORT:-}',
         'user' => '${DB_USER:-}',
         'password' => '${DB_PASS:-}',
         'name' => '${DB_NAME:-}',
         'file' => '${DB_FILE:-/db/pdns.db}',
         'pdns_db_name' => '${PA_PDNS_DB_NAME:-}',
+        'ssl' => ${db_ssl},
+        'ssl_verify' => ${db_ssl_verify},
+        'ssl_ca' => '${DB_SSL_CA:-}',
+        'ssl_key' => '${DB_SSL_KEY:-}',
+        'ssl_cert' => '${DB_SSL_CERT:-}',
     ],
     'dns' => [
         'hostmaster' => '${DNS_HOSTMASTER:-hostmaster.example.com}',
@@ -597,6 +690,33 @@ EOF
                     'last_name' => 'family_name',
                     'display_name' => 'name',
                     'groups' => 'groups',
+                ],
+            ],
+EOF
+    fi
+
+    # Add Generic OIDC configuration if enabled (for Authentik, Keycloak, Okta, etc.)
+    if [ "${oidc_generic_enabled}" = "true" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'generic' => [
+                'name' => '${PA_OIDC_GENERIC_NAME:-Generic OIDC}',
+                'display_name' => '${PA_OIDC_GENERIC_DISPLAY_NAME:-Sign in with OIDC}',
+                'client_id' => '${PA_OIDC_GENERIC_CLIENT_ID:-}',
+                'client_secret' => '${PA_OIDC_GENERIC_CLIENT_SECRET:-}',
+                'auto_discovery' => ${oidc_generic_auto_discovery},
+                'metadata_url' => '${PA_OIDC_GENERIC_METADATA_URL:-}',
+                'authorize_url' => '${PA_OIDC_GENERIC_AUTHORIZE_URL:-}',
+                'token_url' => '${PA_OIDC_GENERIC_TOKEN_URL:-}',
+                'userinfo_url' => '${PA_OIDC_GENERIC_USERINFO_URL:-}',
+                'logout_url' => '${PA_OIDC_GENERIC_LOGOUT_URL:-}',
+                'scopes' => '${PA_OIDC_GENERIC_SCOPES:-openid profile email}',
+                'user_mapping' => [
+                    'username' => '${PA_OIDC_GENERIC_USERNAME_ATTR:-preferred_username}',
+                    'email' => '${PA_OIDC_GENERIC_EMAIL_ATTR:-email}',
+                    'first_name' => '${PA_OIDC_GENERIC_FIRST_NAME_ATTR:-given_name}',
+                    'last_name' => '${PA_OIDC_GENERIC_LAST_NAME_ATTR:-family_name}',
+                    'display_name' => '${PA_OIDC_GENERIC_DISPLAY_NAME_ATTR:-name}',
+                    'groups' => '${PA_OIDC_GENERIC_GROUPS_ATTR:-groups}',
                 ],
             ],
 EOF
@@ -790,8 +910,8 @@ EOF
 print_config_summary() {
     log "=== Poweradmin Configuration Summary ==="
 
-    if [ -n "${PA_CONFIG_PATH}" ] && [ -f "${CONFIG_FILE}" ]; then
-        log "Configuration: Custom configuration file loaded from ${PA_CONFIG_PATH}"
+    if [ -n "${PA_CONFIG_PATH}" ]; then
+        log "Configuration: Custom configuration file at ${CONFIG_FILE}"
         log "Configuration details are managed by the custom config file."
     else
         log "Database Type: ${DB_TYPE}"
@@ -823,18 +943,28 @@ print_config_summary() {
 
 }
 
-# Set up proper file permissions
+# Set up proper file permissions for writable directories
 setup_permissions() {
     log "Setting up file permissions..."
 
-    # Ensure directories exist and have proper permissions
-    mkdir -p /app/config "${DB_DIR}"
+    # Fix ownership on writable volumes (entrypoint runs as root)
+    # This eliminates the need for volume pre-initialization
 
-    # Set ownership
-    chown -R www-data:www-data /app "${DB_DIR}"
+    # Database directory
+    if [ -d "${DB_DIR}" ]; then
+        chown -R www-data:www-data "${DB_DIR}"
+    fi
 
-    # Set permissions
-    chmod -R 755 /app "${DB_DIR}"
+    # Config directory (when using custom PA_CONFIG_PATH)
+    config_dir=$(dirname "${CONFIG_FILE}")
+    if [ "${config_dir}" != "/app/config" ] && [ -d "${config_dir}" ]; then
+        chown -R www-data:www-data "${config_dir}"
+    fi
+
+    # Caddy data directory (may fail on read-only filesystem, that's OK)
+    if [ -d "/var/caddy" ]; then
+        chown -R www-data:www-data /var/caddy 2>/dev/null || true
+    fi
 
     log "File permissions set successfully"
 }
@@ -846,20 +976,18 @@ main() {
     # 1. PA_CONFIG_PATH (custom config file) - highest priority
     # 2. Individual environment variables (with Docker secrets support) - fallback
 
-    # Process Docker secrets first
+    # Process Docker secrets first (must run before using any secret-provided variables)
     log "Processing Docker secrets..."
     process_secret_files
+
+    # Set CONFIG_FILE after secrets are processed (supports PA_CONFIG_PATH__FILE)
+    CONFIG_FILE="${PA_CONFIG_PATH:-/app/config/settings.php}"
 
     # Initialize SQLite database if needed (must run before admin user creation)
     init_sqlite_db
 
-    if [ -n "${PA_CONFIG_PATH}" ] && [ -f "${PA_CONFIG_PATH}" ]; then
-        log "Using custom configuration from: ${PA_CONFIG_PATH}"
-        cp "${PA_CONFIG_PATH}" "${CONFIG_FILE}"
-        chmod 644 "${CONFIG_FILE}"
-        chown www-data:www-data "${CONFIG_FILE}"
-    elif [ -f "${CONFIG_FILE}" ]; then
-        log "Using existing settings.php (generated from environment variables)"
+    if [ -f "${CONFIG_FILE}" ]; then
+        log "Using configuration file: ${CONFIG_FILE}"
     else
         log "No custom config found. Generating settings.php from environment variables..."
 
@@ -877,6 +1005,8 @@ main() {
         debug_log "LDAP validation completed successfully"
         validate_saml_config
         debug_log "SAML validation completed successfully"
+        validate_oidc_config
+        debug_log "OIDC validation completed successfully"
         log "Configuration validation completed successfully"
 
         # Generate configuration
@@ -895,8 +1025,8 @@ main() {
     log "Configuration loaded successfully"
     log "Starting Poweradmin..."
 
-    # Execute the command
-    exec "$@"
+    # Drop privileges and execute the command as www-data
+    exec su-exec www-data "$@"
 }
 
 # Run main function with all arguments

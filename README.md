@@ -60,7 +60,7 @@ For detailed installation instructions, please visit [the official documentation
 * **Recommended method - via releases**:
     * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
 * **For specific needs - via Git**:
-    * **Warning**: The master branch (4.1.x) is used for development and may be unstable. For production use, stick with the stable 4.0.x release.
+    * **Warning**: The master branch is used for pre-release integration testing and may be unstable. For production use, stick with the stable release/4.0.x branch or use the `stable` Docker tag.
 
 ### Docker Deployment
 
@@ -90,14 +90,41 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 * PHP 8.1 or higher (including 8.2, 8.3, 8.4, etc.)
 * PHP extensions: intl, gettext, openssl, filter, tokenizer, pdo, xml, pdo-mysql/pdo-pgsql/pdo-sqlite, ldap (optional)
 * MySQL 5.7.x/8.x, MariaDB, PostgreSQL or SQLite database
-* PowerDNS authoritative server 4.0.0+ (including 5.0)
+* PowerDNS authoritative server 4.0.0+ (including 4.x and 5.x series)
 
 ## Tested on
 
-**Versions:**
-- **4.1.x (development)**: PHP 8.2.28, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
-- **4.0.x (stable)**: PHP 8.1.31, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
-- **3.9.x (previous stable)**: PHP 8.1.31, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
+**Officially tested versions:**
+- **master (pre-release)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
+- **release/4.0.x (stable)**: PHP 8.2, PowerDNS 4.9.5, MariaDB 10.11, PostgreSQL 16.3
+- **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
+
+**User-reported compatibility:**
+- PowerDNS 4.8.x, 4.9.x, and 5.0.x series have been reported to work correctly by community users
+
+**Compatibility note:** Poweradmin operates primarily at the database level with PowerDNS, using the PowerDNS API only for DNSSEC operations. This design provides broad compatibility across PowerDNS versions, as the database schema remains relatively stable between releases.
+
+## Version Support
+
+Poweradmin maintains multiple release branches:
+
+| Branch | Status | Support |
+|--------|--------|---------|
+| `develop` | Development | Experimental features, unstable |
+| `master` | Pre-release | Integration testing, may be unstable |
+| `release/4.1.x` | Current | Latest release, stabilizing |
+| `release/4.0.x` | Stable | 4.0.x bug fixes and security updates |
+| `release/3.x` | LTS | Bug fixes and security updates until December 2027 |
+
+### PHP Version Support
+
+**Important:** Poweradmin **4.1.x will be the last version to support PHP 8.1**. Starting with version 4.2.x, the minimum required PHP version will be **8.2**. Users on PHP 8.1 should plan their PHP upgrade accordingly.
+
+### Long-Term Support (LTS)
+
+The **3.9.x branch** is designated as Long-Term Support (LTS), starting with version 3.9.8. This branch will receive bug fixes and security updates for at least two years, providing a stable option for organizations that prefer stability over immediate upgrades.
+
+For more details, see the [Poweradmin in 2025: Year in Review](https://www.poweradmin.org/p/poweradmin-in-2025-year-in-review) blog post.
 
 ## Contributing
 
@@ -124,6 +151,7 @@ JetBrains provides IDE licenses used for development of this project.
 * Gino Cremer
 * Arthur Mayer
 * Dylan Blanqué
+* Tony Johnson
 * trendymail
 
 For feature sponsorship, to speed up development of specific features, or to discuss ideas and issues, please [contact me](https://github.com/edmondas).
@@ -131,6 +159,8 @@ For feature sponsorship, to speed up development of specific features, or to dis
 ## Related Projects
 
 * [terraform-provider-poweradmin](https://github.com/poweradmin/terraform-provider-poweradmin) - Terraform/OpenTofu provider for managing DNS zones and records through Poweradmin
+* [certbot-dns-poweradmin](https://github.com/poweradmin/certbot-dns-poweradmin) - Certbot DNS plugin for Poweradmin to automate Let's Encrypt certificate issuance with DNS-01 challenge
+* [external-dns-poweradmin-webhook](https://github.com/poweradmin/external-dns-poweradmin-webhook) - ExternalDNS webhook provider for Poweradmin to synchronize Kubernetes DNS records
 
 ## Note
 

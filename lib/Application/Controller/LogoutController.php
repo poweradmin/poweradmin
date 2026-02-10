@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 
 class LogoutController extends BaseController
 {
@@ -250,7 +251,8 @@ class LogoutController extends BaseController
 
     private function getBaseUrl(): string
     {
-        $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $protocolDetector = new ProtocolDetector();
+        $scheme = $protocolDetector->detect();
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         $basePrefix = $this->config->get('interface', 'base_url_prefix', '');
 

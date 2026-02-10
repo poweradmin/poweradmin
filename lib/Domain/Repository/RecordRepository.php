@@ -444,6 +444,39 @@ class RecordRepository implements RecordRepositoryInterface
     }
 
     /**
+     * Get serial numbers for multiple zones in a single query (batch optimization)
+     *
+     * @param array $zoneIds Array of zone IDs
+     * @return array<int, string> Array mapping zone ID to serial number
+     */
+    public function getSerialsByZoneIds(array $zoneIds): array
+    {
+        if (empty($zoneIds)) {
+            return [];
+        }
+
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
+
+        $stmt = $this->db->prepare("SELECT domain_id, content FROM $records_table WHERE type = 'SOA' AND domain_id IN ($placeholders)");
+
+        $paramIndex = 1;
+        foreach ($zoneIds as $zoneId) {
+            $stmt->bindValue($paramIndex, $zoneId, PDO::PARAM_INT);
+            $paramIndex++;
+        }
+        $stmt->execute();
+
+        $serials = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $rr_soa_fields = explode(" ", $row['content']);
+            $serials[$row['domain_id']] = $rr_soa_fields[2] ?? '';
+        }
+
+        return $serials;
+    }
+
+    /**
      * Get filtered records from a domain with search capabilities
      *
      * Note: Excludes PowerDNS Empty Non-Terminal (ENT) records.
@@ -483,6 +516,10 @@ class RecordRepository implements RecordRepositoryInterface
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
+
+        // SQLite is strict about ambiguous column names when JOINs are used.
+        // Qualify ORDER BY columns to always refer to records table.
+        $sort_by_qualified = $records_table . '.' . $sort_by;
 
         // Prepare query parameters
         $params = [':zone_id' => $zone_id];
@@ -545,8 +582,16 @@ class RecordRepository implements RecordRepositoryInterface
         $query .= " WHERE $records_table.domain_id = :zone_id AND $records_table.type IS NOT NULL AND $records_table.type != ''" .
                  $search_condition . $type_condition . $content_condition;
 
-        // Sorting and limits
-        $query .= " ORDER BY $sort_by $sort_direction LIMIT :row_amount OFFSET :row_start";
+        // Sorting (qualified) and limits
+        $query .= " ORDER BY $sort_by_qualified $sort_direction";
+
+        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'sqlite') {
+            // SQLite PDO can be picky with bound LIMIT/OFFSET; inline after validation
+            $query .= " LIMIT $row_amount OFFSET $row_start";
+        } else {
+            $query .= " LIMIT :row_amount OFFSET :row_start";
+        }
 
         $stmt = $this->db->prepare($query);
 
@@ -554,8 +599,10 @@ class RecordRepository implements RecordRepositoryInterface
         foreach ($params as $key => $value) {
             $stmt->bindValue($key, $value);
         }
-        $stmt->bindValue(':row_amount', $row_amount, PDO::PARAM_INT);
-        $stmt->bindValue(':row_start', $row_start, PDO::PARAM_INT);
+        if ($driver !== 'sqlite') {
+            $stmt->bindValue(':row_amount', $row_amount, PDO::PARAM_INT);
+            $stmt->bindValue(':row_start', $row_start, PDO::PARAM_INT);
+        }
 
         $stmt->execute();
         $records = [];
@@ -667,13 +714,26 @@ class RecordRepository implements RecordRepositoryInterface
         return $result ? (int)$result : null;
     }
 
+    /**
+     * Get records by domain ID
+     *
+     * Note: Excludes PowerDNS Empty Non-Terminal (ENT) records.
+     * PowerDNS automatically creates records with NULL/empty type for RFC 8020 compliance
+     * to support DNS hierarchy (e.g., if a.b.c.example.com exists, ENT records are created
+     * for b.c.example.com and c.example.com). These are not user-manageable records.
+     *
+     * @param int $domainId Domain ID
+     * @param string|null $recordType Optional record type filter
+     * @return array Array of records
+     */
     public function getRecordsByDomainId(int $domainId, ?string $recordType = null): array
     {
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled, ordername, auth
                   FROM $records_table
-                  WHERE domain_id = :domain_id";
+                  WHERE domain_id = :domain_id
+                  AND type IS NOT NULL AND type != ''";
 
         $params = [':domain_id' => $domainId];
 

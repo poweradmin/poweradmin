@@ -34,7 +34,6 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
-use Exception;
 use PDO;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -192,7 +191,7 @@ class ZonesRRSetsController extends PublicApiController
             $rrsets = $this->groupIntoRRSets($records);
 
             return $this->returnApiResponse($rrsets, true, 'RRSets retrieved successfully', 200);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to retrieve RRSets: ' . $e->getMessage(), 500);
         }
     }
@@ -305,7 +304,7 @@ class ZonesRRSetsController extends PublicApiController
             $rrset = $this->formatRRSet($records, $zoneName);
 
             return $this->returnApiResponse($rrset, true, 'RRSet retrieved successfully', 200);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to retrieve RRSet: ' . $e->getMessage(), 500);
         }
     }
@@ -528,11 +527,11 @@ class ZonesRRSetsController extends PublicApiController
                 ];
 
                 return $this->returnApiResponse($responseData, true, 'RRSet replaced successfully', 200);
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $this->db->rollBack();
                 throw $e;
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to replace RRSet: ' . $e->getMessage(), 500);
         }
     }
@@ -666,11 +665,11 @@ class ZonesRRSetsController extends PublicApiController
                     'RRSet deleted successfully',
                     204
                 );
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $this->db->rollBack();
                 throw $e;
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to delete RRSet: ' . $e->getMessage(), 500);
         }
     }
@@ -686,6 +685,11 @@ class ZonesRRSetsController extends PublicApiController
         $rrsets = [];
 
         foreach ($records as $record) {
+            // Skip ENT (Empty Non-Terminal) records created by PowerDNS for RFC 8020 compliance
+            if (empty($record['type']) || empty($record['name'])) {
+                continue;
+            }
+
             $key = $record['name'] . '|' . $record['type'];
 
             if (!isset($rrsets[$key])) {
@@ -721,11 +725,16 @@ class ZonesRRSetsController extends PublicApiController
      */
     private function formatRRSet(array $records, string $zoneName): array
     {
-        if (empty($records)) {
+        // Filter out ENT (Empty Non-Terminal) records created by PowerDNS for RFC 8020 compliance
+        $validRecords = array_filter($records, function ($record) {
+            return !empty($record['type']) && !empty($record['name']);
+        });
+
+        if (empty($validRecords)) {
             return [];
         }
 
-        $firstRecord = $records[0];
+        $firstRecord = reset($validRecords);
 
         return [
             'name' => DnsHelper::stripZoneSuffix($firstRecord['name'], $zoneName),
@@ -733,11 +742,11 @@ class ZonesRRSetsController extends PublicApiController
             'ttl' => (int)$firstRecord['ttl'],
             'records' => array_map(function ($record) {
                 return [
-                    'content' => $this->stripTxtQuotes($record['content'], $record['type']),
+                    'content' => $this->stripTxtQuotes($record['content'] ?? '', $record['type'] ?? ''),
                     'priority' => isset($record['prio']) ? (int)$record['prio'] : 0,
                     'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false
                 ];
-            }, $records)
+            }, $validRecords)
         ];
     }
 
@@ -774,7 +783,7 @@ class ZonesRRSetsController extends PublicApiController
             $stmt->bindValue(':disabled', $disabled, PDO::PARAM_INT);
 
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             error_log('Failed to insert record: ' . $e->getMessage());
             return false;
         }

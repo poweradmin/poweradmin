@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use ReflectionClass;
 
 class SamlConfigurationService extends LoggingService
@@ -128,7 +129,8 @@ class SamlConfigurationService extends LoggingService
         }
 
         // Fallback to detecting from server environment
-        $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+        $protocolDetector = new ProtocolDetector();
+        $scheme = $protocolDetector->detect();
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         $prefix = $this->configManager->get('interface', 'base_url_prefix', '');
 

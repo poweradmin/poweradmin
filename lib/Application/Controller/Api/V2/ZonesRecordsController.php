@@ -183,6 +183,13 @@ class ZonesRecordsController extends PublicApiController
             // Get records for the zone
             $records = $this->recordRepository->getRecordsByDomainId($zoneId, $recordType);
 
+            // Filter out ENT (Empty Non-Terminal) records created by PowerDNS for RFC 8020 compliance.
+            // These records have NULL/empty type and are not user-manageable.
+            // Note: Repository already filters these, but kept as defensive measure.
+            $validRecords = array_filter($records, function ($record) {
+                return !empty($record['type']) && !empty($record['name']);
+            });
+
             // Format record data
             $formattedRecords = array_map(function ($record) {
                 return [
@@ -195,11 +202,11 @@ class ZonesRecordsController extends PublicApiController
                     'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false,
                     'auth' => isset($record['auth']) ? (bool)DbCompat::boolFromDb($record['auth']) : true
                 ];
-            }, $records);
+            }, $validRecords);
 
             return $this->returnApiResponse($formattedRecords, true, 'Records retrieved successfully', 200);
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to retrieve records: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'ZonesRecordsController::listRecords', 'Failed to retrieve records');
         }
     }
 
@@ -303,8 +310,8 @@ class ZonesRecordsController extends PublicApiController
             ];
 
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record retrieved successfully', 200);
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to retrieve record: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'ZonesRecordsController::getRecord', 'Failed to retrieve record');
         }
     }
 
@@ -561,8 +568,8 @@ class ZonesRecordsController extends PublicApiController
 
             $message = 'Record created successfully' . $ptrMessage;
             return $this->returnApiResponse(['record' => $responseData], true, $message, 201);
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to create record: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'ZonesRecordsController::createRecord', 'Failed to create record');
         }
     }
 
@@ -734,8 +741,8 @@ class ZonesRecordsController extends PublicApiController
             ];
 
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record updated successfully', 200);
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to update record: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'ZonesRecordsController::updateRecord', 'Failed to update record');
         }
     }
 
@@ -839,8 +846,8 @@ class ZonesRecordsController extends PublicApiController
             }
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204);
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to delete record: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'ZonesRecordsController::deleteRecord', 'Failed to delete record');
         }
     }
 

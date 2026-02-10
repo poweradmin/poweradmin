@@ -262,7 +262,7 @@ class ZonesRecordsBulkController extends PublicApiController
                             default:
                                 throw new ApiErrorException("Invalid action: $action. Must be 'create', 'update', or 'delete'", 400);
                         }
-                    } catch (Exception $e) {
+                    } catch (\Throwable $e) {
                         $results['failed']++;
                         $results['errors'][] = "Operation $index ($action): " . $e->getMessage();
 
@@ -285,7 +285,7 @@ class ZonesRecordsBulkController extends PublicApiController
                 }
 
                 return $this->returnApiResponse($results, true, $message, 200);
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $this->db->rollBack();
 
                 // Reset counters on rollback - no changes were actually persisted
@@ -305,7 +305,7 @@ class ZonesRecordsBulkController extends PublicApiController
             }
 
             return $this->returnApiError('Bulk operations failed: ' . $e->getMessage(), $statusCode);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             // Server errors - return 500
             return $this->returnApiError('Bulk operations failed: ' . $e->getMessage(), 500);
         }
@@ -519,7 +519,7 @@ class ZonesRecordsBulkController extends PublicApiController
             $stmt->bindValue(':disabled', $disabled, PDO::PARAM_INT);
 
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             error_log('Failed to insert record: ' . $e->getMessage());
             return false;
         }

@@ -72,3 +72,4 @@ nginx.conf.example
 .htaccess
 .hadolint.yaml
 transifex.yml
+cliff.toml
