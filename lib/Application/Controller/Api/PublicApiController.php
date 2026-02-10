@@ -230,4 +230,33 @@ abstract class PublicApiController extends AbstractApiController
     {
         return $this->authenticatedUserId;
     }
+
+    /**
+     * Handle exception and return JSON error response
+     *
+     * Catches all throwables (Exception, TypeError, Error, etc.) and returns a proper JSON
+     * error response instead of letting PHP display HTML errors. Logs detailed error
+     * information for debugging.
+     *
+     * @param \Throwable $e The exception/error to handle
+     * @param string $context Context description (e.g., method name)
+     * @param string $userMessage User-friendly error message
+     * @param int $statusCode HTTP status code
+     * @return JsonResponse JSON error response
+     */
+    protected function handleException(\Throwable $e, string $context, string $userMessage = 'An error occurred', int $statusCode = 500): JsonResponse
+    {
+        // Log detailed error information for debugging
+        error_log(sprintf(
+            '[API Error] %s - %s: %s in %s:%d',
+            $context,
+            get_class($e),
+            $e->getMessage(),
+            $e->getFile(),
+            $e->getLine()
+        ));
+
+        // Return clean JSON error response to client
+        return $this->returnApiError($userMessage . ': ' . $e->getMessage(), $statusCode);
+    }
 }

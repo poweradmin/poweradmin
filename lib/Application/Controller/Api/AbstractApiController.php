@@ -147,6 +147,12 @@ abstract class AbstractApiController extends BaseController
      */
     protected function returnJsonResponse($data, int $status = 200, array $headers = []): JsonResponse
     {
+        if ($status === 204) {
+            $response = new JsonResponse(null, 204, $headers);
+            $response->setContent('');
+            return $response;
+        }
+
         return new JsonResponse($data, $status, $headers);
     }
 

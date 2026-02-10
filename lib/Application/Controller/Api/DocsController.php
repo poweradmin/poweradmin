@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,13 +25,14 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -87,7 +88,8 @@ class DocsController extends BaseController
     private function generateSwaggerUI(): string
     {
         // Get the base URL for API docs
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $protocolDetector = new ProtocolDetector();
+        $protocol = $protocolDetector->detect();
         $host = $this->getValidatedHost();
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
         $baseUrl = $protocol . '://' . $host . $baseUrlPrefix;
