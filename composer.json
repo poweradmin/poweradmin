@@ -90,10 +90,12 @@
     "analyse:phpstan": "phpstan analyse --level=3 addons config db index.php install lib tests tools dynamic_update.php",
     "analyse:psalm": "psalm",
     "quality:all": "phpmd addons,config,db,index.php,install,lib,tools,dynamic_update.php ansi phpmd.xml",
+    "lint:twig": "! grep -rn 'name=\"csrf_token\"' templates/ --include='*.html' || (echo 'ERROR: Use name=\"_token\" instead of name=\"csrf_token\" for CSRF token fields' && false)",
     "analyse:all": [
         "@check:all",
         "@analyse:psalm",
-        "@analyse:phpstan"
+        "@analyse:phpstan",
+        "@lint:twig"
     ],
 
     "compat:8.1": "phan --target-php-version=8.1 --allow-polyfill-parser",
