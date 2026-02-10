@@ -36,7 +36,6 @@ use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
-use Exception;
 
 class PermissionsController extends PublicApiController
 {
@@ -53,7 +52,6 @@ class PermissionsController extends PublicApiController
     /**
      * Handle permission requests
      */
-    #[\Override]
     public function run(): void
     {
         $method = $this->request->getMethod();
@@ -118,7 +116,7 @@ class PermissionsController extends PublicApiController
 
             $permissions = $this->permissionTemplateRepository->getPermissionsByTemplateId(0);
             return $this->returnApiResponse($permissions);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to fetch permissions: ' . $e->getMessage(), 500);
         }
     }
@@ -199,7 +197,7 @@ class PermissionsController extends PublicApiController
             }
 
             return $this->returnApiResponse(['permission' => array_values($permission)[0]]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to fetch permission: ' . $e->getMessage(), 500);
         }
     }

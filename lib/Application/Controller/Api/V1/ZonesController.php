@@ -84,7 +84,6 @@ class ZonesController extends PublicApiController
     /**
      * Handle zone-related requests
      */
-    #[\Override]
     public function run(): void
     {
         $method = $this->request->getMethod();

@@ -36,7 +36,6 @@ use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
-use Exception;
 
 class PermissionTemplatesController extends PublicApiController
 {
@@ -53,7 +52,6 @@ class PermissionTemplatesController extends PublicApiController
     /**
      * Handle permission template requests
      */
-    #[\Override]
     public function run(): void
     {
         $method = $this->request->getMethod();
@@ -121,7 +119,7 @@ class PermissionTemplatesController extends PublicApiController
 
             $templates = $this->permissionTemplateRepository->listPermissionTemplates();
             return $this->returnApiResponse($templates);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to fetch permission templates: ' . $e->getMessage(), 500);
         }
     }
@@ -210,7 +208,7 @@ class PermissionTemplatesController extends PublicApiController
             $template['permissions'] = $this->permissionTemplateRepository->getPermissionsByTemplateId($id);
 
             return $this->returnApiResponse(['template' => $template]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to fetch permission template: ' . $e->getMessage(), 500);
         }
     }
@@ -312,8 +310,8 @@ class PermissionTemplatesController extends PublicApiController
             } else {
                 return $this->returnApiError('Failed to create permission template', 500);
             }
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to create permission template: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'PermissionTemplatesController::createTemplate', 'Failed to create permission template');
         }
     }
 
@@ -435,8 +433,8 @@ class PermissionTemplatesController extends PublicApiController
             } else {
                 return $this->returnApiError('Failed to update permission template', 500);
             }
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to update permission template: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'PermissionTemplatesController::updateTemplate', 'Failed to update permission template');
         }
     }
 
@@ -507,8 +505,8 @@ class PermissionTemplatesController extends PublicApiController
             } else {
                 return $this->returnApiError('Cannot delete permission template - it is assigned to one or more users', 409);
             }
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to delete permission template: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'PermissionTemplatesController::deleteTemplate', 'Failed to delete permission template');
         }
     }
 }

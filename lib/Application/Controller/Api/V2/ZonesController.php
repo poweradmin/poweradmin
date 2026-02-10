@@ -31,7 +31,6 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
-use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
@@ -89,7 +88,6 @@ class ZonesController extends PublicApiController
     /**
      * Handle zone-related requests
      */
-    #[\Override]
     public function run(): void
     {
         $method = $this->request->getMethod();
@@ -238,8 +236,8 @@ class ZonesController extends PublicApiController
             }
 
             return $this->returnApiResponse(['zones' => $formattedZones], true, 'Zones retrieved successfully', 200, $responseData);
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to retrieve zones: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'ZonesController::listZones', 'Failed to retrieve zones');
         }
     }
 
@@ -336,8 +334,8 @@ class ZonesController extends PublicApiController
             }
 
             return $this->returnApiResponse(['zone' => $formattedZone], true, 'Zone retrieved successfully', 200);
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to retrieve zone: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'ZonesController::getZone', 'Failed to retrieve zone');
         }
     }
 
@@ -537,8 +535,8 @@ class ZonesController extends PublicApiController
                 $result['message'] ?? 'Zone created successfully',
                 201
             );
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to create zone: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'ZonesController::createZone', 'Failed to create zone');
         }
     }
 
@@ -711,8 +709,8 @@ class ZonesController extends PublicApiController
             }
 
             return $this->returnApiResponse(null, true, 'Zone updated successfully', 200);
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to update zone: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'ZonesController::updateZone', 'Failed to update zone');
         }
     }
 
@@ -785,8 +783,8 @@ class ZonesController extends PublicApiController
             }
 
             return $this->returnApiResponse(null, true, 'Zone deleted successfully', 204);
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to delete zone: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'ZonesController::deleteZone', 'Failed to delete zone');
         }
     }
 

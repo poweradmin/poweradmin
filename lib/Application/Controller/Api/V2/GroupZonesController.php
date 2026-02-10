@@ -58,7 +58,6 @@ class GroupZonesController extends PublicApiController
     /**
      * Handle group zone-related requests
      */
-    #[\Override]
     public function run(): void
     {
         $method = $this->request->getMethod();

@@ -67,7 +67,6 @@ class GroupsController extends PublicApiController
     /**
      * Handle group-related requests
      */
-    #[\Override]
     public function run(): void
     {
         $method = $this->request->getMethod();
