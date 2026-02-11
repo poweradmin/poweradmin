@@ -21,7 +21,7 @@
     }
   ],
   "require": {
-    "php": ">=8.1",
+    "php": ">=8.2",
     "ext-intl": "*",
     "ext-gettext": "*",
     "ext-openssl": "*",
@@ -99,13 +99,11 @@
         "@lint:twig"
     ],
 
-    "compat:8.1": "phan --target-php-version=8.1 --allow-polyfill-parser",
     "compat:8.2": "phan --target-php-version=8.2 --allow-polyfill-parser",
     "compat:8.3": "phan --target-php-version=8.3 --allow-polyfill-parser",
     "compat:8.4": "phan --target-php-version=8.4 --allow-polyfill-parser",
     "compat:8.5": "phan --target-php-version=8.5 --allow-polyfill-parser",
     "compat:all": [
-        "@compat:8.1",
         "@compat:8.2",
         "@compat:8.3",
         "@compat:8.4",
@@ -119,7 +117,7 @@
   },
   "config": {
     "platform": {
-      "php": "8.1"
+      "php": "8.2"
     },
     "allow-plugins": {
       "cweagans/composer-patches": true

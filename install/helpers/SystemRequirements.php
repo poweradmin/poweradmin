@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ class SystemRequirements
     /**
      * Minimum PHP version required for Poweradmin
      */
-    public const MIN_PHP_VERSION = '8.1.0';
+    public const MIN_PHP_VERSION = '8.2.0';
 
     /**
      * Required PHP extensions
@@ -144,6 +144,36 @@ class SystemRequirements
         return self::isPhpVersionSupported() &&
                self::areRequiredExtensionsLoaded() &&
                self::isDatabaseExtensionLoaded();
+    }
+
+    /**
+     * Get web server information and URL rewriting status
+     *
+     * @return array{server_software: string, is_apache: bool, is_nginx: bool, mod_rewrite_loaded: bool, can_detect_modules: bool}
+     */
+    public static function getWebServerInfo(): array
+    {
+        $serverSoftware = !empty($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
+        $sapi = php_sapi_name();
+
+        $isApache = stripos($serverSoftware, 'apache') !== false || str_contains($sapi, 'apache');
+        $isNginx = stripos($serverSoftware, 'nginx') !== false;
+
+        $displayName = !empty($serverSoftware) ? $serverSoftware : 'Unknown (' . $sapi . ')';
+
+        $canDetectModules = $isApache && function_exists('apache_get_modules');
+        $modRewriteLoaded = false;
+        if ($canDetectModules) {
+            $modRewriteLoaded = in_array('mod_rewrite', apache_get_modules());
+        }
+
+        return [
+            'server_software' => $displayName,
+            'is_apache' => $isApache,
+            'is_nginx' => $isNginx,
+            'mod_rewrite_loaded' => $modRewriteLoaded,
+            'can_detect_modules' => $canDetectModules,
+        ];
     }
 
     /**
