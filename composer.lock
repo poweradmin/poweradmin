@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fec1787dd31dbf50bf4ebea03318ec05",
+    "content-hash": "f52098fd43090e1d8b637ae6d2ac2813",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -5447,54 +5447,6 @@
             "time": "2024-05-06T16:37:16+00:00"
         },
         {
-            "name": "cweagans/composer-patches",
-            "version": "1.7.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cweagans/composer-patches.git",
-                "reference": "e190d4466fe2b103a55467dfa83fc2fecfcaf2db"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cweagans/composer-patches/zipball/e190d4466fe2b103a55467dfa83fc2fecfcaf2db",
-                "reference": "e190d4466fe2b103a55467dfa83fc2fecfcaf2db",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.0 || ^2.0",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "composer/composer": "~1.0 || ~2.0",
-                "phpunit/phpunit": "~4.6"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "cweagans\\Composer\\Patches"
-            },
-            "autoload": {
-                "psr-4": {
-                    "cweagans\\Composer\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Cameron Eagans",
-                    "email": "me@cweagans.net"
-                }
-            ],
-            "description": "Provides a way to patch Composer packages.",
-            "support": {
-                "issues": "https://github.com/cweagans/composer-patches/issues",
-                "source": "https://github.com/cweagans/composer-patches/tree/1.7.3"
-            },
-            "time": "2022-12-20T22:53:13+00:00"
-        },
-        {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "v0.1.1",
             "source": {
@@ -6067,34 +6019,33 @@
         },
         {
             "name": "phan/phan",
-            "version": "6.0.0",
+            "version": "6.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
-                "reference": "3eb6ae40d60d4e4e163d3f7cfc78f27aad2e2e48"
+                "reference": "072872a257bc2de31daeaa998ae39db0821a2b8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phan/phan/zipball/3eb6ae40d60d4e4e163d3f7cfc78f27aad2e2e48",
-                "reference": "3eb6ae40d60d4e4e163d3f7cfc78f27aad2e2e48",
+                "url": "https://api.github.com/repos/phan/phan/zipball/072872a257bc2de31daeaa998ae39db0821a2b8e",
+                "reference": "072872a257bc2de31daeaa998ae39db0821a2b8e",
                 "shasum": ""
             },
             "require": {
                 "composer/semver": "^1.4|^2.0|^3.0",
                 "composer/xdebug-handler": "^2.0|^3.0",
-                "cweagans/composer-patches": "^1.7",
                 "ext-filter": "*",
                 "ext-json": "*",
                 "ext-tokenizer": "*",
                 "felixfbecker/advanced-json-rpc": "^3.0.4",
                 "netresearch/jsonmapper": "^1.6.0|^2.0|^3.0|^4.0|^5.0",
                 "phan/tolerant-php-parser": "v0.2.0",
+                "phan/var_representation_polyfill": "^0.1.4",
                 "php": "^8.1.0",
                 "sabre/event": "^5.1.3",
                 "symfony/console": "^6.0|^7.0|^8.0",
                 "symfony/polyfill-mbstring": "^1.11.0",
-                "symfony/string": "^6.0|^7.0|^8.0",
-                "tysonandre/var_representation_polyfill": "^0.0.2|^0.1.0"
+                "symfony/string": "^6.0|^7.0|^8.0"
             },
             "conflict": {
                 "microsoft/tolerant-php-parser": "*"
@@ -6116,13 +6067,6 @@
                 "tocheckstyle"
             ],
             "type": "project",
-            "extra": {
-                "patches": {
-                    "tysonandre/var_representation_polyfill": {
-                        "Fix deprecated semicolon in switch case for PHP 8.5 compatibility": "patches/var_representation_polyfill_php85_compat.patch"
-                    }
-                }
-            },
             "autoload": {
                 "files": [
                     "src/Phan/bootstrap/polyfills.php"
@@ -6155,9 +6099,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phan/phan/issues",
-                "source": "https://github.com/phan/phan/tree/6.0.0"
+                "source": "https://github.com/phan/phan/tree/6.0.1"
             },
-            "time": "2026-01-16T18:22:06+00:00"
+            "time": "2026-02-08T23:04:04+00:00"
         },
         {
             "name": "phan/tolerant-php-parser",
@@ -6204,6 +6148,64 @@
                 "source": "https://github.com/phan/phan-tolerant/tree/v0.2.0"
             },
             "time": "2025-10-29T19:20:13+00:00"
+        },
+        {
+            "name": "phan/var_representation_polyfill",
+            "version": "0.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phan/var_representation_polyfill",
+                "reference": "6673325fb4343899af4564d9f6984b1fbe077e9d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phan/var_representation_polyfill/zipball/6673325fb4343899af4564d9f6984b1fbe077e9d",
+                "reference": "6673325fb4343899af4564d9f6984b1fbe077e9d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-tokenizer": "*",
+                "php": "^7.2.0|^8.0.0"
+            },
+            "provide": {
+                "ext-var_representation": "*"
+            },
+            "require-dev": {
+                "phan/phan": "^5.4.1",
+                "phpunit/phpunit": "^8.5.0"
+            },
+            "suggest": {
+                "ext-var_representation": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "0.1.3-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/var_representation.php"
+                ],
+                "psr-4": {
+                    "VarRepresentation\\": "src/VarRepresentation"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tyson Andre"
+                }
+            ],
+            "description": "Polyfill for var_representation: convert a variable to a string in a way that fixes the shortcomings of var_export",
+            "keywords": [
+                "var_export",
+                "var_representation"
+            ],
+            "time": "2026-01-28T23:32:31+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -9251,68 +9253,6 @@
                 }
             ],
             "time": "2025-11-17T20:03:58+00:00"
-        },
-        {
-            "name": "tysonandre/var_representation_polyfill",
-            "version": "0.1.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TysonAndre/var_representation_polyfill.git",
-                "reference": "e9116c2c352bb0835ca428b442dde7767c11ad32"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TysonAndre/var_representation_polyfill/zipball/e9116c2c352bb0835ca428b442dde7767c11ad32",
-                "reference": "e9116c2c352bb0835ca428b442dde7767c11ad32",
-                "shasum": ""
-            },
-            "require": {
-                "ext-tokenizer": "*",
-                "php": "^7.2.0|^8.0.0"
-            },
-            "provide": {
-                "ext-var_representation": "*"
-            },
-            "require-dev": {
-                "phan/phan": "^5.4.1",
-                "phpunit/phpunit": "^8.5.0"
-            },
-            "suggest": {
-                "ext-var_representation": "For best performance"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "0.1.3-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/var_representation.php"
-                ],
-                "psr-4": {
-                    "VarRepresentation\\": "src/VarRepresentation"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Tyson Andre"
-                }
-            ],
-            "description": "Polyfill for var_representation: convert a variable to a string in a way that fixes the shortcomings of var_export",
-            "keywords": [
-                "var_export",
-                "var_representation"
-            ],
-            "support": {
-                "issues": "https://github.com/TysonAndre/var_representation_polyfill/issues",
-                "source": "https://github.com/TysonAndre/var_representation_polyfill/tree/0.1.3"
-            },
-            "time": "2022-08-31T12:59:22+00:00"
         },
         {
             "name": "vimeo/psalm",
