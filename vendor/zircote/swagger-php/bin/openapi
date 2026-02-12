@@ -6,7 +6,7 @@ use OpenApi\Analysers\DocBlockAnnotationFactory;
 use OpenApi\Analysers\ReflectionAnalyser;
 use OpenApi\Annotations\OpenApi;
 use OpenApi\Generator;
-use OpenApi\Util;
+use OpenApi\SourceFinder;
 use OpenApi\Loggers\ConsoleLogger;
 
 if (class_exists(Generator::class) === false) {
@@ -22,6 +22,7 @@ error_reporting(E_ALL);
 // Possible options and their default values.
 $options = [
     'config' => [],
+    'defaults' => false,
     'output' => false,
     'format' => 'auto',
     'exclude' => [],
@@ -29,18 +30,21 @@ $options = [
     'bootstrap' => [],
     'help' => false,
     'debug' => false,
-    'processor' => [],
+    'add-processor' => [],
+    'remove-processor' => [],
     'version' => null,
 ];
 $aliases = [
     'c' => 'config',
+    'D' => 'defaults',
     'o' => 'output',
     'e' => 'exclude',
     'n' => 'pattern',
     'b' => 'bootstrap',
     'h' => 'help',
     'd' => 'debug',
-    'p' => 'processor',
+    'a' => 'add-processor',
+    'r' => 'remove-processor',
     'f' => 'format'
 ];
 $needsArgument = [
@@ -50,7 +54,8 @@ $needsArgument = [
     'exclude',
     'pattern',
     'bootstrap',
-    'processor',
+    'add-processor',
+    'remove-processor',
     'version',
 ];
 $paths = [];
@@ -60,9 +65,12 @@ try {
     // Parse cli arguments
     for ($i = 1; $i < $argc; $i++) {
         $arg = $argv[$i];
-        if (substr($arg, 0, 2) === '--') { // longopt
+
+        if (substr($arg, 0, 2) === '--') {
+            // longopt
             $option = substr($arg, 2);
-        } elseif ($arg[0] === '-') { // shortopt
+        } elseif ($arg[0] === '-') {
+            // shortopt
             if (array_key_exists(substr($arg, 1), $aliases)) {
                 $option = $aliases[$arg[1]];
             } else {
@@ -72,9 +80,11 @@ try {
             $paths[] = $arg;
             continue;
         }
-        if (array_key_exists($option, $options) === false) {
+
+        if (false === array_key_exists($option, $options)) {
             throw new Exception('Unknown option: "' . $arg . '"');
         }
+
         if (in_array($option, $needsArgument)) {
             if (empty($argv[$i + 1]) || $argv[$i + 1][0] === '-') {
                 throw new Exception('Missing argument for "' . $arg . '"');
@@ -110,6 +120,13 @@ if (!$error && $options['bootstrap']) {
         }
     }
 }
+
+if ($options['defaults']) {
+    $logger->info('Default config');
+    $logger->info(json_encode((new Generator())->getDefaultConfig(), JSON_PRETTY_PRINT));
+    exit(1);
+}
+
 if (count($paths) === 0) {
     $error = 'Specify at least one path.';
 }
@@ -127,21 +144,23 @@ if ($options['help']) {
 Usage: openapi [--option value] [/path/to/project ...]
 
 Options:
-  --config (-c)     Generator config
-                    ex: -c operationId.hash=false
-  --output (-o)     Path to store the generated documentation.
-                    ex: --output openapi.yaml
-  --exclude (-e)    Exclude path(s).
-                    ex: --exclude vendor,library/Zend
-  --pattern (-n)    Pattern of files to scan.
-                    ex: --pattern "*.php" or --pattern "/\.(phps|php)$/"
-  --bootstrap (-b)  Bootstrap php file(s) for defining constants, etc.
-                    ex: --bootstrap config/constants.php
-  --processor (-p)  Register an additional processor.
-  --format (-f)     Force yaml or json.
-  --debug (-d)      Show additional error information.
-  --version         The OpenAPI version; defaults to {$defaultVersion}.
-  --help (-h)       Display this help message.
+  --config (-c)               Generator config.
+                              ex: -c operationId.hash=false
+  --defaults (-D)             Show default config.
+  --output (-o)               Path to store the generated documentation.
+                              ex: --output openapi.yaml
+  --exclude (-e)              Exclude path(s).
+                              ex: --exclude vendor,library/Zend
+  --pattern (-n)              Pattern of files to scan.
+                              ex: --pattern "*.php" or --pattern "/\.(phps|php)$/"
+  --bootstrap (-b)            Bootstrap php file(s) for defining constants, etc.
+                              ex: --bootstrap config/constants.php
+  --add-processor (-a)        Register an additional processor (allows multiple).
+  --remove-processor (-r)     Remove an existing processor (allows multiple).
+  --format (-f)               Force yaml or json.
+  --debug (-d)                Show additional error information.
+  --version                   The OpenAPI version; defaults to {$defaultVersion}.
+  --help (-h)                 Display this help message.
 
 
 EOF;
@@ -207,14 +226,20 @@ if ($options['pattern']) {
 }
 
 $generator = new Generator($logger);
-foreach ($options["processor"] as $processor) {
-    $class = '\OpenApi\Processors\\'.$processor;
+foreach ($options["add-processor"] as $processor) {
+    $class = '\OpenApi\Processors\\'.ucfirst($processor);
     if (class_exists($class)) {
         $processor = new $class();
     } elseif (class_exists($processor)) {
         $processor = new $processor();
     }
     $generator->getProcessorPipeline()->add($processor);
+}
+foreach ($options["remove-processor"] as $processor) {
+    $class = class_exists($processor)
+        ? $class
+        : '\OpenApi\Processors\\'.ucfirst($processor);
+    $generator->getProcessorPipeline()->remove($class);
 }
 
 $analyser = new ReflectionAnalyser([
@@ -227,7 +252,7 @@ $openapi = $generator
     ->setVersion($options['version'])
     ->setConfig($options['config'])
     ->setAnalyser($analyser)
-    ->generate(Util::finder($paths, $exclude, $pattern));
+    ->generate(new SourceFinder($paths, $exclude, $pattern));
 
 if ($options['output'] === false) {
     if (strtolower($options['format']) === 'json') {

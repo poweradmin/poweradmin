@@ -1,0 +1,65 @@
+{
+  "name": "radebatz/type-info-extras",
+  "description": "Extras for symfony/type-info",
+  "keywords": ["component", "types", "symfony", "type-info"],
+  "license": [
+    "MIT"
+  ],
+  "homepage": "http://radebatz.net/mano/",
+  "authors": [
+    {
+      "name": "Martin Rademacher",
+      "email": "mano@radebatz.org"
+    }
+  ],
+  "config": {
+    "sort-packages": true,
+    "preferred-install": {
+      "symfony/type-info": "source",
+      "*": "dist"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.x-dev"
+    }
+  },
+  "require": {
+    "php": ">=8.2",
+    "phpstan/phpdoc-parser": "^2.0",
+    "symfony/type-info": "^7.3.8 || ^7.4.1 || ^8.0 || ^8.1-@dev"
+  },
+  "autoload": {
+    "psr-4": { "Radebatz\\TypeInfoExtras\\": "src" },
+    "exclude-from-classmap": [
+      "/tests/"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Radebatz\\TypeInfoExtras\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.70",
+    "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^11.0"
+  },
+  "scripts-descriptions": {
+    "cs": "Fix all codestyle issues",
+    "lint": "Test codestyle",
+    "test": "Run all PHP, codestyle  tests",
+    "analyse": "Run static analysis (phpstan)"
+  },
+  "scripts": {
+    "cs": "export XDEBUG_MODE=off && php-cs-fixer fix --allow-risky=yes",
+    "lint": "@cs --dry-run",
+    "test": [
+      "export XDEBUG_MODE=off && phpunit",
+      "@lint"
+    ],
+    "analyse": [
+      "export XDEBUG_MODE=off && phpstan analyse --memory-limit=2G"
+    ]
+  }
+}

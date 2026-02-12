@@ -522,11 +522,7 @@ class Schema extends AbstractAnnotation
         return in_array($type, (array) $this->type, true);
     }
 
-    /**
-     * @inheritdoc
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): \stdClass
     {
         $data = parent::jsonSerialize();
 

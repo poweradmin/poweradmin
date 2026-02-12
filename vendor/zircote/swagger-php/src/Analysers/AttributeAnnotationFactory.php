@@ -25,16 +25,16 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
 
     public function isSupported(): bool
     {
-        return \PHP_VERSION_ID >= 80100;
+        return true;
     }
 
     public function build(\Reflector $reflector, Context $context): array
     {
-        if (!$this->isSupported() || !method_exists($reflector, 'getAttributes')) {
+        if (!$this->isSupported()) {
             return [];
         }
 
-        if ($reflector instanceof \ReflectionProperty && method_exists($reflector, 'isPromoted') && $reflector->isPromoted()) {
+        if ($reflector instanceof \ReflectionProperty && $reflector->isPromoted()) {
             // handled via __construct() parameter
             return [];
         }
@@ -106,10 +106,9 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
         }
 
         // merge backwards into parents...
-        $isParent = function (OA\AbstractAnnotation $annotation, OA\AbstractAnnotation $possibleParent): bool {
+        $isParent = static function (OA\AbstractAnnotation $annotation, OA\AbstractAnnotation $possibleParent): bool {
             // regular annotation hierarchy
             $explicitParent = null !== $possibleParent->matchNested($annotation) && !$annotation instanceof OA\Attachable;
-
             $isParentAllowed = false;
             // support Attachable subclasses
             if ($isAttachable = $annotation instanceof OA\Attachable) {

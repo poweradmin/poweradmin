@@ -20,6 +20,7 @@ use OpenApi\Processors\Concerns\DocblockTrait;
 class AugmentParameters implements GeneratorAwareInterface
 {
     use DocblockTrait;
+
     use GeneratorAwareTrait;
 
     protected bool $augmentOperationParameters;
@@ -129,7 +130,6 @@ class AugmentParameters implements GeneratorAwareInterface
 
     protected function augmentOperationParameters(Analysis $analysis): void
     {
-        /** @var OA\Operation[] $operations */
         $operations = $analysis->getAnnotationsOfType(OA\Operation::class);
 
         foreach ($operations as $operation) {

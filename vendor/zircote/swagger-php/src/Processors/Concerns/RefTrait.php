@@ -12,13 +12,13 @@ trait RefTrait
 {
     protected function toRefKey(Context $context, ?string $name): string
     {
-        $fqn = strtolower($context->fullyQualifiedName($name));
+        $fqn = strtolower($context->fullyQualifiedName($name) ?? '');
 
         return ltrim($fqn, '\\');
     }
 
     protected function isRef(?string $ref): bool
     {
-        return $ref && 0 === strpos($ref, '#/');
+        return $ref && str_starts_with($ref, '#/');
     }
 }
