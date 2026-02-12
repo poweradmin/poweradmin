@@ -2,6 +2,7 @@
 
 namespace unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use ReflectionClass;
@@ -17,9 +18,7 @@ class PowerdnsStatusServiceTest extends TestCase
         $this->reflection = new ReflectionClass($this->service);
     }
 
-    /**
-     * @dataProvider secureUrlProvider
-     */
+    #[DataProvider('secureUrlProvider')]
     public function testIsSecureUrl(string $url, bool $expected): void
     {
         $method = $this->reflection->getMethod('isSecureUrl');
@@ -56,9 +55,7 @@ class PowerdnsStatusServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider displayNameProvider
-     */
+    #[DataProvider('displayNameProvider')]
     public function testSanitizeDisplayName($input, string $expected): void
     {
         $method = $this->reflection->getMethod('sanitizeDisplayName');

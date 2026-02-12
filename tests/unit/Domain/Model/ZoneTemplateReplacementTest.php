@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Model;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ZoneTemplate;
 
@@ -29,8 +30,8 @@ use Poweradmin\Domain\Model\ZoneTemplate;
  * Test Zone Template Placeholder Replacement Functionality
  *
  * @package Poweradmin\Tests\Unit\Domain\Model
- * @covers \Poweradmin\Domain\Model\ZoneTemplate::replaceWithTemplatePlaceholders
  */
+#[CoversClass(ZoneTemplate::class)]
 class ZoneTemplateReplacementTest extends TestCase
 {
     public function testReplaceZoneInRecordName(): void

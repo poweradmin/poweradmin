@@ -2,6 +2,7 @@
 
 namespace Unit\Domain\Service;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsIdnService;
 
@@ -117,9 +118,8 @@ class DnsIdnServiceTest extends TestCase
 
     /**
      * Test toPunycode lowercases ASCII domain with mixed case
-     *
-     * @dataProvider mixedCaseAsciiDomainsProvider
      */
+    #[DataProvider('mixedCaseAsciiDomainsProvider')]
     public function testToPunycodeLowercasesAsciiDomain(string $input, string $expected): void
     {
         $result = DnsIdnService::toPunycode($input);
@@ -142,9 +142,8 @@ class DnsIdnServiceTest extends TestCase
 
     /**
      * Test toPunycode lowercases IDN domain with mixed case
-     *
-     * @dataProvider mixedCaseIdnDomainsProvider
      */
+    #[DataProvider('mixedCaseIdnDomainsProvider')]
     public function testToPunycodeLowercasesIdnDomain(string $input, string $expected): void
     {
         $result = DnsIdnService::toPunycode($input);
@@ -168,9 +167,8 @@ class DnsIdnServiceTest extends TestCase
      * Test toPunycode with simulated user input (with whitespace)
      *
      * Note: toPunycode does NOT trim whitespace - caller must trim first
-     *
-     * @dataProvider userInputDomainsProvider
      */
+    #[DataProvider('userInputDomainsProvider')]
     public function testToPunycodeWithUserInput(string $input, string $expected): void
     {
         // Simulate proper input handling: trim then convert
