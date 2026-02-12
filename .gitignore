@@ -64,6 +64,7 @@ package-lock.json
 
 # PHP tools
 /.php-cs-fixer.cache
+.phan/phan.phar
 
 # Node.js version manager
 /.nvmrc

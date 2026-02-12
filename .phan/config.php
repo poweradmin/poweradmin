@@ -49,8 +49,8 @@ return [
     //
     // Note that the **only** effect of choosing `'5.6'` is to infer that functions removed in php 7.0 exist.
     // (See `backward_compatibility_checks` for additional options)
-    // Automatically inferred from composer.json requirement for "php" of ">=8.1"
-    'target_php_version' => '8.1',
+    // Automatically inferred from composer.json requirement for "php" of ">=8.2"
+    'target_php_version' => '8.2',
 
     // If enabled, missing properties will be created when
     // they are first seen. If false, we'll report an
