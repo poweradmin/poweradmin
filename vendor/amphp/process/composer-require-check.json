@@ -1,0 +1,36 @@
+{
+    "symbol-whitelist": [
+        "null",
+        "true",
+        "false",
+        "static",
+        "self",
+        "parent",
+        "array",
+        "string",
+        "int",
+        "float",
+        "bool",
+        "iterable",
+        "callable",
+        "mixed",
+        "void",
+        "object",
+        "random_bytes",
+        "escapeArgument",
+        "IS_WINDOWS",
+        "posix_kill",
+        "pcntl_waitpid",
+        "WNOHANG"
+    ],
+    "php-core-extensions": [
+        "Core",
+        "date",
+        "pcre",
+        "Phar",
+        "Reflection",
+        "SPL",
+        "standard",
+        "hash"
+    ]
+}
