@@ -20,16 +20,18 @@ class RemoveBuildParametersPass implements CompilerPassInterface
      */
     private array $removedParameters = [];
 
-    /**
-     * @return void
-     */
-    public function process(ContainerBuilder $container)
+    public function __construct(
+        private bool $preserveArrays = false,
+    ) {
+    }
+
+    public function process(ContainerBuilder $container): void
     {
         $parameterBag = $container->getParameterBag();
         $this->removedParameters = [];
 
         foreach ($parameterBag->all() as $name => $value) {
-            if ('.' === ($name[0] ?? '')) {
+            if ('.' === ($name[0] ?? '') && (!$this->preserveArrays || !\is_array($value))) {
                 $this->removedParameters[$name] = $value;
 
                 $parameterBag->remove($name);

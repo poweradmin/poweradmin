@@ -26,23 +26,18 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
  */
 class HttpUtils
 {
-    private ?UrlGeneratorInterface $urlGenerator;
-    private UrlMatcherInterface|RequestMatcherInterface|null $urlMatcher;
-    private ?string $domainRegexp;
-    private ?string $secureDomainRegexp;
-
     /**
      * @param $domainRegexp       A regexp the target of HTTP redirections must match, scheme included
      * @param $secureDomainRegexp A regexp the target of HTTP redirections must match when the scheme is "https"
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(?UrlGeneratorInterface $urlGenerator = null, UrlMatcherInterface|RequestMatcherInterface|null $urlMatcher = null, ?string $domainRegexp = null, ?string $secureDomainRegexp = null)
-    {
-        $this->urlGenerator = $urlGenerator;
-        $this->urlMatcher = $urlMatcher;
-        $this->domainRegexp = $domainRegexp;
-        $this->secureDomainRegexp = $secureDomainRegexp;
+    public function __construct(
+        private ?UrlGeneratorInterface $urlGenerator = null,
+        private UrlMatcherInterface|RequestMatcherInterface|null $urlMatcher = null,
+        private ?string $domainRegexp = null,
+        private ?string $secureDomainRegexp = null,
+    ) {
     }
 
     /**
@@ -73,9 +68,21 @@ class HttpUtils
         if ($trustedProxies = Request::getTrustedProxies()) {
             Request::setTrustedProxies([], Request::getTrustedHeaderSet());
         }
-        $newRequest = Request::create($this->generateUri($request, $path), 'get', [], $request->cookies->all(), [], $request->server->all());
-        if ($trustedProxies) {
-            Request::setTrustedProxies($trustedProxies, Request::getTrustedHeaderSet());
+
+        $context = $this->urlGenerator?->getContext();
+        if ($baseUrl = $context?->getBaseUrl()) {
+            $context->setBaseUrl('');
+        }
+
+        try {
+            $newRequest = Request::create($this->generateUri($request, $path), 'get', [], $request->cookies->all(), [], $request->server->all());
+        } finally {
+            if ($trustedProxies) {
+                Request::setTrustedProxies($trustedProxies, Request::getTrustedHeaderSet());
+            }
+            if ($baseUrl) {
+                $context->setBaseUrl($baseUrl);
+            }
         }
 
         static $setSession;
@@ -93,8 +100,8 @@ class HttpUtils
             $newRequest->attributes->set(SecurityRequestAttributes::LAST_USERNAME, $request->attributes->get(SecurityRequestAttributes::LAST_USERNAME));
         }
 
-        if ($request->get('_format')) {
-            $newRequest->attributes->set('_format', $request->get('_format'));
+        if ($request->attributes->has('_format')) {
+            $newRequest->attributes->set('_format', $request->attributes->get('_format'));
         }
         if ($request->getDefaultLocale() !== $request->getLocale()) {
             $newRequest->setLocale($request->getLocale());
@@ -127,9 +134,7 @@ class HttpUtils
                 }
 
                 return isset($parameters['_route']) && $path === $parameters['_route'];
-            } catch (MethodNotAllowedException) {
-                return false;
-            } catch (ResourceNotFoundException) {
+            } catch (MethodNotAllowedException|ResourceNotFoundException) {
                 return false;
             }
         }
