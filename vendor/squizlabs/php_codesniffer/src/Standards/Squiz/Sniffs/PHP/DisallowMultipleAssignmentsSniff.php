@@ -3,7 +3,8 @@
  * Ensures there is only one assignment on a line, and that it is the first thing on the line.
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
@@ -25,8 +26,7 @@ class DisallowMultipleAssignmentsSniff implements Sniff
     public function register()
     {
         return [T_EQUAL];
-
-    }//end register()
+    }
 
 
     /**
@@ -38,7 +38,7 @@ class DisallowMultipleAssignmentsSniff implements Sniff
      *
      * @return void
      */
-    public function process(File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, int $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
@@ -74,7 +74,7 @@ class DisallowMultipleAssignmentsSniff implements Sniff
             $conditions = $tokens[$stackPtr]['conditions'];
             end($conditions);
             $deepestScope = key($conditions);
-            if (isset(Tokens::$ooScopeTokens[$tokens[$deepestScope]['code']]) === true) {
+            if (isset(Tokens::OO_SCOPE_TOKENS[$tokens[$deepestScope]['code']]) === true) {
                 return;
             }
         }
@@ -105,7 +105,7 @@ class DisallowMultipleAssignmentsSniff implements Sniff
             }
 
             if ($tokens[$varToken]['code'] === T_VARIABLE) {
-                $prevNonEmpty = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($varToken - 1), null, true);
+                $prevNonEmpty = $phpcsFile->findPrevious(Tokens::EMPTY_TOKENS, ($varToken - 1), null, true);
                 if ($tokens[$prevNonEmpty]['code'] === T_OBJECT_OPERATOR) {
                     // Dynamic property access, the real "start" variable still needs to be found.
                     $varToken = $prevNonEmpty;
@@ -115,7 +115,7 @@ class DisallowMultipleAssignmentsSniff implements Sniff
                 // We found our variable.
                 break;
             }
-        }//end for
+        }
 
         if ($varToken <= 0) {
             // Didn't find a variable.
@@ -124,10 +124,9 @@ class DisallowMultipleAssignmentsSniff implements Sniff
 
         $start = $phpcsFile->findStartOfStatement($varToken);
 
-        $allowed = Tokens::$emptyTokens;
+        $allowed  = Tokens::EMPTY_TOKENS;
+        $allowed += Tokens::NAME_TOKENS;
 
-        $allowed[T_STRING]       = T_STRING;
-        $allowed[T_NS_SEPARATOR] = T_NS_SEPARATOR;
         $allowed[T_DOUBLE_COLON] = T_DOUBLE_COLON;
         $allowed[T_ASPERAND]     = T_ASPERAND;
         $allowed[T_DOLLAR]       = T_DOLLAR;
@@ -156,7 +155,7 @@ class DisallowMultipleAssignmentsSniff implements Sniff
 
         if ($tokens[$varToken]['code'] === T_VARIABLE
             || $tokens[$varToken]['code'] === T_OPEN_TAG
-            || $tokens[$varToken]['code'] === T_GOTO_LABEL
+            || $tokens[$varToken]['code'] === T_GOTO_COLON
             || $tokens[$varToken]['code'] === T_INLINE_THEN
             || $tokens[$varToken]['code'] === T_INLINE_ELSE
             || $tokens[$varToken]['code'] === T_SEMICOLON
@@ -174,7 +173,6 @@ class DisallowMultipleAssignmentsSniff implements Sniff
                 T_IF     => T_IF,
                 T_ELSEIF => T_ELSEIF,
                 T_SWITCH => T_SWITCH,
-                T_CASE   => T_CASE,
                 T_FOR    => T_FOR,
                 T_MATCH  => T_MATCH,
             ];
@@ -189,8 +187,5 @@ class DisallowMultipleAssignmentsSniff implements Sniff
         }
 
         $phpcsFile->addError($error, $stackPtr, $errorCode);
-
-    }//end process()
-
-
-}//end class
+    }
+}

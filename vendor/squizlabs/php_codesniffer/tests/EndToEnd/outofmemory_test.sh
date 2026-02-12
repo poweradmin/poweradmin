@@ -5,8 +5,8 @@ function tear_down() {
 }
 
 function test_phpcs_out_of_memory_error_handling() {
-  OUTPUT="$(bin/phpcs -d memory_limit=4M --standard=tests/EndToEnd/Fixtures/endtoend.xml.dist tests/EndToEnd/Fixtures/)"
-  # Exit code may be 255 or 139 depending on the PHP version, but the exact code is not our concern, just that it's non-zero.
+  OUTPUT="$( { bin/phpcs -d memory_limit=4M --standard=tests/EndToEnd/Fixtures/endtoend.xml.dist tests/EndToEnd/Fixtures/; } 2>&1)"
+  # The exact exit code is not our concern, just that it's non-zero.
   assert_unsuccessful_code
 
   assert_contains "The PHP_CodeSniffer \"phpcs\" command ran out of memory." "$OUTPUT"
@@ -15,8 +15,8 @@ function test_phpcs_out_of_memory_error_handling() {
 }
 
 function test_phpcbf_out_of_memory_error_handling() {
-  OUTPUT="$(bin/phpcbf -d memory_limit=4M --standard=tests/EndToEnd/Fixtures/endtoend.xml.dist tests/EndToEnd/Fixtures/ --suffix=.fixed)"
-  # Exit code may be 255 or 139 depending on the PHP version, but the exact code is not our concern, just that it's non-zero.
+  OUTPUT="$( { bin/phpcbf -d memory_limit=4M --standard=tests/EndToEnd/Fixtures/endtoend.xml.dist tests/EndToEnd/Fixtures/ --suffix=.fixed; } 2>&1)"
+  # The exact exit code is not our concern, just that it's non-zero.
   assert_unsuccessful_code
 
   assert_contains "The PHP_CodeSniffer \"phpcbf\" command ran out of memory." "$OUTPUT"

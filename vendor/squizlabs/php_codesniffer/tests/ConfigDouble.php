@@ -11,7 +11,7 @@
  * with the exception of select tests for the Config class itself.
  *
  * @author    Juliette Reinders Folmer <phpcs_nospam@adviesenzo.nl>
- * @copyright 2024 Juliette Reinders Folmer. All rights reserved.
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
@@ -56,7 +56,7 @@ final class ConfigDouble extends Config
      *
      * @return void
      */
-    public function __construct(array $cliArgs=[], $skipSettingStandard=false, $skipSettingReportWidth=false)
+    public function __construct(array $cliArgs = [], bool $skipSettingStandard = false, bool $skipSettingReportWidth = false)
     {
         $this->skipSettingStandard = $skipSettingStandard;
 
@@ -68,8 +68,7 @@ final class ConfigDouble extends Config
         if ($skipSettingReportWidth !== true) {
             $this->preventAutoDiscoveryScreenWidth();
         }
-
-    }//end __construct()
+    }
 
 
     /**
@@ -80,12 +79,10 @@ final class ConfigDouble extends Config
      */
     public function __destruct()
     {
-        $this->setStaticConfigProperty('overriddenDefaults', []);
         $this->setStaticConfigProperty('executablePaths', []);
         $this->setStaticConfigProperty('configData', null);
         $this->setStaticConfigProperty('configDataFile', null);
-
-    }//end __destruct()
+    }
 
 
     /**
@@ -102,21 +99,18 @@ final class ConfigDouble extends Config
         if ($this->skipSettingStandard !== true) {
             $this->preventSearchingForRuleset();
         }
-
-    }//end setCommandLineValues()
+    }
 
 
     /**
-     * Reset a few properties on the Config class to their default values.
+     * Reset select properties on the Config class to their default values.
      *
      * @return void
      */
     private function resetSelectProperties()
     {
-        $this->setStaticConfigProperty('overriddenDefaults', []);
         $this->setStaticConfigProperty('executablePaths', []);
-
-    }//end resetSelectProperties()
+    }
 
 
     /**
@@ -131,8 +125,7 @@ final class ConfigDouble extends Config
     {
         $this->setStaticConfigProperty('configData', []);
         $this->setStaticConfigProperty('configDataFile', '');
-
-    }//end preventReadingCodeSnifferConfFile()
+    }
 
 
     /**
@@ -155,8 +148,7 @@ final class ConfigDouble extends Config
         }
 
         self::setStaticConfigProperty('overriddenDefaults', $overriddenDefaults);
-
-    }//end preventSearchingForRuleset()
+    }
 
 
     /**
@@ -171,8 +163,7 @@ final class ConfigDouble extends Config
         if ($settings['reportWidth'] === 'auto') {
             $this->reportWidth = self::DEFAULT_REPORT_WIDTH;
         }
-
-    }//end preventAutoDiscoveryScreenWidth()
+    }
 
 
     /**
@@ -182,14 +173,17 @@ final class ConfigDouble extends Config
      *
      * @return mixed
      */
-    private function getStaticConfigProperty($name)
+    private function getStaticConfigProperty(string $name)
     {
-        $property = new ReflectionProperty('PHP_CodeSniffer\Config', $name);
+        $property = new ReflectionProperty(Config::class, $name);
         (PHP_VERSION_ID < 80100) && $property->setAccessible(true);
 
-        return $property->getValue();
+        if ($name === 'overriddenDefaults') {
+            return $property->getValue($this);
+        }
 
-    }//end getStaticConfigProperty()
+        return $property->getValue();
+    }
 
 
     /**
@@ -200,14 +194,17 @@ final class ConfigDouble extends Config
      *
      * @return void
      */
-    private function setStaticConfigProperty($name, $value)
+    private function setStaticConfigProperty(string $name, $value)
     {
-        $property = new ReflectionProperty('PHP_CodeSniffer\Config', $name);
+        $property = new ReflectionProperty(Config::class, $name);
         (PHP_VERSION_ID < 80100) && $property->setAccessible(true);
-        $property->setValue(null, $value);
+
+        if ($name === 'overriddenDefaults') {
+            $property->setValue($this, $value);
+        } else {
+            $property->setValue(null, $value);
+        }
+
         (PHP_VERSION_ID < 80100) && $property->setAccessible(false);
-
-    }//end setStaticConfigProperty()
-
-
-}//end class
+    }
+}

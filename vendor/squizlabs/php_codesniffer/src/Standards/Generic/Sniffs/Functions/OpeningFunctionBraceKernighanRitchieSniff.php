@@ -3,7 +3,8 @@
  * Checks that the opening brace of a function is on the same line as the function declaration.
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
@@ -42,8 +43,7 @@ class OpeningFunctionBraceKernighanRitchieSniff implements Sniff
             T_FUNCTION,
             T_CLOSURE,
         ];
-
-    }//end register()
+    }
 
 
     /**
@@ -55,7 +55,7 @@ class OpeningFunctionBraceKernighanRitchieSniff implements Sniff
      *
      * @return void
      */
-    public function process(File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, int $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
@@ -74,7 +74,7 @@ class OpeningFunctionBraceKernighanRitchieSniff implements Sniff
         $openingBrace = $tokens[$stackPtr]['scope_opener'];
 
         // Find the end of the function declaration.
-        $prev = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($openingBrace - 1), null, true);
+        $prev = $phpcsFile->findPrevious(Tokens::EMPTY_TOKENS, ($openingBrace - 1), null, true);
 
         $functionLine = $tokens[$prev]['line'];
         $braceLine    = $tokens[$openingBrace]['line'];
@@ -112,12 +112,12 @@ class OpeningFunctionBraceKernighanRitchieSniff implements Sniff
                 }
 
                 $phpcsFile->fixer->endChangeset();
-            }//end if
+            }
         } else {
             $phpcsFile->recordMetric($stackPtr, "$metricType opening brace placement", 'same line');
-        }//end if
+        }
 
-        $ignore   = Tokens::$phpcsCommentTokens;
+        $ignore   = Tokens::PHPCS_ANNOTATION_TOKENS;
         $ignore[] = T_WHITESPACE;
         $next     = $phpcsFile->findNext($ignore, ($openingBrace + 1), null, true);
         if ($tokens[$next]['line'] === $tokens[$openingBrace]['line']) {
@@ -142,7 +142,7 @@ class OpeningFunctionBraceKernighanRitchieSniff implements Sniff
         $spacing = $tokens[($openingBrace - 1)]['content'];
         if ($tokens[($openingBrace - 1)]['code'] !== T_WHITESPACE) {
             $length = 0;
-        } else if ($spacing === "\t") {
+        } elseif ($spacing === "\t") {
             // Tab without tab-width set, so no tab replacement has taken place.
             $length = '\t';
         } else {
@@ -170,8 +170,5 @@ class OpeningFunctionBraceKernighanRitchieSniff implements Sniff
                 }
             }
         }
-
-    }//end process()
-
-
-}//end class
+    }
+}

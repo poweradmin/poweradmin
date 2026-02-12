@@ -2,14 +2,25 @@
 /**
  * Timing functions for the run.
  *
+ * ---------------------------------------------------------------------------------------------
+ * This class is intended for internal use only and is not part of the public API.
+ * This also means that it has no promise of backward compatibility. Use at your own risk.
+ * ---------------------------------------------------------------------------------------------
+ *
+ * @internal
+ *
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @author    Juliette Reinders Folmer <phpcs_nospam@adviesenzo.nl>
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Util;
 
-class Timing
+use PHP_CodeSniffer\Util\Writers\StatusWriter;
+
+final class Timing
 {
 
     /**
@@ -17,17 +28,17 @@ class Timing
      *
      * @var int
      */
-    const MINUTE_IN_MS = 60000;
+    private const MINUTE_IN_MS = 60000;
 
     /**
      * Number of milliseconds in a second.
      *
      * @var int
      */
-    const SECOND_IN_MS = 1000;
+    private const SECOND_IN_MS = 1000;
 
     /**
-     * The start time of the run in microseconds.
+     * The start time of the run in seconds.
      *
      * @var float
      */
@@ -50,8 +61,7 @@ class Timing
     {
 
         self::$startTime = microtime(true);
-
-    }//end startTiming()
+    }
 
 
     /**
@@ -67,8 +77,20 @@ class Timing
         }
 
         return ((microtime(true) - self::$startTime) * 1000);
+    }
 
-    }//end getDuration()
+
+    /**
+     * Get the duration since a given start time up to "now".
+     *
+     * @param float $startTime Start time in microseconds.
+     *
+     * @return float Duration in milliseconds.
+     */
+    public static function getDurationSince(float $startTime)
+    {
+        return ((microtime(true) - $startTime) * 1000);
+    }
 
 
     /**
@@ -78,25 +100,24 @@ class Timing
      *
      * @return string
      */
-    public static function getHumanReadableDuration($duration)
+    public static function getHumanReadableDuration(float $duration)
     {
         $timeString = '';
         if ($duration >= self::MINUTE_IN_MS) {
             $mins       = floor($duration / self::MINUTE_IN_MS);
             $secs       = round((fmod($duration, self::MINUTE_IN_MS) / self::SECOND_IN_MS), 2);
-            $timeString = $mins.' mins';
+            $timeString = $mins . ' mins';
             if ($secs >= 0.01) {
                 $timeString .= ", $secs secs";
             }
-        } else if ($duration >= self::SECOND_IN_MS) {
-            $timeString = round(($duration / self::SECOND_IN_MS), 2).' secs';
+        } elseif ($duration >= self::SECOND_IN_MS) {
+            $timeString = round(($duration / self::SECOND_IN_MS), 2) . ' secs';
         } else {
-            $timeString = round($duration).'ms';
+            $timeString = round($duration) . 'ms';
         }
 
         return $timeString;
-
-    }//end getHumanReadableDuration()
+    }
 
 
     /**
@@ -107,7 +128,7 @@ class Timing
      *
      * @return void
      */
-    public static function printRunTime($force=false)
+    public static function printRunTime(bool $force = false)
     {
         if ($force === false && self::$printed === true) {
             // A double call.
@@ -122,12 +143,9 @@ class Timing
         $duration = self::getDuration();
         $duration = self::getHumanReadableDuration($duration);
 
-        $mem = round((memory_get_peak_usage(true) / (1024 * 1024)), 2).'MB';
-        echo "Time: $duration; Memory: $mem".PHP_EOL.PHP_EOL;
+        $mem = round((memory_get_peak_usage(true) / (1024 * 1024)), 2) . 'MB';
+        StatusWriter::write("Time: $duration; Memory: $mem");
 
         self::$printed = true;
-
-    }//end printRunTime()
-
-
-}//end class
+    }
+}

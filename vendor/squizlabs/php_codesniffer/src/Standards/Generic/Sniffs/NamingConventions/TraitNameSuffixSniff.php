@@ -23,8 +23,7 @@ class TraitNameSuffixSniff implements Sniff
     public function register()
     {
         return [T_TRAIT];
-
-    }//end register()
+    }
 
 
     /**
@@ -36,10 +35,10 @@ class TraitNameSuffixSniff implements Sniff
      *
      * @return void
      */
-    public function process(File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, int $stackPtr)
     {
         $traitName = $phpcsFile->getDeclarationName($stackPtr);
-        if ($traitName === null) {
+        if ($traitName === '') {
             // Live coding or parse error. Bow out.
             return;
         }
@@ -48,8 +47,5 @@ class TraitNameSuffixSniff implements Sniff
         if (strtolower($suffix) !== 'trait') {
             $phpcsFile->addError('Trait names must be suffixed with "Trait"; found "%s"', $stackPtr, 'Missing', [$traitName]);
         }
-
-    }//end process()
-
-
-}//end class
+    }
+}

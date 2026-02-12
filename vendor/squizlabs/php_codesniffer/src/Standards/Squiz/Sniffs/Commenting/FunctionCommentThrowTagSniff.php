@@ -3,7 +3,8 @@
  * Verifies that a @throws tag exists for each exception type a function throws.
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
@@ -25,8 +26,7 @@ class FunctionCommentThrowTagSniff implements Sniff
     public function register()
     {
         return [T_FUNCTION];
-
-    }//end register()
+    }
 
 
     /**
@@ -38,7 +38,7 @@ class FunctionCommentThrowTagSniff implements Sniff
      *
      * @return void
      */
-    public function process(File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, int $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
@@ -47,7 +47,7 @@ class FunctionCommentThrowTagSniff implements Sniff
             return;
         }
 
-        $ignore = Tokens::$methodPrefixes;
+        $ignore = Tokens::METHOD_MODIFIERS;
         $ignore[T_WHITESPACE] = T_WHITESPACE;
 
         for ($commentEnd = ($stackPtr - 1); $commentEnd >= 0; $commentEnd--) {
@@ -104,47 +104,33 @@ class FunctionCommentThrowTagSniff implements Sniff
                 don't know the exception class.
             */
 
-            $nextToken = $phpcsFile->findNext(Tokens::$emptyTokens, ($currPos + 1), null, true);
+            $nextToken = $phpcsFile->findNext(Tokens::EMPTY_TOKENS, ($currPos + 1), null, true);
             if ($tokens[$nextToken]['code'] === T_NEW
-                || $tokens[$nextToken]['code'] === T_NS_SEPARATOR
-                || $tokens[$nextToken]['code'] === T_STRING
+                || isset(Tokens::NAME_TOKENS[$tokens[$nextToken]['code']]) === true
             ) {
                 if ($tokens[$nextToken]['code'] === T_NEW) {
                     $currException = $phpcsFile->findNext(
-                        [
-                            T_NS_SEPARATOR,
-                            T_STRING,
-                        ],
-                        $currPos,
+                        Tokens::EMPTY_TOKENS,
+                        ($nextToken + 1),
                         $stackPtrEnd,
-                        false,
-                        null,
                         true
                     );
                 } else {
                     $currException = $nextToken;
                 }
 
-                if ($currException !== false) {
-                    $endException = $phpcsFile->findNext(
-                        [
-                            T_NS_SEPARATOR,
-                            T_STRING,
-                        ],
-                        ($currException + 1),
-                        $stackPtrEnd,
-                        true,
-                        null,
-                        true
-                    );
-
-                    if ($endException === false) {
-                        $thrownExceptions[] = $tokens[$currException]['content'];
+                if ($currException !== false
+                    && isset(Tokens::NAME_TOKENS[$tokens[$currException]['code']]) === true
+                ) {
+                    if ($tokens[$currException]['code'] === T_NAME_RELATIVE) {
+                        // Strip the `namespace\` prefix off the exception name
+                        // to prevent confusing the name comparison.
+                        $thrownExceptions[] = substr($tokens[$currException]['content'], 10);
                     } else {
-                        $thrownExceptions[] = $phpcsFile->getTokensAsString($currException, ($endException - $currException));
+                        $thrownExceptions[] = $tokens[$currException]['content'];
                     }
-                }//end if
-            } else if ($tokens[$nextToken]['code'] === T_VARIABLE) {
+                }
+            } elseif ($tokens[$nextToken]['code'] === T_VARIABLE) {
                 // Find the nearest catch block in this scope and, if the caught var
                 // matches our re-thrown var, use the exception types being caught as
                 // exception types that are being thrown as well.
@@ -173,7 +159,7 @@ class FunctionCommentThrowTagSniff implements Sniff
                 }
             } else {
                 ++$unknownCount;
-            }//end if
+            }
         } while ($currPos < $stackPtrEnd && $currPos !== false);
 
         if ($foundThrows === false) {
@@ -205,7 +191,7 @@ class FunctionCommentThrowTagSniff implements Sniff
             $error = 'Missing @throws tag in function comment';
             $phpcsFile->addError($error, $commentEnd, 'Missing');
             return;
-        } else if (empty($thrownExceptions) === true) {
+        } elseif (empty($thrownExceptions) === true) {
             // If token count is zero, it means that only variables are being
             // thrown, so we need at least one @throws tag (checked above).
             // Nothing more to do.
@@ -240,8 +226,5 @@ class FunctionCommentThrowTagSniff implements Sniff
             $data  = [$throw];
             $phpcsFile->addError($error, $commentEnd, 'Missing', $data);
         }
-
-    }//end process()
-
-
-}//end class
+    }
+}

@@ -3,7 +3,8 @@
  * Checks the separation between functions and methods.
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
@@ -53,8 +54,7 @@ class FunctionSpacingSniff implements Sniff
     public function register()
     {
         return [T_FUNCTION];
-
-    }//end register()
+    }
 
 
     /**
@@ -66,10 +66,10 @@ class FunctionSpacingSniff implements Sniff
      *
      * @return void
      */
-    public function process(File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, int $stackPtr)
     {
         $tokens           = $phpcsFile->getTokens();
-        $previousNonEmpty = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($stackPtr - 1), null, true);
+        $previousNonEmpty = $phpcsFile->findPrevious(Tokens::EMPTY_TOKENS, ($stackPtr - 1), null, true);
         if ($previousNonEmpty !== false
             && $tokens[$previousNonEmpty]['code'] === T_OPEN_TAG
             && $tokens[$previousNonEmpty]['line'] !== 1
@@ -112,7 +112,7 @@ class FunctionSpacingSniff implements Sniff
         $isFirst = false;
         $isLast  = false;
 
-        $ignore = ([T_WHITESPACE => T_WHITESPACE] + Tokens::$methodPrefixes);
+        $ignore = ([T_WHITESPACE => T_WHITESPACE] + Tokens::METHOD_MODIFIERS);
 
         $prev = $phpcsFile->findPrevious($ignore, ($stackPtr - 1), null, true);
 
@@ -156,7 +156,7 @@ class FunctionSpacingSniff implements Sniff
         }
 
         $next = $phpcsFile->findNext($ignore, ($closer + 1), null, true);
-        if (isset(Tokens::$emptyTokens[$tokens[$next]['code']]) === true
+        if (isset(Tokens::EMPTY_TOKENS[$tokens[$next]['code']]) === true
             && $tokens[$next]['line'] === $tokens[$closer]['line']
         ) {
             // Skip past "end" comments.
@@ -241,8 +241,8 @@ class FunctionSpacingSniff implements Sniff
                 }
 
                 $phpcsFile->fixer->endChangeset();
-            }//end if
-        }//end if
+            }
+        }
 
         /*
             Check the number of blank lines
@@ -270,7 +270,7 @@ class FunctionSpacingSniff implements Sniff
         } else {
             $firstBefore = $phpcsFile->findPrevious(T_WHITESPACE, ($startOfDeclarationLine - 1), null, true);
             if ($tokens[$firstBefore]['code'] === T_COMMENT
-                || isset(Tokens::$phpcsCommentTokens[$tokens[$firstBefore]['code']]) === true
+                || isset(Tokens::PHPCS_ANNOTATION_TOKENS[$tokens[$firstBefore]['code']]) === true
             ) {
                 // Ignore comments as they can have different spacing rules, and this
                 // isn't a proper function comment anyway.
@@ -313,8 +313,8 @@ class FunctionSpacingSniff implements Sniff
                 if ($currentLine === $prevLine) {
                     break;
                 }
-            }//end for
-        }//end if
+            }
+        }
 
         $requiredSpacing = $this->spacing;
         $errorCode       = 'Before';
@@ -366,11 +366,8 @@ class FunctionSpacingSniff implements Sniff
                     }
 
                     $phpcsFile->fixer->endChangeset();
-                }//end if
-            }//end if
-        }//end if
-
-    }//end process()
-
-
-}//end class
+                }
+            }
+        }
+    }
+}

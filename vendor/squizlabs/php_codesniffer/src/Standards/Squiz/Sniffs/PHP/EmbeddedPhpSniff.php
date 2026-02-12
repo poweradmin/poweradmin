@@ -3,7 +3,8 @@
  * Checks the indentation of embedded PHP code segments.
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
@@ -28,8 +29,7 @@ class EmbeddedPhpSniff implements Sniff
             T_OPEN_TAG,
             T_OPEN_TAG_WITH_ECHO,
         ];
-
-    }//end register()
+    }
 
 
     /**
@@ -41,7 +41,7 @@ class EmbeddedPhpSniff implements Sniff
      *
      * @return void
      */
-    public function process(File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, int $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
@@ -53,8 +53,7 @@ class EmbeddedPhpSniff implements Sniff
         } else {
             $this->validateInlineEmbeddedPhp($phpcsFile, $stackPtr, $closeTag);
         }
-
-    }//end process()
+    }
 
 
     /**
@@ -68,7 +67,7 @@ class EmbeddedPhpSniff implements Sniff
      *
      * @return void
      */
-    private function validateMultilineEmbeddedPhp($phpcsFile, $stackPtr, $closingTag)
+    private function validateMultilineEmbeddedPhp(File $phpcsFile, int $stackPtr, $closingTag)
     {
         $tokens = $phpcsFile->getTokens();
 
@@ -96,7 +95,7 @@ class EmbeddedPhpSniff implements Sniff
                 $this->reportEmptyTagSet($phpcsFile, $stackPtr, $closingTag);
                 return;
             }
-        }//end if
+        }
 
         if ($tokens[$firstContent]['line'] === $tokens[$stackPtr]['line']) {
             $error = 'Opening PHP tag must be on a line by itself';
@@ -144,7 +143,7 @@ class EmbeddedPhpSniff implements Sniff
 
                         $phpcsFile->fixer->endChangeset();
                     }
-                }//end if
+                }
 
                 $indent        = $this->calculateLineIndent($phpcsFile, $stackPtr);
                 $contentColumn = ($tokens[$firstContent]['column'] - 1);
@@ -164,8 +163,8 @@ class EmbeddedPhpSniff implements Sniff
                         }
                     }
                 }
-            }//end if
-        }//end if
+            }
+        }
 
         $lastContentBeforeBlock = $phpcsFile->findPrevious(T_WHITESPACE, ($stackPtr - 1), null, true);
         if ($tokens[$lastContentBeforeBlock]['line'] === $tokens[$stackPtr]['line']
@@ -180,7 +179,7 @@ class EmbeddedPhpSniff implements Sniff
                 $padding = $this->calculateLineIndent($phpcsFile, $lastContentBeforeBlock);
 
                 $phpcsFile->fixer->beginChangeset();
-                $phpcsFile->fixer->addContentBefore($stackPtr, $phpcsFile->eolChar.str_repeat(' ', $padding));
+                $phpcsFile->fixer->addContentBefore($stackPtr, $phpcsFile->eolChar . str_repeat(' ', $padding));
 
                 // Make sure we don't leave trailing whitespace behind.
                 if ($tokens[($stackPtr - 1)]['code'] === T_INLINE_HTML
@@ -190,13 +189,13 @@ class EmbeddedPhpSniff implements Sniff
                 }
 
                 $phpcsFile->fixer->endChangeset();
-            }//end if
+            }
         } else {
             // Find the first token on the first non-empty line we find.
             for ($first = ($lastContentBeforeBlock - 1); $first > 0; $first--) {
                 if ($tokens[$first]['line'] === $tokens[$stackPtr]['line']) {
                     continue;
-                } else if (trim($tokens[$first]['content']) !== '') {
+                } elseif (trim($tokens[$first]['content']) !== '') {
                     $first = $phpcsFile->findFirstOnLine([], $first, true);
                     break;
                 }
@@ -216,7 +215,7 @@ class EmbeddedPhpSniff implements Sniff
                     $phpcsFile->fixer->replaceToken(($stackPtr - 1), str_repeat(' ', $expected));
                 }
             }
-        }//end if
+        }
 
         if ($closingTag === false) {
             return;
@@ -250,8 +249,8 @@ class EmbeddedPhpSniff implements Sniff
                 $phpcsFile->fixer->addContentBefore($closingTag, str_repeat(' ', $closerIndent));
                 $phpcsFile->fixer->addNewlineBefore($closingTag);
                 $phpcsFile->fixer->endChangeset();
-            }//end if
-        } else if ($firstContentAfterBlock !== false
+            }
+        } elseif ($firstContentAfterBlock !== false
             && $tokens[$firstContentAfterBlock]['line'] === $tokens[$closingTag]['line']
         ) {
             $error = 'Closing PHP tag must be on a line by itself';
@@ -283,8 +282,8 @@ class EmbeddedPhpSniff implements Sniff
                 }
 
                 $phpcsFile->fixer->endChangeset();
-            }//end if
-        }//end if
+            }
+        }
 
         $next = $phpcsFile->findNext($this->register(), ($closingTag + 1));
         if ($next === false) {
@@ -292,7 +291,7 @@ class EmbeddedPhpSniff implements Sniff
         }
 
         // Check for a blank line at the bottom.
-        $lastNonEmpty = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($closingTag - 1), ($stackPtr + 1), true);
+        $lastNonEmpty = $phpcsFile->findPrevious(Tokens::EMPTY_TOKENS, ($closingTag - 1), ($stackPtr + 1), true);
         if ((isset($tokens[$lastNonEmpty]['scope_closer']) === false
             || $tokens[$lastNonEmpty]['scope_closer'] !== $lastNonEmpty)
             && $tokens[$lastContent]['line'] < ($tokens[$closingTag]['line'] - 1)
@@ -319,9 +318,8 @@ class EmbeddedPhpSniff implements Sniff
 
                 $phpcsFile->fixer->endChangeset();
             }
-        }//end if
-
-    }//end validateMultilineEmbeddedPhp()
+        }
+    }
 
 
     /**
@@ -335,7 +333,7 @@ class EmbeddedPhpSniff implements Sniff
      *
      * @return void
      */
-    private function validateInlineEmbeddedPhp($phpcsFile, $stackPtr, $closeTag)
+    private function validateInlineEmbeddedPhp(File $phpcsFile, int $stackPtr, int $closeTag)
     {
         $tokens = $phpcsFile->getTokens();
 
@@ -347,16 +345,7 @@ class EmbeddedPhpSniff implements Sniff
         }
 
         // Check that there is one, and only one space at the start of the statement.
-        $leadingSpace  = 0;
-        $isLongOpenTag = false;
-        if ($tokens[$stackPtr]['code'] === T_OPEN_TAG
-            && stripos($tokens[$stackPtr]['content'], '<?php') === 0
-        ) {
-            // The long open tag token in a single line tag set always contains a single space after it.
-            $leadingSpace  = 1;
-            $isLongOpenTag = true;
-        }
-
+        $leadingSpace = 0;
         if ($tokens[($stackPtr + 1)]['code'] === T_WHITESPACE) {
             $leadingSpace += $tokens[($stackPtr + 1)]['length'];
         }
@@ -366,19 +355,17 @@ class EmbeddedPhpSniff implements Sniff
             $data  = [$leadingSpace];
             $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'SpacingAfterOpen', $data);
             if ($fix === true) {
-                if ($isLongOpenTag === true) {
-                    $phpcsFile->fixer->replaceToken(($stackPtr + 1), '');
-                } else if ($tokens[($stackPtr + 1)]['code'] === T_WHITESPACE) {
-                    // Short open tag with too much whitespace.
+                if ($tokens[($stackPtr + 1)]['code'] === T_WHITESPACE) {
+                    // Open tag with too much whitespace.
                     $phpcsFile->fixer->replaceToken(($stackPtr + 1), ' ');
                 } else {
-                    // Short open tag without whitespace.
+                    // Open tag without whitespace.
                     $phpcsFile->fixer->addContent($stackPtr, ' ');
                 }
             }
         }
 
-        $prev = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($closeTag - 1), $stackPtr, true);
+        $prev = $phpcsFile->findPrevious(Tokens::EMPTY_TOKENS, ($closeTag - 1), $stackPtr, true);
         if ($prev !== $stackPtr) {
             if ((isset($tokens[$prev]['scope_opener']) === false
                 || $tokens[$prev]['scope_opener'] !== $prev)
@@ -396,7 +383,7 @@ class EmbeddedPhpSniff implements Sniff
                 if ($fix === true) {
                     $phpcsFile->fixer->addContent($prev, ';');
                 }
-            } else if ($tokens[$prev]['code'] === T_SEMICOLON) {
+            } elseif ($tokens[$prev]['code'] === T_SEMICOLON) {
                 $statementCount = 1;
                 for ($i = ($stackPtr + 1); $i < $prev; $i++) {
                     if ($tokens[$i]['code'] === T_SEMICOLON) {
@@ -409,14 +396,14 @@ class EmbeddedPhpSniff implements Sniff
                     $data  = [$statementCount];
                     $phpcsFile->addError($error, $stackPtr, 'MultipleStatements', $data);
                 }
-            }//end if
-        }//end if
+            }
+        }
 
         $trailingSpace = 0;
         if ($tokens[($closeTag - 1)]['code'] === T_WHITESPACE) {
             $trailingSpace = $tokens[($closeTag - 1)]['length'];
-        } else if (($tokens[($closeTag - 1)]['code'] === T_COMMENT
-            || isset(Tokens::$phpcsCommentTokens[$tokens[($closeTag - 1)]['code']]) === true)
+        } elseif (($tokens[($closeTag - 1)]['code'] === T_COMMENT
+            || isset(Tokens::PHPCS_ANNOTATION_TOKENS[$tokens[($closeTag - 1)]['code']]) === true)
             && substr($tokens[($closeTag - 1)]['content'], -1) === ' '
         ) {
             $trailingSpace = (strlen($tokens[($closeTag - 1)]['content']) - strlen(rtrim($tokens[($closeTag - 1)]['content'])));
@@ -429,17 +416,16 @@ class EmbeddedPhpSniff implements Sniff
             if ($fix === true) {
                 if ($trailingSpace === 0) {
                     $phpcsFile->fixer->addContentBefore($closeTag, ' ');
-                } else if ($tokens[($closeTag - 1)]['code'] === T_COMMENT
-                    || isset(Tokens::$phpcsCommentTokens[$tokens[($closeTag - 1)]['code']]) === true
+                } elseif ($tokens[($closeTag - 1)]['code'] === T_COMMENT
+                    || isset(Tokens::PHPCS_ANNOTATION_TOKENS[$tokens[($closeTag - 1)]['code']]) === true
                 ) {
-                    $phpcsFile->fixer->replaceToken(($closeTag - 1), rtrim($tokens[($closeTag - 1)]['content']).' ');
+                    $phpcsFile->fixer->replaceToken(($closeTag - 1), rtrim($tokens[($closeTag - 1)]['content']) . ' ');
                 } else {
                     $phpcsFile->fixer->replaceToken(($closeTag - 1), ' ');
                 }
             }
         }
-
-    }//end validateInlineEmbeddedPhp()
+    }
 
 
     /**
@@ -453,7 +439,7 @@ class EmbeddedPhpSniff implements Sniff
      *
      * @return void
      */
-    private function reportEmptyTagSet(File $phpcsFile, $stackPtr, $closeTag)
+    private function reportEmptyTagSet(File $phpcsFile, int $stackPtr, int $closeTag)
     {
         $tokens = $phpcsFile->getTokens();
         $error  = 'Empty embedded PHP tag found';
@@ -477,8 +463,7 @@ class EmbeddedPhpSniff implements Sniff
 
             $phpcsFile->fixer->endChangeset();
         }
-
-    }//end reportEmptyTagSet()
+    }
 
 
     /**
@@ -490,7 +475,7 @@ class EmbeddedPhpSniff implements Sniff
      *
      * @return int
      */
-    private function calculateLineIndent(File $phpcsFile, $stackPtr)
+    private function calculateLineIndent(File $phpcsFile, int $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
@@ -507,18 +492,15 @@ class EmbeddedPhpSniff implements Sniff
         $indent = 0;
         if ($tokens[$firstOnLine]['code'] === T_WHITESPACE) {
             $indent = ($tokens[($firstOnLine + 1)]['column'] - 1);
-        } else if ($tokens[$firstOnLine]['code'] === T_INLINE_HTML
+        } elseif ($tokens[$firstOnLine]['code'] === T_INLINE_HTML
             || $tokens[$firstOnLine]['code'] === T_END_HEREDOC
             || $tokens[$firstOnLine]['code'] === T_END_NOWDOC
         ) {
             $indent = (strlen($tokens[$firstOnLine]['content']) - strlen(ltrim($tokens[$firstOnLine]['content'])));
-        } else if ($tokens[$firstOnLine]['code'] === T_DOC_COMMENT_WHITESPACE) {
+        } elseif ($tokens[$firstOnLine]['code'] === T_DOC_COMMENT_WHITESPACE) {
             $indent = (strlen($tokens[$firstOnLine]['content']) - strlen(ltrim($tokens[$firstOnLine]['content'])) - 1);
         }
 
         return $indent;
-
-    }//end calculateLineIndent()
-
-
-}//end class
+    }
+}

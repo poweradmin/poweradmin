@@ -6,15 +6,14 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @author    Juliette Reinders Folmer <phpcs_nospam@adviesenzo.nl>
- * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @copyright 2024 PHPCSStandards and contributors
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Generators;
 
 use DOMElement;
-use DOMNode;
 
 class Text extends Generator
 {
@@ -23,19 +22,19 @@ class Text extends Generator
     /**
      * Process the documentation for a single sniff.
      *
-     * @param \DOMNode $doc The DOMNode object for the sniff.
-     *                      It represents the "documentation" tag in the XML
-     *                      standard file.
+     * @param \DOMElement $doc The DOMElement object for the sniff.
+     *                         It represents the "documentation" tag in the XML
+     *                         standard file.
      *
      * @return void
      */
-    public function processSniff(DOMNode $doc)
+    public function processSniff(DOMElement $doc)
     {
         $content = '';
         foreach ($doc->childNodes as $node) {
             if ($node->nodeName === 'standard') {
                 $content .= $this->getFormattedTextBlock($node);
-            } else if ($node->nodeName === 'code_comparison') {
+            } elseif ($node->nodeName === 'code_comparison') {
                 $content .= $this->getFormattedCodeComparisonBlock($node);
             }
         }
@@ -43,47 +42,22 @@ class Text extends Generator
         if (trim($content) !== '') {
             echo $this->getFormattedTitle($doc), $content;
         }
-
-    }//end processSniff()
-
-
-    /**
-     * Prints the title area for a single sniff.
-     *
-     * @param \DOMNode $doc The DOMNode object for the sniff.
-     *                      It represents the "documentation" tag in the XML
-     *                      standard file.
-     *
-     * @deprecated 3.12.0 Use Text::getFormattedTitle() instead.
-     *
-     * @codeCoverageIgnore
-     *
-     * @return void
-     */
-    protected function printTitle(DOMNode $doc)
-    {
-        trigger_error(
-            'The '.__METHOD__.'() method is deprecated. Use "echo '.__CLASS__.'::getFormattedTitle()" instead.',
-            E_USER_DEPRECATED
-        );
-
-        echo $this->getFormattedTitle($doc);
-
-    }//end printTitle()
+    }
 
 
     /**
      * Format the title area for a single sniff.
      *
-     * @param \DOMNode $doc The DOMNode object for the sniff.
-     *                      It represents the "documentation" tag in the XML
-     *                      standard file.
+     * @param \DOMElement $doc The DOMElement object for the sniff.
+     *                         It represents the "documentation" tag in the XML
+     *                         standard file.
      *
-     * @since 3.12.0 Replaces the deprecated Text::printTitle() method.
+     * @since 3.12.0 Replaces the Text::printTitle() method,
+     *               which was deprecated in 3.12.0 and removed in 4.0.0.
      *
      * @return string
      */
-    protected function getFormattedTitle(DOMNode $doc)
+    protected function getFormattedTitle(DOMElement $doc)
     {
         $title        = $this->getTitle($doc);
         $standard     = $this->ruleset->name;
@@ -92,48 +66,25 @@ class Text extends Generator
 
         $output  = PHP_EOL;
         $output .= str_repeat('-', ($titleLength + 4));
-        $output .= strtoupper(PHP_EOL."| $displayTitle |".PHP_EOL);
+        $output .= strtoupper(PHP_EOL . "| $displayTitle |" . PHP_EOL);
         $output .= str_repeat('-', ($titleLength + 4));
-        $output .= PHP_EOL.PHP_EOL;
+        $output .= PHP_EOL . PHP_EOL;
 
         return $output;
-
-    }//end getFormattedTitle()
-
-
-    /**
-     * Print a text block found in a standard.
-     *
-     * @param \DOMNode $node The DOMNode object for the text block.
-     *
-     * @deprecated 3.12.0 Use Text::getFormattedTextBlock() instead.
-     *
-     * @codeCoverageIgnore
-     *
-     * @return void
-     */
-    protected function printTextBlock(DOMNode $node)
-    {
-        trigger_error(
-            'The '.__METHOD__.'() method is deprecated. Use "echo '.__CLASS__.'::getFormattedTextBlock()" instead.',
-            E_USER_DEPRECATED
-        );
-
-        echo $this->getFormattedTextBlock($node);
-
-    }//end printTextBlock()
+    }
 
 
     /**
      * Format a text block found in a standard.
      *
-     * @param \DOMNode $node The DOMNode object for the text block.
+     * @param \DOMElement $node The DOMElement object for the text block.
      *
-     * @since 3.12.0 Replaces the deprecated Text::printTextBlock() method.
+     * @since 3.12.0 Replaces the Text::printTextBlock() method,
+     *               which was deprecated in 3.12.0 and removed in 4.0.0.
      *
      * @return string
      */
-    protected function getFormattedTextBlock(DOMNode $node)
+    protected function getFormattedTextBlock(DOMElement $node)
     {
         $text = $node->nodeValue;
         if (empty($text) === true) {
@@ -147,44 +98,21 @@ class Text extends Generator
         $nodeLines = array_map('trim', $nodeLines);
         $text      = implode(PHP_EOL, $nodeLines);
 
-        return wordwrap($text, 100, PHP_EOL).PHP_EOL.PHP_EOL;
-
-    }//end getFormattedTextBlock()
-
-
-    /**
-     * Print a code comparison block found in a standard.
-     *
-     * @param \DOMNode $node The DOMNode object for the code comparison block.
-     *
-     * @deprecated 3.12.0 Use Text::getFormattedCodeComparisonBlock() instead.
-     *
-     * @codeCoverageIgnore
-     *
-     * @return void
-     */
-    protected function printCodeComparisonBlock(DOMNode $node)
-    {
-        trigger_error(
-            'The '.__METHOD__.'() method is deprecated. Use "echo '.__CLASS__.'::getFormattedCodeComparisonBlock()" instead.',
-            E_USER_DEPRECATED
-        );
-
-        echo $this->getFormattedCodeComparisonBlock($node);
-
-    }//end printCodeComparisonBlock()
+        return wordwrap($text, 100, PHP_EOL) . PHP_EOL . PHP_EOL;
+    }
 
 
     /**
      * Format a code comparison block found in a standard.
      *
-     * @param \DOMNode $node The DOMNode object for the code comparison block.
+     * @param \DOMElement $node The DOMElement object for the code comparison block.
      *
-     * @since 3.12.0 Replaces the deprecated Text::printCodeComparisonBlock() method.
+     * @since 3.12.0 Replaces the Text::printCodeComparisonBlock() method,
+     *               which was deprecated in 3.12.0 and removed in 4.0.0.
      *
      * @return string
      */
-    protected function getFormattedCodeComparisonBlock(DOMNode $node)
+    protected function getFormattedCodeComparisonBlock(DOMElement $node)
     {
         $codeBlocks    = $node->getElementsByTagName('code');
         $firstCodeElm  = $codeBlocks->item(0);
@@ -204,27 +132,26 @@ class Text extends Generator
         $titleRow = '';
         if ($firstTitleLines !== [] || $secondTitleLines !== []) {
             $titleRow  = $this->linesToTableRows($firstTitleLines, $secondTitleLines);
-            $titleRow .= str_repeat('-', 100).PHP_EOL;
-        }//end if
+            $titleRow .= str_repeat('-', 100) . PHP_EOL;
+        }
 
         $codeRow = '';
         if ($firstLines !== [] || $secondLines !== []) {
             $codeRow  = $this->linesToTableRows($firstLines, $secondLines);
-            $codeRow .= str_repeat('-', 100).PHP_EOL.PHP_EOL;
-        }//end if
+            $codeRow .= str_repeat('-', 100) . PHP_EOL . PHP_EOL;
+        }
 
         $output = '';
         if ($titleRow !== '' || $codeRow !== '') {
             $output  = str_repeat('-', 41);
             $output .= ' CODE COMPARISON ';
-            $output .= str_repeat('-', 42).PHP_EOL;
+            $output .= str_repeat('-', 42) . PHP_EOL;
             $output .= $titleRow;
             $output .= $codeRow;
         }
 
         return $output;
-
-    }//end getFormattedCodeComparisonBlock()
+    }
 
 
     /**
@@ -246,8 +173,7 @@ class Text extends Generator
         $title = wordwrap($title, 46, "\n");
 
         return explode("\n", $title);
-
-    }//end codeTitleToLines()
+    }
 
 
     /**
@@ -268,8 +194,7 @@ class Text extends Generator
 
         $code = str_replace(['<em>', '</em>'], '', $code);
         return explode("\n", $code);
-
-    }//end codeToLines()
+    }
 
 
     /**
@@ -288,26 +213,16 @@ class Text extends Generator
 
         $rows = '';
         for ($i = 0; $i < $maxLines; $i++) {
-            $column1Text = '';
-            if (isset($column1Lines[$i]) === true) {
-                $column1Text = $column1Lines[$i];
-            }
-
-            $column2Text = '';
-            if (isset($column2Lines[$i]) === true) {
-                $column2Text = $column2Lines[$i];
-            }
+            $column1Text = ($column1Lines[$i] ?? '');
+            $column2Text = ($column2Lines[$i] ?? '');
 
             $rows .= '| ';
-            $rows .= $column1Text.str_repeat(' ', max(0, (47 - strlen($column1Text))));
+            $rows .= $column1Text . str_repeat(' ', max(0, (47 - strlen($column1Text))));
             $rows .= '| ';
-            $rows .= $column2Text.str_repeat(' ', max(0, (48 - strlen($column2Text))));
-            $rows .= '|'.PHP_EOL;
-        }//end for
+            $rows .= $column2Text . str_repeat(' ', max(0, (48 - strlen($column2Text))));
+            $rows .= '|' . PHP_EOL;
+        }
 
         return $rows;
-
-    }//end linesToTableRows()
-
-
-}//end class
+    }
+}

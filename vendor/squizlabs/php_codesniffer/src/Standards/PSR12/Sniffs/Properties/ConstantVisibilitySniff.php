@@ -3,7 +3,8 @@
  * Verifies that all class constants have their visibility set.
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006-2019 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
@@ -16,6 +17,17 @@ use PHP_CodeSniffer\Util\Tokens;
 class ConstantVisibilitySniff implements Sniff
 {
 
+    /**
+     * Visibility tokens which are valid for class constants.
+     *
+     * @var array<int, int>
+     */
+    private const VALID_VISIBILITY = [
+        T_PRIVATE   => T_PRIVATE,
+        T_PUBLIC    => T_PUBLIC,
+        T_PROTECTED => T_PROTECTED,
+    ];
+
 
     /**
      * Returns an array of tokens this test wants to listen for.
@@ -25,8 +37,7 @@ class ConstantVisibilitySniff implements Sniff
     public function register()
     {
         return [T_CONST];
-
-    }//end register()
+    }
 
 
     /**
@@ -38,33 +49,24 @@ class ConstantVisibilitySniff implements Sniff
      *
      * @return void
      */
-    public function process(File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, int $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
         // Make sure this is a class constant.
-        if ($phpcsFile->hasCondition($stackPtr, Tokens::$ooScopeTokens) === false) {
+        if ($phpcsFile->hasCondition($stackPtr, Tokens::OO_SCOPE_TOKENS) === false) {
             return;
         }
 
-        $ignore   = Tokens::$emptyTokens;
+        $ignore   = Tokens::EMPTY_TOKENS;
         $ignore[] = T_FINAL;
 
-        $validVisibility = [
-            T_PRIVATE   => T_PRIVATE,
-            T_PUBLIC    => T_PUBLIC,
-            T_PROTECTED => T_PROTECTED,
-        ];
-
         $prev = $phpcsFile->findPrevious($ignore, ($stackPtr - 1), null, true);
-        if (isset($validVisibility[$tokens[$prev]['code']]) === true) {
+        if (isset(self::VALID_VISIBILITY[$tokens[$prev]['code']]) === true) {
             return;
         }
 
         $error = 'Visibility must be declared on all constants if your project supports PHP 7.1 or later';
         $phpcsFile->addWarning($error, $stackPtr, 'NotFound');
-
-    }//end process()
-
-
-}//end class
+    }
+}

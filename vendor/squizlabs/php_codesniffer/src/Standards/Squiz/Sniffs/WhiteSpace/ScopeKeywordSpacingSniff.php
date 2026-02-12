@@ -3,7 +3,8 @@
  * Ensure there is a single space after scope keywords.
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
@@ -24,12 +25,11 @@ class ScopeKeywordSpacingSniff implements Sniff
      */
     public function register()
     {
-        $register  = Tokens::$methodPrefixes;
-        $register += Tokens::$scopeModifiers;
+        $register  = Tokens::METHOD_MODIFIERS;
+        $register += Tokens::SCOPE_MODIFIERS;
         $register[T_READONLY] = T_READONLY;
         return $register;
-
-    }//end register()
+    }
 
 
     /**
@@ -41,7 +41,7 @@ class ScopeKeywordSpacingSniff implements Sniff
      *
      * @return void
      */
-    public function process(File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, int $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
@@ -51,12 +51,13 @@ class ScopeKeywordSpacingSniff implements Sniff
             return;
         }
 
-        $prevToken = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($stackPtr - 1), null, true);
-        $nextToken = $phpcsFile->findNext(Tokens::$emptyTokens, ($stackPtr + 1), null, true);
+        $prevToken = $phpcsFile->findPrevious(Tokens::EMPTY_TOKENS, ($stackPtr - 1), null, true);
+        $nextToken = $phpcsFile->findNext(Tokens::EMPTY_TOKENS, ($stackPtr + 1), null, true);
 
         if ($tokens[$stackPtr]['code'] === T_STATIC) {
             if (($nextToken === false || $tokens[$nextToken]['code'] === T_DOUBLE_COLON)
                 || $tokens[$prevToken]['code'] === T_NEW
+                || $tokens[$prevToken]['code'] === T_INSTANCEOF
             ) {
                 // Late static binding, e.g., static:: OR new static() usage or live coding.
                 return;
@@ -79,7 +80,7 @@ class ScopeKeywordSpacingSniff implements Sniff
             if ($prevToken !== false
                 && $tokens[$prevToken]['code'] === T_COLON
             ) {
-                $prevPrevToken = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($prevToken - 1), null, true);
+                $prevPrevToken = $phpcsFile->findPrevious(Tokens::EMPTY_TOKENS, ($prevToken - 1), null, true);
                 if ($prevPrevToken !== false
                     && $tokens[$prevPrevToken]['code'] === T_CLOSE_PARENTHESIS
                 ) {
@@ -87,7 +88,7 @@ class ScopeKeywordSpacingSniff implements Sniff
                     return;
                 }
             }
-        }//end if
+        }
 
         if ($tokens[$prevToken]['code'] === T_AS) {
             // Trait visibility change, e.g., "use HelloWorld { sayHello as private; }".
@@ -162,10 +163,7 @@ class ScopeKeywordSpacingSniff implements Sniff
                     $phpcsFile->fixer->replaceToken(($stackPtr + 1), ' ');
                     $phpcsFile->fixer->endChangeset();
                 }
-            }//end if
-        }//end if
-
-    }//end process()
-
-
-}//end class
+            }
+        }
+    }
+}

@@ -7,16 +7,18 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @author    Juliette Reinders Folmer <phpcs_nospam@adviesenzo.nl>
- * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @copyright 2024 PHPCSStandards and contributors
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
 namespace PHP_CodeSniffer\Generators;
 
 use DOMDocument;
+use DOMElement;
 use DOMNode;
 use PHP_CodeSniffer\Autoload;
+use PHP_CodeSniffer\Exceptions\GeneratorException;
 use PHP_CodeSniffer\Ruleset;
 
 abstract class Generator
@@ -49,11 +51,11 @@ abstract class Generator
         $this->ruleset = $ruleset;
 
         $find    = [
-            DIRECTORY_SEPARATOR.'Sniffs'.DIRECTORY_SEPARATOR,
+            DIRECTORY_SEPARATOR . 'Sniffs' . DIRECTORY_SEPARATOR,
             'Sniff.php',
         ];
         $replace = [
-            DIRECTORY_SEPARATOR.'Docs'.DIRECTORY_SEPARATOR,
+            DIRECTORY_SEPARATOR . 'Docs' . DIRECTORY_SEPARATOR,
             'Standard.xml',
         ];
 
@@ -68,20 +70,19 @@ abstract class Generator
 
         // Always present the docs in a consistent alphabetical order.
         sort($this->docFiles, (SORT_NATURAL | SORT_FLAG_CASE));
-
-    }//end __construct()
+    }
 
 
     /**
-     * Retrieves the title of the sniff from the DOMNode supplied.
+     * Retrieves the title of the sniff from the DOMElement supplied.
      *
-     * @param \DOMNode $doc The DOMNode object for the sniff.
-     *                      It represents the "documentation" tag in the XML
-     *                      standard file.
+     * @param \DOMElement $doc The DOMElement object for the sniff.
+     *                         It represents the "documentation" tag in the XML
+     *                         standard file.
      *
      * @return string
      */
-    protected function getTitle(DOMNode $doc)
+    protected function getTitle(DOMElement $doc)
     {
         $title = $doc->getAttribute('title');
 
@@ -99,8 +100,7 @@ abstract class Generator
         }
 
         return $title;
-
-    }//end getTitle()
+    }
 
 
     /**
@@ -112,6 +112,9 @@ abstract class Generator
      *
      * @return void
      * @see    processSniff()
+     *
+     * @throws \PHP_CodeSniffer\Exceptions\GeneratorException If there is no <documentation> element
+     *                                                        in the XML document.
      */
     public function generate()
     {
@@ -119,10 +122,15 @@ abstract class Generator
             $doc = new DOMDocument();
             $doc->load($file);
             $documentation = $doc->getElementsByTagName('documentation')->item(0);
+            if (($documentation instanceof DOMNode) === false) {
+                throw new GeneratorException(
+                    'Missing top-level <documentation> element in XML documentation file ' . $file
+                );
+            }
+
             $this->processSniff($documentation);
         }
-
-    }//end generate()
+    }
 
 
     /**
@@ -130,14 +138,12 @@ abstract class Generator
      *
      * Doc generators must implement this function to produce output.
      *
-     * @param \DOMNode $doc The DOMNode object for the sniff.
-     *                      It represents the "documentation" tag in the XML
-     *                      standard file.
+     * @param \DOMElement $doc The DOMElement object for the sniff.
+     *                         It represents the "documentation" tag in the XML
+     *                         standard file.
      *
      * @return void
      * @see    generate()
      */
-    abstract protected function processSniff(DOMNode $doc);
-
-
-}//end class
+    abstract protected function processSniff(DOMElement $doc);
+}

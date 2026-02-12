@@ -3,7 +3,8 @@
  * Tests that the file name and the name of the class contained within the file match.
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
@@ -24,12 +25,11 @@ class ClassFileNameSniff implements Sniff
      */
     public function register()
     {
-        $targets = Tokens::$ooScopeTokens;
+        $targets = Tokens::OO_SCOPE_TOKENS;
         unset($targets[T_ANON_CLASS]);
 
         return $targets;
-
-    }//end register()
+    }
 
 
     /**
@@ -42,7 +42,7 @@ class ClassFileNameSniff implements Sniff
      * @return int|void Integer stack pointer to skip forward or void to continue
      *                  normal file processing.
      */
-    public function process(File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, int $stackPtr)
     {
         $fullPath = $phpcsFile->getFilename();
         if ($fullPath === 'STDIN') {
@@ -55,7 +55,7 @@ class ClassFileNameSniff implements Sniff
 
         $tokens = $phpcsFile->getTokens();
         $ooName = $phpcsFile->getDeclarationName($stackPtr);
-        if ($ooName === null) {
+        if ($ooName === '') {
             // Probably parse error/live coding.
             return;
         }
@@ -64,12 +64,9 @@ class ClassFileNameSniff implements Sniff
             $error = 'Filename doesn\'t match %s name; expected file name "%s"';
             $data  = [
                 $tokens[$stackPtr]['content'],
-                $ooName.'.'.$extension,
+                $ooName . '.' . $extension,
             ];
             $phpcsFile->addError($error, $stackPtr, 'NoMatch', $data);
         }
-
-    }//end process()
-
-
-}//end class
+    }
+}

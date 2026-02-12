@@ -3,7 +3,8 @@
  * Verifies that properties are declared correctly.
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
- * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
@@ -11,11 +12,21 @@ namespace PHP_CodeSniffer\Standards\PSR2\Sniffs\Classes;
 
 use Exception;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\AbstractScopeSniff;
 use PHP_CodeSniffer\Sniffs\AbstractVariableSniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class PropertyDeclarationSniff extends AbstractVariableSniff
 {
+
+
+    /**
+     * Only listen to variables within OO scopes.
+     */
+    public function __construct()
+    {
+        AbstractScopeSniff::__construct(Tokens::OO_SCOPE_TOKENS, [T_VARIABLE], false);
+    }
 
 
     /**
@@ -26,8 +37,15 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
      *
      * @return void
      */
-    protected function processMemberVar(File $phpcsFile, $stackPtr)
+    protected function processMemberVar(File $phpcsFile, int $stackPtr)
     {
+        try {
+            $propertyInfo = $phpcsFile->getMemberProperties($stackPtr);
+        } catch (Exception $e) {
+            // Parse error: property in enum. Ignore.
+            return;
+        }
+
         $tokens = $phpcsFile->getTokens();
 
         if ($tokens[$stackPtr]['content'][1] === '_') {
@@ -39,7 +57,7 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
         // Detect multiple properties defined at the same time. Throw an error
         // for this, but also only process the first property in the list so we don't
         // repeat errors.
-        $find   = Tokens::$scopeModifiers;
+        $find   = Tokens::SCOPE_MODIFIERS;
         $find[] = T_VARIABLE;
         $find[] = T_VAR;
         $find[] = T_READONLY;
@@ -64,16 +82,6 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
             $phpcsFile->addError($error, $stackPtr, 'Multiple');
         }
 
-        try {
-            $propertyInfo = $phpcsFile->getMemberProperties($stackPtr);
-            if (empty($propertyInfo) === true) {
-                return;
-            }
-        } catch (Exception $e) {
-            // Turns out not to be a property after all.
-            return;
-        }
-
         if ($propertyInfo['type'] !== '') {
             $typeToken = $propertyInfo['type_end_token'];
             $error     = 'There must be 1 space after the property type declaration; %s found';
@@ -83,7 +91,7 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
                 if ($fix === true) {
                     $phpcsFile->fixer->addContent($typeToken, ' ');
                 }
-            } else if ($tokens[($typeToken + 1)]['content'] !== ' ') {
+            } elseif ($tokens[($typeToken + 1)]['content'] !== ' ') {
                 $next = $phpcsFile->findNext(T_WHITESPACE, ($typeToken + 1), null, true);
                 if ($tokens[$next]['line'] !== $tokens[$typeToken]['line']) {
                     $found = 'newline';
@@ -93,7 +101,7 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
 
                 $data = [$found];
 
-                $nextNonWs = $phpcsFile->findNext(Tokens::$emptyTokens, ($typeToken + 1), null, true);
+                $nextNonWs = $phpcsFile->findNext(Tokens::EMPTY_TOKENS, ($typeToken + 1), null, true);
                 if ($nextNonWs !== $next) {
                     $phpcsFile->addError($error, $typeToken, 'SpacingAfterType', $data);
                 } else {
@@ -112,8 +120,8 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
                         }
                     }
                 }
-            }//end if
-        }//end if
+            }
+        }
 
         if ($propertyInfo['scope_specified'] === false && $propertyInfo['set_scope'] === false) {
             $error = 'Visibility must be declared on property "%s"';
@@ -141,7 +149,7 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
          */
 
         $hasVisibilityModifier   = ($propertyInfo['scope_specified'] === true || $propertyInfo['set_scope'] !== false);
-        $lastVisibilityModifier  = $phpcsFile->findPrevious(Tokens::$scopeModifiers, ($stackPtr - 1));
+        $lastVisibilityModifier  = $phpcsFile->findPrevious(Tokens::SCOPE_MODIFIERS, ($stackPtr - 1));
         $firstVisibilityModifier = $lastVisibilityModifier;
 
         if ($propertyInfo['scope_specified'] === true && $propertyInfo['set_scope'] !== false) {
@@ -162,14 +170,14 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
                     }
 
                     $phpcsFile->fixer->replaceToken($scopePtr, '');
-                    $phpcsFile->fixer->addContentBefore($setScopePtr, $tokens[$scopePtr]['content'].' ');
+                    $phpcsFile->fixer->addContentBefore($setScopePtr, $tokens[$scopePtr]['content'] . ' ');
 
                     $phpcsFile->fixer->endChangeset();
                 }
             }
 
             $firstVisibilityModifier = min($scopePtr, $setScopePtr);
-        }//end if
+        }
 
         if ($hasVisibilityModifier === true && $propertyInfo['is_final'] === true) {
             $scopePtr = $firstVisibilityModifier;
@@ -189,12 +197,12 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
                     }
 
                     $phpcsFile->fixer->replaceToken($finalPtr, '');
-                    $phpcsFile->fixer->addContentBefore($scopePtr, $tokens[$finalPtr]['content'].' ');
+                    $phpcsFile->fixer->addContentBefore($scopePtr, $tokens[$finalPtr]['content'] . ' ');
 
                     $phpcsFile->fixer->endChangeset();
                 }
             }
-        }//end if
+        }
 
         if ($hasVisibilityModifier === true && $propertyInfo['is_abstract'] === true) {
             $scopePtr    = $firstVisibilityModifier;
@@ -214,12 +222,12 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
                     }
 
                     $phpcsFile->fixer->replaceToken($abstractPtr, '');
-                    $phpcsFile->fixer->addContentBefore($scopePtr, $tokens[$abstractPtr]['content'].' ');
+                    $phpcsFile->fixer->addContentBefore($scopePtr, $tokens[$abstractPtr]['content'] . ' ');
 
                     $phpcsFile->fixer->endChangeset();
                 }
             }
-        }//end if
+        }
 
         if ($hasVisibilityModifier === true && $propertyInfo['is_static'] === true) {
             $scopePtr  = $lastVisibilityModifier;
@@ -239,12 +247,12 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
                     }
 
                     $phpcsFile->fixer->replaceToken($staticPtr, '');
-                    $phpcsFile->fixer->addContent($scopePtr, ' '.$tokens[$staticPtr]['content']);
+                    $phpcsFile->fixer->addContent($scopePtr, ' ' . $tokens[$staticPtr]['content']);
 
                     $phpcsFile->fixer->endChangeset();
                 }
             }
-        }//end if
+        }
 
         if ($hasVisibilityModifier === true && $propertyInfo['is_readonly'] === true) {
             $scopePtr    = $lastVisibilityModifier;
@@ -264,14 +272,13 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
                     }
 
                     $phpcsFile->fixer->replaceToken($readonlyPtr, '');
-                    $phpcsFile->fixer->addContent($scopePtr, ' '.$tokens[$readonlyPtr]['content']);
+                    $phpcsFile->fixer->addContent($scopePtr, ' ' . $tokens[$readonlyPtr]['content']);
 
                     $phpcsFile->fixer->endChangeset();
                 }
             }
-        }//end if
-
-    }//end processMemberVar()
+        }
+    }
 
 
     /**
@@ -282,13 +289,10 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
      *
      * @return void
      */
-    protected function processVariable(File $phpcsFile, $stackPtr)
+    protected function processVariable(File $phpcsFile, int $stackPtr)
     {
-        /*
-            We don't care about normal variables.
-        */
-
-    }//end processVariable()
+        // We don't care about normal variables.
+    }
 
 
     /**
@@ -299,13 +303,8 @@ class PropertyDeclarationSniff extends AbstractVariableSniff
      *
      * @return void
      */
-    protected function processVariableInString(File $phpcsFile, $stackPtr)
+    protected function processVariableInString(File $phpcsFile, int $stackPtr)
     {
-        /*
-            We don't care about normal variables.
-        */
-
-    }//end processVariableInString()
-
-
-}//end class
+        // We don't care about normal variables.
+    }
+}

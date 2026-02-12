@@ -7,6 +7,7 @@
  *
  * @author    Juliette Reinders Folmer <phpcs_nospam@adviesenzo.nl>
  * @copyright 2017 Juliette Reinders Folmer. All rights reserved.
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
@@ -31,8 +32,7 @@ class EmptyPHPStatementSniff implements Sniff
             T_SEMICOLON,
             T_CLOSE_TAG,
         ];
-
-    }//end register()
+    }
 
 
     /**
@@ -44,7 +44,7 @@ class EmptyPHPStatementSniff implements Sniff
      *
      * @return void
      */
-    public function process(File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, int $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
@@ -53,8 +53,7 @@ class EmptyPHPStatementSniff implements Sniff
         } else {
             $this->processCloseTag($phpcsFile, $stackPtr);
         }
-
-    }//end process()
+    }
 
 
     /**
@@ -66,11 +65,11 @@ class EmptyPHPStatementSniff implements Sniff
      *
      * @return void
      */
-    private function processSemicolon(File $phpcsFile, $stackPtr)
+    private function processSemicolon(File $phpcsFile, int $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
-        $prevNonEmpty = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($stackPtr - 1), null, true);
+        $prevNonEmpty = $phpcsFile->findPrevious(Tokens::EMPTY_TOKENS, ($stackPtr - 1), null, true);
         if ($tokens[$prevNonEmpty]['code'] !== T_SEMICOLON
             && $tokens[$prevNonEmpty]['code'] !== T_OPEN_TAG
             && $tokens[$prevNonEmpty]['code'] !== T_OPEN_TAG_WITH_ECHO
@@ -113,19 +112,15 @@ class EmptyPHPStatementSniff implements Sniff
         if ($fix === true) {
             $phpcsFile->fixer->beginChangeset();
 
-            if ($tokens[$prevNonEmpty]['code'] === T_OPEN_TAG
-                || $tokens[$prevNonEmpty]['code'] === T_OPEN_TAG_WITH_ECHO
-            ) {
-                // Check for superfluous whitespace after the semicolon which should be
-                // removed as the `<?php ` open tag token already contains whitespace,
-                // either a space or a new line.
-                if ($tokens[($stackPtr + 1)]['code'] === T_WHITESPACE) {
-                    $replacement = str_replace(' ', '', $tokens[($stackPtr + 1)]['content']);
-                    $phpcsFile->fixer->replaceToken(($stackPtr + 1), $replacement);
-                }
+            // Make sure there always remains one space between the open tag and the next content.
+            $replacement = ' ';
+            if ($tokens[($stackPtr + 1)]['code'] === T_WHITESPACE) {
+                $replacement = '';
             }
 
-            for ($i = $stackPtr; $i > $prevNonEmpty; $i--) {
+            $phpcsFile->fixer->replaceToken($stackPtr, $replacement);
+
+            for ($i = ($stackPtr - 1); $i > $prevNonEmpty; $i--) {
                 if ($tokens[$i]['code'] !== T_SEMICOLON
                     && $tokens[$i]['code'] !== T_WHITESPACE
                 ) {
@@ -136,9 +131,8 @@ class EmptyPHPStatementSniff implements Sniff
             }
 
             $phpcsFile->fixer->endChangeset();
-        }//end if
-
-    }//end processSemicolon()
+        }
+    }
 
 
     /**
@@ -150,7 +144,7 @@ class EmptyPHPStatementSniff implements Sniff
      *
      * @return void
      */
-    private function processCloseTag(File $phpcsFile, $stackPtr)
+    private function processCloseTag(File $phpcsFile, int $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
 
@@ -176,8 +170,5 @@ class EmptyPHPStatementSniff implements Sniff
 
             $phpcsFile->fixer->endChangeset();
         }
-
-    }//end processCloseTag()
-
-
-}//end class
+    }
+}

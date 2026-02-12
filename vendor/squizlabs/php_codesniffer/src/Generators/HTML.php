@@ -8,8 +8,8 @@
  *
  * @author    Greg Sherwood <gsherwood@squiz.net>
  * @author    Juliette Reinders Folmer <phpcs_nospam@adviesenzo.nl>
- * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
- * @copyright 2024 PHPCSStandards and contributors
+ * @copyright 2006-2023 Squiz Pty Ltd (ABN 77 084 670 600)
+ * @copyright 2023 PHPCSStandards and contributors
  * @license   https://github.com/PHPCSStandards/PHP_CodeSniffer/blob/HEAD/licence.txt BSD Licence
  */
 
@@ -17,8 +17,8 @@ namespace PHP_CodeSniffer\Generators;
 
 use DOMDocument;
 use DOMElement;
-use DOMNode;
 use PHP_CodeSniffer\Config;
+use PHP_CodeSniffer\Exceptions\GeneratorException;
 
 class HTML extends Generator
 {
@@ -28,7 +28,7 @@ class HTML extends Generator
      *
      * @var string
      */
-    const STYLESHEET = '<style>
+    private const STYLESHEET = '<style>
         body {
             background-color: #FFFFFF;
             font-size: 14px;
@@ -126,6 +126,9 @@ class HTML extends Generator
      *
      * @return void
      * @see    processSniff()
+     *
+     * @throws \PHP_CodeSniffer\Exceptions\GeneratorException If there is no <documentation> element
+     *                                                        in the XML document.
      */
     public function generate()
     {
@@ -134,10 +137,18 @@ class HTML extends Generator
         }
 
         ob_start();
-        parent::generate();
+        try {
+            parent::generate();
+            $content = ob_get_clean();
+        } catch (GeneratorException $e) {
+            ob_end_clean();
+            $content = '';
+        }
 
-        $content = ob_get_contents();
-        ob_end_clean();
+        // If an exception was caught, rethrow it outside of the output buffer.
+        if (isset($e) === true) {
+            throw $e;
+        }
 
         // Clear anchor cache after Documentation generation.
         // The anchor generation for the TOC anchor links will use the same logic, so should end up with the same unique slugs.
@@ -149,35 +160,14 @@ class HTML extends Generator
             echo $content;
             echo $this->getFormattedFooter();
         }
-
-    }//end generate()
-
-
-    /**
-     * Print the header of the HTML page.
-     *
-     * @deprecated 3.12.0 Use HTML::getFormattedHeader() instead.
-     *
-     * @codeCoverageIgnore
-     *
-     * @return void
-     */
-    protected function printHeader()
-    {
-        trigger_error(
-            'The '.__METHOD__.'() method is deprecated. Use "echo '.__CLASS__.'::getFormattedHeader()" instead.',
-            E_USER_DEPRECATED
-        );
-
-        echo $this->getFormattedHeader();
-
-    }//end printHeader()
+    }
 
 
     /**
      * Format the header of the HTML page.
      *
-     * @since 3.12.0 Replaces the deprecated HTML::printHeader() method.
+     * @since 3.12.0 Replaces the HTML::printHeader() method,
+     *               which was deprecated in 3.12.0 and removed in 4.0.0.
      *
      * @return string
      */
@@ -197,30 +187,8 @@ class HTML extends Generator
         );
 
         // Use the correct line endings based on the OS.
-        return str_replace("\n", PHP_EOL, $output).PHP_EOL;
-
-    }//end getFormattedHeader()
-
-
-    /**
-     * Print the table of contents for the standard.
-     *
-     * @deprecated 3.12.0 Use HTML::getFormattedToc() instead.
-     *
-     * @codeCoverageIgnore
-     *
-     * @return void
-     */
-    protected function printToc()
-    {
-        trigger_error(
-            'The '.__METHOD__.'() method is deprecated. Use "echo '.__CLASS__.'::getFormattedToc()" instead.',
-            E_USER_DEPRECATED
-        );
-
-        echo $this->getFormattedToc();
-
-    }//end printToc()
+        return str_replace("\n", PHP_EOL, $output) . PHP_EOL;
+    }
 
 
     /**
@@ -228,7 +196,8 @@ class HTML extends Generator
      *
      * The TOC is just an unordered list of bookmarks to sniffs on the page.
      *
-     * @since 3.12.0 Replaces the deprecated HTML::printToc() method.
+     * @since 3.12.0 Replaces the HTML::printToc() method,
+     *               which was deprecated in 3.12.0 and removed in 4.0.0.
      *
      * @return string
      */
@@ -239,10 +208,10 @@ class HTML extends Generator
             return '';
         }
 
-        $output  = '  <h2>Table of Contents</h2>'.PHP_EOL;
-        $output .= '  <ul class="toc">'.PHP_EOL;
+        $output  = '  <h2>Table of Contents</h2>' . PHP_EOL;
+        $output .= '  <ul class="toc">' . PHP_EOL;
 
-        $listItemTemplate = '   <li><a href="#%s">%s</a></li>'.PHP_EOL;
+        $listItemTemplate = '   <li><a href="#%s">%s</a></li>' . PHP_EOL;
 
         foreach ($this->docFiles as $file) {
             $doc = new DOMDocument();
@@ -252,38 +221,17 @@ class HTML extends Generator
             $output       .= sprintf($listItemTemplate, $this->titleToAnchor($title), $title);
         }
 
-        $output .= '  </ul>'.PHP_EOL;
+        $output .= '  </ul>' . PHP_EOL;
 
         return $output;
-
-    }//end getFormattedToc()
-
-
-    /**
-     * Print the footer of the HTML page.
-     *
-     * @deprecated 3.12.0 Use HTML::getFormattedFooter() instead.
-     *
-     * @codeCoverageIgnore
-     *
-     * @return void
-     */
-    protected function printFooter()
-    {
-        trigger_error(
-            'The '.__METHOD__.'() method is deprecated. Use "echo '.__CLASS__.'::getFormattedFooter()" instead.',
-            E_USER_DEPRECATED
-        );
-
-        echo $this->getFormattedFooter();
-
-    }//end printFooter()
+    }
 
 
     /**
      * Format the footer of the HTML page.
      *
-     * @since 3.12.0 Replaces the deprecated HTML::printFooter() method.
+     * @since 3.12.0 Replaces the HTML::printFooter() method,
+     *               which was deprecated in 3.12.0 and removed in 4.0.0.
      *
      * @return string
      */
@@ -302,27 +250,26 @@ class HTML extends Generator
         error_reporting($errorLevel);
 
         // Use the correct line endings based on the OS.
-        return str_replace("\n", PHP_EOL, $output).PHP_EOL;
-
-    }//end getFormattedFooter()
+        return str_replace("\n", PHP_EOL, $output) . PHP_EOL;
+    }
 
 
     /**
      * Process the documentation for a single sniff.
      *
-     * @param \DOMNode $doc The DOMNode object for the sniff.
-     *                      It represents the "documentation" tag in the XML
-     *                      standard file.
+     * @param \DOMElement $doc The DOMElement object for the sniff.
+     *                         It represents the "documentation" tag in the XML
+     *                         standard file.
      *
      * @return void
      */
-    public function processSniff(DOMNode $doc)
+    public function processSniff(DOMElement $doc)
     {
         $content = '';
         foreach ($doc->childNodes as $node) {
             if ($node->nodeName === 'standard') {
                 $content .= $this->getFormattedTextBlock($node);
-            } else if ($node->nodeName === 'code_comparison') {
+            } elseif ($node->nodeName === 'code_comparison') {
                 $content .= $this->getFormattedCodeComparisonBlock($node);
             }
         }
@@ -330,14 +277,13 @@ class HTML extends Generator
         if (trim($content) !== '') {
             $title = $this->getTitle($doc);
             printf(
-                '  <h2 id="%1$s">%2$s<a class="sniffanchor" href="#%1$s"> &sect; </a></h2>'.PHP_EOL,
+                '  <h2 id="%1$s">%2$s<a class="sniffanchor" href="#%1$s"> &sect; </a></h2>' . PHP_EOL,
                 $this->titleToAnchor($title),
                 $title
             );
             echo $content;
         }
-
-    }//end processSniff()
+    }
 
 
     /**
@@ -349,7 +295,7 @@ class HTML extends Generator
      *
      * @return string
      */
-    private function titleToAnchor($title)
+    private function titleToAnchor(string $title)
     {
         // Slugify the text.
         $title = strtolower($title);
@@ -357,51 +303,28 @@ class HTML extends Generator
 
         if (isset($this->seenAnchors[$title]) === true) {
             // Try to find a unique anchor for this title.
-            for ($i = 2; (isset($this->seenAnchors[$title.'-'.$i]) === true); $i++);
-            $title .= '-'.$i;
+            for ($i = 2; (isset($this->seenAnchors[$title . '-' . $i]) === true); $i++);
+            $title .= '-' . $i;
         }
 
         // Add to "seen" list.
         $this->seenAnchors[$title] = true;
 
         return $title;
-
-    }//end titleToAnchor()
-
-
-    /**
-     * Print a text block found in a standard.
-     *
-     * @param \DOMNode $node The DOMNode object for the text block.
-     *
-     * @deprecated 3.12.0 Use HTML::getFormattedTextBlock() instead.
-     *
-     * @codeCoverageIgnore
-     *
-     * @return void
-     */
-    protected function printTextBlock(DOMNode $node)
-    {
-        trigger_error(
-            'The '.__METHOD__.'() method is deprecated. Use "echo '.__CLASS__.'::getFormattedTextBlock()" instead.',
-            E_USER_DEPRECATED
-        );
-
-        echo $this->getFormattedTextBlock($node);
-
-    }//end printTextBlock()
+    }
 
 
     /**
      * Format a text block found in a standard.
      *
-     * @param \DOMNode $node The DOMNode object for the text block.
+     * @param \DOMElement $node The DOMElement object for the text block.
      *
-     * @since 3.12.0 Replaces the deprecated HTML::printTextBlock() method.
+     * @since 3.12.0 Replaces the HTML::printTextBlock() method,
+     *               which was deprecated in 3.12.0 and removed in 4.0.0.
      *
      * @return string
      */
-    protected function getFormattedTextBlock(DOMNode $node)
+    protected function getFormattedTextBlock(DOMElement $node)
     {
         $content = $node->nodeValue;
         if (empty($content) === true) {
@@ -430,53 +353,30 @@ class HTML extends Generator
                 if ($nextLine === '') {
                     // Next line is a blank line, end the paragraph and start a new one.
                     // Also skip over the blank line.
-                    $lines[] = $currentLine.'</p>'.PHP_EOL.'  <p class="text">';
+                    $lines[] = $currentLine . '</p>' . PHP_EOL . '  <p class="text">';
                     ++$i;
                 } else {
                     // Next line is not blank, so just add a line break.
-                    $lines[] = $currentLine.'<br/>'.PHP_EOL;
+                    $lines[] = $currentLine . '<br/>' . PHP_EOL;
                 }
             }
         }
 
-        return '  <p class="text">'.implode('', $lines).'</p>'.PHP_EOL;
-
-    }//end getFormattedTextBlock()
-
-
-    /**
-     * Print a code comparison block found in a standard.
-     *
-     * @param \DOMNode $node The DOMNode object for the code comparison block.
-     *
-     * @deprecated 3.12.0 Use HTML::getFormattedCodeComparisonBlock() instead.
-     *
-     * @codeCoverageIgnore
-     *
-     * @return void
-     */
-    protected function printCodeComparisonBlock(DOMNode $node)
-    {
-        trigger_error(
-            'The '.__METHOD__.'() method is deprecated. Use "echo '.__CLASS__.'::getFormattedCodeComparisonBlock()" instead.',
-            E_USER_DEPRECATED
-        );
-
-        echo $this->getFormattedCodeComparisonBlock($node);
-
-    }//end printCodeComparisonBlock()
+        return '  <p class="text">' . implode('', $lines) . '</p>' . PHP_EOL;
+    }
 
 
     /**
      * Format a code comparison block found in a standard.
      *
-     * @param \DOMNode $node The DOMNode object for the code comparison block.
+     * @param \DOMElement $node The DOMElement object for the code comparison block.
      *
-     * @since 3.12.0 Replaces the deprecated HTML::printCodeComparisonBlock() method.
+     * @since 3.12.0 Replaces the HTML::printCodeComparisonBlock() method,
+     *               which was deprecated in 3.12.0 and removed in 4.0.0.
      *
      * @return string
      */
-    protected function getFormattedCodeComparisonBlock(DOMNode $node)
+    protected function getFormattedCodeComparisonBlock(DOMElement $node)
     {
         $codeBlocks    = $node->getElementsByTagName('code');
         $firstCodeElm  = $codeBlocks->item(0);
@@ -495,31 +395,30 @@ class HTML extends Generator
 
         $titleRow = '';
         if ($firstTitle !== '' || $secondTitle !== '') {
-            $titleRow .= '   <tr>'.PHP_EOL;
-            $titleRow .= "    <th class=\"code-comparison-title\">$firstTitle</th>".PHP_EOL;
-            $titleRow .= "    <th class=\"code-comparison-title\">$secondTitle</th>".PHP_EOL;
-            $titleRow .= '   </tr>'.PHP_EOL;
+            $titleRow .= '   <tr>' . PHP_EOL;
+            $titleRow .= "    <th class=\"code-comparison-title\">$firstTitle</th>" . PHP_EOL;
+            $titleRow .= "    <th class=\"code-comparison-title\">$secondTitle</th>" . PHP_EOL;
+            $titleRow .= '   </tr>' . PHP_EOL;
         }
 
         $codeRow = '';
         if ($first !== '' || $second !== '') {
-            $codeRow .= '   <tr>'.PHP_EOL;
-            $codeRow .= "    <td class=\"code-comparison-code\">$first</td>".PHP_EOL;
-            $codeRow .= "    <td class=\"code-comparison-code\">$second</td>".PHP_EOL;
-            $codeRow .= '   </tr>'.PHP_EOL;
+            $codeRow .= '   <tr>' . PHP_EOL;
+            $codeRow .= "    <td class=\"code-comparison-code\">$first</td>" . PHP_EOL;
+            $codeRow .= "    <td class=\"code-comparison-code\">$second</td>" . PHP_EOL;
+            $codeRow .= '   </tr>' . PHP_EOL;
         }
 
         $output = '';
         if ($titleRow !== '' || $codeRow !== '') {
-            $output  = '  <table class="code-comparison">'.PHP_EOL;
+            $output  = '  <table class="code-comparison">' . PHP_EOL;
             $output .= $titleRow;
             $output .= $codeRow;
-            $output .= '  </table>'.PHP_EOL;
+            $output .= '  </table>' . PHP_EOL;
         }
 
         return $output;
-
-    }//end getFormattedCodeComparisonBlock()
+    }
 
 
     /**
@@ -535,8 +434,7 @@ class HTML extends Generator
     {
         $title = trim($codeElm->getAttribute('title'));
         return str_replace('  ', '&nbsp;&nbsp;', $title);
-
-    }//end formatCodeTitle()
+    }
 
 
     /**
@@ -557,8 +455,5 @@ class HTML extends Generator
         $code = str_replace(['<em>', '</em>'], ['<span class="code-comparison-highlight">', '</span>'], $code);
 
         return $code;
-
-    }//end formatCodeSample()
-
-
-}//end class
+    }
+}
