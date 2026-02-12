@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -75,6 +75,9 @@ class CheckRequirementsValidator extends BaseValidator
         $dbExtensionOk = SystemRequirements::isDatabaseExtensionLoaded();
         $requirementsOk = SystemRequirements::areAllRequirementsMet();
 
+        // Get web server information
+        $webServerInfo = SystemRequirements::getWebServerInfo();
+
         // Prepare template data
         $templateData = [
             'php_version' => $phpVersion,
@@ -83,6 +86,7 @@ class CheckRequirementsValidator extends BaseValidator
             'database_extensions' => $databaseExtensions,
             'db_extension_ok' => $dbExtensionOk,
             'optional_extensions' => $optionalExtensions,
+            'web_server_info' => $webServerInfo,
             'requirements_ok' => $requirementsOk,
             'next_step' => InstallationSteps::STEP_GETTING_READY,
         ];
