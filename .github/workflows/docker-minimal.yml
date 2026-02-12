@@ -73,7 +73,7 @@ jobs:
           tags: poweradmin:scan-3.x
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@0.34.0
         with:
           image-ref: poweradmin:scan-3.x
           format: 'sarif'
