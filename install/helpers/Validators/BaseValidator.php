@@ -41,10 +41,7 @@ abstract class BaseValidator extends AbstractStepValidator
         return [
             'install_token' => [
                 new Assert\NotBlank(),
-                new Assert\Length([
-                    'min' => CsrfTokenService::TOKEN_LENGTH,
-                    'max' => CsrfTokenService::TOKEN_LENGTH
-                ]),
+                new Assert\Length(min: CsrfTokenService::TOKEN_LENGTH, max: CsrfTokenService::TOKEN_LENGTH),
             ]
         ];
     }

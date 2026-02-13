@@ -192,7 +192,7 @@ class EditZoneTemplController extends BaseController
                 new Assert\NotBlank()
             ],
             'templ_descr' => [
-                new Assert\Length(['max' => 1024])
+                new Assert\Length(max: 1024)
             ]
         ];
 
@@ -245,7 +245,7 @@ class EditZoneTemplController extends BaseController
                 new Assert\NotBlank()
             ],
             'templ_descr' => [
-                new Assert\Length(['max' => 1024])
+                new Assert\Length(max: 1024)
             ]
         ];
 

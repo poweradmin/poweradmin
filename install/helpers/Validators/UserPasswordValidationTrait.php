@@ -37,10 +37,7 @@ trait UserPasswordValidationTrait
         return [
             'pa_pass' => [
                 new Assert\NotBlank(),
-                new Assert\Length([
-                    'min' => $this->config['password_policy']['min_length'],
-                    'minMessage' => 'Poweradmin administrator password must be at least 6 characters long'
-                ]),
+                new Assert\Length(min: $this->config['password_policy']['min_length'], minMessage: 'Poweradmin administrator password must be at least 6 characters long'),
                 new Assert\Callback([$this, 'validateLoginPassword']),
             ],
         ];

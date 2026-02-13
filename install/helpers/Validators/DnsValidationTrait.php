@@ -40,63 +40,33 @@ trait DnsValidationTrait
         return [
             'dns_hostmaster' => [
                 new Assert\NotBlank(),
-                new Length([
-                    'max' => 255,
-                    'maxMessage' => 'The hostmaster hostname cannot be longer than {{ limit }} characters'
-                ]),
-                new Regex([
-                    'pattern' => self::getDnsHostnameRegex(),
-                    'message' => 'The hostmaster must be a valid hostname'
-                ]),
+                new Length(max: 255, maxMessage: 'The hostmaster hostname cannot be longer than {{ limit }} characters'),
+                new Regex(pattern: self::getDnsHostnameRegex(), message: 'The hostmaster must be a valid hostname'),
                 new Callback([$this, 'validateHostname'])
             ],
             'dns_ns1' => [
                 new Assert\NotBlank(),
-                new Length([
-                    'max' => 255,
-                    'maxMessage' => 'The 1st nameserver hostname cannot be longer than {{ limit }} characters'
-                ]),
-                new Regex([
-                    'pattern' => self::getDnsHostnameRegex(),
-                    'message' => 'The 1st nameserver must be a valid hostname'
-                ]),
+                new Length(max: 255, maxMessage: 'The 1st nameserver hostname cannot be longer than {{ limit }} characters'),
+                new Regex(pattern: self::getDnsHostnameRegex(), message: 'The 1st nameserver must be a valid hostname'),
                 new Callback([$this, 'validateNameserver'])
             ],
             'dns_ns2' => [
                 new Assert\NotBlank(),
-                new Length([
-                    'max' => 255,
-                    'maxMessage' => 'The 2nd nameserver hostname cannot be longer than {{ limit }} characters'
-                ]),
-                new Regex([
-                    'pattern' => self::getDnsHostnameRegex(),
-                    'message' => 'The 2nd nameserver must be a valid hostname'
-                ]),
+                new Length(max: 255, maxMessage: 'The 2nd nameserver hostname cannot be longer than {{ limit }} characters'),
+                new Regex(pattern: self::getDnsHostnameRegex(), message: 'The 2nd nameserver must be a valid hostname'),
                 new Callback([$this, 'validateNameserver'])
             ],
             'dns_ns3' => [
                 new Assert\Optional([
-                    new Length([
-                        'max' => 255,
-                        'maxMessage' => 'The 3rd nameserver hostname cannot be longer than {{ limit }} characters'
-                    ]),
-                    new Regex([
-                        'pattern' => self::getDnsHostnameRegex(),
-                        'message' => 'The 3rd nameserver must be a valid hostname'
-                    ]),
+                    new Length(max: 255, maxMessage: 'The 3rd nameserver hostname cannot be longer than {{ limit }} characters'),
+                    new Regex(pattern: self::getDnsHostnameRegex(), message: 'The 3rd nameserver must be a valid hostname'),
                     new Callback([$this, 'validateNameserver'])
                 ])
             ],
             'dns_ns4' => [
                 new Assert\Optional([
-                    new Length([
-                        'max' => 255,
-                        'maxMessage' => 'The 4th nameserver hostname cannot be longer than {{ limit }} characters'
-                    ]),
-                    new Regex([
-                        'pattern' => self::getDnsHostnameRegex(),
-                        'message' => 'The 4th nameserver must be a valid hostname'
-                    ]),
+                    new Length(max: 255, maxMessage: 'The 4th nameserver hostname cannot be longer than {{ limit }} characters'),
+                    new Regex(pattern: self::getDnsHostnameRegex(), message: 'The 4th nameserver must be a valid hostname'),
                     new Callback([$this, 'validateNameserver'])
                 ])
             ],

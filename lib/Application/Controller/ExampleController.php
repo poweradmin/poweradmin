@@ -181,12 +181,12 @@ class ExampleController extends BaseController
         $constraints = [
             'example_field' => [
                 new Assert\NotBlank(),
-                new Assert\Length(['min' => 3, 'max' => 100])
+                new Assert\Length(min: 3, max: 100)
             ],
             'numeric_field' => [
                 new Assert\NotBlank(),
                 new Assert\Type('integer'),
-                new Assert\Range(['min' => 1, 'max' => 1000])
+                new Assert\Range(min: 1, max: 1000)
             ]
         ];
 

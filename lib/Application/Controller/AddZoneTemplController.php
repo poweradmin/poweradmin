@@ -71,10 +71,10 @@ class AddZoneTemplController extends BaseController
         $constraints = [
             'templ_name' => [
                 new Assert\NotBlank(),
-                new Assert\Length(['max' => 128])
+                new Assert\Length(max: 128)
             ],
             'templ_descr' => [
-                new Assert\Length(['max' => 1024])
+                new Assert\Length(max: 1024)
             ]
         ];
 

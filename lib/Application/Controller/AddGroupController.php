@@ -157,7 +157,7 @@ class AddGroupController extends BaseController
         $constraints = [
             'name' => [
                 new Assert\NotBlank(),
-                new Assert\Length(['min' => 1, 'max' => 255])
+                new Assert\Length(min: 1, max: 255)
             ],
             'perm_templ' => [
                 new Assert\NotBlank(),
