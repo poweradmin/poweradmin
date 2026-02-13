@@ -4,6 +4,7 @@
     "config:recommended"
   ],
   "baseBranchPatterns": [
+    "develop",
     "master",
     "release/3.x",
     "release/4.x",
