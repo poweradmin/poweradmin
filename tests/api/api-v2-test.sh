@@ -621,7 +621,7 @@ test_groups() {
     # Test 1: Create group
     increment_test
     print_test "Create new group"
-    local response=$(api_request_groups POST "/groups" '{"name": "Test Admins", "description": "Test group for administrators", "perm_templ_id": 1}')
+    local response=$(api_request_groups POST "/groups" '{"name": "Test Admins", "description": "Test group for administrators", "perm_templ_id": 6}')
     local http_code=$(echo "$response" | tail -n1)
     local body=$(echo "$response" | sed '$d')
 

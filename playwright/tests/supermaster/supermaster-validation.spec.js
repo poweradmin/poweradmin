@@ -176,8 +176,8 @@ test.describe('Supermaster Validation', () => {
       const deleteLink = page.locator('a[href*="/delete"]').first();
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete|confirm/i);
+        await page.waitForLoadState('networkidle');
+        await expect(page.locator('.alert-heading:has-text("Warning")')).toBeVisible();
       }
     });
 

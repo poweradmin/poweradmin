@@ -9,6 +9,7 @@ test.describe('DNS Record Types Management', () => {
   const timestamp = Date.now();
   const testDomain = `records-test-${timestamp}.com`;
   let zoneCreated = false;
+  let zoneId = null;
 
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -20,20 +21,25 @@ test.describe('DNS Record Types Management', () => {
     await page.locator('[data-testid="add-zone-button"]').click();
     await page.waitForLoadState('networkidle');
 
-    // Verify zone was created
+    // Verify zone was created and get zone ID
     await page.goto('/zones/forward?letter=all');
-    await expect(page.locator(`tr:has-text("${testDomain}")`)).toBeVisible();
+    const zoneRow = page.locator(`tr:has-text("${testDomain}")`);
+    await expect(zoneRow).toBeVisible();
+    const editLink = await zoneRow.locator('a[href*="/edit"]').first().getAttribute('href');
+    const match = editLink.match(/\/zones\/(\d+)/);
+    if (match) {
+      zoneId = match[1];
+    }
     zoneCreated = true;
   });
 
   test('should add A record successfully', async ({ page }) => {
-    test.skip(!zoneCreated, 'Zone not created');
+    test.skip(!zoneCreated || !zoneId, 'Zone not created');
 
-    await page.goto('/zones/forward?letter=all');
-    await page.locator(`tr:has-text("${testDomain}")`).locator('a[href*="/edit"]').first().click();
+    await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
 
-    // Fill in A record
+    await page.locator('select[name*="type"]').first().selectOption('A');
     await page.locator('input[name*="name"]').first().fill('www');
     await page.locator('input[name*="content"]').first().fill('192.168.1.10');
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
@@ -44,18 +50,12 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should add AAAA record successfully', async ({ page }) => {
-    test.skip(!zoneCreated, 'Zone not created');
+    test.skip(!zoneCreated || !zoneId, 'Zone not created');
 
-    await page.goto('/zones/forward?letter=all');
-    await page.locator(`tr:has-text("${testDomain}")`).locator('a[href*="/edit"]').first().click();
+    await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
 
-    // Select AAAA type if type selector exists
-    const typeSelector = page.locator('select[name*="type"]').first();
-    if (await typeSelector.count() > 0) {
-      await typeSelector.selectOption('AAAA');
-    }
-
+    await page.locator('select[name*="type"]').first().selectOption('AAAA');
     await page.locator('input[name*="name"]').first().fill('ipv6');
     await page.locator('input[name*="content"]').first().fill('2001:db8:85a3::8a2e:370:7334');
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
@@ -66,17 +66,12 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should add MX record successfully', async ({ page }) => {
-    test.skip(!zoneCreated, 'Zone not created');
+    test.skip(!zoneCreated || !zoneId, 'Zone not created');
 
-    await page.goto('/zones/forward?letter=all');
-    await page.locator(`tr:has-text("${testDomain}")`).locator('a[href*="/edit"]').first().click();
+    await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
 
-    const typeSelector = page.locator('select[name*="type"]').first();
-    if (await typeSelector.count() > 0) {
-      await typeSelector.selectOption('MX');
-    }
-
+    await page.locator('select[name*="type"]').first().selectOption('MX');
     await page.locator('input[name*="content"]').first().fill('mail.example.com');
 
     // Set priority if available
@@ -93,17 +88,12 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should add CNAME record successfully', async ({ page }) => {
-    test.skip(!zoneCreated, 'Zone not created');
+    test.skip(!zoneCreated || !zoneId, 'Zone not created');
 
-    await page.goto('/zones/forward?letter=all');
-    await page.locator(`tr:has-text("${testDomain}")`).locator('a[href*="/edit"]').first().click();
+    await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
 
-    const typeSelector = page.locator('select[name*="type"]').first();
-    if (await typeSelector.count() > 0) {
-      await typeSelector.selectOption('CNAME');
-    }
-
+    await page.locator('select[name*="type"]').first().selectOption('CNAME');
     await page.locator('input[name*="name"]').first().fill('blog');
     await page.locator('input[name*="content"]').first().fill('www.example.com');
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
@@ -114,17 +104,12 @@ test.describe('DNS Record Types Management', () => {
   });
 
   test('should add TXT record successfully', async ({ page }) => {
-    test.skip(!zoneCreated, 'Zone not created');
+    test.skip(!zoneCreated || !zoneId, 'Zone not created');
 
-    await page.goto('/zones/forward?letter=all');
-    await page.locator(`tr:has-text("${testDomain}")`).locator('a[href*="/edit"]').first().click();
+    await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
 
-    const typeSelector = page.locator('select[name*="type"]').first();
-    if (await typeSelector.count() > 0) {
-      await typeSelector.selectOption('TXT');
-    }
-
+    await page.locator('select[name*="type"]').first().selectOption('TXT');
     await page.locator('input[name*="name"]').first().fill('_dmarc');
     await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('v=DMARC1; p=none');
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
