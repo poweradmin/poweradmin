@@ -18,13 +18,6 @@ on:
       - release/3.x
       - release/4.x
       - release/4.1.x
-  pull_request:
-    branches:
-      - master
-      - develop
-      - release/3.x
-      - release/4.x
-      - release/4.1.x
   workflow_dispatch:
 
 concurrency:
