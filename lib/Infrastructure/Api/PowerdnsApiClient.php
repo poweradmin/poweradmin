@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,6 +50,11 @@ class PowerdnsApiClient
         return self::API_VERSION_PATH . "/servers/$this->serverName" . $path;
     }
 
+    private function buildZoneEndpoint(string $zoneName, string $suffix = ''): string
+    {
+        return $this->buildEndpoint("/zones/" . rawurlencode($zoneName) . $suffix);
+    }
+
     /**
      * Rectify a zone
      *
@@ -59,7 +64,7 @@ class PowerdnsApiClient
     public function rectifyZone(Zone $zone): bool
     {
         try {
-            $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}/rectify");
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/rectify");
             $response = $this->httpClient->makeRequest('PUT', $endpoint);
 
             return $response &&
@@ -81,7 +86,7 @@ class PowerdnsApiClient
     public function secureZone(Zone $zone): bool
     {
         try {
-            $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}");
+            $endpoint = $this->buildZoneEndpoint($zone->getName());
             $data = ['dnssec' => true];
             $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
 
@@ -101,7 +106,7 @@ class PowerdnsApiClient
     public function unsecureZone(Zone $zone): bool
     {
         try {
-            $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}");
+            $endpoint = $this->buildZoneEndpoint($zone->getName());
             $data = ['dnssec' => false];
             $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
 
@@ -170,7 +175,7 @@ class PowerdnsApiClient
     public function updateZone(Zone $zone): bool
     {
         try {
-            $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}");
+            $endpoint = $this->buildZoneEndpoint($zone->getName());
             $data = [
                 'name' => $zone->getName(),
             ];
@@ -192,7 +197,7 @@ class PowerdnsApiClient
     public function deleteZone(Zone $zone): bool
     {
         try {
-            $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}");
+            $endpoint = $this->buildZoneEndpoint($zone->getName());
             $response = $this->httpClient->makeRequest('DELETE', $endpoint);
 
             return $response && $response['responseCode'] === 204;
@@ -211,7 +216,7 @@ class PowerdnsApiClient
     public function getZoneKeys(Zone $zone): array
     {
         try {
-            $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}/cryptokeys");
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys");
             $response = $this->httpClient->makeRequest('GET', $endpoint);
 
             if ($response && $response['responseCode'] === 200) {
@@ -260,7 +265,7 @@ class PowerdnsApiClient
     public function addZoneKey(Zone $zone, CryptoKey $key): bool
     {
         try {
-            $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}/cryptokeys");
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys");
             $data = [
                 'keytype' => $key->getType(),
                 'bits' => $key->getSize(),
@@ -289,7 +294,7 @@ class PowerdnsApiClient
     public function activateZoneKey(Zone $zone, CryptoKey $key): bool
     {
         try {
-            $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}/cryptokeys/{$key->getId()}");
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys/{$key->getId()}");
             $data = ['active' => true];
             $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
 
@@ -315,7 +320,7 @@ class PowerdnsApiClient
     public function deactivateZoneKey(Zone $zone, CryptoKey $key): bool
     {
         try {
-            $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}/cryptokeys/{$key->getId()}");
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys/{$key->getId()}");
             $data = ['active' => false];
             $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
 
@@ -341,7 +346,7 @@ class PowerdnsApiClient
     public function removeZoneKey(Zone $zone, CryptoKey $key): bool
     {
         try {
-            $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}/cryptokeys/{$key->getId()}");
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys/{$key->getId()}");
             $response = $this->httpClient->makeRequest('DELETE', $endpoint);
 
             return $response && $response['responseCode'] === 204;
@@ -365,7 +370,7 @@ class PowerdnsApiClient
     public function isZoneSecured(Zone $zone): bool
     {
         try {
-            $endpoint = $this->buildEndpoint("/zones/{$zone->getName()}");
+            $endpoint = $this->buildZoneEndpoint($zone->getName());
             $response = $this->httpClient->makeRequest('GET', $endpoint);
 
             return $response &&
