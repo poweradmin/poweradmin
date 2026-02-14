@@ -9,14 +9,14 @@ on:
       - master
       - develop
       - release/3.x
-      - release/4.x
+      - release/4.0.x
       - release/4.1.x
   push:
     tags:
       - 'v*'
     branches:
       - release/3.x
-      - release/4.x
+      - release/4.0.x
       - release/4.1.x
   workflow_dispatch:
 
@@ -87,7 +87,7 @@ jobs:
             type=raw,value=latest,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'master') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/master') }}
             type=raw,value=dev,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'develop') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/develop') }}
             type=raw,value=lts,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/3.x') }}
-            type=raw,value=stable,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.x') }}
+            type=raw,value=stable,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.0.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.0.x') }}
             type=raw,value=next,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.1.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.1.x') }}
 
       - name: Build and push
