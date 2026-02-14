@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-01-29 00:35+0200\n"
+"POT-Creation-Date: 2026-02-14 17:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -219,19 +219,19 @@ msgstr "Du har ikke tillatelse til å redigere denne posten."
 msgid "MFA is not enabled on this system."
 msgstr "MFA er ikke aktivert på dette systemet."
 
-#: lib/Application/Controller/MfaSetupController.php:194
+#: lib/Application/Controller/MfaSetupController.php:193
 msgid "Failed to create MFA record."
 msgstr "Kunne ikke opprette MFA-post."
 
-#: lib/Application/Controller/MfaSetupController.php:201
+#: lib/Application/Controller/MfaSetupController.php:200
 msgid "MFA is already enabled."
 msgstr "MFA er allerede aktivert."
 
-#: lib/Application/Controller/MfaSetupController.php:246
+#: lib/Application/Controller/MfaSetupController.php:245
 msgid "Verification code is required."
 msgstr "Verifiseringskode er påkrevd."
 
-#: lib/Application/Controller/MfaSetupController.php:155
+#: lib/Application/Controller/MfaSetupController.php:154
 msgid "MFA has been enabled successfully."
 msgstr "MFA har blitt aktivert."
 
@@ -239,7 +239,7 @@ msgstr "MFA har blitt aktivert."
 msgid "Invalid verification code. Please try again."
 msgstr "Ugyldig verifiseringskode. Vennligst prøv igjen."
 
-#: lib/Application/Controller/MfaSetupController.php:171
+#: lib/Application/Controller/MfaSetupController.php:170
 msgid ""
 "Email address is not available. Please update your email address in your "
 "profile."
@@ -247,7 +247,7 @@ msgstr ""
 "E-postadresse er ikke tilgjengelig. Vennligst oppdater e-postadressen din i "
 "profilen."
 
-#: lib/Application/Controller/MfaSetupController.php:178
+#: lib/Application/Controller/MfaSetupController.php:177
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
@@ -255,11 +255,11 @@ msgstr ""
 "E-postverifisering er ikke tilgjengelig fordi e-posttjenesten ikke er "
 "aktivert på dette systemet."
 
-#: lib/Application/Controller/MfaSetupController.php:185
+#: lib/Application/Controller/MfaSetupController.php:184
 msgid "Email verification method is not enabled on this system."
 msgstr "E-postverifisering er ikke aktivert på dette systemet."
 
-#: lib/Application/Controller/MfaSetupController.php:227
+#: lib/Application/Controller/MfaSetupController.php:226
 msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
@@ -267,23 +267,23 @@ msgstr ""
 "Kunne ikke sende verifiseringskode. Vennligst prøv igjen senere eller bruk "
 "app-basert autentisering."
 
-#: lib/Application/Controller/MfaSetupController.php:264
+#: lib/Application/Controller/MfaSetupController.php:263
 msgid "MFA has been enabled with email verification."
 msgstr "MFA har blitt aktivert med e-postverifisering."
 
-#: lib/Application/Controller/MfaSetupController.php:280
+#: lib/Application/Controller/MfaSetupController.php:279
 msgid "MFA is not enabled."
 msgstr "MFA er ikke aktivert."
 
-#: lib/Application/Controller/MfaSetupController.php:288
+#: lib/Application/Controller/MfaSetupController.php:287
 msgid "MFA has been disabled."
 msgstr "MFA har blitt deaktivert."
 
-#: lib/Application/Controller/MfaSetupController.php:303
+#: lib/Application/Controller/MfaSetupController.php:302
 msgid "MFA must be enabled to regenerate recovery codes."
 msgstr "MFA må være aktivert for å regenerere gjenopprettingskoder."
 
-#: lib/Application/Controller/MfaSetupController.php:311
+#: lib/Application/Controller/MfaSetupController.php:310
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr ""
 "Gjenopprettingskoder har blitt regenerert. Vennligst lagre dem på et trygt "
@@ -5449,7 +5449,7 @@ msgstr "CDNSKEY offentlig nøkkel må kun inneholde gyldige base64-tegn."
 msgid "CDNSKEY public key must be valid base64-encoded data."
 msgstr "CDNSKEY offentlig nøkkel må være gyldige base64-kodede data."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:181
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:190
 msgid "LUA record content cannot be empty."
 msgstr "LUA-postinnhold kan ikke være tomt."
 
@@ -5469,7 +5469,7 @@ msgstr ""
 "ADVARSEL: Denne LUA-posten inneholder potensielt utrygg fil- eller "
 "systemoperasjoner. Disse kan bli blokkert av PowerDNS sikkerhetsmekanismer."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:132
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:141
 msgid ""
 "This LUA record uses explicit return mode (starts with semicolon). Ensure "
 "your Lua script explicitly returns the appropriate value."
@@ -5477,7 +5477,7 @@ msgstr ""
 "Denne LUA-posten bruker eksplisitt return-modus (starter med semikolon). "
 "Sørg for at Lua-skriptet eksplisitt returnerer den riktige verdien."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:146
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:155
 msgid ""
 "This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
 "sure it returns an appropriate value for the record type."
@@ -5485,7 +5485,7 @@ msgstr ""
 "Denne LUA-posten ser ikke ut til å bruke vanlige PowerDNS Lua-funksjoner. "
 "Sørg for at den returnerer en passende verdi for posttypen."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:154
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:163
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
@@ -5493,15 +5493,15 @@ msgstr ""
 "ADVARSEL: Denne LUA-posten ser ut til å ha ubalanserte anførselstegn, som "
 "kan forårsake syntaksfeil."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:188
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
 msgstr "LUA-post har feilaktige parenteser. Sjekk syntaksen din."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
 msgstr "LUA-post har feilaktige krøllparenteser. Sjekk syntaksen din."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:202
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
@@ -5509,7 +5509,7 @@ msgstr ""
 "LUA-post i eksplisitt return-modus (starter med semikolon) må inneholde "
 "minst én \"return\"-setning."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
@@ -5517,7 +5517,7 @@ msgstr ""
 "LUA-post i implisitt return-modus bør være et gyldig funksjonskall eller "
 "funksjonsdefinisjon med \"function\" og \"end\" nøkkelord."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:242
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
@@ -8203,7 +8203,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Slett sone(r)"
 
-#: templates/default/dnssec_add_key.html:81
+#: templates/default/dnssec_add_key.html:91
 msgid "Add key"
 msgstr "Legg til nøkkel"
 
@@ -8212,47 +8212,58 @@ msgid "Add key for zone"
 msgstr "Legg til nøkkel for sone"
 
 #: templates/default/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ bruker CSK som standard"
+
+#: templates/default/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 og nyere versjoner bruker Combined Signing Keys (CSK) som standard. Hvis du velger KSK eller ZSK, kan PowerDNS likevel opprette en CSK-nøkkel."
+
+#: templates/default/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Nøkkeltype"
 
-#: templates/default/dnssec_add_key.html:50
+#: templates/default/dnssec_add_key.html:60
 msgid "Select key type"
 msgstr "Velg nøkkeltype"
 
-#: templates/default/dnssec_add_key.html:61
+#: templates/default/dnssec_add_key.html:71
 msgid "Select algorithm"
 msgstr "Velg algoritme"
 
-#: templates/default/dnssec_add_key.html:66
+#: templates/default/dnssec_add_key.html:76
 msgid "Bits in length"
 msgstr "Antall bits i lengde"
 
-#: templates/default/dnssec_add_key.html:75
+#: templates/default/dnssec_add_key.html:85
 msgid "Select bits length"
 msgstr "Velg bitlengde"
 
-#: templates/default/dnssec_add_key.html:132
+#: templates/default/dnssec_add_key.html:142
 msgid "Recommended bits for"
 msgstr "Anbefalte bits for"
 
-#: templates/default/dnssec_add_key.html:140
+#: templates/default/dnssec_add_key.html:150
 #: install/helpers/InstallStepHandler.php:183
 msgid "Warning:"
 msgstr "Advarsel:"
 
-#: templates/default/dnssec_add_key.html:140
+#: templates/default/dnssec_add_key.html:150
 msgid "bits is not recommended for"
 msgstr "bits anbefales ikke for"
 
-#: templates/default/dnssec_add_key.html:177
+#: templates/default/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
 msgstr "Om DNSSEC-nøkkeltyper"
 
-#: templates/default/dnssec_add_key.html:181
+#: templates/default/dnssec_add_key.html:191
 msgid "Key Types Explained"
 msgstr "Nøkkeltyper forklart"
 
-#: templates/default/dnssec_add_key.html:183
+#: templates/default/dnssec_add_key.html:193
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -8260,19 +8271,19 @@ msgstr ""
 "Kombinert signeringsnøkkel - fungerer som både KSK og ZSK (anbefales for "
 "PowerDNS 4.0+)"
 
-#: templates/default/dnssec_add_key.html:184
+#: templates/default/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Nøkkelsigneringsnøkkel - signerer DNSKEY-postene i sonen"
 
-#: templates/default/dnssec_add_key.html:185
+#: templates/default/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Sonesigneringsnøkkel - signerer alle andre poster i sonen"
 
-#: templates/default/dnssec_add_key.html:190
+#: templates/default/dnssec_add_key.html:200
 msgid "Recommended Settings"
 msgstr "Anbefalte innstillinger"
 
-#: templates/default/dnssec_add_key.html:191
+#: templates/default/dnssec_add_key.html:201
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11386,50 +11397,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan ikke koble til PowerDNS-database \"%s\": %s"
-
-# OBSOLETE: msgid "Type \""
-# OBSOLETE: msgstr "Type \""
-
-# OBSOLETE: msgid "Duplicate type \""
-# OBSOLETE: msgstr "Duplikat type \""
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr "IPv6-adresse bør bruke små bokstaver for heksadesimale siffer."
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr "IPv6-adressen er ikke i kanonisk form (RFC 5952). Kanonisk form: %s"
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "HTML-tagger er ikke tillatt i innholdsfelt."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "TXT-poststreng overskrider 255 byte. TXT-strenger må være 255 byte eller "
-# OBSOLETE: "mindre. For lengre innhold, del opp i flere strenger med anførselstegn "
-# OBSOLETE: "separert med mellomrom."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR-post må ha enten en regexp eller en erstatning (med \".\"), men "
-# OBSOLETE: "ikke begge deler."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR-tjeneste må følge formatet: [protokoll][+rs][+rs]... hvor protokoll "
-# OBSOLETE: "og rs starter med en bokstav og kun inneholder alfanumeriske tegn (maks "
-# OBSOLETE: "32 tegn hver)."
-
-
-

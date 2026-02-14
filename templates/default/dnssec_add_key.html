@@ -36,6 +36,16 @@
                 </strong>
             </div>
             <div class="card-body">
+                <div class="alert alert-info bg-info bg-opacity-10 mb-3" role="alert" id="csk-info-alert">
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-info-circle-fill me-2 mt-1"></i>
+                        <div>
+                            <strong>{% trans %}PowerDNS 4.0+ uses CSK by default{% endtrans %}</strong>
+                            <p class="mb-0 mt-1">{% trans %}PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. If you select KSK or ZSK, PowerDNS may still create a CSK key.{% endtrans %}</p>
+                        </div>
+                    </div>
+                </div>
+
                 <form class="needs-validation" method="post" action="index.php?page=dnssec_add_key&id={{ zone_id }}" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-01-29 00:35+0200\n"
+"POT-Creation-Date: 2026-02-14 17:25+0200\n"
 "PO-Revision-Date: 2025-06-02 07:22+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -221,19 +221,19 @@ msgstr "Nemáte oprávnění upravit tento záznam."
 msgid "MFA is not enabled on this system."
 msgstr "MFA není na tomto systému povoleno."
 
-#: lib/Application/Controller/MfaSetupController.php:194
+#: lib/Application/Controller/MfaSetupController.php:193
 msgid "Failed to create MFA record."
 msgstr "Selhalo vytvoření MFA záznamu."
 
-#: lib/Application/Controller/MfaSetupController.php:201
+#: lib/Application/Controller/MfaSetupController.php:200
 msgid "MFA is already enabled."
 msgstr "MFA je již povoleno."
 
-#: lib/Application/Controller/MfaSetupController.php:246
+#: lib/Application/Controller/MfaSetupController.php:245
 msgid "Verification code is required."
 msgstr "Ověřovací kód je povinný."
 
-#: lib/Application/Controller/MfaSetupController.php:155
+#: lib/Application/Controller/MfaSetupController.php:154
 msgid "MFA has been enabled successfully."
 msgstr "MFA bylo úspěšně povoleno."
 
@@ -241,7 +241,7 @@ msgstr "MFA bylo úspěšně povoleno."
 msgid "Invalid verification code. Please try again."
 msgstr "Neplatný ověřovací kód. Zkuste to znovu."
 
-#: lib/Application/Controller/MfaSetupController.php:171
+#: lib/Application/Controller/MfaSetupController.php:170
 msgid ""
 "Email address is not available. Please update your email address in your "
 "profile."
@@ -249,7 +249,7 @@ msgstr ""
 "E-mailová adresa není dostupná. Aktualizujte svou e-mailovou adresu ve svém "
 "profilu."
 
-#: lib/Application/Controller/MfaSetupController.php:178
+#: lib/Application/Controller/MfaSetupController.php:177
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
@@ -257,11 +257,11 @@ msgstr ""
 "E-mailová ověřovací metoda není dostupná, protože poštovní služba není na "
 "tomto systému povolena."
 
-#: lib/Application/Controller/MfaSetupController.php:185
+#: lib/Application/Controller/MfaSetupController.php:184
 msgid "Email verification method is not enabled on this system."
 msgstr "E-mailová ověřovací metoda není na tomto systému povolena."
 
-#: lib/Application/Controller/MfaSetupController.php:227
+#: lib/Application/Controller/MfaSetupController.php:226
 msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
@@ -269,23 +269,23 @@ msgstr ""
 "Selhalo odeslání ověřovacího kódu. Zkuste to později nebo použijte aplikaci "
 "pro ověření."
 
-#: lib/Application/Controller/MfaSetupController.php:264
+#: lib/Application/Controller/MfaSetupController.php:263
 msgid "MFA has been enabled with email verification."
 msgstr "MFA bylo povoleno s e-mailovým ověřením."
 
-#: lib/Application/Controller/MfaSetupController.php:280
+#: lib/Application/Controller/MfaSetupController.php:279
 msgid "MFA is not enabled."
 msgstr "MFA není povoleno."
 
-#: lib/Application/Controller/MfaSetupController.php:288
+#: lib/Application/Controller/MfaSetupController.php:287
 msgid "MFA has been disabled."
 msgstr "MFA bylo zakázáno."
 
-#: lib/Application/Controller/MfaSetupController.php:303
+#: lib/Application/Controller/MfaSetupController.php:302
 msgid "MFA must be enabled to regenerate recovery codes."
 msgstr "MFA musí být povoleno pro regeneraci záchanných kódů."
 
-#: lib/Application/Controller/MfaSetupController.php:311
+#: lib/Application/Controller/MfaSetupController.php:310
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "Záchanné kódy byly regenerovány. Uložte je na bezpečné místo."
 
@@ -5461,7 +5461,7 @@ msgstr "Veřejný klíč CDNSKEY musí obsahovat pouze platné znaky base64."
 msgid "CDNSKEY public key must be valid base64-encoded data."
 msgstr "Veřejný klíč CDNSKEY musí být platná data kódovaná v base64."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:181
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:190
 msgid "LUA record content cannot be empty."
 msgstr "Obsah LUA záznamu nemůže být prázdný."
 
@@ -5482,7 +5482,7 @@ msgstr ""
 "systémové operace. Tyto mohou být blokovány PowerDNS bezpečnostními "
 "mechanismy."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:132
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:141
 msgid ""
 "This LUA record uses explicit return mode (starts with semicolon). Ensure "
 "your Lua script explicitly returns the appropriate value."
@@ -5490,7 +5490,7 @@ msgstr ""
 "Tento LUA záznam používá explicitní return režim (začíná středníkem). "
 "Ujistěte se, že váš Lua skript explicitně vrací odpovídající hodnotu."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:146
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:155
 msgid ""
 "This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
 "sure it returns an appropriate value for the record type."
@@ -5498,7 +5498,7 @@ msgstr ""
 "Tento LUA záznam se zdá nepoužívat běžné PowerDNS Lua funkce. Ujistěte se, "
 "že vrací odpovídající hodnotu pro typ záznamu."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:154
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:163
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
@@ -5506,15 +5506,15 @@ msgstr ""
 "VAROVÁNÍ: Tento LUA záznam se zdá mít nevyvážené uvozovky, což může způsobit "
 "syntaktické chyby."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:188
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
 msgstr "LUA záznam má nesouhlasící závorky. Zkontrolujte svou syntaxi."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
 msgstr "LUA záznam má nesouhlasící složené závorky. Zkontrolujte svou syntaxi."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:202
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
@@ -5522,7 +5522,7 @@ msgstr ""
 "LUA záznam v explicitním return režimu (začíná středníkem) musí obsahovat "
 "alespoň jeden \"return\" příkaz."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
@@ -5530,7 +5530,7 @@ msgstr ""
 "LUA záznam v implicitním return režimu by měl být platné volání funkce nebo "
 "definice funkce s klíčovými slovy \"function\" a \"end\"."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:242
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
@@ -8216,7 +8216,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Smazat zónu/zóny"
 
-#: templates/default/dnssec_add_key.html:81
+#: templates/default/dnssec_add_key.html:91
 msgid "Add key"
 msgstr "Přidat klíč"
 
@@ -8225,47 +8225,58 @@ msgid "Add key for zone"
 msgstr "Přidat klíč pro zónu"
 
 #: templates/default/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ používá CSK ve výchozím nastavení"
+
+#: templates/default/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 a novější verze používají Combined Signing Keys (CSK) ve výchozím nastavení. Pokud vyberete KSK nebo ZSK, PowerDNS může stále vytvořit klíč CSK."
+
+#: templates/default/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Typ klíče"
 
-#: templates/default/dnssec_add_key.html:50
+#: templates/default/dnssec_add_key.html:60
 msgid "Select key type"
 msgstr "Vyberte typ klíče"
 
-#: templates/default/dnssec_add_key.html:61
+#: templates/default/dnssec_add_key.html:71
 msgid "Select algorithm"
 msgstr "Vyberte algoritmus"
 
-#: templates/default/dnssec_add_key.html:66
+#: templates/default/dnssec_add_key.html:76
 msgid "Bits in length"
 msgstr "Počet bitů"
 
-#: templates/default/dnssec_add_key.html:75
+#: templates/default/dnssec_add_key.html:85
 msgid "Select bits length"
 msgstr "Vyberte délku v bitech"
 
-#: templates/default/dnssec_add_key.html:132
+#: templates/default/dnssec_add_key.html:142
 msgid "Recommended bits for"
 msgstr "Doporučené bity pro"
 
-#: templates/default/dnssec_add_key.html:140
+#: templates/default/dnssec_add_key.html:150
 #: install/helpers/InstallStepHandler.php:183
 msgid "Warning:"
 msgstr "Varování:"
 
-#: templates/default/dnssec_add_key.html:140
+#: templates/default/dnssec_add_key.html:150
 msgid "bits is not recommended for"
 msgstr "bitů se nedoporučuje pro"
 
-#: templates/default/dnssec_add_key.html:177
+#: templates/default/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
 msgstr "O typech DNSSEC klíčů"
 
-#: templates/default/dnssec_add_key.html:181
+#: templates/default/dnssec_add_key.html:191
 msgid "Key Types Explained"
 msgstr "Vysvětlení typů klíčů"
 
-#: templates/default/dnssec_add_key.html:183
+#: templates/default/dnssec_add_key.html:193
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -8273,19 +8284,19 @@ msgstr ""
 "Kombinovaný podpisový klíč - slouží jako KSK i ZSK (doporučeno pro PowerDNS "
 "4.0+)"
 
-#: templates/default/dnssec_add_key.html:184
+#: templates/default/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Klíč pro podpis klíčů - podepisuje DNSKEY záznamy v zóně"
 
-#: templates/default/dnssec_add_key.html:185
+#: templates/default/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Klíč pro podpis zóny - podepisuje všechny ostatní záznamy v zóně"
 
-#: templates/default/dnssec_add_key.html:190
+#: templates/default/dnssec_add_key.html:200
 msgid "Recommended Settings"
 msgstr "Doporučená nastavení"
 
-#: templates/default/dnssec_add_key.html:191
+#: templates/default/dnssec_add_key.html:201
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11389,50 +11400,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nelze se připojit k databázi PowerDNS \"%s\": %s"
-
-# OBSOLETE: msgid "Type \""
-# OBSOLETE: msgstr "Typ \""
-
-# OBSOLETE: msgid "Duplicate type \""
-# OBSOLETE: msgstr "Duplicitní typ \""
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IPv6 adresa by měla používat malá písmena pro hexadecimální číslice."
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr "IPv6 adresa není v kanonické formě (RFC 5952). Kanonická forma: %s"
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "HTML tagy nejsou povoleny v poli obsahu."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Řetězec TXT záznamu překračuje 255 bajtů. TXT řetězce musí mít 255 bajtů "
-# OBSOLETE: "nebo méně. Pro delší obsah rozdělte na více řetězců v uvozovkách "
-# OBSOLETE: "oddělených mezerami."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR záznam musí mít buď regexp nebo náhradu (s \".\"), ale ne obojí."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR služba musí následovat formát: [protokol][+rs][+rs]... kde protokol "
-# OBSOLETE: "a rs začínají písmenem a obsahují pouze alfanumerické znaky (max 32 znaků "
-# OBSOLETE: "každý)."
-
-
-

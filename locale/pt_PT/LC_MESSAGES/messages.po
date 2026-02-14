@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-01-29 00:35+0200\n"
+"POT-Creation-Date: 2026-02-14 17:25+0200\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -229,19 +229,19 @@ msgstr "Não tem permissão para editar este registo."
 msgid "MFA is not enabled on this system."
 msgstr "A MFA não está ativada neste sistema."
 
-#: lib/Application/Controller/MfaSetupController.php:194
+#: lib/Application/Controller/MfaSetupController.php:193
 msgid "Failed to create MFA record."
 msgstr "Falha ao criar registo MFA."
 
-#: lib/Application/Controller/MfaSetupController.php:201
+#: lib/Application/Controller/MfaSetupController.php:200
 msgid "MFA is already enabled."
 msgstr "A MFA já está ativada."
 
-#: lib/Application/Controller/MfaSetupController.php:246
+#: lib/Application/Controller/MfaSetupController.php:245
 msgid "Verification code is required."
 msgstr "O código de verificação é obrigatório."
 
-#: lib/Application/Controller/MfaSetupController.php:155
+#: lib/Application/Controller/MfaSetupController.php:154
 msgid "MFA has been enabled successfully."
 msgstr "A MFA foi ativada com sucesso."
 
@@ -249,7 +249,7 @@ msgstr "A MFA foi ativada com sucesso."
 msgid "Invalid verification code. Please try again."
 msgstr "Código de verificação inválido. Tente novamente."
 
-#: lib/Application/Controller/MfaSetupController.php:171
+#: lib/Application/Controller/MfaSetupController.php:170
 msgid ""
 "Email address is not available. Please update your email address in your "
 "profile."
@@ -257,7 +257,7 @@ msgstr ""
 "O endereço de correio eletrónico não está disponível. Actualize o seu "
 "endereço de correio eletrónico no seu perfil."
 
-#: lib/Application/Controller/MfaSetupController.php:178
+#: lib/Application/Controller/MfaSetupController.php:177
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
@@ -265,13 +265,13 @@ msgstr ""
 "O método de verificação por correio eletrónico não está disponível porque o "
 "serviço de correio não está ativado neste sistema."
 
-#: lib/Application/Controller/MfaSetupController.php:185
+#: lib/Application/Controller/MfaSetupController.php:184
 msgid "Email verification method is not enabled on this system."
 msgstr ""
 "O método de verificação por correio eletrónico não está ativado neste "
 "sistema."
 
-#: lib/Application/Controller/MfaSetupController.php:227
+#: lib/Application/Controller/MfaSetupController.php:226
 msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
@@ -279,23 +279,23 @@ msgstr ""
 "Falha ao enviar código de verificação. Tente novamente mais tarde ou utilize "
 "autenticação baseada em aplicação."
 
-#: lib/Application/Controller/MfaSetupController.php:264
+#: lib/Application/Controller/MfaSetupController.php:263
 msgid "MFA has been enabled with email verification."
 msgstr "A MFA foi ativada com verificação por correio eletrónico."
 
-#: lib/Application/Controller/MfaSetupController.php:280
+#: lib/Application/Controller/MfaSetupController.php:279
 msgid "MFA is not enabled."
 msgstr "A MFA não está ativada."
 
-#: lib/Application/Controller/MfaSetupController.php:288
+#: lib/Application/Controller/MfaSetupController.php:287
 msgid "MFA has been disabled."
 msgstr "A MFA foi desativada."
 
-#: lib/Application/Controller/MfaSetupController.php:303
+#: lib/Application/Controller/MfaSetupController.php:302
 msgid "MFA must be enabled to regenerate recovery codes."
 msgstr "A MFA deve estar ativada para regenerar códigos de recuperação."
 
-#: lib/Application/Controller/MfaSetupController.php:311
+#: lib/Application/Controller/MfaSetupController.php:310
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr ""
 "Os códigos de recuperação foram regenerados. Guarde-os num local seguro."
@@ -5594,7 +5594,7 @@ msgstr "A chave pública CDNSKEY deve conter apenas caracteres base64 válidos."
 msgid "CDNSKEY public key must be valid base64-encoded data."
 msgstr "A chave pública CDNSKEY deve ser dados codificados em base64 válidos."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:181
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:190
 msgid "LUA record content cannot be empty."
 msgstr "O conteúdo do registo LUA não pode estar vazio."
 
@@ -5615,7 +5615,7 @@ msgstr ""
 "potencialmente inseguras. Estas podem ser bloqueadas pelos mecanismos de "
 "segurança do PowerDNS."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:132
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:141
 msgid ""
 "This LUA record uses explicit return mode (starts with semicolon). Ensure "
 "your Lua script explicitly returns the appropriate value."
@@ -5624,7 +5624,7 @@ msgstr ""
 "Certifique-se de que o seu script Lua retorna explicitamente o valor "
 "apropriado."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:146
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:155
 msgid ""
 "This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
 "sure it returns an appropriate value for the record type."
@@ -5632,7 +5632,7 @@ msgstr ""
 "Este registo LUA não parece usar funções Lua comuns do PowerDNS. Certifique-"
 "se de que retorna um valor apropriado para o tipo de registo."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:154
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:163
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
@@ -5640,15 +5640,15 @@ msgstr ""
 "AVISO: Este registo LUA parece ter aspas desequilibradas, que podem causar "
 "erros de sintaxe."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:188
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
 msgstr "O registo LUA tem parênteses desemparelhados. Verifique a sua sintaxe."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
 msgstr "O registo LUA tem chavetas desemparelhadas. Verifique a sua sintaxe."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:202
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
@@ -5656,7 +5656,7 @@ msgstr ""
 "O registo LUA em modo de retorno explícito (começa com ponto e vírgula) deve "
 "conter pelo menos uma declaração \"return\"."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
@@ -5664,7 +5664,7 @@ msgstr ""
 "O registo LUA em modo de retorno implícito deve ser uma chamada de função "
 "válida ou definição de função com palavras-chave \"function\" e \"end\"."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:242
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
@@ -6585,9 +6585,9 @@ msgid ""
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr ""
-"O serviço NAPTR deve seguir o formato: [protocolo][+rs][+rs]... onde protocolo "
-"e rs começam com uma letra e contêm caracteres alfanuméricos, hífens, dois "
-"pontos ou sinais de mais (máx 32 caracteres cada)."
+"O serviço NAPTR deve seguir o formato: [protocolo][+rs][+rs]... onde "
+"protocolo e rs começam com uma letra e contêm caracteres alfanuméricos, "
+"hífens, dois pontos ou sinais de mais (máx 32 caracteres cada)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8401,7 +8401,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Eliminar zona(s)"
 
-#: templates/default/dnssec_add_key.html:81
+#: templates/default/dnssec_add_key.html:91
 msgid "Add key"
 msgstr "Adicionar chave"
 
@@ -8410,47 +8410,58 @@ msgid "Add key for zone"
 msgstr "Adicionar chave para zona"
 
 #: templates/default/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ usa CSK por predefinição"
+
+#: templates/default/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 e versões mais recentes utilizam Combined Signing Keys (CSK) por predefinição. Se selecionar KSK ou ZSK, o PowerDNS poderá ainda assim criar uma chave CSK."
+
+#: templates/default/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Tipo de chave"
 
-#: templates/default/dnssec_add_key.html:50
+#: templates/default/dnssec_add_key.html:60
 msgid "Select key type"
 msgstr "Seleccionar tipo de chave"
 
-#: templates/default/dnssec_add_key.html:61
+#: templates/default/dnssec_add_key.html:71
 msgid "Select algorithm"
 msgstr "Seleccionar algoritmo"
 
-#: templates/default/dnssec_add_key.html:66
+#: templates/default/dnssec_add_key.html:76
 msgid "Bits in length"
 msgstr "Bits de comprimento"
 
-#: templates/default/dnssec_add_key.html:75
+#: templates/default/dnssec_add_key.html:85
 msgid "Select bits length"
 msgstr "Seleccionar comprimento em bits"
 
-#: templates/default/dnssec_add_key.html:132
+#: templates/default/dnssec_add_key.html:142
 msgid "Recommended bits for"
 msgstr "Bits recomendados para"
 
-#: templates/default/dnssec_add_key.html:140
+#: templates/default/dnssec_add_key.html:150
 #: install/helpers/InstallStepHandler.php:183
 msgid "Warning:"
 msgstr "Aviso:"
 
-#: templates/default/dnssec_add_key.html:140
+#: templates/default/dnssec_add_key.html:150
 msgid "bits is not recommended for"
 msgstr "bits não é recomendado para"
 
-#: templates/default/dnssec_add_key.html:177
+#: templates/default/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
 msgstr "Sobre Tipos de Chave DNSSEC"
 
-#: templates/default/dnssec_add_key.html:181
+#: templates/default/dnssec_add_key.html:191
 msgid "Key Types Explained"
 msgstr "Tipos de Chave Explicados"
 
-#: templates/default/dnssec_add_key.html:183
+#: templates/default/dnssec_add_key.html:193
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -8458,19 +8469,19 @@ msgstr ""
 "Chave de Assinatura Combinada - serve como KSK e ZSK (recomendado para "
 "PowerDNS 4.0+)"
 
-#: templates/default/dnssec_add_key.html:184
+#: templates/default/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Chave de Assinatura de Chave - assina os registos DNSKEY na zona"
 
-#: templates/default/dnssec_add_key.html:185
+#: templates/default/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Chave de Assinatura de Zona - assina todos os outros registos na zona"
 
-#: templates/default/dnssec_add_key.html:190
+#: templates/default/dnssec_add_key.html:200
 msgid "Recommended Settings"
 msgstr "Configurações Recomendadas"
 
-#: templates/default/dnssec_add_key.html:191
+#: templates/default/dnssec_add_key.html:201
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11627,51 +11638,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Não é possível ligar à base de dados PowerDNS \"%s\": %s"
-
-# OBSOLETE: msgid "Type \""
-# OBSOLETE: msgstr "Tipo \""
-
-# OBSOLETE: msgid "Duplicate type \""
-# OBSOLETE: msgstr "Tipo duplicado \""
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr "O endereço IPv6 deve usar minúsculas para dígitos hexadecimais."
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "O endereço IPv6 não está na forma canónica (RFC 5952). Forma canónica: %s"
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "Etiquetas HTML não são permitidas no campo de conteúdo."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "A string do registo TXT excede 255 bytes. As strings TXT devem ter 255 "
-# OBSOLETE: "bytes ou menos. Para conteúdo mais longo, divida em múltiplas strings "
-# OBSOLETE: "entre aspas separadas por espaços."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "O registo NAPTR deve ter uma expressão regular ou uma substituição (com "
-# OBSOLETE: "\".\"), mas não ambos."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "O serviço NAPTR deve seguir o formato: [protocolo][+rs][+rs]... onde "
-# OBSOLETE: "protocolo e rs começam com uma letra e contêm apenas caracteres "
-# OBSOLETE: "alfanuméricos (máx. 32 caracteres cada)."
-
-
-

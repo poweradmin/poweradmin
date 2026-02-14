@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-01-29 00:35+0200\n"
+"POT-Creation-Date: 2026-02-14 17:25+0200\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -226,19 +226,19 @@ msgstr "U hebt geen toestemming om dit record te bewerken."
 msgid "MFA is not enabled on this system."
 msgstr "MFA is niet ingeschakeld op dit systeem."
 
-#: lib/Application/Controller/MfaSetupController.php:194
+#: lib/Application/Controller/MfaSetupController.php:193
 msgid "Failed to create MFA record."
 msgstr "Kan MFA-record niet aanmaken."
 
-#: lib/Application/Controller/MfaSetupController.php:201
+#: lib/Application/Controller/MfaSetupController.php:200
 msgid "MFA is already enabled."
 msgstr "MFA is al ingeschakeld."
 
-#: lib/Application/Controller/MfaSetupController.php:246
+#: lib/Application/Controller/MfaSetupController.php:245
 msgid "Verification code is required."
 msgstr "Verificatiecode is verplicht."
 
-#: lib/Application/Controller/MfaSetupController.php:155
+#: lib/Application/Controller/MfaSetupController.php:154
 msgid "MFA has been enabled successfully."
 msgstr "MFA is succesvol ingeschakeld."
 
@@ -246,14 +246,14 @@ msgstr "MFA is succesvol ingeschakeld."
 msgid "Invalid verification code. Please try again."
 msgstr "Ongeldige verificatiecode. Probeer het opnieuw."
 
-#: lib/Application/Controller/MfaSetupController.php:171
+#: lib/Application/Controller/MfaSetupController.php:170
 msgid ""
 "Email address is not available. Please update your email address in your "
 "profile."
 msgstr ""
 "E-mailadres is niet beschikbaar. Werk uw e-mailadres bij in uw profiel."
 
-#: lib/Application/Controller/MfaSetupController.php:178
+#: lib/Application/Controller/MfaSetupController.php:177
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
@@ -261,11 +261,11 @@ msgstr ""
 "E-mailverificatiemethode is niet beschikbaar omdat de mailservice niet is "
 "ingeschakeld op dit systeem."
 
-#: lib/Application/Controller/MfaSetupController.php:185
+#: lib/Application/Controller/MfaSetupController.php:184
 msgid "Email verification method is not enabled on this system."
 msgstr "E-mailverificatiemethode is niet ingeschakeld op dit systeem."
 
-#: lib/Application/Controller/MfaSetupController.php:227
+#: lib/Application/Controller/MfaSetupController.php:226
 msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
@@ -273,23 +273,23 @@ msgstr ""
 "Kan verificatiecode niet verzenden. Probeer het later opnieuw of gebruik app-"
 "gebaseerde authenticatie."
 
-#: lib/Application/Controller/MfaSetupController.php:264
+#: lib/Application/Controller/MfaSetupController.php:263
 msgid "MFA has been enabled with email verification."
 msgstr "MFA is ingeschakeld met e-mailverificatie."
 
-#: lib/Application/Controller/MfaSetupController.php:280
+#: lib/Application/Controller/MfaSetupController.php:279
 msgid "MFA is not enabled."
 msgstr "MFA is niet ingeschakeld."
 
-#: lib/Application/Controller/MfaSetupController.php:288
+#: lib/Application/Controller/MfaSetupController.php:287
 msgid "MFA has been disabled."
 msgstr "MFA is uitgeschakeld."
 
-#: lib/Application/Controller/MfaSetupController.php:303
+#: lib/Application/Controller/MfaSetupController.php:302
 msgid "MFA must be enabled to regenerate recovery codes."
 msgstr "MFA moet ingeschakeld zijn om herstelcodes opnieuw te genereren."
 
-#: lib/Application/Controller/MfaSetupController.php:311
+#: lib/Application/Controller/MfaSetupController.php:310
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr ""
 "Herstelcodes zijn opnieuw gegenereerd. Bewaar ze op een veilige plaats."
@@ -5568,7 +5568,7 @@ msgstr "CDNSKEY publieke sleutel mag alleen geldige base64 karakters bevatten."
 msgid "CDNSKEY public key must be valid base64-encoded data."
 msgstr "CDNSKEY publieke sleutel moet geldige base64-gecodeerde gegevens zijn."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:181
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:190
 msgid "LUA record content cannot be empty."
 msgstr "LUA record inhoud kan niet leeg zijn."
 
@@ -5589,7 +5589,7 @@ msgstr ""
 "systeemoperaties. Deze kunnen geblokkeerd worden door PowerDNS "
 "beveiligingsmechanismen."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:132
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:141
 msgid ""
 "This LUA record uses explicit return mode (starts with semicolon). Ensure "
 "your Lua script explicitly returns the appropriate value."
@@ -5597,7 +5597,7 @@ msgstr ""
 "Dit LUA record gebruikt expliciete return modus (begint met puntkomma). Zorg "
 "ervoor dat uw Lua script expliciet de juiste waarde teruggeeft."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:146
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:155
 msgid ""
 "This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
 "sure it returns an appropriate value for the record type."
@@ -5605,7 +5605,7 @@ msgstr ""
 "Dit LUA record lijkt geen veelgebruikte PowerDNS Lua functies te gebruiken. "
 "Zorg ervoor dat het een juiste waarde teruggeeft voor het recordtype."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:154
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:163
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
@@ -5613,15 +5613,15 @@ msgstr ""
 "WAARSCHUWING: Dit LUA record lijkt ongebalanceerde aanhalingstekens te "
 "hebben, wat syntaxfouten kan veroorzaken."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:188
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
 msgstr "LUA record heeft niet-overeenkomende haakjes. Controleer uw syntax."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
 msgstr "LUA record heeft niet-overeenkomende accolades. Controleer uw syntax."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:202
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
@@ -5629,7 +5629,7 @@ msgstr ""
 "LUA record in expliciete return modus (begint met puntkomma) moet minstens "
 "één \"return\" statement bevatten."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
@@ -5637,7 +5637,7 @@ msgstr ""
 "LUA record in impliciete return modus moet een geldige functieaanroep of "
 "functiedefinitie zijn met \"function\" en \"end\" trefwoorden."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:242
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
@@ -6551,8 +6551,8 @@ msgid ""
 "colons, or plus signs (max 32 chars each)."
 msgstr ""
 "NAPTR service moet het formaat volgen: [protocol][+rs][+rs]... waarbij "
-"protocol en rs beginnen met een letter en alfanumerieke tekens, koppeltekens, "
-"dubbele punten of plustekens bevatten (max 32 tekens elk)."
+"protocol en rs beginnen met een letter en alfanumerieke tekens, "
+"koppeltekens, dubbele punten of plustekens bevatten (max 32 tekens elk)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8367,7 +8367,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Zone(s) verwijderen"
 
-#: templates/default/dnssec_add_key.html:81
+#: templates/default/dnssec_add_key.html:91
 msgid "Add key"
 msgstr "Sleutel toevoegen"
 
@@ -8376,47 +8376,58 @@ msgid "Add key for zone"
 msgstr "Sleutel toevoegen voor zone"
 
 #: templates/default/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ gebruikt standaard CSK"
+
+#: templates/default/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 en nieuwere versies gebruiken standaard Combined Signing Keys (CSK). Als u KSK of ZSK selecteert, kan PowerDNS alsnog een CSK-sleutel aanmaken."
+
+#: templates/default/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Sleuteltype"
 
-#: templates/default/dnssec_add_key.html:50
+#: templates/default/dnssec_add_key.html:60
 msgid "Select key type"
 msgstr "Selecteer sleuteltype"
 
-#: templates/default/dnssec_add_key.html:61
+#: templates/default/dnssec_add_key.html:71
 msgid "Select algorithm"
 msgstr "Selecteer algoritme"
 
-#: templates/default/dnssec_add_key.html:66
+#: templates/default/dnssec_add_key.html:76
 msgid "Bits in length"
 msgstr "Bits in lengte"
 
-#: templates/default/dnssec_add_key.html:75
+#: templates/default/dnssec_add_key.html:85
 msgid "Select bits length"
 msgstr "Selecteer bits lengte"
 
-#: templates/default/dnssec_add_key.html:132
+#: templates/default/dnssec_add_key.html:142
 msgid "Recommended bits for"
 msgstr "Aanbevolen bits voor"
 
-#: templates/default/dnssec_add_key.html:140
+#: templates/default/dnssec_add_key.html:150
 #: install/helpers/InstallStepHandler.php:183
 msgid "Warning:"
 msgstr "Waarschuwing:"
 
-#: templates/default/dnssec_add_key.html:140
+#: templates/default/dnssec_add_key.html:150
 msgid "bits is not recommended for"
 msgstr "bits wordt niet aanbevolen voor"
 
-#: templates/default/dnssec_add_key.html:177
+#: templates/default/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
 msgstr "Over DNSSEC Sleutel Types"
 
-#: templates/default/dnssec_add_key.html:181
+#: templates/default/dnssec_add_key.html:191
 msgid "Key Types Explained"
 msgstr "Sleutel Types Uitgelegd"
 
-#: templates/default/dnssec_add_key.html:183
+#: templates/default/dnssec_add_key.html:193
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -8424,19 +8435,19 @@ msgstr ""
 "Gecombineerde Ondertekenings Sleutel - fungeert als zowel KSK als ZSK "
 "(aanbevolen voor PowerDNS 4.0+)"
 
-#: templates/default/dnssec_add_key.html:184
+#: templates/default/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Key Signing Key - ondertekent de DNSKEY records in de zone"
 
-#: templates/default/dnssec_add_key.html:185
+#: templates/default/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - ondertekent alle andere records in de zone"
 
-#: templates/default/dnssec_add_key.html:190
+#: templates/default/dnssec_add_key.html:200
 msgid "Recommended Settings"
 msgstr "Aanbevolen Instellingen"
 
-#: templates/default/dnssec_add_key.html:191
+#: templates/default/dnssec_add_key.html:201
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -11596,50 +11607,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan geen verbinding maken met PowerDNS-database \"%s\": %s"
-
-# OBSOLETE: msgid "Type \""
-# OBSOLETE: msgstr "Type \""
-
-# OBSOLETE: msgid "Duplicate type \""
-# OBSOLETE: msgstr "Dubbel type \""
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr "IPv6 adres moet kleine letters gebruiken voor hexadecimale cijfers."
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr "IPv6 adres is niet in canonieke vorm (RFC 5952). Canonieke vorm: %s"
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "HTML tags zijn niet toegestaan in het inhoudsveld."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "TXT record string overschrijdt 255 bytes. TXT strings moeten 255 bytes of "
-# OBSOLETE: "minder zijn. Voor langere inhoud, verdeel in meerdere quoted strings "
-# OBSOLETE: "gescheiden door spaties."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR record moet ofwel een regexp of een replacement (met \".\") hebben, "
-# OBSOLETE: "maar niet beide."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR service moet het formaat volgen: [protocol][+rs][+rs]... waarbij "
-# OBSOLETE: "protocol en rs beginnen met een letter en alleen alfanumerieke karakters "
-# OBSOLETE: "bevatten (max 32 tekens elk)."
-
-
-

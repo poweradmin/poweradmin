@@ -37,6 +37,16 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
+    test('should display CSK info alert on add key page', async ({ adminPage: page }) => {
+      const zoneId = await ensureTestZoneExists(page, 'admin');
+      expect(zoneId).toBeTruthy();
+      await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
+      const cskInfoAlert = page.locator('#csk-info-alert');
+      await expect(cskInfoAlert).toBeVisible();
+      await expect(cskInfoAlert).toContainText('PowerDNS 4.0');
+      await expect(cskInfoAlert).toContainText('CSK');
+    });
+
     test('should display key type selector', async ({ adminPage: page }) => {
       const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
