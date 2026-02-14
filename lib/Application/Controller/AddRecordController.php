@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -268,6 +269,7 @@ class AddRecordController extends BaseController
 
         $this->render('add_record.html', [
             'types' => $isReverseZone ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled) : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled),
+            'deprecated_types' => RecordType::DEPRECATED_TYPES,
             'name' => $_POST['name'] ?? '',
             'type' => $_POST['type'] ?? '',
             'content' => $_POST['content'] ?? '',

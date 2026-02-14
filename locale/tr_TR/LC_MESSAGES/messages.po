@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-14 17:09+0200\n"
+"POT-Creation-Date: 2026-02-14 19:18+0200\n"
 "PO-Revision-Date: 2025-06-05 21:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -135,7 +135,7 @@ msgstr "Bu yorumu düzenleme yetkiniz yok."
 msgid "The comment has been updated successfully."
 msgstr "Yorum başarıyla güncellendi."
 
-#: lib/Application/Controller/EditRecordController.php:86
+#: lib/Application/Controller/EditRecordController.php:87
 msgid "Invalid record ID."
 msgstr "Geçersiz kayıt ID'si."
 
@@ -143,7 +143,7 @@ msgstr "Geçersiz kayıt ID'si."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Bu bölgedeki kayıtları silme izniniz bulunmamaktadır."
 
-#: lib/Application/Controller/EditRecordController.php:195
+#: lib/Application/Controller/EditRecordController.php:197
 msgid "Record not found."
 msgstr "Kayıt bulunamadı."
 
@@ -792,19 +792,19 @@ msgstr "Zon başarıyla güncellenmedi."
 msgid "Please provide all required fields."
 msgstr "Lütfen tüm zorunlu alanları sağlayın."
 
-#: lib/Application/Controller/AddRecordController.php:229
+#: lib/Application/Controller/AddRecordController.php:230
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Kayıt başarıyla eklendi. Eşleşen bir PTR kaydı da oluşturuldu."
 
-#: lib/Application/Controller/AddRecordController.php:234
+#: lib/Application/Controller/AddRecordController.php:235
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Kayıt başarıyla eklendi, ancak PTR kaydı oluşturma başarısız: "
 
-#: lib/Application/Controller/AddRecordController.php:238
+#: lib/Application/Controller/AddRecordController.php:239
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Kayıt başarıyla eklendi, ancak PTR kaydı oluşturma başarısız."
 
-#: lib/Application/Controller/AddRecordController.php:244
+#: lib/Application/Controller/AddRecordController.php:245
 msgid "Record successfully added. A matching A record was also created."
 msgstr "Kayıt başarıyla eklendi. Eşleşen bir A kaydı da oluşturuldu."
 
@@ -848,25 +848,25 @@ msgstr ""
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Bu alana kayıt ekleme yetkiniz bulunmuyor."
 
-#: lib/Application/Controller/AddRecordController.php:226
+#: lib/Application/Controller/AddRecordController.php:227
 msgid "Record successfully added."
 msgstr "Kayıt başarıyla eklendi."
 
-#: lib/Application/Controller/AddRecordController.php:398
+#: lib/Application/Controller/AddRecordController.php:400
 msgid "No records were provided."
 msgstr "Kayıt sağlanmadı."
 
-#: lib/Application/Controller/AddRecordController.php:440
+#: lib/Application/Controller/AddRecordController.php:442
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d kayıt başarıyla eklendi."
 
-#: lib/Application/Controller/AddRecordController.php:442
+#: lib/Application/Controller/AddRecordController.php:444
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d kayıt eklenemedi."
 
-#: lib/Application/Controller/AddRecordController.php:447
+#: lib/Application/Controller/AddRecordController.php:449
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -874,7 +874,7 @@ msgstr ""
 "Bazı kayıtlar eklenemedi. Zaten mevcut olabilirler veya geçersiz veri "
 "içerebilirler."
 
-#: lib/Application/Controller/AddRecordController.php:473
+#: lib/Application/Controller/AddRecordController.php:475
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Hiçbir kayıt eklenemedi. Geçersiz veri içerebilirler."
 
@@ -1348,23 +1348,23 @@ msgstr "Oturumunuz kapatıldı"
 msgid "Logout completed (with warnings): "
 msgstr "Oturum kapatma tamamlandı (uyarılarla): "
 
-#: lib/Application/Controller/EditRecordController.php:99
+#: lib/Application/Controller/EditRecordController.php:100
 msgid "You do not have permission to view this record."
 msgstr "Bu kaydı görüntüleme izniniz bulunmamaktadır."
 
-#: lib/Application/Controller/EditRecordController.php:108
+#: lib/Application/Controller/EditRecordController.php:109
 msgid "You cannot edit records in a SLAVE zone."
 msgstr "SLAVE bölgesinde kayıt düzenleyemezsiniz."
 
-#: lib/Application/Controller/EditRecordController.php:118
+#: lib/Application/Controller/EditRecordController.php:119
 msgid "You do not have permission to edit this record."
 msgstr "Bu kaydı düzenleme izniniz bulunmamaktadır."
 
-#: lib/Application/Controller/EditRecordController.php:226
+#: lib/Application/Controller/EditRecordController.php:228
 msgid "Failed to retrieve updated record information."
 msgstr "Güncellenmiş kayıt bilgileri alınamadı."
 
-#: lib/Application/Controller/EditRecordController.php:305
+#: lib/Application/Controller/EditRecordController.php:307
 msgid "The record has been updated successfully."
 msgstr "Kayıt başarıyla güncellendi."
 
@@ -1768,7 +1768,6 @@ msgid "Transport protocol for the TLS connection"
 msgstr "TLS bağlantısı için aktarım protokolü"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:89
-#: install/templates/step4.html.twig:64
 msgid "Hostname"
 msgstr "Sunucu adı"
 
@@ -9080,9 +9079,18 @@ msgstr "DNS kayıt özelliklerini değiştir"
 msgid "Comment"
 msgstr "Yorum"
 
+#: templates/modern/edit_record.html:92 templates/modern/add_record.html:83
+msgid "deprecated"
+msgstr "kullanımdan kaldırılmış"
+
 #: templates/modern/edit.html:637 templates/modern/add_record.html:91
 msgid "Provide content"
 msgstr "İçerik sağlayın"
+
+#: templates/modern/edit_record.html:109 templates/modern/add_record.html:96
+msgid "This record type is deprecated and should not be used for new records."
+msgstr ""
+"Bu kayıt türü kullanımdan kaldırılmıştır ve yeni kayıtlar için kullanılmamalıdır."
 
 #: templates/modern/edit_perm_templ.html:48
 msgid "Update"
@@ -9448,8 +9456,7 @@ msgstr "Kullanıcı etkinlik geçmişini görüntüle"
 msgid "View user logs"
 msgstr "Kullanıcı kayıtlarını görüntüle"
 
-#: templates/modern/add_user.html:39 install/templates/step4.html.twig:49
-#: install/templates/step5.html.twig:67
+#: templates/modern/add_user.html:39
 msgid "Password"
 msgstr "Şifre"
 
@@ -10166,6 +10173,19 @@ msgstr "Anahtar ekle"
 msgid "Add key for zone"
 msgstr "Zon için anahtar ekle"
 
+#: templates/modern/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ varsayılan olarak CSK kullanır"
+
+#: templates/modern/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 ve daha yeni sürümler varsayılan olarak Combined Signing Keys "
+"(CSK) kullanır. KSK veya ZSK seçseniz bile PowerDNS yine de bir CSK anahtarı "
+"oluşturabilir."
+
 #: templates/modern/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Anahtar tipi"
@@ -10191,7 +10211,6 @@ msgid "Recommended bits for"
 msgstr "Önerilen bit sayısı"
 
 #: templates/modern/dnssec_add_key.html:150
-#: install/helpers/InstallStepHandler.php:169
 msgid "Warning:"
 msgstr "Uyarı:"
 
@@ -10244,7 +10263,6 @@ msgid "Edit User"
 msgstr "Kullanıcıyı Düzenle"
 
 #: templates/modern/manage_group_members.html:92
-#: install/templates/step4.html.twig:38 install/templates/step5.html.twig:56
 msgid "Username"
 msgstr "Kullanıcı adı"
 
@@ -10289,7 +10307,6 @@ msgid "Optional information about this user"
 msgstr "Bu kullanıcı hakkında isteğe bağlı bilgi"
 
 #: templates/modern/users.html:49 templates/modern/add_user.html:94
-#: install/templates/step2.html.twig:116
 msgid "Enabled"
 msgstr "Etkin"
 
@@ -10691,7 +10708,6 @@ msgid "Host Prefix"
 msgstr "Host Öneki"
 
 #: templates/modern/batch_ptr_record.html:71
-#: install/templates/step4.html.twig:133
 msgid "Optional"
 msgstr "İsteğe bağlı"
 
@@ -11053,7 +11069,7 @@ msgstr "Geçersiz TTL değeri"
 msgid "Provide TTL"
 msgstr "TTL sağlayın"
 
-#: templates/modern/edit.html:682 templates/modern/add_record.html:139
+#: templates/modern/edit.html:682 templates/modern/add_record.html:142
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11406,7 +11422,6 @@ msgid "Add User"
 msgstr "Kullanıcı Ekle"
 
 #: templates/default/add_user.html:43 templates/modern/add_user.html:43
-#: install/templates/step4.html.twig:54
 msgid "Provide user password"
 msgstr "Kullanıcı şifresini girin"
 
@@ -12622,7 +12637,6 @@ msgid "Last Checked"
 msgstr "Son Kontrol"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:125
-#: install/templates/step2.html.twig:27
 msgid "OK"
 msgstr "Tamam"
 
@@ -12760,11 +12774,11 @@ msgstr "Zona Kayıt Ekle"
 msgid "Create a new DNS record in this zone"
 msgstr "Bu zonda yeni bir DNS kaydı oluştur"
 
-#: templates/default/add_record.html:128 templates/modern/add_record.html:128
+#: templates/default/add_record.html:131 templates/modern/add_record.html:131
 msgid "Add another record"
 msgstr "Başka Bir Kayıt Ekle"
 
-#: templates/default/add_record.html:143 templates/modern/add_record.html:143
+#: templates/default/add_record.html:146 templates/modern/add_record.html:146
 msgid "Add records"
 msgstr "Kayıtları Ekle"
 
@@ -13078,657 +13092,519 @@ msgstr "Zon Şablonlarını Listele"
 msgid "Bulk Domain Registration"
 msgstr "Toplu Domain Kayıt"
 
-#: templates/modern/dnssec_add_key.html:43
-msgid "PowerDNS 4.0+ uses CSK by default"
-msgstr "PowerDNS 4.0+ varsayılan olarak CSK kullanır"
-
-#: templates/modern/dnssec_add_key.html:44
-msgid ""
-"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
-"If you select KSK or ZSK, PowerDNS may still create a CSK key."
-msgstr ""
-"PowerDNS 4.0 ve daha yeni sürümler varsayılan olarak Combined Signing Keys (CSK) kullanır. KSK veya ZSK seçseniz bile PowerDNS yine de bir CSK anahtarı oluşturabilir."
-
 #: templates/modern/header.html:382
 msgid "Dashboard"
 msgstr "Pano"
 
-#: install/templates/step6.html.twig:3
-msgid "Create limited rights user"
-msgstr "Sınırlı haklara sahip kullanıcı oluştur"
-
-#: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
-msgid "Step"
-msgstr "Adım"
-
-#: install/templates/step6.html.twig:8
-msgid "Create limited-rights user"
-msgstr "Sınırlı haklara sahip kullanıcı oluştur"
-
-#: install/templates/step6.html.twig:13
-msgid "Limited Database Rights:"
-msgstr "Sınırlı Veritabanı Hakları:"
-
-#: install/templates/step6.html.twig:13
-msgid ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
-msgstr ""
-"Poweradmin'in PowerDNS tablolarına erişmesi için sınırlı haklara (select, "
-"insert, update, delete) sahip bir veritabanı kullanıcısı oluşturun."
-
-#: install/templates/step6.html.twig:20
-msgid "Database Commands"
-msgstr "Veritabanı Komutları"
-
-#: install/templates/step6.html.twig:23
-msgid "Execute the following commands:"
-msgstr "Aşağıdaki komutları çalıştırın:"
-
-#: install/templates/step6.html.twig:35
-msgid ""
-"After you have added the new user, proceed with this installation procedure."
-msgstr "Yeni kullanıcıyı ekledikten sonra, bu kurulum prosedürüne devam edin."
-
-#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:97
-msgid "Note:"
-msgstr "Not:"
-
-#: install/templates/step6.html.twig:38
-msgid ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
-msgstr ""
-"SQLite kullandığınız için, sınırlı haklara sahip yeni bir kullanıcı "
-"oluşturmanıza gerek yoktur."
-
-#: install/templates/step5.html.twig:167 install/templates/step3.html.twig:38
-msgid "Continue to step"
-msgstr "Adıma devam et"
-
-#: install/templates/base.html.twig:29
-msgid "Installation step"
-msgstr "Kurulum adımı"
-
-#: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
-msgid "Create configuration file"
-msgstr "Yapılandırma dosyası oluştur"
-
-#: install/templates/step7.html.twig:12
-msgid "Configuration File:"
-msgstr "Yapılandırma Dosyası:"
-
-#: install/templates/step7.html.twig:12
-msgid "Create the file"
-msgstr "Dosyayı oluştur"
-
-#: install/templates/step7.html.twig:14
-msgid "with the following content:"
-msgstr "aşağıdaki içerikle:"
-
-#: install/templates/step1.html.twig:3
-msgid "Choose a language"
-msgstr "Bir dil seçin"
-
-#: install/templates/step1.html.twig:8
-msgid "Choose a language for installation"
-msgstr "Kurulum için bir dil seçin"
-
-#: install/templates/step1.html.twig:12
-msgid ""
-"Please select your preferred language to continue with the installation:"
-msgstr "Kuruluma devam etmek için lütfen tercih ettiğiniz dili seçin:"
-
-#: install/templates/step1.html.twig:222
-msgid "Begin Installation"
-msgstr "Kurulumu Başlat"
-
-#: install/templates/step4.html.twig:3
-msgid "Configuring database"
-msgstr "Veritabanı yapılandırması"
-
-#: install/templates/step4.html.twig:8
-msgid "Configuring Database Connection"
-msgstr "Veritabanı Bağlantısını Yapılandırma"
-
-#: install/templates/step4.html.twig:12
-msgid "Database Configuration:"
-msgstr "Veritabanı Yapılandırması:"
-
-#: install/templates/step4.html.twig:12
-msgid ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
-msgstr ""
-"Tablo oluşturma haklarına sahip veritabanı bağlantısını yapılandırın. "
-"Gerekirse PowerDNS konumu ayrı olarak belirtilebilir."
-
-#: install/templates/step4.html.twig:20
-msgid "Database Connection Settings"
-msgstr "Veritabanı Bağlantısı Ayarları"
-
-#: install/templates/step4.html.twig:24
-msgid "Database type"
-msgstr "Veritabanı türü"
-
-#: install/templates/step4.html.twig:33
-msgid "Database server type."
-msgstr "Veritabanı sunucu türü."
-
-#: install/templates/step4.html.twig:41 install/templates/step5.html.twig:59
-msgid "Provide the user name"
-msgstr "Kullanıcı adını girin"
-
-#: install/templates/step4.html.twig:44
-msgid "Database username with rights to create tables."
-msgstr "Tablo oluşturma haklarına sahip veritabanı kullanıcı adı."
-
-#: install/templates/step4.html.twig:58
-msgid "Password for this database user."
-msgstr "Bu veritabanı kullanıcısı için şifre."
-
-#: install/templates/step4.html.twig:59 install/templates/step5.html.twig:77
-msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Tırnak işaretleri, ters eğik çizgiler ve satır sonlarından kaçının."
-
-#: install/templates/step4.html.twig:67
-msgid "Provide the hostname"
-msgstr "Sunucu adını girin"
-
-#: install/templates/step4.html.twig:70
-msgid "Database server hostname (usually \"localhost\")."
-msgstr "Veritabanı sunucusu hostname'i (genellikle \"localhost\")."
-
-#: install/templates/step4.html.twig:75
-msgid "DB Port"
-msgstr "DB Portu"
-
-#: install/templates/step4.html.twig:78
-msgid "Provide database port"
-msgstr "Veritabanı portunu girin"
-
-#: install/templates/step4.html.twig:81
-msgid "Database server port."
-msgstr "Veritabanı sunucusu portu."
-
-#: install/templates/step4.html.twig:86
-msgid "Database"
-msgstr "Veritabanı"
-
-#: install/templates/step4.html.twig:89
-msgid "Provide the name of the database"
-msgstr "Veritabanının adını girin"
-
-#: install/templates/step4.html.twig:92
-msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Veritabanı adı (Poweradmin tabloları için kullanılacak)."
-
-#: install/templates/step4.html.twig:94
-msgid "Full path to SQLite database file"
-msgstr "SQLite veritabanı dosyasının tam yolu"
-
-#: install/templates/step4.html.twig:97
-msgid "File must exist with web server read/write access. Use absolute path."
-msgstr ""
-"Dosya, web sunucusu okuma/yazma erişimiyle var olmalıdır. Mutlak yol "
-"kullanın."
-
-#: install/templates/step4.html.twig:105
-msgid "DB charset"
-msgstr "DB karakter seti"
-
-#: install/templates/step4.html.twig:200 install/templates/step4.html.twig:208
-msgid "Use default"
-msgstr "Varsayılanı kullan"
-
-#: install/templates/step4.html.twig:112
-msgid "Charset for new tables. Leave empty for database default."
-msgstr ""
-"Yeni tablolar için karakter seti. Veritabanı varsayılanı için boş bırakın."
-
-#: install/templates/step4.html.twig:117
-msgid "DB collation"
-msgstr "DB karşılaştırması"
-
-#: install/templates/step4.html.twig:124
-msgid ""
-"Collation rules for character comparison. Leave empty for database default."
-msgstr ""
-"Karakter karşılaştırması için harmanlama kuralları. Veritabanı varsayılanı "
-"için boş bırakın."
-
-#: install/templates/step4.html.twig:133
-msgid "PowerDNS Database"
-msgstr "PowerDNS Veritabanı"
-
-#: install/templates/step4.html.twig:137
-msgid "Database name"
-msgstr "Veritabanı adı"
-
-#: install/templates/step4.html.twig:140
-msgid "Leave empty for same database"
-msgstr "Aynı veritabanı için boş bırakın"
-
-#: install/templates/step4.html.twig:143
-msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "PowerDNS tablolarına sahip MySQL veritabanı (farklı ise)."
-
-#: install/templates/step4.html.twig:151
-msgid "Poweradmin Account"
-msgstr "Poweradmin Hesabı"
-
-#: install/templates/step4.html.twig:155
-msgid "Administrator password"
-msgstr "Yönetici şifresi"
-
-#: install/templates/step4.html.twig:160
-msgid "Provide a password"
-msgstr "Bir şifre girin"
-
-#: install/templates/step4.html.twig:165
-msgid "Password for \"admin\" username."
-msgstr "\"admin\" kullanıcı adı için şifre."
-
-#: install/templates/step2.html.twig:3
-msgid "System Requirements"
-msgstr "Sistem Gereksinimleri"
-
-#: install/templates/step2.html.twig:8
-msgid "System Requirements Check"
-msgstr "Sistem Gereksinimleri Kontrolü"
-
-#: install/templates/step2.html.twig:12
-msgid "Requirements Check:"
-msgstr "Gereksinim Kontrolü:"
-
-#: install/templates/step2.html.twig:12
-msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr ""
-"Sunucunuzun Poweradmin'i çalıştırmak için tüm gereksinimleri karşıladığı "
-"doğrulanıyor."
-
-#: install/templates/step2.html.twig:20
-msgid "PHP Version"
-msgstr "PHP Sürümü"
-
-#: install/templates/step2.html.twig:29
-msgid "Requires PHP 8.2.0+"
-msgstr "PHP 8.2.0+ gerektirir"
-
-#: install/templates/step2.html.twig:40
-msgid "Database Extensions"
-msgstr "Veritabanı Uzantıları"
-
-#: install/templates/step2.html.twig:40
-msgid "at least one required"
-msgstr "en az bir tane gerekli"
-
-#: install/templates/step2.html.twig:61
-msgid "Required PHP Extensions"
-msgstr "Gerekli PHP Uzantıları"
-
-#: install/templates/step2.html.twig:80
-msgid "Optional Extensions"
-msgstr "İsteğe Bağlı Uzantılar"
-
-#: install/templates/step2.html.twig:99
-msgid "Web Server"
-msgstr "Web Sunucusu"
-
-#: install/templates/step2.html.twig:106
-msgid "Server"
-msgstr "Sunucu"
-
-#: install/templates/step2.html.twig:118
-msgid "Not detected — required for URL routing"
-msgstr "Algılanamadı — URL yönlendirmesi için gerekli"
-
-#: install/templates/step2.html.twig:124
-msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
-msgstr "Algılanamıyor (PHP-FPM) — etkin olduğundan emin olun"
-
-#: install/templates/step2.html.twig:130
-msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr ""
-"URL yeniden yazmanın yapılandırıldığından emin olun (nginx.conf.example'a "
-"bakın)"
-
-#: install/templates/step2.html.twig:135
-msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Web sunucunuz için URL yeniden yazmanın yapılandırıldığından emin olun"
-
-#: install/templates/step2.html.twig:151
-msgid "All required components are available."
-msgstr "Tüm gerekli bileşenler mevcut."
-
-#: install/templates/step2.html.twig:152
-msgid "You can continue with the installation."
-msgstr "Kuruluma devam edebilirsiniz."
-
-#: install/templates/step2.html.twig:160
-msgid "Some required components are missing."
-msgstr "Bazı gerekli bileşenler eksik."
-
-#: install/templates/step2.html.twig:161
-msgid "Please install the missing components before continuing."
-msgstr "Devam etmeden önce lütfen eksik bileşenleri yükleyin."
-
-#: install/templates/step5.html.twig:3
-msgid "Setup account and nameservers"
-msgstr "Hesap ve ad sunucularını ayarla"
-
-#: install/templates/step5.html.twig:8
-msgid "Setup account and name servers"
-msgstr "Hesap ve ad sunucularını ayarla"
-
-#: install/templates/step5.html.twig:12
-msgid "Configuration:"
-msgstr "Yapılandırma:"
-
-#: install/templates/step5.html.twig:12
-msgid "Now we will gather all details for the configuration itself."
-msgstr "Şimdi yapılandırmanın kendisi için tüm ayrıntıları toplayacağız."
-
-#: install/templates/step5.html.twig:52
-msgid "Database User"
-msgstr "Veritabanı Kullanıcısı"
-
-#: install/templates/step5.html.twig:62
-msgid ""
-"Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
-"Sınırlı erişime sahip Poweradmin veritabanı kullanıcı adı. Web kullanıcı "
-"arayüzü girişi için değil."
-
-#: install/templates/step5.html.twig:72
-msgid "Provide the user password"
-msgstr "Kullanıcı şifresini girin"
-
-#: install/templates/step5.html.twig:76
-msgid "The password for this username."
-msgstr "Bu kullanıcı adı için şifre."
-
-#: install/templates/step5.html.twig:86
-msgid "DNS Settings"
-msgstr "DNS Ayarları"
-
-#: install/templates/step5.html.twig:90
-msgid "Hostmaster"
-msgstr "Ana yönetici"
-
-#: install/templates/step5.html.twig:94
-msgid "Provide the DNS hostmaster"
-msgstr "DNS hostmaster'ı girin"
-
-#: install/templates/step5.html.twig:97
-msgid "Default hostmaster for SOA records."
-msgstr "SOA kayıtları için varsayılan hostmaster."
-
-#: install/templates/step5.html.twig:102
-msgid "Primary nameserver"
-msgstr "Birincil ad sunucusu"
-
-#: install/templates/step5.html.twig:106
-msgid "Provide the primary nameserver"
-msgstr "Birincil ad sunucusunu girin"
-
-#: install/templates/step5.html.twig:109
-msgid "Primary nameserver for new zones."
-msgstr "Yeni bölgeler için birincil ad sunucusu."
-
-#: install/templates/step5.html.twig:114
-msgid "Secondary nameserver"
-msgstr "İkincil ad sunucusu"
-
-#: install/templates/step5.html.twig:118
-msgid "Provide the secondary nameserver"
-msgstr "İkincil ad sunucusunu girin"
-
-#: install/templates/step5.html.twig:121
-msgid "Secondary nameserver for new zones."
-msgstr "Yeni bölgeler için ikincil ad sunucusu."
-
-#: install/templates/step5.html.twig:127
-msgid "Tertiary Nameserver"
-msgstr "Üçüncül Ad Sunucusu"
-
-#: install/templates/step5.html.twig:127 install/templates/step5.html.twig:140
-msgid "optional"
-msgstr "isteğe bağlı"
-
-#: install/templates/step5.html.twig:134
-msgid "Optional tertiary nameserver for new zones."
-msgstr "Yeni bölgeler için isteğe bağlı üçüncül ad sunucusu."
-
-#: install/templates/step5.html.twig:140
-msgid "Quaternary Nameserver"
-msgstr "Dördüncül Ad Sunucusu"
-
-#: install/templates/step5.html.twig:147
-msgid "Optional quaternary nameserver for new zones."
-msgstr "Yeni bölgeler için isteğe bağlı dördüncül ad sunucusu."
-
-#: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
-msgid "Installation complete"
-msgstr "Kurulum tamamlandı"
-
-#: install/templates/step8.html.twig:12
-msgid "Installation Complete!"
-msgstr "Kurulum Tamamlandı!"
-
-#: install/templates/step8.html.twig:12
-msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Tebrikler! Poweradmin kurulumunuz artık yapılandırıldı."
-
-#: install/templates/step8.html.twig:16
-msgid "Important Security Notice:"
-msgstr "Önemli Güvenlik Bildirimi:"
-
-#: install/templates/step8.html.twig:16
-msgid ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
-msgstr ""
-"Poweradmin kök dizininden \"install/\" dizinini kaldırmalısınız.directory."
-
-#: install/templates/step8.html.twig:17
-msgid ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
-msgstr ""
-"Güvenlik önlemi olarak, kurulum dizini varsa Poweradmin çalışmayacaktır."
-
-#: install/templates/step8.html.twig:22
-msgid "Next Steps"
-msgstr "Sonraki Adımlar"
-
-#: install/templates/step8.html.twig:26
-msgid "Remove the \"install/\" directory from your server"
-msgstr "Sunucunuzdan \"install/\" dizinini kaldırın"
-
-#: install/templates/step8.html.twig:27
-msgid ""
-"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
-"\"admin\" and the password you set in step 3"
-msgstr ""
-"Varsayılan kullanıcı adı \"admin\" ve adım 3'te belirlediğiniz şifreyi "
-"kullanarak <a href=\"../index.php\">Poweradmin</a>'e giriş yapın\"admin\" "
-"and the password you set in step 3"
-
-#: install/templates/step8.html.twig:28
-msgid "Begin configuring your DNS zones and records"
-msgstr "DNS bölgelerinizi ve kayıtlarınızı yapılandırmaya başlayın"
-
-#: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
-msgid "Getting Ready"
-msgstr "Hazırlanıyor"
-
-#: install/templates/step3.html.twig:13
-msgid "Prerequisites"
-msgstr "Ön Koşullar"
-
-#: install/templates/step3.html.twig:16
-msgid "Before proceeding, ensure you have:"
-msgstr "Devam etmeden önce, sahip olduğunuzdan emin olun:"
-
-#: install/templates/step3.html.twig:18
-msgid "PowerDNS installed with database tables created"
-msgstr "Veritabanı tabloları oluşturulmuş PowerDNS yüklü"
-
-#: install/templates/step3.html.twig:19
-msgid "Database credentials (hostname, username, password)"
-msgstr "Veritabanı kimlik bilgileri (sunucu adı, kullanıcı adı, şifre)"
-
-#: install/templates/step3.html.twig:20
-msgid "Permission to create tables for Poweradmin"
-msgstr "Poweradmin için tablo oluşturma izni"
-
-#: install/templates/step3.html.twig:27
-msgid "Next:"
-msgstr "Sonraki:"
-
-#: install/templates/step3.html.twig:27
-msgid ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
-msgstr ""
-"Veritabanı bağlantısını yapılandırın, yönetici hesabı oluşturun ve "
-"yapılandırma dosyası oluşturun."
-
-#: install/helpers/InstallStepHandler.php:170
-msgid "Missing PowerDNS tables:"
-msgstr "Eksik PowerDNS tabloları:"
-
-#: install/helpers/InstallStepHandler.php:171
-msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin'in düzgün çalışması için bu PowerDNS tabloları gereklidir."
-
-#: install/helpers/InstallStepHandler.php:179
-msgid "Updating database... done!"
-msgstr "Veritabanı güncelleniyor... tamamlandı!"
-
-#: install/helpers/InstallStepHandler.php:201
-msgid "Foreign Key Constraint Issues:"
-msgstr "Yabancı Anahtar Kısıtlama Sorunları:"
-
-#: install/helpers/InstallStepHandler.php:203
-msgid ""
-"The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
-"Yükleyici, yabancı anahtar kısıtlamaları nedeniyle mevcut tabloları "
-"kaldıramadı"
-
-#: install/helpers/InstallStepHandler.php:204
-msgid ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
-msgstr ""
-"Özel kısıtlamalarınız varsa veya tablolar başka tablolar tarafından referans "
-"alınıyorsa yeniden kurulum sırasında bu olabilir"
-
-#: install/helpers/InstallStepHandler.php:205
-msgid ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
-msgstr ""
-"Yükleyiciyi çalıştırmadan önce yabancı anahtar kontrollerini manuel olarak "
-"devre dışı bırakmayı deneyebilirsiniz:"
-
-#: install/helpers/InstallStepHandler.php:218
-msgid "Suggestions:"
-msgstr "Öneriler:"
-
-#: install/helpers/InstallStepHandler.php:212
-msgid "Make sure the SQLite database file exists"
-msgstr "SQLite veritabanı dosyasının mevcut olduğundan emin olun"
-
-#: install/helpers/InstallStepHandler.php:213
-msgid ""
-"Check that the web server has read and write permissions for the database "
-"file"
-msgstr ""
-"Web sunucusunun veritabanı dosyası için okuma ve yazma izinlerine sahip "
-"olduğunu kontrol edin"
-
-#: install/helpers/InstallStepHandler.php:214
-msgid "Verify the full path to the database file is correct and accessible"
-msgstr ""
-"Veritabanı dosyasının tam yolunun doğru ve erişilebilir olduğunu doğrulayın"
-
-#: install/helpers/InstallStepHandler.php:220
-msgid "Verify database credentials are correct"
-msgstr "Veritabanı kimlik bilgilerinin doğru olduğunu doğrulayın"
-
-#: install/helpers/InstallStepHandler.php:221
-msgid "Check that the database user has sufficient privileges"
-msgstr ""
-"Veritabanı kullanıcısının yeterli ayrıcalıklara sahip olduğunu kontrol edin"
-
-#: install/helpers/InstallStepHandler.php:222
-msgid "Ensure the database server is running and accessible"
-msgstr ""
-"Veritabanı sunucusunun çalıştığından ve erişilebilir olduğundan emin olun"
-
-#: install/helpers/InstallStepHandler.php:227
-msgid "Database Error"
-msgstr "Veritabanı Hatası"
-
-#: install/helpers/DatabaseHelper.php:160
+#~ msgid "Create limited rights user"
+#~ msgstr "Sınırlı haklara sahip kullanıcı oluştur"
+
+#~ msgid "Step"
+#~ msgstr "Adım"
+
+#~ msgid "Create limited-rights user"
+#~ msgstr "Sınırlı haklara sahip kullanıcı oluştur"
+
+#~ msgid "Limited Database Rights:"
+#~ msgstr "Sınırlı Veritabanı Hakları:"
+
+#~ msgid ""
+#~ "Create a database user with limited rights (select, insert, update, "
+#~ "delete) for Poweradmin to access PowerDNS tables."
+#~ msgstr ""
+#~ "Poweradmin'in PowerDNS tablolarına erişmesi için sınırlı haklara (select, "
+#~ "insert, update, delete) sahip bir veritabanı kullanıcısı oluşturun."
+
+#~ msgid "Database Commands"
+#~ msgstr "Veritabanı Komutları"
+
+#~ msgid "Execute the following commands:"
+#~ msgstr "Aşağıdaki komutları çalıştırın:"
+
+#~ msgid ""
+#~ "After you have added the new user, proceed with this installation "
+#~ "procedure."
+#~ msgstr ""
+#~ "Yeni kullanıcıyı ekledikten sonra, bu kurulum prosedürüne devam edin."
+
+#~ msgid "Note:"
+#~ msgstr "Not:"
+
+#~ msgid ""
+#~ "Since you are using SQLite, there is no need to create a new user with "
+#~ "limited rights."
+#~ msgstr ""
+#~ "SQLite kullandığınız için, sınırlı haklara sahip yeni bir kullanıcı "
+#~ "oluşturmanıza gerek yoktur."
+
+#~ msgid "Continue to step"
+#~ msgstr "Adıma devam et"
+
+#~ msgid "Installation step"
+#~ msgstr "Kurulum adımı"
+
+#~ msgid "Create configuration file"
+#~ msgstr "Yapılandırma dosyası oluştur"
+
+#~ msgid "Configuration File:"
+#~ msgstr "Yapılandırma Dosyası:"
+
+#~ msgid "Create the file"
+#~ msgstr "Dosyayı oluştur"
+
+#~ msgid "with the following content:"
+#~ msgstr "aşağıdaki içerikle:"
+
+#~ msgid "Choose a language"
+#~ msgstr "Bir dil seçin"
+
+#~ msgid "Choose a language for installation"
+#~ msgstr "Kurulum için bir dil seçin"
+
+#~ msgid ""
+#~ "Please select your preferred language to continue with the installation:"
+#~ msgstr "Kuruluma devam etmek için lütfen tercih ettiğiniz dili seçin:"
+
+#~ msgid "Begin Installation"
+#~ msgstr "Kurulumu Başlat"
+
+#~ msgid "Configuring database"
+#~ msgstr "Veritabanı yapılandırması"
+
+#~ msgid "Configuring Database Connection"
+#~ msgstr "Veritabanı Bağlantısını Yapılandırma"
+
+#~ msgid "Database Configuration:"
+#~ msgstr "Veritabanı Yapılandırması:"
+
+#~ msgid ""
+#~ "Configure database connection with table creation rights. PowerDNS "
+#~ "location can be specified separately if needed."
+#~ msgstr ""
+#~ "Tablo oluşturma haklarına sahip veritabanı bağlantısını yapılandırın. "
+#~ "Gerekirse PowerDNS konumu ayrı olarak belirtilebilir."
+
+#~ msgid "Database Connection Settings"
+#~ msgstr "Veritabanı Bağlantısı Ayarları"
+
+#~ msgid "Database type"
+#~ msgstr "Veritabanı türü"
+
+#~ msgid "Database server type."
+#~ msgstr "Veritabanı sunucu türü."
+
+#~ msgid "Provide the user name"
+#~ msgstr "Kullanıcı adını girin"
+
+#~ msgid "Database username with rights to create tables."
+#~ msgstr "Tablo oluşturma haklarına sahip veritabanı kullanıcı adı."
+
+#~ msgid "Password for this database user."
+#~ msgstr "Bu veritabanı kullanıcısı için şifre."
+
+#~ msgid "Avoid quotes, backslashes, and line breaks."
+#~ msgstr "Tırnak işaretleri, ters eğik çizgiler ve satır sonlarından kaçının."
+
+#~ msgid "Provide the hostname"
+#~ msgstr "Sunucu adını girin"
+
+#~ msgid "Database server hostname (usually \"localhost\")."
+#~ msgstr "Veritabanı sunucusu hostname'i (genellikle \"localhost\")."
+
+#~ msgid "DB Port"
+#~ msgstr "DB Portu"
+
+#~ msgid "Provide database port"
+#~ msgstr "Veritabanı portunu girin"
+
+#~ msgid "Database server port."
+#~ msgstr "Veritabanı sunucusu portu."
+
+#~ msgid "Database"
+#~ msgstr "Veritabanı"
+
+#~ msgid "Provide the name of the database"
+#~ msgstr "Veritabanının adını girin"
+
+#~ msgid "Database name (will be used for Poweradmin tables)."
+#~ msgstr "Veritabanı adı (Poweradmin tabloları için kullanılacak)."
+
+#~ msgid "Full path to SQLite database file"
+#~ msgstr "SQLite veritabanı dosyasının tam yolu"
+
+#~ msgid ""
+#~ "File must exist with web server read/write access. Use absolute path."
+#~ msgstr ""
+#~ "Dosya, web sunucusu okuma/yazma erişimiyle var olmalıdır. Mutlak yol "
+#~ "kullanın."
+
+#~ msgid "DB charset"
+#~ msgstr "DB karakter seti"
+
+#~ msgid "Use default"
+#~ msgstr "Varsayılanı kullan"
+
+#~ msgid "Charset for new tables. Leave empty for database default."
+#~ msgstr ""
+#~ "Yeni tablolar için karakter seti. Veritabanı varsayılanı için boş bırakın."
+
+#~ msgid "DB collation"
+#~ msgstr "DB karşılaştırması"
+
+#~ msgid ""
+#~ "Collation rules for character comparison. Leave empty for database "
+#~ "default."
+#~ msgstr ""
+#~ "Karakter karşılaştırması için harmanlama kuralları. Veritabanı "
+#~ "varsayılanı için boş bırakın."
+
+#~ msgid "PowerDNS Database"
+#~ msgstr "PowerDNS Veritabanı"
+
+#~ msgid "Database name"
+#~ msgstr "Veritabanı adı"
+
+#~ msgid "Leave empty for same database"
+#~ msgstr "Aynı veritabanı için boş bırakın"
+
+#~ msgid "MySQL database with PowerDNS tables (if different)."
+#~ msgstr "PowerDNS tablolarına sahip MySQL veritabanı (farklı ise)."
+
+#~ msgid "Poweradmin Account"
+#~ msgstr "Poweradmin Hesabı"
+
+#~ msgid "Administrator password"
+#~ msgstr "Yönetici şifresi"
+
+#~ msgid "Provide a password"
+#~ msgstr "Bir şifre girin"
+
+#~ msgid "Password for \"admin\" username."
+#~ msgstr "\"admin\" kullanıcı adı için şifre."
+
+#~ msgid "System Requirements"
+#~ msgstr "Sistem Gereksinimleri"
+
+#~ msgid "System Requirements Check"
+#~ msgstr "Sistem Gereksinimleri Kontrolü"
+
+#~ msgid "Requirements Check:"
+#~ msgstr "Gereksinim Kontrolü:"
+
+#~ msgid "Verifying that your server meets all requirements to run Poweradmin."
+#~ msgstr ""
+#~ "Sunucunuzun Poweradmin'i çalıştırmak için tüm gereksinimleri karşıladığı "
+#~ "doğrulanıyor."
+
+#~ msgid "PHP Version"
+#~ msgstr "PHP Sürümü"
+
+#~ msgid "Requires PHP 8.2.0+"
+#~ msgstr "PHP 8.2.0+ gerektirir"
+
+#~ msgid "Database Extensions"
+#~ msgstr "Veritabanı Uzantıları"
+
+#~ msgid "at least one required"
+#~ msgstr "en az bir tane gerekli"
+
+#~ msgid "Required PHP Extensions"
+#~ msgstr "Gerekli PHP Uzantıları"
+
+#~ msgid "Optional Extensions"
+#~ msgstr "İsteğe Bağlı Uzantılar"
+
+#~ msgid "Web Server"
+#~ msgstr "Web Sunucusu"
+
+#~ msgid "Server"
+#~ msgstr "Sunucu"
+
+#~ msgid "Not detected — required for URL routing"
+#~ msgstr "Algılanamadı — URL yönlendirmesi için gerekli"
+
+#~ msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
+#~ msgstr "Algılanamıyor (PHP-FPM) — etkin olduğundan emin olun"
+
+#~ msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
+#~ msgstr ""
+#~ "URL yeniden yazmanın yapılandırıldığından emin olun (nginx.conf.example'a "
+#~ "bakın)"
+
+#~ msgid "Ensure URL rewriting is configured for your web server"
+#~ msgstr ""
+#~ "Web sunucunuz için URL yeniden yazmanın yapılandırıldığından emin olun"
+
+#~ msgid "All required components are available."
+#~ msgstr "Tüm gerekli bileşenler mevcut."
+
+#~ msgid "You can continue with the installation."
+#~ msgstr "Kuruluma devam edebilirsiniz."
+
+#~ msgid "Some required components are missing."
+#~ msgstr "Bazı gerekli bileşenler eksik."
+
+#~ msgid "Please install the missing components before continuing."
+#~ msgstr "Devam etmeden önce lütfen eksik bileşenleri yükleyin."
+
+#~ msgid "Setup account and nameservers"
+#~ msgstr "Hesap ve ad sunucularını ayarla"
+
+#~ msgid "Setup account and name servers"
+#~ msgstr "Hesap ve ad sunucularını ayarla"
+
+#~ msgid "Configuration:"
+#~ msgstr "Yapılandırma:"
+
+#~ msgid "Now we will gather all details for the configuration itself."
+#~ msgstr "Şimdi yapılandırmanın kendisi için tüm ayrıntıları toplayacağız."
+
+#~ msgid "Database User"
+#~ msgstr "Veritabanı Kullanıcısı"
+
+#~ msgid ""
+#~ "Poweradmin database username with restricted access. Not for web UI login."
+#~ msgstr ""
+#~ "Sınırlı erişime sahip Poweradmin veritabanı kullanıcı adı. Web kullanıcı "
+#~ "arayüzü girişi için değil."
+
+#~ msgid "Provide the user password"
+#~ msgstr "Kullanıcı şifresini girin"
+
+#~ msgid "The password for this username."
+#~ msgstr "Bu kullanıcı adı için şifre."
+
+#~ msgid "DNS Settings"
+#~ msgstr "DNS Ayarları"
+
+#~ msgid "Hostmaster"
+#~ msgstr "Ana yönetici"
+
+#~ msgid "Provide the DNS hostmaster"
+#~ msgstr "DNS hostmaster'ı girin"
+
+#~ msgid "Default hostmaster for SOA records."
+#~ msgstr "SOA kayıtları için varsayılan hostmaster."
+
+#~ msgid "Primary nameserver"
+#~ msgstr "Birincil ad sunucusu"
+
+#~ msgid "Provide the primary nameserver"
+#~ msgstr "Birincil ad sunucusunu girin"
+
+#~ msgid "Primary nameserver for new zones."
+#~ msgstr "Yeni bölgeler için birincil ad sunucusu."
+
+#~ msgid "Secondary nameserver"
+#~ msgstr "İkincil ad sunucusu"
+
+#~ msgid "Provide the secondary nameserver"
+#~ msgstr "İkincil ad sunucusunu girin"
+
+#~ msgid "Secondary nameserver for new zones."
+#~ msgstr "Yeni bölgeler için ikincil ad sunucusu."
+
+#~ msgid "Tertiary Nameserver"
+#~ msgstr "Üçüncül Ad Sunucusu"
+
+#~ msgid "optional"
+#~ msgstr "isteğe bağlı"
+
+#~ msgid "Optional tertiary nameserver for new zones."
+#~ msgstr "Yeni bölgeler için isteğe bağlı üçüncül ad sunucusu."
+
+#~ msgid "Quaternary Nameserver"
+#~ msgstr "Dördüncül Ad Sunucusu"
+
+#~ msgid "Optional quaternary nameserver for new zones."
+#~ msgstr "Yeni bölgeler için isteğe bağlı dördüncül ad sunucusu."
+
+#~ msgid "Installation complete"
+#~ msgstr "Kurulum tamamlandı"
+
+#~ msgid "Installation Complete!"
+#~ msgstr "Kurulum Tamamlandı!"
+
+#~ msgid "Congratulations! Your Poweradmin installation is now configured."
+#~ msgstr "Tebrikler! Poweradmin kurulumunuz artık yapılandırıldı."
+
+#~ msgid "Important Security Notice:"
+#~ msgstr "Önemli Güvenlik Bildirimi:"
+
+#~ msgid ""
+#~ "You must remove the \"install/\" directory from the Poweradmin root "
+#~ "directory."
+#~ msgstr ""
+#~ "Poweradmin kök dizininden \"install/\" dizinini kaldırmalısınız.directory."
+
+#~ msgid ""
+#~ "Poweradmin will not function if the install directory exists, as a "
+#~ "security measure."
+#~ msgstr ""
+#~ "Güvenlik önlemi olarak, kurulum dizini varsa Poweradmin çalışmayacaktır."
+
+#~ msgid "Next Steps"
+#~ msgstr "Sonraki Adımlar"
+
+#~ msgid "Remove the \"install/\" directory from your server"
+#~ msgstr "Sunucunuzdan \"install/\" dizinini kaldırın"
+
+#~ msgid ""
+#~ "Login to <a href=\"../index.php\">Poweradmin</a> using the default "
+#~ "username \"admin\" and the password you set in step 3"
+#~ msgstr ""
+#~ "Varsayılan kullanıcı adı \"admin\" ve adım 3'te belirlediğiniz şifreyi "
+#~ "kullanarak <a href=\"../index.php\">Poweradmin</a>'e giriş yapın\"admin\" "
+#~ "and the password you set in step 3"
+
+#~ msgid "Begin configuring your DNS zones and records"
+#~ msgstr "DNS bölgelerinizi ve kayıtlarınızı yapılandırmaya başlayın"
+
+#~ msgid "Getting Ready"
+#~ msgstr "Hazırlanıyor"
+
+#~ msgid "Prerequisites"
+#~ msgstr "Ön Koşullar"
+
+#~ msgid "Before proceeding, ensure you have:"
+#~ msgstr "Devam etmeden önce, sahip olduğunuzdan emin olun:"
+
+#~ msgid "PowerDNS installed with database tables created"
+#~ msgstr "Veritabanı tabloları oluşturulmuş PowerDNS yüklü"
+
+#~ msgid "Database credentials (hostname, username, password)"
+#~ msgstr "Veritabanı kimlik bilgileri (sunucu adı, kullanıcı adı, şifre)"
+
+#~ msgid "Permission to create tables for Poweradmin"
+#~ msgstr "Poweradmin için tablo oluşturma izni"
+
+#~ msgid "Next:"
+#~ msgstr "Sonraki:"
+
+#~ msgid ""
+#~ "Configure database connection, create admin account, and generate "
+#~ "configuration file."
+#~ msgstr ""
+#~ "Veritabanı bağlantısını yapılandırın, yönetici hesabı oluşturun ve "
+#~ "yapılandırma dosyası oluşturun."
+
+#~ msgid "Missing PowerDNS tables:"
+#~ msgstr "Eksik PowerDNS tabloları:"
+
+#~ msgid "Poweradmin requires these PowerDNS tables to function properly."
+#~ msgstr ""
+#~ "Poweradmin'in düzgün çalışması için bu PowerDNS tabloları gereklidir."
+
+#~ msgid "Updating database... done!"
+#~ msgstr "Veritabanı güncelleniyor... tamamlandı!"
+
+#~ msgid "Foreign Key Constraint Issues:"
+#~ msgstr "Yabancı Anahtar Kısıtlama Sorunları:"
+
+#~ msgid ""
+#~ "The installer could not remove existing tables due to foreign key "
+#~ "constraints"
+#~ msgstr ""
+#~ "Yükleyici, yabancı anahtar kısıtlamaları nedeniyle mevcut tabloları "
+#~ "kaldıramadı"
+
+#~ msgid ""
+#~ "This can happen during reinstallation if you have custom constraints or "
+#~ "if tables are referenced by other tables"
+#~ msgstr ""
+#~ "Özel kısıtlamalarınız varsa veya tablolar başka tablolar tarafından "
+#~ "referans alınıyorsa yeniden kurulum sırasında bu olabilir"
+
+#~ msgid ""
+#~ "You can try manually disabling foreign key checks before running the "
+#~ "installer:"
+#~ msgstr ""
+#~ "Yükleyiciyi çalıştırmadan önce yabancı anahtar kontrollerini manuel "
+#~ "olarak devre dışı bırakmayı deneyebilirsiniz:"
+
+#~ msgid "Suggestions:"
+#~ msgstr "Öneriler:"
+
+#~ msgid "Make sure the SQLite database file exists"
+#~ msgstr "SQLite veritabanı dosyasının mevcut olduğundan emin olun"
+
+#~ msgid ""
+#~ "Check that the web server has read and write permissions for the database "
+#~ "file"
+#~ msgstr ""
+#~ "Web sunucusunun veritabanı dosyası için okuma ve yazma izinlerine sahip "
+#~ "olduğunu kontrol edin"
+
+#~ msgid "Verify the full path to the database file is correct and accessible"
+#~ msgstr ""
+#~ "Veritabanı dosyasının tam yolunun doğru ve erişilebilir olduğunu "
+#~ "doğrulayın"
+
+#~ msgid "Verify database credentials are correct"
+#~ msgstr "Veritabanı kimlik bilgilerinin doğru olduğunu doğrulayın"
+
+#~ msgid "Check that the database user has sufficient privileges"
+#~ msgstr ""
+#~ "Veritabanı kullanıcısının yeterli ayrıcalıklara sahip olduğunu kontrol "
+#~ "edin"
+
+#~ msgid "Ensure the database server is running and accessible"
+#~ msgstr ""
+#~ "Veritabanı sunucusunun çalıştığından ve erişilebilir olduğundan emin olun"
+
+#~ msgid "Database Error"
+#~ msgstr "Veritabanı Hatası"
+
 #, php-format
-msgid ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
-msgstr ""
-"SQLite veritabanı dosyası %s mevcut değil. Devam etmeden önce lütfen "
-"veritabanı dosyasını oluşturun."
+#~ msgid ""
+#~ "The SQLite database file %s does not exist. Please create the database "
+#~ "file before proceeding."
+#~ msgstr ""
+#~ "SQLite veritabanı dosyası %s mevcut değil. Devam etmeden önce lütfen "
+#~ "veritabanı dosyasını oluşturun."
 
-#: install/helpers/DatabaseHelper.php:168
 #, php-format
-msgid ""
-"The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
-"SQLite veritabanı dosyası %s okunamıyor. Lütfen dosya izinlerini kontrol "
-"edin."
+#~ msgid ""
+#~ "The SQLite database file %s is not readable. Please check file "
+#~ "permissions."
+#~ msgstr ""
+#~ "SQLite veritabanı dosyası %s okunamıyor. Lütfen dosya izinlerini kontrol "
+#~ "edin."
 
-#: install/helpers/DatabaseHelper.php:176
 #, php-format
-msgid ""
-"The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
-"SQLite veritabanı dosyası %s yazılabilir değil. Lütfen dosya izinlerini "
-"kontrol edin."
+#~ msgid ""
+#~ "The SQLite database file %s is not writable. Please check file "
+#~ "permissions."
+#~ msgstr ""
+#~ "SQLite veritabanı dosyası %s yazılabilir değil. Lütfen dosya izinlerini "
+#~ "kontrol edin."
 
-#: install/helpers/DatabaseHelper.php:188
 #, php-format
-msgid "Could not access the SQLite database file %s: %s"
-msgstr "SQLite veritabanı dosyasına erişilemedi %s: %s"
+#~ msgid "Could not access the SQLite database file %s: %s"
+#~ msgstr "SQLite veritabanı dosyasına erişilemedi %s: %s"
 
-#: install/helpers/Validators/CreateConfigurationFileValidator.php:54
-msgid ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
-msgstr ""
-"Yapılandırma dosyası bulunamadı. Devam etmeden önce lütfen config/"
-"settings.php dosyasını oluşturun."
+#~ msgid ""
+#~ "No configuration file found. Please create the config/settings.php file "
+#~ "before proceeding."
+#~ msgstr ""
+#~ "Yapılandırma dosyası bulunamadı. Devam etmeden önce lütfen config/"
+#~ "settings.php dosyasını oluşturun."
 
-#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
-msgid ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
-msgstr ""
-"Ayrı PowerDNS veritabanları yalnızca MySQL ile desteklenir. PostgreSQL ve "
-"SQLite için lütfen aynı veritabanını kullanın."
+#~ msgid ""
+#~ "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+#~ "and SQLite, please use the same database."
+#~ msgstr ""
+#~ "Ayrı PowerDNS veritabanları yalnızca MySQL ile desteklenir. PostgreSQL ve "
+#~ "SQLite için lütfen aynı veritabanını kullanın."
 
-#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
-msgid ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
-msgstr ""
-"\"%s\" veritabanında PowerDNS tabloları eksik: %s. PowerDNS'in bu "
-"veritabanında düzgün şekilde yüklü olduğundan emin olun."
+#~ msgid ""
+#~ "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+#~ "properly installed in this database."
+#~ msgstr ""
+#~ "\"%s\" veritabanında PowerDNS tabloları eksik: %s. PowerDNS'in bu "
+#~ "veritabanında düzgün şekilde yüklü olduğundan emin olun."
 
-#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
-msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "PowerDNS veritabanına bağlanılamıyor \"%s\": %s"
+#~ msgid "Cannot connect to PowerDNS database \"%s\": %s"
+#~ msgstr "PowerDNS veritabanına bağlanılamıyor \"%s\": %s"

@@ -80,7 +80,7 @@
                                     {% elseif is_reverse_zone and record_type == 'PTR' %}
                                     {% set add = 'selected' %}
                                     {% endif %}
-                                    <option {{ add }} value="{{ record_type }}">{{ record_type }}</option>
+                                    <option {{ add }} value="{{ record_type }}">{{ record_type }}{% if record_type in deprecated_types %} ({% trans %}deprecated{% endtrans %}){% endif %}</option>
                                     {% endfor %}
                                 </select>
                             </td>
@@ -91,6 +91,9 @@
                                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
                                 <div class="cname-root-warning alert alert-warning mt-1 py-1 px-2 small" style="display: none;">
                                     <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}Warning: CNAME records at the domain root (zone apex) are not recommended and may cause issues. SOA and NS records are required at the domain root and cannot coexist with CNAME.{% endtrans %}
+                                </div>
+                                <div class="deprecated-type-warning alert alert-warning mt-1 py-1 px-2 small" style="display: none;">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}This record type is deprecated and should not be used for new records.{% endtrans %}
                                 </div>
                             </td>
                             <td>
@@ -228,16 +231,18 @@
             updatePriorityFieldState(typeSelect, priorityInput);
         }
         
-        // Setup CNAME root warning for the new row
+        // Setup warnings for the new row
         const nameField = newRow.querySelector('.name-field');
         if (typeSelect && nameField) {
             typeSelect.addEventListener('change', function() {
                 checkCnameRootWarning(newRow);
+                checkDeprecatedTypeWarning(newRow);
             });
             nameField.addEventListener('input', function() {
                 checkCnameRootWarning(newRow);
             });
             checkCnameRootWarning(newRow);
+            checkDeprecatedTypeWarning(newRow);
         }
     }
 
@@ -299,6 +304,19 @@
         }
     }
 
+    // Deprecated record types
+    const DEPRECATED_RECORD_TYPES = ['SPF', 'DLV', 'AFSDB', 'KEY', 'MR', 'MINFO'];
+
+    // Check if a deprecated record type is selected
+    function checkDeprecatedTypeWarning(row) {
+        const typeSelect = row.querySelector('.record-type-select');
+        const warningDiv = row.querySelector('.deprecated-type-warning');
+
+        if (!typeSelect || !warningDiv) return;
+
+        warningDiv.style.display = DEPRECATED_RECORD_TYPES.includes(typeSelect.value) ? 'block' : 'none';
+    }
+
     // Check if a record is at the domain root (name equals zone name)
     function checkCnameRootWarning(row) {
         const typeSelect = row.querySelector('.record-type-select');
@@ -315,26 +333,28 @@
         warningDiv.style.display = (isType && isAtRoot) ? 'block' : 'none';
     }
     
-    // Update CNAME root warning when record type or name changes
-    function setupCnameRootWarningListeners() {
+    // Update CNAME root warning and deprecated type warning when record type or name changes
+    function setupRecordWarningListeners() {
         document.querySelectorAll('.record-row').forEach(function(row) {
             const typeSelect = row.querySelector('.record-type-select');
             const nameField = row.querySelector('.name-field');
-            
+
             if (typeSelect) {
                 typeSelect.addEventListener('change', function() {
                     checkCnameRootWarning(row);
+                    checkDeprecatedTypeWarning(row);
                 });
             }
-            
+
             if (nameField) {
                 nameField.addEventListener('input', function() {
                     checkCnameRootWarning(row);
                 });
             }
-            
+
             // Initial check
             checkCnameRootWarning(row);
+            checkDeprecatedTypeWarning(row);
         });
     }
     
@@ -344,7 +364,7 @@
             updatePtrCheckboxVisibility(select);
         });
         
-        setupCnameRootWarningListeners();
+        setupRecordWarningListeners();
     });
 </script>
 

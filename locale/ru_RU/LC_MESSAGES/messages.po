@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-14 17:09+0200\n"
+"POT-Creation-Date: 2026-02-14 19:18+0200\n"
 "PO-Revision-Date: 2025-06-05 21:30+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -138,7 +138,7 @@ msgstr "У вас нет разрешения на редактирование 
 msgid "The comment has been updated successfully."
 msgstr "Комментарий успешно обновлён."
 
-#: lib/Application/Controller/EditRecordController.php:86
+#: lib/Application/Controller/EditRecordController.php:87
 msgid "Invalid record ID."
 msgstr "Неверный ID записи."
 
@@ -146,7 +146,7 @@ msgstr "Неверный ID записи."
 msgid "You do not have permission to delete records in this zone."
 msgstr "У вас нет разрешения на удаление записей в этой зоне."
 
-#: lib/Application/Controller/EditRecordController.php:195
+#: lib/Application/Controller/EditRecordController.php:197
 msgid "Record not found."
 msgstr "Запись не найдена."
 
@@ -804,20 +804,20 @@ msgstr "Не удалось обновить зону."
 msgid "Please provide all required fields."
 msgstr "Пожалуйста, заполните все обязательные поля."
 
-#: lib/Application/Controller/AddRecordController.php:229
+#: lib/Application/Controller/AddRecordController.php:230
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr ""
 "Запись успешно добавлена. Также была создана соответствующая PTR запись."
 
-#: lib/Application/Controller/AddRecordController.php:234
+#: lib/Application/Controller/AddRecordController.php:235
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Запись успешно добавлена, но создание PTR записи не удалось: "
 
-#: lib/Application/Controller/AddRecordController.php:238
+#: lib/Application/Controller/AddRecordController.php:239
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Запись была успешно добавлена, но создание PTR записи не удалось."
 
-#: lib/Application/Controller/AddRecordController.php:244
+#: lib/Application/Controller/AddRecordController.php:245
 msgid "Record successfully added. A matching A record was also created."
 msgstr "Запись успешно добавлена. Также была создана соответствующая A запись."
 
@@ -861,25 +861,25 @@ msgstr ""
 msgid "You do not have the permission to add a record to this zone."
 msgstr "У вас нет разрешения на добавление записи в эту зону."
 
-#: lib/Application/Controller/AddRecordController.php:226
+#: lib/Application/Controller/AddRecordController.php:227
 msgid "Record successfully added."
 msgstr "Запись успешно добавлена."
 
-#: lib/Application/Controller/AddRecordController.php:398
+#: lib/Application/Controller/AddRecordController.php:400
 msgid "No records were provided."
 msgstr "Записи не предоставлены."
 
-#: lib/Application/Controller/AddRecordController.php:440
+#: lib/Application/Controller/AddRecordController.php:442
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d запись(ей) успешно добавлено."
 
-#: lib/Application/Controller/AddRecordController.php:442
+#: lib/Application/Controller/AddRecordController.php:444
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d запись(ей) не удалось добавить."
 
-#: lib/Application/Controller/AddRecordController.php:447
+#: lib/Application/Controller/AddRecordController.php:449
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -887,7 +887,7 @@ msgstr ""
 "Некоторые записи не удалось добавить. Возможно, они уже существуют или "
 "содержат недопустимые данные."
 
-#: lib/Application/Controller/AddRecordController.php:473
+#: lib/Application/Controller/AddRecordController.php:475
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Не удалось добавить ни одной записи. Возможно, они содержат недопустимые "
@@ -1372,23 +1372,23 @@ msgstr "Вы вышли из системы"
 msgid "Logout completed (with warnings): "
 msgstr "Выход завершен (с предупреждениями): "
 
-#: lib/Application/Controller/EditRecordController.php:99
+#: lib/Application/Controller/EditRecordController.php:100
 msgid "You do not have permission to view this record."
 msgstr "У вас нет разрешения на просмотр этой записи."
 
-#: lib/Application/Controller/EditRecordController.php:108
+#: lib/Application/Controller/EditRecordController.php:109
 msgid "You cannot edit records in a SLAVE zone."
 msgstr "Вы не можете редактировать записи в зоне SLAVE."
 
-#: lib/Application/Controller/EditRecordController.php:118
+#: lib/Application/Controller/EditRecordController.php:119
 msgid "You do not have permission to edit this record."
 msgstr "У вас нет разрешения на редактирование этой записи."
 
-#: lib/Application/Controller/EditRecordController.php:226
+#: lib/Application/Controller/EditRecordController.php:228
 msgid "Failed to retrieve updated record information."
 msgstr "Не удалось получить обновленную информацию о записи."
 
-#: lib/Application/Controller/EditRecordController.php:305
+#: lib/Application/Controller/EditRecordController.php:307
 msgid "The record has been updated successfully."
 msgstr "Запись была успешно обновлена."
 
@@ -1791,7 +1791,6 @@ msgid "Transport protocol for the TLS connection"
 msgstr "Транспортный протокол для соединения TLS"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:89
-#: install/templates/step4.html.twig:64
 msgid "Hostname"
 msgstr "Имя хоста"
 
@@ -9199,9 +9198,17 @@ msgstr "Изменить свойства DNS записи"
 msgid "Comment"
 msgstr "Комментарий"
 
+#: templates/modern/edit_record.html:92 templates/modern/add_record.html:83
+msgid "deprecated"
+msgstr "устаревший"
+
 #: templates/modern/edit.html:637 templates/modern/add_record.html:91
 msgid "Provide content"
 msgstr "Укажите содержимое"
+
+#: templates/modern/edit_record.html:109 templates/modern/add_record.html:96
+msgid "This record type is deprecated and should not be used for new records."
+msgstr "Этот тип записи устарел и не должен использоваться для новых записей."
 
 #: templates/modern/edit_perm_templ.html:48
 msgid "Update"
@@ -9571,8 +9578,7 @@ msgstr "Просмотр истории активности пользоват�
 msgid "View user logs"
 msgstr "Просмотр журналов пользователей"
 
-#: templates/modern/add_user.html:39 install/templates/step4.html.twig:49
-#: install/templates/step5.html.twig:67
+#: templates/modern/add_user.html:39
 msgid "Password"
 msgstr "Пароль"
 
@@ -10296,6 +10302,19 @@ msgstr "Добавить ключ"
 msgid "Add key for zone"
 msgstr "Добавить ключ для зоны"
 
+#: templates/modern/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ использует CSK по умолчанию"
+
+#: templates/modern/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 и более новые версии используют Combined Signing Keys (CSK) по "
+"умолчанию. Если вы выберете KSK или ZSK, PowerDNS всё равно может создать "
+"ключ CSK."
+
 #: templates/modern/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Тип ключа"
@@ -10321,7 +10340,6 @@ msgid "Recommended bits for"
 msgstr "Рекомендуемые биты для"
 
 #: templates/modern/dnssec_add_key.html:150
-#: install/helpers/InstallStepHandler.php:169
 msgid "Warning:"
 msgstr "Предупреждение:"
 
@@ -10374,7 +10392,6 @@ msgid "Edit User"
 msgstr "Редактировать Пользователя"
 
 #: templates/modern/manage_group_members.html:92
-#: install/templates/step4.html.twig:38 install/templates/step5.html.twig:56
 msgid "Username"
 msgstr "Имя пользователя"
 
@@ -10419,7 +10436,6 @@ msgid "Optional information about this user"
 msgstr "Дополнительная информация об этом пользователе"
 
 #: templates/modern/users.html:49 templates/modern/add_user.html:94
-#: install/templates/step2.html.twig:116
 msgid "Enabled"
 msgstr "Включен"
 
@@ -10820,7 +10836,6 @@ msgid "Host Prefix"
 msgstr "Префикс Хоста"
 
 #: templates/modern/batch_ptr_record.html:71
-#: install/templates/step4.html.twig:133
 msgid "Optional"
 msgstr "Необязательно"
 
@@ -11182,7 +11197,7 @@ msgstr "Недопустимое значение TTL"
 msgid "Provide TTL"
 msgstr "Укажите TTL"
 
-#: templates/modern/edit.html:682 templates/modern/add_record.html:139
+#: templates/modern/edit.html:682 templates/modern/add_record.html:142
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11534,7 +11549,6 @@ msgid "Add User"
 msgstr "Добавить пользователя"
 
 #: templates/default/add_user.html:43 templates/modern/add_user.html:43
-#: install/templates/step4.html.twig:54
 msgid "Provide user password"
 msgstr "Укажите пароль пользователя"
 
@@ -12758,7 +12772,6 @@ msgid "Last Checked"
 msgstr "Последняя проверка"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:125
-#: install/templates/step2.html.twig:27
 msgid "OK"
 msgstr "ОК"
 
@@ -12898,11 +12911,11 @@ msgstr "Добавить запись в зону"
 msgid "Create a new DNS record in this zone"
 msgstr "Создать новую DNS-запись в этой зоне"
 
-#: templates/default/add_record.html:128 templates/modern/add_record.html:128
+#: templates/default/add_record.html:131 templates/modern/add_record.html:131
 msgid "Add another record"
 msgstr "Добавить еще одну запись"
 
-#: templates/default/add_record.html:143 templates/modern/add_record.html:143
+#: templates/default/add_record.html:146 templates/modern/add_record.html:146
 msgid "Add records"
 msgstr "Добавить записи"
 
@@ -13217,653 +13230,513 @@ msgstr "Список шаблонов зон"
 msgid "Bulk Domain Registration"
 msgstr "Массовая регистрация доменов"
 
-#: templates/modern/dnssec_add_key.html:43
-msgid "PowerDNS 4.0+ uses CSK by default"
-msgstr "PowerDNS 4.0+ использует CSK по умолчанию"
-
-#: templates/modern/dnssec_add_key.html:44
-msgid ""
-"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
-"If you select KSK or ZSK, PowerDNS may still create a CSK key."
-msgstr ""
-"PowerDNS 4.0 и более новые версии используют Combined Signing Keys (CSK) по умолчанию. Если вы выберете KSK или ZSK, PowerDNS всё равно может создать ключ CSK."
-
 #: templates/modern/header.html:382
 msgid "Dashboard"
 msgstr "Панель управления"
 
-#: install/templates/step6.html.twig:3
-msgid "Create limited rights user"
-msgstr "Создание пользователя с ограниченными правами"
-
-#: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
-msgid "Step"
-msgstr "Шаг"
-
-#: install/templates/step6.html.twig:8
-msgid "Create limited-rights user"
-msgstr "Создание пользователя с ограниченными правами"
-
-#: install/templates/step6.html.twig:13
-msgid "Limited Database Rights:"
-msgstr "Ограниченные права базы данных:"
-
-#: install/templates/step6.html.twig:13
-msgid ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
-msgstr ""
-"Создайте пользователя базы данных с ограниченными правами (select, insert, "
-"update, delete) для доступа Poweradmin к таблицам PowerDNS."
-
-#: install/templates/step6.html.twig:20
-msgid "Database Commands"
-msgstr "Команды базы данных"
-
-#: install/templates/step6.html.twig:23
-msgid "Execute the following commands:"
-msgstr "Выполните следующие команды:"
-
-#: install/templates/step6.html.twig:35
-msgid ""
-"After you have added the new user, proceed with this installation procedure."
-msgstr ""
-"После добавления нового пользователя продолжите эту процедуру установки."
-
-#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:97
-msgid "Note:"
-msgstr "Примечание:"
-
-#: install/templates/step6.html.twig:38
-msgid ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
-msgstr ""
-"Поскольку вы используете SQLite, нет необходимости создавать нового "
-"пользователя с ограниченными правами."
-
-#: install/templates/step5.html.twig:167 install/templates/step3.html.twig:38
-msgid "Continue to step"
-msgstr "Продолжить к шагу"
-
-#: install/templates/base.html.twig:29
-msgid "Installation step"
-msgstr "Шаг установки"
-
-#: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
-msgid "Create configuration file"
-msgstr "Создание конфигурационного файла"
-
-#: install/templates/step7.html.twig:12
-msgid "Configuration File:"
-msgstr "Конфигурационный файл:"
-
-#: install/templates/step7.html.twig:12
-msgid "Create the file"
-msgstr "Создайте файл"
-
-#: install/templates/step7.html.twig:14
-msgid "with the following content:"
-msgstr "со следующим содержимым:"
-
-#: install/templates/step1.html.twig:3
-msgid "Choose a language"
-msgstr "Выберите язык"
-
-#: install/templates/step1.html.twig:8
-msgid "Choose a language for installation"
-msgstr "Выберите язык для установки"
-
-#: install/templates/step1.html.twig:12
-msgid ""
-"Please select your preferred language to continue with the installation:"
-msgstr "Выберите предпочтительный язык для продолжения установки:"
-
-#: install/templates/step1.html.twig:222
-msgid "Begin Installation"
-msgstr "Начать установку"
-
-#: install/templates/step4.html.twig:3
-msgid "Configuring database"
-msgstr "Настройка базы данных"
-
-#: install/templates/step4.html.twig:8
-msgid "Configuring Database Connection"
-msgstr "Настройка подключения к базе данных"
-
-#: install/templates/step4.html.twig:12
-msgid "Database Configuration:"
-msgstr "Конфигурация базы данных:"
-
-#: install/templates/step4.html.twig:12
-msgid ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
-msgstr ""
-"Настройте подключение к базе данных с правами создания таблиц. Расположение "
-"PowerDNS может быть указано отдельно при необходимости."
-
-#: install/templates/step4.html.twig:20
-msgid "Database Connection Settings"
-msgstr "Настройки подключения к базе данных"
-
-#: install/templates/step4.html.twig:24
-msgid "Database type"
-msgstr "Тип базы данных"
-
-#: install/templates/step4.html.twig:33
-msgid "Database server type."
-msgstr "Тип сервера базы данных."
-
-#: install/templates/step4.html.twig:41 install/templates/step5.html.twig:59
-msgid "Provide the user name"
-msgstr "Укажите имя пользователя"
-
-#: install/templates/step4.html.twig:44
-msgid "Database username with rights to create tables."
-msgstr "Имя пользователя базы данных с правами создания таблиц."
-
-#: install/templates/step4.html.twig:58
-msgid "Password for this database user."
-msgstr "Пароль для этого пользователя базы данных."
-
-#: install/templates/step4.html.twig:59 install/templates/step5.html.twig:77
-msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Избегайте кавычек, обратных слешей и переносов строк."
-
-#: install/templates/step4.html.twig:67
-msgid "Provide the hostname"
-msgstr "Укажите имя хоста"
-
-#: install/templates/step4.html.twig:70
-msgid "Database server hostname (usually \"localhost\")."
-msgstr "Имя хоста сервера базы данных (обычно \"localhost\")."
-
-#: install/templates/step4.html.twig:75
-msgid "DB Port"
-msgstr "Порт БД"
-
-#: install/templates/step4.html.twig:78
-msgid "Provide database port"
-msgstr "Укажите порт базы данных"
-
-#: install/templates/step4.html.twig:81
-msgid "Database server port."
-msgstr "Порт сервера базы данных."
-
-#: install/templates/step4.html.twig:86
-msgid "Database"
-msgstr "База данных"
-
-#: install/templates/step4.html.twig:89
-msgid "Provide the name of the database"
-msgstr "Укажите имя базы данных"
-
-#: install/templates/step4.html.twig:92
-msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Имя базы данных (будет использовано для таблиц Poweradmin)."
-
-#: install/templates/step4.html.twig:94
-msgid "Full path to SQLite database file"
-msgstr "Полный путь к файлу базы данных SQLite"
-
-#: install/templates/step4.html.twig:97
-msgid "File must exist with web server read/write access. Use absolute path."
-msgstr ""
-"Файл должен существовать с доступом на чтение/запись для веб-сервера. "
-"Используйте абсолютный путь."
-
-#: install/templates/step4.html.twig:105
-msgid "DB charset"
-msgstr "Кодировка БД"
-
-#: install/templates/step4.html.twig:200 install/templates/step4.html.twig:208
-msgid "Use default"
-msgstr "Использовать по умолчанию"
-
-#: install/templates/step4.html.twig:112
-msgid "Charset for new tables. Leave empty for database default."
-msgstr ""
-"Кодировка для новых таблиц. Оставьте пустым для значения по умолчанию базы "
-"данных."
-
-#: install/templates/step4.html.twig:117
-msgid "DB collation"
-msgstr "Сопоставление БД"
-
-#: install/templates/step4.html.twig:124
-msgid ""
-"Collation rules for character comparison. Leave empty for database default."
-msgstr ""
-"Правила сравнения символов. Оставьте пустым для значения по умолчанию базы "
-"данных."
-
-#: install/templates/step4.html.twig:133
-msgid "PowerDNS Database"
-msgstr "База данных PowerDNS"
-
-#: install/templates/step4.html.twig:137
-msgid "Database name"
-msgstr "Имя базы данных"
-
-#: install/templates/step4.html.twig:140
-msgid "Leave empty for same database"
-msgstr "Оставьте пустым для той же базы данных"
-
-#: install/templates/step4.html.twig:143
-msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "База данных MySQL с таблицами PowerDNS (если отличается)."
-
-#: install/templates/step4.html.twig:151
-msgid "Poweradmin Account"
-msgstr "Учетная запись Poweradmin"
-
-#: install/templates/step4.html.twig:155
-msgid "Administrator password"
-msgstr "Пароль администратора"
-
-#: install/templates/step4.html.twig:160
-msgid "Provide a password"
-msgstr "Укажите пароль"
-
-#: install/templates/step4.html.twig:165
-msgid "Password for \"admin\" username."
-msgstr "Пароль для имени пользователя \"admin\"."
-
-#: install/templates/step2.html.twig:3
-msgid "System Requirements"
-msgstr "Системные Требования"
-
-#: install/templates/step2.html.twig:8
-msgid "System Requirements Check"
-msgstr "Проверка Системных Требований"
-
-#: install/templates/step2.html.twig:12
-msgid "Requirements Check:"
-msgstr "Проверка Требований:"
-
-#: install/templates/step2.html.twig:12
-msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr ""
-"Проверка соответствия вашего сервера всем требованиям для запуска Poweradmin."
-
-#: install/templates/step2.html.twig:20
-msgid "PHP Version"
-msgstr "Версия PHP"
-
-#: install/templates/step2.html.twig:29
-msgid "Requires PHP 8.2.0+"
-msgstr "Требуется PHP 8.2.0+"
-
-#: install/templates/step2.html.twig:40
-msgid "Database Extensions"
-msgstr "Расширения базы данных"
-
-#: install/templates/step2.html.twig:40
-msgid "at least one required"
-msgstr "требуется как минимум одно"
-
-#: install/templates/step2.html.twig:61
-msgid "Required PHP Extensions"
-msgstr "Необходимые расширения PHP"
-
-#: install/templates/step2.html.twig:80
-msgid "Optional Extensions"
-msgstr "Дополнительные расширения"
-
-#: install/templates/step2.html.twig:99
-msgid "Web Server"
-msgstr "Веб-сервер"
-
-#: install/templates/step2.html.twig:106
-msgid "Server"
-msgstr "Сервер"
-
-#: install/templates/step2.html.twig:118
-msgid "Not detected — required for URL routing"
-msgstr "Не обнаружен — требуется для маршрутизации URL"
-
-#: install/templates/step2.html.twig:124
-msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
-msgstr "Невозможно обнаружить (PHP-FPM) — убедитесь, что он включен"
-
-#: install/templates/step2.html.twig:130
-msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Убедитесь, что перезапись URL настроена (см. nginx.conf.example)"
-
-#: install/templates/step2.html.twig:135
-msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Убедитесь, что перезапись URL настроена для вашего веб-сервера"
-
-#: install/templates/step2.html.twig:151
-msgid "All required components are available."
-msgstr "Все необходимые компоненты доступны."
-
-#: install/templates/step2.html.twig:152
-msgid "You can continue with the installation."
-msgstr "Вы можете продолжить установку."
-
-#: install/templates/step2.html.twig:160
-msgid "Some required components are missing."
-msgstr "Некоторые необходимые компоненты отсутствуют."
-
-#: install/templates/step2.html.twig:161
-msgid "Please install the missing components before continuing."
-msgstr "Пожалуйста, установите отсутствующие компоненты перед продолжением."
-
-#: install/templates/step5.html.twig:3
-msgid "Setup account and nameservers"
-msgstr "Настройка учетной записи и серверов имен"
-
-#: install/templates/step5.html.twig:8
-msgid "Setup account and name servers"
-msgstr "Настройка учетной записи и серверов имен"
-
-#: install/templates/step5.html.twig:12
-msgid "Configuration:"
-msgstr "Конфигурация:"
-
-#: install/templates/step5.html.twig:12
-msgid "Now we will gather all details for the configuration itself."
-msgstr "Теперь мы соберем все детали для самой конфигурации."
-
-#: install/templates/step5.html.twig:52
-msgid "Database User"
-msgstr "Пользователь базы данных"
-
-#: install/templates/step5.html.twig:62
-msgid ""
-"Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
-"Имя пользователя базы данных Poweradmin с ограниченным доступом. Не для "
-"входа в веб-интерфейс."
-
-#: install/templates/step5.html.twig:72
-msgid "Provide the user password"
-msgstr "Укажите пароль пользователя"
-
-#: install/templates/step5.html.twig:76
-msgid "The password for this username."
-msgstr "Пароль для этого имени пользователя."
-
-#: install/templates/step5.html.twig:86
-msgid "DNS Settings"
-msgstr "Настройки DNS"
-
-#: install/templates/step5.html.twig:90
-msgid "Hostmaster"
-msgstr "Администратор хоста"
-
-#: install/templates/step5.html.twig:94
-msgid "Provide the DNS hostmaster"
-msgstr "Укажите администратора хоста DNS"
-
-#: install/templates/step5.html.twig:97
-msgid "Default hostmaster for SOA records."
-msgstr "Hostmaster по умолчанию для записей SOA."
-
-#: install/templates/step5.html.twig:102
-msgid "Primary nameserver"
-msgstr "Основной сервер имен"
-
-#: install/templates/step5.html.twig:106
-msgid "Provide the primary nameserver"
-msgstr "Укажите основной сервер имен"
-
-#: install/templates/step5.html.twig:109
-msgid "Primary nameserver for new zones."
-msgstr "Основной сервер имен для новых зон."
-
-#: install/templates/step5.html.twig:114
-msgid "Secondary nameserver"
-msgstr "Вторичный сервер имен"
-
-#: install/templates/step5.html.twig:118
-msgid "Provide the secondary nameserver"
-msgstr "Укажите вторичный сервер имен"
-
-#: install/templates/step5.html.twig:121
-msgid "Secondary nameserver for new zones."
-msgstr "Вторичный сервер имен для новых зон."
-
-#: install/templates/step5.html.twig:127
-msgid "Tertiary Nameserver"
-msgstr "Третичный сервер имен"
-
-#: install/templates/step5.html.twig:127 install/templates/step5.html.twig:140
-msgid "optional"
-msgstr "необязательно"
-
-#: install/templates/step5.html.twig:134
-msgid "Optional tertiary nameserver for new zones."
-msgstr "Дополнительный третичный сервер имен для новых зон."
-
-#: install/templates/step5.html.twig:140
-msgid "Quaternary Nameserver"
-msgstr "Четвертичный сервер имен"
-
-#: install/templates/step5.html.twig:147
-msgid "Optional quaternary nameserver for new zones."
-msgstr "Дополнительный четвертичный сервер имен для новых зон."
-
-#: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
-msgid "Installation complete"
-msgstr "Установка завершена"
-
-#: install/templates/step8.html.twig:12
-msgid "Installation Complete!"
-msgstr "Установка завершена!"
-
-#: install/templates/step8.html.twig:12
-msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Поздравляем! Ваша установка Poweradmin теперь настроена."
-
-#: install/templates/step8.html.twig:16
-msgid "Important Security Notice:"
-msgstr "Важное уведомление о безопасности:"
-
-#: install/templates/step8.html.twig:16
-msgid ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
-msgstr ""
-"Вы должны удалить директорию \"install/\" из корневой директории "
-"Poweradmin.directory."
-
-#: install/templates/step8.html.twig:17
-msgid ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
-msgstr ""
-"Poweradmin не будет работать, если существует каталог установки, в качестве "
-"меры безопасности."
-
-#: install/templates/step8.html.twig:22
-msgid "Next Steps"
-msgstr "Следующие шаги"
-
-#: install/templates/step8.html.twig:26
-msgid "Remove the \"install/\" directory from your server"
-msgstr "Удалите директорию \"install/\" с вашего сервера"
-
-#: install/templates/step8.html.twig:27
-msgid ""
-"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
-"\"admin\" and the password you set in step 3"
-msgstr ""
-"Войдите в <a href=\"../index.php\">Poweradmin</a> используя имя пользователя "
-"по умолчанию \"admin\" и пароль, который вы установили на шаге 3\"admin\" "
-"and the password you set in step 3"
-
-#: install/templates/step8.html.twig:28
-msgid "Begin configuring your DNS zones and records"
-msgstr "Начните настройку зон и записей DNS"
-
-#: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
-msgid "Getting Ready"
-msgstr "Подготовка"
-
-#: install/templates/step3.html.twig:13
-msgid "Prerequisites"
-msgstr "Предварительные требования"
-
-#: install/templates/step3.html.twig:16
-msgid "Before proceeding, ensure you have:"
-msgstr "Перед продолжением убедитесь, что у вас есть:"
-
-#: install/templates/step3.html.twig:18
-msgid "PowerDNS installed with database tables created"
-msgstr "Установленный PowerDNS с созданными таблицами базы данных"
-
-#: install/templates/step3.html.twig:19
-msgid "Database credentials (hostname, username, password)"
-msgstr "Учетные данные базы данных (имя хоста, имя пользователя, пароль)"
-
-#: install/templates/step3.html.twig:20
-msgid "Permission to create tables for Poweradmin"
-msgstr "Разрешение на создание таблиц для Poweradmin"
-
-#: install/templates/step3.html.twig:27
-msgid "Next:"
-msgstr "Далее:"
-
-#: install/templates/step3.html.twig:27
-msgid ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
-msgstr ""
-"Настройте подключение к базе данных, создайте учетную запись администратора "
-"и сгенерируйте файл конфигурации."
-
-#: install/helpers/InstallStepHandler.php:170
-msgid "Missing PowerDNS tables:"
-msgstr "Отсутствуют таблицы PowerDNS:"
-
-#: install/helpers/InstallStepHandler.php:171
-msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin требует эти таблицы PowerDNS для правильной работы."
-
-#: install/helpers/InstallStepHandler.php:179
-msgid "Updating database... done!"
-msgstr "Обновление базы данных... готово!"
-
-#: install/helpers/InstallStepHandler.php:201
-msgid "Foreign Key Constraint Issues:"
-msgstr "Проблемы с ограничениями внешних ключей:"
-
-#: install/helpers/InstallStepHandler.php:203
-msgid ""
-"The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
-"Установщик не смог удалить существующие таблицы из-за ограничений внешних "
-"ключей"
-
-#: install/helpers/InstallStepHandler.php:204
-msgid ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
-msgstr ""
-"Это может произойти при переустановке, если у вас есть пользовательские "
-"ограничения или если таблицы ссылаются на другие таблицы"
-
-#: install/helpers/InstallStepHandler.php:205
-msgid ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
-msgstr ""
-"Вы можете попробовать вручную отключить проверку внешних ключей перед "
-"запуском установщика:"
-
-#: install/helpers/InstallStepHandler.php:218
-msgid "Suggestions:"
-msgstr "Предложения:"
-
-#: install/helpers/InstallStepHandler.php:212
-msgid "Make sure the SQLite database file exists"
-msgstr "Убедитесь, что файл базы данных SQLite существует"
-
-#: install/helpers/InstallStepHandler.php:213
-msgid ""
-"Check that the web server has read and write permissions for the database "
-"file"
-msgstr ""
-"Проверьте, что веб-сервер имеет права на чтение и запись для файла базы "
-"данных"
-
-#: install/helpers/InstallStepHandler.php:214
-msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Проверьте, что полный путь к файлу базы данных правильный и доступный"
-
-#: install/helpers/InstallStepHandler.php:220
-msgid "Verify database credentials are correct"
-msgstr "Проверьте правильность учетных данных базы данных"
-
-#: install/helpers/InstallStepHandler.php:221
-msgid "Check that the database user has sufficient privileges"
-msgstr "Проверьте, что пользователь базы данных имеет достаточные привилегии"
-
-#: install/helpers/InstallStepHandler.php:222
-msgid "Ensure the database server is running and accessible"
-msgstr "Убедитесь, что сервер базы данных запущен и доступен"
-
-#: install/helpers/InstallStepHandler.php:227
-msgid "Database Error"
-msgstr "Ошибка базы данных"
-
-#: install/helpers/DatabaseHelper.php:160
+#~ msgid "Create limited rights user"
+#~ msgstr "Создание пользователя с ограниченными правами"
+
+#~ msgid "Step"
+#~ msgstr "Шаг"
+
+#~ msgid "Create limited-rights user"
+#~ msgstr "Создание пользователя с ограниченными правами"
+
+#~ msgid "Limited Database Rights:"
+#~ msgstr "Ограниченные права базы данных:"
+
+#~ msgid ""
+#~ "Create a database user with limited rights (select, insert, update, "
+#~ "delete) for Poweradmin to access PowerDNS tables."
+#~ msgstr ""
+#~ "Создайте пользователя базы данных с ограниченными правами (select, "
+#~ "insert, update, delete) для доступа Poweradmin к таблицам PowerDNS."
+
+#~ msgid "Database Commands"
+#~ msgstr "Команды базы данных"
+
+#~ msgid "Execute the following commands:"
+#~ msgstr "Выполните следующие команды:"
+
+#~ msgid ""
+#~ "After you have added the new user, proceed with this installation "
+#~ "procedure."
+#~ msgstr ""
+#~ "После добавления нового пользователя продолжите эту процедуру установки."
+
+#~ msgid "Note:"
+#~ msgstr "Примечание:"
+
+#~ msgid ""
+#~ "Since you are using SQLite, there is no need to create a new user with "
+#~ "limited rights."
+#~ msgstr ""
+#~ "Поскольку вы используете SQLite, нет необходимости создавать нового "
+#~ "пользователя с ограниченными правами."
+
+#~ msgid "Continue to step"
+#~ msgstr "Продолжить к шагу"
+
+#~ msgid "Installation step"
+#~ msgstr "Шаг установки"
+
+#~ msgid "Create configuration file"
+#~ msgstr "Создание конфигурационного файла"
+
+#~ msgid "Configuration File:"
+#~ msgstr "Конфигурационный файл:"
+
+#~ msgid "Create the file"
+#~ msgstr "Создайте файл"
+
+#~ msgid "with the following content:"
+#~ msgstr "со следующим содержимым:"
+
+#~ msgid "Choose a language"
+#~ msgstr "Выберите язык"
+
+#~ msgid "Choose a language for installation"
+#~ msgstr "Выберите язык для установки"
+
+#~ msgid ""
+#~ "Please select your preferred language to continue with the installation:"
+#~ msgstr "Выберите предпочтительный язык для продолжения установки:"
+
+#~ msgid "Begin Installation"
+#~ msgstr "Начать установку"
+
+#~ msgid "Configuring database"
+#~ msgstr "Настройка базы данных"
+
+#~ msgid "Configuring Database Connection"
+#~ msgstr "Настройка подключения к базе данных"
+
+#~ msgid "Database Configuration:"
+#~ msgstr "Конфигурация базы данных:"
+
+#~ msgid ""
+#~ "Configure database connection with table creation rights. PowerDNS "
+#~ "location can be specified separately if needed."
+#~ msgstr ""
+#~ "Настройте подключение к базе данных с правами создания таблиц. "
+#~ "Расположение PowerDNS может быть указано отдельно при необходимости."
+
+#~ msgid "Database Connection Settings"
+#~ msgstr "Настройки подключения к базе данных"
+
+#~ msgid "Database type"
+#~ msgstr "Тип базы данных"
+
+#~ msgid "Database server type."
+#~ msgstr "Тип сервера базы данных."
+
+#~ msgid "Provide the user name"
+#~ msgstr "Укажите имя пользователя"
+
+#~ msgid "Database username with rights to create tables."
+#~ msgstr "Имя пользователя базы данных с правами создания таблиц."
+
+#~ msgid "Password for this database user."
+#~ msgstr "Пароль для этого пользователя базы данных."
+
+#~ msgid "Avoid quotes, backslashes, and line breaks."
+#~ msgstr "Избегайте кавычек, обратных слешей и переносов строк."
+
+#~ msgid "Provide the hostname"
+#~ msgstr "Укажите имя хоста"
+
+#~ msgid "Database server hostname (usually \"localhost\")."
+#~ msgstr "Имя хоста сервера базы данных (обычно \"localhost\")."
+
+#~ msgid "DB Port"
+#~ msgstr "Порт БД"
+
+#~ msgid "Provide database port"
+#~ msgstr "Укажите порт базы данных"
+
+#~ msgid "Database server port."
+#~ msgstr "Порт сервера базы данных."
+
+#~ msgid "Database"
+#~ msgstr "База данных"
+
+#~ msgid "Provide the name of the database"
+#~ msgstr "Укажите имя базы данных"
+
+#~ msgid "Database name (will be used for Poweradmin tables)."
+#~ msgstr "Имя базы данных (будет использовано для таблиц Poweradmin)."
+
+#~ msgid "Full path to SQLite database file"
+#~ msgstr "Полный путь к файлу базы данных SQLite"
+
+#~ msgid ""
+#~ "File must exist with web server read/write access. Use absolute path."
+#~ msgstr ""
+#~ "Файл должен существовать с доступом на чтение/запись для веб-сервера. "
+#~ "Используйте абсолютный путь."
+
+#~ msgid "DB charset"
+#~ msgstr "Кодировка БД"
+
+#~ msgid "Use default"
+#~ msgstr "Использовать по умолчанию"
+
+#~ msgid "Charset for new tables. Leave empty for database default."
+#~ msgstr ""
+#~ "Кодировка для новых таблиц. Оставьте пустым для значения по умолчанию "
+#~ "базы данных."
+
+#~ msgid "DB collation"
+#~ msgstr "Сопоставление БД"
+
+#~ msgid ""
+#~ "Collation rules for character comparison. Leave empty for database "
+#~ "default."
+#~ msgstr ""
+#~ "Правила сравнения символов. Оставьте пустым для значения по умолчанию "
+#~ "базы данных."
+
+#~ msgid "PowerDNS Database"
+#~ msgstr "База данных PowerDNS"
+
+#~ msgid "Database name"
+#~ msgstr "Имя базы данных"
+
+#~ msgid "Leave empty for same database"
+#~ msgstr "Оставьте пустым для той же базы данных"
+
+#~ msgid "MySQL database with PowerDNS tables (if different)."
+#~ msgstr "База данных MySQL с таблицами PowerDNS (если отличается)."
+
+#~ msgid "Poweradmin Account"
+#~ msgstr "Учетная запись Poweradmin"
+
+#~ msgid "Administrator password"
+#~ msgstr "Пароль администратора"
+
+#~ msgid "Provide a password"
+#~ msgstr "Укажите пароль"
+
+#~ msgid "Password for \"admin\" username."
+#~ msgstr "Пароль для имени пользователя \"admin\"."
+
+#~ msgid "System Requirements"
+#~ msgstr "Системные Требования"
+
+#~ msgid "System Requirements Check"
+#~ msgstr "Проверка Системных Требований"
+
+#~ msgid "Requirements Check:"
+#~ msgstr "Проверка Требований:"
+
+#~ msgid "Verifying that your server meets all requirements to run Poweradmin."
+#~ msgstr ""
+#~ "Проверка соответствия вашего сервера всем требованиям для запуска "
+#~ "Poweradmin."
+
+#~ msgid "PHP Version"
+#~ msgstr "Версия PHP"
+
+#~ msgid "Requires PHP 8.2.0+"
+#~ msgstr "Требуется PHP 8.2.0+"
+
+#~ msgid "Database Extensions"
+#~ msgstr "Расширения базы данных"
+
+#~ msgid "at least one required"
+#~ msgstr "требуется как минимум одно"
+
+#~ msgid "Required PHP Extensions"
+#~ msgstr "Необходимые расширения PHP"
+
+#~ msgid "Optional Extensions"
+#~ msgstr "Дополнительные расширения"
+
+#~ msgid "Web Server"
+#~ msgstr "Веб-сервер"
+
+#~ msgid "Server"
+#~ msgstr "Сервер"
+
+#~ msgid "Not detected — required for URL routing"
+#~ msgstr "Не обнаружен — требуется для маршрутизации URL"
+
+#~ msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
+#~ msgstr "Невозможно обнаружить (PHP-FPM) — убедитесь, что он включен"
+
+#~ msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
+#~ msgstr "Убедитесь, что перезапись URL настроена (см. nginx.conf.example)"
+
+#~ msgid "Ensure URL rewriting is configured for your web server"
+#~ msgstr "Убедитесь, что перезапись URL настроена для вашего веб-сервера"
+
+#~ msgid "All required components are available."
+#~ msgstr "Все необходимые компоненты доступны."
+
+#~ msgid "You can continue with the installation."
+#~ msgstr "Вы можете продолжить установку."
+
+#~ msgid "Some required components are missing."
+#~ msgstr "Некоторые необходимые компоненты отсутствуют."
+
+#~ msgid "Please install the missing components before continuing."
+#~ msgstr "Пожалуйста, установите отсутствующие компоненты перед продолжением."
+
+#~ msgid "Setup account and nameservers"
+#~ msgstr "Настройка учетной записи и серверов имен"
+
+#~ msgid "Setup account and name servers"
+#~ msgstr "Настройка учетной записи и серверов имен"
+
+#~ msgid "Configuration:"
+#~ msgstr "Конфигурация:"
+
+#~ msgid "Now we will gather all details for the configuration itself."
+#~ msgstr "Теперь мы соберем все детали для самой конфигурации."
+
+#~ msgid "Database User"
+#~ msgstr "Пользователь базы данных"
+
+#~ msgid ""
+#~ "Poweradmin database username with restricted access. Not for web UI login."
+#~ msgstr ""
+#~ "Имя пользователя базы данных Poweradmin с ограниченным доступом. Не для "
+#~ "входа в веб-интерфейс."
+
+#~ msgid "Provide the user password"
+#~ msgstr "Укажите пароль пользователя"
+
+#~ msgid "The password for this username."
+#~ msgstr "Пароль для этого имени пользователя."
+
+#~ msgid "DNS Settings"
+#~ msgstr "Настройки DNS"
+
+#~ msgid "Hostmaster"
+#~ msgstr "Администратор хоста"
+
+#~ msgid "Provide the DNS hostmaster"
+#~ msgstr "Укажите администратора хоста DNS"
+
+#~ msgid "Default hostmaster for SOA records."
+#~ msgstr "Hostmaster по умолчанию для записей SOA."
+
+#~ msgid "Primary nameserver"
+#~ msgstr "Основной сервер имен"
+
+#~ msgid "Provide the primary nameserver"
+#~ msgstr "Укажите основной сервер имен"
+
+#~ msgid "Primary nameserver for new zones."
+#~ msgstr "Основной сервер имен для новых зон."
+
+#~ msgid "Secondary nameserver"
+#~ msgstr "Вторичный сервер имен"
+
+#~ msgid "Provide the secondary nameserver"
+#~ msgstr "Укажите вторичный сервер имен"
+
+#~ msgid "Secondary nameserver for new zones."
+#~ msgstr "Вторичный сервер имен для новых зон."
+
+#~ msgid "Tertiary Nameserver"
+#~ msgstr "Третичный сервер имен"
+
+#~ msgid "optional"
+#~ msgstr "необязательно"
+
+#~ msgid "Optional tertiary nameserver for new zones."
+#~ msgstr "Дополнительный третичный сервер имен для новых зон."
+
+#~ msgid "Quaternary Nameserver"
+#~ msgstr "Четвертичный сервер имен"
+
+#~ msgid "Optional quaternary nameserver for new zones."
+#~ msgstr "Дополнительный четвертичный сервер имен для новых зон."
+
+#~ msgid "Installation complete"
+#~ msgstr "Установка завершена"
+
+#~ msgid "Installation Complete!"
+#~ msgstr "Установка завершена!"
+
+#~ msgid "Congratulations! Your Poweradmin installation is now configured."
+#~ msgstr "Поздравляем! Ваша установка Poweradmin теперь настроена."
+
+#~ msgid "Important Security Notice:"
+#~ msgstr "Важное уведомление о безопасности:"
+
+#~ msgid ""
+#~ "You must remove the \"install/\" directory from the Poweradmin root "
+#~ "directory."
+#~ msgstr ""
+#~ "Вы должны удалить директорию \"install/\" из корневой директории "
+#~ "Poweradmin.directory."
+
+#~ msgid ""
+#~ "Poweradmin will not function if the install directory exists, as a "
+#~ "security measure."
+#~ msgstr ""
+#~ "Poweradmin не будет работать, если существует каталог установки, в "
+#~ "качестве меры безопасности."
+
+#~ msgid "Next Steps"
+#~ msgstr "Следующие шаги"
+
+#~ msgid "Remove the \"install/\" directory from your server"
+#~ msgstr "Удалите директорию \"install/\" с вашего сервера"
+
+#~ msgid ""
+#~ "Login to <a href=\"../index.php\">Poweradmin</a> using the default "
+#~ "username \"admin\" and the password you set in step 3"
+#~ msgstr ""
+#~ "Войдите в <a href=\"../index.php\">Poweradmin</a> используя имя "
+#~ "пользователя по умолчанию \"admin\" и пароль, который вы установили на "
+#~ "шаге 3\"admin\" and the password you set in step 3"
+
+#~ msgid "Begin configuring your DNS zones and records"
+#~ msgstr "Начните настройку зон и записей DNS"
+
+#~ msgid "Getting Ready"
+#~ msgstr "Подготовка"
+
+#~ msgid "Prerequisites"
+#~ msgstr "Предварительные требования"
+
+#~ msgid "Before proceeding, ensure you have:"
+#~ msgstr "Перед продолжением убедитесь, что у вас есть:"
+
+#~ msgid "PowerDNS installed with database tables created"
+#~ msgstr "Установленный PowerDNS с созданными таблицами базы данных"
+
+#~ msgid "Database credentials (hostname, username, password)"
+#~ msgstr "Учетные данные базы данных (имя хоста, имя пользователя, пароль)"
+
+#~ msgid "Permission to create tables for Poweradmin"
+#~ msgstr "Разрешение на создание таблиц для Poweradmin"
+
+#~ msgid "Next:"
+#~ msgstr "Далее:"
+
+#~ msgid ""
+#~ "Configure database connection, create admin account, and generate "
+#~ "configuration file."
+#~ msgstr ""
+#~ "Настройте подключение к базе данных, создайте учетную запись "
+#~ "администратора и сгенерируйте файл конфигурации."
+
+#~ msgid "Missing PowerDNS tables:"
+#~ msgstr "Отсутствуют таблицы PowerDNS:"
+
+#~ msgid "Poweradmin requires these PowerDNS tables to function properly."
+#~ msgstr "Poweradmin требует эти таблицы PowerDNS для правильной работы."
+
+#~ msgid "Updating database... done!"
+#~ msgstr "Обновление базы данных... готово!"
+
+#~ msgid "Foreign Key Constraint Issues:"
+#~ msgstr "Проблемы с ограничениями внешних ключей:"
+
+#~ msgid ""
+#~ "The installer could not remove existing tables due to foreign key "
+#~ "constraints"
+#~ msgstr ""
+#~ "Установщик не смог удалить существующие таблицы из-за ограничений внешних "
+#~ "ключей"
+
+#~ msgid ""
+#~ "This can happen during reinstallation if you have custom constraints or "
+#~ "if tables are referenced by other tables"
+#~ msgstr ""
+#~ "Это может произойти при переустановке, если у вас есть пользовательские "
+#~ "ограничения или если таблицы ссылаются на другие таблицы"
+
+#~ msgid ""
+#~ "You can try manually disabling foreign key checks before running the "
+#~ "installer:"
+#~ msgstr ""
+#~ "Вы можете попробовать вручную отключить проверку внешних ключей перед "
+#~ "запуском установщика:"
+
+#~ msgid "Suggestions:"
+#~ msgstr "Предложения:"
+
+#~ msgid "Make sure the SQLite database file exists"
+#~ msgstr "Убедитесь, что файл базы данных SQLite существует"
+
+#~ msgid ""
+#~ "Check that the web server has read and write permissions for the database "
+#~ "file"
+#~ msgstr ""
+#~ "Проверьте, что веб-сервер имеет права на чтение и запись для файла базы "
+#~ "данных"
+
+#~ msgid "Verify the full path to the database file is correct and accessible"
+#~ msgstr ""
+#~ "Проверьте, что полный путь к файлу базы данных правильный и доступный"
+
+#~ msgid "Verify database credentials are correct"
+#~ msgstr "Проверьте правильность учетных данных базы данных"
+
+#~ msgid "Check that the database user has sufficient privileges"
+#~ msgstr ""
+#~ "Проверьте, что пользователь базы данных имеет достаточные привилегии"
+
+#~ msgid "Ensure the database server is running and accessible"
+#~ msgstr "Убедитесь, что сервер базы данных запущен и доступен"
+
+#~ msgid "Database Error"
+#~ msgstr "Ошибка базы данных"
+
 #, php-format
-msgid ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
-msgstr ""
-"Файл базы данных SQLite %s не существует. Пожалуйста, создайте файл базы "
-"данных перед продолжением."
+#~ msgid ""
+#~ "The SQLite database file %s does not exist. Please create the database "
+#~ "file before proceeding."
+#~ msgstr ""
+#~ "Файл базы данных SQLite %s не существует. Пожалуйста, создайте файл базы "
+#~ "данных перед продолжением."
 
-#: install/helpers/DatabaseHelper.php:168
 #, php-format
-msgid ""
-"The SQLite database file %s is not readable. Please check file permissions."
-msgstr "Файл базы данных SQLite %s не читается. Проверьте разрешения файла."
+#~ msgid ""
+#~ "The SQLite database file %s is not readable. Please check file "
+#~ "permissions."
+#~ msgstr "Файл базы данных SQLite %s не читается. Проверьте разрешения файла."
 
-#: install/helpers/DatabaseHelper.php:176
 #, php-format
-msgid ""
-"The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
-"Файл базы данных SQLite %s не доступен для записи. Проверьте разрешения "
-"файла."
+#~ msgid ""
+#~ "The SQLite database file %s is not writable. Please check file "
+#~ "permissions."
+#~ msgstr ""
+#~ "Файл базы данных SQLite %s не доступен для записи. Проверьте разрешения "
+#~ "файла."
 
-#: install/helpers/DatabaseHelper.php:188
 #, php-format
-msgid "Could not access the SQLite database file %s: %s"
-msgstr "Не удалось получить доступ к файлу базы данных SQLite %s: %s"
+#~ msgid "Could not access the SQLite database file %s: %s"
+#~ msgstr "Не удалось получить доступ к файлу базы данных SQLite %s: %s"
 
-#: install/helpers/Validators/CreateConfigurationFileValidator.php:54
-msgid ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
-msgstr ""
-"Конфигурационный файл не найден. Пожалуйста, создайте файл config/"
-"settings.php перед продолжением."
+#~ msgid ""
+#~ "No configuration file found. Please create the config/settings.php file "
+#~ "before proceeding."
+#~ msgstr ""
+#~ "Конфигурационный файл не найден. Пожалуйста, создайте файл config/"
+#~ "settings.php перед продолжением."
 
-#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
-msgid ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
-msgstr ""
-"Отдельные базы данных PowerDNS поддерживаются только с MySQL. Для PostgreSQL "
-"и SQLite используйте ту же базу данных."
+#~ msgid ""
+#~ "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+#~ "and SQLite, please use the same database."
+#~ msgstr ""
+#~ "Отдельные базы данных PowerDNS поддерживаются только с MySQL. Для "
+#~ "PostgreSQL и SQLite используйте ту же базу данных."
 
-#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
-msgid ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
-msgstr ""
-"Отсутствуют таблицы PowerDNS в базе данных \"%s\": %s. Убедитесь, что "
-"PowerDNS правильно установлен в этой базе данных."
+#~ msgid ""
+#~ "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+#~ "properly installed in this database."
+#~ msgstr ""
+#~ "Отсутствуют таблицы PowerDNS в базе данных \"%s\": %s. Убедитесь, что "
+#~ "PowerDNS правильно установлен в этой базе данных."
 
-#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
-msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Невозможно подключиться к базе данных PowerDNS \"%s\": %s"
+#~ msgid "Cannot connect to PowerDNS database \"%s\": %s"
+#~ msgstr "Невозможно подключиться к базе данных PowerDNS \"%s\": %s"

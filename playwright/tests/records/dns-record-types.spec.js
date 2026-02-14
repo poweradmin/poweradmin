@@ -119,6 +119,53 @@ test.describe('DNS Record Types Management', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
+  test('should show deprecated label for SPF record type in dropdown', async ({ page }) => {
+    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+
+    await page.goto(`/zones/${zoneId}/records/add`);
+    await page.waitForLoadState('networkidle');
+
+    const spfOption = page.locator('select[name*="type"] option[value="SPF"]').first();
+    if (await spfOption.count() > 0) {
+      const optionText = await spfOption.textContent();
+      expect(optionText).toContain('deprecated');
+    }
+  });
+
+  test('should show deprecation warning when selecting SPF type', async ({ page }) => {
+    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+
+    await page.goto(`/zones/${zoneId}/records/add`);
+    await page.waitForLoadState('networkidle');
+
+    const typeSelect = page.locator('select[name*="type"]').first();
+    const spfOption = page.locator('select[name*="type"] option[value="SPF"]').first();
+    if (await spfOption.count() > 0) {
+      await typeSelect.selectOption('SPF');
+      const warning = page.locator('.deprecated-type-warning').first();
+      await expect(warning).toBeVisible();
+      await expect(warning).toContainText('deprecated');
+    }
+  });
+
+  test('should hide deprecation warning when switching to non-deprecated type', async ({ page }) => {
+    test.skip(!zoneCreated || !zoneId, 'Zone not created');
+
+    await page.goto(`/zones/${zoneId}/records/add`);
+    await page.waitForLoadState('networkidle');
+
+    const typeSelect = page.locator('select[name*="type"]').first();
+    const spfOption = page.locator('select[name*="type"] option[value="SPF"]').first();
+    if (await spfOption.count() > 0) {
+      await typeSelect.selectOption('SPF');
+      const warning = page.locator('.deprecated-type-warning').first();
+      await expect(warning).toBeVisible();
+
+      await typeSelect.selectOption('A');
+      await expect(warning).not.toBeVisible();
+    }
+  });
+
   test('should cleanup test zone', async ({ page }) => {
     test.skip(!zoneCreated, 'Zone not created');
 

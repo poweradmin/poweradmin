@@ -40,6 +40,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -174,6 +175,7 @@ class EditRecordController extends BaseController
             'record_id' => $record_id,
             'record' => $record,
             'recordTypes' => $recordTypes,
+            'deprecated_types' => RecordType::DEPRECATED_TYPES,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
             'zone_type' => $zone_type,
