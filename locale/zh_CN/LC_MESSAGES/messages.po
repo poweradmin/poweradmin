@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-10 19:11+0200\n"
+"POT-Creation-Date: 2026-02-14 17:09+0200\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -22,7 +22,9 @@ msgstr ""
 msgid ""
 "No configuration file found at %s. Please use the <a href=\"install/"
 "\">installer</a> to create one, or create the configuration file manually."
-msgstr "找不到配置文件。请使用<a href=\"install/\">安装程序</a>创建一个，或者手动创建 %s 文件。"
+msgstr ""
+"找不到配置文件。请使用<a href=\"install/\">安装程序</a>创建一个，或者手动创"
+"建 %s 文件。"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:134
 msgid "Invalid CSRF token."
@@ -101,7 +103,6 @@ msgid "You do not have the permission to delete this user."
 msgstr "您没有删除此用户的权限。"
 
 #: lib/Application/Controller/DeleteUserController.php:62
-#, auto-english-fallback
 msgid "You do not have permission to delete a superuser account."
 msgstr "您没有权限删除超级用户帐户。"
 
@@ -138,7 +139,6 @@ msgid "You do not have permission to delete records in this zone."
 msgstr "您没有权限删除此区域中的记录。"
 
 #: lib/Application/Controller/EditRecordController.php:195
-#, auto-english-fallback
 msgid "Record not found."
 msgstr "未找到记录。"
 
@@ -199,67 +199,54 @@ msgid "The record has been deleted successfully."
 msgstr "记录已成功删除。"
 
 #: lib/Application/Controller/DeleteRecordController.php:239
-#, auto-english-fallback
 msgid "You cannot delete records from a SLAVE zone."
 msgstr "您不能从SLAVE区域删除记录。"
 
 #: lib/Application/Controller/DeleteGroupController.php:70
-#, auto-english-fallback
 msgid "You do not have permission to delete groups."
 msgstr "您没有权限删除组。"
 
 #: lib/Application/Controller/EditGroupController.php:86
-#, auto-english-fallback
 msgid "Invalid group ID."
 msgstr "无效的组ID。"
 
 #: lib/Application/Controller/DeleteGroupController.php:98
-#, auto-english-fallback
 msgid "Group deletion cancelled."
 msgstr "组删除已取消。"
 
 #: lib/Application/Controller/DeleteGroupController.php:135
-#, auto-english-fallback
 msgid "Group has been deleted successfully."
 msgstr "组已成功删除。"
 
 #: lib/Application/Controller/EditGroupController.php:197
-#, auto-english-fallback
 msgid "Group not found."
 msgstr "未找到组。"
 
 #: lib/Application/Controller/UserPreferencesController.php:99
-#, auto-english-fallback
 msgid "Preferences saved successfully."
 msgstr "首选项已成功保存。"
 
 #: lib/Application/Controller/UserPreferencesController.php:107
-#, auto-english-fallback
 msgid "Failed to update preferences. Please try again."
 msgstr "无法更新首选项。请重试。"
 
 #: lib/Application/Controller/UserPreferencesController.php:122
-#, auto-english-fallback
 msgid "Top"
 msgstr "顶部"
 
 #: lib/Application/Controller/UserPreferencesController.php:123
-#, auto-english-fallback
 msgid "Bottom"
 msgstr "底部"
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:60
-#, auto-english-fallback
 msgid "You do not have permission to manage group members."
 msgstr "您没有权限管理组成员。"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:103
-#, auto-english-fallback
 msgid "Invalid action."
 msgstr "无效的操作。"
 
 #: lib/Application/Controller/ManageGroupMembersController.php:192
-#, auto-english-fallback
 msgid "Please select at least one user."
 msgstr "请至少选择一个用户。"
 
@@ -292,7 +279,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: lib/Application/Controller/DnsWizardController.php:57
-#, auto-english-fallback
 msgid "DNS wizards are not enabled."
 msgstr "DNS向导未启用。"
 
@@ -301,27 +287,22 @@ msgid "Invalid zone ID."
 msgstr "无效的区域 ID。"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:93
-#, auto-english-fallback
 msgid "Zone not found."
 msgstr "未找到区域。"
 
 #: lib/Application/Controller/DnsWizardController.php:80
-#, auto-english-fallback
 msgid "You do not have permission to add records to this zone."
 msgstr "您没有权限向此区域添加记录。"
 
 #: lib/Application/Controller/DnsWizardFormController.php:114
-#, auto-english-fallback
 msgid "Invalid wizard type."
 msgstr "无效的向导类型。"
 
 #: lib/Application/Controller/DnsWizardFormController.php:199
-#, auto-english-fallback
 msgid "Validation failed:"
 msgstr "验证失败："
 
 #: lib/Application/Controller/DnsWizardFormController.php:223
-#, auto-english-fallback
 msgid "Failed to generate record:"
 msgstr "无法生成记录："
 
@@ -507,17 +488,14 @@ msgid "Invalid request method."
 msgstr "请求方法无效。"
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:77
-#, auto-english-fallback
 msgid "Invalid group or user ID."
 msgstr "无效的组或用户ID。"
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:86
-#, auto-english-fallback
 msgid "Member removed from group successfully."
 msgstr "成员已成功从组中移除。"
 
 #: lib/Application/Controller/RemoveUserGroupController.php:118
-#, auto-english-fallback
 msgid "User was not a member of this group."
 msgstr "用户不是此组的成员。"
 
@@ -526,7 +504,6 @@ msgid "You do not have the permission to add a new user."
 msgstr "您没有添加新用户的权限。"
 
 #: lib/Application/Controller/EditUserController.php:235
-#, auto-english-fallback
 msgid "Invalid permission template: must be a user template"
 msgstr "无效的权限模板：必须是用户模板"
 
@@ -564,17 +541,14 @@ msgid "The record could not be deleted."
 msgstr "无法删除记录。"
 
 #: lib/Application/Controller/ListLogUsersController.php:67
-#, auto-english-fallback
 msgid "Invalid page number."
 msgstr "无效的页码。"
 
 #: lib/Application/Controller/ListLogUsersController.php:69
-#, auto-english-fallback
 msgid "Page number must be at least 1."
 msgstr "页码必须至少为1。"
 
 #: lib/Application/Controller/ListLogUsersController.php:87
-#, auto-english-fallback
 msgid "Page number exceeds available pages."
 msgstr "页码超出可用页面。"
 
@@ -702,17 +676,14 @@ msgid "You do not have the permission to view this zone."
 msgstr "您没有查看此区域的权限。"
 
 #: lib/Application/Controller/EditController.php:271
-#, auto-english-fallback
 msgid "Zone type has been changed successfully."
 msgstr "区域类型已成功更改。"
 
 #: lib/Application/Controller/EditController.php:278
-#, auto-english-fallback
 msgid "Slave master has been changed successfully."
 msgstr "从服务器主机已成功更改。"
 
 #: lib/Application/Controller/EditController.php:298
-#, auto-english-fallback
 msgid "Zone template has been changed successfully."
 msgstr "区域模板已成功更改。"
 
@@ -738,7 +709,9 @@ msgstr "区域签名请求成功，但验证失败。请检查 DNSSEC 密钥。"
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
-msgstr "无法签署区域。区域验证通过，但PowerDNS API返回了错误。请查看PowerDNS日志以了解详情。"
+msgstr ""
+"无法签署区域。区域验证通过，但PowerDNS API返回了错误。请查看PowerDNS日志以了"
+"解详情。"
 
 #: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
@@ -843,7 +816,6 @@ msgid "You do not have the permission to add a record to this zone."
 msgstr "您没有向此区域添加记录的权限。"
 
 #: lib/Application/Controller/AddRecordController.php:226
-#, auto-english-fallback
 msgid "Record successfully added."
 msgstr "记录已成功添加。"
 
@@ -900,7 +872,6 @@ msgid "Authentication failed: "
 msgstr "身份验证失败："
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
-#, auto-english-fallback
 msgid "You do not have permission to create zone templates."
 msgstr "您没有权限创建区域模板。"
 
@@ -909,7 +880,6 @@ msgid "Template name can't be an empty string."
 msgstr "模板名称不能为空字符串。"
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:150
-#, auto-english-fallback
 msgid "Zone template has been created successfully."
 msgstr "区域模板已成功创建。"
 
@@ -926,7 +896,6 @@ msgid "You do not have the permission to add a master zone."
 msgstr "您没有添加主区域的权限。"
 
 #: lib/Application/Controller/AddZoneSlaveController.php:101
-#, auto-english-fallback
 msgid "At least one user or group must be selected as owner."
 msgstr "必须至少选择一个用户或组作为所有者。"
 
@@ -944,10 +913,11 @@ msgstr "区域已成功创建，但由于验证错误跳过了DNSSEC签名："
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
-msgstr "区域已创建，但使用DNSSEC保护失败。区域验证通过，但PowerDNS API返回了错误。请查看PowerDNS日志以了解详情。"
+msgstr ""
+"区域已创建，但使用DNSSEC保护失败。区域验证通过，但PowerDNS API返回了错误。请"
+"查看PowerDNS日志以了解详情。"
 
 #: lib/Application/Controller/AddZoneMasterController.php:177
-#, auto-english-fallback
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "区域已成功创建并使用DNSSEC签名。"
 
@@ -978,17 +948,14 @@ msgid "You do not have the permission to view zone templates."
 msgstr "您没有查看区域模板的权限。"
 
 #: lib/Application/Controller/AddGroupController.php:66
-#, auto-english-fallback
 msgid "You do not have permission to create groups."
 msgstr "您没有权限创建组。"
 
 #: lib/Application/Controller/EditGroupController.php:115
-#, auto-english-fallback
 msgid "Invalid permission template: must be a group template"
 msgstr "无效的权限模板：必须是组模板"
 
 #: lib/Application/Controller/AddGroupController.php:132
-#, auto-english-fallback
 msgid "Group has been created successfully."
 msgstr "组已成功创建。"
 
@@ -1001,7 +968,6 @@ msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "您没有权限管理此区域的 DNSSEC。"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:89
-#, auto-english-fallback
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC密钥未找到或不再存在。"
 
@@ -1018,22 +984,18 @@ msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "删除 DNSSEC 密钥时发生错误："
 
 #: lib/Application/Controller/SamlCallbackController.php:77
-#, auto-english-fallback
 msgid "SAML authentication is not enabled"
 msgstr "SAML身份验证未启用"
 
 #: lib/Application/Controller/SamlLoginController.php:89
-#, auto-english-fallback
 msgid "No SAML providers are configured"
 msgstr "未配置SAML提供商"
 
 #: lib/Application/Controller/SamlLoginController.php:100
-#, auto-english-fallback
 msgid "Invalid SAML provider"
 msgstr "无效的SAML提供商"
 
 #: lib/Application/Controller/SamlCallbackController.php:105
-#, auto-english-fallback
 msgid "SAML authentication failed: "
 msgstr "SAML身份验证失败："
 
@@ -1046,12 +1008,10 @@ msgid "You do not have the permission to see any zones."
 msgstr "您没有查看任何区域的权限。"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:71
-#, auto-english-fallback
 msgid "You do not have permission to manage zone ownership."
 msgstr "您没有权限管理区域所有权。"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:205
-#, auto-english-fallback
 msgid "Please select at least one zone."
 msgstr "请至少选择一个区域。"
 
@@ -1178,22 +1138,18 @@ msgid "Failed to retrieve RDAP information using server %s"
 msgstr "使用服务器 %s 检索 RDAP 信息失败"
 
 #: lib/Application/Controller/Api/Internal/DnsWizardController.php:409
-#, auto-english-fallback
 msgid "Record created successfully"
 msgstr "记录已成功创建"
 
 #: lib/Application/Controller/EditUserController.php:338
-#, auto-english-fallback
 msgid "You do not have permission to manage group memberships."
 msgstr "您没有权限管理组成员资格。"
 
 #: lib/Application/Controller/RemoveUserGroupController.php:79
-#, auto-english-fallback
 msgid "Invalid user or group ID."
 msgstr "无效的用户或组ID。"
 
 #: lib/Application/Controller/RemoveUserGroupController.php:100
-#, auto-english-fallback
 msgid "User removed from group successfully."
 msgstr "用户已成功从组中移除。"
 
@@ -1230,22 +1186,18 @@ msgid "The supermaster has been updated successfully."
 msgstr "超级主机已成功更新。"
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:60
-#, auto-english-fallback
 msgid "You do not have permission to manage group zones."
 msgstr "您没有权限管理组区域。"
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:77
-#, auto-english-fallback
 msgid "Invalid group or zone ID."
 msgstr "无效的组或区域ID。"
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
-#, auto-english-fallback
 msgid "Zone removed from group successfully."
 msgstr "区域已成功从组中移除。"
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:88
-#, auto-english-fallback
 msgid "Zone was not owned by this group."
 msgstr "区域不属于此组。"
 
@@ -1278,12 +1230,10 @@ msgid "You do not have the permission to edit this user."
 msgstr "您没有编辑此用户的权限。"
 
 #: lib/Application/Controller/EditUserController.php:210
-#, auto-english-fallback
 msgid "You do not have permission to edit a superuser account."
 msgstr "您没有权限编辑超级用户帐户。"
 
 #: lib/Application/Controller/EditUserController.php:346
-#, auto-english-fallback
 msgid "Please select at least one group."
 msgstr "请至少选择一个组。"
 
@@ -1343,17 +1293,14 @@ msgid "An unexpected error occurred. Please contact the administrator."
 msgstr "发生意外错误。请联系管理员。"
 
 #: lib/Application/Controller/SamlCallbackController.php:93
-#, auto-english-fallback
 msgid "Unknown SAML endpoint"
 msgstr "未知的SAML端点"
 
 #: lib/Application/Controller/SamlCallbackController.php:119
-#, auto-english-fallback
 msgid "You have been logged out"
 msgstr "您已退出登录"
 
 #: lib/Application/Controller/SamlCallbackController.php:124
-#, auto-english-fallback
 msgid "Logout completed (with warnings): "
 msgstr "退出登录完成（有警告）："
 
@@ -1362,7 +1309,6 @@ msgid "You do not have permission to view this record."
 msgstr "您没有权限查看此记录。"
 
 #: lib/Application/Controller/EditRecordController.php:108
-#, auto-english-fallback
 msgid "You cannot edit records in a SLAVE zone."
 msgstr "您不能在SLAVE区域中编辑记录。"
 
@@ -1371,7 +1317,6 @@ msgid "You do not have permission to edit this record."
 msgstr "您没有权限编辑此记录。"
 
 #: lib/Application/Controller/EditRecordController.php:226
-#, auto-english-fallback
 msgid "Failed to retrieve updated record information."
 msgstr "无法检索更新的记录信息。"
 
@@ -1390,7 +1335,9 @@ msgid ""
 "Users authenticated via Single Sign-On cannot change their password here. "
 "Please contact your administrator or change your password through your "
 "identity provider."
-msgstr "通过单点登录进行身份验证的用户无法在此更改密码。请联系管理员或通过身份提供商更改密码。"
+msgstr ""
+"通过单点登录进行身份验证的用户无法在此更改密码。请联系管理员或通过身份提供商"
+"更改密码。"
 
 #: lib/Application/Controller/ChangePasswordController.php:87
 msgid ""
@@ -1435,12 +1382,10 @@ msgid "Please select both algorithm and bits"
 msgstr "请选择算法和位数"
 
 #: lib/Application/Controller/EditGroupController.php:79
-#, auto-english-fallback
 msgid "You do not have permission to edit groups."
 msgstr "您没有权限编辑组。"
 
 #: lib/Application/Controller/EditGroupController.php:180
-#, auto-english-fallback
 msgid "Group has been updated successfully."
 msgstr "组已成功更新。"
 
@@ -1473,22 +1418,18 @@ msgid "Some zone(s) could not be added."
 msgstr "某些区域无法添加。"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:169
-#, auto-english-fallback
 msgid "Owner has been added successfully."
 msgstr "所有者已成功添加。"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:184
-#, auto-english-fallback
 msgid "Owner has been removed successfully."
 msgstr "所有者已成功移除。"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:198
-#, auto-english-fallback
 msgid "Group has been added successfully."
 msgstr "组已成功添加。"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:205
-#, auto-english-fallback
 msgid "Group has been removed successfully."
 msgstr "组已成功移除。"
 
@@ -1520,7 +1461,6 @@ msgid "Failed to activate zone key."
 msgstr "激活区域密钥失败。"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:116
-#, auto-english-fallback
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "切换DNSSEC密钥时发生错误。请重试。"
 
@@ -1581,7 +1521,6 @@ msgid "Failed to authenticate against LDAP."
 msgstr "LDAP 认证失败。"
 
 #: lib/Application/Service/SamlService.php:243
-#, auto-english-fallback
 msgid "Authentication failed: Invalid SAML response"
 msgstr "身份验证失败：无效的SAML响应"
 
@@ -1596,7 +1535,6 @@ msgid "No"
 msgstr "否"
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
-#, auto-english-fallback
 msgid "This template is assigned to at least one user and one group."
 msgstr "此模板已分配给至少一个用户和一个组。"
 
@@ -1605,7 +1543,6 @@ msgid "This template is assigned to at least one user."
 msgstr "此模板分配给至少一个用户。"
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
-#, auto-english-fallback
 msgid "This template is assigned to at least one group."
 msgstr "此模板已分配给至少一个组。"
 
@@ -1619,7 +1556,6 @@ msgid "An empty password is not allowed"
 msgstr "不允许空密码"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:216
-#, auto-english-fallback
 msgid "LDAP authentication is disabled"
 msgstr "LDAP身份验证已禁用"
 
@@ -1718,17 +1654,14 @@ msgid "Error checking template existence: "
 msgstr "检查模板存在性错误："
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:45
-#, auto-english-fallback
 msgid "TLSA Record"
 msgstr "TLSA记录"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:46
-#, auto-english-fallback
 msgid "TLS certificate/key authentication (DANE)"
 msgstr "TLS证书/密钥身份验证（DANE）"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:57
-#, auto-english-fallback
 msgid "DNSSEC Requirement"
 msgstr "DNSSEC要求"
 
@@ -1737,15 +1670,15 @@ msgid ""
 "TLSA records require DNSSEC to be enabled for this zone. TLSA records "
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
-msgstr "TLSA记录要求为此区域启用DNSSEC。没有DNSSEC的TLSA记录不会提供安全优势，客户端可能会忽略。"
+msgstr ""
+"TLSA记录要求为此区域启用DNSSEC。没有DNSSEC的TLSA记录不会提供安全优势，客户端"
+"可能会忽略。"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:91
-#, auto-english-fallback
 msgid "Service Configuration"
 msgstr "服务配置"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:148
-#, auto-english-fallback
 msgid "Port Number"
 msgstr "端口号"
 
@@ -1755,27 +1688,22 @@ msgid ""
 msgstr "TCP/UDP端口号（HTTPS为443，SMTP为25，DNS-over-TLS为853等）"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:113
-#, auto-english-fallback
 msgid "Protocol"
 msgstr "协议"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:81
-#, auto-english-fallback
 msgid "Transmission Control Protocol - most common for HTTPS/TLS"
 msgstr "传输控制协议 - HTTPS/TLS最常用"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:82
-#, auto-english-fallback
 msgid "User Datagram Protocol - for DTLS connections"
 msgstr "用户数据报协议 - 用于DTLS连接"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:121
-#, auto-english-fallback
 msgid "Stream Control Transmission Protocol"
 msgstr "流控制传输协议"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:85
-#, auto-english-fallback
 msgid "Transport protocol for the TLS connection"
 msgstr "TLS连接的传输协议"
 
@@ -1788,55 +1716,46 @@ msgstr "主机名"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr "服务的主机名（留空表示区域根@）。记录将在 _port._protocol.hostname 创建"
+msgstr ""
+"服务的主机名（留空表示区域根@）。记录将在 _port._protocol.hostname 创建"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:98
-#, auto-english-fallback
 msgid "Certificate Usage"
 msgstr "证书用途"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:102
-#, auto-english-fallback
 msgid "Usage"
 msgstr "用途"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
-#, auto-english-fallback
 msgid "0 - CA Constraint"
 msgstr "0 - CA约束"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
-#, auto-english-fallback
 msgid "Certificate must chain to specified CA (PKIX-TA)"
 msgstr "证书必须链接到指定的CA（PKIX-TA）"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
-#, auto-english-fallback
 msgid "1 - Service Certificate"
 msgstr "1 - 服务证书"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
-#, auto-english-fallback
 msgid "Certificate must match exactly (PKIX-EE)"
 msgstr "证书必须完全匹配（PKIX-EE）"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
-#, auto-english-fallback
 msgid "2 - Trust Anchor Assertion"
 msgstr "2 - 信任锚断言"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
-#, auto-english-fallback
 msgid "Certificate must chain to specified anchor (DANE-TA)"
 msgstr "证书必须链接到指定的锚（DANE-TA）"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
-#, auto-english-fallback
 msgid "3 - Domain-Issued Certificate"
 msgstr "3 - 域颁发证书"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
-#, auto-english-fallback
 msgid "Certificate must match exactly, bypassing PKI (DANE-EE)"
 msgstr "证书必须完全匹配，绕过PKI（DANE-EE）"
 
@@ -1847,27 +1766,22 @@ msgid ""
 msgstr "如何验证证书。类型3最常用于自签名或自定义CA。"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:72
-#, auto-english-fallback
 msgid "Selector"
 msgstr "选择器"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
-#, auto-english-fallback
 msgid "0 - Full Certificate"
 msgstr "0 - 完整证书"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
-#, auto-english-fallback
 msgid "Use the entire certificate"
 msgstr "使用完整证书"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
-#, auto-english-fallback
 msgid "1 - Public Key"
 msgstr "1 - 公钥"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
-#, auto-english-fallback
 msgid "Use only the Subject Public Key Info (SPKI)"
 msgstr "仅使用主题公钥信息（SPKI）"
 
@@ -1878,37 +1792,30 @@ msgid ""
 msgstr "要匹配证书的哪一部分。类型1（公钥）在证书续订时仍然有效。"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:138
-#, auto-english-fallback
 msgid "Matching Type"
 msgstr "匹配类型"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
-#, auto-english-fallback
 msgid "0 - Exact Match"
 msgstr "0 - 完全匹配"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
-#, auto-english-fallback
 msgid "Full certificate/key data (very long record)"
 msgstr "完整证书/密钥数据（记录很长）"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
-#, auto-english-fallback
 msgid "1 - SHA-256 Hash"
 msgstr "1 - SHA-256哈希"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
-#, auto-english-fallback
 msgid "SHA-256 hash of certificate/key"
 msgstr "证书/密钥的SHA-256哈希"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
-#, auto-english-fallback
 msgid "2 - SHA-512 Hash"
 msgstr "2 - SHA-512哈希"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
-#, auto-english-fallback
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
 msgstr "证书/密钥的SHA-512哈希（更安全但更长）"
 
@@ -1919,12 +1826,10 @@ msgid ""
 msgstr "如何编码证书数据。SHA-256（类型1）提供了安全性和长度的良好平衡。"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:152
-#, auto-english-fallback
 msgid "Certificate Data"
 msgstr "证书数据"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:156
-#, auto-english-fallback
 msgid "Certificate Association Data"
 msgstr "证书关联数据"
 
@@ -1934,50 +1839,43 @@ msgid ""
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
 msgstr ""
-"十六进制哈希或完整证书数据（取决于匹配类型）。对于SHA-256：使用 \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
+"十六进制哈希或完整证书数据（取决于匹配类型）。对于SHA-256：使用 \"openssl "
+"x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | "
+"openssl dgst -sha256\""
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:184
-#, auto-english-fallback
 msgid "Record Settings"
 msgstr "记录设置"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:188
-#, auto-english-fallback
 msgid "TTL (seconds)"
 msgstr "TTL（秒）"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:193
-#, auto-english-fallback
 msgid "Time to live - how long DNS resolvers should cache this record"
 msgstr "生存时间 - DNS解析器应缓存此记录的时长"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:289
-#, auto-english-fallback
 msgid "Port must be between 1 and 65535"
 msgstr "端口必须在1到65535之间"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:233
-#, auto-english-fallback
 msgid "Usage must be 0, 1, 2, or 3"
 msgstr "用途必须为0、1、2或3"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:238
-#, auto-english-fallback
 msgid "Selector must be 0 or 1"
 msgstr "选择器必须为0或1"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:243
-#, auto-english-fallback
 msgid "Matching type must be 0, 1, or 2"
 msgstr "匹配类型必须为0、1或2"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:248
-#, auto-english-fallback
 msgid "Certificate association data is required"
 msgstr "证书关联数据是必需的"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:253
-#, auto-english-fallback
 msgid "Certificate data must be hexadecimal (0-9, a-f)"
 msgstr "证书数据必须是十六进制（0-9，a-f）"
 
@@ -2010,55 +1908,47 @@ msgstr "主机名格式无效"
 msgid ""
 "CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
 "DNSSEC, TLSA records provide NO security benefit."
-msgstr "关键：TLSA记录要求在此区域上启用DNSSEC。没有DNSSEC，TLSA记录不提供任何安全优势。"
+msgstr ""
+"关键：TLSA记录要求在此区域上启用DNSSEC。没有DNSSEC，TLSA记录不提供任何安全优"
+"势。"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:46
-#, auto-english-fallback
 msgid "DMARC Record"
 msgstr "DMARC记录"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:47
-#, auto-english-fallback
 msgid "Email authentication policy and reporting configuration"
 msgstr "电子邮件身份验证策略和报告配置"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:59
-#, auto-english-fallback
 msgid "Policy Settings"
 msgstr "策略设置"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:138
-#, auto-english-fallback
 msgid "Policy"
 msgstr "策略"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
-#, auto-english-fallback
 msgid "None (monitor only)"
 msgstr "无（仅监控）"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
-#, auto-english-fallback
 msgid "No action taken, just collect reports for analysis"
 msgstr "不采取任何措施，仅收集报告进行分析"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
-#, auto-english-fallback
 msgid "Quarantine"
 msgstr "隔离"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:69
-#, auto-english-fallback
 msgid "Treat suspicious emails as spam/junk"
 msgstr "将可疑电子邮件视为垃圾邮件"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
-#, auto-english-fallback
 msgid "Reject"
 msgstr "拒绝"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:70
-#, auto-english-fallback
 msgid "Block delivery of suspicious emails entirely"
 msgstr "完全阻止可疑电子邮件的传递"
 
@@ -2067,47 +1957,38 @@ msgid "Start with \"none\" to collect data before enforcing a stricter policy."
 msgstr "在实施更严格的策略之前，从\"无\"开始收集数据。"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:76
-#, auto-english-fallback
 msgid "Subdomain Policy"
 msgstr "子域策略"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
-#, auto-english-fallback
 msgid "Same as domain policy"
 msgstr "与域策略相同"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
-#, auto-english-fallback
 msgid "Use the same policy as the main domain"
 msgstr "使用与主域相同的策略"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
-#, auto-english-fallback
 msgid "None"
 msgstr "无"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
-#, auto-english-fallback
 msgid "Monitor only for subdomains"
 msgstr "仅监控子域"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
-#, auto-english-fallback
 msgid "Quarantine suspicious subdomain emails"
 msgstr "隔离可疑的子域电子邮件"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
-#, auto-english-fallback
 msgid "Reject suspicious subdomain emails"
 msgstr "拒绝可疑的子域电子邮件"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:86
-#, auto-english-fallback
 msgid "Policy for emails from subdomains (e.g., mail.example.com)"
 msgstr "来自子域的电子邮件策略（例如mail.example.com）"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:90
-#, auto-english-fallback
 msgid "Policy Application Percentage"
 msgstr "策略应用百分比"
 
@@ -2118,22 +1999,18 @@ msgid ""
 msgstr "策略应应用于的消息百分比（100=所有消息）。在策略推出期间使用较低的值。"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:101
-#, auto-english-fallback
 msgid "Reporting Settings"
 msgstr "报告设置"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:105
-#, auto-english-fallback
 msgid "Aggregate Report Email"
 msgstr "聚合报告电子邮件"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:109
-#, auto-english-fallback
 msgid "Email address to receive daily aggregate reports"
 msgstr "接收每日聚合报告的电子邮件地址"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:113
-#, auto-english-fallback
 msgid "Forensic Report Email"
 msgstr "取证报告电子邮件"
 
@@ -2144,27 +2021,22 @@ msgid ""
 msgstr "接收详细失败报告的电子邮件地址（可选，可能会很多）"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:121
-#, auto-english-fallback
 msgid "Forensic Reporting Options"
 msgstr "取证报告选项"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:125
-#, auto-english-fallback
 msgid "Generate reports if all authentication mechanisms fail"
 msgstr "如果所有身份验证机制都失败，则生成报告"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:126
-#, auto-english-fallback
 msgid "Generate reports if any authentication mechanism fails"
 msgstr "如果任何身份验证机制失败，则生成报告"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:127
-#, auto-english-fallback
 msgid "Generate reports if DKIM check fails"
 msgstr "如果DKIM检查失败，则生成报告"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:128
-#, auto-english-fallback
 msgid "Generate reports if SPF check fails"
 msgstr "如果SPF检查失败，则生成报告"
 
@@ -2174,72 +2046,58 @@ msgid ""
 msgstr "何时生成取证报告（仅在设置了取证电子邮件时适用）"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:135
-#, auto-english-fallback
 msgid "Alignment Settings"
 msgstr "对齐设置"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:136
-#, auto-english-fallback
 msgid "Advanced settings for SPF and DKIM alignment modes"
 msgstr "SPF和DKIM对齐模式的高级设置"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:140
-#, auto-english-fallback
 msgid "DKIM Alignment Mode"
 msgstr "DKIM对齐模式"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
-#, auto-english-fallback
 msgid "Relaxed"
 msgstr "宽松"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:145
-#, auto-english-fallback
 msgid "DKIM domain can be subdomain of From: domain"
 msgstr "DKIM域可以是From:域的子域"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
-#, auto-english-fallback
 msgid "Strict"
 msgstr "严格"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:146
-#, auto-english-fallback
 msgid "DKIM domain must exactly match From: domain"
 msgstr "DKIM域必须与From:域完全匹配"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:151
-#, auto-english-fallback
 msgid "SPF Alignment Mode"
 msgstr "SPF对齐模式"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
-#, auto-english-fallback
 msgid "SPF domain can be subdomain of From: domain"
 msgstr "SPF域可以是From:域的子域"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
-#, auto-english-fallback
 msgid "SPF domain must exactly match From: domain"
 msgstr "SPF域必须与From:域完全匹配"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:261
-#, auto-english-fallback
 msgid "Policy is required"
 msgstr "策略是必需的"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:263
-#, auto-english-fallback
 msgid "Invalid policy value"
 msgstr "无效的策略值"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:268
-#, auto-english-fallback
 msgid "Invalid subdomain policy value"
 msgstr "无效的子域策略值"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:275
-#, auto-english-fallback
 msgid "Percentage must be between 0 and 100"
 msgstr "百分比必须在0到100之间"
 
@@ -2251,12 +2109,10 @@ msgid ""
 msgstr "策略仅适用于%%d的消息。测试完成后使用%%100。"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:283
-#, auto-english-fallback
 msgid "Invalid aggregate report email address"
 msgstr "无效的聚合报告电子邮件地址"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:287
-#, auto-english-fallback
 msgid "Invalid forensic report email address"
 msgstr "无效的取证报告电子邮件地址"
 
@@ -2272,87 +2128,70 @@ msgid ""
 msgstr "使用\"p=none\"仅提供监控。在查看报告后考虑更严格的策略（隔离/拒绝）。"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:48
-#, auto-english-fallback
 msgid "SPF Record"
 msgstr "SPF记录"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:49
-#, auto-english-fallback
 msgid "Authorized mail server configuration"
 msgstr "授权邮件服务器配置"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:61
-#, auto-english-fallback
 msgid "Basic Mechanisms"
 msgstr "基本机制"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:62
-#, auto-english-fallback
 msgid "Select common mechanisms to authorize email sending"
 msgstr "选择常见机制以授权发送电子邮件"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:66
-#, auto-english-fallback
 msgid "MX Records"
 msgstr "MX记录"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:69
-#, auto-english-fallback
 msgid "Authorize all servers listed in MX records for this domain"
 msgstr "授权此域的MX记录中列出的所有服务器"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:73
-#, auto-english-fallback
 msgid "A/AAAA Records"
 msgstr "A/AAAA记录"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:76
-#, auto-english-fallback
 msgid "Authorize the domain's A and AAAA records"
 msgstr "授权域的A和AAAA记录"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:81
-#, auto-english-fallback
 msgid "IP Addresses"
 msgstr "IP地址"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:82
-#, auto-english-fallback
 msgid "Authorized IP addresses and networks (CIDR notation supported)"
 msgstr "授权的IP地址和网络（支持CIDR表示法）"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:86
-#, auto-english-fallback
 msgid "IPv4 Addresses"
 msgstr "IPv4地址"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:90
-#, auto-english-fallback
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 msgstr "每行一个IP地址或网络（例如192.0.2.1或192.0.2.0/24）"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:94
-#, auto-english-fallback
 msgid "IPv6 Addresses"
 msgstr "IPv6地址"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:98
-#, auto-english-fallback
 msgid "One IPv6 address or network per line"
 msgstr "每行一个IPv6地址或网络"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:103
-#, auto-english-fallback
 msgid "Include Mechanisms"
 msgstr "包含机制"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:104
-#, auto-english-fallback
 msgid "Include SPF records from other domains"
 msgstr "包含其他域的SPF记录"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:108
-#, auto-english-fallback
 msgid "Include Domains"
 msgstr "包含域"
 
@@ -2360,55 +2199,47 @@ msgstr "包含域"
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr "应包含其SPF记录的域（每行一个）。常见：_spf.google.com、spf.protection.outlook.com"
+msgstr ""
+"应包含其SPF记录的域（每行一个）。常见：_spf.google.com、"
+"spf.protection.outlook.com"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:117
-#, auto-english-fallback
 msgid "Additional Mechanisms"
 msgstr "其他机制"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:121
-#, auto-english-fallback
 msgid "Additional A/AAAA Hosts"
 msgstr "其他A/AAAA主机"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:125
-#, auto-english-fallback
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
 msgstr "授权特定主机名的A/AAAA记录（每行一个）"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:129
-#, auto-english-fallback
 msgid "Additional MX Hosts"
 msgstr "其他MX主机"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:133
-#, auto-english-fallback
 msgid "Authorize MX records from other domains (one per line)"
 msgstr "授权其他域的MX记录（每行一个）"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:142
-#, auto-english-fallback
 msgid "Default Action"
 msgstr "默认操作"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:147
-#, auto-english-fallback
 msgid "Pass all - allows anyone to send (insecure)"
 msgstr "全部通过 - 允许任何人发送（不安全）"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:148
-#, auto-english-fallback
 msgid "Neutral (no policy)"
 msgstr "中性（无策略）"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:149
-#, auto-english-fallback
 msgid "Soft fail (mark as spam but accept)"
 msgstr "软失败（标记为垃圾邮件但接受）"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:150
-#, auto-english-fallback
 msgid "Fail (reject unauthorized emails)"
 msgstr "失败（拒绝未授权的电子邮件）"
 
@@ -2424,29 +2255,30 @@ msgid ""
 "SPF record exceeds the DNS lookup limit (%d/10). This will cause SPF "
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
-msgstr "SPF记录超过DNS查找限制（%d/10）。这将导致SPF验证失败。删除一些include/a/mx机制或改用ip4/ip6。"
+msgstr ""
+"SPF记录超过DNS查找限制（%d/10）。这将导致SPF验证失败。删除一些include/a/mx机"
+"制或改用ip4/ip6。"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:294
 #, php-format
 msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
-msgstr "SPF记录有%d次DNS查找（限制为10）。考虑使用ip4/ip6而不是include机制，或合并include以保持在限制以下。"
+msgstr ""
+"SPF记录有%d次DNS查找（限制为10）。考虑使用ip4/ip6而不是include机制，或合并"
+"include以保持在限制以下。"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:304
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv4 address or network: %s"
 msgstr "无效的IPv4地址或网络：%s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:313
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv6 address or network: %s"
 msgstr "无效的IPv6地址或网络：%s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:323
-#, auto-english-fallback
 #, php-format
 msgid "Invalid include domain: %s"
 msgstr "无效的包含域：%s"
@@ -2463,27 +2295,22 @@ msgid ""
 msgstr "使用\"+all\"允许任何人以您的域发送电子邮件。强烈不建议这样做。"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:43
-#, auto-english-fallback
 msgid "CAA Record"
 msgstr "CAA记录"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:44
-#, auto-english-fallback
 msgid "Certificate authority authorization"
 msgstr "证书颁发机构授权"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:68
-#, auto-english-fallback
 msgid "Custom (enter manually)"
 msgstr "自定义（手动输入）"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:74
-#, auto-english-fallback
 msgid "Certificate Authority"
 msgstr "证书颁发机构"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:78
-#, auto-english-fallback
 msgid "CA Provider"
 msgstr "CA提供商"
 
@@ -2494,7 +2321,6 @@ msgid ""
 msgstr "选择授权为此域颁发证书的证书颁发机构"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:87
-#, auto-english-fallback
 msgid "CA Domain (Custom)"
 msgstr "CA域（自定义）"
 
@@ -2504,7 +2330,6 @@ msgid ""
 msgstr "手动输入CA域名（仅在选择\"自定义\"时显示）"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:97
-#, auto-english-fallback
 msgid "Certificate Type"
 msgstr "证书类型"
 
@@ -2514,77 +2339,62 @@ msgid "Tag"
 msgstr "标签"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
-#, auto-english-fallback
 msgid "Issue"
 msgstr "颁发"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
-#, auto-english-fallback
 msgid "Authorize issuance of standard certificates"
 msgstr "授权颁发标准证书"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
-#, auto-english-fallback
 msgid "Issue Wildcard"
 msgstr "颁发通配符"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
-#, auto-english-fallback
 msgid "Authorize issuance of wildcard certificates (*.example.com)"
 msgstr "授权颁发通配符证书（*.example.com）"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
-#, auto-english-fallback
 msgid "Incident Reporting"
 msgstr "事件报告"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
-#, auto-english-fallback
 msgid "URL to report certificate issuance violations"
 msgstr "报告证书颁发违规的URL"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:110
-#, auto-english-fallback
 msgid "Type of authorization or reporting"
 msgstr "授权或报告的类型"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:114
-#, auto-english-fallback
 msgid "Reporting URL"
 msgstr "报告URL"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:119
-#, auto-english-fallback
 msgid "URL or email for incident reports (mailto: or https:)"
 msgstr "事件报告的URL或电子邮件（mailto:或https:）"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:103
-#, auto-english-fallback
 msgid "Advanced Options"
 msgstr "高级选项"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:130
-#, auto-english-fallback
 msgid "Flags"
 msgstr "标志"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
-#, auto-english-fallback
 msgid "Non-critical"
 msgstr "非关键"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
-#, auto-english-fallback
 msgid "Allow fallback if not understood"
 msgstr "如果不理解则允许回退"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
-#, auto-english-fallback
 msgid "Critical"
 msgstr "关键"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
-#, auto-english-fallback
 msgid "Reject if not understood - strict enforcement"
 msgstr "如果不理解则拒绝 - 严格执行"
 
@@ -2595,12 +2405,10 @@ msgid ""
 msgstr "非关键（0）提供更好的兼容性。关键（128）强制执行严格的CAA处理。"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:204
-#, auto-english-fallback
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
 msgstr "无效的CAA标签。必须是issue、issuewild或iodef"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:210
-#, auto-english-fallback
 msgid "CA provider is required"
 msgstr "CA提供商是必需的"
 
@@ -2609,7 +2417,6 @@ msgid "Custom CA domain is required when \"Custom\" is selected"
 msgstr "选择\"自定义\"时需要自定义CA域"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:215
-#, auto-english-fallback
 msgid "Invalid CA domain format"
 msgstr "无效的CA域格式"
 
@@ -2620,18 +2427,15 @@ msgid ""
 msgstr "使用\";\"允许所有证书颁发机构颁发证书。这违背了CAA记录的目的。"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:227
-#, auto-english-fallback
 msgid "Reporting URL is required for iodef tag"
 msgstr "iodef标签需要报告URL"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
-#, auto-english-fallback
 #, php-format
 msgid "Reporting URL must start with %s, %s, or %s"
 msgstr "报告URL必须以%s、%s或%s开头"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
-#, auto-english-fallback
 msgid "Flags must be 0 or 128"
 msgstr "标志必须为0或128"
 
@@ -2639,15 +2443,15 @@ msgstr "标志必须为0或128"
 msgid ""
 "Critical flag (128) is set. Systems that do not understand CAA records will "
 "reject operations. Use 0 unless you have a specific requirement."
-msgstr "已设置关键标志（128）。不理解CAA记录的系统将拒绝操作。除非有特定要求，否则使用0。"
+msgstr ""
+"已设置关键标志（128）。不理解CAA记录的系统将拒绝操作。除非有特定要求，否则使"
+"用0。"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:46
-#, auto-english-fallback
 msgid "DKIM Record"
 msgstr "DKIM记录"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:47
-#, auto-english-fallback
 msgid "Email signature verification public key"
 msgstr "电子邮件签名验证公钥"
 
@@ -2663,10 +2467,11 @@ msgid ""
 "the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your "
 "mail server (never share it)."
 msgstr ""
-"DKIM使用加密签名证明电子邮件来自您的域。在您的邮件服务器（Postfix、Exim等）上生成DKIM密钥对。只有公钥放入此DNS记录。将私钥安全地保存在邮件服务器上（切勿共享）。"
+"DKIM使用加密签名证明电子邮件来自您的域。在您的邮件服务器（Postfix、Exim等）上"
+"生成DKIM密钥对。只有公钥放入此DNS记录。将私钥安全地保存在邮件服务器上（切勿共"
+"享）。"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:68
-#, auto-english-fallback
 msgid "DKIM Configuration"
 msgstr "DKIM配置"
 
@@ -2676,10 +2481,10 @@ msgid ""
 "\"202501\", or service name like \"google\"). Only alphanumeric characters, "
 "hyphens, and underscores allowed."
 msgstr ""
-"用于标识DKIM密钥的选择器（通常为\"default\"、时间戳如\"202501\"或服务名称如\"google\"）。仅允许字母数字字符、连字符和下划线。"
+"用于标识DKIM密钥的选择器（通常为\"default\"、时间戳如\"202501\"或服务名称如"
+"\"google\"）。仅允许字母数字字符、连字符和下划线。"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:81
-#, auto-english-fallback
 msgid "Public Key"
 msgstr "公钥"
 
@@ -2690,27 +2495,22 @@ msgid ""
 msgstr "粘贴来自邮件服务器的base64编码公钥。空格和换行符将自动删除。"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:90
-#, auto-english-fallback
 msgid "Key Type"
 msgstr "密钥类型"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:95
-#, auto-english-fallback
 msgid "Widely supported by all mail servers"
 msgstr "所有邮件服务器都广泛支持"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:96
-#, auto-english-fallback
 msgid "Newer algorithm - not universally supported yet"
 msgstr "较新的算法 - 尚未得到普遍支持"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:98
-#, auto-english-fallback
 msgid "Encryption algorithm for the DKIM public key"
 msgstr "DKIM公钥的加密算法"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:109
-#, auto-english-fallback
 msgid "Testing Mode"
 msgstr "测试模式"
 
@@ -2721,7 +2521,6 @@ msgid ""
 msgstr "启用测试模式（t=y）。DKIM签名将存在但不强制执行。在初始部署期间使用。"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:116
-#, auto-english-fallback
 msgid "Strict Subdomain Mode"
 msgstr "严格子域模式"
 
@@ -2731,7 +2530,6 @@ msgid ""
 msgstr "启用严格子域模式（t=s）。拒绝来自子域的未签名邮件。"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:198
-#, auto-english-fallback
 msgid "Selector is required"
 msgstr "选择器是必需的"
 
@@ -2741,12 +2539,10 @@ msgid ""
 msgstr "选择器只能包含字母数字字符、连字符和下划线"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:205
-#, auto-english-fallback
 msgid "Public key is required"
 msgstr "公钥是必需的"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:211
-#, auto-english-fallback
 msgid "Public key must be valid base64-encoded data"
 msgstr "公钥必须是有效的base64编码数据"
 
@@ -2775,17 +2571,14 @@ msgid ""
 msgstr "已启用测试模式（t=y）。不会强制执行DKIM签名。测试完成后禁用此功能。"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:68
-#, auto-english-fallback
 msgid "SRV Record"
 msgstr "SRV记录"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:69
-#, auto-english-fallback
 msgid "Service location (hostname and port)"
 msgstr "服务位置（主机名和端口）"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:95
-#, auto-english-fallback
 msgid "Service"
 msgstr "服务"
 
@@ -2794,32 +2587,26 @@ msgid "Select a common service or choose \"Custom\" to enter manually"
 msgstr "选择常见服务或选择\"自定义\"手动输入"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:104
-#, auto-english-fallback
 msgid "Custom Service Name"
 msgstr "自定义服务名称"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:109
-#, auto-english-fallback
 msgid "Service name must start with underscore (e.g., _myservice)"
 msgstr "服务名称必须以下划线开头（例如_myservice）"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:118
-#, auto-english-fallback
 msgid "Transmission Control Protocol - most common"
 msgstr "传输控制协议 - 最常见"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:119
-#, auto-english-fallback
 msgid "User Datagram Protocol - connectionless"
 msgstr "用户数据报协议 - 无连接"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:120
-#, auto-english-fallback
 msgid "Transport Layer Security"
 msgstr "传输层安全"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:123
-#, auto-english-fallback
 msgid "Transport protocol for the service"
 msgstr "服务的传输协议"
 
@@ -2835,12 +2622,10 @@ msgid ""
 msgstr "域名（留空表示区域根@）。完整记录名称将为：_service._protocol.domain"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:136
-#, auto-english-fallback
 msgid "Target Server"
 msgstr "目标服务器"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:140
-#, auto-english-fallback
 msgid "Target Hostname"
 msgstr "目标主机名"
 
@@ -2848,7 +2633,8 @@ msgstr "目标主机名"
 msgid ""
 "Hostname of the server providing this service (must be a hostname with an A/"
 "AAAA record, not an IP address)"
-msgstr "提供此服务的服务器的主机名（必须是具有A/AAAA记录的主机名，而不是IP地址）"
+msgstr ""
+"提供此服务的服务器的主机名（必须是具有A/AAAA记录的主机名，而不是IP地址）"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:154
 msgid ""
@@ -2857,7 +2643,6 @@ msgid ""
 msgstr "服务监听的端口号（常见服务会自动填充）"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:159
-#, auto-english-fallback
 msgid "Priority & Load Balancing"
 msgstr "优先级和负载均衡"
 
@@ -2870,10 +2655,11 @@ msgstr "优先级"
 msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
-msgstr "较低的值具有较高的优先级（10是一个很好的默认值）。客户端按优先级顺序尝试服务器。"
+msgstr ""
+"较低的值具有较高的优先级（10是一个很好的默认值）。客户端按优先级顺序尝试服务"
+"器。"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:173
-#, auto-english-fallback
 msgid "Weight"
 msgstr "权重"
 
@@ -2881,30 +2667,26 @@ msgstr "权重"
 msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
-msgstr "用于相同优先级服务器之间的负载均衡。较高的权重=更多流量。0=无负载均衡。"
+msgstr ""
+"用于相同优先级服务器之间的负载均衡。较高的权重=更多流量。0=无负载均衡。"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:261
-#, auto-english-fallback
 msgid "Service is required"
 msgstr "服务是必需的"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:265
-#, auto-english-fallback
 msgid "Custom service name is required"
 msgstr "自定义服务名称是必需的"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:267
-#, auto-english-fallback
 msgid "Service name must contain only alphanumeric characters and hyphens"
 msgstr "服务名称只能包含字母数字字符和连字符"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:273
-#, auto-english-fallback
 msgid "Target hostname is required"
 msgstr "目标主机名是必需的"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:277
-#, auto-english-fallback
 msgid "Invalid target hostname format"
 msgstr "无效的目标主机名格式"
 
@@ -2915,7 +2697,6 @@ msgid ""
 msgstr "目标必须是主机名，而不是IP地址。首先为主机名创建A或AAAA记录。"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:295
-#, auto-english-fallback
 msgid "Priority must be between 0 and 65535"
 msgstr "优先级必须在0到65535之间"
 
@@ -2925,12 +2706,10 @@ msgid ""
 msgstr "优先级0有效但不常见。大多数服务使用优先级10或更高。"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:305
-#, auto-english-fallback
 msgid "Weight must be between 0 and 65535"
 msgstr "权重必须在0到65535之间"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:310
-#, auto-english-fallback
 msgid "Invalid domain format"
 msgstr "无效的域格式"
 
@@ -5351,29 +5130,29 @@ msgid ""
 "appears to have expired before it became valid."
 msgstr "过期时间必须晚于生效时间。此签名似乎在生效之前就已过期。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
 msgstr "严重：此签名已过期。DNSSEC 解析器将不会验证它。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
 msgstr "警告：此签名将在未来 7 天内过期。请考虑尽快续签。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
 msgstr "此签名将在未来 30 天内过期。请计划续签。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
 msgstr "警告：此签名尚未生效。在达到生效时间之前，DNSSEC 解析器不会验证它。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:291
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
 msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
@@ -5382,38 +5161,38 @@ msgstr ""
 "签名有效期超过 90 天，这比推荐做法要长。较长的有效期会在密钥泄露情况下增加漏"
 "洞。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:295
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
 msgstr "无法解析签名时间戳以检查有效期。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:300
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:302
 msgid "RRSIG key tag field must be a numeric value."
 msgstr "RRSIG 密钥标签字段必须是数值。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:305
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:307
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
 msgstr "RRSIG 密钥标签必须是 0 到 65535 之间的有效值。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:310
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
 msgstr "RRSIG 签名者名称必须是完全限定域名（以点结尾）。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:316
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
 msgstr "RRSIG 签名者名称必须是有效的域名。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:321
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
 msgstr "RRSIG 签名不能为空。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:326
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
 msgstr "签名似乎不是有效的 base64 编码数据。RRSIG 签名应该使用 base64 编码。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
 "RRSIG records are part of DNSSEC and provide cryptographic signatures for "
 "DNS records. They should be managed automatically by the DNS server."
@@ -5421,7 +5200,7 @@ msgstr ""
 "RRSIG 记录是 DNSSEC 的一部分，为 DNS 记录提供加密签名。它们应该由 DNS 服务器"
 "自动管理。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:333
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
@@ -6023,36 +5802,30 @@ msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
 msgstr "无效的 IPv6 地址：每个十六进制段必须是 4 个十六进制数字。"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
-#, auto-english-fallback
 msgid "IP address list cannot be empty."
 msgstr "IP地址列表不能为空。"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
 msgstr "%s中的无效IPv6地址：%s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
-#, auto-english-fallback
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
 msgstr "无效的端口号：%d（必须为1-65535）"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
-#, auto-english-fallback
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
 msgstr "无效的服务器格式：%s（期望IP:port或[IPv6]:port）"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
 msgstr "%s中的无效IPv4地址：%s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IP address: %s"
 msgstr "无效的IP地址：%s"
@@ -6105,7 +5878,6 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "issuewild 标签中的 CA 域无效。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-#, auto-english-fallback
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "CAA iodef值必须是以%s、%s或%s开头的URL。"
@@ -6157,17 +5929,14 @@ msgid "Given hostname or one of the labels is too short or too long."
 msgstr "给定的主机名或其中一个标签太短或太长。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:128
-#, auto-english-fallback
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
 msgstr "ARPA区域中不允许在不同标签中使用多个斜杠。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
-#, auto-english-fallback
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
 msgstr "无效的RFC 2317格式。使用格式：subnet/prefix（例如0/26）。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
-#, auto-english-fallback
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
 msgstr "RFC 2317表示法中的无效子网号。对于IPv4必须为0-255。"
 
@@ -6177,12 +5946,10 @@ msgid ""
 msgstr "RFC 2317表示法中的无效子网。对于IPv6必须为十六进制（0-9，a-f）。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
-#, auto-english-fallback
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
 msgstr "RFC 2317表示法中的无效子网。必须为数字或十六进制。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
-#, auto-english-fallback
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
 msgstr "RFC 2317表示法中的无效前缀长度。必须为数字。"
 
@@ -6193,18 +5960,15 @@ msgid ""
 msgstr "RFC 2317的无效IPv4前缀长度。通常为24-32（无类委派通常为25-31）。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
-#, auto-english-fallback
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 msgstr "子网%d与前缀/%d不对齐。应该是%d的倍数。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
-#, auto-english-fallback
 msgid "Invalid IPv6 prefix length. Must be 0-128."
 msgstr "无效的IPv6前缀长度。必须为0-128。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:209
-#, auto-english-fallback
 msgid "Invalid prefix length. Must be 0-128."
 msgstr "无效的前缀长度。必须为0-128。"
 
@@ -6367,8 +6131,8 @@ msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
-"SMIMEA 记录名称格式为：SHA256(local-part)._smimecert.domain.tld，用于 %s "
-"这样的电子邮件地址"
+"SMIMEA 记录名称格式为：SHA256(local-part)._smimecert.domain.tld，用于 %s 这样"
+"的电子邮件地址"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7530,8 +7294,8 @@ msgid ""
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr ""
-"NAPTR 服务必须遵循格式：[protocol][+rs][+rs]...，其中 protocol 和 rs "
-"以字母开头并且只包含字母数字字符（每个最多 32 个字符）。"
+"NAPTR 服务必须遵循格式：[protocol][+rs][+rs]...，其中 protocol 和 rs 以字母开"
+"头并且只包含字母数字字符（每个最多 32 个字符）。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -7729,23 +7493,19 @@ msgid "You do not have permission to regenerate API keys."
 msgstr "您没有重新生成 API 密钥的权限。"
 
 #: lib/Domain/Service/ZoneValidationService.php:128
-#, auto-english-fallback
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr "区域中没有SOA记录或SOA记录未激活。这是DNSSEC所必需的。"
 
 #: lib/Domain/Service/ZoneValidationService.php:129
-#, auto-english-fallback
 msgid "Add an SOA record to the zone before attempting to sign it."
 msgstr "在尝试签名之前向区域添加SOA记录。"
 
 #: lib/Domain/Service/ZoneValidationService.php:135
-#, auto-english-fallback
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
 msgstr "区域有%d个SOA记录。每个区域只允许一个SOA记录。"
 
 #: lib/Domain/Service/ZoneValidationService.php:136
-#, auto-english-fallback
 msgid "Remove duplicate SOA records, keeping only one."
 msgstr "删除重复的SOA记录，只保留一个。"
 
@@ -7755,12 +7515,10 @@ msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
 msgstr "SOA记录不在顶点。在\"%s\"找到，但区域是\"%s\"。"
 
 #: lib/Domain/Service/ZoneValidationService.php:148
-#, auto-english-fallback
 msgid "Move the SOA record to the zone apex."
 msgstr "将SOA记录移至区域顶点。"
 
 #: lib/Domain/Service/ZoneValidationService.php:158
-#, auto-english-fallback
 msgid "SOA record has invalid content format."
 msgstr "SOA记录的内容格式无效。"
 
@@ -7777,22 +7535,18 @@ msgid ""
 msgstr "区域顶点没有NS（名称服务器）记录。DNSSEC至少需要一个顶点NS记录。"
 
 #: lib/Domain/Service/ZoneValidationService.php:219
-#, auto-english-fallback
 msgid "Add NS records at the zone apex for your authoritative name servers."
 msgstr "在区域顶点为您的权威名称服务器添加NS记录。"
 
 #: lib/Domain/Service/ZoneValidationService.php:265
-#, auto-english-fallback
 msgid "DNSSEC signing cannot proceed due to the following errors:"
 msgstr "由于以下错误，DNSSEC签名无法继续："
 
 #: lib/Domain/Service/ZoneValidationService.php:287
-#, auto-english-fallback
 msgid "Additionally, the following warnings were found:"
 msgstr "此外，发现以下警告："
 
 #: lib/Domain/Service/ZoneValidationService.php:289
-#, auto-english-fallback
 msgid "The following warnings were found:"
 msgstr "发现以下警告："
 
@@ -7815,7 +7569,9 @@ msgstr "指向 %s 的 %s 的 PTR 记录已存在。"
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
-msgstr "反向记录已添加。警告：%s的PTR记录已存在，指向：%s。不建议为同一IP设置多个PTR记录。"
+msgstr ""
+"反向记录已添加。警告：%s的PTR记录已存在，指向：%s。不建议为同一IP设置多个PTR"
+"记录。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:215
 msgid "You do not have the permission to add SOA record."
@@ -8453,27 +8209,22 @@ msgid "Send Reset Link"
 msgstr "发送重置链接"
 
 #: templates/modern/manage_group_members.html:4
-#, auto-english-fallback
 msgid "Groups"
 msgstr "组"
 
 #: templates/default/list_groups.html:10 templates/modern/list_groups.html:10
-#, auto-english-fallback
 msgid "Group Management"
 msgstr "组管理"
 
 #: templates/modern/header.html:204 templates/modern/add_group.html:5
-#, auto-english-fallback
 msgid "Add group"
 msgstr "添加组"
 
 #: templates/modern/edit_user.html:254 templates/modern/add_user.html:189
-#, auto-english-fallback
 msgid "No groups found"
 msgstr "未找到组"
 
 #: templates/modern/list_groups.html:50 templates/modern/edit_group.html:70
-#, auto-english-fallback
 msgid "Members"
 msgstr "成员"
 
@@ -8482,17 +8233,14 @@ msgid "Zones"
 msgstr "区域"
 
 #: templates/modern/manage_group_members.html:6
-#, auto-english-fallback
 msgid "Manage members"
 msgstr "管理成员"
 
 #: templates/modern/manage_group_zones.html:6
-#, auto-english-fallback
 msgid "Manage zones"
 msgstr "管理区域"
 
 #: templates/modern/list_groups.html:55 templates/modern/edit_group.html:5
-#, auto-english-fallback
 msgid "Edit group"
 msgstr "编辑组"
 
@@ -8501,7 +8249,6 @@ msgid "Edit"
 msgstr "编辑"
 
 #: templates/modern/list_groups.html:58 templates/modern/delete_group.html:5
-#, auto-english-fallback
 msgid "Delete group"
 msgstr "删除组"
 
@@ -8526,32 +8273,26 @@ msgid "Update"
 msgstr "更新"
 
 #: templates/default/edit_group.html:13 templates/modern/edit_group.html:13
-#, auto-english-fallback
 msgid "Edit Group"
 msgstr "编辑组"
 
 #: templates/modern/edit_group.html:23 templates/modern/add_group.html:20
-#, auto-english-fallback
 msgid "Group Name"
 msgstr "组名"
 
 #: templates/modern/edit_group.html:25 templates/modern/add_group.html:22
-#, auto-english-fallback
 msgid "Unique name for this group"
 msgstr "此组的唯一名称"
 
 #: templates/modern/edit_group.html:26 templates/modern/add_group.html:23
-#, auto-english-fallback
 msgid "Provide group name"
 msgstr "提供组名"
 
 #: templates/modern/edit_group.html:32 templates/modern/add_group.html:29
-#, auto-english-fallback
 msgid "Optional information about this group"
 msgstr "关于此组的可选信息"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-#, auto-english-fallback
 msgid "Access template"
 msgstr "访问模板"
 
@@ -8561,72 +8302,58 @@ msgid ""
 msgstr "组成员仅对此组拥有的区域继承这些权限"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:45
-#, auto-english-fallback
 msgid "Select an access template"
 msgstr "选择访问模板"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
-#, auto-english-fallback
 msgid "Update Group"
 msgstr "更新组"
 
 #: templates/modern/edit_group.html:74 templates/modern/edit_group.html:118
-#, auto-english-fallback
 msgid "Manage"
 msgstr "管理"
 
 #: templates/default/edit_group.html:81 templates/modern/edit_group.html:81
-#, auto-english-fallback
 msgid "No members in this group yet."
 msgstr "此组中尚无成员。"
 
 #: templates/modern/edit_group.html:144 templates/modern/edit_user.html:220
-#, auto-english-fallback
 msgid "Remove from group"
 msgstr "从组中移除"
 
 #: templates/modern/edit_group.html:151 templates/modern/delete_group.html:68
-#, auto-english-fallback
 msgid "and"
 msgstr "和"
 
 #: templates/modern/edit_group.html:101 templates/modern/edit_group.html:151
-#, auto-english-fallback
 msgid "more..."
 msgstr "更多..."
 
 #: templates/default/edit_group.html:125 templates/modern/edit_group.html:125
-#, auto-english-fallback
 msgid "This group doesn't own any zones yet."
 msgstr "此组尚未拥有任何区域。"
 
 #: templates/modern/manage_group_zones.html:113
-#, auto-english-fallback
 msgid "Master"
 msgstr "主"
 
 #: templates/modern/manage_group_zones.html:115
-#, auto-english-fallback
 msgid "Slave"
 msgstr "从"
 
 #: templates/modern/manage_group_zones.html:117
-#, auto-english-fallback
 msgid "Native"
 msgstr "本地"
 
 #: templates/default/edit_group.html:182 templates/modern/edit_group.html:182
-#, auto-english-fallback
 msgid "Confirm Member Removal"
 msgstr "确认移除成员"
 
 #: templates/default/edit_group.html:187 templates/modern/edit_group.html:187
-#, auto-english-fallback
 msgid "Are you sure you want to remove user"
 msgstr "您确定要移除用户"
 
 #: templates/modern/edit_group.html:187 templates/modern/edit_group.html:213
-#, auto-english-fallback
 msgid "from this group?"
 msgstr "从此组？"
 
@@ -8636,17 +8363,14 @@ msgid ""
 msgstr "此操作将立即撤销此组授予的任何权限。"
 
 #: templates/modern/manage_group_members.html:139
-#, auto-english-fallback
 msgid "Remove"
 msgstr "移除"
 
 #: templates/default/edit_group.html:208 templates/modern/edit_group.html:208
-#, auto-english-fallback
 msgid "Confirm Zone Removal"
 msgstr "确认移除区域"
 
 #: templates/default/edit_group.html:213 templates/modern/edit_group.html:213
-#, auto-english-fallback
 msgid "Are you sure you want to remove zone"
 msgstr "您确定要移除区域"
 
@@ -8657,12 +8381,10 @@ msgid ""
 msgstr "区域将保留在系统中，但此组将不再拥有所有权。"
 
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
-#, auto-english-fallback
 msgid "Delete Group"
 msgstr "删除组"
 
 #: templates/default/delete_group.html:16 templates/modern/delete_group.html:16
-#, auto-english-fallback
 msgid "You are about to delete the group"
 msgstr "您即将删除该组"
 
@@ -8671,42 +8393,34 @@ msgid "This action cannot be undone. Are you sure you want to proceed?"
 msgstr "此操作无法撤销。您确定要继续吗？"
 
 #: templates/default/delete_group.html:22 templates/modern/delete_group.html:22
-#, auto-english-fallback
 msgid "Deletion Impact"
 msgstr "删除影响"
 
 #: templates/default/delete_group.html:29 templates/modern/delete_group.html:29
-#, auto-english-fallback
 msgid "member will be removed from this group"
 msgstr "成员将从此组中移除"
 
 #: templates/default/delete_group.html:31 templates/modern/delete_group.html:31
-#, auto-english-fallback
 msgid "members will be removed from this group"
 msgstr "成员将从此组中移除"
 
 #: templates/default/delete_group.html:37 templates/modern/delete_group.html:37
-#, auto-english-fallback
 msgid "zone will lose this group ownership"
 msgstr "区域将失去此组的所有权"
 
 #: templates/default/delete_group.html:39 templates/modern/delete_group.html:39
-#, auto-english-fallback
 msgid "zones will lose this group ownership"
 msgstr "区域将失去此组的所有权"
 
 #: templates/default/delete_group.html:49 templates/modern/delete_group.html:49
-#, auto-english-fallback
 msgid "Affected Zones"
 msgstr "受影响的区域"
 
 #: templates/default/delete_group.html:51 templates/modern/delete_group.html:51
-#, auto-english-fallback
 msgid "showing first 20"
 msgstr "显示前20个"
 
 #: templates/default/delete_group.html:68 templates/modern/delete_group.html:68
-#, auto-english-fallback
 msgid "more zones..."
 msgstr "更多区域..."
 
@@ -8718,15 +8432,15 @@ msgstr "重要提示"
 msgid ""
 "Members will lose access to all zones owned by this group. Zones without any "
 "remaining owners will still exist but will be inaccessible to regular users."
-msgstr "成员将失去对此组拥有的所有区域的访问权限。没有剩余所有者的区域仍将存在，但普通用户将无法访问。"
+msgstr ""
+"成员将失去对此组拥有的所有区域的访问权限。没有剩余所有者的区域仍将存在，但普"
+"通用户将无法访问。"
 
 #: templates/default/delete_group.html:85 templates/modern/delete_group.html:85
-#, auto-english-fallback
 msgid "Yes, delete this group"
 msgstr "是的，删除此组"
 
 #: templates/default/delete_group.html:89 templates/modern/delete_group.html:89
-#, auto-english-fallback
 msgid "No, keep this group"
 msgstr "不，保留此组"
 
@@ -8932,17 +8646,14 @@ msgid "Change password"
 msgstr "更改密码"
 
 #: templates/modern/header.html:332
-#, auto-english-fallback
 msgid "Preferences"
 msgstr "首选项"
 
 #: templates/default/index.html:288 templates/modern/index.html:235
-#, auto-english-fallback
 msgid "Customize your interface settings"
 msgstr "自定义您的界面设置"
 
 #: templates/default/index.html:290
-#, auto-english-fallback
 msgid "User preferences"
 msgstr "用户首选项"
 
@@ -8955,17 +8666,14 @@ msgid "Manage system users and access"
 msgstr "管理系统用户和访问"
 
 #: templates/modern/index.html:199 templates/modern/header.html:169
-#, auto-english-fallback
 msgid "List users"
 msgstr "列出用户"
 
 #: templates/modern/header.html:222
-#, auto-english-fallback
 msgid "Access"
 msgstr "访问"
 
 #: templates/default/index.html:321
-#, auto-english-fallback
 msgid "Manage access templates"
 msgstr "管理访问模板"
 
@@ -9248,27 +8956,22 @@ msgid "Advanced Records"
 msgstr "高级记录"
 
 #: templates/modern/dns_wizard_select.html:6
-#, auto-english-fallback
 msgid "DNS Wizard"
 msgstr "DNS向导"
 
 #: templates/modern/dns_wizard_form.html:15
-#, auto-english-fallback
 msgid "Wizard"
 msgstr "向导"
 
 #: templates/modern/dns_wizard_form.html:26
-#, auto-english-fallback
 msgid "Warning: Please Review Before Proceeding"
 msgstr "警告：请在继续之前查看"
 
 #: templates/modern/dns_wizard_form.html:200
-#, auto-english-fallback
 msgid "Create Record"
 msgstr "创建记录"
 
 #: templates/modern/dns_wizard_form.html:203
-#, auto-english-fallback
 msgid "Back to Wizard Selection"
 msgstr "返回向导选择"
 
@@ -9331,17 +9034,14 @@ msgid "No, keep this user"
 msgstr "不，保留此用户"
 
 #: templates/modern/save-zone-template.html:6 templates/modern/edit.html:209
-#, auto-english-fallback
 msgid "Save as Template"
 msgstr "另存为模板"
 
 #: templates/modern/save-zone-template.html:14
-#, auto-english-fallback
 msgid "Save Zone as Template"
 msgstr "将区域另存为模板"
 
 #: templates/modern/save-zone-template.html:18
-#, auto-english-fallback
 msgid "Source Zone"
 msgstr "源区域"
 
@@ -9354,7 +9054,6 @@ msgid "Provide template name"
 msgstr "提供模板名称"
 
 #: templates/modern/save-zone-template.html:44
-#, auto-english-fallback
 msgid "Create Template"
 msgstr "创建模板"
 
@@ -9619,7 +9318,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "删除区域"
 
-#: templates/modern/dnssec_add_key.html:81
+#: templates/modern/dnssec_add_key.html:91
 msgid "Add key"
 msgstr "添加密钥"
 
@@ -9627,66 +9326,66 @@ msgstr "添加密钥"
 msgid "Add key for zone"
 msgstr "为区域添加密钥"
 
-#: templates/modern/dnssec_add_key.html:43
+#: templates/modern/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "密钥类型"
 
-#: templates/modern/dnssec_add_key.html:50
+#: templates/modern/dnssec_add_key.html:60
 msgid "Select key type"
 msgstr "选择密钥类型"
 
-#: templates/modern/dnssec_add_key.html:61
+#: templates/modern/dnssec_add_key.html:71
 msgid "Select algorithm"
 msgstr "选择算法"
 
-#: templates/modern/dnssec_add_key.html:66
+#: templates/modern/dnssec_add_key.html:76
 msgid "Bits in length"
 msgstr "长度位数"
 
-#: templates/modern/dnssec_add_key.html:75
+#: templates/modern/dnssec_add_key.html:85
 msgid "Select bits length"
 msgstr "选择位数长度"
 
-#: templates/modern/dnssec_add_key.html:132
+#: templates/modern/dnssec_add_key.html:142
 msgid "Recommended bits for"
 msgstr "推荐位数"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 #: install/helpers/InstallStepHandler.php:169
 msgid "Warning:"
 msgstr "警告："
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 msgid "bits is not recommended for"
 msgstr "位数不推荐用于"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
 msgstr "关于 DNSSEC 密钥类型"
 
-#: templates/modern/dnssec_add_key.html:181
+#: templates/modern/dnssec_add_key.html:191
 msgid "Key Types Explained"
 msgstr "密钥类型说明"
 
-#: templates/modern/dnssec_add_key.html:183
+#: templates/modern/dnssec_add_key.html:193
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
 msgstr "组合签名密钥 - 同时用作 KSK 和 ZSK（推荐用于 PowerDNS 4.0+）"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "密钥签名密钥 - 签名区域中的 DNSKEY 记录"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "区域签名密钥 - 签名区域中的所有其他记录"
 
-#: templates/modern/dnssec_add_key.html:190
+#: templates/modern/dnssec_add_key.html:200
 msgid "Recommended Settings"
 msgstr "推荐设置"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:201
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -9795,7 +9494,6 @@ msgid "User Permissions"
 msgstr "用户权限"
 
 #: templates/default/edit_user.html:169 templates/modern/edit_user.html:169
-#, auto-english-fallback
 msgid "This user has been assigned the access template"
 msgstr "此用户已分配访问模板"
 
@@ -9808,27 +9506,22 @@ msgid "No permissions are assigned to this template"
 msgstr "此模板未分配任何权限"
 
 #: templates/modern/edit_user.html:197 templates/modern/add_user.html:172
-#, auto-english-fallback
 msgid "Group Memberships"
 msgstr "组成员资格"
 
 #: templates/default/edit_user.html:201 templates/modern/edit_user.html:201
-#, auto-english-fallback
 msgid "Current Memberships"
 msgstr "当前成员资格"
 
 #: templates/default/edit_user.html:216 templates/modern/edit_user.html:216
-#, auto-english-fallback
 msgid "View group details"
 msgstr "查看组详细信息"
 
 #: templates/default/edit_user.html:230 templates/modern/edit_user.html:230
-#, auto-english-fallback
 msgid "This user is not a member of any groups."
 msgstr "此用户不是任何组的成员。"
 
 #: templates/modern/edit_user.html:236 templates/modern/add_user.html:175
-#, auto-english-fallback
 msgid "Add to Groups"
 msgstr "添加到组"
 
@@ -9837,12 +9530,10 @@ msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr "选择一个或多个组，然后单击\"添加选定的组\"按钮。"
 
 #: templates/modern/edit_user.html:245 templates/modern/add_user.html:180
-#, auto-english-fallback
 msgid "Search available groups..."
 msgstr "搜索可用组..."
 
 #: templates/modern/edit_user.html:246 templates/modern/add_user.html:181
-#, auto-english-fallback
 msgid "Clear search"
 msgstr "清除搜索"
 
@@ -9851,27 +9542,22 @@ msgid "Select All"
 msgstr "全选"
 
 #: templates/modern/add_zone_slave.html:98
-#, auto-english-fallback
 msgid "Clear All"
 msgstr "全部清除"
 
 #: templates/modern/add_user.html:208 templates/modern/add_user.html:384
-#, auto-english-fallback
 msgid "selected"
 msgstr "已选择"
 
 #: templates/default/edit_user.html:275 templates/modern/edit_user.html:275
-#, auto-english-fallback
 msgid "Add Selected Groups"
 msgstr "添加选定的组"
 
 #: templates/modern/manage_group_members.html:126
-#, auto-english-fallback
 msgid "Confirm Removal"
 msgstr "确认移除"
 
 #: templates/default/edit_user.html:303 templates/modern/edit_user.html:303
-#, auto-english-fallback
 msgid "Are you sure you want to remove this user from the group"
 msgstr "您确定要从组中移除此用户"
 
@@ -9921,7 +9607,6 @@ msgid "Yes, unlink these zones"
 msgstr "是的，取消链接这些区域"
 
 #: templates/modern/list_perm_templ.html:5
-#, auto-english-fallback
 msgid "Access templates"
 msgstr "访问模板"
 
@@ -9930,7 +9615,6 @@ msgid "Add"
 msgstr "添加"
 
 #: templates/modern/add_perm_templ.html:18
-#, auto-english-fallback
 msgid "Add Access Template"
 msgstr "添加访问模板"
 
@@ -9943,17 +9627,14 @@ msgid "Optional: more detailed description of this permission set"
 msgstr "可选：此权限集的更详细描述"
 
 #: templates/modern/edit_perm_templ.html:36
-#, auto-english-fallback
 msgid "Template Type"
 msgstr "模板类型"
 
 #: templates/modern/edit_perm_templ.html:38
-#, auto-english-fallback
 msgid "User Template"
 msgstr "用户模板"
 
 #: templates/modern/edit_perm_templ.html:39
-#, auto-english-fallback
 msgid "Group Template"
 msgstr "组模板"
 
@@ -9964,7 +9645,6 @@ msgid ""
 msgstr "用户模板全局应用；组模板仅应用于组拥有的区域"
 
 #: templates/modern/edit_perm_templ.html:42
-#, auto-english-fallback
 msgid "Please select a template type"
 msgstr "请选择模板类型"
 
@@ -9973,12 +9653,10 @@ msgid "Add Template"
 msgstr "添加模板"
 
 #: templates/modern/add_perm_templ.html:62
-#, auto-english-fallback
 msgid "About Access Templates"
 msgstr "关于访问模板"
 
 #: templates/modern/add_perm_templ.html:67
-#, auto-english-fallback
 msgid "What are Access Templates?"
 msgstr "什么是访问模板？"
 
@@ -9987,7 +9665,9 @@ msgid ""
 "Access templates define sets of actions that users and groups can perform in "
 "Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr "访问模板定义了用户和组可以在Poweradmin中执行的一组操作。它们提供了分配常见权限组合的快捷方式。"
+msgstr ""
+"访问模板定义了用户和组可以在Poweradmin中执行的一组操作。它们提供了分配常见权"
+"限组合的快捷方式。"
 
 #: templates/modern/add_perm_templ.html:71
 msgid "How to Use Templates"
@@ -9997,7 +9677,9 @@ msgstr "如何使用模板"
 msgid ""
 "After creating a template, you can assign it to users or groups. This "
 "ensures consistent permissions across users and groups with similar roles."
-msgstr "创建模板后，您可以在创建或编辑用户账户时将其分配给用户。这确保了具有相似角色的用户组之间权限的一致性。"
+msgstr ""
+"创建模板后，您可以在创建或编辑用户账户时将其分配给用户。这确保了具有相似角色"
+"的用户组之间权限的一致性。"
 
 #: templates/modern/edit_perm_templ.html:86
 msgid "Available Permissions"
@@ -10113,7 +9795,6 @@ msgid "Forgot your password?"
 msgstr "忘记密码？"
 
 #: templates/default/login.html:86 templates/modern/login.html:86
-#, auto-english-fallback
 msgid "Forgot your username?"
 msgstr "忘记用户名？"
 
@@ -10285,62 +9966,50 @@ msgstr ""
 "用）"
 
 #: templates/modern/zone-ownership.html:6 templates/modern/edit.html:205
-#, auto-english-fallback
 msgid "Ownership"
 msgstr "所有权"
 
 #: templates/modern/add_zone_slave.html:49
-#, auto-english-fallback
 msgid "User Owner"
 msgstr "用户所有者"
 
 #: templates/modern/zone-ownership.html:55
-#, auto-english-fallback
 msgid "No users assigned to this zone."
 msgstr "没有用户分配到此区域。"
 
 #: templates/modern/zone-ownership.html:61
-#, auto-english-fallback
 msgid "Add User Owner"
 msgstr "添加用户所有者"
 
 #: templates/modern/manage_group_members.html:84
-#, auto-english-fallback
 msgid "Search users..."
 msgstr "搜索用户..."
 
 #: templates/modern/add_zone_slave.html:76
-#, auto-english-fallback
 msgid "You"
 msgstr "您"
 
 #: templates/modern/zone-ownership.html:83
-#, auto-english-fallback
 msgid "Add Owner"
 msgstr "添加所有者"
 
 #: templates/modern/add_zone_slave.html:90
-#, auto-english-fallback
 msgid "Group Ownership"
 msgstr "组所有权"
 
 #: templates/modern/zone-ownership.html:127
-#, auto-english-fallback
 msgid "No groups assigned to this zone."
 msgstr "没有组分配到此区域。"
 
 #: templates/modern/zone-ownership.html:133
-#, auto-english-fallback
 msgid "Add Group Ownership"
 msgstr "添加组所有权"
 
 #: templates/modern/add_zone_slave.html:94
-#, auto-english-fallback
 msgid "Search groups..."
 msgstr "搜索组..."
 
 #: templates/modern/add_group.html:13
-#, auto-english-fallback
 msgid "Add Group"
 msgstr "添加组"
 
@@ -10365,12 +10034,10 @@ msgid "Create a new record for this zone template"
 msgstr "为此区域模板创建新记录"
 
 #: templates/modern/delete_perm_templ.html:12
-#, auto-english-fallback
 msgid "Delete Access Template"
 msgstr "删除访问模板"
 
 #: templates/modern/delete_perm_templ.html:17
-#, auto-english-fallback
 msgid "You are about to delete the access template"
 msgstr "您即将删除访问模板"
 
@@ -10391,7 +10058,6 @@ msgid "No, keep this template"
 msgstr "不，保留此模板"
 
 #: templates/modern/dns_wizard_select.html:14
-#, auto-english-fallback
 msgid "DNS Record Wizard"
 msgstr "DNS记录向导"
 
@@ -10408,12 +10074,10 @@ msgid ""
 msgstr "DNS向导专为正向区域设计，可能不适用于反向区域。"
 
 #: templates/modern/dns_wizard_select.html:59
-#, auto-english-fallback
 msgid "Recommended"
 msgstr "推荐"
 
 #: templates/modern/dns_wizard_select.html:71
-#, auto-english-fallback
 msgid "Back"
 msgstr "返回"
 
@@ -10450,12 +10114,10 @@ msgid "Add new record"
 msgstr "添加新记录"
 
 #: templates/modern/edit.html:28 templates/modern/edit.html:543
-#, auto-english-fallback
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "DMARC、SPF、DKIM、CAA、TLSA和SRV记录的引导式向导"
 
 #: templates/modern/edit.html:29 templates/modern/edit.html:544
-#, auto-english-fallback
 msgid "Record Wizard"
 msgstr "记录向导"
 
@@ -10568,7 +10230,6 @@ msgid "total records"
 msgstr "条记录"
 
 #: templates/default/edit.html:474 templates/modern/edit.html:474
-#, auto-english-fallback
 msgid "Edit selected"
 msgstr "编辑选定"
 
@@ -10581,17 +10242,14 @@ msgid "Comments"
 msgstr "备注"
 
 #: templates/default/edit.html:515 templates/modern/edit.html:515
-#, auto-english-fallback
 msgid "Export CSV"
 msgstr "导出CSV"
 
 #: templates/default/edit.html:519 templates/modern/edit.html:519
-#, auto-english-fallback
 msgid "Generate PTR"
 msgstr "生成PTR"
 
 #: templates/modern/edit.html:696 templates/modern/add_zone_master.html:24
-#, auto-english-fallback
 msgid "Zone Configuration"
 msgstr "区域配置"
 
@@ -10604,7 +10262,6 @@ msgid "IP address of master NS"
 msgstr "主 NS 的 IP 地址"
 
 #: templates/default/edit.html:786 templates/modern/edit.html:786
-#, auto-english-fallback
 msgid "Manage DNSSEC"
 msgstr "管理DNSSEC"
 
@@ -10613,12 +10270,10 @@ msgid "Sign zone"
 msgstr "签名区域"
 
 #: templates/default/edit.html:794 templates/modern/edit.html:794
-#, auto-english-fallback
 msgid "Not signed"
 msgstr "未签名"
 
 #: templates/default/users.html:10 templates/modern/users.html:10
-#, auto-english-fallback
 msgid "User Management"
 msgstr "用户管理"
 
@@ -10627,17 +10282,14 @@ msgid "Add user"
 msgstr "添加用户"
 
 #: templates/default/users.html:45 templates/modern/users.html:45
-#, auto-english-fallback
 msgid "Auth Type"
 msgstr "认证类型"
 
 #: templates/default/users.html:47 templates/modern/users.html:47
-#, auto-english-fallback
 msgid "MFA"
 msgstr "MFA"
 
 #: templates/modern/users.html:99 templates/modern/users.html:161
-#, auto-english-fallback
 msgid "SQL"
 msgstr "SQL"
 
@@ -10646,22 +10298,18 @@ msgid "LDAP"
 msgstr "LDAP"
 
 #: templates/modern/users.html:103 templates/modern/users.html:165
-#, auto-english-fallback
 msgid "OIDC"
 msgstr "OIDC"
 
 #: templates/modern/users.html:105 templates/modern/users.html:167
-#, auto-english-fallback
 msgid "SAML"
 msgstr "SAML"
 
 #: templates/modern/users.html:114 templates/modern/users.html:176
-#, auto-english-fallback
 msgid "MFA enabled"
 msgstr "已启用MFA"
 
 #: templates/modern/users.html:116 templates/modern/users.html:178
-#, auto-english-fallback
 msgid "MFA not configured"
 msgstr "未配置MFA"
 
@@ -10859,7 +10507,6 @@ msgid "Are you sure you want to delete this item?"
 msgstr "您确定要删除此项目吗？"
 
 #: templates/modern/forgot_username.html:4
-#, auto-english-fallback
 msgid "Forgot Username"
 msgstr "忘记用户名"
 
@@ -10870,7 +10517,6 @@ msgid ""
 msgstr "输入您的电子邮件地址，我们将向您发送与此帐户关联的用户名。"
 
 #: templates/modern/forgot_username.html:41
-#, auto-english-fallback
 msgid "Send Username"
 msgstr "发送用户名"
 
@@ -10913,7 +10559,6 @@ msgstr ""
 "限。"
 
 #: templates/default/add_user.html:176 templates/modern/add_user.html:176
-#, auto-english-fallback
 msgid "Select groups to add the new user to upon creation."
 msgstr "选择在创建时将新用户添加到的组。"
 
@@ -10946,27 +10591,22 @@ msgid "Secure this zone with DNSSEC signing"
 msgstr "使用 DNSSEC 签名保护此区域"
 
 #: templates/modern/add_zone_slave.html:54
-#, auto-english-fallback
 msgid "Selected:"
 msgstr "已选择："
 
 #: templates/modern/add_zone_slave.html:59
-#, auto-english-fallback
 msgid "No user owner"
 msgstr "无用户所有者"
 
 #: templates/modern/add_zone_slave.html:60
-#, auto-english-fallback
 msgid "Zone will be owned only by groups"
 msgstr "区域将仅由组拥有"
 
 #: templates/modern/add_zone_slave.html:82
-#, auto-english-fallback
 msgid "Optional: Select a user responsible for this zone"
 msgstr "可选：选择负责此区域的用户"
 
 #: templates/modern/add_zone_slave.html:111
-#, auto-english-fallback
 msgid "Optional: Select one or more groups"
 msgstr "可选：选择一个或多个组"
 
@@ -11464,7 +11104,6 @@ msgstr ""
 "登录一次。"
 
 #: templates/default/mfa_setup.html:14 templates/modern/mfa_setup.html:14
-#, auto-english-fallback
 msgid "MFA Setup Required"
 msgstr "需要设置MFA"
 
@@ -11638,107 +11277,86 @@ msgid "No, keep this zone"
 msgstr "不，保留此区域"
 
 #: templates/modern/user_preferences.html:4 templates/modern/header.html:388
-#, auto-english-fallback
 msgid "User Preferences"
 msgstr "用户首选项"
 
 #: templates/modern/user_preferences.html:17
-#, auto-english-fallback
 msgid "Display Settings"
 msgstr "显示设置"
 
 #: templates/modern/user_preferences.html:22
-#, auto-english-fallback
 msgid "Items per page"
 msgstr "每页项目数"
 
 #: templates/modern/user_preferences.html:36
-#, auto-english-fallback
 msgid "Zone Options"
 msgstr "区域选项"
 
 #: templates/modern/user_preferences.html:42
-#, auto-english-fallback
 msgid "Zone serial numbers"
 msgstr "区域序列号"
 
 #: templates/modern/user_preferences.html:43
-#, auto-english-fallback
 msgid "Display serial numbers in zone lists"
 msgstr "在区域列表中显示序列号"
 
 #: templates/modern/user_preferences.html:51
-#, auto-english-fallback
 msgid "Display template information in zone lists"
 msgstr "在区域列表中显示模板信息"
 
 #: templates/modern/user_preferences.html:64
-#, auto-english-fallback
 msgid "Interface Behavior"
 msgstr "界面行为"
 
 #: templates/modern/user_preferences.html:69
-#, auto-english-fallback
 msgid "Record form"
 msgstr "记录表单"
 
 #: templates/modern/user_preferences.html:78
-#, auto-english-fallback
 msgid "Save buttons"
 msgstr "保存按钮"
 
 #: templates/modern/user_preferences.html:88
-#, auto-english-fallback
 msgid "Edit Zone View"
 msgstr "编辑区域视图"
 
 #: templates/modern/user_preferences.html:93
-#, auto-english-fallback
 msgid "Show record ID"
 msgstr "显示记录ID"
 
 #: templates/modern/user_preferences.html:94
-#, auto-english-fallback
 msgid "Display record ID column in edit view"
 msgstr "在编辑视图中显示记录ID列"
 
 #: templates/modern/user_preferences.html:101
-#, auto-english-fallback
 msgid "Show add record form"
 msgstr "显示添加记录表单"
 
 #: templates/modern/user_preferences.html:102
-#, auto-english-fallback
 msgid "Display inline add record form in edit view"
 msgstr "在编辑视图中显示内联添加记录表单"
 
 #: templates/modern/user_preferences.html:109
-#, auto-english-fallback
 msgid "Show edit buttons"
 msgstr "显示编辑按钮"
 
 #: templates/modern/user_preferences.html:110
-#, auto-english-fallback
 msgid "Display individual edit button per record"
 msgstr "为每条记录显示单独的编辑按钮"
 
 #: templates/modern/user_preferences.html:117
-#, auto-english-fallback
 msgid "Show delete buttons"
 msgstr "显示删除按钮"
 
 #: templates/modern/user_preferences.html:118
-#, auto-english-fallback
 msgid "Display individual delete button per record"
 msgstr "为每条记录显示单独的删除按钮"
 
 #: templates/modern/user_preferences.html:133
-#, auto-english-fallback
 msgid "Save Preferences"
 msgstr "保存首选项"
 
 #: templates/modern/user_preferences.html:139
-#, auto-english-fallback
 msgid "Changes will be applied after saving"
 msgstr "更改将在保存后应用"
 
@@ -11784,27 +11402,22 @@ msgid "Try different search terms or filters"
 msgstr "尝试不同的搜索条件或过滤器"
 
 #: templates/default/search.html:676 templates/modern/search.html:687
-#, auto-english-fallback
 msgid "Confirm Zone Deletion"
 msgstr "确认删除区域"
 
 #: templates/modern/search.html:692 templates/modern/search.html:718
-#, auto-english-fallback
 msgid "Are you sure you want to delete"
 msgstr "您确定要删除"
 
 #: templates/default/search.html:681 templates/modern/search.html:692
-#, auto-english-fallback
 msgid "selected zone(s)?"
 msgstr "选定的区域吗？"
 
 #: templates/default/search.html:702 templates/modern/search.html:713
-#, auto-english-fallback
 msgid "Confirm Record Deletion"
 msgstr "确认删除记录"
 
 #: templates/default/search.html:707 templates/modern/search.html:718
-#, auto-english-fallback
 msgid "selected record(s)?"
 msgstr "选定的记录吗？"
 
@@ -11873,7 +11486,6 @@ msgid "Search logs by user"
 msgstr "按用户搜索日志"
 
 #: templates/modern/add_zone_slave.html:24
-#, auto-english-fallback
 msgid "Slave Zone Configuration"
 msgstr "从区域配置"
 
@@ -12169,17 +11781,14 @@ msgid "Reverse zones"
 msgstr "反向区域"
 
 #: templates/default/header.html:133 templates/modern/header.html:199
-#, auto-english-fallback
 msgid "List groups"
 msgstr "列出组"
 
 #: templates/modern/header.html:210 templates/modern/list_log_groups.html:5
-#, auto-english-fallback
 msgid "Group logs"
 msgstr "组日志"
 
 #: templates/default/header.html:153 templates/modern/header.html:227
-#, auto-english-fallback
 msgid "List templates"
 msgstr "列出模板"
 
@@ -12234,57 +11843,46 @@ msgid "Add records"
 msgstr "添加记录"
 
 #: templates/modern/manage_group_members.html:12
-#, auto-english-fallback
 msgid "Back to Group"
 msgstr "返回组"
 
 #: templates/modern/manage_group_zones.html:20
-#, auto-english-fallback
 msgid "Owned Zones"
 msgstr "拥有的区域"
 
 #: templates/modern/manage_group_zones.html:27
-#, auto-english-fallback
 msgid "This group doesn't own any zones yet"
 msgstr "此组尚未拥有任何区域"
 
 #: templates/modern/manage_group_members.html:57
-#, auto-english-fallback
 msgid "Remove Selected"
 msgstr "移除选定"
 
 #: templates/modern/manage_group_zones.html:79
-#, auto-english-fallback
 msgid "Available Zones"
 msgstr "可用区域"
 
 #: templates/modern/manage_group_zones.html:86
-#, auto-english-fallback
 msgid "This group already owns all zones or no zones are available"
 msgstr "此组已拥有所有区域或没有可用区域"
 
 #: templates/modern/manage_group_zones.html:94
-#, auto-english-fallback
 msgid "Search zones..."
 msgstr "搜索区域..."
 
 #: templates/modern/manage_group_members.html:110
-#, auto-english-fallback
 msgid "Add Selected"
 msgstr "添加选定"
 
 #: templates/modern/manage_group_members.html:131
-#, auto-english-fallback
 msgid "Are you sure you want to remove"
 msgstr "您确定要移除"
 
 #: templates/modern/manage_group_zones.html:221
-#, auto-english-fallback
 msgid "zone(s) from this group?"
 msgstr "此组中的区域吗？"
 
 #: templates/modern/manage_group_zones.html:222
-#, auto-english-fallback
 msgid "The zones will remain in the system."
 msgstr "区域将保留在系统中。"
 
@@ -12343,7 +11941,6 @@ msgid "No, keep this API key"
 msgstr "不，保留此 API 密钥"
 
 #: templates/modern/edit_perm_templ.html:19
-#, auto-english-fallback
 msgid "Edit Access Template"
 msgstr "编辑访问模板"
 
@@ -12360,10 +11957,11 @@ msgid ""
 "This template can be assigned to users and groups to quickly apply its set "
 "of permissions. Changes made here will affect all users and groups who have "
 "this template assigned."
-msgstr "此模板可以分配给用户以快速应用其权限集。此处所做的更改将影响所有已分配此模板的用户。"
+msgstr ""
+"此模板可以分配给用户以快速应用其权限集。此处所做的更改将影响所有已分配此模板"
+"的用户。"
 
 #: templates/default/edit_perm_templ.html:72
-#, auto-english-fallback
 msgid "Users vs Groups"
 msgstr "用户与组"
 
@@ -12430,12 +12028,10 @@ msgid ""
 msgstr "所有组成员将继承此组拥有的区域的这些权限"
 
 #: templates/default/add_group.html:50 templates/modern/add_group.html:50
-#, auto-english-fallback
 msgid "After creating the group, you can add members and assign zones to it."
 msgstr "创建组后，您可以添加成员并为其分配区域。"
 
 #: templates/default/add_group.html:55 templates/modern/add_group.html:55
-#, auto-english-fallback
 msgid "Create Group"
 msgstr "创建组"
 
@@ -12452,72 +12048,58 @@ msgid "Please enter a domain name to perform a WHOIS lookup."
 msgstr "请输入域名以执行 WHOIS 查询。"
 
 #: templates/modern/list_perm_templ.html:40
-#, auto-english-fallback
 msgid "User"
 msgstr "用户"
 
 #: templates/modern/list_perm_templ.html:10
-#, auto-english-fallback
 msgid "templates apply globally"
 msgstr "模板全局应用"
 
 #: templates/modern/list_perm_templ.html:42
-#, auto-english-fallback
 msgid "Group"
 msgstr "组"
 
 #: templates/modern/list_perm_templ.html:10
-#, auto-english-fallback
 msgid "templates apply only to group-owned zones"
 msgstr "模板仅应用于组拥有的区域"
 
 #: templates/modern/list_perm_templ.html:15
-#, auto-english-fallback
 msgid "Access Templates"
 msgstr "访问模板"
 
 #: templates/modern/list_perm_templ.html:31
-#, auto-english-fallback
 msgid "No access templates found"
 msgstr "未找到访问模板"
 
 #: templates/modern/list_perm_templ.html:63
-#, auto-english-fallback
 msgid "Add access template"
 msgstr "添加访问模板"
 
 #: templates/modern/list_log_groups.html:11
-#, auto-english-fallback
 msgid "Group Activity Logs"
 msgstr "组活动日志"
 
 #: templates/modern/list_log_groups.html:19
-#, auto-english-fallback
 msgid "Search logs by group"
 msgstr "按组搜索日志"
 
 #: templates/modern/manage_group_members.html:20
-#, auto-english-fallback
 msgid "Current Members"
 msgstr "当前成员"
 
 #: templates/modern/manage_group_members.html:27
-#, auto-english-fallback
 msgid "No members in this group yet"
 msgstr "此组中尚无成员"
 
 #: templates/modern/manage_group_members.html:69
-#, auto-english-fallback
 msgid "Available Users"
 msgstr "可用用户"
 
 #: templates/modern/manage_group_members.html:76
-#, auto-english-fallback
 msgid "All users are already members of this group"
 msgstr "所有用户已经是此组的成员"
 
 #: templates/modern/manage_group_members.html:131
-#, auto-english-fallback
 msgid "user(s) from this group?"
 msgstr "此组中的用户吗？"
 
@@ -12557,8 +12139,18 @@ msgstr "列出区域模板"
 msgid "Bulk Domain Registration"
 msgstr "批量域名注册"
 
+#: templates/modern/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ 默认使用 CSK"
+
+#: templates/modern/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 及更新版本默认使用 Combined Signing Keys (CSK)。如果您选择 KSK 或 ZSK，PowerDNS 仍可能创建 CSK 密钥。使用 CSK 是现代部署的推荐方式。"
+
 #: templates/modern/header.html:382
-#, auto-english-fallback
 msgid "Dashboard"
 msgstr "仪表板"
 
@@ -12830,32 +12422,26 @@ msgid "Optional Extensions"
 msgstr "可选扩展"
 
 #: install/templates/step2.html.twig:99
-#, auto-english-fallback
 msgid "Web Server"
 msgstr "Web服务器"
 
 #: install/templates/step2.html.twig:106
-#, auto-english-fallback
 msgid "Server"
 msgstr "服务器"
 
 #: install/templates/step2.html.twig:118
-#, auto-english-fallback
 msgid "Not detected — required for URL routing"
 msgstr "未检测到 — URL路由需要"
 
 #: install/templates/step2.html.twig:124
-#, auto-english-fallback
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
 msgstr "无法检测（PHP-FPM）— 确保已启用"
 
 #: install/templates/step2.html.twig:130
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
 msgstr "确保已配置URL重写（参见nginx.conf.example）"
 
 #: install/templates/step2.html.twig:135
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured for your web server"
 msgstr "确保已为您的Web服务器配置URL重写"
 
@@ -13166,335 +12752,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "无法连接到PowerDNS数据库\"%s\"：%s"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create a config/settings.php file "
-# OBSOLETE: "manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "找不到配置文件。请使用<a href=\"install/\">安装程序</a>创建一个，或者手动"
-# OBSOLETE: "创建 config/settings.php 文件。"
-
-# OBSOLETE: msgid "Invalid authentication provider"
-# OBSOLETE: msgstr "无效的身份验证提供程序"
-
-# OBSOLETE: msgid "Failed to sign zone. Check PowerDNS logs for details."
-# OBSOLETE: msgstr "签名区域失败。请查看 PowerDNS 日志了解详情。"
-
-# OBSOLETE: msgid "Zone was created, but securing it with DNSSEC failed."
-# OBSOLETE: msgstr "区域已创建，但使用 DNSSEC 保护失败。"
-
-# OBSOLETE: msgid "Failed to delete DNSSEC key."
-# OBSOLETE: msgstr "删除 DNSSEC 密钥失败。"
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
-# OBSOLETE: "once."
-# OBSOLETE: msgstr "发现重复的 %s 机制。每种机制类型最多应出现一次。"
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr "IPv6 地址应使用小写十六进制数字。"
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr "IPv6 地址不是规范形式 (RFC 5952)。规范形式：%s"
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-# OBSOLETE: msgstr "IP 地址 \"%s\" 无效。必须是有效的 IPv4 或 IPv6 地址。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "CAA iodef value must be a URL starting with http://, https://, or mailto:."
-# OBSOLETE: msgstr "CAA iodef 值必须是以 http://、https:// 或 mailto: 开头的 URL。"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "SMIMEA record name is in the format: SHA256(local-"
-# OBSOLETE: "part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "SMIMEA 记录名称格式为：SHA256(local-part)._smimecert.domain.tld，用于 "
-# OBSOLETE: "local-part@domain.tld 这样的电子邮件地址"
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "内容字段中不允许使用 HTML 标签。"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "TXT 记录字符串超过 255 字节。TXT 字符串必须为 255 字节或更少。对于较长的内"
-# OBSOLETE: "容，请分割成多个由空格分隔的带引号字符串。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr "NAPTR 记录必须有正则表达式或替换（带有 \\\".\\\")，但不能两者都有。"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR 服务必须遵循格式：[protocol][+rs][+rs]...，其中 protocol 和 rs 以字"
-# OBSOLETE: "母开头并且只包含字母数字字符（每个最多 32 个字符）。"
-
-# OBSOLETE: msgid "User administration"
-# OBSOLETE: msgstr "用户管理"
-
-# OBSOLETE: msgid "Permissions"
-# OBSOLETE: msgstr "权限"
-
-# OBSOLETE: msgid "Manage permission templates"
-# OBSOLETE: msgstr "管理权限模板"
-
-# OBSOLETE: msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-# OBSOLETE: msgstr "设置标准记录，如 MX、SPF 的 TXT 和 www 的 CNAME"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-# OBSOLETE: "[SERIAL] in record content"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "在记录内容中使用 [ZONE]、[DOMAIN]、[TLD]、[NS1]、[HOSTMASTER] 和 [SERIAL] "
-# OBSOLETE: "等占位符"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-# OBSOLETE: "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "[DOMAIN] 和 [TLD] 占位符对 Microsoft 365 MX 记录很有用（例如，[DOMAIN]-"
-# OBSOLETE: "[TLD].mail.protection.outlook.com）"
-
-# OBSOLETE: msgid "Permission template"
-# OBSOLETE: msgstr "权限模板"
-
-# OBSOLETE: msgid "This user has been assigned the permission template"
-# OBSOLETE: msgstr "此用户已分配权限模板"
-
-# OBSOLETE: msgid "User Management Tips"
-# OBSOLETE: msgstr "用户管理提示"
-
-# OBSOLETE: msgid "Leave password field empty to keep the current password"
-# OBSOLETE: msgstr "保留密码字段为空以保持当前密码"
-
-# OBSOLETE: msgid "Changing permission templates will update user access immediately"
-# OBSOLETE: msgstr "更改权限模板将立即更新用户访问权限"
-
-# OBSOLETE: msgid "Users can be disabled instead of deleted to preserve their settings"
-# OBSOLETE: msgstr "可以禁用用户而不是删除用户以保留其设置"
-
-# OBSOLETE: msgid "LDAP users cannot have passwords managed through this interface"
-# OBSOLETE: msgstr "LDAP 用户无法通过此界面管理密码"
-
-# OBSOLETE: msgid "Permission templates"
-# OBSOLETE: msgstr "权限模板"
-
-# OBSOLETE: msgid "Add Permission Template"
-# OBSOLETE: msgstr "添加权限模板"
-
-# OBSOLETE: msgid "About Permission Templates"
-# OBSOLETE: msgstr "关于权限模板"
-
-# OBSOLETE: msgid "What are Permission Templates?"
-# OBSOLETE: msgstr "什么是权限模板？"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Permission templates define sets of actions that users can perform in "
-# OBSOLETE: "Poweradmin. They provide a quick way to assign common permission "
-# OBSOLETE: "combinations to multiple users."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "权限模板定义用户在 Poweradmin 中可以执行的操作集。它们提供了一种快速方法来"
-# OBSOLETE: "为多个用户分配常见的权限组合。"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "After creating a template, you can assign it to users when creating or "
-# OBSOLETE: "editing user accounts. This ensures consistent permissions across user "
-# OBSOLETE: "groups with similar roles."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "创建模板后，您可以在创建或编辑用户账户时将其分配给用户。这确保了具有相似角"
-# OBSOLETE: "色的用户组之间权限的一致性。"
-
-# OBSOLETE: msgid "Delete Permission Template"
-# OBSOLETE: msgstr "删除权限模板"
-
-# OBSOLETE: msgid "You are about to delete the permission template"
-# OBSOLETE: msgstr "您即将删除权限模板"
-
-# OBSOLETE: msgid "CSV"
-# OBSOLETE: msgstr "CSV"
-
-# OBSOLETE: msgid "Save as new template"
-# OBSOLETE: msgstr "保存为新模板"
-
-# OBSOLETE: msgid "Create a reusable template from this zone's records"
-# OBSOLETE: msgstr "从此区域的记录创建可重用模板"
-
-# OBSOLETE: msgid "Template Description"
-# OBSOLETE: msgstr "模板描述"
-
-# OBSOLETE: msgid "Optional description for this template"
-# OBSOLETE: msgstr "此模板的可选描述"
-
-# OBSOLETE: msgid "Save as template"
-# OBSOLETE: msgstr "保存为模板"
-
-# OBSOLETE: msgid "Zone Settings"
-# OBSOLETE: msgstr "区域设置"
-
-# OBSOLETE: msgid "Owner of zone"
-# OBSOLETE: msgstr "区域所有者"
-
-# OBSOLETE: msgid "No owner set for this zone."
-# OBSOLETE: msgstr "此区域未设置所有者。"
-
-# OBSOLETE: msgid "Select All Filtered"
-# OBSOLETE: msgstr "选择所有已筛选"
-
-# OBSOLETE: msgid "User Administration"
-# OBSOLETE: msgstr "用户管理"
-
-# OBSOLETE: msgid "Create descriptive usernames that are easy to identify"
-# OBSOLETE: msgstr "创建易于识别的描述性用户名"
-
-# OBSOLETE: msgid "Adding a full name helps with user identification"
-# OBSOLETE: msgstr "添加全名有助于用户识别"
-
-# OBSOLETE: msgid "Auto-generating passwords is recommended for better security"
-# OBSOLETE: msgstr "建议自动生成密码以提高安全性"
-
-# OBSOLETE: msgid "User responsible for this zone"
-# OBSOLETE: msgstr "负责此区域的用户"
-
-# OBSOLETE: msgid "Zone Information"
-# OBSOLETE: msgstr "区域信息"
-
-# OBSOLETE: msgid "About Master Zones"
-# OBSOLETE: msgstr "关于主区域"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "A master zone is a zone for which this PowerDNS server is the primary "
-# OBSOLETE: "authority. You can add, edit and delete records in master zones."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "主区域是此 PowerDNS 服务器为主要权威的区域。您可以在主区域中添加、编辑和删"
-# OBSOLETE: "除记录。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "After creating the zone, you will be redirected to add DNS records to it."
-# OBSOLETE: msgstr "创建区域后，您将被重定向到向其添加 DNS 记录。"
-
-# OBSOLETE: msgid "DNSSEC Information"
-# OBSOLETE: msgstr "DNSSEC 信息"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "DNSSEC (Domain Name System Security Extensions) adds cryptographic "
-# OBSOLETE: "signatures to DNS records to protect against spoofing and cache poisoning "
-# OBSOLETE: "attacks."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "DNSSEC（域名系统安全扩展）为 DNS 记录添加加密签名，以防止欺骗和缓存投毒攻"
-# OBSOLETE: "击。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "When enabled, PowerDNS will automatically generate and manage the "
-# OBSOLETE: "necessary keys and signatures for the zone."
-# OBSOLETE: msgstr "启用后，PowerDNS 将自动生成和管理区域所需的密钥和签名。"
-
-# OBSOLETE: msgid "Use fully qualified domain names (example.com)"
-# OBSOLETE: msgstr "使用完全限定域名（example.com）"
-
-# OBSOLETE: msgid "Select a template to automatically create common DNS records"
-# OBSOLETE: msgstr "选择模板以自动创建常见的 DNS 记录"
-
-# OBSOLETE: msgid "NATIVE zone type is recommended for most setups"
-# OBSOLETE: msgstr "建议大多数设置使用 NATIVE 区域类型"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Are you sure you want to delete the selected zones? This action cannot be "
-# OBSOLETE: "undone."
-# OBSOLETE: msgstr "您确定要删除所选区域吗？此操作无法撤销。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Are you sure you want to delete the selected records? This action cannot "
-# OBSOLETE: "be undone."
-# OBSOLETE: msgstr "您确定要删除所选记录吗？此操作无法撤销。"
-
-# OBSOLETE: msgid "IP address of the master name server (can be IPv4 or IPv6)"
-# OBSOLETE: msgstr "主域名服务器的 IP 地址（可以是 IPv4 或 IPv6）"
-
-# OBSOLETE: msgid "About Slave Zones"
-# OBSOLETE: msgstr "关于从区域"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "A slave zone is a read-only copy of a zone hosted on another DNS server. "
-# OBSOLETE: "PowerDNS will automatically fetch and update zone data from the master "
-# OBSOLETE: "server."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "从区域是托管在另一个 DNS 服务器上的区域的只读副本。PowerDNS 将自动从主服务"
-# OBSOLETE: "器获取和更新区域数据。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You cannot edit records in a slave zone - all changes must be made on the "
-# OBSOLETE: "master server."
-# OBSOLETE: msgstr "您无法编辑从区域中的记录——所有更改都必须在主服务器上进行。"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Make sure that this PowerDNS server is allowed to transfer the zone from "
-# OBSOLETE: "the master server. The master server must have an allow-transfer or "
-# OBSOLETE: "similar configuration permitting zone transfers to this server's IP "
-# OBSOLETE: "address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "确保此 PowerDNS 服务器被允许从主服务器传输区域。主服务器必须具有 allow-"
-# OBSOLETE: "transfer 或类似配置，允许向此服务器的 IP 地址进行区域传输。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can specify multiple master servers by separating IP addresses with "
-# OBSOLETE: "commas"
-# OBSOLETE: msgstr "您可以通过用逗号分隔 IP 地址来指定多个主服务器"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Slave zones will automatically update when the master server sends a "
-# OBSOLETE: "notification"
-# OBSOLETE: msgstr "当主服务器发送通知时，从区域将自动更新"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "To test the connection, check the PowerDNS logs after adding the zone"
-# OBSOLETE: msgstr "要测试连接，请在添加区域后检查 PowerDNS 日志"
-
-# OBSOLETE: msgid "List permission templates"
-# OBSOLETE: msgstr "列出权限模板"
-
-# OBSOLETE: msgid "Add permission template"
-# OBSOLETE: msgstr "添加权限模板"
-
-# OBSOLETE: msgid "Edit Permission Template"
-# OBSOLETE: msgstr "编辑权限模板"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "此模板可以分配给用户以快速应用其权限集。此处所做的更改将影响所有已分配此模"
-# OBSOLETE: "板的用户。"
-
-# OBSOLETE: msgid "Permission Templates"
-# OBSOLETE: msgstr "权限模板"
-
-# OBSOLETE: msgid "No permission templates found"
-# OBSOLETE: msgstr "未找到权限模板"
-
-
-

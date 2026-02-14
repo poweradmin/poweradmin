@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-10 19:11+0200\n"
+"POT-Creation-Date: 2026-02-14 17:09+0200\n"
 "PO-Revision-Date: 2025-06-02 07:22+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -23,9 +23,8 @@ msgid ""
 "No configuration file found at %s. Please use the <a href=\"install/"
 "\">installer</a> to create one, or create the configuration file manually."
 msgstr ""
-"Konfigurační soubor nebyl nalezen. Použijte <a "
-"href=\"install/\">instalátor</a> k vytvoření jednoho, nebo vytvořte "
-"soubor %s ručně."
+"Konfigurační soubor nebyl nalezen. Použijte <a href=\"install/\">instalátor</"
+"a> k vytvoření jednoho, nebo vytvořte soubor %s ručně."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:134
 msgid "Invalid CSRF token."
@@ -114,7 +113,6 @@ msgid "You do not have the permission to delete this user."
 msgstr "Nemáte oprávnění smazat tohoto uživatele."
 
 #: lib/Application/Controller/DeleteUserController.php:62
-#, auto-english-fallback
 msgid "You do not have permission to delete a superuser account."
 msgstr "Nemáte oprávnění smazat účet superuživatele."
 
@@ -151,7 +149,6 @@ msgid "You do not have permission to delete records in this zone."
 msgstr "Nemáte oprávnění mazat záznamy v této zóně."
 
 #: lib/Application/Controller/EditRecordController.php:195
-#, auto-english-fallback
 msgid "Record not found."
 msgstr "Záznam nebyl nalezen."
 
@@ -222,67 +219,54 @@ msgid "The record has been deleted successfully."
 msgstr "Záznam byl úspěšně smazán."
 
 #: lib/Application/Controller/DeleteRecordController.php:239
-#, auto-english-fallback
 msgid "You cannot delete records from a SLAVE zone."
 msgstr "Nemůžete mazat záznamy ze SLAVE zóny."
 
 #: lib/Application/Controller/DeleteGroupController.php:70
-#, auto-english-fallback
 msgid "You do not have permission to delete groups."
 msgstr "Nemáte oprávnění mazat skupiny."
 
 #: lib/Application/Controller/EditGroupController.php:86
-#, auto-english-fallback
 msgid "Invalid group ID."
 msgstr "Neplatné ID skupiny."
 
 #: lib/Application/Controller/DeleteGroupController.php:98
-#, auto-english-fallback
 msgid "Group deletion cancelled."
 msgstr "Smazání skupiny bylo zrušeno."
 
 #: lib/Application/Controller/DeleteGroupController.php:135
-#, auto-english-fallback
 msgid "Group has been deleted successfully."
 msgstr "Skupina byla úspěšně smazána."
 
 #: lib/Application/Controller/EditGroupController.php:197
-#, auto-english-fallback
 msgid "Group not found."
 msgstr "Skupina nebyla nalezena."
 
 #: lib/Application/Controller/UserPreferencesController.php:99
-#, auto-english-fallback
 msgid "Preferences saved successfully."
 msgstr "Předvolby byly úspěšně uloženy."
 
 #: lib/Application/Controller/UserPreferencesController.php:107
-#, auto-english-fallback
 msgid "Failed to update preferences. Please try again."
 msgstr "Aktualizace předvoleb se nezdařila. Zkuste to prosím znovu."
 
 #: lib/Application/Controller/UserPreferencesController.php:122
-#, auto-english-fallback
 msgid "Top"
 msgstr "Nahoře"
 
 #: lib/Application/Controller/UserPreferencesController.php:123
-#, auto-english-fallback
 msgid "Bottom"
 msgstr "Dole"
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:60
-#, auto-english-fallback
 msgid "You do not have permission to manage group members."
 msgstr "Nemáte oprávnění spravovat členy skupiny."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:103
-#, auto-english-fallback
 msgid "Invalid action."
 msgstr "Neplatná akce."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:192
-#, auto-english-fallback
 msgid "Please select at least one user."
 msgstr "Vyberte prosím alespoň jednoho uživatele."
 
@@ -319,7 +303,6 @@ msgstr[1] "%d uživatele nebylo možné odebrat."
 msgstr[2] "%d uživatelů nebylo možné odebrat."
 
 #: lib/Application/Controller/DnsWizardController.php:57
-#, auto-english-fallback
 msgid "DNS wizards are not enabled."
 msgstr "Průvodci DNS nejsou povoleni."
 
@@ -328,27 +311,22 @@ msgid "Invalid zone ID."
 msgstr "Neplatné ID zóny."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:93
-#, auto-english-fallback
 msgid "Zone not found."
 msgstr "Zóna nebyla nalezena."
 
 #: lib/Application/Controller/DnsWizardController.php:80
-#, auto-english-fallback
 msgid "You do not have permission to add records to this zone."
 msgstr "Nemáte oprávnění přidávat záznamy do této zóny."
 
 #: lib/Application/Controller/DnsWizardFormController.php:114
-#, auto-english-fallback
 msgid "Invalid wizard type."
 msgstr "Neplatný typ průvodce."
 
 #: lib/Application/Controller/DnsWizardFormController.php:199
-#, auto-english-fallback
 msgid "Validation failed:"
 msgstr "Ověření se nezdařilo:"
 
 #: lib/Application/Controller/DnsWizardFormController.php:223
-#, auto-english-fallback
 msgid "Failed to generate record:"
 msgstr "Generování záznamu se nezdařilo:"
 
@@ -543,17 +521,14 @@ msgid "Invalid request method."
 msgstr "Neplatná metoda požadavku."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:77
-#, auto-english-fallback
 msgid "Invalid group or user ID."
 msgstr "Neplatné ID skupiny nebo uživatele."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:86
-#, auto-english-fallback
 msgid "Member removed from group successfully."
 msgstr "Člen byl úspěšně odebrán ze skupiny."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:118
-#, auto-english-fallback
 msgid "User was not a member of this group."
 msgstr "Uživatel nebyl členem této skupiny."
 
@@ -562,7 +537,6 @@ msgid "You do not have the permission to add a new user."
 msgstr "Nemáte oprávnění přidat nového uživatele."
 
 #: lib/Application/Controller/EditUserController.php:235
-#, auto-english-fallback
 msgid "Invalid permission template: must be a user template"
 msgstr "Neplatná šablona oprávnění: musí být šablona uživatele"
 
@@ -600,17 +574,14 @@ msgid "The record could not be deleted."
 msgstr "Záznam nemohl být smazán."
 
 #: lib/Application/Controller/ListLogUsersController.php:67
-#, auto-english-fallback
 msgid "Invalid page number."
 msgstr "Neplatné číslo stránky."
 
 #: lib/Application/Controller/ListLogUsersController.php:69
-#, auto-english-fallback
 msgid "Page number must be at least 1."
 msgstr "Číslo stránky musí být alespoň 1."
 
 #: lib/Application/Controller/ListLogUsersController.php:87
-#, auto-english-fallback
 msgid "Page number exceeds available pages."
 msgstr "Číslo stránky překračuje počet dostupných stránek."
 
@@ -740,17 +711,14 @@ msgid "You do not have the permission to view this zone."
 msgstr "Nemáte oprávnění zobrazit tuto zónu."
 
 #: lib/Application/Controller/EditController.php:271
-#, auto-english-fallback
 msgid "Zone type has been changed successfully."
 msgstr "Typ zóny byl úspěšně změněn."
 
 #: lib/Application/Controller/EditController.php:278
-#, auto-english-fallback
 msgid "Slave master has been changed successfully."
 msgstr "Master server slave zóny byl úspěšně změněn."
 
 #: lib/Application/Controller/EditController.php:298
-#, auto-english-fallback
 msgid "Zone template has been changed successfully."
 msgstr "Šablona zóny byla úspěšně změněna."
 
@@ -779,7 +747,8 @@ msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
 msgstr ""
-"Podepsání zóny se nezdařilo. Ověření zóny proběhlo úspěšně, ale PowerDNS API vrátilo chybu. Zkontrolujte logy PowerDNS pro podrobnosti."
+"Podepsání zóny se nezdařilo. Ověření zóny proběhlo úspěšně, ale PowerDNS API "
+"vrátilo chybu. Zkontrolujte logy PowerDNS pro podrobnosti."
 
 #: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
@@ -890,7 +859,6 @@ msgid "You do not have the permission to add a record to this zone."
 msgstr "Nemáte oprávnění přidat záznam do této zóny."
 
 #: lib/Application/Controller/AddRecordController.php:226
-#, auto-english-fallback
 msgid "Record successfully added."
 msgstr "Záznam byl úspěšně přidán."
 
@@ -949,7 +917,6 @@ msgid "Authentication failed: "
 msgstr "Ověření selhalo: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
-#, auto-english-fallback
 msgid "You do not have permission to create zone templates."
 msgstr "Nemáte oprávnění vytvářet šablony zón."
 
@@ -958,7 +925,6 @@ msgid "Template name can't be an empty string."
 msgstr "Název šablony nemůže být prázdný řetězec."
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:150
-#, auto-english-fallback
 msgid "Zone template has been created successfully."
 msgstr "Šablona zóny byla úspěšně vytvořena."
 
@@ -975,7 +941,6 @@ msgid "You do not have the permission to add a master zone."
 msgstr "Nemáte oprávnění přidat hlavní zónu."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:101
-#, auto-english-fallback
 msgid "At least one user or group must be selected as owner."
 msgstr "Alespoň jeden uživatel nebo skupina musí být vybrán jako vlastník."
 
@@ -988,17 +953,19 @@ msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
-"Zóna byla úspěšně vytvořena, ale podepsání DNSSEC bylo přeskočeno kvůli chybám ověření:"
+"Zóna byla úspěšně vytvořena, ale podepsání DNSSEC bylo přeskočeno kvůli "
+"chybám ověření:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:171
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
 msgstr ""
-"Zóna byla vytvořena, ale zabezpečení pomocí DNSSEC se nezdařilo. Ověření zóny proběhlo úspěšně, ale PowerDNS API vrátilo chybu. Zkontrolujte logy PowerDNS pro podrobnosti."
+"Zóna byla vytvořena, ale zabezpečení pomocí DNSSEC se nezdařilo. Ověření "
+"zóny proběhlo úspěšně, ale PowerDNS API vrátilo chybu. Zkontrolujte logy "
+"PowerDNS pro podrobnosti."
 
 #: lib/Application/Controller/AddZoneMasterController.php:177
-#, auto-english-fallback
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zóna byla úspěšně vytvořena a podepsána pomocí DNSSEC."
 
@@ -1007,7 +974,8 @@ msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
 msgstr ""
-"Zóna byla vytvořena a podepsání bylo vyžádáno, ale ověření se nezdařilo. Zkontrolujte klíče DNSSEC."
+"Zóna byla vytvořena a podepsání bylo vyžádáno, ale ověření se nezdařilo. "
+"Zkontrolujte klíče DNSSEC."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:145
 msgid "Zone has been added successfully."
@@ -1030,17 +998,14 @@ msgid "You do not have the permission to view zone templates."
 msgstr "Nemáte oprávnění zobrazit šablony zón."
 
 #: lib/Application/Controller/AddGroupController.php:66
-#, auto-english-fallback
 msgid "You do not have permission to create groups."
 msgstr "Nemáte oprávnění vytvářet skupiny."
 
 #: lib/Application/Controller/EditGroupController.php:115
-#, auto-english-fallback
 msgid "Invalid permission template: must be a group template"
 msgstr "Neplatná šablona oprávnění: musí být šablona skupiny"
 
 #: lib/Application/Controller/AddGroupController.php:132
-#, auto-english-fallback
 msgid "Group has been created successfully."
 msgstr "Skupina byla úspěšně vytvořena."
 
@@ -1053,7 +1018,6 @@ msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Nemáte oprávnění spravovat DNSSEC pro tuto zónu."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:89
-#, auto-english-fallback
 msgid "DNSSEC key not found or no longer exists."
 msgstr "Klíč DNSSEC nebyl nalezen nebo již neexistuje."
 
@@ -1070,22 +1034,18 @@ msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Při mazání DNSSEC klíče došlo k chybě: "
 
 #: lib/Application/Controller/SamlCallbackController.php:77
-#, auto-english-fallback
 msgid "SAML authentication is not enabled"
 msgstr "Ověření SAML není povoleno"
 
 #: lib/Application/Controller/SamlLoginController.php:89
-#, auto-english-fallback
 msgid "No SAML providers are configured"
 msgstr "Nejsou nakonfigurovány žádní poskytovatelé SAML"
 
 #: lib/Application/Controller/SamlLoginController.php:100
-#, auto-english-fallback
 msgid "Invalid SAML provider"
 msgstr "Neplatný poskytovatel SAML"
 
 #: lib/Application/Controller/SamlCallbackController.php:105
-#, auto-english-fallback
 msgid "SAML authentication failed: "
 msgstr "Ověření SAML se nezdařilo: "
 
@@ -1098,12 +1058,10 @@ msgid "You do not have the permission to see any zones."
 msgstr "Nemáte oprávnění zobrazit žádné zóny."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:71
-#, auto-english-fallback
 msgid "You do not have permission to manage zone ownership."
 msgstr "Nemáte oprávnění spravovat vlastnictví zón."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:205
-#, auto-english-fallback
 msgid "Please select at least one zone."
 msgstr "Vyberte prosím alespoň jednu zónu."
 
@@ -1234,22 +1192,18 @@ msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Nepodařilo se získat RDAP informace pomocí serveru %s"
 
 #: lib/Application/Controller/Api/Internal/DnsWizardController.php:409
-#, auto-english-fallback
 msgid "Record created successfully"
 msgstr "Záznam byl úspěšně vytvořen"
 
 #: lib/Application/Controller/EditUserController.php:338
-#, auto-english-fallback
 msgid "You do not have permission to manage group memberships."
 msgstr "Nemáte oprávnění spravovat členství ve skupinách."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:79
-#, auto-english-fallback
 msgid "Invalid user or group ID."
 msgstr "Neplatné ID uživatele nebo skupiny."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:100
-#, auto-english-fallback
 msgid "User removed from group successfully."
 msgstr "Uživatel byl úspěšně odebrán ze skupiny."
 
@@ -1286,22 +1240,18 @@ msgid "The supermaster has been updated successfully."
 msgstr "Supermaster byl úspěšně aktualizován."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:60
-#, auto-english-fallback
 msgid "You do not have permission to manage group zones."
 msgstr "Nemáte oprávnění spravovat zóny skupiny."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:77
-#, auto-english-fallback
 msgid "Invalid group or zone ID."
 msgstr "Neplatné ID skupiny nebo zóny."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
-#, auto-english-fallback
 msgid "Zone removed from group successfully."
 msgstr "Zóna byla úspěšně odebrána ze skupiny."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:88
-#, auto-english-fallback
 msgid "Zone was not owned by this group."
 msgstr "Zóna nebyla vlastněna touto skupinou."
 
@@ -1334,12 +1284,10 @@ msgid "You do not have the permission to edit this user."
 msgstr "Nemáte oprávnění upravovat tohoto uživatele."
 
 #: lib/Application/Controller/EditUserController.php:210
-#, auto-english-fallback
 msgid "You do not have permission to edit a superuser account."
 msgstr "Nemáte oprávnění upravovat účet superuživatele."
 
 #: lib/Application/Controller/EditUserController.php:346
-#, auto-english-fallback
 msgid "Please select at least one group."
 msgstr "Vyberte prosím alespoň jednu skupinu."
 
@@ -1357,11 +1305,14 @@ msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
 msgstr[0] ""
-"Přidání uživatele do %d skupiny se nezdařilo (již je členem nebo skupina nebyla nalezena)."
+"Přidání uživatele do %d skupiny se nezdařilo (již je členem nebo skupina "
+"nebyla nalezena)."
 msgstr[1] ""
-"Přidání uživatele do %d skupin se nezdařilo (již je členem nebo skupiny nebyly nalezeny)."
+"Přidání uživatele do %d skupin se nezdařilo (již je členem nebo skupiny "
+"nebyly nalezeny)."
 msgstr[2] ""
-"Přidání uživatele do %d skupin se nezdařilo (již je členem nebo skupiny nebyly nalezeny)."
+"Přidání uživatele do %d skupin se nezdařilo (již je členem nebo skupiny "
+"nebyly nalezeny)."
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 msgid "You do not have the permission to delete permission templates."
@@ -1408,17 +1359,14 @@ msgid "An unexpected error occurred. Please contact the administrator."
 msgstr "Došlo k neočekávané chybě. Obraťte se prosím na administrátora."
 
 #: lib/Application/Controller/SamlCallbackController.php:93
-#, auto-english-fallback
 msgid "Unknown SAML endpoint"
 msgstr "Neznámý koncový bod SAML"
 
 #: lib/Application/Controller/SamlCallbackController.php:119
-#, auto-english-fallback
 msgid "You have been logged out"
 msgstr "Byli jste odhlášeni"
 
 #: lib/Application/Controller/SamlCallbackController.php:124
-#, auto-english-fallback
 msgid "Logout completed (with warnings): "
 msgstr "Odhlášení dokončeno (s varováními): "
 
@@ -1427,7 +1375,6 @@ msgid "You do not have permission to view this record."
 msgstr "Nemáte oprávnění zobrazit tento záznam."
 
 #: lib/Application/Controller/EditRecordController.php:108
-#, auto-english-fallback
 msgid "You cannot edit records in a SLAVE zone."
 msgstr "Nemůžete upravovat záznamy ve SLAVE zóně."
 
@@ -1436,7 +1383,6 @@ msgid "You do not have permission to edit this record."
 msgstr "Nemáte oprávnění upravit tento záznam."
 
 #: lib/Application/Controller/EditRecordController.php:226
-#, auto-english-fallback
 msgid "Failed to retrieve updated record information."
 msgstr "Načtení aktualizovaných informací o záznamu se nezdařilo."
 
@@ -1457,14 +1403,17 @@ msgid ""
 "Please contact your administrator or change your password through your "
 "identity provider."
 msgstr ""
-"Uživatelé ověření přes Single Sign-On zde nemohou změnit své heslo. Kontaktujte prosím svého administrátora nebo změňte heslo prostřednictvím poskytovatele identity."
+"Uživatelé ověření přes Single Sign-On zde nemohou změnit své heslo. "
+"Kontaktujte prosím svého administrátora nebo změňte heslo prostřednictvím "
+"poskytovatele identity."
 
 #: lib/Application/Controller/ChangePasswordController.php:87
 msgid ""
 "External authentication users cannot change their password here. Please "
 "contact your administrator."
 msgstr ""
-"Uživatelé s externím ověřením zde nemohou změnit své heslo. Kontaktujte prosím svého administrátora."
+"Uživatelé s externím ověřením zde nemohou změnit své heslo. Kontaktujte "
+"prosím svého administrátora."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:116
 msgid "ECDSA P-256 algorithm must use 256 bits"
@@ -1505,12 +1454,10 @@ msgid "Please select both algorithm and bits"
 msgstr "Vyberte prosím algoritmus i bity"
 
 #: lib/Application/Controller/EditGroupController.php:79
-#, auto-english-fallback
 msgid "You do not have permission to edit groups."
 msgstr "Nemáte oprávnění upravovat skupiny."
 
 #: lib/Application/Controller/EditGroupController.php:180
-#, auto-english-fallback
 msgid "Group has been updated successfully."
 msgstr "Skupina byla úspěšně aktualizována."
 
@@ -1543,22 +1490,18 @@ msgid "Some zone(s) could not be added."
 msgstr "Některé zóny nemohly být přidány."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:169
-#, auto-english-fallback
 msgid "Owner has been added successfully."
 msgstr "Vlastník byl úspěšně přidán."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:184
-#, auto-english-fallback
 msgid "Owner has been removed successfully."
 msgstr "Vlastník byl úspěšně odebrán."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:198
-#, auto-english-fallback
 msgid "Group has been added successfully."
 msgstr "Skupina byla úspěšně přidána."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:205
-#, auto-english-fallback
 msgid "Group has been removed successfully."
 msgstr "Skupina byla úspěšně odebrána."
 
@@ -1591,7 +1534,6 @@ msgid "Failed to activate zone key."
 msgstr "Nepodařilo se aktivovat klíč zóny."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:116
-#, auto-english-fallback
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Při přepínání klíče DNSSEC došlo k chybě. Zkuste to prosím znovu."
 
@@ -1652,7 +1594,6 @@ msgid "Failed to authenticate against LDAP."
 msgstr "Nepodařilo se ověřit proti LDAP."
 
 #: lib/Application/Service/SamlService.php:243
-#, auto-english-fallback
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Ověření se nezdařilo: Neplatná odpověď SAML"
 
@@ -1667,7 +1608,6 @@ msgid "No"
 msgstr "Ne"
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
-#, auto-english-fallback
 msgid "This template is assigned to at least one user and one group."
 msgstr "Tato šablona je přiřazena alespoň jednomu uživateli a jedné skupině."
 
@@ -1676,7 +1616,6 @@ msgid "This template is assigned to at least one user."
 msgstr "Tato šablona je přiřazena alespoň jednomu uživateli."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
-#, auto-english-fallback
 msgid "This template is assigned to at least one group."
 msgstr "Tato šablona je přiřazena alespoň jedné skupině."
 
@@ -1690,7 +1629,6 @@ msgid "An empty password is not allowed"
 msgstr "Prázdné heslo není povoleno"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:216
-#, auto-english-fallback
 msgid "LDAP authentication is disabled"
 msgstr "Ověření LDAP je zakázáno"
 
@@ -1699,7 +1637,8 @@ msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
 msgstr ""
-"Chyba databáze: Nelze ověřit autentizaci uživatele. Zkontrolujte prosím konfiguraci databáze."
+"Chyba databáze: Nelze ověřit autentizaci uživatele. Zkontrolujte prosím "
+"konfiguraci databáze."
 
 #: lib/Domain/Repository/DomainRepository.php:201
 msgid "This is an invalid zone name."
@@ -1790,17 +1729,14 @@ msgid "Error checking template existence: "
 msgstr "Chyba při kontrole existence šablony: "
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:45
-#, auto-english-fallback
 msgid "TLSA Record"
 msgstr "Záznam TLSA"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:46
-#, auto-english-fallback
 msgid "TLS certificate/key authentication (DANE)"
 msgstr "Ověření TLS certifikátu/klíče (DANE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:57
-#, auto-english-fallback
 msgid "DNSSEC Requirement"
 msgstr "Požadavek DNSSEC"
 
@@ -1810,15 +1746,14 @@ msgid ""
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
 msgstr ""
-"Záznamy TLSA vyžadují, aby byl pro tuto zónu povolen DNSSEC. Záznamy TLSA bez DNSSEC neposkytují bezpečnostní výhody a mohou být klienty ignorovány."
+"Záznamy TLSA vyžadují, aby byl pro tuto zónu povolen DNSSEC. Záznamy TLSA "
+"bez DNSSEC neposkytují bezpečnostní výhody a mohou být klienty ignorovány."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:91
-#, auto-english-fallback
 msgid "Service Configuration"
 msgstr "Konfigurace služby"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:148
-#, auto-english-fallback
 msgid "Port Number"
 msgstr "Číslo portu"
 
@@ -1829,27 +1764,22 @@ msgstr ""
 "Číslo portu TCP/UDP (443 pro HTTPS, 25 pro SMTP, 853 pro DNS-over-TLS atd.)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:113
-#, auto-english-fallback
 msgid "Protocol"
 msgstr "Protokol"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:81
-#, auto-english-fallback
 msgid "Transmission Control Protocol - most common for HTTPS/TLS"
 msgstr "Transmission Control Protocol – nejběžnější pro HTTPS/TLS"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:82
-#, auto-english-fallback
 msgid "User Datagram Protocol - for DTLS connections"
 msgstr "User Datagram Protocol – pro spojení DTLS"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:121
-#, auto-english-fallback
 msgid "Stream Control Transmission Protocol"
 msgstr "Stream Control Transmission Protocol"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:85
-#, auto-english-fallback
 msgid "Transport protocol for the TLS connection"
 msgstr "Transportní protokol pro připojení TLS"
 
@@ -1863,55 +1793,46 @@ msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
 msgstr ""
-"Název hostitele pro službu (ponechte prázdné pro apex zóny @). Záznam bude vytvořen na _port._protokol.hostname"
+"Název hostitele pro službu (ponechte prázdné pro apex zóny @). Záznam bude "
+"vytvořen na _port._protokol.hostname"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:98
-#, auto-english-fallback
 msgid "Certificate Usage"
 msgstr "Použití certifikátu"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:102
-#, auto-english-fallback
 msgid "Usage"
 msgstr "Použití"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
-#, auto-english-fallback
 msgid "0 - CA Constraint"
 msgstr "0 – Omezení CA"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
-#, auto-english-fallback
 msgid "Certificate must chain to specified CA (PKIX-TA)"
 msgstr "Certifikát musí tvořit řetěz k určené CA (PKIX-TA)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
-#, auto-english-fallback
 msgid "1 - Service Certificate"
 msgstr "1 – Certifikát služby"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
-#, auto-english-fallback
 msgid "Certificate must match exactly (PKIX-EE)"
 msgstr "Certifikát se musí přesně shodovat (PKIX-EE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
-#, auto-english-fallback
 msgid "2 - Trust Anchor Assertion"
 msgstr "2 – Tvrzení o kotevním certifikátu"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
-#, auto-english-fallback
 msgid "Certificate must chain to specified anchor (DANE-TA)"
 msgstr "Certifikát musí tvořit řetěz k určené kotvě (DANE-TA)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
-#, auto-english-fallback
 msgid "3 - Domain-Issued Certificate"
 msgstr "3 – Certifikát vydaný doménou"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
-#, auto-english-fallback
 msgid "Certificate must match exactly, bypassing PKI (DANE-EE)"
 msgstr "Certifikát se musí přesně shodovat, obchází PKI (DANE-EE)"
 
@@ -1920,30 +1841,26 @@ msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
 msgstr ""
-"Jak by měl být certifikát ověřen. Typ 3 je nejběžnější pro vlastní certifikáty nebo vlastní CA."
+"Jak by měl být certifikát ověřen. Typ 3 je nejběžnější pro vlastní "
+"certifikáty nebo vlastní CA."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:72
-#, auto-english-fallback
 msgid "Selector"
 msgstr "Selektor"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
-#, auto-english-fallback
 msgid "0 - Full Certificate"
 msgstr "0 – Celý certifikát"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
-#, auto-english-fallback
 msgid "Use the entire certificate"
 msgstr "Použít celý certifikát"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
-#, auto-english-fallback
 msgid "1 - Public Key"
 msgstr "1 – Veřejný klíč"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
-#, auto-english-fallback
 msgid "Use only the Subject Public Key Info (SPKI)"
 msgstr "Použít pouze informace o veřejném klíči subjektu (SPKI)"
 
@@ -1952,40 +1869,34 @@ msgid ""
 "What part of the certificate to match. Type 1 (public key) survives "
 "certificate renewal."
 msgstr ""
-"Která část certifikátu se má porovnávat. Typ 1 (veřejný klíč) přetrvá obnovení certifikátu."
+"Která část certifikátu se má porovnávat. Typ 1 (veřejný klíč) přetrvá "
+"obnovení certifikátu."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:138
-#, auto-english-fallback
 msgid "Matching Type"
 msgstr "Typ shody"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
-#, auto-english-fallback
 msgid "0 - Exact Match"
 msgstr "0 – Přesná shoda"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
-#, auto-english-fallback
 msgid "Full certificate/key data (very long record)"
 msgstr "Celá data certifikátu/klíče (velmi dlouhý záznam)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
-#, auto-english-fallback
 msgid "1 - SHA-256 Hash"
 msgstr "1 – Hash SHA-256"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
-#, auto-english-fallback
 msgid "SHA-256 hash of certificate/key"
 msgstr "Hash SHA-256 certifikátu/klíče"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
-#, auto-english-fallback
 msgid "2 - SHA-512 Hash"
 msgstr "2 – Hash SHA-512"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
-#, auto-english-fallback
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
 msgstr "Hash SHA-512 certifikátu/klíče (bezpečnější, ale delší)"
 
@@ -1994,15 +1905,14 @@ msgid ""
 "How to encode the certificate data. SHA-256 (type 1) provides good balance "
 "of security and length."
 msgstr ""
-"Jak zakódovat data certifikátu. SHA-256 (typ 1) poskytuje dobrý poměr bezpečnosti a délky."
+"Jak zakódovat data certifikátu. SHA-256 (typ 1) poskytuje dobrý poměr "
+"bezpečnosti a délky."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:152
-#, auto-english-fallback
 msgid "Certificate Data"
 msgstr "Data certifikátu"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:156
-#, auto-english-fallback
 msgid "Certificate Association Data"
 msgstr "Asociační data certifikátu"
 
@@ -2012,51 +1922,45 @@ msgid ""
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
 msgstr ""
-"Hexadecimální hash nebo úplná data certifikátu (v závislosti na typu shody). Pro SHA-256 použijte: \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
+"Hexadecimální hash nebo úplná data certifikátu (v závislosti na typu shody). "
+"Pro SHA-256 použijte: \"openssl x509 -in cert.pem -pubkey -noout | openssl "
+"pkey -pubin -outform DER | openssl dgst -sha256\""
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:184
-#, auto-english-fallback
 msgid "Record Settings"
 msgstr "Nastavení záznamu"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:188
-#, auto-english-fallback
 msgid "TTL (seconds)"
 msgstr "TTL (sekundy)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:193
-#, auto-english-fallback
 msgid "Time to live - how long DNS resolvers should cache this record"
 msgstr ""
-"Doba platnosti – jak dlouho mají DNS resolvery uchovávat tento záznam v mezipaměti"
+"Doba platnosti – jak dlouho mají DNS resolvery uchovávat tento záznam v "
+"mezipaměti"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:289
-#, auto-english-fallback
 msgid "Port must be between 1 and 65535"
 msgstr "Port musí být v rozsahu 1 až 65535"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:233
-#, auto-english-fallback
 msgid "Usage must be 0, 1, 2, or 3"
 msgstr "Použití musí být 0, 1, 2 nebo 3"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:238
-#, auto-english-fallback
 msgid "Selector must be 0 or 1"
 msgstr "Selektor musí být 0 nebo 1"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:243
-#, auto-english-fallback
 msgid "Matching type must be 0, 1, or 2"
 msgstr "Typ shody musí být 0, 1 nebo 2"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:248
-#, auto-english-fallback
 msgid "Certificate association data is required"
 msgstr "Asociační data certifikátu jsou povinná"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:253
-#, auto-english-fallback
 msgid "Certificate data must be hexadecimal (0-9, a-f)"
 msgstr "Data certifikátu musí být hexadecimální (0-9, a-f)"
 
@@ -2066,7 +1970,8 @@ msgid ""
 "SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
 "correct."
 msgstr ""
-"Hash SHA-256 by měl mít 64 hexadecimálních znaků, zjištěno %d. Ověřte správnost hashe."
+"Hash SHA-256 by měl mít 64 hexadecimálních znaků, zjištěno %d. Ověřte "
+"správnost hashe."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:263
 #, php-format
@@ -2074,14 +1979,16 @@ msgid ""
 "SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
 "is correct."
 msgstr ""
-"Hash SHA-512 by měl mít 128 hexadecimálních znaků, zjištěno %d. Ověřte správnost hashe."
+"Hash SHA-512 by měl mít 128 hexadecimálních znaků, zjištěno %d. Ověřte "
+"správnost hashe."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:267
 msgid ""
 "Full certificate data seems too short. Ensure you provided the complete "
 "certificate."
 msgstr ""
-"Úplná data certifikátu se zdají příliš krátká. Ujistěte se, že jste poskytli celý certifikát."
+"Úplná data certifikátu se zdají příliš krátká. Ujistěte se, že jste poskytli "
+"celý certifikát."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:274
 #: templates/modern/edit.html:91 templates/modern/edit.html:607
@@ -2093,55 +2000,46 @@ msgid ""
 "CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
 "DNSSEC, TLSA records provide NO security benefit."
 msgstr ""
-"KRITICKÉ: Záznamy TLSA vyžadují, aby byl pro tuto zónu povolen DNSSEC. Bez DNSSEC záznamy TLSA neposkytují ŽÁDNÉ bezpečnostní výhody."
+"KRITICKÉ: Záznamy TLSA vyžadují, aby byl pro tuto zónu povolen DNSSEC. Bez "
+"DNSSEC záznamy TLSA neposkytují ŽÁDNÉ bezpečnostní výhody."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:46
-#, auto-english-fallback
 msgid "DMARC Record"
 msgstr "Záznam DMARC"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:47
-#, auto-english-fallback
 msgid "Email authentication policy and reporting configuration"
 msgstr "Zásady ověření e-mailu a konfigurace hlášení"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:59
-#, auto-english-fallback
 msgid "Policy Settings"
 msgstr "Nastavení zásad"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:138
-#, auto-english-fallback
 msgid "Policy"
 msgstr "Zásada"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
-#, auto-english-fallback
 msgid "None (monitor only)"
 msgstr "Žádná (pouze monitorování)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
-#, auto-english-fallback
 msgid "No action taken, just collect reports for analysis"
 msgstr "Žádná akce, pouze sběr hlášení pro analýzu"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
-#, auto-english-fallback
 msgid "Quarantine"
 msgstr "Karanténa"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:69
-#, auto-english-fallback
 msgid "Treat suspicious emails as spam/junk"
 msgstr "Zacházet s podezřelými e-maily jako se spamem"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
-#, auto-english-fallback
 msgid "Reject"
 msgstr "Odmítnout"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:70
-#, auto-english-fallback
 msgid "Block delivery of suspicious emails entirely"
 msgstr "Zcela zablokovat doručení podezřelých e-mailů"
 
@@ -2150,47 +2048,38 @@ msgid "Start with \"none\" to collect data before enforcing a stricter policy."
 msgstr "Začněte s \"none\" pro sběr dat před vynucením přísnější zásady."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:76
-#, auto-english-fallback
 msgid "Subdomain Policy"
 msgstr "Zásada pro subdomény"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
-#, auto-english-fallback
 msgid "Same as domain policy"
 msgstr "Stejná jako zásada domény"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
-#, auto-english-fallback
 msgid "Use the same policy as the main domain"
 msgstr "Použít stejnou zásadu jako hlavní doména"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
-#, auto-english-fallback
 msgid "None"
 msgstr "Žádná"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
-#, auto-english-fallback
 msgid "Monitor only for subdomains"
 msgstr "Pouze monitorování pro subdomény"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
-#, auto-english-fallback
 msgid "Quarantine suspicious subdomain emails"
 msgstr "Podezřelé e-maily subdomén do karantény"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
-#, auto-english-fallback
 msgid "Reject suspicious subdomain emails"
 msgstr "Odmítnout podezřelé e-maily subdomén"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:86
-#, auto-english-fallback
 msgid "Policy for emails from subdomains (e.g., mail.example.com)"
 msgstr "Zásada pro e-maily ze subdomén (např. mail.example.com)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:90
-#, auto-english-fallback
 msgid "Policy Application Percentage"
 msgstr "Procento uplatnění zásady"
 
@@ -2199,25 +2088,22 @@ msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
 msgstr ""
-"Procento zpráv, na které se má zásada vztahovat (100 = všechny zprávy). Během zavádění zásady použijte nižší hodnoty."
+"Procento zpráv, na které se má zásada vztahovat (100 = všechny zprávy). "
+"Během zavádění zásady použijte nižší hodnoty."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:101
-#, auto-english-fallback
 msgid "Reporting Settings"
 msgstr "Nastavení hlášení"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:105
-#, auto-english-fallback
 msgid "Aggregate Report Email"
 msgstr "E-mail pro souhrnná hlášení"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:109
-#, auto-english-fallback
 msgid "Email address to receive daily aggregate reports"
 msgstr "E-mailová adresa pro příjem denních souhrnných hlášení"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:113
-#, auto-english-fallback
 msgid "Forensic Report Email"
 msgstr "E-mail pro forenzní hlášení"
 
@@ -2226,30 +2112,26 @@ msgid ""
 "Email address to receive detailed failure reports (optional, can be high "
 "volume)"
 msgstr ""
-"E-mailová adresa pro příjem podrobných hlášení o chybách (volitelné, může jich být hodně)"
+"E-mailová adresa pro příjem podrobných hlášení o chybách (volitelné, může "
+"jich být hodně)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:121
-#, auto-english-fallback
 msgid "Forensic Reporting Options"
 msgstr "Možnosti forenzního hlášení"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:125
-#, auto-english-fallback
 msgid "Generate reports if all authentication mechanisms fail"
 msgstr "Generovat hlášení, pokud selžou všechny mechanismy ověření"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:126
-#, auto-english-fallback
 msgid "Generate reports if any authentication mechanism fails"
 msgstr "Generovat hlášení, pokud selže jakýkoliv mechanismus ověření"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:127
-#, auto-english-fallback
 msgid "Generate reports if DKIM check fails"
 msgstr "Generovat hlášení, pokud selže kontrola DKIM"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:128
-#, auto-english-fallback
 msgid "Generate reports if SPF check fails"
 msgstr "Generovat hlášení, pokud selže kontrola SPF"
 
@@ -2257,75 +2139,62 @@ msgstr "Generovat hlášení, pokud selže kontrola SPF"
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
 msgstr ""
-"Kdy generovat forenzní hlášení (platí pouze pokud je nastaven e-mail pro forenzní hlášení)"
+"Kdy generovat forenzní hlášení (platí pouze pokud je nastaven e-mail pro "
+"forenzní hlášení)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:135
-#, auto-english-fallback
 msgid "Alignment Settings"
 msgstr "Nastavení zarovnání"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:136
-#, auto-english-fallback
 msgid "Advanced settings for SPF and DKIM alignment modes"
 msgstr "Pokročilá nastavení režimů zarovnání SPF a DKIM"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:140
-#, auto-english-fallback
 msgid "DKIM Alignment Mode"
 msgstr "Režim zarovnání DKIM"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
-#, auto-english-fallback
 msgid "Relaxed"
 msgstr "Volný"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:145
-#, auto-english-fallback
 msgid "DKIM domain can be subdomain of From: domain"
 msgstr "Doména DKIM může být subdoménou domény odesílatele (From:)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
-#, auto-english-fallback
 msgid "Strict"
 msgstr "Přísný"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:146
-#, auto-english-fallback
 msgid "DKIM domain must exactly match From: domain"
 msgstr "Doména DKIM se musí přesně shodovat s doménou odesílatele (From:)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:151
-#, auto-english-fallback
 msgid "SPF Alignment Mode"
 msgstr "Režim zarovnání SPF"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
-#, auto-english-fallback
 msgid "SPF domain can be subdomain of From: domain"
 msgstr "Doména SPF může být subdoménou domény odesílatele (From:)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
-#, auto-english-fallback
 msgid "SPF domain must exactly match From: domain"
 msgstr "Doména SPF se musí přesně shodovat s doménou odesílatele (From:)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:261
-#, auto-english-fallback
 msgid "Policy is required"
 msgstr "Zásada je povinná"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:263
-#, auto-english-fallback
 msgid "Invalid policy value"
 msgstr "Neplatná hodnota zásady"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:268
-#, auto-english-fallback
 msgid "Invalid subdomain policy value"
 msgstr "Neplatná hodnota zásady pro subdomény"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:275
-#, auto-english-fallback
 msgid "Percentage must be between 0 and 100"
 msgstr "Procento musí být v rozsahu 0 až 100"
 
@@ -2338,12 +2207,10 @@ msgstr ""
 "Zásada se uplatní pouze na %d%% zpráv. Po dokončení testování použijte 100%%."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:283
-#, auto-english-fallback
 msgid "Invalid aggregate report email address"
 msgstr "Neplatná e-mailová adresa pro souhrnná hlášení"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:287
-#, auto-english-fallback
 msgid "Invalid forensic report email address"
 msgstr "Neplatná e-mailová adresa pro forenzní hlášení"
 
@@ -2351,97 +2218,82 @@ msgstr "Neplatná e-mailová adresa pro forenzní hlášení"
 msgid ""
 "No reporting email addresses configured. You will not receive DMARC reports."
 msgstr ""
-"Nejsou nakonfigurovány žádné e-mailové adresy pro hlášení. Nebudete dostávat hlášení DMARC."
+"Nejsou nakonfigurovány žádné e-mailové adresy pro hlášení. Nebudete dostávat "
+"hlášení DMARC."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:305
 msgid ""
 "Using \"p=none\" provides monitoring only. Consider stricter policy "
 "(quarantine/reject) once you've reviewed reports."
 msgstr ""
-"Použití \"p=none\" poskytuje pouze monitorování. Po prostudování hlášení zvažte přísnější zásadu (quarantine/reject)."
+"Použití \"p=none\" poskytuje pouze monitorování. Po prostudování hlášení "
+"zvažte přísnější zásadu (quarantine/reject)."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:48
-#, auto-english-fallback
 msgid "SPF Record"
 msgstr "Záznam SPF"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:49
-#, auto-english-fallback
 msgid "Authorized mail server configuration"
 msgstr "Konfigurace autorizovaných poštovních serverů"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:61
-#, auto-english-fallback
 msgid "Basic Mechanisms"
 msgstr "Základní mechanismy"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:62
-#, auto-english-fallback
 msgid "Select common mechanisms to authorize email sending"
 msgstr "Vyberte běžné mechanismy pro autorizaci odesílání e-mailů"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:66
-#, auto-english-fallback
 msgid "MX Records"
 msgstr "Záznamy MX"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:69
-#, auto-english-fallback
 msgid "Authorize all servers listed in MX records for this domain"
 msgstr "Autorizovat všechny servery uvedené v záznamech MX pro tuto doménu"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:73
-#, auto-english-fallback
 msgid "A/AAAA Records"
 msgstr "Záznamy A/AAAA"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:76
-#, auto-english-fallback
 msgid "Authorize the domain's A and AAAA records"
 msgstr "Autorizovat záznamy A a AAAA domény"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:81
-#, auto-english-fallback
 msgid "IP Addresses"
 msgstr "IP adresy"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:82
-#, auto-english-fallback
 msgid "Authorized IP addresses and networks (CIDR notation supported)"
 msgstr "Autorizované IP adresy a sítě (podporován zápis CIDR)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:86
-#, auto-english-fallback
 msgid "IPv4 Addresses"
 msgstr "IPv4 adresy"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:90
-#, auto-english-fallback
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 msgstr "Jedna IP adresa nebo síť na řádek (např. 192.0.2.1 nebo 192.0.2.0/24)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:94
-#, auto-english-fallback
 msgid "IPv6 Addresses"
 msgstr "IPv6 adresy"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:98
-#, auto-english-fallback
 msgid "One IPv6 address or network per line"
 msgstr "Jedna IPv6 adresa nebo síť na řádek"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:103
-#, auto-english-fallback
 msgid "Include Mechanisms"
 msgstr "Mechanismy include"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:104
-#, auto-english-fallback
 msgid "Include SPF records from other domains"
 msgstr "Zahrnout záznamy SPF z jiných domén"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:108
-#, auto-english-fallback
 msgid "Include Domains"
 msgstr "Zahrnuté domény"
 
@@ -2450,55 +2302,46 @@ msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
 msgstr ""
-"Domény, jejichž záznamy SPF mají být zahrnuty (jedna na řádek). Běžné: _spf.google.com, spf.protection.outlook.com"
+"Domény, jejichž záznamy SPF mají být zahrnuty (jedna na řádek). Běžné: "
+"_spf.google.com, spf.protection.outlook.com"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:117
-#, auto-english-fallback
 msgid "Additional Mechanisms"
 msgstr "Další mechanismy"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:121
-#, auto-english-fallback
 msgid "Additional A/AAAA Hosts"
 msgstr "Další hostitelé A/AAAA"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:125
-#, auto-english-fallback
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
 msgstr "Autorizovat záznamy A/AAAA konkrétních hostitelů (jeden na řádek)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:129
-#, auto-english-fallback
 msgid "Additional MX Hosts"
 msgstr "Další hostitelé MX"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:133
-#, auto-english-fallback
 msgid "Authorize MX records from other domains (one per line)"
 msgstr "Autorizovat záznamy MX z jiných domén (jedna na řádek)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:142
-#, auto-english-fallback
 msgid "Default Action"
 msgstr "Výchozí akce"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:147
-#, auto-english-fallback
 msgid "Pass all - allows anyone to send (insecure)"
 msgstr "Propustit vše – umožňuje komukoliv odesílat (nezabezpečené)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:148
-#, auto-english-fallback
 msgid "Neutral (no policy)"
 msgstr "Neutrální (žádná zásada)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:149
-#, auto-english-fallback
 msgid "Soft fail (mark as spam but accept)"
 msgstr "Měkké selhání (označit jako spam, ale přijmout)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:150
-#, auto-english-fallback
 msgid "Fail (reject unauthorized emails)"
 msgstr "Selhání (odmítnout neautorizované e-maily)"
 
@@ -2507,7 +2350,8 @@ msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
 msgstr ""
-"Zásada pro e-maily neodpovídající žádnému mechanismu. Pro testování začněte s ~all (softfail)."
+"Zásada pro e-maily neodpovídající žádnému mechanismu. Pro testování začněte "
+"s ~all (softfail)."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:289
 #, php-format
@@ -2516,7 +2360,9 @@ msgid ""
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
 msgstr ""
-"Záznam SPF překračuje limit vyhledávání DNS (%d/10). To způsobí selhání ověření SPF. Odeberte některé mechanismy include/a/mx nebo místo nich použijte ip4/ip6."
+"Záznam SPF překračuje limit vyhledávání DNS (%d/10). To způsobí selhání "
+"ověření SPF. Odeberte některé mechanismy include/a/mx nebo místo nich "
+"použijte ip4/ip6."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:294
 #, php-format
@@ -2524,22 +2370,20 @@ msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
 msgstr ""
-"Záznam SPF má %d vyhledávání DNS (limit je 10). Zvažte použití ip4/ip6 místo mechanismů include, nebo je konsolidujte, abyste zůstali pod limitem."
+"Záznam SPF má %d vyhledávání DNS (limit je 10). Zvažte použití ip4/ip6 místo "
+"mechanismů include, nebo je konsolidujte, abyste zůstali pod limitem."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:304
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv4 address or network: %s"
 msgstr "Neplatná IPv4 adresa nebo síť: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:313
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv6 address or network: %s"
 msgstr "Neplatná IPv6 adresa nebo síť: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:323
-#, auto-english-fallback
 #, php-format
 msgid "Invalid include domain: %s"
 msgstr "Neplatná zahrnutá doména: %s"
@@ -2548,37 +2392,34 @@ msgstr "Neplatná zahrnutá doména: %s"
 msgid ""
 "No mechanisms selected. This SPF record will only contain the default action."
 msgstr ""
-"Nebyly vybrány žádné mechanismy. Tento záznam SPF bude obsahovat pouze výchozí akci."
+"Nebyly vybrány žádné mechanismy. Tento záznam SPF bude obsahovat pouze "
+"výchozí akci."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:348
 msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
 msgstr ""
-"Použití \"+all\" umožňuje komukoliv odesílat e-maily jako vaše doména. To se důrazně nedoporučuje."
+"Použití \"+all\" umožňuje komukoliv odesílat e-maily jako vaše doména. To se "
+"důrazně nedoporučuje."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:43
-#, auto-english-fallback
 msgid "CAA Record"
 msgstr "Záznam CAA"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:44
-#, auto-english-fallback
 msgid "Certificate authority authorization"
 msgstr "Autorizace certifikační autority"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:68
-#, auto-english-fallback
 msgid "Custom (enter manually)"
 msgstr "Vlastní (zadat ručně)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:74
-#, auto-english-fallback
 msgid "Certificate Authority"
 msgstr "Certifikační autorita"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:78
-#, auto-english-fallback
 msgid "CA Provider"
 msgstr "Poskytovatel CA"
 
@@ -2590,18 +2431,15 @@ msgstr ""
 "Vyberte certifikační autoritu oprávněnou vydávat certifikáty pro tuto doménu"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:87
-#, auto-english-fallback
 msgid "CA Domain (Custom)"
 msgstr "Doména CA (vlastní)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:92
 msgid ""
 "Enter the CA domain name manually (only shown when \"Custom\" is selected)"
-msgstr ""
-"Zadejte název domény CA ručně (zobrazeno pouze při výběru \"Vlastní\")"
+msgstr "Zadejte název domény CA ručně (zobrazeno pouze při výběru \"Vlastní\")"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:97
-#, auto-english-fallback
 msgid "Certificate Type"
 msgstr "Typ certifikátu"
 
@@ -2611,77 +2449,62 @@ msgid "Tag"
 msgstr "Štítek"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
-#, auto-english-fallback
 msgid "Issue"
 msgstr "Vydat"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
-#, auto-english-fallback
 msgid "Authorize issuance of standard certificates"
 msgstr "Autorizovat vydávání standardních certifikátů"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
-#, auto-english-fallback
 msgid "Issue Wildcard"
 msgstr "Vydat zástupný certifikát"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
-#, auto-english-fallback
 msgid "Authorize issuance of wildcard certificates (*.example.com)"
 msgstr "Autorizovat vydávání zástupných certifikátů (*.example.com)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
-#, auto-english-fallback
 msgid "Incident Reporting"
 msgstr "Hlášení incidentů"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
-#, auto-english-fallback
 msgid "URL to report certificate issuance violations"
 msgstr "URL pro hlášení porušení pravidel vydávání certifikátů"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:110
-#, auto-english-fallback
 msgid "Type of authorization or reporting"
 msgstr "Typ autorizace nebo hlášení"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:114
-#, auto-english-fallback
 msgid "Reporting URL"
 msgstr "URL hlášení"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:119
-#, auto-english-fallback
 msgid "URL or email for incident reports (mailto: or https:)"
 msgstr "URL nebo e-mail pro hlášení incidentů (mailto: nebo https:)"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:103
-#, auto-english-fallback
 msgid "Advanced Options"
 msgstr "Pokročilé možnosti"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:130
-#, auto-english-fallback
 msgid "Flags"
 msgstr "Příznaky"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
-#, auto-english-fallback
 msgid "Non-critical"
 msgstr "Nekritické"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
-#, auto-english-fallback
 msgid "Allow fallback if not understood"
 msgstr "Povolit zálohu, pokud není pochopen"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
-#, auto-english-fallback
 msgid "Critical"
 msgstr "Kritické"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
-#, auto-english-fallback
 msgid "Reject if not understood - strict enforcement"
 msgstr "Odmítnout, pokud není pochopen – přísné vynucení"
 
@@ -2690,15 +2513,14 @@ msgid ""
 "Non-critical (0) provides better compatibility. Critical (128) enforces "
 "strict CAA processing."
 msgstr ""
-"Nekritické (0) poskytuje lepší kompatibilitu. Kritické (128) vynucuje přísné zpracování CAA."
+"Nekritické (0) poskytuje lepší kompatibilitu. Kritické (128) vynucuje přísné "
+"zpracování CAA."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:204
-#, auto-english-fallback
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
 msgstr "Neplatný tag CAA. Musí být issue, issuewild nebo iodef"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:210
-#, auto-english-fallback
 msgid "CA provider is required"
 msgstr "Poskytovatel CA je povinný"
 
@@ -2707,7 +2529,6 @@ msgid "Custom CA domain is required when \"Custom\" is selected"
 msgstr "Vlastní doména CA je povinná při výběru \"Vlastní\""
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:215
-#, auto-english-fallback
 msgid "Invalid CA domain format"
 msgstr "Neplatný formát domény CA"
 
@@ -2716,21 +2537,19 @@ msgid ""
 "Using \";\" allows ALL certificate authorities to issue certificates. This "
 "defeats the purpose of CAA records."
 msgstr ""
-"Použití \";\" umožňuje VŠEM certifikačním autoritám vydávat certifikáty. To maří účel záznamů CAA."
+"Použití \";\" umožňuje VŠEM certifikačním autoritám vydávat certifikáty. To "
+"maří účel záznamů CAA."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:227
-#, auto-english-fallback
 msgid "Reporting URL is required for iodef tag"
 msgstr "URL hlášení je povinné pro tag iodef"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
-#, auto-english-fallback
 #, php-format
 msgid "Reporting URL must start with %s, %s, or %s"
 msgstr "URL hlášení musí začínat na %s, %s nebo %s"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
-#, auto-english-fallback
 msgid "Flags must be 0 or 128"
 msgstr "Příznaky musí být 0 nebo 128"
 
@@ -2739,15 +2558,14 @@ msgid ""
 "Critical flag (128) is set. Systems that do not understand CAA records will "
 "reject operations. Use 0 unless you have a specific requirement."
 msgstr ""
-"Je nastaven kritický příznak (128). Systémy, které nerozumí záznamům CAA, odmítnou operace. Použijte 0, pokud nemáte konkrétní požadavek."
+"Je nastaven kritický příznak (128). Systémy, které nerozumí záznamům CAA, "
+"odmítnou operace. Použijte 0, pokud nemáte konkrétní požadavek."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:46
-#, auto-english-fallback
 msgid "DKIM Record"
 msgstr "Záznam DKIM"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:47
-#, auto-english-fallback
 msgid "Email signature verification public key"
 msgstr "Veřejný klíč pro ověření podpisu e-mailu"
 
@@ -2763,10 +2581,12 @@ msgid ""
 "the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your "
 "mail server (never share it)."
 msgstr ""
-"DKIM dokazuje, že e-maily pocházejí z vaší domény, pomocí kryptografických podpisů. Vygenerujte pár klíčů DKIM na svém POŠTOVNÍM SERVERU (Postfix, Exim atd.). Do tohoto DNS záznamu patří pouze VEŘEJNÝ KLÍČ. SOUKROMÝ KLÍČ uchovejte v bezpečí na poštovním serveru (nikdy jej nesdílejte)."
+"DKIM dokazuje, že e-maily pocházejí z vaší domény, pomocí kryptografických "
+"podpisů. Vygenerujte pár klíčů DKIM na svém POŠTOVNÍM SERVERU (Postfix, Exim "
+"atd.). Do tohoto DNS záznamu patří pouze VEŘEJNÝ KLÍČ. SOUKROMÝ KLÍČ "
+"uchovejte v bezpečí na poštovním serveru (nikdy jej nesdílejte)."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:68
-#, auto-english-fallback
 msgid "DKIM Configuration"
 msgstr "Konfigurace DKIM"
 
@@ -2776,10 +2596,11 @@ msgid ""
 "\"202501\", or service name like \"google\"). Only alphanumeric characters, "
 "hyphens, and underscores allowed."
 msgstr ""
-"Selektor pro identifikaci klíče DKIM (obvykle \"default\", časové razítko jako \"202501\" nebo název služby jako \"google\"). Povoleny jsou pouze alfanumerické znaky, pomlčky a podtržítka."
+"Selektor pro identifikaci klíče DKIM (obvykle \"default\", časové razítko "
+"jako \"202501\" nebo název služby jako \"google\"). Povoleny jsou pouze "
+"alfanumerické znaky, pomlčky a podtržítka."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:81
-#, auto-english-fallback
 msgid "Public Key"
 msgstr "Veřejný klíč"
 
@@ -2788,30 +2609,26 @@ msgid ""
 "Paste the base64-encoded public key from your mail server. Spaces and "
 "newlines will be automatically removed."
 msgstr ""
-"Vložte veřejný klíč zakódovaný v base64 z vašeho poštovního serveru. Mezery a konce řádků budou automaticky odstraněny."
+"Vložte veřejný klíč zakódovaný v base64 z vašeho poštovního serveru. Mezery "
+"a konce řádků budou automaticky odstraněny."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:90
-#, auto-english-fallback
 msgid "Key Type"
 msgstr "Typ klíče"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:95
-#, auto-english-fallback
 msgid "Widely supported by all mail servers"
 msgstr "Široce podporován všemi poštovními servery"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:96
-#, auto-english-fallback
 msgid "Newer algorithm - not universally supported yet"
 msgstr "Novější algoritmus – zatím není univerzálně podporován"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:98
-#, auto-english-fallback
 msgid "Encryption algorithm for the DKIM public key"
 msgstr "Šifrovací algoritmus pro veřejný klíč DKIM"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:109
-#, auto-english-fallback
 msgid "Testing Mode"
 msgstr "Testovací režim"
 
@@ -2820,10 +2637,10 @@ msgid ""
 "Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
 "Use during initial deployment."
 msgstr ""
-"Povolit testovací režim (t=y). Podpisy DKIM budou přítomny, ale nebudou vynucovány. Použijte během počátečního nasazení."
+"Povolit testovací režim (t=y). Podpisy DKIM budou přítomny, ale nebudou "
+"vynucovány. Použijte během počátečního nasazení."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:116
-#, auto-english-fallback
 msgid "Strict Subdomain Mode"
 msgstr "Přísný režim subdomén"
 
@@ -2834,7 +2651,6 @@ msgstr ""
 "Povolit přísný režim subdomén (t=s). Odmítá nepodepsanou poštu ze subdomén."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:198
-#, auto-english-fallback
 msgid "Selector is required"
 msgstr "Selektor je povinný"
 
@@ -2845,12 +2661,10 @@ msgstr ""
 "Selektor může obsahovat pouze alfanumerické znaky, pomlčky a podtržítka"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:205
-#, auto-english-fallback
 msgid "Public key is required"
 msgstr "Veřejný klíč je povinný"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:211
-#, auto-english-fallback
 msgid "Public key must be valid base64-encoded data"
 msgstr "Veřejný klíč musí být platná data zakódovaná v base64"
 
@@ -2859,41 +2673,42 @@ msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
 msgstr ""
-"Veřejný klíč se zdá neobvykle krátký. Ujistěte se, že jste zkopírovali celý klíč z poštovního serveru."
+"Veřejný klíč se zdá neobvykle krátký. Ujistěte se, že jste zkopírovali celý "
+"klíč z poštovního serveru."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:221
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
 msgstr ""
-"Vložili jste SOUKROMÝ KLÍČ. V DNS by měl být pouze VEŘEJNÝ KLÍČ. Nikdy nesdílejte svůj soukromý klíč!"
+"Vložili jste SOUKROMÝ KLÍČ. V DNS by měl být pouze VEŘEJNÝ KLÍČ. Nikdy "
+"nesdílejte svůj soukromý klíč!"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:225
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
 msgstr ""
-"Veřejný klíč zřejmě obsahuje PEM hlavičky (BEGIN/END). Je potřeba pouze obsah base64 mezi hlavičkami."
+"Veřejný klíč zřejmě obsahuje PEM hlavičky (BEGIN/END). Je potřeba pouze "
+"obsah base64 mezi hlavičkami."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:239
 msgid ""
 "Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
 "this once testing is complete."
 msgstr ""
-"Testovací režim je povolen (t=y). Podpisy DKIM nebudou vynucovány. Po dokončení testování jej zakažte."
+"Testovací režim je povolen (t=y). Podpisy DKIM nebudou vynucovány. Po "
+"dokončení testování jej zakažte."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:68
-#, auto-english-fallback
 msgid "SRV Record"
 msgstr "Záznam SRV"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:69
-#, auto-english-fallback
 msgid "Service location (hostname and port)"
 msgstr "Umístění služby (název hostitele a port)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:95
-#, auto-english-fallback
 msgid "Service"
 msgstr "Služba"
 
@@ -2902,32 +2717,26 @@ msgid "Select a common service or choose \"Custom\" to enter manually"
 msgstr "Vyberte běžnou službu nebo zvolte \"Vlastní\" pro ruční zadání"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:104
-#, auto-english-fallback
 msgid "Custom Service Name"
 msgstr "Vlastní název služby"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:109
-#, auto-english-fallback
 msgid "Service name must start with underscore (e.g., _myservice)"
 msgstr "Název služby musí začínat podtržítkem (např. _myservice)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:118
-#, auto-english-fallback
 msgid "Transmission Control Protocol - most common"
 msgstr "Transmission Control Protocol – nejběžnější"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:119
-#, auto-english-fallback
 msgid "User Datagram Protocol - connectionless"
 msgstr "User Datagram Protocol – bezspojový"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:120
-#, auto-english-fallback
 msgid "Transport Layer Security"
 msgstr "Transport Layer Security"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:123
-#, auto-english-fallback
 msgid "Transport protocol for the service"
 msgstr "Transportní protokol pro službu"
 
@@ -2941,15 +2750,14 @@ msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
 msgstr ""
-"Název domény (ponechte prázdné pro apex zóny @). Celý název záznamu bude: _služba._protokol.doména"
+"Název domény (ponechte prázdné pro apex zóny @). Celý název záznamu bude: "
+"_služba._protokol.doména"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:136
-#, auto-english-fallback
 msgid "Target Server"
 msgstr "Cílový server"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:140
-#, auto-english-fallback
 msgid "Target Hostname"
 msgstr "Cílový název hostitele"
 
@@ -2958,17 +2766,18 @@ msgid ""
 "Hostname of the server providing this service (must be a hostname with an A/"
 "AAAA record, not an IP address)"
 msgstr ""
-"Název hostitele serveru poskytujícího tuto službu (musí být název hostitele se záznamem A/AAAA, nikoli IP adresa)"
+"Název hostitele serveru poskytujícího tuto službu (musí být název hostitele "
+"se záznamem A/AAAA, nikoli IP adresa)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:154
 msgid ""
 "Port number where the service is listening (automatically filled for common "
 "services)"
 msgstr ""
-"Číslo portu, na kterém služba naslouchá (automaticky vyplněno pro běžné služby)"
+"Číslo portu, na kterém služba naslouchá (automaticky vyplněno pro běžné "
+"služby)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:159
-#, auto-english-fallback
 msgid "Priority & Load Balancing"
 msgstr "Priorita a rozložení zátěže"
 
@@ -2982,10 +2791,10 @@ msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
 msgstr ""
-"Nižší hodnoty mají vyšší prioritu (10 je dobrá výchozí hodnota). Klienti zkouší servery v pořadí priority."
+"Nižší hodnoty mají vyšší prioritu (10 je dobrá výchozí hodnota). Klienti "
+"zkouší servery v pořadí priority."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:173
-#, auto-english-fallback
 msgid "Weight"
 msgstr "Váha"
 
@@ -2994,30 +2803,26 @@ msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
 msgstr ""
-"Pro rozložení zátěže mezi servery se stejnou prioritou. Vyšší váha = více provozu. 0 = žádné rozložení zátěže."
+"Pro rozložení zátěže mezi servery se stejnou prioritou. Vyšší váha = více "
+"provozu. 0 = žádné rozložení zátěže."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:261
-#, auto-english-fallback
 msgid "Service is required"
 msgstr "Služba je povinná"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:265
-#, auto-english-fallback
 msgid "Custom service name is required"
 msgstr "Vlastní název služby je povinný"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:267
-#, auto-english-fallback
 msgid "Service name must contain only alphanumeric characters and hyphens"
 msgstr "Název služby smí obsahovat pouze alfanumerické znaky a pomlčky"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:273
-#, auto-english-fallback
 msgid "Target hostname is required"
 msgstr "Cílový název hostitele je povinný"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:277
-#, auto-english-fallback
 msgid "Invalid target hostname format"
 msgstr "Neplatný formát cílového názvu hostitele"
 
@@ -3026,10 +2831,10 @@ msgid ""
 "Target must be a hostname, not an IP address. Create an A or AAAA record for "
 "the hostname first."
 msgstr ""
-"Cíl musí být název hostitele, nikoli IP adresa. Nejprve vytvořte záznam A nebo AAAA pro daný název hostitele."
+"Cíl musí být název hostitele, nikoli IP adresa. Nejprve vytvořte záznam A "
+"nebo AAAA pro daný název hostitele."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:295
-#, auto-english-fallback
 msgid "Priority must be between 0 and 65535"
 msgstr "Priorita musí být v rozsahu 0 až 65535"
 
@@ -3037,15 +2842,14 @@ msgstr "Priorita musí být v rozsahu 0 až 65535"
 msgid ""
 "Priority 0 is valid but unusual. Most services use priority 10 or higher."
 msgstr ""
-"Priorita 0 je platná, ale neobvyklá. Většina služeb používá prioritu 10 nebo vyšší."
+"Priorita 0 je platná, ale neobvyklá. Většina služeb používá prioritu 10 nebo "
+"vyšší."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:305
-#, auto-english-fallback
 msgid "Weight must be between 0 and 65535"
 msgstr "Váha musí být v rozsahu 0 až 65535"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:310
-#, auto-english-fallback
 msgid "Invalid domain format"
 msgstr "Neplatný formát domény"
 
@@ -5794,13 +5598,13 @@ msgstr ""
 "Čas vypršení musí být pozdější než čas začátku. Tento podpis se zdá být "
 "vypršelý dříve, než se stal platným."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
 msgstr "KRITICKÉ: Tento podpis již vypršel. Nebude validován DNSSEC resolvery."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
@@ -5808,11 +5612,11 @@ msgstr ""
 "VAROVÁNÍ: Tento podpis vyprší během následujících 7 dnů. Zvažte jeho brzké "
 "obnovení."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
 msgstr "Tento podpis vyprší během následujících 30 dnů. Naplánujte obnovení."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
@@ -5820,7 +5624,7 @@ msgstr ""
 "VAROVÁNÍ: Tento podpis ještě není platný. Nebude validován DNSSEC resolvery, "
 "dokud nebude dosaženo času začátku."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:291
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
 msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
@@ -5830,35 +5634,35 @@ msgstr ""
 "postupy. Dlouhé doby platnosti zvyšují zranitelnost v případě kompromitace "
 "klíče."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:295
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
 msgstr ""
 "Nepodařilo se parsovat časové značky podpisu pro kontrolu doby platnosti."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:300
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:302
 msgid "RRSIG key tag field must be a numeric value."
 msgstr "Pole klíčového tagu RRSIG musí být číselná hodnota."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:305
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:307
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
 msgstr "Klíčový tag RRSIG musí být platná hodnota mezi 0 a 65535."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:310
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
 msgstr ""
 "Jméno podpisisovatele RRSIG musí být plně kvalifikované doménové jméno "
 "(končící tečkou)."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:316
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
 msgstr "Jméno podpisisovatele RRSIG musí být platné doménové jméno."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:321
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
 msgstr "Podpis RRSIG nemůže být prázdný."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:326
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
@@ -5866,7 +5670,7 @@ msgstr ""
 "Podpis se nezdá být platná data kódovaná v base64. Podpisy RRSIG by měly být "
 "kódovány v base64."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
 "RRSIG records are part of DNSSEC and provide cryptographic signatures for "
 "DNS records. They should be managed automatically by the DNS server."
@@ -5874,7 +5678,7 @@ msgstr ""
 "Záznamy RRSIG jsou součástí DNSSEC a poskytují kryptografické podpisy pro "
 "DNS záznamy. Měly by být spravovány automaticky DNS serverem."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:333
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
@@ -6561,36 +6365,30 @@ msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
 msgstr "Neplatná IPv6 adresa: každý hextet musí mít 4 hexadecimální číslice."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
-#, auto-english-fallback
 msgid "IP address list cannot be empty."
 msgstr "Seznam IP adres nesmí být prázdný."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
 msgstr "Neplatná IPv6 adresa v %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
-#, auto-english-fallback
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
 msgstr "Neplatné číslo portu: %d (musí být 1–65535)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
-#, auto-english-fallback
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
 msgstr "Neplatný formát serveru: %s (očekáváno IP:port nebo [IPv6]:port)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
 msgstr "Neplatná IPv4 adresa v %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IP address: %s"
 msgstr "Neplatná IP adresa: %s"
@@ -6645,7 +6443,6 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "Neplatná CA doména v issuewild tagu."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-#, auto-english-fallback
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "Hodnota CAA iodef musí být URL začínající na %s, %s nebo %s."
@@ -6699,18 +6496,14 @@ msgid "Given hostname or one of the labels is too short or too long."
 msgstr "Zadaný hostname nebo jeden ze štítků je příliš krátký nebo dlouhý."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:128
-#, auto-english-fallback
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
 msgstr "Více lomítek v různých popisech není v zónách ARPA povoleno."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
-#, auto-english-fallback
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
-msgstr ""
-"Neplatný formát RFC 2317. Použijte formát: podsíť/prefix (např. 0/26)."
+msgstr "Neplatný formát RFC 2317. Použijte formát: podsíť/prefix (např. 0/26)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
-#, auto-english-fallback
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
 msgstr "Neplatné číslo podsítě v zápisu RFC 2317. Musí být 0–255 pro IPv4."
 
@@ -6718,16 +6511,15 @@ msgstr "Neplatné číslo podsítě v zápisu RFC 2317. Musí být 0–255 pro I
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
 msgstr ""
-"Neplatná podsíť v zápisu RFC 2317. Musí být hexadecimální (0-9, a-f) pro IPv6."
+"Neplatná podsíť v zápisu RFC 2317. Musí být hexadecimální (0-9, a-f) pro "
+"IPv6."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
-#, auto-english-fallback
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
 msgstr ""
 "Neplatná podsíť v zápisu RFC 2317. Musí být numerická nebo hexadecimální."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
-#, auto-english-fallback
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
 msgstr "Neplatná délka prefixu v zápisu RFC 2317. Musí být numerická."
 
@@ -6736,21 +6528,19 @@ msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
 msgstr ""
-"Neplatná délka IPv4 prefixu pro RFC 2317. Obvykle 24–32 (beztřídní delegace obvykle 25–31)."
+"Neplatná délka IPv4 prefixu pro RFC 2317. Obvykle 24–32 (beztřídní delegace "
+"obvykle 25–31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
-#, auto-english-fallback
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 msgstr "Podsíť %d není zarovnána s prefixem /%d. Měla by být násobkem %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
-#, auto-english-fallback
 msgid "Invalid IPv6 prefix length. Must be 0-128."
 msgstr "Neplatná délka IPv6 prefixu. Musí být 0–128."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:209
-#, auto-english-fallback
 msgid "Invalid prefix length. Must be 0-128."
 msgstr "Neplatná délka prefixu. Musí být 0–128."
 
@@ -6935,7 +6725,8 @@ msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
-"Název záznamu SMIMEA je ve formátu: SHA256(lokální-část)._smimecert.doména.tld pro e-mailové adresy jako %s"
+"Název záznamu SMIMEA je ve formátu: SHA256(lokální-"
+"část)._smimecert.doména.tld pro e-mailové adresy jako %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7733,7 +7524,8 @@ msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
 msgstr ""
-"Obsah záznamu TXT překračuje maximální délku %d bajtů. Zmenšete prosím velikost obsahu."
+"Obsah záznamu TXT překračuje maximální délku %d bajtů. Zmenšete prosím "
+"velikost obsahu."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
@@ -7749,7 +7541,8 @@ msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
 msgstr ""
-"Celkový obsah záznamu TXT překračuje maximální délku %d bajtů. Zmenšete prosím velikost obsahu."
+"Celkový obsah záznamu TXT překračuje maximální délku %d bajtů. Zmenšete "
+"prosím velikost obsahu."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
@@ -8230,9 +8023,9 @@ msgid ""
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr ""
-"NAPTR služba musí následovat formát: [protokol][+rs][+rs]... kde "
-"protokol a rs začínají písmenem a obsahují pouze alfanumerické znaky "
-"(max 32 znaků každý)."
+"NAPTR služba musí následovat formát: [protokol][+rs][+rs]... kde protokol a "
+"rs začínají písmenem a obsahují pouze alfanumerické znaky (max 32 znaků "
+"každý)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8454,25 +8247,21 @@ msgid "You do not have permission to regenerate API keys."
 msgstr "Nemáte oprávnění regenerovat API klíče."
 
 #: lib/Domain/Service/ZoneValidationService.php:128
-#, auto-english-fallback
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr ""
 "V zóně není přítomen nebo aktivní záznam SOA. To je vyžadováno pro DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:129
-#, auto-english-fallback
 msgid "Add an SOA record to the zone before attempting to sign it."
 msgstr "Přidejte záznam SOA do zóny, než se ji pokusíte podepsat."
 
 #: lib/Domain/Service/ZoneValidationService.php:135
-#, auto-english-fallback
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
 msgstr ""
 "Zóna má %d záznamů SOA. Na jednu zónu je povolen pouze jeden záznam SOA."
 
 #: lib/Domain/Service/ZoneValidationService.php:136
-#, auto-english-fallback
 msgid "Remove duplicate SOA records, keeping only one."
 msgstr "Odstraňte duplicitní záznamy SOA, ponechte pouze jeden."
 
@@ -8482,12 +8271,10 @@ msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
 msgstr "Záznam SOA není na apexu. Nalezen na \"%s\", ale zóna je \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:148
-#, auto-english-fallback
 msgid "Move the SOA record to the zone apex."
 msgstr "Přesuňte záznam SOA na apex zóny."
 
 #: lib/Domain/Service/ZoneValidationService.php:158
-#, auto-english-fallback
 msgid "SOA record has invalid content format."
 msgstr "Záznam SOA má neplatný formát obsahu."
 
@@ -8496,33 +8283,31 @@ msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
 msgstr ""
-"Formát SOA by měl být: primary-ns hostmaster serial refresh retry expire minimum"
+"Formát SOA by měl být: primary-ns hostmaster serial refresh retry expire "
+"minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:218
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
 msgstr ""
-"Zóna nemá žádné záznamy NS (Name Server) na apexu. Pro DNSSEC je vyžadován alespoň jeden záznam NS na apexu."
+"Zóna nemá žádné záznamy NS (Name Server) na apexu. Pro DNSSEC je vyžadován "
+"alespoň jeden záznam NS na apexu."
 
 #: lib/Domain/Service/ZoneValidationService.php:219
-#, auto-english-fallback
 msgid "Add NS records at the zone apex for your authoritative name servers."
 msgstr ""
 "Přidejte záznamy NS na apex zóny pro vaše autoritativní jmenné servery."
 
 #: lib/Domain/Service/ZoneValidationService.php:265
-#, auto-english-fallback
 msgid "DNSSEC signing cannot proceed due to the following errors:"
 msgstr "Podepsání DNSSEC nemůže pokračovat kvůli následujícím chybám:"
 
 #: lib/Domain/Service/ZoneValidationService.php:287
-#, auto-english-fallback
 msgid "Additionally, the following warnings were found:"
 msgstr "Navíc byla nalezena následující varování:"
 
 #: lib/Domain/Service/ZoneValidationService.php:289
-#, auto-english-fallback
 msgid "The following warnings were found:"
 msgstr "Byla nalezena následující varování:"
 
@@ -8546,7 +8331,8 @@ msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
 msgstr ""
-"Reverzní záznam přidán. Upozornění: Záznam PTR pro %s již existuje a odkazuje na: %s. Mít více záznamů PTR pro stejnou IP adresu se nedoporučuje."
+"Reverzní záznam přidán. Upozornění: Záznam PTR pro %s již existuje a "
+"odkazuje na: %s. Mít více záznamů PTR pro stejnou IP adresu se nedoporučuje."
 
 #: lib/Domain/Service/Dns/RecordManager.php:215
 msgid "You do not have the permission to add SOA record."
@@ -9195,27 +8981,22 @@ msgid "Send Reset Link"
 msgstr "Odeslat odkaz pro reset"
 
 #: templates/modern/manage_group_members.html:4
-#, auto-english-fallback
 msgid "Groups"
 msgstr "Skupiny"
 
 #: templates/default/list_groups.html:10 templates/modern/list_groups.html:10
-#, auto-english-fallback
 msgid "Group Management"
 msgstr "Správa skupin"
 
 #: templates/modern/header.html:204 templates/modern/add_group.html:5
-#, auto-english-fallback
 msgid "Add group"
 msgstr "Přidat skupinu"
 
 #: templates/modern/edit_user.html:254 templates/modern/add_user.html:189
-#, auto-english-fallback
 msgid "No groups found"
 msgstr "Nebyly nalezeny žádné skupiny"
 
 #: templates/modern/list_groups.html:50 templates/modern/edit_group.html:70
-#, auto-english-fallback
 msgid "Members"
 msgstr "Členové"
 
@@ -9224,17 +9005,14 @@ msgid "Zones"
 msgstr "Zóny"
 
 #: templates/modern/manage_group_members.html:6
-#, auto-english-fallback
 msgid "Manage members"
 msgstr "Spravovat členy"
 
 #: templates/modern/manage_group_zones.html:6
-#, auto-english-fallback
 msgid "Manage zones"
 msgstr "Spravovat zóny"
 
 #: templates/modern/list_groups.html:55 templates/modern/edit_group.html:5
-#, auto-english-fallback
 msgid "Edit group"
 msgstr "Upravit skupinu"
 
@@ -9243,7 +9021,6 @@ msgid "Edit"
 msgstr "Upravit"
 
 #: templates/modern/list_groups.html:58 templates/modern/delete_group.html:5
-#, auto-english-fallback
 msgid "Delete group"
 msgstr "Smazat skupinu"
 
@@ -9268,32 +9045,26 @@ msgid "Update"
 msgstr "Aktualizovat"
 
 #: templates/default/edit_group.html:13 templates/modern/edit_group.html:13
-#, auto-english-fallback
 msgid "Edit Group"
 msgstr "Upravit skupinu"
 
 #: templates/modern/edit_group.html:23 templates/modern/add_group.html:20
-#, auto-english-fallback
 msgid "Group Name"
 msgstr "Název skupiny"
 
 #: templates/modern/edit_group.html:25 templates/modern/add_group.html:22
-#, auto-english-fallback
 msgid "Unique name for this group"
 msgstr "Jedinečný název pro tuto skupinu"
 
 #: templates/modern/edit_group.html:26 templates/modern/add_group.html:23
-#, auto-english-fallback
 msgid "Provide group name"
 msgstr "Zadejte název skupiny"
 
 #: templates/modern/edit_group.html:32 templates/modern/add_group.html:29
-#, auto-english-fallback
 msgid "Optional information about this group"
 msgstr "Volitelné informace o této skupině"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-#, auto-english-fallback
 msgid "Access template"
 msgstr "Šablona přístupu"
 
@@ -9304,72 +9075,58 @@ msgstr ""
 "Členové skupiny dědí tato oprávnění pouze pro zóny vlastněné touto skupinou"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:45
-#, auto-english-fallback
 msgid "Select an access template"
 msgstr "Vyberte šablonu přístupu"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
-#, auto-english-fallback
 msgid "Update Group"
 msgstr "Aktualizovat skupinu"
 
 #: templates/modern/edit_group.html:74 templates/modern/edit_group.html:118
-#, auto-english-fallback
 msgid "Manage"
 msgstr "Spravovat"
 
 #: templates/default/edit_group.html:81 templates/modern/edit_group.html:81
-#, auto-english-fallback
 msgid "No members in this group yet."
 msgstr "V této skupině zatím nejsou žádní členové."
 
 #: templates/modern/edit_group.html:144 templates/modern/edit_user.html:220
-#, auto-english-fallback
 msgid "Remove from group"
 msgstr "Odebrat ze skupiny"
 
 #: templates/modern/edit_group.html:151 templates/modern/delete_group.html:68
-#, auto-english-fallback
 msgid "and"
 msgstr "a"
 
 #: templates/modern/edit_group.html:101 templates/modern/edit_group.html:151
-#, auto-english-fallback
 msgid "more..."
 msgstr "více..."
 
 #: templates/default/edit_group.html:125 templates/modern/edit_group.html:125
-#, auto-english-fallback
 msgid "This group doesn't own any zones yet."
 msgstr "Tato skupina zatím nevlastní žádné zóny."
 
 #: templates/modern/manage_group_zones.html:113
-#, auto-english-fallback
 msgid "Master"
 msgstr "Master"
 
 #: templates/modern/manage_group_zones.html:115
-#, auto-english-fallback
 msgid "Slave"
 msgstr "Slave"
 
 #: templates/modern/manage_group_zones.html:117
-#, auto-english-fallback
 msgid "Native"
 msgstr "Native"
 
 #: templates/default/edit_group.html:182 templates/modern/edit_group.html:182
-#, auto-english-fallback
 msgid "Confirm Member Removal"
 msgstr "Potvrzení odebrání člena"
 
 #: templates/default/edit_group.html:187 templates/modern/edit_group.html:187
-#, auto-english-fallback
 msgid "Are you sure you want to remove user"
 msgstr "Opravdu chcete odebrat uživatele"
 
 #: templates/modern/edit_group.html:187 templates/modern/edit_group.html:213
-#, auto-english-fallback
 msgid "from this group?"
 msgstr "z této skupiny?"
 
@@ -9379,17 +9136,14 @@ msgid ""
 msgstr "Tato akce okamžitě odebere veškerá oprávnění udělená touto skupinou."
 
 #: templates/modern/manage_group_members.html:139
-#, auto-english-fallback
 msgid "Remove"
 msgstr "Odebrat"
 
 #: templates/default/edit_group.html:208 templates/modern/edit_group.html:208
-#, auto-english-fallback
 msgid "Confirm Zone Removal"
 msgstr "Potvrzení odebrání zóny"
 
 #: templates/default/edit_group.html:213 templates/modern/edit_group.html:213
-#, auto-english-fallback
 msgid "Are you sure you want to remove zone"
 msgstr "Opravdu chcete odebrat zónu"
 
@@ -9400,12 +9154,10 @@ msgid ""
 msgstr "Zóna zůstane v systému, ale tato skupina ji již nebude vlastnit."
 
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
-#, auto-english-fallback
 msgid "Delete Group"
 msgstr "Smazat skupinu"
 
 #: templates/default/delete_group.html:16 templates/modern/delete_group.html:16
-#, auto-english-fallback
 msgid "You are about to delete the group"
 msgstr "Chystáte se smazat skupinu"
 
@@ -9414,42 +9166,34 @@ msgid "This action cannot be undone. Are you sure you want to proceed?"
 msgstr "Tuto akci nelze vrátit zpět. Jste si jisti, že chcete pokračovat?"
 
 #: templates/default/delete_group.html:22 templates/modern/delete_group.html:22
-#, auto-english-fallback
 msgid "Deletion Impact"
 msgstr "Dopad smazání"
 
 #: templates/default/delete_group.html:29 templates/modern/delete_group.html:29
-#, auto-english-fallback
 msgid "member will be removed from this group"
 msgstr "člen bude odebrán z této skupiny"
 
 #: templates/default/delete_group.html:31 templates/modern/delete_group.html:31
-#, auto-english-fallback
 msgid "members will be removed from this group"
 msgstr "členové budou odebráni z této skupiny"
 
 #: templates/default/delete_group.html:37 templates/modern/delete_group.html:37
-#, auto-english-fallback
 msgid "zone will lose this group ownership"
 msgstr "zóna ztratí vlastnictví této skupiny"
 
 #: templates/default/delete_group.html:39 templates/modern/delete_group.html:39
-#, auto-english-fallback
 msgid "zones will lose this group ownership"
 msgstr "zóny ztratí vlastnictví této skupiny"
 
 #: templates/default/delete_group.html:49 templates/modern/delete_group.html:49
-#, auto-english-fallback
 msgid "Affected Zones"
 msgstr "Dotčené zóny"
 
 #: templates/default/delete_group.html:51 templates/modern/delete_group.html:51
-#, auto-english-fallback
 msgid "showing first 20"
 msgstr "zobrazeno prvních 20"
 
 #: templates/default/delete_group.html:68 templates/modern/delete_group.html:68
-#, auto-english-fallback
 msgid "more zones..."
 msgstr "další zóny..."
 
@@ -9462,15 +9206,15 @@ msgid ""
 "Members will lose access to all zones owned by this group. Zones without any "
 "remaining owners will still exist but will be inaccessible to regular users."
 msgstr ""
-"Členové ztratí přístup ke všem zónám vlastněným touto skupinou. Zóny bez zbývajících vlastníků budou stále existovat, ale nebudou přístupné běžným uživatelům."
+"Členové ztratí přístup ke všem zónám vlastněným touto skupinou. Zóny bez "
+"zbývajících vlastníků budou stále existovat, ale nebudou přístupné běžným "
+"uživatelům."
 
 #: templates/default/delete_group.html:85 templates/modern/delete_group.html:85
-#, auto-english-fallback
 msgid "Yes, delete this group"
 msgstr "Ano, smazat tuto skupinu"
 
 #: templates/default/delete_group.html:89 templates/modern/delete_group.html:89
-#, auto-english-fallback
 msgid "No, keep this group"
 msgstr "Ne, ponechat tuto skupinu"
 
@@ -9676,17 +9420,14 @@ msgid "Change password"
 msgstr "Změnit heslo"
 
 #: templates/modern/header.html:332
-#, auto-english-fallback
 msgid "Preferences"
 msgstr "Předvolby"
 
 #: templates/default/index.html:288 templates/modern/index.html:235
-#, auto-english-fallback
 msgid "Customize your interface settings"
 msgstr "Přizpůsobte nastavení svého rozhraní"
 
 #: templates/default/index.html:290
-#, auto-english-fallback
 msgid "User preferences"
 msgstr "Uživatelské předvolby"
 
@@ -9699,17 +9440,14 @@ msgid "Manage system users and access"
 msgstr "Správa systémových uživatelů a přístupu"
 
 #: templates/modern/index.html:199 templates/modern/header.html:169
-#, auto-english-fallback
 msgid "List users"
 msgstr "Seznam uživatelů"
 
 #: templates/modern/header.html:222
-#, auto-english-fallback
 msgid "Access"
 msgstr "Přístup"
 
 #: templates/default/index.html:321
-#, auto-english-fallback
 msgid "Manage access templates"
 msgstr "Spravovat šablony přístupu"
 
@@ -9995,27 +9733,22 @@ msgid "Advanced Records"
 msgstr "Pokročilé záznamy"
 
 #: templates/modern/dns_wizard_select.html:6
-#, auto-english-fallback
 msgid "DNS Wizard"
 msgstr "Průvodce DNS"
 
 #: templates/modern/dns_wizard_form.html:15
-#, auto-english-fallback
 msgid "Wizard"
 msgstr "Průvodce"
 
 #: templates/modern/dns_wizard_form.html:26
-#, auto-english-fallback
 msgid "Warning: Please Review Before Proceeding"
 msgstr "Upozornění: Prosím zkontrolujte před pokračováním"
 
 #: templates/modern/dns_wizard_form.html:200
-#, auto-english-fallback
 msgid "Create Record"
 msgstr "Vytvořit záznam"
 
 #: templates/modern/dns_wizard_form.html:203
-#, auto-english-fallback
 msgid "Back to Wizard Selection"
 msgstr "Zpět na výběr průvodce"
 
@@ -10080,17 +9813,14 @@ msgid "No, keep this user"
 msgstr "Ne, ponechat tohoto uživatele"
 
 #: templates/modern/save-zone-template.html:6 templates/modern/edit.html:209
-#, auto-english-fallback
 msgid "Save as Template"
 msgstr "Uložit jako šablonu"
 
 #: templates/modern/save-zone-template.html:14
-#, auto-english-fallback
 msgid "Save Zone as Template"
 msgstr "Uložit zónu jako šablonu"
 
 #: templates/modern/save-zone-template.html:18
-#, auto-english-fallback
 msgid "Source Zone"
 msgstr "Zdrojová zóna"
 
@@ -10103,7 +9833,6 @@ msgid "Provide template name"
 msgstr "Zadejte název šablony"
 
 #: templates/modern/save-zone-template.html:44
-#, auto-english-fallback
 msgid "Create Template"
 msgstr "Vytvořit šablonu"
 
@@ -10382,7 +10111,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Smazat zónu/zóny"
 
-#: templates/modern/dnssec_add_key.html:81
+#: templates/modern/dnssec_add_key.html:91
 msgid "Add key"
 msgstr "Přidat klíč"
 
@@ -10390,48 +10119,48 @@ msgstr "Přidat klíč"
 msgid "Add key for zone"
 msgstr "Přidat klíč pro zónu"
 
-#: templates/modern/dnssec_add_key.html:43
+#: templates/modern/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Typ klíče"
 
-#: templates/modern/dnssec_add_key.html:50
+#: templates/modern/dnssec_add_key.html:60
 msgid "Select key type"
 msgstr "Vyberte typ klíče"
 
-#: templates/modern/dnssec_add_key.html:61
+#: templates/modern/dnssec_add_key.html:71
 msgid "Select algorithm"
 msgstr "Vyberte algoritmus"
 
-#: templates/modern/dnssec_add_key.html:66
+#: templates/modern/dnssec_add_key.html:76
 msgid "Bits in length"
 msgstr "Počet bitů"
 
-#: templates/modern/dnssec_add_key.html:75
+#: templates/modern/dnssec_add_key.html:85
 msgid "Select bits length"
 msgstr "Vyberte délku v bitech"
 
-#: templates/modern/dnssec_add_key.html:132
+#: templates/modern/dnssec_add_key.html:142
 msgid "Recommended bits for"
 msgstr "Doporučené bity pro"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 #: install/helpers/InstallStepHandler.php:169
 msgid "Warning:"
 msgstr "Varování:"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 msgid "bits is not recommended for"
 msgstr "bitů se nedoporučuje pro"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
 msgstr "O typech DNSSEC klíčů"
 
-#: templates/modern/dnssec_add_key.html:181
+#: templates/modern/dnssec_add_key.html:191
 msgid "Key Types Explained"
 msgstr "Vysvětlení typů klíčů"
 
-#: templates/modern/dnssec_add_key.html:183
+#: templates/modern/dnssec_add_key.html:193
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -10439,19 +10168,19 @@ msgstr ""
 "Kombinovaný podpisový klíč - slouží jako KSK i ZSK (doporučeno pro PowerDNS "
 "4.0+)"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Klíč pro podpis klíčů - podepisuje DNSKEY záznamy v zóně"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Klíč pro podpis zóny - podepisuje všechny ostatní záznamy v zóně"
 
-#: templates/modern/dnssec_add_key.html:190
+#: templates/modern/dnssec_add_key.html:200
 msgid "Recommended Settings"
 msgstr "Doporučená nastavení"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:201
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10505,7 +10234,8 @@ msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
 msgstr ""
-"Oprávnění z této šablony se uplatní globálně v celém systému pro tohoto uživatele"
+"Oprávnění z této šablony se uplatní globálně v celém systému pro tohoto "
+"uživatele"
 
 #: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
 msgid "Optional information about this user"
@@ -10561,7 +10291,6 @@ msgid "User Permissions"
 msgstr "Oprávnění uživatele"
 
 #: templates/default/edit_user.html:169 templates/modern/edit_user.html:169
-#, auto-english-fallback
 msgid "This user has been assigned the access template"
 msgstr "Tomuto uživateli byla přiřazena šablona přístupu"
 
@@ -10574,42 +10303,36 @@ msgid "No permissions are assigned to this template"
 msgstr "Této šabloně nejsou přiřazena žádná oprávnění"
 
 #: templates/modern/edit_user.html:197 templates/modern/add_user.html:172
-#, auto-english-fallback
 msgid "Group Memberships"
 msgstr "Členství ve skupinách"
 
 #: templates/default/edit_user.html:201 templates/modern/edit_user.html:201
-#, auto-english-fallback
 msgid "Current Memberships"
 msgstr "Aktuální členství"
 
 #: templates/default/edit_user.html:216 templates/modern/edit_user.html:216
-#, auto-english-fallback
 msgid "View group details"
 msgstr "Zobrazit podrobnosti skupiny"
 
 #: templates/default/edit_user.html:230 templates/modern/edit_user.html:230
-#, auto-english-fallback
 msgid "This user is not a member of any groups."
 msgstr "Tento uživatel není členem žádné skupiny."
 
 #: templates/modern/edit_user.html:236 templates/modern/add_user.html:175
-#, auto-english-fallback
 msgid "Add to Groups"
 msgstr "Přidat do skupin"
 
 #: templates/default/edit_user.html:237 templates/modern/edit_user.html:237
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr ""
-"Vyberte jednu nebo více skupin a klikněte na tlačítko \"Přidat vybrané skupiny\"."
+"Vyberte jednu nebo více skupin a klikněte na tlačítko \"Přidat vybrané "
+"skupiny\"."
 
 #: templates/modern/edit_user.html:245 templates/modern/add_user.html:180
-#, auto-english-fallback
 msgid "Search available groups..."
 msgstr "Hledat dostupné skupiny..."
 
 #: templates/modern/edit_user.html:246 templates/modern/add_user.html:181
-#, auto-english-fallback
 msgid "Clear search"
 msgstr "Vymazat hledání"
 
@@ -10618,27 +10341,22 @@ msgid "Select All"
 msgstr "Vybrat vše"
 
 #: templates/modern/add_zone_slave.html:98
-#, auto-english-fallback
 msgid "Clear All"
 msgstr "Vymazat vše"
 
 #: templates/modern/add_user.html:208 templates/modern/add_user.html:384
-#, auto-english-fallback
 msgid "selected"
 msgstr "vybráno"
 
 #: templates/default/edit_user.html:275 templates/modern/edit_user.html:275
-#, auto-english-fallback
 msgid "Add Selected Groups"
 msgstr "Přidat vybrané skupiny"
 
 #: templates/modern/manage_group_members.html:126
-#, auto-english-fallback
 msgid "Confirm Removal"
 msgstr "Potvrdit odebrání"
 
 #: templates/default/edit_user.html:303 templates/modern/edit_user.html:303
-#, auto-english-fallback
 msgid "Are you sure you want to remove this user from the group"
 msgstr "Opravdu chcete odebrat tohoto uživatele ze skupiny"
 
@@ -10690,7 +10408,6 @@ msgid "Yes, unlink these zones"
 msgstr "Ano, odpojit tyto zóny"
 
 #: templates/modern/list_perm_templ.html:5
-#, auto-english-fallback
 msgid "Access templates"
 msgstr "Šablony přístupu"
 
@@ -10699,7 +10416,6 @@ msgid "Add"
 msgstr "Přidat"
 
 #: templates/modern/add_perm_templ.html:18
-#, auto-english-fallback
 msgid "Add Access Template"
 msgstr "Přidat šablonu přístupu"
 
@@ -10712,17 +10428,14 @@ msgid "Optional: more detailed description of this permission set"
 msgstr "Volitelné: podrobnější popis této sady oprávnění"
 
 #: templates/modern/edit_perm_templ.html:36
-#, auto-english-fallback
 msgid "Template Type"
 msgstr "Typ šablony"
 
 #: templates/modern/edit_perm_templ.html:38
-#, auto-english-fallback
 msgid "User Template"
 msgstr "Šablona uživatele"
 
 #: templates/modern/edit_perm_templ.html:39
-#, auto-english-fallback
 msgid "Group Template"
 msgstr "Šablona skupiny"
 
@@ -10731,10 +10444,10 @@ msgid ""
 "User templates apply globally; Group templates apply only to group-owned "
 "zones"
 msgstr ""
-"Šablony uživatelů se uplatňují globálně; šablony skupin se uplatňují pouze pro zóny vlastněné skupinou"
+"Šablony uživatelů se uplatňují globálně; šablony skupin se uplatňují pouze "
+"pro zóny vlastněné skupinou"
 
 #: templates/modern/edit_perm_templ.html:42
-#, auto-english-fallback
 msgid "Please select a template type"
 msgstr "Vyberte prosím typ šablony"
 
@@ -10743,12 +10456,10 @@ msgid "Add Template"
 msgstr "Přidat šablonu"
 
 #: templates/modern/add_perm_templ.html:62
-#, auto-english-fallback
 msgid "About Access Templates"
 msgstr "O šablonách přístupu"
 
 #: templates/modern/add_perm_templ.html:67
-#, auto-english-fallback
 msgid "What are Access Templates?"
 msgstr "Co jsou šablony přístupu?"
 
@@ -10758,7 +10469,9 @@ msgid ""
 "Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Šablony přístupu definují sady akcí, které mohou uživatelé a skupiny provádět v Poweradmin. Poskytují rychlý způsob přiřazení běžných kombinací oprávnění."
+"Šablony přístupu definují sady akcí, které mohou uživatelé a skupiny "
+"provádět v Poweradmin. Poskytují rychlý způsob přiřazení běžných kombinací "
+"oprávnění."
 
 #: templates/modern/add_perm_templ.html:71
 msgid "How to Use Templates"
@@ -10769,9 +10482,9 @@ msgid ""
 "After creating a template, you can assign it to users or groups. This "
 "ensures consistent permissions across users and groups with similar roles."
 msgstr ""
-"Po vytvoření šablony ji můžete přiřadit uživatelům při vytváření nebo "
-"úpravě uživatelských účtů. To zajišťuje konzistentní oprávnění napříč "
-"skupinami uživatelů s podobnými rolemi."
+"Po vytvoření šablony ji můžete přiřadit uživatelům při vytváření nebo úpravě "
+"uživatelských účtů. To zajišťuje konzistentní oprávnění napříč skupinami "
+"uživatelů s podobnými rolemi."
 
 #: templates/modern/edit_perm_templ.html:86
 msgid "Available Permissions"
@@ -10892,7 +10605,6 @@ msgid "Forgot your password?"
 msgstr "Zapomněli jste heslo?"
 
 #: templates/default/login.html:86 templates/modern/login.html:86
-#, auto-english-fallback
 msgid "Forgot your username?"
 msgstr "Zapomněli jste uživatelské jméno?"
 
@@ -11078,62 +10790,50 @@ msgstr ""
 "odpovídajících přímých záznamů (zakázáno při použití režimu odpovídání)"
 
 #: templates/modern/zone-ownership.html:6 templates/modern/edit.html:205
-#, auto-english-fallback
 msgid "Ownership"
 msgstr "Vlastnictví"
 
 #: templates/modern/add_zone_slave.html:49
-#, auto-english-fallback
 msgid "User Owner"
 msgstr "Vlastník – uživatel"
 
 #: templates/modern/zone-ownership.html:55
-#, auto-english-fallback
 msgid "No users assigned to this zone."
 msgstr "K této zóně nejsou přiřazeni žádní uživatelé."
 
 #: templates/modern/zone-ownership.html:61
-#, auto-english-fallback
 msgid "Add User Owner"
 msgstr "Přidat vlastníka – uživatele"
 
 #: templates/modern/manage_group_members.html:84
-#, auto-english-fallback
 msgid "Search users..."
 msgstr "Hledat uživatele..."
 
 #: templates/modern/add_zone_slave.html:76
-#, auto-english-fallback
 msgid "You"
 msgstr "Vy"
 
 #: templates/modern/zone-ownership.html:83
-#, auto-english-fallback
 msgid "Add Owner"
 msgstr "Přidat vlastníka"
 
 #: templates/modern/add_zone_slave.html:90
-#, auto-english-fallback
 msgid "Group Ownership"
 msgstr "Vlastnictví skupiny"
 
 #: templates/modern/zone-ownership.html:127
-#, auto-english-fallback
 msgid "No groups assigned to this zone."
 msgstr "K této zóně nejsou přiřazeny žádné skupiny."
 
 #: templates/modern/zone-ownership.html:133
-#, auto-english-fallback
 msgid "Add Group Ownership"
 msgstr "Přidat vlastnictví skupiny"
 
 #: templates/modern/add_zone_slave.html:94
-#, auto-english-fallback
 msgid "Search groups..."
 msgstr "Hledat skupiny..."
 
 #: templates/modern/add_group.html:13
-#, auto-english-fallback
 msgid "Add Group"
 msgstr "Přidat skupinu"
 
@@ -11158,12 +10858,10 @@ msgid "Create a new record for this zone template"
 msgstr "Vytvořit nový záznam pro tuto šablonu zóny"
 
 #: templates/modern/delete_perm_templ.html:12
-#, auto-english-fallback
 msgid "Delete Access Template"
 msgstr "Smazat šablonu přístupu"
 
 #: templates/modern/delete_perm_templ.html:17
-#, auto-english-fallback
 msgid "You are about to delete the access template"
 msgstr "Chystáte se smazat šablonu přístupu"
 
@@ -11184,7 +10882,6 @@ msgid "No, keep this template"
 msgstr "Ne, ponechat tuto šablonu"
 
 #: templates/modern/dns_wizard_select.html:14
-#, auto-english-fallback
 msgid "DNS Record Wizard"
 msgstr "Průvodce DNS záznamy"
 
@@ -11193,22 +10890,22 @@ msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
 msgstr ""
-"Vyberte průvodce, který vám pomůže vytvořit složité DNS záznamy pomocí formulářů místo ručního zadávání textu."
+"Vyberte průvodce, který vám pomůže vytvořit složité DNS záznamy pomocí "
+"formulářů místo ručního zadávání textu."
 
 #: templates/modern/dns_wizard_select.html:27
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
 msgstr ""
-"Průvodci DNS jsou určeni pro dopředné zóny a nemusí být vhodní pro reverzní zóny."
+"Průvodci DNS jsou určeni pro dopředné zóny a nemusí být vhodní pro reverzní "
+"zóny."
 
 #: templates/modern/dns_wizard_select.html:59
-#, auto-english-fallback
 msgid "Recommended"
 msgstr "Doporučeno"
 
 #: templates/modern/dns_wizard_select.html:71
-#, auto-english-fallback
 msgid "Back"
 msgstr "Zpět"
 
@@ -11245,12 +10942,10 @@ msgid "Add new record"
 msgstr "Přidat nový záznam"
 
 #: templates/modern/edit.html:28 templates/modern/edit.html:543
-#, auto-english-fallback
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Průvodci pro záznamy DMARC, SPF, DKIM, CAA, TLSA a SRV"
 
 #: templates/modern/edit.html:29 templates/modern/edit.html:544
-#, auto-english-fallback
 msgid "Record Wizard"
 msgstr "Průvodce záznamy"
 
@@ -11363,7 +11058,6 @@ msgid "total records"
 msgstr "celkem záznamů"
 
 #: templates/default/edit.html:474 templates/modern/edit.html:474
-#, auto-english-fallback
 msgid "Edit selected"
 msgstr "Upravit vybrané"
 
@@ -11376,17 +11070,14 @@ msgid "Comments"
 msgstr "Komentáře"
 
 #: templates/default/edit.html:515 templates/modern/edit.html:515
-#, auto-english-fallback
 msgid "Export CSV"
 msgstr "Exportovat CSV"
 
 #: templates/default/edit.html:519 templates/modern/edit.html:519
-#, auto-english-fallback
 msgid "Generate PTR"
 msgstr "Generovat PTR"
 
 #: templates/modern/edit.html:696 templates/modern/add_zone_master.html:24
-#, auto-english-fallback
 msgid "Zone Configuration"
 msgstr "Konfigurace zóny"
 
@@ -11399,7 +11090,6 @@ msgid "IP address of master NS"
 msgstr "IP adresa hlavního NS"
 
 #: templates/default/edit.html:786 templates/modern/edit.html:786
-#, auto-english-fallback
 msgid "Manage DNSSEC"
 msgstr "Spravovat DNSSEC"
 
@@ -11408,12 +11098,10 @@ msgid "Sign zone"
 msgstr "Podepsat zónu"
 
 #: templates/default/edit.html:794 templates/modern/edit.html:794
-#, auto-english-fallback
 msgid "Not signed"
 msgstr "Nepodepsáno"
 
 #: templates/default/users.html:10 templates/modern/users.html:10
-#, auto-english-fallback
 msgid "User Management"
 msgstr "Správa uživatelů"
 
@@ -11422,17 +11110,14 @@ msgid "Add user"
 msgstr "Přidat uživatele"
 
 #: templates/default/users.html:45 templates/modern/users.html:45
-#, auto-english-fallback
 msgid "Auth Type"
 msgstr "Typ ověření"
 
 #: templates/default/users.html:47 templates/modern/users.html:47
-#, auto-english-fallback
 msgid "MFA"
 msgstr "MFA"
 
 #: templates/modern/users.html:99 templates/modern/users.html:161
-#, auto-english-fallback
 msgid "SQL"
 msgstr "SQL"
 
@@ -11441,22 +11126,18 @@ msgid "LDAP"
 msgstr "LDAP"
 
 #: templates/modern/users.html:103 templates/modern/users.html:165
-#, auto-english-fallback
 msgid "OIDC"
 msgstr "OIDC"
 
 #: templates/modern/users.html:105 templates/modern/users.html:167
-#, auto-english-fallback
 msgid "SAML"
 msgstr "SAML"
 
 #: templates/modern/users.html:114 templates/modern/users.html:176
-#, auto-english-fallback
 msgid "MFA enabled"
 msgstr "MFA povoleno"
 
 #: templates/modern/users.html:116 templates/modern/users.html:178
-#, auto-english-fallback
 msgid "MFA not configured"
 msgstr "MFA nenakonfigurováno"
 
@@ -11656,7 +11337,6 @@ msgid "Are you sure you want to delete this item?"
 msgstr "Jste si jisti, že chcete smazat tuto položku?"
 
 #: templates/modern/forgot_username.html:4
-#, auto-english-fallback
 msgid "Forgot Username"
 msgstr "Zapomenuté uživatelské jméno"
 
@@ -11665,10 +11345,10 @@ msgid ""
 "Enter your email address and we'll send you the username associated with "
 "this account."
 msgstr ""
-"Zadejte svou e-mailovou adresu a my vám zašleme uživatelské jméno spojené s tímto účtem."
+"Zadejte svou e-mailovou adresu a my vám zašleme uživatelské jméno spojené s "
+"tímto účtem."
 
 #: templates/modern/forgot_username.html:41
-#, auto-english-fallback
 msgid "Send Username"
 msgstr "Odeslat uživatelské jméno"
 
@@ -11711,7 +11391,6 @@ msgstr ""
 "Tato oprávnění můžete později upravit editací uživatele."
 
 #: templates/default/add_user.html:176 templates/modern/add_user.html:176
-#, auto-english-fallback
 msgid "Select groups to add the new user to upon creation."
 msgstr "Vyberte skupiny, do kterých má být nový uživatel přidán po vytvoření."
 
@@ -11744,27 +11423,22 @@ msgid "Secure this zone with DNSSEC signing"
 msgstr "Zabezpečit tuto zónu pomocí DNSSEC podpisu"
 
 #: templates/modern/add_zone_slave.html:54
-#, auto-english-fallback
 msgid "Selected:"
 msgstr "Vybráno:"
 
 #: templates/modern/add_zone_slave.html:59
-#, auto-english-fallback
 msgid "No user owner"
 msgstr "Žádný vlastník – uživatel"
 
 #: templates/modern/add_zone_slave.html:60
-#, auto-english-fallback
 msgid "Zone will be owned only by groups"
 msgstr "Zóna bude vlastněna pouze skupinami"
 
 #: templates/modern/add_zone_slave.html:82
-#, auto-english-fallback
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Volitelné: Vyberte uživatele zodpovědného za tuto zónu"
 
 #: templates/modern/add_zone_slave.html:111
-#, auto-english-fallback
 msgid "Optional: Select one or more groups"
 msgstr "Volitelné: Vyberte jednu nebo více skupin"
 
@@ -12273,7 +11947,6 @@ msgstr ""
 "přihlášení, pokud ztratíte přístup k autentifikačnímu zařízení."
 
 #: templates/default/mfa_setup.html:14 templates/modern/mfa_setup.html:14
-#, auto-english-fallback
 msgid "MFA Setup Required"
 msgstr "Vyžadováno nastavení MFA"
 
@@ -12282,7 +11955,8 @@ msgid ""
 "Your organization requires multi-factor authentication. Please set up MFA to "
 "continue using the system."
 msgstr ""
-"Vaše organizace vyžaduje vícefaktorové ověření. Pro pokračování v používání systému prosím nastavte MFA."
+"Vaše organizace vyžaduje vícefaktorové ověření. Pro pokračování v používání "
+"systému prosím nastavte MFA."
 
 #: templates/default/mfa_setup.html:24 templates/modern/mfa_setup.html:24
 msgid ""
@@ -12361,8 +12035,7 @@ msgstr "Spoléhá na doručení e-mailu"
 msgid ""
 "Email verification is not available because it has been disabled by the "
 "administrator."
-msgstr ""
-"Ověření e-mailem není dostupné, protože bylo zakázáno administrátorem."
+msgstr "Ověření e-mailem není dostupné, protože bylo zakázáno administrátorem."
 
 #: templates/default/mfa_setup.html:108 templates/modern/mfa_setup.html:108
 msgid ""
@@ -12455,107 +12128,86 @@ msgid "No, keep this zone"
 msgstr "Ne, ponechat tuto zónu"
 
 #: templates/modern/user_preferences.html:4 templates/modern/header.html:388
-#, auto-english-fallback
 msgid "User Preferences"
 msgstr "Uživatelské předvolby"
 
 #: templates/modern/user_preferences.html:17
-#, auto-english-fallback
 msgid "Display Settings"
 msgstr "Nastavení zobrazení"
 
 #: templates/modern/user_preferences.html:22
-#, auto-english-fallback
 msgid "Items per page"
 msgstr "Položek na stránku"
 
 #: templates/modern/user_preferences.html:36
-#, auto-english-fallback
 msgid "Zone Options"
 msgstr "Možnosti zóny"
 
 #: templates/modern/user_preferences.html:42
-#, auto-english-fallback
 msgid "Zone serial numbers"
 msgstr "Sériová čísla zóny"
 
 #: templates/modern/user_preferences.html:43
-#, auto-english-fallback
 msgid "Display serial numbers in zone lists"
 msgstr "Zobrazit sériová čísla v seznamech zón"
 
 #: templates/modern/user_preferences.html:51
-#, auto-english-fallback
 msgid "Display template information in zone lists"
 msgstr "Zobrazit informace o šabloně v seznamech zón"
 
 #: templates/modern/user_preferences.html:64
-#, auto-english-fallback
 msgid "Interface Behavior"
 msgstr "Chování rozhraní"
 
 #: templates/modern/user_preferences.html:69
-#, auto-english-fallback
 msgid "Record form"
 msgstr "Formulář záznamu"
 
 #: templates/modern/user_preferences.html:78
-#, auto-english-fallback
 msgid "Save buttons"
 msgstr "Tlačítka uložení"
 
 #: templates/modern/user_preferences.html:88
-#, auto-english-fallback
 msgid "Edit Zone View"
 msgstr "Zobrazení úpravy zóny"
 
 #: templates/modern/user_preferences.html:93
-#, auto-english-fallback
 msgid "Show record ID"
 msgstr "Zobrazit ID záznamu"
 
 #: templates/modern/user_preferences.html:94
-#, auto-english-fallback
 msgid "Display record ID column in edit view"
 msgstr "Zobrazit sloupec ID záznamu v zobrazení úprav"
 
 #: templates/modern/user_preferences.html:101
-#, auto-english-fallback
 msgid "Show add record form"
 msgstr "Zobrazit formulář pro přidání záznamu"
 
 #: templates/modern/user_preferences.html:102
-#, auto-english-fallback
 msgid "Display inline add record form in edit view"
 msgstr "Zobrazit vložený formulář pro přidání záznamu v zobrazení úprav"
 
 #: templates/modern/user_preferences.html:109
-#, auto-english-fallback
 msgid "Show edit buttons"
 msgstr "Zobrazit tlačítka úprav"
 
 #: templates/modern/user_preferences.html:110
-#, auto-english-fallback
 msgid "Display individual edit button per record"
 msgstr "Zobrazit samostatné tlačítko úprav u každého záznamu"
 
 #: templates/modern/user_preferences.html:117
-#, auto-english-fallback
 msgid "Show delete buttons"
 msgstr "Zobrazit tlačítka smazání"
 
 #: templates/modern/user_preferences.html:118
-#, auto-english-fallback
 msgid "Display individual delete button per record"
 msgstr "Zobrazit samostatné tlačítko smazání u každého záznamu"
 
 #: templates/modern/user_preferences.html:133
-#, auto-english-fallback
 msgid "Save Preferences"
 msgstr "Uložit předvolby"
 
 #: templates/modern/user_preferences.html:139
-#, auto-english-fallback
 msgid "Changes will be applied after saving"
 msgstr "Změny budou uplatněny po uložení"
 
@@ -12604,27 +12256,22 @@ msgid "Try different search terms or filters"
 msgstr "Zkuste jiné vyhledávací termíny nebo filtry"
 
 #: templates/default/search.html:676 templates/modern/search.html:687
-#, auto-english-fallback
 msgid "Confirm Zone Deletion"
 msgstr "Potvrzení smazání zóny"
 
 #: templates/modern/search.html:692 templates/modern/search.html:718
-#, auto-english-fallback
 msgid "Are you sure you want to delete"
 msgstr "Opravdu chcete smazat"
 
 #: templates/default/search.html:681 templates/modern/search.html:692
-#, auto-english-fallback
 msgid "selected zone(s)?"
 msgstr "vybrané zóny?"
 
 #: templates/default/search.html:702 templates/modern/search.html:713
-#, auto-english-fallback
 msgid "Confirm Record Deletion"
 msgstr "Potvrzení smazání záznamu"
 
 #: templates/default/search.html:707 templates/modern/search.html:718
-#, auto-english-fallback
 msgid "selected record(s)?"
 msgstr "vybrané záznamy?"
 
@@ -12693,7 +12340,6 @@ msgid "Search logs by user"
 msgstr "Hledat protokoly podle uživatele"
 
 #: templates/modern/add_zone_slave.html:24
-#, auto-english-fallback
 msgid "Slave Zone Configuration"
 msgstr "Konfigurace slave zóny"
 
@@ -12706,7 +12352,8 @@ msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
 msgstr ""
-"IP adresa master jmenného serveru (podporuje IPv4 a IPv6, více IP adres oddělených čárkami)"
+"IP adresa master jmenného serveru (podporuje IPv4 a IPv6, více IP adres "
+"oddělených čárkami)"
 
 #: templates/modern/delete_zone_templ.html:12
 msgid "Delete template"
@@ -13002,17 +12649,14 @@ msgid "Reverse zones"
 msgstr "Reverzní zóny"
 
 #: templates/default/header.html:133 templates/modern/header.html:199
-#, auto-english-fallback
 msgid "List groups"
 msgstr "Seznam skupin"
 
 #: templates/modern/header.html:210 templates/modern/list_log_groups.html:5
-#, auto-english-fallback
 msgid "Group logs"
 msgstr "Protokoly skupin"
 
 #: templates/default/header.html:153 templates/modern/header.html:227
-#, auto-english-fallback
 msgid "List templates"
 msgstr "Seznam šablon"
 
@@ -13069,57 +12713,46 @@ msgid "Add records"
 msgstr "Přidat záznamy"
 
 #: templates/modern/manage_group_members.html:12
-#, auto-english-fallback
 msgid "Back to Group"
 msgstr "Zpět na skupinu"
 
 #: templates/modern/manage_group_zones.html:20
-#, auto-english-fallback
 msgid "Owned Zones"
 msgstr "Vlastněné zóny"
 
 #: templates/modern/manage_group_zones.html:27
-#, auto-english-fallback
 msgid "This group doesn't own any zones yet"
 msgstr "Tato skupina zatím nevlastní žádné zóny"
 
 #: templates/modern/manage_group_members.html:57
-#, auto-english-fallback
 msgid "Remove Selected"
 msgstr "Odebrat vybrané"
 
 #: templates/modern/manage_group_zones.html:79
-#, auto-english-fallback
 msgid "Available Zones"
 msgstr "Dostupné zóny"
 
 #: templates/modern/manage_group_zones.html:86
-#, auto-english-fallback
 msgid "This group already owns all zones or no zones are available"
 msgstr "Tato skupina již vlastní všechny zóny nebo nejsou dostupné žádné zóny"
 
 #: templates/modern/manage_group_zones.html:94
-#, auto-english-fallback
 msgid "Search zones..."
 msgstr "Hledat zóny..."
 
 #: templates/modern/manage_group_members.html:110
-#, auto-english-fallback
 msgid "Add Selected"
 msgstr "Přidat vybrané"
 
 #: templates/modern/manage_group_members.html:131
-#, auto-english-fallback
 msgid "Are you sure you want to remove"
 msgstr "Opravdu chcete odebrat"
 
 #: templates/modern/manage_group_zones.html:221
-#, auto-english-fallback
 msgid "zone(s) from this group?"
 msgstr "zóny z této skupiny?"
 
 #: templates/modern/manage_group_zones.html:222
-#, auto-english-fallback
 msgid "The zones will remain in the system."
 msgstr "Zóny zůstanou v systému."
 
@@ -13180,7 +12813,6 @@ msgid "No, keep this API key"
 msgstr "Ne, ponechat tento API klíč"
 
 #: templates/modern/edit_perm_templ.html:19
-#, auto-english-fallback
 msgid "Edit Access Template"
 msgstr "Upravit šablonu přístupu"
 
@@ -13198,12 +12830,11 @@ msgid ""
 "of permissions. Changes made here will affect all users and groups who have "
 "this template assigned."
 msgstr ""
-"Tuto šablonu lze přiřadit uživatelům pro rychlé použití její sady "
-"oprávnění. Změny provedené zde ovlivní všechny uživatele, kteří mají "
-"přiřazenou tuto šablonu."
+"Tuto šablonu lze přiřadit uživatelům pro rychlé použití její sady oprávnění. "
+"Změny provedené zde ovlivní všechny uživatele, kteří mají přiřazenou tuto "
+"šablonu."
 
 #: templates/default/edit_perm_templ.html:72
-#, auto-english-fallback
 msgid "Users vs Groups"
 msgstr "Uživatelé vs. skupiny"
 
@@ -13212,14 +12843,16 @@ msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
 msgstr ""
-"Při přiřazení <strong>uživatelům</strong>: Oprávnění se uplatňují globálně v celém systému."
+"Při přiřazení <strong>uživatelům</strong>: Oprávnění se uplatňují globálně v "
+"celém systému."
 
 #: templates/default/edit_perm_templ.html:74
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
 msgstr ""
-"Při přiřazení <strong>skupinám</strong>: Oprávnění se uplatňují pouze pro zóny vlastněné danou skupinou."
+"Při přiřazení <strong>skupinám</strong>: Oprávnění se uplatňují pouze pro "
+"zóny vlastněné danou skupinou."
 
 #: templates/modern/edit_perm_templ.html:73
 msgid "Permission Groups"
@@ -13274,15 +12907,14 @@ msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
 msgstr ""
-"Všichni členové skupiny zdědí tato oprávnění pro zóny vlastněné touto skupinou"
+"Všichni členové skupiny zdědí tato oprávnění pro zóny vlastněné touto "
+"skupinou"
 
 #: templates/default/add_group.html:50 templates/modern/add_group.html:50
-#, auto-english-fallback
 msgid "After creating the group, you can add members and assign zones to it."
 msgstr "Po vytvoření skupiny můžete přidat členy a přiřadit jí zóny."
 
 #: templates/default/add_group.html:55 templates/modern/add_group.html:55
-#, auto-english-fallback
 msgid "Create Group"
 msgstr "Vytvořit skupinu"
 
@@ -13300,72 +12932,58 @@ msgid "Please enter a domain name to perform a WHOIS lookup."
 msgstr "Zadejte prosím název domény pro provedení WHOIS vyhledávání."
 
 #: templates/modern/list_perm_templ.html:40
-#, auto-english-fallback
 msgid "User"
 msgstr "Uživatel"
 
 #: templates/modern/list_perm_templ.html:10
-#, auto-english-fallback
 msgid "templates apply globally"
 msgstr "šablony se uplatňují globálně"
 
 #: templates/modern/list_perm_templ.html:42
-#, auto-english-fallback
 msgid "Group"
 msgstr "Skupina"
 
 #: templates/modern/list_perm_templ.html:10
-#, auto-english-fallback
 msgid "templates apply only to group-owned zones"
 msgstr "šablony se uplatňují pouze pro zóny vlastněné skupinou"
 
 #: templates/modern/list_perm_templ.html:15
-#, auto-english-fallback
 msgid "Access Templates"
 msgstr "Šablony přístupu"
 
 #: templates/modern/list_perm_templ.html:31
-#, auto-english-fallback
 msgid "No access templates found"
 msgstr "Nebyly nalezeny žádné šablony přístupu"
 
 #: templates/modern/list_perm_templ.html:63
-#, auto-english-fallback
 msgid "Add access template"
 msgstr "Přidat šablonu přístupu"
 
 #: templates/modern/list_log_groups.html:11
-#, auto-english-fallback
 msgid "Group Activity Logs"
 msgstr "Protokoly aktivity skupin"
 
 #: templates/modern/list_log_groups.html:19
-#, auto-english-fallback
 msgid "Search logs by group"
 msgstr "Hledat protokoly podle skupiny"
 
 #: templates/modern/manage_group_members.html:20
-#, auto-english-fallback
 msgid "Current Members"
 msgstr "Aktuální členové"
 
 #: templates/modern/manage_group_members.html:27
-#, auto-english-fallback
 msgid "No members in this group yet"
 msgstr "V této skupině zatím nejsou žádní členové"
 
 #: templates/modern/manage_group_members.html:69
-#, auto-english-fallback
 msgid "Available Users"
 msgstr "Dostupní uživatelé"
 
 #: templates/modern/manage_group_members.html:76
-#, auto-english-fallback
 msgid "All users are already members of this group"
 msgstr "Všichni uživatelé jsou již členy této skupiny"
 
 #: templates/modern/manage_group_members.html:131
-#, auto-english-fallback
 msgid "user(s) from this group?"
 msgstr "uživatele z této skupiny?"
 
@@ -13405,8 +13023,18 @@ msgstr "Seznam šablon zón"
 msgid "Bulk Domain Registration"
 msgstr "Hromadná registrace domén"
 
+#: templates/modern/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ používá CSK ve výchozím nastavení"
+
+#: templates/modern/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 a novější verze používají Combined Signing Keys (CSK) ve výchozím nastavení. Pokud vyberete KSK nebo ZSK, PowerDNS může stále vytvořit klíč CSK."
+
 #: templates/modern/header.html:382
-#, auto-english-fallback
 msgid "Dashboard"
 msgstr "Přehled"
 
@@ -13687,33 +13315,27 @@ msgid "Optional Extensions"
 msgstr "Volitelná rozšíření"
 
 #: install/templates/step2.html.twig:99
-#, auto-english-fallback
 msgid "Web Server"
 msgstr "Webový server"
 
 #: install/templates/step2.html.twig:106
-#, auto-english-fallback
 msgid "Server"
 msgstr "Server"
 
 #: install/templates/step2.html.twig:118
-#, auto-english-fallback
 msgid "Not detected — required for URL routing"
 msgstr "Nezjištěno — vyžadováno pro směrování URL"
 
 #: install/templates/step2.html.twig:124
-#, auto-english-fallback
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
 msgstr "Nelze zjistit (PHP-FPM) — ujistěte se, že je povoleno"
 
 #: install/templates/step2.html.twig:130
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
 msgstr ""
 "Ujistěte se, že je nakonfigurováno přepisování URL (viz nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured for your web server"
 msgstr ""
 "Ujistěte se, že je nakonfigurováno přepisování URL pro váš webový server"
@@ -14049,376 +13671,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nelze se připojit k databázi PowerDNS \"%s\": %s"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create a config/settings.php file "
-# OBSOLETE: "manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Konfigurační soubor nebyl nalezen. Použijte <a href=\"install/"
-# OBSOLETE: "\">instalátor</a> k vytvoření jednoho, nebo vytvořte soubor config/"
-# OBSOLETE: "settings.php ručně."
-
-# OBSOLETE: msgid "Invalid authentication provider"
-# OBSOLETE: msgstr "Neplatný poskytovatel ověření"
-
-# OBSOLETE: msgid "Failed to sign zone. Check PowerDNS logs for details."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nepodařilo se podepsat zónu. Zkontrolujte logy PowerDNS pro detaily."
-
-# OBSOLETE: msgid "Zone was created, but securing it with DNSSEC failed."
-# OBSOLETE: msgstr "Zóna byla vytvořena, ale zabezpečení pomocí DNSSEC selhalo."
-
-# OBSOLETE: msgid "Failed to delete DNSSEC key."
-# OBSOLETE: msgstr "Nepodařilo se smazat DNSSEC klíč."
-
-#, auto-english-fallback
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
-# OBSOLETE: "once."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nalezen duplicitní mechanismus %s. Každý typ mechanismu by se měl objevit "
-# OBSOLETE: "nejvýše jednou."
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IPv6 adresa by měla používat malá písmena pro hexadecimální číslice."
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr "IPv6 adresa není v kanonické formě (RFC 5952). Kanonická forma: %s"
-
-#, auto-english-fallback
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IP adresa \"%s\" není platná. Musí být platná IPv4 nebo IPv6 adresa."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "CAA iodef value must be a URL starting with http://, https://, or mailto:."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "CAA iodef hodnota musí být URL začínající http://, https://, nebo mailto:."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "SMIMEA record name is in the format: SHA256(local-"
-# OBSOLETE: "part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Název SMIMEA záznamu je ve formátu: SHA256(lokální-"
-# OBSOLETE: "část)._smimecert.doména.tld pro e-mailové adresy jako lokální-"
-# OBSOLETE: "část@doména.tld"
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "HTML tagy nejsou povoleny v poli obsahu."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Řetězec TXT záznamu překračuje 255 bajtů. TXT řetězce musí mít 255 bajtů "
-# OBSOLETE: "nebo méně. Pro delší obsah rozdělte na více řetězců v uvozovkách "
-# OBSOLETE: "oddělených mezerami."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR záznam musí mít buď regexp nebo náhradu (s \".\"), ale ne obojí."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR služba musí následovat formát: [protokol][+rs][+rs]... kde protokol "
-# OBSOLETE: "a rs začínají písmenem a obsahují pouze alfanumerické znaky (max 32 znaků "
-# OBSOLETE: "každý)."
-
-# OBSOLETE: msgid "User administration"
-# OBSOLETE: msgstr "Správa uživatelů"
-
-# OBSOLETE: msgid "Permissions"
-# OBSOLETE: msgstr "Oprávnění"
-
-# OBSOLETE: msgid "Manage permission templates"
-# OBSOLETE: msgstr "Správa šablon oprávnění"
-
-# OBSOLETE: msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-# OBSOLETE: msgstr "Nastavte standardní záznamy jako MX, TXT pro SPF a CNAME pro www"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-# OBSOLETE: "[SERIAL] in record content"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Používejte zástupné symboly jako [ZONE], [DOMAIN], [TLD], [NS1], "
-# OBSOLETE: "[HOSTMASTER] a [SERIAL] v obsahu záznamu"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-# OBSOLETE: "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Zástupné symboly [DOMAIN] a [TLD] jsou užitečné pro Microsoft 365 MX "
-# OBSOLETE: "záznamy (např. [DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-# OBSOLETE: msgid "Permission template"
-# OBSOLETE: msgstr "Šablona oprávnění"
-
-# OBSOLETE: msgid "This user has been assigned the permission template"
-# OBSOLETE: msgstr "Tomuto uživateli byla přiřazena šablona oprávnění"
-
-# OBSOLETE: msgid "User Management Tips"
-# OBSOLETE: msgstr "Tipy pro správu uživatelů"
-
-# OBSOLETE: msgid "Leave password field empty to keep the current password"
-# OBSOLETE: msgstr "Ponechte pole hesla prázdné pro zachování současného hesla"
-
-# OBSOLETE: msgid "Changing permission templates will update user access immediately"
-# OBSOLETE: msgstr "Změna šablon oprávnění okamžitě aktualizuje přístup uživatele"
-
-# OBSOLETE: msgid "Users can be disabled instead of deleted to preserve their settings"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Uživatelé mohou být zakázáni místo smazání pro zachování jejich nastavení"
-
-# OBSOLETE: msgid "LDAP users cannot have passwords managed through this interface"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "LDAP uživatelé nemohou mít hesla spravovaná prostřednictvím tohoto "
-# OBSOLETE: "rozhraní"
-
-# OBSOLETE: msgid "Permission templates"
-# OBSOLETE: msgstr "Šablony oprávnění"
-
-# OBSOLETE: msgid "Add Permission Template"
-# OBSOLETE: msgstr "Přidat šablonu oprávnění"
-
-# OBSOLETE: msgid "About Permission Templates"
-# OBSOLETE: msgstr "O šablonách oprávnění"
-
-# OBSOLETE: msgid "What are Permission Templates?"
-# OBSOLETE: msgstr "Co jsou šablony oprávnění?"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Permission templates define sets of actions that users can perform in "
-# OBSOLETE: "Poweradmin. They provide a quick way to assign common permission "
-# OBSOLETE: "combinations to multiple users."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Šablony oprávnění definují sady akcí, které mohou uživatelé v Poweradmin "
-# OBSOLETE: "provádět. Poskytují rychlý způsob přiřazení běžných kombinací oprávnění "
-# OBSOLETE: "více uživatelům."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "After creating a template, you can assign it to users when creating or "
-# OBSOLETE: "editing user accounts. This ensures consistent permissions across user "
-# OBSOLETE: "groups with similar roles."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Po vytvoření šablony ji můžete přiřadit uživatelům při vytváření nebo "
-# OBSOLETE: "úpravě uživatelských účtů. To zajišťuje konzistentní oprávnění napříč "
-# OBSOLETE: "skupinami uživatelů s podobnými rolemi."
-
-# OBSOLETE: msgid "Delete Permission Template"
-# OBSOLETE: msgstr "Smazat šablonu oprávnění"
-
-# OBSOLETE: msgid "You are about to delete the permission template"
-# OBSOLETE: msgstr "Chystáte se smazat šablonu oprávnění"
-
-# OBSOLETE: msgid "CSV"
-# OBSOLETE: msgstr "CSV"
-
-# OBSOLETE: msgid "Save as new template"
-# OBSOLETE: msgstr "Uložit jako novou šablonu"
-
-# OBSOLETE: msgid "Create a reusable template from this zone's records"
-# OBSOLETE: msgstr "Vytvořit opakovaně použitelnou šablonu ze záznamů této zóny"
-
-# OBSOLETE: msgid "Template Description"
-# OBSOLETE: msgstr "Popis šablony"
-
-# OBSOLETE: msgid "Optional description for this template"
-# OBSOLETE: msgstr "Volitelný popis pro tuto šablonu"
-
-# OBSOLETE: msgid "Save as template"
-# OBSOLETE: msgstr "Uložit jako šablonu"
-
-# OBSOLETE: msgid "Zone Settings"
-# OBSOLETE: msgstr "Nastavení zóny"
-
-# OBSOLETE: msgid "Owner of zone"
-# OBSOLETE: msgstr "Vlastník zóny"
-
-# OBSOLETE: msgid "No owner set for this zone."
-# OBSOLETE: msgstr "Pro tuto zónu není nastaven žádný vlastník."
-
-# OBSOLETE: msgid "Select All Filtered"
-# OBSOLETE: msgstr "Vybrat všechny filtrované"
-
-# OBSOLETE: msgid "User Administration"
-# OBSOLETE: msgstr "Správa uživatelů"
-
-# OBSOLETE: msgid "Create descriptive usernames that are easy to identify"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Vytvářejte popisná uživatelská jména, která jsou snadno identifikovatelná"
-
-# OBSOLETE: msgid "Adding a full name helps with user identification"
-# OBSOLETE: msgstr "Přidání celého jména pomáhá s identifikací uživatele"
-
-# OBSOLETE: msgid "Auto-generating passwords is recommended for better security"
-# OBSOLETE: msgstr "Automatické generování hesel se doporučuje pro lepší bezpečnost"
-
-# OBSOLETE: msgid "User responsible for this zone"
-# OBSOLETE: msgstr "Uživatel odpovědný za tuto zónu"
-
-# OBSOLETE: msgid "Zone Information"
-# OBSOLETE: msgstr "Informace o zóně"
-
-# OBSOLETE: msgid "About Master Zones"
-# OBSOLETE: msgstr "O hlavních zónách"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "A master zone is a zone for which this PowerDNS server is the primary "
-# OBSOLETE: "authority. You can add, edit and delete records in master zones."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Hlavní zóna je zóna, pro kterou je tento PowerDNS server primární "
-# OBSOLETE: "autoritou. Můžete přidávat, upravovat a mazat záznamy v hlavních zónách."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "After creating the zone, you will be redirected to add DNS records to it."
-# OBSOLETE: msgstr "Po vytvoření zóny budete přesměrováni na přidání DNS záznamů."
-
-# OBSOLETE: msgid "DNSSEC Information"
-# OBSOLETE: msgstr "Informace o DNSSEC"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "DNSSEC (Domain Name System Security Extensions) adds cryptographic "
-# OBSOLETE: "signatures to DNS records to protect against spoofing and cache poisoning "
-# OBSOLETE: "attacks."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "DNSSEC (Domain Name System Security Extensions) přidává kryptografické "
-# OBSOLETE: "podpisy k DNS záznamům pro ochranu proti útokům spoofingu a cache "
-# OBSOLETE: "poisoning."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When enabled, PowerDNS will automatically generate and manage the "
-# OBSOLETE: "necessary keys and signatures for the zone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Když je povoleno, PowerDNS automaticky vygeneruje a spravuje potřebné "
-# OBSOLETE: "klíče a podpisy pro zónu."
-
-# OBSOLETE: msgid "Use fully qualified domain names (example.com)"
-# OBSOLETE: msgstr "Používejte plně kvalifikované názvy domén (example.com)"
-
-# OBSOLETE: msgid "Select a template to automatically create common DNS records"
-# OBSOLETE: msgstr "Vyberte šablonu pro automatické vytvoření běžných DNS záznamů"
-
-# OBSOLETE: msgid "NATIVE zone type is recommended for most setups"
-# OBSOLETE: msgstr "Typ zóny NATIVE se doporučuje pro většinu nastavení"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Are you sure you want to delete the selected zones? This action cannot be "
-# OBSOLETE: "undone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Jste si jisti, že chcete smazat vybrané zóny? Tuto akci nelze vrátit zpět."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Are you sure you want to delete the selected records? This action cannot "
-# OBSOLETE: "be undone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Jste si jisti, že chcete smazat vybrané záznamy? Tuto akci nelze vrátit "
-# OBSOLETE: "zpět."
-
-# OBSOLETE: msgid "IP address of the master name server (can be IPv4 or IPv6)"
-# OBSOLETE: msgstr "IP adresa hlavního jmenného serveru (může být IPv4 nebo IPv6)"
-
-# OBSOLETE: msgid "About Slave Zones"
-# OBSOLETE: msgstr "O podružných zónách"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "A slave zone is a read-only copy of a zone hosted on another DNS server. "
-# OBSOLETE: "PowerDNS will automatically fetch and update zone data from the master "
-# OBSOLETE: "server."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Podružná zóna je kopie zóny pouze pro čtení hostovaná na jiném DNS "
-# OBSOLETE: "serveru. PowerDNS automaticky načte a aktualizuje data zóny z hlavního "
-# OBSOLETE: "serveru."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You cannot edit records in a slave zone - all changes must be made on the "
-# OBSOLETE: "master server."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nemůžete upravovat záznamy v podružné zóně - všechny změny musí být "
-# OBSOLETE: "provedeny na hlavním serveru."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Make sure that this PowerDNS server is allowed to transfer the zone from "
-# OBSOLETE: "the master server. The master server must have an allow-transfer or "
-# OBSOLETE: "similar configuration permitting zone transfers to this server's IP "
-# OBSOLETE: "address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ujistěte se, že tento PowerDNS server má povoleno přenést zónu z hlavního "
-# OBSOLETE: "serveru. Hlavní server musí mít konfiguraci allow-transfer nebo podobnou, "
-# OBSOLETE: "která umožňuje přenos zón na IP adresu tohoto serveru."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can specify multiple master servers by separating IP addresses with "
-# OBSOLETE: "commas"
-# OBSOLETE: msgstr "Můžete zadat více hlavních serverů oddělením IP adres čárkami"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Slave zones will automatically update when the master server sends a "
-# OBSOLETE: "notification"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Podružné zóny se automaticky aktualizují, když hlavní server pošle "
-# OBSOLETE: "oznámení"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "To test the connection, check the PowerDNS logs after adding the zone"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Pro testování připojení zkontrolujte PowerDNS protokoly po přidání zóny"
-
-# OBSOLETE: msgid "List permission templates"
-# OBSOLETE: msgstr "Seznam šablon oprávnění"
-
-# OBSOLETE: msgid "Add permission template"
-# OBSOLETE: msgstr "Přidat šablonu oprávnění"
-
-# OBSOLETE: msgid "Edit Permission Template"
-# OBSOLETE: msgstr "Upravit šablonu oprávnění"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Tuto šablonu lze přiřadit uživatelům pro rychlé použití její sady "
-# OBSOLETE: "oprávnění. Změny provedené zde ovlivní všechny uživatele, kteří mají "
-# OBSOLETE: "přiřazenou tuto šablonu."
-
-# OBSOLETE: msgid "Permission Templates"
-# OBSOLETE: msgstr "Šablony oprávnění"
-
-# OBSOLETE: msgid "No permission templates found"
-# OBSOLETE: msgstr "Nebyly nalezeny žádné šablony oprávnění"
-
-
-

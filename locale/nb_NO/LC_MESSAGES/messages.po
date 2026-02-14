@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-10 19:11+0200\n"
+"POT-Creation-Date: 2026-02-14 17:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,9 +23,9 @@ msgid ""
 "No configuration file found at %s. Please use the <a href=\"install/"
 "\">installer</a> to create one, or create the configuration file manually."
 msgstr ""
-"Ingen konfigurasjonsfil funnet. Vennligst bruk <a "
-"href=\"install/\">installasjonsprogrammet</a> for å opprette en, "
-"eller opprett en %s fil manuelt."
+"Ingen konfigurasjonsfil funnet. Vennligst bruk <a href=\"install/"
+"\">installasjonsprogrammet</a> for å opprette en, eller opprett en %s fil "
+"manuelt."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:134
 msgid "Invalid CSRF token."
@@ -113,7 +113,6 @@ msgid "You do not have the permission to delete this user."
 msgstr "Du har ikke tillatelse til å slette denne brukeren."
 
 #: lib/Application/Controller/DeleteUserController.php:62
-#, auto-english-fallback
 msgid "You do not have permission to delete a superuser account."
 msgstr "Du har ikke tillatelse til å slette en superbrukerkonto."
 
@@ -150,7 +149,6 @@ msgid "You do not have permission to delete records in this zone."
 msgstr "Du har ikke tillatelse til å slette poster i denne sonen."
 
 #: lib/Application/Controller/EditRecordController.php:195
-#, auto-english-fallback
 msgid "Record not found."
 msgstr "Post ikke funnet."
 
@@ -219,67 +217,54 @@ msgid "The record has been deleted successfully."
 msgstr "Posten har blitt slettet."
 
 #: lib/Application/Controller/DeleteRecordController.php:239
-#, auto-english-fallback
 msgid "You cannot delete records from a SLAVE zone."
 msgstr "Du kan ikke slette poster fra en SLAVE-sone."
 
 #: lib/Application/Controller/DeleteGroupController.php:70
-#, auto-english-fallback
 msgid "You do not have permission to delete groups."
 msgstr "Du har ikke tillatelse til å slette grupper."
 
 #: lib/Application/Controller/EditGroupController.php:86
-#, auto-english-fallback
 msgid "Invalid group ID."
 msgstr "Ugyldig gruppe-ID."
 
 #: lib/Application/Controller/DeleteGroupController.php:98
-#, auto-english-fallback
 msgid "Group deletion cancelled."
 msgstr "Gruppesletting avbrutt."
 
 #: lib/Application/Controller/DeleteGroupController.php:135
-#, auto-english-fallback
 msgid "Group has been deleted successfully."
 msgstr "Gruppen er slettet."
 
 #: lib/Application/Controller/EditGroupController.php:197
-#, auto-english-fallback
 msgid "Group not found."
 msgstr "Gruppe ikke funnet."
 
 #: lib/Application/Controller/UserPreferencesController.php:99
-#, auto-english-fallback
 msgid "Preferences saved successfully."
 msgstr "Innstillinger lagret."
 
 #: lib/Application/Controller/UserPreferencesController.php:107
-#, auto-english-fallback
 msgid "Failed to update preferences. Please try again."
 msgstr "Kunne ikke oppdatere innstillinger. Vennligst prøv igjen."
 
 #: lib/Application/Controller/UserPreferencesController.php:122
-#, auto-english-fallback
 msgid "Top"
 msgstr "Topp"
 
 #: lib/Application/Controller/UserPreferencesController.php:123
-#, auto-english-fallback
 msgid "Bottom"
 msgstr "Bunn"
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:60
-#, auto-english-fallback
 msgid "You do not have permission to manage group members."
 msgstr "Du har ikke tillatelse til å administrere gruppemedlemmer."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:103
-#, auto-english-fallback
 msgid "Invalid action."
 msgstr "Ugyldig handling."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:192
-#, auto-english-fallback
 msgid "Please select at least one user."
 msgstr "Vennligst velg minst én bruker."
 
@@ -312,7 +297,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: lib/Application/Controller/DnsWizardController.php:57
-#, auto-english-fallback
 msgid "DNS wizards are not enabled."
 msgstr "DNS-veivisere er ikke aktivert."
 
@@ -321,27 +305,22 @@ msgid "Invalid zone ID."
 msgstr "Ugyldig sone-ID."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:93
-#, auto-english-fallback
 msgid "Zone not found."
 msgstr "Sone ikke funnet."
 
 #: lib/Application/Controller/DnsWizardController.php:80
-#, auto-english-fallback
 msgid "You do not have permission to add records to this zone."
 msgstr "Du har ikke tillatelse til å legge til poster i denne sonen."
 
 #: lib/Application/Controller/DnsWizardFormController.php:114
-#, auto-english-fallback
 msgid "Invalid wizard type."
 msgstr "Ugyldig veivisertype."
 
 #: lib/Application/Controller/DnsWizardFormController.php:199
-#, auto-english-fallback
 msgid "Validation failed:"
 msgstr "Validering mislyktes:"
 
 #: lib/Application/Controller/DnsWizardFormController.php:223
-#, auto-english-fallback
 msgid "Failed to generate record:"
 msgstr "Kunne ikke generere post:"
 
@@ -539,17 +518,14 @@ msgid "Invalid request method."
 msgstr "Ugyldig forespørselsmetode."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:77
-#, auto-english-fallback
 msgid "Invalid group or user ID."
 msgstr "Ugyldig gruppe- eller bruker-ID."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:86
-#, auto-english-fallback
 msgid "Member removed from group successfully."
 msgstr "Medlem fjernet fra gruppe."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:118
-#, auto-english-fallback
 msgid "User was not a member of this group."
 msgstr "Brukeren var ikke medlem av denne gruppen."
 
@@ -558,7 +534,6 @@ msgid "You do not have the permission to add a new user."
 msgstr "Du har ikke tillatelse til å legge til en ny bruker."
 
 #: lib/Application/Controller/EditUserController.php:235
-#, auto-english-fallback
 msgid "Invalid permission template: must be a user template"
 msgstr "Ugyldig tillatelsesmal: må være en brukermal"
 
@@ -596,17 +571,14 @@ msgid "The record could not be deleted."
 msgstr "Posten kunne ikke slettes."
 
 #: lib/Application/Controller/ListLogUsersController.php:67
-#, auto-english-fallback
 msgid "Invalid page number."
 msgstr "Ugyldig sidenummer."
 
 #: lib/Application/Controller/ListLogUsersController.php:69
-#, auto-english-fallback
 msgid "Page number must be at least 1."
 msgstr "Sidenummer må være minst 1."
 
 #: lib/Application/Controller/ListLogUsersController.php:87
-#, auto-english-fallback
 msgid "Page number exceeds available pages."
 msgstr "Sidenummer overskrider tilgjengelige sider."
 
@@ -734,17 +706,14 @@ msgid "You do not have the permission to view this zone."
 msgstr "Du har ikke tillatelse til å se denne sonen."
 
 #: lib/Application/Controller/EditController.php:271
-#, auto-english-fallback
 msgid "Zone type has been changed successfully."
 msgstr "Sonetype er endret."
 
 #: lib/Application/Controller/EditController.php:278
-#, auto-english-fallback
 msgid "Slave master has been changed successfully."
 msgstr "Slave-master er endret."
 
 #: lib/Application/Controller/EditController.php:298
-#, auto-english-fallback
 msgid "Zone template has been changed successfully."
 msgstr "Sonemal er endret."
 
@@ -772,7 +741,8 @@ msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
 msgstr ""
-"Kunne ikke signere sone. Sonevalidering godkjent, men PowerDNS API returnerte en feil. Sjekk PowerDNS-logger for detaljer."
+"Kunne ikke signere sone. Sonevalidering godkjent, men PowerDNS API "
+"returnerte en feil. Sjekk PowerDNS-logger for detaljer."
 
 #: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
@@ -883,7 +853,6 @@ msgid "You do not have the permission to add a record to this zone."
 msgstr "Du har ikke tillatelse til å legge til en post i denne sonen."
 
 #: lib/Application/Controller/AddRecordController.php:226
-#, auto-english-fallback
 msgid "Record successfully added."
 msgstr "Post lagt til."
 
@@ -942,7 +911,6 @@ msgid "Authentication failed: "
 msgstr "Autentisering mislyktes: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
-#, auto-english-fallback
 msgid "You do not have permission to create zone templates."
 msgstr "Du har ikke tillatelse til å opprette sonemaler."
 
@@ -951,7 +919,6 @@ msgid "Template name can't be an empty string."
 msgstr "Malnavn kan ikke være tomt."
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:150
-#, auto-english-fallback
 msgid "Zone template has been created successfully."
 msgstr "Sonemal er opprettet."
 
@@ -968,7 +935,6 @@ msgid "You do not have the permission to add a master zone."
 msgstr "Du har ikke tillatelse til å legge til en hovedsone."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:101
-#, auto-english-fallback
 msgid "At least one user or group must be selected as owner."
 msgstr "Minst én bruker eller gruppe må velges som eier."
 
@@ -981,17 +947,19 @@ msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
-"Sonen ble opprettet, men DNSSEC-signering ble hoppet over på grunn av valideringsfeil:"
+"Sonen ble opprettet, men DNSSEC-signering ble hoppet over på grunn av "
+"valideringsfeil:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:171
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
 msgstr ""
-"Sonen ble opprettet, men sikring med DNSSEC mislyktes. Sonevalidering godkjent, men PowerDNS API returnerte en feil. Sjekk PowerDNS-logger for detaljer."
+"Sonen ble opprettet, men sikring med DNSSEC mislyktes. Sonevalidering "
+"godkjent, men PowerDNS API returnerte en feil. Sjekk PowerDNS-logger for "
+"detaljer."
 
 #: lib/Application/Controller/AddZoneMasterController.php:177
-#, auto-english-fallback
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Sonen er opprettet og signert med DNSSEC."
 
@@ -1000,7 +968,8 @@ msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
 msgstr ""
-"Sonen ble opprettet og signering ble forespurt, men verifisering mislyktes. Sjekk DNSSEC-nøkler."
+"Sonen ble opprettet og signering ble forespurt, men verifisering mislyktes. "
+"Sjekk DNSSEC-nøkler."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:145
 msgid "Zone has been added successfully."
@@ -1024,17 +993,14 @@ msgid "You do not have the permission to view zone templates."
 msgstr "Du har ikke tillatelse til å se sonemaler."
 
 #: lib/Application/Controller/AddGroupController.php:66
-#, auto-english-fallback
 msgid "You do not have permission to create groups."
 msgstr "Du har ikke tillatelse til å opprette grupper."
 
 #: lib/Application/Controller/EditGroupController.php:115
-#, auto-english-fallback
 msgid "Invalid permission template: must be a group template"
 msgstr "Ugyldig tillatelsesmal: må være en gruppemal"
 
 #: lib/Application/Controller/AddGroupController.php:132
-#, auto-english-fallback
 msgid "Group has been created successfully."
 msgstr "Gruppen er opprettet."
 
@@ -1047,7 +1013,6 @@ msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Du har ikke tillatelse til å administrere DNSSEC for denne sonen."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:89
-#, auto-english-fallback
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC-nøkkel ikke funnet eller eksisterer ikke lenger."
 
@@ -1064,22 +1029,18 @@ msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "En feil oppstod under sletting av DNSSEC-nøkkelen: "
 
 #: lib/Application/Controller/SamlCallbackController.php:77
-#, auto-english-fallback
 msgid "SAML authentication is not enabled"
 msgstr "SAML-autentisering er ikke aktivert"
 
 #: lib/Application/Controller/SamlLoginController.php:89
-#, auto-english-fallback
 msgid "No SAML providers are configured"
 msgstr "Ingen SAML-leverandører er konfigurert"
 
 #: lib/Application/Controller/SamlLoginController.php:100
-#, auto-english-fallback
 msgid "Invalid SAML provider"
 msgstr "Ugyldig SAML-leverandør"
 
 #: lib/Application/Controller/SamlCallbackController.php:105
-#, auto-english-fallback
 msgid "SAML authentication failed: "
 msgstr "SAML-autentisering mislyktes: "
 
@@ -1092,12 +1053,10 @@ msgid "You do not have the permission to see any zones."
 msgstr "Du har ikke tillatelse til å se noen soner."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:71
-#, auto-english-fallback
 msgid "You do not have permission to manage zone ownership."
 msgstr "Du har ikke tillatelse til å administrere soneeierskap."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:205
-#, auto-english-fallback
 msgid "Please select at least one zone."
 msgstr "Vennligst velg minst én sone."
 
@@ -1224,22 +1183,18 @@ msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Kunne ikke hente RDAP informasjon fra server %s"
 
 #: lib/Application/Controller/Api/Internal/DnsWizardController.php:409
-#, auto-english-fallback
 msgid "Record created successfully"
 msgstr "Post opprettet"
 
 #: lib/Application/Controller/EditUserController.php:338
-#, auto-english-fallback
 msgid "You do not have permission to manage group memberships."
 msgstr "Du har ikke tillatelse til å administrere gruppemedlemskap."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:79
-#, auto-english-fallback
 msgid "Invalid user or group ID."
 msgstr "Ugyldig bruker- eller gruppe-ID."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:100
-#, auto-english-fallback
 msgid "User removed from group successfully."
 msgstr "Bruker fjernet fra gruppe."
 
@@ -1276,22 +1231,18 @@ msgid "The supermaster has been updated successfully."
 msgstr "Supermasteren har blitt oppdatert."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:60
-#, auto-english-fallback
 msgid "You do not have permission to manage group zones."
 msgstr "Du har ikke tillatelse til å administrere gruppesoner."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:77
-#, auto-english-fallback
 msgid "Invalid group or zone ID."
 msgstr "Ugyldig gruppe- eller sone-ID."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
-#, auto-english-fallback
 msgid "Zone removed from group successfully."
 msgstr "Sone fjernet fra gruppe."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:88
-#, auto-english-fallback
 msgid "Zone was not owned by this group."
 msgstr "Sonen var ikke eid av denne gruppen."
 
@@ -1324,12 +1275,10 @@ msgid "You do not have the permission to edit this user."
 msgstr "Du har ikke tillatelse til å redigere denne brukeren."
 
 #: lib/Application/Controller/EditUserController.php:210
-#, auto-english-fallback
 msgid "You do not have permission to edit a superuser account."
 msgstr "Du har ikke tillatelse til å redigere en superbrukerkonto."
 
 #: lib/Application/Controller/EditUserController.php:346
-#, auto-english-fallback
 msgid "Please select at least one group."
 msgstr "Vennligst velg minst én gruppe."
 
@@ -1393,17 +1342,14 @@ msgid "An unexpected error occurred. Please contact the administrator."
 msgstr "En uventet feil oppstod. Kontakt administratoren."
 
 #: lib/Application/Controller/SamlCallbackController.php:93
-#, auto-english-fallback
 msgid "Unknown SAML endpoint"
 msgstr "Ukjent SAML-endepunkt"
 
 #: lib/Application/Controller/SamlCallbackController.php:119
-#, auto-english-fallback
 msgid "You have been logged out"
 msgstr "Du er logget ut"
 
 #: lib/Application/Controller/SamlCallbackController.php:124
-#, auto-english-fallback
 msgid "Logout completed (with warnings): "
 msgstr "Utlogging fullført (med advarsler): "
 
@@ -1412,7 +1358,6 @@ msgid "You do not have permission to view this record."
 msgstr "Du har ikke tillatelse til å se denne posten."
 
 #: lib/Application/Controller/EditRecordController.php:108
-#, auto-english-fallback
 msgid "You cannot edit records in a SLAVE zone."
 msgstr "Du kan ikke redigere poster i en SLAVE-sone."
 
@@ -1421,7 +1366,6 @@ msgid "You do not have permission to edit this record."
 msgstr "Du har ikke tillatelse til å redigere denne posten."
 
 #: lib/Application/Controller/EditRecordController.php:226
-#, auto-english-fallback
 msgid "Failed to retrieve updated record information."
 msgstr "Kunne ikke hente oppdatert postinformasjon."
 
@@ -1443,14 +1387,16 @@ msgid ""
 "Please contact your administrator or change your password through your "
 "identity provider."
 msgstr ""
-"Brukere autentisert via Single Sign-On kan ikke endre passord her. Vennligst kontakt administrator eller endre passord gjennom identitetsleverandøren."
+"Brukere autentisert via Single Sign-On kan ikke endre passord her. Vennligst "
+"kontakt administrator eller endre passord gjennom identitetsleverandøren."
 
 #: lib/Application/Controller/ChangePasswordController.php:87
 msgid ""
 "External authentication users cannot change their password here. Please "
 "contact your administrator."
 msgstr ""
-"Brukere med ekstern autentisering kan ikke endre passord her. Vennligst kontakt administrator."
+"Brukere med ekstern autentisering kan ikke endre passord her. Vennligst "
+"kontakt administrator."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:116
 msgid "ECDSA P-256 algorithm must use 256 bits"
@@ -1490,12 +1436,10 @@ msgid "Please select both algorithm and bits"
 msgstr "Vennligst velg både algoritme og bits"
 
 #: lib/Application/Controller/EditGroupController.php:79
-#, auto-english-fallback
 msgid "You do not have permission to edit groups."
 msgstr "Du har ikke tillatelse til å redigere grupper."
 
 #: lib/Application/Controller/EditGroupController.php:180
-#, auto-english-fallback
 msgid "Group has been updated successfully."
 msgstr "Gruppen er oppdatert."
 
@@ -1528,22 +1472,18 @@ msgid "Some zone(s) could not be added."
 msgstr "Noen soner kunne ikke legges til."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:169
-#, auto-english-fallback
 msgid "Owner has been added successfully."
 msgstr "Eier er lagt til."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:184
-#, auto-english-fallback
 msgid "Owner has been removed successfully."
 msgstr "Eier er fjernet."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:198
-#, auto-english-fallback
 msgid "Group has been added successfully."
 msgstr "Gruppen er lagt til."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:205
-#, auto-english-fallback
 msgid "Group has been removed successfully."
 msgstr "Gruppen er fjernet."
 
@@ -1557,7 +1497,8 @@ msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr ""
-"DNSSEC-funksjonalitet er ikke tilgjengelig. Vennligst sjekk PowerDNS API-konfigurasjonen."
+"DNSSEC-funksjonalitet er ikke tilgjengelig. Vennligst sjekk PowerDNS API-"
+"konfigurasjonen."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:100
 msgid "Zone key has been successfully deactivated."
@@ -1576,7 +1517,6 @@ msgid "Failed to activate zone key."
 msgstr "Kunne ikke aktivere sonenøkkel."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:116
-#, auto-english-fallback
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "En feil oppstod ved veksling av DNSSEC-nøkkel. Vennligst prøv igjen."
 
@@ -1637,7 +1577,6 @@ msgid "Failed to authenticate against LDAP."
 msgstr "Kunne ikke autentisere mot LDAP."
 
 #: lib/Application/Service/SamlService.php:243
-#, auto-english-fallback
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Autentisering mislyktes: Ugyldig SAML-respons"
 
@@ -1652,7 +1591,6 @@ msgid "No"
 msgstr "Nei"
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
-#, auto-english-fallback
 msgid "This template is assigned to at least one user and one group."
 msgstr "Denne malen er tilordnet minst én bruker og én gruppe."
 
@@ -1661,7 +1599,6 @@ msgid "This template is assigned to at least one user."
 msgstr "Denne malen er tildelt minst én bruker."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
-#, auto-english-fallback
 msgid "This template is assigned to at least one group."
 msgstr "Denne malen er tilordnet minst én gruppe."
 
@@ -1675,7 +1612,6 @@ msgid "An empty password is not allowed"
 msgstr "Et tomt passord er ikke tillatt"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:216
-#, auto-english-fallback
 msgid "LDAP authentication is disabled"
 msgstr "LDAP-autentisering er deaktivert"
 
@@ -1684,7 +1620,8 @@ msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
 msgstr ""
-"Databasefeil: Kunne ikke verifisere brukerautentisering. Vennligst sjekk databasekonfigurasjonen."
+"Databasefeil: Kunne ikke verifisere brukerautentisering. Vennligst sjekk "
+"databasekonfigurasjonen."
 
 #: lib/Domain/Repository/DomainRepository.php:201
 msgid "This is an invalid zone name."
@@ -1775,17 +1712,14 @@ msgid "Error checking template existence: "
 msgstr "Feil ved kontroll av mal eksistens: "
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:45
-#, auto-english-fallback
 msgid "TLSA Record"
 msgstr "TLSA-post"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:46
-#, auto-english-fallback
 msgid "TLS certificate/key authentication (DANE)"
 msgstr "TLS-sertifikat/nøkkelautentisering (DANE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:57
-#, auto-english-fallback
 msgid "DNSSEC Requirement"
 msgstr "DNSSEC-krav"
 
@@ -1795,15 +1729,14 @@ msgid ""
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
 msgstr ""
-"TLSA-poster krever at DNSSEC er aktivert for denne sonen. TLSA-poster uten DNSSEC gir ingen sikkerhetsmessige fordeler og kan bli ignorert av klienter."
+"TLSA-poster krever at DNSSEC er aktivert for denne sonen. TLSA-poster uten "
+"DNSSEC gir ingen sikkerhetsmessige fordeler og kan bli ignorert av klienter."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:91
-#, auto-english-fallback
 msgid "Service Configuration"
 msgstr "Tjenestekonfigurasjon"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:148
-#, auto-english-fallback
 msgid "Port Number"
 msgstr "Portnummer"
 
@@ -1814,27 +1747,22 @@ msgstr ""
 "TCP/UDP-portnummer (443 for HTTPS, 25 for SMTP, 853 for DNS-over-TLS, etc.)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:113
-#, auto-english-fallback
 msgid "Protocol"
 msgstr "Protokoll"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:81
-#, auto-english-fallback
 msgid "Transmission Control Protocol - most common for HTTPS/TLS"
 msgstr "Transmission Control Protocol - mest vanlig for HTTPS/TLS"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:82
-#, auto-english-fallback
 msgid "User Datagram Protocol - for DTLS connections"
 msgstr "User Datagram Protocol - for DTLS-tilkoblinger"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:121
-#, auto-english-fallback
 msgid "Stream Control Transmission Protocol"
 msgstr "Stream Control Transmission Protocol"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:85
-#, auto-english-fallback
 msgid "Transport protocol for the TLS connection"
 msgstr "Transportprotokoll for TLS-tilkoblingen"
 
@@ -1848,55 +1776,46 @@ msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
 msgstr ""
-"Vertsnavn for tjenesten (la stå tom for sonetoppunkt @). Posten opprettes ved _port._protocol.vertsnavn"
+"Vertsnavn for tjenesten (la stå tom for sonetoppunkt @). Posten opprettes "
+"ved _port._protocol.vertsnavn"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:98
-#, auto-english-fallback
 msgid "Certificate Usage"
 msgstr "Sertifikatbruk"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:102
-#, auto-english-fallback
 msgid "Usage"
 msgstr "Bruk"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
-#, auto-english-fallback
 msgid "0 - CA Constraint"
 msgstr "0 - CA-begrensning"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
-#, auto-english-fallback
 msgid "Certificate must chain to specified CA (PKIX-TA)"
 msgstr "Sertifikatet må kjede til spesifisert CA (PKIX-TA)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
-#, auto-english-fallback
 msgid "1 - Service Certificate"
 msgstr "1 - Tjenestesertifikat"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
-#, auto-english-fallback
 msgid "Certificate must match exactly (PKIX-EE)"
 msgstr "Sertifikatet må matche nøyaktig (PKIX-EE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
-#, auto-english-fallback
 msgid "2 - Trust Anchor Assertion"
 msgstr "2 - Tillitsankerpåstand"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
-#, auto-english-fallback
 msgid "Certificate must chain to specified anchor (DANE-TA)"
 msgstr "Sertifikatet må kjede til spesifisert anker (DANE-TA)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
-#, auto-english-fallback
 msgid "3 - Domain-Issued Certificate"
 msgstr "3 - Domeneutstedt sertifikat"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
-#, auto-english-fallback
 msgid "Certificate must match exactly, bypassing PKI (DANE-EE)"
 msgstr "Sertifikatet må matche nøyaktig, omgår PKI (DANE-EE)"
 
@@ -1905,30 +1824,26 @@ msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
 msgstr ""
-"Hvordan sertifikatet skal valideres. Type 3 er mest vanlig for selvignerte eller tilpassede CA-er."
+"Hvordan sertifikatet skal valideres. Type 3 er mest vanlig for selvignerte "
+"eller tilpassede CA-er."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:72
-#, auto-english-fallback
 msgid "Selector"
 msgstr "Velger"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
-#, auto-english-fallback
 msgid "0 - Full Certificate"
 msgstr "0 - Fullt sertifikat"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
-#, auto-english-fallback
 msgid "Use the entire certificate"
 msgstr "Bruk hele sertifikatet"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
-#, auto-english-fallback
 msgid "1 - Public Key"
 msgstr "1 - Offentlig nøkkel"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
-#, auto-english-fallback
 msgid "Use only the Subject Public Key Info (SPKI)"
 msgstr "Bruk kun Subject Public Key Info (SPKI)"
 
@@ -1937,40 +1852,34 @@ msgid ""
 "What part of the certificate to match. Type 1 (public key) survives "
 "certificate renewal."
 msgstr ""
-"Hvilken del av sertifikatet som skal matches. Type 1 (offentlig nøkkel) overlever sertifikatfornyelse."
+"Hvilken del av sertifikatet som skal matches. Type 1 (offentlig nøkkel) "
+"overlever sertifikatfornyelse."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:138
-#, auto-english-fallback
 msgid "Matching Type"
 msgstr "Matchtype"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
-#, auto-english-fallback
 msgid "0 - Exact Match"
 msgstr "0 - Eksakt treff"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
-#, auto-english-fallback
 msgid "Full certificate/key data (very long record)"
 msgstr "Full sertifikat-/nøkkeldata (veldig lang post)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
-#, auto-english-fallback
 msgid "1 - SHA-256 Hash"
 msgstr "1 - SHA-256-hash"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
-#, auto-english-fallback
 msgid "SHA-256 hash of certificate/key"
 msgstr "SHA-256-hash av sertifikat/nøkkel"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
-#, auto-english-fallback
 msgid "2 - SHA-512 Hash"
 msgstr "2 - SHA-512-hash"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
-#, auto-english-fallback
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
 msgstr "SHA-512-hash av sertifikat/nøkkel (sikrere men lengre)"
 
@@ -1979,15 +1888,14 @@ msgid ""
 "How to encode the certificate data. SHA-256 (type 1) provides good balance "
 "of security and length."
 msgstr ""
-"Hvordan kode sertifikatdataene. SHA-256 (type 1) gir god balanse mellom sikkerhet og lengde."
+"Hvordan kode sertifikatdataene. SHA-256 (type 1) gir god balanse mellom "
+"sikkerhet og lengde."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:152
-#, auto-english-fallback
 msgid "Certificate Data"
 msgstr "Sertifikatdata"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:156
-#, auto-english-fallback
 msgid "Certificate Association Data"
 msgstr "Sertifikatassosieringsdata"
 
@@ -1997,50 +1905,43 @@ msgid ""
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
 msgstr ""
-"Heksadesimal hash eller fullstendige sertifikatdata (avhengig av matchtype). For SHA-256: bruk \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
+"Heksadesimal hash eller fullstendige sertifikatdata (avhengig av matchtype). "
+"For SHA-256: bruk \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
+"-pubin -outform DER | openssl dgst -sha256\""
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:184
-#, auto-english-fallback
 msgid "Record Settings"
 msgstr "Postinnstillinger"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:188
-#, auto-english-fallback
 msgid "TTL (seconds)"
 msgstr "TTL (sekunder)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:193
-#, auto-english-fallback
 msgid "Time to live - how long DNS resolvers should cache this record"
 msgstr "Time to live - hvor lenge DNS-resolvere skal mellomlagre denne posten"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:289
-#, auto-english-fallback
 msgid "Port must be between 1 and 65535"
 msgstr "Port må være mellom 1 og 65535"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:233
-#, auto-english-fallback
 msgid "Usage must be 0, 1, 2, or 3"
 msgstr "Bruk må være 0, 1, 2 eller 3"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:238
-#, auto-english-fallback
 msgid "Selector must be 0 or 1"
 msgstr "Velger må være 0 eller 1"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:243
-#, auto-english-fallback
 msgid "Matching type must be 0, 1, or 2"
 msgstr "Matchtype må være 0, 1 eller 2"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:248
-#, auto-english-fallback
 msgid "Certificate association data is required"
 msgstr "Sertifikatassosieringsdata er påkrevd"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:253
-#, auto-english-fallback
 msgid "Certificate data must be hexadecimal (0-9, a-f)"
 msgstr "Sertifikatdata må være heksadesimale (0-9, a-f)"
 
@@ -2050,7 +1951,8 @@ msgid ""
 "SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
 "correct."
 msgstr ""
-"SHA-256-hash skal være 64 heksadesimale tegn, fikk %d. Verifiser at hashen er korrekt."
+"SHA-256-hash skal være 64 heksadesimale tegn, fikk %d. Verifiser at hashen "
+"er korrekt."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:263
 #, php-format
@@ -2058,14 +1960,16 @@ msgid ""
 "SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
 "is correct."
 msgstr ""
-"SHA-512-hash skal være 128 heksadesimale tegn, fikk %d. Verifiser at hashen er korrekt."
+"SHA-512-hash skal være 128 heksadesimale tegn, fikk %d. Verifiser at hashen "
+"er korrekt."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:267
 msgid ""
 "Full certificate data seems too short. Ensure you provided the complete "
 "certificate."
 msgstr ""
-"Fullstendige sertifikatdata virker for korte. Sørg for at du oppga hele sertifikatet."
+"Fullstendige sertifikatdata virker for korte. Sørg for at du oppga hele "
+"sertifikatet."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:274
 #: templates/modern/edit.html:91 templates/modern/edit.html:607
@@ -2077,55 +1981,46 @@ msgid ""
 "CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
 "DNSSEC, TLSA records provide NO security benefit."
 msgstr ""
-"KRITISK: TLSA-poster krever at DNSSEC er aktivert på denne sonen. Uten DNSSEC gir TLSA-poster INGEN sikkerhetsmessige fordeler."
+"KRITISK: TLSA-poster krever at DNSSEC er aktivert på denne sonen. Uten "
+"DNSSEC gir TLSA-poster INGEN sikkerhetsmessige fordeler."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:46
-#, auto-english-fallback
 msgid "DMARC Record"
 msgstr "DMARC-post"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:47
-#, auto-english-fallback
 msgid "Email authentication policy and reporting configuration"
 msgstr "E-postautentiseringspolicy og rapporteringskonfigurasjon"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:59
-#, auto-english-fallback
 msgid "Policy Settings"
 msgstr "Policyinnstillinger"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:138
-#, auto-english-fallback
 msgid "Policy"
 msgstr "Policy"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
-#, auto-english-fallback
 msgid "None (monitor only)"
 msgstr "Ingen (kun overvåking)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
-#, auto-english-fallback
 msgid "No action taken, just collect reports for analysis"
 msgstr "Ingen handling utført, bare samle rapporter for analyse"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
-#, auto-english-fallback
 msgid "Quarantine"
 msgstr "Karantene"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:69
-#, auto-english-fallback
 msgid "Treat suspicious emails as spam/junk"
 msgstr "Behandle mistenkelige e-poster som spam/søppelpost"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
-#, auto-english-fallback
 msgid "Reject"
 msgstr "Avvis"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:70
-#, auto-english-fallback
 msgid "Block delivery of suspicious emails entirely"
 msgstr "Blokker levering av mistenkelige e-poster helt"
 
@@ -2135,47 +2030,38 @@ msgstr ""
 "Start med \"ingen\" for å samle data før du håndhever en strengere policy."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:76
-#, auto-english-fallback
 msgid "Subdomain Policy"
 msgstr "Underdomene-policy"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
-#, auto-english-fallback
 msgid "Same as domain policy"
 msgstr "Samme som domene-policy"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
-#, auto-english-fallback
 msgid "Use the same policy as the main domain"
 msgstr "Bruk samme policy som hoveddomenet"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
-#, auto-english-fallback
 msgid "None"
 msgstr "Ingen"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
-#, auto-english-fallback
 msgid "Monitor only for subdomains"
 msgstr "Kun overvåking for underdomener"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
-#, auto-english-fallback
 msgid "Quarantine suspicious subdomain emails"
 msgstr "Sett mistenkelige underdomene-e-poster i karantene"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
-#, auto-english-fallback
 msgid "Reject suspicious subdomain emails"
 msgstr "Avvis mistenkelige underdomene-e-poster"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:86
-#, auto-english-fallback
 msgid "Policy for emails from subdomains (e.g., mail.example.com)"
 msgstr "Policy for e-poster fra underdomener (f.eks. mail.example.com)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:90
-#, auto-english-fallback
 msgid "Policy Application Percentage"
 msgstr "Policyandel"
 
@@ -2184,25 +2070,22 @@ msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
 msgstr ""
-"Prosentandel av meldinger policyen skal gjelde for (100 = alle meldinger). Bruk lavere verdier under policyutrulling."
+"Prosentandel av meldinger policyen skal gjelde for (100 = alle meldinger). "
+"Bruk lavere verdier under policyutrulling."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:101
-#, auto-english-fallback
 msgid "Reporting Settings"
 msgstr "Rapporteringsinnstillinger"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:105
-#, auto-english-fallback
 msgid "Aggregate Report Email"
 msgstr "Aggregert rapport e-post"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:109
-#, auto-english-fallback
 msgid "Email address to receive daily aggregate reports"
 msgstr "E-postadresse for daglige aggregerte rapporter"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:113
-#, auto-english-fallback
 msgid "Forensic Report Email"
 msgstr "Detaljert rapport e-post"
 
@@ -2211,30 +2094,26 @@ msgid ""
 "Email address to receive detailed failure reports (optional, can be high "
 "volume)"
 msgstr ""
-"E-postadresse for detaljerte feilrapporter (valgfritt, kan være store mengder)"
+"E-postadresse for detaljerte feilrapporter (valgfritt, kan være store "
+"mengder)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:121
-#, auto-english-fallback
 msgid "Forensic Reporting Options"
 msgstr "Alternativer for detaljert rapportering"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:125
-#, auto-english-fallback
 msgid "Generate reports if all authentication mechanisms fail"
 msgstr "Generer rapporter hvis alle autentiseringsmekanismer feiler"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:126
-#, auto-english-fallback
 msgid "Generate reports if any authentication mechanism fails"
 msgstr "Generer rapporter hvis noen autentiseringsmekanisme feiler"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:127
-#, auto-english-fallback
 msgid "Generate reports if DKIM check fails"
 msgstr "Generer rapporter hvis DKIM-sjekk feiler"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:128
-#, auto-english-fallback
 msgid "Generate reports if SPF check fails"
 msgstr "Generer rapporter hvis SPF-sjekk feiler"
 
@@ -2242,75 +2121,62 @@ msgstr "Generer rapporter hvis SPF-sjekk feiler"
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
 msgstr ""
-"Når detaljerte rapporter skal genereres (gjelder kun hvis e-post for detaljerte rapporter er angitt)"
+"Når detaljerte rapporter skal genereres (gjelder kun hvis e-post for "
+"detaljerte rapporter er angitt)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:135
-#, auto-english-fallback
 msgid "Alignment Settings"
 msgstr "Justeringsinnstillinger"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:136
-#, auto-english-fallback
 msgid "Advanced settings for SPF and DKIM alignment modes"
 msgstr "Avanserte innstillinger for SPF- og DKIM-justeringsmodus"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:140
-#, auto-english-fallback
 msgid "DKIM Alignment Mode"
 msgstr "DKIM-justeringsmodus"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
-#, auto-english-fallback
 msgid "Relaxed"
 msgstr "Avslappet"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:145
-#, auto-english-fallback
 msgid "DKIM domain can be subdomain of From: domain"
 msgstr "DKIM-domene kan være underdomene av From:-domene"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
-#, auto-english-fallback
 msgid "Strict"
 msgstr "Streng"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:146
-#, auto-english-fallback
 msgid "DKIM domain must exactly match From: domain"
 msgstr "DKIM-domene må matche From:-domene nøyaktig"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:151
-#, auto-english-fallback
 msgid "SPF Alignment Mode"
 msgstr "SPF-justeringsmodus"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
-#, auto-english-fallback
 msgid "SPF domain can be subdomain of From: domain"
 msgstr "SPF-domene kan være underdomene av From:-domene"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
-#, auto-english-fallback
 msgid "SPF domain must exactly match From: domain"
 msgstr "SPF-domene må matche From:-domene nøyaktig"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:261
-#, auto-english-fallback
 msgid "Policy is required"
 msgstr "Policy er påkrevd"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:263
-#, auto-english-fallback
 msgid "Invalid policy value"
 msgstr "Ugyldig policyverdi"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:268
-#, auto-english-fallback
 msgid "Invalid subdomain policy value"
 msgstr "Ugyldig underdomene-policyverdi"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:275
-#, auto-english-fallback
 msgid "Percentage must be between 0 and 100"
 msgstr "Prosentandel må være mellom 0 og 100"
 
@@ -2320,15 +2186,14 @@ msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
 msgstr ""
-"Policy vil kun gjelde for %d%% av meldinger. Bruk 100%% når testing er fullført."
+"Policy vil kun gjelde for %d%% av meldinger. Bruk 100%% når testing er "
+"fullført."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:283
-#, auto-english-fallback
 msgid "Invalid aggregate report email address"
 msgstr "Ugyldig e-postadresse for aggregert rapport"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:287
-#, auto-english-fallback
 msgid "Invalid forensic report email address"
 msgstr "Ugyldig e-postadresse for detaljert rapport"
 
@@ -2336,98 +2201,83 @@ msgstr "Ugyldig e-postadresse for detaljert rapport"
 msgid ""
 "No reporting email addresses configured. You will not receive DMARC reports."
 msgstr ""
-"Ingen rapporterings-e-postadresser konfigurert. Du vil ikke motta DMARC-rapporter."
+"Ingen rapporterings-e-postadresser konfigurert. Du vil ikke motta DMARC-"
+"rapporter."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:305
 msgid ""
 "Using \"p=none\" provides monitoring only. Consider stricter policy "
 "(quarantine/reject) once you've reviewed reports."
 msgstr ""
-"Bruk av \"p=none\" gir kun overvåking. Vurder strengere policy (karantene/avvis) når du har gjennomgått rapporter."
+"Bruk av \"p=none\" gir kun overvåking. Vurder strengere policy (karantene/"
+"avvis) når du har gjennomgått rapporter."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:48
-#, auto-english-fallback
 msgid "SPF Record"
 msgstr "SPF-post"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:49
-#, auto-english-fallback
 msgid "Authorized mail server configuration"
 msgstr "Autorisert e-postserverkonfigurasjon"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:61
-#, auto-english-fallback
 msgid "Basic Mechanisms"
 msgstr "Grunnleggende mekanismer"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:62
-#, auto-english-fallback
 msgid "Select common mechanisms to authorize email sending"
 msgstr "Velg vanlige mekanismer for å autorisere e-postsending"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:66
-#, auto-english-fallback
 msgid "MX Records"
 msgstr "MX-poster"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:69
-#, auto-english-fallback
 msgid "Authorize all servers listed in MX records for this domain"
 msgstr "Autoriser alle servere oppført i MX-poster for dette domenet"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:73
-#, auto-english-fallback
 msgid "A/AAAA Records"
 msgstr "A/AAAA-poster"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:76
-#, auto-english-fallback
 msgid "Authorize the domain's A and AAAA records"
 msgstr "Autoriser domenets A- og AAAA-poster"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:81
-#, auto-english-fallback
 msgid "IP Addresses"
 msgstr "IP-adresser"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:82
-#, auto-english-fallback
 msgid "Authorized IP addresses and networks (CIDR notation supported)"
 msgstr "Autoriserte IP-adresser og nettverk (CIDR-notasjon støttes)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:86
-#, auto-english-fallback
 msgid "IPv4 Addresses"
 msgstr "IPv4-adresser"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:90
-#, auto-english-fallback
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 msgstr ""
 "Én IP-adresse eller nettverk per linje (f.eks. 192.0.2.1 eller 192.0.2.0/24)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:94
-#, auto-english-fallback
 msgid "IPv6 Addresses"
 msgstr "IPv6-adresser"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:98
-#, auto-english-fallback
 msgid "One IPv6 address or network per line"
 msgstr "Én IPv6-adresse eller nettverk per linje"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:103
-#, auto-english-fallback
 msgid "Include Mechanisms"
 msgstr "Inkluderingsmekanismer"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:104
-#, auto-english-fallback
 msgid "Include SPF records from other domains"
 msgstr "Inkluder SPF-poster fra andre domener"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:108
-#, auto-english-fallback
 msgid "Include Domains"
 msgstr "Inkluder domener"
 
@@ -2436,55 +2286,46 @@ msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
 msgstr ""
-"Domener hvis SPF-poster skal inkluderes (én per linje). Vanlige: _spf.google.com, spf.protection.outlook.com"
+"Domener hvis SPF-poster skal inkluderes (én per linje). Vanlige: "
+"_spf.google.com, spf.protection.outlook.com"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:117
-#, auto-english-fallback
 msgid "Additional Mechanisms"
 msgstr "Tilleggsmekanismer"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:121
-#, auto-english-fallback
 msgid "Additional A/AAAA Hosts"
 msgstr "Ekstra A/AAAA-verter"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:125
-#, auto-english-fallback
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
 msgstr "Autoriser spesifikke vertsnavns A/AAAA-poster (én per linje)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:129
-#, auto-english-fallback
 msgid "Additional MX Hosts"
 msgstr "Ekstra MX-verter"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:133
-#, auto-english-fallback
 msgid "Authorize MX records from other domains (one per line)"
 msgstr "Autoriser MX-poster fra andre domener (én per linje)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:142
-#, auto-english-fallback
 msgid "Default Action"
 msgstr "Standardhandling"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:147
-#, auto-english-fallback
 msgid "Pass all - allows anyone to send (insecure)"
 msgstr "Godta alle - tillater hvem som helst å sende (usikker)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:148
-#, auto-english-fallback
 msgid "Neutral (no policy)"
 msgstr "Nøytral (ingen policy)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:149
-#, auto-english-fallback
 msgid "Soft fail (mark as spam but accept)"
 msgstr "Myk feil (merk som spam men aksepter)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:150
-#, auto-english-fallback
 msgid "Fail (reject unauthorized emails)"
 msgstr "Feil (avvis uautoriserte e-poster)"
 
@@ -2493,7 +2334,8 @@ msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
 msgstr ""
-"Policy for e-poster som ikke matcher noen mekanisme. Start med ~all (softfail) for testing."
+"Policy for e-poster som ikke matcher noen mekanisme. Start med ~all "
+"(softfail) for testing."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:289
 #, php-format
@@ -2502,7 +2344,9 @@ msgid ""
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
 msgstr ""
-"SPF-posten overskrider DNS-oppslagsgrensen (%d/10). Dette vil føre til at SPF-validering feiler. Fjern noen include/a/mx-mekanismer eller bruk ip4/ip6 i stedet."
+"SPF-posten overskrider DNS-oppslagsgrensen (%d/10). Dette vil føre til at "
+"SPF-validering feiler. Fjern noen include/a/mx-mekanismer eller bruk ip4/ip6 "
+"i stedet."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:294
 #, php-format
@@ -2510,22 +2354,21 @@ msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
 msgstr ""
-"SPF-posten har %d DNS-oppslag (grense er 10). Vurder å bruke ip4/ip6 i stedet for include-mekanismer, eller konsolider includes for å holde deg under grensen."
+"SPF-posten har %d DNS-oppslag (grense er 10). Vurder å bruke ip4/ip6 i "
+"stedet for include-mekanismer, eller konsolider includes for å holde deg "
+"under grensen."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:304
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv4 address or network: %s"
 msgstr "Ugyldig IPv4-adresse eller nettverk: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:313
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv6 address or network: %s"
 msgstr "Ugyldig IPv6-adresse eller nettverk: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:323
-#, auto-english-fallback
 #, php-format
 msgid "Invalid include domain: %s"
 msgstr "Ugyldig include-domene: %s"
@@ -2534,37 +2377,34 @@ msgstr "Ugyldig include-domene: %s"
 msgid ""
 "No mechanisms selected. This SPF record will only contain the default action."
 msgstr ""
-"Ingen mekanismer valgt. Denne SPF-posten vil kun inneholde standardhandlingen."
+"Ingen mekanismer valgt. Denne SPF-posten vil kun inneholde "
+"standardhandlingen."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:348
 msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
 msgstr ""
-"Bruk av \"+all\" tillater hvem som helst å sende e-post som ditt domene. Dette frarådes sterkt."
+"Bruk av \"+all\" tillater hvem som helst å sende e-post som ditt domene. "
+"Dette frarådes sterkt."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:43
-#, auto-english-fallback
 msgid "CAA Record"
 msgstr "CAA-post"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:44
-#, auto-english-fallback
 msgid "Certificate authority authorization"
 msgstr "Sertifikatautoritet-autorisasjon"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:68
-#, auto-english-fallback
 msgid "Custom (enter manually)"
 msgstr "Tilpasset (skriv inn manuelt)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:74
-#, auto-english-fallback
 msgid "Certificate Authority"
 msgstr "Sertifikatautoritet"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:78
-#, auto-english-fallback
 msgid "CA Provider"
 msgstr "CA-leverandør"
 
@@ -2573,10 +2413,10 @@ msgid ""
 "Select the certificate authority authorized to issue certificates for this "
 "domain"
 msgstr ""
-"Velg sertifikatautoriteten som er autorisert til å utstede sertifikater for dette domenet"
+"Velg sertifikatautoriteten som er autorisert til å utstede sertifikater for "
+"dette domenet"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:87
-#, auto-english-fallback
 msgid "CA Domain (Custom)"
 msgstr "CA-domene (Tilpasset)"
 
@@ -2587,7 +2427,6 @@ msgstr ""
 "Skriv inn CA-domenenavnet manuelt (vises kun når \"Tilpasset\" er valgt)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:97
-#, auto-english-fallback
 msgid "Certificate Type"
 msgstr "Sertifikattype"
 
@@ -2597,77 +2436,62 @@ msgid "Tag"
 msgstr "Merke"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
-#, auto-english-fallback
 msgid "Issue"
 msgstr "Utsted"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
-#, auto-english-fallback
 msgid "Authorize issuance of standard certificates"
 msgstr "Autoriser utstedelse av standard sertifikater"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
-#, auto-english-fallback
 msgid "Issue Wildcard"
 msgstr "Utsted wildcard"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
-#, auto-english-fallback
 msgid "Authorize issuance of wildcard certificates (*.example.com)"
 msgstr "Autoriser utstedelse av wildcard-sertifikater (*.example.com)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
-#, auto-english-fallback
 msgid "Incident Reporting"
 msgstr "Hendelsesrapportering"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
-#, auto-english-fallback
 msgid "URL to report certificate issuance violations"
 msgstr "URL for å rapportere brudd på sertifikatutstedelse"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:110
-#, auto-english-fallback
 msgid "Type of authorization or reporting"
 msgstr "Type autorisasjon eller rapportering"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:114
-#, auto-english-fallback
 msgid "Reporting URL"
 msgstr "Rapporterings-URL"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:119
-#, auto-english-fallback
 msgid "URL or email for incident reports (mailto: or https:)"
 msgstr "URL eller e-post for hendelsesrapporter (mailto: eller https:)"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:103
-#, auto-english-fallback
 msgid "Advanced Options"
 msgstr "Avanserte alternativer"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:130
-#, auto-english-fallback
 msgid "Flags"
 msgstr "Flagg"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
-#, auto-english-fallback
 msgid "Non-critical"
 msgstr "Ikke-kritisk"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
-#, auto-english-fallback
 msgid "Allow fallback if not understood"
 msgstr "Tillat tilbakefall hvis ikke forstått"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
-#, auto-english-fallback
 msgid "Critical"
 msgstr "Kritisk"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
-#, auto-english-fallback
 msgid "Reject if not understood - strict enforcement"
 msgstr "Avvis hvis ikke forstått - streng håndheving"
 
@@ -2676,15 +2500,14 @@ msgid ""
 "Non-critical (0) provides better compatibility. Critical (128) enforces "
 "strict CAA processing."
 msgstr ""
-"Ikke-kritisk (0) gir bedre kompatibilitet. Kritisk (128) håndhever streng CAA-behandling."
+"Ikke-kritisk (0) gir bedre kompatibilitet. Kritisk (128) håndhever streng "
+"CAA-behandling."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:204
-#, auto-english-fallback
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
 msgstr "Ugyldig CAA-tagg. Må være issue, issuewild eller iodef"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:210
-#, auto-english-fallback
 msgid "CA provider is required"
 msgstr "CA-leverandør er påkrevd"
 
@@ -2693,7 +2516,6 @@ msgid "Custom CA domain is required when \"Custom\" is selected"
 msgstr "Tilpasset CA-domene er påkrevd når \"Tilpasset\" er valgt"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:215
-#, auto-english-fallback
 msgid "Invalid CA domain format"
 msgstr "Ugyldig CA-domeneformat"
 
@@ -2702,21 +2524,19 @@ msgid ""
 "Using \";\" allows ALL certificate authorities to issue certificates. This "
 "defeats the purpose of CAA records."
 msgstr ""
-"Bruk av \";\" tillater ALLE sertifikatautoriteter å utstede sertifikater. Dette ødelegger formålet med CAA-poster."
+"Bruk av \";\" tillater ALLE sertifikatautoriteter å utstede sertifikater. "
+"Dette ødelegger formålet med CAA-poster."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:227
-#, auto-english-fallback
 msgid "Reporting URL is required for iodef tag"
 msgstr "Rapporterings-URL er påkrevd for iodef-tagg"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
-#, auto-english-fallback
 #, php-format
 msgid "Reporting URL must start with %s, %s, or %s"
 msgstr "Rapporterings-URL må starte med %s, %s eller %s"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
-#, auto-english-fallback
 msgid "Flags must be 0 or 128"
 msgstr "Flagg må være 0 eller 128"
 
@@ -2725,15 +2545,14 @@ msgid ""
 "Critical flag (128) is set. Systems that do not understand CAA records will "
 "reject operations. Use 0 unless you have a specific requirement."
 msgstr ""
-"Kritisk flagg (128) er satt. Systemer som ikke forstår CAA-poster vil avvise operasjoner. Bruk 0 med mindre du har et spesifikt krav."
+"Kritisk flagg (128) er satt. Systemer som ikke forstår CAA-poster vil avvise "
+"operasjoner. Bruk 0 med mindre du har et spesifikt krav."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:46
-#, auto-english-fallback
 msgid "DKIM Record"
 msgstr "DKIM-post"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:47
-#, auto-english-fallback
 msgid "Email signature verification public key"
 msgstr "Offentlig nøkkel for e-postsignaturverifisering"
 
@@ -2749,10 +2568,12 @@ msgid ""
 "the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your "
 "mail server (never share it)."
 msgstr ""
-"DKIM beviser at e-poster er fra ditt domene ved bruk av kryptografiske signaturer. Generer DKIM-nøkkelparet på E-POSTSERVEREN din (Postfix, Exim, etc.). Kun den OFFENTLIGE NØKKELEN legges i denne DNS-posten. Hold den PRIVATE NØKKELEN sikker på e-postserveren din (del den aldri)."
+"DKIM beviser at e-poster er fra ditt domene ved bruk av kryptografiske "
+"signaturer. Generer DKIM-nøkkelparet på E-POSTSERVEREN din (Postfix, Exim, "
+"etc.). Kun den OFFENTLIGE NØKKELEN legges i denne DNS-posten. Hold den "
+"PRIVATE NØKKELEN sikker på e-postserveren din (del den aldri)."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:68
-#, auto-english-fallback
 msgid "DKIM Configuration"
 msgstr "DKIM-konfigurasjon"
 
@@ -2762,10 +2583,11 @@ msgid ""
 "\"202501\", or service name like \"google\"). Only alphanumeric characters, "
 "hyphens, and underscores allowed."
 msgstr ""
-"Velger for å identifisere DKIM-nøkkelen (vanligvis \"default\", tidsstempel som \"202501\", eller tjenestenavn som \"google\"). Kun alfanumeriske tegn, bindestreker og understreker tillatt."
+"Velger for å identifisere DKIM-nøkkelen (vanligvis \"default\", tidsstempel "
+"som \"202501\", eller tjenestenavn som \"google\"). Kun alfanumeriske tegn, "
+"bindestreker og understreker tillatt."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:81
-#, auto-english-fallback
 msgid "Public Key"
 msgstr "Offentlig nøkkel"
 
@@ -2774,30 +2596,26 @@ msgid ""
 "Paste the base64-encoded public key from your mail server. Spaces and "
 "newlines will be automatically removed."
 msgstr ""
-"Lim inn base64-kodet offentlig nøkkel fra e-postserveren din. Mellomrom og linjeskift fjernes automatisk."
+"Lim inn base64-kodet offentlig nøkkel fra e-postserveren din. Mellomrom og "
+"linjeskift fjernes automatisk."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:90
-#, auto-english-fallback
 msgid "Key Type"
 msgstr "Nøkkeltype"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:95
-#, auto-english-fallback
 msgid "Widely supported by all mail servers"
 msgstr "Bredt støttet av alle e-postservere"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:96
-#, auto-english-fallback
 msgid "Newer algorithm - not universally supported yet"
 msgstr "Nyere algoritme - ikke universelt støttet ennå"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:98
-#, auto-english-fallback
 msgid "Encryption algorithm for the DKIM public key"
 msgstr "Krypteringsalgoritme for DKIM offentlig nøkkel"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:109
-#, auto-english-fallback
 msgid "Testing Mode"
 msgstr "Testmodus"
 
@@ -2806,10 +2624,10 @@ msgid ""
 "Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
 "Use during initial deployment."
 msgstr ""
-"Aktiver testmodus (t=y). DKIM-signaturer vil være tilstede men ikke håndhevet. Bruk under innledende utrulling."
+"Aktiver testmodus (t=y). DKIM-signaturer vil være tilstede men ikke "
+"håndhevet. Bruk under innledende utrulling."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:116
-#, auto-english-fallback
 msgid "Strict Subdomain Mode"
 msgstr "Streng underdomene-modus"
 
@@ -2817,10 +2635,10 @@ msgstr "Streng underdomene-modus"
 msgid ""
 "Enable strict subdomain mode (t=s). Rejects unsigned mail from subdomains."
 msgstr ""
-"Aktiver streng underdomene-modus (t=s). Avviser usignert post fra underdomener."
+"Aktiver streng underdomene-modus (t=s). Avviser usignert post fra "
+"underdomener."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:198
-#, auto-english-fallback
 msgid "Selector is required"
 msgstr "Velger er påkrevd"
 
@@ -2831,12 +2649,10 @@ msgstr ""
 "Velger kan kun inneholde alfanumeriske tegn, bindestreker og understreker"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:205
-#, auto-english-fallback
 msgid "Public key is required"
 msgstr "Offentlig nøkkel er påkrevd"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:211
-#, auto-english-fallback
 msgid "Public key must be valid base64-encoded data"
 msgstr "Offentlig nøkkel må være gyldige base64-kodede data"
 
@@ -2845,41 +2661,42 @@ msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
 msgstr ""
-"Offentlig nøkkel virker uvanlig kort. Sørg for at du kopierte hele nøkkelen fra e-postserveren din."
+"Offentlig nøkkel virker uvanlig kort. Sørg for at du kopierte hele nøkkelen "
+"fra e-postserveren din."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:221
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
 msgstr ""
-"Du limte inn en PRIVAT NØKKEL. Kun den OFFENTLIGE NØKKELEN skal være i DNS. Del aldri din private nøkkel!"
+"Du limte inn en PRIVAT NØKKEL. Kun den OFFENTLIGE NØKKELEN skal være i DNS. "
+"Del aldri din private nøkkel!"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:225
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
 msgstr ""
-"Offentlig nøkkel ser ut til å inneholde PEM-hoder (BEGIN/END). Kun base64-innholdet mellom hoder er nødvendig."
+"Offentlig nøkkel ser ut til å inneholde PEM-hoder (BEGIN/END). Kun base64-"
+"innholdet mellom hoder er nødvendig."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:239
 msgid ""
 "Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
 "this once testing is complete."
 msgstr ""
-"Testmodus er aktivert (t=y). DKIM-signaturer vil ikke bli håndhevet. Deaktiver dette når testing er fullført."
+"Testmodus er aktivert (t=y). DKIM-signaturer vil ikke bli håndhevet. "
+"Deaktiver dette når testing er fullført."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:68
-#, auto-english-fallback
 msgid "SRV Record"
 msgstr "SRV-post"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:69
-#, auto-english-fallback
 msgid "Service location (hostname and port)"
 msgstr "Tjenesteplassering (vertsnavn og port)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:95
-#, auto-english-fallback
 msgid "Service"
 msgstr "Tjeneste"
 
@@ -2889,32 +2706,26 @@ msgstr ""
 "Velg en vanlig tjeneste eller velg \"Tilpasset\" for å skrive inn manuelt"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:104
-#, auto-english-fallback
 msgid "Custom Service Name"
 msgstr "Tilpasset tjenestenavn"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:109
-#, auto-english-fallback
 msgid "Service name must start with underscore (e.g., _myservice)"
 msgstr "Tjenestenavn må starte med understreking (f.eks. _mintjeneste)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:118
-#, auto-english-fallback
 msgid "Transmission Control Protocol - most common"
 msgstr "Transmission Control Protocol - mest vanlig"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:119
-#, auto-english-fallback
 msgid "User Datagram Protocol - connectionless"
 msgstr "User Datagram Protocol - tilkoblingsfri"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:120
-#, auto-english-fallback
 msgid "Transport Layer Security"
 msgstr "Transport Layer Security"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:123
-#, auto-english-fallback
 msgid "Transport protocol for the service"
 msgstr "Transportprotokoll for tjenesten"
 
@@ -2928,15 +2739,14 @@ msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
 msgstr ""
-"Domenename (la stå tom for sonetoppunkt @). Fullt postnavn blir: _tjeneste._protokoll.domene"
+"Domenename (la stå tom for sonetoppunkt @). Fullt postnavn blir: "
+"_tjeneste._protokoll.domene"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:136
-#, auto-english-fallback
 msgid "Target Server"
 msgstr "Målserver"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:140
-#, auto-english-fallback
 msgid "Target Hostname"
 msgstr "Målvertsnavn"
 
@@ -2945,7 +2755,8 @@ msgid ""
 "Hostname of the server providing this service (must be a hostname with an A/"
 "AAAA record, not an IP address)"
 msgstr ""
-"Vertsnavn til serveren som tilbyr denne tjenesten (må være et vertsnavn med A/AAAA-post, ikke en IP-adresse)"
+"Vertsnavn til serveren som tilbyr denne tjenesten (må være et vertsnavn med "
+"A/AAAA-post, ikke en IP-adresse)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:154
 msgid ""
@@ -2955,7 +2766,6 @@ msgstr ""
 "Portnummer der tjenesten lytter (fylles automatisk for vanlige tjenester)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:159
-#, auto-english-fallback
 msgid "Priority & Load Balancing"
 msgstr "Prioritet og lastbalansering"
 
@@ -2969,10 +2779,10 @@ msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
 msgstr ""
-"Lavere verdier har høyere prioritet (10 er en god standard). Klienter prøver servere i prioritetsrekkefølge."
+"Lavere verdier har høyere prioritet (10 er en god standard). Klienter prøver "
+"servere i prioritetsrekkefølge."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:173
-#, auto-english-fallback
 msgid "Weight"
 msgstr "Vekt"
 
@@ -2981,30 +2791,26 @@ msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
 msgstr ""
-"For lastbalansering mellom servere med samme prioritet. Høyere vekt = mer trafikk. 0 = ingen lastbalansering."
+"For lastbalansering mellom servere med samme prioritet. Høyere vekt = mer "
+"trafikk. 0 = ingen lastbalansering."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:261
-#, auto-english-fallback
 msgid "Service is required"
 msgstr "Tjeneste er påkrevd"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:265
-#, auto-english-fallback
 msgid "Custom service name is required"
 msgstr "Tilpasset tjenestenavn er påkrevd"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:267
-#, auto-english-fallback
 msgid "Service name must contain only alphanumeric characters and hyphens"
 msgstr "Tjenestenavn kan kun inneholde alfanumeriske tegn og bindestreker"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:273
-#, auto-english-fallback
 msgid "Target hostname is required"
 msgstr "Målvertsnavn er påkrevd"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:277
-#, auto-english-fallback
 msgid "Invalid target hostname format"
 msgstr "Ugyldig målvertsnavnformat"
 
@@ -3013,10 +2819,10 @@ msgid ""
 "Target must be a hostname, not an IP address. Create an A or AAAA record for "
 "the hostname first."
 msgstr ""
-"Mål må være et vertsnavn, ikke en IP-adresse. Opprett en A- eller AAAA-post for vertsnavnet først."
+"Mål må være et vertsnavn, ikke en IP-adresse. Opprett en A- eller AAAA-post "
+"for vertsnavnet først."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:295
-#, auto-english-fallback
 msgid "Priority must be between 0 and 65535"
 msgstr "Prioritet må være mellom 0 og 65535"
 
@@ -3024,15 +2830,14 @@ msgstr "Prioritet må være mellom 0 og 65535"
 msgid ""
 "Priority 0 is valid but unusual. Most services use priority 10 or higher."
 msgstr ""
-"Prioritet 0 er gyldig men uvanlig. De fleste tjenester bruker prioritet 10 eller høyere."
+"Prioritet 0 er gyldig men uvanlig. De fleste tjenester bruker prioritet 10 "
+"eller høyere."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:305
-#, auto-english-fallback
 msgid "Weight must be between 0 and 65535"
 msgstr "Vekt må være mellom 0 og 65535"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:310
-#, auto-english-fallback
 msgid "Invalid domain format"
 msgstr "Ugyldig domeneformat"
 
@@ -5763,7 +5568,7 @@ msgstr ""
 "Utløpstiden må være senere enn oppstartstiden. Denne signaturen ser ut til å "
 "ha utløpt før den ble gyldig."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
@@ -5771,7 +5576,7 @@ msgstr ""
 "KRITISK: Denne signaturen har allerede utløpt. Den vil ikke bli validert av "
 "DNSSEC resolvere."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
@@ -5779,12 +5584,12 @@ msgstr ""
 "ADVARSEL: Denne signaturen vil utløpe innen de neste 7 dagene. Vurder å "
 "fornye den snart."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
 msgstr ""
 "Denne signaturen vil utløpe innen de neste 30 dagene. Planlegg for fornyelse."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
@@ -5792,7 +5597,7 @@ msgstr ""
 "ADVARSEL: Denne signaturen er ikke gyldig ennå. Den vil ikke bli validert av "
 "DNSSEC resolvere før oppstartstiden er nådd."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:291
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
 msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
@@ -5802,35 +5607,35 @@ msgstr ""
 "praksis. Lange gyldighetsperioder øker sårbarheten i tilfelle "
 "nøkkelkompromittering."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:295
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
 msgstr ""
 "Kunne ikke parse signatur-tidsstempler for å sjekke gyldighetsperioden."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:300
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:302
 msgid "RRSIG key tag field must be a numeric value."
 msgstr "RRSIG nøkkel-tag felt må være en numerisk verdi."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:305
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:307
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
 msgstr "RRSIG nøkkel-tag må være en gyldig verdi mellom 0 og 65535."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:310
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
 msgstr ""
 "RRSIG signatar-navn må være et fullstendig kvalifisert domenenavn (slutte "
 "med punktum)."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:316
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
 msgstr "RRSIG signatar-navn må være et gyldig domenenavn."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:321
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
 msgstr "RRSIG signatur kan ikke være tomt."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:326
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
@@ -5838,7 +5643,7 @@ msgstr ""
 "Signaturen ser ikke ut til å være gyldig base64 kodede data. RRSIG "
 "signaturer bør være base64 kodet."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
 "RRSIG records are part of DNSSEC and provide cryptographic signatures for "
 "DNS records. They should be managed automatically by the DNS server."
@@ -5846,7 +5651,7 @@ msgstr ""
 "RRSIG poster er del av DNSSEC og gir kryptografiske signaturer for DNS "
 "poster. De bør administreres automatisk av DNS serveren."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:333
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
@@ -6535,36 +6340,30 @@ msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
 msgstr "Ugyldig IPv6-adresse: hver hextet må være 4 heksadesimale sifre."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
-#, auto-english-fallback
 msgid "IP address list cannot be empty."
 msgstr "IP-adresseliste kan ikke være tom."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
 msgstr "Ugyldig IPv6-adresse i %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
-#, auto-english-fallback
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
 msgstr "Ugyldig portnummer: %d (må være 1-65535)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
-#, auto-english-fallback
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
 msgstr "Ugyldig serverformat: %s (forventet IP:port eller [IPv6]:port)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
 msgstr "Ugyldig IPv4-adresse i %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IP address: %s"
 msgstr "Ugyldig IP-adresse: %s"
@@ -6619,7 +6418,6 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "Ugyldig CA-domene i issuewild-tag."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-#, auto-english-fallback
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "CAA iodef-verdi må være en URL som starter med %s, %s eller %s."
@@ -6674,18 +6472,15 @@ msgid "Given hostname or one of the labels is too short or too long."
 msgstr "Gitt vertsnavn eller en av etikettene er for kort eller for lang."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:128
-#, auto-english-fallback
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
 msgstr ""
 "Flere skråstreker i forskjellige etiketter er ikke tillatt i ARPA-soner."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
-#, auto-english-fallback
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
 msgstr "Ugyldig RFC 2317-format. Bruk format: subnet/prefix (f.eks. 0/26)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
-#, auto-english-fallback
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
 msgstr "Ugyldig subnett-nummer i RFC 2317-notasjon. Må være 0-255 for IPv4."
 
@@ -6693,16 +6488,15 @@ msgstr "Ugyldig subnett-nummer i RFC 2317-notasjon. Må være 0-255 for IPv4."
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
 msgstr ""
-"Ugyldig subnett i RFC 2317-notasjon. Må være heksadesimalt (0-9, a-f) for IPv6."
+"Ugyldig subnett i RFC 2317-notasjon. Må være heksadesimalt (0-9, a-f) for "
+"IPv6."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
-#, auto-english-fallback
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
 msgstr ""
 "Ugyldig subnett i RFC 2317-notasjon. Må være numerisk eller heksadesimalt."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
-#, auto-english-fallback
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
 msgstr "Ugyldig prefikslengde i RFC 2317-notasjon. Må være numerisk."
 
@@ -6711,21 +6505,19 @@ msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
 msgstr ""
-"Ugyldig IPv4-prefikslengde for RFC 2317. Typisk 24-32 (klasseløs delegering vanligvis 25-31)."
+"Ugyldig IPv4-prefikslengde for RFC 2317. Typisk 24-32 (klasseløs delegering "
+"vanligvis 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
-#, auto-english-fallback
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 msgstr "Subnett %d er ikke justert med prefiks /%d. Bør være multiplum av %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
-#, auto-english-fallback
 msgid "Invalid IPv6 prefix length. Must be 0-128."
 msgstr "Ugyldig IPv6-prefikslengde. Må være 0-128."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:209
-#, auto-english-fallback
 msgid "Invalid prefix length. Must be 0-128."
 msgstr "Ugyldig prefikslengde. Må være 0-128."
 
@@ -6910,7 +6702,8 @@ msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
-"SMIMEA-postnavn er i formatet: SHA256(lokal-del)._smimecert.domene.tld for e-postadresser som %s"
+"SMIMEA-postnavn er i formatet: SHA256(lokal-del)._smimecert.domene.tld for e-"
+"postadresser som %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7703,7 +7496,8 @@ msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
 msgstr ""
-"TXT-postinnhold overskrider maksimal lengde på %d bytes. Vennligst reduser innholdsstørrelsen."
+"TXT-postinnhold overskrider maksimal lengde på %d bytes. Vennligst reduser "
+"innholdsstørrelsen."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
@@ -7719,7 +7513,8 @@ msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
 msgstr ""
-"Totalt TXT-postinnhold overskrider maksimal lengde på %d bytes. Vennligst reduser innholdsstørrelsen."
+"Totalt TXT-postinnhold overskrider maksimal lengde på %d bytes. Vennligst "
+"reduser innholdsstørrelsen."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
@@ -8195,9 +7990,9 @@ msgid ""
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr ""
-"NAPTR-tjeneste må følge formatet: [protokoll][+rs][+rs]... hvor "
-"protokoll og rs starter med en bokstav og kun inneholder "
-"alfanumeriske tegn (maks 32 tegn hver)."
+"NAPTR-tjeneste må følge formatet: [protokoll][+rs][+rs]... hvor protokoll og "
+"rs starter med en bokstav og kun inneholder alfanumeriske tegn (maks 32 tegn "
+"hver)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8418,24 +8213,20 @@ msgid "You do not have permission to regenerate API keys."
 msgstr "Du har ikke tillatelse til å regenerere API-nøkler."
 
 #: lib/Domain/Service/ZoneValidationService.php:128
-#, auto-english-fallback
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr ""
 "Ingen SOA-post tilstede eller aktiv i sone. Dette er påkrevd for DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:129
-#, auto-english-fallback
 msgid "Add an SOA record to the zone before attempting to sign it."
 msgstr "Legg til en SOA-post i sonen før du forsøker å signere den."
 
 #: lib/Domain/Service/ZoneValidationService.php:135
-#, auto-english-fallback
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
 msgstr "Sonen har %d SOA-poster. Kun én SOA-post er tillatt per sone."
 
 #: lib/Domain/Service/ZoneValidationService.php:136
-#, auto-english-fallback
 msgid "Remove duplicate SOA records, keeping only one."
 msgstr "Fjern dupliserte SOA-poster, behold kun én."
 
@@ -8445,12 +8236,10 @@ msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
 msgstr "SOA-post ikke ved toppunkt. Funnet ved \"%s\" men sone er \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:148
-#, auto-english-fallback
 msgid "Move the SOA record to the zone apex."
 msgstr "Flytt SOA-posten til sonetoppunktet."
 
 #: lib/Domain/Service/ZoneValidationService.php:158
-#, auto-english-fallback
 msgid "SOA record has invalid content format."
 msgstr "SOA-post har ugyldig innholdsformat."
 
@@ -8459,33 +8248,31 @@ msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
 msgstr ""
-"SOA-format skal være: primær-ns vertsmester serie oppdater gjenta utløp minimum"
+"SOA-format skal være: primær-ns vertsmester serie oppdater gjenta utløp "
+"minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:218
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
 msgstr ""
-"Sonen har ingen NS (navneserver)-poster ved toppunktet. Minst én toppunkt NS-post er påkrevd for DNSSEC."
+"Sonen har ingen NS (navneserver)-poster ved toppunktet. Minst én toppunkt NS-"
+"post er påkrevd for DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:219
-#, auto-english-fallback
 msgid "Add NS records at the zone apex for your authoritative name servers."
 msgstr ""
 "Legg til NS-poster ved sonetoppunktet for dine autoritative navneservere."
 
 #: lib/Domain/Service/ZoneValidationService.php:265
-#, auto-english-fallback
 msgid "DNSSEC signing cannot proceed due to the following errors:"
 msgstr "DNSSEC-signering kan ikke fortsette på grunn av følgende feil:"
 
 #: lib/Domain/Service/ZoneValidationService.php:287
-#, auto-english-fallback
 msgid "Additionally, the following warnings were found:"
 msgstr "I tillegg ble følgende advarsler funnet:"
 
 #: lib/Domain/Service/ZoneValidationService.php:289
-#, auto-english-fallback
 msgid "The following warnings were found:"
 msgstr "Følgende advarsler ble funnet:"
 
@@ -8509,7 +8296,8 @@ msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
 msgstr ""
-"Reverspost lagt til. Advarsel: En PTR-post for %s eksisterer allerede og peker til: %s. Det anbefales ikke å ha flere PTR-poster for samme IP."
+"Reverspost lagt til. Advarsel: En PTR-post for %s eksisterer allerede og "
+"peker til: %s. Det anbefales ikke å ha flere PTR-poster for samme IP."
 
 #: lib/Domain/Service/Dns/RecordManager.php:215
 msgid "You do not have the permission to add SOA record."
@@ -9166,27 +8954,22 @@ msgid "Send Reset Link"
 msgstr "Send tilbakestillingslenke"
 
 #: templates/modern/manage_group_members.html:4
-#, auto-english-fallback
 msgid "Groups"
 msgstr "Grupper"
 
 #: templates/default/list_groups.html:10 templates/modern/list_groups.html:10
-#, auto-english-fallback
 msgid "Group Management"
 msgstr "Gruppeadministrasjon"
 
 #: templates/modern/header.html:204 templates/modern/add_group.html:5
-#, auto-english-fallback
 msgid "Add group"
 msgstr "Legg til gruppe"
 
 #: templates/modern/edit_user.html:254 templates/modern/add_user.html:189
-#, auto-english-fallback
 msgid "No groups found"
 msgstr "Ingen grupper funnet"
 
 #: templates/modern/list_groups.html:50 templates/modern/edit_group.html:70
-#, auto-english-fallback
 msgid "Members"
 msgstr "Medlemmer"
 
@@ -9195,17 +8978,14 @@ msgid "Zones"
 msgstr "Soner"
 
 #: templates/modern/manage_group_members.html:6
-#, auto-english-fallback
 msgid "Manage members"
 msgstr "Administrer medlemmer"
 
 #: templates/modern/manage_group_zones.html:6
-#, auto-english-fallback
 msgid "Manage zones"
 msgstr "Administrer soner"
 
 #: templates/modern/list_groups.html:55 templates/modern/edit_group.html:5
-#, auto-english-fallback
 msgid "Edit group"
 msgstr "Rediger gruppe"
 
@@ -9214,7 +8994,6 @@ msgid "Edit"
 msgstr "Rediger"
 
 #: templates/modern/list_groups.html:58 templates/modern/delete_group.html:5
-#, auto-english-fallback
 msgid "Delete group"
 msgstr "Slett gruppe"
 
@@ -9239,32 +9018,26 @@ msgid "Update"
 msgstr "Oppdater"
 
 #: templates/default/edit_group.html:13 templates/modern/edit_group.html:13
-#, auto-english-fallback
 msgid "Edit Group"
 msgstr "Rediger gruppe"
 
 #: templates/modern/edit_group.html:23 templates/modern/add_group.html:20
-#, auto-english-fallback
 msgid "Group Name"
 msgstr "Gruppenavn"
 
 #: templates/modern/edit_group.html:25 templates/modern/add_group.html:22
-#, auto-english-fallback
 msgid "Unique name for this group"
 msgstr "Unikt navn for denne gruppen"
 
 #: templates/modern/edit_group.html:26 templates/modern/add_group.html:23
-#, auto-english-fallback
 msgid "Provide group name"
 msgstr "Oppgi gruppenavn"
 
 #: templates/modern/edit_group.html:32 templates/modern/add_group.html:29
-#, auto-english-fallback
 msgid "Optional information about this group"
 msgstr "Valgfri informasjon om denne gruppen"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-#, auto-english-fallback
 msgid "Access template"
 msgstr "Tilgangsmal"
 
@@ -9275,72 +9048,58 @@ msgstr ""
 "Gruppemedlemmer arver disse tillatelsene kun for soner eid av denne gruppen"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:45
-#, auto-english-fallback
 msgid "Select an access template"
 msgstr "Velg en tilgangsmal"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
-#, auto-english-fallback
 msgid "Update Group"
 msgstr "Oppdater gruppe"
 
 #: templates/modern/edit_group.html:74 templates/modern/edit_group.html:118
-#, auto-english-fallback
 msgid "Manage"
 msgstr "Administrer"
 
 #: templates/default/edit_group.html:81 templates/modern/edit_group.html:81
-#, auto-english-fallback
 msgid "No members in this group yet."
 msgstr "Ingen medlemmer i denne gruppen ennå."
 
 #: templates/modern/edit_group.html:144 templates/modern/edit_user.html:220
-#, auto-english-fallback
 msgid "Remove from group"
 msgstr "Fjern fra gruppe"
 
 #: templates/modern/edit_group.html:151 templates/modern/delete_group.html:68
-#, auto-english-fallback
 msgid "and"
 msgstr "og"
 
 #: templates/modern/edit_group.html:101 templates/modern/edit_group.html:151
-#, auto-english-fallback
 msgid "more..."
 msgstr "mer..."
 
 #: templates/default/edit_group.html:125 templates/modern/edit_group.html:125
-#, auto-english-fallback
 msgid "This group doesn't own any zones yet."
 msgstr "Denne gruppen eier ingen soner ennå."
 
 #: templates/modern/manage_group_zones.html:113
-#, auto-english-fallback
 msgid "Master"
 msgstr "Hovedserver"
 
 #: templates/modern/manage_group_zones.html:115
-#, auto-english-fallback
 msgid "Slave"
 msgstr "Slaveserver"
 
 #: templates/modern/manage_group_zones.html:117
-#, auto-english-fallback
 msgid "Native"
 msgstr "Innfødt"
 
 #: templates/default/edit_group.html:182 templates/modern/edit_group.html:182
-#, auto-english-fallback
 msgid "Confirm Member Removal"
 msgstr "Bekreft medlemsfjerning"
 
 #: templates/default/edit_group.html:187 templates/modern/edit_group.html:187
-#, auto-english-fallback
 msgid "Are you sure you want to remove user"
 msgstr "Er du sikker på at du vil fjerne bruker"
 
 #: templates/modern/edit_group.html:187 templates/modern/edit_group.html:213
-#, auto-english-fallback
 msgid "from this group?"
 msgstr "fra denne gruppen?"
 
@@ -9348,20 +9107,18 @@ msgstr "fra denne gruppen?"
 msgid ""
 "This action will immediately revoke any permissions granted by this group."
 msgstr ""
-"Denne handlingen vil umiddelbart tilbakekalle alle tillatelser gitt av denne gruppen."
+"Denne handlingen vil umiddelbart tilbakekalle alle tillatelser gitt av denne "
+"gruppen."
 
 #: templates/modern/manage_group_members.html:139
-#, auto-english-fallback
 msgid "Remove"
 msgstr "Fjern"
 
 #: templates/default/edit_group.html:208 templates/modern/edit_group.html:208
-#, auto-english-fallback
 msgid "Confirm Zone Removal"
 msgstr "Bekreft sonefjerning"
 
 #: templates/default/edit_group.html:213 templates/modern/edit_group.html:213
-#, auto-english-fallback
 msgid "Are you sure you want to remove zone"
 msgstr "Er du sikker på at du vil fjerne sone"
 
@@ -9373,12 +9130,10 @@ msgstr ""
 "Sonen vil forbli i systemet, men denne gruppen vil ikke lenger ha eierskap."
 
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
-#, auto-english-fallback
 msgid "Delete Group"
 msgstr "Slett gruppe"
 
 #: templates/default/delete_group.html:16 templates/modern/delete_group.html:16
-#, auto-english-fallback
 msgid "You are about to delete the group"
 msgstr "Du er i ferd med å slette gruppen"
 
@@ -9387,42 +9142,34 @@ msgid "This action cannot be undone. Are you sure you want to proceed?"
 msgstr "Denne handlingen kan ikke angres. Er du sikker på at du vil fortsette?"
 
 #: templates/default/delete_group.html:22 templates/modern/delete_group.html:22
-#, auto-english-fallback
 msgid "Deletion Impact"
 msgstr "Sletteeffekt"
 
 #: templates/default/delete_group.html:29 templates/modern/delete_group.html:29
-#, auto-english-fallback
 msgid "member will be removed from this group"
 msgstr "medlem vil bli fjernet fra denne gruppen"
 
 #: templates/default/delete_group.html:31 templates/modern/delete_group.html:31
-#, auto-english-fallback
 msgid "members will be removed from this group"
 msgstr "medlemmer vil bli fjernet fra denne gruppen"
 
 #: templates/default/delete_group.html:37 templates/modern/delete_group.html:37
-#, auto-english-fallback
 msgid "zone will lose this group ownership"
 msgstr "sone vil miste denne gruppens eierskap"
 
 #: templates/default/delete_group.html:39 templates/modern/delete_group.html:39
-#, auto-english-fallback
 msgid "zones will lose this group ownership"
 msgstr "soner vil miste denne gruppens eierskap"
 
 #: templates/default/delete_group.html:49 templates/modern/delete_group.html:49
-#, auto-english-fallback
 msgid "Affected Zones"
 msgstr "Berørte soner"
 
 #: templates/default/delete_group.html:51 templates/modern/delete_group.html:51
-#, auto-english-fallback
 msgid "showing first 20"
 msgstr "viser de første 20"
 
 #: templates/default/delete_group.html:68 templates/modern/delete_group.html:68
-#, auto-english-fallback
 msgid "more zones..."
 msgstr "flere soner..."
 
@@ -9435,15 +9182,15 @@ msgid ""
 "Members will lose access to all zones owned by this group. Zones without any "
 "remaining owners will still exist but will be inaccessible to regular users."
 msgstr ""
-"Medlemmer vil miste tilgang til alle soner eid av denne gruppen. Soner uten gjenværende eiere vil fortsatt eksistere, men vil være utilgjengelige for vanlige brukere."
+"Medlemmer vil miste tilgang til alle soner eid av denne gruppen. Soner uten "
+"gjenværende eiere vil fortsatt eksistere, men vil være utilgjengelige for "
+"vanlige brukere."
 
 #: templates/default/delete_group.html:85 templates/modern/delete_group.html:85
-#, auto-english-fallback
 msgid "Yes, delete this group"
 msgstr "Ja, slett denne gruppen"
 
 #: templates/default/delete_group.html:89 templates/modern/delete_group.html:89
-#, auto-english-fallback
 msgid "No, keep this group"
 msgstr "Nei, behold denne gruppen"
 
@@ -9649,17 +9396,14 @@ msgid "Change password"
 msgstr "Endre passord"
 
 #: templates/modern/header.html:332
-#, auto-english-fallback
 msgid "Preferences"
 msgstr "Innstillinger"
 
 #: templates/default/index.html:288 templates/modern/index.html:235
-#, auto-english-fallback
 msgid "Customize your interface settings"
 msgstr "Tilpass grensesnittinnstillingene dine"
 
 #: templates/default/index.html:290
-#, auto-english-fallback
 msgid "User preferences"
 msgstr "Brukerinnstillinger"
 
@@ -9672,17 +9416,14 @@ msgid "Manage system users and access"
 msgstr "Administrer systembrukere og tilgang"
 
 #: templates/modern/index.html:199 templates/modern/header.html:169
-#, auto-english-fallback
 msgid "List users"
 msgstr "List brukere"
 
 #: templates/modern/header.html:222
-#, auto-english-fallback
 msgid "Access"
 msgstr "Tilgang"
 
 #: templates/default/index.html:321
-#, auto-english-fallback
 msgid "Manage access templates"
 msgstr "Administrer tilgangsmaler"
 
@@ -9970,27 +9711,22 @@ msgid "Advanced Records"
 msgstr "Avanserte poster"
 
 #: templates/modern/dns_wizard_select.html:6
-#, auto-english-fallback
 msgid "DNS Wizard"
 msgstr "DNS-veiviser"
 
 #: templates/modern/dns_wizard_form.html:15
-#, auto-english-fallback
 msgid "Wizard"
 msgstr "Veiviser"
 
 #: templates/modern/dns_wizard_form.html:26
-#, auto-english-fallback
 msgid "Warning: Please Review Before Proceeding"
 msgstr "Advarsel: Vennligst gjennomgå før du fortsetter"
 
 #: templates/modern/dns_wizard_form.html:200
-#, auto-english-fallback
 msgid "Create Record"
 msgstr "Opprett post"
 
 #: templates/modern/dns_wizard_form.html:203
-#, auto-english-fallback
 msgid "Back to Wizard Selection"
 msgstr "Tilbake til veiviservalg"
 
@@ -10055,17 +9791,14 @@ msgid "No, keep this user"
 msgstr "Nei, behold denne brukeren"
 
 #: templates/modern/save-zone-template.html:6 templates/modern/edit.html:209
-#, auto-english-fallback
 msgid "Save as Template"
 msgstr "Lagre som mal"
 
 #: templates/modern/save-zone-template.html:14
-#, auto-english-fallback
 msgid "Save Zone as Template"
 msgstr "Lagre sone som mal"
 
 #: templates/modern/save-zone-template.html:18
-#, auto-english-fallback
 msgid "Source Zone"
 msgstr "Kildesone"
 
@@ -10078,7 +9811,6 @@ msgid "Provide template name"
 msgstr "Oppgi malnavn"
 
 #: templates/modern/save-zone-template.html:44
-#, auto-english-fallback
 msgid "Create Template"
 msgstr "Opprett mal"
 
@@ -10355,7 +10087,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Slett sone(r)"
 
-#: templates/modern/dnssec_add_key.html:81
+#: templates/modern/dnssec_add_key.html:91
 msgid "Add key"
 msgstr "Legg til nøkkel"
 
@@ -10363,48 +10095,48 @@ msgstr "Legg til nøkkel"
 msgid "Add key for zone"
 msgstr "Legg til nøkkel for sone"
 
-#: templates/modern/dnssec_add_key.html:43
+#: templates/modern/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Nøkkeltype"
 
-#: templates/modern/dnssec_add_key.html:50
+#: templates/modern/dnssec_add_key.html:60
 msgid "Select key type"
 msgstr "Velg nøkkeltype"
 
-#: templates/modern/dnssec_add_key.html:61
+#: templates/modern/dnssec_add_key.html:71
 msgid "Select algorithm"
 msgstr "Velg algoritme"
 
-#: templates/modern/dnssec_add_key.html:66
+#: templates/modern/dnssec_add_key.html:76
 msgid "Bits in length"
 msgstr "Antall bits i lengde"
 
-#: templates/modern/dnssec_add_key.html:75
+#: templates/modern/dnssec_add_key.html:85
 msgid "Select bits length"
 msgstr "Velg bitlengde"
 
-#: templates/modern/dnssec_add_key.html:132
+#: templates/modern/dnssec_add_key.html:142
 msgid "Recommended bits for"
 msgstr "Anbefalte bits for"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 #: install/helpers/InstallStepHandler.php:169
 msgid "Warning:"
 msgstr "Advarsel:"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 msgid "bits is not recommended for"
 msgstr "bits anbefales ikke for"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
 msgstr "Om DNSSEC-nøkkeltyper"
 
-#: templates/modern/dnssec_add_key.html:181
+#: templates/modern/dnssec_add_key.html:191
 msgid "Key Types Explained"
 msgstr "Nøkkeltyper forklart"
 
-#: templates/modern/dnssec_add_key.html:183
+#: templates/modern/dnssec_add_key.html:193
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -10412,19 +10144,19 @@ msgstr ""
 "Kombinert signeringsnøkkel - fungerer som både KSK og ZSK (anbefales for "
 "PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Nøkkelsigneringsnøkkel - signerer DNSKEY-postene i sonen"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Sonesigneringsnøkkel - signerer alle andre poster i sonen"
 
-#: templates/modern/dnssec_add_key.html:190
+#: templates/modern/dnssec_add_key.html:200
 msgid "Recommended Settings"
 msgstr "Anbefalte innstillinger"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:201
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10478,7 +10210,8 @@ msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
 msgstr ""
-"Tillatelser fra denne malen vil gjelde globalt i hele systemet for denne brukeren"
+"Tillatelser fra denne malen vil gjelde globalt i hele systemet for denne "
+"brukeren"
 
 #: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
 msgid "Optional information about this user"
@@ -10534,7 +10267,6 @@ msgid "User Permissions"
 msgstr "Brukertillatelser"
 
 #: templates/default/edit_user.html:169 templates/modern/edit_user.html:169
-#, auto-english-fallback
 msgid "This user has been assigned the access template"
 msgstr "Denne brukeren har fått tilordnet tilgangsmalen"
 
@@ -10547,27 +10279,22 @@ msgid "No permissions are assigned to this template"
 msgstr "Ingen tillatelser er tildelt denne malen"
 
 #: templates/modern/edit_user.html:197 templates/modern/add_user.html:172
-#, auto-english-fallback
 msgid "Group Memberships"
 msgstr "Gruppemedlemskap"
 
 #: templates/default/edit_user.html:201 templates/modern/edit_user.html:201
-#, auto-english-fallback
 msgid "Current Memberships"
 msgstr "Nåværende medlemskap"
 
 #: templates/default/edit_user.html:216 templates/modern/edit_user.html:216
-#, auto-english-fallback
 msgid "View group details"
 msgstr "Vis gruppedetaljer"
 
 #: templates/default/edit_user.html:230 templates/modern/edit_user.html:230
-#, auto-english-fallback
 msgid "This user is not a member of any groups."
 msgstr "Denne brukeren er ikke medlem av noen grupper."
 
 #: templates/modern/edit_user.html:236 templates/modern/add_user.html:175
-#, auto-english-fallback
 msgid "Add to Groups"
 msgstr "Legg til i grupper"
 
@@ -10577,12 +10304,10 @@ msgstr ""
 "Velg én eller flere grupper og klikk på \"Legg til valgte grupper\"-knappen."
 
 #: templates/modern/edit_user.html:245 templates/modern/add_user.html:180
-#, auto-english-fallback
 msgid "Search available groups..."
 msgstr "Søk i tilgjengelige grupper..."
 
 #: templates/modern/edit_user.html:246 templates/modern/add_user.html:181
-#, auto-english-fallback
 msgid "Clear search"
 msgstr "Tøm søk"
 
@@ -10591,27 +10316,22 @@ msgid "Select All"
 msgstr "Velg alle"
 
 #: templates/modern/add_zone_slave.html:98
-#, auto-english-fallback
 msgid "Clear All"
 msgstr "Tøm alle"
 
 #: templates/modern/add_user.html:208 templates/modern/add_user.html:384
-#, auto-english-fallback
 msgid "selected"
 msgstr "valgt"
 
 #: templates/default/edit_user.html:275 templates/modern/edit_user.html:275
-#, auto-english-fallback
 msgid "Add Selected Groups"
 msgstr "Legg til valgte grupper"
 
 #: templates/modern/manage_group_members.html:126
-#, auto-english-fallback
 msgid "Confirm Removal"
 msgstr "Bekreft fjerning"
 
 #: templates/default/edit_user.html:303 templates/modern/edit_user.html:303
-#, auto-english-fallback
 msgid "Are you sure you want to remove this user from the group"
 msgstr "Er du sikker på at du vil fjerne denne brukeren fra gruppen"
 
@@ -10664,7 +10384,6 @@ msgid "Yes, unlink these zones"
 msgstr "Ja, koble fra disse sonene"
 
 #: templates/modern/list_perm_templ.html:5
-#, auto-english-fallback
 msgid "Access templates"
 msgstr "Tilgangsmaler"
 
@@ -10673,7 +10392,6 @@ msgid "Add"
 msgstr "Legg til"
 
 #: templates/modern/add_perm_templ.html:18
-#, auto-english-fallback
 msgid "Add Access Template"
 msgstr "Legg til tilgangsmal"
 
@@ -10686,17 +10404,14 @@ msgid "Optional: more detailed description of this permission set"
 msgstr "Valgfritt: mer detaljert beskrivelse av dette tillatelsesettet"
 
 #: templates/modern/edit_perm_templ.html:36
-#, auto-english-fallback
 msgid "Template Type"
 msgstr "Maltype"
 
 #: templates/modern/edit_perm_templ.html:38
-#, auto-english-fallback
 msgid "User Template"
 msgstr "Brukermal"
 
 #: templates/modern/edit_perm_templ.html:39
-#, auto-english-fallback
 msgid "Group Template"
 msgstr "Gruppemal"
 
@@ -10708,7 +10423,6 @@ msgstr ""
 "Brukermaler gjelder globalt; Gruppemaler gjelder kun for gruppeeide soner"
 
 #: templates/modern/edit_perm_templ.html:42
-#, auto-english-fallback
 msgid "Please select a template type"
 msgstr "Vennligst velg en maltype"
 
@@ -10717,12 +10431,10 @@ msgid "Add Template"
 msgstr "Legg til mal"
 
 #: templates/modern/add_perm_templ.html:62
-#, auto-english-fallback
 msgid "About Access Templates"
 msgstr "Om tilgangsmaler"
 
 #: templates/modern/add_perm_templ.html:67
-#, auto-english-fallback
 msgid "What are Access Templates?"
 msgstr "Hva er tilgangsmaler?"
 
@@ -10732,7 +10444,9 @@ msgid ""
 "Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Tilgangsmaler definerer sett med handlinger som brukere og grupper kan utføre i Poweradmin. De gir en rask måte å tilordne vanlige tillatelseskombinasjoner."
+"Tilgangsmaler definerer sett med handlinger som brukere og grupper kan "
+"utføre i Poweradmin. De gir en rask måte å tilordne vanlige "
+"tillatelseskombinasjoner."
 
 #: templates/modern/add_perm_templ.html:71
 msgid "How to Use Templates"
@@ -10743,9 +10457,9 @@ msgid ""
 "After creating a template, you can assign it to users or groups. This "
 "ensures consistent permissions across users and groups with similar roles."
 msgstr ""
-"Etter å ha opprettet en mal kan du tildele den til brukere når du "
-"oppretter eller redigerer brukerkontoer. Dette sikrer konsistente "
-"tillatelser på tvers av brukergrupper med lignende roller."
+"Etter å ha opprettet en mal kan du tildele den til brukere når du oppretter "
+"eller redigerer brukerkontoer. Dette sikrer konsistente tillatelser på tvers "
+"av brukergrupper med lignende roller."
 
 #: templates/modern/edit_perm_templ.html:86
 msgid "Available Permissions"
@@ -10864,7 +10578,6 @@ msgid "Forgot your password?"
 msgstr "Glemt passordet ditt?"
 
 #: templates/default/login.html:86 templates/modern/login.html:86
-#, auto-english-fallback
 msgid "Forgot your username?"
 msgstr "Glemt brukernavnet ditt?"
 
@@ -11051,62 +10764,50 @@ msgstr ""
 "tilsvarende fremover-poster (deaktivert når matchende modus brukes)"
 
 #: templates/modern/zone-ownership.html:6 templates/modern/edit.html:205
-#, auto-english-fallback
 msgid "Ownership"
 msgstr "Eierskap"
 
 #: templates/modern/add_zone_slave.html:49
-#, auto-english-fallback
 msgid "User Owner"
 msgstr "Brukereier"
 
 #: templates/modern/zone-ownership.html:55
-#, auto-english-fallback
 msgid "No users assigned to this zone."
 msgstr "Ingen brukere tilordnet denne sonen."
 
 #: templates/modern/zone-ownership.html:61
-#, auto-english-fallback
 msgid "Add User Owner"
 msgstr "Legg til brukereier"
 
 #: templates/modern/manage_group_members.html:84
-#, auto-english-fallback
 msgid "Search users..."
 msgstr "Søk brukere..."
 
 #: templates/modern/add_zone_slave.html:76
-#, auto-english-fallback
 msgid "You"
 msgstr "Du"
 
 #: templates/modern/zone-ownership.html:83
-#, auto-english-fallback
 msgid "Add Owner"
 msgstr "Legg til eier"
 
 #: templates/modern/add_zone_slave.html:90
-#, auto-english-fallback
 msgid "Group Ownership"
 msgstr "Gruppeeierskap"
 
 #: templates/modern/zone-ownership.html:127
-#, auto-english-fallback
 msgid "No groups assigned to this zone."
 msgstr "Ingen grupper tilordnet denne sonen."
 
 #: templates/modern/zone-ownership.html:133
-#, auto-english-fallback
 msgid "Add Group Ownership"
 msgstr "Legg til gruppeeierskap"
 
 #: templates/modern/add_zone_slave.html:94
-#, auto-english-fallback
 msgid "Search groups..."
 msgstr "Søk grupper..."
 
 #: templates/modern/add_group.html:13
-#, auto-english-fallback
 msgid "Add Group"
 msgstr "Legg til gruppe"
 
@@ -11131,12 +10832,10 @@ msgid "Create a new record for this zone template"
 msgstr "Opprett en ny post for denne sonemalen"
 
 #: templates/modern/delete_perm_templ.html:12
-#, auto-english-fallback
 msgid "Delete Access Template"
 msgstr "Slett tilgangsmal"
 
 #: templates/modern/delete_perm_templ.html:17
-#, auto-english-fallback
 msgid "You are about to delete the access template"
 msgstr "Du er i ferd med å slette tilgangsmalen"
 
@@ -11157,7 +10856,6 @@ msgid "No, keep this template"
 msgstr "Nei, behold denne malen"
 
 #: templates/modern/dns_wizard_select.html:14
-#, auto-english-fallback
 msgid "DNS Record Wizard"
 msgstr "DNS-postveiviser"
 
@@ -11166,22 +10864,22 @@ msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
 msgstr ""
-"Velg en veiviser for å hjelpe deg med å opprette komplekse DNS-poster med veiledte skjemaer i stedet for manuell tekstinnføring."
+"Velg en veiviser for å hjelpe deg med å opprette komplekse DNS-poster med "
+"veiledte skjemaer i stedet for manuell tekstinnføring."
 
 #: templates/modern/dns_wizard_select.html:27
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
 msgstr ""
-"DNS-veivisere er designet for videresendingssoner og kan være upassende for reverseringssoner."
+"DNS-veivisere er designet for videresendingssoner og kan være upassende for "
+"reverseringssoner."
 
 #: templates/modern/dns_wizard_select.html:59
-#, auto-english-fallback
 msgid "Recommended"
 msgstr "Anbefalt"
 
 #: templates/modern/dns_wizard_select.html:71
-#, auto-english-fallback
 msgid "Back"
 msgstr "Tilbake"
 
@@ -11218,12 +10916,10 @@ msgid "Add new record"
 msgstr "Legg til ny post"
 
 #: templates/modern/edit.html:28 templates/modern/edit.html:543
-#, auto-english-fallback
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Veiledede veivisere for DMARC, SPF, DKIM, CAA, TLSA og SRV-poster"
 
 #: templates/modern/edit.html:29 templates/modern/edit.html:544
-#, auto-english-fallback
 msgid "Record Wizard"
 msgstr "Postveiviser"
 
@@ -11336,7 +11032,6 @@ msgid "total records"
 msgstr "poster totalt"
 
 #: templates/default/edit.html:474 templates/modern/edit.html:474
-#, auto-english-fallback
 msgid "Edit selected"
 msgstr "Rediger valgte"
 
@@ -11349,17 +11044,14 @@ msgid "Comments"
 msgstr "Kommentarer"
 
 #: templates/default/edit.html:515 templates/modern/edit.html:515
-#, auto-english-fallback
 msgid "Export CSV"
 msgstr "Eksporter CSV"
 
 #: templates/default/edit.html:519 templates/modern/edit.html:519
-#, auto-english-fallback
 msgid "Generate PTR"
 msgstr "Generer PTR"
 
 #: templates/modern/edit.html:696 templates/modern/add_zone_master.html:24
-#, auto-english-fallback
 msgid "Zone Configuration"
 msgstr "Sonekonfigurasjon"
 
@@ -11372,7 +11064,6 @@ msgid "IP address of master NS"
 msgstr "IP-adresse til master NS"
 
 #: templates/default/edit.html:786 templates/modern/edit.html:786
-#, auto-english-fallback
 msgid "Manage DNSSEC"
 msgstr "Administrer DNSSEC"
 
@@ -11381,12 +11072,10 @@ msgid "Sign zone"
 msgstr "Signer sone"
 
 #: templates/default/edit.html:794 templates/modern/edit.html:794
-#, auto-english-fallback
 msgid "Not signed"
 msgstr "Ikke signert"
 
 #: templates/default/users.html:10 templates/modern/users.html:10
-#, auto-english-fallback
 msgid "User Management"
 msgstr "Brukeradministrasjon"
 
@@ -11395,17 +11084,14 @@ msgid "Add user"
 msgstr "Legg til bruker"
 
 #: templates/default/users.html:45 templates/modern/users.html:45
-#, auto-english-fallback
 msgid "Auth Type"
 msgstr "Autentiseringstype"
 
 #: templates/default/users.html:47 templates/modern/users.html:47
-#, auto-english-fallback
 msgid "MFA"
 msgstr "MFA"
 
 #: templates/modern/users.html:99 templates/modern/users.html:161
-#, auto-english-fallback
 msgid "SQL"
 msgstr "SQL"
 
@@ -11414,22 +11100,18 @@ msgid "LDAP"
 msgstr "LDAP"
 
 #: templates/modern/users.html:103 templates/modern/users.html:165
-#, auto-english-fallback
 msgid "OIDC"
 msgstr "OIDC"
 
 #: templates/modern/users.html:105 templates/modern/users.html:167
-#, auto-english-fallback
 msgid "SAML"
 msgstr "SAML"
 
 #: templates/modern/users.html:114 templates/modern/users.html:176
-#, auto-english-fallback
 msgid "MFA enabled"
 msgstr "MFA aktivert"
 
 #: templates/modern/users.html:116 templates/modern/users.html:178
-#, auto-english-fallback
 msgid "MFA not configured"
 msgstr "MFA ikke konfigurert"
 
@@ -11630,7 +11312,6 @@ msgid "Are you sure you want to delete this item?"
 msgstr "Er du sikker på at du vil slette dette elementet?"
 
 #: templates/modern/forgot_username.html:4
-#, auto-english-fallback
 msgid "Forgot Username"
 msgstr "Glemt brukernavn"
 
@@ -11639,10 +11320,10 @@ msgid ""
 "Enter your email address and we'll send you the username associated with "
 "this account."
 msgstr ""
-"Skriv inn e-postadressen din, så sender vi deg brukernavnet tilknyttet denne kontoen."
+"Skriv inn e-postadressen din, så sender vi deg brukernavnet tilknyttet denne "
+"kontoen."
 
 #: templates/modern/forgot_username.html:41
-#, auto-english-fallback
 msgid "Send Username"
 msgstr "Send brukernavn"
 
@@ -11685,7 +11366,6 @@ msgstr ""
 "malen. Du kan endre disse tillatelsene senere ved å redigere brukeren."
 
 #: templates/default/add_user.html:176 templates/modern/add_user.html:176
-#, auto-english-fallback
 msgid "Select groups to add the new user to upon creation."
 msgstr "Velg grupper å legge den nye brukeren til ved opprettelse."
 
@@ -11718,27 +11398,22 @@ msgid "Secure this zone with DNSSEC signing"
 msgstr "Sikre denne sonen med DNSSEC-signering"
 
 #: templates/modern/add_zone_slave.html:54
-#, auto-english-fallback
 msgid "Selected:"
 msgstr "Valgt:"
 
 #: templates/modern/add_zone_slave.html:59
-#, auto-english-fallback
 msgid "No user owner"
 msgstr "Ingen brukereier"
 
 #: templates/modern/add_zone_slave.html:60
-#, auto-english-fallback
 msgid "Zone will be owned only by groups"
 msgstr "Sonen vil kun eies av grupper"
 
 #: templates/modern/add_zone_slave.html:82
-#, auto-english-fallback
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Valgfritt: Velg en bruker ansvarlig for denne sonen"
 
 #: templates/modern/add_zone_slave.html:111
-#, auto-english-fallback
 msgid "Optional: Select one or more groups"
 msgstr "Valgfritt: Velg én eller flere grupper"
 
@@ -12246,7 +11921,6 @@ msgstr ""
 "logge inn hvis du mister tilgang til autentiseringsenheten din."
 
 #: templates/default/mfa_setup.html:14 templates/modern/mfa_setup.html:14
-#, auto-english-fallback
 msgid "MFA Setup Required"
 msgstr "MFA-oppsett påkrevd"
 
@@ -12255,7 +11929,8 @@ msgid ""
 "Your organization requires multi-factor authentication. Please set up MFA to "
 "continue using the system."
 msgstr ""
-"Organisasjonen din krever flerfaktorautentisering. Vennligst sett opp MFA for å fortsette å bruke systemet."
+"Organisasjonen din krever flerfaktorautentisering. Vennligst sett opp MFA "
+"for å fortsette å bruke systemet."
 
 #: templates/default/mfa_setup.html:24 templates/modern/mfa_setup.html:24
 msgid ""
@@ -12336,7 +12011,8 @@ msgid ""
 "Email verification is not available because it has been disabled by the "
 "administrator."
 msgstr ""
-"E-postverifisering er ikke tilgjengelig fordi den har blitt deaktivert av administratoren."
+"E-postverifisering er ikke tilgjengelig fordi den har blitt deaktivert av "
+"administratoren."
 
 #: templates/default/mfa_setup.html:108 templates/modern/mfa_setup.html:108
 msgid ""
@@ -12429,107 +12105,86 @@ msgid "No, keep this zone"
 msgstr "Nei, behold denne sonen"
 
 #: templates/modern/user_preferences.html:4 templates/modern/header.html:388
-#, auto-english-fallback
 msgid "User Preferences"
 msgstr "Brukerinnstillinger"
 
 #: templates/modern/user_preferences.html:17
-#, auto-english-fallback
 msgid "Display Settings"
 msgstr "Visningsinnstillinger"
 
 #: templates/modern/user_preferences.html:22
-#, auto-english-fallback
 msgid "Items per page"
 msgstr "Elementer per side"
 
 #: templates/modern/user_preferences.html:36
-#, auto-english-fallback
 msgid "Zone Options"
 msgstr "Sonealternativer"
 
 #: templates/modern/user_preferences.html:42
-#, auto-english-fallback
 msgid "Zone serial numbers"
 msgstr "Soneserienumre"
 
 #: templates/modern/user_preferences.html:43
-#, auto-english-fallback
 msgid "Display serial numbers in zone lists"
 msgstr "Vis serienumre i sonelister"
 
 #: templates/modern/user_preferences.html:51
-#, auto-english-fallback
 msgid "Display template information in zone lists"
 msgstr "Vis malinformasjon i sonelister"
 
 #: templates/modern/user_preferences.html:64
-#, auto-english-fallback
 msgid "Interface Behavior"
 msgstr "Grensesnittadferd"
 
 #: templates/modern/user_preferences.html:69
-#, auto-english-fallback
 msgid "Record form"
 msgstr "Postskjema"
 
 #: templates/modern/user_preferences.html:78
-#, auto-english-fallback
 msgid "Save buttons"
 msgstr "Lagreknapper"
 
 #: templates/modern/user_preferences.html:88
-#, auto-english-fallback
 msgid "Edit Zone View"
 msgstr "Rediger sonevisning"
 
 #: templates/modern/user_preferences.html:93
-#, auto-english-fallback
 msgid "Show record ID"
 msgstr "Vis post-ID"
 
 #: templates/modern/user_preferences.html:94
-#, auto-english-fallback
 msgid "Display record ID column in edit view"
 msgstr "Vis post-ID-kolonne i redigeringsvisning"
 
 #: templates/modern/user_preferences.html:101
-#, auto-english-fallback
 msgid "Show add record form"
 msgstr "Vis skjema for å legge til post"
 
 #: templates/modern/user_preferences.html:102
-#, auto-english-fallback
 msgid "Display inline add record form in edit view"
 msgstr "Vis innebygd skjema for å legge til post i redigeringsvisning"
 
 #: templates/modern/user_preferences.html:109
-#, auto-english-fallback
 msgid "Show edit buttons"
 msgstr "Vis redigeringsknapper"
 
 #: templates/modern/user_preferences.html:110
-#, auto-english-fallback
 msgid "Display individual edit button per record"
 msgstr "Vis individuell redigeringsknapp per post"
 
 #: templates/modern/user_preferences.html:117
-#, auto-english-fallback
 msgid "Show delete buttons"
 msgstr "Vis slettknapper"
 
 #: templates/modern/user_preferences.html:118
-#, auto-english-fallback
 msgid "Display individual delete button per record"
 msgstr "Vis individuell slettknapp per post"
 
 #: templates/modern/user_preferences.html:133
-#, auto-english-fallback
 msgid "Save Preferences"
 msgstr "Lagre innstillinger"
 
 #: templates/modern/user_preferences.html:139
-#, auto-english-fallback
 msgid "Changes will be applied after saving"
 msgstr "Endringer vil bli anvendt etter lagring"
 
@@ -12578,27 +12233,22 @@ msgid "Try different search terms or filters"
 msgstr "Prøv andre søkeord eller filtre"
 
 #: templates/default/search.html:676 templates/modern/search.html:687
-#, auto-english-fallback
 msgid "Confirm Zone Deletion"
 msgstr "Bekreft sonesletting"
 
 #: templates/modern/search.html:692 templates/modern/search.html:718
-#, auto-english-fallback
 msgid "Are you sure you want to delete"
 msgstr "Er du sikker på at du vil slette"
 
 #: templates/default/search.html:681 templates/modern/search.html:692
-#, auto-english-fallback
 msgid "selected zone(s)?"
 msgstr "valgt(e) sone(r)?"
 
 #: templates/default/search.html:702 templates/modern/search.html:713
-#, auto-english-fallback
 msgid "Confirm Record Deletion"
 msgstr "Bekreft postsletting"
 
 #: templates/default/search.html:707 templates/modern/search.html:718
-#, auto-english-fallback
 msgid "selected record(s)?"
 msgstr "valgt(e) post(er)?"
 
@@ -12668,7 +12318,6 @@ msgid "Search logs by user"
 msgstr "Søk i logger etter bruker"
 
 #: templates/modern/add_zone_slave.html:24
-#, auto-english-fallback
 msgid "Slave Zone Configuration"
 msgstr "Slavesone-konfigurasjon"
 
@@ -12681,7 +12330,8 @@ msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
 msgstr ""
-"IP-adresse til hovednavneserveren (støtter IPv4 og IPv6, flere IP-er adskilt med komma)"
+"IP-adresse til hovednavneserveren (støtter IPv4 og IPv6, flere IP-er adskilt "
+"med komma)"
 
 #: templates/modern/delete_zone_templ.html:12
 msgid "Delete template"
@@ -12980,17 +12630,14 @@ msgid "Reverse zones"
 msgstr "Revers-soner"
 
 #: templates/default/header.html:133 templates/modern/header.html:199
-#, auto-english-fallback
 msgid "List groups"
 msgstr "List grupper"
 
 #: templates/modern/header.html:210 templates/modern/list_log_groups.html:5
-#, auto-english-fallback
 msgid "Group logs"
 msgstr "Gruppelogger"
 
 #: templates/default/header.html:153 templates/modern/header.html:227
-#, auto-english-fallback
 msgid "List templates"
 msgstr "List maler"
 
@@ -13046,58 +12693,47 @@ msgid "Add records"
 msgstr "Legg til poster"
 
 #: templates/modern/manage_group_members.html:12
-#, auto-english-fallback
 msgid "Back to Group"
 msgstr "Tilbake til gruppe"
 
 #: templates/modern/manage_group_zones.html:20
-#, auto-english-fallback
 msgid "Owned Zones"
 msgstr "Eide soner"
 
 #: templates/modern/manage_group_zones.html:27
-#, auto-english-fallback
 msgid "This group doesn't own any zones yet"
 msgstr "Denne gruppen eier ingen soner ennå"
 
 #: templates/modern/manage_group_members.html:57
-#, auto-english-fallback
 msgid "Remove Selected"
 msgstr "Fjern valgte"
 
 #: templates/modern/manage_group_zones.html:79
-#, auto-english-fallback
 msgid "Available Zones"
 msgstr "Tilgjengelige soner"
 
 #: templates/modern/manage_group_zones.html:86
-#, auto-english-fallback
 msgid "This group already owns all zones or no zones are available"
 msgstr ""
 "Denne gruppen eier allerede alle soner eller ingen soner er tilgjengelige"
 
 #: templates/modern/manage_group_zones.html:94
-#, auto-english-fallback
 msgid "Search zones..."
 msgstr "Søk soner..."
 
 #: templates/modern/manage_group_members.html:110
-#, auto-english-fallback
 msgid "Add Selected"
 msgstr "Legg til valgte"
 
 #: templates/modern/manage_group_members.html:131
-#, auto-english-fallback
 msgid "Are you sure you want to remove"
 msgstr "Er du sikker på at du vil fjerne"
 
 #: templates/modern/manage_group_zones.html:221
-#, auto-english-fallback
 msgid "zone(s) from this group?"
 msgstr "sone(r) fra denne gruppen?"
 
 #: templates/modern/manage_group_zones.html:222
-#, auto-english-fallback
 msgid "The zones will remain in the system."
 msgstr "Sonene vil forbli i systemet."
 
@@ -13158,7 +12794,6 @@ msgid "No, keep this API key"
 msgstr "Nei, behold denne API-nøkkelen"
 
 #: templates/modern/edit_perm_templ.html:19
-#, auto-english-fallback
 msgid "Edit Access Template"
 msgstr "Rediger tilgangsmal"
 
@@ -13176,12 +12811,10 @@ msgid ""
 "of permissions. Changes made here will affect all users and groups who have "
 "this template assigned."
 msgstr ""
-"Denne malen kan tildeles brukere for raskt å anvende dens "
-"tillatelser. Endringer gjort her vil påvirke alle brukere som har "
-"denne malen tildelt."
+"Denne malen kan tildeles brukere for raskt å anvende dens tillatelser. "
+"Endringer gjort her vil påvirke alle brukere som har denne malen tildelt."
 
 #: templates/default/edit_perm_templ.html:72
-#, auto-english-fallback
 msgid "Users vs Groups"
 msgstr "Brukere vs grupper"
 
@@ -13190,14 +12823,16 @@ msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
 msgstr ""
-"Når tilordnet <strong>brukere</strong>: Tillatelser gjelder globalt i systemet."
+"Når tilordnet <strong>brukere</strong>: Tillatelser gjelder globalt i "
+"systemet."
 
 #: templates/default/edit_perm_templ.html:74
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
 msgstr ""
-"Når tilordnet <strong>grupper</strong>: Tillatelser gjelder kun for soner eid av den gruppen."
+"Når tilordnet <strong>grupper</strong>: Tillatelser gjelder kun for soner "
+"eid av den gruppen."
 
 #: templates/modern/edit_perm_templ.html:73
 msgid "Permission Groups"
@@ -13252,16 +12887,16 @@ msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
 msgstr ""
-"Alle gruppemedlemmer vil arve disse tillatelsene for soner eid av denne gruppen"
+"Alle gruppemedlemmer vil arve disse tillatelsene for soner eid av denne "
+"gruppen"
 
 #: templates/default/add_group.html:50 templates/modern/add_group.html:50
-#, auto-english-fallback
 msgid "After creating the group, you can add members and assign zones to it."
 msgstr ""
-"Etter opprettelse av gruppen kan du legge til medlemmer og tilordne soner til den."
+"Etter opprettelse av gruppen kan du legge til medlemmer og tilordne soner "
+"til den."
 
 #: templates/default/add_group.html:55 templates/modern/add_group.html:55
-#, auto-english-fallback
 msgid "Create Group"
 msgstr "Opprett gruppe"
 
@@ -13280,72 +12915,58 @@ msgid "Please enter a domain name to perform a WHOIS lookup."
 msgstr "Vennligst skriv inn et domenenavn for å utføre et WHOIS-oppslag."
 
 #: templates/modern/list_perm_templ.html:40
-#, auto-english-fallback
 msgid "User"
 msgstr "Bruker"
 
 #: templates/modern/list_perm_templ.html:10
-#, auto-english-fallback
 msgid "templates apply globally"
 msgstr "maler gjelder globalt"
 
 #: templates/modern/list_perm_templ.html:42
-#, auto-english-fallback
 msgid "Group"
 msgstr "Gruppe"
 
 #: templates/modern/list_perm_templ.html:10
-#, auto-english-fallback
 msgid "templates apply only to group-owned zones"
 msgstr "maler gjelder kun for gruppeeide soner"
 
 #: templates/modern/list_perm_templ.html:15
-#, auto-english-fallback
 msgid "Access Templates"
 msgstr "Tilgangsmaler"
 
 #: templates/modern/list_perm_templ.html:31
-#, auto-english-fallback
 msgid "No access templates found"
 msgstr "Ingen tilgangsmaler funnet"
 
 #: templates/modern/list_perm_templ.html:63
-#, auto-english-fallback
 msgid "Add access template"
 msgstr "Legg til tilgangsmal"
 
 #: templates/modern/list_log_groups.html:11
-#, auto-english-fallback
 msgid "Group Activity Logs"
 msgstr "Gruppeaktivitetslogger"
 
 #: templates/modern/list_log_groups.html:19
-#, auto-english-fallback
 msgid "Search logs by group"
 msgstr "Søk logger etter gruppe"
 
 #: templates/modern/manage_group_members.html:20
-#, auto-english-fallback
 msgid "Current Members"
 msgstr "Nåværende medlemmer"
 
 #: templates/modern/manage_group_members.html:27
-#, auto-english-fallback
 msgid "No members in this group yet"
 msgstr "Ingen medlemmer i denne gruppen ennå"
 
 #: templates/modern/manage_group_members.html:69
-#, auto-english-fallback
 msgid "Available Users"
 msgstr "Tilgjengelige brukere"
 
 #: templates/modern/manage_group_members.html:76
-#, auto-english-fallback
 msgid "All users are already members of this group"
 msgstr "Alle brukere er allerede medlemmer av denne gruppen"
 
 #: templates/modern/manage_group_members.html:131
-#, auto-english-fallback
 msgid "user(s) from this group?"
 msgstr "bruker(e) fra denne gruppen?"
 
@@ -13385,8 +13006,18 @@ msgstr "List sonemaler"
 msgid "Bulk Domain Registration"
 msgstr "Masseregistrering av domener"
 
+#: templates/modern/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ bruker CSK som standard"
+
+#: templates/modern/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 og nyere versjoner bruker Combined Signing Keys (CSK) som standard. Hvis du velger KSK eller ZSK, kan PowerDNS likevel opprette en CSK-nøkkel."
+
 #: templates/modern/header.html:382
-#, auto-english-fallback
 msgid "Dashboard"
 msgstr "Dashbord"
 
@@ -13669,32 +13300,26 @@ msgid "Optional Extensions"
 msgstr "Valgfrie utvidelser"
 
 #: install/templates/step2.html.twig:99
-#, auto-english-fallback
 msgid "Web Server"
 msgstr "Webserver"
 
 #: install/templates/step2.html.twig:106
-#, auto-english-fallback
 msgid "Server"
 msgstr "Server"
 
 #: install/templates/step2.html.twig:118
-#, auto-english-fallback
 msgid "Not detected — required for URL routing"
 msgstr "Ikke oppdaget — påkrevd for URL-ruting"
 
 #: install/templates/step2.html.twig:124
-#, auto-english-fallback
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
 msgstr "Kan ikke oppdage (PHP-FPM) — sørg for at den er aktivert"
 
 #: install/templates/step2.html.twig:130
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
 msgstr "Sørg for at URL-omskriving er konfigurert (se nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured for your web server"
 msgstr "Sørg for at URL-omskriving er konfigurert for webserveren din"
 
@@ -14026,381 +13651,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan ikke koble til PowerDNS-database \"%s\": %s"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create a config/settings.php file "
-# OBSOLETE: "manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ingen konfigurasjonsfil funnet. Vennligst bruk <a href=\"install/"
-# OBSOLETE: "\">installasjonsprogrammet</a> for å opprette en, eller opprett en config/"
-# OBSOLETE: "settings.php fil manuelt."
-
-# OBSOLETE: msgid "Invalid authentication provider"
-# OBSOLETE: msgstr "Ugyldig autentiseringsleverandør"
-
-# OBSOLETE: msgid "Failed to sign zone. Check PowerDNS logs for details."
-# OBSOLETE: msgstr "Kunne ikke signere sone. Sjekk PowerDNS-logger for detaljer."
-
-# OBSOLETE: msgid "Zone was created, but securing it with DNSSEC failed."
-# OBSOLETE: msgstr "Sonen ble opprettet, men sikring med DNSSEC mislyktes."
-
-# OBSOLETE: msgid "Failed to delete DNSSEC key."
-# OBSOLETE: msgstr "Kunne ikke slette DNSSEC-nøkkel."
-
-#, auto-english-fallback
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
-# OBSOLETE: "once."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Duplikat %s mekanisme funnet. Hver mekanisme-type bør kun forekomme "
-# OBSOLETE: "maksimalt én gang."
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr "IPv6-adresse bør bruke små bokstaver for heksadesimale siffer."
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr "IPv6-adressen er ikke i kanonisk form (RFC 5952). Kanonisk form: %s"
-
-#, auto-english-fallback
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IP-adresse \"%s\" er ikke gyldig. Må være en gyldig IPv4- eller IPv6-"
-# OBSOLETE: "adresse."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "CAA iodef value must be a URL starting with http://, https://, or mailto:."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "CAA iodef-verdi må være en URL som starter med http://, https://, eller "
-# OBSOLETE: "mailto:."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "SMIMEA record name is in the format: SHA256(local-"
-# OBSOLETE: "part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "SMIMEA-postnavn er i formatet: SHA256(lokal-del)._smimecert.domene.tld "
-# OBSOLETE: "for e-postadresser som lokal-del@domene.tld"
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "HTML-tagger er ikke tillatt i innholdsfelt."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "TXT-poststreng overskrider 255 byte. TXT-strenger må være 255 byte eller "
-# OBSOLETE: "mindre. For lengre innhold, del opp i flere strenger med anførselstegn "
-# OBSOLETE: "separert med mellomrom."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR-post må ha enten en regexp eller en erstatning (med \".\"), men "
-# OBSOLETE: "ikke begge deler."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR-tjeneste må følge formatet: [protokoll][+rs][+rs]... hvor protokoll "
-# OBSOLETE: "og rs starter med en bokstav og kun inneholder alfanumeriske tegn (maks "
-# OBSOLETE: "32 tegn hver)."
-
-# OBSOLETE: msgid "User administration"
-# OBSOLETE: msgstr "Brukeradministrasjon"
-
-# OBSOLETE: msgid "Permissions"
-# OBSOLETE: msgstr "Tillatelser"
-
-# OBSOLETE: msgid "Manage permission templates"
-# OBSOLETE: msgstr "Administrer tillatelsesmaler"
-
-# OBSOLETE: msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-# OBSOLETE: msgstr "Sett opp standardposter som MX, TXT for SPF og CNAME for www"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-# OBSOLETE: "[SERIAL] in record content"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Bruk plassholdere som [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER] og "
-# OBSOLETE: "[SERIAL] i postinnhold"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-# OBSOLETE: "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "[DOMAIN] og [TLD] plassholdere er nyttige for Microsoft 365 MX-poster "
-# OBSOLETE: "(f.eks. [DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-# OBSOLETE: msgid "Permission template"
-# OBSOLETE: msgstr "Tilgangsmal"
-
-# OBSOLETE: msgid "This user has been assigned the permission template"
-# OBSOLETE: msgstr "Denne brukeren har fått tildelt tillatelsesmalen"
-
-# OBSOLETE: msgid "User Management Tips"
-# OBSOLETE: msgstr "Tips for brukeradministrasjon"
-
-# OBSOLETE: msgid "Leave password field empty to keep the current password"
-# OBSOLETE: msgstr "La passordfeltet stå tomt for å beholde nåværende passord"
-
-# OBSOLETE: msgid "Changing permission templates will update user access immediately"
-# OBSOLETE: msgstr "Endring av tillatelsesmaler vil oppdatere brukertilgang umiddelbart"
-
-# OBSOLETE: msgid "Users can be disabled instead of deleted to preserve their settings"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Brukere kan deaktiveres i stedet for å slettes for å bevare "
-# OBSOLETE: "innstillingene deres"
-
-# OBSOLETE: msgid "LDAP users cannot have passwords managed through this interface"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "LDAP-brukere kan ikke ha passord administrert gjennom dette grensesnittet"
-
-# OBSOLETE: msgid "Permission templates"
-# OBSOLETE: msgstr "Tillatelsesmaler"
-
-# OBSOLETE: msgid "Add Permission Template"
-# OBSOLETE: msgstr "Legg til tillatelsesmal"
-
-# OBSOLETE: msgid "About Permission Templates"
-# OBSOLETE: msgstr "Om tillatelsesmaler"
-
-# OBSOLETE: msgid "What are Permission Templates?"
-# OBSOLETE: msgstr "Hva er tillatelsesmaler?"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Permission templates define sets of actions that users can perform in "
-# OBSOLETE: "Poweradmin. They provide a quick way to assign common permission "
-# OBSOLETE: "combinations to multiple users."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Tillatelsesmaler definerer sett med handlinger som brukere kan utføre i "
-# OBSOLETE: "Poweradmin. De gir en rask måte å tildele vanlige tillatelsekombinasjoner "
-# OBSOLETE: "til flere brukere."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "After creating a template, you can assign it to users when creating or "
-# OBSOLETE: "editing user accounts. This ensures consistent permissions across user "
-# OBSOLETE: "groups with similar roles."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Etter å ha opprettet en mal kan du tildele den til brukere når du "
-# OBSOLETE: "oppretter eller redigerer brukerkontoer. Dette sikrer konsistente "
-# OBSOLETE: "tillatelser på tvers av brukergrupper med lignende roller."
-
-# OBSOLETE: msgid "Delete Permission Template"
-# OBSOLETE: msgstr "Slett tillatelsesmal"
-
-# OBSOLETE: msgid "You are about to delete the permission template"
-# OBSOLETE: msgstr "Du er i ferd med å slette tillatelsesmalen"
-
-# OBSOLETE: msgid "CSV"
-# OBSOLETE: msgstr "CSV"
-
-# OBSOLETE: msgid "Save as new template"
-# OBSOLETE: msgstr "Lagre som ny mal"
-
-# OBSOLETE: msgid "Create a reusable template from this zone's records"
-# OBSOLETE: msgstr "Opprett en gjenbrukbar mal fra denne sonens poster"
-
-# OBSOLETE: msgid "Template Description"
-# OBSOLETE: msgstr "Malbeskrivelse"
-
-# OBSOLETE: msgid "Optional description for this template"
-# OBSOLETE: msgstr "Valgfri beskrivelse for denne malen"
-
-# OBSOLETE: msgid "Save as template"
-# OBSOLETE: msgstr "Lagre som mal"
-
-# OBSOLETE: msgid "Zone Settings"
-# OBSOLETE: msgstr "Soneinnstillinger"
-
-# OBSOLETE: msgid "Owner of zone"
-# OBSOLETE: msgstr "Eier av sone"
-
-# OBSOLETE: msgid "No owner set for this zone."
-# OBSOLETE: msgstr "Ingen eier satt for denne sonen."
-
-# OBSOLETE: msgid "Select All Filtered"
-# OBSOLETE: msgstr "Velg alle filtrerte"
-
-# OBSOLETE: msgid "User Administration"
-# OBSOLETE: msgstr "Brukeradministrasjon"
-
-# OBSOLETE: msgid "Create descriptive usernames that are easy to identify"
-# OBSOLETE: msgstr "Opprett beskrivende brukernavn som er enkle å identifisere"
-
-# OBSOLETE: msgid "Adding a full name helps with user identification"
-# OBSOLETE: msgstr "Å legge til et fullt navn hjelper med brukeridentifikasjon"
-
-# OBSOLETE: msgid "Auto-generating passwords is recommended for better security"
-# OBSOLETE: msgstr "Automatisk generering av passord anbefales for bedre sikkerhet"
-
-# OBSOLETE: msgid "User responsible for this zone"
-# OBSOLETE: msgstr "Bruker ansvarlig for denne sonen"
-
-# OBSOLETE: msgid "Zone Information"
-# OBSOLETE: msgstr "Soneinformasjon"
-
-# OBSOLETE: msgid "About Master Zones"
-# OBSOLETE: msgstr "Om mastersoner"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "A master zone is a zone for which this PowerDNS server is the primary "
-# OBSOLETE: "authority. You can add, edit and delete records in master zones."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "En mastersone er en sone som denne PowerDNS-serveren er primær autoritet "
-# OBSOLETE: "for. Du kan legge til, redigere og slette poster i mastersoner."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "After creating the zone, you will be redirected to add DNS records to it."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Etter å ha opprettet sonen, vil du bli omdirigert for å legge til DNS-"
-# OBSOLETE: "poster i den."
-
-# OBSOLETE: msgid "DNSSEC Information"
-# OBSOLETE: msgstr "DNSSEC-informasjon"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "DNSSEC (Domain Name System Security Extensions) adds cryptographic "
-# OBSOLETE: "signatures to DNS records to protect against spoofing and cache poisoning "
-# OBSOLETE: "attacks."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "DNSSEC (Domain Name System Security Extensions) legger til kryptografiske "
-# OBSOLETE: "signaturer til DNS-poster for å beskytte mot forfalskning og cache "
-# OBSOLETE: "poisoning-angrep."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When enabled, PowerDNS will automatically generate and manage the "
-# OBSOLETE: "necessary keys and signatures for the zone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Når aktivert, vil PowerDNS automatisk generere og administrere nødvendige "
-# OBSOLETE: "nøkler og signaturer for sonen."
-
-# OBSOLETE: msgid "Use fully qualified domain names (example.com)"
-# OBSOLETE: msgstr "Bruk fullstendige domenenavn (eksempel.no)"
-
-# OBSOLETE: msgid "Select a template to automatically create common DNS records"
-# OBSOLETE: msgstr "Velg en mal for å automatisk opprette vanlige DNS-poster"
-
-# OBSOLETE: msgid "NATIVE zone type is recommended for most setups"
-# OBSOLETE: msgstr "NATIVE-sonetype anbefales for de fleste oppsett"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Are you sure you want to delete the selected zones? This action cannot be "
-# OBSOLETE: "undone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Er du sikker på at du vil slette de valgte sonene? Denne handlingen kan "
-# OBSOLETE: "ikke angres."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Are you sure you want to delete the selected records? This action cannot "
-# OBSOLETE: "be undone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Er du sikker på at du vil slette de valgte postene? Denne handlingen kan "
-# OBSOLETE: "ikke angres."
-
-# OBSOLETE: msgid "IP address of the master name server (can be IPv4 or IPv6)"
-# OBSOLETE: msgstr "IP-adresse til master-navnetjeneren (kan være IPv4 eller IPv6)"
-
-# OBSOLETE: msgid "About Slave Zones"
-# OBSOLETE: msgstr "Om slave-soner"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "A slave zone is a read-only copy of a zone hosted on another DNS server. "
-# OBSOLETE: "PowerDNS will automatically fetch and update zone data from the master "
-# OBSOLETE: "server."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "En slave-sone er en skrivebeskyttet kopi av en sone hostet på en annen "
-# OBSOLETE: "DNS-tjener. PowerDNS vil automatisk hente og oppdatere sonedata fra "
-# OBSOLETE: "master-tjeneren."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You cannot edit records in a slave zone - all changes must be made on the "
-# OBSOLETE: "master server."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Du kan ikke redigere poster i en slave-sone - alle endringer må gjøres på "
-# OBSOLETE: "master-tjeneren."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Make sure that this PowerDNS server is allowed to transfer the zone from "
-# OBSOLETE: "the master server. The master server must have an allow-transfer or "
-# OBSOLETE: "similar configuration permitting zone transfers to this server's IP "
-# OBSOLETE: "address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Sørg for at denne PowerDNS-tjeneren har tilgang til å overføre sonen fra "
-# OBSOLETE: "master-tjeneren. Master-tjeneren må ha en allow-transfer eller lignende "
-# OBSOLETE: "konfigurasjon som tillater soneoverføringer til denne tjenerens IP-"
-# OBSOLETE: "adresse."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can specify multiple master servers by separating IP addresses with "
-# OBSOLETE: "commas"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Du kan spesifisere flere master-tjenere ved å skille IP-adresser med komma"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Slave zones will automatically update when the master server sends a "
-# OBSOLETE: "notification"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Slave-soner vil automatisk oppdateres når master-tjeneren sender en "
-# OBSOLETE: "varsling"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "To test the connection, check the PowerDNS logs after adding the zone"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "For å teste tilkoblingen, sjekk PowerDNS-loggene etter å ha lagt til sonen"
-
-# OBSOLETE: msgid "List permission templates"
-# OBSOLETE: msgstr "List tillatelsesmaler"
-
-# OBSOLETE: msgid "Add permission template"
-# OBSOLETE: msgstr "Legg til tillatelsesmal"
-
-# OBSOLETE: msgid "Edit Permission Template"
-# OBSOLETE: msgstr "Rediger tillatelsesmal"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Denne malen kan tildeles brukere for raskt å anvende dens tillatelser. "
-# OBSOLETE: "Endringer gjort her vil påvirke alle brukere som har denne malen tildelt."
-
-# OBSOLETE: msgid "Permission Templates"
-# OBSOLETE: msgstr "Tillatelsesmaler"
-
-# OBSOLETE: msgid "No permission templates found"
-# OBSOLETE: msgstr "Ingen tillatelsesmaler funnet"
-
-
-

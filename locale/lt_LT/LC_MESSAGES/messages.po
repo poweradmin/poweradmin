@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-10 19:11+0200\n"
+"POT-Creation-Date: 2026-02-14 17:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,9 +24,8 @@ msgid ""
 "No configuration file found at %s. Please use the <a href=\"install/"
 "\">installer</a> to create one, or create the configuration file manually."
 msgstr ""
-"Konfigūracijos failas nerastas. Naudokitės <a "
-"href=\"install/\">diegimo programa</a> jo sukūrimui arba sukurkite %s "
-"failą rankiniu būdu."
+"Konfigūracijos failas nerastas. Naudokitės <a href=\"install/\">diegimo "
+"programa</a> jo sukūrimui arba sukurkite %s failą rankiniu būdu."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:134
 msgid "Invalid CSRF token."
@@ -113,7 +112,6 @@ msgid "You do not have the permission to delete this user."
 msgstr "Neturite leidimo ištrinti šį vartotoją."
 
 #: lib/Application/Controller/DeleteUserController.php:62
-#, auto-english-fallback
 msgid "You do not have permission to delete a superuser account."
 msgstr "Neturite leidimo ištrinti supervartotojo paskyros."
 
@@ -150,7 +148,6 @@ msgid "You do not have permission to delete records in this zone."
 msgstr "Jūs neturite leidimo trinti įrašų šioje zonoje."
 
 #: lib/Application/Controller/EditRecordController.php:195
-#, auto-english-fallback
 msgid "Record not found."
 msgstr "Įrašas nerastas."
 
@@ -219,67 +216,54 @@ msgid "The record has been deleted successfully."
 msgstr "Įrašas sėkmingai ištrintas."
 
 #: lib/Application/Controller/DeleteRecordController.php:239
-#, auto-english-fallback
 msgid "You cannot delete records from a SLAVE zone."
 msgstr "Negalite ištrinti įrašų iš SLAVE zonos."
 
 #: lib/Application/Controller/DeleteGroupController.php:70
-#, auto-english-fallback
 msgid "You do not have permission to delete groups."
 msgstr "Neturite leidimo ištrinti grupių."
 
 #: lib/Application/Controller/EditGroupController.php:86
-#, auto-english-fallback
 msgid "Invalid group ID."
 msgstr "Netinkamas grupės ID."
 
 #: lib/Application/Controller/DeleteGroupController.php:98
-#, auto-english-fallback
 msgid "Group deletion cancelled."
 msgstr "Grupės ištrynimas atšauktas."
 
 #: lib/Application/Controller/DeleteGroupController.php:135
-#, auto-english-fallback
 msgid "Group has been deleted successfully."
 msgstr "Grupė sėkmingai ištrinta."
 
 #: lib/Application/Controller/EditGroupController.php:197
-#, auto-english-fallback
 msgid "Group not found."
 msgstr "Grupė nerasta."
 
 #: lib/Application/Controller/UserPreferencesController.php:99
-#, auto-english-fallback
 msgid "Preferences saved successfully."
 msgstr "Nuostatos sėkmingai išsaugotos."
 
 #: lib/Application/Controller/UserPreferencesController.php:107
-#, auto-english-fallback
 msgid "Failed to update preferences. Please try again."
 msgstr "Nepavyko atnaujinti nuostatų. Bandykite dar kartą."
 
 #: lib/Application/Controller/UserPreferencesController.php:122
-#, auto-english-fallback
 msgid "Top"
 msgstr "Viršus"
 
 #: lib/Application/Controller/UserPreferencesController.php:123
-#, auto-english-fallback
 msgid "Bottom"
 msgstr "Apačia"
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:60
-#, auto-english-fallback
 msgid "You do not have permission to manage group members."
 msgstr "Neturite leidimo valdyti grupės narių."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:103
-#, auto-english-fallback
 msgid "Invalid action."
 msgstr "Netinkamas veiksmas."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:192
-#, auto-english-fallback
 msgid "Please select at least one user."
 msgstr "Pasirinkite bent vieną vartotoją."
 
@@ -316,7 +300,6 @@ msgstr[1] ""
 msgstr[2] ""
 
 #: lib/Application/Controller/DnsWizardController.php:57
-#, auto-english-fallback
 msgid "DNS wizards are not enabled."
 msgstr "DNS vedliai neįjungti."
 
@@ -325,27 +308,22 @@ msgid "Invalid zone ID."
 msgstr "Neteisingas zonos ID."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:93
-#, auto-english-fallback
 msgid "Zone not found."
 msgstr "Zona nerasta."
 
 #: lib/Application/Controller/DnsWizardController.php:80
-#, auto-english-fallback
 msgid "You do not have permission to add records to this zone."
 msgstr "Neturite leidimo pridėti įrašų į šią zoną."
 
 #: lib/Application/Controller/DnsWizardFormController.php:114
-#, auto-english-fallback
 msgid "Invalid wizard type."
 msgstr "Netinkamas vedlio tipas."
 
 #: lib/Application/Controller/DnsWizardFormController.php:199
-#, auto-english-fallback
 msgid "Validation failed:"
 msgstr "Patikrinimas nepavyko:"
 
 #: lib/Application/Controller/DnsWizardFormController.php:223
-#, auto-english-fallback
 msgid "Failed to generate record:"
 msgstr "Nepavyko sugeneruoti įrašo:"
 
@@ -422,7 +400,8 @@ msgid ""
 "MFA is required by your organization's security policy and cannot be "
 "disabled."
 msgstr ""
-"MFA reikalaujama jūsų organizacijos saugumo politikos ir negali būti išjungta."
+"MFA reikalaujama jūsų organizacijos saugumo politikos ir negali būti "
+"išjungta."
 
 #: lib/Application/Controller/MfaSetupController.php:290
 msgid "MFA is not enabled."
@@ -539,17 +518,14 @@ msgid "Invalid request method."
 msgstr "Neteisingas užklausos metodas."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:77
-#, auto-english-fallback
 msgid "Invalid group or user ID."
 msgstr "Netinkamas grupės arba vartotojo ID."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:86
-#, auto-english-fallback
 msgid "Member removed from group successfully."
 msgstr "Narys sėkmingai pašalintas iš grupės."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:118
-#, auto-english-fallback
 msgid "User was not a member of this group."
 msgstr "Vartotojas nebuvo šios grupės narys."
 
@@ -558,7 +534,6 @@ msgid "You do not have the permission to add a new user."
 msgstr "Neturite leidimo pridėti naują vartotoją."
 
 #: lib/Application/Controller/EditUserController.php:235
-#, auto-english-fallback
 msgid "Invalid permission template: must be a user template"
 msgstr "Netinkamas leidimų šablonas: turi būti vartotojo šablonas"
 
@@ -596,17 +571,14 @@ msgid "The record could not be deleted."
 msgstr "Įrašo ištrinti nepavyko."
 
 #: lib/Application/Controller/ListLogUsersController.php:67
-#, auto-english-fallback
 msgid "Invalid page number."
 msgstr "Netinkamas puslapio numeris."
 
 #: lib/Application/Controller/ListLogUsersController.php:69
-#, auto-english-fallback
 msgid "Page number must be at least 1."
 msgstr "Puslapio numeris turi būti bent 1."
 
 #: lib/Application/Controller/ListLogUsersController.php:87
-#, auto-english-fallback
 msgid "Page number exceeds available pages."
 msgstr "Puslapio numeris viršija turimus puslapius."
 
@@ -736,17 +708,14 @@ msgid "You do not have the permission to view this zone."
 msgstr "Neturite leidimo peržiūrėti šios zonos."
 
 #: lib/Application/Controller/EditController.php:271
-#, auto-english-fallback
 msgid "Zone type has been changed successfully."
 msgstr "Zonos tipas sėkmingai pakeistas."
 
 #: lib/Application/Controller/EditController.php:278
-#, auto-english-fallback
 msgid "Slave master has been changed successfully."
 msgstr "Slave master sėkmingai pakeistas."
 
 #: lib/Application/Controller/EditController.php:298
-#, auto-english-fallback
 msgid "Zone template has been changed successfully."
 msgstr "Zonos šablonas sėkmingai pakeistas."
 
@@ -775,7 +744,8 @@ msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
 msgstr ""
-"Nepavyko pasirašyti zonos. Zonos tikrinimas pavyko, bet PowerDNS API grąžino klaidą. Patikrinkite PowerDNS žurnalus dėl detalių."
+"Nepavyko pasirašyti zonos. Zonos tikrinimas pavyko, bet PowerDNS API grąžino "
+"klaidą. Patikrinkite PowerDNS žurnalus dėl detalių."
 
 #: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
@@ -888,7 +858,6 @@ msgid "You do not have the permission to add a record to this zone."
 msgstr "Neturite leidimo pridėti įrašą į šią zoną."
 
 #: lib/Application/Controller/AddRecordController.php:226
-#, auto-english-fallback
 msgid "Record successfully added."
 msgstr "Įrašas sėkmingai pridėtas."
 
@@ -947,7 +916,6 @@ msgid "Authentication failed: "
 msgstr "Autentifikacija nepavyko: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
-#, auto-english-fallback
 msgid "You do not have permission to create zone templates."
 msgstr "Neturite leidimo kurti zonos šablonus."
 
@@ -956,7 +924,6 @@ msgid "Template name can't be an empty string."
 msgstr "Šablono pavadinimas negali būti tuščias."
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:150
-#, auto-english-fallback
 msgid "Zone template has been created successfully."
 msgstr "Zonos šablonas sėkmingai sukurtas."
 
@@ -973,7 +940,6 @@ msgid "You do not have the permission to add a master zone."
 msgstr "Neturite leidimo pridėti pagrindinę zoną."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:101
-#, auto-english-fallback
 msgid "At least one user or group must be selected as owner."
 msgstr ""
 "Kaip savininkas turi būti pasirinktas bent vienas vartotojas arba grupė."
@@ -987,17 +953,18 @@ msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
-"Zona sėkmingai sukurta, bet DNSSEC pasirašymas praleistas dėl tikrinimo klaidų:"
+"Zona sėkmingai sukurta, bet DNSSEC pasirašymas praleistas dėl tikrinimo "
+"klaidų:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:171
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
 msgstr ""
-"Zona sukurta, bet apsaugoti ją su DNSSEC nepavyko. Zonos tikrinimas pavyko, bet PowerDNS API grąžino klaidą. Patikrinkite PowerDNS žurnalus dėl detalių."
+"Zona sukurta, bet apsaugoti ją su DNSSEC nepavyko. Zonos tikrinimas pavyko, "
+"bet PowerDNS API grąžino klaidą. Patikrinkite PowerDNS žurnalus dėl detalių."
 
 #: lib/Application/Controller/AddZoneMasterController.php:177
-#, auto-english-fallback
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zona sėkmingai sukurta ir pasirašyta su DNSSEC."
 
@@ -1006,7 +973,8 @@ msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
 msgstr ""
-"Zona sukurta ir pasirašymas užklaustas, bet patikrinimas nepavyko. Patikrinkite DNSSEC raktus."
+"Zona sukurta ir pasirašymas užklaustas, bet patikrinimas nepavyko. "
+"Patikrinkite DNSSEC raktus."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:145
 msgid "Zone has been added successfully."
@@ -1029,17 +997,14 @@ msgid "You do not have the permission to view zone templates."
 msgstr "Neturite leidimo peržiūrėti zonų šablonų."
 
 #: lib/Application/Controller/AddGroupController.php:66
-#, auto-english-fallback
 msgid "You do not have permission to create groups."
 msgstr "Neturite leidimo kurti grupes."
 
 #: lib/Application/Controller/EditGroupController.php:115
-#, auto-english-fallback
 msgid "Invalid permission template: must be a group template"
 msgstr "Netinkamas leidimų šablonas: turi būti grupės šablonas"
 
 #: lib/Application/Controller/AddGroupController.php:132
-#, auto-english-fallback
 msgid "Group has been created successfully."
 msgstr "Grupė sėkmingai sukurta."
 
@@ -1052,7 +1017,6 @@ msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Jūs neturite leidimo valdyti DNSSEC šiai zonai."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:89
-#, auto-english-fallback
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC raktas nerastas arba nebeegzistuoja."
 
@@ -1069,22 +1033,18 @@ msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Įvyko klaida trinant DNSSEC raktą: "
 
 #: lib/Application/Controller/SamlCallbackController.php:77
-#, auto-english-fallback
 msgid "SAML authentication is not enabled"
 msgstr "SAML autentifikacija neįjungta"
 
 #: lib/Application/Controller/SamlLoginController.php:89
-#, auto-english-fallback
 msgid "No SAML providers are configured"
 msgstr "Nesukonfigūruoti SAML teikėjai"
 
 #: lib/Application/Controller/SamlLoginController.php:100
-#, auto-english-fallback
 msgid "Invalid SAML provider"
 msgstr "Netinkamas SAML teikėjas"
 
 #: lib/Application/Controller/SamlCallbackController.php:105
-#, auto-english-fallback
 msgid "SAML authentication failed: "
 msgstr "SAML autentifikacija nepavyko: "
 
@@ -1097,12 +1057,10 @@ msgid "You do not have the permission to see any zones."
 msgstr "Neturite leidimo matyti jokių zonų."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:71
-#, auto-english-fallback
 msgid "You do not have permission to manage zone ownership."
 msgstr "Neturite leidimo valdyti zonos nuosavybę."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:205
-#, auto-english-fallback
 msgid "Please select at least one zone."
 msgstr "Pasirinkite bent vieną zoną."
 
@@ -1233,22 +1191,18 @@ msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Nepavyko gauti RDAP informacijos naudojant serverį %s"
 
 #: lib/Application/Controller/Api/Internal/DnsWizardController.php:409
-#, auto-english-fallback
 msgid "Record created successfully"
 msgstr "Įrašas sėkmingai sukurtas"
 
 #: lib/Application/Controller/EditUserController.php:338
-#, auto-english-fallback
 msgid "You do not have permission to manage group memberships."
 msgstr "Neturite leidimo valdyti grupės narystes."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:79
-#, auto-english-fallback
 msgid "Invalid user or group ID."
 msgstr "Netinkamas vartotojo arba grupės ID."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:100
-#, auto-english-fallback
 msgid "User removed from group successfully."
 msgstr "Vartotojas sėkmingai pašalintas iš grupės."
 
@@ -1285,22 +1239,18 @@ msgid "The supermaster has been updated successfully."
 msgstr "Supermaster sėkmingai atnaujintas."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:60
-#, auto-english-fallback
 msgid "You do not have permission to manage group zones."
 msgstr "Neturite leidimo valdyti grupės zonas."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:77
-#, auto-english-fallback
 msgid "Invalid group or zone ID."
 msgstr "Netinkamas grupės arba zonos ID."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
-#, auto-english-fallback
 msgid "Zone removed from group successfully."
 msgstr "Zona sėkmingai pašalinta iš grupės."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:88
-#, auto-english-fallback
 msgid "Zone was not owned by this group."
 msgstr "Zona nepriklausė šiai grupei."
 
@@ -1333,12 +1283,10 @@ msgid "You do not have the permission to edit this user."
 msgstr "Neturite leidimo redaguoti šio vartotojo."
 
 #: lib/Application/Controller/EditUserController.php:210
-#, auto-english-fallback
 msgid "You do not have permission to edit a superuser account."
 msgstr "Neturite leidimo redaguoti supervartotojo paskyros."
 
 #: lib/Application/Controller/EditUserController.php:346
-#, auto-english-fallback
 msgid "Please select at least one group."
 msgstr "Pasirinkite bent vieną grupę."
 
@@ -1404,17 +1352,14 @@ msgid "An unexpected error occurred. Please contact the administrator."
 msgstr "Įvyko netikėta klaida. Susisiekite su administratoriumi."
 
 #: lib/Application/Controller/SamlCallbackController.php:93
-#, auto-english-fallback
 msgid "Unknown SAML endpoint"
 msgstr "Nežinomas SAML endpoint"
 
 #: lib/Application/Controller/SamlCallbackController.php:119
-#, auto-english-fallback
 msgid "You have been logged out"
 msgstr "Jūs atsijungėte"
 
 #: lib/Application/Controller/SamlCallbackController.php:124
-#, auto-english-fallback
 msgid "Logout completed (with warnings): "
 msgstr "Atsijungimas užbaigtas (su įspėjimais): "
 
@@ -1423,7 +1368,6 @@ msgid "You do not have permission to view this record."
 msgstr "Jūs neturite leidimo peržiūrėti šio įrašo."
 
 #: lib/Application/Controller/EditRecordController.php:108
-#, auto-english-fallback
 msgid "You cannot edit records in a SLAVE zone."
 msgstr "Negalite redaguoti įrašų SLAVE zonoje."
 
@@ -1432,7 +1376,6 @@ msgid "You do not have permission to edit this record."
 msgstr "Jūs neturite leidimo redaguoti šio įrašo."
 
 #: lib/Application/Controller/EditRecordController.php:226
-#, auto-english-fallback
 msgid "Failed to retrieve updated record information."
 msgstr "Nepavyko gauti atnaujintos įrašo informacijos."
 
@@ -1454,14 +1397,17 @@ msgid ""
 "Please contact your administrator or change your password through your "
 "identity provider."
 msgstr ""
-"Vartotojai, autentifikuoti per Single Sign-On, negali pakeisti slaptažodžio čia. Susisiekite su administratoriumi arba pakeiskite slaptažodį per savo tapatybės teikėją."
+"Vartotojai, autentifikuoti per Single Sign-On, negali pakeisti slaptažodžio "
+"čia. Susisiekite su administratoriumi arba pakeiskite slaptažodį per savo "
+"tapatybės teikėją."
 
 #: lib/Application/Controller/ChangePasswordController.php:87
 msgid ""
 "External authentication users cannot change their password here. Please "
 "contact your administrator."
 msgstr ""
-"Išorinės autentifikacijos vartotojai negali pakeisti slaptažodžio čia. Susisiekite su administratoriumi."
+"Išorinės autentifikacijos vartotojai negali pakeisti slaptažodžio čia. "
+"Susisiekite su administratoriumi."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:116
 msgid "ECDSA P-256 algorithm must use 256 bits"
@@ -1500,12 +1446,10 @@ msgid "Please select both algorithm and bits"
 msgstr "Pasirinkite ir algoritmą, ir bitus"
 
 #: lib/Application/Controller/EditGroupController.php:79
-#, auto-english-fallback
 msgid "You do not have permission to edit groups."
 msgstr "Neturite leidimo redaguoti grupes."
 
 #: lib/Application/Controller/EditGroupController.php:180
-#, auto-english-fallback
 msgid "Group has been updated successfully."
 msgstr "Grupė sėkmingai atnaujinta."
 
@@ -1538,22 +1482,18 @@ msgid "Some zone(s) could not be added."
 msgstr "Kai kurių zonų pridėti nepavyko."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:169
-#, auto-english-fallback
 msgid "Owner has been added successfully."
 msgstr "Savininkas sėkmingai pridėtas."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:184
-#, auto-english-fallback
 msgid "Owner has been removed successfully."
 msgstr "Savininkas sėkmingai pašalintas."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:198
-#, auto-english-fallback
 msgid "Group has been added successfully."
 msgstr "Grupė sėkmingai pridėta."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:205
-#, auto-english-fallback
 msgid "Group has been removed successfully."
 msgstr "Grupė sėkmingai pašalinta."
 
@@ -1586,7 +1526,6 @@ msgid "Failed to activate zone key."
 msgstr "Nepavyko įjungti zonos rakto."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:116
-#, auto-english-fallback
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Įvyko klaida perjungiant DNSSEC raktą. Bandykite dar kartą."
 
@@ -1648,7 +1587,6 @@ msgid "Failed to authenticate against LDAP."
 msgstr "Nepavyko autentifikuoti su LDAP."
 
 #: lib/Application/Service/SamlService.php:243
-#, auto-english-fallback
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Autentifikacija nepavyko: Netinkamas SAML atsakymas"
 
@@ -1663,7 +1601,6 @@ msgid "No"
 msgstr "Ne"
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
-#, auto-english-fallback
 msgid "This template is assigned to at least one user and one group."
 msgstr "Šis šablonas priskirtas bent vienam vartotojui ir vienai grupei."
 
@@ -1672,7 +1609,6 @@ msgid "This template is assigned to at least one user."
 msgstr "Šis šablonas priskirtas bent vienam vartotojui."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
-#, auto-english-fallback
 msgid "This template is assigned to at least one group."
 msgstr "Šis šablonas priskirtas bent vienai grupei."
 
@@ -1686,7 +1622,6 @@ msgid "An empty password is not allowed"
 msgstr "Tuščias slaptažodis neleistinas"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:216
-#, auto-english-fallback
 msgid "LDAP authentication is disabled"
 msgstr "LDAP autentifikacija išjungta"
 
@@ -1695,7 +1630,8 @@ msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
 msgstr ""
-"Duomenų bazės klaida: Nepavyko patikrinti vartotojo autentifikacijos. Patikrinkite duomenų bazės konfigūraciją."
+"Duomenų bazės klaida: Nepavyko patikrinti vartotojo autentifikacijos. "
+"Patikrinkite duomenų bazės konfigūraciją."
 
 #: lib/Domain/Repository/DomainRepository.php:201
 msgid "This is an invalid zone name."
@@ -1786,17 +1722,14 @@ msgid "Error checking template existence: "
 msgstr "Klaida tikrinant šablono egzistavimą: "
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:45
-#, auto-english-fallback
 msgid "TLSA Record"
 msgstr "TLSA įrašas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:46
-#, auto-english-fallback
 msgid "TLS certificate/key authentication (DANE)"
 msgstr "TLS sertifikato/rakto autentifikacija (DANE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:57
-#, auto-english-fallback
 msgid "DNSSEC Requirement"
 msgstr "DNSSEC reikalavimas"
 
@@ -1806,46 +1739,39 @@ msgid ""
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
 msgstr ""
-"TLSA įrašams reikia, kad šiai zonai būtų įjungtas DNSSEC. TLSA įrašai be DNSSEC nesuteiks saugumo pranašumų ir gali būti ignoruojami klientų."
+"TLSA įrašams reikia, kad šiai zonai būtų įjungtas DNSSEC. TLSA įrašai be "
+"DNSSEC nesuteiks saugumo pranašumų ir gali būti ignoruojami klientų."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:91
-#, auto-english-fallback
 msgid "Service Configuration"
 msgstr "Paslaugos konfigūracija"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:148
-#, auto-english-fallback
 msgid "Port Number"
 msgstr "Prievado numeris"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:72
 msgid ""
 "TCP/UDP port number (443 for HTTPS, 25 for SMTP, 853 for DNS-over-TLS, etc.)"
-msgstr ""
-"TCP/UDP prievado numeris (443 HTTPS, 25 SMTP, 853 DNS-over-TLS ir kt.)"
+msgstr "TCP/UDP prievado numeris (443 HTTPS, 25 SMTP, 853 DNS-over-TLS ir kt.)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:113
-#, auto-english-fallback
 msgid "Protocol"
 msgstr "Protokolas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:81
-#, auto-english-fallback
 msgid "Transmission Control Protocol - most common for HTTPS/TLS"
 msgstr "Perdavimo valdymo protokolas - dažniausias HTTPS/TLS"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:82
-#, auto-english-fallback
 msgid "User Datagram Protocol - for DTLS connections"
 msgstr "Vartotojo datagramų protokolas - DTLS ryšiams"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:121
-#, auto-english-fallback
 msgid "Stream Control Transmission Protocol"
 msgstr "Srauto valdymo perdavimo protokolas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:85
-#, auto-english-fallback
 msgid "Transport protocol for the TLS connection"
 msgstr "Transporto protokolas TLS ryšiui"
 
@@ -1859,55 +1785,46 @@ msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
 msgstr ""
-"Paslaugos serverio vardas (palikite tuščią zonos viršūnei @). Įrašas bus sukurtas _port._protocol.hostname"
+"Paslaugos serverio vardas (palikite tuščią zonos viršūnei @). Įrašas bus "
+"sukurtas _port._protocol.hostname"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:98
-#, auto-english-fallback
 msgid "Certificate Usage"
 msgstr "Sertifikato naudojimas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:102
-#, auto-english-fallback
 msgid "Usage"
 msgstr "Naudojimas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
-#, auto-english-fallback
 msgid "0 - CA Constraint"
 msgstr "0 - CA apribojimas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
-#, auto-english-fallback
 msgid "Certificate must chain to specified CA (PKIX-TA)"
 msgstr "Sertifikatas turi būti susietas su nurodytu CA (PKIX-TA)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
-#, auto-english-fallback
 msgid "1 - Service Certificate"
 msgstr "1 - Paslaugos sertifikatas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
-#, auto-english-fallback
 msgid "Certificate must match exactly (PKIX-EE)"
 msgstr "Sertifikatas turi tiksliai atitikti (PKIX-EE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
-#, auto-english-fallback
 msgid "2 - Trust Anchor Assertion"
 msgstr "2 - Pasitikėjimo inkaro patvirtinimas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
-#, auto-english-fallback
 msgid "Certificate must chain to specified anchor (DANE-TA)"
 msgstr "Sertifikatas turi būti susietas su nurodytu inkaru (DANE-TA)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
-#, auto-english-fallback
 msgid "3 - Domain-Issued Certificate"
 msgstr "3 - Domeno išduotas sertifikatas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
-#, auto-english-fallback
 msgid "Certificate must match exactly, bypassing PKI (DANE-EE)"
 msgstr "Sertifikatas turi tiksliai atitikti, aplenkiant PKI (DANE-EE)"
 
@@ -1916,30 +1833,26 @@ msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
 msgstr ""
-"Kaip turėtų būti patvirtintas sertifikatas. 3 tipas dažniausias savipasirašytiems arba pasirinktiniams CA."
+"Kaip turėtų būti patvirtintas sertifikatas. 3 tipas dažniausias "
+"savipasirašytiems arba pasirinktiniams CA."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:72
-#, auto-english-fallback
 msgid "Selector"
 msgstr "Selektorius"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
-#, auto-english-fallback
 msgid "0 - Full Certificate"
 msgstr "0 - Pilnas sertifikatas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
-#, auto-english-fallback
 msgid "Use the entire certificate"
 msgstr "Naudoti visą sertifikatą"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
-#, auto-english-fallback
 msgid "1 - Public Key"
 msgstr "1 - Viešasis raktas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
-#, auto-english-fallback
 msgid "Use only the Subject Public Key Info (SPKI)"
 msgstr "Naudoti tik subjekto viešojo rakto informaciją (SPKI)"
 
@@ -1948,40 +1861,34 @@ msgid ""
 "What part of the certificate to match. Type 1 (public key) survives "
 "certificate renewal."
 msgstr ""
-"Kuri sertifikato dalis turi atitikti. 1 tipas (viešasis raktas) išlieka po sertifikato atnaujinimo."
+"Kuri sertifikato dalis turi atitikti. 1 tipas (viešasis raktas) išlieka po "
+"sertifikato atnaujinimo."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:138
-#, auto-english-fallback
 msgid "Matching Type"
 msgstr "Atitikimo tipas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
-#, auto-english-fallback
 msgid "0 - Exact Match"
 msgstr "0 - Tikslus atitikimas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
-#, auto-english-fallback
 msgid "Full certificate/key data (very long record)"
 msgstr "Pilni sertifikato/rakto duomenys (labai ilgas įrašas)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
-#, auto-english-fallback
 msgid "1 - SHA-256 Hash"
 msgstr "1 - SHA-256 maiša"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
-#, auto-english-fallback
 msgid "SHA-256 hash of certificate/key"
 msgstr "Sertifikato/rakto SHA-256 maiša"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
-#, auto-english-fallback
 msgid "2 - SHA-512 Hash"
 msgstr "2 - SHA-512 maiša"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
-#, auto-english-fallback
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
 msgstr "Sertifikato/rakto SHA-512 maiša (saugesnė, bet ilgesnė)"
 
@@ -1990,15 +1897,14 @@ msgid ""
 "How to encode the certificate data. SHA-256 (type 1) provides good balance "
 "of security and length."
 msgstr ""
-"Kaip užkoduoti sertifikato duomenis. SHA-256 (1 tipas) užtikrina gerą saugumo ir ilgio pusiausvyrą."
+"Kaip užkoduoti sertifikato duomenis. SHA-256 (1 tipas) užtikrina gerą "
+"saugumo ir ilgio pusiausvyrą."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:152
-#, auto-english-fallback
 msgid "Certificate Data"
 msgstr "Sertifikato duomenys"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:156
-#, auto-english-fallback
 msgid "Certificate Association Data"
 msgstr "Sertifikato asociacijos duomenys"
 
@@ -2008,51 +1914,43 @@ msgid ""
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
 msgstr ""
-"Šešioliktainė maiša arba pilni sertifikato duomenys (priklausomai nuo atitikimo tipo). SHA-256: naudokite \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
+"Šešioliktainė maiša arba pilni sertifikato duomenys (priklausomai nuo "
+"atitikimo tipo). SHA-256: naudokite \"openssl x509 -in cert.pem -pubkey "
+"-noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:184
-#, auto-english-fallback
 msgid "Record Settings"
 msgstr "Įrašo nustatymai"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:188
-#, auto-english-fallback
 msgid "TTL (seconds)"
 msgstr "TTL (sekundės)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:193
-#, auto-english-fallback
 msgid "Time to live - how long DNS resolvers should cache this record"
-msgstr ""
-"Galiojimo laikas - kiek laiko DNS resolveriai turėtų talpinti šį įrašą"
+msgstr "Galiojimo laikas - kiek laiko DNS resolveriai turėtų talpinti šį įrašą"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:289
-#, auto-english-fallback
 msgid "Port must be between 1 and 65535"
 msgstr "Prievadas turi būti tarp 1 ir 65535"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:233
-#, auto-english-fallback
 msgid "Usage must be 0, 1, 2, or 3"
 msgstr "Naudojimas turi būti 0, 1, 2 arba 3"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:238
-#, auto-english-fallback
 msgid "Selector must be 0 or 1"
 msgstr "Selektorius turi būti 0 arba 1"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:243
-#, auto-english-fallback
 msgid "Matching type must be 0, 1, or 2"
 msgstr "Atitikimo tipas turi būti 0, 1 arba 2"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:248
-#, auto-english-fallback
 msgid "Certificate association data is required"
 msgstr "Sertifikato asociacijos duomenys yra privalomi"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:253
-#, auto-english-fallback
 msgid "Certificate data must be hexadecimal (0-9, a-f)"
 msgstr "Sertifikato duomenys turi būti šešioliktainiai (0-9, a-f)"
 
@@ -2062,7 +1960,8 @@ msgid ""
 "SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
 "correct."
 msgstr ""
-"SHA-256 maiša turėtų būti 64 šešioliktainiai simboliai, gauta %d. Patikrinkite, ar maiša teisinga."
+"SHA-256 maiša turėtų būti 64 šešioliktainiai simboliai, gauta %d. "
+"Patikrinkite, ar maiša teisinga."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:263
 #, php-format
@@ -2070,14 +1969,16 @@ msgid ""
 "SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
 "is correct."
 msgstr ""
-"SHA-512 maiša turėtų būti 128 šešioliktainiai simboliai, gauta %d. Patikrinkite, ar maiša teisinga."
+"SHA-512 maiša turėtų būti 128 šešioliktainiai simboliai, gauta %d. "
+"Patikrinkite, ar maiša teisinga."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:267
 msgid ""
 "Full certificate data seems too short. Ensure you provided the complete "
 "certificate."
 msgstr ""
-"Pilni sertifikato duomenys atrodo per trumpi. Įsitikinkite, kad pateikėte visą sertifikatą."
+"Pilni sertifikato duomenys atrodo per trumpi. Įsitikinkite, kad pateikėte "
+"visą sertifikatą."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:274
 #: templates/modern/edit.html:91 templates/modern/edit.html:607
@@ -2089,105 +1990,88 @@ msgid ""
 "CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
 "DNSSEC, TLSA records provide NO security benefit."
 msgstr ""
-"KRITINIS: TLSA įrašams reikia, kad šiai zonai būtų įjungtas DNSSEC. Be DNSSEC, TLSA įrašai NESUTEIKIA jokių saugumo pranašumų."
+"KRITINIS: TLSA įrašams reikia, kad šiai zonai būtų įjungtas DNSSEC. Be "
+"DNSSEC, TLSA įrašai NESUTEIKIA jokių saugumo pranašumų."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:46
-#, auto-english-fallback
 msgid "DMARC Record"
 msgstr "DMARC įrašas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:47
-#, auto-english-fallback
 msgid "Email authentication policy and reporting configuration"
 msgstr "El. pašto autentifikacijos politika ir ataskaitų konfigūracija"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:59
-#, auto-english-fallback
 msgid "Policy Settings"
 msgstr "Politikos nustatymai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:138
-#, auto-english-fallback
 msgid "Policy"
 msgstr "Politika"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
-#, auto-english-fallback
 msgid "None (monitor only)"
 msgstr "Jokia (tik stebėjimas)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
-#, auto-english-fallback
 msgid "No action taken, just collect reports for analysis"
 msgstr "Joks veiksmas neatliktas, tik renkamos ataskaitos analizei"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
-#, auto-english-fallback
 msgid "Quarantine"
 msgstr "Karantinas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:69
-#, auto-english-fallback
 msgid "Treat suspicious emails as spam/junk"
 msgstr "Įtartinus el. laiškus laikyti šlamštu"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
-#, auto-english-fallback
 msgid "Reject"
 msgstr "Atmesti"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:70
-#, auto-english-fallback
 msgid "Block delivery of suspicious emails entirely"
 msgstr "Visiškai blokuoti įtartinų el. laiškų pristatymą"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:72
 msgid "Start with \"none\" to collect data before enforcing a stricter policy."
 msgstr ""
-"Pradėkite su \"jokia\", kad surinktumėte duomenis prieš taikydami griežtesnę politiką."
+"Pradėkite su \"jokia\", kad surinktumėte duomenis prieš taikydami griežtesnę "
+"politiką."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:76
-#, auto-english-fallback
 msgid "Subdomain Policy"
 msgstr "Subdomenų politika"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
-#, auto-english-fallback
 msgid "Same as domain policy"
 msgstr "Tokia pati kaip domeno politika"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
-#, auto-english-fallback
 msgid "Use the same policy as the main domain"
 msgstr "Naudoti tą pačią politiką kaip pagrindinis domenas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
-#, auto-english-fallback
 msgid "None"
 msgstr "Jokia"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
-#, auto-english-fallback
 msgid "Monitor only for subdomains"
 msgstr "Tik stebėti subdomenus"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
-#, auto-english-fallback
 msgid "Quarantine suspicious subdomain emails"
 msgstr "Įtartinus subdomenų el. laiškus siųsti į karantiną"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
-#, auto-english-fallback
 msgid "Reject suspicious subdomain emails"
 msgstr "Atmesti įtartinus subdomenų el. laiškus"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:86
-#, auto-english-fallback
 msgid "Policy for emails from subdomains (e.g., mail.example.com)"
 msgstr "Politika el. laiškams iš subdomenų (pvz., mail.example.com)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:90
-#, auto-english-fallback
 msgid "Policy Application Percentage"
 msgstr "Politikos taikymo procentas"
 
@@ -2196,25 +2080,22 @@ msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
 msgstr ""
-"Pranešimų procentas, kuriam turėtų būti taikoma politika (100 = visi pranešimai). Naudokite mažesnes reikšmes politikos diegimo metu."
+"Pranešimų procentas, kuriam turėtų būti taikoma politika (100 = visi "
+"pranešimai). Naudokite mažesnes reikšmes politikos diegimo metu."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:101
-#, auto-english-fallback
 msgid "Reporting Settings"
 msgstr "Ataskaitų nustatymai"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:105
-#, auto-english-fallback
 msgid "Aggregate Report Email"
 msgstr "Suvestinės ataskaitos el. paštas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:109
-#, auto-english-fallback
 msgid "Email address to receive daily aggregate reports"
 msgstr "El. pašto adresas kasdienėms suvestinėms ataskaitoms gauti"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:113
-#, auto-english-fallback
 msgid "Forensic Report Email"
 msgstr "Kriminalistinės ataskaitos el. paštas"
 
@@ -2223,32 +2104,27 @@ msgid ""
 "Email address to receive detailed failure reports (optional, can be high "
 "volume)"
 msgstr ""
-"El. pašto adresas detalių nesėkmių ataskaitoms gauti (neprivaloma, gali būti didelė apimtis)"
+"El. pašto adresas detalių nesėkmių ataskaitoms gauti (neprivaloma, gali būti "
+"didelė apimtis)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:121
-#, auto-english-fallback
 msgid "Forensic Reporting Options"
 msgstr "Kriminalistinių ataskaitų parinktys"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:125
-#, auto-english-fallback
 msgid "Generate reports if all authentication mechanisms fail"
-msgstr ""
-"Generuoti ataskaitas, jei visi autentifikacijos mechanizmai nepavyksta"
+msgstr "Generuoti ataskaitas, jei visi autentifikacijos mechanizmai nepavyksta"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:126
-#, auto-english-fallback
 msgid "Generate reports if any authentication mechanism fails"
 msgstr ""
 "Generuoti ataskaitas, jei bet kuris autentifikacijos mechanizmas nepavyksta"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:127
-#, auto-english-fallback
 msgid "Generate reports if DKIM check fails"
 msgstr "Generuoti ataskaitas, jei DKIM patikrinimas nepavyksta"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:128
-#, auto-english-fallback
 msgid "Generate reports if SPF check fails"
 msgstr "Generuoti ataskaitas, jei SPF patikrinimas nepavyksta"
 
@@ -2256,75 +2132,62 @@ msgstr "Generuoti ataskaitas, jei SPF patikrinimas nepavyksta"
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
 msgstr ""
-"Kada generuoti kriminalistines ataskaitas (taikoma tik jei nustatytas kriminalistinis el. paštas)"
+"Kada generuoti kriminalistines ataskaitas (taikoma tik jei nustatytas "
+"kriminalistinis el. paštas)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:135
-#, auto-english-fallback
 msgid "Alignment Settings"
 msgstr "Lygiavimo nustatymai"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:136
-#, auto-english-fallback
 msgid "Advanced settings for SPF and DKIM alignment modes"
 msgstr "Išplėstiniai SPF ir DKIM lygiavimo režimų nustatymai"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:140
-#, auto-english-fallback
 msgid "DKIM Alignment Mode"
 msgstr "DKIM lygiavimo režimas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
-#, auto-english-fallback
 msgid "Relaxed"
 msgstr "Atlaidus"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:145
-#, auto-english-fallback
 msgid "DKIM domain can be subdomain of From: domain"
 msgstr "DKIM domenas gali būti From: domeno subdomenas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
-#, auto-english-fallback
 msgid "Strict"
 msgstr "Griežtas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:146
-#, auto-english-fallback
 msgid "DKIM domain must exactly match From: domain"
 msgstr "DKIM domenas turi tiksliai atitikti From: domeną"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:151
-#, auto-english-fallback
 msgid "SPF Alignment Mode"
 msgstr "SPF lygiavimo režimas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
-#, auto-english-fallback
 msgid "SPF domain can be subdomain of From: domain"
 msgstr "SPF domenas gali būti From: domeno subdomenas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
-#, auto-english-fallback
 msgid "SPF domain must exactly match From: domain"
 msgstr "SPF domenas turi tiksliai atitikti From: domeną"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:261
-#, auto-english-fallback
 msgid "Policy is required"
 msgstr "Politika privaloma"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:263
-#, auto-english-fallback
 msgid "Invalid policy value"
 msgstr "Netinkama politikos reikšmė"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:268
-#, auto-english-fallback
 msgid "Invalid subdomain policy value"
 msgstr "Netinkama subdomenų politikos reikšmė"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:275
-#, auto-english-fallback
 msgid "Percentage must be between 0 and 100"
 msgstr "Procentas turi būti tarp 0 ir 100"
 
@@ -2334,15 +2197,14 @@ msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
 msgstr ""
-"Politika bus taikoma tik %d%% pranešimų. Naudokite 100%%, kai testavimas baigtas."
+"Politika bus taikoma tik %d%% pranešimų. Naudokite 100%%, kai testavimas "
+"baigtas."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:283
-#, auto-english-fallback
 msgid "Invalid aggregate report email address"
 msgstr "Netinkamas suvestinės ataskaitos el. pašto adresas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:287
-#, auto-english-fallback
 msgid "Invalid forensic report email address"
 msgstr "Netinkamas kriminalistinės ataskaitos el. pašto adresas"
 
@@ -2357,91 +2219,75 @@ msgid ""
 "Using \"p=none\" provides monitoring only. Consider stricter policy "
 "(quarantine/reject) once you've reviewed reports."
 msgstr ""
-"Naudojant \"p=none\" tik stebima. Apsvarstykite griežtesnę politiką (karantinas/atmetimas), kai peržiūrėsite ataskaitas."
+"Naudojant \"p=none\" tik stebima. Apsvarstykite griežtesnę politiką "
+"(karantinas/atmetimas), kai peržiūrėsite ataskaitas."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:48
-#, auto-english-fallback
 msgid "SPF Record"
 msgstr "SPF įrašas"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:49
-#, auto-english-fallback
 msgid "Authorized mail server configuration"
 msgstr "Autorizuoto pašto serverio konfigūracija"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:61
-#, auto-english-fallback
 msgid "Basic Mechanisms"
 msgstr "Pagrindiniai mechanizmai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:62
-#, auto-english-fallback
 msgid "Select common mechanisms to authorize email sending"
 msgstr "Pasirinkite įprastus mechanizmus el. pašto siuntimui autorizuoti"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:66
-#, auto-english-fallback
 msgid "MX Records"
 msgstr "MX įrašai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:69
-#, auto-english-fallback
 msgid "Authorize all servers listed in MX records for this domain"
 msgstr "Autorizuoti visus serverius, išvardytus šio domeno MX įrašuose"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:73
-#, auto-english-fallback
 msgid "A/AAAA Records"
 msgstr "A/AAAA įrašai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:76
-#, auto-english-fallback
 msgid "Authorize the domain's A and AAAA records"
 msgstr "Autorizuoti domeno A ir AAAA įrašus"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:81
-#, auto-english-fallback
 msgid "IP Addresses"
 msgstr "IP adresai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:82
-#, auto-english-fallback
 msgid "Authorized IP addresses and networks (CIDR notation supported)"
 msgstr "Autorizuoti IP adresai ir tinklai (palaikomas CIDR formatas)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:86
-#, auto-english-fallback
 msgid "IPv4 Addresses"
 msgstr "IPv4 adresai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:90
-#, auto-english-fallback
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 msgstr ""
 "Vienas IP adresas arba tinklas eilutėje (pvz., 192.0.2.1 arba 192.0.2.0/24)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:94
-#, auto-english-fallback
 msgid "IPv6 Addresses"
 msgstr "IPv6 adresai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:98
-#, auto-english-fallback
 msgid "One IPv6 address or network per line"
 msgstr "Vienas IPv6 adresas arba tinklas eilutėje"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:103
-#, auto-english-fallback
 msgid "Include Mechanisms"
 msgstr "Įtraukimo mechanizmai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:104
-#, auto-english-fallback
 msgid "Include SPF records from other domains"
 msgstr "Įtraukti SPF įrašus iš kitų domenų"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:108
-#, auto-english-fallback
 msgid "Include Domains"
 msgstr "Įtraukti domenus"
 
@@ -2450,55 +2296,46 @@ msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
 msgstr ""
-"Domenai, kurių SPF įrašai turėtų būti įtraukti (vienas eilutėje). Įprasti: _spf.google.com, spf.protection.outlook.com"
+"Domenai, kurių SPF įrašai turėtų būti įtraukti (vienas eilutėje). Įprasti: "
+"_spf.google.com, spf.protection.outlook.com"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:117
-#, auto-english-fallback
 msgid "Additional Mechanisms"
 msgstr "Papildomi mechanizmai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:121
-#, auto-english-fallback
 msgid "Additional A/AAAA Hosts"
 msgstr "Papildomi A/AAAA serveriai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:125
-#, auto-english-fallback
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
 msgstr "Autorizuoti konkrečių serverių vardų A/AAAA įrašus (vienas eilutėje)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:129
-#, auto-english-fallback
 msgid "Additional MX Hosts"
 msgstr "Papildomi MX serveriai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:133
-#, auto-english-fallback
 msgid "Authorize MX records from other domains (one per line)"
 msgstr "Autorizuoti MX įrašus iš kitų domenų (vienas eilutėje)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:142
-#, auto-english-fallback
 msgid "Default Action"
 msgstr "Numatytasis veiksmas"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:147
-#, auto-english-fallback
 msgid "Pass all - allows anyone to send (insecure)"
 msgstr "Praleisti viską - leidžia bet kam siųsti (nesaugu)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:148
-#, auto-english-fallback
 msgid "Neutral (no policy)"
 msgstr "Neutralus (jokios politikos)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:149
-#, auto-english-fallback
 msgid "Soft fail (mark as spam but accept)"
 msgstr "Švelnusis nesėkmė (pažymėti kaip šlamštą, bet priimti)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:150
-#, auto-english-fallback
 msgid "Fail (reject unauthorized emails)"
 msgstr "Nesėkmė (atmesti neautorizuotus el. laiškus)"
 
@@ -2507,7 +2344,8 @@ msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
 msgstr ""
-"Politika el. laiškams, neatitinkantiems jokio mechanizmo. Pradėkite su ~all (softfail) testavimui."
+"Politika el. laiškams, neatitinkantiems jokio mechanizmo. Pradėkite su ~all "
+"(softfail) testavimui."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:289
 #, php-format
@@ -2516,7 +2354,9 @@ msgid ""
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
 msgstr ""
-"SPF įrašas viršija DNS užklausų limitą (%d/10). Tai sukels SPF patikrinimo nesėkmę. Pašalinkite kai kuriuos include/a/mx mechanizmus arba naudokite ip4/ip6."
+"SPF įrašas viršija DNS užklausų limitą (%d/10). Tai sukels SPF patikrinimo "
+"nesėkmę. Pašalinkite kai kuriuos include/a/mx mechanizmus arba naudokite ip4/"
+"ip6."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:294
 #, php-format
@@ -2524,22 +2364,20 @@ msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
 msgstr ""
-"SPF įrašas turi %d DNS užklausų (limitas 10). Apsvarstykite naudoti ip4/ip6 vietoj include mechanizmų arba sujunkite includes, kad neviršytumėte limito."
+"SPF įrašas turi %d DNS užklausų (limitas 10). Apsvarstykite naudoti ip4/ip6 "
+"vietoj include mechanizmų arba sujunkite includes, kad neviršytumėte limito."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:304
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv4 address or network: %s"
 msgstr "Netinkamas IPv4 adresas arba tinklas: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:313
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv6 address or network: %s"
 msgstr "Netinkamas IPv6 adresas arba tinklas: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:323
-#, auto-english-fallback
 #, php-format
 msgid "Invalid include domain: %s"
 msgstr "Netinkamas įtraukimo domenas: %s"
@@ -2554,30 +2392,26 @@ msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
 msgstr ""
-"Naudojant \"+all\" bet kas gali siųsti el. paštą kaip jūsų domenas. Tai griežtai nerekomenduojama."
+"Naudojant \"+all\" bet kas gali siųsti el. paštą kaip jūsų domenas. Tai "
+"griežtai nerekomenduojama."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:43
-#, auto-english-fallback
 msgid "CAA Record"
 msgstr "CAA įrašas"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:44
-#, auto-english-fallback
 msgid "Certificate authority authorization"
 msgstr "Sertifikavimo institucijos autorizacija"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:68
-#, auto-english-fallback
 msgid "Custom (enter manually)"
 msgstr "Pasirinktinis (įveskite rankiniu būdu)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:74
-#, auto-english-fallback
 msgid "Certificate Authority"
 msgstr "Sertifikavimo institucija"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:78
-#, auto-english-fallback
 msgid "CA Provider"
 msgstr "CA teikėjas"
 
@@ -2586,10 +2420,10 @@ msgid ""
 "Select the certificate authority authorized to issue certificates for this "
 "domain"
 msgstr ""
-"Pasirinkite sertifikavimo instituciją, autorizuotą išduoti sertifikatus šiam domenui"
+"Pasirinkite sertifikavimo instituciją, autorizuotą išduoti sertifikatus šiam "
+"domenui"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:87
-#, auto-english-fallback
 msgid "CA Domain (Custom)"
 msgstr "CA domenas (Pasirinktinis)"
 
@@ -2597,10 +2431,10 @@ msgstr "CA domenas (Pasirinktinis)"
 msgid ""
 "Enter the CA domain name manually (only shown when \"Custom\" is selected)"
 msgstr ""
-"Įveskite CA domeno vardą rankiniu būdu (rodoma tik pasirinkus \"Pasirinktinis\")"
+"Įveskite CA domeno vardą rankiniu būdu (rodoma tik pasirinkus "
+"\"Pasirinktinis\")"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:97
-#, auto-english-fallback
 msgid "Certificate Type"
 msgstr "Sertifikato tipas"
 
@@ -2610,77 +2444,62 @@ msgid "Tag"
 msgstr "Žymė"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
-#, auto-english-fallback
 msgid "Issue"
 msgstr "Išduoti"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
-#, auto-english-fallback
 msgid "Authorize issuance of standard certificates"
 msgstr "Autorizuoti standartinių sertifikatų išdavimą"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
-#, auto-english-fallback
 msgid "Issue Wildcard"
 msgstr "Išduoti pakaitos simbolį"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
-#, auto-english-fallback
 msgid "Authorize issuance of wildcard certificates (*.example.com)"
 msgstr "Autorizuoti pakaitos simbolių sertifikatų išdavimą (*.example.com)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
-#, auto-english-fallback
 msgid "Incident Reporting"
 msgstr "Incidentų pranešimas"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
-#, auto-english-fallback
 msgid "URL to report certificate issuance violations"
 msgstr "URL pranešti apie sertifikatų išdavimo pažeidimus"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:110
-#, auto-english-fallback
 msgid "Type of authorization or reporting"
 msgstr "Autorizacijos arba pranešimo tipas"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:114
-#, auto-english-fallback
 msgid "Reporting URL"
 msgstr "Pranešimo URL"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:119
-#, auto-english-fallback
 msgid "URL or email for incident reports (mailto: or https:)"
 msgstr "URL arba el. paštas incidentų ataskaitoms (mailto: arba https:)"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:103
-#, auto-english-fallback
 msgid "Advanced Options"
 msgstr "Išplėstinės parinktys"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:130
-#, auto-english-fallback
 msgid "Flags"
 msgstr "Vėliavėlės"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
-#, auto-english-fallback
 msgid "Non-critical"
 msgstr "Nekritiška"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
-#, auto-english-fallback
 msgid "Allow fallback if not understood"
 msgstr "Leisti atsarginį variantą, jei nesuprantama"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
-#, auto-english-fallback
 msgid "Critical"
 msgstr "Kritiška"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
-#, auto-english-fallback
 msgid "Reject if not understood - strict enforcement"
 msgstr "Atmesti, jei nesuprantama - griežtas įgyvendinimas"
 
@@ -2689,15 +2508,14 @@ msgid ""
 "Non-critical (0) provides better compatibility. Critical (128) enforces "
 "strict CAA processing."
 msgstr ""
-"Nekritiška (0) užtikrina geresnį suderinamumą. Kritiška (128) įgyvendina griežtą CAA apdorojimą."
+"Nekritiška (0) užtikrina geresnį suderinamumą. Kritiška (128) įgyvendina "
+"griežtą CAA apdorojimą."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:204
-#, auto-english-fallback
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
 msgstr "Netinkama CAA žymė. Turi būti issue, issuewild arba iodef"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:210
-#, auto-english-fallback
 msgid "CA provider is required"
 msgstr "CA teikėjas yra privalomas"
 
@@ -2707,7 +2525,6 @@ msgstr ""
 "Pasirinktinis CA domenas yra privalomas, kai pasirinkta \"Pasirinktinis\""
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:215
-#, auto-english-fallback
 msgid "Invalid CA domain format"
 msgstr "Netinkamas CA domeno formatas"
 
@@ -2716,21 +2533,19 @@ msgid ""
 "Using \";\" allows ALL certificate authorities to issue certificates. This "
 "defeats the purpose of CAA records."
 msgstr ""
-"Naudojant \";\" leidžiama VISOMS sertifikatų institucijoms išduoti sertifikatus. Tai panaikina CAA įrašų paskirtį."
+"Naudojant \";\" leidžiama VISOMS sertifikatų institucijoms išduoti "
+"sertifikatus. Tai panaikina CAA įrašų paskirtį."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:227
-#, auto-english-fallback
 msgid "Reporting URL is required for iodef tag"
 msgstr "Ataskaitų URL yra privalomas iodef žymei"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
-#, auto-english-fallback
 #, php-format
 msgid "Reporting URL must start with %s, %s, or %s"
 msgstr "Ataskaitų URL turi prasidėti %s, %s arba %s"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
-#, auto-english-fallback
 msgid "Flags must be 0 or 128"
 msgstr "Vėliavėlės turi būti 0 arba 128"
 
@@ -2739,15 +2554,14 @@ msgid ""
 "Critical flag (128) is set. Systems that do not understand CAA records will "
 "reject operations. Use 0 unless you have a specific requirement."
 msgstr ""
-"Nustatyta kritinė vėliavėlė (128). Sistemos, kurios nesupranta CAA įrašų, atmes operacijas. Naudokite 0, nebent turite konkretų reikalavimą."
+"Nustatyta kritinė vėliavėlė (128). Sistemos, kurios nesupranta CAA įrašų, "
+"atmes operacijas. Naudokite 0, nebent turite konkretų reikalavimą."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:46
-#, auto-english-fallback
 msgid "DKIM Record"
 msgstr "DKIM įrašas"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:47
-#, auto-english-fallback
 msgid "Email signature verification public key"
 msgstr "El. pašto parašo patvirtinimo viešasis raktas"
 
@@ -2763,10 +2577,12 @@ msgid ""
 "the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your "
 "mail server (never share it)."
 msgstr ""
-"DKIM įrodo, kad el. laiškai yra iš jūsų domeno, naudojant kriptografinius parašus. Sugeneruokite DKIM raktų porą savo EL. PAŠTO SERVERYJE (Postfix, Exim ir kt.). Tik VIEŠASIS RAKTAS įrašomas į šį DNS įrašą. Laikykite PRIVATŲ RAKTĄ saugų savo pašto serveryje (niekada jo nebendrinkite)."
+"DKIM įrodo, kad el. laiškai yra iš jūsų domeno, naudojant kriptografinius "
+"parašus. Sugeneruokite DKIM raktų porą savo EL. PAŠTO SERVERYJE (Postfix, "
+"Exim ir kt.). Tik VIEŠASIS RAKTAS įrašomas į šį DNS įrašą. Laikykite PRIVATŲ "
+"RAKTĄ saugų savo pašto serveryje (niekada jo nebendrinkite)."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:68
-#, auto-english-fallback
 msgid "DKIM Configuration"
 msgstr "DKIM konfigūracija"
 
@@ -2776,10 +2592,11 @@ msgid ""
 "\"202501\", or service name like \"google\"). Only alphanumeric characters, "
 "hyphens, and underscores allowed."
 msgstr ""
-"Selektorius DKIM raktui identifikuoti (dažniausiai \"default\", laiko žyma kaip \"202501\" arba paslaugos pavadinimas kaip \"google\"). Leidžiami tik raidiniai skaitiniai simboliai, brūkšniai ir pabraukimai."
+"Selektorius DKIM raktui identifikuoti (dažniausiai \"default\", laiko žyma "
+"kaip \"202501\" arba paslaugos pavadinimas kaip \"google\"). Leidžiami tik "
+"raidiniai skaitiniai simboliai, brūkšniai ir pabraukimai."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:81
-#, auto-english-fallback
 msgid "Public Key"
 msgstr "Viešasis raktas"
 
@@ -2788,30 +2605,26 @@ msgid ""
 "Paste the base64-encoded public key from your mail server. Spaces and "
 "newlines will be automatically removed."
 msgstr ""
-"Įklijuokite base64 koduotą viešąjį raktą iš savo pašto serverio. Tarpai ir naujos eilutės bus automatiškai pašalinti."
+"Įklijuokite base64 koduotą viešąjį raktą iš savo pašto serverio. Tarpai ir "
+"naujos eilutės bus automatiškai pašalinti."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:90
-#, auto-english-fallback
 msgid "Key Type"
 msgstr "Rakto tipas"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:95
-#, auto-english-fallback
 msgid "Widely supported by all mail servers"
 msgstr "Plačiai palaikomas visų pašto serverių"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:96
-#, auto-english-fallback
 msgid "Newer algorithm - not universally supported yet"
 msgstr "Naujesnis algoritmas - dar nepalaikomas visuotinai"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:98
-#, auto-english-fallback
 msgid "Encryption algorithm for the DKIM public key"
 msgstr "Šifravimo algoritmas DKIM viešajam raktui"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:109
-#, auto-english-fallback
 msgid "Testing Mode"
 msgstr "Testavimo režimas"
 
@@ -2820,10 +2633,10 @@ msgid ""
 "Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
 "Use during initial deployment."
 msgstr ""
-"Įjungti testavimo režimą (t=y). DKIM parašai bus, bet nebus įgyvendinami. Naudokite pradinės diegimo metu."
+"Įjungti testavimo režimą (t=y). DKIM parašai bus, bet nebus įgyvendinami. "
+"Naudokite pradinės diegimo metu."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:116
-#, auto-english-fallback
 msgid "Strict Subdomain Mode"
 msgstr "Griežtas subdomenų režimas"
 
@@ -2831,10 +2644,10 @@ msgstr "Griežtas subdomenų režimas"
 msgid ""
 "Enable strict subdomain mode (t=s). Rejects unsigned mail from subdomains."
 msgstr ""
-"Įjungti griežtą subdomenų režimą (t=s). Atmeta nepasirašytą paštą iš subdomenų."
+"Įjungti griežtą subdomenų režimą (t=s). Atmeta nepasirašytą paštą iš "
+"subdomenų."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:198
-#, auto-english-fallback
 msgid "Selector is required"
 msgstr "Selektorius yra privalomas"
 
@@ -2842,15 +2655,14 @@ msgstr "Selektorius yra privalomas"
 msgid ""
 "Selector can only contain alphanumeric characters, hyphens, and underscores"
 msgstr ""
-"Selektorius gali turėti tik raidinius skaitmeninius simbolius, brūkšnius ir pabraukimus"
+"Selektorius gali turėti tik raidinius skaitmeninius simbolius, brūkšnius ir "
+"pabraukimus"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:205
-#, auto-english-fallback
 msgid "Public key is required"
 msgstr "Viešasis raktas yra privalomas"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:211
-#, auto-english-fallback
 msgid "Public key must be valid base64-encoded data"
 msgstr "Viešasis raktas turi būti tinkami base64 koduoti duomenys"
 
@@ -2859,76 +2671,72 @@ msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
 msgstr ""
-"Viešasis raktas atrodo neįprastai trumpas. Įsitikinkite, kad nukopijavote visą raktą iš savo pašto serverio."
+"Viešasis raktas atrodo neįprastai trumpas. Įsitikinkite, kad nukopijavote "
+"visą raktą iš savo pašto serverio."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:221
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
 msgstr ""
-"Įklijavote PRIVATŲ RAKTĄ. DNS turi būti tik VIEŠASIS RAKTAS. Niekada nebendrinkite savo privataus rakto!"
+"Įklijavote PRIVATŲ RAKTĄ. DNS turi būti tik VIEŠASIS RAKTAS. Niekada "
+"nebendrinkite savo privataus rakto!"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:225
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
 msgstr ""
-"Viešasis raktas atrodo turintis PEM antraštes (BEGIN/END). Reikia tik base64 turinio tarp antraščių."
+"Viešasis raktas atrodo turintis PEM antraštes (BEGIN/END). Reikia tik base64 "
+"turinio tarp antraščių."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:239
 msgid ""
 "Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
 "this once testing is complete."
 msgstr ""
-"Testavimo režimas įjungtas (t=y). DKIM parašai nebus įgyvendinami. Išjunkite tai, kai testavimas baigtas."
+"Testavimo režimas įjungtas (t=y). DKIM parašai nebus įgyvendinami. Išjunkite "
+"tai, kai testavimas baigtas."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:68
-#, auto-english-fallback
 msgid "SRV Record"
 msgstr "SRV įrašas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:69
-#, auto-english-fallback
 msgid "Service location (hostname and port)"
 msgstr "Paslaugos vieta (kompiuterio vardas ir prievadas)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:95
-#, auto-english-fallback
 msgid "Service"
 msgstr "Paslauga"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:100
 msgid "Select a common service or choose \"Custom\" to enter manually"
 msgstr ""
-"Pasirinkite bendrą paslaugą arba pasirinkite \"Pasirinktinis\", kad įvestumėte rankiniu būdu"
+"Pasirinkite bendrą paslaugą arba pasirinkite \"Pasirinktinis\", kad "
+"įvestumėte rankiniu būdu"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:104
-#, auto-english-fallback
 msgid "Custom Service Name"
 msgstr "Pasirinktinis paslaugos pavadinimas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:109
-#, auto-english-fallback
 msgid "Service name must start with underscore (e.g., _myservice)"
 msgstr "Paslaugos pavadinimas turi prasidėti pabraukimu (pvz., _manopaslanga)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:118
-#, auto-english-fallback
 msgid "Transmission Control Protocol - most common"
 msgstr "Perdavimo valdymo protokolas - dažniausias"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:119
-#, auto-english-fallback
 msgid "User Datagram Protocol - connectionless"
 msgstr "Vartotojo duomenų protokolas - be ryšio"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:120
-#, auto-english-fallback
 msgid "Transport Layer Security"
 msgstr "Transporto sluoksnio saugumas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:123
-#, auto-english-fallback
 msgid "Transport protocol for the service"
 msgstr "Transporto protokolas paslaugai"
 
@@ -2942,15 +2750,14 @@ msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
 msgstr ""
-"Domeno pavadinimas (palikite tuščią zonos viršūnei @). Visas įrašo pavadinimas bus: _paslauga._protokolas.domenas"
+"Domeno pavadinimas (palikite tuščią zonos viršūnei @). Visas įrašo "
+"pavadinimas bus: _paslauga._protokolas.domenas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:136
-#, auto-english-fallback
 msgid "Target Server"
 msgstr "Tikslo serveris"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:140
-#, auto-english-fallback
 msgid "Target Hostname"
 msgstr "Tikslo kompiuterio vardas"
 
@@ -2959,17 +2766,18 @@ msgid ""
 "Hostname of the server providing this service (must be a hostname with an A/"
 "AAAA record, not an IP address)"
 msgstr ""
-"Serverio, teikiančio šią paslaugą, kompiuterio vardas (turi būti kompiuterio vardas su A/AAAA įrašu, o ne IP adresas)"
+"Serverio, teikiančio šią paslaugą, kompiuterio vardas (turi būti kompiuterio "
+"vardas su A/AAAA įrašu, o ne IP adresas)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:154
 msgid ""
 "Port number where the service is listening (automatically filled for common "
 "services)"
 msgstr ""
-"Prievado numeris, kuriame paslauga klausosi (automatiškai užpildomas bendroms paslaugoms)"
+"Prievado numeris, kuriame paslauga klausosi (automatiškai užpildomas "
+"bendroms paslaugoms)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:159
-#, auto-english-fallback
 msgid "Priority & Load Balancing"
 msgstr "Prioritetas ir apkrovos balansavimas"
 
@@ -2983,10 +2791,10 @@ msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
 msgstr ""
-"Mažesnės reikšmės turi aukštesnį prioritetą (10 yra geras numatytasis). Klientai bando serverius prioriteto tvarka."
+"Mažesnės reikšmės turi aukštesnį prioritetą (10 yra geras numatytasis). "
+"Klientai bando serverius prioriteto tvarka."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:173
-#, auto-english-fallback
 msgid "Weight"
 msgstr "Svoris"
 
@@ -2995,31 +2803,28 @@ msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
 msgstr ""
-"Apkrovos balansavimui tarp serverių su tuo pačiu prioritetu. Didesnis svoris = daugiau srauto. 0 = be apkrovos balansavimo."
+"Apkrovos balansavimui tarp serverių su tuo pačiu prioritetu. Didesnis svoris "
+"= daugiau srauto. 0 = be apkrovos balansavimo."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:261
-#, auto-english-fallback
 msgid "Service is required"
 msgstr "Paslauga yra privaloma"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:265
-#, auto-english-fallback
 msgid "Custom service name is required"
 msgstr "Pasirinktinis paslaugos pavadinimas yra privalomas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:267
-#, auto-english-fallback
 msgid "Service name must contain only alphanumeric characters and hyphens"
 msgstr ""
-"Paslaugos pavadinimas gali turėti tik raidinius skaitmeninius simbolius ir brūkšnius"
+"Paslaugos pavadinimas gali turėti tik raidinius skaitmeninius simbolius ir "
+"brūkšnius"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:273
-#, auto-english-fallback
 msgid "Target hostname is required"
 msgstr "Tikslo kompiuterio vardas yra privalomas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:277
-#, auto-english-fallback
 msgid "Invalid target hostname format"
 msgstr "Netinkamas tikslo kompiuterio vardo formatas"
 
@@ -3028,10 +2833,10 @@ msgid ""
 "Target must be a hostname, not an IP address. Create an A or AAAA record for "
 "the hostname first."
 msgstr ""
-"Tikslas turi būti kompiuterio vardas, o ne IP adresas. Pirmiausia sukurkite A arba AAAA įrašą kompiuterio vardui."
+"Tikslas turi būti kompiuterio vardas, o ne IP adresas. Pirmiausia sukurkite "
+"A arba AAAA įrašą kompiuterio vardui."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:295
-#, auto-english-fallback
 msgid "Priority must be between 0 and 65535"
 msgstr "Prioritetas turi būti tarp 0 ir 65535"
 
@@ -3039,15 +2844,14 @@ msgstr "Prioritetas turi būti tarp 0 ir 65535"
 msgid ""
 "Priority 0 is valid but unusual. Most services use priority 10 or higher."
 msgstr ""
-"Prioritetas 0 yra tinkamas, bet neįprastas. Dauguma paslaugų naudoja prioritetą 10 arba aukštesnį."
+"Prioritetas 0 yra tinkamas, bet neįprastas. Dauguma paslaugų naudoja "
+"prioritetą 10 arba aukštesnį."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:305
-#, auto-english-fallback
 msgid "Weight must be between 0 and 65535"
 msgstr "Svoris turi būti tarp 0 ir 65535"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:310
-#, auto-english-fallback
 msgid "Invalid domain format"
 msgstr "Netinkamas domeno formatas"
 
@@ -5833,7 +5637,7 @@ msgstr ""
 "Galiojimo pabaigos laikas turi būti vėlesnis nei pradžios laikas. Šis "
 "parašas atrodo pasibaigęs prieš tapęs galiojančiu."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
@@ -5841,7 +5645,7 @@ msgstr ""
 "KRITINIS: Šis parašas jau pasibaigęs. Jis nebus validuojamas DNSSEC "
 "resolverių."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
@@ -5849,12 +5653,12 @@ msgstr ""
 "ĮSPĖJIMAS: Šis parašas pasibaigs per artimiausias 7 dienas. Apsvarstykite "
 "greitą atnaujinimą."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
 msgstr ""
 "Šis parašas pasibaigs per artimiausias 30 dienų. Planuokite atnaujinimą."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
@@ -5862,7 +5666,7 @@ msgstr ""
 "ĮSPĖJIMAS: Šis parašas dar negalioja. Jis nebus validuojamas DNSSEC "
 "resolverių, kol bus pasiektas pradžios laikas."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:291
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
 msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
@@ -5872,34 +5676,34 @@ msgstr ""
 "praktika. Ilgi galiojimo laikotarpiai didina pažeidžiamumą rakto "
 "kompromitavimo atveju."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:295
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
 msgstr ""
 "Nepavyko apdoroti parašo laiko žymų galiojimo laikotarpio patikrinimui."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:300
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:302
 msgid "RRSIG key tag field must be a numeric value."
 msgstr "RRSIG rakto žymės laukas turi būti skaitinė reikšmė."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:305
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:307
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
 msgstr "RRSIG rakto žymė turi būti teisinga reikšmė tarp 0 ir 65535."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:310
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
 msgstr ""
 "RRSIG pasirašėjo vardas turi būti pilnas domeno vardas (baigtis tašku)."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:316
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
 msgstr "RRSIG pasirašėjo vardas turi būti teisingas domeno vardas."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:321
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
 msgstr "RRSIG parašas negali būti tuščias."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:326
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
@@ -5907,7 +5711,7 @@ msgstr ""
 "Parašas neatrodo kaip teisingi base64 koduoti duomenys. RRSIG parašai turėtų "
 "būti base64 koduoti."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
 "RRSIG records are part of DNSSEC and provide cryptographic signatures for "
 "DNS records. They should be managed automatically by the DNS server."
@@ -5915,7 +5719,7 @@ msgstr ""
 "RRSIG įrašai yra DNSSEC dalis ir suteikia kriptografinius parašus DNS "
 "įrašams. Jie turėtų būti tvarkomi automatiškai DNS serverio."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:333
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
@@ -6605,37 +6409,32 @@ msgstr ""
 "skaitmenys."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
-#, auto-english-fallback
 msgid "IP address list cannot be empty."
 msgstr "IP adresų sąrašas negali būti tuščias."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
 msgstr "Netinkamas IPv6 adresas %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
-#, auto-english-fallback
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
 msgstr "Netinkamas prievado numeris: %d (turi būti 1-65535)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
-#, auto-english-fallback
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
 msgstr ""
-"Netinkamas serverio formatas: %s (tikėtasi IP:prievadas arba [IPv6]:prievadas)"
+"Netinkamas serverio formatas: %s (tikėtasi IP:prievadas arba "
+"[IPv6]:prievadas)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
 msgstr "Netinkamas IPv4 adresas %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IP address: %s"
 msgstr "Netinkamas IP adresas: %s"
@@ -6690,7 +6489,6 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "Neteisingas CA domenas issuewild žymėje."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-#, auto-english-fallback
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "CAA iodef reikšmė turi būti URL, prasidedantis %s, %s arba %s."
@@ -6745,18 +6543,16 @@ msgid "Given hostname or one of the labels is too short or too long."
 msgstr "Duotas hostname arba viena iš žymių per trumpa ar per ilga."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:128
-#, auto-english-fallback
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
 msgstr "Keli pasvirukai skirtingose etiketėse nėra leidžiami ARPA zonose."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
-#, auto-english-fallback
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
 msgstr ""
-"Netinkamas RFC 2317 formatas. Naudokite formatą: potinklis/prefiksas (pvz., 0/26)."
+"Netinkamas RFC 2317 formatas. Naudokite formatą: potinklis/prefiksas (pvz., "
+"0/26)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
-#, auto-english-fallback
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
 msgstr "Netinkamas potinklio numeris RFC 2317 žymėjime. Turi būti 0-255 IPv4."
 
@@ -6764,16 +6560,16 @@ msgstr "Netinkamas potinklio numeris RFC 2317 žymėjime. Turi būti 0-255 IPv4.
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
 msgstr ""
-"Netinkamas potinklis RFC 2317 žymėjime. Turi būti šešioliktainis (0-9, a-f) IPv6."
+"Netinkamas potinklis RFC 2317 žymėjime. Turi būti šešioliktainis (0-9, a-f) "
+"IPv6."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
-#, auto-english-fallback
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
 msgstr ""
-"Netinkamas potinklis RFC 2317 žymėjime. Turi būti skaitmeninis arba šešioliktainis."
+"Netinkamas potinklis RFC 2317 žymėjime. Turi būti skaitmeninis arba "
+"šešioliktainis."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
-#, auto-english-fallback
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
 msgstr "Netinkamas prefikso ilgis RFC 2317 žymėjime. Turi būti skaitmeninis."
 
@@ -6782,22 +6578,20 @@ msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
 msgstr ""
-"Netinkamas IPv4 prefikso ilgis RFC 2317. Paprastai 24-32 (beklasė delegacija paprastai 25-31)."
+"Netinkamas IPv4 prefikso ilgis RFC 2317. Paprastai 24-32 (beklasė delegacija "
+"paprastai 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
-#, auto-english-fallback
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 msgstr ""
 "Potinklis %d nėra sulygiuotas su prefiksu /%d. Turėtų būti kartotinis %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
-#, auto-english-fallback
 msgid "Invalid IPv6 prefix length. Must be 0-128."
 msgstr "Netinkamas IPv6 prefikso ilgis. Turi būti 0-128."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:209
-#, auto-english-fallback
 msgid "Invalid prefix length. Must be 0-128."
 msgstr "Netinkamas prefikso ilgis. Turi būti 0-128."
 
@@ -6985,7 +6779,8 @@ msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
-"SMIMEA įrašo pavadinimas yra formatu: SHA256(vietinė-dalis)._smimecert.domenas.tld el. pašto adresams kaip %s"
+"SMIMEA įrašo pavadinimas yra formatu: SHA256(vietinė-"
+"dalis)._smimecert.domenas.tld el. pašto adresams kaip %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7809,7 +7604,8 @@ msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
 msgstr ""
-"Bendras TXT įrašo turinys viršija maksimalų %d baitų ilgį. Sumažinkite turinio dydį."
+"Bendras TXT įrašo turinys viršija maksimalų %d baitų ilgį. Sumažinkite "
+"turinio dydį."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
@@ -8299,9 +8095,9 @@ msgid ""
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr ""
-"NAPTR paslauga turi sekti formatą: [protokolas][+rs][+rs]... kur "
-"protokolas ir rs prasideda raide ir turi tik raidinio skaitmeninius "
-"simbolius (maks 32 simboliai kiekvienam)."
+"NAPTR paslauga turi sekti formatą: [protokolas][+rs][+rs]... kur protokolas "
+"ir rs prasideda raide ir turi tik raidinio skaitmeninius simbolius (maks 32 "
+"simboliai kiekvienam)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8521,24 +8317,19 @@ msgid "You do not have permission to regenerate API keys."
 msgstr "Neturite leidimo perdaryti API raktų."
 
 #: lib/Domain/Service/ZoneValidationService.php:128
-#, auto-english-fallback
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr "Zonoje nėra SOA įrašo arba jis nėra aktyvus. Tai yra būtina DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:129
-#, auto-english-fallback
 msgid "Add an SOA record to the zone before attempting to sign it."
 msgstr "Pridėkite SOA įrašą į zoną prieš bandydami ją pasirašyti."
 
 #: lib/Domain/Service/ZoneValidationService.php:135
-#, auto-english-fallback
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
-msgstr ""
-"Zona turi %d SOA įrašų. Tik vienas SOA įrašas leidžiamas vienai zonai."
+msgstr "Zona turi %d SOA įrašų. Tik vienas SOA įrašas leidžiamas vienai zonai."
 
 #: lib/Domain/Service/ZoneValidationService.php:136
-#, auto-english-fallback
 msgid "Remove duplicate SOA records, keeping only one."
 msgstr "Pašalinkite pasikartojančius SOA įrašus, palikdami tik vieną."
 
@@ -8548,12 +8339,10 @@ msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
 msgstr "SOA įrašas ne viršūnėje. Rastas \"%s\", bet zona yra \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:148
-#, auto-english-fallback
 msgid "Move the SOA record to the zone apex."
 msgstr "Perkelkite SOA įrašą į zonos viršūnę."
 
 #: lib/Domain/Service/ZoneValidationService.php:158
-#, auto-english-fallback
 msgid "SOA record has invalid content format."
 msgstr "SOA įrašas turi netinkamą turinio formatą."
 
@@ -8562,33 +8351,31 @@ msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
 msgstr ""
-"SOA formatas turėtų būti: pirminis-ns hostmaster serijos atnaujinimas pakartojimas galiojimas minimumas"
+"SOA formatas turėtų būti: pirminis-ns hostmaster serijos atnaujinimas "
+"pakartojimas galiojimas minimumas"
 
 #: lib/Domain/Service/ZoneValidationService.php:218
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
 msgstr ""
-"Zona neturi NS (vardų serverio) įrašų viršūnėje. Bent vienas viršūnės NS įrašas yra būtinas DNSSEC."
+"Zona neturi NS (vardų serverio) įrašų viršūnėje. Bent vienas viršūnės NS "
+"įrašas yra būtinas DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:219
-#, auto-english-fallback
 msgid "Add NS records at the zone apex for your authoritative name servers."
 msgstr ""
 "Pridėkite NS įrašus zonos viršūnėje savo autoritatiniams vardų serveriams."
 
 #: lib/Domain/Service/ZoneValidationService.php:265
-#, auto-english-fallback
 msgid "DNSSEC signing cannot proceed due to the following errors:"
 msgstr "DNSSEC pasirašymas negali tęstis dėl šių klaidų:"
 
 #: lib/Domain/Service/ZoneValidationService.php:287
-#, auto-english-fallback
 msgid "Additionally, the following warnings were found:"
 msgstr "Be to, rasti šie įspėjimai:"
 
 #: lib/Domain/Service/ZoneValidationService.php:289
-#, auto-english-fallback
 msgid "The following warnings were found:"
 msgstr "Rasti šie įspėjimai:"
 
@@ -8612,7 +8399,9 @@ msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
 msgstr ""
-"Atvirkštinis įrašas pridėtas. Įspėjimas: PTR įrašas %s jau egzistuoja, nurodantis į: %s. Kelių PTR įrašų turėjimas tam pačiam IP nėra rekomenduojamas."
+"Atvirkštinis įrašas pridėtas. Įspėjimas: PTR įrašas %s jau egzistuoja, "
+"nurodantis į: %s. Kelių PTR įrašų turėjimas tam pačiam IP nėra "
+"rekomenduojamas."
 
 #: lib/Domain/Service/Dns/RecordManager.php:215
 msgid "You do not have the permission to add SOA record."
@@ -9264,27 +9053,22 @@ msgid "Send Reset Link"
 msgstr "Siųsti atkūrimo nuorodą"
 
 #: templates/modern/manage_group_members.html:4
-#, auto-english-fallback
 msgid "Groups"
 msgstr "Grupės"
 
 #: templates/default/list_groups.html:10 templates/modern/list_groups.html:10
-#, auto-english-fallback
 msgid "Group Management"
 msgstr "Grupių valdymas"
 
 #: templates/modern/header.html:204 templates/modern/add_group.html:5
-#, auto-english-fallback
 msgid "Add group"
 msgstr "Pridėti grupę"
 
 #: templates/modern/edit_user.html:254 templates/modern/add_user.html:189
-#, auto-english-fallback
 msgid "No groups found"
 msgstr "Grupių nerasta"
 
 #: templates/modern/list_groups.html:50 templates/modern/edit_group.html:70
-#, auto-english-fallback
 msgid "Members"
 msgstr "Nariai"
 
@@ -9293,17 +9077,14 @@ msgid "Zones"
 msgstr "Zonos"
 
 #: templates/modern/manage_group_members.html:6
-#, auto-english-fallback
 msgid "Manage members"
 msgstr "Valdyti narius"
 
 #: templates/modern/manage_group_zones.html:6
-#, auto-english-fallback
 msgid "Manage zones"
 msgstr "Valdyti zonas"
 
 #: templates/modern/list_groups.html:55 templates/modern/edit_group.html:5
-#, auto-english-fallback
 msgid "Edit group"
 msgstr "Redaguoti grupę"
 
@@ -9312,7 +9093,6 @@ msgid "Edit"
 msgstr "Redaguoti"
 
 #: templates/modern/list_groups.html:58 templates/modern/delete_group.html:5
-#, auto-english-fallback
 msgid "Delete group"
 msgstr "Ištrinti grupę"
 
@@ -9337,32 +9117,26 @@ msgid "Update"
 msgstr "Atnaujinti"
 
 #: templates/default/edit_group.html:13 templates/modern/edit_group.html:13
-#, auto-english-fallback
 msgid "Edit Group"
 msgstr "Redaguoti grupę"
 
 #: templates/modern/edit_group.html:23 templates/modern/add_group.html:20
-#, auto-english-fallback
 msgid "Group Name"
 msgstr "Grupės pavadinimas"
 
 #: templates/modern/edit_group.html:25 templates/modern/add_group.html:22
-#, auto-english-fallback
 msgid "Unique name for this group"
 msgstr "Unikalus šios grupės pavadinimas"
 
 #: templates/modern/edit_group.html:26 templates/modern/add_group.html:23
-#, auto-english-fallback
 msgid "Provide group name"
 msgstr "Pateikite grupės pavadinimą"
 
 #: templates/modern/edit_group.html:32 templates/modern/add_group.html:29
-#, auto-english-fallback
 msgid "Optional information about this group"
 msgstr "Papildoma informacija apie šią grupę"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-#, auto-english-fallback
 msgid "Access template"
 msgstr "Prieigos šablonas"
 
@@ -9373,72 +9147,58 @@ msgstr ""
 "Grupės nariai paveldi šias teises tik zonoms, priklausančioms šiai grupei"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:45
-#, auto-english-fallback
 msgid "Select an access template"
 msgstr "Pasirinkite prieigos šabloną"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
-#, auto-english-fallback
 msgid "Update Group"
 msgstr "Atnaujinti grupę"
 
 #: templates/modern/edit_group.html:74 templates/modern/edit_group.html:118
-#, auto-english-fallback
 msgid "Manage"
 msgstr "Valdyti"
 
 #: templates/default/edit_group.html:81 templates/modern/edit_group.html:81
-#, auto-english-fallback
 msgid "No members in this group yet."
 msgstr "Šioje grupėje dar nėra narių."
 
 #: templates/modern/edit_group.html:144 templates/modern/edit_user.html:220
-#, auto-english-fallback
 msgid "Remove from group"
 msgstr "Pašalinti iš grupės"
 
 #: templates/modern/edit_group.html:151 templates/modern/delete_group.html:68
-#, auto-english-fallback
 msgid "and"
 msgstr "ir"
 
 #: templates/modern/edit_group.html:101 templates/modern/edit_group.html:151
-#, auto-english-fallback
 msgid "more..."
 msgstr "daugiau..."
 
 #: templates/default/edit_group.html:125 templates/modern/edit_group.html:125
-#, auto-english-fallback
 msgid "This group doesn't own any zones yet."
 msgstr "Ši grupė dar nevaldo jokių zonų."
 
 #: templates/modern/manage_group_zones.html:113
-#, auto-english-fallback
 msgid "Master"
 msgstr "Pagrindinis"
 
 #: templates/modern/manage_group_zones.html:115
-#, auto-english-fallback
 msgid "Slave"
 msgstr "Pavaldusis"
 
 #: templates/modern/manage_group_zones.html:117
-#, auto-english-fallback
 msgid "Native"
 msgstr "Gimtasis"
 
 #: templates/default/edit_group.html:182 templates/modern/edit_group.html:182
-#, auto-english-fallback
 msgid "Confirm Member Removal"
 msgstr "Patvirtinti nario pašalinimą"
 
 #: templates/default/edit_group.html:187 templates/modern/edit_group.html:187
-#, auto-english-fallback
 msgid "Are you sure you want to remove user"
 msgstr "Ar tikrai norite pašalinti vartotoją"
 
 #: templates/modern/edit_group.html:187 templates/modern/edit_group.html:213
-#, auto-english-fallback
 msgid "from this group?"
 msgstr "iš šios grupės?"
 
@@ -9448,17 +9208,14 @@ msgid ""
 msgstr "Šis veiksmas nedelsiant panaikins visas šios grupės suteiktas teises."
 
 #: templates/modern/manage_group_members.html:139
-#, auto-english-fallback
 msgid "Remove"
 msgstr "Pašalinti"
 
 #: templates/default/edit_group.html:208 templates/modern/edit_group.html:208
-#, auto-english-fallback
 msgid "Confirm Zone Removal"
 msgstr "Patvirtinti zonos pašalinimą"
 
 #: templates/default/edit_group.html:213 templates/modern/edit_group.html:213
-#, auto-english-fallback
 msgid "Are you sure you want to remove zone"
 msgstr "Ar tikrai norite pašalinti zoną"
 
@@ -9469,12 +9226,10 @@ msgid ""
 msgstr "Zona išliks sistemoje, bet ši grupė daugiau neturės nuosavybės."
 
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
-#, auto-english-fallback
 msgid "Delete Group"
 msgstr "Ištrinti grupę"
 
 #: templates/default/delete_group.html:16 templates/modern/delete_group.html:16
-#, auto-english-fallback
 msgid "You are about to delete the group"
 msgstr "Ketinate ištrinti grupę"
 
@@ -9483,42 +9238,34 @@ msgid "This action cannot be undone. Are you sure you want to proceed?"
 msgstr "Šis veiksmas negali būti atšauktas. Ar esate tikri, kad norite tęsti?"
 
 #: templates/default/delete_group.html:22 templates/modern/delete_group.html:22
-#, auto-english-fallback
 msgid "Deletion Impact"
 msgstr "Ištrynimo poveikis"
 
 #: templates/default/delete_group.html:29 templates/modern/delete_group.html:29
-#, auto-english-fallback
 msgid "member will be removed from this group"
 msgstr "narys bus pašalintas iš šios grupės"
 
 #: templates/default/delete_group.html:31 templates/modern/delete_group.html:31
-#, auto-english-fallback
 msgid "members will be removed from this group"
 msgstr "nariai bus pašalinti iš šios grupės"
 
 #: templates/default/delete_group.html:37 templates/modern/delete_group.html:37
-#, auto-english-fallback
 msgid "zone will lose this group ownership"
 msgstr "zona praras šios grupės nuosavybę"
 
 #: templates/default/delete_group.html:39 templates/modern/delete_group.html:39
-#, auto-english-fallback
 msgid "zones will lose this group ownership"
 msgstr "zonos praras šios grupės nuosavybę"
 
 #: templates/default/delete_group.html:49 templates/modern/delete_group.html:49
-#, auto-english-fallback
 msgid "Affected Zones"
 msgstr "Paveiktos zonos"
 
 #: templates/default/delete_group.html:51 templates/modern/delete_group.html:51
-#, auto-english-fallback
 msgid "showing first 20"
 msgstr "rodoma pirmi 20"
 
 #: templates/default/delete_group.html:68 templates/modern/delete_group.html:68
-#, auto-english-fallback
 msgid "more zones..."
 msgstr "daugiau zonų..."
 
@@ -9531,15 +9278,15 @@ msgid ""
 "Members will lose access to all zones owned by this group. Zones without any "
 "remaining owners will still exist but will be inaccessible to regular users."
 msgstr ""
-"Nariai praras prieigą prie visų šios grupės priklausančių zonų. Zonos be likusių savininkų vis tiek egzistuos, bet bus neprieinamos paprastiems vartotojams."
+"Nariai praras prieigą prie visų šios grupės priklausančių zonų. Zonos be "
+"likusių savininkų vis tiek egzistuos, bet bus neprieinamos paprastiems "
+"vartotojams."
 
 #: templates/default/delete_group.html:85 templates/modern/delete_group.html:85
-#, auto-english-fallback
 msgid "Yes, delete this group"
 msgstr "Taip, ištrinti šią grupę"
 
 #: templates/default/delete_group.html:89 templates/modern/delete_group.html:89
-#, auto-english-fallback
 msgid "No, keep this group"
 msgstr "Ne, palikti šią grupę"
 
@@ -9745,17 +9492,14 @@ msgid "Change password"
 msgstr "Keisti slaptažodį"
 
 #: templates/modern/header.html:332
-#, auto-english-fallback
 msgid "Preferences"
 msgstr "Nuostatos"
 
 #: templates/default/index.html:288 templates/modern/index.html:235
-#, auto-english-fallback
 msgid "Customize your interface settings"
 msgstr "Pritaikykite savo sąsajos nustatymus"
 
 #: templates/default/index.html:290
-#, auto-english-fallback
 msgid "User preferences"
 msgstr "Vartotojo nuostatos"
 
@@ -9768,17 +9512,14 @@ msgid "Manage system users and access"
 msgstr "Valdyti sistemos naudotojus ir prieigą"
 
 #: templates/modern/index.html:199 templates/modern/header.html:169
-#, auto-english-fallback
 msgid "List users"
 msgstr "Vartotojų sąrašas"
 
 #: templates/modern/header.html:222
-#, auto-english-fallback
 msgid "Access"
 msgstr "Prieiga"
 
 #: templates/default/index.html:321
-#, auto-english-fallback
 msgid "Manage access templates"
 msgstr "Valdyti prieigos šablonus"
 
@@ -10069,27 +9810,22 @@ msgid "Advanced Records"
 msgstr "Pažangūs įrašai"
 
 #: templates/modern/dns_wizard_select.html:6
-#, auto-english-fallback
 msgid "DNS Wizard"
 msgstr "DNS vedlys"
 
 #: templates/modern/dns_wizard_form.html:15
-#, auto-english-fallback
 msgid "Wizard"
 msgstr "Vedlys"
 
 #: templates/modern/dns_wizard_form.html:26
-#, auto-english-fallback
 msgid "Warning: Please Review Before Proceeding"
 msgstr "Įspėjimas: peržiūrėkite prieš tęsdami"
 
 #: templates/modern/dns_wizard_form.html:200
-#, auto-english-fallback
 msgid "Create Record"
 msgstr "Sukurti įrašą"
 
 #: templates/modern/dns_wizard_form.html:203
-#, auto-english-fallback
 msgid "Back to Wizard Selection"
 msgstr "Grįžti į vedlio pasirinkimą"
 
@@ -10154,17 +9890,14 @@ msgid "No, keep this user"
 msgstr "Ne, palikti šį naudotoją"
 
 #: templates/modern/save-zone-template.html:6 templates/modern/edit.html:209
-#, auto-english-fallback
 msgid "Save as Template"
 msgstr "Išsaugoti kaip šabloną"
 
 #: templates/modern/save-zone-template.html:14
-#, auto-english-fallback
 msgid "Save Zone as Template"
 msgstr "Išsaugoti zoną kaip šabloną"
 
 #: templates/modern/save-zone-template.html:18
-#, auto-english-fallback
 msgid "Source Zone"
 msgstr "Šaltinio zona"
 
@@ -10177,7 +9910,6 @@ msgid "Provide template name"
 msgstr "Pateikite šablono pavadinimą"
 
 #: templates/modern/save-zone-template.html:44
-#, auto-english-fallback
 msgid "Create Template"
 msgstr "Sukurti šabloną"
 
@@ -10450,7 +10182,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Pašalinti zoną(as)"
 
-#: templates/modern/dnssec_add_key.html:81
+#: templates/modern/dnssec_add_key.html:91
 msgid "Add key"
 msgstr "Pridėti raktą"
 
@@ -10458,48 +10190,48 @@ msgstr "Pridėti raktą"
 msgid "Add key for zone"
 msgstr "Pridėti raktą zonai"
 
-#: templates/modern/dnssec_add_key.html:43
+#: templates/modern/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Rakto tipas"
 
-#: templates/modern/dnssec_add_key.html:50
+#: templates/modern/dnssec_add_key.html:60
 msgid "Select key type"
 msgstr "Pasirinkite rakto tipą"
 
-#: templates/modern/dnssec_add_key.html:61
+#: templates/modern/dnssec_add_key.html:71
 msgid "Select algorithm"
 msgstr "Pasirinkite algoritmą"
 
-#: templates/modern/dnssec_add_key.html:66
+#: templates/modern/dnssec_add_key.html:76
 msgid "Bits in length"
 msgstr "Bitų ilgis"
 
-#: templates/modern/dnssec_add_key.html:75
+#: templates/modern/dnssec_add_key.html:85
 msgid "Select bits length"
 msgstr "Pasirinkite bitų ilgį"
 
-#: templates/modern/dnssec_add_key.html:132
+#: templates/modern/dnssec_add_key.html:142
 msgid "Recommended bits for"
 msgstr "Rekomenduojami bitai"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 #: install/helpers/InstallStepHandler.php:169
 msgid "Warning:"
 msgstr "Įspėjimas:"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 msgid "bits is not recommended for"
 msgstr "bitai nerekomenduojami"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
 msgstr "Apie DNSSEC raktų tipus"
 
-#: templates/modern/dnssec_add_key.html:181
+#: templates/modern/dnssec_add_key.html:191
 msgid "Key Types Explained"
 msgstr "Raktų tipų paaiškinimas"
 
-#: templates/modern/dnssec_add_key.html:183
+#: templates/modern/dnssec_add_key.html:193
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -10507,19 +10239,19 @@ msgstr ""
 "Kombinuotas pasirašymo raktas - veikia ir kaip KSK, ir kaip ZSK "
 "(rekomenduojamas PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Rakto pasirašymo raktas - pasirašo DNSKEY įrašus zonoje"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zonos pasirašymo raktas - pasirašo visus kitus įrašus zonoje"
 
-#: templates/modern/dnssec_add_key.html:190
+#: templates/modern/dnssec_add_key.html:200
 msgid "Recommended Settings"
 msgstr "Rekomenduojami nustatymai"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:201
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10629,7 +10361,6 @@ msgid "User Permissions"
 msgstr "Naudotojo leidimai"
 
 #: templates/default/edit_user.html:169 templates/modern/edit_user.html:169
-#, auto-english-fallback
 msgid "This user has been assigned the access template"
 msgstr "Šiam vartotojui priskirtas prieigos šablonas"
 
@@ -10642,42 +10373,36 @@ msgid "No permissions are assigned to this template"
 msgstr "Šiam šablonui nepriskirti jokie leidimai"
 
 #: templates/modern/edit_user.html:197 templates/modern/add_user.html:172
-#, auto-english-fallback
 msgid "Group Memberships"
 msgstr "Grupių narystės"
 
 #: templates/default/edit_user.html:201 templates/modern/edit_user.html:201
-#, auto-english-fallback
 msgid "Current Memberships"
 msgstr "Dabartinės narystės"
 
 #: templates/default/edit_user.html:216 templates/modern/edit_user.html:216
-#, auto-english-fallback
 msgid "View group details"
 msgstr "Peržiūrėti grupės informaciją"
 
 #: templates/default/edit_user.html:230 templates/modern/edit_user.html:230
-#, auto-english-fallback
 msgid "This user is not a member of any groups."
 msgstr "Šis vartotojas nėra jokių grupių narys."
 
 #: templates/modern/edit_user.html:236 templates/modern/add_user.html:175
-#, auto-english-fallback
 msgid "Add to Groups"
 msgstr "Pridėti į grupes"
 
 #: templates/default/edit_user.html:237 templates/modern/edit_user.html:237
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr ""
-"Pasirinkite vieną ar kelias grupes ir spustelėkite mygtuką \"Pridėti pasirinktas grupes\"."
+"Pasirinkite vieną ar kelias grupes ir spustelėkite mygtuką \"Pridėti "
+"pasirinktas grupes\"."
 
 #: templates/modern/edit_user.html:245 templates/modern/add_user.html:180
-#, auto-english-fallback
 msgid "Search available groups..."
 msgstr "Ieškoti prieinamų grupių..."
 
 #: templates/modern/edit_user.html:246 templates/modern/add_user.html:181
-#, auto-english-fallback
 msgid "Clear search"
 msgstr "Išvalyti paiešką"
 
@@ -10686,27 +10411,22 @@ msgid "Select All"
 msgstr "Pasirinkti visus"
 
 #: templates/modern/add_zone_slave.html:98
-#, auto-english-fallback
 msgid "Clear All"
 msgstr "Išvalyti viską"
 
 #: templates/modern/add_user.html:208 templates/modern/add_user.html:384
-#, auto-english-fallback
 msgid "selected"
 msgstr "pasirinkta"
 
 #: templates/default/edit_user.html:275 templates/modern/edit_user.html:275
-#, auto-english-fallback
 msgid "Add Selected Groups"
 msgstr "Pridėti pasirinktas grupes"
 
 #: templates/modern/manage_group_members.html:126
-#, auto-english-fallback
 msgid "Confirm Removal"
 msgstr "Patvirtinti pašalinimą"
 
 #: templates/default/edit_user.html:303 templates/modern/edit_user.html:303
-#, auto-english-fallback
 msgid "Are you sure you want to remove this user from the group"
 msgstr "Ar tikrai norite pašalinti šį vartotoją iš grupės"
 
@@ -10758,7 +10478,6 @@ msgid "Yes, unlink these zones"
 msgstr "Taip, atjungti šias zonas"
 
 #: templates/modern/list_perm_templ.html:5
-#, auto-english-fallback
 msgid "Access templates"
 msgstr "Prieigos šablonai"
 
@@ -10767,7 +10486,6 @@ msgid "Add"
 msgstr "Pridėti"
 
 #: templates/modern/add_perm_templ.html:18
-#, auto-english-fallback
 msgid "Add Access Template"
 msgstr "Pridėti prieigos šabloną"
 
@@ -10780,17 +10498,14 @@ msgid "Optional: more detailed description of this permission set"
 msgstr "Neprivaloma: išsamesnis šio leidimų rinkinio aprašymas"
 
 #: templates/modern/edit_perm_templ.html:36
-#, auto-english-fallback
 msgid "Template Type"
 msgstr "Šablono tipas"
 
 #: templates/modern/edit_perm_templ.html:38
-#, auto-english-fallback
 msgid "User Template"
 msgstr "Vartotojo šablonas"
 
 #: templates/modern/edit_perm_templ.html:39
-#, auto-english-fallback
 msgid "Group Template"
 msgstr "Grupės šablonas"
 
@@ -10799,10 +10514,10 @@ msgid ""
 "User templates apply globally; Group templates apply only to group-owned "
 "zones"
 msgstr ""
-"Vartotojo šablonai taikomi visuotinai; Grupės šablonai taikomi tik grupės priklausančioms zonoms"
+"Vartotojo šablonai taikomi visuotinai; Grupės šablonai taikomi tik grupės "
+"priklausančioms zonoms"
 
 #: templates/modern/edit_perm_templ.html:42
-#, auto-english-fallback
 msgid "Please select a template type"
 msgstr "Pasirinkite šablono tipą"
 
@@ -10811,12 +10526,10 @@ msgid "Add Template"
 msgstr "Pridėti šabloną"
 
 #: templates/modern/add_perm_templ.html:62
-#, auto-english-fallback
 msgid "About Access Templates"
 msgstr "Apie prieigos šablonus"
 
 #: templates/modern/add_perm_templ.html:67
-#, auto-english-fallback
 msgid "What are Access Templates?"
 msgstr "Kas yra prieigos šablonai?"
 
@@ -10826,7 +10539,9 @@ msgid ""
 "Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Prieigos šablonai apibrėžia veiksmų rinkinius, kuriuos vartotojai ir grupės gali atlikti Poweradmin. Jie suteikia greitą būdą priskirti bendrus leidimų derinius."
+"Prieigos šablonai apibrėžia veiksmų rinkinius, kuriuos vartotojai ir grupės "
+"gali atlikti Poweradmin. Jie suteikia greitą būdą priskirti bendrus leidimų "
+"derinius."
 
 #: templates/modern/add_perm_templ.html:71
 msgid "How to Use Templates"
@@ -10837,9 +10552,9 @@ msgid ""
 "After creating a template, you can assign it to users or groups. This "
 "ensures consistent permissions across users and groups with similar roles."
 msgstr ""
-"Sukūrę šabloną, galite jį priskirti naudotojams kuriant arba "
-"redaguojant naudotojų paskyras. Tai užtikrina nuoseklius leidimus "
-"naudotojų grupėse su panašiais vaidmenimis."
+"Sukūrę šabloną, galite jį priskirti naudotojams kuriant arba redaguojant "
+"naudotojų paskyras. Tai užtikrina nuoseklius leidimus naudotojų grupėse su "
+"panašiais vaidmenimis."
 
 #: templates/modern/edit_perm_templ.html:86
 msgid "Available Permissions"
@@ -10959,7 +10674,6 @@ msgid "Forgot your password?"
 msgstr "Pamiršote slaptažodį?"
 
 #: templates/default/login.html:86 templates/modern/login.html:86
-#, auto-english-fallback
 msgid "Forgot your username?"
 msgstr "Pamiršote savo vartotojo vardą?"
 
@@ -11145,62 +10859,50 @@ msgstr ""
 "režimą)"
 
 #: templates/modern/zone-ownership.html:6 templates/modern/edit.html:205
-#, auto-english-fallback
 msgid "Ownership"
 msgstr "Nuosavybė"
 
 #: templates/modern/add_zone_slave.html:49
-#, auto-english-fallback
 msgid "User Owner"
 msgstr "Vartotojo savininkas"
 
 #: templates/modern/zone-ownership.html:55
-#, auto-english-fallback
 msgid "No users assigned to this zone."
 msgstr "Šiai zonai nepriskirti jokie vartotojai."
 
 #: templates/modern/zone-ownership.html:61
-#, auto-english-fallback
 msgid "Add User Owner"
 msgstr "Pridėti vartotojo savininką"
 
 #: templates/modern/manage_group_members.html:84
-#, auto-english-fallback
 msgid "Search users..."
 msgstr "Ieškoti vartotojų..."
 
 #: templates/modern/add_zone_slave.html:76
-#, auto-english-fallback
 msgid "You"
 msgstr "Jūs"
 
 #: templates/modern/zone-ownership.html:83
-#, auto-english-fallback
 msgid "Add Owner"
 msgstr "Pridėti savininką"
 
 #: templates/modern/add_zone_slave.html:90
-#, auto-english-fallback
 msgid "Group Ownership"
 msgstr "Grupės nuosavybė"
 
 #: templates/modern/zone-ownership.html:127
-#, auto-english-fallback
 msgid "No groups assigned to this zone."
 msgstr "Šiai zonai nepriskirtos jokios grupės."
 
 #: templates/modern/zone-ownership.html:133
-#, auto-english-fallback
 msgid "Add Group Ownership"
 msgstr "Pridėti grupės nuosavybę"
 
 #: templates/modern/add_zone_slave.html:94
-#, auto-english-fallback
 msgid "Search groups..."
 msgstr "Ieškoti grupių..."
 
 #: templates/modern/add_group.html:13
-#, auto-english-fallback
 msgid "Add Group"
 msgstr "Pridėti grupę"
 
@@ -11225,12 +10927,10 @@ msgid "Create a new record for this zone template"
 msgstr "Sukurti naują įrašą šiam zonos šablonui"
 
 #: templates/modern/delete_perm_templ.html:12
-#, auto-english-fallback
 msgid "Delete Access Template"
 msgstr "Ištrinti prieigos šabloną"
 
 #: templates/modern/delete_perm_templ.html:17
-#, auto-english-fallback
 msgid "You are about to delete the access template"
 msgstr "Ketinate ištrinti prieigos šabloną"
 
@@ -11251,7 +10951,6 @@ msgid "No, keep this template"
 msgstr "Ne, palikti šį šabloną"
 
 #: templates/modern/dns_wizard_select.html:14
-#, auto-english-fallback
 msgid "DNS Record Wizard"
 msgstr "DNS įrašo vedlys"
 
@@ -11260,22 +10959,22 @@ msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
 msgstr ""
-"Pasirinkite vedlį, kuris padės sukurti sudėtingus DNS įrašus su vadovaujamomis formomis vietoj rankinio teksto įvedimo."
+"Pasirinkite vedlį, kuris padės sukurti sudėtingus DNS įrašus su "
+"vadovaujamomis formomis vietoj rankinio teksto įvedimo."
 
 #: templates/modern/dns_wizard_select.html:27
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
 msgstr ""
-"DNS vedliai sukurti tiesioginėms zonoms ir gali būti netinkami atvirkštinėms zonoms."
+"DNS vedliai sukurti tiesioginėms zonoms ir gali būti netinkami atvirkštinėms "
+"zonoms."
 
 #: templates/modern/dns_wizard_select.html:59
-#, auto-english-fallback
 msgid "Recommended"
 msgstr "Rekomenduojama"
 
 #: templates/modern/dns_wizard_select.html:71
-#, auto-english-fallback
 msgid "Back"
 msgstr "Atgal"
 
@@ -11312,12 +11011,10 @@ msgid "Add new record"
 msgstr "Pridėti naują įrašą"
 
 #: templates/modern/edit.html:28 templates/modern/edit.html:543
-#, auto-english-fallback
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Vadovaujami vedliai DMARC, SPF, DKIM, CAA, TLSA ir SRV įrašams"
 
 #: templates/modern/edit.html:29 templates/modern/edit.html:544
-#, auto-english-fallback
 msgid "Record Wizard"
 msgstr "Įrašo vedlys"
 
@@ -11430,7 +11127,6 @@ msgid "total records"
 msgstr "iš viso įrašų"
 
 #: templates/default/edit.html:474 templates/modern/edit.html:474
-#, auto-english-fallback
 msgid "Edit selected"
 msgstr "Redaguoti pasirinktus"
 
@@ -11443,17 +11139,14 @@ msgid "Comments"
 msgstr "Komentarai"
 
 #: templates/default/edit.html:515 templates/modern/edit.html:515
-#, auto-english-fallback
 msgid "Export CSV"
 msgstr "Eksportuoti CSV"
 
 #: templates/default/edit.html:519 templates/modern/edit.html:519
-#, auto-english-fallback
 msgid "Generate PTR"
 msgstr "Generuoti PTR"
 
 #: templates/modern/edit.html:696 templates/modern/add_zone_master.html:24
-#, auto-english-fallback
 msgid "Zone Configuration"
 msgstr "Zonos konfigūracija"
 
@@ -11466,7 +11159,6 @@ msgid "IP address of master NS"
 msgstr "Master NS IP adresas"
 
 #: templates/default/edit.html:786 templates/modern/edit.html:786
-#, auto-english-fallback
 msgid "Manage DNSSEC"
 msgstr "Valdyti DNSSEC"
 
@@ -11475,12 +11167,10 @@ msgid "Sign zone"
 msgstr "Pasirašyti zoną"
 
 #: templates/default/edit.html:794 templates/modern/edit.html:794
-#, auto-english-fallback
 msgid "Not signed"
 msgstr "Nepasirašyta"
 
 #: templates/default/users.html:10 templates/modern/users.html:10
-#, auto-english-fallback
 msgid "User Management"
 msgstr "Vartotojų valdymas"
 
@@ -11489,17 +11179,14 @@ msgid "Add user"
 msgstr "Pridėti naudotoją"
 
 #: templates/default/users.html:45 templates/modern/users.html:45
-#, auto-english-fallback
 msgid "Auth Type"
 msgstr "Autentifikavimo tipas"
 
 #: templates/default/users.html:47 templates/modern/users.html:47
-#, auto-english-fallback
 msgid "MFA"
 msgstr "MFA"
 
 #: templates/modern/users.html:99 templates/modern/users.html:161
-#, auto-english-fallback
 msgid "SQL"
 msgstr "SQL"
 
@@ -11508,22 +11195,18 @@ msgid "LDAP"
 msgstr "LDAP"
 
 #: templates/modern/users.html:103 templates/modern/users.html:165
-#, auto-english-fallback
 msgid "OIDC"
 msgstr "OIDC"
 
 #: templates/modern/users.html:105 templates/modern/users.html:167
-#, auto-english-fallback
 msgid "SAML"
 msgstr "SAML"
 
 #: templates/modern/users.html:114 templates/modern/users.html:176
-#, auto-english-fallback
 msgid "MFA enabled"
 msgstr "MFA įjungta"
 
 #: templates/modern/users.html:116 templates/modern/users.html:178
-#, auto-english-fallback
 msgid "MFA not configured"
 msgstr "MFA nesukonfigūruota"
 
@@ -11723,7 +11406,6 @@ msgid "Are you sure you want to delete this item?"
 msgstr "Ar esate tikri, kad norite pašalinti šį elementą?"
 
 #: templates/modern/forgot_username.html:4
-#, auto-english-fallback
 msgid "Forgot Username"
 msgstr "Pamiršote vartotojo vardą"
 
@@ -11732,10 +11414,10 @@ msgid ""
 "Enter your email address and we'll send you the username associated with "
 "this account."
 msgstr ""
-"Įveskite savo el. pašto adresą ir mes atsiųsime jums su šia paskyra susietą vartotojo vardą."
+"Įveskite savo el. pašto adresą ir mes atsiųsime jums su šia paskyra susietą "
+"vartotojo vardą."
 
 #: templates/modern/forgot_username.html:41
-#, auto-english-fallback
 msgid "Send Username"
 msgstr "Siųsti vartotojo vardą"
 
@@ -11778,7 +11460,6 @@ msgstr ""
 "leidimus galite keisti vėliau redaguodami naudotoją."
 
 #: templates/default/add_user.html:176 templates/modern/add_user.html:176
-#, auto-english-fallback
 msgid "Select groups to add the new user to upon creation."
 msgstr ""
 "Pasirinkite grupes, į kurias bus pridėtas naujas vartotojas sukūrimo metu."
@@ -11812,27 +11493,22 @@ msgid "Secure this zone with DNSSEC signing"
 msgstr "Apsaugoti šią zoną DNSSEC pasirašymu"
 
 #: templates/modern/add_zone_slave.html:54
-#, auto-english-fallback
 msgid "Selected:"
 msgstr "Pasirinkta:"
 
 #: templates/modern/add_zone_slave.html:59
-#, auto-english-fallback
 msgid "No user owner"
 msgstr "Nėra vartotojo savininko"
 
 #: templates/modern/add_zone_slave.html:60
-#, auto-english-fallback
 msgid "Zone will be owned only by groups"
 msgstr "Zona priklausys tik grupėms"
 
 #: templates/modern/add_zone_slave.html:82
-#, auto-english-fallback
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Neprivaloma: Pasirinkite už šią zoną atsakingą vartotoją"
 
 #: templates/modern/add_zone_slave.html:111
-#, auto-english-fallback
 msgid "Optional: Select one or more groups"
 msgstr "Neprivaloma: Pasirinkite vieną ar daugiau grupių"
 
@@ -12343,7 +12019,6 @@ msgstr ""
 "kartą prisijungimui, jei prarasite prieigą prie autentifikavimo įrenginio."
 
 #: templates/default/mfa_setup.html:14 templates/modern/mfa_setup.html:14
-#, auto-english-fallback
 msgid "MFA Setup Required"
 msgstr "Būtina MFA sąranka"
 
@@ -12352,7 +12027,8 @@ msgid ""
 "Your organization requires multi-factor authentication. Please set up MFA to "
 "continue using the system."
 msgstr ""
-"Jūsų organizacija reikalauja daugiafaktorės autentifikacijos. Nustatykite MFA, kad galėtumėte toliau naudoti sistemą."
+"Jūsų organizacija reikalauja daugiafaktorės autentifikacijos. Nustatykite "
+"MFA, kad galėtumėte toliau naudoti sistemą."
 
 #: templates/default/mfa_setup.html:24 templates/modern/mfa_setup.html:24
 msgid ""
@@ -12433,8 +12109,7 @@ msgstr "Priklauso nuo el. pašto pristatymo"
 msgid ""
 "Email verification is not available because it has been disabled by the "
 "administrator."
-msgstr ""
-"El. pašto patvirtinimas neprieinamas, nes jį išjungė administratorius."
+msgstr "El. pašto patvirtinimas neprieinamas, nes jį išjungė administratorius."
 
 #: templates/default/mfa_setup.html:108 templates/modern/mfa_setup.html:108
 msgid ""
@@ -12528,107 +12203,86 @@ msgid "No, keep this zone"
 msgstr "Ne, palikti šią zoną"
 
 #: templates/modern/user_preferences.html:4 templates/modern/header.html:388
-#, auto-english-fallback
 msgid "User Preferences"
 msgstr "Vartotojo nuostatos"
 
 #: templates/modern/user_preferences.html:17
-#, auto-english-fallback
 msgid "Display Settings"
 msgstr "Rodymo nustatymai"
 
 #: templates/modern/user_preferences.html:22
-#, auto-english-fallback
 msgid "Items per page"
 msgstr "Elementų puslapyje"
 
 #: templates/modern/user_preferences.html:36
-#, auto-english-fallback
 msgid "Zone Options"
 msgstr "Zonos parinktys"
 
 #: templates/modern/user_preferences.html:42
-#, auto-english-fallback
 msgid "Zone serial numbers"
 msgstr "Zonos serijų numeriai"
 
 #: templates/modern/user_preferences.html:43
-#, auto-english-fallback
 msgid "Display serial numbers in zone lists"
 msgstr "Rodyti serijų numerius zonų sąrašuose"
 
 #: templates/modern/user_preferences.html:51
-#, auto-english-fallback
 msgid "Display template information in zone lists"
 msgstr "Rodyti šablonų informaciją zonų sąrašuose"
 
 #: templates/modern/user_preferences.html:64
-#, auto-english-fallback
 msgid "Interface Behavior"
 msgstr "Sąsajos elgsena"
 
 #: templates/modern/user_preferences.html:69
-#, auto-english-fallback
 msgid "Record form"
 msgstr "Įrašo forma"
 
 #: templates/modern/user_preferences.html:78
-#, auto-english-fallback
 msgid "Save buttons"
 msgstr "Išsaugojimo mygtukai"
 
 #: templates/modern/user_preferences.html:88
-#, auto-english-fallback
 msgid "Edit Zone View"
 msgstr "Redaguoti zonos rodinį"
 
 #: templates/modern/user_preferences.html:93
-#, auto-english-fallback
 msgid "Show record ID"
 msgstr "Rodyti įrašo ID"
 
 #: templates/modern/user_preferences.html:94
-#, auto-english-fallback
 msgid "Display record ID column in edit view"
 msgstr "Rodyti įrašo ID stulpelį redagavimo rodinyje"
 
 #: templates/modern/user_preferences.html:101
-#, auto-english-fallback
 msgid "Show add record form"
 msgstr "Rodyti įrašo pridėjimo formą"
 
 #: templates/modern/user_preferences.html:102
-#, auto-english-fallback
 msgid "Display inline add record form in edit view"
 msgstr "Rodyti įterptą įrašo pridėjimo formą redagavimo rodinyje"
 
 #: templates/modern/user_preferences.html:109
-#, auto-english-fallback
 msgid "Show edit buttons"
 msgstr "Rodyti redagavimo mygtukus"
 
 #: templates/modern/user_preferences.html:110
-#, auto-english-fallback
 msgid "Display individual edit button per record"
 msgstr "Rodyti atskirą redagavimo mygtuką kiekvienam įrašui"
 
 #: templates/modern/user_preferences.html:117
-#, auto-english-fallback
 msgid "Show delete buttons"
 msgstr "Rodyti ištrynimo mygtukus"
 
 #: templates/modern/user_preferences.html:118
-#, auto-english-fallback
 msgid "Display individual delete button per record"
 msgstr "Rodyti atskirą ištrynimo mygtuką kiekvienam įrašui"
 
 #: templates/modern/user_preferences.html:133
-#, auto-english-fallback
 msgid "Save Preferences"
 msgstr "Išsaugoti nuostatas"
 
 #: templates/modern/user_preferences.html:139
-#, auto-english-fallback
 msgid "Changes will be applied after saving"
 msgstr "Pakeitimai bus pritaikyti po išsaugojimo"
 
@@ -12677,27 +12331,22 @@ msgid "Try different search terms or filters"
 msgstr "Pabandykite kitus paieškos terminus arba filtrus"
 
 #: templates/default/search.html:676 templates/modern/search.html:687
-#, auto-english-fallback
 msgid "Confirm Zone Deletion"
 msgstr "Patvirtinti zonos ištrynimą"
 
 #: templates/modern/search.html:692 templates/modern/search.html:718
-#, auto-english-fallback
 msgid "Are you sure you want to delete"
 msgstr "Ar tikrai norite ištrinti"
 
 #: templates/default/search.html:681 templates/modern/search.html:692
-#, auto-english-fallback
 msgid "selected zone(s)?"
 msgstr "pasirinkta(-as) zona(-as)?"
 
 #: templates/default/search.html:702 templates/modern/search.html:713
-#, auto-english-fallback
 msgid "Confirm Record Deletion"
 msgstr "Patvirtinti įrašo ištrynimą"
 
 #: templates/default/search.html:707 templates/modern/search.html:718
-#, auto-english-fallback
 msgid "selected record(s)?"
 msgstr "pasirinkta(-us) įrašą(-us)?"
 
@@ -12766,7 +12415,6 @@ msgid "Search logs by user"
 msgstr "Ieškoti žurnalų pagal naudotoją"
 
 #: templates/modern/add_zone_slave.html:24
-#, auto-english-fallback
 msgid "Slave Zone Configuration"
 msgstr "Pavaldžios zonos konfigūracija"
 
@@ -12779,7 +12427,8 @@ msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
 msgstr ""
-"Pagrindinio vardų serverio IP adresas (palaiko IPv4 ir IPv6, keli IP atskirti kableliais)"
+"Pagrindinio vardų serverio IP adresas (palaiko IPv4 ir IPv6, keli IP "
+"atskirti kableliais)"
 
 #: templates/modern/delete_zone_templ.html:12
 msgid "Delete template"
@@ -13076,17 +12725,14 @@ msgid "Reverse zones"
 msgstr "Atvirkštinės zonos"
 
 #: templates/default/header.html:133 templates/modern/header.html:199
-#, auto-english-fallback
 msgid "List groups"
 msgstr "Grupių sąrašas"
 
 #: templates/modern/header.html:210 templates/modern/list_log_groups.html:5
-#, auto-english-fallback
 msgid "Group logs"
 msgstr "Grupės žurnalai"
 
 #: templates/default/header.html:153 templates/modern/header.html:227
-#, auto-english-fallback
 msgid "List templates"
 msgstr "Šablonų sąrašas"
 
@@ -13143,57 +12789,46 @@ msgid "Add records"
 msgstr "Pridėti įrašus"
 
 #: templates/modern/manage_group_members.html:12
-#, auto-english-fallback
 msgid "Back to Group"
 msgstr "Grįžti į grupę"
 
 #: templates/modern/manage_group_zones.html:20
-#, auto-english-fallback
 msgid "Owned Zones"
 msgstr "Priklausančios zonos"
 
 #: templates/modern/manage_group_zones.html:27
-#, auto-english-fallback
 msgid "This group doesn't own any zones yet"
 msgstr "Ši grupė dar nevaldo jokių zonų"
 
 #: templates/modern/manage_group_members.html:57
-#, auto-english-fallback
 msgid "Remove Selected"
 msgstr "Pašalinti pasirinktus"
 
 #: templates/modern/manage_group_zones.html:79
-#, auto-english-fallback
 msgid "Available Zones"
 msgstr "Prieinamos zonos"
 
 #: templates/modern/manage_group_zones.html:86
-#, auto-english-fallback
 msgid "This group already owns all zones or no zones are available"
 msgstr "Ši grupė jau valdo visas zonas arba nėra prieinamų zonų"
 
 #: templates/modern/manage_group_zones.html:94
-#, auto-english-fallback
 msgid "Search zones..."
 msgstr "Ieškoti zonų..."
 
 #: templates/modern/manage_group_members.html:110
-#, auto-english-fallback
 msgid "Add Selected"
 msgstr "Pridėti pasirinktus"
 
 #: templates/modern/manage_group_members.html:131
-#, auto-english-fallback
 msgid "Are you sure you want to remove"
 msgstr "Ar tikrai norite pašalinti"
 
 #: templates/modern/manage_group_zones.html:221
-#, auto-english-fallback
 msgid "zone(s) from this group?"
 msgstr "zona(-as) iš šios grupės?"
 
 #: templates/modern/manage_group_zones.html:222
-#, auto-english-fallback
 msgid "The zones will remain in the system."
 msgstr "Zonos išliks sistemoje."
 
@@ -13255,7 +12890,6 @@ msgid "No, keep this API key"
 msgstr "Ne, palikti šį API raktą"
 
 #: templates/modern/edit_perm_templ.html:19
-#, auto-english-fallback
 msgid "Edit Access Template"
 msgstr "Redaguoti prieigos šabloną"
 
@@ -13273,12 +12907,11 @@ msgid ""
 "of permissions. Changes made here will affect all users and groups who have "
 "this template assigned."
 msgstr ""
-"Šis šablonas gali būti priskirtas naudotojams greitam jo leidimų "
-"rinkinio taikymui. Čia atlikti keitimai paveiks visus naudotojus, "
-"kuriems priskirtas šis šablonas."
+"Šis šablonas gali būti priskirtas naudotojams greitam jo leidimų rinkinio "
+"taikymui. Čia atlikti keitimai paveiks visus naudotojus, kuriems priskirtas "
+"šis šablonas."
 
 #: templates/default/edit_perm_templ.html:72
-#, auto-english-fallback
 msgid "Users vs Groups"
 msgstr "Vartotojai ir grupės"
 
@@ -13287,14 +12920,16 @@ msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
 msgstr ""
-"Kai priskirta <strong>vartotojams</strong>: Leidimai taikomi visuotinai visoje sistemoje."
+"Kai priskirta <strong>vartotojams</strong>: Leidimai taikomi visuotinai "
+"visoje sistemoje."
 
 #: templates/default/edit_perm_templ.html:74
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
 msgstr ""
-"Kai priskirta <strong>grupėms</strong>: Leidimai taikomi tik tos grupės priklausančioms zonoms."
+"Kai priskirta <strong>grupėms</strong>: Leidimai taikomi tik tos grupės "
+"priklausančioms zonoms."
 
 #: templates/modern/edit_perm_templ.html:73
 msgid "Permission Groups"
@@ -13349,15 +12984,14 @@ msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
 msgstr ""
-"Visi grupės nariai paveldės šiuos leidimus zonoms, priklausančioms šiai grupei"
+"Visi grupės nariai paveldės šiuos leidimus zonoms, priklausančioms šiai "
+"grupei"
 
 #: templates/default/add_group.html:50 templates/modern/add_group.html:50
-#, auto-english-fallback
 msgid "After creating the group, you can add members and assign zones to it."
 msgstr "Sukūrę grupę, galėsite pridėti narius ir priskirti jai zonas."
 
 #: templates/default/add_group.html:55 templates/modern/add_group.html:55
-#, auto-english-fallback
 msgid "Create Group"
 msgstr "Sukurti grupę"
 
@@ -13375,72 +13009,58 @@ msgid "Please enter a domain name to perform a WHOIS lookup."
 msgstr "Įveskite domeno pavadinimą WHOIS paieškai."
 
 #: templates/modern/list_perm_templ.html:40
-#, auto-english-fallback
 msgid "User"
 msgstr "Vartotojas"
 
 #: templates/modern/list_perm_templ.html:10
-#, auto-english-fallback
 msgid "templates apply globally"
 msgstr "šablonai taikomi visuotinai"
 
 #: templates/modern/list_perm_templ.html:42
-#, auto-english-fallback
 msgid "Group"
 msgstr "Grupė"
 
 #: templates/modern/list_perm_templ.html:10
-#, auto-english-fallback
 msgid "templates apply only to group-owned zones"
 msgstr "šablonai taikomi tik grupės priklausančioms zonoms"
 
 #: templates/modern/list_perm_templ.html:15
-#, auto-english-fallback
 msgid "Access Templates"
 msgstr "Prieigos šablonai"
 
 #: templates/modern/list_perm_templ.html:31
-#, auto-english-fallback
 msgid "No access templates found"
 msgstr "Prieigos šablonų nerasta"
 
 #: templates/modern/list_perm_templ.html:63
-#, auto-english-fallback
 msgid "Add access template"
 msgstr "Pridėti prieigos šabloną"
 
 #: templates/modern/list_log_groups.html:11
-#, auto-english-fallback
 msgid "Group Activity Logs"
 msgstr "Grupės veiklos žurnalai"
 
 #: templates/modern/list_log_groups.html:19
-#, auto-english-fallback
 msgid "Search logs by group"
 msgstr "Ieškoti žurnalų pagal grupę"
 
 #: templates/modern/manage_group_members.html:20
-#, auto-english-fallback
 msgid "Current Members"
 msgstr "Dabartiniai nariai"
 
 #: templates/modern/manage_group_members.html:27
-#, auto-english-fallback
 msgid "No members in this group yet"
 msgstr "Šioje grupėje dar nėra narių"
 
 #: templates/modern/manage_group_members.html:69
-#, auto-english-fallback
 msgid "Available Users"
 msgstr "Prieinami vartotojai"
 
 #: templates/modern/manage_group_members.html:76
-#, auto-english-fallback
 msgid "All users are already members of this group"
 msgstr "Visi vartotojai jau yra šios grupės nariai"
 
 #: templates/modern/manage_group_members.html:131
-#, auto-english-fallback
 msgid "user(s) from this group?"
 msgstr "vartotoją(-us) iš šios grupės?"
 
@@ -13480,8 +13100,18 @@ msgstr "Parodyti zonų šablonus"
 msgid "Bulk Domain Registration"
 msgstr "Masinė domenų registracija"
 
+#: templates/modern/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ pagal numatytuosius nustatymus naudoja CSK"
+
+#: templates/modern/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 ir naujesnės versijos pagal numatytuosius nustatymus naudoja Combined Signing Keys (CSK). Jei pasirinksite KSK arba ZSK, PowerDNS vis tiek gali sukurti CSK raktą."
+
 #: templates/modern/header.html:382
-#, auto-english-fallback
 msgid "Dashboard"
 msgstr "Prietaisų skydelis"
 
@@ -13764,33 +13394,27 @@ msgid "Optional Extensions"
 msgstr "Pasirenkami plėtiniai"
 
 #: install/templates/step2.html.twig:99
-#, auto-english-fallback
 msgid "Web Server"
 msgstr "Interneto serveris"
 
 #: install/templates/step2.html.twig:106
-#, auto-english-fallback
 msgid "Server"
 msgstr "Serveris"
 
 #: install/templates/step2.html.twig:118
-#, auto-english-fallback
 msgid "Not detected — required for URL routing"
 msgstr "Neaptikta — būtina URL maršrutizavimui"
 
 #: install/templates/step2.html.twig:124
-#, auto-english-fallback
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
 msgstr "Nepavyksta aptikti (PHP-FPM) — įsitikinkite, kad jis įjungtas"
 
 #: install/templates/step2.html.twig:130
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
 msgstr ""
 "Įsitikinkite, kad URL perrašymas sukonfigūruotas (žr. nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured for your web server"
 msgstr ""
 "Įsitikinkite, kad URL perrašymas sukonfigūruotas jūsų interneto serveriui"
@@ -14130,384 +13754,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create a config/settings.php file "
-# OBSOLETE: "manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Konfigūracijos failas nerastas. Naudokitės <a href=\"install/\">diegimo "
-# OBSOLETE: "programa</a> jo sukūrimui arba sukurkite config/settings.php failą "
-# OBSOLETE: "rankiniu būdu."
-
-# OBSOLETE: msgid "Invalid authentication provider"
-# OBSOLETE: msgstr "Neteisingas autentifikacijos tiekėjas"
-
-# OBSOLETE: msgid "Failed to sign zone. Check PowerDNS logs for details."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nepavyko pasirašyti zonos. Patikrinkite PowerDNS žurnalus dėl išsamesnės "
-# OBSOLETE: "informacijos."
-
-# OBSOLETE: msgid "Zone was created, but securing it with DNSSEC failed."
-# OBSOLETE: msgstr "Zona sukurta, bet jos apsauga su DNSSEC nepavyko."
-
-# OBSOLETE: msgid "Failed to delete DNSSEC key."
-# OBSOLETE: msgstr "Nepavyko ištrinti DNSSEC rakto."
-
-#, auto-english-fallback
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
-# OBSOLETE: "once."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Rastas dubliuojamas %s mechanizmas. Kiekvienas mechanizmo tipas turėtų "
-# OBSOLETE: "pasirodyti daugiausiai vieną kartą."
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IPv6 adresas turėtų naudoti mažąsias raides šešioliktainiams skaičiams."
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IPv6 adresas nėra kanoniškoje formoje (RFC 5952). Kanoniška forma: %s"
-
-#, auto-english-fallback
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IP adresas \"%s\" neteisingas. Turi būti teisingas IPv4 arba IPv6 adresas."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "CAA iodef value must be a URL starting with http://, https://, or mailto:."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "CAA iodef reikšmė turi būti URL, prasidedantis http://, https:// arba "
-# OBSOLETE: "mailto:."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "SMIMEA record name is in the format: SHA256(local-"
-# OBSOLETE: "part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "SMIMEA įrašo vardas yra formatu: SHA256(vietinė-"
-# OBSOLETE: "dalis)._smimecert.domain.tld el. pašto adresams kaip vietinė-"
-# OBSOLETE: "dalis@domain.tld"
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "HTML žymės neleidžiamos turinio lauke."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "TXT įrašo eilutė viršija 255 baitus. TXT eilutės turi būti 255 baitų ar "
-# OBSOLETE: "mažiau. Ilgesniam turiniui padalinkite į kelias kabutėse esančias "
-# OBSOLETE: "eilutes, atskirtas tarpais."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR įrašas turi turėti arba regexp, arba pakeitimą (su \".\"), bet ne "
-# OBSOLETE: "abu."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR paslauga turi sekti formatą: [protokolas][+rs][+rs]... kur "
-# OBSOLETE: "protokolas ir rs prasideda raide ir turi tik raidinio skaitmeninius "
-# OBSOLETE: "simbolius (maks 32 simboliai kiekvienam)."
-
-# OBSOLETE: msgid "User administration"
-# OBSOLETE: msgstr "Naudotojų administravimas"
-
-# OBSOLETE: msgid "Permissions"
-# OBSOLETE: msgstr "Leidimai"
-
-# OBSOLETE: msgid "Manage permission templates"
-# OBSOLETE: msgstr "Valdyti leidimų šablonus"
-
-# OBSOLETE: msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nustatykite standartinius įrašus, tokius kaip MX, TXT SPF ir CNAME www"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-# OBSOLETE: "[SERIAL] in record content"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Naudokite vietrženklius, tokius kaip [ZONE], [DOMAIN], [TLD], [NS1], "
-# OBSOLETE: "[HOSTMASTER] ir [SERIAL] įrašų turinyje"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-# OBSOLETE: "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "[DOMAIN] ir [TLD] vietrženkiai naudingi Microsoft 365 MX įrašams (pvz., "
-# OBSOLETE: "[DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-# OBSOLETE: msgid "Permission template"
-# OBSOLETE: msgstr "Leidimų šablonas"
-
-# OBSOLETE: msgid "This user has been assigned the permission template"
-# OBSOLETE: msgstr "Šiam naudotojui buvo priskirtas leidimų šablonas"
-
-# OBSOLETE: msgid "User Management Tips"
-# OBSOLETE: msgstr "Naudotojų valdymo patarimai"
-
-# OBSOLETE: msgid "Leave password field empty to keep the current password"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Palikite slaptažodžio lauką tuščią, kad išlaikytumėte dabartinį slaptažodį"
-
-# OBSOLETE: msgid "Changing permission templates will update user access immediately"
-# OBSOLETE: msgstr "Leidimų šablonų keitimas iš karto atnaujins naudotojo prieigą"
-
-# OBSOLETE: msgid "Users can be disabled instead of deleted to preserve their settings"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Naudotojai gali būti išjungti vietoj pašalinimo, kad išlaikytumėte jų "
-# OBSOLETE: "nustatymus"
-
-# OBSOLETE: msgid "LDAP users cannot have passwords managed through this interface"
-# OBSOLETE: msgstr "LDAP naudotojų slaptažodžiai negali būti valdomi per šią sąsają"
-
-# OBSOLETE: msgid "Permission templates"
-# OBSOLETE: msgstr "Leidimų šablonai"
-
-# OBSOLETE: msgid "Add Permission Template"
-# OBSOLETE: msgstr "Pridėti leidimų šabloną"
-
-# OBSOLETE: msgid "About Permission Templates"
-# OBSOLETE: msgstr "Apie leidimų šablonus"
-
-# OBSOLETE: msgid "What are Permission Templates?"
-# OBSOLETE: msgstr "Kas yra leidimų šablonai?"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Permission templates define sets of actions that users can perform in "
-# OBSOLETE: "Poweradmin. They provide a quick way to assign common permission "
-# OBSOLETE: "combinations to multiple users."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Leidimų šablonai apibrėžia veiksmų rinkinius, kuriuos naudotojai gali "
-# OBSOLETE: "atlikti Poweradmin sistemoje. Jie suteikia greitą būdą priskirti įprastus "
-# OBSOLETE: "leidimų derinius keliems naudotojams."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "After creating a template, you can assign it to users when creating or "
-# OBSOLETE: "editing user accounts. This ensures consistent permissions across user "
-# OBSOLETE: "groups with similar roles."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Sukūrę šabloną, galite jį priskirti naudotojams kuriant arba redaguojant "
-# OBSOLETE: "naudotojų paskyras. Tai užtikrina nuoseklius leidimus naudotojų grupėse "
-# OBSOLETE: "su panašiais vaidmenimis."
-
-# OBSOLETE: msgid "Delete Permission Template"
-# OBSOLETE: msgstr "Pašalinti leidimų šabloną"
-
-# OBSOLETE: msgid "You are about to delete the permission template"
-# OBSOLETE: msgstr "Jūs ketinate pašalinti leidimų šabloną"
-
-# OBSOLETE: msgid "CSV"
-# OBSOLETE: msgstr "CSV"
-
-# OBSOLETE: msgid "Save as new template"
-# OBSOLETE: msgstr "Išsaugoti kaip naują šabloną"
-
-# OBSOLETE: msgid "Create a reusable template from this zone's records"
-# OBSOLETE: msgstr "Sukurti pakartotinai naudojamą šabloną iš šios zonos įrašų"
-
-# OBSOLETE: msgid "Template Description"
-# OBSOLETE: msgstr "Šablono aprašymas"
-
-# OBSOLETE: msgid "Optional description for this template"
-# OBSOLETE: msgstr "Neprivalomas šio šablono aprašymas"
-
-# OBSOLETE: msgid "Save as template"
-# OBSOLETE: msgstr "Išsaugoti kaip šabloną"
-
-# OBSOLETE: msgid "Zone Settings"
-# OBSOLETE: msgstr "Zonos nustatymai"
-
-# OBSOLETE: msgid "Owner of zone"
-# OBSOLETE: msgstr "Zonos savininkas"
-
-# OBSOLETE: msgid "No owner set for this zone."
-# OBSOLETE: msgstr "Šiai zonai nenustatytas savininkas."
-
-# OBSOLETE: msgid "Select All Filtered"
-# OBSOLETE: msgstr "Pasirinkti visus filtruotus"
-
-# OBSOLETE: msgid "User Administration"
-# OBSOLETE: msgstr "Naudotojų administravimas"
-
-# OBSOLETE: msgid "Create descriptive usernames that are easy to identify"
-# OBSOLETE: msgstr "Kurkite aprašomuosius naudotojų vardus, kuriuos lengva atpažinti"
-
-# OBSOLETE: msgid "Adding a full name helps with user identification"
-# OBSOLETE: msgstr "Pilno vardo pridėjimas padeda atpažinti naudotoją"
-
-# OBSOLETE: msgid "Auto-generating passwords is recommended for better security"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Automatinis slaptažodžių generavimas rekomenduojamas geresniam saugumui"
-
-# OBSOLETE: msgid "User responsible for this zone"
-# OBSOLETE: msgstr "Už šią zoną atsakingas naudotojas"
-
-# OBSOLETE: msgid "Zone Information"
-# OBSOLETE: msgstr "Zonos informacija"
-
-# OBSOLETE: msgid "About Master Zones"
-# OBSOLETE: msgstr "Apie Master zonas"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "A master zone is a zone for which this PowerDNS server is the primary "
-# OBSOLETE: "authority. You can add, edit and delete records in master zones."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Master zona yra zona, kuriai šis PowerDNS serveris yra pirminis "
-# OBSOLETE: "autoritetas. Master zonose galite pridėti, redaguoti ir pašalinti įrašus."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "After creating the zone, you will be redirected to add DNS records to it."
-# OBSOLETE: msgstr "Sukūrę zoną, būsite nukreipti pridėti į ją DNS įrašų."
-
-# OBSOLETE: msgid "DNSSEC Information"
-# OBSOLETE: msgstr "DNSSEC informacija"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "DNSSEC (Domain Name System Security Extensions) adds cryptographic "
-# OBSOLETE: "signatures to DNS records to protect against spoofing and cache poisoning "
-# OBSOLETE: "attacks."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "DNSSEC (domeno vardų sistemos saugumo plėtiniai) prideda kriptografinius "
-# OBSOLETE: "parašus prie DNS įrašų, kad apsaugotų nuo klastojimo ir spartinančiosios "
-# OBSOLETE: "atminties užnuodijimo atakų."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When enabled, PowerDNS will automatically generate and manage the "
-# OBSOLETE: "necessary keys and signatures for the zone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Įjungus PowerDNS automatiškai generuos ir valdys reikalingus raktus bei "
-# OBSOLETE: "parašus zonai."
-
-# OBSOLETE: msgid "Use fully qualified domain names (example.com)"
-# OBSOLETE: msgstr "Naudokite pilnai kvalifikuotus domenų vardus (example.com)"
-
-# OBSOLETE: msgid "Select a template to automatically create common DNS records"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Pasirinkite šabloną, kad automatiškai sukurtumėte įprastus DNS įrašus"
-
-# OBSOLETE: msgid "NATIVE zone type is recommended for most setups"
-# OBSOLETE: msgstr "NATIVE zonos tipas rekomenduojamas daugumai nustatymų"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Are you sure you want to delete the selected zones? This action cannot be "
-# OBSOLETE: "undone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ar tikrai norite ištrinti pasirinktas zonas? Šio veiksmo negalima "
-# OBSOLETE: "atšaukti."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Are you sure you want to delete the selected records? This action cannot "
-# OBSOLETE: "be undone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ar tikrai norite ištrinti pasirinktus įrašus? Šio veiksmo negalima "
-# OBSOLETE: "atšaukti."
-
-# OBSOLETE: msgid "IP address of the master name server (can be IPv4 or IPv6)"
-# OBSOLETE: msgstr "Pagrindinio vardų serverio IP adresas (gali būti IPv4 arba IPv6)"
-
-# OBSOLETE: msgid "About Slave Zones"
-# OBSOLETE: msgstr "Apie antrines zonas"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "A slave zone is a read-only copy of a zone hosted on another DNS server. "
-# OBSOLETE: "PowerDNS will automatically fetch and update zone data from the master "
-# OBSOLETE: "server."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Antrinė zona yra tik skaitymui skirta zonos kopija, esanti kitame DNS "
-# OBSOLETE: "serveryje. PowerDNS automatiškai gaus ir atnaujins zonos duomenis iš "
-# OBSOLETE: "pagrindinio serverio."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You cannot edit records in a slave zone - all changes must be made on the "
-# OBSOLETE: "master server."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Negalite redaguoti antrinės zonos įrašų - visi keitimai turi būti "
-# OBSOLETE: "atliekami pagrindiniame serveryje."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Make sure that this PowerDNS server is allowed to transfer the zone from "
-# OBSOLETE: "the master server. The master server must have an allow-transfer or "
-# OBSOLETE: "similar configuration permitting zone transfers to this server's IP "
-# OBSOLETE: "address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Įsitikinkite, kad šis PowerDNS serveris gali gauti zoną iš pagrindinio "
-# OBSOLETE: "serverio. Pagrindiniame serveryje turi būti allow-transfer ar panašus "
-# OBSOLETE: "nustatymas, leidžiantis zonos perdavimą į šio serverio IP adresą."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can specify multiple master servers by separating IP addresses with "
-# OBSOLETE: "commas"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Galite nurodyti kelis pagrindinius serverius, IP adresus atskyrdami "
-# OBSOLETE: "kableliais"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Slave zones will automatically update when the master server sends a "
-# OBSOLETE: "notification"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Antrinės zonos automatiškai atsinaujins, kai pagrindinis serveris išsiųs "
-# OBSOLETE: "pranešimą"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "To test the connection, check the PowerDNS logs after adding the zone"
-# OBSOLETE: msgstr "Ryšio patikrinimui peržiūrėkite PowerDNS žurnalus pridėję zoną"
-
-# OBSOLETE: msgid "List permission templates"
-# OBSOLETE: msgstr "Išvardyti leidimų šablonus"
-
-# OBSOLETE: msgid "Add permission template"
-# OBSOLETE: msgstr "Pridėti leidimų šabloną"
-
-# OBSOLETE: msgid "Edit Permission Template"
-# OBSOLETE: msgstr "Redaguoti leidimų šabloną"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Šis šablonas gali būti priskirtas naudotojams greitam jo leidimų rinkinio "
-# OBSOLETE: "taikymui. Čia atlikti keitimai paveiks visus naudotojus, kuriems "
-# OBSOLETE: "priskirtas šis šablonas."
-
-# OBSOLETE: msgid "Permission Templates"
-# OBSOLETE: msgstr "Leidimų šablonai"
-
-# OBSOLETE: msgid "No permission templates found"
-# OBSOLETE: msgstr "Leidimų šablonų nerasta"
-
-
-

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-10 19:11+0200\n"
+"POT-Creation-Date: 2026-02-14 17:09+0200\n"
 "PO-Revision-Date: 2025-06-05 21:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -108,7 +108,6 @@ msgid "You do not have the permission to delete this user."
 msgstr "Bu kullanıcıyı silme yetkiniz yok."
 
 #: lib/Application/Controller/DeleteUserController.php:62
-#, auto-english-fallback
 msgid "You do not have permission to delete a superuser account."
 msgstr "Süper kullanıcı hesabını silme izniniz yok."
 
@@ -145,7 +144,6 @@ msgid "You do not have permission to delete records in this zone."
 msgstr "Bu bölgedeki kayıtları silme izniniz bulunmamaktadır."
 
 #: lib/Application/Controller/EditRecordController.php:195
-#, auto-english-fallback
 msgid "Record not found."
 msgstr "Kayıt bulunamadı."
 
@@ -213,67 +211,54 @@ msgid "The record has been deleted successfully."
 msgstr "Kayıt başarıyla silindi."
 
 #: lib/Application/Controller/DeleteRecordController.php:239
-#, auto-english-fallback
 msgid "You cannot delete records from a SLAVE zone."
 msgstr "SLAVE bölgesinden kayıt silemezsiniz."
 
 #: lib/Application/Controller/DeleteGroupController.php:70
-#, auto-english-fallback
 msgid "You do not have permission to delete groups."
 msgstr "Grup silme izniniz yok."
 
 #: lib/Application/Controller/EditGroupController.php:86
-#, auto-english-fallback
 msgid "Invalid group ID."
 msgstr "Geçersiz grup ID'si."
 
 #: lib/Application/Controller/DeleteGroupController.php:98
-#, auto-english-fallback
 msgid "Group deletion cancelled."
 msgstr "Grup silme işlemi iptal edildi."
 
 #: lib/Application/Controller/DeleteGroupController.php:135
-#, auto-english-fallback
 msgid "Group has been deleted successfully."
 msgstr "Grup başarıyla silindi."
 
 #: lib/Application/Controller/EditGroupController.php:197
-#, auto-english-fallback
 msgid "Group not found."
 msgstr "Grup bulunamadı."
 
 #: lib/Application/Controller/UserPreferencesController.php:99
-#, auto-english-fallback
 msgid "Preferences saved successfully."
 msgstr "Tercihler başarıyla kaydedildi."
 
 #: lib/Application/Controller/UserPreferencesController.php:107
-#, auto-english-fallback
 msgid "Failed to update preferences. Please try again."
 msgstr "Tercihler güncellenemedi. Lütfen tekrar deneyin."
 
 #: lib/Application/Controller/UserPreferencesController.php:122
-#, auto-english-fallback
 msgid "Top"
 msgstr "Üst"
 
 #: lib/Application/Controller/UserPreferencesController.php:123
-#, auto-english-fallback
 msgid "Bottom"
 msgstr "Alt"
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:60
-#, auto-english-fallback
 msgid "You do not have permission to manage group members."
 msgstr "Grup üyelerini yönetme izniniz yok."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:103
-#, auto-english-fallback
 msgid "Invalid action."
 msgstr "Geçersiz işlem."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:192
-#, auto-english-fallback
 msgid "Please select at least one user."
 msgstr "Lütfen en az bir kullanıcı seçin."
 
@@ -306,7 +291,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: lib/Application/Controller/DnsWizardController.php:57
-#, auto-english-fallback
 msgid "DNS wizards are not enabled."
 msgstr "DNS sihirbazları etkinleştirilmedi."
 
@@ -315,27 +299,22 @@ msgid "Invalid zone ID."
 msgstr "Geçersiz zon kimliği."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:93
-#, auto-english-fallback
 msgid "Zone not found."
 msgstr "Bölge bulunamadı."
 
 #: lib/Application/Controller/DnsWizardController.php:80
-#, auto-english-fallback
 msgid "You do not have permission to add records to this zone."
 msgstr "Bu bölgeye kayıt ekleme izniniz yok."
 
 #: lib/Application/Controller/DnsWizardFormController.php:114
-#, auto-english-fallback
 msgid "Invalid wizard type."
 msgstr "Geçersiz sihirbaz türü."
 
 #: lib/Application/Controller/DnsWizardFormController.php:199
-#, auto-english-fallback
 msgid "Validation failed:"
 msgstr "Doğrulama başarısız:"
 
 #: lib/Application/Controller/DnsWizardFormController.php:223
-#, auto-english-fallback
 msgid "Failed to generate record:"
 msgstr "Kayıt oluşturulamadı:"
 
@@ -413,7 +392,8 @@ msgid ""
 "MFA is required by your organization's security policy and cannot be "
 "disabled."
 msgstr ""
-"Kuruluşunuzun güvenlik politikası gereği MFA zorunludur ve devre dışı bırakılamaz."
+"Kuruluşunuzun güvenlik politikası gereği MFA zorunludur ve devre dışı "
+"bırakılamaz."
 
 #: lib/Application/Controller/MfaSetupController.php:290
 msgid "MFA is not enabled."
@@ -532,17 +512,14 @@ msgid "Invalid request method."
 msgstr "Geçersiz istek yöntemi."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:77
-#, auto-english-fallback
 msgid "Invalid group or user ID."
 msgstr "Geçersiz grup veya kullanıcı ID'si."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:86
-#, auto-english-fallback
 msgid "Member removed from group successfully."
 msgstr "Üye gruptan başarıyla çıkarıldı."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:118
-#, auto-english-fallback
 msgid "User was not a member of this group."
 msgstr "Kullanıcı bu grubun üyesi değildi."
 
@@ -551,7 +528,6 @@ msgid "You do not have the permission to add a new user."
 msgstr "Yeni kullanıcı ekleme yetkiniz yok."
 
 #: lib/Application/Controller/EditUserController.php:235
-#, auto-english-fallback
 msgid "Invalid permission template: must be a user template"
 msgstr "Geçersiz izin şablonu: kullanıcı şablonu olmalıdır"
 
@@ -589,17 +565,14 @@ msgid "The record could not be deleted."
 msgstr "Kayıt silinemedi."
 
 #: lib/Application/Controller/ListLogUsersController.php:67
-#, auto-english-fallback
 msgid "Invalid page number."
 msgstr "Geçersiz sayfa numarası."
 
 #: lib/Application/Controller/ListLogUsersController.php:69
-#, auto-english-fallback
 msgid "Page number must be at least 1."
 msgstr "Sayfa numarası en az 1 olmalıdır."
 
 #: lib/Application/Controller/ListLogUsersController.php:87
-#, auto-english-fallback
 msgid "Page number exceeds available pages."
 msgstr "Sayfa numarası mevcut sayfaları aşıyor."
 
@@ -727,17 +700,14 @@ msgid "You do not have the permission to view this zone."
 msgstr "Bu zonu görüntüleme yetkiniz yok."
 
 #: lib/Application/Controller/EditController.php:271
-#, auto-english-fallback
 msgid "Zone type has been changed successfully."
 msgstr "Bölge türü başarıyla değiştirildi."
 
 #: lib/Application/Controller/EditController.php:278
-#, auto-english-fallback
 msgid "Slave master has been changed successfully."
 msgstr "Slave master başarıyla değiştirildi."
 
 #: lib/Application/Controller/EditController.php:298
-#, auto-english-fallback
 msgid "Zone template has been changed successfully."
 msgstr "Bölge şablonu başarıyla değiştirildi."
 
@@ -766,7 +736,8 @@ msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
 msgstr ""
-"Bölge imzalanamadı. Bölge doğrulaması başarılı, ancak PowerDNS API'si hata döndürdü. Ayrıntılar için PowerDNS günlüklerini kontrol edin."
+"Bölge imzalanamadı. Bölge doğrulaması başarılı, ancak PowerDNS API'si hata "
+"döndürdü. Ayrıntılar için PowerDNS günlüklerini kontrol edin."
 
 #: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
@@ -878,7 +849,6 @@ msgid "You do not have the permission to add a record to this zone."
 msgstr "Bu alana kayıt ekleme yetkiniz bulunmuyor."
 
 #: lib/Application/Controller/AddRecordController.php:226
-#, auto-english-fallback
 msgid "Record successfully added."
 msgstr "Kayıt başarıyla eklendi."
 
@@ -937,7 +907,6 @@ msgid "Authentication failed: "
 msgstr "Kimlik doğrulama başarısız: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
-#, auto-english-fallback
 msgid "You do not have permission to create zone templates."
 msgstr "Bölge şablonu oluşturma izniniz yok."
 
@@ -946,7 +915,6 @@ msgid "Template name can't be an empty string."
 msgstr "Şablon adı boş bir dize olamaz."
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:150
-#, auto-english-fallback
 msgid "Zone template has been created successfully."
 msgstr "Bölge şablonu başarıyla oluşturuldu."
 
@@ -963,7 +931,6 @@ msgid "You do not have the permission to add a master zone."
 msgstr "Ana zon ekleme yetkiniz yok."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:101
-#, auto-english-fallback
 msgid "At least one user or group must be selected as owner."
 msgstr "Sahip olarak en az bir kullanıcı veya grup seçilmelidir."
 
@@ -976,17 +943,19 @@ msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
-"Bölge başarıyla oluşturuldu, ancak doğrulama hataları nedeniyle DNSSEC imzalaması atlandı:"
+"Bölge başarıyla oluşturuldu, ancak doğrulama hataları nedeniyle DNSSEC "
+"imzalaması atlandı:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:171
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
 msgstr ""
-"Bölge oluşturuldu, ancak DNSSEC ile güvence altına alınamadı. Bölge doğrulaması başarılı, ancak PowerDNS API'si hata döndürdü. Ayrıntılar için PowerDNS günlüklerini kontrol edin."
+"Bölge oluşturuldu, ancak DNSSEC ile güvence altına alınamadı. Bölge "
+"doğrulaması başarılı, ancak PowerDNS API'si hata döndürdü. Ayrıntılar için "
+"PowerDNS günlüklerini kontrol edin."
 
 #: lib/Application/Controller/AddZoneMasterController.php:177
-#, auto-english-fallback
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Bölge başarıyla oluşturuldu ve DNSSEC ile imzalandı."
 
@@ -995,7 +964,8 @@ msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
 msgstr ""
-"Bölge oluşturuldu ve imzalama istendi, ancak doğrulama başarısız oldu. DNSSEC anahtarlarını kontrol edin."
+"Bölge oluşturuldu ve imzalama istendi, ancak doğrulama başarısız oldu. "
+"DNSSEC anahtarlarını kontrol edin."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:145
 msgid "Zone has been added successfully."
@@ -1018,17 +988,14 @@ msgid "You do not have the permission to view zone templates."
 msgstr "Zon şablonlarını görüntüleme yetkiniz yok."
 
 #: lib/Application/Controller/AddGroupController.php:66
-#, auto-english-fallback
 msgid "You do not have permission to create groups."
 msgstr "Grup oluşturma izniniz yok."
 
 #: lib/Application/Controller/EditGroupController.php:115
-#, auto-english-fallback
 msgid "Invalid permission template: must be a group template"
 msgstr "Geçersiz izin şablonu: grup şablonu olmalıdır"
 
 #: lib/Application/Controller/AddGroupController.php:132
-#, auto-english-fallback
 msgid "Group has been created successfully."
 msgstr "Grup başarıyla oluşturuldu."
 
@@ -1041,7 +1008,6 @@ msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Bu bölge için DNSSEC yönetme izniniz bulunmamaktadır."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:89
-#, auto-english-fallback
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC anahtarı bulunamadı veya artık mevcut değil."
 
@@ -1058,22 +1024,18 @@ msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "DNSSEC anahtarı silinirken hata oluştu: "
 
 #: lib/Application/Controller/SamlCallbackController.php:77
-#, auto-english-fallback
 msgid "SAML authentication is not enabled"
 msgstr "SAML kimlik doğrulaması etkinleştirilmedi"
 
 #: lib/Application/Controller/SamlLoginController.php:89
-#, auto-english-fallback
 msgid "No SAML providers are configured"
 msgstr "SAML sağlayıcısı yapılandırılmadı"
 
 #: lib/Application/Controller/SamlLoginController.php:100
-#, auto-english-fallback
 msgid "Invalid SAML provider"
 msgstr "Geçersiz SAML sağlayıcısı"
 
 #: lib/Application/Controller/SamlCallbackController.php:105
-#, auto-english-fallback
 msgid "SAML authentication failed: "
 msgstr "SAML kimlik doğrulaması başarısız: "
 
@@ -1086,12 +1048,10 @@ msgid "You do not have the permission to see any zones."
 msgstr "Hiçbir zonu görme izniniz yok."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:71
-#, auto-english-fallback
 msgid "You do not have permission to manage zone ownership."
 msgstr "Bölge sahipliğini yönetme izniniz yok."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:205
-#, auto-english-fallback
 msgid "Please select at least one zone."
 msgstr "Lütfen en az bir bölge seçin."
 
@@ -1218,22 +1178,18 @@ msgid "Failed to retrieve RDAP information using server %s"
 msgstr "%s sunucusu kullanılarak RDAP bilgisi alınamadı"
 
 #: lib/Application/Controller/Api/Internal/DnsWizardController.php:409
-#, auto-english-fallback
 msgid "Record created successfully"
 msgstr "Kayıt başarıyla oluşturuldu"
 
 #: lib/Application/Controller/EditUserController.php:338
-#, auto-english-fallback
 msgid "You do not have permission to manage group memberships."
 msgstr "Grup üyeliklerini yönetme izniniz yok."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:79
-#, auto-english-fallback
 msgid "Invalid user or group ID."
 msgstr "Geçersiz kullanıcı veya grup ID'si."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:100
-#, auto-english-fallback
 msgid "User removed from group successfully."
 msgstr "Kullanıcı gruptan başarıyla çıkarıldı."
 
@@ -1270,22 +1226,18 @@ msgid "The supermaster has been updated successfully."
 msgstr "Supermaster başarıyla güncellendi."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:60
-#, auto-english-fallback
 msgid "You do not have permission to manage group zones."
 msgstr "Grup bölgelerini yönetme izniniz yok."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:77
-#, auto-english-fallback
 msgid "Invalid group or zone ID."
 msgstr "Geçersiz grup veya bölge ID'si."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
-#, auto-english-fallback
 msgid "Zone removed from group successfully."
 msgstr "Bölge gruptan başarıyla çıkarıldı."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:88
-#, auto-english-fallback
 msgid "Zone was not owned by this group."
 msgstr "Bölge bu gruba ait değildi."
 
@@ -1318,12 +1270,10 @@ msgid "You do not have the permission to edit this user."
 msgstr "Bu kullanıcıyı düzenleme yetkiniz yok."
 
 #: lib/Application/Controller/EditUserController.php:210
-#, auto-english-fallback
 msgid "You do not have permission to edit a superuser account."
 msgstr "Süper kullanıcı hesabını düzenleme izniniz yok."
 
 #: lib/Application/Controller/EditUserController.php:346
-#, auto-english-fallback
 msgid "Please select at least one group."
 msgstr "Lütfen en az bir grup seçin."
 
@@ -1387,17 +1337,14 @@ msgid "An unexpected error occurred. Please contact the administrator."
 msgstr "Beklenmeyen bir hata oluştu. Lütfen yönetici ile iletişime geçin."
 
 #: lib/Application/Controller/SamlCallbackController.php:93
-#, auto-english-fallback
 msgid "Unknown SAML endpoint"
 msgstr "Bilinmeyen SAML uç noktası"
 
 #: lib/Application/Controller/SamlCallbackController.php:119
-#, auto-english-fallback
 msgid "You have been logged out"
 msgstr "Oturumunuz kapatıldı"
 
 #: lib/Application/Controller/SamlCallbackController.php:124
-#, auto-english-fallback
 msgid "Logout completed (with warnings): "
 msgstr "Oturum kapatma tamamlandı (uyarılarla): "
 
@@ -1406,7 +1353,6 @@ msgid "You do not have permission to view this record."
 msgstr "Bu kaydı görüntüleme izniniz bulunmamaktadır."
 
 #: lib/Application/Controller/EditRecordController.php:108
-#, auto-english-fallback
 msgid "You cannot edit records in a SLAVE zone."
 msgstr "SLAVE bölgesinde kayıt düzenleyemezsiniz."
 
@@ -1415,7 +1361,6 @@ msgid "You do not have permission to edit this record."
 msgstr "Bu kaydı düzenleme izniniz bulunmamaktadır."
 
 #: lib/Application/Controller/EditRecordController.php:226
-#, auto-english-fallback
 msgid "Failed to retrieve updated record information."
 msgstr "Güncellenmiş kayıt bilgileri alınamadı."
 
@@ -1437,14 +1382,17 @@ msgid ""
 "Please contact your administrator or change your password through your "
 "identity provider."
 msgstr ""
-"Tek Oturum Açma ile kimlik doğrulanan kullanıcılar şifrelerini burada değiştiremez. Lütfen yöneticinizle iletişime geçin veya kimlik sağlayıcınız üzerinden şifrenizi değiştirin."
+"Tek Oturum Açma ile kimlik doğrulanan kullanıcılar şifrelerini burada "
+"değiştiremez. Lütfen yöneticinizle iletişime geçin veya kimlik sağlayıcınız "
+"üzerinden şifrenizi değiştirin."
 
 #: lib/Application/Controller/ChangePasswordController.php:87
 msgid ""
 "External authentication users cannot change their password here. Please "
 "contact your administrator."
 msgstr ""
-"Harici kimlik doğrulama kullanıcıları şifrelerini burada değiştiremez. Lütfen yöneticinizle iletişime geçin."
+"Harici kimlik doğrulama kullanıcıları şifrelerini burada değiştiremez. "
+"Lütfen yöneticinizle iletişime geçin."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:116
 msgid "ECDSA P-256 algorithm must use 256 bits"
@@ -1484,12 +1432,10 @@ msgid "Please select both algorithm and bits"
 msgstr "Lütfen hem algoritma hem de bit seçin"
 
 #: lib/Application/Controller/EditGroupController.php:79
-#, auto-english-fallback
 msgid "You do not have permission to edit groups."
 msgstr "Grup düzenleme izniniz yok."
 
 #: lib/Application/Controller/EditGroupController.php:180
-#, auto-english-fallback
 msgid "Group has been updated successfully."
 msgstr "Grup başarıyla güncellendi."
 
@@ -1522,22 +1468,18 @@ msgid "Some zone(s) could not be added."
 msgstr "Bazı zonlar eklenemedi."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:169
-#, auto-english-fallback
 msgid "Owner has been added successfully."
 msgstr "Sahip başarıyla eklendi."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:184
-#, auto-english-fallback
 msgid "Owner has been removed successfully."
 msgstr "Sahip başarıyla çıkarıldı."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:198
-#, auto-english-fallback
 msgid "Group has been added successfully."
 msgstr "Grup başarıyla eklendi."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:205
-#, auto-english-fallback
 msgid "Group has been removed successfully."
 msgstr "Grup başarıyla çıkarıldı."
 
@@ -1551,7 +1493,8 @@ msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr ""
-"DNSSEC işlevselliği kullanılamıyor. Lütfen PowerDNS API yapılandırmasını kontrol edin."
+"DNSSEC işlevselliği kullanılamıyor. Lütfen PowerDNS API yapılandırmasını "
+"kontrol edin."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:100
 msgid "Zone key has been successfully deactivated."
@@ -1570,7 +1513,6 @@ msgid "Failed to activate zone key."
 msgstr "Zon anahtarı etkinleştirilemedi."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:116
-#, auto-english-fallback
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr ""
 "DNSSEC anahtarı değiştirilirken bir hata oluştu. Lütfen tekrar deneyin."
@@ -1634,7 +1576,6 @@ msgid "Failed to authenticate against LDAP."
 msgstr "LDAP ile kimlik doğrulama başarısız."
 
 #: lib/Application/Service/SamlService.php:243
-#, auto-english-fallback
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Kimlik doğrulama başarısız: Geçersiz SAML yanıtı"
 
@@ -1649,7 +1590,6 @@ msgid "No"
 msgstr "Hayır"
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
-#, auto-english-fallback
 msgid "This template is assigned to at least one user and one group."
 msgstr "Bu şablon en az bir kullanıcıya ve bir gruba atanmış."
 
@@ -1658,7 +1598,6 @@ msgid "This template is assigned to at least one user."
 msgstr "Bu şablon en az bir kullanıcıya atanmış."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
-#, auto-english-fallback
 msgid "This template is assigned to at least one group."
 msgstr "Bu şablon en az bir gruba atanmış."
 
@@ -1672,7 +1611,6 @@ msgid "An empty password is not allowed"
 msgstr "Boş şifreye izin verilmiyor"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:216
-#, auto-english-fallback
 msgid "LDAP authentication is disabled"
 msgstr "LDAP kimlik doğrulaması devre dışı"
 
@@ -1681,7 +1619,8 @@ msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
 msgstr ""
-"Veritabanı hatası: Kullanıcı kimlik doğrulaması doğrulanamıyor. Lütfen veritabanı yapılandırmanızı kontrol edin."
+"Veritabanı hatası: Kullanıcı kimlik doğrulaması doğrulanamıyor. Lütfen "
+"veritabanı yapılandırmanızı kontrol edin."
 
 #: lib/Domain/Repository/DomainRepository.php:201
 msgid "This is an invalid zone name."
@@ -1772,17 +1711,14 @@ msgid "Error checking template existence: "
 msgstr "Şablon varlığı kontrol hatası: "
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:45
-#, auto-english-fallback
 msgid "TLSA Record"
 msgstr "TLSA Kaydı"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:46
-#, auto-english-fallback
 msgid "TLS certificate/key authentication (DANE)"
 msgstr "TLS sertifika/anahtar kimlik doğrulaması (DANE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:57
-#, auto-english-fallback
 msgid "DNSSEC Requirement"
 msgstr "DNSSEC Gereksinimi"
 
@@ -1792,15 +1728,15 @@ msgid ""
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
 msgstr ""
-"TLSA kayıtları için bu bölgede DNSSEC'in etkinleştirilmesi gerekir. DNSSEC olmadan TLSA kayıtları güvenlik avantajı sağlamaz ve istemciler tarafından yok sayılabilir."
+"TLSA kayıtları için bu bölgede DNSSEC'in etkinleştirilmesi gerekir. DNSSEC "
+"olmadan TLSA kayıtları güvenlik avantajı sağlamaz ve istemciler tarafından "
+"yok sayılabilir."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:91
-#, auto-english-fallback
 msgid "Service Configuration"
 msgstr "Servis Yapılandırması"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:148
-#, auto-english-fallback
 msgid "Port Number"
 msgstr "Port Numarası"
 
@@ -1808,30 +1744,26 @@ msgstr "Port Numarası"
 msgid ""
 "TCP/UDP port number (443 for HTTPS, 25 for SMTP, 853 for DNS-over-TLS, etc.)"
 msgstr ""
-"TCP/UDP port numarası (HTTPS için 443, SMTP için 25, DNS-over-TLS için 853, vb.)"
+"TCP/UDP port numarası (HTTPS için 443, SMTP için 25, DNS-over-TLS için 853, "
+"vb.)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:113
-#, auto-english-fallback
 msgid "Protocol"
 msgstr "Protokol"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:81
-#, auto-english-fallback
 msgid "Transmission Control Protocol - most common for HTTPS/TLS"
 msgstr "Transmission Control Protocol - HTTPS/TLS için en yaygın"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:82
-#, auto-english-fallback
 msgid "User Datagram Protocol - for DTLS connections"
 msgstr "User Datagram Protocol - DTLS bağlantıları için"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:121
-#, auto-english-fallback
 msgid "Stream Control Transmission Protocol"
 msgstr "Stream Control Transmission Protocol"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:85
-#, auto-english-fallback
 msgid "Transport protocol for the TLS connection"
 msgstr "TLS bağlantısı için aktarım protokolü"
 
@@ -1845,55 +1777,46 @@ msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
 msgstr ""
-"Servis için host adı (bölge kökü için @ boş bırakın). Kayıt _port._protocol.hostname konumunda oluşturulacak"
+"Servis için host adı (bölge kökü için @ boş bırakın). Kayıt "
+"_port._protocol.hostname konumunda oluşturulacak"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:98
-#, auto-english-fallback
 msgid "Certificate Usage"
 msgstr "Sertifika Kullanımı"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:102
-#, auto-english-fallback
 msgid "Usage"
 msgstr "Kullanım"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
-#, auto-english-fallback
 msgid "0 - CA Constraint"
 msgstr "0 - CA Kısıtlaması"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
-#, auto-english-fallback
 msgid "Certificate must chain to specified CA (PKIX-TA)"
 msgstr "Sertifika belirtilen CA'ya zincirlenmeli (PKIX-TA)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
-#, auto-english-fallback
 msgid "1 - Service Certificate"
 msgstr "1 - Servis Sertifikası"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
-#, auto-english-fallback
 msgid "Certificate must match exactly (PKIX-EE)"
 msgstr "Sertifika tam olarak eşleşmeli (PKIX-EE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
-#, auto-english-fallback
 msgid "2 - Trust Anchor Assertion"
 msgstr "2 - Güven Bağlantısı İddiası"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
-#, auto-english-fallback
 msgid "Certificate must chain to specified anchor (DANE-TA)"
 msgstr "Sertifika belirtilen bağlantıya zincirlenmeli (DANE-TA)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
-#, auto-english-fallback
 msgid "3 - Domain-Issued Certificate"
 msgstr "3 - Domain Tarafından Verilen Sertifika"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
-#, auto-english-fallback
 msgid "Certificate must match exactly, bypassing PKI (DANE-EE)"
 msgstr "Sertifika tam olarak eşleşmeli, PKI atlanarak (DANE-EE)"
 
@@ -1902,30 +1825,26 @@ msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
 msgstr ""
-"Sertifikanın nasıl doğrulanacağı. Tip 3 kendi imzalı veya özel CA'lar için en yaygındır."
+"Sertifikanın nasıl doğrulanacağı. Tip 3 kendi imzalı veya özel CA'lar için "
+"en yaygındır."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:72
-#, auto-english-fallback
 msgid "Selector"
 msgstr "Seçici"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
-#, auto-english-fallback
 msgid "0 - Full Certificate"
 msgstr "0 - Tam Sertifika"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
-#, auto-english-fallback
 msgid "Use the entire certificate"
 msgstr "Tüm sertifikayı kullan"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
-#, auto-english-fallback
 msgid "1 - Public Key"
 msgstr "1 - Açık Anahtar"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
-#, auto-english-fallback
 msgid "Use only the Subject Public Key Info (SPKI)"
 msgstr "Sadece Subject Public Key Info (SPKI) kullan"
 
@@ -1934,40 +1853,34 @@ msgid ""
 "What part of the certificate to match. Type 1 (public key) survives "
 "certificate renewal."
 msgstr ""
-"Sertifikanın hangi bölümünün eşleşeceği. Tip 1 (açık anahtar) sertifika yenilemesinde hayatta kalır."
+"Sertifikanın hangi bölümünün eşleşeceği. Tip 1 (açık anahtar) sertifika "
+"yenilemesinde hayatta kalır."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:138
-#, auto-english-fallback
 msgid "Matching Type"
 msgstr "Eşleştirme Türü"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
-#, auto-english-fallback
 msgid "0 - Exact Match"
 msgstr "0 - Tam Eşleşme"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
-#, auto-english-fallback
 msgid "Full certificate/key data (very long record)"
 msgstr "Tam sertifika/anahtar verisi (çok uzun kayıt)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
-#, auto-english-fallback
 msgid "1 - SHA-256 Hash"
 msgstr "1 - SHA-256 Hash"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
-#, auto-english-fallback
 msgid "SHA-256 hash of certificate/key"
 msgstr "Sertifika/anahtar SHA-256 hash'i"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
-#, auto-english-fallback
 msgid "2 - SHA-512 Hash"
 msgstr "2 - SHA-512 Hash"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
-#, auto-english-fallback
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
 msgstr "Sertifika/anahtar SHA-512 hash'i (daha güvenli ama daha uzun)"
 
@@ -1976,15 +1889,14 @@ msgid ""
 "How to encode the certificate data. SHA-256 (type 1) provides good balance "
 "of security and length."
 msgstr ""
-"Sertifika verisinin nasıl kodlanacağı. SHA-256 (tip 1) güvenlik ve uzunluk dengesi sağlar."
+"Sertifika verisinin nasıl kodlanacağı. SHA-256 (tip 1) güvenlik ve uzunluk "
+"dengesi sağlar."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:152
-#, auto-english-fallback
 msgid "Certificate Data"
 msgstr "Sertifika Verisi"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:156
-#, auto-english-fallback
 msgid "Certificate Association Data"
 msgstr "Sertifika İlişkilendirme Verisi"
 
@@ -1994,51 +1906,45 @@ msgid ""
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
 msgstr ""
-"Onaltılık hash veya tam sertifika verisi (eşleştirme türüne bağlı). SHA-256 için: \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\" kullanın"
+"Onaltılık hash veya tam sertifika verisi (eşleştirme türüne bağlı). SHA-256 "
+"için: \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin "
+"-outform DER | openssl dgst -sha256\" kullanın"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:184
-#, auto-english-fallback
 msgid "Record Settings"
 msgstr "Kayıt Ayarları"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:188
-#, auto-english-fallback
 msgid "TTL (seconds)"
 msgstr "TTL (saniye)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:193
-#, auto-english-fallback
 msgid "Time to live - how long DNS resolvers should cache this record"
 msgstr ""
-"Yaşam süresi - DNS çözümleyicilerinin bu kaydı ne kadar süre önbelleğe alacağı"
+"Yaşam süresi - DNS çözümleyicilerinin bu kaydı ne kadar süre önbelleğe "
+"alacağı"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:289
-#, auto-english-fallback
 msgid "Port must be between 1 and 65535"
 msgstr "Port 1 ile 65535 arasında olmalıdır"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:233
-#, auto-english-fallback
 msgid "Usage must be 0, 1, 2, or 3"
 msgstr "Kullanım 0, 1, 2 veya 3 olmalıdır"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:238
-#, auto-english-fallback
 msgid "Selector must be 0 or 1"
 msgstr "Seçici 0 veya 1 olmalıdır"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:243
-#, auto-english-fallback
 msgid "Matching type must be 0, 1, or 2"
 msgstr "Eşleştirme türü 0, 1 veya 2 olmalıdır"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:248
-#, auto-english-fallback
 msgid "Certificate association data is required"
 msgstr "Sertifika ilişkilendirme verisi gereklidir"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:253
-#, auto-english-fallback
 msgid "Certificate data must be hexadecimal (0-9, a-f)"
 msgstr "Sertifika verisi onaltılık olmalıdır (0-9, a-f)"
 
@@ -2048,7 +1954,8 @@ msgid ""
 "SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
 "correct."
 msgstr ""
-"SHA-256 hash 64 onaltılık karakter olmalıdır, %d alındı. Hash'in doğru olduğunu doğrulayın."
+"SHA-256 hash 64 onaltılık karakter olmalıdır, %d alındı. Hash'in doğru "
+"olduğunu doğrulayın."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:263
 #, php-format
@@ -2056,14 +1963,16 @@ msgid ""
 "SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
 "is correct."
 msgstr ""
-"SHA-512 hash 128 onaltılık karakter olmalıdır, %d alındı. Hash'in doğru olduğunu doğrulayın."
+"SHA-512 hash 128 onaltılık karakter olmalıdır, %d alındı. Hash'in doğru "
+"olduğunu doğrulayın."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:267
 msgid ""
 "Full certificate data seems too short. Ensure you provided the complete "
 "certificate."
 msgstr ""
-"Tam sertifika verisi çok kısa görünüyor. Tam sertifikayı sağladığınızdan emin olun."
+"Tam sertifika verisi çok kısa görünüyor. Tam sertifikayı sağladığınızdan "
+"emin olun."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:274
 #: templates/modern/edit.html:91 templates/modern/edit.html:607
@@ -2075,105 +1984,88 @@ msgid ""
 "CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
 "DNSSEC, TLSA records provide NO security benefit."
 msgstr ""
-"KRİTİK: TLSA kayıtları için bu bölgede DNSSEC'in etkinleştirilmesi gerekir. DNSSEC olmadan TLSA kayıtları HİÇBİR güvenlik avantajı sağlamaz."
+"KRİTİK: TLSA kayıtları için bu bölgede DNSSEC'in etkinleştirilmesi gerekir. "
+"DNSSEC olmadan TLSA kayıtları HİÇBİR güvenlik avantajı sağlamaz."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:46
-#, auto-english-fallback
 msgid "DMARC Record"
 msgstr "DMARC Kaydı"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:47
-#, auto-english-fallback
 msgid "Email authentication policy and reporting configuration"
 msgstr "E-posta kimlik doğrulama politikası ve raporlama yapılandırması"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:59
-#, auto-english-fallback
 msgid "Policy Settings"
 msgstr "Politika Ayarları"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:138
-#, auto-english-fallback
 msgid "Policy"
 msgstr "Politika"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
-#, auto-english-fallback
 msgid "None (monitor only)"
 msgstr "Hiçbiri (sadece izleme)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
-#, auto-english-fallback
 msgid "No action taken, just collect reports for analysis"
 msgstr "Hiçbir işlem yapılmaz, sadece analiz için raporlar toplanır"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
-#, auto-english-fallback
 msgid "Quarantine"
 msgstr "Karantina"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:69
-#, auto-english-fallback
 msgid "Treat suspicious emails as spam/junk"
 msgstr "Şüpheli e-postaları spam/gereksiz olarak işle"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
-#, auto-english-fallback
 msgid "Reject"
 msgstr "Reddet"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:70
-#, auto-english-fallback
 msgid "Block delivery of suspicious emails entirely"
 msgstr "Şüpheli e-postaların teslimini tamamen engelle"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:72
 msgid "Start with \"none\" to collect data before enforcing a stricter policy."
 msgstr ""
-"Daha katı bir politika uygulamadan önce veri toplamak için \"none\" ile başlayın."
+"Daha katı bir politika uygulamadan önce veri toplamak için \"none\" ile "
+"başlayın."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:76
-#, auto-english-fallback
 msgid "Subdomain Policy"
 msgstr "Alt Alan Politikası"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
-#, auto-english-fallback
 msgid "Same as domain policy"
 msgstr "Alan politikası ile aynı"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
-#, auto-english-fallback
 msgid "Use the same policy as the main domain"
 msgstr "Ana alanla aynı politikayı kullan"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
-#, auto-english-fallback
 msgid "None"
 msgstr "Hiçbiri"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
-#, auto-english-fallback
 msgid "Monitor only for subdomains"
 msgstr "Sadece alt alanlar için izleme"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
-#, auto-english-fallback
 msgid "Quarantine suspicious subdomain emails"
 msgstr "Şüpheli alt alan e-postalarını karantinaya al"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
-#, auto-english-fallback
 msgid "Reject suspicious subdomain emails"
 msgstr "Şüpheli alt alan e-postalarını reddet"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:86
-#, auto-english-fallback
 msgid "Policy for emails from subdomains (e.g., mail.example.com)"
 msgstr "Alt alanlardan gelen e-postalar için politika (örn. mail.example.com)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:90
-#, auto-english-fallback
 msgid "Policy Application Percentage"
 msgstr "Politika Uygulama Yüzdesi"
 
@@ -2182,25 +2074,22 @@ msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
 msgstr ""
-"Politikanın uygulanacağı mesajların yüzdesi (100 = tüm mesajlar). Politika yaygınlaştırılırken daha düşük değerler kullanın."
+"Politikanın uygulanacağı mesajların yüzdesi (100 = tüm mesajlar). Politika "
+"yaygınlaştırılırken daha düşük değerler kullanın."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:101
-#, auto-english-fallback
 msgid "Reporting Settings"
 msgstr "Raporlama Ayarları"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:105
-#, auto-english-fallback
 msgid "Aggregate Report Email"
 msgstr "Toplu Rapor E-postası"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:109
-#, auto-english-fallback
 msgid "Email address to receive daily aggregate reports"
 msgstr "Günlük toplu raporları almak için e-posta adresi"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:113
-#, auto-english-fallback
 msgid "Forensic Report Email"
 msgstr "Adli Rapor E-postası"
 
@@ -2209,31 +2098,27 @@ msgid ""
 "Email address to receive detailed failure reports (optional, can be high "
 "volume)"
 msgstr ""
-"Detaylı hata raporlarını almak için e-posta adresi (isteğe bağlı, yüksek hacimli olabilir)"
+"Detaylı hata raporlarını almak için e-posta adresi (isteğe bağlı, yüksek "
+"hacimli olabilir)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:121
-#, auto-english-fallback
 msgid "Forensic Reporting Options"
 msgstr "Adli Raporlama Seçenekleri"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:125
-#, auto-english-fallback
 msgid "Generate reports if all authentication mechanisms fail"
 msgstr "Tüm kimlik doğrulama mekanizmaları başarısız olursa rapor oluştur"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:126
-#, auto-english-fallback
 msgid "Generate reports if any authentication mechanism fails"
 msgstr ""
 "Herhangi bir kimlik doğrulama mekanizması başarısız olursa rapor oluştur"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:127
-#, auto-english-fallback
 msgid "Generate reports if DKIM check fails"
 msgstr "DKIM kontrolü başarısız olursa rapor oluştur"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:128
-#, auto-english-fallback
 msgid "Generate reports if SPF check fails"
 msgstr "SPF kontrolü başarısız olursa rapor oluştur"
 
@@ -2241,75 +2126,62 @@ msgstr "SPF kontrolü başarısız olursa rapor oluştur"
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
 msgstr ""
-"Adli raporların ne zaman oluşturulacağı (sadece adli e-posta ayarlanmışsa geçerlidir)"
+"Adli raporların ne zaman oluşturulacağı (sadece adli e-posta ayarlanmışsa "
+"geçerlidir)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:135
-#, auto-english-fallback
 msgid "Alignment Settings"
 msgstr "Hizalama Ayarları"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:136
-#, auto-english-fallback
 msgid "Advanced settings for SPF and DKIM alignment modes"
 msgstr "SPF ve DKIM hizalama modları için gelişmiş ayarlar"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:140
-#, auto-english-fallback
 msgid "DKIM Alignment Mode"
 msgstr "DKIM Hizalama Modu"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
-#, auto-english-fallback
 msgid "Relaxed"
 msgstr "Gevşek"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:145
-#, auto-english-fallback
 msgid "DKIM domain can be subdomain of From: domain"
 msgstr "DKIM alanı From: alanının alt alanı olabilir"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
-#, auto-english-fallback
 msgid "Strict"
 msgstr "Katı"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:146
-#, auto-english-fallback
 msgid "DKIM domain must exactly match From: domain"
 msgstr "DKIM alanı From: alanı ile tam olarak eşleşmelidir"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:151
-#, auto-english-fallback
 msgid "SPF Alignment Mode"
 msgstr "SPF Hizalama Modu"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
-#, auto-english-fallback
 msgid "SPF domain can be subdomain of From: domain"
 msgstr "SPF alanı From: alanının alt alanı olabilir"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
-#, auto-english-fallback
 msgid "SPF domain must exactly match From: domain"
 msgstr "SPF alanı From: alanı ile tam olarak eşleşmelidir"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:261
-#, auto-english-fallback
 msgid "Policy is required"
 msgstr "Politika gereklidir"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:263
-#, auto-english-fallback
 msgid "Invalid policy value"
 msgstr "Geçersiz politika değeri"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:268
-#, auto-english-fallback
 msgid "Invalid subdomain policy value"
 msgstr "Geçersiz alt alan politika değeri"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:275
-#, auto-english-fallback
 msgid "Percentage must be between 0 and 100"
 msgstr "Yüzde 0 ile 100 arasında olmalıdır"
 
@@ -2319,15 +2191,14 @@ msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
 msgstr ""
-"Politika sadece mesajların %%d'sine uygulanacak. Test tamamlandığında %%100 kullanın."
+"Politika sadece mesajların %%d'sine uygulanacak. Test tamamlandığında %%100 "
+"kullanın."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:283
-#, auto-english-fallback
 msgid "Invalid aggregate report email address"
 msgstr "Geçersiz toplu rapor e-posta adresi"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:287
-#, auto-english-fallback
 msgid "Invalid forensic report email address"
 msgstr "Geçersiz adli rapor e-posta adresi"
 
@@ -2342,90 +2213,74 @@ msgid ""
 "Using \"p=none\" provides monitoring only. Consider stricter policy "
 "(quarantine/reject) once you've reviewed reports."
 msgstr ""
-"\"p=none\" kullanımı sadece izleme sağlar. Raporları inceledikten sonra daha katı politika (karantina/reddetme) düşünün."
+"\"p=none\" kullanımı sadece izleme sağlar. Raporları inceledikten sonra daha "
+"katı politika (karantina/reddetme) düşünün."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:48
-#, auto-english-fallback
 msgid "SPF Record"
 msgstr "SPF Kaydı"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:49
-#, auto-english-fallback
 msgid "Authorized mail server configuration"
 msgstr "Yetkili posta sunucusu yapılandırması"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:61
-#, auto-english-fallback
 msgid "Basic Mechanisms"
 msgstr "Temel Mekanizmalar"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:62
-#, auto-english-fallback
 msgid "Select common mechanisms to authorize email sending"
 msgstr "E-posta gönderimini yetkilendirmek için yaygın mekanizmaları seçin"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:66
-#, auto-english-fallback
 msgid "MX Records"
 msgstr "MX Kayıtları"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:69
-#, auto-english-fallback
 msgid "Authorize all servers listed in MX records for this domain"
 msgstr "Bu alan için MX kayıtlarında listelenen tüm sunucuları yetkilendir"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:73
-#, auto-english-fallback
 msgid "A/AAAA Records"
 msgstr "A/AAAA Kayıtları"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:76
-#, auto-english-fallback
 msgid "Authorize the domain's A and AAAA records"
 msgstr "Alanın A ve AAAA kayıtlarını yetkilendir"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:81
-#, auto-english-fallback
 msgid "IP Addresses"
 msgstr "IP Adresleri"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:82
-#, auto-english-fallback
 msgid "Authorized IP addresses and networks (CIDR notation supported)"
 msgstr "Yetkili IP adresleri ve ağlar (CIDR notasyonu desteklenir)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:86
-#, auto-english-fallback
 msgid "IPv4 Addresses"
 msgstr "IPv4 Adresleri"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:90
-#, auto-english-fallback
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 msgstr "Satır başına bir IP adresi veya ağ (örn. 192.0.2.1 veya 192.0.2.0/24)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:94
-#, auto-english-fallback
 msgid "IPv6 Addresses"
 msgstr "IPv6 Adresleri"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:98
-#, auto-english-fallback
 msgid "One IPv6 address or network per line"
 msgstr "Satır başına bir IPv6 adresi veya ağ"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:103
-#, auto-english-fallback
 msgid "Include Mechanisms"
 msgstr "Dahil Etme Mekanizmaları"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:104
-#, auto-english-fallback
 msgid "Include SPF records from other domains"
 msgstr "Diğer alanlardan SPF kayıtlarını dahil et"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:108
-#, auto-english-fallback
 msgid "Include Domains"
 msgstr "Dahil Edilecek Alanlar"
 
@@ -2434,56 +2289,47 @@ msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
 msgstr ""
-"SPF kayıtları dahil edilmesi gereken alanlar (satır başına bir). Yaygın: _spf.google.com, spf.protection.outlook.com"
+"SPF kayıtları dahil edilmesi gereken alanlar (satır başına bir). Yaygın: "
+"_spf.google.com, spf.protection.outlook.com"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:117
-#, auto-english-fallback
 msgid "Additional Mechanisms"
 msgstr "Ek Mekanizmalar"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:121
-#, auto-english-fallback
 msgid "Additional A/AAAA Hosts"
 msgstr "Ek A/AAAA Hostları"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:125
-#, auto-english-fallback
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
 msgstr ""
 "Belirli host adlarının A/AAAA kayıtlarını yetkilendir (satır başına bir)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:129
-#, auto-english-fallback
 msgid "Additional MX Hosts"
 msgstr "Ek MX Hostları"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:133
-#, auto-english-fallback
 msgid "Authorize MX records from other domains (one per line)"
 msgstr "Diğer alanlardan MX kayıtlarını yetkilendir (satır başına bir)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:142
-#, auto-english-fallback
 msgid "Default Action"
 msgstr "Varsayılan İşlem"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:147
-#, auto-english-fallback
 msgid "Pass all - allows anyone to send (insecure)"
 msgstr "Hepsini geçir - herkesin göndermesine izin verir (güvensiz)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:148
-#, auto-english-fallback
 msgid "Neutral (no policy)"
 msgstr "Tarafsız (politika yok)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:149
-#, auto-english-fallback
 msgid "Soft fail (mark as spam but accept)"
 msgstr "Yumuşak başarısızlık (spam olarak işaretle ama kabul et)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:150
-#, auto-english-fallback
 msgid "Fail (reject unauthorized emails)"
 msgstr "Başarısızlık (yetkisiz e-postaları reddet)"
 
@@ -2492,7 +2338,8 @@ msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
 msgstr ""
-"Hiçbir mekanizmayla eşleşmeyen e-postalar için politika. Test için ~all (softfail) ile başlayın."
+"Hiçbir mekanizmayla eşleşmeyen e-postalar için politika. Test için ~all "
+"(softfail) ile başlayın."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:289
 #, php-format
@@ -2501,7 +2348,9 @@ msgid ""
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
 msgstr ""
-"SPF kaydı DNS arama sınırını aşıyor (%d/10). Bu SPF doğrulamasının başarısız olmasına neden olacak. Bazı include/a/mx mekanizmalarını kaldırın veya yerine ip4/ip6 kullanın."
+"SPF kaydı DNS arama sınırını aşıyor (%d/10). Bu SPF doğrulamasının başarısız "
+"olmasına neden olacak. Bazı include/a/mx mekanizmalarını kaldırın veya "
+"yerine ip4/ip6 kullanın."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:294
 #, php-format
@@ -2509,22 +2358,21 @@ msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
 msgstr ""
-"SPF kaydının %d DNS araması var (sınır 10). Include mekanizmaları yerine ip4/ip6 kullanmayı veya sınırın altında kalmak için include'ları birleştirmeyi düşünün."
+"SPF kaydının %d DNS araması var (sınır 10). Include mekanizmaları yerine ip4/"
+"ip6 kullanmayı veya sınırın altında kalmak için include'ları birleştirmeyi "
+"düşünün."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:304
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv4 address or network: %s"
 msgstr "Geçersiz IPv4 adresi veya ağı: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:313
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv6 address or network: %s"
 msgstr "Geçersiz IPv6 adresi veya ağı: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:323
-#, auto-english-fallback
 #, php-format
 msgid "Invalid include domain: %s"
 msgstr "Geçersiz dahil etme alanı: %s"
@@ -2539,30 +2387,26 @@ msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
 msgstr ""
-"\"+all\" kullanımı herkesin alanınız adına e-posta göndermesine izin verir. Bu kesinlikle önerilmez."
+"\"+all\" kullanımı herkesin alanınız adına e-posta göndermesine izin verir. "
+"Bu kesinlikle önerilmez."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:43
-#, auto-english-fallback
 msgid "CAA Record"
 msgstr "CAA Kaydı"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:44
-#, auto-english-fallback
 msgid "Certificate authority authorization"
 msgstr "Sertifika otoritesi yetkilendirmesi"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:68
-#, auto-english-fallback
 msgid "Custom (enter manually)"
 msgstr "Özel (manuel gir)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:74
-#, auto-english-fallback
 msgid "Certificate Authority"
 msgstr "Sertifika Otoritesi"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:78
-#, auto-english-fallback
 msgid "CA Provider"
 msgstr "CA Sağlayıcısı"
 
@@ -2573,7 +2417,6 @@ msgid ""
 msgstr "Bu alan için sertifika vermeye yetkili sertifika otoritesini seçin"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:87
-#, auto-english-fallback
 msgid "CA Domain (Custom)"
 msgstr "CA Alanı (Özel)"
 
@@ -2583,7 +2426,6 @@ msgid ""
 msgstr "CA alan adını manuel girin (sadece \"Özel\" seçildiğinde gösterilir)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:97
-#, auto-english-fallback
 msgid "Certificate Type"
 msgstr "Sertifika Türü"
 
@@ -2593,77 +2435,62 @@ msgid "Tag"
 msgstr "Etiket"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
-#, auto-english-fallback
 msgid "Issue"
 msgstr "Verme"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
-#, auto-english-fallback
 msgid "Authorize issuance of standard certificates"
 msgstr "Standart sertifikaların verilmesini yetkilendir"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
-#, auto-english-fallback
 msgid "Issue Wildcard"
 msgstr "Wildcard Verme"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
-#, auto-english-fallback
 msgid "Authorize issuance of wildcard certificates (*.example.com)"
 msgstr "Wildcard sertifikalarının verilmesini yetkilendir (*.example.com)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
-#, auto-english-fallback
 msgid "Incident Reporting"
 msgstr "Olay Raporlama"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
-#, auto-english-fallback
 msgid "URL to report certificate issuance violations"
 msgstr "Sertifika verme ihlallerini bildirmek için URL"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:110
-#, auto-english-fallback
 msgid "Type of authorization or reporting"
 msgstr "Yetkilendirme veya raporlama türü"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:114
-#, auto-english-fallback
 msgid "Reporting URL"
 msgstr "Raporlama URL'si"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:119
-#, auto-english-fallback
 msgid "URL or email for incident reports (mailto: or https:)"
 msgstr "Olay raporları için URL veya e-posta (mailto: veya https:)"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:103
-#, auto-english-fallback
 msgid "Advanced Options"
 msgstr "Gelişmiş Seçenekler"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:130
-#, auto-english-fallback
 msgid "Flags"
 msgstr "Bayraklar"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
-#, auto-english-fallback
 msgid "Non-critical"
 msgstr "Kritik değil"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
-#, auto-english-fallback
 msgid "Allow fallback if not understood"
 msgstr "Anlaşılmazsa yedeklemeye izin ver"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
-#, auto-english-fallback
 msgid "Critical"
 msgstr "Kritik"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
-#, auto-english-fallback
 msgid "Reject if not understood - strict enforcement"
 msgstr "Anlaşılmazsa reddet - katı uygulama"
 
@@ -2672,15 +2499,14 @@ msgid ""
 "Non-critical (0) provides better compatibility. Critical (128) enforces "
 "strict CAA processing."
 msgstr ""
-"Kritik olmayan (0) daha iyi uyumluluk sağlar. Kritik (128) katı CAA işlemeyi uygular."
+"Kritik olmayan (0) daha iyi uyumluluk sağlar. Kritik (128) katı CAA işlemeyi "
+"uygular."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:204
-#, auto-english-fallback
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
 msgstr "Geçersiz CAA etiketi. issue, issuewild veya iodef olmalıdır"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:210
-#, auto-english-fallback
 msgid "CA provider is required"
 msgstr "CA sağlayıcısı gereklidir"
 
@@ -2689,7 +2515,6 @@ msgid "Custom CA domain is required when \"Custom\" is selected"
 msgstr "\"Özel\" seçildiğinde özel CA alanı gereklidir"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:215
-#, auto-english-fallback
 msgid "Invalid CA domain format"
 msgstr "Geçersiz CA alan formatı"
 
@@ -2698,21 +2523,19 @@ msgid ""
 "Using \";\" allows ALL certificate authorities to issue certificates. This "
 "defeats the purpose of CAA records."
 msgstr ""
-"\";\" kullanımı TÜM sertifika otoritelerinin sertifika vermesine izin verir. Bu CAA kayıtlarının amacını boşa çıkarır."
+"\";\" kullanımı TÜM sertifika otoritelerinin sertifika vermesine izin verir. "
+"Bu CAA kayıtlarının amacını boşa çıkarır."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:227
-#, auto-english-fallback
 msgid "Reporting URL is required for iodef tag"
 msgstr "iodef etiketi için raporlama URL'si gereklidir"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
-#, auto-english-fallback
 #, php-format
 msgid "Reporting URL must start with %s, %s, or %s"
 msgstr "Raporlama URL'si %s, %s veya %s ile başlamalıdır"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
-#, auto-english-fallback
 msgid "Flags must be 0 or 128"
 msgstr "Bayraklar 0 veya 128 olmalıdır"
 
@@ -2721,15 +2544,14 @@ msgid ""
 "Critical flag (128) is set. Systems that do not understand CAA records will "
 "reject operations. Use 0 unless you have a specific requirement."
 msgstr ""
-"Kritik bayrak (128) ayarlandı. CAA kayıtlarını anlamayan sistemler işlemleri reddedecek. Özel bir gereksiniminiz yoksa 0 kullanın."
+"Kritik bayrak (128) ayarlandı. CAA kayıtlarını anlamayan sistemler işlemleri "
+"reddedecek. Özel bir gereksiniminiz yoksa 0 kullanın."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:46
-#, auto-english-fallback
 msgid "DKIM Record"
 msgstr "DKIM Kaydı"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:47
-#, auto-english-fallback
 msgid "Email signature verification public key"
 msgstr "E-posta imza doğrulama açık anahtarı"
 
@@ -2745,10 +2567,12 @@ msgid ""
 "the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your "
 "mail server (never share it)."
 msgstr ""
-"DKIM, kriptografik imzalar kullanarak e-postaların alan adınızdan geldiğini kanıtlar. DKIM anahtar çiftini POSTA SUNUCUNUZda (Postfix, Exim, vb.) oluşturun. Bu DNS kaydına sadece AÇIK ANAHTAR gider. ÖZEL ANAHTARI posta sunucunuzda güvenli tutun (asla paylaşmayın)."
+"DKIM, kriptografik imzalar kullanarak e-postaların alan adınızdan geldiğini "
+"kanıtlar. DKIM anahtar çiftini POSTA SUNUCUNUZda (Postfix, Exim, vb.) "
+"oluşturun. Bu DNS kaydına sadece AÇIK ANAHTAR gider. ÖZEL ANAHTARI posta "
+"sunucunuzda güvenli tutun (asla paylaşmayın)."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:68
-#, auto-english-fallback
 msgid "DKIM Configuration"
 msgstr "DKIM Yapılandırması"
 
@@ -2758,10 +2582,11 @@ msgid ""
 "\"202501\", or service name like \"google\"). Only alphanumeric characters, "
 "hyphens, and underscores allowed."
 msgstr ""
-"DKIM anahtarını tanımlamak için seçici (genellikle \"default\", \"202501\" gibi zaman damgası veya \"google\" gibi servis adı). Sadece alfanümerik karakterler, tire ve alt çizgiye izin verilir."
+"DKIM anahtarını tanımlamak için seçici (genellikle \"default\", \"202501\" "
+"gibi zaman damgası veya \"google\" gibi servis adı). Sadece alfanümerik "
+"karakterler, tire ve alt çizgiye izin verilir."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:81
-#, auto-english-fallback
 msgid "Public Key"
 msgstr "Açık Anahtar"
 
@@ -2770,30 +2595,26 @@ msgid ""
 "Paste the base64-encoded public key from your mail server. Spaces and "
 "newlines will be automatically removed."
 msgstr ""
-"Posta sunucunuzdaki base64 kodlu açık anahtarı yapıştırın. Boşluklar ve yeni satırlar otomatik olarak kaldırılacak."
+"Posta sunucunuzdaki base64 kodlu açık anahtarı yapıştırın. Boşluklar ve yeni "
+"satırlar otomatik olarak kaldırılacak."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:90
-#, auto-english-fallback
 msgid "Key Type"
 msgstr "Anahtar Türü"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:95
-#, auto-english-fallback
 msgid "Widely supported by all mail servers"
 msgstr "Tüm posta sunucuları tarafından yaygın olarak desteklenir"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:96
-#, auto-english-fallback
 msgid "Newer algorithm - not universally supported yet"
 msgstr "Daha yeni algoritma - henüz evrensel olarak desteklenmiyor"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:98
-#, auto-english-fallback
 msgid "Encryption algorithm for the DKIM public key"
 msgstr "DKIM açık anahtarı için şifreleme algoritması"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:109
-#, auto-english-fallback
 msgid "Testing Mode"
 msgstr "Test Modu"
 
@@ -2802,10 +2623,10 @@ msgid ""
 "Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
 "Use during initial deployment."
 msgstr ""
-"Test modunu etkinleştir (t=y). DKIM imzaları mevcut olacak ancak uygulanmayacak. İlk dağıtım sırasında kullanın."
+"Test modunu etkinleştir (t=y). DKIM imzaları mevcut olacak ancak "
+"uygulanmayacak. İlk dağıtım sırasında kullanın."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:116
-#, auto-english-fallback
 msgid "Strict Subdomain Mode"
 msgstr "Katı Alt Alan Modu"
 
@@ -2813,10 +2634,10 @@ msgstr "Katı Alt Alan Modu"
 msgid ""
 "Enable strict subdomain mode (t=s). Rejects unsigned mail from subdomains."
 msgstr ""
-"Katı alt alan modunu etkinleştir (t=s). Alt alanlardan imzasız postayı reddeder."
+"Katı alt alan modunu etkinleştir (t=s). Alt alanlardan imzasız postayı "
+"reddeder."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:198
-#, auto-english-fallback
 msgid "Selector is required"
 msgstr "Seçici gereklidir"
 
@@ -2826,12 +2647,10 @@ msgid ""
 msgstr "Seçici sadece alfanümerik karakterler, tire ve alt çizgi içerebilir"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:205
-#, auto-english-fallback
 msgid "Public key is required"
 msgstr "Açık anahtar gereklidir"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:211
-#, auto-english-fallback
 msgid "Public key must be valid base64-encoded data"
 msgstr "Açık anahtar geçerli base64 kodlu veri olmalıdır"
 
@@ -2840,41 +2659,42 @@ msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
 msgstr ""
-"Açık anahtar alışılmadık derecede kısa görünüyor. Posta sunucunuzdan tam anahtarı kopyaladığınızdan emin olun."
+"Açık anahtar alışılmadık derecede kısa görünüyor. Posta sunucunuzdan tam "
+"anahtarı kopyaladığınızdan emin olun."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:221
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
 msgstr ""
-"BİR ÖZEL ANAHTAR yapıştırdınız. DNS'te sadece AÇIK ANAHTAR olmalıdır. Özel anahtarınızı asla paylaşmayın!"
+"BİR ÖZEL ANAHTAR yapıştırdınız. DNS'te sadece AÇIK ANAHTAR olmalıdır. Özel "
+"anahtarınızı asla paylaşmayın!"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:225
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
 msgstr ""
-"Açık anahtar PEM başlıkları (BEGIN/END) içeriyor gibi görünüyor. Sadece başlıklar arasındaki base64 içeriği gereklidir."
+"Açık anahtar PEM başlıkları (BEGIN/END) içeriyor gibi görünüyor. Sadece "
+"başlıklar arasındaki base64 içeriği gereklidir."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:239
 msgid ""
 "Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
 "this once testing is complete."
 msgstr ""
-"Test modu etkinleştirildi (t=y). DKIM imzaları uygulanmayacak. Test tamamlandığında bunu devre dışı bırakın."
+"Test modu etkinleştirildi (t=y). DKIM imzaları uygulanmayacak. Test "
+"tamamlandığında bunu devre dışı bırakın."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:68
-#, auto-english-fallback
 msgid "SRV Record"
 msgstr "SRV Kaydı"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:69
-#, auto-english-fallback
 msgid "Service location (hostname and port)"
 msgstr "Servis konumu (host adı ve port)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:95
-#, auto-english-fallback
 msgid "Service"
 msgstr "Servis"
 
@@ -2883,32 +2703,26 @@ msgid "Select a common service or choose \"Custom\" to enter manually"
 msgstr "Yaygın bir servis seçin veya manuel girmek için \"Özel\" seçin"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:104
-#, auto-english-fallback
 msgid "Custom Service Name"
 msgstr "Özel Servis Adı"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:109
-#, auto-english-fallback
 msgid "Service name must start with underscore (e.g., _myservice)"
 msgstr "Servis adı alt çizgi ile başlamalıdır (örn. _servisim)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:118
-#, auto-english-fallback
 msgid "Transmission Control Protocol - most common"
 msgstr "Transmission Control Protocol - en yaygın"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:119
-#, auto-english-fallback
 msgid "User Datagram Protocol - connectionless"
 msgstr "User Datagram Protocol - bağlantısız"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:120
-#, auto-english-fallback
 msgid "Transport Layer Security"
 msgstr "Transport Layer Security"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:123
-#, auto-english-fallback
 msgid "Transport protocol for the service"
 msgstr "Servis için aktarım protokolü"
 
@@ -2922,15 +2736,14 @@ msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
 msgstr ""
-"Alan adı (bölge kökü için @ boş bırakın). Tam kayıt adı şöyle olacak: _service._protocol.domain"
+"Alan adı (bölge kökü için @ boş bırakın). Tam kayıt adı şöyle olacak: "
+"_service._protocol.domain"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:136
-#, auto-english-fallback
 msgid "Target Server"
 msgstr "Hedef Sunucu"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:140
-#, auto-english-fallback
 msgid "Target Hostname"
 msgstr "Hedef Host Adı"
 
@@ -2939,7 +2752,8 @@ msgid ""
 "Hostname of the server providing this service (must be a hostname with an A/"
 "AAAA record, not an IP address)"
 msgstr ""
-"Bu servisi sağlayan sunucunun host adı (IP adresi değil, A/AAAA kaydı olan bir host adı olmalıdır)"
+"Bu servisi sağlayan sunucunun host adı (IP adresi değil, A/AAAA kaydı olan "
+"bir host adı olmalıdır)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:154
 msgid ""
@@ -2949,7 +2763,6 @@ msgstr ""
 "Servisin dinlediği port numarası (yaygın servisler için otomatik doldurulur)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:159
-#, auto-english-fallback
 msgid "Priority & Load Balancing"
 msgstr "Öncelik ve Yük Dengeleme"
 
@@ -2963,10 +2776,10 @@ msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
 msgstr ""
-"Düşük değerler daha yüksek önceliğe sahiptir (10 iyi bir varsayılandır). İstemciler sunucuları öncelik sırasına göre dener."
+"Düşük değerler daha yüksek önceliğe sahiptir (10 iyi bir varsayılandır). "
+"İstemciler sunucuları öncelik sırasına göre dener."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:173
-#, auto-english-fallback
 msgid "Weight"
 msgstr "Ağırlık"
 
@@ -2975,30 +2788,26 @@ msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
 msgstr ""
-"Aynı önceliğe sahip sunucular arasında yük dengeleme için. Daha yüksek ağırlık = daha fazla trafik. 0 = yük dengeleme yok."
+"Aynı önceliğe sahip sunucular arasında yük dengeleme için. Daha yüksek "
+"ağırlık = daha fazla trafik. 0 = yük dengeleme yok."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:261
-#, auto-english-fallback
 msgid "Service is required"
 msgstr "Servis gereklidir"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:265
-#, auto-english-fallback
 msgid "Custom service name is required"
 msgstr "Özel servis adı gereklidir"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:267
-#, auto-english-fallback
 msgid "Service name must contain only alphanumeric characters and hyphens"
 msgstr "Servis adı sadece alfanümerik karakterler ve tire içermelidir"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:273
-#, auto-english-fallback
 msgid "Target hostname is required"
 msgstr "Hedef host adı gereklidir"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:277
-#, auto-english-fallback
 msgid "Invalid target hostname format"
 msgstr "Geçersiz hedef host adı formatı"
 
@@ -3007,10 +2816,10 @@ msgid ""
 "Target must be a hostname, not an IP address. Create an A or AAAA record for "
 "the hostname first."
 msgstr ""
-"Hedef bir host adı olmalıdır, IP adresi değil. Önce host adı için bir A veya AAAA kaydı oluşturun."
+"Hedef bir host adı olmalıdır, IP adresi değil. Önce host adı için bir A veya "
+"AAAA kaydı oluşturun."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:295
-#, auto-english-fallback
 msgid "Priority must be between 0 and 65535"
 msgstr "Öncelik 0 ile 65535 arasında olmalıdır"
 
@@ -3018,15 +2827,14 @@ msgstr "Öncelik 0 ile 65535 arasında olmalıdır"
 msgid ""
 "Priority 0 is valid but unusual. Most services use priority 10 or higher."
 msgstr ""
-"Öncelik 0 geçerlidir ancak alışılmadıktır. Çoğu servis 10 veya daha yüksek öncelik kullanır."
+"Öncelik 0 geçerlidir ancak alışılmadıktır. Çoğu servis 10 veya daha yüksek "
+"öncelik kullanır."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:305
-#, auto-english-fallback
 msgid "Weight must be between 0 and 65535"
 msgstr "Ağırlık 0 ile 65535 arasında olmalıdır"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:310
-#, auto-english-fallback
 msgid "Invalid domain format"
 msgstr "Geçersiz alan formatı"
 
@@ -5800,7 +5608,7 @@ msgstr ""
 "Süre sonu başlangıç zamanından daha sonra olmalıdır. Bu imza geçerli olmadan "
 "önce süresi dolmuş görünüyor."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
@@ -5808,7 +5616,7 @@ msgstr ""
 "KRİTİK: Bu imzanın süresi çoktan dolmuş. DNSSEC çözümleyicileri tarafından "
 "doğrulanmayacak."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
@@ -5816,12 +5624,12 @@ msgstr ""
 "UYARI: Bu imzanın süresi önümüzdeki 7 gün içinde dolacak. Yakında yenilemeyi "
 "düşünün."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
 msgstr ""
 "Bu imzanın süresi önümüzdeki 30 gün içinde dolacak. Yenileme planlayın."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
@@ -5829,7 +5637,7 @@ msgstr ""
 "UYARI: Bu imza henüz geçerli değil. Başlangıç zamanına ulaşılana kadar "
 "DNSSEC çözümleyicileri tarafından doğrulanmayacak."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:291
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
 msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
@@ -5839,35 +5647,35 @@ msgstr ""
 "Uzun geçerlilik süreleri anahtar ele geçirilmesi durumunda güvenlik açığını "
 "artırır."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:295
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
 msgstr ""
 "Geçerlilik süresini kontrol etmek için imza zaman damgaları ayrıştırılamadı."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:300
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:302
 msgid "RRSIG key tag field must be a numeric value."
 msgstr "RRSIG anahtar etiketi alanı sayısal bir değer olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:305
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:307
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
 msgstr ""
 "RRSIG anahtar etiketi 0 ile 65535 arasında geçerli bir değer olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:310
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
 msgstr ""
 "RRSIG imzalayan adı tam nıtelı bir domain adı olmalıdır (nokta ile bitmeli)."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:316
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
 msgstr "RRSIG imzalayan adı geçerli bir domain adı olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:321
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
 msgstr "RRSIG imzası boş olamaz."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:326
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
@@ -5875,7 +5683,7 @@ msgstr ""
 "İmza geçerli base64 kodlanmış veri gibi görünmüyor. RRSIG imzaları base64 "
 "kodlanmış olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
 "RRSIG records are part of DNSSEC and provide cryptographic signatures for "
 "DNS records. They should be managed automatically by the DNS server."
@@ -5883,7 +5691,7 @@ msgstr ""
 "RRSIG kayıtları DNSSEC'in parçasıdır ve DNS kayıtları için kriptografik "
 "imzalar sağlar. DNS sunucusu tarafından otomatik olarak yönetilmelidirler."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:333
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
@@ -6572,36 +6380,30 @@ msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
 msgstr "Geçersiz IPv6 adresi: her hextet 4 onaltılık rakam olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
-#, auto-english-fallback
 msgid "IP address list cannot be empty."
 msgstr "IP adresi listesi boş olamaz."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
 msgstr "%s içinde geçersiz IPv6 adresi: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
-#, auto-english-fallback
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
 msgstr "Geçersiz port numarası: %d (1-65535 olmalıdır)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
-#, auto-english-fallback
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
 msgstr "Geçersiz sunucu formatı: %s (IP:port veya [IPv6]:port bekleniyordu)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
 msgstr "%s içinde geçersiz IPv4 adresi: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IP address: %s"
 msgstr "Geçersiz IP adresi: %s"
@@ -6656,7 +6458,6 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "Issuewild etiketinde geçersiz CA domain'i."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-#, auto-english-fallback
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "CAA iodef değeri %s, %s veya %s ile başlayan bir URL olmalıdır."
@@ -6712,19 +6513,15 @@ msgid "Given hostname or one of the labels is too short or too long."
 msgstr "Verilen hostname veya etiketlerden biri çok kısa veya çok uzun."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:128
-#, auto-english-fallback
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
 msgstr ""
 "ARPA bölgelerinde farklı etiketlerde birden fazla eğik çizgiye izin verilmez."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
-#, auto-english-fallback
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
-msgstr ""
-"Geçersiz RFC 2317 formatı. Format kullanın: subnet/prefix (örn. 0/26)."
+msgstr "Geçersiz RFC 2317 formatı. Format kullanın: subnet/prefix (örn. 0/26)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
-#, auto-english-fallback
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
 msgstr ""
 "RFC 2317 notasyonunda geçersiz alt ağ numarası. IPv4 için 0-255 olmalıdır."
@@ -6733,16 +6530,15 @@ msgstr ""
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
 msgstr ""
-"RFC 2317 notasyonunda geçersiz alt ağ. IPv6 için onaltılık (0-9, a-f) olmalıdır."
+"RFC 2317 notasyonunda geçersiz alt ağ. IPv6 için onaltılık (0-9, a-f) "
+"olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
-#, auto-english-fallback
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
 msgstr ""
 "RFC 2317 notasyonunda geçersiz alt ağ. Sayısal veya onaltılık olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
-#, auto-english-fallback
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
 msgstr "RFC 2317 notasyonunda geçersiz önek uzunluğu. Sayısal olmalıdır."
 
@@ -6751,21 +6547,19 @@ msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
 msgstr ""
-"RFC 2317 için geçersiz IPv4 önek uzunluğu. Genellikle 24-32 (sınıfsız delegasyon genellikle 25-31)."
+"RFC 2317 için geçersiz IPv4 önek uzunluğu. Genellikle 24-32 (sınıfsız "
+"delegasyon genellikle 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
-#, auto-english-fallback
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 msgstr "Alt ağ %d, önek /%d ile hizalı değil. %d'nin katı olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
-#, auto-english-fallback
 msgid "Invalid IPv6 prefix length. Must be 0-128."
 msgstr "Geçersiz IPv6 önek uzunluğu. 0-128 olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:209
-#, auto-english-fallback
 msgid "Invalid prefix length. Must be 0-128."
 msgstr "Geçersiz önek uzunluğu. 0-128 olmalıdır."
 
@@ -6950,8 +6744,8 @@ msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
-"SMIMEA kayıt adı şu formattadır: %s gibi e-posta adresleri için "
-"SHA256(local-part)._smimecert.domain.tld"
+"SMIMEA kayıt adı şu formattadır: %s gibi e-posta adresleri için SHA256(local-"
+"part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7761,7 +7555,8 @@ msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
 msgstr ""
-"TXT kayıt içeriği maksimum %d bayt uzunluğunu aşıyor. Lütfen içerik boyutunu azaltın."
+"TXT kayıt içeriği maksimum %d bayt uzunluğunu aşıyor. Lütfen içerik boyutunu "
+"azaltın."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
@@ -7777,7 +7572,8 @@ msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
 msgstr ""
-"Toplam TXT kayıt içeriği maksimum %d bayt uzunluğunu aşıyor. Lütfen içerik boyutunu azaltın."
+"Toplam TXT kayıt içeriği maksimum %d bayt uzunluğunu aşıyor. Lütfen içerik "
+"boyutunu azaltın."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
@@ -8268,9 +8064,9 @@ msgid ""
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr ""
-"NAPTR servisi şu formatı takip etmelidir: [protocol][+rs][+rs]... "
-"burada protokol ve rs bir harfle başlar ve sadece alfanümerik "
-"karakterler içerir (her biri maks. 32 karakter)."
+"NAPTR servisi şu formatı takip etmelidir: [protocol][+rs][+rs]... burada "
+"protokol ve rs bir harfle başlar ve sadece alfanümerik karakterler içerir "
+"(her biri maks. 32 karakter)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8490,25 +8286,21 @@ msgid "You do not have permission to regenerate API keys."
 msgstr "API anahtarlarını yeniden oluşturma izniniz yok."
 
 #: lib/Domain/Service/ZoneValidationService.php:128
-#, auto-english-fallback
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr ""
 "Bölgede SOA kaydı mevcut değil veya aktif değil. Bu DNSSEC için gereklidir."
 
 #: lib/Domain/Service/ZoneValidationService.php:129
-#, auto-english-fallback
 msgid "Add an SOA record to the zone before attempting to sign it."
 msgstr "İmzalamayı denemeden önce bölgeye bir SOA kaydı ekleyin."
 
 #: lib/Domain/Service/ZoneValidationService.php:135
-#, auto-english-fallback
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
 msgstr ""
 "Bölgenin %d SOA kaydı var. Bölge başına sadece bir SOA kaydına izin verilir."
 
 #: lib/Domain/Service/ZoneValidationService.php:136
-#, auto-english-fallback
 msgid "Remove duplicate SOA records, keeping only one."
 msgstr "Sadece birini tutarak yinelenen SOA kayıtlarını kaldırın."
 
@@ -8518,12 +8310,10 @@ msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
 msgstr "SOA kaydı kökünde değil. \"%s\" konumunda bulundu ancak bölge \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:148
-#, auto-english-fallback
 msgid "Move the SOA record to the zone apex."
 msgstr "SOA kaydını bölge köküne taşıyın."
 
 #: lib/Domain/Service/ZoneValidationService.php:158
-#, auto-english-fallback
 msgid "SOA record has invalid content format."
 msgstr "SOA kaydı geçersiz içerik formatına sahip."
 
@@ -8532,32 +8322,30 @@ msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
 msgstr ""
-"SOA formatı şöyle olmalıdır: primary-ns hostmaster serial refresh retry expire minimum"
+"SOA formatı şöyle olmalıdır: primary-ns hostmaster serial refresh retry "
+"expire minimum"
 
 #: lib/Domain/Service/ZoneValidationService.php:218
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
 msgstr ""
-"Bölgenin kökünde NS (Ad Sunucusu) kaydı yok. DNSSEC için en az bir kök NS kaydı gereklidir."
+"Bölgenin kökünde NS (Ad Sunucusu) kaydı yok. DNSSEC için en az bir kök NS "
+"kaydı gereklidir."
 
 #: lib/Domain/Service/ZoneValidationService.php:219
-#, auto-english-fallback
 msgid "Add NS records at the zone apex for your authoritative name servers."
 msgstr "Yetkili ad sunucularınız için bölge köküne NS kayıtları ekleyin."
 
 #: lib/Domain/Service/ZoneValidationService.php:265
-#, auto-english-fallback
 msgid "DNSSEC signing cannot proceed due to the following errors:"
 msgstr "DNSSEC imzalama aşağıdaki hatalar nedeniyle devam edemiyor:"
 
 #: lib/Domain/Service/ZoneValidationService.php:287
-#, auto-english-fallback
 msgid "Additionally, the following warnings were found:"
 msgstr "Ayrıca, aşağıdaki uyarılar bulundu:"
 
 #: lib/Domain/Service/ZoneValidationService.php:289
-#, auto-english-fallback
 msgid "The following warnings were found:"
 msgstr "Aşağıdaki uyarılar bulundu:"
 
@@ -8581,7 +8369,9 @@ msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
 msgstr ""
-"Ters kayıt eklendi. Uyarı: %s için bir PTR kaydı zaten mevcut ve şuraya işaret ediyor: %s. Aynı IP için birden fazla PTR kaydına sahip olmak önerilmez."
+"Ters kayıt eklendi. Uyarı: %s için bir PTR kaydı zaten mevcut ve şuraya "
+"işaret ediyor: %s. Aynı IP için birden fazla PTR kaydına sahip olmak "
+"önerilmez."
 
 #: lib/Domain/Service/Dns/RecordManager.php:215
 msgid "You do not have the permission to add SOA record."
@@ -9235,27 +9025,22 @@ msgid "Send Reset Link"
 msgstr "Sıfırlama Bağlantısı Gönder"
 
 #: templates/modern/manage_group_members.html:4
-#, auto-english-fallback
 msgid "Groups"
 msgstr "Gruplar"
 
 #: templates/default/list_groups.html:10 templates/modern/list_groups.html:10
-#, auto-english-fallback
 msgid "Group Management"
 msgstr "Grup Yönetimi"
 
 #: templates/modern/header.html:204 templates/modern/add_group.html:5
-#, auto-english-fallback
 msgid "Add group"
 msgstr "Grup ekle"
 
 #: templates/modern/edit_user.html:254 templates/modern/add_user.html:189
-#, auto-english-fallback
 msgid "No groups found"
 msgstr "Grup bulunamadı"
 
 #: templates/modern/list_groups.html:50 templates/modern/edit_group.html:70
-#, auto-english-fallback
 msgid "Members"
 msgstr "Üyeler"
 
@@ -9264,17 +9049,14 @@ msgid "Zones"
 msgstr "Zonlar"
 
 #: templates/modern/manage_group_members.html:6
-#, auto-english-fallback
 msgid "Manage members"
 msgstr "Üyeleri yönet"
 
 #: templates/modern/manage_group_zones.html:6
-#, auto-english-fallback
 msgid "Manage zones"
 msgstr "Bölgeleri yönet"
 
 #: templates/modern/list_groups.html:55 templates/modern/edit_group.html:5
-#, auto-english-fallback
 msgid "Edit group"
 msgstr "Grubu düzenle"
 
@@ -9283,7 +9065,6 @@ msgid "Edit"
 msgstr "Düzenle"
 
 #: templates/modern/list_groups.html:58 templates/modern/delete_group.html:5
-#, auto-english-fallback
 msgid "Delete group"
 msgstr "Grubu sil"
 
@@ -9308,32 +9089,26 @@ msgid "Update"
 msgstr "Güncelle"
 
 #: templates/default/edit_group.html:13 templates/modern/edit_group.html:13
-#, auto-english-fallback
 msgid "Edit Group"
 msgstr "Grubu Düzenle"
 
 #: templates/modern/edit_group.html:23 templates/modern/add_group.html:20
-#, auto-english-fallback
 msgid "Group Name"
 msgstr "Grup Adı"
 
 #: templates/modern/edit_group.html:25 templates/modern/add_group.html:22
-#, auto-english-fallback
 msgid "Unique name for this group"
 msgstr "Bu grup için benzersiz ad"
 
 #: templates/modern/edit_group.html:26 templates/modern/add_group.html:23
-#, auto-english-fallback
 msgid "Provide group name"
 msgstr "Grup adı girin"
 
 #: templates/modern/edit_group.html:32 templates/modern/add_group.html:29
-#, auto-english-fallback
 msgid "Optional information about this group"
 msgstr "Bu grup hakkında isteğe bağlı bilgi"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-#, auto-english-fallback
 msgid "Access template"
 msgstr "Erişim şablonu"
 
@@ -9343,72 +9118,58 @@ msgid ""
 msgstr "Grup üyeleri bu izinleri sadece bu gruba ait bölgeler için devralır"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:45
-#, auto-english-fallback
 msgid "Select an access template"
 msgstr "Bir erişim şablonu seçin"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
-#, auto-english-fallback
 msgid "Update Group"
 msgstr "Grubu Güncelle"
 
 #: templates/modern/edit_group.html:74 templates/modern/edit_group.html:118
-#, auto-english-fallback
 msgid "Manage"
 msgstr "Yönet"
 
 #: templates/default/edit_group.html:81 templates/modern/edit_group.html:81
-#, auto-english-fallback
 msgid "No members in this group yet."
 msgstr "Bu grupta henüz üye yok."
 
 #: templates/modern/edit_group.html:144 templates/modern/edit_user.html:220
-#, auto-english-fallback
 msgid "Remove from group"
 msgstr "Gruptan çıkar"
 
 #: templates/modern/edit_group.html:151 templates/modern/delete_group.html:68
-#, auto-english-fallback
 msgid "and"
 msgstr "ve"
 
 #: templates/modern/edit_group.html:101 templates/modern/edit_group.html:151
-#, auto-english-fallback
 msgid "more..."
 msgstr "daha fazla..."
 
 #: templates/default/edit_group.html:125 templates/modern/edit_group.html:125
-#, auto-english-fallback
 msgid "This group doesn't own any zones yet."
 msgstr "Bu grup henüz hiçbir bölgeye sahip değil."
 
 #: templates/modern/manage_group_zones.html:113
-#, auto-english-fallback
 msgid "Master"
 msgstr "Master"
 
 #: templates/modern/manage_group_zones.html:115
-#, auto-english-fallback
 msgid "Slave"
 msgstr "Slave"
 
 #: templates/modern/manage_group_zones.html:117
-#, auto-english-fallback
 msgid "Native"
 msgstr "Native"
 
 #: templates/default/edit_group.html:182 templates/modern/edit_group.html:182
-#, auto-english-fallback
 msgid "Confirm Member Removal"
 msgstr "Üye Çıkarma Onayı"
 
 #: templates/default/edit_group.html:187 templates/modern/edit_group.html:187
-#, auto-english-fallback
 msgid "Are you sure you want to remove user"
 msgstr "Kullanıcıyı çıkarmak istediğinizden emin misiniz"
 
 #: templates/modern/edit_group.html:187 templates/modern/edit_group.html:213
-#, auto-english-fallback
 msgid "from this group?"
 msgstr "bu gruptan?"
 
@@ -9418,17 +9179,14 @@ msgid ""
 msgstr "Bu işlem bu grup tarafından verilen tüm izinleri derhal iptal edecek."
 
 #: templates/modern/manage_group_members.html:139
-#, auto-english-fallback
 msgid "Remove"
 msgstr "Çıkar"
 
 #: templates/default/edit_group.html:208 templates/modern/edit_group.html:208
-#, auto-english-fallback
 msgid "Confirm Zone Removal"
 msgstr "Bölge Çıkarma Onayı"
 
 #: templates/default/edit_group.html:213 templates/modern/edit_group.html:213
-#, auto-english-fallback
 msgid "Are you sure you want to remove zone"
 msgstr "Bölgeyi çıkarmak istediğinizden emin misiniz"
 
@@ -9439,12 +9197,10 @@ msgid ""
 msgstr "Bölge sistemde kalacak ancak bu grubun artık sahipliği olmayacak."
 
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
-#, auto-english-fallback
 msgid "Delete Group"
 msgstr "Grubu Sil"
 
 #: templates/default/delete_group.html:16 templates/modern/delete_group.html:16
-#, auto-english-fallback
 msgid "You are about to delete the group"
 msgstr "Grubu silmek üzeresiniz"
 
@@ -9453,42 +9209,34 @@ msgid "This action cannot be undone. Are you sure you want to proceed?"
 msgstr "Bu eylem geri alınamaz. Devam etmek istediğinizden emin misiniz?"
 
 #: templates/default/delete_group.html:22 templates/modern/delete_group.html:22
-#, auto-english-fallback
 msgid "Deletion Impact"
 msgstr "Silme Etkisi"
 
 #: templates/default/delete_group.html:29 templates/modern/delete_group.html:29
-#, auto-english-fallback
 msgid "member will be removed from this group"
 msgstr "üye bu gruptan çıkarılacak"
 
 #: templates/default/delete_group.html:31 templates/modern/delete_group.html:31
-#, auto-english-fallback
 msgid "members will be removed from this group"
 msgstr "üye bu gruptan çıkarılacak"
 
 #: templates/default/delete_group.html:37 templates/modern/delete_group.html:37
-#, auto-english-fallback
 msgid "zone will lose this group ownership"
 msgstr "bölge bu grup sahipliğini kaybedecek"
 
 #: templates/default/delete_group.html:39 templates/modern/delete_group.html:39
-#, auto-english-fallback
 msgid "zones will lose this group ownership"
 msgstr "bölge bu grup sahipliğini kaybedecek"
 
 #: templates/default/delete_group.html:49 templates/modern/delete_group.html:49
-#, auto-english-fallback
 msgid "Affected Zones"
 msgstr "Etkilenen Bölgeler"
 
 #: templates/default/delete_group.html:51 templates/modern/delete_group.html:51
-#, auto-english-fallback
 msgid "showing first 20"
 msgstr "ilk 20 gösteriliyor"
 
 #: templates/default/delete_group.html:68 templates/modern/delete_group.html:68
-#, auto-english-fallback
 msgid "more zones..."
 msgstr "daha fazla bölge..."
 
@@ -9501,15 +9249,14 @@ msgid ""
 "Members will lose access to all zones owned by this group. Zones without any "
 "remaining owners will still exist but will be inaccessible to regular users."
 msgstr ""
-"Üyeler bu gruba ait tüm bölgelere erişimi kaybedecek. Kalan sahibi olmayan bölgeler hala var olacak ancak normal kullanıcılar için erişilemez olacak."
+"Üyeler bu gruba ait tüm bölgelere erişimi kaybedecek. Kalan sahibi olmayan "
+"bölgeler hala var olacak ancak normal kullanıcılar için erişilemez olacak."
 
 #: templates/default/delete_group.html:85 templates/modern/delete_group.html:85
-#, auto-english-fallback
 msgid "Yes, delete this group"
 msgstr "Evet, bu grubu sil"
 
 #: templates/default/delete_group.html:89 templates/modern/delete_group.html:89
-#, auto-english-fallback
 msgid "No, keep this group"
 msgstr "Hayır, bu grubu tut"
 
@@ -9715,17 +9462,14 @@ msgid "Change password"
 msgstr "Şifre değiştir"
 
 #: templates/modern/header.html:332
-#, auto-english-fallback
 msgid "Preferences"
 msgstr "Tercihler"
 
 #: templates/default/index.html:288 templates/modern/index.html:235
-#, auto-english-fallback
 msgid "Customize your interface settings"
 msgstr "Arayüz ayarlarınızı özelleştirin"
 
 #: templates/default/index.html:290
-#, auto-english-fallback
 msgid "User preferences"
 msgstr "Kullanıcı tercihleri"
 
@@ -9738,17 +9482,14 @@ msgid "Manage system users and access"
 msgstr "Sistem kullanıcılarını ve erişimi yönet"
 
 #: templates/modern/index.html:199 templates/modern/header.html:169
-#, auto-english-fallback
 msgid "List users"
 msgstr "Kullanıcıları listele"
 
 #: templates/modern/header.html:222
-#, auto-english-fallback
 msgid "Access"
 msgstr "Erişim"
 
 #: templates/default/index.html:321
-#, auto-english-fallback
 msgid "Manage access templates"
 msgstr "Erişim şablonlarını yönet"
 
@@ -10036,27 +9777,22 @@ msgid "Advanced Records"
 msgstr "Gelişmiş Kayıtlar"
 
 #: templates/modern/dns_wizard_select.html:6
-#, auto-english-fallback
 msgid "DNS Wizard"
 msgstr "DNS Sihirbazı"
 
 #: templates/modern/dns_wizard_form.html:15
-#, auto-english-fallback
 msgid "Wizard"
 msgstr "Sihirbaz"
 
 #: templates/modern/dns_wizard_form.html:26
-#, auto-english-fallback
 msgid "Warning: Please Review Before Proceeding"
 msgstr "Uyarı: Devam Etmeden Önce Lütfen İnceleyin"
 
 #: templates/modern/dns_wizard_form.html:200
-#, auto-english-fallback
 msgid "Create Record"
 msgstr "Kayıt Oluştur"
 
 #: templates/modern/dns_wizard_form.html:203
-#, auto-english-fallback
 msgid "Back to Wizard Selection"
 msgstr "Sihirbaz Seçimine Dön"
 
@@ -10121,17 +9857,14 @@ msgid "No, keep this user"
 msgstr "Hayır, bu kullanıcıyı tut"
 
 #: templates/modern/save-zone-template.html:6 templates/modern/edit.html:209
-#, auto-english-fallback
 msgid "Save as Template"
 msgstr "Şablon Olarak Kaydet"
 
 #: templates/modern/save-zone-template.html:14
-#, auto-english-fallback
 msgid "Save Zone as Template"
 msgstr "Bölgeyi Şablon Olarak Kaydet"
 
 #: templates/modern/save-zone-template.html:18
-#, auto-english-fallback
 msgid "Source Zone"
 msgstr "Kaynak Bölge"
 
@@ -10144,7 +9877,6 @@ msgid "Provide template name"
 msgstr "Şablon adı sağlayın"
 
 #: templates/modern/save-zone-template.html:44
-#, auto-english-fallback
 msgid "Create Template"
 msgstr "Şablon Oluştur"
 
@@ -10426,7 +10158,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Zon(ları) sil"
 
-#: templates/modern/dnssec_add_key.html:81
+#: templates/modern/dnssec_add_key.html:91
 msgid "Add key"
 msgstr "Anahtar ekle"
 
@@ -10434,48 +10166,48 @@ msgstr "Anahtar ekle"
 msgid "Add key for zone"
 msgstr "Zon için anahtar ekle"
 
-#: templates/modern/dnssec_add_key.html:43
+#: templates/modern/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Anahtar tipi"
 
-#: templates/modern/dnssec_add_key.html:50
+#: templates/modern/dnssec_add_key.html:60
 msgid "Select key type"
 msgstr "Anahtar tipini seçin"
 
-#: templates/modern/dnssec_add_key.html:61
+#: templates/modern/dnssec_add_key.html:71
 msgid "Select algorithm"
 msgstr "Algoritma seçin"
 
-#: templates/modern/dnssec_add_key.html:66
+#: templates/modern/dnssec_add_key.html:76
 msgid "Bits in length"
 msgstr "Bit uzunluğu"
 
-#: templates/modern/dnssec_add_key.html:75
+#: templates/modern/dnssec_add_key.html:85
 msgid "Select bits length"
 msgstr "Bit uzunluğunu seçin"
 
-#: templates/modern/dnssec_add_key.html:132
+#: templates/modern/dnssec_add_key.html:142
 msgid "Recommended bits for"
 msgstr "Önerilen bit sayısı"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 #: install/helpers/InstallStepHandler.php:169
 msgid "Warning:"
 msgstr "Uyarı:"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 msgid "bits is not recommended for"
 msgstr "bit sayısı şunun için önerilmez:"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
 msgstr "DNSSEC Anahtar Tipleri Hakkında"
 
-#: templates/modern/dnssec_add_key.html:181
+#: templates/modern/dnssec_add_key.html:191
 msgid "Key Types Explained"
 msgstr "Anahtar Tipleri Açıklaması"
 
-#: templates/modern/dnssec_add_key.html:183
+#: templates/modern/dnssec_add_key.html:193
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -10483,19 +10215,19 @@ msgstr ""
 "Birleşik İmzalama Anahtarı - hem KSK hem de ZSK olarak hizmet eder (PowerDNS "
 "4.0+ için önerilir)"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Anahtar İmzalama Anahtarı - zondaki DNSKEY kayıtlarını imzalar"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zon İmzalama Anahtarı - zondaki diğer tüm kayıtları imzalar"
 
-#: templates/modern/dnssec_add_key.html:190
+#: templates/modern/dnssec_add_key.html:200
 msgid "Recommended Settings"
 msgstr "Önerilen Ayarlar"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:201
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10549,7 +10281,8 @@ msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
 msgstr ""
-"Bu şablondan gelen izinler bu kullanıcı için tüm sistemde global olarak uygulanacak"
+"Bu şablondan gelen izinler bu kullanıcı için tüm sistemde global olarak "
+"uygulanacak"
 
 #: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
 msgid "Optional information about this user"
@@ -10605,7 +10338,6 @@ msgid "User Permissions"
 msgstr "Kullanıcı İzinleri"
 
 #: templates/default/edit_user.html:169 templates/modern/edit_user.html:169
-#, auto-english-fallback
 msgid "This user has been assigned the access template"
 msgstr "Bu kullanıcıya erişim şablonu atanmış"
 
@@ -10618,42 +10350,36 @@ msgid "No permissions are assigned to this template"
 msgstr "Bu şablona hiçbir izin atanmamış"
 
 #: templates/modern/edit_user.html:197 templates/modern/add_user.html:172
-#, auto-english-fallback
 msgid "Group Memberships"
 msgstr "Grup Üyelikleri"
 
 #: templates/default/edit_user.html:201 templates/modern/edit_user.html:201
-#, auto-english-fallback
 msgid "Current Memberships"
 msgstr "Mevcut Üyelikler"
 
 #: templates/default/edit_user.html:216 templates/modern/edit_user.html:216
-#, auto-english-fallback
 msgid "View group details"
 msgstr "Grup detaylarını görüntüle"
 
 #: templates/default/edit_user.html:230 templates/modern/edit_user.html:230
-#, auto-english-fallback
 msgid "This user is not a member of any groups."
 msgstr "Bu kullanıcı herhangi bir grubun üyesi değil."
 
 #: templates/modern/edit_user.html:236 templates/modern/add_user.html:175
-#, auto-english-fallback
 msgid "Add to Groups"
 msgstr "Gruplara Ekle"
 
 #: templates/default/edit_user.html:237 templates/modern/edit_user.html:237
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr ""
-"Bir veya daha fazla grup seçin ve \"Seçili Grupları Ekle\" düğmesine tıklayın."
+"Bir veya daha fazla grup seçin ve \"Seçili Grupları Ekle\" düğmesine "
+"tıklayın."
 
 #: templates/modern/edit_user.html:245 templates/modern/add_user.html:180
-#, auto-english-fallback
 msgid "Search available groups..."
 msgstr "Mevcut grupları ara..."
 
 #: templates/modern/edit_user.html:246 templates/modern/add_user.html:181
-#, auto-english-fallback
 msgid "Clear search"
 msgstr "Aramayı temizle"
 
@@ -10662,27 +10388,22 @@ msgid "Select All"
 msgstr "Tümünü Seç"
 
 #: templates/modern/add_zone_slave.html:98
-#, auto-english-fallback
 msgid "Clear All"
 msgstr "Tümünü Temizle"
 
 #: templates/modern/add_user.html:208 templates/modern/add_user.html:384
-#, auto-english-fallback
 msgid "selected"
 msgstr "seçili"
 
 #: templates/default/edit_user.html:275 templates/modern/edit_user.html:275
-#, auto-english-fallback
 msgid "Add Selected Groups"
 msgstr "Seçili Grupları Ekle"
 
 #: templates/modern/manage_group_members.html:126
-#, auto-english-fallback
 msgid "Confirm Removal"
 msgstr "Çıkarma Onayı"
 
 #: templates/default/edit_user.html:303 templates/modern/edit_user.html:303
-#, auto-english-fallback
 msgid "Are you sure you want to remove this user from the group"
 msgstr "Bu kullanıcıyı gruptan çıkarmak istediğinizden emin misiniz"
 
@@ -10735,7 +10456,6 @@ msgid "Yes, unlink these zones"
 msgstr "Evet, bu zonları ayır"
 
 #: templates/modern/list_perm_templ.html:5
-#, auto-english-fallback
 msgid "Access templates"
 msgstr "Erişim şablonları"
 
@@ -10744,7 +10464,6 @@ msgid "Add"
 msgstr "Ekle"
 
 #: templates/modern/add_perm_templ.html:18
-#, auto-english-fallback
 msgid "Add Access Template"
 msgstr "Erişim Şablonu Ekle"
 
@@ -10757,17 +10476,14 @@ msgid "Optional: more detailed description of this permission set"
 msgstr "İsteğe bağlı: bu izin setinin daha ayrıntılı açıklaması"
 
 #: templates/modern/edit_perm_templ.html:36
-#, auto-english-fallback
 msgid "Template Type"
 msgstr "Şablon Türü"
 
 #: templates/modern/edit_perm_templ.html:38
-#, auto-english-fallback
 msgid "User Template"
 msgstr "Kullanıcı Şablonu"
 
 #: templates/modern/edit_perm_templ.html:39
-#, auto-english-fallback
 msgid "Group Template"
 msgstr "Grup Şablonu"
 
@@ -10776,10 +10492,10 @@ msgid ""
 "User templates apply globally; Group templates apply only to group-owned "
 "zones"
 msgstr ""
-"Kullanıcı şablonları global olarak uygulanır; Grup şablonları sadece gruba ait bölgelere uygulanır"
+"Kullanıcı şablonları global olarak uygulanır; Grup şablonları sadece gruba "
+"ait bölgelere uygulanır"
 
 #: templates/modern/edit_perm_templ.html:42
-#, auto-english-fallback
 msgid "Please select a template type"
 msgstr "Lütfen bir şablon türü seçin"
 
@@ -10788,12 +10504,10 @@ msgid "Add Template"
 msgstr "Şablon Ekle"
 
 #: templates/modern/add_perm_templ.html:62
-#, auto-english-fallback
 msgid "About Access Templates"
 msgstr "Erişim Şablonları Hakkında"
 
 #: templates/modern/add_perm_templ.html:67
-#, auto-english-fallback
 msgid "What are Access Templates?"
 msgstr "Erişim Şablonları Nedir?"
 
@@ -10803,7 +10517,9 @@ msgid ""
 "Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"Erişim şablonları kullanıcıların ve grupların Poweradmin'de gerçekleştirebileceği işlem kümelerini tanımlar. Yaygın izin kombinasyonlarını atamanın hızlı bir yolunu sağlarlar."
+"Erişim şablonları kullanıcıların ve grupların Poweradmin'de "
+"gerçekleştirebileceği işlem kümelerini tanımlar. Yaygın izin "
+"kombinasyonlarını atamanın hızlı bir yolunu sağlarlar."
 
 #: templates/modern/add_perm_templ.html:71
 msgid "How to Use Templates"
@@ -10815,8 +10531,8 @@ msgid ""
 "ensures consistent permissions across users and groups with similar roles."
 msgstr ""
 "Bir şablon oluşturduktan sonra, kullanıcı hesapları oluştururken veya "
-"düzenlerken bunu kullanıcılara atayabilirsiniz. Bu, benzer rollere "
-"sahip kullanıcı grupları arasında tutarlı izinler sağlar."
+"düzenlerken bunu kullanıcılara atayabilirsiniz. Bu, benzer rollere sahip "
+"kullanıcı grupları arasında tutarlı izinler sağlar."
 
 #: templates/modern/edit_perm_templ.html:86
 msgid "Available Permissions"
@@ -10935,7 +10651,6 @@ msgid "Forgot your password?"
 msgstr "Şifrenizi mi unuttunuz?"
 
 #: templates/default/login.html:86 templates/modern/login.html:86
-#, auto-english-fallback
 msgid "Forgot your username?"
 msgstr "Kullanıcı adınızı mı unuttunuz?"
 
@@ -11121,62 +10836,50 @@ msgstr ""
 "oluştur\" seçeneğini işaretleyin (eşleştirme modu kullanılırken devre dışı)"
 
 #: templates/modern/zone-ownership.html:6 templates/modern/edit.html:205
-#, auto-english-fallback
 msgid "Ownership"
 msgstr "Sahiplik"
 
 #: templates/modern/add_zone_slave.html:49
-#, auto-english-fallback
 msgid "User Owner"
 msgstr "Kullanıcı Sahibi"
 
 #: templates/modern/zone-ownership.html:55
-#, auto-english-fallback
 msgid "No users assigned to this zone."
 msgstr "Bu bölgeye atanmış kullanıcı yok."
 
 #: templates/modern/zone-ownership.html:61
-#, auto-english-fallback
 msgid "Add User Owner"
 msgstr "Kullanıcı Sahibi Ekle"
 
 #: templates/modern/manage_group_members.html:84
-#, auto-english-fallback
 msgid "Search users..."
 msgstr "Kullanıcıları ara..."
 
 #: templates/modern/add_zone_slave.html:76
-#, auto-english-fallback
 msgid "You"
 msgstr "Siz"
 
 #: templates/modern/zone-ownership.html:83
-#, auto-english-fallback
 msgid "Add Owner"
 msgstr "Sahip Ekle"
 
 #: templates/modern/add_zone_slave.html:90
-#, auto-english-fallback
 msgid "Group Ownership"
 msgstr "Grup Sahipliği"
 
 #: templates/modern/zone-ownership.html:127
-#, auto-english-fallback
 msgid "No groups assigned to this zone."
 msgstr "Bu bölgeye atanmış grup yok."
 
 #: templates/modern/zone-ownership.html:133
-#, auto-english-fallback
 msgid "Add Group Ownership"
 msgstr "Grup Sahipliği Ekle"
 
 #: templates/modern/add_zone_slave.html:94
-#, auto-english-fallback
 msgid "Search groups..."
 msgstr "Grupları ara..."
 
 #: templates/modern/add_group.html:13
-#, auto-english-fallback
 msgid "Add Group"
 msgstr "Grup Ekle"
 
@@ -11201,12 +10904,10 @@ msgid "Create a new record for this zone template"
 msgstr "Bu zon şablonu için yeni bir kayıt oluştur"
 
 #: templates/modern/delete_perm_templ.html:12
-#, auto-english-fallback
 msgid "Delete Access Template"
 msgstr "Erişim Şablonunu Sil"
 
 #: templates/modern/delete_perm_templ.html:17
-#, auto-english-fallback
 msgid "You are about to delete the access template"
 msgstr "Erişim şablonunu silmek üzeresiniz"
 
@@ -11227,7 +10928,6 @@ msgid "No, keep this template"
 msgstr "Hayır, bu şablonu tut"
 
 #: templates/modern/dns_wizard_select.html:14
-#, auto-english-fallback
 msgid "DNS Record Wizard"
 msgstr "DNS Kayıt Sihirbazı"
 
@@ -11236,22 +10936,22 @@ msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
 msgstr ""
-"Manuel metin girişi yerine yönlendirmeli formlarla karmaşık DNS kayıtları oluşturmanıza yardımcı olacak bir sihirbaz seçin."
+"Manuel metin girişi yerine yönlendirmeli formlarla karmaşık DNS kayıtları "
+"oluşturmanıza yardımcı olacak bir sihirbaz seçin."
 
 #: templates/modern/dns_wizard_select.html:27
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
 msgstr ""
-"DNS sihirbazları ileri bölgeler için tasarlanmıştır ve ters bölgeler için uygun olmayabilir."
+"DNS sihirbazları ileri bölgeler için tasarlanmıştır ve ters bölgeler için "
+"uygun olmayabilir."
 
 #: templates/modern/dns_wizard_select.html:59
-#, auto-english-fallback
 msgid "Recommended"
 msgstr "Önerilen"
 
 #: templates/modern/dns_wizard_select.html:71
-#, auto-english-fallback
 msgid "Back"
 msgstr "Geri"
 
@@ -11289,13 +10989,11 @@ msgid "Add new record"
 msgstr "Yeni kayıt ekle"
 
 #: templates/modern/edit.html:28 templates/modern/edit.html:543
-#, auto-english-fallback
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr ""
 "DMARC, SPF, DKIM, CAA, TLSA ve SRV kayıtları için yönlendirmeli sihirbazlar"
 
 #: templates/modern/edit.html:29 templates/modern/edit.html:544
-#, auto-english-fallback
 msgid "Record Wizard"
 msgstr "Kayıt Sihirbazı"
 
@@ -11408,7 +11106,6 @@ msgid "total records"
 msgstr "toplam kayıt"
 
 #: templates/default/edit.html:474 templates/modern/edit.html:474
-#, auto-english-fallback
 msgid "Edit selected"
 msgstr "Seçileni düzenle"
 
@@ -11421,17 +11118,14 @@ msgid "Comments"
 msgstr "Yorumlar"
 
 #: templates/default/edit.html:515 templates/modern/edit.html:515
-#, auto-english-fallback
 msgid "Export CSV"
 msgstr "CSV'ye Aktar"
 
 #: templates/default/edit.html:519 templates/modern/edit.html:519
-#, auto-english-fallback
 msgid "Generate PTR"
 msgstr "PTR Oluştur"
 
 #: templates/modern/edit.html:696 templates/modern/add_zone_master.html:24
-#, auto-english-fallback
 msgid "Zone Configuration"
 msgstr "Bölge Yapılandırması"
 
@@ -11444,7 +11138,6 @@ msgid "IP address of master NS"
 msgstr "Ana NS'nin IP adresi"
 
 #: templates/default/edit.html:786 templates/modern/edit.html:786
-#, auto-english-fallback
 msgid "Manage DNSSEC"
 msgstr "DNSSEC Yönet"
 
@@ -11453,12 +11146,10 @@ msgid "Sign zone"
 msgstr "Zonu imzala"
 
 #: templates/default/edit.html:794 templates/modern/edit.html:794
-#, auto-english-fallback
 msgid "Not signed"
 msgstr "İmzalanmamış"
 
 #: templates/default/users.html:10 templates/modern/users.html:10
-#, auto-english-fallback
 msgid "User Management"
 msgstr "Kullanıcı Yönetimi"
 
@@ -11467,17 +11158,14 @@ msgid "Add user"
 msgstr "Kullanıcı ekle"
 
 #: templates/default/users.html:45 templates/modern/users.html:45
-#, auto-english-fallback
 msgid "Auth Type"
 msgstr "Kimlik Doğrulama Türü"
 
 #: templates/default/users.html:47 templates/modern/users.html:47
-#, auto-english-fallback
 msgid "MFA"
 msgstr "MFA"
 
 #: templates/modern/users.html:99 templates/modern/users.html:161
-#, auto-english-fallback
 msgid "SQL"
 msgstr "SQL"
 
@@ -11486,22 +11174,18 @@ msgid "LDAP"
 msgstr "LDAP"
 
 #: templates/modern/users.html:103 templates/modern/users.html:165
-#, auto-english-fallback
 msgid "OIDC"
 msgstr "OIDC"
 
 #: templates/modern/users.html:105 templates/modern/users.html:167
-#, auto-english-fallback
 msgid "SAML"
 msgstr "SAML"
 
 #: templates/modern/users.html:114 templates/modern/users.html:176
-#, auto-english-fallback
 msgid "MFA enabled"
 msgstr "MFA etkin"
 
 #: templates/modern/users.html:116 templates/modern/users.html:178
-#, auto-english-fallback
 msgid "MFA not configured"
 msgstr "MFA yapılandırılmadı"
 
@@ -11702,7 +11386,6 @@ msgid "Are you sure you want to delete this item?"
 msgstr "Bu öğeyi silmek istediğinizden emin misiniz?"
 
 #: templates/modern/forgot_username.html:4
-#, auto-english-fallback
 msgid "Forgot Username"
 msgstr "Kullanıcı Adını Unuttum"
 
@@ -11711,10 +11394,10 @@ msgid ""
 "Enter your email address and we'll send you the username associated with "
 "this account."
 msgstr ""
-"E-posta adresinizi girin, size bu hesapla ilişkili kullanıcı adını gönderelim."
+"E-posta adresinizi girin, size bu hesapla ilişkili kullanıcı adını "
+"gönderelim."
 
 #: templates/modern/forgot_username.html:41
-#, auto-english-fallback
 msgid "Send Username"
 msgstr "Kullanıcı Adını Gönder"
 
@@ -11758,7 +11441,6 @@ msgstr ""
 "değiştirebilirsiniz."
 
 #: templates/default/add_user.html:176 templates/modern/add_user.html:176
-#, auto-english-fallback
 msgid "Select groups to add the new user to upon creation."
 msgstr "Oluşturulduğunda yeni kullanıcının ekleneceği grupları seçin."
 
@@ -11791,27 +11473,22 @@ msgid "Secure this zone with DNSSEC signing"
 msgstr "Bu zonu DNSSEC imzalama ile güvenli hale getir"
 
 #: templates/modern/add_zone_slave.html:54
-#, auto-english-fallback
 msgid "Selected:"
 msgstr "Seçili:"
 
 #: templates/modern/add_zone_slave.html:59
-#, auto-english-fallback
 msgid "No user owner"
 msgstr "Kullanıcı sahibi yok"
 
 #: templates/modern/add_zone_slave.html:60
-#, auto-english-fallback
 msgid "Zone will be owned only by groups"
 msgstr "Bölge sadece gruplara ait olacak"
 
 #: templates/modern/add_zone_slave.html:82
-#, auto-english-fallback
 msgid "Optional: Select a user responsible for this zone"
 msgstr "İsteğe bağlı: Bu bölgeden sorumlu bir kullanıcı seçin"
 
 #: templates/modern/add_zone_slave.html:111
-#, auto-english-fallback
 msgid "Optional: Select one or more groups"
 msgstr "İsteğe bağlı: Bir veya daha fazla grup seçin"
 
@@ -12322,7 +11999,6 @@ msgstr ""
 "kaybederseniz her kod giriş yapmak için bir kez kullanılabilir."
 
 #: templates/default/mfa_setup.html:14 templates/modern/mfa_setup.html:14
-#, auto-english-fallback
 msgid "MFA Setup Required"
 msgstr "MFA Kurulumu Gerekli"
 
@@ -12331,7 +12007,8 @@ msgid ""
 "Your organization requires multi-factor authentication. Please set up MFA to "
 "continue using the system."
 msgstr ""
-"Kuruluşunuz çok faktörlü kimlik doğrulaması gerektiriyor. Sistemi kullanmaya devam etmek için lütfen MFA'yı kurun."
+"Kuruluşunuz çok faktörlü kimlik doğrulaması gerektiriyor. Sistemi kullanmaya "
+"devam etmek için lütfen MFA'yı kurun."
 
 #: templates/default/mfa_setup.html:24 templates/modern/mfa_setup.html:24
 msgid ""
@@ -12412,7 +12089,8 @@ msgid ""
 "Email verification is not available because it has been disabled by the "
 "administrator."
 msgstr ""
-"E-posta doğrulaması mevcut değil çünkü yönetici tarafından devre dışı bırakılmış."
+"E-posta doğrulaması mevcut değil çünkü yönetici tarafından devre dışı "
+"bırakılmış."
 
 #: templates/default/mfa_setup.html:108 templates/modern/mfa_setup.html:108
 msgid ""
@@ -12506,107 +12184,86 @@ msgid "No, keep this zone"
 msgstr "Hayır, bu zonu tut"
 
 #: templates/modern/user_preferences.html:4 templates/modern/header.html:388
-#, auto-english-fallback
 msgid "User Preferences"
 msgstr "Kullanıcı Tercihleri"
 
 #: templates/modern/user_preferences.html:17
-#, auto-english-fallback
 msgid "Display Settings"
 msgstr "Görüntüleme Ayarları"
 
 #: templates/modern/user_preferences.html:22
-#, auto-english-fallback
 msgid "Items per page"
 msgstr "Sayfa başına öğe"
 
 #: templates/modern/user_preferences.html:36
-#, auto-english-fallback
 msgid "Zone Options"
 msgstr "Bölge Seçenekleri"
 
 #: templates/modern/user_preferences.html:42
-#, auto-english-fallback
 msgid "Zone serial numbers"
 msgstr "Bölge seri numaraları"
 
 #: templates/modern/user_preferences.html:43
-#, auto-english-fallback
 msgid "Display serial numbers in zone lists"
 msgstr "Bölge listelerinde seri numaralarını göster"
 
 #: templates/modern/user_preferences.html:51
-#, auto-english-fallback
 msgid "Display template information in zone lists"
 msgstr "Bölge listelerinde şablon bilgisini göster"
 
 #: templates/modern/user_preferences.html:64
-#, auto-english-fallback
 msgid "Interface Behavior"
 msgstr "Arayüz Davranışı"
 
 #: templates/modern/user_preferences.html:69
-#, auto-english-fallback
 msgid "Record form"
 msgstr "Kayıt formu"
 
 #: templates/modern/user_preferences.html:78
-#, auto-english-fallback
 msgid "Save buttons"
 msgstr "Kaydetme düğmeleri"
 
 #: templates/modern/user_preferences.html:88
-#, auto-english-fallback
 msgid "Edit Zone View"
 msgstr "Bölge Görünümünü Düzenle"
 
 #: templates/modern/user_preferences.html:93
-#, auto-english-fallback
 msgid "Show record ID"
 msgstr "Kayıt ID'sini göster"
 
 #: templates/modern/user_preferences.html:94
-#, auto-english-fallback
 msgid "Display record ID column in edit view"
 msgstr "Düzenleme görünümünde kayıt ID sütununu göster"
 
 #: templates/modern/user_preferences.html:101
-#, auto-english-fallback
 msgid "Show add record form"
 msgstr "Kayıt ekleme formunu göster"
 
 #: templates/modern/user_preferences.html:102
-#, auto-english-fallback
 msgid "Display inline add record form in edit view"
 msgstr "Düzenleme görünümünde satır içi kayıt ekleme formunu göster"
 
 #: templates/modern/user_preferences.html:109
-#, auto-english-fallback
 msgid "Show edit buttons"
 msgstr "Düzenleme düğmelerini göster"
 
 #: templates/modern/user_preferences.html:110
-#, auto-english-fallback
 msgid "Display individual edit button per record"
 msgstr "Her kayıt için ayrı düzenleme düğmesi göster"
 
 #: templates/modern/user_preferences.html:117
-#, auto-english-fallback
 msgid "Show delete buttons"
 msgstr "Silme düğmelerini göster"
 
 #: templates/modern/user_preferences.html:118
-#, auto-english-fallback
 msgid "Display individual delete button per record"
 msgstr "Her kayıt için ayrı silme düğmesi göster"
 
 #: templates/modern/user_preferences.html:133
-#, auto-english-fallback
 msgid "Save Preferences"
 msgstr "Tercihleri Kaydet"
 
 #: templates/modern/user_preferences.html:139
-#, auto-english-fallback
 msgid "Changes will be applied after saving"
 msgstr "Değişiklikler kaydedildikten sonra uygulanacak"
 
@@ -12655,27 +12312,22 @@ msgid "Try different search terms or filters"
 msgstr "Farklı arama terimleri veya filtreleri deneyin"
 
 #: templates/default/search.html:676 templates/modern/search.html:687
-#, auto-english-fallback
 msgid "Confirm Zone Deletion"
 msgstr "Bölge Silme Onayı"
 
 #: templates/modern/search.html:692 templates/modern/search.html:718
-#, auto-english-fallback
 msgid "Are you sure you want to delete"
 msgstr "Silmek istediğinizden emin misiniz"
 
 #: templates/default/search.html:681 templates/modern/search.html:692
-#, auto-english-fallback
 msgid "selected zone(s)?"
 msgstr "seçili bölge(ler)?"
 
 #: templates/default/search.html:702 templates/modern/search.html:713
-#, auto-english-fallback
 msgid "Confirm Record Deletion"
 msgstr "Kayıt Silme Onayı"
 
 #: templates/default/search.html:707 templates/modern/search.html:718
-#, auto-english-fallback
 msgid "selected record(s)?"
 msgstr "seçili kayıt(lar)?"
 
@@ -12744,7 +12396,6 @@ msgid "Search logs by user"
 msgstr "Kullanıcıya göre log ara"
 
 #: templates/modern/add_zone_slave.html:24
-#, auto-english-fallback
 msgid "Slave Zone Configuration"
 msgstr "Slave Bölge Yapılandırması"
 
@@ -12757,7 +12408,8 @@ msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
 msgstr ""
-"Master ad sunucusunun IP adresi (IPv4 ve IPv6 desteklenir, birden fazla IP virgülle ayrılır)"
+"Master ad sunucusunun IP adresi (IPv4 ve IPv6 desteklenir, birden fazla IP "
+"virgülle ayrılır)"
 
 #: templates/modern/delete_zone_templ.html:12
 msgid "Delete template"
@@ -13055,17 +12707,14 @@ msgid "Reverse zones"
 msgstr "Ters Zonlar"
 
 #: templates/default/header.html:133 templates/modern/header.html:199
-#, auto-english-fallback
 msgid "List groups"
 msgstr "Grupları listele"
 
 #: templates/modern/header.html:210 templates/modern/list_log_groups.html:5
-#, auto-english-fallback
 msgid "Group logs"
 msgstr "Grup günlükleri"
 
 #: templates/default/header.html:153 templates/modern/header.html:227
-#, auto-english-fallback
 msgid "List templates"
 msgstr "Şablonları listele"
 
@@ -13120,57 +12769,46 @@ msgid "Add records"
 msgstr "Kayıtları Ekle"
 
 #: templates/modern/manage_group_members.html:12
-#, auto-english-fallback
 msgid "Back to Group"
 msgstr "Gruba Dön"
 
 #: templates/modern/manage_group_zones.html:20
-#, auto-english-fallback
 msgid "Owned Zones"
 msgstr "Sahip Olunan Bölgeler"
 
 #: templates/modern/manage_group_zones.html:27
-#, auto-english-fallback
 msgid "This group doesn't own any zones yet"
 msgstr "Bu grup henüz hiçbir bölgeye sahip değil"
 
 #: templates/modern/manage_group_members.html:57
-#, auto-english-fallback
 msgid "Remove Selected"
 msgstr "Seçilenleri Çıkar"
 
 #: templates/modern/manage_group_zones.html:79
-#, auto-english-fallback
 msgid "Available Zones"
 msgstr "Mevcut Bölgeler"
 
 #: templates/modern/manage_group_zones.html:86
-#, auto-english-fallback
 msgid "This group already owns all zones or no zones are available"
 msgstr "Bu grup zaten tüm bölgelere sahip veya mevcut bölge yok"
 
 #: templates/modern/manage_group_zones.html:94
-#, auto-english-fallback
 msgid "Search zones..."
 msgstr "Bölgeleri ara..."
 
 #: templates/modern/manage_group_members.html:110
-#, auto-english-fallback
 msgid "Add Selected"
 msgstr "Seçilenleri Ekle"
 
 #: templates/modern/manage_group_members.html:131
-#, auto-english-fallback
 msgid "Are you sure you want to remove"
 msgstr "Çıkarmak istediğinizden emin misiniz"
 
 #: templates/modern/manage_group_zones.html:221
-#, auto-english-fallback
 msgid "zone(s) from this group?"
 msgstr "bu gruptan bölge(ler)?"
 
 #: templates/modern/manage_group_zones.html:222
-#, auto-english-fallback
 msgid "The zones will remain in the system."
 msgstr "Bölgeler sistemde kalacak."
 
@@ -13231,7 +12869,6 @@ msgid "No, keep this API key"
 msgstr "Hayır, bu API anahtarını tut"
 
 #: templates/modern/edit_perm_templ.html:19
-#, auto-english-fallback
 msgid "Edit Access Template"
 msgstr "Erişim Şablonunu Düzenle"
 
@@ -13249,12 +12886,11 @@ msgid ""
 "of permissions. Changes made here will affect all users and groups who have "
 "this template assigned."
 msgstr ""
-"Bu şablon, izin setini hızlıca uygulamak için kullanıcılara "
-"atanabilir. Burada yapılan değişiklikler bu şablonun atandığı tüm "
-"kullanıcıları etkileyecektir."
+"Bu şablon, izin setini hızlıca uygulamak için kullanıcılara atanabilir. "
+"Burada yapılan değişiklikler bu şablonun atandığı tüm kullanıcıları "
+"etkileyecektir."
 
 #: templates/default/edit_perm_templ.html:72
-#, auto-english-fallback
 msgid "Users vs Groups"
 msgstr "Kullanıcılar vs Gruplar"
 
@@ -13263,14 +12899,16 @@ msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
 msgstr ""
-"<strong>Kullanıcılara</strong> atandığında: İzinler sistem genelinde global olarak uygulanır."
+"<strong>Kullanıcılara</strong> atandığında: İzinler sistem genelinde global "
+"olarak uygulanır."
 
 #: templates/default/edit_perm_templ.html:74
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
 msgstr ""
-"<strong>Gruplara</strong> atandığında: İzinler sadece o gruba ait bölgelere uygulanır."
+"<strong>Gruplara</strong> atandığında: İzinler sadece o gruba ait bölgelere "
+"uygulanır."
 
 #: templates/modern/edit_perm_templ.html:73
 msgid "Permission Groups"
@@ -13327,13 +12965,11 @@ msgid ""
 msgstr "Tüm grup üyeleri bu gruba ait bölgeler için bu izinleri devralacak"
 
 #: templates/default/add_group.html:50 templates/modern/add_group.html:50
-#, auto-english-fallback
 msgid "After creating the group, you can add members and assign zones to it."
 msgstr ""
 "Grubu oluşturduktan sonra, üye ekleyebilir ve ona bölgeler atayabilirsiniz."
 
 #: templates/default/add_group.html:55 templates/modern/add_group.html:55
-#, auto-english-fallback
 msgid "Create Group"
 msgstr "Grup Oluştur"
 
@@ -13351,72 +12987,58 @@ msgid "Please enter a domain name to perform a WHOIS lookup."
 msgstr "WHOIS sorgusu yapmak için lütfen bir domain adı girin."
 
 #: templates/modern/list_perm_templ.html:40
-#, auto-english-fallback
 msgid "User"
 msgstr "Kullanıcı"
 
 #: templates/modern/list_perm_templ.html:10
-#, auto-english-fallback
 msgid "templates apply globally"
 msgstr "şablonlar global olarak uygulanır"
 
 #: templates/modern/list_perm_templ.html:42
-#, auto-english-fallback
 msgid "Group"
 msgstr "Grup"
 
 #: templates/modern/list_perm_templ.html:10
-#, auto-english-fallback
 msgid "templates apply only to group-owned zones"
 msgstr "şablonlar sadece gruba ait bölgelere uygulanır"
 
 #: templates/modern/list_perm_templ.html:15
-#, auto-english-fallback
 msgid "Access Templates"
 msgstr "Erişim Şablonları"
 
 #: templates/modern/list_perm_templ.html:31
-#, auto-english-fallback
 msgid "No access templates found"
 msgstr "Erişim şablonu bulunamadı"
 
 #: templates/modern/list_perm_templ.html:63
-#, auto-english-fallback
 msgid "Add access template"
 msgstr "Erişim şablonu ekle"
 
 #: templates/modern/list_log_groups.html:11
-#, auto-english-fallback
 msgid "Group Activity Logs"
 msgstr "Grup Aktivite Günlükleri"
 
 #: templates/modern/list_log_groups.html:19
-#, auto-english-fallback
 msgid "Search logs by group"
 msgstr "Gruba göre günlük ara"
 
 #: templates/modern/manage_group_members.html:20
-#, auto-english-fallback
 msgid "Current Members"
 msgstr "Mevcut Üyeler"
 
 #: templates/modern/manage_group_members.html:27
-#, auto-english-fallback
 msgid "No members in this group yet"
 msgstr "Bu grupta henüz üye yok"
 
 #: templates/modern/manage_group_members.html:69
-#, auto-english-fallback
 msgid "Available Users"
 msgstr "Mevcut Kullanıcılar"
 
 #: templates/modern/manage_group_members.html:76
-#, auto-english-fallback
 msgid "All users are already members of this group"
 msgstr "Tüm kullanıcılar zaten bu grubun üyesi"
 
 #: templates/modern/manage_group_members.html:131
-#, auto-english-fallback
 msgid "user(s) from this group?"
 msgstr "bu gruptan kullanıcı(lar)?"
 
@@ -13456,8 +13078,18 @@ msgstr "Zon Şablonlarını Listele"
 msgid "Bulk Domain Registration"
 msgstr "Toplu Domain Kayıt"
 
+#: templates/modern/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ varsayılan olarak CSK kullanır"
+
+#: templates/modern/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 ve daha yeni sürümler varsayılan olarak Combined Signing Keys (CSK) kullanır. KSK veya ZSK seçseniz bile PowerDNS yine de bir CSK anahtarı oluşturabilir."
+
 #: templates/modern/header.html:382
-#, auto-english-fallback
 msgid "Dashboard"
 msgstr "Pano"
 
@@ -13740,36 +13372,30 @@ msgid "Optional Extensions"
 msgstr "İsteğe Bağlı Uzantılar"
 
 #: install/templates/step2.html.twig:99
-#, auto-english-fallback
 msgid "Web Server"
 msgstr "Web Sunucusu"
 
 #: install/templates/step2.html.twig:106
-#, auto-english-fallback
 msgid "Server"
 msgstr "Sunucu"
 
 #: install/templates/step2.html.twig:118
-#, auto-english-fallback
 msgid "Not detected — required for URL routing"
 msgstr "Algılanamadı — URL yönlendirmesi için gerekli"
 
 #: install/templates/step2.html.twig:124
-#, auto-english-fallback
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
 msgstr "Algılanamıyor (PHP-FPM) — etkin olduğundan emin olun"
 
 #: install/templates/step2.html.twig:130
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
 msgstr ""
-"URL yeniden yazmanın yapılandırıldığından emin olun (nginx.conf.example'a bakın)"
+"URL yeniden yazmanın yapılandırıldığından emin olun (nginx.conf.example'a "
+"bakın)"
 
 #: install/templates/step2.html.twig:135
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr ""
-"Web sunucunuz için URL yeniden yazmanın yapılandırıldığından emin olun"
+msgstr "Web sunucunuz için URL yeniden yazmanın yapılandırıldığından emin olun"
 
 #: install/templates/step2.html.twig:151
 msgid "All required components are available."
@@ -14106,385 +13732,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS veritabanına bağlanılamıyor \"%s\": %s"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create a config/settings.php file "
-# OBSOLETE: "manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Yapılandırma dosyası bulunamadı. Lütfen bir tane oluşturmak için <a "
-# OBSOLETE: "href=\"install/\">yükleyiciyi</a> kullanın veya config/settings.php "
-# OBSOLETE: "dosyasını el ile oluşturun."
-
-# OBSOLETE: msgid "Invalid authentication provider"
-# OBSOLETE: msgstr "Geçersiz kimlik doğrulama sağlayıcısı"
-
-# OBSOLETE: msgid "Failed to sign zone. Check PowerDNS logs for details."
-# OBSOLETE: msgstr "Zon imzalanamadı. Ayrıntılar için PowerDNS günlüklerini denetleyin."
-
-# OBSOLETE: msgid "Zone was created, but securing it with DNSSEC failed."
-# OBSOLETE: msgstr "Zon oluşturuldu, ancak DNSSEC ile güvenceye alma başarısız."
-
-# OBSOLETE: msgid "Failed to delete DNSSEC key."
-# OBSOLETE: msgstr "DNSSEC anahtarı silinemedi."
-
-#, auto-english-fallback
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
-# OBSOLETE: "once."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Kopya %s mekanizması bulundu. Her mekanizma türü en fazla bir kez "
-# OBSOLETE: "görünmelidir."
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr "IPv6 adresi onaltılık rakamlar için küçük harf kullanmalıdır."
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr "IPv6 adresi kanonik formda değil (RFC 5952). Kanonik form: %s"
-
-#, auto-english-fallback
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IP adresi \"%s\" geçerli değil. Geçerli bir IPv4 veya IPv6 adresi "
-# OBSOLETE: "olmalıdır."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "CAA iodef value must be a URL starting with http://, https://, or mailto:."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "CAA iodef değeri http://, https://, veya mailto: ile başlayan bir URL "
-# OBSOLETE: "olmalıdır."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "SMIMEA record name is in the format: SHA256(local-"
-# OBSOLETE: "part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "SMIMEA kayıt adı şu formattadır: local-part@domain.tld gibi e-posta "
-# OBSOLETE: "adresleri için SHA256(local-part)._smimecert.domain.tld"
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "İçerik alanında HTML etiketlerine izin verilmez."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "TXT kayıt string'i 255 byte'ı aşıyor. TXT string'leri 255 byte veya daha "
-# OBSOLETE: "az olmalıdır. Daha uzun içerik için boşluklarla ayrılmış birden fazla "
-# OBSOLETE: "tırnak içine alınmış string'e bölün."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR kaydı ya regexp ya da değiştirme (\".\") içermeli, ancak her "
-# OBSOLETE: "ikisini birden değil."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR servisi şu formatı takip etmelidir: [protocol][+rs][+rs]... burada "
-# OBSOLETE: "protokol ve rs bir harfle başlar ve sadece alfanümerik karakterler içerir "
-# OBSOLETE: "(her biri maks. 32 karakter)."
-
-# OBSOLETE: msgid "User administration"
-# OBSOLETE: msgstr "Kullanıcı yönetimi"
-
-# OBSOLETE: msgid "Permissions"
-# OBSOLETE: msgstr "İzinler"
-
-# OBSOLETE: msgid "Manage permission templates"
-# OBSOLETE: msgstr "İzin şablonlarını yönet"
-
-# OBSOLETE: msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-# OBSOLETE: msgstr "MX, SPF için TXT ve www için CNAME gibi standart kayıtları kurun"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-# OBSOLETE: "[SERIAL] in record content"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Kayıt içeriğinde [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER] ve [SERIAL] "
-# OBSOLETE: "gibi yer tutucular kullanın"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-# OBSOLETE: "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "[DOMAIN] ve [TLD] yer tutucuları Microsoft 365 MX kayıtları için "
-# OBSOLETE: "yararlıdır (örneğin: [DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-# OBSOLETE: msgid "Permission template"
-# OBSOLETE: msgstr "İzin şablonu"
-
-# OBSOLETE: msgid "This user has been assigned the permission template"
-# OBSOLETE: msgstr "Bu kullanıcıya izin şablonu atanmıştır"
-
-# OBSOLETE: msgid "User Management Tips"
-# OBSOLETE: msgstr "Kullanıcı Yönetimi İpuçları"
-
-# OBSOLETE: msgid "Leave password field empty to keep the current password"
-# OBSOLETE: msgstr "Mevcut şifreyi korumak için şifre alanını boş bırakın"
-
-# OBSOLETE: msgid "Changing permission templates will update user access immediately"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "İzin şablonlarını değiştirmek kullanıcı erişimini hemen güncelleyecektir"
-
-# OBSOLETE: msgid "Users can be disabled instead of deleted to preserve their settings"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Kullanıcılar ayarlarını korumak için silinmek yerine devre dışı "
-# OBSOLETE: "bırakılabilir"
-
-# OBSOLETE: msgid "LDAP users cannot have passwords managed through this interface"
-# OBSOLETE: msgstr "LDAP kullanıcılarının şifreleri bu arayüz üzerinden yönetilemez"
-
-# OBSOLETE: msgid "Permission templates"
-# OBSOLETE: msgstr "İzin şablonları"
-
-# OBSOLETE: msgid "Add Permission Template"
-# OBSOLETE: msgstr "İzin Şablonu Ekle"
-
-# OBSOLETE: msgid "About Permission Templates"
-# OBSOLETE: msgstr "İzin Şablonları Hakkında"
-
-# OBSOLETE: msgid "What are Permission Templates?"
-# OBSOLETE: msgstr "İzin Şablonları Nedir?"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Permission templates define sets of actions that users can perform in "
-# OBSOLETE: "Poweradmin. They provide a quick way to assign common permission "
-# OBSOLETE: "combinations to multiple users."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "İzin şablonları, kullanıcıların Poweradmin'de gerçekleştirebileceği eylem "
-# OBSOLETE: "setlerini tanımlar. Birden fazla kullanıcıya ortak izin kombinasyonlarını "
-# OBSOLETE: "hızlı bir şekilde atamak için bir yol sağlarlar."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "After creating a template, you can assign it to users when creating or "
-# OBSOLETE: "editing user accounts. This ensures consistent permissions across user "
-# OBSOLETE: "groups with similar roles."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Bir şablon oluşturduktan sonra, kullanıcı hesapları oluştururken veya "
-# OBSOLETE: "düzenlerken bunu kullanıcılara atayabilirsiniz. Bu, benzer rollere sahip "
-# OBSOLETE: "kullanıcı grupları arasında tutarlı izinler sağlar."
-
-# OBSOLETE: msgid "Delete Permission Template"
-# OBSOLETE: msgstr "İzin Şablonunu Sil"
-
-# OBSOLETE: msgid "You are about to delete the permission template"
-# OBSOLETE: msgstr "İzin şablonunu silmek üzeresiniz"
-
-# OBSOLETE: msgid "CSV"
-# OBSOLETE: msgstr "CSV"
-
-# OBSOLETE: msgid "Save as new template"
-# OBSOLETE: msgstr "Yeni şablon olarak kaydet"
-
-# OBSOLETE: msgid "Create a reusable template from this zone's records"
-# OBSOLETE: msgstr "Bu zonun kayıtlarından yeniden kullanılabilir şablon oluştur"
-
-# OBSOLETE: msgid "Template Description"
-# OBSOLETE: msgstr "Şablon Açıklaması"
-
-# OBSOLETE: msgid "Optional description for this template"
-# OBSOLETE: msgstr "Bu şablon için isteğe bağlı açıklama"
-
-# OBSOLETE: msgid "Save as template"
-# OBSOLETE: msgstr "Şablon olarak kaydet"
-
-# OBSOLETE: msgid "Zone Settings"
-# OBSOLETE: msgstr "Zon Ayarları"
-
-# OBSOLETE: msgid "Owner of zone"
-# OBSOLETE: msgstr "Zon sahibi"
-
-# OBSOLETE: msgid "No owner set for this zone."
-# OBSOLETE: msgstr "Bu zon için hiçbir sahip atanmamış."
-
-# OBSOLETE: msgid "Select All Filtered"
-# OBSOLETE: msgstr "Filtrelenenlerin Hepsini Seç"
-
-# OBSOLETE: msgid "User Administration"
-# OBSOLETE: msgstr "Kullanıcı Yönetimi"
-
-# OBSOLETE: msgid "Create descriptive usernames that are easy to identify"
-# OBSOLETE: msgstr "Tanımlanması kolay açıklayıcı kullanıcı adları oluşturun"
-
-# OBSOLETE: msgid "Adding a full name helps with user identification"
-# OBSOLETE: msgstr "Tam ad eklemek kullanıcı tanımlamaya yardımcı olur"
-
-# OBSOLETE: msgid "Auto-generating passwords is recommended for better security"
-# OBSOLETE: msgstr "Daha iyi güvenlik için otomatik şifre oluşturma önerilir"
-
-# OBSOLETE: msgid "User responsible for this zone"
-# OBSOLETE: msgstr "Bu zondan sorumlu kullanıcı"
-
-# OBSOLETE: msgid "Zone Information"
-# OBSOLETE: msgstr "Zon Bilgileri"
-
-# OBSOLETE: msgid "About Master Zones"
-# OBSOLETE: msgstr "Master Zonlar Hakkında"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "A master zone is a zone for which this PowerDNS server is the primary "
-# OBSOLETE: "authority. You can add, edit and delete records in master zones."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Master zon, bu PowerDNS sunucusunun birincil otorite olduğu zondur. "
-# OBSOLETE: "Master zonlarda kayıt ekleyebilir, düzenleyebilir ve silebilirsiniz."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "After creating the zone, you will be redirected to add DNS records to it."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Zonu oluşturduktan sonra, ona DNS kayıtları eklemek için "
-# OBSOLETE: "yönlendirileceksiniz."
-
-# OBSOLETE: msgid "DNSSEC Information"
-# OBSOLETE: msgstr "DNSSEC Bilgileri"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "DNSSEC (Domain Name System Security Extensions) adds cryptographic "
-# OBSOLETE: "signatures to DNS records to protect against spoofing and cache poisoning "
-# OBSOLETE: "attacks."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "DNSSEC (Domain Name System Security Extensions), sahteciliğe ve "
-# OBSOLETE: "önbellekleme zehirlenmesi saldırılarına karşı koruma sağlamak için DNS "
-# OBSOLETE: "kayıtlarına kriptografik imzalar ekler."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When enabled, PowerDNS will automatically generate and manage the "
-# OBSOLETE: "necessary keys and signatures for the zone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Etkinleştirildiğinde, PowerDNS zon için gerekli anahtarları ve imzaları "
-# OBSOLETE: "otomatik olarak oluşturacak ve yönetecektir."
-
-# OBSOLETE: msgid "Use fully qualified domain names (example.com)"
-# OBSOLETE: msgstr "Tam nitelikli domain adları kullanın (example.com)"
-
-# OBSOLETE: msgid "Select a template to automatically create common DNS records"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ortak DNS kayıtlarını otomatik olarak oluşturmak için bir şablon seçin"
-
-# OBSOLETE: msgid "NATIVE zone type is recommended for most setups"
-# OBSOLETE: msgstr "NATIVE zon tipi çoğu kurulum için önerilir"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Are you sure you want to delete the selected zones? This action cannot be "
-# OBSOLETE: "undone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Seçilen zonları silmek istediğinizden emin misiniz? Bu işlem geri "
-# OBSOLETE: "alınamaz."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Are you sure you want to delete the selected records? This action cannot "
-# OBSOLETE: "be undone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Seçilen kayıtları silmek istediğinizden emin misiniz? Bu işlem geri "
-# OBSOLETE: "alınamaz."
-
-# OBSOLETE: msgid "IP address of the master name server (can be IPv4 or IPv6)"
-# OBSOLETE: msgstr "Master isim sunucusunun IP adresi (IPv4 veya IPv6 olabilir)"
-
-# OBSOLETE: msgid "About Slave Zones"
-# OBSOLETE: msgstr "Slave Zonlar Hakkında"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "A slave zone is a read-only copy of a zone hosted on another DNS server. "
-# OBSOLETE: "PowerDNS will automatically fetch and update zone data from the master "
-# OBSOLETE: "server."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Bir slave zon, başka bir DNS sunucusunda barındırılan bir zonun salt "
-# OBSOLETE: "okunur kopyasıdır. PowerDNS, master sunucudan zon verilerini otomatik "
-# OBSOLETE: "olarak getirir ve günceller."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You cannot edit records in a slave zone - all changes must be made on the "
-# OBSOLETE: "master server."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Bir slave zonda kayıtları düzenleyemezsiniz - tüm değişiklikler master "
-# OBSOLETE: "sunucuda yapılmalıdır."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Make sure that this PowerDNS server is allowed to transfer the zone from "
-# OBSOLETE: "the master server. The master server must have an allow-transfer or "
-# OBSOLETE: "similar configuration permitting zone transfers to this server's IP "
-# OBSOLETE: "address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Bu PowerDNS sunucusunun master sunucudan zon aktarımına izin "
-# OBSOLETE: "verildiğinden emin olun. Master sunucu, bu sunucunun IP adresine zon "
-# OBSOLETE: "aktarımlarına izin veren allow-transfer veya benzer yapılandırmaya sahip "
-# OBSOLETE: "olmalıdır."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can specify multiple master servers by separating IP addresses with "
-# OBSOLETE: "commas"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IP adreslerini virgülle ayırarak birden fazla master sunucu "
-# OBSOLETE: "belirtebilirsiniz"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Slave zones will automatically update when the master server sends a "
-# OBSOLETE: "notification"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Master sunucu bir bildirim gönderdiğinde slave zonlar otomatik olarak "
-# OBSOLETE: "güncellenecektir"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "To test the connection, check the PowerDNS logs after adding the zone"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Bağlantıyı test etmek için zon eklendikten sonra PowerDNS günlüklerini "
-# OBSOLETE: "denetleyin"
-
-# OBSOLETE: msgid "List permission templates"
-# OBSOLETE: msgstr "İzin Şablonlarını Listele"
-
-# OBSOLETE: msgid "Add permission template"
-# OBSOLETE: msgstr "İzin Şablonu Ekle"
-
-# OBSOLETE: msgid "Edit Permission Template"
-# OBSOLETE: msgstr "İzin Şablonunu Düzenle"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Bu şablon, izin setini hızlıca uygulamak için kullanıcılara atanabilir. "
-# OBSOLETE: "Burada yapılan değişiklikler bu şablonun atandığı tüm kullanıcıları "
-# OBSOLETE: "etkileyecektir."
-
-# OBSOLETE: msgid "Permission Templates"
-# OBSOLETE: msgstr "İzin Şablonları"
-
-# OBSOLETE: msgid "No permission templates found"
-# OBSOLETE: msgstr "Hiçbir izin şablonu bulunamadı"
-
-
-

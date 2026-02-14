@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-10 19:11+0200\n"
+"POT-Creation-Date: 2026-02-14 17:09+0200\n"
 "PO-Revision-Date: 2025-06-02 20:30+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Italian\n"
@@ -23,9 +23,8 @@ msgid ""
 "No configuration file found at %s. Please use the <a href=\"install/"
 "\">installer</a> to create one, or create the configuration file manually."
 msgstr ""
-"Nessun file di configurazione trovato. Utilizzare l'<a "
-"href=\"install/\">installer</a> per crearne uno, o creare manualmente "
-"un file %s."
+"Nessun file di configurazione trovato. Utilizzare l'<a href=\"install/"
+"\">installer</a> per crearne uno, o creare manualmente un file %s."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:134
 msgid "Invalid CSRF token."
@@ -114,7 +113,6 @@ msgid "You do not have the permission to delete this user."
 msgstr "Non si dispone del permesso di eliminare questo utente."
 
 #: lib/Application/Controller/DeleteUserController.php:62
-#, auto-english-fallback
 msgid "You do not have permission to delete a superuser account."
 msgstr "Non hai il permesso di eliminare un account superutente."
 
@@ -151,7 +149,6 @@ msgid "You do not have permission to delete records in this zone."
 msgstr "Non hai il permesso di eliminare i record in questa zona."
 
 #: lib/Application/Controller/EditRecordController.php:195
-#, auto-english-fallback
 msgid "Record not found."
 msgstr "Record non trovato."
 
@@ -229,67 +226,54 @@ msgid "The record has been deleted successfully."
 msgstr "Il record è stato eliminato con successo."
 
 #: lib/Application/Controller/DeleteRecordController.php:239
-#, auto-english-fallback
 msgid "You cannot delete records from a SLAVE zone."
 msgstr "Non puoi eliminare record da una zona SLAVE."
 
 #: lib/Application/Controller/DeleteGroupController.php:70
-#, auto-english-fallback
 msgid "You do not have permission to delete groups."
 msgstr "Non hai il permesso di eliminare gruppi."
 
 #: lib/Application/Controller/EditGroupController.php:86
-#, auto-english-fallback
 msgid "Invalid group ID."
 msgstr "ID gruppo non valido."
 
 #: lib/Application/Controller/DeleteGroupController.php:98
-#, auto-english-fallback
 msgid "Group deletion cancelled."
 msgstr "Eliminazione gruppo annullata."
 
 #: lib/Application/Controller/DeleteGroupController.php:135
-#, auto-english-fallback
 msgid "Group has been deleted successfully."
 msgstr "Il gruppo è stato eliminato con successo."
 
 #: lib/Application/Controller/EditGroupController.php:197
-#, auto-english-fallback
 msgid "Group not found."
 msgstr "Gruppo non trovato."
 
 #: lib/Application/Controller/UserPreferencesController.php:99
-#, auto-english-fallback
 msgid "Preferences saved successfully."
 msgstr "Preferenze salvate con successo."
 
 #: lib/Application/Controller/UserPreferencesController.php:107
-#, auto-english-fallback
 msgid "Failed to update preferences. Please try again."
 msgstr "Impossibile aggiornare le preferenze. Riprova."
 
 #: lib/Application/Controller/UserPreferencesController.php:122
-#, auto-english-fallback
 msgid "Top"
 msgstr "Inizio"
 
 #: lib/Application/Controller/UserPreferencesController.php:123
-#, auto-english-fallback
 msgid "Bottom"
 msgstr "Fine"
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:60
-#, auto-english-fallback
 msgid "You do not have permission to manage group members."
 msgstr "Non hai il permesso di gestire i membri del gruppo."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:103
-#, auto-english-fallback
 msgid "Invalid action."
 msgstr "Azione non valida."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:192
-#, auto-english-fallback
 msgid "Please select at least one user."
 msgstr "Seleziona almeno un utente."
 
@@ -322,7 +306,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: lib/Application/Controller/DnsWizardController.php:57
-#, auto-english-fallback
 msgid "DNS wizards are not enabled."
 msgstr "Le procedure guidate DNS non sono abilitate."
 
@@ -331,27 +314,22 @@ msgid "Invalid zone ID."
 msgstr "ID zona non valido."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:93
-#, auto-english-fallback
 msgid "Zone not found."
 msgstr "Zona non trovata."
 
 #: lib/Application/Controller/DnsWizardController.php:80
-#, auto-english-fallback
 msgid "You do not have permission to add records to this zone."
 msgstr "Non hai il permesso di aggiungere record a questa zona."
 
 #: lib/Application/Controller/DnsWizardFormController.php:114
-#, auto-english-fallback
 msgid "Invalid wizard type."
 msgstr "Tipo di procedura guidata non valido."
 
 #: lib/Application/Controller/DnsWizardFormController.php:199
-#, auto-english-fallback
 msgid "Validation failed:"
 msgstr "Validazione fallita:"
 
 #: lib/Application/Controller/DnsWizardFormController.php:223
-#, auto-english-fallback
 msgid "Failed to generate record:"
 msgstr "Impossibile generare il record:"
 
@@ -429,7 +407,8 @@ msgid ""
 "MFA is required by your organization's security policy and cannot be "
 "disabled."
 msgstr ""
-"L'MFA è richiesto dalla politica di sicurezza della tua organizzazione e non può essere disabilitato."
+"L'MFA è richiesto dalla politica di sicurezza della tua organizzazione e non "
+"può essere disabilitato."
 
 #: lib/Application/Controller/MfaSetupController.php:290
 msgid "MFA is not enabled."
@@ -547,17 +526,14 @@ msgid "Invalid request method."
 msgstr "Metodo di richiesta non valido."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:77
-#, auto-english-fallback
 msgid "Invalid group or user ID."
 msgstr "ID gruppo o utente non valido."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:86
-#, auto-english-fallback
 msgid "Member removed from group successfully."
 msgstr "Membro rimosso dal gruppo con successo."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:118
-#, auto-english-fallback
 msgid "User was not a member of this group."
 msgstr "L'utente non era membro di questo gruppo."
 
@@ -566,7 +542,6 @@ msgid "You do not have the permission to add a new user."
 msgstr "Non si dispone del permesso di aggiungere un nuovo utente."
 
 #: lib/Application/Controller/EditUserController.php:235
-#, auto-english-fallback
 msgid "Invalid permission template: must be a user template"
 msgstr "Template di permessi non valido: deve essere un template utente"
 
@@ -606,17 +581,14 @@ msgid "The record could not be deleted."
 msgstr "Il record non è stato eliminato."
 
 #: lib/Application/Controller/ListLogUsersController.php:67
-#, auto-english-fallback
 msgid "Invalid page number."
 msgstr "Numero di pagina non valido."
 
 #: lib/Application/Controller/ListLogUsersController.php:69
-#, auto-english-fallback
 msgid "Page number must be at least 1."
 msgstr "Il numero di pagina deve essere almeno 1."
 
 #: lib/Application/Controller/ListLogUsersController.php:87
-#, auto-english-fallback
 msgid "Page number exceeds available pages."
 msgstr "Il numero di pagina supera le pagine disponibili."
 
@@ -744,17 +716,14 @@ msgid "You do not have the permission to view this zone."
 msgstr "Non si dispone del permesso di visualizzare questa zona."
 
 #: lib/Application/Controller/EditController.php:271
-#, auto-english-fallback
 msgid "Zone type has been changed successfully."
 msgstr "Il tipo di zona è stato modificato con successo."
 
 #: lib/Application/Controller/EditController.php:278
-#, auto-english-fallback
 msgid "Slave master has been changed successfully."
 msgstr "Il master slave è stato modificato con successo."
 
 #: lib/Application/Controller/EditController.php:298
-#, auto-english-fallback
 msgid "Zone template has been changed successfully."
 msgstr "Il template di zona è stato modificato con successo."
 
@@ -783,7 +752,8 @@ msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
 msgstr ""
-"Impossibile firmare la zona. La validazione della zona è riuscita, ma l'API PowerDNS ha restituito un errore. Controlla i log PowerDNS per i dettagli."
+"Impossibile firmare la zona. La validazione della zona è riuscita, ma l'API "
+"PowerDNS ha restituito un errore. Controlla i log PowerDNS per i dettagli."
 
 #: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
@@ -905,7 +875,6 @@ msgid "You do not have the permission to add a record to this zone."
 msgstr "Non avete il permesso di aggiungere un record a questa zona."
 
 #: lib/Application/Controller/AddRecordController.php:226
-#, auto-english-fallback
 msgid "Record successfully added."
 msgstr "Record aggiunto con successo."
 
@@ -965,7 +934,6 @@ msgid "Authentication failed: "
 msgstr "Autenticazione fallita: "
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:80
-#, auto-english-fallback
 msgid "You do not have permission to create zone templates."
 msgstr "Non hai il permesso di creare template di zona."
 
@@ -974,7 +942,6 @@ msgid "Template name can't be an empty string."
 msgstr "Il nome del template non può essere una stringa vuota."
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:150
-#, auto-english-fallback
 msgid "Zone template has been created successfully."
 msgstr "Il template di zona è stato creato con successo."
 
@@ -991,7 +958,6 @@ msgid "You do not have the permission to add a master zone."
 msgstr "Non avete il permesso di aggiungere una zona master."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:101
-#, auto-english-fallback
 msgid "At least one user or group must be selected as owner."
 msgstr "Almeno un utente o gruppo deve essere selezionato come proprietario."
 
@@ -1004,17 +970,19 @@ msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
-"La zona è stata creata con successo, ma la firma DNSSEC è stata saltata a causa di errori di validazione:"
+"La zona è stata creata con successo, ma la firma DNSSEC è stata saltata a "
+"causa di errori di validazione:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:171
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
 msgstr ""
-"La zona è stata creata, ma la protezione con DNSSEC è fallita. La validazione della zona è riuscita, ma l'API PowerDNS ha restituito un errore. Controlla i log PowerDNS per i dettagli."
+"La zona è stata creata, ma la protezione con DNSSEC è fallita. La "
+"validazione della zona è riuscita, ma l'API PowerDNS ha restituito un "
+"errore. Controlla i log PowerDNS per i dettagli."
 
 #: lib/Application/Controller/AddZoneMasterController.php:177
-#, auto-english-fallback
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "La zona è stata creata e firmata con DNSSEC con successo."
 
@@ -1023,7 +991,8 @@ msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
 msgstr ""
-"La zona è stata creata e la firma è stata richiesta, ma la verifica è fallita. Controlla le chiavi DNSSEC."
+"La zona è stata creata e la firma è stata richiesta, ma la verifica è "
+"fallita. Controlla le chiavi DNSSEC."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:145
 msgid "Zone has been added successfully."
@@ -1047,17 +1016,14 @@ msgid "You do not have the permission to view zone templates."
 msgstr "Non si dispone del permesso di visualizzare i template di zona."
 
 #: lib/Application/Controller/AddGroupController.php:66
-#, auto-english-fallback
 msgid "You do not have permission to create groups."
 msgstr "Non hai il permesso di creare gruppi."
 
 #: lib/Application/Controller/EditGroupController.php:115
-#, auto-english-fallback
 msgid "Invalid permission template: must be a group template"
 msgstr "Template di permessi non valido: deve essere un template di gruppo"
 
 #: lib/Application/Controller/AddGroupController.php:132
-#, auto-english-fallback
 msgid "Group has been created successfully."
 msgstr "Il gruppo è stato creato con successo."
 
@@ -1070,7 +1036,6 @@ msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Non hai il permesso di gestire DNSSEC per questa zona."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:89
-#, auto-english-fallback
 msgid "DNSSEC key not found or no longer exists."
 msgstr "Chiave DNSSEC non trovata o non esiste più."
 
@@ -1087,22 +1052,18 @@ msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Si è verificato un errore durante l'eliminazione della chiave DNSSEC: "
 
 #: lib/Application/Controller/SamlCallbackController.php:77
-#, auto-english-fallback
 msgid "SAML authentication is not enabled"
 msgstr "L'autenticazione SAML non è abilitata"
 
 #: lib/Application/Controller/SamlLoginController.php:89
-#, auto-english-fallback
 msgid "No SAML providers are configured"
 msgstr "Nessun provider SAML configurato"
 
 #: lib/Application/Controller/SamlLoginController.php:100
-#, auto-english-fallback
 msgid "Invalid SAML provider"
 msgstr "Provider SAML non valido"
 
 #: lib/Application/Controller/SamlCallbackController.php:105
-#, auto-english-fallback
 msgid "SAML authentication failed: "
 msgstr "Autenticazione SAML fallita: "
 
@@ -1115,12 +1076,10 @@ msgid "You do not have the permission to see any zones."
 msgstr "Non si dispone del permesso di visualizzare alcuna zona."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:71
-#, auto-english-fallback
 msgid "You do not have permission to manage zone ownership."
 msgstr "Non hai il permesso di gestire la proprietà della zona."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:205
-#, auto-english-fallback
 msgid "Please select at least one zone."
 msgstr "Seleziona almeno una zona."
 
@@ -1247,22 +1206,18 @@ msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Impossibile recuperare le informazioni RDAP utilizzando il server %s"
 
 #: lib/Application/Controller/Api/Internal/DnsWizardController.php:409
-#, auto-english-fallback
 msgid "Record created successfully"
 msgstr "Record creato con successo"
 
 #: lib/Application/Controller/EditUserController.php:338
-#, auto-english-fallback
 msgid "You do not have permission to manage group memberships."
 msgstr "Non hai il permesso di gestire le appartenenze al gruppo."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:79
-#, auto-english-fallback
 msgid "Invalid user or group ID."
 msgstr "ID utente o gruppo non valido."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:100
-#, auto-english-fallback
 msgid "User removed from group successfully."
 msgstr "Utente rimosso dal gruppo con successo."
 
@@ -1299,22 +1254,18 @@ msgid "The supermaster has been updated successfully."
 msgstr "Il supermaster è stato aggiornato con successo."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:60
-#, auto-english-fallback
 msgid "You do not have permission to manage group zones."
 msgstr "Non hai il permesso di gestire le zone del gruppo."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:77
-#, auto-english-fallback
 msgid "Invalid group or zone ID."
 msgstr "ID gruppo o zona non valido."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:86
-#, auto-english-fallback
 msgid "Zone removed from group successfully."
 msgstr "Zona rimossa dal gruppo con successo."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:88
-#, auto-english-fallback
 msgid "Zone was not owned by this group."
 msgstr "La zona non era di proprietà di questo gruppo."
 
@@ -1347,12 +1298,10 @@ msgid "You do not have the permission to edit this user."
 msgstr "Non si dispone del permesso di modificare questo utente."
 
 #: lib/Application/Controller/EditUserController.php:210
-#, auto-english-fallback
 msgid "You do not have permission to edit a superuser account."
 msgstr "Non hai il permesso di modificare un account superutente."
 
 #: lib/Application/Controller/EditUserController.php:346
-#, auto-english-fallback
 msgid "Please select at least one group."
 msgstr "Seleziona almeno un gruppo."
 
@@ -1418,17 +1367,14 @@ msgid "An unexpected error occurred. Please contact the administrator."
 msgstr "Si è verificato un errore imprevisto. Contatta l'amministratore."
 
 #: lib/Application/Controller/SamlCallbackController.php:93
-#, auto-english-fallback
 msgid "Unknown SAML endpoint"
 msgstr "Endpoint SAML sconosciuto"
 
 #: lib/Application/Controller/SamlCallbackController.php:119
-#, auto-english-fallback
 msgid "You have been logged out"
 msgstr "Sei stato disconnesso"
 
 #: lib/Application/Controller/SamlCallbackController.php:124
-#, auto-english-fallback
 msgid "Logout completed (with warnings): "
 msgstr "Disconnessione completata (con avvisi): "
 
@@ -1437,7 +1383,6 @@ msgid "You do not have permission to view this record."
 msgstr "Non hai il permesso di visualizzare questo record."
 
 #: lib/Application/Controller/EditRecordController.php:108
-#, auto-english-fallback
 msgid "You cannot edit records in a SLAVE zone."
 msgstr "Non puoi modificare i record in una zona SLAVE."
 
@@ -1446,7 +1391,6 @@ msgid "You do not have permission to edit this record."
 msgstr "Non hai il permesso di modificare questo record."
 
 #: lib/Application/Controller/EditRecordController.php:226
-#, auto-english-fallback
 msgid "Failed to retrieve updated record information."
 msgstr "Impossibile recuperare le informazioni del record aggiornato."
 
@@ -1468,14 +1412,17 @@ msgid ""
 "Please contact your administrator or change your password through your "
 "identity provider."
 msgstr ""
-"Gli utenti autenticati tramite Single Sign-On non possono cambiare la password qui. Contatta l'amministratore o cambia la password tramite il tuo provider di identità."
+"Gli utenti autenticati tramite Single Sign-On non possono cambiare la "
+"password qui. Contatta l'amministratore o cambia la password tramite il tuo "
+"provider di identità."
 
 #: lib/Application/Controller/ChangePasswordController.php:87
 msgid ""
 "External authentication users cannot change their password here. Please "
 "contact your administrator."
 msgstr ""
-"Gli utenti con autenticazione esterna non possono cambiare la password qui. Contatta l'amministratore."
+"Gli utenti con autenticazione esterna non possono cambiare la password qui. "
+"Contatta l'amministratore."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:116
 msgid "ECDSA P-256 algorithm must use 256 bits"
@@ -1518,12 +1465,10 @@ msgid "Please select both algorithm and bits"
 msgstr "Seleziona sia l'algoritmo che i bit"
 
 #: lib/Application/Controller/EditGroupController.php:79
-#, auto-english-fallback
 msgid "You do not have permission to edit groups."
 msgstr "Non hai il permesso di modificare i gruppi."
 
 #: lib/Application/Controller/EditGroupController.php:180
-#, auto-english-fallback
 msgid "Group has been updated successfully."
 msgstr "Il gruppo è stato aggiornato con successo."
 
@@ -1556,22 +1501,18 @@ msgid "Some zone(s) could not be added."
 msgstr "Alcune zone non possono essere aggiunte."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:169
-#, auto-english-fallback
 msgid "Owner has been added successfully."
 msgstr "Il proprietario è stato aggiunto con successo."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:184
-#, auto-english-fallback
 msgid "Owner has been removed successfully."
 msgstr "Il proprietario è stato rimosso con successo."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:198
-#, auto-english-fallback
 msgid "Group has been added successfully."
 msgstr "Il gruppo è stato aggiunto con successo."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:205
-#, auto-english-fallback
 msgid "Group has been removed successfully."
 msgstr "Il gruppo è stato rimosso con successo."
 
@@ -1585,7 +1526,8 @@ msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr ""
-"La funzionalità DNSSEC non è disponibile. Controlla la configurazione dell'API PowerDNS."
+"La funzionalità DNSSEC non è disponibile. Controlla la configurazione "
+"dell'API PowerDNS."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:100
 msgid "Zone key has been successfully deactivated."
@@ -1604,10 +1546,10 @@ msgid "Failed to activate zone key."
 msgstr "Impossibile attivare la chiave della zona."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:116
-#, auto-english-fallback
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr ""
-"Si è verificato un errore durante l'attivazione/disattivazione della chiave DNSSEC. Riprova."
+"Si è verificato un errore durante l'attivazione/disattivazione della chiave "
+"DNSSEC. Riprova."
 
 #: lib/Application/Service/LdapAuthenticator.php:93
 msgid "Account is temporarily locked. Please try again later."
@@ -1667,7 +1609,6 @@ msgid "Failed to authenticate against LDAP."
 msgstr "Impossibile autenticarsi con LDAP."
 
 #: lib/Application/Service/SamlService.php:243
-#, auto-english-fallback
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Autenticazione fallita: Risposta SAML non valida"
 
@@ -1682,7 +1623,6 @@ msgid "No"
 msgstr "No"
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
-#, auto-english-fallback
 msgid "This template is assigned to at least one user and one group."
 msgstr "Questo template è assegnato ad almeno un utente e un gruppo."
 
@@ -1691,7 +1631,6 @@ msgid "This template is assigned to at least one user."
 msgstr "Questo template è assegnato ad almeno un utente."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
-#, auto-english-fallback
 msgid "This template is assigned to at least one group."
 msgstr "Questo template è assegnato ad almeno un gruppo."
 
@@ -1705,7 +1644,6 @@ msgid "An empty password is not allowed"
 msgstr "Una password vuota non è consentita"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:216
-#, auto-english-fallback
 msgid "LDAP authentication is disabled"
 msgstr "L'autenticazione LDAP è disabilitata"
 
@@ -1714,7 +1652,8 @@ msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
 msgstr ""
-"Errore del database: impossibile verificare l'autenticazione utente. Controlla la configurazione del database."
+"Errore del database: impossibile verificare l'autenticazione utente. "
+"Controlla la configurazione del database."
 
 #: lib/Domain/Repository/DomainRepository.php:201
 msgid "This is an invalid zone name."
@@ -1808,17 +1747,14 @@ msgid "Error checking template existence: "
 msgstr "Errore nel controllo dell'esistenza del template: "
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:45
-#, auto-english-fallback
 msgid "TLSA Record"
 msgstr "Record TLSA"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:46
-#, auto-english-fallback
 msgid "TLS certificate/key authentication (DANE)"
 msgstr "Autenticazione certificato/chiave TLS (DANE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:57
-#, auto-english-fallback
 msgid "DNSSEC Requirement"
 msgstr "Requisito DNSSEC"
 
@@ -1828,15 +1764,15 @@ msgid ""
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
 msgstr ""
-"I record TLSA richiedono che DNSSEC sia abilitato per questa zona. I record TLSA senza DNSSEC non forniranno benefici di sicurezza e potrebbero essere ignorati dai client."
+"I record TLSA richiedono che DNSSEC sia abilitato per questa zona. I record "
+"TLSA senza DNSSEC non forniranno benefici di sicurezza e potrebbero essere "
+"ignorati dai client."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:91
-#, auto-english-fallback
 msgid "Service Configuration"
 msgstr "Configurazione servizio"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:148
-#, auto-english-fallback
 msgid "Port Number"
 msgstr "Numero porta"
 
@@ -1847,27 +1783,22 @@ msgstr ""
 "Numero porta TCP/UDP (443 per HTTPS, 25 per SMTP, 853 per DNS-over-TLS, ecc.)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:113
-#, auto-english-fallback
 msgid "Protocol"
 msgstr "Protocollo"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:81
-#, auto-english-fallback
 msgid "Transmission Control Protocol - most common for HTTPS/TLS"
 msgstr "Transmission Control Protocol - più comune per HTTPS/TLS"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:82
-#, auto-english-fallback
 msgid "User Datagram Protocol - for DTLS connections"
 msgstr "User Datagram Protocol - per connessioni DTLS"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:121
-#, auto-english-fallback
 msgid "Stream Control Transmission Protocol"
 msgstr "Stream Control Transmission Protocol"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:85
-#, auto-english-fallback
 msgid "Transport protocol for the TLS connection"
 msgstr "Protocollo di trasporto per la connessione TLS"
 
@@ -1881,55 +1812,46 @@ msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
 msgstr ""
-"Nome host per il servizio (lascia vuoto per l'apice della zona @). Il record verrà creato a _porta._protocollo.hostname"
+"Nome host per il servizio (lascia vuoto per l'apice della zona @). Il record "
+"verrà creato a _porta._protocollo.hostname"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:98
-#, auto-english-fallback
 msgid "Certificate Usage"
 msgstr "Utilizzo certificato"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:102
-#, auto-english-fallback
 msgid "Usage"
 msgstr "Utilizzo"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
-#, auto-english-fallback
 msgid "0 - CA Constraint"
 msgstr "0 - Vincolo CA"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
-#, auto-english-fallback
 msgid "Certificate must chain to specified CA (PKIX-TA)"
 msgstr "Il certificato deve concatenarsi alla CA specificata (PKIX-TA)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
-#, auto-english-fallback
 msgid "1 - Service Certificate"
 msgstr "1 - Certificato di servizio"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
-#, auto-english-fallback
 msgid "Certificate must match exactly (PKIX-EE)"
 msgstr "Il certificato deve corrispondere esattamente (PKIX-EE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
-#, auto-english-fallback
 msgid "2 - Trust Anchor Assertion"
 msgstr "2 - Asserzione ancoraggio fiducia"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
-#, auto-english-fallback
 msgid "Certificate must chain to specified anchor (DANE-TA)"
 msgstr "Il certificato deve concatenarsi all'ancoraggio specificato (DANE-TA)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
-#, auto-english-fallback
 msgid "3 - Domain-Issued Certificate"
 msgstr "3 - Certificato emesso dal dominio"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
-#, auto-english-fallback
 msgid "Certificate must match exactly, bypassing PKI (DANE-EE)"
 msgstr ""
 "Il certificato deve corrispondere esattamente, bypassando PKI (DANE-EE)"
@@ -1939,30 +1861,26 @@ msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
 msgstr ""
-"Come deve essere validato il certificato. Il tipo 3 è più comune per certificati autofirmati o CA personalizzate."
+"Come deve essere validato il certificato. Il tipo 3 è più comune per "
+"certificati autofirmati o CA personalizzate."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:72
-#, auto-english-fallback
 msgid "Selector"
 msgstr "Selettore"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
-#, auto-english-fallback
 msgid "0 - Full Certificate"
 msgstr "0 - Certificato completo"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
-#, auto-english-fallback
 msgid "Use the entire certificate"
 msgstr "Usa l'intero certificato"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
-#, auto-english-fallback
 msgid "1 - Public Key"
 msgstr "1 - Chiave pubblica"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
-#, auto-english-fallback
 msgid "Use only the Subject Public Key Info (SPKI)"
 msgstr "Usa solo le informazioni della chiave pubblica del soggetto (SPKI)"
 
@@ -1971,40 +1889,34 @@ msgid ""
 "What part of the certificate to match. Type 1 (public key) survives "
 "certificate renewal."
 msgstr ""
-"Quale parte del certificato far corrispondere. Il tipo 1 (chiave pubblica) sopravvive al rinnovo del certificato."
+"Quale parte del certificato far corrispondere. Il tipo 1 (chiave pubblica) "
+"sopravvive al rinnovo del certificato."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:138
-#, auto-english-fallback
 msgid "Matching Type"
 msgstr "Tipo di corrispondenza"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
-#, auto-english-fallback
 msgid "0 - Exact Match"
 msgstr "0 - Corrispondenza esatta"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
-#, auto-english-fallback
 msgid "Full certificate/key data (very long record)"
 msgstr "Dati completi certificato/chiave (record molto lungo)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
-#, auto-english-fallback
 msgid "1 - SHA-256 Hash"
 msgstr "1 - Hash SHA-256"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
-#, auto-english-fallback
 msgid "SHA-256 hash of certificate/key"
 msgstr "Hash SHA-256 del certificato/chiave"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
-#, auto-english-fallback
 msgid "2 - SHA-512 Hash"
 msgstr "2 - Hash SHA-512"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
-#, auto-english-fallback
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
 msgstr "Hash SHA-512 del certificato/chiave (più sicuro ma più lungo)"
 
@@ -2013,15 +1925,14 @@ msgid ""
 "How to encode the certificate data. SHA-256 (type 1) provides good balance "
 "of security and length."
 msgstr ""
-"Come codificare i dati del certificato. SHA-256 (tipo 1) fornisce un buon equilibrio tra sicurezza e lunghezza."
+"Come codificare i dati del certificato. SHA-256 (tipo 1) fornisce un buon "
+"equilibrio tra sicurezza e lunghezza."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:152
-#, auto-english-fallback
 msgid "Certificate Data"
 msgstr "Dati certificato"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:156
-#, auto-english-fallback
 msgid "Certificate Association Data"
 msgstr "Dati associazione certificato"
 
@@ -2031,51 +1942,44 @@ msgid ""
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
 msgstr ""
-"Hash esadecimale o dati completi del certificato (a seconda del tipo di corrispondenza). Per SHA-256: usa \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
+"Hash esadecimale o dati completi del certificato (a seconda del tipo di "
+"corrispondenza). Per SHA-256: usa \"openssl x509 -in cert.pem -pubkey -noout "
+"| openssl pkey -pubin -outform DER | openssl dgst -sha256\""
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:184
-#, auto-english-fallback
 msgid "Record Settings"
 msgstr "Impostazioni record"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:188
-#, auto-english-fallback
 msgid "TTL (seconds)"
 msgstr "TTL (secondi)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:193
-#, auto-english-fallback
 msgid "Time to live - how long DNS resolvers should cache this record"
 msgstr ""
 "Time to live - quanto tempo i resolver DNS dovrebbero cachare questo record"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:289
-#, auto-english-fallback
 msgid "Port must be between 1 and 65535"
 msgstr "La porta deve essere tra 1 e 65535"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:233
-#, auto-english-fallback
 msgid "Usage must be 0, 1, 2, or 3"
 msgstr "L'utilizzo deve essere 0, 1, 2 o 3"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:238
-#, auto-english-fallback
 msgid "Selector must be 0 or 1"
 msgstr "Il selettore deve essere 0 o 1"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:243
-#, auto-english-fallback
 msgid "Matching type must be 0, 1, or 2"
 msgstr "Il tipo di corrispondenza deve essere 0, 1 o 2"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:248
-#, auto-english-fallback
 msgid "Certificate association data is required"
 msgstr "I dati di associazione del certificato sono richiesti"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:253
-#, auto-english-fallback
 msgid "Certificate data must be hexadecimal (0-9, a-f)"
 msgstr "I dati del certificato devono essere esadecimali (0-9, a-f)"
 
@@ -2085,7 +1989,8 @@ msgid ""
 "SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
 "correct."
 msgstr ""
-"L'hash SHA-256 dovrebbe essere di 64 caratteri esadecimali, ottenuto %d. Verifica che l'hash sia corretto."
+"L'hash SHA-256 dovrebbe essere di 64 caratteri esadecimali, ottenuto %d. "
+"Verifica che l'hash sia corretto."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:263
 #, php-format
@@ -2093,14 +1998,16 @@ msgid ""
 "SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
 "is correct."
 msgstr ""
-"L'hash SHA-512 dovrebbe essere di 128 caratteri esadecimali, ottenuto %d. Verifica che l'hash sia corretto."
+"L'hash SHA-512 dovrebbe essere di 128 caratteri esadecimali, ottenuto %d. "
+"Verifica che l'hash sia corretto."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:267
 msgid ""
 "Full certificate data seems too short. Ensure you provided the complete "
 "certificate."
 msgstr ""
-"I dati completi del certificato sembrano troppo corti. Assicurati di aver fornito il certificato completo."
+"I dati completi del certificato sembrano troppo corti. Assicurati di aver "
+"fornito il certificato completo."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:274
 #: templates/modern/edit.html:91 templates/modern/edit.html:607
@@ -2112,105 +2019,88 @@ msgid ""
 "CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
 "DNSSEC, TLSA records provide NO security benefit."
 msgstr ""
-"CRITICO: I record TLSA richiedono che DNSSEC sia abilitato su questa zona. Senza DNSSEC, i record TLSA non forniscono ALCUN beneficio di sicurezza."
+"CRITICO: I record TLSA richiedono che DNSSEC sia abilitato su questa zona. "
+"Senza DNSSEC, i record TLSA non forniscono ALCUN beneficio di sicurezza."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:46
-#, auto-english-fallback
 msgid "DMARC Record"
 msgstr "Record DMARC"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:47
-#, auto-english-fallback
 msgid "Email authentication policy and reporting configuration"
 msgstr "Politica di autenticazione email e configurazione report"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:59
-#, auto-english-fallback
 msgid "Policy Settings"
 msgstr "Impostazioni politica"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:138
-#, auto-english-fallback
 msgid "Policy"
 msgstr "Politica"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
-#, auto-english-fallback
 msgid "None (monitor only)"
 msgstr "Nessuna (solo monitoraggio)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
-#, auto-english-fallback
 msgid "No action taken, just collect reports for analysis"
 msgstr "Nessuna azione intrapresa, solo raccogliere report per analisi"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
-#, auto-english-fallback
 msgid "Quarantine"
 msgstr "Quarantena"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:69
-#, auto-english-fallback
 msgid "Treat suspicious emails as spam/junk"
 msgstr "Tratta le email sospette come spam/posta indesiderata"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
-#, auto-english-fallback
 msgid "Reject"
 msgstr "Rifiuta"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:70
-#, auto-english-fallback
 msgid "Block delivery of suspicious emails entirely"
 msgstr "Blocca completamente la consegna di email sospette"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:72
 msgid "Start with \"none\" to collect data before enforcing a stricter policy."
 msgstr ""
-"Inizia con \"nessuna\" per raccogliere dati prima di applicare una politica più rigorosa."
+"Inizia con \"nessuna\" per raccogliere dati prima di applicare una politica "
+"più rigorosa."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:76
-#, auto-english-fallback
 msgid "Subdomain Policy"
 msgstr "Politica sottodominio"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
-#, auto-english-fallback
 msgid "Same as domain policy"
 msgstr "Uguale alla politica del dominio"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
-#, auto-english-fallback
 msgid "Use the same policy as the main domain"
 msgstr "Usa la stessa politica del dominio principale"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
-#, auto-english-fallback
 msgid "None"
 msgstr "Nessuna"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
-#, auto-english-fallback
 msgid "Monitor only for subdomains"
 msgstr "Monitora solo per sottodomini"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
-#, auto-english-fallback
 msgid "Quarantine suspicious subdomain emails"
 msgstr "Metti in quarantena email sospette di sottodomini"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
-#, auto-english-fallback
 msgid "Reject suspicious subdomain emails"
 msgstr "Rifiuta email sospette di sottodomini"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:86
-#, auto-english-fallback
 msgid "Policy for emails from subdomains (e.g., mail.example.com)"
 msgstr "Politica per email da sottodomini (es. mail.example.com)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:90
-#, auto-english-fallback
 msgid "Policy Application Percentage"
 msgstr "Percentuale applicazione politica"
 
@@ -2219,25 +2109,22 @@ msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
 msgstr ""
-"Percentuale di messaggi a cui applicare la politica (100 = tutti i messaggi). Usa valori più bassi durante il rilascio della politica."
+"Percentuale di messaggi a cui applicare la politica (100 = tutti i "
+"messaggi). Usa valori più bassi durante il rilascio della politica."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:101
-#, auto-english-fallback
 msgid "Reporting Settings"
 msgstr "Impostazioni report"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:105
-#, auto-english-fallback
 msgid "Aggregate Report Email"
 msgstr "Email report aggregati"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:109
-#, auto-english-fallback
 msgid "Email address to receive daily aggregate reports"
 msgstr "Indirizzo email per ricevere report aggregati giornalieri"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:113
-#, auto-english-fallback
 msgid "Forensic Report Email"
 msgstr "Email report forensi"
 
@@ -2246,30 +2133,26 @@ msgid ""
 "Email address to receive detailed failure reports (optional, can be high "
 "volume)"
 msgstr ""
-"Indirizzo email per ricevere report dettagliati dei fallimenti (opzionale, può essere ad alto volume)"
+"Indirizzo email per ricevere report dettagliati dei fallimenti (opzionale, "
+"può essere ad alto volume)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:121
-#, auto-english-fallback
 msgid "Forensic Reporting Options"
 msgstr "Opzioni report forensi"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:125
-#, auto-english-fallback
 msgid "Generate reports if all authentication mechanisms fail"
 msgstr "Genera report se tutti i meccanismi di autenticazione falliscono"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:126
-#, auto-english-fallback
 msgid "Generate reports if any authentication mechanism fails"
 msgstr "Genera report se qualsiasi meccanismo di autenticazione fallisce"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:127
-#, auto-english-fallback
 msgid "Generate reports if DKIM check fails"
 msgstr "Genera report se il controllo DKIM fallisce"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:128
-#, auto-english-fallback
 msgid "Generate reports if SPF check fails"
 msgstr "Genera report se il controllo SPF fallisce"
 
@@ -2277,75 +2160,62 @@ msgstr "Genera report se il controllo SPF fallisce"
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
 msgstr ""
-"Quando generare report forensi (si applica solo se è impostata l'email forense)"
+"Quando generare report forensi (si applica solo se è impostata l'email "
+"forense)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:135
-#, auto-english-fallback
 msgid "Alignment Settings"
 msgstr "Impostazioni allineamento"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:136
-#, auto-english-fallback
 msgid "Advanced settings for SPF and DKIM alignment modes"
 msgstr "Impostazioni avanzate per le modalità di allineamento SPF e DKIM"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:140
-#, auto-english-fallback
 msgid "DKIM Alignment Mode"
 msgstr "Modalità allineamento DKIM"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
-#, auto-english-fallback
 msgid "Relaxed"
 msgstr "Rilassata"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:145
-#, auto-english-fallback
 msgid "DKIM domain can be subdomain of From: domain"
 msgstr "Il dominio DKIM può essere un sottodominio del dominio From:"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
-#, auto-english-fallback
 msgid "Strict"
 msgstr "Rigorosa"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:146
-#, auto-english-fallback
 msgid "DKIM domain must exactly match From: domain"
 msgstr "Il dominio DKIM deve corrispondere esattamente al dominio From:"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:151
-#, auto-english-fallback
 msgid "SPF Alignment Mode"
 msgstr "Modalità allineamento SPF"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
-#, auto-english-fallback
 msgid "SPF domain can be subdomain of From: domain"
 msgstr "Il dominio SPF può essere un sottodominio del dominio From:"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
-#, auto-english-fallback
 msgid "SPF domain must exactly match From: domain"
 msgstr "Il dominio SPF deve corrispondere esattamente al dominio From:"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:261
-#, auto-english-fallback
 msgid "Policy is required"
 msgstr "La politica è richiesta"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:263
-#, auto-english-fallback
 msgid "Invalid policy value"
 msgstr "Valore politica non valido"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:268
-#, auto-english-fallback
 msgid "Invalid subdomain policy value"
 msgstr "Valore politica sottodominio non valido"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:275
-#, auto-english-fallback
 msgid "Percentage must be between 0 and 100"
 msgstr "La percentuale deve essere tra 0 e 100"
 
@@ -2355,15 +2225,14 @@ msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
 msgstr ""
-"La politica si applicherà solo al %d%% dei messaggi. Usa 100%% una volta completati i test."
+"La politica si applicherà solo al %d%% dei messaggi. Usa 100%% una volta "
+"completati i test."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:283
-#, auto-english-fallback
 msgid "Invalid aggregate report email address"
 msgstr "Indirizzo email report aggregati non valido"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:287
-#, auto-english-fallback
 msgid "Invalid forensic report email address"
 msgstr "Indirizzo email report forensi non valido"
 
@@ -2378,90 +2247,74 @@ msgid ""
 "Using \"p=none\" provides monitoring only. Consider stricter policy "
 "(quarantine/reject) once you've reviewed reports."
 msgstr ""
-"L'uso di \"p=none\" fornisce solo monitoraggio. Considera una politica più rigorosa (quarantena/rifiuto) dopo aver esaminato i report."
+"L'uso di \"p=none\" fornisce solo monitoraggio. Considera una politica più "
+"rigorosa (quarantena/rifiuto) dopo aver esaminato i report."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:48
-#, auto-english-fallback
 msgid "SPF Record"
 msgstr "Record SPF"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:49
-#, auto-english-fallback
 msgid "Authorized mail server configuration"
 msgstr "Configurazione server di posta autorizzato"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:61
-#, auto-english-fallback
 msgid "Basic Mechanisms"
 msgstr "Meccanismi di base"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:62
-#, auto-english-fallback
 msgid "Select common mechanisms to authorize email sending"
 msgstr "Seleziona meccanismi comuni per autorizzare l'invio email"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:66
-#, auto-english-fallback
 msgid "MX Records"
 msgstr "Record MX"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:69
-#, auto-english-fallback
 msgid "Authorize all servers listed in MX records for this domain"
 msgstr "Autorizza tutti i server elencati nei record MX per questo dominio"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:73
-#, auto-english-fallback
 msgid "A/AAAA Records"
 msgstr "Record A/AAAA"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:76
-#, auto-english-fallback
 msgid "Authorize the domain's A and AAAA records"
 msgstr "Autorizza i record A e AAAA del dominio"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:81
-#, auto-english-fallback
 msgid "IP Addresses"
 msgstr "Indirizzi IP"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:82
-#, auto-english-fallback
 msgid "Authorized IP addresses and networks (CIDR notation supported)"
 msgstr "Indirizzi IP e reti autorizzati (notazione CIDR supportata)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:86
-#, auto-english-fallback
 msgid "IPv4 Addresses"
 msgstr "Indirizzi IPv4"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:90
-#, auto-english-fallback
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 msgstr "Un indirizzo IP o rete per riga (es. 192.0.2.1 o 192.0.2.0/24)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:94
-#, auto-english-fallback
 msgid "IPv6 Addresses"
 msgstr "Indirizzi IPv6"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:98
-#, auto-english-fallback
 msgid "One IPv6 address or network per line"
 msgstr "Un indirizzo IPv6 o rete per riga"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:103
-#, auto-english-fallback
 msgid "Include Mechanisms"
 msgstr "Meccanismi di inclusione"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:104
-#, auto-english-fallback
 msgid "Include SPF records from other domains"
 msgstr "Includi record SPF da altri domini"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:108
-#, auto-english-fallback
 msgid "Include Domains"
 msgstr "Includi domini"
 
@@ -2470,55 +2323,46 @@ msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
 msgstr ""
-"Domini i cui record SPF devono essere inclusi (uno per riga). Comuni: _spf.google.com, spf.protection.outlook.com"
+"Domini i cui record SPF devono essere inclusi (uno per riga). Comuni: "
+"_spf.google.com, spf.protection.outlook.com"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:117
-#, auto-english-fallback
 msgid "Additional Mechanisms"
 msgstr "Meccanismi aggiuntivi"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:121
-#, auto-english-fallback
 msgid "Additional A/AAAA Hosts"
 msgstr "Host A/AAAA aggiuntivi"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:125
-#, auto-english-fallback
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
 msgstr "Autorizza record A/AAAA di hostname specifici (uno per riga)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:129
-#, auto-english-fallback
 msgid "Additional MX Hosts"
 msgstr "Host MX aggiuntivi"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:133
-#, auto-english-fallback
 msgid "Authorize MX records from other domains (one per line)"
 msgstr "Autorizza record MX da altri domini (uno per riga)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:142
-#, auto-english-fallback
 msgid "Default Action"
 msgstr "Azione predefinita"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:147
-#, auto-english-fallback
 msgid "Pass all - allows anyone to send (insecure)"
 msgstr "Passa tutto - consente a chiunque di inviare (non sicuro)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:148
-#, auto-english-fallback
 msgid "Neutral (no policy)"
 msgstr "Neutrale (nessuna politica)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:149
-#, auto-english-fallback
 msgid "Soft fail (mark as spam but accept)"
 msgstr "Fallimento soft (segna come spam ma accetta)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:150
-#, auto-english-fallback
 msgid "Fail (reject unauthorized emails)"
 msgstr "Fallimento (rifiuta email non autorizzate)"
 
@@ -2527,7 +2371,8 @@ msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
 msgstr ""
-"Politica per email che non corrispondono a nessun meccanismo. Inizia con ~all (softfail) per i test."
+"Politica per email che non corrispondono a nessun meccanismo. Inizia con "
+"~all (softfail) per i test."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:289
 #, php-format
@@ -2536,7 +2381,9 @@ msgid ""
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
 msgstr ""
-"Il record SPF supera il limite di ricerca DNS (%d/10). Ciò causerà il fallimento della validazione SPF. Rimuovi alcuni meccanismi include/a/mx o usa ip4/ip6 invece."
+"Il record SPF supera il limite di ricerca DNS (%d/10). Ciò causerà il "
+"fallimento della validazione SPF. Rimuovi alcuni meccanismi include/a/mx o "
+"usa ip4/ip6 invece."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:294
 #, php-format
@@ -2544,22 +2391,21 @@ msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
 msgstr ""
-"Il record SPF ha %d ricerche DNS (limite 10). Considera l'uso di ip4/ip6 invece di meccanismi include, o consolida gli include per rimanere sotto il limite."
+"Il record SPF ha %d ricerche DNS (limite 10). Considera l'uso di ip4/ip6 "
+"invece di meccanismi include, o consolida gli include per rimanere sotto il "
+"limite."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:304
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv4 address or network: %s"
 msgstr "Indirizzo o rete IPv4 non valido: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:313
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv6 address or network: %s"
 msgstr "Indirizzo o rete IPv6 non valido: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:323
-#, auto-english-fallback
 #, php-format
 msgid "Invalid include domain: %s"
 msgstr "Dominio include non valido: %s"
@@ -2568,37 +2414,34 @@ msgstr "Dominio include non valido: %s"
 msgid ""
 "No mechanisms selected. This SPF record will only contain the default action."
 msgstr ""
-"Nessun meccanismo selezionato. Questo record SPF conterrà solo l'azione predefinita."
+"Nessun meccanismo selezionato. Questo record SPF conterrà solo l'azione "
+"predefinita."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:348
 msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
 msgstr ""
-"L'uso di \"+all\" consente a chiunque di inviare email come il tuo dominio. Questo è fortemente sconsigliato."
+"L'uso di \"+all\" consente a chiunque di inviare email come il tuo dominio. "
+"Questo è fortemente sconsigliato."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:43
-#, auto-english-fallback
 msgid "CAA Record"
 msgstr "Record CAA"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:44
-#, auto-english-fallback
 msgid "Certificate authority authorization"
 msgstr "Autorizzazione autorità di certificazione"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:68
-#, auto-english-fallback
 msgid "Custom (enter manually)"
 msgstr "Personalizzato (inserisci manualmente)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:74
-#, auto-english-fallback
 msgid "Certificate Authority"
 msgstr "Autorità di certificazione"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:78
-#, auto-english-fallback
 msgid "CA Provider"
 msgstr "Provider CA"
 
@@ -2607,10 +2450,10 @@ msgid ""
 "Select the certificate authority authorized to issue certificates for this "
 "domain"
 msgstr ""
-"Seleziona l'autorità di certificazione autorizzata a emettere certificati per questo dominio"
+"Seleziona l'autorità di certificazione autorizzata a emettere certificati "
+"per questo dominio"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:87
-#, auto-english-fallback
 msgid "CA Domain (Custom)"
 msgstr "Dominio CA (Personalizzato)"
 
@@ -2618,10 +2461,10 @@ msgstr "Dominio CA (Personalizzato)"
 msgid ""
 "Enter the CA domain name manually (only shown when \"Custom\" is selected)"
 msgstr ""
-"Inserisci il nome di dominio CA manualmente (mostrato solo quando è selezionato \"Personalizzato\")"
+"Inserisci il nome di dominio CA manualmente (mostrato solo quando è "
+"selezionato \"Personalizzato\")"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:97
-#, auto-english-fallback
 msgid "Certificate Type"
 msgstr "Tipo certificato"
 
@@ -2631,77 +2474,62 @@ msgid "Tag"
 msgstr "Tag"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
-#, auto-english-fallback
 msgid "Issue"
 msgstr "Emetti"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
-#, auto-english-fallback
 msgid "Authorize issuance of standard certificates"
 msgstr "Autorizza l'emissione di certificati standard"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
-#, auto-english-fallback
 msgid "Issue Wildcard"
 msgstr "Emetti wildcard"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
-#, auto-english-fallback
 msgid "Authorize issuance of wildcard certificates (*.example.com)"
 msgstr "Autorizza l'emissione di certificati wildcard (*.example.com)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
-#, auto-english-fallback
 msgid "Incident Reporting"
 msgstr "Segnalazione incidenti"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
-#, auto-english-fallback
 msgid "URL to report certificate issuance violations"
 msgstr "URL per segnalare violazioni di emissione certificati"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:110
-#, auto-english-fallback
 msgid "Type of authorization or reporting"
 msgstr "Tipo di autorizzazione o segnalazione"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:114
-#, auto-english-fallback
 msgid "Reporting URL"
 msgstr "URL segnalazione"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:119
-#, auto-english-fallback
 msgid "URL or email for incident reports (mailto: or https:)"
 msgstr "URL o email per segnalazioni incidenti (mailto: o https:)"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:103
-#, auto-english-fallback
 msgid "Advanced Options"
 msgstr "Opzioni avanzate"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:130
-#, auto-english-fallback
 msgid "Flags"
 msgstr "Flag"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
-#, auto-english-fallback
 msgid "Non-critical"
 msgstr "Non critico"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
-#, auto-english-fallback
 msgid "Allow fallback if not understood"
 msgstr "Consenti fallback se non compreso"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
-#, auto-english-fallback
 msgid "Critical"
 msgstr "Critico"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
-#, auto-english-fallback
 msgid "Reject if not understood - strict enforcement"
 msgstr "Rifiuta se non compreso - applicazione rigorosa"
 
@@ -2710,25 +2538,24 @@ msgid ""
 "Non-critical (0) provides better compatibility. Critical (128) enforces "
 "strict CAA processing."
 msgstr ""
-"Non critico (0) fornisce migliore compatibilità. Critico (128) impone elaborazione CAA rigorosa."
+"Non critico (0) fornisce migliore compatibilità. Critico (128) impone "
+"elaborazione CAA rigorosa."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:204
-#, auto-english-fallback
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
 msgstr "Tag CAA non valido. Deve essere issue, issuewild o iodef"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:210
-#, auto-english-fallback
 msgid "CA provider is required"
 msgstr "Il provider CA è richiesto"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:213
 msgid "Custom CA domain is required when \"Custom\" is selected"
 msgstr ""
-"Il dominio CA personalizzato è richiesto quando è selezionato \"Personalizzato\""
+"Il dominio CA personalizzato è richiesto quando è selezionato "
+"\"Personalizzato\""
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:215
-#, auto-english-fallback
 msgid "Invalid CA domain format"
 msgstr "Formato dominio CA non valido"
 
@@ -2737,21 +2564,19 @@ msgid ""
 "Using \";\" allows ALL certificate authorities to issue certificates. This "
 "defeats the purpose of CAA records."
 msgstr ""
-"L'uso di \";\" consente a TUTTE le autorità di certificazione di emettere certificati. Questo vanifica lo scopo dei record CAA."
+"L'uso di \";\" consente a TUTTE le autorità di certificazione di emettere "
+"certificati. Questo vanifica lo scopo dei record CAA."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:227
-#, auto-english-fallback
 msgid "Reporting URL is required for iodef tag"
 msgstr "L'URL di segnalazione è richiesto per il tag iodef"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
-#, auto-english-fallback
 #, php-format
 msgid "Reporting URL must start with %s, %s, or %s"
 msgstr "L'URL di segnalazione deve iniziare con %s, %s o %s"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
-#, auto-english-fallback
 msgid "Flags must be 0 or 128"
 msgstr "I flag devono essere 0 o 128"
 
@@ -2760,15 +2585,15 @@ msgid ""
 "Critical flag (128) is set. Systems that do not understand CAA records will "
 "reject operations. Use 0 unless you have a specific requirement."
 msgstr ""
-"Il flag critico (128) è impostato. I sistemi che non comprendono i record CAA rifiuteranno le operazioni. Usa 0 a meno che tu non abbia un requisito specifico."
+"Il flag critico (128) è impostato. I sistemi che non comprendono i record "
+"CAA rifiuteranno le operazioni. Usa 0 a meno che tu non abbia un requisito "
+"specifico."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:46
-#, auto-english-fallback
 msgid "DKIM Record"
 msgstr "Record DKIM"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:47
-#, auto-english-fallback
 msgid "Email signature verification public key"
 msgstr "Chiave pubblica di verifica firma email"
 
@@ -2784,10 +2609,13 @@ msgid ""
 "the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your "
 "mail server (never share it)."
 msgstr ""
-"DKIM prova che le email provengono dal tuo dominio usando firme crittografiche. Genera la coppia di chiavi DKIM sul tuo SERVER EMAIL (Postfix, Exim, ecc.). Solo la CHIAVE PUBBLICA va in questo record DNS. Mantieni la CHIAVE PRIVATA sicura sul tuo server email (non condividerla mai)."
+"DKIM prova che le email provengono dal tuo dominio usando firme "
+"crittografiche. Genera la coppia di chiavi DKIM sul tuo SERVER EMAIL "
+"(Postfix, Exim, ecc.). Solo la CHIAVE PUBBLICA va in questo record DNS. "
+"Mantieni la CHIAVE PRIVATA sicura sul tuo server email (non condividerla "
+"mai)."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:68
-#, auto-english-fallback
 msgid "DKIM Configuration"
 msgstr "Configurazione DKIM"
 
@@ -2797,10 +2625,11 @@ msgid ""
 "\"202501\", or service name like \"google\"). Only alphanumeric characters, "
 "hyphens, and underscores allowed."
 msgstr ""
-"Selettore per identificare la chiave DKIM (comunemente \"default\", timestamp come \"202501\", o nome servizio come \"google\"). Sono consentiti solo caratteri alfanumerici, trattini e underscore."
+"Selettore per identificare la chiave DKIM (comunemente \"default\", "
+"timestamp come \"202501\", o nome servizio come \"google\"). Sono consentiti "
+"solo caratteri alfanumerici, trattini e underscore."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:81
-#, auto-english-fallback
 msgid "Public Key"
 msgstr "Chiave pubblica"
 
@@ -2809,30 +2638,26 @@ msgid ""
 "Paste the base64-encoded public key from your mail server. Spaces and "
 "newlines will be automatically removed."
 msgstr ""
-"Incolla la chiave pubblica codificata base64 dal tuo server email. Spazi e nuove righe saranno automaticamente rimossi."
+"Incolla la chiave pubblica codificata base64 dal tuo server email. Spazi e "
+"nuove righe saranno automaticamente rimossi."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:90
-#, auto-english-fallback
 msgid "Key Type"
 msgstr "Tipo chiave"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:95
-#, auto-english-fallback
 msgid "Widely supported by all mail servers"
 msgstr "Ampiamente supportato da tutti i server email"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:96
-#, auto-english-fallback
 msgid "Newer algorithm - not universally supported yet"
 msgstr "Algoritmo più recente - non ancora universalmente supportato"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:98
-#, auto-english-fallback
 msgid "Encryption algorithm for the DKIM public key"
 msgstr "Algoritmo di crittografia per la chiave pubblica DKIM"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:109
-#, auto-english-fallback
 msgid "Testing Mode"
 msgstr "Modalità test"
 
@@ -2841,10 +2666,10 @@ msgid ""
 "Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
 "Use during initial deployment."
 msgstr ""
-"Abilita modalità test (t=y). Le firme DKIM saranno presenti ma non applicate. Usa durante il deployment iniziale."
+"Abilita modalità test (t=y). Le firme DKIM saranno presenti ma non "
+"applicate. Usa durante il deployment iniziale."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:116
-#, auto-english-fallback
 msgid "Strict Subdomain Mode"
 msgstr "Modalità sottodominio rigorosa"
 
@@ -2852,10 +2677,10 @@ msgstr "Modalità sottodominio rigorosa"
 msgid ""
 "Enable strict subdomain mode (t=s). Rejects unsigned mail from subdomains."
 msgstr ""
-"Abilita modalità sottodominio rigorosa (t=s). Rifiuta posta non firmata da sottodomini."
+"Abilita modalità sottodominio rigorosa (t=s). Rifiuta posta non firmata da "
+"sottodomini."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:198
-#, auto-english-fallback
 msgid "Selector is required"
 msgstr "Il selettore è richiesto"
 
@@ -2866,12 +2691,10 @@ msgstr ""
 "Il selettore può contenere solo caratteri alfanumerici, trattini e underscore"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:205
-#, auto-english-fallback
 msgid "Public key is required"
 msgstr "La chiave pubblica è richiesta"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:211
-#, auto-english-fallback
 msgid "Public key must be valid base64-encoded data"
 msgstr "La chiave pubblica deve essere dati validi codificati base64"
 
@@ -2880,76 +2703,72 @@ msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
 msgstr ""
-"La chiave pubblica sembra insolitamente corta. Assicurati di aver copiato la chiave completa dal tuo server email."
+"La chiave pubblica sembra insolitamente corta. Assicurati di aver copiato la "
+"chiave completa dal tuo server email."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:221
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
 msgstr ""
-"Hai incollato una CHIAVE PRIVATA. Solo la CHIAVE PUBBLICA dovrebbe essere in DNS. Non condividere mai la tua chiave privata!"
+"Hai incollato una CHIAVE PRIVATA. Solo la CHIAVE PUBBLICA dovrebbe essere in "
+"DNS. Non condividere mai la tua chiave privata!"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:225
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
 msgstr ""
-"La chiave pubblica sembra contenere intestazioni PEM (BEGIN/END). È necessario solo il contenuto base64 tra le intestazioni."
+"La chiave pubblica sembra contenere intestazioni PEM (BEGIN/END). È "
+"necessario solo il contenuto base64 tra le intestazioni."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:239
 msgid ""
 "Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
 "this once testing is complete."
 msgstr ""
-"La modalità test è abilitata (t=y). Le firme DKIM non saranno applicate. Disabilita questo una volta completati i test."
+"La modalità test è abilitata (t=y). Le firme DKIM non saranno applicate. "
+"Disabilita questo una volta completati i test."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:68
-#, auto-english-fallback
 msgid "SRV Record"
 msgstr "Record SRV"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:69
-#, auto-english-fallback
 msgid "Service location (hostname and port)"
 msgstr "Posizione servizio (hostname e porta)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:95
-#, auto-english-fallback
 msgid "Service"
 msgstr "Servizio"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:100
 msgid "Select a common service or choose \"Custom\" to enter manually"
 msgstr ""
-"Seleziona un servizio comune o scegli \"Personalizzato\" per inserire manualmente"
+"Seleziona un servizio comune o scegli \"Personalizzato\" per inserire "
+"manualmente"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:104
-#, auto-english-fallback
 msgid "Custom Service Name"
 msgstr "Nome servizio personalizzato"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:109
-#, auto-english-fallback
 msgid "Service name must start with underscore (e.g., _myservice)"
 msgstr "Il nome servizio deve iniziare con underscore (es. _mioservizio)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:118
-#, auto-english-fallback
 msgid "Transmission Control Protocol - most common"
 msgstr "Transmission Control Protocol - più comune"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:119
-#, auto-english-fallback
 msgid "User Datagram Protocol - connectionless"
 msgstr "User Datagram Protocol - senza connessione"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:120
-#, auto-english-fallback
 msgid "Transport Layer Security"
 msgstr "Transport Layer Security"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:123
-#, auto-english-fallback
 msgid "Transport protocol for the service"
 msgstr "Protocollo di trasporto per il servizio"
 
@@ -2963,15 +2782,14 @@ msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
 msgstr ""
-"Nome dominio (lascia vuoto per l'apice zona @). Il nome record completo sarà: _servizio._protocollo.dominio"
+"Nome dominio (lascia vuoto per l'apice zona @). Il nome record completo "
+"sarà: _servizio._protocollo.dominio"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:136
-#, auto-english-fallback
 msgid "Target Server"
 msgstr "Server di destinazione"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:140
-#, auto-english-fallback
 msgid "Target Hostname"
 msgstr "Hostname di destinazione"
 
@@ -2980,17 +2798,18 @@ msgid ""
 "Hostname of the server providing this service (must be a hostname with an A/"
 "AAAA record, not an IP address)"
 msgstr ""
-"Hostname del server che fornisce questo servizio (deve essere un hostname con un record A/AAAA, non un indirizzo IP)"
+"Hostname del server che fornisce questo servizio (deve essere un hostname "
+"con un record A/AAAA, non un indirizzo IP)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:154
 msgid ""
 "Port number where the service is listening (automatically filled for common "
 "services)"
 msgstr ""
-"Numero porta dove il servizio è in ascolto (compilato automaticamente per servizi comuni)"
+"Numero porta dove il servizio è in ascolto (compilato automaticamente per "
+"servizi comuni)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:159
-#, auto-english-fallback
 msgid "Priority & Load Balancing"
 msgstr "Priorità e bilanciamento del carico"
 
@@ -3004,10 +2823,10 @@ msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
 msgstr ""
-"Valori più bassi hanno priorità maggiore (10 è un buon valore predefinito). I client provano i server in ordine di priorità."
+"Valori più bassi hanno priorità maggiore (10 è un buon valore predefinito). "
+"I client provano i server in ordine di priorità."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:173
-#, auto-english-fallback
 msgid "Weight"
 msgstr "Peso"
 
@@ -3016,31 +2835,26 @@ msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
 msgstr ""
-"Per il bilanciamento del carico tra server con stessa priorità. Peso maggiore = più traffico. 0 = nessun bilanciamento."
+"Per il bilanciamento del carico tra server con stessa priorità. Peso "
+"maggiore = più traffico. 0 = nessun bilanciamento."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:261
-#, auto-english-fallback
 msgid "Service is required"
 msgstr "Il servizio è richiesto"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:265
-#, auto-english-fallback
 msgid "Custom service name is required"
 msgstr "Il nome servizio personalizzato è richiesto"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:267
-#, auto-english-fallback
 msgid "Service name must contain only alphanumeric characters and hyphens"
-msgstr ""
-"Il nome servizio deve contenere solo caratteri alfanumerici e trattini"
+msgstr "Il nome servizio deve contenere solo caratteri alfanumerici e trattini"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:273
-#, auto-english-fallback
 msgid "Target hostname is required"
 msgstr "L'hostname di destinazione è richiesto"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:277
-#, auto-english-fallback
 msgid "Invalid target hostname format"
 msgstr "Formato hostname di destinazione non valido"
 
@@ -3049,10 +2863,10 @@ msgid ""
 "Target must be a hostname, not an IP address. Create an A or AAAA record for "
 "the hostname first."
 msgstr ""
-"La destinazione deve essere un hostname, non un indirizzo IP. Crea prima un record A o AAAA per l'hostname."
+"La destinazione deve essere un hostname, non un indirizzo IP. Crea prima un "
+"record A o AAAA per l'hostname."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:295
-#, auto-english-fallback
 msgid "Priority must be between 0 and 65535"
 msgstr "La priorità deve essere tra 0 e 65535"
 
@@ -3060,15 +2874,14 @@ msgstr "La priorità deve essere tra 0 e 65535"
 msgid ""
 "Priority 0 is valid but unusual. Most services use priority 10 or higher."
 msgstr ""
-"La priorità 0 è valida ma insolita. La maggior parte dei servizi usa priorità 10 o superiore."
+"La priorità 0 è valida ma insolita. La maggior parte dei servizi usa "
+"priorità 10 o superiore."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:305
-#, auto-english-fallback
 msgid "Weight must be between 0 and 65535"
 msgstr "Il peso deve essere tra 0 e 65535"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:310
-#, auto-english-fallback
 msgid "Invalid domain format"
 msgstr "Formato dominio non valido"
 
@@ -5913,14 +5726,14 @@ msgstr ""
 "Il tempo di scadenza deve essere successivo al tempo di inizio. Questa firma "
 "sembra essere scaduta prima di diventare valida."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
 msgstr ""
 "CRITICO: Questa firma è già scaduta. Non sarà validata dai resolver DNSSEC."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
@@ -5928,11 +5741,11 @@ msgstr ""
 "AVVISO: Questa firma scadrà entro i prossimi 7 giorni. Considera di "
 "rinnovarla presto."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
 msgstr "Questa firma scadrà entro i prossimi 30 giorni. Pianifica il rinnovo."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
@@ -5940,7 +5753,7 @@ msgstr ""
 "AVVISO: Questa firma non è ancora valida. Non sarà validata dai resolver "
 "DNSSEC finché non viene raggiunto il tempo di inizio."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:291
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
 msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
@@ -5950,37 +5763,37 @@ msgstr ""
 "delle pratiche raccomandate. Periodi di validità lunghi aumentano la "
 "vulnerabilità in caso di compromissione della chiave."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:295
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
 msgstr ""
 "Impossibile analizzare i timestamp della firma per verificare il periodo di "
 "validità."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:300
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:302
 msgid "RRSIG key tag field must be a numeric value."
 msgstr "Il campo tag chiave RRSIG deve essere un valore numerico."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:305
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:307
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
 msgstr ""
 "Il tag chiave RRSIG deve essere un valore valido compreso tra 0 e 65535."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:310
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
 msgstr ""
 "Il nome firmatario RRSIG deve essere un nome di dominio completamente "
 "qualificato (terminare con un punto)."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:316
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
 msgstr "Il nome firmatario RRSIG deve essere un nome di dominio valido."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:321
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
 msgstr "La firma RRSIG non può essere vuota."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:326
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
@@ -5988,7 +5801,7 @@ msgstr ""
 "La firma non sembra essere dati codificati base64 validi. Le firme RRSIG "
 "devono essere codificate base64."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:330
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
 "RRSIG records are part of DNSSEC and provide cryptographic signatures for "
 "DNS records. They should be managed automatically by the DNS server."
@@ -5996,7 +5809,7 @@ msgstr ""
 "I record RRSIG fanno parte di DNSSEC e forniscono firme crittografiche per i "
 "record DNS. Devono essere gestiti automaticamente dal server DNS."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:333
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
@@ -6710,36 +6523,30 @@ msgstr ""
 "Indirizzo IPv6 non valido: ogni hextet deve essere di 4 cifre esadecimali."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
-#, auto-english-fallback
 msgid "IP address list cannot be empty."
 msgstr "L'elenco indirizzi IP non può essere vuoto."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
 msgstr "Indirizzo IPv6 non valido in %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
-#, auto-english-fallback
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
 msgstr "Numero porta non valido: %d (deve essere 1-65535)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
-#, auto-english-fallback
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
 msgstr "Formato server non valido: %s (atteso IP:porta o [IPv6]:porta)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
 msgstr "Indirizzo IPv4 non valido in %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
-#, auto-english-fallback
 #, php-format
 msgid "Invalid IP address: %s"
 msgstr "Indirizzo IP non valido: %s"
@@ -6794,7 +6601,6 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "Dominio CA non valido nel tag issuewild."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-#, auto-english-fallback
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "Il valore CAA iodef deve essere un URL che inizia con %s, %s o %s."
@@ -6851,35 +6657,33 @@ msgid "Given hostname or one of the labels is too short or too long."
 msgstr "Il nome host dato o una delle etichette è troppo corta o troppo lunga."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:128
-#, auto-english-fallback
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
 msgstr "Più barre in etichette diverse non sono consentite nelle zone ARPA."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
-#, auto-english-fallback
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
 msgstr "Formato RFC 2317 non valido. Usa formato: subnet/prefix (es. 0/26)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
-#, auto-english-fallback
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
 msgstr ""
-"Numero subnet non valido nella notazione RFC 2317. Deve essere 0-255 per IPv4."
+"Numero subnet non valido nella notazione RFC 2317. Deve essere 0-255 per "
+"IPv4."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:159
 msgid ""
 "Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
 msgstr ""
-"Subnet non valida nella notazione RFC 2317. Deve essere esadecimale (0-9, a-f) per IPv6."
+"Subnet non valida nella notazione RFC 2317. Deve essere esadecimale (0-9, a-"
+"f) per IPv6."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
-#, auto-english-fallback
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
 msgstr ""
-"Subnet non valida nella notazione RFC 2317. Deve essere numerica o esadecimale."
+"Subnet non valida nella notazione RFC 2317. Deve essere numerica o "
+"esadecimale."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
-#, auto-english-fallback
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
 msgstr ""
 "Lunghezza prefisso non valida nella notazione RFC 2317. Deve essere numerica."
@@ -6889,22 +6693,21 @@ msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
 msgstr ""
-"Lunghezza prefisso IPv4 non valida per RFC 2317. Tipicamente 24-32 (delegazione classless solitamente 25-31)."
+"Lunghezza prefisso IPv4 non valida per RFC 2317. Tipicamente 24-32 "
+"(delegazione classless solitamente 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
-#, auto-english-fallback
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 msgstr ""
-"La subnet %d non è allineata con il prefisso /%d. Dovrebbe essere multiplo di %d."
+"La subnet %d non è allineata con il prefisso /%d. Dovrebbe essere multiplo "
+"di %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
-#, auto-english-fallback
 msgid "Invalid IPv6 prefix length. Must be 0-128."
 msgstr "Lunghezza prefisso IPv6 non valida. Deve essere 0-128."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:209
-#, auto-english-fallback
 msgid "Invalid prefix length. Must be 0-128."
 msgstr "Lunghezza prefisso non valida. Deve essere 0-128."
 
@@ -7097,7 +6900,8 @@ msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
-"Il nome record SMIMEA è nel formato: SHA256(parte-locale)._smimecert.dominio.tld per indirizzi email come %s"
+"Il nome record SMIMEA è nel formato: SHA256(parte-"
+"locale)._smimecert.dominio.tld per indirizzi email come %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7925,7 +7729,8 @@ msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
 msgstr ""
-"Il contenuto del record TXT supera la lunghezza massima di %d byte. Riduci la dimensione del contenuto."
+"Il contenuto del record TXT supera la lunghezza massima di %d byte. Riduci "
+"la dimensione del contenuto."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
@@ -7941,7 +7746,8 @@ msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
 msgstr ""
-"Il contenuto totale del record TXT supera la lunghezza massima di %d byte. Riduci la dimensione del contenuto."
+"Il contenuto totale del record TXT supera la lunghezza massima di %d byte. "
+"Riduci la dimensione del contenuto."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
@@ -8440,9 +8246,9 @@ msgid ""
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr ""
-"Il servizio NAPTR deve seguire il formato: [protocollo][+rs][+rs]... "
-"dove protocollo e rs iniziano con una lettera e contengono solo "
-"caratteri alfanumerici (max 32 caratteri ciascuno)."
+"Il servizio NAPTR deve seguire il formato: [protocollo][+rs][+rs]... dove "
+"protocollo e rs iniziano con una lettera e contengono solo caratteri "
+"alfanumerici (max 32 caratteri ciascuno)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8667,24 +8473,21 @@ msgid "You do not have permission to regenerate API keys."
 msgstr "Non si dispone del permesso di rigenerare le chiavi API."
 
 #: lib/Domain/Service/ZoneValidationService.php:128
-#, auto-english-fallback
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr ""
-"Nessun record SOA presente, o attivo, nella zona. Questo è richiesto per DNSSEC."
+"Nessun record SOA presente, o attivo, nella zona. Questo è richiesto per "
+"DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:129
-#, auto-english-fallback
 msgid "Add an SOA record to the zone before attempting to sign it."
 msgstr "Aggiungi un record SOA alla zona prima di tentare di firmarla."
 
 #: lib/Domain/Service/ZoneValidationService.php:135
-#, auto-english-fallback
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
 msgstr "La zona ha %d record SOA. È consentito un solo record SOA per zona."
 
 #: lib/Domain/Service/ZoneValidationService.php:136
-#, auto-english-fallback
 msgid "Remove duplicate SOA records, keeping only one."
 msgstr "Rimuovi i record SOA duplicati, mantenendone solo uno."
 
@@ -8694,12 +8497,10 @@ msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
 msgstr "Record SOA non all'apice. Trovato in \"%s\" ma la zona è \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:148
-#, auto-english-fallback
 msgid "Move the SOA record to the zone apex."
 msgstr "Sposta il record SOA all'apice della zona."
 
 #: lib/Domain/Service/ZoneValidationService.php:158
-#, auto-english-fallback
 msgid "SOA record has invalid content format."
 msgstr "Il record SOA ha un formato contenuto non valido."
 
@@ -8708,33 +8509,31 @@ msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
 msgstr ""
-"Il formato SOA dovrebbe essere: ns-primario hostmaster seriale refresh retry expire minimo"
+"Il formato SOA dovrebbe essere: ns-primario hostmaster seriale refresh retry "
+"expire minimo"
 
 #: lib/Domain/Service/ZoneValidationService.php:218
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
 msgstr ""
-"La zona non ha record NS (Name Server) all'apice. È richiesto almeno un record NS all'apice per DNSSEC."
+"La zona non ha record NS (Name Server) all'apice. È richiesto almeno un "
+"record NS all'apice per DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:219
-#, auto-english-fallback
 msgid "Add NS records at the zone apex for your authoritative name servers."
 msgstr ""
 "Aggiungi record NS all'apice della zona per i tuoi name server autorevoli."
 
 #: lib/Domain/Service/ZoneValidationService.php:265
-#, auto-english-fallback
 msgid "DNSSEC signing cannot proceed due to the following errors:"
 msgstr "La firma DNSSEC non può procedere a causa dei seguenti errori:"
 
 #: lib/Domain/Service/ZoneValidationService.php:287
-#, auto-english-fallback
 msgid "Additionally, the following warnings were found:"
 msgstr "Inoltre, sono stati trovati i seguenti avvisi:"
 
 #: lib/Domain/Service/ZoneValidationService.php:289
-#, auto-english-fallback
 msgid "The following warnings were found:"
 msgstr "Sono stati trovati i seguenti avvisi:"
 
@@ -8758,7 +8557,8 @@ msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
 msgstr ""
-"Record inverso aggiunto. Avviso: Un record PTR per %s esiste già puntando a: %s. Avere più record PTR per lo stesso IP non è raccomandato."
+"Record inverso aggiunto. Avviso: Un record PTR per %s esiste già puntando a: "
+"%s. Avere più record PTR per lo stesso IP non è raccomandato."
 
 #: lib/Domain/Service/Dns/RecordManager.php:215
 msgid "You do not have the permission to add SOA record."
@@ -9415,27 +9215,22 @@ msgid "Send Reset Link"
 msgstr "Invia Link di Ripristino"
 
 #: templates/modern/manage_group_members.html:4
-#, auto-english-fallback
 msgid "Groups"
 msgstr "Gruppi"
 
 #: templates/default/list_groups.html:10 templates/modern/list_groups.html:10
-#, auto-english-fallback
 msgid "Group Management"
 msgstr "Gestione gruppi"
 
 #: templates/modern/header.html:204 templates/modern/add_group.html:5
-#, auto-english-fallback
 msgid "Add group"
 msgstr "Aggiungi gruppo"
 
 #: templates/modern/edit_user.html:254 templates/modern/add_user.html:189
-#, auto-english-fallback
 msgid "No groups found"
 msgstr "Nessun gruppo trovato"
 
 #: templates/modern/list_groups.html:50 templates/modern/edit_group.html:70
-#, auto-english-fallback
 msgid "Members"
 msgstr "Membri"
 
@@ -9444,17 +9239,14 @@ msgid "Zones"
 msgstr "Zone"
 
 #: templates/modern/manage_group_members.html:6
-#, auto-english-fallback
 msgid "Manage members"
 msgstr "Gestisci membri"
 
 #: templates/modern/manage_group_zones.html:6
-#, auto-english-fallback
 msgid "Manage zones"
 msgstr "Gestisci zone"
 
 #: templates/modern/list_groups.html:55 templates/modern/edit_group.html:5
-#, auto-english-fallback
 msgid "Edit group"
 msgstr "Modifica gruppo"
 
@@ -9463,7 +9255,6 @@ msgid "Edit"
 msgstr "Modifica"
 
 #: templates/modern/list_groups.html:58 templates/modern/delete_group.html:5
-#, auto-english-fallback
 msgid "Delete group"
 msgstr "Elimina gruppo"
 
@@ -9488,32 +9279,26 @@ msgid "Update"
 msgstr "Aggiorna"
 
 #: templates/default/edit_group.html:13 templates/modern/edit_group.html:13
-#, auto-english-fallback
 msgid "Edit Group"
 msgstr "Modifica gruppo"
 
 #: templates/modern/edit_group.html:23 templates/modern/add_group.html:20
-#, auto-english-fallback
 msgid "Group Name"
 msgstr "Nome gruppo"
 
 #: templates/modern/edit_group.html:25 templates/modern/add_group.html:22
-#, auto-english-fallback
 msgid "Unique name for this group"
 msgstr "Nome univoco per questo gruppo"
 
 #: templates/modern/edit_group.html:26 templates/modern/add_group.html:23
-#, auto-english-fallback
 msgid "Provide group name"
 msgstr "Fornisci nome gruppo"
 
 #: templates/modern/edit_group.html:32 templates/modern/add_group.html:29
-#, auto-english-fallback
 msgid "Optional information about this group"
 msgstr "Informazioni opzionali su questo gruppo"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
-#, auto-english-fallback
 msgid "Access template"
 msgstr "Template di accesso"
 
@@ -9521,75 +9306,62 @@ msgstr "Template di accesso"
 msgid ""
 "Group members inherit these permissions only for zones owned by this group"
 msgstr ""
-"I membri del gruppo ereditano questi permessi solo per le zone possedute da questo gruppo"
+"I membri del gruppo ereditano questi permessi solo per le zone possedute da "
+"questo gruppo"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:45
-#, auto-english-fallback
 msgid "Select an access template"
 msgstr "Seleziona un template di accesso"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
-#, auto-english-fallback
 msgid "Update Group"
 msgstr "Aggiorna gruppo"
 
 #: templates/modern/edit_group.html:74 templates/modern/edit_group.html:118
-#, auto-english-fallback
 msgid "Manage"
 msgstr "Gestisci"
 
 #: templates/default/edit_group.html:81 templates/modern/edit_group.html:81
-#, auto-english-fallback
 msgid "No members in this group yet."
 msgstr "Nessun membro in questo gruppo ancora."
 
 #: templates/modern/edit_group.html:144 templates/modern/edit_user.html:220
-#, auto-english-fallback
 msgid "Remove from group"
 msgstr "Rimuovi dal gruppo"
 
 #: templates/modern/edit_group.html:151 templates/modern/delete_group.html:68
-#, auto-english-fallback
 msgid "and"
 msgstr "e"
 
 #: templates/modern/edit_group.html:101 templates/modern/edit_group.html:151
-#, auto-english-fallback
 msgid "more..."
 msgstr "altro..."
 
 #: templates/default/edit_group.html:125 templates/modern/edit_group.html:125
-#, auto-english-fallback
 msgid "This group doesn't own any zones yet."
 msgstr "Questo gruppo non possiede ancora alcuna zona."
 
 #: templates/modern/manage_group_zones.html:113
-#, auto-english-fallback
 msgid "Master"
 msgstr "Master"
 
 #: templates/modern/manage_group_zones.html:115
-#, auto-english-fallback
 msgid "Slave"
 msgstr "Slave"
 
 #: templates/modern/manage_group_zones.html:117
-#, auto-english-fallback
 msgid "Native"
 msgstr "Native"
 
 #: templates/default/edit_group.html:182 templates/modern/edit_group.html:182
-#, auto-english-fallback
 msgid "Confirm Member Removal"
 msgstr "Conferma rimozione membro"
 
 #: templates/default/edit_group.html:187 templates/modern/edit_group.html:187
-#, auto-english-fallback
 msgid "Are you sure you want to remove user"
 msgstr "Sei sicuro di voler rimuovere l'utente"
 
 #: templates/modern/edit_group.html:187 templates/modern/edit_group.html:213
-#, auto-english-fallback
 msgid "from this group?"
 msgstr "da questo gruppo?"
 
@@ -9597,20 +9369,18 @@ msgstr "da questo gruppo?"
 msgid ""
 "This action will immediately revoke any permissions granted by this group."
 msgstr ""
-"Questa azione revocherà immediatamente tutti i permessi concessi da questo gruppo."
+"Questa azione revocherà immediatamente tutti i permessi concessi da questo "
+"gruppo."
 
 #: templates/modern/manage_group_members.html:139
-#, auto-english-fallback
 msgid "Remove"
 msgstr "Rimuovi"
 
 #: templates/default/edit_group.html:208 templates/modern/edit_group.html:208
-#, auto-english-fallback
 msgid "Confirm Zone Removal"
 msgstr "Conferma rimozione zona"
 
 #: templates/default/edit_group.html:213 templates/modern/edit_group.html:213
-#, auto-english-fallback
 msgid "Are you sure you want to remove zone"
 msgstr "Sei sicuro di voler rimuovere la zona"
 
@@ -9622,12 +9392,10 @@ msgstr ""
 "La zona rimarrà nel sistema ma questo gruppo non ne avrà più la proprietà."
 
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
-#, auto-english-fallback
 msgid "Delete Group"
 msgstr "Elimina gruppo"
 
 #: templates/default/delete_group.html:16 templates/modern/delete_group.html:16
-#, auto-english-fallback
 msgid "You are about to delete the group"
 msgstr "Stai per eliminare il gruppo"
 
@@ -9636,42 +9404,34 @@ msgid "This action cannot be undone. Are you sure you want to proceed?"
 msgstr "Questa azione non può essere annullata. Sei sicuro di voler procedere?"
 
 #: templates/default/delete_group.html:22 templates/modern/delete_group.html:22
-#, auto-english-fallback
 msgid "Deletion Impact"
 msgstr "Impatto eliminazione"
 
 #: templates/default/delete_group.html:29 templates/modern/delete_group.html:29
-#, auto-english-fallback
 msgid "member will be removed from this group"
 msgstr "membro sarà rimosso da questo gruppo"
 
 #: templates/default/delete_group.html:31 templates/modern/delete_group.html:31
-#, auto-english-fallback
 msgid "members will be removed from this group"
 msgstr "membri saranno rimossi da questo gruppo"
 
 #: templates/default/delete_group.html:37 templates/modern/delete_group.html:37
-#, auto-english-fallback
 msgid "zone will lose this group ownership"
 msgstr "zona perderà la proprietà di questo gruppo"
 
 #: templates/default/delete_group.html:39 templates/modern/delete_group.html:39
-#, auto-english-fallback
 msgid "zones will lose this group ownership"
 msgstr "zone perderanno la proprietà di questo gruppo"
 
 #: templates/default/delete_group.html:49 templates/modern/delete_group.html:49
-#, auto-english-fallback
 msgid "Affected Zones"
 msgstr "Zone interessate"
 
 #: templates/default/delete_group.html:51 templates/modern/delete_group.html:51
-#, auto-english-fallback
 msgid "showing first 20"
 msgstr "mostrando i primi 20"
 
 #: templates/default/delete_group.html:68 templates/modern/delete_group.html:68
-#, auto-english-fallback
 msgid "more zones..."
 msgstr "più zone..."
 
@@ -9684,15 +9444,15 @@ msgid ""
 "Members will lose access to all zones owned by this group. Zones without any "
 "remaining owners will still exist but will be inaccessible to regular users."
 msgstr ""
-"I membri perderanno l'accesso a tutte le zone possedute da questo gruppo. Le zone senza proprietari rimanenti esisteranno ancora ma saranno inaccessibili agli utenti regolari."
+"I membri perderanno l'accesso a tutte le zone possedute da questo gruppo. Le "
+"zone senza proprietari rimanenti esisteranno ancora ma saranno inaccessibili "
+"agli utenti regolari."
 
 #: templates/default/delete_group.html:85 templates/modern/delete_group.html:85
-#, auto-english-fallback
 msgid "Yes, delete this group"
 msgstr "Sì, elimina questo gruppo"
 
 #: templates/default/delete_group.html:89 templates/modern/delete_group.html:89
-#, auto-english-fallback
 msgid "No, keep this group"
 msgstr "No, mantieni questo gruppo"
 
@@ -9898,17 +9658,14 @@ msgid "Change password"
 msgstr "Cambia password"
 
 #: templates/modern/header.html:332
-#, auto-english-fallback
 msgid "Preferences"
 msgstr "Preferenze"
 
 #: templates/default/index.html:288 templates/modern/index.html:235
-#, auto-english-fallback
 msgid "Customize your interface settings"
 msgstr "Personalizza le impostazioni della tua interfaccia"
 
 #: templates/default/index.html:290
-#, auto-english-fallback
 msgid "User preferences"
 msgstr "Preferenze utente"
 
@@ -9921,17 +9678,14 @@ msgid "Manage system users and access"
 msgstr "Gestisci utenti di sistema e accessi"
 
 #: templates/modern/index.html:199 templates/modern/header.html:169
-#, auto-english-fallback
 msgid "List users"
 msgstr "Elenca utenti"
 
 #: templates/modern/header.html:222
-#, auto-english-fallback
 msgid "Access"
 msgstr "Accesso"
 
 #: templates/default/index.html:321
-#, auto-english-fallback
 msgid "Manage access templates"
 msgstr "Gestisci template di accesso"
 
@@ -10223,27 +9977,22 @@ msgid "Advanced Records"
 msgstr "Record Avanzati"
 
 #: templates/modern/dns_wizard_select.html:6
-#, auto-english-fallback
 msgid "DNS Wizard"
 msgstr "Procedura guidata DNS"
 
 #: templates/modern/dns_wizard_form.html:15
-#, auto-english-fallback
 msgid "Wizard"
 msgstr "Procedura guidata"
 
 #: templates/modern/dns_wizard_form.html:26
-#, auto-english-fallback
 msgid "Warning: Please Review Before Proceeding"
 msgstr "Avviso: si prega di rivedere prima di procedere"
 
 #: templates/modern/dns_wizard_form.html:200
-#, auto-english-fallback
 msgid "Create Record"
 msgstr "Crea record"
 
 #: templates/modern/dns_wizard_form.html:203
-#, auto-english-fallback
 msgid "Back to Wizard Selection"
 msgstr "Torna alla selezione della procedura guidata"
 
@@ -10309,17 +10058,14 @@ msgid "No, keep this user"
 msgstr "No, mantieni questo utente"
 
 #: templates/modern/save-zone-template.html:6 templates/modern/edit.html:209
-#, auto-english-fallback
 msgid "Save as Template"
 msgstr "Salva come template"
 
 #: templates/modern/save-zone-template.html:14
-#, auto-english-fallback
 msgid "Save Zone as Template"
 msgstr "Salva zona come template"
 
 #: templates/modern/save-zone-template.html:18
-#, auto-english-fallback
 msgid "Source Zone"
 msgstr "Zona di origine"
 
@@ -10332,7 +10078,6 @@ msgid "Provide template name"
 msgstr "Fornisci nome del modello"
 
 #: templates/modern/save-zone-template.html:44
-#, auto-english-fallback
 msgid "Create Template"
 msgstr "Crea template"
 
@@ -10614,7 +10359,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Elimina zona/e"
 
-#: templates/modern/dnssec_add_key.html:81
+#: templates/modern/dnssec_add_key.html:91
 msgid "Add key"
 msgstr "Aggiungi chiave"
 
@@ -10622,48 +10367,48 @@ msgstr "Aggiungi chiave"
 msgid "Add key for zone"
 msgstr "Aggiungi chiave per la zona"
 
-#: templates/modern/dnssec_add_key.html:43
+#: templates/modern/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Tipo di chiave"
 
-#: templates/modern/dnssec_add_key.html:50
+#: templates/modern/dnssec_add_key.html:60
 msgid "Select key type"
 msgstr "Seleziona tipo di chiave"
 
-#: templates/modern/dnssec_add_key.html:61
+#: templates/modern/dnssec_add_key.html:71
 msgid "Select algorithm"
 msgstr "Seleziona algoritmo"
 
-#: templates/modern/dnssec_add_key.html:66
+#: templates/modern/dnssec_add_key.html:76
 msgid "Bits in length"
 msgstr "Bit di lunghezza"
 
-#: templates/modern/dnssec_add_key.html:75
+#: templates/modern/dnssec_add_key.html:85
 msgid "Select bits length"
 msgstr "Seleziona lunghezza in bit"
 
-#: templates/modern/dnssec_add_key.html:132
+#: templates/modern/dnssec_add_key.html:142
 msgid "Recommended bits for"
 msgstr "Bit consigliati per"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 #: install/helpers/InstallStepHandler.php:169
 msgid "Warning:"
 msgstr "Avviso:"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 msgid "bits is not recommended for"
 msgstr "bit non è consigliato per"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
 msgstr "Informazioni sui Tipi di Chiave DNSSEC"
 
-#: templates/modern/dnssec_add_key.html:181
+#: templates/modern/dnssec_add_key.html:191
 msgid "Key Types Explained"
 msgstr "Spiegazione dei Tipi di Chiave"
 
-#: templates/modern/dnssec_add_key.html:183
+#: templates/modern/dnssec_add_key.html:193
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -10671,19 +10416,19 @@ msgstr ""
 "Chiave di Firma Combinata - funge da KSK e ZSK (consigliata per PowerDNS "
 "4.0+)"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Chiave di Firma delle Chiavi - firma i record DNSKEY nella zona"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Chiave di Firma della Zona - firma tutti gli altri record nella zona"
 
-#: templates/modern/dnssec_add_key.html:190
+#: templates/modern/dnssec_add_key.html:200
 msgid "Recommended Settings"
 msgstr "Impostazioni Consigliate"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:201
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10737,7 +10482,8 @@ msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
 msgstr ""
-"I permessi di questo template si applicheranno globalmente all'intero sistema per questo utente"
+"I permessi di questo template si applicheranno globalmente all'intero "
+"sistema per questo utente"
 
 #: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
 msgid "Optional information about this user"
@@ -10793,7 +10539,6 @@ msgid "User Permissions"
 msgstr "Permessi Utente"
 
 #: templates/default/edit_user.html:169 templates/modern/edit_user.html:169
-#, auto-english-fallback
 msgid "This user has been assigned the access template"
 msgstr "A questo utente è stato assegnato il template di accesso"
 
@@ -10806,42 +10551,36 @@ msgid "No permissions are assigned to this template"
 msgstr "Nessun permesso è assegnato a questo modello"
 
 #: templates/modern/edit_user.html:197 templates/modern/add_user.html:172
-#, auto-english-fallback
 msgid "Group Memberships"
 msgstr "Appartenenze ai gruppi"
 
 #: templates/default/edit_user.html:201 templates/modern/edit_user.html:201
-#, auto-english-fallback
 msgid "Current Memberships"
 msgstr "Appartenenze attuali"
 
 #: templates/default/edit_user.html:216 templates/modern/edit_user.html:216
-#, auto-english-fallback
 msgid "View group details"
 msgstr "Visualizza dettagli gruppo"
 
 #: templates/default/edit_user.html:230 templates/modern/edit_user.html:230
-#, auto-english-fallback
 msgid "This user is not a member of any groups."
 msgstr "Questo utente non è membro di alcun gruppo."
 
 #: templates/modern/edit_user.html:236 templates/modern/add_user.html:175
-#, auto-english-fallback
 msgid "Add to Groups"
 msgstr "Aggiungi ai gruppi"
 
 #: templates/default/edit_user.html:237 templates/modern/edit_user.html:237
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr ""
-"Seleziona uno o più gruppi e fai clic sul pulsante \"Aggiungi gruppi selezionati\"."
+"Seleziona uno o più gruppi e fai clic sul pulsante \"Aggiungi gruppi "
+"selezionati\"."
 
 #: templates/modern/edit_user.html:245 templates/modern/add_user.html:180
-#, auto-english-fallback
 msgid "Search available groups..."
 msgstr "Cerca gruppi disponibili..."
 
 #: templates/modern/edit_user.html:246 templates/modern/add_user.html:181
-#, auto-english-fallback
 msgid "Clear search"
 msgstr "Cancella ricerca"
 
@@ -10850,27 +10589,22 @@ msgid "Select All"
 msgstr "Seleziona Tutto"
 
 #: templates/modern/add_zone_slave.html:98
-#, auto-english-fallback
 msgid "Clear All"
 msgstr "Cancella tutto"
 
 #: templates/modern/add_user.html:208 templates/modern/add_user.html:384
-#, auto-english-fallback
 msgid "selected"
 msgstr "selezionato"
 
 #: templates/default/edit_user.html:275 templates/modern/edit_user.html:275
-#, auto-english-fallback
 msgid "Add Selected Groups"
 msgstr "Aggiungi gruppi selezionati"
 
 #: templates/modern/manage_group_members.html:126
-#, auto-english-fallback
 msgid "Confirm Removal"
 msgstr "Conferma rimozione"
 
 #: templates/default/edit_user.html:303 templates/modern/edit_user.html:303
-#, auto-english-fallback
 msgid "Are you sure you want to remove this user from the group"
 msgstr "Sei sicuro di voler rimuovere questo utente dal gruppo"
 
@@ -10923,7 +10657,6 @@ msgid "Yes, unlink these zones"
 msgstr "Sì, scollega queste zone"
 
 #: templates/modern/list_perm_templ.html:5
-#, auto-english-fallback
 msgid "Access templates"
 msgstr "Template di accesso"
 
@@ -10932,7 +10665,6 @@ msgid "Add"
 msgstr "Aggiungi"
 
 #: templates/modern/add_perm_templ.html:18
-#, auto-english-fallback
 msgid "Add Access Template"
 msgstr "Aggiungi template di accesso"
 
@@ -10945,17 +10677,14 @@ msgid "Optional: more detailed description of this permission set"
 msgstr "Opzionale: descrizione più dettagliata di questo set di permessi"
 
 #: templates/modern/edit_perm_templ.html:36
-#, auto-english-fallback
 msgid "Template Type"
 msgstr "Tipo template"
 
 #: templates/modern/edit_perm_templ.html:38
-#, auto-english-fallback
 msgid "User Template"
 msgstr "Template utente"
 
 #: templates/modern/edit_perm_templ.html:39
-#, auto-english-fallback
 msgid "Group Template"
 msgstr "Template gruppo"
 
@@ -10964,10 +10693,10 @@ msgid ""
 "User templates apply globally; Group templates apply only to group-owned "
 "zones"
 msgstr ""
-"I template utente si applicano globalmente; I template gruppo si applicano solo alle zone possedute dal gruppo"
+"I template utente si applicano globalmente; I template gruppo si applicano "
+"solo alle zone possedute dal gruppo"
 
 #: templates/modern/edit_perm_templ.html:42
-#, auto-english-fallback
 msgid "Please select a template type"
 msgstr "Seleziona un tipo di template"
 
@@ -10976,12 +10705,10 @@ msgid "Add Template"
 msgstr "Aggiungi Modello"
 
 #: templates/modern/add_perm_templ.html:62
-#, auto-english-fallback
 msgid "About Access Templates"
 msgstr "Informazioni sui template di accesso"
 
 #: templates/modern/add_perm_templ.html:67
-#, auto-english-fallback
 msgid "What are Access Templates?"
 msgstr "Cosa sono i template di accesso?"
 
@@ -10991,7 +10718,9 @@ msgid ""
 "Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"I template di accesso definiscono insiemi di azioni che utenti e gruppi possono eseguire in Poweradmin. Forniscono un modo rapido per assegnare combinazioni di permessi comuni."
+"I template di accesso definiscono insiemi di azioni che utenti e gruppi "
+"possono eseguire in Poweradmin. Forniscono un modo rapido per assegnare "
+"combinazioni di permessi comuni."
 
 #: templates/modern/add_perm_templ.html:71
 msgid "How to Use Templates"
@@ -11002,9 +10731,9 @@ msgid ""
 "After creating a template, you can assign it to users or groups. This "
 "ensures consistent permissions across users and groups with similar roles."
 msgstr ""
-"Dopo aver creato un modello, puoi assegnarlo agli utenti quando crei "
-"o modifichi account utente. Questo assicura permessi coerenti tra "
-"gruppi di utenti con ruoli simili."
+"Dopo aver creato un modello, puoi assegnarlo agli utenti quando crei o "
+"modifichi account utente. Questo assicura permessi coerenti tra gruppi di "
+"utenti con ruoli simili."
 
 #: templates/modern/edit_perm_templ.html:86
 msgid "Available Permissions"
@@ -11124,7 +10853,6 @@ msgid "Forgot your password?"
 msgstr "Hai dimenticato la password?"
 
 #: templates/default/login.html:86 templates/modern/login.html:86
-#, auto-english-fallback
 msgid "Forgot your username?"
 msgstr "Hai dimenticato il tuo nome utente?"
 
@@ -11311,62 +11039,50 @@ msgstr ""
 "corrispondenza)"
 
 #: templates/modern/zone-ownership.html:6 templates/modern/edit.html:205
-#, auto-english-fallback
 msgid "Ownership"
 msgstr "Proprietà"
 
 #: templates/modern/add_zone_slave.html:49
-#, auto-english-fallback
 msgid "User Owner"
 msgstr "Proprietario utente"
 
 #: templates/modern/zone-ownership.html:55
-#, auto-english-fallback
 msgid "No users assigned to this zone."
 msgstr "Nessun utente assegnato a questa zona."
 
 #: templates/modern/zone-ownership.html:61
-#, auto-english-fallback
 msgid "Add User Owner"
 msgstr "Aggiungi proprietario utente"
 
 #: templates/modern/manage_group_members.html:84
-#, auto-english-fallback
 msgid "Search users..."
 msgstr "Cerca utenti..."
 
 #: templates/modern/add_zone_slave.html:76
-#, auto-english-fallback
 msgid "You"
 msgstr "Tu"
 
 #: templates/modern/zone-ownership.html:83
-#, auto-english-fallback
 msgid "Add Owner"
 msgstr "Aggiungi proprietario"
 
 #: templates/modern/add_zone_slave.html:90
-#, auto-english-fallback
 msgid "Group Ownership"
 msgstr "Proprietà gruppo"
 
 #: templates/modern/zone-ownership.html:127
-#, auto-english-fallback
 msgid "No groups assigned to this zone."
 msgstr "Nessun gruppo assegnato a questa zona."
 
 #: templates/modern/zone-ownership.html:133
-#, auto-english-fallback
 msgid "Add Group Ownership"
 msgstr "Aggiungi proprietà gruppo"
 
 #: templates/modern/add_zone_slave.html:94
-#, auto-english-fallback
 msgid "Search groups..."
 msgstr "Cerca gruppi..."
 
 #: templates/modern/add_group.html:13
-#, auto-english-fallback
 msgid "Add Group"
 msgstr "Aggiungi gruppo"
 
@@ -11391,12 +11107,10 @@ msgid "Create a new record for this zone template"
 msgstr "Crea un nuovo record per questo modello di zona"
 
 #: templates/modern/delete_perm_templ.html:12
-#, auto-english-fallback
 msgid "Delete Access Template"
 msgstr "Elimina template di accesso"
 
 #: templates/modern/delete_perm_templ.html:17
-#, auto-english-fallback
 msgid "You are about to delete the access template"
 msgstr "Stai per eliminare il template di accesso"
 
@@ -11417,7 +11131,6 @@ msgid "No, keep this template"
 msgstr "No, mantieni questo modello"
 
 #: templates/modern/dns_wizard_select.html:14
-#, auto-english-fallback
 msgid "DNS Record Wizard"
 msgstr "Procedura guidata record DNS"
 
@@ -11426,22 +11139,22 @@ msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
 msgstr ""
-"Seleziona una procedura guidata per aiutarti a creare record DNS complessi con moduli guidati invece di inserimento manuale di testo."
+"Seleziona una procedura guidata per aiutarti a creare record DNS complessi "
+"con moduli guidati invece di inserimento manuale di testo."
 
 #: templates/modern/dns_wizard_select.html:27
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
 msgstr ""
-"Le procedure guidate DNS sono progettate per le zone dirette e potrebbero non essere appropriate per le zone inverse."
+"Le procedure guidate DNS sono progettate per le zone dirette e potrebbero "
+"non essere appropriate per le zone inverse."
 
 #: templates/modern/dns_wizard_select.html:59
-#, auto-english-fallback
 msgid "Recommended"
 msgstr "Raccomandato"
 
 #: templates/modern/dns_wizard_select.html:71
-#, auto-english-fallback
 msgid "Back"
 msgstr "Indietro"
 
@@ -11479,12 +11192,10 @@ msgid "Add new record"
 msgstr "Aggiungi nuovo record"
 
 #: templates/modern/edit.html:28 templates/modern/edit.html:543
-#, auto-english-fallback
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Procedure guidate per record DMARC, SPF, DKIM, CAA, TLSA e SRV"
 
 #: templates/modern/edit.html:29 templates/modern/edit.html:544
-#, auto-english-fallback
 msgid "Record Wizard"
 msgstr "Procedura guidata record"
 
@@ -11597,7 +11308,6 @@ msgid "total records"
 msgstr "record totali"
 
 #: templates/default/edit.html:474 templates/modern/edit.html:474
-#, auto-english-fallback
 msgid "Edit selected"
 msgstr "Modifica selezionato"
 
@@ -11610,17 +11320,14 @@ msgid "Comments"
 msgstr "Commenti"
 
 #: templates/default/edit.html:515 templates/modern/edit.html:515
-#, auto-english-fallback
 msgid "Export CSV"
 msgstr "Esporta CSV"
 
 #: templates/default/edit.html:519 templates/modern/edit.html:519
-#, auto-english-fallback
 msgid "Generate PTR"
 msgstr "Genera PTR"
 
 #: templates/modern/edit.html:696 templates/modern/add_zone_master.html:24
-#, auto-english-fallback
 msgid "Zone Configuration"
 msgstr "Configurazione zona"
 
@@ -11633,7 +11340,6 @@ msgid "IP address of master NS"
 msgstr "Indirizzo IP del NS master"
 
 #: templates/default/edit.html:786 templates/modern/edit.html:786
-#, auto-english-fallback
 msgid "Manage DNSSEC"
 msgstr "Gestisci DNSSEC"
 
@@ -11642,12 +11348,10 @@ msgid "Sign zone"
 msgstr "Firma zona"
 
 #: templates/default/edit.html:794 templates/modern/edit.html:794
-#, auto-english-fallback
 msgid "Not signed"
 msgstr "Non firmato"
 
 #: templates/default/users.html:10 templates/modern/users.html:10
-#, auto-english-fallback
 msgid "User Management"
 msgstr "Gestione utenti"
 
@@ -11656,17 +11360,14 @@ msgid "Add user"
 msgstr "Aggiungi utente"
 
 #: templates/default/users.html:45 templates/modern/users.html:45
-#, auto-english-fallback
 msgid "Auth Type"
 msgstr "Tipo autenticazione"
 
 #: templates/default/users.html:47 templates/modern/users.html:47
-#, auto-english-fallback
 msgid "MFA"
 msgstr "MFA"
 
 #: templates/modern/users.html:99 templates/modern/users.html:161
-#, auto-english-fallback
 msgid "SQL"
 msgstr "SQL"
 
@@ -11675,22 +11376,18 @@ msgid "LDAP"
 msgstr "LDAP"
 
 #: templates/modern/users.html:103 templates/modern/users.html:165
-#, auto-english-fallback
 msgid "OIDC"
 msgstr "OIDC"
 
 #: templates/modern/users.html:105 templates/modern/users.html:167
-#, auto-english-fallback
 msgid "SAML"
 msgstr "SAML"
 
 #: templates/modern/users.html:114 templates/modern/users.html:176
-#, auto-english-fallback
 msgid "MFA enabled"
 msgstr "MFA abilitato"
 
 #: templates/modern/users.html:116 templates/modern/users.html:178
-#, auto-english-fallback
 msgid "MFA not configured"
 msgstr "MFA non configurato"
 
@@ -11892,7 +11589,6 @@ msgid "Are you sure you want to delete this item?"
 msgstr "Sei sicuro di voler eliminare questo elemento?"
 
 #: templates/modern/forgot_username.html:4
-#, auto-english-fallback
 msgid "Forgot Username"
 msgstr "Nome utente dimenticato"
 
@@ -11901,10 +11597,10 @@ msgid ""
 "Enter your email address and we'll send you the username associated with "
 "this account."
 msgstr ""
-"Inserisci il tuo indirizzo email e ti invieremo il nome utente associato a questo account."
+"Inserisci il tuo indirizzo email e ti invieremo il nome utente associato a "
+"questo account."
 
 #: templates/modern/forgot_username.html:41
-#, auto-english-fallback
 msgid "Send Username"
 msgstr "Invia nome utente"
 
@@ -11948,7 +11644,6 @@ msgstr ""
 "modificando l'utente."
 
 #: templates/default/add_user.html:176 templates/modern/add_user.html:176
-#, auto-english-fallback
 msgid "Select groups to add the new user to upon creation."
 msgstr "Seleziona i gruppi a cui aggiungere il nuovo utente alla creazione."
 
@@ -11981,27 +11676,22 @@ msgid "Secure this zone with DNSSEC signing"
 msgstr "Proteggi questa zona con la firma DNSSEC"
 
 #: templates/modern/add_zone_slave.html:54
-#, auto-english-fallback
 msgid "Selected:"
 msgstr "Selezionato:"
 
 #: templates/modern/add_zone_slave.html:59
-#, auto-english-fallback
 msgid "No user owner"
 msgstr "Nessun proprietario utente"
 
 #: templates/modern/add_zone_slave.html:60
-#, auto-english-fallback
 msgid "Zone will be owned only by groups"
 msgstr "La zona sarà posseduta solo da gruppi"
 
 #: templates/modern/add_zone_slave.html:82
-#, auto-english-fallback
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Opzionale: seleziona un utente responsabile di questa zona"
 
 #: templates/modern/add_zone_slave.html:111
-#, auto-english-fallback
 msgid "Optional: Select one or more groups"
 msgstr "Opzionale: seleziona uno o più gruppi"
 
@@ -12520,7 +12210,6 @@ msgstr ""
 "volta per accedere se perdi l'accesso al tuo dispositivo di autenticazione."
 
 #: templates/default/mfa_setup.html:14 templates/modern/mfa_setup.html:14
-#, auto-english-fallback
 msgid "MFA Setup Required"
 msgstr "Configurazione MFA richiesta"
 
@@ -12529,7 +12218,8 @@ msgid ""
 "Your organization requires multi-factor authentication. Please set up MFA to "
 "continue using the system."
 msgstr ""
-"La tua organizzazione richiede l'autenticazione a più fattori. Configura MFA per continuare a utilizzare il sistema."
+"La tua organizzazione richiede l'autenticazione a più fattori. Configura MFA "
+"per continuare a utilizzare il sistema."
 
 #: templates/default/mfa_setup.html:24 templates/modern/mfa_setup.html:24
 msgid ""
@@ -12611,7 +12301,8 @@ msgid ""
 "Email verification is not available because it has been disabled by the "
 "administrator."
 msgstr ""
-"La verifica email non è disponibile perché è stata disabilitata dall'amministratore."
+"La verifica email non è disponibile perché è stata disabilitata "
+"dall'amministratore."
 
 #: templates/default/mfa_setup.html:108 templates/modern/mfa_setup.html:108
 msgid ""
@@ -12706,107 +12397,86 @@ msgid "No, keep this zone"
 msgstr "No, mantieni questa zona"
 
 #: templates/modern/user_preferences.html:4 templates/modern/header.html:388
-#, auto-english-fallback
 msgid "User Preferences"
 msgstr "Preferenze utente"
 
 #: templates/modern/user_preferences.html:17
-#, auto-english-fallback
 msgid "Display Settings"
 msgstr "Impostazioni visualizzazione"
 
 #: templates/modern/user_preferences.html:22
-#, auto-english-fallback
 msgid "Items per page"
 msgstr "Elementi per pagina"
 
 #: templates/modern/user_preferences.html:36
-#, auto-english-fallback
 msgid "Zone Options"
 msgstr "Opzioni zona"
 
 #: templates/modern/user_preferences.html:42
-#, auto-english-fallback
 msgid "Zone serial numbers"
 msgstr "Numeri seriali zona"
 
 #: templates/modern/user_preferences.html:43
-#, auto-english-fallback
 msgid "Display serial numbers in zone lists"
 msgstr "Visualizza numeri seriali negli elenchi zone"
 
 #: templates/modern/user_preferences.html:51
-#, auto-english-fallback
 msgid "Display template information in zone lists"
 msgstr "Visualizza informazioni template negli elenchi zone"
 
 #: templates/modern/user_preferences.html:64
-#, auto-english-fallback
 msgid "Interface Behavior"
 msgstr "Comportamento interfaccia"
 
 #: templates/modern/user_preferences.html:69
-#, auto-english-fallback
 msgid "Record form"
 msgstr "Modulo record"
 
 #: templates/modern/user_preferences.html:78
-#, auto-english-fallback
 msgid "Save buttons"
 msgstr "Pulsanti salva"
 
 #: templates/modern/user_preferences.html:88
-#, auto-english-fallback
 msgid "Edit Zone View"
 msgstr "Visualizzazione modifica zona"
 
 #: templates/modern/user_preferences.html:93
-#, auto-english-fallback
 msgid "Show record ID"
 msgstr "Mostra ID record"
 
 #: templates/modern/user_preferences.html:94
-#, auto-english-fallback
 msgid "Display record ID column in edit view"
 msgstr "Visualizza colonna ID record nella vista di modifica"
 
 #: templates/modern/user_preferences.html:101
-#, auto-english-fallback
 msgid "Show add record form"
 msgstr "Mostra modulo aggiungi record"
 
 #: templates/modern/user_preferences.html:102
-#, auto-english-fallback
 msgid "Display inline add record form in edit view"
 msgstr "Visualizza modulo aggiungi record in linea nella vista di modifica"
 
 #: templates/modern/user_preferences.html:109
-#, auto-english-fallback
 msgid "Show edit buttons"
 msgstr "Mostra pulsanti modifica"
 
 #: templates/modern/user_preferences.html:110
-#, auto-english-fallback
 msgid "Display individual edit button per record"
 msgstr "Visualizza pulsante modifica individuale per record"
 
 #: templates/modern/user_preferences.html:117
-#, auto-english-fallback
 msgid "Show delete buttons"
 msgstr "Mostra pulsanti elimina"
 
 #: templates/modern/user_preferences.html:118
-#, auto-english-fallback
 msgid "Display individual delete button per record"
 msgstr "Visualizza pulsante elimina individuale per record"
 
 #: templates/modern/user_preferences.html:133
-#, auto-english-fallback
 msgid "Save Preferences"
 msgstr "Salva preferenze"
 
 #: templates/modern/user_preferences.html:139
-#, auto-english-fallback
 msgid "Changes will be applied after saving"
 msgstr "Le modifiche saranno applicate dopo il salvataggio"
 
@@ -12854,27 +12524,22 @@ msgid "Try different search terms or filters"
 msgstr "Prova termini di ricerca o filtri diversi"
 
 #: templates/default/search.html:676 templates/modern/search.html:687
-#, auto-english-fallback
 msgid "Confirm Zone Deletion"
 msgstr "Conferma eliminazione zona"
 
 #: templates/modern/search.html:692 templates/modern/search.html:718
-#, auto-english-fallback
 msgid "Are you sure you want to delete"
 msgstr "Sei sicuro di voler eliminare"
 
 #: templates/default/search.html:681 templates/modern/search.html:692
-#, auto-english-fallback
 msgid "selected zone(s)?"
 msgstr "zona/e selezionata/e?"
 
 #: templates/default/search.html:702 templates/modern/search.html:713
-#, auto-english-fallback
 msgid "Confirm Record Deletion"
 msgstr "Conferma eliminazione record"
 
 #: templates/default/search.html:707 templates/modern/search.html:718
-#, auto-english-fallback
 msgid "selected record(s)?"
 msgstr "record selezionato/i?"
 
@@ -12944,7 +12609,6 @@ msgid "Search logs by user"
 msgstr "Cerca log per utente"
 
 #: templates/modern/add_zone_slave.html:24
-#, auto-english-fallback
 msgid "Slave Zone Configuration"
 msgstr "Configurazione zona slave"
 
@@ -12957,7 +12621,8 @@ msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
 msgstr ""
-"Indirizzo IP del name server master (supporta IPv4 e IPv6, più IP separati da virgole)"
+"Indirizzo IP del name server master (supporta IPv4 e IPv6, più IP separati "
+"da virgole)"
 
 #: templates/modern/delete_zone_templ.html:12
 msgid "Delete template"
@@ -13259,17 +12924,14 @@ msgid "Reverse zones"
 msgstr "Zone inverse"
 
 #: templates/default/header.html:133 templates/modern/header.html:199
-#, auto-english-fallback
 msgid "List groups"
 msgstr "Elenca gruppi"
 
 #: templates/modern/header.html:210 templates/modern/list_log_groups.html:5
-#, auto-english-fallback
 msgid "Group logs"
 msgstr "Log gruppo"
 
 #: templates/default/header.html:153 templates/modern/header.html:227
-#, auto-english-fallback
 msgid "List templates"
 msgstr "Elenca template"
 
@@ -13326,58 +12988,47 @@ msgid "Add records"
 msgstr "Aggiungi record"
 
 #: templates/modern/manage_group_members.html:12
-#, auto-english-fallback
 msgid "Back to Group"
 msgstr "Torna al gruppo"
 
 #: templates/modern/manage_group_zones.html:20
-#, auto-english-fallback
 msgid "Owned Zones"
 msgstr "Zone possedute"
 
 #: templates/modern/manage_group_zones.html:27
-#, auto-english-fallback
 msgid "This group doesn't own any zones yet"
 msgstr "Questo gruppo non possiede ancora alcuna zona"
 
 #: templates/modern/manage_group_members.html:57
-#, auto-english-fallback
 msgid "Remove Selected"
 msgstr "Rimuovi selezionati"
 
 #: templates/modern/manage_group_zones.html:79
-#, auto-english-fallback
 msgid "Available Zones"
 msgstr "Zone disponibili"
 
 #: templates/modern/manage_group_zones.html:86
-#, auto-english-fallback
 msgid "This group already owns all zones or no zones are available"
 msgstr ""
 "Questo gruppo possiede già tutte le zone o non ci sono zone disponibili"
 
 #: templates/modern/manage_group_zones.html:94
-#, auto-english-fallback
 msgid "Search zones..."
 msgstr "Cerca zone..."
 
 #: templates/modern/manage_group_members.html:110
-#, auto-english-fallback
 msgid "Add Selected"
 msgstr "Aggiungi selezionati"
 
 #: templates/modern/manage_group_members.html:131
-#, auto-english-fallback
 msgid "Are you sure you want to remove"
 msgstr "Sei sicuro di voler rimuovere"
 
 #: templates/modern/manage_group_zones.html:221
-#, auto-english-fallback
 msgid "zone(s) from this group?"
 msgstr "zona/e da questo gruppo?"
 
 #: templates/modern/manage_group_zones.html:222
-#, auto-english-fallback
 msgid "The zones will remain in the system."
 msgstr "Le zone rimarranno nel sistema."
 
@@ -13439,7 +13090,6 @@ msgid "No, keep this API key"
 msgstr "No, mantieni questa chiave API"
 
 #: templates/modern/edit_perm_templ.html:19
-#, auto-english-fallback
 msgid "Edit Access Template"
 msgstr "Modifica template di accesso"
 
@@ -13457,12 +13107,11 @@ msgid ""
 "of permissions. Changes made here will affect all users and groups who have "
 "this template assigned."
 msgstr ""
-"Questo template può essere assegnato agli utenti per applicare "
-"rapidamente il suo set di permessi. Le modifiche fatte qui "
-"influenzeranno tutti gli utenti che hanno questo template assegnato."
+"Questo template può essere assegnato agli utenti per applicare rapidamente "
+"il suo set di permessi. Le modifiche fatte qui influenzeranno tutti gli "
+"utenti che hanno questo template assegnato."
 
 #: templates/default/edit_perm_templ.html:72
-#, auto-english-fallback
 msgid "Users vs Groups"
 msgstr "Utenti vs Gruppi"
 
@@ -13471,14 +13120,16 @@ msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
 msgstr ""
-"Quando assegnato a <strong>utenti</strong>: I permessi si applicano globalmente al sistema."
+"Quando assegnato a <strong>utenti</strong>: I permessi si applicano "
+"globalmente al sistema."
 
 #: templates/default/edit_perm_templ.html:74
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
 msgstr ""
-"Quando assegnato a <strong>gruppi</strong>: I permessi si applicano solo alle zone possedute da quel gruppo."
+"Quando assegnato a <strong>gruppi</strong>: I permessi si applicano solo "
+"alle zone possedute da quel gruppo."
 
 #: templates/modern/edit_perm_templ.html:73
 msgid "Permission Groups"
@@ -13533,16 +13184,14 @@ msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
 msgstr ""
-"Tutti i membri del gruppo erediteranno questi permessi per le zone possedute da questo gruppo"
+"Tutti i membri del gruppo erediteranno questi permessi per le zone possedute "
+"da questo gruppo"
 
 #: templates/default/add_group.html:50 templates/modern/add_group.html:50
-#, auto-english-fallback
 msgid "After creating the group, you can add members and assign zones to it."
-msgstr ""
-"Dopo aver creato il gruppo, puoi aggiungere membri e assegnargli zone."
+msgstr "Dopo aver creato il gruppo, puoi aggiungere membri e assegnargli zone."
 
 #: templates/default/add_group.html:55 templates/modern/add_group.html:55
-#, auto-english-fallback
 msgid "Create Group"
 msgstr "Crea gruppo"
 
@@ -13561,72 +13210,58 @@ msgid "Please enter a domain name to perform a WHOIS lookup."
 msgstr "Inserisci un nome di dominio per eseguire una ricerca WHOIS."
 
 #: templates/modern/list_perm_templ.html:40
-#, auto-english-fallback
 msgid "User"
 msgstr "Utente"
 
 #: templates/modern/list_perm_templ.html:10
-#, auto-english-fallback
 msgid "templates apply globally"
 msgstr "i template si applicano globalmente"
 
 #: templates/modern/list_perm_templ.html:42
-#, auto-english-fallback
 msgid "Group"
 msgstr "Gruppo"
 
 #: templates/modern/list_perm_templ.html:10
-#, auto-english-fallback
 msgid "templates apply only to group-owned zones"
 msgstr "i template si applicano solo alle zone possedute dal gruppo"
 
 #: templates/modern/list_perm_templ.html:15
-#, auto-english-fallback
 msgid "Access Templates"
 msgstr "Template di accesso"
 
 #: templates/modern/list_perm_templ.html:31
-#, auto-english-fallback
 msgid "No access templates found"
 msgstr "Nessun template di accesso trovato"
 
 #: templates/modern/list_perm_templ.html:63
-#, auto-english-fallback
 msgid "Add access template"
 msgstr "Aggiungi template di accesso"
 
 #: templates/modern/list_log_groups.html:11
-#, auto-english-fallback
 msgid "Group Activity Logs"
 msgstr "Log attività gruppo"
 
 #: templates/modern/list_log_groups.html:19
-#, auto-english-fallback
 msgid "Search logs by group"
 msgstr "Cerca log per gruppo"
 
 #: templates/modern/manage_group_members.html:20
-#, auto-english-fallback
 msgid "Current Members"
 msgstr "Membri attuali"
 
 #: templates/modern/manage_group_members.html:27
-#, auto-english-fallback
 msgid "No members in this group yet"
 msgstr "Nessun membro in questo gruppo ancora"
 
 #: templates/modern/manage_group_members.html:69
-#, auto-english-fallback
 msgid "Available Users"
 msgstr "Utenti disponibili"
 
 #: templates/modern/manage_group_members.html:76
-#, auto-english-fallback
 msgid "All users are already members of this group"
 msgstr "Tutti gli utenti sono già membri di questo gruppo"
 
 #: templates/modern/manage_group_members.html:131
-#, auto-english-fallback
 msgid "user(s) from this group?"
 msgstr "utente/i da questo gruppo?"
 
@@ -13666,8 +13301,18 @@ msgstr "Elenca modelli di zona"
 msgid "Bulk Domain Registration"
 msgstr "Registrazione domini in massa"
 
+#: templates/modern/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ usa CSK per impostazione predefinita"
+
+#: templates/modern/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 e le versioni più recenti utilizzano Combined Signing Keys (CSK) per impostazione predefinita. Se si seleziona KSK o ZSK, PowerDNS potrebbe comunque creare una chiave CSK."
+
 #: templates/modern/header.html:382
-#, auto-english-fallback
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -13952,33 +13597,27 @@ msgid "Optional Extensions"
 msgstr "Estensioni Opzionali"
 
 #: install/templates/step2.html.twig:99
-#, auto-english-fallback
 msgid "Web Server"
 msgstr "Web Server"
 
 #: install/templates/step2.html.twig:106
-#, auto-english-fallback
 msgid "Server"
 msgstr "Server"
 
 #: install/templates/step2.html.twig:118
-#, auto-english-fallback
 msgid "Not detected — required for URL routing"
 msgstr "Non rilevato — richiesto per il routing URL"
 
 #: install/templates/step2.html.twig:124
-#, auto-english-fallback
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
 msgstr "Impossibile rilevare (PHP-FPM) — assicurati che sia abilitato"
 
 #: install/templates/step2.html.twig:130
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
 msgstr ""
 "Assicurati che la riscrittura URL sia configurata (vedi nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured for your web server"
 msgstr ""
 "Assicurati che la riscrittura URL sia configurata per il tuo web server"
@@ -14318,397 +13957,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Impossibile connettersi al database PowerDNS \"%s\": %s"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create a config/settings.php file "
-# OBSOLETE: "manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nessun file di configurazione trovato. Utilizzare l'<a href=\"install/"
-# OBSOLETE: "\">installer</a> per crearne uno, o creare manualmente un file config/"
-# OBSOLETE: "settings.php."
-
-# OBSOLETE: msgid "Invalid authentication provider"
-# OBSOLETE: msgstr "Provider di autenticazione non valido"
-
-# OBSOLETE: msgid "Failed to sign zone. Check PowerDNS logs for details."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Impossibile firmare la zona. Controllare i log di PowerDNS per i dettagli."
-
-# OBSOLETE: msgid "Zone was created, but securing it with DNSSEC failed."
-# OBSOLETE: msgstr "La zona è stata creata, ma la protezione con DNSSEC è fallita."
-
-# OBSOLETE: msgid "Failed to delete DNSSEC key."
-# OBSOLETE: msgstr "Impossibile eliminare la chiave DNSSEC."
-
-#, auto-english-fallback
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
-# OBSOLETE: "once."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Trovato meccanismo %s duplicato. Ogni tipo di meccanismo deve apparire al "
-# OBSOLETE: "massimo una volta."
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "L'indirizzo IPv6 dovrebbe usare caratteri minuscoli per le cifre "
-# OBSOLETE: "esadecimali."
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "L'indirizzo IPv6 non è in forma canonica (RFC 5952). Forma canonica: %s"
-
-#, auto-english-fallback
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "L'indirizzo IP \"%s\" non è valido. Deve essere un indirizzo IPv4 o IPv6 "
-# OBSOLETE: "valido."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "CAA iodef value must be a URL starting with http://, https://, or mailto:."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Il valore iodef CAA deve essere un URL che inizia con http://, https:// o "
-# OBSOLETE: "mailto:."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "SMIMEA record name is in the format: SHA256(local-"
-# OBSOLETE: "part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Il nome del record SMIMEA è nel formato: SHA256(parte-"
-# OBSOLETE: "locale)._smimecert.dominio.tld per indirizzi email come parte-"
-# OBSOLETE: "locale@dominio.tld"
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "I tag HTML non sono consentiti nel campo contenuto."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "La stringa del record TXT supera 255 byte. Le stringhe TXT devono essere "
-# OBSOLETE: "di 255 byte o meno. Per contenuti più lunghi, dividi in più stringhe "
-# OBSOLETE: "quotate separate da spazi."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Il record NAPTR deve avere o un regexp o una sostituzione (con \".\"), ma "
-# OBSOLETE: "non entrambi."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Il servizio NAPTR deve seguire il formato: [protocollo][+rs][+rs]... dove "
-# OBSOLETE: "protocollo e rs iniziano con una lettera e contengono solo caratteri "
-# OBSOLETE: "alfanumerici (max 32 caratteri ciascuno)."
-
-# OBSOLETE: msgid "User administration"
-# OBSOLETE: msgstr "Amministrazione utenti"
-
-# OBSOLETE: msgid "Permissions"
-# OBSOLETE: msgstr "Permessi"
-
-# OBSOLETE: msgid "Manage permission templates"
-# OBSOLETE: msgstr "Gestisci modelli di permessi"
-
-# OBSOLETE: msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-# OBSOLETE: msgstr "Configura record standard come MX, TXT per SPF e CNAME per www"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-# OBSOLETE: "[SERIAL] in record content"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Usa segnaposto come [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER] e "
-# OBSOLETE: "[SERIAL] nel contenuto dei record"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-# OBSOLETE: "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "I segnaposto [DOMAIN] e [TLD] sono utili per i record MX di Microsoft 365 "
-# OBSOLETE: "(es. [DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-# OBSOLETE: msgid "Permission template"
-# OBSOLETE: msgstr "Modello di permessi"
-
-# OBSOLETE: msgid "This user has been assigned the permission template"
-# OBSOLETE: msgstr "A questo utente è stato assegnato il modello di permessi"
-
-# OBSOLETE: msgid "User Management Tips"
-# OBSOLETE: msgstr "Suggerimenti Gestione Utenti"
-
-# OBSOLETE: msgid "Leave password field empty to keep the current password"
-# OBSOLETE: msgstr "Lascia vuoto il campo password per mantenere la password attuale"
-
-# OBSOLETE: msgid "Changing permission templates will update user access immediately"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Cambiare i modelli di permessi aggiornerà immediatamente l'accesso "
-# OBSOLETE: "dell'utente"
-
-# OBSOLETE: msgid "Users can be disabled instead of deleted to preserve their settings"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Gli utenti possono essere disabilitati invece che eliminati per "
-# OBSOLETE: "preservare le loro impostazioni"
-
-# OBSOLETE: msgid "LDAP users cannot have passwords managed through this interface"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Gli utenti LDAP non possono avere le password gestite attraverso questa "
-# OBSOLETE: "interfaccia"
-
-# OBSOLETE: msgid "Permission templates"
-# OBSOLETE: msgstr "Modelli di permessi"
-
-# OBSOLETE: msgid "Add Permission Template"
-# OBSOLETE: msgstr "Aggiungi Modello di Permessi"
-
-# OBSOLETE: msgid "About Permission Templates"
-# OBSOLETE: msgstr "Informazioni sui Modelli di Permessi"
-
-# OBSOLETE: msgid "What are Permission Templates?"
-# OBSOLETE: msgstr "Cosa sono i Modelli di Permessi?"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Permission templates define sets of actions that users can perform in "
-# OBSOLETE: "Poweradmin. They provide a quick way to assign common permission "
-# OBSOLETE: "combinations to multiple users."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "I modelli di permessi definiscono set di azioni che gli utenti possono "
-# OBSOLETE: "eseguire in Poweradmin. Forniscono un modo rapido per assegnare "
-# OBSOLETE: "combinazioni di permessi comuni a più utenti."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "After creating a template, you can assign it to users when creating or "
-# OBSOLETE: "editing user accounts. This ensures consistent permissions across user "
-# OBSOLETE: "groups with similar roles."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Dopo aver creato un modello, puoi assegnarlo agli utenti quando crei o "
-# OBSOLETE: "modifichi account utente. Questo assicura permessi coerenti tra gruppi di "
-# OBSOLETE: "utenti con ruoli simili."
-
-# OBSOLETE: msgid "Delete Permission Template"
-# OBSOLETE: msgstr "Elimina Modello di Permessi"
-
-# OBSOLETE: msgid "You are about to delete the permission template"
-# OBSOLETE: msgstr "Si sta per eliminare il modello di permessi"
-
-# OBSOLETE: msgid "CSV"
-# OBSOLETE: msgstr "CSV"
-
-# OBSOLETE: msgid "Save as new template"
-# OBSOLETE: msgstr "Salva come nuovo modello"
-
-# OBSOLETE: msgid "Create a reusable template from this zone's records"
-# OBSOLETE: msgstr "Crea un modello riutilizzabile dai record di questa zona"
-
-# OBSOLETE: msgid "Template Description"
-# OBSOLETE: msgstr "Descrizione Modello"
-
-# OBSOLETE: msgid "Optional description for this template"
-# OBSOLETE: msgstr "Descrizione opzionale per questo modello"
-
-# OBSOLETE: msgid "Save as template"
-# OBSOLETE: msgstr "Salva come modello"
-
-# OBSOLETE: msgid "Zone Settings"
-# OBSOLETE: msgstr "Impostazioni Zona"
-
-# OBSOLETE: msgid "Owner of zone"
-# OBSOLETE: msgstr "Proprietario della zona"
-
-# OBSOLETE: msgid "No owner set for this zone."
-# OBSOLETE: msgstr "Nessun proprietario impostato per questa zona."
-
-# OBSOLETE: msgid "Select All Filtered"
-# OBSOLETE: msgstr "Seleziona Tutti i Filtrati"
-
-# OBSOLETE: msgid "User Administration"
-# OBSOLETE: msgstr "Amministrazione Utenti"
-
-# OBSOLETE: msgid "Create descriptive usernames that are easy to identify"
-# OBSOLETE: msgstr "Crea nomi utente descrittivi facili da identificare"
-
-# OBSOLETE: msgid "Adding a full name helps with user identification"
-# OBSOLETE: msgstr "Aggiungere un nome completo aiuta con l'identificazione dell'utente"
-
-# OBSOLETE: msgid "Auto-generating passwords is recommended for better security"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Generare password automaticamente è raccomandato per una migliore "
-# OBSOLETE: "sicurezza"
-
-# OBSOLETE: msgid "User responsible for this zone"
-# OBSOLETE: msgstr "Utente responsabile per questa zona"
-
-# OBSOLETE: msgid "Zone Information"
-# OBSOLETE: msgstr "Informazioni Zona"
-
-# OBSOLETE: msgid "About Master Zones"
-# OBSOLETE: msgstr "Informazioni sulle Zone Master"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "A master zone is a zone for which this PowerDNS server is the primary "
-# OBSOLETE: "authority. You can add, edit and delete records in master zones."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Una zona master è una zona per la quale questo server PowerDNS è "
-# OBSOLETE: "l'autorità primaria. È possibile aggiungere, modificare ed eliminare "
-# OBSOLETE: "record nelle zone master."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "After creating the zone, you will be redirected to add DNS records to it."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Dopo aver creato la zona, verrai reindirizzato per aggiungere record DNS "
-# OBSOLETE: "ad essa."
-
-# OBSOLETE: msgid "DNSSEC Information"
-# OBSOLETE: msgstr "Informazioni DNSSEC"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "DNSSEC (Domain Name System Security Extensions) adds cryptographic "
-# OBSOLETE: "signatures to DNS records to protect against spoofing and cache poisoning "
-# OBSOLETE: "attacks."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "DNSSEC (Domain Name System Security Extensions) aggiunge firme "
-# OBSOLETE: "crittografiche ai record DNS per proteggere contro attacchi di spoofing e "
-# OBSOLETE: "cache poisoning."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When enabled, PowerDNS will automatically generate and manage the "
-# OBSOLETE: "necessary keys and signatures for the zone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Quando abilitato, PowerDNS genererà e gestirà automaticamente le chiavi e "
-# OBSOLETE: "le firme necessarie per la zona."
-
-# OBSOLETE: msgid "Use fully qualified domain names (example.com)"
-# OBSOLETE: msgstr "Usa nomi di dominio completamente qualificati (example.com)"
-
-# OBSOLETE: msgid "Select a template to automatically create common DNS records"
-# OBSOLETE: msgstr "Seleziona un template per creare automaticamente record DNS comuni"
-
-# OBSOLETE: msgid "NATIVE zone type is recommended for most setups"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Il tipo di zona NATIVE è raccomandato per la maggior parte delle "
-# OBSOLETE: "configurazioni"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Are you sure you want to delete the selected zones? This action cannot be "
-# OBSOLETE: "undone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Sei sicuro di voler eliminare le zone selezionate? Questa azione non può "
-# OBSOLETE: "essere annullata."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Are you sure you want to delete the selected records? This action cannot "
-# OBSOLETE: "be undone."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Sei sicuro di voler eliminare i record selezionati? Questa azione non può "
-# OBSOLETE: "essere annullata."
-
-# OBSOLETE: msgid "IP address of the master name server (can be IPv4 or IPv6)"
-# OBSOLETE: msgstr "Indirizzo IP del name server master (può essere IPv4 o IPv6)"
-
-# OBSOLETE: msgid "About Slave Zones"
-# OBSOLETE: msgstr "Informazioni sulle Zone Slave"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "A slave zone is a read-only copy of a zone hosted on another DNS server. "
-# OBSOLETE: "PowerDNS will automatically fetch and update zone data from the master "
-# OBSOLETE: "server."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Una zona slave è una copia di sola lettura di una zona ospitata su un "
-# OBSOLETE: "altro server DNS. PowerDNS recupererà e aggiornerà automaticamente i dati "
-# OBSOLETE: "della zona dal server master."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You cannot edit records in a slave zone - all changes must be made on the "
-# OBSOLETE: "master server."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Non è possibile modificare i record in una zona slave - tutte le "
-# OBSOLETE: "modifiche devono essere fatte sul server master."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Make sure that this PowerDNS server is allowed to transfer the zone from "
-# OBSOLETE: "the master server. The master server must have an allow-transfer or "
-# OBSOLETE: "similar configuration permitting zone transfers to this server's IP "
-# OBSOLETE: "address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Assicurati che questo server PowerDNS sia autorizzato a trasferire la "
-# OBSOLETE: "zona dal server master. Il server master deve avere una configurazione "
-# OBSOLETE: "allow-transfer o simile che permetta i trasferimenti di zona "
-# OBSOLETE: "all'indirizzo IP di questo server."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can specify multiple master servers by separating IP addresses with "
-# OBSOLETE: "commas"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "È possibile specificare più server master separando gli indirizzi IP con "
-# OBSOLETE: "virgole"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Slave zones will automatically update when the master server sends a "
-# OBSOLETE: "notification"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Le zone slave si aggiorneranno automaticamente quando il server master "
-# OBSOLETE: "invia una notifica"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "To test the connection, check the PowerDNS logs after adding the zone"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Per testare la connessione, controlla i log di PowerDNS dopo aver "
-# OBSOLETE: "aggiunto la zona"
-
-# OBSOLETE: msgid "List permission templates"
-# OBSOLETE: msgstr "Elenca template permessi"
-
-# OBSOLETE: msgid "Add permission template"
-# OBSOLETE: msgstr "Aggiungi template permessi"
-
-# OBSOLETE: msgid "Edit Permission Template"
-# OBSOLETE: msgstr "Modifica Template Permessi"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "This template can be assigned to users to quickly apply its set of "
-# OBSOLETE: "permissions. Changes made here will affect all users who have this "
-# OBSOLETE: "template assigned."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Questo template può essere assegnato agli utenti per applicare "
-# OBSOLETE: "rapidamente il suo set di permessi. Le modifiche fatte qui influenzeranno "
-# OBSOLETE: "tutti gli utenti che hanno questo template assegnato."
-
-# OBSOLETE: msgid "Permission Templates"
-# OBSOLETE: msgstr "Template Permessi"
-
-# OBSOLETE: msgid "No permission templates found"
-# OBSOLETE: msgstr "Nessun modello di permessi trovato"
-
-
-
