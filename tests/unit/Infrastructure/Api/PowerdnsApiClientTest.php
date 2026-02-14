@@ -176,4 +176,79 @@ class PowerdnsApiClientTest extends TestCase
         $this->assertIsArray($keys);
         $this->assertEmpty($keys);
     }
+
+    public function testSecureZoneEncodesSlashInRfc2317ZoneName(): void
+    {
+        $zone = new Zone('0/26.1.168.192.in-addr.arpa.');
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('PUT', '/api/v1/servers/localhost/zones/0%2F26.1.168.192.in-addr.arpa.')
+            ->willReturn(['responseCode' => 204, 'data' => []]);
+
+        $result = $this->apiClient->secureZone($zone);
+
+        $this->assertTrue($result);
+    }
+
+    public function testGetZoneKeysEncodesSlashInRfc2317ZoneName(): void
+    {
+        $zone = new Zone('0/26.1.168.192.in-addr.arpa.');
+
+        $apiResponse = [
+            'responseCode' => 200,
+            'data' => [
+                [
+                    'id' => 1,
+                    'keytype' => 'ksk',
+                    'bits' => 256,
+                    'algorithm' => 'ECDSAP256SHA256',
+                    'active' => true,
+                    'dnskey' => 'example-dnskey-string',
+                    'ds' => ['12345 13 2 abcdef...']
+                ]
+            ]
+        ];
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/0%2F26.1.168.192.in-addr.arpa./cryptokeys')
+            ->willReturn($apiResponse);
+
+        $keys = $this->apiClient->getZoneKeys($zone);
+
+        $this->assertCount(1, $keys);
+    }
+
+    public function testIsZoneSecuredEncodesSlashInRfc2317ZoneName(): void
+    {
+        $zone = new Zone('128/25.0.168.192.in-addr.arpa.');
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/128%2F25.0.168.192.in-addr.arpa.')
+            ->willReturn(['responseCode' => 200, 'data' => ['dnssec' => true]]);
+
+        $result = $this->apiClient->isZoneSecured($zone);
+
+        $this->assertTrue($result);
+    }
+
+    public function testDeleteZoneEncodesSlashInRfc2317ZoneName(): void
+    {
+        $zone = new Zone('0/26.1.168.192.in-addr.arpa.');
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('DELETE', '/api/v1/servers/localhost/zones/0%2F26.1.168.192.in-addr.arpa.')
+            ->willReturn(['responseCode' => 204, 'data' => []]);
+
+        $result = $this->apiClient->deleteZone($zone);
+
+        $this->assertTrue($result);
+    }
 }
