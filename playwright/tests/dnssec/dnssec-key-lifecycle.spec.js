@@ -63,6 +63,20 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
+    test('should display CSK info alert on add key page', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) {
+        test.skip('No zones available for DNSSEC test');
+        return;
+      }
+      await page.goto(`/zones/${zoneId}/dnssec/add`);
+      const cskInfoAlert = page.locator('#csk-info-alert');
+      await expect(cskInfoAlert).toBeVisible();
+      await expect(cskInfoAlert).toContainText('PowerDNS 4.0');
+      await expect(cskInfoAlert).toContainText('CSK');
+    });
+
     test('should display key type selector', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const zoneId = await getTestZoneId(page);
