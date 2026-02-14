@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-09-11 22:52+0300\n"
+"POT-Creation-Date: 2026-02-14 17:20+0200\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -17,20 +17,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/AppInitializer.php:76
+#: lib/AppInitializer.php:82
+#, php-format
 msgid ""
-"No configuration file found. Please use the <a href=\"install/\">installer</"
-"a> to create one, or create a config/settings.php file manually."
+"No configuration file found at %s. Please use the <a href=\"install/"
+"\">installer</a> to create one, or create the configuration file manually."
 msgstr ""
-"Geen configuratiebestand gevonden. Gebruik de <a href=\"install/"
-"\">installer</a> om er een te maken, of maak handmatig een config/"
-"settings.php bestand aan."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:130
+#: lib/Infrastructure/Service/SessionAuthenticator.php:131
 msgid "Invalid CSRF token."
 msgstr "Ongeldig CSRF-token."
 
-#: lib/BaseController.php:489
+#: lib/BaseController.php:507
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -38,7 +36,7 @@ msgstr ""
 "De <a href=\"install/\">install/</a> map bestaat, u moet deze eerst "
 "verwijderen voordat u doorgaat."
 
-#: lib/BaseController.php:516
+#: lib/BaseController.php:536
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -46,12 +44,12 @@ msgstr ""
 "De standaard sessie-encryptiesleutel wordt gebruikt, stel deze in in uw "
 "configuratiebestand."
 
-#: lib/BaseController.php:620
+#: lib/BaseController.php:655
 #, php-format
 msgid "The %s field is required."
 msgstr "Het veld %s is verplicht."
 
-#: lib/BaseController.php:628
+#: lib/BaseController.php:663
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Het veld %s moet een getal zijn."
@@ -76,7 +74,7 @@ msgstr "Toon alle"
 msgid "No records selected for deletion."
 msgstr "Geen records geselecteerd voor verwijdering."
 
-#: lib/Application/Controller/DeleteRecordsController.php:180
+#: lib/Application/Controller/DeleteRecordsController.php:184
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
@@ -84,7 +82,7 @@ msgstr ""
 "Het record is succesvol verwijderd. Eventuele bijbehorende PTR-records zijn "
 "ook verwijderd."
 
-#: lib/Application/Controller/DeleteRecordsController.php:182
+#: lib/Application/Controller/DeleteRecordsController.php:186
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -93,30 +91,34 @@ msgstr ""
 "%d records zijn succesvol verwijderd. Eventuele bijbehorende PTR-records "
 "zijn ook verwijderd."
 
-#: lib/Application/Controller/DeleteRecordsController.php:185
+#: lib/Application/Controller/DeleteRecordsController.php:189
 msgid "No records could be deleted. Please check permissions."
 msgstr "Geen records konden worden verwijderd. Controleer de machtigingen."
 
-#: lib/Application/Controller/DeleteRecordsController.php:235
+#: lib/Application/Controller/DeleteRecordsController.php:239
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
 "Geen geldige records geselecteerd voor verwijdering of u hebt geen "
 "toestemming om ze te verwijderen."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:92
+#: lib/Application/Controller/DnssecAddKeyController.php:106
 msgid "Invalid or unexpected input given."
 msgstr "Ongeldige of onverwachte invoer gegeven."
 
-#: lib/Domain/Model/UserManager.php:229
+#: lib/Domain/Model/UserManager.php:278
 msgid "You do not have the permission to delete this user."
 msgstr "U hebt geen toestemming om deze gebruiker te verwijderen."
 
-#: lib/Application/Controller/EditUserController.php:245
+#: lib/Application/Controller/DeleteUserController.php:62
+msgid "You do not have permission to delete a superuser account."
+msgstr ""
+
+#: lib/Application/Controller/EditUserController.php:269
 msgid "User does not exist."
 msgstr "Gebruiker bestaat niet."
 
-#: lib/Application/Controller/DeleteUserController.php:78
+#: lib/Application/Controller/DeleteUserController.php:87
 msgid "The user has been deleted successfully."
 msgstr "De gebruiker is succesvol verwijderd."
 
@@ -124,15 +126,15 @@ msgstr "De gebruiker is succesvol verwijderd."
 msgid "Zone comments feature is disabled in configuration."
 msgstr "Zone opmerkingen functie is uitgeschakeld in de configuratie."
 
-#: lib/Application/Controller/EditCommentController.php:63
+#: lib/Application/Controller/EditCommentController.php:64
 msgid "You do not have the permission to view this comment."
 msgstr "U hebt geen toestemming om deze opmerking te bekijken."
 
-#: lib/Domain/Service/Dns/RecordManager.php:381
+#: lib/Domain/Service/Dns/RecordManager.php:374
 msgid "You do not have the permission to edit this comment."
 msgstr "U hebt geen toestemming om deze opmerking te bewerken."
 
-#: lib/Application/Controller/EditCommentController.php:94
+#: lib/Application/Controller/EditCommentController.php:95
 msgid "The comment has been updated successfully."
 msgstr "De opmerking is succesvol bijgewerkt."
 
@@ -144,7 +146,11 @@ msgstr "Ongeldig record ID."
 msgid "You do not have permission to delete records in this zone."
 msgstr "U heeft geen toestemming om records in deze zone te verwijderen."
 
-#: lib/Application/Controller/DeleteRecordController.php:189
+#: lib/Application/Controller/EditRecordController.php:163
+msgid "Record not found."
+msgstr ""
+
+#: lib/Application/Controller/DeleteRecordController.php:194
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
@@ -152,25 +158,25 @@ msgstr ""
 "Het record en de bijbehorende PTR- en A/AAAA-records zijn succesvol "
 "verwijderd."
 
-#: lib/Application/Controller/DeleteRecordController.php:191
+#: lib/Application/Controller/DeleteRecordController.php:196
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr "Het record en het bijbehorende PTR-record zijn succesvol verwijderd."
 
-#: lib/Application/Controller/DeleteRecordController.php:193
+#: lib/Application/Controller/DeleteRecordController.php:198
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr ""
 "Het record en het bijbehorende A/AAAA-record zijn succesvol verwijderd."
 
-#: lib/Application/Controller/DeleteRecordController.php:195
+#: lib/Application/Controller/DeleteRecordController.php:200
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr ""
 "Het record is succesvol verwijderd. Geen overeenkomend PTR-record gevonden."
 
-#: lib/Application/Controller/DeleteRecordController.php:197
+#: lib/Application/Controller/DeleteRecordController.php:202
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -178,11 +184,11 @@ msgstr ""
 "Het record is succesvol verwijderd. Geen overeenkomend A/AAAA-record "
 "gevonden."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:73
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
 msgid "The record has been deleted successfully."
 msgstr "Het record is succesvol verwijderd."
 
-#: lib/Application/Controller/DeleteRecordController.php:203
+#: lib/Application/Controller/DeleteRecordController.php:208
 msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
@@ -190,7 +196,7 @@ msgstr ""
 "Het record en de bijbehorende PTR- en A/AAAA-records zijn verwijderd, maar "
 "de opmerking is behouden omdat soortgelijke records bestaan."
 
-#: lib/Application/Controller/DeleteRecordController.php:205
+#: lib/Application/Controller/DeleteRecordController.php:210
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
@@ -198,7 +204,7 @@ msgstr ""
 "Het record en het bijbehorende PTR-record zijn verwijderd, maar de opmerking "
 "is behouden omdat vergelijkbare records bestaan."
 
-#: lib/Application/Controller/DeleteRecordController.php:207
+#: lib/Application/Controller/DeleteRecordController.php:212
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
@@ -206,7 +212,7 @@ msgstr ""
 "Het record en het bijbehorende A/AAAA-record zijn verwijderd, maar de "
 "opmerking is behouden omdat soortgelijke records bestaan."
 
-#: lib/Application/Controller/DeleteRecordController.php:209
+#: lib/Application/Controller/DeleteRecordController.php:214
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
@@ -214,42 +220,98 @@ msgstr ""
 "Het record is verwijderd maar de opmerking is behouden omdat er "
 "vergelijkbare records bestaan."
 
-#: lib/Domain/Service/Dns/RecordManager.php:232
+#: lib/Domain/Service/Dns/RecordManager.php:225
 msgid "You do not have the permission to edit this record."
 msgstr "U hebt geen toestemming om dit record te bewerken."
+
+#: lib/Application/Controller/UserPreferencesController.php:99
+msgid "Preferences saved successfully."
+msgstr ""
+
+#: lib/Application/Controller/UserPreferencesController.php:107
+msgid "Failed to update preferences. Please try again."
+msgstr ""
+
+#: lib/Application/Controller/UserPreferencesController.php:122
+msgid "Top"
+msgstr ""
+
+#: lib/Application/Controller/UserPreferencesController.php:123
+msgid "Bottom"
+msgstr ""
+
+#: lib/Application/Controller/DnsWizardController.php:57
+msgid "DNS wizards are not enabled."
+msgstr ""
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:47
+msgid "Invalid zone ID."
+msgstr "Ongeldig zone-ID."
+
+#: lib/Application/Controller/DnsWizardController.php:71
+msgid "Zone not found."
+msgstr ""
+
+#: lib/Application/Controller/DnsWizardController.php:80
+msgid "You do not have permission to add records to this zone."
+msgstr ""
+
+#: lib/Application/Controller/DnsWizardFormController.php:114
+msgid "Invalid wizard type."
+msgstr ""
+
+#: lib/Application/Controller/DnsWizardFormController.php:199
+msgid "Validation failed:"
+msgstr ""
+
+#: lib/Application/Controller/DnsWizardFormController.php:223
+msgid "Failed to generate record:"
+msgstr ""
+
+#: lib/Application/Controller/Api/Internal/DnsWizardController.php:397
+msgid ""
+"This record was not valid and could not be added. It may already exist or "
+"contain invalid data."
+msgstr ""
+"Dit record was niet geldig en kon niet worden toegevoegd. Het bestaat "
+"mogelijk al of bevat ongeldige gegevens."
+
+#: lib/Application/Controller/Api/Internal/DnsWizardController.php:401
+msgid "The record was successfully added."
+msgstr "Het record is succesvol toegevoegd."
 
 #: lib/Application/Controller/MfaSetupController.php:53
 msgid "MFA is not enabled on this system."
 msgstr "MFA is niet ingeschakeld op dit systeem."
 
-#: lib/Application/Controller/MfaSetupController.php:194
+#: lib/Application/Controller/MfaSetupController.php:197
 msgid "Failed to create MFA record."
 msgstr "Kan MFA-record niet aanmaken."
 
-#: lib/Application/Controller/MfaSetupController.php:201
+#: lib/Application/Controller/MfaSetupController.php:204
 msgid "MFA is already enabled."
 msgstr "MFA is al ingeschakeld."
 
-#: lib/Application/Controller/MfaSetupController.php:246
+#: lib/Application/Controller/MfaSetupController.php:249
 msgid "Verification code is required."
 msgstr "Verificatiecode is verplicht."
 
-#: lib/Application/Controller/MfaSetupController.php:155
+#: lib/Application/Controller/MfaSetupController.php:158
 msgid "MFA has been enabled successfully."
 msgstr "MFA is succesvol ingeschakeld."
 
-#: lib/Application/Controller/MfaVerifyController.php:185
+#: lib/Application/Controller/MfaVerifyController.php:262
 msgid "Invalid verification code. Please try again."
 msgstr "Ongeldige verificatiecode. Probeer het opnieuw."
 
-#: lib/Application/Controller/MfaSetupController.php:171
+#: lib/Application/Controller/MfaSetupController.php:174
 msgid ""
 "Email address is not available. Please update your email address in your "
 "profile."
 msgstr ""
 "E-mailadres is niet beschikbaar. Werk uw e-mailadres bij in uw profiel."
 
-#: lib/Application/Controller/MfaSetupController.php:178
+#: lib/Application/Controller/MfaSetupController.php:181
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
@@ -257,11 +319,11 @@ msgstr ""
 "E-mailverificatiemethode is niet beschikbaar omdat de mailservice niet is "
 "ingeschakeld op dit systeem."
 
-#: lib/Application/Controller/MfaSetupController.php:185
+#: lib/Application/Controller/MfaSetupController.php:188
 msgid "Email verification method is not enabled on this system."
 msgstr "E-mailverificatiemethode is niet ingeschakeld op dit systeem."
 
-#: lib/Application/Controller/MfaSetupController.php:227
+#: lib/Application/Controller/MfaSetupController.php:230
 msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
@@ -269,23 +331,23 @@ msgstr ""
 "Kan verificatiecode niet verzenden. Probeer het later opnieuw of gebruik app-"
 "gebaseerde authenticatie."
 
-#: lib/Application/Controller/MfaSetupController.php:264
+#: lib/Application/Controller/MfaSetupController.php:267
 msgid "MFA has been enabled with email verification."
 msgstr "MFA is ingeschakeld met e-mailverificatie."
 
-#: lib/Application/Controller/MfaSetupController.php:280
+#: lib/Application/Controller/MfaSetupController.php:283
 msgid "MFA is not enabled."
 msgstr "MFA is niet ingeschakeld."
 
-#: lib/Application/Controller/MfaSetupController.php:288
+#: lib/Application/Controller/MfaSetupController.php:291
 msgid "MFA has been disabled."
 msgstr "MFA is uitgeschakeld."
 
-#: lib/Application/Controller/MfaSetupController.php:303
+#: lib/Application/Controller/MfaSetupController.php:306
 msgid "MFA must be enabled to regenerate recovery codes."
 msgstr "MFA moet ingeschakeld zijn om herstelcodes opnieuw te genereren."
 
-#: lib/Application/Controller/MfaSetupController.php:311
+#: lib/Application/Controller/MfaSetupController.php:314
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr ""
 "Herstelcodes zijn opnieuw gegenereerd. Bewaar ze op een veilige plaats."
@@ -302,11 +364,11 @@ msgstr "De API-functie is uitgeschakeld in de systeemconfiguratie."
 msgid "You do not have permission to manage API keys."
 msgstr "Je hebt geen toestemming om API-sleutels te beheren."
 
-#: lib/Application/Controller/ApiKeysController.php:232
+#: lib/Application/Controller/ApiKeysController.php:235
 msgid "API key name is required."
 msgstr "API-sleutelnaam is verplicht."
 
-#: lib/Application/Controller/ApiKeysController.php:242
+#: lib/Application/Controller/ApiKeysController.php:245
 msgid "Invalid expiration date format."
 msgstr "Ongeldig formaat voor vervaldatum."
 
@@ -315,11 +377,11 @@ msgid "API key not found or you do not have permission to edit it."
 msgstr ""
 "API-sleutel niet gevonden of u hebt geen toestemming om deze te bewerken."
 
-#: lib/Application/Controller/ApiKeysController.php:251
+#: lib/Application/Controller/ApiKeysController.php:254
 msgid "API key updated successfully."
 msgstr "API-sleutel succesvol bijgewerkt."
 
-#: lib/Application/Controller/ApiKeysController.php:280
+#: lib/Application/Controller/ApiKeysController.php:283
 msgid "API key deleted successfully."
 msgstr "API-sleutel succesvol verwijderd."
 
@@ -328,20 +390,20 @@ msgid "API key not found or you do not have permission to delete it."
 msgstr ""
 "API-sleutel niet gevonden of u hebt geen toestemming om deze te verwijderen."
 
-#: lib/Application/Controller/ApiKeysController.php:352
+#: lib/Application/Controller/ApiKeysController.php:355
 msgid "disabled"
 msgstr "uitgeschakeld"
 
-#: lib/Application/Controller/ApiKeysController.php:352
+#: lib/Application/Controller/ApiKeysController.php:355
 msgid "enabled"
 msgstr "ingeschakeld"
 
-#: lib/Application/Controller/ApiKeysController.php:353
+#: lib/Application/Controller/ApiKeysController.php:356
 #, php-format
 msgid "API key %s successfully."
 msgstr "API-sleutel %s succesvol."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:98
+#: lib/Application/Controller/BatchPtrRecordController.php:101
 msgid "You do not have the permission to add records to this zone."
 msgstr "U hebt geen toestemming om records toe te voegen aan deze zone."
 
@@ -353,24 +415,24 @@ msgstr "Geef ten minste één record op."
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Ongeldig formaat. Verwacht ten minste: naam,type,inhoud"
 
-#: lib/Application/Controller/BulkRecordAddController.php:181
+#: lib/Application/Controller/BulkRecordAddController.php:183
 msgid "Invalid record type."
 msgstr "Ongeldig recordtype."
 
-#: lib/Application/Controller/BulkRecordAddController.php:227
+#: lib/Application/Controller/BulkRecordAddController.php:220
 msgid "Record could not be added."
 msgstr "Record kon niet worden toegevoegd."
 
-#: lib/Application/Controller/BulkRecordAddController.php:235
+#: lib/Application/Controller/BulkRecordAddController.php:228
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d record(s) zijn succesvol toegevoegd."
 
-#: lib/Application/Controller/BulkRecordAddController.php:238
+#: lib/Application/Controller/BulkRecordAddController.php:231
 msgid "Some record(s) could not be added."
 msgstr "Sommige record(s) konden niet worden toegevoegd."
 
-#: lib/Application/Controller/BulkRecordAddController.php:271
+#: lib/Application/Controller/BulkRecordAddController.php:264
 msgid "Zone ID is required."
 msgstr "Zone-ID is verplicht."
 
@@ -378,7 +440,7 @@ msgstr "Zone-ID is verplicht."
 msgid "You do not have the permission to edit permission templates."
 msgstr "U hebt geen toestemming om machtigingssjablonen te bewerken."
 
-#: lib/Application/Controller/EditPermTemplController.php:74
+#: lib/Application/Controller/EditPermTemplController.php:77
 msgid "The permission template has been updated successfully."
 msgstr "Het machtigingssjabloon is succesvol bijgewerkt."
 
@@ -386,70 +448,74 @@ msgstr "Het machtigingssjabloon is succesvol bijgewerkt."
 msgid "You do not have the permission to perform searches."
 msgstr "U hebt geen toestemming om zoekopdrachten uit te voeren."
 
-#: lib/Domain/Model/UserManager.php:739
+#: lib/Domain/Model/UserManager.php:794
 msgid "You do not have the permission to add a new user."
 msgstr "U hebt geen toestemming om een nieuwe gebruiker toe te voegen."
 
-#: lib/Application/Controller/AddUserController.php:101
+#: lib/Application/Controller/AddUserController.php:104
 msgid "The user has been created successfully."
 msgstr "De gebruiker is succesvol aangemaakt."
 
-#: lib/Application/Controller/AddUserController.php:110
+#: lib/Application/Controller/AddUserController.php:113
 #, php-format
 msgid "Generated password: %s"
 msgstr "Gegenereerd wachtwoord: %s."
 
-#: lib/Application/Controller/AddUserController.php:126
+#: lib/Application/Controller/AddUserController.php:129
 msgid "Login details have been sent to the user via email."
 msgstr "Inloggegevens zijn per e-mail naar de gebruiker verzonden."
 
-#: lib/Application/Controller/AddUserController.php:128
+#: lib/Application/Controller/AddUserController.php:131
 msgid "NOTE: Failed to send login details via email."
 msgstr "OPMERKING: Kan inloggegevens niet per e-mail verzenden."
 
-#: lib/Application/Controller/AddUserController.php:134
+#: lib/Application/Controller/AddUserController.php:137
 msgid "A password was generated but is not displayed for security reasons."
 msgstr ""
 "Een wachtwoord is gegenereerd maar wordt om veiligheidsredenen niet "
 "weergegeven."
 
-#: lib/Application/Controller/ChangePasswordController.php:136
+#: lib/Application/Controller/ChangePasswordController.php:151
 msgid "Please fill in all required fields correctly."
 msgstr "Vul alle verplichte velden correct in."
 
-#: lib/Domain/Service/Dns/RecordManager.php:327
+#: lib/Domain/Service/Dns/RecordManager.php:320
 msgid "You do not have the permission to delete this record."
 msgstr "U hebt geen toestemming om dit record te verwijderen."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:76
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:78
 msgid "The record could not be deleted."
 msgstr "Het record kon niet worden verwijderd."
 
-#: lib/Application/Controller/LoginController.php:81
-msgid "Invalid authentication provider"
-msgstr "Ongeldige authenticatieprovider"
+#: lib/Application/Controller/ListLogUsersController.php:67
+msgid "Invalid page number."
+msgstr ""
 
-#: lib/Application/Service/OidcService.php:241
-msgid "Authentication failed: "
-msgstr "Authenticatie mislukt: "
+#: lib/Application/Controller/ListLogUsersController.php:69
+msgid "Page number must be at least 1."
+msgstr ""
+
+#: lib/Application/Controller/ListLogUsersController.php:87
+msgid "Page number exceeds available pages."
+msgstr ""
 
 #: lib/Application/Controller/UsersController.php:49
 msgid "You do not have permission to view the users list."
 msgstr "U hebt geen toestemming om de gebruikerslijst te bekijken."
 
-#: lib/Application/Controller/UsersController.php:72
+#: lib/Application/Controller/UsersController.php:75
 msgid "User details updated"
 msgstr "Gebruikersgegevens bijgewerkt"
 
-#: lib/Application/Controller/EditZoneTemplController.php:58
+#: lib/Application/Controller/EditZoneTemplController.php:59
 msgid "No template ID provided."
 msgstr "Geen sjabloon-ID opgegeven."
 
-#: lib/Application/Controller/EditZoneTemplController.php:68
+#: lib/Application/Controller/EditZoneTemplController.php:69
 msgid "You do not have the permission to edit zone templates."
 msgstr "U hebt geen toestemming om zonesjablonen te bewerken."
 
-#: lib/Application/Controller/EditZoneTemplController.php:84
+#: lib/Application/Controller/EditZoneTemplController.php:88
 msgid "There is no zone template with this ID."
 msgstr "Er is geen zonesjabloon met dit ID."
 
@@ -457,23 +523,23 @@ msgstr "Er is geen zonesjabloon met dit ID."
 msgid "Zone template has been updated successfully."
 msgstr "Zonesjabloon is succesvol bijgewerkt."
 
-#: lib/Application/Controller/EditZoneTemplController.php:222
+#: lib/Application/Controller/EditZoneTemplController.php:228
 msgid "Zones have been updated successfully."
 msgstr "Zones zijn succesvol bijgewerkt."
 
-#: lib/Application/Controller/EditZoneTemplController.php:233
+#: lib/Application/Controller/EditZoneTemplController.php:239
 msgid "You do not have permission to create new zone templates."
 msgstr "U hebt geen toestemming om nieuwe zonesjablonen aan te maken."
 
-#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:802
+#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:803
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Zonesjabloon met deze naam bestaat al, kies een andere."
 
-#: lib/Application/Controller/EditZoneTemplController.php:264
+#: lib/Application/Controller/EditZoneTemplController.php:270
 msgid "Please enter a different name when using Save As."
 msgstr "Voer een andere naam in bij het gebruik van Opslaan Als."
 
-#: lib/Application/Controller/EditZoneTemplController.php:288
+#: lib/Application/Controller/EditZoneTemplController.php:294
 msgid "Zone template has been copied successfully."
 msgstr "Zonesjabloon is succesvol gekopieerd."
 
@@ -485,15 +551,15 @@ msgstr "U hebt geen toestemming om zonesjablonen te bekijken."
 msgid "Invalid template ID."
 msgstr "Ongeldig sjabloon-ID."
 
-#: lib/Application/Controller/ListTemplateZonesController.php:48
+#: lib/Application/Controller/ListTemplateZonesController.php:53
 msgid "Template does not exist."
 msgstr "Sjabloon bestaat niet."
 
-#: lib/Domain/Repository/DomainRepository.php:485
-msgid "You do not have the permission to view this zone."
-msgstr "U hebt geen toestemming om deze zone te bekijken."
-
 #: lib/Application/Controller/DnssecAddKeyController.php:62
+msgid "You do not have permission to view this zone."
+msgstr "U heeft geen toestemming om deze zone te bekijken."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:71
 msgid "There is no zone with this ID."
 msgstr "Er is geen zone met dit ID."
 
@@ -547,28 +613,32 @@ msgstr "WHOIS-opzoekfunctionaliteit is uitgeschakeld."
 msgid "You do not have permission to perform WHOIS lookups."
 msgstr "U hebt geen toestemming om WHOIS-opzoekingen uit te voeren."
 
-#: lib/Application/Controller/WhoisController.php:136
+#: lib/Application/Controller/WhoisController.php:139
 #, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "Kan WHOIS-informatie niet ophalen met server %s"
 
-#: lib/Application/Controller/EditController.php:180
+#: lib/Application/Controller/EditController.php:194
 msgid "You do not have permission to access this zone."
 msgstr "U heeft geen toestemming om deze zone te benaderen."
 
-#: lib/Application/Controller/EditController.php:296
+#: lib/Domain/Repository/DomainRepository.php:497
+msgid "You do not have the permission to view this zone."
+msgstr "U hebt geen toestemming om deze zone te bekijken."
+
+#: lib/Application/Controller/EditController.php:334
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC is niet ingeschakeld op de server."
 
-#: lib/Application/Controller/EditController.php:299
+#: lib/Application/Controller/EditController.php:337
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zone is al ondertekend met DNSSEC."
 
-#: lib/Application/Controller/EditController.php:311
+#: lib/Application/Controller/EditController.php:359
 msgid "Zone has been signed successfully."
 msgstr "Zone is succesvol ondertekend."
 
-#: lib/Application/Controller/EditController.php:315
+#: lib/Application/Controller/EditController.php:363
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -576,9 +646,11 @@ msgstr ""
 "Zone-ondertekening succesvol aangevraagd, maar verificatie mislukt. "
 "Controleer DNSSEC-sleutels."
 
-#: lib/Application/Controller/EditController.php:319
-msgid "Failed to sign zone. Check PowerDNS logs for details."
-msgstr "Kan zone niet ondertekenen. Controleer PowerDNS-logs voor details."
+#: lib/Application/Controller/EditController.php:367
+msgid ""
+"Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
+"error. Check PowerDNS logs for details."
+msgstr ""
 
 #: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
@@ -598,56 +670,49 @@ msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Kan zone-ondertekening niet opheffen. Controleer PowerDNS-logs voor details."
 
-#: lib/Application/Controller/EditController.php:643
+#: lib/Application/Controller/EditController.php:693
 msgid "Template name can't be an empty string."
 msgstr "Sjabloonnaam mag geen lege string zijn."
 
-#: lib/Application/Controller/AddZoneTemplController.php:86
+#: lib/Application/Controller/AddZoneTemplController.php:89
 msgid "Zone template has been added successfully."
 msgstr "Zonesjabloon is succesvol toegevoegd."
 
-#: lib/Application/Controller/EditController.php:663
+#: lib/Application/Controller/EditController.php:713
 msgid "You need to be logged in to export zone data."
 msgstr "U moet ingelogd zijn om zonegegevens te exporteren."
 
-#: lib/Application/Controller/EditController.php:673
+#: lib/Application/Controller/EditController.php:723
 msgid "You do not have permission to export this zone."
 msgstr "U hebt geen toestemming om deze zone te exporteren."
 
-#: lib/Application/Controller/EditController.php:697
+#: lib/Application/Controller/EditController.php:747
 msgid "This zone does not have any records to export."
 msgstr "Deze zone heeft geen records om te exporteren."
 
-#: lib/Application/Controller/EditController.php:797
+#: lib/Application/Controller/EditController.php:847
 msgid "Request has expired, please try again."
 msgstr "Verzoek is verlopen, probeer het opnieuw."
 
-#: lib/Application/Controller/EditController.php:802
+#: lib/Application/Controller/EditController.php:852
 msgid "Zone has been updated successfully."
 msgstr "Zone is succesvol bijgewerkt."
 
-#: lib/Application/Controller/EditController.php:804
+#: lib/Application/Controller/EditController.php:854
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr ""
-"Zone succesvol opgeslagen. Er zijn geen recordwijzigingen gemaakt, maar het SOA-serienummer is verhoogd."
+"Zone succesvol opgeslagen. Er zijn geen recordwijzigingen gemaakt, maar het "
+"SOA-serienummer is verhoogd."
 
-#: lib/Application/Controller/EditController.php:813
+#: lib/Application/Controller/EditController.php:863
 msgid "Zone has not been updated successfully."
 msgstr "Zone is niet succesvol bijgewerkt."
 
-#: lib/Application/Controller/EditController.php:841
+#: lib/Application/Controller/EditController.php:891
 msgid "Please provide all required fields."
 msgstr "Geef alle verplichte velden op."
-
-#: lib/Application/Controller/AddRecordController.php:168
-msgid ""
-"This record was not valid and could not be added. It may already exist or "
-"contain invalid data."
-msgstr ""
-"Dit record was niet geldig en kon niet worden toegevoegd. Het bestaat "
-"mogelijk al of bevat ongeldige gegevens."
 
 #: lib/Application/Controller/AddRecordController.php:223
 msgid "Record successfully added. A matching PTR record was also created."
@@ -662,28 +727,24 @@ msgstr "Record succesvol toegevoegd, maar PTR-record aanmaken mislukt: "
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Het record is succesvol toegevoegd, maar PTR-record aanmaken mislukt."
 
-#: lib/Application/Controller/AddRecordController.php:235
+#: lib/Application/Controller/AddRecordController.php:237
 msgid "Record successfully added. A matching A record was also created."
 msgstr ""
 "Record succesvol toegevoegd. Een bijbehorend A-record is ook aangemaakt."
 
-#: lib/Application/Controller/AddRecordController.php:238
-msgid "The record was successfully added."
-msgstr "Het record is succesvol toegevoegd."
-
-#: lib/Application/Controller/MfaVerifyController.php:110
+#: lib/Application/Controller/MfaVerifyController.php:122
 msgid "Invalid security token. Please try again."
 msgstr "Ongeldig beveiligingstoken. Probeer het opnieuw."
 
-#: lib/Application/Controller/MfaVerifyController.php:120
+#: lib/Application/Controller/MfaVerifyController.php:132
 msgid "No MFA record found. Please contact administrator."
 msgstr "Geen MFA-record gevonden. Neem contact op met de beheerder."
 
-#: lib/Application/Controller/MfaVerifyController.php:125
+#: lib/Application/Controller/MfaVerifyController.php:137
 msgid "An error occurred. Please try again."
 msgstr "Er is een fout opgetreden. Probeer het opnieuw."
 
-#: lib/Application/Controller/MfaVerifyController.php:207
+#: lib/Application/Controller/MfaVerifyController.php:285
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -691,15 +752,15 @@ msgstr ""
 "E-mailverificatie is niet beschikbaar omdat de mailservice is uitgeschakeld. "
 "Gebruik een herstelcode."
 
-#: lib/Application/Controller/MfaVerifyController.php:217
+#: lib/Application/Controller/MfaVerifyController.php:295
 msgid "A new verification code has been sent to your email."
 msgstr "Een nieuwe verificatiecode is naar uw e-mail verzonden."
 
-#: lib/Application/Controller/MfaVerifyController.php:223
+#: lib/Application/Controller/MfaVerifyController.php:301
 msgid "Please use a recovery code instead."
 msgstr "Gebruik in plaats daarvan een herstelcode."
 
-#: lib/Application/Controller/MfaVerifyController.php:228
+#: lib/Application/Controller/MfaVerifyController.php:306
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -707,25 +768,25 @@ msgstr ""
 "Kan verificatiecode niet naar uw e-mail verzenden. Gebruik in plaats daarvan "
 "een herstelcode."
 
-#: lib/Domain/Service/Dns/RecordManager.php:113
+#: lib/Domain/Service/Dns/RecordManager.php:112
 msgid "You do not have the permission to add a record to this zone."
 msgstr "U hebt geen toestemming om een record toe te voegen aan deze zone."
 
-#: lib/Application/Controller/AddRecordController.php:388
+#: lib/Application/Controller/AddRecordController.php:390
 msgid "No records were provided."
 msgstr "Geen records opgegeven."
 
-#: lib/Application/Controller/AddRecordController.php:426
+#: lib/Application/Controller/AddRecordController.php:428
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d record(s) zijn succesvol toegevoegd."
 
-#: lib/Application/Controller/AddRecordController.php:428
+#: lib/Application/Controller/AddRecordController.php:430
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d record(s) konden niet worden toegevoegd."
 
-#: lib/Application/Controller/AddRecordController.php:433
+#: lib/Application/Controller/AddRecordController.php:435
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -733,23 +794,23 @@ msgstr ""
 "Sommige records konden niet worden toegevoegd. Ze bestaan mogelijk al of "
 "bevatten ongeldige gegevens."
 
-#: lib/Application/Controller/AddRecordController.php:455
+#: lib/Application/Controller/AddRecordController.php:457
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Kan geen records toevoegen. Ze bevatten mogelijk ongeldige gegevens."
 
-#: lib/Application/Controller/DeleteDomainsController.php:70
+#: lib/Application/Controller/DeleteDomainsController.php:71
 msgid "No zone selected for deletion."
 msgstr "Geen zone geselecteerd voor verwijdering."
 
-#: lib/Application/Controller/DeleteDomainController.php:120
+#: lib/Application/Controller/DeleteDomainController.php:127
 msgid "Zone has been deleted successfully."
 msgstr "Zone is succesvol verwijderd."
 
-#: lib/Application/Controller/DeleteDomainsController.php:118
+#: lib/Application/Controller/DeleteDomainsController.php:148
 msgid "Zones have been deleted successfully."
 msgstr "Zones zijn succesvol verwijderd."
 
-#: lib/Domain/Service/Dns/DomainManager.php:506
+#: lib/Domain/Service/Dns/DomainManager.php:494
 msgid "You do not have the permission to delete a zone."
 msgstr "U hebt geen toestemming om een zone te verwijderen."
 
@@ -757,31 +818,53 @@ msgstr "U hebt geen toestemming om een zone te verwijderen."
 msgid "You do not have the permission to edit zone template records."
 msgstr "U hebt geen toestemming om zonesjabloonrecords te bewerken."
 
-#: lib/Application/Controller/OidcLoginController.php:76
+#: lib/Application/Controller/OidcLoginController.php:77
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC-authenticatie is niet ingeschakeld"
 
-#: lib/Application/Controller/OidcLoginController.php:88
+#: lib/Application/Service/SamlService.php:379
+msgid "Authentication failed: "
+msgstr "Authenticatie mislukt: "
+
+#: lib/Application/Controller/OidcLoginController.php:89
 msgid "No OIDC providers are configured"
 msgstr "Er zijn geen OIDC-providers geconfigureerd"
 
-#: lib/Application/Controller/OidcLoginController.php:106
+#: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC-authenticatie starten mislukt: "
 
-#: lib/Domain/Service/Dns/DomainManager.php:216
+#: lib/Domain/Service/Dns/DomainManager.php:214
 msgid "You do not have the permission to add a master zone."
 msgstr "U hebt geen toestemming om een master zone toe te voegen."
 
-#: lib/Application/Controller/BulkRegistrationController.php:103
+#: lib/Application/Controller/BulkRegistrationController.php:106
 msgid "There is already a zone with this name."
 msgstr "Er bestaat al een zone met deze naam."
 
-#: lib/Application/Controller/AddZoneMasterController.php:131
-msgid "Zone was created, but securing it with DNSSEC failed."
-msgstr "Zone is aangemaakt, maar beveiligen met DNSSEC is mislukt."
+#: lib/Application/Controller/AddZoneMasterController.php:143
+msgid ""
+"Zone was created successfully, but DNSSEC signing was skipped due to "
+"validation errors:"
+msgstr ""
 
-#: lib/Application/Controller/AddZoneSlaveController.php:127
+#: lib/Application/Controller/AddZoneMasterController.php:155
+msgid ""
+"Zone was created, but securing it with DNSSEC failed. Zone validation "
+"passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
+msgstr ""
+
+#: lib/Application/Controller/AddZoneMasterController.php:161
+msgid "Zone has been created and signed with DNSSEC successfully."
+msgstr ""
+
+#: lib/Application/Controller/AddZoneMasterController.php:164
+msgid ""
+"Zone was created and signing was requested, but verification failed. Check "
+"DNSSEC keys."
+msgstr ""
+
+#: lib/Application/Controller/AddZoneSlaveController.php:130
 msgid "Zone has been added successfully."
 msgstr "Zone is succesvol toegevoegd."
 
@@ -793,60 +876,60 @@ msgstr "Batch PTR-record aanmaken is niet ingeschakeld."
 msgid "You do not have permission to edit DNS records."
 msgstr "U hebt geen toestemming om DNS-records te bewerken."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:92
+#: lib/Application/Controller/BatchPtrRecordController.php:95
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Batch PTR-record aanmaken is niet beschikbaar voor reverse zones."
 
-#: lib/Application/Controller/ListZoneTemplController.php:56
+#: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
 msgstr "U hebt geen toestemming om zonesjablonen te bekijken."
 
-#: lib/Application/Controller/DnssecEditKeyController.php:49
-msgid "Invalid zone ID."
-msgstr "Ongeldig zone-ID."
-
-#: lib/Application/Controller/DnssecEditKeyController.php:55
+#: lib/Application/Controller/DnssecToggleKeyController.php:54
 msgid "Invalid key ID."
 msgstr "Ongeldig sleutel-ID."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:83
-msgid "Failed to delete DNSSEC key."
-msgstr "Kan DNSSEC-sleutel niet verwijderen."
+#: lib/Application/Controller/DnssecToggleKeyController.php:64
+msgid "You do not have permission to manage DNSSEC for this zone."
+msgstr "U heeft geen toestemming om DNSSEC voor deze zone te beheren."
 
-#: lib/Application/Controller/DnssecEditKeyController.php:92
-msgid "Zone key has been successfully deactivated."
-msgstr "Zonesleutel is succesvol gedeactiveerd."
+#: lib/Application/Controller/DnssecToggleKeyController.php:89
+msgid "DNSSEC key not found or no longer exists."
+msgstr ""
 
-#: lib/Application/Controller/DnssecEditKeyController.php:94
-msgid "Failed to deactivate zone key."
-msgstr "Kan zonesleutel niet deactiveren."
-
-#: lib/Application/Controller/DnssecEditKeyController.php:99
-msgid "Zone key has been successfully activated."
-msgstr "Zonesleutel is succesvol geactiveerd."
-
-#: lib/Application/Controller/DnssecEditKeyController.php:101
-msgid "Failed to activate zone key."
-msgstr "Kan zonesleutel niet activeren."
-
-#: lib/Application/Controller/DnssecDeleteKeyController.php:94
+#: lib/Application/Controller/DnssecDeleteKeyController.php:106
 msgid "Zone key has been deleted successfully."
 msgstr "Zonesleutel is succesvol verwijderd."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:97
+#: lib/Application/Controller/DnssecDeleteKeyController.php:115
 msgid "Failed to delete the zone key."
 msgstr "Kan de zonesleutel niet verwijderen."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:104
+#: lib/Application/Controller/DnssecDeleteKeyController.php:122
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr ""
 "Er is een fout opgetreden tijdens het verwijderen van de DNSSEC-sleutel: "
+
+#: lib/Application/Controller/SamlCallbackController.php:77
+msgid "SAML authentication is not enabled"
+msgstr ""
+
+#: lib/Application/Controller/SamlLoginController.php:89
+msgid "No SAML providers are configured"
+msgstr ""
+
+#: lib/Application/Controller/SamlLoginController.php:100
+msgid "Invalid SAML provider"
+msgstr ""
+
+#: lib/Application/Controller/SamlCallbackController.php:105
+msgid "SAML authentication failed: "
+msgstr ""
 
 #: lib/Application/Controller/ListForwardZonesController.php:56
 msgid "You do not have sufficient permissions to view this page."
 msgstr "U hebt onvoldoende rechten om deze pagina te bekijken."
 
-#: lib/Application/Controller/ListForwardZonesController.php:111
+#: lib/Application/Controller/ListForwardZonesController.php:118
 msgid "You do not have the permission to see any zones."
 msgstr "U hebt geen toestemming om zones te bekijken."
 
@@ -854,7 +937,7 @@ msgstr "U hebt geen toestemming om zones te bekijken."
 msgid "You do not have the permission to add permission templates."
 msgstr "U hebt geen toestemming om machtigingssjablonen toe te voegen."
 
-#: lib/Application/Controller/AddPermTemplController.php:69
+#: lib/Application/Controller/AddPermTemplController.php:72
 msgid "The permission template has been added successfully."
 msgstr "Het machtigingssjabloon is succesvol toegevoegd."
 
@@ -866,60 +949,60 @@ msgstr "Niet beschikbaar voor anonieme gebruikers."
 msgid "You do not have the permission to view this page."
 msgstr "U hebt geen toestemming om deze pagina te bekijken."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:42
+#: lib/Application/Controller/DatabaseConsistencyController.php:45
 msgid "Database consistency checks are disabled."
 msgstr "Database consistentiecontroles zijn uitgeschakeld."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:78
+#: lib/Application/Controller/DatabaseConsistencyController.php:81
 #: templates/modern/database_consistency.html:29
 msgid "Database Consistency Check"
 msgstr "Database Consistentiecontrole"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:97
+#: lib/Application/Controller/DatabaseConsistencyController.php:100
 msgid "Zone owner assigned successfully"
 msgstr "Zone-eigenaar succesvol toegewezen"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:97
+#: lib/Application/Controller/DatabaseConsistencyController.php:100
 msgid "Failed to assign zone owner"
 msgstr "Kan zone-eigenaar niet toewijzen"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:104
+#: lib/Application/Controller/DatabaseConsistencyController.php:107
 msgid "Slave zone deleted successfully"
 msgstr "Slave zone succesvol verwijderd"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:104
+#: lib/Application/Controller/DatabaseConsistencyController.php:107
 msgid "Failed to delete slave zone"
 msgstr "Kan slave zone niet verwijderen"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:111
+#: lib/Application/Controller/DatabaseConsistencyController.php:114
 msgid "Orphaned record deleted successfully"
 msgstr "Wees record succesvol verwijderd"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:111
+#: lib/Application/Controller/DatabaseConsistencyController.php:114
 msgid "Failed to delete orphaned record"
 msgstr "Kan wees record niet verwijderen"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:118
+#: lib/Application/Controller/DatabaseConsistencyController.php:121
 msgid "Duplicate SOA records fixed successfully"
 msgstr "Dubbele SOA-records succesvol gerepareerd"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:118
+#: lib/Application/Controller/DatabaseConsistencyController.php:121
 msgid "Failed to fix duplicate SOA records"
 msgstr "Kan dubbele SOA-records niet repareren"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:125
+#: lib/Application/Controller/DatabaseConsistencyController.php:128
 msgid "Default SOA record created successfully"
 msgstr "Standaard SOA-record succesvol aangemaakt"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:125
+#: lib/Application/Controller/DatabaseConsistencyController.php:128
 msgid "Failed to create default SOA record"
 msgstr "Kan standaard SOA-record niet aanmaken"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:130
+#: lib/Application/Controller/DatabaseConsistencyController.php:133
 msgid "Invalid check type"
 msgstr "Ongeldig controletype"
 
-#: lib/Application/Controller/LogoutController.php:102
+#: lib/Application/Controller/LogoutController.php:115
 msgid "You have logged out."
 msgstr "U bent uitgelogd."
 
@@ -935,10 +1018,14 @@ msgstr "RDAP-opzoekfunctionaliteit is uitgeschakeld."
 msgid "You do not have permission to perform RDAP lookups."
 msgstr "U hebt geen toestemming om RDAP-opzoekingen uit te voeren."
 
-#: lib/Application/Controller/RdapController.php:136
+#: lib/Application/Controller/RdapController.php:139
 #, php-format
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Kan RDAP-informatie niet ophalen met server %s"
+
+#: lib/Application/Controller/Api/Internal/DnsWizardController.php:405
+msgid "Record created successfully"
+msgstr ""
 
 #: lib/Application/Controller/AddZoneSlaveController.php:58
 msgid "You do not have the permission to add a slave zone."
@@ -984,21 +1071,25 @@ msgstr "De supermaster is succesvol toegevoegd."
 msgid "You do not have the permission to add records to zone templates."
 msgstr "U hebt geen toestemming om records toe te voegen aan zonesjablonen."
 
-#: lib/Application/Controller/EditUserController.php:112
+#: lib/Application/Controller/EditUserController.php:115
 msgid "Your profile has been updated successfully."
 msgstr "Uw profiel is succesvol bijgewerkt."
 
-#: lib/Application/Controller/EditUserController.php:116
+#: lib/Application/Controller/EditUserController.php:119
 msgid "The user has been updated successfully."
 msgstr "De gebruiker is succesvol bijgewerkt."
 
-#: lib/Application/Controller/EditUserController.php:120
+#: lib/Application/Controller/EditUserController.php:123
 msgid "The user could not be updated."
 msgstr "De gebruiker kon niet worden bijgewerkt."
 
-#: lib/Domain/Model/UserManager.php:394 lib/Domain/Model/UserManager.php:719
+#: lib/Domain/Model/UserManager.php:447 lib/Domain/Model/UserManager.php:774
 msgid "You do not have the permission to edit this user."
 msgstr "U hebt geen toestemming om deze gebruiker te bewerken."
+
+#: lib/Application/Controller/EditUserController.php:190
+msgid "You do not have permission to edit a superuser account."
+msgstr ""
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 msgid "You do not have the permission to delete permission templates."
@@ -1045,6 +1136,18 @@ msgid "An unexpected error occurred. Please contact the administrator."
 msgstr ""
 "Er is een onverwachte fout opgetreden. Neem contact op met de beheerder."
 
+#: lib/Application/Controller/SamlCallbackController.php:93
+msgid "Unknown SAML endpoint"
+msgstr ""
+
+#: lib/Application/Controller/SamlCallbackController.php:119
+msgid "You have been logged out"
+msgstr ""
+
+#: lib/Application/Controller/SamlCallbackController.php:124
+msgid "Logout completed (with warnings): "
+msgstr ""
+
 #: lib/Application/Controller/EditRecordController.php:92
 msgid "You do not have permission to view this record."
 msgstr "U heeft geen toestemming om dit record te bekijken."
@@ -1053,19 +1156,15 @@ msgstr "U heeft geen toestemming om dit record te bekijken."
 msgid "You do not have permission to edit this record."
 msgstr "U heeft geen toestemming om dit record te bewerken."
 
-#: lib/Application/Controller/EditRecordController.php:233
+#: lib/Application/Controller/EditRecordController.php:194
+msgid "Failed to retrieve updated record information."
+msgstr ""
+
+#: lib/Application/Controller/EditRecordController.php:274
 msgid "The record has been updated successfully."
 msgstr "Het record is succesvol bijgewerkt."
 
-#: lib/Application/Controller/DnssecController.php:65
-msgid "You do not have permission to view this zone."
-msgstr "U heeft geen toestemming om deze zone te bekijken."
-
-#: lib/Application/Controller/DnssecController.php:78
-msgid "You do not have permission to manage DNSSEC for this zone."
-msgstr "U heeft geen toestemming om DNSSEC voor deze zone te beheren."
-
-#: lib/Application/Controller/ChangePasswordController.php:78
+#: lib/Application/Controller/ChangePasswordController.php:85
 msgid ""
 "LDAP users cannot change their password here. Please contact your "
 "administrator."
@@ -1073,41 +1172,54 @@ msgstr ""
 "LDAP-gebruikers kunnen hun wachtwoord hier niet wijzigen. Neem contact op "
 "met uw beheerder."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:102
+#: lib/Application/Controller/ChangePasswordController.php:86
+msgid ""
+"Users authenticated via Single Sign-On cannot change their password here. "
+"Please contact your administrator or change your password through your "
+"identity provider."
+msgstr ""
+
+#: lib/Application/Controller/ChangePasswordController.php:87
+msgid ""
+"External authentication users cannot change their password here. Please "
+"contact your administrator."
+msgstr ""
+
+#: lib/Application/Controller/DnssecAddKeyController.php:116
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "ECDSA P-256 algoritme moet 256 bits gebruiken"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:105
+#: lib/Application/Controller/DnssecAddKeyController.php:119
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "ECDSA P-384 algoritme moet 384 bits gebruiken"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:111
+#: lib/Application/Controller/DnssecAddKeyController.php:125
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519 algoritme moet 256 bits gebruiken"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:116
+#: lib/Application/Controller/DnssecAddKeyController.php:130
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "ED448 algoritme moet 456 bits gebruiken (niet ondersteund in deze UI)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:123
+#: lib/Application/Controller/DnssecAddKeyController.php:137
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "RSA-algoritmen moeten 1024 of 2048 bits gebruiken voor adequate beveiliging"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:144
+#: lib/Application/Controller/DnssecAddKeyController.php:158
 msgid "Zone key has been added successfully."
 msgstr "Zonesleutel is succesvol toegevoegd."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:148
+#: lib/Application/Controller/DnssecAddKeyController.php:162
 msgid "Failed to add new DNSSEC key."
 msgstr "Kan nieuwe DNSSEC-sleutel niet toevoegen."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:152
+#: lib/Application/Controller/DnssecAddKeyController.php:166
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr ""
 "Er is een fout opgetreden tijdens het toevoegen van de DNSSEC-sleutel: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:156
+#: lib/Application/Controller/DnssecAddKeyController.php:170
 msgid "Please select both algorithm and bits"
 msgstr "Selecteer zowel algoritme als bits"
 
@@ -1131,11 +1243,11 @@ msgstr "Supermaster bestaat niet."
 msgid "The supermaster has been deleted successfully."
 msgstr "De supermaster is succesvol verwijderd."
 
-#: lib/Application/Controller/BulkRegistrationController.php:118
+#: lib/Application/Controller/BulkRegistrationController.php:121
 msgid "Zones has been added successfully."
 msgstr "Zones zijn succesvol toegevoegd."
 
-#: lib/Application/Controller/BulkRegistrationController.php:121
+#: lib/Application/Controller/BulkRegistrationController.php:124
 msgid "Some zone(s) could not be added."
 msgstr "Sommige zone(s) konden niet worden toegevoegd."
 
@@ -1144,7 +1256,33 @@ msgstr "Sommige zone(s) konden niet worden toegevoegd."
 msgid "Page Not Found"
 msgstr "Pagina Niet Gevonden"
 
-#: lib/Application/Service/LdapAuthenticator.php:84
+#: lib/Application/Controller/DnssecToggleKeyController.php:80
+msgid ""
+"DNSSEC functionality is not available. Please check PowerDNS API "
+"configuration."
+msgstr ""
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:100
+msgid "Zone key has been successfully deactivated."
+msgstr "Zonesleutel is succesvol gedeactiveerd."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:101
+msgid "Failed to deactivate zone key."
+msgstr "Kan zonesleutel niet deactiveren."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:104
+msgid "Zone key has been successfully activated."
+msgstr "Zonesleutel is succesvol geactiveerd."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:105
+msgid "Failed to activate zone key."
+msgstr "Kan zonesleutel niet activeren."
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:116
+msgid "An error occurred while toggling the DNSSEC key. Please try again."
+msgstr ""
+
+#: lib/Application/Service/LdapAuthenticator.php:93
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Account is tijdelijk vergrendeld. Probeer het later opnieuw."
 
@@ -1152,11 +1290,11 @@ msgstr "Account is tijdelijk vergrendeld. Probeer het later opnieuw."
 msgid "The user account is disabled."
 msgstr "Het gebruikersaccount is uitgeschakeld."
 
-#: lib/Application/Service/SqlAuthenticator.php:211
+#: lib/Application/Service/SqlAuthenticator.php:217
 msgid "Authentication failed!"
 msgstr "Authenticatie mislukt!"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:184
+#: lib/Infrastructure/Service/SessionAuthenticator.php:185
 msgid "Session expired, please login again."
 msgstr "Sessie verlopen, log opnieuw in."
 
@@ -1164,79 +1302,93 @@ msgstr "Sessie verlopen, log opnieuw in."
 msgid "Failed to update password"
 msgstr "Kan wachtwoord niet bijwerken"
 
-#: lib/Application/Service/OidcService.php:159
+#: lib/Application/Service/OidcService.php:180
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Authenticatie mislukt: Ongeldige statusparameter"
 
-#: lib/Application/Service/OidcService.php:180
+#: lib/Application/Service/OidcService.php:201
 msgid "Authentication failed: No authorization code"
 msgstr "Authenticatie mislukt: Geen autorisatiecode"
 
-#: lib/Application/Service/OidcService.php:188
+#: lib/Application/Service/SamlService.php:185
 msgid "Authentication failed: Invalid session"
 msgstr "Authenticatie mislukt: Ongeldige sessie"
 
-#: lib/Application/Service/OidcService.php:236
+#: lib/Application/Service/SamlService.php:339
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Authenticatie mislukt: Kan gebruikersaccount niet aanmaken of bijwerken"
 
-#: lib/Application/Service/LdapAuthenticator.php:117
-msgid "Failed to connect to LDAP server!"
-msgstr "Kan geen verbinding maken met LDAP-server!"
-
-#: lib/Application/Service/LdapAuthenticator.php:133
-msgid "Failed to bind to LDAP server!"
-msgstr "Kan niet binden aan LDAP-server!"
-
-#: lib/Application/Service/LdapAuthenticator.php:161
-msgid "Failed to search LDAP."
-msgstr "Kan LDAP niet doorzoeken."
-
-#: lib/Application/Service/LdapAuthenticator.php:178
-msgid "Failed to authenticate against LDAP."
-msgstr "Kan niet authenticeren tegen LDAP."
-
-#: lib/Application/Service/LdapAuthenticator.php:212
+#: lib/Application/Service/LdapAuthenticator.php:237
 msgid "LDAP Authentication failed!"
 msgstr "LDAP-authenticatie mislukt!"
 
-#: lib/Application/Query/RecordSearch.php:169 templates/modern/users.html:119
-#: templates/modern/users.html:127
+#: lib/Application/Service/LdapAuthenticator.php:142
+msgid "Failed to connect to LDAP server!"
+msgstr "Kan geen verbinding maken met LDAP-server!"
+
+#: lib/Application/Service/LdapAuthenticator.php:158
+msgid "Failed to bind to LDAP server!"
+msgstr "Kan niet binden aan LDAP-server!"
+
+#: lib/Application/Service/LdapAuthenticator.php:186
+msgid "Failed to search LDAP."
+msgstr "Kan LDAP niet doorzoeken."
+
+#: lib/Application/Service/LdapAuthenticator.php:203
+msgid "Failed to authenticate against LDAP."
+msgstr "Kan niet authenticeren tegen LDAP."
+
+#: lib/Application/Service/SamlService.php:243
+msgid "Authentication failed: Invalid SAML response"
+msgstr ""
+
+#: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:432
+#: templates/modern/users.html:125
 msgid "Yes"
 msgstr "Ja"
 
-#: lib/Application/Query/RecordSearch.php:169 templates/modern/users.html:121
-#: templates/modern/users.html:129
+#: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:432
+#: templates/modern/users.html:127
 msgid "No"
 msgstr "Nee"
 
-#: lib/Domain/Model/UserManager.php:270
+#: lib/Domain/Model/UserManager.php:323
 msgid "This template is assigned to at least one user."
 msgstr "Dit sjabloon is toegewezen aan ten minste één gebruiker."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:149
-#: templates/default/login.html:125 templates/modern/login.html:125
+#: lib/Infrastructure/Service/SessionAuthenticator.php:150
+#: templates/default/login.html:143 templates/modern/login.html:143
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "reCAPTCHA-verificatie mislukt. Probeer het opnieuw."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:172
+#: lib/Infrastructure/Service/SessionAuthenticator.php:173
 msgid "An empty password is not allowed"
 msgstr "Een leeg wachtwoord is niet toegestaan"
+
+#: lib/Infrastructure/Service/SessionAuthenticator.php:213
+msgid "LDAP authentication is disabled"
+msgstr ""
+
+#: lib/Infrastructure/Service/SessionAuthenticator.php:305
+msgid ""
+"Database error: Unable to verify user authentication. Please check your "
+"database configuration."
+msgstr ""
 
 #: lib/Domain/Repository/DomainRepository.php:201
 msgid "This is an invalid zone name."
 msgstr "Dit is een ongeldige zonenaam."
 
-#: lib/Domain/Model/UserManager.php:751
+#: lib/Domain/Model/UserManager.php:806
 msgid "Enter a valid email address."
 msgstr "Voer een geldig e-mailadres in."
 
-#: lib/Domain/Model/UserManager.php:743
+#: lib/Domain/Model/UserManager.php:798
 msgid "Username exist already, please choose another one."
 msgstr "Gebruikersnaam bestaat al, kies een andere."
 
-#: lib/Domain/Model/UserManager.php:747
+#: lib/Domain/Model/UserManager.php:802
 msgid "Enter a valid user name."
 msgstr "Voer een geldige gebruikersnaam in."
 
@@ -1281,33 +1433,1067 @@ msgstr "Fout bij het verwijderen van zonesjabloonrecord: "
 msgid "Error checking template ownership: "
 msgstr "Fout bij het controleren van sjablooneigendom: "
 
-#: lib/Domain/Model/ZoneTemplate.php:727
+#: lib/Domain/Model/ZoneTemplate.php:728
 msgid "Error retrieving zones using template: "
 msgstr "Fout bij het ophalen van zones die sjabloon gebruiken: "
 
-#: lib/Domain/Model/ZoneTemplate.php:781
+#: lib/Domain/Model/ZoneTemplate.php:782
 msgid "Failed to get list of zones using template: "
 msgstr "Kan lijst van zones die sjabloon gebruiken niet ophalen: "
 
-#: lib/Domain/Model/ZoneTemplate.php:799
+#: lib/Domain/Model/ZoneTemplate.php:800
 msgid "You do not have the permission to edit a zone template."
 msgstr "U hebt geen toestemming om een zonesjabloon te bewerken."
 
-#: lib/Domain/Model/ZoneTemplate.php:843
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid "Error unlinking zone from template: "
 msgstr "Fout bij het loskoppelen van zone van sjabloon: "
 
-#: lib/Domain/Model/ZoneTemplate.php:871
+#: lib/Domain/Model/ZoneTemplate.php:872
 msgid "Error retrieving zones: "
 msgstr "Fout bij het ophalen van zones: "
 
-#: lib/Domain/Model/ZoneTemplate.php:890
+#: lib/Domain/Model/ZoneTemplate.php:891
 msgid "Error checking template name existence: "
 msgstr "Fout bij het controleren van sjabloonnaambestaan: "
 
-#: lib/Domain/Model/ZoneTemplate.php:913
+#: lib/Domain/Model/ZoneTemplate.php:914
 msgid "Error checking template existence: "
 msgstr "Fout bij het controleren van sjabloonbestaan: "
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:45
+msgid "TLSA Record"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:46
+msgid "TLS certificate/key authentication (DANE)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:57
+msgid "DNSSEC Requirement"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:59
+msgid ""
+"TLSA records require DNSSEC to be enabled for this zone. TLSA records "
+"without DNSSEC will not provide security benefits and may be ignored by "
+"clients."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:91
+msgid "Service Configuration"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:148
+msgid "Port Number"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:72
+msgid ""
+"TCP/UDP port number (443 for HTTPS, 25 for SMTP, 853 for DNS-over-TLS, etc.)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:113
+msgid "Protocol"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:81
+msgid "Transmission Control Protocol - most common for HTTPS/TLS"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:82
+msgid "User Datagram Protocol - for DTLS connections"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:121
+msgid "Stream Control Transmission Protocol"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:85
+msgid "Transport protocol for the TLS connection"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:89
+#: install/templates/step4.html.twig:64
+msgid "Hostname"
+msgstr "Hostnaam"
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:93
+msgid ""
+"Hostname for the service (leave empty for zone apex @). Record will be "
+"created at _port._protocol.hostname"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:98
+msgid "Certificate Usage"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:102
+msgid "Usage"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
+msgid "0 - CA Constraint"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
+msgid "Certificate must chain to specified CA (PKIX-TA)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
+msgid "1 - Service Certificate"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
+msgid "Certificate must match exactly (PKIX-EE)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
+msgid "2 - Trust Anchor Assertion"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
+msgid "Certificate must chain to specified anchor (DANE-TA)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
+msgid "3 - Domain-Issued Certificate"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
+msgid "Certificate must match exactly, bypassing PKI (DANE-EE)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:112
+msgid ""
+"How the certificate should be validated. Type 3 is most common for self-"
+"signed or custom CAs."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:72
+msgid "Selector"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
+msgid "0 - Full Certificate"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
+msgid "Use the entire certificate"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
+msgid "1 - Public Key"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
+msgid "Use only the Subject Public Key Info (SPKI)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:129
+msgid ""
+"What part of the certificate to match. Type 1 (public key) survives "
+"certificate renewal."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:138
+msgid "Matching Type"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
+msgid "0 - Exact Match"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
+msgid "Full certificate/key data (very long record)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
+msgid "1 - SHA-256 Hash"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
+msgid "SHA-256 hash of certificate/key"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
+msgid "2 - SHA-512 Hash"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
+msgid "SHA-512 hash of certificate/key (more secure but longer)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:147
+msgid ""
+"How to encode the certificate data. SHA-256 (type 1) provides good balance "
+"of security and length."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:152
+msgid "Certificate Data"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:156
+msgid "Certificate Association Data"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:161
+msgid ""
+"Hexadecimal hash or full certificate data (depending on matching type). For "
+"SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
+"-pubin -outform DER | openssl dgst -sha256\""
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:184
+msgid "Record Settings"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:188
+msgid "TTL (seconds)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:193
+msgid "Time to live - how long DNS resolvers should cache this record"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:289
+msgid "Port must be between 1 and 65535"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:233
+msgid "Usage must be 0, 1, 2, or 3"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:238
+msgid "Selector must be 0 or 1"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:243
+msgid "Matching type must be 0, 1, or 2"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:248
+msgid "Certificate association data is required"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:253
+msgid "Certificate data must be hexadecimal (0-9, a-f)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:259
+#, php-format
+msgid ""
+"SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
+"correct."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:263
+#, php-format
+msgid ""
+"SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
+"is correct."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:267
+msgid ""
+"Full certificate data seems too short. Ensure you provided the complete "
+"certificate."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:274
+#: templates/modern/edit.html:91 templates/modern/edit.html:609
+msgid "Invalid hostname format"
+msgstr "Ongeldig hostnaam formaat"
+
+#: lib/Domain/Service/DnsWizard/TLSAWizard.php:278
+msgid ""
+"CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
+"DNSSEC, TLSA records provide NO security benefit."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:46
+msgid "DMARC Record"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:47
+msgid "Email authentication policy and reporting configuration"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:59
+msgid "Policy Settings"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:138
+msgid "Policy"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
+msgid "None (monitor only)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
+msgid "No action taken, just collect reports for analysis"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
+msgid "Quarantine"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:69
+msgid "Treat suspicious emails as spam/junk"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
+msgid "Reject"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:70
+msgid "Block delivery of suspicious emails entirely"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:72
+msgid "Start with \"none\" to collect data before enforcing a stricter policy."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:76
+msgid "Subdomain Policy"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
+msgid "Same as domain policy"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
+msgid "Use the same policy as the main domain"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
+msgid "None"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
+msgid "Monitor only for subdomains"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
+msgid "Quarantine suspicious subdomain emails"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
+msgid "Reject suspicious subdomain emails"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:86
+msgid "Policy for emails from subdomains (e.g., mail.example.com)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:90
+msgid "Policy Application Percentage"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:96
+msgid ""
+"Percentage of messages to which the policy should apply (100 = all "
+"messages). Use lower values during policy rollout."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:101
+msgid "Reporting Settings"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:105
+msgid "Aggregate Report Email"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:109
+msgid "Email address to receive daily aggregate reports"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:113
+msgid "Forensic Report Email"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:117
+msgid ""
+"Email address to receive detailed failure reports (optional, can be high "
+"volume)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:121
+msgid "Forensic Reporting Options"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:125
+msgid "Generate reports if all authentication mechanisms fail"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:126
+msgid "Generate reports if any authentication mechanism fails"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:127
+msgid "Generate reports if DKIM check fails"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:128
+msgid "Generate reports if SPF check fails"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:130
+msgid ""
+"When to generate forensic reports (only applies if forensic email is set)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:135
+msgid "Alignment Settings"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:136
+msgid "Advanced settings for SPF and DKIM alignment modes"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:140
+msgid "DKIM Alignment Mode"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
+msgid "Relaxed"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:145
+msgid "DKIM domain can be subdomain of From: domain"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
+msgid "Strict"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:146
+msgid "DKIM domain must exactly match From: domain"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:151
+msgid "SPF Alignment Mode"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
+msgid "SPF domain can be subdomain of From: domain"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
+msgid "SPF domain must exactly match From: domain"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:261
+msgid "Policy is required"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:263
+msgid "Invalid policy value"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:268
+msgid "Invalid subdomain policy value"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:275
+msgid "Percentage must be between 0 and 100"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:277
+#, php-format
+msgid ""
+"Policy will only apply to %d%% of messages. Use 100%% once testing is "
+"complete."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:283
+msgid "Invalid aggregate report email address"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:287
+msgid "Invalid forensic report email address"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:292
+msgid ""
+"No reporting email addresses configured. You will not receive DMARC reports."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DMARCWizard.php:305
+msgid ""
+"Using \"p=none\" provides monitoring only. Consider stricter policy "
+"(quarantine/reject) once you've reviewed reports."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:48
+msgid "SPF Record"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:49
+msgid "Authorized mail server configuration"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:61
+msgid "Basic Mechanisms"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:62
+msgid "Select common mechanisms to authorize email sending"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:66
+msgid "MX Records"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:69
+msgid "Authorize all servers listed in MX records for this domain"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:73
+msgid "A/AAAA Records"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:76
+msgid "Authorize the domain's A and AAAA records"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:81
+msgid "IP Addresses"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:82
+msgid "Authorized IP addresses and networks (CIDR notation supported)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:86
+msgid "IPv4 Addresses"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:90
+msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:94
+msgid "IPv6 Addresses"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:98
+msgid "One IPv6 address or network per line"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:103
+msgid "Include Mechanisms"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:104
+msgid "Include SPF records from other domains"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:108
+msgid "Include Domains"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:112
+msgid ""
+"Domains whose SPF records should be included (one per line). Common: "
+"_spf.google.com, spf.protection.outlook.com"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:117
+msgid "Additional Mechanisms"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:121
+msgid "Additional A/AAAA Hosts"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:125
+msgid "Authorize specific hostnames' A/AAAA records (one per line)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:129
+msgid "Additional MX Hosts"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:133
+msgid "Authorize MX records from other domains (one per line)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:142
+msgid "Default Action"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:147
+msgid "Pass all - allows anyone to send (insecure)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:148
+msgid "Neutral (no policy)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:149
+msgid "Soft fail (mark as spam but accept)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:150
+msgid "Fail (reject unauthorized emails)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:152
+msgid ""
+"Policy for emails not matching any mechanism. Start with ~all (softfail) for "
+"testing."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:289
+#, php-format
+msgid ""
+"SPF record exceeds the DNS lookup limit (%d/10). This will cause SPF "
+"validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
+"instead."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:294
+#, php-format
+msgid ""
+"SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
+"of include mechanisms, or consolidate includes to stay under the limit."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:304
+#, php-format
+msgid "Invalid IPv4 address or network: %s"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:313
+#, php-format
+msgid "Invalid IPv6 address or network: %s"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:323
+#, php-format
+msgid "Invalid include domain: %s"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:343
+msgid ""
+"No mechanisms selected. This SPF record will only contain the default action."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SPFWizard.php:348
+msgid ""
+"Using \"+all\" allows anyone to send email as your domain. This is strongly "
+"discouraged."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:43
+msgid "CAA Record"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:44
+msgid "Certificate authority authorization"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:68
+msgid "Custom (enter manually)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:74
+msgid "Certificate Authority"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:78
+msgid "CA Provider"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:83
+msgid ""
+"Select the certificate authority authorized to issue certificates for this "
+"domain"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:87
+msgid "CA Domain (Custom)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:92
+msgid ""
+"Enter the CA domain name manually (only shown when \"Custom\" is selected)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:97
+msgid "Certificate Type"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:101
+#: templates/modern/dnssec_delete_key.html:82
+msgid "Tag"
+msgstr "Tag"
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:106
+msgid "Issue"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:106
+msgid "Authorize issuance of standard certificates"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:107
+msgid "Issue Wildcard"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:107
+msgid "Authorize issuance of wildcard certificates (*.example.com)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:108
+msgid "Incident Reporting"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:108
+msgid "URL to report certificate issuance violations"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:110
+msgid "Type of authorization or reporting"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:114
+msgid "Reporting URL"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:119
+msgid "URL or email for incident reports (mailto: or https:)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:103
+msgid "Advanced Options"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:130
+msgid "Flags"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:135
+msgid "Non-critical"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:135
+msgid "Allow fallback if not understood"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:136
+msgid "Critical"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:136
+msgid "Reject if not understood - strict enforcement"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:138
+msgid ""
+"Non-critical (0) provides better compatibility. Critical (128) enforces "
+"strict CAA processing."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:204
+msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:210
+msgid "CA provider is required"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:213
+msgid "Custom CA domain is required when \"Custom\" is selected"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:215
+msgid "Invalid CA domain format"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:221
+msgid ""
+"Using \";\" allows ALL certificate authorities to issue certificates. This "
+"defeats the purpose of CAA records."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:227
+msgid "Reporting URL is required for iodef tag"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:229
+msgid "Reporting URL must start with mailto:, https://, or http://"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:236
+msgid "Flags must be 0 or 128"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/CAAWizard.php:240
+msgid ""
+"Critical flag (128) is set. Systems that do not understand CAA records will "
+"reject operations. Use 0 unless you have a specific requirement."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:46
+msgid "DKIM Record"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:47
+msgid "Email signature verification public key"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:58
+#: templates/modern/dnssec_edit_key.html:51
+msgid "Information"
+msgstr "Informatie"
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:61
+msgid ""
+"DKIM proves emails are from your domain using cryptographic signatures. "
+"Generate the DKIM key pair on your MAIL SERVER (Postfix, Exim, etc.). Only "
+"the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your "
+"mail server (never share it)."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:68
+msgid "DKIM Configuration"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:77
+msgid ""
+"Selector to identify the DKIM key (commonly \"default\", timestamp like "
+"\"202501\", or service name like \"google\"). Only alphanumeric characters, "
+"hyphens, and underscores allowed."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:81
+msgid "Public Key"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:86
+msgid ""
+"Paste the base64-encoded public key from your mail server. Spaces and "
+"newlines will be automatically removed."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:90
+msgid "Key Type"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:95
+msgid "Widely supported by all mail servers"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:96
+msgid "Newer algorithm - not universally supported yet"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:98
+msgid "Encryption algorithm for the DKIM public key"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:109
+msgid "Testing Mode"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:112
+msgid ""
+"Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
+"Use during initial deployment."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:116
+msgid "Strict Subdomain Mode"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:119
+msgid ""
+"Enable strict subdomain mode (t=s). Rejects unsigned mail from subdomains."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:198
+msgid "Selector is required"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:200
+msgid ""
+"Selector can only contain alphanumeric characters, hyphens, and underscores"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:205
+msgid "Public key is required"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:211
+msgid "Public key must be valid base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:216
+msgid ""
+"Public key seems unusually short. Ensure you copied the complete key from "
+"your mail server."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:221
+msgid ""
+"You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
+"your private key!"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:225
+msgid ""
+"Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
+"content between headers is needed."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/DKIMWizard.php:239
+msgid ""
+"Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
+"this once testing is complete."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:68
+msgid "SRV Record"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:69
+msgid "Service location (hostname and port)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:95
+msgid "Service"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:100
+msgid "Select a common service or choose \"Custom\" to enter manually"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:104
+msgid "Custom Service Name"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:109
+msgid "Service name must start with underscore (e.g., _myservice)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:118
+msgid "Transmission Control Protocol - most common"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:119
+msgid "User Datagram Protocol - connectionless"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:120
+msgid "Transport Layer Security"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:123
+msgid "Transport protocol for the service"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:127
+#: templates/modern/dnssec_delete_key.html:52
+msgid "Domain"
+msgstr "Domein"
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:131
+msgid ""
+"Domain name (leave empty for zone apex @). Full record name will be: "
+"_service._protocol.domain"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:136
+msgid "Target Server"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:140
+msgid "Target Hostname"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:144
+msgid ""
+"Hostname of the server providing this service (must be a hostname with an A/"
+"AAAA record, not an IP address)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:154
+msgid ""
+"Port number where the service is listening (automatically filled for common "
+"services)"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:159
+msgid "Priority & Load Balancing"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:163
+#: templates/modern/delete_zone_templ_record.html:39
+msgid "Priority"
+msgstr "Prioriteit"
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:169
+msgid ""
+"Lower values have higher priority (10 is a good default). Clients try "
+"servers in priority order."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:173
+msgid "Weight"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:179
+msgid ""
+"For load balancing among servers with same priority. Higher weight = more "
+"traffic. 0 = no load balancing."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:261
+msgid "Service is required"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:265
+msgid "Custom service name is required"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:267
+msgid "Service name must contain only alphanumeric characters and hyphens"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:273
+msgid "Target hostname is required"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:277
+msgid "Invalid target hostname format"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:282
+msgid ""
+"Target must be a hostname, not an IP address. Create an A or AAAA record for "
+"the hostname first."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:295
+msgid "Priority must be between 0 and 65535"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:299
+msgid ""
+"Priority 0 is valid but unusual. Most services use priority 10 or higher."
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:305
+msgid "Weight must be between 0 and 65535"
+msgstr ""
+
+#: lib/Domain/Service/DnsWizard/SRVWizard.php:310
+msgid "Invalid domain format"
+msgstr ""
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:74
 msgid "All zones have owners"
@@ -2019,7 +3205,7 @@ msgstr ""
 msgid "Invalid characters in name field."
 msgstr "Ongeldige karakters in naamveld."
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:141
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:165
 msgid "Invalid characters in content field."
 msgstr "Ongeldige karakters in inhoudsveld."
 
@@ -3704,13 +4890,10 @@ msgstr ""
 "SPF record overschrijdt 255 karakter limiet. Verdeel over meerdere TXT "
 "records."
 
-#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:190
-#, php-format
+#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
-"Duplicate %s mechanism found. Each mechanism type should appear at most once."
+"Multiple \"all\" mechanisms found. Only the first one will be effective."
 msgstr ""
-"Dubbel %s mechanisme gevonden. Elk mechanisme type mag hoogstens één keer "
-"voorkomen."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -3829,7 +5012,7 @@ msgstr ""
 "CNAME doel moet een volledig gekwalificeerde domeinnaam (FQDN) zijn. Enkele-"
 "label namen zijn niet toegestaan."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:321
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
@@ -4838,7 +6021,7 @@ msgstr ""
 "Dit is het broadcast adres (all-ones), wat mogelijk niet geldig is in alle "
 "contexten."
 
-#: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:117
+#: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:149
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
@@ -4846,7 +6029,7 @@ msgstr ""
 "De recordnaam lijkt geen standaard reverse DNS zonenaam te zijn (moet "
 "eindigen met .in-addr.arpa voor IPv4 of .ip6.arpa voor IPv6)."
 
-#: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:130
+#: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:162
 msgid ""
 "Priority field for PTR records should be 0 or empty. The specified value "
 "will be ignored."
@@ -4854,7 +6037,7 @@ msgstr ""
 "Prioriteitsveld voor PTR records moet 0 of leeg zijn. De opgegeven waarde "
 "wordt genegeerd."
 
-#: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:134
+#: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:166
 msgid ""
 "PTR records should have corresponding forward (A/AAAA) records to avoid "
 "problems with services that check reverse DNS."
@@ -4862,7 +6045,7 @@ msgstr ""
 "PTR records moeten overeenkomende forward (A/AAAA) records hebben om "
 "problemen te voorkomen met services die reverse DNS controleren."
 
-#: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:135
+#: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:167
 msgid ""
 "Email servers often require properly configured reverse DNS to accept mail "
 "from your server."
@@ -4878,40 +6061,54 @@ msgstr "Dit is geen geldig IPv4 adres."
 msgid "This is not a valid IPv6 address."
 msgstr "Dit is geen geldig IPv6 adres."
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:98
-msgid "IPv6 address should use lowercase for hexadecimal digits."
-msgstr "IPv6 adres moet kleine letters gebruiken voor hexadecimale cijfers."
-
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:107
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:102
 msgid "Invalid IPv4 part in IPv4-mapped IPv6 address."
 msgstr "Ongeldig IPv4 deel in IPv4-mapped IPv6 adres."
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:113
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:108
 msgid "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
 msgstr "IPv4-compatible IPv6 adressen (::a.b.c.d) zijn verouderd."
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:118
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:113
 msgid "Invalid IPv6 address: more than two consecutive colons."
 msgstr "Ongeldig IPv6 adres: meer dan twee opeenvolgende dubbele punten."
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:122
 msgid "Invalid IPv6 address: must have 8 hextets when expanded."
 msgstr "Ongeldig IPv6 adres: moet 8 hextets hebben wanneer uitgebreid."
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:132
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
 msgstr "Ongeldig IPv6 adres: elke hextet moet 4 hexadecimale cijfers zijn."
 
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:142
-#, php-format
-msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-msgstr "IPv6 adres is niet in canonieke vorm (RFC 5952). Canonieke vorm: %s"
-
-#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:312
-#, php-format
-msgid "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
+msgid "IP address list cannot be empty."
 msgstr ""
-"IP adres \"%s\" is niet geldig. Moet een geldig IPv4 of IPv6 adres zijn."
+
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
+#, php-format
+msgid "Invalid IPv6 address in %s: %s"
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
+#, php-format
+msgid "Invalid port number: %d (must be 1-65535)"
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
+#, php-format
+msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
+#, php-format
+msgid "Invalid IPv4 address in %s: %s"
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
+#, php-format
+msgid "Invalid IP address: %s"
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
@@ -4982,7 +6179,7 @@ msgstr ""
 "contactphone waarde mag alleen nummers, spaties en gewone telefoonnummer "
 "leestekens bevatten."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:465
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:487
 msgid "Value must be enclosed in double quotes."
 msgstr "Waarde moet omsloten zijn door dubbele aanhalingstekens."
 
@@ -5005,27 +6202,71 @@ msgstr "CAA eigenschap waarde kan geen NUL (0) karakters bevatten."
 msgid "The hostname is too long."
 msgstr "De hostnaam is te lang."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:77
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:78
 msgid "Single-label hostnames are not allowed."
 msgstr "Single-label hostnamen zijn niet toegestaan."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:90
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:91
 msgid "You have invalid characters in your zone name."
 msgstr "U hebt ongeldige karakters in uw zonenaam."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:99
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:100
 msgid "A hostname can not start or end with a dash."
 msgstr "Een hostnaam kan niet beginnen of eindigen met een streepje."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:103
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:104
 msgid "Given hostname or one of the labels is too short or too long."
 msgstr "Gegeven hostnaam of een van de labels is te kort of te lang."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:132
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:128
+msgid "Multiple slashes in different labels are not allowed in ARPA zones."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
+msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
+msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:159
+msgid ""
+"Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
+msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
+msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:184
+msgid ""
+"Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
+"delegation usually 25-31)."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
+#, php-format
+msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
+msgid "Invalid IPv6 prefix length. Must be 0-128."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:209
+msgid "Invalid prefix length. Must be 0-128."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:217
 msgid "Given hostname has too many slashes."
 msgstr "Gegeven hostnaam heeft te veel schuine strepen."
 
-#: lib/Domain/Service/DnsValidation/HostnameValidator.php:137
+#: lib/Domain/Service/DnsValidation/HostnameValidator.php:222
 msgid "You are using an invalid top level domain."
 msgstr "U gebruikt een ongeldig topleveldomein."
 
@@ -5548,7 +6789,7 @@ msgstr "CDNSKEY publieke sleutel mag alleen geldige base64 karakters bevatten."
 msgid "CDNSKEY public key must be valid base64-encoded data."
 msgstr "CDNSKEY publieke sleutel moet geldige base64-gecodeerde gegevens zijn."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:181
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:190
 msgid "LUA record content cannot be empty."
 msgstr "LUA record inhoud kan niet leeg zijn."
 
@@ -5569,7 +6810,7 @@ msgstr ""
 "systeemoperaties. Deze kunnen geblokkeerd worden door PowerDNS "
 "beveiligingsmechanismen."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:132
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:141
 msgid ""
 "This LUA record uses explicit return mode (starts with semicolon). Ensure "
 "your Lua script explicitly returns the appropriate value."
@@ -5577,7 +6818,7 @@ msgstr ""
 "Dit LUA record gebruikt expliciete return modus (begint met puntkomma). Zorg "
 "ervoor dat uw Lua script expliciet de juiste waarde teruggeeft."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:146
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:155
 msgid ""
 "This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
 "sure it returns an appropriate value for the record type."
@@ -5585,7 +6826,7 @@ msgstr ""
 "Dit LUA record lijkt geen veelgebruikte PowerDNS Lua functies te gebruiken. "
 "Zorg ervoor dat het een juiste waarde teruggeeft voor het recordtype."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:154
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:163
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
@@ -5593,15 +6834,15 @@ msgstr ""
 "WAARSCHUWING: Dit LUA record lijkt ongebalanceerde aanhalingstekens te "
 "hebben, wat syntaxfouten kan veroorzaken."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:188
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
 msgstr "LUA record heeft niet-overeenkomende haakjes. Controleer uw syntax."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
 msgstr "LUA record heeft niet-overeenkomende accolades. Controleer uw syntax."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:202
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
@@ -5609,7 +6850,7 @@ msgstr ""
 "LUA record in expliciete return modus (begint met puntkomma) moet minstens "
 "één \"return\" statement bevatten."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:236
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
@@ -5617,7 +6858,7 @@ msgstr ""
 "LUA record in impliciete return modus moet een geldige functieaanroep of "
 "functiedefinitie zijn met \"function\" en \"end\" trefwoorden."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:242
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
@@ -5995,7 +7236,7 @@ msgstr ""
 "DMARC record specificeert geen rapportage URI's (rua of ruf). Dit kan uw "
 "mogelijkheid om authenticatie resultaten te monitoren beperken."
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:86
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:109
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
@@ -6003,11 +7244,7 @@ msgstr ""
 "Dit is een DMARC record dat verwerkt wordt via TXT recordtype. DMARC records "
 "moeten TXT recordtype gebruiken met inhoud die begint met \"v=DMARC1\"."
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:145
-msgid "HTML tags are not allowed in content field."
-msgstr "HTML tags zijn niet toegestaan in het inhoudsveld."
-
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:159
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:179
 msgid "TXT record content must be enclosed in quotes."
 msgstr "TXT record inhoud moet omsloten zijn door aanhalingstekens."
 
@@ -6016,16 +7253,14 @@ msgid "Backslashes must precede all quotes (\") in TXT content"
 msgstr ""
 "Backslashes moeten voorafgaan aan alle aanhalingstekens (\") in TXT inhoud"
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:173
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:195
+#, php-format
 msgid ""
-"TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or less. "
-"For longer content, split into multiple quoted strings separated by spaces."
+"TXT record content exceeds maximum length of %d bytes. Please reduce the "
+"content size."
 msgstr ""
-"TXT record string overschrijdt 255 bytes. TXT strings moeten 255 bytes of "
-"minder zijn. Voor langere inhoud, verdeel in meerdere quoted strings "
-"gescheiden door spaties."
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:192
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
@@ -6033,7 +7268,14 @@ msgstr ""
 "Elke TXT record string moet 255 bytes of minder zijn. Verdeel lange inhoud "
 "in meerdere strings."
 
-#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:250
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:225
+#, php-format
+msgid ""
+"Total TXT record content exceeds maximum length of %d bytes. Please reduce "
+"the content size."
+msgstr ""
+
+#: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
 "Invalid value for priority field. TXT records must have priority value of 0."
 msgstr ""
@@ -6246,7 +7488,8 @@ msgid ""
 "SRV record content must have weight, port and target (3 fields). Priority "
 "should be in the priority field."
 msgstr ""
-"SRV-recordinhoud moet gewicht, poort en doel hebben (3 velden). Prioriteit moet in het prioriteitsveld staan."
+"SRV-recordinhoud moet gewicht, poort en doel hebben (3 velden). Prioriteit "
+"moet in het prioriteitsveld staan."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
@@ -6442,7 +7685,7 @@ msgstr "Voeg aanhalingstekens toe rondom TXT record inhoud."
 msgid "Invalid domain name format."
 msgstr "Ongeldig domeinnaam formaat."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:103
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:115
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
@@ -6450,7 +7693,7 @@ msgstr ""
 "Dit lijkt een ENUM domein te zijn. NAPTR records moeten E2U service veld "
 "gebruiken en RFC 6116 volgen."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:135
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:147
 msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
@@ -6458,7 +7701,7 @@ msgstr ""
 "Complexe regexp patronen in NAPTR records kunnen moeilijk te debuggen en "
 "onderhouden zijn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:139
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:151
 msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
@@ -6466,7 +7709,7 @@ msgstr ""
 "Dit record volgt RFC 3403. Wees bewust dat sommige DNS servers mogelijk niet "
 "alle NAPTR functies volledig ondersteunen."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:170
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:182
 msgid ""
 "Invalid value for priority field. NAPTR records have priority within the "
 "content field and must have a priority value of 0."
@@ -6474,7 +7717,7 @@ msgstr ""
 "Ongeldige waarde voor prioriteitsveld. NAPTR records hebben prioriteit "
 "binnen het inhoudsveld en moeten een prioriteitswaarde van 0 hebben."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:189
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
 msgid ""
 "NAPTR record must contain order, preference, flags, service, regexp, and "
 "replacement values."
@@ -6482,31 +7725,31 @@ msgstr ""
 "NAPTR record moet order, preference, flags, service, regexp en replacement "
 "waarden bevatten."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:196
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:208
 msgid "NAPTR record order must be a number between 0 and 65535."
 msgstr "NAPTR record order moet een getal tussen 0 en 65535 zijn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
 msgid "NAPTR record preference must be a number between 0 and 65535."
 msgstr "NAPTR record preference moet een getal tussen 0 en 65535 zijn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:207
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:219
 msgid "NAPTR record flags must be a quoted string."
 msgstr "NAPTR record flags moeten een quoted string zijn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:225
 msgid "NAPTR record flags must contain only A, P, S, or U."
 msgstr "NAPTR record flags mogen alleen A, P, S of U bevatten."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:225
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:237
 msgid "NAPTR record service must be a quoted string."
 msgstr "NAPTR record service moet een quoted string zijn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:244
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:256
 msgid "NAPTR record regexp must be a quoted string."
 msgstr "NAPTR record regexp moet een quoted string zijn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:264
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:276
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
@@ -6514,29 +7757,18 @@ msgstr ""
 "NAPTR record replacement moet ofwel \".\" of een geldige fully-qualified "
 "domain name zijn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:270
-msgid ""
-"NAPTR record must have either a regexp or a replacement (with \".\"), but "
-"not both."
-msgstr ""
-"NAPTR record moet ofwel een regexp of een replacement (met \".\") hebben, "
-"maar niet beide."
-
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr "NAPTR record met een regexp moet \".\" als replacement hebben."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:309
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
-"and rs start with a letter and contain only alphanumeric characters (max 32 "
-"chars each)."
+"and rs start with a letter and contain alphanumeric characters, hyphens, "
+"colons, or plus signs (max 32 chars each)."
 msgstr ""
-"NAPTR service moet het formaat volgen: [protocol][+rs][+rs]... waarbij "
-"protocol en rs beginnen met een letter en alleen alfanumerieke karakters "
-"bevatten (max 32 tekens elk)."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:339
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
@@ -6544,11 +7776,11 @@ msgstr ""
 "Terminal flags \"S\", \"A\", \"U\" en \"P\" mogen niet gecombineerd worden "
 "met andere flags."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
 msgstr "NAPTR regexp moet beginnen met een delimiter karakter."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:367
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:389
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
@@ -6556,7 +7788,7 @@ msgstr ""
 "NAPTR regexp moet het formaat "
 "delimiter+patroon+delimiter+replacement+delimiter+flags hebben."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:374
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:396
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
@@ -6564,7 +7796,7 @@ msgstr ""
 "NAPTR regexp flags (na derde delimiter) mogen alleen \"i\" bevatten of leeg "
 "zijn."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:392
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
@@ -6572,15 +7804,15 @@ msgstr ""
 "Dit lijkt een ENUM NAPTR record te zijn (RFC 6116). Zorg ervoor dat het "
 "domein onder e164.arpa of een privé ENUM boom staat."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:393
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
 msgstr "ENUM records moeten de \"U\" flag hebben om URI output aan te geven."
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:420
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
 msgstr "NAPTR regexp bevat mogelijk gevaarlijk patroon: "
 
-#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:427
+#: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
 msgstr "NAPTR regexp is te lang. Maximale lengte is 1000 karakters."
 
@@ -6722,11 +7954,11 @@ msgstr "Dit domeinrecord was niet geldig en kon niet toegevoegd worden."
 msgid "The domain record was successfully added."
 msgstr "Het domeinrecord is succesvol toegevoegd."
 
-#: lib/Domain/Service/DnsRecordValidationService.php:97
+#: lib/Domain/Service/DnsRecordValidationService.php:99
 msgid "Unable to find domain with the given ID."
 msgstr "Kan domein met het gegeven ID niet vinden."
 
-#: lib/Domain/Service/DnsRecordValidationService.php:103
+#: lib/Domain/Service/DnsRecordValidationService.php:105
 msgid "Unknown record type."
 msgstr "Onbekend recordtype."
 
@@ -6755,49 +7987,107 @@ msgstr "U hebt geen toestemming om API sleutels te verwijderen."
 msgid "You do not have permission to regenerate API keys."
 msgstr "U hebt geen toestemming om API sleutels te regenereren."
 
+#: lib/Domain/Service/ZoneValidationService.php:128
+msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
+msgstr ""
+
+#: lib/Domain/Service/ZoneValidationService.php:129
+msgid "Add an SOA record to the zone before attempting to sign it."
+msgstr ""
+
+#: lib/Domain/Service/ZoneValidationService.php:135
+#, php-format
+msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
+msgstr ""
+
+#: lib/Domain/Service/ZoneValidationService.php:136
+msgid "Remove duplicate SOA records, keeping only one."
+msgstr ""
+
+#: lib/Domain/Service/ZoneValidationService.php:147
+#, php-format
+msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
+msgstr ""
+
+#: lib/Domain/Service/ZoneValidationService.php:148
+msgid "Move the SOA record to the zone apex."
+msgstr ""
+
+#: lib/Domain/Service/ZoneValidationService.php:158
+msgid "SOA record has invalid content format."
+msgstr ""
+
+#: lib/Domain/Service/ZoneValidationService.php:159
+msgid ""
+"SOA format should be: primary-ns hostmaster serial refresh retry expire "
+"minimum"
+msgstr ""
+
+#: lib/Domain/Service/ZoneValidationService.php:218
+msgid ""
+"Zone has no NS (Name Server) records at the apex. At least one apex NS "
+"record is required for DNSSEC."
+msgstr ""
+
+#: lib/Domain/Service/ZoneValidationService.php:219
+msgid "Add NS records at the zone apex for your authoritative name servers."
+msgstr ""
+
+#: lib/Domain/Service/ZoneValidationService.php:265
+msgid "DNSSEC signing cannot proceed due to the following errors:"
+msgstr ""
+
+#: lib/Domain/Service/ZoneValidationService.php:287
+msgid "Additionally, the following warnings were found:"
+msgstr ""
+
+#: lib/Domain/Service/ZoneValidationService.php:289
+msgid "The following warnings were found:"
+msgstr ""
+
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr "Onbekend databasetype."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:64
+#: lib/Domain/Service/ReverseRecordCreator.php:65
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "Er is geen overeenkomende reverse-zone voor: %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:72
+#: lib/Domain/Service/ReverseRecordCreator.php:73
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "Een PTR record voor %s die wijst naar %s bestaat al."
 
-#: lib/Domain/Service/Dns/RecordManager.php:105
+#: lib/Domain/Service/Dns/RecordManager.php:104
 msgid "You do not have the permission to add SOA record."
 msgstr "U hebt geen toestemming om SOA record toe te voegen."
 
-#: lib/Domain/Service/Dns/RecordManager.php:109
+#: lib/Domain/Service/Dns/RecordManager.php:108
 msgid "You do not have the permission to add NS record."
 msgstr "U hebt geen toestemming om NS record toe te voegen."
 
-#: lib/Domain/Service/Dns/RecordManager.php:156
+#: lib/Domain/Service/Dns/RecordManager.php:155
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Een record met deze hostnaam, type en inhoud bestaat al."
 
-#: lib/Domain/Service/Dns/RecordManager.php:216
+#: lib/Domain/Service/Dns/RecordManager.php:209
 msgid "You do not have the permission to edit this SOA record."
 msgstr "U hebt geen toestemming om dit SOA record te bewerken."
 
-#: lib/Domain/Service/Dns/RecordManager.php:221
+#: lib/Domain/Service/Dns/RecordManager.php:214
 msgid "You do not have the permission to edit this NS record."
 msgstr "U hebt geen toestemming om dit NS record te bewerken."
 
-#: lib/Domain/Service/Dns/RecordManager.php:303
+#: lib/Domain/Service/Dns/RecordManager.php:296
 msgid "You do not have the permission to delete SOA records."
 msgstr "U hebt geen toestemming om SOA records te verwijderen."
 
-#: lib/Domain/Service/Dns/RecordManager.php:316
+#: lib/Domain/Service/Dns/RecordManager.php:309
 msgid "You do not have the permission to delete NS records."
 msgstr "U hebt geen toestemming om NS records te verwijderen."
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:429
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Ongeldige argument(en) gegeven aan functie %s %s"
@@ -6806,12 +8096,12 @@ msgstr "Ongeldige argument(en) gegeven aan functie %s %s"
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "Er is al een supermaster met dit IP adres en hostnaam."
 
-#: lib/Domain/Service/Dns/DomainManager.php:212
+#: lib/Domain/Service/Dns/DomainManager.php:210
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Ongeldige argument(en) gegeven aan functie %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:411
+#: lib/Domain/Service/Dns/DomainManager.php:392
 msgid "The selected user already owns the zone."
 msgstr "De geselecteerde gebruiker is al eigenaar van de zone."
 
@@ -6939,10 +8229,6 @@ msgstr ""
 msgid "Are you sure you want to proceed?"
 msgstr "Weet u zeker dat u wilt doorgaan?"
 
-#: templates/modern/dnssec_edit_key.html:51
-msgid "Information"
-msgstr "Informatie"
-
 #: templates/modern/dnssec_edit_key.html:52
 msgid "You are about to activate a DNSSEC key (ID"
 msgstr "U staat op het punt een DNSSEC sleutel te activeren (ID"
@@ -6959,10 +8245,6 @@ msgstr ""
 msgid "Key Details"
 msgstr "Sleutel Details"
 
-#: templates/modern/dnssec_delete_key.html:52
-msgid "Domain"
-msgstr "Domein"
-
 #: templates/modern/dnssec_delete_key.html:66
 msgid "Key ID"
 msgstr "Sleutel ID"
@@ -6970,10 +8252,6 @@ msgstr "Sleutel ID"
 #: templates/modern/dnssec_delete_key.html:74
 msgid "Type"
 msgstr "Type"
-
-#: templates/modern/dnssec_delete_key.html:82
-msgid "Tag"
-msgstr "Tag"
 
 #: templates/modern/dnssec_delete_key.html:90
 msgid "Algorithm"
@@ -6991,7 +8269,7 @@ msgstr "Status"
 msgid "Inactive"
 msgstr "Inactief"
 
-#: templates/modern/dnssec_delete_key.html:126
+#: templates/modern/dnssec_delete_key.html:129
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -7106,10 +8384,6 @@ msgid ""
 msgstr ""
 "Voorbeeld: [ZONE] voor de zone zelf, of subdomein.[ZONE] voor een subdomein"
 
-#: templates/modern/delete_zone_templ_record.html:39
-msgid "Priority"
-msgstr "Prioriteit"
-
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-65535"
 msgstr "Geldig bereik: 0-65535"
@@ -7158,7 +8432,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Record bijwerken"
 
-#: templates/modern/edit.html:506 templates/modern/users.html:148
+#: templates/modern/edit.html:524 templates/modern/users.html:146
 msgid "Reset"
 msgstr "Resetten"
 
@@ -7294,7 +8568,7 @@ msgstr "Voer de hostnaam in zoals deze verschijnt in het NS record"
 msgid "Provide host name"
 msgstr "Geef hostnaam op"
 
-#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:278
+#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:281
 msgid "Account"
 msgstr "Account"
 
@@ -7302,7 +8576,7 @@ msgstr "Account"
 msgid "Select the account that will own this supermaster"
 msgstr "Selecteer het account dat eigenaar wordt van deze supermaster"
 
-#: templates/modern/edit.html:183 templates/modern/edit.html:503
+#: templates/modern/edit.html:188 templates/modern/edit.html:521
 msgid "Save changes"
 msgstr "Wijzigingen opslaan"
 
@@ -7416,7 +8690,7 @@ msgstr "Verwijderen"
 msgid "Forgot Password"
 msgstr "Wachtwoord Vergeten"
 
-#: templates/modern/reset_password.html:89
+#: templates/modern/forgot_username.html:46
 msgid "Back to Login"
 msgstr "Terug naar Inloggen"
 
@@ -7426,11 +8700,11 @@ msgid ""
 msgstr ""
 "Voer uw e-mailadres in en wij sturen u een link om uw wachtwoord te resetten."
 
-#: templates/modern/forgot_password.html:27
+#: templates/modern/forgot_username.html:27
 msgid "Email Address"
 msgstr "E-mailadres"
 
-#: templates/modern/forgot_password.html:29
+#: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
 msgstr "Geef een geldig e-mailadres op"
 
@@ -7450,7 +8724,7 @@ msgstr "DNS record eigenschappen wijzigen"
 msgid "Comment"
 msgstr "Opmerking"
 
-#: templates/modern/edit.html:610 templates/modern/add_record.html:91
+#: templates/modern/edit.html:639 templates/modern/add_record.html:91
 msgid "Provide content"
 msgstr "Geef inhoud op"
 
@@ -7494,7 +8768,7 @@ msgstr "Mijn Profiel"
 msgid "Edit your account details"
 msgstr "Uw account gegevens bewerken"
 
-#: templates/modern/header.html:284
+#: templates/modern/header.html:287
 msgid "Edit profile"
 msgstr "Profiel bewerken"
 
@@ -7502,7 +8776,7 @@ msgstr "Profiel bewerken"
 msgid "Profile"
 msgstr "Profiel"
 
-#: templates/modern/header.html:94 templates/modern/header.html:327
+#: templates/modern/header.html:97 templates/modern/header.html:344
 msgid "Search"
 msgstr "Zoeken"
 
@@ -7530,7 +8804,7 @@ msgstr "Reverse DNS zones beheren"
 msgid "List reverse zones"
 msgstr "Reverse zones weergeven"
 
-#: templates/modern/header.html:203 templates/modern/header.html:331
+#: templates/modern/header.html:206 templates/modern/header.html:348
 msgid "Templates"
 msgstr "Sjablonen"
 
@@ -7538,7 +8812,7 @@ msgstr "Sjablonen"
 msgid "Manage zone templates"
 msgstr "Zone sjablonen beheren"
 
-#: templates/modern/header.html:208
+#: templates/modern/header.html:211
 msgid "List zone templates"
 msgstr "Zone sjablonen weergeven"
 
@@ -7558,7 +8832,7 @@ msgstr "Primaire Zone"
 msgid "Create new master zone"
 msgstr "Nieuwe master zone maken"
 
-#: templates/modern/add_zone_master.html:11 templates/modern/header.html:121
+#: templates/modern/add_zone_master.html:11 templates/modern/header.html:124
 msgid "Add master zone"
 msgstr "Master zone toevoegen"
 
@@ -7574,7 +8848,7 @@ msgstr "Secundaire Zone"
 msgid "Add new slave zone"
 msgstr "Nieuwe slave zone toevoegen"
 
-#: templates/modern/add_zone_slave.html:11 templates/modern/header.html:128
+#: templates/modern/add_zone_slave.html:11 templates/modern/header.html:131
 msgid "Add slave zone"
 msgstr "Slave zone toevoegen"
 
@@ -7610,15 +8884,15 @@ msgstr "Bulk domein registratie"
 msgid "Registration"
 msgstr "Registratie"
 
-#: templates/modern/index.html:257
+#: templates/modern/index.html:277
 msgid "PTR Records"
 msgstr "PTR-records"
 
-#: templates/default/index.html:219 templates/modern/index.html:258
+#: templates/default/index.html:219 templates/modern/index.html:278
 msgid "Manage reverse DNS records"
 msgstr "Reverse DNS records beheren"
 
-#: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:142
+#: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:145
 msgid "Batch PTR Records"
 msgstr "Batch PTR-records"
 
@@ -7655,43 +8929,55 @@ msgstr "Wachtwoord"
 msgid "Update your account password"
 msgstr "Uw account wachtwoord bijwerken"
 
-#: templates/modern/change_password.html:49 templates/modern/header.html:291
+#: templates/modern/change_password.html:49 templates/modern/header.html:299
 msgid "Change password"
 msgstr "Wachtwoord wijzigen"
+
+#: templates/modern/header.html:293
+msgid "Preferences"
+msgstr ""
+
+#: templates/default/index.html:288 templates/modern/index.html:235
+msgid "Customize your interface settings"
+msgstr ""
+
+#: templates/default/index.html:290
+msgid "User preferences"
+msgstr ""
 
 #: templates/modern/list_perm_templ.html:4
 msgid "Users"
 msgstr "Gebruikers"
 
-#: templates/default/index.html:289 templates/modern/index.html:192
+#: templates/default/index.html:304 templates/modern/index.html:192
 msgid "Manage system users and access"
 msgstr "Systeemgebruikers en toegang beheren"
 
-#: templates/modern/header.html:166
+#: templates/modern/header.html:169
 msgid "User administration"
 msgstr "Gebruikersbeheer"
 
-#: templates/default/index.html:309
+#: templates/default/index.html:324
 msgid "Permissions"
 msgstr "Machtigingen"
 
-#: templates/default/index.html:306
+#: templates/default/index.html:321
 msgid "Manage permission templates"
 msgstr "Machtigingssjablonen beheren"
 
-#: templates/modern/header.html:339
+#: templates/modern/header.html:364
 msgid "Logout"
 msgstr "Uitloggen"
 
-#: templates/default/index.html:322
+#: templates/default/index.html:337
 msgid "End your session"
 msgstr "Uw sessie beëindigen"
 
-#: templates/modern/header.html:232
+#: templates/modern/header.html:235
 msgid "WHOIS"
 msgstr "WHOIS"
 
-#: templates/default/index.html:337 templates/modern/index.html:236
+#: templates/default/index.html:352 templates/modern/index.html:256
 msgid "Lookup domain WHOIS information"
 msgstr "Domein WHOIS informatie opzoeken"
 
@@ -7699,11 +8985,11 @@ msgstr "Domein WHOIS informatie opzoeken"
 msgid "WHOIS Lookup"
 msgstr "WHOIS Opzoeking"
 
-#: templates/modern/header.html:239
+#: templates/modern/header.html:242
 msgid "RDAP"
 msgstr "RDAP"
 
-#: templates/default/index.html:354
+#: templates/default/index.html:369
 msgid "Lookup domain RDAP information"
 msgstr "Domein RDAP informatie opzoeken"
 
@@ -7711,31 +8997,31 @@ msgstr "Domein RDAP informatie opzoeken"
 msgid "RDAP Lookup"
 msgstr "RDAP Opzoeken"
 
-#: templates/default/index.html:371
+#: templates/default/index.html:386
 msgid "Manage API access keys"
 msgstr "API toegangssleutels beheren"
 
-#: templates/default/index.html:373
+#: templates/default/index.html:388
 msgid "Manage API Keys"
 msgstr "API Sleutels Beheren"
 
-#: templates/modern/header.html:253
+#: templates/modern/header.html:256
 msgid "Database Consistency"
 msgstr "Database Consistentie"
 
-#: templates/default/index.html:388
+#: templates/default/index.html:403
 msgid "Check database integrity"
 msgstr "Database integriteit controleren"
 
-#: templates/default/index.html:390
+#: templates/default/index.html:405
 msgid "Check Database"
 msgstr "Database Controleren"
 
-#: templates/default/index.html:391
+#: templates/default/index.html:406
 msgid "Check DB"
 msgstr "DB Controleren"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:485
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:510
 msgid "Edit comment"
 msgstr "Opmerking bewerken"
 
@@ -7767,7 +9053,7 @@ msgstr "Globaal sjabloon"
 msgid "Make this template available to all users"
 msgstr "Dit sjabloon beschikbaar maken voor alle gebruikers"
 
-#: templates/modern/list_zone_templ.html:126 templates/modern/header.html:214
+#: templates/modern/list_zone_templ.html:126 templates/modern/header.html:217
 msgid "Add zone template"
 msgstr "Zone sjabloon toevoegen"
 
@@ -7826,27 +9112,7 @@ msgstr ""
 "Gebruik beschrijvende namen en omschrijvingen om sjablonen gemakkelijk te "
 "identificeren"
 
-#: templates/modern/add_zone_templ.html:99
-msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-msgstr "Stel standaard records in zoals MX, TXT voor SPF, en CNAME voor www"
-
-#: templates/modern/add_zone_templ.html:100
-msgid ""
-"Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-"[SERIAL] in record content"
-msgstr ""
-"Gebruik placeholders zoals [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], en "
-"[SERIAL] in record inhoud"
-
-#: templates/modern/add_zone_templ.html:101
-msgid ""
-"[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-"(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-msgstr ""
-"[DOMAIN] en [TLD] placeholders zijn nuttig voor Microsoft 365 MX records "
-"(bijv. [DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-#: templates/modern/list_log_zones.html:11 templates/modern/header.html:149
+#: templates/modern/list_log_zones.html:11 templates/modern/header.html:152
 msgid "Zone logs"
 msgstr "Zonelogs"
 
@@ -7854,19 +9120,19 @@ msgstr "Zonelogs"
 msgid "Zone Change Logs"
 msgstr "Zone Wijzigings Logs"
 
-#: templates/modern/list_log_zones.html:26
+#: templates/modern/list_log_zones.html:25
 msgid "Search logs by domain"
 msgstr "Logs zoeken op domein"
 
-#: templates/modern/list_log_users.html:26
+#: templates/modern/list_log_users.html:25
 msgid "Clear"
 msgstr "Wissen"
 
-#: templates/modern/list_log_users.html:32
+#: templates/modern/list_log_users.html:31
 msgid "Total logs"
 msgstr "Totaal logs"
 
-#: templates/modern/list_log_users.html:47
+#: templates/modern/list_log_users.html:46
 msgid "Id"
 msgstr "ID"
 
@@ -7874,23 +9140,23 @@ msgstr "ID"
 msgid "Event"
 msgstr "Gebeurtenis"
 
-#: templates/modern/list_log_zones.html:70
+#: templates/modern/list_log_zones.html:69
 msgid "Details"
 msgstr "Details"
 
-#: templates/modern/list_log_zones.html:87
+#: templates/modern/list_log_zones.html:86
 msgid "Log Details"
 msgstr "Logdetails"
 
-#: templates/modern/list_log_zones.html:94
+#: templates/modern/list_log_zones.html:93
 msgid "Close"
 msgstr "Sluiten"
 
-#: templates/modern/list_log_users.html:73
+#: templates/modern/list_log_users.html:72
 msgid "No logs found"
 msgstr "Geen logs gevonden"
 
-#: templates/modern/list_log_users.html:74
+#: templates/modern/list_log_users.html:73
 msgid "Try different search criteria or check back later"
 msgstr "Probeer andere zoekcriteria of controleer later opnieuw"
 
@@ -7984,6 +9250,30 @@ msgstr "Veelgebruikte Records"
 #: templates/modern/bulk_record_add.html:114
 msgid "Advanced Records"
 msgstr "Geavanceerde Records"
+
+#: templates/modern/header.html:106
+msgid "Zones"
+msgstr "Zones"
+
+#: templates/modern/dns_wizard_select.html:6
+msgid "DNS Wizard"
+msgstr ""
+
+#: templates/modern/dns_wizard_form.html:15 templates/modern/edit.html:204
+msgid "Wizard"
+msgstr ""
+
+#: templates/modern/dns_wizard_form.html:26
+msgid "Warning: Please Review Before Proceeding"
+msgstr ""
+
+#: templates/modern/dns_wizard_form.html:200
+msgid "Create Record"
+msgstr ""
+
+#: templates/modern/dns_wizard_form.html:203
+msgid "Back to Wizard Selection"
+msgstr ""
 
 #: templates/default/delete_user.html:5 templates/modern/delete_user.html:5
 msgid "Delete user"
@@ -8270,10 +9560,6 @@ msgstr "Minstens één cijfer"
 msgid "At least one special character"
 msgstr "Minstens één speciaal karakter"
 
-#: templates/modern/header.html:103
-msgid "Zones"
-msgstr "Zones"
-
 #: templates/modern/list_reverse_zones.html:34
 msgid "Reverse Zone Types"
 msgstr "Omgekeerde Zone Types"
@@ -8302,7 +9588,7 @@ msgstr "IPv4 omgekeerde zones:"
 msgid "IPv6 reverse zones:"
 msgstr "IPv6 omgekeerde zones:"
 
-#: templates/modern/search.html:123 templates/modern/search.html:308
+#: templates/modern/search.html:123 templates/modern/search.html:310
 msgid "Rows per page:"
 msgstr "Rijen per pagina:"
 
@@ -8334,11 +9620,11 @@ msgstr "Sjabloon"
 msgid "-"
 msgstr "-"
 
-#: templates/modern/search.html:285
+#: templates/modern/search.html:287
 msgid "Delete zone(s)"
 msgstr "Zone(s) verwijderen"
 
-#: templates/modern/dnssec_add_key.html:81
+#: templates/modern/dnssec_add_key.html:91
 msgid "Add key"
 msgstr "Sleutel toevoegen"
 
@@ -8346,48 +9632,48 @@ msgstr "Sleutel toevoegen"
 msgid "Add key for zone"
 msgstr "Sleutel toevoegen voor zone"
 
-#: templates/modern/dnssec_add_key.html:43
+#: templates/modern/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Sleuteltype"
 
-#: templates/modern/dnssec_add_key.html:50
+#: templates/modern/dnssec_add_key.html:60
 msgid "Select key type"
 msgstr "Selecteer sleuteltype"
 
-#: templates/modern/dnssec_add_key.html:61
+#: templates/modern/dnssec_add_key.html:71
 msgid "Select algorithm"
 msgstr "Selecteer algoritme"
 
-#: templates/modern/dnssec_add_key.html:66
+#: templates/modern/dnssec_add_key.html:76
 msgid "Bits in length"
 msgstr "Bits in lengte"
 
-#: templates/modern/dnssec_add_key.html:75
+#: templates/modern/dnssec_add_key.html:85
 msgid "Select bits length"
 msgstr "Selecteer bits lengte"
 
-#: templates/modern/dnssec_add_key.html:132
+#: templates/modern/dnssec_add_key.html:142
 msgid "Recommended bits for"
 msgstr "Aanbevolen bits voor"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 #: install/helpers/InstallStepHandler.php:165
 msgid "Warning:"
 msgstr "Waarschuwing:"
 
-#: templates/modern/dnssec_add_key.html:140
+#: templates/modern/dnssec_add_key.html:150
 msgid "bits is not recommended for"
 msgstr "bits wordt niet aanbevolen voor"
 
-#: templates/modern/dnssec_add_key.html:177
+#: templates/modern/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
 msgstr "Over DNSSEC Sleutel Types"
 
-#: templates/modern/dnssec_add_key.html:181
+#: templates/modern/dnssec_add_key.html:191
 msgid "Key Types Explained"
 msgstr "Sleutel Types Uitgelegd"
 
-#: templates/modern/dnssec_add_key.html:183
+#: templates/modern/dnssec_add_key.html:193
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -8395,19 +9681,19 @@ msgstr ""
 "Gecombineerde Ondertekenings Sleutel - fungeert als zowel KSK als ZSK "
 "(aanbevolen voor PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:184
+#: templates/modern/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Key Signing Key - ondertekent de DNSKEY records in de zone"
 
-#: templates/modern/dnssec_add_key.html:185
+#: templates/modern/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - ondertekent alle andere records in de zone"
 
-#: templates/modern/dnssec_add_key.html:190
+#: templates/modern/dnssec_add_key.html:200
 msgid "Recommended Settings"
 msgstr "Aanbevolen Instellingen"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:201
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -8452,43 +9738,43 @@ msgstr "E-mailadres"
 msgid "Provide email"
 msgstr "Geef e-mailadres op"
 
-#: templates/default/edit_user.html:55 templates/modern/edit_user.html:55
+#: templates/default/edit_user.html:58 templates/modern/edit_user.html:58
 msgid "Leave empty to keep current password"
 msgstr "Laat leeg om huidig wachtwoord te behouden"
 
-#: templates/modern/edit_user.html:60 templates/modern/add_user.html:70
+#: templates/modern/edit_user.html:64 templates/modern/add_user.html:70
 msgid "Permission template"
 msgstr "Machtigingssjabloon"
 
-#: templates/modern/edit_user.html:70 templates/modern/add_user.html:81
+#: templates/modern/edit_user.html:74 templates/modern/add_user.html:81
 msgid "Select permissions for this user"
 msgstr "Selecteer machtigingen voor deze gebruiker"
 
-#: templates/modern/edit_user.html:77 templates/modern/add_user.html:88
+#: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
 msgid "Optional information about this user"
 msgstr "Optionele informatie over deze gebruiker"
 
-#: templates/modern/users.html:31 templates/modern/add_user.html:94
+#: templates/modern/users.html:29 templates/modern/add_user.html:94
 msgid "Enabled"
 msgstr "Ingeschakeld"
 
-#: templates/modern/edit_user.html:97 templates/modern/add_user.html:103
+#: templates/modern/edit_user.html:101 templates/modern/add_user.html:103
 msgid "LDAP Authentication"
 msgstr "LDAP Authenticatie"
 
-#: templates/modern/edit_user.html:99 templates/modern/add_user.html:105
+#: templates/modern/edit_user.html:103 templates/modern/add_user.html:105
 msgid "Use external LDAP directory for authentication"
 msgstr "Gebruik externe LDAP directory voor authenticatie"
 
-#: templates/default/edit_user.html:113 templates/modern/edit_user.html:113
+#: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
 msgid "Back to Home"
 msgstr "Terug naar Home"
 
-#: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
+#: templates/default/edit_user.html:121 templates/modern/edit_user.html:121
 msgid "Back to Users"
 msgstr "Terug naar Gebruikers"
 
-#: templates/modern/edit_user.html:131 templates/modern/add_user.html:128
+#: templates/modern/edit_user.html:135 templates/modern/add_user.html:128
 msgid "Account Information"
 msgstr "Account Informatie"
 
@@ -8516,43 +9802,44 @@ msgstr "Geen specifieke wachtwoord vereisten"
 msgid "User Permissions"
 msgstr "Gebruiker Machtigingen"
 
-#: templates/default/edit_user.html:165 templates/modern/edit_user.html:165
+#: templates/default/edit_user.html:169 templates/modern/edit_user.html:169
 msgid "This user has been assigned the permission template"
 msgstr "Deze gebruiker heeft het machtigingssjabloon toegewezen gekregen"
 
-#: templates/default/edit_user.html:174 templates/modern/edit_user.html:174
+#: templates/default/edit_user.html:178 templates/modern/edit_user.html:178
 msgid "Based on this template, this user has the following permissions"
 msgstr ""
 "Op basis van dit sjabloon heeft deze gebruiker de volgende machtigingen"
 
-#: templates/default/edit_user.html:177 templates/modern/edit_user.html:177
+#: templates/default/edit_user.html:181 templates/modern/edit_user.html:181
 msgid "No permissions are assigned to this template"
 msgstr "Geen machtigingen zijn toegewezen aan dit sjabloon"
 
-#: templates/modern/edit_user.html:193 templates/modern/add_user.html:171
+#: templates/modern/edit_user.html:197 templates/modern/add_user.html:171
 msgid "User Management Tips"
 msgstr "Gebruikersbeheer Tips"
 
-#: templates/default/edit_user.html:199 templates/modern/edit_user.html:199
+#: templates/default/edit_user.html:203 templates/modern/edit_user.html:203
 msgid "Leave password field empty to keep the current password"
 msgstr "Laat wachtwoord veld leeg om het huidige wachtwoord te behouden"
 
-#: templates/default/edit_user.html:200 templates/modern/edit_user.html:200
+#: templates/default/edit_user.html:204 templates/modern/edit_user.html:204
 msgid "Changing permission templates will update user access immediately"
 msgstr ""
 "Het wijzigen van machtigingssjablonen zal gebruikerstoegang onmiddellijk "
 "bijwerken"
 
-#: templates/modern/edit_user.html:201 templates/modern/add_user.html:179
+#: templates/modern/edit_user.html:205 templates/modern/add_user.html:179
 msgid "Users can be disabled instead of deleted to preserve their settings"
 msgstr ""
 "Gebruikers kunnen uitgeschakeld worden in plaats van verwijderd om hun "
 "instellingen te behouden"
 
-#: templates/default/edit_user.html:202 templates/modern/edit_user.html:202
-msgid "LDAP users cannot have passwords managed through this interface"
+#: templates/default/edit_user.html:206 templates/modern/edit_user.html:206
+msgid ""
+"External authentication users (LDAP, OIDC, SAML) cannot have passwords "
+"managed through this interface"
 msgstr ""
-"LDAP gebruikers kunnen geen wachtwoorden beheerd hebben via deze interface"
 
 #: templates/modern/confirm_unlink_zones_templ.html:6
 msgid "Unlink zones"
@@ -8611,7 +9898,7 @@ msgstr "Ja, deze zones ontkoppelen"
 msgid "Permission templates"
 msgstr "Machtigingssjablonen"
 
-#: templates/modern/add_perm_templ.html:6 templates/modern/edit.html:765
+#: templates/modern/add_perm_templ.html:6 templates/modern/edit.html:794
 msgid "Add"
 msgstr "Toevoegen"
 
@@ -8781,9 +10068,13 @@ msgstr "Taal"
 msgid "Or sign in with"
 msgstr "Of inloggen met"
 
-#: templates/default/login.html:68 templates/modern/login.html:68
+#: templates/default/login.html:81 templates/modern/login.html:81
 msgid "Forgot your password?"
 msgstr "Wachtwoord vergeten?"
+
+#: templates/default/login.html:86 templates/modern/login.html:86
+msgid "Forgot your username?"
+msgstr ""
 
 #: templates/modern/batch_ptr_record.html:39
 msgid "IP Version"
@@ -9011,6 +10302,30 @@ msgstr "Ja, dit sjabloon verwijderen"
 msgid "No, keep this template"
 msgstr "Nee, dit sjabloon behouden"
 
+#: templates/modern/dns_wizard_select.html:14
+msgid "DNS Record Wizard"
+msgstr ""
+
+#: templates/modern/dns_wizard_select.html:21
+msgid ""
+"Select a wizard to help you create complex DNS records with guided forms "
+"instead of manual text entry."
+msgstr ""
+
+#: templates/modern/dns_wizard_select.html:27
+msgid ""
+"DNS wizards are designed for forward zones and may not be appropriate for "
+"reverse zones."
+msgstr ""
+
+#: templates/modern/dns_wizard_select.html:59
+msgid "Recommended"
+msgstr ""
+
+#: templates/modern/dns_wizard_select.html:71
+msgid "Back"
+msgstr ""
+
 #: templates/modern/api_key_add.html:5 templates/modern/api_key_add.html:13
 msgid "Add API Key"
 msgstr "API Sleutel Toevoegen"
@@ -9044,71 +10359,75 @@ msgstr "Als u de sleutel kwijtraakt, moet u deze regenereren."
 msgid "Edit"
 msgstr "Bewerken"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:518
+#: templates/modern/edit.html:25 templates/modern/edit.html:542
 msgid "Add new record"
 msgstr "Nieuw record toevoegen"
 
-#: templates/modern/edit.html:28 templates/modern/edit.html:521
+#: templates/modern/edit.html:203 templates/modern/edit.html:545
+msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
+msgstr ""
+
+#: templates/modern/edit.html:29 templates/modern/edit.html:546
+msgid "Record Wizard"
+msgstr ""
+
+#: templates/modern/edit.html:33 templates/modern/edit.html:550
 msgid "Multi-record mode"
 msgstr "Multi-record modus"
 
-#: templates/modern/edit.html:31 templates/modern/edit.html:524
+#: templates/modern/edit.html:199 templates/modern/edit.html:553
 msgid "Bulk add"
 msgstr "Bulk toevoegen"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:536
+#: templates/modern/edit.html:48 templates/modern/edit.html:565
 msgid "Failed to add"
 msgstr "Toevoegen mislukt"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:536
+#: templates/modern/edit.html:48 templates/modern/edit.html:565
 msgid "record(s). Please check the record format."
 msgstr "record(s). Controleer het record formaat."
 
-#: templates/modern/edit.html:45 templates/modern/edit.html:538
+#: templates/modern/edit.html:50 templates/modern/edit.html:567
 msgid "Failed to add records. Please check the record format."
 msgstr "Records toevoegen mislukt. Controleer het record formaat."
 
-#: templates/modern/edit.html:48 templates/modern/edit.html:541
+#: templates/modern/edit.html:53 templates/modern/edit.html:570
 msgid "Content validation failed:"
 msgstr "Inhoud validatie mislukt:"
 
-#: templates/modern/edit.html:48 templates/modern/edit.html:541
+#: templates/modern/edit.html:53 templates/modern/edit.html:570
 msgid "Invalid value for record type"
 msgstr "Ongeldige waarde voor record type"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:543
+#: templates/modern/edit.html:55 templates/modern/edit.html:572
 msgid "Please provide all required information."
 msgstr "Geef alle vereiste informatie op."
 
-#: templates/modern/edit.html:566 templates/modern/add_record.html:61
+#: templates/modern/edit.html:595 templates/modern/add_record.html:61
 msgid "Add PTR"
 msgstr "PTR Toevoegen"
 
-#: templates/modern/edit.html:569 templates/modern/add_record.html:64
+#: templates/modern/edit.html:598 templates/modern/add_record.html:64
 msgid "Add A/AAAA"
 msgstr "A/AAAA Toevoegen"
 
-#: templates/modern/edit.html:86 templates/modern/edit.html:580
-msgid "Invalid hostname format"
-msgstr "Ongeldig hostnaam formaat"
-
-#: templates/modern/edit.html:114 templates/modern/edit.html:608
+#: templates/modern/edit.html:119 templates/modern/edit.html:637
 msgid "This record already exists"
 msgstr "Dit record bestaat al"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:620
+#: templates/modern/edit.html:131 templates/modern/edit.html:649
 msgid "Invalid priority"
 msgstr "Ongeldige prioriteit"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:627
+#: templates/modern/edit.html:138 templates/modern/edit.html:656
 msgid "Invalid TTL value"
 msgstr "Ongeldige TTL waarde"
 
-#: templates/modern/edit.html:135 templates/modern/edit.html:629
+#: templates/modern/edit.html:140 templates/modern/edit.html:658
 msgid "Provide TTL"
 msgstr "Geef TTL op"
 
-#: templates/modern/edit.html:655 templates/modern/add_record.html:139
+#: templates/modern/edit.html:684 templates/modern/add_record.html:139
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -9120,7 +10439,7 @@ msgstr ""
 msgid "Edit zone"
 msgstr "Zone bewerken"
 
-#: templates/default/edit.html:190 templates/modern/edit.html:190
+#: templates/default/edit.html:208 templates/modern/edit.html:208
 msgid "CSV"
 msgstr "CSV"
 
@@ -9128,121 +10447,137 @@ msgstr "CSV"
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/default/edit.html:210 templates/modern/edit.html:210
+#: templates/default/edit.html:228 templates/modern/edit.html:228
 msgid "Sign zone"
 msgstr "Zone ondertekenen"
 
-#: templates/default/edit.html:227 templates/modern/edit.html:227
+#: templates/default/edit.html:241 templates/modern/edit.html:241
 msgid "No records match your filter criteria."
 msgstr "Geen records komen overeen met uw filtercriteria."
 
-#: templates/default/edit.html:235 templates/modern/edit.html:235
+#: templates/default/edit.html:249 templates/modern/edit.html:249
 msgid "This zone does not have any records."
 msgstr "Deze zone heeft geen records."
 
-#: templates/default/edit.html:249 templates/modern/edit.html:249
+#: templates/default/edit.html:261 templates/modern/edit.html:261
 msgid "Filter:"
 msgstr "Filter:"
 
-#: templates/default/edit.html:255 templates/modern/edit.html:255
+#: templates/default/edit.html:267 templates/modern/edit.html:267
 msgid "Search by name or content"
 msgstr "Zoeken op naam of inhoud"
 
-#: templates/default/edit.html:261 templates/modern/edit.html:261
+#: templates/default/edit.html:273 templates/modern/edit.html:273
 msgid "All Types"
 msgstr "Alle Types"
 
-#: templates/default/edit.html:271 templates/modern/edit.html:271
+#: templates/default/edit.html:283 templates/modern/edit.html:283
 msgid "Filter by content"
 msgstr "Filteren op inhoud"
 
-#: templates/default/edit.html:277 templates/modern/edit.html:277
+#: templates/default/edit.html:289 templates/modern/edit.html:289
 msgid "Apply"
 msgstr "Toepassen"
 
-#: templates/modern/edit.html:300 templates/modern/search.html:476
-msgid "Delete record(s)"
-msgstr "Record(s) verwijderen"
-
-#: templates/default/edit.html:308 templates/modern/edit.html:308
+#: templates/default/edit.html:325 templates/modern/edit.html:325
 msgid "Showing"
 msgstr "Toont"
 
-#: templates/default/edit.html:308 templates/modern/edit.html:308
+#: templates/default/edit.html:325 templates/modern/edit.html:325
 msgid "of"
 msgstr "van"
 
-#: templates/default/edit.html:308 templates/modern/edit.html:308
+#: templates/default/edit.html:325 templates/modern/edit.html:325
 msgid "total records"
 msgstr "totaal records"
 
-#: templates/modern/edit.html:474 templates/modern/search.html:93
+#: templates/default/edit.html:494 templates/modern/edit.html:494
+msgid "Edit selected"
+msgstr ""
+
+#: templates/modern/edit.html:498 templates/modern/search.html:478
+msgid "Delete record(s)"
+msgstr "Record(s) verwijderen"
+
+#: templates/modern/edit.html:505 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Opmerkingen"
 
-#: templates/default/edit.html:667 templates/modern/edit.html:667
+#: templates/default/edit.html:696 templates/modern/edit.html:696
 msgid "Save as new template"
 msgstr "Opslaan als nieuw sjabloon"
 
-#: templates/default/edit.html:670 templates/modern/edit.html:670
+#: templates/default/edit.html:699 templates/modern/edit.html:699
 msgid "Create a reusable template from this zone's records"
 msgstr "Maak een herbruikbaar sjabloon van de records van deze zone"
 
-#: templates/default/edit.html:676 templates/modern/edit.html:676
+#: templates/default/edit.html:705 templates/modern/edit.html:705
 msgid "Template Name"
 msgstr "Sjabloon Naam"
 
-#: templates/default/edit.html:678 templates/modern/edit.html:678
+#: templates/default/edit.html:707 templates/modern/edit.html:707
 msgid "Provide template name"
 msgstr "Geef sjabloon naam op"
 
-#: templates/default/edit.html:682 templates/modern/edit.html:682
+#: templates/default/edit.html:711 templates/modern/edit.html:711
 msgid "Template Description"
 msgstr "Sjabloon Beschrijving"
 
-#: templates/default/edit.html:684 templates/modern/edit.html:684
+#: templates/default/edit.html:713 templates/modern/edit.html:713
 msgid "Optional description for this template"
 msgstr "Optionele beschrijving voor dit sjabloon"
 
-#: templates/default/edit.html:688 templates/modern/edit.html:688
+#: templates/default/edit.html:717 templates/modern/edit.html:717
 msgid "Save as template"
 msgstr "Opslaan als sjabloon"
 
-#: templates/default/edit.html:699 templates/modern/edit.html:699
+#: templates/default/edit.html:728 templates/modern/edit.html:728
 msgid "Zone Settings"
 msgstr "Zone Instellingen"
 
-#: templates/default/edit.html:702 templates/modern/edit.html:702
+#: templates/default/edit.html:731 templates/modern/edit.html:731
 msgid "Owner of zone"
 msgstr "Eigenaar van zone"
 
-#: templates/default/edit.html:705 templates/modern/edit.html:705
+#: templates/default/edit.html:734 templates/modern/edit.html:734
 msgid "No owner set for this zone."
 msgstr "Geen eigenaar ingesteld voor deze zone."
 
-#: templates/modern/edit.html:804 templates/modern/edit.html:830
+#: templates/modern/edit.html:833 templates/modern/edit.html:859
 msgid "Change"
 msgstr "Wijzigen"
 
-#: templates/modern/edit.html:796 templates/modern/add_zone_slave.html:33
+#: templates/modern/edit.html:825 templates/modern/add_zone_slave.html:33
 msgid "IP address of master NS"
 msgstr "IP adres van master NS"
-
-#: templates/default/edit.html:1022 templates/modern/edit.html:1022
-msgid "Select All Filtered"
-msgstr "Selecteer Alle Gefilterde"
 
 #: templates/modern/users.html:10
 msgid "User Administration"
 msgstr "Gebruikersbeheer"
 
-#: templates/modern/add_user.html:5 templates/modern/header.html:172
+#: templates/modern/add_user.html:5 templates/modern/header.html:175
 msgid "Add user"
 msgstr "Gebruiker toevoegen"
 
-#: templates/default/users.html:29 templates/modern/users.html:29
+#: templates/default/users.html:28 templates/modern/users.html:28
+msgid "Auth Type"
+msgstr ""
+
+#: templates/modern/users.html:69 templates/modern/users.html:111
+msgid "SQL"
+msgstr ""
+
+#: templates/modern/users.html:71 templates/modern/users.html:113
 msgid "LDAP"
 msgstr "LDAP"
+
+#: templates/modern/users.html:73 templates/modern/users.html:115
+msgid "OIDC"
+msgstr ""
+
+#: templates/modern/users.html:75 templates/modern/users.html:117
+msgid "SAML"
+msgstr ""
 
 #: templates/modern/list_template_zones.html:16
 msgid "Total number of zones:"
@@ -9274,11 +10609,11 @@ msgstr ""
 "U probeert een record te verwijderen dat nodig is voor het functioneren van "
 "deze zone."
 
-#: templates/modern/delete_record.html:83
+#: templates/modern/delete_record.html:85
 msgid "Also delete corresponding PTR record (if exists)"
 msgstr "Ook overeenkomend PTR record verwijderen (indien bestaat)"
 
-#: templates/modern/delete_record.html:93
+#: templates/modern/delete_record.html:94
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Ook het bijbehorende A/AAAA-record verwijderen (indien aanwezig)"
 
@@ -9436,6 +10771,20 @@ msgstr "Weet u zeker dat u het verweesde record wilt verwijderen"
 #: templates/modern/database_consistency.html:321
 msgid "Are you sure you want to delete this item?"
 msgstr "Weet u zeker dat u dit item wilt verwijderen?"
+
+#: templates/modern/forgot_username.html:4
+msgid "Forgot Username"
+msgstr ""
+
+#: templates/modern/forgot_username.html:21
+msgid ""
+"Enter your email address and we'll send you the username associated with "
+"this account."
+msgstr ""
+
+#: templates/modern/forgot_username.html:41
+msgid "Send Username"
+msgstr ""
 
 #: templates/modern/add_user.html:13 templates/modern/add_user.html:112
 msgid "Add User"
@@ -9606,7 +10955,7 @@ msgstr "Zones gekoppeld"
 msgid "Sync Status"
 msgstr "Synchronisatiestatus"
 
-#: templates/modern/list_zone_templ.html:32 templates/modern/search.html:497
+#: templates/modern/list_zone_templ.html:32 templates/modern/search.html:499
 msgid "No results found"
 msgstr "Geen resultaten gevonden"
 
@@ -9705,7 +11054,7 @@ msgstr "Gebruik een mix van letters, cijfers en symbolen"
 msgid "Consider using a password manager"
 msgstr "Overweeg het gebruik van een wachtwoordbeheerder"
 
-#: templates/modern/header.html:298
+#: templates/modern/header.html:306
 msgid "Multi-Factor Authentication"
 msgstr "Multi-Factor Authenticatie"
 
@@ -9887,7 +11236,7 @@ msgstr "RDAP resultaten voor"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Voer een domeinnaam in om een RDAP opzoeking uit te voeren."
 
-#: templates/modern/bulk_registration.html:11 templates/modern/header.html:135
+#: templates/modern/bulk_registration.html:11 templates/modern/header.html:138
 msgid "Bulk registration"
 msgstr "Bulk registratie"
 
@@ -10214,19 +11563,19 @@ msgstr "Voer de 6-cijferige code van uw e-mail in"
 msgid "Zones using template"
 msgstr "Zones die sjabloon gebruiken"
 
-#: templates/modern/list_template_zones.html:63
+#: templates/modern/list_template_zones.html:55
 msgid "Domain name"
 msgstr "Domeinnaam"
 
-#: templates/modern/list_template_zones.html:75
+#: templates/modern/list_template_zones.html:67
 msgid "No domains using this template"
 msgstr "Geen domeinen gebruiken dit sjabloon"
 
-#: templates/modern/list_template_zones.html:123
+#: templates/modern/list_template_zones.html:115
 msgid "Back to templates"
 msgstr "Terug naar sjablonen"
 
-#: templates/modern/list_template_zones.html:129
+#: templates/modern/list_template_zones.html:121
 msgid "Unlink selected zones"
 msgstr "Geselecteerde zones ontkoppelen"
 
@@ -10254,13 +11603,97 @@ msgstr ""
 "resulteren in tijdelijke verwijdering. Wanneer de supermaster een melding "
 "voor deze zone stuurt, wordt deze weer toegevoegd!"
 
-#: templates/modern/delete_domain.html:73
+#: templates/modern/delete_domain.html:75
 msgid "Yes, delete this zone"
 msgstr "Ja, deze zone verwijderen"
 
-#: templates/modern/delete_domain.html:80
+#: templates/modern/delete_domain.html:83
 msgid "No, keep this zone"
 msgstr "Nee, deze zone behouden"
+
+#: templates/modern/user_preferences.html:4 templates/modern/header.html:349
+msgid "User Preferences"
+msgstr ""
+
+#: templates/modern/user_preferences.html:17
+msgid "Display Settings"
+msgstr ""
+
+#: templates/modern/user_preferences.html:22
+msgid "Items per page"
+msgstr ""
+
+#: templates/modern/user_preferences.html:36
+msgid "Zone Options"
+msgstr ""
+
+#: templates/modern/user_preferences.html:42
+msgid "Zone serial numbers"
+msgstr ""
+
+#: templates/modern/user_preferences.html:43
+msgid "Display serial numbers in zone lists"
+msgstr ""
+
+#: templates/modern/user_preferences.html:51
+msgid "Display template information in zone lists"
+msgstr ""
+
+#: templates/modern/user_preferences.html:64
+msgid "Interface Behavior"
+msgstr ""
+
+#: templates/modern/user_preferences.html:69
+msgid "Record form"
+msgstr ""
+
+#: templates/modern/user_preferences.html:78
+msgid "Save buttons"
+msgstr ""
+
+#: templates/modern/user_preferences.html:88
+msgid "Edit Zone View"
+msgstr ""
+
+#: templates/modern/user_preferences.html:93
+msgid "Show record ID"
+msgstr ""
+
+#: templates/modern/user_preferences.html:94
+msgid "Display record ID column in edit view"
+msgstr ""
+
+#: templates/modern/user_preferences.html:101
+msgid "Show add record form"
+msgstr ""
+
+#: templates/modern/user_preferences.html:102
+msgid "Display inline add record form in edit view"
+msgstr ""
+
+#: templates/modern/user_preferences.html:109
+msgid "Show edit buttons"
+msgstr ""
+
+#: templates/modern/user_preferences.html:110
+msgid "Display individual edit button per record"
+msgstr ""
+
+#: templates/modern/user_preferences.html:117
+msgid "Show delete buttons"
+msgstr ""
+
+#: templates/modern/user_preferences.html:118
+msgid "Display individual delete button per record"
+msgstr ""
+
+#: templates/modern/user_preferences.html:133
+msgid "Save Preferences"
+msgstr ""
+
+#: templates/modern/user_preferences.html:139
+msgid "Changes will be applied after saving"
+msgstr ""
 
 #: templates/default/search.html:14 templates/modern/search.html:14
 msgid "DNS Search"
@@ -10293,7 +11726,7 @@ msgstr ""
 msgid "Zones found"
 msgstr "Zones gevonden"
 
-#: templates/default/search.html:284 templates/modern/search.html:284
+#: templates/default/search.html:286 templates/modern/search.html:286
 msgid ""
 "Are you sure you want to delete the selected zones? This action cannot be "
 "undone."
@@ -10301,15 +11734,15 @@ msgstr ""
 "Weet u zeker dat u de geselecteerde zones wilt verwijderen? Deze actie kan "
 "niet ongedaan gemaakt worden."
 
-#: templates/modern/search.html:291 templates/modern/search.html:482
+#: templates/modern/search.html:293 templates/modern/search.html:484
 msgid "Toggle all"
 msgstr "Alles omschakelen"
 
-#: templates/default/search.html:305 templates/modern/search.html:305
+#: templates/default/search.html:307 templates/modern/search.html:307
 msgid "Records found"
 msgstr "Records gevonden"
 
-#: templates/default/search.html:475 templates/modern/search.html:475
+#: templates/default/search.html:477 templates/modern/search.html:477
 msgid ""
 "Are you sure you want to delete the selected records? This action cannot be "
 "undone."
@@ -10317,7 +11750,7 @@ msgstr ""
 "Weet u zeker dat u de geselecteerde records wilt verwijderen? Deze actie kan "
 "niet ongedaan gemaakt worden."
 
-#: templates/default/search.html:498 templates/modern/search.html:498
+#: templates/default/search.html:500 templates/modern/search.html:500
 msgid "Try different search terms or filters"
 msgstr "Probeer andere zoektermen of filters"
 
@@ -10375,7 +11808,7 @@ msgstr "Ja, deze supermaster verwijderen"
 msgid "No, keep this supermaster"
 msgstr "Nee, deze supermaster behouden"
 
-#: templates/modern/list_log_users.html:5 templates/modern/header.html:191
+#: templates/modern/list_log_users.html:5 templates/modern/header.html:194
 msgid "User logs"
 msgstr "Gebruikerslogs"
 
@@ -10383,7 +11816,7 @@ msgstr "Gebruikerslogs"
 msgid "User Activity Logs"
 msgstr "Gebruikersactiviteit Logs"
 
-#: templates/modern/list_log_users.html:20
+#: templates/modern/list_log_users.html:19
 msgid "Search logs by user"
 msgstr "Zoek logs op gebruiker"
 
@@ -10474,7 +11907,7 @@ msgstr "Dit sjabloon wordt momenteel gebruikt door"
 msgid "zones"
 msgstr "zones"
 
-#: templates/modern/email_previews.html:10 templates/modern/header.html:260
+#: templates/modern/email_previews.html:10 templates/modern/header.html:263
 msgid "Email Template Previews"
 msgstr "E-mail sjabloon voorvertoningen"
 
@@ -10729,43 +12162,43 @@ msgstr "Weergave Omschakelen"
 msgid "Refresh"
 msgstr "Vernieuwen"
 
-#: templates/modern/pdns_status.html:433
+#: templates/modern/pdns_status.html:441
 msgid "Bytes"
 msgstr "Bytes"
 
-#: templates/default/pdns_status.html:406 templates/modern/pdns_status.html:406
+#: templates/default/pdns_status.html:410 templates/modern/pdns_status.html:410
 msgid "Metric"
 msgstr "Metriek"
 
-#: templates/default/pdns_status.html:407 templates/modern/pdns_status.html:407
+#: templates/default/pdns_status.html:411 templates/modern/pdns_status.html:411
 msgid "Value"
 msgstr "Waarde"
 
-#: templates/default/pdns_status.html:457 templates/modern/pdns_status.html:457
+#: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:465
 msgid "No detailed metrics available."
 msgstr "Geen gedetailleerde metrieken beschikbaar."
 
-#: templates/default/header.html:71 templates/modern/header.html:109
+#: templates/default/header.html:74 templates/modern/header.html:112
 msgid "Forward zones"
 msgstr "Doorstuur zones"
 
-#: templates/default/header.html:72 templates/modern/header.html:114
+#: templates/default/header.html:75 templates/modern/header.html:117
 msgid "Reverse zones"
 msgstr "Omgekeerde zones"
 
-#: templates/default/header.html:118 templates/modern/header.html:179
+#: templates/default/header.html:121 templates/modern/header.html:182
 msgid "List permission templates"
 msgstr "Machtigingssjablonen weergeven"
 
-#: templates/modern/header.html:184 templates/modern/list_perm_templ.html:53
+#: templates/modern/header.html:187 templates/modern/list_perm_templ.html:53
 msgid "Add permission template"
 msgstr "Machtigingssjabloon toevoegen"
 
-#: templates/default/header.html:154 templates/modern/header.html:226
+#: templates/default/header.html:157 templates/modern/header.html:229
 msgid "Tools"
 msgstr "Hulpmiddelen"
 
-#: templates/default/header.html:183 templates/modern/header.html:267
+#: templates/default/header.html:186 templates/modern/header.html:270
 msgid "API Documentation"
 msgstr "API-documentatie"
 
@@ -10916,7 +12349,7 @@ msgstr "Sjabloonrecord Verwijderen"
 msgid "You are about to delete a record from template"
 msgstr "U staat op het punt een record uit het sjabloon te verwijderen"
 
-#: templates/modern/dnssec_delete_key.html:123
+#: templates/modern/dnssec_delete_key.html:125
 msgid "Delete key"
 msgstr "Sleutel verwijderen"
 
@@ -10989,6 +12422,17 @@ msgstr "Toon zonesjablonen"
 #: templates/modern/index.html:177
 msgid "Bulk Domain Registration"
 msgstr "Bulk domeinregistratie"
+
+#: templates/modern/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ gebruikt standaard CSK"
+
+#: templates/modern/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 en nieuwere versies gebruiken standaard Combined Signing Keys (CSK). Als u KSK of ZSK selecteert, kan PowerDNS alsnog een CSK-sleutel aanmaken."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -11129,10 +12573,6 @@ msgstr "Wachtwoord voor deze databasegebruiker."
 #: install/templates/step4.html.twig:59 install/templates/step5.html.twig:77
 msgid "Avoid quotes, backslashes, and line breaks."
 msgstr "Vermijd aanhalingstekens, backslashes en regeleinden."
-
-#: install/templates/step4.html.twig:64
-msgid "Hostname"
-msgstr "Hostnaam"
 
 #: install/templates/step4.html.twig:67
 msgid "Provide the hostname"
@@ -11550,7 +12990,7 @@ msgstr "Zorg ervoor dat de database server actief en toegankelijk is"
 msgid "Database Error"
 msgstr "Database Fout"
 
-#: install/helpers/DatabaseHelper.php:158
+#: install/helpers/DatabaseHelper.php:160
 #, php-format
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
@@ -11559,7 +12999,7 @@ msgstr ""
 "Het SQLite-databasebestand %s bestaat niet. Maak het databasebestand aan "
 "voordat u verder gaat."
 
-#: install/helpers/DatabaseHelper.php:166
+#: install/helpers/DatabaseHelper.php:168
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
@@ -11567,7 +13007,7 @@ msgstr ""
 "Het SQLite-databasebestand %s is niet leesbaar. Controleer de "
 "bestandsrechten."
 
-#: install/helpers/DatabaseHelper.php:174
+#: install/helpers/DatabaseHelper.php:176
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
@@ -11575,7 +13015,7 @@ msgstr ""
 "Het SQLite-databasebestand %s is niet beschrijfbaar. Controleer de "
 "bestandsrechten."
 
-#: install/helpers/DatabaseHelper.php:186
+#: install/helpers/DatabaseHelper.php:188
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
 msgstr "Kon geen toegang krijgen tot het SQLite database bestand %s: %s"
@@ -11588,7 +13028,7 @@ msgstr ""
 "Geen configuratiebestand gevonden. Maak het config/settings.php bestand aan "
 "voordat u verder gaat."
 
-#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:47
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
@@ -11596,7 +13036,7 @@ msgstr ""
 "Afzonderlijke PowerDNS-databases worden alleen ondersteund met MySQL. Voor "
 "PostgreSQL en SQLite, gebruik dezelfde database."
 
-#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
@@ -11605,9 +13045,101 @@ msgstr ""
 "Ontbrekende PowerDNS-tabellen in database \"%s\": %s. Zorg ervoor dat "
 "PowerDNS correct is geïnstalleerd in deze database."
 
-#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:82
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan geen verbinding maken met PowerDNS-database \"%s\": %s"
 
+#~ msgid ""
+#~ "No configuration file found. Please use the <a href=\"install/"
+#~ "\">installer</a> to create one, or create a config/settings.php file "
+#~ "manually."
+#~ msgstr ""
+#~ "Geen configuratiebestand gevonden. Gebruik de <a href=\"install/"
+#~ "\">installer</a> om er een te maken, of maak handmatig een config/"
+#~ "settings.php bestand aan."
 
+#~ msgid "Invalid authentication provider"
+#~ msgstr "Ongeldige authenticatieprovider"
+
+#~ msgid "Failed to sign zone. Check PowerDNS logs for details."
+#~ msgstr "Kan zone niet ondertekenen. Controleer PowerDNS-logs voor details."
+
+#~ msgid "Zone was created, but securing it with DNSSEC failed."
+#~ msgstr "Zone is aangemaakt, maar beveiligen met DNSSEC is mislukt."
+
+#~ msgid "Failed to delete DNSSEC key."
+#~ msgstr "Kan DNSSEC-sleutel niet verwijderen."
+
+#, php-format
+#~ msgid ""
+#~ "Duplicate %s mechanism found. Each mechanism type should appear at most "
+#~ "once."
+#~ msgstr ""
+#~ "Dubbel %s mechanisme gevonden. Elk mechanisme type mag hoogstens één keer "
+#~ "voorkomen."
+
+#~ msgid "IPv6 address should use lowercase for hexadecimal digits."
+#~ msgstr "IPv6 adres moet kleine letters gebruiken voor hexadecimale cijfers."
+
+#, php-format
+#~ msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
+#~ msgstr "IPv6 adres is niet in canonieke vorm (RFC 5952). Canonieke vorm: %s"
+
+#, php-format
+#~ msgid ""
+#~ "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
+#~ msgstr ""
+#~ "IP adres \"%s\" is niet geldig. Moet een geldig IPv4 of IPv6 adres zijn."
+
+#~ msgid "HTML tags are not allowed in content field."
+#~ msgstr "HTML tags zijn niet toegestaan in het inhoudsveld."
+
+#~ msgid ""
+#~ "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
+#~ "less. For longer content, split into multiple quoted strings separated by "
+#~ "spaces."
+#~ msgstr ""
+#~ "TXT record string overschrijdt 255 bytes. TXT strings moeten 255 bytes of "
+#~ "minder zijn. Voor langere inhoud, verdeel in meerdere quoted strings "
+#~ "gescheiden door spaties."
+
+#~ msgid ""
+#~ "NAPTR record must have either a regexp or a replacement (with \".\"), but "
+#~ "not both."
+#~ msgstr ""
+#~ "NAPTR record moet ofwel een regexp of een replacement (met \".\") hebben, "
+#~ "maar niet beide."
+
+#~ msgid ""
+#~ "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
+#~ "protocol and rs start with a letter and contain only alphanumeric "
+#~ "characters (max 32 chars each)."
+#~ msgstr ""
+#~ "NAPTR service moet het formaat volgen: [protocol][+rs][+rs]... waarbij "
+#~ "protocol en rs beginnen met een letter en alleen alfanumerieke karakters "
+#~ "bevatten (max 32 tekens elk)."
+
+#~ msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
+#~ msgstr "Stel standaard records in zoals MX, TXT voor SPF, en CNAME voor www"
+
+#~ msgid ""
+#~ "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
+#~ "[SERIAL] in record content"
+#~ msgstr ""
+#~ "Gebruik placeholders zoals [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], "
+#~ "en [SERIAL] in record inhoud"
+
+#~ msgid ""
+#~ "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
+#~ "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
+#~ msgstr ""
+#~ "[DOMAIN] en [TLD] placeholders zijn nuttig voor Microsoft 365 MX records "
+#~ "(bijv. [DOMAIN]-[TLD].mail.protection.outlook.com)"
+
+#~ msgid "LDAP users cannot have passwords managed through this interface"
+#~ msgstr ""
+#~ "LDAP gebruikers kunnen geen wachtwoorden beheerd hebben via deze interface"
+
+#~ msgid "Select All Filtered"
+#~ msgstr "Selecteer Alle Gefilterde"
