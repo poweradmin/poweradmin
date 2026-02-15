@@ -6,7 +6,7 @@ on:
     branches:
       - master
       - release/3.x
-      - release/4.x
+      - release/4.0.x
 
 permissions:
   contents: write
