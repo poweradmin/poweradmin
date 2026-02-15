@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.2.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-14 19:18+0200\n"
+"POT-Creation-Date: 2026-02-15 12:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -819,23 +819,23 @@ msgstr ""
 msgid "No records were provided."
 msgstr ""
 
-#: lib/Application/Controller/AddRecordController.php:442
+#: lib/Application/Controller/AddRecordController.php:448
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr ""
 
-#: lib/Application/Controller/AddRecordController.php:444
+#: lib/Application/Controller/AddRecordController.php:450
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr ""
 
-#: lib/Application/Controller/AddRecordController.php:449
+#: lib/Application/Controller/AddRecordController.php:455
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr ""
 
-#: lib/Application/Controller/AddRecordController.php:475
+#: lib/Application/Controller/AddRecordController.php:481
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 
@@ -1698,6 +1698,7 @@ msgid "Transport protocol for the TLS connection"
 msgstr ""
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:89
+#: install/templates/step4.html.twig:64
 msgid "Hostname"
 msgstr ""
 
@@ -8277,7 +8278,8 @@ msgstr ""
 msgid "View user logs"
 msgstr ""
 
-#: templates/modern/add_user.html:39
+#: templates/modern/add_user.html:39 install/templates/step4.html.twig:49
+#: install/templates/step5.html.twig:67
 msgid "Password"
 msgstr ""
 
@@ -8998,6 +9000,7 @@ msgid "Recommended bits for"
 msgstr ""
 
 #: templates/modern/dnssec_add_key.html:150
+#: install/helpers/InstallStepHandler.php:169
 msgid "Warning:"
 msgstr ""
 
@@ -9046,6 +9049,7 @@ msgid "Edit User"
 msgstr ""
 
 #: templates/modern/manage_group_members.html:92
+#: install/templates/step4.html.twig:38 install/templates/step5.html.twig:56
 msgid "Username"
 msgstr ""
 
@@ -9088,6 +9092,7 @@ msgid "Optional information about this user"
 msgstr ""
 
 #: templates/modern/users.html:49 templates/modern/add_user.html:94
+#: install/templates/step2.html.twig:116
 msgid "Enabled"
 msgstr ""
 
@@ -9469,6 +9474,7 @@ msgid "Host Prefix"
 msgstr ""
 
 #: templates/modern/batch_ptr_record.html:71
+#: install/templates/step4.html.twig:133
 msgid "Optional"
 msgstr ""
 
@@ -10148,6 +10154,7 @@ msgid "Add User"
 msgstr ""
 
 #: templates/default/add_user.html:43 templates/modern/add_user.html:43
+#: install/templates/step4.html.twig:54
 msgid "Provide user password"
 msgstr ""
 
@@ -11293,6 +11300,7 @@ msgid "Last Checked"
 msgstr ""
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:125
+#: install/templates/step2.html.twig:27
 msgid "OK"
 msgstr ""
 
@@ -11733,4 +11741,597 @@ msgstr ""
 
 #: templates/modern/header.html:382
 msgid "Dashboard"
+msgstr ""
+
+#: install/templates/step6.html.twig:3
+msgid "Create limited rights user"
+msgstr ""
+
+#: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
+msgid "Step"
+msgstr ""
+
+#: install/templates/step6.html.twig:8
+msgid "Create limited-rights user"
+msgstr ""
+
+#: install/templates/step6.html.twig:13
+msgid "Limited Database Rights:"
+msgstr ""
+
+#: install/templates/step6.html.twig:13
+msgid ""
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin to access PowerDNS tables."
+msgstr ""
+
+#: install/templates/step6.html.twig:20
+msgid "Database Commands"
+msgstr ""
+
+#: install/templates/step6.html.twig:23
+msgid "Execute the following commands:"
+msgstr ""
+
+#: install/templates/step6.html.twig:35
+msgid ""
+"After you have added the new user, proceed with this installation procedure."
+msgstr ""
+
+#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:97
+msgid "Note:"
+msgstr ""
+
+#: install/templates/step6.html.twig:38
+msgid ""
+"Since you are using SQLite, there is no need to create a new user with "
+"limited rights."
+msgstr ""
+
+#: install/templates/step5.html.twig:167 install/templates/step3.html.twig:38
+msgid "Continue to step"
+msgstr ""
+
+#: install/templates/base.html.twig:29
+msgid "Installation step"
+msgstr ""
+
+#: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
+msgid "Create configuration file"
+msgstr ""
+
+#: install/templates/step7.html.twig:12
+msgid "Configuration File:"
+msgstr ""
+
+#: install/templates/step7.html.twig:12
+msgid "Create the file"
+msgstr ""
+
+#: install/templates/step7.html.twig:14
+msgid "with the following content:"
+msgstr ""
+
+#: install/templates/step1.html.twig:3
+msgid "Choose a language"
+msgstr ""
+
+#: install/templates/step1.html.twig:8
+msgid "Choose a language for installation"
+msgstr ""
+
+#: install/templates/step1.html.twig:12
+msgid ""
+"Please select your preferred language to continue with the installation:"
+msgstr ""
+
+#: install/templates/step1.html.twig:222
+msgid "Begin Installation"
+msgstr ""
+
+#: install/templates/step4.html.twig:3
+msgid "Configuring database"
+msgstr ""
+
+#: install/templates/step4.html.twig:8
+msgid "Configuring Database Connection"
+msgstr ""
+
+#: install/templates/step4.html.twig:12
+msgid "Database Configuration:"
+msgstr ""
+
+#: install/templates/step4.html.twig:12
+msgid ""
+"Configure database connection with table creation rights. PowerDNS location "
+"can be specified separately if needed."
+msgstr ""
+
+#: install/templates/step4.html.twig:20
+msgid "Database Connection Settings"
+msgstr ""
+
+#: install/templates/step4.html.twig:24
+msgid "Database type"
+msgstr ""
+
+#: install/templates/step4.html.twig:33
+msgid "Database server type."
+msgstr ""
+
+#: install/templates/step4.html.twig:41 install/templates/step5.html.twig:59
+msgid "Provide the user name"
+msgstr ""
+
+#: install/templates/step4.html.twig:44
+msgid "Database username with rights to create tables."
+msgstr ""
+
+#: install/templates/step4.html.twig:58
+msgid "Password for this database user."
+msgstr ""
+
+#: install/templates/step4.html.twig:59 install/templates/step5.html.twig:77
+msgid "Avoid quotes, backslashes, and line breaks."
+msgstr ""
+
+#: install/templates/step4.html.twig:67
+msgid "Provide the hostname"
+msgstr ""
+
+#: install/templates/step4.html.twig:70
+msgid "Database server hostname (usually \"localhost\")."
+msgstr ""
+
+#: install/templates/step4.html.twig:75
+msgid "DB Port"
+msgstr ""
+
+#: install/templates/step4.html.twig:78
+msgid "Provide database port"
+msgstr ""
+
+#: install/templates/step4.html.twig:81
+msgid "Database server port."
+msgstr ""
+
+#: install/templates/step4.html.twig:86
+msgid "Database"
+msgstr ""
+
+#: install/templates/step4.html.twig:89
+msgid "Provide the name of the database"
+msgstr ""
+
+#: install/templates/step4.html.twig:92
+msgid "Database name (will be used for Poweradmin tables)."
+msgstr ""
+
+#: install/templates/step4.html.twig:94
+msgid "Full path to SQLite database file"
+msgstr ""
+
+#: install/templates/step4.html.twig:97
+msgid "File must exist with web server read/write access. Use absolute path."
+msgstr ""
+
+#: install/templates/step4.html.twig:105
+msgid "DB charset"
+msgstr ""
+
+#: install/templates/step4.html.twig:200 install/templates/step4.html.twig:208
+msgid "Use default"
+msgstr ""
+
+#: install/templates/step4.html.twig:112
+msgid "Charset for new tables. Leave empty for database default."
+msgstr ""
+
+#: install/templates/step4.html.twig:117
+msgid "DB collation"
+msgstr ""
+
+#: install/templates/step4.html.twig:124
+msgid ""
+"Collation rules for character comparison. Leave empty for database default."
+msgstr ""
+
+#: install/templates/step4.html.twig:133
+msgid "PowerDNS Database"
+msgstr ""
+
+#: install/templates/step4.html.twig:137
+msgid "Database name"
+msgstr ""
+
+#: install/templates/step4.html.twig:140
+msgid "Leave empty for same database"
+msgstr ""
+
+#: install/templates/step4.html.twig:143
+msgid "MySQL database with PowerDNS tables (if different)."
+msgstr ""
+
+#: install/templates/step4.html.twig:151
+msgid "Poweradmin Account"
+msgstr ""
+
+#: install/templates/step4.html.twig:155
+msgid "Administrator password"
+msgstr ""
+
+#: install/templates/step4.html.twig:160
+msgid "Provide a password"
+msgstr ""
+
+#: install/templates/step4.html.twig:165
+msgid "Password for \"admin\" username."
+msgstr ""
+
+#: install/templates/step2.html.twig:3
+msgid "System Requirements"
+msgstr ""
+
+#: install/templates/step2.html.twig:8
+msgid "System Requirements Check"
+msgstr ""
+
+#: install/templates/step2.html.twig:12
+msgid "Requirements Check:"
+msgstr ""
+
+#: install/templates/step2.html.twig:12
+msgid "Verifying that your server meets all requirements to run Poweradmin."
+msgstr ""
+
+#: install/templates/step2.html.twig:20
+msgid "PHP Version"
+msgstr ""
+
+#: install/templates/step2.html.twig:29
+msgid "Requires PHP 8.2.0+"
+msgstr ""
+
+#: install/templates/step2.html.twig:40
+msgid "Database Extensions"
+msgstr ""
+
+#: install/templates/step2.html.twig:40
+msgid "at least one required"
+msgstr ""
+
+#: install/templates/step2.html.twig:61
+msgid "Required PHP Extensions"
+msgstr ""
+
+#: install/templates/step2.html.twig:80
+msgid "Optional Extensions"
+msgstr ""
+
+#: install/templates/step2.html.twig:99
+msgid "Web Server"
+msgstr ""
+
+#: install/templates/step2.html.twig:106
+msgid "Server"
+msgstr ""
+
+#: install/templates/step2.html.twig:118
+msgid "Not detected — required for URL routing"
+msgstr ""
+
+#: install/templates/step2.html.twig:124
+msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
+msgstr ""
+
+#: install/templates/step2.html.twig:130
+msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr ""
+
+#: install/templates/step2.html.twig:135
+msgid "Ensure URL rewriting is configured for your web server"
+msgstr ""
+
+#: install/templates/step2.html.twig:151
+msgid "All required components are available."
+msgstr ""
+
+#: install/templates/step2.html.twig:152
+msgid "You can continue with the installation."
+msgstr ""
+
+#: install/templates/step2.html.twig:160
+msgid "Some required components are missing."
+msgstr ""
+
+#: install/templates/step2.html.twig:161
+msgid "Please install the missing components before continuing."
+msgstr ""
+
+#: install/templates/step5.html.twig:3
+msgid "Setup account and nameservers"
+msgstr ""
+
+#: install/templates/step5.html.twig:8
+msgid "Setup account and name servers"
+msgstr ""
+
+#: install/templates/step5.html.twig:12
+msgid "Configuration:"
+msgstr ""
+
+#: install/templates/step5.html.twig:12
+msgid "Now we will gather all details for the configuration itself."
+msgstr ""
+
+#: install/templates/step5.html.twig:52
+msgid "Database User"
+msgstr ""
+
+#: install/templates/step5.html.twig:62
+msgid ""
+"Poweradmin database username with restricted access. Not for web UI login."
+msgstr ""
+
+#: install/templates/step5.html.twig:72
+msgid "Provide the user password"
+msgstr ""
+
+#: install/templates/step5.html.twig:76
+msgid "The password for this username."
+msgstr ""
+
+#: install/templates/step5.html.twig:86
+msgid "DNS Settings"
+msgstr ""
+
+#: install/templates/step5.html.twig:90
+msgid "Hostmaster"
+msgstr ""
+
+#: install/templates/step5.html.twig:94
+msgid "Provide the DNS hostmaster"
+msgstr ""
+
+#: install/templates/step5.html.twig:97
+msgid "Default hostmaster for SOA records."
+msgstr ""
+
+#: install/templates/step5.html.twig:102
+msgid "Primary nameserver"
+msgstr ""
+
+#: install/templates/step5.html.twig:106
+msgid "Provide the primary nameserver"
+msgstr ""
+
+#: install/templates/step5.html.twig:109
+msgid "Primary nameserver for new zones."
+msgstr ""
+
+#: install/templates/step5.html.twig:114
+msgid "Secondary nameserver"
+msgstr ""
+
+#: install/templates/step5.html.twig:118
+msgid "Provide the secondary nameserver"
+msgstr ""
+
+#: install/templates/step5.html.twig:121
+msgid "Secondary nameserver for new zones."
+msgstr ""
+
+#: install/templates/step5.html.twig:127
+msgid "Tertiary Nameserver"
+msgstr ""
+
+#: install/templates/step5.html.twig:127 install/templates/step5.html.twig:140
+msgid "optional"
+msgstr ""
+
+#: install/templates/step5.html.twig:134
+msgid "Optional tertiary nameserver for new zones."
+msgstr ""
+
+#: install/templates/step5.html.twig:140
+msgid "Quaternary Nameserver"
+msgstr ""
+
+#: install/templates/step5.html.twig:147
+msgid "Optional quaternary nameserver for new zones."
+msgstr ""
+
+#: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
+msgid "Installation complete"
+msgstr ""
+
+#: install/templates/step8.html.twig:12
+msgid "Installation Complete!"
+msgstr ""
+
+#: install/templates/step8.html.twig:12
+msgid "Congratulations! Your Poweradmin installation is now configured."
+msgstr ""
+
+#: install/templates/step8.html.twig:16
+msgid "Important Security Notice:"
+msgstr ""
+
+#: install/templates/step8.html.twig:16
+msgid ""
+"You must remove the \"install/\" directory from the Poweradmin root "
+"directory."
+msgstr ""
+
+#: install/templates/step8.html.twig:17
+msgid ""
+"Poweradmin will not function if the install directory exists, as a security "
+"measure."
+msgstr ""
+
+#: install/templates/step8.html.twig:22
+msgid "Next Steps"
+msgstr ""
+
+#: install/templates/step8.html.twig:26
+msgid "Remove the \"install/\" directory from your server"
+msgstr ""
+
+#: install/templates/step8.html.twig:27
+msgid ""
+"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
+"\"admin\" and the password you set in step 3"
+msgstr ""
+
+#: install/templates/step8.html.twig:28
+msgid "Begin configuring your DNS zones and records"
+msgstr ""
+
+#: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
+msgid "Getting Ready"
+msgstr ""
+
+#: install/templates/step3.html.twig:13
+msgid "Prerequisites"
+msgstr ""
+
+#: install/templates/step3.html.twig:16
+msgid "Before proceeding, ensure you have:"
+msgstr ""
+
+#: install/templates/step3.html.twig:18
+msgid "PowerDNS installed with database tables created"
+msgstr ""
+
+#: install/templates/step3.html.twig:19
+msgid "Database credentials (hostname, username, password)"
+msgstr ""
+
+#: install/templates/step3.html.twig:20
+msgid "Permission to create tables for Poweradmin"
+msgstr ""
+
+#: install/templates/step3.html.twig:27
+msgid "Next:"
+msgstr ""
+
+#: install/templates/step3.html.twig:27
+msgid ""
+"Configure database connection, create admin account, and generate "
+"configuration file."
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:170
+msgid "Missing PowerDNS tables:"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:171
+msgid "Poweradmin requires these PowerDNS tables to function properly."
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:179
+msgid "Updating database... done!"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:201
+msgid "Foreign Key Constraint Issues:"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:203
+msgid ""
+"The installer could not remove existing tables due to foreign key constraints"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:204
+msgid ""
+"This can happen during reinstallation if you have custom constraints or if "
+"tables are referenced by other tables"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:205
+msgid ""
+"You can try manually disabling foreign key checks before running the "
+"installer:"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:218
+msgid "Suggestions:"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:212
+msgid "Make sure the SQLite database file exists"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:213
+msgid ""
+"Check that the web server has read and write permissions for the database "
+"file"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:214
+msgid "Verify the full path to the database file is correct and accessible"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:220
+msgid "Verify database credentials are correct"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:221
+msgid "Check that the database user has sufficient privileges"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:222
+msgid "Ensure the database server is running and accessible"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:227
+msgid "Database Error"
+msgstr ""
+
+#: install/helpers/DatabaseHelper.php:160
+#, php-format
+msgid ""
+"The SQLite database file %s does not exist. Please create the database file "
+"before proceeding."
+msgstr ""
+
+#: install/helpers/DatabaseHelper.php:168
+#, php-format
+msgid ""
+"The SQLite database file %s is not readable. Please check file permissions."
+msgstr ""
+
+#: install/helpers/DatabaseHelper.php:176
+#, php-format
+msgid ""
+"The SQLite database file %s is not writable. Please check file permissions."
+msgstr ""
+
+#: install/helpers/DatabaseHelper.php:188
+#, php-format
+msgid "Could not access the SQLite database file %s: %s"
+msgstr ""
+
+#: install/helpers/Validators/CreateConfigurationFileValidator.php:54
+msgid ""
+"No configuration file found. Please create the config/settings.php file "
+"before proceeding."
+msgstr ""
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
+msgid ""
+"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+"and SQLite, please use the same database."
+msgstr ""
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
+#, php-format
+msgid ""
+"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+"properly installed in this database."
+msgstr ""
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
+#, php-format
+msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr ""
