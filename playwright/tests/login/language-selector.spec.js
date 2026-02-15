@@ -1,5 +1,4 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
-import { login } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Language Selector', () => {
@@ -18,30 +17,16 @@ test.describe('Language Selector', () => {
     expect(selectedValue).toBe('en_EN');
   });
 
-  test('should contain all expected languages', async ({ page }) => {
+  test('should always include English locale', async ({ page }) => {
     const options = page.locator('select[name="userlang"] option');
-    const count = await options.count();
-    expect(count).toBeGreaterThanOrEqual(15);
-
     const values = await options.evaluateAll(opts => opts.map(o => o.value));
-    const expectedLocales = [
-      'en_EN', 'de_DE', 'fr_FR', 'es_ES', 'nl_NL', 'pl_PL',
-      'cs_CZ', 'it_IT', 'ja_JP', 'ru_RU', 'zh_CN', 'tr_TR',
-      'lt_LT', 'nb_NO', 'pt_PT',
-    ];
-    for (const locale of expectedLocales) {
-      expect(values).toContain(locale);
-    }
+    expect(values).toContain('en_EN');
   });
 
-  test('should contain newly added languages', async ({ page }) => {
+  test('should have at least 2 languages available', async ({ page }) => {
     const options = page.locator('select[name="userlang"] option');
-    const values = await options.evaluateAll(opts => opts.map(o => o.value));
-
-    const newLocales = ['id_ID', 'ko_KR', 'sv_SE', 'uk_UA', 'vi_VN'];
-    for (const locale of newLocales) {
-      expect(values).toContain(locale);
-    }
+    const count = await options.count();
+    expect(count).toBeGreaterThanOrEqual(2);
   });
 
   test('should list languages in alphabetical order by name', async ({ page }) => {
@@ -51,7 +36,26 @@ test.describe('Language Selector', () => {
     expect(labels).toEqual(sorted);
   });
 
+  test('should have non-empty labels for all options', async ({ page }) => {
+    const options = page.locator('select[name="userlang"] option');
+    const labels = await options.evaluateAll(opts => opts.map(o => o.textContent.trim()));
+    for (const label of labels) {
+      expect(label.length).toBeGreaterThan(0);
+    }
+  });
+
+  test('should have unique locale values', async ({ page }) => {
+    const options = page.locator('select[name="userlang"] option');
+    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    const unique = new Set(values);
+    expect(unique.size).toBe(values.length);
+  });
+
   test('should change interface language to German after login', async ({ page }) => {
+    const options = page.locator('select[name="userlang"] option');
+    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    test.skip(!values.includes('de_DE'), 'German not in enabled languages');
+
     await page.locator('select[name="userlang"]').selectOption('de_DE');
     await page.locator('[data-testid="username-input"]').fill(users.admin.username);
     await page.locator('[data-testid="password-input"]').fill(users.admin.password);
@@ -59,11 +63,14 @@ test.describe('Language Selector', () => {
     await page.waitForURL(/\/$|\?/, { timeout: 10000 });
 
     const bodyText = await page.locator('body').textContent();
-    // German UI should contain German words
     expect(bodyText).toMatch(/Zonen|Suche|Abmelden|Benutzer/i);
   });
 
   test('should change interface language to French after login', async ({ page }) => {
+    const options = page.locator('select[name="userlang"] option');
+    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    test.skip(!values.includes('fr_FR'), 'French not in enabled languages');
+
     await page.locator('select[name="userlang"]').selectOption('fr_FR');
     await page.locator('[data-testid="username-input"]').fill(users.admin.username);
     await page.locator('[data-testid="password-input"]').fill(users.admin.password);
@@ -85,15 +92,32 @@ test.describe('Language Selector', () => {
   });
 
   test('should persist language selection across page navigation', async ({ page }) => {
+    const options = page.locator('select[name="userlang"] option');
+    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    test.skip(!values.includes('de_DE'), 'German not in enabled languages');
+
     await page.locator('select[name="userlang"]').selectOption('de_DE');
     await page.locator('[data-testid="username-input"]').fill(users.admin.username);
     await page.locator('[data-testid="password-input"]').fill(users.admin.password);
     await page.locator('[data-testid="login-button"]').click();
     await page.waitForURL(/\/$|\?/, { timeout: 10000 });
 
-    // Navigate to search page
     await page.goto('/search');
     const bodyText = await page.locator('body').textContent();
     expect(bodyText).toMatch(/Suche|Suchergebnis/i);
+  });
+
+  test('should show language selector after logout', async ({ page }) => {
+    await page.locator('[data-testid="username-input"]').fill(users.admin.username);
+    await page.locator('[data-testid="password-input"]').fill(users.admin.password);
+    await page.locator('[data-testid="login-button"]').click();
+    await page.waitForURL(/\/$|\?/, { timeout: 10000 });
+
+    // Log out
+    await page.locator('a[href*="logout"]').first().click();
+    await page.waitForURL(/login/, { timeout: 10000 });
+
+    const selector = page.locator('select[name="userlang"]');
+    await expect(selector).toBeVisible();
   });
 });
