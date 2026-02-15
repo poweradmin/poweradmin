@@ -392,13 +392,19 @@ class AddRecordController extends BaseController
             return;
         }
 
+        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        if ($zone_name === null) {
+            $this->showError(_('Zone not found.'));
+            return;
+        }
+
         foreach ($records as $record) {
             // Skip non-array or incomplete records
             if (!is_array($record) || empty($record['content']) || empty($record['type'])) {
                 continue;
             }
 
-            $name = $record['name'] ?? '';
+            $name = DnsHelper::restoreZoneSuffix($record['name'] ?? '', $zone_name);
             $content = $record['content'];
             $type = $record['type'];
             $prio = isset($record['prio']) && $record['prio'] !== '' ? (int)$record['prio'] : 0;
