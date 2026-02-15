@@ -7,6 +7,7 @@ on:
       - master
       - release/3.x
       - release/4.0.x
+      - release/4.1.x
 
 permissions:
   contents: write
