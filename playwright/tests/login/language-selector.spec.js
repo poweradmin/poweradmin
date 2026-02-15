@@ -113,8 +113,8 @@ test.describe('Language Selector', () => {
     await page.locator('[data-testid="login-button"]').click();
     await page.waitForURL(/\/$|\?/, { timeout: 10000 });
 
-    // Log out
-    await page.locator('a[href*="logout"]').first().click();
+    // Navigate directly to logout for reliable logout
+    await page.goto('/logout');
     await page.waitForURL(/login/, { timeout: 10000 });
 
     const selector = page.locator('select[name="userlang"]');

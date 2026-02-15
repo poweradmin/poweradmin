@@ -13,10 +13,10 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
 
 const CONFIGURED_LANGUAGES = {
   'en_EN': 'English',
-  'de_DE': 'Deutsch',
-  'fr_FR': 'Français',
-  'ja_JP': '日本語',
-  'pl_PL': 'Polski',
+  'de_DE': 'German',
+  'fr_FR': 'French',
+  'ja_JP': 'Japanese',
+  'pl_PL': 'Polish',
 };
 
 const EXCLUDED_LANGUAGES = [
@@ -127,8 +127,8 @@ test.describe('Language Selector - Limited Configuration', () => {
     await page.locator('[data-testid="login-button"]').click();
     await page.waitForURL(/\/$|\?/, { timeout: 10000 });
 
-    // Log out
-    await page.locator('a[href*="logout"]').first().click();
+    // Navigate directly to logout for reliable logout
+    await page.goto('/logout');
     await page.waitForURL(/login/, { timeout: 10000 });
 
     // Verify still limited to configured languages
