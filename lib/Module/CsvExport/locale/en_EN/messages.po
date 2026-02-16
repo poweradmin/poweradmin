@@ -1,0 +1,36 @@
+# Module translations.
+# Copyright (C) 2026 Poweradmin Development Team
+# This file is distributed under the same license as the Poweradmin package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Poweradmin\n"
+"Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
+"POT-Creation-Date: 2026-02-16 12:26+0000\n"
+"PO-Revision-Date: 2026-02-16 12:26+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Module/CsvExport/Controller/CsvExportController.php:45
+msgid "Invalid zone ID."
+msgstr "Invalid zone ID."
+
+#: lib/Module/CsvExport/Controller/CsvExportController.php:64
+msgid "There is no zone with this ID."
+msgstr "There is no zone with this ID."
+
+#: lib/Module/CsvExport/Controller/CsvExportController.php:72
+msgid "This zone does not have any records to export."
+msgstr "This zone does not have any records to export."
+
+#: lib/Module/CsvExport/Controller/CsvExportController.php:56
+msgid "You do not have permission to export this zone."
+msgstr "You do not have permission to export this zone."
+
+#: lib/Module/CsvExport/Controller/CsvExportController.php:39
+msgid "You need to be logged in to export zone data."
+msgstr "You need to be logged in to export zone data."
+

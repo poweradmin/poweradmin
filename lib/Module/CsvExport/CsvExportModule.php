@@ -85,6 +85,6 @@ class CsvExportModule implements ModuleInterface
 
     public function getLocalePath(): string
     {
-        return '';
+        return __DIR__ . '/locale';
     }
 }

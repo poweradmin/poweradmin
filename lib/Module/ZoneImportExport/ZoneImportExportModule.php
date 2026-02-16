@@ -105,6 +105,6 @@ class ZoneImportExportModule implements ModuleInterface
 
     public function getLocalePath(): string
     {
-        return '';
+        return __DIR__ . '/locale';
     }
 }
