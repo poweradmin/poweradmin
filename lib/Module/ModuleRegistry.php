@@ -45,6 +45,7 @@ class ModuleRegistry
     /** @var array<string, class-string<ModuleInterface>> */
     private array $moduleClasses = [
         'csv_export' => \Poweradmin\Module\CsvExport\CsvExportModule::class,
+        'zone_import_export' => \Poweradmin\Module\ZoneImportExport\ZoneImportExportModule::class,
     ];
 
     public function __construct(ConfigurationManager $config)

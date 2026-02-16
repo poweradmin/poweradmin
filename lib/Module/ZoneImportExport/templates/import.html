@@ -1,0 +1,191 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item">{% trans %}Tools{% endtrans %}</li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Zone Import{% endtrans %}</li>
+    </ol>
+</nav>
+
+{% if result is defined and result %}
+{# Import results #}
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-check-circle me-2"></i>{% trans %}Import Results{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        {% if fail_count == 0 %}
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>
+            {% trans %}Import completed successfully.{% endtrans %}
+            {{ success_count }} {% trans %}records imported.{% endtrans %}
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            {{ success_count }} {% trans %}records imported,{% endtrans %}
+            {{ fail_count }} {% trans %}records failed.{% endtrans %}
+        </div>
+        {% endif %}
+        <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-primary btn-sm">
+            <i class="bi bi-pencil me-1"></i>{% trans %}Edit zone{% endtrans %} "{{ zone_name }}"
+        </a>
+        <a href="{{ base_url_prefix }}/tools/zone-import" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-cloud-arrow-down me-1"></i>{% trans %}Import another zone{% endtrans %}
+        </a>
+    </div>
+</div>
+
+{% elseif preview is defined and preview %}
+{# Preview step #}
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-eye me-2"></i>{% trans %}Import Preview{% endtrans %}</strong>
+        <span class="badge bg-primary ms-2">{{ record_count }} {% trans %}records{% endtrans %}</span>
+    </div>
+    <div class="card-body">
+        {% if warnings is defined and warnings|length > 0 %}
+        <div class="alert alert-warning">
+            <strong><i class="bi bi-exclamation-triangle me-2"></i>{% trans %}Warnings:{% endtrans %}</strong>
+            <ul class="mb-0 mt-1">
+                {% for warning in warnings %}
+                <li>{{ warning }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <strong>{% trans %}File:{% endtrans %}</strong> {{ filename }}
+            {% if origin %}<br><strong>{% trans %}Zone:{% endtrans %}</strong> {{ origin }}{% endif %}
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th>{% trans %}Name{% endtrans %}</th>
+                        <th>{% trans %}Type{% endtrans %}</th>
+                        <th>{% trans %}Content{% endtrans %}</th>
+                        <th>{% trans %}TTL{% endtrans %}</th>
+                        <th>{% trans %}Priority{% endtrans %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td><code>{{ record.name }}</code></td>
+                        <td><span class="badge bg-secondary">{{ record.type }}</span></td>
+                        <td class="text-break" style="max-width: 400px">{{ record.content }}</td>
+                        <td>{{ record.ttl }}</td>
+                        <td>{{ record.priority }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <form method="post" action="{{ base_url_prefix }}/tools/zone-import/execute">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            <input type="hidden" name="import_mode" value="{{ import_mode }}">
+            <input type="hidden" name="existing_zone_id" value="{{ existing_zone_id }}">
+
+            {% if import_mode != 'existing' %}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="zone_name" class="form-label">{% trans %}Zone name{% endtrans %}</label>
+                    <input type="text" class="form-control form-control-sm" id="zone_name" name="zone_name" value="{{ origin }}" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="zone_type" class="form-label">{% trans %}Zone type{% endtrans %}</label>
+                    <select class="form-select form-select-sm" id="zone_type" name="zone_type">
+                        <option value="MASTER">Master</option>
+                        <option value="NATIVE">Native</option>
+                    </select>
+                </div>
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary btn-sm">
+                <i class="bi bi-check-circle me-1"></i>{% trans %}Confirm import{% endtrans %} ({{ record_count }} {% trans %}records{% endtrans %})
+            </button>
+            <a href="{{ base_url_prefix }}/tools/zone-import" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+            </a>
+        </form>
+    </div>
+</div>
+
+{% else %}
+{# Upload form #}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-cloud-arrow-down me-2"></i>{% trans %}Import Zone File{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ base_url_prefix }}/tools/zone-import" enctype="multipart/form-data">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+                    <div class="mb-3">
+                        <label for="zone_file" class="form-label">{% trans %}Zone file{% endtrans %} <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control form-control-sm" id="zone_file" name="zone_file" accept=".zone,.txt,.db" required>
+                        <div class="form-text">{% trans %}Standard BIND zone file format. Max size:{% endtrans %} {{ max_file_size_human }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">{% trans %}Import mode{% endtrans %}</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="import_mode" id="mode_new" value="new" checked>
+                            <label class="form-check-label" for="mode_new">{% trans %}Create new zone{% endtrans %}</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="import_mode" id="mode_existing" value="existing">
+                            <label class="form-check-label" for="mode_existing">{% trans %}Import into existing zone{% endtrans %}</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3" id="existing_zone_select" style="display: none">
+                        <label for="existing_zone_id" class="form-label">{% trans %}Select zone{% endtrans %}</label>
+                        <input type="number" class="form-control form-control-sm" id="existing_zone_id" name="existing_zone_id" placeholder="Zone ID">
+                        <div class="form-text">{% trans %}Enter the ID of the zone to import records into.{% endtrans %}</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-upload me-1"></i>{% trans %}Upload and preview{% endtrans %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Supported formats{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li><i class="bi bi-check text-success me-1"></i>{% trans %}Standard BIND zone files{% endtrans %}</li>
+                    <li><i class="bi bi-check text-success me-1"></i>{% trans %}Cloudflare zone exports{% endtrans %}</li>
+                    <li><i class="bi bi-check text-success me-1"></i>{% trans %}$ORIGIN and $TTL directives{% endtrans %}</li>
+                    <li><i class="bi bi-check text-success me-1"></i>{% trans %}Multi-line records{% endtrans %}</li>
+                    <li><i class="bi bi-check text-success me-1"></i>{% trans %}IDN domain names{% endtrans %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var radios = document.querySelectorAll('input[name="import_mode"]');
+    var existingSelect = document.getElementById('existing_zone_select');
+    radios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            existingSelect.style.display = this.value === 'existing' ? 'block' : 'none';
+        });
+    });
+});
+</script>
+{% endif %}

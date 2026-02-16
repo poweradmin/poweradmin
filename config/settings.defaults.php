@@ -810,5 +810,10 @@ return [
         'csv_export' => [
             'enabled' => true,
         ],
+        'zone_import_export' => [
+            'enabled' => false,
+            'auto_ttl_value' => 300,
+            'max_file_size' => 1048576,
+        ],
     ],
 ];
