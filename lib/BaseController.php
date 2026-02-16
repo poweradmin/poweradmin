@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\StyleManager;
+use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Version;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -552,7 +553,8 @@ abstract class BaseController
                 'rdap_restrict_to_admin' => $this->config->get('rdap', 'restrict_to_admin', true),
                 'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
                 'email_previews_enabled' => $this->config->get('misc', 'email_previews_enabled', false),
-                'api_docs_enabled' => $this->config->get('api', 'docs_enabled', false)
+                'api_docs_enabled' => $this->config->get('api', 'docs_enabled', false),
+                'module_nav_items' => $this->getModuleNavItems(),
             ]);
         }
 
@@ -594,6 +596,26 @@ abstract class BaseController
             'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
             'user_logged_in' => $this->userContextService->isAuthenticated(),
         ]);
+    }
+
+    /**
+     * Gets navigation items from enabled modules.
+     *
+     * @return array<array<string, string>>
+     */
+    private function getModuleNavItems(): array
+    {
+        $registry = new ModuleRegistry($this->config);
+        $registry->loadModules();
+
+        $items = $registry->getNavItems();
+
+        return array_values(array_filter($items, function (array $item): bool {
+            if (!empty($item['permission'])) {
+                return UserManager::verifyPermission($this->db, $item['permission']);
+            }
+            return true;
+        }));
     }
 
     /**

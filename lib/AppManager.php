@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ use Poweradmin\Domain\Utility\Timer;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
 use Poweradmin\Infrastructure\Utility\SimpleSizeFormatter;
+use Poweradmin\Module\ModuleRegistry;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;
@@ -93,6 +94,18 @@ class AppManager
 
         // Look directly in the theme path for templates, not in subdirectories
         $loader = new FilesystemLoader([$theme_path]);
+
+        // Register module template paths as Twig namespaces (@module_name/template.html)
+        $registry = new ModuleRegistry($this->configuration);
+        $registry->loadModules();
+
+        foreach ($registry->getEnabledModules() as $module) {
+            $templatePath = $module->getTemplatePath();
+            if (!empty($templatePath) && is_dir($templatePath)) {
+                $loader->addPath($templatePath, $module->getName());
+            }
+        }
+
         $this->templateRenderer = new Environment($loader, ['debug' => false]);
 
         if ($this->configuration->get('misc', 'display_stats', false)) {
@@ -115,6 +128,19 @@ class AppManager
         $translator = new Translator($interfaceLang);
         $translator->addLoader('po', new PoFileLoader());
         $translator->addResource('po', $this->getLocaleFile($interfaceLang), $interfaceLang);
+
+        // Load module translations
+        foreach ($registry->getEnabledModules() as $module) {
+            $localePath = $module->getLocalePath();
+            if (empty($localePath)) {
+                continue;
+            }
+
+            $moduleLocaleFile = $localePath . '/' . $interfaceLang . '/messages.po';
+            if (file_exists($moduleLocaleFile)) {
+                $translator->addResource('po', $moduleLocaleFile, $interfaceLang);
+            }
+        }
 
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
     }

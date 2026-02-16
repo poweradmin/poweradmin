@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,25 +24,30 @@ namespace Poweradmin\Application\Routing;
 
 use Exception;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Module\ModuleRegistry;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\Router;
+use Symfony\Component\Routing\Route;
 
 /**
  * Class SymfonyRouter
  *
- * Clean Symfony Router implementation for Poweradmin without backward compatibility.
+ * Symfony Router implementation for Poweradmin with module support.
  * Uses modern routing patterns with clean URLs and proper REST endpoints.
+ * Loads routes from YAML configuration and enabled modules.
  *
  * @package Poweradmin\Application\Routing
  */
 class SymfonyRouter
 {
-    private Router $router;
+    private UrlMatcher $matcher;
+    private UrlGenerator $urlGenerator;
     private Request $request;
     private array $routeParameters = [];
     private ?string $matchedRoute = null;
@@ -55,7 +60,7 @@ class SymfonyRouter
     }
 
     /**
-     * Initialize the Symfony router with route configuration.
+     * Initialize the router with YAML routes and module routes.
      * Handles base_url_prefix for subfolder deployments.
      */
     private function initializeRouter(): void
@@ -64,17 +69,38 @@ class SymfonyRouter
         $fileLocator = new FileLocator([$configDir]);
         $loader = new YamlFileLoader($fileLocator);
 
+        // Load YAML routes into a RouteCollection
+        $routes = $loader->load('routes.yaml');
+
+        // Load module routes from enabled modules
+        $config = ConfigurationManager::getInstance();
+        $registry = new ModuleRegistry($config);
+        $registry->loadModules();
+
+        foreach ($registry->getRoutes() as $routeDef) {
+            $defaults = ['_controller' => $routeDef['controller']];
+            $requirements = $routeDef['requirements'] ?? [];
+
+            $route = new Route($routeDef['path'], $defaults, $requirements);
+
+            if (isset($routeDef['methods'])) {
+                $route->setMethods($routeDef['methods']);
+            }
+
+            $routes->add($routeDef['name'], $route);
+        }
+
+        // Set up request context with subfolder support
         $context = new RequestContext();
         $context->fromRequest($this->request);
 
-        // Support for subfolder deployments via base_url_prefix
-        $config = ConfigurationManager::getInstance();
         $baseUrlPrefix = $config->get('interface', 'base_url_prefix', '');
         if (!empty($baseUrlPrefix)) {
             $context->setBaseUrl($baseUrlPrefix);
         }
 
-        $this->router = new Router($loader, 'routes.yaml', [], $context);
+        $this->matcher = new UrlMatcher($routes, $context);
+        $this->urlGenerator = new UrlGenerator($routes, $context);
     }
 
     /**
@@ -87,7 +113,7 @@ class SymfonyRouter
     {
         try {
             $pathInfo = $this->request->getPathInfo();
-            $parameters = $this->router->match($pathInfo);
+            $parameters = $this->matcher->match($pathInfo);
 
             $this->routeParameters = $parameters;
             $this->matchedRoute = $parameters['_route'] ?? null;
@@ -193,7 +219,7 @@ class SymfonyRouter
      */
     public function generateUrl(string $routeName, array $parameters = []): string
     {
-        return $this->router->generate($routeName, $parameters);
+        return $this->urlGenerator->generate($routeName, $parameters);
     }
 
     /**

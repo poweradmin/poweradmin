@@ -1296,6 +1296,8 @@ return array(
     'Poweradmin\\Infrastructure\\Utility\\SortHelper' => $baseDir . '/lib/Infrastructure/Utility/SortHelper.php',
     'Poweradmin\\Infrastructure\\Utility\\UserAgentService' => $baseDir . '/lib/Infrastructure/Utility/UserAgentService.php',
     'Poweradmin\\LocaleManager' => $baseDir . '/lib/LocaleManager.php',
+    'Poweradmin\\Module\\ModuleInterface' => $baseDir . '/lib/Module/ModuleInterface.php',
+    'Poweradmin\\Module\\ModuleRegistry' => $baseDir . '/lib/Module/ModuleRegistry.php',
     'Poweradmin\\Pages' => $baseDir . '/lib/Pages.php',
     'Poweradmin\\Version' => $baseDir . '/lib/Version.php',
     'PragmaRX\\Google2FA\\Exceptions\\Contracts\\Google2FA' => $vendorDir . '/pragmarx/google2fa/src/Exceptions/Contracts/Google2FA.php',

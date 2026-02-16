@@ -261,7 +261,7 @@
                     </li>
                     {% endif %}
 
-                    {% if ((not whois_restrict_to_admin or perm_is_godlike) and whois_enabled) or ((not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled) or (perm_is_godlike and api_enabled) or (perm_is_godlike and enable_consistency_checks) or (perm_is_godlike and email_previews_enabled) %}
+                    {% if ((not whois_restrict_to_admin or perm_is_godlike) and whois_enabled) or ((not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled) or (perm_is_godlike and api_enabled) or (perm_is_godlike and enable_consistency_checks) or (perm_is_godlike and email_previews_enabled) or (module_nav_items is defined and module_nav_items|length > 0) %}
                     <!-- Tools Section -->
                     <li class="nav-item">
                         <div class="nav-section-header">
@@ -309,6 +309,16 @@
                                     <i class="bi bi-book me-2"></i>{% trans %}API Documentation{% endtrans %}
                                 </a>
                             </li>
+                            {% endif %}
+                            {% if module_nav_items is defined and module_nav_items|length > 0 %}
+                            {% for item in module_nav_items %}
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page == item.page_id ? 'active' : '' }}"
+                                   href="{{ base_url_prefix }}{{ item.url }}">
+                                    <i class="bi bi-{{ item.icon }} me-2"></i>{% trans %}{{ item.label }}{% endtrans %}
+                                </a>
+                            </li>
+                            {% endfor %}
                             {% endif %}
                         </ul>
                     </li>
