@@ -16,21 +16,21 @@ msgstr ""
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:45
 msgid "Invalid zone ID."
-msgstr ""
+msgstr "Ugyldig sone-ID."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:64
 msgid "There is no zone with this ID."
-msgstr ""
+msgstr "Det finnes ingen sone med denne ID-en."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."
-msgstr ""
+msgstr "Denne sonen har ingen poster å eksportere."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
-msgstr ""
+msgstr "Du har ikke tillatelse til å eksportere denne sonen."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."
-msgstr ""
+msgstr "Du må være innlogget for å eksportere sonedata."
 

@@ -16,21 +16,21 @@ msgstr ""
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:45
 msgid "Invalid zone ID."
-msgstr ""
+msgstr "Недопустимый ID зоны."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:64
 msgid "There is no zone with this ID."
-msgstr ""
+msgstr "Зоны с таким ID не существует."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."
-msgstr ""
+msgstr "В этой зоне нет записей для экспорта."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
-msgstr ""
+msgstr "У вас нет разрешения на экспорт этой зоны."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."
-msgstr ""
+msgstr "Для экспорта данных зоны необходимо войти в систему."
 

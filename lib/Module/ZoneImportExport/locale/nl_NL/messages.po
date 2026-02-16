@@ -16,223 +16,211 @@ msgstr ""
 
 #: lib/Module/ZoneImportExport/templates/import.html:171
 msgid "$ORIGIN and $TTL directives"
-msgstr ""
+msgstr "$ORIGIN- en $TTL-richtlijnen"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:216
 msgid "A zone with this name already exists."
-msgstr ""
+msgstr "Er bestaat al een zone met deze naam."
 
 #: lib/Module/ZoneImportExport/templates/import.html:112
 msgid "Cancel"
-msgstr ""
+msgstr "Annuleren"
 
 #: lib/Module/ZoneImportExport/templates/import.html:170
 msgid "Cloudflare zone exports"
-msgstr ""
+msgstr "Cloudflare zone-exports"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
-msgstr ""
+msgstr "Import bevestigen"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:140
-msgid "Create new zone"
-msgstr ""
+msgstr "Inhoud"
 
 #: lib/Module/ZoneImportExport/templates/import.html:30
 msgid "Edit zone"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:151
-msgid "Enter the ID of the zone to import records into."
-msgstr ""
+msgstr "Zone bewerken"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:222
 msgid "Failed to create zone."
-msgstr ""
+msgstr "Kan zone niet aanmaken."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:228
 msgid "Failed to retrieve created zone."
-msgstr ""
+msgstr "Kan aangemaakte zone niet ophalen."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:101
 msgid "File size exceeds the maximum allowed size of %s."
-msgstr ""
+msgstr "Bestandsgrootte overschrijdt de maximaal toegestane grootte van %s."
 
 #: lib/Module/ZoneImportExport/templates/import.html:58
 msgid "File:"
-msgstr ""
+msgstr "Bestand:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:3
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 #: lib/Module/ZoneImportExport/templates/import.html:173
 msgid "IDN domain names"
-msgstr ""
+msgstr "IDN-domeinnamen"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
-msgstr ""
+msgstr "Importvoorbeeld"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr ""
+msgstr "Importresultaten"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
-msgstr ""
+msgstr "Zonebestand importeren"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
 msgid "Import another zone"
-msgstr ""
+msgstr "Nog een zone importeren"
 
 #: lib/Module/ZoneImportExport/templates/import.html:19
 msgid "Import completed successfully."
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:144
-msgid "Import into existing zone"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:137
-msgid "Import mode"
-msgstr ""
+msgstr "Import succesvol voltooid."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:175
 msgid "Import session expired. Please upload the file again."
-msgstr ""
+msgstr "Importsessie verlopen. Upload het bestand opnieuw."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:48
 msgid "Invalid zone ID."
-msgstr ""
+msgstr "Ongeldig zone-ID."
+
+msgid "Master"
+msgstr "Master"
 
 #: lib/Module/ZoneImportExport/templates/import.html:172
 msgid "Multi-line records"
-msgstr ""
+msgstr "Meerregelige records"
 
 #: lib/Module/ZoneImportExport/templates/import.html:66
 msgid "Name"
-msgstr ""
+msgstr "Naam"
+
+msgid "Native"
+msgstr "Natief"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:116
 msgid "No valid records found in the uploaded file."
-msgstr ""
+msgstr "Geen geldige records gevonden in het geüploade bestand."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:95
 msgid "Please select a valid zone file to upload."
-msgstr ""
+msgstr "Selecteer een geldig zonebestand om te uploaden."
 
 #: lib/Module/ZoneImportExport/templates/import.html:70
 msgid "Priority"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:149
-msgid "Select zone"
-msgstr ""
+msgstr "Prioriteit"
 
 #: lib/Module/ZoneImportExport/templates/import.html:133
 msgid "Standard BIND zone file format. Max size:"
-msgstr ""
+msgstr "Standaard BIND zonebestandsformaat. Max grootte:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:169
 msgid "Standard BIND zone files"
-msgstr ""
+msgstr "Standaard BIND-zonebestanden"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr ""
+msgstr "Ondersteunde formaten"
+
+msgid "Success:"
+msgstr "Succes:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
-msgstr ""
+msgstr "TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:107
 msgid "The uploaded file is empty or could not be read."
-msgstr ""
+msgstr "Het geüploade bestand is leeg of kon niet worden gelezen."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:67
 msgid "There is no zone with this ID."
-msgstr ""
+msgstr "Er is geen zone met dit ID."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:79
 msgid "This zone does not have any records to export."
-msgstr ""
+msgstr "Deze zone heeft geen records om te exporteren."
 
 #: lib/Module/ZoneImportExport/templates/import.html:4
 msgid "Tools"
-msgstr ""
+msgstr "Hulpmiddelen"
 
 #: lib/Module/ZoneImportExport/templates/import.html:67
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
-msgstr ""
+msgstr "Uploaden en voorbeeld"
+
+msgid "Warning:"
+msgstr "Waarschuwing:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"
-msgstr ""
+msgstr "Waarschuwingen:"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:56
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:67
 msgid "You do not have permission to add zones."
-msgstr ""
+msgstr "U heeft geen toestemming om zones toe te voegen."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:59
 msgid "You do not have permission to export this zone."
-msgstr ""
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:203
-msgid "You do not have permission to modify this zone."
-msgstr ""
+msgstr "U heeft geen toestemming om deze zone te exporteren."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:42
 msgid "You need to be logged in to export zone data."
-msgstr ""
+msgstr "U moet ingelogd zijn om zonegegevens te exporteren."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
-msgstr ""
+msgstr "Zone-import"
 
 #: lib/Module/ZoneImportExport/templates/import.html:131
 msgid "Zone file"
-msgstr ""
+msgstr "Zonebestand"
 
 #: lib/Module/ZoneImportExport/templates/import.html:95
 msgid "Zone name"
-msgstr ""
+msgstr "Zonenaam"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:211
 msgid "Zone name is required."
-msgstr ""
+msgstr "Zonenaam is verplicht."
 
 #: lib/Module/ZoneImportExport/templates/import.html:99
 msgid "Zone type"
-msgstr ""
+msgstr "Zonetype"
 
 #: lib/Module/ZoneImportExport/templates/import.html:59
 msgid "Zone:"
-msgstr ""
+msgstr "Zone:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:43
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "records"
-msgstr ""
+msgstr "records"
 
 #: lib/Module/ZoneImportExport/templates/import.html:26
 msgid "records failed."
-msgstr ""
+msgstr "records mislukt."
 
 #: lib/Module/ZoneImportExport/templates/import.html:25
 msgid "records imported,"
-msgstr ""
+msgstr "records geïmporteerd,"
 
 #: lib/Module/ZoneImportExport/templates/import.html:20
 msgid "records imported."
-msgstr ""
+msgstr "records geïmporteerd."
 

@@ -14,20 +14,22 @@
     </div>
     <div class="card-body">
         {% if fail_count == 0 %}
-        <div class="alert alert-success">
-            <i class="bi bi-check-circle me-2"></i>
+        <div class="alert alert-success bg-success bg-opacity-10 py-2 border border-success small">
+            <i class="bi bi-check-circle-fill me-2 text-success"></i>
+            <strong class="text-success">{% trans %}Success:{% endtrans %}</strong>
             {% trans %}Import completed successfully.{% endtrans %}
             {{ success_count }} {% trans %}records imported.{% endtrans %}
         </div>
         {% else %}
-        <div class="alert alert-warning">
-            <i class="bi bi-exclamation-triangle me-2"></i>
+        <div class="alert alert-warning bg-warning bg-opacity-10 py-2 border border-warning small">
+            <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>
+            <strong class="text-warning">{% trans %}Warning:{% endtrans %}</strong>
             {{ success_count }} {% trans %}records imported,{% endtrans %}
             {{ fail_count }} {% trans %}records failed.{% endtrans %}
         </div>
         {% endif %}
-        <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-primary btn-sm">
-            <i class="bi bi-pencil me-1"></i>{% trans %}Edit zone{% endtrans %} "{{ zone_name }}"
+        <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-pencil me-1"></i>{% trans %}Edit zone{% endtrans %}
         </a>
         <a href="{{ base_url_prefix }}/tools/zone-import" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-cloud-arrow-down me-1"></i>{% trans %}Import another zone{% endtrans %}
@@ -86,10 +88,7 @@
 
         <form method="post" action="{{ base_url_prefix }}/tools/zone-import/execute">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
-            <input type="hidden" name="import_mode" value="{{ import_mode }}">
-            <input type="hidden" name="existing_zone_id" value="{{ existing_zone_id }}">
 
-            {% if import_mode != 'existing' %}
             <div class="row mb-3">
                 <div class="col-md-4">
                     <label for="zone_name" class="form-label">{% trans %}Zone name{% endtrans %}</label>
@@ -98,12 +97,11 @@
                 <div class="col-md-3">
                     <label for="zone_type" class="form-label">{% trans %}Zone type{% endtrans %}</label>
                     <select class="form-select form-select-sm" id="zone_type" name="zone_type">
-                        <option value="MASTER">Master</option>
-                        <option value="NATIVE">Native</option>
+                        <option value="MASTER">{% trans %}Master{% endtrans %}</option>
+                        <option value="NATIVE">{% trans %}Native{% endtrans %}</option>
                     </select>
                 </div>
             </div>
-            {% endif %}
 
             <button type="submit" class="btn btn-primary btn-sm">
                 <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Confirm import{% endtrans %} ({{ record_count }} {% trans %}records{% endtrans %})
@@ -133,24 +131,6 @@
                         <div class="form-text">{% trans %}Standard BIND zone file format. Max size:{% endtrans %} {{ max_file_size_human }}</div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">{% trans %}Import mode{% endtrans %}</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="import_mode" id="mode_new" value="new" checked>
-                            <label class="form-check-label" for="mode_new">{% trans %}Create new zone{% endtrans %}</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="import_mode" id="mode_existing" value="existing">
-                            <label class="form-check-label" for="mode_existing">{% trans %}Import into existing zone{% endtrans %}</label>
-                        </div>
-                    </div>
-
-                    <div class="mb-3" id="existing_zone_select" style="display: none">
-                        <label for="existing_zone_id" class="form-label">{% trans %}Select zone{% endtrans %}</label>
-                        <input type="number" class="form-control form-control-sm" id="existing_zone_id" name="existing_zone_id" placeholder="Zone ID">
-                        <div class="form-text">{% trans %}Enter the ID of the zone to import records into.{% endtrans %}</div>
-                    </div>
-
                     <button type="submit" class="btn btn-primary btn-sm">
                         <i class="bi bi-upload me-1 text-white"></i>{% trans %}Upload and preview{% endtrans %}
                     </button>
@@ -176,16 +156,4 @@
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var radios = document.querySelectorAll('input[name="import_mode"]');
-    var existingSelect = document.getElementById('existing_zone_select');
-    radios.forEach(function(radio) {
-        radio.addEventListener('change', function() {
-            existingSelect.style.display = this.value === 'existing' ? 'block' : 'none';
-        });
-    });
-});
-</script>
 {% endif %}

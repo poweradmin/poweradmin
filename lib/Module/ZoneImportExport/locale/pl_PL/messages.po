@@ -16,223 +16,211 @@ msgstr ""
 
 #: lib/Module/ZoneImportExport/templates/import.html:171
 msgid "$ORIGIN and $TTL directives"
-msgstr ""
+msgstr "Dyrektywy $ORIGIN i $TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:216
 msgid "A zone with this name already exists."
-msgstr ""
+msgstr "Strefa o tej nazwie już istnieje."
 
 #: lib/Module/ZoneImportExport/templates/import.html:112
 msgid "Cancel"
-msgstr ""
+msgstr "Anuluj"
 
 #: lib/Module/ZoneImportExport/templates/import.html:170
 msgid "Cloudflare zone exports"
-msgstr ""
+msgstr "Eksporty stref Cloudflare"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
-msgstr ""
+msgstr "Potwierdź import"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:140
-msgid "Create new zone"
-msgstr ""
+msgstr "Zawartość"
 
 #: lib/Module/ZoneImportExport/templates/import.html:30
 msgid "Edit zone"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:151
-msgid "Enter the ID of the zone to import records into."
-msgstr ""
+msgstr "Edytuj strefę"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:222
 msgid "Failed to create zone."
-msgstr ""
+msgstr "Nie udało się utworzyć strefy."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:228
 msgid "Failed to retrieve created zone."
-msgstr ""
+msgstr "Nie udało się pobrać utworzonej strefy."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:101
 msgid "File size exceeds the maximum allowed size of %s."
-msgstr ""
+msgstr "Rozmiar pliku przekracza maksymalny dozwolony rozmiar %s."
 
 #: lib/Module/ZoneImportExport/templates/import.html:58
 msgid "File:"
-msgstr ""
+msgstr "Plik:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:3
 msgid "Home"
-msgstr ""
+msgstr "Strona główna"
 
 #: lib/Module/ZoneImportExport/templates/import.html:173
 msgid "IDN domain names"
-msgstr ""
+msgstr "Nazwy domen IDN"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
-msgstr ""
+msgstr "Podgląd importu"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr ""
+msgstr "Wyniki importu"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
-msgstr ""
+msgstr "Importuj plik strefy"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
 msgid "Import another zone"
-msgstr ""
+msgstr "Importuj kolejną strefę"
 
 #: lib/Module/ZoneImportExport/templates/import.html:19
 msgid "Import completed successfully."
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:144
-msgid "Import into existing zone"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:137
-msgid "Import mode"
-msgstr ""
+msgstr "Import zakończony pomyślnie."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:175
 msgid "Import session expired. Please upload the file again."
-msgstr ""
+msgstr "Sesja importu wygasła. Prześlij plik ponownie."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:48
 msgid "Invalid zone ID."
-msgstr ""
+msgstr "Nieprawidłowy ID strefy."
+
+msgid "Master"
+msgstr "Master"
 
 #: lib/Module/ZoneImportExport/templates/import.html:172
 msgid "Multi-line records"
-msgstr ""
+msgstr "Rekordy wieloliniowe"
 
 #: lib/Module/ZoneImportExport/templates/import.html:66
 msgid "Name"
-msgstr ""
+msgstr "Nazwa"
+
+msgid "Native"
+msgstr "Natywny"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:116
 msgid "No valid records found in the uploaded file."
-msgstr ""
+msgstr "Nie znaleziono prawidłowych rekordów w przesłanym pliku."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:95
 msgid "Please select a valid zone file to upload."
-msgstr ""
+msgstr "Wybierz prawidłowy plik strefy do przesłania."
 
 #: lib/Module/ZoneImportExport/templates/import.html:70
 msgid "Priority"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:149
-msgid "Select zone"
-msgstr ""
+msgstr "Priorytet"
 
 #: lib/Module/ZoneImportExport/templates/import.html:133
 msgid "Standard BIND zone file format. Max size:"
-msgstr ""
+msgstr "Standardowy format pliku strefy BIND. Maks. rozmiar:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:169
 msgid "Standard BIND zone files"
-msgstr ""
+msgstr "Standardowe pliki stref BIND"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr ""
+msgstr "Obsługiwane formaty"
+
+msgid "Success:"
+msgstr "Sukces:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
-msgstr ""
+msgstr "TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:107
 msgid "The uploaded file is empty or could not be read."
-msgstr ""
+msgstr "Przesłany plik jest pusty lub nie można go odczytać."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:67
 msgid "There is no zone with this ID."
-msgstr ""
+msgstr "Nie ma strefy o tym ID."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:79
 msgid "This zone does not have any records to export."
-msgstr ""
+msgstr "Ta strefa nie ma rekordów do eksportu."
 
 #: lib/Module/ZoneImportExport/templates/import.html:4
 msgid "Tools"
-msgstr ""
+msgstr "Narzędzia"
 
 #: lib/Module/ZoneImportExport/templates/import.html:67
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
-msgstr ""
+msgstr "Prześlij i podgląd"
+
+msgid "Warning:"
+msgstr "Ostrzeżenie:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"
-msgstr ""
+msgstr "Ostrzeżenia:"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:56
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:67
 msgid "You do not have permission to add zones."
-msgstr ""
+msgstr "Nie masz uprawnień do dodawania stref."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:59
 msgid "You do not have permission to export this zone."
-msgstr ""
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:203
-msgid "You do not have permission to modify this zone."
-msgstr ""
+msgstr "Nie masz uprawnień do eksportowania tej strefy."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:42
 msgid "You need to be logged in to export zone data."
-msgstr ""
+msgstr "Musisz być zalogowany, aby eksportować dane strefy."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
-msgstr ""
+msgstr "Import strefy"
 
 #: lib/Module/ZoneImportExport/templates/import.html:131
 msgid "Zone file"
-msgstr ""
+msgstr "Plik strefy"
 
 #: lib/Module/ZoneImportExport/templates/import.html:95
 msgid "Zone name"
-msgstr ""
+msgstr "Nazwa strefy"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:211
 msgid "Zone name is required."
-msgstr ""
+msgstr "Nazwa strefy jest wymagana."
 
 #: lib/Module/ZoneImportExport/templates/import.html:99
 msgid "Zone type"
-msgstr ""
+msgstr "Typ strefy"
 
 #: lib/Module/ZoneImportExport/templates/import.html:59
 msgid "Zone:"
-msgstr ""
+msgstr "Strefa:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:43
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "records"
-msgstr ""
+msgstr "rekordy"
 
 #: lib/Module/ZoneImportExport/templates/import.html:26
 msgid "records failed."
-msgstr ""
+msgstr "rekordów nie powiodło się."
 
 #: lib/Module/ZoneImportExport/templates/import.html:25
 msgid "records imported,"
-msgstr ""
+msgstr "rekordów zaimportowano,"
 
 #: lib/Module/ZoneImportExport/templates/import.html:20
 msgid "records imported."
-msgstr ""
+msgstr "rekordów zaimportowano."
 

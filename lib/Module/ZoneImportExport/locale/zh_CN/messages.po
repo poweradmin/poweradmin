@@ -16,223 +16,211 @@ msgstr ""
 
 #: lib/Module/ZoneImportExport/templates/import.html:171
 msgid "$ORIGIN and $TTL directives"
-msgstr ""
+msgstr "$ORIGIN 和 $TTL 指令"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:216
 msgid "A zone with this name already exists."
-msgstr ""
+msgstr "此名称的区域已存在。"
 
 #: lib/Module/ZoneImportExport/templates/import.html:112
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: lib/Module/ZoneImportExport/templates/import.html:170
 msgid "Cloudflare zone exports"
-msgstr ""
+msgstr "Cloudflare 区域导出"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
-msgstr ""
+msgstr "确认导入"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:140
-msgid "Create new zone"
-msgstr ""
+msgstr "内容"
 
 #: lib/Module/ZoneImportExport/templates/import.html:30
 msgid "Edit zone"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:151
-msgid "Enter the ID of the zone to import records into."
-msgstr ""
+msgstr "编辑区域"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:222
 msgid "Failed to create zone."
-msgstr ""
+msgstr "创建区域失败。"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:228
 msgid "Failed to retrieve created zone."
-msgstr ""
+msgstr "获取已创建的区域失败。"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:101
 msgid "File size exceeds the maximum allowed size of %s."
-msgstr ""
+msgstr "文件大小超过最大允许大小 %s。"
 
 #: lib/Module/ZoneImportExport/templates/import.html:58
 msgid "File:"
-msgstr ""
+msgstr "文件："
 
 #: lib/Module/ZoneImportExport/templates/import.html:3
 msgid "Home"
-msgstr ""
+msgstr "首页"
 
 #: lib/Module/ZoneImportExport/templates/import.html:173
 msgid "IDN domain names"
-msgstr ""
+msgstr "IDN 域名"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
-msgstr ""
+msgstr "导入预览"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr ""
+msgstr "导入结果"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
-msgstr ""
+msgstr "导入区域文件"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
 msgid "Import another zone"
-msgstr ""
+msgstr "导入另一个区域"
 
 #: lib/Module/ZoneImportExport/templates/import.html:19
 msgid "Import completed successfully."
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:144
-msgid "Import into existing zone"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:137
-msgid "Import mode"
-msgstr ""
+msgstr "导入成功完成。"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:175
 msgid "Import session expired. Please upload the file again."
-msgstr ""
+msgstr "导入会话已过期。请重新上传文件。"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:48
 msgid "Invalid zone ID."
-msgstr ""
+msgstr "无效的区域 ID。"
+
+msgid "Master"
+msgstr "主服务器"
 
 #: lib/Module/ZoneImportExport/templates/import.html:172
 msgid "Multi-line records"
-msgstr ""
+msgstr "多行记录"
 
 #: lib/Module/ZoneImportExport/templates/import.html:66
 msgid "Name"
-msgstr ""
+msgstr "名称"
+
+msgid "Native"
+msgstr "本地"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:116
 msgid "No valid records found in the uploaded file."
-msgstr ""
+msgstr "上传的文件中未找到有效记录。"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:95
 msgid "Please select a valid zone file to upload."
-msgstr ""
+msgstr "请选择有效的区域文件进行上传。"
 
 #: lib/Module/ZoneImportExport/templates/import.html:70
 msgid "Priority"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:149
-msgid "Select zone"
-msgstr ""
+msgstr "优先级"
 
 #: lib/Module/ZoneImportExport/templates/import.html:133
 msgid "Standard BIND zone file format. Max size:"
-msgstr ""
+msgstr "标准 BIND 区域文件格式。最大大小："
 
 #: lib/Module/ZoneImportExport/templates/import.html:169
 msgid "Standard BIND zone files"
-msgstr ""
+msgstr "标准 BIND 区域文件"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr ""
+msgstr "支持的格式"
+
+msgid "Success:"
+msgstr "成功:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
-msgstr ""
+msgstr "TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:107
 msgid "The uploaded file is empty or could not be read."
-msgstr ""
+msgstr "上传的文件为空或无法读取。"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:67
 msgid "There is no zone with this ID."
-msgstr ""
+msgstr "不存在此 ID 的区域。"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:79
 msgid "This zone does not have any records to export."
-msgstr ""
+msgstr "此区域没有可导出的记录。"
 
 #: lib/Module/ZoneImportExport/templates/import.html:4
 msgid "Tools"
-msgstr ""
+msgstr "工具"
 
 #: lib/Module/ZoneImportExport/templates/import.html:67
 msgid "Type"
-msgstr ""
+msgstr "类型"
 
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
-msgstr ""
+msgstr "上传并预览"
+
+msgid "Warning:"
+msgstr "警告:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"
-msgstr ""
+msgstr "警告："
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:56
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:67
 msgid "You do not have permission to add zones."
-msgstr ""
+msgstr "您没有添加区域的权限。"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:59
 msgid "You do not have permission to export this zone."
-msgstr ""
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:203
-msgid "You do not have permission to modify this zone."
-msgstr ""
+msgstr "您没有导出此区域的权限。"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:42
 msgid "You need to be logged in to export zone data."
-msgstr ""
+msgstr "您需要登录才能导出区域数据。"
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
-msgstr ""
+msgstr "区域导入"
 
 #: lib/Module/ZoneImportExport/templates/import.html:131
 msgid "Zone file"
-msgstr ""
+msgstr "区域文件"
 
 #: lib/Module/ZoneImportExport/templates/import.html:95
 msgid "Zone name"
-msgstr ""
+msgstr "区域名称"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:211
 msgid "Zone name is required."
-msgstr ""
+msgstr "区域名称为必填项。"
 
 #: lib/Module/ZoneImportExport/templates/import.html:99
 msgid "Zone type"
-msgstr ""
+msgstr "区域类型"
 
 #: lib/Module/ZoneImportExport/templates/import.html:59
 msgid "Zone:"
-msgstr ""
+msgstr "区域："
 
 #: lib/Module/ZoneImportExport/templates/import.html:43
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "records"
-msgstr ""
+msgstr "条记录"
 
 #: lib/Module/ZoneImportExport/templates/import.html:26
 msgid "records failed."
-msgstr ""
+msgstr "条记录失败。"
 
 #: lib/Module/ZoneImportExport/templates/import.html:25
 msgid "records imported,"
-msgstr ""
+msgstr "条记录已导入，"
 
 #: lib/Module/ZoneImportExport/templates/import.html:20
 msgid "records imported."
-msgstr ""
+msgstr "条记录已导入。"
 

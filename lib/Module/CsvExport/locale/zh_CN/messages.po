@@ -16,21 +16,21 @@ msgstr ""
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:45
 msgid "Invalid zone ID."
-msgstr ""
+msgstr "无效的区域 ID。"
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:64
 msgid "There is no zone with this ID."
-msgstr ""
+msgstr "不存在此 ID 的区域。"
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."
-msgstr ""
+msgstr "此区域没有可导出的记录。"
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
-msgstr ""
+msgstr "您没有导出此区域的权限。"
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."
-msgstr ""
+msgstr "您需要登录才能导出区域数据。"
 

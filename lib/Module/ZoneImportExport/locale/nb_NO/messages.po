@@ -16,223 +16,211 @@ msgstr ""
 
 #: lib/Module/ZoneImportExport/templates/import.html:171
 msgid "$ORIGIN and $TTL directives"
-msgstr ""
+msgstr "$ORIGIN- og $TTL-direktiver"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:216
 msgid "A zone with this name already exists."
-msgstr ""
+msgstr "En sone med dette navnet finnes allerede."
 
 #: lib/Module/ZoneImportExport/templates/import.html:112
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
 #: lib/Module/ZoneImportExport/templates/import.html:170
 msgid "Cloudflare zone exports"
-msgstr ""
+msgstr "Cloudflare-soneeksporter"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
-msgstr ""
+msgstr "Bekreft import"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:140
-msgid "Create new zone"
-msgstr ""
+msgstr "Innhold"
 
 #: lib/Module/ZoneImportExport/templates/import.html:30
 msgid "Edit zone"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:151
-msgid "Enter the ID of the zone to import records into."
-msgstr ""
+msgstr "Rediger sone"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:222
 msgid "Failed to create zone."
-msgstr ""
+msgstr "Kunne ikke opprette sone."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:228
 msgid "Failed to retrieve created zone."
-msgstr ""
+msgstr "Kunne ikke hente opprettet sone."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:101
 msgid "File size exceeds the maximum allowed size of %s."
-msgstr ""
+msgstr "Filstørrelsen overskrider maksimal tillatt størrelse på %s."
 
 #: lib/Module/ZoneImportExport/templates/import.html:58
 msgid "File:"
-msgstr ""
+msgstr "Fil:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:3
 msgid "Home"
-msgstr ""
+msgstr "Hjem"
 
 #: lib/Module/ZoneImportExport/templates/import.html:173
 msgid "IDN domain names"
-msgstr ""
+msgstr "IDN-domenenavn"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
-msgstr ""
+msgstr "Forhåndsvisning av import"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr ""
+msgstr "Importresultater"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
-msgstr ""
+msgstr "Importer sonefil"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
 msgid "Import another zone"
-msgstr ""
+msgstr "Importer en annen sone"
 
 #: lib/Module/ZoneImportExport/templates/import.html:19
 msgid "Import completed successfully."
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:144
-msgid "Import into existing zone"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:137
-msgid "Import mode"
-msgstr ""
+msgstr "Import fullført."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:175
 msgid "Import session expired. Please upload the file again."
-msgstr ""
+msgstr "Importøkten har utløpt. Last opp filen på nytt."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:48
 msgid "Invalid zone ID."
-msgstr ""
+msgstr "Ugyldig sone-ID."
+
+msgid "Master"
+msgstr "Master"
 
 #: lib/Module/ZoneImportExport/templates/import.html:172
 msgid "Multi-line records"
-msgstr ""
+msgstr "Flerlinjeoppføringer"
 
 #: lib/Module/ZoneImportExport/templates/import.html:66
 msgid "Name"
-msgstr ""
+msgstr "Navn"
+
+msgid "Native"
+msgstr "Nativ"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:116
 msgid "No valid records found in the uploaded file."
-msgstr ""
+msgstr "Ingen gyldige poster funnet i den opplastede filen."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:95
 msgid "Please select a valid zone file to upload."
-msgstr ""
+msgstr "Velg en gyldig sonefil å laste opp."
 
 #: lib/Module/ZoneImportExport/templates/import.html:70
 msgid "Priority"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:149
-msgid "Select zone"
-msgstr ""
+msgstr "Prioritet"
 
 #: lib/Module/ZoneImportExport/templates/import.html:133
 msgid "Standard BIND zone file format. Max size:"
-msgstr ""
+msgstr "Standard BIND sonefilformat. Maks størrelse:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:169
 msgid "Standard BIND zone files"
-msgstr ""
+msgstr "Standard BIND-sonefiler"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr ""
+msgstr "Støttede formater"
+
+msgid "Success:"
+msgstr "Suksess:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
-msgstr ""
+msgstr "TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:107
 msgid "The uploaded file is empty or could not be read."
-msgstr ""
+msgstr "Den opplastede filen er tom eller kunne ikke leses."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:67
 msgid "There is no zone with this ID."
-msgstr ""
+msgstr "Det finnes ingen sone med denne ID-en."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:79
 msgid "This zone does not have any records to export."
-msgstr ""
+msgstr "Denne sonen har ingen poster å eksportere."
 
 #: lib/Module/ZoneImportExport/templates/import.html:4
 msgid "Tools"
-msgstr ""
+msgstr "Verktøy"
 
 #: lib/Module/ZoneImportExport/templates/import.html:67
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
-msgstr ""
+msgstr "Last opp og forhåndsvis"
+
+msgid "Warning:"
+msgstr "Advarsel:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"
-msgstr ""
+msgstr "Advarsler:"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:56
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:67
 msgid "You do not have permission to add zones."
-msgstr ""
+msgstr "Du har ikke tillatelse til å legge til soner."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:59
 msgid "You do not have permission to export this zone."
-msgstr ""
-
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:203
-msgid "You do not have permission to modify this zone."
-msgstr ""
+msgstr "Du har ikke tillatelse til å eksportere denne sonen."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:42
 msgid "You need to be logged in to export zone data."
-msgstr ""
+msgstr "Du må være innlogget for å eksportere sonedata."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
-msgstr ""
+msgstr "Soneimport"
 
 #: lib/Module/ZoneImportExport/templates/import.html:131
 msgid "Zone file"
-msgstr ""
+msgstr "Sonefil"
 
 #: lib/Module/ZoneImportExport/templates/import.html:95
 msgid "Zone name"
-msgstr ""
+msgstr "Sonenavn"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:211
 msgid "Zone name is required."
-msgstr ""
+msgstr "Sonenavn er påkrevd."
 
 #: lib/Module/ZoneImportExport/templates/import.html:99
 msgid "Zone type"
-msgstr ""
+msgstr "Sonetype"
 
 #: lib/Module/ZoneImportExport/templates/import.html:59
 msgid "Zone:"
-msgstr ""
+msgstr "Sone:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:43
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "records"
-msgstr ""
+msgstr "poster"
 
 #: lib/Module/ZoneImportExport/templates/import.html:26
 msgid "records failed."
-msgstr ""
+msgstr "poster feilet."
 
 #: lib/Module/ZoneImportExport/templates/import.html:25
 msgid "records imported,"
-msgstr ""
+msgstr "poster importert,"
 
 #: lib/Module/ZoneImportExport/templates/import.html:20
 msgid "records imported."
-msgstr ""
+msgstr "poster importert."
 

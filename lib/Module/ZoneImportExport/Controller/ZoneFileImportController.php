@@ -23,10 +23,8 @@
 namespace Poweradmin\Module\ZoneImportExport\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
@@ -34,21 +32,16 @@ use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 
 class ZoneFileImportController extends BaseController
 {
     private UserContextService $userContextService;
-    private PermissionService $permissionService;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
         $this->userContextService = new UserContextService();
-        $userRepository = new DbUserRepository($this->db, $this->getConfig());
-        $this->permissionService = new PermissionService($userRepository);
     }
 
     public function run(): void
@@ -71,12 +64,7 @@ class ZoneFileImportController extends BaseController
 
     private function showForm(array $extra = []): void
     {
-        $userId = $this->userContextService->getLoggedInUserId();
         $maxFileSize = $this->getConfig()->get('modules', 'zone_import_export.max_file_size', 1048576);
-
-        $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
-        $perm_view = $this->permissionService->getViewPermissionLevel($userId);
-        $user_is_owner = ($perm_view === 'all');
 
         $vars = array_merge([
             'max_file_size' => $maxFileSize,
@@ -142,9 +130,6 @@ class ZoneFileImportController extends BaseController
             'filename' => $_FILES['zone_file']['name'],
         ];
 
-        $importMode = $_POST['import_mode'] ?? 'new';
-        $existingZoneId = isset($_POST['existing_zone_id']) ? (int)$_POST['existing_zone_id'] : 0;
-
         // Build preview data
         $previewRecords = [];
         foreach ($filteredRecords as $record) {
@@ -164,8 +149,6 @@ class ZoneFileImportController extends BaseController
             'warnings' => $parsed->getWarnings(),
             'origin' => $origin,
             'filename' => $_FILES['zone_file']['name'],
-            'import_mode' => $importMode,
-            'existing_zone_id' => $existingZoneId,
         ]);
     }
 
@@ -180,13 +163,16 @@ class ZoneFileImportController extends BaseController
         $records = unserialize($importData['records']);
         $origin = $importData['origin'];
 
-        $importMode = $_POST['import_mode'] ?? 'new';
         $zoneName = $_POST['zone_name'] ?? $origin;
-        $existingZoneId = isset($_POST['existing_zone_id']) ? (int)$_POST['existing_zone_id'] : 0;
 
         // Handle IDN zone name
         if (DnsIdnService::isIdn($zoneName)) {
             $zoneName = DnsIdnService::toPunycode($zoneName);
+        }
+
+        if (empty($zoneName)) {
+            $this->showError(_('Zone name is required.'));
+            return;
         }
 
         $userId = $this->userContextService->getLoggedInUserId();
@@ -195,48 +181,30 @@ class ZoneFileImportController extends BaseController
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
-        if ($importMode === 'existing' && $existingZoneId > 0) {
-            // Verify user has permission to edit this zone
-            $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $existingZoneId);
-            $perm_edit = $this->permissionService->getEditPermissionLevel($userId);
-            if ($perm_edit == "none" || ($perm_edit == "own" && $user_is_zone_owner == "0")) {
-                $this->showError(_('You do not have permission to modify this zone.'));
-                return;
-            }
-
-            $zone_id = $existingZoneId;
-        } else {
-            // Create new zone
-            if (empty($zoneName)) {
-                $this->showError(_('Zone name is required.'));
-                return;
-            }
-
-            if ($dnsRecord->domainExists($zoneName)) {
-                $this->showError(_('A zone with this name already exists.'));
-                return;
-            }
-
-            $zoneType = $_POST['zone_type'] ?? 'MASTER';
-            if (!$dnsRecord->addDomain($this->db, $zoneName, $userId, $zoneType, '', 'none')) {
-                $this->showError(_('Failed to create zone.'));
-                return;
-            }
-
-            $zone_id = $dnsRecord->getZoneIdFromName($zoneName);
-            if (!$zone_id) {
-                $this->showError(_('Failed to retrieve created zone.'));
-                return;
-            }
-
-            $logger = new LegacyLogger($this->db);
-            $logger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:zone_import zone_name:%s',
-                $clientIp,
-                $userLogin,
-                $zoneName
-            ), $zone_id);
+        if ($dnsRecord->domainExists($zoneName)) {
+            $this->showError(_('A zone with this name already exists.'));
+            return;
         }
+
+        $zoneType = $_POST['zone_type'] ?? 'MASTER';
+        if (!$dnsRecord->addDomain($this->db, $zoneName, $userId, $zoneType, '', 'none')) {
+            $this->showError(_('Failed to create zone.'));
+            return;
+        }
+
+        $zone_id = $dnsRecord->getZoneIdFromName($zoneName);
+        if (!$zone_id) {
+            $this->showError(_('Failed to retrieve created zone.'));
+            return;
+        }
+
+        $logger = new LegacyLogger($this->db);
+        $logger->logInfo(sprintf(
+            'client_ip:%s user:%s operation:zone_import zone_name:%s',
+            $clientIp,
+            $userLogin,
+            $zoneName
+        ), $zone_id);
 
         // Import records
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());

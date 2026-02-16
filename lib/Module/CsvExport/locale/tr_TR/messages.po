@@ -16,21 +16,21 @@ msgstr ""
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:45
 msgid "Invalid zone ID."
-msgstr ""
+msgstr "Geçersiz bölge ID'si."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:64
 msgid "There is no zone with this ID."
-msgstr ""
+msgstr "Bu ID'ye sahip bir bölge yok."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."
-msgstr ""
+msgstr "Bu bölgenin dışa aktarılacak kaydı yok."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
-msgstr ""
+msgstr "Bu bölgeyi dışa aktarma yetkiniz yok."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."
-msgstr ""
+msgstr "Bölge verilerini dışa aktarmak için giriş yapmanız gerekir."
 
