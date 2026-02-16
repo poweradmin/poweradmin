@@ -39,6 +39,8 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneSlaveController extends BaseController
@@ -71,10 +73,6 @@ class AddZoneSlaveController extends BaseController
     private function addZone(): void
     {
         $constraints = [
-            'owner' => [
-                new Assert\NotBlank(),
-                new Assert\Type('numeric')
-            ],
             'domain' => [
                 new Assert\NotBlank()
             ],
@@ -92,9 +90,18 @@ class AddZoneSlaveController extends BaseController
         $dns_third_level_check = $this->config->get('dns', 'third_level_check', false);
 
         $type = "SLAVE";
-        $owner = (int)$_POST['owner'];
+        $owner = !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
         $master = $_POST['slave_master'];
         $zone = DnsIdnService::toPunycode(trim($_POST['domain']));
+        $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
+            array_map('intval', $_POST['groups']) : [];
+
+        // Validate: at least one owner (user or group) must be selected
+        if ($owner === null && empty($selected_groups)) {
+            $this->setMessage('add_zone_slave', 'error', _('At least one user or group must be selected as owner.'));
+            $this->showForm();
+            return;
+        }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $hostnameValidator = new HostnameValidator($this->config);
@@ -114,6 +121,14 @@ class AddZoneSlaveController extends BaseController
             $dnsRecord = new DnsRecord($this->db, $this->getConfig());
             if ($dnsRecord->addDomain($this->db, $zone, $owner, $type, $master, 'none')) {
                 $zone_id = $dnsRecord->getZoneIdFromName($zone);
+
+                // Add group ownership if groups were selected
+                if (!empty($selected_groups)) {
+                    $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
+                    foreach ($selected_groups as $groupId) {
+                        $zoneGroupRepo->add($zone_id, $groupId);
+                    }
+                }
                 $this->logger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                     $_SERVER['REMOTE_ADDR'],
@@ -140,18 +155,32 @@ class AddZoneSlaveController extends BaseController
         $domain_value = isset($_POST['domain']) ? htmlspecialchars($_POST['domain']) : '';
         $slave_master_value = isset($_POST['slave_master']) ? htmlspecialchars($_POST['slave_master']) : '';
 
-        // Safely handle the owner value - ensure it's an integer
+        // Safely handle the owner value - ensure it's an integer or preserve empty selection
         if (isset($_POST['owner'])) {
-            $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
-            // Verify that the owner ID exists among valid users
-            $valid_users = UserManager::showUsers($this->db);
-            $valid_owner_ids = array_column($valid_users, 'id');
-            $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
+            if ($_POST['owner'] === '') {
+                // Empty value means "no user owner" was explicitly selected
+                $owner_value = '';
+            } else {
+                $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
+                // Verify that the owner ID exists among valid users
+                $valid_users = UserManager::showUsers($this->db);
+                $valid_owner_ids = array_column($valid_users, 'id');
+                $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
+            }
         } else {
+            // No POST data, default to current user
             $owner_value = $_SESSION['userid'];
         }
 
         $is_post_request = !empty($_POST);
+
+        // Fetch all groups for the dropdown
+        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $allGroups = $userGroupRepo->findAll();
+
+        // Handle selected groups on error re-render
+        $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
+            array_map('intval', $_POST['groups']) : [];
 
         $this->render('add_zone_slave.html', [
             'users' => UserManager::showUsers($this->db),
@@ -161,6 +190,8 @@ class AddZoneSlaveController extends BaseController
             'slave_master_value' => $slave_master_value,
             'owner_value' => $owner_value,
             'is_post' => $is_post_request,
+            'all_groups' => $allGroups,
+            'selected_groups' => $selected_groups,
             // Don't pass raw POST data to the template for security
         ]);
     }

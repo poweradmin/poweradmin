@@ -33,12 +33,13 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
+use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
@@ -47,6 +48,7 @@ class DeleteRecordsController extends BaseController
     private LegacyLogger $logger;
     private RecordCommentService $recordCommentService;
     private ReverseRecordCreator $reverseRecordCreator;
+    private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
@@ -61,8 +63,10 @@ class DeleteRecordsController extends BaseController
             $this->db,
             $this->getConfig(),
             $this->logger,
-            $dnsRecord
+            $dnsRecord,
+            $this->recordCommentService
         );
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
@@ -146,6 +150,10 @@ class DeleteRecordsController extends BaseController
                         );
                     }
 
+                    // Delete comment for this specific record (per-record comment by record_id)
+                    $this->recordCommentService->deleteCommentByRecordId($record_id);
+
+                    // For backward compatibility, also clean up RRset-based comments if no similar records remain
                     if (!$dnsRecord->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
                         $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                     }
@@ -207,15 +215,31 @@ class DeleteRecordsController extends BaseController
                 $zone_info = $dnsRecord->getZoneInfoFromId($zid);
                 $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $domain_id);
 
-                $perm_edit = Permission::getEditPermission($this->db);
-                if (
-                    $zone_info['type'] == "SLAVE" || $perm_edit == "none" ||
-                    (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")
-                ) {
+                // Check zone-specific edit permission (includes group permissions)
+                $userId = $this->userContextService->getLoggedInUserId();
+                $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $domain_id, 'zone_content_edit_own');
+                $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $domain_id, 'zone_content_edit_own_as_client');
+                $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+
+                if ($zone_info['type'] == "SLAVE" || (!$canEditOthers && !$canEdit && !$canEditAsClient)) {
                     continue;
                 }
 
                 $record_info['zone_name'] = $dnsRecord->getDomainNameById($domain_id);
+
+                // Shorten IPv6 addresses in AAAA record content for display
+                if ($record_info['type'] === 'AAAA' && isset($record_info['content'])) {
+                    $record_info['content'] = IpHelper::shortenIPv6Address($record_info['content']);
+                }
+
+                // Shorten IPv6 reverse zone names (PTR records) for display
+                if (isset($record_info['name']) && str_ends_with($record_info['name'], '.ip6.arpa')) {
+                    $shortened = IpHelper::shortenIPv6ReverseZone($record_info['name']);
+                    if ($shortened !== null) {
+                        $record_info['display_name'] = $shortened;
+                    }
+                }
+
                 $records[] = $record_info;
             }
         }

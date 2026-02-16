@@ -26,7 +26,7 @@
                                 {% if php_version_ok %}
                                     {% trans %}OK{% endtrans %}
                                 {% else %}
-                                    {% trans %}Requires PHP 8.1.0+{% endtrans %}
+                                    {% trans %}Requires PHP 8.2.0+{% endtrans %}
                                 {% endif %}
                             </div>
                         </div>
@@ -89,6 +89,53 @@
                                 </div>
                             </div>
                         {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Web Server Check -->
+            <div class="card mb-2 border-light">
+                <div class="card-header py-1 bg-light">
+                    <strong class="small">{% trans %}Web Server{% endtrans %}</strong>
+                </div>
+                <div class="card-body py-1">
+                    <div class="row g-1">
+                        <div class="col-md-6">
+                            <div class="alert alert-info py-1 mb-1 small">
+                                <i class="bi bi-info-circle"></i>
+                                <strong>{% trans %}Server{% endtrans %}:</strong> {{ web_server_info.server_software }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            {% if web_server_info.is_apache %}
+                                {% if web_server_info.can_detect_modules %}
+                                    <div class="alert {% if web_server_info.mod_rewrite_loaded %}alert-success{% else %}alert-warning{% endif %} py-1 mb-1 small">
+                                        <i class="bi {% if web_server_info.mod_rewrite_loaded %}bi-check-circle{% else %}bi-exclamation-triangle{% endif %}"></i>
+                                        <strong>mod_rewrite:</strong>
+                                        {% if web_server_info.mod_rewrite_loaded %}
+                                            {% trans %}Enabled{% endtrans %}
+                                        {% else %}
+                                            {% trans %}Not detected — required for URL routing{% endtrans %}
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-info py-1 mb-1 small">
+                                        <i class="bi bi-info-circle"></i>
+                                        <strong>mod_rewrite:</strong> {% trans %}Cannot detect (PHP-FPM) — ensure it is enabled{% endtrans %}
+                                    </div>
+                                {% endif %}
+                            {% elseif web_server_info.is_nginx %}
+                                <div class="alert alert-info py-1 mb-1 small">
+                                    <i class="bi bi-info-circle"></i>
+                                    {% trans %}Ensure URL rewriting is configured (see nginx.conf.example){% endtrans %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info py-1 mb-1 small">
+                                    <i class="bi bi-info-circle"></i>
+                                    {% trans %}Ensure URL rewriting is configured for your web server{% endtrans %}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>

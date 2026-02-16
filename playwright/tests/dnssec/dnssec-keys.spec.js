@@ -351,7 +351,7 @@ test.describe('DNSSEC Key Management', () => {
         await deleteLink.click();
         await expect(page).toHaveURL(/.*dnssec.*delete/);
 
-        // Verify the form uses correct CSRF field name (_token, not csrf_token)
+        // Verify the form has the correct CSRF token field name
         const tokenField = page.locator('input[name="_token"]');
         expect(await tokenField.count()).toBe(1);
 

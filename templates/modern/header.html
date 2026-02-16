@@ -166,7 +166,7 @@
                         <ul class="nav nav-pills flex-column ms-3">
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'users' ? 'active' : '' }}" href="{{ base_url_prefix }}/users">
-                                    <i class="bi bi-person-lines-fill me-2"></i>{% trans %}User administration{% endtrans %}
+                                    <i class="bi bi-person-gear me-2"></i>{% trans %}List users{% endtrans %}
                                 </a>
                             </li>
                             {% if perm_add_new %}
@@ -176,22 +176,61 @@
                                 </a>
                             </li>
                             {% endif %}
-                            {% if perm_templ_perm_edit %}
-                            <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_perm_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/permissions/templates">
-                                    <i class="bi bi-person-lock me-2"></i>{% trans %}List permission templates{% endtrans %}
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'add_perm_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/permissions/templates/add">
-                                    <i class="bi bi-person-plus-fill me-2"></i>{% trans %}Add permission template{% endtrans %}
-                                </a>
-                            </li>
-                            {% endif %}
                             {% if perm_is_godlike and dblog_use == true %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_log_users' ? 'active' : '' }}" href="{{ base_url_prefix }}/users/logs">
                                     <i class="bi bi-journal-text me-2"></i>{% trans %}User logs{% endtrans %}
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
+
+                    {% if perm_is_godlike %}
+                    <!-- Groups Section -->
+                    <li class="nav-item">
+                        <div class="nav-section-header">
+                            <i class="bi bi-people-fill me-2"></i>{% trans %}Groups{% endtrans %}
+                        </div>
+                        <ul class="nav nav-pills flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_groups' ? 'active' : '' }}" href="{{ base_url_prefix }}/groups">
+                                    <i class="bi bi-collection-fill me-2"></i>{% trans %}List groups{% endtrans %}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_group' ? 'active' : '' }}" href="{{ base_url_prefix }}/groups/add">
+                                    <i class="bi bi-plus-circle me-2"></i>{% trans %}Add group{% endtrans %}
+                                </a>
+                            </li>
+                            {% if dblog_use == true %}
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_log_groups' ? 'active' : '' }}" href="{{ base_url_prefix }}/groups/logs">
+                                    <i class="bi bi-journal-text me-2"></i>{% trans %}Group logs{% endtrans %}
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
+
+                    {% if perm_templ_perm_edit %}
+                    <!-- Permissions -->
+                    <li class="nav-item">
+                        <div class="nav-section-header">
+                            <i class="bi bi-shield-lock me-2"></i>{% trans %}Access{% endtrans %}
+                        </div>
+                        <ul class="nav nav-pills flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_perm_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/permissions/templates">
+                                    <i class="bi bi-shield-fill-check me-2"></i>{% trans %}List templates{% endtrans %}
+                                </a>
+                            </li>
+                            {% if perm_templ_perm_add %}
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_perm_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/permissions/templates/add">
+                                    <i class="bi bi-shield-plus me-2"></i>{% trans %}Add template{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
@@ -356,7 +395,7 @@
                     {% else %}
                         <i class="bi bi-person-circle me-2"></i>
                     {% endif %}
-                    <span class="me-3">{{ user_name }}</span>
+                    <span class="me-3">{{ user_name }} <small class="text-muted">({{ user_username }})</small></span>
                     <button class="btn btn-outline-secondary btn-sm me-2" id="style-switcher">
                         <i class="bi" id="style-icon"></i>
                     </button>

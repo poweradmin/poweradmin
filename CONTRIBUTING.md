@@ -6,7 +6,7 @@ Thank you for your interest in contributing to Poweradmin! We welcome contributi
 
 ### Prerequisites
 
-- PHP 8.1 or higher
+- PHP 8.2 or higher
 - Composer for dependency management
 - Database server (MySQL, PostgreSQL, or SQLite)
 - Access to a PowerDNS server for testing

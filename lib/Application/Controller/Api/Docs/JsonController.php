@@ -91,9 +91,8 @@ class JsonController extends BaseController
                 throw new Exception("API version {$version} does not exist");
             }
 
-            $openapi = Generator::scan([$scanPath], [
-                'validate' => false,  // Disable validation to prevent issues
-            ]);
+            $generator = new Generator();
+            $openapi = $generator->generate([$scanPath], validate: false);
 
             // Get JSON content
             $jsonContent = $openapi->toJson();

@@ -38,10 +38,12 @@ trait DbUserValidationTrait
         return [
             'pa_db_user' => [
                 new Assert\NotBlank(),
+                /** @phan-suppress-next-line PhanUndeclaredMethodInCallable */
                 new Assert\Callback([$this, 'validateDbUser']),
             ],
             'pa_db_pass' => [
                 new Assert\NotBlank(),
+                /** @phan-suppress-next-line PhanUndeclaredMethodInCallable */
                 new Assert\Callback([$this, 'validateDbPass']),
             ],
         ];

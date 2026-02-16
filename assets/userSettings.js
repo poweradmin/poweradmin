@@ -84,28 +84,30 @@ const UserSettings = (function() {
     /**
      * Apply rows per page setting to the current URL
      * @param {number} rowsPerPage - Number of rows per page
-     * @param {string} pageType - Type of page (zones, edit, search_zones, search_records)
+     * @param {string} pageType - Type of page (zones, edit, search_zones, search_records, users)
      */
     function applyRowsPerPageSetting(rowsPerPage, pageType = 'zones') {
         // Get current URL and parse it
         const url = new URL(window.location.href);
-        
+
         // For search page, we need to handle differently as it uses form submission
         if (pageType === 'search_zones' || pageType === 'search_records') {
             return rowsPerPage; // Just return the value to be used by form submission
         }
-        
+
         // For other pages, we update URL parameters
-        const paramName = `rows_per_page${pageType !== 'zones' ? `_${pageType}` : ''}`;
-        
+        // Pages that use standard rows_per_page parameter
+        const standardPages = ['zones', 'users'];
+        const paramName = standardPages.includes(pageType) ? 'rows_per_page' : `rows_per_page_${pageType}`;
+
         // Update or add rows_per_page parameter
         url.searchParams.set(paramName, rowsPerPage);
-        
+
         // If we have a page parameter, reset it to 1
         if (url.searchParams.has('start')) {
             url.searchParams.set('start', 1);
         }
-        
+
         // Navigate to the new URL
         window.location.href = url.toString();
     }

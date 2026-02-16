@@ -67,13 +67,26 @@ class ZoneSearch extends BaseSearch
         if ($zones) {
             foreach ($zones as $zone_id => $zone_array) {
                 $zone_owner_fullnames = [];
+                $zone_owner_usernames = [];
                 $zone_owner_ids = [];
                 foreach ($zone_array as $zone_entry) {
                     $zone_owner_ids[] = $zone_entry['owner'];
-                    $zone_owner_fullnames[] = $zone_entry['fullname'] != "" ? $zone_entry['fullname'] : $zone_entry['username'];
+                    $zone_owner_fullnames[] = $zone_entry['fullname'];
+                    $zone_owner_usernames[] = $zone_entry['username'];
                 }
                 $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
-                $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
+                $zones[$zone_id][0]['owner_fullnames'] = $zone_owner_fullnames;
+                $zones[$zone_id][0]['owner_usernames'] = $zone_owner_usernames;
+                // Keep old fullname field for backwards compatibility (simple display)
+                $zone_owner_displays = [];
+                foreach ($zone_array as $zone_entry) {
+                    if ($zone_entry['fullname'] != "") {
+                        $zone_owner_displays[] = $zone_entry['fullname'] . ' (' . $zone_entry['username'] . ')';
+                    } else {
+                        $zone_owner_displays[] = $zone_entry['username'];
+                    }
+                }
+                $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_displays);
                 $found_zone = $zones[$zone_id][0];
                 $found_zone['name'] = DnsIdnService::toUtf8($found_zone['name'] ?? '');
                 $foundZones[] = $found_zone;
@@ -240,8 +253,15 @@ class ZoneSearch extends BaseSearch
         $whereConditions .= ')';
 
         if ($permission_view == 'own') {
-            $whereConditions .= ' AND z.owner = :user_id';
-            $params[':user_id'] = $_SESSION['userid'];
+            // Check both direct ownership and group ownership
+            $whereConditions .= ' AND (z.owner = :user_id OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = ' . $domains_table . '.id AND ugm.user_id = :user_id_group
+            ))';
+            $userId = $this->userContext->getLoggedInUserId();
+            $params[':user_id'] = $userId;
+            $params[':user_id_group'] = $userId;
         }
 
         return $whereConditions;
@@ -273,8 +293,15 @@ class ZoneSearch extends BaseSearch
         $whereConditions .= ')';
 
         if ($permission_view == 'own') {
-            $whereConditions .= ' AND z.owner = :user_id';
-            $params[':user_id'] = $_SESSION['userid'];
+            // Check both direct ownership and group ownership
+            $whereConditions .= ' AND (z.owner = :user_id_count OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = ' . $domains_table . '.id AND ugm.user_id = :user_id_count_group
+            ))';
+            $userId = $this->userContext->getLoggedInUserId();
+            $params[':user_id_count'] = $userId;
+            $params[':user_id_count_group'] = $userId;
         }
 
         return $whereConditions;

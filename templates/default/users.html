@@ -7,7 +7,7 @@
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <strong><i class="bi bi-people me-2"></i>{% trans %}User Administration{% endtrans %}</strong>
+        <strong><i class="bi bi-people me-2"></i>{% trans %}User Management{% endtrans %} <span class="badge bg-secondary ms-2">{{ total_users }}</span></strong>
         {% if perm_add_new %}
         <a href="{{ base_url_prefix }}/users/add" class="btn btn-primary btn-sm">
             <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add user{% endtrans %}
@@ -15,6 +15,22 @@
         {% endif %}
     </div>
     <div class="card-body p-0">
+        <div class="d-flex justify-content-between align-items-center px-3 pt-3">
+            <div>
+                {% if pagination %}
+                {{ pagination | raw }}
+                {% endif %}
+            </div>
+            <div class="d-flex align-items-center">
+                <label for="rows-per-page" class="me-2 text-secondary">{% trans %}Rows per page:{% endtrans %}</label>
+                <select id="rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="changeRowsPerPage(this.value, 'users')">
+                    <option value="10" {{ rows_per_page == 10 ? 'selected' : '' }}>10</option>
+                    <option value="20" {{ rows_per_page == 20 ? 'selected' : '' }}>20</option>
+                    <option value="50" {{ rows_per_page == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ rows_per_page == 100 ? 'selected' : '' }}>100</option>
+                </select>
+            </div>
+        </div>
         <form method="post" action="{{ base_url_prefix }}/users" id="user-form">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <div class="table-responsive">
@@ -25,7 +41,11 @@
                         <th>{% trans %}Fullname{% endtrans %}</th>
                         <th>{% trans %}Email address{% endtrans %}</th>
                         <th>{% trans %}Template{% endtrans %}</th>
+                        <th>{% trans %}Groups{% endtrans %}</th>
                         <th class="text-center">{% trans %}Auth Type{% endtrans %}</th>
+                        {% if mfa_enabled %}
+                        <th class="text-center">{% trans %}MFA{% endtrans %}</th>
+                        {% endif %}
                         <th class="text-center">{% trans %}Enabled{% endtrans %}</th>
                         <th class="text-end">{% trans %}Actions{% endtrans %}</th>
                     </tr>
@@ -64,6 +84,16 @@
                             {% endif %}
                         </td>
 
+                        <td class="small text-muted">
+                            {% if user['groups'] is not empty %}
+                                {% for group in user['groups'] %}
+                                <div>{{ group }}</div>
+                                {% endfor %}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+
                         <td class="text-center">
                             {% if user['auth_type'] == 'sql' %}
                                 <span class="badge bg-primary">{% trans %}SQL{% endtrans %}</span>
@@ -78,6 +108,16 @@
                             {% endif %}
                         </td>
 
+                        {% if mfa_enabled %}
+                        <td class="text-center">
+                            {% if user['mfa_enabled'] %}
+                                <i class="bi bi-shield-fill-check text-success" title="{% trans %}MFA enabled{% endtrans %}"></i>
+                            {% else %}
+                                <i class="bi bi-shield text-muted" title="{% trans %}MFA not configured{% endtrans %}"></i>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+
                         {% if user['uid'] != session_userid %}
                         <td class="text-center"><input class="form-check-input" type="checkbox" name="user[{{ user['uid'] }}][active]" {{ active }}></td>
                         {% else %}
@@ -87,13 +127,13 @@
                         <td class="text-end">
                             <input type="hidden" name="user[{{ user_uid }}][uid]" value="{{ user_uid }}">
                             <input type="hidden" name="user[{{ user['uid'] }}][use_ldap]" value="{{ user['use_ldap'] }}">
-                            <div class="gap-2">
+                            <div class="btn-group btn-group-sm" role="group">
                                 <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/users/{{ user_uid }}/edit">
-                                    <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>
+                                    <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 {% if user['uid'] != session_userid %}
                                 <a class="btn btn-sm btn-outline-danger" href="{{ base_url_prefix }}/users/{{ user['uid'] }}/delete">
-                                    <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
+                                    <i class="bi bi-trash text-danger"></i>
                                 </a>
                                 {% endif %}
                             </div>
@@ -106,6 +146,16 @@
                         <td>{{ user['email'] }}</td>
                         <td>{{ user['tpl_name'] }}</td>
 
+                        <td class="small text-muted">
+                            {% if user['groups'] is not empty %}
+                                {% for group in user['groups'] %}
+                                <div>{{ group }}</div>
+                                {% endfor %}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+
                         <td class="text-center">
                             {% if user['auth_type'] == 'sql' %}
                                 <span class="badge bg-primary">{% trans %}SQL{% endtrans %}</span>
@@ -119,6 +169,16 @@
                                 <span class="badge bg-secondary">{{ user['auth_type']|upper }}</span>
                             {% endif %}
                         </td>
+
+                        {% if mfa_enabled %}
+                        <td class="text-center">
+                            {% if user['mfa_enabled'] %}
+                                <i class="bi bi-shield-fill-check text-success" title="{% trans %}MFA enabled{% endtrans %}"></i>
+                            {% else %}
+                                <i class="bi bi-shield text-muted" title="{% trans %}MFA not configured{% endtrans %}"></i>
+                            {% endif %}
+                        </td>
+                        {% endif %}
 
                         <td class="text-center">
                             {% if user['active'] %}
@@ -135,8 +195,13 @@
                 </table>
             </div>
         </form>
+        {% if pagination %}
+        <div class="px-3 py-3">
+            {{ pagination | raw }}
+        </div>
+        {% endif %}
     </div>
-    
+
     {% if permissions['user_edit_own'] or permissions['user_edit_others'] %}
     <div class="card-footer py-3">
         <button type="submit" class="btn btn-primary btn-sm" form="user-form" name="commit">

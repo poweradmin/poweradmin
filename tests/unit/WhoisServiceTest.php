@@ -230,7 +230,7 @@ class WhoisServiceTest extends TestCase
         $mockWhoisService->expects($this->once())
             ->method('getWhoisServerForDomain')
             ->with('example.com')
-            ->will($this->throwException(new \Exception('Test exception')));
+            ->willThrowException(new \Exception('Test exception'));
 
         $result = $mockWhoisService->getWhoisInfo('example.com');
 

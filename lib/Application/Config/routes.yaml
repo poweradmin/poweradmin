@@ -87,6 +87,12 @@ user_delete:
     id: '\d+'
   methods: [GET, POST]
 
+# Remove user from group
+user_remove_group:
+  path: /users/groups/remove
+  controller: Poweradmin\Application\Controller\RemoveUserGroupController::run
+  methods: [POST]
+
 # User Preferences
 user_preferences:
   path: /user/preferences
@@ -143,6 +149,20 @@ zone_edit:
   controller: Poweradmin\Application\Controller\EditController::run
   requirements:
     id: '\d+'
+
+zone_ownership:
+  path: /zones/{id}/ownership
+  controller: Poweradmin\Application\Controller\ZoneOwnershipController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+zone_save_template:
+  path: /zones/{id}/save-template
+  controller: Poweradmin\Application\Controller\SaveZoneAsTemplateController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
 
 zone_delete:
   path: /zones/{id}/delete
@@ -264,10 +284,65 @@ delete_perm_templ:
     id: '\d+'
   methods: [GET, POST]
 
+# User Groups
+list_groups:
+  path: /groups
+  controller: Poweradmin\Application\Controller\ListGroupsController::run
+
+add_group:
+  path: /groups/add
+  controller: Poweradmin\Application\Controller\AddGroupController::run
+  methods: [GET, POST]
+
+edit_group:
+  path: /groups/{id}/edit
+  controller: Poweradmin\Application\Controller\EditGroupController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+delete_group:
+  path: /groups/{id}/delete
+  controller: Poweradmin\Application\Controller\DeleteGroupController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+manage_group_members:
+  path: /groups/{id}/members
+  controller: Poweradmin\Application\Controller\ManageGroupMembersController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+manage_group_zones:
+  path: /groups/{id}/zones
+  controller: Poweradmin\Application\Controller\ManageGroupZonesController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+# Quick remove member from group (from edit page)
+quick_remove_group_member:
+  path: /groups/quick-remove-member
+  controller: Poweradmin\Application\Controller\QuickRemoveGroupMemberController::run
+  methods: [POST]
+
+# Quick remove zone from group (from edit page)
+quick_remove_group_zone:
+  path: /groups/quick-remove-zone
+  controller: Poweradmin\Application\Controller\QuickRemoveGroupZoneController::run
+  methods: [POST]
+
 # User Logs
 users_logs:
   path: /users/logs
   controller: Poweradmin\Application\Controller\ListLogUsersController::run
+
+# Group Logs
+groups_logs:
+  path: /groups/logs
+  controller: Poweradmin\Application\Controller\ListLogGroupsController::run
 
 # DNSSEC Management
 dnssec:
@@ -540,6 +615,48 @@ api_v2_permission:
   requirements:
     id: '\d+'
   methods: [GET]
+
+api_v2_groups:
+  path: /api/v2/groups
+  controller: Poweradmin\Application\Controller\Api\V2\GroupsController::run
+  methods: [GET, POST]
+
+api_v2_group:
+  path: /api/v2/groups/{id}
+  controller: Poweradmin\Application\Controller\Api\V2\GroupsController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, PUT, DELETE]
+
+api_v2_group_members:
+  path: /api/v2/groups/{id}/members
+  controller: Poweradmin\Application\Controller\Api\V2\GroupMembersController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+api_v2_group_member:
+  path: /api/v2/groups/{id}/members/{user_id}
+  controller: Poweradmin\Application\Controller\Api\V2\GroupMembersController::run
+  requirements:
+    id: '\d+'
+    user_id: '\d+'
+  methods: [DELETE]
+
+api_v2_group_zones:
+  path: /api/v2/groups/{id}/zones
+  controller: Poweradmin\Application\Controller\Api\V2\GroupZonesController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+api_v2_group_zone:
+  path: /api/v2/groups/{id}/zones/{zone_id}
+  controller: Poweradmin\Application\Controller\Api\V2\GroupZonesController::run
+  requirements:
+    id: '\d+'
+    zone_id: '\d+'
+  methods: [DELETE]
 
 # API Documentation
 api_docs:

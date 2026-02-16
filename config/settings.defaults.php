@@ -25,7 +25,7 @@ return [
         'charset' => 'latin1', // or 'utf8' (added in 2.1.8)
         'file' => '',          // Only used for SQLite, provide full path to database file (added in 2.1.6)
         'debug' => false,      // Show all SQL queries (added in 2.1.6)
-        'pdns_db_name' => '',  // Separate database for PowerDNS (experimental, added in 3.8.0)
+        'pdns_db_name' => '',  // Separate database for PowerDNS (added in 3.8.0)
 
         /**
          * SSL/TLS Settings for database connections (added in 4.1.0)
@@ -85,6 +85,7 @@ return [
          */
         'mfa' => [
             'enabled' => false,                  // Enable MFA functionality
+            'enforced' => false,                 // Enable MFA enforcement (requires user_enforce_mfa permission)
             'app_enabled' => true,               // Enable authenticator app option
             'email_enabled' => true,             // Enable email verification option
             'recovery_codes' => 8,               // Number of recovery codes to generate
@@ -126,7 +127,7 @@ return [
      */
     'interface' => [
         'language' => 'en_EN',                // Default language for the interface
-        'enabled_languages' => 'cs_CZ,de_DE,en_EN,es_ES,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,tr_TR,zh_CN', // Added in 3.8.0
+        'enabled_languages' => 'cs_CZ,de_DE,en_EN,es_ES,fr_FR,id_ID,it_IT,ja_JP,ko_KR,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,sv_SE,tr_TR,uk_UA,vi_VN,zh_CN', // Added in 3.8.0
         'title' => 'Poweradmin',              // Application title (browser tab and header logo). Useful for distinguishing multiple server instances. (added in 2.1.5)
         'session_timeout' => 1800,            // Session timeout in seconds (30 minutes)
         'rows_per_page' => 10,
@@ -403,17 +404,41 @@ return [
         'auto_provision' => true,             // Automatically create user accounts from OIDC
         'link_by_email' => true,              // Link OIDC accounts to existing users by email
         'sync_user_info' => true,             // Sync user information (name, email) from OIDC provider
-        'default_permission_template' => '',  // Default permission template for new OIDC users
+        'default_permission_template' => 'Guest',  // Default permission template for new OIDC users (minimal access until assigned proper role)
 
         // Permission template mapping for automatic role assignment
-        // Maps OIDC groups to existing permission template names
+        // Maps OIDC groups to existing user permission template names
         // Note: Users can only have one permission template assigned
         // Configure your actual group mappings in config/settings.php
+        //
+        // Predefined user permission templates:
+        //   - 'Administrator' - Full administrative rights
+        //   - 'Viewer' - Read-only access to own zones
+        //   - 'Guest' - Temporary access with no permissions (awaiting approval)
         'permission_template_mapping' => [
             // Examples (configure your actual mappings in settings.php):
-            // 'poweradmin-admins' => 'Administrator',    // Map this OIDC group to Administrator permission template
-            // 'dns-operators' => 'DNS Operator',         // Example: DNS operations template (if exists)
-            // 'dns-viewers' => 'Read Only',              // Example: Read-only template (if exists)
+            // 'poweradmin-admins' => 'Administrator',    // Full admin access
+            // 'dns-operators' => 'Viewer',               // Read-only zone access
+            // 'dns-viewers' => 'Guest',                  // Minimal access (awaiting approval)
+        ],
+
+        // Group membership mapping for automatic group assignment
+        // Maps OIDC groups to Poweradmin groups (users can belong to multiple groups)
+        // Configure your actual group mappings in config/settings.php
+        //
+        // Predefined Poweradmin groups:
+        //   - 'Administrators' - Full administrative access to all system functions
+        //   - 'Zone Managers' - Full zone management including creation, editing, and deletion
+        //   - 'Editors' - Edit zone records but cannot modify SOA and NS records
+        //   - 'Viewers' - Read-only access to zones with search capability
+        //   - 'Guests' - Temporary group with no permissions (awaiting approval)
+        'group_mapping' => [
+            // Examples (configure your actual mappings in settings.php):
+            // 'poweradmin-admins' => 'Administrators',   // Map to Administrators group
+            // 'dns-managers' => 'Zone Managers',         // Map to Zone Managers group
+            // 'dns-editors' => 'Editors',                // Map to Editors group
+            // 'dns-viewers' => 'Viewers',                // Map to Viewers group
+            // 'dns-guests' => 'Guests',                  // Map to Guests group
         ],
 
         // Provider configurations
@@ -595,17 +620,41 @@ return [
         'auto_provision' => true,             // Automatically create user accounts from SAML
         'link_by_email' => true,              // Link SAML accounts to existing users by email
         'sync_user_info' => true,             // Sync user information (name, email) from SAML provider
-        'default_permission_template' => '',  // Default permission template for new SAML users
+        'default_permission_template' => 'Guest',  // Default permission template for new SAML users (minimal access until assigned proper role)
 
         // Permission template mapping for automatic role assignment
-        // Maps SAML groups/roles to existing permission template names
+        // Maps SAML groups/roles to existing user permission template names
         // Note: Users can only have one permission template assigned
         // Configure your actual group mappings in config/settings.php
+        //
+        // Predefined user permission templates:
+        //   - 'Administrator' - Full administrative rights
+        //   - 'Viewer' - Read-only access to own zones
+        //   - 'Guest' - Temporary access with no permissions (awaiting approval)
         'permission_template_mapping' => [
             // Examples (configure your actual mappings in settings.php):
-            // 'poweradmin-admins' => 'Administrator',    // Map this SAML group to Administrator permission template
-            // 'dns-operators' => 'DNS Operator',         // Example: DNS operations template (if exists)
-            // 'dns-viewers' => 'Read Only',              // Example: Read-only template (if exists)
+            // 'poweradmin-admins' => 'Administrator',    // Full admin access
+            // 'dns-operators' => 'Viewer',               // Read-only zone access
+            // 'dns-viewers' => 'Guest',                  // Minimal access (awaiting approval)
+        ],
+
+        // Group membership mapping for automatic group assignment
+        // Maps SAML groups/roles to Poweradmin groups (users can belong to multiple groups)
+        // Configure your actual group mappings in config/settings.php
+        //
+        // Predefined Poweradmin groups:
+        //   - 'Administrators' - Full administrative access to all system functions
+        //   - 'Zone Managers' - Full zone management including creation, editing, and deletion
+        //   - 'Editors' - Edit zone records but cannot modify SOA and NS records
+        //   - 'Viewers' - Read-only access to zones with search capability
+        //   - 'Guests' - Temporary group with no permissions (awaiting approval)
+        'group_mapping' => [
+            // Examples (configure your actual mappings in settings.php):
+            // 'poweradmin-admins' => 'Administrators',   // Map to Administrators group
+            // 'dns-managers' => 'Zone Managers',         // Map to Zone Managers group
+            // 'dns-editors' => 'Editors',                // Map to Editors group
+            // 'dns-viewers' => 'Viewers',                // Map to Viewers group
+            // 'dns-guests' => 'Guests',                  // Map to Guests group
         ],
 
         // Service Provider (SP) Settings - Your PowerAdmin instance

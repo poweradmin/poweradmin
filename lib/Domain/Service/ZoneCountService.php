@@ -78,8 +78,13 @@ class ZoneCountService
 
             if ($userId) {
                 $conditions[] = "zones.domain_id = $domains_table.id";
-                $conditions[] = "zones.owner = ?";
+                $conditions[] = "(zones.owner = ? OR EXISTS (
+                    SELECT 1 FROM zones_groups zg
+                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                    WHERE zg.domain_id = $domains_table.id AND ugm.user_id = ?
+                ))";
                 $params[] = (string)$userId;
+                $params[] = (string)$userId; // For the EXISTS subquery
                 $tables .= ', zones';
             } else {
                 return 0; // No user ID available

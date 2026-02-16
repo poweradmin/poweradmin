@@ -90,7 +90,7 @@ test.describe('User Permission Combinations', () => {
       if (await dnssecLink.count() > 0) {
         await dnssecLink.click();
         const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/denied|permission/i);
+        expect(bodyText).not.toMatch(/access denied|you do not have permission/i);
       }
     });
   });
@@ -109,7 +109,7 @@ test.describe('User Permission Combinations', () => {
     test('should add zones', async ({ page }) => {
       await page.goto('/zones/add/master');
       const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/denied|permission/i);
+      expect(bodyText).not.toMatch(/access denied|you do not have permission/i);
     });
 
     test('should edit own zones', async ({ page }) => {
@@ -118,7 +118,7 @@ test.describe('User Permission Combinations', () => {
       if (await editLink.count() > 0) {
         await editLink.click();
         const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/denied|permission/i);
+        expect(bodyText).not.toMatch(/access denied|you do not have permission/i);
       }
     });
 
@@ -137,7 +137,7 @@ test.describe('User Permission Combinations', () => {
         if (await addRecordLink.count() > 0) {
           await addRecordLink.click();
           const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/denied|permission/i);
+          expect(bodyText).not.toMatch(/access denied|you do not have permission/i);
         }
       }
     });

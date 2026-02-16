@@ -37,7 +37,9 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Exception;
 use PDO;
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Error\ApiErrorException;
+use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -62,6 +64,7 @@ class ZonesRecordsBulkController extends PublicApiController
     private SOARecordManager $soaRecordManager;
     private TableNameService $tableNameService;
     private ApiPermissionService $permissionService;
+    private RecordCommentService $recordCommentService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -71,6 +74,9 @@ class ZonesRecordsBulkController extends PublicApiController
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
         $this->tableNameService = new TableNameService($this->getConfig());
         $this->permissionService = new ApiPermissionService($this->db);
+
+        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
@@ -466,6 +472,15 @@ class ZonesRecordsBulkController extends PublicApiController
         // Use RecordManager to delete the record
         if (!$this->recordManager->deleteRecord($recordId)) {
             throw new Exception('Failed to delete record');
+        }
+
+        // Clean up per-record comment
+        $this->recordCommentService->deleteCommentByRecordId($recordId);
+
+        // Clean up legacy RRset comments if no similar records remain
+        $similarRecords = $this->recordRepository->getRRSetRecords($zoneId, $existingRecord['name'], $recordType);
+        if (empty($similarRecords)) {
+            $this->recordCommentService->deleteComment($zoneId, $existingRecord['name'], $recordType);
         }
 
         return $recordType;

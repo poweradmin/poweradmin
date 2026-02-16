@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -93,7 +94,8 @@ class AddRecordController extends BaseController
             $this->db,
             $this->getConfig(),
             $this->logger,
-            $this->dnsRecord
+            $this->dnsRecord,
+            $recordCommentService
         );
     }
 
@@ -220,8 +222,14 @@ class AddRecordController extends BaseController
             $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
 
             if ($reverseResult && isset($reverseResult['success']) && $reverseResult['success']) {
-                $message = _('Record successfully added. A matching PTR record was also created.');
-                $this->setMessage('edit', 'success', $message);
+                // Check if this is a warning (duplicate PTR exists for different hostname)
+                if (isset($reverseResult['type']) && $reverseResult['type'] === 'warning') {
+                    $message = _('Record successfully added.') . ' ' . $reverseResult['message'];
+                    $this->setMessage('edit', 'warning', $message);
+                } else {
+                    $message = _('Record successfully added. A matching PTR record was also created.');
+                    $this->setMessage('edit', 'success', $message);
+                }
             } elseif ($reverseResult && isset($reverseResult['success']) && !$reverseResult['success'] && isset($reverseResult['message'])) {
                 // Reverse record creation failed with a specific message
                 $message = _('Record successfully added, but PTR record creation failed: ') . $reverseResult['message'];
@@ -261,6 +269,7 @@ class AddRecordController extends BaseController
 
         $this->render('add_record.html', [
             'types' => $isReverseZone ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled) : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled),
+            'deprecated_types' => RecordType::DEPRECATED_TYPES,
             'name' => $_POST['name'] ?? '',
             'type' => $_POST['type'] ?? '',
             'content' => $_POST['content'] ?? '',
@@ -384,6 +393,7 @@ class AddRecordController extends BaseController
         $records = $_POST['records'] ?? [];
         $successCount = 0;
         $failureCount = 0;
+        $ptrWarnings = [];
         $formId = $this->formStateService->generateFormId('add_record');
 
         if (empty($records)) {
@@ -416,7 +426,11 @@ class AddRecordController extends BaseController
 
                 // Handle reverse or domain record creation for individual records
                 if (isset($record['reverse']) && $record['reverse']) {
-                    $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+                    $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+                    // Collect warnings about duplicate PTR records
+                    if (isset($reverseResult['type']) && $reverseResult['type'] === 'warning') {
+                        $ptrWarnings[] = $reverseResult['message'];
+                    }
                 } elseif (isset($record['create_domain_record']) && $record['create_domain_record']) {
                     $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
                 }
@@ -453,6 +467,10 @@ class AddRecordController extends BaseController
                 // Redirect with form_id to show errors
                 $this->redirect('/zones/' . $zone_id . '/edit?form_id=' . $formId);
                 return;
+            } elseif (!empty($ptrWarnings)) {
+                // Success with PTR warnings
+                $message .= ' ' . implode(' ', $ptrWarnings);
+                $this->setMessage('edit', 'warning', $message);
             } else {
                 $this->setMessage('edit', 'success', $message);
             }

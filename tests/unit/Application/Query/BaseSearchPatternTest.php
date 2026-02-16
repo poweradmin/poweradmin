@@ -22,7 +22,9 @@
 
 namespace Poweradmin\Tests\Unit\Application\Query;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Query\BaseSearch;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use unit\Application\Query\TestableBaseSearch;
 
@@ -30,8 +32,8 @@ use unit\Application\Query\TestableBaseSearch;
  * Test Search Pattern Handling and Wildcard Functionality
  *
  * @package Poweradmin\Tests\Unit\Application\Query
- * @covers \Poweradmin\Application\Query\BaseSearch::buildSearchString
  */
+#[CoversClass(BaseSearch::class)]
 class BaseSearchPatternTest extends TestCase
 {
     private $mockDb;

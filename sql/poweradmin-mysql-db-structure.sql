@@ -26,6 +26,16 @@ CREATE TABLE `log_zones` (
                              KEY `idx_log_zones_zone_id` (`zone_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `log_groups` (
+                              `id` int(11) NOT NULL AUTO_INCREMENT,
+                              `event` varchar(2048) NOT NULL,
+                              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+                              `priority` int(11) NOT NULL,
+                              `group_id` int(11) DEFAULT NULL,
+                              PRIMARY KEY (`id`),
+                              KEY `idx_log_groups_group_id` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `users` (
                          `id` int(11) NOT NULL AUTO_INCREMENT,
                          `username` varchar(64) NOT NULL,
@@ -93,21 +103,28 @@ INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (64,	'zone_templ_edit',	'User is allowed to edit existing zone templates.'),
                                                      (65,	'api_manage_keys',	'User is allowed to create and manage API keys.'),
                                                      (67,	'zone_delete_own',	'User is allowed to delete zones they own.'),
-                                                     (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.');
+                                                     (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.'),
+                                                     (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.');
 
 CREATE TABLE `perm_templ` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
                               `name` varchar(128) NOT NULL,
                               `descr` varchar(1024) NOT NULL,
+                              `template_type` enum('user','group') NOT NULL DEFAULT 'user',
                               PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `perm_templ` (`id`, `name`, `descr`) VALUES
-    (1,	'Administrator',	'Administrator template with full rights.'),
-    (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.'),
-    (3,	'DNS Editor',	'Edit own zone records but cannot modify SOA and NS records.'),
-    (4,	'Read Only',	'Read-only access to own zones with search capability.'),
-    (5,	'No Access',	'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.');
+INSERT INTO `perm_templ` (`id`, `name`, `descr`, `template_type`) VALUES
+    (1,	'Administrator',	'Administrator template with full rights.',	'user'),
+    (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.',	'user'),
+    (3,	'Editor',	'Edit own zone records but cannot modify SOA and NS records.',	'user'),
+    (4,	'Viewer',	'Read-only access to own zones with search capability.',	'user'),
+    (5,	'Guest',	'Temporary access with no permissions. Suitable for users awaiting approval or limited access.',	'user'),
+    (6,	'Administrators',	'Full administrative access for group members.',	'group'),
+    (7,	'Zone Managers',	'Full zone management for group members.',	'group'),
+    (8,	'Editors',	'Edit zone records (no SOA/NS) for group members.',	'group'),
+    (9,	'Viewers',	'Read-only zone access for group members.',	'group'),
+    (10,	'Guests',	'Temporary group with no permissions. Suitable for users awaiting approval.',	'group');
 
 CREATE TABLE `perm_templ_items` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -136,7 +153,25 @@ INSERT INTO `perm_templ_items` (`id`, `templ_id`, `perm_id`) VALUES
     (15,	3,	56),
     (16,	3,	62),
     (17,	4,	43),
-    (18,	4,	49);
+    (18,	4,	49),
+    (19,	6,	53),
+    (20,	7,	41),
+    (21,	7,	42),
+    (22,	7,	43),
+    (23,	7,	44),
+    (24,	7,	45),
+    (25,	7,	49),
+    (26,	7,	56),
+    (27,	7,	63),
+    (28,	7,	64),
+    (29,	7,	65),
+    (30,	7,	67),
+    (31,	8,	43),
+    (32,	8,	49),
+    (33,	8,	56),
+    (34,	8,	62),
+    (35,	9,	43),
+    (36,	9,	49);
 
 CREATE TABLE `records_zone_templ` (
                                       `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -151,7 +186,7 @@ CREATE TABLE `records_zone_templ` (
 CREATE TABLE `zones` (
                          `id` int(11) NOT NULL AUTO_INCREMENT,
                          `domain_id` int(11) NOT NULL,
-                         `owner` int(11) NOT NULL,
+                         `owner` int(11) NULL DEFAULT NULL,
                          `comment` varchar(1024) DEFAULT NULL,
                          `zone_templ_id` int(11) NOT NULL,
                          PRIMARY KEY (`id`),
@@ -320,4 +355,60 @@ CREATE TABLE `saml_user_links` (
   KEY `idx_provider_id` (`provider_id`),
   KEY `idx_saml_subject` (`saml_subject`),
   CONSTRAINT `fk_saml_user_links_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `user_groups` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `description` TEXT,
+  `perm_templ` INT NOT NULL,
+  `created_by` INT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_name` (`name`),
+  KEY `idx_perm_templ` (`perm_templ`),
+  KEY `idx_created_by` (`created_by`),
+  KEY `idx_name` (`name`(191)),
+  CONSTRAINT `fk_user_groups_perm_templ` FOREIGN KEY (`perm_templ`) REFERENCES `perm_templ`(`id`),
+  CONSTRAINT `fk_user_groups_created_by` FOREIGN KEY (`created_by`) REFERENCES `users`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `user_groups` (`id`, `name`, `description`, `perm_templ`, `created_by`) VALUES
+    (1, 'Administrators', 'Full administrative access to all system functions.', 6, NULL),
+    (2, 'Zone Managers', 'Full zone management including creation, editing, and deletion.', 7, NULL),
+    (3, 'Editors', 'Edit zone records but cannot modify SOA and NS records.', 8, NULL),
+    (4, 'Viewers', 'Read-only access to zones with search capability.', 9, NULL),
+    (5, 'Guests', 'Temporary group with no permissions. Suitable for users awaiting approval.', 10, NULL);
+
+CREATE TABLE `user_group_members` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `group_id` INT UNSIGNED NOT NULL,
+  `user_id` INT NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_member` (`group_id`, `user_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_group_id` (`group_id`),
+  CONSTRAINT `fk_user_group_members_group` FOREIGN KEY (`group_id`) REFERENCES `user_groups`(`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_user_group_members_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `zones_groups` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `domain_id` INT NOT NULL,
+  `group_id` INT UNSIGNED NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_zone_group` (`domain_id`, `group_id`),
+  KEY `idx_domain_id` (`domain_id`),
+  KEY `idx_group_id` (`group_id`),
+  CONSTRAINT `fk_zones_groups_group` FOREIGN KEY (`group_id`) REFERENCES `user_groups`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `record_comment_links` (
+    `record_id` INT NOT NULL,
+    `comment_id` INT NOT NULL,
+    PRIMARY KEY (`record_id`),
+    UNIQUE KEY `idx_record_comment_links_comment` (`comment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

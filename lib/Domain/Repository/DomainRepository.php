@@ -256,8 +256,13 @@ class DomainRepository implements DomainRepositoryInterface
         } else {
             $params = [];
             if ($perm == "own") {
-                $sql_add = " AND zones.domain_id = $domains_table.id AND zones.owner = :userid";
+                $sql_add = " AND zones.domain_id = $domains_table.id AND (zones.owner = :userid OR EXISTS (
+                    SELECT 1 FROM zones_groups zg
+                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                    WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userid_group
+                ))";
                 $params[':userid'] = $userid;
+                $params[':userid_group'] = $userid;
             }
 
             if ($letterstart != 'all' && $letterstart != 1) {
@@ -304,7 +309,14 @@ class DomainRepository implements DomainRepositoryInterface
                 $id_query .= " WHERE 1=1";
 
                 if ($perm == "own") {
-                    $id_query .= " AND zones.owner = :userid";
+                    $id_query .= " AND (zones.owner = :userid OR EXISTS (
+                        SELECT 1 FROM zones_groups zg
+                        INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                        WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userid_group
+                    ))";
+                    if (!isset($params[':userid_group'])) {
+                        $params[':userid_group'] = $userid;
+                    }
                 }
 
                 if ($letterstart != 'all' && $letterstart != 1) {
@@ -347,7 +359,14 @@ class DomainRepository implements DomainRepositoryInterface
                 $id_query .= " WHERE 1=1";
 
                 if ($perm == "own") {
-                    $id_query .= " AND zones.owner = :userid";
+                    $id_query .= " AND (zones.owner = :userid OR EXISTS (
+                        SELECT 1 FROM zones_groups zg
+                        INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                        WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userid_group
+                    ))";
+                    if (!isset($params[':userid_group'])) {
+                        $params[':userid_group'] = $userid;
+                    }
                 }
 
                 if ($letterstart != 'all' && $letterstart != 1) {
@@ -461,9 +480,24 @@ class DomainRepository implements DomainRepositoryInterface
             $ret[$domainName]["type"] = $r["type"];
             $ret[$domainName]["count_records"] = $r["count_records"];
             $ret[$domainName]["comment"] = $r["comment"] ?? '';
-            $ret[$domainName]["owners"][] = $r["username"];
-            $ret[$domainName]["full_names"][] = $r["fullname"] ?: '';
-            $ret[$domainName]["users"][] = $r["username"];
+
+            // Only add owner if username is not NULL
+            if ($r["username"] !== null) {
+                $ret[$domainName]["owners"][] = $r["username"];
+                $ret[$domainName]["full_names"][] = $r["fullname"] ?: '';
+                $ret[$domainName]["users"][] = $r["username"];
+            } else {
+                // Initialize empty arrays if not already set
+                if (!isset($ret[$domainName]["owners"])) {
+                    $ret[$domainName]["owners"] = [];
+                }
+                if (!isset($ret[$domainName]["full_names"])) {
+                    $ret[$domainName]["full_names"] = [];
+                }
+                if (!isset($ret[$domainName]["users"])) {
+                    $ret[$domainName]["users"] = [];
+                }
+            }
 
             if ($pdnssec_use) {
                 $ret[$domainName]["secured"] = $r["secured"];

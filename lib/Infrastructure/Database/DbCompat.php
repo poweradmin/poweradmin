@@ -93,6 +93,17 @@ final class DbCompat
     ];
 
     /**
+     * Mapping of database types to their GROUP_CONCAT equivalent functions.
+     */
+    private const GROUP_CONCAT_FUNCTIONS = [
+        'mysql' => 'GROUP_CONCAT',
+        'mysqli' => 'GROUP_CONCAT',
+        'sqlite' => 'GROUP_CONCAT',
+        'pgsql' => 'STRING_AGG',
+        'default' => 'GROUP_CONCAT'
+    ];
+
+    /**
      * Returns the appropriate substring function for the given database type.
      *
      * @param string $db_type The type of database (e.g., "sqlite", "mysql", etc.)
@@ -263,6 +274,27 @@ final class DbCompat
     }
 
     /**
+     * Returns the appropriate GROUP_CONCAT expression for the given database type.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", "pgsql")
+     * @param string $column The column to aggregate
+     * @param string $separator The separator between values (default: ', ')
+     * @return string The GROUP_CONCAT expression corresponding to the given database type.
+     */
+    public static function groupConcat(string $db_type, string $column, string $separator = ', '): string
+    {
+        $func = self::GROUP_CONCAT_FUNCTIONS[$db_type] ?? self::GROUP_CONCAT_FUNCTIONS['default'];
+
+        if ($db_type === 'pgsql') {
+            // PostgreSQL uses STRING_AGG(column, separator)
+            return $func . '(' . $column . ", '" . $separator . "')";
+        } else {
+            // MySQL and SQLite use GROUP_CONCAT(column SEPARATOR 'sep')
+            return $func . '(' . $column . " SEPARATOR '" . $separator . "')";
+        }
+    }
+
+    /**
      * Restores the original SQL mode for the MySQL database connection if needed.
      *
      * @param object $db The database connection object
@@ -275,5 +307,40 @@ final class DbCompat
         if ($db_type === 'mysql' && $originalSqlMode !== '') {
             $db->exec("SET SESSION sql_mode = '$originalSqlMode'");
         }
+    }
+
+    /**
+     * Returns the expression to cast an integer column to string for comparison.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", "pgsql")
+     * @param string $column The column to cast
+     * @return string The CAST expression corresponding to the given database type.
+     */
+    public static function castToString(string $db_type, string $column): string
+    {
+        return match ($db_type) {
+            'sqlite' => "CAST($column AS TEXT)",
+            'pgsql' => "CAST($column AS VARCHAR)",
+            default => "CAST($column AS CHAR)",
+        };
+    }
+
+    /**
+     * Returns the expression to check if a column contains only digits (is numeric string).
+     *
+     * Used to distinguish between record IDs (numeric) and legacy usernames (non-numeric)
+     * in the comments.account field.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", "pgsql")
+     * @param string $column The column to check
+     * @return string The expression that returns true if column contains only digits
+     */
+    public static function isNumericString(string $db_type, string $column): string
+    {
+        return match ($db_type) {
+            'sqlite' => "$column GLOB '[0-9]*' AND $column NOT GLOB '*[^0-9]*'",
+            'pgsql' => "$column ~ '^[0-9]+$'",
+            default => "$column REGEXP '^[0-9]+$'",
+        };
     }
 }

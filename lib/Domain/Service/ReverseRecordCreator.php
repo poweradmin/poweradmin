@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -37,17 +38,20 @@ class ReverseRecordCreator
     private ConfigurationManager $config;
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
+    private ?RecordCommentService $recordCommentService;
 
     public function __construct(
         PDOCommon $db,
         ConfigurationManager $config,
         LegacyLogger $logger,
-        DnsRecord $dnsRecord
+        DnsRecord $dnsRecord,
+        ?RecordCommentService $recordCommentService = null
     ) {
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger;
         $this->dnsRecord = $dnsRecord;
+        $this->recordCommentService = $recordCommentService;
     }
 
     public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = ''): array
@@ -73,9 +77,23 @@ class ReverseRecordCreator
             return $this->createErrorResponse(sprintf(_('A PTR record for %s pointing to %s already exists.'), $contentRev, $fqdn_name));
         }
 
+        // Check for existing PTR records pointing to different hostnames (issue #816)
+        $existingPtrRecords = $this->getExistingPtrRecords($zoneRevId, $contentRev);
+        $hasExistingRecords = !empty($existingPtrRecords);
+
         $isRecordAdded = $this->addReverseRecord($zone_id, $zoneRevId, $name, $contentRev, $ttl, $prio, $comment, $account);
 
         if ($isRecordAdded) {
+            if ($hasExistingRecords) {
+                // Return success with warning about existing PTR records
+                return $this->createWarningResponse(
+                    sprintf(
+                        _('Reverse record added. Warning: A PTR record for %s already exists pointing to: %s. Having multiple PTR records for the same IP is not recommended.'),
+                        $contentRev,
+                        implode(', ', $existingPtrRecords)
+                    )
+                );
+            }
             return $this->createSuccessResponse('Reverse record added');
         }
 
@@ -125,11 +143,13 @@ class ReverseRecordCreator
 
         $result = $stmt->fetch();
         if ($result) {
-            $recordId = $result['id'];
+            $recordId = (int)$result['id'];
             $domainId = $result['domain_id'];
 
             $dnsRecord = new DnsRecord($this->db, $this->config);
             if ($dnsRecord->deleteRecord($recordId)) {
+                $this->recordCommentService?->deleteCommentByRecordId($recordId);
+
                 $dnsRecord->updateSOASerial($domainId);
 
                 if ($this->config->get('dnssec', 'enabled')) {
@@ -179,11 +199,13 @@ class ReverseRecordCreator
 
         $result = $stmt->fetch();
         if ($result) {
-            $recordId = $result['id'];
+            $recordId = (int)$result['id'];
             $domainId = $result['domain_id'];
 
             $dnsRecord = new DnsRecord($this->db, $this->config);
             if ($dnsRecord->deleteRecord($recordId)) {
+                $this->recordCommentService?->deleteCommentByRecordId($recordId);
+
                 $dnsRecord->updateSOASerial($domainId);
 
                 if ($this->config->get('dnssec', 'enabled')) {
@@ -275,6 +297,15 @@ class ReverseRecordCreator
         ];
     }
 
+    private function createWarningResponse(string $message): array
+    {
+        return [
+            'success' => true,
+            'type' => 'warning',
+            'message' => $message,
+        ];
+    }
+
     private function createErrorResponse(string $message): array
     {
         return [
@@ -297,10 +328,10 @@ class ReverseRecordCreator
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
-        $query = "SELECT COUNT(*) FROM $records_table 
-                  WHERE domain_id = :zone_id 
-                  AND name = :name 
-                  AND type = 'PTR' 
+        $query = "SELECT COUNT(*) FROM $records_table
+                  WHERE domain_id = :zone_id
+                  AND name = :name
+                  AND type = 'PTR'
                   AND content = :content";
 
         $stmt = $this->db->prepare($query);
@@ -311,5 +342,31 @@ class ReverseRecordCreator
         ]);
 
         return (int)$stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Get all existing PTR records for a given reverse domain name
+     *
+     * @param int $zone_id Domain ID
+     * @param string $name Reverse domain name (e.g., "1.168.192.in-addr.arpa")
+     * @return array Array of existing PTR record contents (hostnames)
+     */
+    private function getExistingPtrRecords(int $zone_id, string $name): array
+    {
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+
+        $query = "SELECT content FROM $records_table
+                  WHERE domain_id = :zone_id
+                  AND name = :name
+                  AND type = 'PTR'";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([
+            ':zone_id' => $zone_id,
+            ':name' => $name
+        ]);
+
+        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
     }
 }

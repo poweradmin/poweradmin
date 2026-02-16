@@ -229,6 +229,13 @@ class PermissionTemplatesController extends PublicApiController
                 properties: [
                     'name' => new OA\Property(property: 'name', type: 'string', example: 'Zone Administrator'),
                     'descr' => new OA\Property(property: 'descr', type: 'string', example: 'Administrator for zones'),
+                    'template_type' => new OA\Property(
+                        property: 'template_type',
+                        type: 'string',
+                        enum: ['user', 'group'],
+                        example: 'user',
+                        description: 'Template type: user (global) or group (zone-specific). Defaults to "user".'
+                    ),
                     'permissions' => new OA\Property(
                         property: 'permissions',
                         type: 'array',
@@ -278,9 +285,18 @@ class PermissionTemplatesController extends PublicApiController
                 return $this->returnApiError('Missing required fields: name, descr', 400);
             }
 
+            // Default template_type to 'user' for backward compatibility
+            $templateType = $data['template_type'] ?? 'user';
+
+            // Validate template_type if provided
+            if (!in_array($templateType, ['user', 'group'])) {
+                return $this->returnApiError('Invalid template_type. Must be either "user" or "group"', 400);
+            }
+
             $details = [
                 'templ_name' => $data['name'],
-                'templ_descr' => $data['descr']
+                'templ_descr' => $data['descr'],
+                'template_type' => $templateType
             ];
 
             if (isset($data['permissions']) && is_array($data['permissions'])) {
@@ -324,6 +340,13 @@ class PermissionTemplatesController extends PublicApiController
                 properties: [
                     'name' => new OA\Property(property: 'name', type: 'string', example: 'Zone Administrator'),
                     'descr' => new OA\Property(property: 'descr', type: 'string', example: 'Administrator for zones'),
+                    'template_type' => new OA\Property(
+                        property: 'template_type',
+                        type: 'string',
+                        enum: ['user', 'group'],
+                        example: 'user',
+                        description: 'Template type: user (global) or group (zone-specific). Defaults to "user".'
+                    ),
                     'permissions' => new OA\Property(
                         property: 'permissions',
                         type: 'array',
@@ -384,10 +407,19 @@ class PermissionTemplatesController extends PublicApiController
                 return $this->returnApiError('Permission template not found', 404);
             }
 
+            // Default template_type to existing value for backward compatibility
+            $templateType = $data['template_type'] ?? $existing['template_type'];
+
+            // Validate template_type if provided
+            if (!in_array($templateType, ['user', 'group'])) {
+                return $this->returnApiError('Invalid template_type. Must be either "user" or "group"', 400);
+            }
+
             $details = [
                 'templ_id' => $id,
                 'templ_name' => $data['name'],
-                'templ_descr' => $data['descr']
+                'templ_descr' => $data['descr'],
+                'template_type' => $templateType
             ];
 
             if (isset($data['permissions']) && is_array($data['permissions'])) {

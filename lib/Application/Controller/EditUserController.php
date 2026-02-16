@@ -32,17 +32,22 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditUserController extends BaseController
 {
     protected Request $request;
     private PasswordPolicyService $policyService;
+    private DbPermissionTemplateRepository $permissionTemplateRepository;
 
     private readonly UserContextService $userContextService;
     public function __construct(
@@ -53,6 +58,7 @@ class EditUserController extends BaseController
         $this->request = new Request();
         $this->policyService = new PasswordPolicyService();
         $this->userContextService = new UserContextService();
+        $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
     }
 
     public function run(): void
@@ -72,7 +78,14 @@ class EditUserController extends BaseController
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $this->updateUser($editId, $policyConfig);
+
+            // Check if this is a group addition request
+            $action = $this->request->getPostParam('action');
+            if ($action === 'add_groups') {
+                $this->handleAddToGroups($editId);
+            } else {
+                $this->updateUser($editId, $policyConfig);
+            }
         } else {
             $this->showUserEditForm($editId, $policyConfig);
         }
@@ -90,7 +103,14 @@ class EditUserController extends BaseController
             return;
         }
 
-        $params = $this->prepareUserData();
+        try {
+            $params = $this->prepareUserData();
+        } catch (\InvalidArgumentException $e) {
+            $this->setMessage('edit_user', 'error', $e->getMessage());
+            $this->showUserEditForm($editId, $policyConfig);
+            return;
+        }
+
         $legacyUsers = new UserManager($this->db, $this->getConfig());
 
         if (
@@ -209,6 +229,13 @@ class EditUserController extends BaseController
             $permTempl = $userData['tpl_id'];
         }
 
+        // Validate that the template is a user template (skip if maintaining existing template)
+        if ($permTempl && (!$isOwnProfile || $canEditOthers)) {
+            if (!$this->permissionTemplateRepository->validateTemplateType((int)$permTempl, 'user')) {
+                throw new \InvalidArgumentException(_('Invalid permission template: must be a user template'));
+            }
+        }
+
         return [
             'username' => htmlspecialchars($this->request->getPostParam('username')),
             'fullname' => htmlspecialchars($this->request->getPostParam('fullname')),
@@ -230,6 +257,46 @@ class EditUserController extends BaseController
         $externalAuthMethods = ['ldap', 'oidc', 'saml'];
         $isExternalAuth = in_array($user['auth_type'] ?? 'sql', $externalAuthMethods);
 
+        // Fetch user's group memberships
+        $groupMemberRepo = new DbUserGroupMemberRepository($this->db);
+        $userGroupRepo = new DbUserGroupRepository($this->db);
+
+        $memberships = $groupMemberRepo->findByUserId($editId);
+        $allGroups = $userGroupRepo->findAll();
+
+        // Get list of group IDs user is already a member of
+        $memberGroupIds = array_map(function ($membership) {
+            return $membership->getGroupId();
+        }, $memberships);
+
+        $userGroups = array_map(function ($membership) use ($allGroups) {
+            $groupId = $membership->getGroupId();
+            foreach ($allGroups as $group) {
+                if ($group->getId() === $groupId) {
+                    return [
+                        'id' => $group->getId(),
+                        'name' => $group->getName(),
+                        'description' => $group->getDescription()
+                    ];
+                }
+            }
+            return null;
+        }, $memberships);
+        $userGroups = array_filter($userGroups); // Remove nulls
+
+        // Get available groups (groups user is NOT a member of)
+        $availableGroups = array_filter($allGroups, function ($group) use ($memberGroupIds) {
+            return !in_array($group->getId(), $memberGroupIds);
+        });
+
+        $availableGroupsArray = array_map(function ($group) {
+            return [
+                'id' => $group->getId(),
+                'name' => $group->getName(),
+                'description' => $group->getDescription()
+            ];
+        }, $availableGroups);
+
         $this->render('edit_user.html', [
             'edit_id' => $editId,
             'name' => $user['fullname'] ?: $user['username'],
@@ -239,12 +306,15 @@ class EditUserController extends BaseController
             'edit_templ_perm' => $permissions['edit_templ_perm'],
             'edit_own_perm' => $permissions['edit_own'],
             'perm_passwd_edit_others' => $permissions['passwd_edit_others'],
-            'permission_templates' => UserManager::listPermissionTemplates($this->db),
+            'permission_templates' => UserManager::listPermissionTemplates($this->db, 'user'),
             'user_permissions' => UserManager::getPermissionsByTemplateId($this->db, $user['tpl_id']),
             'ldap_use' => $this->config->get('ldap', 'enabled', false) && !$permissions['is_admin'],
             'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
             'is_external_auth' => $isExternalAuth,
             'password_policy' => $policyConfig,
+            'user_groups' => $userGroups,
+            'available_groups' => $availableGroupsArray,
+            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
         ]);
     }
 
@@ -259,6 +329,104 @@ class EditUserController extends BaseController
             'is_admin' => Permission::getPermissions($this->db, ['user_is_ueberuser'])['user_is_ueberuser']
                 && $isCurrentUser
         ];
+    }
+
+    private function handleAddToGroups(int $userId): void
+    {
+        // Only admins can manage group memberships
+        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+            $this->setMessage('edit_user', 'error', _('You do not have permission to manage group memberships.'));
+            $this->showUserEditForm($userId, $this->policyService->getPolicyConfig());
+            return;
+        }
+
+        $groupIds = $this->request->getPostParam('add_to_groups', []);
+
+        if (!is_array($groupIds) || empty($groupIds)) {
+            $this->setMessage('edit_user', 'warning', _('Please select at least one group.'));
+            $this->showUserEditForm($userId, $this->policyService->getPolicyConfig());
+            return;
+        }
+
+        // Convert to integers
+        $groupIds = array_map('intval', $groupIds);
+
+        $groupRepository = new DbUserGroupRepository($this->db);
+        $memberRepository = new DbUserGroupMemberRepository($this->db);
+        $membershipService = new GroupMembershipService($memberRepository, $groupRepository);
+
+        // Get target user details for logging
+        $targetUser = $this->getUserDetails($userId);
+        $targetUsername = $targetUser['username'];
+
+        $successCount = 0;
+        $failedCount = 0;
+        $successfulGroups = [];
+
+        foreach ($groupIds as $groupId) {
+            try {
+                $membershipService->addUserToGroup($groupId, $userId);
+                $successCount++;
+
+                // Store both ID and name for accurate logging
+                $group = $groupRepository->findById($groupId);
+                if ($group) {
+                    $successfulGroups[] = [
+                        'id' => $groupId,
+                        'name' => $group->getName()
+                    ];
+                }
+            } catch (\Exception $e) {
+                $failedCount++;
+            }
+        }
+
+        if ($successCount > 0) {
+            $message = sprintf(
+                ngettext(
+                    'User added to %d group successfully.',
+                    'User added to %d groups successfully.',
+                    $successCount
+                ),
+                $successCount
+            );
+            $this->setMessage('edit_user', 'success', $message);
+
+            // Log the additions for each group in the same format as group management
+            $currentUserId = $this->userContextService->getLoggedInUserId();
+            $ldapUse = $this->config->get('ldap', 'enabled');
+            $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
+            $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+
+            $logger = new \Poweradmin\Infrastructure\Logger\DbGroupLogger($this->db);
+
+            // Log each group addition separately with the target username
+            foreach ($successfulGroups as $groupInfo) {
+                $logMessage = sprintf(
+                    "Added 1 user(s) to group '%s' (ID: %d) by %s: %s",
+                    $groupInfo['name'],
+                    $groupInfo['id'],
+                    $actorUsername,
+                    $targetUsername
+                );
+                $logger->doLog($logMessage, $groupInfo['id'], LOG_INFO);
+            }
+        }
+
+        if ($failedCount > 0) {
+            $message = sprintf(
+                ngettext(
+                    'Failed to add user to %d group (already a member or group not found).',
+                    'Failed to add user to %d groups (already a member or groups not found).',
+                    $failedCount
+                ),
+                $failedCount
+            );
+            $this->setMessage('edit_user', 'warning', $message);
+        }
+
+        // Redirect back to edit page to show updated memberships
+        $this->redirect("/users/$userId/edit");
     }
 
     private function getUserDetails(int $editId): array

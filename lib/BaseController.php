@@ -518,6 +518,7 @@ abstract class BaseController
             $vars = array_merge($vars, [
                 'user_logged_in' => $this->userContextService->isAuthenticated(),
                 'user_name' => $this->userContextService->getDisplayName(),
+                'user_username' => $this->userContextService->getLoggedInUsername(),
                 'perm_search' => UserManager::verifyPermission($this->db, 'search'),
                 'perm_view_zone_own' => UserManager::verifyPermission($this->db, 'zone_content_view_own'),
                 'perm_view_zone_other' => UserManager::verifyPermission($this->db, 'zone_content_view_others'),
@@ -529,6 +530,7 @@ abstract class BaseController
                 'perm_supermaster_add' => UserManager::verifyPermission($this->db, 'supermaster_add'),
                 'perm_is_godlike' => $perm_is_godlike,
                 'perm_templ_perm_edit' => UserManager::verifyPermission($this->db, 'templ_perm_edit'),
+                'perm_templ_perm_add' => UserManager::verifyPermission($this->db, 'templ_perm_add'),
                 'perm_add_new' => UserManager::verifyPermission($this->db, 'user_add_new'),
                 'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
                 'perm_edit_own' => UserManager::verifyPermission($this->db, 'user_edit_own'),

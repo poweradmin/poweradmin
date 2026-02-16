@@ -36,7 +36,13 @@
                         <p class="mb-0"><strong>{% trans %}Account{% endtrans %}:</strong></p>
                     </div>
                     <div class="col-md-9">
-                        <p class="mb-0">{{ info['account'] }}</p>
+                        <p class="mb-0">
+                            {% if info['fullname'] %}
+                                {{ info['fullname'] }} <small class="text-muted">({{ info['account'] }})</small>
+                            {% else %}
+                                {{ info['account'] }}
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>

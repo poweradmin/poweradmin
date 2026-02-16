@@ -1,7 +1,6 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Zone templates{% endtrans %}</li>
     </ol>
 </nav>
@@ -58,8 +57,8 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if template['creator_fullname'] %}
-                            {{ template['creator_fullname'] }}
+                        {% if template['creator_fullname'] and template['creator_username'] %}
+                            {{ template['creator_fullname'] }} <small class="text-muted">({{ template['creator_username'] }})</small>
                         {% elseif template['creator_username'] %}
                             {{ template['creator_username'] }}
                         {% else %}

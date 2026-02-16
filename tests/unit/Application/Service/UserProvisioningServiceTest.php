@@ -2,6 +2,7 @@
 
 namespace unit\Application\Service;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
@@ -167,9 +168,7 @@ class UserProvisioningServiceTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideShouldUpdateAuthMethodTestCases
-     */
+    #[DataProvider('provideShouldUpdateAuthMethodTestCases')]
     public function testShouldUpdateAuthMethodAllCombinations(?string $current, string $new, bool $expected): void
     {
         $result = $this->invokeShouldUpdateAuthMethod($current, $new);

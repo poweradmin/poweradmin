@@ -3,7 +3,7 @@
 [![release](https://img.shields.io/github/v/release/poweradmin/poweradmin)](https://github.com/poweradmin/poweradmin/releases)
 [![validations](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml/badge.svg)](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml)
 [![license](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![php version](https://img.shields.io/badge/php-8.1%2B-blue)](https://www.php.net/)
+[![php version](https://img.shields.io/badge/php-8.2%2B-blue)](https://www.php.net/)
 [![docker pulls](https://img.shields.io/docker/pulls/poweradmin/poweradmin)](https://hub.docker.com/r/poweradmin/poweradmin)
 [![docker image size](https://img.shields.io/docker/image-size/poweradmin/poweradmin)](https://hub.docker.com/r/poweradmin/poweradmin)
 
@@ -87,7 +87,7 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 
 ## Requirements
 
-* PHP 8.1 or higher (including 8.2, 8.3, 8.4, etc.)
+* PHP 8.2 or higher (including 8.3, 8.4, 8.5, etc.)
 * PHP extensions: intl, gettext, openssl, filter, tokenizer, pdo, xml, pdo-mysql/pdo-pgsql/pdo-sqlite, ldap (optional)
 * MySQL 5.7.x/8.x, MariaDB, PostgreSQL or SQLite database
 * PowerDNS authoritative server 4.0.0+ (including 4.x and 5.x series)
@@ -118,7 +118,7 @@ Poweradmin maintains multiple release branches:
 
 ### PHP Version Support
 
-**Important:** Poweradmin **4.1.x will be the last version to support PHP 8.1**. Starting with version 4.2.x, the minimum required PHP version will be **8.2**. Users on PHP 8.1 should plan their PHP upgrade accordingly.
+**Important:** Starting with version 4.2.x, the minimum required PHP version is **8.2**. PHP 8.1 is no longer supported.
 
 ### Long-Term Support (LTS)
 

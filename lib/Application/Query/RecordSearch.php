@@ -130,6 +130,24 @@ class RecordSearch extends BaseSearch
             $params[':content_filter'] = $content;
         }
 
+        // Per-record comments via linking table, with fallback to RRset-based comments for legacy data
+        $links_table = 'record_comment_links';
+        $commentSelect = '';
+        if ($iface_record_comments) {
+            $commentSelect = ", (
+                SELECT c.comment
+                FROM $comments_table c
+                LEFT JOIN $links_table rcl ON rcl.comment_id = c.id
+                WHERE (rcl.record_id = $records_table.id)
+                   OR (rcl.record_id IS NULL
+                       AND c.domain_id = $records_table.domain_id
+                       AND c.name = $records_table.name
+                       AND c.type = $records_table.type)
+                ORDER BY CASE WHEN rcl.record_id = $records_table.id THEN 0 ELSE 1 END
+                LIMIT 1
+            ) AS comment";
+        }
+
         $recordsQuery = "
         SELECT
             $records_table.id,
@@ -144,12 +162,11 @@ class RecordSearch extends BaseSearch
             z.owner,
             u.id as user_id,
             u.fullname" .
-            ($iface_record_comments ? ", c.comment" : "") . "
+            $commentSelect . "
         FROM
             $records_table
         LEFT JOIN zones z on $records_table.domain_id = z.domain_id
-        LEFT JOIN users u on z.owner = u.id" .
-            ($iface_record_comments ? " LEFT JOIN $comments_table c on $records_table.domain_id = c.domain_id AND $records_table.name = c.name AND $records_table.type = c.type" : "") . "
+        LEFT JOIN users u on z.owner = u.id
         WHERE
             " . $this->buildWhereConditionsFetch($records_table, $search_string, $reverse, $reverse_search_string, $iface_record_comments, $parameters, $permission_view, $params) .
             $typeFilter .
@@ -207,7 +224,6 @@ class RecordSearch extends BaseSearch
     {
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-        $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
         $groupByClause = $iface_search_group_records ? "GROUP BY $records_table.name, $records_table.content" : '';
 
         // Prepare query parameters
@@ -242,7 +258,6 @@ class RecordSearch extends BaseSearch
                 $records_table
             LEFT JOIN zones z on $records_table.domain_id = z.domain_id
             LEFT JOIN users u on z.owner = u.id
-            LEFT JOIN $comments_table c on $records_table.domain_id = c.domain_id AND $records_table.name = c.name AND $records_table.type = c.type
             WHERE
                 " . $this->buildWhereConditionsCount($records_table, $search_string, $reverse, $reverse_search_string, $parameters, $permission_view, $params) .
             $typeFilter .
@@ -281,8 +296,15 @@ class RecordSearch extends BaseSearch
         $whereConditions .= ')';
 
         if ($permission_view == 'own') {
-            $whereConditions .= ' AND z.owner = :user_id';
-            $params[':user_id'] = $_SESSION['userid'];
+            // Check both direct ownership and group ownership
+            $whereConditions .= ' AND (z.owner = :user_id OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = ' . $records_table . '.domain_id AND ugm.user_id = :user_id_group
+            ))';
+            $userId = $this->userContext->getLoggedInUserId();
+            $params[':user_id'] = $userId;
+            $params[':user_id_group'] = $userId;
         }
 
         return $whereConditions;
@@ -314,8 +336,15 @@ class RecordSearch extends BaseSearch
         $whereConditions .= ')';
 
         if ($permission_view == 'own') {
-            $whereConditions .= ' AND z.owner = :user_id';
-            $params[':user_id'] = $_SESSION['userid'];
+            // Check both direct ownership and group ownership
+            $whereConditions .= ' AND (z.owner = :user_id_count OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = ' . $records_table . '.domain_id AND ugm.user_id = :user_id_count_group
+            ))';
+            $userId = $this->userContext->getLoggedInUserId();
+            $params[':user_id_count'] = $userId;
+            $params[':user_id_count_group'] = $userId;
         }
 
         return $whereConditions;

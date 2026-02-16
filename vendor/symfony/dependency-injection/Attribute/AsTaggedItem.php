@@ -16,9 +16,13 @@ namespace Symfony\Component\DependencyInjection\Attribute;
  *
  * @author Nicolas Grekas <p@tchwork.com>
  */
-#[\Attribute(\Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class AsTaggedItem
 {
+    /**
+     * @param string|null $index    The index at which the service will be found when consuming tagged iterators/locators
+     * @param int|null    $priority The priority of the service in iterators/locators; the higher the number, the earlier it will
+     */
     public function __construct(
         public ?string $index = null,
         public ?int $priority = null,

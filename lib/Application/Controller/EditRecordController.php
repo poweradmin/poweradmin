@@ -34,16 +34,18 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
+use Poweradmin\Domain\Repository\RecordRepository;
 
 class EditRecordController extends BaseController
 {
@@ -52,6 +54,8 @@ class EditRecordController extends BaseController
     private RecordCommentService $recordCommentService;
     private RecordCommentSyncService $commentSyncService;
     private RecordTypeService $recordTypeService;
+    private UserContextService $userContextService;
+    private RecordRepository $recordRepository;
 
     public function __construct(array $request)
     {
@@ -60,8 +64,10 @@ class EditRecordController extends BaseController
         $this->logger = new LegacyLogger($this->db);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
-        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService);
+        $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
+        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
@@ -83,12 +89,14 @@ class EditRecordController extends BaseController
         }
 
         // Early permission check - validate access before further operations
-        $perm_view = Permission::getViewPermission($this->db);
-        $perm_edit = Permission::getEditPermission($this->db);
+        $userId = $this->userContextService->getLoggedInUserId();
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zid);
 
-        // Check view permission first
-        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
+        // Check view permission first (zone-aware for group support)
+        $canView = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_view_own');
+        $canViewOthers = UserManager::verifyPermission($this->db, 'zone_content_view_others');
+
+        if (!$canViewOthers && !$canView) {
             $this->showError(_("You do not have permission to view this record."));
             return;
         }
@@ -96,10 +104,30 @@ class EditRecordController extends BaseController
         // Get zone type after permission validation
         $zone_type = $dnsRecord->getDomainType($zid);
 
-        // Check edit permission for SLAVE zones and ownership
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)) {
+        // Check edit permission for SLAVE zones and zone-specific edit rights
+        if ($zone_type == "SLAVE") {
+            $this->showError(_("You cannot edit records in a SLAVE zone."));
+            return;
+        }
+
+        // Check zone-specific edit permission (includes group permissions)
+        $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_edit_own');
+        $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_edit_own_as_client');
+        $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+
+        if (!$canEditOthers && !$canEdit && !$canEditAsClient) {
             $this->showError(_("You do not have permission to edit this record."));
             return;
+        }
+
+        // Determine permission level for UI (for backward compatibility with templates)
+        $perm_edit = 'none';
+        if ($canEditOthers) {
+            $perm_edit = 'all';
+        } elseif ($canEdit) {
+            $perm_edit = 'own';
+        } elseif ($canEditAsClient) {
+            $perm_edit = 'own_as_client';
         }
 
         $validationFailed = false;
@@ -136,12 +164,18 @@ class EditRecordController extends BaseController
         }
 
         $iface_record_comments = $this->config->get('interface', 'show_record_comments', false);
-        $recordComment = $this->recordCommentService->findComment($zid, $record['name'], $record['type']);
+        // Use record ID to find per-record comment, with fallback to RRset-based lookup for legacy comments
+        $recordComment = $this->recordCommentService->findCommentByRecordId($record_id);
+        if ($recordComment === null) {
+            // Fallback to legacy RRset-based comment lookup
+            $recordComment = $this->recordCommentService->findComment($zid, $record['name'], $record['type']);
+        }
 
         $this->render('edit_record.html', [
             'record_id' => $record_id,
             'record' => $record,
             'recordTypes' => $recordTypes,
+            'deprecated_types' => RecordType::DEPRECATED_TYPES,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
             'zone_type' => $zone_type,
@@ -201,7 +235,7 @@ class EditRecordController extends BaseController
                 . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
                 . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
                 $_SERVER['REMOTE_ADDR'],
-                $_SESSION["userlogin"],
+                $this->userContextService->getLoggedInUsername(),
                 $old_record_info['type'],
                 $old_record_info['name'],
                 $old_record_info['content'],
@@ -221,17 +255,16 @@ class EditRecordController extends BaseController
                               $old_record_info['type'] !== $new_record_info['type']);
 
         if ($showRecordComments) {
-            // Comments visible - use the posted comment value
+            // Comments visible - use per-record comment (linked by record ID via record_comment_links table)
             $commentValue = $_POST['comment'] ?? '';
 
-            $this->recordCommentService->updateComment(
+            $this->recordCommentService->updateCommentForRecord(
                 $zid,
-                $old_record_info['name'],
-                $old_record_info['type'],
                 $new_record_info['name'],
                 $new_record_info['type'],
                 $commentValue,
-                $_SESSION['userlogin']
+                (int)$_POST['rid'],
+                $this->userContextService->getLoggedInUsername()
             );
 
             if ($this->config->get('misc', 'record_comments_sync')) {
@@ -239,7 +272,7 @@ class EditRecordController extends BaseController
                     $dnsRecord,
                     $new_record_info,
                     $commentValue,
-                    $_SESSION['userlogin']
+                    $this->userContextService->getLoggedInUsername()
                 );
             }
         } elseif ($nameOrTypeChanged) {
@@ -258,7 +291,7 @@ class EditRecordController extends BaseController
                     $new_record_info['name'],
                     $new_record_info['type'],
                     $existingComment->getComment(),
-                    $_SESSION['userlogin']
+                    $this->userContextService->getLoggedInUsername()
                 );
             }
         }

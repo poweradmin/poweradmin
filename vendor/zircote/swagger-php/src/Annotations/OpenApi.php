@@ -9,7 +9,6 @@ namespace OpenApi\Annotations;
 use OpenApi\Analysis;
 use OpenApi\Generator;
 use OpenApi\OpenApiException;
-use OpenApi\Util;
 
 /**
  * This is the root document object for the API specification.
@@ -145,6 +144,18 @@ class OpenApi extends AbstractAnnotation
      */
     public static $_types = [];
 
+    public function __construct(array $properties)
+    {
+        parent::__construct($properties);
+
+        if ($this->_context->root()->version) {
+            // override via `Generator::setVersion()`
+            $this->openapi = $this->_context->root()->version;
+        } else {
+            $this->_context->root()->version = $this->openapi;
+        }
+    }
+
     /**
      * @inheritdoc
      */
@@ -187,14 +198,13 @@ class OpenApi extends AbstractAnnotation
      */
     public static function versionMatch(string $version1, string $version2): bool
     {
-        $expand = function (string $v): array {
+        $expand = static function (string $v): array {
             if (!str_ends_with($v, '.x')) {
                 return [$v];
             }
-
             $minor = str_replace('.x', '', $v);
 
-            return array_filter(self::SUPPORTED_VERSIONS, fn (string $sv): bool => str_starts_with($sv, $minor));
+            return array_filter(self::SUPPORTED_VERSIONS, static fn (string $sv): bool => str_starts_with($sv, $minor));
         };
         $versions1 = $expand($version1);
         $versions2 = $expand($version2);
@@ -225,7 +235,7 @@ class OpenApi extends AbstractAnnotation
      */
     public function ref(string $ref)
     {
-        if (substr($ref, 0, 2) !== '#/') {
+        if (!str_starts_with($ref, '#/')) {
             throw new OpenApiException('Unsupported $ref "' . $ref . '", it should start with "#/"');
         }
 
@@ -247,12 +257,12 @@ class OpenApi extends AbstractAnnotation
         $slash = strpos($path, '/');
 
         $subpath = $slash === false ? $path : substr($path, 0, $slash);
-        $property = Util::refDecode($subpath);
+        $property = Components::refDecode($subpath);
         $unresolved = $slash === false ? $resolved . $subpath : $resolved . $subpath . '/';
 
         if (is_object($container)) {
             // support use x-* in ref
-            $xKey = strpos($property, 'x-') === 0 ? substr($property, 2) : null;
+            $xKey = str_starts_with($property, 'x-') ? substr($property, 2) : null;
             if ($xKey) {
                 if (!is_array($container->x) || !array_key_exists($xKey, $container->x)) {
                     $xKey = null;
@@ -291,11 +301,7 @@ class OpenApi extends AbstractAnnotation
         throw new OpenApiException('$ref "' . $unresolved . '" not found');
     }
 
-    /**
-     * @inheritdoc
-     */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): \stdClass
     {
         $data = parent::jsonSerialize();
 

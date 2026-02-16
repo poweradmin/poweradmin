@@ -54,7 +54,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ record_info['name'] }}</td>
+                                <td>{{ record_info['display_name'] is defined ? record_info['display_name'] : record_info['name'] }}</td>
                                 <td><span class="badge bg-secondary">{{ record_info['type'] }}</span></td>
                                 <td>{{ record_info['content'] }}</td>
                                 {% if record_info['prio'] %}

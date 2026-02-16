@@ -74,14 +74,14 @@ class DomainManager implements DomainManagerInterface
      *
      * @param object $db Database connection
      * @param string $domain A domain name
-     * @param int $owner Owner ID for domain
+     * @param int|null $owner Owner ID for domain (null if only groups are assigned)
      * @param string $type Type of domain ['NATIVE','MASTER','SLAVE']
      * @param string $slave_master Master server hostname for domain
      * @param int|string $zone_template ID of zone template ['none' or int]
      *
      * @return boolean true on success
      */
-    public function addDomain($db, string $domain, int $owner, string $type, string $slave_master, int|string $zone_template): bool
+    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template): bool
     {
         $zone_master_add = UserManager::verifyPermission($db, 'zone_master_add');
         $zone_slave_add = UserManager::verifyPermission($db, 'zone_slave_add');

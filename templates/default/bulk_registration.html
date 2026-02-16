@@ -32,10 +32,14 @@
                             {% set default_user_set = false %}
                             {% for user in users %}
                                 {% if user['id'] == userid %}
-                                    <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
+                                    <option value="{{ user['id'] }}" selected>
+                                        {% if user['fullname'] %}{{ user['fullname'] }} ({{ user['username'] }}){% else %}{{ user['username'] }}{% endif %}
+                                    </option>
                                     {% set default_user_set = true %}
                                 {% elseif perm_view_others %}
-                                    <option value="{{ user['id'] }}">{{ user['fullname'] }}</option>
+                                    <option value="{{ user['id'] }}">
+                                        {% if user['fullname'] %}{{ user['fullname'] }} ({{ user['username'] }}){% else %}{{ user['username'] }}{% endif %}
+                                    </option>
                                 {% endif %}
                             {% endfor %}
                         </select>

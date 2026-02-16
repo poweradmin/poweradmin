@@ -23,11 +23,15 @@
 namespace Poweradmin\Domain\Model;
 
 use PDO;
+use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 class UserManager
@@ -48,8 +52,13 @@ class UserManager
      *
      * Function to see if user has right to do something. It will check if
      * user has "ueberuser" bit set. If it isn't, it will check if the user has
-     * the specific permission. It returns "false" if the user doesn't have the
+     * the specific permission from either their direct user template or from
+     * any groups they belong to. It returns "false" if the user doesn't have the
      * right, and "true" if the user has.
+     *
+     * This function checks both:
+     * 1. Direct user permissions (from user's perm_templ)
+     * 2. Group permissions (from user_groups via user_group_members)
      *
      * @param string $arg Permission name
      *
@@ -69,14 +78,28 @@ class UserManager
             return false;
         }
 
-        $query = $db->prepare("SELECT
-        perm_items.name AS permission
-        FROM perm_templ_items
-        LEFT JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
-        LEFT JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
-        LEFT JOIN users ON perm_templ.id = users.perm_templ
-        WHERE users.id = ?");
-        $query->execute(array($_SESSION['userid']));
+        // Query to get both direct user permissions and group permissions
+        // UNION combines permissions from both sources
+        // Note: We filter out NULL permission names to handle orphaned template items
+        $query = $db->prepare("
+            SELECT perm_items.name AS permission
+            FROM perm_templ_items
+            INNER JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
+            INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
+            INNER JOIN users ON perm_templ.id = users.perm_templ
+            WHERE users.id = ? AND perm_items.name IS NOT NULL
+
+            UNION
+
+            SELECT pi.name AS permission
+            FROM user_group_members ugm
+            INNER JOIN user_groups ug ON ugm.group_id = ug.id
+            INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
+            INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE ugm.user_id = ? AND pi.name IS NOT NULL
+        ");
+        $query->execute(array($_SESSION['userid'], $_SESSION['userid']));
         $cache = $query->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
         return array_key_exists('user_is_ueberuser', $cache) || array_key_exists($permission, $cache);
@@ -85,7 +108,12 @@ class UserManager
     /**
      * Check if a specific user has superuser permission
      *
-     * Function to check if a specific user ID has the "user_is_ueberuser" permission.
+     * Function to check if a specific user ID has the "user_is_ueberuser" permission
+     * from either their direct user template or from any groups they belong to.
+     *
+     * This function checks both:
+     * 1. Direct user permissions (from user's perm_templ)
+     * 2. Group permissions (from user_groups via user_group_members)
      *
      * @param PDOCommon $db Database connection
      * @param int $userId User ID to check
@@ -94,16 +122,34 @@ class UserManager
      */
     public static function isUserSuperuser(PDOCommon $db, int $userId): bool
     {
-        $query = $db->prepare("SELECT COUNT(*) as count
+        // Check both direct user permissions and group permissions
+        // Uses same logic as verifyPermission for consistency
+        $query = $db->prepare("
+            SELECT perm_items.name AS permission
             FROM perm_templ_items
-            LEFT JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
-            LEFT JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
-            LEFT JOIN users ON perm_templ.id = users.perm_templ
-            WHERE users.id = :userId AND perm_items.name = 'user_is_ueberuser'");
-        $query->execute([':userId' => $userId]);
+            INNER JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
+            INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
+            INNER JOIN users ON perm_templ.id = users.perm_templ
+            WHERE users.id = ?
+                AND perm_items.name = 'user_is_ueberuser'
+                AND perm_items.name IS NOT NULL
+
+            UNION
+
+            SELECT pi.name AS permission
+            FROM user_group_members ugm
+            INNER JOIN user_groups ug ON ugm.group_id = ug.id
+            INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
+            INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE ugm.user_id = ?
+                AND pi.name = 'user_is_ueberuser'
+                AND pi.name IS NOT NULL
+        ");
+        $query->execute([$userId, $userId]);
         $result = $query->fetch();
 
-        return $result && $result['count'] > 0;
+        return $result !== false;
     }
 
     /**
@@ -111,17 +157,25 @@ class UserManager
      *
      * @return array array of templates [id, name, descr]
      */
-    public static function listPermissionTemplates($db): array
+    public static function listPermissionTemplates($db, ?string $filter_type = null): array
     {
-        $query = "SELECT * FROM perm_templ ORDER BY name";
-        $response = $db->query($query);
+        if ($filter_type !== null && in_array($filter_type, ['user', 'group'])) {
+            $query = "SELECT * FROM perm_templ WHERE template_type = :template_type ORDER BY name";
+            $stmt = $db->prepare($query);
+            $stmt->execute([':template_type' => $filter_type]);
+            $response = $stmt;
+        } else {
+            $query = "SELECT * FROM perm_templ ORDER BY name";
+            $response = $db->query($query);
+        }
 
         $template_list = array();
         while ($template = $response->fetch()) {
             $template_list [] = array(
                 "id" => $template ['id'],
                 "name" => $template ['name'],
-                "descr" => $template ['descr']
+                "descr" => $template ['descr'],
+                "template_type" => $template ['template_type'] ?? 'user'
             );
         }
         return $template_list;
@@ -515,20 +569,72 @@ class UserManager
     /**
      * Verify User is Zone ID owner
      *
+     * Checks if user owns the zone directly or via group membership
+     *
      * @param int $zoneid Zone ID
      *
-     * @return bool 1 if owner, 0 if not owner
+     * @return bool true if owner (directly or via group), false otherwise
      */
     public static function verifyUserIsOwnerZoneId($db, int $zoneid): bool
     {
         $userid = $_SESSION["userid"];
+
+        // Check direct ownership
         $stmt = $db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND zones.domain_id = :zoneid");
         $stmt->execute([
             ':userid' => $userid,
             ':zoneid' => $zoneid
         ]);
-        $response = $stmt->fetchColumn();
-        return (bool)$response;
+        if ($stmt->fetchColumn()) {
+            return true;
+        }
+
+        // Check group ownership
+        $stmt = $db->prepare("
+            SELECT zg.id
+            FROM zones_groups zg
+            INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+            WHERE ugm.user_id = :userid AND zg.domain_id = :zoneid
+        ");
+        $stmt->execute([
+            ':userid' => $userid,
+            ':zoneid' => $zoneid
+        ]);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    /**
+     * Count total users for pagination
+     *
+     * @param object $db Database connection
+     * @param int|null $specific User ID (optional)
+     *
+     * @return int Total number of users
+     */
+    public static function countUsers($db, ?int $specific = null): int
+    {
+        $userid = $_SESSION['userid'];
+
+        if ($specific) {
+            $sql_add = "AND users.id = :specific";
+        } elseif (self::verifyPermission($db, 'user_view_others')) {
+            $sql_add = "";
+        } else {
+            $sql_add = "AND users.id = :userid";
+        }
+
+        $query = "SELECT COUNT(*) FROM users, perm_templ WHERE users.perm_templ = perm_templ.id " . $sql_add;
+
+        $stmt = $db->prepare($query);
+
+        if ($specific) {
+            $stmt->bindValue(':specific', $specific, PDO::PARAM_INT);
+        } elseif (!self::verifyPermission($db, 'user_view_others')) {
+            $stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+        return (int) $stmt->fetchColumn();
     }
 
     /**
@@ -539,10 +645,12 @@ class UserManager
      * @param $db
      * @param $ldap_use
      * @param int|null $specific User ID (optional)
+     * @param int|null $limit Number of records to return (optional)
+     * @param int|null $offset Starting offset (optional)
      *
      * @return array array of user details
      */
-    public static function getUserDetailList($db, $ldap_use, ?int $specific = null): array
+    public static function getUserDetailList($db, $ldap_use, ?int $specific = null, ?int $limit = null, ?int $offset = null): array
     {
         $userid = $_SESSION['userid'];
 
@@ -573,6 +681,10 @@ class UserManager
         WHERE users.perm_templ = perm_templ.id " . $sql_add . "
         ORDER BY username";
 
+        if ($limit !== null) {
+            $query .= " LIMIT :limit OFFSET :offset";
+        }
+
         $stmt = $db->prepare($query);
 
         if ($specific) {
@@ -581,8 +693,19 @@ class UserManager
             $stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
         }
 
+        if ($limit !== null) {
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset ?? 0, PDO::PARAM_INT);
+        }
+
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Fetch user groups in a separate query
+        $userGroups = self::getUserGroupsMap($db);
+
+        // Fetch MFA status in a separate query
+        $mfaStatus = self::getUserMfaStatusMap($db);
 
         $userList = array();
         foreach ($response as $user) {
@@ -597,10 +720,67 @@ class UserManager
                 "auth_type" => $user['auth_method'] ?? 'sql',
                 "tpl_id" => $user['tpl_id'],
                 "tpl_name" => $user['tpl_name'],
-                "tpl_descr" => $user['tpl_descr']
+                "tpl_descr" => $user['tpl_descr'],
+                "groups" => $userGroups[$user['uid']] ?? [],
+                "mfa_enabled" => $mfaStatus[$user['uid']] ?? false
             );
         }
         return $userList;
+    }
+
+    /**
+     * Get a map of user IDs to their group names
+     *
+     * @param object $db Database connection
+     * @return array Map of user_id => array of group names
+     */
+    private static function getUserGroupsMap($db): array
+    {
+        $query = "SELECT ugm.user_id, ug.name AS group_name
+                  FROM user_group_members ugm
+                  INNER JOIN user_groups ug ON ugm.group_id = ug.id
+                  ORDER BY ugm.user_id, ug.name";
+
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $userGroups = [];
+        foreach ($results as $row) {
+            $userId = $row['user_id'];
+            if (!isset($userGroups[$userId])) {
+                $userGroups[$userId] = [];
+            }
+            $userGroups[$userId][] = $row['group_name'];
+        }
+
+        return $userGroups;
+    }
+
+    /**
+     * Get a map of user IDs to their MFA enabled status
+     *
+     * @param object $db Database connection
+     * @return array Map of user_id => bool (true if MFA enabled)
+     */
+    private static function getUserMfaStatusMap($db): array
+    {
+        try {
+            $query = "SELECT user_id, enabled FROM user_mfa WHERE enabled = 1";
+            $stmt = $db->prepare($query);
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $mfaStatus = [];
+            foreach ($results as $row) {
+                $mfaStatus[$row['user_id']] = true;
+            }
+
+            return $mfaStatus;
+        } catch (\PDOException $e) {
+            // Table might not exist if MFA was never enabled
+            return [];
+        }
     }
 
     /**
@@ -783,9 +963,9 @@ class UserManager
      *
      * @param array $details Array of User details
      *
-     * @return boolean true on success, false otherwise
+     * @return int|false The new user ID on success, false otherwise
      */
-    public function addNewUser(array $details): bool
+    public function addNewUser(array $details): int|false
     {
         $ldap_use = $this->config->get('ldap', 'enabled');
         $validation = new Validator($this->db, $this->config);
@@ -848,6 +1028,88 @@ class UserManager
         $stmt->bindValue(':auth_method', $auth_method);
         $stmt->execute();
 
-        return true;
+        return (int)$this->db->lastInsertId();
+    }
+
+    /**
+     * Check if user can perform a specific action on a zone using hybrid permissions
+     *
+     * This method validates both ownership (direct or via group) AND that the user's
+     * permission template (or group's template) grants the required permission.
+     *
+     * @param PDO $db Database connection
+     * @param int $userId User ID
+     * @param int $domainId Domain/Zone ID
+     * @param string $permissionName Permission name (e.g., 'zone_content_edit_own')
+     * @return bool True if user has the permission for this zone
+     */
+    public static function canUserPerformZoneAction($db, int $userId, int $domainId, string $permissionName): bool
+    {
+        // Check if user is überuser - they have all permissions
+        if (self::isUserSuperuser($db, $userId)) {
+            return true;
+        }
+
+        // Use HybridPermissionService for granular permission checking
+        static $hybridPermissionService = null;
+        if ($hybridPermissionService === null) {
+            $groupRepository = new DbUserGroupRepository($db);
+            $memberRepository = new DbUserGroupMemberRepository($db);
+            $zoneGroupRepository = new DbZoneGroupRepository($db);
+
+            $hybridPermissionService = new HybridPermissionService(
+                $db,
+                $groupRepository,
+                $memberRepository,
+                $zoneGroupRepository
+            );
+        }
+
+        return $hybridPermissionService->canUserPerformAction($userId, $domainId, $permissionName);
+    }
+
+    /**
+     * Get all permissions a user has for a specific zone
+     *
+     * Returns an array with permissions from all sources (direct ownership + group memberships).
+     * Useful for debugging and displaying effective permissions in the UI.
+     *
+     * @param PDO $db Database connection
+     * @param int $userId User ID
+     * @param int $domainId Domain/Zone ID
+     * @return array{permissions: string[], sources: array} Permissions and their sources
+     */
+    public static function getUserZonePermissions($db, int $userId, int $domainId): array
+    {
+        // Check if user is überuser
+        if (self::isUserSuperuser($db, $userId)) {
+            return [
+                'permissions' => ['user_is_ueberuser'], // All permissions implied
+                'sources' => [
+                    [
+                        'type' => 'überuser',
+                        'id' => $userId,
+                        'permissions' => ['user_is_ueberuser']
+                    ]
+                ]
+            ];
+        }
+
+        // Use HybridPermissionService
+        static $hybridPermissionService = null;
+        if ($hybridPermissionService === null) {
+            $groupRepository = new DbUserGroupRepository($db);
+            $memberRepository = new DbUserGroupMemberRepository($db);
+            $zoneGroupRepository = new DbZoneGroupRepository($db);
+
+            $hybridPermissionService = new HybridPermissionService(
+                $db,
+                $groupRepository,
+                $memberRepository,
+                $zoneGroupRepository
+            );
+        }
+
+        return $hybridPermissionService->getUserPermissionsForZone($userId, $domainId);
     }
 }

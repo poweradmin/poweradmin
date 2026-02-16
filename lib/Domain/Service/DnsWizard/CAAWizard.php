@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -226,7 +226,7 @@ class CAAWizard extends AbstractDnsWizard
             if (empty($iodefUrl)) {
                 $errors[] = _('Reporting URL is required for iodef tag');
             } elseif (!str_starts_with($iodefUrl, 'mailto:') && !str_starts_with($iodefUrl, 'https://') && !str_starts_with($iodefUrl, 'http://')) {
-                $errors[] = _('Reporting URL must start with mailto:, https://, or http://');
+                $errors[] = sprintf(_('Reporting URL must start with %s, %s, or %s'), 'mailto:', 'https://', 'http://');
             }
         }
 

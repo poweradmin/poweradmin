@@ -89,7 +89,7 @@
                                 {% else %}
                                 {% set add = "" %}
                                 {% endif %}
-                                <option {{ add }} value="{{ type_available }}">{{ type_available }}</option>
+                                <option {{ add }} value="{{ type_available }}">{{ type_available }}{% if type_available in deprecated_types %} ({% trans %}deprecated{% endtrans %}){% endif %}</option>
                                 {% endfor %}
 
                                 {% if not found_selected_type %}
@@ -104,6 +104,9 @@
                             <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
                             <div id="cnameRootWarning" class="alert alert-warning mt-1 py-1 px-2 small" style="display: none;">
                                 <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}Warning: CNAME records at the domain root (zone apex) are not recommended and may cause issues. SOA and NS records are required at the domain root and cannot coexist with CNAME.{% endtrans %}
+                            </div>
+                            <div id="deprecatedTypeWarning" class="alert alert-warning mt-1 py-1 px-2 small" style="display: none;">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}This record type is deprecated and should not be used for new records.{% endtrans %}
                             </div>
                         </td>
                         <td><input id="priorityField" class="form-control form-control-sm" type="number" name="prio" min="0" max="65535"
@@ -170,6 +173,19 @@
         }
     }
     
+    // Deprecated record types
+    const DEPRECATED_RECORD_TYPES = ['SPF', 'DLV', 'AFSDB', 'KEY', 'MR', 'MINFO'];
+
+    // Check if a deprecated record type is selected
+    function checkDeprecatedTypeWarning() {
+        const typeSelect = document.getElementById('recordTypeSelect');
+        const warningDiv = document.getElementById('deprecatedTypeWarning');
+
+        if (!typeSelect || !warningDiv) return;
+
+        warningDiv.style.display = DEPRECATED_RECORD_TYPES.includes(typeSelect.value) ? 'block' : 'none';
+    }
+
     // Check if CNAME is being used at domain root, and show warning if it is
     function checkCnameRootWarning() {
         const typeSelect = document.getElementById('recordTypeSelect');
@@ -191,18 +207,22 @@
         const nameField = document.querySelector('input[name="name"]');
         
         if (typeSelect) {
-            typeSelect.addEventListener('change', checkCnameRootWarning);
-            
+            typeSelect.addEventListener('change', function() {
+                checkCnameRootWarning();
+                checkDeprecatedTypeWarning();
+            });
+
             // Initialize priority field state
             updatePriorityFieldState(typeSelect, 'priorityField');
         }
-        
+
         if (nameField) {
             nameField.addEventListener('input', checkCnameRootWarning);
         }
-        
+
         // Initial check
         checkCnameRootWarning();
+        checkDeprecatedTypeWarning();
     });
 </script>
 <script src="{{ base_url_prefix }}/assets/textareaAutoResize.js?time={{ file_version }}"></script>

@@ -42,6 +42,8 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneMasterController extends BaseController
@@ -82,9 +84,6 @@ class AddZoneMasterController extends BaseController
             'dom_type' => [
                 new Assert\NotBlank()
             ],
-            'owner' => [
-                new Assert\NotBlank()
-            ],
             'zone_template' => [
                 new Assert\NotBlank()
             ]
@@ -101,8 +100,17 @@ class AddZoneMasterController extends BaseController
 
         $zone_name = DnsIdnService::toPunycode(trim($_POST['domain']));
         $dom_type = $_POST["dom_type"];
-        $owner = (int)$_POST['owner'];
+        $owner = !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
         $zone_template = $_POST['zone_template'] ?? "none";
+        $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
+            array_map('intval', $_POST['groups']) : [];
+
+        // Validate: at least one owner (user or group) must be selected
+        if ($owner === null && empty($selected_groups)) {
+            $this->setMessage('add_zone_master', 'error', _('At least one user or group must be selected as owner.'));
+            $this->showForm();
+            return;
+        }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $hostnameValidator = new HostnameValidator($this->config);
@@ -117,6 +125,14 @@ class AddZoneMasterController extends BaseController
             $this->showForm();
         } elseif ($dnsRecord->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template)) {
             $zone_id = $dnsRecord->getZoneIdFromName($zone_name);
+
+            // Add group ownership if groups were selected
+            if (!empty($selected_groups)) {
+                $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
+                foreach ($selected_groups as $groupId) {
+                    $zoneGroupRepo->add($zone_id, $groupId);
+                }
+            }
             $this->logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'],
@@ -214,14 +230,20 @@ class AddZoneMasterController extends BaseController
             $zone_template_value = 'none';
         }
 
-        // Safely handle the owner value - ensure it's an integer
+        // Safely handle the owner value - ensure it's an integer or preserve empty selection
         if (isset($_POST['owner'])) {
-            $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
-            // Verify that the owner ID exists among valid users
-            $valid_users = UserManager::showUsers($this->db);
-            $valid_owner_ids = array_column($valid_users, 'id');
-            $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
+            if ($_POST['owner'] === '') {
+                // Empty value means "no user owner" was explicitly selected
+                $owner_value = '';
+            } else {
+                $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
+                // Verify that the owner ID exists among valid users
+                $valid_users = UserManager::showUsers($this->db);
+                $valid_owner_ids = array_column($valid_users, 'id');
+                $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
+            }
         } else {
+            // No POST data, default to current user
             $owner_value = $_SESSION['userid'];
         }
 
@@ -239,6 +261,14 @@ class AddZoneMasterController extends BaseController
         $userId = $this->userContext->getLoggedInUserId();
         $templates = $zone_templates->getListZoneTempl($userId);
 
+        // Fetch all groups for the dropdown
+        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $allGroups = $userGroupRepo->findAll();
+
+        // Handle selected groups on error re-render
+        $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
+            array_map('intval', $_POST['groups']) : [];
+
         $this->render('add_zone_master.html', [
             'perm_view_others' => $perm_view_others,
             'session_user_id' => $userId,
@@ -255,6 +285,8 @@ class AddZoneMasterController extends BaseController
             'dom_type_value' => $dom_type_value,
             'is_post' => $is_post_request,
             'dnssec_checked' => $dnssec_checked,
+            'all_groups' => $allGroups,
+            'selected_groups' => $selected_groups,
             // Don't pass raw POST data to the template for security
         ]);
     }

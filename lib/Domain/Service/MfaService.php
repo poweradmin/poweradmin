@@ -556,6 +556,96 @@ class MfaService
     }
 
     /**
+     * Check if MFA is enforced for a user
+     *
+     * This checks:
+     * 1. Global mfa.enabled setting (MFA feature must be available)
+     * 2. Global mfa.enforced setting (enforcement must be enabled)
+     * 3. User or group has user_enforce_mfa permission
+     *
+     * @param int $userId The user ID
+     * @param object $db Database connection for permission check
+     * @return bool True if MFA is enforced for this user
+     */
+    public function isMfaEnforced(int $userId, object $db): bool
+    {
+        // Check if MFA feature is enabled
+        if (!$this->configManager->get('security', 'mfa.enabled', false)) {
+            return false;
+        }
+
+        // Check if MFA enforcement is enabled globally
+        if (!$this->configManager->get('security', 'mfa.enforced', false)) {
+            return false;
+        }
+
+        // Check if user has the user_enforce_mfa permission (from user template or group)
+        return $this->userHasMfaEnforcementPermission($userId, $db);
+    }
+
+    /**
+     * Check if user has the user_enforce_mfa permission
+     *
+     * This checks both direct user permissions and group permissions.
+     *
+     * @param int $userId The user ID
+     * @param object $db Database connection
+     * @return bool True if user has the permission
+     */
+    private function userHasMfaEnforcementPermission(int $userId, object $db): bool
+    {
+        try {
+            $query = $db->prepare("
+                SELECT perm_items.name AS permission
+                FROM perm_templ_items
+                INNER JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
+                INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
+                INNER JOIN users ON perm_templ.id = users.perm_templ
+                WHERE users.id = ?
+                    AND perm_items.name = 'user_enforce_mfa'
+
+                UNION
+
+                SELECT pi.name AS permission
+                FROM user_group_members ugm
+                INNER JOIN user_groups ug ON ugm.group_id = ug.id
+                INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
+                INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
+                INNER JOIN perm_items pi ON pti.perm_id = pi.id
+                WHERE ugm.user_id = ?
+                    AND pi.name = 'user_enforce_mfa'
+            ");
+            $query->execute([$userId, $userId]);
+            $result = $query->fetch();
+
+            return $result !== false;
+        } catch (\PDOException $e) {
+            error_log("Error checking MFA enforcement permission: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Check if MFA setup is required for a user
+     *
+     * Returns true if MFA is enforced for the user but they haven't set it up yet.
+     *
+     * @param int $userId The user ID
+     * @param object $db Database connection
+     * @return bool True if MFA setup is required
+     */
+    public function isMfaSetupRequired(int $userId, object $db): bool
+    {
+        // Check if MFA is enforced for this user
+        if (!$this->isMfaEnforced($userId, $db)) {
+            return false;
+        }
+
+        // Check if user already has MFA enabled
+        return !$this->isMfaEnabled($userId);
+    }
+
+    /**
      * Check if MFA is enabled for a user
      */
     public function isMfaEnabled(int $userId): bool

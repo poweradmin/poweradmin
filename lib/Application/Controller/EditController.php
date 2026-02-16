@@ -35,13 +35,10 @@ namespace Poweradmin\Application\Controller;
 use Exception;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\Application\Service\EmailTemplateService;
-use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
-use Poweradmin\Application\Service\ZoneAccessNotificationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordLog;
 use Poweradmin\Domain\Service\RecordTypeService;
@@ -90,7 +87,8 @@ class EditController extends BaseController
         parent::__construct($request);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
-        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService);
+        $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
+        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->formStateService = new FormStateService();
 
@@ -117,7 +115,8 @@ class EditController extends BaseController
             $this->db,
             $this->getConfig(),
             $this->logger,
-            $this->dnsRecord
+            $this->dnsRecord,
+            $this->recordCommentService
         );
 
         $this->userContextService = new UserContextService();
@@ -125,7 +124,6 @@ class EditController extends BaseController
 
         $userRepository = new DbUserRepository($this->db, $this->getConfig());
         $this->permissionService = new PermissionService($userRepository);
-        $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
     }
 
     public function run(): void
@@ -250,71 +248,10 @@ class EditController extends BaseController
             $formData = array_merge($_SESSION['add_record_last_data'], $_SESSION['add_record_error']);
         }
 
-        if (isset($_POST['save_as'])) {
-            $this->validateCsrfToken();
-            $this->saveAsTemplate($zone_id);
-        }
-
-        // Permission levels already retrieved in early check above
-        $perm_edit = $this->permissionService->getEditPermissionLevel($userId);
+        // Permission levels - use zone-aware checking for group permission support
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
         $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
-
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
-
-        if (isset($_POST['slave_master_change']) && is_numeric($_POST["domain"])) {
-            $this->validateCsrfToken();
-            $this->dnsRecord->changeZoneSlaveMaster($_POST['domain'], $_POST['new_master']);
-        }
-
-        $types = ZoneType::getTypes();
-
-        $new_type = htmlspecialchars($_POST['newtype'] ?? '');
-        if (isset($_POST['type_change']) && in_array($new_type, $types)) {
-            $this->validateCsrfToken();
-            $this->dnsRecord->changeZoneType($new_type, $zone_id);
-        }
-
-        if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
-            $this->validateCsrfToken();
-            $ownerAdded = $this->zoneRepository->addOwnerToZone($_POST["domain"], $_POST["newowner"]);
-
-            // Send zone access granted notification only if the owner was successfully added
-            if ($ownerAdded && $this->config->get('notifications', 'zone_access_enabled', false)) {
-                $notificationService = $this->createZoneAccessNotificationService();
-                $notificationService->notifyAccessGranted(
-                    $zone_id,
-                    (int)$_POST["newowner"],
-                    $this->userContextService->getLoggedInUserId()
-                );
-            }
-        }
-
-        if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"])) {
-            $this->validateCsrfToken();
-            $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, $_POST["delete_owner"]);
-
-            // Send zone access revoked notification only if the owner was successfully removed
-            if ($ownerRemoved && $this->config->get('notifications', 'zone_access_enabled', false)) {
-                $notificationService = $this->createZoneAccessNotificationService();
-                $notificationService->notifyAccessRevoked(
-                    $zone_id,
-                    (int)$_POST["delete_owner"],
-                    $this->userContextService->getLoggedInUserId()
-                );
-            }
-        }
-
-        if (isset($_POST["template_change"])) {
-            $this->validateCsrfToken();
-            if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
-                $new_zone_template = 0;
-            } else {
-                $new_zone_template = $_POST['zone_template'];
-            }
-            if ($_POST['current_zone_template'] != $new_zone_template) {
-                $this->dnsRecord->updateZoneRecords($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone_id, $new_zone_template);
-            }
-        }
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));
@@ -322,6 +259,45 @@ class EditController extends BaseController
 
         if (!$this->zoneRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
+        }
+
+        // Handle zone configuration changes
+        if ($this->isPost() && $meta_edit) {
+            // Change zone type
+            $new_type = htmlspecialchars($_POST['newtype'] ?? '');
+            if (isset($_POST['type_change']) && in_array($new_type, ZoneType::getTypes())) {
+                $this->validateCsrfToken();
+                $this->dnsRecord->changeZoneType($new_type, $zone_id);
+                $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
+            }
+
+            // Change slave master
+            if (isset($_POST['slave_master_change'])) {
+                $this->validateCsrfToken();
+                $this->dnsRecord->changeZoneSlaveMaster($zone_id, $_POST['new_master']);
+                $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
+            }
+
+            // Change template
+            if (isset($_POST["template_change"])) {
+                $this->validateCsrfToken();
+                if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
+                    $new_zone_template = 0;
+                } else {
+                    $new_zone_template = $_POST['zone_template'];
+                }
+                $current_zone_template = $_POST['current_zone_template'] ?? 0;
+
+                if ($current_zone_template != $new_zone_template) {
+                    $this->dnsRecord->updateZoneRecords(
+                        $this->config->get('database', 'type', 'mysql'),
+                        $this->config->get('dns', 'ttl', 86400),
+                        $zone_id,
+                        $new_zone_template
+                    );
+                    $this->setMessage('edit', 'success', _('Zone template has been changed successfully.'));
+                }
+            }
         }
 
         if (isset($_POST['sign_zone'])) {
@@ -400,17 +376,16 @@ class EditController extends BaseController
             }
         }
 
-        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
-
         $domain_type = $this->zoneRepository->getDomainType($zone_id);
         $record_count = $this->dnsRecord->countZoneRecords($zone_id);
-        $zone_templates = $zone_templates->getListZoneTempl($this->userContextService->getLoggedInUserId());
+        $slave_master = $this->zoneRepository->getDomainSlaveMaster($zone_id);
+        $types = ZoneType::getTypes();
+
+        // Get zone templates
+        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
+        $zone_templates = $zone_templates->getListZoneTempl($userId);
         $zone_template_id = DnsRecord::getZoneTemplate($this->db, $zone_id);
         $zone_template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_template_id);
-
-        $slave_master = $this->zoneRepository->getDomainSlaveMaster($zone_id);
-
-        $users = UserManager::showUsers($this->db);
 
         $zone_comment = '';
         $raw_zone_comment = $this->zoneRepository->getZoneComment($zone_id);
@@ -456,7 +431,6 @@ class EditController extends BaseController
             );
             $total_filtered_count = $record_count;
         }
-        $owners = $this->zoneRepository->getZoneOwners($zone_id);
 
         $soa_record = $this->dnsRecord->getSOARecord($zone_id);
 
@@ -485,25 +459,21 @@ class EditController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'zone_comment' => $zone_comment,
             'domain_type' => $domain_type,
-            'record_count' => $record_count,
-            'filtered_record_count' => $total_filtered_count,
+            'slave_master' => $slave_master,
+            'zone_types' => $types,
             'zone_templates' => $zone_templates,
             'zone_template_id' => $zone_template_id,
             'zone_template_details' => $zone_template_details,
-            'slave_master' => $slave_master,
-            'users' => $users,
-            'owners' => $owners,
+            'record_count' => $record_count,
+            'filtered_record_count' => $total_filtered_count,
             'records' => $displayRecords,
             'perm_view' => $perm_view,
             'perm_edit' => $perm_edit,
             'perm_meta_edit' => $perm_meta_edit,
             'meta_edit' => $meta_edit,
-            'perm_zone_master_add' => $this->permissionService->canAddZones($userId),
             'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
-            'perm_view_others' => $this->permissionService->canViewOthersContent($userId),
             'perm_is_godlike' => $this->permissionService->isAdmin($userId),
             'user_is_zone_owner' => $user_is_zone_owner,
-            'zone_types' => $types,
             'row_start' => $row_start,
             'row_amount' => $iface_rowamount,
             'record_sort_by' => $record_sort_by,
@@ -599,7 +569,6 @@ class EditController extends BaseController
         $error = false;
         $one_record_changed = false;
         $serial_mismatch = false;
-        $updatedRecordComments = [];
 
         if (isset($_POST['record'])) {
             $soa_record = $this->dnsRecord->getSOARecord($zone_id);
@@ -625,8 +594,11 @@ class EditController extends BaseController
 
                     $comment = '';
                     if ($this->config->get('interface', 'show_record_comments', false)) {
-                        $recordComment = $this->recordCommentService->findComment($zone_id, $record['name'], $record['type']);
-                        $comment = $recordComment && $recordComment->getComment() ?? '';
+                        $recordComment = $this->recordCommentService->findCommentByRecordId((int)$record['rid']);
+                        if ($recordComment === null) {
+                            $recordComment = $this->recordCommentService->findComment($zone_id, $record['name'], $record['type']);
+                        }
+                        $comment = $recordComment ? $recordComment->getComment() : '';
                     }
 
                     $log->logPrior($record['rid'], $record['zid'], $comment);
@@ -645,30 +617,23 @@ class EditController extends BaseController
                         $log->write();
 
                         if ($this->config->get('interface', 'show_record_comments', false)) {
-                            $recordCopy = $log->getRecordCopy();
-                            $recordKey = $recordCopy['name'] . '|' . $recordCopy['type'];
+                            // Use per-record comment (linked by record ID via record_comment_links table)
+                            $this->recordCommentService->updateCommentForRecord(
+                                $zone_id,
+                                $record['name'],
+                                $record['type'],
+                                $record['comment'] ?? '',
+                                (int)$record['rid'],
+                                $this->userContextService->getLoggedInUsername()
+                            );
 
-                            if (!isset($updatedRecordComments[$recordKey])) {
-                                $this->recordCommentService->updateComment(
-                                    $zone_id,
-                                    $recordCopy['name'],
-                                    $recordCopy['type'],
-                                    $record['name'],
-                                    $record['type'],
+                            if ($this->config->get('misc', 'record_comments_sync')) {
+                                $this->commentSyncService->updateRelatedRecordComments(
+                                    $this->dnsRecord,
+                                    $record,
                                     $record['comment'] ?? '',
                                     $this->userContextService->getLoggedInUsername()
                                 );
-
-                                if ($this->config->get('misc', 'record_comments_sync')) {
-                                    $this->commentSyncService->updateRelatedRecordComments(
-                                        $this->dnsRecord,
-                                        $record,
-                                        $record['comment'] ?? '',
-                                        $this->userContextService->getLoggedInUsername()
-                                    );
-                                }
-
-                                $updatedRecordComments[$recordKey] = true;
                             }
                         }
                     }
@@ -683,28 +648,6 @@ class EditController extends BaseController
         $this->finalizeSave($error, $serial_mismatch, $this->dnsRecord, $zone_id, $one_record_changed, $zone_name);
     }
 
-    public function saveAsTemplate(string $zone_id): void
-    {
-        $template_name = htmlspecialchars($_POST['templ_name']) ?? '';
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
-        if ($zoneTemplate->zoneTemplNameExists($template_name)) {
-            $this->showError(_('Zone template with this name already exists, please choose another one.'));
-        } elseif ($template_name == '') {
-            $this->showError(_("Template name can't be an empty string."));
-        } else {
-            $records = $this->dnsRecord->getRecordsFromDomainId($this->config->get('database', 'type', 'mysql'), $zone_id);
-
-            $description = htmlspecialchars($_POST['templ_descr']) ?? '';
-
-            $options = [
-                'NS1' => $this->config->get('dns', 'ns1', '') ?? '',
-                'HOSTMASTER' => $this->config->get('dns', 'hostmaster', '') ?? '',
-            ];
-
-            $zoneTemplate->addZoneTemplSaveAs($template_name, $description, $this->userContextService->getLoggedInUserId(), $records, $options, $this->zoneRepository->getDomainNameById($zone_id));
-            $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
-        }
-    }
 
     public function exportCsv(int $zone_id): void
     {
@@ -1126,26 +1069,5 @@ class EditController extends BaseController
 
         // Store the current zone ID for future comparisons
         $_SESSION['add_record_zone_id'] = $currentZoneId;
-    }
-
-    /**
-     * Create zone access notification service
-     *
-     * @return ZoneAccessNotificationService
-     */
-    private function createZoneAccessNotificationService(): ZoneAccessNotificationService
-    {
-        // Pass null for logger since LegacyLogger doesn't implement PSR LoggerInterface
-        $mailService = new MailService($this->config, null);
-        $emailTemplateService = new EmailTemplateService($this->config);
-
-        return new ZoneAccessNotificationService(
-            $this->db,
-            $this->config,
-            $mailService,
-            $emailTemplateService,
-            $this->zoneRepository,
-            null
-        );
     }
 }

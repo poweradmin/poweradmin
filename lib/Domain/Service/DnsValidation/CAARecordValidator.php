@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -248,7 +248,7 @@ class CAARecordValidator implements DnsRecordValidatorInterface
             // According to RFC 8659 section 6.3, iodef URLs must start with http://, https://, or mailto:
             $unquoted = trim($value, '"');
             if (!preg_match('/^(https?:|mailto:)/', $unquoted)) {
-                return ValidationResult::failure(_('CAA iodef value must be a URL starting with http://, https://, or mailto:.'));
+                return ValidationResult::failure(sprintf(_('CAA iodef value must be a URL starting with %s, %s, or %s.'), 'http://', 'https://', 'mailto:'));
             }
         } elseif ($tag === 'contactemail') { // For contactemail and contactphone, RFC 8659 doesn't define specific format requirements
             $quotedResult = $this->validateQuotedValue($value);

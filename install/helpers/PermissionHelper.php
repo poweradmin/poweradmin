@@ -59,6 +59,7 @@ class PermissionHelper
             [65, 'api_manage_keys', 'User is allowed to create and manage API keys.'],
             [67, 'zone_delete_own', 'User is allowed to delete zones they own.'],
             [68, 'zone_delete_others', 'User is allowed to delete zones owned by others.'],
+            [69, 'user_enforce_mfa', 'User is required to use multi-factor authentication.'],
         ];
     }
 }

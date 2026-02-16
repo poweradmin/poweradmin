@@ -39,17 +39,6 @@
                 <referencedMethod name="PHPUnit\Framework\MockObject\MockObject::will" />
             </errorLevel>
         </UndefinedMethod>
-        <InternalMethod>
-            <errorLevel type="suppress">
-                <!-- Suppress InternalMethod for Symfony Request methods -->
-                <referencedMethod name="Symfony\Component\HttpFoundation\Request::get" />
-                <referencedMethod name="Symfony\Component\HttpFoundation\Request::getMethod" />
-                <referencedMethod name="Symfony\Component\HttpFoundation\Request::getContent" />
-                <referencedMethod name="Symfony\Component\HttpFoundation\Request::getSession" />
-                <referencedMethod name="Symfony\Component\HttpFoundation\Request::getClientIp" />
-            </errorLevel>
-        </InternalMethod>
-        
         <!-- Suppress other common issues in test files -->
         <InvalidOperand>
             <errorLevel type="suppress">

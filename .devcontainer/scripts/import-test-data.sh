@@ -77,6 +77,11 @@ clean_mysql() {
     docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" << 'EOSQL'
 USE poweradmin;
 
+-- Delete group-related data (keep default groups from schema)
+DELETE FROM zones_groups;
+DELETE FROM user_group_members;
+DELETE FROM log_groups;
+
 -- Delete zone template associations and sync data
 DELETE FROM zone_template_sync;
 DELETE FROM records_zone_templ;
@@ -119,6 +124,9 @@ DELETE FROM records;
 
 -- Delete all domains
 DELETE FROM domains;
+
+-- Delete all supermasters
+DELETE FROM supermasters;
 EOSQL
 
     echo -e "${GREEN}✅ MySQL/MariaDB cleaned${NC}"
@@ -134,6 +142,11 @@ clean_pgsql() {
     fi
 
     docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" << 'EOSQL'
+-- Delete group-related data (keep default groups from schema)
+DELETE FROM zones_groups;
+DELETE FROM user_group_members;
+DELETE FROM log_groups;
+
 -- Delete zone template associations and sync data
 DELETE FROM zone_template_sync;
 DELETE FROM records_zone_templ;
@@ -175,6 +188,9 @@ DELETE FROM records;
 -- Delete all domains
 DELETE FROM domains;
 
+-- Delete all supermasters
+DELETE FROM supermasters;
+
 -- Reset sequences
 SELECT setval('perm_templ_id_seq', 1);
 SELECT setval('perm_templ_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_templ_items), 1));
@@ -187,9 +203,12 @@ SELECT setval('zone_templ_records_id_seq', 1);
 SELECT setval('records_zone_templ_id_seq', 1);
 SELECT setval('log_users_id_seq1', 1);
 SELECT setval('log_zones_id_seq1', 1);
+SELECT setval('log_groups_id_seq', 1);
 SELECT setval('api_keys_id_seq', 1);
 SELECT setval('user_mfa_id_seq', 1);
 SELECT setval('login_attempts_id_seq', 1);
+SELECT setval('user_group_members_id_seq', 1);
+SELECT setval('zones_groups_id_seq', 1);
 EOSQL
 
     echo -e "${GREEN}✅ PostgreSQL cleaned${NC}"
@@ -207,6 +226,11 @@ clean_sqlite() {
     docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" << 'EOSQL'
 -- Attach PowerDNS database
 ATTACH DATABASE '/data/pdns.db' AS pdns;
+
+-- Delete group-related data (keep default groups from schema)
+DELETE FROM zones_groups;
+DELETE FROM user_group_members;
+DELETE FROM log_groups;
 
 -- Delete zone template associations and sync data
 DELETE FROM zone_template_sync;
@@ -248,6 +272,9 @@ DELETE FROM pdns.records;
 
 -- Delete all domains from PowerDNS database
 DELETE FROM pdns.domains;
+
+-- Delete all supermasters from PowerDNS database
+DELETE FROM pdns.supermasters;
 EOSQL
 
     echo -e "${GREEN}✅ SQLite cleaned${NC}"
@@ -323,6 +350,32 @@ import_mysql() {
             fi
         fi
 
+        # Import extra comprehensive data (zones, supermasters, etc.)
+        if [ -f "$SQL_DIR/test-extra-data-mysql.sql" ]; then
+            echo -e "${YELLOW}📦 Importing extra test data (zones, supermasters, API keys)...${NC}"
+            output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$SQL_DIR/test-extra-data-mysql.sql" 2>&1)
+            exit_code=$?
+
+            if [ $exit_code -eq 0 ]; then
+                echo -e "${GREEN}✅ MySQL/MariaDB extra test data imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  Extra test data import had issues (may already exist)${NC}"
+            fi
+        fi
+
+        # Import group test data (memberships, zone-group assignments)
+        if [ -f "$SQL_DIR/test-groups-mysql.sql" ]; then
+            echo -e "${YELLOW}📦 Importing group memberships and zone-group assignments...${NC}"
+            output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$SQL_DIR/test-groups-mysql.sql" 2>&1)
+            exit_code=$?
+
+            if [ $exit_code -eq 0 ]; then
+                echo -e "${GREEN}✅ MySQL/MariaDB group test data imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  Group test data import had issues (may already exist)${NC}"
+            fi
+        fi
+
         return 0
     else
         echo -e "${RED}❌ MySQL/MariaDB import failed${NC}"
@@ -389,6 +442,26 @@ import_pgsql() {
             fi
         fi
 
+        # Import extra comprehensive data (zones, supermasters, etc.)
+        if [ -f "$SQL_DIR/test-extra-data-pgsql.sql" ]; then
+            echo -e "${YELLOW}📦 Importing extra test data (zones, supermasters, API keys)...${NC}"
+            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$SQL_DIR/test-extra-data-pgsql.sql" > /dev/null 2>&1; then
+                echo -e "${GREEN}✅ PostgreSQL extra test data imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  Extra test data import had issues (may already exist)${NC}"
+            fi
+        fi
+
+        # Import group test data (memberships, zone-group assignments)
+        if [ -f "$SQL_DIR/test-groups-pgsql.sql" ]; then
+            echo -e "${YELLOW}📦 Importing group memberships and zone-group assignments...${NC}"
+            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$SQL_DIR/test-groups-pgsql.sql" > /dev/null 2>&1; then
+                echo -e "${GREEN}✅ PostgreSQL group test data imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  Group test data import had issues (may already exist)${NC}"
+            fi
+        fi
+
         return 0
     else
         echo -e "${RED}❌ PostgreSQL import failed${NC}"
@@ -451,6 +524,26 @@ import_sqlite() {
                 echo -e "${GREEN}✅ SQLite reverse zones and templates imported${NC}"
             else
                 echo -e "${YELLOW}⚠️  Reverse zones/templates import had issues (may already exist)${NC}"
+            fi
+        fi
+
+        # Import extra comprehensive data (zones, supermasters, etc.)
+        if [ -f "$SQL_DIR/test-extra-data-sqlite.sql" ]; then
+            echo -e "${YELLOW}📦 Importing extra test data (zones, supermasters, API keys)...${NC}"
+            if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQL_DIR/test-extra-data-sqlite.sql" > /dev/null 2>&1; then
+                echo -e "${GREEN}✅ SQLite extra test data imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  Extra test data import had issues (may already exist)${NC}"
+            fi
+        fi
+
+        # Import group test data (memberships, zone-group assignments)
+        if [ -f "$SQL_DIR/test-groups-sqlite.sql" ]; then
+            echo -e "${YELLOW}📦 Importing group memberships and zone-group assignments...${NC}"
+            if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQL_DIR/test-groups-sqlite.sql" > /dev/null 2>&1; then
+                echo -e "${GREEN}✅ SQLite group test data imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  Group test data import had issues (may already exist)${NC}"
             fi
         fi
 
@@ -616,6 +709,18 @@ main() {
         echo "  - manager-zone.example.com (owner: manager) - with comprehensive DNS records"
         echo "  - client-zone.example.com (owner: client) - with comprehensive DNS records"
         echo "  - shared-zone.example.com (owners: manager, client)"
+        echo "  - test858.example.com (owner: admin) - Issue #858 comment testing"
+        echo "  - 168.192.in-addr.arpa (owner: admin) - A/PTR sync testing"
+        echo ""
+        echo "  Reverse zones:"
+        echo "  - 2.0.192.in-addr.arpa (IPv4, owners: admin, manager)"
+        echo "  - 8.b.d.0.1.0.0.2.ip6.arpa (IPv6, owner: admin)"
+        echo ""
+        echo -e "${BLUE}Zone Templates:${NC}"
+        echo "  - Standard Web Zone (owner: admin) - www, mail, ftp, MX"
+        echo "  - Mail Server Zone (owner: admin) - MX, SPF"
+        echo "  - Minimal Zone (owner: admin) - empty"
+        echo "  - Manager Template (owner: manager) - empty"
         echo ""
         echo "  Reverse zones:"
         echo "  - 2.0.192.in-addr.arpa (IPv4, owners: admin, manager)"
@@ -638,6 +743,42 @@ main() {
         echo "  - CAA: 2 records (certificate authority)"
         echo "  - Disabled: 1 record (for testing disabled state)"
         echo "  Total: ~26 records per zone for comprehensive UI testing"
+        echo ""
+        echo -e "${BLUE}Issue #858 Test Data (test858.example.com):${NC}"
+        echo "  - CAA: 3 records with individual comments (per-record comment testing)"
+        echo "  - A: 3 records (www, mail, server1)"
+        echo "  - PTR: 3 records in 168.192.in-addr.arpa (sync testing)"
+        echo "  - Comments linked via record_comment_links table"
+        echo ""
+        echo -e "${BLUE}Extra zones:${NC}"
+        echo "  - viewer-zone.example.com (MASTER, owner: viewer)"
+        echo "  - slave-zone.example.com (SLAVE, owner: admin, master: 10.0.0.1)"
+        echo "  - native-zone.example.com (NATIVE, owner: admin)"
+        echo "  - group-only-zone.example.com (MASTER, no direct owner - group only)"
+        echo ""
+        echo -e "${BLUE}Supermasters:${NC}"
+        echo "  - 10.0.0.1 / ns1.supermaster.example.com (IPv4)"
+        echo "  - 10.0.0.2 / ns2.supermaster.example.com (IPv4)"
+        echo "  - 2001:db8::1 / ns3.supermaster.example.com (IPv6)"
+        echo ""
+        echo -e "${BLUE}Group Memberships:${NC}"
+        echo "  - Administrators: admin"
+        echo "  - Zone Managers: manager"
+        echo "  - Editors: manager (cross-group), client"
+        echo "  - Viewers: viewer"
+        echo "  - Guests: noperm"
+        echo ""
+        echo -e "${BLUE}Zone-Group Assignments:${NC}"
+        echo "  - manager-zone.example.com -> Zone Managers"
+        echo "  - client-zone.example.com -> Editors"
+        echo "  - shared-zone.example.com -> Zone Managers, Editors (multi-group)"
+        echo "  - group-only-zone.example.com -> Zone Managers (no direct owner)"
+        echo ""
+        echo -e "${BLUE}Additional Data:${NC}"
+        echo "  - Expired API key: 'Expired Testing Key' (expired 2024-01-01)"
+        echo "  - Zone template sync: admin-zone (synced), manager-zone (needs sync)"
+        echo "  - Login attempts: 2 successful, 3 failed"
+        echo "  - Group audit logs: 4 entries"
         echo ""
         exit 0
     else

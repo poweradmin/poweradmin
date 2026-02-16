@@ -40,11 +40,9 @@
 
 FROM dunglas/frankenphp:1.11.2-php8.4-alpine
 
-# Update base packages to fix known security vulnerabilities
-RUN apk upgrade --no-cache
-
-# Install required packages and PHP extensions
-RUN apk add --no-cache --virtual .build-deps \
+# Update base packages and install required packages and PHP extensions
+RUN apk upgrade --no-cache \
+    && apk add --no-cache --virtual .build-deps \
     gettext-dev \
     postgresql-dev \
     icu-dev \
@@ -163,13 +161,11 @@ EOF
 ENV XDG_CONFIG_HOME=/var/caddy
 ENV XDG_DATA_HOME=/var/caddy
 
-# Set proper ownership for www-data user
+# Set proper ownership and install su-exec for dropping privileges
 RUN chown -R www-data:www-data /app /db \
     && mkdir -p /var/caddy/caddy \
-    && chown -R www-data:www-data /var/caddy
-
-# Install su-exec for dropping privileges
-RUN apk add --no-cache su-exec
+    && chown -R www-data:www-data /var/caddy \
+    && apk add --no-cache su-exec
 
 # Run as root initially, entrypoint will drop to www-data
 

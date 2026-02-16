@@ -34,11 +34,12 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -48,6 +49,7 @@ class DeleteDomainController extends BaseController
 
     private LegacyLogger $logger;
     private RecordCommentService $recordCommentService;
+    private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
@@ -56,6 +58,7 @@ class DeleteDomainController extends BaseController
         $this->logger = new LegacyLogger($this->db);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
@@ -75,9 +78,16 @@ class DeleteDomainController extends BaseController
 
         $zone_id = (int)$this->getSafeRequestValue('id');
 
-        $perm_delete = Permission::getDeletePermission($this->db);
+        // Check zone-specific delete permission (includes group permissions)
+        $userId = $this->userContextService->getLoggedInUserId();
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
-        $this->checkCondition($perm_delete != "all" && ($perm_delete != "own" || !$user_is_zone_owner), _("You do not have the permission to delete a zone."));
+        $canDelete = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_delete_own');
+        $canDeleteOthers = UserManager::verifyPermission($this->db, 'zone_delete_others');
+
+        $this->checkCondition(
+            !$canDeleteOthers && !$canDelete,
+            _("You do not have the permission to delete a zone.")
+        );
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -106,7 +116,7 @@ class DeleteDomainController extends BaseController
             $this->logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                 $_SERVER['REMOTE_ADDR'],
-                $_SESSION["userlogin"],
+                $this->userContextService->getLoggedInUsername(),
                 $zone_info['name'],
                 $zone_info['type']
             ), $zone_id);
@@ -140,8 +150,12 @@ class DeleteDomainController extends BaseController
         if ($zone_info['type'] == 'SLAVE') {
             $dnsRecord = new DnsRecord($this->db, $this->getConfig());
             $slave_master = $dnsRecord->getDomainSlaveMaster($zone_id);
-            if ($dnsRecord->supermasterExists($slave_master)) {
-                $slave_master_exists = true;
+            if ($slave_master) {
+                // Extract first IP from master field (can contain multiple IPs, hostnames, ports)
+                $master_ip = IpHelper::extractFirstIpFromMaster($slave_master);
+                if ($master_ip && $dnsRecord->supermasterExists($master_ip)) {
+                    $slave_master_exists = true;
+                }
             }
         }
 

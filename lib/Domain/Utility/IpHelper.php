@@ -215,4 +215,185 @@ class IpHelper
 
         return $reversed . '.ip6.arpa';
     }
+
+    /**
+     * Convert IPv6 reverse zone (ip6.arpa) to shortened IPv6 notation
+     *
+     * @param string $reverseZone The reverse zone name (e.g., "1.0.0.0...ip6.arpa")
+     * @return string|null Shortened IPv6 address or null if invalid
+     */
+    public static function shortenIPv6ReverseZone(string $reverseZone): ?string
+    {
+        // Remove .ip6.arpa suffix
+        if (!str_ends_with($reverseZone, '.ip6.arpa')) {
+            return null;
+        }
+
+        $reversedNibbles = str_replace('.ip6.arpa', '', $reverseZone);
+        $nibbles = explode('.', $reversedNibbles);
+
+        // Reverse the nibbles to get original order
+        $nibbles = array_reverse($nibbles);
+
+        // Validate nibbles (must be hex digits)
+        foreach ($nibbles as $nibble) {
+            if (!ctype_xdigit($nibble) || strlen($nibble) !== 1) {
+                return null;
+            }
+        }
+
+        // Pad with zeros if needed to make it 32 nibbles (full IPv6)
+        $nibbles = array_pad($nibbles, 32, '0');
+
+        // Join nibbles to form hex string
+        $hex = implode('', $nibbles);
+
+        // Format as IPv6 address (8 groups of 4 hex digits)
+        $parts = [];
+        for ($i = 0; $i < 8; $i++) {
+            $parts[] = substr($hex, $i * 4, 4);
+        }
+        $ipv6 = implode(':', $parts);
+
+        // Use inet_pton and inet_ntop to get the shortened form
+        $binary = inet_pton($ipv6);
+        if ($binary === false) {
+            return null;
+        }
+
+        return inet_ntop($binary);
+    }
+
+    /**
+     * Extract the first valid IP address from a PowerDNS master field value
+     *
+     * PowerDNS master field can contain various formats:
+     * - Single IP: "192.168.1.1"
+     * - Multiple IPs: "192.168.1.1,192.168.1.2"
+     * - IP with port: "192.168.1.1:5300" or "[2001:db8::1]:5300"
+     * - Hostname: "ns1.example.com"
+     * - Whitespace: " 192.168.1.1 "
+     *
+     * This method extracts the first valid IP address, stripping ports and
+     * ignoring hostnames.
+     *
+     * @param string $master The master field value from PowerDNS
+     * @return string|null First valid IP address or null if none found
+     */
+    public static function extractFirstIpFromMaster(string $master): ?string
+    {
+        // Trim whitespace
+        $master = trim($master);
+
+        if (empty($master)) {
+            return null;
+        }
+
+        // Split by comma in case of multiple masters
+        $masters = array_map('trim', explode(',', $master));
+
+        foreach ($masters as $entry) {
+            // Remove port notation if present
+            // Handle IPv6 with port: [2001:db8::1]:5300
+            if (preg_match('/^\[([^\]]+)\](?::\d+)?$/', $entry, $matches)) {
+                $ip = $matches[1];
+            } elseif (preg_match('/^([0-9.]+):\d+$/', $entry, $matches)) {
+                // Handle IPv4 with port: 192.168.1.1:5300
+                // Be careful not to match IPv6 colons
+                $ip = $matches[1];
+            } else {
+                // No port notation
+                $ip = $entry;
+            }
+
+            // Check if it's a valid IPv4 or IPv6 address (not a hostname)
+            if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
+                return $ip;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Shorten an IPv6 address to its compressed form
+     *
+     * Converts a full or partially expanded IPv6 address to its shortest
+     * representation using zero compression (::).
+     *
+     * @param string $address IPv6 address in any valid format
+     * @return string Shortened IPv6 address, or original string if not a valid IPv6
+     */
+    public static function shortenIPv6Address(string $address): string
+    {
+        // Trim whitespace
+        $address = trim($address);
+
+        if (empty($address)) {
+            return $address;
+        }
+
+        // Use inet_pton to parse and validate the IPv6 address
+        $binary = @inet_pton($address);
+        if ($binary === false) {
+            // Not a valid IPv6 address, return as-is
+            return $address;
+        }
+
+        // Check if it's actually an IPv6 address (16 bytes)
+        if (strlen($binary) !== 16) {
+            return $address;
+        }
+
+        // Use inet_ntop to get the shortened form
+        $shortened = inet_ntop($binary);
+        if ($shortened === false) {
+            return $address;
+        }
+
+        return $shortened;
+    }
+
+    /**
+     * Extract all valid IP addresses from a PowerDNS master field value
+     *
+     * Similar to extractFirstIpFromMaster but returns all valid IPs found.
+     *
+     * @param string $master The master field value from PowerDNS
+     * @return array Array of valid IP addresses
+     */
+    public static function extractAllIpsFromMaster(string $master): array
+    {
+        // Trim whitespace
+        $master = trim($master);
+
+        if (empty($master)) {
+            return [];
+        }
+
+        // Split by comma in case of multiple masters
+        $masters = array_map('trim', explode(',', $master));
+        $validIps = [];
+
+        foreach ($masters as $entry) {
+            // Remove port notation if present
+            // Handle IPv6 with port: [2001:db8::1]:5300
+            if (preg_match('/^\[([^\]]+)\](?::\d+)?$/', $entry, $matches)) {
+                $ip = $matches[1];
+            } elseif (preg_match('/^([0-9.]+):\d+$/', $entry, $matches)) {
+                // Handle IPv4 with port: 192.168.1.1:5300
+                $ip = $matches[1];
+            } else {
+                // No port notation
+                $ip = $entry;
+            }
+
+            // Check if it's a valid IPv4 or IPv6 address (not a hostname)
+            if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
+                $validIps[] = $ip;
+            }
+        }
+
+        return $validIps;
+    }
 }
