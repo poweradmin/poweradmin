@@ -806,5 +806,9 @@ return [
 
     // Module configuration
     // Each module can be enabled/disabled and may have additional settings.
-    'modules' => [],
+    'modules' => [
+        'csv_export' => [
+            'enabled' => true,
+        ],
+    ],
 ];

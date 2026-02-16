@@ -217,7 +217,7 @@
                         {% for item in module_nav_items %}
                         <li><a class="dropdown-item {{ current_page == item.page_id ? 'active' : '' }}"
                                href="{{ base_url_prefix }}{{ item.url }}">
-                            <i class="bi bi-{{ item.icon }} me-2"></i>{% trans %}{{ item.label }}{% endtrans %}
+                            <i class="bi bi-{{ item.icon }} me-2"></i>{{ item.label|trans }}
                         </a></li>
                         {% endfor %}
                         {% endif %}

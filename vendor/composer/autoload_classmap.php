@@ -1296,6 +1296,8 @@ return array(
     'Poweradmin\\Infrastructure\\Utility\\SortHelper' => $baseDir . '/lib/Infrastructure/Utility/SortHelper.php',
     'Poweradmin\\Infrastructure\\Utility\\UserAgentService' => $baseDir . '/lib/Infrastructure/Utility/UserAgentService.php',
     'Poweradmin\\LocaleManager' => $baseDir . '/lib/LocaleManager.php',
+    'Poweradmin\\Module\\CsvExport\\Controller\\CsvExportController' => $baseDir . '/lib/Module/CsvExport/Controller/CsvExportController.php',
+    'Poweradmin\\Module\\CsvExport\\CsvExportModule' => $baseDir . '/lib/Module/CsvExport/CsvExportModule.php',
     'Poweradmin\\Module\\ModuleInterface' => $baseDir . '/lib/Module/ModuleInterface.php',
     'Poweradmin\\Module\\ModuleRegistry' => $baseDir . '/lib/Module/ModuleRegistry.php',
     'Poweradmin\\Pages' => $baseDir . '/lib/Pages.php',

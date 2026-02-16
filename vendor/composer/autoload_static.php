@@ -1691,6 +1691,8 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Infrastructure\\Utility\\SortHelper' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/SortHelper.php',
         'Poweradmin\\Infrastructure\\Utility\\UserAgentService' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/UserAgentService.php',
         'Poweradmin\\LocaleManager' => __DIR__ . '/../..' . '/lib/LocaleManager.php',
+        'Poweradmin\\Module\\CsvExport\\Controller\\CsvExportController' => __DIR__ . '/../..' . '/lib/Module/CsvExport/Controller/CsvExportController.php',
+        'Poweradmin\\Module\\CsvExport\\CsvExportModule' => __DIR__ . '/../..' . '/lib/Module/CsvExport/CsvExportModule.php',
         'Poweradmin\\Module\\ModuleInterface' => __DIR__ . '/../..' . '/lib/Module/ModuleInterface.php',
         'Poweradmin\\Module\\ModuleRegistry' => __DIR__ . '/../..' . '/lib/Module/ModuleRegistry.php',
         'Poweradmin\\Pages' => __DIR__ . '/../..' . '/lib/Pages.php',
