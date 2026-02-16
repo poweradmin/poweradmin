@@ -155,4 +155,18 @@ return [
     'dns_wizards' => [
         'enabled' => true,
     ],
+
+    /**
+     * Module Settings
+     */
+    'modules' => [
+        'csv_export' => [
+            'enabled' => true,
+        ],
+        'zone_import_export' => [
+            'enabled' => true,
+            'auto_ttl_value' => 300,
+            'max_file_size' => 1048576,
+        ],
+    ],
 ];
