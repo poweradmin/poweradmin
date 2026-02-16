@@ -45,8 +45,11 @@ jobs:
             ${{ runner.os }}-composer-twigcs-
             ${{ runner.os }}-composer-
 
-      - name: Install twigcs
-        run: composer require --dev friendsoftwig/twigcs --no-interaction --no-progress
+      - name: Install dependencies
+        run: |
+          rm -rf vendor
+          composer install --no-interaction --no-progress
+          composer require --dev friendsoftwig/twigcs --no-interaction --no-progress
 
       - name: Run TwigCS linter
         run: vendor/bin/twigcs templates --reporter githubAction --severity error
