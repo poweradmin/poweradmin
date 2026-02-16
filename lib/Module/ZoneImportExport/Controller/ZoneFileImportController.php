@@ -218,7 +218,7 @@ class ZoneFileImportController extends BaseController
             }
 
             $zoneType = $_POST['zone_type'] ?? 'MASTER';
-            if (!$dnsRecord->addDomain($this->db, $zoneName, $userId, $zoneType, '', 0)) {
+            if (!$dnsRecord->addDomain($this->db, $zoneName, $userId, $zoneType, '', 'none')) {
                 $this->showError(_('Failed to create zone.'));
                 return;
             }
