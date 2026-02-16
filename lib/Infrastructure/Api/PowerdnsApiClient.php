@@ -391,6 +391,123 @@ class PowerdnsApiClient
     }
 
     /**
+     * Get all metadata for a zone
+     *
+     * @param Zone $zone
+     * @return array Array of metadata entries [['kind' => string, 'metadata' => string[]], ...]
+     */
+    public function getZoneMetadata(Zone $zone): array
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/metadata");
+            $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+            if ($response && $response['responseCode'] === 200) {
+                return $response['data'];
+            }
+
+            return [];
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to get metadata for zone %s: %s", $zone->getName(), $e->getMessage()));
+            return [];
+        }
+    }
+
+    /**
+     * Get a specific metadata kind for a zone
+     *
+     * @param Zone $zone
+     * @param string $kind Metadata kind (e.g., 'ALLOW-AXFR-FROM', 'TSIG-ALLOW-AXFR')
+     * @return array Metadata entry ['kind' => string, 'metadata' => string[]]
+     */
+    public function getZoneMetadataKind(Zone $zone, string $kind): array
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/metadata/" . rawurlencode($kind));
+            $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+            if ($response && $response['responseCode'] === 200) {
+                return $response['data'];
+            }
+
+            return [];
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to get metadata kind '%s' for zone %s: %s", $kind, $zone->getName(), $e->getMessage()));
+            return [];
+        }
+    }
+
+    /**
+     * Create metadata for a zone
+     *
+     * @param Zone $zone
+     * @param string $kind Metadata kind
+     * @param array $metadata Array of metadata values
+     * @return bool
+     */
+    public function createZoneMetadata(Zone $zone, string $kind, array $metadata): bool
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/metadata");
+            $data = [
+                'kind' => $kind,
+                'metadata' => $metadata,
+            ];
+            $response = $this->httpClient->makeRequest('POST', $endpoint, $data);
+
+            return $response && $response['responseCode'] === 204;
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to create metadata kind '%s' for zone %s: %s", $kind, $zone->getName(), $e->getMessage()));
+            return false;
+        }
+    }
+
+    /**
+     * Update metadata for a zone, replacing existing entries of the given kind
+     *
+     * @param Zone $zone
+     * @param string $kind Metadata kind
+     * @param array $metadata Array of metadata values
+     * @return bool
+     */
+    public function updateZoneMetadata(Zone $zone, string $kind, array $metadata): bool
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/metadata/" . rawurlencode($kind));
+            $data = [
+                'kind' => $kind,
+                'metadata' => $metadata,
+            ];
+            $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+
+            return $response && $response['responseCode'] === 200;
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to update metadata kind '%s' for zone %s: %s", $kind, $zone->getName(), $e->getMessage()));
+            return false;
+        }
+    }
+
+    /**
+     * Delete all metadata of a given kind for a zone
+     *
+     * @param Zone $zone
+     * @param string $kind Metadata kind
+     * @return bool
+     */
+    public function deleteZoneMetadata(Zone $zone, string $kind): bool
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/metadata/" . rawurlencode($kind));
+            $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+
+            return $response && $response['responseCode'] === 204;
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to delete metadata kind '%s' for zone %s: %s", $kind, $zone->getName(), $e->getMessage()));
+            return false;
+        }
+    }
+
+    /**
      * Get PowerDNS configuration
      *
      * @return array

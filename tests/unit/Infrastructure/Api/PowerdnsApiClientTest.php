@@ -251,4 +251,161 @@ class PowerdnsApiClientTest extends TestCase
 
         $this->assertTrue($result);
     }
+
+    public function testGetZoneMetadataReturnsMetadataArray(): void
+    {
+        $zone = new Zone('example.com.');
+
+        $apiResponse = [
+            'responseCode' => 200,
+            'data' => [
+                ['kind' => 'ALLOW-AXFR-FROM', 'metadata' => ['192.168.1.0/24']],
+                ['kind' => 'SOA-EDIT-API', 'metadata' => ['DEFAULT']],
+            ]
+        ];
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com./metadata')
+            ->willReturn($apiResponse);
+
+        $metadata = $this->apiClient->getZoneMetadata($zone);
+
+        $this->assertCount(2, $metadata);
+        $this->assertEquals('ALLOW-AXFR-FROM', $metadata[0]['kind']);
+        $this->assertEquals(['192.168.1.0/24'], $metadata[0]['metadata']);
+    }
+
+    public function testGetZoneMetadataReturnsEmptyArrayOnError(): void
+    {
+        $zone = new Zone('example.com.');
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 404, 'data' => []]);
+
+        $metadata = $this->apiClient->getZoneMetadata($zone);
+
+        $this->assertIsArray($metadata);
+        $this->assertEmpty($metadata);
+    }
+
+    public function testGetZoneMetadataKindReturnsSpecificMetadata(): void
+    {
+        $zone = new Zone('example.com.');
+
+        $apiResponse = [
+            'responseCode' => 200,
+            'data' => ['kind' => 'ALLOW-AXFR-FROM', 'metadata' => ['192.168.1.0/24', '10.0.0.0/8']]
+        ];
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com./metadata/ALLOW-AXFR-FROM')
+            ->willReturn($apiResponse);
+
+        $metadata = $this->apiClient->getZoneMetadataKind($zone, 'ALLOW-AXFR-FROM');
+
+        $this->assertEquals('ALLOW-AXFR-FROM', $metadata['kind']);
+        $this->assertCount(2, $metadata['metadata']);
+    }
+
+    public function testGetZoneMetadataKindReturnsEmptyArrayOnNotFound(): void
+    {
+        $zone = new Zone('example.com.');
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 404, 'data' => []]);
+
+        $metadata = $this->apiClient->getZoneMetadataKind($zone, 'NONEXISTENT');
+
+        $this->assertIsArray($metadata);
+        $this->assertEmpty($metadata);
+    }
+
+    public function testCreateZoneMetadata(): void
+    {
+        $zone = new Zone('example.com.');
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with(
+                'POST',
+                '/api/v1/servers/localhost/zones/example.com./metadata',
+                ['kind' => 'ALLOW-AXFR-FROM', 'metadata' => ['192.168.1.0/24']]
+            )
+            ->willReturn(['responseCode' => 204, 'data' => []]);
+
+        $result = $this->apiClient->createZoneMetadata($zone, 'ALLOW-AXFR-FROM', ['192.168.1.0/24']);
+
+        $this->assertTrue($result);
+    }
+
+    public function testCreateZoneMetadataReturnsFalseOnError(): void
+    {
+        $zone = new Zone('example.com.');
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 422, 'data' => []]);
+
+        $result = $this->apiClient->createZoneMetadata($zone, 'INVALID', ['value']);
+
+        $this->assertFalse($result);
+    }
+
+    public function testUpdateZoneMetadata(): void
+    {
+        $zone = new Zone('example.com.');
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with(
+                'PUT',
+                '/api/v1/servers/localhost/zones/example.com./metadata/ALLOW-AXFR-FROM',
+                ['kind' => 'ALLOW-AXFR-FROM', 'metadata' => ['10.0.0.0/8']]
+            )
+            ->willReturn(['responseCode' => 200, 'data' => ['kind' => 'ALLOW-AXFR-FROM', 'metadata' => ['10.0.0.0/8']]]);
+
+        $result = $this->apiClient->updateZoneMetadata($zone, 'ALLOW-AXFR-FROM', ['10.0.0.0/8']);
+
+        $this->assertTrue($result);
+    }
+
+    public function testDeleteZoneMetadata(): void
+    {
+        $zone = new Zone('example.com.');
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('DELETE', '/api/v1/servers/localhost/zones/example.com./metadata/TSIG-ALLOW-AXFR')
+            ->willReturn(['responseCode' => 204, 'data' => []]);
+
+        $result = $this->apiClient->deleteZoneMetadata($zone, 'TSIG-ALLOW-AXFR');
+
+        $this->assertTrue($result);
+    }
+
+    public function testDeleteZoneMetadataReturnsFalseOnNotFound(): void
+    {
+        $zone = new Zone('example.com.');
+
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 404, 'data' => []]);
+
+        $result = $this->apiClient->deleteZoneMetadata($zone, 'NONEXISTENT');
+
+        $this->assertFalse($result);
+    }
 }
