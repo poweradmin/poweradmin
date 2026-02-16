@@ -27,8 +27,6 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Api\HttpClient;
-use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
@@ -102,19 +100,35 @@ class ZoneFileExportController extends BaseController
         }
 
         try {
-            $httpClient = new HttpClient($apiUrl, $apiKey);
             $serverName = $this->getConfig()->get('pdns_api', 'server_name', 'localhost');
-            $endpoint = "/api/v1/servers/$serverName/zones/$zone_name./export";
-            $result = $httpClient->makeRequest('GET', $endpoint);
+            $url = rtrim($apiUrl, '/') . "/api/v1/servers/$serverName/zones/$zone_name./export";
 
-            if ($result['responseCode'] === 200 && !empty($result['data'])) {
-                // API returns the zone file as plain text in the data
-                if (is_string($result['data'])) {
-                    return $result['data'];
+            $context = stream_context_create([
+                'http' => [
+                    'header' => "X-API-Key: $apiKey\r\n",
+                    'method' => 'GET',
+                    'ignore_errors' => true,
+                    'timeout' => 10,
+                ]
+            ]);
+
+            $response = @file_get_contents($url, false, $context);
+
+            if ($response === false) {
+                return null;
+            }
+
+            $responseCode = 0;
+            if (isset($http_response_header)) {
+                foreach ($http_response_header as $header) {
+                    if (preg_match('/^HTTP\/\S+\s+(\d{3})/', $header, $matches)) {
+                        $responseCode = (int)$matches[1];
+                    }
                 }
-                if (is_array($result['data']) && isset($result['data']['zone'])) {
-                    return $result['data']['zone'];
-                }
+            }
+
+            if ($responseCode === 200 && !empty(trim($response))) {
+                return $response;
             }
         } catch (\Exception $e) {
             error_log('PowerDNS API export failed: ' . $e->getMessage());
