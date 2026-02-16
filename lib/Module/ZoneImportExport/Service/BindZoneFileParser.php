@@ -127,7 +127,7 @@ class BindZoneFileParser
                 $buffer .= ' ' . trim($stripped);
                 if (strpos($stripped, ')') !== false) {
                     $inParens = false;
-                    $buffer = str_replace(['(', ')'], '', $buffer);
+                    $buffer = $this->stripParensOutsideQuotes($buffer);
                     $result[] = $buffer;
                     $buffer = '';
                 }
@@ -136,7 +136,7 @@ class BindZoneFileParser
                     $inParens = true;
                     $buffer = $stripped;
                 } else {
-                    $result[] = str_replace(['(', ')'], '', $line);
+                    $result[] = $line;
                 }
             }
         }
@@ -411,9 +411,31 @@ class BindZoneFileParser
         return $name;
     }
 
+    /**
+     * Strip parentheses that are outside quoted strings (multiline syntax markers).
+     */
+    private function stripParensOutsideQuotes(string $line): string
+    {
+        $result = '';
+        $inQuote = false;
+        $len = strlen($line);
+        for ($i = 0; $i < $len; $i++) {
+            $char = $line[$i];
+            if ($char === '"' && ($i === 0 || $line[$i - 1] !== '\\')) {
+                $inQuote = !$inQuote;
+                $result .= $char;
+            } elseif (($char === '(' || $char === ')') && !$inQuote) {
+                // Skip multiline syntax parens
+            } else {
+                $result .= $char;
+            }
+        }
+        return $result;
+    }
+
     private function isTtlValue(string $token): bool
     {
-        return (bool)preg_match('/^\d+[smhdwy]?$/i', $token);
+        return (bool)preg_match('/^\d+(?:[smhdwy]\d*)*$/i', $token);
     }
 
     /**

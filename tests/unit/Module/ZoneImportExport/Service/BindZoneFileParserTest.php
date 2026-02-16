@@ -359,4 +359,113 @@ ZONE;
         $this->assertGreaterThanOrEqual(1, $result->getRecordCount());
         $this->assertEquals('A', $records[0]->type);
     }
+
+    public function testParseCompoundTtlInRecord(): void
+    {
+        $content = <<<ZONE
+\$ORIGIN example.com.
+\$TTL 3600
+www  1d1h  IN  A  192.0.2.1
+ZONE;
+
+        $result = $this->parser->parse($content);
+        $records = $result->getRecords();
+
+        $this->assertEquals(1, $result->getRecordCount());
+        $this->assertEquals('A', $records[0]->type);
+        $this->assertEquals(90000, $records[0]->ttl);
+    }
+
+    public function testParseCompoundTtlDirective(): void
+    {
+        $content = <<<ZONE
+\$ORIGIN example.com.
+\$TTL 1w2d
+www  IN  A  192.0.2.1
+ZONE;
+
+        $result = $this->parser->parse($content);
+
+        $this->assertEquals(777600, $result->getDefaultTtl());
+        $records = $result->getRecords();
+        $this->assertEquals(777600, $records[0]->ttl);
+    }
+
+    public function testParseParenthesesPreservedInTxtContent(): void
+    {
+        $content = <<<ZONE
+\$ORIGIN example.com.
+\$TTL 3600
+@  IN  TXT  "v=spf1 ip4:192.0.2.0/24 (comment) ~all"
+ZONE;
+
+        $result = $this->parser->parse($content);
+        $records = $result->getRecords();
+
+        $this->assertEquals(1, $result->getRecordCount());
+        $this->assertEquals('TXT', $records[0]->type);
+        $this->assertStringContainsString('(comment)', $records[0]->content);
+    }
+
+    public function testParseParenthesesPreservedInCaaRecord(): void
+    {
+        $content = <<<ZONE
+\$ORIGIN example.com.
+\$TTL 3600
+@  IN  CAA  0 issue "letsencrypt.org; accounturi=https://acme.example.com/acct/1 (test)"
+ZONE;
+
+        $result = $this->parser->parse($content);
+        $records = $result->getRecords();
+
+        $this->assertEquals(1, $result->getRecordCount());
+        $this->assertEquals('CAA', $records[0]->type);
+        $this->assertStringContainsString('(test)', $records[0]->content);
+    }
+
+    public function testParseMultilineSoaStripsParens(): void
+    {
+        $content = <<<ZONE
+\$ORIGIN example.com.
+\$TTL 86400
+@  IN  SOA  ns1.example.com. admin.example.com. (
+    2024010101
+    3600
+    900
+    1209600
+    86400
+)
+@  IN  TXT  "text with (parens) inside"
+ZONE;
+
+        $result = $this->parser->parse($content);
+        $records = $result->getRecords();
+
+        // SOA should parse correctly with parens stripped
+        $this->assertEquals('SOA', $records[0]->type);
+        $this->assertStringNotContainsString('(', $records[0]->content);
+
+        // TXT should preserve parens in quoted content
+        $this->assertEquals('TXT', $records[1]->type);
+        $this->assertStringContainsString('(parens)', $records[1]->content);
+    }
+
+    public function testIsTtlValueCompoundForms(): void
+    {
+        // Test via parsing records with compound TTLs
+        $testCases = [
+            ['ttl' => '1d1h', 'expected' => 90000],
+            ['ttl' => '2h30m', 'expected' => 9000],
+            ['ttl' => '1w2d3h', 'expected' => 788400],
+        ];
+
+        foreach ($testCases as $case) {
+            $content = "\$ORIGIN example.com.\n\$TTL 3600\nwww {$case['ttl']} IN A 192.0.2.1\n";
+            $result = $this->parser->parse($content);
+            $records = $result->getRecords();
+
+            $this->assertEquals(1, $result->getRecordCount(), "Failed for TTL: {$case['ttl']}");
+            $this->assertEquals($case['expected'], $records[0]->ttl, "Wrong TTL value for: {$case['ttl']}");
+        }
+    }
 }
