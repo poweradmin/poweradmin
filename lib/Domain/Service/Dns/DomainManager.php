@@ -231,6 +231,8 @@ class DomainManager implements DomainManagerInterface
         $tableNameService = new TableNameService($this->config);
         $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+        $domainmetadata_table = $tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+        $cryptokeys_table = $tableNameService->getTable(PdnsTable::CRYPTOKEYS);
 
         if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
             // Get zone_id before deleting zones record for sync cleanup
@@ -251,6 +253,12 @@ class DomainManager implements DomainManagerInterface
             $stmt->execute([':id' => $id]);
 
             $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
+            $stmt->execute([':id' => $id]);
+
+            $stmt = $this->db->prepare("DELETE FROM $domainmetadata_table WHERE domain_id = :id");
+            $stmt->execute([':id' => $id]);
+
+            $stmt = $this->db->prepare("DELETE FROM $cryptokeys_table WHERE domain_id = :id");
             $stmt->execute([':id' => $id]);
 
             $stmt = $this->db->prepare("DELETE FROM $domains_table WHERE id = :id");
@@ -274,6 +282,8 @@ class DomainManager implements DomainManagerInterface
         $tableNameService = new TableNameService($this->config);
         $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+        $domainmetadata_table = $tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+        $cryptokeys_table = $tableNameService->getTable(PdnsTable::CRYPTOKEYS);
 
         $this->db->beginTransaction();
 
@@ -301,6 +311,12 @@ class DomainManager implements DomainManagerInterface
                     $stmt->execute([':id' => $id]);
 
                     $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
+
+                    $stmt = $this->db->prepare("DELETE FROM $domainmetadata_table WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
+
+                    $stmt = $this->db->prepare("DELETE FROM $cryptokeys_table WHERE domain_id = :id");
                     $stmt->execute([':id' => $id]);
 
                     $stmt = $this->db->prepare("DELETE FROM $domains_table WHERE id = :id");

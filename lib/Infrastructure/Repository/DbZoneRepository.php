@@ -942,6 +942,20 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
 
+        // Delete PowerDNS domain metadata
+        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+        $query = "DELETE FROM $domainmetadata_table WHERE domain_id = :domain_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Delete PowerDNS crypto keys
+        $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $query = "DELETE FROM $cryptokeys_table WHERE domain_id = :domain_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
         // Delete from domains table
         $query = "DELETE FROM $domains_table WHERE id = :id";
         $stmt = $this->db->prepare($query);
