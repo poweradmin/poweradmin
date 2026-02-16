@@ -316,9 +316,21 @@ whois:
   path: /whois
   controller: Poweradmin\Application\Controller\WhoisController::run
 
+zone_whois:
+  path: /zones/{id}/whois
+  controller: Poweradmin\Application\Controller\WhoisController::run
+  requirements:
+    id: '\d+'
+
 rdap:
   path: /rdap
   controller: Poweradmin\Application\Controller\RdapController::run
+
+zone_rdap:
+  path: /zones/{id}/rdap
+  controller: Poweradmin\Application\Controller\RdapController::run
+  requirements:
+    id: '\d+'
 
 # API Keys Management
 api_keys_list:
