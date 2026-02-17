@@ -85,6 +85,27 @@ body:has(.sidebar) {
     margin-top: 0.5rem;
 }
 
+.nav-section-header[role="button"] {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
+
+.nav-section-header[role="button"]:hover {
+    color: var(--primary-blue);
+}
+
+.nav-section-chevron {
+    margin-left: auto;
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+}
+
+.nav-section-header[aria-expanded="false"] .nav-section-chevron {
+    transform: rotate(-90deg);
+}
+
 .nav-link {
     color: #6c757d;
     border-radius: 0.375rem;

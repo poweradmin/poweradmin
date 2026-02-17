@@ -105,6 +105,17 @@
         initializeStyle();
     }
 
+    // Sidebar section toggle (no Bootstrap collapse - instant, no flicker)
+    document.querySelectorAll('.sidebar .nav-section-header[role="button"]').forEach(function(header) {
+        header.addEventListener('click', function() {
+            var target = document.querySelector(header.getAttribute('data-bs-target'));
+            if (target) {
+                var isShown = target.classList.toggle('show');
+                header.setAttribute('aria-expanded', isShown);
+            }
+        });
+    });
+
     // Mobile sidebar toggle functionality
     document.addEventListener('DOMContentLoaded', function() {
         const sidebarToggleButtons = document.querySelectorAll('.sidebar-toggle');
