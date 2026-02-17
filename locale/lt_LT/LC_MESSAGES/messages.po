@@ -15,15 +15,17 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: lib/AppInitializer.php:82
 #, php-format
 msgid ""
-"No configuration file found at %s. Please use the <a href=\"install/"
-"\">installer</a> to create one, or create the configuration file manually."
+"No configuration file found at %s. Please use the <a "
+"href=\"install/\">installer</a> to create one, or create the configuration "
+"file manually."
 msgstr ""
+"Konfigūracijos failas nerastas. Naudokitės <a href=\"install/\">diegimo "
+"programa</a> jo sukūrimui arba sukurkite %s failą rankiniu būdu."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:131
 msgid "Invalid CSRF token."
@@ -34,8 +36,8 @@ msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr ""
-"<a href=\"install/\">install/</a> katalogas egzistuoja, prieš tęsiant turite "
-"jį pašalinti."
+"<a href=\"install/\">install/</a> katalogas egzistuoja, prieš tęsiant turite"
+" jį pašalinti."
 
 #: lib/BaseController.php:536
 msgid ""
@@ -77,8 +79,8 @@ msgstr "Nėra pasirinktų įrašų ištrinimui."
 
 #: lib/Application/Controller/DeleteRecordsController.php:184
 msgid ""
-"The record has been deleted successfully. Any corresponding PTR records were "
-"also removed."
+"The record has been deleted successfully. Any corresponding PTR records were"
+" also removed."
 msgstr ""
 "Įrašas sėkmingai ištrintas. Visi atitinkami PTR įrašai taip pat pašalinti."
 
@@ -96,7 +98,8 @@ msgstr "Nepavyko ištrinti jokių įrašų. Patikrinkite leidimus."
 
 #: lib/Application/Controller/DeleteRecordsController.php:239
 msgid ""
-"No valid records selected for deletion or you lack permission to delete them."
+"No valid records selected for deletion or you lack permission to delete "
+"them."
 msgstr ""
 "Nėra pasirinktų tinkamių įrašų ištrinimui arba neturite leidimo juos "
 "ištrinti."
@@ -111,7 +114,7 @@ msgstr "Neturite leidimo ištrinti šį vartotoją."
 
 #: lib/Application/Controller/DeleteUserController.php:62
 msgid "You do not have permission to delete a superuser account."
-msgstr ""
+msgstr "Neturite leidimo ištrinti supervartotojo paskyros."
 
 #: lib/Application/Controller/EditUserController.php:269
 msgid "User does not exist."
@@ -147,7 +150,7 @@ msgstr "Jūs neturite leidimo trinti įrašų šioje zonoje."
 
 #: lib/Application/Controller/EditRecordController.php:163
 msgid "Record not found."
-msgstr ""
+msgstr "Įrašas nerastas."
 
 #: lib/Application/Controller/DeleteRecordController.php:194
 msgid ""
@@ -183,16 +186,16 @@ msgstr "Įrašas sėkmingai ištrintas."
 
 #: lib/Application/Controller/DeleteRecordController.php:208
 msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
+"The record and its corresponding PTR and A/AAAA records were deleted but the"
+" comment was preserved because similar records exist."
 msgstr ""
 "Įrašas ir atitinkami PTR bei A/AAAA įrašai ištrinti, bet komentaras "
 "išsaugotas, nes egzistuoja panašūs įrašai."
 
 #: lib/Application/Controller/DeleteRecordController.php:210
 msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
+"The record and its corresponding PTR record were deleted but the comment was"
+" preserved because similar records exist."
 msgstr ""
 "Įrašas ir atitinkamas PTR įrašas ištrinti, bet komentaras išsaugotas, nes "
 "egzistuoja panašūs įrašai."
@@ -202,13 +205,13 @@ msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
 msgstr ""
-"Įrašas ir atitinkamas A/AAAA įrašas ištrinti, bet komentaras išsaugotas, nes "
-"egzistuoja panašūs įrašai."
+"Įrašas ir atitinkamas A/AAAA įrašas ištrinti, bet komentaras išsaugotas, nes"
+" egzistuoja panašūs įrašai."
 
 #: lib/Application/Controller/DeleteRecordController.php:214
 msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
+"The record was deleted but the comment was preserved because similar records"
+" exist."
 msgstr ""
 "Įrašas buvo ištrintas, bet komentaras išsaugotas, nes egzistuoja panašūs "
 "įrašai."
@@ -219,23 +222,23 @@ msgstr "Neturite leidimo redaguoti šį įrašą."
 
 #: lib/Application/Controller/UserPreferencesController.php:99
 msgid "Preferences saved successfully."
-msgstr ""
+msgstr "Nuostatos sėkmingai išsaugotos."
 
 #: lib/Application/Controller/UserPreferencesController.php:107
 msgid "Failed to update preferences. Please try again."
-msgstr ""
+msgstr "Nepavyko atnaujinti nuostatų. Bandykite dar kartą."
 
 #: lib/Application/Controller/UserPreferencesController.php:122
 msgid "Top"
-msgstr ""
+msgstr "Viršus"
 
 #: lib/Application/Controller/UserPreferencesController.php:123
 msgid "Bottom"
-msgstr ""
+msgstr "Apačia"
 
 #: lib/Application/Controller/DnsWizardController.php:57
 msgid "DNS wizards are not enabled."
-msgstr ""
+msgstr "DNS vedliai neįjungti."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:47
 msgid "Invalid zone ID."
@@ -243,31 +246,31 @@ msgstr "Neteisingas zonos ID."
 
 #: lib/Application/Controller/DnsWizardController.php:71
 msgid "Zone not found."
-msgstr ""
+msgstr "Zona nerasta."
 
 #: lib/Application/Controller/DnsWizardController.php:80
 msgid "You do not have permission to add records to this zone."
-msgstr ""
+msgstr "Neturite leidimo pridėti įrašų į šią zoną."
 
 #: lib/Application/Controller/DnsWizardFormController.php:114
 msgid "Invalid wizard type."
-msgstr ""
+msgstr "Netinkamas vedlio tipas."
 
 #: lib/Application/Controller/DnsWizardFormController.php:199
 msgid "Validation failed:"
-msgstr ""
+msgstr "Patikrinimas nepavyko:"
 
 #: lib/Application/Controller/DnsWizardFormController.php:223
 msgid "Failed to generate record:"
-msgstr ""
+msgstr "Nepavyko sugeneruoti įrašo:"
 
 #: lib/Application/Controller/Api/Internal/DnsWizardController.php:397
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
 msgstr ""
-"Šis įrašas neteisingas ir negali būti pridėtas. Jis gali jau egzistuoti arba "
-"turėti neteisingų duomenų."
+"Šis įrašas neteisingas ir negali būti pridėtas. Jis gali jau egzistuoti arba"
+" turėti neteisingų duomenų."
 
 #: lib/Application/Controller/Api/Internal/DnsWizardController.php:401
 msgid "The record was successfully added."
@@ -302,15 +305,16 @@ msgid ""
 "Email address is not available. Please update your email address in your "
 "profile."
 msgstr ""
-"El. pašto adresas neprieinamas. Atnaujinkite el. pašto adresą savo profilyje."
+"El. pašto adresas neprieinamas. Atnaujinkite el. pašto adresą savo "
+"profilyje."
 
 #: lib/Application/Controller/MfaSetupController.php:181
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
 msgstr ""
-"El. pašto patvirtinimo metodas neprieinamas, nes pašto paslauga nėra įjungta "
-"šioje sistemoje."
+"El. pašto patvirtinimo metodas neprieinamas, nes pašto paslauga nėra įjungta"
+" šioje sistemoje."
 
 #: lib/Application/Controller/MfaSetupController.php:188
 msgid "Email verification method is not enabled on this system."
@@ -341,7 +345,8 @@ msgid "MFA must be enabled to regenerate recovery codes."
 msgstr "MFA turi būti įjungta atkuriamo kodų regeneravimui."
 
 #: lib/Application/Controller/MfaSetupController.php:314
-msgid "Recovery codes have been regenerated. Please save them in a safe place."
+msgid ""
+"Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "Atkuriamieji kodai regeneruoti. Išsaugokite juos saugioje vietoje."
 
 #: lib/Application/Controller/ListSupermastersController.php:43
@@ -477,15 +482,15 @@ msgstr "Įrašo ištrinti nepavyko."
 
 #: lib/Application/Controller/ListLogUsersController.php:67
 msgid "Invalid page number."
-msgstr ""
+msgstr "Netinkamas puslapio numeris."
 
 #: lib/Application/Controller/ListLogUsersController.php:69
 msgid "Page number must be at least 1."
-msgstr ""
+msgstr "Puslapio numeris turi būti bent 1."
 
 #: lib/Application/Controller/ListLogUsersController.php:87
 msgid "Page number exceeds available pages."
-msgstr ""
+msgstr "Puslapio numeris viršija turimus puslapius."
 
 #: lib/Application/Controller/UsersController.php:49
 msgid "You do not have permission to view the users list."
@@ -520,7 +525,8 @@ msgid "You do not have permission to create new zone templates."
 msgstr "Neturite leidimo kurti naujų zonų šablonų."
 
 #: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:803
-msgid "Zone template with this name already exists, please choose another one."
+msgid ""
+"Zone template with this name already exists, please choose another one."
 msgstr "Zonos šablonas su šiuo pavadinimu jau egzistuoja, pasirinkite kitą."
 
 #: lib/Application/Controller/EditZoneTemplController.php:270
@@ -641,6 +647,8 @@ msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
 msgstr ""
+"Nepavyko pasirašyti zonos. Zonos tikrinimas pavyko, bet PowerDNS API grąžino"
+" klaidą. Patikrinkite PowerDNS žurnalus dėl detalių."
 
 #: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
@@ -734,8 +742,8 @@ msgstr "Įvyko klaida. Bandykite dar kartą."
 
 #: lib/Application/Controller/MfaVerifyController.php:285
 msgid ""
-"Email verification is not available because mail service is disabled. Please "
-"use a recovery code."
+"Email verification is not available because mail service is disabled. Please"
+" use a recovery code."
 msgstr ""
 "El. pašto patikrinimas neprieinamas, nes pašto tarnyba išjungta. Naudokite "
 "atkūrimo kodą."
@@ -835,22 +843,28 @@ msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
+"Zona sėkmingai sukurta, bet DNSSEC pasirašymas praleistas dėl tikrinimo "
+"klaidų:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:155
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
 msgstr ""
+"Zona sukurta, bet apsaugoti ją su DNSSEC nepavyko. Zonos tikrinimas pavyko, "
+"bet PowerDNS API grąžino klaidą. Patikrinkite PowerDNS žurnalus dėl detalių."
 
 #: lib/Application/Controller/AddZoneMasterController.php:161
 msgid "Zone has been created and signed with DNSSEC successfully."
-msgstr ""
+msgstr "Zona sėkmingai sukurta ir pasirašyta su DNSSEC."
 
 #: lib/Application/Controller/AddZoneMasterController.php:164
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
 msgstr ""
+"Zona sukurta ir pasirašymas užklaustas, bet patikrinimas nepavyko. "
+"Patikrinkite DNSSEC raktus."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:130
 msgid "Zone has been added successfully."
@@ -882,7 +896,7 @@ msgstr "Jūs neturite leidimo valdyti DNSSEC šiai zonai."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:89
 msgid "DNSSEC key not found or no longer exists."
-msgstr ""
+msgstr "DNSSEC raktas nerastas arba nebeegzistuoja."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:106
 msgid "Zone key has been deleted successfully."
@@ -898,19 +912,19 @@ msgstr "Įvyko klaida trinant DNSSEC raktą: "
 
 #: lib/Application/Controller/SamlCallbackController.php:77
 msgid "SAML authentication is not enabled"
-msgstr ""
+msgstr "SAML autentifikacija neįjungta"
 
 #: lib/Application/Controller/SamlLoginController.php:89
 msgid "No SAML providers are configured"
-msgstr ""
+msgstr "Nesukonfigūruoti SAML teikėjai"
 
 #: lib/Application/Controller/SamlLoginController.php:100
 msgid "Invalid SAML provider"
-msgstr ""
+msgstr "Netinkamas SAML teikėjas"
 
 #: lib/Application/Controller/SamlCallbackController.php:105
 msgid "SAML authentication failed: "
-msgstr ""
+msgstr "SAML autentifikacija nepavyko: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:56
 msgid "You do not have sufficient permissions to view this page."
@@ -1012,7 +1026,7 @@ msgstr "Nepavyko gauti RDAP informacijos naudojant serverį %s"
 
 #: lib/Application/Controller/Api/Internal/DnsWizardController.php:405
 msgid "Record created successfully"
-msgstr ""
+msgstr "Įrašas sėkmingai sukurtas"
 
 #: lib/Application/Controller/AddZoneSlaveController.php:58
 msgid "You do not have the permission to add a slave zone."
@@ -1076,7 +1090,7 @@ msgstr "Neturite leidimo redaguoti šio vartotojo."
 
 #: lib/Application/Controller/EditUserController.php:190
 msgid "You do not have permission to edit a superuser account."
-msgstr ""
+msgstr "Neturite leidimo redaguoti supervartotojo paskyros."
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 msgid "You do not have the permission to delete permission templates."
@@ -1124,15 +1138,15 @@ msgstr "Įvyko netikėta klaida. Susisiekite su administratoriumi."
 
 #: lib/Application/Controller/SamlCallbackController.php:93
 msgid "Unknown SAML endpoint"
-msgstr ""
+msgstr "Nežinomas SAML endpoint"
 
 #: lib/Application/Controller/SamlCallbackController.php:119
 msgid "You have been logged out"
-msgstr ""
+msgstr "Jūs atsijungėte"
 
 #: lib/Application/Controller/SamlCallbackController.php:124
 msgid "Logout completed (with warnings): "
-msgstr ""
+msgstr "Atsijungimas užbaigtas (su įspėjimais): "
 
 #: lib/Application/Controller/EditRecordController.php:92
 msgid "You do not have permission to view this record."
@@ -1144,7 +1158,7 @@ msgstr "Jūs neturite leidimo redaguoti šio įrašo."
 
 #: lib/Application/Controller/EditRecordController.php:194
 msgid "Failed to retrieve updated record information."
-msgstr ""
+msgstr "Nepavyko gauti atnaujintos įrašo informacijos."
 
 #: lib/Application/Controller/EditRecordController.php:274
 msgid "The record has been updated successfully."
@@ -1164,12 +1178,17 @@ msgid ""
 "Please contact your administrator or change your password through your "
 "identity provider."
 msgstr ""
+"Vartotojai, autentifikuoti per Single Sign-On, negali pakeisti slaptažodžio "
+"čia. Susisiekite su administratoriumi arba pakeiskite slaptažodį per savo "
+"tapatybės teikėją."
 
 #: lib/Application/Controller/ChangePasswordController.php:87
 msgid ""
 "External authentication users cannot change their password here. Please "
 "contact your administrator."
 msgstr ""
+"Išorinės autentifikacijos vartotojai negali pakeisti slaptažodžio čia. "
+"Susisiekite su administratoriumi."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:116
 msgid "ECDSA P-256 algorithm must use 256 bits"
@@ -1189,7 +1208,8 @@ msgstr "ED448 algoritmas turi naudoti 456 bitus (nepalaikomas šioje sąsajoje)"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:137
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr "RSA algoritmai turėtų naudoti 1024 arba 2048 bitus pakankamam saugumui"
+msgstr ""
+"RSA algoritmai turėtų naudoti 1024 arba 2048 bitus pakankamam saugumui"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:158
 msgid "Zone key has been added successfully."
@@ -1245,6 +1265,7 @@ msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr ""
+"DNSSEC funkcionalumas neprieinamas. Patikrinkite PowerDNS API konfigūraciją."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:100
 msgid "Zone key has been successfully deactivated."
@@ -1264,7 +1285,7 @@ msgstr "Nepavyko įjungti zonos rakto."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:116
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
-msgstr ""
+msgstr "Įvyko klaida perjungiant DNSSEC raktą. Bandykite dar kartą."
 
 #: lib/Application/Service/LdapAuthenticator.php:93
 msgid "Account is temporarily locked. Please try again later."
@@ -1301,7 +1322,8 @@ msgstr "Autentifikacija nepavyko: Neteisinga sesija"
 #: lib/Application/Service/SamlService.php:339
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
-"Autentifikacija nepavyko: Nepavyko sukurti arba atnaujinti vartotojo paskyros"
+"Autentifikacija nepavyko: Nepavyko sukurti arba atnaujinti vartotojo "
+"paskyros"
 
 #: lib/Application/Service/LdapAuthenticator.php:237
 msgid "LDAP Authentication failed!"
@@ -1325,7 +1347,7 @@ msgstr "Nepavyko autentifikuoti su LDAP."
 
 #: lib/Application/Service/SamlService.php:243
 msgid "Authentication failed: Invalid SAML response"
-msgstr ""
+msgstr "Autentifikacija nepavyko: Netinkamas SAML atsakymas"
 
 #: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:432
 #: templates/modern/users.html:125
@@ -1352,13 +1374,15 @@ msgstr "Tuščias slaptažodis neleistinas"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:213
 msgid "LDAP authentication is disabled"
-msgstr ""
+msgstr "LDAP autentifikacija išjungta"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:305
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
 msgstr ""
+"Duomenų bazės klaida: Nepavyko patikrinti vartotojo autentifikacijos. "
+"Patikrinkite duomenų bazės konfigūraciją."
 
 #: lib/Domain/Repository/DomainRepository.php:201
 msgid "This is an invalid zone name."
@@ -1446,15 +1470,15 @@ msgstr "Klaida tikrinant šablono egzistavimą: "
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:45
 msgid "TLSA Record"
-msgstr ""
+msgstr "TLSA įrašas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:46
 msgid "TLS certificate/key authentication (DANE)"
-msgstr ""
+msgstr "TLS sertifikato/rakto autentifikacija (DANE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:57
 msgid "DNSSEC Requirement"
-msgstr ""
+msgstr "DNSSEC reikalavimas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:59
 msgid ""
@@ -1462,39 +1486,42 @@ msgid ""
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
 msgstr ""
+"TLSA įrašams reikia, kad šiai zonai būtų įjungtas DNSSEC. TLSA įrašai be "
+"DNSSEC nesuteiks saugumo pranašumų ir gali būti ignoruojami klientų."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:91
 msgid "Service Configuration"
-msgstr ""
+msgstr "Paslaugos konfigūracija"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:148
 msgid "Port Number"
-msgstr ""
+msgstr "Prievado numeris"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:72
 msgid ""
 "TCP/UDP port number (443 for HTTPS, 25 for SMTP, 853 for DNS-over-TLS, etc.)"
 msgstr ""
+"TCP/UDP prievado numeris (443 HTTPS, 25 SMTP, 853 DNS-over-TLS ir kt.)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:113
 msgid "Protocol"
-msgstr ""
+msgstr "Protokolas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:81
 msgid "Transmission Control Protocol - most common for HTTPS/TLS"
-msgstr ""
+msgstr "Perdavimo valdymo protokolas - dažniausias HTTPS/TLS"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:82
 msgid "User Datagram Protocol - for DTLS connections"
-msgstr ""
+msgstr "Vartotojo datagramų protokolas - DTLS ryšiams"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:121
 msgid "Stream Control Transmission Protocol"
-msgstr ""
+msgstr "Srauto valdymo perdavimo protokolas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:85
 msgid "Transport protocol for the TLS connection"
-msgstr ""
+msgstr "Transporto protokolas TLS ryšiui"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:89
 #: install/templates/step4.html.twig:64
@@ -1506,120 +1533,128 @@ msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
 msgstr ""
+"Paslaugos serverio vardas (palikite tuščią zonos viršūnei @). Įrašas bus "
+"sukurtas _port._protocol.hostname"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:98
 msgid "Certificate Usage"
-msgstr ""
+msgstr "Sertifikato naudojimas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:102
 msgid "Usage"
-msgstr ""
+msgstr "Naudojimas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
 msgid "0 - CA Constraint"
-msgstr ""
+msgstr "0 - CA apribojimas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:107
 msgid "Certificate must chain to specified CA (PKIX-TA)"
-msgstr ""
+msgstr "Sertifikatas turi būti susietas su nurodytu CA (PKIX-TA)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
 msgid "1 - Service Certificate"
-msgstr ""
+msgstr "1 - Paslaugos sertifikatas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:108
 msgid "Certificate must match exactly (PKIX-EE)"
-msgstr ""
+msgstr "Sertifikatas turi tiksliai atitikti (PKIX-EE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
 msgid "2 - Trust Anchor Assertion"
-msgstr ""
+msgstr "2 - Pasitikėjimo inkaro patvirtinimas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:109
 msgid "Certificate must chain to specified anchor (DANE-TA)"
-msgstr ""
+msgstr "Sertifikatas turi būti susietas su nurodytu inkaru (DANE-TA)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
 msgid "3 - Domain-Issued Certificate"
-msgstr ""
+msgstr "3 - Domeno išduotas sertifikatas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:110
 msgid "Certificate must match exactly, bypassing PKI (DANE-EE)"
-msgstr ""
+msgstr "Sertifikatas turi tiksliai atitikti, aplenkiant PKI (DANE-EE)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:112
 msgid ""
 "How the certificate should be validated. Type 3 is most common for self-"
 "signed or custom CAs."
 msgstr ""
+"Kaip turėtų būti patvirtintas sertifikatas. 3 tipas dažniausias "
+"savipasirašytiems arba pasirinktiniams CA."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:72
 msgid "Selector"
-msgstr ""
+msgstr "Selektorius"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
 msgid "0 - Full Certificate"
-msgstr ""
+msgstr "0 - Pilnas sertifikatas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
 msgid "Use the entire certificate"
-msgstr ""
+msgstr "Naudoti visą sertifikatą"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
 msgid "1 - Public Key"
-msgstr ""
+msgstr "1 - Viešasis raktas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:127
 msgid "Use only the Subject Public Key Info (SPKI)"
-msgstr ""
+msgstr "Naudoti tik subjekto viešojo rakto informaciją (SPKI)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:129
 msgid ""
 "What part of the certificate to match. Type 1 (public key) survives "
 "certificate renewal."
 msgstr ""
+"Kuri sertifikato dalis turi atitikti. 1 tipas (viešasis raktas) išlieka po "
+"sertifikato atnaujinimo."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:138
 msgid "Matching Type"
-msgstr ""
+msgstr "Atitikimo tipas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
 msgid "0 - Exact Match"
-msgstr ""
+msgstr "0 - Tikslus atitikimas"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:143
 msgid "Full certificate/key data (very long record)"
-msgstr ""
+msgstr "Pilni sertifikato/rakto duomenys (labai ilgas įrašas)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
 msgid "1 - SHA-256 Hash"
-msgstr ""
+msgstr "1 - SHA-256 maiša"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:144
 msgid "SHA-256 hash of certificate/key"
-msgstr ""
+msgstr "Sertifikato/rakto SHA-256 maiša"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
 msgid "2 - SHA-512 Hash"
-msgstr ""
+msgstr "2 - SHA-512 maiša"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:145
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
-msgstr ""
+msgstr "Sertifikato/rakto SHA-512 maiša (saugesnė, bet ilgesnė)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:147
 msgid ""
 "How to encode the certificate data. SHA-256 (type 1) provides good balance "
 "of security and length."
 msgstr ""
+"Kaip užkoduoti sertifikato duomenis. SHA-256 (1 tipas) užtikrina gerą "
+"saugumo ir ilgio pusiausvyrą."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:152
 msgid "Certificate Data"
-msgstr ""
+msgstr "Sertifikato duomenys"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:156
 msgid "Certificate Association Data"
-msgstr ""
+msgstr "Sertifikato asociacijos duomenys"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:161
 msgid ""
@@ -1627,49 +1662,55 @@ msgid ""
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
 msgstr ""
+"Šešioliktainė maiša arba pilni sertifikato duomenys (priklausomai nuo "
+"atitikimo tipo). SHA-256: naudokite \"openssl x509 -in cert.pem -pubkey "
+"-noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\""
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:184
 msgid "Record Settings"
-msgstr ""
+msgstr "Įrašo nustatymai"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:188
 msgid "TTL (seconds)"
-msgstr ""
+msgstr "TTL (sekundės)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:193
 msgid "Time to live - how long DNS resolvers should cache this record"
 msgstr ""
+"Galiojimo laikas - kiek laiko DNS resolveriai turėtų talpinti šį įrašą"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:289
 msgid "Port must be between 1 and 65535"
-msgstr ""
+msgstr "Prievadas turi būti tarp 1 ir 65535"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:233
 msgid "Usage must be 0, 1, 2, or 3"
-msgstr ""
+msgstr "Naudojimas turi būti 0, 1, 2 arba 3"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:238
 msgid "Selector must be 0 or 1"
-msgstr ""
+msgstr "Selektorius turi būti 0 arba 1"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:243
 msgid "Matching type must be 0, 1, or 2"
-msgstr ""
+msgstr "Atitikimo tipas turi būti 0, 1 arba 2"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:248
 msgid "Certificate association data is required"
-msgstr ""
+msgstr "Sertifikato asociacijos duomenys yra privalomi"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:253
 msgid "Certificate data must be hexadecimal (0-9, a-f)"
-msgstr ""
+msgstr "Sertifikato duomenys turi būti šešioliktainiai (0-9, a-f)"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:259
 #, php-format
 msgid ""
-"SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
-"correct."
+"SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is"
+" correct."
 msgstr ""
+"SHA-256 maiša turėtų būti 64 šešioliktainiai simboliai, gauta %d. "
+"Patikrinkite, ar maiša teisinga."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:263
 #, php-format
@@ -1677,12 +1718,16 @@ msgid ""
 "SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
 "is correct."
 msgstr ""
+"SHA-512 maiša turėtų būti 128 šešioliktainiai simboliai, gauta %d. "
+"Patikrinkite, ar maiša teisinga."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:267
 msgid ""
 "Full certificate data seems too short. Ensure you provided the complete "
 "certificate."
 msgstr ""
+"Pilni sertifikato duomenys atrodo per trumpi. Įsitikinkite, kad pateikėte "
+"visą sertifikatą."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:274
 #: templates/modern/edit.html:91 templates/modern/edit.html:609
@@ -1694,195 +1739,207 @@ msgid ""
 "CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
 "DNSSEC, TLSA records provide NO security benefit."
 msgstr ""
+"KRITINIS: TLSA įrašams reikia, kad šiai zonai būtų įjungtas DNSSEC. Be "
+"DNSSEC, TLSA įrašai NESUTEIKIA jokių saugumo pranašumų."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:46
 msgid "DMARC Record"
-msgstr ""
+msgstr "DMARC įrašas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:47
 msgid "Email authentication policy and reporting configuration"
-msgstr ""
+msgstr "El. pašto autentifikacijos politika ir ataskaitų konfigūracija"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:59
 msgid "Policy Settings"
-msgstr ""
+msgstr "Politikos nustatymai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:138
 msgid "Policy"
-msgstr ""
+msgstr "Politika"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
 msgid "None (monitor only)"
-msgstr ""
+msgstr "Jokia (tik stebėjimas)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:68
 msgid "No action taken, just collect reports for analysis"
-msgstr ""
+msgstr "Joks veiksmas neatliktas, tik renkamos ataskaitos analizei"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
 msgid "Quarantine"
-msgstr ""
+msgstr "Karantinas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:69
 msgid "Treat suspicious emails as spam/junk"
-msgstr ""
+msgstr "Įtartinus el. laiškus laikyti šlamštu"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
 msgid "Reject"
-msgstr ""
+msgstr "Atmesti"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:70
 msgid "Block delivery of suspicious emails entirely"
-msgstr ""
+msgstr "Visiškai blokuoti įtartinų el. laiškų pristatymą"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:72
 msgid "Start with \"none\" to collect data before enforcing a stricter policy."
 msgstr ""
+"Pradėkite su \"jokia\", kad surinktumėte duomenis prieš taikydami griežtesnę"
+" politiką."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:76
 msgid "Subdomain Policy"
-msgstr ""
+msgstr "Subdomenų politika"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
 msgid "Same as domain policy"
-msgstr ""
+msgstr "Tokia pati kaip domeno politika"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:81
 msgid "Use the same policy as the main domain"
-msgstr ""
+msgstr "Naudoti tą pačią politiką kaip pagrindinis domenas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
 msgid "None"
-msgstr ""
+msgstr "Jokia"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:82
 msgid "Monitor only for subdomains"
-msgstr ""
+msgstr "Tik stebėti subdomenus"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:83
 msgid "Quarantine suspicious subdomain emails"
-msgstr ""
+msgstr "Įtartinus subdomenų el. laiškus siųsti į karantiną"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:84
 msgid "Reject suspicious subdomain emails"
-msgstr ""
+msgstr "Atmesti įtartinus subdomenų el. laiškus"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:86
 msgid "Policy for emails from subdomains (e.g., mail.example.com)"
-msgstr ""
+msgstr "Politika el. laiškams iš subdomenų (pvz., mail.example.com)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:90
 msgid "Policy Application Percentage"
-msgstr ""
+msgstr "Politikos taikymo procentas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:96
 msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
 msgstr ""
+"Pranešimų procentas, kuriam turėtų būti taikoma politika (100 = visi "
+"pranešimai). Naudokite mažesnes reikšmes politikos diegimo metu."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:101
 msgid "Reporting Settings"
-msgstr ""
+msgstr "Ataskaitų nustatymai"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:105
 msgid "Aggregate Report Email"
-msgstr ""
+msgstr "Suvestinės ataskaitos el. paštas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:109
 msgid "Email address to receive daily aggregate reports"
-msgstr ""
+msgstr "El. pašto adresas kasdienėms suvestinėms ataskaitoms gauti"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:113
 msgid "Forensic Report Email"
-msgstr ""
+msgstr "Kriminalistinės ataskaitos el. paštas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:117
 msgid ""
 "Email address to receive detailed failure reports (optional, can be high "
 "volume)"
 msgstr ""
+"El. pašto adresas detalių nesėkmių ataskaitoms gauti (neprivaloma, gali būti"
+" didelė apimtis)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:121
 msgid "Forensic Reporting Options"
-msgstr ""
+msgstr "Kriminalistinių ataskaitų parinktys"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:125
 msgid "Generate reports if all authentication mechanisms fail"
 msgstr ""
+"Generuoti ataskaitas, jei visi autentifikacijos mechanizmai nepavyksta"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:126
 msgid "Generate reports if any authentication mechanism fails"
 msgstr ""
+"Generuoti ataskaitas, jei bet kuris autentifikacijos mechanizmas nepavyksta"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:127
 msgid "Generate reports if DKIM check fails"
-msgstr ""
+msgstr "Generuoti ataskaitas, jei DKIM patikrinimas nepavyksta"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:128
 msgid "Generate reports if SPF check fails"
-msgstr ""
+msgstr "Generuoti ataskaitas, jei SPF patikrinimas nepavyksta"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:130
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
 msgstr ""
+"Kada generuoti kriminalistines ataskaitas (taikoma tik jei nustatytas "
+"kriminalistinis el. paštas)"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:135
 msgid "Alignment Settings"
-msgstr ""
+msgstr "Lygiavimo nustatymai"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:136
 msgid "Advanced settings for SPF and DKIM alignment modes"
-msgstr ""
+msgstr "Išplėstiniai SPF ir DKIM lygiavimo režimų nustatymai"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:140
 msgid "DKIM Alignment Mode"
-msgstr ""
+msgstr "DKIM lygiavimo režimas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
 msgid "Relaxed"
-msgstr ""
+msgstr "Atlaidus"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:145
 msgid "DKIM domain can be subdomain of From: domain"
-msgstr ""
+msgstr "DKIM domenas gali būti From: domeno subdomenas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
 msgid "Strict"
-msgstr ""
+msgstr "Griežtas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:146
 msgid "DKIM domain must exactly match From: domain"
-msgstr ""
+msgstr "DKIM domenas turi tiksliai atitikti From: domeną"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:151
 msgid "SPF Alignment Mode"
-msgstr ""
+msgstr "SPF lygiavimo režimas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:156
 msgid "SPF domain can be subdomain of From: domain"
-msgstr ""
+msgstr "SPF domenas gali būti From: domeno subdomenas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:157
 msgid "SPF domain must exactly match From: domain"
-msgstr ""
+msgstr "SPF domenas turi tiksliai atitikti From: domeną"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:261
 msgid "Policy is required"
-msgstr ""
+msgstr "Politika privaloma"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:263
 msgid "Invalid policy value"
-msgstr ""
+msgstr "Netinkama politikos reikšmė"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:268
 msgid "Invalid subdomain policy value"
-msgstr ""
+msgstr "Netinkama subdomenų politikos reikšmė"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:275
 msgid "Percentage must be between 0 and 100"
-msgstr ""
+msgstr "Procentas turi būti tarp 0 ir 100"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:277
 #, php-format
@@ -1890,145 +1947,155 @@ msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
 msgstr ""
+"Politika bus taikoma tik %d%% pranešimų. Naudokite 100%%, kai testavimas "
+"baigtas."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:283
 msgid "Invalid aggregate report email address"
-msgstr ""
+msgstr "Netinkamas suvestinės ataskaitos el. pašto adresas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:287
 msgid "Invalid forensic report email address"
-msgstr ""
+msgstr "Netinkamas kriminalistinės ataskaitos el. pašto adresas"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:292
 msgid ""
 "No reporting email addresses configured. You will not receive DMARC reports."
 msgstr ""
+"Nesukonfigūruoti ataskaitų el. pašto adresai. Negausite DMARC ataskaitų."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:305
 msgid ""
 "Using \"p=none\" provides monitoring only. Consider stricter policy "
 "(quarantine/reject) once you've reviewed reports."
 msgstr ""
+"Naudojant \"p=none\" tik stebima. Apsvarstykite griežtesnę politiką "
+"(karantinas/atmetimas), kai peržiūrėsite ataskaitas."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:48
 msgid "SPF Record"
-msgstr ""
+msgstr "SPF įrašas"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:49
 msgid "Authorized mail server configuration"
-msgstr ""
+msgstr "Autorizuoto pašto serverio konfigūracija"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:61
 msgid "Basic Mechanisms"
-msgstr ""
+msgstr "Pagrindiniai mechanizmai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:62
 msgid "Select common mechanisms to authorize email sending"
-msgstr ""
+msgstr "Pasirinkite įprastus mechanizmus el. pašto siuntimui autorizuoti"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:66
 msgid "MX Records"
-msgstr ""
+msgstr "MX įrašai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:69
 msgid "Authorize all servers listed in MX records for this domain"
-msgstr ""
+msgstr "Autorizuoti visus serverius, išvardytus šio domeno MX įrašuose"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:73
 msgid "A/AAAA Records"
-msgstr ""
+msgstr "A/AAAA įrašai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:76
 msgid "Authorize the domain's A and AAAA records"
-msgstr ""
+msgstr "Autorizuoti domeno A ir AAAA įrašus"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:81
 msgid "IP Addresses"
-msgstr ""
+msgstr "IP adresai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:82
 msgid "Authorized IP addresses and networks (CIDR notation supported)"
-msgstr ""
+msgstr "Autorizuoti IP adresai ir tinklai (palaikomas CIDR formatas)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:86
 msgid "IPv4 Addresses"
-msgstr ""
+msgstr "IPv4 adresai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:90
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 msgstr ""
+"Vienas IP adresas arba tinklas eilutėje (pvz., 192.0.2.1 arba 192.0.2.0/24)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:94
 msgid "IPv6 Addresses"
-msgstr ""
+msgstr "IPv6 adresai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:98
 msgid "One IPv6 address or network per line"
-msgstr ""
+msgstr "Vienas IPv6 adresas arba tinklas eilutėje"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:103
 msgid "Include Mechanisms"
-msgstr ""
+msgstr "Įtraukimo mechanizmai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:104
 msgid "Include SPF records from other domains"
-msgstr ""
+msgstr "Įtraukti SPF įrašus iš kitų domenų"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:108
 msgid "Include Domains"
-msgstr ""
+msgstr "Įtraukti domenus"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:112
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
 msgstr ""
+"Domenai, kurių SPF įrašai turėtų būti įtraukti (vienas eilutėje). Įprasti: "
+"_spf.google.com, spf.protection.outlook.com"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:117
 msgid "Additional Mechanisms"
-msgstr ""
+msgstr "Papildomi mechanizmai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:121
 msgid "Additional A/AAAA Hosts"
-msgstr ""
+msgstr "Papildomi A/AAAA serveriai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
-msgstr ""
+msgstr "Autorizuoti konkrečių serverių vardų A/AAAA įrašus (vienas eilutėje)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:129
 msgid "Additional MX Hosts"
-msgstr ""
+msgstr "Papildomi MX serveriai"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:133
 msgid "Authorize MX records from other domains (one per line)"
-msgstr ""
+msgstr "Autorizuoti MX įrašus iš kitų domenų (vienas eilutėje)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:142
 msgid "Default Action"
-msgstr ""
+msgstr "Numatytasis veiksmas"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:147
 msgid "Pass all - allows anyone to send (insecure)"
-msgstr ""
+msgstr "Praleisti viską - leidžia bet kam siųsti (nesaugu)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:148
 msgid "Neutral (no policy)"
-msgstr ""
+msgstr "Neutralus (jokios politikos)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:149
 msgid "Soft fail (mark as spam but accept)"
-msgstr ""
+msgstr "Švelnusis nesėkmė (pažymėti kaip šlamštą, bet priimti)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:150
 msgid "Fail (reject unauthorized emails)"
-msgstr ""
+msgstr "Nesėkmė (atmesti neautorizuotus el. laiškus)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:152
 msgid ""
-"Policy for emails not matching any mechanism. Start with ~all (softfail) for "
-"testing."
+"Policy for emails not matching any mechanism. Start with ~all (softfail) for"
+" testing."
 msgstr ""
+"Politika el. laiškams, neatitinkantiems jokio mechanizmo. Pradėkite su ~all "
+"(softfail) testavimui."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:289
 #, php-format
@@ -2037,6 +2104,9 @@ msgid ""
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
 msgstr ""
+"SPF įrašas viršija DNS užklausų limitą (%d/10). Tai sukels SPF patikrinimo "
+"nesėkmę. Pašalinkite kai kuriuos include/a/mx mechanizmus arba naudokite "
+"ip4/ip6."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:294
 #, php-format
@@ -2044,71 +2114,79 @@ msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
 msgstr ""
+"SPF įrašas turi %d DNS užklausų (limitas 10). Apsvarstykite naudoti ip4/ip6 "
+"vietoj include mechanizmų arba sujunkite includes, kad neviršytumėte limito."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:304
 #, php-format
 msgid "Invalid IPv4 address or network: %s"
-msgstr ""
+msgstr "Netinkamas IPv4 adresas arba tinklas: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:313
 #, php-format
 msgid "Invalid IPv6 address or network: %s"
-msgstr ""
+msgstr "Netinkamas IPv6 adresas arba tinklas: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:323
 #, php-format
 msgid "Invalid include domain: %s"
-msgstr ""
+msgstr "Netinkamas įtraukimo domenas: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:343
 msgid ""
-"No mechanisms selected. This SPF record will only contain the default action."
-msgstr ""
+"No mechanisms selected. This SPF record will only contain the default "
+"action."
+msgstr "Nepasirinkta mechanizmų. Šis SPF įrašas turės tik numatytąjį veiksmą."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:348
 msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
 msgstr ""
+"Naudojant \"+all\" bet kas gali siųsti el. paštą kaip jūsų domenas. Tai "
+"griežtai nerekomenduojama."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:43
 msgid "CAA Record"
-msgstr ""
+msgstr "CAA įrašas"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:44
 msgid "Certificate authority authorization"
-msgstr ""
+msgstr "Sertifikavimo institucijos autorizacija"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:68
 msgid "Custom (enter manually)"
-msgstr ""
+msgstr "Pasirinktinis (įveskite rankiniu būdu)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:74
 msgid "Certificate Authority"
-msgstr ""
+msgstr "Sertifikavimo institucija"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:78
 msgid "CA Provider"
-msgstr ""
+msgstr "CA teikėjas"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:83
 msgid ""
 "Select the certificate authority authorized to issue certificates for this "
 "domain"
 msgstr ""
+"Pasirinkite sertifikavimo instituciją, autorizuotą išduoti sertifikatus šiam"
+" domenui"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:87
 msgid "CA Domain (Custom)"
-msgstr ""
+msgstr "CA domenas (Pasirinktinis)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:92
-msgid ""
-"Enter the CA domain name manually (only shown when \"Custom\" is selected)"
+msgid "Enter the CA domain name manually (only shown when \"Custom\" is selected)"
 msgstr ""
+"Įveskite CA domeno vardą rankiniu būdu (rodoma tik pasirinkus "
+"\"Pasirinktinis\")"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:97
 msgid "Certificate Type"
-msgstr ""
+msgstr "Sertifikato tipas"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:101
 #: templates/modern/dnssec_delete_key.html:82
@@ -2117,95 +2195,99 @@ msgstr "Žymė"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
 msgid "Issue"
-msgstr ""
+msgstr "Išduoti"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:106
 msgid "Authorize issuance of standard certificates"
-msgstr ""
+msgstr "Autorizuoti standartinių sertifikatų išdavimą"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
 msgid "Issue Wildcard"
-msgstr ""
+msgstr "Išduoti pakaitos simbolį"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:107
 msgid "Authorize issuance of wildcard certificates (*.example.com)"
-msgstr ""
+msgstr "Autorizuoti pakaitos simbolių sertifikatų išdavimą (*.example.com)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
 msgid "Incident Reporting"
-msgstr ""
+msgstr "Incidentų pranešimas"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:108
 msgid "URL to report certificate issuance violations"
-msgstr ""
+msgstr "URL pranešti apie sertifikatų išdavimo pažeidimus"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:110
 msgid "Type of authorization or reporting"
-msgstr ""
+msgstr "Autorizacijos arba pranešimo tipas"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:114
 msgid "Reporting URL"
-msgstr ""
+msgstr "Pranešimo URL"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:119
 msgid "URL or email for incident reports (mailto: or https:)"
-msgstr ""
+msgstr "URL arba el. paštas incidentų ataskaitoms (mailto: arba https:)"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:103
 msgid "Advanced Options"
-msgstr ""
+msgstr "Išplėstinės parinktys"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:130
 msgid "Flags"
-msgstr ""
+msgstr "Vėliavėlės"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
 msgid "Non-critical"
-msgstr ""
+msgstr "Nekritiška"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:135
 msgid "Allow fallback if not understood"
-msgstr ""
+msgstr "Leisti atsarginį variantą, jei nesuprantama"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
 msgid "Critical"
-msgstr ""
+msgstr "Kritiška"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:136
 msgid "Reject if not understood - strict enforcement"
-msgstr ""
+msgstr "Atmesti, jei nesuprantama - griežtas įgyvendinimas"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:138
 msgid ""
 "Non-critical (0) provides better compatibility. Critical (128) enforces "
 "strict CAA processing."
 msgstr ""
+"Nekritiška (0) užtikrina geresnį suderinamumą. Kritiška (128) įgyvendina "
+"griežtą CAA apdorojimą."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:204
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
-msgstr ""
+msgstr "Netinkama CAA žymė. Turi būti issue, issuewild arba iodef"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:210
 msgid "CA provider is required"
-msgstr ""
+msgstr "CA teikėjas yra privalomas"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:213
 msgid "Custom CA domain is required when \"Custom\" is selected"
-msgstr ""
+msgstr "Pasirinktinis CA domenas yra privalomas, kai pasirinkta \"Pasirinktinis\""
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:215
 msgid "Invalid CA domain format"
-msgstr ""
+msgstr "Netinkamas CA domeno formatas"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:221
 msgid ""
 "Using \";\" allows ALL certificate authorities to issue certificates. This "
 "defeats the purpose of CAA records."
 msgstr ""
+"Naudojant \";\" leidžiama VISOMS sertifikatų institucijoms išduoti "
+"sertifikatus. Tai panaikina CAA įrašų paskirtį."
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:227
 msgid "Reporting URL is required for iodef tag"
-msgstr ""
+msgstr "Ataskaitų URL yra privalomas iodef žymei"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
 msgid "Reporting URL must start with mailto:, https://, or http://"
@@ -2213,21 +2295,23 @@ msgstr ""
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
 msgid "Flags must be 0 or 128"
-msgstr ""
+msgstr "Vėliavėlės turi būti 0 arba 128"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:240
 msgid ""
 "Critical flag (128) is set. Systems that do not understand CAA records will "
 "reject operations. Use 0 unless you have a specific requirement."
 msgstr ""
+"Nustatyta kritinė vėliavėlė (128). Sistemos, kurios nesupranta CAA įrašų, "
+"atmes operacijas. Naudokite 0, nebent turite konkretų reikalavimą."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:46
 msgid "DKIM Record"
-msgstr ""
+msgstr "DKIM įrašas"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:47
 msgid "Email signature verification public key"
-msgstr ""
+msgstr "El. pašto parašo patvirtinimo viešasis raktas"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:58
 #: templates/modern/dnssec_edit_key.html:51
@@ -2241,10 +2325,14 @@ msgid ""
 "the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your "
 "mail server (never share it)."
 msgstr ""
+"DKIM įrodo, kad el. laiškai yra iš jūsų domeno, naudojant kriptografinius "
+"parašus. Sugeneruokite DKIM raktų porą savo EL. PAŠTO SERVERYJE (Postfix, "
+"Exim ir kt.). Tik VIEŠASIS RAKTAS įrašomas į šį DNS įrašą. Laikykite PRIVATŲ"
+" RAKTĄ saugų savo pašto serveryje (niekada jo nebendrinkite)."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:68
 msgid "DKIM Configuration"
-msgstr ""
+msgstr "DKIM konfigūracija"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:77
 msgid ""
@@ -2252,132 +2340,153 @@ msgid ""
 "\"202501\", or service name like \"google\"). Only alphanumeric characters, "
 "hyphens, and underscores allowed."
 msgstr ""
+"Selektorius DKIM raktui identifikuoti (dažniausiai \"default\", laiko žyma "
+"kaip \"202501\" arba paslaugos pavadinimas kaip \"google\"). Leidžiami tik "
+"raidiniai skaitiniai simboliai, brūkšniai ir pabraukimai."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:81
 msgid "Public Key"
-msgstr ""
+msgstr "Viešasis raktas"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:86
 msgid ""
 "Paste the base64-encoded public key from your mail server. Spaces and "
 "newlines will be automatically removed."
 msgstr ""
+"Įklijuokite base64 koduotą viešąjį raktą iš savo pašto serverio. Tarpai ir "
+"naujos eilutės bus automatiškai pašalinti."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:90
 msgid "Key Type"
-msgstr ""
+msgstr "Rakto tipas"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:95
 msgid "Widely supported by all mail servers"
-msgstr ""
+msgstr "Plačiai palaikomas visų pašto serverių"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:96
 msgid "Newer algorithm - not universally supported yet"
-msgstr ""
+msgstr "Naujesnis algoritmas - dar nepalaikomas visuotinai"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:98
 msgid "Encryption algorithm for the DKIM public key"
-msgstr ""
+msgstr "Šifravimo algoritmas DKIM viešajam raktui"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:109
 msgid "Testing Mode"
-msgstr ""
+msgstr "Testavimo režimas"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:112
 msgid ""
-"Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
-"Use during initial deployment."
+"Enable testing mode (t=y). DKIM signatures will be present but not enforced."
+" Use during initial deployment."
 msgstr ""
+"Įjungti testavimo režimą (t=y). DKIM parašai bus, bet nebus įgyvendinami. "
+"Naudokite pradinės diegimo metu."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:116
 msgid "Strict Subdomain Mode"
-msgstr ""
+msgstr "Griežtas subdomenų režimas"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:119
 msgid ""
 "Enable strict subdomain mode (t=s). Rejects unsigned mail from subdomains."
 msgstr ""
+"Įjungti griežtą subdomenų režimą (t=s). Atmeta nepasirašytą paštą iš "
+"subdomenų."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:198
 msgid "Selector is required"
-msgstr ""
+msgstr "Selektorius yra privalomas"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:200
 msgid ""
 "Selector can only contain alphanumeric characters, hyphens, and underscores"
 msgstr ""
+"Selektorius gali turėti tik raidinius skaitmeninius simbolius, brūkšnius ir "
+"pabraukimus"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:205
 msgid "Public key is required"
-msgstr ""
+msgstr "Viešasis raktas yra privalomas"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:211
 msgid "Public key must be valid base64-encoded data"
-msgstr ""
+msgstr "Viešasis raktas turi būti tinkami base64 koduoti duomenys"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:216
 msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
 msgstr ""
+"Viešasis raktas atrodo neįprastai trumpas. Įsitikinkite, kad nukopijavote "
+"visą raktą iš savo pašto serverio."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:221
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
 msgstr ""
+"Įklijavote PRIVATŲ RAKTĄ. DNS turi būti tik VIEŠASIS RAKTAS. Niekada "
+"nebendrinkite savo privataus rakto!"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:225
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
 msgstr ""
+"Viešasis raktas atrodo turintis PEM antraštes (BEGIN/END). Reikia tik base64"
+" turinio tarp antraščių."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:239
 msgid ""
-"Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
-"this once testing is complete."
+"Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable"
+" this once testing is complete."
 msgstr ""
+"Testavimo režimas įjungtas (t=y). DKIM parašai nebus įgyvendinami. Išjunkite"
+" tai, kai testavimas baigtas."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:68
 msgid "SRV Record"
-msgstr ""
+msgstr "SRV įrašas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:69
 msgid "Service location (hostname and port)"
-msgstr ""
+msgstr "Paslaugos vieta (kompiuterio vardas ir prievadas)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:95
 msgid "Service"
-msgstr ""
+msgstr "Paslauga"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:100
 msgid "Select a common service or choose \"Custom\" to enter manually"
 msgstr ""
+"Pasirinkite bendrą paslaugą arba pasirinkite \"Pasirinktinis\", kad "
+"įvestumėte rankiniu būdu"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:104
 msgid "Custom Service Name"
-msgstr ""
+msgstr "Pasirinktinis paslaugos pavadinimas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr ""
+msgstr "Paslaugos pavadinimas turi prasidėti pabraukimu (pvz., _manopaslanga)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
-msgstr ""
+msgstr "Perdavimo valdymo protokolas - dažniausias"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:119
 msgid "User Datagram Protocol - connectionless"
-msgstr ""
+msgstr "Vartotojo duomenų protokolas - be ryšio"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:120
 msgid "Transport Layer Security"
-msgstr ""
+msgstr "Transporto sluoksnio saugumas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:123
 msgid "Transport protocol for the service"
-msgstr ""
+msgstr "Transporto protokolas paslaugai"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:127
 #: templates/modern/dnssec_delete_key.html:52
@@ -2389,30 +2498,36 @@ msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
 msgstr ""
+"Domeno pavadinimas (palikite tuščią zonos viršūnei @). Visas įrašo "
+"pavadinimas bus: _paslauga._protokolas.domenas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:136
 msgid "Target Server"
-msgstr ""
+msgstr "Tikslo serveris"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:140
 msgid "Target Hostname"
-msgstr ""
+msgstr "Tikslo kompiuterio vardas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:144
 msgid ""
-"Hostname of the server providing this service (must be a hostname with an A/"
-"AAAA record, not an IP address)"
+"Hostname of the server providing this service (must be a hostname with an "
+"A/AAAA record, not an IP address)"
 msgstr ""
+"Serverio, teikiančio šią paslaugą, kompiuterio vardas (turi būti kompiuterio"
+" vardas su A/AAAA įrašu, o ne IP adresas)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:154
 msgid ""
 "Port number where the service is listening (automatically filled for common "
 "services)"
 msgstr ""
+"Prievado numeris, kuriame paslauga klausosi (automatiškai užpildomas "
+"bendroms paslaugoms)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:159
 msgid "Priority & Load Balancing"
-msgstr ""
+msgstr "Prioritetas ir apkrovos balansavimas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:163
 #: templates/modern/delete_zone_templ_record.html:39
@@ -2424,59 +2539,69 @@ msgid ""
 "Lower values have higher priority (10 is a good default). Clients try "
 "servers in priority order."
 msgstr ""
+"Mažesnės reikšmės turi aukštesnį prioritetą (10 yra geras numatytasis). "
+"Klientai bando serverius prioriteto tvarka."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:173
 msgid "Weight"
-msgstr ""
+msgstr "Svoris"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:179
 msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
 msgstr ""
+"Apkrovos balansavimui tarp serverių su tuo pačiu prioritetu. Didesnis svoris"
+" = daugiau srauto. 0 = be apkrovos balansavimo."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:261
 msgid "Service is required"
-msgstr ""
+msgstr "Paslauga yra privaloma"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:265
 msgid "Custom service name is required"
-msgstr ""
+msgstr "Pasirinktinis paslaugos pavadinimas yra privalomas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:267
 msgid "Service name must contain only alphanumeric characters and hyphens"
 msgstr ""
+"Paslaugos pavadinimas gali turėti tik raidinius skaitmeninius simbolius ir "
+"brūkšnius"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:273
 msgid "Target hostname is required"
-msgstr ""
+msgstr "Tikslo kompiuterio vardas yra privalomas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:277
 msgid "Invalid target hostname format"
-msgstr ""
+msgstr "Netinkamas tikslo kompiuterio vardo formatas"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:282
 msgid ""
-"Target must be a hostname, not an IP address. Create an A or AAAA record for "
-"the hostname first."
+"Target must be a hostname, not an IP address. Create an A or AAAA record for"
+" the hostname first."
 msgstr ""
+"Tikslas turi būti kompiuterio vardas, o ne IP adresas. Pirmiausia sukurkite "
+"A arba AAAA įrašą kompiuterio vardui."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:295
 msgid "Priority must be between 0 and 65535"
-msgstr ""
+msgstr "Prioritetas turi būti tarp 0 ir 65535"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:299
 msgid ""
 "Priority 0 is valid but unusual. Most services use priority 10 or higher."
 msgstr ""
+"Prioritetas 0 yra tinkamas, bet neįprastas. Dauguma paslaugų naudoja "
+"prioritetą 10 arba aukštesnį."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:305
 msgid "Weight must be between 0 and 65535"
-msgstr ""
+msgstr "Svoris turi būti tarp 0 ir 65535"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:310
 msgid "Invalid domain format"
-msgstr ""
+msgstr "Netinkamas domeno formatas"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:74
 msgid "All zones have owners"
@@ -2529,11 +2654,11 @@ msgstr "IPSECKEY įrašų prioriteto laukas turi būti 0 arba tuščias"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:122
 msgid ""
-"IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
-"keying material (RFC 4025 Section 4)."
+"IPSECKEY records should be used with DNSSEC to ensure secure transmission of"
+" keying material (RFC 4025 Section 4)."
 msgstr ""
-"IPSECKEY įrašai turėtų būti naudojami su DNSSEC, kad būtų užtikrintas saugus "
-"raktų medžiagos perdavimas (RFC 4025 4 skyrius)."
+"IPSECKEY įrašai turėtų būti naudojami su DNSSEC, kad būtų užtikrintas saugus"
+" raktų medžiagos perdavimas (RFC 4025 4 skyrius)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:123
 msgid ""
@@ -2545,12 +2670,12 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
-"When using domain name gateways, ensure both forward and reverse DNS records "
-"exist and are properly secured with DNSSEC."
+"When using domain name gateways, ensure both forward and reverse DNS records"
+" exist and are properly secured with DNSSEC."
 msgstr ""
 "Naudojant domenų vardų tinklų sietuvus, užtikrinkite, kad egzistuoja tiek "
-"tiesioginiai, tiek atvirkštiniai DNS įrašai ir jie yra tinkamai apsaugoti su "
-"DNSSEC."
+"tiesioginiai, tiek atvirkštiniai DNS įrašai ir jie yra tinkamai apsaugoti su"
+" DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
 msgid "Invalid characters in IPSECKEY record content."
@@ -2587,8 +2712,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
 msgstr ""
-"Tinklų sietuvo tipui 0 (jokio tinklų sietuvo), tinklų sietuvas turi būti \"."
-"\"."
+"Tinklų sietuvo tipui 0 (jokio tinklų sietuvo), tinklų sietuvas turi būti "
+"\".\"."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:201
 msgid "For gateway type 1, gateway must be a valid IPv4 address."
@@ -2662,26 +2787,26 @@ msgstr ""
 "$protocol ir $hostname yra iš SRV paieškos tikslo"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
-msgid ""
-"3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
+msgid "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
 msgstr ""
-"3. Tiek SRV, tiek TLSA įrašai turi turėti DNSSEC validacijos būseną \"saugi\""
+"3. Tiek SRV, tiek TLSA įrašai turi turėti DNSSEC validacijos būseną "
+"\"saugi\""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
-"TLSA record name should typically follow the format _port._protocol.hostname "
-"(e.g., _443._tcp.www.example.com)."
+"TLSA record name should typically follow the format _port._protocol.hostname"
+" (e.g., _443._tcp.www.example.com)."
 msgstr ""
 "TLSA įrašo pavadinimas paprastai turėtų atitikti formatą "
 "_prievadas._protokolas.serverio_vardas (pvz., _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
-"TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
-"and sctp."
+"TLSA record is using a non-standard protocol. Common protocols are tcp, udp,"
+" and sctp."
 msgstr ""
-"TLSA įrašas naudoja nestandartinį protokolą. Įprasti protokolai yra tcp, udp "
-"ir sctp."
+"TLSA įrašas naudoja nestandartinį protokolą. Įprasti protokolai yra tcp, udp"
+" ir sctp."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:143
 msgid ""
@@ -2701,11 +2826,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
-"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
-"properly configured for DoT."
+"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is"
+" properly configured for DoT."
 msgstr ""
-"Tai atrodo kaip TLSA įrašas DNS per TLS. Užtikrinkite, kad jūsų DNS serveris "
-"tinkamai sukonfigūruotas DoT."
+"Tai atrodo kaip TLSA įrašas DNS per TLS. Užtikrinkite, kad jūsų DNS serveris"
+" tinkamai sukonfigūruotas DoT."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:153
 msgid ""
@@ -2724,13 +2849,14 @@ msgstr ""
 "pasirašyta, kad TLSA veiktų teisingai (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
-msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
+msgid ""
+"This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
 msgstr "Tai atrodo kaip SMIMEA įrašas (RFC 8162) S/MIME sertifikatams."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
-"SMIMEA records use the same format as TLSA but associate S/MIME certificates "
-"with email addresses."
+"SMIMEA records use the same format as TLSA but associate S/MIME certificates"
+" with email addresses."
 msgstr ""
 "SMIMEA įrašai naudoja tą patį formatą kaip TLSA, bet susieja S/MIME "
 "sertifikatus su el. pašto adresais."
@@ -2740,8 +2866,8 @@ msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
 msgstr ""
-"Vietinė el. pašto adreso dalis maišoma su SHA-256 ir dedama prieš _smimecert."
-"<domenas>"
+"Vietinė el. pašto adreso dalis maišoma su SHA-256 ir dedama prieš "
+"_smimecert.<domenas>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
@@ -2754,7 +2880,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
-"Invalid value for priority field. TLSA records must have priority value of 0."
+"Invalid value for priority field. TLSA records must have priority value of "
+"0."
 msgstr ""
 "Neteisinga prioriteto lauko reikšmė. TLSA įrašai turi turėti prioriteto "
 "reikšmę 0."
@@ -2764,8 +2891,8 @@ msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
 msgstr ""
-"TLSA įrašas turi turėti naudojimą, selektorių, atitikimo tipą ir sertifikato "
-"duomenis, atskirtus tarpais."
+"TLSA įrašas turi turėti naudojimą, selektorių, atitikimo tipą ir sertifikato"
+" duomenis, atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
@@ -2789,8 +2916,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:270
 msgid ""
-"Usage 2 (DANE-TA) requires proper trust anchor management and may break when "
-"certificates expire."
+"Usage 2 (DANE-TA) requires proper trust anchor management and may break when"
+" certificates expire."
 msgstr ""
 "Naudojimas 2 (DANE-TA) reikalauja tinkamo pasitikėjimo inkarų valdymo ir "
 "gali sugesti, kai sertifikatai baigia galioti."
@@ -2813,7 +2940,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
-"TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
+"TLSA selector field must be 0 (Full certificate) or 1 "
+"(SubjectPublicKeyInfo)."
 msgstr ""
 "TLSA selektoriaus laukas turi būti 0 (pilnas sertifikatas) arba 1 "
 "(SubjectPublicKeyInfo)."
@@ -2839,8 +2967,8 @@ msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
 msgstr ""
-"Atitikimo tipas 0 (tikslus atitikimas) nerekomenduojamas. SHA-256 (1) teikia "
-"geresnį suderinamumą ir saugumą."
+"Atitikimo tipas 0 (tikslus atitikimas) nerekomenduojamas. SHA-256 (1) teikia"
+" geresnį suderinamumą ir saugumą."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -2881,8 +3009,8 @@ msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
 "TTL as the SOA minimum TTL field."
 msgstr ""
-"Pagal RFC 5155 ir RFC 9077, NSEC3PARAM įrašai turėtų turėti tą patį TTL kaip "
-"SOA minimalaus TTL laukas."
+"Pagal RFC 5155 ir RFC 9077, NSEC3PARAM įrašai turėtų turėti tą patį TTL kaip"
+" SOA minimalaus TTL laukas."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:146
 msgid ""
@@ -2894,24 +3022,24 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
-"Manually editing NSEC3PARAM records is not recommended as they are typically "
-"generated automatically by DNSSEC-aware nameservers."
+"Manually editing NSEC3PARAM records is not recommended as they are typically"
+" generated automatically by DNSSEC-aware nameservers."
 msgstr ""
 "Rankinis NSEC3PARAM įrašų redagavimas nerekomenduojamas, nes jie paprastai "
 "generuojami automatiškai DNSSEC žinančių vardų serverių."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:148
 msgid ""
-"NSEC3PARAM records indicate to authoritative servers which parameters to use "
-"for NSEC3-based authenticated denial of existence."
+"NSEC3PARAM records indicate to authoritative servers which parameters to use"
+" for NSEC3-based authenticated denial of existence."
 msgstr ""
 "NSEC3PARAM įrašai nurodo autoritatyviniams serveriams, kokius parametrus "
 "naudoti NSEC3 pagrįstam autentifikuotam egzistavimo neigimui."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:149
 msgid ""
-"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
-"generated with the same parameters."
+"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be "
+"re-generated with the same parameters."
 msgstr ""
 "Atnaujinant NSEC3 parametrus, tiek NSEC3, tiek NSEC3PARAM įrašai turi būti "
 "iš naujo generuojami su tais pačiais parametrais."
@@ -2934,8 +3062,8 @@ msgstr "NSEC3PARAM vėliavėlės turi būti tarp 0 ir 255."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:224
 msgid ""
-"Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover "
-"unsigned delegations."
+"Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover"
+" unsigned delegations."
 msgstr ""
 "Vėliavėlės reikšmė 1 rodo, kad naudojamas Opt-Out. Tai reiškia, kad NSEC3 "
 "įrašai gali apimti nepasirašytas delegacijas."
@@ -2973,8 +3101,8 @@ msgid ""
 "High iteration values (>100) may cause validating resolvers to reject your "
 "zones. RFC 9276 STRONGLY recommends using 0 iterations."
 msgstr ""
-"Didelės iteracijų reikšmės (>100) gali priversti validuojančius sprendiklius "
-"atmesti jūsų zonas. RFC 9276 STIPRIAI rekomenduoja naudoti 0 iteracijų."
+"Didelės iteracijų reikšmės (>100) gali priversti validuojančius sprendiklius"
+" atmesti jūsų zonas. RFC 9276 STIPRIAI rekomenduoja naudoti 0 iteracijų."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:241
 msgid ""
@@ -3006,11 +3134,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:111
 msgid ""
-"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
-"not a formal IETF standard."
+"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol,"
+" not a formal IETF standard."
 msgstr ""
-"PASTABA: LP įrašo tipas apibrėžtas RFC 6742 kaip eksperimentinis protokolas, "
-"ne oficialus IETF standartas."
+"PASTABA: LP įrašo tipas apibrėžtas RFC 6742 kaip eksperimentinis protokolas,"
+" ne oficialus IETF standartas."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:112
 msgid ""
@@ -3022,8 +3150,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
-"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
-"Section 3.4)."
+"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742"
+" Section 3.4)."
 msgstr ""
 "LP įrašai NEGALI būti mazguose, kurie nepalaiko ILNP (RFC 6742 3.4 skyrius)."
 
@@ -3048,9 +3176,9 @@ msgid ""
 "Consider using longer TTL values for LP records. Unlike L32/L64 records, LP "
 "records are stable and benefit from longer cache times (RFC 6742)."
 msgstr ""
-"Apsvarstykite ilgesnių TTL reikšmių naudojimą LP įrašams. Skirtingai nei L32/"
-"L64 įrašai, LP įrašai stabilūs ir naudojasi ilgesniais kešavimo laikais (RFC "
-"6742)."
+"Apsvarstykite ilgesnių TTL reikšmių naudojimą LP įrašams. Skirtingai nei "
+"L32/L64 įrašai, LP įrašai stabilūs ir naudojasi ilgesniais kešavimo laikais "
+"(RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
 msgid "LP record must contain preference and FQDN separated by space."
@@ -3094,8 +3222,8 @@ msgid ""
 "Invalid AFSDB subtype. Must be 1 (AFS cell database server) or 2 (DCE "
 "authenticated name server)."
 msgstr ""
-"Neteisingas AFSDB potipis. Turi būti 1 (AFS ląstelės duomenų bazės serveris) "
-"arba 2 (DCE autentifikuotas vardų serveris)."
+"Neteisingas AFSDB potipis. Turi būti 1 (AFS ląstelės duomenų bazės serveris)"
+" arba 2 (DCE autentifikuotas vardų serveris)."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:112
 msgid "Priority field for LOC records must be 0 or empty."
@@ -3135,8 +3263,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:135
 msgid ""
-"Default precision values detected (1m size, 10000m horizontal precision, 10m "
-"vertical precision). Consider using more accurate values if you have them."
+"Default precision values detected (1m size, 10000m horizontal precision, 10m"
+" vertical precision). Consider using more accurate values if you have them."
 msgstr ""
 "Aptiktos numatytosios tikslumo reikšmės (1m dydis, 10000m horizontalus "
 "tikslumas, 10m vertikalus tikslumas). Apsvarstykite tikslesnių reikšmių "
@@ -3183,8 +3311,8 @@ msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 msgstr ""
-"Neteisingas LOC įrašo formatas. Formatas turėtų būti: l1 [m1 [s1]] {\"Š\"|"
-"\"P\"} l2 [m2 [s2]] {\"R\"|\"V\"} aukš[\"m\"] [dyd[\"m\"] [ht[\"m\"] "
+"Neteisingas LOC įrašo formatas. Formatas turėtų būti: l1 [m1 [s1]] "
+"{\"Š\"|\"P\"} l2 [m2 [s2]] {\"R\"|\"V\"} aukš[\"m\"] [dyd[\"m\"] [ht[\"m\"] "
 "[vt[\"m\"]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
@@ -3201,8 +3329,8 @@ msgstr "RKEY įrašų prioriteto laukas turi būti 0 arba tuščias."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:145
 msgid ""
-"RKEY records should be used with caution as they are not widely supported by "
-"DNS servers and resolvers."
+"RKEY records should be used with caution as they are not widely supported by"
+" DNS servers and resolvers."
 msgstr ""
 "RKEY įrašai turėtų būti naudojami atsargiai, nes jų plačiai nepalaiko DNS "
 "serveriai ir sprendikliai."
@@ -3224,8 +3352,8 @@ msgstr "RKEY vėliavėlių laukas turi būti skaitinė reikšmė."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:189
 msgid ""
-"Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
-"SEP)."
+"Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key +"
+" SEP)."
 msgstr ""
 "Neįprasta vėliavėlių reikšmė. Įprastos reikšmės yra 0, 256 (zonos raktas) "
 "arba 257 (zonos raktas + SEP)."
@@ -3235,8 +3363,8 @@ msgid ""
 "Bit 7 (Zone Key flag) is set in the flags field, indicating this is a zone "
 "key."
 msgstr ""
-"Vėliavėlių lauke nustatytas 7 bitas (zonos rakto vėliavėlė), nurodantis, kad "
-"tai zonos raktas."
+"Vėliavėlių lauke nustatytas 7 bitas (zonos rakto vėliavėlė), nurodantis, kad"
+" tai zonos raktas."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:198
 msgid ""
@@ -3283,8 +3411,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
-"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
-"stronger algorithm."
+"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a"
+" stronger algorithm."
 msgstr ""
 "Algoritmas 5 (RSA/SHA-1) laikomas nesaugiu ir turėtų būti pakeistas "
 "stipresniu algoritmu."
@@ -3300,7 +3428,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:207
 msgid ""
 "Algorithm 8 (RSA/SHA-256) is currently recommended for DNSSEC deployments."
-msgstr "Algoritmas 8 (RSA/SHA-256) šiuo metu rekomenduojamas DNSSEC diegimams."
+msgstr ""
+"Algoritmas 8 (RSA/SHA-256) šiuo metu rekomenduojamas DNSSEC diegimams."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:234
 msgid "Algorithm 10 (RSA/SHA-512) provides strong security."
@@ -3340,11 +3469,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid ""
-"CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
-"SHA-256) or later."
+"CRITICAL: This algorithm is considered insecure. Use algorithm 8 "
+"(RSA/SHA-256) or later."
 msgstr ""
-"KRITINIS: Šis algoritmas laikomas nesaugiu. Naudokite algoritmą 8 (RSA/"
-"SHA-256) arba vėlesnį."
+"KRITINIS: Šis algoritmas laikomas nesaugiu. Naudokite algoritmą 8 "
+"(RSA/SHA-256) arba vėlesnį."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:251
 msgid "RKEY public key data cannot be empty."
@@ -3359,8 +3488,8 @@ msgid ""
 "RKEY records were never formally standardized as an RFC, only proposed in "
 "draft-reid-dnsext-rkey-00."
 msgstr ""
-"RKEY įrašai niekada nebuvo oficialiai standartizuoti kaip RFC, tik pasiūlyti "
-"draft-reid-dnsext-rkey-00."
+"RKEY įrašai niekada nebuvo oficialiai standartizuoti kaip RFC, tik pasiūlyti"
+" draft-reid-dnsext-rkey-00."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
@@ -3435,8 +3564,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:84
 msgid ""
-"Note: NID records are used for the ILNP protocol, which is experimental (RFC "
-"6740, 6742)."
+"Note: NID records are used for the ILNP protocol, which is experimental (RFC"
+" 6740, 6742)."
 msgstr ""
 "Pastaba: NID įrašai naudojami ILNP protokolui, kuris yra eksperimentinis "
 "(RFC 6740, 6742)."
@@ -3463,8 +3592,8 @@ msgid ""
 "NID record content must be a 64-bit hexadecimal value (16 hex characters or "
 "xxxx:xxxx:xxxx:xxxx format)."
 msgstr ""
-"NID įrašo turinys turi būti 64-bitų šešioliktainė reikšmė (16 šešioliktainių "
-"simbolių arba xxxx:xxxx:xxxx:xxxx formatas)."
+"NID įrašo turinys turi būti 64-bitų šešioliktainė reikšmė (16 šešioliktainių"
+" simbolių arba xxxx:xxxx:xxxx:xxxx formatas)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:181
 msgid ""
@@ -3500,7 +3629,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
 msgid "A zero NodeID value is unusual and may indicate a configuration error."
-msgstr "Nulinė NodeID reikšmė neįprasta ir gali reikšti konfigūracijos klaidą."
+msgstr ""
+"Nulinė NodeID reikšmė neįprasta ir gali reikšti konfigūracijos klaidą."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:239
 msgid ""
@@ -3524,7 +3654,8 @@ msgstr "ALIAS tikslas turi būti pilnai kvalifikuotas domeno vardas (FQDN)."
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:107
 msgid ""
 "ALIAS target cannot point to itself, as this would create a resolution loop."
-msgstr "ALIAS tikslas negali nurodyti į save, nes tai sukurtų sprendimo ciklą."
+msgstr ""
+"ALIAS tikslas negali nurodyti į save, nes tai sukurtų sprendimo ciklą."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:160
 msgid ""
@@ -3556,8 +3687,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
-"NSEC records enable \"zone walking\", allowing enumeration of all names in a "
-"zone, which may be a privacy concern."
+"NSEC records enable \"zone walking\", allowing enumeration of all names in a"
+" zone, which may be a privacy concern."
 msgstr ""
 "NSEC įrašai leidžia \"zonos vaikščiojimą\", leidžiantį išvardyti visus "
 "vardus zonoje, kas gali kelti privatumo rūpesčių."
@@ -3591,8 +3722,8 @@ msgid ""
 "Wildcard names in NSEC records require special handling. According to RFC "
 "4035, wildcard owner names appear in NSEC records without expansion."
 msgstr ""
-"Šablonų vardai NSEC įrašuose reikalauja specialaus tvarkymo. Pagal RFC 4035, "
-"šablonų savininkų vardai atsiranda NSEC įrašuose be išplėtimo."
+"Šablonų vardai NSEC įrašuose reikalauja specialaus tvarkymo. Pagal RFC 4035,"
+" šablonų savininkų vardai atsiranda NSEC įrašuose be išplėtimo."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:168
 msgid "NSEC record must contain a valid next domain name."
@@ -3600,9 +3731,9 @@ msgstr "NSEC įrašas turi turėti teisingą kito domeno vardą."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:173
 msgid ""
-"The next domain name field must be the next owner name in canonical ordering "
-"of the zone. Canonical ordering is case-insensitive and sorts by labels from "
-"right to left."
+"The next domain name field must be the next owner name in canonical ordering"
+" of the zone. Canonical ordering is case-insensitive and sorts by labels "
+"from right to left."
 msgstr ""
 "Kito domeno vardo laukas turi būti kitas savininko vardas kanoniškoje zonos "
 "tvarkoje. Kanoniška tvarka neatsižvelgia į didžiąsias/mažąsias raides ir "
@@ -3613,13 +3744,13 @@ msgid ""
 "If this is the last NSEC record in the zone, the next domain name should be "
 "the zone apex (the owner name of the zone's SOA RR)."
 msgstr ""
-"Jei tai paskutinis NSEC įrašas zonoje, kitas domeno vardas turėtų būti zonos "
-"viršūnė (zonos SOA RR savininko vardas)."
+"Jei tai paskutinis NSEC įrašas zonoje, kitas domeno vardas turėtų būti zonos"
+" viršūnė (zonos SOA RR savininko vardas)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:194
 msgid ""
-"Type bit maps should be present to indicate which RR types exist at the NSEC "
-"owner name. An empty type bitmap is unusual."
+"Type bit maps should be present to indicate which RR types exist at the NSEC"
+" owner name. An empty type bitmap is unusual."
 msgstr ""
 "Tipų bitų žemėlapiai turėtų būti pateikti nurodyti, kokie RR tipai "
 "egzistuoja NSEC savininko varde. Tuščias tipų bitmapas neįprastas."
@@ -3659,8 +3790,8 @@ msgid ""
 "This NSEC record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
 msgstr ""
-"Šis NSEC įrašas turi tiek SOA, tiek NS tipus, nurodančius, kad jis gali būti "
-"zonos viršūnei."
+"Šis NSEC įrašas turi tiek SOA, tiek NS tipus, nurodančius, kad jis gali būti"
+" zonos viršūnei."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:112
 msgid ""
@@ -3682,8 +3813,8 @@ msgid ""
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
 msgstr ""
-"OPENPGPKEY įrašai paprastai turėtų būti generuojami naudojant specializuotus "
-"įrankius kaip GnuPG su --print-dane-records parinktimi, o ne kuriami "
+"OPENPGPKEY įrašai paprastai turėtų būti generuojami naudojant specializuotus"
+" įrankius kaip GnuPG su --print-dane-records parinktimi, o ne kuriami "
 "rankiniu būdu."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
@@ -3746,8 +3877,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
-"OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
-"by all email clients or OpenPGP implementations."
+"OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported"
+" by all email clients or OpenPGP implementations."
 msgstr ""
 "OPENPGPKEY įrašai yra EKSPERIMENTINIAI pagal RFC 7929 ir gali būti "
 "nepalaikomi visų el. pašto klientų ar OpenPGP implementacijų."
@@ -3762,8 +3893,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
-"To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
-"print-dane-records option to ensure correct format and content."
+"To create OPENPGPKEY records, use specialized tools like GnuPG with the "
+"--print-dane-records option to ensure correct format and content."
 msgstr ""
 "OPENPGPKEY įrašų kūrimui naudokite specializuotus įrankius, tokius kaip "
 "GnuPG su --print-dane-records parinktimi, kad užtikrintumėte teisingą "
@@ -3812,11 +3943,11 @@ msgstr "Neteisingi kabutės ženklai HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:258
 msgid ""
-"CPU type does not contain any standard values. Consider using a standard CPU "
-"type for better interoperability."
+"CPU type does not contain any standard values. Consider using a standard CPU"
+" type for better interoperability."
 msgstr ""
-"CPU tipas neturi jokių standartinių reikšmių. Apsvarstykite standartinio CPU "
-"tipo naudojimą geresniam suderinamumui."
+"CPU tipas neturi jokių standartinių reikšmių. Apsvarstykite standartinio CPU"
+" tipo naudojimą geresniam suderinamumui."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:262
 msgid ""
@@ -3913,8 +4044,8 @@ msgid ""
 "TSIG error code 16 (BADSIG) indicates that the signature in the TSIG record "
 "is invalid. Check keys and crypto configuration."
 msgstr ""
-"TSIG klaidos kodas 16 (BADSIG) rodo, kad parašas TSIG įraše yra neteisingas. "
-"Patikrinkite raktus ir kriptografijos konfigūraciją."
+"TSIG klaidos kodas 16 (BADSIG) rodo, kad parašas TSIG įraše yra neteisingas."
+" Patikrinkite raktus ir kriptografijos konfigūraciją."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:253
 msgid ""
@@ -3927,8 +4058,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
-"TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
-"is outside the allowed time window. Check clock synchronization."
+"TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record"
+" is outside the allowed time window. Check clock synchronization."
 msgstr ""
 "TSIG klaidos kodas 18 (BADTIME) rodo, kad laiko žyma TSIG įraše yra už "
 "leistino laiko lango ribų. Patikrinkite laikrodžio sinchronizaciją."
@@ -4016,15 +4147,16 @@ msgstr ""
 msgid ""
 "The serial number in the ZONEMD record should match the zone's SOA serial "
 "number."
-msgstr "Serijos numeris ZONEMD įraše turėtų atitikti zonos SOA serijos numerį."
+msgstr ""
+"Serijos numeris ZONEMD įraše turėtų atitikti zonos SOA serijos numerį."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:124
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
 msgstr ""
-"ZONEMD schemos reikšmės 240-255 yra rezervuotos privačiam naudojimui ir gali "
-"būti nesuderinamos."
+"ZONEMD schemos reikšmės 240-255 yra rezervuotos privačiam naudojimui ir gali"
+" būti nesuderinamos."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
@@ -4073,8 +4205,8 @@ msgid ""
 "ZONEMD scheme must be 1 (Simple ZONEMD scheme) for standard use. Other "
 "values are reserved or unassigned."
 msgstr ""
-"ZONEMD schema turi būti 1 (Paprasta ZONEMD schema) standartiniam naudojimui. "
-"Kitos reikšmės yra rezervuotos arba nepriskirtos."
+"ZONEMD schema turi būti 1 (Paprasta ZONEMD schema) standartiniam naudojimui."
+" Kitos reikšmės yra rezervuotos arba nepriskirtos."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
@@ -4132,12 +4264,13 @@ msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
 msgstr ""
-"CERT įrašas turi turėti tipą, rakto žymę, algoritmą ir sertifikato duomenis, "
-"atskirtus tarpais."
+"CERT įrašas turi turėti tipą, rakto žymę, algoritmą ir sertifikato duomenis,"
+" atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
-msgstr "CERT tipas turi būti skaičius tarp 0 ir 65535 arba teisinga mnemonika."
+msgstr ""
+"CERT tipas turi būti skaičius tarp 0 ir 65535 arba teisinga mnemonika."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
@@ -4148,16 +4281,16 @@ msgid ""
 "CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
 "SPKI, PGP, etc.)."
 msgstr ""
-"CERT tipas turi būti skaičius tarp 0 ir 65535 arba teisinga mnemonika (PKIX, "
-"SPKI, PGP, ir t.t.)."
+"CERT tipas turi būti skaičius tarp 0 ir 65535 arba teisinga mnemonika (PKIX,"
+" SPKI, PGP, ir t.t.)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:192
 msgid ""
 "URL-based certificate types (IPKIX, ISPKI, IPGP, IACPKIX) introduce "
 "additional indirection and potential security concerns."
 msgstr ""
-"URL pagrįsti sertifikatų tipai (IPKIX, ISPKI, IPGP, IACPKIX) įveda papildomą "
-"nukreipimą ir potencialius saugumo rūpesčius."
+"URL pagrįsti sertifikatų tipai (IPKIX, ISPKI, IPGP, IACPKIX) įveda papildomą"
+" nukreipimą ir potencialius saugumo rūpesčius."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:197
 msgid "CERT key tag must be a number between 0 and 65535."
@@ -4194,8 +4327,8 @@ msgid ""
 "CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
 "0-9, +, /, =)."
 msgstr ""
-"CERT sertifikato duomenys turi turėti tik teisingus base64 simbolius (A-Z, a-"
-"z, 0-9, +, /, =)."
+"CERT sertifikato duomenys turi turėti tik teisingus base64 simbolius (A-Z, "
+"a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:285
 msgid ""
@@ -4210,8 +4343,8 @@ msgid ""
 "CERT certificate data has invalid base64 length. Base64 data must be a "
 "multiple of 4 characters (with padding)."
 msgstr ""
-"CERT sertifikato duomenų base64 ilgis neteisingas. Base64 duomenys turi būti "
-"4 simbolių kartotinis (su užpildu)."
+"CERT sertifikato duomenų base64 ilgis neteisingas. Base64 duomenys turi būti"
+" 4 simbolių kartotinis (su užpildu)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:299
 msgid "CERT certificate data must be valid base64-encoded data."
@@ -4269,8 +4402,8 @@ msgstr "Neteisinga rakto žymė. Turi būti skaičius tarp 1 ir 65535."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:166
 msgid ""
-"The key tag field does not uniquely identify a DNSKEY. More than one key can "
-"have the same key tag."
+"The key tag field does not uniquely identify a DNSKEY. More than one key can"
+" have the same key tag."
 msgstr ""
 "Rakto žymės laukas ne vienareikšmiškai identifikuoja DNSKEY. Daugiau nei "
 "vienas raktas gali turėti tą pačią rakto žymę."
@@ -4278,7 +4411,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
 msgstr ""
-"Neteisingas algoritmas. Turi būti vienas iš teisingų DNSSEC algoritmų (1-16)."
+"Neteisingas algoritmas. Turi būti vienas iš teisingų DNSSEC algoritmų "
+"(1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
@@ -4300,13 +4434,15 @@ msgstr ""
 "Neteisingas santraukos ilgis SHA-1. Turėtų būti 40 šešioliktainių simbolių."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
-msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
+msgid ""
+"Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
 msgstr ""
 "Neteisingas santraukos ilgis SHA-256. Turėtų būti 64 šešioliktainiai "
 "simboliai."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
-msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
+msgid ""
+"Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
 msgstr ""
 "Neteisingas santraukos ilgis SHA-384. Turėtų būti 96 šešioliktainiai "
 "simboliai."
@@ -4369,7 +4505,8 @@ msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
 msgstr ""
-"HTTPS įrašo tikslas turi būti arba \".\" arba teisingas pilnas domeno vardas."
+"HTTPS įrašo tikslas turi būti arba \".\" arba teisingas pilnas domeno "
+"vardas."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:157
 msgid ""
@@ -4434,8 +4571,8 @@ msgstr "Parametras \"%s\" pažymėtas kaip privalomas, bet neįtrauktas į įra�
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
-"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
-"non-zero TTL may cause issues with older DNS implementations."
+"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current"
+" non-zero TTL may cause issues with older DNS implementations."
 msgstr ""
 "RFC 2930 reikalauja, kad TKEY įrašai turėtų TTL=0, kad išvengtų talpinimo. "
 "Dabartinis ne nulio TTL gali sukelti problemų su senesnėmis DNS "
@@ -4482,7 +4619,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
-"TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
+"TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS "
+"format."
 msgstr ""
 "TKEY galiojimo pabaigos laikas turi būti teisingas Unix timestamp arba "
 "YYYYMMDDHHmmSS formatas."
@@ -4538,7 +4676,8 @@ msgstr ""
 msgid ""
 "TKEY established keys are associated with DNS servers/resolvers, not zones."
 msgstr ""
-"TKEY sukurti raktai yra susieti su DNS serveriais/resolveriais, o ne zonomis."
+"TKEY sukurti raktai yra susieti su DNS serveriais/resolveriais, o ne "
+"zonomis."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:234
 msgid ""
@@ -4558,8 +4697,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
-"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
-"security."
+"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better"
+" security."
 msgstr ""
 "Aptiktas pasenęs algoritmas. Geresniam saugumui rekomenduojamas HMAC-SHA256 "
 "arba stipresnis."
@@ -4589,8 +4728,8 @@ msgstr "TTL reikšmė negali būti neigiama. Turi būti 0 arba aukštesnė."
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:111
 #, php-format
 msgid ""
-"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
-"bit integer."
+"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed "
+"32-bit integer."
 msgstr ""
 "TTL reikšmė viršija maksimalų leistinąjį (%d). RFC 2181 riboja ją iki 32 "
 "bitų sveikojo skaičiaus."
@@ -4607,11 +4746,11 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
-"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
-"TTL values delay DNS updates."
+"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High"
+" TTL values delay DNS updates."
 msgstr ""
-"TTL reikšmė (%d) yra virš rekomenduojamo maksimumo %d sekundžių (1 savaitė). "
-"Aukštos TTL reikšmės uždelsia DNS atnaujinimus."
+"TTL reikšmė (%d) yra virš rekomenduojamo maksimumo %d sekundžių (1 savaitė)."
+" Aukštos TTL reikšmės uždelsia DNS atnaujinimus."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
@@ -4638,7 +4777,8 @@ msgid "FTP is considered less secure than alternatives like SFTP or HTTPS."
 msgstr "FTP laikomas mažiau saugiu nei alternatyvos kaip SFTP ar HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
-msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
+msgid ""
+"Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
 msgstr "Apsvarstykite LDAPS (LDAP per SSL/TLS) naudojimą LDAP ryšių apsaugai."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
@@ -4723,8 +4863,8 @@ msgid ""
 "URI contains percent characters not used for properly formatted percent-"
 "encoding."
 msgstr ""
-"URI turi procentų simbolių, nenaudojamų teisingai suformatuotam procentiniam "
-"kodavimui."
+"URI turi procentų simbolių, nenaudojamų teisingai suformatuotam procentiniam"
+" kodavimui."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:320
 msgid ""
@@ -4747,8 +4887,8 @@ msgid ""
 "IMPORTANT: RFC 2230 requires KX records to be signed using DNSSEC. Unsigned "
 "KX records MUST be ignored for security reasons."
 msgstr ""
-"SVARBU: RFC 2230 reikalauja, kad KX įrašai būtų pasirašyti naudojant DNSSEC. "
-"Nepasirašyti KX įrašai TURI būti ignoruojami saugumo sumetimais."
+"SVARBU: RFC 2230 reikalauja, kad KX įrašai būtų pasirašyti naudojant DNSSEC."
+" Nepasirašyti KX įrašai TURI būti ignoruojami saugumo sumetimais."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:124
 msgid ""
@@ -4768,8 +4908,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
-"The key exchanger host should have appropriate A/AAAA records for type A/"
-"AAAA additional section processing."
+"The key exchanger host should have appropriate A/AAAA records for type "
+"A/AAAA additional section processing."
 msgstr ""
 "Raktų keitiklio hostas turėtų turėti tinkamus A/AAAA įrašus A/AAAA tipo "
 "papildomos sekcijos apdorojimui."
@@ -4783,8 +4923,8 @@ msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
 msgstr ""
-"PASTABA: MINFO įrašo tipas pažymėtas kaip EKSPERIMENTINIS RFC 1035. Jis gali "
-"būti neuniversaliai palaikomas."
+"PASTABA: MINFO įrašo tipas pažymėtas kaip EKSPERIMENTINIS RFC 1035. Jis gali"
+" būti neuniversaliai palaikomas."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
@@ -4861,9 +5001,8 @@ msgstr ""
 "SPF įrašas viršija 255 simbolių limitą. Padalinkite per kelis TXT įrašus."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
-msgid ""
-"Multiple \"all\" mechanisms found. Only the first one will be effective."
-msgstr ""
+msgid "Multiple \"all\" mechanisms found. Only the first one will be effective."
+msgstr "Rasta keletas \"visi\" mechanizmų. Tik pirmas bus veiksmingas."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -4899,7 +5038,8 @@ msgid ""
 "The ptr mechanism is not recommended due to performance issues (RFC 7208 "
 "Section 5.5)."
 msgstr ""
-"Ptr mechanizmas nerekomenduojamas dėl našumo problemų (RFC 7208 skyrius 5.5)."
+"Ptr mechanizmas nerekomenduojamas dėl našumo problemų (RFC 7208 skyrius "
+"5.5)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:261
 msgid ""
@@ -5016,16 +5156,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
-"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
-"=)."
+"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /,"
+" =)."
 msgstr ""
-"DHCID įrašas turi turėti tik teisingus base64 simbolius (A-Z, a-z, 0-9, "
-"+, /, =)."
+"DHCID įrašas turi turėti tik teisingus base64 simbolius (A-Z, a-z, 0-9, +, "
+"/, =)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
-"DHCID record has invalid base64 padding. Equals signs (=) should only appear "
-"at the end of the data."
+"DHCID record has invalid base64 padding. Equals signs (=) should only appear"
+" at the end of the data."
 msgstr ""
 "DHCID įrašas turi neteisingą base64 užpildą. Lygybės ženklai (=) turėtų "
 "atsirasti tik duomenų pabaigoje."
@@ -5047,14 +5187,14 @@ msgid ""
 "DHCID record is too short. The decoded data must contain at least 3 bytes "
 "(type codes and digest)."
 msgstr ""
-"DHCID įrašas per trumpas. Dekoduoti duomenys turi turėti bent 3 baitus (tipo "
-"kodai ir santrauka)."
+"DHCID įrašas per trumpas. Dekoduoti duomenys turi turėti bent 3 baitus (tipo"
+" kodai ir santrauka)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
 msgid ""
-"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
-"4701 (0x0000, 0x0001, 0x0002)."
+"DHCID identifier type 0x%04X is not one of the standard types defined in RFC"
+" 4701 (0x0000, 0x0001, 0x0002)."
 msgstr ""
 "DHCID identifikatoriaus tipas 0x%04X nėra vienas iš standartinių tipų, "
 "apibrėžtų RFC 4701 (0x0000, 0x0001, 0x0002)."
@@ -5062,8 +5202,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
-"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
-"4701."
+"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC"
+" 4701."
 msgstr ""
 "DHCID santraukos tipas %d nėra standartinis tipas (1 SHA-256), apibrėžtas "
 "RFC 4701."
@@ -5090,8 +5230,8 @@ msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
 msgstr ""
-"Apsvarstykite DNSSEC arba TSIG autentifikavimo (RFC 3007) naudojimą saugiems "
-"DHCID atnaujinimams, kaip rekomenduoja RFC 4701."
+"Apsvarstykite DNSSEC arba TSIG autentifikavimo (RFC 3007) naudojimą saugiems"
+" DHCID atnaujinimams, kaip rekomenduoja RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
@@ -5103,8 +5243,8 @@ msgstr "RRSIG įrašų prioriteto laukas turi būti 0 arba tuščias"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid ""
-"RRSIG records should only be created by your DNS server when signing a zone. "
-"Manual manipulation is not recommended."
+"RRSIG records should only be created by your DNS server when signing a zone."
+" Manual manipulation is not recommended."
 msgstr ""
 "RRSIG įrašai turėtų būti kuriami tik jūsų DNS serverio pasirašant zoną. "
 "Nerekomenduojama manipuliuoti rankiniu būdu."
@@ -5194,8 +5334,8 @@ msgid ""
 "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
 msgstr ""
-"Algoritmas 14 (ECDSA P-384 su SHA-384) suteikia stiprų saugumą su mažesniais "
-"parašais nei RSA."
+"Algoritmas 14 (ECDSA P-384 su SHA-384) suteikia stiprų saugumą su mažesniais"
+" parašais nei RSA."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid ""
@@ -5234,15 +5374,16 @@ msgstr "RRSIG originalaus TTL laukas turi būti skaitinė reikšmė."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:244
 msgid "RRSIG original TTL must be a valid positive integer."
-msgstr "RRSIG originalus TTL turi būti teisingas teigiamas sveikasis skaičius."
+msgstr ""
+"RRSIG originalus TTL turi būti teisingas teigiamas sveikasis skaičius."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid ""
-"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
-"are generally preferred for faster recovery in case of key compromise."
+"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs"
+" are generally preferred for faster recovery in case of key compromise."
 msgstr ""
-"Originalus TTL didesnis nei 1 diena (86400). DNSSEC įrašams paprastai geriau "
-"trumpesni TTL, kad greičiau atsigautų rakto kompromitavimo atveju."
+"Originalus TTL didesnis nei 1 diena (86400). DNSSEC įrašams paprastai geriau"
+" trumpesni TTL, kad greičiau atsigautų rakto kompromitavimo atveju."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
@@ -5283,8 +5424,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
 msgid ""
-"WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
-"resolvers until the inception time is reached."
+"WARNING: This signature is not yet valid. It will not be validated by DNSSEC"
+" resolvers until the inception time is reached."
 msgstr ""
 "ĮSPĖJIMAS: Šis parašas dar negalioja. Jis nebus validuojamas DNSSEC "
 "resolverių, kol bus pasiektas pradžios laikas."
@@ -5295,8 +5436,8 @@ msgid ""
 "recommended practices. Long validity periods increase vulnerability in case "
 "of key compromise."
 msgstr ""
-"Parašo galiojimo laikotarpis viršija 90 dienų, kas ilgiau nei rekomenduojama "
-"praktika. Ilgi galiojimo laikotarpiai didina pažeidžiamumą rakto "
+"Parašo galiojimo laikotarpis viršija 90 dienų, kas ilgiau nei rekomenduojama"
+" praktika. Ilgi galiojimo laikotarpiai didina pažeidžiamumą rakto "
 "kompromitavimo atveju."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:295
@@ -5331,8 +5472,8 @@ msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
 msgstr ""
-"Parašas neatrodo kaip teisingi base64 koduoti duomenys. RRSIG parašai turėtų "
-"būti base64 koduoti."
+"Parašas neatrodo kaip teisingi base64 koduoti duomenys. RRSIG parašai turėtų"
+" būti base64 koduoti."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:330
 msgid ""
@@ -5344,8 +5485,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
 msgid ""
-"Remember that RRSIG records must be regenerated before their expiration date "
-"to maintain DNSSEC validation."
+"Remember that RRSIG records must be regenerated before their expiration date"
+" to maintain DNSSEC validation."
 msgstr ""
 "Prisiminkite, kad RRSIG įrašai turi būti perdaryti prieš jų galiojimo "
 "pabaigos datą, kad išlaikytų DNSSEC validaciją."
@@ -5356,8 +5497,8 @@ msgstr "RP įrašų prioriteto laukas turi būti 0 arba tuščias"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:129
 msgid ""
-"RP records were defined in RFC 1183 (1990) and are not widely used in modern "
-"DNS configurations."
+"RP records were defined in RFC 1183 (1990) and are not widely used in modern"
+" DNS configurations."
 msgstr ""
 "RP įrašai apibrėžti RFC 1183 (1990) ir nėra plačiai naudojami šiuolaikinėse "
 "DNS konfigūracijose."
@@ -5367,7 +5508,8 @@ msgid ""
 "Consider including other contact methods besides RP records for critical "
 "domains."
 msgstr ""
-"Apsvarstykite kitų kontaktų metodų įtraukimą be RP įrašų kritiniams domenams."
+"Apsvarstykite kitų kontaktų metodų įtraukimą be RP įrašų kritiniams "
+"domenams."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:131
 msgid "Type code for RP records is 17."
@@ -5442,8 +5584,8 @@ msgstr "Pašto dėžutės domenas atstovauja el. pašto adresą: %s"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
-"RP mailbox domain part contains underscores, which are not allowed in domain "
-"names."
+"RP mailbox domain part contains underscores, which are not allowed in domain"
+" names."
 msgstr ""
 "RP pašto dėžutės domeno dalis turi pabraukimų, kurie neleidžiami domenų "
 "varduose."
@@ -5536,8 +5678,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
-"This appears to be an IPv6 interface identifier (has the universal/local bit "
-"flipped compared to standard EUI-64)."
+"This appears to be an IPv6 interface identifier (has the universal/local bit"
+" flipped compared to standard EUI-64)."
 msgstr ""
 "Tai atrodo kaip IPv6 sąsajos identifikatorius (turi universal/local bitą "
 "apverstą, palyginti su standartiniu EUI-64)."
@@ -5669,8 +5811,8 @@ msgid ""
 "DNAME creates synthetic aliases for all subdomains of its owner name. "
 "Consider this carefully when planning your zone structure."
 msgstr ""
-"DNAME sukuria sintetinius slapyvardžius visiems savininko vardo podomėniams. "
-"Atsargiai apsvarstykite tai planuojant zonos struktūrą."
+"DNAME sukuria sintetinius slapyvardžius visiems savininko vardo podomėniams."
+" Atsargiai apsvarstykite tai planuojant zonos struktūrą."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:101
 msgid ""
@@ -5694,7 +5836,8 @@ msgstr "DS įrašų prioriteto laukas turi būti 0 arba tuščias."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
-"DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
+"DS record must be in the format: <key-tag> <algorithm> <digest-type> "
+"<digest>"
 msgstr ""
 "DS įrašas turi būti formatu: <rakto-žymė> <algoritmas> <santraukos-tipas> "
 "<santrauka>"
@@ -5730,14 +5873,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
-msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
+msgid ""
+"%s (algorithm %d) is optional for implementation according to RFC 8624."
 msgstr "%s (algoritmas %d) yra pasirenkamas implementacijai pagal RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
-"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
-"using ECDSAP256SHA256 (13) or ED25519 (15) instead."
+"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider"
+" using ECDSAP256SHA256 (13) or ED25519 (15) instead."
 msgstr ""
 "%s (algoritmas %d) NEREKOMENDUOJAMAS naudojimui pagal RFC 8624. "
 "Apsvarstykite ECDSAP256SHA256 (13) arba ED25519 (15) naudojimą vietoj to."
@@ -5757,17 +5901,17 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
-"SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
-"8624."
+"SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC"
+" 8624."
 msgstr ""
-"SHA-256 (santraukos tipas 2) yra REKOMENDUOJAMAS santraukos algoritmas pagal "
-"RFC 8624."
+"SHA-256 (santraukos tipas 2) yra REKOMENDUOJAMAS santraukos algoritmas pagal"
+" RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
 "SHA-384 (digest type 4) is a good choice for higher security requirements, "
-"but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
-"support."
+"but SHA-256 (digest type 2) is sufficient for most deployments and has wider"
+" support."
 msgstr ""
 "SHA-384 (santraukos tipas 4) yra geras pasirinkimas aukštesniems saugumo "
 "reikalavimams, bet SHA-256 (santraukos tipas 2) pakanka daugumai diegimų ir "
@@ -5787,8 +5931,8 @@ msgstr "SHA-384 santrauka turi būti tiksliai 96 šešioliktainiai simboliai"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:266
 msgid ""
-"DS records establish a chain of trust from parent to child zones. The parent "
-"zone must have this DS record, and the child zone must have the "
+"DS records establish a chain of trust from parent to child zones. The parent"
+" zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
 msgstr ""
 "DS įrašai nustato pasitikėjimo grandinę nuo tėvinių zonų iki vaikiškių. "
@@ -5797,24 +5941,24 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
-"CSYNC records should only be placed at the zone apex (RFC 7477). This record "
-"may not be processed by parental agents."
+"CSYNC records should only be placed at the zone apex (RFC 7477). This record"
+" may not be processed by parental agents."
 msgstr ""
 "CSYNC įrašai turėtų būti patalpinti tik zonos viršūnėje (RFC 7477). Šis "
 "įrašas gali būti neapdorotas tėvinių agentų."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
-"CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
-"7477). Ensure your zone is properly signed with DNSSEC."
+"CSYNC records require DNSSEC signing to be processed by parental agents (RFC"
+" 7477). Ensure your zone is properly signed with DNSSEC."
 msgstr ""
 "CSYNC įrašai reikalauja DNSSEC pasirašymo, kad būtų apdoroti tėvinių agentų "
 "(RFC 7477). Užtikrinkite, kad jūsų zona tinkamai pasirašyta su DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
-"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
-"cause unexpected behavior."
+"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may"
+" cause unexpected behavior."
 msgstr ""
 "Tik vienas CSYNC įrašas turėtų egzistuoti zonoje (RFC 7477). Keli įrašai "
 "gali sukelti netikėtą elgesį."
@@ -5824,8 +5968,8 @@ msgid ""
 "No flags are set in this CSYNC record. The record may not be processed "
 "immediately by parental agents."
 msgstr ""
-"Šiame CSYNC įraše nenustatytos jokios vėliavos. Įrašas gali būti neapdorotas "
-"tuoj pat tėvinių agentų."
+"Šiame CSYNC įraše nenustatytos jokios vėliavos. Įrašas gali būti neapdorotas"
+" tuoj pat tėvinių agentų."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:142
 msgid ""
@@ -5861,7 +6005,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
-msgstr "Neteisingos vėliavos CSYNC įraše. Vėliavos turi būti skaitinė reikšmė."
+msgstr ""
+"Neteisingos vėliavos CSYNC įraše. Vėliavos turi būti skaitinė reikšmė."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:208
 msgid "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
@@ -5869,15 +6014,16 @@ msgstr "Neteisingos vėliavos CSYNC įraše. Vėliavos turi būti tarp 0 ir 6553
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
-"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
-"values are 0, 1, 2, or 3."
+"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid"
+" values are 0, 1, 2, or 3."
 msgstr ""
 "Neteisingos vėliavos CSYNC įraše. Tik 0-1 bitai apibrėžti (reikšmės 0-3). "
 "Teisingos reikšmės yra 0, 1, 2 arba 3."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
-"CSYNC record must specify at least one record type in the Type Bit Map field."
+"CSYNC record must specify at least one record type in the Type Bit Map "
+"field."
 msgstr "CSYNC įrašas turi nurodyti bent vieną įrašo tipą Type Bit Map lauke."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:244
@@ -5895,7 +6041,8 @@ msgstr "Dubliuojamas tipas \""
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:262
 msgid ""
 "NS record synchronization requires careful consideration. Parent zones may "
-"have specific NS record policies that can prevent successful synchronization."
+"have specific NS record policies that can prevent successful "
+"synchronization."
 msgstr ""
 "NS įrašų sinchronizacija reikalauja atsargaus apsvarstytimo. Tėvinės zonos "
 "gali turėti specifinę NS įrašų politiką, kuri gali užkirsti kelią sėkmingai "
@@ -5913,8 +6060,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:269
 msgid ""
-"RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
-"type cannot be synchronized, no changes will be made by the parent."
+"RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any"
+" type cannot be synchronized, no changes will be made by the parent."
 msgstr ""
 "RFC 7477 reikalauja \"viskas arba nieko\" metodo CSYNC apdorojimui. Jei bet "
 "kuris tipas negali būti sinchronizuotas, jokių pakeitimų nedarys tėvas."
@@ -5936,8 +6083,8 @@ msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
 msgstr ""
-"EUI48 įrašas naudoja dvitaškio skirtukus (xx:xx:xx:xx:xx:xx), bet reikalauja "
-"brūkšnelio skirtukų (xx-xx-xx-xx-xx-xx)."
+"EUI48 įrašas naudoja dvitaškio skirtukus (xx:xx:xx:xx:xx:xx), bet reikalauja"
+" brūkšnelio skirtukų (xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
@@ -5949,7 +6096,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
-"EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
+"EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-"
+"xx."
 msgstr ""
 "EUI48 įrašas atrodo Cisco formatu. Formatas turi būti xx-xx-xx-xx-xx-xx."
 
@@ -5982,8 +6130,8 @@ msgid ""
 "Priority field for PTR records should be 0 or empty. The specified value "
 "will be ignored."
 msgstr ""
-"PTR įrašų prioriteto laukas turėtų būti 0 arba tuščias. Nurodyta reikšmė bus "
-"ignoruojama."
+"PTR įrašų prioriteto laukas turėtų būti 0 arba tuščias. Nurodyta reikšmė bus"
+" ignoruojama."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:166
 msgid ""
@@ -6033,32 +6181,34 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
 msgid "IP address list cannot be empty."
-msgstr ""
+msgstr "IP adresų sąrašas negali būti tuščias."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
-msgstr ""
+msgstr "Netinkamas IPv6 adresas %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
-msgstr ""
+msgstr "Netinkamas prievado numeris: %d (turi būti 1-65535)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
 msgstr ""
+"Netinkamas serverio formatas: %s (tikėtasi IP:prievadas arba "
+"[IPv6]:prievadas)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
-msgstr ""
+msgstr "Netinkamas IPv4 adresas %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
 #, php-format
 msgid "Invalid IP address: %s"
-msgstr ""
+msgstr "Netinkamas IP adresas: %s"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
@@ -6167,47 +6317,57 @@ msgstr "Duotas hostname arba viena iš žymių per trumpa ar per ilga."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:128
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
-msgstr ""
+msgstr "Keli pasvirukai skirtingose etiketėse nėra leidžiami ARPA zonose."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
 msgstr ""
+"Netinkamas RFC 2317 formatas. Naudokite formatą: potinklis/prefiksas (pvz., "
+"0/26)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
-msgstr ""
+msgstr "Netinkamas potinklio numeris RFC 2317 žymėjime. Turi būti 0-255 IPv4."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:159
 msgid ""
-"Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
+"Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for "
+"IPv6."
 msgstr ""
+"Netinkamas potinklis RFC 2317 žymėjime. Turi būti šešioliktainis (0-9, a-f) "
+"IPv6."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
 msgstr ""
+"Netinkamas potinklis RFC 2317 žymėjime. Turi būti skaitmeninis arba "
+"šešioliktainis."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
-msgstr ""
+msgstr "Netinkamas prefikso ilgis RFC 2317 žymėjime. Turi būti skaitmeninis."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:184
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
 msgstr ""
+"Netinkamas IPv4 prefikso ilgis RFC 2317. Paprastai 24-32 (beklasė delegacija"
+" paprastai 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 msgstr ""
+"Potinklis %d nėra sulygiuotas su prefiksu /%d. Turėtų būti kartotinis %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
 msgid "Invalid IPv6 prefix length. Must be 0-128."
-msgstr ""
+msgstr "Netinkamas IPv6 prefikso ilgis. Turi būti 0-128."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:209
 msgid "Invalid prefix length. Must be 0-128."
-msgstr ""
+msgstr "Netinkamas prefikso ilgis. Turi būti 0-128."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:217
 msgid "Given hostname has too many slashes."
@@ -6219,8 +6379,8 @@ msgstr "Naudojate neteisingą aukščiausiojo lygio domeną."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
+"SOA validation parameters not set. Call setSOAParams() first or provide them"
+" as arguments."
 msgstr ""
 "SOA validacijos parametrai nenustatyti. Pirmiau iškvieskite setSOAParams() "
 "arba pateikite juos kaip argumentus."
@@ -6256,8 +6416,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:231
 msgid ""
-"Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
-"This is allowed but not recommended."
+"Serial number appears to use YYYYMMDDnn format but contains an invalid date."
+" This is allowed but not recommended."
 msgstr ""
 "Serijos numeris atrodo naudojantis YYYYMMDDnn formatą, bet turi neteisingą "
 "datą. Tai leidžiama, bet nerekomenduojama."
@@ -6318,10 +6478,8 @@ msgid "SVCB priority must be between 0 and 65535."
 msgstr "SVCB prioritetas turi būti tarp 0 ir 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
-msgid ""
-"SVCB target must be either \".\" (for Service Mode) or a valid hostname."
-msgstr ""
-"SVCB tikslas turi būti arba \".\" (Service Mode) arba teisingas hostname."
+msgid "SVCB target must be either \".\" (for Service Mode) or a valid hostname."
+msgstr "SVCB tikslas turi būti arba \".\" (Service Mode) arba teisingas hostname."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid ""
@@ -6357,8 +6515,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid ""
-"Multiple CNAME records with the same name are not allowed. This would create "
-"a DNS violation."
+"Multiple CNAME records with the same name are not allowed. This would create"
+" a DNS violation."
 msgstr ""
 "Keli CNAME įrašai su tuo pačiu vardu neleidžiami. Tai sukurtų DNS pažeidimą."
 
@@ -6376,8 +6534,8 @@ msgid ""
 "This record conflicts with an existing CNAME record with the same name. A "
 "CNAME record cannot coexist with other record types."
 msgstr ""
-"Šis įrašas konfliktuoja su egzistuojančiu CNAME įrašu tuo pačiu vardu. CNAME "
-"įrašas negali egzistuoti su kitais įrašų tipais."
+"Šis įrašas konfliktuoja su egzistuojančiu CNAME įrašu tuo pačiu vardu. CNAME"
+" įrašas negali egzistuoti su kitais įrašų tipais."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
@@ -6392,8 +6550,8 @@ msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
 msgstr ""
-"SMIMEA įrašo vardas yra formatu: SHA256(vietinė-dalis)._smimecert.domain.tld "
-"el. pašto adresams kaip vietinė-dalis@domain.tld"
+"SMIMEA įrašo vardas yra formatu: SHA256(vietinė-dalis)._smimecert.domain.tld"
+" el. pašto adresams kaip vietinė-dalis@domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -6405,8 +6563,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
-"Invalid value for priority field. SMIMEA records must have priority value of "
-"0."
+"Invalid value for priority field. SMIMEA records must have priority value of"
+" 0."
 msgstr ""
 "Neteisinga prioriteto lauko reikšmė. SMIMEA įrašai turi turėti prioriteto "
 "reikšmę 0."
@@ -6445,12 +6603,14 @@ msgid ""
 "validation path. Ensure this CA is publicly known and trusted."
 msgstr ""
 "PKIX-TA naudojimas (0) reikalauja, kad CA sertifikatas būtų sertifikato "
-"validacijos kelyje. Užtikrinkite, kad šis CA yra viešai žinomas ir patikimas."
+"validacijos kelyje. Užtikrinkite, kad šis CA yra viešai žinomas ir "
+"patikimas."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:214
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
-"PKIX validation rules. Ensure proper intermediate certificates are available."
+"PKIX validation rules. Ensure proper intermediate certificates are "
+"available."
 msgstr ""
 "PKIX-EE naudojimas (1) reikalauja, kad galutinio objekto sertifikatas būtų "
 "validuotas naudojant PKIX validacijos taisykles. Užtikrinkite, kad tinkamas "
@@ -6468,8 +6628,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
-"DANE-EE usage (3) is recommended as it provides the simplest deployment with "
-"direct certificate usage without additional validation."
+"DANE-EE usage (3) is recommended as it provides the simplest deployment with"
+" direct certificate usage without additional validation."
 msgstr ""
 "DANE-EE naudojimas (3) rekomenduojamas, nes suteikia paprasčiausią diegimą "
 "su tiesioginiu sertifikato naudojimu be papildomos validacijos."
@@ -6484,8 +6644,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
-"Selector 0 (Full certificate) means the entire certificate is matched. Using "
-"selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
+"Selector 0 (Full certificate) means the entire certificate is matched. Using"
+" selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
 "flexibility for certificate renewals."
 msgstr ""
 "Selektorius 0 (Pilnas sertifikatas) reiškia, kad atitinkamas visas "
@@ -6512,8 +6672,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
-"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
-"recommended for better performance and compatibility."
+"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is"
+" recommended for better performance and compatibility."
 msgstr ""
 "Atitikimo tipas 0 (Tikslus atitikimas) naudoja žaliavos sertifikato "
 "duomenis. SHA-256 (tipas 1) rekomenduojamas geresniam našumui ir "
@@ -6521,7 +6681,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
-"Matching type 1 (SHA-256) provides a good balance of security and efficiency."
+"Matching type 1 (SHA-256) provides a good balance of security and "
+"efficiency."
 msgstr ""
 "Atitikimo tipas 1 (SHA-256) suteikia gerą saugumo ir efektyvumo pusiausvyrą."
 
@@ -6555,16 +6716,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
-"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
-"be widely supported."
+"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not"
+" be widely supported."
 msgstr ""
 "ĮSPĖJIMAS: SMIMEA (RFC 8162) šiuo metu yra EKSPERIMENTINIS protokolas ir "
 "gali būti neplaičiai palaikomas."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
-"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, "
-"SMIMEA offers NO security benefit."
+"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC,"
+" SMIMEA offers NO security benefit."
 msgstr ""
 "KRITINIS: SMIMEA įrašai REIKALAUJA DNSSEC saugumui. Be DNSSEC, SMIMEA "
 "nesuteikia JOKIOS saugumo naudos."
@@ -6579,8 +6740,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
-"L64 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+"L64 records should only be used with the Identifier-Locator Network Protocol"
+" (ILNP)."
 msgstr ""
 "L64 įrašai turėtų būti naudojami tik su Identifier-Locator Network Protocol "
 "(ILNP)."
@@ -6641,12 +6802,14 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:179
 msgid "Each hexadecimal group in L64 locator must be 4 or fewer characters."
 msgstr ""
-"Kiekviena šešioliktainė grupė L64 lokatoriuje turi būti 4 ar mažiau simbolių."
+"Kiekviena šešioliktainė grupė L64 lokatoriuje turi būti 4 ar mažiau "
+"simbolių."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:86
 msgid ""
 "CDNSKEY records are typically published at the zone apex, not in subdomains."
-msgstr "CDNSKEY įrašai paprastai skelbiami zonos viršūnėje, o ne podomėniuose."
+msgstr ""
+"CDNSKEY įrašai paprastai skelbiami zonos viršūnėje, o ne podomėniuose."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:121
 msgid "Priority field for CDNSKEY records must be 0 or empty"
@@ -6705,8 +6868,8 @@ msgid ""
 "Algorithm 8 (RSASHA256) is being replaced with ECDSAP256SHA256 (13) due to "
 "shorter key and signature size, resulting in smaller DNS packets."
 msgstr ""
-"Algoritmas 8 (RSASHA256) keičiamas ECDSAP256SHA256 (13) dėl trumpesnio rakto "
-"ir parašo dydžio, sukuriant mažesnius DNS paketus."
+"Algoritmas 8 (RSASHA256) keičiamas ECDSAP256SHA256 (13) dėl trumpesnio rakto"
+" ir parašo dydžio, sukuriant mažesnius DNS paketus."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:208
 msgid ""
@@ -6804,8 +6967,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
-"LUA record contains potentially dangerous system access functions. These are "
-"likely to be blocked by PowerDNS security restrictions."
+"LUA record contains potentially dangerous system access functions. These are"
+" likely to be blocked by PowerDNS security restrictions."
 msgstr ""
 "LUA įrašas turi potencialiai pavojingas sistemos prieigos funkcijas. Jos "
 "tikėtinai bus blokuojamos PowerDNS saugumo apribojimų."
@@ -6835,8 +6998,8 @@ msgid ""
 "SSHFP record must contain algorithm, fingerprint-type and fingerprint "
 "separated by spaces."
 msgstr ""
-"SSHFP įrašas turi turėti algoritmą, pirštų atspaudo tipą ir pirštų atspaudą, "
-"atskirtus tarpais."
+"SSHFP įrašas turi turėti algoritmą, pirštų atspaudo tipą ir pirštų atspaudą,"
+" atskirtus tarpais."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:179
 msgid ""
@@ -6848,8 +7011,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
-"DSA keys are considered weak and are deprecated in many SSH implementations. "
-"Consider using RSA, Ed25519, or Ed448 instead."
+"DSA keys are considered weak and are deprecated in many SSH implementations."
+" Consider using RSA, Ed25519, or Ed448 instead."
 msgstr ""
 "DSA raktai laikomi silpnais ir yra pasenę daugelyje SSH implementacijų. "
 "Apsvarstykite RSA, Ed25519 ar Ed448 naudojimą vietoj to."
@@ -6884,11 +7047,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
-"SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
-"than SHA-1."
+"SHA-256 fingerprints are recommended by RFC 6594 and provide better security"
+" than SHA-1."
 msgstr ""
-"SHA-256 pirštų atspaudai rekomenduojami RFC 6594 ir suteikia geresnį saugumą "
-"nei SHA-1."
+"SHA-256 pirštų atspaudai rekomenduojami RFC 6594 ir suteikia geresnį saugumą"
+" nei SHA-1."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
 msgid "SSHFP fingerprint must be a hexadecimal string."
@@ -6905,19 +7068,20 @@ msgstr "SSHFP SHA-256 pirštų atspaudas turi būti 64 simbolių ilgio."
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
-"benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
-"attacks."
+"benefits. Without DNSSEC, they offer no protection against man-in-the-middle"
+" attacks."
 msgstr ""
 "KRITINIS: SSHFP įrašai REIKALAUJA DNSSEC validacijos bet kokiai saugumo "
-"naudai. Be DNSSEC jie nesuteikia jokios apsaugos nuo man-in-the-middle atakų."
+"naudai. Be DNSSEC jie nesuteikia jokios apsaugos nuo man-in-the-middle "
+"atakų."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
-"Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
-"for server verification."
+"Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records"
+" for server verification."
 msgstr ""
-"Sukonfigūruokite SSH klientus su \"VerifyHostKeyDNS yes\", kad naudotų SSHFP "
-"įrašus serverio patikrinimui."
+"Sukonfigūruokite SSH klientus su \"VerifyHostKeyDNS yes\", kad naudotų SSHFP"
+" įrašus serverio patikrinimui."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
@@ -6937,8 +7101,8 @@ msgstr "MR įrašo turinys turi būti teisingas domeno vardas."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:121
 msgid ""
-"MR record content (new mailbox) should be a fully qualified domain name (end "
-"with a dot)."
+"MR record content (new mailbox) should be a fully qualified domain name (end"
+" with a dot)."
 msgstr ""
 "MR įrašo turinys (nauja pašto dėžutė) turėtų būti pilnas domeno vardas "
 "(baigtis tašku)."
@@ -6948,8 +7112,8 @@ msgid ""
 "The new mailbox is the same as the old mailbox. MR records are intended for "
 "redirecting to a different mailbox."
 msgstr ""
-"Nauja pašto dėžutė tokia pati kaip sena. MR įrašai skirti nukreipimui į kitą "
-"pašto dėžutę."
+"Nauja pašto dėžutė tokia pati kaip sena. MR įrašai skirti nukreipimui į kitą"
+" pašto dėžutę."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:142
 msgid "Priority field for MR records must be 0 or empty."
@@ -6972,8 +7136,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:148
 msgid ""
-"The MR record indicates that the mail user has moved from the old mailbox to "
-"the new mailbox."
+"The MR record indicates that the mail user has moved from the old mailbox to"
+" the new mailbox."
 msgstr ""
 "MR įrašas rodo, kad pašto naudotojas persikėlė iš senos pašto dėžutės į "
 "naują."
@@ -6996,8 +7160,8 @@ msgstr "KEY įrašai gali būti nepalaikomi visų DNS serverių ir resolverių."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:141
 msgid ""
-"Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be "
-"used."
+"Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be"
+" used."
 msgstr ""
 "Algoritmas 1 (RSA/MD5) laikomas kriptografiškai silpnu ir neturėtų būti "
 "naudojamas."
@@ -7144,8 +7308,8 @@ msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
 msgstr ""
-"DMARC klaidų ataskaitos parinkčių žymė (fo) turi turėti tik 0, 1, d, s, arba "
-"dvitaškiais atskirtus derinius"
+"DMARC klaidų ataskaitos parinkčių žymė (fo) turi turėti tik 0, 1, d, s, arba"
+" dvitaškiais atskirtus derinius"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
@@ -7201,6 +7365,7 @@ msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
 msgstr ""
+"TXT įrašo turinys viršija maksimalų %d baitų ilgį. Sumažinkite turinio dydį."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
@@ -7216,6 +7381,8 @@ msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
 msgstr ""
+"Bendras TXT įrašo turinys viršija maksimalų %d baitų ilgį. Sumažinkite "
+"turinio dydį."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
@@ -7232,8 +7399,8 @@ msgstr "Neteisingas IPv4 adreso formatas."
 msgid ""
 "Invalid value for priority field. A records must have priority value of 0."
 msgstr ""
-"Neteisinga prioriteto lauko reikšmė. A įrašai turi turėti prioriteto reikšmę "
-"0."
+"Neteisinga prioriteto lauko reikšmė. A įrašai turi turėti prioriteto reikšmę"
+" 0."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:95
 msgid ""
@@ -7269,8 +7436,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
-"CDS record must contain key-tag, algorithm, digest-type and digest separated "
-"by spaces."
+"CDS record must contain key-tag, algorithm, digest-type and digest separated"
+" by spaces."
 msgstr ""
 "CDS įrašas turi turėti rakto žymę, algoritmą, santraukos tipą ir santrauką, "
 "atskirtus tarpais."
@@ -7315,7 +7482,8 @@ msgstr ""
 "7344."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
-msgid "CDS records should only be placed at the zone apex (not on subdomains)."
+msgid ""
+"CDS records should only be placed at the zone apex (not on subdomains)."
 msgstr ""
 "CDS įrašai turėtų būti patalpinti tik zonos viršūnėje (ne podomėniuose)."
 
@@ -7329,16 +7497,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
-"L32 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+"L32 records should only be used with the Identifier-Locator Network Protocol"
+" (ILNP)."
 msgstr ""
 "L32 įrašai turėtų būti naudojami tik su Identifier-Locator Network Protocol "
 "(ILNP)."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
-"Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
-"in ILNP deployments."
+"Using private IP addresses (RFC 1918) as L32 locators may limit reachability"
+" in ILNP deployments."
 msgstr ""
 "Privačių IP adresų (RFC 1918) naudojimas kaip L32 lokatoriai gali apriboti "
 "pasiekiamumą ILNP diegimuose."
@@ -7372,8 +7540,8 @@ msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
 msgstr ""
-"L32 lokatorius negali naudoti transliuojamų ar nenurodytų adresų (0.0.0.0 ar "
-"255.255.255.255)."
+"L32 lokatorius negali naudoti transliuojamų ar nenurodytų adresų (0.0.0.0 ar"
+" 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
@@ -7397,8 +7565,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
-"Invalid protocol value in SRV record. Protocol must start with an underscore "
-"followed by alphanumeric characters."
+"Invalid protocol value in SRV record. Protocol must start with an underscore"
+" followed by alphanumeric characters."
 msgstr ""
 "Neteisinga protokolo reikšmė SRV įraše. Protokolas turi prasidėti "
 "pabraukimu, po kurio seka raidiniai skaitiniai simboliai."
@@ -7415,8 +7583,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
-"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
-"are _tcp and _udp."
+"Protocol \"%s\" is not in the list of well-known protocols. Common protocols"
+" are _tcp and _udp."
 msgstr ""
 "Protokolas \"%s\" nėra žinomų protokolų sąraše. Įprasti protokolai yra _tcp "
 "ir _udp."
@@ -7469,8 +7637,8 @@ msgstr "Neteisinga SRV įrašo prioriteto lauko reikšmė."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:85
 msgid ""
-"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
-"records."
+"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA"
+" records."
 msgstr ""
 "Nenurodyti (::) ar loopback (::1) IPv6 adresai neturėtų būti naudojami AAAA "
 "įrašuose."
@@ -7483,7 +7651,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
-"Invalid value for priority field. AAAA records must have priority value of 0."
+"Invalid value for priority field. AAAA records must have priority value of "
+"0."
 msgstr ""
 "Neteisinga prioriteto lauko reikšmė. AAAA įrašai turi turėti prioriteto "
 "reikšmę 0."
@@ -7593,19 +7762,19 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
-"This NSEC3 record contains both SOA and NS types, indicating it might be for "
-"a zone apex."
+"This NSEC3 record contains both SOA and NS types, indicating it might be for"
+" a zone apex."
 msgstr ""
 "Šis NSEC3 įrašas turi ir SOA, ir NS tipus, rodančius, kad gali būti zonos "
 "viršūnei."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
-"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
-"along with DNSKEY."
+"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present"
+" along with DNSKEY."
 msgstr ""
-"Zonos viršūnei naudojant NSEC3, NSEC3PARAM tipas paprastai turėtų būti kartu "
-"su DNSKEY."
+"Zonos viršūnei naudojant NSEC3, NSEC3PARAM tipas paprastai turėtų būti kartu"
+" su DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
 msgid "Invalid characters have been used in this record."
@@ -7701,15 +7870,16 @@ msgstr "NAPTR įrašas su regexp turi turėti \".\" kaip pakeitimą."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
-"and rs start with a letter and contain alphanumeric characters, hyphens, "
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol"
+" and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr ""
+"NAPTR paslauga turi sekti formatą: [protokolas][+rs][+rs]... kur protokolas "
+"ir rs prasideda raide ir turi tik raidinio skaitmeninius simbolius (maks 32 "
+"simboliai kiekvienam)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
-msgid ""
-"Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
-"other flags."
+msgid "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with other flags."
 msgstr ""
 "Terminalinės vėliavos \"S\", \"A\", \"U\" ir \"P\" neturėtų būti derinamos "
 "su kitomis vėliavomis."
@@ -7731,8 +7901,8 @@ msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
 msgstr ""
-"NAPTR regexp vėliavos (po trečio skirtuko) turėtų turėti tik \"i\" arba būti "
-"tuščios."
+"NAPTR regexp vėliavos (po trečio skirtuko) turėtų turėti tik \"i\" arba būti"
+" tuščios."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:414
 msgid ""
@@ -7846,8 +8016,8 @@ msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
 msgstr ""
-"Algoritmas %d NEGALI būti implementuotas pagal RFC 8624. Ši reikšmė neturėtų "
-"būti naudojama."
+"Algoritmas %d NEGALI būti implementuotas pagal RFC 8624. Ši reikšmė neturėtų"
+" būti naudojama."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -7924,62 +8094,69 @@ msgid "You do not have permission to regenerate API keys."
 msgstr "Neturite leidimo perdaryti API raktų."
 
 #: lib/Domain/Service/ZoneValidationService.php:128
-msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
-msgstr ""
+msgid ""
+"No SOA record present, or active, in zone. This is required for DNSSEC."
+msgstr "Zonoje nėra SOA įrašo arba jis nėra aktyvus. Tai yra būtina DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:129
 msgid "Add an SOA record to the zone before attempting to sign it."
-msgstr ""
+msgstr "Pridėkite SOA įrašą į zoną prieš bandydami ją pasirašyti."
 
 #: lib/Domain/Service/ZoneValidationService.php:135
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
 msgstr ""
+"Zona turi %d SOA įrašų. Tik vienas SOA įrašas leidžiamas vienai zonai."
 
 #: lib/Domain/Service/ZoneValidationService.php:136
 msgid "Remove duplicate SOA records, keeping only one."
-msgstr ""
+msgstr "Pašalinkite pasikartojančius SOA įrašus, palikdami tik vieną."
 
 #: lib/Domain/Service/ZoneValidationService.php:147
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr ""
+msgstr "SOA įrašas ne viršūnėje. Rastas \"%s\", bet zona yra \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:148
 msgid "Move the SOA record to the zone apex."
-msgstr ""
+msgstr "Perkelkite SOA įrašą į zonos viršūnę."
 
 #: lib/Domain/Service/ZoneValidationService.php:158
 msgid "SOA record has invalid content format."
-msgstr ""
+msgstr "SOA įrašas turi netinkamą turinio formatą."
 
 #: lib/Domain/Service/ZoneValidationService.php:159
 msgid ""
 "SOA format should be: primary-ns hostmaster serial refresh retry expire "
 "minimum"
 msgstr ""
+"SOA formatas turėtų būti: pirminis-ns hostmaster serijos atnaujinimas "
+"pakartojimas galiojimas minimumas"
 
 #: lib/Domain/Service/ZoneValidationService.php:218
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
 msgstr ""
+"Zona neturi NS (vardų serverio) įrašų viršūnėje. Bent vienas viršūnės NS "
+"įrašas yra būtinas DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:219
 msgid "Add NS records at the zone apex for your authoritative name servers."
 msgstr ""
+"Pridėkite NS įrašus zonos viršūnėje savo autoritatiniams vardų serveriams."
 
 #: lib/Domain/Service/ZoneValidationService.php:265
 msgid "DNSSEC signing cannot proceed due to the following errors:"
-msgstr ""
+msgstr "DNSSEC pasirašymas negali tęstis dėl šių klaidų:"
 
 #: lib/Domain/Service/ZoneValidationService.php:287
 msgid "Additionally, the following warnings were found:"
-msgstr ""
+msgstr "Be to, rasti šie įspėjimai:"
 
 #: lib/Domain/Service/ZoneValidationService.php:289
 msgid "The following warnings were found:"
-msgstr ""
+msgstr "Rasti šie įspėjimai:"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -8063,8 +8240,8 @@ msgstr "SVARBU: Išsaugokite savo naują API raktą dabar!"
 
 #: templates/modern/api_key_regenerated.html:17
 msgid ""
-"This is the only time your new API key will be displayed. Please save it now "
-"as you won't be able to see it again."
+"This is the only time your new API key will be displayed. Please save it now"
+" as you won't be able to see it again."
 msgstr ""
 "Tai vienintelis kartas, kai jūsų naujas API raktas bus rodomas. Išsaugokite "
 "jį dabar, nes nebegalėsite jo pamatyti."
@@ -8171,8 +8348,8 @@ msgstr "Ketinate įjungti DNSSEC raktą (ID"
 
 #: templates/modern/dnssec_edit_key.html:53
 msgid ""
-"Activating this key will make it part of the active DNSSEC signing chain for "
-"this zone."
+"Activating this key will make it part of the active DNSSEC signing chain for"
+" this zone."
 msgstr ""
 "Šio rakto įjungimas padarys jį aktyvios DNSSEC pasirašymo grandinės dalimi "
 "šiai zonai."
@@ -8217,7 +8394,8 @@ msgstr "Redaguoti API raktą"
 msgid "Name"
 msgstr "Vardas"
 
-#: templates/default/api_key_edit.html:22 templates/modern/api_key_edit.html:22
+#: templates/default/api_key_edit.html:22
+#: templates/modern/api_key_edit.html:22
 msgid "Please provide a name for this API key"
 msgstr "Pateikite šio API rakto vardą"
 
@@ -8233,15 +8411,18 @@ msgstr "Baigiasi"
 msgid "Leave empty for a key that never expires"
 msgstr "Palikite tuščią raktui, kuris niekada nebaigiasi"
 
-#: templates/default/api_key_edit.html:35 templates/modern/api_key_edit.html:35
+#: templates/default/api_key_edit.html:35
+#: templates/modern/api_key_edit.html:35
 msgid "Disable this API key"
 msgstr "Išjungti šį API raktą"
 
-#: templates/default/api_key_edit.html:37 templates/modern/api_key_edit.html:37
+#: templates/default/api_key_edit.html:37
+#: templates/modern/api_key_edit.html:37
 msgid "Disabled keys cannot be used for authentication"
 msgstr "Išjungti raktai negali būti naudojami autentifikavimui"
 
-#: templates/default/api_key_edit.html:43 templates/modern/api_key_edit.html:43
+#: templates/default/api_key_edit.html:43
+#: templates/modern/api_key_edit.html:43
 msgid "Update API Key"
 msgstr "Atnaujinti API raktą"
 
@@ -8249,7 +8430,8 @@ msgstr "Atnaujinti API raktą"
 msgid "* Required fields"
 msgstr "* Privalomi laukai"
 
-#: templates/default/api_key_edit.html:59 templates/modern/api_key_edit.html:59
+#: templates/default/api_key_edit.html:59
+#: templates/modern/api_key_edit.html:59
 msgid "API Key Information"
 msgstr "API rakto informacija"
 
@@ -8261,7 +8443,8 @@ msgstr "Sukurta"
 msgid "Last used"
 msgstr "Paskutinį kartą naudotas"
 
-#: templates/default/api_key_edit.html:93 templates/modern/api_key_edit.html:93
+#: templates/default/api_key_edit.html:93
+#: templates/modern/api_key_edit.html:93
 msgid "Additional Actions"
 msgstr "Papildomi veiksmai"
 
@@ -8269,7 +8452,8 @@ msgstr "Papildomi veiksmai"
 msgid "Regenerate API Key"
 msgstr "Perdaryti API raktą"
 
-#: templates/default/api_key_edit.html:99 templates/modern/api_key_edit.html:99
+#: templates/default/api_key_edit.html:99
+#: templates/modern/api_key_edit.html:99
 msgid "Creates a new key, invalidating the old one"
 msgstr "Sukuria naują raktą, panaikinant senąjį"
 
@@ -8345,8 +8529,8 @@ msgstr "Pateikite savo zonos įrašo turinį"
 #: templates/modern/add_record.html:93
 msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
-"and may cause issues. SOA and NS records are required at the domain root and "
-"cannot coexist with CNAME."
+"and may cause issues. SOA and NS records are required at the domain root and"
+" cannot coexist with CNAME."
 msgstr ""
 "Įspėjimas: CNAME įrašai domeno šaknyje (zonos viršūnė) nerekomenduojami ir "
 "gali sukelti problemų. SOA ir NS įrašai reikalingi domeno šaknyje ir negali "
@@ -8448,7 +8632,8 @@ msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/modern/add_zone_templ_record.html:176
 msgid ""
-"MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
+"MX for Microsoft 365: "
+"<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 msgstr ""
 "MX Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
@@ -8500,7 +8685,8 @@ msgstr "Įveskite serverio vardą, kaip jis atrodo NS įraše"
 msgid "Provide host name"
 msgstr "Pateikite serverio vardą"
 
-#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:281
+#: templates/modern/delete_supermaster.html:36
+#: templates/modern/header.html:281
 msgid "Account"
 msgstr "Paskyra"
 
@@ -8527,7 +8713,8 @@ msgstr "Atnaujinti prisijungimo duomenis"
 #: templates/modern/edit_supermaster.html:92
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Galite keisti šio supermasteio IP adresą, serverio vardą arba paskyrą."
+msgstr ""
+"Galite keisti šio supermasteio IP adresą, serverio vardą arba paskyrą."
 
 #: templates/modern/edit_supermaster.html:95
 msgid "Important"
@@ -8867,15 +9054,15 @@ msgstr "Keisti slaptažodį"
 
 #: templates/modern/header.html:293
 msgid "Preferences"
-msgstr ""
+msgstr "Nuostatos"
 
 #: templates/default/index.html:288 templates/modern/index.html:235
 msgid "Customize your interface settings"
-msgstr ""
+msgstr "Pritaikykite savo sąsajos nustatymus"
 
 #: templates/default/index.html:290
 msgid "User preferences"
-msgstr ""
+msgstr "Vartotojo nuostatos"
 
 #: templates/modern/list_perm_templ.html:4
 msgid "Users"
@@ -9189,23 +9376,23 @@ msgstr "Zonos"
 
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
-msgstr ""
+msgstr "DNS vedlys"
 
 #: templates/modern/dns_wizard_form.html:15 templates/modern/edit.html:204
 msgid "Wizard"
-msgstr ""
+msgstr "Vedlys"
 
 #: templates/modern/dns_wizard_form.html:26
 msgid "Warning: Please Review Before Proceeding"
-msgstr ""
+msgstr "Įspėjimas: peržiūrėkite prieš tęsdami"
 
 #: templates/modern/dns_wizard_form.html:200
 msgid "Create Record"
-msgstr ""
+msgstr "Sukurti įrašą"
 
 #: templates/modern/dns_wizard_form.html:203
 msgid "Back to Wizard Selection"
-msgstr ""
+msgstr "Grįžti į vedlio pasirinkimą"
 
 #: templates/default/delete_user.html:5 templates/modern/delete_user.html:5
 msgid "Delete user"
@@ -9287,7 +9474,8 @@ msgstr "Priimtinas naudojimas"
 #: templates/modern/user_agreement_content.html:6
 msgid ""
 "You will use this system responsibly and in accordance with applicable laws"
-msgstr "Naudositės šia sistema atsakingai ir laikydamiesi galiojančių įstatymų"
+msgstr ""
+"Naudositės šia sistema atsakingai ir laikydamiesi galiojančių įstatymų"
 
 #: templates/modern/user_agreement_content.html:7
 msgid "You will not attempt to gain unauthorized access to other users' data"
@@ -9345,8 +9533,8 @@ msgstr "Atsakomybės apribojimas"
 
 #: templates/modern/user_agreement_content.html:23
 msgid ""
-"This system is provided \"as is\" without any warranties. The administrators "
-"are not liable for any damages or losses resulting from the use of this "
+"This system is provided \"as is\" without any warranties. The administrators"
+" are not liable for any damages or losses resulting from the use of this "
 "system."
 msgstr ""
 "Ši sistema teikiama \"kaip yra\" be jokių garantijų. Administratoriai nėra "
@@ -9714,7 +9902,8 @@ msgstr "Turi turėti specialius simbolius"
 msgid "No specific password requirements"
 msgstr "Nėra specifinių slaptažodžio reikalavimų"
 
-#: templates/modern/add_user.html:160 templates/modern/edit_perm_templ.html:141
+#: templates/modern/add_user.html:160
+#: templates/modern/edit_perm_templ.html:141
 msgid "User Permissions"
 msgstr "Naudotojo leidimai"
 
@@ -9931,8 +10120,8 @@ msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
 msgstr ""
-"Supermaster yra PowerDNS autoritatyvus serveris, kuris automatiškai perduoda "
-"naujas zonas savo slave serveriams."
+"Supermaster yra PowerDNS autoritatyvus serveris, kuris automatiškai perduoda"
+" naujas zonas savo slave serveriams."
 
 #: templates/modern/add_supermaster.html:87
 msgid "How it works"
@@ -9985,7 +10174,7 @@ msgstr "Pamiršote slaptažodį?"
 
 #: templates/default/login.html:86 templates/modern/login.html:86
 msgid "Forgot your username?"
-msgstr ""
+msgstr "Pamiršote savo vartotojo vardą?"
 
 #: templates/modern/batch_ptr_record.html:39
 msgid "IP Version"
@@ -10057,8 +10246,8 @@ msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A records in the specified domain"
 msgstr ""
-"Kai pažymėta, PTR įrašai bus sukurti tik IP adresams, kurie turi atitinkamus "
-"A įrašus nurodytame domene"
+"Kai pažymėta, PTR įrašai bus sukurti tik IP adresams, kurie turi atitinkamus"
+" A įrašus nurodytame domene"
 
 #: templates/modern/batch_ptr_record.html:112
 msgid "Create PTR Records"
@@ -10090,8 +10279,8 @@ msgstr "Tik atitinkantys"
 
 #: templates/modern/batch_ptr_record.html:143
 msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward "
-"zone"
+"Creates PTR records only for IPs that have existing A records in the forward"
+" zone"
 msgstr ""
 "Sukuria PTR įrašus tik IP adresams, kurie turi esamus A įrašus tiesioginėje "
 "zonoje"
@@ -10153,11 +10342,11 @@ msgstr ""
 
 #: templates/modern/batch_ptr_record.html:183
 msgid ""
-"Use the Host Prefix field to add a prefix to all hostnames when creating all "
-"IPs"
+"Use the Host Prefix field to add a prefix to all hostnames when creating all"
+" IPs"
 msgstr ""
-"Naudokite serverio prefikso lauką, kad pridėtumėte prefiksą visiems serverių "
-"vardams kuriant visus IP"
+"Naudokite serverio prefikso lauką, kad pridėtumėte prefiksą visiems serverių"
+" vardams kuriant visus IP"
 
 #: templates/modern/batch_ptr_record.html:184
 msgid ""
@@ -10168,7 +10357,8 @@ msgstr ""
 "sukurtumėte atitinkamus tiesioginius įrašus (išjungta naudojant atitikimo "
 "režimą)"
 
-#: templates/modern/edit_zone_templ.html:97 templates/modern/add_record.html:18
+#: templates/modern/edit_zone_templ.html:97
+#: templates/modern/add_record.html:18
 msgid "Add record"
 msgstr "Pridėti įrašą"
 
@@ -10214,27 +10404,31 @@ msgstr "Ne, palikti šį šabloną"
 
 #: templates/modern/dns_wizard_select.html:14
 msgid "DNS Record Wizard"
-msgstr ""
+msgstr "DNS įrašo vedlys"
 
 #: templates/modern/dns_wizard_select.html:21
 msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
 msgstr ""
+"Pasirinkite vedlį, kuris padės sukurti sudėtingus DNS įrašus su "
+"vadovaujamomis formomis vietoj rankinio teksto įvedimo."
 
 #: templates/modern/dns_wizard_select.html:27
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
 msgstr ""
+"DNS vedliai sukurti tiesioginėms zonoms ir gali būti netinkami atvirkštinėms"
+" zonoms."
 
 #: templates/modern/dns_wizard_select.html:59
 msgid "Recommended"
-msgstr ""
+msgstr "Rekomenduojama"
 
 #: templates/modern/dns_wizard_select.html:71
 msgid "Back"
-msgstr ""
+msgstr "Atgal"
 
 #: templates/modern/api_key_add.html:5 templates/modern/api_key_add.html:13
 msgid "Add API Key"
@@ -10255,10 +10449,11 @@ msgstr "Sukurti API raktą"
 #: templates/default/api_key_add.html:52 templates/modern/api_key_add.html:52
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
-"sure to save it in a secure place, as you won't be able to retrieve it later."
+"sure to save it in a secure place, as you won't be able to retrieve it "
+"later."
 msgstr ""
-"Sukūrę naują API raktą, jis bus parodytas tik VIENĄ kartą. Įsitikinkite, kad "
-"išsaugojote jį saugioje vietoje, nes vėliau jo atkurti nebegalėsite."
+"Sukūrę naują API raktą, jis bus parodytas tik VIENĄ kartą. Įsitikinkite, kad"
+" išsaugojote jį saugioje vietoje, nes vėliau jo atkurti nebegalėsite."
 
 #: templates/default/api_key_add.html:53 templates/modern/api_key_add.html:53
 msgid "If you lose the key, you'll need to regenerate it."
@@ -10274,11 +10469,11 @@ msgstr "Pridėti naują įrašą"
 
 #: templates/modern/edit.html:203 templates/modern/edit.html:545
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
-msgstr ""
+msgstr "Vadovaujami vedliai DMARC, SPF, DKIM, CAA, TLSA ir SRV įrašams"
 
 #: templates/modern/edit.html:29 templates/modern/edit.html:546
 msgid "Record Wizard"
-msgstr ""
+msgstr "Įrašo vedlys"
 
 #: templates/modern/edit.html:33 templates/modern/edit.html:550
 msgid "Multi-record mode"
@@ -10402,7 +10597,7 @@ msgstr "iš viso įrašų"
 
 #: templates/default/edit.html:494 templates/modern/edit.html:494
 msgid "Edit selected"
-msgstr ""
+msgstr "Redaguoti pasirinktus"
 
 #: templates/modern/edit.html:498 templates/modern/search.html:478
 msgid "Delete record(s)"
@@ -10470,11 +10665,11 @@ msgstr "Pridėti naudotoją"
 
 #: templates/default/users.html:28 templates/modern/users.html:28
 msgid "Auth Type"
-msgstr ""
+msgstr "Autentifikavimo tipas"
 
 #: templates/modern/users.html:69 templates/modern/users.html:111
 msgid "SQL"
-msgstr ""
+msgstr "SQL"
 
 #: templates/modern/users.html:71 templates/modern/users.html:113
 msgid "LDAP"
@@ -10482,11 +10677,11 @@ msgstr "LDAP"
 
 #: templates/modern/users.html:73 templates/modern/users.html:115
 msgid "OIDC"
-msgstr ""
+msgstr "OIDC"
 
 #: templates/modern/users.html:75 templates/modern/users.html:117
 msgid "SAML"
-msgstr ""
+msgstr "SAML"
 
 #: templates/modern/list_template_zones.html:16
 msgid "Total number of zones:"
@@ -10513,7 +10708,8 @@ msgid "Record Details"
 msgstr "Įrašo išsamiau"
 
 #: templates/modern/delete_record.html:74
-msgid "You are trying to delete a record that is needed for this zone to work."
+msgid ""
+"You are trying to delete a record that is needed for this zone to work."
 msgstr "Bandote ištrinti įrašą, kuris reikalingas šios zonos veikimui."
 
 #: templates/modern/delete_record.html:85
@@ -10580,8 +10776,8 @@ msgstr "Įveskite teisingą atkūrimo kodą."
 msgid ""
 "Enter one of your recovery codes. Note that each code can only be used once."
 msgstr ""
-"Įveskite vieną iš savo atkūrimo kodų. Atkreipkite dėmesį, kad kiekvieną kodą "
-"galima naudoti tik vieną kartą."
+"Įveskite vieną iš savo atkūrimo kodų. Atkreipkite dėmesį, kad kiekvieną kodą"
+" galima naudoti tik vieną kartą."
 
 #: templates/modern/database_consistency.html:7
 msgid "Confirm Delete"
@@ -10681,17 +10877,19 @@ msgstr "Ar esate tikri, kad norite pašalinti šį elementą?"
 
 #: templates/modern/forgot_username.html:4
 msgid "Forgot Username"
-msgstr ""
+msgstr "Pamiršote vartotojo vardą"
 
 #: templates/modern/forgot_username.html:21
 msgid ""
 "Enter your email address and we'll send you the username associated with "
 "this account."
 msgstr ""
+"Įveskite savo el. pašto adresą ir mes atsiųsime jums su šia paskyra susietą "
+"vartotojo vardą."
 
 #: templates/modern/forgot_username.html:41
 msgid "Send Username"
-msgstr ""
+msgstr "Siųsti vartotojo vardą"
 
 #: templates/modern/add_user.html:13 templates/modern/add_user.html:112
 msgid "Add User"
@@ -10793,8 +10991,8 @@ msgid ""
 "A master zone is a zone for which this PowerDNS server is the primary "
 "authority. You can add, edit and delete records in master zones."
 msgstr ""
-"Master zona yra zona, kuriai šis PowerDNS serveris yra pirminis autoritetas. "
-"Master zonose galite pridėti, redaguoti ir pašalinti įrašus."
+"Master zona yra zona, kuriai šis PowerDNS serveris yra pirminis autoritetas."
+" Master zonose galite pridėti, redaguoti ir pašalinti įrašus."
 
 #: templates/modern/add_zone_master.html:110
 msgid ""
@@ -11177,7 +11375,8 @@ msgstr "Įveskite po vieną domeno pavadinimą eilutėje domenų lauke"
 
 #: templates/modern/bulk_registration.html:104
 msgid "Select a zone template to apply standard records to all zones"
-msgstr "Pasirinkite zonos šabloną standartiniams įrašams taikyti visoms zonoms"
+msgstr ""
+"Pasirinkite zonos šabloną standartiniams įrašams taikyti visoms zonoms"
 
 #: templates/modern/bulk_registration.html:105
 msgid "The chosen owner will have full access to all created zones"
@@ -11244,9 +11443,10 @@ msgstr "Ištrinti įrašus"
 
 #: templates/modern/delete_records.html:27
 msgid ""
-"Are you sure you want to delete the following records? This action cannot be "
-"undone."
-msgstr "Ar tikrai norite ištrinti šiuos įrašus? Šio veiksmo negalima atšaukti."
+"Are you sure you want to delete the following records? This action cannot be"
+" undone."
+msgstr ""
+"Ar tikrai norite ištrinti šiuos įrašus? Šio veiksmo negalima atšaukti."
 
 #: templates/modern/delete_records.html:78
 msgid "Also delete corresponding PTR records (if they exist)"
@@ -11290,8 +11490,8 @@ msgstr "Išsaugokite atkūrimo kodus"
 
 #: templates/modern/mfa_recovery_codes.html:30
 msgid ""
-"Recovery codes can be used to access your account if you lose access to your "
-"authenticator device. Each code can only be used once."
+"Recovery codes can be used to access your account if you lose access to your"
+" authenticator device. Each code can only be used once."
 msgstr ""
 "Atkūrimo kodai gali būti naudojami prisijungti prie paskyros, jei prarasite "
 "prieigą prie autentifikavimo įrenginio. Kiekvieną kodą galima naudoti tik "
@@ -11370,8 +11570,8 @@ msgstr "Autentifikavimo programa"
 
 #: templates/default/mfa_setup.html:61 templates/modern/mfa_setup.html:61
 msgid ""
-"Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
-"or Authy."
+"Use an authenticator app like Google Authenticator, Microsoft Authenticator,"
+" or Authy."
 msgstr ""
 "Naudokite autentifikavimo programą kaip Google Authenticator, Microsoft "
 "Authenticator arba Authy."
@@ -11417,16 +11617,16 @@ msgid ""
 "Email verification is not available because mail service is not enabled on "
 "this system."
 msgstr ""
-"El. pašto patvirtinimas neprieinamas, nes šioje sistemoje nėra įjungta pašto "
-"tarnyba."
+"El. pašto patvirtinimas neprieinamas, nes šioje sistemoje nėra įjungta pašto"
+" tarnyba."
 
 #: templates/default/mfa_setup.html:94 templates/modern/mfa_setup.html:94
 msgid ""
 "You need to set your email address in your profile before you can use email "
 "verification."
 msgstr ""
-"Turite nustatyti el. pašto adresą savo profilyje, kad galėtumėte naudoti el. "
-"pašto patvirtinimą."
+"Turite nustatyti el. pašto adresą savo profilyje, kad galėtumėte naudoti el."
+" pašto patvirtinimą."
 
 #: templates/default/mfa_setup.html:99 templates/modern/mfa_setup.html:99
 msgid "Set up email verification"
@@ -11505,87 +11705,87 @@ msgstr "Ne, palikti šią zoną"
 
 #: templates/modern/user_preferences.html:4 templates/modern/header.html:349
 msgid "User Preferences"
-msgstr ""
+msgstr "Vartotojo nuostatos"
 
 #: templates/modern/user_preferences.html:17
 msgid "Display Settings"
-msgstr ""
+msgstr "Rodymo nustatymai"
 
 #: templates/modern/user_preferences.html:22
 msgid "Items per page"
-msgstr ""
+msgstr "Elementų puslapyje"
 
 #: templates/modern/user_preferences.html:36
 msgid "Zone Options"
-msgstr ""
+msgstr "Zonos parinktys"
 
 #: templates/modern/user_preferences.html:42
 msgid "Zone serial numbers"
-msgstr ""
+msgstr "Zonos serijų numeriai"
 
 #: templates/modern/user_preferences.html:43
 msgid "Display serial numbers in zone lists"
-msgstr ""
+msgstr "Rodyti serijų numerius zonų sąrašuose"
 
 #: templates/modern/user_preferences.html:51
 msgid "Display template information in zone lists"
-msgstr ""
+msgstr "Rodyti šablonų informaciją zonų sąrašuose"
 
 #: templates/modern/user_preferences.html:64
 msgid "Interface Behavior"
-msgstr ""
+msgstr "Sąsajos elgsena"
 
 #: templates/modern/user_preferences.html:69
 msgid "Record form"
-msgstr ""
+msgstr "Įrašo forma"
 
 #: templates/modern/user_preferences.html:78
 msgid "Save buttons"
-msgstr ""
+msgstr "Išsaugojimo mygtukai"
 
 #: templates/modern/user_preferences.html:88
 msgid "Edit Zone View"
-msgstr ""
+msgstr "Redaguoti zonos rodinį"
 
 #: templates/modern/user_preferences.html:93
 msgid "Show record ID"
-msgstr ""
+msgstr "Rodyti įrašo ID"
 
 #: templates/modern/user_preferences.html:94
 msgid "Display record ID column in edit view"
-msgstr ""
+msgstr "Rodyti įrašo ID stulpelį redagavimo rodinyje"
 
 #: templates/modern/user_preferences.html:101
 msgid "Show add record form"
-msgstr ""
+msgstr "Rodyti įrašo pridėjimo formą"
 
 #: templates/modern/user_preferences.html:102
 msgid "Display inline add record form in edit view"
-msgstr ""
+msgstr "Rodyti įterptą įrašo pridėjimo formą redagavimo rodinyje"
 
 #: templates/modern/user_preferences.html:109
 msgid "Show edit buttons"
-msgstr ""
+msgstr "Rodyti redagavimo mygtukus"
 
 #: templates/modern/user_preferences.html:110
 msgid "Display individual edit button per record"
-msgstr ""
+msgstr "Rodyti atskirą redagavimo mygtuką kiekvienam įrašui"
 
 #: templates/modern/user_preferences.html:117
 msgid "Show delete buttons"
-msgstr ""
+msgstr "Rodyti ištrynimo mygtukus"
 
 #: templates/modern/user_preferences.html:118
 msgid "Display individual delete button per record"
-msgstr ""
+msgstr "Rodyti atskirą ištrynimo mygtuką kiekvienam įrašui"
 
 #: templates/modern/user_preferences.html:133
 msgid "Save Preferences"
-msgstr ""
+msgstr "Išsaugoti nuostatas"
 
 #: templates/modern/user_preferences.html:139
 msgid "Changes will be applied after saving"
-msgstr ""
+msgstr "Pakeitimai bus pritaikyti po išsaugojimo"
 
 #: templates/default/search.html:14 templates/modern/search.html:14
 msgid "DNS Search"
@@ -11745,8 +11945,8 @@ msgstr ""
 
 #: templates/modern/add_zone_slave.html:95
 msgid ""
-"Make sure that this PowerDNS server is allowed to transfer the zone from the "
-"master server. The master server must have an allow-transfer or similar "
+"Make sure that this PowerDNS server is allowed to transfer the zone from the"
+" master server. The master server must have an allow-transfer or similar "
 "configuration permitting zone transfers to this server's IP address."
 msgstr ""
 "Įsitikinkite, kad šis PowerDNS serveris gali gauti zoną iš pagrindinio "
@@ -11876,13 +12076,13 @@ msgstr "Pasirinktiniai šablonai"
 
 #: templates/modern/email_previews.html:88
 msgid ""
-"You can create custom email templates by placing them in <code>templates/"
-"emails/custom/</code> to override these standard templates with your own "
-"designs."
+"You can create custom email templates by placing them in "
+"<code>templates/emails/custom/</code> to override these standard templates "
+"with your own designs."
 msgstr ""
 "Galite sukurti pasirinktiniai el. pašto šablonus patalpinant juos "
-"<code>templates/emails/custom/</code>, kad perrašytumėte šiuos standartinius "
-"šablonus savo dizainu."
+"<code>templates/emails/custom/</code>, kad perrašytumėte šiuos standartinius"
+" šablonus savo dizainu."
 
 #: templates/modern/email_previews.html:93
 msgid "About Email Previews"
@@ -11891,7 +12091,8 @@ msgstr "Apie el. pašto peržiūras"
 #: templates/modern/email_previews.html:95
 msgid "Previews use sample data to demonstrate email appearance"
 msgstr ""
-"Peržiūros naudoja pavyzdinius duomenis, kad pademonstruotų el. pašto išvaizdą"
+"Peržiūros naudoja pavyzdinius duomenis, kad pademonstruotų el. pašto "
+"išvaizdą"
 
 #: templates/modern/email_previews.html:96
 msgid "Light mode is the default appearance for most email clients"
@@ -11901,8 +12102,8 @@ msgstr "Šviesusis režimas yra numatytoji išvaizda daugumui el. pašto klient�
 msgid ""
 "Dark mode preview shows how emails appear when users have dark mode enabled"
 msgstr ""
-"Tamsiojo režimo peržiūra rodo, kaip el. paštai atrodo, kai naudotojai įjungę "
-"tamsųjį režimą"
+"Tamsiojo režimo peržiūra rodo, kaip el. paštai atrodo, kai naudotojai įjungę"
+" tamsųjį režimą"
 
 #: templates/modern/email_previews.html:98
 msgid "These previews reflect the actual templates used in production"
@@ -11964,42 +12165,51 @@ msgstr "Veikimo laikas"
 msgid "Server information is not available."
 msgstr "Serverio informacija nepasiekiama."
 
-#: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:101
+#: templates/default/pdns_status.html:101
+#: templates/modern/pdns_status.html:101
 msgid "Slave Servers"
 msgstr "Antriniai serveriai"
 
-#: templates/default/pdns_status.html:104 templates/modern/pdns_status.html:104
+#: templates/default/pdns_status.html:104
+#: templates/modern/pdns_status.html:104
 msgid ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
+"Showing connectivity status for DNS servers listed in the supermasters "
+"table."
 msgstr ""
 "Rodoma ryšio būsena DNS serveriams, išvardytiems supermasterių lentelėje."
 
-#: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:114
+#: templates/default/pdns_status.html:114
+#: templates/modern/pdns_status.html:114
 msgid "Server IP"
 msgstr "Serverio IP"
 
-#: templates/default/pdns_status.html:116 templates/modern/pdns_status.html:116
+#: templates/default/pdns_status.html:116
+#: templates/modern/pdns_status.html:116
 msgid "Last Checked"
 msgstr "Paskutinis patikrinimas"
 
-#: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:125
-#: install/templates/step2.html.twig:27
+#: templates/default/pdns_status.html:125
+#: templates/modern/pdns_status.html:125 install/templates/step2.html.twig:27
 msgid "OK"
 msgstr "Gerai"
 
-#: templates/default/pdns_status.html:127 templates/modern/pdns_status.html:127
+#: templates/default/pdns_status.html:127
+#: templates/modern/pdns_status.html:127
 msgid "Unreachable"
 msgstr "Nepasiekiamas"
 
-#: templates/default/pdns_status.html:129 templates/modern/pdns_status.html:129
+#: templates/default/pdns_status.html:129
+#: templates/modern/pdns_status.html:129
 msgid "Error"
 msgstr "Klaida"
 
-#: templates/default/pdns_status.html:160 templates/modern/pdns_status.html:160
+#: templates/default/pdns_status.html:160
+#: templates/modern/pdns_status.html:160
 msgid "Server Statistics"
 msgstr "Serverio statistika"
 
-#: templates/default/pdns_status.html:170 templates/modern/pdns_status.html:170
+#: templates/default/pdns_status.html:170
+#: templates/modern/pdns_status.html:170
 msgid "Server Health"
 msgstr "Serverio sveikata"
 
@@ -12007,39 +12217,48 @@ msgstr "Serverio sveikata"
 msgid "Unknown"
 msgstr "Nežinoma"
 
-#: templates/default/pdns_status.html:198 templates/modern/pdns_status.html:198
+#: templates/default/pdns_status.html:198
+#: templates/modern/pdns_status.html:198
 msgid "Latency"
 msgstr "Gaištis"
 
-#: templates/default/pdns_status.html:208 templates/modern/pdns_status.html:208
+#: templates/default/pdns_status.html:208
+#: templates/modern/pdns_status.html:208
 msgid "CPU Usage"
 msgstr "CPU naudojimas"
 
-#: templates/default/pdns_status.html:223 templates/modern/pdns_status.html:223
+#: templates/default/pdns_status.html:223
+#: templates/modern/pdns_status.html:223
 msgid "Query Statistics"
 msgstr "Užklausų statistika"
 
-#: templates/default/pdns_status.html:243 templates/modern/pdns_status.html:243
+#: templates/default/pdns_status.html:243
+#: templates/modern/pdns_status.html:243
 msgid "UDP Queries"
 msgstr "UDP užklausos"
 
-#: templates/default/pdns_status.html:260 templates/modern/pdns_status.html:260
+#: templates/default/pdns_status.html:260
+#: templates/modern/pdns_status.html:260
 msgid "TCP Queries"
 msgstr "TCP užklausos"
 
-#: templates/default/pdns_status.html:279 templates/modern/pdns_status.html:279
+#: templates/default/pdns_status.html:279
+#: templates/modern/pdns_status.html:279
 msgid "Cache Hits"
 msgstr "Talpyklos pataikimai"
 
-#: templates/default/pdns_status.html:296 templates/modern/pdns_status.html:296
+#: templates/default/pdns_status.html:296
+#: templates/modern/pdns_status.html:296
 msgid "Cache Misses"
 msgstr "Talpyklos praskojimai"
 
-#: templates/default/pdns_status.html:331 templates/modern/pdns_status.html:331
+#: templates/default/pdns_status.html:331
+#: templates/modern/pdns_status.html:331
 msgid "Toggle View"
 msgstr "Perjungti vaizdą"
 
-#: templates/default/pdns_status.html:336 templates/modern/pdns_status.html:336
+#: templates/default/pdns_status.html:336
+#: templates/modern/pdns_status.html:336
 msgid "Refresh"
 msgstr "Atnaujinti"
 
@@ -12047,15 +12266,18 @@ msgstr "Atnaujinti"
 msgid "Bytes"
 msgstr "Baitai"
 
-#: templates/default/pdns_status.html:410 templates/modern/pdns_status.html:410
+#: templates/default/pdns_status.html:410
+#: templates/modern/pdns_status.html:410
 msgid "Metric"
 msgstr "Metrika"
 
-#: templates/default/pdns_status.html:411 templates/modern/pdns_status.html:411
+#: templates/default/pdns_status.html:411
+#: templates/modern/pdns_status.html:411
 msgid "Value"
 msgstr "Reikšmė"
 
-#: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:465
+#: templates/default/pdns_status.html:465
+#: templates/modern/pdns_status.html:465
 msgid "No detailed metrics available."
 msgstr "Išsamios metrikos neprieinamos."
 
@@ -12170,8 +12392,8 @@ msgstr "Ruošiatės ištrinti API raktą"
 
 #: templates/modern/api_key_delete.html:18
 msgid ""
-"If you delete this API key, any applications using it will no longer be able "
-"to authenticate."
+"If you delete this API key, any applications using it will no longer be able"
+" to authenticate."
 msgstr ""
 "Jei ištrinsite šį API raktą, visos jį naudojančios programos nebegalės "
 "autentifikuotis."
@@ -12247,15 +12469,16 @@ msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
 msgstr ""
-"Aktyvaus rakto ištrynimas paveiks zonos saugumą ir gali sukelti patvirtinimo "
-"klaidas."
+"Aktyvaus rakto ištrynimas paveiks zonos saugumą ir gali sukelti patvirtinimo"
+" klaidas."
 
 #: templates/modern/dnssec_delete_key.html:39
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Ruošiatės ištrinti DNSSEC raktą (ID"
 
 #: templates/default/whois.html:26 templates/modern/whois.html:26
-msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
+msgid ""
+"Enter a domain name (e.g., example.com) to lookup its WHOIS information"
 msgstr ""
 "Įveskite domeno pavadinimą (pvz., example.com) WHOIS informacijos paieškai"
 
@@ -12312,7 +12535,9 @@ msgid ""
 "PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
 "If you select KSK or ZSK, PowerDNS may still create a CSK key."
 msgstr ""
-"PowerDNS 4.0 ir naujesnės versijos pagal numatytuosius nustatymus naudoja Combined Signing Keys (CSK). Jei pasirinksite KSK arba ZSK, PowerDNS vis tiek gali sukurti CSK raktą."
+"PowerDNS 4.0 ir naujesnės versijos pagal numatytuosius nustatymus naudoja "
+"Combined Signing Keys (CSK). Jei pasirinksite KSK arba ZSK, PowerDNS vis "
+"tiek gali sukurti CSK raktą."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -12566,7 +12791,8 @@ msgstr "Reikalavimų Patikrinimas:"
 #: install/templates/step2.html.twig:12
 msgid "Verifying that your server meets all requirements to run Poweradmin."
 msgstr ""
-"Tikrinama, ar jūsų serveris atitinka visus Poweradmin paleidimo reikalavimus."
+"Tikrinama, ar jūsų serveris atitinka visus Poweradmin paleidimo "
+"reikalavimus."
 
 #: install/templates/step2.html.twig:20
 msgid "PHP Version"
@@ -12774,8 +13000,8 @@ msgstr "Įdiegtus PowerDNS su sukurtomis duomenų bazės lentelėmis"
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
 msgstr ""
-"Duomenų bazės prisijungimo duomenis (serverio pavadinimas, vartotojo vardas, "
-"slaptažodis)"
+"Duomenų bazės prisijungimo duomenis (serverio pavadinimas, vartotojo vardas,"
+" slaptažodis)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
@@ -12811,7 +13037,8 @@ msgstr "Užsienio rakto apribojimo problemos:"
 
 #: install/helpers/InstallStepHandler.php:199
 msgid ""
-"The installer could not remove existing tables due to foreign key constraints"
+"The installer could not remove existing tables due to foreign key "
+"constraints"
 msgstr ""
 "Diegimo programa negalėjo pašalinti esamų lentelių dėl užsienio raktų "
 "apribojimų"
@@ -12876,8 +13103,8 @@ msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
 msgstr ""
-"SQLite duomenų bazės failas %s neegzistuoja. Prieš tęsdami sukurkite duomenų "
-"bazės failą."
+"SQLite duomenų bazės failas %s neegzistuoja. Prieš tęsdami sukurkite duomenų"
+" bazės failą."
 
 #: install/helpers/DatabaseHelper.php:168
 #, php-format
@@ -12929,13 +13156,13 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
 
 #~ msgid ""
-#~ "No configuration file found. Please use the <a href=\"install/"
-#~ "\">installer</a> to create one, or create a config/settings.php file "
-#~ "manually."
+#~ "No configuration file found. Please use the <a "
+#~ "href=\"install/\">installer</a> to create one, or create a "
+#~ "config/settings.php file manually."
 #~ msgstr ""
 #~ "Konfigūracijos failas nerastas. Naudokitės <a href=\"install/\">diegimo "
-#~ "programa</a> jo sukūrimui arba sukurkite config/settings.php failą "
-#~ "rankiniu būdu."
+#~ "programa</a> jo sukūrimui arba sukurkite config/settings.php failą rankiniu "
+#~ "būdu."
 
 #~ msgid "Invalid authentication provider"
 #~ msgstr "Neteisingas autentifikacijos tiekėjas"
@@ -12965,12 +13192,10 @@ msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
 
 #, php-format
 #~ msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-#~ msgstr ""
-#~ "IPv6 adresas nėra kanoniškoje formoje (RFC 5952). Kanoniška forma: %s"
+#~ msgstr "IPv6 adresas nėra kanoniškoje formoje (RFC 5952). Kanoniška forma: %s"
 
 #, php-format
-#~ msgid ""
-#~ "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
+#~ msgid "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
 #~ msgstr ""
 #~ "IP adresas \"%s\" neteisingas. Turi būti teisingas IPv4 arba IPv6 adresas."
 
@@ -12978,29 +13203,27 @@ msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
 #~ msgstr "HTML žymės neleidžiamos turinio lauke."
 
 #~ msgid ""
-#~ "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-#~ "less. For longer content, split into multiple quoted strings separated by "
-#~ "spaces."
+#~ "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or less. "
+#~ "For longer content, split into multiple quoted strings separated by spaces."
 #~ msgstr ""
 #~ "TXT įrašo eilutė viršija 255 baitus. TXT eilutės turi būti 255 baitų ar "
-#~ "mažiau. Ilgesniam turiniui padalinkite į kelias kabutėse esančias "
-#~ "eilutes, atskirtas tarpais."
+#~ "mažiau. Ilgesniam turiniui padalinkite į kelias kabutėse esančias eilutes, "
+#~ "atskirtas tarpais."
 
 #~ msgid ""
 #~ "NAPTR record must have either a regexp or a replacement (with \".\"), but "
 #~ "not both."
 #~ msgstr ""
-#~ "NAPTR įrašas turi turėti arba regexp, arba pakeitimą (su \".\"), bet ne "
-#~ "abu."
+#~ "NAPTR įrašas turi turėti arba regexp, arba pakeitimą (su \".\"), bet ne abu."
 
 #~ msgid ""
-#~ "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-#~ "protocol and rs start with a letter and contain only alphanumeric "
-#~ "characters (max 32 chars each)."
+#~ "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol"
+#~ " and rs start with a letter and contain only alphanumeric characters (max 32"
+#~ " chars each)."
 #~ msgstr ""
-#~ "NAPTR paslauga turi sekti formatą: [protokolas][+rs][+rs]... kur "
-#~ "protokolas ir rs prasideda raide ir turi tik raidinio skaitmeninius "
-#~ "simbolius (maks 32 simboliai kiekvienam)."
+#~ "NAPTR paslauga turi sekti formatą: [protokolas][+rs][+rs]... kur protokolas "
+#~ "ir rs prasideda raide ir turi tik raidinio skaitmeninius simbolius (maks 32 "
+#~ "simboliai kiekvienam)."
 
 #~ msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
 #~ msgstr ""
