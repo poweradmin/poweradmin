@@ -1295,6 +1295,7 @@ return array(
     'Poweradmin\\Infrastructure\\Utility\\SimpleSizeFormatter' => $baseDir . '/lib/Infrastructure/Utility/SimpleSizeFormatter.php',
     'Poweradmin\\Infrastructure\\Utility\\SortHelper' => $baseDir . '/lib/Infrastructure/Utility/SortHelper.php',
     'Poweradmin\\Infrastructure\\Utility\\UserAgentService' => $baseDir . '/lib/Infrastructure/Utility/UserAgentService.php',
+    'Poweradmin\\Infrastructure\\Web\\BadgeTwigExtension' => $baseDir . '/lib/Infrastructure/Web/BadgeTwigExtension.php',
     'Poweradmin\\LocaleManager' => $baseDir . '/lib/LocaleManager.php',
     'Poweradmin\\Module\\CsvExport\\Controller\\CsvExportController' => $baseDir . '/lib/Module/CsvExport/Controller/CsvExportController.php',
     'Poweradmin\\Module\\CsvExport\\CsvExportModule' => $baseDir . '/lib/Module/CsvExport/CsvExportModule.php',
