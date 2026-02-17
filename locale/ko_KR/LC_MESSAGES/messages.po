@@ -20,10 +20,12 @@ msgstr ""
 #: lib/AppInitializer.php:82
 #, php-format
 msgid ""
-"No configuration file found at %s. Please use the <a href=\"install/"
-"\">installer</a> to create one, or create the configuration file manually."
+"No configuration file found at %s. Please use the <a "
+"href=\"install/\">installer</a> to create one, or create the configuration "
+"file manually."
 msgstr ""
-"%s에서 구성 파일을 찾을 수 없습니다. <a href=\"install/\">설치 프로그램</a>을 사용하여 생성하거나 구성 파일을 수동으로 생성하십시오."
+"%s에서 구성 파일을 찾을 수 없습니다. <a href=\"install/\">설치 프로그램</a>을 사용하여 생성하거나 구성 파일을 "
+"수동으로 생성하십시오."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:134
 #, auto-english-fallback
@@ -43,14 +45,12 @@ msgid ""
 msgstr "기본 세션 암호화 키가 사용되고 있습니다. 구성 파일에서 설정하십시오."
 
 #: lib/BaseController.php:657
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "The %s field is required."
 msgstr "%s 필드는 필수입니다."
 
 #: lib/BaseController.php:665
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "The %s field must be a number."
 msgstr "%s 필드는 숫자여야 합니다."
 
@@ -81,8 +81,8 @@ msgstr "삭제할 레코드가 선택되지 않았습니다."
 
 #: lib/Application/Controller/DeleteRecordsController.php:192
 msgid ""
-"The record has been deleted successfully. Any corresponding PTR records were "
-"also removed."
+"The record has been deleted successfully. Any corresponding PTR records were"
+" also removed."
 msgstr "레코드가 성공적으로 삭제되었습니다. 해당하는 PTR 레코드도 함께 제거되었습니다."
 
 #: lib/Application/Controller/DeleteRecordsController.php:194
@@ -99,7 +99,8 @@ msgstr "레코드를 삭제할 수 없습니다. 권한을 확인하십시오."
 
 #: lib/Application/Controller/DeleteRecordsController.php:263
 msgid ""
-"No valid records selected for deletion or you lack permission to delete them."
+"No valid records selected for deletion or you lack permission to delete "
+"them."
 msgstr "삭제할 유효한 레코드가 선택되지 않았거나 삭제 권한이 없습니다."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:71
@@ -164,14 +165,14 @@ msgstr "레코드를 찾을 수 없습니다."
 
 #: lib/Application/Controller/DeleteRecordController.php:206
 msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
+"The record and its corresponding PTR and A/AAAA records were deleted but the"
+" comment was preserved because similar records exist."
 msgstr "레코드와 해당 PTR 및 A/AAAA 레코드가 삭제되었지만, 유사한 레코드가 존재하여 코멘트는 보존되었습니다."
 
 #: lib/Application/Controller/DeleteRecordController.php:208
 msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
+"The record and its corresponding PTR record were deleted but the comment was"
+" preserved because similar records exist."
 msgstr "레코드와 해당 PTR 레코드가 삭제되었지만, 유사한 레코드가 존재하여 코멘트는 보존되었습니다."
 
 #: lib/Application/Controller/DeleteRecordController.php:210
@@ -182,8 +183,8 @@ msgstr "레코드와 해당 A/AAAA 레코드가 삭제되었지만, 유사한 �
 
 #: lib/Application/Controller/DeleteRecordController.php:212
 msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
+"The record was deleted but the comment was preserved because similar records"
+" exist."
 msgstr "레코드가 삭제되었지만, 유사한 레코드가 존재하여 코멘트는 보존되었습니다."
 
 #: lib/Application/Controller/DeleteRecordController.php:216
@@ -436,7 +437,8 @@ msgstr "복구 코드를 재생성하려면 MFA가 활성화되어 있어야 합
 
 #: lib/Application/Controller/MfaSetupController.php:321
 #, auto-english-fallback
-msgid "Recovery codes have been regenerated. Please save them in a safe place."
+msgid ""
+"Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "복구 코드가 재생성되었습니다. 안전한 곳에 저장하십시오."
 
 #: lib/Application/Controller/ListSupermastersController.php:43
@@ -495,8 +497,7 @@ msgid "enabled"
 msgstr "활성화됨"
 
 #: lib/Application/Controller/ApiKeysController.php:356
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "API key %s successfully."
 msgstr "API 키가 성공적으로 %s되었습니다."
 
@@ -526,8 +527,7 @@ msgid "Record could not be added."
 msgstr "레코드를 추가할 수 없습니다."
 
 #: lib/Application/Controller/BulkRecordAddController.php:235
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d개의 레코드가 성공적으로 추가되었습니다."
 
@@ -592,8 +592,7 @@ msgid "The user has been created successfully."
 msgstr "사용자가 성공적으로 생성되었습니다."
 
 #: lib/Application/Controller/AddUserController.php:146
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Generated password: %s"
 msgstr "생성된 비밀번호: %s"
 
@@ -684,7 +683,8 @@ msgstr "새 존 템플릿을 생성할 권한이 없습니다."
 
 #: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:803
 #, auto-english-fallback
-msgid "Zone template with this name already exists, please choose another one."
+msgid ""
+"Zone template with this name already exists, please choose another one."
 msgstr "이 이름의 존 템플릿이 이미 존재합니다. 다른 이름을 선택하십시오."
 
 #: lib/Application/Controller/EditZoneTemplController.php:270
@@ -775,8 +775,7 @@ msgid "You do not have permission to perform WHOIS lookups."
 msgstr "WHOIS 조회를 수행할 권한이 없습니다."
 
 #: lib/Application/Controller/WhoisController.php:139
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "서버 %s을(를) 사용하여 WHOIS 정보를 가져오지 못했습니다"
 
@@ -831,7 +830,8 @@ msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
 msgstr ""
-"존 서명에 실패했습니다. 존 유효성 검사는 통과했지만, PowerDNS API에서 오류를 반환했습니다. 자세한 내용은 PowerDNS 로그를 확인하십시오."
+"존 서명에 실패했습니다. 존 유효성 검사는 통과했지만, PowerDNS API에서 오류를 반환했습니다. 자세한 내용은 PowerDNS "
+"로그를 확인하십시오."
 
 #: lib/Application/Controller/DnssecController.php:93
 #, auto-english-fallback
@@ -931,8 +931,8 @@ msgstr "오류가 발생했습니다. 다시 시도하십시오."
 
 #: lib/Application/Controller/MfaVerifyController.php:285
 msgid ""
-"Email verification is not available because mail service is disabled. Please "
-"use a recovery code."
+"Email verification is not available because mail service is disabled. Please"
+" use a recovery code."
 msgstr "메일 서비스가 비활성화되어 이메일 인증을 사용할 수 없습니다. 복구 코드를 사용하십시오."
 
 #: lib/Application/Controller/MfaVerifyController.php:295
@@ -967,14 +967,12 @@ msgid "No records were provided."
 msgstr "레코드가 제공되지 않았습니다."
 
 #: lib/Application/Controller/AddRecordController.php:448
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d개의 레코드가 성공적으로 추가되었습니다."
 
 #: lib/Application/Controller/AddRecordController.php:450
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d개의 레코드 추가에 실패했습니다."
 
@@ -1075,7 +1073,8 @@ msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
 msgstr ""
-"존이 생성되었지만, DNSSEC으로 보안 설정에 실패했습니다. 존 유효성 검사는 통과했지만, PowerDNS API에서 오류를 반환했습니다. 자세한 내용은 PowerDNS 로그를 확인하십시오."
+"존이 생성되었지만, DNSSEC으로 보안 설정에 실패했습니다. 존 유효성 검사는 통과했지만, PowerDNS API에서 오류를 "
+"반환했습니다. 자세한 내용은 PowerDNS 로그를 확인하십시오."
 
 #: lib/Application/Controller/AddZoneMasterController.php:177
 #, auto-english-fallback
@@ -1334,8 +1333,7 @@ msgid "You do not have permission to perform RDAP lookups."
 msgstr "RDAP 조회를 수행할 권한이 없습니다."
 
 #: lib/Application/Controller/RdapController.php:139
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "서버 %s을(를) 사용하여 RDAP 정보를 가져오지 못했습니다"
 
@@ -1576,7 +1574,8 @@ msgid ""
 "Please contact your administrator or change your password through your "
 "identity provider."
 msgstr ""
-"Single Sign-On으로 인증된 사용자는 여기서 비밀번호를 변경할 수 없습니다. 관리자에게 문의하거나 ID 공급자를 통해 비밀번호를 변경하십시오."
+"Single Sign-On으로 인증된 사용자는 여기서 비밀번호를 변경할 수 없습니다. 관리자에게 문의하거나 ID 공급자를 통해 비밀번호를"
+" 변경하십시오."
 
 #: lib/Application/Controller/ChangePasswordController.php:87
 msgid ""
@@ -1986,7 +1985,8 @@ msgid ""
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
 msgstr ""
-"TLSA 레코드는 이 존에 DNSSEC가 활성화되어 있어야 합니다. DNSSEC 없이 TLSA 레코드는 보안 이점을 제공하지 않으며 클라이언트에서 무시될 수 있습니다."
+"TLSA 레코드는 이 존에 DNSSEC가 활성화되어 있어야 합니다. DNSSEC 없이 TLSA 레코드는 보안 이점을 제공하지 않으며 "
+"클라이언트에서 무시될 수 있습니다."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:91
 #, auto-english-fallback
@@ -2184,7 +2184,9 @@ msgid ""
 "SHA-256: use \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey "
 "-pubin -outform DER | openssl dgst -sha256\""
 msgstr ""
-"16진수 해시 또는 전체 인증서 데이터 (일치 유형에 따라 다름). SHA-256의 경우: \"openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256\" 사용"
+"16진수 해시 또는 전체 인증서 데이터 (일치 유형에 따라 다름). SHA-256의 경우: \"openssl x509 -in "
+"cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst "
+"-sha256\" 사용"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:184
 #, auto-english-fallback
@@ -2234,8 +2236,8 @@ msgstr "인증서 데이터는 16진수여야 합니다 (0-9, a-f)"
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:259
 #, php-format
 msgid ""
-"SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
-"correct."
+"SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is"
+" correct."
 msgstr "SHA-256 해시는 64자리 16진수여야 하지만 %d자입니다. 해시가 올바른지 확인하세요."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:263
@@ -2262,7 +2264,8 @@ msgid ""
 "CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
 "DNSSEC, TLSA records provide NO security benefit."
 msgstr ""
-"중요: TLSA 레코드는 이 존에 DNSSEC가 활성화되어 있어야 합니다. DNSSEC 없이 TLSA 레코드는 보안 이점을 제공하지 않습니다."
+"중요: TLSA 레코드는 이 존에 DNSSEC가 활성화되어 있어야 합니다. DNSSEC 없이 TLSA 레코드는 보안 이점을 제공하지 "
+"않습니다."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:46
 #, auto-english-fallback
@@ -2667,8 +2670,8 @@ msgstr "실패 (승인되지 않은 이메일 거부)"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:152
 msgid ""
-"Policy for emails not matching any mechanism. Start with ~all (softfail) for "
-"testing."
+"Policy for emails not matching any mechanism. Start with ~all (softfail) for"
+" testing."
 msgstr "메커니즘과 일치하지 않는 이메일에 대한 정책. 테스트를 위해 ~all (softfail)로 시작하세요."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:289
@@ -2678,7 +2681,8 @@ msgid ""
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
 msgstr ""
-"SPF 레코드가 DNS 조회 제한을 초과했습니다 (%d/10). 이로 인해 SPF 검증이 실패합니다. 일부 include/a/mx 메커니즘을 제거하거나 ip4/ip6를 대신 사용하세요."
+"SPF 레코드가 DNS 조회 제한을 초과했습니다 (%d/10). 이로 인해 SPF 검증이 실패합니다. 일부 include/a/mx "
+"메커니즘을 제거하거나 ip4/ip6를 대신 사용하세요."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:294
 #, php-format
@@ -2686,29 +2690,28 @@ msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
 msgstr ""
-"SPF 레코드에 %d개의 DNS 조회가 있습니다 (제한은 10개). include 메커니즘 대신 ip4/ip6 사용을 고려하거나 포함을 통합하여 제한 내에 유지하세요."
+"SPF 레코드에 %d개의 DNS 조회가 있습니다 (제한은 10개). include 메커니즘 대신 ip4/ip6 사용을 고려하거나 포함을 "
+"통합하여 제한 내에 유지하세요."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:304
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Invalid IPv4 address or network: %s"
 msgstr "유효하지 않은 IPv4 주소 또는 네트워크: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:313
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Invalid IPv6 address or network: %s"
 msgstr "유효하지 않은 IPv6 주소 또는 네트워크: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:323
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Invalid include domain: %s"
 msgstr "유효하지 않은 포함 도메인: %s"
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:343
 msgid ""
-"No mechanisms selected. This SPF record will only contain the default action."
+"No mechanisms selected. This SPF record will only contain the default "
+"action."
 msgstr "선택한 메커니즘이 없습니다. 이 SPF 레코드에는 기본 조치만 포함됩니다."
 
 #: lib/Domain/Service/DnsWizard/SPFWizard.php:348
@@ -2754,8 +2757,7 @@ msgid "CA Domain (Custom)"
 msgstr "CA 도메인 (사용자 정의)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:92
-msgid ""
-"Enter the CA domain name manually (only shown when \"Custom\" is selected)"
+msgid "Enter the CA domain name manually (only shown when \"Custom\" is selected)"
 msgstr "CA 도메인 이름을 수동으로 입력 (\"사용자 정의\" 선택 시에만 표시됨)"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:97
@@ -2881,8 +2883,7 @@ msgid "Reporting URL is required for iodef tag"
 msgstr "iodef 태그에는 보고 URL이 필요합니다"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Reporting URL must start with %s, %s, or %s"
 msgstr "보고 URL은 %s, %s 또는 %s로 시작해야 합니다"
 
@@ -2896,7 +2897,8 @@ msgid ""
 "Critical flag (128) is set. Systems that do not understand CAA records will "
 "reject operations. Use 0 unless you have a specific requirement."
 msgstr ""
-"중요 플래그 (128)가 설정되었습니다. CAA 레코드를 이해하지 못하는 시스템은 작업을 거부합니다. 특정 요구 사항이 없으면 0을 사용하세요."
+"중요 플래그 (128)가 설정되었습니다. CAA 레코드를 이해하지 못하는 시스템은 작업을 거부합니다. 특정 요구 사항이 없으면 0을 "
+"사용하세요."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:46
 #, auto-english-fallback
@@ -2921,7 +2923,8 @@ msgid ""
 "the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your "
 "mail server (never share it)."
 msgstr ""
-"DKIM은 암호화 서명을 사용하여 이메일이 도메인에서 보낸 것임을 증명합니다. 메일 서버 (Postfix, Exim 등)에서 DKIM 키 쌍을 생성하세요. 이 DNS 레코드에는 공개 키만 들어갑니다. 개인 키는 메일 서버에 안전하게 보관하세요 (절대 공유하지 마세요)."
+"DKIM은 암호화 서명을 사용하여 이메일이 도메인에서 보낸 것임을 증명합니다. 메일 서버 (Postfix, Exim 등)에서 DKIM 키"
+" 쌍을 생성하세요. 이 DNS 레코드에는 공개 키만 들어갑니다. 개인 키는 메일 서버에 안전하게 보관하세요 (절대 공유하지 마세요)."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:68
 #, auto-english-fallback
@@ -2934,7 +2937,8 @@ msgid ""
 "\"202501\", or service name like \"google\"). Only alphanumeric characters, "
 "hyphens, and underscores allowed."
 msgstr ""
-"DKIM 키를 식별하는 선택자 (일반적으로 \"default\", \"202501\"과 같은 타임스탬프 또는 \"google\"과 같은 서비스 이름). 영숫자, 하이픈 및 밑줄만 허용됩니다."
+"DKIM 키를 식별하는 선택자 (일반적으로 \"default\", \"202501\"과 같은 타임스탬프 또는 \"google\"과 같은 "
+"서비스 이름). 영숫자, 하이픈 및 밑줄만 허용됩니다."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:81
 #, auto-english-fallback
@@ -2974,8 +2978,8 @@ msgstr "테스트 모드"
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:112
 msgid ""
-"Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
-"Use during initial deployment."
+"Enable testing mode (t=y). DKIM signatures will be present but not enforced."
+" Use during initial deployment."
 msgstr "테스트 모드 활성화 (t=y). DKIM 서명이 있지만 적용되지 않습니다. 초기 배포 중에 사용하세요."
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:116
@@ -3028,8 +3032,8 @@ msgstr "공개 키에 PEM 헤더 (BEGIN/END)가 포함되어 있습니다. 헤�
 
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:239
 msgid ""
-"Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
-"this once testing is complete."
+"Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable"
+" this once testing is complete."
 msgstr "테스트 모드가 활성화되었습니다 (t=y). DKIM 서명이 적용되지 않습니다. 테스트가 완료되면 이를 비활성화하세요."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:68
@@ -3105,8 +3109,8 @@ msgstr "대상 호스트 이름"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:144
 msgid ""
-"Hostname of the server providing this service (must be a hostname with an A/"
-"AAAA record, not an IP address)"
+"Hostname of the server providing this service (must be a hostname with an "
+"A/AAAA record, not an IP address)"
 msgstr "이 서비스를 제공하는 서버의 호스트 이름 (IP 주소가 아닌 A/AAAA 레코드가 있는 호스트 이름이어야 함)"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:154
@@ -3170,8 +3174,8 @@ msgstr "유효하지 않은 대상 호스트 이름 형식"
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:282
 msgid ""
-"Target must be a hostname, not an IP address. Create an A or AAAA record for "
-"the hostname first."
+"Target must be a hostname, not an IP address. Create an A or AAAA record for"
+" the hostname first."
 msgstr "대상은 IP 주소가 아닌 호스트 이름이어야 합니다. 먼저 호스트 이름에 대한 A 또는 AAAA 레코드를 생성하세요."
 
 #: lib/Domain/Service/DnsWizard/SRVWizard.php:295
@@ -3200,8 +3204,7 @@ msgid "All zones have owners"
 msgstr "모든 존에 소유자가 있습니다"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:81
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "%d zones found without owners"
 msgstr "소유자가 없는 %d개의 존이 발견되었습니다"
 
@@ -3211,8 +3214,7 @@ msgid "All slave zones have master IP addresses"
 msgstr "모든 슬레이브 존에 마스터 IP 주소가 있습니다"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:121
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "마스터 IP 주소가 없는 %d개의 슬레이브 존이 발견되었습니다"
 
@@ -3222,8 +3224,7 @@ msgid "All records belong to existing zones"
 msgstr "모든 레코드가 기존 존에 속합니다"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:164
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "%d orphaned records found"
 msgstr "%d개의 고아 레코드가 발견되었습니다"
 
@@ -3233,8 +3234,7 @@ msgid "No duplicate SOA records found"
 msgstr "중복 SOA 레코드가 발견되지 않았습니다"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:211
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d개의 존에 중복 SOA 레코드가 있습니다"
 
@@ -3244,8 +3244,7 @@ msgid "All zones have SOA records"
 msgstr "모든 존에 SOA 레코드가 있습니다"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:253
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "%d zones found without SOA records"
 msgstr "SOA 레코드가 없는 %d개의 존이 발견되었습니다"
 
@@ -3256,8 +3255,8 @@ msgstr "IPSECKEY 레코드의 우선순위 필드는 0이거나 비어 있어야
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:122
 msgid ""
-"IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
-"keying material (RFC 4025 Section 4)."
+"IPSECKEY records should be used with DNSSEC to ensure secure transmission of"
+" keying material (RFC 4025 Section 4)."
 msgstr ""
 "IPSECKEY 레코드는 키 자료의 안전한 전송을 보장하기 위해 DNSSEC와 함께 사용해야 합니다 (RFC 4025 섹션 4)."
 
@@ -3269,8 +3268,8 @@ msgstr "IPSECKEY 레코드의 공개 키는 보안 향상을 위해 정기적으
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
-"When using domain name gateways, ensure both forward and reverse DNS records "
-"exist and are properly secured with DNSSEC."
+"When using domain name gateways, ensure both forward and reverse DNS records"
+" exist and are properly secured with DNSSEC."
 msgstr ""
 "도메인 이름 게이트웨이를 사용할 때 정방향 및 역방향 DNS 레코드가 모두 존재하고 DNSSEC로 적절하게 보안되었는지 확인하세요."
 
@@ -3354,7 +3353,8 @@ msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
 msgstr ""
-"NS 또는 MX 레코드를 CNAME 레코드로 가리킬 수 없습니다. 먼저 CNAME 레코드를 제거하거나 이름을 변경하거나 다른 이름을 사용하세요."
+"NS 또는 MX 레코드를 CNAME 레코드로 가리킬 수 없습니다. 먼저 CNAME 레코드를 제거하거나 이름을 변경하거나 다른 이름을 "
+"사용하세요."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:106
 #, auto-english-fallback
@@ -3377,24 +3377,25 @@ msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
 msgstr ""
-"2. TLSA 레코드는 _$port._$protocol.$hostname에서 찾아야 하며, 여기서 $port, $protocol 및 $hostname은 SRV 조회의 대상에서 가져온 것입니다"
+"2. TLSA 레코드는 _$port._$protocol.$hostname에서 찾아야 하며, 여기서 $port, $protocol 및 "
+"$hostname은 SRV 조회의 대상에서 가져온 것입니다"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
-msgid ""
-"3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
+msgid "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
 msgstr "3. SRV 및 TLSA 레코드 모두 DNSSEC 검증 상태가 \"secure\"여야 합니다"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
-"TLSA record name should typically follow the format _port._protocol.hostname "
-"(e.g., _443._tcp.www.example.com)."
+"TLSA record name should typically follow the format _port._protocol.hostname"
+" (e.g., _443._tcp.www.example.com)."
 msgstr ""
-"TLSA 레코드 이름은 일반적으로 _port._protocol.hostname 형식을 따라야 합니다 (예: _443._tcp.www.example.com)."
+"TLSA 레코드 이름은 일반적으로 _port._protocol.hostname 형식을 따라야 합니다 (예: "
+"_443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
-"TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
-"and sctp."
+"TLSA record is using a non-standard protocol. Common protocols are tcp, udp,"
+" and sctp."
 msgstr "TLSA 레코드가 비표준 프로토콜을 사용하고 있습니다. 일반 프로토콜은 tcp, udp 및 sctp입니다."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:143
@@ -3411,8 +3412,8 @@ msgstr "이것은 HTTPS용 TLSA 레코드로 보입니다. 인증서가 TLSA 레
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
-"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
-"properly configured for DoT."
+"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is"
+" properly configured for DoT."
 msgstr "이것은 DNS over TLS용 TLSA 레코드로 보입니다. DNS 서버가 DoT에 대해 올바르게 구성되었는지 확인하세요."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:153
@@ -3430,13 +3431,14 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 #, auto-english-fallback
-msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
+msgid ""
+"This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
 msgstr "이것은 S/MIME 인증서용 SMIMEA 레코드 (RFC 8162)로 보입니다."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
-"SMIMEA records use the same format as TLSA but associate S/MIME certificates "
-"with email addresses."
+"SMIMEA records use the same format as TLSA but associate S/MIME certificates"
+" with email addresses."
 msgstr "SMIMEA 레코드는 TLSA와 동일한 형식을 사용하지만 S/MIME 인증서를 이메일 주소와 연결합니다."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:162
@@ -3450,11 +3452,13 @@ msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
 msgstr ""
-"TLSA 레코드는 일반적으로 \"_port._protocol.hostname\"에 배치해야 합니다 (예: \"_443._tcp.www.example.com\")."
+"TLSA 레코드는 일반적으로 \"_port._protocol.hostname\"에 배치해야 합니다 (예: "
+"\"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
-"Invalid value for priority field. TLSA records must have priority value of 0."
+"Invalid value for priority field. TLSA records must have priority value of "
+"0."
 msgstr "우선순위 필드의 값이 유효하지 않습니다. TLSA 레코드는 우선순위 값이 0이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:249
@@ -3482,8 +3486,8 @@ msgstr "사용 1 (PKIX-EE)은 DANE 및 기존 PKIX 검증 모두에 의존합니
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:270
 msgid ""
-"Usage 2 (DANE-TA) requires proper trust anchor management and may break when "
-"certificates expire."
+"Usage 2 (DANE-TA) requires proper trust anchor management and may break when"
+" certificates expire."
 msgstr "사용 2 (DANE-TA)는 적절한 신뢰 앵커 관리가 필요하며 인증서가 만료되면 중단될 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:272
@@ -3497,11 +3501,13 @@ msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
 msgstr ""
-"RFC 7671은 가장 강력한 구성으로 usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256)을 권장합니다."
+"RFC 7671은 가장 강력한 구성으로 usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
+"(SHA-256)을 권장합니다."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
-"TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
+"TLSA selector field must be 0 (Full certificate) or 1 "
+"(SubjectPublicKeyInfo)."
 msgstr "TLSA 선택자 필드는 0 (전체 인증서) 또는 1 (SubjectPublicKeyInfo)이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:290
@@ -3574,21 +3580,21 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
-"Manually editing NSEC3PARAM records is not recommended as they are typically "
-"generated automatically by DNSSEC-aware nameservers."
+"Manually editing NSEC3PARAM records is not recommended as they are typically"
+" generated automatically by DNSSEC-aware nameservers."
 msgstr ""
 "NSEC3PARAM 레코드는 일반적으로 DNSSEC 인식 네임서버에 의해 자동으로 생성되므로 수동으로 편집하는 것은 권장되지 않습니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:148
 msgid ""
-"NSEC3PARAM records indicate to authoritative servers which parameters to use "
-"for NSEC3-based authenticated denial of existence."
+"NSEC3PARAM records indicate to authoritative servers which parameters to use"
+" for NSEC3-based authenticated denial of existence."
 msgstr "NSEC3PARAM 레코드는 권한 있는 서버에 NSEC3 기반 인증된 부재에 사용할 매개변수를 나타냅니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:149
 msgid ""
-"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
-"generated with the same parameters."
+"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be "
+"re-generated with the same parameters."
 msgstr "NSEC3 매개변수를 업데이트할 때 NSEC3 및 NSEC3PARAM 레코드를 모두 동일한 매개변수로 다시 생성해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:181
@@ -3609,8 +3615,8 @@ msgstr "NSEC3PARAM 플래그는 0에서 255 사이여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:224
 msgid ""
-"Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover "
-"unsigned delegations."
+"Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover"
+" unsigned delegations."
 msgstr ""
 "플래그 값 1은 Opt-Out이 사용 중임을 나타냅니다. 이는 NSEC3 레코드가 서명되지 않은 위임을 포함할 수 있음을 의미합니다."
 
@@ -3670,8 +3676,8 @@ msgstr "긴 솔트는 추가 보안 이점을 제공하지 않습니다. 더 짧
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:111
 msgid ""
-"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
-"not a formal IETF standard."
+"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol,"
+" not a formal IETF standard."
 msgstr "참고: LP 레코드 유형은 RFC 6742에서 실험적 프로토콜로 정의되었으며 공식 IETF 표준이 아닙니다."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:112
@@ -3682,8 +3688,8 @@ msgstr "LP 레코드는 Identifier-Locator Network Protocol (ILNP)과만 사용�
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
-"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
-"Section 3.4)."
+"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742"
+" Section 3.4)."
 msgstr "LP 레코드는 ILNP를 사용할 수 없는 노드에 있어서는 안 됩니다 (RFC 6742 섹션 3.4)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:122
@@ -3703,7 +3709,8 @@ msgid ""
 "Consider using longer TTL values for LP records. Unlike L32/L64 records, LP "
 "records are stable and benefit from longer cache times (RFC 6742)."
 msgstr ""
-"LP 레코드에 더 긴 TTL 값을 사용하는 것을 고려하세요. L32/L64 레코드와 달리 LP 레코드는 안정적이며 더 긴 캐시 시간의 이점을 얻습니다 (RFC 6742)."
+"LP 레코드에 더 긴 TTL 값을 사용하는 것을 고려하세요. L32/L64 레코드와 달리 LP 레코드는 안정적이며 더 긴 캐시 시간의 "
+"이점을 얻습니다 (RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
 #, auto-english-fallback
@@ -3780,10 +3787,11 @@ msgstr "0 위도 (적도)가 감지되었습니다. 이것이 의도된 경우 �
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:135
 msgid ""
-"Default precision values detected (1m size, 10000m horizontal precision, 10m "
-"vertical precision). Consider using more accurate values if you have them."
+"Default precision values detected (1m size, 10000m horizontal precision, 10m"
+" vertical precision). Consider using more accurate values if you have them."
 msgstr ""
-"기본 정밀도 값이 감지되었습니다 (1m 크기, 10000m 수평 정밀도, 10m 수직 정밀도). 더 정확한 값이 있으면 사용하는 것을 고려하세요."
+"기본 정밀도 값이 감지되었습니다 (1m 크기, 10000m 수평 정밀도, 10m 수직 정밀도). 더 정확한 값이 있으면 사용하는 것을 "
+"고려하세요."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:159
 #, auto-english-fallback
@@ -3831,7 +3839,8 @@ msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 msgstr ""
-"유효하지 않은 LOC 레코드 형식입니다. 형식: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
+"유효하지 않은 LOC 레코드 형식입니다. 형식: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] "
+"{\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 #, auto-english-fallback
@@ -3850,8 +3859,8 @@ msgstr "RKEY 레코드의 우선순위 필드는 0이거나 비어 있어야 합
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:145
 msgid ""
-"RKEY records should be used with caution as they are not widely supported by "
-"DNS servers and resolvers."
+"RKEY records should be used with caution as they are not widely supported by"
+" DNS servers and resolvers."
 msgstr "RKEY 레코드는 DNS 서버 및 리졸버에서 널리 지원되지 않으므로 주의해서 사용해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:168
@@ -3871,8 +3880,8 @@ msgstr "RKEY 플래그 필드는 숫자 값이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:189
 msgid ""
-"Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
-"SEP)."
+"Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key +"
+" SEP)."
 msgstr "비정상적인 플래그 값입니다. 일반적인 값은 0, 256 (Zone Key) 또는 257 (Zone Key + SEP)입니다."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:194
@@ -3921,8 +3930,8 @@ msgstr "알고리즘 3 (DSA/SHA1)은 안전하지 않은 것으로 간주되며 
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
-"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
-"stronger algorithm."
+"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a"
+" stronger algorithm."
 msgstr "알고리즘 5 (RSA/SHA-1)는 안전하지 않은 것으로 간주되며 더 강력한 알고리즘으로 교체해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:230
@@ -3968,8 +3977,8 @@ msgstr "알고리즘 16 (Ed448)은 강력한 최신 보안을 제공하지만 �
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid ""
-"CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
-"SHA-256) or later."
+"CRITICAL: This algorithm is considered insecure. Use algorithm 8 "
+"(RSA/SHA-256) or later."
 msgstr "중요: 이 알고리즘은 안전하지 않은 것으로 간주됩니다. 알고리즘 8 (RSA/SHA-256) 이상을 사용하세요."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:251
@@ -4058,8 +4067,8 @@ msgstr "AXFR 액세스 제어를 위해 APL 레코드를 사용하는 경우 RFC
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:84
 msgid ""
-"Note: NID records are used for the ILNP protocol, which is experimental (RFC "
-"6740, 6742)."
+"Note: NID records are used for the ILNP protocol, which is experimental (RFC"
+" 6740, 6742)."
 msgstr "참고: NID 레코드는 실험적인 ILNP 프로토콜에 사용됩니다 (RFC 6740, 6742)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:88
@@ -4097,21 +4106,24 @@ msgid ""
 "Invalid NID record: The Group bit (g bit, least significant bit of first "
 "byte) MUST be 0 in ILNP as specified in RFC 6742."
 msgstr ""
-"유효하지 않은 NID 레코드: RFC 6742에 지정된 대로 ILNP에서 그룹 비트 (g 비트, 첫 번째 바이트의 최하위 비트)는 0이어야 합니다."
+"유효하지 않은 NID 레코드: RFC 6742에 지정된 대로 ILNP에서 그룹 비트 (g 비트, 첫 번째 바이트의 최하위 비트)는 "
+"0이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:227
 msgid ""
 "The universal/local bit (u/l bit) is set to universal (0), indicating this "
 "NID is based on a globally unique identifier."
 msgstr ""
-"universal/local 비트 (u/l 비트)가 universal (0)로 설정되어 이 NID가 전역적으로 고유한 식별자를 기반으로 함을 나타냅니다."
+"universal/local 비트 (u/l 비트)가 universal (0)로 설정되어 이 NID가 전역적으로 고유한 식별자를 기반으로 "
+"함을 나타냅니다."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:229
 msgid ""
 "The universal/local bit (u/l bit) is set to local (1), indicating this NID "
 "is locally assigned and not globally unique."
 msgstr ""
-"universal/local 비트 (u/l 비트)가 local (1)로 설정되어 이 NID가 로컬로 할당되었으며 전역적으로 고유하지 않음을 나타냅니다."
+"universal/local 비트 (u/l 비트)가 local (1)로 설정되어 이 NID가 로컬로 할당되었으며 전역적으로 고유하지 "
+"않음을 나타냅니다."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
 #, auto-english-fallback
@@ -4172,10 +4184,9 @@ msgstr "RFC 4034에 따르면 NSEC 레코드는 SOA 최소 TTL 필드와 동일�
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
-"NSEC records enable \"zone walking\", allowing enumeration of all names in a "
-"zone, which may be a privacy concern."
-msgstr ""
-"NSEC 레코드는 \"존 워킹\"을 활성화하여 존의 모든 이름을 열거할 수 있으며 이는 개인 정보 보호 문제가 될 수 있습니다."
+"NSEC records enable \"zone walking\", allowing enumeration of all names in a"
+" zone, which may be a privacy concern."
+msgstr "NSEC 레코드는 \"존 워킹\"을 활성화하여 존의 모든 이름을 열거할 수 있으며 이는 개인 정보 보호 문제가 될 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:127
 msgid ""
@@ -4201,7 +4212,8 @@ msgid ""
 "Wildcard names in NSEC records require special handling. According to RFC "
 "4035, wildcard owner names appear in NSEC records without expansion."
 msgstr ""
-"NSEC 레코드의 와일드카드 이름은 특별한 처리가 필요합니다. RFC 4035에 따르면 와일드카드 소유자 이름은 확장 없이 NSEC 레코드에 표시됩니다."
+"NSEC 레코드의 와일드카드 이름은 특별한 처리가 필요합니다. RFC 4035에 따르면 와일드카드 소유자 이름은 확장 없이 NSEC "
+"레코드에 표시됩니다."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:168
 #, auto-english-fallback
@@ -4210,11 +4222,12 @@ msgstr "NSEC 레코드는 유효한 다음 도메인 이름을 포함해야 합�
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:173
 msgid ""
-"The next domain name field must be the next owner name in canonical ordering "
-"of the zone. Canonical ordering is case-insensitive and sorts by labels from "
-"right to left."
+"The next domain name field must be the next owner name in canonical ordering"
+" of the zone. Canonical ordering is case-insensitive and sorts by labels "
+"from right to left."
 msgstr ""
-"다음 도메인 이름 필드는 존의 표준 순서에서 다음 소유자 이름이어야 합니다. 표준 순서는 대소문자를 구분하지 않으며 오른쪽에서 왼쪽으로 레이블별로 정렬합니다."
+"다음 도메인 이름 필드는 존의 표준 순서에서 다음 소유자 이름이어야 합니다. 표준 순서는 대소문자를 구분하지 않으며 오른쪽에서 왼쪽으로 "
+"레이블별로 정렬합니다."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:177
 msgid ""
@@ -4224,8 +4237,8 @@ msgstr "이것이 존의 마지막 NSEC 레코드인 경우 다음 도메인 이
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:194
 msgid ""
-"Type bit maps should be present to indicate which RR types exist at the NSEC "
-"owner name. An empty type bitmap is unusual."
+"Type bit maps should be present to indicate which RR types exist at the NSEC"
+" owner name. An empty type bitmap is unusual."
 msgstr "NSEC 소유자 이름에 존재하는 RR 유형을 나타내기 위해 유형 비트 맵이 있어야 합니다. 빈 유형 비트맵은 비정상적입니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:324
@@ -4236,8 +4249,7 @@ msgid ""
 msgstr "숫자 유형 \"%s\"는 RFC 3597 형식 (TYPE###)을 사용하여 나타내야 합니다."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:266
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "NSEC record contains an invalid record type: %s"
 msgstr "NSEC 레코드에 유효하지 않은 레코드 유형이 포함되어 있습니다: %s"
 
@@ -4265,7 +4277,8 @@ msgid ""
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
 msgstr ""
-"레코드 이름이 표준 OPENPGPKEY 형식 (<hash>._openpgpkey.<domain>)을 따르지 않습니다. 상호 운용성을 위해 표준 형식이 권장됩니다."
+"레코드 이름이 표준 OPENPGPKEY 형식 (<hash>._openpgpkey.<domain>)을 따르지 않습니다. 상호 운용성을 위해"
+" 표준 형식이 권장됩니다."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 #, auto-english-fallback
@@ -4278,7 +4291,8 @@ msgid ""
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
 msgstr ""
-"OPENPGPKEY 레코드는 일반적으로 수동으로 생성하는 대신 --print-dane-records 옵션이 있는 GnuPG와 같은 전문 도구를 사용하여 생성해야 합니다."
+"OPENPGPKEY 레코드는 일반적으로 수동으로 생성하는 대신 --print-dane-records 옵션이 있는 GnuPG와 같은 전문 "
+"도구를 사용하여 생성해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 #, auto-english-fallback
@@ -4306,7 +4320,8 @@ msgid ""
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
 msgstr ""
-"OPENPGPKEY 레코드가 4KB를 초과합니다. RFC 7929는 안정적인 전송을 보장하기 위해 DNS 레코드를 가능한 한 작게 유지할 것을 권장합니다. 최소 키 내보내기 형식을 사용하는 것을 고려하세요."
+"OPENPGPKEY 레코드가 4KB를 초과합니다. RFC 7929는 안정적인 전송을 보장하기 위해 DNS 레코드를 가능한 한 작게 유지할"
+" 것을 권장합니다. 최소 키 내보내기 형식을 사용하는 것을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
@@ -4319,7 +4334,8 @@ msgid ""
 "The decoded content does not appear to be a valid OpenPGP packet. OpenPGP "
 "packets must start with a byte that has the high bit set (RFC 9580)."
 msgstr ""
-"디코딩된 콘텐츠가 유효한 OpenPGP 패킷으로 보이지 않습니다. OpenPGP 패킷은 상위 비트가 설정된 바이트로 시작해야 합니다 (RFC 9580)."
+"디코딩된 콘텐츠가 유효한 OpenPGP 패킷으로 보이지 않습니다. OpenPGP 패킷은 상위 비트가 설정된 바이트로 시작해야 합니다 "
+"(RFC 9580)."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:251
 msgid ""
@@ -4333,14 +4349,16 @@ msgid ""
 "OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
 "validation, these records offer no security advantage."
 msgstr ""
-"OPENPGPKEY 레코드는 보안 이점을 위해 DNSSEC가 필요합니다. DNSSEC 검증 없이 이러한 레코드는 보안 이점을 제공하지 않습니다."
+"OPENPGPKEY 레코드는 보안 이점을 위해 DNSSEC가 필요합니다. DNSSEC 검증 없이 이러한 레코드는 보안 이점을 제공하지 "
+"않습니다."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
-"OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
-"by all email clients or OpenPGP implementations."
+"OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported"
+" by all email clients or OpenPGP implementations."
 msgstr ""
-"OPENPGPKEY 레코드는 RFC 7929에 따라 실험적이며 모든 이메일 클라이언트 또는 OpenPGP 구현에서 지원되지 않을 수 있습니다."
+"OPENPGPKEY 레코드는 RFC 7929에 따라 실험적이며 모든 이메일 클라이언트 또는 OpenPGP 구현에서 지원되지 않을 수 "
+"있습니다."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:260
 msgid ""
@@ -4350,10 +4368,11 @@ msgstr "OPENPGPKEY 레코드는 OpenPGP Web of Trust를 대체하지 않습니�
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
-"To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
-"print-dane-records option to ensure correct format and content."
+"To create OPENPGPKEY records, use specialized tools like GnuPG with the "
+"--print-dane-records option to ensure correct format and content."
 msgstr ""
-"OPENPGPKEY 레코드를 생성하려면 --print-dane-records 옵션이 있는 GnuPG와 같은 전문 도구를 사용하여 올바른 형식과 콘텐츠를 보장하세요."
+"OPENPGPKEY 레코드를 생성하려면 --print-dane-records 옵션이 있는 GnuPG와 같은 전문 도구를 사용하여 올바른 "
+"형식과 콘텐츠를 보장하세요."
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:137
 msgid ""
@@ -4366,7 +4385,8 @@ msgid ""
 "hardware and software that could be useful to attackers. Consider security "
 "implications before using in public-facing DNS."
 msgstr ""
-"경고: HINFO 레코드는 공격자에게 유용할 수 있는 호스트 하드웨어 및 소프트웨어에 대한 잠재적으로 민감한 정보를 공개합니다. 공개 DNS에서 사용하기 전에 보안 영향을 고려하세요."
+"경고: HINFO 레코드는 공격자에게 유용할 수 있는 호스트 하드웨어 및 소프트웨어에 대한 잠재적으로 민감한 정보를 공개합니다. 공개 "
+"DNS에서 사용하기 전에 보안 영향을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 #, auto-english-fallback
@@ -4400,8 +4420,8 @@ msgstr "HINFO 내에 유효하지 않은 따옴표가 있습니다 "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:258
 msgid ""
-"CPU type does not contain any standard values. Consider using a standard CPU "
-"type for better interoperability."
+"CPU type does not contain any standard values. Consider using a standard CPU"
+" type for better interoperability."
 msgstr "CPU 유형에 표준 값이 포함되어 있지 않습니다. 더 나은 상호 운용성을 위해 표준 CPU 유형을 사용하는 것을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:262
@@ -4495,21 +4515,24 @@ msgid ""
 "TSIG error code 17 (BADKEY) indicates that the key used in the TSIG record "
 "is invalid. Verify the key is configured on both DNS servers."
 msgstr ""
-"TSIG 오류 코드 17 (BADKEY)은 TSIG 레코드에 사용된 키가 유효하지 않음을 나타냅니다. 키가 두 DNS 서버 모두에 구성되었는지 확인하세요."
+"TSIG 오류 코드 17 (BADKEY)은 TSIG 레코드에 사용된 키가 유효하지 않음을 나타냅니다. 키가 두 DNS 서버 모두에 "
+"구성되었는지 확인하세요."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
-"TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
-"is outside the allowed time window. Check clock synchronization."
+"TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record"
+" is outside the allowed time window. Check clock synchronization."
 msgstr ""
-"TSIG 오류 코드 18 (BADTIME)은 TSIG 레코드의 타임스탬프가 허용된 시간 창 밖에 있음을 나타냅니다. 클록 동기화를 확인하세요."
+"TSIG 오류 코드 18 (BADTIME)은 TSIG 레코드의 타임스탬프가 허용된 시간 창 밖에 있음을 나타냅니다. 클록 동기화를 "
+"확인하세요."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:259
 msgid ""
 "TSIG error code 22 (BADTRUNC) indicates that the truncated MAC in the TSIG "
 "record is invalid. Check MAC size configuration."
 msgstr ""
-"TSIG 오류 코드 22 (BADTRUNC)는 TSIG 레코드의 잘린 MAC이 유효하지 않음을 나타냅니다. MAC 크기 구성을 확인하세요."
+"TSIG 오류 코드 22 (BADTRUNC)는 TSIG 레코드의 잘린 MAC이 유효하지 않음을 나타냅니다. MAC 크기 구성을 "
+"확인하세요."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 #, auto-english-fallback
@@ -4526,7 +4549,8 @@ msgid ""
 "HMAC-MD5 is considered weak by modern standards. RFC 8945 recommends using "
 "HMAC-SHA256 or stronger algorithms."
 msgstr ""
-"HMAC-MD5는 최신 표준에서 약한 것으로 간주됩니다. RFC 8945는 HMAC-SHA256 또는 더 강력한 알고리즘 사용을 권장합니다."
+"HMAC-MD5는 최신 표준에서 약한 것으로 간주됩니다. RFC 8945는 HMAC-SHA256 또는 더 강력한 알고리즘 사용을 "
+"권장합니다."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:317
 msgid ""
@@ -4665,7 +4689,8 @@ msgid ""
 "Per RFC 4398, consider DNS record size limitations when using CERT records. "
 "Large certificates may cause DNS message fragmentation."
 msgstr ""
-"RFC 4398에 따라 CERT 레코드를 사용할 때 DNS 레코드 크기 제한을 고려하세요. 큰 인증서는 DNS 메시지 조각화를 일으킬 수 있습니다."
+"RFC 4398에 따라 CERT 레코드를 사용할 때 DNS 레코드 크기 제한을 고려하세요. 큰 인증서는 DNS 메시지 조각화를 일으킬 수"
+" 있습니다."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:111
 #, auto-english-fallback
@@ -4772,7 +4797,8 @@ msgid ""
 "DNS resolvers have removed or deprecated DLV support. Consider using "
 "standard DNSSEC validation with DS records instead."
 msgstr ""
-"중요: DLV 레코드는 RFC 8749 (2020년 3월)에 의해 폐기되었습니다. 주요 DNS 리졸버가 DLV 지원을 제거하거나 더 이상 사용하지 않았습니다. DS 레코드와 함께 표준 DNSSEC 검증을 사용하는 것을 고려하세요."
+"중요: DLV 레코드는 RFC 8749 (2020년 3월)에 의해 폐기되었습니다. 주요 DNS 리졸버가 DLV 지원을 제거하거나 더 이상"
+" 사용하지 않았습니다. DS 레코드와 함께 표준 DNSSEC 검증을 사용하는 것을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:97
 msgid ""
@@ -4812,8 +4838,8 @@ msgstr "유효하지 않은 키 태그입니다. 1에서 65535 사이의 숫자�
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:166
 msgid ""
-"The key tag field does not uniquely identify a DNSKEY. More than one key can "
-"have the same key tag."
+"The key tag field does not uniquely identify a DNSKEY. More than one key can"
+" have the same key tag."
 msgstr "키 태그 필드는 DNSKEY를 고유하게 식별하지 않습니다. 둘 이상의 키가 동일한 키 태그를 가질 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
@@ -4831,7 +4857,8 @@ msgid ""
 "SHA-1 (digest type 1) is considered weak for cryptographic use. Consider "
 "using SHA-256 (type 2) or SHA-384 (type 4) instead."
 msgstr ""
-"SHA-1 (다이제스트 유형 1)은 암호화 사용에 약한 것으로 간주됩니다. SHA-256 (유형 2) 또는 SHA-384 (유형 4)를 대신 사용하는 것을 고려하세요."
+"SHA-1 (다이제스트 유형 1)은 암호화 사용에 약한 것으로 간주됩니다. SHA-256 (유형 2) 또는 SHA-384 (유형 4)를 "
+"대신 사용하는 것을 고려하세요."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:215
 #, auto-english-fallback
@@ -4840,12 +4867,14 @@ msgstr "SHA-1에 대한 유효하지 않은 다이제스트 길이입니다. 40�
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
 #, auto-english-fallback
-msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
+msgid ""
+"Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
 msgstr "SHA-256에 대한 유효하지 않은 다이제스트 길이입니다. 64자의 16진수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
 #, auto-english-fallback
-msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
+msgid ""
+"Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
 msgstr "SHA-384에 대한 유효하지 않은 다이제스트 길이입니다. 96자의 16진수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
@@ -4915,8 +4944,7 @@ msgstr "HTTPS 레코드 대상은 \".\" 또는 유효한 정규화된 도메인 
 msgid ""
 "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
 "parameters according to RFC 9460."
-msgstr ""
-"RFC 9460에 따라 대상이 \".\"인 AliasMode(우선순위=0)의 HTTPS 레코드는 매개변수를 가질 수 없습니다."
+msgstr "RFC 9460에 따라 대상이 \".\"인 AliasMode(우선순위=0)의 HTTPS 레코드는 매개변수를 가질 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:215
 msgid ""
@@ -4970,10 +4998,11 @@ msgstr "매개변수 \"%s\"는 필수로 표시되어 있지만 레코드에 포
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
-"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
-"non-zero TTL may cause issues with older DNS implementations."
+"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current"
+" non-zero TTL may cause issues with older DNS implementations."
 msgstr ""
-"RFC 2930에서는 캐싱을 방지하기 위해 TKEY 레코드의 TTL=0을 요구합니다. 현재의 0이 아닌 TTL은 이전 DNS 구현에서 문제를 일으킬 수 있습니다."
+"RFC 2930에서는 캐싱을 방지하기 위해 TKEY 레코드의 TTL=0을 요구합니다. 현재의 0이 아닌 TTL은 이전 DNS 구현에서 "
+"문제를 일으킬 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 #, auto-english-fallback
@@ -5007,11 +5036,13 @@ msgstr "만료 시간은 시작 시간 이후여야 합니다."
 msgid ""
 "TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
 msgstr ""
-"모드 값은 0(서버 할당), 1(Diffie-Hellman 교환), 2(GSS-API 협상), 3(해결자 할당) 또는 4(키 삭제) 중 하나여야 합니다."
+"모드 값은 0(서버 할당), 1(Diffie-Hellman 교환), 2(GSS-API 협상), 3(해결자 할당) 또는 4(키 삭제) 중 "
+"하나여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
-"TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
+"TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS "
+"format."
 msgstr "오류 값은 0(오류 없음) 또는 유효한 TKEY 오류 코드여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:200
@@ -5072,8 +5103,8 @@ msgstr "원본 ID는 0에서 65535 사이의 숫자여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
-"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
-"security."
+"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better"
+" security."
 msgstr "오류 값은 0(오류 없음) 또는 유효한 TSIG 오류 코드여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:316
@@ -5100,8 +5131,8 @@ msgstr "URI 레코드에는 우선순위, 가중치 및 대상 필드가 포함�
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:111
 #, php-format
 msgid ""
-"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
-"bit integer."
+"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed "
+"32-bit integer."
 msgstr "URI 우선순위는 0에서 65535 사이의 숫자여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
@@ -5114,8 +5145,8 @@ msgstr "URI 가중치는 0에서 65535 사이의 숫자여야 합니다."
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
-"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
-"TTL values delay DNS updates."
+"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High"
+" TTL values delay DNS updates."
 msgstr "URI 대상은 유효한 URI여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
@@ -5142,7 +5173,8 @@ msgstr "ZONEMD 체계는 1(SIMPLE)이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 #, auto-english-fallback
-msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
+msgid ""
+"Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
 msgstr "ZONEMD 해시 알고리즘은 1(SHA384) 또는 2(SHA512)여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
@@ -5251,8 +5283,8 @@ msgstr "zone_id는 필수이며 양의 정수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
-"The key exchanger host should have appropriate A/AAAA records for type A/"
-"AAAA additional section processing."
+"The key exchanger host should have appropriate A/AAAA records for type "
+"A/AAAA additional section processing."
 msgstr "zone_templ_id는 필수이며 양의 정수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:166
@@ -5332,13 +5364,11 @@ msgid ""
 msgstr "템플릿 설명은 255자를 초과할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
-msgid ""
-"Multiple \"all\" mechanisms found. Only the first one will be effective."
+msgid "Multiple \"all\" mechanisms found. Only the first one will be effective."
 msgstr "zone_templ_id는 양의 정수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
 msgstr "잘못된 템플릿 ID입니다."
 
@@ -5353,14 +5383,12 @@ msgid "Invalid IPv6 address or network in ip6 mechanism."
 msgstr "잘못된 레코드 ID입니다."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:238
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Invalid domain name in %s mechanism."
 msgstr "사용자 이름은 필수이며 1-64자 사이여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:244
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "CIDR notation is not valid with the %s mechanism."
 msgstr "전체 이름은 필수이며 1-255자 사이여야 합니다."
 
@@ -5392,14 +5420,12 @@ msgid "Invalid domain in exp modifier."
 msgstr "비밀번호는 최소 하나의 숫자를 포함해야 합니다."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Unknown modifier: %s"
 msgstr "설명은 255자를 초과할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:285
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Unknown mechanism: %s"
 msgstr "perm_templ은 0에서 255 사이의 정수여야 합니다."
 
@@ -5479,14 +5505,14 @@ msgstr "권한 항목 설명은 255자를 초과할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
-"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
-"=)."
+"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /,"
+" =)."
 msgstr "잘못된 권한 항목 ID입니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
-"DHCID record has invalid base64 padding. Equals signs (=) should only appear "
-"at the end of the data."
+"DHCID record has invalid base64 padding. Equals signs (=) should only appear"
+" at the end of the data."
 msgstr "검색어는 필수이며 1-255자 사이여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
@@ -5509,15 +5535,15 @@ msgstr "정렬 필드가 잘못되었습니다."
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
 msgid ""
-"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
-"4701 (0x0000, 0x0001, 0x0002)."
+"DHCID identifier type 0x%04X is not one of the standard types defined in RFC"
+" 4701 (0x0000, 0x0001, 0x0002)."
 msgstr "정렬 순서는 'asc' 또는 'desc'여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
-"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
-"4701."
+"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC"
+" 4701."
 msgstr "필터 유형이 잘못되었습니다."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
@@ -5550,8 +5576,8 @@ msgstr "zone_id는 양의 정수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid ""
-"RRSIG records should only be created by your DNS server when signing a zone. "
-"Manual manipulation is not recommended."
+"RRSIG records should only be created by your DNS server when signing a zone."
+" Manual manipulation is not recommended."
 msgstr "user_id는 양의 정수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:146
@@ -5667,8 +5693,8 @@ msgstr "재설정 토큰이 만료되었습니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid ""
-"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
-"are generally preferred for faster recovery in case of key compromise."
+"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs"
+" are generally preferred for faster recovery in case of key compromise."
 msgstr "DNSSEC이 이미 활성화되어 있습니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
@@ -5706,8 +5732,8 @@ msgstr "비트 수는 양의 정수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
-"WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
-"resolvers until the inception time is reached."
+"WARNING: This signature is not yet valid. It will not be validated by DNSSEC"
+" resolvers until the inception time is reached."
 msgstr "활성 키는 제거할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
@@ -5761,8 +5787,8 @@ msgstr "기본 네임서버는 필수이며 유효한 호스트명이어야 합�
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:333
 msgid ""
-"Remember that RRSIG records must be regenerated before their expiration date "
-"to maintain DNSSEC validation."
+"Remember that RRSIG records must be regenerated before their expiration date"
+" to maintain DNSSEC validation."
 msgstr "호스트마스터는 필수이며 유효한 이메일 형식이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
@@ -5772,8 +5798,8 @@ msgstr "일련번호는 양의 정수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:129
 msgid ""
-"RP records were defined in RFC 1183 (1990) and are not widely used in modern "
-"DNS configurations."
+"RP records were defined in RFC 1183 (1990) and are not widely used in modern"
+" DNS configurations."
 msgstr "새로고침 간격은 양의 정수여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:130
@@ -5839,15 +5865,14 @@ msgid ""
 msgstr "존은 이미 존재합니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:238
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "The mailbox domain represents the email address: %s"
 msgstr "존을 생성할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
-"RP mailbox domain part contains underscores, which are not allowed in domain "
-"names."
+"RP mailbox domain part contains underscores, which are not allowed in domain"
+" names."
 msgstr "존을 삭제할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:245
@@ -5929,8 +5954,7 @@ msgid ""
 msgstr "필수 필드가 누락되었습니다."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "You should create a TXT record at domain: %s"
 msgstr "잘못된 요청입니다."
 
@@ -5942,8 +5966,8 @@ msgstr "내부 서버 오류입니다."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
-"This appears to be an IPv6 interface identifier (has the universal/local bit "
-"flipped compared to standard EUI-64)."
+"This appears to be an IPv6 interface identifier (has the universal/local bit"
+" flipped compared to standard EUI-64)."
 msgstr "서비스를 일시적으로 사용할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:128
@@ -6073,7 +6097,8 @@ msgstr "파일 형식이 허용되지 않습니다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
-"DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
+"DS record must be in the format: <key-tag> <algorithm> <digest-type> "
+"<digest>"
 msgstr "파일 크기가 너무 큽니다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
@@ -6105,16 +6130,16 @@ msgid ""
 msgstr "파일을 찾을 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
-#, auto-english-fallback
-#, php-format
-msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
+#, auto-english-fallback, php-format
+msgid ""
+"%s (algorithm %d) is optional for implementation according to RFC 8624."
 msgstr "디렉터리를 생성할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
-"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
-"using ECDSAP256SHA256 (13) or ED25519 (15) instead."
+"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider"
+" using ECDSAP256SHA256 (13) or ED25519 (15) instead."
 msgstr "파일을 쓸 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
@@ -6130,15 +6155,15 @@ msgstr "파일을 삭제할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
-"SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
-"8624."
+"SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC"
+" 8624."
 msgstr "권한이 거부되었습니다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
 "SHA-384 (digest type 4) is a good choice for higher security requirements, "
-"but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
-"support."
+"but SHA-256 (digest type 2) is sufficient for most deployments and has wider"
+" support."
 msgstr "디스크 공간이 부족합니다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
@@ -6158,27 +6183,27 @@ msgstr "캐시를 지울 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:266
 msgid ""
-"DS records establish a chain of trust from parent to child zones. The parent "
-"zone must have this DS record, and the child zone must have the "
+"DS records establish a chain of trust from parent to child zones. The parent"
+" zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
 msgstr "캐시 항목을 찾을 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
-"CSYNC records should only be placed at the zone apex (RFC 7477). This record "
-"may not be processed by parental agents."
+"CSYNC records should only be placed at the zone apex (RFC 7477). This record"
+" may not be processed by parental agents."
 msgstr "캐시 쓰기에 실패했습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
-"CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
-"7477). Ensure your zone is properly signed with DNSSEC."
+"CSYNC records require DNSSEC signing to be processed by parental agents (RFC"
+" 7477). Ensure your zone is properly signed with DNSSEC."
 msgstr "캐시 읽기에 실패했습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
-"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
-"cause unexpected behavior."
+"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may"
+" cause unexpected behavior."
 msgstr "구성 파일을 찾을 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:138
@@ -6223,13 +6248,14 @@ msgstr "데이터베이스 트랜잭션이 실패했습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
-"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
-"values are 0, 1, 2, or 3."
+"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid"
+" values are 0, 1, 2, or 3."
 msgstr "데이터베이스 롤백이 실패했습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
-"CSYNC record must specify at least one record type in the Type Bit Map field."
+"CSYNC record must specify at least one record type in the Type Bit Map "
+"field."
 msgstr "데이터베이스 커밋이 실패했습니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:244
@@ -6247,7 +6273,8 @@ msgstr "중복 키 오류입니다."
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:262
 msgid ""
 "NS record synchronization requires careful consideration. Parent zones may "
-"have specific NS record policies that can prevent successful synchronization."
+"have specific NS record policies that can prevent successful "
+"synchronization."
 msgstr "외래 키 제약 조건 위반입니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:266
@@ -6259,8 +6286,8 @@ msgstr "고유 제약 조건 위반입니다."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:269
 msgid ""
-"RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
-"type cannot be synchronized, no changes will be made by the parent."
+"RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any"
+" type cannot be synchronized, no changes will be made by the parent."
 msgstr "NULL 제약 조건 위반입니다."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
@@ -6288,7 +6315,8 @@ msgstr "데이터베이스가 읽기 전용입니다."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
-"EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
+"EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-"
+"xx."
 msgstr "데이터베이스가 가득 찼습니다."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:148
@@ -6368,32 +6396,27 @@ msgid "IP address list cannot be empty."
 msgstr "필드 '%s'는 유효한 IP 주소여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Invalid IPv6 address in %s: %s"
 msgstr "필드 '%s'는 유효한 도메인이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
 msgstr "필드 '%s'는 유효한 날짜여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
 msgstr "필드 '%s'는 유효한 시간이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Invalid IPv4 address in %s: %s"
 msgstr "필드 '%s'는 유효한 날짜/시간이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Invalid IP address: %s"
 msgstr "필드 '%s'는 숫자여야 합니다."
 
@@ -6454,8 +6477,7 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "필드 '%s'는 %d와 %d 사이여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "필드 '%s'는 %d보다 커야 합니다."
 
@@ -6531,7 +6553,8 @@ msgstr "필드 '%s'는 어제여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:159
 msgid ""
-"Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for IPv6."
+"Invalid subnet in RFC 2317 notation. Must be hexadecimal (0-9, a-f) for "
+"IPv6."
 msgstr "필드 '%s'는 내일이어야 합니다."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
@@ -6551,8 +6574,7 @@ msgid ""
 msgstr "잘못된 MFA 코드입니다."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 msgstr "MFA 설정에 실패했습니다."
 
@@ -6578,8 +6600,8 @@ msgstr "잘못된 백업 코드입니다."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
+"SOA validation parameters not set. Call setSOAParams() first or provide them"
+" as arguments."
 msgstr "QR 코드 생성에 실패했습니다."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:115
@@ -6615,8 +6637,8 @@ msgstr "액세스 토큰이 잘못되었습니다."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:231
 msgid ""
-"Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
-"This is allowed but not recommended."
+"Serial number appears to use YYYYMMDDnn format but contains an invalid date."
+" This is allowed but not recommended."
 msgstr "액세스 토큰이 만료되었습니다."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:245
@@ -6626,14 +6648,12 @@ msgid ""
 msgstr "새로고침 토큰이 잘못되었습니다."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:265
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "SOA %s field must be numeric."
 msgstr "새로고침 토큰이 만료되었습니다."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:271
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "SOA %s field must be a positive integer."
 msgstr "토큰 생성에 실패했습니다."
 
@@ -6668,8 +6688,7 @@ msgid "SVCB priority must be between 0 and 65535."
 msgstr "OAuth 토큰이 잘못되었습니다."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
-msgid ""
-"SVCB target must be either \".\" (for Service Mode) or a valid hostname."
+msgid "SVCB target must be either \".\" (for Service Mode) or a valid hostname."
 msgstr "SAML 어설션이 잘못되었습니다."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
@@ -6704,8 +6723,8 @@ msgstr "사용자를 찾을 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid ""
-"Multiple CNAME records with the same name are not allowed. This would create "
-"a DNS violation."
+"Multiple CNAME records with the same name are not allowed. This would create"
+" a DNS violation."
 msgstr "그룹을 찾을 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:207
@@ -6742,8 +6761,8 @@ msgstr "역할이 이미 존재합니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
-"Invalid value for priority field. SMIMEA records must have priority value of "
-"0."
+"Invalid value for priority field. SMIMEA records must have priority value of"
+" 0."
 msgstr "권한이 이미 존재합니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:160
@@ -6782,7 +6801,8 @@ msgstr "그룹을 삭제할 수 없습니다."
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:214
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
-"PKIX validation rules. Ensure proper intermediate certificates are available."
+"PKIX validation rules. Ensure proper intermediate certificates are "
+"available."
 msgstr "역할을 생성할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:216
@@ -6794,8 +6814,8 @@ msgstr "역할을 업데이트할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
-"DANE-EE usage (3) is recommended as it provides the simplest deployment with "
-"direct certificate usage without additional validation."
+"DANE-EE usage (3) is recommended as it provides the simplest deployment with"
+" direct certificate usage without additional validation."
 msgstr "역할을 삭제할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:225
@@ -6806,8 +6826,8 @@ msgstr "권한을 생성할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
-"Selector 0 (Full certificate) means the entire certificate is matched. Using "
-"selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
+"Selector 0 (Full certificate) means the entire certificate is matched. Using"
+" selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
 "flexibility for certificate renewals."
 msgstr "권한을 업데이트할 수 없습니다."
 
@@ -6826,13 +6846,14 @@ msgstr "사용자를 그룹에 추가할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
-"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
-"recommended for better performance and compatibility."
+"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is"
+" recommended for better performance and compatibility."
 msgstr "그룹에서 사용자를 제거할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
-"Matching type 1 (SHA-256) provides a good balance of security and efficiency."
+"Matching type 1 (SHA-256) provides a good balance of security and "
+"efficiency."
 msgstr "사용자에게 역할을 할당할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:251
@@ -6864,14 +6885,14 @@ msgstr "감사 로그를 검색할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
-"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
-"be widely supported."
+"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not"
+" be widely supported."
 msgstr "감사 로그를 내보낼 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
-"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, "
-"SMIMEA offers NO security benefit."
+"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC,"
+" SMIMEA offers NO security benefit."
 msgstr "로그 파일을 찾을 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:112
@@ -6882,8 +6903,8 @@ msgstr "로그 파일을 읽을 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
-"L64 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+"L64 records should only be used with the Identifier-Locator Network Protocol"
+" (ILNP)."
 msgstr "로그 파일을 쓸 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:114
@@ -7078,8 +7099,8 @@ msgstr "쿠키가 너무 큽니다."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
-"LUA record contains potentially dangerous system access functions. These are "
-"likely to be blocked by PowerDNS security restrictions."
+"LUA record contains potentially dangerous system access functions. These are"
+" likely to be blocked by PowerDNS security restrictions."
 msgstr "세션 데이터가 너무 큽니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:126
@@ -7113,8 +7134,8 @@ msgstr "잘못된 호스트입니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
-"DSA keys are considered weak and are deprecated in many SSH implementations. "
-"Consider using RSA, Ed25519, or Ed448 instead."
+"DSA keys are considered weak and are deprecated in many SSH implementations."
+" Consider using RSA, Ed25519, or Ed448 instead."
 msgstr "잘못된 포트입니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:189
@@ -7142,8 +7163,8 @@ msgstr "잘못된 사용자 정보입니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
-"SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
-"than SHA-1."
+"SHA-256 fingerprints are recommended by RFC 6594 and provide better security"
+" than SHA-1."
 msgstr "잘못된 권한입니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
@@ -7164,14 +7185,14 @@ msgstr "연결이 재설정되었습니다."
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
-"benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
-"attacks."
+"benefits. Without DNSSEC, they offer no protection against man-in-the-middle"
+" attacks."
 msgstr "연결 시간이 초과되었습니다."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
-"Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
-"for server verification."
+"Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records"
+" for server verification."
 msgstr "연결이 끊어졌습니다."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
@@ -7196,8 +7217,8 @@ msgstr "네트워크에 연결할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:121
 msgid ""
-"MR record content (new mailbox) should be a fully qualified domain name (end "
-"with a dot)."
+"MR record content (new mailbox) should be a fully qualified domain name (end"
+" with a dot)."
 msgstr "호스트를 찾을 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:129
@@ -7224,8 +7245,8 @@ msgstr "프록시에 연결할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:148
 msgid ""
-"The MR record indicates that the mail user has moved from the old mailbox to "
-"the new mailbox."
+"The MR record indicates that the mail user has moved from the old mailbox to"
+" the new mailbox."
 msgstr "터널 설정에 실패했습니다."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:124
@@ -7246,8 +7267,8 @@ msgstr "SSL 인증서가 만료되었습니다."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:141
 msgid ""
-"Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be "
-"used."
+"Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be"
+" used."
 msgstr "SSL 인증서를 확인할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:146
@@ -7385,14 +7406,12 @@ msgid ""
 msgstr "압축 수준이 잘못되었습니다."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "DMARC %s tag must contain valid mailto: or https: URIs"
 msgstr "인코딩에 실패했습니다."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Invalid email address in DMARC %s tag: %s"
 msgstr "디코딩에 실패했습니다."
 
@@ -7402,14 +7421,12 @@ msgid "DMARC report format tag (rf) must be afrf or iodef"
 msgstr "잘못된 인코딩입니다."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Unknown DMARC tag: %s"
 msgstr "잘못된 문자 집합입니다."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:293
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Required DMARC tag missing: %s"
 msgstr "직렬화에 실패했습니다."
 
@@ -7499,8 +7516,8 @@ msgstr "잘못된 숫자 형식입니다."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
-"CDS record must contain key-tag, algorithm, digest-type and digest separated "
-"by spaces."
+"CDS record must contain key-tag, algorithm, digest-type and digest separated"
+" by spaces."
 msgstr "숫자 오버플로입니다."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
@@ -7539,7 +7556,8 @@ msgstr "잘못된 표현식입니다."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 #, auto-english-fallback
-msgid "CDS records should only be placed at the zone apex (not on subdomains)."
+msgid ""
+"CDS records should only be placed at the zone apex (not on subdomains)."
 msgstr "잘못된 문입니다."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:112
@@ -7550,14 +7568,14 @@ msgstr "잘못된 선언입니다."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
-"L32 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+"L32 records should only be used with the Identifier-Locator Network Protocol"
+" (ILNP)."
 msgstr "잘못된 정의입니다."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
-"Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
-"in ILNP deployments."
+"Using private IP addresses (RFC 1918) as L32 locators may limit reachability"
+" in ILNP deployments."
 msgstr "잘못된 할당입니다."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:131
@@ -7611,8 +7629,8 @@ msgstr "메모리 한도를 초과했습니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
-"Invalid protocol value in SRV record. Protocol must start with an underscore "
-"followed by alphanumeric characters."
+"Invalid protocol value in SRV record. Protocol must start with an underscore"
+" followed by alphanumeric characters."
 msgstr "스택 오버플로입니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
@@ -7625,8 +7643,8 @@ msgstr "힙 오버플로입니다."
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
-"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
-"are _tcp and _udp."
+"Protocol \"%s\" is not in the list of well-known protocols. Common protocols"
+" are _tcp and _udp."
 msgstr "버퍼 오버플로입니다."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
@@ -7678,8 +7696,8 @@ msgstr "메모리를 할당할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:85
 msgid ""
-"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
-"records."
+"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA"
+" records."
 msgstr "메모리를 재할당할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
@@ -7689,7 +7707,8 @@ msgstr "메모리를 해제할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
-"Invalid value for priority field. AAAA records must have priority value of 0."
+"Invalid value for priority field. AAAA records must have priority value of "
+"0."
 msgstr "리소스를 할당할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
@@ -7772,8 +7791,7 @@ msgid ""
 msgstr "프로세스를 종료할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "NSEC3 record contains an invalid record type: %s"
 msgstr "프로세스를 대기할 수 없습니다."
 
@@ -7785,14 +7803,14 @@ msgstr "프로세스를 시그널할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
-"This NSEC3 record contains both SOA and NS types, indicating it might be for "
-"a zone apex."
+"This NSEC3 record contains both SOA and NS types, indicating it might be for"
+" a zone apex."
 msgstr "파이프를 생성할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
-"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
-"along with DNSKEY."
+"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present"
+" along with DNSKEY."
 msgstr "소켓을 생성할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
@@ -7887,15 +7905,13 @@ msgstr "umask를 설정할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
-"and rs start with a letter and contain alphanumeric characters, hyphens, "
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol"
+" and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr "사용자 ID를 설정할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
-msgid ""
-"Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
-"other flags."
+msgid "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with other flags."
 msgstr "그룹 ID를 설정할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
@@ -7992,8 +8008,7 @@ msgid ""
 msgstr "CRC를 확인할 수 없습니다."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
 msgstr "서명을 생성할 수 없습니다."
 
@@ -8044,8 +8059,7 @@ msgid "Invalid base64 encoding."
 msgstr "인증서 목적이 잘못되었습니다."
 
 #: lib/Domain/Service/DomainRecordCreator.php:61
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "There is no managed zone for domain: %s."
 msgstr "인증서 주체가 잘못되었습니다."
 
@@ -8107,7 +8121,8 @@ msgstr "인증서 정책 제약 조건이 잘못되었습니다."
 
 #: lib/Domain/Service/ZoneValidationService.php:128
 #, auto-english-fallback
-msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
+msgid ""
+"No SOA record present, or active, in zone. This is required for DNSSEC."
 msgstr "인증서 CRL 배포 지점이 잘못되었습니다."
 
 #: lib/Domain/Service/ZoneValidationService.php:129
@@ -8116,8 +8131,7 @@ msgid "Add an SOA record to the zone before attempting to sign it."
 msgstr "인증서 권한 정보 액세스가 잘못되었습니다."
 
 #: lib/Domain/Service/ZoneValidationService.php:135
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
 msgstr "인증서 주체 키 식별자가 잘못되었습니다."
 
@@ -8179,14 +8193,12 @@ msgid "Unknown database type."
 msgstr "예약 작업을 시작할 수 없습니다."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:69
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "예약 작업을 중지할 수 없습니다."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:77
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "예약 작업을 삭제할 수 없습니다."
 
@@ -8233,8 +8245,7 @@ msgid "You do not have the permission to delete NS records."
 msgstr "대기열 작업을 삭제할 수 없습니다."
 
 #: lib/Domain/Service/Dns/DomainManager.php:429
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "워커를 생성할 수 없습니다."
 
@@ -8244,8 +8255,7 @@ msgid "There is already a supermaster with this IP address and hostname."
 msgstr "워커를 시작할 수 없습니다."
 
 #: lib/Domain/Service/Dns/DomainManager.php:210
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "워커를 중지할 수 없습니다."
 
@@ -8281,8 +8291,8 @@ msgstr "작업에 실패했습니다."
 
 #: templates/modern/api_key_regenerated.html:17
 msgid ""
-"This is the only time your new API key will be displayed. Please save it now "
-"as you won't be able to see it again."
+"This is the only time your new API key will be displayed. Please save it now"
+" as you won't be able to see it again."
 msgstr "작업이 시간 초과되었습니다."
 
 #: templates/modern/api_key_created.html:22
@@ -8408,8 +8418,8 @@ msgstr "세션을 무효화할 수 없습니다."
 
 #: templates/modern/dnssec_edit_key.html:53
 msgid ""
-"Activating this key will make it part of the active DNSSEC signing chain for "
-"this zone."
+"Activating this key will make it part of the active DNSSEC signing chain for"
+" this zone."
 msgstr "세션을 재생성할 수 없습니다."
 
 #: templates/modern/dnssec_delete_key.html:47
@@ -8462,7 +8472,8 @@ msgstr "플래시 메시지를 가져올 수 없습니다."
 msgid "Name"
 msgstr "플래시 메시지를 삭제할 수 없습니다."
 
-#: templates/default/api_key_edit.html:22 templates/modern/api_key_edit.html:22
+#: templates/default/api_key_edit.html:22
+#: templates/modern/api_key_edit.html:22
 #, auto-english-fallback
 msgid "Please provide a name for this API key"
 msgstr "리디렉션할 수 없습니다."
@@ -8482,17 +8493,20 @@ msgstr "순환 리디렉션이 감지되었습니다."
 msgid "Leave empty for a key that never expires"
 msgstr "너무 많은 리디렉션입니다."
 
-#: templates/default/api_key_edit.html:35 templates/modern/api_key_edit.html:35
+#: templates/default/api_key_edit.html:35
+#: templates/modern/api_key_edit.html:35
 #, auto-english-fallback
 msgid "Disable this API key"
 msgstr "헤더를 보낼 수 없습니다."
 
-#: templates/default/api_key_edit.html:37 templates/modern/api_key_edit.html:37
+#: templates/default/api_key_edit.html:37
+#: templates/modern/api_key_edit.html:37
 #, auto-english-fallback
 msgid "Disabled keys cannot be used for authentication"
 msgstr "헤더가 이미 전송되었습니다."
 
-#: templates/default/api_key_edit.html:43 templates/modern/api_key_edit.html:43
+#: templates/default/api_key_edit.html:43
+#: templates/modern/api_key_edit.html:43
 #, auto-english-fallback
 msgid "Update API Key"
 msgstr "응답을 보낼 수 없습니다."
@@ -8502,7 +8516,8 @@ msgstr "응답을 보낼 수 없습니다."
 msgid "* Required fields"
 msgstr "응답이 이미 전송되었습니다."
 
-#: templates/default/api_key_edit.html:59 templates/modern/api_key_edit.html:59
+#: templates/default/api_key_edit.html:59
+#: templates/modern/api_key_edit.html:59
 #, auto-english-fallback
 msgid "API Key Information"
 msgstr "출력을 버퍼링할 수 없습니다."
@@ -8517,7 +8532,8 @@ msgstr "출력을 플러시할 수 없습니다."
 msgid "Last used"
 msgstr "출력을 정리할 수 없습니다."
 
-#: templates/default/api_key_edit.html:93 templates/modern/api_key_edit.html:93
+#: templates/default/api_key_edit.html:93
+#: templates/modern/api_key_edit.html:93
 #, auto-english-fallback
 msgid "Additional Actions"
 msgstr "템플릿을 렌더링할 수 없습니다."
@@ -8527,7 +8543,8 @@ msgstr "템플릿을 렌더링할 수 없습니다."
 msgid "Regenerate API Key"
 msgstr "템플릿을 찾을 수 없습니다."
 
-#: templates/default/api_key_edit.html:99 templates/modern/api_key_edit.html:99
+#: templates/default/api_key_edit.html:99
+#: templates/modern/api_key_edit.html:99
 #, auto-english-fallback
 msgid "Creates a new key, invalidating the old one"
 msgstr "잘못된 템플릿 구문입니다."
@@ -8616,8 +8633,8 @@ msgstr "액션을 찾을 수 없습니다."
 #: templates/modern/add_record.html:93
 msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
-"and may cause issues. SOA and NS records are required at the domain root and "
-"cannot coexist with CNAME."
+"and may cause issues. SOA and NS records are required at the domain root and"
+" cannot coexist with CNAME."
 msgstr "서비스를 찾을 수 없습니다."
 
 #: templates/modern/add_zone_templ_record.html:83
@@ -8734,7 +8751,8 @@ msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/modern/add_zone_templ_record.html:176
 msgid ""
-"MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
+"MX for Microsoft 365: "
+"<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 msgstr ""
 
 #: templates/modern/add_zone_templ_record.html:177
@@ -8797,7 +8815,8 @@ msgstr "어댑터를 찾을 수 없습니다."
 msgid "Provide host name"
 msgstr "브리지를 찾을 수 없습니다."
 
-#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:320
+#: templates/modern/delete_supermaster.html:36
+#: templates/modern/header.html:320
 #, auto-english-fallback
 msgid "Account"
 msgstr "컴포지트를 찾을 수 없습니다."
@@ -9184,12 +9203,14 @@ msgid ""
 "ownership."
 msgstr "Swagger UI를 생성할 수 없습니다."
 
-#: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
+#: templates/default/delete_group.html:11
+#: templates/modern/delete_group.html:11
 #, auto-english-fallback
 msgid "Delete Group"
 msgstr "코드를 생성할 수 없습니다."
 
-#: templates/default/delete_group.html:16 templates/modern/delete_group.html:16
+#: templates/default/delete_group.html:16
+#: templates/modern/delete_group.html:16
 #, auto-english-fallback
 msgid "You are about to delete the group"
 msgstr "클래스를 생성할 수 없습니다."
@@ -9199,42 +9220,50 @@ msgstr "클래스를 생성할 수 없습니다."
 msgid "This action cannot be undone. Are you sure you want to proceed?"
 msgstr "인터페이스를 생성할 수 없습니다."
 
-#: templates/default/delete_group.html:22 templates/modern/delete_group.html:22
+#: templates/default/delete_group.html:22
+#: templates/modern/delete_group.html:22
 #, auto-english-fallback
 msgid "Deletion Impact"
 msgstr "트레이트를 생성할 수 없습니다."
 
-#: templates/default/delete_group.html:29 templates/modern/delete_group.html:29
+#: templates/default/delete_group.html:29
+#: templates/modern/delete_group.html:29
 #, auto-english-fallback
 msgid "member will be removed from this group"
 msgstr "메서드를 생성할 수 없습니다."
 
-#: templates/default/delete_group.html:31 templates/modern/delete_group.html:31
+#: templates/default/delete_group.html:31
+#: templates/modern/delete_group.html:31
 #, auto-english-fallback
 msgid "members will be removed from this group"
 msgstr "속성을 생성할 수 없습니다."
 
-#: templates/default/delete_group.html:37 templates/modern/delete_group.html:37
+#: templates/default/delete_group.html:37
+#: templates/modern/delete_group.html:37
 #, auto-english-fallback
 msgid "zone will lose this group ownership"
 msgstr "상수를 생성할 수 없습니다."
 
-#: templates/default/delete_group.html:39 templates/modern/delete_group.html:39
+#: templates/default/delete_group.html:39
+#: templates/modern/delete_group.html:39
 #, auto-english-fallback
 msgid "zones will lose this group ownership"
 msgstr "네임스페이스를 생성할 수 없습니다."
 
-#: templates/default/delete_group.html:49 templates/modern/delete_group.html:49
+#: templates/default/delete_group.html:49
+#: templates/modern/delete_group.html:49
 #, auto-english-fallback
 msgid "Affected Zones"
 msgstr "주석을 생성할 수 없습니다."
 
-#: templates/default/delete_group.html:51 templates/modern/delete_group.html:51
+#: templates/default/delete_group.html:51
+#: templates/modern/delete_group.html:51
 #, auto-english-fallback
 msgid "showing first 20"
 msgstr "어트리뷰트를 생성할 수 없습니다."
 
-#: templates/default/delete_group.html:68 templates/modern/delete_group.html:68
+#: templates/default/delete_group.html:68
+#: templates/modern/delete_group.html:68
 #, auto-english-fallback
 msgid "more zones..."
 msgstr "PHPDoc을 생성할 수 없습니다."
@@ -9244,18 +9273,22 @@ msgstr "PHPDoc을 생성할 수 없습니다."
 msgid "Important Note"
 msgstr "코드를 린트할 수 없습니다."
 
-#: templates/default/delete_group.html:77 templates/modern/delete_group.html:77
+#: templates/default/delete_group.html:77
+#: templates/modern/delete_group.html:77
 msgid ""
-"Members will lose access to all zones owned by this group. Zones without any "
-"remaining owners will still exist but will be inaccessible to regular users."
+"Members will lose access to all zones owned by this group. Zones without any"
+" remaining owners will still exist but will be inaccessible to regular "
+"users."
 msgstr "코드를 포맷할 수 없습니다."
 
-#: templates/default/delete_group.html:85 templates/modern/delete_group.html:85
+#: templates/default/delete_group.html:85
+#: templates/modern/delete_group.html:85
 #, auto-english-fallback
 msgid "Yes, delete this group"
 msgstr "코드를 분석할 수 없습니다."
 
-#: templates/default/delete_group.html:89 templates/modern/delete_group.html:89
+#: templates/default/delete_group.html:89
+#: templates/modern/delete_group.html:89
 #, auto-english-fallback
 msgid "No, keep this group"
 msgstr "코드를 최적화할 수 없습니다."
@@ -10087,7 +10120,8 @@ msgid ""
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
 msgstr ""
-"시스템 가용성을 유지하기 위해 노력하지만 100% 가동 시간을 보장할 수 없습니다. 사용자는 적절한 백업 및 모니터링 없이 중요한 DNS 작업을 위해 이 시스템에만 의존해서는 안 됩니다."
+"시스템 가용성을 유지하기 위해 노력하지만 100% 가동 시간을 보장할 수 없습니다. 사용자는 적절한 백업 및 모니터링 없이 중요한 DNS"
+" 작업을 위해 이 시스템에만 의존해서는 안 됩니다."
 
 #: templates/modern/user_agreement_content.html:22
 #, auto-english-fallback
@@ -10096,8 +10130,8 @@ msgstr "책임 제한"
 
 #: templates/modern/user_agreement_content.html:23
 msgid ""
-"This system is provided \"as is\" without any warranties. The administrators "
-"are not liable for any damages or losses resulting from the use of this "
+"This system is provided \"as is\" without any warranties. The administrators"
+" are not liable for any damages or losses resulting from the use of this "
 "system."
 msgstr ""
 "이 시스템은 어떠한 보증 없이 \"있는 그대로\" 제공됩니다. 관리자는 이 시스템 사용으로 인한 손해나 손실에 대해 책임지지 않습니다."
@@ -10345,7 +10379,8 @@ msgid ""
 "PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
 "If you select KSK or ZSK, PowerDNS may still create a CSK key."
 msgstr ""
-"PowerDNS 4.0 이상 버전은 기본적으로 Combined Signing Keys(CSK)를 사용합니다. KSK 또는 ZSK를 선택하면 PowerDNS가 여전히 CSK 키를 생성할 수 있습니다."
+"PowerDNS 4.0 이상 버전은 기본적으로 Combined Signing Keys(CSK)를 사용합니다. KSK 또는 ZSK를 "
+"선택하면 PowerDNS가 여전히 CSK 키를 생성할 수 있습니다."
 
 #: templates/modern/dnssec_add_key.html:53
 #, auto-english-fallback
@@ -10544,7 +10579,8 @@ msgstr "특수 문자를 포함해야 합니다"
 msgid "No specific password requirements"
 msgstr "특별한 비밀번호 요구 사항 없음"
 
-#: templates/modern/add_user.html:160 templates/modern/edit_perm_templ.html:151
+#: templates/modern/add_user.html:160
+#: templates/modern/edit_perm_templ.html:151
 #, auto-english-fallback
 msgid "User Permissions"
 msgstr "사용자 권한"
@@ -10753,11 +10789,12 @@ msgstr "액세스 템플릿이란?"
 
 #: templates/modern/add_perm_templ.html:68
 msgid ""
-"Access templates define sets of actions that users and groups can perform in "
-"Poweradmin. They provide a quick way to assign common permission "
+"Access templates define sets of actions that users and groups can perform in"
+" Poweradmin. They provide a quick way to assign common permission "
 "combinations."
 msgstr ""
-"액세스 템플릿은 사용자와 그룹이 Poweradmin에서 수행할 수 있는 작업 집합을 정의합니다. 일반적인 권한 조합을 빠르게 할당할 수 있는 방법을 제공합니다."
+"액세스 템플릿은 사용자와 그룹이 Poweradmin에서 수행할 수 있는 작업 집합을 정의합니다. 일반적인 권한 조합을 빠르게 할당할 수 "
+"있는 방법을 제공합니다."
 
 #: templates/modern/add_perm_templ.html:71
 #, auto-english-fallback
@@ -11031,8 +11068,8 @@ msgstr "일치하는 항목만"
 
 #: templates/modern/batch_ptr_record.html:143
 msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward "
-"zone"
+"Creates PTR records only for IPs that have existing A records in the forward"
+" zone"
 msgstr "정방향 존에 기존 A 레코드가 있는 IP에 대해서만 PTR 레코드를 생성합니다"
 
 #: templates/modern/batch_ptr_record.html:145
@@ -11087,16 +11124,15 @@ msgstr "\"기존 A 레코드에 대해서만 PTR 생성\"을 사용하여 정방
 
 #: templates/modern/batch_ptr_record.html:183
 msgid ""
-"Use the Host Prefix field to add a prefix to all hostnames when creating all "
-"IPs"
+"Use the Host Prefix field to add a prefix to all hostnames when creating all"
+" IPs"
 msgstr "모든 IP를 생성할 때 모든 호스트명에 프리픽스를 추가하려면 호스트 프리픽스 필드를 사용하세요"
 
 #: templates/modern/batch_ptr_record.html:184
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
-msgstr ""
-"\"정방향 A/AAAA 레코드 생성\"을 선택하여 일치하는 정방향 레코드를 자동으로 생성합니다 (일치 모드 사용 시 비활성화됨)"
+msgstr "\"정방향 A/AAAA 레코드 생성\"을 선택하여 일치하는 정방향 레코드를 자동으로 생성합니다 (일치 모드 사용 시 비활성화됨)"
 
 #: templates/modern/zone-ownership.html:6 templates/modern/edit.html:205
 #, auto-english-fallback
@@ -11158,7 +11194,8 @@ msgstr "그룹 검색..."
 msgid "Add Group"
 msgstr "그룹 추가"
 
-#: templates/modern/edit_zone_templ.html:96 templates/modern/add_record.html:18
+#: templates/modern/edit_zone_templ.html:96
+#: templates/modern/add_record.html:18
 #, auto-english-fallback
 msgid "Add record"
 msgstr "레코드 추가"
@@ -11259,7 +11296,8 @@ msgstr "API 키 생성"
 #: templates/default/api_key_add.html:52 templates/modern/api_key_add.html:52
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
-"sure to save it in a secure place, as you won't be able to retrieve it later."
+"sure to save it in a secure place, as you won't be able to retrieve it "
+"later."
 msgstr "새 API 키를 생성하면 키가 한 번만 표시됩니다. 나중에 검색할 수 없으므로 안전한 곳에 저장하세요."
 
 #: templates/default/api_key_add.html:53 templates/modern/api_key_add.html:53
@@ -11556,7 +11594,8 @@ msgstr "레코드 상세 정보"
 
 #: templates/modern/delete_record.html:74
 #, auto-english-fallback
-msgid "You are trying to delete a record that is needed for this zone to work."
+msgid ""
+"You are trying to delete a record that is needed for this zone to work."
 msgstr "이 존이 작동하는 데 필요한 레코드를 삭제하려고 합니다."
 
 #: templates/modern/delete_record.html:85
@@ -11964,7 +12003,8 @@ msgid ""
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
 msgstr ""
-"존의 템플릿을 변경하면 템플릿 기반 레코드를 덮어쓰지만 수동 추가는 유지됩니다. 템플릿 수정은 존을 자동으로 업데이트하지 않습니다 - 템플릿 편집 시 \"존 업데이트\" 버튼을 사용하여 변경 사항을 적용하세요."
+"존의 템플릿을 변경하면 템플릿 기반 레코드를 덮어쓰지만 수동 추가는 유지됩니다. 템플릿 수정은 존을 자동으로 업데이트하지 않습니다 - "
+"템플릿 편집 시 \"존 업데이트\" 버튼을 사용하여 변경 사항을 적용하세요."
 
 #: templates/modern/change_password.html:16
 #, auto-english-fallback
@@ -12121,7 +12161,8 @@ msgid ""
 "This template does not have an SOA record. DNS zones typically require an "
 "SOA record to function properly, and DNSSEC signing may fail without one."
 msgstr ""
-"이 템플릿에는 SOA 레코드가 없습니다. DNS 존은 일반적으로 제대로 작동하려면 SOA 레코드가 필요하며 없으면 DNSSEC 서명이 실패할 수 있습니다."
+"이 템플릿에는 SOA 레코드가 없습니다. DNS 존은 일반적으로 제대로 작동하려면 SOA 레코드가 필요하며 없으면 DNSSEC 서명이 "
+"실패할 수 있습니다."
 
 #: templates/modern/edit_zone_templ.html:38
 #, auto-english-fallback
@@ -12369,8 +12410,8 @@ msgstr "레코드 삭제"
 
 #: templates/modern/delete_records.html:27
 msgid ""
-"Are you sure you want to delete the following records? This action cannot be "
-"undone."
+"Are you sure you want to delete the following records? This action cannot be"
+" undone."
 msgstr "다음 레코드를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다."
 
 #: templates/modern/delete_records.html:78
@@ -12425,8 +12466,8 @@ msgstr "복구 코드 저장"
 
 #: templates/modern/mfa_recovery_codes.html:30
 msgid ""
-"Recovery codes can be used to access your account if you lose access to your "
-"authenticator device. Each code can only be used once."
+"Recovery codes can be used to access your account if you lose access to your"
+" authenticator device. Each code can only be used once."
 msgstr ""
 "인증 장치에 대한 액세스 권한을 잃은 경우 복구 코드를 사용하여 계정에 액세스할 수 있습니다. 각 코드는 한 번만 사용할 수 있습니다."
 
@@ -12484,8 +12525,8 @@ msgstr "MFA 설정 필요"
 
 #: templates/default/mfa_setup.html:15 templates/modern/mfa_setup.html:15
 msgid ""
-"Your organization requires multi-factor authentication. Please set up MFA to "
-"continue using the system."
+"Your organization requires multi-factor authentication. Please set up MFA to"
+" continue using the system."
 msgstr "귀하의 조직은 다중 인증을 요구합니다. 시스템을 계속 사용하려면 MFA를 설정하세요."
 
 #: templates/default/mfa_setup.html:24 templates/modern/mfa_setup.html:24
@@ -12525,8 +12566,8 @@ msgstr "인증 앱"
 
 #: templates/default/mfa_setup.html:75 templates/modern/mfa_setup.html:75
 msgid ""
-"Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
-"or Authy."
+"Use an authenticator app like Google Authenticator, Microsoft Authenticator,"
+" or Authy."
 msgstr ""
 "Google Authenticator, Microsoft Authenticator 또는 Authy와 같은 인증 앱을 사용하세요."
 
@@ -12666,7 +12707,8 @@ msgid ""
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
 msgstr ""
-"마스터 네임서버가 supermaster인 슬레이브 존을 삭제하려고 합니다. 지금 존을 삭제하면 임시로만 제거됩니다. supermaster가 이 존에 대한 알림을 보내면 다시 추가됩니다!"
+"마스터 네임서버가 supermaster인 슬레이브 존을 삭제하려고 합니다. 지금 존을 삭제하면 임시로만 제거됩니다. "
+"supermaster가 이 존에 대한 알림을 보내면 다시 추가됩니다!"
 
 #: templates/modern/delete_domain.html:75
 #, auto-english-fallback
@@ -12808,7 +12850,8 @@ msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
 msgstr ""
-"필터 구문: type:txt content:spf. 와일드카드는 검색에 %를 추가합니다. 역방향은 IP를 PTR 형식으로 변환합니다 (예: 192.168.1.1을 1.1.168.192.in-addr.arpa로)"
+"필터 구문: type:txt content:spf. 와일드카드는 검색에 %를 추가합니다. 역방향은 IP를 PTR 형식으로 변환합니다 "
+"(예: 192.168.1.1을 1.1.168.192.in-addr.arpa로)"
 
 #: templates/default/search.html:120 templates/modern/search.html:120
 #, auto-english-fallback
@@ -12987,7 +13030,8 @@ msgid ""
 "modes. These previews use sample data to demonstrate the email formatting "
 "and styling."
 msgstr ""
-"라이트 모드와 다크 모드 모두에서 이메일 템플릿이 사용자에게 어떻게 표시되는지 미리봅니다. 이러한 미리보기는 샘플 데이터를 사용하여 이메일 형식 및 스타일을 보여줍니다."
+"라이트 모드와 다크 모드 모두에서 이메일 템플릿이 사용자에게 어떻게 표시되는지 미리봅니다. 이러한 미리보기는 샘플 데이터를 사용하여 "
+"이메일 형식 및 스타일을 보여줍니다."
 
 #: templates/modern/email_previews.html:21
 #, auto-english-fallback
@@ -13052,7 +13096,8 @@ msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
 msgstr ""
-"표준 템플릿으로 되돌리려면 <code>templates/emails/custom/</code>에서 사용자 지정 템플릿 파일을 제거하거나 이름을 변경하세요."
+"표준 템플릿으로 되돌리려면 <code>templates/emails/custom/</code>에서 사용자 지정 템플릿 파일을 제거하거나 "
+"이름을 변경하세요."
 
 #: templates/modern/email_previews.html:87
 #, auto-english-fallback
@@ -13061,11 +13106,12 @@ msgstr "사용자 지정 템플릿"
 
 #: templates/modern/email_previews.html:88
 msgid ""
-"You can create custom email templates by placing them in <code>templates/"
-"emails/custom/</code> to override these standard templates with your own "
-"designs."
+"You can create custom email templates by placing them in "
+"<code>templates/emails/custom/</code> to override these standard templates "
+"with your own designs."
 msgstr ""
-"<code>templates/emails/custom/</code>에 배치하여 이러한 표준 템플릿을 사용자 지정 디자인으로 재정의할 수 있습니다."
+"<code>templates/emails/custom/</code>에 배치하여 이러한 표준 템플릿을 사용자 지정 디자인으로 재정의할 수 "
+"있습니다."
 
 #: templates/modern/email_previews.html:93
 #, auto-english-fallback
@@ -13158,48 +13204,57 @@ msgstr "가동 시간"
 msgid "Server information is not available."
 msgstr "서버 정보를 사용할 수 없습니다."
 
-#: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:101
+#: templates/default/pdns_status.html:101
+#: templates/modern/pdns_status.html:101
 #, auto-english-fallback
 msgid "Slave Servers"
 msgstr "슬레이브 서버"
 
-#: templates/default/pdns_status.html:104 templates/modern/pdns_status.html:104
+#: templates/default/pdns_status.html:104
+#: templates/modern/pdns_status.html:104
 msgid ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
+"Showing connectivity status for DNS servers listed in the supermasters "
+"table."
 msgstr "supermaster 테이블에 나열된 DNS 서버의 연결 상태를 표시합니다."
 
-#: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:114
+#: templates/default/pdns_status.html:114
+#: templates/modern/pdns_status.html:114
 #, auto-english-fallback
 msgid "Server IP"
 msgstr "서버 IP"
 
-#: templates/default/pdns_status.html:116 templates/modern/pdns_status.html:116
+#: templates/default/pdns_status.html:116
+#: templates/modern/pdns_status.html:116
 #, auto-english-fallback
 msgid "Last Checked"
 msgstr "마지막 확인"
 
-#: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:125
-#: install/templates/step2.html.twig:27
+#: templates/default/pdns_status.html:125
+#: templates/modern/pdns_status.html:125 install/templates/step2.html.twig:27
 #, auto-english-fallback
 msgid "OK"
 msgstr "OK"
 
-#: templates/default/pdns_status.html:127 templates/modern/pdns_status.html:127
+#: templates/default/pdns_status.html:127
+#: templates/modern/pdns_status.html:127
 #, auto-english-fallback
 msgid "Unreachable"
 msgstr "접근 불가"
 
-#: templates/default/pdns_status.html:129 templates/modern/pdns_status.html:129
+#: templates/default/pdns_status.html:129
+#: templates/modern/pdns_status.html:129
 #, auto-english-fallback
 msgid "Error"
 msgstr "Error"
 
-#: templates/default/pdns_status.html:160 templates/modern/pdns_status.html:160
+#: templates/default/pdns_status.html:160
+#: templates/modern/pdns_status.html:160
 #, auto-english-fallback
 msgid "Server Statistics"
 msgstr "서버 통계"
 
-#: templates/default/pdns_status.html:170 templates/modern/pdns_status.html:170
+#: templates/default/pdns_status.html:170
+#: templates/modern/pdns_status.html:170
 #, auto-english-fallback
 msgid "Server Health"
 msgstr "서버 상태"
@@ -13209,47 +13264,56 @@ msgstr "서버 상태"
 msgid "Unknown"
 msgstr "알 수 없음"
 
-#: templates/default/pdns_status.html:198 templates/modern/pdns_status.html:198
+#: templates/default/pdns_status.html:198
+#: templates/modern/pdns_status.html:198
 #, auto-english-fallback
 msgid "Latency"
 msgstr "대기 시간"
 
-#: templates/default/pdns_status.html:208 templates/modern/pdns_status.html:208
+#: templates/default/pdns_status.html:208
+#: templates/modern/pdns_status.html:208
 #, auto-english-fallback
 msgid "CPU Usage"
 msgstr "CPU 사용량"
 
-#: templates/default/pdns_status.html:223 templates/modern/pdns_status.html:223
+#: templates/default/pdns_status.html:223
+#: templates/modern/pdns_status.html:223
 #, auto-english-fallback
 msgid "Query Statistics"
 msgstr "쿼리 통계"
 
-#: templates/default/pdns_status.html:243 templates/modern/pdns_status.html:243
+#: templates/default/pdns_status.html:243
+#: templates/modern/pdns_status.html:243
 #, auto-english-fallback
 msgid "UDP Queries"
 msgstr "UDP 쿼리"
 
-#: templates/default/pdns_status.html:260 templates/modern/pdns_status.html:260
+#: templates/default/pdns_status.html:260
+#: templates/modern/pdns_status.html:260
 #, auto-english-fallback
 msgid "TCP Queries"
 msgstr "TCP 쿼리"
 
-#: templates/default/pdns_status.html:279 templates/modern/pdns_status.html:279
+#: templates/default/pdns_status.html:279
+#: templates/modern/pdns_status.html:279
 #, auto-english-fallback
 msgid "Cache Hits"
 msgstr "캐시 히트"
 
-#: templates/default/pdns_status.html:296 templates/modern/pdns_status.html:296
+#: templates/default/pdns_status.html:296
+#: templates/modern/pdns_status.html:296
 #, auto-english-fallback
 msgid "Cache Misses"
 msgstr "캐시 미스"
 
-#: templates/default/pdns_status.html:331 templates/modern/pdns_status.html:331
+#: templates/default/pdns_status.html:331
+#: templates/modern/pdns_status.html:331
 #, auto-english-fallback
 msgid "Toggle View"
 msgstr "보기 전환"
 
-#: templates/default/pdns_status.html:336 templates/modern/pdns_status.html:336
+#: templates/default/pdns_status.html:336
+#: templates/modern/pdns_status.html:336
 #, auto-english-fallback
 msgid "Refresh"
 msgstr "새로 고침"
@@ -13259,17 +13323,20 @@ msgstr "새로 고침"
 msgid "Bytes"
 msgstr "바이트"
 
-#: templates/default/pdns_status.html:410 templates/modern/pdns_status.html:410
+#: templates/default/pdns_status.html:410
+#: templates/modern/pdns_status.html:410
 #, auto-english-fallback
 msgid "Metric"
 msgstr "메트릭"
 
-#: templates/default/pdns_status.html:411 templates/modern/pdns_status.html:411
+#: templates/default/pdns_status.html:411
+#: templates/modern/pdns_status.html:411
 #, auto-english-fallback
 msgid "Value"
 msgstr "값"
 
-#: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:465
+#: templates/default/pdns_status.html:465
+#: templates/modern/pdns_status.html:465
 #, auto-english-fallback
 msgid "No detailed metrics available."
 msgstr "상세 메트릭을 사용할 수 없습니다."
@@ -13425,7 +13492,8 @@ msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
 "is linked to your user account and inherits your permissions."
 msgstr ""
-"API 키를 사용하면 외부 애플리케이션이 Poweradmin API에 액세스할 수 있습니다. 각 키는 사용자 계정에 연결되어 있으며 귀하의 권한을 상속합니다."
+"API 키를 사용하면 외부 애플리케이션이 Poweradmin API에 액세스할 수 있습니다. 각 키는 사용자 계정에 연결되어 있으며 "
+"귀하의 권한을 상속합니다."
 
 #: templates/default/api_keys.html:29 templates/modern/api_keys.html:29
 #, auto-english-fallback
@@ -13464,8 +13532,8 @@ msgstr "다음 API 키를 삭제하려고 합니다"
 
 #: templates/modern/api_key_delete.html:18
 msgid ""
-"If you delete this API key, any applications using it will no longer be able "
-"to authenticate."
+"If you delete this API key, any applications using it will no longer be able"
+" to authenticate."
 msgstr "이 API 키를 삭제하면 이를 사용하는 모든 애플리케이션은 더 이상 인증할 수 없습니다."
 
 #: templates/modern/api_key_delete.html:70
@@ -13499,7 +13567,8 @@ msgid ""
 "of permissions. Changes made here will affect all users and groups who have "
 "this template assigned."
 msgstr ""
-"이 템플릿은 사용자와 그룹에 할당되어 권한 집합을 빠르게 적용할 수 있습니다. 여기서 변경한 사항은 이 템플릿이 할당된 모든 사용자와 그룹에 영향을 미칩니다."
+"이 템플릿은 사용자와 그룹에 할당되어 권한 집합을 빠르게 적용할 수 있습니다. 여기서 변경한 사항은 이 템플릿이 할당된 모든 사용자와 "
+"그룹에 영향을 미칩니다."
 
 #: templates/default/edit_perm_templ.html:72
 #, auto-english-fallback
@@ -13588,7 +13657,8 @@ msgstr "그룹 생성"
 
 #: templates/default/whois.html:26 templates/modern/whois.html:26
 #, auto-english-fallback
-msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
+msgid ""
+"Enter a domain name (e.g., example.com) to lookup its WHOIS information"
 msgstr "도메인 이름(예: example.com)을 입력하여 WHOIS 정보를 조회하세요"
 
 #: templates/default/whois.html:34 templates/modern/whois.html:34
@@ -13746,7 +13816,8 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Poweradmin이 PowerDNS 테이블에 액세스하기 위해 제한된 권한(select, insert, update, delete)을 가진 데이터베이스 사용자를 생성합니다."
+"Poweradmin이 PowerDNS 테이블에 액세스하기 위해 제한된 권한(select, insert, update, delete)을 "
+"가진 데이터베이스 사용자를 생성합니다."
 
 #: install/templates/step6.html.twig:20
 #, auto-english-fallback
@@ -14254,7 +14325,8 @@ msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
 msgstr ""
-"3단계에서 설정한 기본 사용자명 \"admin\"과 비밀번호를 사용하여 <a href=\"../index.php\">Poweradmin</a>에 로그인하세요"
+"3단계에서 설정한 기본 사용자명 \"admin\"과 비밀번호를 사용하여 <a "
+"href=\"../index.php\">Poweradmin</a>에 로그인하세요"
 
 #: install/templates/step8.html.twig:28
 #, auto-english-fallback
@@ -14324,7 +14396,8 @@ msgstr "외래 키 제약 조건 문제:"
 
 #: install/helpers/InstallStepHandler.php:203
 msgid ""
-"The installer could not remove existing tables due to foreign key constraints"
+"The installer could not remove existing tables due to foreign key "
+"constraints"
 msgstr "외래 키 제약 조건으로 인해 설치 프로그램이 기존 테이블을 제거할 수 없습니다"
 
 #: install/helpers/InstallStepHandler.php:204
@@ -14400,8 +14473,7 @@ msgid ""
 msgstr "SQLite 데이터베이스 파일 %s에 쓸 수 없습니다. 파일 권한을 확인하세요."
 
 #: install/helpers/DatabaseHelper.php:188
-#, auto-english-fallback
-#, php-format
+#, auto-english-fallback, php-format
 msgid "Could not access the SQLite database file %s: %s"
 msgstr "SQLite 데이터베이스 파일 %s에 액세스할 수 없습니다: %s"
 
@@ -14416,7 +14488,8 @@ msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"별도의 PowerDNS 데이터베이스는 MySQL에서만 지원됩니다. PostgreSQL 및 SQLite의 경우 동일한 데이터베이스를 사용하세요."
+"별도의 PowerDNS 데이터베이스는 MySQL에서만 지원됩니다. PostgreSQL 및 SQLite의 경우 동일한 데이터베이스를 "
+"사용하세요."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
@@ -14424,11 +14497,10 @@ msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
 msgstr ""
-"데이터베이스 \"%s\"에 PowerDNS 테이블이 누락되었습니다: %s. 이 데이터베이스에 PowerDNS가 제대로 설치되어 있는지 확인하세요."
+"데이터베이스 \"%s\"에 PowerDNS 테이블이 누락되었습니다: %s. 이 데이터베이스에 PowerDNS가 제대로 설치되어 있는지 "
+"확인하세요."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS 데이터베이스 \"%s\"에 연결할 수 없습니다: %s"
-
-
