@@ -6,7 +6,7 @@
   "baseBranchPatterns": [
     "master",
     "release/3.x",
-    "release/4.x"
+    "release/4.0.x"
   ],
   "constraints": {
     "php": ">=8.1 <8.2"
@@ -30,6 +30,18 @@
       "postUpdateOptions": [
         "composerUpdateNoDev"
       ]
+    },
+    {
+      "description": "Only allow patch updates on stable branches",
+      "matchBaseBranches": [
+        "release/3.x",
+        "release/4.0.x"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
+      "enabled": false
     },
     {
       "matchDatasources": [
