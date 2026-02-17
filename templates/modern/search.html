@@ -191,7 +191,7 @@
                             {% endif %}
                         </td>
                         <td>{{ zone['name'] }}</td>
-                        <td><span class="badge bg-light text-dark">{{ zone['type'] }}</span></td>
+                        <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone['type'] }}</span></td>
                         <td><span class="badge bg-secondary">{{ zone['count_records'] }}</span></td>
                         <td>
                             {% if zone['owner_fullnames'] is defined %}
@@ -407,7 +407,7 @@
                             {% endif %}
                         </td>
                         <td>{{ record['display_name'] is defined ? record['display_name'] : record['name'] }}</td>
-                        <td><span class="badge {% if record['type'] == 'A' %}bg-primary{% elseif record['type'] == 'AAAA' %}bg-info{% elseif record['type'] == 'CNAME' %}bg-success{% elseif record['type'] == 'MX' %}bg-warning{% elseif record['type'] == 'TXT' %}bg-secondary{% elseif record['type'] == 'PTR' %}bg-danger{% elseif record['type'] == 'SOA' %}bg-dark{% elseif record['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ record['type'] }}</span></td>
+                        <td><span class="badge {{ record_type_class(record['type']) }}">{{ record['type'] }}</span></td>
                         <td>{{ record['prio'] }}</td>
                         <td><code class="text-break">{{ record['content'] }}</code></td>
                         <td>{{ record['ttl'] }}</td>

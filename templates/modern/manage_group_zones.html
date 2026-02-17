@@ -46,15 +46,7 @@
                                 <td><input type="checkbox" name="domain_ids[]" value="{{ zone.id }}" class="form-check-input owned-checkbox"></td>
                                 <td>{{ zone.name }}</td>
                                 <td>
-                                    {% if zone.type == 'MASTER' %}
-                                        <span class="badge bg-success">{% trans %}Master{% endtrans %}</span>
-                                    {% elseif zone.type == 'SLAVE' %}
-                                        <span class="badge bg-info">{% trans %}Slave{% endtrans %}</span>
-                                    {% elseif zone.type == 'NATIVE' %}
-                                        <span class="badge bg-warning">{% trans %}Native{% endtrans %}</span>
-                                    {% else %}
-                                        <span class="badge bg-secondary">{{ zone.type }}</span>
-                                    {% endif %}
+                                    <span class="badge {{ zone_type_class(zone.type) }}">{{ zone.type }}</span>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -109,15 +101,7 @@
                                 <td><input type="checkbox" name="domain_ids[]" value="{{ zone.id }}" class="form-check-input available-checkbox"></td>
                                 <td>{{ zone.name }}</td>
                                 <td>
-                                    {% if zone.type == 'MASTER' %}
-                                        <span class="badge bg-success">{% trans %}Master{% endtrans %}</span>
-                                    {% elseif zone.type == 'SLAVE' %}
-                                        <span class="badge bg-info">{% trans %}Slave{% endtrans %}</span>
-                                    {% elseif zone.type == 'NATIVE' %}
-                                        <span class="badge bg-warning">{% trans %}Native{% endtrans %}</span>
-                                    {% else %}
-                                        <span class="badge bg-secondary">{{ zone.type }}</span>
-                                    {% endif %}
+                                    <span class="badge {{ zone_type_class(zone.type) }}">{{ zone.type }}</span>
                                 </td>
                             </tr>
                             {% endfor %}

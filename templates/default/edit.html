@@ -401,7 +401,7 @@
             {% endif %}
             {% if r['type'] == "SOA" or r['type'] == "NS" and perm_edit == "own_as_client" %}
             <td class="col-sm-2">{{ r['display_name'] is defined ? r['display_name'] : r['name'] }}</td>
-            <td class="text-center"><span class="badge {% if r['type'] == 'SOA' %}bg-dark{% elseif r['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ r['type'] }}</span></td>
+            <td class="text-center"><span class="badge {{ record_type_class(r['type']) }}">{{ r['type'] }}</span></td>
             <td>{{ r['content'] }}</td>
             <td>-</td>
             <td class="col-sm-1">{{ r['ttl'] }}</td>
@@ -414,7 +414,7 @@
                                         name="record[{{ r['id'] }}][name]" value="{{ r['editable_name'] is defined ? r['editable_name'] : r['name'] }}"></td>
             <td class="text-center">
                 <input type="hidden" name="record[{{ r['id'] }}][type]" value="{{ r['type'] }}">
-                <span class="badge {% if r['type'] == 'A' %}bg-primary{% elseif r['type'] == 'AAAA' %}bg-info{% elseif r['type'] == 'CNAME' %}bg-success{% elseif r['type'] == 'MX' %}bg-warning{% elseif r['type'] == 'TXT' %}bg-secondary{% elseif r['type'] == 'PTR' %}bg-danger{% elseif r['type'] == 'SOA' %}bg-dark{% elseif r['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ r['type'] }}</span>
+                <span class="badge {{ record_type_class(r['type']) }}">{{ r['type'] }}</span>
             </td>
             <td>
                 <div id="contentInputContainer{{ r['id'] }}">

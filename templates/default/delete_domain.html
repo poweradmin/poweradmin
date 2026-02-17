@@ -55,7 +55,7 @@
                         <p class="mb-0"><strong>{% trans %}Type{% endtrans %}:</strong></p>
                     </div>
                     <div class="col-md-9">
-                        <p class="mb-0"><span class="badge bg-light text-dark">{{ zone_info['type'] }}</span></p>
+                        <p class="mb-0"><span class="badge {{ zone_type_class(zone_info['type']) }}">{{ zone_info['type'] }}</span></p>
                     </div>
                 </div>
             </div>

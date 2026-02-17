@@ -71,9 +71,7 @@
                         <td><input class="form-check-input zone-checkbox" type="checkbox" name="zone_ids[]" value="{{ zone.id }}"></td>
                         <td>{{ zone.name }}</td>
                     <td>
-                        <span class="badge {% if zone.type == 'MASTER' %}bg-primary{% elseif zone.type == 'SLAVE' %}bg-secondary{% else %}bg-light text-dark{% endif %}">
-                            {{ zone.type }}
-                        </span>
+                        <span class="badge {{ zone_type_class(zone.type) }}">{{ zone.type }}</span>
                     </td>
                     <td>{{ zone.count_records|default(0) }}</td>
                     <td>

@@ -42,7 +42,7 @@
                             {% for zone in zones %}
                             <tr>
                                 <td><code>{{ zone.name }}</code></td>
-                                <td><span class="badge bg-light text-dark">{{ zone.type }}</span></td>
+                                <td><span class="badge {{ zone_type_class(zone.type) }}">{{ zone.type }}</span></td>
                             </tr>
                             {% endfor %}
                         </tbody>

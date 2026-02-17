@@ -30,6 +30,7 @@ use Poweradmin\Domain\Utility\Timer;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
 use Poweradmin\Infrastructure\Utility\SimpleSizeFormatter;
+use Poweradmin\Infrastructure\Web\BadgeTwigExtension;
 use Poweradmin\Module\ModuleRegistry;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\PoFileLoader;
@@ -143,6 +144,7 @@ class AppManager
         }
 
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
+        $this->templateRenderer->addExtension(new BadgeTwigExtension());
     }
 
     /**

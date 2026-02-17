@@ -132,13 +132,7 @@
                                     <i class="bi bi-hdd text-secondary me-1"></i>
                                     <strong>{{ zone.name }}</strong>
                                     {% if zone.type %}
-                                        {% if zone.type == 'MASTER' %}
-                                            <span class="badge bg-success badge-sm ms-1">{% trans %}Master{% endtrans %}</span>
-                                        {% elseif zone.type == 'SLAVE' %}
-                                            <span class="badge bg-info badge-sm ms-1">{% trans %}Slave{% endtrans %}</span>
-                                        {% elseif zone.type == 'NATIVE' %}
-                                            <span class="badge bg-warning badge-sm ms-1">{% trans %}Native{% endtrans %}</span>
-                                        {% endif %}
+                                        <span class="badge {{ zone_type_class(zone.type) }} badge-sm ms-1">{{ zone.type }}</span>
                                     {% endif %}
                                 </div>
                                 <button type="button" class="btn btn-sm btn-outline-danger" onclick="showRemoveZoneModal({{ zone.id }}, '{{ zone.name|e('js') }}')" title="{% trans %}Remove from group{% endtrans %}">

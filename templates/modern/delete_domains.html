@@ -52,7 +52,7 @@
                                         {% endif %}
                                     </td>
                                     <td>{{ zone['owner'] }}</td>
-                                    <td><span class="badge bg-light text-dark">{{ zone['type'] }}</span></td>
+                                    <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone['type'] }}</span></td>
                                     <td>
                                         {% if perm_delete != "all" and (perm_delete != "own" or zone['is_owner'] != "1") %}
                                         <span class="text-danger"><i class="bi bi-exclamation-circle-fill me-1"></i>{{ error }}</span>
