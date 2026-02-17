@@ -206,9 +206,12 @@
             </a>
             {% else %}
                 {% if perm_edit != "none" %}
-                <button class="btn btn-secondary btn-sm" type="submit" form="edit-zone-form" name="sign_zone">
-                    <i class="bi bi-shield-check me-1 text-white"></i>{% trans %}Sign zone{% endtrans %}
-                </button>
+                <form method="post" action="" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <button class="btn btn-secondary btn-sm" type="submit" name="sign_zone">
+                        <i class="bi bi-shield-check me-1 text-white"></i>{% trans %}Sign zone{% endtrans %}
+                    </button>
+                </form>
                 {% endif %}
             {% endif %}
             {% endif %}
