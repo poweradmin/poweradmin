@@ -1834,6 +1834,7 @@ return array(
     'Symfony\\Component\\Serializer\\Mapping\\Factory\\ClassMetadataFactoryInterface' => $vendorDir . '/symfony/serializer/Mapping/Factory/ClassMetadataFactoryInterface.php',
     'Symfony\\Component\\Serializer\\Mapping\\Factory\\ClassResolverTrait' => $vendorDir . '/symfony/serializer/Mapping/Factory/ClassResolverTrait.php',
     'Symfony\\Component\\Serializer\\Mapping\\Factory\\CompiledClassMetadataFactory' => $vendorDir . '/symfony/serializer/Mapping/Factory/CompiledClassMetadataFactory.php',
+    'Symfony\\Component\\Serializer\\Mapping\\Loader\\AccessorCollisionResolverTrait' => $vendorDir . '/symfony/serializer/Mapping/Loader/AccessorCollisionResolverTrait.php',
     'Symfony\\Component\\Serializer\\Mapping\\Loader\\AnnotationLoader' => $vendorDir . '/symfony/serializer/Mapping/Loader/AnnotationLoader.php',
     'Symfony\\Component\\Serializer\\Mapping\\Loader\\AttributeLoader' => $vendorDir . '/symfony/serializer/Mapping/Loader/AttributeLoader.php',
     'Symfony\\Component\\Serializer\\Mapping\\Loader\\FileLoader' => $vendorDir . '/symfony/serializer/Mapping/Loader/FileLoader.php',
