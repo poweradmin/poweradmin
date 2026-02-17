@@ -90,6 +90,7 @@ return [
      */
     'misc' => [
         'record_comments_sync' => true,
+        'email_previews_enabled' => true,
     ],
 
     /**
