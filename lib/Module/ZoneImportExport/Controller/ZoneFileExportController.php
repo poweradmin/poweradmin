@@ -119,7 +119,7 @@ class ZoneFileExportController extends BaseController
             }
 
             $responseCode = 0;
-            if (isset($http_response_header)) {
+            if (!empty($http_response_header)) {
                 foreach ($http_response_header as $header) {
                     if (preg_match('/^HTTP\/\S+\s+(\d{3})/', $header, $matches)) {
                         $responseCode = (int)$matches[1];
