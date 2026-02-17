@@ -31,6 +31,17 @@
       ]
     },
     {
+      "description": "Only allow patch updates on stable branches",
+      "matchBaseBranches": [
+        "release/3.x"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
+      "enabled": false
+    },
+    {
       "matchDatasources": [
         "docker"
       ],
