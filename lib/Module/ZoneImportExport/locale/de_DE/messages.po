@@ -209,7 +209,6 @@ msgid "Zone:"
 msgstr "Zone:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:43
-#: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "records"
 msgstr "Einträge"
 
