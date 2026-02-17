@@ -228,7 +228,7 @@ msgstr "DNSウィザードが有効になっていません。"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:47
 msgid "Invalid zone ID."
-msgstr "Invalid zone ID."
+msgstr "無効なゾーンIDです。"
 
 #: lib/Application/Controller/DnsWizardController.php:71
 msgid "Zone not found."
@@ -337,7 +337,7 @@ msgstr "システム設定でAPI機能が無効になっています。"
 
 #: lib/Application/Controller/ApiKeysController.php:77
 msgid "You do not have permission to manage API keys."
-msgstr "You do not have permission to manage API keys."
+msgstr "APIキーを管理する権限がありません。"
 
 #: lib/Application/Controller/ApiKeysController.php:235
 msgid "API key name is required."
@@ -779,19 +779,19 @@ msgstr "ゾーンテンプレートレコードを編集する権限がありま
 
 #: lib/Application/Controller/OidcLoginController.php:77
 msgid "OIDC authentication is not enabled"
-msgstr "OIDC authentication is not enabled"
+msgstr "OIDC認証が有効になっていません"
 
 #: lib/Application/Service/SamlService.php:379
 msgid "Authentication failed: "
-msgstr "Authentication failed: "
+msgstr "認証に失敗しました："
 
 #: lib/Application/Controller/OidcLoginController.php:89
 msgid "No OIDC providers are configured"
-msgstr "No OIDC providers are configured"
+msgstr "OIDCプロバイダーが設定されていません"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
-msgstr "Failed to initiate OIDC authentication: "
+msgstr "OIDC認証の開始に失敗しました："
 
 #: lib/Domain/Service/Dns/DomainManager.php:214
 msgid "You do not have the permission to add a master zone."
@@ -847,7 +847,7 @@ msgstr "ゾーンテンプレートを表示する権限がありません。"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:54
 msgid "Invalid key ID."
-msgstr "Invalid key ID."
+msgstr "無効なキーIDです。"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:64
 msgid "You do not have permission to manage DNSSEC for this zone."
@@ -1256,19 +1256,19 @@ msgstr "パスワードの更新に失敗しました"
 
 #: lib/Application/Service/OidcService.php:180
 msgid "Authentication failed: Invalid state parameter"
-msgstr "Authentication failed: Invalid state parameter"
+msgstr "認証に失敗しました：無効なstateパラメータ"
 
 #: lib/Application/Service/OidcService.php:201
 msgid "Authentication failed: No authorization code"
-msgstr "Authentication failed: No authorization code"
+msgstr "認証に失敗しました：認可コードがありません"
 
 #: lib/Application/Service/SamlService.php:185
 msgid "Authentication failed: Invalid session"
-msgstr "Authentication failed: Invalid session"
+msgstr "認証に失敗しました：無効なセッション"
 
 #: lib/Application/Service/SamlService.php:339
 msgid "Authentication failed: Unable to create or update user account"
-msgstr "Authentication failed: Unable to create or update user account"
+msgstr "認証に失敗しました：ユーザーアカウントの作成または更新ができません"
 
 #: lib/Application/Service/LdapAuthenticator.php:237
 msgid "LDAP Authentication failed!"
@@ -9098,7 +9098,7 @@ msgstr "言語"
 
 #: templates/default/login.html:53 templates/modern/login.html:53
 msgid "Or sign in with"
-msgstr "Or sign in with"
+msgstr "または次でサインイン"
 
 #: templates/default/login.html:81 templates/modern/login.html:81
 msgid "Forgot your password?"
@@ -11130,7 +11130,7 @@ msgstr "ツール"
 
 #: templates/default/header.html:186 templates/modern/header.html:270
 msgid "API Documentation"
-msgstr "API Documentation"
+msgstr "APIドキュメント"
 
 #: templates/modern/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
@@ -11311,7 +11311,7 @@ msgstr "権限テンプレート"
 
 #: templates/modern/list_perm_templ.html:26
 msgid "No permission templates found"
-msgstr "No permission templates found"
+msgstr "権限テンプレートが見つかりません"
 
 #: templates/modern/index.html:9
 msgid "PowerDNS Server"
@@ -11319,27 +11319,27 @@ msgstr "PowerDNS Server"
 
 #: templates/modern/index.html:23
 msgid "View Details"
-msgstr "View Details"
+msgstr "詳細を表示"
 
 #: templates/modern/index.html:67
 msgid "List Forward Zones"
-msgstr "List Forward Zones"
+msgstr "正引きゾーン一覧"
 
 #: templates/modern/index.html:89
 msgid "Search Zones"
-msgstr "Search Zones"
+msgstr "ゾーン検索"
 
 #: templates/modern/index.html:111
 msgid "List Reverse Zones"
-msgstr "List Reverse Zones"
+msgstr "逆引きゾーン一覧"
 
 #: templates/modern/index.html:155
 msgid "List Zone Templates"
-msgstr "List Zone Templates"
+msgstr "ゾーンテンプレート一覧"
 
 #: templates/modern/index.html:177
 msgid "Bulk Domain Registration"
-msgstr "Bulk Domain Registration"
+msgstr "ドメイン一括登録"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
