@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-14 17:23+0200\n"
+"POT-Creation-Date: 2026-02-17 20:31+0200\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -581,7 +581,7 @@ msgstr "WHOIS 查询功能已禁用。"
 msgid "You do not have permission to perform WHOIS lookups."
 msgstr "您没有执行 WHOIS 查询的权限。"
 
-#: lib/Application/Controller/WhoisController.php:139
+#: lib/Application/Controller/WhoisController.php:142
 #, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "使用服务器 %s 检索 WHOIS 信息失败"
@@ -732,23 +732,23 @@ msgstr "您没有向此区域添加记录的权限。"
 msgid "No records were provided."
 msgstr "未提供记录。"
 
-#: lib/Application/Controller/AddRecordController.php:428
+#: lib/Application/Controller/AddRecordController.php:434
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "已成功添加 %d 条记录。"
 
-#: lib/Application/Controller/AddRecordController.php:430
+#: lib/Application/Controller/AddRecordController.php:436
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d 条记录添加失败。"
 
-#: lib/Application/Controller/AddRecordController.php:435
+#: lib/Application/Controller/AddRecordController.php:441
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr "某些记录无法添加。它们可能已存在或包含无效数据。"
 
-#: lib/Application/Controller/AddRecordController.php:457
+#: lib/Application/Controller/AddRecordController.php:463
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "添加任何记录都失败了。它们可能包含无效数据。"
 
@@ -764,7 +764,7 @@ msgstr "区域已成功删除。"
 msgid "Zones have been deleted successfully."
 msgstr "区域已成功删除。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:494
+#: lib/Domain/Service/Dns/DomainManager.php:510
 msgid "You do not have the permission to delete a zone."
 msgstr "您没有删除区域的权限。"
 
@@ -971,7 +971,7 @@ msgstr "RDAP 查询功能已禁用。"
 msgid "You do not have permission to perform RDAP lookups."
 msgstr "您没有执行 RDAP 查询的权限。"
 
-#: lib/Application/Controller/RdapController.php:139
+#: lib/Application/Controller/RdapController.php:142
 #, php-format
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "使用服务器 %s 检索 RDAP 信息失败"
@@ -1286,12 +1286,12 @@ msgstr "LDAP 认证失败。"
 msgid "Authentication failed: Invalid SAML response"
 msgstr "身份验证失败：无效的SAML响应"
 
-#: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:432
+#: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:435
 #: templates/modern/users.html:125
 msgid "Yes"
 msgstr "是"
 
-#: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:432
+#: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:435
 #: templates/modern/users.html:127
 msgid "No"
 msgstr "否"
@@ -1646,7 +1646,7 @@ msgid ""
 msgstr "完整证书数据似乎太短。请确保您提供了完整的证书。"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:274
-#: templates/modern/edit.html:91 templates/modern/edit.html:609
+#: templates/modern/edit.html:91 templates/modern/edit.html:612
 msgid "Invalid hostname format"
 msgstr "主机名格式无效"
 
@@ -2169,8 +2169,9 @@ msgid "Reporting URL is required for iodef tag"
 msgstr "iodef标签需要报告URL"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
-msgid "Reporting URL must start with mailto:, https://, or http://"
-msgstr "报告URL必须以mailto:、https://或http://开头"
+#, php-format
+msgid "Reporting URL must start with %s, %s, or %s."
+msgstr "报告URL必须以%s、%s或%s开头"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
 msgid "Flags must be 0 or 128"
@@ -5428,9 +5429,9 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "issuewild 标签中的 CA 域无效。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-msgid ""
-"CAA iodef value must be a URL starting with http://, https://, or mailto:."
-msgstr "CAA iodef 值必须是以 http://、https:// 或 mailto: 开头的 URL。"
+#, php-format
+msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
+msgstr "CAA iodef 值必须是以 %s、%s 或 %s 开头的 URL。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -5674,12 +5675,12 @@ msgstr ""
 "part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
+#, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
+"part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
-"SMIMEA 记录名称格式为：SHA256(local-part)._smimecert.domain.tld，用于 local-"
-"part@domain.tld 这样的电子邮件地址"
+"SMIMEA 记录名称格式为：SHA256(local-part)._smimecert.domain.tld，用于 %s 这样的电子邮件地址"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7053,7 +7054,7 @@ msgstr "您没有删除 SOA 记录的权限。"
 msgid "You do not have the permission to delete NS records."
 msgstr "您没有删除 NS 记录的权限。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:429
+#: lib/Domain/Service/Dns/DomainManager.php:445
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "给函数 %s %s 提供了无效参数"
@@ -7067,7 +7068,7 @@ msgstr "已存在具有此 IP 地址和主机名的超级主服务器。"
 msgid "Invalid argument(s) given to function %s"
 msgstr "给函数 %s 提供了无效参数"
 
-#: lib/Domain/Service/Dns/DomainManager.php:392
+#: lib/Domain/Service/Dns/DomainManager.php:408
 msgid "The selected user already owns the zone."
 msgstr "选定的用户已拥有该区域。"
 
@@ -7391,7 +7392,7 @@ msgstr ""
 msgid "Update record"
 msgstr "更新记录"
 
-#: templates/modern/edit.html:524 templates/modern/users.html:146
+#: templates/modern/edit.html:527 templates/modern/users.html:146
 msgid "Reset"
 msgstr "重置"
 
@@ -7535,7 +7536,7 @@ msgstr "账户"
 msgid "Select the account that will own this supermaster"
 msgstr "选择将拥有此超级主服务器的账户"
 
-#: templates/modern/edit.html:188 templates/modern/edit.html:521
+#: templates/modern/edit.html:188 templates/modern/edit.html:524
 msgid "Save changes"
 msgstr "保存更改"
 
@@ -7676,7 +7677,7 @@ msgstr "修改 DNS 记录属性"
 msgid "Comment"
 msgstr "备注"
 
-#: templates/modern/edit.html:639 templates/modern/add_record.html:91
+#: templates/modern/edit.html:642 templates/modern/add_record.html:91
 msgid "Provide content"
 msgstr "提供内容"
 
@@ -7973,7 +7974,7 @@ msgstr "检查数据库"
 msgid "Check DB"
 msgstr "检查数据库"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:510
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:513
 msgid "Edit comment"
 msgstr "编辑备注"
 
@@ -8543,6 +8544,18 @@ msgstr "添加密钥"
 msgid "Add key for zone"
 msgstr "为区域添加密钥"
 
+#: templates/modern/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ 默认使用 CSK"
+
+#: templates/modern/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 及更新版本默认使用 Combined Signing Keys (CSK)。如果您选择 KSK 或 ZSK，PowerDNS "
+"仍可能创建 CSK 密钥。"
+
 #: templates/modern/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "密钥类型"
@@ -8796,7 +8809,7 @@ msgstr "是的，取消链接这些区域"
 msgid "Permission templates"
 msgstr "权限模板"
 
-#: templates/modern/add_perm_templ.html:6 templates/modern/edit.html:794
+#: templates/modern/add_perm_templ.html:6 templates/modern/edit.html:797
 msgid "Add"
 msgstr "添加"
 
@@ -9221,75 +9234,75 @@ msgstr "如果您丢失了密钥，您需要重新生成它。"
 msgid "Edit"
 msgstr "编辑"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:542
+#: templates/modern/edit.html:25 templates/modern/edit.html:545
 msgid "Add new record"
 msgstr "添加新记录"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:545
+#: templates/modern/edit.html:203 templates/modern/edit.html:548
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "DMARC、SPF、DKIM、CAA、TLSA和SRV记录的引导式向导"
 
-#: templates/modern/edit.html:29 templates/modern/edit.html:546
+#: templates/modern/edit.html:29 templates/modern/edit.html:549
 msgid "Record Wizard"
 msgstr "记录向导"
 
-#: templates/modern/edit.html:33 templates/modern/edit.html:550
+#: templates/modern/edit.html:33 templates/modern/edit.html:553
 msgid "Multi-record mode"
 msgstr "多记录模式"
 
-#: templates/modern/edit.html:199 templates/modern/edit.html:553
+#: templates/modern/edit.html:199 templates/modern/edit.html:556
 msgid "Bulk add"
 msgstr "批量添加"
 
-#: templates/modern/edit.html:48 templates/modern/edit.html:565
+#: templates/modern/edit.html:48 templates/modern/edit.html:568
 msgid "Failed to add"
 msgstr "添加失败"
 
-#: templates/modern/edit.html:48 templates/modern/edit.html:565
+#: templates/modern/edit.html:48 templates/modern/edit.html:568
 msgid "record(s). Please check the record format."
 msgstr "条记录。请检查记录格式。"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:567
+#: templates/modern/edit.html:50 templates/modern/edit.html:570
 msgid "Failed to add records. Please check the record format."
 msgstr "添加记录失败。请检查记录格式。"
 
-#: templates/modern/edit.html:53 templates/modern/edit.html:570
+#: templates/modern/edit.html:53 templates/modern/edit.html:573
 msgid "Content validation failed:"
 msgstr "内容验证失败："
 
-#: templates/modern/edit.html:53 templates/modern/edit.html:570
+#: templates/modern/edit.html:53 templates/modern/edit.html:573
 msgid "Invalid value for record type"
 msgstr "记录类型的值无效"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:572
+#: templates/modern/edit.html:55 templates/modern/edit.html:575
 msgid "Please provide all required information."
 msgstr "请提供所有必需信息。"
 
-#: templates/modern/edit.html:595 templates/modern/add_record.html:61
+#: templates/modern/edit.html:598 templates/modern/add_record.html:61
 msgid "Add PTR"
 msgstr "添加 PTR"
 
-#: templates/modern/edit.html:598 templates/modern/add_record.html:64
+#: templates/modern/edit.html:601 templates/modern/add_record.html:64
 msgid "Add A/AAAA"
 msgstr "添加 A/AAAA"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:637
+#: templates/modern/edit.html:119 templates/modern/edit.html:640
 msgid "This record already exists"
 msgstr "此记录已存在"
 
-#: templates/modern/edit.html:131 templates/modern/edit.html:649
+#: templates/modern/edit.html:131 templates/modern/edit.html:652
 msgid "Invalid priority"
 msgstr "优先级无效"
 
-#: templates/modern/edit.html:138 templates/modern/edit.html:656
+#: templates/modern/edit.html:138 templates/modern/edit.html:659
 msgid "Invalid TTL value"
 msgstr "TTL 值无效"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:658
+#: templates/modern/edit.html:140 templates/modern/edit.html:661
 msgid "Provide TTL"
 msgstr "提供 TTL"
 
-#: templates/modern/edit.html:684 templates/modern/add_record.html:139
+#: templates/modern/edit.html:687 templates/modern/add_record.html:139
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -9307,107 +9320,107 @@ msgstr "CSV"
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/default/edit.html:228 templates/modern/edit.html:228
+#: templates/default/edit.html:230 templates/modern/edit.html:230
 msgid "Sign zone"
 msgstr "签名区域"
 
-#: templates/default/edit.html:241 templates/modern/edit.html:241
+#: templates/default/edit.html:244 templates/modern/edit.html:244
 msgid "No records match your filter criteria."
 msgstr "没有记录匹配您的筛选条件。"
 
-#: templates/default/edit.html:249 templates/modern/edit.html:249
+#: templates/default/edit.html:252 templates/modern/edit.html:252
 msgid "This zone does not have any records."
 msgstr "此区域没有任何记录。"
 
-#: templates/default/edit.html:261 templates/modern/edit.html:261
+#: templates/default/edit.html:264 templates/modern/edit.html:264
 msgid "Filter:"
 msgstr "筛选："
 
-#: templates/default/edit.html:267 templates/modern/edit.html:267
+#: templates/default/edit.html:270 templates/modern/edit.html:270
 msgid "Search by name or content"
 msgstr "按名称或内容搜索"
 
-#: templates/default/edit.html:273 templates/modern/edit.html:273
+#: templates/default/edit.html:276 templates/modern/edit.html:276
 msgid "All Types"
 msgstr "所有类型"
 
-#: templates/default/edit.html:283 templates/modern/edit.html:283
+#: templates/default/edit.html:286 templates/modern/edit.html:286
 msgid "Filter by content"
 msgstr "按内容筛选"
 
-#: templates/default/edit.html:289 templates/modern/edit.html:289
+#: templates/default/edit.html:292 templates/modern/edit.html:292
 msgid "Apply"
 msgstr "应用"
 
-#: templates/default/edit.html:325 templates/modern/edit.html:325
+#: templates/default/edit.html:328 templates/modern/edit.html:328
 msgid "Showing"
 msgstr "显示"
 
-#: templates/default/edit.html:325 templates/modern/edit.html:325
+#: templates/default/edit.html:328 templates/modern/edit.html:328
 msgid "of"
 msgstr "，共"
 
-#: templates/default/edit.html:325 templates/modern/edit.html:325
+#: templates/default/edit.html:328 templates/modern/edit.html:328
 msgid "total records"
 msgstr "条记录"
 
-#: templates/default/edit.html:494 templates/modern/edit.html:494
+#: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
 msgstr "编辑选定"
 
-#: templates/modern/edit.html:498 templates/modern/search.html:478
+#: templates/modern/edit.html:501 templates/modern/search.html:478
 msgid "Delete record(s)"
 msgstr "删除记录"
 
-#: templates/modern/edit.html:505 templates/modern/search.html:93
+#: templates/modern/edit.html:508 templates/modern/search.html:93
 msgid "Comments"
 msgstr "备注"
 
-#: templates/default/edit.html:696 templates/modern/edit.html:696
+#: templates/default/edit.html:699 templates/modern/edit.html:699
 msgid "Save as new template"
 msgstr "保存为新模板"
 
-#: templates/default/edit.html:699 templates/modern/edit.html:699
+#: templates/default/edit.html:702 templates/modern/edit.html:702
 msgid "Create a reusable template from this zone's records"
 msgstr "从此区域的记录创建可重用模板"
 
-#: templates/default/edit.html:705 templates/modern/edit.html:705
+#: templates/default/edit.html:708 templates/modern/edit.html:708
 msgid "Template Name"
 msgstr "模板名称"
 
-#: templates/default/edit.html:707 templates/modern/edit.html:707
+#: templates/default/edit.html:710 templates/modern/edit.html:710
 msgid "Provide template name"
 msgstr "提供模板名称"
 
-#: templates/default/edit.html:711 templates/modern/edit.html:711
+#: templates/default/edit.html:714 templates/modern/edit.html:714
 msgid "Template Description"
 msgstr "模板描述"
 
-#: templates/default/edit.html:713 templates/modern/edit.html:713
+#: templates/default/edit.html:716 templates/modern/edit.html:716
 msgid "Optional description for this template"
 msgstr "此模板的可选描述"
 
-#: templates/default/edit.html:717 templates/modern/edit.html:717
+#: templates/default/edit.html:720 templates/modern/edit.html:720
 msgid "Save as template"
 msgstr "保存为模板"
 
-#: templates/default/edit.html:728 templates/modern/edit.html:728
+#: templates/default/edit.html:731 templates/modern/edit.html:731
 msgid "Zone Settings"
 msgstr "区域设置"
 
-#: templates/default/edit.html:731 templates/modern/edit.html:731
+#: templates/default/edit.html:734 templates/modern/edit.html:734
 msgid "Owner of zone"
 msgstr "区域所有者"
 
-#: templates/default/edit.html:734 templates/modern/edit.html:734
+#: templates/default/edit.html:737 templates/modern/edit.html:737
 msgid "No owner set for this zone."
 msgstr "此区域未设置所有者。"
 
-#: templates/modern/edit.html:833 templates/modern/edit.html:859
+#: templates/modern/edit.html:836 templates/modern/edit.html:862
 msgid "Change"
 msgstr "更改"
 
-#: templates/modern/edit.html:825 templates/modern/add_zone_slave.html:33
+#: templates/modern/edit.html:828 templates/modern/add_zone_slave.html:33
 msgid "IP address of master NS"
 msgstr "主 NS 的 IP 地址"
 
@@ -11180,18 +11193,6 @@ msgstr "列出区域模板"
 msgid "Bulk Domain Registration"
 msgstr "批量域名注册"
 
-#: templates/modern/dnssec_add_key.html:43
-msgid "PowerDNS 4.0+ uses CSK by default"
-msgstr "PowerDNS 4.0+ 默认使用 CSK"
-
-#: templates/modern/dnssec_add_key.html:44
-msgid ""
-"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
-"If you select KSK or ZSK, PowerDNS may still create a CSK key."
-msgstr ""
-"PowerDNS 4.0 及更新版本默认使用 Combined Signing Keys (CSK)。如果您选择 KSK 或 ZSK，PowerDNS "
-"仍可能创建 CSK 密钥。"
-
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
 msgstr "创建权限有限的用户"
@@ -11762,81 +11763,3 @@ msgstr "数据库\"%s\"中缺少PowerDNS表：%s。请确保PowerDNS已正确安
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "无法连接到PowerDNS数据库\"%s\"：%s"
-
-#~ msgid ""
-#~ "No configuration file found. Please use the <a "
-#~ "href=\"install/\">installer</a> to create one, or create a "
-#~ "config/settings.php file manually."
-#~ msgstr ""
-#~ "找不到配置文件。请使用<a href=\"install/\">安装程序</a>创建一个，或者手动创建 config/settings.php 文件。"
-
-#~ msgid "Invalid authentication provider"
-#~ msgstr "无效的身份验证提供程序"
-
-#~ msgid "Failed to sign zone. Check PowerDNS logs for details."
-#~ msgstr "签名区域失败。请查看 PowerDNS 日志了解详情。"
-
-#~ msgid "Zone was created, but securing it with DNSSEC failed."
-#~ msgstr "区域已创建，但使用 DNSSEC 保护失败。"
-
-#~ msgid "Failed to delete DNSSEC key."
-#~ msgstr "删除 DNSSEC 密钥失败。"
-
-#, php-format
-#~ msgid ""
-#~ "Duplicate %s mechanism found. Each mechanism type should appear at most "
-#~ "once."
-#~ msgstr "发现重复的 %s 机制。每种机制类型最多应出现一次。"
-
-#~ msgid "IPv6 address should use lowercase for hexadecimal digits."
-#~ msgstr "IPv6 地址应使用小写十六进制数字。"
-
-#, php-format
-#~ msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-#~ msgstr "IPv6 地址不是规范形式 (RFC 5952)。规范形式：%s"
-
-#, php-format
-#~ msgid "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-#~ msgstr "IP 地址 \"%s\" 无效。必须是有效的 IPv4 或 IPv6 地址。"
-
-#~ msgid "HTML tags are not allowed in content field."
-#~ msgstr "内容字段中不允许使用 HTML 标签。"
-
-#~ msgid ""
-#~ "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or less. "
-#~ "For longer content, split into multiple quoted strings separated by spaces."
-#~ msgstr "TXT 记录字符串超过 255 字节。TXT 字符串必须为 255 字节或更少。对于较长的内容，请分割成多个由空格分隔的带引号字符串。"
-
-#~ msgid ""
-#~ "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-#~ "not both."
-#~ msgstr "NAPTR 记录必须有正则表达式或替换（带有 \\\".\\\")，但不能两者都有。"
-
-#~ msgid ""
-#~ "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol"
-#~ " and rs start with a letter and contain only alphanumeric characters (max 32"
-#~ " chars each)."
-#~ msgstr ""
-#~ "NAPTR 服务必须遵循格式：[protocol][+rs][+rs]...，其中 protocol 和 rs "
-#~ "以字母开头并且只包含字母数字字符（每个最多 32 个字符）。"
-
-#~ msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-#~ msgstr "设置标准记录，如 MX、SPF 的 TXT 和 www 的 CNAME"
-
-#~ msgid ""
-#~ "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-#~ "[SERIAL] in record content"
-#~ msgstr "在记录内容中使用 [ZONE]、[DOMAIN]、[TLD]、[NS1]、[HOSTMASTER] 和 [SERIAL] 等占位符"
-
-#~ msgid ""
-#~ "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-#~ "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-#~ msgstr ""
-#~ "[DOMAIN] 和 [TLD] 占位符对 Microsoft 365 MX "
-#~ "记录很有用（例如，[DOMAIN]-[TLD].mail.protection.outlook.com）"
-
-#~ msgid "LDAP users cannot have passwords managed through this interface"
-#~ msgstr "LDAP 用户无法通过此界面管理密码"
-
-#~ msgid "Select All Filtered"
-#~ msgstr "选择所有已筛选"

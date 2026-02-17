@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-14 17:23+0200\n"
+"POT-Creation-Date: 2026-02-17 20:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -628,7 +628,7 @@ msgstr "La funcionalidad de consulta WHOIS está deshabilitada."
 msgid "You do not have permission to perform WHOIS lookups."
 msgstr "No tiene permisos para realizar consultas WHOIS."
 
-#: lib/Application/Controller/WhoisController.php:139
+#: lib/Application/Controller/WhoisController.php:142
 #, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "Error al obtener información WHOIS usando el servidor %s"
@@ -800,17 +800,17 @@ msgstr "No tiene permisos para agregar un registro a esta zona."
 msgid "No records were provided."
 msgstr "No se proporcionaron registros."
 
-#: lib/Application/Controller/AddRecordController.php:428
+#: lib/Application/Controller/AddRecordController.php:434
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d registro(s) se agregaron correctamente."
 
-#: lib/Application/Controller/AddRecordController.php:430
+#: lib/Application/Controller/AddRecordController.php:436
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d registro(s) no se pudieron agregar."
 
-#: lib/Application/Controller/AddRecordController.php:435
+#: lib/Application/Controller/AddRecordController.php:441
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -818,7 +818,7 @@ msgstr ""
 "Algunos registros no se pudieron agregar. Pueden existir ya o contener datos"
 " inválidos."
 
-#: lib/Application/Controller/AddRecordController.php:457
+#: lib/Application/Controller/AddRecordController.php:463
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Error al agregar cualquier registro. Pueden contener datos inválidos."
 
@@ -834,7 +834,7 @@ msgstr "La zona se ha eliminado correctamente."
 msgid "Zones have been deleted successfully."
 msgstr "Las zonas se han eliminado correctamente."
 
-#: lib/Domain/Service/Dns/DomainManager.php:494
+#: lib/Domain/Service/Dns/DomainManager.php:510
 msgid "You do not have the permission to delete a zone."
 msgstr "No tiene permisos para eliminar una zona."
 
@@ -1051,7 +1051,7 @@ msgstr "La funcionalidad de consulta RDAP está deshabilitada."
 msgid "You do not have permission to perform RDAP lookups."
 msgstr "No tiene permisos para realizar consultas RDAP."
 
-#: lib/Application/Controller/RdapController.php:139
+#: lib/Application/Controller/RdapController.php:142
 #, php-format
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Error al obtener información RDAP usando el servidor %s"
@@ -1385,12 +1385,12 @@ msgstr "Error al autenticar contra LDAP."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Autenticación fallida: Respuesta SAML no válida"
 
-#: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:432
+#: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:435
 #: templates/modern/users.html:125
 msgid "Yes"
 msgstr "Sí"
 
-#: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:432
+#: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:435
 #: templates/modern/users.html:127
 msgid "No"
 msgstr "No"
@@ -1770,7 +1770,7 @@ msgstr ""
 "haber proporcionado el certificado completo."
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:274
-#: templates/modern/edit.html:91 templates/modern/edit.html:609
+#: templates/modern/edit.html:91 templates/modern/edit.html:612
 msgid "Invalid hostname format"
 msgstr "Formato de nombre de host inválido"
 
@@ -2337,8 +2337,9 @@ msgid "Reporting URL is required for iodef tag"
 msgstr "La URL de reporte es requerida para la etiqueta iodef"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
-msgid "Reporting URL must start with mailto:, https://, or http://"
-msgstr "La URL de informes debe comenzar con mailto:, https:// o http://"
+#, php-format
+msgid "Reporting URL must start with %s, %s, or %s."
+msgstr "La URL de informes debe comenzar con %s, %s o %s"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
 msgid "Flags must be 0 or 128"
@@ -6376,11 +6377,9 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "Dominio CA inválido en etiqueta issuewild."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-msgid ""
-"CAA iodef value must be a URL starting with http://, https://, or mailto:."
-msgstr ""
-"El valor iodef CAA debe ser una URL que comience con http://, https://, o "
-"mailto:."
+#, php-format
+msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
+msgstr "El valor iodef CAA debe ser una URL que comience con %s, %s, o %s."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -6675,13 +6674,13 @@ msgstr ""
 "part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
+#, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
+"part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
 "El nombre del registro SMIMEA está en el formato: SHA256(local-"
-"part)._smimecert.domain.tld para direcciones de correo como local-"
-"part@domain.tld"
+"part)._smimecert.domain.tld para direcciones de correo como %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -8369,7 +8368,7 @@ msgstr "No tiene permiso para eliminar registros SOA."
 msgid "You do not have the permission to delete NS records."
 msgstr "No tiene permiso para eliminar registros NS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:429
+#: lib/Domain/Service/Dns/DomainManager.php:445
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Argumento(s) inválido(s) dado(s) a la función %s %s"
@@ -8383,7 +8382,7 @@ msgstr "Ya existe un supermaster con esta dirección IP y nombre de host."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Argumento(s) inválido(s) dado(s) a la función %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:392
+#: lib/Domain/Service/Dns/DomainManager.php:408
 msgid "The selected user already owns the zone."
 msgstr "El usuario seleccionado ya posee la zona."
 
@@ -8722,7 +8721,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Actualizar registro"
 
-#: templates/modern/edit.html:524 templates/modern/users.html:146
+#: templates/modern/edit.html:527 templates/modern/users.html:146
 msgid "Reset"
 msgstr "Restablecer"
 
@@ -8867,7 +8866,7 @@ msgstr "Cuenta"
 msgid "Select the account that will own this supermaster"
 msgstr "Seleccione la cuenta que será propietaria de este supermaster"
 
-#: templates/modern/edit.html:188 templates/modern/edit.html:521
+#: templates/modern/edit.html:188 templates/modern/edit.html:524
 msgid "Save changes"
 msgstr "Guardar cambios"
 
@@ -9018,7 +9017,7 @@ msgstr "Modificar propiedades del registro DNS"
 msgid "Comment"
 msgstr "Comentario"
 
-#: templates/modern/edit.html:639 templates/modern/add_record.html:91
+#: templates/modern/edit.html:642 templates/modern/add_record.html:91
 msgid "Provide content"
 msgstr "Proporcionar contenido"
 
@@ -9315,7 +9314,7 @@ msgstr "Verificar Base de Datos"
 msgid "Check DB"
 msgstr "Verificar BD"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:510
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:513
 msgid "Edit comment"
 msgstr "Editar comentario"
 
@@ -9926,6 +9925,19 @@ msgstr "Agregar clave"
 msgid "Add key for zone"
 msgstr "Agregar clave para zona"
 
+#: templates/modern/dnssec_add_key.html:43
+msgid "PowerDNS 4.0+ uses CSK by default"
+msgstr "PowerDNS 4.0+ usa CSK por defecto"
+
+#: templates/modern/dnssec_add_key.html:44
+msgid ""
+"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
+"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+msgstr ""
+"PowerDNS 4.0 y versiones más recientes utilizan Combined Signing Keys (CSK) "
+"por defecto. Si selecciona KSK o ZSK, PowerDNS aún puede crear una clave "
+"CSK."
+
 #: templates/modern/dnssec_add_key.html:53
 msgid "Key type"
 msgstr "Tipo de clave"
@@ -10193,7 +10205,7 @@ msgstr "Sí, desvincular estas zonas"
 msgid "Permission templates"
 msgstr "Plantillas de permisos"
 
-#: templates/modern/add_perm_templ.html:6 templates/modern/edit.html:794
+#: templates/modern/add_perm_templ.html:6 templates/modern/edit.html:797
 msgid "Add"
 msgstr "Agregar"
 
@@ -10662,76 +10674,76 @@ msgstr "Si pierde la clave, necesitará regenerarla."
 msgid "Edit"
 msgstr "Editar"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:542
+#: templates/modern/edit.html:25 templates/modern/edit.html:545
 msgid "Add new record"
 msgstr "Agregar nuevo registro"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:545
+#: templates/modern/edit.html:203 templates/modern/edit.html:548
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Asistentes guiados para registros DMARC, SPF, DKIM, CAA, TLSA y SRV"
 
-#: templates/modern/edit.html:29 templates/modern/edit.html:546
+#: templates/modern/edit.html:29 templates/modern/edit.html:549
 msgid "Record Wizard"
 msgstr "Asistente de registro"
 
-#: templates/modern/edit.html:33 templates/modern/edit.html:550
+#: templates/modern/edit.html:33 templates/modern/edit.html:553
 msgid "Multi-record mode"
 msgstr "Modo multi-registro"
 
-#: templates/modern/edit.html:199 templates/modern/edit.html:553
+#: templates/modern/edit.html:199 templates/modern/edit.html:556
 msgid "Bulk add"
 msgstr "Agregar en masa"
 
-#: templates/modern/edit.html:48 templates/modern/edit.html:565
+#: templates/modern/edit.html:48 templates/modern/edit.html:568
 msgid "Failed to add"
 msgstr "Error al agregar"
 
-#: templates/modern/edit.html:48 templates/modern/edit.html:565
+#: templates/modern/edit.html:48 templates/modern/edit.html:568
 msgid "record(s). Please check the record format."
 msgstr "registro(s). Por favor verifique el formato del registro."
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:567
+#: templates/modern/edit.html:50 templates/modern/edit.html:570
 msgid "Failed to add records. Please check the record format."
 msgstr ""
 "Error al agregar registros. Por favor verifique el formato del registro."
 
-#: templates/modern/edit.html:53 templates/modern/edit.html:570
+#: templates/modern/edit.html:53 templates/modern/edit.html:573
 msgid "Content validation failed:"
 msgstr "La validación del contenido falló:"
 
-#: templates/modern/edit.html:53 templates/modern/edit.html:570
+#: templates/modern/edit.html:53 templates/modern/edit.html:573
 msgid "Invalid value for record type"
 msgstr "Valor inválido para el tipo de registro"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:572
+#: templates/modern/edit.html:55 templates/modern/edit.html:575
 msgid "Please provide all required information."
 msgstr "Por favor proporcione toda la información requerida."
 
-#: templates/modern/edit.html:595 templates/modern/add_record.html:61
+#: templates/modern/edit.html:598 templates/modern/add_record.html:61
 msgid "Add PTR"
 msgstr "Agregar PTR"
 
-#: templates/modern/edit.html:598 templates/modern/add_record.html:64
+#: templates/modern/edit.html:601 templates/modern/add_record.html:64
 msgid "Add A/AAAA"
 msgstr "Agregar A/AAAA"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:637
+#: templates/modern/edit.html:119 templates/modern/edit.html:640
 msgid "This record already exists"
 msgstr "Este registro ya existe"
 
-#: templates/modern/edit.html:131 templates/modern/edit.html:649
+#: templates/modern/edit.html:131 templates/modern/edit.html:652
 msgid "Invalid priority"
 msgstr "Prioridad inválida"
 
-#: templates/modern/edit.html:138 templates/modern/edit.html:656
+#: templates/modern/edit.html:138 templates/modern/edit.html:659
 msgid "Invalid TTL value"
 msgstr "Valor TTL inválido"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:658
+#: templates/modern/edit.html:140 templates/modern/edit.html:661
 msgid "Provide TTL"
 msgstr "Proporcione TTL"
 
-#: templates/modern/edit.html:684 templates/modern/add_record.html:139
+#: templates/modern/edit.html:687 templates/modern/add_record.html:139
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -10751,108 +10763,108 @@ msgstr "CSV"
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/default/edit.html:228 templates/modern/edit.html:228
+#: templates/default/edit.html:230 templates/modern/edit.html:230
 msgid "Sign zone"
 msgstr "Firmar zona"
 
-#: templates/default/edit.html:241 templates/modern/edit.html:241
+#: templates/default/edit.html:244 templates/modern/edit.html:244
 msgid "No records match your filter criteria."
 msgstr "Ningún registro coincide con sus criterios de filtro."
 
-#: templates/default/edit.html:249 templates/modern/edit.html:249
+#: templates/default/edit.html:252 templates/modern/edit.html:252
 msgid "This zone does not have any records."
 msgstr "Esta zona no tiene registros."
 
-#: templates/default/edit.html:261 templates/modern/edit.html:261
+#: templates/default/edit.html:264 templates/modern/edit.html:264
 msgid "Filter:"
 msgstr "Filtro:"
 
-#: templates/default/edit.html:267 templates/modern/edit.html:267
+#: templates/default/edit.html:270 templates/modern/edit.html:270
 msgid "Search by name or content"
 msgstr "Buscar por nombre o contenido"
 
-#: templates/default/edit.html:273 templates/modern/edit.html:273
+#: templates/default/edit.html:276 templates/modern/edit.html:276
 msgid "All Types"
 msgstr "Todos los Tipos"
 
-#: templates/default/edit.html:283 templates/modern/edit.html:283
+#: templates/default/edit.html:286 templates/modern/edit.html:286
 msgid "Filter by content"
 msgstr "Filtrar por contenido"
 
-#: templates/default/edit.html:289 templates/modern/edit.html:289
+#: templates/default/edit.html:292 templates/modern/edit.html:292
 msgid "Apply"
 msgstr "Aplicar"
 
-#: templates/default/edit.html:325 templates/modern/edit.html:325
+#: templates/default/edit.html:328 templates/modern/edit.html:328
 msgid "Showing"
 msgstr "Mostrando"
 
-#: templates/default/edit.html:325 templates/modern/edit.html:325
+#: templates/default/edit.html:328 templates/modern/edit.html:328
 msgid "of"
 msgstr "de"
 
-#: templates/default/edit.html:325 templates/modern/edit.html:325
+#: templates/default/edit.html:328 templates/modern/edit.html:328
 msgid "total records"
 msgstr "registros totales"
 
-#: templates/default/edit.html:494 templates/modern/edit.html:494
+#: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
 msgstr "Editar seleccionado"
 
-#: templates/modern/edit.html:498 templates/modern/search.html:478
+#: templates/modern/edit.html:501 templates/modern/search.html:478
 msgid "Delete record(s)"
 msgstr "Eliminar registro(s)"
 
-#: templates/modern/edit.html:505 templates/modern/search.html:93
+#: templates/modern/edit.html:508 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Comentarios"
 
-#: templates/default/edit.html:696 templates/modern/edit.html:696
+#: templates/default/edit.html:699 templates/modern/edit.html:699
 msgid "Save as new template"
 msgstr "Guardar como nueva plantilla"
 
-#: templates/default/edit.html:699 templates/modern/edit.html:699
+#: templates/default/edit.html:702 templates/modern/edit.html:702
 msgid "Create a reusable template from this zone's records"
 msgstr ""
 "Crear una plantilla reutilizable a partir de los registros de esta zona"
 
-#: templates/default/edit.html:705 templates/modern/edit.html:705
+#: templates/default/edit.html:708 templates/modern/edit.html:708
 msgid "Template Name"
 msgstr "Nombre de Plantilla"
 
-#: templates/default/edit.html:707 templates/modern/edit.html:707
+#: templates/default/edit.html:710 templates/modern/edit.html:710
 msgid "Provide template name"
 msgstr "Proporcione nombre de plantilla"
 
-#: templates/default/edit.html:711 templates/modern/edit.html:711
+#: templates/default/edit.html:714 templates/modern/edit.html:714
 msgid "Template Description"
 msgstr "Descripción de Plantilla"
 
-#: templates/default/edit.html:713 templates/modern/edit.html:713
+#: templates/default/edit.html:716 templates/modern/edit.html:716
 msgid "Optional description for this template"
 msgstr "Descripción opcional para esta plantilla"
 
-#: templates/default/edit.html:717 templates/modern/edit.html:717
+#: templates/default/edit.html:720 templates/modern/edit.html:720
 msgid "Save as template"
 msgstr "Guardar como plantilla"
 
-#: templates/default/edit.html:728 templates/modern/edit.html:728
+#: templates/default/edit.html:731 templates/modern/edit.html:731
 msgid "Zone Settings"
 msgstr "Configuración de Zona"
 
-#: templates/default/edit.html:731 templates/modern/edit.html:731
+#: templates/default/edit.html:734 templates/modern/edit.html:734
 msgid "Owner of zone"
 msgstr "Propietario de zona"
 
-#: templates/default/edit.html:734 templates/modern/edit.html:734
+#: templates/default/edit.html:737 templates/modern/edit.html:737
 msgid "No owner set for this zone."
 msgstr "No se ha establecido propietario para esta zona."
 
-#: templates/modern/edit.html:833 templates/modern/edit.html:859
+#: templates/modern/edit.html:836 templates/modern/edit.html:862
 msgid "Change"
 msgstr "Cambiar"
 
-#: templates/modern/edit.html:825 templates/modern/add_zone_slave.html:33
+#: templates/modern/edit.html:828 templates/modern/add_zone_slave.html:33
 msgid "IP address of master NS"
 msgstr "Dirección IP del NS maestro"
 
@@ -12758,19 +12770,6 @@ msgstr "Listar plantillas de zona"
 msgid "Bulk Domain Registration"
 msgstr "Registro masivo de dominios"
 
-#: templates/modern/dnssec_add_key.html:43
-msgid "PowerDNS 4.0+ uses CSK by default"
-msgstr "PowerDNS 4.0+ usa CSK por defecto"
-
-#: templates/modern/dnssec_add_key.html:44
-msgid ""
-"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
-"If you select KSK or ZSK, PowerDNS may still create a CSK key."
-msgstr ""
-"PowerDNS 4.0 y versiones más recientes utilizan Combined Signing Keys (CSK) "
-"por defecto. Si selecciona KSK o ZSK, PowerDNS aún puede crear una clave "
-"CSK."
-
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
 msgstr "Crear usuario con derechos limitados"
@@ -13393,100 +13392,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "No se puede conectar a la base de datos PowerDNS \"%s\": %s"
-
-#~ msgid ""
-#~ "No configuration file found. Please use the <a "
-#~ "href=\"install/\">installer</a> to create one, or create a "
-#~ "config/settings.php file manually."
-#~ msgstr ""
-#~ "No se encontró el archivo de configuración. Use el <a "
-#~ "href=\"install/\">instalador</a> para crear uno, o cree un archivo "
-#~ "config/settings.php manualmente."
-
-#~ msgid "Invalid authentication provider"
-#~ msgstr "Proveedor de autenticación inválido"
-
-#~ msgid "Failed to sign zone. Check PowerDNS logs for details."
-#~ msgstr ""
-#~ "Error al firmar la zona. Verifique los registros de PowerDNS para más "
-#~ "detalles."
-
-#~ msgid "Zone was created, but securing it with DNSSEC failed."
-#~ msgstr "La zona fue creada, pero asegurarla con DNSSEC falló."
-
-#~ msgid "Failed to delete DNSSEC key."
-#~ msgstr "Error al eliminar la clave DNSSEC."
-
-#, php-format
-#~ msgid ""
-#~ "Duplicate %s mechanism found. Each mechanism type should appear at most "
-#~ "once."
-#~ msgstr ""
-#~ "Mecanismo %s duplicado encontrado. Cada tipo de mecanismo debe aparecer como"
-#~ " máximo una vez."
-
-#~ msgid "IPv6 address should use lowercase for hexadecimal digits."
-#~ msgstr "La dirección IPv6 debe usar minúsculas para dígitos hexadecimales."
-
-#, php-format
-#~ msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-#~ msgstr ""
-#~ "La dirección IPv6 no está en forma canónica (RFC 5952). Forma canónica: %s"
-
-#, php-format
-#~ msgid "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-#~ msgstr ""
-#~ "La dirección IP \"%s\" no es válida. Debe ser una dirección IPv4 o IPv6 "
-#~ "válida."
-
-#~ msgid "HTML tags are not allowed in content field."
-#~ msgstr "No se permiten etiquetas HTML en el campo de contenido."
-
-#~ msgid ""
-#~ "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or less. "
-#~ "For longer content, split into multiple quoted strings separated by spaces."
-#~ msgstr ""
-#~ "La cadena del registro TXT excede 255 bytes. Las cadenas TXT deben ser de "
-#~ "255 bytes o menos. Para contenido más largo, divida en múltiples cadenas "
-#~ "entre comillas separadas por espacios."
-
-#~ msgid ""
-#~ "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-#~ "not both."
-#~ msgstr ""
-#~ "El registro NAPTR debe tener o un regexp o un reemplazo (con \".\"), pero no"
-#~ " ambos."
-
-#~ msgid ""
-#~ "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol"
-#~ " and rs start with a letter and contain only alphanumeric characters (max 32"
-#~ " chars each)."
-#~ msgstr ""
-#~ "El servicio NAPTR debe seguir el formato: [protocol][+rs][+rs]... donde "
-#~ "protocol y rs comienzan con una letra y contienen solo caracteres "
-#~ "alfanuméricos (máximo 32 caracteres cada uno)."
-
-#~ msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-#~ msgstr "Configurar registros estándar como MX, TXT para SPF, y CNAME para www"
-
-#~ msgid ""
-#~ "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-#~ "[SERIAL] in record content"
-#~ msgstr ""
-#~ "Usar marcadores como [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], y "
-#~ "[SERIAL] en el contenido del registro"
-
-#~ msgid ""
-#~ "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-#~ "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-#~ msgstr ""
-#~ "Los marcadores [DOMAIN] y [TLD] son útiles para registros MX de Microsoft "
-#~ "365 (ej., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-#~ msgid "LDAP users cannot have passwords managed through this interface"
-#~ msgstr ""
-#~ "Los usuarios LDAP no pueden tener contraseñas gestionadas a través de esta "
-#~ "interfaz"
-
-#~ msgid "Select All Filtered"
-#~ msgstr "Seleccionar Todos los Filtrados"

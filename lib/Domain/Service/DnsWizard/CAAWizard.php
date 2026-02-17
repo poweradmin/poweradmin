@@ -226,7 +226,7 @@ class CAAWizard extends AbstractDnsWizard
             if (empty($iodefUrl)) {
                 $errors[] = _('Reporting URL is required for iodef tag');
             } elseif (!str_starts_with($iodefUrl, 'mailto:') && !str_starts_with($iodefUrl, 'https://') && !str_starts_with($iodefUrl, 'http://')) {
-                $errors[] = _('Reporting URL must start with mailto:, https://, or http://');
+                $errors[] = sprintf(_('Reporting URL must start with %s, %s, or %s.'), 'mailto:', 'https://', 'http://');
             }
         }
 
