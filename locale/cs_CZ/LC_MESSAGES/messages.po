@@ -2290,7 +2290,7 @@ msgstr "URL hlášení je povinné pro tag iodef"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
 msgid "Reporting URL must start with mailto:, https://, or http://"
-msgstr ""
+msgstr "URL pro hlášení musí začínat mailto:, https:// nebo http://"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
 msgid "Flags must be 0 or 128"
@@ -9870,6 +9870,8 @@ msgid ""
 "External authentication users (LDAP, OIDC, SAML) cannot have passwords "
 "managed through this interface"
 msgstr ""
+"Uživatelům s externím ověřováním (LDAP, OIDC, SAML) nelze spravovat hesla "
+"přes toto rozhraní"
 
 #: templates/modern/confirm_unlink_zones_templ.html:6
 msgid "Unlink zones"

@@ -2185,7 +2185,7 @@ msgstr "iodefタグには報告URLが必要です"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
 msgid "Reporting URL must start with mailto:, https://, or http://"
-msgstr ""
+msgstr "レポートURLはmailto:、https://、またはhttp://で始まる必要があります"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
 msgid "Flags must be 0 or 128"
@@ -8875,7 +8875,7 @@ msgstr "設定を保持するために、ユーザーは削除ではなく無効
 msgid ""
 "External authentication users (LDAP, OIDC, SAML) cannot have passwords "
 "managed through this interface"
-msgstr ""
+msgstr "外部認証ユーザー（LDAP、OIDC、SAML）のパスワードはこのインターフェースでは管理できません"
 
 #: templates/modern/confirm_unlink_zones_templ.html:6
 msgid "Unlink zones"

@@ -2170,7 +2170,7 @@ msgstr "iodef标签需要报告URL"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
 msgid "Reporting URL must start with mailto:, https://, or http://"
-msgstr ""
+msgstr "报告URL必须以mailto:、https://或http://开头"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
 msgid "Flags must be 0 or 128"
@@ -8742,7 +8742,7 @@ msgstr "可以禁用用户而不是删除用户以保留其设置"
 msgid ""
 "External authentication users (LDAP, OIDC, SAML) cannot have passwords "
 "managed through this interface"
-msgstr ""
+msgstr "外部身份验证用户（LDAP、OIDC、SAML）的密码无法通过此界面管理"
 
 #: templates/modern/confirm_unlink_zones_templ.html:6
 msgid "Unlink zones"

@@ -2338,7 +2338,7 @@ msgstr "La URL de reporte es requerida para la etiqueta iodef"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
 msgid "Reporting URL must start with mailto:, https://, or http://"
-msgstr ""
+msgstr "La URL de informes debe comenzar con mailto:, https:// o http://"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
 msgid "Flags must be 0 or 128"
@@ -10134,6 +10134,8 @@ msgid ""
 "External authentication users (LDAP, OIDC, SAML) cannot have passwords "
 "managed through this interface"
 msgstr ""
+"Los usuarios con autenticación externa (LDAP, OIDC, SAML) no pueden "
+"gestionar sus contraseñas a través de esta interfaz"
 
 #: templates/modern/confirm_unlink_zones_templ.html:6
 msgid "Unlink zones"

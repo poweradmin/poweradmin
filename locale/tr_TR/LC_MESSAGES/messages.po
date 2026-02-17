@@ -2289,7 +2289,7 @@ msgstr "iodef etiketi için raporlama URL'si gereklidir"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:229
 msgid "Reporting URL must start with mailto:, https://, or http://"
-msgstr ""
+msgstr "Raporlama URL'si mailto:, https:// veya http:// ile başlamalıdır"
 
 #: lib/Domain/Service/DnsWizard/CAAWizard.php:236
 msgid "Flags must be 0 or 128"
@@ -9928,6 +9928,8 @@ msgid ""
 "External authentication users (LDAP, OIDC, SAML) cannot have passwords "
 "managed through this interface"
 msgstr ""
+"Harici kimlik doğrulama kullanıcılarının (LDAP, OIDC, SAML) parolaları bu "
+"arayüz üzerinden yönetilemez"
 
 #: templates/modern/confirm_unlink_zones_templ.html:6
 msgid "Unlink zones"
