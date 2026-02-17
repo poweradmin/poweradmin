@@ -223,3 +223,33 @@ msgstr "записів імпортовано,"
 msgid "records imported."
 msgstr "записів імпортовано."
 
+msgid "records skipped (duplicates)."
+msgstr "записів пропущено (дублікати)."
+
+msgid "records skipped (duplicates),"
+msgstr "записів пропущено (дублікати),"
+
+msgid "Add all records"
+msgstr "Додати всі записи"
+
+msgid "Conflict strategy"
+msgstr "Стратегія конфліктів"
+
+msgid "Replace matching records"
+msgstr "Замінити відповідні записи"
+
+msgid "Skip duplicates"
+msgstr "Пропустити дублікати"
+
+msgid "Target zone"
+msgstr "Цільова зона"
+
+msgid "The selected zone does not exist."
+msgstr "Вибрана зона не існує."
+
+msgid "You do not have permission to modify this zone."
+msgstr "У вас немає дозволу на зміну цієї зони."
+
+msgid "You do not have permission to import zones."
+msgstr "У вас немає дозволу на імпорт зон."
+

@@ -223,3 +223,33 @@ msgstr "bản ghi đã nhập,"
 msgid "records imported."
 msgstr "bản ghi đã nhập."
 
+msgid "records skipped (duplicates)."
+msgstr "bản ghi đã bỏ qua (trùng lặp)."
+
+msgid "records skipped (duplicates),"
+msgstr "bản ghi đã bỏ qua (trùng lặp),"
+
+msgid "Add all records"
+msgstr "Thêm tất cả bản ghi"
+
+msgid "Conflict strategy"
+msgstr "Chiến lược xung đột"
+
+msgid "Replace matching records"
+msgstr "Thay thế bản ghi trùng khớp"
+
+msgid "Skip duplicates"
+msgstr "Bỏ qua bản ghi trùng lặp"
+
+msgid "Target zone"
+msgstr "Vùng đích"
+
+msgid "The selected zone does not exist."
+msgstr "Vùng được chọn không tồn tại."
+
+msgid "You do not have permission to modify this zone."
+msgstr "Bạn không có quyền sửa đổi vùng này."
+
+msgid "You do not have permission to import zones."
+msgstr "Bạn không có quyền nhập vùng."
+

@@ -223,3 +223,33 @@ msgstr "rekordów zaimportowano,"
 msgid "records imported."
 msgstr "rekordów zaimportowano."
 
+msgid "records skipped (duplicates)."
+msgstr "rekordów pominiętych (duplikaty)."
+
+msgid "records skipped (duplicates),"
+msgstr "rekordów pominiętych (duplikaty),"
+
+msgid "Add all records"
+msgstr "Dodaj wszystkie rekordy"
+
+msgid "Conflict strategy"
+msgstr "Strategia konfliktów"
+
+msgid "Replace matching records"
+msgstr "Zastąp pasujące rekordy"
+
+msgid "Skip duplicates"
+msgstr "Pomiń duplikaty"
+
+msgid "Target zone"
+msgstr "Strefa docelowa"
+
+msgid "The selected zone does not exist."
+msgstr "Wybrana strefa nie istnieje."
+
+msgid "You do not have permission to modify this zone."
+msgstr "Nie masz uprawnień do modyfikacji tej strefy."
+
+msgid "You do not have permission to import zones."
+msgstr "Nie masz uprawnień do importowania stref."
+

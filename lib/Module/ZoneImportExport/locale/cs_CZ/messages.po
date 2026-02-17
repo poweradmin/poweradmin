@@ -223,3 +223,33 @@ msgstr "záznamů importováno,"
 msgid "records imported."
 msgstr "záznamů importováno."
 
+msgid "records skipped (duplicates)."
+msgstr "záznamů přeskočeno (duplikáty)."
+
+msgid "records skipped (duplicates),"
+msgstr "záznamů přeskočeno (duplikáty),"
+
+msgid "Add all records"
+msgstr "Přidat všechny záznamy"
+
+msgid "Conflict strategy"
+msgstr "Strategie konfliktů"
+
+msgid "Replace matching records"
+msgstr "Nahradit odpovídající záznamy"
+
+msgid "Skip duplicates"
+msgstr "Přeskočit duplikáty"
+
+msgid "Target zone"
+msgstr "Cílová zóna"
+
+msgid "The selected zone does not exist."
+msgstr "Vybraná zóna neexistuje."
+
+msgid "You do not have permission to modify this zone."
+msgstr "Nemáte oprávnění upravovat tuto zónu."
+
+msgid "You do not have permission to import zones."
+msgstr "Nemáte oprávnění importovat zóny."
+

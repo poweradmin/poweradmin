@@ -223,3 +223,33 @@ msgstr "įrašų importuota,"
 msgid "records imported."
 msgstr "įrašų importuota."
 
+msgid "records skipped (duplicates)."
+msgstr "įrašų praleista (dublikatai)."
+
+msgid "records skipped (duplicates),"
+msgstr "įrašų praleista (dublikatai),"
+
+msgid "Add all records"
+msgstr "Pridėti visus įrašus"
+
+msgid "Conflict strategy"
+msgstr "Konfliktų strategija"
+
+msgid "Replace matching records"
+msgstr "Pakeisti atitinkančius įrašus"
+
+msgid "Skip duplicates"
+msgstr "Praleisti dublikatus"
+
+msgid "Target zone"
+msgstr "Tikslinė zona"
+
+msgid "The selected zone does not exist."
+msgstr "Pasirinkta zona neegzistuoja."
+
+msgid "You do not have permission to modify this zone."
+msgstr "Neturite leidimo keisti šios zonos."
+
+msgid "You do not have permission to import zones."
+msgstr "Neturite leidimo importuoti zonų."
+

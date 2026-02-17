@@ -223,3 +223,33 @@ msgstr "레코드 가져옴,"
 msgid "records imported."
 msgstr "레코드 가져옴."
 
+msgid "records skipped (duplicates)."
+msgstr "레코드 건너뜀 (중복)."
+
+msgid "records skipped (duplicates),"
+msgstr "레코드 건너뜀 (중복),"
+
+msgid "Add all records"
+msgstr "모든 레코드 추가"
+
+msgid "Conflict strategy"
+msgstr "충돌 전략"
+
+msgid "Replace matching records"
+msgstr "일치하는 레코드 교체"
+
+msgid "Skip duplicates"
+msgstr "중복 건너뛰기"
+
+msgid "Target zone"
+msgstr "대상 영역"
+
+msgid "The selected zone does not exist."
+msgstr "선택한 영역이 존재하지 않습니다."
+
+msgid "You do not have permission to modify this zone."
+msgstr "이 영역을 수정할 권한이 없습니다."
+
+msgid "You do not have permission to import zones."
+msgstr "영역을 가져올 권한이 없습니다."
+

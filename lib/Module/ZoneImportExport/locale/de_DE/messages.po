@@ -223,3 +223,33 @@ msgstr "Einträge importiert,"
 #: lib/Module/ZoneImportExport/templates/import.html:20
 msgid "records imported."
 msgstr "Einträge importiert."
+
+msgid "records skipped (duplicates)."
+msgstr "Einträge übersprungen (Duplikate)."
+
+msgid "records skipped (duplicates),"
+msgstr "Einträge übersprungen (Duplikate),"
+
+msgid "Add all records"
+msgstr "Alle Einträge hinzufügen"
+
+msgid "Conflict strategy"
+msgstr "Konfliktstrategie"
+
+msgid "Replace matching records"
+msgstr "Übereinstimmende Einträge ersetzen"
+
+msgid "Skip duplicates"
+msgstr "Duplikate überspringen"
+
+msgid "Target zone"
+msgstr "Zielzone"
+
+msgid "The selected zone does not exist."
+msgstr "Die ausgewählte Zone existiert nicht."
+
+msgid "You do not have permission to modify this zone."
+msgstr "Sie haben keine Berechtigung, diese Zone zu ändern."
+
+msgid "You do not have permission to import zones."
+msgstr "Sie haben keine Berechtigung, Zonen zu importieren."

@@ -223,3 +223,33 @@ msgstr "rekaman diimpor,"
 msgid "records imported."
 msgstr "rekaman diimpor."
 
+msgid "records skipped (duplicates)."
+msgstr "rekaman dilewati (duplikat)."
+
+msgid "records skipped (duplicates),"
+msgstr "rekaman dilewati (duplikat),"
+
+msgid "Add all records"
+msgstr "Tambahkan semua rekaman"
+
+msgid "Conflict strategy"
+msgstr "Strategi konflik"
+
+msgid "Replace matching records"
+msgstr "Ganti rekaman yang cocok"
+
+msgid "Skip duplicates"
+msgstr "Lewati duplikat"
+
+msgid "Target zone"
+msgstr "Zona tujuan"
+
+msgid "The selected zone does not exist."
+msgstr "Zona yang dipilih tidak ada."
+
+msgid "You do not have permission to modify this zone."
+msgstr "Anda tidak memiliki izin untuk mengubah zona ini."
+
+msgid "You do not have permission to import zones."
+msgstr "Anda tidak memiliki izin untuk mengimpor zona."
+

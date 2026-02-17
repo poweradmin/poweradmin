@@ -223,3 +223,33 @@ msgstr "enregistrements importés,"
 msgid "records imported."
 msgstr "enregistrements importés."
 
+msgid "records skipped (duplicates)."
+msgstr "enregistrements ignorés (doublons)."
+
+msgid "records skipped (duplicates),"
+msgstr "enregistrements ignorés (doublons),"
+
+msgid "Add all records"
+msgstr "Ajouter tous les enregistrements"
+
+msgid "Conflict strategy"
+msgstr "Stratégie de conflit"
+
+msgid "Replace matching records"
+msgstr "Remplacer les enregistrements correspondants"
+
+msgid "Skip duplicates"
+msgstr "Ignorer les doublons"
+
+msgid "Target zone"
+msgstr "Zone cible"
+
+msgid "The selected zone does not exist."
+msgstr "La zone sélectionnée n'existe pas."
+
+msgid "You do not have permission to modify this zone."
+msgstr "Vous n'avez pas la permission de modifier cette zone."
+
+msgid "You do not have permission to import zones."
+msgstr "Vous n'avez pas la permission d'importer des zones."
+

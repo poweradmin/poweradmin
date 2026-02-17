@@ -223,3 +223,33 @@ msgstr "poster importert,"
 msgid "records imported."
 msgstr "poster importert."
 
+msgid "records skipped (duplicates)."
+msgstr "poster hoppet over (duplikater)."
+
+msgid "records skipped (duplicates),"
+msgstr "poster hoppet over (duplikater),"
+
+msgid "Add all records"
+msgstr "Legg til alle poster"
+
+msgid "Conflict strategy"
+msgstr "Konfliktstrategi"
+
+msgid "Replace matching records"
+msgstr "Erstatt samsvarende poster"
+
+msgid "Skip duplicates"
+msgstr "Hopp over duplikater"
+
+msgid "Target zone"
+msgstr "Målsone"
+
+msgid "The selected zone does not exist."
+msgstr "Den valgte sonen finnes ikke."
+
+msgid "You do not have permission to modify this zone."
+msgstr "Du har ikke tillatelse til å endre denne sonen."
+
+msgid "You do not have permission to import zones."
+msgstr "Du har ikke tillatelse til å importere soner."
+

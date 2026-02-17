@@ -223,3 +223,33 @@ msgstr "レコードインポート済み、"
 msgid "records imported."
 msgstr "レコードインポート済み。"
 
+msgid "records skipped (duplicates)."
+msgstr "レコードスキップ済み（重複）。"
+
+msgid "records skipped (duplicates),"
+msgstr "レコードスキップ済み（重複）、"
+
+msgid "Add all records"
+msgstr "すべてのレコードを追加"
+
+msgid "Conflict strategy"
+msgstr "競合戦略"
+
+msgid "Replace matching records"
+msgstr "一致するレコードを置換"
+
+msgid "Skip duplicates"
+msgstr "重複をスキップ"
+
+msgid "Target zone"
+msgstr "対象ゾーン"
+
+msgid "The selected zone does not exist."
+msgstr "選択されたゾーンは存在しません。"
+
+msgid "You do not have permission to modify this zone."
+msgstr "このゾーンを変更する権限がありません。"
+
+msgid "You do not have permission to import zones."
+msgstr "ゾーンをインポートする権限がありません。"
+

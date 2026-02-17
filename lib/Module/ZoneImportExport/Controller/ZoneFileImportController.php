@@ -23,8 +23,11 @@
 namespace Poweradmin\Module\ZoneImportExport\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
@@ -32,6 +35,8 @@ use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 
 class ZoneFileImportController extends BaseController
@@ -46,7 +51,7 @@ class ZoneFileImportController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('zone_master_add', _('You do not have permission to add zones.'));
+        $this->checkImportPermission();
 
         if ($this->isPost()) {
             $this->handleUpload();
@@ -57,19 +62,49 @@ class ZoneFileImportController extends BaseController
 
     public function execute(): void
     {
-        $this->checkPermission('zone_master_add', _('You do not have permission to add zones.'));
+        $this->checkImportPermission();
         $this->validateCsrfToken();
         $this->handleExecute();
+    }
+
+    private function checkImportPermission(): void
+    {
+        $canAdd = UserManager::verifyPermission($this->db, 'zone_master_add');
+        $perm_edit = Permission::getEditPermission($this->db);
+        $this->checkCondition(
+            !$canAdd && $perm_edit === 'none',
+            _('You do not have permission to import zones.')
+        );
     }
 
     private function showForm(array $extra = []): void
     {
         $maxFileSize = $this->getConfig()->get('modules', 'zone_import_export.max_file_size', 1048576);
 
+        $targetZoneId = 0;
+        $targetZoneName = '';
+
+        if (isset($_GET['zone_id']) && (int)$_GET['zone_id'] > 0) {
+            $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+            $zoneName = $zoneRepository->getDomainNameById((int)$_GET['zone_id']);
+            if ($zoneName) {
+                $userId = $this->userContextService->getLoggedInUserId();
+                $userRepository = new DbUserRepository($this->db, $this->getConfig());
+                $permissionService = new PermissionService($userRepository);
+                $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, (int)$_GET['zone_id']);
+                if ($permEdit !== 'none') {
+                    $targetZoneId = (int)$_GET['zone_id'];
+                    $targetZoneName = $zoneName;
+                }
+            }
+        }
+
         $vars = array_merge([
             'max_file_size' => $maxFileSize,
             'max_file_size_human' => $this->formatBytes($maxFileSize),
             'csrf_token' => $this->getCsrfToken(),
+            'target_zone_id' => $targetZoneId,
+            'target_zone_name' => $targetZoneName,
         ], $extra);
 
         $this->render('@zone_import_export/import.html', $vars);
@@ -122,6 +157,34 @@ class ZoneFileImportController extends BaseController
         // Filter out SOA records (Poweradmin creates its own)
         $filteredRecords = array_values(array_filter($records, fn($r) => $r->type !== 'SOA'));
 
+        $importMode = $_POST['import_mode'] ?? 'new';
+        $existingZoneId = isset($_POST['existing_zone_id']) ? (int)$_POST['existing_zone_id'] : 0;
+
+        $userId = $this->userContextService->getLoggedInUserId();
+        $userRepository = new DbUserRepository($this->db, $this->getConfig());
+        $permissionService = new PermissionService($userRepository);
+
+        // Verify permission when importing into an existing zone via POST
+        if ($importMode === 'existing' && $existingZoneId > 0) {
+            $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, $existingZoneId);
+            if ($permEdit === 'none') {
+                $this->showError(_('You do not have permission to modify this zone.'));
+                return;
+            }
+        }
+
+        // Auto-detect existing zone when importing from the menu
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        if ($importMode === 'new' && $origin !== null && $dnsRecord->domainExists($origin)) {
+            $existingZoneId = $dnsRecord->getZoneIdFromName($origin) ?? 0;
+            if ($existingZoneId > 0) {
+                $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, $existingZoneId);
+                if ($permEdit !== 'none') {
+                    $importMode = 'existing';
+                }
+            }
+        }
+
         // Store parsed data in session for the execute step
         $_SESSION['zone_import_data'] = [
             'origin' => $origin,
@@ -142,14 +205,24 @@ class ZoneFileImportController extends BaseController
             ];
         }
 
-        $this->showForm([
+        $previewVars = [
             'preview' => true,
             'records' => $previewRecords,
             'record_count' => count($filteredRecords),
             'warnings' => $parsed->getWarnings(),
             'origin' => $origin,
             'filename' => $_FILES['zone_file']['name'],
-        ]);
+            'import_mode' => $importMode,
+            'existing_zone_id' => $existingZoneId,
+        ];
+
+        if ($importMode === 'existing' && $existingZoneId > 0) {
+            $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+            $existingZoneName = $zoneRepository->getDomainNameById($existingZoneId);
+            $previewVars['existing_zone_name'] = $existingZoneName ?: '';
+        }
+
+        $this->showForm($previewVars);
     }
 
     private function handleExecute(): void
@@ -163,16 +236,14 @@ class ZoneFileImportController extends BaseController
         $records = unserialize($importData['records']);
         $origin = $importData['origin'];
 
+        $importMode = $_POST['import_mode'] ?? 'new';
+        $existingZoneId = isset($_POST['existing_zone_id']) ? (int)$_POST['existing_zone_id'] : 0;
+        $conflictStrategy = $_POST['conflict_strategy'] ?? 'skip';
         $zoneName = $_POST['zone_name'] ?? $origin;
 
         // Handle IDN zone name
-        if (DnsIdnService::isIdn($zoneName)) {
+        if ($zoneName && DnsIdnService::isIdn($zoneName)) {
             $zoneName = DnsIdnService::toPunycode($zoneName);
-        }
-
-        if (empty($zoneName)) {
-            $this->showError(_('Zone name is required.'));
-            return;
         }
 
         $userId = $this->userContextService->getLoggedInUserId();
@@ -181,30 +252,74 @@ class ZoneFileImportController extends BaseController
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
-        if ($dnsRecord->domainExists($zoneName)) {
-            $this->showError(_('A zone with this name already exists.'));
-            return;
-        }
+        if ($importMode === 'existing' && $existingZoneId > 0) {
+            // Verify the zone exists
+            $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+            $existingZoneName = $zoneRepository->getDomainNameById($existingZoneId);
+            if (!$existingZoneName) {
+                $this->showError(_('The selected zone does not exist.'));
+                return;
+            }
 
-        $zoneType = $_POST['zone_type'] ?? 'MASTER';
-        if (!$dnsRecord->addDomain($this->db, $zoneName, $userId, $zoneType, '', 'none')) {
-            $this->showError(_('Failed to create zone.'));
-            return;
-        }
+            // Verify user has permission to edit this zone
+            $userRepository = new DbUserRepository($this->db, $this->getConfig());
+            $permissionService = new PermissionService($userRepository);
+            $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, $existingZoneId);
 
-        $zone_id = $dnsRecord->getZoneIdFromName($zoneName);
-        if (!$zone_id) {
-            $this->showError(_('Failed to retrieve created zone.'));
-            return;
-        }
+            if ($permEdit === 'none') {
+                $this->showError(_('You do not have permission to modify this zone.'));
+                return;
+            }
 
-        $logger = new LegacyLogger($this->db);
-        $logger->logInfo(sprintf(
-            'client_ip:%s user:%s operation:zone_import zone_name:%s',
-            $clientIp,
-            $userLogin,
-            $zoneName
-        ), $zone_id);
+            $zone_id = $existingZoneId;
+            $zoneName = $existingZoneName;
+
+            $logger = new LegacyLogger($this->db);
+            $logger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:zone_import_records zone_name:%s',
+                $clientIp,
+                $userLogin,
+                $zoneName
+            ), $zone_id);
+        } else {
+            if (!UserManager::verifyPermission($this->db, 'zone_master_add')) {
+                $this->showError(_('You do not have permission to add zones.'));
+                return;
+            }
+
+            if (empty($zoneName)) {
+                $this->showError(_('Zone name is required.'));
+                return;
+            }
+
+            if ($dnsRecord->domainExists($zoneName)) {
+                $this->showError(_('A zone with this name already exists.'));
+                return;
+            }
+
+            $zoneType = $_POST['zone_type'] ?? 'MASTER';
+            if (!$dnsRecord->addDomain($this->db, $zoneName, $userId, $zoneType, '', 'none')) {
+                $this->showError(_('Failed to create zone.'));
+                return;
+            }
+
+            $zone_id = $dnsRecord->getZoneIdFromName($zoneName);
+            if (!$zone_id) {
+                $this->showError(_('Failed to retrieve created zone.'));
+                return;
+            }
+
+            $logger = new LegacyLogger($this->db);
+            $logger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:zone_import zone_name:%s',
+                $clientIp,
+                $userLogin,
+                $zoneName
+            ), $zone_id);
+
+            // New zone: no conflicts possible
+            $conflictStrategy = 'add_all';
+        }
 
         // Import records
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
@@ -223,8 +338,30 @@ class ZoneFileImportController extends BaseController
 
         $successCount = 0;
         $failCount = 0;
+        $skipCount = 0;
+        $replacedRRSets = [];
 
         foreach ($records as $record) {
+            if ($importMode === 'existing' && $conflictStrategy !== 'add_all') {
+                $exists = $recordRepository->recordExists($zone_id, $record->name, $record->type, $record->content);
+
+                if ($exists && $conflictStrategy === 'skip') {
+                    $skipCount++;
+                    continue;
+                }
+
+                if ($conflictStrategy === 'replace') {
+                    $rrsetKey = $record->name . '|' . $record->type;
+                    if (!isset($replacedRRSets[$rrsetKey])) {
+                        $rrsetRecords = $recordRepository->getRRSetRecords($zone_id, $record->name, $record->type);
+                        foreach ($rrsetRecords as $existing) {
+                            $dnsRecord->deleteRecord((int)$existing['id']);
+                        }
+                        $replacedRRSets[$rrsetKey] = true;
+                    }
+                }
+            }
+
             $result = $recordManager->createRecord(
                 $zone_id,
                 $record->name,
@@ -251,6 +388,7 @@ class ZoneFileImportController extends BaseController
             'result' => true,
             'success_count' => $successCount,
             'fail_count' => $failCount,
+            'skip_count' => $skipCount,
             'zone_id' => $zone_id,
             'zone_name' => $zoneName ?: $origin,
         ]);

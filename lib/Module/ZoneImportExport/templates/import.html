@@ -13,18 +13,28 @@
         <strong><i class="bi bi-check-circle me-2"></i>{% trans %}Import Results{% endtrans %}</strong>
     </div>
     <div class="card-body">
-        {% if fail_count == 0 %}
+        {% if fail_count == 0 and (skip_count is not defined or skip_count == 0) %}
         <div class="alert alert-success bg-success bg-opacity-10 py-2 border border-success small">
             <i class="bi bi-check-circle-fill me-2 text-success"></i>
             <strong class="text-success">{% trans %}Success:{% endtrans %}</strong>
             {% trans %}Import completed successfully.{% endtrans %}
             {{ success_count }} {% trans %}records imported.{% endtrans %}
         </div>
+        {% elseif fail_count == 0 %}
+        <div class="alert alert-success bg-success bg-opacity-10 py-2 border border-success small">
+            <i class="bi bi-check-circle-fill me-2 text-success"></i>
+            <strong class="text-success">{% trans %}Success:{% endtrans %}</strong>
+            {{ success_count }} {% trans %}records imported,{% endtrans %}
+            {{ skip_count }} {% trans %}records skipped (duplicates).{% endtrans %}
+        </div>
         {% else %}
         <div class="alert alert-warning bg-warning bg-opacity-10 py-2 border border-warning small">
             <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>
             <strong class="text-warning">{% trans %}Warning:{% endtrans %}</strong>
             {{ success_count }} {% trans %}records imported,{% endtrans %}
+            {% if skip_count is defined and skip_count > 0 %}
+            {{ skip_count }} {% trans %}records skipped (duplicates),{% endtrans %}
+            {% endif %}
             {{ fail_count }} {% trans %}records failed.{% endtrans %}
         </div>
         {% endif %}
@@ -32,7 +42,7 @@
             <i class="bi bi-pencil me-1"></i>{% trans %}Edit zone{% endtrans %}
         </a>
         <a href="{{ base_url_prefix }}/tools/zone-import" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-cloud-arrow-down me-1"></i>{% trans %}Import another zone{% endtrans %}
+            <i class="bi bi-cloud-arrow-down me-1 text-secondary"></i>{% trans %}Import another zone{% endtrans %}
         </a>
     </div>
 </div>
@@ -88,7 +98,27 @@
 
         <form method="post" action="{{ base_url_prefix }}/tools/zone-import/execute">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
+            <input type="hidden" name="import_mode" value="{{ import_mode }}">
+            <input type="hidden" name="existing_zone_id" value="{{ existing_zone_id }}">
 
+            {% if import_mode == 'existing' %}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">{% trans %}Target zone{% endtrans %}</label>
+                    <div class="form-control form-control-sm bg-light">
+                        <i class="bi bi-hdd me-1"></i>{{ existing_zone_name is defined ? existing_zone_name : '' }}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="conflict_strategy" class="form-label">{% trans %}Conflict strategy{% endtrans %}</label>
+                    <select class="form-select form-select-sm" id="conflict_strategy" name="conflict_strategy">
+                        <option value="skip">{% trans %}Skip duplicates{% endtrans %}</option>
+                        <option value="replace">{% trans %}Replace matching records{% endtrans %}</option>
+                        <option value="add_all">{% trans %}Add all records{% endtrans %}</option>
+                    </select>
+                </div>
+            </div>
+            {% else %}
             <div class="row mb-3">
                 <div class="col-md-4">
                     <label for="zone_name" class="form-label">{% trans %}Zone name{% endtrans %}</label>
@@ -102,6 +132,7 @@
                     </select>
                 </div>
             </div>
+            {% endif %}
 
             <button type="submit" class="btn btn-primary btn-sm">
                 <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Confirm import{% endtrans %}
@@ -130,6 +161,17 @@
                         <input type="file" class="form-control form-control-sm" id="zone_file" name="zone_file" accept=".zone,.txt,.db" required>
                         <div class="form-text">{% trans %}Standard BIND zone file format. Max size:{% endtrans %} {{ max_file_size_human }}</div>
                     </div>
+
+                    {% if target_zone_id > 0 %}
+                    <div class="mb-3">
+                        <label class="form-label">{% trans %}Target zone{% endtrans %}</label>
+                        <div class="form-control form-control-sm bg-light">
+                            <i class="bi bi-hdd me-1"></i>{{ target_zone_name }}
+                        </div>
+                        <input type="hidden" name="import_mode" value="existing">
+                        <input type="hidden" name="existing_zone_id" value="{{ target_zone_id }}">
+                    </div>
+                    {% endif %}
 
                     <button type="submit" class="btn btn-primary btn-sm">
                         <i class="bi bi-upload me-1 text-white"></i>{% trans %}Upload and preview{% endtrans %}

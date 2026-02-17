@@ -223,3 +223,33 @@ msgstr "registos importados,"
 msgid "records imported."
 msgstr "registos importados."
 
+msgid "records skipped (duplicates)."
+msgstr "registos ignorados (duplicados)."
+
+msgid "records skipped (duplicates),"
+msgstr "registos ignorados (duplicados),"
+
+msgid "Add all records"
+msgstr "Adicionar todos os registos"
+
+msgid "Conflict strategy"
+msgstr "Estratégia de conflitos"
+
+msgid "Replace matching records"
+msgstr "Substituir registos correspondentes"
+
+msgid "Skip duplicates"
+msgstr "Ignorar duplicados"
+
+msgid "Target zone"
+msgstr "Zona de destino"
+
+msgid "The selected zone does not exist."
+msgstr "A zona selecionada não existe."
+
+msgid "You do not have permission to modify this zone."
+msgstr "Não tem permissão para modificar esta zona."
+
+msgid "You do not have permission to import zones."
+msgstr "Não tem permissão para importar zonas."
+

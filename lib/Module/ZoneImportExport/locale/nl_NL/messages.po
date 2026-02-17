@@ -223,3 +223,33 @@ msgstr "records geïmporteerd,"
 msgid "records imported."
 msgstr "records geïmporteerd."
 
+msgid "records skipped (duplicates)."
+msgstr "records overgeslagen (duplicaten)."
+
+msgid "records skipped (duplicates),"
+msgstr "records overgeslagen (duplicaten),"
+
+msgid "Add all records"
+msgstr "Alle records toevoegen"
+
+msgid "Conflict strategy"
+msgstr "Conflictstrategie"
+
+msgid "Replace matching records"
+msgstr "Overeenkomende records vervangen"
+
+msgid "Skip duplicates"
+msgstr "Duplicaten overslaan"
+
+msgid "Target zone"
+msgstr "Doelzone"
+
+msgid "The selected zone does not exist."
+msgstr "De geselecteerde zone bestaat niet."
+
+msgid "You do not have permission to modify this zone."
+msgstr "U heeft geen toestemming om deze zone te wijzigen."
+
+msgid "You do not have permission to import zones."
+msgstr "U heeft geen toestemming om zones te importeren."
+

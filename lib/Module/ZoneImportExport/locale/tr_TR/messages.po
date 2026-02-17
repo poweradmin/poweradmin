@@ -223,3 +223,33 @@ msgstr "kayıt içe aktarıldı,"
 msgid "records imported."
 msgstr "kayıt içe aktarıldı."
 
+msgid "records skipped (duplicates)."
+msgstr "kayıt atlandı (yinelenmiş)."
+
+msgid "records skipped (duplicates),"
+msgstr "kayıt atlandı (yinelenmiş),"
+
+msgid "Add all records"
+msgstr "Tüm kayıtları ekle"
+
+msgid "Conflict strategy"
+msgstr "Çakışma stratejisi"
+
+msgid "Replace matching records"
+msgstr "Eşleşen kayıtları değiştir"
+
+msgid "Skip duplicates"
+msgstr "Yinelenenleri atla"
+
+msgid "Target zone"
+msgstr "Hedef bölge"
+
+msgid "The selected zone does not exist."
+msgstr "Seçilen bölge mevcut değil."
+
+msgid "You do not have permission to modify this zone."
+msgstr "Bu bölgeyi değiştirme izniniz yok."
+
+msgid "You do not have permission to import zones."
+msgstr "Bölge içe aktarma izniniz yok."
+

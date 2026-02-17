@@ -223,3 +223,33 @@ msgstr "poster importerade,"
 msgid "records imported."
 msgstr "poster importerade."
 
+msgid "records skipped (duplicates)."
+msgstr "poster överhoppade (dubbletter)."
+
+msgid "records skipped (duplicates),"
+msgstr "poster överhoppade (dubbletter),"
+
+msgid "Add all records"
+msgstr "Lägg till alla poster"
+
+msgid "Conflict strategy"
+msgstr "Konfliktstrategi"
+
+msgid "Replace matching records"
+msgstr "Ersätt matchande poster"
+
+msgid "Skip duplicates"
+msgstr "Hoppa över dubbletter"
+
+msgid "Target zone"
+msgstr "Målzon"
+
+msgid "The selected zone does not exist."
+msgstr "Den valda zonen finns inte."
+
+msgid "You do not have permission to modify this zone."
+msgstr "Du har inte behörighet att ändra denna zon."
+
+msgid "You do not have permission to import zones."
+msgstr "Du har inte behörighet att importera zoner."
+

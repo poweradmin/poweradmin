@@ -223,3 +223,33 @@ msgstr "条记录已导入，"
 msgid "records imported."
 msgstr "条记录已导入。"
 
+msgid "records skipped (duplicates)."
+msgstr "条记录已跳过（重复）。"
+
+msgid "records skipped (duplicates),"
+msgstr "条记录已跳过（重复），"
+
+msgid "Add all records"
+msgstr "添加所有记录"
+
+msgid "Conflict strategy"
+msgstr "冲突策略"
+
+msgid "Replace matching records"
+msgstr "替换匹配的记录"
+
+msgid "Skip duplicates"
+msgstr "跳过重复项"
+
+msgid "Target zone"
+msgstr "目标区域"
+
+msgid "The selected zone does not exist."
+msgstr "所选区域不存在。"
+
+msgid "You do not have permission to modify this zone."
+msgstr "您没有权限修改此区域。"
+
+msgid "You do not have permission to import zones."
+msgstr "您没有权限导入区域。"
+
