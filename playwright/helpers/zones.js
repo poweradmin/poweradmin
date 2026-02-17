@@ -53,7 +53,7 @@ export async function findZoneIdByName(page, zoneName) {
   // Determine which zone list to check based on zone name
   // Use letter=all for forward zones to ensure we find zones starting with any letter
   const listPage = isReverseZone(zoneName)
-    ? '/zones/reverse'
+    ? '/zones/reverse?letter=all'
     : '/zones/forward?letter=all';
 
   await page.goto(listPage);
@@ -64,9 +64,9 @@ export async function findZoneIdByName(page, zoneName) {
   // Find the row containing the zone name
   let row = page.locator(`tr:has-text("${zoneName}")`);
 
-  // If not found and name is IDN (punycode), try searching by display name from fixtures
-  if (await row.count() === 0 && zoneName.startsWith('xn--')) {
-    // Look up display name from zones fixture
+  // If not found, try searching by display name from fixtures
+  // Handles IDN zones (xn-- punycode) and IPv6 reverse zones (displayed as human-readable prefix)
+  if (await row.count() === 0) {
     const zoneEntry = Object.values(zones).find(z => z.name === zoneName);
     if (zoneEntry && zoneEntry.displayName) {
       row = page.locator(`tr:has-text("${zoneEntry.displayName}")`);

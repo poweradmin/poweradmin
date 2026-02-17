@@ -49,6 +49,7 @@
   },
   "reverseIPv6": {
     "name": "8.b.d.0.1.0.0.2.ip6.arpa",
+    "displayName": "2001:db8::",
     "type": "MASTER",
     "owner": "admin",
     "description": "IPv6 reverse zone for PTR records"
