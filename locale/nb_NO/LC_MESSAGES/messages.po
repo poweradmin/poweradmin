@@ -274,29 +274,29 @@ msgstr "Vennligst velg minst én bruker."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d bruker lagt til i gruppen."
+msgstr[1] "%d brukere lagt til i gruppen."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:171
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d bruker kunne ikke legges til."
+msgstr[1] "%d brukere kunne ikke legges til."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:220
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d bruker fjernet fra gruppen."
+msgstr[1] "%d brukere fjernet fra gruppen."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:253
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d bruker kunne ikke fjernes."
+msgstr[1] "%d brukere kunne ikke fjernes."
 
 #: lib/Application/Controller/DnsWizardController.php:57
 msgid "DNS wizards are not enabled."
@@ -1070,29 +1070,29 @@ msgstr "Vennligst velg minst én sone."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d sone lagt til i gruppen."
+msgstr[1] "%d soner lagt til i gruppen."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:184
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d sone kunne ikke legges til."
+msgstr[1] "%d soner kunne ikke legges til."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:230
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d sone fjernet fra gruppen."
+msgstr[1] "%d soner fjernet fra gruppen."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:276
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d sone kunne ikke fjernes."
+msgstr[1] "%d soner kunne ikke fjernes."
 
 #: lib/Application/Controller/AddPermTemplController.php:50
 msgid "You do not have the permission to add permission templates."
@@ -1292,8 +1292,8 @@ msgstr "Vennligst velg minst én gruppe."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bruker lagt til i %d gruppe."
+msgstr[1] "Bruker lagt til i %d grupper."
 
 #: lib/Application/Controller/EditUserController.php:419
 #, php-format
@@ -1301,7 +1301,11 @@ msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
 msgstr[0] ""
+"Kunne ikke legge til bruker i %d gruppe (allerede medlem eller gruppe ikke "
+"funnet)."
 msgstr[1] ""
+"Kunne ikke legge til bruker i %d grupper (allerede medlem eller grupper ikke"
+" funnet)."
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 msgid "You do not have the permission to delete permission templates."

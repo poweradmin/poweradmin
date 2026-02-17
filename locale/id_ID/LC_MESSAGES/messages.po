@@ -309,29 +309,25 @@ msgstr "Silakan pilih setidaknya satu pengguna."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d pengguna ditambahkan ke grup."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:171
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d pengguna tidak dapat ditambahkan."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:220
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d pengguna dihapus dari grup."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:253
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d pengguna tidak dapat dihapus."
 
 #: lib/Application/Controller/DnsWizardController.php:57
 #, auto-english-fallback
@@ -773,15 +769,13 @@ msgstr "Tidak ada zona yang dipilih."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zona berhasil dilepas dari templat."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:106
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zona tidak dapat dilepas."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, auto-english-fallback
@@ -1258,29 +1252,25 @@ msgstr "Silakan pilih setidaknya satu zona."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zona ditambahkan ke grup."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:184
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zona tidak dapat ditambahkan."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:230
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zona dihapus dari grup."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:276
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zona tidak dapat dihapus."
 
 #: lib/Application/Controller/AddPermTemplController.php:50
 #, auto-english-fallback
@@ -1527,8 +1517,7 @@ msgstr "Silakan pilih setidaknya satu grup."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Pengguna berhasil ditambahkan ke %d grup."
 
 #: lib/Application/Controller/EditUserController.php:419
 #, php-format
@@ -1536,7 +1525,8 @@ msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
 msgstr[0] ""
-msgstr[1] ""
+"Gagal menambahkan pengguna ke %d grup (sudah menjadi anggota atau grup tidak"
+" ditemukan)."
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 #, auto-english-fallback
@@ -9199,6 +9189,8 @@ msgid ""
 "MX for Microsoft 365: "
 "<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 msgstr ""
+"MX untuk Microsoft 365: "
+"<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/modern/add_zone_templ_record.html:177
 #, auto-english-fallback

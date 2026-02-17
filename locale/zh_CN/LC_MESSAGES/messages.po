@@ -254,29 +254,29 @@ msgstr "请至少选择一个用户。"
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 个用户已添加到组。"
+msgstr[1] "%d 个用户已添加到组。"
 
 #: lib/Application/Controller/ManageGroupMembersController.php:171
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 个用户无法添加。"
+msgstr[1] "%d 个用户无法添加。"
 
 #: lib/Application/Controller/ManageGroupMembersController.php:220
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 个用户已从组中移除。"
+msgstr[1] "%d 个用户已从组中移除。"
 
 #: lib/Application/Controller/ManageGroupMembersController.php:253
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 个用户无法移除。"
+msgstr[1] "%d 个用户无法移除。"
 
 #: lib/Application/Controller/DnsWizardController.php:57
 msgid "DNS wizards are not enabled."
@@ -1017,29 +1017,29 @@ msgstr "请至少选择一个区域。"
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 个区域已添加到组。"
+msgstr[1] "%d 个区域已添加到组。"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:184
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 个区域无法添加。"
+msgstr[1] "%d 个区域无法添加。"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:230
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 个区域已从组中移除。"
+msgstr[1] "%d 个区域已从组中移除。"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:276
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 个区域无法移除。"
+msgstr[1] "%d 个区域无法移除。"
 
 #: lib/Application/Controller/AddPermTemplController.php:50
 msgid "You do not have the permission to add permission templates."
@@ -1239,16 +1239,16 @@ msgstr "请至少选择一个组。"
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "用户已成功添加到 %d 个组。"
+msgstr[1] "用户已成功添加到 %d 个组。"
 
 #: lib/Application/Controller/EditUserController.php:419
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "无法将用户添加到 %d 个组（已是成员或未找到组）。"
+msgstr[1] "无法将用户添加到 %d 个组（已是成员或未找到组）。"
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 msgid "You do not have the permission to delete permission templates."

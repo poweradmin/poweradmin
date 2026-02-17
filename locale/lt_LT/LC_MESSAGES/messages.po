@@ -272,33 +272,33 @@ msgstr "Pasirinkite bent vieną vartotoją."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d naudotojas pridėtas į grupę."
+msgstr[1] "%d naudotojai pridėti į grupę."
+msgstr[2] "%d naudotojų pridėta į grupę."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:171
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d naudotojas nepridėtas."
+msgstr[1] "%d naudotojai nepridėti."
+msgstr[2] "%d naudotojų nepridėta."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:220
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d naudotojas pašalintas iš grupės."
+msgstr[1] "%d naudotojai pašalinti iš grupės."
+msgstr[2] "%d naudotojų pašalinta iš grupės."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:253
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d naudotojas nepašalintas."
+msgstr[1] "%d naudotojai nepašalinti."
+msgstr[2] "%d naudotojų nepašalinta."
 
 #: lib/Application/Controller/DnsWizardController.php:57
 msgid "DNS wizards are not enabled."
@@ -1072,33 +1072,33 @@ msgstr "Pasirinkite bent vieną zoną."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d zona pridėta į grupę."
+msgstr[1] "%d zonos pridėtos į grupę."
+msgstr[2] "%d zonų pridėta į grupę."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:184
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d zona nepridėta."
+msgstr[1] "%d zonos nepridėtos."
+msgstr[2] "%d zonų nepridėta."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:230
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d zona pašalinta iš grupės."
+msgstr[1] "%d zonos pašalintos iš grupės."
+msgstr[2] "%d zonų pašalinta iš grupės."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:276
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d zona nepašalinta."
+msgstr[1] "%d zonos nepašalintos."
+msgstr[2] "%d zonų nepašalinta."
 
 #: lib/Application/Controller/AddPermTemplController.php:50
 msgid "You do not have the permission to add permission templates."
@@ -1298,9 +1298,9 @@ msgstr "Pasirinkite bent vieną grupę."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Naudotojas sėkmingai pridėtas į %d grupę."
+msgstr[1] "Naudotojas sėkmingai pridėtas į %d grupes."
+msgstr[2] "Naudotojas sėkmingai pridėtas į %d grupių."
 
 #: lib/Application/Controller/EditUserController.php:419
 #, php-format
@@ -1308,8 +1308,11 @@ msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
 msgstr[0] ""
+"Nepavyko pridėti naudotojo į %d grupę (jau narys arba grupė nerasta)."
 msgstr[1] ""
+"Nepavyko pridėti naudotojo į %d grupes (jau narys arba grupės nerastos)."
 msgstr[2] ""
+"Nepavyko pridėti naudotojo į %d grupių (jau narys arba grupės nerastos)."
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 msgid "You do not have the permission to delete permission templates."

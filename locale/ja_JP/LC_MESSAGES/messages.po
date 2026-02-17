@@ -258,25 +258,25 @@ msgstr "少なくとも1人のユーザーを選択してください。"
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] ""
+msgstr[0] "%d人のユーザーをグループに追加しました。"
 
 #: lib/Application/Controller/ManageGroupMembersController.php:171
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] ""
+msgstr[0] "%d人のユーザーを追加できませんでした。"
 
 #: lib/Application/Controller/ManageGroupMembersController.php:220
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] ""
+msgstr[0] "%d人のユーザーをグループから削除しました。"
 
 #: lib/Application/Controller/ManageGroupMembersController.php:253
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] ""
+msgstr[0] "%d人のユーザーを削除できませんでした。"
 
 #: lib/Application/Controller/DnsWizardController.php:57
 msgid "DNS wizards are not enabled."
@@ -1020,25 +1020,25 @@ msgstr "少なくとも1つのゾーンを選択してください。"
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] ""
+msgstr[0] "%d個のゾーンをグループに追加しました。"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:184
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] ""
+msgstr[0] "%d個のゾーンを追加できませんでした。"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:230
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] ""
+msgstr[0] "%d個のゾーンをグループから削除しました。"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:276
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] ""
+msgstr[0] "%d個のゾーンを削除できませんでした。"
 
 #: lib/Application/Controller/AddPermTemplController.php:50
 msgid "You do not have the permission to add permission templates."
@@ -1238,14 +1238,14 @@ msgstr "少なくとも1つのグループを選択してください。"
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] ""
+msgstr[0] "ユーザーを%d個のグループに正常に追加しました。"
 
 #: lib/Application/Controller/EditUserController.php:419
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] ""
+msgstr[0] "%d個のグループへのユーザー追加に失敗しました（既にメンバーであるか、グループが見つかりません）。"
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 msgid "You do not have the permission to delete permission templates."

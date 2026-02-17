@@ -308,25 +308,25 @@ msgstr "Vui lòng chọn ít nhất một người dùng."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] ""
+msgstr[0] "%d người dùng đã được thêm vào nhóm."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:171
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] ""
+msgstr[0] "%d người dùng không thể được thêm."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:220
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] ""
+msgstr[0] "%d người dùng đã được xóa khỏi nhóm."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:253
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] ""
+msgstr[0] "%d người dùng không thể được xóa."
 
 #: lib/Application/Controller/DnsWizardController.php:57
 #, auto-english-fallback
@@ -764,13 +764,13 @@ msgstr "Không có vùng nào được chọn."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] ""
+msgstr[0] "%d vùng đã được hủy liên kết khỏi mẫu thành công."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:106
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] ""
+msgstr[0] "%d vùng không thể được hủy liên kết."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, auto-english-fallback
@@ -1244,25 +1244,25 @@ msgstr "Vui lòng chọn ít nhất một vùng."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] ""
+msgstr[0] "%d vùng đã được thêm vào nhóm."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:184
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] ""
+msgstr[0] "%d vùng không thể được thêm."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:230
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] ""
+msgstr[0] "%d vùng đã được xóa khỏi nhóm."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:276
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] ""
+msgstr[0] "%d vùng không thể được xóa."
 
 #: lib/Application/Controller/AddPermTemplController.php:50
 #, auto-english-fallback
@@ -1509,7 +1509,7 @@ msgstr "Vui lòng chọn ít nhất một nhóm."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] ""
+msgstr[0] "Người dùng đã được thêm vào %d nhóm thành công."
 
 #: lib/Application/Controller/EditUserController.php:419
 #, php-format
@@ -1517,6 +1517,8 @@ msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
 msgstr[0] ""
+"Không thể thêm người dùng vào %d nhóm (đã là thành viên hoặc không tìm thấy "
+"nhóm)."
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 #, auto-english-fallback
@@ -9416,6 +9418,8 @@ msgid ""
 "MX for Microsoft 365: "
 "<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 msgstr ""
+"MX cho Microsoft 365: "
+"<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/modern/add_zone_templ_record.html:177
 #, auto-english-fallback

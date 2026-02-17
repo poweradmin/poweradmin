@@ -284,29 +284,29 @@ msgstr "Seleziona almeno un utente."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d utente aggiunto al gruppo."
+msgstr[1] "%d utenti aggiunti al gruppo."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:171
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d utente non può essere aggiunto."
+msgstr[1] "%d utenti non possono essere aggiunti."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:220
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d utente rimosso dal gruppo."
+msgstr[1] "%d utenti rimossi dal gruppo."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:253
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d utente non può essere rimosso."
+msgstr[1] "%d utenti non possono essere rimossi."
 
 #: lib/Application/Controller/DnsWizardController.php:57
 msgid "DNS wizards are not enabled."
@@ -1094,29 +1094,29 @@ msgstr "Seleziona almeno una zona."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zona aggiunta al gruppo."
+msgstr[1] "%d zone aggiunte al gruppo."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:184
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zona non può essere aggiunta."
+msgstr[1] "%d zone non possono essere aggiunte."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:230
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zona rimossa dal gruppo."
+msgstr[1] "%d zone rimosse dal gruppo."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:276
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zona non può essere rimossa."
+msgstr[1] "%d zone non possono essere rimosse."
 
 #: lib/Application/Controller/AddPermTemplController.php:50
 msgid "You do not have the permission to add permission templates."
@@ -1316,8 +1316,8 @@ msgstr "Seleziona almeno un gruppo."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Utente aggiunto a %d gruppo con successo."
+msgstr[1] "Utente aggiunto a %d gruppi con successo."
 
 #: lib/Application/Controller/EditUserController.php:419
 #, php-format
@@ -1325,7 +1325,11 @@ msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
 msgstr[0] ""
+"Impossibile aggiungere l'utente a %d gruppo (già membro o gruppo non "
+"trovato)."
 msgstr[1] ""
+"Impossibile aggiungere l'utente a %d gruppi (già membro o gruppi non "
+"trovati)."
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 msgid "You do not have the permission to delete permission templates."

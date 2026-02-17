@@ -289,25 +289,25 @@ msgstr "최소 한 명의 사용자를 선택하십시오."
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
-msgstr[0] ""
+msgstr[0] "%d명의 사용자가 그룹에 추가되었습니다."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:171
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
-msgstr[0] ""
+msgstr[0] "%d명의 사용자를 추가할 수 없습니다."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:220
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
-msgstr[0] ""
+msgstr[0] "%d명의 사용자가 그룹에서 제거되었습니다."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:253
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
-msgstr[0] ""
+msgstr[0] "%d명의 사용자를 제거할 수 없습니다."
 
 #: lib/Application/Controller/DnsWizardController.php:57
 #, auto-english-fallback
@@ -736,13 +736,13 @@ msgstr "선택된 존이 없습니다."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] ""
+msgstr[0] "%d개의 존이 템플릿에서 성공적으로 연결 해제되었습니다."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:106
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] ""
+msgstr[0] "%d개의 존을 연결 해제할 수 없습니다."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:116
 #, auto-english-fallback
@@ -1201,25 +1201,25 @@ msgstr "최소 하나의 존을 선택하십시오."
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
-msgstr[0] ""
+msgstr[0] "%d개의 존이 그룹에 추가되었습니다."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:184
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
-msgstr[0] ""
+msgstr[0] "%d개의 존을 추가할 수 없습니다."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:230
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
-msgstr[0] ""
+msgstr[0] "%d개의 존이 그룹에서 제거되었습니다."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:276
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
-msgstr[0] ""
+msgstr[0] "%d개의 존을 제거할 수 없습니다."
 
 #: lib/Application/Controller/AddPermTemplController.php:50
 #, auto-english-fallback
@@ -1466,14 +1466,14 @@ msgstr "최소 하나의 그룹을 선택하십시오."
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
-msgstr[0] ""
+msgstr[0] "사용자가 %d개의 그룹에 성공적으로 추가되었습니다."
 
 #: lib/Application/Controller/EditUserController.php:419
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
 "Failed to add user to %d groups (already a member or groups not found)."
-msgstr[0] ""
+msgstr[0] "%d개의 그룹에 사용자를 추가하지 못했습니다 (이미 멤버이거나 그룹을 찾을 수 없음)."
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 #, auto-english-fallback
@@ -8754,6 +8754,7 @@ msgid ""
 "MX for Microsoft 365: "
 "<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 msgstr ""
+"Microsoft 365용 MX: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/modern/add_zone_templ_record.html:177
 #, auto-english-fallback
