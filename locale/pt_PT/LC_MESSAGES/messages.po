@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-14 17:25+0200\n"
+"POT-Creation-Date: 2026-02-17 20:19+0200\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -727,17 +727,21 @@ msgstr "Não tem permissão para adicionar um registo a esta zona."
 msgid "No records were provided."
 msgstr "Nenhum registo foi fornecido."
 
-#: lib/Application/Controller/AddRecordController.php:425
+#: lib/Application/Controller/AddRecordController.php:394
+msgid "Zone not found."
+msgstr "Zona não encontrada."
+
+#: lib/Application/Controller/AddRecordController.php:431
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d registo(s) foram adicionados com sucesso."
 
-#: lib/Application/Controller/AddRecordController.php:427
+#: lib/Application/Controller/AddRecordController.php:433
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d registo(s) falharam ao ser adicionados."
 
-#: lib/Application/Controller/AddRecordController.php:432
+#: lib/Application/Controller/AddRecordController.php:438
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -745,7 +749,7 @@ msgstr ""
 "Alguns registos não puderam ser adicionados. Podem já existir ou conter "
 "dados inválidos."
 
-#: lib/Application/Controller/AddRecordController.php:454
+#: lib/Application/Controller/AddRecordController.php:460
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Falha ao adicionar quaisquer registos. Podem conter dados inválidos."
 
@@ -761,7 +765,7 @@ msgstr "A zona foi eliminada com sucesso."
 msgid "Zones have been deleted successfully."
 msgstr "As zonas foram eliminadas com sucesso."
 
-#: lib/Domain/Service/Dns/DomainManager.php:494
+#: lib/Domain/Service/Dns/DomainManager.php:510
 msgid "You do not have the permission to delete a zone."
 msgstr "Não tem permissão para eliminar uma zona."
 
@@ -5024,11 +5028,9 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "Domínio CA inválido na etiqueta issuewild."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-msgid ""
-"CAA iodef value must be a URL starting with http://, https://, or mailto:."
-msgstr ""
-"O valor iodef CAA deve ser um URL começando com http://, https:// ou "
-"mailto:."
+#, php-format
+msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
+msgstr "O valor iodef CAA deve ser um URL começando com %s, %s ou %s."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -5262,9 +5264,10 @@ msgstr ""
 "local)._smimecert.dominio.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
+#, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
+"part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
 "O nome do registo SMIMEA está no formato: SHA256(parte-"
 "local)._smimecert.dominio.tld para endereços de e-mail como parte-"
@@ -6885,7 +6888,7 @@ msgstr "Não tem permissão para eliminar registos SOA."
 msgid "You do not have the permission to delete NS records."
 msgstr "Não tem permissão para eliminar registos NS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:429
+#: lib/Domain/Service/Dns/DomainManager.php:445
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Argumento(s) inválido(s) fornecido(s) à função %s %s"
@@ -6899,7 +6902,7 @@ msgstr "Já existe um supermaster com este endereço IP e nome de anfitrião."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Argumento(s) inválido(s) fornecido(s) à função %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:392
+#: lib/Domain/Service/Dns/DomainManager.php:408
 msgid "The selected user already owns the zone."
 msgstr "O utilizador selecionado já possui a zona."
 
@@ -7392,7 +7395,7 @@ msgstr "Conta"
 msgid "Select the account that will own this supermaster"
 msgstr "Selecione a conta que possuirá este supermaster"
 
-#: templates/default/edit.html:504
+#: templates/default/edit.html:507
 msgid "Save changes"
 msgstr "Guardar alterações"
 
@@ -7543,7 +7546,7 @@ msgstr "Modificar propriedades do registo DNS"
 msgid "Comment"
 msgstr "Comentário"
 
-#: templates/default/edit.html:611 templates/default/add_record.html:91
+#: templates/default/edit.html:614 templates/default/add_record.html:91
 msgid "Provide content"
 msgstr "Forneça conteúdo"
 
@@ -7841,7 +7844,7 @@ msgstr "Verificar Base de Dados"
 msgid "Check DB"
 msgstr "Verificar BD"
 
-#: templates/default/edit_comment.html:18 templates/default/edit.html:486
+#: templates/default/edit_comment.html:18 templates/default/edit.html:489
 msgid "Edit comment"
 msgstr "Editar comentário"
 
@@ -8725,7 +8728,7 @@ msgstr "Sim, desligar estas zonas"
 msgid "Permission templates"
 msgstr "Modelos de permissões"
 
-#: templates/default/add_perm_templ.html:6 templates/default/edit.html:766
+#: templates/default/add_perm_templ.html:6 templates/default/edit.html:769
 msgid "Add"
 msgstr "Adicionar"
 
@@ -9156,40 +9159,40 @@ msgstr "Se perder a chave, terá de a regenerar."
 msgid "Edit"
 msgstr "Editar"
 
-#: templates/default/edit.html:25 templates/default/edit.html:519
+#: templates/default/edit.html:25 templates/default/edit.html:522
 msgid "Add new record"
 msgstr "Adicionar novo registo"
 
-#: templates/default/edit.html:28 templates/default/edit.html:522
+#: templates/default/edit.html:28 templates/default/edit.html:525
 msgid "Multi-record mode"
 msgstr "Modo multi-registo"
 
-#: templates/default/edit.html:31 templates/default/edit.html:525
+#: templates/default/edit.html:31 templates/default/edit.html:528
 msgid "Bulk add"
 msgstr "Adição em lote"
 
-#: templates/default/edit.html:43 templates/default/edit.html:537
+#: templates/default/edit.html:43 templates/default/edit.html:540
 msgid "Failed to add"
 msgstr "Falha ao adicionar"
 
-#: templates/default/edit.html:43 templates/default/edit.html:537
+#: templates/default/edit.html:43 templates/default/edit.html:540
 msgid "record(s). Please check the record format."
 msgstr "registo(s). Por favor, verifique o formato do registo."
 
-#: templates/default/edit.html:45 templates/default/edit.html:539
+#: templates/default/edit.html:45 templates/default/edit.html:542
 msgid "Failed to add records. Please check the record format."
 msgstr ""
 "Falha ao adicionar registos. Por favor, verifique o formato do registo."
 
-#: templates/default/edit.html:48 templates/default/edit.html:542
+#: templates/default/edit.html:48 templates/default/edit.html:545
 msgid "Content validation failed:"
 msgstr "Falha na validação do conteúdo:"
 
-#: templates/default/edit.html:48 templates/default/edit.html:542
+#: templates/default/edit.html:48 templates/default/edit.html:545
 msgid "Invalid value for record type"
 msgstr "Valor inválido para o tipo de registo"
 
-#: templates/default/edit.html:50 templates/default/edit.html:544
+#: templates/default/edit.html:50 templates/default/edit.html:547
 msgid "Please provide all required information."
 msgstr "Por favor, forneça toda a informação obrigatória."
 
@@ -9201,23 +9204,23 @@ msgstr "Adicionar PTR"
 msgid "Add A/AAAA"
 msgstr "Adicionar A/AAAA"
 
-#: templates/default/edit.html:86 templates/default/edit.html:581
+#: templates/default/edit.html:86 templates/default/edit.html:584
 msgid "Invalid hostname format"
 msgstr "Formato de nome de host inválido"
 
-#: templates/default/edit.html:114 templates/default/edit.html:609
+#: templates/default/edit.html:114 templates/default/edit.html:612
 msgid "This record already exists"
 msgstr "Este registo já existe"
 
-#: templates/default/edit.html:126 templates/default/edit.html:621
+#: templates/default/edit.html:126 templates/default/edit.html:624
 msgid "Invalid priority"
 msgstr "Prioridade inválida"
 
-#: templates/default/edit.html:133 templates/default/edit.html:628
+#: templates/default/edit.html:133 templates/default/edit.html:631
 msgid "Invalid TTL value"
 msgstr "Valor TTL inválido"
 
-#: templates/default/edit.html:135 templates/default/edit.html:630
+#: templates/default/edit.html:135 templates/default/edit.html:633
 msgid "Provide TTL"
 msgstr "Forneça TTL"
 
@@ -9241,107 +9244,107 @@ msgstr "CSV"
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/default/edit.html:210
+#: templates/default/edit.html:212
 msgid "Sign zone"
 msgstr "Assinar zona"
 
-#: templates/default/edit.html:227
+#: templates/default/edit.html:230
 msgid "No records match your filter criteria."
 msgstr "Nenhum registo corresponde aos seus critérios de filtro."
 
-#: templates/default/edit.html:235
+#: templates/default/edit.html:238
 msgid "This zone does not have any records."
 msgstr "Esta zona não tem nenhum registo."
 
-#: templates/default/edit.html:249
+#: templates/default/edit.html:252
 msgid "Filter:"
 msgstr "Filtrar:"
 
-#: templates/default/edit.html:255
+#: templates/default/edit.html:258
 msgid "Search by name or content"
 msgstr "Pesquisar por nome ou conteúdo"
 
-#: templates/default/edit.html:261
+#: templates/default/edit.html:264
 msgid "All Types"
 msgstr "Todos os Tipos"
 
-#: templates/default/edit.html:271
+#: templates/default/edit.html:274
 msgid "Filter by content"
 msgstr "Filtrar por conteúdo"
 
-#: templates/default/edit.html:277
+#: templates/default/edit.html:280
 msgid "Apply"
 msgstr "Aplicar"
 
-#: templates/default/edit.html:300 templates/default/search.html:476
+#: templates/default/edit.html:303 templates/default/search.html:476
 msgid "Delete record(s)"
 msgstr "Eliminar registo(s)"
 
-#: templates/default/edit.html:302
+#: templates/default/edit.html:305
 msgid "Select All Filtered"
 msgstr "Seleccionar Tudo Filtrado"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "Showing"
 msgstr "A mostrar"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "of"
 msgstr "de"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "total records"
 msgstr "registos totais"
 
-#: templates/default/edit.html:475 templates/default/search.html:93
+#: templates/default/edit.html:478 templates/default/search.html:93
 msgid "Comments"
 msgstr "Comentários"
 
-#: templates/default/edit.html:668
+#: templates/default/edit.html:671
 msgid "Save as new template"
 msgstr "Guardar como novo modelo"
 
-#: templates/default/edit.html:671
+#: templates/default/edit.html:674
 msgid "Create a reusable template from this zone's records"
 msgstr "Criar um modelo reutilizável a partir dos registos desta zona"
 
-#: templates/default/edit.html:677
+#: templates/default/edit.html:680
 msgid "Template Name"
 msgstr "Nome do Modelo"
 
-#: templates/default/edit.html:679
+#: templates/default/edit.html:682
 msgid "Provide template name"
 msgstr "Forneça o nome do modelo"
 
-#: templates/default/edit.html:683
+#: templates/default/edit.html:686
 msgid "Template Description"
 msgstr "Descrição do Modelo"
 
-#: templates/default/edit.html:685
+#: templates/default/edit.html:688
 msgid "Optional description for this template"
 msgstr "Descrição opcional para este modelo"
 
-#: templates/default/edit.html:689
+#: templates/default/edit.html:692
 msgid "Save as template"
 msgstr "Guardar como modelo"
 
-#: templates/default/edit.html:700
+#: templates/default/edit.html:703
 msgid "Zone Settings"
 msgstr "Definições da Zona"
 
-#: templates/default/edit.html:703
+#: templates/default/edit.html:706
 msgid "Owner of zone"
 msgstr "Proprietário da zona"
 
-#: templates/default/edit.html:706
+#: templates/default/edit.html:709
 msgid "No owner set for this zone."
 msgstr "Nenhum proprietário definido para esta zona."
 
-#: templates/default/edit.html:831
+#: templates/default/edit.html:834
 msgid "Change"
 msgstr "Alterar"
 
-#: templates/default/edit.html:797 templates/default/add_zone_slave.html:33
+#: templates/default/edit.html:800 templates/default/add_zone_slave.html:33
 msgid "IP address of master NS"
 msgstr "Endereço IP do NS mestre"
 

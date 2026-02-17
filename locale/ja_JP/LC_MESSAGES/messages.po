@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-14 17:25+0200\n"
+"POT-Creation-Date: 2026-02-17 20:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -669,23 +669,27 @@ msgstr "このゾーンにレコードを追加する権限がありません。
 msgid "No records were provided."
 msgstr "レコードが提供されていません。"
 
-#: lib/Application/Controller/AddRecordController.php:425
+#: lib/Application/Controller/AddRecordController.php:394
+msgid "Zone not found."
+msgstr "Zone not found."
+
+#: lib/Application/Controller/AddRecordController.php:431
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d件のレコードが正常に追加されました。"
 
-#: lib/Application/Controller/AddRecordController.php:427
+#: lib/Application/Controller/AddRecordController.php:433
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d件のレコードの追加に失敗しました。"
 
-#: lib/Application/Controller/AddRecordController.php:432
+#: lib/Application/Controller/AddRecordController.php:438
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr "一部のレコードを追加できませんでした。既に存在するか、無効なデータが含まれている可能性があります。"
 
-#: lib/Application/Controller/AddRecordController.php:454
+#: lib/Application/Controller/AddRecordController.php:460
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "レコードの追加に失敗しました。無効なデータが含まれている可能性があります。"
 
@@ -701,7 +705,7 @@ msgstr "ゾーンが正常に削除されました。"
 msgid "Zones have been deleted successfully."
 msgstr "ゾーンが正常に削除されました。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:494
+#: lib/Domain/Service/Dns/DomainManager.php:510
 msgid "You do not have the permission to delete a zone."
 msgstr "ゾーンを削除する権限がありません。"
 
@@ -4314,9 +4318,9 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "issuewildタグで無効なCAドメインです。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-msgid ""
-"CAA iodef value must be a URL starting with http://, https://, or mailto:."
-msgstr "CAA iodef値はhttp://、https://、またはmailto:で始まるURLである必要があります。"
+#, php-format
+msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
+msgstr "CAA iodef値は%s、%s、または%sで始まるURLである必要があります。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -4515,12 +4519,12 @@ msgstr ""
 "part)._smimecert.domain.tldです"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
+#, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
+"part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
-"SMIMEAレコード名の形式は：local-part@domain.tldのようなメールアドレスに対してSHA256(local-"
-"part)._smimecert.domain.tldです"
+"SMIMEAレコード名の形式は：%sのようなメールアドレスに対してSHA256(local-part)._smimecert.domain.tldです"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -5868,7 +5872,7 @@ msgstr "SOAレコードを削除する権限がありません。"
 msgid "You do not have the permission to delete NS records."
 msgstr "NSレコードを削除する権限がありません。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:429
+#: lib/Domain/Service/Dns/DomainManager.php:445
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "関数%s %sに無効な引数が渡されました"
@@ -5882,7 +5886,7 @@ msgstr "このIPアドレスとホスト名のスーパーマスターが既に�
 msgid "Invalid argument(s) given to function %s"
 msgstr "関数%sに無効な引数が渡されました"
 
-#: lib/Domain/Service/Dns/DomainManager.php:392
+#: lib/Domain/Service/Dns/DomainManager.php:408
 msgid "The selected user already owns the zone."
 msgstr "選択されたユーザーは既にゾーンを所有しています。"
 
@@ -6363,7 +6367,7 @@ msgstr "アカウント"
 msgid "Select the account that will own this supermaster"
 msgstr "このスーパーマスターを所有するアカウントを選択してください"
 
-#: templates/default/edit.html:504
+#: templates/default/edit.html:507
 msgid "Save changes"
 msgstr "変更を保存"
 
@@ -6506,7 +6510,7 @@ msgstr "DNSレコードのプロパティを変更"
 msgid "Comment"
 msgstr "コメント"
 
-#: templates/default/edit.html:611 templates/default/add_record.html:91
+#: templates/default/edit.html:614 templates/default/add_record.html:91
 msgid "Provide content"
 msgstr "内容を入力してください"
 
@@ -6804,7 +6808,7 @@ msgstr "データベースをチェック"
 msgid "Check DB"
 msgstr "DBをチェック"
 
-#: templates/default/edit_comment.html:18 templates/default/edit.html:486
+#: templates/default/edit_comment.html:18 templates/default/edit.html:489
 msgid "Edit comment"
 msgstr "コメントを編集"
 
@@ -7639,7 +7643,7 @@ msgstr "はい、これらのゾーンのリンクを解除します"
 msgid "Permission templates"
 msgstr "権限テンプレート"
 
-#: templates/default/add_perm_templ.html:6 templates/default/edit.html:766
+#: templates/default/add_perm_templ.html:6 templates/default/edit.html:769
 msgid "Add"
 msgstr "追加"
 
@@ -8034,39 +8038,39 @@ msgstr "キーを紛失した場合は、再生成する必要があります。
 msgid "Edit"
 msgstr "編集"
 
-#: templates/default/edit.html:25 templates/default/edit.html:519
+#: templates/default/edit.html:25 templates/default/edit.html:522
 msgid "Add new record"
 msgstr "新しいレコードを追加"
 
-#: templates/default/edit.html:28 templates/default/edit.html:522
+#: templates/default/edit.html:28 templates/default/edit.html:525
 msgid "Multi-record mode"
 msgstr "マルチレコードモード"
 
-#: templates/default/edit.html:31 templates/default/edit.html:525
+#: templates/default/edit.html:31 templates/default/edit.html:528
 msgid "Bulk add"
 msgstr "一括追加"
 
-#: templates/default/edit.html:43 templates/default/edit.html:537
+#: templates/default/edit.html:43 templates/default/edit.html:540
 msgid "Failed to add"
 msgstr "追加に失敗しました"
 
-#: templates/default/edit.html:43 templates/default/edit.html:537
+#: templates/default/edit.html:43 templates/default/edit.html:540
 msgid "record(s). Please check the record format."
 msgstr "レコード。レコード形式を確認してください。"
 
-#: templates/default/edit.html:45 templates/default/edit.html:539
+#: templates/default/edit.html:45 templates/default/edit.html:542
 msgid "Failed to add records. Please check the record format."
 msgstr "レコードの追加に失敗しました。レコード形式を確認してください。"
 
-#: templates/default/edit.html:48 templates/default/edit.html:542
+#: templates/default/edit.html:48 templates/default/edit.html:545
 msgid "Content validation failed:"
 msgstr "内容の検証に失敗しました："
 
-#: templates/default/edit.html:48 templates/default/edit.html:542
+#: templates/default/edit.html:48 templates/default/edit.html:545
 msgid "Invalid value for record type"
 msgstr "レコードタイプの値が無効です"
 
-#: templates/default/edit.html:50 templates/default/edit.html:544
+#: templates/default/edit.html:50 templates/default/edit.html:547
 msgid "Please provide all required information."
 msgstr "必要な情報をすべて入力してください。"
 
@@ -8078,23 +8082,23 @@ msgstr "PTRを追加"
 msgid "Add A/AAAA"
 msgstr "A/AAAAを追加"
 
-#: templates/default/edit.html:86 templates/default/edit.html:581
+#: templates/default/edit.html:86 templates/default/edit.html:584
 msgid "Invalid hostname format"
 msgstr "ホスト名の形式が無効です"
 
-#: templates/default/edit.html:114 templates/default/edit.html:609
+#: templates/default/edit.html:114 templates/default/edit.html:612
 msgid "This record already exists"
 msgstr "このレコードは既に存在します"
 
-#: templates/default/edit.html:126 templates/default/edit.html:621
+#: templates/default/edit.html:126 templates/default/edit.html:624
 msgid "Invalid priority"
 msgstr "優先度が無効です"
 
-#: templates/default/edit.html:133 templates/default/edit.html:628
+#: templates/default/edit.html:133 templates/default/edit.html:631
 msgid "Invalid TTL value"
 msgstr "TTL値が無効です"
 
-#: templates/default/edit.html:135 templates/default/edit.html:630
+#: templates/default/edit.html:135 templates/default/edit.html:633
 msgid "Provide TTL"
 msgstr "TTLを入力してください"
 
@@ -8116,107 +8120,107 @@ msgstr "CSV"
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/default/edit.html:210
+#: templates/default/edit.html:212
 msgid "Sign zone"
 msgstr "ゾーンの署名"
 
-#: templates/default/edit.html:227
+#: templates/default/edit.html:230
 msgid "No records match your filter criteria."
 msgstr "フィルタ条件に一致するレコードがありません。"
 
-#: templates/default/edit.html:235
+#: templates/default/edit.html:238
 msgid "This zone does not have any records."
 msgstr "このゾーンにはレコードがありません。"
 
-#: templates/default/edit.html:249
+#: templates/default/edit.html:252
 msgid "Filter:"
 msgstr "フィルタ："
 
-#: templates/default/edit.html:255
+#: templates/default/edit.html:258
 msgid "Search by name or content"
 msgstr "名前または内容で検索"
 
-#: templates/default/edit.html:261
+#: templates/default/edit.html:264
 msgid "All Types"
 msgstr "すべてのタイプ"
 
-#: templates/default/edit.html:271
+#: templates/default/edit.html:274
 msgid "Filter by content"
 msgstr "内容でフィルタ"
 
-#: templates/default/edit.html:277
+#: templates/default/edit.html:280
 msgid "Apply"
 msgstr "適用"
 
-#: templates/default/edit.html:300 templates/default/search.html:476
+#: templates/default/edit.html:303 templates/default/search.html:476
 msgid "Delete record(s)"
 msgstr "レコードを削除"
 
-#: templates/default/edit.html:302
+#: templates/default/edit.html:305
 msgid "Select All Filtered"
 msgstr "フィルタされたすべてを選択"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "Showing"
 msgstr "表示中"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "of"
 msgstr "/"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "total records"
 msgstr "レコードの合計"
 
-#: templates/default/edit.html:475 templates/default/search.html:93
+#: templates/default/edit.html:478 templates/default/search.html:93
 msgid "Comments"
 msgstr "コメント"
 
-#: templates/default/edit.html:668
+#: templates/default/edit.html:671
 msgid "Save as new template"
 msgstr "新しいテンプレートとして保存"
 
-#: templates/default/edit.html:671
+#: templates/default/edit.html:674
 msgid "Create a reusable template from this zone's records"
 msgstr "このゾーンのレコードから再利用可能なテンプレートを作成"
 
-#: templates/default/edit.html:677
+#: templates/default/edit.html:680
 msgid "Template Name"
 msgstr "テンプレート名"
 
-#: templates/default/edit.html:679
+#: templates/default/edit.html:682
 msgid "Provide template name"
 msgstr "テンプレート名を入力"
 
-#: templates/default/edit.html:683
+#: templates/default/edit.html:686
 msgid "Template Description"
 msgstr "テンプレートの説明"
 
-#: templates/default/edit.html:685
+#: templates/default/edit.html:688
 msgid "Optional description for this template"
 msgstr "このテンプレートの任意の説明"
 
-#: templates/default/edit.html:689
+#: templates/default/edit.html:692
 msgid "Save as template"
 msgstr "テンプレートとして保存"
 
-#: templates/default/edit.html:700
+#: templates/default/edit.html:703
 msgid "Zone Settings"
 msgstr "ゾーン設定"
 
-#: templates/default/edit.html:703
+#: templates/default/edit.html:706
 msgid "Owner of zone"
 msgstr "ゾーンの所有者"
 
-#: templates/default/edit.html:706
+#: templates/default/edit.html:709
 msgid "No owner set for this zone."
 msgstr "このゾーンに所有者が設定されていません。"
 
-#: templates/default/edit.html:831
+#: templates/default/edit.html:834
 msgid "Change"
 msgstr "変更"
 
-#: templates/default/edit.html:797 templates/default/add_zone_slave.html:33
+#: templates/default/edit.html:800 templates/default/add_zone_slave.html:33
 msgid "IP address of master NS"
 msgstr "マスターNSのIPアドレス"
 

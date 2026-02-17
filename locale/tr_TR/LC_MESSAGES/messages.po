@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-14 17:25+0200\n"
+"POT-Creation-Date: 2026-02-17 20:19+0200\n"
 "PO-Revision-Date: 2025-06-05 21:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -698,17 +698,21 @@ msgstr "Bu alana kayıt ekleme yetkiniz bulunmuyor."
 msgid "No records were provided."
 msgstr "Kayıt sağlanmadı."
 
-#: lib/Application/Controller/AddRecordController.php:425
+#: lib/Application/Controller/AddRecordController.php:394
+msgid "Zone not found."
+msgstr "Bölge bulunamadı."
+
+#: lib/Application/Controller/AddRecordController.php:431
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d kayıt başarıyla eklendi."
 
-#: lib/Application/Controller/AddRecordController.php:427
+#: lib/Application/Controller/AddRecordController.php:433
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d kayıt eklenemedi."
 
-#: lib/Application/Controller/AddRecordController.php:432
+#: lib/Application/Controller/AddRecordController.php:438
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -716,7 +720,7 @@ msgstr ""
 "Bazı kayıtlar eklenemedi. Zaten mevcut olabilirler veya geçersiz veri "
 "içerebilirler."
 
-#: lib/Application/Controller/AddRecordController.php:454
+#: lib/Application/Controller/AddRecordController.php:460
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Hiçbir kayıt eklenemedi. Geçersiz veri içerebilirler."
 
@@ -732,7 +736,7 @@ msgstr "Zon başarıyla silindi."
 msgid "Zones have been deleted successfully."
 msgstr "Zonlar başarıyla silindi."
 
-#: lib/Domain/Service/Dns/DomainManager.php:494
+#: lib/Domain/Service/Dns/DomainManager.php:510
 msgid "You do not have the permission to delete a zone."
 msgstr "Zon silme yetkiniz yok."
 
@@ -4938,11 +4942,9 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "Issuewild etiketinde geçersiz CA domain'i."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-msgid ""
-"CAA iodef value must be a URL starting with http://, https://, or mailto:."
-msgstr ""
-"CAA iodef değeri http://, https://, veya mailto: ile başlayan bir URL "
-"olmalıdır."
+#, php-format
+msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
+msgstr "CAA iodef değeri %s, %s, veya %s ile başlayan bir URL olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -5171,12 +5173,13 @@ msgstr ""
 "olmalıdır. Format şöyle olmalıdır: SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
+#, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
+"part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
-"SMIMEA kayıt adı şu formattadır: local-part@domain.tld gibi e-posta "
-"adresleri için SHA256(local-part)._smimecert.domain.tld"
+"SMIMEA kayıt adı şu formattadır: %s gibi e-posta adresleri için "
+"SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -6765,7 +6768,7 @@ msgstr "SOA kayıtlarını silme yetkiniz yok."
 msgid "You do not have the permission to delete NS records."
 msgstr "NS kayıtlarını silme yetkiniz yok."
 
-#: lib/Domain/Service/Dns/DomainManager.php:429
+#: lib/Domain/Service/Dns/DomainManager.php:445
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Fonksiyon %s %s'ye geçersiz argüman(lar) verildi"
@@ -6779,7 +6782,7 @@ msgstr "Bu IP adresi ve hostname ile zaten bir supermaster mevcut."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Fonksiyon %s'ye geçersiz argüman(lar) verildi"
 
-#: lib/Domain/Service/Dns/DomainManager.php:392
+#: lib/Domain/Service/Dns/DomainManager.php:408
 msgid "The selected user already owns the zone."
 msgstr "Seçilen kullanıcı zaten zonun sahibidir."
 
@@ -7271,7 +7274,7 @@ msgstr "Hesap"
 msgid "Select the account that will own this supermaster"
 msgstr "Bu süper master'ın sahibi olacak hesabı seçin"
 
-#: templates/default/edit.html:504
+#: templates/default/edit.html:507
 msgid "Save changes"
 msgstr "Değişiklikleri kaydet"
 
@@ -7421,7 +7424,7 @@ msgstr "DNS kayıt özelliklerini değiştir"
 msgid "Comment"
 msgstr "Yorum"
 
-#: templates/default/edit.html:611 templates/default/add_record.html:91
+#: templates/default/edit.html:614 templates/default/add_record.html:91
 msgid "Provide content"
 msgstr "İçerik sağlayın"
 
@@ -7719,7 +7722,7 @@ msgstr "Veritabanını Kontrol Et"
 msgid "Check DB"
 msgstr "VT Kontrol"
 
-#: templates/default/edit_comment.html:18 templates/default/edit.html:486
+#: templates/default/edit_comment.html:18 templates/default/edit.html:489
 msgid "Edit comment"
 msgstr "Yorumu düzenle"
 
@@ -8596,7 +8599,7 @@ msgstr "Evet, bu zonları ayır"
 msgid "Permission templates"
 msgstr "İzin şablonları"
 
-#: templates/default/add_perm_templ.html:6 templates/default/edit.html:766
+#: templates/default/add_perm_templ.html:6 templates/default/edit.html:769
 msgid "Add"
 msgstr "Ekle"
 
@@ -9023,39 +9026,39 @@ msgstr "Anahtarı kaybederseniz, yeniden oluşturmanız gerekecektir."
 msgid "Edit"
 msgstr "Düzenle"
 
-#: templates/default/edit.html:25 templates/default/edit.html:519
+#: templates/default/edit.html:25 templates/default/edit.html:522
 msgid "Add new record"
 msgstr "Yeni kayıt ekle"
 
-#: templates/default/edit.html:28 templates/default/edit.html:522
+#: templates/default/edit.html:28 templates/default/edit.html:525
 msgid "Multi-record mode"
 msgstr "Çoklu kayıt kipi"
 
-#: templates/default/edit.html:31 templates/default/edit.html:525
+#: templates/default/edit.html:31 templates/default/edit.html:528
 msgid "Bulk add"
 msgstr "Toplu ekleme"
 
-#: templates/default/edit.html:43 templates/default/edit.html:537
+#: templates/default/edit.html:43 templates/default/edit.html:540
 msgid "Failed to add"
 msgstr "Ekleme başarısız"
 
-#: templates/default/edit.html:43 templates/default/edit.html:537
+#: templates/default/edit.html:43 templates/default/edit.html:540
 msgid "record(s). Please check the record format."
 msgstr "kayıt(lar). Lütfen kayıt formatını kontrol edin."
 
-#: templates/default/edit.html:45 templates/default/edit.html:539
+#: templates/default/edit.html:45 templates/default/edit.html:542
 msgid "Failed to add records. Please check the record format."
 msgstr "Kayıt ekleme başarısız. Lütfen kayıt formatını kontrol edin."
 
-#: templates/default/edit.html:48 templates/default/edit.html:542
+#: templates/default/edit.html:48 templates/default/edit.html:545
 msgid "Content validation failed:"
 msgstr "İçerik doğrulama başarısız:"
 
-#: templates/default/edit.html:48 templates/default/edit.html:542
+#: templates/default/edit.html:48 templates/default/edit.html:545
 msgid "Invalid value for record type"
 msgstr "Kayıt tipi için geçersiz değer"
 
-#: templates/default/edit.html:50 templates/default/edit.html:544
+#: templates/default/edit.html:50 templates/default/edit.html:547
 msgid "Please provide all required information."
 msgstr "Lütfen tüm gerekli bilgileri sağlayın."
 
@@ -9067,23 +9070,23 @@ msgstr "PTR Ekle"
 msgid "Add A/AAAA"
 msgstr "A/AAAA Ekle"
 
-#: templates/default/edit.html:86 templates/default/edit.html:581
+#: templates/default/edit.html:86 templates/default/edit.html:584
 msgid "Invalid hostname format"
 msgstr "Geçersiz sunucu adı formatı"
 
-#: templates/default/edit.html:114 templates/default/edit.html:609
+#: templates/default/edit.html:114 templates/default/edit.html:612
 msgid "This record already exists"
 msgstr "Bu kayıt zaten mevcut"
 
-#: templates/default/edit.html:126 templates/default/edit.html:621
+#: templates/default/edit.html:126 templates/default/edit.html:624
 msgid "Invalid priority"
 msgstr "Geçersiz öncelik"
 
-#: templates/default/edit.html:133 templates/default/edit.html:628
+#: templates/default/edit.html:133 templates/default/edit.html:631
 msgid "Invalid TTL value"
 msgstr "Geçersiz TTL değeri"
 
-#: templates/default/edit.html:135 templates/default/edit.html:630
+#: templates/default/edit.html:135 templates/default/edit.html:633
 msgid "Provide TTL"
 msgstr "TTL sağlayın"
 
@@ -9107,107 +9110,107 @@ msgstr "CSV"
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/default/edit.html:210
+#: templates/default/edit.html:212
 msgid "Sign zone"
 msgstr "Zonu imzala"
 
-#: templates/default/edit.html:227
+#: templates/default/edit.html:230
 msgid "No records match your filter criteria."
 msgstr "Hiçbir kayıt filtre kriterlerinizle eşleşmiyor."
 
-#: templates/default/edit.html:235
+#: templates/default/edit.html:238
 msgid "This zone does not have any records."
 msgstr "Bu zonun hiçbir kaydı bulunmuyor."
 
-#: templates/default/edit.html:249
+#: templates/default/edit.html:252
 msgid "Filter:"
 msgstr "Filtre:"
 
-#: templates/default/edit.html:255
+#: templates/default/edit.html:258
 msgid "Search by name or content"
 msgstr "Ad veya içerikle ara"
 
-#: templates/default/edit.html:261
+#: templates/default/edit.html:264
 msgid "All Types"
 msgstr "Tüm Tipler"
 
-#: templates/default/edit.html:271
+#: templates/default/edit.html:274
 msgid "Filter by content"
 msgstr "İçeriğe göre filtrele"
 
-#: templates/default/edit.html:277
+#: templates/default/edit.html:280
 msgid "Apply"
 msgstr "Uygula"
 
-#: templates/default/edit.html:300 templates/default/search.html:476
+#: templates/default/edit.html:303 templates/default/search.html:476
 msgid "Delete record(s)"
 msgstr "Kayıt(ları) sil"
 
-#: templates/default/edit.html:302
+#: templates/default/edit.html:305
 msgid "Select All Filtered"
 msgstr "Filtrelenenlerin Hepsini Seç"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "Showing"
 msgstr "Gösteriliyor"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "of"
 msgstr "/"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "total records"
 msgstr "toplam kayıt"
 
-#: templates/default/edit.html:475 templates/default/search.html:93
+#: templates/default/edit.html:478 templates/default/search.html:93
 msgid "Comments"
 msgstr "Yorumlar"
 
-#: templates/default/edit.html:668
+#: templates/default/edit.html:671
 msgid "Save as new template"
 msgstr "Yeni şablon olarak kaydet"
 
-#: templates/default/edit.html:671
+#: templates/default/edit.html:674
 msgid "Create a reusable template from this zone's records"
 msgstr "Bu zonun kayıtlarından yeniden kullanılabilir şablon oluştur"
 
-#: templates/default/edit.html:677
+#: templates/default/edit.html:680
 msgid "Template Name"
 msgstr "Şablon Adı"
 
-#: templates/default/edit.html:679
+#: templates/default/edit.html:682
 msgid "Provide template name"
 msgstr "Şablon adı sağlayın"
 
-#: templates/default/edit.html:683
+#: templates/default/edit.html:686
 msgid "Template Description"
 msgstr "Şablon Açıklaması"
 
-#: templates/default/edit.html:685
+#: templates/default/edit.html:688
 msgid "Optional description for this template"
 msgstr "Bu şablon için isteğe bağlı açıklama"
 
-#: templates/default/edit.html:689
+#: templates/default/edit.html:692
 msgid "Save as template"
 msgstr "Şablon olarak kaydet"
 
-#: templates/default/edit.html:700
+#: templates/default/edit.html:703
 msgid "Zone Settings"
 msgstr "Zon Ayarları"
 
-#: templates/default/edit.html:703
+#: templates/default/edit.html:706
 msgid "Owner of zone"
 msgstr "Zon sahibi"
 
-#: templates/default/edit.html:706
+#: templates/default/edit.html:709
 msgid "No owner set for this zone."
 msgstr "Bu zon için hiçbir sahip atanmamış."
 
-#: templates/default/edit.html:831
+#: templates/default/edit.html:834
 msgid "Change"
 msgstr "Değiştir"
 
-#: templates/default/edit.html:797 templates/default/add_zone_slave.html:33
+#: templates/default/edit.html:800 templates/default/add_zone_slave.html:33
 msgid "IP address of master NS"
 msgstr "Ana NS'nin IP adresi"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-14 17:25+0200\n"
+"POT-Creation-Date: 2026-02-17 20:19+0200\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -666,23 +666,27 @@ msgstr "您没有向此区域添加记录的权限。"
 msgid "No records were provided."
 msgstr "未提供记录。"
 
-#: lib/Application/Controller/AddRecordController.php:425
+#: lib/Application/Controller/AddRecordController.php:394
+msgid "Zone not found."
+msgstr "Zone not found."
+
+#: lib/Application/Controller/AddRecordController.php:431
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "已成功添加 %d 条记录。"
 
-#: lib/Application/Controller/AddRecordController.php:427
+#: lib/Application/Controller/AddRecordController.php:433
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d 条记录添加失败。"
 
-#: lib/Application/Controller/AddRecordController.php:432
+#: lib/Application/Controller/AddRecordController.php:438
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr "某些记录无法添加。它们可能已存在或包含无效数据。"
 
-#: lib/Application/Controller/AddRecordController.php:454
+#: lib/Application/Controller/AddRecordController.php:460
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "添加任何记录都失败了。它们可能包含无效数据。"
 
@@ -698,7 +702,7 @@ msgstr "区域已成功删除。"
 msgid "Zones have been deleted successfully."
 msgstr "区域已成功删除。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:494
+#: lib/Domain/Service/Dns/DomainManager.php:510
 msgid "You do not have the permission to delete a zone."
 msgstr "您没有删除区域的权限。"
 
@@ -4235,9 +4239,9 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "issuewild 标签中的 CA 域无效。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-msgid ""
-"CAA iodef value must be a URL starting with http://, https://, or mailto:."
-msgstr "CAA iodef 值必须是以 http://、https:// 或 mailto: 开头的 URL。"
+#, php-format
+msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
+msgstr "CAA iodef 值必须是以 %s、%s 或 %s 开头的 URL。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -4436,12 +4440,12 @@ msgstr ""
 "part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
+#, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
+"part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
-"SMIMEA 记录名称格式为：SHA256(local-part)._smimecert.domain.tld，用于 local-"
-"part@domain.tld 这样的电子邮件地址"
+"SMIMEA 记录名称格式为：SHA256(local-part)._smimecert.domain.tld，用于 %s 这样的电子邮件地址"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -5755,7 +5759,7 @@ msgstr "您没有删除 SOA 记录的权限。"
 msgid "You do not have the permission to delete NS records."
 msgstr "您没有删除 NS 记录的权限。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:429
+#: lib/Domain/Service/Dns/DomainManager.php:445
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "给函数 %s %s 提供了无效参数"
@@ -5769,7 +5773,7 @@ msgstr "已存在具有此 IP 地址和主机名的超级主服务器。"
 msgid "Invalid argument(s) given to function %s"
 msgstr "给函数 %s 提供了无效参数"
 
-#: lib/Domain/Service/Dns/DomainManager.php:392
+#: lib/Domain/Service/Dns/DomainManager.php:408
 msgid "The selected user already owns the zone."
 msgstr "选定的用户已拥有该区域。"
 
@@ -6248,7 +6252,7 @@ msgstr "账户"
 msgid "Select the account that will own this supermaster"
 msgstr "选择将拥有此超级主服务器的账户"
 
-#: templates/default/edit.html:504
+#: templates/default/edit.html:507
 msgid "Save changes"
 msgstr "保存更改"
 
@@ -6390,7 +6394,7 @@ msgstr "修改 DNS 记录属性"
 msgid "Comment"
 msgstr "备注"
 
-#: templates/default/edit.html:611 templates/default/add_record.html:91
+#: templates/default/edit.html:614 templates/default/add_record.html:91
 msgid "Provide content"
 msgstr "提供内容"
 
@@ -6688,7 +6692,7 @@ msgstr "检查数据库"
 msgid "Check DB"
 msgstr "检查数据库"
 
-#: templates/default/edit_comment.html:18 templates/default/edit.html:486
+#: templates/default/edit_comment.html:18 templates/default/edit.html:489
 msgid "Edit comment"
 msgstr "编辑备注"
 
@@ -7519,7 +7523,7 @@ msgstr "是的，取消链接这些区域"
 msgid "Permission templates"
 msgstr "权限模板"
 
-#: templates/default/add_perm_templ.html:6 templates/default/edit.html:766
+#: templates/default/add_perm_templ.html:6 templates/default/edit.html:769
 msgid "Add"
 msgstr "添加"
 
@@ -7911,39 +7915,39 @@ msgstr "如果您丢失了密钥，您需要重新生成它。"
 msgid "Edit"
 msgstr "编辑"
 
-#: templates/default/edit.html:25 templates/default/edit.html:519
+#: templates/default/edit.html:25 templates/default/edit.html:522
 msgid "Add new record"
 msgstr "添加新记录"
 
-#: templates/default/edit.html:28 templates/default/edit.html:522
+#: templates/default/edit.html:28 templates/default/edit.html:525
 msgid "Multi-record mode"
 msgstr "多记录模式"
 
-#: templates/default/edit.html:31 templates/default/edit.html:525
+#: templates/default/edit.html:31 templates/default/edit.html:528
 msgid "Bulk add"
 msgstr "批量添加"
 
-#: templates/default/edit.html:43 templates/default/edit.html:537
+#: templates/default/edit.html:43 templates/default/edit.html:540
 msgid "Failed to add"
 msgstr "添加失败"
 
-#: templates/default/edit.html:43 templates/default/edit.html:537
+#: templates/default/edit.html:43 templates/default/edit.html:540
 msgid "record(s). Please check the record format."
 msgstr "条记录。请检查记录格式。"
 
-#: templates/default/edit.html:45 templates/default/edit.html:539
+#: templates/default/edit.html:45 templates/default/edit.html:542
 msgid "Failed to add records. Please check the record format."
 msgstr "添加记录失败。请检查记录格式。"
 
-#: templates/default/edit.html:48 templates/default/edit.html:542
+#: templates/default/edit.html:48 templates/default/edit.html:545
 msgid "Content validation failed:"
 msgstr "内容验证失败："
 
-#: templates/default/edit.html:48 templates/default/edit.html:542
+#: templates/default/edit.html:48 templates/default/edit.html:545
 msgid "Invalid value for record type"
 msgstr "记录类型的值无效"
 
-#: templates/default/edit.html:50 templates/default/edit.html:544
+#: templates/default/edit.html:50 templates/default/edit.html:547
 msgid "Please provide all required information."
 msgstr "请提供所有必需信息。"
 
@@ -7955,23 +7959,23 @@ msgstr "添加 PTR"
 msgid "Add A/AAAA"
 msgstr "添加 A/AAAA"
 
-#: templates/default/edit.html:86 templates/default/edit.html:581
+#: templates/default/edit.html:86 templates/default/edit.html:584
 msgid "Invalid hostname format"
 msgstr "主机名格式无效"
 
-#: templates/default/edit.html:114 templates/default/edit.html:609
+#: templates/default/edit.html:114 templates/default/edit.html:612
 msgid "This record already exists"
 msgstr "此记录已存在"
 
-#: templates/default/edit.html:126 templates/default/edit.html:621
+#: templates/default/edit.html:126 templates/default/edit.html:624
 msgid "Invalid priority"
 msgstr "优先级无效"
 
-#: templates/default/edit.html:133 templates/default/edit.html:628
+#: templates/default/edit.html:133 templates/default/edit.html:631
 msgid "Invalid TTL value"
 msgstr "TTL 值无效"
 
-#: templates/default/edit.html:135 templates/default/edit.html:630
+#: templates/default/edit.html:135 templates/default/edit.html:633
 msgid "Provide TTL"
 msgstr "提供 TTL"
 
@@ -7993,107 +7997,107 @@ msgstr "CSV"
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/default/edit.html:210
+#: templates/default/edit.html:212
 msgid "Sign zone"
 msgstr "签名区域"
 
-#: templates/default/edit.html:227
+#: templates/default/edit.html:230
 msgid "No records match your filter criteria."
 msgstr "没有记录匹配您的筛选条件。"
 
-#: templates/default/edit.html:235
+#: templates/default/edit.html:238
 msgid "This zone does not have any records."
 msgstr "此区域没有任何记录。"
 
-#: templates/default/edit.html:249
+#: templates/default/edit.html:252
 msgid "Filter:"
 msgstr "筛选："
 
-#: templates/default/edit.html:255
+#: templates/default/edit.html:258
 msgid "Search by name or content"
 msgstr "按名称或内容搜索"
 
-#: templates/default/edit.html:261
+#: templates/default/edit.html:264
 msgid "All Types"
 msgstr "所有类型"
 
-#: templates/default/edit.html:271
+#: templates/default/edit.html:274
 msgid "Filter by content"
 msgstr "按内容筛选"
 
-#: templates/default/edit.html:277
+#: templates/default/edit.html:280
 msgid "Apply"
 msgstr "应用"
 
-#: templates/default/edit.html:300 templates/default/search.html:476
+#: templates/default/edit.html:303 templates/default/search.html:476
 msgid "Delete record(s)"
 msgstr "删除记录"
 
-#: templates/default/edit.html:302
+#: templates/default/edit.html:305
 msgid "Select All Filtered"
 msgstr "选择所有已筛选"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "Showing"
 msgstr "显示"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "of"
 msgstr "，共"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "total records"
 msgstr "条记录"
 
-#: templates/default/edit.html:475 templates/default/search.html:93
+#: templates/default/edit.html:478 templates/default/search.html:93
 msgid "Comments"
 msgstr "备注"
 
-#: templates/default/edit.html:668
+#: templates/default/edit.html:671
 msgid "Save as new template"
 msgstr "保存为新模板"
 
-#: templates/default/edit.html:671
+#: templates/default/edit.html:674
 msgid "Create a reusable template from this zone's records"
 msgstr "从此区域的记录创建可重用模板"
 
-#: templates/default/edit.html:677
+#: templates/default/edit.html:680
 msgid "Template Name"
 msgstr "模板名称"
 
-#: templates/default/edit.html:679
+#: templates/default/edit.html:682
 msgid "Provide template name"
 msgstr "提供模板名称"
 
-#: templates/default/edit.html:683
+#: templates/default/edit.html:686
 msgid "Template Description"
 msgstr "模板描述"
 
-#: templates/default/edit.html:685
+#: templates/default/edit.html:688
 msgid "Optional description for this template"
 msgstr "此模板的可选描述"
 
-#: templates/default/edit.html:689
+#: templates/default/edit.html:692
 msgid "Save as template"
 msgstr "保存为模板"
 
-#: templates/default/edit.html:700
+#: templates/default/edit.html:703
 msgid "Zone Settings"
 msgstr "区域设置"
 
-#: templates/default/edit.html:703
+#: templates/default/edit.html:706
 msgid "Owner of zone"
 msgstr "区域所有者"
 
-#: templates/default/edit.html:706
+#: templates/default/edit.html:709
 msgid "No owner set for this zone."
 msgstr "此区域未设置所有者。"
 
-#: templates/default/edit.html:831
+#: templates/default/edit.html:834
 msgid "Change"
 msgstr "更改"
 
-#: templates/default/edit.html:797 templates/default/add_zone_slave.html:33
+#: templates/default/edit.html:800 templates/default/add_zone_slave.html:33
 msgid "IP address of master NS"
 msgstr "主 NS 的 IP 地址"
 

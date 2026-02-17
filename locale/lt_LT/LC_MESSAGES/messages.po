@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-14 17:25+0200\n"
+"POT-Creation-Date: 2026-02-17 20:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -706,17 +706,21 @@ msgstr "Neturite leidimo pridėti įrašą į šią zoną."
 msgid "No records were provided."
 msgstr "Nebuvo pateikta įrašų."
 
-#: lib/Application/Controller/AddRecordController.php:425
+#: lib/Application/Controller/AddRecordController.php:394
+msgid "Zone not found."
+msgstr "Zona nerasta."
+
+#: lib/Application/Controller/AddRecordController.php:431
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d įrašas(-ai) sėkmingai pridėti."
 
-#: lib/Application/Controller/AddRecordController.php:427
+#: lib/Application/Controller/AddRecordController.php:433
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d įrašo(-ų) pridėti nepavyko."
 
-#: lib/Application/Controller/AddRecordController.php:432
+#: lib/Application/Controller/AddRecordController.php:438
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -724,7 +728,7 @@ msgstr ""
 "Kai kurių įrašų pridėti nepavyko. Jie gali jau egzistuoti arba turėti "
 "neteisingų duomenų."
 
-#: lib/Application/Controller/AddRecordController.php:454
+#: lib/Application/Controller/AddRecordController.php:460
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Nepavyko pridėti jokių įrašų. Jie gali turėti neteisingų duomenų."
 
@@ -740,7 +744,7 @@ msgstr "Zona sėkmingai ištrinta."
 msgid "Zones have been deleted successfully."
 msgstr "Zonos sėkmingai ištrintos."
 
-#: lib/Domain/Service/Dns/DomainManager.php:494
+#: lib/Domain/Service/Dns/DomainManager.php:510
 msgid "You do not have the permission to delete a zone."
 msgstr "Neturite leidimo ištrinti zoną."
 
@@ -4961,11 +4965,9 @@ msgid "Invalid CA domain in issuewild tag."
 msgstr "Neteisingas CA domenas issuewild žymėje."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
-msgid ""
-"CAA iodef value must be a URL starting with http://, https://, or mailto:."
-msgstr ""
-"CAA iodef reikšmė turi būti URL, prasidedantis http://, https:// arba "
-"mailto:."
+#, php-format
+msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
+msgstr "CAA iodef reikšmė turi būti URL, prasidedantis %s, %s arba %s."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -5193,9 +5195,10 @@ msgstr ""
 "hash. Formatas turėtų būti: SHA256(vietinė-dalis)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
+#, php-format
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
+"part)._smimecert.domain.tld for email addresses like %s"
 msgstr ""
 "SMIMEA įrašo vardas yra formatu: SHA256(vietinė-dalis)._smimecert.domain.tld"
 " el. pašto adresams kaip vietinė-dalis@domain.tld"
@@ -6782,7 +6785,7 @@ msgstr "Neturite leidimo šalinti SOA įrašų."
 msgid "You do not have the permission to delete NS records."
 msgstr "Neturite leidimo šalinti NS įrašų."
 
-#: lib/Domain/Service/Dns/DomainManager.php:429
+#: lib/Domain/Service/Dns/DomainManager.php:445
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Neteisingi argumentai pateikti funkcijai %s %s"
@@ -6796,7 +6799,7 @@ msgstr "Jau yra supermaster su šiuo IP adresu ir hostname."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Neteisingi argumentai pateikti funkcijai %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:392
+#: lib/Domain/Service/Dns/DomainManager.php:408
 msgid "The selected user already owns the zone."
 msgstr "Pasirinktas naudotojas jau valdo zoną."
 
@@ -7287,7 +7290,7 @@ msgstr "Paskyra"
 msgid "Select the account that will own this supermaster"
 msgstr "Pasirinkite paskyrą, kuri valdys šį supermasterį"
 
-#: templates/default/edit.html:504
+#: templates/default/edit.html:507
 msgid "Save changes"
 msgstr "Išsaugoti pakeitimus"
 
@@ -7437,7 +7440,7 @@ msgstr "Keisti DNS įrašo savybes"
 msgid "Comment"
 msgstr "Komentaras"
 
-#: templates/default/edit.html:611 templates/default/add_record.html:91
+#: templates/default/edit.html:614 templates/default/add_record.html:91
 msgid "Provide content"
 msgstr "Pateikite turinį"
 
@@ -7735,7 +7738,7 @@ msgstr "Patikrinti duomenų bazę"
 msgid "Check DB"
 msgstr "Patikrinti DB"
 
-#: templates/default/edit_comment.html:18 templates/default/edit.html:486
+#: templates/default/edit_comment.html:18 templates/default/edit.html:489
 msgid "Edit comment"
 msgstr "Redaguoti komentarą"
 
@@ -8606,7 +8609,7 @@ msgstr "Taip, atjungti šias zonas"
 msgid "Permission templates"
 msgstr "Leidimų šablonai"
 
-#: templates/default/add_perm_templ.html:6 templates/default/edit.html:766
+#: templates/default/add_perm_templ.html:6 templates/default/edit.html:769
 msgid "Add"
 msgstr "Pridėti"
 
@@ -9033,39 +9036,39 @@ msgstr "Jei prarasite raktą, turėsite jį generuoti iš naujo."
 msgid "Edit"
 msgstr "Redaguoti"
 
-#: templates/default/edit.html:25 templates/default/edit.html:519
+#: templates/default/edit.html:25 templates/default/edit.html:522
 msgid "Add new record"
 msgstr "Pridėti naują įrašą"
 
-#: templates/default/edit.html:28 templates/default/edit.html:522
+#: templates/default/edit.html:28 templates/default/edit.html:525
 msgid "Multi-record mode"
 msgstr "Kelių įrašų režimas"
 
-#: templates/default/edit.html:31 templates/default/edit.html:525
+#: templates/default/edit.html:31 templates/default/edit.html:528
 msgid "Bulk add"
 msgstr "Masiškai pridėti"
 
-#: templates/default/edit.html:43 templates/default/edit.html:537
+#: templates/default/edit.html:43 templates/default/edit.html:540
 msgid "Failed to add"
 msgstr "Nepavyko pridėti"
 
-#: templates/default/edit.html:43 templates/default/edit.html:537
+#: templates/default/edit.html:43 templates/default/edit.html:540
 msgid "record(s). Please check the record format."
 msgstr "įrašų. Patikrinkite įrašo formatą."
 
-#: templates/default/edit.html:45 templates/default/edit.html:539
+#: templates/default/edit.html:45 templates/default/edit.html:542
 msgid "Failed to add records. Please check the record format."
 msgstr "Nepavyko pridėti įrašų. Patikrinkite įrašų formatą."
 
-#: templates/default/edit.html:48 templates/default/edit.html:542
+#: templates/default/edit.html:48 templates/default/edit.html:545
 msgid "Content validation failed:"
 msgstr "Turinio tikrinimas nepavyko:"
 
-#: templates/default/edit.html:48 templates/default/edit.html:542
+#: templates/default/edit.html:48 templates/default/edit.html:545
 msgid "Invalid value for record type"
 msgstr "Neteisinga reikšmė įrašo tipui"
 
-#: templates/default/edit.html:50 templates/default/edit.html:544
+#: templates/default/edit.html:50 templates/default/edit.html:547
 msgid "Please provide all required information."
 msgstr "Pateikite visą reikalingą informaciją."
 
@@ -9077,23 +9080,23 @@ msgstr "Pridėti PTR"
 msgid "Add A/AAAA"
 msgstr "Pridėti A/AAAA"
 
-#: templates/default/edit.html:86 templates/default/edit.html:581
+#: templates/default/edit.html:86 templates/default/edit.html:584
 msgid "Invalid hostname format"
 msgstr "Neteisingas serverio vardo formatas"
 
-#: templates/default/edit.html:114 templates/default/edit.html:609
+#: templates/default/edit.html:114 templates/default/edit.html:612
 msgid "This record already exists"
 msgstr "Šis įrašas jau egzistuoja"
 
-#: templates/default/edit.html:126 templates/default/edit.html:621
+#: templates/default/edit.html:126 templates/default/edit.html:624
 msgid "Invalid priority"
 msgstr "Neteisingas prioritetas"
 
-#: templates/default/edit.html:133 templates/default/edit.html:628
+#: templates/default/edit.html:133 templates/default/edit.html:631
 msgid "Invalid TTL value"
 msgstr "Neteisinga TTL reikšmė"
 
-#: templates/default/edit.html:135 templates/default/edit.html:630
+#: templates/default/edit.html:135 templates/default/edit.html:633
 msgid "Provide TTL"
 msgstr "Pateikite TTL"
 
@@ -9117,107 +9120,107 @@ msgstr "CSV"
 msgid "PTR"
 msgstr "PTR"
 
-#: templates/default/edit.html:210
+#: templates/default/edit.html:212
 msgid "Sign zone"
 msgstr "Pasirašyti zoną"
 
-#: templates/default/edit.html:227
+#: templates/default/edit.html:230
 msgid "No records match your filter criteria."
 msgstr "Jokie įrašai neatitinka jūsų filtro kriterijų."
 
-#: templates/default/edit.html:235
+#: templates/default/edit.html:238
 msgid "This zone does not have any records."
 msgstr "Ši zona neturi jokių įrašų."
 
-#: templates/default/edit.html:249
+#: templates/default/edit.html:252
 msgid "Filter:"
 msgstr "Filtras:"
 
-#: templates/default/edit.html:255
+#: templates/default/edit.html:258
 msgid "Search by name or content"
 msgstr "Ieškoti pagal vardą arba turinį"
 
-#: templates/default/edit.html:261
+#: templates/default/edit.html:264
 msgid "All Types"
 msgstr "Visi tipai"
 
-#: templates/default/edit.html:271
+#: templates/default/edit.html:274
 msgid "Filter by content"
 msgstr "Filtruoti pagal turinį"
 
-#: templates/default/edit.html:277
+#: templates/default/edit.html:280
 msgid "Apply"
 msgstr "Taikyti"
 
-#: templates/default/edit.html:300 templates/default/search.html:476
+#: templates/default/edit.html:303 templates/default/search.html:476
 msgid "Delete record(s)"
 msgstr "Pašalinti įrašą(us)"
 
-#: templates/default/edit.html:302
+#: templates/default/edit.html:305
 msgid "Select All Filtered"
 msgstr "Pasirinkti visus filtruotus"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "Showing"
 msgstr "Rodoma"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "of"
 msgstr "iš"
 
-#: templates/default/edit.html:309
+#: templates/default/edit.html:312
 msgid "total records"
 msgstr "iš viso įrašų"
 
-#: templates/default/edit.html:475 templates/default/search.html:93
+#: templates/default/edit.html:478 templates/default/search.html:93
 msgid "Comments"
 msgstr "Komentarai"
 
-#: templates/default/edit.html:668
+#: templates/default/edit.html:671
 msgid "Save as new template"
 msgstr "Išsaugoti kaip naują šabloną"
 
-#: templates/default/edit.html:671
+#: templates/default/edit.html:674
 msgid "Create a reusable template from this zone's records"
 msgstr "Sukurti pakartotinai naudojamą šabloną iš šios zonos įrašų"
 
-#: templates/default/edit.html:677
+#: templates/default/edit.html:680
 msgid "Template Name"
 msgstr "Šablono pavadinimas"
 
-#: templates/default/edit.html:679
+#: templates/default/edit.html:682
 msgid "Provide template name"
 msgstr "Pateikite šablono pavadinimą"
 
-#: templates/default/edit.html:683
+#: templates/default/edit.html:686
 msgid "Template Description"
 msgstr "Šablono aprašymas"
 
-#: templates/default/edit.html:685
+#: templates/default/edit.html:688
 msgid "Optional description for this template"
 msgstr "Neprivalomas šio šablono aprašymas"
 
-#: templates/default/edit.html:689
+#: templates/default/edit.html:692
 msgid "Save as template"
 msgstr "Išsaugoti kaip šabloną"
 
-#: templates/default/edit.html:700
+#: templates/default/edit.html:703
 msgid "Zone Settings"
 msgstr "Zonos nustatymai"
 
-#: templates/default/edit.html:703
+#: templates/default/edit.html:706
 msgid "Owner of zone"
 msgstr "Zonos savininkas"
 
-#: templates/default/edit.html:706
+#: templates/default/edit.html:709
 msgid "No owner set for this zone."
 msgstr "Šiai zonai nenustatytas savininkas."
 
-#: templates/default/edit.html:831
+#: templates/default/edit.html:834
 msgid "Change"
 msgstr "Keisti"
 
-#: templates/default/edit.html:797 templates/default/add_zone_slave.html:33
+#: templates/default/edit.html:800 templates/default/add_zone_slave.html:33
 msgid "IP address of master NS"
 msgstr "Master NS IP adresas"
 
