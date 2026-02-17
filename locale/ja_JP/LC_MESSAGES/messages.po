@@ -5,7 +5,7 @@
 # Translators:
 # Koichi MATSUMOTO <mzch@me.com>, 2011.
 # Shogo Mori <smori@designet.co.jp>, 2017.
-#       http://www.designet.co.jp/ 
+#       http://www.designet.co.jp/
 msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
@@ -25,39 +25,35 @@ msgid ""
 "The configuration file (config.inc.php) does not exist. Please use the <a "
 "href=\"install/\">installer</a> to create it."
 msgstr ""
-"The configuration file (config.inc.php) does not exist. Please use the <a "
+"設定ファイル (config.inc.php) が存在しません。<a href=\"install/\">インストーラー</a>を使用して作成してください。"
 "href=\"install/\">installer</a> to create it."
 
 #: lib/BaseController.php:128
 #: lib/Infrastructure/Service/SessionAuthenticator.php:105
 msgid "Invalid CSRF token."
-msgstr "Invalid CSRF token."
+msgstr "無効なCSRFトークンです。"
 
 #: lib/BaseController.php:299
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
-msgstr ""
-"<a href=\"install/\">Install</a> ディレクトリを削除しないと次の処理に進めませ"
-"ん。"
+msgstr "<a href=\"install/\">Install</a> ディレクトリを削除しないと次の処理に進めません。"
 
 #: lib/BaseController.php:320
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
-msgstr ""
-"Default session encryption key is used, please set it in your configuration "
-"file."
+msgstr "デフォルトのセッション暗号化キーが使用されています。設定ファイルで設定してください。"
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
 #: templates/search.html:120 templates/search.html:229
 msgid "Previous"
-msgstr "Previous"
+msgstr "前へ"
 
 #: lib/Application/Presenter/PaginationPresenter.php:79
 #: templates/search.html:142 templates/search.html:251
 msgid "Next"
-msgstr "Next"
+msgstr "次へ"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:27
 msgid "Show zones beginning with"
@@ -66,7 +62,7 @@ msgstr "次で始まるゾーンを表示"
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:50
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:52
 msgid "Show all"
-msgstr "Show all"
+msgstr "すべて表示"
 
 #: lib/Application/Controller/DeleteUserController.php:49
 #: lib/Application/Controller/EditCommentController.php:57
@@ -134,11 +130,9 @@ msgstr "指定のレコードは削除されました。"
 
 #: lib/Application/Controller/DeleteRecordController.php:102
 msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
+"The record was deleted but the comment was preserved because similar records"
+" exist."
+msgstr "レコードは削除されましたが、類似のレコードが存在するためコメントは保持されました。"
 
 #: lib/Application/Controller/DeleteRecordController.php:115
 #: lib/Application/Controller/EditRecordController.php:83
@@ -148,7 +142,7 @@ msgstr "このレコードを編集する権限がありません。"
 
 #: lib/Application/Controller/ListSupermastersController.php:43
 msgid "You do not have the permission to view supermasters."
-msgstr "You do not have the permission to view supermasters."
+msgstr "スーパーマスターを表示する権限がありません。"
 
 #: lib/Application/Controller/EditPermTemplController.php:50
 #: lib/Application/Controller/ListPermTemplController.php:42
@@ -178,11 +172,11 @@ msgstr "このレコードを削除する権限がありません。"
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:69
 msgid "The record could not be deleted."
-msgstr "The record could not be deleted."
+msgstr "レコードを削除できませんでした。"
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "User details updated"
-msgstr "User details updated"
+msgstr "ユーザー詳細が更新されました"
 
 #: lib/Application/Controller/EditZoneTemplController.php:53
 #: lib/Application/Controller/EditZoneTemplRecordController.php:60
@@ -215,37 +209,37 @@ msgstr "このゾーンを閲覧する権限がありません。"
 
 #: lib/Application/Controller/EditController.php:167
 msgid "Zone has been signed successfully."
-msgstr "Zone has been signed successfully."
+msgstr "ゾーンが正常に署名されました。"
 
 #: lib/Application/Controller/EditController.php:170
 msgid "DNSSEC is not enabled on the server."
-msgstr "DNSSEC is not enabled on the server."
+msgstr "サーバーでDNSSECが有効になっていません。"
 
 #: lib/Application/Controller/EditController.php:183
 msgid "Zone has been unsigned successfully."
-msgstr "Zone has been unsigned successfully."
+msgstr "ゾーンの署名が正常に解除されました。"
 
 #: lib/Application/Controller/EditController.php:381
 msgid "Request has expired, please try again."
-msgstr "Request has expired, please try again."
+msgstr "リクエストが期限切れです。もう一度お試しください。"
 
 #: lib/Application/Controller/EditController.php:386
 msgid "Zone has been updated successfully."
-msgstr "Zone has been updated successfully."
+msgstr "ゾーンが正常に更新されました。"
 
 #: lib/Application/Controller/EditController.php:388
 msgid "Zone did not have any record changes."
-msgstr "Zone did not have any record changes."
+msgstr "ゾーンにレコードの変更はありませんでした。"
 
 #: lib/Application/Controller/EditController.php:397
 msgid "Zone has not been updated successfully."
-msgstr "Zone has not been updated successfully."
+msgstr "ゾーンが正常に更新されませんでした。"
 
 #: lib/Application/Controller/EditController.php:405
 #: lib/Domain/Model/ZoneTemplate.php:132 lib/Domain/Model/ZoneTemplate.php:567
-msgid "Zone template with this name already exists, please choose another one."
-msgstr ""
-"同じ名前のゾーンテンプレートが既に存在します。別の名前に変更して下さい。"
+msgid ""
+"Zone template with this name already exists, please choose another one."
+msgstr "同じ名前のゾーンテンプレートが既に存在します。別の名前に変更して下さい。"
 
 #: lib/Application/Controller/EditController.php:407
 msgid "Template name can't be an empty string."
@@ -267,11 +261,11 @@ msgstr "レコードが追加されました。"
 
 #: lib/Application/Controller/AddRecordController.php:207
 msgid "This record was not valid and could not be added."
-msgstr "This record was not valid and could not be added."
+msgstr "このレコードは無効であり、追加できませんでした。"
 
 #: lib/Application/Controller/DeleteDomainsController.php:61
 msgid "No zone selected for deletion."
-msgstr "No zone selected for deletion."
+msgstr "削除するゾーンが選択されていません。"
 
 #: lib/Application/Controller/DeleteDomainsController.php:91
 #: lib/Application/Controller/DeleteDomainController.php:105
@@ -280,7 +274,7 @@ msgstr "指定のゾーンは削除されました。"
 
 #: lib/Application/Controller/DeleteDomainsController.php:93
 msgid "Zones have been deleted successfully."
-msgstr "Zones have been deleted successfully."
+msgstr "ゾーンが正常に削除されました。"
 
 #: lib/Application/Controller/DeleteDomainsController.php:105
 #: lib/Application/Controller/DeleteDomainController.php:74
@@ -291,22 +285,20 @@ msgstr "ゾーンを削除する権限がありません。"
 
 #: lib/Application/Controller/MigrationsController.php:37
 msgid "You do not have the permission to access the migrations."
-msgstr "You do not have the permission to access the migrations."
+msgstr "マイグレーションにアクセスする権限がありません。"
 
 #: lib/Application/Controller/MigrationsController.php:42
 msgid ""
 "Old migrations table detected. Please remove the `migrations` table before "
 "proceeding."
-msgstr ""
-"Old migrations table detected. Please remove the `migrations` table before "
+msgstr "古いマイグレーションテーブルが検出されました。続行する前に `migrations` テーブルを削除してください。"
 "proceeding."
 
 #: lib/Application/Controller/MigrationsController.php:49
 msgid ""
 "Database access check failed. Please ensure the current database user has "
 "the necessary permissions to create and alter tables."
-msgstr ""
-"Database access check failed. Please ensure the current database user has "
+msgstr "データベースアクセスチェックに失敗しました。現在のデータベースユーザーにテーブルの作成と変更に必要な権限があることを確認してください。"
 "the necessary permissions to create and alter tables."
 
 #: lib/Application/Controller/AddZoneMasterController.php:57
@@ -339,7 +331,7 @@ msgstr "ゾーンが追加されました。"
 
 #: lib/Application/Controller/ListZonesController.php:56
 msgid "You do not have sufficient permissions to view this page."
-msgstr "You do not have sufficient permissions to view this page."
+msgstr "このページを表示する十分な権限がありません。"
 
 #: lib/Application/Controller/ListZonesController.php:102
 msgid "You do not have the permission to see any zones."
@@ -352,27 +344,27 @@ msgstr "ゾーンテンプレートを編集する権限がありません。"
 #: lib/Application/Controller/DnssecEditKeyController.php:80
 #: lib/Application/Controller/DnssecDeleteKeyController.php:81
 msgid "Failed to delete DNSSEC key."
-msgstr "Failed to delete DNSSEC key."
+msgstr "DNSSECキーの削除に失敗しました。"
 
 #: lib/Application/Controller/DnssecEditKeyController.php:88
 msgid "Zone key has been successfully deactivated."
-msgstr "Zone key has been successfully deactivated."
+msgstr "ゾーンキーが正常に無効化されました。"
 
 #: lib/Application/Controller/DnssecEditKeyController.php:93
 msgid "Zone key has been successfully activated."
-msgstr "Zone key has been successfully activated."
+msgstr "ゾーンキーが正常に有効化されました。"
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:85
 msgid "Zone key has been deleted successfully."
-msgstr "Zone key has been deleted successfully."
+msgstr "ゾーンキーが正常に削除されました。"
 
 #: lib/Application/Controller/AddPermTemplController.php:50
 msgid "You do not have the permission to add permission templates."
-msgstr "You do not have the permission to add permission templates."
+msgstr "権限テンプレートを追加する権限がありません。"
 
 #: lib/Application/Controller/AddPermTemplController.php:69
 msgid "The permission template has been added successfully."
-msgstr "The permission template has been added successfully."
+msgstr "権限テンプレートが正常に追加されました。"
 
 #: lib/Application/Controller/LogoutController.php:46
 #: lib/Infrastructure/Service/SessionAuthenticator.php:91
@@ -418,7 +410,7 @@ msgstr "指定のユーザーは更新されました。"
 #: lib/Application/Controller/EditUserController.php:124
 #: lib/Application/Controller/EditUserController.php:127
 msgid "The user could not be updated."
-msgstr "The user could not be updated."
+msgstr "ユーザーを更新できませんでした。"
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 msgid "You do not have the permission to delete permission templates."
@@ -442,12 +434,12 @@ msgstr "パスワードが変更されました。ログインし直して下さ
 
 #: lib/Application/Controller/DnssecAddKeyController.php:99
 msgid "Zone key has been added successfully."
-msgstr "Zone key has been added successfully."
+msgstr "ゾーンキーが正常に追加されました。"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:102
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:346
 msgid "Failed to add new DNSSEC key."
-msgstr "Failed to add new DNSSEC key."
+msgstr "新しいDNSSECキーの追加に失敗しました。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:43
 msgid "You do not have the permission to delete a supermaster."
@@ -455,7 +447,7 @@ msgstr "スーパーマスターを削除する権限がありません。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:66
 msgid "Super master does not exist."
-msgstr "Super master does not exist."
+msgstr "スーパーマスターが存在しません。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:71
 msgid "The supermaster has been deleted successfully."
@@ -463,15 +455,15 @@ msgstr "指定のスーパーマスターは削除されました。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid "Zones has been added successfully."
-msgstr "Zones has been added successfully."
+msgstr "ゾーンが正常に追加されました。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:103
 msgid "Some zone(s) could not be added."
-msgstr "Some zone(s) could not be added."
+msgstr "一部のゾーンを追加できませんでした。"
 
 #: lib/Application/Service/SqlAuthenticator.php:104
 msgid "The user account is disabled."
-msgstr "The user account is disabled."
+msgstr "ユーザーアカウントが無効です。"
 
 #: lib/Application/Service/SqlAuthenticator.php:143
 msgid "Authentication failed!"
@@ -484,28 +476,29 @@ msgstr "セッションの有効期限が切れました。ログインし直し
 
 #: lib/Application/Service/LdapAuthenticator.php:87
 msgid "Failed to connect to LDAP server!"
-msgstr "Failed to connect to LDAP server!"
+msgstr "LDAPサーバーへの接続に失敗しました！"
 
 #: lib/Application/Service/LdapAuthenticator.php:100
 msgid "Failed to bind to LDAP server!"
-msgstr "Failed to bind to LDAP server!"
+msgstr "LDAPサーバーへのバインドに失敗しました！"
 
 #: lib/Application/Service/LdapAuthenticator.php:123
 msgid "Failed to search LDAP."
-msgstr "Failed to search LDAP."
+msgstr "LDAP検索に失敗しました。"
 
 #: lib/Application/Service/LdapAuthenticator.php:139
 msgid "Failed to authenticate against LDAP."
-msgstr "Failed to authenticate against LDAP."
+msgstr "LDAPに対する認証に失敗しました。"
 
 #: lib/Application/Service/LdapAuthenticator.php:154
 #: lib/Application/Service/LdapAuthenticator.php:171
 msgid "LDAP Authentication failed!"
-msgstr "LDAP Authentication failed!"
+msgstr "LDAP認証に失敗しました！"
 
-#: lib/Application/Query/RecordSearch.php:112 templates/dnssec_edit_key.html:53
-#: templates/delete_user.html:54 templates/delete_perm_templ.html:13
-#: templates/users.html:77 templates/users.html:109 templates/users.html:110
+#: lib/Application/Query/RecordSearch.php:112
+#: templates/dnssec_edit_key.html:53 templates/delete_user.html:54
+#: templates/delete_perm_templ.html:13 templates/users.html:77
+#: templates/users.html:109 templates/users.html:110
 #: templates/delete_record.html:51 templates/delete_domain.html:33
 #: templates/delete_domains.html:51 templates/delete_supermaster.html:17
 #: templates/delete_zone_templ.html:13
@@ -514,9 +507,10 @@ msgstr "LDAP Authentication failed!"
 msgid "Yes"
 msgstr "はい"
 
-#: lib/Application/Query/RecordSearch.php:112 templates/dnssec_edit_key.html:54
-#: templates/delete_user.html:55 templates/delete_perm_templ.html:14
-#: templates/users.html:79 templates/users.html:109 templates/users.html:110
+#: lib/Application/Query/RecordSearch.php:112
+#: templates/dnssec_edit_key.html:54 templates/delete_user.html:55
+#: templates/delete_perm_templ.html:14 templates/users.html:79
+#: templates/users.html:109 templates/users.html:110
 #: templates/delete_record.html:52 templates/delete_domain.html:34
 #: templates/delete_domains.html:53 templates/delete_supermaster.html:18
 #: templates/delete_zone_templ.html:15
@@ -527,7 +521,7 @@ msgstr "いいえ"
 
 #: lib/Infrastructure/Database/PDOLayer.php:141
 msgid "Unknown database type."
-msgstr "Unknown database type."
+msgstr "不明なデータベースタイプです。"
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:195
 #: lib/Domain/Model/UserManager.php:250
@@ -536,45 +530,44 @@ msgstr "このテンプレートは少なくとも一人のユーザーに割り
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:131
 msgid "An empty password is not allowed"
-msgstr "An empty password is not allowed"
+msgstr "空のパスワードは許可されていません"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:50
 msgid ""
 "Failed to call function exec. Make sure that exec is not listed in "
 "disable_functions at php.ini"
-msgstr ""
-"Failed to call function exec. Make sure that exec is not listed in "
+msgstr "exec関数の呼び出しに失敗しました。php.iniのdisable_functionsにexecが含まれていないことを確認してください"
 "disable_functions at php.ini"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:58
 msgid "Failed to call pdnssec utility."
-msgstr "Failed to call pdnssec utility."
+msgstr "pdnssecユーティリティの呼び出しに失敗しました。"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:155
 msgid "Failed to secure zone."
-msgstr "Failed to secure zone."
+msgstr "ゾーンのセキュア化に失敗しました。"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:174
 msgid "Failed to disable DNSSEC."
-msgstr "Failed to disable DNSSEC."
+msgstr "DNSSECの無効化に失敗しました。"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:215
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:249
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:312
 msgid "Failed to get DNSSEC key details."
-msgstr "Failed to get DNSSEC key details."
+msgstr "DNSSECキーの詳細の取得に失敗しました。"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:273
 msgid "Failed to active DNSSEC key."
-msgstr "Failed to active DNSSEC key."
+msgstr "DNSSECキーの有効化に失敗しました。"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:292
 msgid "Failed to deactivate DNSSEC key."
-msgstr "Failed to deactivate DNSSEC key."
+msgstr "DNSSECキーの無効化に失敗しました。"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:365
 msgid "Failed to remove DNSSEC key."
-msgstr "Failed to remove DNSSEC key."
+msgstr "DNSSECキーの削除に失敗しました。"
 
 #: lib/Domain/Model/UserManager.php:290
 msgid "Enter a valid email address."
@@ -595,11 +588,11 @@ msgstr "内容欄に入力した値が不適切です。"
 #: lib/Domain/Model/ZoneTemplate.php:350 lib/Domain/Model/ZoneTemplate.php:397
 #: lib/Domain/Service/Dns.php:290
 msgid "Invalid value for prio field."
-msgstr "Invalid value for prio field."
+msgstr "優先度フィールドの値が無効です。"
 
 #: lib/Domain/Service/Dns.php:248
 msgid "The content of the SPF record is invalid"
-msgstr "The content of the SPF record is invalid"
+msgstr "SPFレコードの内容が無効です"
 
 #: lib/Domain/Service/Dns.php:282
 msgid "Unknown record type."
@@ -643,15 +636,15 @@ msgstr "このレコードは、不適切な文字が使用されています。
 
 #: lib/Domain/Service/Dns.php:535
 msgid "You cannot use html tags for this type of record."
-msgstr "You cannot use html tags for this type of record."
+msgstr "この種類のレコードではHTMLタグを使用できません。"
 
 #: lib/Domain/Service/Dns.php:563
 msgid "Backslashes must precede all quotes (\") in TXT content"
-msgstr "Backslashes must precede all quotes (\") in TXT content"
+msgstr "TXT内容のすべての引用符（\"）の前にバックスラッシュが必要です"
 
 #: lib/Domain/Service/Dns.php:585
 msgid "Add quotes around TXT record content."
-msgstr "Add quotes around TXT record content."
+msgstr "TXTレコードの内容の周りに引用符を追加してください。"
 
 #: lib/Domain/Service/Dns.php:615
 msgid ""
@@ -666,20 +659,18 @@ msgstr "不適切なレコードです。この名前の CNAME が既に存在�
 #: lib/Domain/Service/Dns.php:671
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
-msgstr ""
-"This is not a valid CNAME. There already exists a record with this name."
+msgstr "これは有効なCNAMEではありません。この名前のレコードが既に存在します。"
 
 #: lib/Domain/Service/Dns.php:691
 msgid "Empty CNAME records are not allowed."
-msgstr "Empty CNAME records are not allowed."
+msgstr "空のCNAMEレコードは許可されていません。"
 
 #: lib/Domain/Service/Dns.php:717
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
 msgstr ""
-"You can not point a NS or MX record to a CNAME record. Remove or rename the "
-"CNAME record first, or take another name."
+"NSまたはMXレコードをCNAMEレコードに向けることはできません。最初にCNAMEレコードを削除するか名前を変更するか、別の名前を使用してください。"
 
 #: lib/Domain/Service/Dns.php:743
 msgid "Invalid value for content field of HINFO record."
@@ -689,21 +680,19 @@ msgstr "ＨINFO レコードの content 項目に不適切な値が設定され�
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
-msgstr ""
-"SOA レコードの name 項目に不適切な値が設定されています。そこはゾーン名でなけ"
-"ればなりません。"
+msgstr "SOA レコードの name 項目に不適切な値が設定されています。そこはゾーン名でなければなりません。"
 
 #: lib/Domain/Service/Dns.php:871
 msgid "Invalid service value in name field of SRV record."
-msgstr "Invalid service value in name field of SRV record."
+msgstr "SRVレコードの名前フィールドのサービス値が無効です。"
 
 #: lib/Domain/Service/Dns.php:878
 msgid "Invalid protocol value in name field of SRV record."
-msgstr "Invalid protocol value in name field of SRV record."
+msgstr "SRVレコードの名前フィールドのプロトコル値が無効です。"
 
 #: lib/Domain/Service/Dns.php:885
 msgid "Invalid FQDN value in name field of SRV record."
-msgstr "Invalid FQDN value in name field of SRV record."
+msgstr "SRVレコードの名前フィールドのFQDN値が無効です。"
 
 #: lib/Domain/Service/Dns.php:905
 msgid "Invalid value for the priority field of the SRV record."
@@ -724,38 +713,38 @@ msgstr "TTL に不適切な値が設定されています。TTL は数字でな�
 #: lib/Domain/Service/DomainRecordCreator.php:56
 #, php-format
 msgid "There is no managed zone for domain: %s."
-msgstr "There is no managed zone for domain: %s."
+msgstr "ドメイン%sの管理ゾーンがありません。"
 
 #: lib/Domain/Service/DomainRecordCreator.php:69
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
-msgstr "Adding IPv6 domain records from reverse zones is not supported yet."
+msgstr "逆引きゾーンからのIPv6ドメインレコードの追加はまだサポートされていません。"
 
 #: lib/Domain/Service/DomainRecordCreator.php:73
 #: lib/Domain/Service/DomainRecordCreator.php:82
 #: lib/Domain/Service/DomainRecordCreator.php:91
 #: lib/Domain/Service/DomainRecordCreator.php:107
 msgid "This domain record was not valid and could not be added."
-msgstr "This domain record was not valid and could not be added."
+msgstr "このドメインレコードは有効ではなく、追加できませんでした。"
 
 #: lib/Domain/Service/DomainRecordCreator.php:103
 msgid "The domain record was successfully added."
-msgstr "The domain record was successfully added."
+msgstr "ドメインレコードが正常に追加されました。"
 
 #: lib/Domain/Service/DnsRecord.php:370
 msgid "You do not have the permission to edit this SOA record."
-msgstr "You do not have the permission to edit this SOA record."
+msgstr "このSOAレコードを編集する権限がありません。"
 
 #: lib/Domain/Service/DnsRecord.php:377
 msgid "You do not have the permission to edit this NS record."
-msgstr "You do not have the permission to edit this NS record."
+msgstr "このNSレコードを編集する権限がありません。"
 
 #: lib/Domain/Service/DnsRecord.php:432
 msgid "You do not have the permission to add SOA record."
-msgstr "You do not have the permission to add SOA record."
+msgstr "SOAレコードを追加する権限がありません。"
 
 #: lib/Domain/Service/DnsRecord.php:439
 msgid "You do not have the permission to add NS record."
-msgstr "You do not have the permission to add NS record."
+msgstr "NSレコードを追加する権限がありません。"
 
 #: lib/Domain/Service/DnsRecord.php:529 lib/Domain/Service/DnsRecord.php:571
 #: lib/Domain/Service/DnsRecord.php:600 lib/Domain/Service/DnsRecord.php:785
@@ -769,15 +758,13 @@ msgstr "関数 %s %s に不正な引数が渡されました。"
 
 #: lib/Domain/Service/DnsRecord.php:537
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "There is already a supermaster with this IP address and hostname."
+msgstr "このIPアドレスとホスト名のスーパーマスターが既に存在します。"
 
 #: lib/Domain/Service/DnsRecord.php:638
 msgid ""
 "You are trying to delete the SOA record. You are not allowed to remove it, "
 "unless you remove the entire zone."
-msgstr ""
-"SOA レコードを削除しようとしましたが、ゾーン全体を削除しない限り、SOA レコー"
-"ドを削除することはできません。"
+msgstr "SOA レコードを削除しようとしましたが、ゾーン全体を削除しない限り、SOA レコードを削除することはできません。"
 
 #: lib/Domain/Service/DnsRecord.php:791 lib/Domain/Service/DnsRecord.php:1405
 #, php-format
@@ -786,11 +773,11 @@ msgstr "関数 %s に不正な引数が渡されました。"
 
 #: lib/Domain/Service/DnsRecord.php:875
 msgid "The selected user already owns the zone."
-msgstr "The selected user already owns the zone."
+msgstr "選択されたユーザーは既にゾーンを所有しています。"
 
 #: lib/Domain/Service/DnsRecord.php:904
 msgid "There must be at least one owner for a zone."
-msgstr "There must be at least one owner for a zone."
+msgstr "ゾーンには少なくとも1人のオーナーが必要です。"
 
 #: lib/Domain/Service/DnsRecord.php:1123
 msgid "This is an invalid zone name."
@@ -799,7 +786,7 @@ msgstr "不適切なゾーン名です。"
 #: lib/Domain/Service/ReverseRecordCreator.php:62
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
-msgstr "There is no matching reverse-zone for: %s."
+msgstr "%sに一致する逆引きゾーンがありません。"
 
 #: templates/dnssec_edit_key.html:3 templates/edit_zone_templ_record.html:3
 #: templates/dnssec.html:3 templates/edit_record.html:3
@@ -821,7 +808,7 @@ msgstr "There is no matching reverse-zone for: %s."
 #: templates/edit_perm_templ.html:3 templates/delete_zone_templ_record.html:3
 #: templates/dnssec_delete_key.html:3 templates/list_perm_templ.html:3
 msgid "Home"
-msgstr "Home"
+msgstr "ホーム"
 
 #: templates/dnssec_edit_key.html:4 templates/edit_zone_templ_record.html:4
 #: templates/dnssec.html:4 templates/edit_record.html:4
@@ -838,7 +825,7 @@ msgstr "Home"
 #: templates/add_record.html:4 templates/delete_zone_templ_record.html:4
 #: templates/dnssec_delete_key.html:4
 msgid "Zones"
-msgstr "Zones"
+msgstr "ゾーン"
 
 #: templates/dnssec_edit_key.html:13 templates/dnssec.html:12
 #: templates/list_zones.html:62 templates/dnssec_add_key.html:13
@@ -849,29 +836,29 @@ msgstr "DNSSEC"
 
 #: templates/dnssec_edit_key.html:17
 msgid "Deactivate key"
-msgstr "Deactivate key"
+msgstr "キーを無効化"
 
 #: templates/dnssec_edit_key.html:19
 msgid "Activate key"
-msgstr "Activate key"
+msgstr "キーを有効化"
 
 #: templates/dnssec_edit_key.html:26
 msgid "Deactivate zone key"
-msgstr "Deactivate zone key"
+msgstr "ゾーンキーを無効化"
 
 #: templates/dnssec_edit_key.html:28
 msgid "Activate zone key"
-msgstr "Activate zone key"
+msgstr "ゾーンキーを有効化"
 
 #: templates/dnssec_edit_key.html:37 templates/dnssec_delete_key.html:28
 msgid "Domain"
-msgstr "Domain"
+msgstr "ドメイン"
 
 #: templates/dnssec_edit_key.html:44 templates/list_log_zones.html:39
 #: templates/edit.html:133 templates/list_log_users.html:39
 #: templates/dnssec_delete_key.html:35
 msgid "Id"
-msgstr "Id"
+msgstr "ID"
 
 #: templates/dnssec_edit_key.html:45 templates/edit_zone_templ_record.html:23
 #: templates/dnssec.html:25 templates/edit_record.html:29
@@ -889,17 +876,17 @@ msgstr "タイプ"
 #: templates/dnssec_edit_key.html:46 templates/dnssec.html:26
 #: templates/dnssec_delete_key.html:37
 msgid "Tag"
-msgstr "Tag"
+msgstr "タグ"
 
 #: templates/dnssec_edit_key.html:47 templates/dnssec.html:27
 #: templates/dnssec_add_key.html:54 templates/dnssec_delete_key.html:38
 msgid "Algorithm"
-msgstr "Algorithm"
+msgstr "アルゴリズム"
 
 #: templates/dnssec_edit_key.html:48 templates/dnssec.html:28
 #: templates/dnssec_delete_key.html:39
 msgid "Bits"
-msgstr "Bits"
+msgstr "ビット"
 
 #: templates/dnssec_edit_key.html:49 templates/dnssec.html:29
 #: templates/dnssec_delete_key.html:40
@@ -920,7 +907,7 @@ msgstr "よろしいですか?"
 #: templates/edit_zone_templ.html:5 templates/delete_zone_templ.html:5
 #: templates/delete_zone_templ_record.html:5
 msgid "Zone templates"
-msgstr "Zone templates"
+msgstr "ゾーンテンプレート"
 
 #: templates/edit_zone_templ_record.html:8 templates/edit_record.html:12
 msgid "Edit record"
@@ -970,24 +957,24 @@ msgstr "TTL"
 #: templates/edit_zone_templ_record.html:51 templates/edit_record.html:82
 #: templates/edit.html:73 templates/edit.html:354 templates/add_record.html:59
 msgid "Provide content"
-msgstr "Provide content"
+msgstr "内容を入力してください"
 
 #: templates/edit_zone_templ_record.html:60 templates/edit_record.html:99
 #: templates/edit_comment.html:31 templates/edit_user.html:77
 #: templates/add_perm_templ.html:47 templates/users.html:119
 #: templates/edit_zone_templ.html:152 templates/edit_perm_templ.html:55
 msgid "Update"
-msgstr "Update"
+msgstr "更新"
 
 #: templates/edit_zone_templ_record.html:61 templates/edit_record.html:100
 #: templates/edit_comment.html:32 templates/edit_user.html:78
 #: templates/edit.html:293 templates/users.html:120
 msgid "Reset"
-msgstr "Reset"
+msgstr "リセット"
 
 #: templates/dnssec.html:17 templates/dnssec.html:19
 msgid "DNSSEC keys for zone"
-msgstr "DNSSEC keys for zone"
+msgstr "ゾーンのDNSSECキー"
 
 #: templates/dnssec.html:24
 msgid "ID"
@@ -995,34 +982,35 @@ msgstr "ID"
 
 #: templates/dnssec.html:53 templates/dnssec_delete_key.html:21
 msgid "Delete zone key"
-msgstr "Delete zone key"
+msgstr "ゾーンキーを削除"
 
 #: templates/dnssec.html:60
 msgid "Add new key"
-msgstr "Add new key"
+msgstr "新しいキーを追加"
 
 #: templates/dnssec.html:62
 msgid "Show DS and DNSKEY"
-msgstr "Show DS and DNSKEY"
+msgstr "DSとDNSKEYを表示"
 
 #: templates/edit_record.html:17 templates/edit_record.html:19
 msgid "Edit record in zone"
 msgstr "次のゾーンのレコードを編集:"
 
-#: templates/edit_record.html:34 templates/edit.html:33 templates/edit.html:181
-#: templates/edit.html:325 templates/add_record.html:34
+#: templates/edit_record.html:34 templates/edit.html:33
+#: templates/edit.html:181 templates/edit.html:325
+#: templates/add_record.html:34
 msgid "Comment"
-msgstr "Comment"
+msgstr "コメント"
 
 #: templates/edit_record.html:36 templates/edit.html:185
 #: templates/search.html:188
 msgid "Disabled"
-msgstr "Disabled"
+msgstr "無効"
 
 #: templates/migrations.html:4 templates/migrations.html:8
 #: templates/index_list.html:66 templates/index_cards.html:138
 msgid "Migrations"
-msgstr "Migrations"
+msgstr "マイグレーション"
 
 #: templates/edit_comment.html:12 templates/edit.html:285
 msgid "Edit comment"
@@ -1034,7 +1022,7 @@ msgstr "次のゾーンのコメントを編集:"
 
 #: templates/add_zone_templ.html:6
 msgid "Add template"
-msgstr "Add template"
+msgstr "テンプレートを追加"
 
 #: templates/add_zone_templ.html:10
 msgid "Add zone template for"
@@ -1044,7 +1032,7 @@ msgstr "次のユーザー向けにゾーンテンプレートを追加:"
 #: templates/edit_zone_templ.html:112 templates/edit_zone_templ.html:133
 #: templates/edit_perm_templ.html:19
 msgid "Provide a name for your template"
-msgstr "Provide a name for your template"
+msgstr "テンプレートの名前を入力してください"
 
 #: templates/add_zone_templ.html:20 templates/edit_user.html:60
 #: templates/add_perm_templ.html:20 templates/add_perm_templ.html:32
@@ -1056,7 +1044,7 @@ msgstr "説明"
 
 #: templates/add_zone_templ.html:26 templates/edit_zone_templ.html:146
 msgid "Everyone could use it (global)?"
-msgstr "Everyone could use it (global)?"
+msgstr "全員が使用可能（グローバル）にしますか？"
 
 #: templates/add_zone_templ.html:30 templates/list_zone_templ.html:71
 #: templates/header.html:106
@@ -1067,15 +1055,15 @@ msgstr "ゾーンテンプレートを追加"
 #: templates/index_list.html:45 templates/index_cards.html:90
 #: templates/header.html:62
 msgid "Zone logs"
-msgstr "Zone logs"
+msgstr "ゾーンログ"
 
 #: templates/list_log_zones.html:10 templates/list_log_users.html:10
 msgid "Total number of logs:"
-msgstr "Total number of logs:"
+msgstr "ログの合計数："
 
 #: templates/list_log_zones.html:17
 msgid "Search logs by domain"
-msgstr "Search logs by domain"
+msgstr "ドメインでログを検索"
 
 #: templates/list_log_zones.html:21 templates/search.html:4
 #: templates/search.html:23 templates/list_log_users.html:21
@@ -1086,23 +1074,23 @@ msgstr "検索"
 #: templates/list_log_zones.html:25 templates/search.html:25
 #: templates/list_log_users.html:25
 msgid "Clear"
-msgstr "Clear"
+msgstr "クリア"
 
 #: templates/list_log_zones.html:40 templates/list_log_users.html:40
 msgid "Event"
-msgstr "Event"
+msgstr "イベント"
 
 #: templates/list_log_zones.html:41 templates/list_log_users.html:41
 msgid "Created at"
-msgstr "Created at"
+msgstr "作成日時"
 
 #: templates/list_log_zones.html:53
 msgid "Details"
-msgstr "Details"
+msgstr "詳細"
 
 #: templates/list_log_zones.html:64 templates/list_log_users.html:56
 msgid "No logs found"
-msgstr "No logs found"
+msgstr "ログが見つかりません"
 
 #: templates/index_list.html:1 templates/index_cards.html:1
 msgid "Welcome"
@@ -1166,7 +1154,7 @@ msgstr "ユーザー管理"
 #: templates/index_list.html:58 templates/index_cards.html:119
 #: templates/header.html:82
 msgid "List permission templates"
-msgstr "List permission templates"
+msgstr "権限テンプレート一覧"
 
 #: templates/index_list.html:62 templates/index_cards.html:128
 #: templates/header.html:119
@@ -1179,7 +1167,7 @@ msgstr "ログアウト"
 #: templates/list_log_users.html:4 templates/header.html:71
 #: templates/edit_perm_templ.html:4 templates/list_perm_templ.html:4
 msgid "Users"
-msgstr "Users"
+msgstr "ユーザー"
 
 #: templates/delete_user.html:5 templates/delete_user.html:9
 msgid "Delete user"
@@ -1189,9 +1177,7 @@ msgstr "次のユーザーを削除:"
 msgid ""
 "You are about to delete a user. This user is owner for a number of zones. "
 "Please decide what to do with these zones."
-msgstr ""
-"ユーザーを削除しようとしていますが、このユーザーがオーナーであるゾーンが存在"
-"します。以下のゾーンの扱いを決めて下さい。"
+msgstr "ユーザーを削除しようとしていますが、このユーザーがオーナーであるゾーンが存在します。以下のゾーンの扱いを決めて下さい。"
 
 #: templates/delete_user.html:22
 msgid "Zone"
@@ -1220,7 +1206,7 @@ msgstr "追加されるオーナー"
 
 #: templates/list_zones.html:9 templates/search.html:58
 msgid "Total number of zones:"
-msgstr "Total number of zones:"
+msgstr "ゾーンの総数："
 
 #: templates/list_zones.html:21
 msgid "There are no zones to show in this listing."
@@ -1240,24 +1226,25 @@ msgstr "オーナー"
 
 #: templates/list_zones.html:51
 msgid "Full name"
-msgstr "Full name"
+msgstr "完全名"
 
 #: templates/list_zones.html:54
 msgid "Serial"
 msgstr "シリアル"
 
-#: templates/list_zones.html:58 templates/edit.html:559 templates/users.html:18
-#: templates/add_zone_master.html:50 templates/bulk_registration.html:44
+#: templates/list_zones.html:58 templates/edit.html:559
+#: templates/users.html:18 templates/add_zone_master.html:50
+#: templates/bulk_registration.html:44
 msgid "Template"
 msgstr "テンプレート"
 
-#: templates/list_zones.html:115 templates/edit.html:12 templates/edit.html:262
-#: templates/users.html:93 templates/list_zone_templ.html:59
-#: templates/edit_zone_templ.html:51 templates/search.html:100
-#: templates/search.html:209 templates/edit_perm_templ.html:6
-#: templates/list_perm_templ.html:24
+#: templates/list_zones.html:115 templates/edit.html:12
+#: templates/edit.html:262 templates/users.html:93
+#: templates/list_zone_templ.html:59 templates/edit_zone_templ.html:51
+#: templates/search.html:100 templates/search.html:209
+#: templates/edit_perm_templ.html:6 templates/list_perm_templ.html:24
 msgid "Edit"
-msgstr "Edit"
+msgstr "編集"
 
 #: templates/list_zones.html:135
 msgid "Delete zone(s)"
@@ -1265,31 +1252,31 @@ msgstr "ゾーンを削除"
 
 #: templates/dnssec_add_key.html:15 templates/dnssec_add_key.html:74
 msgid "Add key"
-msgstr "Add key"
+msgstr "キーを追加"
 
 #: templates/dnssec_add_key.html:20 templates/dnssec_add_key.html:22
 msgid "Add key for zone"
-msgstr "Add key for zone"
+msgstr "ゾーンのキーを追加"
 
 #: templates/dnssec_add_key.html:29
 msgid "Key type"
-msgstr "Key type"
+msgstr "キータイプ"
 
 #: templates/dnssec_add_key.html:36
 msgid "Select key type"
-msgstr "Select key type"
+msgstr "キータイプを選択"
 
 #: templates/dnssec_add_key.html:40
 msgid "Bits in length"
-msgstr "Bits in length"
+msgstr "ビット長"
 
 #: templates/dnssec_add_key.html:50
 msgid "Select bits length"
-msgstr "Select bits length"
+msgstr "ビット長を選択"
 
 #: templates/dnssec_add_key.html:68
 msgid "Select algorithm"
-msgstr "Select algorithm"
+msgstr "アルゴリズムを選択"
 
 #: templates/edit_user.html:5 templates/edit_user.html:9
 msgid "Edit user"
@@ -1302,7 +1289,7 @@ msgstr "ユーザー名"
 
 #: templates/edit_user.html:18 templates/add_user.html:16
 msgid "Provide user name"
-msgstr "Provide user name"
+msgstr "ユーザー名を入力してください"
 
 #: templates/edit_user.html:22 templates/users.html:16
 #: templates/add_user.html:20
@@ -1321,7 +1308,7 @@ msgstr "メールアドレス"
 
 #: templates/edit_user.html:40 templates/add_user.html:36
 msgid "Provide email"
-msgstr "Provide email"
+msgstr "メールアドレスを入力してください"
 
 #: templates/edit_user.html:45 templates/add_user.html:41
 msgid "Permission template"
@@ -1334,11 +1321,11 @@ msgstr "有効"
 
 #: templates/edit_user.html:70 templates/add_user.html:67
 msgid "LDAP Authentication"
-msgstr "LDAP Authentication"
+msgstr "LDAP認証"
 
 #: templates/edit_user.html:84
 msgid "This user has been assigned the permission template"
-msgstr "This user has been assigned the permission template"
+msgstr "このユーザーには権限テンプレートが割り当てられています"
 
 #: templates/edit_user.html:86
 msgid "The description for this template is"
@@ -1367,7 +1354,7 @@ msgstr "権限テンプレートを追加"
 #: templates/add_supermaster.html:4 templates/list_supermasters.html:4
 #: templates/delete_supermaster.html:4
 msgid "Supermasters"
-msgstr "Supermasters"
+msgstr "スーパーマスター"
 
 #: templates/add_supermaster.html:14 templates/list_supermasters.html:13
 msgid "IP address of supermaster"
@@ -1375,7 +1362,7 @@ msgstr "スーパーマスターの IP アドレス"
 
 #: templates/add_supermaster.html:17 templates/add_zone_slave.html:24
 msgid "Provide ip address"
-msgstr "Provide ip address"
+msgstr "IPアドレスを入力してください"
 
 #: templates/add_supermaster.html:20 templates/list_supermasters.html:14
 #: templates/delete_supermaster.html:11
@@ -1384,7 +1371,7 @@ msgstr "NS レコードのホスト名"
 
 #: templates/add_supermaster.html:22
 msgid "Provide host name"
-msgstr "Provide host name"
+msgstr "ホスト名を入力してください"
 
 #: templates/add_supermaster.html:25 templates/list_supermasters.html:15
 #: templates/delete_supermaster.html:12 templates/header.html:114
@@ -1397,11 +1384,11 @@ msgstr "ログイン"
 
 #: templates/login.html:15
 msgid "Please provide a username"
-msgstr "Please provide a username"
+msgstr "ユーザー名を入力してください"
 
 #: templates/login.html:22
 msgid "Please provide a password"
-msgstr "Please provide a password"
+msgstr "パスワードを入力してください"
 
 #: templates/login.html:27
 msgid "Language"
@@ -1425,11 +1412,11 @@ msgstr "次のゾーンテンプレートにレコードを追加:"
 
 #: templates/add_zone_templ_record.html:40
 msgid "Provide content for your zone record"
-msgstr "Provide content for your zone record"
+msgstr "ゾーンレコードの内容を入力してください"
 
 #: templates/add_zone_templ_record.html:57 templates/edit_zone_templ.html:71
 msgid "Hint:"
-msgstr "Hint:"
+msgstr "ヒント："
 
 #: templates/add_zone_templ_record.html:60 templates/edit_zone_templ.html:74
 msgid "The following placeholders can be used in template records"
@@ -1445,50 +1432,49 @@ msgstr "現在の日付と２桁の数字で置換されます"
 
 #: templates/add_zone_templ_record.html:66 templates/edit_zone_templ.html:82
 msgid "substituted with 1st name server"
-msgstr "substituted with 1st name server"
+msgstr "第1ネームサーバーに置き換え"
 
 #: templates/add_zone_templ_record.html:67 templates/edit_zone_templ.html:83
 msgid "substituted with 2nd name server"
-msgstr "substituted with 2nd name server"
+msgstr "第2ネームサーバーに置き換え"
 
 #: templates/add_zone_templ_record.html:68 templates/edit_zone_templ.html:84
 msgid "substituted with 3rd name server"
-msgstr "substituted with 3rd name server"
+msgstr "第3ネームサーバーに置き換え"
 
 #: templates/add_zone_templ_record.html:69 templates/edit_zone_templ.html:85
 msgid "substituted with 4th name server"
-msgstr "substituted with 4th name server"
+msgstr "第4ネームサーバーに置き換え"
 
 #: templates/add_zone_templ_record.html:70 templates/edit_zone_templ.html:86
 msgid "substituted with hostmaster"
-msgstr "substituted with hostmaster"
+msgstr "ホストマスターに置き換え"
 
 #: templates/add_zone_templ_record.html:74 templates/edit_zone_templ.html:90
 msgid "Examples:"
-msgstr "Examples:"
+msgstr "例："
 
 #: templates/add_zone_templ_record.html:77 templates/edit_zone_templ.html:93
 msgid ""
 "To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
 "name field."
-msgstr ""
-"To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
+msgstr "ゾーンテンプレートにサブドメインfooを追加するには、名前フィールドにfoo.[ZONE]と入力します。"
 "name field."
 
 #: templates/add_zone_templ_record.html:78 templates/edit_zone_templ.html:94
 msgid "To add a wildcard record put *.[ZONE] in the name field."
-msgstr "To add a wildcard record put *.[ZONE] in the name field."
+msgstr "ワイルドカードレコードを追加するには、名前フィールドに*.[ZONE]と入力します。"
 
 #: templates/add_zone_templ_record.html:79 templates/edit_zone_templ.html:95
 msgid "Use just [ZONE] to have the domain itself return a value."
-msgstr "Use just [ZONE] to have the domain itself return a value."
+msgstr "ドメイン自体が値を返すようにするには、[ZONE]のみを使用します。"
 
 #: templates/add_zone_templ_record.html:80 templates/edit_zone_templ.html:96
 msgid ""
 "For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
 "86400 in the content field."
 msgstr ""
-"For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
+"SOAレコードには、コンテンツフィールドに [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 と入力します。"
 "86400 in the content field."
 
 #: templates/delete_perm_templ.html:10
@@ -1497,19 +1483,19 @@ msgstr "次の権限テンプレートを削除"
 
 #: templates/edit.html:17
 msgid "Add new record"
-msgstr "Add new record"
+msgstr "新しいレコードを追加"
 
 #: templates/edit.html:37
 msgid "Add PTR"
-msgstr "Add PTR"
+msgstr "PTRを追加"
 
 #: templates/edit.html:40
 msgid "Add A/AAAA"
-msgstr "Add A/AAAA"
+msgstr "A/AAAAを追加"
 
 #: templates/edit.html:79 templates/edit.html:360
 msgid "Provide TTL"
-msgstr "Provide TTL"
+msgstr "TTLを入力してください"
 
 #: templates/edit.html:107 templates/edit.html:109
 msgid "Edit zone"
@@ -1517,35 +1503,35 @@ msgstr "次のゾーンを編集:"
 
 #: templates/edit.html:119
 msgid "This zone does not have any records."
-msgstr "This zone does not have any records."
+msgstr "このゾーンにはレコードがありません。"
 
 #: templates/edit.html:275
 msgid "Comments"
-msgstr "Comments"
+msgstr "コメント"
 
 #: templates/edit.html:292
 msgid "Save changes"
-msgstr "Save changes"
+msgstr "変更を保存"
 
 #: templates/edit.html:301
 msgid "Unsign this zone"
-msgstr "Unsign this zone"
+msgstr "このゾーンの署名を解除"
 
 #: templates/edit.html:304
 msgid "Sign this zone"
-msgstr "Sign this zone"
+msgstr "このゾーンに署名"
 
 #: templates/edit.html:374 templates/add_record.html:77
 msgid "Also add a PTR record in the matching zone"
-msgstr "Also add a PTR record in the matching zone"
+msgstr "一致するゾーンにPTRレコードも追加する"
 
 #: templates/edit.html:381 templates/add_record.html:84
 msgid "Also add an A/AAAA record in the matching zone"
-msgstr "Also add an A/AAAA record in the matching zone"
+msgstr "一致するゾーンにA/AAAAレコードも追加する"
 
 #: templates/edit.html:396
 msgid "Save as new template"
-msgstr "Save as new template"
+msgstr "新しいテンプレートとして保存"
 
 #: templates/edit.html:399 templates/edit_zone_templ.html:109
 msgid "Template Name"
@@ -1553,7 +1539,7 @@ msgstr "テンプレート名"
 
 #: templates/edit.html:402
 msgid "Provide template name"
-msgstr "Provide template name"
+msgstr "テンプレート名を入力"
 
 #: templates/edit.html:406 templates/edit_zone_templ.html:116
 msgid "Template Description"
@@ -1583,26 +1569,27 @@ msgstr "マスター NS の IP アドレス"
 msgid "LDAP"
 msgstr "LDAP"
 
-#: templates/users.html:125 templates/add_user.html:5 templates/add_user.html:9
-#: templates/header.html:75
+#: templates/users.html:125 templates/add_user.html:5
+#: templates/add_user.html:9 templates/header.html:75
 msgid "Add user"
 msgstr "ユーザーを追加"
 
 #: templates/delete_record.html:12
 msgid "Delete Record"
-msgstr "Delete Record"
+msgstr "レコードの削除"
 
 #: templates/delete_record.html:17 templates/delete_record.html:19
 msgid "Delete record in zone"
-msgstr "Delete record in zone"
+msgstr "ゾーン内のレコードを削除"
 
 #: templates/delete_record.html:47
-msgid "You are trying to delete a record that is needed for this zone to work."
+msgid ""
+"You are trying to delete a record that is needed for this zone to work."
 msgstr "このゾーンになくてはならないレコードを削除しようとしています。"
 
 #: templates/add_user.html:29
 msgid "Provide user password"
-msgstr "Provide user password"
+msgstr "ユーザーパスワードを提供してください"
 
 #: templates/add_zone_master.html:14 templates/add_zone_slave.html:14
 msgid "Zone name"
@@ -1610,7 +1597,7 @@ msgstr "ゾーン名"
 
 #: templates/add_zone_master.html:17 templates/add_zone_slave.html:17
 msgid "Provide zone name"
-msgstr "Provide zone name"
+msgstr "ゾーン名を入力"
 
 #: templates/add_zone_master.html:70 templates/add_zone_slave.html:56
 msgid "Add zone"
@@ -1622,23 +1609,23 @@ msgstr "次のユーザー向けのゾーンテンプレート:"
 
 #: templates/list_zone_templ.html:13
 msgid "In use"
-msgstr "In use"
+msgstr "使用中"
 
 #: templates/list_zone_templ.html:18
 msgid "Zones linked"
-msgstr "Zones linked"
+msgstr "リンクされたゾーン"
 
 #: templates/list_zone_templ.html:26 templates/search.html:261
 msgid "No results found"
-msgstr "No results found"
+msgstr "結果が見つかりません"
 
 #: templates/list_zone_templ.html:51
 msgid "private"
-msgstr "private"
+msgstr "プライベート"
 
 #: templates/list_zone_templ.html:53
 msgid "global"
-msgstr "global"
+msgstr "グローバル"
 
 #: templates/change_password.html:13
 msgid "Current password"
@@ -1646,7 +1633,7 @@ msgstr "現在のパスワード"
 
 #: templates/change_password.html:17
 msgid "Provide current password"
-msgstr "Provide current password"
+msgstr "現在のパスワードを入力"
 
 #: templates/change_password.html:21
 msgid "New password"
@@ -1654,11 +1641,11 @@ msgstr "新しいパスワード"
 
 #: templates/change_password.html:25 templates/change_password.html:33
 msgid "Provide new password"
-msgstr "Provide new password"
+msgstr "新しいパスワードを入力"
 
 #: templates/change_password.html:29
 msgid "Repeat password"
-msgstr "Repeat password"
+msgstr "パスワードの再入力"
 
 #: templates/edit_zone_templ.html:7
 msgid "Edit template"
@@ -1670,7 +1657,7 @@ msgstr "次のゾーンテンプレートを編集:"
 
 #: templates/edit_zone_templ.html:17
 msgid "This zone template does not have any records yet."
-msgstr "This zone template does not have any records yet."
+msgstr "このゾーンテンプレートにはまだレコードがありません。"
 
 #: templates/edit_zone_templ.html:67
 msgid "Update zones"
@@ -1678,7 +1665,7 @@ msgstr "ゾーンを更新"
 
 #: templates/list_supermasters.html:40
 msgid "There are no supermasters to show in this listing."
-msgstr "There are no supermasters to show in this listing."
+msgstr "この一覧に表示するスーパーマスターがありません。"
 
 #: templates/bulk_registration.html:58
 msgid "Type one domain per line"
@@ -1686,7 +1673,7 @@ msgstr "登録するドメインを1行1ドメインの形式で入力してく�
 
 #: templates/bulk_registration.html:61
 msgid "Provide a domain name(s)"
-msgstr "Provide a domain name(s)"
+msgstr "ドメイン名を入力"
 
 #: templates/bulk_registration.html:69
 msgid "Add zones"
@@ -1694,7 +1681,7 @@ msgstr "ゾーンの追加"
 
 #: templates/delete_domain.html:12
 msgid "Delete Zone"
-msgstr "Delete Zone"
+msgstr "ゾーンを削除"
 
 #: templates/delete_domain.html:17 templates/delete_domain.html:19
 msgid "Delete zone"
@@ -1707,24 +1694,20 @@ msgid ""
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
 msgstr ""
-"You are about to delete a slave zone of which the master nameserver is a "
-"supermaster. Deleting the zone now, will result in temporary removal only. "
-"Whenever the supermaster sends a notification for this zone, it will be "
-"added again!"
+"マスターネームサーバーがスーパーマスターであるスレーブゾーンを削除しようとしています。今ゾーンを削除すると、一時的な削除のみになります。スーパーマスターがこのゾーンの通知を送信するたびに、再び追加されます！"
 
 #: templates/search.html:9
 msgid ""
-"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) "
-"in pattern matches any single character, a percent sign (%) matches any "
+"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_)"
+" in pattern matches any single character, a percent sign (%) matches any "
 "string of zero or more characters."
 msgstr ""
-"ホスト名か IP アドレスを入力して下さい。SQL ライクな文法をサポートしていま"
-"す: アンダースコア (_) は任意の一文字にマッチし、パーセント記号 (%) は、空文"
-"字列を含む任意の長さの文字列にマッチします。"
+"ホスト名か IP アドレスを入力して下さい。SQL ライクな文法をサポートしています: アンダースコア (_) は任意の一文字にマッチし、パーセント記号"
+" (%) は、空文字列を含む任意の長さの文字列にマッチします。"
 
 #: templates/search.html:27
 msgid "Provide a keyword for your search"
-msgstr "Provide a keyword for your search"
+msgstr "検索キーワードを入力してください"
 
 #: templates/search.html:44
 msgid "Wildcard"
@@ -1744,7 +1727,7 @@ msgstr "マッチしたレコード"
 
 #: templates/search.html:153
 msgid "Total number of records:"
-msgstr "Total number of records:"
+msgstr "レコードの合計数："
 
 #: templates/delete_domains.html:5 templates/delete_domains.html:9
 msgid "Delete zones"
@@ -1752,7 +1735,7 @@ msgstr "ゾーンを削除"
 
 #: templates/delete_domains.html:18
 msgid "Note"
-msgstr "Note"
+msgstr "注意"
 
 #: templates/delete_supermaster.html:5 templates/delete_supermaster.html:9
 msgid "Delete supermaster"
@@ -1761,11 +1744,11 @@ msgstr "次のスーパーマスターを削除:"
 #: templates/list_log_users.html:5 templates/list_log_users.html:9
 #: templates/header.html:91
 msgid "User logs"
-msgstr "User logs"
+msgstr "ユーザーログ"
 
 #: templates/list_log_users.html:17
 msgid "Search logs by user"
-msgstr "Search logs by user"
+msgstr "ユーザーでログを検索"
 
 #: templates/delete_zone_templ.html:6
 msgid "Delete template"
@@ -1777,15 +1760,15 @@ msgstr "次のゾーンテンプレートを削除:"
 
 #: templates/header.html:101
 msgid "Templates"
-msgstr "Templates"
+msgstr "テンプレート"
 
 #: templates/dnssec_ds_dnskey.html:16
 msgid "DS and DNS keys"
-msgstr "DS and DNS keys"
+msgstr "DSとDNSキー"
 
 #: templates/dnssec_ds_dnskey.html:22 templates/dnssec_ds_dnskey.html:24
 msgid "DNSSEC public records for zone"
-msgstr "DNSSEC public records for zone"
+msgstr "ゾーンのDNSSECパブリックレコード"
 
 #: templates/dnssec_ds_dnskey.html:27
 msgid "DNSKEY"
@@ -1793,7 +1776,7 @@ msgstr "DNSKEY"
 
 #: templates/dnssec_ds_dnskey.html:33
 msgid "DS record"
-msgstr "DS record"
+msgstr "DSレコード"
 
 #: templates/add_record.html:17 templates/add_record.html:19
 msgid "Add record to zone"
@@ -1809,23 +1792,22 @@ msgstr "レコードを削除"
 
 #: templates/delete_zone_templ_record.html:11
 msgid "Delete record in zone template"
-msgstr "Delete record in zone template"
+msgstr "ゾーンテンプレート内のレコードを削除"
 
 #: templates/dnssec_delete_key.html:16
 msgid "Delete key"
-msgstr "Delete key"
+msgstr "キーを削除"
 
 #: install/helpers/InstallStepHandler.php:57
 msgid ""
 "There is already a configuration file in place, so the installation will be "
 "skipped."
-msgstr ""
-"There is already a configuration file in place, so the installation will be "
+msgstr "設定ファイルが既に存在するため、インストールはスキップされます。"
 "skipped."
 
 #: install/helpers/InstallStepHandler.php:71
 msgid "Error rendering template"
-msgstr "Error rendering template"
+msgstr "テンプレートのレンダリングエラー"
 
 #: install/helpers/InstallStepHandler.php:101
 msgid "Updating database..."
@@ -1837,18 +1819,17 @@ msgstr "完了!"
 
 #: install/helpers/DatabaseHelper.php:119
 msgid "or"
-msgstr "or"
+msgstr "または"
 
 #: install/helpers/ErrorHandler.php:29
 msgid "Please select a language to proceed with the installation."
-msgstr "Please select a language to proceed with the installation."
+msgstr "インストールを続行するには言語を選択してください。"
 
 #: install/helpers/LocaleHandler.php:87
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
+msgstr "ロケールの設定に失敗しました。選択したロケールはこのシステムでサポートされていない可能性があります。管理者に連絡してください。"
 "Please contact your administrator."
 
 #~ msgid "You can not change your password as LDAP user."
@@ -1883,8 +1864,7 @@ msgstr ""
 #~ msgstr "問い合わせ"
 
 #~ msgid "Function returned an error (multiple zones matching this zone ID)."
-#~ msgstr ""
-#~ "関数がエラーを返しました (同一のゾーンIDが複数のゾーンにマッチしました)。"
+#~ msgstr "関数がエラーを返しました (同一のゾーンIDが複数のゾーンにマッチしました)。"
 
 #~ msgid "You have to create a config.inc.php!"
 #~ msgstr "config.inc.php を作成して下さい!"
@@ -1930,34 +1910,27 @@ msgstr ""
 #~ msgstr "config.inc.php にデータベースパスワードが設定されていません。"
 
 #~ msgid "No or unknown database type has been set in config.inc.php."
-#~ msgstr ""
-#~ "config.inc.php にデータベースタイプが設定されていないか、未知の値が設定さ"
-#~ "れています。"
+#~ msgstr "config.inc.php にデータベースタイプが設定されていないか、未知の値が設定されています。"
 
 #~ msgid "No database file has been set in config.inc.php."
 #~ msgstr "config.inc.php にデータベースファイルが設定されていません。"
 
 #~ msgid ""
-#~ "It seems that you forgot to update the database after Poweradmin upgrade "
-#~ "to new version."
-#~ msgstr ""
-#~ "Poweradmin を新しいバージョンにアップグレードした後でデータベースを更新し"
-#~ "忘れているようです。"
+#~ "It seems that you forgot to update the database after Poweradmin upgrade to "
+#~ "new version."
+#~ msgstr "Poweradmin を新しいバージョンにアップグレードした後でデータベースを更新し忘れているようです。"
 
 #~ msgid ""
-#~ "This is not a valid CNAME. There is already exists an A, AAAA or CNAME "
-#~ "with this name."
-#~ msgstr ""
-#~ "不適切な ＣNAME です。A、もしくはAAAA、CNAME レコードのいずれかに同じホス"
-#~ "ト名が存在します。"
+#~ "This is not a valid CNAME. There is already exists an A, AAAA or CNAME with "
+#~ "this name."
+#~ msgstr "不適切な ＣNAME です。A、もしくはAAAA、CNAME レコードのいずれかに同じホスト名が存在します。"
 
 #~ msgid ""
 #~ "You can not point a NS or MX record to a CNAME record. Remove or rame the "
 #~ "CNAME record first, or take another name."
 #~ msgstr ""
-#~ "NS レコードもしくは MX レコードを CNAME レコード に向けることはできませ"
-#~ "ん。CNAME レコードの名前を変更、または削除するか、もしくは別のホスト名を指"
-#~ "定して下さい。"
+#~ "NS レコードもしくは MX レコードを CNAME レコード に向けることはできません。CNAME "
+#~ "レコードの名前を変更、または削除するか、もしくは別のホスト名を指定して下さい。"
 
 #~ msgid "NS records must be a hostnames."
 #~ msgstr "NS レコードにはホスト名を指定しなくてはなりません。"
@@ -1969,23 +1942,20 @@ msgstr ""
 #~ msgstr "SOA レコードの MNAME 項目にエラーがあります。"
 
 #~ msgid "Invalid value for prio field. It should be numeric."
-#~ msgstr ""
-#~ "プライオリティに不適切な値が設定されています。プライオリティは数字でなけれ"
-#~ "ばなりません。"
+#~ msgstr "プライオリティに不適切な値が設定されています。プライオリティは数字でなければなりません。"
 
 #~ msgid "Invalid value for name field of SRV record."
 #~ msgstr "SRV レコードのドメイン名項目に不適切な値が設定されています。"
 
 #, php-format
 #~ msgid ""
-#~ "You are about to delete a slave zone of which the master nameserver, %s, "
-#~ "is a supermaster. Deleting the zone now, will result in temporary removal "
-#~ "only. Whenever the supermaster sends a notification for this zone, it "
-#~ "will be added again!"
+#~ "You are about to delete a slave zone of which the master nameserver, %s, is "
+#~ "a supermaster. Deleting the zone now, will result in temporary removal only."
+#~ " Whenever the supermaster sends a notification for this zone, it will be "
+#~ "added again!"
 #~ msgstr ""
-#~ "マスターネームサーバ (%s) がスーパーマスターであるスレーブゾーンを削除しよ"
-#~ "うとしています。ゾーンを削除しても一時的に削除されるだけで、スーパーマス"
-#~ "ターからこのゾーンが通知されると、再度ゾーンが追加されていまいます!"
+#~ "マスターネームサーバ (%s) "
+#~ "がスーパーマスターであるスレーブゾーンを削除しようとしています。ゾーンを削除しても一時的に削除されるだけで、スーパーマスターからこのゾーンが通知されると、再度ゾーンが追加されていまいます!"
 
 #~ msgid "This zone does not have any records. Weird."
 #~ msgstr "このゾーンにはレコードがありません。変ですね。"
@@ -2000,78 +1970,65 @@ msgstr ""
 #~ msgstr "ステップ"
 
 #~ msgid ""
-#~ "This installer expects you to have a PowerDNS database accessible from "
-#~ "this server. This installer also expects you to have never ran Poweradmin "
-#~ "before, or that you want to overwrite the Poweradmin part of the "
-#~ "database. If you have had Poweradmin running before, any data in the "
-#~ "following tables will be destroyed: perm_items, perm_templ, "
-#~ "perm_templ_items, users and zones. This installer will, of course, not "
-#~ "touch the data in the PowerDNS tables of the database. However, it is "
-#~ "recommended that you create a backup of your database before proceeding."
+#~ "This installer expects you to have a PowerDNS database accessible from this "
+#~ "server. This installer also expects you to have never ran Poweradmin before,"
+#~ " or that you want to overwrite the Poweradmin part of the database. If you "
+#~ "have had Poweradmin running before, any data in the following tables will be"
+#~ " destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This "
+#~ "installer will, of course, not touch the data in the PowerDNS tables of the "
+#~ "database. However, it is recommended that you create a backup of your "
+#~ "database before proceeding."
 #~ msgstr ""
-#~ "このインストーラーは、PowerDNS のデータベースにこのサーバーからアクセスす"
-#~ "ることができることを前提としています。また、以前に Poweradmin を実行したこ"
-#~ "とがないか、したことがあってもデータベースで Poweradmin が使用した箇所を上"
-#~ "書きすることが前提となります。もし、以前に Poweradmin を実行していたのな"
-#~ "ら、次のテーブルのデータがクリアされます: perm_itemrs、perm_templ、"
-#~ "perm_templ_items、users、zones。当然のことながらこのインストーラーはデータ"
-#~ "ベースの PowerDNS のテーブルに変更を加えることはありませんが、念のため処理"
-#~ "を始める前にデータベースのバックアップを行うことをお勧めします。"
+#~ "このインストーラーは、PowerDNS のデータベースにこのサーバーからアクセスすることができることを前提としています。また、以前に "
+#~ "Poweradmin を実行したことがないか、したことがあってもデータベースで Poweradmin "
+#~ "が使用した箇所を上書きすることが前提となります。もし、以前に Poweradmin を実行していたのなら、次のテーブルのデータがクリアされます: "
+#~ "perm_itemrs、perm_templ、perm_templ_items、users、zones。当然のことながらこのインストーラーはデータベースの"
+#~ " PowerDNS のテーブルに変更を加えることはありませんが、念のため処理を始める前にデータベースのバックアップを行うことをお勧めします。"
 
 #~ msgid ""
 #~ "The alternative for this installer is a manual installation. Refer to the "
 #~ "poweradmin.org website if you want to go down that road."
-#~ msgstr ""
-#~ "このインストーラーを使わずに、手動でインストールすることもできます。その場"
-#~ "合は、poweradmin.org のウェブサイトをご覧下さい。"
+#~ msgstr "このインストーラーを使わずに、手動でインストールすることもできます。その場合は、poweradmin.org のウェブサイトをご覧下さい。"
 
 #~ msgid ""
 #~ "Finally, if you see any errors during the installation process, a problem "
-#~ "report would be appreciated. You can report problems (and ask for help) "
-#~ "on the <a href=\"https://github.com/poweradmin/poweradmin/issues\" "
+#~ "report would be appreciated. You can report problems (and ask for help) on "
+#~ "the <a href=\"https://github.com/poweradmin/poweradmin/issues\" "
 #~ "target=\"blank\">poweradmin</a> issues."
 #~ msgstr ""
-#~ "最後に、インストール処理中にエラーが発生した場合、問題を報告していただける"
-#~ "とありがたく思います。<a href=\"https://github.com/poweradmin/poweradmin/"
-#~ "issues\" target=\"blank\">poweradmin</a> メーリングリストに問題を報告して"
-#~ "解決策を尋ねることができます。"
+#~ "最後に、インストール処理中にエラーが発生した場合、問題を報告していただけるとありがたく思います。<a "
+#~ "href=\"https://github.com/poweradmin/poweradmin/issues\" "
+#~ "target=\"blank\">poweradmin</a> メーリングリストに問題を報告して解決策を尋ねることができます。"
 
 #~ msgid "Do you want to proceed now?"
 #~ msgstr "続けてもよろしいですか?"
 
 #~ msgid ""
-#~ "To prepare the database for using Poweradmin, the installer needs to "
-#~ "modify the PowerDNS database. It will add a number of tables and it will "
-#~ "fill these tables with some data. If the tables are already present, the "
-#~ "installer will drop them first."
+#~ "To prepare the database for using Poweradmin, the installer needs to modify "
+#~ "the PowerDNS database. It will add a number of tables and it will fill these"
+#~ " tables with some data. If the tables are already present, the installer "
+#~ "will drop them first."
 #~ msgstr ""
-#~ "Poweradmin で使用するデータベースを準備するために、インストーラーは、"
-#~ "PowerDNS データベースを更新する必要があります。インストーラーはテーブルを"
-#~ "いくつか追加しデータを設定します。テーブルが既に存在する場合、インストー"
-#~ "ラーは最初にテーブルをドロップします。"
+#~ "Poweradmin で使用するデータベースを準備するために、インストーラーは、PowerDNS "
+#~ "データベースを更新する必要があります。インストーラーはテーブルをいくつか追加しデータを設定します。テーブルが既に存在する場合、インストーラーは最初にテーブルをドロップします。"
 
 #~ msgid ""
 #~ "To do all of this, the installer needs to access the database with an "
 #~ "account which has sufficient rights. If you trust the installer, you may "
-#~ "give it the username and password of the database user root. Otherwise, "
-#~ "make sure the user has enough rights, before actually proceeding."
+#~ "give it the username and password of the database user root. Otherwise, make"
+#~ " sure the user has enough rights, before actually proceeding."
 #~ msgstr ""
-#~ "上記の作業を行うため、インストーラはそれに必要な権限を持つアカウントでデー"
-#~ "タベースにアクセスする必要があります。インストーラを信頼するなら、データ"
-#~ "ベースの root ユーザーのユーザー名とパスワードを指定して下さい。root でア"
-#~ "クセスさせてくなければ、実際に処理を継続する前に、入力したユーザーに必要な"
-#~ "権限があることを確認して下さい。"
+#~ "上記の作業を行うため、インストーラはそれに必要な権限を持つアカウントでデータベースにアクセスする必要があります。インストーラを信頼するなら、データベースの"
+#~ " root ユーザーのユーザー名とパスワードを指定して下さい。root "
+#~ "でアクセスさせてくなければ、実際に処理を継続する前に、入力したユーザーに必要な権限があることを確認して下さい。"
 
 #~ msgid ""
-#~ "The username to use to connect to the database, make sure the username "
-#~ "has sufficient rights to perform administrative task to the PowerDNS "
-#~ "database (the installer wants to drop, create and fill tables to the "
-#~ "database)."
+#~ "The username to use to connect to the database, make sure the username has "
+#~ "sufficient rights to perform administrative task to the PowerDNS database "
+#~ "(the installer wants to drop, create and fill tables to the database)."
 #~ msgstr ""
-#~ "データベース接続に使用するユーザー名です。このユーザーには、Poweradmin "
-#~ "データベースに対する管理タスクを実行する権限があることを確認して下さい (イ"
-#~ "ンストーラは、データベースに対して、テーブルの作成／削除、データの書き込み"
-#~ "を行います)。"
+#~ "データベース接続に使用するユーザー名です。このユーザーには、Poweradmin データベースに対する管理タスクを実行する権限があることを確認して下さい"
+#~ " (インストーラは、データベースに対して、テーブルの作成／削除、データの書き込みを行います)。"
 
 #~ msgid "The password for this username."
 #~ msgstr "このユーザーに対するパスワード"
@@ -2080,11 +2037,9 @@ msgstr ""
 #~ msgstr "ホスト名"
 
 #~ msgid ""
-#~ "The hostname on which the PowerDNS database resides. Frequently, this "
-#~ "will be \"localhost\"."
-#~ msgstr ""
-#~ "PowerDNS データベースが存在するホストのホスト名。たいていの場合は、"
-#~ "\"localhost\" です。"
+#~ "The hostname on which the PowerDNS database resides. Frequently, this will "
+#~ "be \"localhost\"."
+#~ msgstr "PowerDNS データベースが存在するホストのホスト名。たいていの場合は、\"localhost\" です。"
 
 #~ msgid "DB Port"
 #~ msgstr "DB ポート"
@@ -2111,8 +2066,7 @@ msgstr ""
 #~ "The password of the Poweradmin administrator. This administrator has full "
 #~ "rights to Poweradmin using the web interface."
 #~ msgstr ""
-#~ "Poweradmin 管理者のパスワードです。この管理者はウェブインターフェースを"
-#~ "使って Poweradmin のすべての操作を実行する権限を持ちます。"
+#~ "Poweradmin 管理者のパスワードです。この管理者はウェブインターフェースを使って Poweradmin のすべての操作を実行する権限を持ちます。"
 
 #~ msgid "Now we will gather all details for the configuration itself."
 #~ msgstr "設定に必要な情報をすべて収集します。"
@@ -2127,9 +2081,7 @@ msgstr ""
 #~ msgid ""
 #~ "When creating SOA records and no hostmaster is provided, this value here "
 #~ "will be used."
-#~ msgstr ""
-#~ "SOA レコードを作成する際に hostmaster を設定しなければ、この値が使用されま"
-#~ "す。"
+#~ msgstr "SOA レコードを作成する際に hostmaster を設定しなければ、この値が使用されます。"
 
 #~ msgid "Primary nameserver"
 #~ msgstr "プライマリ・ネームサーバー"
@@ -2137,9 +2089,7 @@ msgstr ""
 #~ msgid ""
 #~ "When creating new zones using the template, this value will be used as "
 #~ "primary nameserver."
-#~ msgstr ""
-#~ "テンプレートを使用して新しくゾーンを作成する際に、この値がプライマリネーム"
-#~ "サーバとして使用されます。"
+#~ msgstr "テンプレートを使用して新しくゾーンを作成する際に、この値がプライマリネームサーバとして使用されます。"
 
 #~ msgid "Secondary nameserver"
 #~ msgstr "セカンダリ・ネームサーバー"
@@ -2147,20 +2097,16 @@ msgstr ""
 #~ msgid ""
 #~ "When creating new zones using the template, this value will be used as "
 #~ "secondary nameserver."
-#~ msgstr ""
-#~ "テンプレートを使用して新しくゾーンを作成する際に、この値がセカンダリネーム"
-#~ "サーバとして使用されます。"
+#~ msgstr "テンプレートを使用して新しくゾーンを作成する際に、この値がセカンダリネームサーバとして使用されます。"
 
 #~ msgid ""
-#~ "You now want to give limited rights to Poweradmin so it can update the "
-#~ "data in the tables. To do this, you should create a new user and give it "
-#~ "rights to select, delete, insert and update records in the PowerDNS "
-#~ "database."
+#~ "You now want to give limited rights to Poweradmin so it can update the data "
+#~ "in the tables. To do this, you should create a new user and give it rights "
+#~ "to select, delete, insert and update records in the PowerDNS database."
 #~ msgstr ""
-#~ "Poweradmin の権限に制限を加えようとお考えなら、ここでテーブルのデータを更"
-#~ "新することができます。そのためには、新しいユーザーを作成して、PowerDNS "
-#~ "データベースにレコードを select, insert, update する権限だけを与えるべきで"
-#~ "す。"
+#~ "Poweradmin "
+#~ "の権限に制限を加えようとお考えなら、ここでテーブルのデータを更新することができます。そのためには、新しいユーザーを作成して、PowerDNS "
+#~ "データベースにレコードを select, insert, update する権限だけを与えるべきです。"
 
 #~ msgid "In MySQL you should now perform the following command:"
 #~ msgstr "MySQL で、次のコマンドを実行して下さい:"
@@ -2169,36 +2115,29 @@ msgstr ""
 #~ msgstr "PgSQL で、次のコマンドを実行して下さい:"
 
 #~ msgid ""
-#~ "After you have added the new user, proceed with this installation "
-#~ "procedure."
-#~ msgstr ""
-#~ "新しいユーザーを追加した後で、このインストールプロセスを継続します。"
+#~ "After you have added the new user, proceed with this installation procedure."
+#~ msgstr "新しいユーザーを追加した後で、このインストールプロセスを継続します。"
 
 #~ msgid "You should now create the file"
 #~ msgstr "設定内容を以下に表示しますので、ファイル"
 
 #~ msgid ""
-#~ " in the Poweradmin root directory yourself. It should contain the "
-#~ "following few lines:"
-#~ msgstr ""
-#~ " を Poweradmin のルートディレクトリに直接作成して下さい。ファイルには表示"
-#~ "された行を必ず含めて下さい:"
+#~ " in the Poweradmin root directory yourself. It should contain the following "
+#~ "few lines:"
+#~ msgstr " を Poweradmin のルートディレクトリに直接作成して下さい。ファイルには表示された行を必ず含めて下さい:"
 
 #~ msgid ""
 #~ "Now we have finished the configuration, you should (must!) remove the "
-#~ "directory \"install/\" from the Poweradmin root directory. You will not "
-#~ "be able to use Poweradmin if it exists. Do it now."
+#~ "directory \"install/\" from the Poweradmin root directory. You will not be "
+#~ "able to use Poweradmin if it exists. Do it now."
 #~ msgstr ""
-#~ "設定が完了しました。ディレクトリ \"install\" を Poweradmin のルートディレ"
-#~ "クトリから **必ず** 削除して下さい! そのディレクトリがあると、Poweradmin "
-#~ "を使うことはできません。今すぐ削除して下さい。"
+#~ "設定が完了しました。ディレクトリ \"install\" を Poweradmin のルートディレクトリから **必ず** 削除して下さい! "
+#~ "そのディレクトリがあると、Poweradmin を使うことはできません。今すぐ削除して下さい。"
 
 #~ msgid ""
-#~ "After you have removed the directory, you can login to <a href=\"../"
-#~ "index.php\">Poweradmin</a> with username \"admin\" and password"
-#~ msgstr ""
-#~ "ディレクトリを削除したら、<a href=\"../index.php\">Poweradmin</a> にユー"
-#~ "ザー \"admin\"、パスワード"
+#~ "After you have removed the directory, you can login to <a "
+#~ "href=\"../index.php\">Poweradmin</a> with username \"admin\" and password"
+#~ msgstr "ディレクトリを削除したら、<a href=\"../index.php\">Poweradmin</a> にユーザー \"admin\"、パスワード"
 
 #~ msgid "Really delete this user?"
 #~ msgstr "本当にこのユーザーを削除しますか?"

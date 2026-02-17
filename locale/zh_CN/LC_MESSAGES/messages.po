@@ -23,14 +23,13 @@ msgstr ""
 msgid ""
 "The configuration file (config.inc.php) does not exist. Please use the <a "
 "href=\"install/\">installer</a> to create it."
-msgstr ""
-"The configuration file (config.inc.php) does not exist. Please use the <a "
+msgstr "配置文件 (config.inc.php) 不存在。请使用<a href=\"install/\">安装程序</a>来创建它。"
 "href=\"install/\">installer</a> to create it."
 
 #: lib/BaseController.php:128
 #: lib/Infrastructure/Service/SessionAuthenticator.php:105
 msgid "Invalid CSRF token."
-msgstr "Invalid CSRF token."
+msgstr "无效的 CSRF 令牌。"
 
 #: lib/BaseController.php:299
 msgid ""
@@ -129,11 +128,9 @@ msgstr "记录已成功删除。"
 
 #: lib/Application/Controller/DeleteRecordController.php:102
 msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
-msgstr ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
+"The record was deleted but the comment was preserved because similar records"
+" exist."
+msgstr "记录已删除，但由于存在类似记录，注释被保留。"
 
 #: lib/Application/Controller/DeleteRecordController.php:115
 #: lib/Application/Controller/EditRecordController.php:83
@@ -143,7 +140,7 @@ msgstr "您没有权限编辑此记录。"
 
 #: lib/Application/Controller/ListSupermastersController.php:43
 msgid "You do not have the permission to view supermasters."
-msgstr "You do not have the permission to view supermasters."
+msgstr "您没有查看超级主机的权限。"
 
 #: lib/Application/Controller/EditPermTemplController.php:50
 #: lib/Application/Controller/ListPermTemplController.php:42
@@ -214,7 +211,7 @@ msgstr "区域已成功签名。"
 
 #: lib/Application/Controller/EditController.php:170
 msgid "DNSSEC is not enabled on the server."
-msgstr "DNSSEC is not enabled on the server."
+msgstr "服务器上未启用 DNSSEC。"
 
 #: lib/Application/Controller/EditController.php:183
 msgid "Zone has been unsigned successfully."
@@ -238,7 +235,8 @@ msgstr "区域更新未成功。"
 
 #: lib/Application/Controller/EditController.php:405
 #: lib/Domain/Model/ZoneTemplate.php:132 lib/Domain/Model/ZoneTemplate.php:567
-msgid "Zone template with this name already exists, please choose another one."
+msgid ""
+"Zone template with this name already exists, please choose another one."
 msgstr "具有此名称的区域模板已存在，请选择其他名称。"
 
 #: lib/Application/Controller/EditController.php:407
@@ -265,7 +263,7 @@ msgstr "此记录无效，无法添加。"
 
 #: lib/Application/Controller/DeleteDomainsController.php:61
 msgid "No zone selected for deletion."
-msgstr "No zone selected for deletion."
+msgstr "未选择要删除的区域。"
 
 #: lib/Application/Controller/DeleteDomainsController.php:91
 #: lib/Application/Controller/DeleteDomainController.php:105
@@ -285,22 +283,20 @@ msgstr "您没有权限删除区域。"
 
 #: lib/Application/Controller/MigrationsController.php:37
 msgid "You do not have the permission to access the migrations."
-msgstr "You do not have the permission to access the migrations."
+msgstr "您没有访问迁移的权限。"
 
 #: lib/Application/Controller/MigrationsController.php:42
 msgid ""
 "Old migrations table detected. Please remove the `migrations` table before "
 "proceeding."
-msgstr ""
-"Old migrations table detected. Please remove the `migrations` table before "
+msgstr "检测到旧的迁移表。请在继续之前删除 `migrations` 表。"
 "proceeding."
 
 #: lib/Application/Controller/MigrationsController.php:49
 msgid ""
 "Database access check failed. Please ensure the current database user has "
 "the necessary permissions to create and alter tables."
-msgstr ""
-"Database access check failed. Please ensure the current database user has "
+msgstr "数据库访问检查失败。请确保当前数据库用户拥有创建和修改表的必要权限。"
 "the necessary permissions to create and alter tables."
 
 #: lib/Application/Controller/AddZoneMasterController.php:57
@@ -441,7 +437,7 @@ msgstr "区域密钥已成功添加。"
 #: lib/Application/Controller/DnssecAddKeyController.php:102
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:346
 msgid "Failed to add new DNSSEC key."
-msgstr "Failed to add new DNSSEC key."
+msgstr "添加新 DNSSEC 密钥失败。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:43
 msgid "You do not have the permission to delete a supermaster."
@@ -449,7 +445,7 @@ msgstr "您没有权限删除超级主服务器。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:66
 msgid "Super master does not exist."
-msgstr "Super master does not exist."
+msgstr "超级主机不存在。"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:71
 msgid "The supermaster has been deleted successfully."
@@ -457,7 +453,7 @@ msgstr "超级主服务器已成功删除。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:100
 msgid "Zones has been added successfully."
-msgstr "Zones has been added successfully."
+msgstr "区域已成功添加。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:103
 msgid "Some zone(s) could not be added."
@@ -465,7 +461,7 @@ msgstr "部分区域未能成功添加。"
 
 #: lib/Application/Service/SqlAuthenticator.php:104
 msgid "The user account is disabled."
-msgstr "The user account is disabled."
+msgstr "用户账户已禁用。"
 
 #: lib/Application/Service/SqlAuthenticator.php:143
 msgid "Authentication failed!"
@@ -478,11 +474,11 @@ msgstr "会话已过期，请重新登录。"
 
 #: lib/Application/Service/LdapAuthenticator.php:87
 msgid "Failed to connect to LDAP server!"
-msgstr "Failed to connect to LDAP server!"
+msgstr "连接到 LDAP 服务器失败！"
 
 #: lib/Application/Service/LdapAuthenticator.php:100
 msgid "Failed to bind to LDAP server!"
-msgstr "Failed to bind to LDAP server!"
+msgstr "绑定到 LDAP 服务器失败！"
 
 #: lib/Application/Service/LdapAuthenticator.php:123
 msgid "Failed to search LDAP."
@@ -497,9 +493,10 @@ msgstr "LDAP身份验证失败。"
 msgid "LDAP Authentication failed!"
 msgstr "LDAP认证失败！"
 
-#: lib/Application/Query/RecordSearch.php:112 templates/dnssec_edit_key.html:53
-#: templates/delete_user.html:54 templates/delete_perm_templ.html:13
-#: templates/users.html:77 templates/users.html:109 templates/users.html:110
+#: lib/Application/Query/RecordSearch.php:112
+#: templates/dnssec_edit_key.html:53 templates/delete_user.html:54
+#: templates/delete_perm_templ.html:13 templates/users.html:77
+#: templates/users.html:109 templates/users.html:110
 #: templates/delete_record.html:51 templates/delete_domain.html:33
 #: templates/delete_domains.html:51 templates/delete_supermaster.html:17
 #: templates/delete_zone_templ.html:13
@@ -508,9 +505,10 @@ msgstr "LDAP认证失败！"
 msgid "Yes"
 msgstr "是"
 
-#: lib/Application/Query/RecordSearch.php:112 templates/dnssec_edit_key.html:54
-#: templates/delete_user.html:55 templates/delete_perm_templ.html:14
-#: templates/users.html:79 templates/users.html:109 templates/users.html:110
+#: lib/Application/Query/RecordSearch.php:112
+#: templates/dnssec_edit_key.html:54 templates/delete_user.html:55
+#: templates/delete_perm_templ.html:14 templates/users.html:79
+#: templates/users.html:109 templates/users.html:110
 #: templates/delete_record.html:52 templates/delete_domain.html:34
 #: templates/delete_domains.html:53 templates/delete_supermaster.html:18
 #: templates/delete_zone_templ.html:15
@@ -530,7 +528,7 @@ msgstr "此模板已分配给至少一个用户。"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:131
 msgid "An empty password is not allowed"
-msgstr "An empty password is not allowed"
+msgstr "不允许空密码"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:50
 msgid ""
@@ -558,7 +556,7 @@ msgstr "获取DNSSEC密钥详情失败。"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:273
 msgid "Failed to active DNSSEC key."
-msgstr "Failed to active DNSSEC key."
+msgstr "激活 DNSSEC 密钥失败。"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:292
 msgid "Failed to deactivate DNSSEC key."
@@ -587,7 +585,7 @@ msgstr "您的内容字段没有合法值"
 #: lib/Domain/Model/ZoneTemplate.php:350 lib/Domain/Model/ZoneTemplate.php:397
 #: lib/Domain/Service/Dns.php:290
 msgid "Invalid value for prio field."
-msgstr "Invalid value for prio field."
+msgstr "优先级字段的值无效。"
 
 #: lib/Domain/Service/Dns.php:248
 msgid "The content of the SPF record is invalid"
@@ -635,11 +633,11 @@ msgstr "此记录中使用了无效字符。"
 
 #: lib/Domain/Service/Dns.php:535
 msgid "You cannot use html tags for this type of record."
-msgstr "You cannot use html tags for this type of record."
+msgstr "此类型的记录不能使用 HTML 标签。"
 
 #: lib/Domain/Service/Dns.php:563
 msgid "Backslashes must precede all quotes (\") in TXT content"
-msgstr "Backslashes must precede all quotes (\") in TXT content"
+msgstr "在 TXT 内容中，所有引号 (\\\") 前必须加反斜杠"
 
 #: lib/Domain/Service/Dns.php:585
 msgid "Add quotes around TXT record content."
@@ -653,8 +651,7 @@ msgstr "这不是有效的CNAME记录。您是否将MX或NS记录分配给了此
 #: lib/Domain/Service/Dns.php:644
 msgid ""
 "This is not a valid record. There is already exists a CNAME with this name."
-msgstr ""
-"This is not a valid record. There is already exists a CNAME with this name."
+msgstr "这不是一个有效的记录。已存在一个同名的 CNAME 记录。"
 
 #: lib/Domain/Service/Dns.php:671
 msgid ""
@@ -669,9 +666,7 @@ msgstr "不允许空的CNAME记录。"
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
-msgstr ""
-"You can not point a NS or MX record to a CNAME record. Remove or rename the "
-"CNAME record first, or take another name."
+msgstr "您不能将 NS 或 MX 记录指向 CNAME 记录。请先删除或重命名 CNAME 记录，或者使用不同的名称。"
 
 #: lib/Domain/Service/Dns.php:743
 msgid "Invalid value for content field of HINFO record."
@@ -714,22 +709,22 @@ msgstr "TTL字段值无效。应为数字。"
 #: lib/Domain/Service/DomainRecordCreator.php:56
 #, php-format
 msgid "There is no managed zone for domain: %s."
-msgstr "There is no managed zone for domain: %s."
+msgstr "域 %s 没有托管区域。"
 
 #: lib/Domain/Service/DomainRecordCreator.php:69
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
-msgstr "Adding IPv6 domain records from reverse zones is not supported yet."
+msgstr "尚不支持从反向区域添加 IPv6 域记录。"
 
 #: lib/Domain/Service/DomainRecordCreator.php:73
 #: lib/Domain/Service/DomainRecordCreator.php:82
 #: lib/Domain/Service/DomainRecordCreator.php:91
 #: lib/Domain/Service/DomainRecordCreator.php:107
 msgid "This domain record was not valid and could not be added."
-msgstr "This domain record was not valid and could not be added."
+msgstr "此域记录无效，无法添加。"
 
 #: lib/Domain/Service/DomainRecordCreator.php:103
 msgid "The domain record was successfully added."
-msgstr "The domain record was successfully added."
+msgstr "域记录已成功添加。"
 
 #: lib/Domain/Service/DnsRecord.php:370
 msgid "You do not have the permission to edit this SOA record."
@@ -741,11 +736,11 @@ msgstr "您没有权限编辑此NS记录。"
 
 #: lib/Domain/Service/DnsRecord.php:432
 msgid "You do not have the permission to add SOA record."
-msgstr "You do not have the permission to add SOA record."
+msgstr "您没有添加 SOA 记录的权限。"
 
 #: lib/Domain/Service/DnsRecord.php:439
 msgid "You do not have the permission to add NS record."
-msgstr "You do not have the permission to add NS record."
+msgstr "您没有添加 NS 记录的权限。"
 
 #: lib/Domain/Service/DnsRecord.php:529 lib/Domain/Service/DnsRecord.php:571
 #: lib/Domain/Service/DnsRecord.php:600 lib/Domain/Service/DnsRecord.php:785
@@ -997,20 +992,21 @@ msgstr "显示DS和DNSKEY"
 msgid "Edit record in zone"
 msgstr "编辑区域内的记录"
 
-#: templates/edit_record.html:34 templates/edit.html:33 templates/edit.html:181
-#: templates/edit.html:325 templates/add_record.html:34
+#: templates/edit_record.html:34 templates/edit.html:33
+#: templates/edit.html:181 templates/edit.html:325
+#: templates/add_record.html:34
 msgid "Comment"
-msgstr "Comment"
+msgstr "备注"
 
 #: templates/edit_record.html:36 templates/edit.html:185
 #: templates/search.html:188
 msgid "Disabled"
-msgstr "Disabled"
+msgstr "已禁用"
 
 #: templates/migrations.html:4 templates/migrations.html:8
 #: templates/index_list.html:66 templates/index_cards.html:138
 msgid "Migrations"
-msgstr "Migrations"
+msgstr "迁移"
 
 #: templates/edit_comment.html:12 templates/edit.html:285
 msgid "Edit comment"
@@ -1177,8 +1173,7 @@ msgstr "删除用户"
 msgid ""
 "You are about to delete a user. This user is owner for a number of zones. "
 "Please decide what to do with these zones."
-msgstr ""
-"You are about to delete a user. This user is owner for a number of zones. "
+msgstr "您即将删除一个用户。该用户是多个区域的所有者。请决定如何处理这些区域。"
 "Please decide what to do with these zones."
 
 #: templates/delete_user.html:22
@@ -1234,16 +1229,17 @@ msgstr "全名"
 msgid "Serial"
 msgstr "序列号"
 
-#: templates/list_zones.html:58 templates/edit.html:559 templates/users.html:18
-#: templates/add_zone_master.html:50 templates/bulk_registration.html:44
+#: templates/list_zones.html:58 templates/edit.html:559
+#: templates/users.html:18 templates/add_zone_master.html:50
+#: templates/bulk_registration.html:44
 msgid "Template"
 msgstr "模板"
 
-#: templates/list_zones.html:115 templates/edit.html:12 templates/edit.html:262
-#: templates/users.html:93 templates/list_zone_templ.html:59
-#: templates/edit_zone_templ.html:51 templates/search.html:100
-#: templates/search.html:209 templates/edit_perm_templ.html:6
-#: templates/list_perm_templ.html:24
+#: templates/list_zones.html:115 templates/edit.html:12
+#: templates/edit.html:262 templates/users.html:93
+#: templates/list_zone_templ.html:59 templates/edit_zone_templ.html:51
+#: templates/search.html:100 templates/search.html:209
+#: templates/edit_perm_templ.html:6 templates/list_perm_templ.html:24
 msgid "Edit"
 msgstr "编辑"
 
@@ -1459,8 +1455,7 @@ msgstr "示例："
 msgid ""
 "To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
 "name field."
-msgstr ""
-"To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
+msgstr "要在区域模板中添加子域 foo，请在名称字段中输入 foo.[ZONE]。"
 "name field."
 
 #: templates/add_zone_templ_record.html:78 templates/edit_zone_templ.html:94
@@ -1476,7 +1471,7 @@ msgid ""
 "For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
 "86400 in the content field."
 msgstr ""
-"For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
+"对于 SOA 记录，请在内容字段中输入 [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400。"
 "86400 in the content field."
 
 #: templates/delete_perm_templ.html:10
@@ -1485,15 +1480,15 @@ msgstr "删除权限模板"
 
 #: templates/edit.html:17
 msgid "Add new record"
-msgstr "Add new record"
+msgstr "添加新记录"
 
 #: templates/edit.html:37
 msgid "Add PTR"
-msgstr "Add PTR"
+msgstr "添加 PTR"
 
 #: templates/edit.html:40
 msgid "Add A/AAAA"
-msgstr "Add A/AAAA"
+msgstr "添加 A/AAAA"
 
 #: templates/edit.html:79 templates/edit.html:360
 msgid "Provide TTL"
@@ -1513,7 +1508,7 @@ msgstr "评论"
 
 #: templates/edit.html:292
 msgid "Save changes"
-msgstr "Save changes"
+msgstr "保存更改"
 
 #: templates/edit.html:301
 msgid "Unsign this zone"
@@ -1525,11 +1520,11 @@ msgstr "对该区域进行签名"
 
 #: templates/edit.html:374 templates/add_record.html:77
 msgid "Also add a PTR record in the matching zone"
-msgstr "Also add a PTR record in the matching zone"
+msgstr "同时在匹配的区域中添加 PTR 记录"
 
 #: templates/edit.html:381 templates/add_record.html:84
 msgid "Also add an A/AAAA record in the matching zone"
-msgstr "Also add an A/AAAA record in the matching zone"
+msgstr "同时在匹配的区域中添加 A/AAAA 记录"
 
 #: templates/edit.html:396
 msgid "Save as new template"
@@ -1541,7 +1536,7 @@ msgstr "模板名称"
 
 #: templates/edit.html:402
 msgid "Provide template name"
-msgstr "Provide template name"
+msgstr "提供模板名称"
 
 #: templates/edit.html:406 templates/edit_zone_templ.html:116
 msgid "Template Description"
@@ -1571,8 +1566,8 @@ msgstr "主DNS服务器的IP地址"
 msgid "LDAP"
 msgstr "LDAP"
 
-#: templates/users.html:125 templates/add_user.html:5 templates/add_user.html:9
-#: templates/header.html:75
+#: templates/users.html:125 templates/add_user.html:5
+#: templates/add_user.html:9 templates/header.html:75
 msgid "Add user"
 msgstr "添加用户"
 
@@ -1585,7 +1580,8 @@ msgid "Delete record in zone"
 msgstr "删除区域中的记录"
 
 #: templates/delete_record.html:47
-msgid "You are trying to delete a record that is needed for this zone to work."
+msgid ""
+"You are trying to delete a record that is needed for this zone to work."
 msgstr "您正试图删除此区域所需的记录。"
 
 #: templates/add_user.html:29
@@ -1682,7 +1678,7 @@ msgstr "添加区域"
 
 #: templates/delete_domain.html:12
 msgid "Delete Zone"
-msgstr "Delete Zone"
+msgstr "删除区域"
 
 #: templates/delete_domain.html:17 templates/delete_domain.html:19
 msgid "Delete zone"
@@ -1694,20 +1690,14 @@ msgid ""
 "supermaster. Deleting the zone now, will result in temporary removal only. "
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
-msgstr ""
-"You are about to delete a slave zone of which the master nameserver is a "
-"supermaster. Deleting the zone now, will result in temporary removal only. "
-"Whenever the supermaster sends a notification for this zone, it will be "
-"added again!"
+msgstr "您即将删除主名称服务器为超级主服务器的从区域。现在删除此区域只会导致临时删除。每当超级主服务器发送此区域的通知时，它将再次被添加！"
 
 #: templates/search.html:9
 msgid ""
-"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) "
-"in pattern matches any single character, a percent sign (%) matches any "
+"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_)"
+" in pattern matches any single character, a percent sign (%) matches any "
 "string of zero or more characters."
-msgstr ""
-"输入主机名或IP地址。支持SQL LIKE语法：模式中的下划线(_)匹配任意单个字符，百分"
-"号(%)匹配任意零个或多个字符。"
+msgstr "输入主机名或IP地址。支持SQL LIKE语法：模式中的下划线(_)匹配任意单个字符，百分号(%)匹配任意零个或多个字符。"
 
 #: templates/search.html:27
 msgid "Provide a keyword for your search"
@@ -1731,7 +1721,7 @@ msgstr "找到记录"
 
 #: templates/search.html:153
 msgid "Total number of records:"
-msgstr "Total number of records:"
+msgstr "记录总数："
 
 #: templates/delete_domains.html:5 templates/delete_domains.html:9
 msgid "Delete zones"
@@ -1810,7 +1800,7 @@ msgstr "已经存在配置文件，因此将跳过安装过程。"
 
 #: install/helpers/InstallStepHandler.php:71
 msgid "Error rendering template"
-msgstr "Error rendering template"
+msgstr "模板渲染错误"
 
 #: install/helpers/InstallStepHandler.php:101
 msgid "Updating database..."
@@ -1822,18 +1812,17 @@ msgstr "完成！"
 
 #: install/helpers/DatabaseHelper.php:119
 msgid "or"
-msgstr "or"
+msgstr "或"
 
 #: install/helpers/ErrorHandler.php:29
 msgid "Please select a language to proceed with the installation."
-msgstr "Please select a language to proceed with the installation."
+msgstr "请选择一种语言以继续安装。"
 
 #: install/helpers/LocaleHandler.php:87
 msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
-msgstr ""
-"设置区域设置失败。在此系统上，所选区域设置可能不受支持。请联系您的管理员。"
+msgstr "设置区域设置失败。在此系统上，所选区域设置可能不受支持。请联系您的管理员。"
 
 #~ msgid "You can not change your password as LDAP user."
 #~ msgstr "You can not change your password as LDAP user."
@@ -2055,18 +2044,14 @@ msgstr ""
 #~ msgstr "注册Email"
 
 #~ msgid ""
-#~ "You now want to give limited rights to Poweradmin so it can update the "
-#~ "data in the tables. To do this, you should create a new user and give it "
-#~ "rights to select, delete, insert, and update records in the PowerDNS "
-#~ "database."
+#~ "You now want to give limited rights to Poweradmin so it can update the data "
+#~ "in the tables. To do this, you should create a new user and give it rights "
+#~ "to select, delete, insert, and update records in the PowerDNS database."
 #~ msgstr ""
-#~ "现在您想为Poweradmin提供有限的权限，以便它可以更新表中的数据。为此，您应该"
-#~ "创建一个新用户，并为其授予在PowerDNS数据库中选择、删除、插入和更新记录的权"
-#~ "限。"
+#~ "现在您想为Poweradmin提供有限的权限，以便它可以更新表中的数据。为此，您应该创建一个新用户，并为其授予在PowerDNS数据库中选择、删除、插入和更新记录的权限。"
 
 #~ msgid ""
-#~ "After you have added the new user, proceed with this installation "
-#~ "procedure."
+#~ "After you have added the new user, proceed with this installation procedure."
 #~ msgstr "添加新用户后，请继续进行此安装过程。"
 
 #~ msgid "Supermaster does not exist."
@@ -2098,11 +2083,9 @@ msgstr ""
 #~ msgstr "这不是有效的记录。已经存在具有此名称的CNAME记录。"
 
 #~ msgid ""
-#~ "You cannot point an NS or MX record to a CNAME record. Remove or rename "
-#~ "the CNAME record first, or take another name."
-#~ msgstr ""
-#~ "您不能将NS或MX记录指向CNAME记录。请先删除或重命名CNAME记录，或者选择另一个"
-#~ "名称。"
+#~ "You cannot point an NS or MX record to a CNAME record. Remove or rename the "
+#~ "CNAME record first, or take another name."
+#~ msgstr "您不能将NS或MX记录指向CNAME记录。请先删除或重命名CNAME记录，或者选择另一个名称。"
 
 #~ msgid "Failed to activate DNSSEC key."
 #~ msgstr "激活DNSSEC密钥失败。"
@@ -2149,8 +2132,8 @@ msgstr ""
 #~ msgstr "提供主机名"
 
 #~ msgid ""
-#~ "The hostname on which the PowerDNS database resides. Frequently, this "
-#~ "will be \"localhost\"."
+#~ "The hostname on which the PowerDNS database resides. Frequently, this will "
+#~ "be \"localhost\"."
 #~ msgstr "PowerDNS数据库所在的主机名。通常为“localhost”。"
 
 #~ msgid "Provide database port"
@@ -2176,53 +2159,47 @@ msgstr ""
 
 #~ msgid ""
 #~ "You should (must!) remove the directory \"install/\" from the Poweradmin "
-#~ "root directory. You will not be able to use Poweradmin if it exists. Do "
-#~ "it now."
+#~ "root directory. You will not be able to use Poweradmin if it exists. Do it "
+#~ "now."
 #~ msgstr ""
-#~ "您应该（必须！）从Poweradmin根目录中删除目录“install/”。如果存在该目录，您"
-#~ "将无法使用Poweradmin。现在就去做吧。"
+#~ "您应该（必须！）从Poweradmin根目录中删除目录“install/”。如果存在该目录，您将无法使用Poweradmin。现在就去做吧。"
 
 #~ msgid ""
-#~ "After you have removed the directory, you can login to <a href=\"../"
-#~ "index.php\">Poweradmin</a>."
+#~ "After you have removed the directory, you can login to <a "
+#~ "href=\"../index.php\">Poweradmin</a>."
 #~ msgstr "删除目录后，您可以登录到<a href=\"../index.php\">Poweradmin</a>。"
 
 #~ msgid "You should now create the file "
 #~ msgstr "现在您应该创建文件“"
 
 #~ msgid ""
-#~ "in the Poweradmin root directory yourself. It should contain the "
-#~ "following few lines:"
+#~ "in the Poweradmin root directory yourself. It should contain the following "
+#~ "few lines:"
 #~ msgstr "在Poweradmin根目录中。文件应包含以下几行内容："
 
 #~ msgid ""
-#~ "This installer expects you to have a PowerDNS database accessible from "
-#~ "this server. This installer also expects you to have never run Poweradmin "
-#~ "before, or that you want to overwrite the Poweradmin part of the "
-#~ "database. If you have had Poweradmin running before, any data in the "
-#~ "following tables will be destroyed: perm_items, perm_templ, "
-#~ "perm_templ_items, users, and zones. This installer will, of course, not "
-#~ "touch the data in the PowerDNS tables of the database. However, it is "
-#~ "recommended that you create a backup of your database before proceeding."
+#~ "This installer expects you to have a PowerDNS database accessible from this "
+#~ "server. This installer also expects you to have never run Poweradmin before,"
+#~ " or that you want to overwrite the Poweradmin part of the database. If you "
+#~ "have had Poweradmin running before, any data in the following tables will be"
+#~ " destroyed: perm_items, perm_templ, perm_templ_items, users, and zones. This"
+#~ " installer will, of course, not touch the data in the PowerDNS tables of the"
+#~ " database. However, it is recommended that you create a backup of your "
+#~ "database before proceeding."
 #~ msgstr ""
-#~ "此安装程序预期您可以从此服务器访问PowerDNS数据库。此安装程序还预期您以前从"
-#~ "未运行过Poweradmin，或者您希望覆盖数据库的Poweradmin部分。如果以前已经运行"
-#~ "过Poweradmin，则以下表中的任何数据都将被销毁：perm_items、perm_templ、"
-#~ "perm_templ_items、users和zones。当然，此安装程序不会触及数据库中PowerDNS表"
-#~ "的数据。但是，建议您在继续之前创建数据库备份。"
+#~ "此安装程序预期您可以从此服务器访问PowerDNS数据库。此安装程序还预期您以前从未运行过Poweradmin，或者您希望覆盖数据库的Poweradmin部分。如果以前已经运行过Poweradmin，则以下表中的任何数据都将被销毁：perm_items、perm_templ、perm_templ_items、users和zones。当然，此安装程序不会触及数据库中PowerDNS表的数据。但是，建议您在继续之前创建数据库备份。"
 
 #~ msgid ""
 #~ "The alternative for this installer is a manual installation. Refer to the "
 #~ "poweradmin.org website if you want to go down that road."
-#~ msgstr ""
-#~ "此安装程序的替代方案是手动安装。如果您想选择手动安装，请参阅poweradmin.org"
-#~ "网站。"
+#~ msgstr "此安装程序的替代方案是手动安装。如果您想选择手动安装，请参阅poweradmin.org网站。"
 
 #~ msgid ""
 #~ "Finally, if you see any errors during the installation process, a problem "
-#~ "report would be appreciated. You can report problems (and ask for help) "
-#~ "on the <a href=\"https://github.com/poweradmin/poweradmin/"
-#~ "issues\target=\"blank\">poweradmin</a> issues."
+#~ "report would be appreciated. You can report problems (and ask for help) on "
+#~ "the <a "
+#~ "href=\"https://github.com/poweradmin/poweradmin/issues\target=\"blank\">poweradmin</a>"
+#~ " issues."
 #~ msgstr ""
 #~ "最后，如果在安装过程中遇到任何错误，我们将非常感谢您报告问题。您可以在<a "
 #~ "href=\"https://github.com/poweradmin/poweradmin/issues\" "
