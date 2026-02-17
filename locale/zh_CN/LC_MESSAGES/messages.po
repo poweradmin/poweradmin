@@ -668,7 +668,7 @@ msgstr "未提供记录。"
 
 #: lib/Application/Controller/AddRecordController.php:394
 msgid "Zone not found."
-msgstr "Zone not found."
+msgstr "未找到区域。"
 
 #: lib/Application/Controller/AddRecordController.php:431
 #, php-format

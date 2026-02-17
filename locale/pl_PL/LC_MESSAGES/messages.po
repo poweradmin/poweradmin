@@ -727,7 +727,7 @@ msgstr "Nie podano żadnych rekordów."
 
 #: lib/Application/Controller/AddRecordController.php:394
 msgid "Zone not found."
-msgstr "Zone not found."
+msgstr "Nie znaleziono strefy."
 
 #: lib/Application/Controller/AddRecordController.php:431
 #, php-format

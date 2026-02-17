@@ -671,7 +671,7 @@ msgstr "レコードが提供されていません。"
 
 #: lib/Application/Controller/AddRecordController.php:394
 msgid "Zone not found."
-msgstr "Zone not found."
+msgstr "ゾーンが見つかりません。"
 
 #: lib/Application/Controller/AddRecordController.php:431
 #, php-format
