@@ -19,8 +19,9 @@ msgstr ""
 
 #: lib/AppInitializer.php:82
 msgid ""
-"No configuration file found. Please use the <a href=\"install/\">installer</"
-"a> to create one, or create a config/settings.php file manually."
+"No configuration file found. Please use the <a "
+"href=\"install/\">installer</a> to create one, or create a "
+"config/settings.php file manually."
 msgstr ""
 "Yapılandırma dosyası bulunamadı. Lütfen bir tane oluşturmak için <a "
 "href=\"install/\">yükleyiciyi</a> kullanın veya config/settings.php "
@@ -78,8 +79,8 @@ msgstr "Silme için seçilen kayıt yok."
 
 #: lib/Application/Controller/DeleteRecordsController.php:180
 msgid ""
-"The record has been deleted successfully. Any corresponding PTR records were "
-"also removed."
+"The record has been deleted successfully. Any corresponding PTR records were"
+" also removed."
 msgstr "Kayıt başarıyla silindi. İlgili PTR kayıtları da kaldırıldı."
 
 #: lib/Application/Controller/DeleteRecordsController.php:182
@@ -95,7 +96,8 @@ msgstr "Hiçbir kayıt silinemedi. Lütfen izinleri kontrol edin."
 
 #: lib/Application/Controller/DeleteRecordsController.php:234
 msgid ""
-"No valid records selected for deletion or you lack permission to delete them."
+"No valid records selected for deletion or you lack permission to delete "
+"them."
 msgstr "Silme için geçerli kayıt seçilmedi veya bunları silme yetkiniz yok."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:91
@@ -177,16 +179,16 @@ msgstr "Kayıt başarıyla silindi."
 
 #: lib/Application/Controller/DeleteRecordController.php:204
 msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
+"The record and its corresponding PTR and A/AAAA records were deleted but the"
+" comment was preserved because similar records exist."
 msgstr ""
 "Kayıt ve buna karşılık gelen PTR ile A/AAAA kayıtları silindi ancak benzer "
 "kayıtlar mevcut olduğu için yorum korundu."
 
 #: lib/Application/Controller/DeleteRecordController.php:206
 msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
+"The record and its corresponding PTR record were deleted but the comment was"
+" preserved because similar records exist."
 msgstr ""
 "Kayıt ve ilgili PTR kaydı silindi ancak benzer kayıtlar mevcut olduğu için "
 "yorum korundu."
@@ -201,8 +203,8 @@ msgstr ""
 
 #: lib/Application/Controller/DeleteRecordController.php:210
 msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
+"The record was deleted but the comment was preserved because similar records"
+" exist."
 msgstr "Kayıt silindi ancak benzer kayıtlar var olduğu için yorum korundu."
 
 #: lib/Domain/Service/Dns/RecordManager.php:225
@@ -258,8 +260,8 @@ msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
 msgstr ""
-"Doğrulama kodu gönderilemedi. Lütfen daha sonra tekrar deneyin veya uygulama "
-"tabanlı kimlik doğrulamayı kullanın."
+"Doğrulama kodu gönderilemedi. Lütfen daha sonra tekrar deneyin veya uygulama"
+" tabanlı kimlik doğrulamayı kullanın."
 
 #: lib/Application/Controller/MfaSetupController.php:263
 msgid "MFA has been enabled with email verification."
@@ -278,7 +280,8 @@ msgid "MFA must be enabled to regenerate recovery codes."
 msgstr "Kurtarma kodlarını yeniden oluşturmak için MFA etkin olmalıdır."
 
 #: lib/Application/Controller/MfaSetupController.php:310
-msgid "Recovery codes have been regenerated. Please save them in a safe place."
+msgid ""
+"Recovery codes have been regenerated. Please save them in a safe place."
 msgstr ""
 "Kurtarma kodları yeniden oluşturuldu. Lütfen bunları güvenli bir yerde "
 "saklayın."
@@ -451,7 +454,8 @@ msgid "You do not have permission to create new zone templates."
 msgstr "Yeni zon şablonları oluşturma izniniz yok."
 
 #: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:803
-msgid "Zone template with this name already exists, please choose another one."
+msgid ""
+"Zone template with this name already exists, please choose another one."
 msgstr "Bu adda bir bölge şablonu zaten mevcut, lütfen başka bir tane seçin."
 
 #: lib/Application/Controller/EditZoneTemplController.php:264
@@ -664,11 +668,11 @@ msgstr "Bir hata oluştu. Lütfen tekrar deneyin."
 
 #: lib/Application/Controller/MfaVerifyController.php:258
 msgid ""
-"Email verification is not available because mail service is disabled. Please "
-"use a recovery code."
+"Email verification is not available because mail service is disabled. Please"
+" use a recovery code."
 msgstr ""
-"Mail servisi devre dışı olduğu için e-posta doğrulaması mevcut değil. Lütfen "
-"kurtarma kodu kullanın."
+"Mail servisi devre dışı olduğu için e-posta doğrulaması mevcut değil. Lütfen"
+" kurtarma kodu kullanın."
 
 #: lib/Application/Controller/MfaVerifyController.php:268
 msgid "A new verification code has been sent to your email."
@@ -1008,8 +1012,8 @@ msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
 msgstr ""
-"PowerDNS API özelliği yapılandırılmamış. Lütfen sistem yapılandırmasında API "
-"URL ve anahtarını ayarlayın."
+"PowerDNS API özelliği yapılandırılmamış. Lütfen sistem yapılandırmasında API"
+" URL ve anahtarını ayarlayın."
 
 #: lib/Application/Controller/ExampleController.php:114
 msgid "You do not have the permission to access this feature."
@@ -1266,7 +1270,8 @@ msgstr "İçerik alanınız geçerli bir değere sahip değil."
 
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:76
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
-msgstr "MX/SRV kayıtları için öncelik 0 ile 65535 arasında bir sayı olmalıdır."
+msgstr ""
+"MX/SRV kayıtları için öncelik 0 ile 65535 arasında bir sayı olmalıdır."
 
 #: lib/Domain/Model/ZoneTemplate.php:534
 msgid "Error updating zone template record: "
@@ -1359,8 +1364,8 @@ msgstr "IPSECKEY kayıtları için öncelik alanı 0 veya boş olmalıdır"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:122
 msgid ""
-"IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
-"keying material (RFC 4025 Section 4)."
+"IPSECKEY records should be used with DNSSEC to ensure secure transmission of"
+" keying material (RFC 4025 Section 4)."
 msgstr ""
 "IPSECKEY kayıtları, anahtar materyalinin güvenli aktarımını sağlamak için "
 "DNSSEC ile kullanılmalıdır (RFC 4025 Bölüm 4)."
@@ -1375,8 +1380,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
-"When using domain name gateways, ensure both forward and reverse DNS records "
-"exist and are properly secured with DNSSEC."
+"When using domain name gateways, ensure both forward and reverse DNS records"
+" exist and are properly secured with DNSSEC."
 msgstr ""
 "Domain adı ağ geçitlerini kullanırken, hem ileri hem de ters DNS "
 "kayıtlarının mevcut olduğundan ve DNSSEC ile uygun şekilde güvenceye "
@@ -1391,8 +1396,8 @@ msgid ""
 "IPSECKEY record must contain precedence, gateway type, algorithm, gateway, "
 "and public key."
 msgstr ""
-"IPSECKEY kaydı öncelik, ağ geçidi türü, algoritma, ağ geçidi ve açık anahtar "
-"içermelidir."
+"IPSECKEY kaydı öncelik, ağ geçidi türü, algoritma, ağ geçidi ve açık anahtar"
+" içermelidir."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:175
 msgid "IPSECKEY precedence must be a number between 0 and 255."
@@ -1403,8 +1408,8 @@ msgid ""
 "IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 "
 "(Domain name)"
 msgstr ""
-"IPSECKEY ağ geçidi türü 0 (Ağ geçidi yok), 1 (IPv4), 2 (IPv6) veya 3 (Domain "
-"adı) olmalıdır"
+"IPSECKEY ağ geçidi türü 0 (Ağ geçidi yok), 1 (IPv4), 2 (IPv6) veya 3 (Domain"
+" adı) olmalıdır"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:187
 msgid ""
@@ -1483,31 +1488,30 @@ msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
 msgstr ""
-"2. TLSA kayıtları _$port._$protocol.$hostname adresinde bulunmalıdır; burada "
-"$port, $protocol ve $hostname SRV aramasının hedefinden alınır"
+"2. TLSA kayıtları _$port._$protocol.$hostname adresinde bulunmalıdır; burada"
+" $port, $protocol ve $hostname SRV aramasının hedefinden alınır"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
-msgid ""
-"3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
+msgid "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
 msgstr ""
-"3. Hem SRV hem de TLSA kayıtları \"güvenli\" DNSSEC doğrulama durumuna sahip "
-"olmalıdır"
+"3. Hem SRV hem de TLSA kayıtları \"güvenli\" DNSSEC doğrulama durumuna sahip"
+" olmalıdır"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
-"TLSA record name should typically follow the format _port._protocol.hostname "
-"(e.g., _443._tcp.www.example.com)."
+"TLSA record name should typically follow the format _port._protocol.hostname"
+" (e.g., _443._tcp.www.example.com)."
 msgstr ""
-"TLSA kayıt adı genellikle _port._protocol.hostname formatını takip etmelidir "
-"(örn. _443._tcp.www.example.com)."
+"TLSA kayıt adı genellikle _port._protocol.hostname formatını takip etmelidir"
+" (örn. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
-"TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
-"and sctp."
+"TLSA record is using a non-standard protocol. Common protocols are tcp, udp,"
+" and sctp."
 msgstr ""
-"TLSA kaydı standart olmayan bir protokol kullanıyor. Yaygın protokoller tcp, "
-"udp ve sctp'dir."
+"TLSA kaydı standart olmayan bir protokol kullanıyor. Yaygın protokoller tcp,"
+" udp ve sctp'dir."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:143
 msgid ""
@@ -1527,11 +1531,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
-"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
-"properly configured for DoT."
+"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is"
+" properly configured for DoT."
 msgstr ""
-"Bu DNS over TLS için bir TLSA kaydı gibi görünüyor. DNS sunucunuzun DoT için "
-"uygun şekilde yapılandırıldığından emin olun."
+"Bu DNS over TLS için bir TLSA kaydı gibi görünüyor. DNS sunucunuzun DoT için"
+" uygun şekilde yapılandırıldığından emin olun."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:153
 msgid ""
@@ -1550,17 +1554,18 @@ msgstr ""
 "DNSSEC ile imzalandığından emin olun (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
-msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
+msgid ""
+"This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
 msgstr ""
 "Bu S/MIME sertifikaları için bir SMIMEA kaydı (RFC 8162) gibi görünüyor."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
-"SMIMEA records use the same format as TLSA but associate S/MIME certificates "
-"with email addresses."
+"SMIMEA records use the same format as TLSA but associate S/MIME certificates"
+" with email addresses."
 msgstr ""
-"SMIMEA kayıtları TLSA ile aynı formatı kullanır ancak S/MIME sertifikalarını "
-"e-posta adresleriyle ilişkilendirir."
+"SMIMEA kayıtları TLSA ile aynı formatı kullanır ancak S/MIME sertifikalarını"
+" e-posta adresleriyle ilişkilendirir."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:162
 msgid ""
@@ -1580,7 +1585,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
-"Invalid value for priority field. TLSA records must have priority value of 0."
+"Invalid value for priority field. TLSA records must have priority value of "
+"0."
 msgstr ""
 "Öncelik alanı için geçersiz değer. TLSA kayıtları 0 öncelik değerine sahip "
 "olmalıdır."
@@ -1610,13 +1616,13 @@ msgid ""
 "Usage 1 (PKIX-EE) depends on both DANE and traditional PKIX validation. May "
 "break when certificates expire."
 msgstr ""
-"Kullanım 1 (PKIX-EE) hem DANE hem de geleneksel PKIX doğrulamasına bağlıdır. "
-"Sertifikalar sona erdiğinde bozulabilir."
+"Kullanım 1 (PKIX-EE) hem DANE hem de geleneksel PKIX doğrulamasına bağlıdır."
+" Sertifikalar sona erdiğinde bozulabilir."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:270
 msgid ""
-"Usage 2 (DANE-TA) requires proper trust anchor management and may break when "
-"certificates expire."
+"Usage 2 (DANE-TA) requires proper trust anchor management and may break when"
+" certificates expire."
 msgstr ""
 "Kullanım 2 (DANE-TA) uygun güven çapası yönetimi gerektirir ve sertifikalar "
 "sona erdiğinde bozulabilir."
@@ -1634,12 +1640,13 @@ msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
 msgstr ""
-"RFC 7671 en sağlam yapılandırma olarak usage=3 (DANE-EE), selector=1 (SPKI), "
-"matching-type=1 (SHA-256) önerir."
+"RFC 7671 en sağlam yapılandırma olarak usage=3 (DANE-EE), selector=1 (SPKI),"
+" matching-type=1 (SHA-256) önerir."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
-"TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
+"TLSA selector field must be 0 (Full certificate) or 1 "
+"(SubjectPublicKeyInfo)."
 msgstr ""
 "TLSA seçici alanı 0 (Tam sertifika) veya 1 (SubjectPublicKeyInfo) olmalıdır."
 
@@ -1664,8 +1671,8 @@ msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
 msgstr ""
-"Eşleştirme türü 0 (Tam eşleşme) önerilmez. SHA-256 (1) daha iyi uyumluluk ve "
-"güvenlik sağlar."
+"Eşleştirme türü 0 (Tam eşleşme) önerilmez. SHA-256 (1) daha iyi uyumluluk ve"
+" güvenlik sağlar."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
@@ -1705,8 +1712,8 @@ msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
 "TTL as the SOA minimum TTL field."
 msgstr ""
-"RFC 5155 ve RFC 9077'ye göre, NSEC3PARAM kayıtları SOA minimum TTL alanı ile "
-"aynı TTL'ye sahip olmalıdır."
+"RFC 5155 ve RFC 9077'ye göre, NSEC3PARAM kayıtları SOA minimum TTL alanı ile"
+" aynı TTL'ye sahip olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:146
 msgid ""
@@ -1718,24 +1725,24 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
-"Manually editing NSEC3PARAM records is not recommended as they are typically "
-"generated automatically by DNSSEC-aware nameservers."
+"Manually editing NSEC3PARAM records is not recommended as they are typically"
+" generated automatically by DNSSEC-aware nameservers."
 msgstr ""
 "NSEC3PARAM kayıtlarını manuel olarak düzenlemek önerilmez çünkü genellikle "
 "DNSSEC destekli ad sunucuları tarafından otomatik olarak oluşturulur."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:148
 msgid ""
-"NSEC3PARAM records indicate to authoritative servers which parameters to use "
-"for NSEC3-based authenticated denial of existence."
+"NSEC3PARAM records indicate to authoritative servers which parameters to use"
+" for NSEC3-based authenticated denial of existence."
 msgstr ""
 "NSEC3PARAM kayıtları yetkili sunuculara NSEC3 tabanlı kimlik doğrulamalı "
 "varlık reddinde hangi parametrelerin kullanılacağını belirtir."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:149
 msgid ""
-"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
-"generated with the same parameters."
+"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be "
+"re-generated with the same parameters."
 msgstr ""
 "NSEC3 parametreleri güncellenirken, hem NSEC3 hem de NSEC3PARAM kayıtları "
 "aynı parametrelerle yeniden oluşturulmalıdır."
@@ -1745,8 +1752,8 @@ msgid ""
 "NSEC3PARAM record must contain exactly hash algorithm, flags, iterations, "
 "and salt."
 msgstr ""
-"NSEC3PARAM kaydı tam olarak hash algoritması, bayraklar, yinelemeler ve salt "
-"içermelidir."
+"NSEC3PARAM kaydı tam olarak hash algoritması, bayraklar, yinelemeler ve salt"
+" içermelidir."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:187
 msgid "NSEC3PARAM hash algorithm must be 1 (SHA-1)."
@@ -1758,8 +1765,8 @@ msgstr "NSEC3PARAM bayrakları 0 ile 255 arasında olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:224
 msgid ""
-"Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover "
-"unsigned delegations."
+"Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover"
+" unsigned delegations."
 msgstr ""
 "Bayrak değeri 1 Opt-Out'un kullanımda olduğunu gösterir. Bu NSEC3 "
 "kayıtlarının imzasız delegasyonları kapsayabileceği anlamına gelir."
@@ -1830,8 +1837,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:111
 msgid ""
-"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
-"not a formal IETF standard."
+"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol,"
+" not a formal IETF standard."
 msgstr ""
 "NOT: LP kayıt türü RFC 6742'de resmi bir IETF standardı değil, deneysel bir "
 "protokol olarak tanımlanır."
@@ -1846,8 +1853,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
-"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
-"Section 3.4)."
+"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742"
+" Section 3.4)."
 msgstr ""
 "LP kayıtları ILNP yetenekli olmayan düğümler için mevcut OLMAMALIDIR (RFC "
 "6742 Bölüm 3.4)."
@@ -1930,8 +1937,8 @@ msgid ""
 "NOTE: The LOC record type is defined in RFC 1876 as an experimental "
 "protocol, not a formal IETF standard."
 msgstr ""
-"NOT: LOC kayıt türü RFC 1876'da resmi bir IETF standardı değil, deneysel bir "
-"protokol olarak tanımlanır."
+"NOT: LOC kayıt türü RFC 1876'da resmi bir IETF standardı değil, deneysel bir"
+" protokol olarak tanımlanır."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:119
 msgid ""
@@ -1959,12 +1966,12 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:135
 msgid ""
-"Default precision values detected (1m size, 10000m horizontal precision, 10m "
-"vertical precision). Consider using more accurate values if you have them."
+"Default precision values detected (1m size, 10000m horizontal precision, 10m"
+" vertical precision). Consider using more accurate values if you have them."
 msgstr ""
 "Varsayılan hassasiyet değerleri tespit edildi (1m boyut, 10000m yatay "
-"hassasiyet, 10m dikey hassasiyet). Eğer varsa daha doğru değerler kullanmayı "
-"düşünün."
+"hassasiyet, 10m dikey hassasiyet). Eğer varsa daha doğru değerler kullanmayı"
+" düşünün."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:159
 msgid "Latitude degrees must be between 0 and 90."
@@ -2007,8 +2014,8 @@ msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 msgstr ""
-"Geçersiz LOC kayıt formatı. Format şöyle olmalıdır: d1 [m1 [s1]] {\"N\"|"
-"\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
+"Geçersiz LOC kayıt formatı. Format şöyle olmalıdır: d1 [m1 [s1]] "
+"{\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
 "[vp[\"m\"]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
@@ -2025,8 +2032,8 @@ msgstr "RKEY kayıtları için öncelik alanı 0 veya boş olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:145
 msgid ""
-"RKEY records should be used with caution as they are not widely supported by "
-"DNS servers and resolvers."
+"RKEY records should be used with caution as they are not widely supported by"
+" DNS servers and resolvers."
 msgstr ""
 "RKEY kayıtları DNS sunucuları ve çözümleyiciler tarafından yaygın olarak "
 "desteklenmediği için dikkatle kullanılmalıdır."
@@ -2039,7 +2046,8 @@ msgstr "RKEY kayıt içeriği boş olamaz."
 msgid ""
 "RKEY record must contain flags, protocol, algorithm, and public key data."
 msgstr ""
-"RKEY kaydı bayraklar, protokol, algoritma ve açık anahtar verisi içermelidir."
+"RKEY kaydı bayraklar, protokol, algoritma ve açık anahtar verisi "
+"içermelidir."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:181
 msgid "RKEY flags field must be a numeric value."
@@ -2047,8 +2055,8 @@ msgstr "RKEY bayraklar alanı sayısal bir değer olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:189
 msgid ""
-"Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
-"SEP)."
+"Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key +"
+" SEP)."
 msgstr ""
 "Olağandışı bayraklar değeri. Yaygın değerler 0, 256 (Zon Anahtarı) veya 257 "
 "(Zon Anahtarı + SEP)'dir."
@@ -2105,11 +2113,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
-"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
-"stronger algorithm."
+"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a"
+" stronger algorithm."
 msgstr ""
-"Algoritma 5 (RSA/SHA-1) güvensiz kabul edilir ve daha güçlü bir algoritmayla "
-"değiştirilmelidir."
+"Algoritma 5 (RSA/SHA-1) güvensiz kabul edilir ve daha güçlü bir algoritmayla"
+" değiştirilmelidir."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:230
 msgid ""
@@ -2163,8 +2171,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid ""
-"CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
-"SHA-256) or later."
+"CRITICAL: This algorithm is considered insecure. Use algorithm 8 "
+"(RSA/SHA-256) or later."
 msgstr ""
 "KRİTİK: Bu algoritma güvensiz kabul edilir. Algoritma 8 (RSA/SHA-256) veya "
 "sonrasını kullanın."
@@ -2259,8 +2267,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:84
 msgid ""
-"Note: NID records are used for the ILNP protocol, which is experimental (RFC "
-"6740, 6742)."
+"Note: NID records are used for the ILNP protocol, which is experimental (RFC"
+" 6740, 6742)."
 msgstr ""
 "Not: NID kayıtları deneysel olan ILNP protokolü için kullanılır (RFC 6740, "
 "6742)."
@@ -2380,8 +2388,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
-"NSEC records enable \"zone walking\", allowing enumeration of all names in a "
-"zone, which may be a privacy concern."
+"NSEC records enable \"zone walking\", allowing enumeration of all names in a"
+" zone, which may be a privacy concern."
 msgstr ""
 "NSEC kayıtları \"zon yürüme\"yi etkinleştirir, zondaki tüm adların "
 "numaralandırılmasına izin verir, bu gizlilik endişesi olabilir."
@@ -2424,9 +2432,9 @@ msgstr "NSEC kaydı geçerli bir sonraki domain adı içermelidir."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:173
 msgid ""
-"The next domain name field must be the next owner name in canonical ordering "
-"of the zone. Canonical ordering is case-insensitive and sorts by labels from "
-"right to left."
+"The next domain name field must be the next owner name in canonical ordering"
+" of the zone. Canonical ordering is case-insensitive and sorts by labels "
+"from right to left."
 msgstr ""
 "Sonraki domain adı alanı zonun kanonik sıralamasında sonraki sahip adı "
 "olmalıdır. Kanonik sıralama büyük-küçük harf duyarsızdır ve etiketleri "
@@ -2442,11 +2450,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:194
 msgid ""
-"Type bit maps should be present to indicate which RR types exist at the NSEC "
-"owner name. An empty type bitmap is unusual."
+"Type bit maps should be present to indicate which RR types exist at the NSEC"
+" owner name. An empty type bitmap is unusual."
 msgstr ""
-"NSEC sahip adında hangi RR türlerinin mevcut olduğunu belirtmek için tür bit "
-"haritalası bulunmalıdır. Boş tür bit haritası olağandışıdır."
+"NSEC sahip adında hangi RR türlerinin mevcut olduğunu belirtmek için tür bit"
+" haritalası bulunmalıdır. Boş tür bit haritası olağandışıdır."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:324
 #, php-format
@@ -2505,8 +2513,9 @@ msgid ""
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
 msgstr ""
-"OPENPGPKEY kayıtları genellikle manuel olarak oluşturulmaktansa --print-dane-"
-"records seçeneği ile GnuPG gibi özel araçlar kullanılarak oluşturulmalıdır."
+"OPENPGPKEY kayıtları genellikle manuel olarak oluşturulmaktansa --print-"
+"dane-records seçeneği ile GnuPG gibi özel araçlar kullanılarak "
+"oluşturulmalıdır."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
@@ -2568,11 +2577,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
-"OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
-"by all email clients or OpenPGP implementations."
+"OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported"
+" by all email clients or OpenPGP implementations."
 msgstr ""
-"OPENPGPKEY kayıtları RFC 7929'a göre DENEYSELİDİR ve tüm e-posta istemcileri "
-"veya OpenPGP uygulamaları tarafından desteklenmeyebilir."
+"OPENPGPKEY kayıtları RFC 7929'a göre DENEYSELİDİR ve tüm e-posta istemcileri"
+" veya OpenPGP uygulamaları tarafından desteklenmeyebilir."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:260
 msgid ""
@@ -2584,8 +2593,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
-"To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
-"print-dane-records option to ensure correct format and content."
+"To create OPENPGPKEY records, use specialized tools like GnuPG with the "
+"--print-dane-records option to ensure correct format and content."
 msgstr ""
 "OPENPGPKEY kayıtları oluşturmak için doğru format ve içeriği sağlamak "
 "amacıyla --print-dane-records seçeneği ile GnuPG gibi özel araçlar kullanın."
@@ -2605,8 +2614,8 @@ msgid ""
 msgstr ""
 "Uyarı: HINFO kayıtları saldırganlar için faydalı olabilecek ana bilgisayar "
 "donanımı ve yazılımı hakkında potansiyel olarak hassas bilgileri ortaya "
-"çıkarır. Herkese açık DNS'te kullanmadan önce güvenlik etkilerini göz önünde "
-"bulundurun."
+"çıkarır. Herkese açık DNS'te kullanmadan önce güvenlik etkilerini göz önünde"
+" bulundurun."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
@@ -2634,8 +2643,8 @@ msgstr "HINFO içinde geçersiz tırnak işaretleri "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:258
 msgid ""
-"CPU type does not contain any standard values. Consider using a standard CPU "
-"type for better interoperability."
+"CPU type does not contain any standard values. Consider using a standard CPU"
+" type for better interoperability."
 msgstr ""
 "CPU türü hiçbir standart değer içermiyor. Daha iyi birlikte çalışabilirlik "
 "için standart bir CPU türü kullanmayı düşünün."
@@ -2691,8 +2700,8 @@ msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
 msgstr ""
-"TSIG kaydı en azından boşluklarla ayrılmış algorithm-name, timestamp, fudge, "
-"mac, original-id, error ve other-len içermelidir."
+"TSIG kaydı en azından boşluklarla ayrılmış algorithm-name, timestamp, fudge,"
+" mac, original-id, error ve other-len içermelidir."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
@@ -2713,7 +2722,8 @@ msgstr "TSIG fudge negatif olmayan bir tam sayı olmalıdır."
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
 msgstr ""
-"TSIG MAC geçerli bir base64 kodlanmış string veya onaltılık string olmalıdır."
+"TSIG MAC geçerli bir base64 kodlanmış string veya onaltılık string "
+"olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:232
 msgid ""
@@ -2749,8 +2759,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
-"TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
-"is outside the allowed time window. Check clock synchronization."
+"TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record"
+" is outside the allowed time window. Check clock synchronization."
 msgstr ""
 "TSIG hata kodu 18 (BADTIME) TSIG kaydındaki zaman damgasının izin verilen "
 "zaman aralığının dışında olduğunu gösterir. Saat senkronizasyonunu kontrol "
@@ -2821,7 +2831,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
-msgstr "ZONEMD kayıtları zon zirvesine (SOA kaydıyla aynı) yerleştirilmelidir."
+msgstr ""
+"ZONEMD kayıtları zon zirvesine (SOA kaydıyla aynı) yerleştirilmelidir."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:112
 msgid ""
@@ -2857,8 +2868,8 @@ msgid ""
 "SHA-512 (algorithm 2) provides stronger security but requires more "
 "processing resources than SHA-384."
 msgstr ""
-"SHA-512 (algoritma 2) daha güçlü güvenlik sağlar ancak SHA-384'ün daha fazla "
-"işleme kaynağı gerektirir."
+"SHA-512 (algoritma 2) daha güçlü güvenlik sağlar ancak SHA-384'ün daha fazla"
+" işleme kaynağı gerektirir."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:133
 msgid ""
@@ -2881,8 +2892,8 @@ msgid ""
 "ZONEMD serial must be a number between 0 and 4294967295 (32-bit unsigned "
 "integer)."
 msgstr ""
-"ZONEMD serial 0 ile 4294967295 arasında bir sayı olmalıdır (32-bit işaretsiz "
-"tam sayı)."
+"ZONEMD serial 0 ile 4294967295 arasında bir sayı olmalıdır (32-bit işaretsiz"
+" tam sayı)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:178
 msgid "ZONEMD scheme must be a number between 0 and 255."
@@ -2922,8 +2933,8 @@ msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
 msgstr ""
-"SHA-384 (algoritma 1) için ZONEMD özeti tam olarak 96 onaltılık karakter (48 "
-"oktet) olmalıdır."
+"SHA-384 (algoritma 1) için ZONEMD özeti tam olarak 96 onaltılık karakter (48"
+" oktet) olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
@@ -2951,8 +2962,8 @@ msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
 msgstr ""
-"CERT kaydı boşluklarla ayrılmış type, key-tag, algorithm ve certificate-data "
-"içermelidir."
+"CERT kaydı boşluklarla ayrılmış type, key-tag, algorithm ve certificate-data"
+" içermelidir."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
@@ -3016,8 +3027,8 @@ msgid ""
 "CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
 "0-9, +, /, =)."
 msgstr ""
-"CERT sertifika verisi sadece geçerli base64 karakterleri (A-Z, a-z, 0-9, "
-"+, /, =) içermelidir."
+"CERT sertifika verisi sadece geçerli base64 karakterleri (A-Z, a-z, 0-9, +, "
+"/, =) içermelidir."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:285
 msgid ""
@@ -3092,11 +3103,11 @@ msgstr "Geçersiz anahtar etiketi. 1 ile 65535 arasında bir sayı olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:166
 msgid ""
-"The key tag field does not uniquely identify a DNSKEY. More than one key can "
-"have the same key tag."
+"The key tag field does not uniquely identify a DNSKEY. More than one key can"
+" have the same key tag."
 msgstr ""
-"Anahtar etiketi alanı bir DNSKEY'i benzersiz olarak tanımlamaz. Birden fazla "
-"anahtar aynı anahtar etiketine sahip olabilir."
+"Anahtar etiketi alanı bir DNSKEY'i benzersiz olarak tanımlamaz. Birden fazla"
+" anahtar aynı anahtar etiketine sahip olabilir."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
@@ -3105,7 +3116,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "Geçersiz özet türü. 1 (SHA-1), 2 (SHA-256) veya 4 (SHA-384) olmalıdır."
+msgstr ""
+"Geçersiz özet türü. 1 (SHA-1), 2 (SHA-256) veya 4 (SHA-384) olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
@@ -3120,11 +3132,13 @@ msgid "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
 msgstr "SHA-1 için geçersiz özet uzunluğu. 40 onaltılık karakter olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
-msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
+msgid ""
+"Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
 msgstr "SHA-256 için geçersiz özet uzunluğu. 64 onaltılık karakter olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
-msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
+msgid ""
+"Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
 msgstr "SHA-384 için geçersiz özet uzunluğu. 96 onaltılık karakter olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
@@ -3247,13 +3261,12 @@ msgstr "DoH yolu eğik çizgi (/) ile başlamalıdır."
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:296
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr ""
-"Parametre \"%s\" zorunlu olarak işaretlenmiş ancak kayıtta yer almıyor."
+msgstr "Parametre \"%s\" zorunlu olarak işaretlenmiş ancak kayıtta yer almıyor."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
-"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
-"non-zero TTL may cause issues with older DNS implementations."
+"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current"
+" non-zero TTL may cause issues with older DNS implementations."
 msgstr ""
 "RFC 2930 önbelleklemeyi önlemek için TKEY kayıtlarının TTL=0'a sahip "
 "olmasını gerektirir. Mevcut sıfır olmayan TTL eski DNS uygulamalarında "
@@ -3268,8 +3281,8 @@ msgid ""
 "TKEY records are not for DNS data authentication, they are for key "
 "establishment between DNS servers/resolvers."
 msgstr ""
-"TKEY kayıtları DNS veri kimlik doğrulaması için değil, DNS sunucuları/"
-"çözümleyiciler arasında anahtar kurulumu içindir."
+"TKEY kayıtları DNS veri kimlik doğrulaması için değil, DNS "
+"sunucuları/çözümleyiciler arasında anahtar kurulumu içindir."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
@@ -3300,7 +3313,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
-"TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
+"TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS "
+"format."
 msgstr ""
 "TKEY süre dolum zamanı geçerli bir Unix zaman damgası veya YYYYMMDDHHmmSS "
 "formatı olmalıdır."
@@ -3379,8 +3393,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
-"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
-"security."
+"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better"
+" security."
 msgstr ""
 "Eski algoritma tespit edildi. Daha iyi güvenlik için HMAC-SHA256 veya daha "
 "güçlüsü önerilir."
@@ -3411,11 +3425,11 @@ msgstr "TTL değeri negatif olamaz. 0 veya daha yüksek olmalıdır."
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:111
 #, php-format
 msgid ""
-"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
-"bit integer."
+"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed "
+"32-bit integer."
 msgstr ""
-"TTL değeri izin verilen maksimumu (%d) aşıyor. RFC 2181 bunu işaretli 32-bit "
-"tam sayıyla sınırlar."
+"TTL değeri izin verilen maksimumu (%d) aşıyor. RFC 2181 bunu işaretli 32-bit"
+" tam sayıyla sınırlar."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
@@ -3429,8 +3443,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
-"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
-"TTL values delay DNS updates."
+"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High"
+" TTL values delay DNS updates."
 msgstr ""
 "TTL değeri (%d) önerilen maksimum %d saniyenin (1 hafta) üzerinde. Yüksek "
 "TTL değerleri DNS güncellemelerini geciktirir."
@@ -3459,7 +3473,8 @@ msgstr ""
 "FTP, SFTP veya HTTPS gibi alternatiflerden daha az güvenli kabul edilir."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
-msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
+msgid ""
+"Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
 msgstr ""
 "LDAP bağlantılarını güvenli hale getirmek için LDAPS (LDAP over SSL/TLS) "
 "kullanmayı düşünün."
@@ -3499,16 +3514,16 @@ msgid ""
 "URI must start with a valid scheme that begins with a letter followed by "
 "letters, digits, plus, period, or hyphen."
 msgstr ""
-"URI bir harfle başlayan ve ardından harfler, rakamlar, artı, nokta veya tire "
-"gelen geçerli bir şemayla başlamalıdır."
+"URI bir harfle başlayan ve ardından harfler, rakamlar, artı, nokta veya tire"
+" gelen geçerli bir şemayla başlamalıdır."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:271
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
 msgstr ""
-"URI olağandışı bir protokol kullanıyor. Daha iyi uyumluluk için standart bir "
-"URI şeması kullanmayı düşünün."
+"URI olağandışı bir protokol kullanıyor. Daha iyi uyumluluk için standart bir"
+" URI şeması kullanmayı düşünün."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
@@ -3567,15 +3582,16 @@ msgid ""
 "KX records MUST be ignored for security reasons."
 msgstr ""
 "ÖNEMLİ: RFC 2230 KX kayıtlarının DNSSEC kullanılarak imzalanmasını "
-"gerektirir. İmzalanmamış KX kayıtları güvenlik nedenleriyle yok sayılMALIDIR."
+"gerektirir. İmzalanmamış KX kayıtları güvenlik nedenleriyle yok "
+"sayılMALIDIR."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:124
 msgid ""
 "Systems not implementing Secure DNS should ignore KX records entirely "
 "according to RFC 2230."
 msgstr ""
-"Güvenli DNS uygulamayan sistemler RFC 2230'a göre KX kayıtlarını tamamen yok "
-"saymalıdır."
+"Güvenli DNS uygulamayan sistemler RFC 2230'a göre KX kayıtlarını tamamen yok"
+" saymalıdır."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:129
 msgid ""
@@ -3587,8 +3603,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
-"The key exchanger host should have appropriate A/AAAA records for type A/"
-"AAAA additional section processing."
+"The key exchanger host should have appropriate A/AAAA records for type "
+"A/AAAA additional section processing."
 msgstr ""
 "Anahtar değiştirici host tip A/AAAA ek bölüm işleme için uygun A/AAAA "
 "kayıtlarına sahip olmalıdır."
@@ -3626,8 +3642,8 @@ msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
 msgstr ""
-"RFC 1035 birçok posta listesinin sorumlu posta kutusu alanı için \"list-name-"
-"request\" posta kutusu kullandığını belirtir."
+"RFC 1035 birçok posta listesinin sorumlu posta kutusu alanı için \"list-"
+"name-request\" posta kutusu kullandığını belirtir."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
@@ -3680,16 +3696,15 @@ msgstr ""
 "SPF kaydı 255 karakter sınırını aşıyor. Birden fazla TXT kaydına bölün."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
-msgid ""
-"Multiple \"all\" mechanisms found. Only the first one will be effective."
-msgstr ""
-"Birden fazla \"all\" mekanizması bulundu. Yalnızca ilki etkili olacaktır."
+msgid "Multiple \"all\" mechanisms found. Only the first one will be effective."
+msgstr "Birden fazla \"all\" mekanizması bulundu. Yalnızca ilki etkili olacaktır."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
 msgstr ""
-"Kopya %s değiştiricisi bulundu. Her değiştirici en fazla bir kez görünebilir."
+"Kopya %s değiştiricisi bulundu. Her değiştirici en fazla bir kez "
+"görünebilir."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
@@ -3816,8 +3831,8 @@ msgid ""
 "As per RFC 4701 and RFC 4703, DHCID records should be placed at the same "
 "name as the A or AAAA records they correspond to."
 msgstr ""
-"RFC 4701 ve RFC 4703'e göre, DHCID kayıtları karşılık geldikleri A veya AAAA "
-"kayıtlarıyla aynı adda yerleştirilmelidir."
+"RFC 4701 ve RFC 4703'e göre, DHCID kayıtları karşılık geldikleri A veya AAAA"
+" kayıtlarıyla aynı adda yerleştirilmelidir."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:120
 msgid "Priority field for DHCID records must be 0 or empty."
@@ -3835,16 +3850,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
-"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
-"=)."
+"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /,"
+" =)."
 msgstr ""
 "DHCID kaydı sadece geçerli base64 karakterleri (A-Z, a-z, 0-9, +, /, =) "
 "içermelidir."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
-"DHCID record has invalid base64 padding. Equals signs (=) should only appear "
-"at the end of the data."
+"DHCID record has invalid base64 padding. Equals signs (=) should only appear"
+" at the end of the data."
 msgstr ""
 "DHCID kaydında geçersiz base64 dolgusu. Eşitlik işaretleri (=) sadece "
 "verinin sonunda görünmelidir."
@@ -3872,8 +3887,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
 msgid ""
-"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
-"4701 (0x0000, 0x0001, 0x0002)."
+"DHCID identifier type 0x%04X is not one of the standard types defined in RFC"
+" 4701 (0x0000, 0x0001, 0x0002)."
 msgstr ""
 "DHCID tanımlayıcı türü 0x%04X RFC 4701'de tanımlanan standart türlerden "
 "(0x0000, 0x0001, 0x0002) biri değil."
@@ -3881,8 +3896,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
-"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
-"4701."
+"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC"
+" 4701."
 msgstr ""
 "DHCID özet türü %d RFC 4701'de tanımlanan standart tür (SHA-256 için 1) "
 "değil."
@@ -3908,8 +3923,8 @@ msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
 msgstr ""
-"RFC 4701 tarafından önerildiği gibi güvenli DHCID güncellemeleri için DNSSEC "
-"veya TSIG kimlik doğrulaması (RFC 3007) kullanmayı düşünün."
+"RFC 4701 tarafından önerildiği gibi güvenli DHCID güncellemeleri için DNSSEC"
+" veya TSIG kimlik doğrulaması (RFC 3007) kullanmayı düşünün."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
@@ -3921,8 +3936,8 @@ msgstr "RRSIG kayıtları için öncelik alanı 0 veya boş olmalıdır"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid ""
-"RRSIG records should only be created by your DNS server when signing a zone. "
-"Manual manipulation is not recommended."
+"RRSIG records should only be created by your DNS server when signing a zone."
+" Manual manipulation is not recommended."
 msgstr ""
 "RRSIG kayıtları sadece bir zon imzalanırken DNS sunucunuz tarafından "
 "oluşturulmalıdır. Manuel müdahale önerilmez."
@@ -3996,8 +4011,8 @@ msgid ""
 "Algorithm 10 (RSA/SHA-512) provides strong security but may have "
 "interoperability issues with some validators."
 msgstr ""
-"Algoritma 10 (RSA/SHA-512) güçlü güvenlik sağlar ancak bazı doğrulayıcılarla "
-"birlikte çalışabilirlik sorunları yaşayabilir."
+"Algoritma 10 (RSA/SHA-512) güçlü güvenlik sağlar ancak bazı doğrulayıcılarla"
+" birlikte çalışabilirlik sorunları yaşayabilir."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
 msgid ""
@@ -4056,8 +4071,8 @@ msgstr "RRSIG orijinal TTL geçerli bir pozitif tamsayı olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid ""
-"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
-"are generally preferred for faster recovery in case of key compromise."
+"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs"
+" are generally preferred for faster recovery in case of key compromise."
 msgstr ""
 "Orijinal TTL 1 günden (86400) büyük. DNSSEC kayıtları için, anahtar ele "
 "geçirilmesi durumunda daha hızlı kurtarma için genellikle daha kısa TTL'ler "
@@ -4076,8 +4091,8 @@ msgid ""
 "The expiration time must be later than the inception time. This signature "
 "appears to have expired before it became valid."
 msgstr ""
-"Süre sonu başlangıç zamanından daha sonra olmalıdır. Bu imza geçerli olmadan "
-"önce süresi dolmuş görünüyor."
+"Süre sonu başlangıç zamanından daha sonra olmalıdır. Bu imza geçerli olmadan"
+" önce süresi dolmuş görünüyor."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
 msgid ""
@@ -4092,8 +4107,8 @@ msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
 msgstr ""
-"UYARI: Bu imzanın süresi önümüzdeki 7 gün içinde dolacak. Yakında yenilemeyi "
-"düşünün."
+"UYARI: Bu imzanın süresi önümüzdeki 7 gün içinde dolacak. Yakında yenilemeyi"
+" düşünün."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid "This signature will expire within the next 30 days. Plan for renewal."
@@ -4102,8 +4117,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
 msgid ""
-"WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
-"resolvers until the inception time is reached."
+"WARNING: This signature is not yet valid. It will not be validated by DNSSEC"
+" resolvers until the inception time is reached."
 msgstr ""
 "UYARI: Bu imza henüz geçerli değil. Başlangıç zamanına ulaşılana kadar "
 "DNSSEC çözümleyicileri tarafından doğrulanmayacak."
@@ -4114,9 +4129,9 @@ msgid ""
 "recommended practices. Long validity periods increase vulnerability in case "
 "of key compromise."
 msgstr ""
-"İmza geçerlilik süresi 90 günü aşıyor, bu önerilen uygulamalardan daha uzun. "
-"Uzun geçerlilik süreleri anahtar ele geçirilmesi durumunda güvenlik açığını "
-"artırır."
+"İmza geçerlilik süresi 90 günü aşıyor, bu önerilen uygulamalardan daha uzun."
+" Uzun geçerlilik süreleri anahtar ele geçirilmesi durumunda güvenlik açığını"
+" artırır."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:295
 msgid "Could not parse signature timestamps to check validity period."
@@ -4164,8 +4179,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
 msgid ""
-"Remember that RRSIG records must be regenerated before their expiration date "
-"to maintain DNSSEC validation."
+"Remember that RRSIG records must be regenerated before their expiration date"
+" to maintain DNSSEC validation."
 msgstr ""
 "RRSIG kayıtlarının DNSSEC doğrulamasını sürdürmek için süre sonu tarihinden "
 "önce yeniden oluşturulması gerektiğini unutmayın."
@@ -4176,8 +4191,8 @@ msgstr "RP kayıtları için öncelik alanı 0 veya boş olmalıdır"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:129
 msgid ""
-"RP records were defined in RFC 1183 (1990) and are not widely used in modern "
-"DNS configurations."
+"RP records were defined in RFC 1183 (1990) and are not widely used in modern"
+" DNS configurations."
 msgstr ""
 "RP kayıtları RFC 1183 (1990) ile tanımlanmıştır ve modern DNS "
 "yapılandırmalarında yaygın olarak kullanılmaz."
@@ -4223,8 +4238,8 @@ msgid ""
 "The RP record is less commonly used today. Consider using WHOIS records or "
 "other contact mechanisms instead."
 msgstr ""
-"RP kaydı bugün daha az kullanılıyor. Bunun yerine WHOIS kayıtları veya diğer "
-"iletişim mekanizmalarını kullanmayı düşünün."
+"RP kaydı bugün daha az kullanılıyor. Bunun yerine WHOIS kayıtları veya diğer"
+" iletişim mekanizmalarını kullanmayı düşünün."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:195
 msgid ""
@@ -4263,8 +4278,8 @@ msgstr "Mailbox domain e-posta adresini temsil eder: %s"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
-"RP mailbox domain part contains underscores, which are not allowed in domain "
-"names."
+"RP mailbox domain part contains underscores, which are not allowed in domain"
+" names."
 msgstr ""
 "RP mailbox domain kısmı domain adlarında izin verilmeyen alt çizgiler "
 "içeriyor."
@@ -4299,8 +4314,8 @@ msgid ""
 "The mailbox domain should use the same format as the RNAME field in SOA "
 "records, with @ replaced by a dot."
 msgstr ""
-"Mailbox domain SOA kayıtlarındaki RNAME alanıyla aynı formatı kullanmalıdır, "
-"@ işareti nokta ile değiştirilmelidir."
+"Mailbox domain SOA kayıtlarındaki RNAME alanıyla aynı formatı kullanmalıdır,"
+" @ işareti nokta ile değiştirilmelidir."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:299
 msgid ""
@@ -4312,7 +4327,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP TXT domain tam nıtelı bir domain adı olmalıdır (nokta ile bitmeli)."
+msgstr ""
+"RP TXT domain tam nıtelı bir domain adı olmalıdır (nokta ile bitmeli)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
@@ -4357,8 +4373,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
-"This appears to be an IPv6 interface identifier (has the universal/local bit "
-"flipped compared to standard EUI-64)."
+"This appears to be an IPv6 interface identifier (has the universal/local bit"
+" flipped compared to standard EUI-64)."
 msgstr ""
 "Bu bir IPv6 arayuz tanımlayıcısı gibi görünüyor (standart EUI-64'e kıyasla "
 "evrensel/yerel bit çevrilmiş)."
@@ -4380,8 +4396,8 @@ msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
 msgstr ""
-"EUI64 kaydı iki nokta ayırıcıları (xx:xx:xx:xx:xx:xx:xx:xx) kullanıyor ancak "
-"tire ayırıcıları (xx-xx-xx-xx-xx-xx-xx-xx) gerektiriyor."
+"EUI64 kaydı iki nokta ayırıcıları (xx:xx:xx:xx:xx:xx:xx:xx) kullanıyor ancak"
+" tire ayırıcıları (xx-xx-xx-xx-xx-xx-xx-xx) gerektiriyor."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
@@ -4420,8 +4436,8 @@ msgid ""
 "This appears to be a locally administered address (the second least "
 "significant bit of the first octet is set to 1)."
 msgstr ""
-"Bu yerel olarak yönetilen bir adres gibi görünüyor (ilk oktetin ikinci en az "
-"anlamlı biti 1'e ayarlanmış)."
+"Bu yerel olarak yönetilen bir adres gibi görünüyor (ilk oktetin ikinci en az"
+" anlamlı biti 1'e ayarlanmış)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
@@ -4453,8 +4469,8 @@ msgid ""
 "The DNAME target appears to be a subdomain of the owner name. This could "
 "create problematic circular references when resolving subdomains."
 msgstr ""
-"DNAME hedefi sahip adının bir alt domain'i gibi görünüyor. Bu alt domainleri "
-"çözümlerken sorunlu dairesel referanslar yaratabilir."
+"DNAME hedefi sahip adının bir alt domain'i gibi görünüyor. Bu alt domainleri"
+" çözümlerken sorunlu dairesel referanslar yaratabilir."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:122
 msgid "Priority field for DNAME records must be 0 or empty."
@@ -4465,8 +4481,8 @@ msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
 msgstr ""
-"RFC 6672'ye göre, DNAME kayıtları belirli bir sahip adda benzersiz olmalıdır "
-"(tekil kuralı)."
+"RFC 6672'ye göre, DNAME kayıtları belirli bir sahip adda benzersiz olmalıdır"
+" (tekil kuralı)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
@@ -4514,7 +4530,8 @@ msgstr "DS kayıtları için öncelik alanı 0 veya boş olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
-"DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
+"DS record must be in the format: <key-tag> <algorithm> <digest-type> "
+"<digest>"
 msgstr ""
 "DS kaydı şu formatta olmalıdır: <key-tag> <algorithm> <digest-type> <digest>"
 
@@ -4529,8 +4546,8 @@ msgstr "Anahtar etiketi 1 ile 65535 arasında bir sayı olmalıdır"
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:211
 msgid "Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
 msgstr ""
-"Algoritma şunlardan biri olmalıdır: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, "
-"16"
+"Algoritma şunlardan biri olmalıdır: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15,"
+" 16"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:212
 #, php-format
@@ -4550,14 +4567,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
-msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
+msgid ""
+"%s (algorithm %d) is optional for implementation according to RFC 8624."
 msgstr "%s (algoritma %d) RFC 8624'e göre uygulama için isteğe bağlıdır."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
-"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
-"using ECDSAP256SHA256 (13) or ED25519 (15) instead."
+"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider"
+" using ECDSAP256SHA256 (13) or ED25519 (15) instead."
 msgstr ""
 "%s (algoritma %d) RFC 8624'e göre kullanım için ÖNERİLMEZ. Bunun yerine "
 "ECDSAP256SHA256 (13) veya ED25519 (15) kullanmayı düşünün."
@@ -4577,15 +4595,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
-"SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
-"8624."
+"SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC"
+" 8624."
 msgstr "SHA-256 (özet türü 2) RFC 8624'e göre ÖNERİLEN özet algoritmadır."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
 "SHA-384 (digest type 4) is a good choice for higher security requirements, "
-"but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
-"support."
+"but SHA-256 (digest type 2) is sufficient for most deployments and has wider"
+" support."
 msgstr ""
 "SHA-384 (özet türü 4) daha yüksek güvenlik gereksinimleri için iyi bir "
 "seçimdir, ancak SHA-256 (özet türü 2) çoğu dağıtım için yeterlidir ve daha "
@@ -4605,8 +4623,8 @@ msgstr "SHA-384 özeti tam olarak 96 onaltılık karakter olmalıdır"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:266
 msgid ""
-"DS records establish a chain of trust from parent to child zones. The parent "
-"zone must have this DS record, and the child zone must have the "
+"DS records establish a chain of trust from parent to child zones. The parent"
+" zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
 msgstr ""
 "DS kayıtları üst seviyeden alt seviye zonlara güven zinciri kurar. Üst "
@@ -4615,16 +4633,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
-"CSYNC records should only be placed at the zone apex (RFC 7477). This record "
-"may not be processed by parental agents."
+"CSYNC records should only be placed at the zone apex (RFC 7477). This record"
+" may not be processed by parental agents."
 msgstr ""
 "CSYNC kayıtları sadece zon tepesine yerleştirilmelidir (RFC 7477). Bu kayıt "
 "üst seviye ajanlar tarafından işlenmeyebilir."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
-"CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
-"7477). Ensure your zone is properly signed with DNSSEC."
+"CSYNC records require DNSSEC signing to be processed by parental agents (RFC"
+" 7477). Ensure your zone is properly signed with DNSSEC."
 msgstr ""
 "CSYNC kayıtlarının üst seviye ajanlar tarafından işlenmesi için DNSSEC "
 "imzalama gerekir (RFC 7477). Zonunuzun DNSSEC ile düzgün imzalandığından "
@@ -4632,8 +4650,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
-"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
-"cause unexpected behavior."
+"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may"
+" cause unexpected behavior."
 msgstr ""
 "Zon başına sadece bir CSYNC kaydı bulunmalıdır (RFC 7477). Birden fazla "
 "kayıt beklenmeyen davranışlara neden olabilir."
@@ -4690,15 +4708,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
-"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
-"values are 0, 1, 2, or 3."
+"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid"
+" values are 0, 1, 2, or 3."
 msgstr ""
 "CSYNC kaydında geçersiz Bayraklar. Sadece 0-1 bitleri tanımlı (0-3 "
 "değerleri). Geçerli değerler 0, 1, 2, veya 3'dir."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
-"CSYNC record must specify at least one record type in the Type Bit Map field."
+"CSYNC record must specify at least one record type in the Type Bit Map "
+"field."
 msgstr "CSYNC kaydı Type Bit Map alanında en az bir kayıt türü belirtmelidir."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:244
@@ -4726,7 +4745,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:262
 msgid ""
 "NS record synchronization requires careful consideration. Parent zones may "
-"have specific NS record policies that can prevent successful synchronization."
+"have specific NS record policies that can prevent successful "
+"synchronization."
 msgstr ""
 "NS kayıt senkronizasyonu dikkatli değerlendirme gerektirir. Üst seviye "
 "zonlar başarılı senkronizasyonu engelleyebilecek özel NS kayıt "
@@ -4744,8 +4764,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:269
 msgid ""
-"RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
-"type cannot be synchronized, no changes will be made by the parent."
+"RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any"
+" type cannot be synchronized, no changes will be made by the parent."
 msgstr ""
 "RFC 7477 CSYNC işleme için \"hepsi veya hiçbiri\" yaklaşımı gerektirir. "
 "Herhangi bir tür senkronize edilemezse, üst seviye tarafından hiçbir "
@@ -4781,7 +4801,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
-"EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
+"EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-"
+"xx."
 msgstr ""
 "EUI48 kaydı Cisco formatında görünüyor. Format xx-xx-xx-xx-xx-xx olmalıdır."
 
@@ -4790,8 +4811,8 @@ msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
 msgstr ""
-"EUI48 kaydı xx-xx-xx-xx-xx-xx formatında geçerli bir MAC adresi olmalıdır (x "
-"onaltılık sayı)."
+"EUI48 kaydı xx-xx-xx-xx-xx-xx formatında geçerli bir MAC adresi olmalıdır (x"
+" onaltılık sayı)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -4805,8 +4826,8 @@ msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
 msgstr ""
-"Kayıt adı standart ters DNS zon adı gibi görünmüyor (IPv4 için .in-addr.arpa "
-"veya IPv6 için .ip6.arpa ile bitmeli)."
+"Kayıt adı standart ters DNS zon adı gibi görünmüyor (IPv4 için .in-addr.arpa"
+" veya IPv6 için .ip6.arpa ile bitmeli)."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:130
 msgid ""
@@ -4872,7 +4893,8 @@ msgstr "CAA kayıtları için öncelik alanı 0 veya boş olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:125
 msgid "CAA record must contain flags, tag, and value separated by spaces."
-msgstr "CAA kaydı boşluklarla ayrılmış bayraklar, etiket ve değer içermelidir."
+msgstr ""
+"CAA kaydı boşluklarla ayrılmış bayraklar, etiket ve değer içermelidir."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
 msgid "CAA flags must be a number between 0 and 255."
@@ -4982,8 +5004,8 @@ msgstr "Geçersiz bir üst seviye domain kullanıyorsunuz."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
+"SOA validation parameters not set. Call setSOAParams() first or provide them"
+" as arguments."
 msgstr ""
 "SOA doğrulama parametreleri ayarlanmamış. Önce setSOAParams() çağırın veya "
 "bunları argüman olarak sağlayın."
@@ -5016,8 +5038,8 @@ msgstr "Seri numarası 32-bit işaretsiz tamsayı (0 ile 4294967295) olmalıdır
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:231
 msgid ""
-"Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
-"This is allowed but not recommended."
+"Serial number appears to use YYYYMMDDnn format but contains an invalid date."
+" This is allowed but not recommended."
 msgstr ""
 "Seri numarası YYYYMMDDnn formatını kullanıyor gibi görünüyor ancak geçersiz "
 "tarih içeriyor. Bu kabul edilebilir ancak önerilmez."
@@ -5070,17 +5092,18 @@ msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
 msgstr ""
-"SVCB kaydı öncelik ve hedefle başlamalıdır: <priority> <target> [<params>...]"
+"SVCB kaydı öncelik ve hedefle başlamalıdır: <priority> <target> "
+"[<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
 msgstr "SVCB önceliği 0 ile 65535 arasında olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
-msgid ""
-"SVCB target must be either \".\" (for Service Mode) or a valid hostname."
+msgid "SVCB target must be either \".\" (for Service Mode) or a valid hostname."
 msgstr ""
-"SVCB hedefi ya \".\" (Servis Modu için) ya da geçerli bir hostname olmalıdır."
+"SVCB hedefi ya \".\" (Servis Modu için) ya da geçerli bir hostname "
+"olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid ""
@@ -5116,8 +5139,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid ""
-"Multiple CNAME records with the same name are not allowed. This would create "
-"a DNS violation."
+"Multiple CNAME records with the same name are not allowed. This would create"
+" a DNS violation."
 msgstr ""
 "Aynı ada sahip birden fazla CNAME kaydına izin verilmez. Bu bir DNS ihlali "
 "yaratacaktır."
@@ -5136,8 +5159,8 @@ msgid ""
 "This record conflicts with an existing CNAME record with the same name. A "
 "CNAME record cannot coexist with other record types."
 msgstr ""
-"Bu kayıt aynı ada sahip mevcut bir CNAME kaydıyla çakışıyor. Bir CNAME kaydı "
-"diğer kayıt türleriyle bir arada bulunamaz."
+"Bu kayıt aynı ada sahip mevcut bir CNAME kaydıyla çakışıyor. Bir CNAME kaydı"
+" diğer kayıt türleriyle bir arada bulunamaz."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
@@ -5165,11 +5188,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
-"Invalid value for priority field. SMIMEA records must have priority value of "
-"0."
+"Invalid value for priority field. SMIMEA records must have priority value of"
+" 0."
 msgstr ""
-"Öncelik alanı için geçersiz değer. SMIMEA kayıtları 0 öncelik değerine sahip "
-"olmalıdır."
+"Öncelik alanı için geçersiz değer. SMIMEA kayıtları 0 öncelik değerine sahip"
+" olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:160
 msgid ""
@@ -5204,13 +5227,14 @@ msgid ""
 "PKIX-TA usage (0) requires the CA certificate to be in the certificate "
 "validation path. Ensure this CA is publicly known and trusted."
 msgstr ""
-"PKIX-TA kullanımı (0) CA sertifikasının sertifika doğrulama yolunda olmasını "
-"gerektirir. Bu CA'nın halka açık bilinen ve güvenilir olduğundan emin olun."
+"PKIX-TA kullanımı (0) CA sertifikasının sertifika doğrulama yolunda olmasını"
+" gerektirir. Bu CA'nın halka açık bilinen ve güvenilir olduğundan emin olun."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:214
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
-"PKIX validation rules. Ensure proper intermediate certificates are available."
+"PKIX validation rules. Ensure proper intermediate certificates are "
+"available."
 msgstr ""
 "PKIX-EE kullanımı (1) son varlık sertifikasının PKIX doğrulama kuralları "
 "kullanılarak doğrulanmasını gerektirir. Uygun ara sertifikaların mevcut "
@@ -5228,8 +5252,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
-"DANE-EE usage (3) is recommended as it provides the simplest deployment with "
-"direct certificate usage without additional validation."
+"DANE-EE usage (3) is recommended as it provides the simplest deployment with"
+" direct certificate usage without additional validation."
 msgstr ""
 "DANE-EE kullanımı (3) ek doğrulama olmaksızın doğrudan sertifika "
 "kullanımıyla en basit dağıtımı sağladığı için önerilir."
@@ -5244,8 +5268,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
-"Selector 0 (Full certificate) means the entire certificate is matched. Using "
-"selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
+"Selector 0 (Full certificate) means the entire certificate is matched. Using"
+" selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
 "flexibility for certificate renewals."
 msgstr ""
 "Seçici 0 (Tam sertifika) tüm sertifikanın eşleştirildiği anlamına gelir. "
@@ -5259,7 +5283,8 @@ msgid ""
 "same."
 msgstr ""
 "Seçici 1 (SubjectPublicKeyInfo) genel anahtar aynı kaldığı sürece SMIMEA "
-"kayıt güncellemeleri olmadan sertifika yenilemeye izin verdiği için önerilir."
+"kayıt güncellemeleri olmadan sertifika yenilemeye izin verdiği için "
+"önerilir."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:241
 msgid ""
@@ -5271,15 +5296,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
-"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
-"recommended for better performance and compatibility."
+"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is"
+" recommended for better performance and compatibility."
 msgstr ""
 "Eşleşme türü 0 (Tam eşleşme) ham sertifika verisi kullanır. Daha iyi "
 "performans ve uyumluluk için SHA-256 (tür 1) önerilir."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
-"Matching type 1 (SHA-256) provides a good balance of security and efficiency."
+"Matching type 1 (SHA-256) provides a good balance of security and "
+"efficiency."
 msgstr ""
 "Eşleşme türü 1 (SHA-256) güvenlik ve verimlilik arasında iyi bir denge "
 "sağlar."
@@ -5289,8 +5315,8 @@ msgid ""
 "Matching type 2 (SHA-512) provides the highest security but may have "
 "compatibility issues with some implementations."
 msgstr ""
-"Eşleşme türü 2 (SHA-512) en yüksek güvenliği sağlar ancak bazı uygulamalarla "
-"uyumluluk sorunları yaşayabilir."
+"Eşleşme türü 2 (SHA-512) en yüksek güvenliği sağlar ancak bazı uygulamalarla"
+" uyumluluk sorunları yaşayabilir."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:256
 msgid "SMIMEA certificate data must be a hexadecimal string."
@@ -5314,16 +5340,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
-"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
-"be widely supported."
+"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not"
+" be widely supported."
 msgstr ""
 "UYARI: SMIMEA (RFC 8162) şu anda DENEYSEL bir protokoldür ve yaygın olarak "
 "desteklenmeyebilir."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
-"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, "
-"SMIMEA offers NO security benefit."
+"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC,"
+" SMIMEA offers NO security benefit."
 msgstr ""
 "KRİTİK: SMIMEA kayıtları güvenlik sağlamak için DNSSEC GEREKİTİRİR. DNSSEC "
 "olmadan, SMIMEA HİÇBİR güvenlik faydası sunmaz."
@@ -5333,13 +5359,13 @@ msgid ""
 "NOTE: The L64 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
 msgstr ""
-"NOT: L64 kayıt türü RFC 6742'de resmi bir IETF standardı değil, deneysel bir "
-"protokol olarak tanımlanmıştır."
+"NOT: L64 kayıt türü RFC 6742'de resmi bir IETF standardı değil, deneysel bir"
+" protokol olarak tanımlanmıştır."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
-"L64 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+"L64 records should only be used with the Identifier-Locator Network Protocol"
+" (ILNP)."
 msgstr ""
 "L64 kayıtları sadece Identifier-Locator Network Protocol (ILNP) ile "
 "kullanılmalıdır."
@@ -5383,8 +5409,8 @@ msgid ""
 "L64 locator must be a valid 64-bit hexadecimal IPv6 address segment "
 "consisting of exactly 4 groups of hex digits (e.g., 2001:0db8:1140:1000)."
 msgstr ""
-"L64 konum belirleyici tam olarak 4 hex rakam grubundan oluşan geçerli 64-bit "
-"onaltılık IPv6 adres segmenti olmalıdır (örneğin: 2001:0db8:1140:1000)."
+"L64 konum belirleyici tam olarak 4 hex rakam grubundan oluşan geçerli 64-bit"
+" onaltılık IPv6 adres segmenti olmalıdır (örneğin: 2001:0db8:1140:1000)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:172
 msgid ""
@@ -5406,7 +5432,8 @@ msgstr ""
 msgid ""
 "CDNSKEY records are typically published at the zone apex, not in subdomains."
 msgstr ""
-"CDNSKEY kayıtları genellikle alt domainlerde değil, zon tepesinde yayınlanır."
+"CDNSKEY kayıtları genellikle alt domainlerde değil, zon tepesinde "
+"yayınlanır."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:121
 msgid "Priority field for CDNSKEY records must be 0 or empty"
@@ -5487,7 +5514,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
-msgstr "CDNSKEY genel anahtarı sadece geçerli base64 karakterleri içermelidir."
+msgstr ""
+"CDNSKEY genel anahtarı sadece geçerli base64 karakterleri içermelidir."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:241
 msgid "CDNSKEY public key must be valid base64-encoded data."
@@ -5526,8 +5554,8 @@ msgid ""
 "This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
 "sure it returns an appropriate value for the record type."
 msgstr ""
-"Bu LUA kaydı yaygın PowerDNS Lua fonksiyonlarını kullanıyor gibi görünmüyor. "
-"Kayıt türü için uygun bir değer döndürdüğünden emin olun."
+"Bu LUA kaydı yaygın PowerDNS Lua fonksiyonlarını kullanıyor gibi görünmüyor."
+" Kayıt türü için uygun bir değer döndürdüğünden emin olun."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:163
 msgid ""
@@ -5564,11 +5592,12 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
-"LUA record contains potentially dangerous system access functions. These are "
-"likely to be blocked by PowerDNS security restrictions."
+"LUA record contains potentially dangerous system access functions. These are"
+" likely to be blocked by PowerDNS security restrictions."
 msgstr ""
 "LUA kaydı potansiyel olarak tehlikeli sistem erişim fonksiyonları içeriyor. "
-"Bunların PowerDNS güvenlik kısıtlamaları tarafından engellenmesi muhtemeldir."
+"Bunların PowerDNS güvenlik kısıtlamaları tarafından engellenmesi "
+"muhtemeldir."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:126
 msgid "Priority field for SSHFP records must be 0 or empty"
@@ -5587,8 +5616,8 @@ msgid ""
 "For maximum security, publish both SHA-1 and SHA-256 fingerprints for "
 "compatibility, but prefer SHA-256 in clients."
 msgstr ""
-"Maksimum güvenlik için uyumluluk adına hem SHA-1 hem SHA-256 parmak izlerini "
-"yayınlayın, ancak istemcilerde SHA-256'yı tercih edin."
+"Maksimum güvenlik için uyumluluk adına hem SHA-1 hem SHA-256 parmak izlerini"
+" yayınlayın, ancak istemcilerde SHA-256'yı tercih edin."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:171
 msgid ""
@@ -5608,11 +5637,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
-"DSA keys are considered weak and are deprecated in many SSH implementations. "
-"Consider using RSA, Ed25519, or Ed448 instead."
+"DSA keys are considered weak and are deprecated in many SSH implementations."
+" Consider using RSA, Ed25519, or Ed448 instead."
 msgstr ""
-"DSA anahtarları zayıf kabul edilir ve birçok SSH uygulamalarında kullanımdan "
-"kaldırılmıştır. Bunun yerine RSA, Ed25519, veya Ed448 kullanmayı düşünün."
+"DSA anahtarları zayıf kabul edilir ve birçok SSH uygulamalarında kullanımdan"
+" kaldırılmıştır. Bunun yerine RSA, Ed25519, veya Ed448 kullanmayı düşünün."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:189
 msgid ""
@@ -5644,8 +5673,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
-"SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
-"than SHA-1."
+"SHA-256 fingerprints are recommended by RFC 6594 and provide better security"
+" than SHA-1."
 msgstr ""
 "SHA-256 parmak izleri RFC 6594 tarafından önerilir ve SHA-1'den daha iyi "
 "güvenlik sağlar."
@@ -5665,8 +5694,8 @@ msgstr "SSHFP SHA-256 parmak izi 64 karakter uzunluğunda olmalıdır."
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
-"benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
-"attacks."
+"benefits. Without DNSSEC, they offer no protection against man-in-the-middle"
+" attacks."
 msgstr ""
 "KRİTİK: SSHFP kayıtları herhangi bir güvenlik faydası sağlamak için DNSSEC "
 "doğrulaması GEREKİTİRİR. DNSSEC olmadan, ortadaki adam saldırılarına karşı "
@@ -5674,8 +5703,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
-"Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
-"for server verification."
+"Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records"
+" for server verification."
 msgstr ""
 "Sunucu doğrulaması için SSHFP kayıtlarını kullanmak üzere SSH istemcilerini "
 "\"VerifyHostKeyDNS yes\" ile yapılandırın."
@@ -5698,8 +5727,8 @@ msgstr "MR kayıt içeriği geçerli bir domain adı olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:121
 msgid ""
-"MR record content (new mailbox) should be a fully qualified domain name (end "
-"with a dot)."
+"MR record content (new mailbox) should be a fully qualified domain name (end"
+" with a dot)."
 msgstr ""
 "MR kayıt içeriği (yeni posta kutusu) tam nıtelı bir domain adı olmalıdır "
 "(nokta ile bitmeli)."
@@ -5733,8 +5762,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:148
 msgid ""
-"The MR record indicates that the mail user has moved from the old mailbox to "
-"the new mailbox."
+"The MR record indicates that the mail user has moved from the old mailbox to"
+" the new mailbox."
 msgstr ""
 "MR kaydı posta kullanıcısının eski posta kutusundan yeni posta kutusuna "
 "taşındığını gösterir."
@@ -5759,8 +5788,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:141
 msgid ""
-"Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be "
-"used."
+"Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be"
+" used."
 msgstr ""
 "Algoritma 1 (RSA/MD5) kriptografik olarak zayıf kabul edilir ve "
 "kullanılmamalıdır."
@@ -5779,7 +5808,8 @@ msgstr "KEY kayıt içeriğinde geçersiz karakterler."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:181
 msgid "KEY record must contain flags, protocol, algorithm, and public key."
-msgstr "KEY kaydı bayraklar, protokol, algoritma ve genel anahtar içermelidir."
+msgstr ""
+"KEY kaydı bayraklar, protokol, algoritma ve genel anahtar içermelidir."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:190
 msgid "KEY flags must be a number between 0 and 65535."
@@ -5855,7 +5885,8 @@ msgstr "DMARC sürüm etiketi (v) DMARC1 olmalıdır"
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:195
 msgid "DMARC policy tag (p) must be one of: none, quarantine, reject"
 msgstr ""
-"DMARC politika etiketi (p) şunlardan biri olmalıdır: none, quarantine, reject"
+"DMARC politika etiketi (p) şunlardan biri olmalıdır: none, quarantine, "
+"reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:200
 msgid ""
@@ -5863,8 +5894,8 @@ msgid ""
 "affecting delivery. Consider a stricter policy once you've reviewed the "
 "reports."
 msgstr ""
-"\"p=none\" kullanmak teslimi etkilemeden e-posta kimlik doğrulaması hakkında "
-"görünürlük sağlar. Raporları inceledikten sonra daha sıkı bir politika "
+"\"p=none\" kullanmak teslimi etkilemeden e-posta kimlik doğrulaması hakkında"
+" görünürlük sağlar. Raporları inceledikten sonra daha sıkı bir politika "
 "düşünün."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
@@ -5892,8 +5923,8 @@ msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
 msgstr ""
-"DMARC politikası sadece mesajların %d%%'sine uygulanıyor. Bu sadece politika "
-"dağıtımı sırasında kullanılmalıdır."
+"DMARC politikası sadece mesajların %d%%'sine uygulanıyor. Bu sadece politika"
+" dağıtımı sırasında kullanılmalıdır."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -5963,8 +5994,8 @@ msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
 msgstr ""
-"TXT kayıt içeriği maksimum %d bayt uzunluğunu aşıyor. Lütfen içerik boyutunu "
-"küçültün."
+"TXT kayıt içeriği maksimum %d bayt uzunluğunu aşıyor. Lütfen içerik boyutunu"
+" küçültün."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:218
 msgid ""
@@ -6035,8 +6066,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
-"CDS record must contain key-tag, algorithm, digest-type and digest separated "
-"by spaces."
+"CDS record must contain key-tag, algorithm, digest-type and digest separated"
+" by spaces."
 msgstr ""
 "CDS kaydı boşluklarla ayrılmış key-tag, algoritma, digest-type ve digest "
 "içermelidir."
@@ -6079,7 +6110,8 @@ msgstr ""
 "birlikte olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
-msgid "CDS records should only be placed at the zone apex (not on subdomains)."
+msgid ""
+"CDS records should only be placed at the zone apex (not on subdomains)."
 msgstr ""
 "CDS kayıtları sadece zon tepesine yerleştirilmelidir (alt domainlere değil)."
 
@@ -6088,21 +6120,21 @@ msgid ""
 "NOTE: The L32 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
 msgstr ""
-"NOT: L32 kayıt türü RFC 6742'de resmi bir IETF standardı değil, deneysel bir "
-"protokol olarak tanımlanmıştır."
+"NOT: L32 kayıt türü RFC 6742'de resmi bir IETF standardı değil, deneysel bir"
+" protokol olarak tanımlanmıştır."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
-"L32 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+"L32 records should only be used with the Identifier-Locator Network Protocol"
+" (ILNP)."
 msgstr ""
 "L32 kayıtları sadece Identifier-Locator Network Protocol (ILNP) ile "
 "kullanılmalıdır."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
-"Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
-"in ILNP deployments."
+"Using private IP addresses (RFC 1918) as L32 locators may limit reachability"
+" in ILNP deployments."
 msgstr ""
 "L32 konum belirleyicileri olarak özel IP adreslerini (RFC 1918) kullanmak "
 "ILNP dağıtımlarında erişilebilirliği sınırlayabilir."
@@ -6162,8 +6194,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
-"Invalid protocol value in SRV record. Protocol must start with an underscore "
-"followed by alphanumeric characters."
+"Invalid protocol value in SRV record. Protocol must start with an underscore"
+" followed by alphanumeric characters."
 msgstr ""
 "SRV kaydında geçersiz protokol değeri. Protokol alt çizgi ile başlamalı ve "
 "ardından alfanümerik karakterler gelmelidir."
@@ -6180,8 +6212,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
-"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
-"are _tcp and _udp."
+"Protocol \"%s\" is not in the list of well-known protocols. Common protocols"
+" are _tcp and _udp."
 msgstr ""
 "Protokol \"%s\" bilinen protokoller listesinde değil. Yaygın protokoller "
 "_tcp ve _udp'dir."
@@ -6223,8 +6255,7 @@ msgstr "SRV hedefi boş olamaz."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:375
 msgid "When target is \".\" (no service), port and weight should both be 0."
-msgstr ""
-"Hedef \".\" (servis yok) olduğunda, port ve ağırlık ikisi de 0 olmalıdır."
+msgstr "Hedef \".\" (servis yok) olduğunda, port ve ağırlık ikisi de 0 olmalıdır."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:400
 msgid "Invalid SRV target."
@@ -6236,8 +6267,8 @@ msgstr "SRV kaydının öncelik alanı için geçersiz değer."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:85
 msgid ""
-"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
-"records."
+"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA"
+" records."
 msgstr ""
 "Belirtilmemiş (::) veya geri döngü (::1) IPv6 adresleri AAAA kayıtlarında "
 "kullanılmamalıdır."
@@ -6251,7 +6282,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
-"Invalid value for priority field. AAAA records must have priority value of 0."
+"Invalid value for priority field. AAAA records must have priority value of "
+"0."
 msgstr ""
 "Öncelik alanı için geçersiz değer. AAAA kayıtları 0 öncelik değerine sahip "
 "olmalıdır."
@@ -6262,8 +6294,8 @@ msgid ""
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 msgstr ""
-"NSEC3 kayıt sahip adları genellikle zon adını takip eden Base32hex kodlanmış "
-"hash olmalıdır (örneğin: \"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
+"NSEC3 kayıt sahip adları genellikle zon adını takip eden Base32hex kodlanmış"
+" hash olmalıdır (örneğin: \"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
@@ -6286,16 +6318,16 @@ msgid ""
 "NSEC3 records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
 msgstr ""
-"NSEC3 kayıtları DNSSEC'in bir parçasıdır ve sadece diğer DNSSEC kayıtlarıyla "
-"(DNSKEY, RRSIG, vb.) birlikte yönetilmelidir."
+"NSEC3 kayıtları DNSSEC'in bir parçasıdır ve sadece diğer DNSSEC kayıtlarıyla"
+" (DNSKEY, RRSIG, vb.) birlikte yönetilmelidir."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:146
 msgid ""
 "Manually editing NSEC3 records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
 msgstr ""
-"NSEC3 kayıtlarını manuel olarak düzenlemek önerilmez çünkü genellikle DNSSEC "
-"uyumlu ad sunucuları tarafından otomatik olarak oluşturulurlar."
+"NSEC3 kayıtlarını manuel olarak düzenlemek önerilmez çünkü genellikle DNSSEC"
+" uyumlu ad sunucuları tarafından otomatik olarak oluşturulurlar."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:147
 msgid ""
@@ -6342,8 +6374,8 @@ msgid ""
 "Type bit maps should be present to indicate which RR types exist at the "
 "original owner name."
 msgstr ""
-"Orijinal sahip adında hangi RR tiplerinin mevcut olduğunu belirtmek için tip "
-"bit haritaları bulunmalıdır."
+"Orijinal sahip adında hangi RR tiplerinin mevcut olduğunu belirtmek için tip"
+" bit haritaları bulunmalıdır."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
@@ -6360,16 +6392,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
-"This NSEC3 record contains both SOA and NS types, indicating it might be for "
-"a zone apex."
+"This NSEC3 record contains both SOA and NS types, indicating it might be for"
+" a zone apex."
 msgstr ""
 "Bu NSEC3 kaydı hem SOA hem de NS tiplerini içeriyor, zon tepesi için "
 "olabileceğini gösteriyor."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
-"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
-"along with DNSKEY."
+"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present"
+" along with DNSKEY."
 msgstr ""
 "NSEC3 kullanan bir zon tepesi için, NSEC3PARAM tipi genellikle DNSKEY ile "
 "birlikte bulunmalıdır."
@@ -6468,18 +6500,17 @@ msgstr "Regexp'li NAPTR kaydı değiştirme olarak \".\" içermelidir."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
-"and rs start with a letter and contain alphanumeric characters, hyphens, "
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol"
+" and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr ""
 "NAPTR servisi şu formatı takip etmelidir: [protokol][+rs][+rs]... burada "
 "protokol ve rs bir harf ile başlamalı ve alfanümerik karakterler, tire, iki "
-"nokta üst üste veya artı işaretleri içermelidir (her biri maks. 32 karakter)."
+"nokta üst üste veya artı işaretleri içermelidir (her biri maks. 32 "
+"karakter)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
-msgid ""
-"Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
-"other flags."
+msgid "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with other flags."
 msgstr ""
 "Terminal bayrakları \"S\", \"A\", \"U\", ve \"P\" diğer bayraklarla "
 "birleştirilmemelidir."
@@ -6562,8 +6593,8 @@ msgid ""
 "Flag value 256 indicates this is a Zone Signing Key (ZSK) with Zone Key bit "
 "set and SEP bit unset."
 msgstr ""
-"Bayrak değeri 256 bunun Zone Key biti ayarlı ve SEP biti ayarlı olmayan Zone "
-"Signing Key (ZSK) olduğunu gösterir."
+"Bayrak değeri 256 bunun Zone Key biti ayarlı ve SEP biti ayarlı olmayan Zone"
+" Signing Key (ZSK) olduğunu gösterir."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:162
 msgid ""
@@ -6586,8 +6617,8 @@ msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
 msgstr ""
-"ECDSAP256SHA256 (algoritma 13) RFC 8624'e göre DNSSEC imzalama için ÖNERİLEN "
-"algoritmadır."
+"ECDSAP256SHA256 (algoritma 13) RFC 8624'e göre DNSSEC imzalama için ÖNERİLEN"
+" algoritmadır."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
@@ -6774,8 +6805,8 @@ msgstr "ÖNEMLİ: Yeni API anahtarınızı şimdi kaydedin!"
 
 #: templates/default/api_key_regenerated.html:17
 msgid ""
-"This is the only time your new API key will be displayed. Please save it now "
-"as you won't be able to see it again."
+"This is the only time your new API key will be displayed. Please save it now"
+" as you won't be able to see it again."
 msgstr ""
 "Bu yeni API anahtarınızın görüntüleneceği tek seferdir. Lütfen şimdi "
 "kaydedin çünkü bir daha göremeyeceksiniz."
@@ -6886,8 +6917,8 @@ msgstr "Bir DNSSEC anahtarını etkinleştirmek üzeresiniz (ID"
 
 #: templates/default/dnssec_edit_key.html:53
 msgid ""
-"Activating this key will make it part of the active DNSSEC signing chain for "
-"this zone."
+"Activating this key will make it part of the active DNSSEC signing chain for"
+" this zone."
 msgstr ""
 "Bu anahtarı etkinleştirmek onu bu zon için aktif DNSSEC imzalama zincirinin "
 "bir parçası yapacaktır."
@@ -6932,7 +6963,8 @@ msgstr "Pasif"
 msgid "Cancel"
 msgstr "İptal"
 
-#: templates/default/api_key_edit.html:5 templates/default/api_key_edit.html:13
+#: templates/default/api_key_edit.html:5
+#: templates/default/api_key_edit.html:13
 msgid "Edit API Key"
 msgstr "API Anahtarını Düzenle"
 
@@ -6944,7 +6976,8 @@ msgstr "Ad"
 msgid "Please provide a name for this API key"
 msgstr "Lütfen bu API anahtarı için bir ad sağlayın"
 
-#: templates/default/api_key_edit.html:23 templates/default/api_key_add.html:23
+#: templates/default/api_key_edit.html:23
+#: templates/default/api_key_add.html:23
 msgid "A descriptive name to help you identify this key"
 msgstr "Bu anahtarı tanımlamaya yardımcı olacak açıklayıcı bir ad"
 
@@ -6952,7 +6985,8 @@ msgstr "Bu anahtarı tanımlamaya yardımcı olacak açıklayıcı bir ad"
 msgid "Expires at"
 msgstr "Süre Sonu"
 
-#: templates/default/api_key_edit.html:29 templates/default/api_key_add.html:29
+#: templates/default/api_key_edit.html:29
+#: templates/default/api_key_add.html:29
 msgid "Leave empty for a key that never expires"
 msgstr "Süresi hiç dolmayacak anahtar için boş bırakın"
 
@@ -7072,8 +7106,8 @@ msgstr "Zon kaydınız için içerik sağlayın"
 #: templates/default/add_record.html:93
 msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
-"and may cause issues. SOA and NS records are required at the domain root and "
-"cannot coexist with CNAME."
+"and may cause issues. SOA and NS records are required at the domain root and"
+" cannot coexist with CNAME."
 msgstr ""
 "Uyarı: Domain kökünde (zon tepesi) CNAME kayıtları önerilmez ve sorunlara "
 "neden olabilir. Domain kökünde SOA ve NS kayıtları gereklidir ve CNAME ile "
@@ -7175,10 +7209,11 @@ msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERİ] 28800 7200 604800 86400</code>"
 
 #: templates/default/add_zone_templ_record.html:176
 msgid ""
-"MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
+"MX for Microsoft 365: "
+"<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 msgstr ""
-"Microsoft 365 için MX: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</"
-"code>"
+"Microsoft 365 için MX: "
+"<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/default/add_zone_templ_record.html:177
 msgid "A record: <code>192.0.2.10</code>"
@@ -7318,7 +7353,8 @@ msgstr "Zonu imzasız yap"
 msgid "ID"
 msgstr "ID"
 
-#: templates/default/api_keys.html:34 templates/default/list_perm_templ.html:20
+#: templates/default/api_keys.html:34
+#: templates/default/list_perm_templ.html:20
 msgid "Actions"
 msgstr "İşlemler"
 
@@ -7529,7 +7565,8 @@ msgstr "Yeni süper master sunucu ekle"
 msgid "Add supermaster"
 msgstr "Süper master ekle"
 
-#: templates/default/index.html:201 templates/default/bulk_registration.html:23
+#: templates/default/index.html:201
+#: templates/default/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Toplu Kayıt"
 
@@ -7714,7 +7751,8 @@ msgstr "Genel şablon"
 msgid "Make this template available to all users"
 msgstr "Bu şablonu tüm kullanıcılar için kullanılabilir yap"
 
-#: templates/default/list_zone_templ.html:126 templates/default/header.html:133
+#: templates/default/list_zone_templ.html:126
+#: templates/default/header.html:133
 msgid "Add zone template"
 msgstr "Zon şablonu ekle"
 
@@ -7736,7 +7774,8 @@ msgstr ""
 
 #: templates/default/add_zone_templ.html:75
 msgid "After creating a template, you can add record templates to it."
-msgstr "Bir şablon oluşturduktan sonra, ona kayıt şablonları ekleyebilirsiniz."
+msgstr ""
+"Bir şablon oluşturduktan sonra, ona kayıt şablonları ekleyebilirsiniz."
 
 #: templates/default/add_zone_templ.html:78
 msgid "Template Usage"
@@ -8075,8 +8114,8 @@ msgstr "Sorumluluk Sınırlandırması"
 
 #: templates/default/user_agreement_content.html:23
 msgid ""
-"This system is provided \"as is\" without any warranties. The administrators "
-"are not liable for any damages or losses resulting from the use of this "
+"This system is provided \"as is\" without any warranties. The administrators"
+" are not liable for any damages or losses resulting from the use of this "
 "system."
 msgstr ""
 "Bu sistem herhangi bir garanti olmaksızın \"olduğu gibi\" sağlanır. "
@@ -8292,7 +8331,9 @@ msgid ""
 "PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
 "If you select KSK or ZSK, PowerDNS may still create a CSK key."
 msgstr ""
-"PowerDNS 4.0 ve daha yeni sürümler varsayılan olarak Combined Signing Keys (CSK) kullanır. KSK veya ZSK seçseniz bile PowerDNS yine de bir CSK anahtarı oluşturabilir."
+"PowerDNS 4.0 ve daha yeni sürümler varsayılan olarak Combined Signing Keys "
+"(CSK) kullanır. KSK veya ZSK seçseniz bile PowerDNS yine de bir CSK anahtarı"
+" oluşturabilir."
 
 #: templates/default/dnssec_add_key.html:53
 msgid "Key type"
@@ -8340,8 +8381,8 @@ msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
 msgstr ""
-"Birleşik İmzalama Anahtarı - hem KSK hem de ZSK olarak hizmet eder (PowerDNS "
-"4.0+ için önerilir)"
+"Birleşik İmzalama Anahtarı - hem KSK hem de ZSK olarak hizmet eder (PowerDNS"
+" 4.0+ için önerilir)"
 
 #: templates/default/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
@@ -8492,7 +8533,8 @@ msgstr ""
 #: templates/default/edit_user.html:201 templates/default/add_user.html:179
 msgid "Users can be disabled instead of deleted to preserve their settings"
 msgstr ""
-"Kullanıcılar ayarlarını korumak için silinmek yerine devre dışı bırakılabilir"
+"Kullanıcılar ayarlarını korumak için silinmek yerine devre dışı "
+"bırakılabilir"
 
 #: templates/default/edit_user.html:202
 msgid "LDAP users cannot have passwords managed through this interface"
@@ -8539,8 +8581,8 @@ msgid ""
 "Unlinking the zones from their template will not delete any records. The "
 "zones will no longer receive updates when the template is modified."
 msgstr ""
-"Zonları şablonlarından ayırmak hiçbir kaydı silmez. Şablon değiştirildiğinde "
-"zonlar artık güncelleme almayacaktır."
+"Zonları şablonlarından ayırmak hiçbir kaydı silmez. Şablon değiştirildiğinde"
+" zonlar artık güncelleme almayacaktır."
 
 #: templates/default/confirm_unlink_zones_templ.html:70
 msgid "Yes, unlink this zone"
@@ -8675,8 +8717,8 @@ msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
 msgstr ""
-"Supermaster, yeni zonları otomatik olarak slave'lerine gönderen bir PowerDNS "
-"yetkili sunucusudur."
+"Supermaster, yeni zonları otomatik olarak slave'lerine gönderen bir PowerDNS"
+" yetkili sunucusudur."
 
 #: templates/default/add_supermaster.html:87
 msgid "How it works"
@@ -8825,8 +8867,8 @@ msgstr "Sadece eşleşenler"
 
 #: templates/default/batch_ptr_record.html:143
 msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward "
-"zone"
+"Creates PTR records only for IPs that have existing A records in the forward"
+" zone"
 msgstr ""
 "PTR kayıtlarını sadece düz zonda mevcut A kayıtları bulunan IP'ler için "
 "oluşturur"
@@ -8844,8 +8886,8 @@ msgid ""
 "You must have the appropriate reverse zone already created in PowerDNS "
 "before using this feature."
 msgstr ""
-"Bu özelliği kullanmadan önce PowerDNS'te uygun ters zonun zaten oluşturulmuş "
-"olması gerekir."
+"Bu özelliği kullanmadan önce PowerDNS'te uygun ters zonun zaten oluşturulmuş"
+" olması gerekir."
 
 #: templates/default/batch_ptr_record.html:163
 msgid "For example:"
@@ -8889,8 +8931,8 @@ msgstr ""
 
 #: templates/default/batch_ptr_record.html:183
 msgid ""
-"Use the Host Prefix field to add a prefix to all hostnames when creating all "
-"IPs"
+"Use the Host Prefix field to add a prefix to all hostnames when creating all"
+" IPs"
 msgstr ""
 "Tüm IP'leri oluştururken tüm hostname'lere bir önek eklemek için Host Öneki "
 "alanını kullanın"
@@ -8900,8 +8942,8 @@ msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
 msgstr ""
-"Eşleşen düz kayıtları otomatik olarak oluşturmak için \"Düz A/AAAA kayıtları "
-"oluştur\" seçeneğini işaretleyin (eşleştirme modu kullanılırken devre dışı)"
+"Eşleşen düz kayıtları otomatik olarak oluşturmak için \"Düz A/AAAA kayıtları"
+" oluştur\" seçeneğini işaretleyin (eşleştirme modu kullanılırken devre dışı)"
 
 #: templates/default/add_record.html:18
 msgid "Add record"
@@ -8966,7 +9008,8 @@ msgstr "API Anahtarı Oluştur"
 #: templates/default/api_key_add.html:52
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
-"sure to save it in a secure place, as you won't be able to retrieve it later."
+"sure to save it in a secure place, as you won't be able to retrieve it "
+"later."
 msgstr ""
 "Yeni bir API anahtarı oluşturduğunuzda, anahtar size sadece BİR KERE "
 "gösterilecektir. Güvenli bir yerde sakladığınızdan emin olun, çünkü daha "
@@ -9205,7 +9248,8 @@ msgid "Record Details"
 msgstr "Kayıt Detayları"
 
 #: templates/default/delete_record.html:74
-msgid "You are trying to delete a record that is needed for this zone to work."
+msgid ""
+"You are trying to delete a record that is needed for this zone to work."
 msgstr ""
 "Bu bölgenin çalışması için gerekli olan bir kaydı silmeye çalışıyorsunuz."
 
@@ -9491,8 +9535,8 @@ msgid ""
 "signatures to DNS records to protect against spoofing and cache poisoning "
 "attacks."
 msgstr ""
-"DNSSEC (Domain Name System Security Extensions), sahteciliğe ve önbellekleme "
-"zehirlenmesi saldırılarına karşı koruma sağlamak için DNS kayıtlarına "
+"DNSSEC (Domain Name System Security Extensions), sahteciliğe ve önbellekleme"
+" zehirlenmesi saldırılarına karşı koruma sağlamak için DNS kayıtlarına "
 "kriptografik imzalar ekler."
 
 #: templates/default/add_zone_master.html:117
@@ -9509,7 +9553,8 @@ msgstr "Tam nitelikli domain adları kullanın (example.com)"
 
 #: templates/default/add_zone_master.html:133
 msgid "Select a template to automatically create common DNS records"
-msgstr "Ortak DNS kayıtlarını otomatik olarak oluşturmak için bir şablon seçin"
+msgstr ""
+"Ortak DNS kayıtlarını otomatik olarak oluşturmak için bir şablon seçin"
 
 #: templates/default/add_zone_master.html:134
 msgid "NATIVE zone type is recommended for most setups"
@@ -9577,8 +9622,8 @@ msgid ""
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
 msgstr ""
-"Bir alanın şablonunu değiştirmek şablon tabanlı kayıtları üstüne yazar ancak "
-"manuel eklemeleri korur. Şablon değişiklikleri alanları otomatik olarak "
+"Bir alanın şablonunu değiştirmek şablon tabanlı kayıtları üstüne yazar ancak"
+" manuel eklemeleri korur. Şablon değişiklikleri alanları otomatik olarak "
 "güncellemez - değişiklikleri uygulamak için şablonları düzenlerken "
 "\"Alanları Güncelle\" düğmesini kullanın."
 
@@ -9813,7 +9858,8 @@ msgstr "Şunun için RDAP sonuçları:"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "RDAP sorgusu yapmak için lütfen bir domain adı girin."
 
-#: templates/default/bulk_registration.html:11 templates/default/header.html:74
+#: templates/default/bulk_registration.html:11
+#: templates/default/header.html:74
 msgid "Bulk registration"
 msgstr "Toplu kayıt"
 
@@ -9870,8 +9916,8 @@ msgid ""
 "The system will attempt to create each zone with the same settings. Failed "
 "domains will be displayed so you can correct any issues and try again."
 msgstr ""
-"Sistem her zonu aynı ayarlarla oluşturmaya çalışacaktır. Başarısız domainler "
-"gösterilecek, böylece sorunları düzelterek tekrar deneyebilirsiniz."
+"Sistem her zonu aynı ayarlarla oluşturmaya çalışacaktır. Başarısız domainler"
+" gösterilecek, böylece sorunları düzelterek tekrar deneyebilirsiniz."
 
 #: templates/default/bulk_registration.html:118
 msgid "Tips & Recommendations"
@@ -9922,8 +9968,8 @@ msgstr "Kayıtları sil"
 
 #: templates/default/delete_records.html:27
 msgid ""
-"Are you sure you want to delete the following records? This action cannot be "
-"undone."
+"Are you sure you want to delete the following records? This action cannot be"
+" undone."
 msgstr ""
 "Aşağıdaki kayıtları silmek istediğinizden emin misiniz? Bu işlem geri "
 "alınamaz."
@@ -9970,8 +10016,8 @@ msgstr "Kurtarma Kodlarınızı Kaydedin"
 
 #: templates/default/mfa_recovery_codes.html:30
 msgid ""
-"Recovery codes can be used to access your account if you lose access to your "
-"authenticator device. Each code can only be used once."
+"Recovery codes can be used to access your account if you lose access to your"
+" authenticator device. Each code can only be used once."
 msgstr ""
 "Kimlik doğrulama cihazınıza erişimi kaybederseniz kurtarma kodları "
 "hesabınıza erişmek için kullanılabilir. Her kod yalnızca bir kez "
@@ -10049,8 +10095,8 @@ msgstr "Kimlik Doğrulama Uygulaması"
 
 #: templates/default/mfa_setup.html:61
 msgid ""
-"Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
-"or Authy."
+"Use an authenticator app like Google Authenticator, Microsoft Authenticator,"
+" or Authy."
 msgstr ""
 "Google Authenticator, Microsoft Authenticator veya Authy gibi bir kimlik "
 "doğrulama uygulaması kullanın."
@@ -10206,8 +10252,8 @@ msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
 msgstr ""
-"Filtre sözdizimi: type:txt content:spf. Joker karakter aramaya % ekler. Ters "
-"çevirme IP'leri PTR formatına dönüştürür (örneğin: 192.168.1.1'i "
+"Filtre sözdizimi: type:txt content:spf. Joker karakter aramaya % ekler. Ters"
+" çevirme IP'leri PTR formatına dönüştürür (örneğin: 192.168.1.1'i "
 "1.1.168.192.in-addr.arpa'ya)"
 
 #: templates/default/search.html:120
@@ -10234,7 +10280,8 @@ msgid ""
 "Are you sure you want to delete the selected records? This action cannot be "
 "undone."
 msgstr ""
-"Seçilen kayıtları silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
+"Seçilen kayıtları silmek istediğinizden emin misiniz? Bu işlem geri "
+"alınamaz."
 
 #: templates/default/search.html:498
 msgid "Try different search terms or filters"
@@ -10340,8 +10387,8 @@ msgstr ""
 
 #: templates/default/add_zone_slave.html:95
 msgid ""
-"Make sure that this PowerDNS server is allowed to transfer the zone from the "
-"master server. The master server must have an allow-transfer or similar "
+"Make sure that this PowerDNS server is allowed to transfer the zone from the"
+" master server. The master server must have an allow-transfer or similar "
 "configuration permitting zone transfers to this server's IP address."
 msgstr ""
 "Bu PowerDNS sunucusunun master sunucudan zon aktarımına izin verildiğinden "
@@ -10353,7 +10400,8 @@ msgid ""
 "You can specify multiple master servers by separating IP addresses with "
 "commas"
 msgstr ""
-"IP adreslerini virgülle ayırarak birden fazla master sunucu belirtebilirsiniz"
+"IP adreslerini virgülle ayırarak birden fazla master sunucu "
+"belirtebilirsiniz"
 
 #: templates/default/add_zone_slave.html:110
 msgid ""
@@ -10420,16 +10468,16 @@ msgid ""
 "Custom templates are active and override the default templates. These are "
 "the templates currently used when sending emails."
 msgstr ""
-"Özel şablonlar aktif ve varsayılan şablonları geçersiz kılar. Bunlar e-posta "
-"gönderilirken kullanılan şablonlardır."
+"Özel şablonlar aktif ve varsayılan şablonları geçersiz kılar. Bunlar e-posta"
+" gönderilirken kullanılan şablonlardır."
 
 #: templates/default/email_previews.html:34
 msgid ""
 "Standard templates are active. These are the default templates used when "
 "sending emails."
 msgstr ""
-"Standart şablonlar aktif. Bunlar e-posta gönderilirken kullanılan varsayılan "
-"şablonlardır."
+"Standart şablonlar aktif. Bunlar e-posta gönderilirken kullanılan varsayılan"
+" şablonlardır."
 
 #: templates/default/email_previews.html:54
 msgid "Subject:"
@@ -10473,9 +10521,9 @@ msgstr "Özel Şablonlar"
 
 #: templates/default/email_previews.html:88
 msgid ""
-"You can create custom email templates by placing them in <code>templates/"
-"emails/custom/</code> to override these standard templates with your own "
-"designs."
+"You can create custom email templates by placing them in "
+"<code>templates/emails/custom/</code> to override these standard templates "
+"with your own designs."
 msgstr ""
 "Bu standart şablonları kendi tasarımlarınızla geçersiz kılmak için "
 "<code>templates/emails/custom/</code> dizinine özel e-posta şablonları "
@@ -10497,8 +10545,8 @@ msgstr "Açık mod çoğu e-posta istemcisi için varsayılan görünümdür"
 msgid ""
 "Dark mode preview shows how emails appear when users have dark mode enabled"
 msgstr ""
-"Koyu mod önizlemesi kullanıcıların koyu modunu etkinleştirdiğinde e-"
-"postaların nasıl göründüğünü gösterir"
+"Koyu mod önizlemesi kullanıcıların koyu modunu etkinleştirdiğinde "
+"e-postaların nasıl göründüğünü gösterir"
 
 #: templates/default/email_previews.html:98
 msgid "These previews reflect the actual templates used in production"
@@ -10552,7 +10600,8 @@ msgstr "PowerDNS Sürümü"
 msgid "Daemon Type"
 msgstr "Daemon Tipi"
 
-#: templates/default/pdns_status.html:81 templates/default/pdns_status.html:182
+#: templates/default/pdns_status.html:81
+#: templates/default/pdns_status.html:182
 msgid "Uptime"
 msgstr "Çalışma Süresi"
 
@@ -10566,7 +10615,8 @@ msgstr "Slave Sunucular"
 
 #: templates/default/pdns_status.html:104
 msgid ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
+"Showing connectivity status for DNS servers listed in the supermasters "
+"table."
 msgstr ""
 "Supermasters tablosunda listelenen DNS sunucuları için bağlantı durumu "
 "gösteriliyor."
@@ -10759,8 +10809,8 @@ msgstr "API anahtarını silmek üzeresiniz"
 
 #: templates/default/api_key_delete.html:18
 msgid ""
-"If you delete this API key, any applications using it will no longer be able "
-"to authenticate."
+"If you delete this API key, any applications using it will no longer be able"
+" to authenticate."
 msgstr ""
 "Bu API anahtarını silerseniz, onu kullanan uygulamalar artık kimlik "
 "doğrulaması yapamayacaktır."
@@ -10844,7 +10894,8 @@ msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Bir DNSSEC anahtarını silmek üzeresiniz (ID"
 
 #: templates/default/whois.html:26
-msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
+msgid ""
+"Enter a domain name (e.g., example.com) to lookup its WHOIS information"
 msgstr ""
 "WHOIS bilgilerini aramak için bir domain adı girin (örneğin: example.com)"
 
@@ -11358,7 +11409,8 @@ msgstr "Yabancı Anahtar Kısıtlama Sorunları:"
 
 #: install/helpers/InstallStepHandler.php:217
 msgid ""
-"The installer could not remove existing tables due to foreign key constraints"
+"The installer could not remove existing tables due to foreign key "
+"constraints"
 msgstr ""
 "Yükleyici, yabancı anahtar kısıtlamaları nedeniyle mevcut tabloları "
 "kaldıramadı"
@@ -11368,8 +11420,8 @@ msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
-"Özel kısıtlamalarınız varsa veya tablolar başka tablolar tarafından referans "
-"alınıyorsa yeniden kurulum sırasında bu olabilir"
+"Özel kısıtlamalarınız varsa veya tablolar başka tablolar tarafından referans"
+" alınıyorsa yeniden kurulum sırasında bu olabilir"
 
 #: install/helpers/InstallStepHandler.php:219
 msgid ""
@@ -11453,8 +11505,8 @@ msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
 msgstr ""
-"Yapılandırma dosyası bulunamadı. Devam etmeden önce lütfen config/"
-"settings.php dosyasını oluşturun."
+"Yapılandırma dosyası bulunamadı. Devam etmeden önce lütfen "
+"config/settings.php dosyasını oluşturun."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:47
 msgid ""

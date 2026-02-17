@@ -19,12 +19,13 @@ msgstr ""
 
 #: lib/AppInitializer.php:82
 msgid ""
-"No configuration file found. Please use the <a href=\"install/\">installer</"
-"a> to create one, or create a config/settings.php file manually."
+"No configuration file found. Please use the <a "
+"href=\"install/\">installer</a> to create one, or create a "
+"config/settings.php file manually."
 msgstr ""
-"Geen configuratiebestand gevonden. Gebruik de <a href=\"install/"
-"\">installer</a> om er een te maken, of maak handmatig een config/"
-"settings.php bestand aan."
+"Geen configuratiebestand gevonden. Gebruik de <a "
+"href=\"install/\">installer</a> om er een te maken, of maak handmatig een "
+"config/settings.php bestand aan."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:136
 msgid "Invalid CSRF token."
@@ -78,8 +79,8 @@ msgstr "Geen records geselecteerd voor verwijdering."
 
 #: lib/Application/Controller/DeleteRecordsController.php:180
 msgid ""
-"The record has been deleted successfully. Any corresponding PTR records were "
-"also removed."
+"The record has been deleted successfully. Any corresponding PTR records were"
+" also removed."
 msgstr ""
 "Het record is succesvol verwijderd. Eventuele bijbehorende PTR-records zijn "
 "ook verwijderd."
@@ -99,7 +100,8 @@ msgstr "Geen records konden worden verwijderd. Controleer de machtigingen."
 
 #: lib/Application/Controller/DeleteRecordsController.php:234
 msgid ""
-"No valid records selected for deletion or you lack permission to delete them."
+"No valid records selected for deletion or you lack permission to delete "
+"them."
 msgstr ""
 "Geen geldige records geselecteerd voor verwijdering of u hebt geen "
 "toestemming om ze te verwijderen."
@@ -114,7 +116,8 @@ msgstr "U hebt geen toestemming om deze gebruiker te verwijderen."
 
 #: lib/Application/Controller/DeleteUserController.php:63
 msgid "You do not have permission to delete a superuser account."
-msgstr "U heeft geen toestemming om een supergebruikersaccount te verwijderen."
+msgstr ""
+"U heeft geen toestemming om een supergebruikersaccount te verwijderen."
 
 #: lib/Application/Controller/EditUserController.php:252
 msgid "User does not exist."
@@ -188,19 +191,19 @@ msgstr "Het record is succesvol verwijderd."
 
 #: lib/Application/Controller/DeleteRecordController.php:204
 msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
+"The record and its corresponding PTR and A/AAAA records were deleted but the"
+" comment was preserved because similar records exist."
 msgstr ""
 "Het record en de bijbehorende PTR- en A/AAAA-records zijn verwijderd, maar "
 "de opmerking is behouden omdat soortgelijke records bestaan."
 
 #: lib/Application/Controller/DeleteRecordController.php:206
 msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
+"The record and its corresponding PTR record were deleted but the comment was"
+" preserved because similar records exist."
 msgstr ""
-"Het record en het bijbehorende PTR-record zijn verwijderd, maar de opmerking "
-"is behouden omdat vergelijkbare records bestaan."
+"Het record en het bijbehorende PTR-record zijn verwijderd, maar de opmerking"
+" is behouden omdat vergelijkbare records bestaan."
 
 #: lib/Application/Controller/DeleteRecordController.php:208
 msgid ""
@@ -212,8 +215,8 @@ msgstr ""
 
 #: lib/Application/Controller/DeleteRecordController.php:210
 msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
+"The record was deleted but the comment was preserved because similar records"
+" exist."
 msgstr ""
 "Het record is verwijderd maar de opmerking is behouden omdat er "
 "vergelijkbare records bestaan."
@@ -270,8 +273,8 @@ msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
 msgstr ""
-"Kan verificatiecode niet verzenden. Probeer het later opnieuw of gebruik app-"
-"gebaseerde authenticatie."
+"Kan verificatiecode niet verzenden. Probeer het later opnieuw of gebruik "
+"app-gebaseerde authenticatie."
 
 #: lib/Application/Controller/MfaSetupController.php:263
 msgid "MFA has been enabled with email verification."
@@ -290,7 +293,8 @@ msgid "MFA must be enabled to regenerate recovery codes."
 msgstr "MFA moet ingeschakeld zijn om herstelcodes opnieuw te genereren."
 
 #: lib/Application/Controller/MfaSetupController.php:310
-msgid "Recovery codes have been regenerated. Please save them in a safe place."
+msgid ""
+"Recovery codes have been regenerated. Please save them in a safe place."
 msgstr ""
 "Herstelcodes zijn opnieuw gegenereerd. Bewaar ze op een veilige plaats."
 
@@ -307,8 +311,8 @@ msgid ""
 "You do not have permission to manage API keys. Only administrators can "
 "access this feature."
 msgstr ""
-"U hebt geen toestemming om API-sleutels te beheren. Alleen beheerders kunnen "
-"deze functie gebruiken."
+"U hebt geen toestemming om API-sleutels te beheren. Alleen beheerders kunnen"
+" deze functie gebruiken."
 
 #: lib/Application/Controller/ApiKeysController.php:196
 msgid "API key name is required."
@@ -466,7 +470,8 @@ msgid "You do not have permission to create new zone templates."
 msgstr "U hebt geen toestemming om nieuwe zonesjablonen aan te maken."
 
 #: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:803
-msgid "Zone template with this name already exists, please choose another one."
+msgid ""
+"Zone template with this name already exists, please choose another one."
 msgstr "Zonesjabloon met deze naam bestaat al, kies een andere."
 
 #: lib/Application/Controller/EditZoneTemplController.php:264
@@ -682,11 +687,11 @@ msgstr "Er is een fout opgetreden. Probeer het opnieuw."
 
 #: lib/Application/Controller/MfaVerifyController.php:258
 msgid ""
-"Email verification is not available because mail service is disabled. Please "
-"use a recovery code."
+"Email verification is not available because mail service is disabled. Please"
+" use a recovery code."
 msgstr ""
-"E-mailverificatie is niet beschikbaar omdat de mailservice is uitgeschakeld. "
-"Gebruik een herstelcode."
+"E-mailverificatie is niet beschikbaar omdat de mailservice is uitgeschakeld."
+" Gebruik een herstelcode."
 
 #: lib/Application/Controller/MfaVerifyController.php:268
 msgid "A new verification code has been sent to your email."
@@ -701,8 +706,8 @@ msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
 msgstr ""
-"Kan verificatiecode niet naar uw e-mail verzenden. Gebruik in plaats daarvan "
-"een herstelcode."
+"Kan verificatiecode niet naar uw e-mail verzenden. Gebruik in plaats daarvan"
+" een herstelcode."
 
 #: lib/Domain/Service/Dns/RecordManager.php:112
 msgid "You do not have the permission to add a record to this zone."
@@ -1381,11 +1386,11 @@ msgstr "Prioriteitsveld voor IPSECKEY-records moet 0 of leeg zijn"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:122
 msgid ""
-"IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
-"keying material (RFC 4025 Section 4)."
+"IPSECKEY records should be used with DNSSEC to ensure secure transmission of"
+" keying material (RFC 4025 Section 4)."
 msgstr ""
-"IPSECKEY-records moeten worden gebruikt met DNSSEC om veilige overdracht van "
-"sleutelmateriaal te garanderen (RFC 4025 Sectie 4)."
+"IPSECKEY-records moeten worden gebruikt met DNSSEC om veilige overdracht van"
+" sleutelmateriaal te garanderen (RFC 4025 Sectie 4)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:123
 msgid ""
@@ -1397,8 +1402,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
-"When using domain name gateways, ensure both forward and reverse DNS records "
-"exist and are properly secured with DNSSEC."
+"When using domain name gateways, ensure both forward and reverse DNS records"
+" exist and are properly secured with DNSSEC."
 msgstr ""
 "Bij het gebruik van domeinnaamgateways, zorg ervoor dat zowel voorwaartse "
 "als omgekeerde DNS-records bestaan en goed beveiligd zijn met DNSSEC."
@@ -1412,8 +1417,8 @@ msgid ""
 "IPSECKEY record must contain precedence, gateway type, algorithm, gateway, "
 "and public key."
 msgstr ""
-"IPSECKEY-record moet precedence, gatewaytype, algoritme, gateway en publieke "
-"sleutel bevatten."
+"IPSECKEY-record moet precedence, gatewaytype, algoritme, gateway en publieke"
+" sleutel bevatten."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:175
 msgid "IPSECKEY precedence must be a number between 0 and 255."
@@ -1461,19 +1466,21 @@ msgstr "IPSECKEY publieke sleutel moet correct Base64-gecodeerd zijn."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:239
 msgid "RSA keys should follow the format defined in RFC 3110."
-msgstr "RSA-sleutels moeten het formaat volgen zoals gedefinieerd in RFC 3110."
+msgstr ""
+"RSA-sleutels moeten het formaat volgen zoals gedefinieerd in RFC 3110."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:243
 msgid "DSA keys should follow the format defined in RFC 2536."
-msgstr "DSA-sleutels moeten het formaat volgen zoals gedefinieerd in RFC 2536."
+msgstr ""
+"DSA-sleutels moeten het formaat volgen zoals gedefinieerd in RFC 2536."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:248
 msgid ""
 "When algorithm is 0 (No key), the public key field is typically empty or "
 "ignored."
 msgstr ""
-"Wanneer algoritme 0 (Geen sleutel) is, is het publieke sleutelveld doorgaans "
-"leeg of wordt genegeerd."
+"Wanneer algoritme 0 (Geen sleutel) is, is het publieke sleutelveld doorgaans"
+" leeg of wordt genegeerd."
 
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:102
 msgid ""
@@ -1508,24 +1515,23 @@ msgstr ""
 "waarbij $port, $protocol en $hostname van het doel van SRV-opzoeking komen"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
-msgid ""
-"3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
+msgid "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
 msgstr ""
 "3. Zowel SRV- als TLSA-records moeten DNSSEC-validatiestatus \"secure\" "
 "hebben"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
-"TLSA record name should typically follow the format _port._protocol.hostname "
-"(e.g., _443._tcp.www.example.com)."
+"TLSA record name should typically follow the format _port._protocol.hostname"
+" (e.g., _443._tcp.www.example.com)."
 msgstr ""
 "TLSA-recordnaam moet doorgaans het formaat _port._protocol.hostname volgen "
 "(bijv. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
-"TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
-"and sctp."
+"TLSA record is using a non-standard protocol. Common protocols are tcp, udp,"
+" and sctp."
 msgstr ""
 "TLSA-record gebruikt een niet-standaard protocol. Gebruikelijke protocollen "
 "zijn tcp, udp en sctp."
@@ -1548,8 +1554,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
-"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
-"properly configured for DoT."
+"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is"
+" properly configured for DoT."
 msgstr ""
 "Dit lijkt een TLSA-record voor DNS over TLS te zijn. Zorg ervoor dat uw DNS-"
 "server correct geconfigureerd is voor DoT."
@@ -1571,14 +1577,15 @@ msgstr ""
 "ondertekend is opdat TLSA correct werkt (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
-msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
+msgid ""
+"This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
 msgstr ""
 "Dit lijkt een SMIMEA-record (RFC 8162) voor S/MIME-certificaten te zijn."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
-"SMIMEA records use the same format as TLSA but associate S/MIME certificates "
-"with email addresses."
+"SMIMEA records use the same format as TLSA but associate S/MIME certificates"
+" with email addresses."
 msgstr ""
 "SMIMEA-records gebruiken hetzelfde formaat als TLSA maar koppelen S/MIME-"
 "certificaten aan e-mailadressen."
@@ -1601,10 +1608,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
-"Invalid value for priority field. TLSA records must have priority value of 0."
+"Invalid value for priority field. TLSA records must have priority value of "
+"0."
 msgstr ""
-"Ongeldige waarde voor prioriteitsveld. TLSA-records moeten prioriteitswaarde "
-"0 hebben."
+"Ongeldige waarde voor prioriteitsveld. TLSA-records moeten prioriteitswaarde"
+" 0 hebben."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:249
 msgid ""
@@ -1636,11 +1644,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:270
 msgid ""
-"Usage 2 (DANE-TA) requires proper trust anchor management and may break when "
-"certificates expire."
+"Usage 2 (DANE-TA) requires proper trust anchor management and may break when"
+" certificates expire."
 msgstr ""
-"Gebruik 2 (DANE-TA) vereist correct vertrouwensankerbeheer en kan kapot gaan "
-"wanneer certificaten verlopen."
+"Gebruik 2 (DANE-TA) vereist correct vertrouwensankerbeheer en kan kapot gaan"
+" wanneer certificaten verlopen."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:272
 msgid ""
@@ -1660,7 +1668,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
-"TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
+"TLSA selector field must be 0 (Full certificate) or 1 "
+"(SubjectPublicKeyInfo)."
 msgstr ""
 "TLSA-selectorveld moet 0 (Volledig certificaat) of 1 (SubjectPublicKeyInfo) "
 "zijn."
@@ -1712,8 +1721,8 @@ msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
 msgstr ""
-"NSEC3PARAM-records MOETEN alleen aanwezig zijn op de zone-apex (hoofddomein, "
-"niet subdomein)."
+"NSEC3PARAM-records MOETEN alleen aanwezig zijn op de zone-apex (hoofddomein,"
+" niet subdomein)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
@@ -1736,29 +1745,29 @@ msgid ""
 "NSEC3PARAM records are part of DNSSEC and should only be managed alongside "
 "other DNSSEC records (DNSKEY, RRSIG, etc.)."
 msgstr ""
-"NSEC3PARAM-records zijn onderdeel van DNSSEC en moeten alleen beheerd worden "
-"samen met andere DNSSEC-records (DNSKEY, RRSIG, etc.)."
+"NSEC3PARAM-records zijn onderdeel van DNSSEC en moeten alleen beheerd worden"
+" samen met andere DNSSEC-records (DNSKEY, RRSIG, etc.)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
-"Manually editing NSEC3PARAM records is not recommended as they are typically "
-"generated automatically by DNSSEC-aware nameservers."
+"Manually editing NSEC3PARAM records is not recommended as they are typically"
+" generated automatically by DNSSEC-aware nameservers."
 msgstr ""
 "Handmatig bewerken van NSEC3PARAM-records wordt niet aanbevolen omdat ze "
 "doorgaans automatisch gegenereerd worden door DNSSEC-bewuste nameservers."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:148
 msgid ""
-"NSEC3PARAM records indicate to authoritative servers which parameters to use "
-"for NSEC3-based authenticated denial of existence."
+"NSEC3PARAM records indicate to authoritative servers which parameters to use"
+" for NSEC3-based authenticated denial of existence."
 msgstr ""
 "NSEC3PARAM-records geven aan gezaghebbende servers aan welke parameters te "
 "gebruiken voor NSEC3-gebaseerde geauthenticeerde ontkenning van bestaan."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:149
 msgid ""
-"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
-"generated with the same parameters."
+"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be "
+"re-generated with the same parameters."
 msgstr ""
 "Bij het bijwerken van NSEC3-parameters moeten zowel NSEC3- als NSEC3PARAM-"
 "records opnieuw gegenereerd worden met dezelfde parameters."
@@ -1781,11 +1790,11 @@ msgstr "NSEC3PARAM-vlaggen moeten tussen 0 en 255 zijn."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:224
 msgid ""
-"Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover "
-"unsigned delegations."
+"Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover"
+" unsigned delegations."
 msgstr ""
-"Vlagwaarde 1 geeft aan dat Opt-Out in gebruik is. Dit betekent dat NSEC3-"
-"records niet-ondertekende delegaties kunnen dekken."
+"Vlagwaarde 1 geeft aan dat Opt-Out in gebruik is. Dit betekent dat "
+"NSEC3-records niet-ondertekende delegaties kunnen dekken."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:225
 msgid ""
@@ -1793,7 +1802,8 @@ msgid ""
 "zones where the majority of records are insecure delegations."
 msgstr ""
 "RFC 9276 beveelt aan Opt-Out alleen te gebruiken voor zeer grote en schaars "
-"ondertekende zones waar de meerderheid van records onveilige delegaties zijn."
+"ondertekende zones waar de meerderheid van records onveilige delegaties "
+"zijn."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:201
 msgid ""
@@ -1820,8 +1830,8 @@ msgid ""
 "High iteration values (>100) may cause validating resolvers to reject your "
 "zones. RFC 9276 STRONGLY recommends using 0 iterations."
 msgstr ""
-"Hoge iteratiewaarden (>100) kunnen ertoe leiden dat validerende resolvers uw "
-"zones afwijzen. RFC 9276 beveelt STERK aan om 0 iteraties te gebruiken."
+"Hoge iteratiewaarden (>100) kunnen ertoe leiden dat validerende resolvers uw"
+" zones afwijzen. RFC 9276 beveelt STERK aan om 0 iteraties te gebruiken."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:241
 msgid ""
@@ -1853,8 +1863,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:111
 msgid ""
-"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
-"not a formal IETF standard."
+"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol,"
+" not a formal IETF standard."
 msgstr ""
 "OPMERKING: Het LP recordtype is gedefinieerd in RFC 6742 als een "
 "experimenteel protocol, niet als een formele IETF-standaard."
@@ -1869,11 +1879,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
-"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
-"Section 3.4)."
+"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742"
+" Section 3.4)."
 msgstr ""
-"LP records mogen NIET aanwezig zijn voor nodes die niet ILNP-compatibel zijn "
-"(RFC 6742 Sectie 3.4)."
+"LP records mogen NIET aanwezig zijn voor nodes die niet ILNP-compatibel zijn"
+" (RFC 6742 Sectie 3.4)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:122
 msgid ""
@@ -1964,8 +1974,8 @@ msgid ""
 "LOC records are rarely used but can be helpful for geographical mapping of "
 "resources."
 msgstr ""
-"LOC records worden zelden gebruikt maar kunnen nuttig zijn voor geografische "
-"mapping van resources."
+"LOC records worden zelden gebruikt maar kunnen nuttig zijn voor geografische"
+" mapping van resources."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:128
 msgid ""
@@ -1985,8 +1995,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:135
 msgid ""
-"Default precision values detected (1m size, 10000m horizontal precision, 10m "
-"vertical precision). Consider using more accurate values if you have them."
+"Default precision values detected (1m size, 10000m horizontal precision, 10m"
+" vertical precision). Consider using more accurate values if you have them."
 msgstr ""
 "Standaard precisiewaarden gedetecteerd (1m grootte, 10000m horizontale "
 "precisie, 10m verticale precisie). Overweeg nauwkeurigere waarden te "
@@ -2050,8 +2060,8 @@ msgstr "Prioriteitsveld voor RKEY records moet 0 of leeg zijn."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:145
 msgid ""
-"RKEY records should be used with caution as they are not widely supported by "
-"DNS servers and resolvers."
+"RKEY records should be used with caution as they are not widely supported by"
+" DNS servers and resolvers."
 msgstr ""
 "RKEY records moeten voorzichtig worden gebruikt omdat ze niet breed "
 "ondersteund worden door DNS servers en resolvers."
@@ -2073,8 +2083,8 @@ msgstr "RKEY flags veld moet een numerieke waarde zijn."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:189
 msgid ""
-"Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
-"SEP)."
+"Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key +"
+" SEP)."
 msgstr ""
 "Ongewone flags waarde. Gebruikelijke waarden zijn 0, 256 (Zone Key), of 257 "
 "(Zone Key + SEP)."
@@ -2132,11 +2142,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
-"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
-"stronger algorithm."
+"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a"
+" stronger algorithm."
 msgstr ""
-"Algoritme 5 (RSA/SHA-1) wordt als onveilig beschouwd en zou vervangen moeten "
-"worden door een sterker algoritme."
+"Algoritme 5 (RSA/SHA-1) wordt als onveilig beschouwd en zou vervangen moeten"
+" worden door een sterker algoritme."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:230
 msgid ""
@@ -2191,8 +2201,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid ""
-"CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
-"SHA-256) or later."
+"CRITICAL: This algorithm is considered insecure. Use algorithm 8 "
+"(RSA/SHA-256) or later."
 msgstr ""
 "KRITIEK: Dit algoritme wordt als onveilig beschouwd. Gebruik algoritme 8 "
 "(RSA/SHA-256) of later."
@@ -2288,8 +2298,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:84
 msgid ""
-"Note: NID records are used for the ILNP protocol, which is experimental (RFC "
-"6740, 6742)."
+"Note: NID records are used for the ILNP protocol, which is experimental (RFC"
+" 6740, 6742)."
 msgstr ""
 "Opmerking: NID records worden gebruikt voor het ILNP protocol, dat "
 "experimenteel is (RFC 6740, 6742)."
@@ -2303,8 +2313,8 @@ msgid ""
 "NID record content must be in format xxxx:xxxx:xxxx:xxxx with 4 groups of 4 "
 "hexadecimal digits."
 msgstr ""
-"NID record inhoud moet in formaat xxxx:xxxx:xxxx:xxxx zijn met 4 groepen van "
-"4 hexadecimale cijfers."
+"NID record inhoud moet in formaat xxxx:xxxx:xxxx:xxxx zijn met 4 groepen van"
+" 4 hexadecimale cijfers."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
@@ -2315,16 +2325,16 @@ msgid ""
 "NID record content must be a 64-bit hexadecimal value (16 hex characters or "
 "xxxx:xxxx:xxxx:xxxx format)."
 msgstr ""
-"NID record inhoud moet een 64-bit hexadecimale waarde zijn (16 hex karakters "
-"of xxxx:xxxx:xxxx:xxxx formaat)."
+"NID record inhoud moet een 64-bit hexadecimale waarde zijn (16 hex karakters"
+" of xxxx:xxxx:xxxx:xxxx formaat)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:181
 msgid ""
 "NID records should use the RFC 6742 presentation format "
 "(xxxx:xxxx:xxxx:xxxx) with colons for better readability."
 msgstr ""
-"NID records moeten het RFC 6742 presentatieformaat (xxxx:xxxx:xxxx:xxxx) met "
-"dubbele punten gebruiken voor betere leesbaarheid."
+"NID records moeten het RFC 6742 presentatieformaat (xxxx:xxxx:xxxx:xxxx) met"
+" dubbele punten gebruiken voor betere leesbaarheid."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:220
 msgid ""
@@ -2339,16 +2349,16 @@ msgid ""
 "The universal/local bit (u/l bit) is set to universal (0), indicating this "
 "NID is based on a globally unique identifier."
 msgstr ""
-"De universal/local bit (u/l bit) is ingesteld op universal (0), wat aangeeft "
-"dat deze NID gebaseerd is op een globaal unieke identificatie."
+"De universal/local bit (u/l bit) is ingesteld op universal (0), wat aangeeft"
+" dat deze NID gebaseerd is op een globaal unieke identificatie."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:229
 msgid ""
 "The universal/local bit (u/l bit) is set to local (1), indicating this NID "
 "is locally assigned and not globally unique."
 msgstr ""
-"De universal/local bit (u/l bit) is ingesteld op local (1), wat aangeeft dat "
-"deze NID lokaal toegewezen is en niet globaal uniek."
+"De universal/local bit (u/l bit) is ingesteld op local (1), wat aangeeft dat"
+" deze NID lokaal toegewezen is en niet globaal uniek."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
 msgid "A zero NodeID value is unusual and may indicate a configuration error."
@@ -2359,7 +2369,8 @@ msgstr ""
 msgid ""
 "An all-ones NodeID value is unusual and may indicate a configuration error."
 msgstr ""
-"Een all-ones NodeID waarde is ongewoon en kan duiden op een configuratiefout."
+"Een all-ones NodeID waarde is ongewoon en kan duiden op een "
+"configuratiefout."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:273
 msgid "NID record preference must be a number."
@@ -2405,13 +2416,13 @@ msgid ""
 "According to RFC 4034, NSEC records should have the same TTL as the SOA "
 "minimum TTL field."
 msgstr ""
-"Volgens RFC 4034 moeten NSEC records dezelfde TTL hebben als het SOA minimum "
-"TTL veld."
+"Volgens RFC 4034 moeten NSEC records dezelfde TTL hebben als het SOA minimum"
+" TTL veld."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
-"NSEC records enable \"zone walking\", allowing enumeration of all names in a "
-"zone, which may be a privacy concern."
+"NSEC records enable \"zone walking\", allowing enumeration of all names in a"
+" zone, which may be a privacy concern."
 msgstr ""
 "NSEC records maken \"zone walking\" mogelijk, wat enumeratie van alle namen "
 "in een zone toestaat, wat een privacykwestie kan zijn."
@@ -2429,16 +2440,16 @@ msgid ""
 "NSEC records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
 msgstr ""
-"NSEC records zijn onderdeel van DNSSEC en moeten alleen beheerd worden samen "
-"met andere DNSSEC records (DNSKEY, RRSIG, etc.)."
+"NSEC records zijn onderdeel van DNSSEC en moeten alleen beheerd worden samen"
+" met andere DNSSEC records (DNSKEY, RRSIG, etc.)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:129
 msgid ""
 "Manually editing NSEC records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
 msgstr ""
-"Handmatig bewerken van NSEC records wordt niet aanbevolen omdat ze doorgaans "
-"automatisch gegenereerd worden door DNSSEC-bewuste nameservers."
+"Handmatig bewerken van NSEC records wordt niet aanbevolen omdat ze doorgaans"
+" automatisch gegenereerd worden door DNSSEC-bewuste nameservers."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:133
 msgid ""
@@ -2454,9 +2465,9 @@ msgstr "NSEC record moet een geldige volgende domeinnaam bevatten."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:173
 msgid ""
-"The next domain name field must be the next owner name in canonical ordering "
-"of the zone. Canonical ordering is case-insensitive and sorts by labels from "
-"right to left."
+"The next domain name field must be the next owner name in canonical ordering"
+" of the zone. Canonical ordering is case-insensitive and sorts by labels "
+"from right to left."
 msgstr ""
 "Het volgende domeinnaam veld moet de volgende eigenaarsnaam zijn in "
 "canonieke volgorde van de zone. Canonieke volgorde is hoofdletterongevoelig "
@@ -2472,8 +2483,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:194
 msgid ""
-"Type bit maps should be present to indicate which RR types exist at the NSEC "
-"owner name. An empty type bitmap is unusual."
+"Type bit maps should be present to indicate which RR types exist at the NSEC"
+" owner name. An empty type bitmap is unusual."
 msgstr ""
 "Type bit maps moeten aanwezig zijn om aan te geven welke RR types bestaan "
 "bij de NSEC eigenaarsnaam. Een lege type bitmap is ongewoon."
@@ -2537,8 +2548,8 @@ msgid ""
 "manually."
 msgstr ""
 "OPENPGPKEY records moeten doorgaans gegenereerd worden met gespecialiseerde "
-"tools zoals GnuPG met de --print-dane-records optie, in plaats van handmatig "
-"aangemaakt."
+"tools zoals GnuPG met de --print-dane-records optie, in plaats van handmatig"
+" aangemaakt."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
@@ -2550,7 +2561,8 @@ msgstr "Ongeldige karakters in OPENPGPKEY record inhoud."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:208
 msgid "OPENPGPKEY records must contain valid base64-encoded data."
-msgstr "OPENPGPKEY records moeten geldige base64-gecodeerde gegevens bevatten."
+msgstr ""
+"OPENPGPKEY records moeten geldige base64-gecodeerde gegevens bevatten."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:214
 msgid "OPENPGPKEY record contains invalid base64 data."
@@ -2563,8 +2575,8 @@ msgid ""
 "minimal key export format."
 msgstr ""
 "OPENPGPKEY record overschrijdt 4KB in grootte. RFC 7929 beveelt aan om DNS "
-"records zo klein mogelijk te houden voor betrouwbaar transport. Overweeg een "
-"minimaal sleutel export formaat te gebruiken."
+"records zo klein mogelijk te houden voor betrouwbaar transport. Overweeg een"
+" minimaal sleutel export formaat te gebruiken."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
@@ -2580,8 +2592,8 @@ msgid ""
 "packets must start with a byte that has the high bit set (RFC 9580)."
 msgstr ""
 "De gedecodeerde inhoud lijkt geen geldig OpenPGP pakket te zijn. OpenPGP "
-"pakketten moeten beginnen met een byte waarvan de hoge bit is ingesteld (RFC "
-"9580)."
+"pakketten moeten beginnen met een byte waarvan de hoge bit is ingesteld (RFC"
+" 9580)."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:251
 msgid ""
@@ -2601,8 +2613,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
-"OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
-"by all email clients or OpenPGP implementations."
+"OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported"
+" by all email clients or OpenPGP implementations."
 msgstr ""
 "OPENPGPKEY records zijn EXPERIMENTEEL volgens RFC 7929 en worden mogelijk "
 "niet ondersteund door alle e-mailclients of OpenPGP implementaties."
@@ -2617,8 +2629,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
-"To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
-"print-dane-records option to ensure correct format and content."
+"To create OPENPGPKEY records, use specialized tools like GnuPG with the "
+"--print-dane-records option to ensure correct format and content."
 msgstr ""
 "Om OPENPGPKEY records aan te maken, gebruik gespecialiseerde tools zoals "
 "GnuPG met de --print-dane-records optie om correct formaat en inhoud te "
@@ -2639,7 +2651,8 @@ msgid ""
 msgstr ""
 "Waarschuwing: HINFO records onthullen mogelijk gevoelige informatie over "
 "host hardware en software die nuttig kan zijn voor aanvallers. Overweeg "
-"beveiligingsimplicaties voordat u deze gebruikt in publiek toegankelijke DNS."
+"beveiligingsimplicaties voordat u deze gebruikt in publiek toegankelijke "
+"DNS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
@@ -2667,8 +2680,8 @@ msgstr "Ongeldige aanhalingstekens binnen HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:258
 msgid ""
-"CPU type does not contain any standard values. Consider using a standard CPU "
-"type for better interoperability."
+"CPU type does not contain any standard values. Consider using a standard CPU"
+" type for better interoperability."
 msgstr ""
 "CPU type bevat geen standaardwaarden. Overweeg een standaard CPU type te "
 "gebruiken voor betere interoperabiliteit."
@@ -2716,8 +2729,8 @@ msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
 msgstr ""
-"Nauwkeurige systeemklokken zijn vereist op zowel client als server voor TSIG "
-"om correct te werken."
+"Nauwkeurige systeemklokken zijn vereist op zowel client als server voor TSIG"
+" om correct te werken."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
@@ -2784,8 +2797,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
-"TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
-"is outside the allowed time window. Check clock synchronization."
+"TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record"
+" is outside the allowed time window. Check clock synchronization."
 msgstr ""
 "TSIG foutcode 18 (BADTIME) geeft aan dat de timestamp in het TSIG record "
 "buiten het toegestane tijdvenster valt. Controleer kloksynchronisatie."
@@ -2795,8 +2808,8 @@ msgid ""
 "TSIG error code 22 (BADTRUNC) indicates that the truncated MAC in the TSIG "
 "record is invalid. Check MAC size configuration."
 msgstr ""
-"TSIG foutcode 22 (BADTRUNC) geeft aan dat de verkorte MAC in het TSIG record "
-"ongeldig is. Controleer MAC grootte configuratie."
+"TSIG foutcode 22 (BADTRUNC) geeft aan dat de verkorte MAC in het TSIG record"
+" ongeldig is. Controleer MAC grootte configuratie."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
@@ -2904,8 +2917,8 @@ msgid ""
 "ZONEMD hash algorithm values 240-255 are reserved for private use and may "
 "not be interoperable."
 msgstr ""
-"ZONEMD hash algoritme waarden 240-255 zijn gereserveerd voor privégebruik en "
-"zijn mogelijk niet interoperabel."
+"ZONEMD hash algoritme waarden 240-255 zijn gereserveerd voor privégebruik en"
+" zijn mogelijk niet interoperabel."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:159
 msgid ""
@@ -2945,7 +2958,8 @@ msgstr "ZONEMD hash algoritme moet een getal tussen 0 en 255 zijn."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "ZONEMD hash algoritme 0 is gereserveerd en niet voor standaardgebruik."
+msgstr ""
+"ZONEMD hash algoritme 0 is gereserveerd en niet voor standaardgebruik."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
@@ -2974,8 +2988,8 @@ msgid ""
 "Large certificates may cause DNS message fragmentation."
 msgstr ""
 "Volgens RFC 4398, houd rekening met DNS record groottebeperkingen bij het "
-"gebruik van CERT records. Grote certificaten kunnen DNS bericht fragmentatie "
-"veroorzaken."
+"gebruik van CERT records. Grote certificaten kunnen DNS bericht fragmentatie"
+" veroorzaken."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:111
 msgid "This CERT record content is quite large ("
@@ -3042,8 +3056,8 @@ msgstr "Algoritme "
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
 msgstr ""
-"Voor URL-gebaseerde CERT types moeten de certificaatgegevens een geldige URL "
-"zijn."
+"Voor URL-gebaseerde CERT types moeten de certificaatgegevens een geldige URL"
+" zijn."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
@@ -3054,8 +3068,8 @@ msgid ""
 "CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
 "0-9, +, /, =)."
 msgstr ""
-"CERT certificaatgegevens mogen alleen geldige base64 karakters bevatten (A-"
-"Z, a-z, 0-9, +, /, =)."
+"CERT certificaatgegevens mogen alleen geldige base64 karakters bevatten "
+"(A-Z, a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:285
 msgid ""
@@ -3088,8 +3102,8 @@ msgid ""
 "DNS resolvers have removed or deprecated DLV support. Consider using "
 "standard DNSSEC validation with DS records instead."
 msgstr ""
-"BELANGRIJK: DLV records zijn verouderd verklaard door RFC 8749 (maart 2020). "
-"Grote DNS resolvers hebben DLV ondersteuning verwijderd of afgeschaft. "
+"BELANGRIJK: DLV records zijn verouderd verklaard door RFC 8749 (maart 2020)."
+" Grote DNS resolvers hebben DLV ondersteuning verwijderd of afgeschaft. "
 "Overweeg standaard DNSSEC validatie met DS records te gebruiken."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:97
@@ -3130,8 +3144,8 @@ msgstr "Ongeldige key tag. Moet een getal tussen 1 en 65535 zijn."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:166
 msgid ""
-"The key tag field does not uniquely identify a DNSKEY. More than one key can "
-"have the same key tag."
+"The key tag field does not uniquely identify a DNSKEY. More than one key can"
+" have the same key tag."
 msgstr ""
 "Het key tag veld identificeert geen DNSKEY uniek. Meer dan één sleutel kan "
 "dezelfde key tag hebben."
@@ -3160,12 +3174,14 @@ msgstr ""
 "Ongeldige digest lengte voor SHA-1. Moet 40 hexadecimale karakters zijn."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
-msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
+msgid ""
+"Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
 msgstr ""
 "Ongeldige digest lengte voor SHA-256. Moet 64 hexadecimale karakters zijn."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
-msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
+msgid ""
+"Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
 msgstr ""
 "Ongeldige digest lengte voor SHA-384. Moet 96 hexadecimale karakters zijn."
 
@@ -3182,8 +3198,8 @@ msgid ""
 "This is a null MX record (RFC 7505) indicating this domain does not accept "
 "email."
 msgstr ""
-"Dit is een null MX record (RFC 7505) wat aangeeft dat dit domein geen e-mail "
-"accepteert."
+"Dit is een null MX record (RFC 7505) wat aangeeft dat dit domein geen e-mail"
+" accepteert."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:99
 msgid "A domain with null MX record must not have any other MX records."
@@ -3211,8 +3227,8 @@ msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
 msgstr ""
-"Prioriteitsveld mag niet gebruikt worden voor HTTPS records omdat prioriteit "
-"deel uitmaakt van de inhoud."
+"Prioriteitsveld mag niet gebruikt worden voor HTTPS records omdat prioriteit"
+" deel uitmaakt van de inhoud."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:119
 msgid "HTTPS record must contain at least priority and target values."
@@ -3227,7 +3243,8 @@ msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
 msgstr ""
-"HTTPS record doel moet \".\" of een geldige fully-qualified domain name zijn."
+"HTTPS record doel moet \".\" of een geldige fully-qualified domain name "
+"zijn."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:157
 msgid ""
@@ -3295,11 +3312,12 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
-"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
-"non-zero TTL may cause issues with older DNS implementations."
+"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current"
+" non-zero TTL may cause issues with older DNS implementations."
 msgstr ""
 "RFC 2930 vereist dat TKEY records TTL=0 hebben om caching te voorkomen. De "
-"huidige niet-nul TTL kan problemen veroorzaken met oudere DNS implementaties."
+"huidige niet-nul TTL kan problemen veroorzaken met oudere DNS "
+"implementaties."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -3342,7 +3360,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
-"TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
+"TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS "
+"format."
 msgstr ""
 "TKEY vervaltijd moet een geldige Unix timestamp of YYYYMMDDHHmmSS formaat "
 "zijn."
@@ -3379,8 +3398,8 @@ msgid ""
 "Key deletion operations MUST be authenticated using TSIG with the key being "
 "deleted."
 msgstr ""
-"Sleutel verwijderingsoperaties MOETEN geauthenticeerd worden met TSIG met de "
-"sleutel die wordt verwijderd."
+"Sleutel verwijderingsoperaties MOETEN geauthenticeerd worden met TSIG met de"
+" sleutel die wordt verwijderd."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:224
 msgid "TKEY error must be a valid DNS RCODE number between 0 and 23."
@@ -3397,8 +3416,8 @@ msgstr ""
 msgid ""
 "TKEY established keys are associated with DNS servers/resolvers, not zones."
 msgstr ""
-"TKEY vastgestelde sleutels zijn geassocieerd met DNS servers/resolvers, niet "
-"met zones."
+"TKEY vastgestelde sleutels zijn geassocieerd met DNS servers/resolvers, niet"
+" met zones."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:234
 msgid ""
@@ -3418,8 +3437,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
-"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
-"security."
+"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better"
+" security."
 msgstr ""
 "Legacy algoritme gedetecteerd. HMAC-SHA256 of sterker wordt aanbevolen voor "
 "betere beveiliging."
@@ -3450,8 +3469,8 @@ msgstr "TTL waarde kan niet negatief zijn. Het moet 0 of hoger zijn."
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:111
 #, php-format
 msgid ""
-"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
-"bit integer."
+"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed "
+"32-bit integer."
 msgstr ""
 "TTL waarde overschrijdt het toegestane maximum (%d). RFC 2181 beperkt het "
 "tot een signed 32-bit integer."
@@ -3468,8 +3487,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
-"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
-"TTL values delay DNS updates."
+"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High"
+" TTL values delay DNS updates."
 msgstr ""
 "TTL waarde (%d) ligt boven het aanbevolen maximum van %d seconden (1 week). "
 "Hoge TTL waarden vertragen DNS updates."
@@ -3501,10 +3520,11 @@ msgstr ""
 "FTP wordt als minder veilig beschouwd dan alternatieven zoals SFTP of HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
-msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
+msgid ""
+"Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
 msgstr ""
-"Overweeg LDAPS (LDAP over SSL/TLS) te gebruiken voor het beveiligen van LDAP "
-"verbindingen."
+"Overweeg LDAPS (LDAP over SSL/TLS) te gebruiken voor het beveiligen van LDAP"
+" verbindingen."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
@@ -3571,8 +3591,8 @@ msgid ""
 "URI contains backslash characters, which may be interpreted differently "
 "across systems."
 msgstr ""
-"URI bevat backslash karakters, die mogelijk anders geïnterpreteerd worden op "
-"verschillende systemen."
+"URI bevat backslash karakters, die mogelijk anders geïnterpreteerd worden op"
+" verschillende systemen."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:305
 msgid ""
@@ -3587,8 +3607,8 @@ msgid ""
 "URI contains percent characters not used for properly formatted percent-"
 "encoding."
 msgstr ""
-"URI bevat procenttekens die niet gebruikt worden voor correct geformatteerde "
-"percent-encoding."
+"URI bevat procenttekens die niet gebruikt worden voor correct geformatteerde"
+" percent-encoding."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:320
 msgid ""
@@ -3632,8 +3652,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
-"The key exchanger host should have appropriate A/AAAA records for type A/"
-"AAAA additional section processing."
+"The key exchanger host should have appropriate A/AAAA records for type "
+"A/AAAA additional section processing."
 msgstr ""
 "De key exchanger host moet de juiste A/AAAA records hebben voor type A/AAAA "
 "additional section processing."
@@ -3647,8 +3667,8 @@ msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
 msgstr ""
-"OPMERKING: Het MINFO recordtype is gemarkeerd als EXPERIMENTEEL in RFC 1035. "
-"Het wordt mogelijk niet universeel ondersteund."
+"OPMERKING: Het MINFO recordtype is gemarkeerd als EXPERIMENTEEL in RFC 1035."
+" Het wordt mogelijk niet universeel ondersteund."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
@@ -3659,8 +3679,8 @@ msgid ""
 "MINFO record must contain both responsible mailbox and error mailbox "
 "separated by a space (RFC 1035 Section 3.3.7)."
 msgstr ""
-"MINFO record moet zowel verantwoordelijke mailbox als error mailbox bevatten "
-"gescheiden door een spatie (RFC 1035 Sectie 3.3.7)."
+"MINFO record moet zowel verantwoordelijke mailbox als error mailbox bevatten"
+" gescheiden door een spatie (RFC 1035 Sectie 3.3.7)."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:113
 msgid "Invalid responsible mailbox hostname (RMAILBX)."
@@ -3671,8 +3691,8 @@ msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
 msgstr ""
-"RFC 1035 merkt op dat veel mailinglijsten een mailbox \"lijst-naam-request\" "
-"gebruiken voor het verantwoordelijke mailbox veld."
+"RFC 1035 merkt op dat veel mailinglijsten een mailbox \"lijst-naam-request\""
+" gebruiken voor het verantwoordelijke mailbox veld."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
@@ -3691,8 +3711,8 @@ msgid ""
 "Using \".\" (root) for EMAILBX indicates that errors should be returned to "
 "the sender of the message."
 msgstr ""
-"Het gebruik van \".\" (root) voor EMAILBX geeft aan dat fouten teruggestuurd "
-"moeten worden naar de verzender van het bericht."
+"Het gebruik van \".\" (root) voor EMAILBX geeft aan dat fouten teruggestuurd"
+" moeten worden naar de verzender van het bericht."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:146
 msgid ""
@@ -3726,8 +3746,7 @@ msgstr ""
 "records."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
-msgid ""
-"Multiple \"all\" mechanisms found. Only the first one will be effective."
+msgid "Multiple \"all\" mechanisms found. Only the first one will be effective."
 msgstr ""
 "Meerdere \"all\"-mechanismen gevonden. Alleen de eerste zal effectief zijn."
 
@@ -3735,7 +3754,8 @@ msgstr ""
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
 msgstr ""
-"Dubbele %s modifier gevonden. Elke modifier kan hoogstens één keer voorkomen."
+"Dubbele %s modifier gevonden. Elke modifier kan hoogstens één keer "
+"voorkomen."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
@@ -3865,8 +3885,8 @@ msgid ""
 "As per RFC 4701 and RFC 4703, DHCID records should be placed at the same "
 "name as the A or AAAA records they correspond to."
 msgstr ""
-"Volgens RFC 4701 en RFC 4703 moeten DHCID records op dezelfde naam geplaatst "
-"worden als de A of AAAA records waar ze bij horen."
+"Volgens RFC 4701 en RFC 4703 moeten DHCID records op dezelfde naam geplaatst"
+" worden als de A of AAAA records waar ze bij horen."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:120
 msgid "Priority field for DHCID records must be 0 or empty."
@@ -3879,21 +3899,21 @@ msgid ""
 "the name is in use by a DHCP client."
 msgstr ""
 "Volgens RFC 4703 worden DHCID records gebruikt voor collision detection "
-"wanneer meerdere DHCP clients dezelfde naam claimen. De aanwezigheid van een "
-"DHCID record geeft aan dat de naam in gebruik is door een DHCP client."
+"wanneer meerdere DHCP clients dezelfde naam claimen. De aanwezigheid van een"
+" DHCID record geeft aan dat de naam in gebruik is door een DHCP client."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
-"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
-"=)."
+"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /,"
+" =)."
 msgstr ""
-"DHCID record mag alleen geldige base64 karakters bevatten (A-Z, a-z, 0-9, "
-"+, /, =)."
+"DHCID record mag alleen geldige base64 karakters bevatten (A-Z, a-z, 0-9, +,"
+" /, =)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
-"DHCID record has invalid base64 padding. Equals signs (=) should only appear "
-"at the end of the data."
+"DHCID record has invalid base64 padding. Equals signs (=) should only appear"
+" at the end of the data."
 msgstr ""
 "DHCID record heeft ongeldige base64 padding. Gelijktekens (=) mogen alleen "
 "aan het einde van de gegevens verschijnen."
@@ -3921,8 +3941,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
 msgid ""
-"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
-"4701 (0x0000, 0x0001, 0x0002)."
+"DHCID identifier type 0x%04X is not one of the standard types defined in RFC"
+" 4701 (0x0000, 0x0001, 0x0002)."
 msgstr ""
 "DHCID identifier type 0x%04X is niet een van de standaardtypes gedefinieerd "
 "in RFC 4701 (0x0000, 0x0001, 0x0002)."
@@ -3930,19 +3950,19 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
-"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
-"4701."
+"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC"
+" 4701."
 msgstr ""
-"DHCID digest type %d is niet het standaardtype (1 voor SHA-256) gedefinieerd "
-"in RFC 4701."
+"DHCID digest type %d is niet het standaardtype (1 voor SHA-256) gedefinieerd"
+" in RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
 "DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
 "decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
 msgstr ""
-"DHCID record met SHA-256 digest (type 1) moet minstens 35 bytes zijn wanneer "
-"gedecodeerd (2 voor identifier type, 1 voor digest type, 32 voor SHA-256 "
+"DHCID record met SHA-256 digest (type 1) moet minstens 35 bytes zijn wanneer"
+" gedecodeerd (2 voor identifier type, 1 voor digest type, 32 voor SHA-256 "
 "digest)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:207
@@ -3972,8 +3992,8 @@ msgstr "Prioriteitsveld voor RRSIG records moet 0 of leeg zijn"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid ""
-"RRSIG records should only be created by your DNS server when signing a zone. "
-"Manual manipulation is not recommended."
+"RRSIG records should only be created by your DNS server when signing a zone."
+" Manual manipulation is not recommended."
 msgstr ""
 "RRSIG records moeten alleen aangemaakt worden door uw DNS server bij het "
 "ondertekenen van een zone. Handmatige manipulatie wordt niet aanbevolen."
@@ -4031,8 +4051,8 @@ msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
 msgstr ""
-"Algoritme 5 (RSA/SHA-1) wordt als onveilig beschouwd en zou vervangen moeten "
-"worden door sterkere algoritmen."
+"Algoritme 5 (RSA/SHA-1) wordt als onveilig beschouwd en zou vervangen moeten"
+" worden door sterkere algoritmen."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
@@ -4063,8 +4083,8 @@ msgid ""
 "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
 msgstr ""
-"Algoritme 14 (ECDSA P-384 met SHA-384) biedt sterke beveiliging met kleinere "
-"handtekeningen dan RSA."
+"Algoritme 14 (ECDSA P-384 met SHA-384) biedt sterke beveiliging met kleinere"
+" handtekeningen dan RSA."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid ""
@@ -4107,8 +4127,8 @@ msgstr "RRSIG originele TTL moet een geldige positieve integer zijn."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid ""
-"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
-"are generally preferred for faster recovery in case of key compromise."
+"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs"
+" are generally preferred for faster recovery in case of key compromise."
 msgstr ""
 "Originele TTL is groter dan 1 dag (86400). Voor DNSSEC records zijn kortere "
 "TTL's over het algemeen geprefereerd voor sneller herstel in geval van "
@@ -4127,8 +4147,8 @@ msgid ""
 "The expiration time must be later than the inception time. This signature "
 "appears to have expired before it became valid."
 msgstr ""
-"De vervaltijd moet later zijn dan de inception tijd. Deze handtekening lijkt "
-"verlopen te zijn voordat het geldig werd."
+"De vervaltijd moet later zijn dan de inception tijd. Deze handtekening lijkt"
+" verlopen te zijn voordat het geldig werd."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
 msgid ""
@@ -4143,18 +4163,19 @@ msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
 msgstr ""
-"WAARSCHUWING: Deze handtekening verloopt binnen de komende 7 dagen. Overweeg "
-"het binnenkort te vernieuwen."
+"WAARSCHUWING: Deze handtekening verloopt binnen de komende 7 dagen. Overweeg"
+" het binnenkort te vernieuwen."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid "This signature will expire within the next 30 days. Plan for renewal."
 msgstr ""
-"Deze handtekening verloopt binnen de komende 30 dagen. Plan voor vernieuwing."
+"Deze handtekening verloopt binnen de komende 30 dagen. Plan voor "
+"vernieuwing."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
 msgid ""
-"WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
-"resolvers until the inception time is reached."
+"WARNING: This signature is not yet valid. It will not be validated by DNSSEC"
+" resolvers until the inception time is reached."
 msgstr ""
 "WAARSCHUWING: Deze handtekening is nog niet geldig. Het wordt niet "
 "gevalideerd door DNSSEC resolvers totdat de inception tijd bereikt is."
@@ -4203,8 +4224,8 @@ msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
 msgstr ""
-"De handtekening lijkt geen geldige base64 gecodeerde gegevens te zijn. RRSIG "
-"handtekeningen moeten base64 gecodeerd zijn."
+"De handtekening lijkt geen geldige base64 gecodeerde gegevens te zijn. RRSIG"
+" handtekeningen moeten base64 gecodeerd zijn."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:330
 msgid ""
@@ -4217,8 +4238,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
 msgid ""
-"Remember that RRSIG records must be regenerated before their expiration date "
-"to maintain DNSSEC validation."
+"Remember that RRSIG records must be regenerated before their expiration date"
+" to maintain DNSSEC validation."
 msgstr ""
 "Onthoud dat RRSIG records opnieuw gegenereerd moeten worden voor hun "
 "vervaldatum om DNSSEC validatie te behouden."
@@ -4229,8 +4250,8 @@ msgstr "Prioriteitsveld voor RP records moet 0 of leeg zijn"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:129
 msgid ""
-"RP records were defined in RFC 1183 (1990) and are not widely used in modern "
-"DNS configurations."
+"RP records were defined in RFC 1183 (1990) and are not widely used in modern"
+" DNS configurations."
 msgstr ""
 "RP records werden gedefinieerd in RFC 1183 (1990) en worden niet breed "
 "gebruikt in moderne DNS configuraties."
@@ -4284,8 +4305,8 @@ msgid ""
 "Ensure corresponding TXT records exist for the txt-dname field if not using "
 "a dot (.)."
 msgstr ""
-"Zorg ervoor dat bijbehorende TXT records bestaan voor het txt-dname veld als "
-"geen punt (.) gebruikt wordt."
+"Zorg ervoor dat bijbehorende TXT records bestaan voor het txt-dname veld als"
+" geen punt (.) gebruikt wordt."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:213
 msgid ""
@@ -4308,8 +4329,8 @@ msgid ""
 "RP mailbox local part contains invalid characters. Only characters valid in "
 "email addresses are allowed."
 msgstr ""
-"RP mailbox lokaal deel bevat ongeldige karakters. Alleen karakters geldig in "
-"e-mailadressen zijn toegestaan."
+"RP mailbox lokaal deel bevat ongeldige karakters. Alleen karakters geldig in"
+" e-mailadressen zijn toegestaan."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:238
 #, php-format
@@ -4318,8 +4339,8 @@ msgstr "Het mailbox domein vertegenwoordigt het e-mailadres: %s"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
-"RP mailbox domain part contains underscores, which are not allowed in domain "
-"names."
+"RP mailbox domain part contains underscores, which are not allowed in domain"
+" names."
 msgstr ""
 "RP mailbox domein deel bevat underscores, die niet toegestaan zijn in "
 "domeinnamen."
@@ -4414,8 +4435,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
-"This appears to be an IPv6 interface identifier (has the universal/local bit "
-"flipped compared to standard EUI-64)."
+"This appears to be an IPv6 interface identifier (has the universal/local bit"
+" flipped compared to standard EUI-64)."
 msgstr ""
 "Dit lijkt een IPv6 interface identifier te zijn (heeft de universal/local "
 "bit omgedraaid vergeleken met standaard EUI-64)."
@@ -4454,8 +4475,8 @@ msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
 msgstr ""
-"EUI64 record lijkt in dotted formaat te zijn. Formaat moet xx-xx-xx-xx-xx-xx-"
-"xx-xx zijn."
+"EUI64 record lijkt in dotted formaat te zijn. Formaat moet xx-xx-xx-xx-xx-"
+"xx-xx-xx zijn."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
@@ -4478,8 +4499,8 @@ msgid ""
 "This appears to be a locally administered address (the second least "
 "significant bit of the first octet is set to 1)."
 msgstr ""
-"Dit lijkt een lokaal beheerd adres te zijn (de tweede minst significante bit "
-"van de eerste octet is ingesteld op 1)."
+"Dit lijkt een lokaal beheerd adres te zijn (de tweede minst significante bit"
+" van de eerste octet is ingesteld op 1)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
@@ -4574,7 +4595,8 @@ msgstr "Prioriteitsveld voor DS records moet 0 of leeg zijn."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
-"DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
+"DS record must be in the format: <key-tag> <algorithm> <digest-type> "
+"<digest>"
 msgstr ""
 "DS record moet in het formaat zijn: <key-tag> <algoritme> <digest-type> "
 "<digest>"
@@ -4611,14 +4633,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
-msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
+msgid ""
+"%s (algorithm %d) is optional for implementation according to RFC 8624."
 msgstr "%s (algoritme %d) is optioneel voor implementatie volgens RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
-"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
-"using ECDSAP256SHA256 (13) or ED25519 (15) instead."
+"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider"
+" using ECDSAP256SHA256 (13) or ED25519 (15) instead."
 msgstr ""
 "%s (algoritme %d) wordt NIET AANBEVOLEN voor gebruik volgens RFC 8624. "
 "Overweeg ECDSAP256SHA256 (13) of ED25519 (15) te gebruiken."
@@ -4639,16 +4662,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
-"SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
-"8624."
+"SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC"
+" 8624."
 msgstr ""
 "SHA-256 (digest type 2) is het AANBEVOLEN digest algoritme volgens RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
 "SHA-384 (digest type 4) is a good choice for higher security requirements, "
-"but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
-"support."
+"but SHA-256 (digest type 2) is sufficient for most deployments and has wider"
+" support."
 msgstr ""
 "SHA-384 (digest type 4) is een goede keuze voor hogere beveiligingseisen, "
 "maar SHA-256 (digest type 2) is voldoende voor de meeste implementaties en "
@@ -4668,8 +4691,8 @@ msgstr "SHA-384 digest moet precies 96 hexadecimale karakters zijn"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:266
 msgid ""
-"DS records establish a chain of trust from parent to child zones. The parent "
-"zone must have this DS record, and the child zone must have the "
+"DS records establish a chain of trust from parent to child zones. The parent"
+" zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
 msgstr ""
 "DS records vestigen een vertrouwensketen van parent naar child zones. De "
@@ -4678,16 +4701,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
-"CSYNC records should only be placed at the zone apex (RFC 7477). This record "
-"may not be processed by parental agents."
+"CSYNC records should only be placed at the zone apex (RFC 7477). This record"
+" may not be processed by parental agents."
 msgstr ""
-"CSYNC records moeten alleen geplaatst worden op de zone apex (RFC 7477). Dit "
-"record wordt mogelijk niet verwerkt door parental agents."
+"CSYNC records moeten alleen geplaatst worden op de zone apex (RFC 7477). Dit"
+" record wordt mogelijk niet verwerkt door parental agents."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
-"CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
-"7477). Ensure your zone is properly signed with DNSSEC."
+"CSYNC records require DNSSEC signing to be processed by parental agents (RFC"
+" 7477). Ensure your zone is properly signed with DNSSEC."
 msgstr ""
 "CSYNC records vereisen DNSSEC ondertekening om verwerkt te worden door "
 "parental agents (RFC 7477). Zorg ervoor dat uw zone correct ondertekend is "
@@ -4695,8 +4718,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
-"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
-"cause unexpected behavior."
+"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may"
+" cause unexpected behavior."
 msgstr ""
 "Er mag slechts één CSYNC record per zone bestaan (RFC 7477). Meerdere "
 "records kunnen onverwacht gedrag veroorzaken."
@@ -4722,8 +4745,8 @@ msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
 msgstr ""
-"De \"soaminimum\" flag (0x0002) is niet ingesteld. SOA serienummer validatie "
-"wordt mogelijk niet afgedwongen."
+"De \"soaminimum\" flag (0x0002) is niet ingesteld. SOA serienummer validatie"
+" wordt mogelijk niet afgedwongen."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
@@ -4753,15 +4776,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
-"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
-"values are 0, 1, 2, or 3."
+"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid"
+" values are 0, 1, 2, or 3."
 msgstr ""
 "Ongeldige flags in CSYNC record. Alleen bits 0-1 zijn gedefinieerd (waarden "
 "0-3). Geldige waarden zijn 0, 1, 2, of 3."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
-"CSYNC record must specify at least one record type in the Type Bit Map field."
+"CSYNC record must specify at least one record type in the Type Bit Map "
+"field."
 msgstr ""
 "CSYNC record moet minstens één recordtype specificeren in het Type Bit Map "
 "veld."
@@ -4791,10 +4815,11 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:262
 msgid ""
 "NS record synchronization requires careful consideration. Parent zones may "
-"have specific NS record policies that can prevent successful synchronization."
+"have specific NS record policies that can prevent successful "
+"synchronization."
 msgstr ""
-"NS record synchronisatie vereist zorgvuldige overweging. Parent zones kunnen "
-"specifieke NS record beleid hebben dat succesvolle synchronisatie kan "
+"NS record synchronisatie vereist zorgvuldige overweging. Parent zones kunnen"
+" specifieke NS record beleid hebben dat succesvolle synchronisatie kan "
 "voorkomen."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:266
@@ -4809,8 +4834,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:269
 msgid ""
-"RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
-"type cannot be synchronized, no changes will be made by the parent."
+"RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any"
+" type cannot be synchronized, no changes will be made by the parent."
 msgstr ""
 "RFC 7477 vereist een \"alles of niets\" benadering voor CSYNC verwerking. "
 "Als een type niet gesynchroniseerd kan worden, worden er geen wijzigingen "
@@ -4833,8 +4858,8 @@ msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
 msgstr ""
-"EUI48 record gebruikt dubbele punt scheidingstekens (xx:xx:xx:xx:xx:xx) maar "
-"vereist koppelteken scheidingstekens (xx-xx-xx-xx-xx-xx)."
+"EUI48 record gebruikt dubbele punt scheidingstekens (xx:xx:xx:xx:xx:xx) maar"
+" vereist koppelteken scheidingstekens (xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
@@ -4846,7 +4871,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
-"EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
+"EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-"
+"xx."
 msgstr ""
 "EUI48 record lijkt in Cisco formaat te zijn. Formaat moet xx-xx-xx-xx-xx-xx "
 "zijn."
@@ -4930,8 +4956,7 @@ msgstr "Ongeldig IPv6 adres: elke hextet moet 4 hexadecimale cijfers zijn."
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:300
 #, php-format
 msgid "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-msgstr ""
-"IP adres \"%s\" is niet geldig. Moet een geldig IPv4 of IPv6 adres zijn."
+msgstr "IP adres \"%s\" is niet geldig. Moet een geldig IPv4 of IPv6 adres zijn."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
@@ -4939,7 +4964,8 @@ msgstr "Prioriteitsveld voor CAA records moet 0 of leeg zijn."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:125
 msgid "CAA record must contain flags, tag, and value separated by spaces."
-msgstr "CAA record moet flags, tag en waarde bevatten gescheiden door spaties."
+msgstr ""
+"CAA record moet flags, tag en waarde bevatten gescheiden door spaties."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
 msgid "CAA flags must be a number between 0 and 255."
@@ -4960,8 +4986,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr ""
-"Lege waarde is niet toegestaan. Gebruik \";\" om alle CA's toe te staan."
+msgstr "Lege waarde is niet toegestaan. Gebruik \";\" om alle CA's toe te staan."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:204
 msgid "Invalid CA domain in issue tag."
@@ -5051,8 +5076,8 @@ msgstr "U gebruikt een ongeldig topleveldomein."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
+"SOA validation parameters not set. Call setSOAParams() first or provide them"
+" as arguments."
 msgstr ""
 "SOA validatieparameters niet ingesteld. Roep eerst setSOAParams() aan of "
 "geef ze als argumenten."
@@ -5087,8 +5112,8 @@ msgstr "Serienummer moet tussen 0 en 4294967295 liggen."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:231
 msgid ""
-"Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
-"This is allowed but not recommended."
+"Serial number appears to use YYYYMMDDnn format but contains an invalid date."
+" This is allowed but not recommended."
 msgstr ""
 "Serienummer lijkt YYYYMMDDnn formaat te gebruiken maar bevat een ongeldige "
 "datum. Dit is toegestaan maar niet aanbevolen."
@@ -5149,8 +5174,7 @@ msgid "SVCB priority must be between 0 and 65535."
 msgstr "SVCB prioriteit moet tussen 0 en 65535 liggen."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
-msgid ""
-"SVCB target must be either \".\" (for Service Mode) or a valid hostname."
+msgid "SVCB target must be either \".\" (for Service Mode) or a valid hostname."
 msgstr ""
 "SVCB doel moet ofwel \".\" zijn (voor Service Mode) of een geldige hostnaam."
 
@@ -5189,8 +5213,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid ""
-"Multiple CNAME records with the same name are not allowed. This would create "
-"a DNS violation."
+"Multiple CNAME records with the same name are not allowed. This would create"
+" a DNS violation."
 msgstr ""
 "Meerdere CNAME records met dezelfde naam zijn niet toegestaan. Dit zou een "
 "DNS schending creëren."
@@ -5209,8 +5233,8 @@ msgid ""
 "This record conflicts with an existing CNAME record with the same name. A "
 "CNAME record cannot coexist with other record types."
 msgstr ""
-"Dit record conflicteert met een bestaand CNAME record met dezelfde naam. Een "
-"CNAME record kan niet naast andere recordtypes bestaan."
+"Dit record conflicteert met een bestaand CNAME record met dezelfde naam. Een"
+" CNAME record kan niet naast andere recordtypes bestaan."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
@@ -5238,8 +5262,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
-"Invalid value for priority field. SMIMEA records must have priority value of "
-"0."
+"Invalid value for priority field. SMIMEA records must have priority value of"
+" 0."
 msgstr ""
 "Ongeldige waarde voor prioriteitsveld. SMIMEA records moeten een "
 "prioriteitswaarde van 0 hebben."
@@ -5283,7 +5307,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:214
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
-"PKIX validation rules. Ensure proper intermediate certificates are available."
+"PKIX validation rules. Ensure proper intermediate certificates are "
+"available."
 msgstr ""
 "PKIX-EE usage (1) vereist dat het end entity certificaat gevalideerd wordt "
 "met PKIX validatieregels. Zorg ervoor dat de juiste tussenliggende "
@@ -5301,8 +5326,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
-"DANE-EE usage (3) is recommended as it provides the simplest deployment with "
-"direct certificate usage without additional validation."
+"DANE-EE usage (3) is recommended as it provides the simplest deployment with"
+" direct certificate usage without additional validation."
 msgstr ""
 "DANE-EE usage (3) wordt aanbevolen omdat het de eenvoudigste implementatie "
 "biedt met direct certificaatgebruik zonder aanvullende validatie."
@@ -5317,8 +5342,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
-"Selector 0 (Full certificate) means the entire certificate is matched. Using "
-"selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
+"Selector 0 (Full certificate) means the entire certificate is matched. Using"
+" selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
 "flexibility for certificate renewals."
 msgstr ""
 "Selector 0 (Volledig certificaat) betekent dat het gehele certificaat "
@@ -5340,20 +5365,21 @@ msgid ""
 "SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
 msgstr ""
-"SMIMEA matching type veld moet 0 (Exacte match), 1 (SHA-256), of 2 (SHA-512) "
-"zijn."
+"SMIMEA matching type veld moet 0 (Exacte match), 1 (SHA-256), of 2 (SHA-512)"
+" zijn."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
-"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
-"recommended for better performance and compatibility."
+"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is"
+" recommended for better performance and compatibility."
 msgstr ""
 "Matching type 0 (Exacte match) gebruikt ruwe certificaatgegevens. SHA-256 "
 "(type 1) wordt aanbevolen voor betere prestaties en compatibiliteit."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
-"Matching type 1 (SHA-256) provides a good balance of security and efficiency."
+"Matching type 1 (SHA-256) provides a good balance of security and "
+"efficiency."
 msgstr ""
 "Matching type 1 (SHA-256) biedt een goede balans tussen beveiliging en "
 "efficiëntie."
@@ -5388,16 +5414,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
-"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
-"be widely supported."
+"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not"
+" be widely supported."
 msgstr ""
 "WAARSCHUWING: SMIMEA (RFC 8162) is momenteel een EXPERIMENTEEL protocol en "
 "wordt mogelijk niet breed ondersteund."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
-"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, "
-"SMIMEA offers NO security benefit."
+"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC,"
+" SMIMEA offers NO security benefit."
 msgstr ""
 "KRITIEK: SMIMEA records VEREISEN DNSSEC om beveiliging te bieden. Zonder "
 "DNSSEC biedt SMIMEA GEEN beveiligingsvoordeel."
@@ -5412,11 +5438,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
-"L64 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+"L64 records should only be used with the Identifier-Locator Network Protocol"
+" (ILNP)."
 msgstr ""
-"L64 records moeten alleen gebruikt worden met het Identifier-Locator Network "
-"Protocol (ILNP)."
+"L64 records moeten alleen gebruikt worden met het Identifier-Locator Network"
+" Protocol (ILNP)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:114
 msgid ""
@@ -5549,8 +5575,8 @@ msgid ""
 "Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
 "supported for validation."
 msgstr ""
-"Algoritme 10 (RSASHA512) wordt NIET AANBEVOLEN voor ondertekening hoewel het "
-"ondersteund moet worden voor validatie."
+"Algoritme 10 (RSASHA512) wordt NIET AANBEVOLEN voor ondertekening hoewel het"
+" ondersteund moet worden voor validatie."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:219
 msgid ""
@@ -5562,11 +5588,13 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
-msgstr "CDNSKEY publieke sleutel mag alleen geldige base64 karakters bevatten."
+msgstr ""
+"CDNSKEY publieke sleutel mag alleen geldige base64 karakters bevatten."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:241
 msgid "CDNSKEY public key must be valid base64-encoded data."
-msgstr "CDNSKEY publieke sleutel moet geldige base64-gecodeerde gegevens zijn."
+msgstr ""
+"CDNSKEY publieke sleutel moet geldige base64-gecodeerde gegevens zijn."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:190
 msgid "LUA record content cannot be empty."
@@ -5594,8 +5622,8 @@ msgid ""
 "This LUA record uses explicit return mode (starts with semicolon). Ensure "
 "your Lua script explicitly returns the appropriate value."
 msgstr ""
-"Dit LUA record gebruikt expliciete return modus (begint met puntkomma). Zorg "
-"ervoor dat uw Lua script expliciet de juiste waarde teruggeeft."
+"Dit LUA record gebruikt expliciete return modus (begint met puntkomma). Zorg"
+" ervoor dat uw Lua script expliciet de juiste waarde teruggeeft."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:155
 msgid ""
@@ -5639,8 +5667,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
-"LUA record contains potentially dangerous system access functions. These are "
-"likely to be blocked by PowerDNS security restrictions."
+"LUA record contains potentially dangerous system access functions. These are"
+" likely to be blocked by PowerDNS security restrictions."
 msgstr ""
 "LUA record bevat mogelijk gevaarlijke systeemtoegang functies. Deze worden "
 "waarschijnlijk geblokkeerd door PowerDNS beveiligingsbeperkingen."
@@ -5683,8 +5711,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
-"DSA keys are considered weak and are deprecated in many SSH implementations. "
-"Consider using RSA, Ed25519, or Ed448 instead."
+"DSA keys are considered weak and are deprecated in many SSH implementations."
+" Consider using RSA, Ed25519, or Ed448 instead."
 msgstr ""
 "DSA sleutels worden als zwak beschouwd en zijn verouderd in veel SSH "
 "implementaties. Overweeg RSA, Ed25519 of Ed448 te gebruiken."
@@ -5719,8 +5747,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
-"SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
-"than SHA-1."
+"SHA-256 fingerprints are recommended by RFC 6594 and provide better security"
+" than SHA-1."
 msgstr ""
 "SHA-256 fingerprints worden aanbevolen door RFC 6594 en bieden betere "
 "beveiliging dan SHA-1."
@@ -5740,17 +5768,17 @@ msgstr "SSHFP SHA-256 fingerprint moet 64 karakters lang zijn."
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
-"benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
-"attacks."
+"benefits. Without DNSSEC, they offer no protection against man-in-the-middle"
+" attacks."
 msgstr ""
-"KRITIEK: SSHFP records VEREISEN DNSSEC validatie om beveiligingsvoordelen te "
-"bieden. Zonder DNSSEC bieden ze geen bescherming tegen man-in-the-middle "
+"KRITIEK: SSHFP records VEREISEN DNSSEC validatie om beveiligingsvoordelen te"
+" bieden. Zonder DNSSEC bieden ze geen bescherming tegen man-in-the-middle "
 "aanvallen."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
-"Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
-"for server verification."
+"Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records"
+" for server verification."
 msgstr ""
 "Configureer SSH clients met \"VerifyHostKeyDNS yes\" om SSHFP records te "
 "gebruiken voor server verificatie."
@@ -5773,8 +5801,8 @@ msgstr "MR record inhoud moet een geldige domeinnaam zijn."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:121
 msgid ""
-"MR record content (new mailbox) should be a fully qualified domain name (end "
-"with a dot)."
+"MR record content (new mailbox) should be a fully qualified domain name (end"
+" with a dot)."
 msgstr ""
 "MR record inhoud (nieuwe mailbox) moet een fully qualified domain name zijn "
 "(eindigen met een punt)."
@@ -5803,16 +5831,16 @@ msgstr ""
 msgid ""
 "Consider using standard mail forwarding mechanisms instead of MR records."
 msgstr ""
-"Overweeg standaard mail forwarding mechanismen te gebruiken in plaats van MR "
-"records."
+"Overweeg standaard mail forwarding mechanismen te gebruiken in plaats van MR"
+" records."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:148
 msgid ""
-"The MR record indicates that the mail user has moved from the old mailbox to "
-"the new mailbox."
+"The MR record indicates that the mail user has moved from the old mailbox to"
+" the new mailbox."
 msgstr ""
-"Het MR record geeft aan dat de mailgebruiker verhuisd is van de oude mailbox "
-"naar de nieuwe mailbox."
+"Het MR record geeft aan dat de mailgebruiker verhuisd is van de oude mailbox"
+" naar de nieuwe mailbox."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:124
 msgid "Priority field for KEY records must be 0 or empty"
@@ -5834,8 +5862,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:141
 msgid ""
-"Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be "
-"used."
+"Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be"
+" used."
 msgstr ""
 "Algoritme 1 (RSA/MD5) wordt als cryptografisch zwak beschouwd en moet niet "
 "gebruikt worden."
@@ -5866,8 +5894,8 @@ msgid ""
 "Unusual flag value. Common values are 0 (authentication prohibited), 256 "
 "(user key), or 257 (zone key)."
 msgstr ""
-"Ongewone flag waarde. Veelgebruikte waarden zijn 0 (authenticatie verboden), "
-"256 (gebruiker sleutel), of 257 (zone sleutel)."
+"Ongewone flag waarde. Veelgebruikte waarden zijn 0 (authenticatie verboden),"
+" 256 (gebruiker sleutel), of 257 (zone sleutel)."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:202
 msgid "KEY protocol must be a number between 0 and 255."
@@ -5877,8 +5905,8 @@ msgstr "KEY protocol moet een getal tussen 0 en 255 zijn."
 msgid ""
 "Unusual protocol value. Protocol 3 (DNSSEC) is most common for KEY records."
 msgstr ""
-"Ongewone protocol waarde. Protocol 3 (DNSSEC) is het meest gebruikelijk voor "
-"KEY records."
+"Ongewone protocol waarde. Protocol 3 (DNSSEC) is het meest gebruikelijk voor"
+" KEY records."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:213
 msgid "KEY algorithm must be a number between 0 and 255."
@@ -5889,8 +5917,8 @@ msgid ""
 "Unusual algorithm value. Common values are 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 "
 "(RSA/SHA-1), 8 (RSA/SHA-256)."
 msgstr ""
-"Ongewone algoritme waarde. Veelgebruikte waarden zijn 1 (RSA/MD5), 2 (DH), 3 "
-"(DSA), 5 (RSA/SHA-1), 8 (RSA/SHA-256)."
+"Ongewone algoritme waarde. Veelgebruikte waarden zijn 1 (RSA/MD5), 2 (DH), 3"
+" (DSA), 5 (RSA/SHA-1), 8 (RSA/SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:224
 msgid "KEY public key is required."
@@ -6020,8 +6048,8 @@ msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
 msgstr ""
-"Dit is een DMARC record dat verwerkt wordt via TXT recordtype. DMARC records "
-"moeten TXT recordtype gebruiken met inhoud die begint met \"v=DMARC1\"."
+"Dit is een DMARC record dat verwerkt wordt via TXT recordtype. DMARC records"
+" moeten TXT recordtype gebruiken met inhoud die begint met \"v=DMARC1\"."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:181
 msgid "TXT record content must be enclosed in quotes."
@@ -6111,8 +6139,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
-"CDS record must contain key-tag, algorithm, digest-type and digest separated "
-"by spaces."
+"CDS record must contain key-tag, algorithm, digest-type and digest separated"
+" by spaces."
 msgstr ""
 "CDS record moet key-tag, algoritme, digest-type en digest bevatten "
 "gescheiden door spaties."
@@ -6155,7 +6183,8 @@ msgstr ""
 "aanbevolen door RFC 7344."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
-msgid "CDS records should only be placed at the zone apex (not on subdomains)."
+msgid ""
+"CDS records should only be placed at the zone apex (not on subdomains)."
 msgstr ""
 "CDS records moeten alleen geplaatst worden op de zone apex (niet op "
 "subdomeinen)."
@@ -6170,16 +6199,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
-"L32 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+"L32 records should only be used with the Identifier-Locator Network Protocol"
+" (ILNP)."
 msgstr ""
-"L32 records moeten alleen gebruikt worden met het Identifier-Locator Network "
-"Protocol (ILNP)."
+"L32 records moeten alleen gebruikt worden met het Identifier-Locator Network"
+" Protocol (ILNP)."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
-"Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
-"in ILNP deployments."
+"Using private IP addresses (RFC 1918) as L32 locators may limit reachability"
+" in ILNP deployments."
 msgstr ""
 "Het gebruik van privé IP adressen (RFC 1918) als L32 locators kan "
 "bereikbaarheid beperken in ILNP implementaties."
@@ -6194,7 +6223,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
-msgstr "L32 record moet preference en locator bevatten gescheiden door spatie."
+msgstr ""
+"L32 record moet preference en locator bevatten gescheiden door spatie."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:162
 msgid "L32 preference must be a number between 0 and 65535."
@@ -6213,8 +6243,8 @@ msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
 msgstr ""
-"L32 locator kan geen broadcast of unspecified adressen gebruiken (0.0.0.0 of "
-"255.255.255.255)."
+"L32 locator kan geen broadcast of unspecified adressen gebruiken (0.0.0.0 of"
+" 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
@@ -6238,8 +6268,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
-"Invalid protocol value in SRV record. Protocol must start with an underscore "
-"followed by alphanumeric characters."
+"Invalid protocol value in SRV record. Protocol must start with an underscore"
+" followed by alphanumeric characters."
 msgstr ""
 "Ongeldige protocol waarde in SRV record. Protocol moet beginnen met een "
 "underscore gevolgd door alfanumerieke karakters."
@@ -6256,8 +6286,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
-"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
-"are _tcp and _udp."
+"Protocol \"%s\" is not in the list of well-known protocols. Common protocols"
+" are _tcp and _udp."
 msgstr ""
 "Protocol \"%s\" staat niet in de lijst van bekende protocollen. "
 "Veelgebruikte protocollen zijn _tcp en _udp."
@@ -6277,7 +6307,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
 msgstr ""
-"Ongeldige waarde voor het gewichtsveld van het SRV record. Moet 0-65535 zijn."
+"Ongeldige waarde voor het gewichtsveld van het SRV record. Moet 0-65535 "
+"zijn."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
@@ -6313,8 +6344,8 @@ msgstr "Ongeldige waarde voor het prioriteitsveld van het SRV record."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:85
 msgid ""
-"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
-"records."
+"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA"
+" records."
 msgstr ""
 "Unspecified (::) of loopback (::1) IPv6 adressen mogen niet gebruikt worden "
 "in AAAA records."
@@ -6328,7 +6359,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
-"Invalid value for priority field. AAAA records must have priority value of 0."
+"Invalid value for priority field. AAAA records must have priority value of "
+"0."
 msgstr ""
 "Ongeldige waarde voor prioriteitsveld. AAAA records moeten een "
 "prioriteitswaarde van 0 hebben."
@@ -6438,16 +6470,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
-"This NSEC3 record contains both SOA and NS types, indicating it might be for "
-"a zone apex."
+"This NSEC3 record contains both SOA and NS types, indicating it might be for"
+" a zone apex."
 msgstr ""
-"Dit NSEC3 record bevat zowel SOA als NS types, wat aangeeft dat het mogelijk "
-"voor een zone apex is."
+"Dit NSEC3 record bevat zowel SOA als NS types, wat aangeeft dat het mogelijk"
+" voor een zone apex is."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
-"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
-"along with DNSKEY."
+"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present"
+" along with DNSKEY."
 msgstr ""
 "Voor een zone apex die NSEC3 gebruikt, moet het NSEC3PARAM type doorgaans "
 "aanwezig zijn samen met DNSKEY."
@@ -6489,8 +6521,8 @@ msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
 msgstr ""
-"Dit record volgt RFC 3403. Wees bewust dat sommige DNS servers mogelijk niet "
-"alle NAPTR functies volledig ondersteunen."
+"Dit record volgt RFC 3403. Wees bewust dat sommige DNS servers mogelijk niet"
+" alle NAPTR functies volledig ondersteunen."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:182
 msgid ""
@@ -6546,8 +6578,8 @@ msgstr "NAPTR record met een regexp moet \".\" als replacement hebben."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
-"and rs start with a letter and contain alphanumeric characters, hyphens, "
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol"
+" and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr ""
 "NAPTR service moet het formaat volgen: [protocol][+rs][+rs]... waarbij "
@@ -6555,9 +6587,7 @@ msgstr ""
 "koppeltekens, dubbele punten of plustekens bevatten (max 32 tekens elk)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
-msgid ""
-"Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
-"other flags."
+msgid "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with other flags."
 msgstr ""
 "Terminal flags \"S\", \"A\", \"U\" en \"P\" mogen niet gecombineerd worden "
 "met andere flags."
@@ -6639,8 +6669,8 @@ msgid ""
 "Flag value 256 indicates this is a Zone Signing Key (ZSK) with Zone Key bit "
 "set and SEP bit unset."
 msgstr ""
-"Flag waarde 256 geeft aan dat dit een Zone Signing Key (ZSK) is met Zone Key "
-"bit ingesteld en SEP bit uitgeschakeld."
+"Flag waarde 256 geeft aan dat dit een Zone Signing Key (ZSK) is met Zone Key"
+" bit ingesteld en SEP bit uitgeschakeld."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:162
 msgid ""
@@ -6706,8 +6736,8 @@ msgid ""
 "RSA key size is less than 2048 bits. RFC 8624 recommends a minimum of 2048 "
 "bits for RSA keys."
 msgstr ""
-"RSA sleutelgrootte is minder dan 2048 bits. RFC 8624 beveelt een minimum van "
-"2048 bits aan voor RSA sleutels."
+"RSA sleutelgrootte is minder dan 2048 bits. RFC 8624 beveelt een minimum van"
+" 2048 bits aan voor RSA sleutels."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:254
 msgid "Base64 encoding has incorrect padding."
@@ -6854,11 +6884,11 @@ msgstr "BELANGRIJK: Bewaar uw nieuwe API sleutel nu!"
 
 #: templates/default/api_key_regenerated.html:17
 msgid ""
-"This is the only time your new API key will be displayed. Please save it now "
-"as you won't be able to see it again."
+"This is the only time your new API key will be displayed. Please save it now"
+" as you won't be able to see it again."
 msgstr ""
-"Dit is de enige keer dat uw nieuwe API sleutel wordt getoond. Bewaar deze nu "
-"omdat u hem niet meer kunt zien."
+"Dit is de enige keer dat uw nieuwe API sleutel wordt getoond. Bewaar deze nu"
+" omdat u hem niet meer kunt zien."
 
 #: templates/default/api_key_created.html:22
 msgid "Name:"
@@ -6966,8 +6996,8 @@ msgstr "U staat op het punt een DNSSEC sleutel te activeren (ID"
 
 #: templates/default/dnssec_edit_key.html:53
 msgid ""
-"Activating this key will make it part of the active DNSSEC signing chain for "
-"this zone."
+"Activating this key will make it part of the active DNSSEC signing chain for"
+" this zone."
 msgstr ""
 "Het activeren van deze sleutel maakt het onderdeel van de actieve DNSSEC "
 "ondertekeningsketen voor deze zone."
@@ -7012,7 +7042,8 @@ msgstr "Inactief"
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: templates/default/api_key_edit.html:5 templates/default/api_key_edit.html:13
+#: templates/default/api_key_edit.html:5
+#: templates/default/api_key_edit.html:13
 msgid "Edit API Key"
 msgstr "API Sleutel Bewerken"
 
@@ -7024,7 +7055,8 @@ msgstr "Naam"
 msgid "Please provide a name for this API key"
 msgstr "Geef een naam op voor deze API sleutel"
 
-#: templates/default/api_key_edit.html:23 templates/default/api_key_add.html:23
+#: templates/default/api_key_edit.html:23
+#: templates/default/api_key_add.html:23
 msgid "A descriptive name to help you identify this key"
 msgstr "Een beschrijvende naam om deze sleutel te identificeren"
 
@@ -7032,7 +7064,8 @@ msgstr "Een beschrijvende naam om deze sleutel te identificeren"
 msgid "Expires at"
 msgstr "Verloopt op"
 
-#: templates/default/api_key_edit.html:29 templates/default/api_key_add.html:29
+#: templates/default/api_key_edit.html:29
+#: templates/default/api_key_add.html:29
 msgid "Leave empty for a key that never expires"
 msgstr "Laat leeg voor een sleutel die nooit verloopt"
 
@@ -7042,7 +7075,8 @@ msgstr "Deze API sleutel uitschakelen"
 
 #: templates/default/api_key_edit.html:37
 msgid "Disabled keys cannot be used for authentication"
-msgstr "Uitgeschakelde sleutels kunnen niet gebruikt worden voor authenticatie"
+msgstr ""
+"Uitgeschakelde sleutels kunnen niet gebruikt worden voor authenticatie"
 
 #: templates/default/api_key_edit.html:43
 msgid "Update API Key"
@@ -7154,12 +7188,12 @@ msgstr "Geef inhoud voor uw zone record"
 #: templates/default/add_record.html:93
 msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
-"and may cause issues. SOA and NS records are required at the domain root and "
-"cannot coexist with CNAME."
+"and may cause issues. SOA and NS records are required at the domain root and"
+" cannot coexist with CNAME."
 msgstr ""
 "Waarschuwing: CNAME records op de domeinroot (zone apex) worden niet "
-"aanbevolen en kunnen problemen veroorzaken. SOA en NS records zijn verplicht "
-"op de domeinroot en kunnen niet samen bestaan met CNAME."
+"aanbevolen en kunnen problemen veroorzaken. SOA en NS records zijn verplicht"
+" op de domeinroot en kunnen niet samen bestaan met CNAME."
 
 #: templates/default/add_zone_templ_record.html:83
 msgid ""
@@ -7168,8 +7202,8 @@ msgid ""
 "records are required for proper DNS zone functionality."
 msgstr ""
 "Tip: Voor SOA records, gebruik <code>[ZONE]</code> als naam en <code>[NS1] "
-"[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> als inhoud. SOA records "
-"zijn vereist voor goede DNS zone functionaliteit."
+"[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> als inhoud. SOA records"
+" zijn vereist voor goede DNS zone functionaliteit."
 
 #: templates/default/edit_zone_templ_record.html:103
 msgid "Update record"
@@ -7258,10 +7292,11 @@ msgstr ""
 
 #: templates/default/add_zone_templ_record.html:176
 msgid ""
-"MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
+"MX for Microsoft 365: "
+"<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 msgstr ""
-"MX voor Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</"
-"code>"
+"MX voor Microsoft 365: "
+"<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/default/add_zone_templ_record.html:177
 msgid "A record: <code>192.0.2.10</code>"
@@ -7401,7 +7436,8 @@ msgstr "Zone onthandtekenen"
 msgid "ID"
 msgstr "ID"
 
-#: templates/default/api_keys.html:34 templates/default/list_perm_templ.html:20
+#: templates/default/api_keys.html:34
+#: templates/default/list_perm_templ.html:20
 msgid "Actions"
 msgstr "Acties"
 
@@ -7441,7 +7477,8 @@ msgstr "Terug naar Inloggen"
 msgid ""
 "Enter your email address and we'll send you a link to reset your password."
 msgstr ""
-"Voer uw e-mailadres in en wij sturen u een link om uw wachtwoord te resetten."
+"Voer uw e-mailadres in en wij sturen u een link om uw wachtwoord te "
+"resetten."
 
 #: templates/default/forgot_password.html:27
 msgid "Email Address"
@@ -7611,7 +7648,8 @@ msgstr "Nieuwe supermaster server toevoegen"
 msgid "Add supermaster"
 msgstr "Supermaster toevoegen"
 
-#: templates/default/index.html:201 templates/default/bulk_registration.html:23
+#: templates/default/index.html:201
+#: templates/default/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Bulk Registratie"
 
@@ -7796,7 +7834,8 @@ msgstr "Globaal sjabloon"
 msgid "Make this template available to all users"
 msgstr "Dit sjabloon beschikbaar maken voor alle gebruikers"
 
-#: templates/default/list_zone_templ.html:126 templates/default/header.html:133
+#: templates/default/list_zone_templ.html:126
+#: templates/default/header.html:133
 msgid "Add zone template"
 msgstr "Zone sjabloon toevoegen"
 
@@ -7818,7 +7857,8 @@ msgstr ""
 
 #: templates/default/add_zone_templ.html:75
 msgid "After creating a template, you can add record templates to it."
-msgstr "Na het maken van een sjabloon kunt u record sjablonen eraan toevoegen."
+msgstr ""
+"Na het maken van een sjabloon kunt u record sjablonen eraan toevoegen."
 
 #: templates/default/add_zone_templ.html:78
 msgid "Template Usage"
@@ -8041,8 +8081,8 @@ msgid ""
 "This user is the owner for the following zones. Please decide what to do "
 "with each zone:"
 msgstr ""
-"Deze gebruiker is eigenaar van de volgende zones. Beslis wat u met elke zone "
-"wilt doen:"
+"Deze gebruiker is eigenaar van de volgende zones. Beslis wat u met elke zone"
+" wilt doen:"
 
 #: templates/default/delete_records.html:39
 msgid "Zone"
@@ -8106,8 +8146,8 @@ msgstr ""
 #: templates/default/user_agreement_content.html:7
 msgid "You will not attempt to gain unauthorized access to other users' data"
 msgstr ""
-"U zult niet proberen ongeautoriseerde toegang te verkrijgen tot gegevens van "
-"andere gebruikers"
+"U zult niet proberen ongeautoriseerde toegang te verkrijgen tot gegevens van"
+" andere gebruikers"
 
 #: templates/default/user_agreement_content.html:8
 msgid "You will keep your login credentials secure and confidential"
@@ -8166,8 +8206,8 @@ msgstr "Beperking van Aansprakelijkheid"
 
 #: templates/default/user_agreement_content.html:23
 msgid ""
-"This system is provided \"as is\" without any warranties. The administrators "
-"are not liable for any damages or losses resulting from the use of this "
+"This system is provided \"as is\" without any warranties. The administrators"
+" are not liable for any damages or losses resulting from the use of this "
 "system."
 msgstr ""
 "Dit systeem wordt geleverd \"zoals het is\" zonder enige garanties. De "
@@ -8384,7 +8424,9 @@ msgid ""
 "PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
 "If you select KSK or ZSK, PowerDNS may still create a CSK key."
 msgstr ""
-"PowerDNS 4.0 en nieuwere versies gebruiken standaard Combined Signing Keys (CSK). Als u KSK of ZSK selecteert, kan PowerDNS alsnog een CSK-sleutel aanmaken."
+"PowerDNS 4.0 en nieuwere versies gebruiken standaard Combined Signing Keys "
+"(CSK). Als u KSK of ZSK selecteert, kan PowerDNS alsnog een CSK-sleutel "
+"aanmaken."
 
 #: templates/default/dnssec_add_key.html:53
 msgid "Key type"
@@ -8924,8 +8966,8 @@ msgstr "Alleen overeenkomende"
 
 #: templates/default/batch_ptr_record.html:143
 msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward "
-"zone"
+"Creates PTR records only for IPs that have existing A records in the forward"
+" zone"
 msgstr ""
 "Maakt PTR records alleen aan voor IP's die bestaande A records hebben in de "
 "forward zone"
@@ -8975,8 +9017,8 @@ msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
 msgstr ""
-"Gebruik de dropdown knop naast Netwerk Prefix om te selecteren uit bestaande "
-"reverse zones"
+"Gebruik de dropdown knop naast Netwerk Prefix om te selecteren uit bestaande"
+" reverse zones"
 
 #: templates/default/batch_ptr_record.html:182
 msgid ""
@@ -8988,8 +9030,8 @@ msgstr ""
 
 #: templates/default/batch_ptr_record.html:183
 msgid ""
-"Use the Host Prefix field to add a prefix to all hostnames when creating all "
-"IPs"
+"Use the Host Prefix field to add a prefix to all hostnames when creating all"
+" IPs"
 msgstr ""
 "Gebruik het Host Prefix veld om een prefix toe te voegen aan alle hostnamen "
 "bij het aanmaken van alle IP's"
@@ -9000,7 +9042,8 @@ msgid ""
 "forward records (disabled when using matching mode)"
 msgstr ""
 "Vink \"Maak forward A/AAAA records aan\" aan om automatisch overeenkomende "
-"forward records te maken (uitgeschakeld bij gebruik van overeenkomende modus)"
+"forward records te maken (uitgeschakeld bij gebruik van overeenkomende "
+"modus)"
 
 #: templates/default/add_record.html:18
 msgid "Add record"
@@ -9066,7 +9109,8 @@ msgstr "API Sleutel Aanmaken"
 #: templates/default/api_key_add.html:52
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
-"sure to save it in a secure place, as you won't be able to retrieve it later."
+"sure to save it in a secure place, as you won't be able to retrieve it "
+"later."
 msgstr ""
 "Wanneer u een nieuwe API sleutel aanmaakt, wordt de sleutel slechts EENMAAL "
 "getoond. Zorg ervoor dat u deze op een veilige plaats opslaat, omdat u deze "
@@ -9305,7 +9349,8 @@ msgid "Record Details"
 msgstr "Recorddetails"
 
 #: templates/default/delete_record.html:74
-msgid "You are trying to delete a record that is needed for this zone to work."
+msgid ""
+"You are trying to delete a record that is needed for this zone to work."
 msgstr ""
 "U probeert een record te verwijderen dat nodig is voor het functioneren van "
 "deze zone."
@@ -9504,8 +9549,8 @@ msgid ""
 "user."
 msgstr ""
 "Bij het aanmaken van een nieuwe gebruiker krijgen zij machtigingen op basis "
-"van het geselecteerde sjabloon. U kunt deze machtigingen later wijzigen door "
-"de gebruiker te bewerken."
+"van het geselecteerde sjabloon. U kunt deze machtigingen later wijzigen door"
+" de gebruiker te bewerken."
 
 #: templates/default/add_user.html:177
 msgid "Create descriptive usernames that are easy to identify"
@@ -9514,7 +9559,8 @@ msgstr ""
 
 #: templates/default/add_user.html:178
 msgid "Adding a full name helps with user identification"
-msgstr "Het toevoegen van een volledige naam helpt bij gebruikersidentificatie"
+msgstr ""
+"Het toevoegen van een volledige naam helpt bij gebruikersidentificatie"
 
 #: templates/default/add_user.html:180
 msgid "Auto-generating passwords is recommended for better security"
@@ -9817,8 +9863,8 @@ msgid ""
 "SOA record to function properly, and DNSSEC signing may fail without one."
 msgstr ""
 "Dit sjabloon heeft geen SOA record. DNS zones vereisen doorgaans een SOA "
-"record om goed te functioneren, en DNSSEC ondertekening kan mislukken zonder "
-"een SOA record."
+"record om goed te functioneren, en DNSSEC ondertekening kan mislukken zonder"
+" een SOA record."
 
 #: templates/default/edit_zone_templ.html:39
 msgid "This zone template does not have any records yet."
@@ -9922,7 +9968,8 @@ msgstr "RDAP resultaten voor"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Voer een domeinnaam in om een RDAP opzoeking uit te voeren."
 
-#: templates/default/bulk_registration.html:11 templates/default/header.html:74
+#: templates/default/bulk_registration.html:11
+#: templates/default/header.html:74
 msgid "Bulk registration"
 msgstr "Bulk registratie"
 
@@ -9957,7 +10004,8 @@ msgstr "Over Bulk Registratie"
 #: templates/default/bulk_registration.html:101
 msgid "This tool allows you to create multiple DNS zones at once."
 msgstr ""
-"Dit gereedschap stelt u in staat om meerdere DNS zones tegelijk aan te maken."
+"Dit gereedschap stelt u in staat om meerdere DNS zones tegelijk aan te "
+"maken."
 
 #: templates/default/bulk_registration.html:103
 msgid "Enter one domain name per line in the Domains field"
@@ -9970,7 +10018,8 @@ msgstr ""
 
 #: templates/default/bulk_registration.html:105
 msgid "The chosen owner will have full access to all created zones"
-msgstr "De gekozen eigenaar heeft volledige toegang tot alle aangemaakte zones"
+msgstr ""
+"De gekozen eigenaar heeft volledige toegang tot alle aangemaakte zones"
 
 #: templates/default/bulk_registration.html:109
 msgid "How It Works"
@@ -9982,8 +10031,8 @@ msgid ""
 "domains will be displayed so you can correct any issues and try again."
 msgstr ""
 "Het systeem zal proberen elke zone met dezelfde instellingen aan te maken. "
-"Mislukte domeinen worden getoond zodat u eventuele problemen kunt corrigeren "
-"en opnieuw kunt proberen."
+"Mislukte domeinen worden getoond zodat u eventuele problemen kunt corrigeren"
+" en opnieuw kunt proberen."
 
 #: templates/default/bulk_registration.html:118
 msgid "Tips & Recommendations"
@@ -10034,11 +10083,11 @@ msgstr "Records verwijderen"
 
 #: templates/default/delete_records.html:27
 msgid ""
-"Are you sure you want to delete the following records? This action cannot be "
-"undone."
+"Are you sure you want to delete the following records? This action cannot be"
+" undone."
 msgstr ""
-"Weet u zeker dat u de volgende records wilt verwijderen? Deze actie kan niet "
-"ongedaan gemaakt worden."
+"Weet u zeker dat u de volgende records wilt verwijderen? Deze actie kan niet"
+" ongedaan gemaakt worden."
 
 #: templates/default/delete_records.html:78
 msgid "Also delete corresponding PTR records (if they exist)"
@@ -10082,11 +10131,11 @@ msgstr "Sla Uw Herstelcodes Op"
 
 #: templates/default/mfa_recovery_codes.html:30
 msgid ""
-"Recovery codes can be used to access your account if you lose access to your "
-"authenticator device. Each code can only be used once."
+"Recovery codes can be used to access your account if you lose access to your"
+" authenticator device. Each code can only be used once."
 msgstr ""
-"Herstelcodes kunnen gebruikt worden om toegang te krijgen tot uw account als "
-"u de toegang tot uw authenticator apparaat verliest. Elke code kan slechts "
+"Herstelcodes kunnen gebruikt worden om toegang te krijgen tot uw account als"
+" u de toegang tot uw authenticator apparaat verliest. Elke code kan slechts "
 "eenmaal gebruikt worden."
 
 #: templates/default/mfa_recovery_codes.html:31
@@ -10163,8 +10212,8 @@ msgstr "Authenticator-app"
 
 #: templates/default/mfa_setup.html:61
 msgid ""
-"Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
-"or Authy."
+"Use an authenticator app like Google Authenticator, Microsoft Authenticator,"
+" or Authy."
 msgstr ""
 "Gebruik een authenticator app zoals Google Authenticator, Microsoft "
 "Authenticator, of Authy."
@@ -10305,7 +10354,8 @@ msgstr "DNS Zoeken"
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
 msgstr ""
-"Voer domeinnaam, hostnaam of IP in (bijv. voorbeeld.com type:txt content:spf)"
+"Voer domeinnaam, hostnaam of IP in (bijv. voorbeeld.com type:txt "
+"content:spf)"
 
 #: templates/default/search.html:76
 msgid "Wildcards"
@@ -10349,8 +10399,8 @@ msgid ""
 "Are you sure you want to delete the selected records? This action cannot be "
 "undone."
 msgstr ""
-"Weet u zeker dat u de geselecteerde records wilt verwijderen? Deze actie kan "
-"niet ongedaan gemaakt worden."
+"Weet u zeker dat u de geselecteerde records wilt verwijderen? Deze actie kan"
+" niet ongedaan gemaakt worden."
 
 #: templates/default/search.html:498
 msgid "Try different search terms or filters"
@@ -10445,8 +10495,8 @@ msgid ""
 "server."
 msgstr ""
 "Een slave zone is een alleen-lezen kopie van een zone die gehost wordt op "
-"een andere DNS server. PowerDNS haalt automatisch zone data op en werkt deze "
-"bij vanaf de master server."
+"een andere DNS server. PowerDNS haalt automatisch zone data op en werkt deze"
+" bij vanaf de master server."
 
 #: templates/default/add_zone_slave.html:91
 msgid ""
@@ -10458,8 +10508,8 @@ msgstr ""
 
 #: templates/default/add_zone_slave.html:95
 msgid ""
-"Make sure that this PowerDNS server is allowed to transfer the zone from the "
-"master server. The master server must have an allow-transfer or similar "
+"Make sure that this PowerDNS server is allowed to transfer the zone from the"
+" master server. The master server must have an allow-transfer or similar "
 "configuration permitting zone transfers to this server's IP address."
 msgstr ""
 "Zorg ervoor dat deze PowerDNS server toestemming heeft om de zone over te "
@@ -10486,8 +10536,8 @@ msgstr ""
 #: templates/default/add_zone_slave.html:111
 msgid "To test the connection, check the PowerDNS logs after adding the zone"
 msgstr ""
-"Om de verbinding te testen, controleer de PowerDNS logs na het toevoegen van "
-"de zone"
+"Om de verbinding te testen, controleer de PowerDNS logs na het toevoegen van"
+" de zone"
 
 #: templates/default/delete_zone_templ.html:12
 msgid "Delete template"
@@ -10520,8 +10570,8 @@ msgid ""
 "and styling."
 msgstr ""
 "Bekijk hoe e-mail sjablonen zullen verschijnen voor gebruikers in zowel "
-"lichte als donkere modi. Deze voorvertoningen gebruiken voorbeeldgegevens om "
-"de e-mailopmaak en styling te demonstreren."
+"lichte als donkere modi. Deze voorvertoningen gebruiken voorbeeldgegevens om"
+" de e-mailopmaak en styling te demonstreren."
 
 #: templates/default/email_previews.html:21
 msgid "Active Email Templates"
@@ -10540,9 +10590,9 @@ msgid ""
 "Custom templates are active and override the default templates. These are "
 "the templates currently used when sending emails."
 msgstr ""
-"Aangepaste sjablonen zijn actief en overschrijven de standaardsjablonen. Dit "
-"zijn de sjablonen die momenteel worden gebruikt bij het verzenden van e-"
-"mails."
+"Aangepaste sjablonen zijn actief en overschrijven de standaardsjablonen. Dit"
+" zijn de sjablonen die momenteel worden gebruikt bij het verzenden van "
+"e-mails."
 
 #: templates/default/email_previews.html:34
 msgid ""
@@ -10573,8 +10623,8 @@ msgid ""
 "The following standard templates are currently overridden by custom "
 "templates:"
 msgstr ""
-"De volgende standaardsjablonen worden momenteel overschreven door aangepaste "
-"sjablonen:"
+"De volgende standaardsjablonen worden momenteel overschreven door aangepaste"
+" sjablonen:"
 
 #: templates/default/email_previews.html:80
 msgid "using custom template"
@@ -10594,9 +10644,9 @@ msgstr "Aangepaste sjablonen"
 
 #: templates/default/email_previews.html:88
 msgid ""
-"You can create custom email templates by placing them in <code>templates/"
-"emails/custom/</code> to override these standard templates with your own "
-"designs."
+"You can create custom email templates by placing them in "
+"<code>templates/emails/custom/</code> to override these standard templates "
+"with your own designs."
 msgstr ""
 "U kunt aangepaste e-mailsjablonen maken door ze te plaatsen in "
 "<code>templates/emails/custom/</code> om deze standaardsjablonen te "
@@ -10609,7 +10659,8 @@ msgstr "Over e-mail voorvertoningen"
 #: templates/default/email_previews.html:95
 msgid "Previews use sample data to demonstrate email appearance"
 msgstr ""
-"Voorvertoningen gebruiken voorbeeldgegevens om e-mailweergave te demonstreren"
+"Voorvertoningen gebruiken voorbeeldgegevens om e-mailweergave te "
+"demonstreren"
 
 #: templates/default/email_previews.html:96
 msgid "Light mode is the default appearance for most email clients"
@@ -10619,8 +10670,8 @@ msgstr "Lichte modus is de standaardweergave voor de meeste e-mailclients"
 msgid ""
 "Dark mode preview shows how emails appear when users have dark mode enabled"
 msgstr ""
-"Donkere modus voorvertoning toont hoe e-mails verschijnen wanneer gebruikers "
-"donkere modus hebben ingeschakeld"
+"Donkere modus voorvertoning toont hoe e-mails verschijnen wanneer gebruikers"
+" donkere modus hebben ingeschakeld"
 
 #: templates/default/email_previews.html:98
 msgid "These previews reflect the actual templates used in production"
@@ -10676,7 +10727,8 @@ msgstr "PowerDNS Versie"
 msgid "Daemon Type"
 msgstr "Daemontype"
 
-#: templates/default/pdns_status.html:81 templates/default/pdns_status.html:182
+#: templates/default/pdns_status.html:81
+#: templates/default/pdns_status.html:182
 msgid "Uptime"
 msgstr "Bedrijfstijd"
 
@@ -10690,7 +10742,8 @@ msgstr "Secundaire Servers"
 
 #: templates/default/pdns_status.html:104
 msgid ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
+"Showing connectivity status for DNS servers listed in the supermasters "
+"table."
 msgstr ""
 "Toont connectiviteitsstatus voor DNS servers vermeld in de supermasters "
 "tabel."
@@ -10886,8 +10939,8 @@ msgstr "U staat op het punt de API sleutel te verwijderen"
 
 #: templates/default/api_key_delete.html:18
 msgid ""
-"If you delete this API key, any applications using it will no longer be able "
-"to authenticate."
+"If you delete this API key, any applications using it will no longer be able"
+" to authenticate."
 msgstr ""
 "Als u deze API sleutel verwijdert, kunnen applicaties die deze gebruiken "
 "niet meer authenticeren."
@@ -10919,8 +10972,8 @@ msgid ""
 "assigned."
 msgstr ""
 "Dit sjabloon kan aan gebruikers worden toegewezen om snel de bijbehorende "
-"machtigingen toe te passen. Wijzigingen hier beïnvloeden alle gebruikers die "
-"dit sjabloon hebben toegewezen."
+"machtigingen toe te passen. Wijzigingen hier beïnvloeden alle gebruikers die"
+" dit sjabloon hebben toegewezen."
 
 #: templates/default/edit_perm_templ.html:63
 msgid "Permission Groups"
@@ -10971,7 +11024,8 @@ msgid "You are about to delete a DNSSEC key (ID"
 msgstr "U gaat een DNSSEC-sleutel verwijderen (ID"
 
 #: templates/default/whois.html:26
-msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
+msgid ""
+"Enter a domain name (e.g., example.com) to lookup its WHOIS information"
 msgstr ""
 "Voer een domeinnaam in (bijv. voorbeeld.com) om de WHOIS informatie op te "
 "zoeken"
@@ -11009,8 +11063,8 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Maak een databasegebruiker aan met beperkte rechten (select, insert, update, "
-"delete) zodat Poweradmin toegang heeft tot PowerDNS-tabellen."
+"Maak een databasegebruiker aan met beperkte rechten (select, insert, update,"
+" delete) zodat Poweradmin toegang heeft tot PowerDNS-tabellen."
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -11171,8 +11225,8 @@ msgstr "Volledig pad naar SQLite-databasebestand"
 #: install/templates/step4.html.twig:97
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr ""
-"Bestand moet bestaan met lees-/schrijftoegang voor de webserver. Gebruik een "
-"absoluut pad."
+"Bestand moet bestaan met lees-/schrijftoegang voor de webserver. Gebruik een"
+" absoluut pad."
 
 #: install/templates/step4.html.twig:105
 msgid "DB charset"
@@ -11245,7 +11299,8 @@ msgstr "Vereistencontrole:"
 #: install/templates/step2.html.twig:12
 msgid "Verifying that your server meets all requirements to run Poweradmin."
 msgstr ""
-"Controleren of uw server aan alle vereisten voldoet om Poweradmin te draaien."
+"Controleren of uw server aan alle vereisten voldoet om Poweradmin te "
+"draaien."
 
 #: install/templates/step2.html.twig:20
 msgid "PHP Version"
@@ -11489,7 +11544,8 @@ msgstr "Foreign Key Beperking Problemen:"
 
 #: install/helpers/InstallStepHandler.php:217
 msgid ""
-"The installer could not remove existing tables due to foreign key constraints"
+"The installer could not remove existing tables due to foreign key "
+"constraints"
 msgstr ""
 "De installer kon bestaande tabellen niet verwijderen vanwege foreign key "
 "beperkingen"
@@ -11499,8 +11555,8 @@ msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
-"Dit kan gebeuren tijdens herinstallatie als u aangepaste beperkingen hebt of "
-"als tabellen worden gerefereerd door andere tabellen"
+"Dit kan gebeuren tijdens herinstallatie als u aangepaste beperkingen hebt of"
+" als tabellen worden gerefereerd door andere tabellen"
 
 #: install/helpers/InstallStepHandler.php:219
 msgid ""

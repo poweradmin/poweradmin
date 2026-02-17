@@ -15,17 +15,17 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 
 #: lib/AppInitializer.php:82
 msgid ""
-"No configuration file found. Please use the <a href=\"install/\">installer</"
-"a> to create one, or create a config/settings.php file manually."
+"No configuration file found. Please use the <a "
+"href=\"install/\">installer</a> to create one, or create a "
+"config/settings.php file manually."
 msgstr ""
-"Файл конфигурации не найден. Пожалуйста, используйте <a href=\"install/"
-"\">установщик</a> для его создания или создайте файл config/settings.php "
-"вручную."
+"Файл конфигурации не найден. Пожалуйста, используйте <a "
+"href=\"install/\">установщик</a> для его создания или создайте файл "
+"config/settings.php вручную."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:136
 msgid "Invalid CSRF token."
@@ -79,9 +79,10 @@ msgstr "Не выбрано записей для удаления."
 
 #: lib/Application/Controller/DeleteRecordsController.php:180
 msgid ""
-"The record has been deleted successfully. Any corresponding PTR records were "
-"also removed."
-msgstr "Запись успешно удалена. Соответствующие PTR записи также были удалены."
+"The record has been deleted successfully. Any corresponding PTR records were"
+" also removed."
+msgstr ""
+"Запись успешно удалена. Соответствующие PTR записи также были удалены."
 
 #: lib/Application/Controller/DeleteRecordsController.php:182
 #, php-format
@@ -97,7 +98,8 @@ msgstr "Не удалось удалить записи. Пожалуйста, �
 
 #: lib/Application/Controller/DeleteRecordsController.php:234
 msgid ""
-"No valid records selected for deletion or you lack permission to delete them."
+"No valid records selected for deletion or you lack permission to delete "
+"them."
 msgstr ""
 "Не выбрано допустимых записей для удаления или у вас нет разрешения на их "
 "удаление."
@@ -172,7 +174,8 @@ msgstr "Запись успешно удалена. Соответствующа
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
-msgstr "Запись была успешно удалена. Соответствующая A/AAAA запись не найдена."
+msgstr ""
+"Запись была успешно удалена. Соответствующая A/AAAA запись не найдена."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:73
 msgid "The record has been deleted successfully."
@@ -180,16 +183,16 @@ msgstr "Запись успешно удалена."
 
 #: lib/Application/Controller/DeleteRecordController.php:204
 msgid ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
+"The record and its corresponding PTR and A/AAAA records were deleted but the"
+" comment was preserved because similar records exist."
 msgstr ""
-"Запись и соответствующие ей PTR и A/AAAA записи были удалены, но комментарий "
-"сохранен, поскольку существуют похожие записи."
+"Запись и соответствующие ей PTR и A/AAAA записи были удалены, но комментарий"
+" сохранен, поскольку существуют похожие записи."
 
 #: lib/Application/Controller/DeleteRecordController.php:206
 msgid ""
-"The record and its corresponding PTR record were deleted but the comment was "
-"preserved because similar records exist."
+"The record and its corresponding PTR record were deleted but the comment was"
+" preserved because similar records exist."
 msgstr ""
 "Запись и соответствующая PTR запись удалены, но комментарий сохранён, "
 "поскольку существуют похожие записи."
@@ -204,8 +207,8 @@ msgstr ""
 
 #: lib/Application/Controller/DeleteRecordController.php:210
 msgid ""
-"The record was deleted but the comment was preserved because similar records "
-"exist."
+"The record was deleted but the comment was preserved because similar records"
+" exist."
 msgstr ""
 "Запись была удалена, но комментарий сохранен, так как существуют похожие "
 "записи."
@@ -283,7 +286,8 @@ msgid "MFA must be enabled to regenerate recovery codes."
 msgstr "MFA должна быть включена для генерации новых кодов восстановления."
 
 #: lib/Application/Controller/MfaSetupController.php:310
-msgid "Recovery codes have been regenerated. Please save them in a safe place."
+msgid ""
+"Recovery codes have been regenerated. Please save them in a safe place."
 msgstr ""
 "Коды восстановления сгенерированы заново. Пожалуйста, сохраните их в "
 "безопасном месте."
@@ -457,7 +461,8 @@ msgid "You do not have permission to create new zone templates."
 msgstr "У вас нет разрешения на создание новых шаблонов зон."
 
 #: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:803
-msgid "Zone template with this name already exists, please choose another one."
+msgid ""
+"Zone template with this name already exists, please choose another one."
 msgstr "Шаблон зоны с таким именем уже существует, выберите другое имя."
 
 #: lib/Application/Controller/EditZoneTemplController.php:264
@@ -655,7 +660,8 @@ msgstr "Запись была успешно добавлена, но созда
 
 #: lib/Application/Controller/AddRecordController.php:235
 msgid "Record successfully added. A matching A record was also created."
-msgstr "Запись успешно добавлена. Также была создана соответствующая A запись."
+msgstr ""
+"Запись успешно добавлена. Также была создана соответствующая A запись."
 
 #: lib/Application/Controller/AddRecordController.php:238
 msgid "The record was successfully added."
@@ -675,8 +681,8 @@ msgstr "Произошла ошибка. Попробуйте еще раз."
 
 #: lib/Application/Controller/MfaVerifyController.php:258
 msgid ""
-"Email verification is not available because mail service is disabled. Please "
-"use a recovery code."
+"Email verification is not available because mail service is disabled. Please"
+" use a recovery code."
 msgstr ""
 "Проверка по электронной почте недоступна, поскольку почтовая служба "
 "отключена. Используйте код восстановления."
@@ -758,8 +764,8 @@ msgid ""
 "Old migrations table detected. Please remove the `migrations` table before "
 "proceeding."
 msgstr ""
-"Обнаружена старая таблица миграций. Пожалуйста, удалите таблицу `migrations` "
-"перед продолжением."
+"Обнаружена старая таблица миграций. Пожалуйста, удалите таблицу `migrations`"
+" перед продолжением."
 
 #: lib/Application/Controller/MigrationsController.php:60
 msgid ""
@@ -1376,8 +1382,8 @@ msgstr "Поле приоритета для записей IPSECKEY должн�
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:122
 msgid ""
-"IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
-"keying material (RFC 4025 Section 4)."
+"IPSECKEY records should be used with DNSSEC to ensure secure transmission of"
+" keying material (RFC 4025 Section 4)."
 msgstr ""
 "Записи IPSECKEY должны использоваться с DNSSEC для обеспечения безопасной "
 "передачи ключевого материала (RFC 4025 раздел 4)."
@@ -1392,8 +1398,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
-"When using domain name gateways, ensure both forward and reverse DNS records "
-"exist and are properly secured with DNSSEC."
+"When using domain name gateways, ensure both forward and reverse DNS records"
+" exist and are properly secured with DNSSEC."
 msgstr ""
 "При использовании шлюзов доменных имен убедитесь, что прямые и обратные "
 "записи DNS существуют и должным образом защищены с помощью DNSSEC."
@@ -1427,8 +1433,8 @@ msgid ""
 "IPSECKEY algorithm must be 0 (No key), 1 (RSA), 2 (DSA), 3 (ECDSA), or 4 "
 "(Ed25519)."
 msgstr ""
-"Алгоритм IPSECKEY должен быть 0 (без ключа), 1 (RSA), 2 (DSA), 3 (ECDSA) или "
-"4 (Ed25519)."
+"Алгоритм IPSECKEY должен быть 0 (без ключа), 1 (RSA), 2 (DSA), 3 (ECDSA) или"
+" 4 (Ed25519)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
@@ -1501,24 +1507,23 @@ msgstr ""
 "$port, $protocol и $hostname взяты из цели поиска SRV"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
-msgid ""
-"3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
+msgid "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
 msgstr ""
 "3. Как записи SRV, так и TLSA должны иметь статус проверки DNSSEC "
 "\"безопасный\""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
-"TLSA record name should typically follow the format _port._protocol.hostname "
-"(e.g., _443._tcp.www.example.com)."
+"TLSA record name should typically follow the format _port._protocol.hostname"
+" (e.g., _443._tcp.www.example.com)."
 msgstr ""
 "Имя записи TLSA обычно должно следовать формату _port._protocol.hostname "
 "(например, _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
-"TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
-"and sctp."
+"TLSA record is using a non-standard protocol. Common protocols are tcp, udp,"
+" and sctp."
 msgstr ""
 "TLSA запись использует нестандартный протокол. Распространенные протоколы: "
 "tcp, udp и sctp."
@@ -1528,7 +1533,8 @@ msgid ""
 "This appears to be a TLSA record for SMTP. Ensure MX records are also "
 "configured correctly."
 msgstr ""
-"Это TLSA запись для SMTP. Убедитесь, что MX записи также настроены правильно."
+"Это TLSA запись для SMTP. Убедитесь, что MX записи также настроены "
+"правильно."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:145
 msgid ""
@@ -1540,8 +1546,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
-"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
-"properly configured for DoT."
+"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is"
+" properly configured for DoT."
 msgstr ""
 "Это TLSA запись для DNS over TLS. Убедитесь, что ваш DNS сервер правильно "
 "настроен для DoT."
@@ -1563,13 +1569,14 @@ msgstr ""
 "для корректной работы TLSA (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
-msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
+msgid ""
+"This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
 msgstr "Это SMIMEA запись (RFC 8162) для S/MIME сертификатов."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
-"SMIMEA records use the same format as TLSA but associate S/MIME certificates "
-"with email addresses."
+"SMIMEA records use the same format as TLSA but associate S/MIME certificates"
+" with email addresses."
 msgstr ""
 "SMIMEA записи используют тот же формат, что и TLSA, но связывают S/MIME "
 "сертификаты с адресами электронной почты."
@@ -1592,7 +1599,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
-"Invalid value for priority field. TLSA records must have priority value of 0."
+"Invalid value for priority field. TLSA records must have priority value of "
+"0."
 msgstr ""
 "Недопустимое значение поля приоритета. TLSA записи должны иметь значение "
 "приоритета 0."
@@ -1627,8 +1635,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:270
 msgid ""
-"Usage 2 (DANE-TA) requires proper trust anchor management and may break when "
-"certificates expire."
+"Usage 2 (DANE-TA) requires proper trust anchor management and may break when"
+" certificates expire."
 msgstr ""
 "Использование 2 (DANE-TA) требует правильного управления точками доверия и "
 "может нарушить работу при истечении сертификатов."
@@ -1651,7 +1659,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
-"TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
+"TLSA selector field must be 0 (Full certificate) or 1 "
+"(SubjectPublicKeyInfo)."
 msgstr ""
 "Поле селектора TLSA должно быть 0 (Полный сертификат) или 1 "
 "(SubjectPublicKeyInfo)."
@@ -1661,16 +1670,16 @@ msgid ""
 "Selector 0 (Full certificate) may break when certificate attributes change. "
 "Selector 1 (SPKI) is recommended."
 msgstr ""
-"Селектор 0 (Полный сертификат) может нарушить работу при изменении атрибутов "
-"сертификата. Рекомендуется селектор 1 (SPKI)."
+"Селектор 0 (Полный сертификат) может нарушить работу при изменении атрибутов"
+" сертификата. Рекомендуется селектор 1 (SPKI)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:298
 msgid ""
 "TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
 msgstr ""
-"Поле типа соответствия TLSA должно быть 0 (Точное соответствие), 1 (SHA-256) "
-"или 2 (SHA-512)."
+"Поле типа соответствия TLSA должно быть 0 (Точное соответствие), 1 (SHA-256)"
+" или 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:304
 msgid ""
@@ -1719,8 +1728,8 @@ msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
 "TTL as the SOA minimum TTL field."
 msgstr ""
-"Согласно RFC 5155 и RFC 9077, NSEC3PARAM записи должны иметь тот же TTL, что "
-"и поле минимального TTL в SOA."
+"Согласно RFC 5155 и RFC 9077, NSEC3PARAM записи должны иметь тот же TTL, что"
+" и поле минимального TTL в SOA."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:146
 msgid ""
@@ -1732,16 +1741,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
-"Manually editing NSEC3PARAM records is not recommended as they are typically "
-"generated automatically by DNSSEC-aware nameservers."
+"Manually editing NSEC3PARAM records is not recommended as they are typically"
+" generated automatically by DNSSEC-aware nameservers."
 msgstr ""
 "Ручное редактирование NSEC3PARAM записей не рекомендуется, так как они "
 "обычно генерируются автоматически DNSSEC-осведомленными серверами имен."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:148
 msgid ""
-"NSEC3PARAM records indicate to authoritative servers which parameters to use "
-"for NSEC3-based authenticated denial of existence."
+"NSEC3PARAM records indicate to authoritative servers which parameters to use"
+" for NSEC3-based authenticated denial of existence."
 msgstr ""
 "NSEC3PARAM записи указывают авторитетным серверам, какие параметры "
 "использовать для аутентифицированного отрицания существования на основе "
@@ -1749,8 +1758,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:149
 msgid ""
-"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
-"generated with the same parameters."
+"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be "
+"re-generated with the same parameters."
 msgstr ""
 "При обновлении параметров NSEC3, и NSEC3, и NSEC3PARAM записи должны быть "
 "перегенерированы с одинаковыми параметрами."
@@ -1773,11 +1782,11 @@ msgstr "Флаги NSEC3PARAM должны быть от 0 до 255."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:224
 msgid ""
-"Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover "
-"unsigned delegations."
+"Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover"
+" unsigned delegations."
 msgstr ""
-"Значение флага 1 означает, что используется Opt-Out. Это означает, что NSEC3 "
-"записи могут покрывать неподписанные делегирования."
+"Значение флага 1 означает, что используется Opt-Out. Это означает, что NSEC3"
+" записи могут покрывать неподписанные делегирования."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:225
 msgid ""
@@ -1793,8 +1802,8 @@ msgid ""
 "Flags values greater than 1 are reserved for future use. Current "
 "implementations may not handle these values correctly."
 msgstr ""
-"Значения флагов больше 1 зарезервированы для будущего использования. Текущие "
-"реализации могут не обрабатывать эти значения корректно."
+"Значения флагов больше 1 зарезервированы для будущего использования. Текущие"
+" реализации могут не обрабатывать эти значения корректно."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:207
 msgid "NSEC3PARAM iterations must be between 0 and 2500."
@@ -1835,8 +1844,8 @@ msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
 msgstr ""
-"RFC 9276 рекомендует НЕ использовать соль (обозначается \"-\") для упрощения "
-"эксплуатации без снижения безопасности."
+"RFC 9276 рекомендует НЕ использовать соль (обозначается \"-\") для упрощения"
+" эксплуатации без снижения безопасности."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
@@ -1848,8 +1857,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:111
 msgid ""
-"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
-"not a formal IETF standard."
+"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol,"
+" not a formal IETF standard."
 msgstr ""
 "ПРИМЕЧАНИЕ: Тип записи LP определен в RFC 6742 как экспериментальный "
 "протокол, а не как официальный стандарт IETF."
@@ -1859,13 +1868,13 @@ msgid ""
 "LP records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
 msgstr ""
-"LP записи должны использоваться только с Identifier-Locator Network Protocol "
-"(ILNP)."
+"LP записи должны использоваться только с Identifier-Locator Network Protocol"
+" (ILNP)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
-"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
-"Section 3.4)."
+"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742"
+" Section 3.4)."
 msgstr ""
 "LP записи НЕ ДОЛЖНЫ присутствовать для узлов, которые не поддерживают ILNP "
 "(RFC 6742 Раздел 3.4)."
@@ -1940,8 +1949,8 @@ msgid ""
 "Invalid AFSDB subtype. Must be 1 (AFS cell database server) or 2 (DCE "
 "authenticated name server)."
 msgstr ""
-"Недопустимый подтип AFSDB. Должен быть 1 (сервер базы данных AFS ячейки) или "
-"2 (DCE аутентифицированный сервер имен)."
+"Недопустимый подтип AFSDB. Должен быть 1 (сервер базы данных AFS ячейки) или"
+" 2 (DCE аутентифицированный сервер имен)."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:112
 msgid "Priority field for LOC records must be 0 or empty."
@@ -1981,12 +1990,12 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:135
 msgid ""
-"Default precision values detected (1m size, 10000m horizontal precision, 10m "
-"vertical precision). Consider using more accurate values if you have them."
+"Default precision values detected (1m size, 10000m horizontal precision, 10m"
+" vertical precision). Consider using more accurate values if you have them."
 msgstr ""
 "Обнаружены значения точности по умолчанию (1м размер, 10000м горизонтальная "
-"точность, 10м вертикальная точность). Рассмотрите использование более точных "
-"значений, если они у вас есть."
+"точность, 10м вертикальная точность). Рассмотрите использование более точных"
+" значений, если они у вас есть."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:159
 msgid "Latitude degrees must be between 0 and 90."
@@ -2029,8 +2038,8 @@ msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 msgstr ""
-"Недопустимый формат LOC записи. Формат должен быть: d1 [m1 [s1]] {\"N\"|"
-"\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
+"Недопустимый формат LOC записи. Формат должен быть: d1 [m1 [s1]] "
+"{\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] "
 "[vp[\"m\"]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
@@ -2047,8 +2056,8 @@ msgstr "Поле приоритета для RKEY записей должно б
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:145
 msgid ""
-"RKEY records should be used with caution as they are not widely supported by "
-"DNS servers and resolvers."
+"RKEY records should be used with caution as they are not widely supported by"
+" DNS servers and resolvers."
 msgstr ""
 "RKEY записи следует использовать осторожно, так как они не широко "
 "поддерживаются DNS серверами и резолверами."
@@ -2070,8 +2079,8 @@ msgstr "Поле флагов RKEY должно быть числовым зна
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:189
 msgid ""
-"Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
-"SEP)."
+"Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key +"
+" SEP)."
 msgstr ""
 "Необычное значение флагов. Обычные значения: 0, 256 (Ключ зоны) или 257 "
 "(Ключ зоны + SEP)."
@@ -2081,8 +2090,8 @@ msgid ""
 "Bit 7 (Zone Key flag) is set in the flags field, indicating this is a zone "
 "key."
 msgstr ""
-"Бит 7 (флаг Ключа зоны) установлен в поле флагов, что означает, что это ключ "
-"зоны."
+"Бит 7 (флаг Ключа зоны) установлен в поле флагов, что означает, что это ключ"
+" зоны."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:198
 msgid ""
@@ -2101,8 +2110,8 @@ msgid ""
 "Protocol field should be 3 for compliance with standards based on DNSKEY "
 "format."
 msgstr ""
-"Поле протокола должно быть 3 для соответствия со стандартами, основанными на "
-"формате DNSKEY."
+"Поле протокола должно быть 3 для соответствия со стандартами, основанными на"
+" формате DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:213
 msgid "RKEY algorithm field must be a numeric value."
@@ -2128,8 +2137,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
-"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
-"stronger algorithm."
+"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a"
+" stronger algorithm."
 msgstr ""
 "Алгоритм 5 (RSA/SHA-1) считается небезопасным и должен быть заменен более "
 "сильным алгоритмом."
@@ -2187,8 +2196,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid ""
-"CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
-"SHA-256) or later."
+"CRITICAL: This algorithm is considered insecure. Use algorithm 8 "
+"(RSA/SHA-256) or later."
 msgstr ""
 "КРИТИЧНО: Данный алгоритм считается небезопасным. Используйте алгоритм 8 "
 "(RSA/SHA-256) или более поздний."
@@ -2279,13 +2288,13 @@ msgid ""
 "Using APL records for AXFR access control should be combined with other "
 "security measures as noted in RFC 3123."
 msgstr ""
-"Использование записей APL для контроля доступа AXFR должно быть объединено с "
-"другими мерами безопасности, как отмечено в RFC 3123."
+"Использование записей APL для контроля доступа AXFR должно быть объединено с"
+" другими мерами безопасности, как отмечено в RFC 3123."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:84
 msgid ""
-"Note: NID records are used for the ILNP protocol, which is experimental (RFC "
-"6740, 6742)."
+"Note: NID records are used for the ILNP protocol, which is experimental (RFC"
+" 6740, 6742)."
 msgstr ""
 "Примечание: записи NID используются для протокола ILNP, который является "
 "экспериментальным (RFC 6740, 6742)."
@@ -2299,8 +2308,8 @@ msgid ""
 "NID record content must be in format xxxx:xxxx:xxxx:xxxx with 4 groups of 4 "
 "hexadecimal digits."
 msgstr ""
-"Содержимое записи NID должно быть в формате xxxx:xxxx:xxxx:xxxx с 4 группами "
-"по 4 шестнадцатеричных цифры."
+"Содержимое записи NID должно быть в формате xxxx:xxxx:xxxx:xxxx с 4 группами"
+" по 4 шестнадцатеричных цифры."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
@@ -2409,8 +2418,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
-"NSEC records enable \"zone walking\", allowing enumeration of all names in a "
-"zone, which may be a privacy concern."
+"NSEC records enable \"zone walking\", allowing enumeration of all names in a"
+" zone, which may be a privacy concern."
 msgstr ""
 "Записи NSEC включают \"zone walking\", разрешая перечисление всех имен в "
 "зоне, что может создавать проблемы с конфиденциальностью."
@@ -2454,9 +2463,9 @@ msgstr "Запись NSEC должна содержать допустимое �
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:173
 msgid ""
-"The next domain name field must be the next owner name in canonical ordering "
-"of the zone. Canonical ordering is case-insensitive and sorts by labels from "
-"right to left."
+"The next domain name field must be the next owner name in canonical ordering"
+" of the zone. Canonical ordering is case-insensitive and sorts by labels "
+"from right to left."
 msgstr ""
 "Поле следующего доменного имени должно быть следующим именем владельца в "
 "каноническом порядке зоны. Канонический порядок не учитывает регистр и "
@@ -2467,13 +2476,13 @@ msgid ""
 "If this is the last NSEC record in the zone, the next domain name should be "
 "the zone apex (the owner name of the zone's SOA RR)."
 msgstr ""
-"Если это последняя запись NSEC в зоне, следующим доменным именем должна быть "
-"вершина зоны (имя владельца SOA RR зоны)."
+"Если это последняя запись NSEC в зоне, следующим доменным именем должна быть"
+" вершина зоны (имя владельца SOA RR зоны)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:194
 msgid ""
-"Type bit maps should be present to indicate which RR types exist at the NSEC "
-"owner name. An empty type bitmap is unusual."
+"Type bit maps should be present to indicate which RR types exist at the NSEC"
+" owner name. An empty type bitmap is unusual."
 msgstr ""
 "Карты битов типов должны присутствовать, чтобы указать, какие типы RR "
 "существуют в имени владельца NSEC. Пустая карта битов типов необычна."
@@ -2483,8 +2492,7 @@ msgstr ""
 msgid ""
 "Numeric type \"%s\" should be represented using the RFC 3597 format "
 "(TYPE###)."
-msgstr ""
-"Числовой тип \"%s\" должен быть представлен в формате RFC 3597 (TYPE###)."
+msgstr "Числовой тип \"%s\" должен быть представлен в формате RFC 3597 (TYPE###)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:266
 #, php-format
@@ -2496,8 +2504,8 @@ msgid ""
 "NSEC type should typically be present in its own type bit map, as each name "
 "in a signed zone should have an NSEC record."
 msgstr ""
-"Тип NSEC обычно должен присутствовать в своей собственной карте битов типов, "
-"так как каждое имя в подписанной зоне должно иметь запись NSEC."
+"Тип NSEC обычно должен присутствовать в своей собственной карте битов типов,"
+" так как каждое имя в подписанной зоне должно иметь запись NSEC."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:276
 msgid ""
@@ -2562,17 +2570,17 @@ msgid ""
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
 msgstr ""
-"Запись OPENPGPKEY превышает 4 КБ по размеру. RFC 7929 рекомендует делать DNS-"
-"записи как можно меньше, чтобы обеспечить надежную передачу. Рассмотрите "
-"использование минимального формата экспорта ключа."
+"Запись OPENPGPKEY превышает 4 КБ по размеру. RFC 7929 рекомендует делать "
+"DNS-записи как можно меньше, чтобы обеспечить надежную передачу. Рассмотрите"
+" использование минимального формата экспорта ключа."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
 msgstr ""
-"Запись OPENPGPKEY необычно мала. Убедитесь, что это допустимый открытый ключ "
-"OpenPGP."
+"Запись OPENPGPKEY необычно мала. Убедитесь, что это допустимый открытый ключ"
+" OpenPGP."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
@@ -2601,8 +2609,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
-"OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
-"by all email clients or OpenPGP implementations."
+"OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported"
+" by all email clients or OpenPGP implementations."
 msgstr ""
 "Записи OPENPGPKEY являются ЭКСПЕРИМЕНТАЛЬНЫМИ согласно RFC 7929 и могут не "
 "поддерживаться всеми почтовыми клиентами или реализациями OpenPGP."
@@ -2617,8 +2625,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
-"To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
-"print-dane-records option to ensure correct format and content."
+"To create OPENPGPKEY records, use specialized tools like GnuPG with the "
+"--print-dane-records option to ensure correct format and content."
 msgstr ""
 "Для создания записей OPENPGPKEY используйте специализированные инструменты, "
 "такие как GnuPG с опцией --print-dane-records, чтобы обеспечить правильный "
@@ -2668,8 +2676,8 @@ msgstr "Недопустимые кавычки в HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:258
 msgid ""
-"CPU type does not contain any standard values. Consider using a standard CPU "
-"type for better interoperability."
+"CPU type does not contain any standard values. Consider using a standard CPU"
+" type for better interoperability."
 msgstr ""
 "Тип CPU не содержит стандартных значений. Рассмотрите использование "
 "стандартного типа CPU для лучшей совместимости."
@@ -2778,17 +2786,17 @@ msgid ""
 "TSIG error code 17 (BADKEY) indicates that the key used in the TSIG record "
 "is invalid. Verify the key is configured on both DNS servers."
 msgstr ""
-"Код ошибки TSIG 17 (BADKEY) указывает, что ключ, используемый в записи TSIG, "
-"недопустим. Убедитесь, что ключ настроен на обоих DNS-серверах."
+"Код ошибки TSIG 17 (BADKEY) указывает, что ключ, используемый в записи TSIG,"
+" недопустим. Убедитесь, что ключ настроен на обоих DNS-серверах."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
-"TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
-"is outside the allowed time window. Check clock synchronization."
+"TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record"
+" is outside the allowed time window. Check clock synchronization."
 msgstr ""
 "Код ошибки TSIG 18 (BADTIME) указывает, что метка времени в записи TSIG "
-"находится за пределами разрешенного временного окна. Проверьте синхронизацию "
-"часов."
+"находится за пределами разрешенного временного окна. Проверьте синхронизацию"
+" часов."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:259
 msgid ""
@@ -2839,8 +2847,8 @@ msgstr ""
 msgid ""
 "Using a non-standard TSIG algorithm name. This may not be widely supported."
 msgstr ""
-"Используется нестандартное имя алгоритма TSIG. Это может не получить широкой "
-"поддержки."
+"Используется нестандартное имя алгоритма TSIG. Это может не получить широкой"
+" поддержки."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
@@ -2888,7 +2896,8 @@ msgstr ""
 msgid ""
 "SHA-384 (algorithm 1) is the recommended hash algorithm for ZONEMD records."
 msgstr ""
-"SHA-384 (алгоритм 1) - рекомендуемый алгоритм хеширования для записей ZONEMD."
+"SHA-384 (алгоритм 1) - рекомендуемый алгоритм хеширования для записей "
+"ZONEMD."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:131
 msgid ""
@@ -2911,8 +2920,8 @@ msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
 msgstr ""
-"Запись ZONEMD должна содержать серийный номер, схему, алгоритм хеширования и "
-"дайджест, разделенные пробелами."
+"Запись ZONEMD должна содержать серийный номер, схему, алгоритм хеширования и"
+" дайджест, разделенные пробелами."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -3138,11 +3147,11 @@ msgstr "Недопустимая метка ключа. Должна быть ч
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:166
 msgid ""
-"The key tag field does not uniquely identify a DNSKEY. More than one key can "
-"have the same key tag."
+"The key tag field does not uniquely identify a DNSKEY. More than one key can"
+" have the same key tag."
 msgstr ""
-"Поле метки ключа не однозначно идентифицирует DNSKEY. Несколько ключей могут "
-"иметь одинаковую метку."
+"Поле метки ключа не однозначно идентифицирует DNSKEY. Несколько ключей могут"
+" иметь одинаковую метку."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
@@ -3172,20 +3181,23 @@ msgstr ""
 "символов."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
-msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
+msgid ""
+"Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
 msgstr ""
 "Недопустимая длина дайджеста для SHA-256. Должна быть 64 шестнадцатеричных "
 "символа."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
-msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
+msgid ""
+"Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
 msgstr ""
 "Недопустимая длина дайджеста для SHA-384. Должна быть 96 шестнадцатеричных "
 "символов."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
 msgid "Digest must contain only hexadecimal characters (0-9, a-f)."
-msgstr "Дайджест должен содержать только шестнадцатеричные символы (0-9, a-f)."
+msgstr ""
+"Дайджест должен содержать только шестнадцатеричные символы (0-9, a-f)."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:92
 msgid "Null MX record (.) must have priority 0 according to RFC 7505."
@@ -3263,7 +3275,8 @@ msgstr ""
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr ""
-"Неизвестный ключ параметра HTTPS: \"%s\". См. RFC 9460 для допустимых ключей."
+"Неизвестный ключ параметра HTTPS: \"%s\". См. RFC 9460 для допустимых "
+"ключей."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:228
 #, php-format
@@ -3307,8 +3320,8 @@ msgstr "Параметр \"%s\" отмечен как обязательный, 
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
-"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
-"non-zero TTL may cause issues with older DNS implementations."
+"RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current"
+" non-zero TTL may cause issues with older DNS implementations."
 msgstr ""
 "RFC 2930 требует, чтобы записи TKEY имели TTL=0 для предотвращения "
 "кеширования. Текущий ненулевой TTL может вызвать проблемы с более старыми "
@@ -3355,7 +3368,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
-"TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
+"TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS "
+"format."
 msgstr ""
 "Время истечения TKEY должно быть допустимой меткой времени Unix или в "
 "формате YYYYMMDDHHmmSS."
@@ -3403,14 +3417,15 @@ msgstr "Ошибка TKEY должна быть допустимым номер�
 msgid ""
 "TKEY key data must be valid base64-encoded data or a hexadecimal string."
 msgstr ""
-"Данные ключа TKEY должны быть действительными данными в кодировке base64 или "
-"шестнадцатеричной строкой."
+"Данные ключа TKEY должны быть действительными данными в кодировке base64 или"
+" шестнадцатеричной строкой."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:233
 msgid ""
 "TKEY established keys are associated with DNS servers/resolvers, not zones."
 msgstr ""
-"Установленные ключи TKEY связаны с DNS серверами/резольверами, а не с зонами."
+"Установленные ключи TKEY связаны с DNS серверами/резольверами, а не с "
+"зонами."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:234
 msgid ""
@@ -3430,8 +3445,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
-"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
-"security."
+"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better"
+" security."
 msgstr ""
 "Обнаружен устаревший алгоритм. Для лучшей безопасности рекомендуется HMAC-"
 "SHA256 или более сильный."
@@ -3462,8 +3477,8 @@ msgstr "Значение TTL не может быть отрицательным
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:111
 #, php-format
 msgid ""
-"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
-"bit integer."
+"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed "
+"32-bit integer."
 msgstr ""
 "Значение TTL превышает максимально разрешенное (%d). RFC 2181 ограничивает "
 "его 32-битным целым числом со знаком."
@@ -3474,14 +3489,14 @@ msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
 "Low TTL values increase DNS traffic."
 msgstr ""
-"Значение TTL (%d) ниже рекомендуемого минимума в %d секунд (5 минут). Низкие "
-"значения TTL увеличивают DNS трафик."
+"Значение TTL (%d) ниже рекомендуемого минимума в %d секунд (5 минут). Низкие"
+" значения TTL увеличивают DNS трафик."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
-"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
-"TTL values delay DNS updates."
+"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High"
+" TTL values delay DNS updates."
 msgstr ""
 "Значение TTL (%d) превышает рекомендованный максимум %d секунд (1 неделя). "
 "Высокие значения TTL замедляют обновления DNS."
@@ -3512,7 +3527,8 @@ msgstr ""
 "FTP считается менее безопасным, чем альтернативы, такие как SFTP или HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
-msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
+msgid ""
+"Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
 msgstr ""
 "Рассмотрите возможность использования LDAPS (LDAP через SSL/TLS) для защиты "
 "LDAP-соединений."
@@ -3528,8 +3544,8 @@ msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
 msgstr ""
-"Схема URI \"file\" может представлять угрозу безопасности и не рекомендуется "
-"для публичных DNS-записей."
+"Схема URI \"file\" может представлять угрозу безопасности и не рекомендуется"
+" для публичных DNS-записей."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
@@ -3599,8 +3615,8 @@ msgid ""
 "URI contains percent characters not used for properly formatted percent-"
 "encoding."
 msgstr ""
-"URI содержит символы процента, не используемые для правильно сформированного "
-"процентного кодирования."
+"URI содержит символы процента, не используемые для правильно сформированного"
+" процентного кодирования."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:320
 msgid ""
@@ -3639,13 +3655,13 @@ msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
 msgstr ""
-"Убедитесь, что для хоста обменника ключей настроены соответствующие прямые и "
-"обратные DNS-записи."
+"Убедитесь, что для хоста обменника ключей настроены соответствующие прямые и"
+" обратные DNS-записи."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
-"The key exchanger host should have appropriate A/AAAA records for type A/"
-"AAAA additional section processing."
+"The key exchanger host should have appropriate A/AAAA records for type "
+"A/AAAA additional section processing."
 msgstr ""
 "Хост обменника ключей должен иметь соответствующие A/AAAA-записи для "
 "обработки дополнительной секции A/AAAA."
@@ -3692,8 +3708,8 @@ msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
 msgstr ""
-"Использование \".\" (корень) для RMAILBX означает, что владелец MINFO-записи "
-"отвечает за себя."
+"Использование \".\" (корень) для RMAILBX означает, что владелец MINFO-записи"
+" отвечает за себя."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
@@ -3739,8 +3755,7 @@ msgstr ""
 "записей."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
-msgid ""
-"Multiple \"all\" mechanisms found. Only the first one will be effective."
+msgid "Multiple \"all\" mechanisms found. Only the first one will be effective."
 msgstr "Найдено несколько механизмов \"all\". Только первый будет действующим."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
@@ -3890,22 +3905,22 @@ msgid ""
 "DHCP clients claim the same name. The presence of a DHCID record indicates "
 "the name is in use by a DHCP client."
 msgstr ""
-"Согласно RFC 4703, DHCID-записи используются для обнаружения коллизий, когда "
-"несколько DHCP-клиентов претендуют на одно и то же имя. Наличие DHCID-записи "
-"указывает, что имя используется DHCP-клиентом."
+"Согласно RFC 4703, DHCID-записи используются для обнаружения коллизий, когда"
+" несколько DHCP-клиентов претендуют на одно и то же имя. Наличие DHCID-"
+"записи указывает, что имя используется DHCP-клиентом."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
-"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
-"=)."
+"DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /,"
+" =)."
 msgstr ""
-"Запись DHCID должна содержать только действительные символы base64 (A-Z, a-"
-"z, 0-9, +, /, =)."
+"Запись DHCID должна содержать только действительные символы base64 (A-Z, "
+"a-z, 0-9, +, /, =)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
-"DHCID record has invalid base64 padding. Equals signs (=) should only appear "
-"at the end of the data."
+"DHCID record has invalid base64 padding. Equals signs (=) should only appear"
+" at the end of the data."
 msgstr ""
 "Запись DHCID имеет неверное дополнение base64. Знаки равенства (=) должны "
 "появляться только в конце данных."
@@ -3915,8 +3930,8 @@ msgid ""
 "DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
 "characters (with padding)."
 msgstr ""
-"Запись DHCID имеет неверную длину base64. Данные base64 должны быть кратны 4 "
-"символам (с дополнением)."
+"Запись DHCID имеет неверную длину base64. Данные base64 должны быть кратны 4"
+" символам (с дополнением)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:172
 msgid "DHCID record must contain valid base64-encoded data."
@@ -3934,8 +3949,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
 msgid ""
-"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
-"4701 (0x0000, 0x0001, 0x0002)."
+"DHCID identifier type 0x%04X is not one of the standard types defined in RFC"
+" 4701 (0x0000, 0x0001, 0x0002)."
 msgstr ""
 "Тип идентификатора DHCID 0x%04X не является одним из стандартных типов, "
 "определенных в RFC 4701 (0x0000, 0x0001, 0x0002)."
@@ -3943,8 +3958,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
-"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
-"4701."
+"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC"
+" 4701."
 msgstr ""
 "Тип дайджеста DHCID %d не является стандартным типом (1 для SHA-256), "
 "определенным в RFC 4701."
@@ -3964,7 +3979,8 @@ msgid ""
 "to prevent conflicts and unauthorized DNS updates."
 msgstr ""
 "DHCID-записи должны обновляться только авторизованными DHCP-клиентами или "
-"серверами для предотвращения конфликтов и несанкционированных DNS-обновлений."
+"серверами для предотвращения конфликтов и несанкционированных DNS-"
+"обновлений."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:208
 msgid ""
@@ -3984,8 +4000,8 @@ msgstr "Поле приоритета для RRSIG-записей должно �
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid ""
-"RRSIG records should only be created by your DNS server when signing a zone. "
-"Manual manipulation is not recommended."
+"RRSIG records should only be created by your DNS server when signing a zone."
+" Manual manipulation is not recommended."
 msgstr ""
 "RRSIG-записи должны создаваться только вашим DNS-сервером при подписании "
 "зоны. Ручное изменение не рекомендуется."
@@ -4011,8 +4027,8 @@ msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
 msgstr ""
-"RRSIG-запись должна содержать покрываемый тип, алгоритм, метки, оригинальный "
-"TTL, дату истечения, дату начала, тег ключа, имя подписывающего и подпись."
+"RRSIG-запись должна содержать покрываемый тип, алгоритм, метки, оригинальный"
+" TTL, дату истечения, дату начала, тег ключа, имя подписывающего и подпись."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
@@ -4043,8 +4059,8 @@ msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
 msgstr ""
-"Алгоритм 5 (RSA/SHA-1) считается небезопасным и должен быть заменен на более "
-"сильные алгоритмы."
+"Алгоритм 5 (RSA/SHA-1) считается небезопасным и должен быть заменен на более"
+" сильные алгоритмы."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
@@ -4121,8 +4137,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid ""
-"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
-"are generally preferred for faster recovery in case of key compromise."
+"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs"
+" are generally preferred for faster recovery in case of key compromise."
 msgstr ""
 "Оригинальный TTL больше 1 дня (86400). Для DNSSEC-записей обычно "
 "предпочтительны более короткие TTL для более быстрого восстановления в "
@@ -4167,8 +4183,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
 msgid ""
-"WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
-"resolvers until the inception time is reached."
+"WARNING: This signature is not yet valid. It will not be validated by DNSSEC"
+" resolvers until the inception time is reached."
 msgstr ""
 "ПРЕДУПРЕЖДЕНИЕ: Эта подпись еще не действительна. Она не будет проверена "
 "DNSSEC резолверами до наступления времени начала действия."
@@ -4201,8 +4217,8 @@ msgstr "Тег ключа RRSIG должен быть допустимым зн�
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
 msgstr ""
-"Имя подписанта RRSIG должно быть полностью квалифицированным доменным именем "
-"(заканчиваться точкой)."
+"Имя подписанта RRSIG должно быть полностью квалифицированным доменным именем"
+" (заканчиваться точкой)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:316
 msgid "RRSIG signer name must be a valid domain name."
@@ -4230,8 +4246,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
 msgid ""
-"Remember that RRSIG records must be regenerated before their expiration date "
-"to maintain DNSSEC validation."
+"Remember that RRSIG records must be regenerated before their expiration date"
+" to maintain DNSSEC validation."
 msgstr ""
 "Помните, что записи RRSIG должны быть пересозданы до истечения срока "
 "действия для поддержания валидации DNSSEC."
@@ -4242,8 +4258,8 @@ msgstr "Поле приоритета для RP записей должно бы
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:129
 msgid ""
-"RP records were defined in RFC 1183 (1990) and are not widely used in modern "
-"DNS configurations."
+"RP records were defined in RFC 1183 (1990) and are not widely used in modern"
+" DNS configurations."
 msgstr ""
 "Записи RP были определены в RFC 1183 (1990) и не широко используются в "
 "современных DNS конфигурациях."
@@ -4281,8 +4297,8 @@ msgid ""
 "RP records expose contact information in DNS which can create privacy and "
 "security concerns."
 msgstr ""
-"RP записи раскрывают контактную информацию в DNS, что может создать проблемы "
-"конфиденциальности и безопасности."
+"RP записи раскрывают контактную информацию в DNS, что может создать проблемы"
+" конфиденциальности и безопасности."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:194
 msgid ""
@@ -4330,8 +4346,8 @@ msgstr "Домен почтового ящика представляет адр
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
-"RP mailbox domain part contains underscores, which are not allowed in domain "
-"names."
+"RP mailbox domain part contains underscores, which are not allowed in domain"
+" names."
 msgstr ""
 "Доменная часть почтового ящика RP содержит подчеркивания, которые не "
 "разрешены в доменных именах."
@@ -4339,8 +4355,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:245
 msgid "RP mailbox domain must include both local part and domain sections."
 msgstr ""
-"Домен почтового ящика RP должен включать как локальную часть, так и доменные "
-"секции."
+"Домен почтового ящика RP должен включать как локальную часть, так и доменные"
+" секции."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:256
 msgid "RP mailbox domain contains empty label."
@@ -4424,13 +4440,13 @@ msgid ""
 "This appears to be an EUI-64 address derived from an EUI-48 address "
 "(contains FF-FE in the middle)."
 msgstr ""
-"Это выглядит как EUI-64 адрес, полученный из EUI-48 адреса (содержит FF-FE в "
-"середине)."
+"Это выглядит как EUI-64 адрес, полученный из EUI-48 адреса (содержит FF-FE в"
+" середине)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
-"This appears to be an IPv6 interface identifier (has the universal/local bit "
-"flipped compared to standard EUI-64)."
+"This appears to be an IPv6 interface identifier (has the universal/local bit"
+" flipped compared to standard EUI-64)."
 msgstr ""
 "Это выглядит как идентификатор интерфейса IPv6 (имеет перевернутый "
 "универсальный/локальный бит по сравнению со стандартным EUI-64)."
@@ -4460,8 +4476,8 @@ msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
 msgstr ""
-"В EUI64 записи отсутствуют разделители. Формат должен быть xx-xx-xx-xx-xx-xx-"
-"xx-xx с дефисами между октетами."
+"В EUI64 записи отсутствуют разделители. Формат должен быть xx-xx-xx-xx-xx-"
+"xx-xx-xx с дефисами между октетами."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
@@ -4510,8 +4526,8 @@ msgid ""
 "This DNAME record appears to be at zone apex. According to RFC 6672, using "
 "DNAME at the zone apex requires special handling for NS and related records."
 msgstr ""
-"Эта DNAME запись находится в верхушке зоны. Согласно RFC 6672, использование "
-"DNAME в верхушке зоны требует специальной обработки NS и связанных записей."
+"Эта DNAME запись находится в верхушке зоны. Согласно RFC 6672, использование"
+" DNAME в верхушке зоны требует специальной обработки NS и связанных записей."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:97
 msgid "DNAME target must be a valid fully-qualified domain name."
@@ -4528,8 +4544,8 @@ msgid ""
 "The DNAME target appears to be a subdomain of the owner name. This could "
 "create problematic circular references when resolving subdomains."
 msgstr ""
-"Цель DNAME является поддоменом имени владельца. Это может создать проблемные "
-"циклические ссылки при разрешении поддоменов."
+"Цель DNAME является поддоменом имени владельца. Это может создать проблемные"
+" циклические ссылки при разрешении поддоменов."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:122
 msgid "Priority field for DNAME records must be 0 or empty."
@@ -4556,8 +4572,8 @@ msgid ""
 "DNAME records MUST NOT appear at the same owner name as NS records, unless "
 "the owner name is the zone apex."
 msgstr ""
-"DNAME записи НЕ МОГУТ появляться с тем же именем владельца, что и NS записи, "
-"если имя владельца не является верхушкой зоны."
+"DNAME записи НЕ МОГУТ появляться с тем же именем владельца, что и NS записи,"
+" если имя владельца не является верхушкой зоны."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:133
 msgid ""
@@ -4589,7 +4605,8 @@ msgstr "Поле приоритета для DS записей должно бы
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
-"DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
+"DS record must be in the format: <key-tag> <algorithm> <digest-type> "
+"<digest>"
 msgstr ""
 "DS запись должна быть в формате: <тег-ключа> <алгоритм> <тип-дайджеста> "
 "<дайджест>"
@@ -4626,18 +4643,20 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
-msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
+msgid ""
+"%s (algorithm %d) is optional for implementation according to RFC 8624."
 msgstr ""
 "%s (алгоритм %d) является опциональным для реализации согласно RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
-"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
-"using ECDSAP256SHA256 (13) or ED25519 (15) instead."
+"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider"
+" using ECDSAP256SHA256 (13) or ED25519 (15) instead."
 msgstr ""
 "%s (алгоритм %d) НЕ РЕКОМЕНДУЕТСЯ для использования согласно RFC 8624. "
-"Рассмотрите использование ECDSAP256SHA256 (13) или ED25519 (15) вместо этого."
+"Рассмотрите использование ECDSAP256SHA256 (13) или ED25519 (15) вместо "
+"этого."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
@@ -4654,8 +4673,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
-"SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
-"8624."
+"SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC"
+" 8624."
 msgstr ""
 "SHA-256 (тип дайджеста 2) является РЕКОМЕНДУЕМЫМ алгоритмом дайджеста "
 "согласно RFC 8624."
@@ -4663,8 +4682,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
 "SHA-384 (digest type 4) is a good choice for higher security requirements, "
-"but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
-"support."
+"but SHA-256 (digest type 2) is sufficient for most deployments and has wider"
+" support."
 msgstr ""
 "SHA-384 (тип дайджеста 4) - хороший выбор для повышенных требований "
 "безопасности, но SHA-256 (тип дайджеста 2) достаточно для большинства "
@@ -4686,8 +4705,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:266
 msgid ""
-"DS records establish a chain of trust from parent to child zones. The parent "
-"zone must have this DS record, and the child zone must have the "
+"DS records establish a chain of trust from parent to child zones. The parent"
+" zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
 msgstr ""
 "DS записи устанавливают цепочку доверия от родительских к дочерним зонам. "
@@ -4696,24 +4715,24 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
-"CSYNC records should only be placed at the zone apex (RFC 7477). This record "
-"may not be processed by parental agents."
+"CSYNC records should only be placed at the zone apex (RFC 7477). This record"
+" may not be processed by parental agents."
 msgstr ""
 "CSYNC записи должны размещаться только в верхушке зоны (RFC 7477). Эта "
 "запись может не обрабатываться родительскими агентами."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
-"CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
-"7477). Ensure your zone is properly signed with DNSSEC."
+"CSYNC records require DNSSEC signing to be processed by parental agents (RFC"
+" 7477). Ensure your zone is properly signed with DNSSEC."
 msgstr ""
 "CSYNC записи требуют подписи DNSSEC для обработки родительскими агентами "
 "(RFC 7477). Убедитесь, что ваша зона правильно подписана через DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
-"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
-"cause unexpected behavior."
+"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may"
+" cause unexpected behavior."
 msgstr ""
 "Только одна CSYNC запись должна существовать на зону (RFC 7477). "
 "Множественные записи могут вызвать неожиданное поведение."
@@ -4769,15 +4788,16 @@ msgstr "Недопустимые флаги в CSYNC записи. Флаги д
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
-"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
-"values are 0, 1, 2, or 3."
+"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid"
+" values are 0, 1, 2, or 3."
 msgstr ""
 "Недопустимые флаги в CSYNC записи. Определены только биты 0-1 (значения "
 "0-3). Допустимые значения: 0, 1, 2 или 3."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
-"CSYNC record must specify at least one record type in the Type Bit Map field."
+"CSYNC record must specify at least one record type in the Type Bit Map "
+"field."
 msgstr ""
 "CSYNC запись должна указывать минимум один тип записи в поле Type Bit Map."
 
@@ -4791,8 +4811,8 @@ msgid ""
 "Type \"%s\" is prohibited in CSYNC records. DNSSEC-related records (DS, "
 "DNSKEY, CDS, CDNSKEY) and CSYNC records must not be synchronized."
 msgstr ""
-"Тип \"%s\" запрещён в записях CSYNC. Записи, связанные с DNSSEC (DS, DNSKEY, "
-"CDS, CDNSKEY), и записи CSYNC не должны синхронизироваться."
+"Тип \"%s\" запрещён в записях CSYNC. Записи, связанные с DNSSEC (DS, DNSKEY,"
+" CDS, CDNSKEY), и записи CSYNC не должны синхронизироваться."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:254
 #, php-format
@@ -4806,7 +4826,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:262
 msgid ""
 "NS record synchronization requires careful consideration. Parent zones may "
-"have specific NS record policies that can prevent successful synchronization."
+"have specific NS record policies that can prevent successful "
+"synchronization."
 msgstr ""
 "Синхронизация NS записей требует внимательного рассмотрения. Родительские "
 "зоны могут иметь специфические политики для NS записей, которые могут "
@@ -4818,14 +4839,14 @@ msgid ""
 "4.1.2 format. Poweradmin uses a simplified representation with space-"
 "separated record types."
 msgstr ""
-"Примечание: Истинный проводной формат для CSYNC Type Bit Map следует формату "
-"RFC 4034 раздела 4.1.2. Poweradmin использует упрощенное представление с "
+"Примечание: Истинный проводной формат для CSYNC Type Bit Map следует формату"
+" RFC 4034 раздела 4.1.2. Poweradmin использует упрощенное представление с "
 "типами записей, разделенными пробелами."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:269
 msgid ""
-"RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
-"type cannot be synchronized, no changes will be made by the parent."
+"RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any"
+" type cannot be synchronized, no changes will be made by the parent."
 msgstr ""
 "RFC 7477 требует подхода \"всё или ничего\" для обработки CSYNC. Если какой-"
 "либо тип не может быть синхронизирован, родительская зона не внесет никаких "
@@ -4856,15 +4877,16 @@ msgid ""
 "EUI48 record is missing separators. Format must be xx-xx-xx-xx-xx-xx with "
 "hyphens between octets."
 msgstr ""
-"В записи EUI48 отсутствуют разделители. Формат должен быть xx-xx-xx-xx-xx-xx "
-"с дефисами между октетами."
+"В записи EUI48 отсутствуют разделители. Формат должен быть xx-xx-xx-xx-xx-xx"
+" с дефисами между октетами."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
-"EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
-msgstr ""
-"Запись EUI48 представлена в формате Cisco. Формат должен быть xx-xx-xx-xx-xx-"
+"EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-"
 "xx."
+msgstr ""
+"Запись EUI48 представлена в формате Cisco. Формат должен быть xx-xx-xx-xx-"
+"xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:148
 msgid ""
@@ -4895,8 +4917,8 @@ msgid ""
 "Priority field for PTR records should be 0 or empty. The specified value "
 "will be ignored."
 msgstr ""
-"Поле приоритета для записей PTR должно быть 0 или пустым. Указанное значение "
-"будет проигнорировано."
+"Поле приоритета для записей PTR должно быть 0 или пустым. Указанное значение"
+" будет проигнорировано."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:134
 msgid ""
@@ -4911,8 +4933,8 @@ msgid ""
 "Email servers often require properly configured reverse DNS to accept mail "
 "from your server."
 msgstr ""
-"Почтовые серверы часто требуют правильно настроенный обратный DNS для приема "
-"почты с вашего сервера."
+"Почтовые серверы часто требуют правильно настроенный обратный DNS для приема"
+" почты с вашего сервера."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:53
 msgid "This is not a valid IPv4 address."
@@ -4941,14 +4963,13 @@ msgstr "Недопустимый IPv6-адрес: должен иметь 8 ге
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
 msgstr ""
-"Недопустимый IPv6-адрес: каждый гекстет должен содержать 4 шестнадцатеричные "
-"цифры."
+"Недопустимый IPv6-адрес: каждый гекстет должен содержать 4 шестнадцатеричные"
+" цифры."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:300
 #, php-format
 msgid "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-msgstr ""
-"IP-адрес \"%s\" недопустим. Должен быть корректным IPv4 или IPv6 адресом."
+msgstr "IP-адрес \"%s\" недопустим. Должен быть корректным IPv4 или IPv6 адресом."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
@@ -4973,8 +4994,8 @@ msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
 msgstr ""
-"Установлен критический флаг для неизвестного тега \"%s\". Это может привести "
-"к сбоям выдачи сертификатов."
+"Установлен критический флаг для неизвестного тега \"%s\". Это может привести"
+" к сбоям выдачи сертификатов."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -5071,8 +5092,8 @@ msgstr "Вы используете недопустимый домен верх
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
+"SOA validation parameters not set. Call setSOAParams() first or provide them"
+" as arguments."
 msgstr ""
 "Параметры проверки SOA не установлены. Сначала вызовите setSOAParams() или "
 "предоставьте их в качестве аргументов."
@@ -5081,7 +5102,8 @@ msgstr ""
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
-msgstr "Недопустимое значение для поля имени записи SOA. Должно быть имя зоны."
+msgstr ""
+"Недопустимое значение для поля имени записи SOA. Должно быть имя зоны."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:174
 msgid "SOA record must have between 1 and 7 fields."
@@ -5107,8 +5129,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:231
 msgid ""
-"Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
-"This is allowed but not recommended."
+"Serial number appears to use YYYYMMDDnn format but contains an invalid date."
+" This is allowed but not recommended."
 msgstr ""
 "Серийный номер использует формат YYYYMMDDnn, но содержит недопустимую дату. "
 "Это допустимо, но не рекомендуется."
@@ -5169,11 +5191,10 @@ msgid "SVCB priority must be between 0 and 65535."
 msgstr "Приоритет SVCB должен быть от 0 до 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
-msgid ""
-"SVCB target must be either \".\" (for Service Mode) or a valid hostname."
+msgid "SVCB target must be either \".\" (for Service Mode) or a valid hostname."
 msgstr ""
-"Цель SVCB должна быть либо \".\" (для режима службы), либо корректным именем "
-"хоста."
+"Цель SVCB должна быть либо \".\" (для режима службы), либо корректным именем"
+" хоста."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid ""
@@ -5210,8 +5231,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid ""
-"Multiple CNAME records with the same name are not allowed. This would create "
-"a DNS violation."
+"Multiple CNAME records with the same name are not allowed. This would create"
+" a DNS violation."
 msgstr ""
 "Множественные записи CNAME с одинаковым именем не допускаются. Это создало "
 "бы нарушение DNS."
@@ -5246,8 +5267,8 @@ msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
 msgstr ""
-"Имя записи SMIMEA имеет формат: SHA256(локальная-часть)._smimecert.домен.tld "
-"для адресов электронной почты вида локальная-часть@домен.tld"
+"Имя записи SMIMEA имеет формат: SHA256(локальная-часть)._smimecert.домен.tld"
+" для адресов электронной почты вида локальная-часть@домен.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -5259,8 +5280,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
-"Invalid value for priority field. SMIMEA records must have priority value of "
-"0."
+"Invalid value for priority field. SMIMEA records must have priority value of"
+" 0."
 msgstr ""
 "Недопустимое значение для поля приоритета. Записи SMIMEA должны иметь "
 "значение приоритета 0."
@@ -5299,17 +5320,18 @@ msgid ""
 "validation path. Ensure this CA is publicly known and trusted."
 msgstr ""
 "Использование PKIX-TA (0) требует, чтобы сертификат центра сертификации был "
-"в пути проверки сертификата. Убедитесь, что этот центр сертификации публично "
-"известен и доверен."
+"в пути проверки сертификата. Убедитесь, что этот центр сертификации публично"
+" известен и доверен."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:214
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
-"PKIX validation rules. Ensure proper intermediate certificates are available."
+"PKIX validation rules. Ensure proper intermediate certificates are "
+"available."
 msgstr ""
 "Использование PKIX-EE (1) требует проверки сертификата конечной сущности с "
-"использованием правил проверки PKIX. Убедитесь в доступности соответствующих "
-"промежуточных сертификатов."
+"использованием правил проверки PKIX. Убедитесь в доступности соответствующих"
+" промежуточных сертификатов."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:216
 msgid ""
@@ -5323,8 +5345,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
-"DANE-EE usage (3) is recommended as it provides the simplest deployment with "
-"direct certificate usage without additional validation."
+"DANE-EE usage (3) is recommended as it provides the simplest deployment with"
+" direct certificate usage without additional validation."
 msgstr ""
 "Использование DANE-EE (3) рекомендуется, поскольку обеспечивает простейшее "
 "развертывание с прямым использованием сертификата без дополнительной "
@@ -5340,8 +5362,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
-"Selector 0 (Full certificate) means the entire certificate is matched. Using "
-"selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
+"Selector 0 (Full certificate) means the entire certificate is matched. Using"
+" selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
 "flexibility for certificate renewals."
 msgstr ""
 "Селектор 0 (полный сертификат) означает соответствие всего сертификата. "
@@ -5368,8 +5390,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
-"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
-"recommended for better performance and compatibility."
+"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is"
+" recommended for better performance and compatibility."
 msgstr ""
 "Тип соответствия 0 (точное соответствие) использует необработанные данные "
 "сертификата. Рекомендуется SHA-256 (тип 1) для лучшей производительности и "
@@ -5377,7 +5399,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
-"Matching type 1 (SHA-256) provides a good balance of security and efficiency."
+"Matching type 1 (SHA-256) provides a good balance of security and "
+"efficiency."
 msgstr ""
 "Тип соответствия 1 (SHA-256) обеспечивает хороший баланс безопасности и "
 "эффективности."
@@ -5412,16 +5435,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
-"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
-"be widely supported."
+"WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not"
+" be widely supported."
 msgstr ""
 "ПРЕДУПРЕЖДЕНИЕ: SMIMEA (RFC 8162) в настоящее время является "
 "ЭКСПЕРИМЕНТАЛЬНЫМ протоколом и может не иметь широкой поддержки."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
-"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, "
-"SMIMEA offers NO security benefit."
+"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC,"
+" SMIMEA offers NO security benefit."
 msgstr ""
 "КРИТИЧНО: Записи SMIMEA ТРЕБУЮТ DNSSEC для обеспечения безопасности. Без "
 "DNSSEC, SMIMEA НЕ обеспечивает НИКАКИХ преимуществ безопасности."
@@ -5436,8 +5459,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
-"L64 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+"L64 records should only be used with the Identifier-Locator Network Protocol"
+" (ILNP)."
 msgstr ""
 "L64 записи должны использоваться только с протоколом Identifier-Locator "
 "Network Protocol (ILNP)."
@@ -5455,8 +5478,8 @@ msgid ""
 "RFC 6742 recommends very low TTL values for L64 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
 msgstr ""
-"RFC 6742 рекомендует очень низкие значения TTL для L64 записей мобильных или "
-"многодомных узлов, поскольку значения локаторов могут часто изменяться."
+"RFC 6742 рекомендует очень низкие значения TTL для L64 записей мобильных или"
+" многодомных узлов, поскольку значения локаторов могут часто изменяться."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:128
 msgid ""
@@ -5516,8 +5539,8 @@ msgid ""
 "RFC 7344 recommends that if you publish a CDNSKEY record, you should also "
 "publish a corresponding CDS record."
 msgstr ""
-"RFC 7344 рекомендует, что если вы публикуете CDNSKEY запись, вы также должны "
-"опубликовать соответствующую CDS запись."
+"RFC 7344 рекомендует, что если вы публикуете CDNSKEY запись, вы также должны"
+" опубликовать соответствующую CDS запись."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:151
 msgid "Invalid characters in CDNSKEY record content."
@@ -5591,7 +5614,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:241
 msgid "CDNSKEY public key must be valid base64-encoded data."
 msgstr ""
-"Открытый ключ CDNSKEY должен быть действительными данными в кодировке base64."
+"Открытый ключ CDNSKEY должен быть действительными данными в кодировке "
+"base64."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:190
 msgid "LUA record content cannot be empty."
@@ -5660,13 +5684,13 @@ msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
 msgstr ""
-"LUA запись в режиме неявного возврата должна быть допустимым вызовом функции "
-"или определением функции с ключевыми словами \"function\" и \"end\"."
+"LUA запись в режиме неявного возврата должна быть допустимым вызовом функции"
+" или определением функции с ключевыми словами \"function\" и \"end\"."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:256
 msgid ""
-"LUA record contains potentially dangerous system access functions. These are "
-"likely to be blocked by PowerDNS security restrictions."
+"LUA record contains potentially dangerous system access functions. These are"
+" likely to be blocked by PowerDNS security restrictions."
 msgstr ""
 "LUA запись содержит потенциально опасные функции системного доступа. Они "
 "вероятно будут заблокированы ограничениями безопасности PowerDNS."
@@ -5709,8 +5733,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
-"DSA keys are considered weak and are deprecated in many SSH implementations. "
-"Consider using RSA, Ed25519, or Ed448 instead."
+"DSA keys are considered weak and are deprecated in many SSH implementations."
+" Consider using RSA, Ed25519, or Ed448 instead."
 msgstr ""
 "DSA ключи считаются слабыми и устаревшими во многих SSH реализациях. "
 "Рассмотрите использование RSA, Ed25519 или Ed448 вместо них."
@@ -5745,11 +5769,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
-"SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
-"than SHA-1."
+"SHA-256 fingerprints are recommended by RFC 6594 and provide better security"
+" than SHA-1."
 msgstr ""
-"SHA-256 отпечатки рекомендуются RFC 6594 и обеспечивают лучшую безопасность, "
-"чем SHA-1."
+"SHA-256 отпечатки рекомендуются RFC 6594 и обеспечивают лучшую безопасность,"
+" чем SHA-1."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
 msgid "SSHFP fingerprint must be a hexadecimal string."
@@ -5766,8 +5790,8 @@ msgstr "SHA-256 отпечаток SSHFP должен быть длиной 64 �
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
-"benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
-"attacks."
+"benefits. Without DNSSEC, they offer no protection against man-in-the-middle"
+" attacks."
 msgstr ""
 "КРИТИЧНО: SSHFP записи ТРЕБУЮТ проверки DNSSEC для обеспечения любых "
 "преимуществ безопасности. Без DNSSEC они не обеспечивают защиты от атак "
@@ -5775,8 +5799,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
-"Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
-"for server verification."
+"Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records"
+" for server verification."
 msgstr ""
 "Настройте SSH клиенты с \"VerifyHostKeyDNS yes\" для использования SSHFP "
 "записей для проверки сервера."
@@ -5799,8 +5823,8 @@ msgstr "Содержимое MR записи должно быть допуст�
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:121
 msgid ""
-"MR record content (new mailbox) should be a fully qualified domain name (end "
-"with a dot)."
+"MR record content (new mailbox) should be a fully qualified domain name (end"
+" with a dot)."
 msgstr ""
 "Содержимое MR записи (новый почтовый ящик) должно быть полностью "
 "квалифицированным доменным именем (заканчиваться точкой)."
@@ -5834,11 +5858,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:148
 msgid ""
-"The MR record indicates that the mail user has moved from the old mailbox to "
-"the new mailbox."
+"The MR record indicates that the mail user has moved from the old mailbox to"
+" the new mailbox."
 msgstr ""
-"MR запись указывает, что почтовый пользователь переехал из старого почтового "
-"ящика в новый."
+"MR запись указывает, что почтовый пользователь переехал из старого почтового"
+" ящика в новый."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:124
 msgid "Priority field for KEY records must be 0 or empty"
@@ -5858,8 +5882,8 @@ msgstr "KEY записи могут не поддерживаться всеми
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:141
 msgid ""
-"Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be "
-"used."
+"Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be"
+" used."
 msgstr ""
 "Алгоритм 1 (RSA/MD5) считается криптографически слабым и не должен "
 "использоваться."
@@ -5878,7 +5902,8 @@ msgstr "Недопустимые символы в содержимом KEY за
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:181
 msgid "KEY record must contain flags, protocol, algorithm, and public key."
-msgstr "KEY запись должна содержать флаги, протокол, алгоритм и открытый ключ."
+msgstr ""
+"KEY запись должна содержать флаги, протокол, алгоритм и открытый ключ."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:190
 msgid "KEY flags must be a number between 0 and 65535."
@@ -5900,8 +5925,8 @@ msgstr "Протокол KEY должен быть числом от 0 до 255.
 msgid ""
 "Unusual protocol value. Protocol 3 (DNSSEC) is most common for KEY records."
 msgstr ""
-"Необычное значение протокола. Протокол 3 (DNSSEC) наиболее распространён для "
-"KEY записей."
+"Необычное значение протокола. Протокол 3 (DNSSEC) наиболее распространён для"
+" KEY записей."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:213
 msgid "KEY algorithm must be a number between 0 and 255."
@@ -5932,7 +5957,8 @@ msgid ""
 "Invalid value for priority field. DMARC records must have a priority value "
 "of 0."
 msgstr ""
-"Недопустимое значение поля приоритета. DMARC записи должны иметь приоритет 0."
+"Недопустимое значение поля приоритета. DMARC записи должны иметь приоритет "
+"0."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:162
 msgid "DMARC record must start with \"v=DMARC1\""
@@ -5943,8 +5969,8 @@ msgid ""
 "DMARC record exceeds 255 character limit. For complex policies, consider "
 "simplifying or using URI references."
 msgstr ""
-"DMARC запись превышает лимит в 255 символов. Для сложных политик рассмотрите "
-"упрощение или использование URI ссылок."
+"DMARC запись превышает лимит в 255 символов. Для сложных политик рассмотрите"
+" упрощение или использование URI ссылок."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
@@ -6036,8 +6062,8 @@ msgid ""
 "DMARC record does not specify any reporting URIs (rua or ruf). This may "
 "limit your ability to monitor authentication results."
 msgstr ""
-"DMARC запись не указывает URI отчётности (rua или ruf). Это может ограничить "
-"вашу способность отслеживать результаты аутентификации."
+"DMARC запись не указывает URI отчётности (rua или ruf). Это может ограничить"
+" вашу способность отслеживать результаты аутентификации."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:111
 msgid ""
@@ -6134,8 +6160,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
-"CDS record must contain key-tag, algorithm, digest-type and digest separated "
-"by spaces."
+"CDS record must contain key-tag, algorithm, digest-type and digest separated"
+" by spaces."
 msgstr ""
 "CDS запись должна содержать key-tag, алгоритм, тип дайджеста и дайджест, "
 "разделенные пробелами."
@@ -6150,7 +6176,8 @@ msgstr "CDS алгоритм должен быть числом от 1 до 16."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "Тип дайджеста CDS должен быть 1 (SHA-1), 2 (SHA-256), или 4 (SHA-384)."
+msgstr ""
+"Тип дайджеста CDS должен быть 1 (SHA-1), 2 (SHA-256), или 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:216
 msgid ""
@@ -6158,8 +6185,8 @@ msgid ""
 "SHA-256 (digest type 2) or SHA-384 (digest type 4) instead."
 msgstr ""
 "SHA-1 (тип дайджеста 1) устарел по соображениям безопасности. Рассмотрите "
-"использование SHA-256 (тип дайджеста 2) или SHA-384 (тип дайджеста 4) вместо "
-"него."
+"использование SHA-256 (тип дайджеста 2) или SHA-384 (тип дайджеста 4) вместо"
+" него."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:237
 #, php-format
@@ -6179,7 +6206,8 @@ msgstr ""
 "рекомендовано в RFC 7344."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
-msgid "CDS records should only be placed at the zone apex (not on subdomains)."
+msgid ""
+"CDS records should only be placed at the zone apex (not on subdomains)."
 msgstr ""
 "CDS записи следует размещать только в вершине зоны (а не в поддоменах)."
 
@@ -6193,16 +6221,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
-"L32 records should only be used with the Identifier-Locator Network Protocol "
-"(ILNP)."
+"L32 records should only be used with the Identifier-Locator Network Protocol"
+" (ILNP)."
 msgstr ""
 "Записи L32 следует использовать только с протоколом Identifier-Locator "
 "Network Protocol (ILNP)."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
-"Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
-"in ILNP deployments."
+"Using private IP addresses (RFC 1918) as L32 locators may limit reachability"
+" in ILNP deployments."
 msgstr ""
 "Использование частных IP-адресов (RFC 1918) в качестве L32 локаторов может "
 "ограничить доступность в развертываниях ILNP."
@@ -6212,8 +6240,8 @@ msgid ""
 "RFC 6742 recommends very low TTL values for L32 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
 msgstr ""
-"RFC 6742 рекомендует очень низкие значения TTL для L32 записей мобильных или "
-"многосетевых узлов, поскольку значения локаторов могут часто изменяться."
+"RFC 6742 рекомендует очень низкие значения TTL для L32 записей мобильных или"
+" многосетевых узлов, поскольку значения локаторов могут часто изменяться."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
@@ -6262,8 +6290,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
-"Invalid protocol value in SRV record. Protocol must start with an underscore "
-"followed by alphanumeric characters."
+"Invalid protocol value in SRV record. Protocol must start with an underscore"
+" followed by alphanumeric characters."
 msgstr ""
 "Недопустимое значение протокола в SRV записи. Протокол должен начинаться с "
 "подчеркивания, за которым следуют буквенно-цифровые символы."
@@ -6280,8 +6308,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
-"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
-"are _tcp and _udp."
+"Protocol \"%s\" is not in the list of well-known protocols. Common protocols"
+" are _tcp and _udp."
 msgstr ""
 "Протокол \"%s\" не находится в списке известных протоколов. Обычные "
 "протоколы - это _tcp и _udp."
@@ -6333,8 +6361,8 @@ msgstr "Недопустимое значение поля приоритета 
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:85
 msgid ""
-"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
-"records."
+"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA"
+" records."
 msgstr ""
 "Неопределенные (::) или локальные (::1) IPv6 адреса не следует использовать "
 "в AAAA записях."
@@ -6347,7 +6375,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
-"Invalid value for priority field. AAAA records must have priority value of 0."
+"Invalid value for priority field. AAAA records must have priority value of "
+"0."
 msgstr ""
 "Недопустимое значение поля приоритета. AAAA записи должны иметь значение "
 "приоритета 0."
@@ -6424,7 +6453,8 @@ msgstr "Итерации NSEC3 должны быть от 0 до 2500."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:248
 msgid "NSEC3 salt must be - (for empty) or a hexadecimal value."
-msgstr "Соль NSEC3 должна быть - (для пустой) или шестнадцатеричным значением."
+msgstr ""
+"Соль NSEC3 должна быть - (для пустой) или шестнадцатеричным значением."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:264
 msgid ""
@@ -6457,16 +6487,16 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
-"This NSEC3 record contains both SOA and NS types, indicating it might be for "
-"a zone apex."
+"This NSEC3 record contains both SOA and NS types, indicating it might be for"
+" a zone apex."
 msgstr ""
 "Эта NSEC3 запись содержит типы SOA и NS, что указывает на то, что она может "
 "быть для вершины зоны."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
-"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
-"along with DNSKEY."
+"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present"
+" along with DNSKEY."
 msgstr ""
 "Для вершины зоны, использующей NSEC3, тип NSEC3PARAM обычно должен "
 "присутствовать вместе с DNSKEY."
@@ -6500,8 +6530,8 @@ msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
 msgstr ""
-"Сложные шаблоны регулярных выражений в NAPTR записях могут быть трудными для "
-"отладки и поддержки."
+"Сложные шаблоны регулярных выражений в NAPTR записях могут быть трудными для"
+" отладки и поддержки."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:151
 msgid ""
@@ -6562,12 +6592,13 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr ""
-"NAPTR запись с регулярным выражением должна иметь \".\" в качестве замещения."
+"NAPTR запись с регулярным выражением должна иметь \".\" в качестве "
+"замещения."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
-"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
-"and rs start with a letter and contain alphanumeric characters, hyphens, "
+"NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol"
+" and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
 msgstr ""
 "Сервис NAPTR должен следовать формату: [протокол][+rs][+rs]... где протокол "
@@ -6575,9 +6606,7 @@ msgstr ""
 "двоеточия или знаки плюс (макс. 32 символа каждый)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
-msgid ""
-"Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
-"other flags."
+msgid "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with other flags."
 msgstr ""
 "Терминальные флаги \"S\", \"A\", \"U\" и \"P\" не должны комбинироваться с "
 "другими флагами."
@@ -6707,8 +6736,8 @@ msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
 msgstr ""
-"%s (алгоритм %d) УСТАРЕЛ согласно RFC 8624. Не используйте этот алгоритм для "
-"новых развертываний."
+"%s (алгоритм %d) УСТАРЕЛ согласно RFC 8624. Не используйте этот алгоритм для"
+" новых развертываний."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
@@ -6751,7 +6780,8 @@ msgstr "Нет управляемой зоны для домена: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:74
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
-msgstr "Добавление IPv6 записей домена из обратных зон пока не поддерживается."
+msgstr ""
+"Добавление IPv6 записей домена из обратных зон пока не поддерживается."
 
 #: lib/Domain/Service/DomainRecordCreator.php:112
 msgid "This domain record was not valid and could not be added."
@@ -6875,8 +6905,8 @@ msgstr "ВАЖНО: Сохраните ваш новый API ключ сейча
 
 #: templates/default/api_key_regenerated.html:17
 msgid ""
-"This is the only time your new API key will be displayed. Please save it now "
-"as you won't be able to see it again."
+"This is the only time your new API key will be displayed. Please save it now"
+" as you won't be able to see it again."
 msgstr ""
 "Это единственный раз, когда ваш новый API ключ будет отображен. Пожалуйста, "
 "сохраните его сейчас, так как вы не сможете увидеть его снова."
@@ -6987,11 +7017,11 @@ msgstr "Вы собираетесь активировать DNSSEC ключ (ID
 
 #: templates/default/dnssec_edit_key.html:53
 msgid ""
-"Activating this key will make it part of the active DNSSEC signing chain for "
-"this zone."
+"Activating this key will make it part of the active DNSSEC signing chain for"
+" this zone."
 msgstr ""
-"Активация этого ключа сделает его частью активной цепочки подписи DNSSEC для "
-"этой зоны."
+"Активация этого ключа сделает его частью активной цепочки подписи DNSSEC для"
+" этой зоны."
 
 #: templates/default/dnssec_delete_key.html:47
 msgid "Key Details"
@@ -7033,7 +7063,8 @@ msgstr "Неактивен"
 msgid "Cancel"
 msgstr "Отменить"
 
-#: templates/default/api_key_edit.html:5 templates/default/api_key_edit.html:13
+#: templates/default/api_key_edit.html:5
+#: templates/default/api_key_edit.html:13
 msgid "Edit API Key"
 msgstr "Редактировать API Ключ"
 
@@ -7045,7 +7076,8 @@ msgstr "Имя"
 msgid "Please provide a name for this API key"
 msgstr "Пожалуйста, укажите имя для этого API ключа"
 
-#: templates/default/api_key_edit.html:23 templates/default/api_key_add.html:23
+#: templates/default/api_key_edit.html:23
+#: templates/default/api_key_add.html:23
 msgid "A descriptive name to help you identify this key"
 msgstr "Описательное имя, которое поможет вам идентифицировать этот ключ"
 
@@ -7053,7 +7085,8 @@ msgstr "Описательное имя, которое поможет вам и
 msgid "Expires at"
 msgstr "Истекает"
 
-#: templates/default/api_key_edit.html:29 templates/default/api_key_add.html:29
+#: templates/default/api_key_edit.html:29
+#: templates/default/api_key_add.html:29
 msgid "Leave empty for a key that never expires"
 msgstr "Оставьте пустым для ключа, который никогда не истекает"
 
@@ -7173,8 +7206,8 @@ msgstr "Укажите содержимое для вашей записи зо�
 #: templates/default/add_record.html:93
 msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
-"and may cause issues. SOA and NS records are required at the domain root and "
-"cannot coexist with CNAME."
+"and may cause issues. SOA and NS records are required at the domain root and"
+" cannot coexist with CNAME."
 msgstr ""
 "Предупреждение: CNAME записи в корне домена (вершине зоны) не рекомендуются "
 "и могут вызвать проблемы. SOA и NS записи обязательны в корне домена и не "
@@ -7186,8 +7219,8 @@ msgid ""
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
 msgstr ""
-"Совет: Для SOA записей используйте <code>[ZONE]</code> как имя и <code>[NS1] "
-"[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> как содержимое. SOA "
+"Совет: Для SOA записей используйте <code>[ZONE]</code> как имя и <code>[NS1]"
+" [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> как содержимое. SOA "
 "записи необходимы для правильной работы DNS зоны."
 
 #: templates/default/edit_zone_templ_record.html:103
@@ -7276,9 +7309,11 @@ msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/default/add_zone_templ_record.html:176
 msgid ""
-"MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
+"MX for Microsoft 365: "
+"<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 msgstr ""
-"MX для Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
+"MX для Microsoft 365: "
+"<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/default/add_zone_templ_record.html:177
 msgid "A record: <code>192.0.2.10</code>"
@@ -7417,7 +7452,8 @@ msgstr "Отменить подпись зоны"
 msgid "ID"
 msgstr "ID"
 
-#: templates/default/api_keys.html:34 templates/default/list_perm_templ.html:20
+#: templates/default/api_keys.html:34
+#: templates/default/list_perm_templ.html:20
 msgid "Actions"
 msgstr "Действия"
 
@@ -7628,7 +7664,8 @@ msgstr "Добавить новый суперсервер"
 msgid "Add supermaster"
 msgstr "Добавить суперсервер"
 
-#: templates/default/index.html:201 templates/default/bulk_registration.html:23
+#: templates/default/index.html:201
+#: templates/default/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Массовая Регистрация"
 
@@ -7813,7 +7850,8 @@ msgstr "Глобальный шаблон"
 msgid "Make this template available to all users"
 msgstr "Сделать этот шаблон доступным для всех пользователей"
 
-#: templates/default/list_zone_templ.html:126 templates/default/header.html:133
+#: templates/default/list_zone_templ.html:126
+#: templates/default/header.html:133
 msgid "Add zone template"
 msgstr "Добавить шаблон зоны"
 
@@ -7830,8 +7868,8 @@ msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
 msgstr ""
-"Шаблоны зон позволяют создавать предопределенные наборы DNS записей, которые "
-"можно быстро применить при создании новых зон."
+"Шаблоны зон позволяют создавать предопределенные наборы DNS записей, которые"
+" можно быстро применить при создании новых зон."
 
 #: templates/default/add_zone_templ.html:75
 msgid "After creating a template, you can add record templates to it."
@@ -7890,8 +7928,8 @@ msgid ""
 "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
 "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
 msgstr ""
-"Заполнители [DOMAIN] и [TLD] полезны для MX записей Microsoft 365 (например, "
-"[DOMAIN]-[TLD].mail.protection.outlook.com)"
+"Заполнители [DOMAIN] и [TLD] полезны для MX записей Microsoft 365 (например,"
+" [DOMAIN]-[TLD].mail.protection.outlook.com)"
 
 #: templates/default/list_log_zones.html:11 templates/default/header.html:86
 msgid "Zone logs"
@@ -8009,7 +8047,8 @@ msgstr "Лучшие Практики"
 #: templates/default/bulk_record_add.html:89
 msgid "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
 msgstr ""
-"Для записей CNAME, MX, SRV убедитесь, что содержимое заканчивается точкой (.)"
+"Для записей CNAME, MX, SRV убедитесь, что содержимое заканчивается точкой "
+"(.)"
 
 #: templates/default/bulk_record_add.html:90
 msgid "Use @ for records at the zone apex (root domain)"
@@ -8056,8 +8095,8 @@ msgid ""
 "This user is the owner for the following zones. Please decide what to do "
 "with each zone:"
 msgstr ""
-"Этот пользователь является владельцем следующих зон. Пожалуйста, решите, что "
-"делать с каждой зоной:"
+"Этот пользователь является владельцем следующих зон. Пожалуйста, решите, что"
+" делать с каждой зоной:"
 
 #: templates/default/delete_records.html:39
 msgid "Zone"
@@ -8182,13 +8221,13 @@ msgstr "Ограничение ответственности"
 
 #: templates/default/user_agreement_content.html:23
 msgid ""
-"This system is provided \"as is\" without any warranties. The administrators "
-"are not liable for any damages or losses resulting from the use of this "
+"This system is provided \"as is\" without any warranties. The administrators"
+" are not liable for any damages or losses resulting from the use of this "
 "system."
 msgstr ""
 "Эта система предоставляется \"как есть\" без каких-либо гарантий. "
-"Администраторы не несут ответственности за любой ущерб или потери, возникшие "
-"в результате использования этой системы."
+"Администраторы не несут ответственности за любой ущерб или потери, возникшие"
+" в результате использования этой системы."
 
 #: templates/default/user_agreement_content.html:25
 msgid "Changes to Agreement"
@@ -8212,7 +8251,8 @@ msgstr "Последнее обновление:"
 
 #: templates/default/user_agreement_content.html:31
 msgid "Please contact your administrator for the last update date"
-msgstr "Пожалуйста, обратитесь к администратору за датой последнего обновления"
+msgstr ""
+"Пожалуйста, обратитесь к администратору за датой последнего обновления"
 
 #: templates/default/api_key_regenerate.html:16
 msgid "You are about to regenerate the API key"
@@ -8399,7 +8439,9 @@ msgid ""
 "PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
 "If you select KSK or ZSK, PowerDNS may still create a CSK key."
 msgstr ""
-"PowerDNS 4.0 и более новые версии используют Combined Signing Keys (CSK) по умолчанию. Если вы выберете KSK или ZSK, PowerDNS всё равно может создать ключ CSK."
+"PowerDNS 4.0 и более новые версии используют Combined Signing Keys (CSK) по "
+"умолчанию. Если вы выберете KSK или ZSK, PowerDNS всё равно может создать "
+"ключ CSK."
 
 #: templates/default/dnssec_add_key.html:53
 msgid "Key type"
@@ -8808,8 +8850,8 @@ msgstr "Имя хоста должно точно совпадать с тем, 
 msgid ""
 "Ensure your firewall allows DNS notifications between masters and slaves."
 msgstr ""
-"Убедитесь, что ваш межсетевой экран разрешает DNS уведомления между главными "
-"и подчиненными серверами."
+"Убедитесь, что ваш межсетевой экран разрешает DNS уведомления между главными"
+" и подчиненными серверами."
 
 #: templates/default/login.html:11 templates/default/login.html:48
 msgid "Log in"
@@ -8931,8 +8973,8 @@ msgstr "Только совпадающие"
 
 #: templates/default/batch_ptr_record.html:143
 msgid ""
-"Creates PTR records only for IPs that have existing A records in the forward "
-"zone"
+"Creates PTR records only for IPs that have existing A records in the forward"
+" zone"
 msgstr ""
 "Создает PTR записи только для IP-адресов, которые имеют существующие A "
 "записи в прямой зоне"
@@ -8989,16 +9031,16 @@ msgid ""
 "Use \"Create PTRs only for existing A records\" to populate PTRs based on "
 "your forward zone"
 msgstr ""
-"Используйте \"Создать PTR только для существующих A записей\" для заполнения "
-"PTR на основе вашей прямой зоны"
+"Используйте \"Создать PTR только для существующих A записей\" для заполнения"
+" PTR на основе вашей прямой зоны"
 
 #: templates/default/batch_ptr_record.html:183
 msgid ""
-"Use the Host Prefix field to add a prefix to all hostnames when creating all "
-"IPs"
+"Use the Host Prefix field to add a prefix to all hostnames when creating all"
+" IPs"
 msgstr ""
-"Используйте поле Префикс Хоста для добавления префикса ко всем именам хостов "
-"при создании всех IP"
+"Используйте поле Префикс Хоста для добавления префикса ко всем именам хостов"
+" при создании всех IP"
 
 #: templates/default/batch_ptr_record.html:184
 msgid ""
@@ -9072,7 +9114,8 @@ msgstr "Создать API Ключ"
 #: templates/default/api_key_add.html:52
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
-"sure to save it in a secure place, as you won't be able to retrieve it later."
+"sure to save it in a secure place, as you won't be able to retrieve it "
+"later."
 msgstr ""
 "При создании нового API ключа он будет показан вам только ОДИН РАЗ. "
 "Обязательно сохраните его в безопасном месте, так как позже вы не сможете "
@@ -9311,7 +9354,8 @@ msgid "Record Details"
 msgstr "Детали Записи"
 
 #: templates/default/delete_record.html:74
-msgid "You are trying to delete a record that is needed for this zone to work."
+msgid ""
+"You are trying to delete a record that is needed for this zone to work."
 msgstr "Вы пытаетесь удалить запись, необходимую для работы этой зоны."
 
 #: templates/default/delete_record.html:83
@@ -9521,7 +9565,8 @@ msgstr "Добавление полного имени помогает с ид�
 
 #: templates/default/add_user.html:180
 msgid "Auto-generating passwords is recommended for better security"
-msgstr "Автоматическая генерация паролей рекомендуется для лучшей безопасности"
+msgstr ""
+"Автоматическая генерация паролей рекомендуется для лучшей безопасности"
 
 #: templates/default/add_zone_master.html:19
 msgid "Add Master Zone"
@@ -9683,8 +9728,8 @@ msgid ""
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
 msgstr ""
-"Изменение шаблона зоны перезаписывает записи на основе шаблона, но сохраняет "
-"ручные добавления. Изменения шаблона не обновляют зоны автоматически - "
+"Изменение шаблона зоны перезаписывает записи на основе шаблона, но сохраняет"
+" ручные добавления. Изменения шаблона не обновляют зоны автоматически - "
 "используйте кнопку \"Обновить зоны\" при редактировании шаблонов для "
 "применения изменений."
 
@@ -9920,7 +9965,8 @@ msgstr "Результаты RDAP для"
 msgid "Please enter a domain name to perform an RDAP lookup."
 msgstr "Пожалуйста, введите доменное имя для выполнения RDAP-поиска."
 
-#: templates/default/bulk_registration.html:11 templates/default/header.html:74
+#: templates/default/bulk_registration.html:11
+#: templates/default/header.html:74
 msgid "Bulk registration"
 msgstr "Массовая регистрация"
 
@@ -9996,7 +10042,8 @@ msgstr ""
 
 #: templates/default/bulk_registration.html:126
 msgid "You can copy and paste a list of domains from a spreadsheet"
-msgstr "Вы можете скопировать и вставить список доменов из электронной таблицы"
+msgstr ""
+"Вы можете скопировать и вставить список доменов из электронной таблицы"
 
 #: templates/default/bulk_registration.html:127
 msgid "Make sure the domain names follow valid DNS naming conventions"
@@ -10030,8 +10077,8 @@ msgstr "Удалить записи"
 
 #: templates/default/delete_records.html:27
 msgid ""
-"Are you sure you want to delete the following records? This action cannot be "
-"undone."
+"Are you sure you want to delete the following records? This action cannot be"
+" undone."
 msgstr ""
 "Вы уверены, что хотите удалить следующие записи? Это действие невозможно "
 "отменить."
@@ -10078,8 +10125,8 @@ msgstr "Сохраните ваши коды восстановления"
 
 #: templates/default/mfa_recovery_codes.html:30
 msgid ""
-"Recovery codes can be used to access your account if you lose access to your "
-"authenticator device. Each code can only be used once."
+"Recovery codes can be used to access your account if you lose access to your"
+" authenticator device. Each code can only be used once."
 msgstr ""
 "Коды восстановления можно использовать для доступа к вашей учетной записи, "
 "если вы потеряете доступ к устройству аутентификации. Каждый код можно "
@@ -10158,8 +10205,8 @@ msgstr "Приложение аутентификатора"
 
 #: templates/default/mfa_setup.html:61
 msgid ""
-"Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
-"or Authy."
+"Use an authenticator app like Google Authenticator, Microsoft Authenticator,"
+" or Authy."
 msgstr ""
 "Используйте приложение аутентификатора, такое как Google Authenticator, "
 "Microsoft Authenticator или Authy."
@@ -10279,8 +10326,8 @@ msgid ""
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
 msgstr ""
-"Вы собираетесь удалить вторичную зону, основной сервер имен которой является "
-"супермастером. Удаление зоны сейчас приведет только к временному удалению. "
+"Вы собираетесь удалить вторичную зону, основной сервер имен которой является"
+" супермастером. Удаление зоны сейчас приведет только к временному удалению. "
 "Всякий раз, когда супермастер отправляет уведомление для этой зоны, она "
 "будет добавлена снова!"
 
@@ -10453,12 +10500,12 @@ msgstr ""
 
 #: templates/default/add_zone_slave.html:95
 msgid ""
-"Make sure that this PowerDNS server is allowed to transfer the zone from the "
-"master server. The master server must have an allow-transfer or similar "
+"Make sure that this PowerDNS server is allowed to transfer the zone from the"
+" master server. The master server must have an allow-transfer or similar "
 "configuration permitting zone transfers to this server's IP address."
 msgstr ""
-"Убедитесь, что данному серверу PowerDNS разрешено передавать зону с главного "
-"сервера. На главном сервере должна быть настройка allow-transfer или "
+"Убедитесь, что данному серверу PowerDNS разрешено передавать зону с главного"
+" сервера. На главном сервере должна быть настройка allow-transfer или "
 "аналогичная, разрешающая передачу зон на IP-адрес этого сервера."
 
 #: templates/default/add_zone_slave.html:109
@@ -10585,9 +10632,9 @@ msgstr "Пользовательские шаблоны"
 
 #: templates/default/email_previews.html:88
 msgid ""
-"You can create custom email templates by placing them in <code>templates/"
-"emails/custom/</code> to override these standard templates with your own "
-"designs."
+"You can create custom email templates by placing them in "
+"<code>templates/emails/custom/</code> to override these standard templates "
+"with your own designs."
 msgstr ""
 "Вы можете создать пользовательские шаблоны email, поместив их в "
 "<code>templates/emails/custom/</code>, чтобы переопределить эти стандартные "
@@ -10668,7 +10715,8 @@ msgstr "Версия PowerDNS"
 msgid "Daemon Type"
 msgstr "Тип демона"
 
-#: templates/default/pdns_status.html:81 templates/default/pdns_status.html:182
+#: templates/default/pdns_status.html:81
+#: templates/default/pdns_status.html:182
 msgid "Uptime"
 msgstr "Время работы"
 
@@ -10682,7 +10730,8 @@ msgstr "Подчиненные серверы"
 
 #: templates/default/pdns_status.html:104
 msgid ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
+"Showing connectivity status for DNS servers listed in the supermasters "
+"table."
 msgstr ""
 "Отображается статус подключения для DNS-серверов, перечисленных в таблице "
 "супермастеров."
@@ -10816,8 +10865,8 @@ msgid ""
 "DS records should be added to the parent zone to establish the chain of "
 "trust."
 msgstr ""
-"Записи DS должны быть добавлены в родительскую зону для установления цепочки "
-"доверия."
+"Записи DS должны быть добавлены в родительскую зону для установления цепочки"
+" доверия."
 
 #: templates/default/add_record.html:27 templates/default/add_record.html:29
 msgid "Add record to zone"
@@ -10877,8 +10926,8 @@ msgstr "Вы собираетесь удалить API ключ"
 
 #: templates/default/api_key_delete.html:18
 msgid ""
-"If you delete this API key, any applications using it will no longer be able "
-"to authenticate."
+"If you delete this API key, any applications using it will no longer be able"
+" to authenticate."
 msgstr ""
 "Если вы удалите этот API ключ, любые приложения, которые его используют, "
 "больше не смогут проходить аутентификацию."
@@ -10909,8 +10958,8 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"Этот шаблон можно назначить пользователям для быстрого применения его набора "
-"разрешений. Изменения, внесенные здесь, повлияют на всех пользователей, "
+"Этот шаблон можно назначить пользователям для быстрого применения его набора"
+" разрешений. Изменения, внесенные здесь, повлияют на всех пользователей, "
 "которым назначен этот шаблон."
 
 #: templates/default/edit_perm_templ.html:63
@@ -10954,15 +11003,16 @@ msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
 msgstr ""
-"Удаление активного ключа повлияет на безопасность вашей зоны и может вызвать "
-"ошибки проверки."
+"Удаление активного ключа повлияет на безопасность вашей зоны и может вызвать"
+" ошибки проверки."
 
 #: templates/default/dnssec_delete_key.html:39
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Вы собираетесь удалить DNSSEC ключ (ID"
 
 #: templates/default/whois.html:26
-msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
+msgid ""
+"Enter a domain name (e.g., example.com) to lookup its WHOIS information"
 msgstr ""
 "Введите доменное имя (например, example.com) для поиска WHOIS информации"
 
@@ -11235,7 +11285,8 @@ msgstr "Проверка Требований:"
 #: install/templates/step2.html.twig:12
 msgid "Verifying that your server meets all requirements to run Poweradmin."
 msgstr ""
-"Проверка соответствия вашего сервера всем требованиям для запуска Poweradmin."
+"Проверка соответствия вашего сервера всем требованиям для запуска "
+"Poweradmin."
 
 #: install/templates/step2.html.twig:20
 msgid "PHP Version"
@@ -11417,8 +11468,8 @@ msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
 msgstr ""
-"Войдите в <a href=\"../index.php\">Poweradmin</a> используя имя пользователя "
-"по умолчанию \"admin\" и пароль, который вы установили на шаге 3\"admin\" "
+"Войдите в <a href=\"../index.php\">Poweradmin</a> используя имя пользователя"
+" по умолчанию \"admin\" и пароль, который вы установили на шаге 3\"admin\" "
 "and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
@@ -11479,7 +11530,8 @@ msgstr "Проблемы с ограничениями внешних ключе
 
 #: install/helpers/InstallStepHandler.php:217
 msgid ""
-"The installer could not remove existing tables due to foreign key constraints"
+"The installer could not remove existing tables due to foreign key "
+"constraints"
 msgstr ""
 "Установщик не смог удалить существующие таблицы из-за ограничений внешних "
 "ключей"
@@ -11569,16 +11621,16 @@ msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
 msgstr ""
-"Конфигурационный файл не найден. Пожалуйста, создайте файл config/"
-"settings.php перед продолжением."
+"Конфигурационный файл не найден. Пожалуйста, создайте файл "
+"config/settings.php перед продолжением."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:47
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"Отдельные базы данных PowerDNS поддерживаются только с MySQL. Для PostgreSQL "
-"и SQLite используйте ту же базу данных."
+"Отдельные базы данных PowerDNS поддерживаются только с MySQL. Для PostgreSQL"
+" и SQLite используйте ту же базу данных."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
 #, php-format
