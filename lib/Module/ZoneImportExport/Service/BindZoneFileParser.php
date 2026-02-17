@@ -105,7 +105,70 @@ class BindZoneFileParser
             $records[] = $parsed;
         }
 
+        // If no $ORIGIN directive was found, try to infer it from record names
+        if ($origin === null && !empty($records)) {
+            $origin = $this->inferOrigin($records);
+        }
+
         return new ParsedZoneFile($origin, $defaultTtl, $records, $warnings);
+    }
+
+    /**
+     * Infer zone origin from record names when no $ORIGIN directive is present.
+     *
+     * Finds the longest common suffix of all record FQDNs. For example,
+     * records like a.example.com, b.example.com → inferred origin: example.com.
+     *
+     * @param ParsedRecord[] $records
+     */
+    public function inferOrigin(array $records): ?string
+    {
+        $names = array_unique(array_map(fn($r) => $r->name, $records));
+        // Only consider names with at least 2 labels (contain a dot)
+        $names = array_values(array_filter($names, fn($n) => $n !== '' && str_contains($n, '.')));
+
+        if (empty($names)) {
+            return null;
+        }
+
+        // Split each name into labels and reverse for prefix comparison
+        $reversedLabelSets = array_map(
+            fn($n) => array_reverse(explode('.', strtolower($n))),
+            $names
+        );
+
+        // Find the longest common prefix of reversed label arrays
+        $common = $reversedLabelSets[0];
+        for ($i = 1; $i < count($reversedLabelSets); $i++) {
+            $newCommon = [];
+            $limit = min(count($common), count($reversedLabelSets[$i]));
+            for ($j = 0; $j < $limit; $j++) {
+                if ($common[$j] === $reversedLabelSets[$i][$j]) {
+                    $newCommon[] = $common[$j];
+                } else {
+                    break;
+                }
+            }
+            $common = $newCommon;
+            if (empty($common)) {
+                return null;
+            }
+        }
+
+        // Need at least 2 labels for a valid zone name (e.g., example.com)
+        if (count($common) < 2) {
+            return null;
+        }
+
+        $suffix = implode('.', array_reverse($common));
+
+        // If all unique names are identical (e.g., all records at example.com),
+        // the suffix IS the zone apex
+        if (count($names) === 1) {
+            return $suffix;
+        }
+
+        return $suffix;
     }
 
     /**
