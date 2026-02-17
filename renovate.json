@@ -7,7 +7,7 @@
     "develop",
     "master",
     "release/3.x",
-    "release/4.x",
+    "release/4.0.x",
     "release/4.1.x"
   ],
   "constraints": {
@@ -32,6 +32,19 @@
       "postUpdateOptions": [
         "composerUpdateNoDev"
       ]
+    },
+    {
+      "description": "Only allow patch updates on stable branches",
+      "matchBaseBranches": [
+        "release/3.x",
+        "release/4.0.x",
+        "release/4.1.x"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
+      "enabled": false
     },
     {
       "matchDatasources": [
