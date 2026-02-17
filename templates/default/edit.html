@@ -787,9 +787,12 @@
                         </a>
                         {% else %}
                             {% if perm_edit != "none" and meta_edit %}
-                            <button class="btn btn-outline-success btn-sm" type="submit" form="edit-zone-form" name="sign_zone">
-                                <i class="bi bi-shield-check me-1 text-success"></i>{% trans %}Sign zone{% endtrans %}
-                            </button>
+                            <form method="post" action="" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                <button class="btn btn-outline-success btn-sm" type="submit" name="sign_zone">
+                                    <i class="bi bi-shield-check me-1 text-success"></i>{% trans %}Sign zone{% endtrans %}
+                                </button>
+                            </form>
                             {% else %}
                             <p><span class="badge bg-secondary">{% trans %}Not signed{% endtrans %}</span></p>
                             {% endif %}
