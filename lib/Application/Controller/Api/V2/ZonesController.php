@@ -459,7 +459,7 @@ class ZonesController extends PublicApiController
             $domain = $input['name'] ?? '';
             $type = strtoupper($input['type'] ?? 'MASTER');
             $slaveMaster = $input['masters'] ?? $input['master'] ?? '';
-            $zoneTemplate = $input['template'] ?? 'none';
+            $zoneTemplate = (string)($input['template'] ?? 'none');
             if ($zoneTemplate !== 'none' && !is_numeric($zoneTemplate)) {
                 return $this->returnApiError('Template must be a numeric ID', 400);
             }
