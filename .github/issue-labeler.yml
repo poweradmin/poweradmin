@@ -2,8 +2,8 @@
 # Automatically applies labels to issues based on keywords in title and body
 # Uses regex patterns - case insensitive matching
 #
-# IMPORTANT: bug and feature labels are mutually exclusive and handled by
-# the workflow based on issue template type. Keywords here are backup only.
+# NOTE: bug/feature types are handled by GitHub's built-in issue types
+# (set via `type:` field in issue templates), not by labels.
 
 # === Authentication & Security ===
 auth:
@@ -58,10 +58,3 @@ docs:
 # === Dependencies ===
 dependencies:
   - '(dependency|dependencies|composer\.(json|lock)|npm|package\.json|library.update|vendor)'
-
-# === Issue Type (backup patterns - workflow uses template type as primary) ===
-bug:
-  - '(\[bug\]|bug.report|error.message|crash|exception|fatal.error|not.working|fails.to|broken|regression)'
-
-feature:
-  - '(\[feature\]|feature.request|enhancement|new.feature|add.support|implement.new|would.like)'
