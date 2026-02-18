@@ -36,6 +36,8 @@ TEST_SLAVE_ZONE_ID=""
 TEST_REVERSE_ZONE_ID=""
 TEST_GROUP_ID=""
 TEST_USER_ID=""
+TEST_ZONE_TEMPLATE_ID=""
+TEST_ZONE_TEMPLATE_RECORD_ID=""
 CREATED_REVERSE_ZONE=false
 
 ##############################################################################
@@ -821,6 +823,143 @@ test_groups() {
 }
 
 ##############################################################################
+# Test: Zone Templates API
+##############################################################################
+
+cleanup_existing_test_templates() {
+    # Remove any test zone templates from previous runs
+    local templates
+    templates=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/zone-templates" 2>/dev/null)
+
+    local test_names=("API Test Template" "Updated API Test Template")
+
+    for name in "${test_names[@]}"; do
+        local template_id
+        template_id=$(echo "$templates" | jq -r ".data[]? | select(.name == \"$name\") | .id" 2>/dev/null)
+        if [[ -n "$template_id" ]]; then
+            curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+                "${API_BASE_URL}/api/v2/zone-templates/${template_id}" >/dev/null 2>&1 || true
+        fi
+    done
+}
+
+test_zone_templates() {
+    print_section "Zone Templates API Tests"
+
+    cleanup_existing_test_templates
+
+    # Test 1: List zone templates
+    api_request_v2 "GET" "/zone-templates" "" 200 "List zone templates"
+
+    # Test 2: Create zone template
+    local template_data='{"name": "API Test Template", "description": "Template created via API test"}'
+    if api_request_v2 "POST" "/zone-templates" "$template_data" 201 "Create zone template"; then
+        TEST_ZONE_TEMPLATE_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
+        print_info "Created zone template ID: $TEST_ZONE_TEMPLATE_ID"
+    else
+        print_fail "Failed to create zone template - skipping remaining template tests"
+        return 1
+    fi
+
+    # Test 3: Get zone template details (should include auto-created SOA record)
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
+        api_request_v2 "GET" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}" "" 200 "Get zone template details"
+
+        increment_test
+        if [[ "$LAST_RESPONSE_BODY" =~ "SOA" ]]; then
+            print_pass "Zone template includes auto-created SOA record"
+        else
+            print_fail "Zone template missing auto-created SOA record"
+        fi
+    fi
+
+    # Test 4: List zone template records
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
+        api_request_v2 "GET" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records" "" 200 "List zone template records"
+    fi
+
+    # Test 5: Add record to zone template
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
+        local record_data='{"name": "[ZONE]", "type": "A", "content": "192.168.1.1", "ttl": 3600, "priority": 0}'
+        if api_request_v2 "POST" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records" "$record_data" 201 "Add record to zone template"; then
+            TEST_ZONE_TEMPLATE_RECORD_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
+            print_info "Created template record ID: $TEST_ZONE_TEMPLATE_RECORD_ID"
+        fi
+    fi
+
+    # Test 6: Get specific template record
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]] && [[ -n "$TEST_ZONE_TEMPLATE_RECORD_ID" ]]; then
+        api_request_v2 "GET" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records/${TEST_ZONE_TEMPLATE_RECORD_ID}" "" 200 "Get specific template record"
+    fi
+
+    # Test 7: Update template record
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]] && [[ -n "$TEST_ZONE_TEMPLATE_RECORD_ID" ]]; then
+        local update_record_data='{"name": "[ZONE]", "type": "A", "content": "192.168.1.2", "ttl": 7200, "priority": 0}'
+        api_request_v2 "PUT" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records/${TEST_ZONE_TEMPLATE_RECORD_ID}" "$update_record_data" 200 "Update template record"
+    fi
+
+    # Test 8: Update zone template
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
+        local update_data='{"name": "Updated API Test Template", "description": "Updated via API test"}'
+        api_request_v2 "PUT" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}" "$update_data" 200 "Update zone template"
+    fi
+
+    # Test 9: Create zone using template ID
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
+        local zone_with_template="{\"name\":\"template-zone-test.example.com\",\"type\":\"MASTER\",\"template\":${TEST_ZONE_TEMPLATE_ID}}"
+        api_request_v2 "POST" "/zones" "$zone_with_template" 201 "Create zone using template ID"
+
+        if [[ "$LAST_RESPONSE_CODE" -eq 201 ]]; then
+            local template_zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+            if [[ -n "$template_zone_id" ]]; then
+                print_info "Created zone with template, zone ID: $template_zone_id"
+                # Cleanup the zone
+                curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+                    "${API_BASE_URL}/api/v2/zones/${template_zone_id}" >/dev/null 2>&1 || true
+            fi
+        fi
+    fi
+
+    # Test 10: Create zone with invalid template ID (should fail, no orphan)
+    local bad_template_zone='{"name":"bad-template-test.example.com","type":"MASTER","template":999999}'
+    api_request_v2 "POST" "/zones" "$bad_template_zone" 400 "Reject zone creation with invalid template ID" || true
+
+    # Test 10b: Create zone with string template name (should fail, must be numeric ID)
+    local name_template_zone='{"name":"name-template-test.example.com","type":"MASTER","template":"blockTemplate"}'
+    api_request_v2 "POST" "/zones" "$name_template_zone" 400 "Reject zone creation with string template name" || true
+
+    # Test 11: Duplicate template name
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
+        local dup_data='{"name": "Updated API Test Template", "description": "Duplicate name test"}'
+        api_request_v2 "POST" "/zone-templates" "$dup_data" 409 "Reject duplicate template name"
+    fi
+
+    # Test 12: Create template with missing fields
+    local missing_fields='{"name": "Incomplete"}'
+    api_request_v2 "POST" "/zone-templates" "$missing_fields" 400 "Reject template with missing fields"
+
+    # Test 13: Get non-existent template
+    api_request_v2 "GET" "/zone-templates/999999" "" 404 "Get non-existent template returns 404"
+
+    # Test 14: Delete template record
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]] && [[ -n "$TEST_ZONE_TEMPLATE_RECORD_ID" ]]; then
+        api_request_v2 "DELETE" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records/${TEST_ZONE_TEMPLATE_RECORD_ID}" "" 200 "Delete template record"
+    fi
+
+    # Test 15: Delete zone template
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
+        api_request_v2 "DELETE" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}" "" 200 "Delete zone template"
+        TEST_ZONE_TEMPLATE_ID=""
+    fi
+
+    # Test 16: Delete non-existent template
+    api_request_v2 "DELETE" "/zone-templates/999999" "" 404 "Delete non-existent template returns 404"
+
+    print_info "Zone Templates API tests completed"
+}
+
+##############################################################################
 # Cleanup Function
 ##############################################################################
 
@@ -842,6 +981,15 @@ cleanup() {
         print_info "Deleting reverse zone $TEST_REVERSE_ZONE_ID..."
         api_request_v2 "DELETE" "/zones/$TEST_REVERSE_ZONE_ID" "" 204 "Delete reverse zone" || true
     fi
+
+    # Delete test zone template if still exists
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
+        print_info "Deleting test zone template $TEST_ZONE_TEMPLATE_ID..."
+        api_request_v2 "DELETE" "/zone-templates/$TEST_ZONE_TEMPLATE_ID" "" 200 "Delete test zone template" || true
+    fi
+
+    # Cleanup leftover test templates
+    cleanup_existing_test_templates
 
     # Delete test group if still exists
     if [[ -n "$TEST_GROUP_ID" ]]; then
@@ -874,6 +1022,9 @@ cleanup_existing_test_zones() {
         "slave-mixed.example.com"
         "slave-no-brackets.example.com"
         "master-nomasters.example.com"
+        "template-zone-test.example.com"
+        "bad-template-test.example.com"
+        "name-template-test.example.com"
     )
 
     local all_zones
@@ -906,6 +1057,7 @@ main() {
     test_bulk_operations
     test_master_port_syntax
     test_groups
+    test_zone_templates
 
     # Cleanup
     cleanup

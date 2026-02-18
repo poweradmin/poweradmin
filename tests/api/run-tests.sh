@@ -8,7 +8,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-API_V1_TEST_SCRIPT="$SCRIPT_DIR/api-test.sh"
+API_V1_TEST_SCRIPT="$SCRIPT_DIR/api-v1-test.sh"
 API_V2_TEST_SCRIPT="$SCRIPT_DIR/api-v2-test.sh"
 LOAD_TEST_SCRIPT="$SCRIPT_DIR/api-load-test.sh"
 

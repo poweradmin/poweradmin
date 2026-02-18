@@ -553,6 +553,10 @@ test_zone_management() {
     }'
     api_request "POST" "/zones" "$invalid_zone" "400" "Create zone with validation errors"
     
+    # Create zone with string template name (should fail, must be numeric ID)
+    local name_template_zone='{"name":"name-template-test.example.com","type":"MASTER","template":"blockTemplate"}'
+    api_request "POST" "/zones" "$name_template_zone" "400" "Reject zone creation with string template name"
+
     # Create duplicate zone
     if [[ -n "${TEST_ZONE_ID:-}" ]]; then
         local duplicate_zone='{
