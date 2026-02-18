@@ -1042,7 +1042,7 @@ cleanup_existing_test_zones() {
 }
 
 main() {
-    print_header "PowerAdmin API v2 Enhancements Test Suite"
+    print_header "PowerAdmin API v2 Test Suite"
 
     load_config
 

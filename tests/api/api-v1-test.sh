@@ -1316,7 +1316,7 @@ test_performance() {
 ##############################################################################
 
 run_all_tests() {
-    print_header "Starting API Test Suite"
+    print_header "PowerAdmin API v1 Test Suite"
     
     # Check dependencies
     command -v curl >/dev/null 2>&1 || { print_error "curl is required but not installed"; exit 1; }
