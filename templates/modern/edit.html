@@ -511,10 +511,12 @@
         <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-outline-primary btn-sm">
             <i class="bi bi-file-earmark-text me-1 text-primary"></i>{% trans %}Bulk add{% endtrans %}
         </a>
-        {% if export_formats is defined and export_formats|length > 0 %}
+        {% if import_enabled is defined and import_enabled %}
         <a href="{{ base_url_prefix }}/tools/zone-import?zone_id={{ zone_id }}&amp;zone_name={{ zone_name }}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-upload me-1 text-secondary"></i>{% trans %}Import{% endtrans %}
         </a>
+        {% endif %}
+        {% if export_formats is defined and export_formats|length > 0 %}
         <div class="btn-group">
             <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
                 <i class="bi bi-download me-1 text-secondary"></i>{% trans %}Export{% endtrans %}

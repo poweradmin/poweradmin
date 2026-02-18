@@ -503,6 +503,7 @@ class EditController extends BaseController
             'display_hostname_only' => $display_hostname_only,
             'dns_wizards_enabled' => $this->config->get('dns_wizards', 'enabled', false),
             'export_formats' => $this->getExportFormats($zone_id),
+            'import_enabled' => $this->isImportEnabled(),
         ]);
     }
 
@@ -652,6 +653,18 @@ class EditController extends BaseController
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
         return $registry->getCapabilityData('zone_export', ['zone_id' => $zone_id]);
+    }
+
+    private function isImportEnabled(): bool
+    {
+        $registry = new ModuleRegistry($this->config);
+        $registry->loadModules();
+        foreach ($registry->getEnabledModules() as $module) {
+            if (in_array('zone_import', $module->getCapabilities(), true)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
