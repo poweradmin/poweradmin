@@ -19,7 +19,7 @@ body = """
 {%- elif scope_name == "sql" %}{% set scope_icon = "🗄️" -%}
 {%- elif scope_name == "ui" %}{% set scope_icon = "🖥️" -%}
 {%- elif scope_name == "i18n" %}{% set scope_icon = "🌐" -%}
-{%- elif scope_name == "mail" %}{% set scope_icon = "📧" -%}
+{%- elif scope_name == "email" %}{% set scope_icon = "📧" -%}
 {%- elif scope_name == "ldap" %}{% set scope_icon = "🔐" -%}
 {%- elif scope_name == "mfa" %}{% set scope_icon = "🔑" -%}
 {%- elif scope_name == "users" %}{% set scope_icon = "👥" -%}
@@ -33,19 +33,15 @@ body = """
 {%- elif scope_name == "export" %}{% set scope_icon = "📤" -%}
 {%- elif scope_name == "import" %}{% set scope_icon = "📥" -%}
 {%- elif scope_name == "database" %}{% set scope_icon = "🗃️" -%}
-{%- elif scope_name == "db" %}{% set scope_icon = "🗃️" -%}
 {%- elif scope_name == "infrastructure" %}{% set scope_icon = "🔌" -%}
-{%- elif scope_name == "infra" %}{% set scope_icon = "🔌" -%}
 {%- elif scope_name == "validation" %}{% set scope_icon = "✅" -%}
-{%- elif scope_name == "smtp" %}{% set scope_icon = "📧" -%}
-{%- elif scope_name == "email" %}{% set scope_icon = "📧" -%}
+{%- elif scope_name == "navigation" %}{% set scope_icon = "🔀" -%}
 {%- elif scope_name == "session" %}{% set scope_icon = "🔐" -%}
 {%- elif scope_name == "routing" %}{% set scope_icon = "🔀" -%}
 {%- elif scope_name == "cache" %}{% set scope_icon = "💾" -%}
 {%- elif scope_name == "tests" %}{% set scope_icon = "🧪" -%}
 {%- elif scope_name == "migration" %}{% set scope_icon = "📦" -%}
 {%- elif scope_name == "installer" %}{% set scope_icon = "📥" -%}
-{%- elif scope_name == "install" %}{% set scope_icon = "📥" -%}
 {%- else %}{% set scope_icon = "🔧" -%}
 {%- endif %}
 **{{ scope_icon }} {{ scope_name }}:**
@@ -63,6 +59,18 @@ trim = true
 conventional_commits = true
 filter_unconventional = true
 split_commits = false
+commit_preprocessors = [
+    # Normalize scopes to canonical (plural/longer) forms
+    { pattern = "\\(dns-wizard\\)", replace = "(dns-wizards)" },
+    { pattern = "\\(install\\)", replace = "(installer)" },
+    { pattern = "\\(db\\)", replace = "(database)" },
+    { pattern = "\\(template\\)", replace = "(templates)" },
+    { pattern = "\\(user\\)", replace = "(users)" },
+    { pattern = "\\(nav\\)", replace = "(navigation)" },
+    { pattern = "\\(infra\\)", replace = "(infrastructure)" },
+    { pattern = "\\(smtp\\)", replace = "(email)" },
+    { pattern = "\\(mail\\)", replace = "(email)" },
+]
 commit_parsers = [
     # Skip development/CI scopes from release notes
     { message = "\\(ci\\)", skip = true },
