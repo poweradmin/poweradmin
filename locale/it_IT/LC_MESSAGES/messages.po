@@ -9407,15 +9407,15 @@ msgstr "Questo gruppo non possiede ancora alcuna zona."
 
 #: templates/modern/manage_group_zones.html:113
 msgid "Master"
-msgstr "Master"
+msgstr "Principale"
 
 #: templates/modern/manage_group_zones.html:115
 msgid "Slave"
-msgstr "Slave"
+msgstr "Secondario"
 
 #: templates/modern/manage_group_zones.html:117
 msgid "Native"
-msgstr "Native"
+msgstr "Nativo"
 
 #: templates/default/edit_group.html:182 templates/modern/edit_group.html:182
 msgid "Confirm Member Removal"
@@ -13707,7 +13707,7 @@ msgstr "Estensioni Opzionali"
 
 #: install/templates/step2.html.twig:99
 msgid "Web Server"
-msgstr "Web Server"
+msgstr "Server Web"
 
 #: install/templates/step2.html.twig:106
 msgid "Server"

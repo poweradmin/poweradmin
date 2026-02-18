@@ -11034,7 +11034,7 @@ msgstr "Các vùng chuyển tiếp liên kết"
 #: templates/modern/list_forward_zones.html:92
 #, auto-english-fallback
 msgid "Serial"
-msgstr "Serial"
+msgstr "Số sê-ri"
 
 #: templates/modern/bulk_registration.html:64
 #, auto-english-fallback
@@ -14080,13 +14080,13 @@ msgstr "Truy vấn TCP"
 #: templates/modern/pdns_status.html:279
 #, auto-english-fallback
 msgid "Cache Hits"
-msgstr "Cache Hits"
+msgstr "Lượt trúng bộ nhớ đệm"
 
 #: templates/default/pdns_status.html:296
 #: templates/modern/pdns_status.html:296
 #, auto-english-fallback
 msgid "Cache Misses"
-msgstr "Cache Misses"
+msgstr "Lượt trượt bộ nhớ đệm"
 
 #: templates/default/pdns_status.html:331
 #: templates/modern/pdns_status.html:331

@@ -9374,7 +9374,7 @@ msgstr "Slave"
 
 #: templates/modern/manage_group_zones.html:117
 msgid "Native"
-msgstr "Native"
+msgstr "Nativ"
 
 #: templates/default/edit_group.html:182 templates/modern/edit_group.html:182
 msgid "Confirm Member Removal"

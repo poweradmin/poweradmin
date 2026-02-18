@@ -9346,11 +9346,11 @@ msgstr "Este grupo ainda não possui zonas."
 
 #: templates/modern/manage_group_zones.html:113
 msgid "Master"
-msgstr "Master"
+msgstr "Mestre"
 
 #: templates/modern/manage_group_zones.html:115
 msgid "Slave"
-msgstr "Slave"
+msgstr "Escravo"
 
 #: templates/modern/manage_group_zones.html:117
 msgid "Native"

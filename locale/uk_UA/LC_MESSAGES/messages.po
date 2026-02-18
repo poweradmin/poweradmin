@@ -11114,7 +11114,7 @@ msgstr "Id"
 #: templates/modern/list_log_groups.html:49
 #, auto-english-fallback
 msgid "Event"
-msgstr "Event"
+msgstr "Подія"
 
 #: templates/modern/list_log_zones.html:69
 #, auto-english-fallback
