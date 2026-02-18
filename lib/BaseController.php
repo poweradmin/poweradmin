@@ -60,6 +60,7 @@ abstract class BaseController
     protected MessageService $messageService;
     protected ConfigurationManager $config;
     private UserContextService $userContextService;
+    private string $pageTitle = '';
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -409,6 +410,26 @@ abstract class BaseController
     }
 
     /**
+     * Sets the current page identifier used for navigation highlighting.
+     *
+     * @param string $page The page identifier
+     */
+    protected function setCurrentPage(string $page): void
+    {
+        $this->requestData['page'] = $page;
+    }
+
+    /**
+     * Sets the page title displayed in the header.
+     *
+     * @param string $title The page title
+     */
+    protected function setPageTitle(string $title): void
+    {
+        $this->pageTitle = $title;
+    }
+
+    /**
      * Checks if the user has a specific permission and displays an error message if not.
      *
      * @param string $permission The permission to check.
@@ -563,9 +584,10 @@ abstract class BaseController
             $vars['system_messages'] = $systemMessages;
         }
 
-        // Add the current page to the header variables
+        // Add the current page and page title to the header variables
         $currentPage = $this->requestData['page'] ?? 'index';
         $vars['current_page'] = $currentPage;
+        $vars['page_title'] = $this->pageTitle !== '' ? $this->pageTitle : $vars['iface_title'];
 
         $this->app->render('header.html', $vars);
     }
