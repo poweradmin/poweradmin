@@ -54,6 +54,9 @@ class IndexController extends BaseController
             return;
         }
 
+        $this->setCurrentPage('index');
+        $this->setPageTitle(_('Dashboard'));
+
         $this->showIndex();
     }
 
