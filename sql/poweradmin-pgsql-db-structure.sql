@@ -80,8 +80,6 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES
 
 SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items));
 
-SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items));
-
 CREATE SEQUENCE perm_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
 CREATE TABLE "public"."perm_templ" (
@@ -104,10 +102,6 @@ INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES
     (8,	'Editors',	'Edit zone records (no SOA/NS) for group members.',	'group'),
     (9,	'Viewers',	'Read-only zone access for group members.',	'group'),
     (10,	'Guests',	'Temporary group with no permissions. Suitable for users awaiting approval.',	'group');
-
-SELECT setval('perm_templ_id_seq', 10);
-
-SELECT setval('perm_templ_id_seq', (SELECT MAX(id) FROM perm_templ));
 
 SELECT setval('perm_templ_id_seq', (SELECT MAX(id) FROM perm_templ));
 
@@ -160,12 +154,6 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
     (34,	8,	62),
     (35,	9,	43),
     (36,	9,	49);
-
-SELECT setval('perm_templ_items_id_seq', 36);
-
-SELECT setval('perm_templ_items_id_seq', (SELECT MAX(id) FROM perm_templ_items));
-
-CREATE SEQUENCE records_zone_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
 SELECT setval('perm_templ_items_id_seq', (SELECT MAX(id) FROM perm_templ_items));
 
@@ -444,7 +432,7 @@ INSERT INTO user_groups (id, name, description, perm_templ, created_by) VALUES
     (4, 'Viewers', 'Read-only access to zones with search capability.', 9, NULL),
     (5, 'Guests', 'Temporary group with no permissions. Suitable for users awaiting approval.', 10, NULL);
 
-SELECT setval('user_groups_id_seq', 5);
+SELECT setval('user_groups_id_seq', (SELECT MAX(id) FROM user_groups));
 
 CREATE TABLE user_group_members (
     id SERIAL PRIMARY KEY,
