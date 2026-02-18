@@ -70,6 +70,8 @@ commit_preprocessors = [
     { pattern = "\\(infra\\)", replace = "(infrastructure)" },
     { pattern = "\\(smtp\\)", replace = "(email)" },
     { pattern = "\\(mail\\)", replace = "(email)" },
+    { pattern = "\\(emails\\)", replace = "(email)" },
+    { pattern = "\\(DNS\\)", replace = "(dns)" },
 ]
 commit_parsers = [
     # Skip development/CI scopes from release notes
