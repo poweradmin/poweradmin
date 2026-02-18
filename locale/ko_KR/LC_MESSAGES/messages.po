@@ -14004,7 +14004,7 @@ msgstr "웹 서버 읽기/쓰기 액세스 권한이 있는 파일이 존재해�
 #: install/templates/step4.html.twig:105
 #, auto-english-fallback
 msgid "DB charset"
-msgstr "DB charset"
+msgstr "DB 문자셋"
 
 #: install/templates/step4.html.twig:200 install/templates/step4.html.twig:208
 #, auto-english-fallback
@@ -14019,7 +14019,7 @@ msgstr "새 테이블의 문자 집합. 데이터베이스 기본값의 경우 �
 #: install/templates/step4.html.twig:117
 #, auto-english-fallback
 msgid "DB collation"
-msgstr "DB collation"
+msgstr "DB 정렬 순서"
 
 #: install/templates/step4.html.twig:124
 msgid ""

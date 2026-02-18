@@ -9600,15 +9600,15 @@ msgstr "Ce groupe ne possède aucune zone pour le moment."
 
 #: templates/modern/manage_group_zones.html:113
 msgid "Master"
-msgstr "Master"
+msgstr "Maître"
 
 #: templates/modern/manage_group_zones.html:115
 msgid "Slave"
-msgstr "Slave"
+msgstr "Esclave"
 
 #: templates/modern/manage_group_zones.html:117
 msgid "Native"
-msgstr "Native"
+msgstr "Natif"
 
 #: templates/default/edit_group.html:182 templates/modern/edit_group.html:182
 msgid "Confirm Member Removal"

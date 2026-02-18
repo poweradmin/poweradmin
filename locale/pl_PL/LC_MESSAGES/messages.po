@@ -9305,11 +9305,11 @@ msgstr "Ta grupa nie posiada jeszcze żadnych stref."
 
 #: templates/modern/manage_group_zones.html:113
 msgid "Master"
-msgstr "Master"
+msgstr "Nadrzędny"
 
 #: templates/modern/manage_group_zones.html:115
 msgid "Slave"
-msgstr "Slave"
+msgstr "Podrzędny"
 
 #: templates/modern/manage_group_zones.html:117
 msgid "Native"

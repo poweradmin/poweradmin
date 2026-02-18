@@ -2175,7 +2175,7 @@ msgstr ""
 #: lib/Domain/Service/DnsWizard/DKIMWizard.php:72
 #, auto-english-fallback
 msgid "Selector"
-msgstr "Selector"
+msgstr "Selektor"
 
 #: lib/Domain/Service/DnsWizard/TLSAWizard.php:126
 #, auto-english-fallback
@@ -11984,7 +11984,7 @@ msgstr "Ekspor CSV"
 #: templates/default/edit.html:519 templates/modern/edit.html:519
 #, auto-english-fallback
 msgid "Generate PTR"
-msgstr "Generate PTR"
+msgstr "Buat PTR"
 
 #: templates/modern/edit.html:696 templates/modern/add_zone_master.html:24
 #, auto-english-fallback
@@ -13394,7 +13394,7 @@ msgstr "Wildcard"
 #: templates/default/search.html:84 templates/modern/search.html:84
 #, auto-english-fallback
 msgid "Reverse"
-msgstr "Reverse"
+msgstr "Balik"
 
 #: templates/default/search.html:107 templates/modern/search.html:107
 msgid ""
@@ -14714,7 +14714,7 @@ msgstr "Ekstensi Opsional"
 #: install/templates/step2.html.twig:99
 #, auto-english-fallback
 msgid "Web Server"
-msgstr "Web Server"
+msgstr "Server Web"
 
 #: install/templates/step2.html.twig:106
 #, auto-english-fallback

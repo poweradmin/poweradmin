@@ -12231,7 +12231,7 @@ msgstr "Slavzoner utan master IP-adresser"
 #: templates/modern/database_consistency.html:110
 #, auto-english-fallback
 msgid "Master IP"
-msgstr "Master IP"
+msgstr "Master-IP"
 
 #: templates/modern/database_consistency.html:128
 #, auto-english-fallback
@@ -13374,7 +13374,7 @@ msgstr "Jokertecken"
 #: templates/default/search.html:84 templates/modern/search.html:84
 #, auto-english-fallback
 msgid "Reverse"
-msgstr "Reverse"
+msgstr "Omvänd"
 
 #: templates/default/search.html:107 templates/modern/search.html:107
 msgid ""
