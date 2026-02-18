@@ -325,6 +325,36 @@ class ApiPermissionService
     }
 
     /**
+     * Check if user can create zone templates (stateless)
+     *
+     * @param int $userId User ID to check
+     * @return bool True if user can create zone templates
+     */
+    public function canCreateZoneTemplate(int $userId): bool
+    {
+        if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+            return true;
+        }
+
+        return $this->userHasPermission($userId, 'zone_templ_add');
+    }
+
+    /**
+     * Check if user can edit zone templates (stateless)
+     *
+     * @param int $userId User ID to check
+     * @return bool True if user can edit zone templates
+     */
+    public function canEditZoneTemplate(int $userId): bool
+    {
+        if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+            return true;
+        }
+
+        return $this->userHasPermission($userId, 'zone_templ_edit');
+    }
+
+    /**
      * Get all zone IDs that the user is allowed to view (stateless)
      *
      * @param int $userId User ID to check

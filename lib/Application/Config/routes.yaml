@@ -616,6 +616,33 @@ api_v2_permission_template:
     id: '\d+'
   methods: [GET, PUT, DELETE]
 
+api_v2_zone_templates:
+  path: /api/v2/zone-templates
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneTemplatesController::run
+  methods: [GET, POST]
+
+api_v2_zone_template:
+  path: /api/v2/zone-templates/{id}
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneTemplatesController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, PUT, DELETE]
+
+api_v2_zone_template_records:
+  path: /api/v2/zone-templates/{id}/records
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneTemplateRecordsController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+api_v2_zone_template_record:
+  path: /api/v2/zone-templates/{template_id}/records/{id}
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneTemplateRecordsController::run
+  requirements:
+    template_id: '\d+'
+    id: '\d+'
+  methods: [GET, PUT, DELETE]
+
 api_v2_permissions:
   path: /api/v2/permissions
   controller: Poweradmin\Application\Controller\Api\V2\PermissionsController::run
