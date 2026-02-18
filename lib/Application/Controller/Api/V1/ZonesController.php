@@ -321,9 +321,9 @@ class ZonesController extends PublicApiController
                 ),
                 new OA\Property(
                     property: 'template',
-                    description: 'Zone template name to use',
-                    type: 'string',
-                    example: 'default'
+                    description: 'Zone template ID to use',
+                    type: 'integer',
+                    example: 1
                 ),
                 new OA\Property(
                     property: 'enable_dnssec',
@@ -400,6 +400,9 @@ class ZonesController extends PublicApiController
             $type = strtoupper($input['type'] ?? 'MASTER');
             $slaveMaster = $input['master'] ?? '';
             $zoneTemplate = $input['template'] ?? 'none';
+            if ($zoneTemplate !== 'none' && !is_numeric($zoneTemplate)) {
+                return $this->returnApiError('Template must be a numeric ID', 400);
+            }
             $enableDnssec = $input['enable_dnssec'] ?? false;
 
             // Require explicit owner for API requests (stateless)
