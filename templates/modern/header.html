@@ -403,16 +403,7 @@
                         <i class="bi bi-list"></i>
                     </button>
                     {% if current_page != 'home' %}
-                    <h1 class="h5 mb-0">
-                        {% if current_page == 'index' %}{% trans %}Dashboard{% endtrans %}
-                        {% elseif current_page == 'search' %}{% trans %}Search{% endtrans %}
-                        {% elseif current_page == 'list_forward_zones' %}{% trans %}Forward Zones{% endtrans %}
-                        {% elseif current_page == 'list_reverse_zones' %}{% trans %}Reverse Zones{% endtrans %}
-                        {% elseif current_page == 'users' %}{% trans %}Users{% endtrans %}
-                        {% elseif current_page == 'list_zone_templ' %}{% trans %}Templates{% endtrans %}
-                        {% elseif current_page == 'user_preferences' %}{% trans %}User Preferences{% endtrans %}
-                        {% else %}{{ iface_title }}{% endif %}
-                    </h1>
+                    <h1 class="h5 mb-0">{{ page_title }}</h1>
                     {% endif %}
                 </div>
                 <div class="d-flex align-items-center">
