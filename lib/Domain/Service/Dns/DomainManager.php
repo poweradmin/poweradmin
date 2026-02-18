@@ -102,109 +102,120 @@ class DomainManager implements DomainManagerInterface
                 (preg_match('/in-addr.arpa/i', $domain) && $owner && $zone_template) ||
                 $type == "SLAVE" && $domain && $owner && $slave_master
             ) {
-                $stmt = $db->prepare("INSERT INTO $domains_table (name, type) VALUES (:domain, :type)");
-                $stmt->bindValue(':domain', $domain, PDO::PARAM_STR);
-                $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-                $stmt->execute();
-
-                $domain_id = $db->lastInsertId();
-
-                $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
-                $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-                $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
-                $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
-                $stmt->execute();
-
-                // Get the zone ID from the zones table (not the domain ID from domains table)
-                $zone_id = $db->lastInsertId();
-
-                // Create sync tracking record if using a template
-                if ($zone_template != "none" && is_numeric($zone_template)) {
-                    $syncService = new ZoneTemplateSyncService($db, $this->config);
-                    $syncService->createSyncRecord($zone_id, (int)$zone_template);
-                    // Mark as synced since we're creating from template
-                    $syncService->markZoneAsSynced($zone_id, (int)$zone_template);
-                }
-
-                if ($type == "SLAVE") {
-                    $stmt = $db->prepare("UPDATE $domains_table SET master = :slave_master WHERE id = :domain_id");
-                    $stmt->bindValue(':slave_master', $slave_master, PDO::PARAM_STR);
-                    $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                $db->beginTransaction();
+                try {
+                    $stmt = $db->prepare("INSERT INTO $domains_table (name, type) VALUES (:domain, :type)");
+                    $stmt->bindValue(':domain', $domain, PDO::PARAM_STR);
+                    $stmt->bindValue(':type', $type, PDO::PARAM_STR);
                     $stmt->execute();
-                    return true;
-                } else {
-                    if ($zone_template == "none" && $domain_id) {
-                        $ns1 = $dns_ns1;
-                        $hm = $dns_hostmaster;
-                        $ttl = $dns_ttl;
 
-                        // Get SOA parameters from config
-                        $soa_refresh = $this->config->get('dns', 'soa_refresh', 28800);
-                        $soa_retry = $this->config->get('dns', 'soa_retry', 7200);
-                        $soa_expire = $this->config->get('dns', 'soa_expire', 604800);
-                        $soa_minimum = $this->config->get('dns', 'soa_minimum', 86400);
+                    $domain_id = $db->lastInsertId();
 
-                        $this->soaRecordManager->setTimezone();
-                        $serial = date("Ymd") . "00";
+                    $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
+                    $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                    $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
+                    $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
+                    $stmt->execute();
 
-                        // Construct complete SOA record with all parameters
-                        $soa_content = "$ns1 $hm $serial $soa_refresh $soa_retry $soa_expire $soa_minimum";
+                    // Get the zone ID from the zones table (not the domain ID from domains table)
+                    $zone_id = $db->lastInsertId();
 
-                        $stmt = $db->prepare("INSERT INTO $records_table (domain_id, name, content, type, ttl, prio) VALUES (:domain_id, :name, :content, :type, :ttl, :prio)");
-                        $stmt->execute([
-                            ':domain_id' => $domain_id,
-                            ':name' => $domain,
-                            ':content' => $soa_content,
-                            ':type' => 'SOA',
-                            ':ttl' => $ttl,
-                            ':prio' => 0
-                        ]);
-                        return true;
-                    } elseif ($domain_id && is_numeric($zone_template)) {
-                        $dns_ttl = $this->config->get('dns', 'ttl');
+                    // Create sync tracking record if using a template
+                    if ($zone_template != "none" && is_numeric($zone_template)) {
+                        $syncService = new ZoneTemplateSyncService($db, $this->config);
+                        $syncService->createSyncRecord($zone_id, (int)$zone_template);
+                        // Mark as synced since we're creating from template
+                        $syncService->markZoneAsSynced($zone_id, (int)$zone_template);
+                    }
 
-                        $templ_records = ZoneTemplate::getZoneTemplRecords($db, $zone_template);
-                        if (is_array($templ_records) && !empty($templ_records)) {
-                            // Process the template records
-                            foreach ($templ_records as $r) {
-                                if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
-                                    $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-                                    $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
-                                    $type = $r["type"];
-                                    $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
-                                    $ttl = $r["ttl"];
-                                    $prio = intval($r["prio"]);
-
-                                    if (!$ttl) {
-                                        $ttl = $dns_ttl;
-                                    }
-
-                                    $stmt = $db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:domain_id, :name, :type, :content, :ttl, :prio)");
-                                    $stmt->execute([
-                                        ':domain_id' => $domain_id,
-                                        ':name' => $name,
-                                        ':type' => $type,
-                                        ':content' => $content,
-                                        ':ttl' => $ttl,
-                                        ':prio' => $prio
-                                    ]);
-
-                                    $record_id = $db->lastInsertId();
-
-                                    $stmt = $db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
-                                    $stmt->execute([
-                                        ':domain_id' => $domain_id,
-                                        ':record_id' => $record_id,
-                                        ':zone_templ_id' => $r['zone_templ_id']
-                                    ]);
-                                }
-                            }
-                        }
+                    if ($type == "SLAVE") {
+                        $stmt = $db->prepare("UPDATE $domains_table SET master = :slave_master WHERE id = :domain_id");
+                        $stmt->bindValue(':slave_master', $slave_master, PDO::PARAM_STR);
+                        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                        $stmt->execute();
+                        $db->commit();
                         return true;
                     } else {
-                        $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "addDomain", "could not create zone"));
-                        return false;
+                        if ($zone_template == "none" && $domain_id) {
+                            $ns1 = $dns_ns1;
+                            $hm = $dns_hostmaster;
+                            $ttl = $dns_ttl;
+
+                            // Get SOA parameters from config
+                            $soa_refresh = $this->config->get('dns', 'soa_refresh', 28800);
+                            $soa_retry = $this->config->get('dns', 'soa_retry', 7200);
+                            $soa_expire = $this->config->get('dns', 'soa_expire', 604800);
+                            $soa_minimum = $this->config->get('dns', 'soa_minimum', 86400);
+
+                            $this->soaRecordManager->setTimezone();
+                            $serial = date("Ymd") . "00";
+
+                            // Construct complete SOA record with all parameters
+                            $soa_content = "$ns1 $hm $serial $soa_refresh $soa_retry $soa_expire $soa_minimum";
+
+                            $stmt = $db->prepare("INSERT INTO $records_table (domain_id, name, content, type, ttl, prio) VALUES (:domain_id, :name, :content, :type, :ttl, :prio)");
+                            $stmt->execute([
+                                ':domain_id' => $domain_id,
+                                ':name' => $domain,
+                                ':content' => $soa_content,
+                                ':type' => 'SOA',
+                                ':ttl' => $ttl,
+                                ':prio' => 0
+                            ]);
+                            $db->commit();
+                            return true;
+                        } elseif ($domain_id && is_numeric($zone_template)) {
+                            $dns_ttl = $this->config->get('dns', 'ttl');
+
+                            $templ_records = ZoneTemplate::getZoneTemplRecords($db, $zone_template);
+                            if (is_array($templ_records) && !empty($templ_records)) {
+                                // Process the template records
+                                foreach ($templ_records as $r) {
+                                    if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
+                                        $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+                                        $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
+                                        $type = $r["type"];
+                                        $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
+                                        $ttl = $r["ttl"];
+                                        $prio = intval($r["prio"]);
+
+                                        if (!$ttl) {
+                                            $ttl = $dns_ttl;
+                                        }
+
+                                        $stmt = $db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:domain_id, :name, :type, :content, :ttl, :prio)");
+                                        $stmt->execute([
+                                            ':domain_id' => $domain_id,
+                                            ':name' => $name,
+                                            ':type' => $type,
+                                            ':content' => $content,
+                                            ':ttl' => $ttl,
+                                            ':prio' => $prio
+                                        ]);
+
+                                        $record_id = $db->lastInsertId();
+
+                                        $stmt = $db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
+                                        $stmt->execute([
+                                            ':domain_id' => $domain_id,
+                                            ':record_id' => $record_id,
+                                            ':zone_templ_id' => $r['zone_templ_id']
+                                        ]);
+                                    }
+                                }
+                            }
+                            $db->commit();
+                            return true;
+                        } else {
+                            $db->rollBack();
+                            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "addDomain", "could not create zone"));
+                            return false;
+                        }
                     }
+                } catch (\Exception $e) {
+                    $db->rollBack();
+                    $this->messageService->addSystemError(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
+                    return false;
                 }
             } else {
                 $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s'), "addDomain"));

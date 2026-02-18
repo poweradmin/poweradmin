@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -97,6 +98,25 @@ class ZoneManagementService
         // For SLAVE zones, ensure master IP is provided
         if ($type === 'SLAVE' && empty($slaveMaster)) {
             return ['success' => false, 'message' => 'Master IP address is required for SLAVE zones'];
+        }
+
+        // Resolve zone template: accept both name and numeric ID
+        if ($zoneTemplate !== 'none' && $zoneTemplate !== '') {
+            if (is_numeric($zoneTemplate)) {
+                if (!ZoneTemplate::zoneTemplIdExists($this->db, (int)$zoneTemplate)) {
+                    return ['success' => false, 'message' => 'Zone template not found'];
+                }
+                $zoneTemplate = (string)(int)$zoneTemplate;
+            } else {
+                $zoneTemplateModel = new ZoneTemplate($this->db, $this->config);
+                $matchingIds = $zoneTemplateModel->getZoneTemplIdsByName($zoneTemplate);
+                if (count($matchingIds) === 0) {
+                    return ['success' => false, 'message' => 'Zone template not found'];
+                } elseif (count($matchingIds) > 1) {
+                    return ['success' => false, 'message' => 'Multiple zone templates found with this name, please use template ID instead'];
+                }
+                $zoneTemplate = (string)$matchingIds[0];
+            }
         }
 
         error_log(sprintf('[ZoneManagementService] Creating zone: %s, Type: %s, Owner: %s', $domain, $type, $owner));
