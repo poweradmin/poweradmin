@@ -60,7 +60,8 @@ class AddZoneSlaveController extends BaseController
         $this->checkPermission('zone_slave_add', _("You do not have the permission to add a slave zone."));
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'add_zone_slave';
+        $this->setCurrentPage('add_zone_slave');
+        $this->setPageTitle(_('Add Secondary Zone'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

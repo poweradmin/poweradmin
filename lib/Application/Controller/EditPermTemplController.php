@@ -50,7 +50,8 @@ class EditPermTemplController extends BaseController
         $this->checkPermission('templ_perm_edit', _("You do not have the permission to edit permission templates."));
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'edit_perm_templ';
+        $this->setCurrentPage('edit_perm_templ');
+        $this->setPageTitle(_('Edit Permission Template'));
 
         if (!$this->validateRequest()) {
             $this->showFirstValidationError();

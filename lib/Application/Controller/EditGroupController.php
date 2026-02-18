@@ -89,7 +89,8 @@ class EditGroupController extends BaseController
         }
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'edit_group';
+        $this->setCurrentPage('edit_group');
+        $this->setPageTitle(_('Edit Group'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

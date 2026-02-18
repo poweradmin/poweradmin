@@ -61,7 +61,8 @@ class SaveZoneAsTemplateController extends BaseController
     public function run(): void
     {
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'edit';
+        $this->setCurrentPage('edit');
+        $this->setPageTitle(_('Edit Zone'));
 
         $zone_id = $this->getSafeRequestValue('id');
         if (!$zone_id || !is_numeric($zone_id)) {

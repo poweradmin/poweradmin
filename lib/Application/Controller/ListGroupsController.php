@@ -51,7 +51,8 @@ class ListGroupsController extends BaseController
     public function run(): void
     {
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'list_groups';
+        $this->setCurrentPage('list_groups');
+        $this->setPageTitle(_('Groups'));
 
         $this->showGroupsList();
     }

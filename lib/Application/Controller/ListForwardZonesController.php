@@ -58,7 +58,8 @@ class ListForwardZonesController extends BaseController
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'list_forward_zones';
+        $this->setCurrentPage('list_forward_zones');
+        $this->setPageTitle(_('Forward Zones'));
 
         $this->listForwardZones();
     }

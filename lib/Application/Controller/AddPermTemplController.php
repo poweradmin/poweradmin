@@ -50,7 +50,8 @@ class AddPermTemplController extends BaseController
         $this->checkPermission('templ_perm_add', _("You do not have the permission to add permission templates."));
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'add_perm_templ';
+        $this->setCurrentPage('add_perm_templ');
+        $this->setPageTitle(_('Add Permission Template'));
 
         if ($this->isPost()) {
             $this->handleFormSubmission();

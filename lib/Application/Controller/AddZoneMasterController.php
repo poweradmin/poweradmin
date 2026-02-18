@@ -65,7 +65,8 @@ class AddZoneMasterController extends BaseController
         $this->checkPermission('zone_master_add', _("You do not have the permission to add a master zone."));
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'add_zone_master';
+        $this->setCurrentPage('add_zone_master');
+        $this->setPageTitle(_('Add Primary Zone'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

@@ -83,7 +83,8 @@ class AddUserController extends BaseController
         $this->checkPermission('user_add_new', _("You do not have the permission to add a new user."));
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'add_user';
+        $this->setCurrentPage('add_user');
+        $this->setPageTitle(_('Add User'));
 
         $policyConfig = $this->passwordPolicyService->getPolicyConfig();
 

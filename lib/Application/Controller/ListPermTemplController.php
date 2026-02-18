@@ -42,7 +42,8 @@ class ListPermTemplController extends BaseController
         $this->checkPermission('templ_perm_edit', _("You do not have the permission to edit permission templates."));
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'list_perm_templ';
+        $this->setCurrentPage('list_perm_templ');
+        $this->setPageTitle(_('Permission Templates'));
 
         $this->showListPermTempl();
     }

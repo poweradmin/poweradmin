@@ -57,7 +57,8 @@ class MfaSetupController extends BaseController
         }
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'mfa_setup';
+        $this->setCurrentPage('mfa_setup');
+        $this->setPageTitle(_('MFA Setup'));
 
         // MFA setup forms processing
         if ($this->isPost()) {

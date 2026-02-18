@@ -66,7 +66,8 @@ class RdapController extends BaseController
         }
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'rdap';
+        $this->setCurrentPage('rdap');
+        $this->setPageTitle(_('RDAP'));
 
         $domain = $this->handleDomainInput();
         $result = $this->performRdapLookup($domain);

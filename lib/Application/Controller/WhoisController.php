@@ -66,7 +66,8 @@ class WhoisController extends BaseController
         }
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'whois';
+        $this->setCurrentPage('whois');
+        $this->setPageTitle(_('WHOIS'));
 
         $domain = $this->handleDomainInput();
         $result = $this->performWhoisLookup($domain);

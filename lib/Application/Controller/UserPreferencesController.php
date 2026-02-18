@@ -38,7 +38,8 @@ class UserPreferencesController extends BaseController
         }
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'user_preferences';
+        $this->setCurrentPage('user_preferences');
+        $this->setPageTitle(_('User Preferences'));
 
         // Users can always view/edit their own preferences
         $this->showUserPreferences();

@@ -72,7 +72,8 @@ class EditUserController extends BaseController
         $this->checkEditPermissions($editId);
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'edit_user';
+        $this->setCurrentPage('edit_user');
+        $this->setPageTitle(_('Edit User'));
 
         $policyConfig = $this->policyService->getPolicyConfig();
 

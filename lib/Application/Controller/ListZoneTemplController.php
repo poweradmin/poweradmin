@@ -57,7 +57,8 @@ class ListZoneTemplController extends BaseController
         $this->checkCondition(!$hasPermission, _("You do not have the permission to view zone templates."));
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'list_zone_templ';
+        $this->setCurrentPage('list_zone_templ');
+        $this->setPageTitle(_('Zone Templates'));
 
         $this->showListZoneTempl();
     }

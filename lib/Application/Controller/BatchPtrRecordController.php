@@ -79,7 +79,8 @@ class BatchPtrRecordController extends BaseController
         );
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'batch_ptr_record';
+        $this->setCurrentPage('batch_ptr_record');
+        $this->setPageTitle(_('Batch PTR Records'));
 
         // Check if we have a specific zone_id
         $hasZoneId = isset($_GET['id']) && !empty($_GET['id']);

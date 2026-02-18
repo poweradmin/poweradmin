@@ -50,7 +50,8 @@ class EmailPreviewsController extends BaseController
         $this->checkPermission('user_is_ueberuser', 'You do not have permission to access email template previews.');
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'email_previews';
+        $this->setCurrentPage('email_previews');
+        $this->setPageTitle(_('Email Previews'));
 
         $template = $this->getSafeRequestValue('template');
         $mode = $this->getSafeRequestValue('mode');

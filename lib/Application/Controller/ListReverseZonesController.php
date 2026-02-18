@@ -75,7 +75,8 @@ class ListReverseZonesController extends BaseController
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'list_reverse_zones';
+        $this->setCurrentPage('list_reverse_zones');
+        $this->setPageTitle(_('Reverse Zones'));
 
         $this->listReverseZones();
     }

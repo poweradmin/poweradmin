@@ -130,7 +130,8 @@ class EditController extends BaseController
     public function run(): void
     {
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'edit';
+        $this->setCurrentPage('edit');
+        $this->setPageTitle(_('Edit Zone'));
 
         // Get default rows per page from config
         $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);

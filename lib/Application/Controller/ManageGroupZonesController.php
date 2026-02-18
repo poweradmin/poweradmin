@@ -81,7 +81,8 @@ class ManageGroupZonesController extends BaseController
         }
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'manage_group_zones';
+        $this->setCurrentPage('manage_group_zones');
+        $this->setPageTitle(_('Manage Group Zones'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

@@ -69,7 +69,8 @@ class AddGroupController extends BaseController
         }
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'add_group';
+        $this->setCurrentPage('add_group');
+        $this->setPageTitle(_('Add Group'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

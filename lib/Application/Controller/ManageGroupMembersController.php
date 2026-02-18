@@ -78,7 +78,8 @@ class ManageGroupMembersController extends BaseController
         }
 
         // Set the current page for navigation highlighting
-        $this->requestData['page'] = 'manage_group_members';
+        $this->setCurrentPage('manage_group_members');
+        $this->setPageTitle(_('Manage Group Members'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
