@@ -102,9 +102,9 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
      * Validates HTTPS record content according to RFC 9460
      * Format: <priority> <target> [key=value...]
      *
-     * The record has two modes:
-     * - Service Mode (priority = 0): Provides connection information for the service
-     * - Alias Mode (priority > 0): Points to another SVCB or HTTPS record
+     * The record has two modes (RFC 9460 Section 2.4.1):
+     * - Alias Mode (priority = 0): Points to another SVCB or HTTPS record
+     * - Service Mode (priority > 0): Provides connection information for the service
      *
      * @param string $content The content to validate
      * @return ValidationResult Validation result with success or error message
@@ -136,21 +136,12 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
             }
         }
 
-        // RFC 9460 defines two modes:
-        // - AliasMode (priority=0): Directs clients to other SVCB records
+        // RFC 9460 Section 2.4.1:
+        // - AliasMode (priority=0): Directs clients to other SVCB/HTTPS records
         // - ServiceMode (priority>0): Contains connection information
-        // Note that this is opposite to the priority meaning in our current validator!
-
-        // The test expectations seem to treat priority=1 as ServiceMode and priority=0 as AliasMode
-        // which is the opposite of the RFC. Let's correct our validation to match the tests.
 
         if ($priorityValue === 0) {
-            // AliasMode in RFC 9460 - priority is 0
-
-            // In strict RFC mode, AliasMode should have no parameters and target should be "."
-            // But our current implementation doesn't enforce this fully to maintain
-            // compatibility with existing records and test expectations
-
+            // AliasMode - priority is 0
             // Check for "." target in AliasMode
             if ($target === "." && count($parts) > 2 && !empty(trim($parts[2]))) {
                 return ValidationResult::failure(
@@ -158,11 +149,8 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
                 );
             }
 
-            // Allow non-"." targets in AliasMode for compatibility
         } else {
-            // ServiceMode in RFC 9460 - priority is non-zero (1 to 65535)
-
-            // ServiceMode is allowed to have params or not have params
+            // ServiceMode - priority > 0
         }
 
         // If there are key-value parameters, validate them
