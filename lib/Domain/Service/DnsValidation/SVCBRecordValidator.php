@@ -110,9 +110,9 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
      * Check if content follows SVCB record format according to RFC 9460
      * Format: <priority> <target> [<params>...]
      *
-     * The record has two modes:
-     * - Service Mode (priority = 0): Provides connection information for the service
-     * - Alias Mode (priority > 0): Points to another SVCB or other record
+     * The record has two modes (RFC 9460 Section 2.4.1):
+     * - Alias Mode (priority = 0): Points to another SVCB or other record
+     * - Service Mode (priority > 0): Provides connection information for the service
      *
      * @param string $content The content to validate
      * @return ValidationResult ValidationResult containing validation result
@@ -133,33 +133,33 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('SVCB priority must be between 0 and 65535.'));
         }
 
-        // Validate target (either "." for Service Mode or a valid hostname)
+        // Validate target (either "." or a valid hostname)
         if ($target !== '.') {
             $hostnameResult = $this->hostnameValidator->validate($target, false);
             if (!$hostnameResult->isValid()) {
-                return ValidationResult::failure(_('SVCB target must be either "." (for Service Mode) or a valid hostname.'));
+                return ValidationResult::failure(_('SVCB target must be either "." or a valid hostname.'));
             }
         }
 
-        // Apply specific rules based on mode (Service Mode vs Alias Mode) - RFC 9460 section 2.2
+        // Apply specific rules based on mode (Alias Mode vs Service Mode) - RFC 9460 Section 2.4.1
         if ($priority === 0) {
-            // Service Mode (AliasMode = false) - priority is 0
-
-            // In Service Mode with "." as the target, there must be at least one parameter
-            if ($target === "." && trim($params) === '') {
-                return ValidationResult::failure(_('In Service Mode (priority = 0) with "." target, at least one SvcParam is required.'));
-            }
-        } else {
-            // Alias Mode (AliasMode = true) - priority > 0
+            // Alias Mode - priority is 0
 
             // In Alias Mode, the target cannot be "."
             if ($target === ".") {
-                return ValidationResult::failure(_('In Alias Mode (priority > 0), the target cannot be ".".'));
+                return ValidationResult::failure(_('In Alias Mode (priority = 0), the target cannot be ".".'));
             }
 
             // In Alias Mode, there must not be any parameters
             if (trim($params) !== '') {
-                return ValidationResult::failure(_('In Alias Mode (priority > 0), no SvcParams are allowed.'));
+                return ValidationResult::failure(_('In Alias Mode (priority = 0), no SvcParams are allowed.'));
+            }
+        } else {
+            // Service Mode - priority > 0
+
+            // In Service Mode with "." as the target, there must be at least one parameter
+            if ($target === "." && trim($params) === '') {
+                return ValidationResult::failure(_('In Service Mode (priority > 0) with "." target, at least one SvcParam is required.'));
             }
         }
 
