@@ -141,16 +141,12 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
         // - ServiceMode (priority>0): Contains connection information
 
         if ($priorityValue === 0) {
-            // AliasMode - priority is 0
-            // Check for "." target in AliasMode
+            // AliasMode (priority=0) - check for "." target with parameters
             if ($target === "." && count($parts) > 2 && !empty(trim($parts[2]))) {
                 return ValidationResult::failure(
                     _('HTTPS record in AliasMode (priority=0) with target "." cannot have parameters according to RFC 9460.')
                 );
             }
-
-        } else {
-            // ServiceMode - priority > 0
         }
 
         // If there are key-value parameters, validate them
