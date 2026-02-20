@@ -237,6 +237,20 @@ abstract class BaseController
         return $this->config;
     }
 
+    /**
+     * Get a module config value with legacy fallback.
+     *
+     * Checks modules.<module>.<key> first, then falls back to <module>.<key>
+     * for backward compatibility with pre-module config layouts.
+     */
+    protected function getModuleConfig(string $module, string $key, mixed $default = null): mixed
+    {
+        $value = $this->config->get('modules', "$module.$key", null);
+        if ($value !== null) {
+            return $value;
+        }
+        return $this->config->get($module, $key, $default);
+    }
 
     /**
      * Renders a template with the given parameters.
@@ -566,10 +580,8 @@ abstract class BaseController
                 'request' => $this->requestData,
                 'dblog_use' => $dblog_use,
                 'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
-                'rdap_enabled' => $this->config->get('rdap', 'enabled', false),
                 'api_enabled' => $this->config->get('api', 'enabled', false),
                 'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
-                'rdap_restrict_to_admin' => $this->config->get('rdap', 'restrict_to_admin', true),
                 'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
                 'email_previews_enabled' => $this->config->get('misc', 'email_previews_enabled', false),
                 'api_docs_enabled' => $this->config->get('api', 'docs_enabled', false),
@@ -628,7 +640,8 @@ abstract class BaseController
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
 
-        $items = $registry->getNavItems();
+        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $items = $registry->getNavItems($isAdmin);
 
         return array_values(array_filter($items, function (array $item): bool {
             if (!empty($item['permission'])) {

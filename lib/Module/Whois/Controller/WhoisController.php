@@ -39,13 +39,13 @@ class WhoisController extends BaseController
         $this->whoisService = new WhoisService();
         $this->dnsRecord = new DnsRecord($this->db, $this->config);
 
-        $timeout = $this->config->get('modules', 'whois.socket_timeout', 10);
+        $timeout = $this->getModuleConfig('whois', 'socket_timeout', 10);
         $this->whoisService->setSocketTimeout($timeout);
     }
 
     public function run(): void
     {
-        $restrict_to_admin = $this->config->get('modules', 'whois.restrict_to_admin', true);
+        $restrict_to_admin = $this->getModuleConfig('whois', 'restrict_to_admin', true);
         if ($restrict_to_admin) {
             $this->checkPermission('user_is_ueberuser', _('You do not have permission to perform WHOIS lookups.'));
         }
@@ -60,7 +60,7 @@ class WhoisController extends BaseController
             'domain' => $domain,
             'utf8_domain' => str_starts_with($domain, 'xn--') ? DnsIdnService::toUtf8($domain) : $domain,
             'result' => $result,
-            'custom_server' => $this->config->get('modules', 'whois.default_server', '')
+            'custom_server' => $this->getModuleConfig('whois', 'default_server', '')
         ]);
     }
 
@@ -100,7 +100,7 @@ class WhoisController extends BaseController
             return $result;
         }
 
-        $customServer = $this->config->get('modules', 'whois.default_server', '');
+        $customServer = $this->getModuleConfig('whois', 'default_server', '');
 
         if (!empty($customServer)) {
             $response = $this->whoisService->query($domain, $customServer);
