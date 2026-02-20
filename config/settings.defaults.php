@@ -356,16 +356,6 @@ return [
     ],
 
     /**
-     * WHOIS Settings
-     */
-    'whois' => [
-        'enabled' => false,                            // Enable WHOIS lookup functionality
-        'default_server' => '',                        // Optional default WHOIS server (empty to use server from the WHOIS database)
-        'socket_timeout' => 10,                        // Socket timeout in seconds for WHOIS queries
-        'restrict_to_admin' => true,                   // Only allow administrators (user_is_ueberuser) to use WHOIS functionality
-    ],
-
-    /**
      * RDAP Settings
      */
     'rdap' => [
@@ -814,6 +804,12 @@ return [
             'enabled' => false,
             'auto_ttl_value' => 300,
             'max_file_size' => 1048576,
+        ],
+        'whois' => [
+            'enabled' => false,
+            'default_server' => '',
+            'socket_timeout' => 10,
+            'restrict_to_admin' => true,
         ],
     ],
 ];

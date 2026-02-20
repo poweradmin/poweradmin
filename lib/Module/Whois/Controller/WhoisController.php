@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,80 +20,57 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles WHOIS lookups
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
+namespace Poweradmin\Module\Whois\Controller;
 
-namespace Poweradmin\Application\Controller;
-
-use Poweradmin\Application\Service\WhoisService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Module\Whois\Service\WhoisService;
 
 class WhoisController extends BaseController
 {
     private WhoisService $whoisService;
     private DnsRecord $dnsRecord;
 
-    public function __construct(array $request, bool $authenticate = true)
+    public function __construct(array $request)
     {
-        parent::__construct($request, $authenticate);
+        parent::__construct($request);
 
         $this->whoisService = new WhoisService();
         $this->dnsRecord = new DnsRecord($this->db, $this->config);
 
-        // Set the socket timeout from configuration
-        $timeout = $this->config->get('whois', 'socket_timeout', 10);
+        $timeout = $this->config->get('modules', 'whois.socket_timeout', 10);
         $this->whoisService->setSocketTimeout($timeout);
     }
 
     public function run(): void
     {
-        // Check if WHOIS functionality is enabled
-        $whois_enabled = $this->config->get('whois', 'enabled', false);
-        $this->checkCondition(!$whois_enabled, _('WHOIS lookup functionality is disabled.'));
-
-        // Check if restricted to admin and enforce permission if needed
-        $restrict_to_admin = $this->config->get('whois', 'restrict_to_admin', true);
+        $restrict_to_admin = $this->config->get('modules', 'whois.restrict_to_admin', true);
         if ($restrict_to_admin) {
             $this->checkPermission('user_is_ueberuser', _('You do not have permission to perform WHOIS lookups.'));
         }
 
-        // Set the current page for navigation highlighting
-        $this->setCurrentPage('whois');
+        $this->setCurrentPage('module_whois');
         $this->setPageTitle(_('WHOIS'));
 
         $domain = $this->handleDomainInput();
         $result = $this->performWhoisLookup($domain);
 
-        $this->render('whois.html', [
+        $this->render('@whois/whois.html', [
             'domain' => $domain,
             'utf8_domain' => str_starts_with($domain, 'xn--') ? DnsIdnService::toUtf8($domain) : $domain,
             'result' => $result,
-            'custom_server' => $this->config->get('whois', 'default_server', '')
+            'custom_server' => $this->config->get('modules', 'whois.default_server', '')
         ]);
     }
 
-    /**
-     * Handles the domain input from various sources (direct input, zone ID)
-     *
-     * @return string The domain to lookup
-     */
     private function handleDomainInput(): string
     {
         $domain = '';
 
-        // Check if a domain was submitted through the form
         if ($this->isPost() && isset($this->getRequest()['domain'])) {
             $domain = trim($this->getRequest()['domain']);
 
-            // Convert Unicode domain to Punycode if needed
             if (preg_match('/[^\x20-\x7E]/', $domain)) {
                 $punycode = DnsIdnService::toPunycode($domain);
                 if ($punycode !== false) {
@@ -111,12 +88,6 @@ class WhoisController extends BaseController
         return $domain;
     }
 
-    /**
-     * Performs the WHOIS lookup for a domain
-     *
-     * @param string $domain The domain to lookup
-     * @return array The WHOIS lookup result
-     */
     private function performWhoisLookup(string $domain): array
     {
         $result = [
@@ -129,11 +100,9 @@ class WhoisController extends BaseController
             return $result;
         }
 
-        // Check if we should use a custom default server
-        $customServer = $this->config->get('whois', 'default_server', '');
+        $customServer = $this->config->get('modules', 'whois.default_server', '');
 
         if (!empty($customServer)) {
-            // Use default server from config
             $response = $this->whoisService->query($domain, $customServer);
 
             if ($response !== null) {
@@ -143,7 +112,6 @@ class WhoisController extends BaseController
                 $result['error'] = sprintf(_('Failed to retrieve WHOIS information using server %s'), $customServer);
             }
         } else {
-            // Use automatic server detection
             $result = $this->whoisService->getWhoisInfo($domain);
         }
 

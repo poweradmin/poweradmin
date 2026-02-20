@@ -1,15 +1,10 @@
 <?php
 
-namespace Poweradmin\Application\Service;
-
-use Exception;
-use Poweradmin\Domain\Service\DnsIdnService;
-
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +20,11 @@ use Poweradmin\Domain\Service\DnsIdnService;
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace Poweradmin\Module\Whois\Service;
+
+use Exception;
+use Poweradmin\Domain\Service\DnsIdnService;
+
 class WhoisService
 {
     private array $whoisServers = [];
@@ -32,21 +32,14 @@ class WhoisService
     private int $socketTimeout = 10;
 
     /**
-     * WhoisService constructor.
-     *
      * @param string $dataFile Path to the whois servers PHP data file
      */
     public function __construct(string $dataFile = '')
     {
-        $this->dataFile = $dataFile ?: __DIR__ . '/../../../data/whois_servers.php';
+        $this->dataFile = $dataFile ?: __DIR__ . '/../data/whois_servers.php';
         $this->loadWhoisServers();
     }
 
-    /**
-     * Load whois servers data from PHP file
-     *
-     * @return bool True if loading was successful, false otherwise
-     */
     private function loadWhoisServers(): bool
     {
         if (!file_exists($this->dataFile)) {
@@ -64,8 +57,6 @@ class WhoisService
     }
 
     /**
-     * Get whois server for a given TLD
-     *
      * @param string $tld The top-level domain (e.g. "com", "net", "org", "co.uk")
      * @return string|null The whois server hostname or null if not found
      */
@@ -73,16 +64,13 @@ class WhoisService
     {
         $tld = strtolower(trim($tld));
 
-        // Check if this might be an IDN TLD
         if (preg_match('/[^\x20-\x7E]/', $tld)) {
-            // Try to convert to punycode and check if we have a server for that
             $punycodeTld = DnsIdnService::toPunycode($tld);
             if ($punycodeTld !== false && isset($this->whoisServers[$punycodeTld])) {
                 return $this->whoisServers[$punycodeTld];
             }
         } elseif (str_starts_with($tld, 'xn--')) {
             try {
-                // Try to convert to Unicode and check if we have a server for that
                 $unicodeTld = DnsIdnService::toUtf8($tld);
                 if (
                     $unicodeTld !== false && $unicodeTld !== $tld &&
@@ -95,18 +83,14 @@ class WhoisService
             }
         }
 
-        // Direct match
         if (isset($this->whoisServers[$tld])) {
             return $this->whoisServers[$tld];
         }
 
-        // No direct match found
         return null;
     }
 
     /**
-     * Get whois server for a domain
-     *
      * @param string $domain The domain name (e.g. "example.com")
      * @return string|null The whois server hostname or null if not found
      */
@@ -114,13 +98,11 @@ class WhoisService
     {
         $domain = strtolower(trim($domain));
 
-        // Extract TLD from domain
         $parts = explode('.', $domain);
         if (count($parts) < 2) {
             return null;
         }
 
-        // Try more specific TLDs first (e.g., uk.com before com)
         for ($i = count($parts) - 1; $i >= 1; $i--) {
             $possibleTld = implode('.', array_slice($parts, -$i));
             $whoisServer = $this->getWhoisServer($possibleTld);
@@ -133,46 +115,22 @@ class WhoisService
         return null;
     }
 
-    /**
-     * Check if a TLD has a registered whois server
-     *
-     * @param string $tld The top-level domain to check
-     * @return bool True if the TLD has a whois server, false otherwise
-     */
     public function hasTld(string $tld): bool
     {
         return $this->getWhoisServer($tld) !== null;
     }
 
-    /**
-     * Get all available whois servers
-     *
-     * @return array Associative array with TLDs as keys and whois servers as values
-     */
     public function getAllWhoisServers(): array
     {
         return $this->whoisServers;
     }
 
-    /**
-     * Refresh whois servers data by reloading from the JSON file
-     *
-     * @return bool True if refresh was successful, false otherwise
-     */
-    /**
-     * Convert domain to IDNA ASCII (punycode) format for WHOIS query
-     *
-     * @param string $domain Domain name that might contain Unicode characters
-     * @return string Domain name in ASCII format
-     */
     private function convertToIdnaPunycode(string $domain): string
     {
-        // Check if conversion is needed
         if (!preg_match('/[^\x20-\x7E]/', $domain)) {
-            return $domain; // Already ASCII
+            return $domain;
         }
 
-        // Split the domain into labels and convert each part
         $parts = explode('.', $domain);
         foreach ($parts as &$part) {
             if (preg_match('/[^\x20-\x7E]/', $part)) {
@@ -184,30 +142,17 @@ class WhoisService
         return implode('.', $parts);
     }
 
-    /**
-     * Refresh whois servers data by reloading from the JSON file
-     *
-     * @return bool True if refresh was successful, false otherwise
-     */
     public function refresh(): bool
     {
         return $this->loadWhoisServers();
     }
 
-    /**
-     * Set socket timeout in seconds
-     *
-     * @param int $seconds Timeout in seconds
-     * @return void
-     */
     public function setSocketTimeout(int $seconds): void
     {
         $this->socketTimeout = max(1, $seconds);
     }
 
     /**
-     * Query a WHOIS server for domain information
-     *
      * @param string $domain The domain name to query
      * @param string|null $server Specific WHOIS server to query (optional)
      * @return string|null The WHOIS response or null if the query failed
@@ -216,57 +161,46 @@ class WhoisService
     {
         $domain = strtolower(trim($domain));
 
-        // Convert IDN to punycode for the WHOIS query
         $domainForQuery = $this->convertToIdnaPunycode($domain);
 
-        // If no server is specified, try to find one
         if ($server === null) {
             $server = $this->getWhoisServerForDomain($domain);
             if ($server === null) {
-                return null; // No WHOIS server found for this domain
+                return null;
             }
         }
 
-        // Standard WHOIS port
         $port = 43;
 
-        // Create a socket connection to the WHOIS server
         $socket = @fsockopen($server, $port, $errno, $errstr, $this->socketTimeout);
         if (!$socket) {
-            return null; // Connection failed
+            return null;
         }
 
-        // Set socket timeout for read/write operations
         stream_set_timeout($socket, $this->socketTimeout);
 
-        // Send the query
         fwrite($socket, $domainForQuery . "\r\n");
 
-        // Read the response
         $response = '';
         while (!feof($socket)) {
             $buffer = fgets($socket, 1024);
             if ($buffer === false) {
-                break; // Read error
+                break;
             }
             $response .= $buffer;
 
-            // Check for socket timeout
             $info = stream_get_meta_data($socket);
             if ($info['timed_out']) {
-                break; // Socket timed out
+                break;
             }
         }
 
-        // Close the connection
         fclose($socket);
 
         return $response ?: null;
     }
 
     /**
-     * Get WHOIS information for a domain with formatting
-     *
      * @param string $domain The domain name to query
      * @return array An array with keys 'success', 'data', and 'error'
      */
@@ -302,19 +236,10 @@ class WhoisService
         return $result;
     }
 
-    /**
-     * Format WHOIS response for better readability
-     *
-     * @param string $response Raw WHOIS response
-     * @return string Formatted response
-     */
     public function formatWhoisResponse(string $response): string
     {
-        // Remove excess whitespace and normalize line endings
         $response = trim($response);
         $response = str_replace(["\r\n", "\r"], "\n", $response);
-
-        // Remove consecutive empty lines
         $response = preg_replace("/\n{3,}/", "\n\n", $response);
 
         return $response;

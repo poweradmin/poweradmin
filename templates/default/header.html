@@ -175,18 +175,13 @@
                     </ul>
                 </li>
                 {% endif %}
-                {% if ((not whois_restrict_to_admin or perm_is_godlike) and whois_enabled) or ((not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled) or (perm_is_godlike and api_enabled) or (perm_is_godlike and enable_consistency_checks) or (perm_is_godlike and email_previews_enabled) or (module_nav_items is defined and module_nav_items|length > 0) %}
+                {% if ((not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled) or (perm_is_godlike and api_enabled) or (perm_is_godlike and enable_consistency_checks) or (perm_is_godlike and email_previews_enabled) or (module_nav_items is defined and module_nav_items|length > 0) %}
                 <li class="p-2">
-                    <a href="#" class="nav-link text-{{ current_page in ['whois', 'rdap', 'api_keys', 'database_consistency', 'email_previews'] ? 'primary' : 'secondary' }} text-center"><i class="bi bi-tools fs-5"></i></a>
-                    <a class="text-{{ current_page in ['whois', 'rdap', 'api_keys', 'database_consistency', 'email_previews'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    <a href="#" class="nav-link text-{{ current_page in ['rdap', 'api_keys', 'database_consistency', 'email_previews'] or current_page starts with 'module_' ? 'primary' : 'secondary' }} text-center"><i class="bi bi-tools fs-5"></i></a>
+                    <a class="text-{{ current_page in ['rdap', 'api_keys', 'database_consistency', 'email_previews'] or current_page starts with 'module_' ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                         href="#"
                         role="button">{% trans %}Tools{% endtrans %}</a>
                     <ul class="dropdown-menu">
-                        {% if (not whois_restrict_to_admin or perm_is_godlike) and whois_enabled %}
-                        <li><a class="dropdown-item {{ current_page == 'whois' ? 'active' : '' }}" href="{{ base_url_prefix }}/whois">
-                            <i class="bi bi-search-heart me-2"></i>{% trans %}WHOIS{% endtrans %}
-                        </a></li>
-                        {% endif %}
                         {% if (not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled %}
                         <li><a class="dropdown-item {{ current_page == 'rdap' ? 'active' : '' }}" href="{{ base_url_prefix }}/rdap">
                             <i class="bi bi-search-heart-fill me-2"></i>{% trans %}RDAP{% endtrans %}

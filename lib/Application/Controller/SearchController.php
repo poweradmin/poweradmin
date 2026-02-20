@@ -37,6 +37,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Module\ModuleRegistry;
 
 class SearchController extends BaseController
 {
@@ -240,7 +241,6 @@ class SearchController extends BaseController
         $iface_zone_comments,
         $iface_record_comments
     ): void {
-        $whois_enabled = $this->config->get('whois', 'enabled', false);
         $rdap_enabled = $this->config->get('rdap', 'enabled', false);
 
         // Get all record types for the filter dropdown
@@ -275,10 +275,17 @@ class SearchController extends BaseController
             'edit_permission' => Permission::getEditPermission($this->db),
             'delete_permission' => Permission::getDeletePermission($this->db),
             'user_id' => $_SESSION['userid'],
-            'whois_enabled' => $whois_enabled,
             'rdap_enabled' => $rdap_enabled,
+            'whois_action_patterns' => $this->getWhoisActionPatterns(),
             'record_types' => $recordTypes,
         ]);
+    }
+
+    private function getWhoisActionPatterns(): array
+    {
+        $registry = new ModuleRegistry($this->config);
+        $registry->loadModules();
+        return $registry->getCapabilityData('whois_lookup');
     }
 
     private function getSortOrder(string $name, array $allowedValues): array

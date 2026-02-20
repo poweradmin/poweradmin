@@ -271,9 +271,9 @@
                     </li>
                     {% endif %}
 
-                    {% if ((not whois_restrict_to_admin or perm_is_godlike) and whois_enabled) or ((not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled) or (perm_is_godlike and api_enabled) or (perm_is_godlike and enable_consistency_checks) or (perm_is_godlike and email_previews_enabled) or (module_nav_items is defined and module_nav_items|length > 0) %}
+                    {% if ((not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled) or (perm_is_godlike and api_enabled) or (perm_is_godlike and enable_consistency_checks) or (perm_is_godlike and email_previews_enabled) or (module_nav_items is defined and module_nav_items|length > 0) %}
                     <!-- Tools Section -->
-                    {% set tools_active = current_page in ['whois', 'rdap', 'api_keys', 'database_consistency', 'email_previews'] or current_page starts with 'module_' %}
+                    {% set tools_active = current_page in ['rdap', 'api_keys', 'database_consistency', 'email_previews'] or current_page starts with 'module_' %}
                     <li class="nav-item">
                         <div class="nav-section-header {{ tools_active ? 'text-primary' : '' }}" role="button" data-bs-target="#navTools" aria-expanded="{{ tools_active ? 'true' : 'false' }}" aria-controls="navTools">
                             <i class="bi bi-tools me-2"></i>{% trans %}Tools{% endtrans %}
@@ -312,13 +312,6 @@
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'rdap' ? 'active' : '' }}" href="{{ base_url_prefix }}/rdap">
                                     <i class="bi bi-search-heart-fill me-2"></i>{% trans %}RDAP{% endtrans %}
-                                </a>
-                            </li>
-                            {% endif %}
-                            {% if (not whois_restrict_to_admin or perm_is_godlike) and whois_enabled %}
-                            <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'whois' ? 'active' : '' }}" href="{{ base_url_prefix }}/whois">
-                                    <i class="bi bi-search-heart me-2"></i>{% trans %}WHOIS{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}

@@ -494,7 +494,7 @@ class EditController extends BaseController
             'iface_zone_comments' => $iface_zone_comments,
             'serial' => DnsRecord::getSOASerial($soa_record),
             'file_version' => time(),
-            'whois_enabled' => $this->config->get('whois', 'enabled', false),
+            'whois_actions' => $this->getWhoisActions($zone_id),
             'form_token' => $formToken,
             'form_data' => $formData,
             'search_term' => $searchTerm,
@@ -647,6 +647,13 @@ class EditController extends BaseController
         $this->finalizeSave($error, $serial_mismatch, $this->dnsRecord, $zone_id, $one_record_changed, $zone_name);
     }
 
+
+    private function getWhoisActions(int $zone_id): array
+    {
+        $registry = new ModuleRegistry($this->config);
+        $registry->loadModules();
+        return $registry->getCapabilityData('whois_lookup', ['zone_id' => $zone_id]);
+    }
 
     private function getExportFormats(int $zone_id): array
     {

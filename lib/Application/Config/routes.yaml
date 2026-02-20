@@ -387,16 +387,6 @@ search:
   methods: [GET, POST]
 
 # Utilities
-whois:
-  path: /whois
-  controller: Poweradmin\Application\Controller\WhoisController::run
-
-zone_whois:
-  path: /zones/{id}/whois
-  controller: Poweradmin\Application\Controller\WhoisController::run
-  requirements:
-    id: '\d+'
-
 rdap:
   path: /rdap
   controller: Poweradmin\Application\Controller\RdapController::run

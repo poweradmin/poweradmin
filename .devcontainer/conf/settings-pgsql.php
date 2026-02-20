@@ -134,14 +134,6 @@ return [
     ],
 
     /**
-     * WHOIS Settings
-     */
-    'whois' => [
-        'enabled' => true,
-        'restrict_to_admin' => false,
-    ],
-
-    /**
      * RDAP Settings
      */
     'rdap' => [
@@ -167,6 +159,10 @@ return [
             'enabled' => true,
             'auto_ttl_value' => 300,
             'max_file_size' => 1048576,
+        ],
+        'whois' => [
+            'enabled' => true,
+            'restrict_to_admin' => false,
         ],
     ],
 ];

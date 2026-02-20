@@ -3,7 +3,7 @@
 namespace integration;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\WhoisService;
+use Poweradmin\Module\Whois\Service\WhoisService;
 
 class WhoisServerAvailabilityTest extends TestCase
 {

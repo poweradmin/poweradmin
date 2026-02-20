@@ -245,26 +245,26 @@
         </div>
     </div>
 
-    {% if (not whois_restrict_to_admin or permissions['user_is_ueberuser']) and whois_enabled %}
-    <!-- WHOIS Lookup -->
+    {% if module_nav_items is defined %}
+    {% for item in module_nav_items %}
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card h-100 shadow-sm">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h6 class="card-title">{% trans %}WHOIS{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Lookup domain WHOIS information{% endtrans %}</p>
+                        <h6 class="card-title">{{ item.label|trans }}</h6>
                     </div>
                     <div class="align-self-center">
-                        <i class="bi bi-search-heart display-4 text-muted"></i>
+                        <i class="bi bi-{{ item.icon }} display-4 text-muted"></i>
                     </div>
                 </div>
-                <a href="{{ base_url_prefix }}/whois" class="btn btn-sm btn-outline-primary mt-2" data-testid="whois-link">
-                    {% trans %}WHOIS Lookup{% endtrans %}
+                <a href="{{ base_url_prefix }}{{ item.url }}" class="btn btn-sm btn-outline-primary mt-2" data-testid="{{ item.page_id }}-link">
+                    {{ item.label|trans }}
                 </a>
             </div>
         </div>
     </div>
+    {% endfor %}
     {% endif %}
 
     {% if iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others']) %}

@@ -212,11 +212,13 @@
                         {% endif %}
                         <td class="text-end">
                             <div class="d-flex gap-2 justify-content-end">
-                                {% if perm_is_godlike and whois_enabled %}
+                                {% if whois_action_patterns is defined and whois_action_patterns|length > 0 %}
+                                {% for action in whois_action_patterns %}
                                 <a class="btn btn-sm btn-outline-secondary"
-                                href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/whois" data-testid="whois-zone-{{ zone['id'] }}">
-                                    <i class="bi bi-search-heart text-secondary"></i>
+                                href="{{ base_url_prefix }}{{ action.url_pattern|replace({'{id}': zone['id']}) }}" data-testid="whois-zone-{{ zone['id'] }}">
+                                    <i class="bi bi-{{ action.icon }} text-secondary"></i>
                                 </a>
+                                {% endfor %}
                                 {% endif %}
                                 {% if perm_is_godlike and rdap_enabled %}
                                 <a class="btn btn-sm btn-outline-secondary"

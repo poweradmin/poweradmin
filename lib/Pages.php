@@ -109,7 +109,6 @@ class Pages
             'search',
             'user_agreement',
             'users',
-            'whois',
             'rdap',
             'pdns_status',
         ];

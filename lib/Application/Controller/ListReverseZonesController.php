@@ -46,6 +46,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Module\ModuleRegistry;
 
 class ListReverseZonesController extends BaseController
 {
@@ -204,14 +205,21 @@ class ListReverseZonesController extends BaseController
             'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
             'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
-            'whois_enabled' => $this->config->get('whois', 'enabled', false),
             'rdap_enabled' => $this->config->get('rdap', 'enabled', false),
+            'whois_action_patterns' => $this->getWhoisActionPatterns(),
             'reverse_zone_type' => $reverse_zone_type,
             'count_ipv4_zones' => $count_ipv4_zones,
             'count_ipv6_zones' => $count_ipv6_zones,
             'count_all_reverse_zones' => $count_all_reverse_zones,
             'associated_forward_zones' => $associatedForwardZones,
         ]);
+    }
+
+    private function getWhoisActionPatterns(): array
+    {
+        $registry = new ModuleRegistry($this->config);
+        $registry->loadModules();
+        return $registry->getCapabilityData('whois_lookup');
     }
 
     private function createAndPresentPagination(int $totalItems, string $itemsPerPage): string

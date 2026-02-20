@@ -166,11 +166,13 @@
                         {% endif %}
                         <td class="text-end">
                             <div class="gap-2">
-                                {% if perm_is_godlike and whois_enabled %}
-                                <a class="btn btn-outline-secondary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/whois" data-testid="whois-zone-{{ zone['id'] }}">
-                                    <i class="bi bi-search-heart text-secondary"></i>
-                                    <span class="d-none d-md-inline">{% trans %}WHOIS{% endtrans %}</span>
+                                {% if whois_action_patterns is defined and whois_action_patterns|length > 0 %}
+                                {% for action in whois_action_patterns %}
+                                <a class="btn btn-outline-secondary btn-sm" href="{{ base_url_prefix }}{{ action.url_pattern|replace({'{id}': zone['id']}) }}" data-testid="whois-zone-{{ zone['id'] }}">
+                                    <i class="bi bi-{{ action.icon }} text-secondary"></i>
+                                    <span class="d-none d-md-inline">{{ action.label }}</span>
                                 </a>
+                                {% endfor %}
                                 {% endif %}
                                 {% if perm_is_godlike and rdap_enabled %}
                                 <a class="btn btn-outline-secondary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/rdap" data-testid="rdap-zone-{{ zone['id'] }}">

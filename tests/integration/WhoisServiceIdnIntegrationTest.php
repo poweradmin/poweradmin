@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Integration;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\WhoisService;
+use Poweradmin\Module\Whois\Service\WhoisService;
 
 /**
  * Integration test for IDN (Internationalized Domain Name) WHOIS lookups
