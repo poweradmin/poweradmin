@@ -134,14 +134,6 @@ return [
     ],
 
     /**
-     * RDAP Settings
-     */
-    'rdap' => [
-        'enabled' => true,
-        'restrict_to_admin' => false,
-    ],
-
-    /**
      * DNS Wizard Settings
      */
     'dns_wizards' => [
@@ -161,6 +153,10 @@ return [
             'max_file_size' => 1048576,
         ],
         'whois' => [
+            'enabled' => true,
+            'restrict_to_admin' => false,
+        ],
+        'rdap' => [
             'enabled' => true,
             'restrict_to_admin' => false,
         ],

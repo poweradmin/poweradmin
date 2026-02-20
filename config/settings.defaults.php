@@ -356,16 +356,6 @@ return [
     ],
 
     /**
-     * RDAP Settings
-     */
-    'rdap' => [
-        'enabled' => false,                            // Enable RDAP lookup functionality
-        'default_server' => '',                        // Optional default RDAP server URL (empty to use server from the RDAP database)
-        'request_timeout' => 10,                       // HTTP request timeout in seconds for RDAP queries
-        'restrict_to_admin' => true,                   // Only allow administrators (user_is_ueberuser) to use RDAP functionality
-    ],
-
-    /**
      * API Settings
      */
     'api' => [
@@ -809,6 +799,12 @@ return [
             'enabled' => false,
             'default_server' => '',
             'socket_timeout' => 10,
+            'restrict_to_admin' => true,
+        ],
+        'rdap' => [
+            'enabled' => false,
+            'default_server' => '',
+            'request_timeout' => 10,
             'restrict_to_admin' => true,
         ],
     ],

@@ -47,6 +47,7 @@ class ModuleRegistry
         'csv_export' => \Poweradmin\Module\CsvExport\CsvExportModule::class,
         'zone_import_export' => \Poweradmin\Module\ZoneImportExport\ZoneImportExportModule::class,
         'whois' => \Poweradmin\Module\Whois\WhoisModule::class,
+        'rdap' => \Poweradmin\Module\Rdap\RdapModule::class,
     ];
 
     public function __construct(ConfigurationManager $config)
@@ -78,6 +79,13 @@ class ModuleRegistry
             $this->modules[$name] = $module;
 
             $enabled = $this->config->get('modules', "$name.enabled", false);
+
+            // Legacy config fallback: check standalone config section for modules
+            // that were previously configured outside the modules section
+            if (!$enabled) {
+                $enabled = $this->config->get($name, 'enabled', false);
+            }
+
             if ($enabled) {
                 $this->enabledModules[$name] = $module;
             }
@@ -121,12 +129,19 @@ class ModuleRegistry
     /**
      * Get aggregated navigation items from all enabled modules.
      *
+     * @param bool $isAdmin Whether the current user is an administrator
      * @return array<array<string, string>>
      */
-    public function getNavItems(): array
+    public function getNavItems(bool $isAdmin = false): array
     {
         $items = [];
-        foreach ($this->enabledModules as $module) {
+        foreach ($this->enabledModules as $name => $module) {
+            $restrictToAdmin = $this->config->get('modules', "$name.restrict_to_admin", false)
+                || $this->config->get($name, 'restrict_to_admin', false);
+            if ($restrictToAdmin && !$isAdmin) {
+                continue;
+            }
+
             foreach ($module->getNavItems() as $item) {
                 $items[] = $item;
             }
@@ -139,13 +154,21 @@ class ModuleRegistry
      *
      * @param string $capability The capability identifier (e.g., 'zone_export')
      * @param array<string, mixed> $context Context for placeholder resolution (e.g., ['zone_id' => 123])
+     * @param bool $isAdmin Whether the current user is an administrator
      * @return array<array<string, string>>
      */
-    public function getCapabilityData(string $capability, array $context = []): array
+    public function getCapabilityData(string $capability, array $context = [], bool $isAdmin = false): array
     {
         $data = [];
-        foreach ($this->enabledModules as $module) {
+        foreach ($this->enabledModules as $name => $module) {
             if (!in_array($capability, $module->getCapabilities(), true)) {
+                continue;
+            }
+
+            // Skip module capabilities when restrict_to_admin is enabled and user is not admin
+            $restrictToAdmin = $this->config->get('modules', "$name.restrict_to_admin", false)
+                || $this->config->get($name, 'restrict_to_admin', false);
+            if ($restrictToAdmin && !$isAdmin) {
                 continue;
             }
 
