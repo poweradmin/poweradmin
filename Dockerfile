@@ -61,7 +61,6 @@ RUN apk add --no-cache --virtual .build-deps \
     mariadb-client \
     mariadb-connector-c \
     postgresql-client \
-    postgresql-dev \
     libpq \
     libldap \
     libxml2 \
