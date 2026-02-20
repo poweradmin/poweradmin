@@ -35,6 +35,7 @@ use Poweradmin\Application\Query\RecordSearch;
 use Poweradmin\Application\Query\ZoneSearch;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Module\ModuleRegistry;
@@ -241,8 +242,6 @@ class SearchController extends BaseController
         $iface_zone_comments,
         $iface_record_comments
     ): void {
-        $rdap_enabled = $this->config->get('rdap', 'enabled', false);
-
         // Get all record types for the filter dropdown
         $recordTypeService = new RecordTypeService($this->getConfig());
         $recordTypes = $recordTypeService->getAllTypes();
@@ -275,17 +274,18 @@ class SearchController extends BaseController
             'edit_permission' => Permission::getEditPermission($this->db),
             'delete_permission' => Permission::getDeletePermission($this->db),
             'user_id' => $_SESSION['userid'],
-            'rdap_enabled' => $rdap_enabled,
-            'whois_action_patterns' => $this->getWhoisActionPatterns(),
+            'whois_action_patterns' => $this->getModuleActionPatterns('whois_lookup'),
+            'rdap_action_patterns' => $this->getModuleActionPatterns('rdap_lookup'),
             'record_types' => $recordTypes,
         ]);
     }
 
-    private function getWhoisActionPatterns(): array
+    private function getModuleActionPatterns(string $capability): array
     {
+        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
-        return $registry->getCapabilityData('whois_lookup');
+        return $registry->getCapabilityData($capability, [], $isAdmin);
     }
 
     private function getSortOrder(string $name, array $allowedValues): array

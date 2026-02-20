@@ -220,11 +220,13 @@
                                 </a>
                                 {% endfor %}
                                 {% endif %}
-                                {% if perm_is_godlike and rdap_enabled %}
+                                {% if rdap_action_patterns is defined and rdap_action_patterns|length > 0 %}
+                                {% for action in rdap_action_patterns %}
                                 <a class="btn btn-sm btn-outline-secondary"
-                                href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/rdap" data-testid="rdap-zone-{{ zone['id'] }}">
-                                    <i class="bi bi-search text-secondary"></i>
+                                href="{{ base_url_prefix }}{{ action.url_pattern|replace({'{id}': zone['id']}) }}" data-testid="rdap-zone-{{ zone['id'] }}">
+                                    <i class="bi bi-{{ action.icon }} text-secondary"></i>
                                 </a>
+                                {% endfor %}
                                 {% endif %}
                                 {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and zone['user_id'] == user_id) %}
                                 <a class="btn btn-sm btn-outline-primary"

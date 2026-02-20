@@ -174,11 +174,13 @@
                                 </a>
                                 {% endfor %}
                                 {% endif %}
-                                {% if perm_is_godlike and rdap_enabled %}
-                                <a class="btn btn-outline-secondary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/rdap" data-testid="rdap-zone-{{ zone['id'] }}">
-                                    <i class="bi bi-search text-secondary"></i>
-                                    <span class="d-none d-md-inline">{% trans %}RDAP{% endtrans %}</span>
+                                {% if rdap_action_patterns is defined and rdap_action_patterns|length > 0 %}
+                                {% for action in rdap_action_patterns %}
+                                <a class="btn btn-outline-secondary btn-sm" href="{{ base_url_prefix }}{{ action.url_pattern|replace({'{id}': zone['id']}) }}" data-testid="rdap-zone-{{ zone['id'] }}">
+                                    <i class="bi bi-{{ action.icon }} text-secondary"></i>
+                                    <span class="d-none d-md-inline">{{ action.label }}</span>
                                 </a>
+                                {% endfor %}
                                 {% endif %}
                                 {% if perm_zone_master_add %}
                                 <a class="btn btn-outline-secondary btn-sm" href="{{ base_url_prefix }}/zones/batch-ptr?id={{ zone['id'] }}">

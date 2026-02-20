@@ -118,9 +118,7 @@ class IndexController extends BaseController
             'permissions' => $permissions,
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', true),
-            'rdap_enabled' => $this->config->get('rdap', 'enabled', false),
             'api_enabled' => $this->config->get('api', 'enabled', false),
-            'rdap_restrict_to_admin' => $this->config->get('rdap', 'restrict_to_admin', true),
             'pdns_api_enabled' => $pdnsApiEnabled,
             'show_pdns_status' => $showPdnsStatus,
             'pdns_server_status' => $pdnsServerStatus,
@@ -136,7 +134,8 @@ class IndexController extends BaseController
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
 
-        $items = $registry->getNavItems();
+        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $items = $registry->getNavItems($isAdmin);
 
         return array_values(array_filter($items, function (array $item): bool {
             if (!empty($item['permission'])) {

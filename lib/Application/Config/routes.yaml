@@ -386,17 +386,6 @@ search:
   controller: Poweradmin\Application\Controller\SearchController::run
   methods: [GET, POST]
 
-# Utilities
-rdap:
-  path: /rdap
-  controller: Poweradmin\Application\Controller\RdapController::run
-
-zone_rdap:
-  path: /zones/{id}/rdap
-  controller: Poweradmin\Application\Controller\RdapController::run
-  requirements:
-    id: '\d+'
-
 # API Keys Management
 api_keys_list:
   path: /settings/api-keys

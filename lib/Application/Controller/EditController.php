@@ -650,9 +650,10 @@ class EditController extends BaseController
 
     private function getWhoisActions(int $zone_id): array
     {
+        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
-        return $registry->getCapabilityData('whois_lookup', ['zone_id' => $zone_id]);
+        return $registry->getCapabilityData('whois_lookup', ['zone_id' => $zone_id], $isAdmin);
     }
 
     private function getExportFormats(int $zone_id): array
