@@ -59,7 +59,6 @@ RUN apk upgrade --no-cache \
     mariadb-client \
     mariadb-connector-c \
     postgresql-client \
-    postgresql-dev \
     libpq \
     libldap \
     libxml2 \
