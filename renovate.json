@@ -3,6 +3,10 @@
   "extends": [
     "config:recommended"
   ],
+  "schedule": [
+    "after 9am and before 9pm"
+  ],
+  "timezone": "Europe/Vilnius",
   "baseBranchPatterns": [
     "master",
     "release/3.x"
