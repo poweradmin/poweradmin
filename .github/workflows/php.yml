@@ -279,10 +279,38 @@ jobs:
           exit 1
         fi
 
+  locale-check:
+    name: Locale Empty Translation Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Install gettext
+      run: sudo apt-get install -y gettext
+
+    - name: Check for empty translations in .po files
+      run: |
+        errors=0
+        for f in locale/*/LC_MESSAGES/*.po lib/Module/*/locale/*/*.po; do
+          [ -f "$f" ] || continue
+          stats=$(msgfmt --statistics -o /dev/null "$f" 2>&1)
+          if echo "$stats" | grep -q "untranslated"; then
+            echo "ERROR: $f has $stats"
+            errors=$((errors + 1))
+          fi
+        done
+        if [ "$errors" -gt 0 ]; then
+          echo ""
+          echo "Found $errors locale file(s) with empty translations."
+          exit 1
+        fi
+        echo "All locale files have complete translations."
+
   summary:
     name: Validation Summary
     runs-on: ubuntu-latest
-    needs: [syntax-check, security-audit, code-style, phpstan, psalm, unit-tests, compatibility, twig-csrf-check]
+    needs: [syntax-check, security-audit, code-style, phpstan, psalm, unit-tests, compatibility, twig-csrf-check, locale-check]
     if: always()
 
     steps:
@@ -343,6 +371,12 @@ jobs:
           echo "- ❌ Twig CSRF Field Name Check" >> $GITHUB_STEP_SUMMARY
         fi
 
+        if [ "${{ needs.locale-check.result }}" == "success" ]; then
+          echo "- ✅ Locale Empty Translation Check" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- ❌ Locale Empty Translation Check" >> $GITHUB_STEP_SUMMARY
+        fi
+
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Workflow:** ${{ github.workflow }} (#${{ github.run_number }})" >> $GITHUB_STEP_SUMMARY
 
@@ -355,6 +389,7 @@ jobs:
         needs.psalm.result != 'success' ||
         needs.unit-tests.result != 'success' ||
         needs.compatibility.result != 'success' ||
-        needs.twig-csrf-check.result != 'success'
+        needs.twig-csrf-check.result != 'success' ||
+        needs.locale-check.result != 'success'
       run: exit 1
 
