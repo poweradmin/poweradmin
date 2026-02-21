@@ -894,27 +894,6 @@ class ZoneTemplate
     }
 
     /**
-     * Get zone template IDs by name
-     *
-     * Returns all template IDs matching the given name. Since template names
-     * are not unique in the database, multiple IDs may be returned.
-     *
-     * @param string $name Zone template name
-     * @return int[] Array of matching template IDs
-     */
-    public function getZoneTemplIdsByName(string $name): array
-    {
-        try {
-            $stmt = $this->db->prepare("SELECT id FROM zone_templ WHERE name = :name");
-            $stmt->execute([':name' => $name]);
-            return array_map('intval', $stmt->fetchAll(\PDO::FETCH_COLUMN));
-        } catch (Exception $e) {
-            $this->messageService->addSystemError(_('Error looking up template by name: ') . $e->getMessage());
-            return [];
-        }
-    }
-
-    /**
      * Check if zone template name and id exists
      *
      * @param string $zone_templ_name zone template name
