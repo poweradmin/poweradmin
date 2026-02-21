@@ -100,3 +100,30 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "Compatibility check completed for PHP ${{ matrix.php-version }}" >> $GITHUB_STEP_SUMMARY
 
+  locale-check:
+    name: Locale Empty Translation Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Install gettext
+      run: sudo apt-get install -y gettext
+
+    - name: Check for empty translations in .po files
+      run: |
+        errors=0
+        for f in locale/*/LC_MESSAGES/*.po; do
+          [ -f "$f" ] || continue
+          stats=$(msgfmt --statistics -o /dev/null "$f" 2>&1)
+          if echo "$stats" | grep -q "untranslated"; then
+            echo "ERROR: $f has $stats"
+            errors=$((errors + 1))
+          fi
+        done
+        if [ "$errors" -gt 0 ]; then
+          echo ""
+          echo "Found $errors locale file(s) with empty translations."
+          exit 1
+        fi
+        echo "All locale files have complete translations."
