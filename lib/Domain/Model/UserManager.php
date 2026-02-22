@@ -467,8 +467,8 @@ class UserManager
                 $config = ConfigurationManager::getInstance();
                 $config->initialize();
                 $userAuthService = new UserAuthenticationService(
-                    $config->get('security', 'password_encryption'),
-                    $config->get('security', 'password_cost')
+                    $config->get('security', 'password_encryption', 'bcrypt'),
+                    $config->get('security', 'password_cost', 12)
                 );
 
                 $passwordHash = $i_use_ldap ? 'LDAP_USER' : $userAuthService->hashPassword($user_password);
@@ -517,8 +517,8 @@ class UserManager
         $config = ConfigurationManager::getInstance();
         $config->initialize();
         $userAuthService = new UserAuthenticationService(
-            $config->get('security', 'password_encryption'),
-            $config->get('security', 'password_cost')
+            $config->get('security', 'password_encryption', 'bcrypt'),
+            $config->get('security', 'password_cost', 12)
         );
         $stmt = $db->prepare("UPDATE users SET password = :password WHERE id = :id");
         $stmt->execute([
@@ -920,8 +920,8 @@ class UserManager
                 $config = ConfigurationManager::getInstance();
                 $config->initialize();
                 $userAuthService = new UserAuthenticationService(
-                    $config->get('security', 'password_encryption'),
-                    $config->get('security', 'password_cost')
+                    $config->get('security', 'password_encryption', 'bcrypt'),
+                    $config->get('security', 'password_cost', 12)
                 );
                 $hashedPassword = $userAuthService->hashPassword($details['password']);
                 $query .= ", password = :password";
