@@ -117,8 +117,8 @@ class SqlAuthenticator extends LoggingService
             return;
         }
 
-        $passwordEncryption = $this->configManager->get('security', 'password_encryption');
-        $passwordCost = $this->configManager->get('security', 'password_cost');
+        $passwordEncryption = $this->configManager->get('security', 'password_encryption', 'bcrypt');
+        $passwordCost = $this->configManager->get('security', 'password_cost', 12);
 
         $userAuthService = new UserAuthenticationService($passwordEncryption, $passwordCost);
 
