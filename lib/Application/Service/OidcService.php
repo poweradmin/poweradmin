@@ -388,18 +388,62 @@ class OidcService extends LoggingService
         $config = $this->oidcConfigurationService->getProviderConfig($providerId);
         $mapping = $config['user_mapping'] ?? [];
 
+        $groupsKey = $mapping['groups'] ?? 'groups';
+        $groups = $userData[$groupsKey] ?? [];
+
+        // Some providers (e.g. Microsoft Entra ID) include groups only in the
+        // ID token, not in the userinfo endpoint response. Fall back to the
+        // ID token claims when the userinfo groups are empty.
+        if (empty($groups)) {
+            $tokenValues = $token->getValues();
+            if (isset($tokenValues['id_token'])) {
+                $idTokenClaims = $this->decodeIdTokenPayload($tokenValues['id_token']);
+                $groups = $idTokenClaims[$groupsKey] ?? [];
+                if (!empty($groups)) {
+                    $this->logInfo('Extracted groups from ID token: {groups}', ['groups' => $groups]);
+                }
+            }
+        }
+
         return new OidcUserInfo(
             username: $userData[$mapping['username'] ?? 'preferred_username'] ?? $userData['sub'] ?? '',
             email: $userData[$mapping['email'] ?? 'email'] ?? '',
             firstName: $userData[$mapping['first_name'] ?? 'given_name'] ?? '',
             lastName: $userData[$mapping['last_name'] ?? 'family_name'] ?? '',
             displayName: $userData[$mapping['display_name'] ?? 'name'] ?? '',
-            groups: $userData[$mapping['groups'] ?? 'groups'] ?? [],
+            groups: $groups,
             providerId: $providerId,
             subject: $userData[$mapping['subject'] ?? 'sub'] ?? '',
             rawData: $userData,
             avatarUrl: $userData[$mapping['avatar'] ?? 'picture'] ?? null
         );
+    }
+
+    /**
+     * Decode the payload of a JWT ID token without signature verification.
+     *
+     * Signature verification is not required here because the token was received
+     * directly from the token endpoint over TLS during the authorization code
+     * exchange, not from an untrusted source like a browser redirect.
+     *
+     * @return array<string, mixed>
+     */
+    private function decodeIdTokenPayload(string $idToken): array
+    {
+        $parts = explode('.', $idToken);
+        if (count($parts) !== 3) {
+            $this->logWarning('Invalid ID token format');
+            return [];
+        }
+
+        $payload = base64_decode(strtr($parts[1], '-_', '+/'));
+        if ($payload === false) {
+            $this->logWarning('Failed to decode ID token payload');
+            return [];
+        }
+
+        $claims = json_decode($payload, true);
+        return is_array($claims) ? $claims : [];
     }
 
     private function getCallbackUrl(): string
