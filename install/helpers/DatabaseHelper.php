@@ -218,8 +218,8 @@ class DatabaseHelper
         $config = ConfigurationManager::getInstance();
         $config->initialize();
         $userAuthService = new UserAuthenticationService(
-            $config->get('security', 'password_encryption'),
-            $config->get('security', 'password_cost')
+            $config->get('security', 'password_encryption', 'bcrypt'),
+            $config->get('security', 'password_cost', 12)
         );
         $user_query = $this->db->prepare("INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0)");
         $user_query->execute(array($userAuthService->hashPassword($pa_pass), $permTemplId));
