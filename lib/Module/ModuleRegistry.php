@@ -78,11 +78,11 @@ class ModuleRegistry
 
             $this->modules[$name] = $module;
 
-            $enabled = $this->config->get('modules', "$name.enabled", false);
+            $enabled = $this->config->get('modules', "$name.enabled", null);
 
             // Legacy config fallback: check standalone config section for modules
             // that were previously configured outside the modules section
-            if (!$enabled) {
+            if ($enabled === null) {
                 $enabled = $this->config->get($name, 'enabled', false);
             }
 
@@ -136,8 +136,10 @@ class ModuleRegistry
     {
         $items = [];
         foreach ($this->enabledModules as $name => $module) {
-            $restrictToAdmin = $this->config->get('modules', "$name.restrict_to_admin", false)
-                || $this->config->get($name, 'restrict_to_admin', false);
+            $restrictToAdmin = $this->config->get('modules', "$name.restrict_to_admin", null);
+            if ($restrictToAdmin === null) {
+                $restrictToAdmin = $this->config->get($name, 'restrict_to_admin', false);
+            }
             if ($restrictToAdmin && !$isAdmin) {
                 continue;
             }
@@ -166,8 +168,10 @@ class ModuleRegistry
             }
 
             // Skip module capabilities when restrict_to_admin is enabled and user is not admin
-            $restrictToAdmin = $this->config->get('modules', "$name.restrict_to_admin", false)
-                || $this->config->get($name, 'restrict_to_admin', false);
+            $restrictToAdmin = $this->config->get('modules', "$name.restrict_to_admin", null);
+            if ($restrictToAdmin === null) {
+                $restrictToAdmin = $this->config->get($name, 'restrict_to_admin', false);
+            }
             if ($restrictToAdmin && !$isAdmin) {
                 continue;
             }
