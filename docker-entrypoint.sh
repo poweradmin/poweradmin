@@ -449,6 +449,15 @@ main() {
     # Initialize SQLite database if needed (must run before admin user creation)
     init_sqlite_db
 
+    # Ensure settings.defaults.php exists in config directory
+    # When /app/config is a volume mount, the image's defaults file is hidden
+    defaults_file="$(dirname "${CONFIG_FILE}")/settings.defaults.php"
+    if [ ! -f "${defaults_file}" ] && [ -f "/usr/local/share/settings.defaults.php" ]; then
+        log "Restoring settings.defaults.php into config directory..."
+        cp /usr/local/share/settings.defaults.php "${defaults_file}"
+        chown www-data:www-data "${defaults_file}"
+    fi
+
     if [ -n "${PA_CONFIG_PATH}" ] && [ -f "${PA_CONFIG_PATH}" ]; then
         log "Using custom configuration from: ${PA_CONFIG_PATH}"
         cp "${PA_CONFIG_PATH}" "${CONFIG_FILE}"
