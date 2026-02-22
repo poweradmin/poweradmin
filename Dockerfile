@@ -80,7 +80,8 @@ COPY . .
 # Copy and set permissions for entrypoint script, create directories
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
-    && mkdir -p /db /app/config
+    && mkdir -p /db /app/config \
+    && cp /app/config/settings.defaults.php /usr/local/share/settings.defaults.php
 
 # Create Caddyfile for FrankenPHP
 COPY <<EOF /etc/caddy/Caddyfile
