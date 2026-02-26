@@ -134,7 +134,7 @@ jobs:
 
       - name: Attest build provenance
         if: github.event_name != 'pull_request' && success()
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-name: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           subject-digest: ${{ steps.build.outputs.digest }}
