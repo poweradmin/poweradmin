@@ -447,44 +447,6 @@ class UnicodeString extends AbstractUnicodeString
         }
     }
 
-    public function trimPrefix($prefix): static
-    {
-        if (\is_array($prefix) || $prefix instanceof \Traversable) {
-            return parent::trimPrefix($prefix);
-        }
-
-        if ($prefix instanceof AbstractString) {
-            $prefix = $prefix->string;
-        } else {
-            $prefix = (string) $prefix;
-        }
-
-        if (!normalizer_is_normalized($prefix, \Normalizer::NFC)) {
-            $prefix = normalizer_normalize($prefix, \Normalizer::NFC);
-        }
-
-        return parent::trimPrefix($prefix);
-    }
-
-    public function trimSuffix($suffix): static
-    {
-        if (\is_array($suffix) || $suffix instanceof \Traversable) {
-            return parent::trimSuffix($suffix);
-        }
-
-        if ($suffix instanceof AbstractString) {
-            $suffix = $suffix->string;
-        } else {
-            $suffix = (string) $suffix;
-        }
-
-        if (!normalizer_is_normalized($suffix, \Normalizer::NFC)) {
-            $suffix = normalizer_normalize($suffix, \Normalizer::NFC);
-        }
-
-        return parent::trimSuffix($suffix);
-    }
-
     /**
      * @deprecated since Symfony 7.4, will be replaced by `__unserialize()` in 8.0
      */

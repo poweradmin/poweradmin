@@ -430,15 +430,6 @@ class Application implements ResetInterface
 
             return;
         }
-
-        if (
-            CompletionInput::TYPE_OPTION_VALUE === $input->getCompletionType()
-            && ($definition = $this->getDefinition())->hasOption($input->getCompletionName())
-        ) {
-            $definition->getOption($input->getCompletionName())->complete($input, $suggestions);
-
-            return;
-        }
     }
 
     /**
@@ -784,6 +775,21 @@ class Application implements ResetInterface
             }));
         }
 
+        // check whether all commands left are aliases to the same one
+        if (\count($commands) > 1) {
+            $uniqueCommands = array_unique(array_map(function ($nameOrAlias) use (&$commandList) {
+                if (!$commandList[$nameOrAlias] instanceof Command) {
+                    $commandList[$nameOrAlias] = $this->commandLoader->get($nameOrAlias);
+                }
+
+                return $commandList[$nameOrAlias]->getName();
+            }, $commands));
+
+            if (1 === \count($uniqueCommands)) {
+                $commands = [reset($uniqueCommands)];
+            }
+        }
+
         if (\count($commands) > 1) {
             $usableWidth = $this->terminal->getWidth() - 10;
             $abbrevs = array_values($commands);
@@ -1024,9 +1030,6 @@ class Application implements ResetInterface
         $registeredSignals = false;
         if (($commandSignals = $command->getSubscribedSignals()) || $this->dispatcher && $this->signalsToDispatchEvent) {
             $signalRegistry = $this->getSignalRegistry();
-
-            $registeredSignals = true;
-            $this->getSignalRegistry()->pushCurrentHandlers();
 
             $registeredSignals = true;
             $this->getSignalRegistry()->pushCurrentHandlers();
