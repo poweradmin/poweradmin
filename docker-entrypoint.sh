@@ -1143,7 +1143,7 @@ main() {
         chown www-data:www-data "${defaults_file}"
     fi
 
-    if [ -f "${CONFIG_FILE}" ]; then
+    if [ -f "${CONFIG_FILE}" ] && [ -s "${CONFIG_FILE}" ]; then
         log "Using configuration file: ${CONFIG_FILE}"
     else
         log "No custom config found. Generating settings.php from environment variables..."
