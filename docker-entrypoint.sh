@@ -463,7 +463,7 @@ main() {
         cp "${PA_CONFIG_PATH}" "${CONFIG_FILE}"
         chmod 644 "${CONFIG_FILE}"
         chown www-data:www-data "${CONFIG_FILE}"
-    elif [ -f "${CONFIG_FILE}" ]; then
+    elif [ -f "${CONFIG_FILE}" ] && [ -s "${CONFIG_FILE}" ]; then
         log "Using existing settings.php (generated from environment variables)"
     else
         log "No custom config found. Generating settings.php from environment variables..."
