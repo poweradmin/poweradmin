@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'poweradmin/poweradmin',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => 'bd5935e72bd889532de2a13ae61d8e0351a11681',
+        'pretty_version' => 'dev-develop',
+        'version' => 'dev-develop',
+        'reference' => '562a4fb742e2adfd8268e41f542b3368682a2712',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -512,9 +512,9 @@
             'dev_requirement' => true,
         ),
         'poweradmin/poweradmin' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => 'bd5935e72bd889532de2a13ae61d8e0351a11681',
+            'pretty_version' => 'dev-develop',
+            'version' => 'dev-develop',
+            'reference' => '562a4fb742e2adfd8268e41f542b3368682a2712',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
