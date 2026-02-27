@@ -65,7 +65,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         if (!$viewOthers) {
             $query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
-            $query .= " WHERE zones.owner = :userId";
+            $query .= " WHERE (zones.owner = :userId OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
+            ))";
             $query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa'";
             $query .= " AND $domains_table.name NOT LIKE '%.ip6.arpa'";
         } else {
@@ -79,6 +83,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         if (!$viewOthers) {
             $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
         }
 
         $stmt->execute();
@@ -142,8 +147,13 @@ class DbZoneRepository implements ZoneRepositoryInterface
                          WHERE 1=1";
 
             if ($permType == 'own') {
-                $query .= " AND zones.owner = :userId";
+                $query .= " AND (zones.owner = :userId OR EXISTS (
+                    SELECT 1 FROM zones_groups zg
+                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                    WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
+                ))";
                 $params[':userId'] = $userId;
+                $params[':userId_group'] = $userId;
             }
 
             // Add reverse zone type filter
@@ -194,8 +204,13 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // Add permission filter
         $params = [];
         if ($permType == 'own') {
-            $query .= " AND zones.owner = :userId";
+            $query .= " AND (zones.owner = :userId OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
+            ))";
             $params[':userId'] = $userId;
+            $params[':userId_group'] = $userId;
         }
 
         // Add reverse zone type filter at database level
@@ -321,16 +336,25 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         // Join with zones table for permission filtering if needed
         if ($permType === 'own') {
-            $query .= " INNER JOIN zones z ON d.id = z.domain_id AND z.owner = :user_id";
+            $query .= " LEFT JOIN zones z ON d.id = z.domain_id";
         }
 
         // Filter to reverse zones only
         $query .= " WHERE (d.name LIKE '%.in-addr.arpa' OR d.name LIKE '%.ip6.arpa')";
 
+        if ($permType === 'own') {
+            $query .= " AND (z.owner = :user_id OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = d.id AND ugm.user_id = :user_id_group
+            ))";
+        }
+
         $stmt = $this->db->prepare($query);
 
         if ($permType === 'own') {
             $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':user_id_group', $userId, PDO::PARAM_INT);
         }
 
         $stmt->execute();

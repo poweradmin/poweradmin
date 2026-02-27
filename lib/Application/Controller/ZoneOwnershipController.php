@@ -118,13 +118,15 @@ class ZoneOwnershipController extends BaseController
         $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
         $groupOwnerships = $zoneGroupRepo->findByDomainId($zone_id);
 
-        // Fetch all groups for name lookup and dropdown
+        // Fetch groups - all for name lookup, filtered for dropdown
         $userGroupRepo = new DbUserGroupRepository($this->db);
         $allGroups = $userGroupRepo->findAll();
+        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $userGroups = $isAdmin ? $allGroups : $userGroupRepo->findByUserId($userId);
 
-        // Filter out groups that are already owners
+        // Filter out groups that are already owners (from user's visible groups)
         $groupOwnerIds = array_map(fn($zg) => $zg->getGroupId(), $groupOwnerships);
-        $availableGroups = array_values(array_filter($allGroups, function ($group) use ($groupOwnerIds) {
+        $availableGroups = array_values(array_filter($userGroups, function ($group) use ($groupOwnerIds) {
             return !in_array($group->getId(), $groupOwnerIds);
         }));
 
@@ -194,8 +196,22 @@ class ZoneOwnershipController extends BaseController
 
         // Add group
         if (isset($_POST["newgroup"]) && is_numeric($_POST["newgroup"]) && $meta_edit) {
+            $groupId = (int)$_POST["newgroup"];
+
+            // Validate group ID against user's allowed groups
+            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+            if (!$isAdmin) {
+                $userGroupRepo = new DbUserGroupRepository($this->db);
+                $allowedGroups = $userGroupRepo->findByUserId($userId);
+                $allowedGroupIds = array_map(fn($g) => $g->getId(), $allowedGroups);
+                if (!in_array($groupId, $allowedGroupIds)) {
+                    $this->setMessage('zone_ownership', 'error', _('You do not have permission to assign this group.'));
+                    return;
+                }
+            }
+
             $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
-            $zoneGroupRepo->add($zone_id, (int)$_POST["newgroup"]);
+            $zoneGroupRepo->add($zone_id, $groupId);
             $this->setMessage('zone_ownership', 'success', _('Group has been added successfully.'));
         }
 

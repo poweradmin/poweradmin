@@ -916,6 +916,7 @@ return array(
     'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionTemplatesController' => $baseDir . '/lib/Application/Controller/Api/V2/PermissionTemplatesController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionsController' => $baseDir . '/lib/Application/Controller/Api/V2/PermissionsController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\UsersController' => $baseDir . '/lib/Application/Controller/Api/V2/UsersController.php',
+    'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneOwnersController' => $baseDir . '/lib/Application/Controller/Api/V2/ZoneOwnersController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneTemplateRecordsController' => $baseDir . '/lib/Application/Controller/Api/V2/ZoneTemplateRecordsController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneTemplatesController' => $baseDir . '/lib/Application/Controller/Api/V2/ZoneTemplatesController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\ZonesController' => $baseDir . '/lib/Application/Controller/Api/V2/ZonesController.php',

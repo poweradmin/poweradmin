@@ -532,6 +532,21 @@ api_v2_zone:
     id: '\d+'
   methods: [GET, PUT, DELETE]
 
+api_v2_zone_owners:
+  path: /api/v2/zones/{id}/owners
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneOwnersController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+api_v2_zone_owner:
+  path: /api/v2/zones/{id}/owners/{user_id}
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneOwnersController::run
+  requirements:
+    id: '\d+'
+    user_id: '\d+'
+  methods: [DELETE]
+
 api_v2_zone_records:
   path: /api/v2/zones/{id}/records
   controller: Poweradmin\Application\Controller\Api\V2\ZonesRecordsController::run

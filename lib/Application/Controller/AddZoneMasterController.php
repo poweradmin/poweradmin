@@ -43,7 +43,6 @@ use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneMasterController extends BaseController
@@ -113,6 +112,24 @@ class AddZoneMasterController extends BaseController
             return;
         }
 
+        // Validate submitted group IDs against user's allowed groups
+        if (!empty($selected_groups)) {
+            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+            if (!$isAdmin) {
+                $userId = $this->userContext->getLoggedInUserId();
+                $userGroupRepo = new DbUserGroupRepository($this->db);
+                $allowedGroups = $userGroupRepo->findByUserId($userId);
+                $allowedGroupIds = array_map(fn($g) => $g->getId(), $allowedGroups);
+                $selected_groups = array_values(array_intersect($selected_groups, $allowedGroupIds));
+
+                if (empty($selected_groups) && $owner === null) {
+                    $this->setMessage('add_zone_master', 'error', _('At least one user or group must be selected as owner.'));
+                    $this->showForm();
+                    return;
+                }
+            }
+        }
+
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $hostnameValidator = new HostnameValidator($this->config);
         if (!$hostnameValidator->isValid($zone_name)) {
@@ -124,16 +141,9 @@ class AddZoneMasterController extends BaseController
         } elseif ($dnsRecord->domainExists($zone_name) || $dnsRecord->recordNameExists($zone_name)) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif ($dnsRecord->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template)) {
+        } elseif ($dnsRecord->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template, $selected_groups)) {
             $zone_id = $dnsRecord->getZoneIdFromName($zone_name);
 
-            // Add group ownership if groups were selected
-            if (!empty($selected_groups)) {
-                $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
-                foreach ($selected_groups as $groupId) {
-                    $zoneGroupRepo->add($zone_id, $groupId);
-                }
-            }
             $this->logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'],
@@ -262,9 +272,10 @@ class AddZoneMasterController extends BaseController
         $userId = $this->userContext->getLoggedInUserId();
         $templates = $zone_templates->getListZoneTempl($userId);
 
-        // Fetch all groups for the dropdown
+        // Fetch groups for the dropdown - admins see all, others see only their own
         $userGroupRepo = new DbUserGroupRepository($this->db);
-        $allGroups = $userGroupRepo->findAll();
+        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
 
         // Handle selected groups on error re-render
         $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?

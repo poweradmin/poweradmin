@@ -36,10 +36,11 @@ interface DomainManagerInterface
      * @param string $type Type of domain ['NATIVE','MASTER','SLAVE']
      * @param string $slave_master Master server hostname for domain
      * @param int|string $zone_template ID of zone template ['none' or int]
+     * @param int[] $groupIds Group IDs for group ownership (assigned atomically within the same transaction)
      *
      * @return boolean true on success
      */
-    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template): bool;
+    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = []): bool;
 
     /**
      * Deletes a domain by a given id

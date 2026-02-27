@@ -38,6 +38,8 @@ TEST_GROUP_ID=""
 TEST_USER_ID=""
 TEST_ZONE_TEMPLATE_ID=""
 TEST_ZONE_TEMPLATE_RECORD_ID=""
+TEST_OWNER_ZONE_ID=""
+TEST_OWNER_USER_ID=""
 CREATED_REVERSE_ZONE=false
 
 ##############################################################################
@@ -960,6 +962,250 @@ test_zone_templates() {
 }
 
 ##############################################################################
+# Test: Zone Owners API
+##############################################################################
+
+cleanup_existing_test_owner_user() {
+    local user_id
+    user_id=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "zone_owner_test_user") | .user_id' 2>/dev/null)
+    if [[ -n "$user_id" ]]; then
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+            "${API_BASE_URL}/api/v2/users/${user_id}" >/dev/null 2>&1 || true
+    fi
+}
+
+test_zone_owners() {
+    print_section "Zone Owners API Tests"
+
+    cleanup_existing_test_owner_user
+
+    # Prerequisites: Create test user and test zone
+    print_info "Creating test user for zone owner tests..."
+    local user_data='{"username":"zone_owner_test_user","password":"SecurePass1234","fullname":"Zone Owner Test","email":"zone_owner_test@example.com","description":"Test user for zone owner API tests","perm_templ":1,"active":true}'
+
+    if api_request_v2 "POST" "/users" "$user_data" 201 "Create test user for owners"; then
+        TEST_OWNER_USER_ID=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')
+        print_info "Created test user ID: $TEST_OWNER_USER_ID"
+    else
+        print_fail "Failed to create test user - skipping zone owner tests"
+        return 1
+    fi
+
+    print_info "Creating test zone for zone owner tests..."
+    local zone_data='{"name":"owner-test.example.com","type":"MASTER"}'
+
+    if api_request_v2 "POST" "/zones" "$zone_data" 201 "Create test zone for owners"; then
+        TEST_OWNER_ZONE_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+        print_info "Created zone ID: $TEST_OWNER_ZONE_ID"
+    else
+        print_fail "Failed to create test zone - skipping zone owner tests"
+        return 1
+    fi
+
+    # Test 1: List zone owners
+    api_request_v2 "GET" "/zones/${TEST_OWNER_ZONE_ID}/owners" "" 200 "List zone owners"
+
+    # Test 2: Verify initial owner exists
+    increment_test
+    if [[ "$LAST_RESPONSE_BODY" =~ "user_id" ]]; then
+        print_pass "Zone owners response contains user data"
+    else
+        print_fail "Zone owners response missing user data"
+    fi
+
+    # Test 3: Add test user as owner
+    increment_test
+    print_test "Add owner to zone"
+    local response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" "{\"user_id\": ${TEST_OWNER_USER_ID}}")
+    local http_code=$(echo "$response" | tail -n1)
+    local body=$(echo "$response" | sed '$d')
+
+    if [[ "$http_code" == "201" ]]; then
+        local success=$(echo "$body" | jq -r '.success')
+        if [[ "$success" == "true" ]]; then
+            print_pass "Owner added successfully"
+        else
+            print_fail "Failed to add owner"
+        fi
+    else
+        print_fail "Failed to add owner (HTTP $http_code)"
+    fi
+
+    # Test 4: List owners after addition
+    api_request_v2 "GET" "/zones/${TEST_OWNER_ZONE_ID}/owners" "" 200 "List zone owners after addition"
+
+    # Test 5: Verify new owner appears in list
+    increment_test
+    local owner_count=$(echo "$LAST_RESPONSE_BODY" | grep -o "\"user_id\"" | wc -l | tr -d ' ')
+    if [[ $owner_count -ge 2 ]]; then
+        print_pass "Zone now has multiple owners ($owner_count)"
+    else
+        print_fail "Expected at least 2 owners, found $owner_count"
+    fi
+
+    # Test 6: Add duplicate owner (should return 409)
+    increment_test
+    print_test "Add duplicate owner (should fail)"
+    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" "{\"user_id\": ${TEST_OWNER_USER_ID}}")
+    http_code=$(echo "$response" | tail -n1)
+
+    if [[ "$http_code" == "409" ]]; then
+        print_pass "Duplicate owner correctly rejected (409)"
+    else
+        print_fail "Expected 409 for duplicate owner, got HTTP $http_code"
+    fi
+
+    # Test 7: Add non-existent user as owner (should return 404)
+    increment_test
+    print_test "Add non-existent user as owner"
+    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" '{"user_id": 999999}')
+    http_code=$(echo "$response" | tail -n1)
+
+    if [[ "$http_code" == "404" ]]; then
+        print_pass "Non-existent user correctly rejected (404)"
+    else
+        print_fail "Expected 404 for non-existent user, got HTTP $http_code"
+    fi
+
+    # Test 8: Add owner with missing user_id (should return 400)
+    increment_test
+    print_test "Add owner with missing user_id"
+    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" '{}')
+    http_code=$(echo "$response" | tail -n1)
+
+    if [[ "$http_code" == "400" ]]; then
+        print_pass "Missing user_id correctly rejected (400)"
+    else
+        print_fail "Expected 400 for missing user_id, got HTTP $http_code"
+    fi
+
+    # Remove test user owner first so batch add can re-add them
+    api_request_groups DELETE "/zones/${TEST_OWNER_ZONE_ID}/owners/${TEST_OWNER_USER_ID}" >/dev/null 2>&1 || true
+
+    # Test 8b: Batch add owners using user_ids
+    increment_test
+    print_test "Batch add owners using user_ids"
+    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" "{\"user_ids\": [${TEST_OWNER_USER_ID}, 1]}")
+    http_code=$(echo "$response" | tail -n1)
+    body=$(echo "$response" | sed '$d')
+
+    if [[ "$http_code" == "201" ]]; then
+        local added_count=$(echo "$body" | jq -r '.data.added | length')
+        local skipped_count=$(echo "$body" | jq -r '.data.skipped | length')
+        if [[ "$added_count" -ge 1 ]]; then
+            print_pass "Batch add owners returned 201 (added: $added_count, skipped: $skipped_count)"
+        else
+            print_fail "Expected at least 1 added, got added=$added_count skipped=$skipped_count"
+        fi
+    else
+        print_fail "Expected 201 for batch add, got HTTP $http_code"
+    fi
+
+    # Test 8c: Batch add with already assigned users (should skip them)
+    increment_test
+    print_test "Batch add with already assigned owners (skipped)"
+    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" "{\"user_ids\": [${TEST_OWNER_USER_ID}, 1]}")
+    http_code=$(echo "$response" | tail -n1)
+    body=$(echo "$response" | sed '$d')
+
+    if [[ "$http_code" == "201" ]]; then
+        local skipped=$(echo "$body" | jq -r '.data.skipped | length')
+        local added=$(echo "$body" | jq -r '.data.added | length')
+        if [[ "$added" == "0" && "$skipped" -ge 1 ]]; then
+            print_pass "All users correctly skipped as already assigned"
+        else
+            print_fail "Expected 0 added and skipped >= 1, got added=$added skipped=$skipped"
+        fi
+    else
+        print_fail "Expected 201 for batch add, got HTTP $http_code"
+    fi
+
+    # Test 8d: Batch add with non-existent users (reports not_found)
+    increment_test
+    print_test "Batch add with non-existent users"
+    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" '{"user_ids": [999998, 999999]}')
+    http_code=$(echo "$response" | tail -n1)
+    body=$(echo "$response" | sed '$d')
+
+    if [[ "$http_code" == "201" ]]; then
+        local not_found=$(echo "$body" | jq -r '.data.not_found | length')
+        if [[ "$not_found" == "2" ]]; then
+            print_pass "Non-existent users correctly reported in not_found ($not_found)"
+        else
+            print_fail "Expected 2 not_found, got $not_found"
+        fi
+    else
+        print_fail "Expected 201 for batch add, got HTTP $http_code"
+    fi
+
+    # Clean up batch-added owners before removal tests
+    api_request_groups DELETE "/zones/${TEST_OWNER_ZONE_ID}/owners/1" >/dev/null 2>&1 || true
+
+    # Test 9: Remove owner from zone
+    increment_test
+    print_test "Remove owner from zone"
+    response=$(api_request_groups DELETE "/zones/${TEST_OWNER_ZONE_ID}/owners/${TEST_OWNER_USER_ID}")
+    http_code=$(echo "$response" | tail -n1)
+    body=$(echo "$response" | sed '$d')
+
+    if [[ "$http_code" == "200" ]]; then
+        local success=$(echo "$body" | jq -r '.success')
+        if [[ "$success" == "true" ]]; then
+            print_pass "Owner removed successfully"
+        else
+            print_fail "Failed to remove owner"
+        fi
+    else
+        print_fail "Failed to remove owner (HTTP $http_code)"
+    fi
+
+    # Test 10: List owners after removal
+    api_request_v2 "GET" "/zones/${TEST_OWNER_ZONE_ID}/owners" "" 200 "List zone owners after removal"
+
+    # Test 11: Remove non-existent owner (should return 404)
+    increment_test
+    print_test "Remove non-existent owner"
+    response=$(api_request_groups DELETE "/zones/${TEST_OWNER_ZONE_ID}/owners/999999")
+    http_code=$(echo "$response" | tail -n1)
+
+    if [[ "$http_code" == "404" ]]; then
+        print_pass "Non-existent owner correctly returns 404"
+    else
+        print_fail "Expected 404 for non-existent owner, got HTTP $http_code"
+    fi
+
+    # Test 12: List owners of non-existent zone (should return 404)
+    api_request_v2 "GET" "/zones/999999/owners" "" 404 "List owners of non-existent zone returns 404"
+
+    # Test 13: Add owner to non-existent zone (should return 404)
+    increment_test
+    print_test "Add owner to non-existent zone"
+    response=$(api_request_groups POST "/zones/999999/owners" '{"user_id": 1}')
+    http_code=$(echo "$response" | tail -n1)
+
+    if [[ "$http_code" == "404" ]]; then
+        print_pass "Add owner to non-existent zone correctly returns 404"
+    else
+        print_fail "Expected 404 for non-existent zone, got HTTP $http_code"
+    fi
+
+    # Test 14: Remove owner from non-existent zone (should return 404)
+    increment_test
+    print_test "Remove owner from non-existent zone"
+    response=$(api_request_groups DELETE "/zones/999999/owners/1")
+    http_code=$(echo "$response" | tail -n1)
+
+    if [[ "$http_code" == "404" ]]; then
+        print_pass "Remove owner from non-existent zone correctly returns 404"
+    else
+        print_fail "Expected 404 for non-existent zone, got HTTP $http_code"
+    fi
+
+    print_info "Zone Owners API tests completed"
+}
+
+##############################################################################
 # Cleanup Function
 ##############################################################################
 
@@ -982,6 +1228,17 @@ cleanup() {
         api_request_v2 "DELETE" "/zones/$TEST_REVERSE_ZONE_ID" "" 204 "Delete reverse zone" || true
     fi
 
+    # Delete zone owner test zone and user
+    if [[ -n "$TEST_OWNER_ZONE_ID" ]]; then
+        print_info "Deleting zone owner test zone $TEST_OWNER_ZONE_ID..."
+        api_request_v2 "DELETE" "/zones/$TEST_OWNER_ZONE_ID" "" 204 "Delete zone owner test zone" || true
+    fi
+
+    if [[ -n "$TEST_OWNER_USER_ID" ]]; then
+        print_info "Deleting zone owner test user $TEST_OWNER_USER_ID..."
+        api_request_v2 "DELETE" "/users/$TEST_OWNER_USER_ID" "" 200 "Delete zone owner test user" || true
+    fi
+
     # Delete test zone template if still exists
     if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
         print_info "Deleting test zone template $TEST_ZONE_TEMPLATE_ID..."
@@ -1001,8 +1258,9 @@ cleanup() {
     print_info "Cleaning up any remaining test zones..."
     # This would require listing zones and filtering - simplified for now
 
-    # Cleanup any remaining test groups
+    # Cleanup any remaining test groups and users
     cleanup_existing_test_groups
+    cleanup_existing_test_owner_user
 }
 
 ##############################################################################
@@ -1025,6 +1283,7 @@ cleanup_existing_test_zones() {
         "template-zone-test.example.com"
         "bad-template-test.example.com"
         "name-template-test.example.com"
+        "owner-test.example.com"
     )
 
     local all_zones
@@ -1057,6 +1316,7 @@ main() {
     test_bulk_operations
     test_master_port_syntax
     test_groups
+    test_zone_owners
     test_zone_templates
 
     # Cleanup

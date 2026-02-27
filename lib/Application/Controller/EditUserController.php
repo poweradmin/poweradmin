@@ -263,7 +263,9 @@ class EditUserController extends BaseController
         $userGroupRepo = new DbUserGroupRepository($this->db);
 
         $memberships = $groupMemberRepo->findByUserId($editId);
-        $allGroups = $userGroupRepo->findAll();
+        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $currentUserId = $this->userContextService->getLoggedInUserId();
+        $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($currentUserId);
 
         // Get list of group IDs user is already a member of
         $memberGroupIds = array_map(function ($membership) {

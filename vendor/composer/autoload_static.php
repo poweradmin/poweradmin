@@ -1311,6 +1311,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionTemplatesController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/PermissionTemplatesController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/PermissionsController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\UsersController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/UsersController.php',
+        'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneOwnersController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZoneOwnersController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneTemplateRecordsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZoneTemplateRecordsController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\ZoneTemplatesController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZoneTemplatesController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\ZonesController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZonesController.php',

@@ -35,6 +35,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -44,6 +45,7 @@ class GroupZonesController extends PublicApiController
 {
     private ZoneGroupService $zoneGroupService;
     private ApiPermissionService $apiPermissionService;
+    private DbZoneRepository $zoneRepository;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -53,6 +55,7 @@ class GroupZonesController extends PublicApiController
         $groupRepository = new DbUserGroupRepository($this->db);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
         $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->zoneRepository = new DbZoneRepository($this->db, $this->config);
     }
 
     /**
@@ -189,6 +192,7 @@ class GroupZonesController extends PublicApiController
     )]
     #[OA\Response(response: 400, description: 'Invalid input')]
     #[OA\Response(response: 403, description: 'Forbidden')]
+    #[OA\Response(response: 404, description: 'Zone not found')]
     private function assignZone(): JsonResponse
     {
         if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
@@ -204,6 +208,11 @@ class GroupZonesController extends PublicApiController
             }
 
             $zoneId = (int)$data['zone_id'];
+
+            if (!$this->zoneRepository->zoneExists($zoneId)) {
+                return $this->returnApiError('Zone not found', 404);
+            }
+
             $this->zoneGroupService->addGroupToZone($zoneId, $groupId);
 
             return $this->returnApiResponse(null, true, 'Zone assigned successfully', 201);
@@ -254,7 +263,7 @@ class GroupZonesController extends PublicApiController
         )
     )]
     #[OA\Response(response: 403, description: 'Forbidden')]
-    #[OA\Response(response: 404, description: 'Zone assignment not found')]
+    #[OA\Response(response: 404, description: 'Zone or assignment not found')]
     private function unassignZone(): JsonResponse
     {
         if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
@@ -267,6 +276,10 @@ class GroupZonesController extends PublicApiController
 
             if ($zoneId === 0) {
                 return $this->returnApiError('Invalid zone_id', 400);
+            }
+
+            if (!$this->zoneRepository->zoneExists($zoneId)) {
+                return $this->returnApiError('Zone not found', 404);
             }
 
             $success = $this->zoneGroupService->removeGroupFromZone($zoneId, $groupId);

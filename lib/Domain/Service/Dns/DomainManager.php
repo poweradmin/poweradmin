@@ -81,7 +81,7 @@ class DomainManager implements DomainManagerInterface
      *
      * @return boolean true on success
      */
-    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template): bool
+    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = []): bool
     {
         $zone_master_add = UserManager::verifyPermission($db, 'zone_master_add');
         $zone_slave_add = UserManager::verifyPermission($db, 'zone_slave_add');
@@ -98,9 +98,9 @@ class DomainManager implements DomainManagerInterface
             $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
             if (
-                ($domain && $owner && $zone_template) ||
-                (preg_match('/in-addr.arpa/i', $domain) && $owner && $zone_template) ||
-                $type == "SLAVE" && $domain && $owner && $slave_master
+                ($domain && $zone_template) ||
+                (preg_match('/in-addr.arpa/i', $domain) && $zone_template) ||
+                $type == "SLAVE" && $domain && $slave_master
             ) {
                 $db->beginTransaction();
                 try {
@@ -113,7 +113,7 @@ class DomainManager implements DomainManagerInterface
 
                     $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
                     $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-                    $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
+                    $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
                     $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
                     $stmt->execute();
 
@@ -126,6 +126,15 @@ class DomainManager implements DomainManagerInterface
                         $syncService->createSyncRecord($zone_id, (int)$zone_template);
                         // Mark as synced since we're creating from template
                         $syncService->markZoneAsSynced($zone_id, (int)$zone_template);
+                    }
+
+                    // Assign group ownership within the same transaction
+                    $uniqueGroupIds = array_unique($groupIds);
+                    foreach ($uniqueGroupIds as $groupId) {
+                        $stmt = $db->prepare("INSERT INTO zones_groups (domain_id, group_id, created_at) VALUES (:domain_id, :group_id, CURRENT_TIMESTAMP)");
+                        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                        $stmt->bindValue(':group_id', $groupId, PDO::PARAM_INT);
+                        $stmt->execute();
                     }
 
                     if ($type == "SLAVE") {

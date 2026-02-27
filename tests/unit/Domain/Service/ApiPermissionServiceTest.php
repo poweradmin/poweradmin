@@ -86,6 +86,22 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testUserHasPermissionChecksGroupMemberships(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchColumn')->willReturn(1);
+
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->stringContains('user_group_members'))
+            ->willReturn($stmt);
+
+        $result = $this->service->userHasPermission(1, 'zone_master_add');
+        $this->assertTrue($result);
+    }
+
+    #[Test]
     public function testUserOwnsZoneReturnsTrue(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
@@ -109,6 +125,25 @@ class ApiPermissionServiceTest extends TestCase
 
         $result = $this->service->userOwnsZone(1, 100);
         $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testUserOwnsZoneViaGroupMembership(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+
+        $callIndex = 0;
+        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex): int {
+            $results = [0, 1]; // direct ownership: false, group ownership: true
+            $index = $callIndex++;
+            return array_key_exists($index, $results) ? $results[$index] : 0;
+        });
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $result = $this->service->userOwnsZone(1, 100);
+        $this->assertTrue($result);
     }
 
     #[Test]
@@ -436,5 +471,51 @@ class ApiPermissionServiceTest extends TestCase
 
         $result = $this->service->getUserVisibleZoneIds(4);
         $this->assertEquals([], $result);
+    }
+
+    #[Test]
+    public function testCanEditZoneMetaAsUberuser(): void
+    {
+        $this->setupPermissionMock([1]); // user_is_ueberuser = true
+
+        $result = $this->service->canEditZoneMeta(1, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneMetaWithEditOthersPermission(): void
+    {
+        $this->setupPermissionMock([0, 1]); // not ueberuser, has zone_meta_edit_others
+
+        $result = $this->service->canEditZoneMeta(2, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneMetaWithEditOwnPermissionAndOwnership(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+
+        $callIndex = 0;
+        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex): int {
+            $results = [0, 0, 1, 1]; // not ueberuser, not edit_others, has edit_own, owns zone
+            $index = $callIndex++;
+            return array_key_exists($index, $results) ? $results[$index] : 0;
+        });
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $result = $this->service->canEditZoneMeta(3, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneMetaReturnsFalseWithoutPermission(): void
+    {
+        $this->setupPermissionMock([0, 0, 0]); // no permissions
+
+        $result = $this->service->canEditZoneMeta(4, 100);
+        $this->assertFalse($result);
     }
 }
