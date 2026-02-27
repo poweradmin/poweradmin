@@ -297,19 +297,11 @@
 
             {% if delete_permission == 'all' or delete_permission == 'own' or delete_permission == 'own_as_client' %}
             {% if total_zones > 0 %}
-            <div class="card-footer py-3 d-flex justify-content-between align-items-center">
-                <div>
-                    <button type="button" name="commit" class="btn btn-danger btn-sm" id="delete-zones-button" disabled
-                            onclick="showDeleteZonesModal()">
-                        <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete zone(s){% endtrans %}
-                    </button>
-                </div>
-                <div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary"
-                            onclick="document.getElementById('select_search_zones').click()">
-                        <i class="bi bi-check-all me-1 text-secondary"></i>{% trans %}Toggle all{% endtrans %}
-                    </button>
-                </div>
+            <div class="card-footer py-3">
+                <button type="button" name="commit" class="btn btn-danger btn-sm" id="delete-zones-button" disabled
+                        onclick="showDeleteZonesModal()">
+                    <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete zone(s){% endtrans %}
+                </button>
             </div>
             {% endif %}
             {% endif %}
@@ -488,19 +480,11 @@
 
             {% if edit_permission == 'all' or edit_permission == 'own' or edit_permission == 'own_as_client' %}
             {% if total_records > 0 %}
-            <div class="card-footer py-3 d-flex justify-content-between align-items-center">
-                <div>
-                    <button type="button" name="commit" class="btn btn-danger btn-sm" id="delete-records-button" disabled
-                            onclick="showDeleteRecordsModal()">
-                        <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
-                    </button>
-                </div>
-                <div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" 
-                            onclick="document.getElementById('select_records').click()">
-                        <i class="bi bi-check-all me-1 text-secondary"></i>{% trans %}Toggle all{% endtrans %}
-                    </button>
-                </div>
+            <div class="card-footer py-3">
+                <button type="button" name="commit" class="btn btn-danger btn-sm" id="delete-records-button" disabled
+                        onclick="showDeleteRecordsModal()">
+                    <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
+                </button>
             </div>
             {% endif %}
             {% endif %}
