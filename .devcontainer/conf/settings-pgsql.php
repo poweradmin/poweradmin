@@ -61,6 +61,7 @@ return [
         'show_record_comments' => true,
         'show_zone_comments' => false,
         'enable_consistency_checks' => true,
+        'add_reverse_record' => true,
     ],
 
     /**
