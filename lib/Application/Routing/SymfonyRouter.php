@@ -166,7 +166,7 @@ class SymfonyRouter
         $parameters = $routeInfo['parameters'];
 
         if (!class_exists($controllerClass)) {
-            throw new Exception("Controller class {$controllerClass} not found");
+            throw new Exception("Controller class {$controllerClass} not found", 404);
         }
 
         // Create controller instance
@@ -185,7 +185,7 @@ class SymfonyRouter
 
         // Check if method exists
         if (!method_exists($controller, $method)) {
-            throw new Exception("Method {$method} not found in {$controllerClass}");
+            throw new Exception("Method {$method} not found in {$controllerClass}", 404);
         }
 
         // Execute controller method
