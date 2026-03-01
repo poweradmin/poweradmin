@@ -10,7 +10,9 @@ docker-compose up -d
 
 ## Architecture
 
-Each web server uses a different database backend with its own PowerDNS instance (DNSSEC enabled):
+Each database has two Poweradmin instances - one using direct SQL and one using the PowerDNS REST API backend (experimental). All share the same PowerDNS servers (DNSSEC enabled):
+
+### SQL Backend (default - direct database access)
 
 | Port | Web Server | Database | PowerDNS DNS | PowerDNS API |
 |------|------------|----------|--------------|--------------|
@@ -18,12 +20,25 @@ Each web server uses a different database backend with its own PowerDNS instance
 | 8081 | Apache | PostgreSQL | 1054 | 8182 |
 | 8082 | Caddy | SQLite | 1055 | 8183 |
 
+### API Backend (experimental - writes via PowerDNS REST API)
+
+| Port | Web Server | Database | PowerDNS DNS | PowerDNS API |
+|------|------------|----------|--------------|--------------|
+| 8083 | Nginx | MySQL/MariaDB | 1053 | 8181 |
+| 8084 | Nginx | PostgreSQL | 1054 | 8182 |
+| 8085 | Nginx | SQLite | 1055 | 8183 |
+
 ## Port Mappings
 
-### Poweradmin Web Interfaces
-- **MySQL instance** (Nginx): http://localhost:8080
-- **PostgreSQL instance** (Apache): http://localhost:8081
-- **SQLite instance** (Caddy): http://localhost:8082
+### Poweradmin Web Interfaces (SQL backend)
+- **MySQL + SQL** (Nginx): http://localhost:8080
+- **PostgreSQL + SQL** (Apache): http://localhost:8081
+- **SQLite + SQL** (Caddy): http://localhost:8082
+
+### Poweradmin Web Interfaces (API backend)
+- **MySQL + API** (Nginx): http://localhost:8083
+- **PostgreSQL + API** (Nginx): http://localhost:8084
+- **SQLite + API** (Nginx): http://localhost:8085
 
 ### PowerDNS Servers (with DNSSEC)
 - **MySQL backend**: DNS port 1053, API port 8181
@@ -42,19 +57,27 @@ Each web server uses a different database backend with its own PowerDNS instance
 ## Configuration Files
 
 ### Web Server Configs
-- `conf/nginx.conf` - Nginx configuration (MySQL backend)
-- `conf/apache-vhost.conf` - Apache virtual host
-- `conf/Caddyfile` - Caddy configuration (SQLite backend)
+- `conf/nginx.conf` - Nginx configuration (MySQL + SQL)
+- `conf/apache-vhost.conf` - Apache virtual host (PostgreSQL + SQL)
+- `conf/Caddyfile` - Caddy configuration (SQLite + SQL)
+- `conf/nginx-mysql-api.conf` - Nginx configuration (MySQL + API)
+- `conf/nginx-pgsql-api.conf` - Nginx configuration (PostgreSQL + API)
+- `conf/nginx-sqlite-api.conf` - Nginx configuration (SQLite + API)
 
 ### PowerDNS Configs (DNSSEC enabled)
 - `conf/pdns-mysql.conf` - PowerDNS for MySQL
 - `conf/pdns-pgsql.conf` - PowerDNS for PostgreSQL
 - `conf/pdns-sqlite.conf` - PowerDNS for SQLite
 
-### Poweradmin Settings
-- `conf/settings-mysql.php` - MySQL database settings
-- `conf/settings-pgsql.php` - PostgreSQL database settings
-- `conf/settings-sqlite.php` - SQLite database settings
+### Poweradmin Settings (SQL backend)
+- `conf/settings-mysql-sql.php` - MySQL + SQL backend
+- `conf/settings-pgsql-sql.php` - PostgreSQL + SQL backend
+- `conf/settings-sqlite-sql.php` - SQLite + SQL backend
+
+### Poweradmin Settings (API backend)
+- `conf/settings-mysql-api.php` - MySQL + API backend
+- `conf/settings-pgsql-api.php` - PostgreSQL + API backend
+- `conf/settings-sqlite-api.php` - SQLite + API backend
 
 ### Docker Files
 - `Dockerfile` - PHP-FPM container (for Nginx/Caddy)

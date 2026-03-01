@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Poweradmin Settings Configuration File (SQLite)
+ * Poweradmin Settings Configuration File (PostgreSQL + SQL Backend)
  *
- * Devcontainer configuration for SQLite database
+ * Devcontainer configuration for PostgreSQL database
+ * with direct SQL backend (default)
  */
 
 return [
@@ -11,8 +12,13 @@ return [
      * Database Settings
      */
     'database' => [
-        'type' => 'sqlite',
-        'file' => '/data/pdns.db',
+        'host' => 'postgres',
+        'port' => '5432',
+        'name' => 'pdns',
+        'user' => 'pdns',
+        'password' => 'poweradmin',
+        'type' => 'pgsql',
+        'charset' => 'utf8',
     ],
 
     /**
@@ -50,10 +56,8 @@ return [
      * Interface Settings
      */
     'interface' => [
-        'language' => 'en_EN',
-        'enabled_languages' => 'en_EN,de_DE,fr_FR,ja_JP,pl_PL',
-        'title' => 'Poweradmin (SQLite)',
-        'theme' => 'modern',
+        'language' => 'de_DE',
+        'title' => 'Poweradmin (PostgreSQL + SQL)',
         'show_pdns_status' => true,
         'show_record_comments' => true,
         'show_zone_comments' => false,
@@ -107,7 +111,7 @@ return [
      */
     'pdns_api' => [
         'display_name' => 'PowerDNS',
-        'url' => 'http://pdns-sqlite:8081',
+        'url' => 'http://pdns-pgsql:8081',
         'key' => 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA',
         'server_name' => 'localhost',
         'webserver_username' => '',

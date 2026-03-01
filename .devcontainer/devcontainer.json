@@ -7,6 +7,9 @@
     "webserver:8080",
     "apache:8081",
     "caddy:8082",
+    "web-mysql-api:8083",
+    "web-pgsql-api:8084",
+    "web-sqlite-api:8085",
     "mysql:3306",
     "pgsql:5432",
     "adminer:8090",
@@ -21,15 +24,27 @@
   ],
   "portsAttributes": {
     "webserver:8080": {
-      "label": "Poweradmin (MySQL)",
+      "label": "Poweradmin (MySQL + SQL)",
       "onAutoForward": "notify"
     },
     "apache:8081": {
-      "label": "Poweradmin (PostgreSQL)",
+      "label": "Poweradmin (PostgreSQL + SQL)",
       "onAutoForward": "notify"
     },
     "caddy:8082": {
-      "label": "Poweradmin (SQLite)",
+      "label": "Poweradmin (SQLite + SQL)",
+      "onAutoForward": "notify"
+    },
+    "web-mysql-api:8083": {
+      "label": "Poweradmin (MySQL + API)",
+      "onAutoForward": "notify"
+    },
+    "web-pgsql-api:8084": {
+      "label": "Poweradmin (PostgreSQL + API)",
+      "onAutoForward": "notify"
+    },
+    "web-sqlite-api:8085": {
+      "label": "Poweradmin (SQLite + API)",
       "onAutoForward": "notify"
     },
     "mysql:3306": {

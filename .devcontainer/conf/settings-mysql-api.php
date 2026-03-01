@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Poweradmin Settings Configuration File (PostgreSQL)
+ * Poweradmin Settings Configuration File (MySQL + API Backend)
  *
- * Devcontainer configuration for PostgreSQL database
+ * Devcontainer configuration for MySQL/MariaDB database
+ * with PowerDNS REST API backend (experimental)
  */
 
 return [
@@ -11,13 +12,14 @@ return [
      * Database Settings
      */
     'database' => [
-        'host' => 'postgres',
-        'port' => '5432',
-        'name' => 'pdns',
+        'host' => 'mariadb',
+        'port' => '3306',
+        'name' => 'poweradmin',
         'user' => 'pdns',
         'password' => 'poweradmin',
-        'type' => 'pgsql',
+        'type' => 'mysql',
         'charset' => 'utf8',
+        'pdns_db_name' => 'pdns',
     ],
 
     /**
@@ -55,8 +57,8 @@ return [
      * Interface Settings
      */
     'interface' => [
-        'language' => 'de_DE',
-        'title' => 'Poweradmin (PostgreSQL)',
+        'language' => 'en_EN',
+        'title' => 'Poweradmin (MySQL + API)',
         'show_pdns_status' => true,
         'show_record_comments' => true,
         'show_zone_comments' => false,
@@ -106,15 +108,16 @@ return [
     ],
 
     /**
-     * PowerDNS API Settings
+     * PowerDNS API Settings (API backend mode)
      */
     'pdns_api' => [
         'display_name' => 'PowerDNS',
-        'url' => 'http://pdns-pgsql:8081',
+        'url' => 'http://pdns-mysql:8081',
         'key' => 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA',
         'server_name' => 'localhost',
         'webserver_username' => '',
         'webserver_password' => 'poweradmin',
+        'backend' => 'api',
     ],
 
     /**

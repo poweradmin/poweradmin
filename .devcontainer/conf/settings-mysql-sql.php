@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Poweradmin Settings Configuration File (MySQL)
+ * Poweradmin Settings Configuration File (MySQL + SQL Backend)
  *
  * Devcontainer configuration for MySQL/MariaDB database
+ * with direct SQL backend (default)
  */
 
 return [
@@ -57,7 +58,7 @@ return [
      */
     'interface' => [
         'language' => 'en_EN',
-        'title' => 'Poweradmin (MySQL)',
+        'title' => 'Poweradmin (MySQL + SQL)',
         'show_pdns_status' => true,
         'show_record_comments' => true,
         'show_zone_comments' => false,
