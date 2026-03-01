@@ -26,14 +26,9 @@ class FakeConfiguration implements ConfigurationInterface
 {
     protected array $config;
 
-    public function __construct(?string $pdnsApiUrl, ?string $pdnsApiKey)
+    public function __construct(array $config = [])
     {
-        $this->config = [
-            'pdns_api' => [
-                'url' => $pdnsApiUrl,
-                'key' => $pdnsApiKey
-            ]
-        ];
+        $this->config = $config;
     }
 
     /**
