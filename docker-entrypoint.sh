@@ -741,6 +741,7 @@ return [
         'server_name' => '${PA_PDNS_SERVER_NAME:-localhost}',
         'webserver_username' => '${PA_PDNS_WEBSERVER_USERNAME:-}',
         'webserver_password' => '${PA_PDNS_WEBSERVER_PASSWORD:-}',
+        'backend' => '${PA_PDNS_BACKEND:-sql}',
     ],
     'ldap' => [
         'enabled' => ${ldap_enabled},
