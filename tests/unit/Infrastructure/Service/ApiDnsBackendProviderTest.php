@@ -385,7 +385,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtDomain->method('fetchColumn')->willReturn('example.com');
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord, $stmtDomain
+            $stmtRecord,
+            $stmtDomain
         );
 
         // Mock getRRsetFromApi - only this one record
@@ -435,7 +436,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtDomain->method('fetchColumn')->willReturn('example.com');
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord, $stmtDomain
+            $stmtRecord,
+            $stmtDomain
         );
 
         // Mock getRRsetFromApi - two records in the RRset
@@ -505,7 +507,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtDomain->method('fetchColumn')->willReturn('example.com');
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord, $stmtDomain
+            $stmtRecord,
+            $stmtDomain
         );
 
         // Mock getRRsetFromApi
@@ -559,7 +562,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtDomain->method('fetchColumn')->willReturn('example.com');
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord, $stmtDomain
+            $stmtRecord,
+            $stmtDomain
         );
 
         $this->mockClient->method('getZone')
@@ -589,7 +593,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtDomain->method('fetchColumn')->willReturn('example.com');
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord, $stmtDomain
+            $stmtRecord,
+            $stmtDomain
         );
 
         $this->mockClient->method('getZone')
@@ -620,7 +625,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtDomain->method('fetchColumn')->willReturn('example.com');
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord, $stmtDomain
+            $stmtRecord,
+            $stmtDomain
         );
 
         // getZone returns both old and new RRsets
@@ -695,7 +701,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtDomain->method('fetchColumn')->willReturn('example.com');
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord, $stmtDomain
+            $stmtRecord,
+            $stmtDomain
         );
 
         // API returns an RRset with a different record (old record not present)
@@ -751,7 +758,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtDomain->method('fetchColumn')->willReturn(false);
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord, $stmtDomain
+            $stmtRecord,
+            $stmtDomain
         );
 
         $result = $this->provider->editRecord(5, 'www.example.com', 'A', '10.0.0.1', 7200, 0, 0);
@@ -774,7 +782,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtDomain->method('fetchColumn')->willReturn(false);
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord, $stmtDomain
+            $stmtRecord,
+            $stmtDomain
         );
 
         $result = $this->provider->deleteRecord(5);
@@ -815,7 +824,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtDomain->method('fetchColumn')->willReturn('example.com');
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord, $stmtDomain
+            $stmtRecord,
+            $stmtDomain
         );
 
         $this->mockClient->method('getZone')
@@ -869,7 +879,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtDomain->method('fetchColumn')->willReturn('example.com');
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord, $stmtDomain
+            $stmtRecord,
+            $stmtDomain
         );
 
         $callCount = 0;
@@ -922,7 +933,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtLookup->method('fetchColumn')->willReturn(42);
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtDomain, $stmtLookup
+            $stmtDomain,
+            $stmtLookup
         );
 
         $this->mockClient->method('getZone')
@@ -1058,8 +1070,11 @@ class ApiDnsBackendProviderTest extends TestCase
             ->willReturn(true);
 
         $result = $this->provider->updateSupermaster(
-            '192.168.1.1', 'ns1.example.com',
-            '10.0.0.1', 'ns2.example.com', 'admin'
+            '192.168.1.1',
+            'ns1.example.com',
+            '10.0.0.1',
+            'ns2.example.com',
+            'admin'
         );
 
         $this->assertTrue($result);
@@ -1076,8 +1091,11 @@ class ApiDnsBackendProviderTest extends TestCase
             ->method('deleteAutoprimary');
 
         $result = $this->provider->updateSupermaster(
-            '192.168.1.1', 'ns1.example.com',
-            '10.0.0.1', 'ns2.example.com', 'admin'
+            '192.168.1.1',
+            'ns1.example.com',
+            '10.0.0.1',
+            'ns2.example.com',
+            'admin'
         );
 
         $this->assertFalse($result);
@@ -1103,8 +1121,11 @@ class ApiDnsBackendProviderTest extends TestCase
             ->willReturn(true);
 
         $result = $this->provider->updateSupermaster(
-            '192.168.1.1', 'ns1.example.com',
-            '192.168.1.1', 'ns1.example.com', 'newaccount'
+            '192.168.1.1',
+            'ns1.example.com',
+            '192.168.1.1',
+            'ns1.example.com',
+            'newaccount'
         );
 
         $this->assertTrue($result);
@@ -1136,8 +1157,11 @@ class ApiDnsBackendProviderTest extends TestCase
             });
 
         $result = $this->provider->updateSupermaster(
-            '192.168.1.1', 'ns1.example.com',
-            '192.168.1.1', 'ns1.example.com', 'newaccount'
+            '192.168.1.1',
+            'ns1.example.com',
+            '192.168.1.1',
+            'ns1.example.com',
+            'newaccount'
         );
 
         $this->assertFalse($result);

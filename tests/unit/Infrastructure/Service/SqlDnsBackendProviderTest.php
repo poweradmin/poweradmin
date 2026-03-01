@@ -277,8 +277,11 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->mockDb->method('prepare')->willReturn($stmt);
 
         $result = $this->provider->updateSupermaster(
-            '192.168.1.1', 'ns1.example.com',
-            '10.0.0.1', 'ns2.example.com', 'admin'
+            '192.168.1.1',
+            'ns1.example.com',
+            '10.0.0.1',
+            'ns2.example.com',
+            'admin'
         );
 
         $this->assertTrue($result);
