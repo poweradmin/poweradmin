@@ -12,10 +12,15 @@ API_V1_TEST_SCRIPT="$SCRIPT_DIR/api-v1-test.sh"
 API_V2_TEST_SCRIPT="$SCRIPT_DIR/api-v2-test.sh"
 LOAD_TEST_SCRIPT="$SCRIPT_DIR/api-load-test.sh"
 
-# Database-specific config files
+# Database-specific config files (SQL backend)
 CONFIG_MYSQL="$SCRIPT_DIR/.env.api-test.mysql"
 CONFIG_PGSQL="$SCRIPT_DIR/.env.api-test.pgsql"
 CONFIG_SQLITE="$SCRIPT_DIR/.env.api-test.sqlite"
+
+# Database-specific config files (API backend)
+CONFIG_MYSQL_API="$SCRIPT_DIR/.env.api-test.mysql-api"
+CONFIG_PGSQL_API="$SCRIPT_DIR/.env.api-test.pgsql-api"
+CONFIG_SQLITE_API="$SCRIPT_DIR/.env.api-test.sqlite-api"
 
 # Default to MySQL config
 CONFIG_FILE="$CONFIG_MYSQL"
@@ -40,10 +45,15 @@ usage() {
     echo "  check              Check test prerequisites"
     echo "  clean              Clean up test data"
     echo ""
-    echo "Database Options:"
-    echo "  --db mysql         Use MySQL config (port 8080)"
-    echo "  --db pgsql         Use PostgreSQL config (port 8081)"
-    echo "  --db sqlite        Use SQLite config (port 8082)"
+    echo "Database Options (SQL backend):"
+    echo "  --db mysql         Use MySQL + SQL config (port 8080)"
+    echo "  --db pgsql         Use PostgreSQL + SQL config (port 8081)"
+    echo "  --db sqlite        Use SQLite + SQL config (port 8082)"
+    echo ""
+    echo "Database Options (API backend):"
+    echo "  --db mysql-api     Use MySQL + API config (port 8083)"
+    echo "  --db pgsql-api     Use PostgreSQL + API config (port 8084)"
+    echo "  --db sqlite-api    Use SQLite + API config (port 8085)"
     echo ""
     echo "API Versions:"
     echo "  v1                 Run API v1 tests only (98 tests)"
@@ -83,7 +93,7 @@ select_database_config() {
         mysql)
             if [[ -f "$CONFIG_MYSQL" ]]; then
                 CONFIG_FILE="$CONFIG_MYSQL"
-                echo -e "${BLUE}Using MySQL configuration (port 8080)${NC}"
+                echo -e "${BLUE}Using MySQL + SQL configuration (port 8080)${NC}"
             else
                 echo -e "${RED}MySQL config not found: $CONFIG_MYSQL${NC}"
                 return 1
@@ -92,7 +102,7 @@ select_database_config() {
         pgsql|postgres|postgresql)
             if [[ -f "$CONFIG_PGSQL" ]]; then
                 CONFIG_FILE="$CONFIG_PGSQL"
-                echo -e "${BLUE}Using PostgreSQL configuration (port 8081)${NC}"
+                echo -e "${BLUE}Using PostgreSQL + SQL configuration (port 8081)${NC}"
             else
                 echo -e "${RED}PostgreSQL config not found: $CONFIG_PGSQL${NC}"
                 return 1
@@ -101,15 +111,42 @@ select_database_config() {
         sqlite)
             if [[ -f "$CONFIG_SQLITE" ]]; then
                 CONFIG_FILE="$CONFIG_SQLITE"
-                echo -e "${BLUE}Using SQLite configuration (port 8082)${NC}"
+                echo -e "${BLUE}Using SQLite + SQL configuration (port 8082)${NC}"
             else
                 echo -e "${RED}SQLite config not found: $CONFIG_SQLITE${NC}"
                 return 1
             fi
             ;;
+        mysql-api)
+            if [[ -f "$CONFIG_MYSQL_API" ]]; then
+                CONFIG_FILE="$CONFIG_MYSQL_API"
+                echo -e "${BLUE}Using MySQL + API configuration (port 8083)${NC}"
+            else
+                echo -e "${RED}MySQL API config not found: $CONFIG_MYSQL_API${NC}"
+                return 1
+            fi
+            ;;
+        pgsql-api|postgres-api|postgresql-api)
+            if [[ -f "$CONFIG_PGSQL_API" ]]; then
+                CONFIG_FILE="$CONFIG_PGSQL_API"
+                echo -e "${BLUE}Using PostgreSQL + API configuration (port 8084)${NC}"
+            else
+                echo -e "${RED}PostgreSQL API config not found: $CONFIG_PGSQL_API${NC}"
+                return 1
+            fi
+            ;;
+        sqlite-api)
+            if [[ -f "$CONFIG_SQLITE_API" ]]; then
+                CONFIG_FILE="$CONFIG_SQLITE_API"
+                echo -e "${BLUE}Using SQLite + API configuration (port 8085)${NC}"
+            else
+                echo -e "${RED}SQLite API config not found: $CONFIG_SQLITE_API${NC}"
+                return 1
+            fi
+            ;;
         *)
             echo -e "${RED}Unknown database type: $db_type${NC}"
-            echo "Valid options: mysql, pgsql, sqlite"
+            echo "Valid options: mysql, pgsql, sqlite, mysql-api, pgsql-api, sqlite-api"
             return 1
             ;;
     esac
@@ -150,11 +187,15 @@ check_config() {
         echo -e "${RED}Configuration file not found: $CONFIG_FILE${NC}"
         echo ""
         echo "Available configuration files:"
-        echo "  .env.api-test.mysql  - MySQL (port 8080)"
-        echo "  .env.api-test.pgsql  - PostgreSQL (port 8081)"
-        echo "  .env.api-test.sqlite - SQLite (port 8082)"
+        echo "  .env.api-test.mysql       - MySQL + SQL (port 8080)"
+        echo "  .env.api-test.pgsql       - PostgreSQL + SQL (port 8081)"
+        echo "  .env.api-test.sqlite      - SQLite + SQL (port 8082)"
+        echo "  .env.api-test.mysql-api   - MySQL + API (port 8083)"
+        echo "  .env.api-test.pgsql-api   - PostgreSQL + API (port 8084)"
+        echo "  .env.api-test.sqlite-api  - SQLite + API (port 8085)"
         echo ""
         echo "Use --db flag to select: $0 --db mysql test all"
+        echo "                         $0 --db mysql-api test all"
         return 1
     fi
 
@@ -297,7 +338,7 @@ run_tests_all_databases() {
     echo -e "${BLUE}================================${NC}"
     echo ""
 
-    for db in mysql pgsql sqlite; do
+    for db in mysql pgsql sqlite mysql-api pgsql-api sqlite-api; do
         echo -e "\n${BLUE}=== Testing $db database ===${NC}\n"
 
         if select_database_config "$db"; then
