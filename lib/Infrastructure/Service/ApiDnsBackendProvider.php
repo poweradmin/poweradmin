@@ -23,7 +23,6 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
-use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
