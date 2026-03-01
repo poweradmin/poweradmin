@@ -264,15 +264,17 @@ class EditController extends BaseController
             $new_type = htmlspecialchars($_POST['newtype'] ?? '');
             if (isset($_POST['type_change']) && in_array($new_type, ZoneType::getTypes())) {
                 $this->validateCsrfToken();
-                $this->dnsRecord->changeZoneType($new_type, $zone_id);
-                $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
+                if ($this->dnsRecord->changeZoneType($new_type, $zone_id)) {
+                    $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
+                }
             }
 
             // Change slave master
             if (isset($_POST['slave_master_change'])) {
                 $this->validateCsrfToken();
-                $this->dnsRecord->changeZoneSlaveMaster($zone_id, $_POST['new_master']);
-                $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
+                if ($this->dnsRecord->changeZoneSlaveMaster($zone_id, $_POST['new_master'])) {
+                    $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
+                }
             }
 
             // Change template

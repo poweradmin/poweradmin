@@ -66,7 +66,7 @@ interface DomainManagerInterface
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]
      * @param int $id Zone ID
      */
-    public function changeZoneType(string $type, int $id): void;
+    public function changeZoneType(string $type, int $id): bool;
 
     /**
      * Change Slave Zone's Master IP Address
@@ -74,7 +74,7 @@ interface DomainManagerInterface
      * @param int $zone_id Zone ID
      * @param string $ip_slave_master Master IP Address
      */
-    public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master);
+    public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master): bool;
 
     /**
      * Change owner of a domain

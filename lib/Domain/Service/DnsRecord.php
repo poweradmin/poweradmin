@@ -639,11 +639,11 @@ class DnsRecord
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]
      * @param int $id Zone ID
      *
-     * @return void
+     * @return bool
      */
-    public function changeZoneType(string $type, int $id): void
+    public function changeZoneType(string $type, int $id): bool
     {
-        $this->domainManager->changeZoneType($type, $id);
+        return $this->domainManager->changeZoneType($type, $id);
     }
 
     /** Change Slave Zone's Master IP Address
@@ -651,9 +651,9 @@ class DnsRecord
      * @param int $zone_id Zone ID
      * @param string $ip_slave_master Master IP Address
      *
-     * @return null
+     * @return bool
      */
-    public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master)
+    public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master): bool
     {
         return $this->domainManager->changeZoneSlaveMaster($zone_id, $ip_slave_master);
     }

@@ -23,10 +23,14 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Error\RecordIdNotFoundException;
+use Poweradmin\Domain\Error\ZoneIdNotFoundException;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -46,6 +50,7 @@ class DomainManager implements DomainManagerInterface
     private SOARecordManagerInterface $soaRecordManager;
     private DomainRepositoryInterface $domainRepository;
     private IPAddressValidator $ipAddressValidator;
+    private DnsBackendProvider $backendProvider;
 
     /**
      * Constructor
@@ -54,12 +59,14 @@ class DomainManager implements DomainManagerInterface
      * @param ConfigurationManager $config Configuration manager
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
+     * @param DnsBackendProvider|null $backendProvider DNS backend provider (auto-created if null)
      */
     public function __construct(
         PDOCommon $db,
         ConfigurationManager $config,
         SOARecordManagerInterface $soaRecordManager,
-        DomainRepositoryInterface $domainRepository
+        DomainRepositoryInterface $domainRepository,
+        ?DnsBackendProvider $backendProvider = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -67,6 +74,7 @@ class DomainManager implements DomainManagerInterface
         $this->soaRecordManager = $soaRecordManager;
         $this->domainRepository = $domainRepository;
         $this->ipAddressValidator = new IPAddressValidator();
+        $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
     }
 
     /**
@@ -91,26 +99,38 @@ class DomainManager implements DomainManagerInterface
             $dns_ns1 = $this->config->get('dns', 'ns1');
             $dns_hostmaster = $this->config->get('dns', 'hostmaster');
             $dns_ttl = $this->config->get('dns', 'ttl');
-            $db_type = $this->config->get('database', 'type');
-
-            $tableNameService = new TableNameService($this->config);
-            $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
-            $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
             if (
                 ($domain && $zone_template) ||
                 (preg_match('/in-addr.arpa/i', $domain) && $zone_template) ||
-                $type == "SLAVE" && $domain && $slave_master
+                ($type == "SLAVE" && $domain && $slave_master)
             ) {
+                // Create zone BEFORE starting the transaction. In API mode,
+                // createZone() polls the DB to discover the new domain ID.
+                // If called inside a transaction, snapshot isolation can hide
+                // the row that PowerDNS wrote on a different connection.
+                try {
+                    $domain_id = $this->backendProvider->createZone($domain, $type, $slave_master);
+                } catch (ZoneIdNotFoundException $e) {
+                    // Zone was created via API but DB ID lookup timed out.
+                    // Clean up the orphaned zone to avoid unmanaged state.
+                    $this->cleanupZoneOnFailure(0, $domain);
+                    $this->messageService->addSystemError(_('Failed to create zone in DNS backend.'));
+                    return false;
+                } catch (\Exception $e) {
+                    $this->messageService->addSystemError(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
+                    return false;
+                }
+                if ($domain_id === false) {
+                    // API call was rejected (duplicate zone, validation error, etc.)
+                    // Zone was NOT created - do not attempt cleanup as it could
+                    // delete an existing zone with the same name.
+                    $this->messageService->addSystemError(_('Failed to create zone in DNS backend.'));
+                    return false;
+                }
+
                 $db->beginTransaction();
                 try {
-                    $stmt = $db->prepare("INSERT INTO $domains_table (name, type) VALUES (:domain, :type)");
-                    $stmt->bindValue(':domain', $domain, PDO::PARAM_STR);
-                    $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-                    $stmt->execute();
-
-                    $domain_id = $db->lastInsertId();
-
                     $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
                     $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
                     $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
@@ -138,10 +158,7 @@ class DomainManager implements DomainManagerInterface
                     }
 
                     if ($type == "SLAVE") {
-                        $stmt = $db->prepare("UPDATE $domains_table SET master = :slave_master WHERE id = :domain_id");
-                        $stmt->bindValue(':slave_master', $slave_master, PDO::PARAM_STR);
-                        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-                        $stmt->execute();
+                        // Master IP is already set by backendProvider->createZone()
                         $db->commit();
                         return true;
                     } else {
@@ -162,18 +179,24 @@ class DomainManager implements DomainManagerInterface
                             // Construct complete SOA record with all parameters
                             $soa_content = "$ns1 $hm $serial $soa_refresh $soa_retry $soa_expire $soa_minimum";
 
-                            $stmt = $db->prepare("INSERT INTO $records_table (domain_id, name, content, type, ttl, prio) VALUES (:domain_id, :name, :content, :type, :ttl, :prio)");
-                            $stmt->execute([
-                                ':domain_id' => $domain_id,
-                                ':name' => $domain,
-                                ':content' => $soa_content,
-                                ':type' => 'SOA',
-                                ':ttl' => $ttl,
-                                ':prio' => 0
-                            ]);
+                            if (!$this->backendProvider->addRecord((int)$domain_id, $domain, 'SOA', $soa_content, (int)$ttl, 0)) {
+                                $db->rollBack();
+                                $this->cleanupZoneOnFailure((int)$domain_id, $domain);
+                                $this->messageService->addSystemError(_('Failed to create SOA record for zone.'));
+                                return false;
+                            }
                             $db->commit();
                             return true;
                         } elseif ($domain_id && is_numeric($zone_template)) {
+                            $isApiBackend = $this->backendProvider->isApiBackend();
+                            if ($isApiBackend) {
+                                // Commit zones + zones_groups before template records.
+                                // addRecordGetId() polls the DB for records that PowerDNS
+                                // writes via a separate connection. Snapshot isolation
+                                // inside this transaction would hide those rows.
+                                $db->commit();
+                            }
+
                             $dns_ttl = $this->config->get('dns', 'ttl');
 
                             $templ_records = ZoneTemplate::getZoneTemplRecords($db, $zone_template);
@@ -183,7 +206,7 @@ class DomainManager implements DomainManagerInterface
                                     if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
                                         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
                                         $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
-                                        $type = $r["type"];
+                                        $recordType = $r["type"];
                                         $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
                                         $ttl = $r["ttl"];
                                         $prio = intval($r["prio"]);
@@ -192,17 +215,24 @@ class DomainManager implements DomainManagerInterface
                                             $ttl = $dns_ttl;
                                         }
 
-                                        $stmt = $db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:domain_id, :name, :type, :content, :ttl, :prio)");
-                                        $stmt->execute([
-                                            ':domain_id' => $domain_id,
-                                            ':name' => $name,
-                                            ':type' => $type,
-                                            ':content' => $content,
-                                            ':ttl' => $ttl,
-                                            ':prio' => $prio
-                                        ]);
-
-                                        $record_id = $db->lastInsertId();
+                                        try {
+                                            $record_id = $this->backendProvider->addRecordGetId((int)$domain_id, $name, $recordType, $content, (int)$ttl, $prio);
+                                        } catch (RecordIdNotFoundException $e) {
+                                            // Record was created via API but DB ID not found.
+                                            // Skip template linkage for this record to avoid
+                                            // storing a synthetic ID that breaks cleanup JOINs.
+                                            error_log($e->getMessage());
+                                            continue;
+                                        }
+                                        if ($record_id === null && $isApiBackend) {
+                                            $this->cleanupZoneOnFailure((int)$domain_id, $domain);
+                                            $this->cleanupZoneMetadata((int)$domain_id);
+                                            $this->messageService->addSystemError(sprintf(_('Failed to create %s record for zone.'), $recordType));
+                                            return false;
+                                        }
+                                        if ($record_id === null) {
+                                            $record_id = 0;
+                                        }
 
                                         $stmt = $db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
                                         $stmt->execute([
@@ -213,7 +243,9 @@ class DomainManager implements DomainManagerInterface
                                     }
                                 }
                             }
-                            $db->commit();
+                            if (!$isApiBackend) {
+                                $db->commit();
+                            }
                             return true;
                         } else {
                             $db->rollBack();
@@ -222,7 +254,16 @@ class DomainManager implements DomainManagerInterface
                         }
                     }
                 } catch (\Exception $e) {
-                    $db->rollBack();
+                    $wasInTransaction = $db->inTransaction();
+                    if ($wasInTransaction) {
+                        $db->rollBack();
+                    }
+                    if ($domain_id !== false) {
+                        $this->cleanupZoneOnFailure((int)$domain_id, $domain);
+                        if (!$wasInTransaction) {
+                            $this->cleanupZoneMetadata((int)$domain_id);
+                        }
+                    }
                     $this->messageService->addSystemError(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
                     return false;
                 }
@@ -248,41 +289,59 @@ class DomainManager implements DomainManagerInterface
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
 
-        $tableNameService = new TableNameService($this->config);
-        $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-        $domainmetadata_table = $tableNameService->getTable(PdnsTable::DOMAINMETADATA);
-        $cryptokeys_table = $tableNameService->getTable(PdnsTable::CRYPTOKEYS);
-
         if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-            // Get zone_id before deleting zones record for sync cleanup
-            $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
-            $stmt->execute([':id' => $id]);
-            $zoneId = $stmt->fetchColumn();
+            // Get zone name for backend deletion.
+            $zoneName = $this->domainRepository->getDomainNameById($id);
+            if ($zoneName !== null) {
+                // Delete DNS data via backend first (SQL or API).
+                // This must happen before local cleanup so that a failure
+                // does not leave Poweradmin metadata deleted while DNS zone remains.
+                if (!$this->backendProvider->deleteZone($id, $zoneName)) {
+                    $this->messageService->addSystemError(_('Failed to delete zone from DNS backend.'));
+                    return false;
+                }
+            } elseif (!$this->backendProvider->isApiBackend()) {
+                // Domain name row is gone (out-of-band delete or partial failure)
+                // but the SQL backend can still clean up records, domainmetadata,
+                // and cryptokeys by domain ID alone.
+                $this->backendProvider->deleteZone($id, '');
+            }
+            // For API backend with missing domain name: skip backend call
+            // (API requires the zone name) and proceed to metadata cleanup.
 
-            // Clean up zone template sync records if zone exists
-            if ($zoneId) {
-                $syncService = new ZoneTemplateSyncService($this->db, $this->config);
-                $syncService->cleanupZoneSyncRecords($zoneId);
+            // Clean up Poweradmin-internal tables in a transaction
+            try {
+                $this->db->beginTransaction();
+
+                // Get zone_id before deleting zones record for sync cleanup
+                $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
+                $stmt->execute([':id' => $id]);
+                $zoneId = $stmt->fetchColumn();
+
+                // Clean up zone template sync records if zone exists
+                if ($zoneId) {
+                    $syncService = new ZoneTemplateSyncService($this->db, $this->config);
+                    $syncService->cleanupZoneSyncRecords($zoneId);
+                }
+
+                $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
+                $stmt->execute([':id' => $id]);
+
+                $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
+                $stmt->execute([':id' => $id]);
+
+                $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
+                $stmt->execute([':id' => $id]);
+
+                $this->db->commit();
+            } catch (\Exception $e) {
+                if ($this->db->inTransaction()) {
+                    $this->db->rollBack();
+                }
+                $this->messageService->addSystemError(sprintf(_('Failed to clean up zone metadata: %s'), $e->getMessage()));
+                return false;
             }
 
-            $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
-            $stmt->execute([':id' => $id]);
-
-            $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :id");
-            $stmt->execute([':id' => $id]);
-
-            $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
-            $stmt->execute([':id' => $id]);
-
-            $stmt = $this->db->prepare("DELETE FROM $domainmetadata_table WHERE domain_id = :id");
-            $stmt->execute([':id' => $id]);
-
-            $stmt = $this->db->prepare("DELETE FROM $cryptokeys_table WHERE domain_id = :id");
-            $stmt->execute([':id' => $id]);
-
-            $stmt = $this->db->prepare("DELETE FROM $domains_table WHERE id = :id");
-            $stmt->execute([':id' => $id]);
             return true;
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
@@ -299,13 +358,7 @@ class DomainManager implements DomainManagerInterface
      */
     public function deleteDomains(array $domains): bool
     {
-        $tableNameService = new TableNameService($this->config);
-        $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-        $domainmetadata_table = $tableNameService->getTable(PdnsTable::DOMAINMETADATA);
-        $cryptokeys_table = $tableNameService->getTable(PdnsTable::CRYPTOKEYS);
-
-        $this->db->beginTransaction();
+        $allSucceeded = true;
 
         foreach ($domains as $id) {
             $perm_edit = Permission::getEditPermission($this->db);
@@ -313,45 +366,99 @@ class DomainManager implements DomainManagerInterface
 
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if (is_numeric($id)) {
-                    // Get zone_id before deleting zones record for sync cleanup
-                    $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
-                    $stmt->execute([':id' => $id]);
-                    $zoneId = $stmt->fetchColumn();
-
-                    // Clean up zone template sync records if zone exists
-                    if ($zoneId) {
-                        $syncService = new ZoneTemplateSyncService($this->db, $this->config);
-                        $syncService->cleanupZoneSyncRecords($zoneId);
+                    // Get zone name for backend deletion.
+                    $zoneName = $this->domainRepository->getDomainNameById($id);
+                    if ($zoneName !== null) {
+                        // Delete DNS data BEFORE the transaction. API deletions are
+                        // irreversible, so they must not be inside a transaction that
+                        // could roll back and leave metadata pointing to a deleted zone.
+                        if (!$this->backendProvider->deleteZone($id, $zoneName)) {
+                            $this->messageService->addSystemError(_('Failed to delete zone from DNS backend.'));
+                            $allSucceeded = false;
+                            continue;
+                        }
+                    } elseif (!$this->backendProvider->isApiBackend()) {
+                        // Domain name row is gone but SQL backend can still
+                        // clean up by domain ID.
+                        $this->backendProvider->deleteZone($id, '');
                     }
 
-                    $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
-                    $stmt->execute([':id' => $id]);
+                    // Clean up Poweradmin metadata in a transaction
+                    $this->db->beginTransaction();
+                    try {
+                        // Get zone_id before deleting zones record for sync cleanup
+                        $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
+                        $stmt->execute([':id' => $id]);
+                        $zoneId = $stmt->fetchColumn();
 
-                    $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :id");
-                    $stmt->execute([':id' => $id]);
+                        // Clean up zone template sync records if zone exists
+                        if ($zoneId) {
+                            $syncService = new ZoneTemplateSyncService($this->db, $this->config);
+                            $syncService->cleanupZoneSyncRecords($zoneId);
+                        }
 
-                    $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
-                    $stmt->execute([':id' => $id]);
+                        // Clean up Poweradmin-internal tables (always SQL)
+                        $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
+                        $stmt->execute([':id' => $id]);
 
-                    $stmt = $this->db->prepare("DELETE FROM $domainmetadata_table WHERE domain_id = :id");
-                    $stmt->execute([':id' => $id]);
+                        $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
+                        $stmt->execute([':id' => $id]);
 
-                    $stmt = $this->db->prepare("DELETE FROM $cryptokeys_table WHERE domain_id = :id");
-                    $stmt->execute([':id' => $id]);
+                        $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
+                        $stmt->execute([':id' => $id]);
 
-                    $stmt = $this->db->prepare("DELETE FROM $domains_table WHERE id = :id");
-                    $stmt->execute([':id' => $id]);
+                        $this->db->commit();
+                    } catch (\Exception $e) {
+                        if ($this->db->inTransaction()) {
+                            $this->db->rollBack();
+                        }
+                        $this->messageService->addSystemError(sprintf(_('Failed to delete zone metadata: %s'), $e->getMessage()));
+                        $allSucceeded = false;
+                    }
                 } else {
                     $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "deleteDomains", "id must be a number"));
+                    $allSucceeded = false;
                 }
             } else {
                 $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
+                $allSucceeded = false;
             }
         }
 
-        $this->db->commit();
+        return $allSucceeded;
+    }
 
-        return true;
+    /**
+     * Attempt to clean up a zone created before the transaction on failure.
+     *
+     * Since createZone() runs outside the transaction (required for API mode
+     * snapshot isolation), both SQL and API backends need compensating cleanup
+     * when the subsequent transaction fails.
+     */
+    private function cleanupZoneOnFailure(int $domainId, string $domain): void
+    {
+        try {
+            $this->backendProvider->deleteZone($domainId, $domain);
+        } catch (\Exception $e) {
+            error_log(sprintf("Failed to clean up orphaned zone '%s' after local failure: %s", $domain, $e->getMessage()));
+        }
+    }
+
+    /**
+     * Clean up already-committed Poweradmin metadata for a zone.
+     * Used when the transaction was committed early (API backend)
+     * and a subsequent step fails.
+     */
+    private function cleanupZoneMetadata(int $domainId): void
+    {
+        try {
+            $db = $this->db;
+            $db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :did")->execute([':did' => $domainId]);
+            $db->prepare("DELETE FROM zones_groups WHERE domain_id = :did")->execute([':did' => $domainId]);
+            $db->prepare("DELETE FROM zones WHERE domain_id = :did")->execute([':did' => $domainId]);
+        } catch (\Exception $e) {
+            error_log(sprintf("Failed to clean up zone metadata for domain_id %d: %s", $domainId, $e->getMessage()));
+        }
     }
 
     /**
@@ -360,26 +467,13 @@ class DomainManager implements DomainManagerInterface
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]
      * @param int $id Zone ID
      */
-    public function changeZoneType(string $type, int $id): void
+    public function changeZoneType(string $type, int $id): bool
     {
-        $tableNameService = new TableNameService($this->config);
-        $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $add = '';
-        $params = array(':type' => $type, ':id' => $id);
-
-        // It is not really necessary to clear the field that contains the IP address
-        // of the master if the type changes from slave to something else. PowerDNS will
-        // ignore the field if the type isn't something else then slave. But then again,
-        // it's much clearer this way.
-        if ($type != "SLAVE") {
-            $add = ", master = :master";
-            $params[':master'] = '';
+        if (!$this->backendProvider->updateZoneType($id, $type)) {
+            $this->messageService->addSystemError(_('Failed to update zone type in DNS backend.'));
+            return false;
         }
-        $query = "UPDATE $domains_table SET type = :type" . $add . " WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-
-        $stmt->execute($params);
+        return true;
     }
 
     /**
@@ -388,17 +482,19 @@ class DomainManager implements DomainManagerInterface
      * @param int $zone_id Zone ID
      * @param string $ip_slave_master Master IP Address
      */
-    public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master)
+    public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master): bool
     {
-        if ($this->ipAddressValidator->areMultipleValidIPs($ip_slave_master)) {
-            $tableNameService = new TableNameService($this->config);
-            $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
-
-            $stmt = $this->db->prepare("UPDATE $domains_table SET master = ? WHERE id = ?");
-            $stmt->execute(array($ip_slave_master, $zone_id));
-        } else {
+        if (!$this->ipAddressValidator->areMultipleValidIPs($ip_slave_master)) {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "changeZoneSlaveMaster", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
+            return false;
         }
+
+        if (!$this->backendProvider->updateZoneMaster($zone_id, $ip_slave_master)) {
+            $this->messageService->addSystemError(_('Failed to update zone master in DNS backend.'));
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -411,7 +507,7 @@ class DomainManager implements DomainManagerInterface
      */
     public static function addOwnerToZone($db, int $zone_id, int $user_id): bool
     {
-        if ((UserManager::verifyPermission($db, 'zone_meta_edit_others')) || (UserManager::verifyPermission($db, 'zone_meta_edit_own')) && UserManager::verifyUserIsOwnerZoneId($db, $_GET["id"])) {
+        if (UserManager::verifyPermission($db, 'zone_meta_edit_others') || (UserManager::verifyPermission($db, 'zone_meta_edit_own') && UserManager::verifyUserIsOwnerZoneId($db, $zone_id))) {
             if (UserManager::isValidUser($db, $user_id)) {
                 $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE owner = ? AND domain_id = ?");
                 $stmt->execute([$user_id, $zone_id]);
@@ -448,18 +544,19 @@ class DomainManager implements DomainManagerInterface
      */
     public static function deleteOwnerFromZone($db, int $zone_id, int $user_id): bool
     {
-        if ((UserManager::verifyPermission($db, 'zone_meta_edit_others')) || (UserManager::verifyPermission($db, 'zone_meta_edit_own')) && UserManager::verifyUserIsOwnerZoneId($db, $_GET["id"])) {
+        if (UserManager::verifyPermission($db, 'zone_meta_edit_others') || (UserManager::verifyPermission($db, 'zone_meta_edit_own') && UserManager::verifyUserIsOwnerZoneId($db, $zone_id))) {
             if (UserManager::isValidUser($db, $user_id)) {
                 $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE domain_id = ?");
                 $stmt->execute([$zone_id]);
                 if ($stmt->fetchColumn() > 1) {
                     $stmt = $db->prepare("DELETE FROM zones WHERE owner = ? AND domain_id = ?");
                     $stmt->execute([$user_id, $zone_id]);
+                    return true;
                 } else {
                     $messageService = new MessageService();
                     $messageService->addSystemError(_('There must be at least one owner for a zone.'));
+                    return false;
                 }
-                return true;
             } else {
                 $messageService = new MessageService();
                 $messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "deleteOwnerFromZone", "$zone_id / $user_id"));
@@ -509,10 +606,12 @@ class DomainManager implements DomainManagerInterface
         $zone_slave_add = UserManager::verifyPermission($this->db, 'zone_slave_add');
 
         $soa_rec = $this->soaRecordManager->getSOARecord($zone_id);
-        $this->db->beginTransaction();
 
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+
+        $this->db->beginTransaction();
+        try {
 
         if ($zone_template_id != 0) {
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
@@ -543,9 +642,9 @@ class DomainManager implements DomainManagerInterface
                     // Check if this is a reverse zone and handle NS or SOA records appropriately
                     if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
                         $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
-                        $type = $r["type"];
+                        $recordType = $r["type"];
 
-                        if ($type == "SOA") {
+                        if ($recordType == "SOA") {
                             // For SOA records, delete existing ones and use updated SOA record
                             $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
                             $stmt->execute([':zone_id' => $zone_id]);
@@ -565,7 +664,7 @@ class DomainManager implements DomainManagerInterface
                         }
 
                         // Check if a record with the same name, type, and content already exists
-                        $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table 
+                        $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table
                             WHERE domain_id = :zone_id
                             AND name = :name
                             AND type = :type
@@ -573,7 +672,7 @@ class DomainManager implements DomainManagerInterface
                         $stmt->execute([
                             ':zone_id' => $zone_id,
                             ':name' => $name,
-                            ':type' => $type,
+                            ':type' => $recordType,
                             ':content' => $content
                         ]);
                         $recordExists = (int)$stmt->fetchColumn() > 0;
@@ -585,7 +684,7 @@ class DomainManager implements DomainManagerInterface
                             $stmt->execute([
                                 ':zone_id' => $zone_id,
                                 ':name' => $name,
-                                ':type' => $type,
+                                ':type' => $recordType,
                                 ':content' => $content,
                                 ':ttl' => $ttl,
                                 ':prio' => $prio
@@ -620,5 +719,11 @@ class DomainManager implements DomainManagerInterface
             ':zone_id' => $zone_id
         ]);
         $this->db->commit();
+        } catch (\Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            $this->messageService->addSystemError(sprintf(_('Failed to update zone records: %s'), $e->getMessage()));
+        }
     }
 }

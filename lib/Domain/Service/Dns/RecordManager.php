@@ -24,11 +24,14 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use Exception;
 use PDO;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -51,6 +54,7 @@ class RecordManager implements RecordManagerInterface
     private DnsRecordValidationServiceInterface $validationService;
     private SOARecordManagerInterface $soaRecordManager;
     private DomainRepositoryInterface $domainRepository;
+    private DnsBackendProvider $backendProvider;
 
     /**
      * Constructor
@@ -60,13 +64,15 @@ class RecordManager implements RecordManagerInterface
      * @param DnsRecordValidationServiceInterface $validationService DNS record validation service
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
+     * @param DnsBackendProvider|null $backendProvider DNS backend provider (auto-created if null)
      */
     public function __construct(
         PDOCommon $db,
         ConfigurationManager $config,
         DnsRecordValidationServiceInterface $validationService,
         SOARecordManagerInterface $soaRecordManager,
-        DomainRepositoryInterface $domainRepository
+        DomainRepositoryInterface $domainRepository,
+        ?DnsBackendProvider $backendProvider = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -76,6 +82,7 @@ class RecordManager implements RecordManagerInterface
         $this->validationService = $validationService;
         $this->soaRecordManager = $soaRecordManager;
         $this->domainRepository = $domainRepository;
+        $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
     }
 
     /**
@@ -156,23 +163,12 @@ class RecordManager implements RecordManagerInterface
             return false;
         }
 
-        $this->db->beginTransaction();
+        if (!$this->backendProvider->addRecord($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio)) {
+            $this->messageService->addSystemError(_('Failed to add record to DNS backend.'));
+            return false;
+        }
 
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:zone_id, :name, :type, :content, :ttl, :prio)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
-        $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-        $stmt->bindValue(':content', $content, PDO::PARAM_STR);
-        $stmt->bindValue(':ttl', $validatedTtl, PDO::PARAM_INT);
-        $stmt->bindValue(':prio', $validatedPrio, PDO::PARAM_INT);
-        $stmt->execute();
-        $this->db->commit();
-
-        if ($type != 'SOA') {
+        if ($type != 'SOA' && !$this->backendProvider->isApiBackend()) {
             $this->soaRecordManager->updateSOASerial($zone_id);
         }
 
@@ -265,27 +261,14 @@ class RecordManager implements RecordManagerInterface
             return null;
         }
 
-        $this->db->beginTransaction();
+        try {
+            $recordId = $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
+        } catch (RecordIdNotFoundException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
 
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:zone_id, :name, :type, :content, :ttl, :prio)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
-        $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-        $stmt->bindValue(':content', $content, PDO::PARAM_STR);
-        $stmt->bindValue(':ttl', $validatedTtl, PDO::PARAM_INT);
-        $stmt->bindValue(':prio', $validatedPrio, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Get the newly inserted record ID
-        $recordId = (int)$this->db->lastInsertId();
-
-        $this->db->commit();
-
-        if ($type != 'SOA') {
+        if ($type != 'SOA' && !$this->backendProvider->isApiBackend()) {
             $this->soaRecordManager->updateSOASerial($zone_id);
         }
 
@@ -362,21 +345,18 @@ class RecordManager implements RecordManagerInterface
                 $validatedTtl = $validatedData['ttl'];
                 $validatedPrio = $validatedData['prio'];
 
-                $tableNameService = new TableNameService($this->config);
-                $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-                $stmt = $this->db->prepare("UPDATE $records_table
-                SET name = ?, type = ?, content = ?, ttl = ?, prio = ?, disabled = ?
-                WHERE id = ?");
-                $stmt->execute([
+                if (!$this->backendProvider->editRecord(
+                    $record['rid'],
                     $name,
                     $record['type'],
                     $content,
                     $validatedTtl,
                     $validatedPrio,
-                    $record['disabled'],
-                    $record['rid']
-                ]);
+                    $record['disabled']
+                )) {
+                    $this->messageService->addSystemError(_('Failed to update record in DNS backend.'));
+                    return false;
+                }
                 return true;
             } else {
                 $this->messageService->addSystemError($validationResult->getFirstError());
@@ -402,33 +382,17 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
-            if ($record['type'] == "SOA") {
-                // SOA record deletion is based on permissions
-                // Own_as_client users cannot delete SOA records
-                if ($perm_edit == "own_as_client") {
-                    $this->messageService->addSystemError(_('You do not have the permission to delete SOA records.'));
-                    return false;
-                }
+            if ($record['type'] == "SOA" && $perm_edit == "own_as_client") {
+                $this->messageService->addSystemError(_('You do not have the permission to delete SOA records.'));
+                return false;
+            }
 
-                // Admins and regular zone owners can delete SOA records
-                $tableNameService = new TableNameService($this->config);
-                $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-                $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = ?");
-                $stmt->execute([$rid]);
-                return true;
-            } elseif ($record['type'] == "NS" && $perm_edit == "own_as_client") {
-                // Users with own_as_client permission cannot delete NS records
+            if ($record['type'] == "NS" && $perm_edit == "own_as_client") {
                 $this->messageService->addSystemError(_('You do not have the permission to delete NS records.'));
                 return false;
-            } else {
-                $tableNameService = new TableNameService($this->config);
-                $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-                $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = ?");
-                $stmt->execute([$rid]);
-                return true;
             }
+
+            return $this->backendProvider->deleteRecord($rid);
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
             return false;

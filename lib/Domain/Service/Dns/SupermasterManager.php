@@ -23,6 +23,8 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -42,14 +44,16 @@ class SupermasterManager implements SupermasterManagerInterface
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
     private TableNameService $tableNameService;
+    private DnsBackendProvider $backendProvider;
 
     /**
      * Constructor
      *
      * @param PDOCommon $db Database connection
      * @param ConfigurationManager $config Configuration manager
+     * @param DnsBackendProvider|null $backendProvider DNS backend provider (auto-created if null)
      */
-    public function __construct(PDOCommon $db, ConfigurationManager $config)
+    public function __construct(PDOCommon $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
@@ -57,6 +61,7 @@ class SupermasterManager implements SupermasterManagerInterface
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ipAddressValidator = new IPAddressValidator();
         $this->tableNameService = new TableNameService($config);
+        $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
     }
 
     /**
@@ -91,16 +96,7 @@ class SupermasterManager implements SupermasterManagerInterface
             $this->messageService->addSystemError(_('There is already a supermaster with this IP address and hostname.'));
             return false;
         } else {
-            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
-
-            $stmt = $this->db->prepare("INSERT INTO $supermasters_table (ip, nameserver, account) VALUES (:master_ip, :ns_name, :account)");
-            $stmt->execute([
-                ':master_ip' => $master_ip,
-                ':ns_name' => $ns_name,
-                ':account' => $account
-            ]);
-            return true;
+            return $this->backendProvider->addSupermaster($master_ip, $ns_name, $account);
         }
     }
 
@@ -117,15 +113,7 @@ class SupermasterManager implements SupermasterManagerInterface
     public function deleteSupermaster(string $master_ip, string $ns_name): bool
     {
         if ($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip) || $this->hostnameValidator->isValid($ns_name)) {
-            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
-
-            $stmt = $this->db->prepare("DELETE FROM $supermasters_table WHERE ip = :master_ip AND nameserver = :ns_name");
-            $stmt->execute([
-                ':master_ip' => $master_ip,
-                ':ns_name' => $ns_name
-            ]);
-            return true;
+            return $this->backendProvider->deleteSupermaster($master_ip, $ns_name);
         } else {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "deleteSupermaster", "No or no valid ipv4 or ipv6 address given."));
         }
@@ -292,20 +280,7 @@ class SupermasterManager implements SupermasterManagerInterface
             return false;
         }
 
-        $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
-
-        $stmt = $this->db->prepare("UPDATE $supermasters_table SET ip = :new_master_ip, nameserver = :new_ns_name, account = :account 
-                                    WHERE ip = :old_master_ip AND nameserver = :old_ns_name");
-
-        $result = $stmt->execute([
-            ':new_master_ip' => $new_master_ip,
-            ':new_ns_name' => $new_ns_name,
-            ':account' => $account,
-            ':old_master_ip' => $old_master_ip,
-            ':old_ns_name' => $old_ns_name
-        ]);
-
-        return (bool)$result;
+        return $this->backendProvider->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account);
     }
 
     /**
