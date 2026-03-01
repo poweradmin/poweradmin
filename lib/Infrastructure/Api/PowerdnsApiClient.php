@@ -566,4 +566,302 @@ class PowerdnsApiClient
             return [];
         }
     }
+
+    // ---------------------------------------------------------------
+    // Zone operations (extended for DNS backend integration)
+    // ---------------------------------------------------------------
+
+    /**
+     * Get a single zone with its RRsets
+     *
+     * @param string $zoneName Zone name (with trailing dot)
+     * @return array|null Zone data or null if not found
+     */
+    public function getZone(string $zoneName): ?array
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zoneName);
+            $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+            if ($response && $response['responseCode'] === 200) {
+                return $response['data'];
+            }
+
+            return null;
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to get zone %s: %s", $zoneName, $e->getMessage()));
+            return null;
+        }
+    }
+
+    /**
+     * Create a zone with full data and return the response
+     *
+     * @param array $zoneData Zone creation payload
+     * @return array|null Zone data from response or null on failure
+     */
+    public function createZoneWithData(array $zoneData): ?array
+    {
+        try {
+            $endpoint = $this->buildEndpoint("/zones");
+            $response = $this->httpClient->makeRequest('POST', $endpoint, $zoneData);
+
+            if ($response && $response['responseCode'] === 201) {
+                return $response['data'] ?? [];
+            }
+
+            return null;
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to create zone: %s", $e->getMessage()));
+            return null;
+        }
+    }
+
+    /**
+     * Update zone properties (kind, masters, account, etc.)
+     *
+     * @param string $zoneName Zone name (with trailing dot)
+     * @param array $data Zone properties to update
+     * @return bool
+     */
+    public function updateZoneProperties(string $zoneName, array $data): bool
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zoneName);
+            $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+
+            return $response && $response['responseCode'] === 204;
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to update zone %s: %s", $zoneName, $e->getMessage()));
+            return false;
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // RRset operations
+    // ---------------------------------------------------------------
+
+    /**
+     * Patch zone RRsets (add, modify, or delete records)
+     *
+     * @param string $zoneName Zone name (with trailing dot)
+     * @param array $rrsets Array of RRset change objects
+     * @return bool
+     */
+    public function patchZoneRRsets(string $zoneName, array $rrsets): bool
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zoneName);
+            $data = ['rrsets' => $rrsets];
+            $response = $this->httpClient->makeRequest('PATCH', $endpoint, $data);
+
+            return $response && $response['responseCode'] === 204;
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to patch RRsets for zone %s: %s", $zoneName, $e->getMessage()));
+            return false;
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Search
+    // ---------------------------------------------------------------
+
+    /**
+     * Search across zones, records, and comments
+     *
+     * @param string $query Search query (supports * and ? wildcards)
+     * @param string $objectType Filter: 'all', 'zone', 'record', or 'comment'
+     * @param int $max Maximum number of results
+     * @return array Search results
+     */
+    public function searchData(string $query, string $objectType = 'all', int $max = 100): array
+    {
+        try {
+            $params = http_build_query([
+                'q' => $query,
+                'max' => $max,
+                'object_type' => $objectType,
+            ]);
+            $endpoint = $this->buildEndpoint("/search-data?{$params}");
+            $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+            if ($response && $response['responseCode'] === 200) {
+                return $response['data'] ?? [];
+            }
+
+            return [];
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to search: %s", $e->getMessage()));
+            return [];
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Autoprimary (supermaster) operations
+    // ---------------------------------------------------------------
+
+    /**
+     * Get all autoprimaries
+     *
+     * @return array
+     */
+    public function getAutoprimaries(): array
+    {
+        try {
+            $endpoint = $this->buildEndpoint("/autoprimaries");
+            $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+            if ($response && $response['responseCode'] === 200) {
+                return $response['data'] ?? [];
+            }
+
+            return [];
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to get autoprimaries: %s", $e->getMessage()));
+            return [];
+        }
+    }
+
+    /**
+     * Add an autoprimary
+     *
+     * @param string $ip IP address
+     * @param string $nameserver Nameserver hostname
+     * @param string $account Account name
+     * @return bool
+     */
+    public function addAutoprimary(string $ip, string $nameserver, string $account = ''): bool
+    {
+        try {
+            $endpoint = $this->buildEndpoint("/autoprimaries");
+            $data = [
+                'ip' => $ip,
+                'nameserver' => $nameserver,
+                'account' => $account,
+            ];
+            $response = $this->httpClient->makeRequest('POST', $endpoint, $data);
+
+            return $response && ($response['responseCode'] === 201 || $response['responseCode'] === 204);
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to add autoprimary: %s", $e->getMessage()));
+            return false;
+        }
+    }
+
+    /**
+     * Delete an autoprimary
+     *
+     * @param string $ip IP address
+     * @param string $nameserver Nameserver hostname
+     * @return bool
+     */
+    public function deleteAutoprimary(string $ip, string $nameserver): bool
+    {
+        try {
+            $endpoint = $this->buildEndpoint("/autoprimaries/" . rawurlencode($ip) . "/" . rawurlencode($nameserver));
+            $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+
+            return $response && $response['responseCode'] === 204;
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to delete autoprimary: %s", $e->getMessage()));
+            return false;
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // TSIG key operations
+    // ---------------------------------------------------------------
+
+    /**
+     * Get all TSIG keys
+     *
+     * @return array
+     */
+    public function getTsigKeys(): array
+    {
+        try {
+            $endpoint = $this->buildEndpoint("/tsigkeys");
+            $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+            if ($response && $response['responseCode'] === 200) {
+                return $response['data'] ?? [];
+            }
+
+            return [];
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to get TSIG keys: %s", $e->getMessage()));
+            return [];
+        }
+    }
+
+    /**
+     * Create a TSIG key
+     *
+     * @param string $name Key name
+     * @param string $algorithm Key algorithm (e.g., hmac-md5, hmac-sha256)
+     * @param string $key Key material (empty to let server generate)
+     * @return array|null Created key data or null on failure
+     */
+    public function createTsigKey(string $name, string $algorithm, string $key = ''): ?array
+    {
+        try {
+            $endpoint = $this->buildEndpoint("/tsigkeys");
+            $data = [
+                'name' => $name,
+                'algorithm' => $algorithm,
+            ];
+            if ($key !== '') {
+                $data['key'] = $key;
+            }
+            $response = $this->httpClient->makeRequest('POST', $endpoint, $data);
+
+            if ($response && $response['responseCode'] === 201) {
+                return $response['data'] ?? [];
+            }
+
+            return null;
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to create TSIG key: %s", $e->getMessage()));
+            return null;
+        }
+    }
+
+    /**
+     * Delete a TSIG key
+     *
+     * @param string $keyId TSIG key ID
+     * @return bool
+     */
+    public function deleteTsigKey(string $keyId): bool
+    {
+        try {
+            $endpoint = $this->buildEndpoint("/tsigkeys/" . rawurlencode($keyId));
+            $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+
+            return $response && $response['responseCode'] === 204;
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to delete TSIG key: %s", $e->getMessage()));
+            return false;
+        }
+    }
+
+    /**
+     * Update a TSIG key
+     *
+     * @param string $keyId TSIG key ID
+     * @param array $data Key properties to update
+     * @return bool
+     */
+    public function updateTsigKey(string $keyId, array $data): bool
+    {
+        try {
+            $endpoint = $this->buildEndpoint("/tsigkeys/" . rawurlencode($keyId));
+            $response = $this->httpClient->makeRequest('PUT', $endpoint, $data);
+
+            return $response && $response['responseCode'] === 200;
+        } catch (ApiErrorException $e) {
+            error_log(sprintf("Failed to update TSIG key: %s", $e->getMessage()));
+            return false;
+        }
+    }
 }

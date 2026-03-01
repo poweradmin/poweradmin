@@ -265,6 +265,7 @@ return [
         'server_name' => 'localhost',              // PowerDNS server name used in API calls (added in 4.0.0)
         'webserver_username' => '',                // PowerDNS webserver Basic Auth username (usually '#') (added in 4.0.3)
         'webserver_password' => '',                // PowerDNS webserver Basic Auth password (for /metrics endpoint) (added in 4.0.3)
+        'backend' => 'sql',                        // DNS data backend: 'sql' (default, direct database) or 'api' (PowerDNS REST API, experimental) (added in 4.3.0)
     ],
 
     /**
