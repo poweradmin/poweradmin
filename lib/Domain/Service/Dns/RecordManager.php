@@ -345,15 +345,17 @@ class RecordManager implements RecordManagerInterface
                 $validatedTtl = $validatedData['ttl'];
                 $validatedPrio = $validatedData['prio'];
 
-                if (!$this->backendProvider->editRecord(
-                    $record['rid'],
-                    $name,
-                    $record['type'],
-                    $content,
-                    $validatedTtl,
-                    $validatedPrio,
-                    $record['disabled']
-                )) {
+                if (
+                    !$this->backendProvider->editRecord(
+                        $record['rid'],
+                        $name,
+                        $record['type'],
+                        $content,
+                        $validatedTtl,
+                        $validatedPrio,
+                        $record['disabled']
+                    )
+                ) {
                     $this->messageService->addSystemError(_('Failed to update record in DNS backend.'));
                     return false;
                 }

@@ -612,113 +612,112 @@ class DomainManager implements DomainManagerInterface
 
         $this->db->beginTransaction();
         try {
-
-        if ($zone_template_id != 0) {
-            if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-                // Delete existing template-based records
-                if ($db_type == 'pgsql') {
-                    $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
-                } elseif ($db_type == 'sqlite') {
-                    $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
+            if ($zone_template_id != 0) {
+                if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+                    // Delete existing template-based records
+                    if ($db_type == 'pgsql') {
+                        $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
+                    } elseif ($db_type == 'sqlite') {
+                        $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
+                    } else {
+                        $query = "DELETE r, rzt FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
+                    }
+                    $stmt = $this->db->prepare($query);
+                    $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
                 } else {
-                    $query = "DELETE r, rzt FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
+                    $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
                 }
-                $stmt = $this->db->prepare($query);
-                $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
-            } else {
-                $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
-            }
 
-            // Use the permissions we already checked earlier
-            if ($zone_master_add || $zone_slave_add) {
-                $domain = $this->domainRepository->getDomainNameById($zone_id);
+                // Use the permissions we already checked earlier
+                if ($zone_master_add || $zone_slave_add) {
+                    $domain = $this->domainRepository->getDomainNameById($zone_id);
 
-                // Get all records from the template
-                $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
-                $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+                    // Get all records from the template
+                    $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
+                    $zoneTemplate = new ZoneTemplate($this->db, $this->config);
 
-                // Process each template record
-                foreach ($templ_records as $r) {
-                    // Check if this is a reverse zone and handle NS or SOA records appropriately
-                    if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
-                        $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
-                        $recordType = $r["type"];
+                    // Process each template record
+                    foreach ($templ_records as $r) {
+                        // Check if this is a reverse zone and handle NS or SOA records appropriately
+                        if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
+                            $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
+                            $recordType = $r["type"];
 
-                        if ($recordType == "SOA") {
-                            // For SOA records, delete existing ones and use updated SOA record
-                            $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
-                            $stmt->execute([':zone_id' => $zone_id]);
-                            $content = $this->soaRecordManager->getUpdatedSOARecord($soa_rec);
-                            if ($content == "") {
+                            if ($recordType == "SOA") {
+                                // For SOA records, delete existing ones and use updated SOA record
+                                $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
+                                $stmt->execute([':zone_id' => $zone_id]);
+                                $content = $this->soaRecordManager->getUpdatedSOARecord($soa_rec);
+                                if ($content == "") {
+                                    $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
+                                }
+                            } else {
                                 $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
                             }
-                        } else {
-                            $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
-                        }
 
-                        $ttl = $r["ttl"];
-                        $prio = intval($r["prio"]);
+                            $ttl = $r["ttl"];
+                            $prio = intval($r["prio"]);
 
-                        if (!$ttl) {
-                            $ttl = $dns_ttl;
-                        }
+                            if (!$ttl) {
+                                $ttl = $dns_ttl;
+                            }
 
-                        // Check if a record with the same name, type, and content already exists
-                        $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table
+                            // Check if a record with the same name, type, and content already exists
+                            $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table
                             WHERE domain_id = :zone_id
                             AND name = :name
                             AND type = :type
                             AND content = :content");
-                        $stmt->execute([
-                            ':zone_id' => $zone_id,
-                            ':name' => $name,
-                            ':type' => $recordType,
-                            ':content' => $content
-                        ]);
-                        $recordExists = (int)$stmt->fetchColumn() > 0;
-
-                        // Only insert if the record doesn't already exist
-                        if (!$recordExists) {
-                            // Insert the record
-                            $stmt = $this->db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:zone_id, :name, :type, :content, :ttl, :prio)");
                             $stmt->execute([
                                 ':zone_id' => $zone_id,
                                 ':name' => $name,
                                 ':type' => $recordType,
-                                ':content' => $content,
-                                ':ttl' => $ttl,
-                                ':prio' => $prio
+                                ':content' => $content
                             ]);
+                            $recordExists = (int)$stmt->fetchColumn() > 0;
 
-                            // Get the new record ID
-                            if ($db_type == 'pgsql') {
-                                $record_id = $this->db->lastInsertId('records_id_seq');
-                            } else {
-                                $record_id = $this->db->lastInsertId();
-                            }
+                            // Only insert if the record doesn't already exist
+                            if (!$recordExists) {
+                                // Insert the record
+                                $stmt = $this->db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:zone_id, :name, :type, :content, :ttl, :prio)");
+                                $stmt->execute([
+                                    ':zone_id' => $zone_id,
+                                    ':name' => $name,
+                                    ':type' => $recordType,
+                                    ':content' => $content,
+                                    ':ttl' => $ttl,
+                                    ':prio' => $prio
+                                ]);
 
-                            // Link the record to the template in the mapping table
-                            $stmt = $this->db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
-                            $stmt->execute([
+                                // Get the new record ID
+                                if ($db_type == 'pgsql') {
+                                        $record_id = $this->db->lastInsertId('records_id_seq');
+                                } else {
+                                    $record_id = $this->db->lastInsertId();
+                                }
+
+                                // Link the record to the template in the mapping table
+                                $stmt = $this->db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
+                                $stmt->execute([
                                 ':zone_id' => $zone_id,
                                 ':record_id' => $record_id,
                                 ':zone_template_id' => $zone_template_id
-                            ]);
+                                ]);
+                            }
                         }
                     }
                 }
             }
-        }
 
         // Update the zone's template ID
-        $stmt = $this->db->prepare("UPDATE zones 
+            $stmt = $this->db->prepare("UPDATE zones 
                     SET zone_templ_id = :zone_template_id
                     WHERE domain_id = :zone_id");
-        $stmt->execute([
+            $stmt->execute([
             ':zone_template_id' => $zone_template_id,
             ':zone_id' => $zone_id
-        ]);
-        $this->db->commit();
+            ]);
+            $this->db->commit();
         } catch (\Exception $e) {
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
