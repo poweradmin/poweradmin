@@ -124,8 +124,6 @@
   </file>
   <file src="lib/Domain/Service/Dns/DomainManager.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$_GET["id"]]]></code>
-      <code><![CDATA[$_GET["id"]]]></code>
       <code><![CDATA[$zone_template]]></code>
     </InvalidScalarArgument>
   </file>
@@ -143,11 +141,6 @@
       <code><![CDATA[$new_serial]]></code>
       <code><![CDATA[$revision]]></code>
     </InvalidScalarArgument>
-  </file>
-  <file src="lib/Domain/Service/Dns/SupermasterManager.php">
-    <RedundantCast>
-      <code><![CDATA[(bool)$result]]></code>
-    </RedundantCast>
   </file>
   <file src="lib/Domain/Service/DnsIdnService.php">
     <FalsableReturnStatement>

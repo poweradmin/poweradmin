@@ -179,9 +179,9 @@ class DomainManager implements DomainManagerInterface
                             // Construct complete SOA record with all parameters
                             $soa_content = "$ns1 $hm $serial $soa_refresh $soa_retry $soa_expire $soa_minimum";
 
-                            if (!$this->backendProvider->addRecord((int)$domain_id, $domain, 'SOA', $soa_content, (int)$ttl, 0)) {
+                            if (!$this->backendProvider->addRecord($domain_id, $domain, 'SOA', $soa_content, (int)$ttl, 0)) {
                                 $db->rollBack();
-                                $this->cleanupZoneOnFailure((int)$domain_id, $domain);
+                                $this->cleanupZoneOnFailure($domain_id, $domain);
                                 $this->messageService->addSystemError(_('Failed to create SOA record for zone.'));
                                 return false;
                             }
@@ -216,7 +216,7 @@ class DomainManager implements DomainManagerInterface
                                         }
 
                                         try {
-                                            $record_id = $this->backendProvider->addRecordGetId((int)$domain_id, $name, $recordType, $content, (int)$ttl, $prio);
+                                            $record_id = $this->backendProvider->addRecordGetId($domain_id, $name, $recordType, $content, (int)$ttl, $prio);
                                         } catch (RecordIdNotFoundException $e) {
                                             // Record was created via API but DB ID not found.
                                             // Skip template linkage for this record to avoid
@@ -225,8 +225,8 @@ class DomainManager implements DomainManagerInterface
                                             continue;
                                         }
                                         if ($record_id === null && $isApiBackend) {
-                                            $this->cleanupZoneOnFailure((int)$domain_id, $domain);
-                                            $this->cleanupZoneMetadata((int)$domain_id);
+                                            $this->cleanupZoneOnFailure($domain_id, $domain);
+                                            $this->cleanupZoneMetadata($domain_id);
                                             $this->messageService->addSystemError(sprintf(_('Failed to create %s record for zone.'), $recordType));
                                             return false;
                                         }
@@ -259,9 +259,9 @@ class DomainManager implements DomainManagerInterface
                         $db->rollBack();
                     }
                     if ($domain_id !== false) {
-                        $this->cleanupZoneOnFailure((int)$domain_id, $domain);
+                        $this->cleanupZoneOnFailure($domain_id, $domain);
                         if (!$wasInTransaction) {
-                            $this->cleanupZoneMetadata((int)$domain_id);
+                            $this->cleanupZoneMetadata($domain_id);
                         }
                     }
                     $this->messageService->addSystemError(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
