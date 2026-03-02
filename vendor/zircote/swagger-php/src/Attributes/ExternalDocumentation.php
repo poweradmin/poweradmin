@@ -6,20 +6,21 @@
 
 namespace OpenApi\Attributes;
 
-use OpenApi\Generator;
 use OpenApi\Annotations as OA;
+use OpenApi\Generator;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class ExternalDocumentation extends OA\ExternalDocumentation
 {
     /**
      * @param array<string,mixed>|null $x
-     * @param Attachable[]|null        $attachables
+     * @param list<Attachable>|null    $attachables
      */
     public function __construct(
         ?string $description = Generator::UNDEFINED,
         ?string $url = null,
-        // annotation
+
+        // abstract annotation
         ?array $x = null,
         ?array $attachables = null
     ) {

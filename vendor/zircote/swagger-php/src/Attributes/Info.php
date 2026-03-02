@@ -6,15 +6,15 @@
 
 namespace OpenApi\Attributes;
 
-use OpenApi\Generator;
 use OpenApi\Annotations as OA;
+use OpenApi\Generator;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Info extends OA\Info
 {
     /**
      * @param array<string,mixed>|null $x
-     * @param Attachable[]|null        $attachables
+     * @param list<Attachable>|null    $attachables
      */
     public function __construct(
         ?string $version = null,
@@ -23,7 +23,8 @@ class Info extends OA\Info
         ?string $termsOfService = null,
         ?Contact $contact = null,
         ?License $license = null,
-        // annotation
+
+        // abstract annotation
         ?array $x = null,
         ?array $attachables = null
     ) {

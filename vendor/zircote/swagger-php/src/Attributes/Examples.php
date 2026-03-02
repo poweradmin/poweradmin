@@ -6,8 +6,8 @@
 
 namespace OpenApi\Attributes;
 
-use OpenApi\Generator;
 use OpenApi\Annotations as OA;
+use OpenApi\Generator;
 
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Examples extends OA\Examples
@@ -15,7 +15,7 @@ class Examples extends OA\Examples
     /**
      * @param string|class-string|object|null $ref
      * @param array<string,mixed>|null        $x
-     * @param Attachable[]|null               $attachables
+     * @param list<Attachable>|null           $attachables
      */
     public function __construct(
         ?string $example = null,
@@ -24,7 +24,8 @@ class Examples extends OA\Examples
         int|string|array|null $value = null,
         ?string $externalValue = null,
         string|object|null $ref = null,
-        // annotation
+
+        // abstract annotation
         ?array $x = null,
         ?array $attachables = null
     ) {

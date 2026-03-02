@@ -333,6 +333,7 @@ return array(
     'OpenApi\\Annotations\\Info' => $vendorDir . '/zircote/swagger-php/src/Annotations/Info.php',
     'OpenApi\\Annotations\\Items' => $vendorDir . '/zircote/swagger-php/src/Annotations/Items.php',
     'OpenApi\\Annotations\\JsonContent' => $vendorDir . '/zircote/swagger-php/src/Annotations/JsonContent.php',
+    'OpenApi\\Annotations\\JsonSchemaTrait' => $vendorDir . '/zircote/swagger-php/src/Annotations/JsonSchemaTrait.php',
     'OpenApi\\Annotations\\License' => $vendorDir . '/zircote/swagger-php/src/Annotations/License.php',
     'OpenApi\\Annotations\\Link' => $vendorDir . '/zircote/swagger-php/src/Annotations/Link.php',
     'OpenApi\\Annotations\\MediaType' => $vendorDir . '/zircote/swagger-php/src/Annotations/MediaType.php',
