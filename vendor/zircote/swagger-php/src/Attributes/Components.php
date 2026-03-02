@@ -6,23 +6,23 @@
 
 namespace OpenApi\Attributes;
 
-use OpenApi\Generator;
 use OpenApi\Annotations as OA;
+use OpenApi\Generator;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Components extends OA\Components
 {
     /**
      * @param array<Schema|OA\Schema>|null $schemas
-     * @param Response[]|null              $responses
-     * @param Parameter[]|null             $parameters
-     * @param RequestBody[]|null           $requestBodies
+     * @param list<Response>|null          $responses
+     * @param list<Parameter>|null         $parameters
+     * @param list<RequestBody>|null       $requestBodies
      * @param array<Examples>|null         $examples
-     * @param Header[]|null                $headers
-     * @param SecurityScheme[]|null        $securitySchemes
-     * @param Link[]|null                  $links
+     * @param list<Header>|null            $headers
+     * @param list<SecurityScheme>|null    $securitySchemes
+     * @param list<Link>|null              $links
      * @param array<string,mixed>|null     $x
-     * @param Attachable[]|null            $attachables
+     * @param list<Attachable>|null        $attachables
      */
     public function __construct(
         ?array $schemas = null,
@@ -34,7 +34,8 @@ class Components extends OA\Components
         ?array $securitySchemes = null,
         ?array $links = null,
         ?array $callbacks = null,
-        // annotation
+
+        // abstract annotation
         ?array $x = null,
         ?array $attachables = null
     ) {
