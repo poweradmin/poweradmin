@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'poweradmin/poweradmin',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => '9c91b201a94a48f62d977f827b60209de67efad1',
+        'pretty_version' => 'dev-develop',
+        'version' => 'dev-develop',
+        'reference' => '0c77e6199129da8cf385be4e45c8f130bcf35e55',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -416,9 +416,9 @@
             'dev_requirement' => true,
         ),
         'poweradmin/poweradmin' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => '9c91b201a94a48f62d977f827b60209de67efad1',
+            'pretty_version' => 'dev-develop',
+            'version' => 'dev-develop',
+            'reference' => '0c77e6199129da8cf385be4e45c8f130bcf35e55',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -1271,9 +1271,9 @@
             'dev_requirement' => true,
         ),
         'zircote/swagger-php' => array(
-            'pretty_version' => '5.8.2',
-            'version' => '5.8.2.0',
-            'reference' => '18ee6592518238a5a6c9905aae4926d5bbc65754',
+            'pretty_version' => '5.8.3',
+            'version' => '5.8.3.0',
+            'reference' => '098223019f764a16715f64089a58606096719c98',
             'type' => 'library',
             'install_path' => __DIR__ . '/../zircote/swagger-php',
             'aliases' => array(),
