@@ -6,17 +6,17 @@
 
 namespace OpenApi\Attributes;
 
-use OpenApi\Generator;
 use OpenApi\Annotations as OA;
+use OpenApi\Generator;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class MediaType extends OA\MediaType
 {
     /**
      * @param array<Examples>          $examples
-     * @param Encoding[]               $encoding
+     * @param list<Encoding>           $encoding
      * @param array<string,mixed>|null $x
-     * @param Attachable[]|null        $attachables
+     * @param list<Attachable>|null    $attachables
      */
     public function __construct(
         ?string $mediaType = null,
@@ -24,7 +24,8 @@ class MediaType extends OA\MediaType
         mixed $example = Generator::UNDEFINED,
         ?array $examples = null,
         ?array $encoding = null,
-        // annotation
+
+        // abstract annotation
         ?array $x = null,
         ?array $attachables = null
     ) {

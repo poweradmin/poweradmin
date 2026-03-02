@@ -6,15 +6,15 @@
 
 namespace OpenApi\Attributes;
 
-use OpenApi\Generator;
 use OpenApi\Annotations as OA;
+use OpenApi\Generator;
 
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class Tag extends OA\Tag
 {
     /**
      * @param array<string,mixed>|null $x
-     * @param Attachable[]|null        $attachables
+     * @param list<Attachable>|null    $attachables
      */
     public function __construct(
         ?string $name = null,
@@ -23,7 +23,8 @@ class Tag extends OA\Tag
         ?string $parent = null,
         ?string $kind = null,
         ?ExternalDocumentation $externalDocs = null,
-        // annotation
+
+        // abstract annotation
         ?array $x = null,
         ?array $attachables = null
     ) {

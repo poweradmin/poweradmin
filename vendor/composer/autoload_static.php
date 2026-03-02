@@ -728,6 +728,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'OpenApi\\Annotations\\Info' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Info.php',
         'OpenApi\\Annotations\\Items' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Items.php',
         'OpenApi\\Annotations\\JsonContent' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/JsonContent.php',
+        'OpenApi\\Annotations\\JsonSchemaTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/JsonSchemaTrait.php',
         'OpenApi\\Annotations\\License' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/License.php',
         'OpenApi\\Annotations\\Link' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Link.php',
         'OpenApi\\Annotations\\MediaType' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/MediaType.php',
