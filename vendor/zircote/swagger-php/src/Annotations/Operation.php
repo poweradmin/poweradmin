@@ -6,8 +6,8 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Generator;
 use OpenApi\Annotations as OA;
+use OpenApi\Generator;
 
 /**
  * Base class for <code>@OA\Get</code>,  <code>@OA\Post</code>,  <code>@OA\Put</code>,  etc.
@@ -32,7 +32,7 @@ abstract class Operation extends AbstractAnnotation
      *
      * Tags can be used for logical grouping of operations by resources or any other qualifier.
      *
-     * @var string[]
+     * @var list<string>
      */
     public $tags = Generator::UNDEFINED;
 
@@ -90,7 +90,7 @@ abstract class Operation extends AbstractAnnotation
      * The list can use the Reference Object to link to parameters that are defined at the OpenAPI Object's
      * components/parameters.
      *
-     * @var Parameter[]
+     * @var list<Parameter>
      */
     public $parameters = Generator::UNDEFINED;
 
@@ -108,7 +108,7 @@ abstract class Operation extends AbstractAnnotation
     /**
      * The list of possible responses as they are returned from executing this operation.
      *
-     * @var Response[]
+     * @var list<Response>
      */
     public $responses = Generator::UNDEFINED;
 
@@ -156,7 +156,7 @@ abstract class Operation extends AbstractAnnotation
      * If an alternative server object is specified at the Path Item Object or Root level, it will be overridden by
      * this value.
      *
-     * @var Server[]
+     * @var list<Server>
      */
     public $servers = Generator::UNDEFINED;
 
@@ -221,7 +221,7 @@ abstract class Operation extends AbstractAnnotation
         if (!Generator::isDefault($this->responses)) {
             foreach ($this->responses as $response) {
                 if (!Generator::isDefault($response->response) && $response->response !== 'default' && preg_match('/^([12345]{1}\d{2})|([12345]{1}XX)$/', (string) $response->response) === 0) {
-                    $this->_context->logger->warning('Invalid value "' . $response->response . '" for ' . $response->_identity([]) . '->response, expecting "default", a HTTP Status Code or HTTP Status Code range definition in ' . $response->_context);
+                    $this->_context->logger->warning('Invalid value "' . $response->response . '" for ' . $response->identity([]) . '->response, expecting "default", a HTTP Status Code or HTTP Status Code range definition in ' . $response->_context);
                     $valid = false;
                 }
             }

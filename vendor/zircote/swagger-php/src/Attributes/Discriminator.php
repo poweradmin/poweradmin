@@ -6,21 +6,22 @@
 
 namespace OpenApi\Attributes;
 
-use OpenApi\Generator;
 use OpenApi\Annotations as OA;
+use OpenApi\Generator;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Discriminator extends OA\Discriminator
 {
     /**
-     * @param string[]|null            $mapping
-     * @param array<string,mixed>|null $x
-     * @param Attachable[]|null        $attachables
+     * @param array<string,string>|null $mapping
+     * @param array<string,mixed>|null  $x
+     * @param list<Attachable>|null     $attachables
      */
     public function __construct(
         ?string $propertyName = null,
         ?array $mapping = null,
-        // annotation
+
+        // abstract annotation
         ?array $x = null,
         ?array $attachables = null
     ) {

@@ -6,18 +6,18 @@
 
 namespace OpenApi\Attributes;
 
-use OpenApi\Generator;
 use OpenApi\Annotations as OA;
+use OpenApi\Generator;
 
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class PathItem extends OA\PathItem
 {
     /**
      * @param string|class-string|object|null $ref
-     * @param Server[]|null                   $servers
-     * @param Parameter[]|null                $parameters
+     * @param list<Server>|null               $servers
+     * @param list<Parameter>|null            $parameters
      * @param array<string,mixed>|null        $x
-     * @param Attachable[]|null               $attachables
+     * @param list<Attachable>|null           $attachables
      */
     public function __construct(
         ?string $path = null,
@@ -35,7 +35,8 @@ class PathItem extends OA\PathItem
         ?Query $query = null,
         ?array $servers = null,
         ?array $parameters = null,
-        // annotation
+
+        // abstract annotation
         ?array $x = null,
         ?array $attachables = null
     ) {
