@@ -23,20 +23,25 @@
 namespace Poweradmin;
 
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\UserAvatarService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
+use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\StyleManager;
 use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Version;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -52,7 +57,7 @@ abstract class BaseController
 {
     private AppManager $app;
     private AppInitializer $init;
-    protected PDOCommon $db;
+    protected PDO $db;
     protected array $requestData;
     private ValidatorInterface $validator;
     private array $validationConstraints = [];
@@ -61,6 +66,7 @@ abstract class BaseController
     protected ConfigurationManager $config;
     private UserContextService $userContextService;
     private string $pageTitle = '';
+    protected LoggerInterface $logger;
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -75,7 +81,16 @@ abstract class BaseController
      */
     public function __construct(array $request, bool $authenticate = true)
     {
-        $this->app = new AppManager();
+        // Create logger early so AppManager and ConfigurationManager can use it
+        $this->config = ConfigurationManager::getInstance();
+        $this->config->initialize();
+
+        $logHandler = LoggerHandlerFactory::create($this->config->getAll());
+        $logLevel = $this->config->get('logging', 'level', 'info');
+        $this->logger = new Logger($logHandler, $logLevel);
+
+        $this->config->setLogger($this->logger);
+        $this->app = new AppManager($this->logger);
 
         $this->init = new AppInitializer($authenticate);
         $this->db = $this->init->getDb();
@@ -83,7 +98,6 @@ abstract class BaseController
         $this->requestData = $request;
         $this->validator = Validation::createValidator();
 
-        $this->config = ConfigurationManager::getInstance();
         $this->csrfTokenService = new CsrfTokenService();
         $this->messageService = new MessageService();
         $this->userContextService = new UserContextService();
@@ -404,6 +418,17 @@ abstract class BaseController
     }
 
     /**
+     * Create DnsDataService for backend-aware DNS data reads.
+     *
+     * @return DnsDataService
+     */
+    protected function createDnsDataService(): DnsDataService
+    {
+        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        return new DnsDataService($backendProvider, $this->db, $this->getConfig());
+    }
+
+    /**
      * Get current user ID
      *
      * @return int|null
@@ -619,7 +644,7 @@ abstract class BaseController
             'version' => $this->userContextService->isAuthenticated() ? Version::VERSION : false,
             'custom_footer' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/' . $this->config->get('interface', 'theme', 'default') . '/custom/footer.html'),
             'display_stats' => $display_stats ? $this->app->displayStats() : false,
-            'db_queries' => $db_debug ? $this->db->getQueries() : false,
+            'db_queries' => $db_debug ? $this->init->getDebugQueries() : false,
             'show_style_switcher' => in_array($selected_style, ['light', 'dark']),
             'iface_style' => $selected_style,
             'theme' => $theme,
