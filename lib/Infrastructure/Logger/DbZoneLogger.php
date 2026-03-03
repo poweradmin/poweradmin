@@ -25,11 +25,10 @@ namespace Poweradmin\Infrastructure\Logger;
 use PDO;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class DbZoneLogger
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
 
     public function __construct($db)

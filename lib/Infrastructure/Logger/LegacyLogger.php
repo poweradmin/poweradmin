@@ -23,11 +23,11 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 class LegacyLogger
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
 
     public function __construct($db)

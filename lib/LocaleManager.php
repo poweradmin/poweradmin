@@ -22,6 +22,9 @@
 
 namespace Poweradmin;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+
 /**
  * Class LocaleManager
  * Manages locale settings for the application.
@@ -38,16 +41,19 @@ class LocaleManager
      */
     private string $localeDirectory;
 
+    private LoggerInterface $logger;
+
     /**
      * LocaleManager constructor.
      *
      * @param array $supportedLocales List of supported locales.
      * @param string $localeDirectory Directory where locale files are stored.
      */
-    public function __construct(array $supportedLocales, string $localeDirectory)
+    public function __construct(array $supportedLocales, string $localeDirectory, ?LoggerInterface $logger = null)
     {
         $this->supportedLocales = $supportedLocales;
         $this->localeDirectory = $localeDirectory;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -59,7 +65,7 @@ class LocaleManager
     public function setLocale(string $locale): void
     {
         if (!in_array($locale, $this->supportedLocales)) {
-            error_log("The provided locale '$locale' is not supported. Please choose a supported locale.");
+            $this->logger->warning('The provided locale {locale} is not supported. Please choose a supported locale.', ['locale' => $locale]);
             return;
         }
 
@@ -68,14 +74,14 @@ class LocaleManager
         }
 
         if (!is_dir($this->localeDirectory) || !is_readable($this->localeDirectory)) {
-            error_log("The directory '$this->localeDirectory' does not exist or is not readable.");
+            $this->logger->warning('The locale directory {dir} does not exist or is not readable.', ['dir' => $this->localeDirectory]);
             return;
         }
 
         $locales = ["$locale.UTF-8", "$locale.utf8", $locale];
 
         if (!setlocale(LC_ALL, $locales)) {
-            error_log("Failed to set locale '$locale'. Selected locale may be unsupported on this system. Tried: " . implode(', ', $locales));
+            $this->logger->warning('Failed to set locale {locale}. Selected locale may be unsupported on this system. Tried: {tried}', ['locale' => $locale, 'tried' => implode(', ', $locales)]);
             return;
         }
 

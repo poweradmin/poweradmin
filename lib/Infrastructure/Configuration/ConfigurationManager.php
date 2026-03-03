@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+
 /**
  * Class ConfigurationManager
  *
@@ -33,12 +36,25 @@ class ConfigurationManager implements ConfigurationInterface
     private static ?ConfigurationManager $instance = null;
     private array $settings = [];
     private bool $initialized = false;
+    private LoggerInterface $logger;
 
     /**
      * Private constructor to prevent direct instantiation
      */
     private function __construct()
     {
+        $this->logger = new NullLogger();
+    }
+
+    /**
+     * Set the logger instance
+     *
+     * @param LoggerInterface $logger
+     * @return void
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -227,11 +243,10 @@ class ConfigurationManager implements ConfigurationInterface
         if (!$validator->validate()) {
             $errors = $validator->getErrors();
             foreach ($errors as $key => $error) {
-                error_log(sprintf(
-                    "Configuration validation error [%s]: %s",
-                    $key,
-                    $error
-                ));
+                $this->logger->warning('Configuration validation error [{key}]: {error}', [
+                    'key' => $key,
+                    'error' => $error,
+                ]);
             }
         }
     }

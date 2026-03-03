@@ -24,12 +24,11 @@ namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 class DbGroupLogger
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
 
     public function __construct($db)

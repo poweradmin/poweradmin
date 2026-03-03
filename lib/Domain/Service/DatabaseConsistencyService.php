@@ -25,17 +25,16 @@ namespace Poweradmin\Domain\Service;
 use Exception;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
 class DatabaseConsistencyService
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
     private TableNameService $tableNameService;
 
-    public function __construct(PDOCommon $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;

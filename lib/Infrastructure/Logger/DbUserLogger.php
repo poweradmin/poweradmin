@@ -24,11 +24,10 @@ namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
 use Poweradmin\Domain\Model\UserEntity;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class DbUserLogger
 {
-    private PDOCommon $db;
+    private PDO $db;
 
     public function __construct($db)
     {

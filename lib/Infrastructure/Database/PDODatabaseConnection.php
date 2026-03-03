@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\DatabaseConnection;
 
 class PDODatabaseConnection implements DatabaseConnection
 {
-    public function connect(array $credentials): PDOCommon
+    public function connect(array $credentials): PDO
     {
         $this->validateDatabaseType($credentials['db_type']);
 
@@ -43,16 +43,20 @@ class PDODatabaseConnection implements DatabaseConnection
         $options = $this->buildDriverOptions($credentials);
 
         try {
-            $pdo = new PDOCommon($dsn, $credentials['db_user'], $credentials['db_pass'], $options);
+            $debug = !empty($credentials['db_debug']);
+            $pdoClass = $debug ? DebugPDO::class : PDO::class;
+
+            $pdo = new $pdoClass($dsn, $credentials['db_user'], $credentials['db_pass'], $options);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Only allow one statement per query for MySQL
+            if (in_array($credentials['db_type'], ['mysql', 'mysqli'])) {
+                $pdo->setAttribute(PDO::MYSQL_ATTR_DIRECT_QUERY, false);
+            }
 
             // Enable foreign key constraints for SQLite
             if ($credentials['db_type'] === 'sqlite') {
                 $pdo->exec('PRAGMA foreign_keys = ON');
-            }
-
-            if (isset($credentials['db_debug']) && $credentials['db_debug']) {
-                $pdo->setDebug(true);
             }
 
             return $pdo;

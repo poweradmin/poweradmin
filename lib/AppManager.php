@@ -35,6 +35,8 @@ use Poweradmin\Module\ModuleRegistry;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Twig\Environment;
 use Twig\Error\Error;
 use Twig\Loader\FilesystemLoader;
@@ -55,12 +57,15 @@ class AppManager
     /** @var StatsDisplayService|null $statsDisplayService The service for displaying statistics */
     protected ?StatsDisplayService $statsDisplayService = null;
 
+    private LoggerInterface $logger;
+
     /**
      * AppManager constructor.
      * Initializes the template renderer, configuration, and optional statistics display service.
      */
-    public function __construct()
+    public function __construct(?LoggerInterface $logger = null)
     {
+        $this->logger = $logger ?? new NullLogger();
         $this->configuration = ConfigurationManager::getInstance();
         $this->configuration->initialize();
 
@@ -70,12 +75,12 @@ class AppManager
 
         // Validate theme directory exists, fallback to 'default' if not
         if (!is_dir($theme_path)) {
-            error_log("Theme directory '$theme_path' does not exist. Falling back to 'default' theme.");
+            $this->logger->warning('Theme directory {path} does not exist. Falling back to default theme.', ['path' => $theme_path]);
 
             // Check if this is a removed legacy theme
             $removedThemes = ['spark', 'ignite', 'mobile'];
             if (in_array($theme, $removedThemes)) {
-                error_log("The '$theme' theme was removed in Poweradmin 4.0. Please update your configuration to use theme: 'default'.");
+                $this->logger->warning('The {theme} theme was removed in Poweradmin 4.0. Please update your configuration to use theme: default.', ['theme' => $theme]);
             }
 
             // Fallback to default theme
@@ -158,7 +163,7 @@ class AppManager
         try {
             echo $this->templateRenderer->render($template, $params);
         } catch (Error $e) {
-            error_log($e->getMessage());
+            $this->logger->error('Template rendering failed: {error}', ['error' => $e->getMessage()]);
             $messageService = new MessageService();
             $messageService->displayDirectSystemError('An error occurred while rendering the template. Please check the server logs for details.');
         }

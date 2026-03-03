@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Exception;
 use Poweradmin\Domain\Service\DatabaseConnection;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use RuntimeException;
 
 class DatabaseService
@@ -36,7 +36,7 @@ class DatabaseService
         $this->databaseConnection = $databaseConnection;
     }
 
-    public function connect(array $credentials): PDOCommon
+    public function connect(array $credentials): PDO
     {
         try {
             return $this->databaseConnection->connect($credentials);

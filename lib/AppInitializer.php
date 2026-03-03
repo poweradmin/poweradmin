@@ -26,8 +26,9 @@ use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use PDO;
+use Poweradmin\Infrastructure\Database\DebugPDO;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\SessionAuthenticator;
 use Poweradmin\Infrastructure\Utility\DependencyCheck;
@@ -43,8 +44,8 @@ class AppInitializer
     /** @var ConfigurationManager $configManager Configuration manager */
     private ConfigurationManager $configManager;
 
-    /** @var PDOCommon $db Database connection layer */
-    private PDOCommon $db;
+    /** @var PDO $db Database connection layer */
+    private PDO $db;
 
     /**
      * AppInitializer constructor.
@@ -161,10 +162,21 @@ class AppInitializer
     /**
      * Gets the database connection.
      *
-     * @return PDOCommon The database connection
+     * @return PDO The database connection
      */
-    public function getDb(): PDOCommon
+    public function getDb(): PDO
     {
         return $this->db;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getDebugQueries(): array
+    {
+        if ($this->db instanceof DebugPDO) {
+            return $this->db->getQueries();
+        }
+        return [];
     }
 }
