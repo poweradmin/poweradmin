@@ -35,16 +35,20 @@ use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
+use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class PublicApiController extends AbstractApiController
 {
     protected array $pathParameters;
     protected int $authenticatedUserId = 0;
+    protected LoggerInterface $logger;
 
     /**
      * PublicApiController constructor
@@ -60,6 +64,12 @@ abstract class PublicApiController extends AbstractApiController
 
         // Store path parameters for use by child classes
         $this->pathParameters = $pathParameters;
+
+        // Initialize PSR-3 logger
+        $config = $this->getConfig();
+        $logHandler = LoggerHandlerFactory::create($config->getAll());
+        $logLevel = $config->get('logging', 'level', 'info');
+        $this->logger = new Logger($logHandler, $logLevel);
 
         // Authenticate the API request using API key or HTTP Basic auth
         $this->authenticateApiRequest();
@@ -247,14 +257,13 @@ abstract class PublicApiController extends AbstractApiController
     protected function handleException(\Throwable $e, string $context, string $userMessage = 'An error occurred', int $statusCode = 500): JsonResponse
     {
         // Log detailed error information for debugging
-        error_log(sprintf(
-            '[API Error] %s - %s: %s in %s:%d',
-            $context,
-            get_class($e),
-            $e->getMessage(),
-            $e->getFile(),
-            $e->getLine()
-        ));
+        $this->logger->error('[API Error] {context} - {class}: {message} in {file}:{line}', [
+            'context' => $context,
+            'class' => get_class($e),
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ]);
 
         // Return clean JSON error response to client
         return $this->returnApiError($userMessage . ': ' . $e->getMessage(), $statusCode);

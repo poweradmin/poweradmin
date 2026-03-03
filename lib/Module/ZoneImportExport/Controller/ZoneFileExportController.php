@@ -131,7 +131,7 @@ class ZoneFileExportController extends BaseController
                 return $response;
             }
         } catch (\Exception $e) {
-            error_log('PowerDNS API export failed: ' . $e->getMessage());
+            $this->logger->error('PowerDNS API export failed: {error}', ['error' => $e->getMessage()]);
         }
 
         return null;

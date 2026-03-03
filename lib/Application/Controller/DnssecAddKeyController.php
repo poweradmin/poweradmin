@@ -102,7 +102,7 @@ class DnssecAddKeyController extends BaseController
             // To check the supported DNSSEC algorithms in your build of PowerDNS, run pdnsutil list-algorithms.
             $valid_algorithm = array('rsasha1', 'rsasha1-nsec3-sha1', 'rsasha256', 'rsasha512', 'ecdsa256', 'ecdsa384', 'ed25519', 'ed448');
             if (!in_array($algorithm, $valid_algorithm)) {
-                error_log("Invalid DNSSEC algorithm selected: " . $algorithm);
+                $this->logger->warning('Invalid DNSSEC algorithm selected: {algorithm}', ['algorithm' => $algorithm]);
                 $this->showError(_('Invalid or unexpected input given.'));
             }
         }
@@ -148,7 +148,7 @@ class DnssecAddKeyController extends BaseController
             if (!empty($algorithm) && !empty($bits)) {
                 $validation = $validateAlgorithmBitCombination($algorithm, $bits);
                 if (!$validation['valid']) {
-                    error_log("Invalid DNSSEC algorithm/bits combination: algorithm=$algorithm, bits=$bits - " . $validation['message']);
+                    $this->logger->warning('Invalid DNSSEC algorithm/bits combination: algorithm={algorithm}, bits={bits} - {message}', ['algorithm' => $algorithm, 'bits' => $bits, 'message' => $validation['message']]);
                     $this->setMessage('dnssec_add_key', 'error', $validation['message']);
                     // Don't redirect, let the form display again with the error message
                 } else {
@@ -158,11 +158,11 @@ class DnssecAddKeyController extends BaseController
                             $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
                             $this->redirect('/zones/' . $zone_id . '/dnssec');
                         } else {
-                            error_log("Failed to add DNSSEC key: domain=$domain_name, key_type=$key_type, bits=$bits, algorithm=$algorithm");
+                            $this->logger->error('Failed to add DNSSEC key: domain={domain}, key_type={key_type}, bits={bits}, algorithm={algorithm}', ['domain' => $domain_name, 'key_type' => $key_type, 'bits' => $bits, 'algorithm' => $algorithm]);
                             $this->setMessage('dnssec_add_key', 'error', _('Failed to add new DNSSEC key.'));
                         }
                     } catch (Exception $e) {
-                        error_log("Exception adding DNSSEC key: " . $e->getMessage());
+                        $this->logger->error('Exception adding DNSSEC key: {error}', ['error' => $e->getMessage()]);
                         $this->setMessage('dnssec_add_key', 'error', _('An error occurred while adding the DNSSEC key: ') . $e->getMessage());
                     }
                 }

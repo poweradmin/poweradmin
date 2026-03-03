@@ -25,14 +25,14 @@ namespace Poweradmin\Application\Query;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 abstract class BaseSearch
 {
     protected object $db;
     protected string $db_type;
-    protected ConfigurationManager $config;
+    protected ConfigurationInterface $config;
     protected IPAddressValidator $ipValidator;
     protected UserContextService $userContext;
 

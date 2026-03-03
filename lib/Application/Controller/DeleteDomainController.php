@@ -47,7 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class DeleteDomainController extends BaseController
 {
 
-    private LegacyLogger $logger;
+    private LegacyLogger $auditLogger;
     private RecordCommentService $recordCommentService;
     private UserContextService $userContextService;
 
@@ -55,7 +55,7 @@ class DeleteDomainController extends BaseController
     {
         parent::__construct($request);
 
-        $this->logger = new LegacyLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->userContextService = new UserContextService();
@@ -113,7 +113,7 @@ class DeleteDomainController extends BaseController
         }
 
         if ($dnsRecord->deleteDomain($zone_id)) {
-            $this->logger->logInfo(sprintf(
+            $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                 $_SERVER['REMOTE_ADDR'],
                 $this->userContextService->getLoggedInUsername(),
@@ -126,7 +126,7 @@ class DeleteDomainController extends BaseController
             try {
                 $this->recordCommentService->deleteCommentsByDomainId($zone_id);
             } catch (\Exception $e) {
-                error_log("Failed to delete comments for zone $zone_id: " . $e->getMessage());
+                $this->logger->error('Failed to delete comments for zone {zone_id}: {error}', ['zone_id' => $zone_id, 'error' => $e->getMessage()]);
             }
 
             // Check if the zone is a reverse zone and redirect accordingly

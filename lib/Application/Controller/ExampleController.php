@@ -212,7 +212,7 @@ class ExampleController extends BaseController
             }
         } catch (Exception $e) {
             // Log the error for debugging
-            error_log('ExampleController error: ' . $e->getMessage());
+            $this->logger->error('ExampleController error: {error}', ['error' => $e->getMessage()]);
 
             // Show user-friendly error message
             $this->showError(_('An unexpected error occurred. Please contact the administrator.'));

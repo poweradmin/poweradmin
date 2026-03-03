@@ -52,7 +52,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class AddRecordController extends BaseController
 {
-    private LegacyLogger $logger;
+    private LegacyLogger $auditLogger;
     private DnsRecord $dnsRecord;
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
@@ -65,7 +65,7 @@ class AddRecordController extends BaseController
         parent::__construct($request);
 
         // ConfigurationManager is now handled by the BaseController
-        $this->logger = new LegacyLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->formStateService = new FormStateService();
 
@@ -78,7 +78,7 @@ class AddRecordController extends BaseController
             $this->dnsRecord,
             $recordCommentService,
             $commentSyncService,
-            $this->logger,
+            $this->auditLogger,
             $this->getConfig()
         );
 
@@ -86,14 +86,14 @@ class AddRecordController extends BaseController
 
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
-            $this->logger,
+            $this->auditLogger,
             $this->dnsRecord,
         );
 
         $this->reverseRecordCreator = new ReverseRecordCreator(
             $this->db,
             $this->getConfig(),
-            $this->logger,
+            $this->auditLogger,
             $this->dnsRecord,
             $recordCommentService
         );

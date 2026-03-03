@@ -73,7 +73,7 @@ class EditController extends BaseController
     private RecordCommentSyncService $commentSyncService;
     private RecordTypeService $recordTypeService;
     private FormStateService $formStateService;
-    private LegacyLogger $logger;
+    private LegacyLogger $auditLogger;
     private DnsRecord $dnsRecord;
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
@@ -94,7 +94,7 @@ class EditController extends BaseController
         $this->formStateService = new FormStateService();
 
         // Initialize services for record addition
-        $this->logger = new LegacyLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         $this->recordManager = new RecordManagerService(
@@ -102,20 +102,20 @@ class EditController extends BaseController
             $this->dnsRecord,
             $this->recordCommentService,
             $this->commentSyncService,
-            $this->logger,
+            $this->auditLogger,
             $this->getConfig()
         );
 
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
-            $this->logger,
+            $this->auditLogger,
             $this->dnsRecord,
         );
 
         $this->reverseRecordCreator = new ReverseRecordCreator(
             $this->db,
             $this->getConfig(),
-            $this->logger,
+            $this->auditLogger,
             $this->dnsRecord,
             $this->recordCommentService
         );
@@ -319,7 +319,7 @@ class EditController extends BaseController
                     // Show validation errors to user
                     $errorMsg = $zoneValidator->getFormattedErrorMessage($validation);
                     $this->setMessage('edit', 'error', $errorMsg);
-                    error_log("DNSSEC pre-flight validation failed for zone: $zone_name");
+                    $this->logger->warning('DNSSEC pre-flight validation failed for zone: {zone}', ['zone' => $zone_name]);
                 } else {
                     // Validation passed - proceed with signing
                     // Update SOA serial before signing
@@ -336,11 +336,11 @@ class EditController extends BaseController
                             $dnssecProvider->rectifyZone($zone_name);
                         } else {
                             $this->setMessage('edit', 'warning', _('Zone signing requested successfully, but verification failed. Check DNSSEC keys.'));
-                            error_log("DNSSEC signing verification failed for zone: $zone_name - API returned success but zone not secured");
+                            $this->logger->warning('DNSSEC signing verification failed for zone: {zone} - API returned success but zone not secured', ['zone' => $zone_name]);
                         }
                     } else {
                         $this->setMessage('edit', 'error', _('Failed to sign zone. Zone validation passed, but PowerDNS API returned an error. Check PowerDNS logs for details.'));
-                        error_log("DNSSEC signing failed for zone: $zone_name");
+                        $this->logger->error('DNSSEC signing failed for zone: {zone}', ['zone' => $zone_name]);
                     }
                 }
             }
@@ -366,11 +366,11 @@ class EditController extends BaseController
                         $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
                     } else {
                         $this->setMessage('edit', 'warning', _('Zone unsigning requested successfully, but verification failed.'));
-                        error_log("DNSSEC unsigning verification failed for zone: $zone_name - API returned success but zone still secured");
+                        $this->logger->warning('DNSSEC unsigning verification failed for zone: {zone} - API returned success but zone still secured', ['zone' => $zone_name]);
                     }
                 } else {
                     $this->setMessage('edit', 'error', _('Failed to unsign zone. Check PowerDNS logs for details.'));
-                    error_log("DNSSEC unsigning failed for zone: $zone_name");
+                    $this->logger->error('DNSSEC unsigning failed for zone: {zone}', ['zone' => $zone_name]);
                 }
             }
         }
@@ -398,38 +398,22 @@ class EditController extends BaseController
         } else {
             $idn_zone_name = "";
         }
-        // Get filtered records based on search parameters
-        if (!empty($searchTerm) || !empty($recordTypeFilter) || !empty($contentFilter)) {
-            $records = $this->recordRepository->getFilteredRecords(
-                $zone_id,
-                $row_start,
-                $iface_rowamount,
-                $record_sort_by,
-                $sort_direction,
-                $iface_record_comments,
-                $searchTerm,
-                $recordTypeFilter,
-                $contentFilter
-            );
-            $total_filtered_count = $this->recordRepository->getFilteredRecordCount(
-                $zone_id,
-                $iface_record_comments,
-                $searchTerm,
-                $recordTypeFilter,
-                $contentFilter
-            );
-        } else {
-            $records = $this->dnsRecord->getRecordsFromDomainId(
-                $this->config->get('database', 'type', 'mysql'),
-                $zone_id,
-                (int)$row_start,
-                $iface_rowamount,
-                $record_sort_by,
-                $sort_direction,
-                $iface_record_comments
-            );
-            $total_filtered_count = $record_count;
-        }
+        // Get records via DnsDataService (supports both SQL and API backends)
+        $dnsDataService = $this->createDnsDataService();
+        $recordResult = $dnsDataService->getZoneRecords(
+            $zone_id,
+            $zone_name ?? '',
+            (int)$row_start,
+            $iface_rowamount,
+            $record_sort_by,
+            $sort_direction,
+            $iface_record_comments,
+            $searchTerm,
+            $recordTypeFilter,
+            $contentFilter
+        );
+        $records = $recordResult['records'];
+        $total_filtered_count = $recordResult['total'];
 
         $soa_record = $this->dnsRecord->getSOARecord($zone_id);
 

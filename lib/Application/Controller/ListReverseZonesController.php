@@ -32,14 +32,13 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\PaginationPresenter;
+use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
-use Poweradmin\Application\Service\ZoneService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -50,7 +49,7 @@ use Poweradmin\Module\ModuleRegistry;
 
 class ListReverseZonesController extends BaseController
 {
-    private ZoneService $zoneService;
+    private DnsDataService $dnsDataService;
     private ForwardZoneAssociationService $forwardZoneAssociationService;
     private UserContextService $userContextService;
     private ZoneSortingService $zoneSortingService;
@@ -61,7 +60,7 @@ class ListReverseZonesController extends BaseController
 
         // Initialize repository and services
         $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
-        $this->zoneService = new ZoneService($zoneRepository);
+        $this->dnsDataService = $this->createDnsDataService();
         $this->forwardZoneAssociationService = new ForwardZoneAssociationService($zoneRepository);
         $this->userContextService = new UserContextService();
         $this->zoneSortingService = new ZoneSortingService();
@@ -108,10 +107,9 @@ class ListReverseZonesController extends BaseController
         $perm_edit = Permission::getEditPermission($this->db);
         $perm_delete = Permission::getDeletePermission($this->db);
 
-        $zoneCountService = new ZoneCountService($this->db, $this->getConfig());
-        $count_zones_view = $zoneCountService->countZones($perm_view, 'all', 'reverse');
-        $count_zones_edit = $zoneCountService->countZones($perm_edit, 'all', 'reverse');
-        $count_zones_delete = $zoneCountService->countZones($perm_delete, 'all', 'reverse');
+        $count_zones_view = $this->dnsDataService->countZones($perm_view, 'all', 'reverse');
+        $count_zones_edit = $this->dnsDataService->countZones($perm_edit, 'all', 'reverse');
+        $count_zones_delete = $this->dnsDataService->countZones($perm_delete, 'all', 'reverse');
 
         list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'owner']);
 
@@ -123,14 +121,14 @@ class ListReverseZonesController extends BaseController
         $reverse_zone_type = $this->zoneSortingService->getReverseZoneTypeFilter();
         $loggedInUserId = $this->userContextService->getLoggedInUserId();
 
-        // Get all counts in a single query (optimization: 4 queries → 1)
-        $zoneCounts = $this->zoneService->getReverseZoneCounts($perm_view, $loggedInUserId);
+        // Get all counts in a single call
+        $zoneCounts = $this->dnsDataService->getReverseZoneCounts($perm_view, $loggedInUserId);
         $count_all_reverse_zones = $zoneCounts['count_all'];
         $count_ipv4_zones = $zoneCounts['count_ipv4'];
         $count_ipv6_zones = $zoneCounts['count_ipv6'];
 
-        // Get the actual zones for the current page with efficient DB filtering
-        $reverse_zones = $this->zoneService->getReverseZones(
+        // Get the actual zones for the current page
+        $reverse_zones = $this->dnsDataService->getReverseZones(
             $perm_view,
             $loggedInUserId,
             $reverse_zone_type,

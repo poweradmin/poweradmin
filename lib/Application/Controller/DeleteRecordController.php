@@ -51,7 +51,7 @@ use Poweradmin\Infrastructure\Repository\DbUserRepository;
 class DeleteRecordController extends BaseController
 {
 
-    private LegacyLogger $logger;
+    private LegacyLogger $auditLogger;
     private RecordCommentService $recordCommentService;
     private ReverseRecordCreator $reverseRecordCreator;
     private UserContextService $userContextService;
@@ -61,7 +61,7 @@ class DeleteRecordController extends BaseController
     {
         parent::__construct($request);
 
-        $this->logger = new LegacyLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
@@ -69,7 +69,7 @@ class DeleteRecordController extends BaseController
         $this->reverseRecordCreator = new ReverseRecordCreator(
             $this->db,
             $this->getConfig(),
-            $this->logger,
+            $this->auditLogger,
             $dnsRecord,
             $this->recordCommentService
         );
@@ -139,7 +139,7 @@ class DeleteRecordController extends BaseController
 
             if ($dnsRecord->deleteRecord($record_id)) {
                 if (isset($record_info['prio'])) {
-                    $this->logger->logInfo(sprintf(
+                    $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
                         $_SERVER['REMOTE_ADDR'],
                         $_SESSION["userlogin"],
@@ -150,7 +150,7 @@ class DeleteRecordController extends BaseController
                         $record_info['prio']
                     ), $zid);
                 } else {
-                    $this->logger->logInfo(sprintf(
+                    $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
                         $_SERVER['REMOTE_ADDR'],
                         $_SESSION["userlogin"],

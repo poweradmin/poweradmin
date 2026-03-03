@@ -92,7 +92,7 @@ class MfaVerifyController extends BaseController
         // If the user is already fully authenticated (MFA passed), redirect to index
         // Use our centralized MFA session manager to check state
         if (!MfaSessionManager::isMfaRequired()) {
-            error_log("MFA not required according to MfaSessionManager, redirecting to /");
+            $this->logger->debug('MFA not required according to MfaSessionManager, redirecting to /');
             $this->redirect('/');
         }
 
@@ -109,7 +109,7 @@ class MfaVerifyController extends BaseController
     private function handleMfaVerification(): void
     {
         // Basic logging
-        error_log("[MfaVerifyController] Verification attempt started");
+        $this->logger->debug('[MfaVerifyController] Verification attempt started');
 
         $code = $_POST['mfa_code'] ?? '';
         // During MFA verification, userid is stored as pending_userid to prevent API bypass
@@ -118,7 +118,7 @@ class MfaVerifyController extends BaseController
 
         // Validate CSRF token for security
         if (!$this->csrfTokenService->validateToken($mfaToken, 'mfa_token')) {
-            error_log("[MfaVerifyController] Invalid CSRF token for user ID: $userId");
+            $this->logger->warning('[MfaVerifyController] Invalid CSRF token for user ID: {user_id}', ['user_id' => $userId]);
             $this->displayMfaForm(_('Invalid security token. Please try again.'), 'danger');
             return;
         }
@@ -128,25 +128,25 @@ class MfaVerifyController extends BaseController
             $userMfa = $this->mfaService->getUserMfa($userId);
 
             if (!$userMfa) {
-                error_log("[MfaVerifyController] No MFA record found for user ID: $userId");
+                $this->logger->warning('[MfaVerifyController] No MFA record found for user ID: {user_id}', ['user_id' => $userId]);
                 $this->displayMfaForm(_('No MFA record found. Please contact administrator.'), 'danger');
                 return;
             }
         } catch (Exception $e) {
-            error_log("[MfaVerifyController] Error retrieving MFA data: " . $e->getMessage());
+            $this->logger->error('[MfaVerifyController] Error retrieving MFA data: {error}', ['error' => $e->getMessage()]);
             $this->displayMfaForm(_('An error occurred. Please try again.'), 'danger');
             return;
         }
 
         // Use the MFA service for verification (handles both regular codes and recovery codes)
-        error_log("[MfaVerifyController] Verifying code for user ID: $userId, type: {$userMfa->getType()}");
+        $this->logger->debug('[MfaVerifyController] Verifying code for user ID: {user_id}, type: {type}', ['user_id' => $userId, 'type' => $userMfa->getType()]);
         $isValid = $this->mfaService->verifyCode($userId, $code);
 
         // Log the verification result
         if ($isValid) {
-            error_log("[MfaVerifyController] Verification successful for user ID: $userId");
+            $this->logger->info('[MfaVerifyController] Verification successful for user ID: {user_id}', ['user_id' => $userId]);
         } else {
-            error_log("[MfaVerifyController] Verification failed for user ID: $userId");
+            $this->logger->warning('[MfaVerifyController] Verification failed for user ID: {user_id}', ['user_id' => $userId]);
         }
 
         if ($isValid) {
@@ -160,12 +160,12 @@ class MfaVerifyController extends BaseController
                 $this->mfaService->updateMfaSecretAfterLogin($userId, $email);
 
                 if ($mfaType === 'email') {
-                    error_log("[MfaVerifyController] Email verification code updated after successful login for user ID: $userId");
+                    $this->logger->info('[MfaVerifyController] Email verification code updated after successful login for user ID: {user_id}', ['user_id' => $userId]);
                 } else {
-                    error_log("[MfaVerifyController] Successfully verified app-based MFA for user ID: $userId");
+                    $this->logger->info('[MfaVerifyController] Successfully verified app-based MFA for user ID: {user_id}', ['user_id' => $userId]);
                 }
             } catch (Exception $e) {
-                error_log("[MfaVerifyController] Error updating MFA secret: " . $e->getMessage());
+                $this->logger->error('[MfaVerifyController] Error updating MFA secret: {error}', ['error' => $e->getMessage()]);
                 // Continue with authentication even if updating the secret fails
             }
 
@@ -173,7 +173,7 @@ class MfaVerifyController extends BaseController
             if ($this->userContextService->hasSessionData('pending_userid')) {
                 $this->userContextService->setSessionData('userid', $this->userContextService->getSessionData('pending_userid'));
                 $this->userContextService->unsetSessionData('pending_userid');
-                error_log("[MfaVerifyController] Promoted pending_userid to userid for user ID: $userId");
+                $this->logger->debug('[MfaVerifyController] Promoted pending_userid to userid for user ID: {user_id}', ['user_id' => $userId]);
             }
             if ($this->userContextService->hasSessionData('pending_name')) {
                 $this->userContextService->setSessionData('name', $this->userContextService->getSessionData('pending_name'));
@@ -284,7 +284,7 @@ class MfaVerifyController extends BaseController
                 // Force user to use recovery codes since email is not available
                 $message = _('Email verification is not available because mail service is disabled. Please use a recovery code.');
                 $type = 'warning';
-                error_log("[MfaVerifyController] Email verification unavailable - mail service disabled for user ID: $userId");
+                $this->logger->warning('[MfaVerifyController] Email verification unavailable - mail service disabled for user ID: {user_id}', ['user_id' => $userId]);
             } else {
                 try {
                     // Check if the code needs refreshing (expired or used)
@@ -294,18 +294,18 @@ class MfaVerifyController extends BaseController
                         // A new code was generated
                         $message = _('A new verification code has been sent to your email.');
                         $type = 'info';
-                        error_log("[MfaVerifyController] New email verification code sent for user ID: $userId");
+                        $this->logger->info('[MfaVerifyController] New email verification code sent for user ID: {user_id}', ['user_id' => $userId]);
                     }
                 } catch (RuntimeException $e) {
                     // Mail configuration error occurred
                     $message = $e->getMessage() . ' ' . _('Please use a recovery code instead.');
                     $type = 'warning';
-                    error_log("[MfaVerifyController] Email verification code refresh failed: " . $e->getMessage());
+                    $this->logger->error('[MfaVerifyController] Email verification code refresh failed: {error}', ['error' => $e->getMessage()]);
                 } catch (Exception $e) {
                     // Other error occurred
                     $message = _('Could not send verification code to your email. Please use a recovery code instead.');
                     $type = 'warning';
-                    error_log("[MfaVerifyController] Email verification error: " . $e->getMessage());
+                    $this->logger->error('[MfaVerifyController] Email verification error: {error}', ['error' => $e->getMessage()]);
                 }
             }
         }

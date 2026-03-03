@@ -47,7 +47,7 @@ use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 class DeleteDomainsController extends BaseController
 {
 
-    private LegacyLogger $logger;
+    private LegacyLogger $auditLogger;
     private RecordCommentService $recordCommentService;
     private UserContextService $userContextService;
 
@@ -55,7 +55,7 @@ class DeleteDomainsController extends BaseController
     {
         parent::__construct($request);
 
-        $this->logger = new LegacyLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->userContextService = new UserContextService();
@@ -113,7 +113,7 @@ class DeleteDomainsController extends BaseController
         if ($delete_domains) {
             foreach ($deleted_zones as $deleted_zone) {
                 if (!empty($deleted_zone['name'])) {
-                    $this->logger->logInfo(sprintf(
+                    $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                         $_SERVER['REMOTE_ADDR'],
                         $this->userContextService->getLoggedInUsername(),
@@ -131,7 +131,7 @@ class DeleteDomainsController extends BaseController
                 } catch (\Exception $e) {
                     // Log the error but continue - zone deletion should not fail
                     // because of comment cleanup issues
-                    error_log("Failed to delete comments for zone $zone_id: " . $e->getMessage());
+                    $this->logger->error('Failed to delete comments for zone {zone_id}: {error}', ['zone_id' => $zone_id, 'error' => $e->getMessage()]);
                 }
             }
 

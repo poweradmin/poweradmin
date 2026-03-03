@@ -125,7 +125,7 @@ class MfaSetupController extends BaseController
         $userMfa->setType(UserMfa::TYPE_APP);
         $this->mfaService->saveUserMfa($userMfa);
 
-        error_log("[MfaSetupController] Generated new secret for app-based MFA for user $userId");
+        $this->logger->debug('[MfaSetupController] Generated new secret for app-based MFA for user {user_id}', ['user_id' => $userId]);
 
         // Display verification page
         $this->displayAppVerification($userMfa->getSecret());
@@ -227,7 +227,7 @@ class MfaSetupController extends BaseController
             return;
         } catch (Exception $e) {
             // Handle other errors
-            error_log("[MfaSetupController] Email verification error: " . $e->getMessage());
+            $this->logger->error('[MfaSetupController] Email verification error: {error}', ['error' => $e->getMessage()]);
             $this->addSystemMessage('error', _('Failed to send verification code. Please try again later or use app-based authentication.'));
             $this->displayMfaSetup();
             return;
@@ -372,7 +372,7 @@ class MfaSetupController extends BaseController
 
         // Make sure we have a valid email for the QR code
         if (empty($email)) {
-            error_log("[MfaSetupController] Warning: Empty email when generating QR code for user $userId");
+            $this->logger->warning('[MfaSetupController] Empty email when generating QR code for user {user_id}', ['user_id' => $userId]);
             // Use a generic username if email is missing
             $email = "user$userId";
         }
@@ -381,7 +381,7 @@ class MfaSetupController extends BaseController
         $qrCode = $this->mfaService->generateQrCodeSvg($email, $secret);
 
         // Log QR code generation for debugging
-        error_log("[MfaSetupController] Generated QR code for user ID: $userId");
+        $this->logger->debug('[MfaSetupController] Generated QR code for user ID: {user_id}', ['user_id' => $userId]);
 
         // Render the template with all necessary data
         $this->render('mfa_verify_app.html', [

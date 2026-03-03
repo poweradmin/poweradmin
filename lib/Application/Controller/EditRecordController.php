@@ -50,7 +50,7 @@ use Poweradmin\Domain\Repository\RecordRepository;
 class EditRecordController extends BaseController
 {
 
-    private LegacyLogger $logger;
+    private LegacyLogger $auditLogger;
     private RecordCommentService $recordCommentService;
     private RecordCommentSyncService $commentSyncService;
     private RecordTypeService $recordTypeService;
@@ -61,7 +61,7 @@ class EditRecordController extends BaseController
     {
         parent::__construct($request);
 
-        $this->logger = new LegacyLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
@@ -229,7 +229,7 @@ class EditRecordController extends BaseController
             return false;
         }
 
-        $this->logger->logInfo(
+        $this->auditLogger->logInfo(
             sprintf(
                 'client_ip:%s user:%s operation:edit_record'
                 . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'

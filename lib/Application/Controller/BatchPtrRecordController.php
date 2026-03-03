@@ -39,7 +39,7 @@ use Poweradmin\Domain\Model\Constants;
 
 class BatchPtrRecordController extends BaseController
 {
-    private LegacyLogger $logger;
+    private LegacyLogger $auditLogger;
     private DnsRecord $dnsRecord;
     private BatchReverseRecordCreator $batchReverseRecordCreator;
     private UserContextService $userContextService;
@@ -48,7 +48,7 @@ class BatchPtrRecordController extends BaseController
     {
         parent::__construct($request);
 
-        $this->logger = new LegacyLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         $recordRepository = new RecordRepository($this->db, $this->getConfig());
@@ -56,7 +56,7 @@ class BatchPtrRecordController extends BaseController
         $this->batchReverseRecordCreator = new BatchReverseRecordCreator(
             $this->db,
             $this->getConfig(),
-            $this->logger,
+            $this->auditLogger,
             $this->dnsRecord,
             null,
             $recordRepository

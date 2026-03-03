@@ -103,7 +103,7 @@ class LogoutController extends BaseController
             }
         } catch (Exception $e) {
             // Log error but continue with standard logout
-            error_log('OIDC logout error: ' . $e->getMessage());
+            $this->logger->error('OIDC logout error: {error}', ['error' => $e->getMessage()]);
         }
 
         // Fallback to standard logout if OIDC logout fails
@@ -153,7 +153,7 @@ class LogoutController extends BaseController
             }
         } catch (Exception $e) {
             // Log error and fallback to standard logout
-            error_log('SAML logout error: ' . $e->getMessage());
+            $this->logger->error('SAML logout error: {error}', ['error' => $e->getMessage()]);
             $this->performStandardLogout();
         }
     }

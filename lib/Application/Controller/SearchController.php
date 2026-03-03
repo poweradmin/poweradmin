@@ -31,8 +31,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Query\RecordSearch;
-use Poweradmin\Application\Query\ZoneSearch;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
@@ -170,10 +168,9 @@ class SearchController extends BaseController
 
             $permission_view = Permission::getViewPermission($this->db);
 
-            $db_type = $this->config->get('database', 'type', 'mysql');
+            $dnsDataService = $this->createDnsDataService();
 
-            $zoneSearch = new ZoneSearch($this->db, $this->getConfig(), $db_type);
-            $searchResultZones = $zoneSearch->searchZones(
+            $searchResultZones = $dnsDataService->searchZones(
                 $parameters,
                 $permission_view,
                 $zone_sort_by,
@@ -183,13 +180,12 @@ class SearchController extends BaseController
                 $zones_page
             );
 
-            $totalZones = $zoneSearch->getTotalZones($parameters, $permission_view);
+            $totalZones = $dnsDataService->searchZonesTotalCount($parameters, $permission_view);
 
             $records_page = isset($_POST['records_page']) ? (int)$_POST['records_page'] : 1;
 
             $iface_search_group_records = $this->config->get('interface', 'search_group_records', false);
-            $recordSearch = new RecordSearch($this->db, $this->getConfig(), $db_type);
-            $searchResultRecords = $recordSearch->searchRecords(
+            $searchResultRecords = $dnsDataService->searchRecords(
                 $parameters,
                 $permission_view,
                 $record_sort_by,
@@ -197,10 +193,10 @@ class SearchController extends BaseController
                 $iface_search_group_records,
                 $record_rowamount,
                 $iface_record_comments,
-                $records_page,
+                $records_page
             );
 
-            $totalRecords = $recordSearch->getTotalRecords($parameters, $permission_view, $iface_search_group_records);
+            $totalRecords = $dnsDataService->searchRecordsTotalCount($parameters, $permission_view, $iface_search_group_records);
 
             // Shorten IPv6 addresses in AAAA record content for display
             $searchResultRecords = $this->shortenIPv6InRecords($searchResultRecords);

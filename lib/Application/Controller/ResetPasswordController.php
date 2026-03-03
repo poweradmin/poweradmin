@@ -44,7 +44,6 @@ class ResetPasswordController extends BaseController
     private PasswordPolicyService $passwordPolicyService;
     private UserContextService $userContextService;
     private CsrfTokenService $csrfTokenService;
-    private Logger $logger;
     private IpAddressRetriever $ipRetriever;
     private UserAgentService $userAgentService;
     private ?string $token = null;

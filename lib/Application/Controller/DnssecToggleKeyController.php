@@ -112,7 +112,7 @@ class DnssecToggleKeyController extends BaseController
                 $this->setMessage('dnssec', 'error', $error_message);
             }
         } catch (\Exception $e) {
-            error_log("DNSSEC key toggle failed for zone $domain_name, key $key_id: " . $e->getMessage());
+            $this->logger->error('DNSSEC key toggle failed for zone {domain}, key {key_id}: {error}', ['domain' => $domain_name, 'key_id' => $key_id, 'error' => $e->getMessage()]);
             $this->setMessage('dnssec', 'error', _('An error occurred while toggling the DNSSEC key. Please try again.'));
         }
 

@@ -44,13 +44,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneSlaveController extends BaseController
 {
-    private LegacyLogger $logger;
+    private LegacyLogger $auditLogger;
     private IPAddressValidator $ipAddressValidator;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->logger = new LegacyLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressValidator = new IPAddressValidator();
     }
 
@@ -139,7 +139,7 @@ class AddZoneSlaveController extends BaseController
             if ($dnsRecord->addDomain($this->db, $zone, $owner, $type, $master, 'none', $selected_groups)) {
                 $zone_id = $dnsRecord->getZoneIdFromName($zone);
 
-                $this->logger->logInfo(sprintf(
+                $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                     $_SERVER['REMOTE_ADDR'],
                     $_SESSION["userlogin"],

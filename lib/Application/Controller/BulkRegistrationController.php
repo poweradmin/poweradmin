@@ -43,13 +43,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BulkRegistrationController extends BaseController
 {
 
-    private LegacyLogger $logger;
+    private LegacyLogger $auditLogger;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
-        $this->logger = new LegacyLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     public function run(): void
@@ -107,7 +107,7 @@ class BulkRegistrationController extends BaseController
                 $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');
             } elseif ($dnsRecord->addDomain($this->db, $domain, $owner, $dom_type, '', $zone_template)) {
                 $zone_id = $dnsRecord->getZoneIdFromName($domain);
-                $this->logger->logInfo(sprintf(
+                $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                     $_SERVER['REMOTE_ADDR'],
                     $_SESSION["userlogin"],

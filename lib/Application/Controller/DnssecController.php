@@ -106,11 +106,11 @@ class DnssecController extends BaseController
                         return;
                     } else {
                         $this->setMessage('dnssec', 'warning', _('Zone unsigning requested successfully, but verification failed.'));
-                        error_log("DNSSEC unsigning verification failed for zone: $zone_name - API returned success but zone still secured");
+                        $this->logger->warning('DNSSEC unsigning verification failed for zone: {zone} - API returned success but zone still secured', ['zone' => $zone_name]);
                     }
                 } else {
                     $this->setMessage('dnssec', 'error', _('Failed to unsign zone. Check PowerDNS logs for details.'));
-                    error_log("DNSSEC unsigning failed for zone: $zone_name");
+                    $this->logger->error('DNSSEC unsigning failed for zone: {zone}', ['zone' => $zone_name]);
                 }
             }
         }

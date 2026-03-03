@@ -114,7 +114,7 @@ class JsonController extends BaseController
             $response->send();
         } catch (Exception $e) {
             // Log the actual error for debugging
-            error_log("OpenAPI generation failed: " . $e->getMessage());
+            $this->logger->error('OpenAPI generation failed: {error}', ['error' => $e->getMessage()]);
 
             // Return minimal OpenAPI spec if generation fails
             $fallbackSpec = [

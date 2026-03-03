@@ -44,7 +44,6 @@ class ForgotPasswordController extends BaseController
     private RecaptchaService $recaptchaService;
     private UserContextService $userContextService;
     private CsrfTokenService $csrfTokenService;
-    private Logger $logger;
     private IpAddressRetriever $ipRetriever;
     private UserAgentService $userAgentService;
 

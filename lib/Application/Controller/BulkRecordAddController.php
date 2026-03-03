@@ -48,7 +48,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class BulkRecordAddController extends BaseController
 {
-    private LegacyLogger $logger;
+    private LegacyLogger $auditLogger;
     private DnsRecord $dnsRecord;
     private RecordManagerService $recordManager;
     private RecordTypeService $recordTypeService;
@@ -58,7 +58,7 @@ class BulkRecordAddController extends BaseController
     {
         parent::__construct($request);
 
-        $this->logger = new LegacyLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
@@ -70,7 +70,7 @@ class BulkRecordAddController extends BaseController
             $this->dnsRecord,
             $recordCommentService,
             $commentSyncService,
-            $this->logger,
+            $this->auditLogger,
             $this->getConfig()
         );
 
@@ -213,7 +213,7 @@ class BulkRecordAddController extends BaseController
                     $success_count++;
 
                     // Log the record creation
-                    $this->logger->logInfo(sprintf(
+                    $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:add_record name:%s type:%s content:%s ttl:%s prio:%s',
                         $_SERVER['REMOTE_ADDR'],
                         $this->userContextService->getLoggedInUsername(),

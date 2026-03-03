@@ -45,7 +45,7 @@ use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
 class DeleteRecordsController extends BaseController
 {
-    private LegacyLogger $logger;
+    private LegacyLogger $auditLogger;
     private RecordCommentService $recordCommentService;
     private ReverseRecordCreator $reverseRecordCreator;
     private UserContextService $userContextService;
@@ -54,7 +54,7 @@ class DeleteRecordsController extends BaseController
     {
         parent::__construct($request);
 
-        $this->logger = new LegacyLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
@@ -62,7 +62,7 @@ class DeleteRecordsController extends BaseController
         $this->reverseRecordCreator = new ReverseRecordCreator(
             $this->db,
             $this->getConfig(),
-            $this->logger,
+            $this->auditLogger,
             $dnsRecord,
             $this->recordCommentService
         );
@@ -116,7 +116,7 @@ class DeleteRecordsController extends BaseController
                     $affected_zones[$zid] = true;
 
                     if (isset($record_info['prio'])) {
-                        $this->logger->logInfo(sprintf(
+                        $this->auditLogger->logInfo(sprintf(
                             'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
                             $_SERVER['REMOTE_ADDR'],
                             $_SESSION["userlogin"],
@@ -127,7 +127,7 @@ class DeleteRecordsController extends BaseController
                             $record_info['prio']
                         ), $zid);
                     } else {
-                        $this->logger->logInfo(sprintf(
+                        $this->auditLogger->logInfo(sprintf(
                             'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
                             $_SERVER['REMOTE_ADDR'],
                             $_SESSION["userlogin"],

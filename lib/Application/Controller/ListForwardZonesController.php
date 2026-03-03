@@ -39,8 +39,6 @@ use Poweradmin\Application\Service\ZoneService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Repository\DomainRepository;
-use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -91,10 +89,11 @@ class ListForwardZonesController extends BaseController
         $perm_edit = Permission::getEditPermission($this->db);
         $perm_delete = Permission::getDeletePermission($this->db);
 
-        $zoneCountService = new ZoneCountService($this->db, $this->getConfig());
-        $count_zones_view = $zoneCountService->countZones($perm_view);
-        $count_zones_edit = $zoneCountService->countZones($perm_edit);
-        $count_zones_delete = $zoneCountService->countZones($perm_delete);
+        $dnsDataService = $this->createDnsDataService();
+
+        $count_zones_view = $dnsDataService->countZones($perm_view);
+        $count_zones_edit = $dnsDataService->countZones($perm_edit);
+        $count_zones_delete = $dnsDataService->countZones($perm_delete);
 
         $letter_start = 'all';
         if ($count_zones_view > $iface_rowamount) {
@@ -107,16 +106,22 @@ class ListForwardZonesController extends BaseController
             }
         }
 
-        $count_zones_all_letterstart = $zoneCountService->countZones($perm_view, $letter_start);
+        $count_zones_all_letterstart = $dnsDataService->countZones($perm_view, $letter_start);
 
         list($zone_sort_by, $zone_sort_direction) = $this->getZoneSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'owner']);
 
-        $domainRepository = new DomainRepository($this->db, $this->getConfig());
-        if ($count_zones_view <= $iface_rowamount || $letter_start == 'all') {
-            $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], 'all', $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction, true, $iface_zonelist_serial, $iface_zonelist_template);
-        } else {
-            $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction, true, $iface_zonelist_serial, $iface_zonelist_template);
-        }
+        $effectiveLetterStart = ($count_zones_view <= $iface_rowamount || $letter_start == 'all') ? 'all' : $letter_start;
+        $zones = $dnsDataService->getForwardZones(
+            $perm_view,
+            $_SESSION['userid'],
+            $effectiveLetterStart,
+            $row_start,
+            $iface_rowamount,
+            $zone_sort_by,
+            $zone_sort_direction,
+            $iface_zonelist_serial,
+            $iface_zonelist_template
+        );
 
         // Augment zones with group information
         $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
@@ -178,14 +183,15 @@ class ListForwardZonesController extends BaseController
 
     private function getAvailableStartingLetters(string $letterStart, int $userId): string
     {
-        $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
-        $zoneService = new ZoneService($zoneRepository);
-
         $userRepository = new DbUserRepository($this->db, $this->getConfig());
         $userService = new UserService($userRepository);
         $allow_view_others = $userService->canUserViewOthersContent($userId);
 
-        $availableChars = $zoneService->getAvailableStartingLetters($userId, $allow_view_others);
+        $dnsDataService = $this->createDnsDataService();
+        $availableChars = $dnsDataService->getDistinctStartingLetters($userId, $allow_view_others);
+
+        $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $zoneService = new ZoneService($zoneRepository);
         $digitsAvailable = $zoneService->checkDigitsAvailable($availableChars);
 
         $presenter = new ZoneStartingLettersPresenter();

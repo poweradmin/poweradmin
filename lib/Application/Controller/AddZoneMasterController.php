@@ -48,14 +48,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 class AddZoneMasterController extends BaseController
 {
 
-    private LegacyLogger $logger;
+    private LegacyLogger $auditLogger;
     private UserContextService $userContext;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
-        $this->logger = new LegacyLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
         $this->userContext = new UserContextService();
     }
 
@@ -144,7 +144,7 @@ class AddZoneMasterController extends BaseController
         } elseif ($dnsRecord->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template, $selected_groups)) {
             $zone_id = $dnsRecord->getZoneIdFromName($zone_name);
 
-            $this->logger->logInfo(sprintf(
+            $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'],
                 $this->userContext->getLoggedInUsername(),
@@ -168,7 +168,7 @@ class AddZoneMasterController extends BaseController
                         $errorMsg = $zoneValidator->getFormattedErrorMessage($validation);
                         $messageKey = DnsHelper::isReverseZone($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
                         $this->setMessage($messageKey, 'warning', _('Zone was created successfully, but DNSSEC signing was skipped due to validation errors:') . "\n\n" . $errorMsg);
-                        error_log("DNSSEC pre-flight validation failed for newly created zone: $zone_name");
+                        $this->logger->warning('DNSSEC pre-flight validation failed for newly created zone: {zone}', ['zone' => $zone_name]);
                         $dnssecMessageSet = true;
                     } else {
                         // Validation passed - proceed with signing
@@ -180,7 +180,7 @@ class AddZoneMasterController extends BaseController
 
                         if (!$secureResult) {
                             $this->setMessage($messageKey, 'warning', _('Zone was created, but securing it with DNSSEC failed. Zone validation passed, but PowerDNS API returned an error. Check PowerDNS logs for details.'));
-                            error_log("DNSSEC signing failed for newly created zone: $zone_name");
+                            $this->logger->error('DNSSEC signing failed for newly created zone: {zone}', ['zone' => $zone_name]);
                             $dnssecMessageSet = true;
                         } else {
                             // Verify the zone is now secured
@@ -189,7 +189,7 @@ class AddZoneMasterController extends BaseController
                                 $dnssecMessageSet = true;
                             } else {
                                 $this->setMessage($messageKey, 'warning', _('Zone was created and signing was requested, but verification failed. Check DNSSEC keys.'));
-                                error_log("DNSSEC signing verification failed for newly created zone: $zone_name");
+                                $this->logger->warning('DNSSEC signing verification failed for newly created zone: {zone}', ['zone' => $zone_name]);
                                 $dnssecMessageSet = true;
                             }
                         }
