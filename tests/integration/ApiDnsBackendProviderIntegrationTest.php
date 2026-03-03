@@ -28,8 +28,8 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
+use Psr\Log\NullLogger;
 
 /**
  * Integration tests for the API DNS backend provider against a real PowerDNS instance.
@@ -41,7 +41,7 @@ use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
  */
 class ApiDnsBackendProviderIntegrationTest extends TestCase
 {
-    private ?PDOCommon $db = null;
+    private ?PDO $db = null;
     private ?PowerdnsApiClient $client = null;
     private ?ApiDnsBackendProvider $provider = null;
     private array $createdZones = [];
@@ -59,7 +59,7 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
     {
         // Try connecting to the database
         try {
-            $this->db = new PDOCommon(
+            $this->db = new PDO(
                 'mysql:host=' . self::DB_HOST . ';port=' . self::DB_PORT . ';dbname=' . self::DB_NAME,
                 self::DB_USER,
                 self::DB_PASS,
@@ -102,7 +102,7 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
             ],
         ]);
 
-        $this->provider = new ApiDnsBackendProvider($this->client, $this->db, $config);
+        $this->provider = new ApiDnsBackendProvider($this->client, $this->db, $config, new NullLogger());
     }
 
     protected function tearDown(): void
@@ -599,6 +599,165 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
 
         // Should always return true without doing anything
         $this->assertTrue($this->provider->updateSOASerial($domainId));
+    }
+
+    // ---------------------------------------------------------------
+    // Zone read operations
+    // ---------------------------------------------------------------
+
+    public function testGetZonesReturnsAllZones(): void
+    {
+        $zone1 = $this->uniqueZoneName();
+        $zone2 = $this->uniqueZoneName();
+        $this->createdZones[] = $zone1;
+        $this->createdZones[] = $zone2;
+
+        $this->provider->createZone($zone1, 'NATIVE');
+        $this->provider->createZone($zone2, 'MASTER');
+
+        $zones = $this->provider->getZones();
+
+        $this->assertIsArray($zones);
+        $names = array_column($zones, 'name');
+        $this->assertContains($zone1, $names);
+        $this->assertContains($zone2, $names);
+
+        // Check structure
+        $found = null;
+        foreach ($zones as $z) {
+            if ($z['name'] === $zone1) {
+                $found = $z;
+                break;
+            }
+        }
+        $this->assertNotNull($found);
+        $this->assertArrayHasKey('id', $found);
+        $this->assertArrayHasKey('type', $found);
+        $this->assertArrayHasKey('dnssec', $found);
+        $this->assertEquals('NATIVE', $found['type']);
+    }
+
+    public function testGetZoneByName(): void
+    {
+        $zone = $this->uniqueZoneName();
+        $this->createdZones[] = $zone;
+
+        $domainId = $this->provider->createZone($zone, 'NATIVE');
+
+        $result = $this->provider->getZoneByName($zone);
+
+        $this->assertNotNull($result);
+        $this->assertEquals($zone, $result['name']);
+        $this->assertEquals('NATIVE', $result['type']);
+        $this->assertEquals($domainId, $result['id']);
+        $this->assertArrayHasKey('dnssec', $result);
+    }
+
+    public function testGetZoneByNameNotFound(): void
+    {
+        $result = $this->provider->getZoneByName('nonexistent-zone-' . uniqid() . '.example.com');
+        $this->assertNull($result);
+    }
+
+    // ---------------------------------------------------------------
+    // Record read operations
+    // ---------------------------------------------------------------
+
+    public function testGetZoneRecords(): void
+    {
+        $zone = $this->uniqueZoneName();
+        $this->createdZones[] = $zone;
+
+        $domainId = $this->provider->createZone($zone, 'NATIVE');
+
+        $this->provider->addRecord($domainId, "www.$zone", 'A', '192.0.2.1', 3600, 0);
+        $this->provider->addRecord($domainId, $zone, 'MX', "mail.$zone.", 3600, 10);
+
+        $records = $this->provider->getZoneRecords($domainId, $zone);
+
+        $this->assertIsArray($records);
+        // Should have at least SOA + NS + A + MX
+        $this->assertGreaterThanOrEqual(3, count($records));
+
+        $types = array_column($records, 'type');
+        $this->assertContains('A', $types);
+        $this->assertContains('MX', $types);
+
+        // Check structure
+        foreach ($records as $record) {
+            $this->assertArrayHasKey('id', $record);
+            $this->assertArrayHasKey('domain_id', $record);
+            $this->assertArrayHasKey('name', $record);
+            $this->assertArrayHasKey('type', $record);
+            $this->assertArrayHasKey('content', $record);
+            $this->assertArrayHasKey('ttl', $record);
+            $this->assertArrayHasKey('prio', $record);
+            $this->assertArrayHasKey('disabled', $record);
+        }
+
+        // MX record should have priority extracted
+        foreach ($records as $record) {
+            if ($record['type'] === 'MX') {
+                $this->assertEquals(10, $record['prio']);
+                // Content should NOT contain the priority prefix
+                $this->assertStringStartsNotWith('10 ', $record['content']);
+                break;
+            }
+        }
+    }
+
+    public function testGetZoneRecordsStripsTrailingDots(): void
+    {
+        $zone = $this->uniqueZoneName();
+        $this->createdZones[] = $zone;
+
+        $domainId = $this->provider->createZone($zone, 'NATIVE');
+        $this->provider->addRecord($domainId, "alias.$zone", 'CNAME', "www.$zone.", 3600, 0);
+
+        $records = $this->provider->getZoneRecords($domainId, $zone);
+
+        $cnameRecords = array_filter($records, fn($r) => $r['type'] === 'CNAME');
+        $this->assertNotEmpty($cnameRecords);
+
+        $cname = array_values($cnameRecords)[0];
+        // Trailing dot should be stripped from CNAME content
+        $this->assertStringEndsNotWith('.', $cname['content']);
+    }
+
+    // ---------------------------------------------------------------
+    // Search operations
+    // ---------------------------------------------------------------
+
+    public function testSearchDnsDataFindsZones(): void
+    {
+        $zone = 'apisearch-' . uniqid() . '.example.com';
+        $this->createdZones[] = $zone;
+
+        $this->provider->createZone($zone, 'NATIVE');
+
+        $results = $this->provider->searchDnsData('apisearch', 'zone');
+
+        $this->assertArrayHasKey('zones', $results);
+        $this->assertArrayHasKey('records', $results);
+
+        $names = array_column($results['zones'], 'name');
+        $this->assertContains($zone, $names);
+    }
+
+    public function testSearchDnsDataFindsRecords(): void
+    {
+        $zone = 'apisrchrc-' . uniqid() . '.example.com';
+        $this->createdZones[] = $zone;
+
+        $domainId = $this->provider->createZone($zone, 'NATIVE');
+        $this->provider->addRecord($domainId, "findme.$zone", 'A', '192.0.2.99', 3600, 0);
+
+        $results = $this->provider->searchDnsData('findme', 'record');
+
+        $this->assertArrayHasKey('records', $results);
+
+        $names = array_column($results['records'], 'name');
+        $this->assertContains("findme.$zone", $names);
     }
 
     // ---------------------------------------------------------------
