@@ -24,6 +24,8 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Utility\ProtocolDetector;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Service for building absolute URLs
@@ -34,10 +36,12 @@ use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 class UrlService
 {
     private ConfigurationInterface $config;
+    private LoggerInterface $logger;
 
-    public function __construct(ConfigurationInterface $config)
+    public function __construct(ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
         $this->config = $config;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -141,7 +145,7 @@ class UrlService
             // If configured URL exists, validate the detected host matches
             if (!empty($expectedHost) && strcasecmp($host, $expectedHost) !== 0) {
                 // Log suspicious activity - possible host header injection attempt
-                error_log("UrlService: Host header mismatch - got '$host', expected '$expectedHost' from configuration. Using configured host for security.");
+                $this->logger->warning('UrlService: Host header mismatch - got {host}, expected {expectedHost} from configuration. Using configured host for security.', ['host' => $host, 'expectedHost' => $expectedHost]);
                 return $expectedHost;
             }
         }

@@ -297,17 +297,16 @@ class MailService implements MailServiceInterface
         $emailMessage .= $body . "\n";
         $emailMessage .= "===== END EMAIL LOG =====\n";
 
-        // Log the email to error_log (visible in Docker logs)
-        error_log("[POWERADMIN MAILER] " . $emailMessage);
-
-        // Also log via the application logger if available
+        // Log via the application logger if available, fall back to error_log for Docker visibility
         if ($this->logger !== null) {
-            $this->logger->info('Email sent via logger transport', [
+            $this->logger->info('[POWERADMIN MAILER] Email sent via logger transport', [
                 'to' => $to,
                 'subject' => $subject,
                 'from' => $fromEmail,
                 'email_content' => $emailMessage
             ]);
+        } else {
+            error_log($emailMessage);
         }
 
         // Always return true since this is just logging
@@ -494,6 +493,8 @@ class MailService implements MailServiceInterface
     {
         if ($this->logger !== null) {
             $this->logger->error($message);
+        } else {
+            error_log('[POWERADMIN MAILER] ERROR: ' . $message);
         }
     }
 
@@ -504,6 +505,8 @@ class MailService implements MailServiceInterface
     {
         if ($this->logger !== null) {
             $this->logger->warning($message);
+        } else {
+            error_log('[POWERADMIN MAILER] WARNING: ' . $message);
         }
     }
 

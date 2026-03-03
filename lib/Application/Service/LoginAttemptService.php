@@ -25,14 +25,13 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class LoginAttemptService
 {
     private ConfigurationManager $configManager;
-    private PDOCommon $connection;
+    private PDO $connection;
 
-    public function __construct(PDOCommon $connection, ?ConfigurationManager $configManager = null)
+    public function __construct(PDO $connection, ?ConfigurationManager $configManager = null)
     {
         $this->connection = $connection;
         $this->configManager = $configManager ?? ConfigurationManager::getInstance();

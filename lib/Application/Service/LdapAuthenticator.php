@@ -29,7 +29,6 @@ use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -39,7 +38,7 @@ use ReflectionClass;
 
 class LdapAuthenticator extends LoggingService
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $configManager;
     private LdapUserEventLogger $ldapUserEventLogger;
     private AuthenticationService $authenticationService;
@@ -50,7 +49,7 @@ class LdapAuthenticator extends LoggingService
     private ?MfaService $mfaService = null;
 
     public function __construct(
-        PDOCommon $connection,
+        PDO $connection,
         ConfigurationManager $configManager,
         LdapUserEventLogger $ldapUserEventLogger,
         AuthenticationService $authService,
@@ -271,7 +270,7 @@ class LdapAuthenticator extends LoggingService
                 $this->ldapUserEventLogger->logSuccessAuth();
 
                 // Log before redirect
-                error_log("LdapAuthenticator: Redirecting to MFA verification page");
+                $this->logInfo('LdapAuthenticator: Redirecting to MFA verification page');
 
                 // Clear any output buffers
                 if (ob_get_level()) {

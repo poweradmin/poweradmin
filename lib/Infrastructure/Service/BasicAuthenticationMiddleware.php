@@ -31,7 +31,6 @@ use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\NullLogHandler;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -47,7 +46,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BasicAuthenticationMiddleware
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
     private SqlAuthenticator $sqlAuthenticator;
@@ -55,10 +54,10 @@ class BasicAuthenticationMiddleware
     /**
      * Constructor
      *
-     * @param PDOCommon $db Database connection
+     * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
      */
-    public function __construct(PDOCommon $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;

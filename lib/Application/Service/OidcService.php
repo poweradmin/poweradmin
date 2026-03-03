@@ -33,7 +33,7 @@ use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
@@ -48,7 +48,7 @@ class OidcService extends LoggingService
     private UserProvisioningService $userProvisioningService;
     private Request $request;
     private CsrfTokenService $csrfTokenService;
-    private PDOCommon $db;
+    private PDO $db;
     private ?MfaService $mfaService = null;
 
     public function __construct(
@@ -56,7 +56,7 @@ class OidcService extends LoggingService
         OidcConfigurationService $oidcConfigurationService,
         UserProvisioningService $userProvisioningService,
         Logger $logger,
-        PDOCommon $db,
+        PDO $db,
         ?Request $request = null
     ) {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();

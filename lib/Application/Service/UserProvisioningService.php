@@ -28,7 +28,6 @@ use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
@@ -45,13 +44,13 @@ class UserProvisioningService extends LoggingService
     public const AUTH_METHOD_OIDC = 'oidc';
     public const AUTH_METHOD_SAML = 'saml';
 
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $configManager;
     private UserManager $userManager;
     private DbUserRepository $userRepository;
 
     public function __construct(
-        PDOCommon $connection,
+        PDO $connection,
         ConfigurationManager $configManager,
         Logger $logger
     ) {

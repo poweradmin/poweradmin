@@ -22,14 +22,14 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class UserEventLogger
 {
     private LegacyLogger $logger;
 
-    public function __construct(PDOCommon $db)
+    public function __construct(PDO $db)
     {
         $this->logger = new LegacyLogger($db);
     }

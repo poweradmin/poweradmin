@@ -28,7 +28,6 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
@@ -37,7 +36,7 @@ use ReflectionClass;
 
 class SqlAuthenticator extends LoggingService
 {
-    private PDOCommon $connection;
+    private PDO $connection;
     private ConfigurationManager $configManager;
     private UserEventLogger $userEventLogger;
     private $authService; // Can be either AuthenticationService or UserAuthenticationService
@@ -47,7 +46,7 @@ class SqlAuthenticator extends LoggingService
     private ?MfaService $mfaService = null;
 
     public function __construct(
-        PDOCommon $connection,
+        PDO $connection,
         ConfigurationManager $configManager,
         UserEventLogger $userEventLogger,
         $authService, // Changed type to allow UserAuthenticationService
@@ -174,7 +173,7 @@ class SqlAuthenticator extends LoggingService
                 $this->userEventLogger->logSuccessfulAuth();
 
                 // Log before redirect
-                error_log("SqlAuthenticator: Redirecting to MFA verification page");
+                $this->logInfo('SqlAuthenticator: Redirecting to MFA verification page');
 
                 // Clear any output buffers
                 if (ob_get_level()) {
