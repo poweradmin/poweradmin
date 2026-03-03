@@ -9,8 +9,8 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
+use Psr\Log\NullLogger;
 
 #[CoversClass(ApiDnsBackendProvider::class)]
 class ApiDnsBackendProviderTest extends TestCase
@@ -23,7 +23,7 @@ class ApiDnsBackendProviderTest extends TestCase
     protected function setUp(): void
     {
         $this->mockClient = $this->createMock(PowerdnsApiClient::class);
-        $this->mockDb = $this->createMock(PDOCommon::class);
+        $this->mockDb = $this->createMock(PDO::class);
         $this->mockConfig = $this->createMock(ConfigurationInterface::class);
         $this->mockConfig->method('get')->willReturnMap([
             ['database', 'pdns_db_name', null, ''],
@@ -32,7 +32,8 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->provider = new ApiDnsBackendProvider(
             $this->mockClient,
             $this->mockDb,
-            $this->mockConfig
+            $this->mockConfig,
+            new NullLogger()
         );
     }
 
@@ -1172,5 +1173,120 @@ class ApiDnsBackendProviderTest extends TestCase
         $result = $this->provider->deleteRecordsByDomainId(1);
 
         $this->assertTrue($result);
+    }
+
+    // ---------------------------------------------------------------
+    // resolveRecordIds - duplicate record handling
+    // ---------------------------------------------------------------
+
+    public function testGetZoneRecordsAssignsUniqueIdsForDuplicateRecords(): void
+    {
+        // API returns 3 identical A records (round-robin)
+        $this->mockClient->method('getZone')
+            ->with('example.com.')
+            ->willReturn([
+                'rrsets' => [
+                    [
+                        'name' => 'www.example.com.',
+                        'type' => 'A',
+                        'ttl' => 3600,
+                        'records' => [
+                            ['content' => '192.168.1.1', 'disabled' => false],
+                            ['content' => '192.168.1.1', 'disabled' => false],
+                            ['content' => '192.168.1.1', 'disabled' => false],
+                        ],
+                    ],
+                ],
+            ]);
+
+        // DB has 3 rows with different IDs for the same content
+        $stmtRecords = $this->createMock(PDOStatement::class);
+        $stmtRecords->method('execute');
+        $fetchCallCount = 0;
+        $dbRows = [
+            ['id' => 10, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.168.1.1', 'prio' => 0],
+            ['id' => 11, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.168.1.1', 'prio' => 0],
+            ['id' => 12, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.168.1.1', 'prio' => 0],
+        ];
+        $stmtRecords->method('fetch')->willReturnCallback(function () use (&$fetchCallCount, $dbRows) {
+            return $dbRows[$fetchCallCount++] ?? false;
+        });
+
+        $this->mockDb->method('prepare')->willReturn($stmtRecords);
+
+        $records = $this->provider->getZoneRecords(1, 'example.com');
+
+        $this->assertCount(3, $records);
+
+        // Each record should have a unique ID assigned via FIFO
+        $ids = array_column($records, 'id');
+        $this->assertSame([10, 11, 12], $ids);
+        $this->assertCount(3, array_unique($ids), 'Duplicate records must get unique IDs');
+    }
+
+    // ---------------------------------------------------------------
+    // createRecordAtomic
+    // ---------------------------------------------------------------
+
+    public function testCreateRecordAtomicDelegatesToAddRecordGetId(): void
+    {
+        // Mock getDomainNameById
+        $stmtDomain = $this->createMock(PDOStatement::class);
+        $stmtDomain->method('execute');
+        $stmtDomain->method('fetchColumn')->willReturn('example.com');
+
+        // Mock lookupRecordId
+        $stmtLookup = $this->createMock(PDOStatement::class);
+        $stmtLookup->method('execute');
+        $stmtLookup->method('fetchColumn')->willReturn(42);
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
+            $stmtDomain,
+            $stmtLookup
+        );
+
+        $this->mockClient->method('getZone')
+            ->with('example.com.')
+            ->willReturn(['rrsets' => []]);
+
+        $this->mockClient->method('patchZoneRRsets')->willReturn(true);
+
+        // disabled=0, so no editRecord call needed
+        $result = $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 0);
+
+        $this->assertEquals(42, $result);
+    }
+
+    public function testCreateRecordAtomicRollsBackOnDisabledFailure(): void
+    {
+        $provider = $this->getMockBuilder(ApiDnsBackendProvider::class)
+            ->setConstructorArgs([$this->mockClient, $this->mockDb, $this->mockConfig, new NullLogger()])
+            ->onlyMethods(['addRecordGetId', 'editRecord', 'deleteRecord'])
+            ->getMock();
+
+        $provider->method('addRecordGetId')->willReturn(42);
+        $provider->method('editRecord')->willReturn(false);
+        $provider->expects($this->once())->method('deleteRecord')->with(42)->willReturn(true);
+
+        $result = $provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 1);
+        $this->assertNull($result);
+    }
+
+    public function testCreateRecordAtomicReturnsNullWhenAddFails(): void
+    {
+        // Mock getDomainNameById
+        $stmtDomain = $this->createMock(PDOStatement::class);
+        $stmtDomain->method('execute');
+        $stmtDomain->method('fetchColumn')->willReturn('example.com');
+        $this->mockDb->method('prepare')->willReturn($stmtDomain);
+
+        // API fetch fails -> addRecord returns false -> addRecordGetId returns null
+        $this->mockClient->method('getZone')
+            ->with('example.com.')
+            ->willReturn(null);
+
+        $result = $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
+
+        $this->assertNull($result);
     }
 }

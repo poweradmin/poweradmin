@@ -31,14 +31,13 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 
 #[CoversClass(DbApiKeyRepository::class)]
 class DbApiKeyRepositoryTest extends TestCase
 {
     private DbApiKeyRepository $repository;
-    private PDOCommon&MockObject $db;
+    private PDO&MockObject $db;
     private ConfigurationManager&MockObject $config;
     private string $originalErrorLog;
 
@@ -50,7 +49,7 @@ class DbApiKeyRepositoryTest extends TestCase
         $this->originalErrorLog = ini_get('error_log') ?: '';
         ini_set('error_log', '/dev/null');
 
-        $this->db = $this->createMock(PDOCommon::class);
+        $this->db = $this->createMock(PDO::class);
         $this->config = $this->createMock(ConfigurationManager::class);
         $this->repository = new DbApiKeyRepository($this->db, $this->config);
     }

@@ -26,7 +26,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use TestHelpers\BaseDnsTest;
 use ReflectionClass;
 
@@ -40,8 +40,8 @@ class CnameValidationTest extends BaseDnsTest
         // Create CNAMERecordValidator instance
         /** @var MockObject&ConfigurationManager $configMock */
         $configMock = $this->createMock(ConfigurationManager::class);
-        /** @var MockObject&PDOCommon $dbMock */
-        $dbMock = $this->createMock(PDOCommon::class);
+        /** @var MockObject&PDO $dbMock */
+        $dbMock = $this->createMock(PDO::class);
 
         // Track which test case we're in for different return values
         $stmtMock = $this->createMock(\PDOStatement::class);
@@ -80,8 +80,8 @@ class CnameValidationTest extends BaseDnsTest
         // Create CNAMERecordValidator instance
         /** @var MockObject&ConfigurationManager $configMock */
         $configMock = $this->createMock(ConfigurationManager::class);
-        /** @var MockObject&PDOCommon $dbMock */
-        $dbMock = $this->createMock(PDOCommon::class);
+        /** @var MockObject&PDO $dbMock */
+        $dbMock = $this->createMock(PDO::class);
 
         // Setup mock prepared statement responses
         $stmtMock = $this->createMock(\PDOStatement::class);
@@ -129,8 +129,8 @@ class CnameValidationTest extends BaseDnsTest
         // Create CNAMERecordValidator instance
         /** @var MockObject&ConfigurationManager $configMock */
         $configMock = $this->createMock(ConfigurationManager::class);
-        /** @var MockObject&PDOCommon $dbMock */
-        $dbMock = $this->createMock(PDOCommon::class);
+        /** @var MockObject&PDO $dbMock */
+        $dbMock = $this->createMock(PDO::class);
 
         // Setup mock prepared statement responses
         $stmtMock = $this->createMock(\PDOStatement::class);
@@ -167,8 +167,8 @@ class CnameValidationTest extends BaseDnsTest
         ->willReturn('pdns');
 
         // Test valid case - target is not a CNAME
-        /** @var MockObject&PDOCommon $dbMock1 */
-        $dbMock1 = $this->createMock(PDOCommon::class);
+        /** @var MockObject&PDO $dbMock1 */
+        $dbMock1 = $this->createMock(PDO::class);
         $stmtMock1 = $this->createMock(\PDOStatement::class);
         $stmtMock1->method('execute')->willReturn(true);
         $stmtMock1->method('fetchColumn')->willReturn(false); // No CNAME found
@@ -180,8 +180,8 @@ class CnameValidationTest extends BaseDnsTest
         $this->assertTrue($result1->getData());
 
         // Test invalid case - target is a CNAME
-        /** @var MockObject&PDOCommon $dbMock2 */
-        $dbMock2 = $this->createMock(PDOCommon::class);
+        /** @var MockObject&PDO $dbMock2 */
+        $dbMock2 = $this->createMock(PDO::class);
         $stmtMock2 = $this->createMock(\PDOStatement::class);
         $stmtMock2->method('execute')->willReturn(true);
         $stmtMock2->method('fetchColumn')->willReturn(1); // CNAME found
@@ -198,8 +198,8 @@ class CnameValidationTest extends BaseDnsTest
         // Create CNAMERecordValidator instance
         /** @var MockObject&ConfigurationManager $configMock */
         $configMock = $this->createMock(ConfigurationManager::class);
-        /** @var MockObject&PDOCommon $dbMock */
-        $dbMock = $this->createMock(PDOCommon::class);
+        /** @var MockObject&PDO $dbMock */
+        $dbMock = $this->createMock(PDO::class);
 
         $validator = new CNAMERecordValidator($configMock, $dbMock);
         $reflection = new ReflectionClass($validator);

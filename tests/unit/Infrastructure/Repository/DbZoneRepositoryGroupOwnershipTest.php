@@ -29,7 +29,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 
 /**
@@ -42,14 +41,14 @@ use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 #[CoversClass(DbZoneRepository::class)]
 class DbZoneRepositoryGroupOwnershipTest extends TestCase
 {
-    private PDOCommon&MockObject $db;
+    private PDO&MockObject $db;
     private ConfigurationManager&MockObject $config;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->db = $this->createMock(PDOCommon::class);
+        $this->db = $this->createMock(PDO::class);
         $this->config = $this->createMock(ConfigurationManager::class);
     }
 

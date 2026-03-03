@@ -26,8 +26,8 @@ use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
+use Psr\Log\NullLogger;
 
 /**
  * Integration tests for the SQL DNS backend provider against a real database.
@@ -37,7 +37,7 @@ use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
  */
 class SqlDnsBackendProviderIntegrationTest extends TestCase
 {
-    private ?PDOCommon $db = null;
+    private ?PDO $db = null;
     private ?SqlDnsBackendProvider $provider = null;
     private array $createdDomainIds = [];
     private array $createdSupermasters = [];
@@ -51,7 +51,7 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
     protected function setUp(): void
     {
         try {
-            $this->db = new PDOCommon(
+            $this->db = new PDO(
                 'mysql:host=' . self::DB_HOST . ';port=' . self::DB_PORT . ';dbname=' . self::DB_NAME,
                 self::DB_USER,
                 self::DB_PASS,
@@ -67,7 +67,7 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
             ],
         ]);
 
-        $this->provider = new SqlDnsBackendProvider($this->db, $config);
+        $this->provider = new SqlDnsBackendProvider($this->db, $config, new NullLogger());
     }
 
     protected function tearDown(): void
@@ -375,6 +375,152 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
         $this->assertFalse($stmt->fetch());
 
         $this->createdDomainIds = array_diff($this->createdDomainIds, [$domainId]);
+    }
+
+    // ---------------------------------------------------------------
+    // Zone read operations
+    // ---------------------------------------------------------------
+
+    public function testGetZonesReturnsAllZones(): void
+    {
+        $zone1 = $this->uniqueZoneName();
+        $zone2 = $this->uniqueZoneName();
+        $id1 = $this->provider->createZone($zone1, 'NATIVE');
+        $id2 = $this->provider->createZone($zone2, 'MASTER');
+        $this->createdDomainIds[] = $id1;
+        $this->createdDomainIds[] = $id2;
+
+        $zones = $this->provider->getZones();
+
+        $this->assertIsArray($zones);
+
+        $names = array_column($zones, 'name');
+        $this->assertContains($zone1, $names);
+        $this->assertContains($zone2, $names);
+
+        // Check structure of one result
+        $found = null;
+        foreach ($zones as $z) {
+            if ($z['name'] === $zone1) {
+                $found = $z;
+                break;
+            }
+        }
+        $this->assertNotNull($found);
+        $this->assertArrayHasKey('id', $found);
+        $this->assertArrayHasKey('type', $found);
+        $this->assertArrayHasKey('dnssec', $found);
+        $this->assertEquals('NATIVE', $found['type']);
+        $this->assertEquals($id1, $found['id']);
+    }
+
+    public function testGetZoneByName(): void
+    {
+        $zone = $this->uniqueZoneName();
+        $domainId = $this->provider->createZone($zone, 'MASTER');
+        $this->createdDomainIds[] = $domainId;
+
+        $result = $this->provider->getZoneByName($zone);
+
+        $this->assertNotNull($result);
+        $this->assertEquals($zone, $result['name']);
+        $this->assertEquals('MASTER', $result['type']);
+        $this->assertEquals($domainId, $result['id']);
+        $this->assertArrayHasKey('dnssec', $result);
+    }
+
+    public function testGetZoneByNameNotFound(): void
+    {
+        $result = $this->provider->getZoneByName('nonexistent-zone-' . uniqid() . '.example.com');
+        $this->assertNull($result);
+    }
+
+    // ---------------------------------------------------------------
+    // Record read operations
+    // ---------------------------------------------------------------
+
+    public function testGetZoneRecords(): void
+    {
+        $zone = $this->uniqueZoneName();
+        $domainId = $this->provider->createZone($zone, 'NATIVE');
+        $this->createdDomainIds[] = $domainId;
+
+        $this->provider->addRecord($domainId, "www.$zone", 'A', '192.0.2.1', 3600, 0);
+        $this->provider->addRecord($domainId, "mail.$zone", 'MX', "mail.$zone", 3600, 10);
+        $this->provider->addRecord($domainId, $zone, 'NS', 'ns1.example.com', 3600, 0);
+
+        $records = $this->provider->getZoneRecords($domainId, $zone);
+
+        $this->assertIsArray($records);
+        $this->assertGreaterThanOrEqual(3, count($records));
+
+        $types = array_column($records, 'type');
+        $this->assertContains('A', $types);
+        $this->assertContains('MX', $types);
+        $this->assertContains('NS', $types);
+
+        // Check structure
+        foreach ($records as $record) {
+            $this->assertArrayHasKey('id', $record);
+            $this->assertArrayHasKey('domain_id', $record);
+            $this->assertArrayHasKey('name', $record);
+            $this->assertArrayHasKey('type', $record);
+            $this->assertArrayHasKey('content', $record);
+            $this->assertArrayHasKey('ttl', $record);
+            $this->assertArrayHasKey('prio', $record);
+            $this->assertArrayHasKey('disabled', $record);
+        }
+    }
+
+    public function testGetZoneRecordsExcludesEntRecords(): void
+    {
+        $zone = $this->uniqueZoneName();
+        $domainId = $this->provider->createZone($zone, 'NATIVE');
+        $this->createdDomainIds[] = $domainId;
+
+        $this->provider->addRecord($domainId, "www.$zone", 'A', '192.0.2.1', 3600, 0);
+
+        $records = $this->provider->getZoneRecords($domainId, $zone);
+
+        // All records should have a non-empty type
+        foreach ($records as $record) {
+            $this->assertNotEmpty($record['type'], 'ENT records should be excluded');
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Search operations
+    // ---------------------------------------------------------------
+
+    public function testSearchDnsDataFindsZones(): void
+    {
+        $zone = 'searchsql-' . uniqid() . '.example.com';
+        $domainId = $this->provider->createZone($zone, 'NATIVE');
+        $this->createdDomainIds[] = $domainId;
+
+        $results = $this->provider->searchDnsData('searchsql', 'zone');
+
+        $this->assertArrayHasKey('zones', $results);
+        $this->assertArrayHasKey('records', $results);
+
+        $names = array_column($results['zones'], 'name');
+        $this->assertContains($zone, $names);
+    }
+
+    public function testSearchDnsDataFindsRecords(): void
+    {
+        $zone = 'srchrecord-' . uniqid() . '.example.com';
+        $domainId = $this->provider->createZone($zone, 'NATIVE');
+        $this->createdDomainIds[] = $domainId;
+
+        $this->provider->addRecord($domainId, "unique-srch-host.$zone", 'A', '192.0.2.42', 3600, 0);
+
+        $results = $this->provider->searchDnsData('unique-srch-host', 'record');
+
+        $this->assertArrayHasKey('records', $results);
+
+        $names = array_column($results['records'], 'name');
+        $this->assertContains("unique-srch-host.$zone", $names);
     }
 
     // ---------------------------------------------------------------

@@ -27,7 +27,7 @@ use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\OidcService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Logger\Logger;
 use ReflectionMethod;
 
@@ -44,7 +44,7 @@ class OidcServiceIdTokenTest extends TestCase
         $oidcConfigService = $this->createMock(OidcConfigurationService::class);
         $userProvisioningService = $this->createMock(UserProvisioningService::class);
         $logger = $this->createMock(Logger::class);
-        $db = $this->createMock(PDOCommon::class);
+        $db = $this->createMock(PDO::class);
 
         $this->service = new OidcService(
             $configManager,

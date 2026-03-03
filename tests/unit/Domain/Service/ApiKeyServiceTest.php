@@ -33,7 +33,6 @@ use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 #[CoversClass(ApiKeyService::class)]
@@ -41,7 +40,7 @@ class ApiKeyServiceTest extends TestCase
 {
     private ApiKeyService $service;
     private ApiKeyRepositoryInterface&MockObject $apiKeyRepository;
-    private PDOCommon&MockObject $db;
+    private PDO&MockObject $db;
     private ConfigurationManager&MockObject $config;
     private MessageService&MockObject $messageService;
 
@@ -50,7 +49,7 @@ class ApiKeyServiceTest extends TestCase
         parent::setUp();
 
         $this->apiKeyRepository = $this->createMock(ApiKeyRepositoryInterface::class);
-        $this->db = $this->createMock(PDOCommon::class);
+        $this->db = $this->createMock(PDO::class);
         $this->config = $this->createMock(ConfigurationManager::class);
         $this->messageService = $this->createMock(MessageService::class);
 

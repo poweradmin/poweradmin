@@ -28,19 +28,19 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ZoneValidationService;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 #[CoversClass(ZoneValidationService::class)]
 class ZoneValidationServiceTest extends TestCase
 {
     private ZoneValidationService $service;
-    private PDOCommon&MockObject $db;
+    private PDO&MockObject $db;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->db = $this->createMock(PDOCommon::class);
+        $this->db = $this->createMock(PDO::class);
         $this->service = new ZoneValidationService($this->db);
     }
 

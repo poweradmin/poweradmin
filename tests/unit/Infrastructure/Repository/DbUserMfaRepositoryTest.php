@@ -31,14 +31,13 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 
 #[CoversClass(DbUserMfaRepository::class)]
 class DbUserMfaRepositoryTest extends TestCase
 {
     private DbUserMfaRepository $repository;
-    private PDOCommon&MockObject $db;
+    private PDO&MockObject $db;
     private ConfigurationManager&MockObject $config;
     private string $originalErrorLog;
 
@@ -50,7 +49,7 @@ class DbUserMfaRepositoryTest extends TestCase
         $this->originalErrorLog = ini_get('error_log') ?: '';
         ini_set('error_log', '/dev/null');
 
-        $this->db = $this->createMock(PDOCommon::class);
+        $this->db = $this->createMock(PDO::class);
         $this->config = $this->createMock(ConfigurationManager::class);
         $this->repository = new DbUserMfaRepository($this->db, $this->config);
     }

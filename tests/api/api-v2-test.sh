@@ -499,6 +499,140 @@ test_bulk_operations() {
 }
 
 ##############################################################################
+# Test: Disabled Record Creation
+##############################################################################
+
+test_disabled_records() {
+    print_section "Disabled Record Tests"
+
+    # Prerequisites: Create test zone
+    print_info "Creating test zone for disabled record tests..."
+    local zone_data='{"name":"disabled-test.example.com","type":"MASTER"}'
+    local disabled_zone_id=""
+
+    if api_request_v2 "POST" "/zones" "$zone_data" 201 "Create zone for disabled record tests"; then
+        disabled_zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+        print_info "Created zone ID: $disabled_zone_id"
+    else
+        print_fail "Failed to create test zone - skipping disabled record tests"
+        return 1
+    fi
+
+    # Test 1: Create record with disabled=true
+    local disabled_record='{
+        "name": "disabled-host",
+        "type": "A",
+        "content": "192.0.2.50",
+        "ttl": 3600,
+        "disabled": true
+    }'
+    if api_request_v2 "POST" "/zones/$disabled_zone_id/records" "$disabled_record" 201 "Create record with disabled=true"; then
+        local disabled_record_id
+        disabled_record_id=$(extract_json_field "$LAST_RESPONSE_BODY" "record_id")
+        print_info "Created disabled record ID: $disabled_record_id"
+
+        # Test 2: Verify record is disabled when retrieved
+        if [[ -n "$disabled_record_id" ]]; then
+            api_request_v2 "GET" "/zones/$disabled_zone_id/records/$disabled_record_id" "" 200 "Get disabled record"
+
+            increment_test
+            if echo "$LAST_RESPONSE_BODY" | grep -q '"disabled":true'; then
+                print_pass "Record is correctly marked as disabled"
+            else
+                print_fail "Record should be disabled but is not"
+                echo "Response: $LAST_RESPONSE_BODY"
+            fi
+
+            # Cleanup the record
+            api_request_v2 "DELETE" "/zones/$disabled_zone_id/records/$disabled_record_id" "" 204 "Delete disabled record" || true
+        fi
+    fi
+
+    # Test 3: Create record with disabled=false (default behavior)
+    local enabled_record='{
+        "name": "enabled-host",
+        "type": "A",
+        "content": "192.0.2.51",
+        "ttl": 3600,
+        "disabled": false
+    }'
+    if api_request_v2 "POST" "/zones/$disabled_zone_id/records" "$enabled_record" 201 "Create record with disabled=false"; then
+        local enabled_record_id
+        enabled_record_id=$(extract_json_field "$LAST_RESPONSE_BODY" "record_id")
+        print_info "Created enabled record ID: $enabled_record_id"
+
+        # Test 4: Verify record is enabled when retrieved
+        if [[ -n "$enabled_record_id" ]]; then
+            api_request_v2 "GET" "/zones/$disabled_zone_id/records/$enabled_record_id" "" 200 "Get enabled record"
+
+            increment_test
+            if echo "$LAST_RESPONSE_BODY" | grep -q '"disabled":false'; then
+                print_pass "Record is correctly marked as enabled"
+            else
+                print_fail "Record should be enabled but is not"
+                echo "Response: $LAST_RESPONSE_BODY"
+            fi
+
+            # Cleanup the record
+            api_request_v2 "DELETE" "/zones/$disabled_zone_id/records/$enabled_record_id" "" 204 "Delete enabled record" || true
+        fi
+    fi
+
+    # Test 5: Create record without disabled field (should default to enabled)
+    local default_record='{
+        "name": "default-host",
+        "type": "A",
+        "content": "192.0.2.52",
+        "ttl": 3600
+    }'
+    if api_request_v2 "POST" "/zones/$disabled_zone_id/records" "$default_record" 201 "Create record without disabled field (default)"; then
+        local default_record_id
+        default_record_id=$(extract_json_field "$LAST_RESPONSE_BODY" "record_id")
+
+        if [[ -n "$default_record_id" ]]; then
+            api_request_v2 "GET" "/zones/$disabled_zone_id/records/$default_record_id" "" 200 "Get default record"
+
+            increment_test
+            if echo "$LAST_RESPONSE_BODY" | grep -q '"disabled":false'; then
+                print_pass "Record defaults to enabled when disabled field omitted"
+            else
+                print_fail "Record should default to enabled"
+                echo "Response: $LAST_RESPONSE_BODY"
+            fi
+
+            api_request_v2 "DELETE" "/zones/$disabled_zone_id/records/$default_record_id" "" 204 "Delete default record" || true
+        fi
+    fi
+
+    # Test 6: Create disabled record via RRSet
+    local disabled_rrset='{
+        "name": "disabled-rrset",
+        "type": "A",
+        "ttl": 3600,
+        "records": [
+            {"content": "192.0.2.60", "disabled": true}
+        ]
+    }'
+    api_request_v2 "PUT" "/zones/$disabled_zone_id/rrsets" "$disabled_rrset" 200 "Create RRSet with disabled record"
+
+    api_request_v2 "GET" "/zones/$disabled_zone_id/rrsets/disabled-rrset/A" "" 200 "Get disabled RRSet"
+    increment_test
+    if echo "$LAST_RESPONSE_BODY" | grep -q '"disabled":true'; then
+        print_pass "RRSet record is correctly marked as disabled"
+    else
+        print_fail "RRSet record should be disabled"
+        echo "Response: $LAST_RESPONSE_BODY"
+    fi
+
+    # Cleanup: delete the test zone
+    if [[ -n "$disabled_zone_id" ]]; then
+        api_request_v2 "DELETE" "/zones/$disabled_zone_id" "" 204 "Delete disabled test zone" || true
+    fi
+
+    print_info "Disabled record tests completed"
+}
+
+##############################################################################
 # Test: Master Port Syntax
 ##############################################################################
 
@@ -1284,6 +1418,7 @@ cleanup_existing_test_zones() {
         "bad-template-test.example.com"
         "name-template-test.example.com"
         "owner-test.example.com"
+        "disabled-test.example.com"
     )
 
     local all_zones
@@ -1314,6 +1449,7 @@ main() {
     test_rrsets
     test_ptr_autocreation
     test_bulk_operations
+    test_disabled_records
     test_master_port_syntax
     test_groups
     test_zone_owners

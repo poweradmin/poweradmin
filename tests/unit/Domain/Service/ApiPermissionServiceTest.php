@@ -29,19 +29,18 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 
 #[CoversClass(ApiPermissionService::class)]
 class ApiPermissionServiceTest extends TestCase
 {
     private ApiPermissionService $service;
-    private PDOCommon&MockObject $db;
+    private PDO&MockObject $db;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->db = $this->createMock(PDOCommon::class);
+        $this->db = $this->createMock(PDO::class);
         $this->service = new ApiPermissionService($this->db);
     }
 

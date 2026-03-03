@@ -31,21 +31,20 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 #[CoversClass(DbUserRepository::class)]
 class DbUserRepositoryTest extends TestCase
 {
     private DbUserRepository $repository;
-    private PDOCommon&MockObject $db;
+    private PDO&MockObject $db;
     private ConfigurationManager&MockObject $config;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->db = $this->createMock(PDOCommon::class);
+        $this->db = $this->createMock(PDO::class);
         $this->config = $this->createMock(ConfigurationManager::class);
         $this->repository = new DbUserRepository($this->db, $this->config);
     }

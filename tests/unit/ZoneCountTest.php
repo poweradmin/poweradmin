@@ -6,17 +6,17 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 class ZoneCountTest extends TestCase
 {
-    private MockObject&PDOCommon $dbMock;
+    private MockObject&PDO $dbMock;
     private MockObject&ConfigurationManager $configMock;
     private ZoneCountService $zoneCountService;
 
     protected function setUp(): void
     {
-        $this->dbMock = $this->createMock(PDOCommon::class);
+        $this->dbMock = $this->createMock(PDO::class);
         $this->configMock = $this->createMock(ConfigurationManager::class);
         // Don't create the service here - do it in each test to allow proper mock setup
     }

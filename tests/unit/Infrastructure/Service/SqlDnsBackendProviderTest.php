@@ -7,8 +7,8 @@ use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
+use Psr\Log\NullLogger;
 
 #[CoversClass(SqlDnsBackendProvider::class)]
 class SqlDnsBackendProviderTest extends TestCase
@@ -19,13 +19,13 @@ class SqlDnsBackendProviderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->mockDb = $this->createMock(PDOCommon::class);
+        $this->mockDb = $this->createMock(PDO::class);
         $this->mockConfig = $this->createMock(ConfigurationInterface::class);
         $this->mockConfig->method('get')->willReturnMap([
             ['database', 'pdns_db_name', null, ''],
         ]);
 
-        $this->provider = new SqlDnsBackendProvider($this->mockDb, $this->mockConfig);
+        $this->provider = new SqlDnsBackendProvider($this->mockDb, $this->mockConfig, new NullLogger());
     }
 
     public function testIsApiBackendReturnsFalse(): void
@@ -197,6 +197,98 @@ class SqlDnsBackendProviderTest extends TestCase
         $result = $this->provider->deleteRecordsByDomainId(1);
 
         $this->assertTrue($result);
+    }
+
+    // ---------------------------------------------------------------
+    // createRecordAtomic
+    // ---------------------------------------------------------------
+
+    public function testCreateRecordAtomicInsertsWithTransaction(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())->method('execute');
+        $stmt->method('bindValue');
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+        $this->mockDb->method('lastInsertId')->willReturn('200');
+        $this->mockDb->expects($this->once())->method('beginTransaction');
+        $this->mockDb->expects($this->once())->method('commit');
+
+        $result = $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
+
+        $this->assertEquals(200, $result);
+    }
+
+    public function testCreateRecordAtomicIncludesDisabledColumn(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())->method('execute');
+
+        // Verify disabled=1 is bound
+        $boundValues = [];
+        $stmt->method('bindValue')->willReturnCallback(function ($param, $value) use (&$boundValues) {
+            $boundValues[$param] = $value;
+            return true;
+        });
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+        $this->mockDb->method('lastInsertId')->willReturn('201');
+        $this->mockDb->method('beginTransaction');
+        $this->mockDb->method('commit');
+
+        $result = $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 1);
+
+        $this->assertEquals(201, $result);
+        $this->assertEquals(1, $boundValues[':disabled']);
+    }
+
+    public function testCreateRecordAtomicRetriesOnDeadlock(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('bindValue');
+
+        // First call throws deadlock, second call succeeds
+        $callCount = 0;
+        $stmt->method('execute')->willReturnCallback(function () use (&$callCount) {
+            $callCount++;
+            if ($callCount === 1) {
+                throw new \PDOException('Deadlock found when trying to get lock', 1213);
+            }
+            return true;
+        });
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+        $this->mockDb->method('lastInsertId')->willReturn('202');
+        $this->mockDb->method('beginTransaction');
+        $this->mockDb->method('commit');
+        // First call: ownership check (false = not in transaction, so we own it)
+        // Second call: in catch block to check before rollBack (true = still in transaction)
+        $this->mockDb->method('inTransaction')->willReturnOnConsecutiveCalls(false, true);
+        $this->mockDb->method('rollBack');
+
+        $result = $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
+
+        $this->assertEquals(202, $result);
+        $this->assertEquals(2, $callCount);
+    }
+
+    public function testCreateRecordAtomicRollsBackOnNonDeadlockError(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('bindValue');
+        $stmt->method('execute')->willThrowException(new \PDOException('Syntax error', 42000));
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+        $this->mockDb->method('beginTransaction');
+        // First call: ownership check (false = not in transaction, so we own it)
+        // Second call: in catch block to check before rollBack (true = still in transaction)
+        $this->mockDb->method('inTransaction')->willReturnOnConsecutiveCalls(false, true);
+        $this->mockDb->expects($this->once())->method('rollBack');
+
+        $this->expectException(\PDOException::class);
+        $this->expectExceptionMessage('Syntax error');
+
+        $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
     }
 
     // ---------------------------------------------------------------

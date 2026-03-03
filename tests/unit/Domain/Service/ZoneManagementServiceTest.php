@@ -30,7 +30,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 #[CoversClass(ZoneManagementService::class)]
 class ZoneManagementServiceTest extends TestCase
@@ -38,7 +38,7 @@ class ZoneManagementServiceTest extends TestCase
     private ZoneManagementService $service;
     private ZoneRepositoryInterface&MockObject $zoneRepository;
     private ConfigurationManager&MockObject $config;
-    private PDOCommon&MockObject $db;
+    private PDO&MockObject $db;
     private string $originalErrorLog;
 
     protected function setUp(): void
@@ -51,7 +51,7 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->zoneRepository = $this->createMock(ZoneRepositoryInterface::class);
         $this->config = $this->createMock(ConfigurationManager::class);
-        $this->db = $this->createMock(PDOCommon::class);
+        $this->db = $this->createMock(PDO::class);
 
         $this->service = new ZoneManagementService(
             $this->zoneRepository,

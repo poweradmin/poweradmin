@@ -446,7 +446,7 @@ class LdapAuthenticatorCacheTest extends TestCase
             ->with(\PDO::FETCH_ASSOC)
             ->willReturn(['id' => 1, 'fullname' => 'Test User']);
 
-        $mockDb = $this->createMock(\Poweradmin\Infrastructure\Database\PDOCommon::class);
+        $mockDb = $this->createMock(\PDO::class);
         $mockDb->expects($this->once())
             ->method('prepare')
             ->with("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1")
@@ -480,7 +480,7 @@ class LdapAuthenticatorCacheTest extends TestCase
             ->with(\PDO::FETCH_ASSOC)
             ->willReturn(false); // No user found
 
-        $mockDb = $this->createMock(\Poweradmin\Infrastructure\Database\PDOCommon::class);
+        $mockDb = $this->createMock(\PDO::class);
         $mockDb->expects($this->once())
             ->method('prepare')
             ->willReturn($mockStmt);
@@ -513,7 +513,7 @@ class LdapAuthenticatorCacheTest extends TestCase
             ->with(\PDO::FETCH_ASSOC)
             ->willReturn(false); // No user found (filtered by use_ldap=1)
 
-        $mockDb = $this->createMock(\Poweradmin\Infrastructure\Database\PDOCommon::class);
+        $mockDb = $this->createMock(\PDO::class);
         $mockDb->expects($this->once())
             ->method('prepare')
             ->willReturn($mockStmt);

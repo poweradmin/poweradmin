@@ -663,9 +663,111 @@ test_zone_records() {
     fi
 }
 
+test_disabled_records() {
+    print_section "Disabled Record Tests"
+
+    if [[ -z "${TEST_ZONE_ID:-}" ]]; then
+        print_skip "Disabled record tests - no test zone available"
+        return
+    fi
+
+    # Test 1: Create record with disabled=true
+    local disabled_record='{
+        "name": "disabled-v1.curl-test.example.com",
+        "type": "A",
+        "content": "192.0.2.50",
+        "ttl": 3600,
+        "disabled": true
+    }'
+    if api_request "POST" "/zones/$TEST_ZONE_ID/records" "$disabled_record" "201" "Create record with disabled=true"; then
+        local disabled_record_id
+        disabled_record_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.record_id // .data.id')
+
+        # Test 2: Verify record is disabled when retrieved
+        if [[ -n "$disabled_record_id" && "$disabled_record_id" != "null" ]]; then
+            api_request "GET" "/zones/$TEST_ZONE_ID/records/$disabled_record_id" "" "200" "Get disabled record"
+
+            increment_test
+            local is_disabled
+            is_disabled=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.disabled // false')
+            if [[ "$is_disabled" == "true" ]]; then
+                print_pass "Record is correctly marked as disabled"
+            else
+                print_fail "Record should be disabled but is not (disabled=$is_disabled)"
+            fi
+
+            # Cleanup
+            api_request "DELETE" "/zones/$TEST_ZONE_ID/records/$disabled_record_id" "" "204" "Delete disabled record" || true
+        else
+            print_skip "Verify disabled record - no record ID returned"
+        fi
+    fi
+
+    # Test 3: Create record with disabled=false
+    local enabled_record='{
+        "name": "enabled-v1.curl-test.example.com",
+        "type": "A",
+        "content": "192.0.2.51",
+        "ttl": 3600,
+        "disabled": false
+    }'
+    if api_request "POST" "/zones/$TEST_ZONE_ID/records" "$enabled_record" "201" "Create record with disabled=false"; then
+        local enabled_record_id
+        enabled_record_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.record_id // .data.id')
+
+        # Test 4: Verify record is enabled
+        if [[ -n "$enabled_record_id" && "$enabled_record_id" != "null" ]]; then
+            api_request "GET" "/zones/$TEST_ZONE_ID/records/$enabled_record_id" "" "200" "Get enabled record"
+
+            increment_test
+            local is_enabled
+            is_enabled=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.disabled // false')
+            if [[ "$is_enabled" == "false" ]]; then
+                print_pass "Record is correctly marked as enabled"
+            else
+                print_fail "Record should be enabled but is disabled"
+            fi
+
+            # Cleanup
+            api_request "DELETE" "/zones/$TEST_ZONE_ID/records/$enabled_record_id" "" "204" "Delete enabled record" || true
+        else
+            print_skip "Verify enabled record - no record ID returned"
+        fi
+    fi
+
+    # Test 5: Create record without disabled field (should default to enabled)
+    local default_record='{
+        "name": "default-v1.curl-test.example.com",
+        "type": "A",
+        "content": "192.0.2.52",
+        "ttl": 3600
+    }'
+    if api_request "POST" "/zones/$TEST_ZONE_ID/records" "$default_record" "201" "Create record without disabled field"; then
+        local default_record_id
+        default_record_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.record_id // .data.id')
+
+        if [[ -n "$default_record_id" && "$default_record_id" != "null" ]]; then
+            api_request "GET" "/zones/$TEST_ZONE_ID/records/$default_record_id" "" "200" "Get default record"
+
+            increment_test
+            local default_disabled
+            default_disabled=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.disabled // false')
+            if [[ "$default_disabled" == "false" ]]; then
+                print_pass "Record defaults to enabled when disabled field omitted"
+            else
+                print_fail "Record should default to enabled"
+            fi
+
+            api_request "DELETE" "/zones/$TEST_ZONE_ID/records/$default_record_id" "" "204" "Delete default record" || true
+        else
+            print_skip "Verify default record - no record ID returned"
+        fi
+    fi
+}
+
 test_record_types() {
     print_section "Record Type Validation Tests"
-    
+
     if [[ -z "${TEST_ZONE_ID:-}" ]]; then
         print_skip "Record type tests - no test zone available"
         return
@@ -1333,6 +1435,7 @@ run_all_tests() {
     test_user_management
     test_zone_management
     test_zone_records
+    test_disabled_records
     test_record_types
     test_soa_serial_updates
     test_permission_templates
@@ -1410,6 +1513,7 @@ main() {
             load_config
             setup_test_data
             test_zone_records
+            test_disabled_records
             test_record_types
             cleanup_test_data
             generate_report

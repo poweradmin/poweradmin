@@ -4,7 +4,7 @@ namespace unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ZoneValidationService;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 /**
  * Tests for ZoneValidationService
@@ -18,7 +18,7 @@ class ZoneValidationServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->dbMock = $this->createMock(PDOCommon::class);
+        $this->dbMock = $this->createMock(PDO::class);
         $this->validator = new ZoneValidationService($this->dbMock);
     }
 

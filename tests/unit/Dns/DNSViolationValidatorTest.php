@@ -9,7 +9,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 /**
  * Class DNSViolationValidatorTest
@@ -18,14 +18,14 @@ use Poweradmin\Infrastructure\Database\PDOCommon;
 class DNSViolationValidatorTest extends TestCase
 {
     private MockObject&ConfigurationManager $configMock;
-    private MockObject&PDOCommon $dbMock;
+    private MockObject&PDO $dbMock;
     private DNSViolationValidator $validator;
     private MockObject&\PDOStatement $pdoStatementMock;
 
     protected function setUp(): void
     {
         $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->dbMock = $this->createMock(PDOCommon::class);
+        $this->dbMock = $this->createMock(PDO::class);
 
         // Set up the mock PDO statement that will be returned by prepare()
         $this->pdoStatementMock = $this->createMock(\PDOStatement::class);

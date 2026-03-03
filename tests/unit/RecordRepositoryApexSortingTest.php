@@ -27,19 +27,18 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PDO;
 use PDOStatement;
 use Poweradmin\Domain\Repository\RecordRepository;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class RecordRepositoryApexSortingTest extends TestCase
 {
-    private PDOCommon&MockObject $db;
+    private PDO&MockObject $db;
     private ConfigurationManager&MockObject $config;
     private RecordRepository $repository;
 
     protected function setUp(): void
     {
         // Create mock PDO
-        $this->db = $this->createMock(PDOCommon::class);
+        $this->db = $this->createMock(PDO::class);
 
         // Create mock config
         $this->config = $this->createMock(ConfigurationManager::class);

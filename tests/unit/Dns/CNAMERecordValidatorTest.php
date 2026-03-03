@@ -26,7 +26,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 /**
  * Tests for the CNAMERecordValidator
@@ -35,7 +35,7 @@ class CNAMERecordValidatorTest extends TestCase
 {
     private CNAMERecordValidator $validator;
     private MockObject&ConfigurationManager $configMock;
-    private MockObject&PDOCommon $dbMock;
+    private MockObject&PDO $dbMock;
 
     protected function setUp(): void
     {
@@ -56,7 +56,7 @@ class CNAMERecordValidatorTest extends TestCase
                 return 'example.com';
             });
 
-        $this->dbMock = $this->createMock(PDOCommon::class);
+        $this->dbMock = $this->createMock(PDO::class);
 
         // Set up default prepared statement mock
         $stmtMock = $this->createMock(\PDOStatement::class);
@@ -92,7 +92,7 @@ class CNAMERecordValidatorTest extends TestCase
     public function testValidateWithConflictingRecord()
     {
         // Create a new mock to override the default one
-        $this->dbMock = $this->createMock(PDOCommon::class);
+        $this->dbMock = $this->createMock(PDO::class);
         $stmtMock = $this->createMock(\PDOStatement::class);
         $stmtMock->method('execute')->willReturn(true);
         $stmtMock->method('fetchColumn')->willReturn(1); // Conflict found
@@ -289,7 +289,7 @@ class CNAMERecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
 
         // Mock DB for non-unique CNAME
-        $this->dbMock = $this->createMock(PDOCommon::class);
+        $this->dbMock = $this->createMock(PDO::class);
         $stmtMock = $this->createMock(\PDOStatement::class);
         $stmtMock->method('execute')->willReturn(true);
         $stmtMock->method('fetchColumn')->willReturn(1); // Conflict found
@@ -312,7 +312,7 @@ class CNAMERecordValidatorTest extends TestCase
         $method->setAccessible(true);
 
         // Mock DB for valid CNAME name
-        $this->dbMock = $this->createMock(PDOCommon::class);
+        $this->dbMock = $this->createMock(PDO::class);
         $stmtMock = $this->createMock(\PDOStatement::class);
         $stmtMock->method('execute')->willReturn(true);
         $stmtMock->method('fetchColumn')->willReturn(false);
@@ -327,7 +327,7 @@ class CNAMERecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
 
         // Mock DB for invalid CNAME name
-        $this->dbMock = $this->createMock(PDOCommon::class);
+        $this->dbMock = $this->createMock(PDO::class);
         $stmtMock2 = $this->createMock(\PDOStatement::class);
         $stmtMock2->method('execute')->willReturn(true);
         $stmtMock2->method('fetchColumn')->willReturn(1); // MX/NS record found
