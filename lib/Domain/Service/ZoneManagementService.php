@@ -28,7 +28,9 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Service for managing DNS zones
@@ -37,16 +39,19 @@ class ZoneManagementService
 {
     private ZoneRepositoryInterface $zoneRepository;
     private ConfigurationManager $config;
-    private PDOCommon $db;
+    private PDO $db;
+    private LoggerInterface $logger;
 
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
         ConfigurationManager $config,
-        object $db
+        object $db,
+        ?LoggerInterface $logger = null
     ) {
         $this->zoneRepository = $zoneRepository;
         $this->config = $config;
         $this->db = $db;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -119,7 +124,7 @@ class ZoneManagementService
             }
         }
 
-        error_log(sprintf('[ZoneManagementService] Creating zone: %s, Type: %s, Owner: %s', $domain, $type, $owner));
+        $this->logger->info('[ZoneManagementService] Creating zone: {domain}, Type: {type}, Owner: {owner}', ['domain' => $domain, 'type' => $type, 'owner' => $owner]);
 
         // Create the domain using DnsRecord service for now (to maintain compatibility)
         $success = $dnsRecord->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate);
@@ -145,7 +150,7 @@ class ZoneManagementService
                     $dnssecProvider->rectifyZone($domain);
                 }
             } catch (Exception $e) {
-                error_log('[ZoneManagementService] Failed to secure zone with DNSSEC: ' . $e->getMessage());
+                $this->logger->error('[ZoneManagementService] Failed to secure zone with DNSSEC: {error}', ['error' => $e->getMessage()]);
                 // We don't return an error since the zone was created successfully
             }
         }

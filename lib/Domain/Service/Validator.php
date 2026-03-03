@@ -25,15 +25,15 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 class Validator
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
     private DnsValidatorRegistry $validatorRegistry;
 
-    public function __construct(PDOCommon $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;

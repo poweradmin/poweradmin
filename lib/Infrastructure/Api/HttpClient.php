@@ -24,6 +24,8 @@ namespace Poweradmin\Infrastructure\Api;
 
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Throwable;
 
 class HttpClient implements ApiClient
@@ -31,11 +33,13 @@ class HttpClient implements ApiClient
 
     private string $apiUrl;
     private string $apiKey;
+    private LoggerInterface $logger;
 
-    public function __construct(string $baseEndpoint, string $apiKey)
+    public function __construct(string $baseEndpoint, string $apiKey, ?LoggerInterface $logger = null)
     {
         $this->apiUrl = rtrim($baseEndpoint, '/');
         $this->apiKey = $apiKey;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function makeRequest(string $method, string $endpoint, array $data = []): array
@@ -165,13 +169,7 @@ class HttpClient implements ApiClient
      */
     private function logApiError(string $message, array $details = []): void
     {
-        $logMessage = sprintf(
-            "API Error: %s; Details: %s",
-            $message,
-            json_encode($details, JSON_UNESCAPED_SLASHES)
-        );
-
-        error_log($logMessage);
+        $this->logger->error('API Error: {message}', ['message' => $message, 'details' => $details]);
     }
 
     private function getResponseCode(array $headers): ?int

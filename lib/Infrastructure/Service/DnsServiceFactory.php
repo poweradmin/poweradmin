@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 
 /**
@@ -47,12 +47,12 @@ class DnsServiceFactory
     /**
      * Create DnsRecordValidationService instance with all dependencies
      *
-     * @param PDOCommon $db Database connection
+     * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
      * @return DnsRecordValidationServiceInterface The DNS record validation service
      */
     public static function createDnsRecordValidationService(
-        PDOCommon $db,
+        PDO $db,
         ConfigurationManager $config
     ): DnsRecordValidationServiceInterface {
         $validatorRegistry = new DnsValidatorRegistry($config, $db);

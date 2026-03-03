@@ -26,7 +26,7 @@ use DateTime;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 /**
  * SOA record validator
@@ -49,13 +49,13 @@ class SOARecordValidator implements DnsRecordValidatorInterface
     private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private PDOCommon $db;
+    private PDO $db;
 
     // SOA-specific parameters
     private string $dns_hostmaster;
     private string $zone;
 
-    public function __construct(ConfigurationManager $config, PDOCommon $db)
+    public function __construct(ConfigurationManager $config, PDO $db)
     {
         $this->config = $config;
         $this->db = $db;

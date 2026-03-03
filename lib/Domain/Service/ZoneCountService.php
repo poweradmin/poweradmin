@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -38,12 +38,12 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
  */
 class ZoneCountService
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
     private ?UserContextService $userContext;
     private TableNameService $tableNameService;
 
-    public function __construct(PDOCommon $db, ConfigurationManager $config, ?UserContextService $userContext = null)
+    public function __construct(PDO $db, ConfigurationManager $config, ?UserContextService $userContext = null)
     {
         $this->db = $db;
         $this->config = $config;

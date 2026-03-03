@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -32,16 +32,16 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
  */
 class SOARecordManager implements SOARecordManagerInterface
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
 
     /**
      * Constructor
      *
-     * @param PDOCommon $db Database connection
+     * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
      */
-    public function __construct(PDOCommon $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;

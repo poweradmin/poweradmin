@@ -34,39 +34,42 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Service class for managing domains/zones
  */
 class DomainManager implements DomainManagerInterface
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
     private SOARecordManagerInterface $soaRecordManager;
     private DomainRepositoryInterface $domainRepository;
     private IPAddressValidator $ipAddressValidator;
     private DnsBackendProvider $backendProvider;
+    private LoggerInterface $logger;
 
     /**
      * Constructor
      *
-     * @param PDOCommon $db Database connection
+     * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
      * @param DnsBackendProvider|null $backendProvider DNS backend provider (auto-created if null)
      */
     public function __construct(
-        PDOCommon $db,
+        PDO $db,
         ConfigurationManager $config,
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
-        ?DnsBackendProvider $backendProvider = null
+        ?DnsBackendProvider $backendProvider = null,
+        ?LoggerInterface $logger = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -75,6 +78,7 @@ class DomainManager implements DomainManagerInterface
         $this->domainRepository = $domainRepository;
         $this->ipAddressValidator = new IPAddressValidator();
         $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -221,7 +225,7 @@ class DomainManager implements DomainManagerInterface
                                             // Record was created via API but DB ID not found.
                                             // Skip template linkage for this record to avoid
                                             // storing a synthetic ID that breaks cleanup JOINs.
-                                            error_log($e->getMessage());
+                                            $this->logger->error('Failed to get record ID after API creation: {error}', ['error' => $e->getMessage()]);
                                             continue;
                                         }
                                         if ($record_id === null && $isApiBackend) {
@@ -440,7 +444,7 @@ class DomainManager implements DomainManagerInterface
         try {
             $this->backendProvider->deleteZone($domainId, $domain);
         } catch (\Exception $e) {
-            error_log(sprintf("Failed to clean up orphaned zone '%s' after local failure: %s", $domain, $e->getMessage()));
+            $this->logger->error('Failed to clean up orphaned zone {domain} after local failure: {error}', ['domain' => $domain, 'error' => $e->getMessage()]);
         }
     }
 
@@ -457,7 +461,7 @@ class DomainManager implements DomainManagerInterface
             $db->prepare("DELETE FROM zones_groups WHERE domain_id = :did")->execute([':did' => $domainId]);
             $db->prepare("DELETE FROM zones WHERE domain_id = :did")->execute([':did' => $domainId]);
         } catch (\Exception $e) {
-            error_log(sprintf("Failed to clean up zone metadata for domain_id %d: %s", $domainId, $e->getMessage()));
+            $this->logger->error('Failed to clean up zone metadata for domain_id {domainId}: {error}', ['domainId' => $domainId, 'error' => $e->getMessage()]);
         }
     }
 

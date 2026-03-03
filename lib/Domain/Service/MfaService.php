@@ -37,6 +37,8 @@ use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
 use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use PragmaRX\Google2FA\Google2FA;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use RuntimeException;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -49,6 +51,7 @@ class MfaService
     private ConfigurationManager $configManager;
     private MailService $mailService;
     private EmailTemplateService $templateService;
+    private LoggerInterface $logger;
 
     /**
      * MfaService constructor
@@ -56,13 +59,15 @@ class MfaService
     public function __construct(
         UserMfaRepositoryInterface $userMfaRepository,
         ConfigurationManager $configManager,
-        MailService $mailService
+        MailService $mailService,
+        ?LoggerInterface $logger = null
     ) {
         $this->google2fa = new Google2FA();
         $this->userMfaRepository = $userMfaRepository;
         $this->configManager = $configManager;
         $this->mailService = $mailService;
         $this->templateService = new EmailTemplateService($configManager);
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -100,7 +105,7 @@ class MfaService
             return $this->userMfaRepository->findByUserId($userId);
         } catch (PDOException $e) {
             // If the table doesn't exist or there's another database error, log the error and return null
-            error_log("getUserMfa failed: " . $e->getMessage());
+            $this->logger->error('getUserMfa failed: {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }
@@ -131,7 +136,7 @@ class MfaService
             }
 
             // Create and save a new record
-            error_log("Creating new MFA record for user $userId");
+            $this->logger->info('Creating new MFA record for user {userId}', ['userId' => $userId]);
             $userMfa = UserMfa::create($userId);
 
             // The repository's save method will handle duplicate key errors by retrieving
@@ -139,7 +144,7 @@ class MfaService
             return $this->userMfaRepository->save($userMfa);
         } catch (PDOException $e) {
             // If the table doesn't exist or there's another database error, log the error and return null
-            error_log("getOrCreateUserMfa failed: " . $e->getMessage());
+            $this->logger->error('getOrCreateUserMfa failed: {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }
@@ -237,7 +242,7 @@ class MfaService
         $userMfa = $this->getUserMfa($userId);
 
         if (!$userMfa) {
-            error_log("Cannot disable MFA: No MFA record found for user $userId");
+            $this->logger->warning('Cannot disable MFA: No MFA record found for user {userId}', ['userId' => $userId]);
             return null;
         }
 
@@ -257,7 +262,7 @@ class MfaService
         $userMfa = $this->userMfaRepository->findByUserId($userId);
 
         if (!$userMfa || !$userMfa->getSecret()) {
-            error_log("[MfaService] Verification failed - User not found or no secret");
+            $this->logger->debug('Verification failed - User not found or no secret');
             return false;
         }
 
@@ -266,15 +271,15 @@ class MfaService
 
         // For app-based authentication, verify the secret is in the correct format
         if ($mfaType === UserMfa::TYPE_APP && !$this->isValidTotpSecret($secret)) {
-            error_log("[MfaService] Invalid secret format for app-based authentication - not Base32 encoded");
+            $this->logger->warning('Invalid secret format for app-based authentication - not Base32 encoded');
             return false;
         }
 
-        error_log("[MfaService] Verifying code for user ID: $userId, type: $mfaType");
+        $this->logger->debug('Verifying code for user ID: {userId}, type: {type}', ['userId' => $userId, 'type' => $mfaType]);
 
         // First, check if the code matches a recovery code
         if ($userMfa->validateRecoveryCode($code)) {
-            error_log("[MfaService] Valid recovery code used by user ID: $userId");
+            $this->logger->info('Valid recovery code used by user ID: {userId}', ['userId' => $userId]);
             // Recovery code is removed from the list in validateRecoveryCode
             $this->userMfaRepository->save($userMfa);
             return true;
@@ -284,7 +289,7 @@ class MfaService
         if ($mfaType === UserMfa::TYPE_EMAIL) {
             // Check if mail service is enabled before proceeding with email verification
             if (!$this->configManager->get('mail', 'enabled', false)) {
-                error_log("[MfaService] Email verification attempted but mail service is disabled for user ID: $userId");
+                $this->logger->warning('Email verification attempted but mail service is disabled for user ID: {userId}', ['userId' => $userId]);
                 // Only proceed to recovery code check, which was already done above, or TOTP below
                 // Do not validate the email code if mail service is disabled
             } else {
@@ -299,17 +304,17 @@ class MfaService
 
                         // Check if code has expired
                         if (isset($metadata['expires_at']) && $metadata['expires_at'] < time()) {
-                            error_log("[MfaService] Email code expired for user ID: $userId");
+                            $this->logger->debug('Email code expired for user ID: {userId}', ['userId' => $userId]);
                             return false;
                         }
 
                         // Check if code was already used
                         if (isset($metadata['used']) && $metadata['used'] === true) {
-                            error_log("[MfaService] Email code already used for user ID: $userId");
+                            $this->logger->debug('Email code already used for user ID: {userId}', ['userId' => $userId]);
                             return false;
                         }
                     } catch (Exception $e) {
-                        error_log("[MfaService] Error processing metadata: " . $e->getMessage());
+                        $this->logger->error('Error processing metadata: {error}', ['error' => $e->getMessage()]);
                     }
                 }
 
@@ -317,7 +322,7 @@ class MfaService
                 $isValid = trim($storedSecret) === trim($code);
 
                 if ($isValid) {
-                    error_log("[MfaService] Valid email code for user ID: $userId");
+                    $this->logger->debug('Valid email code for user ID: {userId}', ['userId' => $userId]);
 
                     // Mark the code as used
                     if ($metadata) {
@@ -330,7 +335,7 @@ class MfaService
                     $this->userMfaRepository->save($userMfa);
                     return true;
                 } else {
-                    error_log("[MfaService] Invalid email code for user ID: $userId");
+                    $this->logger->debug('Invalid email code for user ID: {userId}', ['userId' => $userId]);
                     return false;
                 }
             }
@@ -352,16 +357,16 @@ class MfaService
             $isValid = $this->google2fa->verifyKey($secret, $code, $window);
 
             if ($isValid) {
-                error_log("[MfaService] Valid TOTP code for user ID: $userId");
+                $this->logger->debug('Valid TOTP code for user ID: {userId}', ['userId' => $userId]);
                 $userMfa->updateLastUsed();
                 $this->userMfaRepository->save($userMfa);
             } else {
-                error_log("[MfaService] Invalid TOTP code for user ID: $userId");
+                $this->logger->debug('Invalid TOTP code for user ID: {userId}', ['userId' => $userId]);
             }
 
             return $isValid;
         } catch (Exception $e) {
-            error_log("[MfaService] TOTP verification error: " . $e->getMessage());
+            $this->logger->error('TOTP verification error: {error}', ['error' => $e->getMessage()]);
             return false;
         }
     }
@@ -386,7 +391,7 @@ class MfaService
         }
 
         // Log for audit
-        error_log("[MfaService] Generated QR code for user with email: " . $email);
+        $this->logger->info('Generated QR code for user with email: {email}', ['email' => $email]);
 
         // Create a QR code renderer with increased size for better scanability
         $renderer = new ImageRenderer(
@@ -416,13 +421,13 @@ class MfaService
     {
         // Check if mail service is enabled
         if (!$this->configManager->get('mail', 'enabled', false)) {
-            error_log("[MfaService] Email verification attempted but mail service is disabled for user ID: $userId");
+            $this->logger->warning('Email verification attempted but mail service is disabled for user ID: {userId}', ['userId' => $userId]);
             throw new RuntimeException('Email verification is not available because mail service is disabled.');
         }
 
         // Check if email is empty
         if (empty($email)) {
-            error_log("[MfaService] Email verification attempted but email is empty for user ID: $userId");
+            $this->logger->warning('Email verification attempted but email is empty for user ID: {userId}', ['userId' => $userId]);
             throw new RuntimeException('Email address is required for email verification.');
         }
 
@@ -431,7 +436,7 @@ class MfaService
             method_exists($this->mailService, 'isMailConfigurationValid') &&
             !$this->mailService->isMailConfigurationValid()
         ) {
-            error_log("[MfaService] Email verification attempted but mail configuration is invalid for user ID: $userId");
+            $this->logger->warning('Email verification attempted but mail configuration is invalid for user ID: {userId}', ['userId' => $userId]);
             throw new RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
         }
 
@@ -452,7 +457,7 @@ class MfaService
         ]);
 
         // Log the code generation but not the actual code for security
-        error_log("[MfaService] Generated verification code for user $userId, expires at " . date('Y-m-d H:i:s', $expiresAt));
+        $this->logger->debug('Generated verification code for user {userId}, expires at {expiresAt}', ['userId' => $userId, 'expiresAt' => date('Y-m-d H:i:s', $expiresAt)]);
 
         // Store the verification code and related metadata
         $userMfa->setSecret($verificationCode);
@@ -466,8 +471,7 @@ class MfaService
         $this->userMfaRepository->save($userMfa);
 
         // Log the action
-        error_log("New email verification code generated for user {$userId} - expires at " .
-            date('Y-m-d H:i:s', $expiresAt));
+        $this->logger->info('New email verification code generated for user {userId} - expires at {expiresAt}', ['userId' => $userId, 'expiresAt' => date('Y-m-d H:i:s', $expiresAt)]);
 
         // Send the code via email
         $templates = $this->templateService->renderMfaVerificationEmail($verificationCode, $expiresAt);
@@ -491,13 +495,13 @@ class MfaService
     {
         // Check if mail service is enabled
         if (!$this->configManager->get('mail', 'enabled', false)) {
-            error_log("[MfaService] Email verification refresh attempted but mail service is disabled for user ID: $userId");
+            $this->logger->warning('Email verification refresh attempted but mail service is disabled for user ID: {userId}', ['userId' => $userId]);
             throw new RuntimeException('Email verification is not available because mail service is disabled.');
         }
 
         // Check if email is empty
         if (empty($email)) {
-            error_log("[MfaService] Email verification refresh attempted but email is empty for user ID: $userId");
+            $this->logger->warning('Email verification refresh attempted but email is empty for user ID: {userId}', ['userId' => $userId]);
             throw new RuntimeException('Email address is required for email verification.');
         }
 
@@ -506,7 +510,7 @@ class MfaService
             method_exists($this->mailService, 'isMailConfigurationValid') &&
             !$this->mailService->isMailConfigurationValid()
         ) {
-            error_log("[MfaService] Email verification refresh attempted but mail configuration is invalid for user ID: $userId");
+            $this->logger->warning('Email verification refresh attempted but mail configuration is invalid for user ID: {userId}', ['userId' => $userId]);
             throw new RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
         }
 
@@ -537,17 +541,17 @@ class MfaService
                     $needsRefresh = false;
                 }
             } catch (Exception $e) {
-                error_log("[MfaService] Error checking verification code status: " . $e->getMessage());
+                $this->logger->error('Error checking verification code status: {error}', ['error' => $e->getMessage()]);
                 $needsRefresh = true;
             }
         }
 
         if ($needsRefresh) {
-            error_log("[MfaService] Generating new email verification code for user $userId");
+            $this->logger->debug('Generating new email verification code for user {userId}', ['userId' => $userId]);
             try {
                 return $this->sendEmailVerificationCode($userId, $email);
             } catch (Exception $e) {
-                error_log("[MfaService] Failed to send verification code: " . $e->getMessage());
+                $this->logger->error('Failed to send verification code: {error}', ['error' => $e->getMessage()]);
                 return null;
             }
         }
@@ -620,7 +624,7 @@ class MfaService
 
             return $result !== false;
         } catch (\PDOException $e) {
-            error_log("Error checking MFA enforcement permission: " . $e->getMessage());
+            $this->logger->error('Error checking MFA enforcement permission: {error}', ['error' => $e->getMessage()]);
             return false;
         }
     }
@@ -655,7 +659,7 @@ class MfaService
             return $userMfa && $userMfa->isEnabled();
         } catch (PDOException $e) {
             // If the table doesn't exist or there's another database error, assume MFA is disabled
-            error_log("MFA check failed: " . $e->getMessage());
+            $this->logger->error('MFA check failed: {error}', ['error' => $e->getMessage()]);
             return false;
         }
     }
@@ -670,7 +674,7 @@ class MfaService
             return $userMfa ? $userMfa->getType() : null;
         } catch (PDOException $e) {
             // If the table doesn't exist or there's another database error, assume null
-            error_log("getMfaType failed: " . $e->getMessage());
+            $this->logger->error('getMfaType failed: {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }
@@ -721,7 +725,7 @@ class MfaService
             $userMfa = $this->getUserMfa($userId);
 
             if (!$userMfa || !$userMfa->isEnabled()) {
-                error_log("[MfaService] Cannot update MFA: User $userId has no enabled MFA");
+                $this->logger->debug('Cannot update MFA: User {userId} has no enabled MFA', ['userId' => $userId]);
                 return;
             }
 
@@ -733,17 +737,17 @@ class MfaService
                 // Only for email-based MFA, generate a new verification code
                 $newSecret = $this->generateEmailVerificationCode();
                 $userMfa->setSecret($newSecret);
-                error_log("[MfaService] Generated new email verification code for user $userId");
+                $this->logger->debug('Generated new email verification code for user {userId}', ['userId' => $userId]);
             } else {
                 // For app-based MFA, DO NOT change the secret
-                error_log("[MfaService] App-based MFA secret preserved for user $userId - no changes made");
+                $this->logger->debug('App-based MFA secret preserved for user {userId} - no changes made', ['userId' => $userId]);
             }
 
             // Save the updated user MFA data (for email-based) or just update last used timestamp
             $userMfa->updateLastUsed();
             $this->userMfaRepository->save($userMfa);
         } catch (Exception $e) {
-            error_log("[MfaService] Error in MFA update: " . $e->getMessage());
+            $this->logger->error('Error in MFA update: {error}', ['error' => $e->getMessage()]);
         }
     }
 }

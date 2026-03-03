@@ -107,6 +107,23 @@ interface DnsBackendProvider
     public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): ?int;
 
     /**
+     * Create a DNS record atomically with optional disabled flag.
+     *
+     * In SQL mode, wraps the INSERT in a transaction with deadlock retry.
+     * In API mode, delegates to addRecordGetId + optional editRecord.
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @param string $content Record content
+     * @param int $ttl Time-to-live
+     * @param int $prio Priority
+     * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
+     * @return int|null The new record ID, or null on failure
+     */
+    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0): ?int;
+
+    /**
      * Edit an existing DNS record.
      *
      * @param int $recordId Record ID
@@ -192,6 +209,63 @@ interface DnsBackendProvider
      * @return bool
      */
     public function updateSupermaster(string $oldMasterIp, string $oldNsName, string $newMasterIp, string $newNsName, string $account): bool;
+
+    // ---------------------------------------------------------------
+    // Zone read operations
+    // ---------------------------------------------------------------
+
+    /**
+     * Get all zones from the DNS backend.
+     *
+     * Returns raw zone data without Poweradmin metadata (ownership, comments).
+     * Each zone array contains: name, type, dnssec (bool), master (string).
+     *
+     * @return array Array of zone data arrays
+     */
+    public function getZones(): array;
+
+    /**
+     * Get a single zone by name with its type, master, and DNSSEC status.
+     *
+     * @param string $zoneName Zone name (without trailing dot)
+     * @return array|null Zone data array or null if not found
+     */
+    public function getZoneByName(string $zoneName): ?array;
+
+    // ---------------------------------------------------------------
+    // Record read operations
+    // ---------------------------------------------------------------
+
+    /**
+     * Get all records for a zone from the DNS backend.
+     *
+     * Returns a flat array of record data. In SQL mode, records include
+     * numeric IDs. In API mode, IDs are resolved from the database.
+     * ENT records (null/empty type) are excluded.
+     *
+     * @param int $domainId Domain ID
+     * @param string $zoneName Zone name (needed for API calls)
+     * @return array Array of record data arrays
+     */
+    public function getZoneRecords(int $domainId, string $zoneName): array;
+
+    // ---------------------------------------------------------------
+    // Search operations
+    // ---------------------------------------------------------------
+
+    /**
+     * Search for zones and records matching a query.
+     *
+     * Returns separate arrays for zone matches and record matches.
+     * Results contain only DNS data - callers must enrich with
+     * Poweradmin metadata (ownership, permissions).
+     *
+     * @param string $query Search query (supports wildcards)
+     * @param string $objectType Filter: 'all', 'zone', 'record'
+     * @param int $max Maximum results
+     * @return array{zones: array, records: array}
+     */
+    public function searchDnsData(string $query, string $objectType = 'all', int $max = 100): array;
 
     // ---------------------------------------------------------------
     // Capability check

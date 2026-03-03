@@ -36,15 +36,16 @@ use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Service class for managing DNS records
  */
 class RecordManager implements RecordManagerInterface
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
@@ -53,11 +54,12 @@ class RecordManager implements RecordManagerInterface
     private SOARecordManagerInterface $soaRecordManager;
     private DomainRepositoryInterface $domainRepository;
     private DnsBackendProvider $backendProvider;
+    private LoggerInterface $logger;
 
     /**
      * Constructor
      *
-     * @param PDOCommon $db Database connection
+     * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
      * @param DnsRecordValidationServiceInterface $validationService DNS record validation service
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
@@ -65,12 +67,13 @@ class RecordManager implements RecordManagerInterface
      * @param DnsBackendProvider|null $backendProvider DNS backend provider (auto-created if null)
      */
     public function __construct(
-        PDOCommon $db,
+        PDO $db,
         ConfigurationManager $config,
         DnsRecordValidationServiceInterface $validationService,
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
-        ?DnsBackendProvider $backendProvider = null
+        ?DnsBackendProvider $backendProvider = null,
+        ?LoggerInterface $logger = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -81,6 +84,7 @@ class RecordManager implements RecordManagerInterface
         $this->soaRecordManager = $soaRecordManager;
         $this->domainRepository = $domainRepository;
         $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -262,7 +266,7 @@ class RecordManager implements RecordManagerInterface
         try {
             $recordId = $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
         } catch (RecordIdNotFoundException $e) {
-            error_log($e->getMessage());
+            $this->logger->error('Failed to get record ID after creation: {error}', ['error' => $e->getMessage()]);
             return null;
         }
 

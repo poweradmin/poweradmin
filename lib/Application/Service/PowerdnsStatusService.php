@@ -27,6 +27,8 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Infrastructure\Api\HttpClient;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class PowerdnsStatusService
 {
@@ -38,9 +40,11 @@ class PowerdnsStatusService
     private string $serverName;
     private string $webserverUsername;
     private string $webserverPassword;
+    private LoggerInterface $logger;
 
-    public function __construct()
+    public function __construct(?LoggerInterface $logger = null)
     {
+        $this->logger = $logger ?? new NullLogger();
         $config = ConfigurationManager::getInstance();
         $this->apiUrl = $config->get('pdns_api', 'url', '');
         $this->apiKey = $config->get('pdns_api', 'key', '');
@@ -114,7 +118,7 @@ class PowerdnsStatusService
                             $metricInfo = $this->getMetricInfo($rawMetrics);
                         } else {
                             // Log failure to fetch Prometheus metrics (may require Basic Auth)
-                            error_log("Failed to fetch Prometheus metrics from {$metricsUrl}. If PowerDNS webserver-password is enabled, configure 'pdns_api.webserver_username' and 'pdns_api.webserver_password' in settings.");
+                            $this->logger->warning('Failed to fetch Prometheus metrics from {url}. If PowerDNS webserver-password is enabled, configure pdns_api.webserver_username and pdns_api.webserver_password in settings.', ['url' => $metricsUrl]);
                         }
                     }
                 }
@@ -462,7 +466,7 @@ class PowerdnsStatusService
     {
         // Validate URL format
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-            error_log("PowerdnsStatusService: Invalid URL format");
+            $this->logger->warning('PowerdnsStatusService: Invalid URL format');
             return false;
         }
 
@@ -470,31 +474,31 @@ class PowerdnsStatusService
 
         // Ensure scheme is http or https only (prevent file://, ftp://, gopher://, etc.)
         if (!isset($parsedUrl['scheme']) || !in_array($parsedUrl['scheme'], ['http', 'https'], true)) {
-            error_log("PowerdnsStatusService: Invalid URL scheme, only http/https allowed");
+            $this->logger->warning('PowerdnsStatusService: Invalid URL scheme, only http/https allowed');
             return false;
         }
 
         // Ensure host is present
         if (!isset($parsedUrl['host']) || empty($parsedUrl['host'])) {
-            error_log("PowerdnsStatusService: Missing URL host");
+            $this->logger->warning('PowerdnsStatusService: Missing URL host');
             return false;
         }
 
         // Validate that the URL is from the same host as configured API URL (Option 2)
         if (empty($this->apiUrl)) {
-            error_log("PowerdnsStatusService: API URL not configured");
+            $this->logger->warning('PowerdnsStatusService: API URL not configured');
             return false;
         }
 
         $apiParsedUrl = parse_url($this->apiUrl);
         if (!isset($apiParsedUrl['host'])) {
-            error_log("PowerdnsStatusService: Invalid API URL configuration");
+            $this->logger->warning('PowerdnsStatusService: Invalid API URL configuration');
             return false;
         }
 
         // Enforce same host - prevent requests to arbitrary internal services
         if (strtolower($parsedUrl['host']) !== strtolower($apiParsedUrl['host'])) {
-            error_log("PowerdnsStatusService: URL host mismatch with configured API URL");
+            $this->logger->warning('PowerdnsStatusService: URL host mismatch with configured API URL');
             return false;
         }
 
@@ -541,7 +545,7 @@ class PowerdnsStatusService
     {
         // Validate URL before fetching to prevent SSRF and path traversal
         if (!$this->isValidMetricsUrl($url)) {
-            error_log("PowerdnsStatusService: Blocked unsafe URL fetch attempt");
+            $this->logger->warning('PowerdnsStatusService: Blocked unsafe URL fetch attempt');
             return false;
         }
 

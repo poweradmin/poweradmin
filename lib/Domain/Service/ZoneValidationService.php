@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
@@ -35,11 +35,11 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
  */
 class ZoneValidationService
 {
-    private PDOCommon $db;
+    private PDO $db;
     private string $pdnsDbName;
     private string $dbType;
 
-    public function __construct(PDOCommon $db)
+    public function __construct(PDO $db)
     {
         $this->db = $db;
 

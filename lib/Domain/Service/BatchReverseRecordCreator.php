@@ -27,14 +27,14 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Utility\IpHelper;
 
 class BatchReverseRecordCreator
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
@@ -43,7 +43,7 @@ class BatchReverseRecordCreator
     private RecordMatchingService $recordMatchingService;
 
     public function __construct(
-        PDOCommon $db,
+        PDO $db,
         ConfigurationManager $config,
         LegacyLogger $logger,
         DnsRecord $dnsRecord,

@@ -25,9 +25,10 @@ namespace Poweradmin\Infrastructure\Service;
 use PDO;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * SQL-based DNS backend provider.
@@ -37,15 +38,17 @@ use Poweradmin\Infrastructure\Database\TableNameService;
  */
 class SqlDnsBackendProvider implements DnsBackendProvider
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationInterface $config;
     private TableNameService $tableNameService;
+    private LoggerInterface $logger;
 
-    public function __construct(PDOCommon $db, ConfigurationInterface $config)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->tableNameService = new TableNameService($config);
+        $this->logger = $logger ?? new NullLogger();
     }
 
     // ---------------------------------------------------------------
@@ -159,6 +162,62 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return (int)$this->db->lastInsertId();
     }
 
+    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0): ?int
+    {
+        // If already inside a caller's transaction (e.g. RRSet replace, bulk ops),
+        // just do the INSERT without managing the transaction ourselves.
+        $ownsTransaction = !$this->db->inTransaction();
+
+        $maxRetries = $ownsTransaction ? 3 : 1;
+        $retryDelay = 50000; // 50ms in microseconds
+
+        for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+            try {
+                if ($ownsTransaction) {
+                    $this->db->beginTransaction();
+                }
+
+                $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+                $stmt = $this->db->prepare(
+                    "INSERT INTO $recordsTable (domain_id, name, type, content, ttl, prio, disabled)
+                     VALUES (:domain_id, :name, :type, :content, :ttl, :prio, :disabled)"
+                );
+                $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+                $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+                $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+                $stmt->bindValue(':content', $content, PDO::PARAM_STR);
+                $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
+                $stmt->bindValue(':prio', $prio, PDO::PARAM_INT);
+                $stmt->bindValue(':disabled', $disabled, PDO::PARAM_INT);
+                $stmt->execute();
+
+                $id = (int)$this->db->lastInsertId();
+
+                if ($ownsTransaction) {
+                    $this->db->commit();
+                }
+                return $id;
+            } catch (\Exception $e) {
+                if ($ownsTransaction && $this->db->inTransaction()) {
+                    $this->db->rollBack();
+                }
+
+                if ($ownsTransaction && $this->isDeadlockError($e) && $attempt < $maxRetries) {
+                    $this->logger->warning('Deadlock detected on attempt {attempt}, retrying', [
+                        'attempt' => $attempt,
+                        'message' => $e->getMessage(),
+                    ]);
+                    usleep($retryDelay * $attempt);
+                    continue;
+                }
+
+                throw $e;
+            }
+        }
+
+        return null;
+    }
+
     public function editRecord(int $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled): bool
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -187,6 +246,167 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $stmt->execute([':id' => $domainId]);
 
         return true;
+    }
+
+    // ---------------------------------------------------------------
+    // Zone read operations
+    // ---------------------------------------------------------------
+
+    public function getZones(): array
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $cryptokeysTable = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $domainmetadataTable = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+
+        $query = "SELECT d.id, d.name, d.type, d.master,
+                    EXISTS(SELECT 1 FROM $cryptokeysTable ck WHERE ck.domain_id = d.id) OR
+                    EXISTS(SELECT 1 FROM $domainmetadataTable dm WHERE dm.domain_id = d.id AND dm.kind = 'PRESIGNED')
+                    AS dnssec
+                  FROM $domainsTable d
+                  ORDER BY d.name";
+
+        $stmt = $this->db->query($query);
+        $zones = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $zones[] = [
+                'id' => (int)$row['id'],
+                'name' => $row['name'],
+                'type' => $row['type'],
+                'master' => $row['master'] ?? '',
+                'dnssec' => (bool)$row['dnssec'],
+            ];
+        }
+        return $zones;
+    }
+
+    public function getZoneByName(string $zoneName): ?array
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $cryptokeysTable = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $domainmetadataTable = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+
+        $stmt = $this->db->prepare(
+            "SELECT d.id, d.name, d.type, d.master,
+                    EXISTS(SELECT 1 FROM $cryptokeysTable ck WHERE ck.domain_id = d.id) OR
+                    EXISTS(SELECT 1 FROM $domainmetadataTable dm WHERE dm.domain_id = d.id AND dm.kind = 'PRESIGNED')
+                    AS dnssec
+             FROM $domainsTable d WHERE d.name = :name"
+        );
+        $stmt->execute([':name' => $zoneName]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            return null;
+        }
+
+        return [
+            'id' => (int)$row['id'],
+            'name' => $row['name'],
+            'type' => $row['type'],
+            'master' => $row['master'] ?? '',
+            'dnssec' => (bool)$row['dnssec'],
+        ];
+    }
+
+    // ---------------------------------------------------------------
+    // Record read operations
+    // ---------------------------------------------------------------
+
+    public function getZoneRecords(int $domainId, string $zoneName): array
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+
+        $stmt = $this->db->prepare(
+            "SELECT id, domain_id, name, type, content, ttl, prio, disabled
+             FROM $recordsTable
+             WHERE domain_id = :domain_id AND type IS NOT NULL AND type != ''
+             ORDER BY name, type"
+        );
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $records = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $records[] = [
+                'id' => (int)$row['id'],
+                'domain_id' => (int)$row['domain_id'],
+                'name' => $row['name'],
+                'type' => $row['type'],
+                'content' => $row['content'],
+                'ttl' => (int)$row['ttl'],
+                'prio' => (int)$row['prio'],
+                'disabled' => (int)$row['disabled'],
+            ];
+        }
+        return $records;
+    }
+
+    // ---------------------------------------------------------------
+    // Search operations
+    // ---------------------------------------------------------------
+
+    public function searchDnsData(string $query, string $objectType = 'all', int $max = 100): array
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+
+        $zones = [];
+        $records = [];
+        $pattern = '%' . $query . '%';
+
+        if ($objectType === 'all' || $objectType === 'zone') {
+            $sql = "SELECT id, name, type FROM $domainsTable WHERE name LIKE :pattern ORDER BY name";
+            if ($max > 0) {
+                $sql .= " LIMIT :max";
+            }
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':pattern', $pattern, PDO::PARAM_STR);
+            if ($max > 0) {
+                $stmt->bindValue(':max', $max, PDO::PARAM_INT);
+            }
+            $stmt->execute();
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $zones[] = [
+                    'id' => (int)$row['id'],
+                    'name' => $row['name'],
+                    'type' => $row['type'],
+                ];
+            }
+        }
+
+        if ($objectType === 'all' || $objectType === 'record') {
+            $sql = "SELECT r.id, r.domain_id, r.name, r.type, r.content, r.ttl, r.prio, r.disabled, d.name AS zone_name
+                 FROM $recordsTable r
+                 LEFT JOIN $domainsTable d ON r.domain_id = d.id
+                 WHERE (r.name LIKE :pattern1 OR r.content LIKE :pattern2)
+                   AND r.type IS NOT NULL AND r.type != ''
+                 ORDER BY r.name";
+            if ($max > 0) {
+                $sql .= " LIMIT :max";
+            }
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':pattern1', $pattern, PDO::PARAM_STR);
+            $stmt->bindValue(':pattern2', $pattern, PDO::PARAM_STR);
+            if ($max > 0) {
+                $stmt->bindValue(':max', $max, PDO::PARAM_INT);
+            }
+            $stmt->execute();
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $records[] = [
+                    'id' => (int)$row['id'],
+                    'domain_id' => (int)$row['domain_id'],
+                    'name' => $row['name'],
+                    'type' => $row['type'],
+                    'content' => $row['content'],
+                    'ttl' => (int)$row['ttl'],
+                    'prio' => (int)$row['prio'],
+                    'disabled' => (int)$row['disabled'],
+                    'zone_name' => $row['zone_name'] ?? '',
+                ];
+            }
+        }
+
+        return ['zones' => $zones, 'records' => $records];
     }
 
     // ---------------------------------------------------------------
@@ -266,5 +486,17 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     public function isApiBackend(): bool
     {
         return false;
+    }
+
+    // ---------------------------------------------------------------
+    // Private helpers
+    // ---------------------------------------------------------------
+
+    private function isDeadlockError(\Exception $e): bool
+    {
+        $code = $e->getCode();
+        return $code == 1213 || $code == '40001'
+            || strpos($e->getMessage(), '1213') !== false
+            || strpos($e->getMessage(), 'Deadlock') !== false;
     }
 }

@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+
 /**
  * MfaSessionManager
  *
@@ -30,6 +33,18 @@ namespace Poweradmin\Domain\Service;
  */
 class MfaSessionManager
 {
+    private static ?LoggerInterface $logger = null;
+
+    public static function setLogger(LoggerInterface $logger): void
+    {
+        self::$logger = $logger;
+    }
+
+    private static function getLogger(): LoggerInterface
+    {
+        return self::$logger ?? new NullLogger();
+    }
+
     /**
      * Flags a user as requiring MFA verification
      *
@@ -44,7 +59,7 @@ class MfaSessionManager
         $_SESSION['mfa_required'] = true;
         $_SESSION['lastmod'] = time();
 
-        error_log("[MfaSessionManager] MFA required set for user: $userId");
+        self::getLogger()->debug('[MfaSessionManager] MFA required set for user: {user_id}', ['user_id' => $userId]);
 
         // Save session immediately
         session_write_close();
@@ -67,7 +82,7 @@ class MfaSessionManager
         $_SESSION['mfa_verification_token'] = hash('sha256', time() . $_SESSION['userid'] . 'verified' . random_bytes(16));
 
         $userId = $_SESSION['userid'] ?? 0;
-        error_log("[MfaSessionManager] MFA verified set for user: $userId");
+        self::getLogger()->debug('[MfaSessionManager] MFA verified set for user: {user_id}', ['user_id' => $userId]);
 
         // Save session immediately
         session_write_close();
@@ -116,7 +131,7 @@ class MfaSessionManager
         unset($_SESSION['mfa_verification_token']);
 
         $userId = $_SESSION['userid'] ?? 0;
-        error_log("[MfaSessionManager] Session variables reset for user: $userId");
+        self::getLogger()->debug('[MfaSessionManager] Session variables reset for user: {user_id}', ['user_id' => $userId]);
 
         // Save session immediately
         session_write_close();

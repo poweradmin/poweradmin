@@ -28,7 +28,7 @@ use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Logger\CompositeLegacyLogger;
 use Poweradmin\Infrastructure\Logger\SyslogLegacyLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
@@ -87,12 +87,12 @@ class DnssecProviderFactory
     /**
      * Create DNSSEC provider instance using PowerDNS API
      *
-     * @param PDOCommon $db Database connection
+     * @param PDO $db Database connection
      * @param ConfigurationInterface $config Configuration object
      * @return DnssecProvider DNSSEC provider instance
      * @throws Exception When PowerDNS API is not configured
      */
-    public static function create(PDOCommon $db, ConfigurationInterface $config): DnssecProvider
+    public static function create(PDO $db, ConfigurationInterface $config): DnssecProvider
     {
         $pdnsApiUrl = $config->get('pdns_api', 'url');
         $pdnsApiKey = $config->get('pdns_api', 'key');

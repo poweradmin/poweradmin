@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 /**
  * Registry for DNS record validators
@@ -33,9 +33,9 @@ class DnsValidatorRegistry
 {
     private array $validators = [];
     private ConfigurationManager $config;
-    private PDOCommon $db;
+    private PDO $db;
 
-    public function __construct(ConfigurationManager $config, PDOCommon $db)
+    public function __construct(ConfigurationManager $config, PDO $db)
     {
         $this->config = $config;
         $this->db = $db;

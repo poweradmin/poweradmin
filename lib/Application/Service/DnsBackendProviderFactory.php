@@ -26,9 +26,11 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Factory for creating DNS backend provider instances.
@@ -42,29 +44,31 @@ class DnsBackendProviderFactory
     /**
      * Create a DNS backend provider instance.
      *
-     * @param PDOCommon $db Database connection
+     * @param PDO $db Database connection
      * @param ConfigurationInterface $config Configuration object
+     * @param LoggerInterface|null $logger PSR-3 logger
      * @return DnsBackendProvider
      */
-    public static function create(PDOCommon $db, ConfigurationInterface $config): DnsBackendProvider
+    public static function create(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null): DnsBackendProvider
     {
+        $logger = $logger ?? new NullLogger();
         $backend = $config->get('pdns_api', 'backend');
         $pdnsApiUrl = $config->get('pdns_api', 'url');
         $pdnsApiKey = $config->get('pdns_api', 'key');
 
         if ($backend === 'api' && $pdnsApiUrl && $pdnsApiKey) {
-            $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey);
+            $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey, $logger);
             $serverNameFromConfig = $config->get('pdns_api', 'server_name');
             $serverName = $serverNameFromConfig ?: 'localhost';
-            $apiClient = new PowerdnsApiClient($httpClient, $serverName);
+            $apiClient = new PowerdnsApiClient($httpClient, $serverName, $logger);
 
-            return new ApiDnsBackendProvider($apiClient, $db, $config);
+            return new ApiDnsBackendProvider($apiClient, $db, $config, $logger);
         }
 
         if ($backend === 'api' && (!$pdnsApiUrl || !$pdnsApiKey)) {
-            error_log('Poweradmin: pdns_api.backend is set to "api" but url/key are not configured. Falling back to SQL backend.');
+            $logger->warning('pdns_api.backend is set to "api" but url/key are not configured. Falling back to SQL backend.');
         }
 
-        return new SqlDnsBackendProvider($db, $config);
+        return new SqlDnsBackendProvider($db, $config, $logger);
     }
 }

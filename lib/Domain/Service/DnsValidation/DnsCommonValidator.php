@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -39,11 +39,11 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
  */
 class DnsCommonValidator
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationInterface $config;
     private MessageService $messageService;
 
-    public function __construct(PDOCommon $db, ConfigurationInterface $config)
+    public function __construct(PDO $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;

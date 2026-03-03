@@ -27,21 +27,21 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
 class ReverseRecordCreator
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
     private ?RecordCommentService $recordCommentService;
 
     public function __construct(
-        PDOCommon $db,
+        PDO $db,
         ConfigurationManager $config,
         LegacyLogger $logger,
         DnsRecord $dnsRecord,
