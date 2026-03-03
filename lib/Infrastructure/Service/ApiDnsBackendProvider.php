@@ -27,9 +27,10 @@ use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * PowerDNS REST API-based DNS backend provider.
@@ -41,16 +42,18 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 class ApiDnsBackendProvider implements DnsBackendProvider
 {
     private PowerdnsApiClient $client;
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationInterface $config;
     private TableNameService $tableNameService;
+    private LoggerInterface $logger;
 
-    public function __construct(PowerdnsApiClient $client, PDOCommon $db, ConfigurationInterface $config)
+    public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
         $this->client = $client;
         $this->db = $db;
         $this->config = $config;
         $this->tableNameService = new TableNameService($config);
+        $this->logger = $logger ?? new NullLogger();
     }
 
     // ---------------------------------------------------------------
@@ -145,7 +148,9 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         // from the DB and the second REPLACE would clobber the first.
         $rrsetData = $this->getRRsetFromApi($apiZoneName, $apiRecordName, $type);
         if ($rrsetData === null) {
-            error_log(sprintf("Failed to fetch current RRset for '%s %s' from API - aborting to prevent data loss", $apiRecordName, $type));
+            $this->logger->error("Failed to fetch current RRset for '{name} {type}' from API - aborting to prevent data loss", [
+                'name' => $apiRecordName, 'type' => $type,
+            ]);
             return false;
         }
 
@@ -187,6 +192,24 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         return $id;
     }
 
+    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0): ?int
+    {
+        $id = $this->addRecordGetId($domainId, $name, $type, $content, $ttl, $prio);
+        if ($id === null) {
+            return null;
+        }
+
+        if ($disabled === 1) {
+            if (!$this->editRecord($id, $name, $type, $content, $ttl, $prio, $disabled)) {
+                $this->logger->error('Failed to set disabled flag for record ID {id}, rolling back', ['id' => $id]);
+                $this->deleteRecord($id);
+                return null;
+            }
+        }
+
+        return $id;
+    }
+
     public function editRecord(int $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled): bool
     {
         // Read old record from DB to find zone and old name/type/content
@@ -212,7 +235,9 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             // Remove from old RRset (read from API to avoid stale DB reads)
             $oldRRsetData = $this->getRRsetFromApi($apiZoneName, self::ensureTrailingDot($oldName), $oldType);
             if ($oldRRsetData === null) {
-                error_log(sprintf("Failed to fetch old RRset for '%s %s' from API - aborting to prevent data loss", $oldName, $oldType));
+                $this->logger->error("Failed to fetch old RRset for '{name} {type}' from API - aborting to prevent data loss", [
+                    'name' => $oldName, 'type' => $oldType,
+                ]);
                 return false;
             }
 
@@ -245,7 +270,9 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             // Add to new RRset (read from API to avoid stale DB reads)
             $newRRsetData = $this->getRRsetFromApi($apiZoneName, self::ensureTrailingDot($name), $type);
             if ($newRRsetData === null) {
-                error_log(sprintf("Failed to fetch new RRset for '%s %s' from API - aborting to prevent data loss", $name, $type));
+                $this->logger->error("Failed to fetch new RRset for '{name} {type}' from API - aborting to prevent data loss", [
+                    'name' => $name, 'type' => $type,
+                ]);
                 return false;
             }
 
@@ -266,7 +293,9 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             // Same name+type: rebuild the RRset with the modified record
             $rrsetData = $this->getRRsetFromApi($apiZoneName, self::ensureTrailingDot($name), $type);
             if ($rrsetData === null) {
-                error_log(sprintf("Failed to fetch RRset for '%s %s' from API - aborting to prevent data loss", $name, $type));
+                $this->logger->error("Failed to fetch RRset for '{name} {type}' from API - aborting to prevent data loss", [
+                    'name' => $name, 'type' => $type,
+                ]);
                 return false;
             }
 
@@ -327,7 +356,9 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         // Read sibling records from the API (not DB) to avoid stale reads
         $rrsetData = $this->getRRsetFromApi($apiZoneName, $apiRecordName, $type);
         if ($rrsetData === null) {
-            error_log(sprintf("Failed to fetch current RRset for '%s %s' from API - aborting to prevent data loss", $name, $type));
+            $this->logger->error("Failed to fetch current RRset for '{name} {type}' from API - aborting to prevent data loss", [
+                'name' => $name, 'type' => $type,
+            ]);
             return false;
         }
 
@@ -368,6 +399,246 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     {
         // Zone deletion via API handles this automatically
         return true;
+    }
+
+    // ---------------------------------------------------------------
+    // Zone read operations
+    // ---------------------------------------------------------------
+
+    public function getZones(): array
+    {
+        $apiZones = $this->client->getAllZones();
+
+        $zones = [];
+        foreach ($apiZones as $zone) {
+            $name = rtrim($zone->getName(), '.');
+            $zones[] = [
+                'id' => 0,
+                'name' => $name,
+                'type' => '', // getAllZones() doesn't return kind
+                'master' => '',
+                'dnssec' => $zone->isSecured(),
+            ];
+        }
+
+        // Enrich with type/master from individual zone lookups if needed.
+        // For list views, we batch-fetch zone details to get kind/master.
+        // Use a pragmatic approach: do a single DB query if available, else leave empty.
+        if (!empty($zones)) {
+            $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+            $stmt = $this->db->query("SELECT id, name, type, master FROM $domainsTable");
+            $dbZones = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $dbZones[$row['name']] = $row;
+            }
+
+            foreach ($zones as &$zone) {
+                if (isset($dbZones[$zone['name']])) {
+                    $zone['id'] = (int)$dbZones[$zone['name']]['id'];
+                    $zone['type'] = strtoupper($dbZones[$zone['name']]['type'] ?? '');
+                    $zone['master'] = $dbZones[$zone['name']]['master'] ?? '';
+                }
+            }
+            unset($zone);
+        }
+
+        return $zones;
+    }
+
+    public function getZoneByName(string $zoneName): ?array
+    {
+        $apiName = self::ensureTrailingDot($zoneName);
+        $zoneData = $this->client->getZone($apiName);
+        if ($zoneData === null) {
+            return null;
+        }
+
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $stmt = $this->db->prepare("SELECT id FROM $domainsTable WHERE name = :name");
+        $stmt->execute([':name' => $zoneName]);
+        $id = $stmt->fetchColumn();
+
+        return [
+            'id' => $id !== false ? (int)$id : 0,
+            'name' => $zoneName,
+            'type' => strtoupper($zoneData['kind'] ?? ''),
+            'master' => implode(',', $zoneData['masters'] ?? []),
+            'dnssec' => $zoneData['dnssec'] ?? false,
+        ];
+    }
+
+    // ---------------------------------------------------------------
+    // Record read operations
+    // ---------------------------------------------------------------
+
+    public function getZoneRecords(int $domainId, string $zoneName): array
+    {
+        $apiName = self::ensureTrailingDot($zoneName);
+        $zoneData = $this->client->getZone($apiName);
+        if ($zoneData === null) {
+            return [];
+        }
+
+        $records = [];
+        foreach ($zoneData['rrsets'] ?? [] as $rrset) {
+            $type = $rrset['type'] ?? '';
+            if ($type === '' || $type === null) {
+                continue; // Skip ENT records
+            }
+
+            $name = rtrim($rrset['name'] ?? '', '.');
+            $ttl = $rrset['ttl'] ?? 3600;
+
+            foreach ($rrset['records'] ?? [] as $record) {
+                $content = $record['content'] ?? '';
+                $prio = 0;
+
+                // Extract priority from content for MX/SRV
+                if ($type === 'MX' || $type === 'SRV') {
+                    $parts = explode(' ', $content, 2);
+                    if (count($parts) === 2) {
+                        $prio = (int)$parts[0];
+                        $content = $parts[1];
+                    }
+                }
+
+                // Strip trailing dot from hostname-type content for DB format
+                $content = $this->stripTrailingDotFromContent($type, $content);
+
+                $records[] = [
+                    'id' => 0, // Will be resolved below
+                    'domain_id' => $domainId,
+                    'name' => $name,
+                    'type' => $type,
+                    'content' => $content,
+                    'ttl' => (int)$ttl,
+                    'prio' => $prio,
+                    'disabled' => ($record['disabled'] ?? false) ? 1 : 0,
+                ];
+            }
+        }
+
+        // Resolve record IDs from the database
+        $this->resolveRecordIds($records, $domainId);
+
+        return $records;
+    }
+
+    // ---------------------------------------------------------------
+    // Search operations
+    // ---------------------------------------------------------------
+
+    public function searchDnsData(string $query, string $objectType = 'all', int $max = 100): array
+    {
+        // PowerDNS search API requires wildcard characters for partial matching
+        $wildcardQuery = '*' . $query . '*';
+        $apiResults = $this->client->searchData($wildcardQuery, $objectType, $max);
+
+        $zones = [];
+        $records = [];
+
+        foreach ($apiResults as $result) {
+            $objType = $result['object_type'] ?? '';
+            $name = rtrim($result['name'] ?? '', '.');
+
+            if ($objType === 'zone') {
+                $zones[] = [
+                    'name' => $name,
+                    'type' => strtoupper($result['kind'] ?? ''),
+                ];
+            } elseif ($objType === 'record') {
+                $content = $result['content'] ?? '';
+                $type = $result['type'] ?? '';
+                $prio = 0;
+
+                if ($type === 'MX' || $type === 'SRV') {
+                    $parts = explode(' ', $content, 2);
+                    if (count($parts) === 2) {
+                        $prio = (int)$parts[0];
+                        $content = $parts[1];
+                    }
+                }
+
+                $content = $this->stripTrailingDotFromContent($type, $content);
+                $zoneName = rtrim($result['zone'] ?? '', '.');
+
+                $records[] = [
+                    'id' => 0,
+                    'domain_id' => 0,
+                    'name' => $name,
+                    'type' => $type,
+                    'content' => $content,
+                    'ttl' => (int)($result['ttl'] ?? 0),
+                    'prio' => $prio,
+                    'disabled' => ($result['disabled'] ?? false) ? 1 : 0,
+                    'zone_name' => $zoneName,
+                ];
+            }
+        }
+
+        // Build domain name->id lookup from DB (used for both zones and records)
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $dbZones = [];
+        if (!empty($zones) || !empty($records)) {
+            $stmt = $this->db->query("SELECT id, name, type FROM $domainsTable");
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $dbZones[$row['name']] = $row;
+            }
+        }
+
+        // Enrich zones with IDs from DB
+        if (!empty($zones)) {
+            foreach ($zones as &$zone) {
+                if (isset($dbZones[$zone['name']])) {
+                    $zone['id'] = (int)$dbZones[$zone['name']]['id'];
+                    if (empty($zone['type'])) {
+                        $zone['type'] = strtoupper($dbZones[$zone['name']]['type'] ?? '');
+                    }
+                }
+            }
+            unset($zone);
+        }
+
+        // Enrich records with domain_id and id from DB
+        if (!empty($records)) {
+            $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+
+            // Set domain_id from zone name lookup
+            $domainIds = [];
+            foreach ($records as &$record) {
+                $zoneName = $record['zone_name'] ?? '';
+                $record['domain_id'] = isset($dbZones[$zoneName]) ? (int)$dbZones[$zoneName]['id'] : 0;
+                if ($record['domain_id'] > 0) {
+                    $domainIds[$record['domain_id']] = true;
+                }
+            }
+            unset($record);
+
+            // Batch-resolve record IDs for all matched domain IDs
+            if (!empty($domainIds)) {
+                $placeholders = implode(',', array_fill(0, count($domainIds), '?'));
+                $stmt = $this->db->prepare(
+                    "SELECT id, domain_id, name, type, content, prio FROM $recordsTable
+                     WHERE domain_id IN ($placeholders) AND type IS NOT NULL AND type != ''"
+                );
+                $stmt->execute(array_keys($domainIds));
+
+                // Build lookup map with array-of-IDs for duplicate handling
+                $idMap = [];
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $key = $row['domain_id'] . '|' . $row['name'] . '|' . $row['type'] . '|' . $row['content'] . '|' . (int)$row['prio'];
+                    $idMap[$key][] = (int)$row['id'];
+                }
+
+                foreach ($records as &$record) {
+                    $key = $record['domain_id'] . '|' . $record['name'] . '|' . $record['type'] . '|' . $record['content'] . '|' . $record['prio'];
+                    $record['id'] = !empty($idMap[$key]) ? array_shift($idMap[$key]) : 0;
+                }
+                unset($record);
+            }
+        }
+
+        return ['zones' => $zones, 'records' => $records];
     }
 
     // ---------------------------------------------------------------
@@ -547,7 +818,9 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             }
         }
 
-        error_log(sprintf("Failed to find domain ID for '%s' after API creation (retried %d times)", $domain, $maxRetries));
+        $this->logger->error("Failed to find domain ID for '{domain}' after API creation (retried {retries} times)", [
+            'domain' => $domain, 'retries' => $maxRetries,
+        ]);
         return false;
     }
 
@@ -585,7 +858,9 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             }
         }
 
-        error_log(sprintf("Failed to find record ID for '%s %s %s' after API creation (retried %d times)", $name, $type, $content, $maxRetries));
+        $this->logger->error("Failed to find record ID for '{name} {type} {content}' after API creation (retried {retries} times)", [
+            'name' => $name, 'type' => $type, 'content' => $content, 'retries' => $maxRetries,
+        ]);
         return null;
     }
 
@@ -653,6 +928,62 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         }
 
         return ['records' => [], 'ttl' => 3600];
+    }
+
+    /**
+     * Strip trailing dot from hostname-type record content.
+     *
+     * PowerDNS API returns content with trailing dots for hostname types
+     * (CNAME, NS, MX, PTR, SRV, etc.), but the DB stores them without.
+     */
+    private function stripTrailingDotFromContent(string $type, string $content): string
+    {
+        $hostnameTypes = ['CNAME', 'NS', 'MX', 'PTR', 'SRV', 'AFSDB', 'DNAME', 'ALIAS'];
+        if (in_array($type, $hostnameTypes, true)) {
+            return rtrim($content, '.');
+        }
+        return $content;
+    }
+
+    /**
+     * Resolve numeric record IDs from the database for API-sourced records.
+     *
+     * Matches records by (domain_id, name, type, content, prio) and assigns
+     * the DB ID. Records without a DB match keep id=0.
+     *
+     * @param array &$records Records array to update in-place
+     * @param int $domainId Domain ID
+     */
+    private function resolveRecordIds(array &$records, int $domainId): void
+    {
+        if (empty($records)) {
+            return;
+        }
+
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $stmt = $this->db->prepare(
+            "SELECT id, name, type, content, prio FROM $recordsTable
+             WHERE domain_id = :did AND type IS NOT NULL AND type != ''"
+        );
+        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Build lookup map: "name|type|content|prio" => [id1, id2, ...]
+        // Using an array of IDs handles duplicate records (same name, type,
+        // content, prio) by assigning each a unique DB ID via FIFO consumption.
+        $idMap = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $key = $row['name'] . '|' . $row['type'] . '|' . $row['content'] . '|' . (int)$row['prio'];
+            $idMap[$key][] = (int)$row['id'];
+        }
+
+        foreach ($records as &$record) {
+            $key = $record['name'] . '|' . $record['type'] . '|' . $record['content'] . '|' . $record['prio'];
+            if (!empty($idMap[$key])) {
+                $record['id'] = array_shift($idMap[$key]);
+            }
+        }
+        unset($record);
     }
 
     /**

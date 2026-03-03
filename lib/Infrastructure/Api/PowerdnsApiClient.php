@@ -25,6 +25,8 @@ namespace Poweradmin\Infrastructure\Api;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 // TODO
 // - have smaller client classes for specific functionality
@@ -38,11 +40,13 @@ class PowerdnsApiClient
 
     private HttpClient $httpClient;
     private string $serverName;
+    private LoggerInterface $logger;
 
-    public function __construct(HttpClient $httpClient, string $serverName)
+    public function __construct(HttpClient $httpClient, string $serverName, ?LoggerInterface $logger = null)
     {
         $this->httpClient = $httpClient;
         $this->serverName = $serverName;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     private function buildEndpoint(string $path): string
@@ -72,7 +76,7 @@ class PowerdnsApiClient
                    isset($response['data']['result']) &&
                    $response['data']['result'] === 'Rectified';
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to rectify zone %s: %s", $zone->getName(), $e->getMessage()));
+            $this->logger->error('Failed to rectify zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -92,7 +96,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to secure zone %s: %s", $zone->getName(), $e->getMessage()));
+            $this->logger->error('Failed to secure zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -112,7 +116,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to unsecure zone %s: %s", $zone->getName(), $e->getMessage()));
+            $this->logger->error('Failed to unsecure zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -131,13 +135,13 @@ class PowerdnsApiClient
             $zones = [];
             if ($response && $response['responseCode'] === 200) {
                 foreach ($response['data'] as $zoneData) {
-                    $zones[] = new Zone($zoneData['name'], $zoneData['id'], $zoneData['dnssec']);
+                    $zones[] = new Zone($zoneData['name'], $zoneData['dnssec'] ?? false);
                 }
             }
 
             return $zones;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to get zones: %s", $e->getMessage()));
+            $this->logger->error('Failed to get zones: {error}', ['error' => $e->getMessage()]);
 
             // Return empty array instead of breaking the UI
             return [];
@@ -161,7 +165,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 201;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to create zone %s: %s", $zone->getName(), $e->getMessage()));
+            $this->logger->error('Failed to create zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -183,7 +187,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to update zone %s: %s", $zone->getName(), $e->getMessage()));
+            $this->logger->error('Failed to update zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -202,7 +206,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to delete zone %s: %s", $zone->getName(), $e->getMessage()));
+            $this->logger->error('Failed to delete zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -244,11 +248,7 @@ class PowerdnsApiClient
 
             return [];
         } catch (ApiErrorException $e) {
-            error_log(sprintf(
-                "Failed to get DNSSEC keys for zone %s: %s",
-                $zone->getName(),
-                $e->getMessage()
-            ));
+            $this->logger->error('Failed to get DNSSEC keys for zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
 
             // Return empty array instead of breaking the UI
             return [];
@@ -275,11 +275,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 201;
         } catch (ApiErrorException $e) {
-            error_log(sprintf(
-                "Failed to add key to zone %s: %s",
-                $zone->getName(),
-                $e->getMessage()
-            ));
+            $this->logger->error('Failed to add key to zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -300,12 +296,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf(
-                "Failed to activate key %d for zone %s: %s",
-                $key->getId(),
-                $zone->getName(),
-                $e->getMessage()
-            ));
+            $this->logger->error('Failed to activate key {keyId} for zone {zone}: {error}', ['keyId' => $key->getId(), 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -326,12 +317,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf(
-                "Failed to deactivate key %d for zone %s: %s",
-                $key->getId(),
-                $zone->getName(),
-                $e->getMessage()
-            ));
+            $this->logger->error('Failed to deactivate key {keyId} for zone {zone}: {error}', ['keyId' => $key->getId(), 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -351,12 +337,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf(
-                "Failed to remove key %d from zone %s: %s",
-                $key->getId(),
-                $zone->getName(),
-                $e->getMessage()
-            ));
+            $this->logger->error('Failed to remove key {keyId} from zone {zone}: {error}', ['keyId' => $key->getId(), 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -379,11 +360,7 @@ class PowerdnsApiClient
                    $response['data']['dnssec'];
         } catch (ApiErrorException $e) {
             // Log the error but don't break the UI flow
-            error_log(sprintf(
-                "DNSSEC check failed for zone %s: %s",
-                $zone->getName(),
-                $e->getMessage()
-            ));
+            $this->logger->error('DNSSEC check failed for zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
 
             // Return false as a fallback - this assumes zone is not secured when we can't tell
             return false;
@@ -408,7 +385,7 @@ class PowerdnsApiClient
 
             return [];
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to get metadata for zone %s: %s", $zone->getName(), $e->getMessage()));
+            $this->logger->error('Failed to get metadata for zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return [];
         }
     }
@@ -432,7 +409,7 @@ class PowerdnsApiClient
 
             return [];
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to get metadata kind '%s' for zone %s: %s", $kind, $zone->getName(), $e->getMessage()));
+            $this->logger->error('Failed to get metadata kind {kind} for zone {zone}: {error}', ['kind' => $kind, 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return [];
         }
     }
@@ -457,7 +434,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to create metadata kind '%s' for zone %s: %s", $kind, $zone->getName(), $e->getMessage()));
+            $this->logger->error('Failed to create metadata kind {kind} for zone {zone}: {error}', ['kind' => $kind, 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -482,7 +459,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 200;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to update metadata kind '%s' for zone %s: %s", $kind, $zone->getName(), $e->getMessage()));
+            $this->logger->error('Failed to update metadata kind {kind} for zone {zone}: {error}', ['kind' => $kind, 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -502,7 +479,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to delete metadata kind '%s' for zone %s: %s", $kind, $zone->getName(), $e->getMessage()));
+            $this->logger->error('Failed to delete metadata kind {kind} for zone {zone}: {error}', ['kind' => $kind, 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -520,7 +497,7 @@ class PowerdnsApiClient
 
             return $response['data'] ?? [];
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to get PowerDNS config: %s", $e->getMessage()));
+            $this->logger->error('Failed to get PowerDNS config: {error}', ['error' => $e->getMessage()]);
 
             // Return empty array as fallback
             return [];
@@ -540,7 +517,7 @@ class PowerdnsApiClient
 
             return $response['data'] ?? [];
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to get server info: %s", $e->getMessage()));
+            $this->logger->error('Failed to get server info: {error}', ['error' => $e->getMessage()]);
 
             // Return empty array as fallback
             return [];
@@ -560,7 +537,7 @@ class PowerdnsApiClient
 
             return $response['data'] ?? [];
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to get metrics: %s", $e->getMessage()));
+            $this->logger->error('Failed to get metrics: {error}', ['error' => $e->getMessage()]);
 
             // Return empty array as fallback
             return [];
@@ -589,7 +566,7 @@ class PowerdnsApiClient
 
             return null;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to get zone %s: %s", $zoneName, $e->getMessage()));
+            $this->logger->error('Failed to get zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
             return null;
         }
     }
@@ -612,7 +589,7 @@ class PowerdnsApiClient
 
             return null;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to create zone: %s", $e->getMessage()));
+            $this->logger->error('Failed to create zone: {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }
@@ -632,7 +609,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to update zone %s: %s", $zoneName, $e->getMessage()));
+            $this->logger->error('Failed to update zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -657,7 +634,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to patch RRsets for zone %s: %s", $zoneName, $e->getMessage()));
+            $this->logger->error('Failed to patch RRsets for zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -691,7 +668,7 @@ class PowerdnsApiClient
 
             return [];
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to search: %s", $e->getMessage()));
+            $this->logger->error('Failed to search: {error}', ['error' => $e->getMessage()]);
             return [];
         }
     }
@@ -717,7 +694,7 @@ class PowerdnsApiClient
 
             return [];
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to get autoprimaries: %s", $e->getMessage()));
+            $this->logger->error('Failed to get autoprimaries: {error}', ['error' => $e->getMessage()]);
             return [];
         }
     }
@@ -743,7 +720,7 @@ class PowerdnsApiClient
 
             return $response && ($response['responseCode'] === 201 || $response['responseCode'] === 204);
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to add autoprimary: %s", $e->getMessage()));
+            $this->logger->error('Failed to add autoprimary: {error}', ['error' => $e->getMessage()]);
             return false;
         }
     }
@@ -763,7 +740,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to delete autoprimary: %s", $e->getMessage()));
+            $this->logger->error('Failed to delete autoprimary: {error}', ['error' => $e->getMessage()]);
             return false;
         }
     }
@@ -789,7 +766,7 @@ class PowerdnsApiClient
 
             return [];
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to get TSIG keys: %s", $e->getMessage()));
+            $this->logger->error('Failed to get TSIG keys: {error}', ['error' => $e->getMessage()]);
             return [];
         }
     }
@@ -821,7 +798,7 @@ class PowerdnsApiClient
 
             return null;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to create TSIG key: %s", $e->getMessage()));
+            $this->logger->error('Failed to create TSIG key: {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }
@@ -840,7 +817,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to delete TSIG key: %s", $e->getMessage()));
+            $this->logger->error('Failed to delete TSIG key: {error}', ['error' => $e->getMessage()]);
             return false;
         }
     }
@@ -860,7 +837,7 @@ class PowerdnsApiClient
 
             return $response && $response['responseCode'] === 200;
         } catch (ApiErrorException $e) {
-            error_log(sprintf("Failed to update TSIG key: %s", $e->getMessage()));
+            $this->logger->error('Failed to update TSIG key: {error}', ['error' => $e->getMessage()]);
             return false;
         }
     }
