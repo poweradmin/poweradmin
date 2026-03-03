@@ -26,16 +26,15 @@ use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DatabaseSchemaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class DatabaseHelper
 {
-    private PDOCommon $db;
+    private PDO $db;
     private DatabaseSchemaService $schemaService;
     private array $databaseCredentials;
     private const REQUIRED_PDNS_TABLES = ['domains', 'records', 'supermasters', 'domainmetadata', 'comments'];
 
-    public function __construct(PDOCommon $db, array $databaseCredentials)
+    public function __construct(PDO $db, array $databaseCredentials)
     {
         $this->db = $db;
         $this->schemaService = new DatabaseSchemaService($db);
