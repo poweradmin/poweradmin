@@ -27,7 +27,7 @@ use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DomainParsingService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -43,14 +43,14 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class ZoneTemplate
 {
     private ConfigurationInterface $config;
-    private PDOCommon $db;
+    private PDO $db;
     private DnsFormatter $dnsFormatter;
     private MessageService $messageService;
     private DnsCommonValidator $dnsCommonValidator;
     private DomainParsingService $domainParsingService;
     private TableNameService $tableNameService;
 
-    public function __construct(PDOCommon $db, ConfigurationInterface $config)
+    public function __construct(PDO $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;

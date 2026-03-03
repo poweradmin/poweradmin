@@ -25,14 +25,13 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Repository\UserPreferenceRepositoryInterface;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class DbUserPreferenceRepository implements UserPreferenceRepositoryInterface
 {
-    private PDOCommon $db;
+    private PDO $db;
     private string $db_type;
 
-    public function __construct(PDOCommon $db, string $db_type)
+    public function __construct(PDO $db, string $db_type)
     {
         $this->db = $db;
         $this->db_type = $db_type;

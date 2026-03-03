@@ -29,7 +29,8 @@ use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Class DbApiKeyRepository
@@ -40,19 +41,22 @@ use Poweradmin\Infrastructure\Database\PDOCommon;
  */
 class DbApiKeyRepository implements ApiKeyRepositoryInterface
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
+    private LoggerInterface $logger;
 
     /**
      * DbApiKeyRepository constructor
      *
-     * @param PDOCommon $db The PDO database layer
+     * @param PDO $db The PDO database layer
      * @param ConfigurationManager $config The configuration manager
+     * @param LoggerInterface|null $logger The logger instance
      */
-    public function __construct(PDOCommon $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -106,13 +110,12 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
     public function findBySecretKey(string $secretKey): ?ApiKey
     {
         // Log the query details for debugging
-        error_log("[DbApiKeyRepository] Looking up API key in database");
-        error_log(sprintf(
-            "[DbApiKeyRepository] Key length: %d, First chars: %s, Last chars: %s",
-            strlen($secretKey),
-            substr($secretKey, 0, 4),
-            substr($secretKey, -4)
-        ));
+        $this->logger->debug('[DbApiKeyRepository] Looking up API key in database');
+        $this->logger->debug('[DbApiKeyRepository] Key length: {length}, First chars: {first}, Last chars: {last}', [
+            'length' => strlen($secretKey),
+            'first' => substr($secretKey, 0, 4),
+            'last' => substr($secretKey, -4),
+        ]);
 
         // Try a different approach first - direct comparison to work around database encoding issues
         try {
@@ -122,17 +125,16 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
 
             while ($row = $allKeys->fetch(PDO::FETCH_ASSOC)) {
                 // Debug each key
-                error_log(sprintf(
-                    "[DbApiKeyRepository] Found key ID %d in DB, length: %d, prefix: %s, suffix: %s",
-                    $row['id'],
-                    strlen($row['secret_key']),
-                    substr($row['secret_key'], 0, 4),
-                    substr($row['secret_key'], -4)
-                ));
+                $this->logger->debug('[DbApiKeyRepository] Found key ID {id} in DB, length: {length}, prefix: {prefix}, suffix: {suffix}', [
+                    'id' => $row['id'],
+                    'length' => strlen($row['secret_key']),
+                    'prefix' => substr($row['secret_key'], 0, 4),
+                    'suffix' => substr($row['secret_key'], -4),
+                ]);
 
                 // Check for exact match
                 if ($row['secret_key'] === $secretKey) {
-                    error_log("[DbApiKeyRepository] EXACT MATCH FOUND with ID: " . $row['id']);
+                    $this->logger->debug('[DbApiKeyRepository] Exact match found with ID: {id}', ['id' => $row['id']]);
                     $found = true;
                     $foundId = $row['id'];
                     break;
@@ -147,17 +149,16 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
                 $exactResult = $exactStmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($exactResult) {
-                    error_log(sprintf(
-                        "[DbApiKeyRepository] Successfully found key by ID: %d, Name: %s",
-                        $exactResult['id'],
-                        $exactResult['name']
-                    ));
+                    $this->logger->debug('[DbApiKeyRepository] Successfully found key by ID: {id}, Name: {name}', [
+                        'id' => $exactResult['id'],
+                        'name' => $exactResult['name'],
+                    ]);
                     return $this->createFromArray($exactResult);
                 }
             }
 
             // Fall back to original query
-            error_log("[DbApiKeyRepository] No exact match found, trying normal query");
+            $this->logger->debug('[DbApiKeyRepository] No exact match found, trying normal query');
             $stmt = $this->db->prepare("SELECT * FROM api_keys WHERE secret_key = :secretKey");
             $stmt->bindValue(':secretKey', $secretKey);
             $stmt->execute();
@@ -166,29 +167,28 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
 
             if (!$result) {
                 // Log that no matching key was found
-                error_log("[DbApiKeyRepository] No API key found matching the provided secret key");
+                $this->logger->debug('[DbApiKeyRepository] No API key found matching the provided secret key');
 
                 // For debugging only, check if keys exist at all
                 $countStmt = $this->db->prepare("SELECT COUNT(*) FROM api_keys");
                 $countStmt->execute();
                 $count = $countStmt->fetchColumn();
-                error_log("[DbApiKeyRepository] Total API keys in database: " . $count);
+                $this->logger->debug('[DbApiKeyRepository] Total API keys in database: {count}', ['count' => $count]);
 
                 return null;
             }
 
             // Log basic info about the found key (don't log the actual key)
-            error_log(sprintf(
-                "[DbApiKeyRepository] Found API key ID: %d, Name: %s, Created by: %d",
-                $result['id'],
-                $result['name'],
-                $result['created_by']
-            ));
+            $this->logger->debug('[DbApiKeyRepository] Found API key ID: {id}, Name: {name}, Created by: {createdBy}', [
+                'id' => $result['id'],
+                'name' => $result['name'],
+                'createdBy' => $result['created_by'],
+            ]);
 
             return $this->createFromArray($result);
         } catch (\Exception $e) {
             // Log any database errors
-            error_log("[DbApiKeyRepository] Database error while finding API key: " . $e->getMessage());
+            $this->logger->error('[DbApiKeyRepository] Database error while finding API key: {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }

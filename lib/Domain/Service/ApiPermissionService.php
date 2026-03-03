@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 /**
  * Stateless permission service for API requests
@@ -32,9 +32,9 @@ use Poweradmin\Infrastructure\Database\PDOCommon;
  */
 class ApiPermissionService
 {
-    private PDOCommon $db;
+    private PDO $db;
 
-    public function __construct(PDOCommon $db)
+    public function __construct(PDO $db)
     {
         $this->db = $db;
     }

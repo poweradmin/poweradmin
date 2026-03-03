@@ -29,17 +29,20 @@ use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class DbUserMfaRepository implements UserMfaRepositoryInterface
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
+    private LoggerInterface $logger;
 
-    public function __construct(PDOCommon $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function findByUserId(int $userId): ?UserMfa
@@ -61,7 +64,7 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
             return $this->hydrateUserMfa($result);
         } catch (PDOException $e) {
             // Log the error and rethrow it to be handled by the calling code
-            error_log("DbUserMfaRepository::findByUserId failed: " . $e->getMessage());
+            $this->logger->error('DbUserMfaRepository::findByUserId failed: {error}', ['error' => $e->getMessage()]);
 
             // Only return null for "table not found" error, otherwise rethrow
             if (strpos($e->getMessage(), "Base table or view not found") !== false) {
@@ -91,7 +94,7 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
             return $this->hydrateUserMfa($result);
         } catch (PDOException $e) {
             // Log the error and rethrow it to be handled by the calling code
-            error_log("DbUserMfaRepository::findById failed: " . $e->getMessage());
+            $this->logger->error('DbUserMfaRepository::findById failed: {error}', ['error' => $e->getMessage()]);
 
             // Only return null for "table not found" error, otherwise rethrow
             if (strpos($e->getMessage(), "Base table or view not found") !== false) {
@@ -112,11 +115,11 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
             return $this->update($userMfa);
         } catch (PDOException $e) {
             // Log the error
-            error_log("DbUserMfaRepository::save failed: " . $e->getMessage());
+            $this->logger->error('DbUserMfaRepository::save failed: {error}', ['error' => $e->getMessage()]);
 
             // If the table doesn't exist, we want to fail gracefully
             if (strpos($e->getMessage(), "Base table or view not found") !== false) {
-                error_log("MFA table not found, operations will be skipped");
+                $this->logger->warning('MFA table not found, operations will be skipped');
                 return $userMfa;
             }
 
@@ -125,7 +128,7 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
                 strpos($e->getMessage(), "Integrity constraint violation") !== false &&
                 strpos($e->getMessage(), "idx_user_mfa_user_id") !== false
             ) {
-                error_log("Duplicate user_id in user_mfa table, retrieving existing record");
+                $this->logger->warning('Duplicate user_id in user_mfa table, retrieving existing record');
 
                 // Try to get the existing record
                 $existingUserMfa = $this->findByUserId($userMfa->getUserId());

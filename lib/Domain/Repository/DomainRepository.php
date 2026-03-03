@@ -30,7 +30,6 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -42,7 +41,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 class DomainRepository implements DomainRepositoryInterface
 {
 
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
@@ -51,10 +50,10 @@ class DomainRepository implements DomainRepositoryInterface
     /**
      * Constructor
      *
-     * @param PDOCommon $db Database connection
+     * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
      */
-    public function __construct(PDOCommon $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;

@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Repository;
 use PDO;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -37,7 +36,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 class RecordRepository implements RecordRepositoryInterface
 {
 
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
     private TableNameService $tableNameService;
@@ -45,10 +44,10 @@ class RecordRepository implements RecordRepositoryInterface
     /**
      * Constructor
      *
-     * @param PDOCommon $db Database connection
+     * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
      */
-    public function __construct(PDOCommon $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;

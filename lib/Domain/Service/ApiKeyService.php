@@ -30,8 +30,9 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Service for managing API keys
@@ -41,16 +42,17 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class ApiKeyService
 {
     private ApiKeyRepositoryInterface $apiKeyRepository;
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
+    private LoggerInterface $logger;
 
     /**
      * Get the database connection for debugging
      *
-     * @return PDOCommon
+     * @return PDO
      */
-    public function getDb(): PDOCommon
+    public function getDb(): PDO
     {
         return $this->db;
     }
@@ -59,20 +61,22 @@ class ApiKeyService
      * ApiKeyService constructor
      *
      * @param ApiKeyRepositoryInterface $apiKeyRepository The API key repository
-     * @param PDOCommon $db The database connection
+     * @param PDO $db The database connection
      * @param ConfigurationManager $config The configuration manager
      * @param MessageService $messageService The message service
      */
     public function __construct(
         ApiKeyRepositoryInterface $apiKeyRepository,
-        PDOCommon $db,
+        PDO $db,
         ConfigurationManager $config,
-        MessageService $messageService
+        MessageService $messageService,
+        ?LoggerInterface $logger = null
     ) {
         $this->apiKeyRepository = $apiKeyRepository;
         $this->db = $db;
         $this->config = $config;
         $this->messageService = $messageService;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -446,7 +450,7 @@ class ApiKeyService
                 return (int)$keyData['created_by'];
             }
         } catch (Exception $e) {
-            error_log('Failed to get user ID from API key: ' . $e->getMessage());
+            $this->logger->error('Failed to get user ID from API key: {error}', ['error' => $e->getMessage()]);
         }
 
         return 0;

@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Model;
 
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 /**
  * Class Permission
@@ -74,10 +74,10 @@ class Permission
      *
      * This method determines the user's permission to delete zones.
      *
-     * @param PDOCommon $db The database connection.
+     * @param PDO $db The database connection.
      * @return string Returns "all", "own", or "none" depending on the user's delete permission.
      */
-    public static function getDeletePermission(PDOCommon $db): string
+    public static function getDeletePermission(PDO $db): string
     {
         if (UserManager::verifyPermission($db, 'zone_delete_others')) {
             return "all";
@@ -93,11 +93,11 @@ class Permission
      *
      * This method checks a set of permissions for the user.
      *
-     * @param PDOCommon $db The database connection.
+     * @param PDO $db The database connection.
      * @param array $permissions An array containing the permission keys to check.
      * @return array An associative array containing the permission key and its corresponding boolean value.
      */
-    public static function getPermissions(PDOCommon $db, array $permissions): array
+    public static function getPermissions(PDO $db, array $permissions): array
     {
         $result = [];
 

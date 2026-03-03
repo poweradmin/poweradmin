@@ -28,7 +28,6 @@ use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -36,11 +35,11 @@ use Poweradmin\Infrastructure\Service\MessageService;
 
 class UserManager
 {
-    private PDOCommon $db;
+    private PDO $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
 
-    public function __construct(PDOCommon $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;
@@ -115,12 +114,12 @@ class UserManager
      * 1. Direct user permissions (from user's perm_templ)
      * 2. Group permissions (from user_groups via user_group_members)
      *
-     * @param PDOCommon $db Database connection
+     * @param PDO $db Database connection
      * @param int $userId User ID to check
      *
      * @return bool true if user is superuser, false otherwise
      */
-    public static function isUserSuperuser(PDOCommon $db, int $userId): bool
+    public static function isUserSuperuser(PDO $db, int $userId): bool
     {
         // Check both direct user permissions and group permissions
         // Uses same logic as verifyPermission for consistency
