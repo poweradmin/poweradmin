@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller\Api\V1;
 
 use Exception;
-use PDO;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -46,9 +45,9 @@ use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Repository\DomainRepository;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -58,9 +57,9 @@ class ZonesRecordsController extends PublicApiController
     private RecordRepository $recordRepository;
     private RecordManagerInterface $recordManager;
     private SOARecordManager $soaRecordManager;
-    private TableNameService $tableNameService;
     private ApiPermissionService $permissionService;
     private RecordCommentService $recordCommentService;
+    private DnsBackendProvider $backendProvider;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -68,8 +67,8 @@ class ZonesRecordsController extends PublicApiController
 
         $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
-        $this->tableNameService = new TableNameService($this->getConfig());
         $this->permissionService = new ApiPermissionService($this->db);
+        $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
 
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
@@ -462,25 +461,35 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError($errorMessage, 400);
             }
 
-            // If validation passes, insert the record
-            $success = $this->insertRecordDirect($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled);
+            // Insert record via backend provider
+            // Wrap insert + SOA update in a transaction for atomicity (SQL backend only).
+            // API backend polls the DB for the new record ID after the HTTP call;
+            // opening a transaction before that would hide the row due to MVCC snapshot isolation.
+            $useTransaction = !$this->backendProvider->isApiBackend();
+            if ($useTransaction) {
+                $this->db->beginTransaction();
+            }
 
-            if (!$success) {
+            $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled);
+
+            if ($newRecordId === null) {
+                if ($useTransaction) {
+                    $this->db->rollBack();
+                }
                 return $this->returnApiError('Failed to create record', 500);
             }
 
-            // Get the newly created record ID (we'll need to query for it since addRecord doesn't return ID)
-            $records = $this->recordRepository->getRecordsByDomainId($zoneId);
-            $newRecord = null;
-            foreach ($records as $record) {
-                if ($record['name'] === $name && $record['type'] === $type && $record['content'] === $content) {
-                    $newRecord = $record;
-                    break;
-                }
+            // Update SOA serial for the zone
+            if ($type !== 'SOA') {
+                $this->updateSOASerial($zoneId);
+            }
+
+            if ($useTransaction) {
+                $this->db->commit();
             }
 
             $responseData = [
-                'record_id' => $newRecord ? (int)$newRecord['id'] : null,
+                'record_id' => $newRecordId,
                 'name' => $name,
                 'type' => $type,
                 'content' => $content,
@@ -491,6 +500,9 @@ class ZonesRecordsController extends PublicApiController
 
             return $this->returnApiResponse($responseData, true, 'Record created successfully', 201);
         } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
             return $this->returnApiError('Failed to create record: ' . $e->getMessage(), 500);
         }
     }
@@ -736,7 +748,7 @@ class ZonesRecordsController extends PublicApiController
     }
 
     /**
-     * Insert a validated record directly into the database (API-specific method)
+     * Insert a validated record via the DNS backend provider
      *
      * @param int $zoneId Zone ID
      * @param string $name Record name (already normalized)
@@ -745,47 +757,15 @@ class ZonesRecordsController extends PublicApiController
      * @param int $ttl TTL value
      * @param int $priority Priority value
      * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
-     * @return bool True if successful
+     * @return int|null Record ID if successful, null on failure
      */
-    private function insertRecordDirect(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): bool
+    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): ?int
     {
         try {
-            $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-            // Start transaction
-            $this->db->beginTransaction();
-
-            // Insert the record
-            $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio, disabled)
-                      VALUES (:zone_id, :name, :type, :content, :ttl, :prio, :disabled)";
-
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-            $stmt->bindValue(':name', $name, PDO::PARAM_STR);
-            $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-            $stmt->bindValue(':content', $content, PDO::PARAM_STR);
-            $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
-            $stmt->bindValue(':prio', $priority, PDO::PARAM_INT);
-            $stmt->bindValue(':disabled', $disabled, PDO::PARAM_INT);
-
-            $result = $stmt->execute();
-
-            if (!$result) {
-                $this->db->rollBack();
-                return false;
-            }
-
-            // Update SOA serial if it's not a SOA record
-            if ($type !== 'SOA') {
-                $this->updateSOASerial($zoneId);
-            }
-
-            $this->db->commit();
-            return true;
-        } catch (Exception $e) {
-            $this->db->rollBack();
-            error_log('Failed to insert record: ' . $e->getMessage());
-            return false;
+            return $this->backendProvider->createRecordAtomic($zoneId, $name, $type, $content, $ttl, $priority, $disabled);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to insert record: {message}', ['message' => $e->getMessage()]);
+            return null;
         }
     }
 

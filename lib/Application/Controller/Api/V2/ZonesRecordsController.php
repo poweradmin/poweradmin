@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Exception;
-use PDO;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -48,9 +47,9 @@ use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Repository\DomainRepository;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -62,9 +61,9 @@ class ZonesRecordsController extends PublicApiController
     private RecordRepository $recordRepository;
     private RecordManagerInterface $recordManager;
     private SOARecordManager $soaRecordManager;
-    private TableNameService $tableNameService;
     private ApiPermissionService $permissionService;
     private RecordCommentService $recordCommentService;
+    private DnsBackendProvider $backendProvider;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -72,8 +71,8 @@ class ZonesRecordsController extends PublicApiController
 
         $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
-        $this->tableNameService = new TableNameService($this->getConfig());
         $this->permissionService = new ApiPermissionService($this->db);
+        $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
 
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
@@ -504,22 +503,35 @@ class ZonesRecordsController extends PublicApiController
             $validatedTtl = $validatedData['ttl'] ?? $ttl;
             $validatedPriority = $validatedData['prio'] ?? $priority;
 
-            // If validation passes, insert the record with validated values
-            $success = $this->insertRecordDirect($zoneId, $normalizedName, $type, $validatedContent, $validatedTtl, $validatedPriority, $disabled);
+            // If validation passes, insert the record via backend provider
+            // Wrap insert + SOA update in a transaction for atomicity (SQL backend only).
+            // API backend polls the DB for the new record ID after the HTTP call;
+            // opening a transaction before that would hide the row due to MVCC snapshot isolation.
+            $useTransaction = !$this->backendProvider->isApiBackend();
+            if ($useTransaction) {
+                $this->db->beginTransaction();
+            }
 
-            if (!$success) {
+            $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $validatedContent, $validatedTtl, $validatedPriority, $disabled);
+
+            if ($newRecordId === null) {
+                if ($useTransaction) {
+                    $this->db->rollBack();
+                }
                 return $this->returnApiError('Failed to create record', 500);
             }
 
-            // Get the newly created record ID (we'll need to query for it since addRecord doesn't return ID)
-            $records = $this->recordRepository->getRecordsByDomainId($zoneId);
-            $newRecord = null;
-            foreach ($records as $record) {
-                if ($record['name'] === $normalizedName && $record['type'] === $type && $record['content'] === $validatedContent) {
-                    $newRecord = $record;
-                    break;
-                }
+            // Update SOA serial for the zone
+            if ($type !== 'SOA') {
+                $this->updateSOASerial($zoneId);
             }
+
+            if ($useTransaction) {
+                $this->db->commit();
+            }
+
+            // Fetch the newly created record
+            $newRecord = $this->recordRepository->getRecordById($newRecordId);
 
             // Create PTR record if requested and record type is A or AAAA
             $ptrCreated = false;
@@ -549,7 +561,7 @@ class ZonesRecordsController extends PublicApiController
                 } catch (Exception $e) {
                     // Log error but don't fail the entire request
                     $ptrMessage = ' PTR record creation failed: ' . $e->getMessage();
-                    error_log('PTR record creation failed: ' . $e->getMessage());
+                    $this->logger->error('PTR record creation failed: {error}', ['error' => $e->getMessage()]);
                 }
             }
 
@@ -569,6 +581,9 @@ class ZonesRecordsController extends PublicApiController
             $message = 'Record created successfully' . $ptrMessage;
             return $this->returnApiResponse(['record' => $responseData], true, $message, 201);
         } catch (\Throwable $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
             return $this->handleException($e, 'ZonesRecordsController::createRecord', 'Failed to create record');
         }
     }
@@ -863,69 +878,14 @@ class ZonesRecordsController extends PublicApiController
      * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
      * @return bool True if successful
      */
-    private function insertRecordDirect(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): bool
+    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): ?int
     {
-        $maxRetries = 3;
-        $retryDelay = 50000; // 50ms in microseconds
-
-        for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
-            try {
-                $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-                // Start transaction
-                $this->db->beginTransaction();
-
-                // Insert the record
-                $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio, disabled)
-                          VALUES (:zone_id, :name, :type, :content, :ttl, :prio, :disabled)";
-
-                $stmt = $this->db->prepare($query);
-                $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-                $stmt->bindValue(':name', $name, PDO::PARAM_STR);
-                $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-                $stmt->bindValue(':content', $content, PDO::PARAM_STR);
-                $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
-                $stmt->bindValue(':prio', $priority, PDO::PARAM_INT);
-                $stmt->bindValue(':disabled', $disabled, PDO::PARAM_INT);
-
-                $result = $stmt->execute();
-
-                if (!$result) {
-                    $this->db->rollBack();
-                    return false;
-                }
-
-                // Update SOA serial if it's not a SOA record
-                if ($type !== 'SOA') {
-                    $this->updateSOASerial($zoneId);
-                }
-
-                $this->db->commit();
-                return true;
-            } catch (Exception $e) {
-                $this->db->rollBack();
-
-                // Check if this is a deadlock error (1213) or lock wait timeout (1205)
-                $errorCode = $e->getCode();
-                $isDeadlock = ($errorCode == 1213 || $errorCode == '40001' ||
-                              strpos($e->getMessage(), '1213') !== false ||
-                              strpos($e->getMessage(), 'Deadlock') !== false);
-
-                if ($isDeadlock && $attempt < $maxRetries) {
-                    // Log the retry attempt
-                    error_log("Deadlock detected on attempt $attempt, retrying... " . $e->getMessage());
-                    // Wait before retrying with exponential backoff
-                    usleep($retryDelay * $attempt);
-                    continue; // Retry the transaction
-                }
-
-                // Not a deadlock or max retries reached
-                error_log('Failed to insert record: ' . $e->getMessage());
-                return false;
-            }
+        try {
+            return $this->backendProvider->createRecordAtomic($zoneId, $name, $type, $content, $ttl, $priority, $disabled);
+        } catch (\Throwable $e) {
+            $this->logger->error('Failed to insert record: {message}', ['message' => $e->getMessage()]);
+            return null;
         }
-
-        return false;
     }
 
     /**

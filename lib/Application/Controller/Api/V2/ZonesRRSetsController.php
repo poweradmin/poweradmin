@@ -34,7 +34,6 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
-use PDO;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
@@ -47,9 +46,9 @@ use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Repository\DomainRepository;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -59,8 +58,8 @@ class ZonesRRSetsController extends PublicApiController
     private RecordRepository $recordRepository;
     private RecordManagerInterface $recordManager;
     private SOARecordManager $soaRecordManager;
-    private TableNameService $tableNameService;
     private ApiPermissionService $permissionService;
+    private DnsBackendProvider $backendProvider;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -68,8 +67,8 @@ class ZonesRRSetsController extends PublicApiController
 
         $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
-        $this->tableNameService = new TableNameService($this->getConfig());
         $this->permissionService = new ApiPermissionService($this->db);
+        $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
@@ -430,50 +429,42 @@ class ZonesRRSetsController extends PublicApiController
             // Convert name to FQDN
             $fqdn = DnsHelper::restoreZoneSuffix($name, $zoneName);
 
-            // Start transaction
-            $this->db->beginTransaction();
+            // Start transaction (SQL backend only).
+            // API backend polls the DB for new record IDs after HTTP calls;
+            // an open transaction hides those rows due to MVCC snapshot isolation.
+            $useTransaction = !$this->backendProvider->isApiBackend();
+            if ($useTransaction) {
+                $this->db->beginTransaction();
+            }
 
             try {
-                // Delete existing records with this name and type
-                $existingRecords = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
-                foreach ($existingRecords as $record) {
-                    $deleteResult = $this->recordManager->deleteRecord($record['id']);
-                    if (!$deleteResult) {
-                        $this->db->rollBack();
-                        return $this->returnApiError('Failed to delete existing record with ID ' . $record['id'], 500);
-                    }
-                }
-
-                // Create new records
-                $recordsCreated = 0;
+                // Validate all records BEFORE any destructive operations.
+                // This prevents data loss when validation fails after records have been deleted.
                 $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
                 $hostnameValidator = new HostnameValidator($this->getConfig());
                 $dnsFormatter = new DnsFormatter($this->getConfig());
                 $normalizedName = $hostnameValidator->normalizeRecordName($fqdn, $zoneName);
+                $dns_hostmaster = $this->getConfig()->get('dns', 'hostmaster');
+                $dns_ttl = $this->getConfig()->get('dns', 'ttl');
 
+                $validatedRecords = [];
                 foreach ($input['records'] as $recordData) {
                     if (!isset($recordData['content'])) {
-                        continue; // Skip invalid records
+                        continue;
                     }
 
                     $content = trim($recordData['content']);
                     $disabled = isset($recordData['disabled']) ? (int)$recordData['disabled'] : 0;
                     $priority = isset($recordData['priority']) ? (int)$recordData['priority'] : 0;
 
-                    // Format content
                     $content = $dnsFormatter->formatContent($type, $content);
 
-                    // Auto-quote TXT records (V2 API convention)
                     if ($type === 'TXT') {
                         $content = trim($content);
                         if (!str_starts_with($content, '"') || !str_ends_with($content, '"')) {
                             $content = '"' . $content . '"';
                         }
                     }
-
-                    // Validate the record
-                    $dns_hostmaster = $this->getConfig()->get('dns', 'hostmaster');
-                    $dns_ttl = $this->getConfig()->get('dns', 'ttl');
 
                     $validationResult = $validationService->validateRecord(
                         -1,
@@ -488,28 +479,51 @@ class ZonesRRSetsController extends PublicApiController
                     );
 
                     if (!$validationResult->isValid()) {
-                        $this->db->rollBack();
+                        if ($useTransaction) {
+                            $this->db->rollBack();
+                        }
                         return $this->returnApiError($validationResult->getFirstError(), 400);
                     }
 
-                    // Get validated values
                     $validatedData = $validationResult->getData();
-                    $validatedContent = $validatedData['content'] ?? $content;
-                    $validatedTtl = $validatedData['ttl'] ?? $ttl;
-                    $validatedPriority = $validatedData['prio'] ?? $priority;
-
-                    // Insert record
-                    $insertResult = $this->insertRecordDirect($zoneId, $normalizedName, $type, $validatedContent, $validatedTtl, $validatedPriority, $disabled);
-                    if (!$insertResult) {
-                        $this->db->rollBack();
-                        return $this->returnApiError('Failed to insert record: ' . $content, 500);
-                    }
-                    $recordsCreated++;
+                    $validatedRecords[] = [
+                        'content' => $validatedData['content'] ?? $content,
+                        'ttl' => $validatedData['ttl'] ?? $ttl,
+                        'priority' => $validatedData['prio'] ?? $priority,
+                        'disabled' => $disabled,
+                    ];
                 }
 
-                if ($recordsCreated === 0) {
-                    $this->db->rollBack();
+                if (empty($validatedRecords)) {
+                    if ($useTransaction) {
+                        $this->db->rollBack();
+                    }
                     return $this->returnApiError('No valid records to create', 400);
+                }
+
+                // All validation passed - now safe to delete existing records
+                $existingRecords = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
+                foreach ($existingRecords as $record) {
+                    $deleteResult = $this->recordManager->deleteRecord($record['id']);
+                    if (!$deleteResult) {
+                        if ($useTransaction) {
+                            $this->db->rollBack();
+                        }
+                        return $this->returnApiError('Failed to delete existing record with ID ' . $record['id'], 500);
+                    }
+                }
+
+                // Insert validated records
+                $recordsCreated = 0;
+                foreach ($validatedRecords as $vr) {
+                    $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $vr['content'], $vr['ttl'], $vr['priority'], $vr['disabled']);
+                    if ($newRecordId === null) {
+                        if ($useTransaction) {
+                            $this->db->rollBack();
+                        }
+                        return $this->returnApiError('Failed to insert record: ' . $vr['content'], 500);
+                    }
+                    $recordsCreated++;
                 }
 
                 // Update SOA serial
@@ -517,7 +531,9 @@ class ZonesRRSetsController extends PublicApiController
                     $this->soaRecordManager->updateSOASerial($zoneId);
                 }
 
-                $this->db->commit();
+                if ($useTransaction) {
+                    $this->db->commit();
+                }
 
                 $responseData = [
                     'name' => $name,
@@ -528,7 +544,9 @@ class ZonesRRSetsController extends PublicApiController
 
                 return $this->returnApiResponse($responseData, true, 'RRSet replaced successfully', 200);
             } catch (\Throwable $e) {
-                $this->db->rollBack();
+                if ($useTransaction) {
+                    $this->db->rollBack();
+                }
                 throw $e;
             }
         } catch (\Throwable $e) {
@@ -751,7 +769,7 @@ class ZonesRRSetsController extends PublicApiController
     }
 
     /**
-     * Insert a validated record directly into the database
+     * Insert a validated record via the DNS backend provider
      *
      * @param int $zoneId Zone ID
      * @param string $name Record name (already normalized)
@@ -760,32 +778,15 @@ class ZonesRRSetsController extends PublicApiController
      * @param int $ttl TTL value
      * @param int $priority Priority value
      * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
-     * @return bool True if successful
+     * @return int|null Record ID if successful, null on failure
      */
-    private function insertRecordDirect(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): bool
+    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): ?int
     {
         try {
-            $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-            // PowerDNS only searches for lowercase records - normalize before insert
-            $name = strtolower($name);
-
-            $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio, disabled)
-                      VALUES (:zone_id, :name, :type, :content, :ttl, :prio, :disabled)";
-
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-            $stmt->bindValue(':name', $name, PDO::PARAM_STR);
-            $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-            $stmt->bindValue(':content', $content, PDO::PARAM_STR);
-            $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
-            $stmt->bindValue(':prio', $priority, PDO::PARAM_INT);
-            $stmt->bindValue(':disabled', $disabled, PDO::PARAM_INT);
-
-            return $stmt->execute();
+            return $this->backendProvider->createRecordAtomic($zoneId, $name, $type, $content, $ttl, $priority, $disabled);
         } catch (\Throwable $e) {
-            error_log('Failed to insert record: ' . $e->getMessage());
-            return false;
+            $this->logger->error('Failed to insert record: {message}', ['message' => $e->getMessage()]);
+            return null;
         }
     }
 
