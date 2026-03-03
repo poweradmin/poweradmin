@@ -309,6 +309,23 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $this->assertEquals('Master', $apiZone['kind']);
     }
 
+    public function testUpdateZoneMaster(): void
+    {
+        $zone = $this->uniqueZoneName();
+        $this->createdZones[] = $zone;
+
+        $domainId = $this->provider->createZone($zone, 'SLAVE', '10.0.0.1');
+        $this->assertIsInt($domainId);
+
+        $result = $this->provider->updateZoneMaster($domainId, '10.0.0.2');
+        $this->assertTrue($result);
+
+        // Verify via API
+        $apiZone = $this->client->getZone($zone . '.');
+        $this->assertNotNull($apiZone);
+        $this->assertContains('10.0.0.2', $apiZone['masters']);
+    }
+
     // ---------------------------------------------------------------
     // Record lifecycle tests
     // ---------------------------------------------------------------
@@ -406,6 +423,51 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $this->assertNotFalse($row);
         $this->assertEquals("test.$zone", $row['name']);
         $this->assertEquals('192.0.2.2', $row['content']);
+    }
+
+    public function testCreateRecordAtomic(): void
+    {
+        $zone = $this->uniqueZoneName();
+        $this->createdZones[] = $zone;
+
+        $domainId = $this->provider->createZone($zone, 'NATIVE');
+        $this->assertIsInt($domainId);
+
+        // Create a normal (enabled) record
+        $recordId = $this->provider->createRecordAtomic($domainId, "atomic.$zone", 'A', '192.0.2.10', 3600, 0);
+        $this->assertIsInt($recordId);
+        $this->assertGreaterThan(0, $recordId);
+
+        // Verify via database
+        $stmt = $this->db->prepare("SELECT name, content, disabled FROM records WHERE id = :id");
+        $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $this->assertNotFalse($row);
+        $this->assertEquals("atomic.$zone", $row['name']);
+        $this->assertEquals('192.0.2.10', $row['content']);
+        $this->assertEquals(0, (int)$row['disabled']);
+
+        // Create a disabled record
+        $disabledId = $this->provider->createRecordAtomic($domainId, "disabled.$zone", 'A', '192.0.2.11', 3600, 0, 1);
+        $this->assertIsInt($disabledId);
+        $this->assertGreaterThan(0, $disabledId);
+
+        // Verify disabled state via API (editRecord patches API, not local DB directly)
+        $apiZone = $this->client->getZone($zone . '.');
+        $disabledFound = false;
+        foreach ($apiZone['rrsets'] ?? [] as $rrset) {
+            if ($rrset['type'] === 'A' && $rrset['name'] === "disabled.$zone.") {
+                foreach ($rrset['records'] as $record) {
+                    if ($record['content'] === '192.0.2.11') {
+                        $this->assertTrue($record['disabled'], 'Record should be disabled');
+                        $disabledFound = true;
+                    }
+                }
+            }
+        }
+        $this->assertTrue($disabledFound, 'Disabled record not found in API response');
     }
 
     public function testAddMultipleRecordsSameRRset(): void

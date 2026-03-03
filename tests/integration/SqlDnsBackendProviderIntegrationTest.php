@@ -238,6 +238,39 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
         $this->assertEquals('2001:db8::1', $row['content']);
     }
 
+    public function testCreateRecordAtomic(): void
+    {
+        $zone = $this->uniqueZoneName();
+        $domainId = $this->provider->createZone($zone, 'NATIVE');
+        $this->createdDomainIds[] = $domainId;
+
+        // Create a normal (enabled) record
+        $recordId = $this->provider->createRecordAtomic($domainId, "atomic.$zone", 'A', '192.0.2.10', 3600, 0);
+        $this->assertIsInt($recordId);
+        $this->assertGreaterThan(0, $recordId);
+
+        $stmt = $this->db->prepare("SELECT name, content, disabled FROM records WHERE id = :id");
+        $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $this->assertEquals("atomic.$zone", $row['name']);
+        $this->assertEquals('192.0.2.10', $row['content']);
+        $this->assertEquals(0, (int)$row['disabled']);
+
+        // Create a disabled record
+        $disabledId = $this->provider->createRecordAtomic($domainId, "disabled.$zone", 'A', '192.0.2.11', 3600, 0, 1);
+        $this->assertIsInt($disabledId);
+        $this->assertGreaterThan(0, $disabledId);
+
+        $stmt = $this->db->prepare("SELECT disabled FROM records WHERE id = :id");
+        $stmt->bindValue(':id', $disabledId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $this->assertEquals(1, (int)$row['disabled']);
+    }
+
     public function testEditRecord(): void
     {
         $zone = $this->uniqueZoneName();
