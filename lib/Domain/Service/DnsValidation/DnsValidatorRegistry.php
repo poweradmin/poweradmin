@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 
@@ -34,11 +35,13 @@ class DnsValidatorRegistry
     private array $validators = [];
     private ConfigurationManager $config;
     private PDO $db;
+    private ?DnsBackendProvider $backendProvider;
 
-    public function __construct(ConfigurationManager $config, PDO $db)
+    public function __construct(ConfigurationManager $config, PDO $db, ?DnsBackendProvider $backendProvider = null)
     {
         $this->config = $config;
         $this->db = $db;
+        $this->backendProvider = $backendProvider;
         $this->registerValidators();
     }
 
@@ -58,7 +61,7 @@ class DnsValidatorRegistry
             RecordType::CDNSKEY => new CDNSKEYRecordValidator($this->config),
             RecordType::CDS => new CDSRecordValidator($this->config),
             RecordType::CERT => new CERTRecordValidator($this->config),
-            RecordType::CNAME => new CNAMERecordValidator($this->config, $this->db),
+            RecordType::CNAME => new CNAMERecordValidator($this->config, $this->db, $this->backendProvider),
             RecordType::CSYNC => new CSYNCRecordValidator($this->config),
             RecordType::DHCID => new DHCIDRecordValidator($this->config),
             RecordType::DLV => new DLVRecordValidator($this->config),

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
@@ -42,7 +43,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class CNAMERecordValidator implements DnsRecordValidatorInterface
@@ -52,20 +53,28 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     private ConfigurationManager $config;
     private PDO $db;
     private TableNameService $tableNameService;
+    private ?DnsBackendProvider $backendProvider;
 
     /**
      * Constructor
      *
      * @param ConfigurationManager $config
      * @param PDO $db
+     * @param DnsBackendProvider|null $backendProvider Optional DNS backend provider
      */
-    public function __construct(ConfigurationManager $config, PDO $db)
+    public function __construct(ConfigurationManager $config, PDO $db, ?DnsBackendProvider $backendProvider = null)
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
         $this->config = $config;
         $this->db = $db;
         $this->tableNameService = new TableNameService($config);
+        $this->backendProvider = $backendProvider;
+    }
+
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     /**
@@ -190,6 +199,16 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameUnique(string $name, int $rid): ValidationResult
     {
+        if ($this->isApiBackend()) {
+            $result = $this->backendProvider->searchDnsData($name, 'record', 100);
+            foreach ($result['records'] ?? [] as $r) {
+                if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($rid <= 0 || ($r['id'] ?? 0) !== $rid)) {
+                    return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
+                }
+            }
+            return ValidationResult::success(true);
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         // Check if there are any records with this name
@@ -221,6 +240,16 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameName(string $name): ValidationResult
     {
+        if ($this->isApiBackend()) {
+            $result = $this->backendProvider->searchDnsData($name, 'record', 100);
+            foreach ($result['records'] ?? [] as $r) {
+                if ($r['content'] === $name && in_array($r['type'], ['MX', 'NS'], true)) {
+                    return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
+                }
+            }
+            return ValidationResult::success(true);
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "SELECT id FROM $records_table WHERE content = ? AND (type = ? OR type = ?)";
@@ -262,6 +291,16 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     public function validateCnameExistence(string $name, int $rid): ValidationResult
     {
+        if ($this->isApiBackend()) {
+            $result = $this->backendProvider->searchDnsData($name, 'record', 100);
+            foreach ($result['records'] ?? [] as $r) {
+                if ($r['name'] === $name && $r['type'] === 'CNAME' && ($rid <= 0 || ($r['id'] ?? 0) !== $rid)) {
+                    return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
+                }
+            }
+            return ValidationResult::success(true);
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         if ($rid > 0) {

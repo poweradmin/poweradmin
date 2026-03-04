@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 
 use PDO;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -38,24 +39,32 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
  *
  * @package Poweradmin
  * @copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright 2010-2025 Poweradmin Development Team
+ * @copyright 2010-2026 Poweradmin Development Team
  * @license https://opensource.org/licenses/GPL-3.0 GPL
  */
 class DNSViolationValidator
 {
     private PDO $db;
     private ConfigurationManager $config;
+    private ?DnsBackendProvider $backendProvider;
 
     /**
      * Constructor
      *
      * @param PDO $db
      * @param ConfigurationManager $config
+     * @param DnsBackendProvider|null $backendProvider Optional DNS backend provider
      */
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->backendProvider = $backendProvider;
+    }
+
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     /**
@@ -125,10 +134,19 @@ class DNSViolationValidator
      */
     private function checkDuplicateCNAME(int $recordId, int $zoneId, string $name): ValidationResult
     {
+        if ($this->isApiBackend()) {
+            $records = $this->backendProvider->getRecordsByZoneId($zoneId, 'CNAME');
+            foreach ($records as $r) {
+                if ($r['name'] === $name && ($recordId <= 0 || (int)($r['id'] ?? 0) !== $recordId)) {
+                    return ValidationResult::failure(_('Multiple CNAME records with the same name are not allowed. This would create a DNS violation.'));
+                }
+            }
+            return ValidationResult::success(true);
+        }
+
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
-        // Using native PDO parameter binding for security
         if ($recordId > 0) {
             $query = "SELECT COUNT(*) FROM $records_table
                      WHERE name = :name
@@ -172,6 +190,16 @@ class DNSViolationValidator
      */
     private function checkCNAMEConflictsWithOtherTypes(int $recordId, int $zoneId, string $name): ValidationResult
     {
+        if ($this->isApiBackend()) {
+            $records = $this->backendProvider->getRecordsByZoneId($zoneId);
+            foreach ($records as $r) {
+                if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($recordId <= 0 || (int)($r['id'] ?? 0) !== $recordId)) {
+                    return ValidationResult::failure(sprintf(_('A CNAME record cannot coexist with other record types for the same name. Found existing %s record.'), $r['type']));
+                }
+            }
+            return ValidationResult::success(true);
+        }
+
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -220,6 +248,16 @@ class DNSViolationValidator
      */
     private function validateConflictsWithCNAME(int $recordId, int $zoneId, string $name): ValidationResult
     {
+        if ($this->isApiBackend()) {
+            $records = $this->backendProvider->getRecordsByZoneId($zoneId, 'CNAME');
+            foreach ($records as $r) {
+                if ($r['name'] === $name && ($recordId <= 0 || (int)($r['id'] ?? 0) !== $recordId)) {
+                    return ValidationResult::failure(_('This record conflicts with an existing CNAME record with the same name. A CNAME record cannot coexist with other record types.'));
+                }
+            }
+            return ValidationResult::success(true);
+        }
+
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 

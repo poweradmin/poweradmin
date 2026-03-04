@@ -28,6 +28,7 @@ use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
@@ -53,14 +54,15 @@ class DnsServiceFactory
      */
     public static function createDnsRecordValidationService(
         PDO $db,
-        ConfigurationManager $config
+        ConfigurationManager $config,
+        ?DnsBackendProvider $backendProvider = null
     ): DnsRecordValidationServiceInterface {
-        $validatorRegistry = new DnsValidatorRegistry($config, $db);
+        $validatorRegistry = new DnsValidatorRegistry($config, $db, $backendProvider);
         $ttlValidator = new TTLValidator();
-        $dnsCommonValidator = new DnsCommonValidator($db, $config);
+        $dnsCommonValidator = new DnsCommonValidator($db, $config, $backendProvider);
         $messageService = new MessageService();
         $zoneRepository = new DbZoneRepository($db, $config);
-        $dnsViolationValidator = new DNSViolationValidator($db, $config);
+        $dnsViolationValidator = new DNSViolationValidator($db, $config, $backendProvider);
 
         return new DnsRecordValidationService(
             $validatorRegistry,
