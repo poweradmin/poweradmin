@@ -204,7 +204,10 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         // PowerDNS stores MX/SRV with priority in the prio column and bare
         // content in the content column, so we must match on both fields
         // rather than using the API-formatted (priority-prepended) content.
-        $id = $this->lookupRecordId($domainId, $name, $type, $content, $prio);
+        // For SOA records, PowerDNS normalizes hostnames with trailing dots,
+        // so we must match using the normalized content.
+        $lookupContent = $this->normalizeContentForLookup($type, $content);
+        $id = $this->lookupRecordId($domainId, $name, $type, $lookupContent, $prio);
         if ($id === null) {
             throw new \Poweradmin\Domain\Error\RecordIdNotFoundException(
                 sprintf("Record '%s %s' created via API but DB ID not found after retries", $name, $type)
@@ -997,6 +1000,25 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             }
         }
 
+        return $content;
+    }
+
+    /**
+     * Normalize record content to match what PowerDNS stores in the DB.
+     *
+     * For SOA records, PowerDNS adds trailing dots to the primary NS and
+     * hostmaster fields. This must match for lookupRecordId() queries.
+     */
+    private function normalizeContentForLookup(string $type, string $content): string
+    {
+        if ($type === 'SOA') {
+            $parts = explode(' ', $content);
+            if (count($parts) >= 7) {
+                $parts[0] = self::ensureTrailingDot($parts[0]);
+                $parts[1] = self::ensureTrailingDot($parts[1]);
+                return implode(' ', $parts);
+            }
+        }
         return $content;
     }
 
