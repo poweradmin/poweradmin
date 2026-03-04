@@ -126,6 +126,16 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return true;
     }
 
+    public function updateZoneAccount(int $domainId, string $account): bool
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        $stmt = $this->db->prepare("UPDATE $domainsTable SET account = :account WHERE id = :id");
+        $stmt->execute([':account' => $account, ':id' => $domainId]);
+
+        return true;
+    }
+
     // ---------------------------------------------------------------
     // Record operations
     // ---------------------------------------------------------------
@@ -249,7 +259,200 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     }
 
     // ---------------------------------------------------------------
-    // Zone read operations
+    // Zone read methods
+    // ---------------------------------------------------------------
+
+    public function zoneExists(string $zoneName): bool
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $stmt = $this->db->prepare("SELECT COUNT(id) FROM $domainsTable WHERE name = :name");
+        $stmt->execute([':name' => $zoneName]);
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    public function getZoneById(int $domainId): ?array
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $cryptokeysTable = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $domainmetadataTable = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+
+        $stmt = $this->db->prepare(
+            "SELECT d.id, d.name, d.type, d.master,
+                    EXISTS(SELECT 1 FROM $cryptokeysTable ck WHERE ck.domain_id = d.id) OR
+                    EXISTS(SELECT 1 FROM $domainmetadataTable dm WHERE dm.domain_id = d.id AND dm.kind = 'PRESIGNED')
+                    AS dnssec
+             FROM $domainsTable d WHERE d.id = :id"
+        );
+        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            return null;
+        }
+
+        return [
+            'id' => (int)$row['id'],
+            'name' => $row['name'],
+            'type' => $row['type'] ?: 'NATIVE',
+            'master' => $row['master'] ?? '',
+            'dnssec' => (bool)$row['dnssec'],
+        ];
+    }
+
+    public function getZoneNameById(int $domainId): ?string
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $stmt = $this->db->prepare("SELECT name FROM $domainsTable WHERE id = :id");
+        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        $name = $stmt->fetchColumn();
+        return $name !== false ? $name : null;
+    }
+
+    public function getZoneIdByName(string $zoneName): ?int
+    {
+        if (empty($zoneName)) {
+            return null;
+        }
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $stmt = $this->db->prepare("SELECT id FROM $domainsTable WHERE name = :name");
+        $stmt->execute([':name' => $zoneName]);
+        $id = $stmt->fetchColumn();
+        return $id !== false ? (int)$id : null;
+    }
+
+    public function getZoneTypeById(int $domainId): string
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $stmt = $this->db->prepare("SELECT type FROM $domainsTable WHERE id = :id");
+        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        $type = $stmt->fetchColumn();
+        return $type ?: 'NATIVE';
+    }
+
+    public function getZoneMasterById(int $domainId): ?string
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $stmt = $this->db->prepare("SELECT master FROM $domainsTable WHERE type = 'SLAVE' AND id = :id");
+        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchColumn();
+        return $result !== false ? $result : null;
+    }
+
+    // ---------------------------------------------------------------
+    // Record read methods
+    // ---------------------------------------------------------------
+
+    public function getRecordById(int $recordId): ?array
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $stmt = $this->db->prepare(
+            "SELECT id, domain_id, name, type, content, ttl, prio, disabled
+             FROM $recordsTable WHERE id = :id AND type IS NOT NULL AND type != ''"
+        );
+        $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$row || empty($row['content'])) {
+            return null;
+        }
+        return [
+            'id' => (int)$row['id'],
+            'domain_id' => (int)$row['domain_id'],
+            'name' => $row['name'],
+            'type' => $row['type'],
+            'content' => $row['content'],
+            'ttl' => (int)$row['ttl'],
+            'prio' => (int)$row['prio'],
+            'disabled' => (int)$row['disabled'],
+        ];
+    }
+
+    public function getZoneIdFromRecordId(int $recordId): int
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $stmt = $this->db->prepare("SELECT domain_id FROM $recordsTable WHERE id = :id");
+        $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int)($stmt->fetchColumn() ?: 0);
+    }
+
+    public function countZoneRecords(int $domainId): int
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(id) FROM $recordsTable WHERE domain_id = :did AND type IS NOT NULL AND type != ''"
+        );
+        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int)($stmt->fetchColumn() ?: 0);
+    }
+
+    public function recordExists(int $domainId, string $name, string $type, string $content): bool
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) FROM $recordsTable
+             WHERE domain_id = :did AND name = :name AND type = :type AND content = :content"
+        );
+        $stmt->execute([':did' => $domainId, ':name' => $name, ':type' => $type, ':content' => $content]);
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    public function getRecordsByZoneId(int $domainId, ?string $type = null): array
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled
+                  FROM $recordsTable
+                  WHERE domain_id = :did AND type IS NOT NULL AND type != ''";
+        $params = [':did' => $domainId];
+
+        if ($type !== null) {
+            $query .= " AND type = :type";
+            $params[':type'] = $type;
+        }
+        $query .= " ORDER BY type, name";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getSOARecord(int $domainId): string
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $stmt = $this->db->prepare("SELECT content FROM $recordsTable WHERE type = 'SOA' AND domain_id = :did");
+        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() ?: '';
+    }
+
+    public function getBestMatchingReverseZoneId(string $reverseName): int
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $match = 72;
+        $foundId = -1;
+
+        $stmt = $this->db->prepare(
+            "SELECT name, id FROM $domainsTable WHERE name LIKE :pattern ORDER BY length(name) DESC"
+        );
+        $stmt->execute([':pattern' => '%.arpa']);
+
+        while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pos = stripos($reverseName, $r['name']);
+            if ($pos !== false && $pos < $match) {
+                $match = $pos;
+                $foundId = (int)$r['id'];
+            }
+        }
+        return $foundId;
+    }
+
+    // ---------------------------------------------------------------
+    // Zone list operations
     // ---------------------------------------------------------------
 
     public function getZones(): array

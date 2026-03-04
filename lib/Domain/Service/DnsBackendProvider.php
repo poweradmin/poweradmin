@@ -76,6 +76,15 @@ interface DnsBackendProvider
      */
     public function updateZoneMaster(int $domainId, string $masterIp): bool;
 
+    /**
+     * Update zone account field.
+     *
+     * @param int $domainId Domain ID
+     * @param string $account Account value
+     * @return bool
+     */
+    public function updateZoneAccount(int $domainId, string $account): bool;
+
     // ---------------------------------------------------------------
     // Record operations
     // ---------------------------------------------------------------
@@ -209,6 +218,122 @@ interface DnsBackendProvider
      * @return bool
      */
     public function updateSupermaster(string $oldMasterIp, string $oldNsName, string $newMasterIp, string $newNsName, string $account): bool;
+
+    // ---------------------------------------------------------------
+    // Zone read methods (used by repositories in API mode)
+    // ---------------------------------------------------------------
+
+    /**
+     * Check if a zone exists by name.
+     *
+     * @param string $zoneName Zone name
+     * @return bool
+     */
+    public function zoneExists(string $zoneName): bool;
+
+    /**
+     * Get zone info by ID.
+     *
+     * @param int $domainId Domain ID
+     * @return array|null [id, name, type, master, dnssec] or null
+     */
+    public function getZoneById(int $domainId): ?array;
+
+    /**
+     * Get zone name by domain ID.
+     *
+     * @param int $domainId Domain ID
+     * @return string|null Zone name or null
+     */
+    public function getZoneNameById(int $domainId): ?string;
+
+    /**
+     * Get zone ID by name.
+     *
+     * @param string $zoneName Zone name
+     * @return int|null Domain ID or null
+     */
+    public function getZoneIdByName(string $zoneName): ?int;
+
+    /**
+     * Get zone type by domain ID.
+     *
+     * @param int $domainId Domain ID
+     * @return string Zone type (NATIVE, MASTER, SLAVE)
+     */
+    public function getZoneTypeById(int $domainId): string;
+
+    /**
+     * Get zone master by domain ID.
+     *
+     * @param int $domainId Domain ID
+     * @return string|null Master IP or null
+     */
+    public function getZoneMasterById(int $domainId): ?string;
+
+    // ---------------------------------------------------------------
+    // Record read methods (used by repositories in API mode)
+    // ---------------------------------------------------------------
+
+    /**
+     * Get a single record by ID.
+     *
+     * @param int $recordId Record ID
+     * @return array|null Record data or null
+     */
+    public function getRecordById(int $recordId): ?array;
+
+    /**
+     * Get zone ID from a record ID.
+     *
+     * @param int $recordId Record ID
+     * @return int Zone ID (0 if not found)
+     */
+    public function getZoneIdFromRecordId(int $recordId): int;
+
+    /**
+     * Count non-ENT records in a zone.
+     *
+     * @param int $domainId Domain ID
+     * @return int Record count
+     */
+    public function countZoneRecords(int $domainId): int;
+
+    /**
+     * Check if a record with given attributes exists.
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @param string $content Record content
+     * @return bool
+     */
+    public function recordExists(int $domainId, string $name, string $type, string $content): bool;
+
+    /**
+     * Get records by zone ID, optionally filtered by type.
+     *
+     * @param int $domainId Domain ID
+     * @param string|null $type Optional record type filter
+     * @return array Array of record data
+     */
+    public function getRecordsByZoneId(int $domainId, ?string $type = null): array;
+
+    /**
+     * Get SOA record content for a zone.
+     *
+     * @param int $domainId Domain ID
+     * @return string SOA content or empty string
+     */
+    public function getSOARecord(int $domainId): string;
+
+    /**
+     * Find the best matching reverse zone ID for a PTR record name.
+     *
+     * @param string $reverseName Reverse name (e.g. 1.168.192.in-addr.arpa)
+     * @return int Zone ID or -1 if not found
+     */
+    public function getBestMatchingReverseZoneId(string $reverseName): int;
 
     // ---------------------------------------------------------------
     // Zone read operations

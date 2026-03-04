@@ -128,6 +128,18 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         return $this->client->updateZoneProperties($apiName, ['masters' => [$masterIp]]);
     }
 
+    public function updateZoneAccount(int $domainId, string $account): bool
+    {
+        $zoneName = $this->getDomainNameById($domainId);
+        if ($zoneName === null) {
+            return false;
+        }
+
+        $apiName = self::ensureTrailingDot($zoneName);
+
+        return $this->client->updateZoneProperties($apiName, ['account' => $account]);
+    }
+
     // ---------------------------------------------------------------
     // Record operations
     // ---------------------------------------------------------------
@@ -154,12 +166,22 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return false;
         }
 
-        // Build the full RRset including existing records + new record
-        $records = $rrsetData['records'];
-        $records[] = [
-            'content' => $this->formatRecordContent($type, $content, $prio),
-            'disabled' => false,
-        ];
+        // Build the full RRset including existing records + new record.
+        // SOA is a singleton type - replace the existing record instead of appending.
+        if ($type === 'SOA') {
+            $records = [
+                [
+                    'content' => $this->formatRecordContent($type, $content, $prio),
+                    'disabled' => false,
+                ],
+            ];
+        } else {
+            $records = $rrsetData['records'];
+            $records[] = [
+                'content' => $this->formatRecordContent($type, $content, $prio),
+                'disabled' => false,
+            ];
+        }
 
         $rrset = [
             'name' => $apiRecordName,
@@ -204,6 +226,13 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                 $this->logger->error('Failed to set disabled flag for record ID {id}, rolling back', ['id' => $id]);
                 $this->deleteRecord($id);
                 return null;
+            }
+
+            // PowerDNS may reassign the DB record ID after the PATCH that sets the
+            // disabled flag. Re-lookup the current ID so callers get the valid one.
+            $newId = $this->lookupRecordId($domainId, $name, $type, $content, $prio);
+            if ($newId !== null) {
+                $id = $newId;
             }
         }
 
@@ -402,7 +431,178 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     }
 
     // ---------------------------------------------------------------
-    // Zone read operations
+    // Zone read methods
+    // ---------------------------------------------------------------
+
+    public function zoneExists(string $zoneName): bool
+    {
+        $apiName = self::ensureTrailingDot($zoneName);
+        $zoneData = $this->client->getZone($apiName);
+        return $zoneData !== null;
+    }
+
+    public function getZoneById(int $domainId): ?array
+    {
+        $zoneName = $this->getDomainNameById($domainId);
+        if ($zoneName === null) {
+            return null;
+        }
+        $zone = $this->getZoneByName($zoneName);
+        if ($zone === null) {
+            return null;
+        }
+        $zone['id'] = $domainId;
+        return $zone;
+    }
+
+    public function getZoneNameById(int $domainId): ?string
+    {
+        return $this->getDomainNameById($domainId);
+    }
+
+    public function getZoneIdByName(string $zoneName): ?int
+    {
+        if (empty($zoneName)) {
+            return null;
+        }
+        return $this->lookupDomainIdByNameDirect($zoneName);
+    }
+
+    public function getZoneTypeById(int $domainId): string
+    {
+        $zone = $this->getZoneById($domainId);
+        return $zone ? ($zone['type'] ?: 'NATIVE') : 'NATIVE';
+    }
+
+    public function getZoneMasterById(int $domainId): ?string
+    {
+        $zone = $this->getZoneById($domainId);
+        if ($zone === null || strtoupper($zone['type']) !== 'SLAVE') {
+            return null;
+        }
+        return $zone['master'] ?: null;
+    }
+
+    // ---------------------------------------------------------------
+    // Record read methods
+    // ---------------------------------------------------------------
+
+    public function getRecordById(int $recordId): ?array
+    {
+        $record = $this->getRecordFromDb($recordId);
+        if ($record === null) {
+            return null;
+        }
+        if (empty($record['type']) || empty($record['content'])) {
+            return null;
+        }
+        return [
+            'id' => (int)$record['id'],
+            'domain_id' => (int)$record['domain_id'],
+            'name' => $record['name'],
+            'type' => $record['type'],
+            'content' => $record['content'],
+            'ttl' => (int)$record['ttl'],
+            'prio' => (int)$record['prio'],
+            'disabled' => (int)$record['disabled'],
+        ];
+    }
+
+    public function getZoneIdFromRecordId(int $recordId): int
+    {
+        $record = $this->getRecordFromDb($recordId);
+        return $record ? (int)$record['domain_id'] : 0;
+    }
+
+    public function countZoneRecords(int $domainId): int
+    {
+        $zoneName = $this->getDomainNameById($domainId);
+        if ($zoneName === null) {
+            return 0;
+        }
+        $records = $this->getZoneRecords($domainId, $zoneName);
+        return count($records);
+    }
+
+    public function recordExists(int $domainId, string $name, string $type, string $content): bool
+    {
+        $zoneName = $this->getDomainNameById($domainId);
+        if ($zoneName === null) {
+            return false;
+        }
+        $records = $this->getZoneRecords($domainId, $zoneName);
+        foreach ($records as $r) {
+            if ($r['name'] === $name && $r['type'] === $type && $r['content'] === $content) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getRecordsByZoneId(int $domainId, ?string $type = null): array
+    {
+        $zoneName = $this->getDomainNameById($domainId);
+        if ($zoneName === null) {
+            return [];
+        }
+        $records = $this->getZoneRecords($domainId, $zoneName);
+        if ($type !== null) {
+            $records = array_values(array_filter($records, fn($r) => $r['type'] === $type));
+        }
+        return $records;
+    }
+
+    public function getSOARecord(int $domainId): string
+    {
+        $zoneName = $this->getDomainNameById($domainId);
+        if ($zoneName === null) {
+            return '';
+        }
+        $apiName = self::ensureTrailingDot($zoneName);
+        $zoneData = $this->client->getZone($apiName);
+        if ($zoneData === null) {
+            return '';
+        }
+        foreach ($zoneData['rrsets'] ?? [] as $rrset) {
+            if (($rrset['type'] ?? '') === 'SOA') {
+                $record = $rrset['records'][0] ?? null;
+                if ($record) {
+                    $content = $record['content'] ?? '';
+                    // Strip trailing dots from the two hostname fields
+                    $parts = explode(' ', $content);
+                    if (count($parts) >= 7) {
+                        $parts[0] = rtrim($parts[0], '.');
+                        $parts[1] = rtrim($parts[1], '.');
+                        return implode(' ', $parts);
+                    }
+                    return $content;
+                }
+            }
+        }
+        return '';
+    }
+
+    public function getBestMatchingReverseZoneId(string $reverseName): int
+    {
+        $zones = $this->getZones();
+        $match = 72;
+        $foundId = -1;
+
+        foreach ($zones as $zone) {
+            if (!str_ends_with($zone['name'], '.arpa')) {
+                continue;
+            }
+            $pos = stripos($reverseName, $zone['name']);
+            if ($pos !== false && $pos < $match) {
+                $match = $pos;
+                $foundId = (int)$zone['id'];
+            }
+        }
+        return $foundId;
+    }
+
+    // ---------------------------------------------------------------
+    // Zone list operations
     // ---------------------------------------------------------------
 
     public function getZones(): array
@@ -786,7 +986,31 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return $prio . ' ' . $content;
         }
 
+        if ($type === 'SOA') {
+            // SOA content: "ns1.example.com hostmaster.example.com serial refresh retry expire minimum"
+            // PowerDNS API requires FQDN format with trailing dots on the two hostname fields.
+            $parts = explode(' ', $content);
+            if (count($parts) >= 7) {
+                $parts[0] = self::ensureTrailingDot($parts[0]);
+                $parts[1] = self::ensureTrailingDot($parts[1]);
+                return implode(' ', $parts);
+            }
+        }
+
         return $content;
+    }
+
+    /**
+     * Look up domain ID by name from the database without retries.
+     * Used for read operations where the zone should already exist.
+     */
+    private function lookupDomainIdByNameDirect(string $zoneName): ?int
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $stmt = $this->db->prepare("SELECT id FROM $domainsTable WHERE name = :name");
+        $stmt->execute([':name' => $zoneName]);
+        $id = $stmt->fetchColumn();
+        return $id !== false ? (int)$id : null;
     }
 
     /**
