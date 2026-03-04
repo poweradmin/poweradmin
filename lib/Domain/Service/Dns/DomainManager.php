@@ -167,6 +167,15 @@ class DomainManager implements DomainManagerInterface
                         return true;
                     } else {
                         if ($zone_template == "none" && $domain_id) {
+                            $isApiBackend = $this->backendProvider->isApiBackend();
+                            if ($isApiBackend) {
+                                // Commit zones + zones_groups before SOA update.
+                                // addRecord() calls the PowerDNS API which writes
+                                // to the same DB. With SQLite, holding a write lock
+                                // here would deadlock the PowerDNS write.
+                                $db->commit();
+                            }
+
                             $ns1 = $dns_ns1;
                             $hm = $dns_hostmaster;
                             $ttl = $dns_ttl;
@@ -184,12 +193,19 @@ class DomainManager implements DomainManagerInterface
                             $soa_content = "$ns1 $hm $serial $soa_refresh $soa_retry $soa_expire $soa_minimum";
 
                             if (!$this->backendProvider->addRecord($domain_id, $domain, 'SOA', $soa_content, (int)$ttl, 0)) {
-                                $db->rollBack();
+                                if (!$isApiBackend) {
+                                    $db->rollBack();
+                                }
                                 $this->cleanupZoneOnFailure($domain_id, $domain);
+                                if ($isApiBackend) {
+                                    $this->cleanupZoneMetadata($domain_id);
+                                }
                                 $this->messageService->addSystemError(_('Failed to create SOA record for zone.'));
                                 return false;
                             }
-                            $db->commit();
+                            if (!$isApiBackend) {
+                                $db->commit();
+                            }
                             return true;
                         } elseif ($domain_id && is_numeric($zone_template)) {
                             $isApiBackend = $this->backendProvider->isApiBackend();
@@ -611,6 +627,8 @@ class DomainManager implements DomainManagerInterface
 
         $soa_rec = $this->soaRecordManager->getSOARecord($zone_id);
 
+        $isApiBackend = $this->backendProvider->isApiBackend();
+
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -618,16 +636,33 @@ class DomainManager implements DomainManagerInterface
         try {
             if ($zone_template_id != 0) {
                 if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-                    // Delete existing template-based records
-                    if ($db_type == 'pgsql') {
-                        $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
-                    } elseif ($db_type == 'sqlite') {
-                        $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
+                    if ($isApiBackend) {
+                        // In API mode: get record IDs from records_zone_templ, delete via backend
+                        $stmt = $this->db->prepare(
+                            "SELECT record_id FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id"
+                        );
+                        $stmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
+                        $recordIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                        foreach ($recordIds as $rid) {
+                            $this->backendProvider->deleteRecord((int)$rid);
+                        }
+                        // Clean up the mapping table
+                        $stmt = $this->db->prepare(
+                            "DELETE FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id"
+                        );
+                        $stmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
                     } else {
-                        $query = "DELETE r, rzt FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
+                        // SQL mode: delete records and mapping in one query
+                        if ($db_type == 'pgsql') {
+                            $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
+                        } elseif ($db_type == 'sqlite') {
+                            $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
+                        } else {
+                            $query = "DELETE r, rzt FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
+                        }
+                        $stmt = $this->db->prepare($query);
+                        $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
                     }
-                    $stmt = $this->db->prepare($query);
-                    $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
                 } else {
                     $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
                 }
@@ -640,6 +675,11 @@ class DomainManager implements DomainManagerInterface
                     $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
                     $zoneTemplate = new ZoneTemplate($this->db, $this->config);
 
+                    // Commit before API writes to avoid snapshot isolation issues
+                    if ($isApiBackend) {
+                        $this->db->commit();
+                    }
+
                     // Process each template record
                     foreach ($templ_records as $r) {
                         // Check if this is a reverse zone and handle NS or SOA records appropriately
@@ -648,6 +688,10 @@ class DomainManager implements DomainManagerInterface
                             $recordType = $r["type"];
 
                             if ($recordType == "SOA") {
+                                if ($isApiBackend) {
+                                    // In API mode, SOA is managed by PowerDNS; skip SOA template records
+                                    continue;
+                                }
                                 // For SOA records, delete existing ones and use updated SOA record
                                 $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
                                 $stmt->execute([':zone_id' => $zone_id]);
@@ -667,45 +711,63 @@ class DomainManager implements DomainManagerInterface
                             }
 
                             // Check if a record with the same name, type, and content already exists
-                            $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table
-                            WHERE domain_id = :zone_id
-                            AND name = :name
-                            AND type = :type
-                            AND content = :content");
-                            $stmt->execute([
-                                ':zone_id' => $zone_id,
-                                ':name' => $name,
-                                ':type' => $recordType,
-                                ':content' => $content
-                            ]);
-                            $recordExists = (int)$stmt->fetchColumn() > 0;
+                            $recordExists = $isApiBackend
+                                ? $this->backendProvider->recordExists($zone_id, $name, $recordType, $content)
+                                : false;
 
-                            // Only insert if the record doesn't already exist
-                            if (!$recordExists) {
-                                // Insert the record
-                                $stmt = $this->db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:zone_id, :name, :type, :content, :ttl, :prio)");
+                            if (!$isApiBackend) {
+                                $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table
+                                WHERE domain_id = :zone_id
+                                AND name = :name
+                                AND type = :type
+                                AND content = :content");
                                 $stmt->execute([
                                     ':zone_id' => $zone_id,
                                     ':name' => $name,
                                     ':type' => $recordType,
-                                    ':content' => $content,
-                                    ':ttl' => $ttl,
-                                    ':prio' => $prio
+                                    ':content' => $content
                                 ]);
+                                $recordExists = (int)$stmt->fetchColumn() > 0;
+                            }
 
-                                // Get the new record ID
-                                if ($db_type == 'pgsql') {
-                                        $record_id = $this->db->lastInsertId('records_id_seq');
+                            // Only insert if the record doesn't already exist
+                            if (!$recordExists) {
+                                if ($isApiBackend) {
+                                    try {
+                                        $record_id = $this->backendProvider->addRecordGetId($zone_id, $name, $recordType, $content, (int)$ttl, $prio);
+                                    } catch (RecordIdNotFoundException $e) {
+                                        $this->logger->error('Failed to get record ID after API creation: {error}', ['error' => $e->getMessage()]);
+                                        continue;
+                                    }
+                                    if ($record_id === null) {
+                                        continue;
+                                    }
                                 } else {
-                                    $record_id = $this->db->lastInsertId();
+                                    // Insert the record via SQL
+                                    $stmt = $this->db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:zone_id, :name, :type, :content, :ttl, :prio)");
+                                    $stmt->execute([
+                                        ':zone_id' => $zone_id,
+                                        ':name' => $name,
+                                        ':type' => $recordType,
+                                        ':content' => $content,
+                                        ':ttl' => $ttl,
+                                        ':prio' => $prio
+                                    ]);
+
+                                    // Get the new record ID
+                                    if ($db_type == 'pgsql') {
+                                        $record_id = $this->db->lastInsertId('records_id_seq');
+                                    } else {
+                                        $record_id = $this->db->lastInsertId();
+                                    }
                                 }
 
                                 // Link the record to the template in the mapping table
                                 $stmt = $this->db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
                                 $stmt->execute([
-                                ':zone_id' => $zone_id,
-                                ':record_id' => $record_id,
-                                ':zone_template_id' => $zone_template_id
+                                    ':zone_id' => $zone_id,
+                                    ':record_id' => $record_id,
+                                    ':zone_template_id' => $zone_template_id
                                 ]);
                             }
                         }
@@ -713,15 +775,17 @@ class DomainManager implements DomainManagerInterface
                 }
             }
 
-        // Update the zone's template ID
-            $stmt = $this->db->prepare("UPDATE zones 
+            // Update the zone's template ID
+            $stmt = $this->db->prepare("UPDATE zones
                     SET zone_templ_id = :zone_template_id
                     WHERE domain_id = :zone_id");
             $stmt->execute([
-            ':zone_template_id' => $zone_template_id,
-            ':zone_id' => $zone_id
+                ':zone_template_id' => $zone_template_id,
+                ':zone_id' => $zone_id
             ]);
-            $this->db->commit();
+            if (!$isApiBackend || $this->db->inTransaction()) {
+                $this->db->commit();
+            }
         } catch (\Exception $e) {
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();

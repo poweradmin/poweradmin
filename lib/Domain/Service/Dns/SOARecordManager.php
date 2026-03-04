@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -34,17 +35,25 @@ class SOARecordManager implements SOARecordManagerInterface
 {
     private PDO $db;
     private ConfigurationManager $config;
+    private ?DnsBackendProvider $backendProvider;
 
     /**
      * Constructor
      *
      * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
+     * @param DnsBackendProvider|null $backendProvider Optional DNS backend provider
      */
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->backendProvider = $backendProvider;
+    }
+
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     /**
@@ -56,6 +65,10 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function getSOARecord(int $zone_id): string
     {
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->getSOARecord($zone_id);
+        }
+
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -174,6 +187,11 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function updateSOARecord(int $domain_id, string $content): bool
     {
+        if ($this->isApiBackend()) {
+            // In API mode, PowerDNS handles SOA updates via soa_edit_api.
+            return true;
+        }
+
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -236,6 +254,11 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function updateSOASerial(int $domain_id): bool
     {
+        if ($this->isApiBackend()) {
+            // In API mode, PowerDNS auto-increments SOA serial via soa_edit_api.
+            return true;
+        }
+
         $soa_rec = $this->getSOARecord($domain_id);
         if ($soa_rec == null) {
             return false;
