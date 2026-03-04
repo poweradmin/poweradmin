@@ -402,7 +402,7 @@ class EditController extends BaseController
         $dnsDataService = $this->createDnsDataService();
         $recordResult = $dnsDataService->getZoneRecords(
             $zone_id,
-            $zone_name ?? '',
+            $zone_name,
             (int)$row_start,
             $iface_rowamount,
             $record_sort_by,

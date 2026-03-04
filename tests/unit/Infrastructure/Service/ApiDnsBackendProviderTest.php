@@ -1209,6 +1209,7 @@ class ApiDnsBackendProviderTest extends TestCase
             ['id' => 12, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.168.1.1', 'prio' => 0],
         ];
         $stmtRecords->method('fetch')->willReturnCallback(function () use (&$fetchCallCount, $dbRows) {
+            /** @psalm-suppress InvalidArrayOffset -- counter is incremented by reference */
             return $dbRows[$fetchCallCount++] ?? false;
         });
 

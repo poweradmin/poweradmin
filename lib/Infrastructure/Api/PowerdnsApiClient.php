@@ -630,7 +630,9 @@ class PowerdnsApiClient
         try {
             $endpoint = $this->buildZoneEndpoint($zoneName);
             $data = ['rrsets' => $rrsets];
+            $this->logger->debug('patchZoneRRsets: endpoint={endpoint}, data={data}', ['endpoint' => $endpoint, 'data' => json_encode($data)]);
             $response = $this->httpClient->makeRequest('PATCH', $endpoint, $data);
+            $this->logger->debug('patchZoneRRsets: response={response}', ['response' => json_encode($response)]);
 
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
