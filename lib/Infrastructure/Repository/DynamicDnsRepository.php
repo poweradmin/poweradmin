@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -35,13 +36,20 @@ class DynamicDnsRepository implements DynamicDnsRepositoryInterface
     private DnsRecord $dnsRecord;
     private string $recordsTable;
     private ConfigurationManager $config;
+    private ?DnsBackendProvider $backendProvider;
 
-    public function __construct(PDO $db, DnsRecord $dnsRecord, string $recordsTable, ConfigurationManager $config)
+    public function __construct(PDO $db, DnsRecord $dnsRecord, string $recordsTable, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->dnsRecord = $dnsRecord;
         $this->config = $config;
         $this->recordsTable = $recordsTable;
+        $this->backendProvider = $backendProvider;
+    }
+
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     public function findUserByUsernameWithDynamicDnsPermissions(string $username): ?User
@@ -90,9 +98,20 @@ class DynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function getDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType): array
     {
+        if ($this->isApiBackend()) {
+            $allRecords = $this->backendProvider->getRecordsByZoneId($zoneId, $recordType);
+            $records = [];
+            foreach ($allRecords as $r) {
+                if (($r['name'] ?? '') === $hostname->getValue()) {
+                    $records[$r['content'] ?? ''] = (int)($r['id'] ?? 0);
+                }
+            }
+            return $records;
+        }
+
         $query = $this->db->prepare("
-            SELECT id, content 
-            FROM {$this->recordsTable} 
+            SELECT id, content
+            FROM {$this->recordsTable}
             WHERE domain_id = :domain_id AND name = :hostname AND type = :type
         ");
         $query->execute([
@@ -111,6 +130,11 @@ class DynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): void
     {
+        if ($this->isApiBackend()) {
+            $this->backendProvider->addRecord($zoneId, $hostname->getValue(), $recordType, $content, 60, 0);
+            return;
+        }
+
         $insert = $this->db->prepare("
             INSERT INTO {$this->recordsTable} (domain_id, name, type, content, ttl, prio)
             VALUES (:domain_id, :hostname, :type, :content, 60, NULL)
@@ -125,6 +149,11 @@ class DynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function deleteDnsRecord(int $recordId): void
     {
+        if ($this->isApiBackend()) {
+            $this->backendProvider->deleteRecord($recordId);
+            return;
+        }
+
         $delete = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id = :id");
         $delete->execute([':id' => $recordId]);
     }

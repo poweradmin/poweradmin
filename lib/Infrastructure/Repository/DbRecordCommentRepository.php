@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -35,13 +36,20 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
     private string $comments_table;
     private string $records_table;
     private string $links_table = 'record_comment_links';
+    private ?DnsBackendProvider $backendProvider;
 
-    public function __construct(PDO $connection, ConfigurationManager $config)
+    public function __construct(PDO $connection, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->connection = $connection;
         $tableNameService = new TableNameService($config);
         $this->comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
         $this->records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+        $this->backendProvider = $backendProvider;
+    }
+
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     public function add(RecordComment $comment): RecordComment
@@ -288,20 +296,39 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         }
 
         // Find all records in the RRset that don't have linked comments (excluding the current record)
-        $query = "SELECT r.id FROM {$this->records_table} r
-                  WHERE r.domain_id = :domain_id AND r.name = :name AND r.type = :type
-                  AND r.id != :exclude_record_id
-                  AND NOT EXISTS (
-                      SELECT 1 FROM {$this->links_table} rcl WHERE rcl.record_id = r.id
-                  )";
-        $stmt = $this->connection->prepare($query);
-        $stmt->execute([
-            ':domain_id' => $domainId,
-            ':name' => $name,
-            ':type' => $type,
-            ':exclude_record_id' => $excludeRecordId
-        ]);
-        $unlinkedRecords = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $unlinkedRecords = [];
+
+        if ($this->isApiBackend()) {
+            $allRecords = $this->backendProvider->getRecordsByZoneId($domainId, $type);
+            foreach ($allRecords as $r) {
+                $recordId = (int)($r['id'] ?? 0);
+                if (($r['name'] ?? '') === $name && $recordId !== $excludeRecordId && $recordId > 0) {
+                    // Check if this record already has a linked comment
+                    $linkQuery = "SELECT 1 FROM {$this->links_table} WHERE record_id = :record_id";
+                    $linkStmt = $this->connection->prepare($linkQuery);
+                    $linkStmt->bindValue(':record_id', $recordId, PDO::PARAM_INT);
+                    $linkStmt->execute();
+                    if (!$linkStmt->fetch()) {
+                        $unlinkedRecords[] = $recordId;
+                    }
+                }
+            }
+        } else {
+            $query = "SELECT r.id FROM {$this->records_table} r
+                      WHERE r.domain_id = :domain_id AND r.name = :name AND r.type = :type
+                      AND r.id != :exclude_record_id
+                      AND NOT EXISTS (
+                          SELECT 1 FROM {$this->links_table} rcl WHERE rcl.record_id = r.id
+                      )";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute([
+                ':domain_id' => $domainId,
+                ':name' => $name,
+                ':type' => $type,
+                ':exclude_record_id' => $excludeRecordId
+            ]);
+            $unlinkedRecords = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        }
 
         // Create linked comments for each unlinked record (copying the legacy comment)
         foreach ($unlinkedRecords as $recordId) {

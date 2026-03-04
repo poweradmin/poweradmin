@@ -74,7 +74,7 @@ class ZonesRecordsController extends PublicApiController
         $this->permissionService = new ApiPermissionService($this->db);
         $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
 
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
+        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $this->backendProvider);
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
         // Initialize services using factory
@@ -876,7 +876,7 @@ class ZonesRecordsController extends PublicApiController
      * @param int $ttl TTL value
      * @param int $priority Priority value
      * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
-     * @return bool True if successful
+     * @return int|null The new record ID, or null on failure
      */
     private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): ?int
     {

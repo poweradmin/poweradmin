@@ -74,7 +74,7 @@ class ZonesRecordsBulkController extends PublicApiController
         $this->permissionService = new ApiPermissionService($this->db);
         $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
 
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
+        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $this->backendProvider);
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
         // Initialize services using factory
