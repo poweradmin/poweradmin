@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Exception;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
@@ -68,21 +69,25 @@ class DnsRecord
     {
         $this->db = $db;
         $this->config = $config;
-        $this->validationService = DnsServiceFactory::createDnsRecordValidationService($db, $config);
+
+        // Create backend provider once and pass to all dependencies
+        $backendProvider = DnsBackendProviderFactory::create($db, $config);
+
+        $this->validationService = DnsServiceFactory::createDnsRecordValidationService($db, $config, $backendProvider);
 
         // Initialize the new service instances
-        $this->initializeDependencies();
+        $this->initializeDependencies($backendProvider);
     }
 
     /**
      * Initialize the dependencies for the class
      */
-    private function initializeDependencies(): void
+    private function initializeDependencies(DnsBackendProvider $backendProvider): void
     {
-        // Create the new service instances
-        $this->soaRecordManager = new SOARecordManager($this->db, $this->config);
-        $this->domainRepository = new DomainRepository($this->db, $this->config);
-        $this->recordRepository = new RecordRepository($this->db, $this->config);
+        // Create the new service instances with backend provider
+        $this->soaRecordManager = new SOARecordManager($this->db, $this->config, $backendProvider);
+        $this->domainRepository = new DomainRepository($this->db, $this->config, $backendProvider);
+        $this->recordRepository = new RecordRepository($this->db, $this->config, $backendProvider);
 
         // Create services with dependencies on repositories
         $this->recordManager = new RecordManager(
@@ -90,17 +95,19 @@ class DnsRecord
             $this->config,
             $this->validationService,
             $this->soaRecordManager,
-            $this->domainRepository
+            $this->domainRepository,
+            $backendProvider
         );
 
         $this->domainManager = new DomainManager(
             $this->db,
             $this->config,
             $this->soaRecordManager,
-            $this->domainRepository
+            $this->domainRepository,
+            $backendProvider
         );
 
-        $this->supermasterManager = new SupermasterManager($this->db, $this->config);
+        $this->supermasterManager = new SupermasterManager($this->db, $this->config, $backendProvider);
     }
 
     /** Check if Zone ID exists
