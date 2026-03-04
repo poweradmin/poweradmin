@@ -107,6 +107,11 @@ class HttpClient implements ApiClient
                         'response' => $errorResponse
                     ];
 
+                    $this->logger->debug('HTTP error {code} for {method} {url}', [
+                        'code' => $responseCode, 'method' => $method, 'url' => $url,
+                        'response_body' => substr($response, 0, 500),
+                    ]);
+
                     // Provide user-friendly messages for common HTTP errors
                     $errorMessage = $this->getHttpErrorMessage($responseCode, $errorResponse, $displayErrors);
 
