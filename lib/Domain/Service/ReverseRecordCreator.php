@@ -31,6 +31,7 @@ use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 
 class ReverseRecordCreator
 {
@@ -39,19 +40,27 @@ class ReverseRecordCreator
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
     private ?RecordCommentService $recordCommentService;
+    private ?DnsBackendProvider $backendProvider;
 
     public function __construct(
         PDO $db,
         ConfigurationManager $config,
         LegacyLogger $logger,
         DnsRecord $dnsRecord,
-        ?RecordCommentService $recordCommentService = null
+        ?RecordCommentService $recordCommentService = null,
+        ?DnsBackendProvider $backendProvider = null
     ) {
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger;
         $this->dnsRecord = $dnsRecord;
         $this->recordCommentService = $recordCommentService;
+        $this->backendProvider = $backendProvider;
+    }
+
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = ''): array
@@ -130,12 +139,35 @@ class ReverseRecordCreator
             return false;
         }
 
+        if ($this->isApiBackend()) {
+            $zoneRevId = $this->dnsRecord->getBestMatchingZoneIdFromName($contentRev);
+            if ($zoneRevId === -1) {
+                return false;
+            }
+            $records = $this->backendProvider->getRecordsByZoneId($zoneRevId, 'PTR');
+            foreach ($records as $r) {
+                if ($r['name'] === $contentRev && ($r['content'] === $name || str_starts_with($r['content'], "$name."))) {
+                    $recordId = (int)($r['id'] ?? 0);
+                    if ($recordId > 0 && $this->dnsRecord->deleteRecord($recordId)) {
+                        $this->recordCommentService?->deleteCommentByRecordId($recordId);
+                        if ($this->config->get('dnssec', 'enabled')) {
+                            $zone_name = $this->dnsRecord->getDomainNameById($zoneRevId);
+                            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
+                            $dnssecProvider->rectifyZone($zone_name);
+                        }
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         // Look for a PTR record pointing to this name
-        $query = "SELECT id, domain_id FROM $records_table 
-                  WHERE type = 'PTR' AND name = ? 
+        $query = "SELECT id, domain_id FROM $records_table
+                  WHERE type = 'PTR' AND name = ?
                   AND (content = ? OR content LIKE ?)";
 
         $stmt = $this->db->prepare($query);
@@ -183,15 +215,35 @@ class ReverseRecordCreator
         // Determine record type based on IP address format
         $recordType = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? RecordType::A : RecordType::AAAA;
 
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
         // Remove trailing dot from PTR content if present
         $hostname = rtrim($ptrContent, '.');
 
+        if ($this->isApiBackend()) {
+            $result = $this->backendProvider->searchDnsData($hostname, 'record', 100);
+            foreach ($result['records'] ?? [] as $r) {
+                if ($r['type'] === $recordType && $r['content'] === $ipAddress && ($r['name'] === $hostname || str_starts_with($r['name'], "$hostname."))) {
+                    $recordId = (int)($r['id'] ?? 0);
+                    $domainId = (int)($r['domain_id'] ?? 0);
+                    if ($recordId > 0 && $this->dnsRecord->deleteRecord($recordId)) {
+                        $this->recordCommentService?->deleteCommentByRecordId($recordId);
+                        if ($this->config->get('dnssec', 'enabled') && $domainId > 0) {
+                            $zone_name = $this->dnsRecord->getDomainNameById($domainId);
+                            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
+                            $dnssecProvider->rectifyZone($zone_name);
+                        }
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+
         // Look for A or AAAA record with matching hostname and IP address
-        $query = "SELECT id, domain_id FROM $records_table 
-                  WHERE type = ? AND content = ? 
+        $query = "SELECT id, domain_id FROM $records_table
+                  WHERE type = ? AND content = ?
                   AND (name = ? OR name LIKE ?)";
 
         $stmt = $this->db->prepare($query);
@@ -325,6 +377,16 @@ class ReverseRecordCreator
      */
     private function ptrRecordExists(int $zone_id, string $name, string $content): bool
     {
+        if ($this->isApiBackend()) {
+            $records = $this->backendProvider->getRecordsByZoneId($zone_id, 'PTR');
+            foreach ($records as $r) {
+                if ($r['name'] === $name && $r['content'] === $content) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -353,6 +415,17 @@ class ReverseRecordCreator
      */
     private function getExistingPtrRecords(int $zone_id, string $name): array
     {
+        if ($this->isApiBackend()) {
+            $records = $this->backendProvider->getRecordsByZoneId($zone_id, 'PTR');
+            $contents = [];
+            foreach ($records as $r) {
+                if ($r['name'] === $name) {
+                    $contents[] = $r['content'];
+                }
+            }
+            return $contents;
+        }
+
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 

@@ -63,6 +63,11 @@ class SupermasterManager implements SupermasterManagerInterface
         $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
     }
 
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider->isApiBackend();
+    }
+
     /**
      * Add Supermaster
      *
@@ -128,6 +133,32 @@ class SupermasterManager implements SupermasterManagerInterface
      */
     public function getSupermasters(): array
     {
+        if ($this->isApiBackend()) {
+            $apiSupermasters = $this->backendProvider->getSupermasters();
+            $supermasters = [];
+            foreach ($apiSupermasters as $sm) {
+                $ip = $sm['ip'] ?? $sm['master_ip'] ?? '';
+                $nameserver = $sm['nameserver'] ?? $sm['ns_name'] ?? '';
+                $account = $sm['account'] ?? '';
+
+                // Enrich with user fullname from Poweradmin users table
+                $fullname = '';
+                if ($account !== '') {
+                    $stmt = $this->db->prepare("SELECT fullname FROM users WHERE username = ?");
+                    $stmt->execute([$account]);
+                    $fullname = $stmt->fetchColumn() ?: '';
+                }
+
+                $supermasters[] = [
+                    "master_ip" => $ip,
+                    "ns_name" => $nameserver,
+                    "account" => $account,
+                    "fullname" => $fullname,
+                ];
+            }
+            return $supermasters;
+        }
+
         $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
 
         $result = $this->db->query("SELECT s.ip, s.nameserver, s.account, u.fullname
@@ -158,27 +189,36 @@ class SupermasterManager implements SupermasterManagerInterface
      */
     public function getSupermasterInfoFromIp(string $master_ip): array
     {
-        if ($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip)) {
-            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
-
-            $stmt = $this->db->prepare("SELECT s.ip, s.nameserver, s.account, u.fullname
-                                         FROM $supermasters_table s
-                                         LEFT JOIN users u ON s.account = u.username
-                                         WHERE s.ip = :master_ip");
-            $stmt->execute([':master_ip' => $master_ip]);
-            $result = $stmt->fetch();
-
-            return array(
-                "master_ip" => $result["ip"],
-                "ns_name" => $result["nameserver"],
-                "account" => $result["account"],
-                "fullname" => $result["fullname"] ?? ''
-            );
-        } else {
+        if (!$this->ipAddressValidator->isValidIPv4($master_ip) && !$this->ipAddressValidator->isValidIPv6($master_ip)) {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "getSupermasterInfoFromIp", "No or no valid ipv4 or ipv6 address given."));
             return array();
         }
+
+        if ($this->isApiBackend()) {
+            $allSupermasters = $this->getSupermasters();
+            foreach ($allSupermasters as $sm) {
+                if ($sm['master_ip'] === $master_ip) {
+                    return $sm;
+                }
+            }
+            return array();
+        }
+
+        $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
+
+        $stmt = $this->db->prepare("SELECT s.ip, s.nameserver, s.account, u.fullname
+                                     FROM $supermasters_table s
+                                     LEFT JOIN users u ON s.account = u.username
+                                     WHERE s.ip = :master_ip");
+        $stmt->execute([':master_ip' => $master_ip]);
+        $result = $stmt->fetch();
+
+        return array(
+            "master_ip" => $result["ip"],
+            "ns_name" => $result["nameserver"],
+            "account" => $result["account"],
+            "fullname" => $result["fullname"] ?? ''
+        );
     }
 
     /**
@@ -190,18 +230,27 @@ class SupermasterManager implements SupermasterManagerInterface
      */
     public function supermasterExists(string $master_ip): bool
     {
-        if ($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip)) {
-            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
-
-            $stmt = $this->db->prepare("SELECT ip FROM $supermasters_table WHERE ip = :master_ip");
-            $stmt->execute([':master_ip' => $master_ip]);
-            $result = $stmt->fetchColumn();
-            return (bool)$result;
-        } else {
+        if (!$this->ipAddressValidator->isValidIPv4($master_ip) && !$this->ipAddressValidator->isValidIPv6($master_ip)) {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "supermasterExists", "No or no valid IPv4 or IPv6 address given."));
             return false;
         }
+
+        if ($this->isApiBackend()) {
+            $allSupermasters = $this->getSupermasters();
+            foreach ($allSupermasters as $sm) {
+                if ($sm['master_ip'] === $master_ip) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
+
+        $stmt = $this->db->prepare("SELECT ip FROM $supermasters_table WHERE ip = :master_ip");
+        $stmt->execute([':master_ip' => $master_ip]);
+        $result = $stmt->fetchColumn();
+        return (bool)$result;
     }
 
     /**
@@ -214,21 +263,30 @@ class SupermasterManager implements SupermasterManagerInterface
      */
     public function supermasterIpNameExists(string $master_ip, string $ns_name): bool
     {
-        if (($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip)) && $this->hostnameValidator->isValid($ns_name)) {
-            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
-
-            $stmt = $this->db->prepare("SELECT ip FROM $supermasters_table WHERE ip = :master_ip AND nameserver = :ns_name");
-            $stmt->execute([
-                ':master_ip' => $master_ip,
-                ':ns_name' => $ns_name
-            ]);
-            $result = $stmt->fetchColumn();
-            return (bool)$result;
-        } else {
+        if ((!$this->ipAddressValidator->isValidIPv4($master_ip) && !$this->ipAddressValidator->isValidIPv6($master_ip)) || !$this->hostnameValidator->isValid($ns_name)) {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "supermasterExists", "No or no valid IPv4 or IPv6 address given."));
             return false;
         }
+
+        if ($this->isApiBackend()) {
+            $allSupermasters = $this->getSupermasters();
+            foreach ($allSupermasters as $sm) {
+                if ($sm['master_ip'] === $master_ip && $sm['ns_name'] === $ns_name) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
+
+        $stmt = $this->db->prepare("SELECT ip FROM $supermasters_table WHERE ip = :master_ip AND nameserver = :ns_name");
+        $stmt->execute([
+            ':master_ip' => $master_ip,
+            ':ns_name' => $ns_name
+        ]);
+        $result = $stmt->fetchColumn();
+        return (bool)$result;
     }
 
     /**
@@ -289,6 +347,15 @@ class SupermasterManager implements SupermasterManagerInterface
      */
     public function getSlaveServerIPs(): array
     {
+        if ($this->isApiBackend()) {
+            $allSupermasters = $this->getSupermasters();
+            $ips = [];
+            foreach ($allSupermasters as $sm) {
+                $ips[$sm['master_ip']] = true;
+            }
+            return array_keys($ips);
+        }
+
         $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
 
         $result = $this->db->query("SELECT ip FROM $supermasters_table GROUP BY ip");
