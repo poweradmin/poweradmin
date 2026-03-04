@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -41,8 +42,6 @@ use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -552,15 +551,8 @@ class ZonesController extends PublicApiController
      */
     private function updateDomainAccount(int $zoneId, string $account): void
     {
-        $tableNameService = new TableNameService($this->getConfig());
-        $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "UPDATE $domains_table SET account = :account WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([
-            ':account' => $account,
-            ':id' => $zoneId
-        ]);
+        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig());
+        $backendProvider->updateZoneAccount($zoneId, $account);
     }
 
     /**

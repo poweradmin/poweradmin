@@ -33,10 +33,12 @@ namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
@@ -127,9 +129,7 @@ class ManageGroupZonesController extends BaseController
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
-            // Get zone names for logging
-            $tableNameService = new TableNameService($this->config);
-            $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
+            $domainRepository = new DomainRepository($this->db, $this->config);
 
             $results = $this->zoneGroupService->bulkAddZones($groupId, $domainIds);
 
@@ -150,11 +150,10 @@ class ManageGroupZonesController extends BaseController
                 $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
 
                 // Get zone names for successful additions
-                $placeholders = implode(',', array_fill(0, count($results['success']), '?'));
-                $query = "SELECT name FROM $domainsTable WHERE id IN ($placeholders)";
-                $stmt = $this->db->prepare($query);
-                $stmt->execute($results['success']);
-                $zoneNames = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+                $zoneNames = array_filter(array_map(
+                    fn($id) => $domainRepository->getDomainNameById((int)$id),
+                    $results['success']
+                ));
 
                 // Shorten IPv6 zones for logging
                 $displayNames = array_map(function ($name) {
@@ -219,9 +218,7 @@ class ManageGroupZonesController extends BaseController
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
-            // Get zone names for logging
-            $tableNameService = new TableNameService($this->config);
-            $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
+            $domainRepository = new DomainRepository($this->db, $this->config);
 
             $results = $this->zoneGroupService->bulkRemoveZones($groupId, $domainIds);
 
@@ -242,11 +239,10 @@ class ManageGroupZonesController extends BaseController
                 $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
 
                 // Get zone names for successful removals
-                $placeholders = implode(',', array_fill(0, count($results['success']), '?'));
-                $query = "SELECT name FROM $domainsTable WHERE id IN ($placeholders)";
-                $stmt = $this->db->prepare($query);
-                $stmt->execute($results['success']);
-                $zoneNames = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+                $zoneNames = array_filter(array_map(
+                    fn($id) => $domainRepository->getDomainNameById((int)$id),
+                    $results['success']
+                ));
 
                 // Shorten IPv6 zones for logging
                 $displayNames = array_map(function ($name) {
@@ -304,9 +300,7 @@ class ManageGroupZonesController extends BaseController
                 return;
             }
 
-            // Get the proper table name for domains
-            $tableNameService = new TableNameService($this->config);
-            $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
+            $domainRepository = new DomainRepository($this->db, $this->config);
 
             // Get zones owned by this group
             $zoneGroups = $this->zoneGroupService->listGroupZones($groupId);
@@ -315,26 +309,41 @@ class ManageGroupZonesController extends BaseController
             // Get owned zone details
             $ownedZones = [];
             if (!empty($ownedDomainIds)) {
-                $placeholders = implode(',', array_fill(0, count($ownedDomainIds), '?'));
-                $query = "SELECT id, name, type FROM $domainsTable WHERE id IN ($placeholders) ORDER BY name ASC";
-                $stmt = $this->db->prepare($query);
-                $stmt->execute($ownedDomainIds);
-                $ownedZones = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-                // Shorten IPv6 reverse zones for display
-                foreach ($ownedZones as &$zone) {
-                    if (str_ends_with($zone['name'], '.ip6.arpa')) {
-                        $shortened = IpHelper::shortenIPv6ReverseZone($zone['name']);
-                        $zone['name'] = $shortened ?? $zone['name'];
+                foreach ($ownedDomainIds as $domainId) {
+                    $zoneInfo = $domainRepository->getZoneInfoFromId($domainId);
+                    if ($zoneInfo) {
+                        $name = $zoneInfo['name'] ?? '';
+                        if (str_ends_with($name, '.ip6.arpa')) {
+                            $shortened = IpHelper::shortenIPv6ReverseZone($name);
+                            $name = $shortened ?? $name;
+                        }
+                        $ownedZones[] = [
+                            'id' => $domainId,
+                            'name' => $name,
+                            'type' => $zoneInfo['type'] ?? '',
+                        ];
                     }
                 }
-                unset($zone);
+                usort($ownedZones, fn($a, $b) => strcasecmp($a['name'], $b['name']));
             }
 
             // Get all zones for selection
-            $query = "SELECT id, name, type FROM $domainsTable ORDER BY name ASC";
-            $stmt = $this->db->query($query);
-            $allZones = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config);
+            if ($backendProvider->isApiBackend()) {
+                $apiZones = $backendProvider->getZones();
+                $allZones = array_filter(array_map(fn($z) => [
+                    'id' => (int)($z['id'] ?? 0),
+                    'name' => rtrim($z['name'] ?? '', '.'),
+                    'type' => $z['type'] ?? $z['kind'] ?? '',
+                ], $apiZones), fn($z) => $z['id'] > 0);
+                usort($allZones, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+            } else {
+                $tableNameService = new TableNameService($this->config);
+                $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
+                $query = "SELECT id, name, type FROM $domainsTable ORDER BY name ASC";
+                $stmt = $this->db->query($query);
+                $allZones = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            }
 
             // Filter out owned zones from available zones and shorten IPv6 zones
             $availableZones = array_filter($allZones, function ($zone) use ($ownedDomainIds) {

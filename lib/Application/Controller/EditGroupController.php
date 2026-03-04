@@ -38,8 +38,7 @@ use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
@@ -217,17 +216,12 @@ class EditGroupController extends BaseController
             }
 
             // Get zone details
-            $tableNameService = new TableNameService($this->config);
-            $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
+            $domainRepository = new DomainRepository($this->db, $this->config);
 
             $zoneDetails = [];
             foreach ($zones as $zoneGroup) {
                 $domainId = $zoneGroup->getDomainId();
-                // Get zone name from domains table
-                $query = "SELECT name FROM $domainsTable WHERE id = :id";
-                $stmt = $this->db->prepare($query);
-                $stmt->execute([':id' => $domainId]);
-                $zoneName = $stmt->fetchColumn();
+                $zoneName = $domainRepository->getDomainNameById($domainId);
 
                 if ($zoneName) {
                     $zoneDetails[] = [
