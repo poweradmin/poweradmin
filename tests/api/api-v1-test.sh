@@ -193,13 +193,25 @@ api_request() {
     fi
 }
 
+# Look up a record ID by content and type from the zone records list.
+# On API backends, PowerDNS may reassign record IDs after updates.
+api_request_get_record_id() {
+    local endpoint="$1"
+    local content="$2"
+    local type="$3"
+    local url="${API_BASE_URL}/api/v1${endpoint}"
+    local response
+    response=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" "$url" --max-time "${TEST_TIMEOUT:-30}" 2>/dev/null) || true
+    echo "$response" | jq -r ".data[] | select(.content == \"$content\" and .type == \"$type\") | .id" 2>/dev/null | head -1
+}
+
 api_request_no_auth() {
     local method="$1"
     local endpoint="$2"
     local data="${3:-}"
     local expected_status="${4:-401}"
     local description="${5:-API request without auth}"
-    
+
     increment_test
     print_test "$description"
     
@@ -645,14 +657,23 @@ test_zone_records() {
         }'
         api_request "PUT" "/zones/$TEST_ZONE_ID/records/$TEST_RECORD_ID" "$update_data" "200" "Update existing record"
         validate_json_response "Updated record response" "success"
+
+        # On API backends, PowerDNS may recreate the record with a new DB ID after
+        # the PATCH. Re-fetch the current record ID so subsequent tests use the
+        # correct one.
+        local updated_id
+        updated_id=$(api_request_get_record_id "/zones/$TEST_ZONE_ID/records" "192.0.2.200" "A")
+        if [[ -n "$updated_id" ]]; then
+            TEST_RECORD_ID="$updated_id"
+        fi
     else
         print_skip "Update record - no test record available"
     fi
-    
+
     # Update non-existent record
     local update_data='{"content": "192.0.2.1"}'
     api_request "PUT" "/zones/$TEST_ZONE_ID/records/99999" "$update_data" "404" "Update non-existent record"
-    
+
     # Update record with validation errors
     # NOTE: API currently returns 500 instead of 400 for validation errors - this may be a bug
     if [[ -n "${TEST_RECORD_ID:-}" ]]; then

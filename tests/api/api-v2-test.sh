@@ -156,7 +156,7 @@ api_request_v2() {
 extract_json_field() {
     local json="$1"
     local field="$2"
-    echo "$json" | grep -o "\"$field\":[^,}]*" | head -1 | sed 's/.*://; s/"//g; s/ //g'
+    echo "$json" | grep -o "\"$field\":[^,}]*" | head -1 | sed 's/.*://; s/"//g; s/ //g' || true
 }
 
 ##############################################################################
@@ -528,7 +528,7 @@ test_disabled_records() {
     }'
     if api_request_v2 "POST" "/zones/$disabled_zone_id/records" "$disabled_record" 201 "Create record with disabled=true"; then
         local disabled_record_id
-        disabled_record_id=$(extract_json_field "$LAST_RESPONSE_BODY" "record_id")
+        disabled_record_id=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
         print_info "Created disabled record ID: $disabled_record_id"
 
         # Test 2: Verify record is disabled when retrieved
@@ -558,7 +558,7 @@ test_disabled_records() {
     }'
     if api_request_v2 "POST" "/zones/$disabled_zone_id/records" "$enabled_record" 201 "Create record with disabled=false"; then
         local enabled_record_id
-        enabled_record_id=$(extract_json_field "$LAST_RESPONSE_BODY" "record_id")
+        enabled_record_id=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
         print_info "Created enabled record ID: $enabled_record_id"
 
         # Test 4: Verify record is enabled when retrieved
@@ -587,7 +587,7 @@ test_disabled_records() {
     }'
     if api_request_v2 "POST" "/zones/$disabled_zone_id/records" "$default_record" 201 "Create record without disabled field (default)"; then
         local default_record_id
-        default_record_id=$(extract_json_field "$LAST_RESPONSE_BODY" "record_id")
+        default_record_id=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
 
         if [[ -n "$default_record_id" ]]; then
             api_request_v2 "GET" "/zones/$disabled_zone_id/records/$default_record_id" "" 200 "Get default record"
@@ -877,7 +877,20 @@ test_groups() {
 
     # Test 10: Assign zone to group
     if [[ -n "$TEST_GROUP_ID" ]]; then
-        local TEST_ZONE_ASSIGN_ID=1  # Assume zone ID 1 exists
+        # Create a test zone for assignment
+        local zone_assign_response
+        zone_assign_response=$(curl -s -w "\n%{http_code}" -H "X-API-Key: $API_KEY" \
+            -H "Content-Type: application/json" -H "Accept: application/json" \
+            -X POST "${API_BASE_URL}/api/v2/zones" \
+            -d '{"name":"group-assign-test.example.com","type":"MASTER"}' --max-time 30)
+        local TEST_ZONE_ASSIGN_ID
+        TEST_ZONE_ASSIGN_ID=$(echo "$zone_assign_response" | sed '$d' | jq -r '.data.zone_id // empty')
+        if [[ -z "$TEST_ZONE_ASSIGN_ID" ]]; then
+            # Zone may already exist, look it up
+            TEST_ZONE_ASSIGN_ID=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+                "${API_BASE_URL}/api/v2/zones?name=group-assign-test.example.com" --max-time 30 \
+                | jq -r '.data[0].id // empty')
+        fi
         increment_test
         print_test "Assign zone to group"
         response=$(api_request_groups POST "/groups/${TEST_GROUP_ID}/zones" "{\"zone_id\": ${TEST_ZONE_ASSIGN_ID}}")
@@ -905,8 +918,7 @@ test_groups() {
     fi
 
     # Test 12: Unassign zone from group
-    if [[ -n "$TEST_GROUP_ID" ]]; then
-        local TEST_ZONE_ASSIGN_ID=1
+    if [[ -n "$TEST_GROUP_ID" ]] && [[ -n "${TEST_ZONE_ASSIGN_ID:-}" ]]; then
         increment_test
         print_test "Unassign zone from group"
         response=$(api_request_groups DELETE "/groups/${TEST_GROUP_ID}/zones/${TEST_ZONE_ASSIGN_ID}")
@@ -953,6 +965,12 @@ test_groups() {
         else
             print_fail "Failed to delete group (HTTP $http_code)"
         fi
+    fi
+
+    # Cleanup: delete the test zone created for assignment
+    if [[ -n "${TEST_ZONE_ASSIGN_ID:-}" ]]; then
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" \
+            "${API_BASE_URL}/api/v2/zones/${TEST_ZONE_ASSIGN_ID}" >/dev/null 2>&1 || true
     fi
 
     print_info "Groups API tests completed"
@@ -1419,6 +1437,7 @@ cleanup_existing_test_zones() {
         "name-template-test.example.com"
         "owner-test.example.com"
         "disabled-test.example.com"
+        "group-assign-test.example.com"
     )
 
     local all_zones
