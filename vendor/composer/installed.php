@@ -3,7 +3,11 @@
         'name' => 'poweradmin/poweradmin',
         'pretty_version' => 'dev-develop',
         'version' => 'dev-develop',
-        'reference' => '9bd3adf3b8947f7192efd001ff64ba4d7cca9d50',
+<<<<<<< HEAD
+        'reference' => '40c7fb47b7b573094b791256a22635ccda7106b3',
+=======
+        'reference' => '07ac27e628adc2c381b916f9ed4e7ccd8ba46f79',
+>>>>>>> f2a152bad (chore(deps): update composer autoload maps)
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -514,7 +518,11 @@
         'poweradmin/poweradmin' => array(
             'pretty_version' => 'dev-develop',
             'version' => 'dev-develop',
-            'reference' => '9bd3adf3b8947f7192efd001ff64ba4d7cca9d50',
+<<<<<<< HEAD
+            'reference' => '40c7fb47b7b573094b791256a22635ccda7106b3',
+=======
+            'reference' => '07ac27e628adc2c381b916f9ed4e7ccd8ba46f79',
+>>>>>>> f2a152bad (chore(deps): update composer autoload maps)
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -911,18 +919,18 @@
             'dev_requirement' => false,
         ),
         'symfony/config' => array(
-            'pretty_version' => 'v7.4.7',
-            'version' => '7.4.7.0',
-            'reference' => '6c17162555bfb58957a55bb0e43e00035b6ae3d5',
+            'pretty_version' => 'v7.4.6',
+            'version' => '7.4.6.0',
+            'reference' => '9400e2f9226b3b64ebb0a8ae967ae84e54e39640',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/config',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'symfony/console' => array(
-            'pretty_version' => 'v7.4.7',
-            'version' => '7.4.7.0',
-            'reference' => 'e1e6770440fb9c9b0cf725f81d1361ad1835329d',
+            'pretty_version' => 'v7.4.6',
+            'version' => '7.4.6.0',
+            'reference' => '6d643a93b47398599124022eb24d97c153c12f27',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/console',
             'aliases' => array(),
@@ -998,9 +1006,9 @@
             'dev_requirement' => false,
         ),
         'symfony/http-foundation' => array(
-            'pretty_version' => 'v7.4.7',
-            'version' => '7.4.7.0',
-            'reference' => 'f94b3e7b7dafd40e666f0c9ff2084133bae41e81',
+            'pretty_version' => 'v7.4.6',
+            'version' => '7.4.6.0',
+            'reference' => 'fd97d5e926e988a363cef56fbbf88c5c528e9065',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/http-foundation',
             'aliases' => array(),
@@ -1214,9 +1222,9 @@
             'dev_requirement' => false,
         ),
         'symfony/serializer' => array(
-            'pretty_version' => 'v7.4.7',
-            'version' => '7.4.7.0',
-            'reference' => 'bd395bbc6fabd136a48e1a6f91b09f88b5050b0b',
+            'pretty_version' => 'v7.4.6',
+            'version' => '7.4.6.0',
+            'reference' => '83c3cbd6dcb96c1dbe197499a0714f8dceb0f274',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/serializer',
             'aliases' => array(),
@@ -1280,9 +1288,9 @@
             ),
         ),
         'symfony/twig-bridge' => array(
-            'pretty_version' => 'v7.4.7',
-            'version' => '7.4.7.0',
-            'reference' => 'c67219ca6b79a57b64e36bbb2cd8ba741286587e',
+            'pretty_version' => 'v7.4.6',
+            'version' => '7.4.6.0',
+            'reference' => '8903bc9a64cf624ffe522893f3626d5a0b97175c',
             'type' => 'symfony-bridge',
             'install_path' => __DIR__ . '/../symfony/twig-bridge',
             'aliases' => array(),
@@ -1298,9 +1306,9 @@
             'dev_requirement' => false,
         ),
         'symfony/validator' => array(
-            'pretty_version' => 'v7.4.7',
-            'version' => '7.4.7.0',
-            'reference' => '3a1a460a9f8c5e5611e15c52c4baa5a62fa3c203',
+            'pretty_version' => 'v7.4.6',
+            'version' => '7.4.6.0',
+            'reference' => 'a1ceaf285712ed8034819a76b5fbba23eaf3e54d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/validator',
             'aliases' => array(),
