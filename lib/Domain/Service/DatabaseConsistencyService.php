@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Exception;
 use PDO;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -33,12 +34,19 @@ class DatabaseConsistencyService
     private PDO $db;
     private ConfigurationManager $config;
     private TableNameService $tableNameService;
+    private ?DnsBackendProvider $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->tableNameService = new TableNameService($config);
+        $this->backendProvider = $backendProvider;
+    }
+
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
 
@@ -49,22 +57,42 @@ class DatabaseConsistencyService
      */
     public function checkZonesHaveOwners(): array
     {
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        if ($this->isApiBackend()) {
+            $allZones = $this->backendProvider->getZones();
+            $orphanedZones = [];
+            foreach ($allZones as $z) {
+                $zoneId = (int)($z['id'] ?? 0);
+                $zoneName = $z['name'] ?? '';
+                // Check Poweradmin's zones table for ownership
+                $stmt = $this->db->prepare("SELECT owner FROM zones WHERE domain_id = ?");
+                $stmt->execute([$zoneId]);
+                $owner = $stmt->fetchColumn();
+                if ($owner === false || (int)$owner === 0) {
+                    $orphanedZones[] = [
+                        'id' => $zoneId,
+                        'name' => rtrim($zoneName, '.'),
+                        'owner' => $owner ?: null
+                    ];
+                }
+            }
+        } else {
+            $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $stmt = $this->db->query("
-            SELECT d.id, d.name, z.owner
-            FROM $domains_table d
-            LEFT JOIN zones z ON d.id = z.domain_id
-            WHERE z.owner IS NULL OR z.owner = 0
-        ");
+            $stmt = $this->db->query("
+                SELECT d.id, d.name, z.owner
+                FROM $domains_table d
+                LEFT JOIN zones z ON d.id = z.domain_id
+                WHERE z.owner IS NULL OR z.owner = 0
+            ");
 
-        $orphanedZones = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $orphanedZones[] = [
-                'id' => $row['id'],
-                'name' => $row['name'],
-                'owner' => $row['owner']
-            ];
+            $orphanedZones = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $orphanedZones[] = [
+                    'id' => $row['id'],
+                    'name' => $row['name'],
+                    'owner' => $row['owner']
+                ];
+            }
         }
 
         if (empty($orphanedZones)) {
@@ -89,22 +117,40 @@ class DatabaseConsistencyService
      */
     public function checkSlaveZonesHaveMasters(): array
     {
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        if ($this->isApiBackend()) {
+            $allZones = $this->backendProvider->getZones();
+            $slavesWithoutMaster = [];
+            foreach ($allZones as $z) {
+                $kind = strtoupper($z['kind'] ?? $z['type'] ?? '');
+                if ($kind === 'SLAVE') {
+                    $master = $z['masters'][0] ?? $z['master'] ?? '';
+                    if (empty($master) || $master === '0.0.0.0') {
+                        $slavesWithoutMaster[] = [
+                            'id' => (int)($z['id'] ?? 0),
+                            'name' => rtrim($z['name'] ?? '', '.'),
+                            'master' => $master
+                        ];
+                    }
+                }
+            }
+        } else {
+            $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $stmt = $this->db->query("
-            SELECT d.id, d.name, d.master
-            FROM $domains_table d
-            WHERE d.type = 'SLAVE'
-            AND (d.master IS NULL OR d.master = '' OR d.master = '0.0.0.0')
-        ");
+            $stmt = $this->db->query("
+                SELECT d.id, d.name, d.master
+                FROM $domains_table d
+                WHERE d.type = 'SLAVE'
+                AND (d.master IS NULL OR d.master = '' OR d.master = '0.0.0.0')
+            ");
 
-        $slavesWithoutMaster = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $slavesWithoutMaster[] = [
-                'id' => $row['id'],
-                'name' => $row['name'],
-                'master' => $row['master']
-            ];
+            $slavesWithoutMaster = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $slavesWithoutMaster[] = [
+                    'id' => $row['id'],
+                    'name' => $row['name'],
+                    'master' => $row['master']
+                ];
+            }
         }
 
         if (empty($slavesWithoutMaster)) {
@@ -129,6 +175,15 @@ class DatabaseConsistencyService
      */
     public function checkRecordsBelongToZones(): array
     {
+        if ($this->isApiBackend()) {
+            // In API mode, PowerDNS manages record-zone integrity - orphaned records shouldn't exist
+            return [
+                'status' => 'success',
+                'message' => _('All records belong to existing zones'),
+                'data' => []
+            ];
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
@@ -172,29 +227,44 @@ class DatabaseConsistencyService
      */
     public function checkDuplicateSOARecords(): array
     {
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        if ($this->isApiBackend()) {
+            $allZones = $this->backendProvider->getZones();
+            $duplicateSOA = [];
+            foreach ($allZones as $z) {
+                $zoneId = (int)($z['id'] ?? 0);
+                $records = $this->backendProvider->getRecordsByZoneId($zoneId, 'SOA');
+                if (count($records) > 1) {
+                    $duplicateSOA[] = [
+                        'zone_id' => $zoneId,
+                        'zone_name' => rtrim($z['name'] ?? '', '.'),
+                        'soa_count' => count($records)
+                    ];
+                }
+            }
+        } else {
+            $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+            $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $stmt = $this->db->query("
-            SELECT domain_id, COUNT(*) as soa_count
-            FROM $records_table
-            WHERE type = 'SOA'
-            GROUP BY domain_id
-            HAVING COUNT(*) > 1
-        ");
+            $stmt = $this->db->query("
+                SELECT domain_id, COUNT(*) as soa_count
+                FROM $records_table
+                WHERE type = 'SOA'
+                GROUP BY domain_id
+                HAVING COUNT(*) > 1
+            ");
 
-        $duplicateSOA = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            // Get zone name
-            $zoneStmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :zone_id");
-            $zoneStmt->execute(['zone_id' => $row['domain_id']]);
-            $zoneName = $zoneStmt->fetchColumn();
+            $duplicateSOA = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $zoneStmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :zone_id");
+                $zoneStmt->execute(['zone_id' => $row['domain_id']]);
+                $zoneName = $zoneStmt->fetchColumn();
 
-            $duplicateSOA[] = [
-                'zone_id' => $row['domain_id'],
-                'zone_name' => $zoneName,
-                'soa_count' => $row['soa_count']
-            ];
+                $duplicateSOA[] = [
+                    'zone_id' => $row['domain_id'],
+                    'zone_name' => $zoneName,
+                    'soa_count' => $row['soa_count']
+                ];
+            }
         }
 
         if (empty($duplicateSOA)) {
@@ -219,24 +289,43 @@ class DatabaseConsistencyService
      */
     public function checkZonesWithoutSOA(): array
     {
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        if ($this->isApiBackend()) {
+            $allZones = $this->backendProvider->getZones();
+            $zonesWithoutSOA = [];
+            foreach ($allZones as $z) {
+                $kind = strtoupper($z['kind'] ?? $z['type'] ?? '');
+                if ($kind === 'MASTER' || $kind === 'NATIVE') {
+                    $zoneId = (int)($z['id'] ?? 0);
+                    $soaRecords = $this->backendProvider->getRecordsByZoneId($zoneId, 'SOA');
+                    if (empty($soaRecords)) {
+                        $zonesWithoutSOA[] = [
+                            'id' => $zoneId,
+                            'name' => rtrim($z['name'] ?? '', '.'),
+                            'type' => $kind
+                        ];
+                    }
+                }
+            }
+        } else {
+            $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+            $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-        $stmt = $this->db->query("
-            SELECT d.id, d.name, d.type
-            FROM $domains_table d
-            LEFT JOIN $records_table r ON d.id = r.domain_id AND r.type = 'SOA'
-            WHERE r.id IS NULL
-            AND d.type IN ('MASTER', 'NATIVE')
-        ");
+            $stmt = $this->db->query("
+                SELECT d.id, d.name, d.type
+                FROM $domains_table d
+                LEFT JOIN $records_table r ON d.id = r.domain_id AND r.type = 'SOA'
+                WHERE r.id IS NULL
+                AND d.type IN ('MASTER', 'NATIVE')
+            ");
 
-        $zonesWithoutSOA = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $zonesWithoutSOA[] = [
-                'id' => $row['id'],
-                'name' => $row['name'],
-                'type' => $row['type']
-            ];
+            $zonesWithoutSOA = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $zonesWithoutSOA[] = [
+                    'id' => $row['id'],
+                    'name' => $row['name'],
+                    'type' => $row['type']
+                ];
+            }
         }
 
         if (empty($zonesWithoutSOA)) {
@@ -303,6 +392,30 @@ class DatabaseConsistencyService
      */
     public function deleteSlaveZone(int $zoneId): bool
     {
+        if ($this->isApiBackend()) {
+            // Delete DNS zone first, then metadata (so metadata survives if API fails)
+            $zoneName = $this->backendProvider->getZoneNameById($zoneId) ?? '';
+            if (!$this->backendProvider->deleteZone($zoneId, $zoneName)) {
+                return false;
+            }
+
+            $this->db->beginTransaction();
+            try {
+                $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
+                $stmt->execute(['domain_id' => $zoneId]);
+
+                $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :domain_id");
+                $stmt->execute(['domain_id' => $zoneId]);
+
+                $this->db->commit();
+            } catch (Exception $e) {
+                $this->db->rollBack();
+                return false;
+            }
+
+            return true;
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
@@ -340,6 +453,10 @@ class DatabaseConsistencyService
      */
     public function deleteOrphanedRecord(int $recordId): bool
     {
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->deleteRecord($recordId);
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = :id");
@@ -354,6 +471,22 @@ class DatabaseConsistencyService
      */
     public function fixDuplicateSOA(int $zoneId): bool
     {
+        if ($this->isApiBackend()) {
+            $records = $this->backendProvider->getRecordsByZoneId($zoneId, 'SOA');
+            if (count($records) <= 1) {
+                return true;
+            }
+            // Keep the first, delete the rest
+            array_shift($records);
+            foreach ($records as $r) {
+                $recordId = (int)($r['id'] ?? 0);
+                if ($recordId > 0) {
+                    $this->backendProvider->deleteRecord($recordId);
+                }
+            }
+            return true;
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $this->db->beginTransaction();
@@ -390,6 +523,27 @@ class DatabaseConsistencyService
      */
     public function createDefaultSOA(int $zoneId): bool
     {
+        if ($this->isApiBackend()) {
+            $zoneName = $this->backendProvider->getZoneNameById($zoneId);
+            if (!$zoneName) {
+                return false;
+            }
+
+            $primaryNs = 'ns1.' . $zoneName;
+            $hostmaster = 'hostmaster.' . $zoneName;
+            $serial = date('Ymd') . '01';
+
+            $soaContent = sprintf(
+                '%s %s %s 28800 7200 604800 86400',
+                $primaryNs,
+                $hostmaster,
+                $serial
+            );
+
+            $recordId = $this->backendProvider->addRecordGetId($zoneId, $zoneName, 'SOA', $soaContent, 86400, 0);
+            return $recordId !== null;
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -417,7 +571,7 @@ class DatabaseConsistencyService
 
         // Insert SOA record
         $stmt = $this->db->prepare("
-            INSERT INTO $records_table (domain_id, name, type, content, ttl, prio, disabled) 
+            INSERT INTO $records_table (domain_id, name, type, content, ttl, prio, disabled)
             VALUES (:domain_id, :name, 'SOA', :content, 86400, 0, 0)
         ");
 

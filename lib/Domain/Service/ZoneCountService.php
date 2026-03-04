@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use PDO;
@@ -42,13 +43,20 @@ class ZoneCountService
     private ConfigurationManager $config;
     private ?UserContextService $userContext;
     private TableNameService $tableNameService;
+    private ?DnsBackendProvider $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationManager $config, ?UserContextService $userContext = null)
+    public function __construct(PDO $db, ConfigurationManager $config, ?UserContextService $userContext = null, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->userContext = $userContext;
         $this->tableNameService = new TableNameService($config);
+        $this->backendProvider = $backendProvider;
+    }
+
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     /**
@@ -62,6 +70,10 @@ class ZoneCountService
      */
     public function countZones(string $perm, string $letterstart = 'all', string $zone_type = 'forward'): int
     {
+        if ($this->isApiBackend()) {
+            return $this->countZonesApi($perm, $letterstart, $zone_type);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $tables = $domains_table;
@@ -129,5 +141,60 @@ class ZoneCountService
 
             return (int) ($result['count_zones'] ?? 0);
         }
+    }
+
+    private function countZonesApi(string $perm, string $letterstart, string $zone_type): int
+    {
+        $allZones = $this->backendProvider->getZones();
+
+        // Filter by ownership
+        if ($perm === 'own') {
+            $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION['userid'] ?? null);
+            if (!$userId) {
+                return 0;
+            }
+
+            $stmt = $this->db->prepare(
+                "SELECT DISTINCT domain_id FROM zones WHERE owner = :uid
+                 UNION
+                 SELECT DISTINCT zg.domain_id FROM zones_groups zg
+                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                 WHERE ugm.user_id = :uid2"
+            );
+            $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            $ownedIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+
+            $allZones = array_filter($allZones, fn($z) => in_array((int)($z['id'] ?? 0), $ownedIds, true));
+        } elseif ($perm !== 'all') {
+            return 0;
+        }
+
+        // Filter by letter
+        if ($letterstart !== 'all') {
+            $allZones = array_filter($allZones, function ($z) use ($letterstart) {
+                $name = rtrim($z['name'] ?? '', '.');
+                if ($letterstart === '1') {
+                    return !empty($name) && is_numeric($name[0]);
+                }
+                return !empty($name) && strtolower($name[0]) === strtolower($letterstart);
+            });
+        }
+
+        // Filter by zone type
+        if ($zone_type === 'forward') {
+            $allZones = array_filter($allZones, function ($z) {
+                $name = rtrim($z['name'] ?? '', '.');
+                return !str_ends_with($name, '.in-addr.arpa') && !str_ends_with($name, '.ip6.arpa');
+            });
+        } elseif ($zone_type === 'reverse') {
+            $allZones = array_filter($allZones, function ($z) {
+                $name = rtrim($z['name'] ?? '', '.');
+                return str_ends_with($name, '.in-addr.arpa') || str_ends_with($name, '.ip6.arpa');
+            });
+        }
+
+        return count($allZones);
     }
 }

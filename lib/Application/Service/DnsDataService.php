@@ -708,19 +708,26 @@ class DnsDataService
         // Enrich with record counts from the records table
         $zoneIds = array_filter(array_map(fn($z) => $z['id'] ?? 0, $zones));
         if (!empty($zoneIds)) {
-            $tableNameService = new TableNameService($this->config);
-            $recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
-            $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
-            $stmt = $this->db->prepare(
-                "SELECT domain_id, COUNT(*) as count_records FROM $recordsTable
-                 WHERE domain_id IN ($placeholders) AND type IS NOT NULL AND type != ''
-                 GROUP BY domain_id"
-            );
-            $stmt->execute(array_values($zoneIds));
+            if ($this->backendProvider->isApiBackend()) {
+                $recordCounts = [];
+                foreach ($zoneIds as $zid) {
+                    $recordCounts[$zid] = $this->backendProvider->countZoneRecords($zid);
+                }
+            } else {
+                $tableNameService = new TableNameService($this->config);
+                $recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
+                $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
+                $stmt = $this->db->prepare(
+                    "SELECT domain_id, COUNT(*) as count_records FROM $recordsTable
+                     WHERE domain_id IN ($placeholders) AND type IS NOT NULL AND type != ''
+                     GROUP BY domain_id"
+                );
+                $stmt->execute(array_values($zoneIds));
 
-            $recordCounts = [];
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $recordCounts[(int)$row['domain_id']] = (int)$row['count_records'];
+                $recordCounts = [];
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $recordCounts[(int)$row['domain_id']] = (int)$row['count_records'];
+                }
             }
 
             foreach ($zones as &$zone) {
@@ -741,7 +748,7 @@ class DnsDataService
             return;
         }
 
-        $recordRepository = new RecordRepository($this->db, $this->config);
+        $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
         $zoneIds = array_map(fn($zone) => $zone['id'] ?? 0, $zones);
         $serials = $recordRepository->getSerialsByZoneIds($zoneIds);
 

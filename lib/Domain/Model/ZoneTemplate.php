@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Model;
 
 use Exception;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DomainParsingService;
@@ -49,16 +50,23 @@ class ZoneTemplate
     private DnsCommonValidator $dnsCommonValidator;
     private DomainParsingService $domainParsingService;
     private TableNameService $tableNameService;
+    private ?DnsBackendProvider $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->dnsFormatter = new DnsFormatter($config);
         $this->messageService = new MessageService();
-        $this->dnsCommonValidator = new DnsCommonValidator($db, $config);
+        $this->dnsCommonValidator = new DnsCommonValidator($db, $config, $backendProvider);
         $this->domainParsingService = new DomainParsingService();
         $this->tableNameService = new TableNameService($config);
+        $this->backendProvider = $backendProvider;
+    }
+
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     /**
@@ -688,6 +696,27 @@ class ZoneTemplate
      */
     public function getListZoneUseTempl(int $zone_templ_id, int $userid): array
     {
+        if ($this->isApiBackend()) {
+            $perm_edit = Permission::getEditPermission($this->db);
+            $params = [':zone_templ_id' => $zone_templ_id];
+            $sql_add = '';
+
+            if ($perm_edit != "all") {
+                $sql_add = " AND zones.owner = :userid";
+                $params[':userid'] = $userid;
+            }
+
+            $query = "SELECT domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
+            try {
+                $stmt = $this->db->prepare($query);
+                $stmt->execute($params);
+                return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+            } catch (Exception $e) {
+                $this->messageService->addSystemError(_('Error retrieving zones using template: ') . $e->getMessage());
+                return [];
+            }
+        }
+
         $perm_edit = Permission::getEditPermission($this->db);
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
@@ -740,6 +769,52 @@ class ZoneTemplate
      */
     public function getZonesUsingTemplate(int $zone_templ_id, int $userid): array
     {
+        if ($this->isApiBackend()) {
+            $perm_edit = Permission::getEditPermission($this->db);
+            $params = [':zone_templ_id' => $zone_templ_id];
+            $sql_add = '';
+
+            if ($perm_edit != "all") {
+                $sql_add = " AND zones.owner = :userid";
+                $params[':userid'] = $userid;
+            }
+
+            try {
+                $query = "SELECT zones.domain_id, zones.owner, zones.comment,
+                          u.username as owner_name, u.fullname as owner_fullname
+                          FROM zones
+                          LEFT JOIN users u ON zones.owner = u.id
+                          WHERE zones.zone_templ_id = :zone_templ_id" . $sql_add . "
+                          ORDER BY zones.domain_id";
+                $stmt = $this->db->prepare($query);
+                $stmt->execute($params);
+                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                $result = [];
+                foreach ($rows as $row) {
+                    $zoneId = (int)$row['domain_id'];
+                    $zoneData = $this->backendProvider->getZoneById($zoneId);
+                    $countRecords = $this->backendProvider->countZoneRecords($zoneId);
+                    $result[] = [
+                        'id' => $zoneId,
+                        'name' => $zoneData['name'] ?? '',
+                        'type' => $zoneData['type'] ?? '',
+                        'count_records' => $countRecords,
+                        'owner' => $row['owner'],
+                        'comment' => $row['comment'],
+                        'owner_name' => $row['owner_name'],
+                        'owner_fullname' => $row['owner_fullname'],
+                    ];
+                }
+
+                usort($result, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+                return $result;
+            } catch (Exception $e) {
+                $this->messageService->addSystemError(_('Failed to get list of zones using template: ') . $e->getMessage());
+                return [];
+            }
+        }
+
         $perm_edit = Permission::getEditPermission($this->db);
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
@@ -769,8 +844,8 @@ class ZoneTemplate
                 ) Record_Count ON Record_Count.domain_id=$domains_table.id
                 WHERE 1=1" . $sql_add . "
                 AND zone_templ_id = :zone_templ_id
-                GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, 
-                        Record_Count.count_records, zones.owner, zones.comment, 
+                GROUP BY $domains_table.name, $domains_table.id, $domains_table.type,
+                        Record_Count.count_records, zones.owner, zones.comment,
                         u.username, u.fullname
                 ORDER BY $domains_table.name";
 
@@ -858,12 +933,33 @@ class ZoneTemplate
             return [];
         }
 
+        if ($this->isApiBackend()) {
+            try {
+                $result = [];
+                foreach ($zone_ids as $zid) {
+                    $zoneData = $this->backendProvider->getZoneById((int)$zid);
+                    if ($zoneData) {
+                        $result[] = [
+                            'id' => $zoneData['id'],
+                            'name' => $zoneData['name'],
+                            'type' => $zoneData['type'],
+                        ];
+                    }
+                }
+                usort($result, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+                return $result;
+            } catch (Exception $e) {
+                $this->messageService->addSystemError(_('Error retrieving zones: ') . $e->getMessage());
+                return [];
+            }
+        }
+
         try {
             $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
             $placeholders = str_repeat('?,', count($zone_ids) - 1) . '?';
-            $stmt = $this->db->prepare("SELECT d.id, d.name, d.type 
-                                        FROM $domains_table d 
+            $stmt = $this->db->prepare("SELECT d.id, d.name, d.type
+                                        FROM $domains_table d
                                         WHERE d.id IN ($placeholders)
                                         ORDER BY d.name");
             $stmt->execute($zone_ids);
