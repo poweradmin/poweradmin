@@ -28,6 +28,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -46,20 +47,28 @@ class DomainRepository implements DomainRepositoryInterface
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TableNameService $tableNameService;
+    private ?DnsBackendProvider $backendProvider;
 
     /**
      * Constructor
      *
      * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
+     * @param DnsBackendProvider|null $backendProvider Optional DNS backend provider
      */
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->tableNameService = new TableNameService($config);
+        $this->backendProvider = $backendProvider;
+    }
+
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     /**
@@ -71,6 +80,11 @@ class DomainRepository implements DomainRepositoryInterface
      */
     public function zoneIdExists(int $zid): int
     {
+        if ($this->isApiBackend()) {
+            $zone = $this->backendProvider->getZoneById($zid);
+            return $zone !== null ? 1 : 0;
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->prepare("SELECT COUNT(id) FROM $domains_table WHERE id = :id");
@@ -87,6 +101,10 @@ class DomainRepository implements DomainRepositoryInterface
      */
     public function getDomainNameById(int $id): ?string
     {
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->getZoneNameById($id);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :id");
@@ -112,6 +130,10 @@ class DomainRepository implements DomainRepositoryInterface
             return null;
         }
 
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->getZoneIdByName($name);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT id FROM $domains_table WHERE name = :name";
@@ -135,6 +157,10 @@ class DomainRepository implements DomainRepositoryInterface
             return null;
         }
 
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->getZoneIdByName($zname);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
@@ -153,6 +179,10 @@ class DomainRepository implements DomainRepositoryInterface
      */
     public function getDomainType(int $id): string
     {
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->getZoneTypeById($id);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->prepare("SELECT type FROM $domains_table WHERE id = :id");
@@ -173,6 +203,10 @@ class DomainRepository implements DomainRepositoryInterface
      */
     public function getDomainSlaveMaster(int $id): ?string
     {
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->getZoneMasterById($id);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->prepare("SELECT master FROM $domains_table WHERE type = 'SLAVE' and id = :id");
@@ -189,17 +223,19 @@ class DomainRepository implements DomainRepositoryInterface
      */
     public function domainExists(string $domain): bool
     {
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        if ($this->hostnameValidator->isValid($domain)) {
-            $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
-            $stmt->execute([':name' => $domain]);
-            $result = $stmt->fetch();
-            return (bool)$result;
-        } else {
+        if (!$this->hostnameValidator->isValid($domain)) {
             $this->messageService->addSystemError(_('This is an invalid zone name.'));
             return false;
         }
+
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->zoneExists($domain);
+        }
+
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
+        $stmt->execute([':name' => $domain]);
+        return (bool)$stmt->fetch();
     }
 
     /**
@@ -529,29 +565,43 @@ class DomainRepository implements DomainRepositoryInterface
         if ($perm_view == "none") {
             $this->messageService->addSystemError(_("You do not have the permission to view this zone."));
             return [];
-        } else {
-            [$domains_table, $records_table] = $this->tableNameService->getTables(
-                PdnsTable::DOMAINS,
-                PdnsTable::RECORDS
-            );
-
-            $stmt = $this->db->prepare("SELECT $domains_table.type AS type,
-                    $domains_table.name AS name,
-                    $domains_table.master AS master_ip,
-                    count($records_table.domain_id) AS record_count
-                    FROM $domains_table LEFT OUTER JOIN $records_table ON $domains_table.id = $records_table.domain_id
-                    WHERE $domains_table.id = :zid
-                    GROUP BY $domains_table.id, $domains_table.type, $domains_table.name, $domains_table.master");
-            $stmt->execute([':zid' => $zid]);
-            $result = $stmt->fetch();
-            return array(
-                "id" => $zid,
-                "name" => $result['name'],
-                "type" => $result['type'],
-                "master_ip" => $result['master_ip'],
-                "record_count" => $result['record_count']
-            );
         }
+
+        if ($this->isApiBackend()) {
+            $zone = $this->backendProvider->getZoneById($zid);
+            if ($zone === null) {
+                return [];
+            }
+            return [
+                'id' => $zid,
+                'name' => $zone['name'],
+                'type' => $zone['type'],
+                'master_ip' => $zone['master'],
+                'record_count' => $this->backendProvider->countZoneRecords($zid),
+            ];
+        }
+
+        [$domains_table, $records_table] = $this->tableNameService->getTables(
+            PdnsTable::DOMAINS,
+            PdnsTable::RECORDS
+        );
+
+        $stmt = $this->db->prepare("SELECT $domains_table.type AS type,
+                $domains_table.name AS name,
+                $domains_table.master AS master_ip,
+                count($records_table.domain_id) AS record_count
+                FROM $domains_table LEFT OUTER JOIN $records_table ON $domains_table.id = $records_table.domain_id
+                WHERE $domains_table.id = :zid
+                GROUP BY $domains_table.id, $domains_table.type, $domains_table.name, $domains_table.master");
+        $stmt->execute([':zid' => $zid]);
+        $result = $stmt->fetch();
+        return array(
+            "id" => $zid,
+            "name" => $result['name'],
+            "type" => $result['type'],
+            "master_ip" => $result['master_ip'],
+            "record_count" => $result['record_count']
+        );
     }
 
     /**
@@ -579,6 +629,10 @@ class DomainRepository implements DomainRepositoryInterface
      */
     public function getBestMatchingZoneIdFromName(string $domain): int
     {
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->getBestMatchingReverseZoneId($domain);
+        }
+
         // rev-patch
         // string to find the correct zone
         // %ip6.arpa and %in-addr.arpa is looked for

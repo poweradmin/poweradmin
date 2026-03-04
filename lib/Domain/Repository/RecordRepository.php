@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Repository;
 
 use PDO;
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
@@ -40,19 +41,27 @@ class RecordRepository implements RecordRepositoryInterface
     private ConfigurationManager $config;
     private MessageService $messageService;
     private TableNameService $tableNameService;
+    private ?DnsBackendProvider $backendProvider;
 
     /**
      * Constructor
      *
      * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
+     * @param DnsBackendProvider|null $backendProvider Optional DNS backend provider
      */
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->messageService = new MessageService();
         $this->tableNameService = new TableNameService($config);
+        $this->backendProvider = $backendProvider;
+    }
+
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     /**
@@ -64,6 +73,10 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function getZoneIdFromRecordId(int $rid): int
     {
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->getZoneIdFromRecordId($rid);
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("SELECT domain_id FROM $records_table WHERE id = :id");
@@ -85,6 +98,10 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function countZoneRecords(int $zone_id): int
     {
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->countZoneRecords($zone_id);
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("SELECT COUNT(id) FROM $records_table WHERE domain_id = :zone_id AND type IS NOT NULL AND type != ''");
@@ -101,6 +118,22 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function getRecordDetailsFromRecordId(int $rid): array
     {
+        if ($this->isApiBackend()) {
+            $record = $this->backendProvider->getRecordById($rid);
+            if ($record === null) {
+                return [];
+            }
+            return [
+                'rid' => $record['id'],
+                'zid' => $record['domain_id'],
+                'name' => $record['name'],
+                'type' => $record['type'],
+                'content' => $record['content'],
+                'ttl' => $record['ttl'],
+                'prio' => $record['prio'],
+            ];
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio FROM $records_table WHERE id = :id");
@@ -122,6 +155,17 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function getRecordFromId(int $id): ?array
     {
+        if ($this->isApiBackend()) {
+            $record = $this->backendProvider->getRecordById($id);
+            if ($record === null) {
+                return null;
+            }
+            // Add fields expected by callers that aren't in the backend response
+            $record['ordername'] = $record['ordername'] ?? '';
+            $record['auth'] = $record['auth'] ?? 1;
+            return $record;
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("SELECT * FROM $records_table WHERE id = :id AND type IS NOT NULL AND type != ''");
@@ -271,6 +315,16 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function recordNameExists(string $name): bool
     {
+        if ($this->isApiBackend()) {
+            $result = $this->backendProvider->searchDnsData($name, 'record', 1);
+            foreach ($result['records'] ?? [] as $r) {
+                if ($r['name'] === $name) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("SELECT COUNT(id) FROM $records_table WHERE name = :name");
@@ -296,6 +350,16 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function hasNonDelegationRecords(string $name): bool
     {
+        if ($this->isApiBackend()) {
+            $result = $this->backendProvider->searchDnsData($name, 'record', 100);
+            foreach ($result['records'] ?? [] as $r) {
+                if ($r['name'] === $name && !in_array($r['type'], ['NS', 'DS'], true)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare(
@@ -319,6 +383,16 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function hasSimilarRecords(int $domain_id, string $name, string $type, int $record_id): bool
     {
+        if ($this->isApiBackend()) {
+            $records = $this->backendProvider->getRecordsByZoneId($domain_id, $type);
+            foreach ($records as $r) {
+                if ($r['name'] === $name && (int)($r['id'] ?? 0) !== $record_id) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "SELECT COUNT(*) FROM $records_table
@@ -344,12 +418,16 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function recordExists(int $domain_id, string $name, string $type, string $content): bool
     {
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->recordExists($domain_id, $name, $type, $content);
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table 
-                  WHERE domain_id = :domain_id 
-                  AND name = :name 
-                  AND type = :type 
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table
+                  WHERE domain_id = :domain_id
+                  AND name = :name
+                  AND type = :type
                   AND content = :content");
         $stmt->execute([
             ':domain_id' => $domain_id,
@@ -420,11 +498,21 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function hasPtrRecord(int $domain_id, string $name): bool
     {
+        if ($this->isApiBackend()) {
+            $records = $this->backendProvider->getRecordsByZoneId($domain_id, 'PTR');
+            foreach ($records as $r) {
+                if ($r['name'] === $name) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table 
-                  WHERE domain_id = :domain_id 
-                  AND name = :name 
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table
+                  WHERE domain_id = :domain_id
+                  AND name = :name
                   AND type = 'PTR'");
         $stmt->execute([
             ':domain_id' => $domain_id,
@@ -442,6 +530,12 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function getSerialByZid(int $zid): string
     {
+        if ($this->isApiBackend()) {
+            $soa = $this->backendProvider->getSOARecord($zid);
+            $fields = explode(' ', $soa);
+            return $fields[2] ?? '';
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("SELECT content FROM $records_table WHERE type = :type AND domain_id = :domain_id");
@@ -464,6 +558,16 @@ class RecordRepository implements RecordRepositoryInterface
     {
         if (empty($zoneIds)) {
             return [];
+        }
+
+        if ($this->isApiBackend()) {
+            $serials = [];
+            foreach ($zoneIds as $zid) {
+                $soa = $this->backendProvider->getSOARecord($zid);
+                $fields = explode(' ', $soa);
+                $serials[$zid] = $fields[2] ?? '';
+            }
+            return $serials;
         }
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -750,6 +854,10 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function getRecordsByDomainId(int $domainId, ?string $recordType = null): array
     {
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->getRecordsByZoneId($domainId, $recordType);
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled, ordername, auth
@@ -774,6 +882,16 @@ class RecordRepository implements RecordRepositoryInterface
 
     public function getRecordById(int $recordId): ?array
     {
+        if ($this->isApiBackend()) {
+            $record = $this->backendProvider->getRecordById($recordId);
+            if ($record === null) {
+                return null;
+            }
+            $record['ordername'] = $record['ordername'] ?? '';
+            $record['auth'] = $record['auth'] ?? 1;
+            return $record;
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled, ordername, auth
@@ -801,6 +919,19 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function getRRSetRecords(int $domainId, string $name, string $type): array
     {
+        if ($this->isApiBackend()) {
+            $name = strtolower($name);
+            $records = $this->backendProvider->getRecordsByZoneId($domainId, $type);
+            $result = [];
+            foreach ($records as $r) {
+                if (strtolower($r['name']) === $name) {
+                    $result[] = $r;
+                }
+            }
+            usort($result, fn($a, $b) => strcmp($a['content'] ?? '', $b['content'] ?? ''));
+            return $result;
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         // PowerDNS stores all record names in lowercase - normalize for consistent lookup
