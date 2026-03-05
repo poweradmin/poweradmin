@@ -474,6 +474,10 @@ generate_config() {
     local dnssec_enabled=$(echo "${PA_DNSSEC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local dnssec_debug=$(echo "${PA_DNSSEC_DEBUG:-false}" | tr '[:upper:]' '[:lower:]')
 
+    # Convert logging boolean values to lowercase
+    local logging_database_enabled=$(echo "${PA_LOGGING_DATABASE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local logging_syslog_enabled=$(echo "${PA_LOGGING_SYSLOG_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+
     # Convert OIDC boolean values to lowercase
     local oidc_enabled=$(echo "${PA_OIDC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local oidc_auto_provision=$(echo "${PA_OIDC_AUTO_PROVISION:-true}" | tr '[:upper:]' '[:lower:]')
@@ -634,6 +638,14 @@ return [
         'base_dn' => '${PA_LDAP_BASE_DN:-}',
         'bind_dn' => '${PA_LDAP_BIND_DN:-}',
         'bind_password' => '${PA_LDAP_BIND_PASSWORD:-}',
+    ],
+    'logging' => [
+        'type' => '${PA_LOGGING_TYPE:-null}',
+        'level' => '${PA_LOGGING_LEVEL:-info}',
+        'database_enabled' => ${logging_database_enabled},
+        'syslog_enabled' => ${logging_syslog_enabled},
+        'syslog_identity' => '${PA_LOGGING_SYSLOG_IDENTITY:-poweradmin}',
+        'syslog_facility' => ${PA_LOGGING_SYSLOG_FACILITY:-LOG_USER},
     ],
     'misc' => [
         'timezone' => '${PA_TIMEZONE:-UTC}',
@@ -932,6 +944,10 @@ print_config_summary() {
         log "API Enabled: ${PA_API_ENABLED:-false}"
         log "LDAP Enabled: ${PA_LDAP_ENABLED:-false}"
         log "Timezone: ${PA_TIMEZONE:-UTC}"
+        log "Logging Type: ${PA_LOGGING_TYPE:-null}"
+        log "Logging Level: ${PA_LOGGING_LEVEL:-info}"
+        log "Database Logging: ${PA_LOGGING_DATABASE_ENABLED:-false}"
+        log "Syslog Enabled: ${PA_LOGGING_SYSLOG_ENABLED:-false}"
     fi
 
     log "Admin User Creation: ${PA_CREATE_ADMIN:-false}"

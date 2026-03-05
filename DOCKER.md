@@ -204,6 +204,17 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_DNSSEC_ENABLED` | Enable DNSSEC functionality | `false` | No |
 | `PA_DNSSEC_DEBUG` | Enable DNSSEC debug logging | `false` | No |
 
+### Logging Configuration
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_LOGGING_TYPE` | Logging type (`null`, `native`) | `null` | No |
+| `PA_LOGGING_LEVEL` | Log level (`debug`, `info`, `notice`, `warning`, `error`, `critical`, `alert`, `emergency`) | `info` | No |
+| `PA_LOGGING_DATABASE_ENABLED` | Enable logging zone and record changes to the database | `false` | No |
+| `PA_LOGGING_SYSLOG_ENABLED` | Write authentication attempts to syslog | `false` | No |
+| `PA_LOGGING_SYSLOG_IDENTITY` | Syslog identity | `poweradmin` | No |
+| `PA_LOGGING_SYSLOG_FACILITY` | Syslog facility (PHP constant) | `LOG_USER` | No |
+
 ### Security Configuration
 
 | Variable | Description | Default | Required |
