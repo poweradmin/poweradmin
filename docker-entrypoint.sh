@@ -762,14 +762,6 @@ return [
         'syslog_identity' => '${PA_LOGGING_SYSLOG_IDENTITY:-poweradmin}',
         'syslog_facility' => ${PA_LOGGING_SYSLOG_FACILITY:-LOG_USER},
     ],
-    'logging' => [
-        'type' => '${PA_LOGGING_TYPE:-null}',
-        'level' => '${PA_LOGGING_LEVEL:-info}',
-        'database_enabled' => ${logging_database_enabled},
-        'syslog_enabled' => ${logging_syslog_enabled},
-        'syslog_identity' => '${PA_LOGGING_SYSLOG_IDENTITY:-poweradmin}',
-        'syslog_facility' => ${PA_LOGGING_SYSLOG_FACILITY:-LOG_USER},
-    ],
     'misc' => [
         'display_stats' => ${display_stats},
         'timezone' => '${PA_TIMEZONE:-UTC}',
