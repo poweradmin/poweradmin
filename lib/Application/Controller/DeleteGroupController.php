@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\DomainRepository;
-use Poweradmin\Infrastructure\Logger\DbGroupLogger;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 
@@ -47,6 +47,7 @@ class DeleteGroupController extends BaseController
     private GroupService $groupService;
     private ZoneGroupService $zoneGroupService;
     private Request $request;
+    private LegacyLogger $auditLogger;
 
     public function __construct(array $request)
     {
@@ -58,6 +59,7 @@ class DeleteGroupController extends BaseController
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
         $this->request = new Request();
+        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     public function run(): void
@@ -129,8 +131,7 @@ class DeleteGroupController extends BaseController
                 $zoneCount
             );
 
-            $logger = new DbGroupLogger($this->db);
-            $logger->doLog($logMessage, null, LOG_WARNING);
+            $this->auditLogger->logGroupWarning($logMessage, null);
 
             $this->setMessage('list_groups', 'success', _('Group has been deleted successfully.'));
             $this->redirect('/groups');

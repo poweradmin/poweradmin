@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,29 +23,19 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 class DbGroupLogger
 {
     private PDO $db;
-    private ConfigurationManager $config;
 
     public function __construct($db)
     {
         $this->db = $db;
-        $this->config = ConfigurationManager::getInstance();
-        $this->config->initialize();
     }
 
     public function doLog($msg, $group_id, $priority): void
     {
-        $dblog_use = $this->config->get('logging', 'database_enabled');
-
-        if (!$dblog_use) {
-            return;
-        }
-
         try {
             $stmt = $this->db->prepare('INSERT INTO log_groups (group_id, event, priority) VALUES (:group_id, :msg, :priority)');
             $stmt->execute([

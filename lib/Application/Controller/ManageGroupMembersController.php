@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Infrastructure\Logger\DbGroupLogger;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
@@ -46,6 +46,7 @@ class ManageGroupMembersController extends BaseController
     private GroupMembershipService $membershipService;
     private GroupService $groupService;
     private Request $request;
+    private LegacyLogger $auditLogger;
 
     public function __construct(array $request)
     {
@@ -57,6 +58,7 @@ class ManageGroupMembersController extends BaseController
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->request = new Request();
+        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     public function run(): void
@@ -160,9 +162,7 @@ class ManageGroupMembersController extends BaseController
                     implode(', ', $addedUsernames)
                 );
 
-                // Log member additions
-                $logger = new DbGroupLogger($this->db);
-                $logger->doLog($logMessage, $groupId, LOG_INFO);
+                $this->auditLogger->logGroupInfo($logMessage, $groupId);
             }
 
             if (!empty($results['failed'])) {
@@ -242,9 +242,7 @@ class ManageGroupMembersController extends BaseController
                     implode(', ', $removedUsernames)
                 );
 
-                // Log member removals
-                $logger = new DbGroupLogger($this->db);
-                $logger->doLog($logMessage, $groupId, LOG_INFO);
+                $this->auditLogger->logGroupInfo($logMessage, $groupId);
             }
 
             if (!empty($results['failed'])) {

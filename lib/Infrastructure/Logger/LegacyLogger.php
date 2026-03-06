@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -81,5 +81,34 @@ class LegacyLogger
     public function logInfo(string $message, ?int $zone_id = null): void
     {
         $this->doLog($message, LOG_INFO, $zone_id);
+    }
+
+    public function logGroupInfo(string $message, ?int $group_id): void
+    {
+        $this->doLogWithGroup($message, LOG_INFO, $group_id);
+    }
+
+    public function logGroupWarning(string $message, ?int $group_id): void
+    {
+        $this->doLogWithGroup($message, LOG_WARNING, $group_id);
+    }
+
+    private function doLogWithGroup(string $message, int $priority, ?int $group_id): void
+    {
+        $syslog_use = $this->config->get('logging', 'syslog_enabled');
+        $syslog_ident = $this->config->get('logging', 'syslog_identity');
+        $syslog_facility = $this->config->get('logging', 'syslog_facility');
+        $dblog_use = $this->config->get('logging', 'database_enabled');
+
+        if ($syslog_use) {
+            openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+            syslog($priority, $message);
+            closelog();
+        }
+
+        if ($dblog_use) {
+            $dbGroupLogger = new DbGroupLogger($this->db);
+            $dbGroupLogger->doLog($message, $group_id, $priority);
+        }
     }
 }
