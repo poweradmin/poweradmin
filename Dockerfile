@@ -49,6 +49,7 @@ RUN apk upgrade --no-cache \
     openldap-dev \
     libxml2-dev \
     && apk add --no-cache \
+    ca-certificates \
     icu-data-full \
     icu-libs \
     gettext \
