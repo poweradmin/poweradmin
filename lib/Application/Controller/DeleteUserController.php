@@ -35,10 +35,22 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\DomainRepository;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class DeleteUserController extends BaseController
 {
+    private LegacyLogger $auditLogger;
+    private UserContextService $userContextService;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->userContextService = new UserContextService();
+    }
 
     public function run(): void
     {
@@ -77,6 +89,9 @@ class DeleteUserController extends BaseController
             $this->showError(_('User does not exist.'));
         }
 
+        // Capture username before deletion since user won't exist after
+        $targetUsername = UserEntity::getUserNameById($this->db, $uid);
+
         $zones = array();
         if (isset($_POST['zone'])) {
             $zones = $_POST['zone'];
@@ -84,6 +99,13 @@ class DeleteUserController extends BaseController
 
         $legacyUsers = new UserManager($this->db, $this->getConfig());
         if ($legacyUsers->deleteUser($uid, $zones)) {
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:delete_user target_user:%s',
+                $_SERVER['REMOTE_ADDR'],
+                $this->userContextService->getLoggedInUsername(),
+                $targetUsername
+            ));
+
             $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
             $this->redirect('/users');
         }

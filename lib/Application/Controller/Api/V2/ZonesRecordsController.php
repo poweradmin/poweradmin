@@ -64,6 +64,7 @@ class ZonesRecordsController extends PublicApiController
     private ApiPermissionService $permissionService;
     private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
+    private LegacyLogger $auditLogger;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -88,6 +89,8 @@ class ZonesRecordsController extends PublicApiController
             $this->soaRecordManager,
             $domainRepository
         );
+
+        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     /**
@@ -539,8 +542,7 @@ class ZonesRecordsController extends PublicApiController
             if ($createPtr && ($type === 'A' || $type === 'AAAA')) {
                 try {
                     $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                    $logger = new LegacyLogger($this->db);
-                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $logger, $dnsRecord, $this->recordCommentService);
+                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $dnsRecord, $this->recordCommentService);
 
                     $ptrResult = $reverseRecordCreator->createReverseRecord(
                         $name,
@@ -577,6 +579,15 @@ class ZonesRecordsController extends PublicApiController
                 'auth' => true,
                 'ptr_created' => $ptrCreated
             ];
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user_id:%d operation:api_add_record zone_id:%d type:%s name:%s',
+                $_SERVER['REMOTE_ADDR'],
+                $userId,
+                $zoneId,
+                $type,
+                $name
+            ), $zoneId);
 
             $message = 'Record created successfully' . $ptrMessage;
             return $this->returnApiResponse(['record' => $responseData], true, $message, 201);
@@ -755,6 +766,14 @@ class ZonesRecordsController extends PublicApiController
                 'auth' => isset($updatedRecord['auth']) ? (bool)DbCompat::boolFromDb($updatedRecord['auth']) : true
             ];
 
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user_id:%d operation:api_edit_record zone_id:%d record_id:%d',
+                $_SERVER['REMOTE_ADDR'],
+                $userId,
+                $zoneId,
+                $recordId
+            ), $zoneId);
+
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record updated successfully', 200);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZonesRecordsController::updateRecord', 'Failed to update record');
@@ -859,6 +878,14 @@ class ZonesRecordsController extends PublicApiController
             if ($recordType !== 'SOA') {
                 $this->updateSOASerial($zoneId);
             }
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user_id:%d operation:api_delete_record zone_id:%d record_id:%d',
+                $_SERVER['REMOTE_ADDR'],
+                $userId,
+                $zoneId,
+                $recordId
+            ), $zoneId);
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204);
         } catch (\Throwable $e) {

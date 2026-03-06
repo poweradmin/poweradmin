@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
@@ -54,6 +55,7 @@ class AddUserController extends BaseController
     private DbUserGroupRepository $groupRepository;
     private DbUserGroupMemberRepository $memberRepository;
     private UserContextService $userContextService;
+    private LegacyLogger $auditLogger;
     protected Request $request;
 
 
@@ -76,6 +78,7 @@ class AddUserController extends BaseController
         $this->groupRepository = new DbUserGroupRepository($this->db);
         $this->memberRepository = new DbUserGroupMemberRepository($this->db);
         $this->userContextService = new UserContextService();
+        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     public function run(): void
@@ -171,6 +174,14 @@ class AddUserController extends BaseController
                     $successMessage .= ' ' . _('A password was generated but is not displayed for security reasons.');
                 }
             }
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:add_user username:%s email:%s',
+                $_SERVER['REMOTE_ADDR'],
+                $this->userContextService->getLoggedInUsername(),
+                $userParams['username'],
+                $userParams['email']
+            ));
 
             $this->setMessage('users', 'success', $successMessage);
             $this->redirect('/users');
@@ -330,8 +341,6 @@ class AddUserController extends BaseController
             $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
             $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
 
-            $logger = new \Poweradmin\Infrastructure\Logger\DbGroupLogger($this->db);
-
             foreach ($successfulGroups as $groupInfo) {
                 $logMessage = sprintf(
                     "Added 1 user(s) to group '%s' (ID: %d) by %s: %s",
@@ -340,7 +349,7 @@ class AddUserController extends BaseController
                     $actorUsername,
                     $username
                 );
-                $logger->doLog($logMessage, $groupInfo['id'], LOG_INFO);
+                $this->auditLogger->logGroupInfo($logMessage, $groupInfo['id']);
             }
         }
     }

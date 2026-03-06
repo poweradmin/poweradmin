@@ -43,6 +43,7 @@ use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -54,6 +55,7 @@ class ZonesController extends PublicApiController
     private ZoneManagementService $zoneManagementService;
     private ApiPermissionService $permissionService;
     private IPAddressValidator $ipAddressValidator;
+    private LegacyLogger $auditLogger;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -82,6 +84,8 @@ class ZonesController extends PublicApiController
             $this->getConfig(),
             $this->db
         );
+
+        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     /**
@@ -531,6 +535,14 @@ class ZonesController extends PublicApiController
                 $this->updateDomainAccount($zoneId, $account);
             }
 
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user_id:%d operation:api_add_zone zone_name:%s zone_type:%s',
+                $_SERVER['REMOTE_ADDR'],
+                $userId,
+                $domain,
+                $type
+            ), $zoneId);
+
             return $this->returnApiResponse(
                 ['zone_id' => $zoneId],
                 true,
@@ -766,6 +778,10 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to delete this zone', 403);
             }
 
+            // Capture zone name before deletion
+            $zone = $this->zoneRepository->getZoneById($zoneId);
+            $zoneName = $zone['name'] ?? 'unknown';
+
             // Use the zone management service to delete zone
             $result = $this->zoneManagementService->deleteZone($zoneId);
 
@@ -776,6 +792,13 @@ class ZonesController extends PublicApiController
                 };
                 return $this->returnApiError($result['message'], $statusCode);
             }
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user_id:%d operation:api_delete_zone zone_name:%s',
+                $_SERVER['REMOTE_ADDR'],
+                $userId,
+                $zoneName
+            ), $zoneId);
 
             return $this->returnApiResponse(null, true, 'Zone deleted successfully', 204);
         } catch (\Throwable $e) {

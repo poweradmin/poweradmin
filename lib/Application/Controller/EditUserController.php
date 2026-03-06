@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -48,8 +49,9 @@ class EditUserController extends BaseController
     protected Request $request;
     private PasswordPolicyService $policyService;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
-
     private readonly UserContextService $userContextService;
+    private LegacyLogger $auditLogger;
+
     public function __construct(
         array $request
     ) {
@@ -59,6 +61,7 @@ class EditUserController extends BaseController
         $this->policyService = new PasswordPolicyService();
         $this->userContextService = new UserContextService();
         $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     public function run(): void
@@ -127,6 +130,13 @@ class EditUserController extends BaseController
                 $params['use_ldap']
             )
         ) {
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:edit_user target_user:%s',
+                $_SERVER['REMOTE_ADDR'],
+                $this->userContextService->getLoggedInUsername(),
+                $params['username']
+            ));
+
             $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
             $canViewAllUsers = UserManager::verifyPermission($this->db, 'user_view_others');
             $canEditAllUsers = UserManager::verifyPermission($this->db, 'user_edit_others');
@@ -401,9 +411,6 @@ class EditUserController extends BaseController
             $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
             $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
 
-            $logger = new \Poweradmin\Infrastructure\Logger\DbGroupLogger($this->db);
-
-            // Log each group addition separately with the target username
             foreach ($successfulGroups as $groupInfo) {
                 $logMessage = sprintf(
                     "Added 1 user(s) to group '%s' (ID: %d) by %s: %s",
@@ -412,7 +419,7 @@ class EditUserController extends BaseController
                     $actorUsername,
                     $targetUsername
                 );
-                $logger->doLog($logMessage, $groupInfo['id'], LOG_INFO);
+                $this->auditLogger->logGroupInfo($logMessage, $groupInfo['id']);
             }
         }
 

@@ -31,6 +31,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
@@ -39,6 +40,7 @@ use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 class LogoutController extends BaseController
 {
     private AuthenticationService $authService;
+    private LegacyLogger $auditLogger;
 
     public function __construct(array $request)
     {
@@ -47,10 +49,18 @@ class LogoutController extends BaseController
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authService = new AuthenticationService($sessionService, $redirectService);
+        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     public function run(): void
     {
+        // Log before logout since session data is destroyed during logout
+        $this->auditLogger->logInfo(sprintf(
+            'client_ip:%s user:%s operation:logout',
+            $_SERVER['REMOTE_ADDR'],
+            $_SESSION['userlogin'] ?? 'unknown'
+        ));
+
         // Check if user was authenticated via external auth
         $authMethod = $_SESSION['auth_method_used'] ?? null;
         $oidcProviderId = $_SESSION['oidc_provider'] ?? null;
