@@ -40,6 +40,20 @@ process_secret_files() {
     done
 }
 
+# Install custom CA certificate for trusting self-signed certs (e.g., internal Keycloak/OIDC)
+install_trusted_ca() {
+    if [ -n "${TRUSTED_CA_FILE:-}" ]; then
+        if [ ! -f "${TRUSTED_CA_FILE}" ]; then
+            log "ERROR: TRUSTED_CA_FILE points to non-existent file: ${TRUSTED_CA_FILE}"
+            exit 1
+        fi
+        log "Installing custom CA certificate from ${TRUSTED_CA_FILE}..."
+        cp "${TRUSTED_CA_FILE}" /usr/local/share/ca-certificates/custom-ca.crt
+        update-ca-certificates
+        log "Custom CA certificate installed successfully"
+    fi
+}
+
 # Escape single quotes for SQL by replacing ' with ''
 escape_sql() {
     printf '%s' "$1" | sed "s/'/''/g"
@@ -1115,6 +1129,9 @@ main() {
     # Process Docker secrets first (must run before using any secret-provided variables)
     log "Processing Docker secrets..."
     process_secret_files
+
+    # Install custom CA certificate if provided (must run before any HTTPS calls)
+    install_trusted_ca
 
     # Set CONFIG_FILE after secrets are processed (supports PA_CONFIG_PATH__FILE)
     CONFIG_FILE="${PA_CONFIG_PATH:-/app/config/settings.php}"

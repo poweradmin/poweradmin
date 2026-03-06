@@ -392,6 +392,34 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LDAP_SEARCH_FILTER` | Additional LDAP search filter | Empty | No |
 | `PA_LDAP_SESSION_CACHE_TIMEOUT` | Session cache timeout in seconds (0 to disable) | `300` | No |
 
+### Custom CA Certificate
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `TRUSTED_CA_FILE` | Path to a custom CA certificate file inside the container | Empty | No |
+
+Use this when connecting to services (OIDC, SAML, LDAP, PowerDNS API) that use self-signed or internal CA certificates. The certificate is added to the system trust store on container startup, so all outbound HTTPS connections will trust it.
+
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -e TRUSTED_CA_FILE=/certs/my-ca.crt \
+  -v /path/to/my-ca.crt:/certs/my-ca.crt:ro \
+  poweradmin/poweradmin
+```
+
+Docker Compose example:
+```yaml
+services:
+  poweradmin:
+    image: poweradmin/poweradmin
+    environment:
+      TRUSTED_CA_FILE: /certs/my-ca.crt
+    volumes:
+      - ./my-ca.crt:/certs/my-ca.crt:ro
+```
+
+Supports Docker secrets via `TRUSTED_CA_FILE__FILE` (see [DOCKER-SECRETS.md](DOCKER-SECRETS.md)).
+
 ### OIDC (OpenID Connect) Authentication
 
 | Variable | Description | Default | Required |
