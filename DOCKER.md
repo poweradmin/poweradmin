@@ -365,7 +365,6 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_API_ENABLED` | Enable API functionality | `false` | No |
 | `PA_API_BASIC_AUTH_ENABLED` | Enable HTTP Basic Auth for API | `false` | No |
 | `PA_API_BASIC_AUTH_REALM` | Realm name for HTTP Basic Authentication | `Poweradmin API` | No |
-| `PA_API_LOG_REQUESTS` | Log all API requests | `false` | No |
 | `PA_API_DOCS_ENABLED` | Enable API documentation at /api/docs | `false` | No |
 | `PA_API_MAX_KEYS_PER_USER` | Maximum API keys per user (admins unlimited) | `5` | No |
 

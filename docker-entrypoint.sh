@@ -524,8 +524,6 @@ generate_config() {
     local display_errors=$(echo "${PA_DISPLAY_ERRORS:-false}" | tr '[:upper:]' '[:lower:]')
     local show_generated_passwords=$(echo "${PA_SHOW_GENERATED_PASSWORDS:-true}" | tr '[:upper:]' '[:lower:]')
 
-    # Convert API boolean values to lowercase
-    local api_log_requests=$(echo "${PA_API_LOG_REQUESTS:-false}" | tr '[:upper:]' '[:lower:]')
     # Convert OIDC boolean values to lowercase
     local oidc_enabled=$(echo "${PA_OIDC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local oidc_auto_provision=$(echo "${PA_OIDC_AUTO_PROVISION:-true}" | tr '[:upper:]' '[:lower:]')
@@ -725,7 +723,6 @@ return [
         'enabled' => ${api_enabled},
         'basic_auth_enabled' => ${api_basic_auth_enabled},
         'basic_auth_realm' => '${PA_API_BASIC_AUTH_REALM:-Poweradmin API}',
-        'log_requests' => ${api_log_requests},
         'docs_enabled' => ${api_docs_enabled},
         'max_keys_per_user' => ${PA_API_MAX_KEYS_PER_USER:-5},
     ],
