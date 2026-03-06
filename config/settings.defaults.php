@@ -325,7 +325,6 @@ return [
         'enabled' => false,                            // Enable API functionality (including API keys)
         'basic_auth_enabled' => false,                 // Enable HTTP Basic Authentication for public API endpoints
         'basic_auth_realm' => 'Poweradmin API',        // Realm name for HTTP Basic Authentication
-        'log_requests' => false,                       // Log all API requests
         'docs_enabled' => false,                       // Enable API documentation at /api/docs endpoint
         'max_keys_per_user' => 5,                      // Maximum number of API keys per user (admin users have no limit)
     ],
