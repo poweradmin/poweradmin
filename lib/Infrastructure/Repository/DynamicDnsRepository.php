@@ -131,7 +131,10 @@ class DynamicDnsRepository implements DynamicDnsRepositoryInterface
     public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): void
     {
         if ($this->isApiBackend()) {
-            $this->backendProvider->addRecord($zoneId, $hostname->getValue(), $recordType, $content, 60, 0);
+            $result = $this->backendProvider->addRecord($zoneId, $hostname->getValue(), $recordType, $content, 60, 0);
+            if (!$result) {
+                throw new \RuntimeException("Failed to add DNS record via API for zone $zoneId");
+            }
             return;
         }
 
@@ -150,7 +153,10 @@ class DynamicDnsRepository implements DynamicDnsRepositoryInterface
     public function deleteDnsRecord(int $recordId): void
     {
         if ($this->isApiBackend()) {
-            $this->backendProvider->deleteRecord($recordId);
+            $result = $this->backendProvider->deleteRecord($recordId);
+            if (!$result) {
+                throw new \RuntimeException("Failed to delete DNS record via API for record $recordId");
+            }
             return;
         }
 
