@@ -52,6 +52,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -65,6 +66,7 @@ class ZonesRecordsController extends PublicApiController
     private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
     private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -91,6 +93,7 @@ class ZonesRecordsController extends PublicApiController
         );
 
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     /**
@@ -582,7 +585,7 @@ class ZonesRecordsController extends PublicApiController
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user_id:%d operation:api_add_record zone_id:%d type:%s name:%s',
-                $_SERVER['REMOTE_ADDR'],
+                $this->ipAddressRetriever->getClientIp(),
                 $userId,
                 $zoneId,
                 $type,
@@ -768,7 +771,7 @@ class ZonesRecordsController extends PublicApiController
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user_id:%d operation:api_edit_record zone_id:%d record_id:%d',
-                $_SERVER['REMOTE_ADDR'],
+                $this->ipAddressRetriever->getClientIp(),
                 $userId,
                 $zoneId,
                 $recordId
@@ -881,7 +884,7 @@ class ZonesRecordsController extends PublicApiController
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user_id:%d operation:api_delete_record zone_id:%d record_id:%d',
-                $_SERVER['REMOTE_ADDR'],
+                $this->ipAddressRetriever->getClientIp(),
                 $userId,
                 $zoneId,
                 $recordId

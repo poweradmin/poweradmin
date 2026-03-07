@@ -43,6 +43,7 @@ use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneMasterController extends BaseController
@@ -50,6 +51,7 @@ class AddZoneMasterController extends BaseController
 
     private LegacyLogger $auditLogger;
     private UserContextService $userContext;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -57,6 +59,7 @@ class AddZoneMasterController extends BaseController
 
         $this->auditLogger = new LegacyLogger($this->db);
         $this->userContext = new UserContextService();
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -146,7 +149,7 @@ class AddZoneMasterController extends BaseController
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
-                $_SERVER['REMOTE_ADDR'],
+                $this->ipAddressRetriever->getClientIp(),
                 $this->userContext->getLoggedInUsername(),
                 $zone_name,
                 $dom_type,

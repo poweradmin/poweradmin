@@ -45,6 +45,7 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Repository\RecordRepository;
 
 class EditRecordController extends BaseController
@@ -55,6 +56,7 @@ class EditRecordController extends BaseController
     private RecordCommentSyncService $commentSyncService;
     private RecordTypeService $recordTypeService;
     private UserContextService $userContextService;
+    private IpAddressRetriever $ipAddressRetriever;
     private RecordRepository $recordRepository;
 
     public function __construct(array $request)
@@ -62,6 +64,7 @@ class EditRecordController extends BaseController
         parent::__construct($request);
 
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
@@ -234,7 +237,7 @@ class EditRecordController extends BaseController
                 'client_ip:%s user:%s operation:edit_record'
                 . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
                 . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
-                $_SERVER['REMOTE_ADDR'],
+                $this->ipAddressRetriever->getClientIp(),
                 $this->userContextService->getLoggedInUsername(),
                 $old_record_info['type'],
                 $old_record_info['name'],

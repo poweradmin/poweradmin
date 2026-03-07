@@ -43,6 +43,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeleteDomainsController extends BaseController
 {
@@ -50,6 +51,7 @@ class DeleteDomainsController extends BaseController
     private LegacyLogger $auditLogger;
     private RecordCommentService $recordCommentService;
     private UserContextService $userContextService;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -59,6 +61,7 @@ class DeleteDomainsController extends BaseController
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->userContextService = new UserContextService();
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -115,7 +118,7 @@ class DeleteDomainsController extends BaseController
                 if (!empty($deleted_zone['name'])) {
                     $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
-                        $_SERVER['REMOTE_ADDR'],
+                        $this->ipAddressRetriever->getClientIp(),
                         $this->userContextService->getLoggedInUsername(),
                         $deleted_zone['name'],
                         $deleted_zone['type']

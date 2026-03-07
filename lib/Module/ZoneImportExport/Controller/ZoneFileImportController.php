@@ -37,6 +37,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 
 class ZoneFileImportController extends BaseController
@@ -248,7 +249,8 @@ class ZoneFileImportController extends BaseController
 
         $userId = $this->userContextService->getLoggedInUserId();
         $userLogin = $this->userContextService->getLoggedInUsername();
-        $clientIp = $_SERVER['REMOTE_ADDR'] ?? '';
+        $ipRetriever = new IpAddressRetriever($_SERVER);
+        $clientIp = $ipRetriever->getClientIp();
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 

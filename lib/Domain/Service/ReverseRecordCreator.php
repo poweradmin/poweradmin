@@ -29,6 +29,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Domain\Service\DnsBackendProvider;
@@ -41,6 +42,8 @@ class ReverseRecordCreator
     private DnsRecord $dnsRecord;
     private ?RecordCommentService $recordCommentService;
     private ?DnsBackendProvider $backendProvider;
+    private IpAddressRetriever $ipAddressRetriever;
+    private UserContextService $userContextService;
 
     public function __construct(
         PDO $db,
@@ -56,6 +59,8 @@ class ReverseRecordCreator
         $this->dnsRecord = $dnsRecord;
         $this->recordCommentService = $recordCommentService;
         $this->backendProvider = $backendProvider;
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->userContextService = new UserContextService();
     }
 
     private function isApiBackend(): bool
@@ -317,11 +322,11 @@ class ReverseRecordCreator
 
         if ($this->dnsRecord->addRecord($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
             // Determine username for logging - API auth uses userid without userlogin
-            $username = $_SESSION["userlogin"] ?? 'api_user_' . ($_SESSION['userid'] ?? 'unknown');
+            $username = $this->userContextService->getLoggedInUsername() ?? 'api_user_' . ($this->userContextService->getLoggedInUserId() ?? 'unknown');
 
             $this->logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
-                $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+                $this->ipAddressRetriever->getClientIp() ?: 'unknown',
                 $username,
                 $content_rev,
                 $fqdn_name,

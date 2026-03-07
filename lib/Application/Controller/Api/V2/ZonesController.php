@@ -44,6 +44,7 @@ use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -56,6 +57,7 @@ class ZonesController extends PublicApiController
     private ApiPermissionService $permissionService;
     private IPAddressValidator $ipAddressValidator;
     private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -65,6 +67,7 @@ class ZonesController extends PublicApiController
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
         $this->permissionService = new ApiPermissionService($this->db);
         $this->ipAddressValidator = new IPAddressValidator();
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
@@ -537,7 +540,7 @@ class ZonesController extends PublicApiController
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user_id:%d operation:api_add_zone zone_name:%s zone_type:%s',
-                $_SERVER['REMOTE_ADDR'],
+                $this->ipAddressRetriever->getClientIp(),
                 $userId,
                 $domain,
                 $type
@@ -795,7 +798,7 @@ class ZonesController extends PublicApiController
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user_id:%d operation:api_delete_zone zone_name:%s',
-                $_SERVER['REMOTE_ADDR'],
+                $this->ipAddressRetriever->getClientIp(),
                 $userId,
                 $zoneName
             ), $zoneId);

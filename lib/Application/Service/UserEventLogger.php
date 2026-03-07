@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,23 +24,26 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class UserEventLogger
 {
     private LegacyLogger $logger;
+    private IpAddressRetriever $ipRetriever;
 
     public function __construct(PDO $db)
     {
         $this->logger = new LegacyLogger($db);
+        $this->ipRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function logSuccessfulAuth(): void
     {
-        $this->logger->logNotice(sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin']));
+        $this->logger->logNotice(sprintf('Successful authentication attempt from [%s] for user \'%s\'', $this->ipRetriever->getClientIp(), $_SESSION['userlogin']));
     }
 
     public function logFailedAuth(): void
     {
-        $this->logger->logWarn(sprintf('Failed authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        $this->logger->logWarn(sprintf('Failed authentication attempt from [%s] for user \'%s\'', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
     }
 }

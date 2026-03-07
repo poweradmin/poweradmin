@@ -36,20 +36,26 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DomainHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class BulkRegistrationController extends BaseController
 {
 
     private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
+    private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
@@ -109,8 +115,8 @@ class BulkRegistrationController extends BaseController
                 $zone_id = $dnsRecord->getZoneIdFromName($domain);
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
-                    $_SERVER['REMOTE_ADDR'],
-                    $_SESSION["userlogin"],
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->userContextService->getLoggedInUsername(),
                     $domain,
                     $dom_type,
                     $zone_template

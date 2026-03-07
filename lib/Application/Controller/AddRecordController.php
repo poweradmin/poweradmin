@@ -45,20 +45,24 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddRecordController extends BaseController
 {
     private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
     private DnsRecord $dnsRecord;
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
     private RecordManagerService $recordManager;
     private RecordTypeService $recordTypeService;
     private FormStateService $formStateService;
+    private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
@@ -66,6 +70,7 @@ class AddRecordController extends BaseController
 
         // ConfigurationManager is now handled by the BaseController
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->formStateService = new FormStateService();
 
@@ -97,6 +102,8 @@ class AddRecordController extends BaseController
             $this->dnsRecord,
             $recordCommentService
         );
+
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
@@ -311,8 +318,8 @@ class AddRecordController extends BaseController
             $ttl,
             $prio,
             $comment,
-            $_SESSION['userlogin'],
-            $_SERVER['REMOTE_ADDR']
+            $this->userContextService->getLoggedInUsername(),
+            $this->ipAddressRetriever->getClientIp()
         );
     }
 
@@ -326,7 +333,7 @@ class AddRecordController extends BaseController
             $ttl,
             $prio,
             $comment,
-            $_SESSION['userlogin']
+            $this->userContextService->getLoggedInUsername()
         );
 
         if (isset($result['success']) && !$result['success']) {
@@ -344,7 +351,7 @@ class AddRecordController extends BaseController
             $content,
             $zone_id,
             $comment,
-            $_SESSION['userlogin']
+            $this->userContextService->getLoggedInUsername()
         );
 
         if ($result['success']) {

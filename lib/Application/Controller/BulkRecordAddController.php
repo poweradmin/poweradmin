@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class BulkRecordAddController extends BaseController
@@ -53,12 +54,14 @@ class BulkRecordAddController extends BaseController
     private RecordManagerService $recordManager;
     private RecordTypeService $recordTypeService;
     private UserContextService $userContextService;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
@@ -207,7 +210,7 @@ class BulkRecordAddController extends BaseController
                         $prio,
                         $comment,
                         $this->userContextService->getLoggedInUsername(),
-                        $_SERVER['REMOTE_ADDR']
+                        $this->ipAddressRetriever->getClientIp()
                     )
                 ) {
                     $success_count++;
@@ -215,7 +218,7 @@ class BulkRecordAddController extends BaseController
                     // Log the record creation
                     $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:add_record name:%s type:%s content:%s ttl:%s prio:%s',
-                        $_SERVER['REMOTE_ADDR'],
+                        $this->ipAddressRetriever->getClientIp(),
                         $this->userContextService->getLoggedInUsername(),
                         $name,
                         $type,

@@ -47,6 +47,7 @@ use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeleteRecordController extends BaseController
 {
@@ -56,12 +57,14 @@ class DeleteRecordController extends BaseController
     private ReverseRecordCreator $reverseRecordCreator;
     private UserContextService $userContextService;
     private PermissionService $permissionService;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
@@ -141,8 +144,8 @@ class DeleteRecordController extends BaseController
                 if (isset($record_info['prio'])) {
                     $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
-                        $_SERVER['REMOTE_ADDR'],
-                        $_SESSION["userlogin"],
+                        $this->ipAddressRetriever->getClientIp(),
+                        $this->userContextService->getLoggedInUsername(),
                         $record_info['type'],
                         $record_info['name'],
                         $record_info['content'],
@@ -152,8 +155,8 @@ class DeleteRecordController extends BaseController
                 } else {
                     $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
-                        $_SERVER['REMOTE_ADDR'],
-                        $_SESSION["userlogin"],
+                        $this->ipAddressRetriever->getClientIp(),
+                        $this->userContextService->getLoggedInUsername(),
                         $record_info['type'],
                         $record_info['name'],
                         $record_info['content'],

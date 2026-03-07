@@ -42,6 +42,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -56,6 +57,7 @@ class AddUserController extends BaseController
     private DbUserGroupMemberRepository $memberRepository;
     private UserContextService $userContextService;
     private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
     protected Request $request;
 
 
@@ -79,6 +81,7 @@ class AddUserController extends BaseController
         $this->memberRepository = new DbUserGroupMemberRepository($this->db);
         $this->userContextService = new UserContextService();
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -177,7 +180,7 @@ class AddUserController extends BaseController
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_user username:%s email:%s',
-                $_SERVER['REMOTE_ADDR'],
+                $this->ipAddressRetriever->getClientIp(),
                 $this->userContextService->getLoggedInUsername(),
                 $userParams['username'],
                 $userParams['email']

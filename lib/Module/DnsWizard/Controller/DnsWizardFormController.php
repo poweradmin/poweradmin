@@ -34,7 +34,9 @@ use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
  * DNS Wizard Form Controller
@@ -239,8 +241,10 @@ class DnsWizardFormController extends BaseController
         $prio = isset($recordData['prio']) && $recordData['prio'] !== '' ? (int)$recordData['prio'] : 0;
 
         // Create the record
-        $userlogin = $_SESSION['userlogin'] ?? 'unknown';
-        $clientIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $userContextService = new UserContextService();
+        $userlogin = $userContextService->getLoggedInUsername() ?? 'unknown';
+        $ipRetriever = new IpAddressRetriever($_SERVER);
+        $clientIp = $ipRetriever->getClientIp();
 
         $success = $this->recordManager->createRecord(
             $zone_id,

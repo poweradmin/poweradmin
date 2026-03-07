@@ -23,9 +23,11 @@
 namespace Poweradmin\Domain\Model;
 
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class RecordLog
 {
@@ -35,14 +37,17 @@ class RecordLog
     private bool $record_changed = false;
     private LegacyLogger $logger;
     private PDO $db;
-
     private ConfigurationManager $config;
+    private IpAddressRetriever $ipAddressRetriever;
+    private UserContextService $userContextService;
 
     public function __construct(PDO $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;
         $this->logger = new LegacyLogger($db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->userContextService = new UserContextService();
     }
 
     public function logPrior($rid, $zid, $comment): void
@@ -95,8 +100,8 @@ class RecordLog
             'client_ip:%s user:%s operation:edit_record'
             . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
             . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
-            $_SERVER['REMOTE_ADDR'],
-            $_SESSION["userlogin"],
+            $this->ipAddressRetriever->getClientIp(),
+            $this->userContextService->getLoggedInUsername(),
             $this->record_prior['type'],
             $this->record_prior['name'],
             $this->record_prior['content'],

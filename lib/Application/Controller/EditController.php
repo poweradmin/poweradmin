@@ -60,6 +60,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -79,6 +80,7 @@ class EditController extends BaseController
     private ReverseRecordCreator $reverseRecordCreator;
     private RecordManagerService $recordManager;
     private UserContextService $userContextService;
+    private IpAddressRetriever $ipAddressRetriever;
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
     private RecordRepository $recordRepository;
@@ -121,6 +123,7 @@ class EditController extends BaseController
         );
 
         $this->userContextService = new UserContextService();
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
 
         $userRepository = new DbUserRepository($this->db, $this->getConfig());
@@ -882,7 +885,7 @@ class EditController extends BaseController
             $prio,
             $comment,
             $this->userContextService->getLoggedInUsername(),
-            $_SERVER['REMOTE_ADDR']
+            $this->ipAddressRetriever->getClientIp()
         );
     }
 
