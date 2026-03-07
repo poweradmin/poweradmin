@@ -40,6 +40,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -51,6 +52,7 @@ class EditUserController extends BaseController
     private DbPermissionTemplateRepository $permissionTemplateRepository;
     private readonly UserContextService $userContextService;
     private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(
         array $request
@@ -62,6 +64,7 @@ class EditUserController extends BaseController
         $this->userContextService = new UserContextService();
         $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -131,10 +134,12 @@ class EditUserController extends BaseController
             )
         ) {
             $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:edit_user target_user:%s',
-                $_SERVER['REMOTE_ADDR'],
+                'client_ip:%s user:%s operation:edit_user target_user:%s perm_template:%s auth_type:%s',
+                $this->ipAddressRetriever->getClientIp(),
                 $this->userContextService->getLoggedInUsername(),
-                $params['username']
+                $params['username'],
+                $params['perm_templ'],
+                $params['use_ldap'] ? 'ldap' : 'sql'
             ));
 
             $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
