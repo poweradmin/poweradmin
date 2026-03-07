@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,17 +32,26 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class AddPermTemplController extends BaseController
 {
     private DbPermissionTemplateRepository $permissionTemplate;
+    private LegacyLogger $auditLogger;
+    private UserContextService $userContextService;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->permissionTemplate = new DbPermissionTemplateRepository($this->db, $this->getConfig());
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->userContextService = new UserContextService();
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -70,6 +79,14 @@ class AddPermTemplController extends BaseController
         }
 
         $this->permissionTemplate->addPermissionTemplate($this->getRequest());
+
+        $this->auditLogger->logInfo(sprintf(
+            'client_ip:%s user:%s operation:add_perm_template name:%s',
+            $this->ipAddressRetriever->getClientIp(),
+            $this->userContextService->getLoggedInUsername(),
+            $this->getSafeRequestValue('templ_name')
+        ));
+
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));
         $this->redirect('/permissions/templates');
     }
