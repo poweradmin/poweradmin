@@ -429,7 +429,7 @@ class UserManager
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
 
-            $stmt = $this->db->prepare("SELECT username FROM users WHERE id = :id");
+            $stmt = $this->db->prepare("SELECT username, auth_method FROM users WHERE id = :id");
             $stmt->execute([':id' => $id]);
             $usercheck = $stmt->fetch();
 
@@ -485,7 +485,18 @@ class UserManager
             $stmt->bindValue(':description', $description, PDO::PARAM_STR);
             $stmt->bindValue(':active', $active, PDO::PARAM_INT);
             $stmt->bindValue(':use_ldap', $i_use_ldap ?: 0, PDO::PARAM_INT);
-            $stmt->bindValue(':auth_method', $i_use_ldap ? 'ldap' : 'sql', PDO::PARAM_STR);
+
+            // Determine auth_method: preserve existing value for external auth (oidc, saml)
+            // unless LDAP is being explicitly enabled
+            $currentAuthMethod = $usercheck['auth_method'] ?? 'sql';
+            if ($i_use_ldap) {
+                $authMethod = 'ldap';
+            } elseif (in_array($currentAuthMethod, ['oidc', 'saml'])) {
+                $authMethod = $currentAuthMethod;
+            } else {
+                $authMethod = 'sql';
+            }
+            $stmt->bindValue(':auth_method', $authMethod, PDO::PARAM_STR);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
             if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
@@ -876,7 +887,7 @@ class UserManager
             // current username is not the same as the username that was given by the
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
-            $query = "SELECT username FROM users WHERE id = :id";
+            $query = "SELECT username, auth_method FROM users WHERE id = :id";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':id', $details['uid'], PDO::PARAM_INT);
             $stmt->execute();
@@ -941,7 +952,17 @@ class UserManager
             }
             if ($perm_is_godlike == "1") {
                 $stmt->bindValue(':use_ldap', $use_ldap, PDO::PARAM_INT);
-                $stmt->bindValue(':auth_method', $use_ldap ? 'ldap' : 'sql', PDO::PARAM_STR);
+
+                // Preserve existing auth_method for external auth (oidc, saml)
+                $currentAuthMethod = $userCheck['auth_method'] ?? 'sql';
+                if ($use_ldap) {
+                    $authMethod = 'ldap';
+                } elseif (in_array($currentAuthMethod, ['oidc', 'saml'])) {
+                    $authMethod = $currentAuthMethod;
+                } else {
+                    $authMethod = 'sql';
+                }
+                $stmt->bindValue(':auth_method', $authMethod, PDO::PARAM_STR);
             }
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
                 $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
