@@ -189,7 +189,13 @@ class ZoneFileImportController extends BaseController
         // Store parsed data in session for the execute step
         $_SESSION['zone_import_data'] = [
             'origin' => $origin,
-            'records' => serialize($filteredRecords),
+            'records' => json_encode(array_map(fn($r) => [
+                'name' => $r->name,
+                'type' => $r->type,
+                'content' => $r->content,
+                'ttl' => $r->ttl,
+                'priority' => $r->priority,
+            ], $filteredRecords)),
             'warnings' => $parsed->getWarnings(),
             'filename' => $_FILES['zone_file']['name'],
         ];
@@ -234,7 +240,11 @@ class ZoneFileImportController extends BaseController
         }
 
         $importData = $_SESSION['zone_import_data'];
-        $records = unserialize($importData['records']);
+        $records = json_decode($importData['records']);
+        if (!is_array($records)) {
+            $this->showError(_('Invalid import data. Please upload the file again.'));
+            return;
+        }
         $origin = $importData['origin'];
 
         $importMode = $_POST['import_mode'] ?? 'new';
