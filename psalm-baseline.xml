@@ -12,12 +12,6 @@
       <code><![CDATA[DatabaseValidationConstants::MIN_PORT->value]]></code>
     </InvalidScalarArgument>
   </file>
-  <file src="lib/Application/Controller/DeletePermTemplController.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$id]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Application/Controller/DeleteRecordController.php">
     <InvalidScalarArgument>
       <code><![CDATA[$record_id]]></code>
