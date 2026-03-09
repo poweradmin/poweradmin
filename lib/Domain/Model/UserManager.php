@@ -402,7 +402,7 @@ class UserManager
      *
      * @return boolean true if succesful, false otherwise
      */
-    public function editUser(int $id, string $user, string $fullname, string $email, string $perm_templ, string $description, int $active, string $user_password, $i_use_ldap): bool
+    public function editUser(int $id, string $user, string $fullname, string $email, string $perm_templ, string $description, int $active, string $user_password, $useLdap): bool
     {
         $perm_edit_own = self::verifyPermission($this->db, 'user_edit_own');
         $perm_edit_others = self::verifyPermission($this->db, 'user_edit_others');
@@ -470,7 +470,7 @@ class UserManager
                     $config->get('security', 'password_cost', 12)
                 );
 
-                $passwordHash = $i_use_ldap ? 'LDAP_USER' : $userAuthService->hashPassword($user_password);
+                $passwordHash = $useLdap ? 'LDAP_USER' : $userAuthService->hashPassword($user_password);
                 $query .= ", password = :password";
             }
 
@@ -483,19 +483,9 @@ class UserManager
             $stmt->bindValue(':email', $email, PDO::PARAM_STR);
             $stmt->bindValue(':description', $description, PDO::PARAM_STR);
             $stmt->bindValue(':active', $active, PDO::PARAM_INT);
-            $stmt->bindValue(':use_ldap', $i_use_ldap ?: 0, PDO::PARAM_INT);
+            $stmt->bindValue(':use_ldap', $useLdap ?: 0, PDO::PARAM_INT);
 
-            // Determine auth_method: preserve existing value for external auth (oidc, saml)
-            // unless LDAP is being explicitly enabled
-            $currentAuthMethod = $usercheck['auth_method'] ?? 'sql';
-            if ($i_use_ldap) {
-                $authMethod = 'ldap';
-            } elseif (in_array($currentAuthMethod, ['oidc', 'saml'])) {
-                $authMethod = $currentAuthMethod;
-            } else {
-                $authMethod = 'sql';
-            }
-            $stmt->bindValue(':auth_method', $authMethod, PDO::PARAM_STR);
+            $stmt->bindValue(':auth_method', self::resolveAuthMethod((bool) $useLdap, $usercheck['auth_method'] ?? null), PDO::PARAM_STR);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
             if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
@@ -739,6 +729,26 @@ class UserManager
     }
 
     /**
+     * Resolve auth_method value, preserving external auth types (oidc, saml).
+     *
+     * @param bool $useLdap Whether LDAP is being enabled
+     * @param string|null $currentAuthMethod Current auth_method from the database
+     * @return string The resolved auth_method value
+     */
+    private static function resolveAuthMethod(bool $useLdap, ?string $currentAuthMethod): string
+    {
+        if ($useLdap) {
+            return 'ldap';
+        }
+
+        if (in_array($currentAuthMethod, ['oidc', 'saml'])) {
+            return $currentAuthMethod;
+        }
+
+        return 'sql';
+    }
+
+    /**
      * Get a map of user IDs to their group names
      *
      * @param object $db Database connection
@@ -952,16 +962,7 @@ class UserManager
             if ($perm_is_godlike == "1") {
                 $stmt->bindValue(':use_ldap', $use_ldap, PDO::PARAM_INT);
 
-                // Preserve existing auth_method for external auth (oidc, saml)
-                $currentAuthMethod = $userCheck['auth_method'] ?? 'sql';
-                if ($use_ldap) {
-                    $authMethod = 'ldap';
-                } elseif (in_array($currentAuthMethod, ['oidc', 'saml'])) {
-                    $authMethod = $currentAuthMethod;
-                } else {
-                    $authMethod = 'sql';
-                }
-                $stmt->bindValue(':auth_method', $authMethod, PDO::PARAM_STR);
+                $stmt->bindValue(':auth_method', self::resolveAuthMethod((bool) $use_ldap, $userCheck['auth_method'] ?? null), PDO::PARAM_STR);
             }
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
                 $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
