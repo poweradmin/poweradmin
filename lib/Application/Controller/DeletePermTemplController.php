@@ -73,7 +73,7 @@ class DeletePermTemplController extends BaseController
             return;
         }
 
-        $id = $this->getSafeRequestValue('id');
+        $id = (int)$this->getSafeRequestValue('id');
         $templDetails = $this->permissionTemplate->getPermissionTemplateDetails($id);
 
         if (UserManager::deletePermTempl($this->db, $id)) {
@@ -97,7 +97,7 @@ class DeletePermTemplController extends BaseController
     private function showForm(): void
     {
         $id = $this->getSafeRequestValue('id');
-        $templ_details = $this->permissionTemplate->getPermissionTemplateDetails($id);
+        $templ_details = $this->permissionTemplate->getPermissionTemplateDetails((int)$id);
 
         $this->render('delete_perm_templ.html', [
             'perm_templ_id' => $id,

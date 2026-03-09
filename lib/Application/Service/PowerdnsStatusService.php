@@ -118,7 +118,9 @@ class PowerdnsStatusService
                             $metricInfo = $this->getMetricInfo($rawMetrics);
                         } else {
                             // Log failure to fetch Prometheus metrics (may require Basic Auth)
-                            $this->logger->warning('Failed to fetch Prometheus metrics from {url}. If PowerDNS webserver-password is enabled, configure pdns_api.webserver_username and pdns_api.webserver_password in settings.', ['url' => $metricsUrl]);
+                            $message = 'Failed to fetch Prometheus metrics from {url}. If PowerDNS webserver-password is enabled, '
+                                . 'configure pdns_api.webserver_username and pdns_api.webserver_password in settings.';
+                            $this->logger->warning($message, ['url' => $metricsUrl]);
                         }
                     }
                 }
