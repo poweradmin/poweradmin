@@ -3,6 +3,7 @@
 namespace unit;
 
 use Error;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Routing\BasicRouter;
 
@@ -81,7 +82,7 @@ class BasicRouterTest extends TestCase
         $router = new BasicRouter(['page' => 'non_existent_class']);
         $router->setPages(['non_existent_class']);
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Class \Poweradmin\Application\Controller\NonExistentClassController not found');
         $router->process();
     }
