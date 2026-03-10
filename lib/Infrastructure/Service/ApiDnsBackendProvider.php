@@ -103,7 +103,8 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         $zonesId = (int)$this->db->lastInsertId();
 
         // Set domain_id = zones.id so existing code that uses domain_id works
-        $stmt = $this->db->prepare("UPDATE zones SET domain_id = :id WHERE id = :id");
+        $stmt = $this->db->prepare("UPDATE zones SET domain_id = :did WHERE id = :id");
+        $stmt->bindValue(':did', $zonesId, PDO::PARAM_INT);
         $stmt->bindValue(':id', $zonesId, PDO::PARAM_INT);
         $stmt->execute();
 
