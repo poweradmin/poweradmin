@@ -36,7 +36,6 @@ use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 
@@ -86,7 +85,7 @@ class ZoneFileImportController extends BaseController
         $targetZoneName = '';
 
         if (isset($_GET['zone_id']) && (int)$_GET['zone_id'] > 0) {
-            $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+            $zoneRepository = $this->createZoneRepository();
             $zoneName = $zoneRepository->getDomainNameById((int)$_GET['zone_id']);
             if ($zoneName) {
                 $userId = $this->userContextService->getLoggedInUserId();
@@ -224,7 +223,7 @@ class ZoneFileImportController extends BaseController
         ];
 
         if ($importMode === 'existing' && $existingZoneId > 0) {
-            $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+            $zoneRepository = $this->createZoneRepository();
             $existingZoneName = $zoneRepository->getDomainNameById($existingZoneId);
             $previewVars['existing_zone_name'] = $existingZoneName ?: '';
         }
@@ -266,7 +265,7 @@ class ZoneFileImportController extends BaseController
 
         if ($importMode === 'existing' && $existingZoneId > 0) {
             // Verify the zone exists
-            $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+            $zoneRepository = $this->createZoneRepository();
             $existingZoneName = $zoneRepository->getDomainNameById($existingZoneId);
             if (!$existingZoneName) {
                 $this->showError(_('The selected zone does not exist.'));

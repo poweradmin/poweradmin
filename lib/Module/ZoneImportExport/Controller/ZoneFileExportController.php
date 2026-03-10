@@ -28,7 +28,6 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
 
 class ZoneFileExportController extends BaseController
@@ -58,7 +57,7 @@ class ZoneFileExportController extends BaseController
             return;
         }
 
-        $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $zoneRepository = $this->createZoneRepository();
         $zone_name = $zoneRepository->getDomainNameById($zone_id);
 
         if (!$zone_name) {

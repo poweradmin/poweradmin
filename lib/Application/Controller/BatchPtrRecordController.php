@@ -33,7 +33,6 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Repository\RecordRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Model\Constants;
 
@@ -272,7 +271,7 @@ class BatchPtrRecordController extends BaseController
      */
     private function getReverseZones(): array
     {
-        $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $zoneRepository = $this->createZoneRepository();
 
         // Get permission type and user ID
         $perm_view = Permission::getViewPermission($this->db);

@@ -63,7 +63,7 @@ class ZonesController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
         $this->permissionService = new ApiPermissionService($this->db);
         $this->ipAddressValidator = new IPAddressValidator();

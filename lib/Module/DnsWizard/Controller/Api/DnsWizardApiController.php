@@ -35,7 +35,6 @@ use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -346,7 +345,7 @@ class DnsWizardApiController extends InternalApiController
 
         try {
             // Check zone existence
-            $zoneRepository = new DbZoneRepository($this->db, $this->config);
+            $zoneRepository = $this->createZoneRepository();
             $zone_name = $zoneRepository->getDomainNameById($zone_id);
 
             if ($zone_name === null) {

@@ -61,7 +61,7 @@ class DnsServiceFactory
         $ttlValidator = new TTLValidator();
         $dnsCommonValidator = new DnsCommonValidator($db, $config, $backendProvider);
         $messageService = new MessageService();
-        $zoneRepository = new DbZoneRepository($db, $config);
+        $zoneRepository = new DbZoneRepository($db, $config, $backendProvider);
         $dnsViolationValidator = new DNSViolationValidator($db, $config, $backendProvider);
 
         return new DnsRecordValidationService(

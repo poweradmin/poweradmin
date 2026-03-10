@@ -40,7 +40,6 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneSortingService;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
@@ -59,7 +58,7 @@ class ListReverseZonesController extends BaseController
         parent::__construct($request);
 
         // Initialize repository and services
-        $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $zoneRepository = $this->createZoneRepository();
         $this->dnsDataService = $this->createDnsDataService();
         $this->forwardZoneAssociationService = new ForwardZoneAssociationService($zoneRepository);
         $this->userContextService = new UserContextService();

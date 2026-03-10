@@ -57,7 +57,7 @@ class DnsWizardFormController extends BaseController
 
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->wizardRegistry = new WizardRegistry($this->getConfig());
-        $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $this->zoneRepository = $this->createZoneRepository();
         $this->formStateService = new FormStateService();
 
         $logger = new LegacyLogger($this->db);

@@ -162,7 +162,7 @@ class DnsDataService
         bool $showTemplate = false
     ): array {
         if (!$this->backendProvider->isApiBackend()) {
-            $zoneRepository = new DbZoneRepository($this->db, $this->config);
+            $zoneRepository = new DbZoneRepository($this->db, $this->config, $this->backendProvider);
             return $zoneRepository->getReverseZones(
                 $perm,
                 $userId,
@@ -246,7 +246,7 @@ class DnsDataService
     public function getReverseZoneCounts(string $perm, int $userId): array
     {
         if (!$this->backendProvider->isApiBackend()) {
-            $zoneRepository = new DbZoneRepository($this->db, $this->config);
+            $zoneRepository = new DbZoneRepository($this->db, $this->config, $this->backendProvider);
             return $zoneRepository->getReverseZoneCounts($perm, $userId);
         }
 
@@ -297,7 +297,7 @@ class DnsDataService
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
     {
         if (!$this->backendProvider->isApiBackend()) {
-            $zoneRepository = new DbZoneRepository($this->db, $this->config);
+            $zoneRepository = new DbZoneRepository($this->db, $this->config, $this->backendProvider);
             return $zoneRepository->getDistinctStartingLetters($userId, $viewOthers);
         }
 

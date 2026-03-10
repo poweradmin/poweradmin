@@ -40,7 +40,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
@@ -190,7 +189,7 @@ class ListForwardZonesController extends BaseController
         $dnsDataService = $this->createDnsDataService();
         $availableChars = $dnsDataService->getDistinctStartingLetters($userId, $allow_view_others);
 
-        $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $zoneRepository = $this->createZoneRepository();
         $zoneService = new ZoneService($zoneRepository);
         $digitsAvailable = $zoneService->checkDigitsAvailable($availableChars);
 

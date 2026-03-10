@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -43,8 +44,9 @@ class DbZoneRepository implements ZoneRepositoryInterface
     private ReverseZoneSorting $reverseZoneSorting;
     private object $config;
     private TableNameService $tableNameService;
+    private ?ApiZoneRepository $apiRepo;
 
-    public function __construct($db, $config)
+    public function __construct($db, $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
@@ -54,11 +56,18 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $this->reverseDomainNaturalSorting = new ReverseDomainNaturalSorting();
         $this->reverseZoneSorting = new ReverseZoneSorting();
         $this->tableNameService = new TableNameService($config);
+        $this->apiRepo = $backendProvider !== null
+            ? new ApiZoneRepository($db, $backendProvider, $this->db_type)
+            : null;
     }
 
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getDistinctStartingLetters($userId, $viewOthers);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->db_type) . "($domains_table.name, 1, 1)) AS letter FROM $domains_table";
@@ -120,6 +129,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
         bool $showSerial = false,
         bool $showTemplate = false
     ) {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getReverseZones($permType, $userId, $reverseType, $offset, $limit, $sortBy, $sortDirection, $countOnly, $showSerial, $showTemplate);
+        }
+
         // Validate sort parameters
         $allowedSortColumns = ['name', 'owner', 'count_records', 'type'];
         $sortBy = $this->tableNameService->validateOrderBy($sortBy, $allowedSortColumns);
@@ -139,7 +152,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $params = [];
 
             // For count queries, use a simpler join structure
-            $query = "SELECT $selectFields 
+            $query = "SELECT $selectFields
                      FROM (
                          SELECT DISTINCT $domains_table.id
                          FROM $domains_table
@@ -181,11 +194,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
             return (int)$stmt->fetchColumn();
         } else {
-            $selectFields = "$domains_table.id, 
-                           $domains_table.name, 
-                           $domains_table.type, 
-                           COUNT($records_table.id) AS count_records, 
-                           users.username, 
+            $selectFields = "$domains_table.id,
+                           $domains_table.name,
+                           $domains_table.type,
+                           COUNT($records_table.id) AS count_records,
+                           users.username,
                            users.fullname,
                            COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured,
                            zones.comment";
@@ -301,7 +314,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $zones[$name]['users'][] = $row['username'];
         }
 
-        // Batch fetch serial numbers (optimization: N+1 → 1 query)
+        // Batch fetch serial numbers (optimization: N+1 -> 1 query)
         if ($showSerial && !empty($zones)) {
             $zoneIds = array_map(fn($zone) => $zone['id'], $zones);
             $recordRepository = new RecordRepository($this->db, $this->config);
@@ -325,6 +338,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getReverseZoneCounts(string $permType, int $userId): array
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getReverseZoneCounts($permType, $userId);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         // Base query with conditional aggregation for all three counts
@@ -375,6 +392,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getDomainNameById(int $zoneId): ?string
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getDomainNameById($zoneId);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT name FROM $domains_table WHERE id = :id";
@@ -398,6 +419,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function listZones(?int $userId = null, bool $viewOthers = false, array $filters = [], int $offset = 0, int $limit = 100): array
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->listZones($userId, $viewOthers, $filters, $offset, $limit);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
@@ -498,6 +523,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function zoneExists(int $zoneId, ?int $userId = null): bool
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->zoneExists($zoneId, $userId);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT 1 FROM $domains_table";
@@ -529,6 +558,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getZone(int $zoneId): ?array
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getZone($zoneId);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
@@ -580,6 +613,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getZoneByName(string $zoneName): ?array
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getZoneByName($zoneName);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         // First find the zone ID
@@ -613,6 +650,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
     {
         if (empty($reverseZoneIds)) {
             return [];
+        }
+
+        if ($this->apiRepo) {
+            return $this->apiRepo->findForwardZonesByPtrRecords($reverseZoneIds);
         }
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -722,6 +763,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function zoneIdExists(int $zoneId): bool
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->zoneIdExists($zoneId);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT 1 FROM $domains_table WHERE id = :id";
@@ -740,6 +785,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getDomainType(int $zoneId): string
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getDomainType($zoneId);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT type FROM $domains_table WHERE id = :id";
@@ -759,6 +808,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getDomainSlaveMaster(int $zoneId): ?string
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getDomainSlaveMaster($zoneId);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT master FROM $domains_table WHERE id = :id";
@@ -778,6 +831,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getZoneComment(int $zoneId): ?string
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getZoneComment($zoneId);
+        }
+
         $query = "SELECT comment FROM zones WHERE domain_id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
@@ -796,6 +853,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function updateZoneComment(int $zoneId, string $comment): bool
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->updateZoneComment($zoneId, $comment);
+        }
+
         $query = "UPDATE zones SET comment = :comment WHERE domain_id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
@@ -812,7 +873,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getZoneOwners(int $zoneId): array
     {
-        $query = "SELECT u.id, u.username, u.fullname 
+        if ($this->apiRepo) {
+            return $this->apiRepo->getZoneOwners($zoneId);
+        }
+
+        $query = "SELECT u.id, u.username, u.fullname
                   FROM zones z
                   JOIN users u ON z.owner = u.id
                   WHERE z.domain_id = :id";
@@ -832,6 +897,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function addOwnerToZone(int $zoneId, int $userId): bool
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->addOwnerToZone($zoneId, $userId);
+        }
+
         // Get the zone_templ_id from an existing zone record for this domain
         $getTemplateQuery = "SELECT zone_templ_id FROM zones WHERE domain_id = :domain_id LIMIT 1";
         $getStmt = $this->db->prepare($getTemplateQuery);
@@ -860,6 +929,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function removeOwnerFromZone(int $zoneId, int $userId): bool
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->removeOwnerFromZone($zoneId, $userId);
+        }
+
         $query = "DELETE FROM zones WHERE domain_id = :domain_id AND owner = :owner";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
@@ -878,6 +951,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function isUserZoneOwner(int $zoneId, int $userId): bool
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->isUserZoneOwner($zoneId, $userId);
+        }
+
         $query = "SELECT COUNT(id) FROM zones WHERE owner = :user_id AND domain_id = :domain_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
@@ -895,6 +972,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getZoneIdByName(string $zoneName): ?int
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getZoneIdByName($zoneName);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT id FROM $domains_table WHERE name = :name";
@@ -918,6 +999,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function createDomain(string $domain, int $owner, string $type, string $slaveMaster = '', string $zoneTemplate = 'none'): bool
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->createDomain($domain, $owner, $type, $slaveMaster, $zoneTemplate);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         // Insert into domains table
@@ -951,6 +1036,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function deleteZone(int $zoneId): bool
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->deleteZone($zoneId);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -1003,6 +1092,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function updateZone(int $zoneId, array $updates): bool
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->updateZone($zoneId, $updates);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $allowedFields = ['name', 'type', 'master'];
@@ -1028,6 +1121,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
     public function getAllZones(?int $offset = null, ?int $limit = null): array
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getAllZones($offset, $limit);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -1057,6 +1154,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneCount(): int
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getZoneCount();
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT COUNT(*) FROM $domains_table";
@@ -1073,6 +1174,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null): int
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getZoneCountFiltered($zoneIds, $userId, $nameFilter);
+        }
+
         // If empty array, user can't see any zones
         if ($zoneIds !== null && empty($zoneIds)) {
             return 0;
@@ -1123,6 +1228,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null): array
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getAllZonesFiltered($zoneIds, $userId, $nameFilter, $offset, $limit);
+        }
+
         // If empty array, user can't see any zones
         if ($zoneIds !== null && empty($zoneIds)) {
             return [];
@@ -1192,6 +1301,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneById(int $zoneId): ?array
     {
+        if ($this->apiRepo) {
+            return $this->apiRepo->getZoneById($zoneId);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT d.id, d.name, d.type, d.master, d.account,

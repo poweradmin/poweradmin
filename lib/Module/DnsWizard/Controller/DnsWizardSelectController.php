@@ -47,7 +47,7 @@ class DnsWizardSelectController extends BaseController
 
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->wizardRegistry = new WizardRegistry($this->getConfig());
-        $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $this->zoneRepository = $this->createZoneRepository();
     }
 
     public function run(): void

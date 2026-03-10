@@ -41,7 +41,6 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
@@ -55,7 +54,7 @@ class ZoneOwnershipController extends BaseController
     {
         parent::__construct($request);
         $this->userContextService = new UserContextService();
-        $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $this->zoneRepository = $this->createZoneRepository();
 
         $userRepository = new DbUserRepository($this->db, $this->getConfig());
         $this->permissionService = new PermissionService($userRepository);

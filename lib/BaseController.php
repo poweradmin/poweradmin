@@ -428,6 +428,12 @@ abstract class BaseController
         return new DnsDataService($backendProvider, $this->db, $this->getConfig());
     }
 
+    protected function createZoneRepository(): \Poweradmin\Infrastructure\Repository\DbZoneRepository
+    {
+        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        return new \Poweradmin\Infrastructure\Repository\DbZoneRepository($this->db, $this->getConfig(), $backendProvider);
+    }
+
     /**
      * Get current user ID
      *

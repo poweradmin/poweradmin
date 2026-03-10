@@ -38,7 +38,6 @@ use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -55,7 +54,7 @@ class ValidationController extends InternalApiController
         $dnsCommonValidator = new DnsCommonValidator($this->db, $this->getConfig());
         $ttlValidator = new TTLValidator();
         $messageService = new MessageService();
-        $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $this->zoneRepository = $this->createZoneRepository();
         $dnsViolationValidator = new DNSViolationValidator($this->db, $this->getConfig());
 
         $this->validationService = new DnsRecordValidationService(

@@ -49,7 +49,7 @@ class ZoneOwnersController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = new DbZoneRepository($this->db, $this->config);
+        $this->zoneRepository = $this->createZoneRepository();
         $this->userRepository = new DbUserRepository($this->db, $this->config);
         $this->apiPermissionService = new ApiPermissionService($this->db);
     }

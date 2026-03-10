@@ -64,7 +64,6 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -124,7 +123,7 @@ class EditController extends BaseController
 
         $this->userContextService = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $this->zoneRepository = $this->createZoneRepository();
 
         $userRepository = new DbUserRepository($this->db, $this->getConfig());
         $this->permissionService = new PermissionService($userRepository);

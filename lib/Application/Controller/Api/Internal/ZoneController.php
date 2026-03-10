@@ -47,7 +47,7 @@ class ZoneController extends InternalApiController
     {
         parent::__construct($request);
 
-        $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $this->zoneRepository = $this->createZoneRepository();
     }
 
     /**
