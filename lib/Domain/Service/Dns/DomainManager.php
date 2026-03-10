@@ -135,14 +135,25 @@ class DomainManager implements DomainManagerInterface
 
                 $db->beginTransaction();
                 try {
-                    $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
-                    $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-                    $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
-                    $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
-                    $stmt->execute();
+                    if ($this->backendProvider->isApiBackend()) {
+                        // In API mode, createZone() already inserted the zones row.
+                        // Update it with owner and template info instead of creating a duplicate.
+                        $stmt = $db->prepare("UPDATE zones SET owner = :owner, zone_templ_id = :zone_template WHERE domain_id = :domain_id");
+                        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                        $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
+                        $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
+                        $stmt->execute();
 
-                    // Get the zone ID from the zones table (not the domain ID from domains table)
-                    $zone_id = $db->lastInsertId();
+                        $zone_id = $domain_id;
+                    } else {
+                        $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
+                        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                        $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
+                        $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
+                        $stmt->execute();
+
+                        $zone_id = $db->lastInsertId();
+                    }
 
                     // Create sync tracking record if using a template
                     if ($zone_template != "none" && is_numeric($zone_template)) {

@@ -222,9 +222,10 @@ class ApiZoneRepository
 
     public function getDomainNameById(int $zoneId): ?string
     {
-        $query = "SELECT zone_name FROM zones WHERE id = :id OR domain_id = :id";
+        $query = "SELECT zone_name FROM zones WHERE id = :id OR domain_id = :did";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_COLUMN);
         return $result ?: null;
@@ -285,12 +286,13 @@ class ApiZoneRepository
 
     public function zoneExists(int $zoneId, ?int $userId = null): bool
     {
-        $query = "SELECT 1 FROM zones WHERE (id = :id OR domain_id = :id)";
+        $query = "SELECT 1 FROM zones WHERE (id = :id OR domain_id = :did)";
         if ($userId !== null) {
             $query .= " AND owner = :userId";
         }
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         if ($userId !== null) {
             $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
         }
@@ -304,9 +306,10 @@ class ApiZoneRepository
                          z.comment, u.username, u.fullname
                   FROM zones z
                   LEFT JOIN users u ON z.owner = u.id
-                  WHERE z.id = :id OR z.domain_id = :id";
+                  WHERE z.id = :id OR z.domain_id = :did";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
         $zone = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$zone) {
@@ -414,18 +417,20 @@ class ApiZoneRepository
 
     public function zoneIdExists(int $zoneId): bool
     {
-        $query = "SELECT 1 FROM zones WHERE id = :id OR domain_id = :id";
+        $query = "SELECT 1 FROM zones WHERE id = :id OR domain_id = :did";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn() !== false;
     }
 
     public function getDomainType(int $zoneId): string
     {
-        $query = "SELECT zone_type FROM zones WHERE id = :id OR domain_id = :id";
+        $query = "SELECT zone_type FROM zones WHERE id = :id OR domain_id = :did";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchColumn();
         return $result ?: '';
@@ -433,9 +438,10 @@ class ApiZoneRepository
 
     public function getDomainSlaveMaster(int $zoneId): ?string
     {
-        $query = "SELECT zone_master FROM zones WHERE id = :id OR domain_id = :id";
+        $query = "SELECT zone_master FROM zones WHERE id = :id OR domain_id = :did";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchColumn();
         return $result ?: null;
@@ -443,9 +449,10 @@ class ApiZoneRepository
 
     public function getZoneComment(int $zoneId): ?string
     {
-        $query = "SELECT comment FROM zones WHERE id = :id OR domain_id = :id";
+        $query = "SELECT comment FROM zones WHERE id = :id OR domain_id = :did";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchColumn();
         return $result ?: null;
@@ -453,10 +460,11 @@ class ApiZoneRepository
 
     public function updateZoneComment(int $zoneId, string $comment): bool
     {
-        $query = "UPDATE zones SET comment = :comment WHERE id = :id OR domain_id = :id";
+        $query = "UPDATE zones SET comment = :comment WHERE id = :id OR domain_id = :did";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
@@ -465,9 +473,10 @@ class ApiZoneRepository
         $query = "SELECT u.id, u.username, u.fullname
                   FROM zones z
                   JOIN users u ON z.owner = u.id
-                  WHERE z.id = :id OR z.domain_id = :id";
+                  WHERE z.id = :id OR z.domain_id = :did";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -475,17 +484,19 @@ class ApiZoneRepository
     public function addOwnerToZone(int $zoneId, int $userId): bool
     {
         // Get the zone_templ_id from an existing zone record for this domain
-        $getTemplateQuery = "SELECT zone_templ_id FROM zones WHERE id = :id OR domain_id = :id LIMIT 1";
+        $getTemplateQuery = "SELECT zone_templ_id FROM zones WHERE id = :id OR domain_id = :did LIMIT 1";
         $getStmt = $this->db->prepare($getTemplateQuery);
         $getStmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $getStmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $getStmt->execute();
         $templateResult = $getStmt->fetch(PDO::FETCH_ASSOC);
         $zoneTemplId = $templateResult ? $templateResult['zone_templ_id'] : 0;
 
         // Get the zone_name from an existing record
-        $getNameQuery = "SELECT zone_name FROM zones WHERE id = :id OR domain_id = :id LIMIT 1";
+        $getNameQuery = "SELECT zone_name FROM zones WHERE id = :id OR domain_id = :did LIMIT 1";
         $getNameStmt = $this->db->prepare($getNameQuery);
         $getNameStmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $getNameStmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $getNameStmt->execute();
         $nameResult = $getNameStmt->fetch(PDO::FETCH_ASSOC);
 
@@ -501,9 +512,10 @@ class ApiZoneRepository
 
     public function removeOwnerFromZone(int $zoneId, int $userId): bool
     {
-        $query = "DELETE FROM zones WHERE (id = :id OR domain_id = :id) AND owner = :owner";
+        $query = "DELETE FROM zones WHERE (id = :id OR domain_id = :did) AND owner = :owner";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->rowCount() > 0;
@@ -511,10 +523,11 @@ class ApiZoneRepository
 
     public function isUserZoneOwner(int $zoneId, int $userId): bool
     {
-        $query = "SELECT COUNT(id) FROM zones WHERE owner = :user_id AND (id = :id OR domain_id = :id)";
+        $query = "SELECT COUNT(id) FROM zones WHERE owner = :user_id AND (id = :id OR domain_id = :did)";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }
@@ -537,10 +550,11 @@ class ApiZoneRepository
         }
         // createZone already inserts into zones table in API mode
         // But we need to set the owner
-        $query = "UPDATE zones SET owner = :owner WHERE id = :id OR domain_id = :id";
+        $query = "UPDATE zones SET owner = :owner WHERE id = :id OR domain_id = :did";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
         $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
         $stmt->execute();
         return true;
     }
@@ -560,9 +574,10 @@ class ApiZoneRepository
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
-        $query = "DELETE FROM zones WHERE id = :id OR domain_id = :id";
+        $query = "DELETE FROM zones WHERE id = :id OR domain_id = :did";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
@@ -572,23 +587,26 @@ class ApiZoneRepository
         if (isset($updates['type'])) {
             $success = $success && $this->backendProvider->updateZoneType($zoneId, $updates['type']);
             // Update local cache
-            $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type WHERE id = :id OR domain_id = :id");
+            $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type WHERE id = :id OR domain_id = :did");
             $stmt->bindValue(':type', $updates['type'], PDO::PARAM_STR);
             $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+            $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
             $stmt->execute();
         }
         if (isset($updates['master'])) {
             $success = $success && $this->backendProvider->updateZoneMaster($zoneId, $updates['master']);
-            $stmt = $this->db->prepare("UPDATE zones SET zone_master = :master WHERE id = :id OR domain_id = :id");
+            $stmt = $this->db->prepare("UPDATE zones SET zone_master = :master WHERE id = :id OR domain_id = :did");
             $stmt->bindValue(':master', $updates['master'], PDO::PARAM_STR);
             $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+            $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
             $stmt->execute();
         }
         if (isset($updates['name'])) {
             // Zone rename - update local zone_name
-            $stmt = $this->db->prepare("UPDATE zones SET zone_name = :name WHERE id = :id OR domain_id = :id");
+            $stmt = $this->db->prepare("UPDATE zones SET zone_name = :name WHERE id = :id OR domain_id = :did");
             $stmt->bindValue(':name', $updates['name'], PDO::PARAM_STR);
             $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+            $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
             $stmt->execute();
         }
         return $success;
@@ -695,9 +713,10 @@ class ApiZoneRepository
         $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
                          COALESCE(z.owner, 0) as owner
                   FROM zones z
-                  WHERE z.id = :id OR z.domain_id = :id";
+                  WHERE z.id = :id OR z.domain_id = :did";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$result) {
