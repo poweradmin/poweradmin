@@ -165,7 +165,7 @@ class ApiZoneRepository
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $zones = [];
         foreach ($results as $row) {
-            $name = $row['name'];
+            $name = (string)$row['name'];
             if (!isset($zones[$name])) {
                 $zones[$name] = [
                     'id' => $row['id'],
@@ -261,7 +261,7 @@ class ApiZoneRepository
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $zones = [];
         foreach ($results as $row) {
-            $name = $row['name'];
+            $name = (string)$row['name'];
             if (!isset($zones[$name])) {
                 $zones[$name] = [
                     'id' => $row['id'],
