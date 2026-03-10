@@ -550,7 +550,10 @@ class ApiZoneRepository
         // Get zone name for API call
         $zoneName = $this->getDomainNameById($zoneId);
         if ($zoneName) {
-            $this->backendProvider->deleteZone($zoneId, $zoneName);
+            $result = $this->backendProvider->deleteZone($zoneId, $zoneName);
+            if (!$result) {
+                return false;
+            }
         }
         // Delete local ownership data
         $query = "DELETE FROM zones_groups WHERE domain_id = :domain_id";
