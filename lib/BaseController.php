@@ -39,7 +39,7 @@ use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
-use Poweradmin\Infrastructure\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\StyleManager;
 use Poweradmin\Module\ModuleRegistry;
