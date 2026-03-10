@@ -22,6 +22,7 @@
 
 namespace Poweradmin;
 
+use InvalidArgumentException;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
@@ -36,7 +37,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
+use Poweradmin\Infrastructure\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\StyleManager;
 use Poweradmin\Module\ModuleRegistry;
@@ -324,7 +327,7 @@ abstract class BaseController
     {
         // Clean URL implementation - all URLs should start with '/'
         if (!str_starts_with($url, '/')) {
-            throw new \InvalidArgumentException("URL must start with '/'. Got: $url");
+            throw new InvalidArgumentException("URL must start with '/'. Got: $url");
         }
 
         // Prepend base_url_prefix for subfolder deployments
@@ -422,16 +425,21 @@ abstract class BaseController
      *
      * @return DnsDataService
      */
+    protected function createDnsBackendProvider(): DnsBackendProvider
+    {
+        return DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+    }
+
     protected function createDnsDataService(): DnsDataService
     {
-        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        $backendProvider = $this->createDnsBackendProvider();
         return new DnsDataService($backendProvider, $this->db, $this->getConfig());
     }
 
-    protected function createZoneRepository(): \Poweradmin\Infrastructure\Repository\DbZoneRepository
+    protected function createZoneRepository(): DbZoneRepository
     {
-        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
-        return new \Poweradmin\Infrastructure\Repository\DbZoneRepository($this->db, $this->getConfig(), $backendProvider);
+        $backendProvider = $this->createDnsBackendProvider();
+        return new DbZoneRepository($this->db, $this->getConfig(), $backendProvider);
     }
 
     /**

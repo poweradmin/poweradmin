@@ -74,7 +74,8 @@ class DeleteRecordController extends BaseController
             $this->getConfig(),
             $this->auditLogger,
             $dnsRecord,
-            $this->recordCommentService
+            $this->recordCommentService,
+            $this->createDnsBackendProvider()
         );
 
         $this->userContextService = new UserContextService();

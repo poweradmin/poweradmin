@@ -118,7 +118,8 @@ class EditController extends BaseController
             $this->getConfig(),
             $this->auditLogger,
             $this->dnsRecord,
-            $this->recordCommentService
+            $this->recordCommentService,
+            $this->createDnsBackendProvider()
         );
 
         $this->userContextService = new UserContextService();

@@ -545,7 +545,7 @@ class ZonesRecordsController extends PublicApiController
             if ($createPtr && ($type === 'A' || $type === 'AAAA')) {
                 try {
                     $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $dnsRecord, $this->recordCommentService);
+                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $dnsRecord, $this->recordCommentService, $this->createDnsBackendProvider());
 
                     $ptrResult = $reverseRecordCreator->createReverseRecord(
                         $name,

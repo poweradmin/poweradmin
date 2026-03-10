@@ -100,7 +100,8 @@ class AddRecordController extends BaseController
             $this->getConfig(),
             $this->auditLogger,
             $this->dnsRecord,
-            $recordCommentService
+            $recordCommentService,
+            $this->createDnsBackendProvider()
         );
 
         $this->userContextService = new UserContextService();
