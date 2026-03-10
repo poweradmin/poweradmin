@@ -874,7 +874,6 @@ abstract class BaseController
      */
     private function sendRedirect(string $url): void
     {
-        # TODO: read hosts from config
         $allowedHosts = [];
 
         $parsedUrl = parse_url($url);
