@@ -421,9 +421,9 @@ abstract class BaseController
     }
 
     /**
-     * Create DnsDataService for backend-aware DNS data reads.
+     * Create DnsBackendProvider for backend-aware DNS operations.
      *
-     * @return DnsDataService
+     * @return DnsBackendProvider
      */
     protected function createDnsBackendProvider(): DnsBackendProvider
     {
