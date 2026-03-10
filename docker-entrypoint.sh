@@ -566,6 +566,15 @@ generate_config() {
     local mfa_app_enabled=$(echo "${PA_MFA_APP_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
     local mfa_email_enabled=$(echo "${PA_MFA_EMAIL_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
 
+    # Convert module boolean values to lowercase
+    local mod_csv_export_enabled=$(echo "${PA_MODULE_CSV_EXPORT_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
+    local mod_zone_import_export_enabled=$(echo "${PA_MODULE_ZONE_IMPORT_EXPORT_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local mod_whois_enabled=$(echo "${PA_MODULE_WHOIS_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local mod_whois_restrict_to_admin=$(echo "${PA_MODULE_WHOIS_RESTRICT_TO_ADMIN:-true}" | tr '[:upper:]' '[:lower:]')
+    local mod_rdap_enabled=$(echo "${PA_MODULE_RDAP_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local mod_rdap_restrict_to_admin=$(echo "${PA_MODULE_RDAP_RESTRICT_TO_ADMIN:-true}" | tr '[:upper:]' '[:lower:]')
+    local mod_email_previews_restrict_to_admin=$(echo "${PA_MODULE_EMAIL_PREVIEWS_RESTRICT_TO_ADMIN:-true}" | tr '[:upper:]' '[:lower:]')
+
     # Process DNS record types - convert comma-separated values to PHP array format or null
     local domain_record_types="null"
     if [ -n "${PA_DNS_DOMAIN_RECORD_TYPES}" ]; then
@@ -575,6 +584,12 @@ generate_config() {
     local reverse_record_types="null"
     if [ -n "${PA_DNS_REVERSE_RECORD_TYPES}" ]; then
         reverse_record_types="['$(echo "${PA_DNS_REVERSE_RECORD_TYPES}" | sed "s/,/','/g")']"
+    fi
+
+    # Process dns_wizards available types - convert comma-separated values to PHP array format
+    local dns_wizards_types="['DMARC', 'SPF', 'DKIM', 'CAA', 'TLSA', 'SRV']"
+    if [ -n "${PA_MODULE_DNS_WIZARDS_TYPES}" ]; then
+        dns_wizards_types="['$(echo "${PA_MODULE_DNS_WIZARDS_TYPES}" | sed "s/,/','/g")']"
     fi
 
     # Process custom TLDs - convert comma-separated values to PHP array format or empty array
@@ -1040,6 +1055,34 @@ EOF
     cat >> "${CONFIG_FILE}" << EOF
         ],
     ],
+    'modules' => [
+        'csv_export' => [
+            'enabled' => ${mod_csv_export_enabled},
+        ],
+        'zone_import_export' => [
+            'enabled' => ${mod_zone_import_export_enabled},
+            'auto_ttl_value' => ${PA_MODULE_ZONE_IMPORT_EXPORT_AUTO_TTL:-300},
+            'max_file_size' => ${PA_MODULE_ZONE_IMPORT_EXPORT_MAX_FILE_SIZE:-1048576},
+        ],
+        'whois' => [
+            'enabled' => ${mod_whois_enabled},
+            'default_server' => '${PA_MODULE_WHOIS_DEFAULT_SERVER:-}',
+            'socket_timeout' => ${PA_MODULE_WHOIS_SOCKET_TIMEOUT:-10},
+            'restrict_to_admin' => ${mod_whois_restrict_to_admin},
+        ],
+        'rdap' => [
+            'enabled' => ${mod_rdap_enabled},
+            'default_server' => '${PA_MODULE_RDAP_DEFAULT_SERVER:-}',
+            'request_timeout' => ${PA_MODULE_RDAP_REQUEST_TIMEOUT:-10},
+            'restrict_to_admin' => ${mod_rdap_restrict_to_admin},
+        ],
+        'email_previews' => [
+            'restrict_to_admin' => ${mod_email_previews_restrict_to_admin},
+        ],
+        'dns_wizards' => [
+            'available_types' => ${dns_wizards_types},
+        ],
+    ],
 ];
 EOF
 
@@ -1083,6 +1126,7 @@ print_config_summary() {
         log "Account Lockout: ${PA_LOCKOUT_ENABLED:-false}"
         log "Password Reset: ${PA_PASSWORD_RESET_ENABLED:-false}"
         log "Username Recovery: ${PA_USERNAME_RECOVERY_ENABLED:-false}"
+        log "Modules: csv_export=${PA_MODULE_CSV_EXPORT_ENABLED:-true}, zone_import_export=${PA_MODULE_ZONE_IMPORT_EXPORT_ENABLED:-false}, whois=${PA_MODULE_WHOIS_ENABLED:-false}, rdap=${PA_MODULE_RDAP_ENABLED:-false}"
     fi
 
     log "Admin User Creation: ${PA_CREATE_ADMIN:-false}"

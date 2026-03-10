@@ -378,6 +378,25 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_PDNS_SERVER_NAME` | PowerDNS server name for API calls | `localhost` | No |
 | `PA_PDNS_BACKEND` | DNS data backend: `sql` (direct database) or `api` (PowerDNS REST API, experimental) | `sql` | No |
 
+### Modules
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_MODULE_CSV_EXPORT_ENABLED` | Enable CSV export module | `true` | No |
+| `PA_MODULE_ZONE_IMPORT_EXPORT_ENABLED` | Enable zone import/export module | `false` | No |
+| `PA_MODULE_ZONE_IMPORT_EXPORT_AUTO_TTL` | Default TTL for imported records (seconds) | `300` | No |
+| `PA_MODULE_ZONE_IMPORT_EXPORT_MAX_FILE_SIZE` | Max upload file size in bytes | `1048576` | No |
+| `PA_MODULE_WHOIS_ENABLED` | Enable WHOIS lookup module | `false` | No |
+| `PA_MODULE_WHOIS_DEFAULT_SERVER` | Default WHOIS server | Empty | No |
+| `PA_MODULE_WHOIS_SOCKET_TIMEOUT` | WHOIS socket timeout in seconds | `10` | No |
+| `PA_MODULE_WHOIS_RESTRICT_TO_ADMIN` | Restrict WHOIS to administrators | `true` | No |
+| `PA_MODULE_RDAP_ENABLED` | Enable RDAP lookup module | `false` | No |
+| `PA_MODULE_RDAP_DEFAULT_SERVER` | Default RDAP server | Empty | No |
+| `PA_MODULE_RDAP_REQUEST_TIMEOUT` | RDAP request timeout in seconds | `10` | No |
+| `PA_MODULE_RDAP_RESTRICT_TO_ADMIN` | Restrict RDAP to administrators | `true` | No |
+| `PA_MODULE_EMAIL_PREVIEWS_RESTRICT_TO_ADMIN` | Restrict email previews to administrators | `true` | No |
+| `PA_MODULE_DNS_WIZARDS_TYPES` | Comma-separated list of DNS wizard types | `DMARC,SPF,DKIM,CAA,TLSA,SRV` | No |
+
 ### LDAP Authentication
 
 | Variable | Description | Default | Required |
