@@ -116,7 +116,7 @@ class RecordRepository implements RecordRepositoryInterface
      *
      * @return array array of record details [rid,zid,name,type,content,ttl,prio]
      */
-    public function getRecordDetailsFromRecordId(int $rid): array
+    public function getRecordDetailsFromRecordId(int|string $rid): array
     {
         if ($this->isApiBackend()) {
             $record = $this->backendProvider->getRecordById($rid);
@@ -153,7 +153,7 @@ class RecordRepository implements RecordRepositoryInterface
      * @param int $id Record ID
      * @return array|null array of record detail, or null if nothing found
      */
-    public function getRecordFromId(int $id): ?array
+    public function getRecordFromId(int|string $id): ?array
     {
         if ($this->isApiBackend()) {
             $record = $this->backendProvider->getRecordById($id);
@@ -880,7 +880,7 @@ class RecordRepository implements RecordRepositoryInterface
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getRecordById(int $recordId): ?array
+    public function getRecordById(int|string $recordId): ?array
     {
         if ($this->isApiBackend()) {
             $record = $this->backendProvider->getRecordById($recordId);

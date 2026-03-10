@@ -287,7 +287,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
      * @param string $type Record type
      * @param int $excludeRecordId Record ID to exclude (the one being edited)
      */
-    public function migrateLegacyComments(int $domainId, string $name, string $type, int $excludeRecordId): void
+    public function migrateLegacyComments(int $domainId, string $name, string $type, int|string $excludeRecordId): void
     {
         // Find the legacy (unlinked) comment for this RRset
         $legacyComment = $this->find($domainId, $name, $type);
@@ -295,40 +295,28 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
             return; // No legacy comment to migrate
         }
 
-        // Find all records in the RRset that don't have linked comments (excluding the current record)
-        $unlinkedRecords = [];
-
+        // In API mode, record IDs are encoded strings that can't be stored
+        // in the integer record_comment_links.record_id column. Skip per-record
+        // migration; legacy RRset-level comments still work fine.
         if ($this->isApiBackend()) {
-            $allRecords = $this->backendProvider->getRecordsByZoneId($domainId, $type);
-            foreach ($allRecords as $r) {
-                $recordId = (int)($r['id'] ?? 0);
-                if (($r['name'] ?? '') === $name && $recordId !== $excludeRecordId && $recordId > 0) {
-                    // Check if this record already has a linked comment
-                    $linkQuery = "SELECT 1 FROM {$this->links_table} WHERE record_id = :record_id";
-                    $linkStmt = $this->connection->prepare($linkQuery);
-                    $linkStmt->bindValue(':record_id', $recordId, PDO::PARAM_INT);
-                    $linkStmt->execute();
-                    if (!$linkStmt->fetch()) {
-                        $unlinkedRecords[] = $recordId;
-                    }
-                }
-            }
-        } else {
-            $query = "SELECT r.id FROM {$this->records_table} r
-                      WHERE r.domain_id = :domain_id AND r.name = :name AND r.type = :type
-                      AND r.id != :exclude_record_id
-                      AND NOT EXISTS (
-                          SELECT 1 FROM {$this->links_table} rcl WHERE rcl.record_id = r.id
-                      )";
-            $stmt = $this->connection->prepare($query);
-            $stmt->execute([
-                ':domain_id' => $domainId,
-                ':name' => $name,
-                ':type' => $type,
-                ':exclude_record_id' => $excludeRecordId
-            ]);
-            $unlinkedRecords = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            return;
         }
+
+        // Find all records in the RRset that don't have linked comments (excluding the current record)
+        $query = "SELECT r.id FROM {$this->records_table} r
+                  WHERE r.domain_id = :domain_id AND r.name = :name AND r.type = :type
+                  AND r.id != :exclude_record_id
+                  AND NOT EXISTS (
+                      SELECT 1 FROM {$this->links_table} rcl WHERE rcl.record_id = r.id
+                  )";
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([
+            ':domain_id' => $domainId,
+            ':name' => $name,
+            ':type' => $type,
+            ':exclude_record_id' => $excludeRecordId
+        ]);
+        $unlinkedRecords = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
         // Create linked comments for each unlinked record (copying the legacy comment)
         foreach ($unlinkedRecords as $recordId) {

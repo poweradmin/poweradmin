@@ -41,10 +41,10 @@ interface RecordRepositoryInterface
     /**
      * Get a record by ID
      *
-     * @param int $recordId Record ID
+     * @param int|string $recordId Record ID (int for SQL mode, encoded string for API mode)
      * @return array|null Record data if found, null otherwise
      */
-    public function getRecordById(int $recordId): ?array;
+    public function getRecordById(int|string $recordId): ?array;
 
     /**
      * Get Zone ID from Record ID
@@ -67,21 +67,21 @@ interface RecordRepositoryInterface
     /**
      * Get record details from Record ID
      *
-     * @param int $rid Record ID
+     * @param int|string $rid Record ID (int for SQL mode, encoded string for API mode)
      *
      * @return array array of record details [rid,zid,name,type,content,ttl,prio]
      */
-    public function getRecordDetailsFromRecordId(int $rid): array;
+    public function getRecordDetailsFromRecordId(int|string $rid): array;
 
     /**
      * Get a Record from a Record ID
      *
      * Retrieve all fields of the record and send it back to the function caller.
      *
-     * @param int $id Record ID
+     * @param int|string $id Record ID (int for SQL mode, encoded string for API mode)
      * @return array|null array of record detail, or null if nothing found
      */
-    public function getRecordFromId(int $id): ?array;
+    public function getRecordFromId(int|string $id): ?array;
 
     /**
      * Get all records from a domain id.

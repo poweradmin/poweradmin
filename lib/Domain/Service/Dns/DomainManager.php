@@ -265,12 +265,16 @@ class DomainManager implements DomainManagerInterface
                                             $record_id = 0;
                                         }
 
-                                        $stmt = $db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
-                                        $stmt->execute([
-                                            ':domain_id' => $domain_id,
-                                            ':record_id' => $record_id,
-                                            ':zone_templ_id' => $r['zone_templ_id']
-                                        ]);
+                                        // Skip template linkage in API mode: record IDs are encoded
+                                        // strings that can't be stored in the integer record_id column.
+                                        if (!$isApiBackend) {
+                                            $stmt = $db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
+                                            $stmt->execute([
+                                                ':domain_id' => $domain_id,
+                                                ':record_id' => $record_id,
+                                                ':zone_templ_id' => $r['zone_templ_id']
+                                            ]);
+                                        }
                                     }
                                 }
                             }
