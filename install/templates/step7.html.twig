@@ -74,6 +74,9 @@ return [
      * DNS Settings
      */
     'dns' => [
+{% if pdns_api_backend is defined and pdns_api_backend == 'api' %}
+        'backend' => 'api',
+{% endif %}
         'hostmaster' => '{{ dns_hostmaster }}',
         'ns1' => '{{ dns_ns1 }}',
         'ns2' => '{{ dns_ns2 }}',
@@ -90,7 +93,6 @@ return [
      * PowerDNS API Settings
      */
     'pdns_api' => [
-        'backend' => 'api',
         'url' => '{{ pdns_api_url }}',
         'key' => '{{ pdns_api_key }}',
         'server_name' => '{{ pdns_api_server_name|default('localhost') }}',

@@ -25,7 +25,7 @@ class DnsBackendProviderFactoryTest extends TestCase
     public function testDefaultBackendReturnsSqlProvider(): void
     {
         $this->mockConfig->method('get')->willReturnMap([
-            ['pdns_api', 'backend', null, 'sql'],
+            ['dns', 'backend', null, 'sql'],
             ['pdns_api', 'url', null, ''],
             ['pdns_api', 'key', null, ''],
             ['pdns_api', 'server_name', null, ''],
@@ -41,7 +41,7 @@ class DnsBackendProviderFactoryTest extends TestCase
     public function testEmptyBackendReturnsSqlProvider(): void
     {
         $this->mockConfig->method('get')->willReturnMap([
-            ['pdns_api', 'backend', null, ''],
+            ['dns', 'backend', null, ''],
             ['pdns_api', 'url', null, ''],
             ['pdns_api', 'key', null, ''],
             ['pdns_api', 'server_name', null, ''],
@@ -56,7 +56,7 @@ class DnsBackendProviderFactoryTest extends TestCase
     public function testApiBackendWithCredentialsReturnsApiProvider(): void
     {
         $this->mockConfig->method('get')->willReturnMap([
-            ['pdns_api', 'backend', null, 'api'],
+            ['dns', 'backend', null, 'api'],
             ['pdns_api', 'url', null, 'http://127.0.0.1:8081'],
             ['pdns_api', 'key', null, 'secret-api-key'],
             ['pdns_api', 'server_name', null, 'localhost'],
@@ -72,7 +72,7 @@ class DnsBackendProviderFactoryTest extends TestCase
     public function testApiBackendWithoutUrlFallsBackToSql(): void
     {
         $this->mockConfig->method('get')->willReturnMap([
-            ['pdns_api', 'backend', null, 'api'],
+            ['dns', 'backend', null, 'api'],
             ['pdns_api', 'url', null, ''],
             ['pdns_api', 'key', null, 'secret-api-key'],
             ['pdns_api', 'server_name', null, ''],
@@ -87,7 +87,7 @@ class DnsBackendProviderFactoryTest extends TestCase
     public function testApiBackendWithoutKeyFallsBackToSql(): void
     {
         $this->mockConfig->method('get')->willReturnMap([
-            ['pdns_api', 'backend', null, 'api'],
+            ['dns', 'backend', null, 'api'],
             ['pdns_api', 'url', null, 'http://127.0.0.1:8081'],
             ['pdns_api', 'key', null, ''],
             ['pdns_api', 'server_name', null, ''],
@@ -102,7 +102,7 @@ class DnsBackendProviderFactoryTest extends TestCase
     public function testApiBackendWithCustomServerName(): void
     {
         $this->mockConfig->method('get')->willReturnMap([
-            ['pdns_api', 'backend', null, 'api'],
+            ['dns', 'backend', null, 'api'],
             ['pdns_api', 'url', null, 'http://127.0.0.1:8081'],
             ['pdns_api', 'key', null, 'secret-api-key'],
             ['pdns_api', 'server_name', null, 'custom-server'],
@@ -117,7 +117,7 @@ class DnsBackendProviderFactoryTest extends TestCase
     public function testApiBackendWithEmptyServerNameDefaultsToLocalhost(): void
     {
         $this->mockConfig->method('get')->willReturnMap([
-            ['pdns_api', 'backend', null, 'api'],
+            ['dns', 'backend', null, 'api'],
             ['pdns_api', 'url', null, 'http://127.0.0.1:8081'],
             ['pdns_api', 'key', null, 'secret-api-key'],
             ['pdns_api', 'server_name', null, ''],

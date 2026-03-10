@@ -52,7 +52,7 @@ class DnsBackendProviderFactory
     public static function create(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null): DnsBackendProvider
     {
         $logger = $logger ?? new NullLogger();
-        $backend = $config->get('pdns_api', 'backend');
+        $backend = $config->get('dns', 'backend');
         $pdnsApiUrl = $config->get('pdns_api', 'url');
         $pdnsApiKey = $config->get('pdns_api', 'key');
 
@@ -66,7 +66,7 @@ class DnsBackendProviderFactory
         }
 
         if ($backend === 'api' && (!$pdnsApiUrl || !$pdnsApiKey)) {
-            $logger->warning('pdns_api.backend is set to "api" but url/key are not configured. Falling back to SQL backend.');
+            $logger->warning('dns.backend is set to "api" but pdns_api url/key are not configured. Falling back to SQL backend.');
         }
 
         return new SqlDnsBackendProvider($db, $config, $logger);

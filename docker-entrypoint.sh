@@ -625,6 +625,7 @@ return [
         'ssl_cert' => '${DB_SSL_CERT:-}',
     ],
     'dns' => [
+        'backend' => '${PA_DNS_BACKEND:-sql}',
         'hostmaster' => '${DNS_HOSTMASTER:-hostmaster.example.com}',
         'ns1' => '${DNS_NS1:-ns1.example.com}',
         'ns2' => '${DNS_NS2:-ns2.example.com}',
@@ -767,7 +768,6 @@ return [
         'server_name' => '${PA_PDNS_SERVER_NAME:-localhost}',
         'webserver_username' => '${PA_PDNS_WEBSERVER_USERNAME:-}',
         'webserver_password' => '${PA_PDNS_WEBSERVER_PASSWORD:-}',
-        'backend' => '${PA_PDNS_BACKEND:-sql}',
     ],
     'ldap' => [
         'enabled' => ${ldap_enabled},
