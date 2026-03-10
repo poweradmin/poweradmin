@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,9 @@ namespace unit\Application\Service;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Infrastructure\Logger\Logger;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -42,7 +45,7 @@ class LdapAuthenticatorCacheTest extends TestCase
         $this->userContextService = new UserContextService();
 
         // Mock logger to avoid initialization errors
-        $mockLogger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
+        $mockLogger = $this->createMock(Logger::class);
         $loggerProperty = $this->reflection->getParentClass()->getProperty('logger');
         $loggerProperty->setAccessible(true);
         $loggerProperty->setValue($this->authenticator, $mockLogger);
@@ -63,7 +66,7 @@ class LdapAuthenticatorCacheTest extends TestCase
     public function testCacheValidationWhenCachingDisabled(): void
     {
         // Set up mock configuration with cache disabled
-        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager = $this->createMock(ConfigurationManager::class);
         $configManager->method('get')
             ->willReturnCallback(function ($section, $key, $default) {
                 if ($section === 'ldap' && $key === 'session_cache_timeout') {
@@ -95,7 +98,7 @@ class LdapAuthenticatorCacheTest extends TestCase
     public function testCacheValidationWhenUserNotAuthenticated(): void
     {
         // Set up mock configuration
-        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager = $this->createMock(ConfigurationManager::class);
         $configManager->method('get')
             ->willReturn(300); // 5 minutes timeout
 
@@ -122,7 +125,7 @@ class LdapAuthenticatorCacheTest extends TestCase
     public function testCacheValidationWhenTimestampMissing(): void
     {
         // Set up mock configuration
-        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager = $this->createMock(ConfigurationManager::class);
         $configManager->method('get')
             ->willReturn(300);
 
@@ -150,7 +153,7 @@ class LdapAuthenticatorCacheTest extends TestCase
      */
     public function testCacheValidationWhenCacheExpired(): void
     {
-        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager = $this->createMock(ConfigurationManager::class);
         $configManager->method('get')
             ->willReturn(300); // 5 minutes timeout
 
@@ -180,7 +183,7 @@ class LdapAuthenticatorCacheTest extends TestCase
      */
     public function testCacheValidationWhenCacheValid(): void
     {
-        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager = $this->createMock(ConfigurationManager::class);
         $configManager->method('get')
             ->willReturn(300); // 5 minutes timeout
 
@@ -217,7 +220,7 @@ class LdapAuthenticatorCacheTest extends TestCase
      */
     public function testCacheValidationWhenIpAddressChanges(): void
     {
-        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager = $this->createMock(ConfigurationManager::class);
         $configManager->method('get')
             ->willReturn(300);
 
@@ -254,7 +257,7 @@ class LdapAuthenticatorCacheTest extends TestCase
      */
     public function testCacheValidationWhenUsernameChanges(): void
     {
-        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager = $this->createMock(ConfigurationManager::class);
         $configManager->method('get')
             ->willReturn(300);
 
@@ -291,7 +294,7 @@ class LdapAuthenticatorCacheTest extends TestCase
      */
     public function testCacheValidationRejectsWhenAuthenticatedIsFalse(): void
     {
-        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager = $this->createMock(ConfigurationManager::class);
         $configManager->method('get')
             ->willReturn(300);
 
@@ -329,7 +332,7 @@ class LdapAuthenticatorCacheTest extends TestCase
      */
     public function testCacheValidationRejectsWhenAuthenticatedIsNull(): void
     {
-        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager = $this->createMock(ConfigurationManager::class);
         $configManager->method('get')
             ->willReturn(300);
 
@@ -366,7 +369,7 @@ class LdapAuthenticatorCacheTest extends TestCase
      */
     public function testUpdateAuthenticationCache(): void
     {
-        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager = $this->createMock(ConfigurationManager::class);
         $configManager->method('get')
             ->willReturn(300);
 
@@ -446,7 +449,7 @@ class LdapAuthenticatorCacheTest extends TestCase
             ->with(\PDO::FETCH_ASSOC)
             ->willReturn(['id' => 1, 'fullname' => 'Test User']);
 
-        $mockDb = $this->createMock(\Poweradmin\Infrastructure\Database\PDOCommon::class);
+        $mockDb = $this->createMock(PDOCommon::class);
         $mockDb->expects($this->once())
             ->method('prepare')
             ->with("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1")
@@ -480,7 +483,7 @@ class LdapAuthenticatorCacheTest extends TestCase
             ->with(\PDO::FETCH_ASSOC)
             ->willReturn(false); // No user found
 
-        $mockDb = $this->createMock(\Poweradmin\Infrastructure\Database\PDOCommon::class);
+        $mockDb = $this->createMock(PDOCommon::class);
         $mockDb->expects($this->once())
             ->method('prepare')
             ->willReturn($mockStmt);
@@ -513,7 +516,7 @@ class LdapAuthenticatorCacheTest extends TestCase
             ->with(\PDO::FETCH_ASSOC)
             ->willReturn(false); // No user found (filtered by use_ldap=1)
 
-        $mockDb = $this->createMock(\Poweradmin\Infrastructure\Database\PDOCommon::class);
+        $mockDb = $this->createMock(PDOCommon::class);
         $mockDb->expects($this->once())
             ->method('prepare')
             ->willReturn($mockStmt);

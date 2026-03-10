@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Application\Service\CsrfTokenService;
 
 /**
  * DNS Wizard Internal API Controller
@@ -303,7 +304,7 @@ class DnsWizardController extends InternalApiController
             // CSRF validation is disabled in config - skip check
         } else {
             // Create a temporary CsrfTokenService to validate the token
-            $csrfService = new \Poweradmin\Application\Service\CsrfTokenService();
+            $csrfService = new CsrfTokenService();
             if (!$csrfService->validateToken($csrfToken)) {
                 return $this->returnApiError('Invalid CSRF token', 403);
             }
