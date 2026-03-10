@@ -362,9 +362,8 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
                 return $targetResult;
             }
 
-            // RFC 2782 recommends that the target name MUST NOT be an alias
-            // but this can't be enforced in the validator since we don't have this context
-            // TODO: Consider checking for CNAME records with this target, but this requires DB access
+            // Note: RFC 2782 recommends target MUST NOT be an alias, but enforcing this
+            // requires DB access which validators don't have.
         }
 
         // Additional RFC 2782 validation rules
