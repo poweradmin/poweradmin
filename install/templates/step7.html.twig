@@ -83,7 +83,19 @@ return [
 {% if dns_ns4 is defined and dns_ns4 is not empty %}
         'ns4' => '{{ dns_ns4 }}',
 {% endif %}
-    ]
+    ],
+{% if pdns_api_backend is defined and pdns_api_backend == 'api' %}
+
+    /**
+     * PowerDNS API Settings
+     */
+    'pdns_api' => [
+        'backend' => 'api',
+        'url' => '{{ pdns_api_url }}',
+        'key' => '{{ pdns_api_key }}',
+        'server_name' => '{{ pdns_api_server_name|default('localhost') }}',
+    ],
+{% endif %}
 ];
 </pre>
             </div>

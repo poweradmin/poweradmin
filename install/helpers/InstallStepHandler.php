@@ -129,6 +129,11 @@ class InstallStepHandler
             'pa_pass' => $this->input->request->get('pa_pass'),
             // PowerDNS database field
             'pdns_db_name' => $this->getPdnsDbName(),
+            // PowerDNS API fields
+            'pdns_api_backend' => $this->input->request->get('pdns_api_backend', ''),
+            'pdns_api_url' => $this->input->request->get('pdns_api_url', ''),
+            'pdns_api_key' => $this->input->request->get('pdns_api_key', ''),
+            'pdns_api_server_name' => $this->input->request->get('pdns_api_server_name', 'localhost'),
         ];
 
         $this->renderTemplate('step4.html.twig', array_merge([
@@ -160,10 +165,11 @@ class InstallStepHandler
             $databaseHelper = new DatabaseHelper($db, $credentials);
 
             // Check for PowerDNS tables before proceeding
-            // Skip this check if using a separate PowerDNS database (it's already validated)
+            // Skip this check if using API backend or a separate PowerDNS database (already validated)
             $pdns_db_name = $this->getPdnsDbName();
-            if (empty($pdns_db_name)) {
-                // Only check PowerDNS tables if using the same database
+            $pdns_api_backend = $this->input->request->get('pdns_api_backend', '');
+            if ($pdns_api_backend !== 'api' && empty($pdns_db_name)) {
+                // Only check PowerDNS tables if using SQL backend with the same database
                 $missingTables = $databaseHelper->checkPowerDnsTables();
                 if (!empty($missingTables)) {
                     $warningMsg = '<strong>' . _('Warning:') . '</strong> ';
@@ -248,6 +254,10 @@ class InstallStepHandler
             'dns_ns3' => $this->input->request->get('dns_ns3'),
             'dns_ns4' => $this->input->request->get('dns_ns4'),
             'pdns_db_name' => $this->input->request->get('pdns_db_name'),
+            'pdns_api_backend' => $this->input->request->get('pdns_api_backend', ''),
+            'pdns_api_url' => $this->input->request->get('pdns_api_url', ''),
+            'pdns_api_key' => $this->input->request->get('pdns_api_key', ''),
+            'pdns_api_server_name' => $this->input->request->get('pdns_api_server_name', 'localhost'),
         ];
 
         $this->renderTemplate('step5.html.twig', array_merge([
@@ -303,6 +313,10 @@ class InstallStepHandler
             'dns_ns3' => $dns_ns3,
             'dns_ns4' => $dns_ns4,
             'pdns_db_name' => $this->input->request->get('pdns_db_name'),
+            'pdns_api_backend' => $this->input->request->get('pdns_api_backend', ''),
+            'pdns_api_url' => $this->input->request->get('pdns_api_url', ''),
+            'pdns_api_key' => $this->input->request->get('pdns_api_key', ''),
+            'pdns_api_server_name' => $this->input->request->get('pdns_api_server_name', 'localhost'),
             'instruction_blocks' => $instructionBlocks,
             'errors' => $errors,
         ));
@@ -345,6 +359,12 @@ class InstallStepHandler
 
         $pdns_db_name = $this->input->request->get('pdns_db_name');
 
+        // PowerDNS API settings
+        $pdns_api_backend = $this->input->request->get('pdns_api_backend', '');
+        $pdns_api_url = $this->input->request->get('pdns_api_url', '');
+        $pdns_api_key = $this->input->request->get('pdns_api_key', '');
+        $pdns_api_server_name = $this->input->request->get('pdns_api_server_name', 'localhost');
+
         // Auto-detect subfolder deployment
         $base_url_prefix = $this->detectBaseUrlPrefix();
 
@@ -368,6 +388,10 @@ class InstallStepHandler
             'db_charset' => $db_charset,
             'db_collation' => $db_collation,
             'pdns_db_name' => $pdns_db_name,
+            'pdns_api_backend' => $pdns_api_backend,
+            'pdns_api_url' => $pdns_api_url,
+            'pdns_api_key' => $pdns_api_key,
+            'pdns_api_server_name' => $pdns_api_server_name,
             'base_url_prefix' => $base_url_prefix,
             'errors' => $errors,
         ));

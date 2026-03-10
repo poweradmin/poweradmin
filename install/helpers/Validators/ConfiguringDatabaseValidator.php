@@ -47,6 +47,11 @@ class ConfiguringDatabaseValidator extends BaseValidator
                 ],
                 // PowerDNS database field (optional)
                 'pdns_db_name' => new Assert\Optional(),
+                // PowerDNS API fields (optional)
+                'pdns_api_backend' => new Assert\Optional(),
+                'pdns_api_url' => new Assert\Optional(),
+                'pdns_api_key' => new Assert\Optional(),
+                'pdns_api_server_name' => new Assert\Optional(),
             ]
         ));
 
@@ -55,9 +60,21 @@ class ConfiguringDatabaseValidator extends BaseValidator
 
         $errors = ValidationErrorHelper::formatErrors($violations);
 
-        // Add PowerDNS database validation
-        $pdnsErrors = $this->validatePdnsDatabase($input);
-        $errors = array_merge($errors, $pdnsErrors);
+        // Add PowerDNS database validation (only for SQL backend)
+        if (($input['pdns_api_backend'] ?? '') !== 'api') {
+            $pdnsErrors = $this->validatePdnsDatabase($input);
+            $errors = array_merge($errors, $pdnsErrors);
+        }
+
+        // Validate PowerDNS API settings when API backend is selected
+        if (($input['pdns_api_backend'] ?? '') === 'api') {
+            if (empty($input['pdns_api_url'] ?? '')) {
+                $errors['pdns_api_url'] = _('PowerDNS API URL is required when using API backend.');
+            }
+            if (empty($input['pdns_api_key'] ?? '')) {
+                $errors['pdns_api_key'] = _('PowerDNS API key is required when using API backend.');
+            }
+        }
 
         return $errors;
     }

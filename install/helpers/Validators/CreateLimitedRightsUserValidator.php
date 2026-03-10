@@ -53,6 +53,11 @@ class CreateLimitedRightsUserValidator extends BaseValidator
                 ],
                 // PowerDNS database field (optional)
                 'pdns_db_name' => new Assert\Optional(),
+                // PowerDNS API fields (optional)
+                'pdns_api_backend' => new Assert\Optional(),
+                'pdns_api_url' => new Assert\Optional(),
+                'pdns_api_key' => new Assert\Optional(),
+                'pdns_api_server_name' => new Assert\Optional(),
             ]
         ));
 

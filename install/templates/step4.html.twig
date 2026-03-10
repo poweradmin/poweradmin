@@ -8,18 +8,91 @@
             {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Configuring Database Connection{% endtrans %}
         </div>
         <div class="card-body">
-            <div class="alert alert-info py-1 mb-2 small">
-                <strong>{% trans %}Database Configuration:{% endtrans %}</strong> {% trans %}Configure database connection with table creation rights. PowerDNS location can be specified separately if needed.{% endtrans %}
-            </div>
-
             <form class="needs-validation" method="post" novalidate>
                 <input type="hidden" name="install_token" value="{{ install_token }}">
 
+                <!-- PowerDNS Backend Selection -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <strong>{% trans %}PowerDNS Backend{% endtrans %}</strong>
+                    </div>
+                    <div class="card-body">
+                        <p class="small mb-2">{% trans %}Choose how Poweradmin communicates with PowerDNS:{% endtrans %}</p>
+                        <div class="form-check mb-1">
+                            <input class="form-check-input" type="radio" name="pdns_api_backend" id="backend_sql" value="sql"
+                                   {% if pdns_api_backend != 'api' %}checked{% endif %} onChange="updateBackendFields()">
+                            <label class="form-check-label small" for="backend_sql">
+                                <strong>{% trans %}SQL{% endtrans %}</strong> - {% trans %}Direct access to PowerDNS database tables{% endtrans %}
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="pdns_api_backend" id="backend_api" value="api"
+                                   {% if pdns_api_backend == 'api' %}checked{% endif %} onChange="updateBackendFields()">
+                            <label class="form-check-label small" for="backend_api">
+                                <strong>{% trans %}API{% endtrans %}</strong> - {% trans %}PowerDNS REST API{% endtrans %}
+                                <span class="badge bg-warning text-dark ms-1">{% trans %}Experimental{% endtrans %}</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PowerDNS API Settings (shown when API backend selected) -->
+                <div class="card mb-3" id="pdns_api_section" style="display: none;">
+                    <div class="card-header">
+                        <strong>{% trans %}PowerDNS API Settings{% endtrans %}</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <label for="pdns_api_url" class="col-md-2 col-form-label col-form-label-sm">{% trans %}API URL{% endtrans %}</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control form-control-sm" id="pdns_api_url" name="pdns_api_url"
+                                       value="{{ pdns_api_url }}" placeholder="http://127.0.0.1:8081">
+                            </div>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}PowerDNS API endpoint URL.{% endtrans %}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for="pdns_api_key" class="col-md-2 col-form-label col-form-label-sm">{% trans %}API Key{% endtrans %}</label>
+                            <div class="col-md-4">
+                                <div class="input-group input-group-sm">
+                                    <input type="password" class="form-control form-control-sm" id="pdns_api_key" name="pdns_api_key"
+                                           value="{{ pdns_api_key }}" autocomplete="off">
+                                    <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('pdns_api_key', 'eye_api')"><i class="bi bi-eye-fill" id="eye_api"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}PowerDNS API key (from pdns.conf api-key setting).{% endtrans %}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <label for="pdns_api_server_name" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Server name{% endtrans %}</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control form-control-sm" id="pdns_api_server_name" name="pdns_api_server_name"
+                                       value="{{ pdns_api_server_name|default('localhost') }}" placeholder="localhost">
+                            </div>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}PowerDNS server name for API calls (usually "localhost").{% endtrans %}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database Connection Settings -->
                 <div class="card mb-3">
                     <div class="card-header">
                         <strong>{% trans %}Database Connection Settings{% endtrans %}</strong>
                     </div>
                     <div class="card-body">
+                        <div class="alert alert-info py-1 mb-2 small" id="db_info_sql">
+                            <strong>{% trans %}Database Configuration:{% endtrans %}</strong> {% trans %}Configure database connection with table creation rights. PowerDNS location can be specified separately if needed.{% endtrans %}
+                        </div>
+                        <div class="alert alert-info py-1 mb-2 small" id="db_info_api" style="display: none;">
+                            <strong>{% trans %}Database Configuration:{% endtrans %}</strong> {% trans %}Configure database connection for Poweradmin tables (users, permissions, zones). PowerDNS tables are not required.{% endtrans %}
+                        </div>
+
                         <div class="row mb-2">
                             <label for="db_type" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Database type{% endtrans %}</label>
                             <div class="col-md-4">
@@ -127,7 +200,7 @@
                     </div>
                 </div>
 
-                <!-- PowerDNS Database Location (only for MySQL) -->
+                <!-- PowerDNS Database Location (only for MySQL + SQL backend) -->
                 <div class="card mb-3" id="pdns_db_section" style="display: none;">
                     <div class="card-header">
                         <strong>{% trans %}PowerDNS Database{% endtrans %} ({% trans %}Optional{% endtrans %})</strong>
@@ -136,7 +209,7 @@
                         <div class="row mb-2">
                             <label for="pdns_db_name" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Database name{% endtrans %}</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control form-control-sm" id="pdns_db_name" name="pdns_db_name" 
+                                <input type="text" class="form-control form-control-sm" id="pdns_db_name" name="pdns_db_name"
                                        value="{{ pdns_db_name }}" placeholder="{% trans %}Leave empty for same database{% endtrans %}">
                             </div>
                             <div class="col-md-6">
@@ -214,6 +287,33 @@
             });
         }
 
+        function updateBackendFields() {
+            const isApi = document.getElementById('backend_api').checked;
+            const pdnsApiSection = document.getElementById('pdns_api_section');
+            const pdnsDbSection = document.getElementById('pdns_db_section');
+            const dbInfoSql = document.getElementById('db_info_sql');
+            const dbInfoApi = document.getElementById('db_info_api');
+            const dbType = document.getElementById('db_type').value;
+
+            // Toggle API settings card
+            pdnsApiSection.style.display = isApi ? '' : 'none';
+
+            // Toggle info messages
+            dbInfoSql.style.display = isApi ? 'none' : '';
+            dbInfoApi.style.display = isApi ? '' : 'none';
+
+            // Toggle PowerDNS DB section (only for MySQL + SQL backend)
+            if (!isApi && dbType === 'mysql') {
+                pdnsDbSection.style.display = '';
+            } else {
+                pdnsDbSection.style.display = 'none';
+                const pdnsDbNameInput = document.getElementById('pdns_db_name');
+                if (pdnsDbNameInput) {
+                    pdnsDbNameInput.value = '';
+                }
+            }
+        }
+
         function updateFormFields(dbType) {
             // Fields to show/hide based on DB type
             const usernameRow = document.getElementById('username_row');
@@ -222,7 +322,6 @@
             const portRow = document.getElementById('db_port_row');
             const charsetRow = document.getElementById('db_charset_row');
             const collationRow = document.getElementById('db_collation_row');
-            const pdnsDbSection = document.getElementById('pdns_db_section');
 
             // Input fields
             const usernameInput = document.getElementById('username');
@@ -245,7 +344,6 @@
                 portRow.style.display = 'none';
                 charsetRow.style.display = 'none';
                 collationRow.style.display = 'none';
-                pdnsDbSection.style.display = 'none';
 
                 // Remove 'required' attribute from hidden fields
                 usernameInput.removeAttribute('required');
@@ -262,9 +360,6 @@
 
                 // If the field is empty or doesn't look like a path, set the default SQLite path
                 if (!dbNameInput.value || !dbNameInput.value.includes('/')) {
-                    // Save the old value in case it's a real database name
-                    const oldValue = dbNameInput.value;
-                    // Set the default SQLite path
                     dbNameInput.value = '/var/lib/powerdns/pdns.sqlite';
                 }
             } else {
@@ -275,18 +370,6 @@
                 portRow.style.display = '';
                 charsetRow.style.display = '';
                 collationRow.style.display = '';
-
-                // Only show PowerDNS database section for MySQL
-                if (dbType === 'mysql') {
-                    pdnsDbSection.style.display = '';
-                } else {
-                    pdnsDbSection.style.display = 'none';
-                    // Clear the PowerDNS database name when switching away from MySQL
-                    const pdnsDbNameInput = document.getElementById('pdns_db_name');
-                    if (pdnsDbNameInput) {
-                        pdnsDbNameInput.value = '';
-                    }
-                }
 
                 // Add 'required' attribute back to visible fields
                 usernameInput.setAttribute('required', '');
@@ -300,10 +383,9 @@
 
                 // Update input placeholder for MySQL/PostgreSQL
                 dbNameInput.placeholder = 'poweradmin';
-                
+
                 // Clear SQLite path if switching from SQLite to MySQL/PostgreSQL
                 if (dbNameInput.value && dbNameInput.value.includes('/')) {
-                    // Check if it looks like a file path (contains slash)
                     dbNameInput.value = 'poweradmin';
                 }
 
@@ -314,6 +396,9 @@
                     portInput.value = '5432';
                 }
             }
+
+            // Update backend-dependent sections (PowerDNS DB section visibility)
+            updateBackendFields();
 
             // Reset validation state when changing database type
             const form = document.querySelector('form.needs-validation');
@@ -331,6 +416,7 @@
                     updateDatabaseFields(this.value);
                 });
             }
+            updateBackendFields();
         });
     </script>
 {% endblock %}
