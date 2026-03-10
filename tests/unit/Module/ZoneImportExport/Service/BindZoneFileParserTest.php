@@ -4,6 +4,7 @@ namespace Tests\Unit\Module\ZoneImportExport\Service;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
+use Poweradmin\Module\ZoneImportExport\Service\ParsedRecord;
 
 class BindZoneFileParserTest extends TestCase
 {
@@ -570,9 +571,9 @@ ZONE;
     public function testInferOriginDirectMethodCall(): void
     {
         $records = [
-            new \Poweradmin\Module\ZoneImportExport\Service\ParsedRecord('a.example.com', 60, 'A', '1.1.1.1'),
-            new \Poweradmin\Module\ZoneImportExport\Service\ParsedRecord('b.example.com', 60, 'A', '1.1.1.2'),
-            new \Poweradmin\Module\ZoneImportExport\Service\ParsedRecord('c.example.com', 60, 'A', '1.1.1.3'),
+            new ParsedRecord('a.example.com', 60, 'A', '1.1.1.1'),
+            new ParsedRecord('b.example.com', 60, 'A', '1.1.1.2'),
+            new ParsedRecord('c.example.com', 60, 'A', '1.1.1.3'),
         ];
 
         $this->assertEquals('example.com', $this->parser->inferOrigin($records));
@@ -586,7 +587,7 @@ ZONE;
     public function testInferOriginReturnsNullForSingleLabelNames(): void
     {
         $records = [
-            new \Poweradmin\Module\ZoneImportExport\Service\ParsedRecord('localhost', 60, 'A', '127.0.0.1'),
+            new ParsedRecord('localhost', 60, 'A', '127.0.0.1'),
         ];
 
         $this->assertNull($this->parser->inferOrigin($records));

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -325,7 +326,7 @@ class GroupsController extends PublicApiController
             }
 
             // Validate that the template is a group template
-            $permTemplateRepo = new \Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository($this->db, $this->config);
+            $permTemplateRepo = new DbPermissionTemplateRepository($this->db, $this->config);
             if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
                 return $this->returnApiError('Invalid permission template: must be a group template', 400);
             }
@@ -403,7 +404,7 @@ class GroupsController extends PublicApiController
 
             // Validate that the template is a group template (if provided)
             if (isset($data['perm_templ_id'])) {
-                $permTemplateRepo = new \Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository($this->db, $this->config);
+                $permTemplateRepo = new DbPermissionTemplateRepository($this->db, $this->config);
                 if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
                     return $this->returnApiError('Invalid permission template: must be a group template', 400);
                 }

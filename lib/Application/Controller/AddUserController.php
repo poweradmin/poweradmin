@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ use Poweradmin\Application\Service\PasswordGenerationService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -330,7 +331,7 @@ class AddUserController extends BaseController
             $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
             $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
 
-            $logger = new \Poweradmin\Infrastructure\Logger\DbGroupLogger($this->db);
+            $logger = new DbGroupLogger($this->db);
 
             foreach ($successfulGroups as $groupInfo) {
                 $logMessage = sprintf(
