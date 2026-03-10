@@ -22,9 +22,11 @@
 
 namespace integration;
 
+use Exception;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
@@ -111,8 +113,8 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         foreach ($this->createdZones as $zoneName) {
             try {
                 $apiName = str_ends_with($zoneName, '.') ? $zoneName : $zoneName . '.';
-                $this->client?->deleteZone(new \Poweradmin\Domain\Model\Zone($apiName));
-            } catch (\Exception $e) {
+                $this->client?->deleteZone(new Zone($apiName));
+            } catch (Exception $e) {
                 // Ignore cleanup errors
             }
         }
@@ -121,7 +123,7 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         foreach ($this->createdAutoprimaries as [$ip, $ns]) {
             try {
                 $this->provider?->deleteSupermaster($ip, $ns);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // Ignore cleanup errors
             }
         }

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\UserRepository;
 
 /**
@@ -125,7 +126,7 @@ class PermissionService
 
         // Check zone-specific permissions (direct ownership + group membership)
         // This uses HybridPermissionService internally
-        $zonePermissions = \Poweradmin\Domain\Model\UserManager::getUserZonePermissions($db, $userId, $domainId);
+        $zonePermissions = UserManager::getUserZonePermissions($db, $userId, $domainId);
 
         if (in_array('zone_content_view_own', $zonePermissions['permissions'])) {
             return 'own';
@@ -176,7 +177,7 @@ class PermissionService
 
         // Check zone-specific permissions (direct ownership + group membership)
         // This uses HybridPermissionService internally
-        $zonePermissions = \Poweradmin\Domain\Model\UserManager::getUserZonePermissions($db, $userId, $domainId);
+        $zonePermissions = UserManager::getUserZonePermissions($db, $userId, $domainId);
 
         if (in_array('zone_content_edit_own', $zonePermissions['permissions'])) {
             return 'own';

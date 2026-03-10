@@ -23,11 +23,14 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
+use Poweradmin\Application\Query\RecordSearch;
+use Poweradmin\Application\Query\ZoneSearch;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -409,7 +412,7 @@ class DnsDataService
     ): array {
         if (!$this->backendProvider->isApiBackend()) {
             $dbType = $this->config->get('database', 'type', 'mysql');
-            $zoneSearch = new \Poweradmin\Application\Query\ZoneSearch($this->db, $this->config, $dbType);
+            $zoneSearch = new ZoneSearch($this->db, $this->config, $dbType);
             return $zoneSearch->searchZones(
                 $parameters,
                 $permissionView,
@@ -431,7 +434,7 @@ class DnsDataService
     {
         if (!$this->backendProvider->isApiBackend()) {
             $dbType = $this->config->get('database', 'type', 'mysql');
-            $zoneSearch = new \Poweradmin\Application\Query\ZoneSearch($this->db, $this->config, $dbType);
+            $zoneSearch = new ZoneSearch($this->db, $this->config, $dbType);
             return $zoneSearch->getTotalZones($parameters, $permissionView);
         }
 
@@ -458,7 +461,7 @@ class DnsDataService
     ): array {
         if (!$this->backendProvider->isApiBackend()) {
             $dbType = $this->config->get('database', 'type', 'mysql');
-            $recordSearch = new \Poweradmin\Application\Query\RecordSearch($this->db, $this->config, $dbType);
+            $recordSearch = new RecordSearch($this->db, $this->config, $dbType);
             return $recordSearch->searchRecords(
                 $parameters,
                 $permissionView,
@@ -481,7 +484,7 @@ class DnsDataService
     {
         if (!$this->backendProvider->isApiBackend()) {
             $dbType = $this->config->get('database', 'type', 'mysql');
-            $recordSearch = new \Poweradmin\Application\Query\RecordSearch($this->db, $this->config, $dbType);
+            $recordSearch = new RecordSearch($this->db, $this->config, $dbType);
             return $recordSearch->getTotalRecords($parameters, $permissionView, $groupRecords);
         }
 
@@ -822,7 +825,7 @@ class DnsDataService
             );
         } else {
             $dbType = $this->config->get('database', 'type', 'mysql');
-            $dnsRecord = new \Poweradmin\Domain\Service\DnsRecord($this->db, $this->config);
+            $dnsRecord = new DnsRecord($this->db, $this->config);
             $records = $dnsRecord->getRecordsFromDomainId(
                 $dbType,
                 $zoneId,

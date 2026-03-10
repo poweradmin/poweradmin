@@ -23,6 +23,12 @@
 namespace Poweradmin\Module;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Module\CsvExport\CsvExportModule;
+use Poweradmin\Module\DnsWizard\DnsWizardModule;
+use Poweradmin\Module\EmailPreviews\EmailPreviewsModule;
+use Poweradmin\Module\Rdap\RdapModule;
+use Poweradmin\Module\Whois\WhoisModule;
+use Poweradmin\Module\ZoneImportExport\ZoneImportExportModule;
 
 /**
  * Module Registry
@@ -44,12 +50,12 @@ class ModuleRegistry
 
     /** @var array<string, class-string<ModuleInterface>> */
     private array $moduleClasses = [
-        'csv_export' => \Poweradmin\Module\CsvExport\CsvExportModule::class,
-        'zone_import_export' => \Poweradmin\Module\ZoneImportExport\ZoneImportExportModule::class,
-        'whois' => \Poweradmin\Module\Whois\WhoisModule::class,
-        'rdap' => \Poweradmin\Module\Rdap\RdapModule::class,
-        'dns_wizards' => \Poweradmin\Module\DnsWizard\DnsWizardModule::class,
-        'email_previews' => \Poweradmin\Module\EmailPreviews\EmailPreviewsModule::class,
+        'csv_export' => CsvExportModule::class,
+        'zone_import_export' => ZoneImportExportModule::class,
+        'whois' => WhoisModule::class,
+        'rdap' => RdapModule::class,
+        'dns_wizards' => DnsWizardModule::class,
+        'email_previews' => EmailPreviewsModule::class,
     ];
 
     public function __construct(ConfigurationManager $config)

@@ -31,11 +31,13 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -230,7 +232,7 @@ class GroupsController extends PublicApiController
 
             try {
                 $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
-            } catch (\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 // Permission denied
                 return $this->returnApiError($e->getMessage(), 403);
             }
@@ -325,7 +327,7 @@ class GroupsController extends PublicApiController
             }
 
             // Validate that the template is a group template
-            $permTemplateRepo = new \Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository($this->db, $this->config);
+            $permTemplateRepo = new DbPermissionTemplateRepository($this->db, $this->config);
             if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
                 return $this->returnApiError('Invalid permission template: must be a group template', 400);
             }
@@ -403,7 +405,7 @@ class GroupsController extends PublicApiController
 
             // Validate that the template is a group template (if provided)
             if (isset($data['perm_templ_id'])) {
-                $permTemplateRepo = new \Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository($this->db, $this->config);
+                $permTemplateRepo = new DbPermissionTemplateRepository($this->db, $this->config);
                 if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
                     return $this->returnApiError('Invalid permission template: must be a group template', 400);
                 }
