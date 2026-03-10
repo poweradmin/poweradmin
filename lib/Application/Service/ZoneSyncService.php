@@ -146,8 +146,8 @@ class ZoneSyncService
             if ($stmt->execute()) {
                 // Set domain_id = id (self-referencing for API mode compatibility)
                 $id = $this->db->lastInsertId();
-                $this->db->prepare("UPDATE zones SET domain_id = :id WHERE id = :id")
-                    ->execute([':id' => $id]);
+                $this->db->prepare("UPDATE zones SET domain_id = :did WHERE id = :id")
+                    ->execute([':did' => $id, ':id' => $id]);
                 $count++;
             }
         }
