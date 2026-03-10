@@ -249,7 +249,7 @@ record_edit:
   controller: Poweradmin\Application\Controller\EditRecordController::run
   requirements:
     zone_id: '\d+'
-    id: '\d+'
+    id: '[\w\-=.]+'
   methods: [GET, POST]
 
 record_delete:
@@ -257,7 +257,7 @@ record_delete:
   controller: Poweradmin\Application\Controller\DeleteRecordController::run
   requirements:
     zone_id: '\d+'
-    id: '\d+'
+    id: '[\w\-=.]+'
   methods: [GET, POST]
 
 # Permission Templates
@@ -480,7 +480,7 @@ api_v1_zone_record:
   controller: Poweradmin\Application\Controller\Api\V1\ZonesRecordsController::run
   requirements:
     id: '\d+'
-    record_id: '\d+'
+    record_id: '[\w\-=.]+'
   methods: [GET, PUT, DELETE]
 
 api_v1_users:
@@ -559,7 +559,7 @@ api_v2_zone_record:
   controller: Poweradmin\Application\Controller\Api\V2\ZonesRecordsController::run
   requirements:
     id: '\d+'
-    record_id: '\d+'
+    record_id: '[\w\-=.]+'
   methods: [GET, PUT, DELETE]
 
 api_v2_zone_records_bulk:

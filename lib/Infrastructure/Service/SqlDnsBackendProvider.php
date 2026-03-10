@@ -156,7 +156,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return true;
     }
 
-    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): ?int
+    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): int|string|null
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -172,7 +172,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return (int)$this->db->lastInsertId();
     }
 
-    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0): ?int
+    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0): int|string|null
     {
         // If already inside a caller's transaction (e.g. RRSet replace, bulk ops),
         // just do the INSERT without managing the transaction ourselves.
@@ -228,7 +228,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return null;
     }
 
-    public function editRecord(int $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled): bool
+    public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled): bool
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -238,7 +238,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return true;
     }
 
-    public function deleteRecord(int $recordId): bool
+    public function deleteRecord(int|string $recordId): bool
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -346,7 +346,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     // Record read methods
     // ---------------------------------------------------------------
 
-    public function getRecordById(int $recordId): ?array
+    public function getRecordById(int|string $recordId): ?array
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $stmt = $this->db->prepare(
@@ -371,7 +371,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         ];
     }
 
-    public function getZoneIdFromRecordId(int $recordId): int
+    public function getZoneIdFromRecordId(int|string $recordId): int
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $stmt = $this->db->prepare("SELECT domain_id FROM $recordsTable WHERE id = :id");

@@ -111,9 +111,9 @@ interface DnsBackendProvider
      * @param string $content Record content
      * @param int $ttl Time-to-live
      * @param int $prio Priority
-     * @return int|null The new record ID, or null on failure
+     * @return int|string|null The new record ID (int for SQL mode, encoded string for API mode), or null on failure
      */
-    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): ?int;
+    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): int|string|null;
 
     /**
      * Create a DNS record atomically with optional disabled flag.
@@ -128,14 +128,14 @@ interface DnsBackendProvider
      * @param int $ttl Time-to-live
      * @param int $prio Priority
      * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
-     * @return int|null The new record ID, or null on failure
+     * @return int|string|null The new record ID, or null on failure
      */
-    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0): ?int;
+    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0): int|string|null;
 
     /**
      * Edit an existing DNS record.
      *
-     * @param int $recordId Record ID
+     * @param int|string $recordId Record ID (int for SQL mode, encoded string for API mode)
      * @param string $name New record name
      * @param string $type New record type
      * @param string $content New record content
@@ -144,15 +144,15 @@ interface DnsBackendProvider
      * @param int $disabled Whether record is disabled (0 or 1)
      * @return bool
      */
-    public function editRecord(int $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled): bool;
+    public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled): bool;
 
     /**
      * Delete a DNS record by ID.
      *
-     * @param int $recordId Record ID
+     * @param int|string $recordId Record ID (int for SQL mode, encoded string for API mode)
      * @return bool
      */
-    public function deleteRecord(int $recordId): bool;
+    public function deleteRecord(int|string $recordId): bool;
 
     /**
      * Delete all records for a given domain.
@@ -278,18 +278,18 @@ interface DnsBackendProvider
     /**
      * Get a single record by ID.
      *
-     * @param int $recordId Record ID
+     * @param int|string $recordId Record ID (int for SQL mode, encoded string for API mode)
      * @return array|null Record data or null
      */
-    public function getRecordById(int $recordId): ?array;
+    public function getRecordById(int|string $recordId): ?array;
 
     /**
      * Get zone ID from a record ID.
      *
-     * @param int $recordId Record ID
+     * @param int|string $recordId Record ID (int for SQL mode, encoded string for API mode)
      * @return int Zone ID (0 if not found)
      */
-    public function getZoneIdFromRecordId(int $recordId): int;
+    public function getZoneIdFromRecordId(int|string $recordId): int;
 
     /**
      * Count non-ENT records in a zone.

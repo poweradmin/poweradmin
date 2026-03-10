@@ -185,14 +185,18 @@ CREATE TABLE `records_zone_templ` (
 
 CREATE TABLE `zones` (
                          `id` int(11) NOT NULL AUTO_INCREMENT,
-                         `domain_id` int(11) NOT NULL,
+                         `domain_id` int(11) NULL DEFAULT NULL,
                          `owner` int(11) NULL DEFAULT NULL,
                          `comment` varchar(1024) DEFAULT NULL,
                          `zone_templ_id` int(11) NOT NULL,
+                         `zone_name` varchar(255) DEFAULT NULL,
+                         `zone_type` varchar(8) DEFAULT NULL,
+                         `zone_master` varchar(255) DEFAULT NULL,
                          PRIMARY KEY (`id`),
                          KEY `idx_zones_domain_id` (`domain_id`),
                          KEY `idx_zones_owner` (`owner`),
-                         KEY `idx_zones_zone_templ_id` (`zone_templ_id`)
+                         KEY `idx_zones_zone_templ_id` (`zone_templ_id`),
+                         UNIQUE KEY `idx_zones_zone_name` (`zone_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 

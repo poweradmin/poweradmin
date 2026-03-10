@@ -6,7 +6,7 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Error\RecordIdNotFoundException;
+use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
@@ -25,9 +25,6 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockClient = $this->createMock(PowerdnsApiClient::class);
         $this->mockDb = $this->createMock(PDO::class);
         $this->mockConfig = $this->createMock(ConfigurationInterface::class);
-        $this->mockConfig->method('get')->willReturnMap([
-            ['database', 'pdns_db_name', null, ''],
-        ]);
 
         $this->provider = new ApiDnsBackendProvider(
             $this->mockClient,
@@ -57,6 +54,7 @@ class ApiDnsBackendProviderTest extends TestCase
             ])
             ->willReturn(['name' => 'example.com.']);
 
+        // Mock: SELECT id FROM zones WHERE zone_name = :name -> returns existing id 42
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
         $stmt->method('fetchColumn')->willReturn(42);
@@ -100,6 +98,40 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertFalse($result);
     }
 
+    public function testCreateZoneInsertsNewEntryWhenNotExists(): void
+    {
+        $this->mockClient->expects($this->once())
+            ->method('createZoneWithData')
+            ->willReturn(['name' => 'newzone.com.']);
+
+        // First prepare: SELECT id FROM zones WHERE zone_name = :name -> false (not found)
+        $stmtSelect = $this->createMock(PDOStatement::class);
+        $stmtSelect->method('execute');
+        $stmtSelect->method('fetchColumn')->willReturn(false);
+
+        // Second prepare: INSERT INTO zones
+        $stmtInsert = $this->createMock(PDOStatement::class);
+        $stmtInsert->method('bindValue');
+        $stmtInsert->method('execute');
+
+        // Third prepare: UPDATE zones SET domain_id = :id WHERE id = :id
+        $stmtUpdate = $this->createMock(PDOStatement::class);
+        $stmtUpdate->method('bindValue');
+        $stmtUpdate->method('execute');
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
+            $stmtSelect,
+            $stmtInsert,
+            $stmtUpdate
+        );
+
+        $this->mockDb->method('lastInsertId')->willReturn('7');
+
+        $result = $this->provider->createZone('newzone.com', 'NATIVE');
+
+        $this->assertEquals(7, $result);
+    }
+
     public function testDeleteZoneCallsApiWithTrailingDot(): void
     {
         $this->mockClient->expects($this->once())
@@ -113,10 +145,18 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testUpdateZoneTypeCallsApiWithCorrectData(): void
     {
+        // Mock getZoneNameByLocalId: SELECT zone_name FROM zones WHERE id = :id OR domain_id = :did
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
         $stmt->method('fetchColumn')->willReturn('example.com');
-        $this->mockDb->method('prepare')->willReturn($stmt);
+        $stmt->method('bindValue');
+
+        // Second prepare for UPDATE zones SET zone_type
+        $stmtUpdate = $this->createMock(PDOStatement::class);
+        $stmtUpdate->method('bindValue');
+        $stmtUpdate->method('execute');
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmt, $stmtUpdate);
 
         $this->mockClient->expects($this->once())
             ->method('updateZoneProperties')
@@ -133,7 +173,13 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
         $stmt->method('fetchColumn')->willReturn('example.com');
-        $this->mockDb->method('prepare')->willReturn($stmt);
+        $stmt->method('bindValue');
+
+        $stmtUpdate = $this->createMock(PDOStatement::class);
+        $stmtUpdate->method('bindValue');
+        $stmtUpdate->method('execute');
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmt, $stmtUpdate);
 
         $this->mockClient->expects($this->once())
             ->method('updateZoneProperties')
@@ -145,11 +191,12 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testUpdateZoneTypeReturnsFalseWhenDomainNotFound(): void
+    public function testUpdateZoneTypeReturnsFalseWhenZoneNotFound(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
         $stmt->method('fetchColumn')->willReturn(false);
+        $stmt->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmt);
 
         $result = $this->provider->updateZoneType(999, 'MASTER');
@@ -162,7 +209,13 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
         $stmt->method('fetchColumn')->willReturn('slave.example.com');
-        $this->mockDb->method('prepare')->willReturn($stmt);
+        $stmt->method('bindValue');
+
+        $stmtUpdate = $this->createMock(PDOStatement::class);
+        $stmtUpdate->method('bindValue');
+        $stmtUpdate->method('execute');
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmt, $stmtUpdate);
 
         $this->mockClient->expects($this->once())
             ->method('updateZoneProperties')
@@ -180,11 +233,12 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testAddRecordBuildsReplaceRRset(): void
     {
-        // Mock getDomainNameById
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-        $this->mockDb->method('prepare')->willReturn($stmtDomain);
+        // Mock getZoneNameByLocalId
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetchColumn')->willReturn('example.com');
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
 
         // Mock getRRsetFromApi - no existing records
         $this->mockClient->method('getZone')
@@ -213,10 +267,11 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testAddRecordAppendsToExistingRRset(): void
     {
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-        $this->mockDb->method('prepare')->willReturn($stmtDomain);
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetchColumn')->willReturn('example.com');
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
 
         // Mock getRRsetFromApi - one existing A record
         $this->mockClient->method('getZone')
@@ -256,10 +311,11 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testAddMxRecordPrependsPriority(): void
     {
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-        $this->mockDb->method('prepare')->willReturn($stmtDomain);
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetchColumn')->willReturn('example.com');
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
 
         $this->mockClient->method('getZone')
             ->with('example.com.')
@@ -287,10 +343,11 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testAddMxRecordWithZeroPriority(): void
     {
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-        $this->mockDb->method('prepare')->willReturn($stmtDomain);
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetchColumn')->willReturn('example.com');
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
 
         $this->mockClient->method('getZone')
             ->with('example.com.')
@@ -318,10 +375,11 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testAddSrvRecordPrependsPriority(): void
     {
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-        $this->mockDb->method('prepare')->willReturn($stmtDomain);
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetchColumn')->willReturn('example.com');
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
 
         $this->mockClient->method('getZone')
             ->with('example.com.')
@@ -350,10 +408,11 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testAddRecordAbortsWhenApiFetchFails(): void
     {
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-        $this->mockDb->method('prepare')->willReturn($stmtDomain);
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetchColumn')->willReturn('example.com');
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
 
         // getZone returns null (API failure)
         $this->mockClient->method('getZone')
@@ -369,26 +428,28 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertFalse($result);
     }
 
+    public function testAddRecordReturnsFalseWhenZoneNotFound(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetchColumn')->willReturn(false);
+        $stmt->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->addRecord(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
+
+        $this->assertFalse($result);
+    }
+
     public function testDeleteRecordRemovesLastRecordInRRset(): void
     {
-        // Mock getRecordFromDb
-        $stmtRecord = $this->createMock(PDOStatement::class);
-        $stmtRecord->method('execute');
-        $stmtRecord->method('fetch')->willReturn([
-            'id' => 5, 'domain_id' => 1, 'name' => 'www.example.com',
-            'type' => 'A', 'content' => '192.168.1.1', 'ttl' => 3600,
-            'prio' => 0, 'disabled' => 0,
-        ]);
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
-        // Mock getDomainNameById
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord,
-            $stmtDomain
-        );
+        // Mock getZoneIdByName for internal lookups
+        $stmtZoneId = $this->createMock(PDOStatement::class);
+        $stmtZoneId->method('execute');
+        $stmtZoneId->method('fetchColumn')->willReturn(1);
+        $this->mockDb->method('prepare')->willReturn($stmtZoneId);
 
         // Mock getRRsetFromApi - only this one record
         $this->mockClient->method('getZone')
@@ -417,29 +478,19 @@ class ApiDnsBackendProviderTest extends TestCase
             ])
             ->willReturn(true);
 
-        $result = $this->provider->deleteRecord(5);
+        $result = $this->provider->deleteRecord($encodedId);
 
         $this->assertTrue($result);
     }
 
     public function testDeleteRecordReplacesRRsetWithRemainingRecords(): void
     {
-        $stmtRecord = $this->createMock(PDOStatement::class);
-        $stmtRecord->method('execute');
-        $stmtRecord->method('fetch')->willReturn([
-            'id' => 5, 'domain_id' => 1, 'name' => 'www.example.com',
-            'type' => 'A', 'content' => '192.168.1.1', 'ttl' => 3600,
-            'prio' => 0, 'disabled' => 0,
-        ]);
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord,
-            $stmtDomain
-        );
+        $stmtZoneId = $this->createMock(PDOStatement::class);
+        $stmtZoneId->method('execute');
+        $stmtZoneId->method('fetchColumn')->willReturn(1);
+        $this->mockDb->method('prepare')->willReturn($stmtZoneId);
 
         // Mock getRRsetFromApi - two records in the RRset
         $this->mockClient->method('getZone')
@@ -473,44 +524,38 @@ class ApiDnsBackendProviderTest extends TestCase
             ])
             ->willReturn(true);
 
-        $result = $this->provider->deleteRecord(5);
+        $result = $this->provider->deleteRecord($encodedId);
 
         $this->assertTrue($result);
     }
 
-    public function testDeleteRecordReturnsFalseWhenRecordNotFound(): void
+    public function testDeleteRecordReturnsFalseForNonEncodedId(): void
     {
-        $stmtRecord = $this->createMock(PDOStatement::class);
-        $stmtRecord->method('execute');
-        $stmtRecord->method('fetch')->willReturn(false);
-
-        $this->mockDb->method('prepare')->willReturn($stmtRecord);
-
+        // Non-encoded integer ID should return false in API mode
         $result = $this->provider->deleteRecord(999);
+
+        $this->assertFalse($result);
+    }
+
+    public function testDeleteRecordAbortsWhenApiFetchFails(): void
+    {
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
+
+        $this->mockClient->method('getZone')
+            ->with('example.com.')
+            ->willReturn(null);
+
+        $this->mockClient->expects($this->never())
+            ->method('patchZoneRRsets');
+
+        $result = $this->provider->deleteRecord($encodedId);
 
         $this->assertFalse($result);
     }
 
     public function testEditRecordSameRRsetRebuilds(): void
     {
-        // Mock getRecordFromDb
-        $stmtRecord = $this->createMock(PDOStatement::class);
-        $stmtRecord->method('execute');
-        $stmtRecord->method('fetch')->willReturn([
-            'id' => 5, 'domain_id' => 1, 'name' => 'www.example.com',
-            'type' => 'A', 'content' => '192.168.1.1', 'ttl' => 3600,
-            'prio' => 0, 'disabled' => 0,
-        ]);
-
-        // Mock getDomainNameById
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord,
-            $stmtDomain
-        );
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
         // Mock getRRsetFromApi
         $this->mockClient->method('getZone')
@@ -543,60 +588,21 @@ class ApiDnsBackendProviderTest extends TestCase
             ])
             ->willReturn(true);
 
-        $result = $this->provider->editRecord(5, 'www.example.com', 'A', '10.0.0.1', 7200, 0, 0);
+        $result = $this->provider->editRecord($encodedId, 'www.example.com', 'A', '10.0.0.1', 7200, 0, 0);
 
         $this->assertTrue($result);
     }
 
-    public function testDeleteRecordAbortsWhenApiFetchFails(): void
+    public function testEditRecordReturnsFalseForNonEncodedId(): void
     {
-        $stmtRecord = $this->createMock(PDOStatement::class);
-        $stmtRecord->method('execute');
-        $stmtRecord->method('fetch')->willReturn([
-            'id' => 5, 'domain_id' => 1, 'name' => 'www.example.com',
-            'type' => 'A', 'content' => '192.168.1.1', 'ttl' => 3600,
-            'prio' => 0, 'disabled' => 0,
-        ]);
-
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord,
-            $stmtDomain
-        );
-
-        $this->mockClient->method('getZone')
-            ->with('example.com.')
-            ->willReturn(null);
-
-        $this->mockClient->expects($this->never())
-            ->method('patchZoneRRsets');
-
-        $result = $this->provider->deleteRecord(5);
+        $result = $this->provider->editRecord(5, 'www.example.com', 'A', '10.0.0.1', 7200, 0, 0);
 
         $this->assertFalse($result);
     }
 
     public function testEditRecordAbortsWhenApiFetchFails(): void
     {
-        $stmtRecord = $this->createMock(PDOStatement::class);
-        $stmtRecord->method('execute');
-        $stmtRecord->method('fetch')->willReturn([
-            'id' => 5, 'domain_id' => 1, 'name' => 'www.example.com',
-            'type' => 'A', 'content' => '192.168.1.1', 'ttl' => 3600,
-            'prio' => 0, 'disabled' => 0,
-        ]);
-
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord,
-            $stmtDomain
-        );
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
         $this->mockClient->method('getZone')
             ->with('example.com.')
@@ -605,7 +611,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockClient->expects($this->never())
             ->method('patchZoneRRsets');
 
-        $result = $this->provider->editRecord(5, 'www.example.com', 'A', '10.0.0.1', 7200, 0, 0);
+        $result = $this->provider->editRecord($encodedId, 'www.example.com', 'A', '10.0.0.1', 7200, 0, 0);
 
         $this->assertFalse($result);
     }
@@ -613,22 +619,7 @@ class ApiDnsBackendProviderTest extends TestCase
     public function testEditRecordNameChangeMovesAcrossRRsets(): void
     {
         // Old record at www.example.com A, moving to web.example.com A
-        $stmtRecord = $this->createMock(PDOStatement::class);
-        $stmtRecord->method('execute');
-        $stmtRecord->method('fetch')->willReturn([
-            'id' => 5, 'domain_id' => 1, 'name' => 'www.example.com',
-            'type' => 'A', 'content' => '192.168.1.1', 'ttl' => 3600,
-            'prio' => 0, 'disabled' => 0,
-        ]);
-
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord,
-            $stmtDomain
-        );
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
         // getZone returns both old and new RRsets
         $this->mockClient->method('getZone')
@@ -669,42 +660,15 @@ class ApiDnsBackendProviderTest extends TestCase
             ])
             ->willReturn(true);
 
-        $result = $this->provider->editRecord(5, 'web.example.com', 'A', '192.168.1.1', 3600, 0, 0);
+        $result = $this->provider->editRecord($encodedId, 'web.example.com', 'A', '192.168.1.1', 3600, 0, 0);
 
         $this->assertTrue($result);
     }
 
-    public function testAddRecordReturnsFalseWhenDomainNotFound(): void
-    {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute');
-        $stmt->method('fetchColumn')->willReturn(false);
-        $this->mockDb->method('prepare')->willReturn($stmt);
-
-        $result = $this->provider->addRecord(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
-
-        $this->assertFalse($result);
-    }
-
     public function testEditRecordAppendsWhenOldRecordNotFoundInApi(): void
     {
-        // The DB has a record, but API RRset doesn't contain it (stale DB state)
-        $stmtRecord = $this->createMock(PDOStatement::class);
-        $stmtRecord->method('execute');
-        $stmtRecord->method('fetch')->willReturn([
-            'id' => 5, 'domain_id' => 1, 'name' => 'www.example.com',
-            'type' => 'A', 'content' => '192.168.1.1', 'ttl' => 3600,
-            'prio' => 0, 'disabled' => 0,
-        ]);
-
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord,
-            $stmtDomain
-        );
+        // The encoded ID references a record, but API RRset doesn't contain it (stale state)
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
         // API returns an RRset with a different record (old record not present)
         $this->mockClient->method('getZone')
@@ -739,95 +703,14 @@ class ApiDnsBackendProviderTest extends TestCase
             ])
             ->willReturn(true);
 
-        $result = $this->provider->editRecord(5, 'www.example.com', 'A', '10.0.0.1', 7200, 0, 0);
+        $result = $this->provider->editRecord($encodedId, 'www.example.com', 'A', '10.0.0.1', 7200, 0, 0);
 
         $this->assertTrue($result);
     }
 
-    public function testEditRecordReturnsFalseWhenDomainNotFound(): void
-    {
-        $stmtRecord = $this->createMock(PDOStatement::class);
-        $stmtRecord->method('execute');
-        $stmtRecord->method('fetch')->willReturn([
-            'id' => 5, 'domain_id' => 1, 'name' => 'www.example.com',
-            'type' => 'A', 'content' => '192.168.1.1', 'ttl' => 3600,
-            'prio' => 0, 'disabled' => 0,
-        ]);
-
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn(false);
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord,
-            $stmtDomain
-        );
-
-        $result = $this->provider->editRecord(5, 'www.example.com', 'A', '10.0.0.1', 7200, 0, 0);
-
-        $this->assertFalse($result);
-    }
-
-    public function testDeleteRecordReturnsFalseWhenDomainNotFound(): void
-    {
-        $stmtRecord = $this->createMock(PDOStatement::class);
-        $stmtRecord->method('execute');
-        $stmtRecord->method('fetch')->willReturn([
-            'id' => 5, 'domain_id' => 1, 'name' => 'www.example.com',
-            'type' => 'A', 'content' => '192.168.1.1', 'ttl' => 3600,
-            'prio' => 0, 'disabled' => 0,
-        ]);
-
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn(false);
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord,
-            $stmtDomain
-        );
-
-        $result = $this->provider->deleteRecord(5);
-
-        $this->assertFalse($result);
-    }
-
-    public function testCreateZoneThrowsWhenDbIdLookupTimesOut(): void
-    {
-        $this->mockClient->expects($this->once())
-            ->method('createZoneWithData')
-            ->willReturn(['name' => 'example.com.']);
-
-        // lookupDomainIdByName retries 5 times but never finds the ID
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute');
-        $stmt->method('fetchColumn')->willReturn(false);
-        $this->mockDb->method('prepare')->willReturn($stmt);
-
-        $this->expectException(\Poweradmin\Domain\Error\ZoneIdNotFoundException::class);
-        $this->expectExceptionMessage("Zone 'example.com' created via API but DB ID not found after retries");
-
-        $this->provider->createZone('example.com', 'NATIVE');
-    }
-
     public function testEditRecordWithDisabledFlag(): void
     {
-        $stmtRecord = $this->createMock(PDOStatement::class);
-        $stmtRecord->method('execute');
-        $stmtRecord->method('fetch')->willReturn([
-            'id' => 5, 'domain_id' => 1, 'name' => 'www.example.com',
-            'type' => 'A', 'content' => '192.168.1.1', 'ttl' => 3600,
-            'prio' => 0, 'disabled' => 0,
-        ]);
-
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord,
-            $stmtDomain
-        );
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
         $this->mockClient->method('getZone')
             ->with('example.com.')
@@ -860,29 +743,14 @@ class ApiDnsBackendProviderTest extends TestCase
             ->willReturn(true);
 
         // Edit with disabled=1, same content
-        $result = $this->provider->editRecord(5, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 1);
+        $result = $this->provider->editRecord($encodedId, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 1);
 
         $this->assertTrue($result);
     }
 
     public function testEditRecordNameChangeWithNewRRsetApiFetchFailure(): void
     {
-        $stmtRecord = $this->createMock(PDOStatement::class);
-        $stmtRecord->method('execute');
-        $stmtRecord->method('fetch')->willReturn([
-            'id' => 5, 'domain_id' => 1, 'name' => 'www.example.com',
-            'type' => 'A', 'content' => '192.168.1.1', 'ttl' => 3600,
-            'prio' => 0, 'disabled' => 0,
-        ]);
-
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtRecord,
-            $stmtDomain
-        );
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
         $callCount = 0;
         $this->mockClient->method('getZone')
@@ -912,7 +780,7 @@ class ApiDnsBackendProviderTest extends TestCase
             ->method('patchZoneRRsets');
 
         // Name change: www -> web, second getZone fails
-        $result = $this->provider->editRecord(5, 'web.example.com', 'A', '192.168.1.1', 3600, 0, 0);
+        $result = $this->provider->editRecord($encodedId, 'web.example.com', 'A', '192.168.1.1', 3600, 0, 0);
 
         $this->assertFalse($result);
     }
@@ -921,22 +789,14 @@ class ApiDnsBackendProviderTest extends TestCase
     // addRecordGetId operations
     // ---------------------------------------------------------------
 
-    public function testAddRecordGetIdReturnsIdOnSuccess(): void
+    public function testAddRecordGetIdReturnsEncodedIdOnSuccess(): void
     {
-        // Mock getDomainNameById
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-
-        // Mock lookupRecordId - returns ID on first try
-        $stmtLookup = $this->createMock(PDOStatement::class);
-        $stmtLookup->method('execute');
-        $stmtLookup->method('fetchColumn')->willReturn(42);
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtDomain,
-            $stmtLookup
-        );
+        // Mock getZoneNameByLocalId
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetchColumn')->willReturn('example.com');
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
 
         $this->mockClient->method('getZone')
             ->with('example.com.')
@@ -946,16 +806,27 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $result = $this->provider->addRecordGetId(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
 
-        $this->assertEquals(42, $result);
+        // Should return an encoded string, not an integer
+        $this->assertIsString($result);
+        $this->assertTrue(RecordIdentifier::isEncoded($result));
+
+        // Decode and verify the contents
+        $decoded = RecordIdentifier::decode($result);
+        $this->assertEquals('example.com', $decoded['zone_name']);
+        $this->assertEquals('www.example.com', $decoded['name']);
+        $this->assertEquals('A', $decoded['type']);
+        $this->assertEquals('192.168.1.1', $decoded['content']);
+        $this->assertEquals(0, $decoded['prio']);
     }
 
     public function testAddRecordGetIdReturnsNullWhenAddRecordFails(): void
     {
-        // Mock getDomainNameById
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-        $this->mockDb->method('prepare')->willReturn($stmtDomain);
+        // Mock getZoneNameByLocalId
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetchColumn')->willReturn('example.com');
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
 
         // API fetch fails -> addRecord returns false
         $this->mockClient->method('getZone')
@@ -967,27 +838,18 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function testAddRecordGetIdThrowsWhenDbIdNotFound(): void
+    // ---------------------------------------------------------------
+    // createRecordAtomic
+    // ---------------------------------------------------------------
+
+    public function testCreateRecordAtomicReturnsEncodedIdOnSuccess(): void
     {
-        // Mock getDomainNameById
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-
-        // Mock lookupRecordId - never finds the record (returns false on all retries)
-        $stmtLookup = $this->createMock(PDOStatement::class);
-        $stmtLookup->method('execute');
-        $stmtLookup->method('fetchColumn')->willReturn(false);
-        $stmtLookup->method('bindValue');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtDomain,          // getDomainNameById
-            $stmtLookup,          // lookupRecordId retry 1
-            $stmtLookup,          // lookupRecordId retry 2
-            $stmtLookup,          // lookupRecordId retry 3
-            $stmtLookup,          // lookupRecordId retry 4
-            $stmtLookup           // lookupRecordId retry 5
-        );
+        // Mock getZoneNameByLocalId
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetchColumn')->willReturn('example.com');
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
 
         $this->mockClient->method('getZone')
             ->with('example.com.')
@@ -995,10 +857,89 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $this->mockClient->method('patchZoneRRsets')->willReturn(true);
 
-        $this->expectException(RecordIdNotFoundException::class);
-        $this->expectExceptionMessage("Record 'www.example.com A' created via API but DB ID not found after retries");
+        $result = $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 0);
 
-        $this->provider->addRecordGetId(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
+        $this->assertIsString($result);
+        $this->assertTrue(RecordIdentifier::isEncoded($result));
+
+        $decoded = RecordIdentifier::decode($result);
+        $this->assertEquals('example.com', $decoded['zone_name']);
+        $this->assertEquals('www.example.com', $decoded['name']);
+        $this->assertEquals('A', $decoded['type']);
+    }
+
+    public function testCreateRecordAtomicReturnsNullWhenApiFails(): void
+    {
+        // Mock getZoneNameByLocalId
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetchColumn')->willReturn('example.com');
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
+
+        // API fetch fails
+        $this->mockClient->method('getZone')
+            ->with('example.com.')
+            ->willReturn(null);
+
+        $result = $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
+
+        $this->assertNull($result);
+    }
+
+    public function testCreateRecordAtomicReturnsNullWhenPatchFails(): void
+    {
+        // Mock getZoneNameByLocalId
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetchColumn')->willReturn('example.com');
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
+
+        $this->mockClient->method('getZone')
+            ->with('example.com.')
+            ->willReturn(['rrsets' => []]);
+
+        $this->mockClient->method('patchZoneRRsets')->willReturn(false);
+
+        $result = $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 0);
+
+        $this->assertNull($result);
+    }
+
+    public function testCreateRecordAtomicWithDisabledFlag(): void
+    {
+        // Mock getZoneNameByLocalId
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetchColumn')->willReturn('example.com');
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
+
+        $this->mockClient->method('getZone')
+            ->with('example.com.')
+            ->willReturn(['rrsets' => []]);
+
+        // Should include disabled=true in the record
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', [
+                [
+                    'name' => 'www.example.com.',
+                    'type' => 'A',
+                    'ttl' => 3600,
+                    'changetype' => 'REPLACE',
+                    'records' => [
+                        ['content' => '192.168.1.1', 'disabled' => true],
+                    ],
+                ],
+            ])
+            ->willReturn(true);
+
+        $result = $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 1);
+
+        $this->assertIsString($result);
+        $this->assertTrue(RecordIdentifier::isEncoded($result));
     }
 
     // ---------------------------------------------------------------
@@ -1176,12 +1117,11 @@ class ApiDnsBackendProviderTest extends TestCase
     }
 
     // ---------------------------------------------------------------
-    // resolveRecordIds - duplicate record handling
+    // Zone records with encoded IDs
     // ---------------------------------------------------------------
 
-    public function testGetZoneRecordsAssignsUniqueIdsForDuplicateRecords(): void
+    public function testGetZoneRecordsReturnsEncodedIds(): void
     {
-        // API returns 3 identical A records (round-robin)
         $this->mockClient->method('getZone')
             ->with('example.com.')
             ->willReturn([
@@ -1192,102 +1132,128 @@ class ApiDnsBackendProviderTest extends TestCase
                         'ttl' => 3600,
                         'records' => [
                             ['content' => '192.168.1.1', 'disabled' => false],
-                            ['content' => '192.168.1.1', 'disabled' => false],
-                            ['content' => '192.168.1.1', 'disabled' => false],
+                            ['content' => '192.168.1.2', 'disabled' => false],
                         ],
                     ],
                 ],
             ]);
 
-        // DB has 3 rows with different IDs for the same content
-        $stmtRecords = $this->createMock(PDOStatement::class);
-        $stmtRecords->method('execute');
-        $fetchCallCount = 0;
-        $dbRows = [
-            ['id' => 10, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.168.1.1', 'prio' => 0],
-            ['id' => 11, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.168.1.1', 'prio' => 0],
-            ['id' => 12, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.168.1.1', 'prio' => 0],
-        ];
-        $stmtRecords->method('fetch')->willReturnCallback(function () use (&$fetchCallCount, $dbRows) {
-            /** @psalm-suppress InvalidArrayOffset -- counter is incremented by reference */
-            return $dbRows[$fetchCallCount++] ?? false;
-        });
+        $records = $this->provider->getZoneRecords(1, 'example.com');
 
-        $this->mockDb->method('prepare')->willReturn($stmtRecords);
+        $this->assertCount(2, $records);
+
+        // Each record should have an encoded string ID
+        foreach ($records as $record) {
+            $this->assertIsString($record['id']);
+            $this->assertTrue(RecordIdentifier::isEncoded($record['id']));
+            $this->assertEquals(1, $record['domain_id']);
+            $this->assertEquals('www.example.com', $record['name']);
+            $this->assertEquals('A', $record['type']);
+        }
+
+        $this->assertEquals('192.168.1.1', $records[0]['content']);
+        $this->assertEquals('192.168.1.2', $records[1]['content']);
+
+        // IDs should be different (different content)
+        $this->assertNotEquals($records[0]['id'], $records[1]['id']);
+    }
+
+    public function testGetZoneRecordsExtractsMxPriority(): void
+    {
+        $this->mockClient->method('getZone')
+            ->with('example.com.')
+            ->willReturn([
+                'rrsets' => [
+                    [
+                        'name' => 'example.com.',
+                        'type' => 'MX',
+                        'ttl' => 3600,
+                        'records' => [
+                            ['content' => '10 mail.example.com.', 'disabled' => false],
+                        ],
+                    ],
+                ],
+            ]);
 
         $records = $this->provider->getZoneRecords(1, 'example.com');
 
-        $this->assertCount(3, $records);
-
-        // Each record should have a unique ID assigned via FIFO
-        $ids = array_column($records, 'id');
-        $this->assertSame([10, 11, 12], $ids);
-        $this->assertCount(3, array_unique($ids), 'Duplicate records must get unique IDs');
+        $this->assertCount(1, $records);
+        $this->assertEquals(10, $records[0]['prio']);
+        // MX content should have trailing dot stripped
+        $this->assertEquals('mail.example.com', $records[0]['content']);
     }
 
     // ---------------------------------------------------------------
-    // createRecordAtomic
+    // searchDnsData uses local zones table
     // ---------------------------------------------------------------
 
-    public function testCreateRecordAtomicDelegatesToAddRecordGetId(): void
+    public function testSearchDnsDataUsesLocalZonesTable(): void
     {
-        // Mock getDomainNameById
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
+        $this->mockClient->method('searchData')
+            ->willReturn([
+                [
+                    'object_type' => 'zone',
+                    'name' => 'example.com.',
+                    'kind' => 'NATIVE',
+                ],
+                [
+                    'object_type' => 'record',
+                    'name' => 'www.example.com.',
+                    'type' => 'A',
+                    'content' => '192.168.1.1',
+                    'ttl' => 3600,
+                    'zone' => 'example.com.',
+                    'disabled' => false,
+                ],
+            ]);
 
-        // Mock lookupRecordId
-        $stmtLookup = $this->createMock(PDOStatement::class);
-        $stmtLookup->method('execute');
-        $stmtLookup->method('fetchColumn')->willReturn(42);
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmtDomain,
-            $stmtLookup
+        // Mock local zones query
+        $stmtZones = $this->createMock(PDOStatement::class);
+        $stmtZones->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 1, 'domain_id' => 1, 'zone_name' => 'example.com'],
+            false
         );
+        $this->mockDb->method('query')->willReturn($stmtZones);
 
-        $this->mockClient->method('getZone')
-            ->with('example.com.')
-            ->willReturn(['rrsets' => []]);
+        $result = $this->provider->searchDnsData('example');
 
-        $this->mockClient->method('patchZoneRRsets')->willReturn(true);
+        $this->assertCount(1, $result['zones']);
+        $this->assertEquals(1, $result['zones'][0]['id']);
+        $this->assertEquals('example.com', $result['zones'][0]['name']);
 
-        // disabled=0, so no editRecord call needed
-        $result = $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 0);
-
-        $this->assertEquals(42, $result);
+        $this->assertCount(1, $result['records']);
+        $this->assertEquals(1, $result['records'][0]['domain_id']);
+        $this->assertEquals('www.example.com', $result['records'][0]['name']);
+        // Record ID should be encoded
+        $this->assertIsString($result['records'][0]['id']);
+        $this->assertTrue(RecordIdentifier::isEncoded($result['records'][0]['id']));
     }
 
-    public function testCreateRecordAtomicRollsBackOnDisabledFailure(): void
+    // ---------------------------------------------------------------
+    // getZones enriches with local data
+    // ---------------------------------------------------------------
+
+    public function testGetZonesEnrichesWithLocalZonesData(): void
     {
-        $provider = $this->getMockBuilder(ApiDnsBackendProvider::class)
-            ->setConstructorArgs([$this->mockClient, $this->mockDb, $this->mockConfig, new NullLogger()])
-            ->onlyMethods(['addRecordGetId', 'editRecord', 'deleteRecord'])
-            ->getMock();
+        $mockZone = $this->createMock(\Poweradmin\Domain\Model\Zone::class);
+        $mockZone->method('getName')->willReturn('example.com.');
+        $mockZone->method('isSecured')->willReturn(false);
 
-        $provider->method('addRecordGetId')->willReturn(42);
-        $provider->method('editRecord')->willReturn(false);
-        $provider->expects($this->once())->method('deleteRecord')->with(42)->willReturn(true);
+        $this->mockClient->method('getAllZones')->willReturn([$mockZone]);
 
-        $result = $provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 1);
-        $this->assertNull($result);
-    }
+        // Mock local zones query
+        $stmtZones = $this->createMock(PDOStatement::class);
+        $stmtZones->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 5, 'domain_id' => 5, 'zone_name' => 'example.com', 'zone_type' => 'NATIVE', 'zone_master' => ''],
+            false
+        );
+        $this->mockDb->method('query')->willReturn($stmtZones);
 
-    public function testCreateRecordAtomicReturnsNullWhenAddFails(): void
-    {
-        // Mock getDomainNameById
-        $stmtDomain = $this->createMock(PDOStatement::class);
-        $stmtDomain->method('execute');
-        $stmtDomain->method('fetchColumn')->willReturn('example.com');
-        $this->mockDb->method('prepare')->willReturn($stmtDomain);
+        $result = $this->provider->getZones();
 
-        // API fetch fails -> addRecord returns false -> addRecordGetId returns null
-        $this->mockClient->method('getZone')
-            ->with('example.com.')
-            ->willReturn(null);
-
-        $result = $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
-
-        $this->assertNull($result);
+        $this->assertCount(1, $result);
+        $this->assertEquals(5, $result[0]['id']);
+        $this->assertEquals('example.com', $result[0]['name']);
+        $this->assertEquals('NATIVE', $result[0]['type']);
     }
 }

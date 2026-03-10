@@ -293,13 +293,13 @@ class DatabaseStructureHelper
                     ),
                     'domain_id' => array
                     (
-                        'notnull' => 1,
+                        'notnull' => 0,
                         'unsigned' => 0,
-                        'default' => 0,
+                        'default' => null,
                         'type' => 'integer',
                         'name' => 'domain_id',
                         'table' => 'zones',
-                        'flags' => 'not_null'
+                        'flags' => ''
                     ),
                     'owner' => array
                     (
@@ -330,6 +330,39 @@ class DatabaseStructureHelper
                         'name' => 'zone_templ_id',
                         'table' => 'zones',
                         'flags' => ''
+                    ),
+                    'zone_name' => array
+                    (
+                        'notnull' => 0,
+                        'length' => 255,
+                        'fixed' => 0,
+                        'default' => null,
+                        'type' => 'text',
+                        'name' => 'zone_name',
+                        'table' => 'zones',
+                        'flags' => ''
+                    ),
+                    'zone_type' => array
+                    (
+                        'notnull' => 0,
+                        'length' => 8,
+                        'fixed' => 0,
+                        'default' => null,
+                        'type' => 'text',
+                        'name' => 'zone_type',
+                        'table' => 'zones',
+                        'flags' => ''
+                    ),
+                    'zone_master' => array
+                    (
+                        'notnull' => 0,
+                        'length' => 255,
+                        'fixed' => 0,
+                        'default' => null,
+                        'type' => 'text',
+                        'name' => 'zone_master',
+                        'table' => 'zones',
+                        'flags' => ''
                     )
                 ),
                 'indexes' => array(
@@ -347,6 +380,12 @@ class DatabaseStructureHelper
                         'fields' => array(
                             'zone_templ_id' => array()
                         )
+                    ),
+                    'zones_zone_name_idx' => array(
+                        'fields' => array(
+                            'zone_name' => array()
+                        ),
+                        'type' => 'unique'
                     )
                 )
             ),

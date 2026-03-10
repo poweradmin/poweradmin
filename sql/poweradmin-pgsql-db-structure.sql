@@ -247,12 +247,16 @@ CREATE TABLE "public"."zones" (
                                   "owner" integer DEFAULT NULL,
                                   "comment" character varying(1024),
                                   "zone_templ_id" integer,
+                                  "zone_name" character varying(255) DEFAULT NULL,
+                                  "zone_type" character varying(8) DEFAULT NULL,
+                                  "zone_master" character varying(255) DEFAULT NULL,
                                   CONSTRAINT "zones_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
 CREATE INDEX "idx_zones_domain_id" ON "public"."zones" USING btree ("domain_id");
 CREATE INDEX "idx_zones_owner" ON "public"."zones" USING btree ("owner");
 CREATE INDEX "idx_zones_zone_templ_id" ON "public"."zones" USING btree ("zone_templ_id");
+CREATE UNIQUE INDEX "idx_zones_zone_name" ON "public"."zones" USING btree ("zone_name");
 
 CREATE SEQUENCE api_keys_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 

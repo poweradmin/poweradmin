@@ -115,7 +115,8 @@ class RoutingConfigurationTest extends TestCase
         $zoneRecordRoute = $this->routes->get('api_v1_zone_record');
         $this->assertNotNull($zoneRecordRoute);
         $this->assertEquals('\d+', $zoneRecordRoute->getRequirement('id'));
-        $this->assertEquals('\d+', $zoneRecordRoute->getRequirement('record_id'));
+        // record_id accepts both numeric IDs (SQL mode) and encoded strings (API mode)
+        $this->assertEquals('[\w\-=.]+', $zoneRecordRoute->getRequirement('record_id'));
     }
 
     public function testRouteMethodRestrictions(): void
