@@ -1222,6 +1222,7 @@ return array(
     'Poweradmin\\Domain\\ValueObject\\HostnameValue' => $baseDir . '/lib/Domain/ValueObject/HostnameValue.php',
     'Poweradmin\\Domain\\ValueObject\\IpAddressList' => $baseDir . '/lib/Domain/ValueObject/IpAddressList.php',
     'Poweradmin\\Domain\\ValueObject\\OidcUserInfo' => $baseDir . '/lib/Domain/ValueObject/OidcUserInfo.php',
+    'Poweradmin\\Domain\\ValueObject\\RecordIdentifier' => $baseDir . '/lib/Domain/ValueObject/RecordIdentifier.php',
     'Poweradmin\\Domain\\ValueObject\\SamlUserInfo' => $baseDir . '/lib/Domain/ValueObject/SamlUserInfo.php',
     'Poweradmin\\Domain\\ValueObject\\UserInfoInterface' => $baseDir . '/lib/Domain/ValueObject/UserInfoInterface.php',
     'Poweradmin\\Infrastructure\\Api\\ApiClient' => $baseDir . '/lib/Infrastructure/Api/ApiClient.php',
