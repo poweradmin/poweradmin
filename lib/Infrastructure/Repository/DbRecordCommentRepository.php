@@ -285,7 +285,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
      * @param int $domainId Domain ID
      * @param string $name Record name
      * @param string $type Record type
-     * @param int $excludeRecordId Record ID to exclude (the one being edited)
+     * @param int|string $excludeRecordId Record ID to exclude (int for SQL, encoded string for API)
      */
     public function migrateLegacyComments(int $domainId, string $name, string $type, int|string $excludeRecordId): void
     {

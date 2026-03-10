@@ -112,7 +112,7 @@ class RecordRepository implements RecordRepositoryInterface
     /**
      * Get record details from Record ID
      *
-     * @param int $rid Record ID
+     * @param int|string $rid Record ID (int for SQL mode, encoded string for API mode)
      *
      * @return array array of record details [rid,zid,name,type,content,ttl,prio]
      */
@@ -150,7 +150,7 @@ class RecordRepository implements RecordRepositoryInterface
      * PowerDNS automatically creates records with NULL/empty type for RFC 8020 compliance
      * to support DNS hierarchy. These are not user-manageable records.
      *
-     * @param int $id Record ID
+     * @param int|string $id Record ID (int for SQL mode, encoded string for API mode)
      * @return array|null array of record detail, or null if nothing found
      */
     public function getRecordFromId(int|string $id): ?array
