@@ -48,6 +48,7 @@ class DnsDataService
     private DnsBackendProvider $backendProvider;
     private PDO $db;
     private ConfigurationInterface $config;
+    private ?ZoneSyncService $zoneSyncService = null;
 
     public function __construct(
         DnsBackendProvider $backendProvider,
@@ -57,6 +58,10 @@ class DnsDataService
         $this->backendProvider = $backendProvider;
         $this->db = $db;
         $this->config = $config;
+
+        if ($backendProvider->isApiBackend()) {
+            $this->zoneSyncService = new ZoneSyncService($db, $backendProvider);
+        }
     }
 
     /**
@@ -213,6 +218,8 @@ class DnsDataService
             $zoneCountService = new ZoneCountService($this->db, $this->config);
             return $zoneCountService->countZones($perm, $letterStart, $zoneType);
         }
+
+        $this->zoneSyncService?->syncIfStale();
 
         $zones = $this->backendProvider->getZones();
         $zones = $this->filterZonesByType($zones, $zoneType);
@@ -502,6 +509,9 @@ class DnsDataService
         string $zoneType,
         string $reverseType = 'all'
     ): array {
+        // Sync local zones table with PowerDNS API before listing
+        $this->zoneSyncService?->syncIfStale();
+
         $allZones = $this->backendProvider->getZones();
 
         // Filter by zone type (forward/reverse)
