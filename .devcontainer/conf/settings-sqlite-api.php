@@ -66,6 +66,7 @@ return [
      * DNS Settings
      */
     'dns' => [
+        'backend' => 'api',
         'hostmaster' => 'hostmaster.example.com',
         'ns1' => 'ns1.example.com',
         'ns2' => 'ns2.example.com',
@@ -113,7 +114,6 @@ return [
         'server_name' => 'localhost',
         'webserver_username' => '',
         'webserver_password' => 'poweradmin',
-        'backend' => 'api',
     ],
 
     /**
