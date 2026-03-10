@@ -159,6 +159,7 @@ docker run -d --name poweradmin -p 80:80 \
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
+| `PA_DNS_BACKEND` | DNS data backend: `sql` (direct database) or `api` (PowerDNS REST API) | `sql` | No |
 | `DNS_NS1` | Primary DNS nameserver | `ns1.example.com` | Yes |
 | `DNS_NS2` | Secondary DNS nameserver | `ns2.example.com` | Yes |
 | `DNS_NS3` | Third DNS nameserver (optional) | Empty | No |
@@ -376,7 +377,6 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_PDNS_API_URL` | PowerDNS API URL (e.g., http://127.0.0.1:8081) | Empty | No |
 | `PA_PDNS_API_KEY` | PowerDNS API key | Empty | No |
 | `PA_PDNS_SERVER_NAME` | PowerDNS server name for API calls | `localhost` | No |
-| `PA_PDNS_BACKEND` | DNS data backend: `sql` (direct database) or `api` (PowerDNS REST API, experimental) | `sql` | No |
 
 ### Modules
 
