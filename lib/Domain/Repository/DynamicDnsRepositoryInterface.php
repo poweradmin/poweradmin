@@ -35,7 +35,7 @@ interface DynamicDnsRepositoryInterface
 
     public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): void;
 
-    public function deleteDnsRecord(int $recordId): void;
+    public function deleteDnsRecord(int|string $recordId): void;
 
     public function updateSOASerial(int $zoneId): void;
 }

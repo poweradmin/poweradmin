@@ -103,7 +103,7 @@ class DynamicDnsRepository implements DynamicDnsRepositoryInterface
             $records = [];
             foreach ($allRecords as $r) {
                 if (($r['name'] ?? '') === $hostname->getValue()) {
-                    $records[$r['content'] ?? ''] = (int)($r['id'] ?? 0);
+                    $records[$r['content'] ?? ''] = $r['id'] ?? 0;
                 }
             }
             return $records;
@@ -150,7 +150,7 @@ class DynamicDnsRepository implements DynamicDnsRepositoryInterface
         ]);
     }
 
-    public function deleteDnsRecord(int $recordId): void
+    public function deleteDnsRecord(int|string $recordId): void
     {
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->deleteRecord($recordId);
