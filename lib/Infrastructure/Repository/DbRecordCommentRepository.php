@@ -234,7 +234,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         return $stmt->execute();
     }
 
-    public function unlinkRecord(int $recordId): bool
+    public function unlinkRecord(int|string $recordId): bool
     {
         $query = "DELETE FROM {$this->links_table} WHERE record_id = :record_id";
         $stmt = $this->connection->prepare($query);

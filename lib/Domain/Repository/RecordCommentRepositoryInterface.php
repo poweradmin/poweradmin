@@ -111,10 +111,10 @@ interface RecordCommentRepositoryInterface
     /**
      * Unlink a record from its comment.
      *
-     * @param int $recordId The record ID
+     * @param int|string $recordId The record ID
      * @return bool
      */
-    public function unlinkRecord(int $recordId): bool;
+    public function unlinkRecord(int|string $recordId): bool;
 
     /**
      * Add a comment for a specific record.
