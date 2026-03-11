@@ -196,7 +196,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         return $result ? $this->hydrateComment($result) : null;
     }
 
-    public function deleteByRecordId(int $recordId): bool
+    public function deleteByRecordId(int|string $recordId): bool
     {
         // First, get the comment_id linked to this record
         $query = "SELECT comment_id FROM {$this->links_table} WHERE record_id = :record_id";

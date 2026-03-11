@@ -372,11 +372,11 @@ class RecordManager implements RecordManagerInterface
     /**
      * Delete a record by a given record id
      *
-     * @param int $rid Record ID
+     * @param int|string $rid Record ID
      *
      * @return boolean true on success
      */
-    public function deleteRecord(int $rid): bool
+    public function deleteRecord(int|string $rid): bool
     {
         $perm_edit = Permission::getEditPermission($this->db);
 

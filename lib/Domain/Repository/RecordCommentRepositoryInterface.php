@@ -94,10 +94,10 @@ interface RecordCommentRepositoryInterface
     /**
      * Delete the comment linked to a specific record ID.
      *
-     * @param int $recordId The record ID
+     * @param int|string $recordId The record ID
      * @return bool
      */
-    public function deleteByRecordId(int $recordId): bool;
+    public function deleteByRecordId(int|string $recordId): bool;
 
     /**
      * Link a record to a comment.

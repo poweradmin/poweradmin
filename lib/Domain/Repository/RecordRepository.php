@@ -381,12 +381,12 @@ class RecordRepository implements RecordRepositoryInterface
      * @param int $record_id Current record ID to exclude from check
      * @return bool True if similar records found, false otherwise
      */
-    public function hasSimilarRecords(int $domain_id, string $name, string $type, int $record_id): bool
+    public function hasSimilarRecords(int $domain_id, string $name, string $type, int|string $record_id): bool
     {
         if ($this->isApiBackend()) {
             $records = $this->backendProvider->getRecordsByZoneId($domain_id, $type);
             foreach ($records as $r) {
-                if ($r['name'] === $name && (int)($r['id'] ?? 0) !== $record_id) {
+                if ($r['name'] === $name && ($r['id'] ?? 0) != $record_id) {
                     return true;
                 }
             }

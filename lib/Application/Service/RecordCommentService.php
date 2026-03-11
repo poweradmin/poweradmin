@@ -140,10 +140,10 @@ class RecordCommentService
      * Delete comment for a specific record.
      * Removes the link and the associated comment.
      *
-     * @param int $recordId Record ID
+     * @param int|string $recordId Record ID
      * @return bool
      */
-    public function deleteCommentByRecordId(int $recordId): bool
+    public function deleteCommentByRecordId(int|string $recordId): bool
     {
         return $this->recordCommentRepository->deleteByRecordId($recordId);
     }

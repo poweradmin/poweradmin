@@ -162,7 +162,7 @@ interface RecordRepositoryInterface
      * @param int $record_id Current record ID to exclude from check
      * @return bool True if similar records found, false otherwise
      */
-    public function hasSimilarRecords(int $domain_id, string $name, string $type, int $record_id): bool;
+    public function hasSimilarRecords(int $domain_id, string $name, string $type, int|string $record_id): bool;
 
     /**
      * Get Serial for Zone ID
