@@ -58,8 +58,9 @@ class DeleteDomainsController extends BaseController
         parent::__construct($request);
 
         $this->auditLogger = new LegacyLogger($this->db);
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+        $backendProvider = $this->createDnsBackendProvider();
+        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $backendProvider);
         $this->userContextService = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }

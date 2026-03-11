@@ -199,10 +199,10 @@ class RecordManager implements RecordManagerInterface
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
      *
-     * @return int|null The new record ID, or null on failure
+     * @return int|string|null The new record ID, or null on failure
      * @throws Exception
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): ?int
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): int|string|null
     {
         $perm_edit = Permission::getEditPermission($this->db);
 

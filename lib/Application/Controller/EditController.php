@@ -87,10 +87,11 @@ class EditController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+        $backendProvider = $this->createDnsBackendProvider();
+        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $backendProvider);
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
-        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository);
+        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->formStateService = new FormStateService();
 

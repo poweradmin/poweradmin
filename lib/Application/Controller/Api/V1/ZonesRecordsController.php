@@ -71,7 +71,7 @@ class ZonesRecordsController extends PublicApiController
         $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
 
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $this->backendProvider);
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $this->backendProvider);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());

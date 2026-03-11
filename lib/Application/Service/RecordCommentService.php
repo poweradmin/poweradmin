@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 
 /**
  * Service for managing DNS record comments.
@@ -35,10 +36,14 @@ use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 class RecordCommentService
 {
     private RecordCommentRepositoryInterface $recordCommentRepository;
+    private bool $isApiBackend;
 
-    public function __construct(RecordCommentRepositoryInterface $recordCommentRepository)
-    {
+    public function __construct(
+        RecordCommentRepositoryInterface $recordCommentRepository,
+        ?DnsBackendProvider $backendProvider = null
+    ) {
         $this->recordCommentRepository = $recordCommentRepository;
+        $this->isApiBackend = $backendProvider !== null && $backendProvider->isApiBackend();
     }
 
     /**
@@ -61,6 +66,12 @@ class RecordCommentService
         int $recordId,
         ?string $account = null
     ): ?RecordComment {
+        // In API mode, per-record linking is not possible (encoded string IDs).
+        // Delegate to RRset-level comment instead.
+        if ($this->isApiBackend) {
+            return $this->createComment($domainId, $name, $type, $comment, $account);
+        }
+
         // Ensure legacy RRset comments are copied to other records before mutating this RRset
         $this->recordCommentRepository->migrateLegacyComments($domainId, $name, $type, $recordId);
 
@@ -145,6 +156,9 @@ class RecordCommentService
      */
     public function deleteCommentByRecordId(int|string $recordId): bool
     {
+        if ($this->isApiBackend) {
+            return true;
+        }
         return $this->recordCommentRepository->deleteByRecordId($recordId);
     }
 
@@ -178,6 +192,12 @@ class RecordCommentService
         int $recordId,
         ?string $account = null
     ): ?RecordComment {
+        // In API mode, per-record linking is not possible (encoded string IDs).
+        // Delegate to RRset-level comment instead.
+        if ($this->isApiBackend) {
+            return $this->updateComment($domainId, $name, $type, $name, $type, $comment, $account);
+        }
+
         if ($comment === '') {
             // Migrate legacy comments to other records before deleting
             $this->recordCommentRepository->migrateLegacyComments($domainId, $name, $type, $recordId);
@@ -248,6 +268,9 @@ class RecordCommentService
      */
     public function findCommentByRecordId(int $recordId): ?RecordComment
     {
+        if ($this->isApiBackend) {
+            return null;
+        }
         return $this->recordCommentRepository->findByRecordId($recordId);
     }
 }

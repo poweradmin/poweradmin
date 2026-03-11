@@ -66,10 +66,11 @@ class EditRecordController extends BaseController
 
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+        $backendProvider = $this->createDnsBackendProvider();
+        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $backendProvider);
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
-        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository);
+        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();
     }

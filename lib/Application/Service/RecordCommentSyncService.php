@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,17 +24,23 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsRecord;
 
 class RecordCommentSyncService
 {
     private RecordCommentService $commentService;
     private ?RecordRepository $recordRepository;
+    private bool $isApiBackend;
 
-    public function __construct(RecordCommentService $commentService, ?RecordRepository $recordRepository = null)
-    {
+    public function __construct(
+        RecordCommentService $commentService,
+        ?RecordRepository $recordRepository = null,
+        ?DnsBackendProvider $backendProvider = null
+    ) {
         $this->commentService = $commentService;
         $this->recordRepository = $recordRepository;
+        $this->isApiBackend = $backendProvider !== null && $backendProvider->isApiBackend();
     }
 
     public function syncCommentsForPtrRecord(
@@ -117,6 +123,17 @@ class RecordCommentSyncService
 
     private function updateRecordComments(int $zoneId, string $name, string $type, string $comment, string $userLogin): void
     {
+        // In API mode, record IDs are encoded strings that cannot be cast to int.
+        // Use RRset-level comment update instead of per-record linking.
+        if ($this->isApiBackend) {
+            if ($type === RecordType::PTR) {
+                $this->updatePtrRecordComment($zoneId, $name, $name, $comment, $userLogin);
+            } else {
+                $this->updateARecordComment($zoneId, $name, $name, $comment, $userLogin);
+            }
+            return;
+        }
+
         if ($this->recordRepository !== null) {
             $rrsetRecords = $this->recordRepository->getRRSetRecords($zoneId, $name, $type);
             foreach ($rrsetRecords as $record) {

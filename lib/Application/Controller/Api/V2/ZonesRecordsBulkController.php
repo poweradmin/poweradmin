@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ class ZonesRecordsBulkController extends PublicApiController
         $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
 
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $this->backendProvider);
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $this->backendProvider);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
@@ -137,7 +137,7 @@ class ZonesRecordsBulkController extends PublicApiController
                     items: new OA\Items(
                         properties: [
                             new OA\Property(property: 'action', type: 'string', enum: ['create', 'update', 'delete'], example: 'create', description: 'Operation type'),
-                            new OA\Property(property: 'id', type: 'integer', example: 123, description: 'Record ID (required for update/delete)'),
+                            new OA\Property(property: 'id', oneOf: [new OA\Schema(type: 'integer'), new OA\Schema(type: 'string')], example: 123, description: 'Record ID (required for update/delete)'),
                             new OA\Property(property: 'name', type: 'string', example: 'www', description: 'Record name (required for create)'),
                             new OA\Property(property: 'type', type: 'string', example: 'A', description: 'Record type (required for create)'),
                             new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content (required for create/update)'),
@@ -425,7 +425,7 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException("Field 'id' is required for update operation", 400);
         }
 
-        $recordId = (int)$operation['id'];
+        $recordId = ctype_digit((string)$operation['id']) ? (int)$operation['id'] : $operation['id'];
 
         // Get existing record
         $existingRecord = $this->recordRepository->getRecordById($recordId);
@@ -467,7 +467,7 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException("Field 'id' is required for delete operation", 400);
         }
 
-        $recordId = (int)$operation['id'];
+        $recordId = ctype_digit((string)$operation['id']) ? (int)$operation['id'] : $operation['id'];
 
         // Verify record exists in this zone
         $existingRecord = $this->recordRepository->getRecordById($recordId);
@@ -505,9 +505,9 @@ class ZonesRecordsBulkController extends PublicApiController
      * @param int $ttl TTL value
      * @param int $priority Priority value
      * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
-     * @return int|null Record ID if successful, null on failure
+     * @return int|string|null Record ID if successful, null on failure
      */
-    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): ?int
+    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): int|string|null
     {
         try {
             return $this->backendProvider->createRecordAtomic($zoneId, $name, $type, $content, $ttl, $priority, $disabled);

@@ -184,6 +184,10 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
 
     public function findByRecordId(int $recordId): ?RecordComment
     {
+        if ($this->isApiBackend()) {
+            return null;
+        }
+
         $query = "SELECT c.* FROM {$this->comments_table} c
                   JOIN {$this->links_table} rcl ON rcl.comment_id = c.id
                   WHERE rcl.record_id = :record_id
@@ -223,6 +227,10 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
 
     public function linkRecordToComment(int $recordId, int $commentId): bool
     {
+        if ($this->isApiBackend()) {
+            return true;
+        }
+
         // First, remove any existing link for this record
         $this->unlinkRecord($recordId);
 
@@ -244,6 +252,10 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
 
     public function addForRecord(int $recordId, RecordComment $comment): ?RecordComment
     {
+        if ($this->isApiBackend()) {
+            return null;
+        }
+
         // First, delete any existing comment for this record
         $this->deleteByRecordId($recordId);
 

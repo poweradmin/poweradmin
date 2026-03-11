@@ -58,8 +58,9 @@ class DeleteRecordsController extends BaseController
 
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+        $backendProvider = $this->createDnsBackendProvider();
+        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $backendProvider);
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->reverseRecordCreator = new ReverseRecordCreator(

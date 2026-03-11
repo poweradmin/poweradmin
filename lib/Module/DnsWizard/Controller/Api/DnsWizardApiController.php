@@ -373,9 +373,10 @@ class DnsWizardApiController extends InternalApiController
 
             // Create the record using RecordManagerService
             $logger = new LegacyLogger($this->db);
-            $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->config);
-            $recordCommentService = new RecordCommentService($recordCommentRepository);
-            $commentSyncService = new RecordCommentSyncService($recordCommentService);
+            $backendProvider = $this->createDnsBackendProvider();
+            $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->config, $backendProvider);
+            $recordCommentService = new RecordCommentService($recordCommentRepository, $backendProvider);
+            $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
             $recordManager = new RecordManagerService(
                 $this->db,
                 $dnsRecord,

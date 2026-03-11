@@ -61,9 +61,10 @@ class DnsWizardFormController extends BaseController
         $this->formStateService = new FormStateService();
 
         $logger = new LegacyLogger($this->db);
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
-        $recordCommentService = new RecordCommentService($recordCommentRepository);
-        $commentSyncService = new RecordCommentSyncService($recordCommentService);
+        $backendProvider = $this->createDnsBackendProvider();
+        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
+        $recordCommentService = new RecordCommentService($recordCommentRepository, $backendProvider);
+        $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
 
         $this->recordManager = new RecordManagerService(
             $this->db,

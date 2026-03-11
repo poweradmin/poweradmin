@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ class ZonesRecordsController extends PublicApiController
         $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
 
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $this->backendProvider);
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $this->backendProvider);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
@@ -152,7 +152,7 @@ class ZonesRecordsController extends PublicApiController
                     type: 'array',
                     items: new OA\Items(
                         properties: [
-                            new OA\Property(property: 'id', type: 'integer', example: 1),
+                            new OA\Property(property: 'id', oneOf: [new OA\Schema(type: 'integer'), new OA\Schema(type: 'string')], example: 1),
                             new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
                             new OA\Property(property: 'type', type: 'string', example: 'A'),
                             new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
@@ -198,7 +198,7 @@ class ZonesRecordsController extends PublicApiController
             // Format record data
             $formattedRecords = array_map(function ($record) {
                 return [
-                    'id' => (int)$record['id'],
+                    'id' => $this->formatRecordId($record['id']),
                     'name' => $record['name'],
                     'type' => $record['type'],
                     'content' => $this->stripTxtQuotes($record['content'], $record['type']),
@@ -239,7 +239,7 @@ class ZonesRecordsController extends PublicApiController
         in: 'path',
         description: 'Record ID',
         required: true,
-        schema: new OA\Schema(type: 'integer')
+        schema: new OA\Schema(type: 'string')
     )]
     #[OA\Response(
         response: 200,
@@ -254,7 +254,7 @@ class ZonesRecordsController extends PublicApiController
                         new OA\Property(
                             property: 'record',
                             properties: [
-                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'id', oneOf: [new OA\Schema(type: 'integer'), new OA\Schema(type: 'string')], example: 1),
                                 new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
                                 new OA\Property(property: 'type', type: 'string', example: 'A'),
                                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
@@ -306,7 +306,7 @@ class ZonesRecordsController extends PublicApiController
             $zoneName = $domainRepository->getDomainNameById($zoneId);
 
             $formattedRecord = [
-                'id' => (int)$record['id'],
+                'id' => $this->formatRecordId($record['id']),
                 'zone_id' => $zoneId,
                 'name' => DnsHelper::stripZoneSuffix($record['name'], $zoneName),
                 'type' => $record['type'],
@@ -367,7 +367,7 @@ class ZonesRecordsController extends PublicApiController
                 new OA\Property(
                     property: 'data',
                     properties: [
-                        new OA\Property(property: 'record_id', type: 'integer', example: 456),
+                        new OA\Property(property: 'record_id', oneOf: [new OA\Schema(type: 'integer'), new OA\Schema(type: 'string')], example: 456),
                         new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
                         new OA\Property(property: 'type', type: 'string', example: 'A'),
                         new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
@@ -574,7 +574,7 @@ class ZonesRecordsController extends PublicApiController
             }
 
             $responseData = [
-                'id' => $newRecord ? (int)$newRecord['id'] : null,
+                'id' => $newRecord ? $this->formatRecordId($newRecord['id']) : null,
                 'zone_id' => $zoneId,
                 'name' => DnsHelper::stripZoneSuffix($name, $zoneName),
                 'type' => $type,
@@ -629,7 +629,7 @@ class ZonesRecordsController extends PublicApiController
         in: 'path',
         description: 'Record ID',
         required: true,
-        schema: new OA\Schema(type: 'integer')
+        schema: new OA\Schema(type: 'string')
     )]
     #[OA\RequestBody(
         description: 'Record update data',
@@ -658,7 +658,7 @@ class ZonesRecordsController extends PublicApiController
                         new OA\Property(
                             property: 'record',
                             properties: [
-                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'id', oneOf: [new OA\Schema(type: 'integer'), new OA\Schema(type: 'string')], example: 1),
                                 new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
                                 new OA\Property(property: 'type', type: 'string', example: 'A'),
                                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
@@ -764,7 +764,7 @@ class ZonesRecordsController extends PublicApiController
             $zoneName = $domainRepository->getDomainNameById($zoneId);
 
             $formattedRecord = [
-                'id' => (int)$updatedRecord['id'],
+                'id' => $this->formatRecordId($updatedRecord['id']),
                 'zone_id' => $zoneId,
                 'name' => DnsHelper::stripZoneSuffix($updatedRecord['name'], $zoneName),
                 'type' => $updatedRecord['type'],
@@ -776,7 +776,7 @@ class ZonesRecordsController extends PublicApiController
             ];
 
             $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user_id:%d operation:api_edit_record zone_id:%d record_id:%d',
+                'client_ip:%s user_id:%d operation:api_edit_record zone_id:%d record_id:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $userId,
                 $zoneId,
@@ -813,7 +813,7 @@ class ZonesRecordsController extends PublicApiController
         in: 'path',
         description: 'Record ID',
         required: true,
-        schema: new OA\Schema(type: 'integer')
+        schema: new OA\Schema(type: 'string')
     )]
     #[OA\Response(
         response: 204,
@@ -892,7 +892,7 @@ class ZonesRecordsController extends PublicApiController
             }
 
             $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user_id:%d operation:api_delete_record zone_id:%d record_id:%d',
+                'client_ip:%s user_id:%d operation:api_delete_record zone_id:%d record_id:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $userId,
                 $zoneId,
@@ -906,6 +906,17 @@ class ZonesRecordsController extends PublicApiController
     }
 
     /**
+     * Format a record ID preserving encoded string IDs from API backend.
+     *
+     * @param mixed $id Record ID (int for SQL, encoded string for API)
+     * @return int|string
+     */
+    private function formatRecordId(mixed $id): int|string
+    {
+        return ctype_digit((string)$id) ? (int)$id : $id;
+    }
+
+    /**
      * Insert a validated record directly into the database (API-specific method)
      *
      * @param int $zoneId Zone ID
@@ -915,9 +926,9 @@ class ZonesRecordsController extends PublicApiController
      * @param int $ttl TTL value
      * @param int $priority Priority value
      * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
-     * @return int|null The new record ID, or null on failure
+     * @return int|string|null The new record ID, or null on failure
      */
-    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): ?int
+    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): int|string|null
     {
         try {
             return $this->backendProvider->createRecordAtomic($zoneId, $name, $type, $content, $ttl, $priority, $disabled);
