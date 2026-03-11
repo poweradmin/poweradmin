@@ -56,7 +56,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $this->reverseDomainNaturalSorting = new ReverseDomainNaturalSorting();
         $this->reverseZoneSorting = new ReverseZoneSorting();
         $this->tableNameService = new TableNameService($config);
-        $this->apiRepo = $backendProvider !== null
+        $isApiBackend = $config->get('dns', 'backend') === 'api';
+        $this->apiRepo = ($isApiBackend && $backendProvider !== null)
             ? new ApiZoneRepository($db, $backendProvider, $this->db_type)
             : null;
     }
