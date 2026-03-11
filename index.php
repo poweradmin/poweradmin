@@ -56,7 +56,7 @@ try {
     if ($expectsJson) {
         header('Content-Type: application/json');
 
-        if ($e->getCode() === 404 || str_contains($e->getMessage(), 'not found')) {
+        if ($e->getCode() === 404) {
             http_response_code(404);
             echo json_encode([
                 'error' => true,
@@ -81,7 +81,7 @@ try {
         }
     } else {
         // HTML error response
-        if ($e->getCode() === 404 || str_contains($e->getMessage(), 'not found')) {
+        if ($e->getCode() === 404) {
             http_response_code(404);
             try {
                 $notFoundController = new NotFoundController([]);
