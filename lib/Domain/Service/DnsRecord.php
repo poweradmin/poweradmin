@@ -123,11 +123,11 @@ class DnsRecord
 
     /** Get Zone ID from Record ID
      *
-     * @param int $rid Record ID
+     * @param int|string $rid Record ID
      *
      * @return int Zone ID
      */
-    public function getZoneIdFromRecordId(int $rid): int
+    public function getZoneIdFromRecordId(int|string $rid): int
     {
         return $this->recordRepository->getZoneIdFromRecordId($rid);
     }

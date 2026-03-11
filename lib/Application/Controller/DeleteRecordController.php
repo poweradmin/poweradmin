@@ -42,6 +42,7 @@ use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -86,9 +87,12 @@ class DeleteRecordController extends BaseController
     public function run(): void
     {
         $record_id = $this->getSafeRequestValue('id');
-        if (!$record_id || !Validator::isNumber($record_id)) {
+        if (!$record_id || (!Validator::isNumber($record_id) && !RecordIdentifier::isEncoded($record_id))) {
             $this->showError(_('Invalid or unexpected input given.'));
             return;
+        }
+        if (Validator::isNumber($record_id)) {
+            $record_id = (int)$record_id;
         }
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 

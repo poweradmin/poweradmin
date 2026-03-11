@@ -43,6 +43,7 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -77,11 +78,13 @@ class EditRecordController extends BaseController
     {
         // Validate record ID parameter
         $record_id = $this->getSafeRequestValue('id');
-        if (!$record_id || !Validator::isNumber($record_id)) {
+        if (!$record_id || (!Validator::isNumber($record_id) && !RecordIdentifier::isEncoded($record_id))) {
             $this->showError(_('Invalid record ID.'));
             return;
         }
-        $record_id = (int)$record_id;
+        if (Validator::isNumber($record_id)) {
+            $record_id = (int)$record_id;
+        }
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         // Get zone ID from record first
