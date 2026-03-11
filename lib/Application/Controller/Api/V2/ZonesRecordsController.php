@@ -280,7 +280,10 @@ class ZonesRecordsController extends PublicApiController
         try {
             $userId = $this->getAuthenticatedUserId();
             $zoneId = (int)$this->pathParameters['id'];
-            $recordId = (int)$this->pathParameters['record_id'];
+            $recordId = $this->pathParameters['record_id'];
+            if (ctype_digit($recordId)) {
+                $recordId = (int)$recordId;
+            }
 
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
@@ -688,9 +691,12 @@ class ZonesRecordsController extends PublicApiController
         try {
             $userId = $this->getAuthenticatedUserId();
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
-            $recordId = (int)($this->pathParameters['record_id'] ?? 0);
+            $recordId = $this->pathParameters['record_id'] ?? '';
+            if (ctype_digit($recordId)) {
+                $recordId = (int)$recordId;
+            }
 
-            if ($zoneId <= 0 || $recordId <= 0) {
+            if ($zoneId <= 0 || !$recordId) {
                 return $this->returnApiError('Valid zone ID and record ID are required', 400);
             }
 
@@ -836,9 +842,12 @@ class ZonesRecordsController extends PublicApiController
         try {
             $userId = $this->getAuthenticatedUserId();
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
-            $recordId = (int)($this->pathParameters['record_id'] ?? 0);
+            $recordId = $this->pathParameters['record_id'] ?? '';
+            if (ctype_digit($recordId)) {
+                $recordId = (int)$recordId;
+            }
 
-            if ($zoneId <= 0 || $recordId <= 0) {
+            if ($zoneId <= 0 || !$recordId) {
                 return $this->returnApiError('Valid zone ID and record ID are required', 400);
             }
 
