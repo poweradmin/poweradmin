@@ -30,15 +30,6 @@ use Poweradmin\Domain\Utility\DnssecTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
 
-// TODO:
-// - Add debug logging (if enabled)
-// - Better error handling (visual response)
-// - Add tests (unit, integration, functional)
-// - Provide documentation
-// - Test syslog logging
-// - Move logging into middleware, decorator, or event listener/subscriber
-// - define interfaces or DTOs for returned data by PowerDNS API
-
 class DnsSecApiProvider implements DnssecProvider
 {
     private PowerdnsApiClient $client;

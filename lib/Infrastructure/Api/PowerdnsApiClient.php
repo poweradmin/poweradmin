@@ -28,11 +28,6 @@ use Poweradmin\Domain\Model\Zone;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-// TODO
-// - have smaller client classes for specific functionality
-// - refactor response handling into separate method
-// - add tests (unit, integration, functional)
-
 class PowerdnsApiClient
 {
 
