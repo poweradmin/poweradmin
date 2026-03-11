@@ -505,7 +505,6 @@ class DomainRepository implements DomainRepositoryInterface
 
         $ret = array();
         while ($r = $result->fetch()) {
-            //FIXME: name is not guaranteed to be unique with round-robin record sets
             $domainName = $r["name"];
             $utf8Name = DnsIdnService::toUtf8($domainName);
 

@@ -433,7 +433,6 @@ class ZoneTemplate
      * Add a record for a zone template
      *
      * This function validates and if correct it inserts it into the database.
-     * TODO: actual validation?
      *
      * @param int $zone_templ_id zone template ID
      * @param string $name name part of record
