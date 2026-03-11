@@ -378,7 +378,7 @@ class RecordRepository implements RecordRepositoryInterface
      * @param int $domain_id Domain ID
      * @param string $name Record name
      * @param string $type Record type
-     * @param int $record_id Current record ID to exclude from check
+     * @param int|string $record_id Current record ID to exclude from check
      * @return bool True if similar records found, false otherwise
      */
     public function hasSimilarRecords(int $domain_id, string $name, string $type, int|string $record_id): bool
