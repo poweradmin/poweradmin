@@ -74,6 +74,21 @@ interface UserGroupRepositoryInterface
     public function delete(int $id): bool;
 
     /**
+     * Count all groups
+     *
+     * @return int
+     */
+    public function countAll(): int;
+
+    /**
+     * Get member counts for multiple groups in a single query
+     *
+     * @param int[] $groupIds
+     * @return array<int, int> Map of group_id => member_count
+     */
+    public function getMemberCountsByGroupIds(array $groupIds): array;
+
+    /**
      * Count members in a group
      *
      * @param int $groupId

@@ -12,6 +12,19 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Group CRUD Operations', () => {
+  // Helper to create a group (selects first available template)
+  async function createGroup(page, groupName) {
+    await page.goto('/groups/add');
+    await page.locator('input#name').fill(groupName);
+    const select = page.locator('select#perm_templ');
+    const options = select.locator('option:not([disabled])');
+    if (await options.count() > 0) {
+      await select.selectOption(await options.first().getAttribute('value'));
+    }
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await page.waitForLoadState('domcontentloaded');
+  }
+
   test.describe('List Groups', () => {
     test('admin should access groups list page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -53,6 +66,53 @@ test.describe('Group CRUD Operations', () => {
       const addBtn = page.locator('a[href*="/groups/add"]');
       expect(await addBtn.count()).toBeGreaterThan(0);
     });
+
+    test('should display search input for filtering groups', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/groups');
+
+      const searchInput = page.locator('#group-search');
+      await expect(searchInput).toBeVisible();
+    });
+
+    test('should filter groups by search term', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/groups');
+
+      const searchInput = page.locator('#group-search');
+      await searchInput.fill('Admin');
+
+      // Administrators row should be visible, others hidden
+      const visibleRows = page.locator('.group-row:visible');
+      const allRows = page.locator('.group-row');
+      expect(await visibleRows.count()).toBeLessThan(await allRows.count());
+      expect(await visibleRows.count()).toBeGreaterThan(0);
+    });
+
+    test('should clear search and show all groups', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/groups');
+
+      const searchInput = page.locator('#group-search');
+      await searchInput.fill('Admin');
+
+      const clearBtn = page.locator('#clear-group-search');
+      await clearBtn.click();
+
+      const allRows = page.locator('.group-row');
+      const visibleRows = page.locator('.group-row:visible');
+      expect(await visibleRows.count()).toBe(await allRows.count());
+    });
+
+    test('should display distinct badge colors for members and zones', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/groups');
+
+      const successBadges = page.locator('.badge.bg-success');
+      const primaryBadges = page.locator('.badge.bg-primary');
+      expect(await successBadges.count()).toBeGreaterThan(0);
+      expect(await primaryBadges.count()).toBeGreaterThan(0);
+    });
   });
 
   test.describe('Add Group', () => {
@@ -72,6 +132,25 @@ test.describe('Group CRUD Operations', () => {
       await expect(page.locator('select#perm_templ')).toBeVisible();
     });
 
+    test('should display info sidebar', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/groups/add');
+
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).toMatch(/About Groups/i);
+      expect(bodyText).toMatch(/What are Groups/i);
+    });
+
+    test('should display template select with placeholder option', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/groups/add');
+
+      const select = page.locator('select#perm_templ');
+      const placeholderOption = select.locator('option[disabled]');
+      expect(await placeholderOption.count()).toBeGreaterThan(0);
+      await expect(placeholderOption).toContainText('Select a template');
+    });
+
     test('should create new group with name and description', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const groupName = `Test Group ${Date.now()}`;
@@ -79,6 +158,15 @@ test.describe('Group CRUD Operations', () => {
 
       await page.locator('input#name').fill(groupName);
       await page.locator('textarea#description, input#description').first().fill('E2E test group');
+
+      // Select the first available template
+      const select = page.locator('select#perm_templ');
+      const options = select.locator('option:not([disabled])');
+      if (await options.count() > 0) {
+        const firstValue = await options.first().getAttribute('value');
+        await select.selectOption(firstValue);
+      }
+
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       await page.waitForLoadState('domcontentloaded');
@@ -90,8 +178,13 @@ test.describe('Group CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/groups/add');
 
-      // Leave name empty, fill description
+      // Leave name empty, fill description and select template
       await page.locator('textarea#description, input#description').first().fill('No name group');
+      const select = page.locator('select#perm_templ');
+      const options = select.locator('option:not([disabled])');
+      if (await options.count() > 0) {
+        await select.selectOption(await options.first().getAttribute('value'));
+      }
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       const url = page.url();
@@ -109,6 +202,11 @@ test.describe('Group CRUD Operations', () => {
 
       // Use a name that already exists from test data
       await page.locator('input#name').fill('Administrators');
+      const select = page.locator('select#perm_templ');
+      const options = select.locator('option:not([disabled])');
+      if (await options.count() > 0) {
+        await select.selectOption(await options.first().getAttribute('value'));
+      }
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       const bodyText = await page.locator('body').textContent();
@@ -137,10 +235,7 @@ test.describe('Group CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       // First create a group to edit
       const groupName = `Edit Test ${Date.now()}`;
-      await page.goto('/groups/add');
-      await page.locator('input#name').fill(groupName);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      await page.waitForLoadState('domcontentloaded');
+      await createGroup(page, groupName);
 
       // Find and edit the created group
       await page.goto('/groups');
@@ -166,10 +261,7 @@ test.describe('Group CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       // Create a group to delete
       const groupName = `Delete Test ${Date.now()}`;
-      await page.goto('/groups/add');
-      await page.locator('input#name').fill(groupName);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      await page.waitForLoadState('domcontentloaded');
+      await createGroup(page, groupName);
 
       await page.goto('/groups');
       const row = page.locator(`tr:has-text("${groupName}")`);
@@ -216,10 +308,7 @@ test.describe('Group CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       // Create a group to delete
       const groupName = `ToDelete ${Date.now()}`;
-      await page.goto('/groups/add');
-      await page.locator('input#name').fill(groupName);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      await page.waitForLoadState('domcontentloaded');
+      await createGroup(page, groupName);
 
       await page.goto('/groups');
       const row = page.locator(`tr:has-text("${groupName}")`);

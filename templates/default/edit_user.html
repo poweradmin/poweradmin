@@ -131,9 +131,11 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#accountInfoBody" role="button" aria-expanded="true">
                 <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Account Information{% endtrans %}</strong>
+                <i class="bi bi-chevron-down float-end"></i>
             </div>
+            <div class="collapse show" id="accountInfoBody">
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">
@@ -164,8 +166,12 @@
                         </ul>
                     </div>
                     <div class="list-group-item">
-                        <h6 class="mb-1"><i class="bi bi-key text-warning me-2"></i>{% trans %}User Permissions{% endtrans %}</h6>
-                        <p class="mb-2 small">
+                        <h6 class="mb-1" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#permissionsBody" role="button" aria-expanded="false">
+                            <i class="bi bi-key text-warning me-2"></i>{% trans %}User Permissions{% endtrans %}
+                            <i class="bi bi-chevron-down float-end"></i>
+                        </h6>
+                        <div class="collapse" id="permissionsBody">
+                        <p class="mb-2 small mt-2">
                             {% trans %}This user has been assigned the access template{% endtrans %}: <strong>"{{ user['tpl_name'] }}"</strong>
                         </p>
 
@@ -187,8 +193,10 @@
                                 {% endfor %}
                             </ul>
                         {% endif %}
+                        </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
 

@@ -79,4 +79,39 @@ test.describe('Group Visibility Filtering', () => {
     // Admin should see all 5 groups
     expect(count).toBeGreaterThanOrEqual(5);
   });
+
+  test('should display member count badges next to group names on add master zone page', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto('/zones/add/master');
+    await page.waitForLoadState('networkidle');
+
+    const groupItems = page.locator('.group-item');
+    const count = await groupItems.count();
+
+    if (count === 0) {
+      return;
+    }
+
+    // Each group label should contain a member count badge with "members" text
+    const firstLabel = groupItems.first().locator('label');
+    const badgeText = await firstLabel.locator('.badge').textContent();
+    expect(badgeText).toMatch(/\d+\s+members/i);
+  });
+
+  test('should display member count badges next to group names on add slave zone page', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto('/zones/add/slave');
+    await page.waitForLoadState('networkidle');
+
+    const groupItems = page.locator('.group-item');
+    const count = await groupItems.count();
+
+    if (count === 0) {
+      return;
+    }
+
+    const firstLabel = groupItems.first().locator('label');
+    const badgeText = await firstLabel.locator('.badge').textContent();
+    expect(badgeText).toMatch(/\d+\s+members/i);
+  });
 });
