@@ -280,6 +280,10 @@ class AddZoneMasterController extends BaseController
         $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
 
+        // Fetch member counts for all groups in a single query
+        $groupIds = array_map(fn($g) => $g->getId(), $allGroups);
+        $memberCounts = $userGroupRepo->getMemberCountsByGroupIds($groupIds);
+
         // Handle selected groups on error re-render
         $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
             array_map('intval', $_POST['groups']) : [];
@@ -301,6 +305,7 @@ class AddZoneMasterController extends BaseController
             'is_post' => $is_post_request,
             'dnssec_checked' => $dnssec_checked,
             'all_groups' => $allGroups,
+            'group_member_counts' => $memberCounts,
             'selected_groups' => $selected_groups,
             // Don't pass raw POST data to the template for security
         ]);

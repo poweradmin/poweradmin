@@ -91,8 +91,8 @@
                                         <small class="text-muted ms-2">({{ member.fullname }})</small>
                                     {% endif %}
                                 </div>
-                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="showRemoveMemberModal({{ member.id }}, '{{ member.username|e('js') }}')" title="{% trans %}Remove from group{% endtrans %}">
-                                    <i class="bi bi-x-circle text-danger"></i>
+                                <button type="button" class="btn btn-sm btn-outline-danger px-2" onclick="showRemoveMemberModal({{ member.id }}, '{{ member.username|e('js') }}')" title="{% trans %}Remove from group{% endtrans %}">
+                                    <i class="bi bi-x-circle text-danger me-1"></i><small>{% trans %}Remove{% endtrans %}</small>
                                 </button>
                             </li>
                             {% endfor %}
@@ -135,8 +135,8 @@
                                         <span class="badge {{ zone_type_class(zone.type) }} badge-sm ms-1">{{ zone.type }}</span>
                                     {% endif %}
                                 </div>
-                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="showRemoveZoneModal({{ zone.id }}, '{{ zone.name|e('js') }}')" title="{% trans %}Remove from group{% endtrans %}">
-                                    <i class="bi bi-x-circle text-danger"></i>
+                                <button type="button" class="btn btn-sm btn-outline-danger px-2" onclick="showRemoveZoneModal({{ zone.id }}, '{{ zone.name|e('js') }}')" title="{% trans %}Remove from group{% endtrans %}">
+                                    <i class="bi bi-x-circle text-danger me-1"></i><small>{% trans %}Remove{% endtrans %}</small>
                                 </button>
                             </li>
                             {% endfor %}

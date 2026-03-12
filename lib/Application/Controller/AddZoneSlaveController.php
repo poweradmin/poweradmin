@@ -195,6 +195,10 @@ class AddZoneSlaveController extends BaseController
         $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION['userid']);
 
+        // Fetch member counts for all groups in a single query
+        $groupIds = array_map(fn($g) => $g->getId(), $allGroups);
+        $memberCounts = $userGroupRepo->getMemberCountsByGroupIds($groupIds);
+
         // Handle selected groups on error re-render
         $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
             array_map('intval', $_POST['groups']) : [];
@@ -208,6 +212,7 @@ class AddZoneSlaveController extends BaseController
             'owner_value' => $owner_value,
             'is_post' => $is_post_request,
             'all_groups' => $allGroups,
+            'group_member_counts' => $memberCounts,
             'selected_groups' => $selected_groups,
             // Don't pass raw POST data to the template for security
         ]);

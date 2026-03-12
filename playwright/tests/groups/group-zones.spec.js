@@ -125,6 +125,26 @@ test.describe('Group Zones Management', () => {
         }
       }
     });
+
+    test('should display selection count badge', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+      const found = await navigateToGroupZones(page, 'Editors');
+      if (found) {
+        const countBadge = page.locator('#zone-remove-count');
+        if (await countBadge.count() > 0) {
+          await expect(countBadge).toBeVisible();
+          await expect(countBadge).toContainText('0');
+
+          // Check a zone and verify count updates
+          const checkbox = page.locator('.owned-checkbox').first();
+          if (await checkbox.count() > 0) {
+            await checkbox.check();
+            await expect(countBadge).toContainText('1');
+          }
+        }
+      }
+    });
   });
 
   test.describe('Multi-Group Zone Handling', () => {

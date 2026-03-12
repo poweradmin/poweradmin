@@ -97,6 +97,34 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
         return $stmt->rowCount() > 0;
     }
 
+    public function countAll(): int
+    {
+        $query = "SELECT COUNT(*) FROM user_groups";
+        $stmt = $this->db->query($query);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function getMemberCountsByGroupIds(array $groupIds): array
+    {
+        if (empty($groupIds)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($groupIds), '?'));
+        $query = "SELECT group_id, COUNT(*) as member_count FROM user_group_members WHERE group_id IN ($placeholders) GROUP BY group_id";
+        $stmt = $this->db->prepare($query);
+        foreach ($groupIds as $i => $id) {
+            $stmt->bindValue($i + 1, $id, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $counts = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $counts[(int)$row['group_id']] = (int)$row['member_count'];
+        }
+        return $counts;
+    }
+
     public function countMembers(int $groupId): int
     {
         $query = "SELECT COUNT(*) FROM user_group_members WHERE group_id = :group_id";

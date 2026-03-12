@@ -13,9 +13,9 @@
     </a>
 </div>
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card shadow-sm mb-4">
+<div class="row d-flex align-items-stretch">
+    <div class="col-md-6 d-flex">
+        <div class="card shadow-sm mb-4 w-100 d-flex flex-column">
             <div class="card-header py-2 bg-primary bg-opacity-10 text-primary">
                 <strong><i class="bi bi-hdd-stack-fill me-2 text-primary"></i>{% trans %}Owned Zones{% endtrans %}</strong>
                 <span class="badge bg-primary ms-2">{{ owned_zones|length }}</span>
@@ -54,7 +54,8 @@
                         </table>
                     </div>
 
-                    <div class="mt-3">
+                    <div class="mt-3 d-flex justify-content-between align-items-center">
+                        <span class="badge bg-secondary" id="zone-remove-count">0 {% trans %}selected{% endtrans %}</span>
                         <button type="button" class="btn btn-danger btn-sm" id="remove-btn" onclick="showRemoveZonesModal()" disabled>
                             <i class="bi bi-dash-circle-fill me-1 text-white"></i>{% trans %}Remove Selected{% endtrans %}
                         </button>
@@ -65,8 +66,8 @@
         </div>
     </div>
 
-    <div class="col-md-6">
-        <div class="card shadow-sm mb-4">
+    <div class="col-md-6 d-flex">
+        <div class="card shadow-sm mb-4 w-100 d-flex flex-column">
             <div class="card-header py-2 bg-success bg-opacity-10 text-success">
                 <strong><i class="bi bi-plus-circle-fill me-2 text-success"></i>{% trans %}Available Zones{% endtrans %}</strong>
                 <span class="badge bg-success ms-2">{{ available_zones|length }}</span>
@@ -114,7 +115,8 @@
                         </table>
                     </div>
 
-                    <div class="mt-3">
+                    <div class="mt-3 d-flex justify-content-between align-items-center">
+                        <span class="badge bg-secondary" id="zone-add-count">0 {% trans %}selected{% endtrans %}</span>
                         <button type="submit" class="btn btn-success btn-sm" id="add-btn" disabled>
                             <i class="bi bi-plus-circle-fill me-1 text-white"></i>{% trans %}Add Selected{% endtrans %}
                         </button>
@@ -154,14 +156,18 @@ document.querySelectorAll('.available-checkbox').forEach(cb => {
 
 function toggleRemoveButton() {
     const removeBtn = document.getElementById('remove-btn');
-    const checked = document.querySelectorAll('.owned-checkbox:checked').length > 0;
-    if (removeBtn) removeBtn.disabled = !checked;
+    const count = document.querySelectorAll('.owned-checkbox:checked').length;
+    if (removeBtn) removeBtn.disabled = count === 0;
+    const countBadge = document.getElementById('zone-remove-count');
+    if (countBadge) countBadge.textContent = count + ' {% trans %}selected{% endtrans %}';
 }
 
 function toggleAddButton() {
     const addBtn = document.getElementById('add-btn');
-    const checked = document.querySelectorAll('.available-checkbox:checked').length > 0;
-    if (addBtn) addBtn.disabled = !checked;
+    const count = document.querySelectorAll('.available-checkbox:checked').length;
+    if (addBtn) addBtn.disabled = count === 0;
+    const countBadge = document.getElementById('zone-add-count');
+    if (countBadge) countBadge.textContent = count + ' {% trans %}selected{% endtrans %}';
 }
 
 // Search functionality

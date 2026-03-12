@@ -49,6 +49,38 @@ test.describe('Permission Template CRUD Operations', () => {
       }
     });
 
+    test('should display filter tabs for All/User/Group', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/permissions/templates');
+
+      const allBtn = page.locator('button[data-filter="all"]');
+      const userBtn = page.locator('button[data-filter="user"]');
+      const groupBtn = page.locator('button[data-filter="group"]');
+      await expect(allBtn).toBeVisible();
+      await expect(userBtn).toBeVisible();
+      await expect(groupBtn).toBeVisible();
+    });
+
+    test('should filter templates by type', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/permissions/templates');
+
+      const allRows = page.locator('tbody tr[data-type]');
+      const totalCount = await allRows.count();
+
+      if (totalCount > 0) {
+        // Click User filter
+        await page.locator('button[data-filter="user"]').click();
+        const visibleAfterUser = page.locator('tbody tr[data-type]:visible');
+        expect(await visibleAfterUser.count()).toBeLessThanOrEqual(totalCount);
+
+        // Click All filter to reset
+        await page.locator('button[data-filter="all"]').click();
+        const visibleAfterAll = page.locator('tbody tr[data-type]:visible');
+        expect(await visibleAfterAll.count()).toBe(totalCount);
+      }
+    });
+
     test('non-admin should not access permission templates', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
       await page.goto('/permissions/templates');
