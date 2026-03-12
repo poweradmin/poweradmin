@@ -7,7 +7,7 @@
 </nav>
 
 <div class="row">
-    <div class="col-md-8 col-lg-6">
+    <div class="col-md-6">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
                 <strong><i class="bi bi-plus-circle me-2 text-dark"></i>{% trans %}Add Group{% endtrans %}</strong>
@@ -32,6 +32,7 @@
                     <div class="mb-3">
                         <label for="perm_templ" class="form-label">{% trans %}Access template{% endtrans %} <span class="text-danger">*</span></label>
                         <select class="form-select form-select-sm" id="perm_templ" name="perm_templ" required>
+                            <option value="" disabled {{ perm_templ ? '' : 'selected' }}>{% trans %}Select a template...{% endtrans %}</option>
                             {% for template in perm_templates %}
                             {% if perm_templ == template['id'] %}
                             {% set selected = 'selected' %}
@@ -45,11 +46,6 @@
                         <div class="invalid-feedback">{% trans %}Select an access template{% endtrans %}</div>
                     </div>
 
-                    <div class="alert alert-info py-1 px-2 small">
-                        <i class="bi bi-info-circle-fill me-1"></i>
-                        {% trans %}After creating the group, you can add members and assign zones to it.{% endtrans %}
-                    </div>
-
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary btn-sm">
                             <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Create Group{% endtrans %}
@@ -59,6 +55,20 @@
                         </a>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}About Groups{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <h6><i class="bi bi-shield-check me-2 text-primary"></i>{% trans %}What are Groups?{% endtrans %}</h6>
+                <p>{% trans %}Groups allow you to organize users and manage zone access collectively. Members inherit the group's permissions for all zones owned by the group.{% endtrans %}</p>
+                <h6><i class="bi bi-lightbulb me-2 text-warning"></i>{% trans %}How to Use Groups{% endtrans %}</h6>
+                <p>{% trans %}After creating the group, you can add members and assign zones to it. All members will automatically get access to the group's zones.{% endtrans %}</p>
             </div>
         </div>
     </div>

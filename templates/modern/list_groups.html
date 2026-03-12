@@ -21,6 +21,14 @@
             <p class="mt-2">{% trans %}No groups found{% endtrans %}</p>
         </div>
         {% else %}
+        <div class="px-3 py-3">
+            <div class="input-group input-group-sm" style="max-width: 300px;">
+                <input type="text" id="group-search" class="form-control form-control-sm" placeholder="{% trans %}Search groups...{% endtrans %}">
+                <button class="btn btn-outline-secondary" type="button" id="clear-group-search">
+                    <i class="bi bi-x-circle text-secondary"></i>
+                </button>
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table table-striped table-hover table-sm mb-0">
                 <thead class="table-light">
@@ -34,11 +42,11 @@
                 </thead>
                 <tbody>
                 {% for group in groups %}
-                <tr>
+                <tr class="group-row" data-name="{{ group.name|lower }}" data-description="{{ group.description|default('')|lower }}">
                     <td>{{ group.name }}</td>
-                    <td>{{ group.description|default('—') }}</td>
+                    <td class="text-truncate" style="max-width: 300px;" title="{{ group.description|default('') }}">{{ group.description|default('-') }}</td>
                     <td class="text-center">
-                        <span class="badge bg-info">{{ group.member_count }}</span>
+                        <span class="badge bg-success">{{ group.member_count }}</span>
                     </td>
                     <td class="text-center">
                         <span class="badge bg-primary">{{ group.zone_count }}</span>
@@ -53,10 +61,10 @@
                                 <i class="bi bi-hdd-stack text-secondary"></i> <span class="d-none d-lg-inline">{% trans %}Zones{% endtrans %}</span>
                             </a>
                             <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/groups/{{ group.id }}/edit" title="{% trans %}Edit group{% endtrans %}">
-                                <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-lg-inline">{% trans %}Edit{% endtrans %}</span>
+                                <i class="bi bi-pencil-square text-primary"></i>
                             </a>
                             <a class="btn btn-sm btn-outline-danger" href="{{ base_url_prefix }}/groups/{{ group.id }}/delete" title="{% trans %}Delete group{% endtrans %}">
-                                <i class="bi bi-trash text-danger"></i> <span class="d-none d-lg-inline">{% trans %}Delete{% endtrans %}</span>
+                                <i class="bi bi-trash text-danger"></i>
                             </a>
                             {% endif %}
                         </div>
@@ -69,3 +77,33 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+(function() {
+    const searchInput = document.getElementById('group-search');
+    const clearBtn = document.getElementById('clear-group-search');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            document.querySelectorAll('.group-row').forEach(function(row) {
+                const name = row.dataset.name;
+                const description = row.dataset.description;
+                row.style.display = (name.includes(searchTerm) || description.includes(searchTerm)) ? '' : 'none';
+            });
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            if (searchInput) {
+                searchInput.value = '';
+                document.querySelectorAll('.group-row').forEach(function(row) {
+                    row.style.display = '';
+                });
+                searchInput.focus();
+            }
+        });
+    }
+})();
+</script>

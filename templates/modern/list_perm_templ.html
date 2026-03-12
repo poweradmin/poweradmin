@@ -11,8 +11,13 @@
 </div>
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-shield-lock me-2"></i>{% trans %}Access Templates{% endtrans %}</strong>
+        <div class="btn-group btn-group-sm" role="group">
+            <button class="btn btn-sm btn-secondary active" data-filter="all">{% trans %}All{% endtrans %}</button>
+            <button class="btn btn-sm btn-outline-secondary" data-filter="user">{% trans %}User{% endtrans %}</button>
+            <button class="btn btn-sm btn-outline-secondary" data-filter="group">{% trans %}Group{% endtrans %}</button>
+        </div>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -32,9 +37,9 @@
                 </tr>
                 {% else %}
                 {% for template in permission_templates %}
-                <tr>
+                <tr data-type="{{ template['template_type']|default('user') }}">
                     <td>{{ template['name'] }}</td>
-                    <td>{{ template['descr'] }}</td>
+                    <td class="text-truncate" style="max-width: 300px;" title="{{ template['descr']|default('') }}">{{ template['descr']|default('-') }}</td>
                     <td>
                         {% if template['template_type'] == 'user' or not template['template_type'] %}
                         <span class="badge bg-primary">{% trans %}User{% endtrans %}</span>
@@ -65,3 +70,29 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+(function() {
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    filterButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+
+            filterButtons.forEach(function(b) {
+                b.classList.remove('btn-secondary', 'active');
+                b.classList.add('btn-outline-secondary');
+            });
+            this.classList.remove('btn-outline-secondary');
+            this.classList.add('btn-secondary', 'active');
+
+            document.querySelectorAll('tbody tr[data-type]').forEach(function(row) {
+                if (filter === 'all' || row.dataset.type === filter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+})();
+</script>

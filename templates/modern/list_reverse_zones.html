@@ -163,19 +163,48 @@
                         <td>{{ zone["count_records"] }}</td>
 
                         <td>
+                            {% set total_owners = zone['owners']|length + (zone['groups'] is defined ? zone['groups']|length : 0) %}
+                            {% set shown = 0 %}
                             {% for key, owner in zone['owners'] %}
-                            <div><i class="bi bi-person"></i>
-                                {% if zone['full_names'][key] %}
-                                    {{ zone['full_names'][key] }} <small class="text-muted">({{ owner }})</small>
-                                {% else %}
-                                    {{ owner }}
+                                {% if shown < 2 %}
+                                <div><i class="bi bi-person text-secondary"></i>
+                                    {% if zone['full_names'][key] %}
+                                        {{ zone['full_names'][key] }} <small class="text-muted">({{ owner }})</small>
+                                    {% else %}
+                                        {{ owner }}
+                                    {% endif %}
+                                </div>
+                                {% set shown = shown + 1 %}
                                 {% endif %}
-                            </div>
                             {% endfor %}
                             {% if zone['groups'] is defined and zone['groups']|length > 0 %}
                                 {% for group in zone['groups'] %}
-                                <div class="text-muted"><i class="bi bi-people"></i> {{ group }}</div>
+                                    {% if shown < 2 %}
+                                    <div class="text-muted"><i class="bi bi-people"></i> {{ group }}</div>
+                                    {% set shown = shown + 1 %}
+                                    {% endif %}
                                 {% endfor %}
+                            {% endif %}
+                            {% if total_owners > 2 %}
+                            <div>
+                                {% set remaining_names = [] %}
+                                {% set idx = 0 %}
+                                {% for key, owner in zone['owners'] %}
+                                    {% if idx >= 2 %}
+                                        {% set remaining_names = remaining_names|merge([zone['full_names'][key] ? zone['full_names'][key] ~ ' (' ~ owner ~ ')' : owner]) %}
+                                    {% endif %}
+                                    {% set idx = idx + 1 %}
+                                {% endfor %}
+                                {% if zone['groups'] is defined %}
+                                    {% for group in zone['groups'] %}
+                                        {% if idx >= 2 %}
+                                            {% set remaining_names = remaining_names|merge([group]) %}
+                                        {% endif %}
+                                        {% set idx = idx + 1 %}
+                                    {% endfor %}
+                                {% endif %}
+                                <small class="text-muted" data-bs-toggle="tooltip" title="{{ remaining_names|join(', ') }}">+{{ total_owners - 2 }} {% trans %}more...{% endtrans %}</small>
+                            </div>
                             {% endif %}
                         </td>
                         {% if iface_zonelist_fullname %}
