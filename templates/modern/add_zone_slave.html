@@ -102,7 +102,7 @@
                     <div class="form-check mb-2 group-item" data-groupname="{{ group.name|lower }}" data-groupdesc="{{ group.description|lower|default('') }}">
                         <input class="form-check-input group-checkbox" type="checkbox" name="groups[]" id="group_{{ group.id }}" value="{{ group.id }}" {% if selected_groups is defined and group.id in selected_groups %}checked{% endif %}>
                         <label class="form-check-label" for="group_{{ group.id }}">
-                            {{ group.name }}
+                            {{ group.name }} <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">{{ group_member_counts[group.id]|default(0) }} {% trans %}members{% endtrans %}</span>
                             {% if group.description %}<small class="text-muted d-block">{{ group.description }}</small>{% endif %}
                         </label>
                     </div>
