@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-03-12 12:31+0200\n"
+"POT-Creation-Date: 2026-03-12 21:44+0200\n"
 "PO-Revision-Date: 2024-06-15 10:40+0300\n"
 "Last-Translator: quimi <quimi@quimi.cz>\n"
 "Language-Team: Czech\n"
@@ -678,7 +678,8 @@ msgid ""
 "Invalid CDNSKEY record format. Expected: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY "
 "(e.g., 257 3 5 AwEA...)"
 msgstr ""
-"Neplatný formát záznamu CDNSKEY. Očekáváno: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY (např. 257 3 5 AwEA...)"
+"Neplatný formát záznamu CDNSKEY. Očekáváno: FLAGS PROTOCOL ALGORITHM "
+"PUBLIC_KEY (např. 257 3 5 AwEA...)"
 
 #: lib/Domain/Service/Dns.php:1046
 msgid "CDNSKEY flags must be between 0 and 65535."
@@ -745,7 +746,8 @@ msgid ""
 "Invalid AFSDB record format. Expected: SUBTYPE HOSTNAME (e.g., 1 afs-"
 "server.example.com)"
 msgstr ""
-"Neplatný formát záznamu AFSDB. Očekáváno: SUBTYPE HOSTNAME (např. 1 afs-server.example.com)"
+"Neplatný formát záznamu AFSDB. Očekáváno: SUBTYPE HOSTNAME (např. 1 afs-"
+"server.example.com)"
 
 #: lib/Domain/Service/Dns.php:1290
 msgid "AFSDB subtype must be between 0 and 65535."
@@ -760,7 +762,8 @@ msgid ""
 "Invalid CAA record format. Expected: FLAGS TAG VALUE (e.g., 0 issue "
 "\"letsencrypt.org\")"
 msgstr ""
-"Neplatný formát záznamu CAA. Očekáváno: FLAGS TAG VALUE (např. 0 issue \"letsencrypt.org\")"
+"Neplatný formát záznamu CAA. Očekáváno: FLAGS TAG VALUE (např. 0 issue "
+"\"letsencrypt.org\")"
 
 #: lib/Domain/Service/Dns.php:1347
 msgid "CAA flags must be between 0 and 255."
@@ -785,7 +788,8 @@ msgid ""
 "Invalid CDS record format. Expected: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
 "(e.g., 20642 8 2 04443ABE...)"
 msgstr ""
-"Neplatný formát záznamu CDS. Očekáváno: KEYTAG ALGORITHM DIGESTTYPE DIGEST (např. 20642 8 2 04443ABE...)"
+"Neplatný formát záznamu CDS. Očekáváno: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
+"(např. 20642 8 2 04443ABE...)"
 
 #: lib/Domain/Service/Dns.php:1434
 msgid "CDS keytag must be between 0 and 65535."
@@ -808,14 +812,16 @@ msgid ""
 "CDS digest has unexpected length. Expected 40 (SHA-1), 64 (SHA-256), or 96 "
 "(SHA-384) hex characters."
 msgstr ""
-"Digest CDS má neočekávanou délku. Očekáváno 40 (SHA-1), 64 (SHA-256) nebo 96 (SHA-384) hexadecimálních znaků."
+"Digest CDS má neočekávanou délku. Očekáváno 40 (SHA-1), 64 (SHA-256) nebo 96 "
+"(SHA-384) hexadecimálních znaků."
 
 #: lib/Domain/Service/Dns.php:1527
 msgid ""
 "Invalid CERT record format. Expected: TYPE KEYTAG ALGORITHM CERTIFICATE "
 "(e.g., 1 0 0 MIIB9D...)"
 msgstr ""
-"Neplatný formát záznamu CERT. Očekáváno: TYPE KEYTAG ALGORITHM CERTIFICATE (např. 1 0 0 MIIB9D...)"
+"Neplatný formát záznamu CERT. Očekáváno: TYPE KEYTAG ALGORITHM CERTIFICATE "
+"(např. 1 0 0 MIIB9D...)"
 
 #: lib/Domain/Service/Dns.php:1542
 msgid "CERT type must be between 0 and 65535."
@@ -854,14 +860,16 @@ msgid ""
 "DNAME target contains invalid characters. Only alphanumeric, dots, hyphens, "
 "and underscores are allowed."
 msgstr ""
-"Cíl DNAME obsahuje neplatné znaky. Povoleny jsou pouze alfanumerické znaky, tečky, pomlčky a podtržítka."
+"Cíl DNAME obsahuje neplatné znaky. Povoleny jsou pouze alfanumerické znaky, "
+"tečky, pomlčky a podtržítka."
 
 #: lib/Domain/Service/Dns.php:1686
 msgid ""
 "Invalid L32 record format. Expected: PREFERENCE LOCATOR32 (e.g., 513 "
 "192.0.2.1)"
 msgstr ""
-"Neplatný formát záznamu L32. Očekáváno: PREFERENCE LOCATOR32 (např. 513 192.0.2.1)"
+"Neplatný formát záznamu L32. Očekáváno: PREFERENCE LOCATOR32 (např. 513 "
+"192.0.2.1)"
 
 #: lib/Domain/Service/Dns.php:1699
 msgid "L32 preference must be between 0 and 65535."
@@ -876,7 +884,8 @@ msgid ""
 "Invalid L64 record format. Expected: PREFERENCE LOCATOR64 (e.g., 255 "
 "2001:0DB8:1234:ABCD)"
 msgstr ""
-"Neplatný formát záznamu L64. Očekáváno: PREFERENCE LOCATOR64 (např. 255 2001:0DB8:1234:ABCD)"
+"Neplatný formát záznamu L64. Očekáváno: PREFERENCE LOCATOR64 (např. 255 "
+"2001:0DB8:1234:ABCD)"
 
 #: lib/Domain/Service/Dns.php:1757
 msgid "L64 preference must be between 0 and 65535."
@@ -887,7 +896,8 @@ msgid ""
 "L64 locator64 must be in format XXXX:XXXX:XXXX:XXXX (e.g., "
 "2001:0DB8:1234:ABCD)."
 msgstr ""
-"L64 locator64 musí být ve formátu XXXX:XXXX:XXXX:XXXX (např. 2001:0DB8:1234:ABCD)."
+"L64 locator64 musí být ve formátu XXXX:XXXX:XXXX:XXXX (např. "
+"2001:0DB8:1234:ABCD)."
 
 #: lib/Domain/Service/Dns.php:1806
 msgid "LUA record content cannot be empty."
@@ -898,14 +908,16 @@ msgid ""
 "Invalid LUA record format. Expected: TYPE LUA_CODE (e.g., A \"ifportup(443, "
 "{'192.0.2.1'})\")"
 msgstr ""
-"Neplatny format zaznamu LUA. Ocekavany: TYP LUA_KOD (napr. A \"ifportup(443, {'192.0.2.1'})\")"
+"Neplatny format zaznamu LUA. Ocekavany: TYP LUA_KOD (napr. A \"ifportup(443, "
+"{'192.0.2.1'})\")"
 
 #: lib/Domain/Service/Dns.php:1836
 msgid ""
 "LUA record type must be a valid DNS record type (e.g., A, AAAA, TXT, MX, "
 "etc.)."
 msgstr ""
-"Typ záznamu LUA musí být platný typ DNS záznamu (např. A, AAAA, TXT, MX atd.)."
+"Typ záznamu LUA musí být platný typ DNS záznamu (např. A, AAAA, TXT, MX "
+"atd.)."
 
 #: lib/Domain/Service/Dns.php:1846
 msgid "LUA code cannot be empty."
@@ -916,7 +928,8 @@ msgid ""
 "Invalid LP record format. Expected: PREFERENCE FQDN (e.g., 512 "
 "foo.powerdns.org.)"
 msgstr ""
-"Neplatny format zaznamu LP. Ocekavany: PREFERENCE FQDN (napr. 512 foo.powerdns.org.)"
+"Neplatny format zaznamu LP. Ocekavany: PREFERENCE FQDN (napr. 512 "
+"foo.powerdns.org.)"
 
 #: lib/Domain/Service/Dns.php:1898
 msgid "LP preference must be between 0 and 65535."
@@ -931,7 +944,8 @@ msgid ""
 "LP FQDN contains invalid characters. Only alphanumeric, dots, hyphens, and "
 "underscores are allowed."
 msgstr ""
-"FQDN pro LP obsahuje neplatne znaky. Povoleny jsou pouze alfanumericke znaky, tecky, pomlcky a podtrzitka."
+"FQDN pro LP obsahuje neplatne znaky. Povoleny jsou pouze alfanumericke "
+"znaky, tecky, pomlcky a podtrzitka."
 
 #: lib/Domain/Service/Dns.php:1952
 #, php-format
@@ -939,7 +953,8 @@ msgid ""
 "%s is a meta-query type and cannot be used as a zone record. It is only used "
 "in DNS queries."
 msgstr ""
-"%s je meta-dotazový typ a nelze jej použít jako záznam zóny. Používá se pouze v DNS dotazech."
+"%s je meta-dotazový typ a nelze jej použít jako záznam zóny. Používá se "
+"pouze v DNS dotazech."
 
 #: lib/Domain/Service/Dns.php:1985
 msgid "OPENPGPKEY content cannot be empty."
@@ -958,7 +973,8 @@ msgid ""
 "Invalid SIG record format. Expected: TYPE_COVERED ALGORITHM LABELS "
 "ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
 msgstr ""
-"Neplatny format zaznamu SIG. Ocekavany: TYPE_COVERED ALGORITHM LABELS ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
+"Neplatny format zaznamu SIG. Ocekavany: TYPE_COVERED ALGORITHM LABELS "
+"ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
 
 #: lib/Domain/Service/Dns.php:2072
 msgid "SIG type covered must be a valid DNS record type."
@@ -1021,7 +1037,8 @@ msgid ""
 "SMIMEA record must have at least 4 fields: usage, selector, matching-type, "
 "and certificate data"
 msgstr ""
-"Záznam SMIMEA musí mít alespoň 4 pole: použití, selektor, typ shody a data certifikátu"
+"Záznam SMIMEA musí mít alespoň 4 pole: použití, selektor, typ shody a data "
+"certifikátu"
 
 #: lib/Domain/Service/Dns.php:2272
 msgid "SMIMEA usage must be an integer between 0 and 255"
@@ -1063,7 +1080,8 @@ msgid ""
 "TKEY record must have at least 6 fields: algorithm, inception, expiration, "
 "mode, error, and keysize"
 msgstr ""
-"Záznam TKEY musí mít alespoň 6 polí: algoritmus, začátek, konec, režim, chyba a velikost klíče"
+"Záznam TKEY musí mít alespoň 6 polí: algoritmus, začátek, konec, režim, "
+"chyba a velikost klíče"
 
 #: lib/Domain/Service/Dns.php:2398
 msgid "TKEY algorithm must be a valid domain name"
@@ -1123,7 +1141,8 @@ msgid ""
 "URI record must have format: <priority> <weight> \"<target>\" (target must "
 "be in quotes)"
 msgstr ""
-"Zaznam URI musi mit format: <priorita> <vaha> \"<cil>\" (cil musi byt v uvozovkach)"
+"Zaznam URI musi mit format: <priorita> <vaha> \"<cil>\" (cil musi byt v "
+"uvozovkach)"
 
 #: lib/Domain/Service/Dns.php:2582
 msgid "URI priority must be a 16-bit unsigned integer (0-65535)"
@@ -1138,10 +1157,9 @@ msgid "URI target cannot be empty"
 msgstr "Cíl URI nesmí být prázdný"
 
 #: lib/Domain/Service/Dns.php:2612
-msgid ""
-"URI target must be a valid URI with a scheme (e.g., http://, ftp://, mailto:)"
-msgstr ""
-"Cíl URI musí být platný URI se schématem (např. http://, ftp://, mailto:)"
+#, php-format
+msgid "URI target must be a valid URI with a scheme (e.g., %s, %s, %s)"
+msgstr "Cíl URI musí být platný URI se schématem (např. %s, %s, %s)"
 
 #: lib/Domain/Service/Dns.php:2661
 msgid "SSHFP record content is required"
@@ -1180,7 +1198,8 @@ msgid ""
 "NAPTR record must have format: <order> <preference> \"<flags>\" "
 "\"<services>\" \"<regexp>\" <replacement>"
 msgstr ""
-"Záznam NAPTR musí mít formát: <pořadí> <preference> \"<příznaky>\" \"<služby>\" \"<regexp>\" <náhrada>"
+"Záznam NAPTR musí mít formát: <pořadí> <preference> \"<příznaky>\" "
+"\"<služby>\" \"<regexp>\" <náhrada>"
 
 #: lib/Domain/Service/Dns.php:2778
 msgid "NAPTR order must be a 16-bit unsigned integer (0-65535)"
@@ -1219,7 +1238,8 @@ msgid ""
 "DNSKEY record must have at least 4 fields: flags, protocol, algorithm, and "
 "public key"
 msgstr ""
-"Záznam DNSKEY musí mít alespoň 4 pole: příznaky, protokol, algoritmus a veřejný klíč"
+"Záznam DNSKEY musí mít alespoň 4 pole: příznaky, protokol, algoritmus a "
+"veřejný klíč"
 
 #: lib/Domain/Service/Dns.php:2911
 msgid "DNSKEY flags must be a 16-bit unsigned integer (0-65535)"
@@ -1266,7 +1286,8 @@ msgid ""
 "NSEC3 record must have at least 5 fields: algorithm, flags, iterations, "
 "salt, and next hash"
 msgstr ""
-"Záznam NSEC3 musí mít alespoň 5 polí: algoritmus, příznaky, iterace, sůl a další hash"
+"Záznam NSEC3 musí mít alespoň 5 polí: algoritmus, příznaky, iterace, sůl a "
+"další hash"
 
 #: lib/Domain/Service/Dns.php:3066
 msgid "NSEC3 algorithm must be an 8-bit unsigned integer (0-255)"
@@ -1299,13 +1320,11 @@ msgstr "Obsah záznamu NSEC3PARAM je povinný"
 #: lib/Domain/Service/Dns.php:3158
 msgid ""
 "NSEC3PARAM record must have 4 fields: algorithm, flags, iterations, and salt"
-msgstr ""
-"Záznam NSEC3PARAM musí mít 4 pole: algoritmus, příznaky, iterace a sůl"
+msgstr "Záznam NSEC3PARAM musí mít 4 pole: algoritmus, příznaky, iterace a sůl"
 
 #: lib/Domain/Service/Dns.php:3173
 msgid "NSEC3PARAM algorithm must be an 8-bit unsigned integer (0-255)"
-msgstr ""
-"Algoritmus NSEC3PARAM musí být 8bitové celé číslo bez znaménka (0-255)"
+msgstr "Algoritmus NSEC3PARAM musí být 8bitové celé číslo bez znaménka (0-255)"
 
 #: lib/Domain/Service/Dns.php:3183
 msgid "NSEC3PARAM flags must be an 8-bit unsigned integer (0-255)"
@@ -1313,8 +1332,7 @@ msgstr "Příznaky NSEC3PARAM musí být 8bitové celé číslo bez znaménka (0
 
 #: lib/Domain/Service/Dns.php:3193
 msgid "NSEC3PARAM iterations must be a 16-bit unsigned integer (0-65535)"
-msgstr ""
-"Iterace NSEC3PARAM musí být 16bitové celé číslo bez znaménka (0-65535)"
+msgstr "Iterace NSEC3PARAM musí být 16bitové celé číslo bez znaménka (0-65535)"
 
 #: lib/Domain/Service/Dns.php:3203
 msgid "NSEC3PARAM salt must be hexadecimal or \"-\" for no salt"
@@ -1329,7 +1347,8 @@ msgid ""
 "TSIG record must have at least 8 fields: algorithm, time-signed, fudge, mac-"
 "size, mac, original-id, error, and other-len"
 msgstr ""
-"Záznam TSIG musí mít alespoň 8 polí: algoritmus, čas podpisu, odchylka, velikost mac, mac, původní ID, chyba a délka ostatních"
+"Záznam TSIG musí mít alespoň 8 polí: algoritmus, čas podpisu, odchylka, "
+"velikost mac, mac, původní ID, chyba a délka ostatních"
 
 #: lib/Domain/Service/Dns.php:3278
 msgid "TSIG algorithm must be a valid domain name"
@@ -1378,8 +1397,7 @@ msgstr "Obsah záznamu EUI48 je povinný"
 
 #: lib/Domain/Service/Dns.php:3405
 msgid "EUI48 must be 6 octets separated by dashes (e.g., 00-11-22-33-44-55)"
-msgstr ""
-"EUI48 musí být 6 oktetů oddělených pomlčkami (např. 00-11-22-33-44-55)"
+msgstr "EUI48 musí být 6 oktetů oddělených pomlčkami (např. 00-11-22-33-44-55)"
 
 #: lib/Domain/Service/Dns.php:3430
 msgid "EUI64 record content is required"
@@ -1407,7 +1425,8 @@ msgstr "Preference NID musí být 16bitové celé číslo bez znaménka (0-65535
 msgid ""
 "NID node-id must be in format XXXX:XXXX:XXXX:XXXX (64-bit hex with colons)"
 msgstr ""
-"ID uzlu NID musí být ve formátu XXXX:XXXX:XXXX:XXXX (64bitový hex s dvojtečkami)"
+"ID uzlu NID musí být ve formátu XXXX:XXXX:XXXX:XXXX (64bitový hex s "
+"dvojtečkami)"
 
 #: lib/Domain/Service/Dns.php:3524
 msgid "KX record content is required"
@@ -1515,7 +1534,8 @@ msgstr "Adresa WKS musí být platná adresa IPv4"
 #: lib/Domain/Service/Dns.php:3941 lib/Domain/Service/Dns.php:3951
 msgid "WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name"
 msgstr ""
-"Protokol WKS musí být 8bitové celé číslo bez znaménka (0-255) nebo název protokolu"
+"Protokol WKS musí být 8bitové celé číslo bez znaménka (0-255) nebo název "
+"protokolu"
 
 #: lib/Domain/Service/Dns.php:3965 lib/Domain/Service/Dns.php:3975
 msgid "WKS service must be a 16-bit port number (0-65535) or service name"
@@ -1530,7 +1550,8 @@ msgid ""
 "A6 record must have at least 2 fields: prefix-length and address-suffix or "
 "prefix-name"
 msgstr ""
-"Záznam A6 musí mít alespoň 2 pole: délka prefixu a přípona adresy nebo název prefixu"
+"Záznam A6 musí mít alespoň 2 pole: délka prefixu a přípona adresy nebo název "
+"prefixu"
 
 #: lib/Domain/Service/Dns.php:4027
 msgid "A6 prefix length must be an integer (0-128)"
@@ -1544,12 +1565,14 @@ msgstr "Obsah záznamu CSYNC je povinný"
 msgid ""
 "CSYNC record must have at least 3 fields: SOA-serial, flags, and type-list"
 msgstr ""
-"Záznam CSYNC musí mít alespoň 3 pole: SOA sériové číslo, příznaky a seznam typů"
+"Záznam CSYNC musí mít alespoň 3 pole: SOA sériové číslo, příznaky a seznam "
+"typů"
 
 #: lib/Domain/Service/Dns.php:4076
 msgid "CSYNC SOA serial must be a 32-bit unsigned integer (0-4294967295)"
 msgstr ""
-"SOA sériové číslo CSYNC musí být 32bitové celé číslo bez znaménka (0-4294967295)"
+"SOA sériové číslo CSYNC musí být 32bitové celé číslo bez znaménka "
+"(0-4294967295)"
 
 #: lib/Domain/Service/Dns.php:4086
 msgid "CSYNC flags must be a 16-bit unsigned integer (0-65535)"
@@ -2579,14 +2602,17 @@ msgid ""
 "root directory. You will not be able to use Poweradmin if it exists. Do it "
 "now."
 msgstr ""
-"Měli byste (musíte!) odstranit adresář \"install/\" z kořenového adresáře Poweradmin. Nebudete moci používat Poweradmin, pokud existuje. Udělejte to nyní."
+"Měli byste (musíte!) odstranit adresář \"install/\" z kořenového adresáře "
+"Poweradmin. Nebudete moci používat Poweradmin, pokud existuje. Udělejte to "
+"nyní."
 
 #: install/templates/step7.html.twig:10
 msgid ""
 "After you have removed the directory, you can login to <a href=\"../"
 "index.php\">Poweradmin</a>."
 msgstr ""
-"Po odstranění adresáře se můžete přihlásit do <a href=\"../index.php\">Poweradmin</a>."
+"Po odstranění adresáře se můžete přihlásit do <a href=\"../"
+"index.php\">Poweradmin</a>."
 
 #: install/templates/step7.html.twig:11
 msgid "Use the default username \"admin\" and the password set in step 3."
@@ -2613,7 +2639,8 @@ msgstr "Zadejte uživatelské jméno"
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
-"Uživatelské jméno databáze Poweradmin s omezeným přístupem. Ne pro přihlášení do webového rozhraní."
+"Uživatelské jméno databáze Poweradmin s omezeným přístupem. Ne pro "
+"přihlášení do webového rozhraní."
 
 #: install/templates/step4.html.twig:27
 msgid "Provide the user password"
@@ -2636,7 +2663,8 @@ msgid ""
 "When creating SOA records and no hostmaster is provided, this value here "
 "will be used."
 msgstr ""
-"Při vytváření záznamů SOA, pokud není zadán hostmaster, bude použita tato hodnota."
+"Při vytváření záznamů SOA, pokud není zadán hostmaster, bude použita tato "
+"hodnota."
 
 #: install/templates/step4.html.twig:45
 msgid "Primary nameserver"
@@ -2651,7 +2679,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "primary nameserver."
 msgstr ""
-"Při vytváření nových zón pomocí šablony bude tato hodnota použita jako primární jmenný server."
+"Při vytváření nových zón pomocí šablony bude tato hodnota použita jako "
+"primární jmenný server."
 
 #: install/templates/step4.html.twig:56
 msgid "Secondary nameserver"
@@ -2666,7 +2695,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "secondary nameserver."
 msgstr ""
-"Při vytváření nových zón pomocí šablony bude tato hodnota použita jako sekundární jmenný server."
+"Při vytváření nových zón pomocí šablony bude tato hodnota použita jako "
+"sekundární jmenný server."
 
 #: install/templates/step4.html.twig:67
 msgid "Tertiary Nameserver"
@@ -2677,7 +2707,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "tertiary nameserver."
 msgstr ""
-"Při vytváření nových zón pomocí šablony bude tato hodnota použita jako terciární jmenný server."
+"Při vytváření nových zón pomocí šablony bude tato hodnota použita jako "
+"terciární jmenný server."
 
 #: install/templates/step4.html.twig:77
 msgid "Quaternary Nameserver"
@@ -2688,7 +2719,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "quaternary nameserver."
 msgstr ""
-"Při vytváření nových zón pomocí šablony bude tato hodnota použita jako kvartérní jmenný server."
+"Při vytváření nových zón pomocí šablony bude tato hodnota použita jako "
+"kvartérní jmenný server."
 
 #: install/templates/step2.html.twig:3
 msgid "Getting ready for installation"
@@ -2705,14 +2737,21 @@ msgid ""
 "database. However, it is recommended that you create a backup of your "
 "database before proceeding."
 msgstr ""
-"Tento instalátor předpokládá, že máte databázi PowerDNS přístupnou z tohoto serveru. Tento instalátor také předpokládá, že jste nikdy předtím nepoužívali Poweradmin, nebo že chcete přepsat část Poweradmin v databázi. Pokud jste Poweradmin používali dříve, všechna data v následujících tabulkách budou zničena: perm_items, perm_templ, perm_templ_items, users a zones. Tento instalátor samozřejmě nezmění data v tabulkách PowerDNS. Doporučuje se však před pokračováním vytvořit zálohu databáze."
+"Tento instalátor předpokládá, že máte databázi PowerDNS přístupnou z tohoto "
+"serveru. Tento instalátor také předpokládá, že jste nikdy předtím "
+"nepoužívali Poweradmin, nebo že chcete přepsat část Poweradmin v databázi. "
+"Pokud jste Poweradmin používali dříve, všechna data v následujících "
+"tabulkách budou zničena: perm_items, perm_templ, perm_templ_items, users a "
+"zones. Tento instalátor samozřejmě nezmění data v tabulkách PowerDNS. "
+"Doporučuje se však před pokračováním vytvořit zálohu databáze."
 
 #: install/templates/step2.html.twig:8
 msgid ""
 "The alternative for this installer is a manual installation. Refer to the "
 "poweradmin.org website if you want to go down that road."
 msgstr ""
-"Alternativou k tomuto instalátoru je ruční instalace. Navštivte web poweradmin.org, pokud chcete jít touto cestou."
+"Alternativou k tomuto instalátoru je ruční instalace. Navštivte web "
+"poweradmin.org, pokud chcete jít touto cestou."
 
 #: install/templates/step2.html.twig:11
 msgid "Do you want to proceed now?"
@@ -2736,7 +2775,8 @@ msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Protože používáte SQLite, není potřeba vytvářet nového uživatele s omezenými právy."
+"Protože používáte SQLite, není potřeba vytvářet nového uživatele s omezenými "
+"právy."
 
 #: install/templates/step3.html.twig:4
 msgid "Configuring Database Connection"
@@ -2763,7 +2803,8 @@ msgid ""
 "The hostname on which the PowerDNS database resides. Frequently, this will "
 "be \"localhost\"."
 msgstr ""
-"Název hostitele, na kterém se nachází databáze PowerDNS. Často to bude \"localhost\"."
+"Název hostitele, na kterém se nachází databáze PowerDNS. Často to bude "
+"\"localhost\"."
 
 #: install/templates/step3.html.twig:66
 msgid "DB Port"
@@ -2806,7 +2847,8 @@ msgid ""
 "The charset (encoding) which will be used for new tables. Leave it empty "
 "then default database charset will be used."
 msgstr ""
-"Znaková sada (kódování), která bude použita pro nové tabulky. Ponechte prázdné, bude použita výchozí znaková sada databáze."
+"Znaková sada (kódování), která bude použita pro nové tabulky. Ponechte "
+"prázdné, bude použita výchozí znaková sada databáze."
 
 #: install/templates/step3.html.twig:93
 msgid "DB collation"
@@ -2817,7 +2859,8 @@ msgid ""
 "Set of rules for comparing characters in database. Leave it empty then "
 "default database collation will be used."
 msgstr ""
-"Sada pravidel pro porovnávání znaků v databázi. Ponechte prázdné, bude použito výchozí řazení databáze."
+"Sada pravidel pro porovnávání znaků v databázi. Ponechte prázdné, bude "
+"použito výchozí řazení databáze."
 
 #: install/templates/step3.html.twig:102
 msgid "Poweradmin administrator password"
@@ -2832,14 +2875,16 @@ msgid ""
 "The password of the Poweradmin administrator. This administrator has full "
 "rights to Poweradmin using the web interface."
 msgstr ""
-"Heslo administrátora Poweradmin. Tento administrátor má plná práva k Poweradmin prostřednictvím webového rozhraní."
+"Heslo administrátora Poweradmin. Tento administrátor má plná práva k "
+"Poweradmin prostřednictvím webového rozhraní."
 
 #: install/templates/step3.html.twig:112
 msgid ""
 "Password must be at least 6 characters long, contain at least one uppercase "
 "letter, one lowercase letter, and one number."
 msgstr ""
-"Heslo musí mít alespoň 6 znaků, obsahovat alespoň jedno velké písmeno, jedno malé písmeno a jedno číslo."
+"Heslo musí mít alespoň 6 znaků, obsahovat alespoň jedno velké písmeno, jedno "
+"malé písmeno a jedno číslo."
 
 #: install/helpers/InstallStepHandler.php:60
 msgid "An error occurred while rendering the template."

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-03-12 12:31+0200\n"
+"POT-Creation-Date: 2026-03-12 21:44+0200\n"
 "PO-Revision-Date: 2012-11-09 04:05+0000\n"
 "Last-Translator: Per M Knutsen <pmknutsen@gmail.com>\n"
 "Language-Team: Norwegian Bokmål\n"
@@ -689,7 +689,8 @@ msgid ""
 "Invalid CDNSKEY record format. Expected: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY "
 "(e.g., 257 3 5 AwEA...)"
 msgstr ""
-"Ugyldig CDNSKEY-postformat. Forventet: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY (f.eks. 257 3 5 AwEA...)"
+"Ugyldig CDNSKEY-postformat. Forventet: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY "
+"(f.eks. 257 3 5 AwEA...)"
 
 #: lib/Domain/Service/Dns.php:1046
 msgid "CDNSKEY flags must be between 0 and 65535."
@@ -756,7 +757,8 @@ msgid ""
 "Invalid AFSDB record format. Expected: SUBTYPE HOSTNAME (e.g., 1 afs-"
 "server.example.com)"
 msgstr ""
-"Ugyldig AFSDB-postformat. Forventet: SUBTYPE HOSTNAME (f.eks. 1 afs-server.example.com)"
+"Ugyldig AFSDB-postformat. Forventet: SUBTYPE HOSTNAME (f.eks. 1 afs-"
+"server.example.com)"
 
 #: lib/Domain/Service/Dns.php:1290
 msgid "AFSDB subtype must be between 0 and 65535."
@@ -771,7 +773,8 @@ msgid ""
 "Invalid CAA record format. Expected: FLAGS TAG VALUE (e.g., 0 issue "
 "\"letsencrypt.org\")"
 msgstr ""
-"Ugyldig CAA-postformat. Forventet: FLAGS TAG VALUE (f.eks. 0 issue \"letsencrypt.org\")"
+"Ugyldig CAA-postformat. Forventet: FLAGS TAG VALUE (f.eks. 0 issue "
+"\"letsencrypt.org\")"
 
 #: lib/Domain/Service/Dns.php:1347
 msgid "CAA flags must be between 0 and 255."
@@ -796,7 +799,8 @@ msgid ""
 "Invalid CDS record format. Expected: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
 "(e.g., 20642 8 2 04443ABE...)"
 msgstr ""
-"Ugyldig CDS-postformat. Forventet: KEYTAG ALGORITHM DIGESTTYPE DIGEST (f.eks. 20642 8 2 04443ABE...)"
+"Ugyldig CDS-postformat. Forventet: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
+"(f.eks. 20642 8 2 04443ABE...)"
 
 #: lib/Domain/Service/Dns.php:1434
 msgid "CDS keytag must be between 0 and 65535."
@@ -819,14 +823,16 @@ msgid ""
 "CDS digest has unexpected length. Expected 40 (SHA-1), 64 (SHA-256), or 96 "
 "(SHA-384) hex characters."
 msgstr ""
-"CDS-sammendrag har uventet lengde. Forventet 40 (SHA-1), 64 (SHA-256) eller 96 (SHA-384) heksadesimale tegn."
+"CDS-sammendrag har uventet lengde. Forventet 40 (SHA-1), 64 (SHA-256) eller "
+"96 (SHA-384) heksadesimale tegn."
 
 #: lib/Domain/Service/Dns.php:1527
 msgid ""
 "Invalid CERT record format. Expected: TYPE KEYTAG ALGORITHM CERTIFICATE "
 "(e.g., 1 0 0 MIIB9D...)"
 msgstr ""
-"Ugyldig CERT-postformat. Forventet: TYPE KEYTAG ALGORITHM CERTIFICATE (f.eks. 1 0 0 MIIB9D...)"
+"Ugyldig CERT-postformat. Forventet: TYPE KEYTAG ALGORITHM CERTIFICATE "
+"(f.eks. 1 0 0 MIIB9D...)"
 
 #: lib/Domain/Service/Dns.php:1542
 msgid "CERT type must be between 0 and 65535."
@@ -865,14 +871,16 @@ msgid ""
 "DNAME target contains invalid characters. Only alphanumeric, dots, hyphens, "
 "and underscores are allowed."
 msgstr ""
-"DNAME-maal inneholder ugyldige tegn. Kun alfanumeriske tegn, punktum, bindestreker og understreker er tillatt."
+"DNAME-maal inneholder ugyldige tegn. Kun alfanumeriske tegn, punktum, "
+"bindestreker og understreker er tillatt."
 
 #: lib/Domain/Service/Dns.php:1686
 msgid ""
 "Invalid L32 record format. Expected: PREFERENCE LOCATOR32 (e.g., 513 "
 "192.0.2.1)"
 msgstr ""
-"Ugyldig L32-postformat. Forventet: PREFERENCE LOCATOR32 (f.eks. 513 192.0.2.1)"
+"Ugyldig L32-postformat. Forventet: PREFERENCE LOCATOR32 (f.eks. 513 "
+"192.0.2.1)"
 
 #: lib/Domain/Service/Dns.php:1699
 msgid "L32 preference must be between 0 and 65535."
@@ -887,7 +895,8 @@ msgid ""
 "Invalid L64 record format. Expected: PREFERENCE LOCATOR64 (e.g., 255 "
 "2001:0DB8:1234:ABCD)"
 msgstr ""
-"Ugyldig L64-postformat. Forventet: PREFERENCE LOCATOR64 (f.eks. 255 2001:0DB8:1234:ABCD)"
+"Ugyldig L64-postformat. Forventet: PREFERENCE LOCATOR64 (f.eks. 255 "
+"2001:0DB8:1234:ABCD)"
 
 #: lib/Domain/Service/Dns.php:1757
 msgid "L64 preference must be between 0 and 65535."
@@ -898,7 +907,8 @@ msgid ""
 "L64 locator64 must be in format XXXX:XXXX:XXXX:XXXX (e.g., "
 "2001:0DB8:1234:ABCD)."
 msgstr ""
-"L64 locator64 maa vaere i formatet XXXX:XXXX:XXXX:XXXX (f.eks. 2001:0DB8:1234:ABCD)."
+"L64 locator64 maa vaere i formatet XXXX:XXXX:XXXX:XXXX (f.eks. "
+"2001:0DB8:1234:ABCD)."
 
 #: lib/Domain/Service/Dns.php:1806
 msgid "LUA record content cannot be empty."
@@ -909,7 +919,8 @@ msgid ""
 "Invalid LUA record format. Expected: TYPE LUA_CODE (e.g., A \"ifportup(443, "
 "{'192.0.2.1'})\")"
 msgstr ""
-"Ugyldig LUA-postformat. Forventet: TYPE LUA_CODE (f.eks. A \"ifportup(443, {'192.0.2.1'})\")"
+"Ugyldig LUA-postformat. Forventet: TYPE LUA_CODE (f.eks. A \"ifportup(443, "
+"{'192.0.2.1'})\")"
 
 #: lib/Domain/Service/Dns.php:1836
 msgid ""
@@ -927,7 +938,8 @@ msgid ""
 "Invalid LP record format. Expected: PREFERENCE FQDN (e.g., 512 "
 "foo.powerdns.org.)"
 msgstr ""
-"Ugyldig LP-postformat. Forventet: PREFERENCE FQDN (f.eks. 512 foo.powerdns.org.)"
+"Ugyldig LP-postformat. Forventet: PREFERENCE FQDN (f.eks. 512 "
+"foo.powerdns.org.)"
 
 #: lib/Domain/Service/Dns.php:1898
 msgid "LP preference must be between 0 and 65535."
@@ -942,7 +954,8 @@ msgid ""
 "LP FQDN contains invalid characters. Only alphanumeric, dots, hyphens, and "
 "underscores are allowed."
 msgstr ""
-"LP FQDN inneholder ugyldige tegn. Kun alfanumeriske tegn, punktum, bindestreker og understreker er tillatt."
+"LP FQDN inneholder ugyldige tegn. Kun alfanumeriske tegn, punktum, "
+"bindestreker og understreker er tillatt."
 
 #: lib/Domain/Service/Dns.php:1952
 #, php-format
@@ -950,7 +963,8 @@ msgid ""
 "%s is a meta-query type and cannot be used as a zone record. It is only used "
 "in DNS queries."
 msgstr ""
-"%s er en meta-sporingstype og kan ikke brukes som en sonepost. Den brukes kun i DNS-sporringer."
+"%s er en meta-sporingstype og kan ikke brukes som en sonepost. Den brukes "
+"kun i DNS-sporringer."
 
 #: lib/Domain/Service/Dns.php:1985
 msgid "OPENPGPKEY content cannot be empty."
@@ -969,7 +983,8 @@ msgid ""
 "Invalid SIG record format. Expected: TYPE_COVERED ALGORITHM LABELS "
 "ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
 msgstr ""
-"Ugyldig SIG-postformat. Forventet: TYPE_COVERED ALGORITHM LABELS ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
+"Ugyldig SIG-postformat. Forventet: TYPE_COVERED ALGORITHM LABELS "
+"ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
 
 #: lib/Domain/Service/Dns.php:2072
 msgid "SIG type covered must be a valid DNS record type."
@@ -1032,7 +1047,8 @@ msgid ""
 "SMIMEA record must have at least 4 fields: usage, selector, matching-type, "
 "and certificate data"
 msgstr ""
-"SMIMEA-post maa ha minst 4 felt: usage, selector, matching-type og sertifikatdata"
+"SMIMEA-post maa ha minst 4 felt: usage, selector, matching-type og "
+"sertifikatdata"
 
 #: lib/Domain/Service/Dns.php:2272
 msgid "SMIMEA usage must be an integer between 0 and 255"
@@ -1073,7 +1089,8 @@ msgid ""
 "TKEY record must have at least 6 fields: algorithm, inception, expiration, "
 "mode, error, and keysize"
 msgstr ""
-"TKEY-post maa ha minst 6 felt: algorithm, inception, expiration, mode, error og keysize"
+"TKEY-post maa ha minst 6 felt: algorithm, inception, expiration, mode, error "
+"og keysize"
 
 #: lib/Domain/Service/Dns.php:2398
 msgid "TKEY algorithm must be a valid domain name"
@@ -1134,7 +1151,8 @@ msgid ""
 "URI record must have format: <priority> <weight> \"<target>\" (target must "
 "be in quotes)"
 msgstr ""
-"URI-post maa ha formatet: <prioritet> <vekt> \"<maal>\" (maal maa vaere i anforselsregn)"
+"URI-post maa ha formatet: <prioritet> <vekt> \"<maal>\" (maal maa vaere i "
+"anforselsregn)"
 
 #: lib/Domain/Service/Dns.php:2582
 msgid "URI priority must be a 16-bit unsigned integer (0-65535)"
@@ -1149,10 +1167,9 @@ msgid "URI target cannot be empty"
 msgstr "URI-maal kan ikke vaere tomt"
 
 #: lib/Domain/Service/Dns.php:2612
-msgid ""
-"URI target must be a valid URI with a scheme (e.g., http://, ftp://, mailto:)"
-msgstr ""
-"URI-maal maa vaere en gyldig URI med skjema (f.eks. http://, ftp://, mailto:)"
+#, php-format
+msgid "URI target must be a valid URI with a scheme (e.g., %s, %s, %s)"
+msgstr "URI-mål må være en gyldig URI med et skjema (f.eks. %s, %s, %s)"
 
 #: lib/Domain/Service/Dns.php:2661
 msgid "SSHFP record content is required"
@@ -1192,7 +1209,8 @@ msgid ""
 "NAPTR record must have format: <order> <preference> \"<flags>\" "
 "\"<services>\" \"<regexp>\" <replacement>"
 msgstr ""
-"NAPTR-post maa ha formatet: <order> <preference> \"<flags>\" \"<services>\" \"<regexp>\" <replacement>"
+"NAPTR-post maa ha formatet: <order> <preference> \"<flags>\" \"<services>\" "
+"\"<regexp>\" <replacement>"
 
 #: lib/Domain/Service/Dns.php:2778
 msgid "NAPTR order must be a 16-bit unsigned integer (0-65535)"
@@ -1231,7 +1249,8 @@ msgid ""
 "DNSKEY record must have at least 4 fields: flags, protocol, algorithm, and "
 "public key"
 msgstr ""
-"DNSKEY-post maa ha minst 4 felt: flags, protokoll, algoritme og offentlig nokkel"
+"DNSKEY-post maa ha minst 4 felt: flags, protokoll, algoritme og offentlig "
+"nokkel"
 
 #: lib/Domain/Service/Dns.php:2911
 msgid "DNSKEY flags must be a 16-bit unsigned integer (0-65535)"
@@ -1278,7 +1297,8 @@ msgid ""
 "NSEC3 record must have at least 5 fields: algorithm, flags, iterations, "
 "salt, and next hash"
 msgstr ""
-"NSEC3-post maa ha minst 5 felt: algoritme, flagg, iterasjoner, salt og neste hash"
+"NSEC3-post maa ha minst 5 felt: algoritme, flagg, iterasjoner, salt og neste "
+"hash"
 
 #: lib/Domain/Service/Dns.php:3066
 msgid "NSEC3 algorithm must be an 8-bit unsigned integer (0-255)"
@@ -1339,7 +1359,8 @@ msgid ""
 "TSIG record must have at least 8 fields: algorithm, time-signed, fudge, mac-"
 "size, mac, original-id, error, and other-len"
 msgstr ""
-"TSIG-post maa ha minst 8 felt: algoritme, time-signed, fudge, mac-size, mac, original-id, error og other-len"
+"TSIG-post maa ha minst 8 felt: algoritme, time-signed, fudge, mac-size, mac, "
+"original-id, error og other-len"
 
 #: lib/Domain/Service/Dns.php:3278
 msgid "TSIG algorithm must be a valid domain name"
@@ -1388,7 +1409,8 @@ msgstr "EUI48-postinnhold er paakrevd"
 #: lib/Domain/Service/Dns.php:3405
 msgid "EUI48 must be 6 octets separated by dashes (e.g., 00-11-22-33-44-55)"
 msgstr ""
-"EUI48 maa vaere 6 oktetter atskilt med bindestreker (f.eks. 00-11-22-33-44-55)"
+"EUI48 maa vaere 6 oktetter atskilt med bindestreker (f.eks. "
+"00-11-22-33-44-55)"
 
 #: lib/Domain/Service/Dns.php:3430
 msgid "EUI64 record content is required"
@@ -1398,7 +1420,8 @@ msgstr "EUI64-postinnhold er paakrevd"
 msgid ""
 "EUI64 must be 8 octets separated by dashes (e.g., 00-11-22-33-44-55-66-77)"
 msgstr ""
-"EUI64 maa vaere 8 oktetter atskilt med bindestreker (f.eks. 00-11-22-33-44-55-66-77)"
+"EUI64 maa vaere 8 oktetter atskilt med bindestreker (f.eks. "
+"00-11-22-33-44-55-66-77)"
 
 #: lib/Domain/Service/Dns.php:3465
 msgid "NID record content is required"
@@ -1525,7 +1548,8 @@ msgstr "WKS-adresse maa vaere en gyldig IPv4-adresse"
 #: lib/Domain/Service/Dns.php:3941 lib/Domain/Service/Dns.php:3951
 msgid "WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name"
 msgstr ""
-"WKS-protokoll maa vaere et 8-bits heltall uten fortegn (0-255) eller et protokollnavn"
+"WKS-protokoll maa vaere et 8-bits heltall uten fortegn (0-255) eller et "
+"protokollnavn"
 
 #: lib/Domain/Service/Dns.php:3965 lib/Domain/Service/Dns.php:3975
 msgid "WKS service must be a 16-bit port number (0-65535) or service name"
@@ -1541,7 +1565,8 @@ msgid ""
 "A6 record must have at least 2 fields: prefix-length and address-suffix or "
 "prefix-name"
 msgstr ""
-"A6-post maa ha minst 2 felt: prefikslengde og adressesuffiks eller prefiksnavn"
+"A6-post maa ha minst 2 felt: prefikslengde og adressesuffiks eller "
+"prefiksnavn"
 
 #: lib/Domain/Service/Dns.php:4027
 msgid "A6 prefix length must be an integer (0-128)"
@@ -1579,8 +1604,7 @@ msgstr "ZONEMD-post maa ha 4 felt: serial, skjema, algoritme og sammendrag"
 
 #: lib/Domain/Service/Dns.php:4150
 msgid "ZONEMD serial must be a 32-bit unsigned integer (0-4294967295)"
-msgstr ""
-"ZONEMD-serial maa vaere et 32-bits heltall uten fortegn (0-4294967295)"
+msgstr "ZONEMD-serial maa vaere et 32-bits heltall uten fortegn (0-4294967295)"
 
 #: lib/Domain/Service/Dns.php:4160
 msgid "ZONEMD scheme must be an 8-bit unsigned integer (0-255)"
@@ -2564,8 +2588,8 @@ msgstr "Du må nå opprette filen"
 msgid ""
 "in the Poweradmin root directory yourself. It should contain the following "
 "few lines:"
-msgstr "i Poweradmin-rotkatalogen selv. Den boer inneholde folgende linjer:"
-"linjer:"
+msgstr ""
+"i Poweradmin-rotkatalogen selv. Den boer inneholde folgende linjer:linjer:"
 
 #: install/templates/step5.html.twig:39 install/templates/step3.html.twig:121
 msgid "Go to step"
@@ -2589,17 +2613,19 @@ msgid ""
 "root directory. You will not be able to use Poweradmin if it exists. Do it "
 "now."
 msgstr ""
-"Du maa (!) fjerne katalogen \"install/\" fra Poweradmin-rotkatalogen. Du vil ikke kunne bruke Poweradmin hvis den eksisterer. Gjor det naa."
-"katalogen hvor Poweradmin er lagret. Poweradmin vil ikke fungere dersom "
-"denne katalogen eksisterer. Slett derfor katalogen nå."
+"Du maa (!) fjerne katalogen \"install/\" fra Poweradmin-rotkatalogen. Du vil "
+"ikke kunne bruke Poweradmin hvis den eksisterer. Gjor det naa.katalogen hvor "
+"Poweradmin er lagret. Poweradmin vil ikke fungere dersom denne katalogen "
+"eksisterer. Slett derfor katalogen nå."
 
 #: install/templates/step7.html.twig:10
 msgid ""
 "After you have removed the directory, you can login to <a href=\"../"
 "index.php\">Poweradmin</a>."
 msgstr ""
-"Etter at du har fjernet katalogen, kan du logge inn paa <a href=\"../index.php\">Poweradmin</a>."
-"index.php\">Poweradmin</a> med brukernavn \"admin\" og passord"
+"Etter at du har fjernet katalogen, kan du logge inn paa <a href=\"../"
+"index.php\">Poweradmin</a>.index.php\">Poweradmin</a> med brukernavn "
+"\"admin\" og passord"
 
 #: install/templates/step7.html.twig:11
 msgid "Use the default username \"admin\" and the password set in step 3."
@@ -2625,7 +2651,8 @@ msgstr "Oppgi brukernavnet"
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
-"Poweradmin databasebrukernavn med begrenset tilgang. Ikke for pålogging til nettgrensesnittet."
+"Poweradmin databasebrukernavn med begrenset tilgang. Ikke for pålogging til "
+"nettgrensesnittet."
 
 #: install/templates/step4.html.twig:27
 msgid "Provide the user password"
@@ -2692,8 +2719,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "tertiary nameserver."
 msgstr ""
-"Naar nye soner opprettes med malen, vil denne verdien bli brukt som tertiaer navneserver."
-"som primær navnetjener. For eksempel \"ns1.eksempel.net\"."
+"Naar nye soner opprettes med malen, vil denne verdien bli brukt som tertiaer "
+"navneserver.som primær navnetjener. For eksempel \"ns1.eksempel.net\"."
 
 #: install/templates/step4.html.twig:77
 msgid "Quaternary Nameserver"
@@ -2704,8 +2731,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "quaternary nameserver."
 msgstr ""
-"Naar nye soner opprettes med malen, vil denne verdien bli brukt som kvartaer navneserver."
-"som sekundær navnetjener."
+"Naar nye soner opprettes med malen, vil denne verdien bli brukt som kvartaer "
+"navneserver.som sekundær navnetjener."
 
 #: install/templates/step2.html.twig:3
 msgid "Getting ready for installation"
@@ -2763,7 +2790,8 @@ msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Siden du bruker SQLite, er det ikke nødvendig å opprette en ny bruker med begrensede rettigheter."
+"Siden du bruker SQLite, er det ikke nødvendig å opprette en ny bruker med "
+"begrensede rettigheter."
 
 #: install/templates/step3.html.twig:4
 msgid "Configuring Database Connection"
@@ -2834,7 +2862,8 @@ msgid ""
 "The charset (encoding) which will be used for new tables. Leave it empty "
 "then default database charset will be used."
 msgstr ""
-"Tegnsettet (koding) som vil bli brukt for nye tabeller. La det staa tomt saa brukes databasens standard tegnsett."
+"Tegnsettet (koding) som vil bli brukt for nye tabeller. La det staa tomt saa "
+"brukes databasens standard tegnsett."
 
 #: install/templates/step3.html.twig:93
 msgid "DB collation"
@@ -2845,7 +2874,8 @@ msgid ""
 "Set of rules for comparing characters in database. Leave it empty then "
 "default database collation will be used."
 msgstr ""
-"Regelsett for sammenligning av tegn i databasen. La det staa tomt saa brukes databasens standard sortering."
+"Regelsett for sammenligning av tegn i databasen. La det staa tomt saa brukes "
+"databasens standard sortering."
 
 #: install/templates/step3.html.twig:102
 msgid "Poweradmin administrator password"
@@ -2868,7 +2898,8 @@ msgid ""
 "Password must be at least 6 characters long, contain at least one uppercase "
 "letter, one lowercase letter, and one number."
 msgstr ""
-"Passordet maa vaere minst 6 tegn langt og inneholde minst en stor bokstav, en liten bokstav og et tall."
+"Passordet maa vaere minst 6 tegn langt og inneholde minst en stor bokstav, "
+"en liten bokstav og et tall."
 
 #: install/helpers/InstallStepHandler.php:60
 msgid "An error occurred while rendering the template."

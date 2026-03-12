@@ -2609,7 +2609,7 @@ class Dns
 
         // Basic URI validation - must contain scheme and colon
         if (!preg_match('/^[a-zA-Z][a-zA-Z0-9+.-]*:/', $target)) {
-            $error = _('URI target must be a valid URI with a scheme (e.g., http://, ftp://, mailto:)');
+            $error = sprintf(_('URI target must be a valid URI with a scheme (e.g., %s, %s, %s)'), 'http://', 'ftp://', 'mailto:');
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);

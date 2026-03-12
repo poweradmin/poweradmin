@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 3.8.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-03-12 12:31+0200\n"
+"POT-Creation-Date: 2026-03-12 21:44+0200\n"
 "PO-Revision-Date: 2024-12-05 12:48+0100\n"
 "Last-Translator: Riccardo Bessone <riccardo@bess.one>\n"
 "Language-Team: Italian\n"
@@ -221,7 +221,8 @@ msgstr "Questo record non è valido e non può essere aggiunto."
 #: lib/Application/Controller/AddRecordController.php:139
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr ""
-"Record aggiunto con successo. È stato anche creato un record PTR corrispondente."
+"Record aggiunto con successo. È stato anche creato un record PTR "
+"corrispondente."
 
 #: lib/Application/Controller/AddRecordController.php:146
 msgid "The record was successfully added."
@@ -230,7 +231,8 @@ msgstr "Il record è stato aggiunto correttamente."
 #: lib/Application/Controller/AddRecordController.php:143
 msgid "Record successfully added. A matching A record was also created."
 msgstr ""
-"Record aggiunto con successo. È stato anche creato un record A corrispondente."
+"Record aggiunto con successo. È stato anche creato un record A "
+"corrispondente."
 
 #: lib/Application/Controller/DeleteDomainsController.php:61
 msgid "No zone selected for deletion."
@@ -361,7 +363,8 @@ msgstr "Il supermaster è stato aggiunto correttamente."
 #: lib/Application/Controller/AddZoneTemplRecordController.php:56
 msgid "You do not have the permission to add a record to this zone template."
 msgstr ""
-"Non si dispone del permesso di aggiungere un record a questo template di zona."
+"Non si dispone del permesso di aggiungere un record a questo template di "
+"zona."
 
 #: lib/Domain/Model/UserManager.php:379 lib/Domain/Model/UserManager.php:744
 msgid "You do not have the permission to edit this user."
@@ -688,7 +691,8 @@ msgid ""
 "Invalid CDNSKEY record format. Expected: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY "
 "(e.g., 257 3 5 AwEA...)"
 msgstr ""
-"Formato record CDNSKEY non valido. Previsto: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY (es. 257 3 5 AwEA...)"
+"Formato record CDNSKEY non valido. Previsto: FLAGS PROTOCOL ALGORITHM "
+"PUBLIC_KEY (es. 257 3 5 AwEA...)"
 
 #: lib/Domain/Service/Dns.php:1046
 msgid "CDNSKEY flags must be between 0 and 65535."
@@ -742,7 +746,8 @@ msgstr "Il prefisso IPv6 deve essere compreso tra 0 e 128."
 #, php-format
 msgid "Unknown address family in APL: %d. Must be 1 (IPv4) or 2 (IPv6)."
 msgstr ""
-"Famiglia di indirizzi sconosciuta in APL: %d. Deve essere 1 (IPv4) o 2 (IPv6)."
+"Famiglia di indirizzi sconosciuta in APL: %d. Deve essere 1 (IPv4) o 2 "
+"(IPv6)."
 
 #: lib/Domain/Service/Dns.php:1234
 msgid "ALIAS target hostname cannot be empty."
@@ -757,7 +762,8 @@ msgid ""
 "Invalid AFSDB record format. Expected: SUBTYPE HOSTNAME (e.g., 1 afs-"
 "server.example.com)"
 msgstr ""
-"Formato record AFSDB non valido. Previsto: SUBTYPE HOSTNAME (es. 1 afs-server.example.com)"
+"Formato record AFSDB non valido. Previsto: SUBTYPE HOSTNAME (es. 1 afs-"
+"server.example.com)"
 
 #: lib/Domain/Service/Dns.php:1290
 msgid "AFSDB subtype must be between 0 and 65535."
@@ -772,7 +778,8 @@ msgid ""
 "Invalid CAA record format. Expected: FLAGS TAG VALUE (e.g., 0 issue "
 "\"letsencrypt.org\")"
 msgstr ""
-"Formato record CAA non valido. Previsto: FLAGS TAG VALUE (es. 0 issue \"letsencrypt.org\")"
+"Formato record CAA non valido. Previsto: FLAGS TAG VALUE (es. 0 issue "
+"\"letsencrypt.org\")"
 
 #: lib/Domain/Service/Dns.php:1347
 msgid "CAA flags must be between 0 and 255."
@@ -786,7 +793,8 @@ msgstr "Il tag CAA deve essere alfanumerico."
 msgid ""
 "CAA value must be enclosed in quotes (e.g., \"letsencrypt.org\" or \"\")."
 msgstr ""
-"Il valore CAA deve essere racchiuso tra virgolette (es. \"letsencrypt.org\" o \"\")."
+"Il valore CAA deve essere racchiuso tra virgolette (es. \"letsencrypt.org\" "
+"o \"\")."
 
 #: lib/Domain/Service/Dns.php:1382
 msgid "Quotes inside CAA value must be escaped with backslash."
@@ -797,7 +805,8 @@ msgid ""
 "Invalid CDS record format. Expected: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
 "(e.g., 20642 8 2 04443ABE...)"
 msgstr ""
-"Formato record CDS non valido. Previsto: KEYTAG ALGORITHM DIGESTTYPE DIGEST (es. 20642 8 2 04443ABE...)"
+"Formato record CDS non valido. Previsto: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
+"(es. 20642 8 2 04443ABE...)"
 
 #: lib/Domain/Service/Dns.php:1434
 msgid "CDS keytag must be between 0 and 65535."
@@ -820,14 +829,16 @@ msgid ""
 "CDS digest has unexpected length. Expected 40 (SHA-1), 64 (SHA-256), or 96 "
 "(SHA-384) hex characters."
 msgstr ""
-"Il digest CDS ha una lunghezza inattesa. Previsti 40 (SHA-1), 64 (SHA-256) o 96 (SHA-384) caratteri esadecimali."
+"Il digest CDS ha una lunghezza inattesa. Previsti 40 (SHA-1), 64 (SHA-256) o "
+"96 (SHA-384) caratteri esadecimali."
 
 #: lib/Domain/Service/Dns.php:1527
 msgid ""
 "Invalid CERT record format. Expected: TYPE KEYTAG ALGORITHM CERTIFICATE "
 "(e.g., 1 0 0 MIIB9D...)"
 msgstr ""
-"Formato record CERT non valido. Previsto: TYPE KEYTAG ALGORITHM CERTIFICATE (es. 1 0 0 MIIB9D...)"
+"Formato record CERT non valido. Previsto: TYPE KEYTAG ALGORITHM CERTIFICATE "
+"(es. 1 0 0 MIIB9D...)"
 
 #: lib/Domain/Service/Dns.php:1542
 msgid "CERT type must be between 0 and 65535."
@@ -866,14 +877,16 @@ msgid ""
 "DNAME target contains invalid characters. Only alphanumeric, dots, hyphens, "
 "and underscores are allowed."
 msgstr ""
-"La destinazione DNAME contiene caratteri non validi. Sono consentiti solo caratteri alfanumerici, punti, trattini e underscore."
+"La destinazione DNAME contiene caratteri non validi. Sono consentiti solo "
+"caratteri alfanumerici, punti, trattini e underscore."
 
 #: lib/Domain/Service/Dns.php:1686
 msgid ""
 "Invalid L32 record format. Expected: PREFERENCE LOCATOR32 (e.g., 513 "
 "192.0.2.1)"
 msgstr ""
-"Formato record L32 non valido. Previsto: PREFERENCE LOCATOR32 (es. 513 192.0.2.1)"
+"Formato record L32 non valido. Previsto: PREFERENCE LOCATOR32 (es. 513 "
+"192.0.2.1)"
 
 #: lib/Domain/Service/Dns.php:1699
 msgid "L32 preference must be between 0 and 65535."
@@ -888,7 +901,8 @@ msgid ""
 "Invalid L64 record format. Expected: PREFERENCE LOCATOR64 (e.g., 255 "
 "2001:0DB8:1234:ABCD)"
 msgstr ""
-"Formato record L64 non valido. Previsto: PREFERENCE LOCATOR64 (es. 255 2001:0DB8:1234:ABCD)"
+"Formato record L64 non valido. Previsto: PREFERENCE LOCATOR64 (es. 255 "
+"2001:0DB8:1234:ABCD)"
 
 #: lib/Domain/Service/Dns.php:1757
 msgid "L64 preference must be between 0 and 65535."
@@ -899,7 +913,8 @@ msgid ""
 "L64 locator64 must be in format XXXX:XXXX:XXXX:XXXX (e.g., "
 "2001:0DB8:1234:ABCD)."
 msgstr ""
-"Il locator64 L64 deve essere nel formato XXXX:XXXX:XXXX:XXXX (es. 2001:0DB8:1234:ABCD)."
+"Il locator64 L64 deve essere nel formato XXXX:XXXX:XXXX:XXXX (es. "
+"2001:0DB8:1234:ABCD)."
 
 #: lib/Domain/Service/Dns.php:1806
 msgid "LUA record content cannot be empty."
@@ -910,14 +925,16 @@ msgid ""
 "Invalid LUA record format. Expected: TYPE LUA_CODE (e.g., A \"ifportup(443, "
 "{'192.0.2.1'})\")"
 msgstr ""
-"Formato record LUA non valido. Previsto: TYPE LUA_CODE (es. A \"ifportup(443, {'192.0.2.1'})\")"
+"Formato record LUA non valido. Previsto: TYPE LUA_CODE (es. A "
+"\"ifportup(443, {'192.0.2.1'})\")"
 
 #: lib/Domain/Service/Dns.php:1836
 msgid ""
 "LUA record type must be a valid DNS record type (e.g., A, AAAA, TXT, MX, "
 "etc.)."
 msgstr ""
-"Il tipo di record LUA deve essere un tipo DNS valido (es. A, AAAA, TXT, MX, ecc.)."
+"Il tipo di record LUA deve essere un tipo DNS valido (es. A, AAAA, TXT, MX, "
+"ecc.)."
 
 #: lib/Domain/Service/Dns.php:1846
 msgid "LUA code cannot be empty."
@@ -928,7 +945,8 @@ msgid ""
 "Invalid LP record format. Expected: PREFERENCE FQDN (e.g., 512 "
 "foo.powerdns.org.)"
 msgstr ""
-"Formato record LP non valido. Previsto: PREFERENCE FQDN (es. 512 foo.powerdns.org.)"
+"Formato record LP non valido. Previsto: PREFERENCE FQDN (es. 512 "
+"foo.powerdns.org.)"
 
 #: lib/Domain/Service/Dns.php:1898
 msgid "LP preference must be between 0 and 65535."
@@ -943,7 +961,8 @@ msgid ""
 "LP FQDN contains invalid characters. Only alphanumeric, dots, hyphens, and "
 "underscores are allowed."
 msgstr ""
-"Il FQDN LP contiene caratteri non validi. Sono consentiti solo caratteri alfanumerici, punti, trattini e underscore."
+"Il FQDN LP contiene caratteri non validi. Sono consentiti solo caratteri "
+"alfanumerici, punti, trattini e underscore."
 
 #: lib/Domain/Service/Dns.php:1952
 #, php-format
@@ -951,7 +970,8 @@ msgid ""
 "%s is a meta-query type and cannot be used as a zone record. It is only used "
 "in DNS queries."
 msgstr ""
-"%s e un tipo meta-query e non puo essere utilizzato come record di zona. Viene utilizzato solo nelle query DNS."
+"%s e un tipo meta-query e non puo essere utilizzato come record di zona. "
+"Viene utilizzato solo nelle query DNS."
 
 #: lib/Domain/Service/Dns.php:1985
 msgid "OPENPGPKEY content cannot be empty."
@@ -970,7 +990,8 @@ msgid ""
 "Invalid SIG record format. Expected: TYPE_COVERED ALGORITHM LABELS "
 "ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
 msgstr ""
-"Formato record SIG non valido. Previsto: TYPE_COVERED ALGORITHM LABELS ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
+"Formato record SIG non valido. Previsto: TYPE_COVERED ALGORITHM LABELS "
+"ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
 
 #: lib/Domain/Service/Dns.php:2072
 msgid "SIG type covered must be a valid DNS record type."
@@ -1033,7 +1054,8 @@ msgid ""
 "SMIMEA record must have at least 4 fields: usage, selector, matching-type, "
 "and certificate data"
 msgstr ""
-"Il record SMIMEA deve avere almeno 4 campi: usage, selector, matching-type e dati del certificato"
+"Il record SMIMEA deve avere almeno 4 campi: usage, selector, matching-type e "
+"dati del certificato"
 
 #: lib/Domain/Service/Dns.php:2272
 msgid "SMIMEA usage must be an integer between 0 and 255"
@@ -1060,13 +1082,15 @@ msgstr ""
 msgid ""
 "SMIMEA certificate data must be at least 2 hexadecimal characters (1 byte)"
 msgstr ""
-"I dati del certificato SMIMEA devono contenere almeno 2 caratteri esadecimali (1 byte)"
+"I dati del certificato SMIMEA devono contenere almeno 2 caratteri "
+"esadecimali (1 byte)"
 
 #: lib/Domain/Service/Dns.php:2331
 msgid ""
 "SMIMEA certificate data must have an even number of hexadecimal characters"
 msgstr ""
-"I dati del certificato SMIMEA devono avere un numero pari di caratteri esadecimali"
+"I dati del certificato SMIMEA devono avere un numero pari di caratteri "
+"esadecimali"
 
 #: lib/Domain/Service/Dns.php:2368
 msgid "TKEY record content is required"
@@ -1077,7 +1101,8 @@ msgid ""
 "TKEY record must have at least 6 fields: algorithm, inception, expiration, "
 "mode, error, and keysize"
 msgstr ""
-"Il record TKEY deve avere almeno 6 campi: algoritmo, inception, expiration, mode, error e keysize"
+"Il record TKEY deve avere almeno 6 campi: algoritmo, inception, expiration, "
+"mode, error e keysize"
 
 #: lib/Domain/Service/Dns.php:2398
 msgid "TKEY algorithm must be a valid domain name"
@@ -1138,7 +1163,8 @@ msgid ""
 "URI record must have format: <priority> <weight> \"<target>\" (target must "
 "be in quotes)"
 msgstr ""
-"Il record URI deve avere il formato: <priorita> <peso> \"<destinazione>\" (la destinazione deve essere tra virgolette)"
+"Il record URI deve avere il formato: <priorita> <peso> \"<destinazione>\" "
+"(la destinazione deve essere tra virgolette)"
 
 #: lib/Domain/Service/Dns.php:2582
 msgid "URI priority must be a 16-bit unsigned integer (0-65535)"
@@ -1153,10 +1179,10 @@ msgid "URI target cannot be empty"
 msgstr "La destinazione URI non puo essere vuota"
 
 #: lib/Domain/Service/Dns.php:2612
-msgid ""
-"URI target must be a valid URI with a scheme (e.g., http://, ftp://, mailto:)"
-msgstr ""
-"La destinazione URI deve essere un URI valido con uno schema (es. http://, ftp://, mailto:)"
+#, php-format
+msgid "URI target must be a valid URI with a scheme (e.g., %s, %s, %s)"
+msgstr "Il target URI deve essere un URI valido con uno schema (es., %s, %s, %s)"
+"ftp://, mailto:)"
 
 #: lib/Domain/Service/Dns.php:2661
 msgid "SSHFP record content is required"
@@ -1196,7 +1222,8 @@ msgid ""
 "NAPTR record must have format: <order> <preference> \"<flags>\" "
 "\"<services>\" \"<regexp>\" <replacement>"
 msgstr ""
-"Il record NAPTR deve avere il formato: <order> <preference> \"<flags>\" \"<services>\" \"<regexp>\" <replacement>"
+"Il record NAPTR deve avere il formato: <order> <preference> \"<flags>\" "
+"\"<services>\" \"<regexp>\" <replacement>"
 
 #: lib/Domain/Service/Dns.php:2778
 msgid "NAPTR order must be a 16-bit unsigned integer (0-65535)"
@@ -1236,7 +1263,8 @@ msgid ""
 "DNSKEY record must have at least 4 fields: flags, protocol, algorithm, and "
 "public key"
 msgstr ""
-"Il record DNSKEY deve avere almeno 4 campi: flags, protocollo, algoritmo e chiave pubblica"
+"Il record DNSKEY deve avere almeno 4 campi: flags, protocollo, algoritmo e "
+"chiave pubblica"
 
 #: lib/Domain/Service/Dns.php:2911
 msgid "DNSKEY flags must be a 16-bit unsigned integer (0-65535)"
@@ -1266,7 +1294,8 @@ msgstr "Il contenuto del record NSEC e obbligatorio"
 #: lib/Domain/Service/Dns.php:2987
 msgid "NSEC record must have at least 2 fields: next domain name and type list"
 msgstr ""
-"Il record NSEC deve avere almeno 2 campi: nome di dominio successivo e lista dei tipi"
+"Il record NSEC deve avere almeno 2 campi: nome di dominio successivo e lista "
+"dei tipi"
 
 #: lib/Domain/Service/Dns.php:2999
 msgid "NSEC next domain must be a valid domain name"
@@ -1285,7 +1314,8 @@ msgid ""
 "NSEC3 record must have at least 5 fields: algorithm, flags, iterations, "
 "salt, and next hash"
 msgstr ""
-"Il record NSEC3 deve avere almeno 5 campi: algoritmo, flags, iterazioni, salt e hash successivo"
+"Il record NSEC3 deve avere almeno 5 campi: algoritmo, flags, iterazioni, "
+"salt e hash successivo"
 
 #: lib/Domain/Service/Dns.php:3066
 msgid "NSEC3 algorithm must be an 8-bit unsigned integer (0-255)"
@@ -1306,8 +1336,7 @@ msgstr "Il salt NSEC3 deve essere esadecimale o \"-\" per nessun salt"
 
 #: lib/Domain/Service/Dns.php:3106
 msgid "NSEC3 next hash must be Base32hex-encoded (0-9, A-V)"
-msgstr ""
-"L'hash successivo NSEC3 deve essere codificato in Base32hex (0-9, A-V)"
+msgstr "L'hash successivo NSEC3 deve essere codificato in Base32hex (0-9, A-V)"
 
 #: lib/Domain/Service/Dns.php:3119
 msgid "NSEC3 type list must contain uppercase type names"
@@ -1330,13 +1359,13 @@ msgstr ""
 
 #: lib/Domain/Service/Dns.php:3183
 msgid "NSEC3PARAM flags must be an 8-bit unsigned integer (0-255)"
-msgstr ""
-"I flags NSEC3PARAM devono essere un intero senza segno a 8 bit (0-255)"
+msgstr "I flags NSEC3PARAM devono essere un intero senza segno a 8 bit (0-255)"
 
 #: lib/Domain/Service/Dns.php:3193
 msgid "NSEC3PARAM iterations must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
-"Le iterazioni NSEC3PARAM devono essere un intero senza segno a 16 bit (0-65535)"
+"Le iterazioni NSEC3PARAM devono essere un intero senza segno a 16 bit "
+"(0-65535)"
 
 #: lib/Domain/Service/Dns.php:3203
 msgid "NSEC3PARAM salt must be hexadecimal or \"-\" for no salt"
@@ -1351,7 +1380,8 @@ msgid ""
 "TSIG record must have at least 8 fields: algorithm, time-signed, fudge, mac-"
 "size, mac, original-id, error, and other-len"
 msgstr ""
-"Il record TSIG deve avere almeno 8 campi: algoritmo, time-signed, fudge, mac-size, mac, original-id, error e other-len"
+"Il record TSIG deve avere almeno 8 campi: algoritmo, time-signed, fudge, mac-"
+"size, mac, original-id, error e other-len"
 
 #: lib/Domain/Service/Dns.php:3278
 msgid "TSIG algorithm must be a valid domain name"
@@ -1401,7 +1431,8 @@ msgstr "Il contenuto del record EUI48 e obbligatorio"
 #: lib/Domain/Service/Dns.php:3405
 msgid "EUI48 must be 6 octets separated by dashes (e.g., 00-11-22-33-44-55)"
 msgstr ""
-"EUI48 deve essere composto da 6 ottetti separati da trattini (es. 00-11-22-33-44-55)"
+"EUI48 deve essere composto da 6 ottetti separati da trattini (es. "
+"00-11-22-33-44-55)"
 
 #: lib/Domain/Service/Dns.php:3430
 msgid "EUI64 record content is required"
@@ -1411,7 +1442,8 @@ msgstr "Il contenuto del record EUI64 e obbligatorio"
 msgid ""
 "EUI64 must be 8 octets separated by dashes (e.g., 00-11-22-33-44-55-66-77)"
 msgstr ""
-"EUI64 deve essere composto da 8 ottetti separati da trattini (es. 00-11-22-33-44-55-66-77)"
+"EUI64 deve essere composto da 8 ottetti separati da trattini (es. "
+"00-11-22-33-44-55-66-77)"
 
 #: lib/Domain/Service/Dns.php:3465
 msgid "NID record content is required"
@@ -1423,14 +1455,14 @@ msgstr "Il record NID deve avere 2 campi: preference e node-id"
 
 #: lib/Domain/Service/Dns.php:3489
 msgid "NID preference must be a 16-bit unsigned integer (0-65535)"
-msgstr ""
-"La preference NID deve essere un intero senza segno a 16 bit (0-65535)"
+msgstr "La preference NID deve essere un intero senza segno a 16 bit (0-65535)"
 
 #: lib/Domain/Service/Dns.php:3499
 msgid ""
 "NID node-id must be in format XXXX:XXXX:XXXX:XXXX (64-bit hex with colons)"
 msgstr ""
-"Il node-id NID deve essere nel formato XXXX:XXXX:XXXX:XXXX (esadecimale 64 bit con due punti)"
+"Il node-id NID deve essere nel formato XXXX:XXXX:XXXX:XXXX (esadecimale 64 "
+"bit con due punti)"
 
 #: lib/Domain/Service/Dns.php:3524
 msgid "KX record content is required"
@@ -1457,7 +1489,8 @@ msgid ""
 "IPSECKEY record must have at least 3 fields: precedence, gateway-type, and "
 "algorithm"
 msgstr ""
-"Il record IPSECKEY deve avere almeno 3 campi: precedence, tipo di gateway e algoritmo"
+"Il record IPSECKEY deve avere almeno 3 campi: precedence, tipo di gateway e "
+"algoritmo"
 
 #: lib/Domain/Service/Dns.php:3609
 msgid "IPSECKEY precedence must be an 8-bit unsigned integer (0-255)"
@@ -1467,12 +1500,12 @@ msgstr ""
 #: lib/Domain/Service/Dns.php:3619
 msgid "IPSECKEY gateway-type must be 0-3 (0=none, 1=IPv4, 2=IPv6, 3=domain)"
 msgstr ""
-"Il tipo di gateway IPSECKEY deve essere 0-3 (0=nessuno, 1=IPv4, 2=IPv6, 3=dominio)"
+"Il tipo di gateway IPSECKEY deve essere 0-3 (0=nessuno, 1=IPv4, 2=IPv6, "
+"3=dominio)"
 
 #: lib/Domain/Service/Dns.php:3629
 msgid "IPSECKEY algorithm must be an 8-bit unsigned integer (0-255)"
-msgstr ""
-"L'algoritmo IPSECKEY deve essere un intero senza segno a 8 bit (0-255)"
+msgstr "L'algoritmo IPSECKEY deve essere un intero senza segno a 8 bit (0-255)"
 
 #: lib/Domain/Service/Dns.php:3708 lib/Domain/Service/Dns.php:3740
 msgid "IPSECKEY public key must be Base64-encoded"
@@ -1542,12 +1575,14 @@ msgstr "L'indirizzo WKS deve essere un indirizzo IPv4 valido"
 #: lib/Domain/Service/Dns.php:3941 lib/Domain/Service/Dns.php:3951
 msgid "WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name"
 msgstr ""
-"Il protocollo WKS deve essere un intero senza segno a 8 bit (0-255) o un nome di protocollo"
+"Il protocollo WKS deve essere un intero senza segno a 8 bit (0-255) o un "
+"nome di protocollo"
 
 #: lib/Domain/Service/Dns.php:3965 lib/Domain/Service/Dns.php:3975
 msgid "WKS service must be a 16-bit port number (0-65535) or service name"
 msgstr ""
-"Il servizio WKS deve essere un numero di porta a 16 bit (0-65535) o un nome di servizio"
+"Il servizio WKS deve essere un numero di porta a 16 bit (0-65535) o un nome "
+"di servizio"
 
 #: lib/Domain/Service/Dns.php:4002
 msgid "A6 record content is required"
@@ -1558,7 +1593,8 @@ msgid ""
 "A6 record must have at least 2 fields: prefix-length and address-suffix or "
 "prefix-name"
 msgstr ""
-"Il record A6 deve avere almeno 2 campi: lunghezza del prefisso e suffisso dell'indirizzo o nome del prefisso"
+"Il record A6 deve avere almeno 2 campi: lunghezza del prefisso e suffisso "
+"dell'indirizzo o nome del prefisso"
 
 #: lib/Domain/Service/Dns.php:4027
 msgid "A6 prefix length must be an integer (0-128)"
@@ -2613,20 +2649,24 @@ msgid ""
 "root directory. You will not be able to use Poweradmin if it exists. Do it "
 "now."
 msgstr ""
-"Devi (obbligatoriamente!) rimuovere la directory \"install/\" dalla directory principale di Poweradmin. Non potrai utilizzare Poweradmin se esiste. Fallo ora."
-"Poweradmin. Non sarai in grado di usare Poweradmin se esiste. Fallo ora."
+"Devi (obbligatoriamente!) rimuovere la directory \"install/\" dalla "
+"directory principale di Poweradmin. Non potrai utilizzare Poweradmin se "
+"esiste. Fallo ora.Poweradmin. Non sarai in grado di usare Poweradmin se "
+"esiste. Fallo ora."
 
 #: install/templates/step7.html.twig:10
 msgid ""
 "After you have removed the directory, you can login to <a href=\"../"
 "index.php\">Poweradmin</a>."
 msgstr ""
-"Dopo aver rimosso la directory, puoi accedere a <a href=\"../index.php\">Poweradmin</a>."
+"Dopo aver rimosso la directory, puoi accedere a <a href=\"../"
+"index.php\">Poweradmin</a>."
 
 #: install/templates/step7.html.twig:11
 msgid "Use the default username \"admin\" and the password set in step 3."
 msgstr ""
-"Utilizza il nome utente predefinito \"admin\" e la password impostata al passaggio 3."
+"Utilizza il nome utente predefinito \"admin\" e la password impostata al "
+"passaggio 3."
 
 #: install/templates/step1.html.twig:4
 msgid "Choose a language for installation"
@@ -2649,7 +2689,8 @@ msgstr "Fornisci il nome utente"
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
-"Nome utente del database Poweradmin con accesso limitato. Non per l'accesso all'interfaccia web."
+"Nome utente del database Poweradmin con accesso limitato. Non per l'accesso "
+"all'interfaccia web."
 
 #: install/templates/step4.html.twig:27
 msgid "Provide the user password"
@@ -2672,7 +2713,8 @@ msgid ""
 "When creating SOA records and no hostmaster is provided, this value here "
 "will be used."
 msgstr ""
-"Quando si creano record SOA e non viene fornito un hostmaster, verra utilizzato questo valore."
+"Quando si creano record SOA e non viene fornito un hostmaster, verra "
+"utilizzato questo valore."
 
 #: install/templates/step4.html.twig:45
 msgid "Primary nameserver"
@@ -2687,7 +2729,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "primary nameserver."
 msgstr ""
-"Quando si creano nuove zone utilizzando il modello, questo valore verra utilizzato come server dei nomi primario."
+"Quando si creano nuove zone utilizzando il modello, questo valore verra "
+"utilizzato come server dei nomi primario."
 
 #: install/templates/step4.html.twig:56
 msgid "Secondary nameserver"
@@ -2702,7 +2745,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "secondary nameserver."
 msgstr ""
-"Quando si creano nuove zone utilizzando il modello, questo valore verra utilizzato come server dei nomi secondario."
+"Quando si creano nuove zone utilizzando il modello, questo valore verra "
+"utilizzato come server dei nomi secondario."
 
 #: install/templates/step4.html.twig:67
 msgid "Tertiary Nameserver"
@@ -2713,7 +2757,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "tertiary nameserver."
 msgstr ""
-"Quando si creano nuove zone utilizzando il modello, questo valore verra utilizzato come server dei nomi terziario."
+"Quando si creano nuove zone utilizzando il modello, questo valore verra "
+"utilizzato come server dei nomi terziario."
 
 #: install/templates/step4.html.twig:77
 msgid "Quaternary Nameserver"
@@ -2724,7 +2769,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "quaternary nameserver."
 msgstr ""
-"Quando si creano nuove zone utilizzando il modello, questo valore verra utilizzato come server dei nomi quaternario."
+"Quando si creano nuove zone utilizzando il modello, questo valore verra "
+"utilizzato come server dei nomi quaternario."
 
 #: install/templates/step2.html.twig:3
 msgid "Getting ready for installation"
@@ -2783,7 +2829,8 @@ msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Poiché stai utilizzando SQLite, non è necessario creare un nuovo utente con diritti limitati."
+"Poiché stai utilizzando SQLite, non è necessario creare un nuovo utente con "
+"diritti limitati."
 
 #: install/templates/step3.html.twig:4
 msgid "Configuring Database Connection"
@@ -2853,7 +2900,8 @@ msgid ""
 "The charset (encoding) which will be used for new tables. Leave it empty "
 "then default database charset will be used."
 msgstr ""
-"Il set di caratteri (codifica) che verra utilizzato per le nuove tabelle. Lasciare vuoto per utilizzare il set di caratteri predefinito del database."
+"Il set di caratteri (codifica) che verra utilizzato per le nuove tabelle. "
+"Lasciare vuoto per utilizzare il set di caratteri predefinito del database."
 
 #: install/templates/step3.html.twig:93
 msgid "DB collation"
@@ -2864,7 +2912,8 @@ msgid ""
 "Set of rules for comparing characters in database. Leave it empty then "
 "default database collation will be used."
 msgstr ""
-"Insieme di regole per il confronto dei caratteri nel database. Lasciare vuoto per utilizzare la collation predefinita del database."
+"Insieme di regole per il confronto dei caratteri nel database. Lasciare "
+"vuoto per utilizzare la collation predefinita del database."
 
 #: install/templates/step3.html.twig:102
 msgid "Poweradmin administrator password"
@@ -2879,14 +2928,16 @@ msgid ""
 "The password of the Poweradmin administrator. This administrator has full "
 "rights to Poweradmin using the web interface."
 msgstr ""
-"La password dell'amministratore Poweradmin. Questo amministratore ha tutti i diritti su Poweradmin tramite l'interfaccia web."
+"La password dell'amministratore Poweradmin. Questo amministratore ha tutti i "
+"diritti su Poweradmin tramite l'interfaccia web."
 
 #: install/templates/step3.html.twig:112
 msgid ""
 "Password must be at least 6 characters long, contain at least one uppercase "
 "letter, one lowercase letter, and one number."
 msgstr ""
-"La password deve contenere almeno 6 caratteri, di cui almeno una lettera maiuscola, una minuscola e un numero."
+"La password deve contenere almeno 6 caratteri, di cui almeno una lettera "
+"maiuscola, una minuscola e un numero."
 
 #: install/helpers/InstallStepHandler.php:60
 msgid "An error occurred while rendering the template."

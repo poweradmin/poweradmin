@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-03-12 12:31+0200\n"
+"POT-Creation-Date: 2026-03-12 21:44+0200\n"
 "PO-Revision-Date: 2024-06-15 10:58+0300\n"
 "Last-Translator: Edmondas <edmondas@girkantas.lt>\n"
 "Language-Team: Lithuanian\n"
@@ -681,7 +681,8 @@ msgid ""
 "Invalid CDNSKEY record format. Expected: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY "
 "(e.g., 257 3 5 AwEA...)"
 msgstr ""
-"Neteisingas CDNSKEY įrašo formatas. Tikėtasi: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY (e.g., 257 3 5 AwEA...)"
+"Neteisingas CDNSKEY įrašo formatas. Tikėtasi: FLAGS PROTOCOL ALGORITHM "
+"PUBLIC_KEY (e.g., 257 3 5 AwEA...)"
 
 #: lib/Domain/Service/Dns.php:1046
 msgid "CDNSKEY flags must be between 0 and 65535."
@@ -734,8 +735,7 @@ msgstr "IPv6 prefiksas turi būti tarp 0 ir 128."
 #: lib/Domain/Service/Dns.php:1201
 #, php-format
 msgid "Unknown address family in APL: %d. Must be 1 (IPv4) or 2 (IPv6)."
-msgstr ""
-"Nežinoma adresų šeima APL įraše: %d. Turi būti 1 (IPv4) arba 2 (IPv6)."
+msgstr "Nežinoma adresų šeima APL įraše: %d. Turi būti 1 (IPv4) arba 2 (IPv6)."
 
 #: lib/Domain/Service/Dns.php:1234
 msgid "ALIAS target hostname cannot be empty."
@@ -750,7 +750,8 @@ msgid ""
 "Invalid AFSDB record format. Expected: SUBTYPE HOSTNAME (e.g., 1 afs-"
 "server.example.com)"
 msgstr ""
-"Neteisingas AFSDB įrašo formatas. Tikėtasi: SUBTYPE HOSTNAME (e.g., 1 afs-server.example.com)"
+"Neteisingas AFSDB įrašo formatas. Tikėtasi: SUBTYPE HOSTNAME (e.g., 1 afs-"
+"server.example.com)"
 
 #: lib/Domain/Service/Dns.php:1290
 msgid "AFSDB subtype must be between 0 and 65535."
@@ -765,7 +766,8 @@ msgid ""
 "Invalid CAA record format. Expected: FLAGS TAG VALUE (e.g., 0 issue "
 "\"letsencrypt.org\")"
 msgstr ""
-"Neteisingas CAA įrašo formatas. Tikėtasi: FLAGS TAG VALUE (e.g., 0 issue \"letsencrypt.org\")"
+"Neteisingas CAA įrašo formatas. Tikėtasi: FLAGS TAG VALUE (e.g., 0 issue "
+"\"letsencrypt.org\")"
 
 #: lib/Domain/Service/Dns.php:1347
 msgid "CAA flags must be between 0 and 255."
@@ -789,7 +791,8 @@ msgid ""
 "Invalid CDS record format. Expected: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
 "(e.g., 20642 8 2 04443ABE...)"
 msgstr ""
-"Neteisingas CDS įrašo formatas. Tikėtasi: KEYTAG ALGORITHM DIGESTTYPE DIGEST (e.g., 20642 8 2 04443ABE...)"
+"Neteisingas CDS įrašo formatas. Tikėtasi: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
+"(e.g., 20642 8 2 04443ABE...)"
 
 #: lib/Domain/Service/Dns.php:1434
 msgid "CDS keytag must be between 0 and 65535."
@@ -812,14 +815,16 @@ msgid ""
 "CDS digest has unexpected length. Expected 40 (SHA-1), 64 (SHA-256), or 96 "
 "(SHA-384) hex characters."
 msgstr ""
-"CDS santrauka turi netikėtą ilgį. Tikėtasi 40 (SHA-1), 64 (SHA-256) arba 96 (SHA-384) šešioliktainių simbolių."
+"CDS santrauka turi netikėtą ilgį. Tikėtasi 40 (SHA-1), 64 (SHA-256) arba 96 "
+"(SHA-384) šešioliktainių simbolių."
 
 #: lib/Domain/Service/Dns.php:1527
 msgid ""
 "Invalid CERT record format. Expected: TYPE KEYTAG ALGORITHM CERTIFICATE "
 "(e.g., 1 0 0 MIIB9D...)"
 msgstr ""
-"Neteisingas CERT įrašo formatas. Tikėtasi: TYPE KEYTAG ALGORITHM CERTIFICATE (e.g., 1 0 0 MIIB9D...)"
+"Neteisingas CERT įrašo formatas. Tikėtasi: TYPE KEYTAG ALGORITHM CERTIFICATE "
+"(e.g., 1 0 0 MIIB9D...)"
 
 #: lib/Domain/Service/Dns.php:1542
 msgid "CERT type must be between 0 and 65535."
@@ -858,14 +863,16 @@ msgid ""
 "DNAME target contains invalid characters. Only alphanumeric, dots, hyphens, "
 "and underscores are allowed."
 msgstr ""
-"DNAME target turi netinkamų simbolių. Leidžiami tik raidės, skaičiai, taškai, brūkšneliai ir pabraukimai."
+"DNAME target turi netinkamų simbolių. Leidžiami tik raidės, skaičiai, "
+"taškai, brūkšneliai ir pabraukimai."
 
 #: lib/Domain/Service/Dns.php:1686
 msgid ""
 "Invalid L32 record format. Expected: PREFERENCE LOCATOR32 (e.g., 513 "
 "192.0.2.1)"
 msgstr ""
-"Neteisingas L32 įrašo formatas. Tikėtasi: PREFERENCE LOCATOR32 (e.g., 513 192.0.2.1)"
+"Neteisingas L32 įrašo formatas. Tikėtasi: PREFERENCE LOCATOR32 (e.g., 513 "
+"192.0.2.1)"
 
 #: lib/Domain/Service/Dns.php:1699
 msgid "L32 preference must be between 0 and 65535."
@@ -880,7 +887,8 @@ msgid ""
 "Invalid L64 record format. Expected: PREFERENCE LOCATOR64 (e.g., 255 "
 "2001:0DB8:1234:ABCD)"
 msgstr ""
-"Neteisingas L64 įrašo formatas. Tikėtasi: PREFERENCE LOCATOR64 (e.g., 255 2001:0DB8:1234:ABCD)"
+"Neteisingas L64 įrašo formatas. Tikėtasi: PREFERENCE LOCATOR64 (e.g., 255 "
+"2001:0DB8:1234:ABCD)"
 
 #: lib/Domain/Service/Dns.php:1757
 msgid "L64 preference must be between 0 and 65535."
@@ -891,7 +899,8 @@ msgid ""
 "L64 locator64 must be in format XXXX:XXXX:XXXX:XXXX (e.g., "
 "2001:0DB8:1234:ABCD)."
 msgstr ""
-"L64 locator64 turi būti formato XXXX:XXXX:XXXX:XXXX (pvz., 2001:0DB8:1234:ABCD)."
+"L64 locator64 turi būti formato XXXX:XXXX:XXXX:XXXX (pvz., "
+"2001:0DB8:1234:ABCD)."
 
 #: lib/Domain/Service/Dns.php:1806
 msgid "LUA record content cannot be empty."
@@ -902,14 +911,16 @@ msgid ""
 "Invalid LUA record format. Expected: TYPE LUA_CODE (e.g., A \"ifportup(443, "
 "{'192.0.2.1'})\")"
 msgstr ""
-"Neteisingas LUA įrašo formatas. Tikėtasi: TYPE LUA_CODE (e.g., A \"ifportup(443, {'192.0.2.1'})\")"
+"Neteisingas LUA įrašo formatas. Tikėtasi: TYPE LUA_CODE (e.g., A "
+"\"ifportup(443, {'192.0.2.1'})\")"
 
 #: lib/Domain/Service/Dns.php:1836
 msgid ""
 "LUA record type must be a valid DNS record type (e.g., A, AAAA, TXT, MX, "
 "etc.)."
 msgstr ""
-"LUA įrašo tipas turi būti galiojantis DNS įrašo tipas (pvz., A, AAAA, TXT, MX ir kt.)."
+"LUA įrašo tipas turi būti galiojantis DNS įrašo tipas (pvz., A, AAAA, TXT, "
+"MX ir kt.)."
 
 #: lib/Domain/Service/Dns.php:1846
 msgid "LUA code cannot be empty."
@@ -920,7 +931,8 @@ msgid ""
 "Invalid LP record format. Expected: PREFERENCE FQDN (e.g., 512 "
 "foo.powerdns.org.)"
 msgstr ""
-"Neteisingas LP įrašo formatas. Tikėtasi: PREFERENCE FQDN (e.g., 512 foo.powerdns.org.)"
+"Neteisingas LP įrašo formatas. Tikėtasi: PREFERENCE FQDN (e.g., 512 "
+"foo.powerdns.org.)"
 
 #: lib/Domain/Service/Dns.php:1898
 msgid "LP preference must be between 0 and 65535."
@@ -935,7 +947,8 @@ msgid ""
 "LP FQDN contains invalid characters. Only alphanumeric, dots, hyphens, and "
 "underscores are allowed."
 msgstr ""
-"LP FQDN turi netinkamų simbolių. Leidžiami tik raidės, skaičiai, taškai, brūkšneliai ir pabraukimai."
+"LP FQDN turi netinkamų simbolių. Leidžiami tik raidės, skaičiai, taškai, "
+"brūkšneliai ir pabraukimai."
 
 #: lib/Domain/Service/Dns.php:1952
 #, php-format
@@ -943,7 +956,8 @@ msgid ""
 "%s is a meta-query type and cannot be used as a zone record. It is only used "
 "in DNS queries."
 msgstr ""
-"%s yra meta-užklausos tipas ir negali būti naudojamas kaip zonos įrašas. Jis naudojamas tik DNS užklausose."
+"%s yra meta-užklausos tipas ir negali būti naudojamas kaip zonos įrašas. Jis "
+"naudojamas tik DNS užklausose."
 
 #: lib/Domain/Service/Dns.php:1985
 msgid "OPENPGPKEY content cannot be empty."
@@ -962,7 +976,8 @@ msgid ""
 "Invalid SIG record format. Expected: TYPE_COVERED ALGORITHM LABELS "
 "ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
 msgstr ""
-"Neteisingas SIG įrašo formatas. Tikėtasi: TYPE_COVERED ALGORITHM LABELS ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
+"Neteisingas SIG įrašo formatas. Tikėtasi: TYPE_COVERED ALGORITHM LABELS "
+"ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
 
 #: lib/Domain/Service/Dns.php:2072
 msgid "SIG type covered must be a valid DNS record type."
@@ -1025,7 +1040,8 @@ msgid ""
 "SMIMEA record must have at least 4 fields: usage, selector, matching-type, "
 "and certificate data"
 msgstr ""
-"SMIMEA įrašas turi turėti bent 4 laukus: naudojimas, selektorius, atitikimo tipas ir sertifikato duomenys"
+"SMIMEA įrašas turi turėti bent 4 laukus: naudojimas, selektorius, atitikimo "
+"tipas ir sertifikato duomenys"
 
 #: lib/Domain/Service/Dns.php:2272
 msgid "SMIMEA usage must be an integer between 0 and 255"
@@ -1051,13 +1067,15 @@ msgstr "SMIMEA sertifikato duomenys turi būti galiojanti šešioliktainė eilut
 msgid ""
 "SMIMEA certificate data must be at least 2 hexadecimal characters (1 byte)"
 msgstr ""
-"SMIMEA sertifikato duomenys turi būti bent 2 šešioliktainiai simboliai (1 baitas)"
+"SMIMEA sertifikato duomenys turi būti bent 2 šešioliktainiai simboliai (1 "
+"baitas)"
 
 #: lib/Domain/Service/Dns.php:2331
 msgid ""
 "SMIMEA certificate data must have an even number of hexadecimal characters"
 msgstr ""
-"SMIMEA sertifikato duomenys turi turėti lyginį šešioliktainių simbolių skaičių"
+"SMIMEA sertifikato duomenys turi turėti lyginį šešioliktainių simbolių "
+"skaičių"
 
 #: lib/Domain/Service/Dns.php:2368
 msgid "TKEY record content is required"
@@ -1068,7 +1086,8 @@ msgid ""
 "TKEY record must have at least 6 fields: algorithm, inception, expiration, "
 "mode, error, and keysize"
 msgstr ""
-"TKEY įrašas turi turėti bent 6 laukus: algoritmas, pradžia, pabaiga, režimas, klaida ir rakto dydis"
+"TKEY įrašas turi turėti bent 6 laukus: algoritmas, pradžia, pabaiga, "
+"režimas, klaida ir rakto dydis"
 
 #: lib/Domain/Service/Dns.php:2398
 msgid "TKEY algorithm must be a valid domain name"
@@ -1131,7 +1150,8 @@ msgid ""
 "URI record must have format: <priority> <weight> \"<target>\" (target must "
 "be in quotes)"
 msgstr ""
-"URI record must have format: <priority> <weight> \"<target>\" (tikslas turi būti in quotes)"
+"URI record must have format: <priority> <weight> \"<target>\" (tikslas turi "
+"būti in quotes)"
 
 #: lib/Domain/Service/Dns.php:2582
 msgid "URI priority must be a 16-bit unsigned integer (0-65535)"
@@ -1147,10 +1167,10 @@ msgid "URI target cannot be empty"
 msgstr "URI tikslas negali būti tuščias"
 
 #: lib/Domain/Service/Dns.php:2612
-msgid ""
-"URI target must be a valid URI with a scheme (e.g., http://, ftp://, mailto:)"
-msgstr ""
-"URI tikslas turi būti a valid URI with a scheme (e.g., http://, ftp://, mailto:)"
+#, php-format
+msgid "URI target must be a valid URI with a scheme (e.g., %s, %s, %s)"
+msgstr "URI tikslas turi būti galiojantis URI su schema (pvz., %s, %s, %s)"
+"mailto:)"
 
 #: lib/Domain/Service/Dns.php:2661
 msgid "SSHFP record content is required"
@@ -1159,7 +1179,8 @@ msgstr "SSHFP įrašo turinys yra privalomas"
 #: lib/Domain/Service/Dns.php:2672
 msgid "SSHFP record must have 3 fields: algorithm, fptype, and fingerprint"
 msgstr ""
-"SSHFP įrašas turi turėti 3 laukus: algoritmas, pirštų atspaudų tipas ir pirštų atspaudas"
+"SSHFP įrašas turi turėti 3 laukus: algoritmas, pirštų atspaudų tipas ir "
+"pirštų atspaudas"
 
 #: lib/Domain/Service/Dns.php:2686
 msgid "SSHFP algorithm must be an 8-bit integer (0-255)"
@@ -1192,7 +1213,8 @@ msgid ""
 "NAPTR record must have format: <order> <preference> \"<flags>\" "
 "\"<services>\" \"<regexp>\" <replacement>"
 msgstr ""
-"NAPTR įrašas turi atitikti formatą: <eilė> <prioritetas> \"<vėliavėlės>\" \"<paslaugos>\" \"<regexp>\" <pakeitimas>"
+"NAPTR įrašas turi atitikti formatą: <eilė> <prioritetas> \"<vėliavėlės>\" "
+"\"<paslaugos>\" \"<regexp>\" <pakeitimas>"
 
 #: lib/Domain/Service/Dns.php:2778
 msgid "NAPTR order must be a 16-bit unsigned integer (0-65535)"
@@ -1233,7 +1255,8 @@ msgid ""
 "DNSKEY record must have at least 4 fields: flags, protocol, algorithm, and "
 "public key"
 msgstr ""
-"DNSKEY įrašas turi turėti bent 4 laukus: vėliavėlės, protokolas, algoritmas ir viešasis raktas"
+"DNSKEY įrašas turi turėti bent 4 laukus: vėliavėlės, protokolas, algoritmas "
+"ir viešasis raktas"
 
 #: lib/Domain/Service/Dns.php:2911
 msgid "DNSKEY flags must be a 16-bit unsigned integer (0-65535)"
@@ -1283,17 +1306,16 @@ msgid ""
 "NSEC3 record must have at least 5 fields: algorithm, flags, iterations, "
 "salt, and next hash"
 msgstr ""
-"NSEC3 įrašas turi turėti bent 5 laukus: algoritmas, vėliavėlės, iteracijos, druska ir kita maišos reikšmė"
+"NSEC3 įrašas turi turėti bent 5 laukus: algoritmas, vėliavėlės, iteracijos, "
+"druska ir kita maišos reikšmė"
 
 #: lib/Domain/Service/Dns.php:3066
 msgid "NSEC3 algorithm must be an 8-bit unsigned integer (0-255)"
-msgstr ""
-"NSEC3 algoritmas turi būti 8 bitų sveikasis skaičius be ženklo (0-255)"
+msgstr "NSEC3 algoritmas turi būti 8 bitų sveikasis skaičius be ženklo (0-255)"
 
 #: lib/Domain/Service/Dns.php:3076
 msgid "NSEC3 flags must be an 8-bit unsigned integer (0-255)"
-msgstr ""
-"NSEC3 vėliavėlės turi būti 8 bitų sveikasis skaičius be ženklo (0-255)"
+msgstr "NSEC3 vėliavėlės turi būti 8 bitų sveikasis skaičius be ženklo (0-255)"
 
 #: lib/Domain/Service/Dns.php:3086
 msgid "NSEC3 iterations must be a 16-bit unsigned integer (0-65535)"
@@ -1321,7 +1343,8 @@ msgstr "NSEC3PARAM įrašo turinys yra privalomas"
 msgid ""
 "NSEC3PARAM record must have 4 fields: algorithm, flags, iterations, and salt"
 msgstr ""
-"NSEC3PARAM įrašas turi turėti 4 laukus: algoritmas, vėliavėlės, iteracijos ir druska"
+"NSEC3PARAM įrašas turi turėti 4 laukus: algoritmas, vėliavėlės, iteracijos "
+"ir druska"
 
 #: lib/Domain/Service/Dns.php:3173
 msgid "NSEC3PARAM algorithm must be an 8-bit unsigned integer (0-255)"
@@ -1336,7 +1359,8 @@ msgstr ""
 #: lib/Domain/Service/Dns.php:3193
 msgid "NSEC3PARAM iterations must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
-"NSEC3PARAM iteracijos turi būti 16 bitų sveikasis skaičius be ženklo (0-65535)"
+"NSEC3PARAM iteracijos turi būti 16 bitų sveikasis skaičius be ženklo "
+"(0-65535)"
 
 #: lib/Domain/Service/Dns.php:3203
 msgid "NSEC3PARAM salt must be hexadecimal or \"-\" for no salt"
@@ -1351,7 +1375,8 @@ msgid ""
 "TSIG record must have at least 8 fields: algorithm, time-signed, fudge, mac-"
 "size, mac, original-id, error, and other-len"
 msgstr ""
-"TSIG įrašas turi turėti bent 8 laukus: algoritmas, pasirašymo laikas, paklaida, mac dydis, mac, pradinis ID, klaida ir kitas ilgis"
+"TSIG įrašas turi turėti bent 8 laukus: algoritmas, pasirašymo laikas, "
+"paklaida, mac dydis, mac, pradinis ID, klaida ir kitas ilgis"
 
 #: lib/Domain/Service/Dns.php:3278
 msgid "TSIG algorithm must be a valid domain name"
@@ -1363,8 +1388,7 @@ msgstr "TSIG pasirašymo laikas turi būti neneigiamas sveikasis skaičius"
 
 #: lib/Domain/Service/Dns.php:3298
 msgid "TSIG fudge must be a 16-bit unsigned integer (0-65535)"
-msgstr ""
-"TSIG paklaida turi būti 16 bitų sveikasis skaičius be ženklo (0-65535)"
+msgstr "TSIG paklaida turi būti 16 bitų sveikasis skaičius be ženklo (0-65535)"
 
 #: lib/Domain/Service/Dns.php:3308
 msgid "TSIG mac-size must be a 16-bit unsigned integer (0-65535)"
@@ -1414,7 +1438,8 @@ msgstr "EUI64 įrašo turinys yra privalomas"
 msgid ""
 "EUI64 must be 8 octets separated by dashes (e.g., 00-11-22-33-44-55-66-77)"
 msgstr ""
-"EUI64 turi būti 8 oktetai, atskirti brūkšneliais (pvz., 00-11-22-33-44-55-66-77)"
+"EUI64 turi būti 8 oktetai, atskirti brūkšneliais (pvz., "
+"00-11-22-33-44-55-66-77)"
 
 #: lib/Domain/Service/Dns.php:3465
 msgid "NID record content is required"
@@ -1433,7 +1458,8 @@ msgstr ""
 msgid ""
 "NID node-id must be in format XXXX:XXXX:XXXX:XXXX (64-bit hex with colons)"
 msgstr ""
-"NID mazgo ID turi būti formato XXXX:XXXX:XXXX:XXXX (64 bitų šešioliktainis su dvitaškiais)"
+"NID mazgo ID turi būti formato XXXX:XXXX:XXXX:XXXX (64 bitų šešioliktainis "
+"su dvitaškiais)"
 
 #: lib/Domain/Service/Dns.php:3524
 msgid "KX record content is required"
@@ -1461,7 +1487,8 @@ msgid ""
 "IPSECKEY record must have at least 3 fields: precedence, gateway-type, and "
 "algorithm"
 msgstr ""
-"IPSECKEY įrašas turi turėti bent 3 laukus: pirmenybė, vartų tipas ir algoritmas"
+"IPSECKEY įrašas turi turėti bent 3 laukus: pirmenybė, vartų tipas ir "
+"algoritmas"
 
 #: lib/Domain/Service/Dns.php:3609
 msgid "IPSECKEY precedence must be an 8-bit unsigned integer (0-255)"
@@ -1470,8 +1497,7 @@ msgstr ""
 
 #: lib/Domain/Service/Dns.php:3619
 msgid "IPSECKEY gateway-type must be 0-3 (0=none, 1=IPv4, 2=IPv6, 3=domain)"
-msgstr ""
-"IPSECKEY vartų tipas turi būti 0-3 (0=nėra, 1=IPv4, 2=IPv6, 3=domenas)"
+msgstr "IPSECKEY vartų tipas turi būti 0-3 (0=nėra, 1=IPv4, 2=IPv6, 3=domenas)"
 
 #: lib/Domain/Service/Dns.php:3629
 msgid "IPSECKEY algorithm must be an 8-bit unsigned integer (0-255)"
@@ -1536,8 +1562,7 @@ msgstr "WKS įrašo turinys yra privalomas"
 
 #: lib/Domain/Service/Dns.php:3917
 msgid "WKS record must have at least 3 fields: address, protocol, and services"
-msgstr ""
-"WKS įrašas turi turėti bent 3 laukus: adresas, protokolas ir paslaugos"
+msgstr "WKS įrašas turi turėti bent 3 laukus: adresas, protokolas ir paslaugos"
 
 #: lib/Domain/Service/Dns.php:3930
 msgid "WKS address must be a valid IPv4 address"
@@ -1546,12 +1571,14 @@ msgstr "WKS adresas turi būti galiojantis IPv4 adresas"
 #: lib/Domain/Service/Dns.php:3941 lib/Domain/Service/Dns.php:3951
 msgid "WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name"
 msgstr ""
-"WKS protokolas turi būti 8 bitų sveikasis skaičius be ženklo (0-255) arba protokolo pavadinimas"
+"WKS protokolas turi būti 8 bitų sveikasis skaičius be ženklo (0-255) arba "
+"protokolo pavadinimas"
 
 #: lib/Domain/Service/Dns.php:3965 lib/Domain/Service/Dns.php:3975
 msgid "WKS service must be a 16-bit port number (0-65535) or service name"
 msgstr ""
-"WKS paslauga turi būti 16 bitų prievado numeris (0-65535) arba paslaugos pavadinimas"
+"WKS paslauga turi būti 16 bitų prievado numeris (0-65535) arba paslaugos "
+"pavadinimas"
 
 #: lib/Domain/Service/Dns.php:4002
 msgid "A6 record content is required"
@@ -1562,7 +1589,8 @@ msgid ""
 "A6 record must have at least 2 fields: prefix-length and address-suffix or "
 "prefix-name"
 msgstr ""
-"A6 įrašas turi turėti bent 2 laukus: prefikso ilgis ir adreso priesaga arba prefikso vardas"
+"A6 įrašas turi turėti bent 2 laukus: prefikso ilgis ir adreso priesaga arba "
+"prefikso vardas"
 
 #: lib/Domain/Service/Dns.php:4027
 msgid "A6 prefix length must be an integer (0-128)"
@@ -1576,12 +1604,14 @@ msgstr "CSYNC įrašo turinys yra privalomas"
 msgid ""
 "CSYNC record must have at least 3 fields: SOA-serial, flags, and type-list"
 msgstr ""
-"CSYNC įrašas turi turėti bent 3 laukus: SOA serijos numeris, vėliavėlės ir tipų sąrašas"
+"CSYNC įrašas turi turėti bent 3 laukus: SOA serijos numeris, vėliavėlės ir "
+"tipų sąrašas"
 
 #: lib/Domain/Service/Dns.php:4076
 msgid "CSYNC SOA serial must be a 32-bit unsigned integer (0-4294967295)"
 msgstr ""
-"CSYNC SOA serijos numeris turi būti 32 bitų sveikasis skaičius be ženklo (0-4294967295)"
+"CSYNC SOA serijos numeris turi būti 32 bitų sveikasis skaičius be ženklo "
+"(0-4294967295)"
 
 #: lib/Domain/Service/Dns.php:4086
 msgid "CSYNC flags must be a 16-bit unsigned integer (0-65535)"
@@ -1600,12 +1630,14 @@ msgstr "ZONEMD įrašo turinys yra privalomas"
 #: lib/Domain/Service/Dns.php:4135
 msgid "ZONEMD record must have 4 fields: serial, scheme, algorithm, and digest"
 msgstr ""
-"ZONEMD įrašas turi turėti 4 laukus: serijos numeris, schema, algoritmas ir santrauka"
+"ZONEMD įrašas turi turėti 4 laukus: serijos numeris, schema, algoritmas ir "
+"santrauka"
 
 #: lib/Domain/Service/Dns.php:4150
 msgid "ZONEMD serial must be a 32-bit unsigned integer (0-4294967295)"
 msgstr ""
-"ZONEMD serijos numeris turi būti 32 bitų sveikasis skaičius be ženklo (0-4294967295)"
+"ZONEMD serijos numeris turi būti 32 bitų sveikasis skaičius be ženklo "
+"(0-4294967295)"
 
 #: lib/Domain/Service/Dns.php:4160
 msgid "ZONEMD scheme must be an 8-bit unsigned integer (0-255)"
@@ -2614,19 +2646,23 @@ msgid ""
 "root directory. You will not be able to use Poweradmin if it exists. Do it "
 "now."
 msgstr ""
-"Turite (privalote!) pašalinti katalogą \"install/\" iš Poweradmin šakninio katalogo. Negalėsite naudoti Poweradmin, jei jis egzistuos. Padarykite tai dabar."
+"Turite (privalote!) pašalinti katalogą \"install/\" iš Poweradmin šakninio "
+"katalogo. Negalėsite naudoti Poweradmin, jei jis egzistuos. Padarykite tai "
+"dabar."
 
 #: install/templates/step7.html.twig:10
 msgid ""
 "After you have removed the directory, you can login to <a href=\"../"
 "index.php\">Poweradmin</a>."
 msgstr ""
-"Pašalinę katalogą, galite prisijungti prie <a href=\"../index.php\">Poweradmin</a>."
+"Pašalinę katalogą, galite prisijungti prie <a href=\"../"
+"index.php\">Poweradmin</a>."
 
 #: install/templates/step7.html.twig:11
 msgid "Use the default username \"admin\" and the password set in step 3."
 msgstr ""
-"Naudokite numatytąjį naudotojo vardą \"admin\" ir slaptažodį, nustatytą 3 žingsnyje."
+"Naudokite numatytąjį naudotojo vardą \"admin\" ir slaptažodį, nustatytą 3 "
+"žingsnyje."
 
 #: install/templates/step1.html.twig:4
 msgid "Choose a language for installation"
@@ -2648,7 +2684,8 @@ msgstr "Nurodykite vartotojo vardą"
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
-"Poweradmin duomenų bazės vartotojo vardas su apribota prieiga. Ne prisijungimui prie žiniatinklio sąsajos."
+"Poweradmin duomenų bazės vartotojo vardas su apribota prieiga. Ne "
+"prisijungimui prie žiniatinklio sąsajos."
 
 #: install/templates/step4.html.twig:27
 msgid "Provide the user password"
@@ -2686,7 +2723,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "primary nameserver."
 msgstr ""
-"Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip pirminis vardų serveris."
+"Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip "
+"pirminis vardų serveris."
 
 #: install/templates/step4.html.twig:56
 msgid "Secondary nameserver"
@@ -2701,7 +2739,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "secondary nameserver."
 msgstr ""
-"Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip antrinis vardų serveris."
+"Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip "
+"antrinis vardų serveris."
 
 #: install/templates/step4.html.twig:67
 msgid "Tertiary Nameserver"
@@ -2712,7 +2751,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "tertiary nameserver."
 msgstr ""
-"Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip tretinis vardų serveris."
+"Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip "
+"tretinis vardų serveris."
 
 #: install/templates/step4.html.twig:77
 msgid "Quaternary Nameserver"
@@ -2723,7 +2763,8 @@ msgid ""
 "When creating new zones using the template, this value will be used as "
 "quaternary nameserver."
 msgstr ""
-"Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip ketvirtinis vardų serveris."
+"Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip "
+"ketvirtinis vardų serveris."
 
 #: install/templates/step2.html.twig:3
 msgid "Getting ready for installation"
@@ -2740,14 +2781,21 @@ msgid ""
 "database. However, it is recommended that you create a backup of your "
 "database before proceeding."
 msgstr ""
-"Šis diegiklis tikisi, kad turite PowerDNS duomenų bazę, pasiekiamą iš šio serverio. Šis diegiklis taip pat tikisi, kad niekada anksčiau nenaudojote Poweradmin arba norite perrašyti Poweradmin dalį duomenų bazėje. Jei anksčiau naudojote Poweradmin, visi duomenys šiose lentelėse bus sunaikinti: perm_items, perm_templ, perm_templ_items, users ir zones. Šis diegiklis, žinoma, nepalies duomenų PowerDNS lentelėse. Tačiau rekomenduojama prieš tęsiant sukurti duomenų bazės atsarginę kopiją."
+"Šis diegiklis tikisi, kad turite PowerDNS duomenų bazę, pasiekiamą iš šio "
+"serverio. Šis diegiklis taip pat tikisi, kad niekada anksčiau nenaudojote "
+"Poweradmin arba norite perrašyti Poweradmin dalį duomenų bazėje. Jei "
+"anksčiau naudojote Poweradmin, visi duomenys šiose lentelėse bus sunaikinti: "
+"perm_items, perm_templ, perm_templ_items, users ir zones. Šis diegiklis, "
+"žinoma, nepalies duomenų PowerDNS lentelėse. Tačiau rekomenduojama prieš "
+"tęsiant sukurti duomenų bazės atsarginę kopiją."
 
 #: install/templates/step2.html.twig:8
 msgid ""
 "The alternative for this installer is a manual installation. Refer to the "
 "poweradmin.org website if you want to go down that road."
 msgstr ""
-"Alternatyva šiam diegikliui yra rankinis diegimas. Apsilankykite poweradmin.org svetainėje, jei norite rinktis šį būdą."
+"Alternatyva šiam diegikliui yra rankinis diegimas. Apsilankykite "
+"poweradmin.org svetainėje, jei norite rinktis šį būdą."
 
 #: install/templates/step2.html.twig:11
 msgid "Do you want to proceed now?"
@@ -2771,7 +2819,8 @@ msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Kadangi naudojate SQLite, nereikia kurti naujo vartotojo su ribotomis teisėmis."
+"Kadangi naudojate SQLite, nereikia kurti naujo vartotojo su ribotomis "
+"teisėmis."
 
 #: install/templates/step3.html.twig:4
 msgid "Configuring Database Connection"
@@ -2798,7 +2847,8 @@ msgid ""
 "The hostname on which the PowerDNS database resides. Frequently, this will "
 "be \"localhost\"."
 msgstr ""
-"Serverio vardas, kuriame yra PowerDNS duomenų bazė. Dažniausiai tai bus \"localhost\"."
+"Serverio vardas, kuriame yra PowerDNS duomenų bazė. Dažniausiai tai bus "
+"\"localhost\"."
 
 #: install/templates/step3.html.twig:66
 msgid "DB Port"
@@ -2841,7 +2891,8 @@ msgid ""
 "The charset (encoding) which will be used for new tables. Leave it empty "
 "then default database charset will be used."
 msgstr ""
-"Simbolių rinkinys (koduotė), kuris bus naudojamas naujoms lentelėms. Palikite tuščią, bus naudojamas numatytasis duomenų bazės simbolių rinkinys."
+"Simbolių rinkinys (koduotė), kuris bus naudojamas naujoms lentelėms. "
+"Palikite tuščią, bus naudojamas numatytasis duomenų bazės simbolių rinkinys."
 
 #: install/templates/step3.html.twig:93
 msgid "DB collation"
@@ -2852,7 +2903,8 @@ msgid ""
 "Set of rules for comparing characters in database. Leave it empty then "
 "default database collation will be used."
 msgstr ""
-"Simbolių palyginimo taisyklių rinkinys duomenų bazėje. Palikite tuščią, bus naudojamas numatytasis duomenų bazės lyginimas."
+"Simbolių palyginimo taisyklių rinkinys duomenų bazėje. Palikite tuščią, bus "
+"naudojamas numatytasis duomenų bazės lyginimas."
 
 #: install/templates/step3.html.twig:102
 msgid "Poweradmin administrator password"
@@ -2867,14 +2919,16 @@ msgid ""
 "The password of the Poweradmin administrator. This administrator has full "
 "rights to Poweradmin using the web interface."
 msgstr ""
-"Poweradmin administratoriaus slaptažodis. Šis administratorius turi visas teises Poweradmin per žiniatinklio sąsają."
+"Poweradmin administratoriaus slaptažodis. Šis administratorius turi visas "
+"teises Poweradmin per žiniatinklio sąsają."
 
 #: install/templates/step3.html.twig:112
 msgid ""
 "Password must be at least 6 characters long, contain at least one uppercase "
 "letter, one lowercase letter, and one number."
 msgstr ""
-"Slaptažodis turi būti bent 6 simbolių ilgio, turėti bent vieną didžiąją raidę, vieną mažąją raidę ir vieną skaičių."
+"Slaptažodis turi būti bent 6 simbolių ilgio, turėti bent vieną didžiąją "
+"raidę, vieną mažąją raidę ir vieną skaičių."
 
 #: install/helpers/InstallStepHandler.php:60
 msgid "An error occurred while rendering the template."
