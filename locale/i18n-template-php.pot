@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.1.2\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-02-17 20:31+0200\n"
+"POT-Creation-Date: 2026-03-12 12:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -244,13 +244,13 @@ msgstr ""
 msgid "Failed to generate record:"
 msgstr ""
 
-#: lib/Application/Controller/Api/Internal/DnsWizardController.php:397
+#: lib/Application/Controller/Api/Internal/DnsWizardController.php:398
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
 msgstr ""
 
-#: lib/Application/Controller/Api/Internal/DnsWizardController.php:401
+#: lib/Application/Controller/Api/Internal/DnsWizardController.php:402
 msgid "The record was successfully added."
 msgstr ""
 
@@ -414,7 +414,7 @@ msgstr ""
 msgid "You do not have the permission to perform searches."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:794
+#: lib/Domain/Model/UserManager.php:815
 msgid "You do not have the permission to add a new user."
 msgstr ""
 
@@ -972,7 +972,7 @@ msgstr ""
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr ""
 
-#: lib/Application/Controller/Api/Internal/DnsWizardController.php:405
+#: lib/Application/Controller/Api/Internal/DnsWizardController.php:406
 msgid "Record created successfully"
 msgstr ""
 
@@ -1032,7 +1032,7 @@ msgstr ""
 msgid "The user could not be updated."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:447 lib/Domain/Model/UserManager.php:774
+#: lib/Domain/Model/UserManager.php:458 lib/Domain/Model/UserManager.php:795
 msgid "You do not have the permission to edit this user."
 msgstr ""
 
@@ -1319,15 +1319,15 @@ msgstr ""
 msgid "This is an invalid zone name."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:806
+#: lib/Domain/Model/UserManager.php:827
 msgid "Enter a valid email address."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:798
+#: lib/Domain/Model/UserManager.php:819
 msgid "Username exist already, please choose another one."
 msgstr ""
 
-#: lib/Domain/Model/UserManager.php:802
+#: lib/Domain/Model/UserManager.php:823
 msgid "Enter a valid user name."
 msgstr ""
 
@@ -3962,23 +3962,23 @@ msgid ""
 "name."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:157
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:147
 msgid ""
 "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
 "parameters according to RFC 9460."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:215
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:223
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:228
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr ""
@@ -4009,7 +4009,7 @@ msgstr ""
 msgid "DoH path must start with a forward slash (/)."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:296
+#: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
 msgstr ""
@@ -5573,22 +5573,21 @@ msgid "SVCB priority must be between 0 and 65535."
 msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
-msgid ""
-"SVCB target must be either \".\" (for Service Mode) or a valid hostname."
+msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
-msgid ""
-"In Service Mode (priority = 0) with \".\" target, at least one SvcParam is "
-"required."
+msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:157
-msgid "In Alias Mode (priority > 0), the target cannot be \".\"."
+#: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
+msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
 msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
-msgid "In Alias Mode (priority > 0), no SvcParams are allowed."
+msgid ""
+"In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
+"required."
 msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
