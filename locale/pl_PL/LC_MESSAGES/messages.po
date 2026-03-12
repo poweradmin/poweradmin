@@ -2649,9 +2649,8 @@ msgid "The password for this username."
 msgstr "Hasło dla tej nazwy użytkownika."
 
 #: install/templates/step4.html.twig:34
-#, fuzzy
 msgid "Hostmaster"
-msgstr "Master"
+msgstr "Hostmaster"
 
 #: install/templates/step4.html.twig:39
 msgid "Provide the DNS hostmaster"

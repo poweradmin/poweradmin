@@ -140,9 +140,8 @@ msgid "The record could not be deleted."
 msgstr "Запись не может быть удалена."
 
 #: lib/Application/Controller/ListLogUsersController.php:85
-#, fuzzy
 msgid "Unknown page."
-msgstr "Аларм, Упячка!"
+msgstr "Неизвестная страница."
 
 #: lib/Application/Controller/UsersController.php:61
 msgid "User details updated"
@@ -297,9 +296,8 @@ msgid "You do not have the permission to see any zones."
 msgstr "Вы не имеете необходимых привилегий для просмотра каких-либо зон."
 
 #: lib/Application/Controller/DnssecEditKeyController.php:80
-#, fuzzy
 msgid "You do not have the permission to edit this zone."
-msgstr "У вас нет  привилегий для редактирования данного пользователя."
+msgstr "У вас нет разрешения на редактирование этой зоны."
 
 #: lib/Application/Controller/DnssecEditKeyController.php:88
 msgid "Zone key has been successfully deactivated."
@@ -382,9 +380,8 @@ msgid "The permission template has been deleted successfully."
 msgstr "Шаблон привилегий успешно удалён."
 
 #: lib/Application/Controller/EditRecordController.php:79
-#, fuzzy
 msgid "Record does not exist or has been deleted."
-msgstr "Запись не может быть удалена."
+msgstr "Запись не существует или была удалена."
 
 #: lib/Application/Controller/EditRecordController.php:89
 msgid "You do not have the permission to view this record."
@@ -544,7 +541,7 @@ msgstr "Два новых пароля не совпадают."
 
 #: lib/Domain/Model/UserManager.php:431
 msgid "You can not change your password as LDAP user."
-msgstr "You can not change your password as LDAP user."
+msgstr "Вы не можете изменить пароль как пользователь LDAP."
 
 #: lib/Domain/Model/UserManager.php:451
 msgid "You did not enter the correct current password."
@@ -689,40 +686,41 @@ msgid ""
 "Invalid CDNSKEY record format. Expected: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY "
 "(e.g., 257 3 5 AwEA...)"
 msgstr ""
+"Неверный формат записи CDNSKEY. Ожидается: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY (напр. 257 3 5 AwEA...)"
 
 #: lib/Domain/Service/Dns.php:1046
 msgid "CDNSKEY flags must be between 0 and 65535."
-msgstr ""
+msgstr "Флаги CDNSKEY должны быть от 0 до 65535."
 
 #: lib/Domain/Service/Dns.php:1056
 msgid "CDNSKEY protocol must be between 0 and 255."
-msgstr ""
+msgstr "Протокол CDNSKEY должен быть от 0 до 255."
 
 #: lib/Domain/Service/Dns.php:1066
 msgid "CDNSKEY algorithm must be between 0 and 255."
-msgstr ""
+msgstr "Алгоритм CDNSKEY должен быть от 0 до 255."
 
 #: lib/Domain/Service/Dns.php:1076
 msgid "CDNSKEY public key cannot be empty."
-msgstr ""
+msgstr "Открытый ключ CDNSKEY не может быть пустым."
 
 #: lib/Domain/Service/Dns.php:1086
 msgid "CDNSKEY public key must be valid Base64."
-msgstr ""
+msgstr "Открытый ключ CDNSKEY должен быть валидным Base64."
 
 #: lib/Domain/Service/Dns.php:1097
 msgid "CDNSKEY public key contains invalid Base64 encoding."
-msgstr ""
+msgstr "Открытый ключ CDNSKEY содержит недопустимую кодировку Base64."
 
 #: lib/Domain/Service/Dns.php:1151
 #, php-format
 msgid "Invalid APL element format: %s. Expected: [!]FAMILY:ADDRESS/PREFIX"
-msgstr ""
+msgstr "Неверный формат элемента APL: %s. Ожидается: [!]FAMILY:ADDRESS/PREFIX"
 
 #: lib/Domain/Service/Dns.php:1167
 #, php-format
 msgid "Invalid IPv4 address in APL: %s"
-msgstr ""
+msgstr "Недопустимый адрес IPv4 в APL: %s"
 
 #: lib/Domain/Service/Dns.php:1175
 msgid "IPv4 prefix must be between 0 and 32."
@@ -731,7 +729,7 @@ msgstr "Префикс IPv4 должен быть от 0 до 32."
 #: lib/Domain/Service/Dns.php:1185
 #, php-format
 msgid "Invalid IPv6 address in APL: %s"
-msgstr ""
+msgstr "Недопустимый адрес IPv6 в APL: %s"
 
 #: lib/Domain/Service/Dns.php:1193
 msgid "IPv6 prefix must be between 0 and 128."
@@ -741,155 +739,165 @@ msgstr "Префикс IPv6 должен быть от 0 до 128."
 #, php-format
 msgid "Unknown address family in APL: %d. Must be 1 (IPv4) or 2 (IPv6)."
 msgstr ""
+"Неизвестное семейство адресов в APL: %d. Должно быть 1 (IPv4) или 2 (IPv6)."
 
 #: lib/Domain/Service/Dns.php:1234
 msgid "ALIAS target hostname cannot be empty."
-msgstr ""
+msgstr "Имя целевого хоста ALIAS не может быть пустым."
 
 #: lib/Domain/Service/Dns.php:1245
-#, fuzzy
 msgid "ALIAS target must be a valid hostname."
-msgstr "NS-запись должна быть именем хоста."
+msgstr "Цель ALIAS должна быть допустимым именем хоста."
 
 #: lib/Domain/Service/Dns.php:1277
 msgid ""
 "Invalid AFSDB record format. Expected: SUBTYPE HOSTNAME (e.g., 1 afs-"
 "server.example.com)"
 msgstr ""
+"Неверный формат записи AFSDB. Ожидается: SUBTYPE HOSTNAME (напр. 1 afs-server.example.com)"
 
 #: lib/Domain/Service/Dns.php:1290
 msgid "AFSDB subtype must be between 0 and 65535."
-msgstr ""
+msgstr "Подтип AFSDB должен быть от 0 до 65535."
 
 #: lib/Domain/Service/Dns.php:1300
 msgid "AFSDB hostname cannot be empty."
-msgstr ""
+msgstr "Имя хоста AFSDB не может быть пустым."
 
 #: lib/Domain/Service/Dns.php:1333
 msgid ""
 "Invalid CAA record format. Expected: FLAGS TAG VALUE (e.g., 0 issue "
 "\"letsencrypt.org\")"
 msgstr ""
+"Неверный формат записи CAA. Ожидается: FLAGS TAG VALUE (напр. 0 issue \"letsencrypt.org\")"
 
 #: lib/Domain/Service/Dns.php:1347
 msgid "CAA flags must be between 0 and 255."
-msgstr ""
+msgstr "Флаги CAA должны быть от 0 до 255."
 
 #: lib/Domain/Service/Dns.php:1358
 msgid "CAA tag must be alphanumeric."
-msgstr ""
+msgstr "Тег CAA должен быть буквенно-цифровым."
 
 #: lib/Domain/Service/Dns.php:1368
 msgid ""
 "CAA value must be enclosed in quotes (e.g., \"letsencrypt.org\" or \"\")."
 msgstr ""
+"Значение CAA должно быть в кавычках (напр. \"letsencrypt.org\" или \"\")."
 
 #: lib/Domain/Service/Dns.php:1382
 msgid "Quotes inside CAA value must be escaped with backslash."
 msgstr ""
+"Кавычки внутри значения CAA должны быть экранированы обратной косой чертой."
 
 #: lib/Domain/Service/Dns.php:1419
 msgid ""
 "Invalid CDS record format. Expected: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
 "(e.g., 20642 8 2 04443ABE...)"
 msgstr ""
+"Неверный формат записи CDS. Ожидается: KEYTAG ALGORITHM DIGESTTYPE DIGEST (напр. 20642 8 2 04443ABE...)"
 
 #: lib/Domain/Service/Dns.php:1434
 msgid "CDS keytag must be between 0 and 65535."
-msgstr ""
+msgstr "Keytag CDS должен быть от 0 до 65535."
 
 #: lib/Domain/Service/Dns.php:1444
 msgid "CDS algorithm must be between 0 and 255."
-msgstr ""
+msgstr "Алгоритм CDS должен быть от 0 до 255."
 
 #: lib/Domain/Service/Dns.php:1454
 msgid "CDS digest type must be between 0 and 255."
-msgstr ""
+msgstr "Тип дайджеста CDS должен быть от 0 до 255."
 
 #: lib/Domain/Service/Dns.php:1464
 msgid "CDS digest cannot be empty."
-msgstr ""
+msgstr "Дайджест CDS не может быть пустым."
 
 #: lib/Domain/Service/Dns.php:1481
 msgid ""
 "CDS digest has unexpected length. Expected 40 (SHA-1), 64 (SHA-256), or 96 "
 "(SHA-384) hex characters."
 msgstr ""
+"Дайджест CDS имеет неожиданную длину. Ожидается 40 (SHA-1), 64 (SHA-256) или 96 (SHA-384) шестнадцатеричных символов."
 
 #: lib/Domain/Service/Dns.php:1527
 msgid ""
 "Invalid CERT record format. Expected: TYPE KEYTAG ALGORITHM CERTIFICATE "
 "(e.g., 1 0 0 MIIB9D...)"
 msgstr ""
+"Неверный формат записи CERT. Ожидается: TYPE KEYTAG ALGORITHM CERTIFICATE (напр. 1 0 0 MIIB9D...)"
 
 #: lib/Domain/Service/Dns.php:1542
 msgid "CERT type must be between 0 and 65535."
-msgstr ""
+msgstr "Тип CERT должен быть от 0 до 65535."
 
 #: lib/Domain/Service/Dns.php:1552
 msgid "CERT keytag must be between 0 and 65535."
-msgstr ""
+msgstr "Keytag CERT должен быть от 0 до 65535."
 
 #: lib/Domain/Service/Dns.php:1562
 msgid "CERT algorithm must be between 0 and 255."
-msgstr ""
+msgstr "Алгоритм CERT должен быть от 0 до 255."
 
 #: lib/Domain/Service/Dns.php:1572
 msgid "CERT certificate cannot be empty."
-msgstr ""
+msgstr "Сертификат CERT не может быть пустым."
 
 #: lib/Domain/Service/Dns.php:1582
 msgid "CERT certificate must be valid Base64."
-msgstr ""
+msgstr "Сертификат CERT должен быть валидным Base64."
 
 #: lib/Domain/Service/Dns.php:1593
 msgid "CERT certificate contains invalid Base64 encoding."
-msgstr ""
+msgstr "Сертификат CERT содержит недопустимую кодировку Base64."
 
 #: lib/Domain/Service/Dns.php:1630
 msgid "DNAME target cannot be empty."
-msgstr ""
+msgstr "Цель DNAME не может быть пустой."
 
 #: lib/Domain/Service/Dns.php:1641
 msgid "DNAME target cannot contain spaces."
-msgstr ""
+msgstr "Цель DNAME не может содержать пробелы."
 
 #: lib/Domain/Service/Dns.php:1651
 msgid ""
 "DNAME target contains invalid characters. Only alphanumeric, dots, hyphens, "
 "and underscores are allowed."
 msgstr ""
+"Цель DNAME содержит недопустимые символы. Разрешены только буквенно-цифровые символы, точки, дефисы и подчеркивания."
 
 #: lib/Domain/Service/Dns.php:1686
 msgid ""
 "Invalid L32 record format. Expected: PREFERENCE LOCATOR32 (e.g., 513 "
 "192.0.2.1)"
 msgstr ""
+"Неверный формат записи L32. Ожидается: PREFERENCE LOCATOR32 (напр. 513 192.0.2.1)"
 
 #: lib/Domain/Service/Dns.php:1699
 msgid "L32 preference must be between 0 and 65535."
-msgstr ""
+msgstr "Предпочтение L32 должно быть от 0 до 65535."
 
 #: lib/Domain/Service/Dns.php:1709
-#, fuzzy
 msgid "L32 locator32 must be a valid IPv4 address."
-msgstr "Это не правильный адрес IPv4."
+msgstr "L32 locator32 должен быть допустимым адресом IPv4."
 
 #: lib/Domain/Service/Dns.php:1744
 msgid ""
 "Invalid L64 record format. Expected: PREFERENCE LOCATOR64 (e.g., 255 "
 "2001:0DB8:1234:ABCD)"
 msgstr ""
+"Неверный формат записи L64. Ожидается: PREFERENCE LOCATOR64 (напр. 255 2001:0DB8:1234:ABCD)"
 
 #: lib/Domain/Service/Dns.php:1757
 msgid "L64 preference must be between 0 and 65535."
-msgstr ""
+msgstr "Предпочтение L64 должно быть от 0 до 65535."
 
 #: lib/Domain/Service/Dns.php:1768
 msgid ""
 "L64 locator64 must be in format XXXX:XXXX:XXXX:XXXX (e.g., "
 "2001:0DB8:1234:ABCD)."
 msgstr ""
+"L64 locator64 должен быть в формате XXXX:XXXX:XXXX:XXXX (напр. 2001:0DB8:1234:ABCD)."
 
 #: lib/Domain/Service/Dns.php:1806
 msgid "LUA record content cannot be empty."
@@ -900,36 +908,40 @@ msgid ""
 "Invalid LUA record format. Expected: TYPE LUA_CODE (e.g., A \"ifportup(443, "
 "{'192.0.2.1'})\")"
 msgstr ""
+"Неверный формат записи LUA. Ожидается: TYPE LUA_CODE (напр. A \"ifportup(443, {'192.0.2.1'})\")"
 
 #: lib/Domain/Service/Dns.php:1836
 msgid ""
 "LUA record type must be a valid DNS record type (e.g., A, AAAA, TXT, MX, "
 "etc.)."
 msgstr ""
+"Тип записи LUA должен быть допустимым типом DNS-записи (напр. A, AAAA, TXT, MX и т.д.)."
 
 #: lib/Domain/Service/Dns.php:1846
 msgid "LUA code cannot be empty."
-msgstr ""
+msgstr "Код LUA не может быть пустым."
 
 #: lib/Domain/Service/Dns.php:1885
 msgid ""
 "Invalid LP record format. Expected: PREFERENCE FQDN (e.g., 512 "
 "foo.powerdns.org.)"
 msgstr ""
+"Неверный формат записи LP. Ожидается: PREFERENCE FQDN (напр. 512 foo.powerdns.org.)"
 
 #: lib/Domain/Service/Dns.php:1898
 msgid "LP preference must be between 0 and 65535."
-msgstr ""
+msgstr "Предпочтение LP должно быть от 0 до 65535."
 
 #: lib/Domain/Service/Dns.php:1908
 msgid "LP FQDN cannot be empty."
-msgstr ""
+msgstr "LP FQDN не может быть пустым."
 
 #: lib/Domain/Service/Dns.php:1919
 msgid ""
 "LP FQDN contains invalid characters. Only alphanumeric, dots, hyphens, and "
 "underscores are allowed."
 msgstr ""
+"LP FQDN содержит недопустимые символы. Разрешены только буквенно-цифровые символы, точки, дефисы и подчеркивания."
 
 #: lib/Domain/Service/Dns.php:1952
 #, php-format
@@ -937,644 +949,688 @@ msgid ""
 "%s is a meta-query type and cannot be used as a zone record. It is only used "
 "in DNS queries."
 msgstr ""
+"%s является типом мета-запроса и не может использоваться как запись зоны. Он используется только в DNS-запросах."
 
 #: lib/Domain/Service/Dns.php:1985
 msgid "OPENPGPKEY content cannot be empty."
-msgstr ""
+msgstr "Содержимое OPENPGPKEY не может быть пустым."
 
 #: lib/Domain/Service/Dns.php:1995
 msgid "OPENPGPKEY must be valid Base64-encoded data."
-msgstr ""
+msgstr "OPENPGPKEY должен содержать валидные данные в кодировке Base64."
 
 #: lib/Domain/Service/Dns.php:2006
 msgid "OPENPGPKEY contains invalid Base64 encoding."
-msgstr ""
+msgstr "OPENPGPKEY содержит недопустимую кодировку Base64."
 
 #: lib/Domain/Service/Dns.php:2052
 msgid ""
 "Invalid SIG record format. Expected: TYPE_COVERED ALGORITHM LABELS "
 "ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
 msgstr ""
+"Неверный формат записи SIG. Ожидается: TYPE_COVERED ALGORITHM LABELS ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
 
 #: lib/Domain/Service/Dns.php:2072
 msgid "SIG type covered must be a valid DNS record type."
-msgstr ""
+msgstr "Покрываемый тип SIG должен быть допустимым типом DNS-записи."
 
 #: lib/Domain/Service/Dns.php:2082
 msgid "SIG algorithm must be between 0 and 255."
-msgstr ""
+msgstr "Алгоритм SIG должен быть от 0 до 255."
 
 #: lib/Domain/Service/Dns.php:2092
 msgid "SIG labels must be between 0 and 255."
-msgstr ""
+msgstr "Метки SIG должны быть от 0 до 255."
 
 #: lib/Domain/Service/Dns.php:2102
 msgid "SIG original TTL must be a positive integer."
-msgstr ""
+msgstr "Исходный TTL SIG должен быть положительным целым числом."
 
 #: lib/Domain/Service/Dns.php:2112
 msgid "SIG key tag must be between 0 and 65535."
-msgstr ""
+msgstr "Тег ключа SIG должен быть от 0 до 65535."
 
 #: lib/Domain/Service/Dns.php:2122
 msgid "SIG signer name cannot be empty."
-msgstr ""
+msgstr "Имя подписанта SIG не может быть пустым."
 
 #: lib/Domain/Service/Dns.php:2131
 msgid "SIG signer name must be a valid domain name."
-msgstr ""
+msgstr "Имя подписанта SIG должно быть допустимым доменным именем."
 
 #: lib/Domain/Service/Dns.php:2141
 msgid "SIG signature cannot be empty."
-msgstr ""
+msgstr "Подпись SIG не может быть пустой."
 
 #: lib/Domain/Service/Dns.php:2150
 msgid "SIG signature must be valid Base64."
-msgstr ""
+msgstr "Подпись SIG должна быть валидным Base64."
 
 #: lib/Domain/Service/Dns.php:2160
 msgid "SIG signature contains invalid Base64 encoding."
-msgstr ""
+msgstr "Подпись SIG содержит недопустимую кодировку Base64."
 
 #: lib/Domain/Service/Dns.php:2190
 msgid "DHCID record content is required"
-msgstr ""
+msgstr "Содержимое записи DHCID обязательно"
 
 #: lib/Domain/Service/Dns.php:2204
 msgid "DHCID record must contain valid Base64-encoded data"
-msgstr ""
+msgstr "Запись DHCID должна содержать валидные данные в кодировке Base64"
 
 #: lib/Domain/Service/Dns.php:2214
 msgid "DHCID record data is too short (minimum 35 bytes required)"
-msgstr ""
+msgstr "Данные записи DHCID слишком короткие (требуется минимум 35 байт)"
 
 #: lib/Domain/Service/Dns.php:2246
 msgid "SMIMEA record content is required"
-msgstr ""
+msgstr "Содержимое записи SMIMEA обязательно"
 
 #: lib/Domain/Service/Dns.php:2257
 msgid ""
 "SMIMEA record must have at least 4 fields: usage, selector, matching-type, "
 "and certificate data"
 msgstr ""
+"Запись SMIMEA должна иметь не менее 4 полей: usage, selector, matching-type и данные сертификата"
 
 #: lib/Domain/Service/Dns.php:2272
 msgid "SMIMEA usage must be an integer between 0 and 255"
-msgstr ""
+msgstr "Usage SMIMEA должен быть целым числом от 0 до 255"
 
 #: lib/Domain/Service/Dns.php:2282
 msgid "SMIMEA selector must be an integer between 0 and 255"
-msgstr ""
+msgstr "Selector SMIMEA должен быть целым числом от 0 до 255"
 
 #: lib/Domain/Service/Dns.php:2292
 msgid "SMIMEA matching type must be an integer between 0 and 255"
-msgstr ""
+msgstr "Тип соответствия SMIMEA должен быть целым числом от 0 до 255"
 
 #: lib/Domain/Service/Dns.php:2302
 msgid "SMIMEA certificate data is required"
-msgstr ""
+msgstr "Данные сертификата SMIMEA обязательны"
 
 #: lib/Domain/Service/Dns.php:2311
 msgid "SMIMEA certificate data must be a valid hexadecimal string"
 msgstr ""
+"Данные сертификата SMIMEA должны быть допустимой шестнадцатеричной строкой"
 
 #: lib/Domain/Service/Dns.php:2321
 msgid ""
 "SMIMEA certificate data must be at least 2 hexadecimal characters (1 byte)"
 msgstr ""
+"Данные сертификата SMIMEA должны содержать не менее 2 шестнадцатеричных символов (1 байт)"
 
 #: lib/Domain/Service/Dns.php:2331
 msgid ""
 "SMIMEA certificate data must have an even number of hexadecimal characters"
 msgstr ""
+"Данные сертификата SMIMEA должны иметь четное количество шестнадцатеричных символов"
 
 #: lib/Domain/Service/Dns.php:2368
 msgid "TKEY record content is required"
-msgstr ""
+msgstr "Содержимое записи TKEY обязательно"
 
 #: lib/Domain/Service/Dns.php:2381
 msgid ""
 "TKEY record must have at least 6 fields: algorithm, inception, expiration, "
 "mode, error, and keysize"
 msgstr ""
+"Запись TKEY должна иметь не менее 6 полей: algorithm, inception, expiration, mode, error и keysize"
 
 #: lib/Domain/Service/Dns.php:2398
 msgid "TKEY algorithm must be a valid domain name"
-msgstr ""
+msgstr "Алгоритм TKEY должен быть допустимым доменным именем"
 
 #: lib/Domain/Service/Dns.php:2408
 msgid "TKEY inception must be a 32-bit unsigned integer (0-4294967295)"
 msgstr ""
+"TKEY inception должен быть 32-битным беззнаковым целым числом (0-4294967295)"
 
 #: lib/Domain/Service/Dns.php:2418
 msgid "TKEY expiration must be a 32-bit unsigned integer (0-4294967295)"
 msgstr ""
+"TKEY expiration должен быть 32-битным беззнаковым целым числом (0-4294967295)"
 
 #: lib/Domain/Service/Dns.php:2428
 msgid "TKEY mode must be a 16-bit unsigned integer (0-65535)"
-msgstr ""
+msgstr "TKEY mode должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:2438
 msgid "TKEY error must be a 16-bit unsigned integer (0-65535)"
-msgstr ""
+msgstr "TKEY error должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:2448
 msgid "TKEY keysize must be a 16-bit unsigned integer (0-65535)"
-msgstr ""
+msgstr "TKEY keysize должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:2462
 msgid "TKEY keydata is required when keysize > 0"
-msgstr ""
+msgstr "TKEY keydata обязателен когда keysize > 0"
 
 #: lib/Domain/Service/Dns.php:2474
 msgid "TKEY keydata must be valid Base64-encoded data"
-msgstr ""
+msgstr "TKEY keydata должен содержать валидные данные в кодировке Base64"
 
 #: lib/Domain/Service/Dns.php:2487
 msgid "TKEY othersize field is required"
-msgstr ""
+msgstr "Поле TKEY othersize обязательно"
 
 #: lib/Domain/Service/Dns.php:2499
 msgid "TKEY othersize must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
+"TKEY othersize должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:2513
 msgid "TKEY otherdata is required when othersize > 0"
-msgstr ""
+msgstr "TKEY otherdata обязателен когда othersize > 0"
 
 #: lib/Domain/Service/Dns.php:2525
 msgid "TKEY otherdata must be valid Base64-encoded data"
-msgstr ""
+msgstr "TKEY otherdata должен содержать валидные данные в кодировке Base64"
 
 #: lib/Domain/Service/Dns.php:2557
 msgid "URI record content is required"
-msgstr ""
+msgstr "Содержимое записи URI обязательно"
 
 #: lib/Domain/Service/Dns.php:2568
 msgid ""
 "URI record must have format: <priority> <weight> \"<target>\" (target must "
 "be in quotes)"
 msgstr ""
+"Запись URI должна иметь формат: <приоритет> <вес> \"<цель>\" (цель должна быть в кавычках)"
 
 #: lib/Domain/Service/Dns.php:2582
 msgid "URI priority must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
+"Приоритет URI должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:2592
 msgid "URI weight must be a 16-bit unsigned integer (0-65535)"
-msgstr ""
+msgstr "Вес URI должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:2602
 msgid "URI target cannot be empty"
-msgstr ""
+msgstr "Цель URI не может быть пустой"
 
 #: lib/Domain/Service/Dns.php:2612
 msgid ""
 "URI target must be a valid URI with a scheme (e.g., http://, ftp://, mailto:)"
 msgstr ""
+"Цель URI должна быть допустимым URI со схемой (напр. http://, ftp://, mailto:)"
 
 #: lib/Domain/Service/Dns.php:2661
 msgid "SSHFP record content is required"
-msgstr ""
+msgstr "Содержимое записи SSHFP обязательно"
 
 #: lib/Domain/Service/Dns.php:2672
 msgid "SSHFP record must have 3 fields: algorithm, fptype, and fingerprint"
-msgstr ""
+msgstr "Запись SSHFP должна иметь 3 поля: алгоритм, тип отпечатка и отпечаток"
 
 #: lib/Domain/Service/Dns.php:2686
 msgid "SSHFP algorithm must be an 8-bit integer (0-255)"
-msgstr ""
+msgstr "Алгоритм SSHFP должен быть 8-битным целым числом (0-255)"
 
 #: lib/Domain/Service/Dns.php:2696
 msgid "SSHFP fingerprint type must be an 8-bit integer (0-255)"
-msgstr ""
+msgstr "Тип отпечатка SSHFP должен быть 8-битным целым числом (0-255)"
 
 #: lib/Domain/Service/Dns.php:2706
 msgid "SSHFP fingerprint is required"
-msgstr ""
+msgstr "Отпечаток SSHFP обязателен"
 
 #: lib/Domain/Service/Dns.php:2715
 msgid "SSHFP fingerprint must be a valid hexadecimal string"
-msgstr ""
+msgstr "Отпечаток SSHFP должен быть допустимой шестнадцатеричной строкой"
 
 #: lib/Domain/Service/Dns.php:2725
 msgid "SSHFP fingerprint must have an even number of hexadecimal characters"
 msgstr ""
+"Отпечаток SSHFP должен иметь четное количество шестнадцатеричных символов"
 
 #: lib/Domain/Service/Dns.php:2751
 msgid "NAPTR record content is required"
-msgstr ""
+msgstr "Содержимое записи NAPTR обязательно"
 
 #: lib/Domain/Service/Dns.php:2761
 msgid ""
 "NAPTR record must have format: <order> <preference> \"<flags>\" "
 "\"<services>\" \"<regexp>\" <replacement>"
 msgstr ""
+"Запись NAPTR должна иметь формат: <order> <preference> \"<flags>\" \"<services>\" \"<regexp>\" <replacement>"
 
 #: lib/Domain/Service/Dns.php:2778
 msgid "NAPTR order must be a 16-bit unsigned integer (0-65535)"
-msgstr ""
+msgstr "NAPTR order должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:2788
 msgid "NAPTR preference must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
+"NAPTR preference должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:2799
 msgid "NAPTR replacement must be a valid domain name or \".\""
-msgstr ""
+msgstr "NAPTR replacement должен быть допустимым доменным именем или \".\""
 
 #: lib/Domain/Service/Dns.php:2825
 msgid "RP record content is required"
-msgstr ""
+msgstr "Содержимое записи RP обязательно"
 
 #: lib/Domain/Service/Dns.php:2836
 msgid "RP record must have 2 fields: mbox-dname and txt-dname"
-msgstr ""
+msgstr "Запись RP должна иметь 2 поля: mbox-dname и txt-dname"
 
 #: lib/Domain/Service/Dns.php:2849
 msgid "RP mbox-dname must be a valid domain name"
-msgstr ""
+msgstr "RP mbox-dname должен быть допустимым доменным именем"
 
 #: lib/Domain/Service/Dns.php:2859
 msgid "RP txt-dname must be a valid domain name"
-msgstr ""
+msgstr "RP txt-dname должен быть допустимым доменным именем"
 
 #: lib/Domain/Service/Dns.php:2885
 msgid "DNSKEY record content is required"
-msgstr ""
+msgstr "Содержимое записи DNSKEY обязательно"
 
 #: lib/Domain/Service/Dns.php:2896
 msgid ""
 "DNSKEY record must have at least 4 fields: flags, protocol, algorithm, and "
 "public key"
 msgstr ""
+"Запись DNSKEY должна иметь не менее 4 полей: flags, protocol, algorithm и открытый ключ"
 
 #: lib/Domain/Service/Dns.php:2911
 msgid "DNSKEY flags must be a 16-bit unsigned integer (0-65535)"
-msgstr ""
+msgstr "Флаги DNSKEY должны быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:2921
 msgid "DNSKEY protocol must be 3"
-msgstr ""
+msgstr "Протокол DNSKEY должен быть 3"
 
 #: lib/Domain/Service/Dns.php:2931
 msgid "DNSKEY algorithm must be an 8-bit unsigned integer (0-255)"
-msgstr ""
+msgstr "Алгоритм DNSKEY должен быть 8-битным беззнаковым целым числом (0-255)"
 
 #: lib/Domain/Service/Dns.php:2941
 msgid "DNSKEY public key is required"
-msgstr ""
+msgstr "Открытый ключ DNSKEY обязателен"
 
 #: lib/Domain/Service/Dns.php:2950
 msgid "DNSKEY public key must be valid Base64-encoded data"
 msgstr ""
+"Открытый ключ DNSKEY должен содержать валидные данные в кодировке Base64"
 
 #: lib/Domain/Service/Dns.php:2976
 msgid "NSEC record content is required"
-msgstr ""
+msgstr "Содержимое записи NSEC обязательно"
 
 #: lib/Domain/Service/Dns.php:2987
 msgid "NSEC record must have at least 2 fields: next domain name and type list"
 msgstr ""
+"Запись NSEC должна иметь не менее 2 полей: следующее доменное имя и список типов"
 
 #: lib/Domain/Service/Dns.php:2999
 msgid "NSEC next domain must be a valid domain name"
-msgstr ""
+msgstr "Следующий домен NSEC должен быть допустимым доменным именем"
 
 #: lib/Domain/Service/Dns.php:3012
 msgid "NSEC type list must contain valid DNS record type names"
-msgstr ""
+msgstr "Список типов NSEC должен содержать допустимые имена типов DNS-записей"
 
 #: lib/Domain/Service/Dns.php:3039
 msgid "NSEC3 record content is required"
-msgstr ""
+msgstr "Содержимое записи NSEC3 обязательно"
 
 #: lib/Domain/Service/Dns.php:3050
 msgid ""
 "NSEC3 record must have at least 5 fields: algorithm, flags, iterations, "
 "salt, and next hash"
 msgstr ""
+"Запись NSEC3 должна иметь не менее 5 полей: algorithm, flags, iterations, salt и следующий хеш"
 
 #: lib/Domain/Service/Dns.php:3066
 msgid "NSEC3 algorithm must be an 8-bit unsigned integer (0-255)"
-msgstr ""
+msgstr "Алгоритм NSEC3 должен быть 8-битным беззнаковым целым числом (0-255)"
 
 #: lib/Domain/Service/Dns.php:3076
 msgid "NSEC3 flags must be an 8-bit unsigned integer (0-255)"
-msgstr ""
+msgstr "Флаги NSEC3 должны быть 8-битным беззнаковым целым числом (0-255)"
 
 #: lib/Domain/Service/Dns.php:3086
 msgid "NSEC3 iterations must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
+"Итерации NSEC3 должны быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:3096
 msgid "NSEC3 salt must be hexadecimal or \"-\" for no salt"
 msgstr ""
+"Salt NSEC3 должен быть шестнадцатеричным или \"-\" для отсутствия salt"
 
 #: lib/Domain/Service/Dns.php:3106
 msgid "NSEC3 next hash must be Base32hex-encoded (0-9, A-V)"
-msgstr ""
+msgstr "Следующий хеш NSEC3 должен быть в кодировке Base32hex (0-9, A-V)"
 
 #: lib/Domain/Service/Dns.php:3119
 msgid "NSEC3 type list must contain uppercase type names"
-msgstr ""
+msgstr "Список типов NSEC3 должен содержать имена типов в верхнем регистре"
 
 #: lib/Domain/Service/Dns.php:3147
 msgid "NSEC3PARAM record content is required"
-msgstr ""
+msgstr "Содержимое записи NSEC3PARAM обязательно"
 
 #: lib/Domain/Service/Dns.php:3158
 msgid ""
 "NSEC3PARAM record must have 4 fields: algorithm, flags, iterations, and salt"
 msgstr ""
+"Запись NSEC3PARAM должна иметь 4 поля: algorithm, flags, iterations и salt"
 
 #: lib/Domain/Service/Dns.php:3173
 msgid "NSEC3PARAM algorithm must be an 8-bit unsigned integer (0-255)"
 msgstr ""
+"Алгоритм NSEC3PARAM должен быть 8-битным беззнаковым целым числом (0-255)"
 
 #: lib/Domain/Service/Dns.php:3183
 msgid "NSEC3PARAM flags must be an 8-bit unsigned integer (0-255)"
 msgstr ""
+"Флаги NSEC3PARAM должны быть 8-битным беззнаковым целым числом (0-255)"
 
 #: lib/Domain/Service/Dns.php:3193
 msgid "NSEC3PARAM iterations must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
+"Итерации NSEC3PARAM должны быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:3203
 msgid "NSEC3PARAM salt must be hexadecimal or \"-\" for no salt"
 msgstr ""
+"Salt NSEC3PARAM должен быть шестнадцатеричным или \"-\" для отсутствия salt"
 
 #: lib/Domain/Service/Dns.php:3247
 msgid "TSIG record content is required"
-msgstr ""
+msgstr "Содержимое записи TSIG обязательно"
 
 #: lib/Domain/Service/Dns.php:3259
 msgid ""
 "TSIG record must have at least 8 fields: algorithm, time-signed, fudge, mac-"
 "size, mac, original-id, error, and other-len"
 msgstr ""
+"Запись TSIG должна иметь не менее 8 полей: algorithm, time-signed, fudge, mac-size, mac, original-id, error и other-len"
 
 #: lib/Domain/Service/Dns.php:3278
 msgid "TSIG algorithm must be a valid domain name"
-msgstr ""
+msgstr "Алгоритм TSIG должен быть допустимым доменным именем"
 
 #: lib/Domain/Service/Dns.php:3288
 msgid "TSIG time-signed must be a non-negative integer"
-msgstr ""
+msgstr "TSIG time-signed должен быть неотрицательным целым числом"
 
 #: lib/Domain/Service/Dns.php:3298
 msgid "TSIG fudge must be a 16-bit unsigned integer (0-65535)"
-msgstr ""
+msgstr "TSIG fudge должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:3308
 msgid "TSIG mac-size must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
+"TSIG mac-size должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:3318
 msgid "TSIG MAC must be valid Base64-encoded data"
-msgstr ""
+msgstr "TSIG MAC должен содержать валидные данные в кодировке Base64"
 
 #: lib/Domain/Service/Dns.php:3328
 msgid "TSIG original-id must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
+"TSIG original-id должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:3338
 msgid "TSIG error must be a 16-bit unsigned integer (0-65535)"
-msgstr ""
+msgstr "TSIG error должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:3348
 msgid "TSIG other-len must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
+"TSIG other-len должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:3359
 msgid "TSIG other-data is required when other-len > 0"
-msgstr ""
+msgstr "TSIG other-data обязателен когда other-len > 0"
 
 #: lib/Domain/Service/Dns.php:3369
 msgid "TSIG other-data must be valid Base64-encoded data"
-msgstr ""
+msgstr "TSIG other-data должен содержать валидные данные в кодировке Base64"
 
 #: lib/Domain/Service/Dns.php:3395
 msgid "EUI48 record content is required"
-msgstr ""
+msgstr "Содержимое записи EUI48 обязательно"
 
 #: lib/Domain/Service/Dns.php:3405
 msgid "EUI48 must be 6 octets separated by dashes (e.g., 00-11-22-33-44-55)"
 msgstr ""
+"EUI48 должен состоять из 6 октетов, разделенных дефисами (напр. 00-11-22-33-44-55)"
 
 #: lib/Domain/Service/Dns.php:3430
 msgid "EUI64 record content is required"
-msgstr ""
+msgstr "Содержимое записи EUI64 обязательно"
 
 #: lib/Domain/Service/Dns.php:3440
 msgid ""
 "EUI64 must be 8 octets separated by dashes (e.g., 00-11-22-33-44-55-66-77)"
 msgstr ""
+"EUI64 должен состоять из 8 октетов, разделенных дефисами (напр. 00-11-22-33-44-55-66-77)"
 
 #: lib/Domain/Service/Dns.php:3465
 msgid "NID record content is required"
-msgstr ""
+msgstr "Содержимое записи NID обязательно"
 
 #: lib/Domain/Service/Dns.php:3476
 msgid "NID record must have 2 fields: preference and node-id"
-msgstr ""
+msgstr "Запись NID должна иметь 2 поля: preference и node-id"
 
 #: lib/Domain/Service/Dns.php:3489
 msgid "NID preference must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
+"NID preference должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:3499
 msgid ""
 "NID node-id must be in format XXXX:XXXX:XXXX:XXXX (64-bit hex with colons)"
 msgstr ""
+"NID node-id должен быть в формате XXXX:XXXX:XXXX:XXXX (64-битный hex с двоеточиями)"
 
 #: lib/Domain/Service/Dns.php:3524
 msgid "KX record content is required"
-msgstr ""
+msgstr "Содержимое записи KX обязательно"
 
 #: lib/Domain/Service/Dns.php:3535
 msgid "KX record must have 2 fields: preference and exchanger"
-msgstr ""
+msgstr "Запись KX должна иметь 2 поля: preference и exchanger"
 
 #: lib/Domain/Service/Dns.php:3548
 msgid "KX preference must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
+"KX preference должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:3559
 msgid "KX exchanger must be a valid domain name"
-msgstr ""
+msgstr "KX exchanger должен быть допустимым доменным именем"
 
 #: lib/Domain/Service/Dns.php:3584
 msgid "IPSECKEY record content is required"
-msgstr ""
+msgstr "Содержимое записи IPSECKEY обязательно"
 
 #: lib/Domain/Service/Dns.php:3595
 msgid ""
 "IPSECKEY record must have at least 3 fields: precedence, gateway-type, and "
 "algorithm"
 msgstr ""
+"Запись IPSECKEY должна иметь не менее 3 полей: precedence, gateway-type и algorithm"
 
 #: lib/Domain/Service/Dns.php:3609
 msgid "IPSECKEY precedence must be an 8-bit unsigned integer (0-255)"
 msgstr ""
+"IPSECKEY precedence должен быть 8-битным беззнаковым целым числом (0-255)"
 
 #: lib/Domain/Service/Dns.php:3619
 msgid "IPSECKEY gateway-type must be 0-3 (0=none, 1=IPv4, 2=IPv6, 3=domain)"
 msgstr ""
+"IPSECKEY gateway-type должен быть 0-3 (0=нет, 1=IPv4, 2=IPv6, 3=домен)"
 
 #: lib/Domain/Service/Dns.php:3629
 msgid "IPSECKEY algorithm must be an 8-bit unsigned integer (0-255)"
 msgstr ""
+"Алгоритм IPSECKEY должен быть 8-битным беззнаковым целым числом (0-255)"
 
 #: lib/Domain/Service/Dns.php:3708 lib/Domain/Service/Dns.php:3740
 msgid "IPSECKEY public key must be Base64-encoded"
-msgstr ""
+msgstr "Открытый ключ IPSECKEY должен быть в кодировке Base64"
 
 #: lib/Domain/Service/Dns.php:3657
 msgid "IPSECKEY with gateway-type 1 requires an IPv4 address"
-msgstr ""
+msgstr "IPSECKEY с gateway-type 1 требует адрес IPv4"
 
 #: lib/Domain/Service/Dns.php:3666
-#, fuzzy
 msgid "IPSECKEY gateway must be a valid IPv4 address"
-msgstr "Это не правильный адрес IPv4."
+msgstr "Шлюз IPSECKEY должен быть допустимым адресом IPv4"
 
 #: lib/Domain/Service/Dns.php:3688
 msgid "IPSECKEY with gateway-type 2 requires an IPv6 address"
-msgstr ""
+msgstr "IPSECKEY с gateway-type 2 требует адрес IPv6"
 
 #: lib/Domain/Service/Dns.php:3697
-#, fuzzy
 msgid "IPSECKEY gateway must be a valid IPv6 address"
-msgstr "Это не правильный адрес IPv6."
+msgstr "Шлюз IPSECKEY должен быть допустимым адресом IPv6"
 
 #: lib/Domain/Service/Dns.php:3719
 msgid "IPSECKEY with gateway-type 3 requires a domain name"
-msgstr ""
+msgstr "IPSECKEY с gateway-type 3 требует доменное имя"
 
 #: lib/Domain/Service/Dns.php:3729
 msgid "IPSECKEY gateway must be a valid domain name"
-msgstr ""
+msgstr "Шлюз IPSECKEY должен быть допустимым доменным именем"
 
 #: lib/Domain/Service/Dns.php:3812
 msgid "MINFO record content is required"
-msgstr ""
+msgstr "Содержимое записи MINFO обязательно"
 
 #: lib/Domain/Service/Dns.php:3823
 msgid "MINFO record must have 2 fields: rmailbx and emailbx"
-msgstr ""
+msgstr "Запись MINFO должна иметь 2 поля: rmailbx и emailbx"
 
 #: lib/Domain/Service/Dns.php:3836
 msgid "MINFO rmailbx must be a valid domain name"
-msgstr ""
+msgstr "MINFO rmailbx должен быть допустимым доменным именем"
 
 #: lib/Domain/Service/Dns.php:3846
 msgid "MINFO emailbx must be a valid domain name"
-msgstr ""
+msgstr "MINFO emailbx должен быть допустимым доменным именем"
 
 #: lib/Domain/Service/Dns.php:3871
 msgid "MR record content is required"
-msgstr ""
+msgstr "Содержимое записи MR обязательно"
 
 #: lib/Domain/Service/Dns.php:3881
 msgid "MR newname must be a valid domain name"
-msgstr ""
+msgstr "MR newname должен быть допустимым доменным именем"
 
 #: lib/Domain/Service/Dns.php:3906
 msgid "WKS record content is required"
-msgstr ""
+msgstr "Содержимое записи WKS обязательно"
 
 #: lib/Domain/Service/Dns.php:3917
 msgid "WKS record must have at least 3 fields: address, protocol, and services"
-msgstr ""
+msgstr "Запись WKS должна иметь не менее 3 полей: адрес, протокол и сервисы"
 
 #: lib/Domain/Service/Dns.php:3930
-#, fuzzy
 msgid "WKS address must be a valid IPv4 address"
-msgstr "Это не правильный адрес IPv4."
+msgstr "Адрес WKS должен быть допустимым адресом IPv4"
 
 #: lib/Domain/Service/Dns.php:3941 lib/Domain/Service/Dns.php:3951
 msgid "WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name"
 msgstr ""
+"Протокол WKS должен быть 8-битным беззнаковым целым числом (0-255) или именем протокола"
 
 #: lib/Domain/Service/Dns.php:3965 lib/Domain/Service/Dns.php:3975
 msgid "WKS service must be a 16-bit port number (0-65535) or service name"
 msgstr ""
+"Сервис WKS должен быть 16-битным номером порта (0-65535) или именем сервиса"
 
 #: lib/Domain/Service/Dns.php:4002
 msgid "A6 record content is required"
-msgstr ""
+msgstr "Содержимое записи A6 обязательно"
 
 #: lib/Domain/Service/Dns.php:4015
 msgid ""
 "A6 record must have at least 2 fields: prefix-length and address-suffix or "
 "prefix-name"
 msgstr ""
+"Запись A6 должна иметь не менее 2 полей: длина префикса и суффикс адреса или имя префикса"
 
 #: lib/Domain/Service/Dns.php:4027
 msgid "A6 prefix length must be an integer (0-128)"
-msgstr ""
+msgstr "Длина префикса A6 должна быть целым числом (0-128)"
 
 #: lib/Domain/Service/Dns.php:4052
 msgid "CSYNC record content is required"
-msgstr ""
+msgstr "Содержимое записи CSYNC обязательно"
 
 #: lib/Domain/Service/Dns.php:4063
 msgid ""
 "CSYNC record must have at least 3 fields: SOA-serial, flags, and type-list"
 msgstr ""
+"Запись CSYNC должна иметь не менее 3 полей: SOA-serial, flags и список типов"
 
 #: lib/Domain/Service/Dns.php:4076
 msgid "CSYNC SOA serial must be a 32-bit unsigned integer (0-4294967295)"
 msgstr ""
+"CSYNC SOA serial должен быть 32-битным беззнаковым целым числом (0-4294967295)"
 
 #: lib/Domain/Service/Dns.php:4086
 msgid "CSYNC flags must be a 16-bit unsigned integer (0-65535)"
-msgstr ""
+msgstr "Флаги CSYNC должны быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:4098
 msgid "CSYNC type list must contain uppercase type names"
-msgstr ""
+msgstr "Список типов CSYNC должен содержать имена типов в верхнем регистре"
 
 #: lib/Domain/Service/Dns.php:4124
 msgid "ZONEMD record content is required"
-msgstr ""
+msgstr "Содержимое записи ZONEMD обязательно"
 
 #: lib/Domain/Service/Dns.php:4135
 msgid "ZONEMD record must have 4 fields: serial, scheme, algorithm, and digest"
-msgstr ""
+msgstr "Запись ZONEMD должна иметь 4 поля: serial, scheme, algorithm и digest"
 
 #: lib/Domain/Service/Dns.php:4150
 msgid "ZONEMD serial must be a 32-bit unsigned integer (0-4294967295)"
 msgstr ""
+"ZONEMD serial должен быть 32-битным беззнаковым целым числом (0-4294967295)"
 
 #: lib/Domain/Service/Dns.php:4160
 msgid "ZONEMD scheme must be an 8-bit unsigned integer (0-255)"
-msgstr ""
+msgstr "Схема ZONEMD должна быть 8-битным беззнаковым целым числом (0-255)"
 
 #: lib/Domain/Service/Dns.php:4170
 msgid "ZONEMD algorithm must be an 8-bit unsigned integer (0-255)"
-msgstr ""
+msgstr "Алгоритм ZONEMD должен быть 8-битным беззнаковым целым числом (0-255)"
 
 #: lib/Domain/Service/Dns.php:4180
 msgid "ZONEMD digest must be hexadecimal"
-msgstr ""
+msgstr "Дайджест ZONEMD должен быть шестнадцатеричным"
 
 #: lib/Domain/Service/Dns.php:4220
 msgid "SVCB record content is required"
-msgstr ""
+msgstr "Содержимое записи SVCB обязательно"
 
 #: lib/Domain/Service/Dns.php:4231
 msgid "SVCB record must have at least 2 fields: priority and target"
-msgstr ""
+msgstr "Запись SVCB должна иметь не менее 2 полей: приоритет и цель"
 
 #: lib/Domain/Service/Dns.php:4244
 msgid "SVCB priority must be a 16-bit unsigned integer (0-65535)"
 msgstr ""
+"Приоритет SVCB должен быть 16-битным беззнаковым целым числом (0-65535)"
 
 #: lib/Domain/Service/Dns.php:4255
 msgid "SVCB target must be a valid domain name or \".\""
-msgstr ""
+msgstr "Цель SVCB должна быть допустимым доменным именем или \".\""
 
 #: lib/Domain/Service/DomainRecordCreator.php:56
 #, php-format
@@ -2546,42 +2602,39 @@ msgid "Installation complete"
 msgstr "Установка завершена"
 
 #: install/templates/step7.html.twig:8
-#, fuzzy
 msgid "Now we have finished the configuration."
-msgstr "Теперь будут собраны все необходимые данные для самоконфигурации."
+msgstr "Настройка завершена."
 
 #: install/templates/step7.html.twig:9
-#, fuzzy
 msgid ""
 "You should (must!) remove the directory \"install/\" from the Poweradmin "
 "root directory. You will not be able to use Poweradmin if it exists. Do it "
 "now."
 msgstr ""
-"Конфигурирование окончено. Вы обязательно должны удалить директорию "
+"Вы должны (обязательно!) удалить каталог \"install/\" из корневого каталога Poweradmin. Вы не сможете использовать Poweradmin, пока он существует. Сделайте это сейчас."
 "\"install/\" из корневой директории Poweradmin. Вы не сможете использовать "
 "Poweradmin не удалив данную директорию."
 
 #: install/templates/step7.html.twig:10
-#, fuzzy
 msgid ""
 "After you have removed the directory, you can login to <a href=\"../"
 "index.php\">Poweradmin</a>."
 msgstr ""
-"После того, как вы удалите директорию, вы можете войти в <a href=\"../"
+"После удаления каталога вы можете войти в <a href=\"../index.php\">Poweradmin</a>."
 "index.php\">Poweradmin</a> с именем пользователя \"admin\" и паролем \""
 
 #: install/templates/step7.html.twig:11
 msgid "Use the default username \"admin\" and the password set in step 3."
 msgstr ""
+"Используйте имя пользователя по умолчанию \"admin\" и пароль, установленный на шаге 3."
 
 #: install/templates/step1.html.twig:4
 msgid "Choose a language for installation"
 msgstr "Выберите язык для установки"
 
 #: install/templates/step4.html.twig:4
-#, fuzzy
 msgid "Setup of account and name servers"
-msgstr "Вторичный сервер имён"
+msgstr "Настройка учетной записи и серверов имен"
 
 #: install/templates/step4.html.twig:8
 msgid "Now we will gather all details for the configuration itself."
@@ -2658,12 +2711,11 @@ msgid "Tertiary Nameserver"
 msgstr "Третичный сервер имен"
 
 #: install/templates/step4.html.twig:73
-#, fuzzy
 msgid ""
 "When creating new zones using the template, this value will be used as "
 "tertiary nameserver."
 msgstr ""
-"При создании новой зоны по шаблону, это значение будет подставлено как "
+"При создании новых зон с использованием шаблона это значение будет использоваться как третичный сервер имен."
 "первичный сервер имён."
 
 #: install/templates/step4.html.twig:77
@@ -2671,17 +2723,16 @@ msgid "Quaternary Nameserver"
 msgstr "Четвертичный сервер имен"
 
 #: install/templates/step4.html.twig:83
-#, fuzzy
 msgid ""
 "When creating new zones using the template, this value will be used as "
 "quaternary nameserver."
 msgstr ""
-"При создании новой зоны по шаблону, это значение будет подставлено как "
+"При создании новых зон с использованием шаблона это значение будет использоваться как четвертичный сервер имен."
 "вторичный сервер имён."
 
 #: install/templates/step2.html.twig:3
 msgid "Getting ready for installation"
-msgstr ""
+msgstr "Подготовка к установке"
 
 #: install/templates/step2.html.twig:7
 msgid ""
@@ -2723,7 +2774,7 @@ msgstr "Создание пользователя с ограниченными 
 
 #: install/templates/step5.html.twig:12
 msgid "Execute the following commands based on your database:"
-msgstr ""
+msgstr "Выполните следующие команды в зависимости от вашей базы данных:"
 
 #: install/templates/step5.html.twig:14
 msgid ""
@@ -2792,9 +2843,8 @@ msgid "The name of the PowerDNS database."
 msgstr "Имя базы данных PowerDNS."
 
 #: install/templates/step3.html.twig:80
-#, fuzzy
 msgid "The path and filename to the PowerDNS SQLite database."
-msgstr "Имя базы данных PowerDNS."
+msgstr "Путь и имя файла базы данных PowerDNS SQLite."
 
 #: install/templates/step3.html.twig:84
 msgid "DB charset"
@@ -2809,6 +2859,7 @@ msgid ""
 "The charset (encoding) which will be used for new tables. Leave it empty "
 "then default database charset will be used."
 msgstr ""
+"Кодировка, которая будет использоваться для новых таблиц. Оставьте пустым для использования кодировки базы данных по умолчанию."
 
 #: install/templates/step3.html.twig:93
 msgid "DB collation"
@@ -2819,6 +2870,7 @@ msgid ""
 "Set of rules for comparing characters in database. Leave it empty then "
 "default database collation will be used."
 msgstr ""
+"Набор правил сравнения символов в базе данных. Оставьте пустым для использования сортировки базы данных по умолчанию."
 
 #: install/templates/step3.html.twig:102
 msgid "Poweradmin administrator password"
@@ -2841,11 +2893,11 @@ msgid ""
 "Password must be at least 6 characters long, contain at least one uppercase "
 "letter, one lowercase letter, and one number."
 msgstr ""
+"Пароль должен содержать не менее 6 символов, включая хотя бы одну заглавную букву, одну строчную букву и одну цифру."
 
 #: install/helpers/InstallStepHandler.php:60
-#, fuzzy
 msgid "An error occurred while rendering the template."
-msgstr "Ошибка отображения шаблона"
+msgstr "Произошла ошибка при отрисовке шаблона."
 
 #: install/helpers/InstallStepHandler.php:121
 msgid "Updating database..."

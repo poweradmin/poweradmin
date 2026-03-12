@@ -2625,7 +2625,7 @@ msgstr "Heslo pro toto uživatelské jméno."
 
 #: install/templates/step4.html.twig:34
 msgid "Hostmaster"
-msgstr ""
+msgstr "Hostmaster"
 
 #: install/templates/step4.html.twig:39
 msgid "Provide the DNS hostmaster"

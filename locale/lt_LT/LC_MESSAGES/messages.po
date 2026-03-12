@@ -2659,9 +2659,8 @@ msgid "The password for this username."
 msgstr "Šio vartotojo vardo slaptažodis."
 
 #: install/templates/step4.html.twig:34
-#, fuzzy
 msgid "Hostmaster"
-msgstr "Pagrindinio kompiuterio vardas"
+msgstr "Hostmaster"
 
 #: install/templates/step4.html.twig:39
 msgid "Provide the DNS hostmaster"
