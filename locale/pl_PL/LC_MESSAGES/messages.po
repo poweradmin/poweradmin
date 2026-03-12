@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2024-12-28 20:04+0200\n"
+"POT-Creation-Date: 2026-03-12 12:31+0200\n"
 "PO-Revision-Date: 2010-05-15 23:21+0100\n"
 "Last-Translator: Krzysztof Laska <krzysztof.laska@steamworx.pl>\n"
 "Language-Team: Polish\n"
@@ -21,11 +21,11 @@ msgid ""
 "The configuration file (config.inc.php) does not exist. Please use the <a "
 "href=\"install/\">installer</a> to create it."
 msgstr ""
-"Plik konfiguracyjny (config.inc.php) nie istnieje. Proszę użyć <a href=\"install/\">instalatora</a>, aby go utworzyć."
-"href=\"install/\">installer</a> to create it."
+"Plik konfiguracyjny (config.inc.php) nie istnieje. Proszę użyć <a "
+"href=\"install/\">instalatora</a>, aby go utworzyć.href=\"install/"
+"\">installer</a> to create it."
 
-#: lib/BaseController.php:128
-#: lib/Infrastructure/Service/SessionAuthenticator.php:105
+#: lib/Infrastructure/Service/SessionAuthenticator.php:107
 msgid "Invalid CSRF token."
 msgstr "Nieprawidłowy token CSRF."
 
@@ -46,53 +46,31 @@ msgstr ""
 "konfiguracyjnym."
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
-#: templates/search.html:120 templates/search.html:229
+#: templates/search.html:151 templates/search.html:284
 msgid "Previous"
 msgstr "Poprzednia"
 
 #: lib/Application/Presenter/PaginationPresenter.php:79
-#: templates/search.html:142 templates/search.html:251
+#: templates/search.html:173 templates/search.html:306
 msgid "Next"
 msgstr "Następna"
 
-#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:27
+#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:29
 msgid "Show zones beginning with"
 msgstr "Pokasz strony zaczynające się na"
 
-#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:50
-#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:52
+#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:54
 msgid "Show all"
 msgstr "Pokaż wszystkie"
 
-#: lib/Application/Controller/DeleteUserController.php:49
-#: lib/Application/Controller/EditCommentController.php:57
-#: lib/Application/Controller/DeleteRecordController.php:62
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:45
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:50
-#: lib/Application/Controller/EditZoneTemplController.php:161
-#: lib/Application/Controller/DnssecDsDnskeyController.php:55
-#: lib/Application/Controller/EditController.php:83
-#: lib/Application/Controller/DnssecEditKeyController.php:64
-#: lib/Application/Controller/DnssecEditKeyController.php:71
-#: lib/Application/Controller/DnssecEditKeyController.php:76
-#: lib/Application/Controller/DnssecDeleteKeyController.php:64
-#: lib/Application/Controller/DnssecDeleteKeyController.php:71
-#: lib/Application/Controller/DnssecDeleteKeyController.php:77
-#: lib/Application/Controller/EditUserController.php:53
-#: lib/Application/Controller/EditUserController.php:115
-#: lib/Application/Controller/DnssecController.php:50
-#: lib/Application/Controller/DnssecAddKeyController.php:67
-#: lib/Application/Controller/DnssecAddKeyController.php:77
-#: lib/Application/Controller/DnssecAddKeyController.php:88
+#: lib/Application/Controller/DnssecAddKeyController.php:89
 msgid "Invalid or unexpected input given."
 msgstr "Nieprawidłowy lub nieprzewidziany wybór."
 
-#: lib/Application/Controller/DeleteUserController.php:60
 #: lib/Domain/Model/UserManager.php:211
 msgid "You do not have the permission to delete this user."
 msgstr "Nie masz uprawnień do usunięcia tego uźytkownika."
 
-#: lib/Application/Controller/DeleteUserController.php:69
 #: lib/Application/Controller/EditUserController.php:135
 msgid "User does not exist."
 msgstr "Uźytkownik nie istnieje."
@@ -101,9 +79,7 @@ msgstr "Uźytkownik nie istnieje."
 msgid "The user has been deleted successfully."
 msgstr "Uźytkownik został usunięty."
 
-#: lib/Application/Controller/EditCommentController.php:50
-#: lib/Application/Controller/EditCommentController.php:74
-#: lib/Domain/Service/DnsRecord.php:330
+#: lib/Domain/Service/DnsRecord.php:331
 msgid "You do not have the permission to edit this comment."
 msgstr "Nie masz uprawnień do edycji tego komentarza."
 
@@ -115,38 +91,30 @@ msgstr "Nie masz uprawnień do wyświetlenia tego komentarza."
 msgid "The comment has been updated successfully."
 msgstr "Komentarz został zaktualizowany."
 
-#: lib/Application/Controller/DeleteRecordController.php:70
-#: lib/Application/Controller/DnssecDsDnskeyController.php:70
-#: lib/Application/Controller/EditController.php:154
-#: lib/Application/Controller/DnssecController.php:65
-#: lib/Application/Controller/DnssecAddKeyController.php:59
+#: lib/Application/Controller/DnssecAddKeyController.php:60
 msgid "There is no zone with this ID."
 msgstr "Nie ma strefy o takim ID."
 
-#: lib/Application/Controller/DeleteRecordController.php:100
+#: lib/Domain/Model/ZoneTemplate.php:386 lib/Domain/Service/DnsRecord.php:400
+msgid "You do not have the permission to edit this record."
+msgstr "Nie masz uprawnień do edycji tego rekordu."
+
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:67
 msgid "The record has been deleted successfully."
 msgstr "Rekord został usunięty."
 
-#: lib/Application/Controller/DeleteRecordController.php:102
+#: lib/Application/Controller/DeleteRecordController.php:125
 msgid ""
-"The record was deleted but the comment was preserved because similar records"
-" exist."
+"The record was deleted but the comment was preserved because similar records "
+"exist."
 msgstr ""
 "Rekord został usunięty, ale komentarz został zachowany, ponieważ istnieją "
 "podobne rekordy."
-
-#: lib/Application/Controller/DeleteRecordController.php:115
-#: lib/Application/Controller/EditRecordController.php:83
-#: lib/Domain/Model/ZoneTemplate.php:381 lib/Domain/Service/DnsRecord.php:388
-msgid "You do not have the permission to edit this record."
-msgstr "Nie masz uprawnień do edycji tego rekordu."
 
 #: lib/Application/Controller/ListSupermastersController.php:43
 msgid "You do not have the permission to view supermasters."
 msgstr "Nie masz uprawnień do przeglądania supermasterów."
 
-#: lib/Application/Controller/EditPermTemplController.php:50
 #: lib/Application/Controller/ListPermTemplController.php:42
 msgid "You do not have the permission to edit permission templates."
 msgstr "Nie masz uprawnień do edycji wzorców uprawnień."
@@ -159,7 +127,7 @@ msgstr "Szablon uprawnień został pomyślnie zaktualizowany."
 msgid "You do not have the permission to perform searches."
 msgstr "Nie masz uprawnień do wyszukiwania,"
 
-#: lib/Application/Controller/AddUserController.php:43
+#: lib/Domain/Model/UserManager.php:766
 msgid "You do not have the permission to add a new user."
 msgstr "Nie masz uprawnień do dodawania uźytkowników."
 
@@ -167,8 +135,7 @@ msgstr "Nie masz uprawnień do dodawania uźytkowników."
 msgid "The user has been created successfully."
 msgstr "Uźytkownik został dodany."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:63
-#: lib/Domain/Model/ZoneTemplate.php:424 lib/Domain/Service/DnsRecord.php:651
+#: lib/Domain/Model/ZoneTemplate.php:429 lib/Domain/Service/DnsRecord.php:677
 msgid "You do not have the permission to delete this record."
 msgstr "Nie masz uprawnień do usunięcia tego rekordu."
 
@@ -176,36 +143,32 @@ msgstr "Nie masz uprawnień do usunięcia tego rekordu."
 msgid "The record could not be deleted."
 msgstr "Nie można usunąć rekordu."
 
+#: lib/Application/Controller/ListLogUsersController.php:85
+#, fuzzy
+msgid "Unknown page."
+msgstr "Nieokreślony błąd."
+
 #: lib/Application/Controller/UsersController.php:61
 msgid "User details updated"
 msgstr "Szczegóły użytkownika zaktualizowane"
 
-#: lib/Application/Controller/EditZoneTemplController.php:53
-#: lib/Application/Controller/EditZoneTemplRecordController.php:60
-#: lib/Application/Controller/DeleteZoneTemplController.php:48
-#: lib/Application/Controller/AddZoneTemplRecordController.php:56
-#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:215
-msgid "You do not have the permission to delete zone templates."
-msgstr "Nie masz uprawnień do usuwania wzorców stref."
+#: lib/Application/Controller/ListZoneTemplController.php:43
+msgid "You do not have the permission to edit zone templates."
+msgstr "Nie masz uprawnień do edycji wzorców stref."
 
-#: lib/Application/Controller/EditZoneTemplController.php:65
+#: lib/Application/Controller/EditZoneTemplController.php:66
 msgid "There is no zone template with this ID."
 msgstr "Nie ma szablonu strefy o tym identyfikatorze."
 
-#: lib/Application/Controller/EditZoneTemplController.php:164
 #: lib/Application/Controller/EditZoneTemplRecordController.php:86
 msgid "Zone template has been updated successfully."
 msgstr "Wzorzec strefy został zaktualizowany."
 
-#: lib/Application/Controller/EditZoneTemplController.php:176
+#: lib/Application/Controller/EditZoneTemplController.php:177
 msgid "Zones have been updated successfully."
 msgstr "Strefy zostały pomyślnie zaktualizowane."
 
-#: lib/Application/Controller/DnssecDsDnskeyController.php:65
-#: lib/Application/Controller/EditController.php:150
-#: lib/Application/Controller/DnssecController.php:60
-#: lib/Application/Controller/DnssecAddKeyController.php:54
-#: lib/Domain/Service/DnsRecord.php:998 lib/Domain/Service/DnsRecord.php:1231
+#: lib/Domain/Service/DnsRecord.php:1036 lib/Domain/Service/DnsRecord.php:1273
 msgid "You do not have the permission to view this zone."
 msgstr "Nie masz uprawnień do wyświetlenia tej strefy."
 
@@ -221,69 +184,75 @@ msgstr "DNSSEC nie jest włączone na serwerze."
 msgid "Zone has been unsigned successfully."
 msgstr "Podpis strefy został pomyślnie usunięty."
 
-#: lib/Application/Controller/EditController.php:381
-msgid "Request has expired, please try again."
-msgstr "Żądanie wygasło, spróbuj ponownie."
-
-#: lib/Application/Controller/EditController.php:386
-msgid "Zone has been updated successfully."
-msgstr "Strefa została pomyślnie zaktualizowana."
-
-#: lib/Application/Controller/EditController.php:388
-msgid "Zone did not have any record changes."
-msgstr "Strefa nie miała żadnych zmian w rekordach."
-
-#: lib/Application/Controller/EditController.php:397
-msgid "Zone has not been updated successfully."
-msgstr "Strefa nie została pomyślnie zaktualizowana."
-
-#: lib/Application/Controller/EditController.php:405
-#: lib/Domain/Model/ZoneTemplate.php:132 lib/Domain/Model/ZoneTemplate.php:567
-msgid ""
-"Zone template with this name already exists, please choose another one."
+#: lib/Domain/Model/ZoneTemplate.php:135 lib/Domain/Model/ZoneTemplate.php:572
+msgid "Zone template with this name already exists, please choose another one."
 msgstr "Szablon strefy o tej nazwie już istnieje, proszę wybrać inną."
 
-#: lib/Application/Controller/EditController.php:407
+#: lib/Application/Controller/EditController.php:423
 msgid "Template name can't be an empty string."
 msgstr "Nazwa szablonu nie może być pusta."
 
-#: lib/Application/Controller/EditController.php:420
-#: lib/Application/Controller/AddZoneTemplController.php:73
+#: lib/Application/Controller/AddZoneTemplController.php:78
 msgid "Zone template has been added successfully."
 msgstr "Wzorzec strefy został dodany."
 
-#: lib/Application/Controller/AddRecordController.php:103
-#: lib/Domain/Model/ZoneTemplate.php:326 lib/Domain/Service/DnsRecord.php:447
+#: lib/Application/Controller/EditController.php:486
+msgid "Request has expired, please try again."
+msgstr "Żądanie wygasło, spróbuj ponownie."
+
+#: lib/Application/Controller/EditController.php:491
+msgid "Zone has been updated successfully."
+msgstr "Strefa została pomyślnie zaktualizowana."
+
+#: lib/Application/Controller/EditController.php:493
+msgid "Zone did not have any record changes."
+msgstr "Strefa nie miała żadnych zmian w rekordach."
+
+#: lib/Application/Controller/EditController.php:502
+msgid "Zone has not been updated successfully."
+msgstr "Strefa nie została pomyślnie zaktualizowana."
+
+#: lib/Domain/Model/ZoneTemplate.php:330 lib/Domain/Service/DnsRecord.php:459
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Nie masz uprawnień do dodania rekordu w tej strefie."
 
-#: lib/Application/Controller/AddRecordController.php:203
+#: lib/Application/Controller/AddRecordController.php:133
+msgid "This record was not valid and could not be added."
+msgstr "Ten rekord był nieprawidłowy i nie mógł zostać dodany."
+
+#: lib/Application/Controller/AddRecordController.php:139
+msgid "Record successfully added. A matching PTR record was also created."
+msgstr ""
+"Rekord został pomyślnie dodany. Utworzono również odpowiadający rekord PTR."
+
+#: lib/Application/Controller/AddRecordController.php:146
 msgid "The record was successfully added."
 msgstr "Rekord został dodany."
 
-#: lib/Application/Controller/AddRecordController.php:207
-msgid "This record was not valid and could not be added."
-msgstr "Ten rekord był nieprawidłowy i nie mógł zostać dodany."
+#: lib/Application/Controller/AddRecordController.php:143
+msgid "Record successfully added. A matching A record was also created."
+msgstr ""
+"Rekord został pomyślnie dodany. Utworzono również odpowiadający rekord A."
 
 #: lib/Application/Controller/DeleteDomainsController.php:61
 msgid "No zone selected for deletion."
 msgstr "Nie wybrano strefy do usunięcia."
 
-#: lib/Application/Controller/DeleteDomainsController.php:91
-#: lib/Application/Controller/DeleteDomainController.php:105
+#: lib/Application/Controller/DeleteDomainController.php:110
 msgid "Zone has been deleted successfully."
 msgstr "Strefa została usunięta."
 
-#: lib/Application/Controller/DeleteDomainsController.php:93
+#: lib/Application/Controller/DeleteDomainsController.php:98
 msgid "Zones have been deleted successfully."
 msgstr "Strefy zostały pomyślnie usunięte."
 
-#: lib/Application/Controller/DeleteDomainsController.php:105
-#: lib/Application/Controller/DeleteDomainController.php:74
-#: lib/Domain/Service/DnsRecord.php:828 lib/Domain/Service/DnsRecord.php:1638
-#: lib/Domain/Service/DnsRecord.php:1752
+#: lib/Domain/Service/DnsRecord.php:1886
 msgid "You do not have the permission to delete a zone."
 msgstr "Nie masz uprawnień do usunięcia strefy."
+
+#: lib/Application/Controller/EditZoneTemplRecordController.php:60
+msgid "You do not have the permission to edit zone template records."
+msgstr "Nie masz uprawnień do edycji rekordów szablonu strefy."
 
 #: lib/Application/Controller/MigrationsController.php:37
 msgid "You do not have the permission to access the migrations."
@@ -294,42 +263,31 @@ msgid ""
 "Old migrations table detected. Please remove the `migrations` table before "
 "proceeding."
 msgstr ""
-"Wykryto starą tabelę migracji. Proszę usunąć tabelę `migrations` przed kontynuowaniem."
-"proceeding."
+"Wykryto starą tabelę migracji. Proszę usunąć tabelę `migrations` przed "
+"kontynuowaniem.proceeding."
 
 #: lib/Application/Controller/MigrationsController.php:49
 msgid ""
 "Database access check failed. Please ensure the current database user has "
 "the necessary permissions to create and alter tables."
 msgstr ""
-"Sprawdzenie dostępu do bazy danych nie powiodło się. Upewnij się, że bieżący użytkownik bazy danych ma wymagane uprawnienia do tworzenia i modyfikowania tabel."
-"the necessary permissions to create and alter tables."
+"Sprawdzenie dostępu do bazy danych nie powiodło się. Upewnij się, że bieżący "
+"użytkownik bazy danych ma wymagane uprawnienia do tworzenia i modyfikowania "
+"tabel.the necessary permissions to create and alter tables."
 
-#: lib/Application/Controller/AddZoneMasterController.php:57
-#: lib/Application/Controller/BulkRegistrationController.php:57
-#: lib/Domain/Service/DnsRecord.php:796
+#: lib/Domain/Service/DnsRecord.php:831
 msgid "You do not have the permission to add a master zone."
 msgstr "Nie masz uprawnień do dodania strefy master."
 
-#: lib/Application/Controller/AddZoneMasterController.php:88
-#: lib/Application/Controller/AddZoneSlaveController.php:86
-#: lib/Application/Controller/BulkRegistrationController.php:88
-#: lib/Domain/Model/ZoneTemplate.php:342 lib/Domain/Model/ZoneTemplate.php:389
-#: lib/Domain/Service/Dns.php:387 lib/Domain/Service/Dns.php:394
-#: lib/Domain/Service/Dns.php:401 lib/Domain/Service/DnsRecord.php:522
+#: lib/Domain/Service/Dns.php:427 lib/Domain/Service/DnsRecord.php:542
 msgid "Invalid hostname."
 msgstr "Nieprawidłowa nazwa hosta."
 
-#: lib/Application/Controller/AddZoneMasterController.php:91
-#: lib/Application/Controller/AddZoneMasterController.php:94
-#: lib/Application/Controller/AddZoneSlaveController.php:89
-#: lib/Application/Controller/AddZoneSlaveController.php:92
-#: lib/Application/Controller/BulkRegistrationController.php:90
+#: lib/Application/Controller/BulkRegistrationController.php:91
 msgid "There is already a zone with this name."
 msgstr "Taka strefa juź istnieje."
 
-#: lib/Application/Controller/AddZoneMasterController.php:97
-#: lib/Application/Controller/AddZoneSlaveController.php:105
+#: lib/Application/Controller/AddZoneSlaveController.php:109
 msgid "Zone has been added successfully."
 msgstr "Strefa została dodana."
 
@@ -341,14 +299,10 @@ msgstr "Nie masz wystarczających uprawnień do przeglądania tej strony."
 msgid "You do not have the permission to see any zones."
 msgstr "Nie masz uprawnień do wyświetlenia jakichkolwiek stref."
 
-#: lib/Application/Controller/ListZoneTemplController.php:43
-msgid "You do not have the permission to edit zone templates."
-msgstr "Nie masz uprawnień do edycji wzorców stref."
-
 #: lib/Application/Controller/DnssecEditKeyController.php:80
-#: lib/Application/Controller/DnssecDeleteKeyController.php:81
-msgid "Failed to delete DNSSEC key."
-msgstr "Nie udało się usunąć klucza DNSSEC."
+#, fuzzy
+msgid "You do not have the permission to edit this zone."
+msgstr "Nie masz uprawnień do edycji tego uźytkownika."
 
 #: lib/Application/Controller/DnssecEditKeyController.php:88
 msgid "Zone key has been successfully deactivated."
@@ -358,7 +312,11 @@ msgstr "Klucz strefy został pomyślnie dezaktywowany."
 msgid "Zone key has been successfully activated."
 msgstr "Klucz strefy został pomyślnie aktywowany."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:85
+#: lib/Application/Controller/DnssecDeleteKeyController.php:81
+msgid "Failed to delete DNSSEC key."
+msgstr "Nie udało się usunąć klucza DNSSEC."
+
+#: lib/Application/Controller/DnssecDeleteKeyController.php:88
 msgid "Zone key has been deleted successfully."
 msgstr "Klucz strefy został pomyślnie usunięty."
 
@@ -370,14 +328,11 @@ msgstr "Nie masz uprawnień do dodawania szablonów uprawnień."
 msgid "The permission template has been added successfully."
 msgstr "Szablon uprawnień został pomyślnie dodany."
 
-#: lib/Application/Controller/LogoutController.php:46
-#: lib/Infrastructure/Service/SessionAuthenticator.php:91
+#: lib/Infrastructure/Service/SessionAuthenticator.php:92
 msgid "You have logged out."
 msgstr "Jesteś wylogowany."
 
-#: lib/Application/Controller/AddZoneTemplController.php:43
-#: lib/Domain/Model/ZoneTemplate.php:126 lib/Domain/Model/ZoneTemplate.php:470
-#: lib/Domain/Model/ZoneTemplate.php:561
+#: lib/Domain/Model/ZoneTemplate.php:566
 msgid "You do not have the permission to add a zone template."
 msgstr "Nie masz uprawnień do dodawania szablonu strefy."
 
@@ -385,12 +340,15 @@ msgstr "Nie masz uprawnień do dodawania szablonu strefy."
 msgid "You do not have the permission to add a slave zone."
 msgstr "Nie masz uprawnień do dodania strefy slave."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:95
-#: lib/Domain/Service/DnsRecord.php:513
+#: lib/Domain/Service/DnsRecord.php:533
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "To nie jest poprawny adres IPv4 czy IPv6."
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:69
+#: lib/Domain/Model/ZoneTemplate.php:184 lib/Domain/Model/ZoneTemplate.php:218
+msgid "You do not have the permission to delete zone templates."
+msgstr "Nie masz uprawnień do usuwania wzorców stref."
+
+#: lib/Application/Controller/DeleteZoneTemplController.php:72
 msgid "Zone template has been deleted successfully."
 msgstr "Wzorzec strefy został usunięty."
 
@@ -402,8 +360,11 @@ msgstr "Nie masz uprawnień, źeby dodać supermastera"
 msgid "The supermaster has been added successfully."
 msgstr "Suoermaster został dodany."
 
-#: lib/Application/Controller/EditUserController.php:57
-#: lib/Domain/Model/UserManager.php:380
+#: lib/Application/Controller/AddZoneTemplRecordController.php:56
+msgid "You do not have the permission to add a record to this zone template."
+msgstr "Nie masz uprawnień do dodawania rekordu do tego szablonu strefy."
+
+#: lib/Domain/Model/UserManager.php:379 lib/Domain/Model/UserManager.php:744
 msgid "You do not have the permission to edit this user."
 msgstr "Nie masz uprawnień do edycji tego uźytkownika."
 
@@ -411,7 +372,6 @@ msgstr "Nie masz uprawnień do edycji tego uźytkownika."
 msgid "The user has been updated successfully."
 msgstr "Strefa została zaktualizowana."
 
-#: lib/Application/Controller/EditUserController.php:124
 #: lib/Application/Controller/EditUserController.php:127
 msgid "The user could not be updated."
 msgstr "Nie można zaktualizować użytkownika."
@@ -425,10 +385,15 @@ msgid "The permission template has been deleted successfully."
 msgstr "Wzorzec uprawnień został usunięty."
 
 #: lib/Application/Controller/EditRecordController.php:79
+#, fuzzy
+msgid "Record does not exist or has been deleted."
+msgstr "Nie można usunąć rekordu."
+
+#: lib/Application/Controller/EditRecordController.php:89
 msgid "You do not have the permission to view this record."
 msgstr "Nie masz uprawnień do wyświetlenia tego rekordu."
 
-#: lib/Application/Controller/EditRecordController.php:180
+#: lib/Application/Controller/EditRecordController.php:232
 msgid "The record has been updated successfully."
 msgstr "Rekord został zaktualizowany."
 
@@ -436,32 +401,43 @@ msgstr "Rekord został zaktualizowany."
 msgid "Password has been changed, please login."
 msgstr "Hasło zostało zmienione, zaloguj się."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:99
+#: lib/Application/Controller/DnssecAddKeyController.php:101
 msgid "Zone key has been added successfully."
 msgstr "Klucz strefy został pomyślnie dodany."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:102
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:346
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:364
 msgid "Failed to add new DNSSEC key."
 msgstr "Nie udało się dodać nowego klucza DNSSEC."
+
+#: lib/Application/Controller/DnssecAddKeyController.php:107
+msgid "An error occurred while adding the DNSSEC key: "
+msgstr "Wystąpił błąd podczas dodawania klucza DNSSEC: "
 
 #: lib/Application/Controller/DeleteSupermasterController.php:43
 msgid "You do not have the permission to delete a supermaster."
 msgstr "Nie masz uprawnień do usunięcia supermastera"
 
-#: lib/Application/Controller/DeleteSupermasterController.php:66
+#: lib/Application/Controller/DeleteSupermasterController.php:69
+msgid "Invalid IP address."
+msgstr "Nieprawidłowy adres IP."
+
+#: lib/Application/Controller/DeleteSupermasterController.php:74
+msgid "Invalid NS name."
+msgstr "Nieprawidłowa nazwa NS."
+
+#: lib/Application/Controller/DeleteSupermasterController.php:80
 msgid "Super master does not exist."
 msgstr "Supermaster nie istnieje."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:71
+#: lib/Application/Controller/DeleteSupermasterController.php:84
 msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster został usunięty."
 
-#: lib/Application/Controller/BulkRegistrationController.php:100
+#: lib/Application/Controller/BulkRegistrationController.php:106
 msgid "Zones has been added successfully."
 msgstr "Strefy zostały pomyślnie dodane."
 
-#: lib/Application/Controller/BulkRegistrationController.php:103
+#: lib/Application/Controller/BulkRegistrationController.php:109
 msgid "Some zone(s) could not be added."
 msgstr "Niektóre strefy nie mogły zostać dodane."
 
@@ -473,8 +449,7 @@ msgstr "Konto użytkownika jest wyłączone."
 msgid "Authentication failed!"
 msgstr "Logowanie nieudane!"
 
-#: lib/Application/Service/SqlAuthenticator.php:147
-#: lib/Infrastructure/Service/SessionAuthenticator.php:143
+#: lib/Infrastructure/Service/SessionAuthenticator.php:145
 msgid "Session expired, please login again."
 msgstr "Sesja wygasła, zaloguj się ponownie."
 
@@ -486,53 +461,37 @@ msgstr "Nie udało się połączyć z serwerem LDAP!"
 msgid "Failed to bind to LDAP server!"
 msgstr "Nie udało się powiązać z serwerem LDAP!"
 
-#: lib/Application/Service/LdapAuthenticator.php:123
+#: lib/Application/Service/LdapAuthenticator.php:124
 msgid "Failed to search LDAP."
 msgstr "Nie udało się przeszukać LDAP."
 
-#: lib/Application/Service/LdapAuthenticator.php:139
+#: lib/Application/Service/LdapAuthenticator.php:140
 msgid "Failed to authenticate against LDAP."
 msgstr "Nie udało się uwierzytelnić w LDAP."
 
-#: lib/Application/Service/LdapAuthenticator.php:154
-#: lib/Application/Service/LdapAuthenticator.php:171
+#: lib/Application/Service/LdapAuthenticator.php:172
 msgid "LDAP Authentication failed!"
 msgstr "Uwierzytelnienie LDAP nie powiodło się!"
 
-#: lib/Application/Query/RecordSearch.php:112
-#: templates/dnssec_edit_key.html:53 templates/delete_user.html:54
-#: templates/delete_perm_templ.html:13 templates/users.html:77
-#: templates/users.html:109 templates/users.html:110
-#: templates/delete_record.html:51 templates/delete_domain.html:33
-#: templates/delete_domains.html:51 templates/delete_supermaster.html:17
-#: templates/delete_zone_templ.html:13
-#: templates/delete_zone_templ_record.html:36
-#: templates/dnssec_delete_key.html:45
+#: lib/Application/Query/RecordSearch.php:158
+#: templates/dnssec_delete_key.html:46
 msgid "Yes"
 msgstr "Tak"
 
-#: lib/Application/Query/RecordSearch.php:112
-#: templates/dnssec_edit_key.html:54 templates/delete_user.html:55
-#: templates/delete_perm_templ.html:14 templates/users.html:79
-#: templates/users.html:109 templates/users.html:110
-#: templates/delete_record.html:52 templates/delete_domain.html:34
-#: templates/delete_domains.html:53 templates/delete_supermaster.html:18
-#: templates/delete_zone_templ.html:15
-#: templates/delete_zone_templ_record.html:37
-#: templates/dnssec_delete_key.html:47
+#: lib/Application/Query/RecordSearch.php:158
+#: templates/dnssec_delete_key.html:48
 msgid "No"
 msgstr "Nie"
 
-#: lib/Infrastructure/Database/PDOLayer.php:141
+#: lib/Infrastructure/Database/PDOLayer.php:140
 msgid "Unknown database type."
 msgstr "Nieznany typ bazy danych."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:195
 #: lib/Domain/Model/UserManager.php:250
 msgid "This template is assigned to at least one user."
 msgstr "Ten wzorzec jest przypisany do co najmniej jednego uźytkownika."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:131
+#: lib/Infrastructure/Service/SessionAuthenticator.php:133
 msgid "An empty password is not allowed"
 msgstr "Puste hasło nie jest dozwolone"
 
@@ -541,140 +500,144 @@ msgid ""
 "Failed to call function exec. Make sure that exec is not listed in "
 "disable_functions at php.ini"
 msgstr ""
-"Nie udało się wywołać funkcji exec. Upewnij się, że exec nie jest wymieniony w disable_functions w php.ini"
-"disable_functions at php.ini"
+"Nie udało się wywołać funkcji exec. Upewnij się, że exec nie jest wymieniony "
+"w disable_functions w php.inidisable_functions at php.ini"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:58
 msgid "Failed to call pdnssec utility."
 msgstr "Nie udało się wywołać narzędzia pdnssec."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:155
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:154
 msgid "Failed to secure zone."
 msgstr "Nie udało się zabezpieczyć strefy."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:174
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:177
 msgid "Failed to disable DNSSEC."
 msgstr "Nie udało się wyłączyć DNSSEC."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:215
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:249
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:312
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:329
 msgid "Failed to get DNSSEC key details."
 msgstr "Nie udało się pobrać szczegółów klucza DNSSEC."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:273
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:280
 msgid "Failed to active DNSSEC key."
 msgstr "Nie udało się aktywować klucza DNSSEC."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:292
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:304
 msgid "Failed to deactivate DNSSEC key."
 msgstr "Nie udało się dezaktywować klucza DNSSEC."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:365
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:390
 msgid "Failed to remove DNSSEC key."
 msgstr "Nie udało się usunąć klucza DNSSEC."
 
-#: lib/Domain/Model/UserManager.php:290
+#: lib/Domain/Model/UserManager.php:784
 msgid "Enter a valid email address."
 msgstr "Wpisz poprawny adres e-mail."
 
-#: lib/Domain/Model/UserManager.php:325
+#: lib/Domain/Model/UserManager.php:772
 msgid "Username exist already, please choose another one."
 msgstr "Taka nazwa uźytkownika juź istnieje, wybierz inną."
 
-#: lib/Domain/Model/UserManager.php:421
+#: lib/Domain/Model/UserManager.php:420
 msgid "The two new password fields do not match."
 msgstr "Wpisane hasła nie są identyczne."
 
-#: lib/Domain/Model/ZoneTemplate.php:334 lib/Domain/Service/Dns.php:238
+#: lib/Domain/Model/UserManager.php:431
+msgid "You can not change your password as LDAP user."
+msgstr "You can not change your password as LDAP user."
+
+#: lib/Domain/Model/UserManager.php:451
+msgid "You did not enter the correct current password."
+msgstr "Aktualne hasło jakie wpisałeś jest nieprawidłowe."
+
+#: lib/Domain/Model/UserManager.php:778
+msgid "Enter a valid user name."
+msgstr "Wprowadź prawidłową nazwę użytkownika."
+
+#: lib/Domain/Model/ZoneTemplate.php:338 lib/Domain/Service/Dns.php:185
 msgid "Your content field doesnt have a legit value."
 msgstr "Pole zawartość nie posiada wymaganej zawartości."
 
-#: lib/Domain/Model/ZoneTemplate.php:350 lib/Domain/Model/ZoneTemplate.php:397
-#: lib/Domain/Service/Dns.php:290
+#: lib/Domain/Service/Dns.php:316
 msgid "Invalid value for prio field."
 msgstr "Nieprawidłowa wartość pola priorytetu."
 
-#: lib/Domain/Service/Dns.php:248
+#: lib/Domain/Service/Dns.php:279
 msgid "The content of the SPF record is invalid"
 msgstr "Zawartość rekordu SPF jest nieprawidłowa"
 
-#: lib/Domain/Service/Dns.php:282
+#: lib/Domain/Service/Dns.php:303
 msgid "Unknown record type."
 msgstr "Nieznany typ rekordu."
 
-#: lib/Domain/Service/Dns.php:324 lib/Domain/Service/Dns.php:862
+#: lib/Domain/Service/Dns.php:350 lib/Domain/Service/Dns.php:871
 msgid "The hostname is too long."
 msgstr "Zbyt długa nazwa hosta."
 
-#: lib/Domain/Service/Dns.php:341 lib/Domain/Service/Dns.php:350
+#: lib/Domain/Service/Dns.php:367 lib/Domain/Service/Dns.php:376
 msgid "You have invalid characters in your hostname."
 msgstr "W nazwie hosta występują nieprawidłowe znaki."
 
-#: lib/Domain/Service/Dns.php:358 lib/Domain/Service/Dns.php:365
+#: lib/Domain/Service/Dns.php:384 lib/Domain/Service/Dns.php:391
 msgid "A hostname can not start or end with a dash."
 msgstr "Nazwa hosta nie moźe się zaczynać lub kończyć myślnikiem."
 
-#: lib/Domain/Service/Dns.php:372
+#: lib/Domain/Service/Dns.php:398
 msgid "Given hostname or one of the labels is too short or too long."
 msgstr "Wpisana nazwa hosta lub etykieta jest zbyt krótka, lub zbyt długa."
 
-#: lib/Domain/Service/Dns.php:409
+#: lib/Domain/Service/Dns.php:435
 msgid "Given hostname has too many slashes."
 msgstr "Wpisana nazwa hosta zawiera zbyt duźo ukośników."
 
-#: lib/Domain/Service/Dns.php:418
+#: lib/Domain/Service/Dns.php:444
 msgid "You are using an invalid top level domain."
 msgstr "Uźywasz niewłaściwej domeny nadrzędnej."
 
-#: lib/Domain/Service/Dns.php:441
+#: lib/Domain/Service/Dns.php:467
 msgid "This is not a valid IPv4 address."
 msgstr "To nie jest poprawny adres IPv4."
 
-#: lib/Domain/Service/Dns.php:464
+#: lib/Domain/Service/Dns.php:490
 msgid "This is not a valid IPv6 address."
 msgstr "To nie jest poprawny adres IPv6."
 
-#: lib/Domain/Service/Dns.php:518
+#: lib/Domain/Service/Dns.php:544
 msgid "Invalid characters have been used in this record."
 msgstr "W tym rekordzie uźyto nieprawidłowych znaków."
 
-#: lib/Domain/Service/Dns.php:535
-msgid "You cannot use html tags for this type of record."
-msgstr "Nie można używać znaczników HTML dla tego typu rekordu."
-
-#: lib/Domain/Service/Dns.php:563
+#: lib/Domain/Service/Dns.php:572
 msgid "Backslashes must precede all quotes (\") in TXT content"
 msgstr ""
-"Ukośniki wsteczne muszą poprzedzać wszystkie cudzysłowy (\") w zawartości "
-"TXT"
+"Ukośniki wsteczne muszą poprzedzać wszystkie cudzysłowy (\") w zawartości TXT"
 
-#: lib/Domain/Service/Dns.php:585
+#: lib/Domain/Service/Dns.php:594
 msgid "Add quotes around TXT record content."
 msgstr "Dodaj cudzysłowy wokół zawartości rekordu TXT."
 
-#: lib/Domain/Service/Dns.php:615
+#: lib/Domain/Service/Dns.php:624
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr ""
 "To nie jest poprawny rekord CNAME. Czyźbyś przypisał mu rekord MX albo NS?"
 
-#: lib/Domain/Service/Dns.php:644
+#: lib/Domain/Service/Dns.php:653
 msgid ""
 "This is not a valid record. There is already exists a CNAME with this name."
 msgstr ""
 "To nie jest poprawny rekord. Rekord CNAME o takiej zawartości juź istnieje."
 
-#: lib/Domain/Service/Dns.php:671
+#: lib/Domain/Service/Dns.php:680
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr "To nie jest prawidłowy CNAME. Istnieje już rekord o tej nazwie."
 
-#: lib/Domain/Service/Dns.php:691
+#: lib/Domain/Service/Dns.php:700
 msgid "Empty CNAME records are not allowed."
 msgstr "Puste rekordy CNAME nie są dozwolone."
 
-#: lib/Domain/Service/Dns.php:717
+#: lib/Domain/Service/Dns.php:726
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
@@ -682,11 +645,11 @@ msgstr ""
 "Rekord NS lub MX nie moźe wskazywać na rekord CNAME. Usuń lub zmień nazwę "
 "rekordu CNAME, albo wybierz inną nazwę."
 
-#: lib/Domain/Service/Dns.php:743
+#: lib/Domain/Service/Dns.php:752
 msgid "Invalid value for content field of HINFO record."
 msgstr "Nieprawidłowa zawartość pola w rekordzie HINFO."
 
-#: lib/Domain/Service/Dns.php:830
+#: lib/Domain/Service/Dns.php:839
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
@@ -694,33 +657,925 @@ msgstr ""
 "Nieprawidłowa zawartość pola name w rekordzie SOA. To powinna być nazwa "
 "hosta."
 
-#: lib/Domain/Service/Dns.php:871
+#: lib/Domain/Service/Dns.php:880
 msgid "Invalid service value in name field of SRV record."
 msgstr "Nieprawidłowa wartość usługi w polu nazwy rekordu SRV."
 
-#: lib/Domain/Service/Dns.php:878
+#: lib/Domain/Service/Dns.php:887
 msgid "Invalid protocol value in name field of SRV record."
 msgstr "Nieprawidłowa wartość protokołu w polu nazwy rekordu SRV."
 
-#: lib/Domain/Service/Dns.php:885
+#: lib/Domain/Service/Dns.php:894
 msgid "Invalid FQDN value in name field of SRV record."
 msgstr "Nieprawidłowa wartość FQDN w polu nazwy rekordu SRV."
 
-#: lib/Domain/Service/Dns.php:905
+#: lib/Domain/Service/Dns.php:914
 msgid "Invalid value for the priority field of the SRV record."
 msgstr "Nieprawidłowa zawartość pola priorytet rekordu SRV."
 
-#: lib/Domain/Service/Dns.php:912
+#: lib/Domain/Service/Dns.php:921
 msgid "Invalid value for the weight field of the SRV record."
 msgstr "Nieprawidłowa zawartość pola waga rekordu SRV."
 
-#: lib/Domain/Service/Dns.php:919
+#: lib/Domain/Service/Dns.php:928
 msgid "Invalid SRV target."
 msgstr "Nieprawidłowy odnośnik SRV."
 
-#: lib/Domain/Service/Dns.php:943
+#: lib/Domain/Service/Dns.php:952
 msgid "Invalid value for TTL field. It should be numeric."
 msgstr "Nieprawidłowa zawartość pola TTL. Dozwolona tylko wartość numeryczna."
+
+#: lib/Domain/Service/Dns.php:1031
+msgid ""
+"Invalid CDNSKEY record format. Expected: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY "
+"(e.g., 257 3 5 AwEA...)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1046
+msgid "CDNSKEY flags must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1056
+msgid "CDNSKEY protocol must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1066
+msgid "CDNSKEY algorithm must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1076
+msgid "CDNSKEY public key cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1086
+msgid "CDNSKEY public key must be valid Base64."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1097
+msgid "CDNSKEY public key contains invalid Base64 encoding."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1151
+#, php-format
+msgid "Invalid APL element format: %s. Expected: [!]FAMILY:ADDRESS/PREFIX"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1167
+#, php-format
+msgid "Invalid IPv4 address in APL: %s"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1175
+msgid "IPv4 prefix must be between 0 and 32."
+msgstr "Prefiks IPv4 musi być między 0 a 32."
+
+#: lib/Domain/Service/Dns.php:1185
+#, php-format
+msgid "Invalid IPv6 address in APL: %s"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1193
+msgid "IPv6 prefix must be between 0 and 128."
+msgstr "Prefiks IPv6 musi być między 0 a 128."
+
+#: lib/Domain/Service/Dns.php:1201
+#, php-format
+msgid "Unknown address family in APL: %d. Must be 1 (IPv4) or 2 (IPv6)."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1234
+msgid "ALIAS target hostname cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1245
+#, fuzzy
+msgid "ALIAS target must be a valid hostname."
+msgstr "Rekordy NS muszą zawierać nazwę hosta."
+
+#: lib/Domain/Service/Dns.php:1277
+msgid ""
+"Invalid AFSDB record format. Expected: SUBTYPE HOSTNAME (e.g., 1 afs-"
+"server.example.com)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1290
+msgid "AFSDB subtype must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1300
+msgid "AFSDB hostname cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1333
+msgid ""
+"Invalid CAA record format. Expected: FLAGS TAG VALUE (e.g., 0 issue "
+"\"letsencrypt.org\")"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1347
+msgid "CAA flags must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1358
+msgid "CAA tag must be alphanumeric."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1368
+msgid ""
+"CAA value must be enclosed in quotes (e.g., \"letsencrypt.org\" or \"\")."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1382
+msgid "Quotes inside CAA value must be escaped with backslash."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1419
+msgid ""
+"Invalid CDS record format. Expected: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
+"(e.g., 20642 8 2 04443ABE...)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1434
+msgid "CDS keytag must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1444
+msgid "CDS algorithm must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1454
+msgid "CDS digest type must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1464
+msgid "CDS digest cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1481
+msgid ""
+"CDS digest has unexpected length. Expected 40 (SHA-1), 64 (SHA-256), or 96 "
+"(SHA-384) hex characters."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1527
+msgid ""
+"Invalid CERT record format. Expected: TYPE KEYTAG ALGORITHM CERTIFICATE "
+"(e.g., 1 0 0 MIIB9D...)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1542
+msgid "CERT type must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1552
+msgid "CERT keytag must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1562
+msgid "CERT algorithm must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1572
+msgid "CERT certificate cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1582
+msgid "CERT certificate must be valid Base64."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1593
+msgid "CERT certificate contains invalid Base64 encoding."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1630
+msgid "DNAME target cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1641
+msgid "DNAME target cannot contain spaces."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1651
+msgid ""
+"DNAME target contains invalid characters. Only alphanumeric, dots, hyphens, "
+"and underscores are allowed."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1686
+msgid ""
+"Invalid L32 record format. Expected: PREFERENCE LOCATOR32 (e.g., 513 "
+"192.0.2.1)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1699
+msgid "L32 preference must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1709
+#, fuzzy
+msgid "L32 locator32 must be a valid IPv4 address."
+msgstr "To nie jest poprawny adres IPv4."
+
+#: lib/Domain/Service/Dns.php:1744
+msgid ""
+"Invalid L64 record format. Expected: PREFERENCE LOCATOR64 (e.g., 255 "
+"2001:0DB8:1234:ABCD)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1757
+msgid "L64 preference must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1768
+msgid ""
+"L64 locator64 must be in format XXXX:XXXX:XXXX:XXXX (e.g., "
+"2001:0DB8:1234:ABCD)."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1806
+msgid "LUA record content cannot be empty."
+msgstr "Zawartość rekordu LUA nie może być pusta."
+
+#: lib/Domain/Service/Dns.php:1817
+msgid ""
+"Invalid LUA record format. Expected: TYPE LUA_CODE (e.g., A \"ifportup(443, "
+"{'192.0.2.1'})\")"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1836
+msgid ""
+"LUA record type must be a valid DNS record type (e.g., A, AAAA, TXT, MX, "
+"etc.)."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1846
+msgid "LUA code cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1885
+msgid ""
+"Invalid LP record format. Expected: PREFERENCE FQDN (e.g., 512 "
+"foo.powerdns.org.)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1898
+msgid "LP preference must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1908
+msgid "LP FQDN cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1919
+msgid ""
+"LP FQDN contains invalid characters. Only alphanumeric, dots, hyphens, and "
+"underscores are allowed."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1952
+#, php-format
+msgid ""
+"%s is a meta-query type and cannot be used as a zone record. It is only used "
+"in DNS queries."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1985
+msgid "OPENPGPKEY content cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1995
+msgid "OPENPGPKEY must be valid Base64-encoded data."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2006
+msgid "OPENPGPKEY contains invalid Base64 encoding."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2052
+msgid ""
+"Invalid SIG record format. Expected: TYPE_COVERED ALGORITHM LABELS "
+"ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2072
+msgid "SIG type covered must be a valid DNS record type."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2082
+msgid "SIG algorithm must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2092
+msgid "SIG labels must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2102
+msgid "SIG original TTL must be a positive integer."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2112
+msgid "SIG key tag must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2122
+msgid "SIG signer name cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2131
+msgid "SIG signer name must be a valid domain name."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2141
+msgid "SIG signature cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2150
+msgid "SIG signature must be valid Base64."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2160
+msgid "SIG signature contains invalid Base64 encoding."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2190
+msgid "DHCID record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2204
+msgid "DHCID record must contain valid Base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2214
+msgid "DHCID record data is too short (minimum 35 bytes required)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2246
+msgid "SMIMEA record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2257
+msgid ""
+"SMIMEA record must have at least 4 fields: usage, selector, matching-type, "
+"and certificate data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2272
+msgid "SMIMEA usage must be an integer between 0 and 255"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2282
+msgid "SMIMEA selector must be an integer between 0 and 255"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2292
+msgid "SMIMEA matching type must be an integer between 0 and 255"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2302
+msgid "SMIMEA certificate data is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2311
+msgid "SMIMEA certificate data must be a valid hexadecimal string"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2321
+msgid ""
+"SMIMEA certificate data must be at least 2 hexadecimal characters (1 byte)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2331
+msgid ""
+"SMIMEA certificate data must have an even number of hexadecimal characters"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2368
+msgid "TKEY record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2381
+msgid ""
+"TKEY record must have at least 6 fields: algorithm, inception, expiration, "
+"mode, error, and keysize"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2398
+msgid "TKEY algorithm must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2408
+msgid "TKEY inception must be a 32-bit unsigned integer (0-4294967295)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2418
+msgid "TKEY expiration must be a 32-bit unsigned integer (0-4294967295)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2428
+msgid "TKEY mode must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2438
+msgid "TKEY error must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2448
+msgid "TKEY keysize must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2462
+msgid "TKEY keydata is required when keysize > 0"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2474
+msgid "TKEY keydata must be valid Base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2487
+msgid "TKEY othersize field is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2499
+msgid "TKEY othersize must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2513
+msgid "TKEY otherdata is required when othersize > 0"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2525
+msgid "TKEY otherdata must be valid Base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2557
+msgid "URI record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2568
+msgid ""
+"URI record must have format: <priority> <weight> \"<target>\" (target must "
+"be in quotes)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2582
+msgid "URI priority must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2592
+msgid "URI weight must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2602
+msgid "URI target cannot be empty"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2612
+msgid ""
+"URI target must be a valid URI with a scheme (e.g., http://, ftp://, mailto:)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2661
+msgid "SSHFP record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2672
+msgid "SSHFP record must have 3 fields: algorithm, fptype, and fingerprint"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2686
+msgid "SSHFP algorithm must be an 8-bit integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2696
+msgid "SSHFP fingerprint type must be an 8-bit integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2706
+msgid "SSHFP fingerprint is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2715
+msgid "SSHFP fingerprint must be a valid hexadecimal string"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2725
+msgid "SSHFP fingerprint must have an even number of hexadecimal characters"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2751
+msgid "NAPTR record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2761
+msgid ""
+"NAPTR record must have format: <order> <preference> \"<flags>\" "
+"\"<services>\" \"<regexp>\" <replacement>"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2778
+msgid "NAPTR order must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2788
+msgid "NAPTR preference must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2799
+msgid "NAPTR replacement must be a valid domain name or \".\""
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2825
+msgid "RP record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2836
+msgid "RP record must have 2 fields: mbox-dname and txt-dname"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2849
+msgid "RP mbox-dname must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2859
+msgid "RP txt-dname must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2885
+msgid "DNSKEY record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2896
+msgid ""
+"DNSKEY record must have at least 4 fields: flags, protocol, algorithm, and "
+"public key"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2911
+msgid "DNSKEY flags must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2921
+msgid "DNSKEY protocol must be 3"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2931
+msgid "DNSKEY algorithm must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2941
+msgid "DNSKEY public key is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2950
+msgid "DNSKEY public key must be valid Base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2976
+msgid "NSEC record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2987
+msgid "NSEC record must have at least 2 fields: next domain name and type list"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2999
+msgid "NSEC next domain must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3012
+msgid "NSEC type list must contain valid DNS record type names"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3039
+msgid "NSEC3 record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3050
+msgid ""
+"NSEC3 record must have at least 5 fields: algorithm, flags, iterations, "
+"salt, and next hash"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3066
+msgid "NSEC3 algorithm must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3076
+msgid "NSEC3 flags must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3086
+msgid "NSEC3 iterations must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3096
+msgid "NSEC3 salt must be hexadecimal or \"-\" for no salt"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3106
+msgid "NSEC3 next hash must be Base32hex-encoded (0-9, A-V)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3119
+msgid "NSEC3 type list must contain uppercase type names"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3147
+msgid "NSEC3PARAM record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3158
+msgid ""
+"NSEC3PARAM record must have 4 fields: algorithm, flags, iterations, and salt"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3173
+msgid "NSEC3PARAM algorithm must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3183
+msgid "NSEC3PARAM flags must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3193
+msgid "NSEC3PARAM iterations must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3203
+msgid "NSEC3PARAM salt must be hexadecimal or \"-\" for no salt"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3247
+msgid "TSIG record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3259
+msgid ""
+"TSIG record must have at least 8 fields: algorithm, time-signed, fudge, mac-"
+"size, mac, original-id, error, and other-len"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3278
+msgid "TSIG algorithm must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3288
+msgid "TSIG time-signed must be a non-negative integer"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3298
+msgid "TSIG fudge must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3308
+msgid "TSIG mac-size must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3318
+msgid "TSIG MAC must be valid Base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3328
+msgid "TSIG original-id must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3338
+msgid "TSIG error must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3348
+msgid "TSIG other-len must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3359
+msgid "TSIG other-data is required when other-len > 0"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3369
+msgid "TSIG other-data must be valid Base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3395
+msgid "EUI48 record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3405
+msgid "EUI48 must be 6 octets separated by dashes (e.g., 00-11-22-33-44-55)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3430
+msgid "EUI64 record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3440
+msgid ""
+"EUI64 must be 8 octets separated by dashes (e.g., 00-11-22-33-44-55-66-77)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3465
+msgid "NID record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3476
+msgid "NID record must have 2 fields: preference and node-id"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3489
+msgid "NID preference must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3499
+msgid ""
+"NID node-id must be in format XXXX:XXXX:XXXX:XXXX (64-bit hex with colons)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3524
+msgid "KX record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3535
+msgid "KX record must have 2 fields: preference and exchanger"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3548
+msgid "KX preference must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3559
+msgid "KX exchanger must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3584
+msgid "IPSECKEY record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3595
+msgid ""
+"IPSECKEY record must have at least 3 fields: precedence, gateway-type, and "
+"algorithm"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3609
+msgid "IPSECKEY precedence must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3619
+msgid "IPSECKEY gateway-type must be 0-3 (0=none, 1=IPv4, 2=IPv6, 3=domain)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3629
+msgid "IPSECKEY algorithm must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3708 lib/Domain/Service/Dns.php:3740
+msgid "IPSECKEY public key must be Base64-encoded"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3657
+msgid "IPSECKEY with gateway-type 1 requires an IPv4 address"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3666
+#, fuzzy
+msgid "IPSECKEY gateway must be a valid IPv4 address"
+msgstr "To nie jest poprawny adres IPv4."
+
+#: lib/Domain/Service/Dns.php:3688
+msgid "IPSECKEY with gateway-type 2 requires an IPv6 address"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3697
+#, fuzzy
+msgid "IPSECKEY gateway must be a valid IPv6 address"
+msgstr "To nie jest poprawny adres IPv6."
+
+#: lib/Domain/Service/Dns.php:3719
+msgid "IPSECKEY with gateway-type 3 requires a domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3729
+msgid "IPSECKEY gateway must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3812
+msgid "MINFO record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3823
+msgid "MINFO record must have 2 fields: rmailbx and emailbx"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3836
+msgid "MINFO rmailbx must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3846
+msgid "MINFO emailbx must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3871
+msgid "MR record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3881
+msgid "MR newname must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3906
+msgid "WKS record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3917
+msgid "WKS record must have at least 3 fields: address, protocol, and services"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3930
+#, fuzzy
+msgid "WKS address must be a valid IPv4 address"
+msgstr "To nie jest poprawny adres IPv4."
+
+#: lib/Domain/Service/Dns.php:3941 lib/Domain/Service/Dns.php:3951
+msgid "WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3965 lib/Domain/Service/Dns.php:3975
+msgid "WKS service must be a 16-bit port number (0-65535) or service name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4002
+msgid "A6 record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4015
+msgid ""
+"A6 record must have at least 2 fields: prefix-length and address-suffix or "
+"prefix-name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4027
+msgid "A6 prefix length must be an integer (0-128)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4052
+msgid "CSYNC record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4063
+msgid ""
+"CSYNC record must have at least 3 fields: SOA-serial, flags, and type-list"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4076
+msgid "CSYNC SOA serial must be a 32-bit unsigned integer (0-4294967295)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4086
+msgid "CSYNC flags must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4098
+msgid "CSYNC type list must contain uppercase type names"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4124
+msgid "ZONEMD record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4135
+msgid "ZONEMD record must have 4 fields: serial, scheme, algorithm, and digest"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4150
+msgid "ZONEMD serial must be a 32-bit unsigned integer (0-4294967295)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4160
+msgid "ZONEMD scheme must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4170
+msgid "ZONEMD algorithm must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4180
+msgid "ZONEMD digest must be hexadecimal"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4220
+msgid "SVCB record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4231
+msgid "SVCB record must have at least 2 fields: priority and target"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4244
+msgid "SVCB priority must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4255
+msgid "SVCB target must be a valid domain name or \".\""
+msgstr ""
 
 #: lib/Domain/Service/DomainRecordCreator.php:56
 #, php-format
@@ -733,9 +1588,6 @@ msgstr ""
 "Dodawanie rekordów domen IPv6 ze stref odwrotnych nie jest jeszcze "
 "obsługiwane."
 
-#: lib/Domain/Service/DomainRecordCreator.php:73
-#: lib/Domain/Service/DomainRecordCreator.php:82
-#: lib/Domain/Service/DomainRecordCreator.php:91
 #: lib/Domain/Service/DomainRecordCreator.php:107
 msgid "This domain record was not valid and could not be added."
 msgstr "Ten rekord domeny był nieprawidłowy i nie mógł zostać dodany."
@@ -744,108 +1596,64 @@ msgstr "Ten rekord domeny był nieprawidłowy i nie mógł zostać dodany."
 msgid "The domain record was successfully added."
 msgstr "Rekord domeny został pomyślnie dodany."
 
-#: lib/Domain/Service/DnsRecord.php:370
+#: lib/Domain/Service/DnsRecord.php:374
 msgid "You do not have the permission to edit this SOA record."
 msgstr "Nie masz uprawnień do edycji tego rekordu SOA."
 
-#: lib/Domain/Service/DnsRecord.php:377
+#: lib/Domain/Service/DnsRecord.php:381
 msgid "You do not have the permission to edit this NS record."
 msgstr "Nie masz uprawnień do edycji tego rekordu NS."
 
-#: lib/Domain/Service/DnsRecord.php:432
+#: lib/Domain/Service/DnsRecord.php:444
 msgid "You do not have the permission to add SOA record."
 msgstr "Nie masz uprawnień do dodawania rekordu SOA."
 
-#: lib/Domain/Service/DnsRecord.php:439
+#: lib/Domain/Service/DnsRecord.php:451
 msgid "You do not have the permission to add NS record."
 msgstr "Nie masz uprawnień do dodawania rekordu NS."
 
-#: lib/Domain/Service/DnsRecord.php:529 lib/Domain/Service/DnsRecord.php:571
-#: lib/Domain/Service/DnsRecord.php:600 lib/Domain/Service/DnsRecord.php:785
-#: lib/Domain/Service/DnsRecord.php:881 lib/Domain/Service/DnsRecord.php:910
-#: lib/Domain/Service/DnsRecord.php:982 lib/Domain/Service/DnsRecord.php:1169
-#: lib/Domain/Service/DnsRecord.php:1194 lib/Domain/Service/DnsRecord.php:1549
-#: lib/Domain/Service/DnsRecord.php:1747
+#: lib/Domain/Service/DnsRecord.php:1881
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Niewłaściwy(e) argument(y) dla funkcji %s %s"
 
-#: lib/Domain/Service/DnsRecord.php:537
+#: lib/Domain/Service/DnsRecord.php:557
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "Już istnieje supermaster z tym adresem IP i nazwą hosta."
 
-#: lib/Domain/Service/DnsRecord.php:638
+#: lib/Domain/Service/DnsRecord.php:664
 msgid ""
 "You are trying to delete the SOA record. You are not allowed to remove it, "
 "unless you remove the entire zone."
 msgstr ""
-"Próbujesz usunąć rekord SOA. Nie powinieneś tego robić, chyba, źe zamierzasz"
-" usunąć całą strefę."
+"Próbujesz usunąć rekord SOA. Nie powinieneś tego robić, chyba, źe zamierzasz "
+"usunąć całą strefę."
 
-#: lib/Domain/Service/DnsRecord.php:791 lib/Domain/Service/DnsRecord.php:1405
+#: lib/Domain/Service/DnsRecord.php:825 lib/Domain/Service/DnsRecord.php:1538
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Niewłaściwy(e) argument(y) dla funkcji %s"
 
-#: lib/Domain/Service/DnsRecord.php:875
+#: lib/Domain/Service/DnsRecord.php:910
 msgid "The selected user already owns the zone."
 msgstr "Wybrany użytkownik już jest właścicielem strefy."
 
-#: lib/Domain/Service/DnsRecord.php:904
+#: lib/Domain/Service/DnsRecord.php:940
 msgid "There must be at least one owner for a zone."
 msgstr "Strefa musi mieć co najmniej jednego właściciela."
 
-#: lib/Domain/Service/DnsRecord.php:1123
+#: lib/Domain/Service/DnsRecord.php:1162
 msgid "This is an invalid zone name."
 msgstr "Taka nazwa strefy jest nieprawidłowa."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:62
-#, php-format
-msgid "There is no matching reverse-zone for: %s."
-msgstr "Nie ma pasującej strefy odwrotnej dla: %s."
-
-#: templates/dnssec_edit_key.html:3 templates/edit_zone_templ_record.html:3
-#: templates/dnssec.html:3 templates/edit_record.html:3
-#: templates/migrations.html:3 templates/edit_comment.html:3
-#: templates/add_zone_templ.html:3 templates/list_log_zones.html:3
-#: templates/delete_user.html:3 templates/list_zones.html:3
-#: templates/dnssec_add_key.html:3 templates/edit_user.html:3
-#: templates/add_perm_templ.html:3 templates/add_supermaster.html:3
-#: templates/add_zone_templ_record.html:3 templates/delete_perm_templ.html:3
-#: templates/edit.html:3 templates/users.html:3 templates/delete_record.html:3
-#: templates/add_user.html:3 templates/add_zone_master.html:3
-#: templates/list_zone_templ.html:3 templates/change_password.html:3
-#: templates/edit_zone_templ.html:3 templates/list_supermasters.html:3
-#: templates/bulk_registration.html:3 templates/delete_domain.html:3
-#: templates/search.html:3 templates/delete_domains.html:3
-#: templates/delete_supermaster.html:3 templates/list_log_users.html:3
-#: templates/add_zone_slave.html:3 templates/delete_zone_templ.html:3
-#: templates/dnssec_ds_dnskey.html:3 templates/add_record.html:3
-#: templates/edit_perm_templ.html:3 templates/delete_zone_templ_record.html:3
 #: templates/dnssec_delete_key.html:3 templates/list_perm_templ.html:3
 msgid "Home"
 msgstr "Strona główna"
 
-#: templates/dnssec_edit_key.html:4 templates/edit_zone_templ_record.html:4
-#: templates/dnssec.html:4 templates/edit_record.html:4
-#: templates/edit_comment.html:4 templates/add_zone_templ.html:4
-#: templates/list_log_zones.html:4 templates/list_zones.html:4
-#: templates/dnssec_add_key.html:4 templates/add_zone_templ_record.html:4
-#: templates/edit.html:4 templates/delete_record.html:4
-#: templates/add_zone_master.html:4 templates/list_zone_templ.html:4
-#: templates/edit_zone_templ.html:4 templates/bulk_registration.html:4
-#: templates/bulk_registration.html:56 templates/delete_domain.html:4
-#: templates/search.html:34 templates/delete_domains.html:4
-#: templates/add_zone_slave.html:4 templates/delete_zone_templ.html:4
-#: templates/header.html:40 templates/dnssec_ds_dnskey.html:4
-#: templates/add_record.html:4 templates/delete_zone_templ_record.html:4
 #: templates/dnssec_delete_key.html:4
 msgid "Zones"
 msgstr "Strefy"
 
-#: templates/dnssec_edit_key.html:13 templates/dnssec.html:12
-#: templates/list_zones.html:62 templates/dnssec_add_key.html:13
-#: templates/edit.html:299 templates/add_zone_master.html:63
 #: templates/dnssec_ds_dnskey.html:13 templates/dnssec_delete_key.html:13
 msgid "DNSSEC"
 msgstr "DNSSEC"
@@ -866,61 +1674,38 @@ msgstr "Dezaktywuj klucz strefy"
 msgid "Activate zone key"
 msgstr "Aktywuj klucz strefy"
 
-#: templates/dnssec_edit_key.html:37 templates/dnssec_delete_key.html:28
+#: templates/dnssec_edit_key.html:38 templates/dnssec_delete_key.html:29
 msgid "Domain"
 msgstr "Domena"
 
-#: templates/dnssec_edit_key.html:44 templates/list_log_zones.html:39
-#: templates/edit.html:133 templates/list_log_users.html:39
-#: templates/dnssec_delete_key.html:35
+#: templates/dnssec_delete_key.html:36
 msgid "Id"
 msgstr "Id"
 
-#: templates/dnssec_edit_key.html:45 templates/edit_zone_templ_record.html:23
-#: templates/dnssec.html:25 templates/edit_record.html:29
-#: templates/list_zones.html:36 templates/add_zone_templ_record.html:20
-#: templates/edit.html:28 templates/edit.html:150 templates/edit.html:320
-#: templates/edit.html:498 templates/add_zone_master.html:35
-#: templates/list_zone_templ.html:17 templates/edit_zone_templ.html:29
-#: templates/bulk_registration.html:29 templates/delete_domain.html:23
-#: templates/search.html:69 templates/search.html:164
-#: templates/delete_domains.html:17 templates/add_record.html:29
-#: templates/dnssec_delete_key.html:36
+#: templates/dnssec_delete_key.html:37
 msgid "Type"
 msgstr "Typ"
 
-#: templates/dnssec_edit_key.html:46 templates/dnssec.html:26
-#: templates/dnssec_delete_key.html:37
+#: templates/dnssec_delete_key.html:38
 msgid "Tag"
 msgstr "Znacznik"
 
-#: templates/dnssec_edit_key.html:47 templates/dnssec.html:27
-#: templates/dnssec_add_key.html:54 templates/dnssec_delete_key.html:38
+#: templates/dnssec_add_key.html:54 templates/dnssec_delete_key.html:39
 msgid "Algorithm"
 msgstr "Algorytm"
 
-#: templates/dnssec_edit_key.html:48 templates/dnssec.html:28
-#: templates/dnssec_delete_key.html:39
+#: templates/dnssec_delete_key.html:40
 msgid "Bits"
 msgstr "Bity"
 
-#: templates/dnssec_edit_key.html:49 templates/dnssec.html:29
-#: templates/dnssec_delete_key.html:40
+#: templates/dnssec_delete_key.html:41
 msgid "Active"
 msgstr "Aktywny"
 
-#: templates/dnssec_edit_key.html:50 templates/delete_user.html:49
-#: templates/delete_perm_templ.html:12 templates/delete_record.html:49
-#: templates/delete_domain.html:31 templates/delete_domains.html:50
-#: templates/delete_supermaster.html:14 templates/delete_zone_templ.html:11
-#: templates/delete_zone_templ_record.html:33
-#: templates/dnssec_delete_key.html:42
+#: templates/dnssec_delete_key.html:43
 msgid "Are you sure?"
 msgstr "Jesteś pewien?"
 
-#: templates/edit_zone_templ_record.html:5 templates/add_zone_templ.html:5
-#: templates/add_zone_templ_record.html:5 templates/list_zone_templ.html:5
-#: templates/edit_zone_templ.html:5 templates/delete_zone_templ.html:5
 #: templates/delete_zone_templ_record.html:5
 msgid "Zone templates"
 msgstr "Szablony stref"
@@ -933,58 +1718,31 @@ msgstr "Edytuj rekord"
 msgid "Edit record in zone template"
 msgstr "Edytuj rekord we wzorcu strefy."
 
-#: templates/edit_zone_templ_record.html:21 templates/edit_record.html:27
-#: templates/add_zone_templ.html:15 templates/list_zones.html:30
-#: templates/add_perm_templ.html:15 templates/add_perm_templ.html:31
-#: templates/add_zone_templ_record.html:18 templates/edit.html:27
-#: templates/edit.html:142 templates/edit.html:318
-#: templates/list_zone_templ.html:14 templates/edit_zone_templ.html:28
-#: templates/edit_zone_templ.html:129 templates/search.html:63
-#: templates/search.html:158 templates/delete_domains.html:15
-#: templates/add_record.html:27 templates/edit_perm_templ.html:17
 #: templates/edit_perm_templ.html:33 templates/list_perm_templ.html:13
 msgid "Name"
 msgstr "Nazwa"
 
-#: templates/edit_zone_templ_record.html:24 templates/edit_record.html:30
-#: templates/add_zone_templ_record.html:21 templates/edit.html:29
-#: templates/edit.html:158 templates/edit.html:321
-#: templates/edit_zone_templ.html:30 templates/search.html:176
 #: templates/add_record.html:30
 msgid "Content"
 msgstr "Zawartość"
 
-#: templates/edit_zone_templ_record.html:25 templates/edit_record.html:31
-#: templates/add_zone_templ_record.html:22 templates/edit.html:30
-#: templates/edit.html:166 templates/edit.html:322
-#: templates/edit_zone_templ.html:31 templates/search.html:170
 #: templates/add_record.html:31
 msgid "Priority"
 msgstr "Priorytet"
 
-#: templates/edit_zone_templ_record.html:26 templates/edit_record.html:32
-#: templates/add_zone_templ_record.html:23 templates/edit.html:31
-#: templates/edit.html:174 templates/edit.html:323
-#: templates/edit_zone_templ.html:33 templates/search.html:182
 #: templates/add_record.html:32
 msgid "TTL"
 msgstr "TTL"
 
-#: templates/edit_zone_templ_record.html:51 templates/edit_record.html:82
-#: templates/edit.html:73 templates/edit.html:354 templates/add_record.html:59
+#: templates/edit.html:73 templates/edit.html:377 templates/add_record.html:59
 msgid "Provide content"
 msgstr "Podaj zawartość"
 
-#: templates/edit_zone_templ_record.html:60 templates/edit_record.html:99
-#: templates/edit_comment.html:31 templates/edit_user.html:77
-#: templates/add_perm_templ.html:47 templates/users.html:119
-#: templates/edit_zone_templ.html:152 templates/edit_perm_templ.html:55
+#: templates/edit_zone_templ.html:148 templates/edit_perm_templ.html:55
 msgid "Update"
 msgstr "Aktualizuj"
 
-#: templates/edit_zone_templ_record.html:61 templates/edit_record.html:100
-#: templates/edit_comment.html:32 templates/edit_user.html:78
-#: templates/edit.html:293 templates/users.html:120
+#: templates/edit.html:147 templates/edit.html:316 templates/users.html:120
 msgid "Reset"
 msgstr "Resetuj"
 
@@ -1000,11 +1758,11 @@ msgstr "ID"
 msgid "Delete zone key"
 msgstr "Usuń klucz strefy"
 
-#: templates/dnssec.html:60
+#: templates/dnssec.html:59
 msgid "Add new key"
 msgstr "Dodaj nowy klucz"
 
-#: templates/dnssec.html:62
+#: templates/dnssec.html:60
 msgid "Show DS and DNSKEY"
 msgstr "Pokaż DS i DNSKEY"
 
@@ -1012,23 +1770,19 @@ msgstr "Pokaż DS i DNSKEY"
 msgid "Edit record in zone"
 msgstr "Edytuj rekord w strefie"
 
-#: templates/edit_record.html:34 templates/edit.html:33
-#: templates/edit.html:181 templates/edit.html:325
 #: templates/add_record.html:34
 msgid "Comment"
 msgstr "Komentarz"
 
-#: templates/edit_record.html:36 templates/edit.html:185
-#: templates/search.html:188
+#: templates/search.html:235
 msgid "Disabled"
 msgstr "Wyłączony"
 
-#: templates/migrations.html:4 templates/migrations.html:8
 #: templates/index_list.html:66 templates/index_cards.html:138
 msgid "Migrations"
 msgstr "Migracje"
 
-#: templates/edit_comment.html:12 templates/edit.html:285
+#: templates/edit_comment.html:12 templates/edit.html:307
 msgid "Edit comment"
 msgstr "Edytuj komentarz"
 
@@ -1044,53 +1798,41 @@ msgstr "Dodaj szablon"
 msgid "Add zone template for"
 msgstr "Dodaj wzorzec dla"
 
-#: templates/add_zone_templ.html:17 templates/add_perm_templ.html:17
-#: templates/edit_zone_templ.html:112 templates/edit_zone_templ.html:133
 #: templates/edit_perm_templ.html:19
 msgid "Provide a name for your template"
 msgstr "Podaj nazwę dla szablonu"
 
-#: templates/add_zone_templ.html:20 templates/edit_user.html:60
-#: templates/add_perm_templ.html:20 templates/add_perm_templ.html:32
-#: templates/add_user.html:57 templates/list_zone_templ.html:15
-#: templates/edit_zone_templ.html:137 templates/edit_perm_templ.html:22
 #: templates/edit_perm_templ.html:34 templates/list_perm_templ.html:14
 msgid "Description"
 msgstr "Opis"
 
-#: templates/add_zone_templ.html:26 templates/edit_zone_templ.html:146
+#: templates/add_zone_templ.html:26 templates/edit_zone_templ.html:142
 msgid "Everyone could use it (global)?"
 msgstr "Czy każdy może go używać (globalny)?"
 
-#: templates/add_zone_templ.html:30 templates/list_zone_templ.html:71
 #: templates/header.html:106
 msgid "Add zone template"
 msgstr "Dodaj wzorzec strefy"
 
-#: templates/list_log_zones.html:5 templates/list_log_zones.html:9
-#: templates/index_list.html:45 templates/index_cards.html:90
 #: templates/header.html:62
 msgid "Zone logs"
 msgstr "Logi stref"
-
-#: templates/list_log_zones.html:10 templates/list_log_users.html:10
-msgid "Total number of logs:"
-msgstr "Łączna liczba logów:"
 
 #: templates/list_log_zones.html:17
 msgid "Search logs by domain"
 msgstr "Wyszukaj logi według domeny"
 
-#: templates/list_log_zones.html:21 templates/search.html:4
-#: templates/search.html:23 templates/list_log_users.html:21
 #: templates/header.html:32
 msgid "Search"
 msgstr "Szukaj"
 
-#: templates/list_log_zones.html:25 templates/search.html:25
-#: templates/list_log_users.html:25
+#: templates/list_log_users.html:23
 msgid "Clear"
 msgstr "Wyczyść"
+
+#: templates/list_log_zones.html:30 templates/list_log_users.html:30
+msgid "Total number of logs:"
+msgstr "Łączna liczba logów:"
 
 #: templates/list_log_zones.html:40 templates/list_log_users.html:40
 msgid "Event"
@@ -1100,11 +1842,15 @@ msgstr "Zdarzenie"
 msgid "Created at"
 msgstr "Utworzono"
 
-#: templates/list_log_zones.html:53
+#: templates/list_log_zones.html:55 templates/list_log_zones.html:68
 msgid "Details"
 msgstr "Szczegóły"
 
-#: templates/list_log_zones.html:64 templates/list_log_users.html:56
+#: templates/list_log_zones.html:73
+msgid "Close"
+msgstr "Zamknij"
+
+#: templates/list_log_zones.html:89 templates/list_log_users.html:58
 msgid "No logs found"
 msgstr "Nie znaleziono logów"
 
@@ -1112,75 +1858,54 @@ msgstr "Nie znaleziono logów"
 msgid "Welcome"
 msgstr "Witaj"
 
-#: templates/index_list.html:5 templates/search.html:8
 #: templates/index_cards.html:8
 msgid "Search zones and records"
 msgstr "Szukaj stref i rekordów"
 
-#: templates/index_list.html:10 templates/list_zones.html:8
 #: templates/index_cards.html:18 templates/header.html:43
 msgid "List zones"
 msgstr "Lista stref"
 
-#: templates/index_list.html:15 templates/index_cards.html:30
 #: templates/header.html:104
 msgid "List zone templates"
 msgstr "Lista wzorców stref"
 
-#: templates/index_list.html:20 templates/list_supermasters.html:8
 #: templates/index_cards.html:40
 msgid "List supermasters"
 msgstr "Lista supermasterów"
 
-#: templates/index_list.html:25 templates/list_zones.html:141
-#: templates/add_zone_master.html:5 templates/add_zone_master.html:9
 #: templates/index_cards.html:50 templates/header.html:47
 msgid "Add master zone"
 msgstr "Dodaj strefę master"
 
-#: templates/index_list.html:30 templates/list_zones.html:145
-#: templates/add_zone_slave.html:5 templates/add_zone_slave.html:9
 #: templates/index_cards.html:60 templates/header.html:51
 msgid "Add slave zone"
 msgstr "Dodaj strefę slave"
 
-#: templates/index_list.html:35 templates/add_supermaster.html:5
-#: templates/add_supermaster.html:9 templates/add_supermaster.html:49
-#: templates/list_supermasters.html:48 templates/index_cards.html:70
+#: templates/list_supermasters.html:49 templates/index_cards.html:70
 msgid "Add supermaster"
 msgstr "Dodaj supermastera"
 
-#: templates/index_list.html:40 templates/bulk_registration.html:5
-#: templates/bulk_registration.html:9 templates/index_cards.html:80
 #: templates/header.html:55
 msgid "Bulk registration"
 msgstr "Rejestracja masowa"
 
-#: templates/index_list.html:50 templates/change_password.html:4
-#: templates/change_password.html:8 templates/change_password.html:37
 #: templates/index_cards.html:101 templates/header.html:117
 msgid "Change password"
 msgstr "Zmień hasło"
 
-#: templates/index_list.html:54 templates/users.html:8
 #: templates/index_cards.html:110 templates/header.html:73
 msgid "User administration"
 msgstr "Zarządzanie uźytkownikami"
 
-#: templates/index_list.html:58 templates/index_cards.html:119
 #: templates/header.html:82
 msgid "List permission templates"
 msgstr "Lista szablonów uprawnień"
 
-#: templates/index_list.html:62 templates/index_cards.html:128
 #: templates/header.html:119
 msgid "Logout"
 msgstr "Wyloguj"
 
-#: templates/delete_user.html:4 templates/edit_user.html:4
-#: templates/add_perm_templ.html:4 templates/delete_perm_templ.html:4
-#: templates/users.html:4 templates/add_user.html:4
-#: templates/list_log_users.html:4 templates/header.html:71
 #: templates/edit_perm_templ.html:4 templates/list_perm_templ.html:4
 msgid "Users"
 msgstr "Użytkownicy"
@@ -1201,12 +1926,7 @@ msgstr ""
 msgid "Zone"
 msgstr "Strefa"
 
-#: templates/delete_user.html:23 templates/list_zones.html:118
-#: templates/delete_perm_templ.html:6 templates/edit.html:264
-#: templates/edit.html:444 templates/users.html:98
-#: templates/list_zone_templ.html:60 templates/edit_zone_templ.html:54
-#: templates/list_supermasters.html:29 templates/search.html:103
-#: templates/search.html:212 templates/list_perm_templ.html:25
+#: templates/search.html:267 templates/list_perm_templ.html:25
 msgid "Delete"
 msgstr "Usuń"
 
@@ -1222,53 +1942,47 @@ msgstr "Dodaj właściciela"
 msgid "Owner to be added"
 msgstr "Właściel do dodania"
 
-#: templates/list_zones.html:9 templates/search.html:58
+#: templates/list_zones.html:12 templates/search.html:67
 msgid "Total number of zones:"
 msgstr "Łączna liczba stref:"
 
-#: templates/list_zones.html:21
+#: templates/search.html:72 templates/search.html:191
+msgid "Rows per page:"
+msgstr "Wierszy na stronę:"
+
+#: templates/list_zones.html:38
 msgid "There are no zones to show in this listing."
 msgstr "Brak stref do wyświetlenia."
 
-#: templates/list_zones.html:41 templates/search.html:39
-#: templates/search.html:75
+#: templates/search.html:98
 msgid "Records"
 msgstr "Rekordy"
 
-#: templates/list_zones.html:47 templates/add_zone_master.html:21
-#: templates/list_zone_templ.html:16 templates/bulk_registration.html:15
-#: templates/delete_domain.html:22 templates/search.html:81
 #: templates/delete_domains.html:16 templates/add_zone_slave.html:28
 msgid "Owner"
 msgstr "Właściciel"
 
-#: templates/list_zones.html:51
+#: templates/list_zones.html:68
 msgid "Full name"
 msgstr "Pełna nazwa"
 
-#: templates/list_zones.html:54
+#: templates/list_zones.html:71
 msgid "Serial"
 msgstr "Numer seryjny"
 
-#: templates/list_zones.html:58 templates/edit.html:559
-#: templates/users.html:18 templates/add_zone_master.html:50
-#: templates/bulk_registration.html:44
+#: templates/add_zone_master.html:50 templates/bulk_registration.html:44
 msgid "Template"
 msgstr "Wzorzec"
 
-#: templates/list_zones.html:115 templates/edit.html:12
-#: templates/edit.html:262 templates/users.html:93
-#: templates/list_zone_templ.html:59 templates/edit_zone_templ.html:51
-#: templates/search.html:100 templates/search.html:209
-#: templates/edit_perm_templ.html:6 templates/list_perm_templ.html:24
+#: templates/list_perm_templ.html:24
 msgid "Edit"
 msgstr "Edytuj"
 
-#: templates/list_zones.html:135
+#: templates/list_zones.html:152
 msgid "Delete zone(s)"
 msgstr "Usuń strefy"
 
-#: templates/dnssec_add_key.html:15 templates/dnssec_add_key.html:74
+#: templates/dnssec_add_key.html:15 templates/dnssec_add_key.html:69
 msgid "Add key"
 msgstr "Dodaj klucz"
 
@@ -1292,7 +2006,7 @@ msgstr "Długość w bitach"
 msgid "Select bits length"
 msgstr "Wybierz długość klucza"
 
-#: templates/dnssec_add_key.html:68
+#: templates/dnssec_add_key.html:63
 msgid "Select algorithm"
 msgstr "Wybierz algorytm"
 
@@ -1300,8 +2014,8 @@ msgstr "Wybierz algorytm"
 msgid "Edit user"
 msgstr "Edytuj uźytkownika"
 
-#: templates/edit_user.html:15 templates/login.html:13 templates/users.html:15
-#: templates/add_user.html:14
+#: templates/add_user.html:14 install/templates/step4.html.twig:14
+#: install/templates/step3.html.twig:35
 msgid "Username"
 msgstr "Nazwa uźytkownika"
 
@@ -1309,17 +2023,15 @@ msgstr "Nazwa uźytkownika"
 msgid "Provide user name"
 msgstr "Podaj nazwę użytkownika"
 
-#: templates/edit_user.html:22 templates/users.html:16
 #: templates/add_user.html:20
 msgid "Fullname"
 msgstr "Pełna nazwa"
 
-#: templates/edit_user.html:27 templates/login.html:18
-#: templates/add_user.html:24
+#: templates/add_user.html:24 install/templates/step4.html.twig:22
+#: install/templates/step3.html.twig:46
 msgid "Password"
 msgstr "Hasło"
 
-#: templates/edit_user.html:37 templates/users.html:17
 #: templates/add_user.html:34
 msgid "Email address"
 msgstr "Adres e-mail"
@@ -1332,7 +2044,6 @@ msgstr "Podaj adres e-mail"
 msgid "Permission template"
 msgstr "Wzorzec uprawnień"
 
-#: templates/edit_user.html:65 templates/users.html:24
 #: templates/add_user.html:62
 msgid "Enabled"
 msgstr "Włączony"
@@ -1341,35 +2052,30 @@ msgstr "Włączony"
 msgid "LDAP Authentication"
 msgstr "Uwierzytelnianie LDAP"
 
-#: templates/edit_user.html:84
+#: templates/edit_user.html:85
 msgid "This user has been assigned the permission template"
 msgstr "Temu użytkownikowi przypisano szablon uprawnień"
 
-#: templates/edit_user.html:86
+#: templates/edit_user.html:87
 msgid "The description for this template is"
 msgstr "Opis tego wzorca to"
 
-#: templates/edit_user.html:88
+#: templates/edit_user.html:89
 msgid "Based on this template, this user has the following permissions"
 msgstr "W oparciu o ten wzorzec, ten uźytkownik ma następujące uprawnienia"
 
-#: templates/add_perm_templ.html:5 templates/delete_perm_templ.html:5
-#: templates/edit_perm_templ.html:5 templates/list_perm_templ.html:5
 #: templates/list_perm_templ.html:9
 msgid "Permission templates"
 msgstr "Wzorce uprawnień"
 
-#: templates/add_perm_templ.html:6 templates/edit.html:492
 #: templates/add_user.html:74
 msgid "Add"
 msgstr "Dodaj"
 
-#: templates/add_perm_templ.html:10 templates/header.html:84
-#: templates/list_perm_templ.html:33
+#: templates/list_perm_templ.html:34
 msgid "Add permission template"
 msgstr "Dodaj wzorzec uprawnień"
 
-#: templates/add_supermaster.html:4 templates/list_supermasters.html:4
 #: templates/delete_supermaster.html:4
 msgid "Supermasters"
 msgstr "Serwery nadrzędne"
@@ -1382,7 +2088,6 @@ msgstr "Adres IP supermastera"
 msgid "Provide ip address"
 msgstr "Podaj adres IP"
 
-#: templates/add_supermaster.html:20 templates/list_supermasters.html:14
 #: templates/delete_supermaster.html:11
 msgid "Hostname in NS record"
 msgstr "Nazwa w rekordzie NS"
@@ -1391,7 +2096,6 @@ msgstr "Nazwa w rekordzie NS"
 msgid "Provide host name"
 msgstr "Podaj nazwę hosta"
 
-#: templates/add_supermaster.html:25 templates/list_supermasters.html:15
 #: templates/delete_supermaster.html:12 templates/header.html:114
 msgid "Account"
 msgstr "Konto"
@@ -1416,10 +2120,6 @@ msgstr "Język"
 msgid "Go"
 msgstr "Wykonaj"
 
-#: templates/add_zone_templ_record.html:7
-#: templates/add_zone_templ_record.html:50 templates/edit.html:98
-#: templates/edit.html:368 templates/edit_zone_templ.html:21
-#: templates/edit_zone_templ.html:62 templates/add_record.html:12
 #: templates/add_record.html:71
 msgid "Add record"
 msgstr "Dodaj rekord"
@@ -1432,11 +2132,11 @@ msgstr "Dodaj rekord do wzorca strefy"
 msgid "Provide content for your zone record"
 msgstr "Podaj zawartość dla Twojego rekordu strefy"
 
-#: templates/add_zone_templ_record.html:57 templates/edit_zone_templ.html:71
+#: templates/add_zone_templ_record.html:57 templates/edit_zone_templ.html:67
 msgid "Hint:"
 msgstr "Wskazówka:"
 
-#: templates/add_zone_templ_record.html:60 templates/edit_zone_templ.html:74
+#: templates/add_zone_templ_record.html:60 templates/edit_zone_templ.html:70
 msgid "The following placeholders can be used in template records"
 msgstr "Moźesz uźyć następujących podstawień"
 
@@ -1448,54 +2148,54 @@ msgstr "zostanie zamienione na nazwę bieźącej strefy"
 msgid "substituted with current date and 2 numbers"
 msgstr "zostanie zamienione na bieźącą datę oraz dwycyfrowy numer"
 
-#: templates/add_zone_templ_record.html:66 templates/edit_zone_templ.html:82
+#: templates/add_zone_templ_record.html:66 templates/edit_zone_templ.html:78
 msgid "substituted with 1st name server"
 msgstr "zastępowane 1. serwerem nazw"
 
-#: templates/add_zone_templ_record.html:67 templates/edit_zone_templ.html:83
+#: templates/add_zone_templ_record.html:67 templates/edit_zone_templ.html:79
 msgid "substituted with 2nd name server"
 msgstr "zastępowane 2. serwerem nazw"
 
-#: templates/add_zone_templ_record.html:68 templates/edit_zone_templ.html:84
+#: templates/add_zone_templ_record.html:68 templates/edit_zone_templ.html:80
 msgid "substituted with 3rd name server"
 msgstr "zastępowane 3. serwerem nazw"
 
-#: templates/add_zone_templ_record.html:69 templates/edit_zone_templ.html:85
+#: templates/add_zone_templ_record.html:69 templates/edit_zone_templ.html:81
 msgid "substituted with 4th name server"
 msgstr "zastępowane 4. serwerem nazw"
 
-#: templates/add_zone_templ_record.html:70 templates/edit_zone_templ.html:86
+#: templates/add_zone_templ_record.html:70 templates/edit_zone_templ.html:82
 msgid "substituted with hostmaster"
 msgstr "zastępowane wartością hostmaster"
 
-#: templates/add_zone_templ_record.html:74 templates/edit_zone_templ.html:90
+#: templates/add_zone_templ_record.html:74 templates/edit_zone_templ.html:86
 msgid "Examples:"
 msgstr "Przykłady:"
 
-#: templates/add_zone_templ_record.html:77 templates/edit_zone_templ.html:93
+#: templates/add_zone_templ_record.html:77 templates/edit_zone_templ.html:89
 msgid ""
 "To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
 "name field."
 msgstr ""
-"Aby dodać subdomenę foo w szablonie strefy, wpisz foo.[ZONE] w polu nazwy."
-"name field."
+"Aby dodać subdomenę foo w szablonie strefy, wpisz foo.[ZONE] w polu "
+"nazwy.name field."
 
-#: templates/add_zone_templ_record.html:78 templates/edit_zone_templ.html:94
+#: templates/add_zone_templ_record.html:78 templates/edit_zone_templ.html:90
 msgid "To add a wildcard record put *.[ZONE] in the name field."
 msgstr ""
 "Aby dodać rekord z symbolem wieloznacznym, wpisz *.[ZONE] w polu nazwy."
 
-#: templates/add_zone_templ_record.html:79 templates/edit_zone_templ.html:95
+#: templates/add_zone_templ_record.html:79 templates/edit_zone_templ.html:91
 msgid "Use just [ZONE] to have the domain itself return a value."
 msgstr "Użyj samego [ZONE], aby sama domena zwracała wartość."
 
-#: templates/add_zone_templ_record.html:80 templates/edit_zone_templ.html:96
+#: templates/add_zone_templ_record.html:80 templates/edit_zone_templ.html:92
 msgid ""
 "For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
 "86400 in the content field."
 msgstr ""
-"Dla rekordu SOA wpisz [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 w polu zawartości."
-"86400 in the content field."
+"Dla rekordu SOA wpisz [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 w "
+"polu zawartości.86400 in the content field."
 
 #: templates/delete_perm_templ.html:10
 msgid "Delete permission template"
@@ -1513,7 +2213,7 @@ msgstr "Dodaj PTR"
 msgid "Add A/AAAA"
 msgstr "Dodaj A/AAAA"
 
-#: templates/edit.html:79 templates/edit.html:360
+#: templates/edit.html:79 templates/edit.html:383
 msgid "Provide TTL"
 msgstr "Podaj TTL"
 
@@ -1521,67 +2221,67 @@ msgstr "Podaj TTL"
 msgid "Edit zone"
 msgstr "Edytuj strefę"
 
-#: templates/edit.html:119
+#: templates/edit.html:134
 msgid "This zone does not have any records."
 msgstr "Ta strefa nie zawiera żadnych rekordów."
 
-#: templates/edit.html:275
-msgid "Comments"
-msgstr "Komentarze"
-
-#: templates/edit.html:292
+#: templates/edit.html:146 templates/edit.html:315
 msgid "Save changes"
 msgstr "Zapisz zmiany"
 
-#: templates/edit.html:301
+#: templates/edit.html:296 templates/search.html:55
+msgid "Comments"
+msgstr "Komentarze"
+
+#: templates/edit.html:324
 msgid "Unsign this zone"
 msgstr "Usuń podpis tej strefy"
 
-#: templates/edit.html:304
+#: templates/edit.html:327
 msgid "Sign this zone"
 msgstr "Podpisz tę strefę"
 
-#: templates/edit.html:374 templates/add_record.html:77
+#: templates/edit.html:397 templates/add_record.html:77
 msgid "Also add a PTR record in the matching zone"
 msgstr "Dodaj również rekord PTR w odpowiedniej strefie"
 
-#: templates/edit.html:381 templates/add_record.html:84
+#: templates/edit.html:404 templates/add_record.html:84
 msgid "Also add an A/AAAA record in the matching zone"
 msgstr "Dodaj również rekord A/AAAA w odpowiedniej strefie"
 
-#: templates/edit.html:396
+#: templates/edit.html:419
 msgid "Save as new template"
 msgstr "Zapisz jako nowy szablon"
 
-#: templates/edit.html:399 templates/edit_zone_templ.html:109
+#: templates/edit.html:422 templates/edit_zone_templ.html:105
 msgid "Template Name"
 msgstr "Nazwa szablonu"
 
-#: templates/edit.html:402
+#: templates/edit.html:425
 msgid "Provide template name"
 msgstr "Podaj nazwę szablonu"
 
-#: templates/edit.html:406 templates/edit_zone_templ.html:116
+#: templates/edit.html:429 templates/edit_zone_templ.html:112
 msgid "Template Description"
 msgstr "Opis szablonu"
 
-#: templates/edit.html:412 templates/edit_zone_templ.html:120
+#: templates/edit.html:435 templates/edit_zone_templ.html:116
 msgid "Save as template"
 msgstr "Zapisz jako szablon"
 
-#: templates/edit.html:421
+#: templates/edit.html:444
 msgid "Owner of zone"
 msgstr "Właściciel strefy"
 
-#: templates/edit.html:426
+#: templates/edit.html:449
 msgid "No owner set for this zone."
 msgstr "Ta strefa nie ma właściciela"
 
-#: templates/edit.html:519 templates/edit.html:546 templates/edit.html:581
+#: templates/edit.html:542 templates/edit.html:569 templates/edit.html:604
 msgid "Change"
 msgstr "Zmień"
 
-#: templates/edit.html:532 templates/add_zone_slave.html:21
+#: templates/edit.html:555 templates/add_zone_slave.html:21
 msgid "IP address of master NS"
 msgstr "IP serwera master NS"
 
@@ -1589,8 +2289,7 @@ msgstr "IP serwera master NS"
 msgid "LDAP"
 msgstr "LDAP"
 
-#: templates/users.html:125 templates/add_user.html:5
-#: templates/add_user.html:9 templates/header.html:75
+#: templates/header.html:75
 msgid "Add user"
 msgstr "Dodaj uźytkownika"
 
@@ -1603,12 +2302,11 @@ msgid "Delete record in zone"
 msgstr "Usuń rekord w strefie"
 
 #: templates/delete_record.html:47
-msgid ""
-"You are trying to delete a record that is needed for this zone to work."
+msgid "You are trying to delete a record that is needed for this zone to work."
 msgstr ""
 "Próbujesz usunąć rekord,który jest niezbędny do poprawnego działania strefy."
 
-#: templates/add_user.html:29
+#: templates/add_user.html:29 install/templates/step3.html.twig:51
 msgid "Provide user password"
 msgstr "Podaj hasło użytkownika"
 
@@ -1636,7 +2334,7 @@ msgstr "W użyciu"
 msgid "Zones linked"
 msgstr "Połączone strefy"
 
-#: templates/list_zone_templ.html:26 templates/search.html:261
+#: templates/list_zone_templ.html:26 templates/search.html:317
 msgid "No results found"
 msgstr "Nie znaleziono wyników"
 
@@ -1680,11 +2378,11 @@ msgstr "Edytuj wzorzec strefy"
 msgid "This zone template does not have any records yet."
 msgstr "Ten szablon strefy nie ma jeszcze żadnych rekordów."
 
-#: templates/edit_zone_templ.html:67
+#: templates/edit_zone_templ.html:63
 msgid "Update zones"
 msgstr "Zaktualizuj strefy"
 
-#: templates/list_supermasters.html:40
+#: templates/list_supermasters.html:41
 msgid "There are no supermasters to show in this listing."
 msgstr "Nie ma żadnych supermasterów do wyświetlenia na tej liście."
 
@@ -1708,7 +2406,7 @@ msgstr "Usuń strefę"
 msgid "Delete zone"
 msgstr "Usuń strefę"
 
-#: templates/delete_domain.html:27 templates/delete_domains.html:42
+#: templates/delete_domain.html:29 templates/delete_domains.html:42
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -1722,12 +2420,12 @@ msgstr ""
 
 #: templates/search.html:9
 msgid ""
-"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_)"
-" in pattern matches any single character, a percent sign (%) matches any "
+"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) "
+"in pattern matches any single character, a percent sign (%) matches any "
 "string of zero or more characters."
 msgstr ""
-"Wpisz nazwę hosta lub adres IP. Składnia podobna do SQL: podkreślenie (_) we"
-" wzorcu zastępuje dowolny, pojedynczy znak, procent (%) zastępuje dowolny "
+"Wpisz nazwę hosta lub adres IP. Składnia podobna do SQL: podkreślenie (_) we "
+"wzorcu zastępuje dowolny, pojedynczy znak, procent (%) zastępuje dowolny "
 "ciąg znaków, dowolnej długości."
 
 #: templates/search.html:27
@@ -1742,15 +2440,15 @@ msgstr "Symbol wieloznaczny"
 msgid "Reverse"
 msgstr "Odwróć"
 
-#: templates/search.html:57
+#: templates/search.html:64
 msgid "Zones found"
 msgstr "Znalezione strefy"
 
-#: templates/search.html:152
+#: templates/search.html:183
 msgid "Records found"
 msgstr "Znalezione rekordy"
 
-#: templates/search.html:153
+#: templates/search.html:186
 msgid "Total number of records:"
 msgstr "Łączna liczba rekordów:"
 
@@ -1766,7 +2464,6 @@ msgstr "Uwaga"
 msgid "Delete supermaster"
 msgstr "Usuń supermastera"
 
-#: templates/list_log_users.html:5 templates/list_log_users.html:9
 #: templates/header.html:91
 msgid "User logs"
 msgstr "Logi użytkowników"
@@ -1799,7 +2496,7 @@ msgstr "Publiczne rekordy DNSSEC dla strefy"
 msgid "DNSKEY"
 msgstr "DNSKEY"
 
-#: templates/dnssec_ds_dnskey.html:33
+#: templates/dnssec_ds_dnskey.html:35
 msgid "DS record"
 msgstr "Rekord DS"
 
@@ -1819,53 +2516,339 @@ msgstr "Usuń rekord"
 msgid "Delete record in zone template"
 msgstr "Usuń rekord w szablonie strefy"
 
-#: templates/dnssec_delete_key.html:16
-msgid "Delete key"
-msgstr "Usuń klucz"
+#: install/templates/step3.html.twig:4
+msgid "Step"
+msgstr "Krok"
 
-#: install/helpers/InstallStepHandler.php:57
+#: install/templates/step6.html.twig:4
+msgid "Create configuration file"
+msgstr "Utwórz plik konfiguracyjny"
+
+#: install/templates/step6.html.twig:9
+msgid "You should now create the file"
+msgstr ""
+
+#: install/templates/step6.html.twig:11
 msgid ""
-"There is already a configuration file in place, so the installation will be "
-"skipped."
-msgstr "Plik konfiguracyjny już istnieje, więc instalacja zostanie pominięta."
-"skipped."
+"in the Poweradmin root directory yourself. It should contain the following "
+"few lines:"
+msgstr ""
 
-#: install/helpers/InstallStepHandler.php:71
-msgid "Error rendering template"
+#: install/templates/step5.html.twig:39 install/templates/step3.html.twig:121
+msgid "Go to step"
+msgstr ""
+
+#: install/templates/base.html.twig:28
+msgid "Installation step"
+msgstr "Krok instalacji"
+
+#: install/templates/step7.html.twig:4
+msgid "Installation complete"
+msgstr "Instalacja zakończona"
+
+#: install/templates/step7.html.twig:8
+msgid "Now we have finished the configuration."
+msgstr ""
+
+#: install/templates/step7.html.twig:9
+msgid ""
+"You should (must!) remove the directory \"install/\" from the Poweradmin "
+"root directory. You will not be able to use Poweradmin if it exists. Do it "
+"now."
+msgstr ""
+
+#: install/templates/step7.html.twig:10
+msgid ""
+"After you have removed the directory, you can login to <a href=\"../"
+"index.php\">Poweradmin</a>."
+msgstr ""
+
+#: install/templates/step7.html.twig:11
+msgid "Use the default username \"admin\" and the password set in step 3."
+msgstr ""
+
+#: install/templates/step1.html.twig:4
+msgid "Choose a language for installation"
+msgstr "Wybierz język instalacji"
+
+#: install/templates/step4.html.twig:4
+msgid "Setup of account and name servers"
+msgstr ""
+
+#: install/templates/step4.html.twig:8
+msgid "Now we will gather all details for the configuration itself."
+msgstr "Teraz zbierzemy wszystkie szczegóły dla samej konfiguracji."
+
+#: install/templates/step4.html.twig:17 install/templates/step3.html.twig:38
+msgid "Provide the user name"
+msgstr "Podaj nazwę użytkownika"
+
+#: install/templates/step4.html.twig:19
+msgid ""
+"Poweradmin database username with restricted access. Not for web UI login."
+msgstr ""
+"Nazwa użytkownika bazy danych Poweradmin z ograniczonym dostępem. Nie do logowania w interfejsie WWW."
+
+#: install/templates/step4.html.twig:27
+msgid "Provide the user password"
+msgstr "Podaj hasło użytkownika"
+
+#: install/templates/step4.html.twig:30 install/templates/step3.html.twig:54
+msgid "The password for this username."
+msgstr "Hasło dla tej nazwy użytkownika."
+
+#: install/templates/step4.html.twig:34
+#, fuzzy
+msgid "Hostmaster"
+msgstr "Master"
+
+#: install/templates/step4.html.twig:39
+msgid "Provide the DNS hostmaster"
+msgstr "Podaj hostmaster DNS"
+
+#: install/templates/step4.html.twig:41
+msgid ""
+"When creating SOA records and no hostmaster is provided, this value here "
+"will be used."
+msgstr ""
+
+#: install/templates/step4.html.twig:45
+msgid "Primary nameserver"
+msgstr "Podstawowy serwer nazw"
+
+#: install/templates/step4.html.twig:49
+msgid "Provide the primary nameserver"
+msgstr "Podaj podstawowy serwer nazw"
+
+#: install/templates/step4.html.twig:52
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"primary nameserver."
+msgstr ""
+
+#: install/templates/step4.html.twig:56
+msgid "Secondary nameserver"
+msgstr "Pomocniczy serwer nazw"
+
+#: install/templates/step4.html.twig:60
+msgid "Provide the secondary nameserver"
+msgstr "Podaj pomocniczy serwer nazw"
+
+#: install/templates/step4.html.twig:63
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"secondary nameserver."
+msgstr ""
+
+#: install/templates/step4.html.twig:67
+msgid "Tertiary Nameserver"
+msgstr "Trzeci serwer nazw"
+
+#: install/templates/step4.html.twig:73
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"tertiary nameserver."
+msgstr ""
+
+#: install/templates/step4.html.twig:77
+msgid "Quaternary Nameserver"
+msgstr "Czwarty serwer nazw"
+
+#: install/templates/step4.html.twig:83
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"quaternary nameserver."
+msgstr ""
+
+#: install/templates/step2.html.twig:3
+msgid "Getting ready for installation"
+msgstr ""
+
+#: install/templates/step2.html.twig:7
+msgid ""
+"This installer expects you to have a PowerDNS database accessible from this "
+"server. This installer also expects you to have never ran Poweradmin before, "
+"or that you want to overwrite the Poweradmin part of the database. If you "
+"have had Poweradmin running before, any data in the following tables will be "
+"destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This "
+"installer will, of course, not touch the data in the PowerDNS tables of the "
+"database. However, it is recommended that you create a backup of your "
+"database before proceeding."
+msgstr ""
+
+#: install/templates/step2.html.twig:8
+msgid ""
+"The alternative for this installer is a manual installation. Refer to the "
+"poweradmin.org website if you want to go down that road."
+msgstr ""
+
+#: install/templates/step2.html.twig:11
+msgid "Do you want to proceed now?"
+msgstr ""
+
+#: install/templates/step5.html.twig:4
+msgid "Create limited-rights user"
+msgstr "Utwórz użytkownika z ograniczonymi prawami"
+
+#: install/templates/step5.html.twig:12
+msgid "Execute the following commands based on your database:"
+msgstr ""
+
+#: install/templates/step5.html.twig:14
+msgid ""
+"After you have added the new user, proceed with this installation procedure."
+msgstr "Po dodaniu nowego użytkownika kontynuuj tę procedurę instalacji."
+
+#: install/templates/step5.html.twig:16
+msgid ""
+"Since you are using SQLite, there is no need to create a new user with "
+"limited rights."
+msgstr ""
+"Ponieważ korzystasz z SQLite, nie ma potrzeby tworzenia nowego użytkownika z ograniczonymi uprawnieniami."
+
+#: install/templates/step3.html.twig:4
+msgid "Configuring Database Connection"
+msgstr "Konfiguracja Połączenia z Bazą Danych"
+
+#: install/templates/step3.html.twig:22
+msgid "Database type"
+msgstr "Typ bazy danych"
+
+#: install/templates/step3.html.twig:31
+msgid "The type of the PowerDNS database."
+msgstr ""
+
+#: install/templates/step3.html.twig:57
+msgid "Hostname"
+msgstr "Nazwa hosta"
+
+#: install/templates/step3.html.twig:60
+msgid "Provide the hostname"
+msgstr "Podaj nazwę hosta"
+
+#: install/templates/step3.html.twig:62
+msgid ""
+"The hostname on which the PowerDNS database resides. Frequently, this will "
+"be \"localhost\"."
+msgstr ""
+
+#: install/templates/step3.html.twig:66
+msgid "DB Port"
+msgstr "Port DB"
+
+#: install/templates/step3.html.twig:69
+msgid "Provide database port"
+msgstr "Podaj port bazy danych"
+
+#: install/templates/step3.html.twig:71
+msgid "The port the database server is listening on."
+msgstr ""
+
+#: install/templates/step3.html.twig:74
+msgid "Database"
+msgstr "Baza danych"
+
+#: install/templates/step3.html.twig:77
+msgid "Provide the name of the database"
+msgstr "Podaj nazwę bazy danych"
+
+#: install/templates/step3.html.twig:79
+msgid "The name of the PowerDNS database."
+msgstr ""
+
+#: install/templates/step3.html.twig:80
+msgid "The path and filename to the PowerDNS SQLite database."
+msgstr ""
+
+#: install/templates/step3.html.twig:84
+msgid "DB charset"
+msgstr "Zestaw znaków DB"
+
+#: install/templates/step3.html.twig:137 install/templates/step3.html.twig:145
+msgid "Use default"
+msgstr "Użyj domyślnego"
+
+#: install/templates/step3.html.twig:90
+msgid ""
+"The charset (encoding) which will be used for new tables. Leave it empty "
+"then default database charset will be used."
+msgstr ""
+
+#: install/templates/step3.html.twig:93
+msgid "DB collation"
+msgstr "Porównywanie DB"
+
+#: install/templates/step3.html.twig:99
+msgid ""
+"Set of rules for comparing characters in database. Leave it empty then "
+"default database collation will be used."
+msgstr ""
+
+#: install/templates/step3.html.twig:102
+msgid "Poweradmin administrator password"
+msgstr ""
+
+#: install/templates/step3.html.twig:107
+msgid "Provide a password"
+msgstr "Podaj hasło"
+
+#: install/templates/step3.html.twig:111
+msgid ""
+"The password of the Poweradmin administrator. This administrator has full "
+"rights to Poweradmin using the web interface."
+msgstr ""
+
+#: install/templates/step3.html.twig:112
+msgid ""
+"Password must be at least 6 characters long, contain at least one uppercase "
+"letter, one lowercase letter, and one number."
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:60
+#, fuzzy
+msgid "An error occurred while rendering the template."
 msgstr "Błąd renderowania szablonu"
 
-#: install/helpers/InstallStepHandler.php:101
+#: install/helpers/InstallStepHandler.php:121
 msgid "Updating database..."
 msgstr "Aktualizowanie bazy danych..."
 
-#: install/helpers/InstallStepHandler.php:119
+#: install/helpers/InstallStepHandler.php:127
 msgid "done!"
 msgstr "gotowe!"
 
-#: install/helpers/DatabaseHelper.php:119
+#: install/helpers/DatabaseHelper.php:124
 msgid "or"
 msgstr "lub"
 
-#: install/helpers/ErrorHandler.php:29
+#: install/helpers/Installer.php:79
+msgid ""
+"There is already a configuration file in place, so the installation will be "
+"skipped."
+msgstr ""
+"Plik konfiguracyjny już istnieje, więc instalacja zostanie pominięta.skipped."
+
+#: install/helpers/Installer.php:93
 msgid "Please select a language to proceed with the installation."
 msgstr "Proszę wybrać język, aby kontynuować instalację."
 
-#: install/helpers/LocaleHandler.php:87
-msgid ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
-msgstr ""
-"Nie udało się ustawić lokalizacji. Wybrana lokalizacja może nie być obsługiwana w tym systemie. Proszę skontaktować się z administratorem."
-"Please contact your administrator."
+#~ msgid "You cannot use html tags for this type of record."
+#~ msgstr "Nie można używać znaczników HTML dla tego typu rekordu."
 
-#~ msgid "You can not change your password as LDAP user."
-#~ msgstr "You can not change your password as LDAP user."
+#, php-format
+#~ msgid "There is no matching reverse-zone for: %s."
+#~ msgstr "Nie ma pasującej strefy odwrotnej dla: %s."
 
-#~ msgid "You did not enter the correct current password."
-#~ msgstr "Aktualne hasło jakie wpisałeś jest nieprawidłowe."
+#~ msgid "Delete key"
+#~ msgstr "Usuń klucz"
 
-#~ msgid "Enter a valid user name."
-#~ msgstr "Enter a valid user name."
+#~ msgid ""
+#~ "Failed to set locale. Selected locale may be unsupported on this system. "
+#~ "Please contact your administrator."
+#~ msgstr ""
+#~ "Nie udało się ustawić lokalizacji. Wybrana lokalizacja może nie być "
+#~ "obsługiwana w tym systemie. Proszę skontaktować się z "
+#~ "administratorem.Please contact your administrator."
 
 #~ msgid "Commit changes"
 #~ msgstr "Zapisz zmiany"
@@ -1875,14 +2858,15 @@ msgstr ""
 
 #, php-format
 #~ msgid ""
-#~ "You are about to delete a slave zone of which the master nameserver, %s, is "
-#~ "a supermaster. Deleting the zone now, will result in temporary removal only."
-#~ " Whenever the supermaster sends a notification for this zone, it will be "
-#~ "added again!"
+#~ "You are about to delete a slave zone of which the master nameserver, %s, "
+#~ "is a supermaster. Deleting the zone now, will result in temporary removal "
+#~ "only. Whenever the supermaster sends a notification for this zone, it "
+#~ "will be added again!"
 #~ msgstr ""
 #~ "Zamierzasz usunać strefę slave, której serwerem master jest %s, będący "
-#~ "jednocześnie supermasterem. Usunięcie tej strefy będzie jedynie tymczasowe. "
-#~ "Po otrzymaniu NOTIFY od supermastera, strefa będzie dodana ponownie!"
+#~ "jednocześnie supermasterem. Usunięcie tej strefy będzie jedynie "
+#~ "tymczasowe. Po otrzymaniu NOTIFY od supermastera, strefa będzie dodana "
+#~ "ponownie!"
 
 #~ msgid "Really delete this user?"
 #~ msgstr "Napewno usunąć tego uźytkownika?"
@@ -1906,9 +2890,6 @@ msgstr ""
 #~ msgid "View zone"
 #~ msgstr "Zobacz strefę"
 
-#~ msgid "Master"
-#~ msgstr "Master"
-
 #~ msgid "Query"
 #~ msgstr "Zapytanie"
 
@@ -1918,14 +2899,11 @@ msgstr ""
 #~ msgid "There is already a supermaster with this IP address."
 #~ msgstr "Supermaster z takim IP juź istnieje."
 
-#~ msgid "Unknown error."
-#~ msgstr "Nieokreślony błąd."
-
 #~ msgid ""
 #~ "The install/ directory exists, you must remove it first before proceeding."
 #~ msgstr ""
-#~ "Katalog instalacyjny istnieje, musisz go usunąć przed wykonaniem następnego "
-#~ "kroku."
+#~ "Katalog instalacyjny istnieje, musisz go usunąć przed wykonaniem "
+#~ "następnego kroku."
 
 #~ msgid "No database name has been set in config.inc.php."
 #~ msgstr "Brak nazwy bazy danych w pliku config.inc.php."
@@ -1943,14 +2921,11 @@ msgstr ""
 #~ msgstr "Brak lub nieznany typ bazy w pliku config.inc.php."
 
 #~ msgid ""
-#~ "This is not a valid CNAME. There is already exists an A, AAAA or CNAME with "
-#~ "this name."
+#~ "This is not a valid CNAME. There is already exists an A, AAAA or CNAME "
+#~ "with this name."
 #~ msgstr ""
-#~ "To nie jest poprawny rekord CNAME. Istnieje juź rekord A, AAAA, lub CNAME o "
-#~ "takiej nazwie."
-
-#~ msgid "NS records must be a hostnames."
-#~ msgstr "Rekordy NS muszą zawierać nazwę hosta."
+#~ "To nie jest poprawny rekord CNAME. Istnieje juź rekord A, AAAA, lub CNAME "
+#~ "o takiej nazwie."
 
 #~ msgid "A prio field should be numeric."
 #~ msgstr "Pole priorytetu musi mieć wartość numeryczną."
@@ -1960,7 +2935,8 @@ msgstr ""
 
 #~ msgid "Invalid value for prio field. It should be numeric."
 #~ msgstr ""
-#~ "Nieprawidłowa zawartość pola priorytetu. Dozwolona tylko wartość numeryczna."
+#~ "Nieprawidłowa zawartość pola priorytetu. Dozwolona tylko wartość "
+#~ "numeryczna."
 
 #~ msgid "Invalid value for name field of SRV record."
 #~ msgstr "Nieprawidłowa zawartość pola name rekordu SRV."
@@ -1991,9 +2967,9 @@ msgstr ""
 # The following is a list of strings that are not hard-code in the PHP
 # files, but which are listed in the poweradmin database. Because of
 # this, tools like xgettext will not notice these strings.
-# 
+#
 # See also <https://www.poweradmin.org/wiki/TranslationContribution>.
-# 
+#
 #~ msgid "User is allowed to add new master zones."
 #~ msgstr "Uźytkownik moźe dodawać nowe strefy master."
 
@@ -2006,7 +2982,8 @@ msgstr ""
 #~ "właścicielem."
 
 #~ msgid "User is allowed to edit the content of zones he owns."
-#~ msgstr "Uźytkownik moźe edytować zawartosć stref, których jest właścicielem."
+#~ msgstr ""
+#~ "Uźytkownik moźe edytować zawartosć stref, których jest właścicielem."
 
 #~ msgid "User is allowed to edit the meta data of zones he owns."
 #~ msgstr "Uźytkownik moźe edytować metadane stref, których jest właścicielem."
@@ -2022,7 +2999,8 @@ msgstr ""
 #~ "Uźytkownik moźe edytować zawartość stref nie będących jego własnością."
 
 #~ msgid "User is allowed to edit the meta data of zones he does not own."
-#~ msgstr "Uźytkownik moźe edytować metadane stref nie będących jego własnością."
+#~ msgstr ""
+#~ "Uźytkownik moźe edytować metadane stref nie będących jego własnością."
 
 #~ msgid "User is allowed to perform searches."
 #~ msgstr "Uźytkownik moźe dokonywać wyszukiwania."

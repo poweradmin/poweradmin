@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2024-12-28 20:04+0200\n"
+"POT-Creation-Date: 2026-03-12 12:31+0200\n"
 "PO-Revision-Date: 2012-11-09 04:05+0000\n"
 "Last-Translator: Per M Knutsen <pmknutsen@gmail.com>\n"
 "Language-Team: Norwegian Bokmål\n"
@@ -24,11 +24,11 @@ msgid ""
 "The configuration file (config.inc.php) does not exist. Please use the <a "
 "href=\"install/\">installer</a> to create it."
 msgstr ""
-"Konfigurasjonsfilen (config.inc.php) eksisterer ikke. Vennligst bruk <a href=\"install/\">installasjonsprogrammet</a> for å opprette den."
-"href=\"install/\">installer</a> to create it."
+"Konfigurasjonsfilen (config.inc.php) eksisterer ikke. Vennligst bruk <a "
+"href=\"install/\">installasjonsprogrammet</a> for å opprette "
+"den.href=\"install/\">installer</a> to create it."
 
-#: lib/BaseController.php:128
-#: lib/Infrastructure/Service/SessionAuthenticator.php:105
+#: lib/Infrastructure/Service/SessionAuthenticator.php:107
 msgid "Invalid CSRF token."
 msgstr "Ugyldig CSRF-token."
 
@@ -49,53 +49,31 @@ msgstr ""
 "konfigurasjonsfilen din."
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
-#: templates/search.html:120 templates/search.html:229
+#: templates/search.html:151 templates/search.html:284
 msgid "Previous"
 msgstr "Forrige"
 
 #: lib/Application/Presenter/PaginationPresenter.php:79
-#: templates/search.html:142 templates/search.html:251
+#: templates/search.html:173 templates/search.html:306
 msgid "Next"
 msgstr "Neste"
 
-#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:27
+#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:29
 msgid "Show zones beginning with"
 msgstr "Vis soner som begynner med"
 
-#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:50
-#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:52
+#: lib/Application/Presenter/ZoneStartingLettersPresenter.php:54
 msgid "Show all"
 msgstr "Vis alle"
 
-#: lib/Application/Controller/DeleteUserController.php:49
-#: lib/Application/Controller/EditCommentController.php:57
-#: lib/Application/Controller/DeleteRecordController.php:62
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:45
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:50
-#: lib/Application/Controller/EditZoneTemplController.php:161
-#: lib/Application/Controller/DnssecDsDnskeyController.php:55
-#: lib/Application/Controller/EditController.php:83
-#: lib/Application/Controller/DnssecEditKeyController.php:64
-#: lib/Application/Controller/DnssecEditKeyController.php:71
-#: lib/Application/Controller/DnssecEditKeyController.php:76
-#: lib/Application/Controller/DnssecDeleteKeyController.php:64
-#: lib/Application/Controller/DnssecDeleteKeyController.php:71
-#: lib/Application/Controller/DnssecDeleteKeyController.php:77
-#: lib/Application/Controller/EditUserController.php:53
-#: lib/Application/Controller/EditUserController.php:115
-#: lib/Application/Controller/DnssecController.php:50
-#: lib/Application/Controller/DnssecAddKeyController.php:67
-#: lib/Application/Controller/DnssecAddKeyController.php:77
-#: lib/Application/Controller/DnssecAddKeyController.php:88
+#: lib/Application/Controller/DnssecAddKeyController.php:89
 msgid "Invalid or unexpected input given."
 msgstr "Ugyldig eller uventet utfylling."
 
-#: lib/Application/Controller/DeleteUserController.php:60
 #: lib/Domain/Model/UserManager.php:211
 msgid "You do not have the permission to delete this user."
 msgstr "Du har ikke rettigheten til å slette denne brukeren."
 
-#: lib/Application/Controller/DeleteUserController.php:69
 #: lib/Application/Controller/EditUserController.php:135
 msgid "User does not exist."
 msgstr "Brukeren eksisterer ikke"
@@ -104,9 +82,7 @@ msgstr "Brukeren eksisterer ikke"
 msgid "The user has been deleted successfully."
 msgstr "Brukeren er slettet."
 
-#: lib/Application/Controller/EditCommentController.php:50
-#: lib/Application/Controller/EditCommentController.php:74
-#: lib/Domain/Service/DnsRecord.php:330
+#: lib/Domain/Service/DnsRecord.php:331
 msgid "You do not have the permission to edit this comment."
 msgstr "Du har ikke rettigheten til å redigere denne kommentaren."
 
@@ -118,38 +94,30 @@ msgstr "Du har ikke rettigheten til å se denne kommentaren."
 msgid "The comment has been updated successfully."
 msgstr "DNS-pekeren er oppdatert."
 
-#: lib/Application/Controller/DeleteRecordController.php:70
-#: lib/Application/Controller/DnssecDsDnskeyController.php:70
-#: lib/Application/Controller/EditController.php:154
-#: lib/Application/Controller/DnssecController.php:65
-#: lib/Application/Controller/DnssecAddKeyController.php:59
+#: lib/Application/Controller/DnssecAddKeyController.php:60
 msgid "There is no zone with this ID."
 msgstr "Det finnes ingen sone med denne ID."
 
-#: lib/Application/Controller/DeleteRecordController.php:100
+#: lib/Domain/Model/ZoneTemplate.php:386 lib/Domain/Service/DnsRecord.php:400
+msgid "You do not have the permission to edit this record."
+msgstr "Du har ikke rettigheten til å redigere denne DNS-pekeren."
+
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:67
 msgid "The record has been deleted successfully."
 msgstr "DNS-pekeren er slettet."
 
-#: lib/Application/Controller/DeleteRecordController.php:102
+#: lib/Application/Controller/DeleteRecordController.php:125
 msgid ""
-"The record was deleted but the comment was preserved because similar records"
-" exist."
+"The record was deleted but the comment was preserved because similar records "
+"exist."
 msgstr ""
 "Posten ble slettet, men kommentaren ble beholdt fordi det finnes lignende "
 "poster."
-
-#: lib/Application/Controller/DeleteRecordController.php:115
-#: lib/Application/Controller/EditRecordController.php:83
-#: lib/Domain/Model/ZoneTemplate.php:381 lib/Domain/Service/DnsRecord.php:388
-msgid "You do not have the permission to edit this record."
-msgstr "Du har ikke rettigheten til å redigere denne DNS-pekeren."
 
 #: lib/Application/Controller/ListSupermastersController.php:43
 msgid "You do not have the permission to view supermasters."
 msgstr "Du har ikke tillatelse til å se supermastere."
 
-#: lib/Application/Controller/EditPermTemplController.php:50
 #: lib/Application/Controller/ListPermTemplController.php:42
 msgid "You do not have the permission to edit permission templates."
 msgstr "Du har ikke rettigheten til å redigere rettighets maler."
@@ -162,7 +130,7 @@ msgstr "Rettighets malen er oppdatert."
 msgid "You do not have the permission to perform searches."
 msgstr "Du har ikke rettigheten til å søke."
 
-#: lib/Application/Controller/AddUserController.php:43
+#: lib/Domain/Model/UserManager.php:766
 msgid "You do not have the permission to add a new user."
 msgstr "Du har ikke rettigheten til å opprette nye brukere."
 
@@ -170,8 +138,7 @@ msgstr "Du har ikke rettigheten til å opprette nye brukere."
 msgid "The user has been created successfully."
 msgstr "Brukeren er opprettet."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:63
-#: lib/Domain/Model/ZoneTemplate.php:424 lib/Domain/Service/DnsRecord.php:651
+#: lib/Domain/Model/ZoneTemplate.php:429 lib/Domain/Service/DnsRecord.php:677
 msgid "You do not have the permission to delete this record."
 msgstr "Du har ikke rettigheten til å slette denne DNS-pekeren."
 
@@ -179,36 +146,32 @@ msgstr "Du har ikke rettigheten til å slette denne DNS-pekeren."
 msgid "The record could not be deleted."
 msgstr "Posten kunne ikke slettes."
 
+#: lib/Application/Controller/ListLogUsersController.php:85
+#, fuzzy
+msgid "Unknown page."
+msgstr "Ukjent feil"
+
 #: lib/Application/Controller/UsersController.php:61
 msgid "User details updated"
 msgstr "Brukerdetaljer oppdatert"
 
-#: lib/Application/Controller/EditZoneTemplController.php:53
-#: lib/Application/Controller/EditZoneTemplRecordController.php:60
-#: lib/Application/Controller/DeleteZoneTemplController.php:48
-#: lib/Application/Controller/AddZoneTemplRecordController.php:56
-#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:215
-msgid "You do not have the permission to delete zone templates."
-msgstr "Du har ikke rettigheten til å slette sone maler."
+#: lib/Application/Controller/ListZoneTemplController.php:43
+msgid "You do not have the permission to edit zone templates."
+msgstr "Du har ikke rettigheten til å redigere sone maler."
 
-#: lib/Application/Controller/EditZoneTemplController.php:65
+#: lib/Application/Controller/EditZoneTemplController.php:66
 msgid "There is no zone template with this ID."
 msgstr "Det finnes ingen sone mal med denne ID."
 
-#: lib/Application/Controller/EditZoneTemplController.php:164
 #: lib/Application/Controller/EditZoneTemplRecordController.php:86
 msgid "Zone template has been updated successfully."
 msgstr "Sone malen er oppdatert."
 
-#: lib/Application/Controller/EditZoneTemplController.php:176
+#: lib/Application/Controller/EditZoneTemplController.php:177
 msgid "Zones have been updated successfully."
 msgstr "Soner har blitt oppdatert."
 
-#: lib/Application/Controller/DnssecDsDnskeyController.php:65
-#: lib/Application/Controller/EditController.php:150
-#: lib/Application/Controller/DnssecController.php:60
-#: lib/Application/Controller/DnssecAddKeyController.php:54
-#: lib/Domain/Service/DnsRecord.php:998 lib/Domain/Service/DnsRecord.php:1231
+#: lib/Domain/Service/DnsRecord.php:1036 lib/Domain/Service/DnsRecord.php:1273
 msgid "You do not have the permission to view this zone."
 msgstr "Du har ikke rettigheten til å se denne sonen."
 
@@ -224,69 +187,73 @@ msgstr "DNSSEC er ikke aktivert på serveren."
 msgid "Zone has been unsigned successfully."
 msgstr "Sonen har blitt usignert."
 
-#: lib/Application/Controller/EditController.php:381
-msgid "Request has expired, please try again."
-msgstr "Forespørselen har utløpt, vennligst prøv igjen."
-
-#: lib/Application/Controller/EditController.php:386
-msgid "Zone has been updated successfully."
-msgstr "Sonen har blitt oppdatert."
-
-#: lib/Application/Controller/EditController.php:388
-msgid "Zone did not have any record changes."
-msgstr "Sonen hadde ingen postendringer."
-
-#: lib/Application/Controller/EditController.php:397
-msgid "Zone has not been updated successfully."
-msgstr "Sonen har ikke blitt oppdatert."
-
-#: lib/Application/Controller/EditController.php:405
-#: lib/Domain/Model/ZoneTemplate.php:132 lib/Domain/Model/ZoneTemplate.php:567
-msgid ""
-"Zone template with this name already exists, please choose another one."
+#: lib/Domain/Model/ZoneTemplate.php:135 lib/Domain/Model/ZoneTemplate.php:572
+msgid "Zone template with this name already exists, please choose another one."
 msgstr "Det finnes allerede en sone mal med dette navnet. Velg et annet navn."
 
-#: lib/Application/Controller/EditController.php:407
+#: lib/Application/Controller/EditController.php:423
 msgid "Template name can't be an empty string."
 msgstr "Navnet på malen kan ikke stå tomt."
 
-#: lib/Application/Controller/EditController.php:420
-#: lib/Application/Controller/AddZoneTemplController.php:73
+#: lib/Application/Controller/AddZoneTemplController.php:78
 msgid "Zone template has been added successfully."
 msgstr "Sone malen er opprettet."
 
-#: lib/Application/Controller/AddRecordController.php:103
-#: lib/Domain/Model/ZoneTemplate.php:326 lib/Domain/Service/DnsRecord.php:447
+#: lib/Application/Controller/EditController.php:486
+msgid "Request has expired, please try again."
+msgstr "Forespørselen har utløpt, vennligst prøv igjen."
+
+#: lib/Application/Controller/EditController.php:491
+msgid "Zone has been updated successfully."
+msgstr "Sonen har blitt oppdatert."
+
+#: lib/Application/Controller/EditController.php:493
+msgid "Zone did not have any record changes."
+msgstr "Sonen hadde ingen postendringer."
+
+#: lib/Application/Controller/EditController.php:502
+msgid "Zone has not been updated successfully."
+msgstr "Sonen har ikke blitt oppdatert."
+
+#: lib/Domain/Model/ZoneTemplate.php:330 lib/Domain/Service/DnsRecord.php:459
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Du har ikke rettigheten til å lage DNS-pekere i denne sonen."
 
-#: lib/Application/Controller/AddRecordController.php:203
+#: lib/Application/Controller/AddRecordController.php:133
+msgid "This record was not valid and could not be added."
+msgstr "Denne posten var ikke gyldig og kunne ikke legges til."
+
+#: lib/Application/Controller/AddRecordController.php:139
+msgid "Record successfully added. A matching PTR record was also created."
+msgstr "Post lagt til. En tilhørende PTR-post ble også opprettet."
+
+#: lib/Application/Controller/AddRecordController.php:146
 msgid "The record was successfully added."
 msgstr "DNS-pekeren er lagret"
 
-#: lib/Application/Controller/AddRecordController.php:207
-msgid "This record was not valid and could not be added."
-msgstr "Denne posten var ikke gyldig og kunne ikke legges til."
+#: lib/Application/Controller/AddRecordController.php:143
+msgid "Record successfully added. A matching A record was also created."
+msgstr "Post lagt til. En tilhørende A-post ble også opprettet."
 
 #: lib/Application/Controller/DeleteDomainsController.php:61
 msgid "No zone selected for deletion."
 msgstr "Ingen sone valgt for sletting."
 
-#: lib/Application/Controller/DeleteDomainsController.php:91
-#: lib/Application/Controller/DeleteDomainController.php:105
+#: lib/Application/Controller/DeleteDomainController.php:110
 msgid "Zone has been deleted successfully."
 msgstr "Sonen er slettet."
 
-#: lib/Application/Controller/DeleteDomainsController.php:93
+#: lib/Application/Controller/DeleteDomainsController.php:98
 msgid "Zones have been deleted successfully."
 msgstr "Soner har blitt slettet."
 
-#: lib/Application/Controller/DeleteDomainsController.php:105
-#: lib/Application/Controller/DeleteDomainController.php:74
-#: lib/Domain/Service/DnsRecord.php:828 lib/Domain/Service/DnsRecord.php:1638
-#: lib/Domain/Service/DnsRecord.php:1752
+#: lib/Domain/Service/DnsRecord.php:1886
 msgid "You do not have the permission to delete a zone."
 msgstr "Du har ikke rettigheten til å slette soner."
+
+#: lib/Application/Controller/EditZoneTemplRecordController.php:60
+msgid "You do not have the permission to edit zone template records."
+msgstr "Du har ikke tillatelse til å redigere sonemal-poster."
 
 #: lib/Application/Controller/MigrationsController.php:37
 msgid "You do not have the permission to access the migrations."
@@ -297,42 +264,31 @@ msgid ""
 "Old migrations table detected. Please remove the `migrations` table before "
 "proceeding."
 msgstr ""
-"Gammel migreringstabell oppdaget. Vennligst fjern `migrations`-tabellen før du fortsetter."
-"proceeding."
+"Gammel migreringstabell oppdaget. Vennligst fjern `migrations`-tabellen før "
+"du fortsetter.proceeding."
 
 #: lib/Application/Controller/MigrationsController.php:49
 msgid ""
 "Database access check failed. Please ensure the current database user has "
 "the necessary permissions to create and alter tables."
 msgstr ""
-"Databasetilgangssjekk mislyktes. Vennligst sørg for at gjeldende databasebruker har nødvendige tillatelser til å opprette og endre tabeller."
-"the necessary permissions to create and alter tables."
+"Databasetilgangssjekk mislyktes. Vennligst sørg for at gjeldende "
+"databasebruker har nødvendige tillatelser til å opprette og endre "
+"tabeller.the necessary permissions to create and alter tables."
 
-#: lib/Application/Controller/AddZoneMasterController.php:57
-#: lib/Application/Controller/BulkRegistrationController.php:57
-#: lib/Domain/Service/DnsRecord.php:796
+#: lib/Domain/Service/DnsRecord.php:831
 msgid "You do not have the permission to add a master zone."
 msgstr "Du har ikke rettigheten til å lage master soner."
 
-#: lib/Application/Controller/AddZoneMasterController.php:88
-#: lib/Application/Controller/AddZoneSlaveController.php:86
-#: lib/Application/Controller/BulkRegistrationController.php:88
-#: lib/Domain/Model/ZoneTemplate.php:342 lib/Domain/Model/ZoneTemplate.php:389
-#: lib/Domain/Service/Dns.php:387 lib/Domain/Service/Dns.php:394
-#: lib/Domain/Service/Dns.php:401 lib/Domain/Service/DnsRecord.php:522
+#: lib/Domain/Service/Dns.php:427 lib/Domain/Service/DnsRecord.php:542
 msgid "Invalid hostname."
 msgstr "Ugyldig vertsnavn."
 
-#: lib/Application/Controller/AddZoneMasterController.php:91
-#: lib/Application/Controller/AddZoneMasterController.php:94
-#: lib/Application/Controller/AddZoneSlaveController.php:89
-#: lib/Application/Controller/AddZoneSlaveController.php:92
-#: lib/Application/Controller/BulkRegistrationController.php:90
+#: lib/Application/Controller/BulkRegistrationController.php:91
 msgid "There is already a zone with this name."
 msgstr "Det finnes allerede en sone med dette navnet."
 
-#: lib/Application/Controller/AddZoneMasterController.php:97
-#: lib/Application/Controller/AddZoneSlaveController.php:105
+#: lib/Application/Controller/AddZoneSlaveController.php:109
 msgid "Zone has been added successfully."
 msgstr "Sonen er lagret."
 
@@ -344,14 +300,10 @@ msgstr "Du har ikke tilstrekkelige tillatelser for å se denne siden."
 msgid "You do not have the permission to see any zones."
 msgstr "Du har ikke rettigheten til å vise soner."
 
-#: lib/Application/Controller/ListZoneTemplController.php:43
-msgid "You do not have the permission to edit zone templates."
-msgstr "Du har ikke rettigheten til å redigere sone maler."
-
 #: lib/Application/Controller/DnssecEditKeyController.php:80
-#: lib/Application/Controller/DnssecDeleteKeyController.php:81
-msgid "Failed to delete DNSSEC key."
-msgstr "Kunne ikke slette DNSSEC-nøkkel."
+#, fuzzy
+msgid "You do not have the permission to edit this zone."
+msgstr "Du har ikke rettigheten til å redigere denne brukeren."
 
 #: lib/Application/Controller/DnssecEditKeyController.php:88
 msgid "Zone key has been successfully deactivated."
@@ -361,7 +313,11 @@ msgstr "Sonenøkkel har blitt deaktivert."
 msgid "Zone key has been successfully activated."
 msgstr "Sonenøkkel har blitt aktivert."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:85
+#: lib/Application/Controller/DnssecDeleteKeyController.php:81
+msgid "Failed to delete DNSSEC key."
+msgstr "Kunne ikke slette DNSSEC-nøkkel."
+
+#: lib/Application/Controller/DnssecDeleteKeyController.php:88
 msgid "Zone key has been deleted successfully."
 msgstr "Sonenøkkel har blitt slettet."
 
@@ -373,14 +329,11 @@ msgstr "Du har ikke tillatelse til å legge til tillatelsesmaler."
 msgid "The permission template has been added successfully."
 msgstr "Tillatelsesmalen har blitt lagt til."
 
-#: lib/Application/Controller/LogoutController.php:46
-#: lib/Infrastructure/Service/SessionAuthenticator.php:91
+#: lib/Infrastructure/Service/SessionAuthenticator.php:92
 msgid "You have logged out."
 msgstr "Du er utlogget"
 
-#: lib/Application/Controller/AddZoneTemplController.php:43
-#: lib/Domain/Model/ZoneTemplate.php:126 lib/Domain/Model/ZoneTemplate.php:470
-#: lib/Domain/Model/ZoneTemplate.php:561
+#: lib/Domain/Model/ZoneTemplate.php:566
 msgid "You do not have the permission to add a zone template."
 msgstr "Du har ikke rettigheten til å lage nye sone maler."
 
@@ -388,12 +341,15 @@ msgstr "Du har ikke rettigheten til å lage nye sone maler."
 msgid "You do not have the permission to add a slave zone."
 msgstr "Du har ikke rettigheten til å lage slave soner."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:95
-#: lib/Domain/Service/DnsRecord.php:513
+#: lib/Domain/Service/DnsRecord.php:533
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Dette er ikke en gyldig IPv4 eller IPv6 adresse."
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:69
+#: lib/Domain/Model/ZoneTemplate.php:184 lib/Domain/Model/ZoneTemplate.php:218
+msgid "You do not have the permission to delete zone templates."
+msgstr "Du har ikke rettigheten til å slette sone maler."
+
+#: lib/Application/Controller/DeleteZoneTemplController.php:72
 msgid "Zone template has been deleted successfully."
 msgstr "Sone malen er slettet."
 
@@ -405,8 +361,11 @@ msgstr "Du har ikke rettigheten til å lage en ny supermaster"
 msgid "The supermaster has been added successfully."
 msgstr "Ny supermaster er lagret."
 
-#: lib/Application/Controller/EditUserController.php:57
-#: lib/Domain/Model/UserManager.php:380
+#: lib/Application/Controller/AddZoneTemplRecordController.php:56
+msgid "You do not have the permission to add a record to this zone template."
+msgstr "Du har ikke tillatelse til å legge til en post i denne sonemalen."
+
+#: lib/Domain/Model/UserManager.php:379 lib/Domain/Model/UserManager.php:744
 msgid "You do not have the permission to edit this user."
 msgstr "Du har ikke rettigheten til å redigere denne brukeren."
 
@@ -414,7 +373,6 @@ msgstr "Du har ikke rettigheten til å redigere denne brukeren."
 msgid "The user has been updated successfully."
 msgstr "Brukeren er oppdatert."
 
-#: lib/Application/Controller/EditUserController.php:124
 #: lib/Application/Controller/EditUserController.php:127
 msgid "The user could not be updated."
 msgstr "Brukeren kunne ikke oppdateres."
@@ -428,10 +386,15 @@ msgid "The permission template has been deleted successfully."
 msgstr "Rettighets malen er slettet."
 
 #: lib/Application/Controller/EditRecordController.php:79
+#, fuzzy
+msgid "Record does not exist or has been deleted."
+msgstr "Posten kunne ikke slettes."
+
+#: lib/Application/Controller/EditRecordController.php:89
 msgid "You do not have the permission to view this record."
 msgstr "Du har ikke rettigheten til å se denne DNS-pekeren."
 
-#: lib/Application/Controller/EditRecordController.php:180
+#: lib/Application/Controller/EditRecordController.php:232
 msgid "The record has been updated successfully."
 msgstr "DNS-pekeren er opprettet."
 
@@ -439,32 +402,43 @@ msgstr "DNS-pekeren er opprettet."
 msgid "Password has been changed, please login."
 msgstr "Passordet er endret. Vennligst logg inn."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:99
+#: lib/Application/Controller/DnssecAddKeyController.php:101
 msgid "Zone key has been added successfully."
 msgstr "Sonenøkkel har blitt lagt til."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:102
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:346
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:364
 msgid "Failed to add new DNSSEC key."
 msgstr "Kunne ikke legge til ny DNSSEC nøkkel."
+
+#: lib/Application/Controller/DnssecAddKeyController.php:107
+msgid "An error occurred while adding the DNSSEC key: "
+msgstr "En feil oppstod ved tillegging av DNSSEC nøkkel: "
 
 #: lib/Application/Controller/DeleteSupermasterController.php:43
 msgid "You do not have the permission to delete a supermaster."
 msgstr "Du har ikke rettigheten til å slette en supermaster."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:66
+#: lib/Application/Controller/DeleteSupermasterController.php:69
+msgid "Invalid IP address."
+msgstr "Ugyldig IP-adresse."
+
+#: lib/Application/Controller/DeleteSupermasterController.php:74
+msgid "Invalid NS name."
+msgstr "Ugyldig NS navn."
+
+#: lib/Application/Controller/DeleteSupermasterController.php:80
 msgid "Super master does not exist."
 msgstr "Supermaster eksisterer ikke."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:71
+#: lib/Application/Controller/DeleteSupermasterController.php:84
 msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster er slettet."
 
-#: lib/Application/Controller/BulkRegistrationController.php:100
+#: lib/Application/Controller/BulkRegistrationController.php:106
 msgid "Zones has been added successfully."
 msgstr "Soner har blitt lagt til."
 
-#: lib/Application/Controller/BulkRegistrationController.php:103
+#: lib/Application/Controller/BulkRegistrationController.php:109
 msgid "Some zone(s) could not be added."
 msgstr "Noen soner kunne ikke legges til."
 
@@ -476,8 +450,7 @@ msgstr "Brukerkontoen er deaktivert."
 msgid "Authentication failed!"
 msgstr "Feil under autentisering!"
 
-#: lib/Application/Service/SqlAuthenticator.php:147
-#: lib/Infrastructure/Service/SessionAuthenticator.php:143
+#: lib/Infrastructure/Service/SessionAuthenticator.php:145
 msgid "Session expired, please login again."
 msgstr "Sesjon utløpt på tid. Vennligst logg inn igjen."
 
@@ -489,53 +462,37 @@ msgstr "Kunne ikke koble til LDAP server!"
 msgid "Failed to bind to LDAP server!"
 msgstr "Kunne ikke binde til LDAP server!"
 
-#: lib/Application/Service/LdapAuthenticator.php:123
+#: lib/Application/Service/LdapAuthenticator.php:124
 msgid "Failed to search LDAP."
 msgstr "Kunne ikke søke i LDAP."
 
-#: lib/Application/Service/LdapAuthenticator.php:139
+#: lib/Application/Service/LdapAuthenticator.php:140
 msgid "Failed to authenticate against LDAP."
 msgstr "Kunne ikke autentisere mot LDAP."
 
-#: lib/Application/Service/LdapAuthenticator.php:154
-#: lib/Application/Service/LdapAuthenticator.php:171
+#: lib/Application/Service/LdapAuthenticator.php:172
 msgid "LDAP Authentication failed!"
 msgstr "LDAP autentisering mislyktes!"
 
-#: lib/Application/Query/RecordSearch.php:112
-#: templates/dnssec_edit_key.html:53 templates/delete_user.html:54
-#: templates/delete_perm_templ.html:13 templates/users.html:77
-#: templates/users.html:109 templates/users.html:110
-#: templates/delete_record.html:51 templates/delete_domain.html:33
-#: templates/delete_domains.html:51 templates/delete_supermaster.html:17
-#: templates/delete_zone_templ.html:13
-#: templates/delete_zone_templ_record.html:36
-#: templates/dnssec_delete_key.html:45
+#: lib/Application/Query/RecordSearch.php:158
+#: templates/dnssec_delete_key.html:46
 msgid "Yes"
 msgstr "Ja"
 
-#: lib/Application/Query/RecordSearch.php:112
-#: templates/dnssec_edit_key.html:54 templates/delete_user.html:55
-#: templates/delete_perm_templ.html:14 templates/users.html:79
-#: templates/users.html:109 templates/users.html:110
-#: templates/delete_record.html:52 templates/delete_domain.html:34
-#: templates/delete_domains.html:53 templates/delete_supermaster.html:18
-#: templates/delete_zone_templ.html:15
-#: templates/delete_zone_templ_record.html:37
-#: templates/dnssec_delete_key.html:47
+#: lib/Application/Query/RecordSearch.php:158
+#: templates/dnssec_delete_key.html:48
 msgid "No"
 msgstr "Nei"
 
-#: lib/Infrastructure/Database/PDOLayer.php:141
+#: lib/Infrastructure/Database/PDOLayer.php:140
 msgid "Unknown database type."
 msgstr "Ukjent databasetype."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:195
 #: lib/Domain/Model/UserManager.php:250
 msgid "This template is assigned to at least one user."
 msgstr "Denne malen er tildelt en eller flere brukere."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:131
+#: lib/Infrastructure/Service/SessionAuthenticator.php:133
 msgid "An empty password is not allowed"
 msgstr "Et tomt passord er ikke tillatt"
 
@@ -544,186 +501,1083 @@ msgid ""
 "Failed to call function exec. Make sure that exec is not listed in "
 "disable_functions at php.ini"
 msgstr ""
-"Kunne ikke kalle funksjonen exec. Sørg for at exec ikke er oppført i disable_functions i php.ini"
-"disable_functions at php.ini"
+"Kunne ikke kalle funksjonen exec. Sørg for at exec ikke er oppført i "
+"disable_functions i php.inidisable_functions at php.ini"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:58
 msgid "Failed to call pdnssec utility."
 msgstr "Kunne ikke kalle pdnssec-verktøyet."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:155
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:154
 msgid "Failed to secure zone."
 msgstr "Kunne ikke sikre sonen."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:174
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:177
 msgid "Failed to disable DNSSEC."
 msgstr "Kunne ikke deaktivere DNSSEC."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:215
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:249
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:312
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:329
 msgid "Failed to get DNSSEC key details."
 msgstr "Kunne ikke hente DNSSEC-nøkkeldetaljer."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:273
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:280
 msgid "Failed to active DNSSEC key."
 msgstr "Kunne ikke aktivere DNSSEC-nøkkel."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:292
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:304
 msgid "Failed to deactivate DNSSEC key."
 msgstr "Kunne ikke deaktivere DNSSEC-nøkkel."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:365
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:390
 msgid "Failed to remove DNSSEC key."
 msgstr "Kunne ikke fjerne DNSSEC-nøkkel."
 
-#: lib/Domain/Model/UserManager.php:290
+#: lib/Domain/Model/UserManager.php:784
 msgid "Enter a valid email address."
 msgstr "Oppgi en gyldig epost adresse."
 
-#: lib/Domain/Model/UserManager.php:325
+#: lib/Domain/Model/UserManager.php:772
 msgid "Username exist already, please choose another one."
 msgstr "Brukernavnet finnes allerede. Vennligst velg et annet."
 
-#: lib/Domain/Model/UserManager.php:421
+#: lib/Domain/Model/UserManager.php:420
 msgid "The two new password fields do not match."
 msgstr "De to passord feltene samsvarer ikke."
 
-#: lib/Domain/Model/ZoneTemplate.php:334 lib/Domain/Service/Dns.php:238
+#: lib/Domain/Model/UserManager.php:431
+msgid "You can not change your password as LDAP user."
+msgstr "You can not change your password as LDAP user."
+
+#: lib/Domain/Model/UserManager.php:451
+msgid "You did not enter the correct current password."
+msgstr "Du oppga feil passord."
+
+#: lib/Domain/Model/UserManager.php:778
+msgid "Enter a valid user name."
+msgstr "Skriv inn et gyldig brukernavn."
+
+#: lib/Domain/Model/ZoneTemplate.php:338 lib/Domain/Service/Dns.php:185
 msgid "Your content field doesnt have a legit value."
 msgstr "Innholdsfeltet ditt inneholder ikke en gyldig verdi."
 
-#: lib/Domain/Model/ZoneTemplate.php:350 lib/Domain/Model/ZoneTemplate.php:397
-#: lib/Domain/Service/Dns.php:290
+#: lib/Domain/Service/Dns.php:316
 msgid "Invalid value for prio field."
 msgstr "Ugyldig verdi for prioritetsfeltet."
 
-#: lib/Domain/Service/Dns.php:248
+#: lib/Domain/Service/Dns.php:279
 msgid "The content of the SPF record is invalid"
 msgstr "Innholdet i SPF-posten er ugyldig"
 
-#: lib/Domain/Service/Dns.php:282
+#: lib/Domain/Service/Dns.php:303
 msgid "Unknown record type."
 msgstr "Ukjent DNS type."
 
-#: lib/Domain/Service/Dns.php:324 lib/Domain/Service/Dns.php:862
+#: lib/Domain/Service/Dns.php:350 lib/Domain/Service/Dns.php:871
 msgid "The hostname is too long."
 msgstr "Vertsnavnet er for langt."
 
-#: lib/Domain/Service/Dns.php:341 lib/Domain/Service/Dns.php:350
+#: lib/Domain/Service/Dns.php:367 lib/Domain/Service/Dns.php:376
 msgid "You have invalid characters in your hostname."
 msgstr "Du har ugyldige tegn i vertsnavnet."
 
-#: lib/Domain/Service/Dns.php:358 lib/Domain/Service/Dns.php:365
+#: lib/Domain/Service/Dns.php:384 lib/Domain/Service/Dns.php:391
 msgid "A hostname can not start or end with a dash."
 msgstr "Et vertsnavn kan ikke begynne eller avslutte med bindestrek."
 
-#: lib/Domain/Service/Dns.php:372
+#: lib/Domain/Service/Dns.php:398
 msgid "Given hostname or one of the labels is too short or too long."
 msgstr "Oppgitt vertsnavn er for kort eller for langt."
 
-#: lib/Domain/Service/Dns.php:409
+#: lib/Domain/Service/Dns.php:435
 msgid "Given hostname has too many slashes."
 msgstr "Oppgitt vertsnavn har for mange skråstreker."
 
-#: lib/Domain/Service/Dns.php:418
+#: lib/Domain/Service/Dns.php:444
 msgid "You are using an invalid top level domain."
 msgstr "Du bruker et ugyldig topp nivå domene."
 
-#: lib/Domain/Service/Dns.php:441
+#: lib/Domain/Service/Dns.php:467
 msgid "This is not a valid IPv4 address."
 msgstr "Dette er ikke en gyldig IPv4 adresse."
 
-#: lib/Domain/Service/Dns.php:464
+#: lib/Domain/Service/Dns.php:490
 msgid "This is not a valid IPv6 address."
 msgstr "Dette er ikke en gyldig IPv6 adresse."
 
-#: lib/Domain/Service/Dns.php:518
+#: lib/Domain/Service/Dns.php:544
 msgid "Invalid characters have been used in this record."
 msgstr "Ugyldige tegn brukt i DNS-pekeren."
 
-#: lib/Domain/Service/Dns.php:535
-msgid "You cannot use html tags for this type of record."
-msgstr "Du kan ikke bruke html-tagger for denne typen post."
-
-#: lib/Domain/Service/Dns.php:563
+#: lib/Domain/Service/Dns.php:572
 msgid "Backslashes must precede all quotes (\") in TXT content"
-msgstr "Omvendte skråstreker må stå foran alle anførselstegn (\") i TXT-innhold"
+msgstr ""
+"Omvendte skråstreker må stå foran alle anførselstegn (\") i TXT-innhold"
 
-#: lib/Domain/Service/Dns.php:585
+#: lib/Domain/Service/Dns.php:594
 msgid "Add quotes around TXT record content."
 msgstr "Legg anførselstegn rundt TXT-postinnhold."
 
-#: lib/Domain/Service/Dns.php:615
+#: lib/Domain/Service/Dns.php:624
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr ""
 "Dette er ikke et gyldig CNAME. Mente du å tildele en MX eller NS peker "
 "istedenfor?"
 
-#: lib/Domain/Service/Dns.php:644
+#: lib/Domain/Service/Dns.php:653
 msgid ""
 "This is not a valid record. There is already exists a CNAME with this name."
 msgstr ""
 "Dette er ikke en gyldig DNS-peker. Det eksisterer allerede et CNAME med "
 "dette navnet."
 
-#: lib/Domain/Service/Dns.php:671
+#: lib/Domain/Service/Dns.php:680
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr ""
 "Dette er ikke en gyldig CNAME. Det finnes allerede en post med dette navnet."
 
-#: lib/Domain/Service/Dns.php:691
+#: lib/Domain/Service/Dns.php:700
 msgid "Empty CNAME records are not allowed."
 msgstr "Tomme CNAME poster er ikke tillatt."
 
-#: lib/Domain/Service/Dns.php:717
+#: lib/Domain/Service/Dns.php:726
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
 msgstr ""
-"Du kan ikke peke en NS- eller MX-post til en CNAME-post. Fjern eller gi nytt"
-" navn til CNAME-posten først, eller velg et annet navn."
+"Du kan ikke peke en NS- eller MX-post til en CNAME-post. Fjern eller gi nytt "
+"navn til CNAME-posten først, eller velg et annet navn."
 
-#: lib/Domain/Service/Dns.php:743
+#: lib/Domain/Service/Dns.php:752
 msgid "Invalid value for content field of HINFO record."
 msgstr "Ugyldig verdi i innholdsfeltet for HINFO pekeren."
 
-#: lib/Domain/Service/Dns.php:830
+#: lib/Domain/Service/Dns.php:839
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
-msgstr ""
-"Ugyldig verdi på navn til SOA feltet. Verdien må være navnet på sonen."
+msgstr "Ugyldig verdi på navn til SOA feltet. Verdien må være navnet på sonen."
 
-#: lib/Domain/Service/Dns.php:871
+#: lib/Domain/Service/Dns.php:880
 msgid "Invalid service value in name field of SRV record."
 msgstr "Ugyldig tjenesteverdi i navnefeltet til SRV-posten."
 
-#: lib/Domain/Service/Dns.php:878
+#: lib/Domain/Service/Dns.php:887
 msgid "Invalid protocol value in name field of SRV record."
 msgstr "Ugyldig protokollverdi i navnefeltet til SRV-posten."
 
-#: lib/Domain/Service/Dns.php:885
+#: lib/Domain/Service/Dns.php:894
 msgid "Invalid FQDN value in name field of SRV record."
 msgstr "Ugyldig FQDN-verdi i navnefeltet til SRV-posten."
 
-#: lib/Domain/Service/Dns.php:905
+#: lib/Domain/Service/Dns.php:914
 msgid "Invalid value for the priority field of the SRV record."
 msgstr "Ugyldig verdi i prioritet feltet for SRV pekeren."
 
-#: lib/Domain/Service/Dns.php:912
+#: lib/Domain/Service/Dns.php:921
 msgid "Invalid value for the weight field of the SRV record."
 msgstr "Ugyldig verdi i weight feltet for SRV pekeren."
 
-#: lib/Domain/Service/Dns.php:919
+#: lib/Domain/Service/Dns.php:928
 msgid "Invalid SRV target."
 msgstr "Ugyldig SRV mål."
 
-#: lib/Domain/Service/Dns.php:943
+#: lib/Domain/Service/Dns.php:952
 msgid "Invalid value for TTL field. It should be numeric."
 msgstr "Ugyldig verdi i TTL feltet. Det må være numerisk."
+
+#: lib/Domain/Service/Dns.php:1031
+msgid ""
+"Invalid CDNSKEY record format. Expected: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY "
+"(e.g., 257 3 5 AwEA...)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1046
+msgid "CDNSKEY flags must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1056
+msgid "CDNSKEY protocol must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1066
+msgid "CDNSKEY algorithm must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1076
+msgid "CDNSKEY public key cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1086
+msgid "CDNSKEY public key must be valid Base64."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1097
+msgid "CDNSKEY public key contains invalid Base64 encoding."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1151
+#, php-format
+msgid "Invalid APL element format: %s. Expected: [!]FAMILY:ADDRESS/PREFIX"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1167
+#, php-format
+msgid "Invalid IPv4 address in APL: %s"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1175
+msgid "IPv4 prefix must be between 0 and 32."
+msgstr "IPv4-prefiks må være mellom 0 og 32."
+
+#: lib/Domain/Service/Dns.php:1185
+#, php-format
+msgid "Invalid IPv6 address in APL: %s"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1193
+msgid "IPv6 prefix must be between 0 and 128."
+msgstr "IPv6-prefiks må være mellom 0 og 128."
+
+#: lib/Domain/Service/Dns.php:1201
+#, php-format
+msgid "Unknown address family in APL: %d. Must be 1 (IPv4) or 2 (IPv6)."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1234
+msgid "ALIAS target hostname cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1245
+#, fuzzy
+msgid "ALIAS target must be a valid hostname."
+msgstr "NS pekere må være vertsnavn."
+
+#: lib/Domain/Service/Dns.php:1277
+msgid ""
+"Invalid AFSDB record format. Expected: SUBTYPE HOSTNAME (e.g., 1 afs-"
+"server.example.com)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1290
+msgid "AFSDB subtype must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1300
+msgid "AFSDB hostname cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1333
+msgid ""
+"Invalid CAA record format. Expected: FLAGS TAG VALUE (e.g., 0 issue "
+"\"letsencrypt.org\")"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1347
+msgid "CAA flags must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1358
+msgid "CAA tag must be alphanumeric."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1368
+msgid ""
+"CAA value must be enclosed in quotes (e.g., \"letsencrypt.org\" or \"\")."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1382
+msgid "Quotes inside CAA value must be escaped with backslash."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1419
+msgid ""
+"Invalid CDS record format. Expected: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
+"(e.g., 20642 8 2 04443ABE...)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1434
+msgid "CDS keytag must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1444
+msgid "CDS algorithm must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1454
+msgid "CDS digest type must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1464
+msgid "CDS digest cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1481
+msgid ""
+"CDS digest has unexpected length. Expected 40 (SHA-1), 64 (SHA-256), or 96 "
+"(SHA-384) hex characters."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1527
+msgid ""
+"Invalid CERT record format. Expected: TYPE KEYTAG ALGORITHM CERTIFICATE "
+"(e.g., 1 0 0 MIIB9D...)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1542
+msgid "CERT type must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1552
+msgid "CERT keytag must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1562
+msgid "CERT algorithm must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1572
+msgid "CERT certificate cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1582
+msgid "CERT certificate must be valid Base64."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1593
+msgid "CERT certificate contains invalid Base64 encoding."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1630
+msgid "DNAME target cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1641
+msgid "DNAME target cannot contain spaces."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1651
+msgid ""
+"DNAME target contains invalid characters. Only alphanumeric, dots, hyphens, "
+"and underscores are allowed."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1686
+msgid ""
+"Invalid L32 record format. Expected: PREFERENCE LOCATOR32 (e.g., 513 "
+"192.0.2.1)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1699
+msgid "L32 preference must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1709
+#, fuzzy
+msgid "L32 locator32 must be a valid IPv4 address."
+msgstr "Dette er ikke en gyldig IPv4 adresse."
+
+#: lib/Domain/Service/Dns.php:1744
+msgid ""
+"Invalid L64 record format. Expected: PREFERENCE LOCATOR64 (e.g., 255 "
+"2001:0DB8:1234:ABCD)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1757
+msgid "L64 preference must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1768
+msgid ""
+"L64 locator64 must be in format XXXX:XXXX:XXXX:XXXX (e.g., "
+"2001:0DB8:1234:ABCD)."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1806
+msgid "LUA record content cannot be empty."
+msgstr "LUA-postinnhold kan ikke være tomt."
+
+#: lib/Domain/Service/Dns.php:1817
+msgid ""
+"Invalid LUA record format. Expected: TYPE LUA_CODE (e.g., A \"ifportup(443, "
+"{'192.0.2.1'})\")"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1836
+msgid ""
+"LUA record type must be a valid DNS record type (e.g., A, AAAA, TXT, MX, "
+"etc.)."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1846
+msgid "LUA code cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1885
+msgid ""
+"Invalid LP record format. Expected: PREFERENCE FQDN (e.g., 512 "
+"foo.powerdns.org.)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1898
+msgid "LP preference must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1908
+msgid "LP FQDN cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1919
+msgid ""
+"LP FQDN contains invalid characters. Only alphanumeric, dots, hyphens, and "
+"underscores are allowed."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1952
+#, php-format
+msgid ""
+"%s is a meta-query type and cannot be used as a zone record. It is only used "
+"in DNS queries."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1985
+msgid "OPENPGPKEY content cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:1995
+msgid "OPENPGPKEY must be valid Base64-encoded data."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2006
+msgid "OPENPGPKEY contains invalid Base64 encoding."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2052
+msgid ""
+"Invalid SIG record format. Expected: TYPE_COVERED ALGORITHM LABELS "
+"ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2072
+msgid "SIG type covered must be a valid DNS record type."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2082
+msgid "SIG algorithm must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2092
+msgid "SIG labels must be between 0 and 255."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2102
+msgid "SIG original TTL must be a positive integer."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2112
+msgid "SIG key tag must be between 0 and 65535."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2122
+msgid "SIG signer name cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2131
+msgid "SIG signer name must be a valid domain name."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2141
+msgid "SIG signature cannot be empty."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2150
+msgid "SIG signature must be valid Base64."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2160
+msgid "SIG signature contains invalid Base64 encoding."
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2190
+msgid "DHCID record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2204
+msgid "DHCID record must contain valid Base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2214
+msgid "DHCID record data is too short (minimum 35 bytes required)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2246
+msgid "SMIMEA record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2257
+msgid ""
+"SMIMEA record must have at least 4 fields: usage, selector, matching-type, "
+"and certificate data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2272
+msgid "SMIMEA usage must be an integer between 0 and 255"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2282
+msgid "SMIMEA selector must be an integer between 0 and 255"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2292
+msgid "SMIMEA matching type must be an integer between 0 and 255"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2302
+msgid "SMIMEA certificate data is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2311
+msgid "SMIMEA certificate data must be a valid hexadecimal string"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2321
+msgid ""
+"SMIMEA certificate data must be at least 2 hexadecimal characters (1 byte)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2331
+msgid ""
+"SMIMEA certificate data must have an even number of hexadecimal characters"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2368
+msgid "TKEY record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2381
+msgid ""
+"TKEY record must have at least 6 fields: algorithm, inception, expiration, "
+"mode, error, and keysize"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2398
+msgid "TKEY algorithm must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2408
+msgid "TKEY inception must be a 32-bit unsigned integer (0-4294967295)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2418
+msgid "TKEY expiration must be a 32-bit unsigned integer (0-4294967295)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2428
+msgid "TKEY mode must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2438
+msgid "TKEY error must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2448
+msgid "TKEY keysize must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2462
+msgid "TKEY keydata is required when keysize > 0"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2474
+msgid "TKEY keydata must be valid Base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2487
+msgid "TKEY othersize field is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2499
+msgid "TKEY othersize must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2513
+msgid "TKEY otherdata is required when othersize > 0"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2525
+msgid "TKEY otherdata must be valid Base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2557
+msgid "URI record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2568
+msgid ""
+"URI record must have format: <priority> <weight> \"<target>\" (target must "
+"be in quotes)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2582
+msgid "URI priority must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2592
+msgid "URI weight must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2602
+msgid "URI target cannot be empty"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2612
+msgid ""
+"URI target must be a valid URI with a scheme (e.g., http://, ftp://, mailto:)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2661
+msgid "SSHFP record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2672
+msgid "SSHFP record must have 3 fields: algorithm, fptype, and fingerprint"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2686
+msgid "SSHFP algorithm must be an 8-bit integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2696
+msgid "SSHFP fingerprint type must be an 8-bit integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2706
+msgid "SSHFP fingerprint is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2715
+msgid "SSHFP fingerprint must be a valid hexadecimal string"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2725
+msgid "SSHFP fingerprint must have an even number of hexadecimal characters"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2751
+msgid "NAPTR record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2761
+msgid ""
+"NAPTR record must have format: <order> <preference> \"<flags>\" "
+"\"<services>\" \"<regexp>\" <replacement>"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2778
+msgid "NAPTR order must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2788
+msgid "NAPTR preference must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2799
+msgid "NAPTR replacement must be a valid domain name or \".\""
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2825
+msgid "RP record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2836
+msgid "RP record must have 2 fields: mbox-dname and txt-dname"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2849
+msgid "RP mbox-dname must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2859
+msgid "RP txt-dname must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2885
+msgid "DNSKEY record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2896
+msgid ""
+"DNSKEY record must have at least 4 fields: flags, protocol, algorithm, and "
+"public key"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2911
+msgid "DNSKEY flags must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2921
+msgid "DNSKEY protocol must be 3"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2931
+msgid "DNSKEY algorithm must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2941
+msgid "DNSKEY public key is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2950
+msgid "DNSKEY public key must be valid Base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2976
+msgid "NSEC record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2987
+msgid "NSEC record must have at least 2 fields: next domain name and type list"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:2999
+msgid "NSEC next domain must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3012
+msgid "NSEC type list must contain valid DNS record type names"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3039
+msgid "NSEC3 record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3050
+msgid ""
+"NSEC3 record must have at least 5 fields: algorithm, flags, iterations, "
+"salt, and next hash"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3066
+msgid "NSEC3 algorithm must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3076
+msgid "NSEC3 flags must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3086
+msgid "NSEC3 iterations must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3096
+msgid "NSEC3 salt must be hexadecimal or \"-\" for no salt"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3106
+msgid "NSEC3 next hash must be Base32hex-encoded (0-9, A-V)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3119
+msgid "NSEC3 type list must contain uppercase type names"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3147
+msgid "NSEC3PARAM record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3158
+msgid ""
+"NSEC3PARAM record must have 4 fields: algorithm, flags, iterations, and salt"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3173
+msgid "NSEC3PARAM algorithm must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3183
+msgid "NSEC3PARAM flags must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3193
+msgid "NSEC3PARAM iterations must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3203
+msgid "NSEC3PARAM salt must be hexadecimal or \"-\" for no salt"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3247
+msgid "TSIG record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3259
+msgid ""
+"TSIG record must have at least 8 fields: algorithm, time-signed, fudge, mac-"
+"size, mac, original-id, error, and other-len"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3278
+msgid "TSIG algorithm must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3288
+msgid "TSIG time-signed must be a non-negative integer"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3298
+msgid "TSIG fudge must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3308
+msgid "TSIG mac-size must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3318
+msgid "TSIG MAC must be valid Base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3328
+msgid "TSIG original-id must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3338
+msgid "TSIG error must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3348
+msgid "TSIG other-len must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3359
+msgid "TSIG other-data is required when other-len > 0"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3369
+msgid "TSIG other-data must be valid Base64-encoded data"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3395
+msgid "EUI48 record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3405
+msgid "EUI48 must be 6 octets separated by dashes (e.g., 00-11-22-33-44-55)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3430
+msgid "EUI64 record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3440
+msgid ""
+"EUI64 must be 8 octets separated by dashes (e.g., 00-11-22-33-44-55-66-77)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3465
+msgid "NID record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3476
+msgid "NID record must have 2 fields: preference and node-id"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3489
+msgid "NID preference must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3499
+msgid ""
+"NID node-id must be in format XXXX:XXXX:XXXX:XXXX (64-bit hex with colons)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3524
+msgid "KX record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3535
+msgid "KX record must have 2 fields: preference and exchanger"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3548
+msgid "KX preference must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3559
+msgid "KX exchanger must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3584
+msgid "IPSECKEY record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3595
+msgid ""
+"IPSECKEY record must have at least 3 fields: precedence, gateway-type, and "
+"algorithm"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3609
+msgid "IPSECKEY precedence must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3619
+msgid "IPSECKEY gateway-type must be 0-3 (0=none, 1=IPv4, 2=IPv6, 3=domain)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3629
+msgid "IPSECKEY algorithm must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3708 lib/Domain/Service/Dns.php:3740
+msgid "IPSECKEY public key must be Base64-encoded"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3657
+msgid "IPSECKEY with gateway-type 1 requires an IPv4 address"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3666
+#, fuzzy
+msgid "IPSECKEY gateway must be a valid IPv4 address"
+msgstr "Dette er ikke en gyldig IPv4 adresse."
+
+#: lib/Domain/Service/Dns.php:3688
+msgid "IPSECKEY with gateway-type 2 requires an IPv6 address"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3697
+#, fuzzy
+msgid "IPSECKEY gateway must be a valid IPv6 address"
+msgstr "Dette er ikke en gyldig IPv6 adresse."
+
+#: lib/Domain/Service/Dns.php:3719
+msgid "IPSECKEY with gateway-type 3 requires a domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3729
+msgid "IPSECKEY gateway must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3812
+msgid "MINFO record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3823
+msgid "MINFO record must have 2 fields: rmailbx and emailbx"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3836
+msgid "MINFO rmailbx must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3846
+msgid "MINFO emailbx must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3871
+msgid "MR record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3881
+msgid "MR newname must be a valid domain name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3906
+msgid "WKS record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3917
+msgid "WKS record must have at least 3 fields: address, protocol, and services"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3930
+#, fuzzy
+msgid "WKS address must be a valid IPv4 address"
+msgstr "Dette er ikke en gyldig IPv4 adresse."
+
+#: lib/Domain/Service/Dns.php:3941 lib/Domain/Service/Dns.php:3951
+msgid "WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:3965 lib/Domain/Service/Dns.php:3975
+msgid "WKS service must be a 16-bit port number (0-65535) or service name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4002
+msgid "A6 record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4015
+msgid ""
+"A6 record must have at least 2 fields: prefix-length and address-suffix or "
+"prefix-name"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4027
+msgid "A6 prefix length must be an integer (0-128)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4052
+msgid "CSYNC record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4063
+msgid ""
+"CSYNC record must have at least 3 fields: SOA-serial, flags, and type-list"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4076
+msgid "CSYNC SOA serial must be a 32-bit unsigned integer (0-4294967295)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4086
+msgid "CSYNC flags must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4098
+msgid "CSYNC type list must contain uppercase type names"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4124
+msgid "ZONEMD record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4135
+msgid "ZONEMD record must have 4 fields: serial, scheme, algorithm, and digest"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4150
+msgid "ZONEMD serial must be a 32-bit unsigned integer (0-4294967295)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4160
+msgid "ZONEMD scheme must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4170
+msgid "ZONEMD algorithm must be an 8-bit unsigned integer (0-255)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4180
+msgid "ZONEMD digest must be hexadecimal"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4220
+msgid "SVCB record content is required"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4231
+msgid "SVCB record must have at least 2 fields: priority and target"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4244
+msgid "SVCB priority must be a 16-bit unsigned integer (0-65535)"
+msgstr ""
+
+#: lib/Domain/Service/Dns.php:4255
+msgid "SVCB target must be a valid domain name or \".\""
+msgstr ""
 
 #: lib/Domain/Service/DomainRecordCreator.php:56
 #, php-format
@@ -735,9 +1589,6 @@ msgid "Adding IPv6 domain records from reverse zones is not supported yet."
 msgstr ""
 "Å legge til IPv6-domeneoppføringer fra reverse soner støttes ikke ennå."
 
-#: lib/Domain/Service/DomainRecordCreator.php:73
-#: lib/Domain/Service/DomainRecordCreator.php:82
-#: lib/Domain/Service/DomainRecordCreator.php:91
 #: lib/Domain/Service/DomainRecordCreator.php:107
 msgid "This domain record was not valid and could not be added."
 msgstr "Denne domeneoppføringen var ikke gyldig og kunne ikke legges til."
@@ -746,109 +1597,65 @@ msgstr "Denne domeneoppføringen var ikke gyldig og kunne ikke legges til."
 msgid "The domain record was successfully added."
 msgstr "Domeneoppføringen ble lagt til."
 
-#: lib/Domain/Service/DnsRecord.php:370
+#: lib/Domain/Service/DnsRecord.php:374
 msgid "You do not have the permission to edit this SOA record."
 msgstr "Du har ikke tillatelse til å redigere denne SOA-oppføringen."
 
-#: lib/Domain/Service/DnsRecord.php:377
+#: lib/Domain/Service/DnsRecord.php:381
 msgid "You do not have the permission to edit this NS record."
 msgstr "Du har ikke tillatelse til å redigere denne NS-oppføringen."
 
-#: lib/Domain/Service/DnsRecord.php:432
+#: lib/Domain/Service/DnsRecord.php:444
 msgid "You do not have the permission to add SOA record."
 msgstr "Du har ikke tillatelse til å legge til SOA-oppføring."
 
-#: lib/Domain/Service/DnsRecord.php:439
+#: lib/Domain/Service/DnsRecord.php:451
 msgid "You do not have the permission to add NS record."
 msgstr "Du har ikke tillatelse til å legge til NS-oppføring."
 
-#: lib/Domain/Service/DnsRecord.php:529 lib/Domain/Service/DnsRecord.php:571
-#: lib/Domain/Service/DnsRecord.php:600 lib/Domain/Service/DnsRecord.php:785
-#: lib/Domain/Service/DnsRecord.php:881 lib/Domain/Service/DnsRecord.php:910
-#: lib/Domain/Service/DnsRecord.php:982 lib/Domain/Service/DnsRecord.php:1169
-#: lib/Domain/Service/DnsRecord.php:1194 lib/Domain/Service/DnsRecord.php:1549
-#: lib/Domain/Service/DnsRecord.php:1747
+#: lib/Domain/Service/DnsRecord.php:1881
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Ugyldig(e) argument(er) er gitt til funksjonen %s %s"
 
-#: lib/Domain/Service/DnsRecord.php:537
+#: lib/Domain/Service/DnsRecord.php:557
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr ""
 "Det finnes allerede en supermaster med denne IP-adressen og vertsnavnet."
 
-#: lib/Domain/Service/DnsRecord.php:638
+#: lib/Domain/Service/DnsRecord.php:664
 msgid ""
 "You are trying to delete the SOA record. You are not allowed to remove it, "
 "unless you remove the entire zone."
 msgstr ""
-"Du prøver å slette en SOA peker. Dette er ikke tillatt med mindre du sletter"
-" hele sonen."
+"Du prøver å slette en SOA peker. Dette er ikke tillatt med mindre du sletter "
+"hele sonen."
 
-#: lib/Domain/Service/DnsRecord.php:791 lib/Domain/Service/DnsRecord.php:1405
+#: lib/Domain/Service/DnsRecord.php:825 lib/Domain/Service/DnsRecord.php:1538
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Ugyldig argument(er) gitt til funksjonen %s"
 
-#: lib/Domain/Service/DnsRecord.php:875
+#: lib/Domain/Service/DnsRecord.php:910
 msgid "The selected user already owns the zone."
 msgstr "Den valgte brukeren eier allerede sonen."
 
-#: lib/Domain/Service/DnsRecord.php:904
+#: lib/Domain/Service/DnsRecord.php:940
 msgid "There must be at least one owner for a zone."
 msgstr "Det må være minst én eier for en sone."
 
-#: lib/Domain/Service/DnsRecord.php:1123
+#: lib/Domain/Service/DnsRecord.php:1162
 msgid "This is an invalid zone name."
 msgstr "Dette er et ugyldig sone navn."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:62
-#, php-format
-msgid "There is no matching reverse-zone for: %s."
-msgstr "Det finnes ingen matchende reverse-sone for: %s."
-
-#: templates/dnssec_edit_key.html:3 templates/edit_zone_templ_record.html:3
-#: templates/dnssec.html:3 templates/edit_record.html:3
-#: templates/migrations.html:3 templates/edit_comment.html:3
-#: templates/add_zone_templ.html:3 templates/list_log_zones.html:3
-#: templates/delete_user.html:3 templates/list_zones.html:3
-#: templates/dnssec_add_key.html:3 templates/edit_user.html:3
-#: templates/add_perm_templ.html:3 templates/add_supermaster.html:3
-#: templates/add_zone_templ_record.html:3 templates/delete_perm_templ.html:3
-#: templates/edit.html:3 templates/users.html:3 templates/delete_record.html:3
-#: templates/add_user.html:3 templates/add_zone_master.html:3
-#: templates/list_zone_templ.html:3 templates/change_password.html:3
-#: templates/edit_zone_templ.html:3 templates/list_supermasters.html:3
-#: templates/bulk_registration.html:3 templates/delete_domain.html:3
-#: templates/search.html:3 templates/delete_domains.html:3
-#: templates/delete_supermaster.html:3 templates/list_log_users.html:3
-#: templates/add_zone_slave.html:3 templates/delete_zone_templ.html:3
-#: templates/dnssec_ds_dnskey.html:3 templates/add_record.html:3
-#: templates/edit_perm_templ.html:3 templates/delete_zone_templ_record.html:3
 #: templates/dnssec_delete_key.html:3 templates/list_perm_templ.html:3
 msgid "Home"
 msgstr "Hjem"
 
-#: templates/dnssec_edit_key.html:4 templates/edit_zone_templ_record.html:4
-#: templates/dnssec.html:4 templates/edit_record.html:4
-#: templates/edit_comment.html:4 templates/add_zone_templ.html:4
-#: templates/list_log_zones.html:4 templates/list_zones.html:4
-#: templates/dnssec_add_key.html:4 templates/add_zone_templ_record.html:4
-#: templates/edit.html:4 templates/delete_record.html:4
-#: templates/add_zone_master.html:4 templates/list_zone_templ.html:4
-#: templates/edit_zone_templ.html:4 templates/bulk_registration.html:4
-#: templates/bulk_registration.html:56 templates/delete_domain.html:4
-#: templates/search.html:34 templates/delete_domains.html:4
-#: templates/add_zone_slave.html:4 templates/delete_zone_templ.html:4
-#: templates/header.html:40 templates/dnssec_ds_dnskey.html:4
-#: templates/add_record.html:4 templates/delete_zone_templ_record.html:4
 #: templates/dnssec_delete_key.html:4
 msgid "Zones"
 msgstr "Soner"
 
-#: templates/dnssec_edit_key.html:13 templates/dnssec.html:12
-#: templates/list_zones.html:62 templates/dnssec_add_key.html:13
-#: templates/edit.html:299 templates/add_zone_master.html:63
 #: templates/dnssec_ds_dnskey.html:13 templates/dnssec_delete_key.html:13
 msgid "DNSSEC"
 msgstr "DNSSEC"
@@ -869,61 +1676,38 @@ msgstr "Deaktiver sonenøkkel"
 msgid "Activate zone key"
 msgstr "Aktiver sonenøkkel"
 
-#: templates/dnssec_edit_key.html:37 templates/dnssec_delete_key.html:28
+#: templates/dnssec_edit_key.html:38 templates/dnssec_delete_key.html:29
 msgid "Domain"
 msgstr "Domene"
 
-#: templates/dnssec_edit_key.html:44 templates/list_log_zones.html:39
-#: templates/edit.html:133 templates/list_log_users.html:39
-#: templates/dnssec_delete_key.html:35
+#: templates/dnssec_delete_key.html:36
 msgid "Id"
 msgstr "ID"
 
-#: templates/dnssec_edit_key.html:45 templates/edit_zone_templ_record.html:23
-#: templates/dnssec.html:25 templates/edit_record.html:29
-#: templates/list_zones.html:36 templates/add_zone_templ_record.html:20
-#: templates/edit.html:28 templates/edit.html:150 templates/edit.html:320
-#: templates/edit.html:498 templates/add_zone_master.html:35
-#: templates/list_zone_templ.html:17 templates/edit_zone_templ.html:29
-#: templates/bulk_registration.html:29 templates/delete_domain.html:23
-#: templates/search.html:69 templates/search.html:164
-#: templates/delete_domains.html:17 templates/add_record.html:29
-#: templates/dnssec_delete_key.html:36
+#: templates/dnssec_delete_key.html:37
 msgid "Type"
 msgstr "Type"
 
-#: templates/dnssec_edit_key.html:46 templates/dnssec.html:26
-#: templates/dnssec_delete_key.html:37
+#: templates/dnssec_delete_key.html:38
 msgid "Tag"
 msgstr "Merke"
 
-#: templates/dnssec_edit_key.html:47 templates/dnssec.html:27
-#: templates/dnssec_add_key.html:54 templates/dnssec_delete_key.html:38
+#: templates/dnssec_add_key.html:54 templates/dnssec_delete_key.html:39
 msgid "Algorithm"
 msgstr "Algoritme"
 
-#: templates/dnssec_edit_key.html:48 templates/dnssec.html:28
-#: templates/dnssec_delete_key.html:39
+#: templates/dnssec_delete_key.html:40
 msgid "Bits"
 msgstr "Biter"
 
-#: templates/dnssec_edit_key.html:49 templates/dnssec.html:29
-#: templates/dnssec_delete_key.html:40
+#: templates/dnssec_delete_key.html:41
 msgid "Active"
 msgstr "Aktiv"
 
-#: templates/dnssec_edit_key.html:50 templates/delete_user.html:49
-#: templates/delete_perm_templ.html:12 templates/delete_record.html:49
-#: templates/delete_domain.html:31 templates/delete_domains.html:50
-#: templates/delete_supermaster.html:14 templates/delete_zone_templ.html:11
-#: templates/delete_zone_templ_record.html:33
-#: templates/dnssec_delete_key.html:42
+#: templates/dnssec_delete_key.html:43
 msgid "Are you sure?"
 msgstr "Er du sikker?"
 
-#: templates/edit_zone_templ_record.html:5 templates/add_zone_templ.html:5
-#: templates/add_zone_templ_record.html:5 templates/list_zone_templ.html:5
-#: templates/edit_zone_templ.html:5 templates/delete_zone_templ.html:5
 #: templates/delete_zone_templ_record.html:5
 msgid "Zone templates"
 msgstr "Sonemaler"
@@ -936,58 +1720,31 @@ msgstr "Rediger DNS-peker"
 msgid "Edit record in zone template"
 msgstr "Rediger DNS-peker i some mal"
 
-#: templates/edit_zone_templ_record.html:21 templates/edit_record.html:27
-#: templates/add_zone_templ.html:15 templates/list_zones.html:30
-#: templates/add_perm_templ.html:15 templates/add_perm_templ.html:31
-#: templates/add_zone_templ_record.html:18 templates/edit.html:27
-#: templates/edit.html:142 templates/edit.html:318
-#: templates/list_zone_templ.html:14 templates/edit_zone_templ.html:28
-#: templates/edit_zone_templ.html:129 templates/search.html:63
-#: templates/search.html:158 templates/delete_domains.html:15
-#: templates/add_record.html:27 templates/edit_perm_templ.html:17
 #: templates/edit_perm_templ.html:33 templates/list_perm_templ.html:13
 msgid "Name"
 msgstr "Navn"
 
-#: templates/edit_zone_templ_record.html:24 templates/edit_record.html:30
-#: templates/add_zone_templ_record.html:21 templates/edit.html:29
-#: templates/edit.html:158 templates/edit.html:321
-#: templates/edit_zone_templ.html:30 templates/search.html:176
 #: templates/add_record.html:30
 msgid "Content"
 msgstr "Innhold"
 
-#: templates/edit_zone_templ_record.html:25 templates/edit_record.html:31
-#: templates/add_zone_templ_record.html:22 templates/edit.html:30
-#: templates/edit.html:166 templates/edit.html:322
-#: templates/edit_zone_templ.html:31 templates/search.html:170
 #: templates/add_record.html:31
 msgid "Priority"
 msgstr "Prioritet"
 
-#: templates/edit_zone_templ_record.html:26 templates/edit_record.html:32
-#: templates/add_zone_templ_record.html:23 templates/edit.html:31
-#: templates/edit.html:174 templates/edit.html:323
-#: templates/edit_zone_templ.html:33 templates/search.html:182
 #: templates/add_record.html:32
 msgid "TTL"
 msgstr "TTL"
 
-#: templates/edit_zone_templ_record.html:51 templates/edit_record.html:82
-#: templates/edit.html:73 templates/edit.html:354 templates/add_record.html:59
+#: templates/edit.html:73 templates/edit.html:377 templates/add_record.html:59
 msgid "Provide content"
 msgstr "Oppgi innhold"
 
-#: templates/edit_zone_templ_record.html:60 templates/edit_record.html:99
-#: templates/edit_comment.html:31 templates/edit_user.html:77
-#: templates/add_perm_templ.html:47 templates/users.html:119
-#: templates/edit_zone_templ.html:152 templates/edit_perm_templ.html:55
+#: templates/edit_zone_templ.html:148 templates/edit_perm_templ.html:55
 msgid "Update"
 msgstr "Oppdater"
 
-#: templates/edit_zone_templ_record.html:61 templates/edit_record.html:100
-#: templates/edit_comment.html:32 templates/edit_user.html:78
-#: templates/edit.html:293 templates/users.html:120
+#: templates/edit.html:147 templates/edit.html:316 templates/users.html:120
 msgid "Reset"
 msgstr "Nullstill"
 
@@ -1003,11 +1760,11 @@ msgstr "ID"
 msgid "Delete zone key"
 msgstr "Slett sonenøkkel"
 
-#: templates/dnssec.html:60
+#: templates/dnssec.html:59
 msgid "Add new key"
 msgstr "Legg til ny nøkkel"
 
-#: templates/dnssec.html:62
+#: templates/dnssec.html:60
 msgid "Show DS and DNSKEY"
 msgstr "Vis DS og DNSKEY"
 
@@ -1015,23 +1772,19 @@ msgstr "Vis DS og DNSKEY"
 msgid "Edit record in zone"
 msgstr "Rediger DNS-peker i sone"
 
-#: templates/edit_record.html:34 templates/edit.html:33
-#: templates/edit.html:181 templates/edit.html:325
 #: templates/add_record.html:34
 msgid "Comment"
 msgstr "Kommentar"
 
-#: templates/edit_record.html:36 templates/edit.html:185
-#: templates/search.html:188
+#: templates/search.html:235
 msgid "Disabled"
 msgstr "Deaktivert"
 
-#: templates/migrations.html:4 templates/migrations.html:8
 #: templates/index_list.html:66 templates/index_cards.html:138
 msgid "Migrations"
 msgstr "Migreringer"
 
-#: templates/edit_comment.html:12 templates/edit.html:285
+#: templates/edit_comment.html:12 templates/edit.html:307
 msgid "Edit comment"
 msgstr "Rediger kommentar"
 
@@ -1047,53 +1800,41 @@ msgstr "Legg til mal"
 msgid "Add zone template for"
 msgstr "Ny sone mal for"
 
-#: templates/add_zone_templ.html:17 templates/add_perm_templ.html:17
-#: templates/edit_zone_templ.html:112 templates/edit_zone_templ.html:133
 #: templates/edit_perm_templ.html:19
 msgid "Provide a name for your template"
 msgstr "Oppgi et navn for malen din"
 
-#: templates/add_zone_templ.html:20 templates/edit_user.html:60
-#: templates/add_perm_templ.html:20 templates/add_perm_templ.html:32
-#: templates/add_user.html:57 templates/list_zone_templ.html:15
-#: templates/edit_zone_templ.html:137 templates/edit_perm_templ.html:22
 #: templates/edit_perm_templ.html:34 templates/list_perm_templ.html:14
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: templates/add_zone_templ.html:26 templates/edit_zone_templ.html:146
+#: templates/add_zone_templ.html:26 templates/edit_zone_templ.html:142
 msgid "Everyone could use it (global)?"
 msgstr "Alle kan bruke den (global)?"
 
-#: templates/add_zone_templ.html:30 templates/list_zone_templ.html:71
 #: templates/header.html:106
 msgid "Add zone template"
 msgstr "Ny sone mal"
 
-#: templates/list_log_zones.html:5 templates/list_log_zones.html:9
-#: templates/index_list.html:45 templates/index_cards.html:90
 #: templates/header.html:62
 msgid "Zone logs"
 msgstr "Sonelogger"
-
-#: templates/list_log_zones.html:10 templates/list_log_users.html:10
-msgid "Total number of logs:"
-msgstr "Totalt antall logger:"
 
 #: templates/list_log_zones.html:17
 msgid "Search logs by domain"
 msgstr "Søk i logger etter domene"
 
-#: templates/list_log_zones.html:21 templates/search.html:4
-#: templates/search.html:23 templates/list_log_users.html:21
 #: templates/header.html:32
 msgid "Search"
 msgstr "Søk"
 
-#: templates/list_log_zones.html:25 templates/search.html:25
-#: templates/list_log_users.html:25
+#: templates/list_log_users.html:23
 msgid "Clear"
 msgstr "Tøm"
+
+#: templates/list_log_zones.html:30 templates/list_log_users.html:30
+msgid "Total number of logs:"
+msgstr "Totalt antall logger:"
 
 #: templates/list_log_zones.html:40 templates/list_log_users.html:40
 msgid "Event"
@@ -1103,11 +1844,15 @@ msgstr "Hendelse"
 msgid "Created at"
 msgstr "Opprettet"
 
-#: templates/list_log_zones.html:53
+#: templates/list_log_zones.html:55 templates/list_log_zones.html:68
 msgid "Details"
 msgstr "Detaljer"
 
-#: templates/list_log_zones.html:64 templates/list_log_users.html:56
+#: templates/list_log_zones.html:73
+msgid "Close"
+msgstr "Lukk"
+
+#: templates/list_log_zones.html:89 templates/list_log_users.html:58
 msgid "No logs found"
 msgstr "Ingen logger funnet"
 
@@ -1115,75 +1860,54 @@ msgstr "Ingen logger funnet"
 msgid "Welcome"
 msgstr "Velkommen"
 
-#: templates/index_list.html:5 templates/search.html:8
 #: templates/index_cards.html:8
 msgid "Search zones and records"
 msgstr "Søk i soner og DNS-pekere"
 
-#: templates/index_list.html:10 templates/list_zones.html:8
 #: templates/index_cards.html:18 templates/header.html:43
 msgid "List zones"
 msgstr "List soner"
 
-#: templates/index_list.html:15 templates/index_cards.html:30
 #: templates/header.html:104
 msgid "List zone templates"
 msgstr "List sone maler"
 
-#: templates/index_list.html:20 templates/list_supermasters.html:8
 #: templates/index_cards.html:40
 msgid "List supermasters"
 msgstr "List supermastere"
 
-#: templates/index_list.html:25 templates/list_zones.html:141
-#: templates/add_zone_master.html:5 templates/add_zone_master.html:9
 #: templates/index_cards.html:50 templates/header.html:47
 msgid "Add master zone"
 msgstr "Ny master sone"
 
-#: templates/index_list.html:30 templates/list_zones.html:145
-#: templates/add_zone_slave.html:5 templates/add_zone_slave.html:9
 #: templates/index_cards.html:60 templates/header.html:51
 msgid "Add slave zone"
 msgstr "Ny slave sone"
 
-#: templates/index_list.html:35 templates/add_supermaster.html:5
-#: templates/add_supermaster.html:9 templates/add_supermaster.html:49
-#: templates/list_supermasters.html:48 templates/index_cards.html:70
+#: templates/list_supermasters.html:49 templates/index_cards.html:70
 msgid "Add supermaster"
 msgstr "Ny supermaster"
 
-#: templates/index_list.html:40 templates/bulk_registration.html:5
-#: templates/bulk_registration.html:9 templates/index_cards.html:80
 #: templates/header.html:55
 msgid "Bulk registration"
 msgstr "Masseregistrering"
 
-#: templates/index_list.html:50 templates/change_password.html:4
-#: templates/change_password.html:8 templates/change_password.html:37
 #: templates/index_cards.html:101 templates/header.html:117
 msgid "Change password"
 msgstr "Endre passord"
 
-#: templates/index_list.html:54 templates/users.html:8
 #: templates/index_cards.html:110 templates/header.html:73
 msgid "User administration"
 msgstr "Bruker administrasjon"
 
-#: templates/index_list.html:58 templates/index_cards.html:119
 #: templates/header.html:82
 msgid "List permission templates"
 msgstr "Vis tillatelsesmaler"
 
-#: templates/index_list.html:62 templates/index_cards.html:128
 #: templates/header.html:119
 msgid "Logout"
 msgstr "Logg ut"
 
-#: templates/delete_user.html:4 templates/edit_user.html:4
-#: templates/add_perm_templ.html:4 templates/delete_perm_templ.html:4
-#: templates/users.html:4 templates/add_user.html:4
-#: templates/list_log_users.html:4 templates/header.html:71
 #: templates/edit_perm_templ.html:4 templates/list_perm_templ.html:4
 msgid "Users"
 msgstr "Brukere"
@@ -1204,12 +1928,7 @@ msgstr ""
 msgid "Zone"
 msgstr "Sone"
 
-#: templates/delete_user.html:23 templates/list_zones.html:118
-#: templates/delete_perm_templ.html:6 templates/edit.html:264
-#: templates/edit.html:444 templates/users.html:98
-#: templates/list_zone_templ.html:60 templates/edit_zone_templ.html:54
-#: templates/list_supermasters.html:29 templates/search.html:103
-#: templates/search.html:212 templates/list_perm_templ.html:25
+#: templates/search.html:267 templates/list_perm_templ.html:25
 msgid "Delete"
 msgstr "Slett"
 
@@ -1225,53 +1944,47 @@ msgstr "Ny eier"
 msgid "Owner to be added"
 msgstr "Legg til ny eier"
 
-#: templates/list_zones.html:9 templates/search.html:58
+#: templates/list_zones.html:12 templates/search.html:67
 msgid "Total number of zones:"
 msgstr "Totalt antall soner:"
 
-#: templates/list_zones.html:21
+#: templates/search.html:72 templates/search.html:191
+msgid "Rows per page:"
+msgstr "Rader per side:"
+
+#: templates/list_zones.html:38
 msgid "There are no zones to show in this listing."
 msgstr "Det er ingen soner å vise i dette søket."
 
-#: templates/list_zones.html:41 templates/search.html:39
-#: templates/search.html:75
+#: templates/search.html:98
 msgid "Records"
 msgstr "DNS-pekere"
 
-#: templates/list_zones.html:47 templates/add_zone_master.html:21
-#: templates/list_zone_templ.html:16 templates/bulk_registration.html:15
-#: templates/delete_domain.html:22 templates/search.html:81
 #: templates/delete_domains.html:16 templates/add_zone_slave.html:28
 msgid "Owner"
 msgstr "Eier"
 
-#: templates/list_zones.html:51
+#: templates/list_zones.html:68
 msgid "Full name"
 msgstr "Fullt navn"
 
-#: templates/list_zones.html:54
+#: templates/list_zones.html:71
 msgid "Serial"
 msgstr "Serienummer"
 
-#: templates/list_zones.html:58 templates/edit.html:559
-#: templates/users.html:18 templates/add_zone_master.html:50
-#: templates/bulk_registration.html:44
+#: templates/add_zone_master.html:50 templates/bulk_registration.html:44
 msgid "Template"
 msgstr "Mal"
 
-#: templates/list_zones.html:115 templates/edit.html:12
-#: templates/edit.html:262 templates/users.html:93
-#: templates/list_zone_templ.html:59 templates/edit_zone_templ.html:51
-#: templates/search.html:100 templates/search.html:209
-#: templates/edit_perm_templ.html:6 templates/list_perm_templ.html:24
+#: templates/list_perm_templ.html:24
 msgid "Edit"
 msgstr "Rediger"
 
-#: templates/list_zones.html:135
+#: templates/list_zones.html:152
 msgid "Delete zone(s)"
 msgstr "Slett sone(r)"
 
-#: templates/dnssec_add_key.html:15 templates/dnssec_add_key.html:74
+#: templates/dnssec_add_key.html:15 templates/dnssec_add_key.html:69
 msgid "Add key"
 msgstr "Legg til nøkkel"
 
@@ -1295,7 +2008,7 @@ msgstr "Antall bits i lengde"
 msgid "Select bits length"
 msgstr "Velg bitlengde"
 
-#: templates/dnssec_add_key.html:68
+#: templates/dnssec_add_key.html:63
 msgid "Select algorithm"
 msgstr "Velg algoritme"
 
@@ -1303,8 +2016,8 @@ msgstr "Velg algoritme"
 msgid "Edit user"
 msgstr "Rediger bruker"
 
-#: templates/edit_user.html:15 templates/login.html:13 templates/users.html:15
-#: templates/add_user.html:14
+#: templates/add_user.html:14 install/templates/step4.html.twig:14
+#: install/templates/step3.html.twig:35
 msgid "Username"
 msgstr "Brukernavn"
 
@@ -1312,17 +2025,15 @@ msgstr "Brukernavn"
 msgid "Provide user name"
 msgstr "Oppgi brukernavn"
 
-#: templates/edit_user.html:22 templates/users.html:16
 #: templates/add_user.html:20
 msgid "Fullname"
 msgstr "Navn"
 
-#: templates/edit_user.html:27 templates/login.html:18
-#: templates/add_user.html:24
+#: templates/add_user.html:24 install/templates/step4.html.twig:22
+#: install/templates/step3.html.twig:46
 msgid "Password"
 msgstr "Passord"
 
-#: templates/edit_user.html:37 templates/users.html:17
 #: templates/add_user.html:34
 msgid "Email address"
 msgstr "Epost adresse"
@@ -1335,7 +2046,6 @@ msgstr "Oppgi e-post"
 msgid "Permission template"
 msgstr "Rettighets mal"
 
-#: templates/edit_user.html:65 templates/users.html:24
 #: templates/add_user.html:62
 msgid "Enabled"
 msgstr "Aktivert"
@@ -1344,35 +2054,30 @@ msgstr "Aktivert"
 msgid "LDAP Authentication"
 msgstr "LDAP-autentisering"
 
-#: templates/edit_user.html:84
+#: templates/edit_user.html:85
 msgid "This user has been assigned the permission template"
 msgstr "Denne brukeren har blitt tildelt tillatelsesmalen"
 
-#: templates/edit_user.html:86
+#: templates/edit_user.html:87
 msgid "The description for this template is"
 msgstr "Beskrivelsen av denne malen er"
 
-#: templates/edit_user.html:88
+#: templates/edit_user.html:89
 msgid "Based on this template, this user has the following permissions"
 msgstr "Utfra denne malen, så har denne brukeren følgende rettigheter"
 
-#: templates/add_perm_templ.html:5 templates/delete_perm_templ.html:5
-#: templates/edit_perm_templ.html:5 templates/list_perm_templ.html:5
 #: templates/list_perm_templ.html:9
 msgid "Permission templates"
 msgstr "Rettighets maler"
 
-#: templates/add_perm_templ.html:6 templates/edit.html:492
 #: templates/add_user.html:74
 msgid "Add"
 msgstr "Ny"
 
-#: templates/add_perm_templ.html:10 templates/header.html:84
-#: templates/list_perm_templ.html:33
+#: templates/list_perm_templ.html:34
 msgid "Add permission template"
 msgstr "Ny rettighets mal"
 
-#: templates/add_supermaster.html:4 templates/list_supermasters.html:4
 #: templates/delete_supermaster.html:4
 msgid "Supermasters"
 msgstr "Overordnede servere"
@@ -1385,7 +2090,6 @@ msgstr "IP adresse til supermaster"
 msgid "Provide ip address"
 msgstr "Oppgi IP-adresse"
 
-#: templates/add_supermaster.html:20 templates/list_supermasters.html:14
 #: templates/delete_supermaster.html:11
 msgid "Hostname in NS record"
 msgstr "Vertsnavn i DNS-peker"
@@ -1394,7 +2098,6 @@ msgstr "Vertsnavn i DNS-peker"
 msgid "Provide host name"
 msgstr "Oppgi vertsnavn"
 
-#: templates/add_supermaster.html:25 templates/list_supermasters.html:15
 #: templates/delete_supermaster.html:12 templates/header.html:114
 msgid "Account"
 msgstr "Konto"
@@ -1419,10 +2122,6 @@ msgstr "Språk"
 msgid "Go"
 msgstr "Kjør"
 
-#: templates/add_zone_templ_record.html:7
-#: templates/add_zone_templ_record.html:50 templates/edit.html:98
-#: templates/edit.html:368 templates/edit_zone_templ.html:21
-#: templates/edit_zone_templ.html:62 templates/add_record.html:12
 #: templates/add_record.html:71
 msgid "Add record"
 msgstr "Ny DNS-peker"
@@ -1435,11 +2134,11 @@ msgstr "Ny DNS-peker for sone mal"
 msgid "Provide content for your zone record"
 msgstr "Oppgi innhold for din soneoppføring"
 
-#: templates/add_zone_templ_record.html:57 templates/edit_zone_templ.html:71
+#: templates/add_zone_templ_record.html:57 templates/edit_zone_templ.html:67
 msgid "Hint:"
 msgstr "Hint:"
 
-#: templates/add_zone_templ_record.html:60 templates/edit_zone_templ.html:74
+#: templates/add_zone_templ_record.html:60 templates/edit_zone_templ.html:70
 msgid "The following placeholders can be used in template records"
 msgstr "Følgende plass-holder kan brukes i mal pekere."
 
@@ -1451,53 +2150,53 @@ msgstr "erstattet med nåværende sone navn"
 msgid "substituted with current date and 2 numbers"
 msgstr "erstattet med dagens dato og 2 tall"
 
-#: templates/add_zone_templ_record.html:66 templates/edit_zone_templ.html:82
+#: templates/add_zone_templ_record.html:66 templates/edit_zone_templ.html:78
 msgid "substituted with 1st name server"
 msgstr "erstattes med 1. navneserver"
 
-#: templates/add_zone_templ_record.html:67 templates/edit_zone_templ.html:83
+#: templates/add_zone_templ_record.html:67 templates/edit_zone_templ.html:79
 msgid "substituted with 2nd name server"
 msgstr "erstattes med 2. navneserver"
 
-#: templates/add_zone_templ_record.html:68 templates/edit_zone_templ.html:84
+#: templates/add_zone_templ_record.html:68 templates/edit_zone_templ.html:80
 msgid "substituted with 3rd name server"
 msgstr "erstattes med 3. navneserver"
 
-#: templates/add_zone_templ_record.html:69 templates/edit_zone_templ.html:85
+#: templates/add_zone_templ_record.html:69 templates/edit_zone_templ.html:81
 msgid "substituted with 4th name server"
 msgstr "erstattes med 4. navneserver"
 
-#: templates/add_zone_templ_record.html:70 templates/edit_zone_templ.html:86
+#: templates/add_zone_templ_record.html:70 templates/edit_zone_templ.html:82
 msgid "substituted with hostmaster"
 msgstr "erstattes med hostmaster"
 
-#: templates/add_zone_templ_record.html:74 templates/edit_zone_templ.html:90
+#: templates/add_zone_templ_record.html:74 templates/edit_zone_templ.html:86
 msgid "Examples:"
 msgstr "Eksempler:"
 
-#: templates/add_zone_templ_record.html:77 templates/edit_zone_templ.html:93
+#: templates/add_zone_templ_record.html:77 templates/edit_zone_templ.html:89
 msgid ""
 "To add a subdomain foo in a zone template you would put foo.[ZONE] into the "
 "name field."
 msgstr ""
-"For å legge til et underdomene foo i en sonemal, skriv foo.[ZONE] i navnefeltet."
-"name field."
+"For å legge til et underdomene foo i en sonemal, skriv foo.[ZONE] i "
+"navnefeltet.name field."
 
-#: templates/add_zone_templ_record.html:78 templates/edit_zone_templ.html:94
+#: templates/add_zone_templ_record.html:78 templates/edit_zone_templ.html:90
 msgid "To add a wildcard record put *.[ZONE] in the name field."
 msgstr "For å legge til en jokertegnpost, skriv *.[ZONE] i navnefeltet."
 
-#: templates/add_zone_templ_record.html:79 templates/edit_zone_templ.html:95
+#: templates/add_zone_templ_record.html:79 templates/edit_zone_templ.html:91
 msgid "Use just [ZONE] to have the domain itself return a value."
 msgstr "Bruk bare [ZONE] for at domenet selv skal returnere en verdi."
 
-#: templates/add_zone_templ_record.html:80 templates/edit_zone_templ.html:96
+#: templates/add_zone_templ_record.html:80 templates/edit_zone_templ.html:92
 msgid ""
 "For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 "
 "86400 in the content field."
 msgstr ""
-"For SOA-posten, skriv [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 i innholdsfeltet."
-"86400 in the content field."
+"For SOA-posten, skriv [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 i "
+"innholdsfeltet.86400 in the content field."
 
 #: templates/delete_perm_templ.html:10
 msgid "Delete permission template"
@@ -1515,7 +2214,7 @@ msgstr "Legg til PTR"
 msgid "Add A/AAAA"
 msgstr "Legg til A/AAAA"
 
-#: templates/edit.html:79 templates/edit.html:360
+#: templates/edit.html:79 templates/edit.html:383
 msgid "Provide TTL"
 msgstr "Oppgi TTL"
 
@@ -1523,67 +2222,67 @@ msgstr "Oppgi TTL"
 msgid "Edit zone"
 msgstr "Rediger sone"
 
-#: templates/edit.html:119
+#: templates/edit.html:134
 msgid "This zone does not have any records."
 msgstr "Denne sonen har ingen poster."
 
-#: templates/edit.html:275
-msgid "Comments"
-msgstr "Kommentarer"
-
-#: templates/edit.html:292
+#: templates/edit.html:146 templates/edit.html:315
 msgid "Save changes"
 msgstr "Lagre endringer"
 
-#: templates/edit.html:301
+#: templates/edit.html:296 templates/search.html:55
+msgid "Comments"
+msgstr "Kommentarer"
+
+#: templates/edit.html:324
 msgid "Unsign this zone"
 msgstr "Fjern signering av denne sonen"
 
-#: templates/edit.html:304
+#: templates/edit.html:327
 msgid "Sign this zone"
 msgstr "Signer denne sonen"
 
-#: templates/edit.html:374 templates/add_record.html:77
+#: templates/edit.html:397 templates/add_record.html:77
 msgid "Also add a PTR record in the matching zone"
 msgstr "Legg også til en PTR-post i den tilhørende sonen"
 
-#: templates/edit.html:381 templates/add_record.html:84
+#: templates/edit.html:404 templates/add_record.html:84
 msgid "Also add an A/AAAA record in the matching zone"
 msgstr "Legg også til en A/AAAA-post i den tilhørende sonen"
 
-#: templates/edit.html:396
+#: templates/edit.html:419
 msgid "Save as new template"
 msgstr "Lagre som ny mal"
 
-#: templates/edit.html:399 templates/edit_zone_templ.html:109
+#: templates/edit.html:422 templates/edit_zone_templ.html:105
 msgid "Template Name"
 msgstr "Navn på mal"
 
-#: templates/edit.html:402
+#: templates/edit.html:425
 msgid "Provide template name"
 msgstr "Oppgi malnavn"
 
-#: templates/edit.html:406 templates/edit_zone_templ.html:116
+#: templates/edit.html:429 templates/edit_zone_templ.html:112
 msgid "Template Description"
 msgstr "Beskrivelse av mal"
 
-#: templates/edit.html:412 templates/edit_zone_templ.html:120
+#: templates/edit.html:435 templates/edit_zone_templ.html:116
 msgid "Save as template"
 msgstr "Lagre som mal"
 
-#: templates/edit.html:421
+#: templates/edit.html:444
 msgid "Owner of zone"
 msgstr "Eier av sone"
 
-#: templates/edit.html:426
+#: templates/edit.html:449
 msgid "No owner set for this zone."
 msgstr "Denne sonen har ingen eier."
 
-#: templates/edit.html:519 templates/edit.html:546 templates/edit.html:581
+#: templates/edit.html:542 templates/edit.html:569 templates/edit.html:604
 msgid "Change"
 msgstr "Endre"
 
-#: templates/edit.html:532 templates/add_zone_slave.html:21
+#: templates/edit.html:555 templates/add_zone_slave.html:21
 msgid "IP address of master NS"
 msgstr "IP adresse til master NS"
 
@@ -1591,8 +2290,7 @@ msgstr "IP adresse til master NS"
 msgid "LDAP"
 msgstr "LDAP"
 
-#: templates/users.html:125 templates/add_user.html:5
-#: templates/add_user.html:9 templates/header.html:75
+#: templates/header.html:75
 msgid "Add user"
 msgstr "Ny bruker"
 
@@ -1605,13 +2303,12 @@ msgid "Delete record in zone"
 msgstr "Slett post i sone"
 
 #: templates/delete_record.html:47
-msgid ""
-"You are trying to delete a record that is needed for this zone to work."
+msgid "You are trying to delete a record that is needed for this zone to work."
 msgstr ""
 "Du er iferd med å slette en DNS-peker som er nødvendig for at denne sonen "
 "skal virke."
 
-#: templates/add_user.html:29
+#: templates/add_user.html:29 install/templates/step3.html.twig:51
 msgid "Provide user password"
 msgstr "Oppgi brukerpassord"
 
@@ -1639,7 +2336,7 @@ msgstr "I bruk"
 msgid "Zones linked"
 msgstr "Soner koblet"
 
-#: templates/list_zone_templ.html:26 templates/search.html:261
+#: templates/list_zone_templ.html:26 templates/search.html:317
 msgid "No results found"
 msgstr "Ingen resultater funnet"
 
@@ -1683,11 +2380,11 @@ msgstr "Rediger sone mal"
 msgid "This zone template does not have any records yet."
 msgstr "Denne sonemalen har ingen oppføringer ennå."
 
-#: templates/edit_zone_templ.html:67
+#: templates/edit_zone_templ.html:63
 msgid "Update zones"
 msgstr "Oppdater soner"
 
-#: templates/list_supermasters.html:40
+#: templates/list_supermasters.html:41
 msgid "There are no supermasters to show in this listing."
 msgstr "Det er ingen supermastere å vise i denne listen."
 
@@ -1711,7 +2408,7 @@ msgstr "Slett sone"
 msgid "Delete zone"
 msgstr "Slett sone"
 
-#: templates/delete_domain.html:27 templates/delete_domains.html:42
+#: templates/delete_domain.html:29 templates/delete_domains.html:42
 msgid ""
 "You are about to delete a slave zone of which the master nameserver is a "
 "supermaster. Deleting the zone now, will result in temporary removal only. "
@@ -1720,13 +2417,12 @@ msgid ""
 msgstr ""
 "Du er i ferd med å slette en slave-sone der master-navneserveren er en "
 "supermaster. Å slette sonen nå vil bare resultere i midlertidig fjerning. "
-"Når supermasteren sender et varsel for denne sonen, vil den legges til "
-"igjen!"
+"Når supermasteren sender et varsel for denne sonen, vil den legges til igjen!"
 
 #: templates/search.html:9
 msgid ""
-"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_)"
-" in pattern matches any single character, a percent sign (%) matches any "
+"Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) "
+"in pattern matches any single character, a percent sign (%) matches any "
 "string of zero or more characters."
 msgstr ""
 "Oppgi vertsnavn eller IP address. SQL LIKE syntaks er støttet: understrek "
@@ -1745,15 +2441,15 @@ msgstr "Jokertegn"
 msgid "Reverse"
 msgstr "Omvendt"
 
-#: templates/search.html:57
+#: templates/search.html:64
 msgid "Zones found"
 msgstr "Soner funnet"
 
-#: templates/search.html:152
+#: templates/search.html:183
 msgid "Records found"
 msgstr "DNS-pekere funnet"
 
-#: templates/search.html:153
+#: templates/search.html:186
 msgid "Total number of records:"
 msgstr "Totalt antall poster:"
 
@@ -1769,7 +2465,6 @@ msgstr "Merknad"
 msgid "Delete supermaster"
 msgstr "Slett supermaster"
 
-#: templates/list_log_users.html:5 templates/list_log_users.html:9
 #: templates/header.html:91
 msgid "User logs"
 msgstr "Brukerlogger"
@@ -1802,7 +2497,7 @@ msgstr "DNSSEC offentlige poster for sone"
 msgid "DNSKEY"
 msgstr "DNSKEY"
 
-#: templates/dnssec_ds_dnskey.html:33
+#: templates/dnssec_ds_dnskey.html:35
 msgid "DS record"
 msgstr "DS-post"
 
@@ -1822,54 +2517,380 @@ msgstr "Slett DNS-peker"
 msgid "Delete record in zone template"
 msgstr "Slett post i sonemal"
 
-#: templates/dnssec_delete_key.html:16
-msgid "Delete key"
-msgstr "Slett nøkkel"
+#: install/templates/step3.html.twig:4
+msgid "Step"
+msgstr "Steg"
 
-#: install/helpers/InstallStepHandler.php:57
+#: install/templates/step6.html.twig:4
+msgid "Create configuration file"
+msgstr "Opprett konfigurasjonsfil"
+
+#: install/templates/step6.html.twig:9
+msgid "You should now create the file"
+msgstr "Du må nå opprette filen"
+
+#: install/templates/step6.html.twig:11
+#, fuzzy
+msgid ""
+"in the Poweradmin root directory yourself. It should contain the following "
+"few lines:"
+msgstr ""
+" selv i root katalogen til Poweradmin. Denne filen må inneholde følgende "
+"linjer:"
+
+#: install/templates/step5.html.twig:39 install/templates/step3.html.twig:121
+msgid "Go to step"
+msgstr "Gå til steg"
+
+#: install/templates/base.html.twig:28
+msgid "Installation step"
+msgstr "Innstallerings steg"
+
+#: install/templates/step7.html.twig:4
+msgid "Installation complete"
+msgstr "Installasjon fullført"
+
+#: install/templates/step7.html.twig:8
+#, fuzzy
+msgid "Now we have finished the configuration."
+msgstr "Vi vil nå samle inn informasjon for konfigurering av Poweradmin."
+
+#: install/templates/step7.html.twig:9
+#, fuzzy
+msgid ""
+"You should (must!) remove the directory \"install/\" from the Poweradmin "
+"root directory. You will not be able to use Poweradmin if it exists. Do it "
+"now."
+msgstr ""
+"Konfigureringen er nå fullfør. Du må nå slette katalogen \"/install\" i "
+"katalogen hvor Poweradmin er lagret. Poweradmin vil ikke fungere dersom "
+"denne katalogen eksisterer. Slett derfor katalogen nå."
+
+#: install/templates/step7.html.twig:10
+#, fuzzy
+msgid ""
+"After you have removed the directory, you can login to <a href=\"../"
+"index.php\">Poweradmin</a>."
+msgstr ""
+"Når du har slettet katalogen, kan du logge deg inn på <a href=\"../"
+"index.php\">Poweradmin</a> med brukernavn \"admin\" og passord"
+
+#: install/templates/step7.html.twig:11
+msgid "Use the default username \"admin\" and the password set in step 3."
+msgstr ""
+
+#: install/templates/step1.html.twig:4
+msgid "Choose a language for installation"
+msgstr "Velg et språk for installasjonen"
+
+#: install/templates/step4.html.twig:4
+#, fuzzy
+msgid "Setup of account and name servers"
+msgstr "Sekundær navnetjener"
+
+#: install/templates/step4.html.twig:8
+msgid "Now we will gather all details for the configuration itself."
+msgstr "Vi vil nå samle inn informasjon for konfigurering av Poweradmin."
+
+#: install/templates/step4.html.twig:17 install/templates/step3.html.twig:38
+msgid "Provide the user name"
+msgstr "Oppgi brukernavnet"
+
+#: install/templates/step4.html.twig:19
+msgid ""
+"Poweradmin database username with restricted access. Not for web UI login."
+msgstr ""
+"Poweradmin databasebrukernavn med begrenset tilgang. Ikke for pålogging til nettgrensesnittet."
+
+#: install/templates/step4.html.twig:27
+msgid "Provide the user password"
+msgstr "Oppgi brukerpassordet"
+
+#: install/templates/step4.html.twig:30 install/templates/step3.html.twig:54
+msgid "The password for this username."
+msgstr "Passordet til dette brukernavnet."
+
+#: install/templates/step4.html.twig:34
+msgid "Hostmaster"
+msgstr "Hostmaster"
+
+#: install/templates/step4.html.twig:39
+msgid "Provide the DNS hostmaster"
+msgstr "Oppgi DNS-hostmaster"
+
+#: install/templates/step4.html.twig:41
+msgid ""
+"When creating SOA records and no hostmaster is provided, this value here "
+"will be used."
+msgstr ""
+"Når du lager SOA pekere og hostmaster ikke er oppgitt, brukes denne verdien "
+"istedenfor."
+
+#: install/templates/step4.html.twig:45
+msgid "Primary nameserver"
+msgstr "Primær navnetjener"
+
+#: install/templates/step4.html.twig:49
+msgid "Provide the primary nameserver"
+msgstr "Oppgi den primære navnetjeneren"
+
+#: install/templates/step4.html.twig:52
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"primary nameserver."
+msgstr ""
+"Når du lager nye soner med denne malen brukes informasjonen i dette feltet "
+"som primær navnetjener. For eksempel \"ns1.eksempel.net\"."
+
+#: install/templates/step4.html.twig:56
+msgid "Secondary nameserver"
+msgstr "Sekundær navnetjener"
+
+#: install/templates/step4.html.twig:60
+msgid "Provide the secondary nameserver"
+msgstr "Oppgi den sekundære navnetjeneren"
+
+#: install/templates/step4.html.twig:63
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"secondary nameserver."
+msgstr ""
+"Når du lager nye soner med denne malen brukes informasjonen i dette feltet "
+"som sekundær navnetjener."
+
+#: install/templates/step4.html.twig:67
+msgid "Tertiary Nameserver"
+msgstr "Tertiær navnetjener"
+
+#: install/templates/step4.html.twig:73
+#, fuzzy
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"tertiary nameserver."
+msgstr ""
+"Når du lager nye soner med denne malen brukes informasjonen i dette feltet "
+"som primær navnetjener. For eksempel \"ns1.eksempel.net\"."
+
+#: install/templates/step4.html.twig:77
+msgid "Quaternary Nameserver"
+msgstr "Kvaternær navnetjener"
+
+#: install/templates/step4.html.twig:83
+#, fuzzy
+msgid ""
+"When creating new zones using the template, this value will be used as "
+"quaternary nameserver."
+msgstr ""
+"Når du lager nye soner med denne malen brukes informasjonen i dette feltet "
+"som sekundær navnetjener."
+
+#: install/templates/step2.html.twig:3
+msgid "Getting ready for installation"
+msgstr ""
+
+#: install/templates/step2.html.twig:7
+msgid ""
+"This installer expects you to have a PowerDNS database accessible from this "
+"server. This installer also expects you to have never ran Poweradmin before, "
+"or that you want to overwrite the Poweradmin part of the database. If you "
+"have had Poweradmin running before, any data in the following tables will be "
+"destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This "
+"installer will, of course, not touch the data in the PowerDNS tables of the "
+"database. However, it is recommended that you create a backup of your "
+"database before proceeding."
+msgstr ""
+"Installerings programmet forventer at en PowerDNS database er tilgjengelig "
+"på denne serveren. Programmet forventer også at du aldri har brukt "
+"Poweradmin tidligere på denne serveren, eller at du ønsker å skrive over "
+"Poweradmin delen i databasen. Dersom du tidligere har benyttet Poweradmin på "
+"denne serveren vil følgende tabeller nå bli slettet: perm_items, perm_templ, "
+"perm_templ_items, users og zones. Installerings programmet vil selvsagt ikke "
+"skriver over data i PowerDNS tabellene i databasen. Allikevel, det er "
+"anbefalt at du tar en full sikkerhetskopi av databasen før du fortsetter med "
+"innstalleringen."
+
+#: install/templates/step2.html.twig:8
+msgid ""
+"The alternative for this installer is a manual installation. Refer to the "
+"poweradmin.org website if you want to go down that road."
+msgstr ""
+"Alternativet til dette innstallerings programmet er å gjennomføre "
+"innstallasjonen manuelt. Vi henviser til nettstedet poweradmin.org for "
+"instrukser hvordan dette gjennomføres på ulike plattformer."
+
+#: install/templates/step2.html.twig:11
+msgid "Do you want to proceed now?"
+msgstr "Vil du fortsette nå?"
+
+#: install/templates/step5.html.twig:4
+msgid "Create limited-rights user"
+msgstr "Opprett bruker med begrensede rettigheter"
+
+#: install/templates/step5.html.twig:12
+msgid "Execute the following commands based on your database:"
+msgstr ""
+
+#: install/templates/step5.html.twig:14
+msgid ""
+"After you have added the new user, proceed with this installation procedure."
+msgstr "Fortsett med installeringen etter at du har opprettet en ny bruker."
+
+#: install/templates/step5.html.twig:16
+msgid ""
+"Since you are using SQLite, there is no need to create a new user with "
+"limited rights."
+msgstr ""
+"Siden du bruker SQLite, er det ikke nødvendig å opprette en ny bruker med begrensede rettigheter."
+
+#: install/templates/step3.html.twig:4
+msgid "Configuring Database Connection"
+msgstr "Konfigurerer databasetilkobling"
+
+#: install/templates/step3.html.twig:22
+msgid "Database type"
+msgstr "Databasetype"
+
+#: install/templates/step3.html.twig:31
+msgid "The type of the PowerDNS database."
+msgstr "Type PowerDNS database."
+
+#: install/templates/step3.html.twig:57
+msgid "Hostname"
+msgstr "Vertsnavn"
+
+#: install/templates/step3.html.twig:60
+msgid "Provide the hostname"
+msgstr "Oppgi vertsnavnet"
+
+#: install/templates/step3.html.twig:62
+msgid ""
+"The hostname on which the PowerDNS database resides. Frequently, this will "
+"be \"localhost\"."
+msgstr ""
+"Vertsnavnet PowerDNS databasen ligger under. Dette er som regel "
+"\"localhost\"."
+
+#: install/templates/step3.html.twig:66
+msgid "DB Port"
+msgstr "DB-port"
+
+#: install/templates/step3.html.twig:69
+msgid "Provide database port"
+msgstr "Oppgi databaseport"
+
+#: install/templates/step3.html.twig:71
+msgid "The port the database server is listening on."
+msgstr "Porten som database serveren lytter på."
+
+#: install/templates/step3.html.twig:74
+msgid "Database"
+msgstr "Database"
+
+#: install/templates/step3.html.twig:77
+msgid "Provide the name of the database"
+msgstr "Oppgi navnet på databasen"
+
+#: install/templates/step3.html.twig:79
+msgid "The name of the PowerDNS database."
+msgstr "Navnet på PowerDNS databasen."
+
+#: install/templates/step3.html.twig:80
+#, fuzzy
+msgid "The path and filename to the PowerDNS SQLite database."
+msgstr "Navnet på PowerDNS databasen."
+
+#: install/templates/step3.html.twig:84
+msgid "DB charset"
+msgstr "DB-tegnsett"
+
+#: install/templates/step3.html.twig:137 install/templates/step3.html.twig:145
+msgid "Use default"
+msgstr "Bruk standard"
+
+#: install/templates/step3.html.twig:90
+msgid ""
+"The charset (encoding) which will be used for new tables. Leave it empty "
+"then default database charset will be used."
+msgstr ""
+
+#: install/templates/step3.html.twig:93
+msgid "DB collation"
+msgstr "DB-kollasjon"
+
+#: install/templates/step3.html.twig:99
+msgid ""
+"Set of rules for comparing characters in database. Leave it empty then "
+"default database collation will be used."
+msgstr ""
+
+#: install/templates/step3.html.twig:102
+msgid "Poweradmin administrator password"
+msgstr "Poweradmin administrator passord"
+
+#: install/templates/step3.html.twig:107
+msgid "Provide a password"
+msgstr "Oppgi et passord"
+
+#: install/templates/step3.html.twig:111
+msgid ""
+"The password of the Poweradmin administrator. This administrator has full "
+"rights to Poweradmin using the web interface."
+msgstr ""
+"Passordet til Poweradmin administratoren. Administratoren har alle "
+"rettigheter i Poweradmin kontrollpanelet."
+
+#: install/templates/step3.html.twig:112
+msgid ""
+"Password must be at least 6 characters long, contain at least one uppercase "
+"letter, one lowercase letter, and one number."
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:60
+#, fuzzy
+msgid "An error occurred while rendering the template."
+msgstr "Feil ved gjengivelse av mal"
+
+#: install/helpers/InstallStepHandler.php:121
+msgid "Updating database..."
+msgstr "Oppdaterer database..."
+
+#: install/helpers/InstallStepHandler.php:127
+msgid "done!"
+msgstr "ferdig!"
+
+#: install/helpers/DatabaseHelper.php:124
+msgid "or"
+msgstr "eller"
+
+#: install/helpers/Installer.php:79
 msgid ""
 "There is already a configuration file in place, so the installation will be "
 "skipped."
 msgstr ""
-"Det finnes allerede en konfigurasjonsfil, så installasjonen vil bli hoppet over."
-"skipped."
+"Det finnes allerede en konfigurasjonsfil, så installasjonen vil bli hoppet "
+"over.skipped."
 
-#: install/helpers/InstallStepHandler.php:71
-msgid "Error rendering template"
-msgstr "Feil ved gjengivelse av mal"
-
-#: install/helpers/InstallStepHandler.php:101
-msgid "Updating database..."
-msgstr "Oppdaterer database..."
-
-#: install/helpers/InstallStepHandler.php:119
-msgid "done!"
-msgstr "ferdig!"
-
-#: install/helpers/DatabaseHelper.php:119
-msgid "or"
-msgstr "eller"
-
-#: install/helpers/ErrorHandler.php:29
+#: install/helpers/Installer.php:93
 msgid "Please select a language to proceed with the installation."
 msgstr "Vennligst velg et språk for å fortsette med installasjonen."
 
-#: install/helpers/LocaleHandler.php:87
-msgid ""
-"Failed to set locale. Selected locale may be unsupported on this system. "
-"Please contact your administrator."
-msgstr ""
-"Kunne ikke angi lokalitet. Valgt lokalitet støttes kanskje ikke på dette systemet. Vennligst kontakt administratoren din."
-"Please contact your administrator."
+#~ msgid "You cannot use html tags for this type of record."
+#~ msgstr "Du kan ikke bruke html-tagger for denne typen post."
 
-#~ msgid "You can not change your password as LDAP user."
-#~ msgstr "You can not change your password as LDAP user."
+#, php-format
+#~ msgid "There is no matching reverse-zone for: %s."
+#~ msgstr "Det finnes ingen matchende reverse-sone for: %s."
 
-#~ msgid "You did not enter the correct current password."
-#~ msgstr "Du oppga feil passord."
+#~ msgid "Delete key"
+#~ msgstr "Slett nøkkel"
 
-#~ msgid "Enter a valid user name."
-#~ msgstr "Enter a valid user name."
+#~ msgid ""
+#~ "Failed to set locale. Selected locale may be unsupported on this system. "
+#~ "Please contact your administrator."
+#~ msgstr ""
+#~ "Kunne ikke angi lokalitet. Valgt lokalitet støttes kanskje ikke på dette "
+#~ "systemet. Vennligst kontakt administratoren din.Please contact your "
+#~ "administrator."
 
 #~ msgid "Commit changes"
 #~ msgstr "Gjennomfør endringer"
@@ -1903,7 +2924,8 @@ msgstr ""
 #~ msgid ""
 #~ "Something has been successfully performed. What exactly, however, will "
 #~ "remain a mystery."
-#~ msgstr "Noe ble gjennomført vellykket. Akkurat hva gjenstår som et mysterium."
+#~ msgstr ""
+#~ "Noe ble gjennomført vellykket. Akkurat hva gjenstår som et mysterium."
 
 #~ msgid "Success!"
 #~ msgstr "Suksess!"
@@ -1927,11 +2949,9 @@ msgstr ""
 #~ msgid "There is already a supermaster with this IP address."
 #~ msgstr "Det finnes allerede en supermaster med denne IP adressen."
 
-#~ msgid "Unknown error."
-#~ msgstr "Ukjent feil"
-
 #~ msgid "No database name has been set in config.inc.php."
-#~ msgstr "Navnet på databasen som skal brukes er ikke oppgitt i config.inc.php."
+#~ msgstr ""
+#~ "Navnet på databasen som skal brukes er ikke oppgitt i config.inc.php."
 
 #~ msgid "No database host has been set in config.inc.php."
 #~ msgstr "Slett bruker"
@@ -1949,15 +2969,15 @@ msgstr ""
 #~ msgstr "Det mangler informasjon om database filen i config.inc.php."
 
 #~ msgid ""
-#~ "It seems that you forgot to update the database after Poweradmin upgrade to "
-#~ "new version."
+#~ "It seems that you forgot to update the database after Poweradmin upgrade "
+#~ "to new version."
 #~ msgstr ""
 #~ "Det virker som om du har glemt å oppdatere databasen etter Poweradmin ble "
 #~ "oppgradert til ny versjon."
 
 #~ msgid ""
-#~ "This is not a valid CNAME. There is already exists an A, AAAA or CNAME with "
-#~ "this name."
+#~ "This is not a valid CNAME. There is already exists an A, AAAA or CNAME "
+#~ "with this name."
 #~ msgstr ""
 #~ "Dette er ikke et gyldig CNAME. Det eksisterer allerede en A, AAAA eller "
 #~ "CNAME peker med dette navnet."
@@ -1966,11 +2986,8 @@ msgstr ""
 #~ "You can not point a NS or MX record to a CNAME record. Remove or rame the "
 #~ "CNAME record first, or take another name."
 #~ msgstr ""
-#~ "Du kan ikke peke en NS eller MX peker til en CNAME peker. Fjern eller endre "
-#~ "navn på CNAME pekeren først, eller velg et annet navn."
-
-#~ msgid "NS records must be a hostnames."
-#~ msgstr "NS pekere må være vertsnavn."
+#~ "Du kan ikke peke en NS eller MX peker til en CNAME peker. Fjern eller "
+#~ "endre navn på CNAME pekeren først, eller velg et annet navn."
 
 #~ msgid "A prio field should be numeric."
 #~ msgstr "Et PRIO felt må være numerisk."
@@ -1986,15 +3003,15 @@ msgstr ""
 
 #, php-format
 #~ msgid ""
-#~ "You are about to delete a slave zone of which the master nameserver, %s, is "
-#~ "a supermaster. Deleting the zone now, will result in temporary removal only."
-#~ " Whenever the supermaster sends a notification for this zone, it will be "
-#~ "added again!"
+#~ "You are about to delete a slave zone of which the master nameserver, %s, "
+#~ "is a supermaster. Deleting the zone now, will result in temporary removal "
+#~ "only. Whenever the supermaster sends a notification for this zone, it "
+#~ "will be added again!"
 #~ msgstr ""
-#~ "Du er iferd med å slette en slave zone som tilhører master navnetjeneren %s."
-#~ " Denne navnetjeneren er også en supermaster. Dersom du sletter denne sonen "
-#~ "vil dette kun være en midlertidig endring. Dersom supermasteren sender en "
-#~ "oppdatering for denne sonen vil den bli opprettet på ny!"
+#~ "Du er iferd med å slette en slave zone som tilhører master navnetjeneren "
+#~ "%s. Denne navnetjeneren er også en supermaster. Dersom du sletter denne "
+#~ "sonen vil dette kun være en midlertidig endring. Dersom supermasteren "
+#~ "sender en oppdatering for denne sonen vil den bli opprettet på ny!"
 
 #~ msgid "This zone does not have any records. Weird."
 #~ msgstr "Denne sonen har ingen DNS-pekere. Merkelig."
@@ -2002,172 +3019,64 @@ msgstr ""
 #~ msgid "View zone"
 #~ msgstr "Vis sone"
 
-#~ msgid "Installation step"
-#~ msgstr "Innstallerings steg"
-
-#~ msgid "Go to step"
-#~ msgstr "Gå til steg"
-
-#~ msgid ""
-#~ "This installer expects you to have a PowerDNS database accessible from this "
-#~ "server. This installer also expects you to have never ran Poweradmin before,"
-#~ " or that you want to overwrite the Poweradmin part of the database. If you "
-#~ "have had Poweradmin running before, any data in the following tables will be"
-#~ " destroyed: perm_items, perm_templ, perm_templ_items, users and zones. This "
-#~ "installer will, of course, not touch the data in the PowerDNS tables of the "
-#~ "database. However, it is recommended that you create a backup of your "
-#~ "database before proceeding."
-#~ msgstr ""
-#~ "Installerings programmet forventer at en PowerDNS database er tilgjengelig "
-#~ "på denne serveren. Programmet forventer også at du aldri har brukt "
-#~ "Poweradmin tidligere på denne serveren, eller at du ønsker å skrive over "
-#~ "Poweradmin delen i databasen. Dersom du tidligere har benyttet Poweradmin på"
-#~ " denne serveren vil følgende tabeller nå bli slettet: perm_items, "
-#~ "perm_templ, perm_templ_items, users og zones. Installerings programmet vil "
-#~ "selvsagt ikke skriver over data i PowerDNS tabellene i databasen. Allikevel,"
-#~ " det er anbefalt at du tar en full sikkerhetskopi av databasen før du "
-#~ "fortsetter med innstalleringen."
-
-#~ msgid ""
-#~ "The alternative for this installer is a manual installation. Refer to the "
-#~ "poweradmin.org website if you want to go down that road."
-#~ msgstr ""
-#~ "Alternativet til dette innstallerings programmet er å gjennomføre "
-#~ "innstallasjonen manuelt. Vi henviser til nettstedet poweradmin.org for "
-#~ "instrukser hvordan dette gjennomføres på ulike plattformer."
-
 #~ msgid ""
 #~ "Finally, if you see any errors during the installation process, a problem "
-#~ "report would be appreciated. You can report problems (and ask for help) on "
-#~ "the <a href=\"https://github.com/poweradmin/poweradmin/issues\" "
+#~ "report would be appreciated. You can report problems (and ask for help) "
+#~ "on the <a href=\"https://github.com/poweradmin/poweradmin/issues\" "
 #~ "target=\"blank\">poweradmin</a> issues."
 #~ msgstr ""
-#~ "Til slutt, dersom du opplever problemer eller får feilmeldinger i løpet av "
-#~ "innstalleringen setter utviklerene av Poweradmin pris på tilbakemelding. Du "
-#~ "kan rapportere problemer (og be om hjelp) på <a "
+#~ "Til slutt, dersom du opplever problemer eller får feilmeldinger i løpet "
+#~ "av innstalleringen setter utviklerene av Poweradmin pris på "
+#~ "tilbakemelding. Du kan rapportere problemer (og be om hjelp) på <a "
 #~ "href=\"https://github.com/poweradmin/poweradmin/issues\" "
 #~ "target=\"blank\">poweradmin</a> issues."
 
-#~ msgid "Do you want to proceed now?"
-#~ msgstr "Vil du fortsette nå?"
-
 #~ msgid ""
-#~ "To prepare the database for using Poweradmin, the installer needs to modify "
-#~ "the PowerDNS database. It will add a number of tables and it will fill these"
-#~ " tables with some data. If the tables are already present, the installer "
-#~ "will drop them first."
+#~ "To prepare the database for using Poweradmin, the installer needs to "
+#~ "modify the PowerDNS database. It will add a number of tables and it will "
+#~ "fill these tables with some data. If the tables are already present, the "
+#~ "installer will drop them first."
 #~ msgstr ""
-#~ "For å forberede databasen til å bruke Poweradmin, er det nødvendig å endre "
-#~ "på PowerDNS databasen. Innstallerings programmet vil derfor opprette flere "
-#~ "nye tabeller og fylle disse med nødvendig informasjon. Dersom disse "
-#~ "tabellene allerede eksisterer, vil de først slettes og deretter opprettes på"
-#~ " ny."
+#~ "For å forberede databasen til å bruke Poweradmin, er det nødvendig å "
+#~ "endre på PowerDNS databasen. Innstallerings programmet vil derfor "
+#~ "opprette flere nye tabeller og fylle disse med nødvendig informasjon. "
+#~ "Dersom disse tabellene allerede eksisterer, vil de først slettes og "
+#~ "deretter opprettes på ny."
 
 #~ msgid ""
 #~ "To do all of this, the installer needs to access the database with an "
 #~ "account which has sufficient rights. If you trust the installer, you may "
-#~ "give it the username and password of the database user root. Otherwise, make"
-#~ " sure the user has enough rights, before actually proceeding."
+#~ "give it the username and password of the database user root. Otherwise, "
+#~ "make sure the user has enough rights, before actually proceeding."
 #~ msgstr ""
 #~ "For å fortsette, trenger innstallasjons programmet tilgang til PowerDNS "
 #~ "databasen med en bruker som har alle nødvendige rettigheter. Dersom du "
-#~ "stoler på innstallasjons programmet kan du oppgi brukernavnet og passordet "
-#~ "til root brukeren. Dersom du oppgir et annet brukernavn, kontroller først at"
-#~ " brukeren har nødvendige rettigheter før du fortsetter."
+#~ "stoler på innstallasjons programmet kan du oppgi brukernavnet og "
+#~ "passordet til root brukeren. Dersom du oppgir et annet brukernavn, "
+#~ "kontroller først at brukeren har nødvendige rettigheter før du fortsetter."
 
 #~ msgid ""
-#~ "The username to use to connect to the database, make sure the username has "
-#~ "sufficient rights to perform administrative task to the PowerDNS database "
-#~ "(the installer wants to drop, create and fill tables to the database)."
+#~ "The username to use to connect to the database, make sure the username "
+#~ "has sufficient rights to perform administrative task to the PowerDNS "
+#~ "database (the installer wants to drop, create and fill tables to the "
+#~ "database)."
 #~ msgstr ""
-#~ "Brukernavnet som skal brukes for tilkobling til databasen. Denne brukeren må"
-#~ " ha alle nødvendige rettigheter til å endre på PowerDNS databasen "
-#~ "(innstallsjons programmet vil utføre oppgaver som drop, create i tillegg til"
-#~ " å lagre data i databasen)."
-
-#~ msgid "The password for this username."
-#~ msgstr "Passordet til dette brukernavnet."
-
-#~ msgid "Hostname"
-#~ msgstr "Vertsnavn"
-
-#~ msgid ""
-#~ "The hostname on which the PowerDNS database resides. Frequently, this will "
-#~ "be \"localhost\"."
-#~ msgstr ""
-#~ "Vertsnavnet PowerDNS databasen ligger under. Dette er som regel "
-#~ "\"localhost\"."
-
-#~ msgid "DB Port"
-#~ msgstr "DB Port"
-
-#~ msgid "The port the database server is listening on."
-#~ msgstr "Porten som database serveren lytter på."
-
-#~ msgid "Database"
-#~ msgstr "Database"
-
-#~ msgid "The name of the PowerDNS database."
-#~ msgstr "Navnet på PowerDNS databasen."
-
-#~ msgid "Database type"
-#~ msgstr "Database type"
-
-#~ msgid "The type of the PowerDNS database."
-#~ msgstr "Type PowerDNS database."
-
-#~ msgid "Poweradmin administrator password"
-#~ msgstr "Poweradmin administrator passord"
-
-#~ msgid ""
-#~ "The password of the Poweradmin administrator. This administrator has full "
-#~ "rights to Poweradmin using the web interface."
-#~ msgstr ""
-#~ "Passordet til Poweradmin administratoren. Administratoren har alle "
-#~ "rettigheter i Poweradmin kontrollpanelet."
-
-#~ msgid "Now we will gather all details for the configuration itself."
-#~ msgstr "Vi vil nå samle inn informasjon for konfigurering av Poweradmin."
+#~ "Brukernavnet som skal brukes for tilkobling til databasen. Denne brukeren "
+#~ "må ha alle nødvendige rettigheter til å endre på PowerDNS databasen "
+#~ "(innstallsjons programmet vil utføre oppgaver som drop, create i tillegg "
+#~ "til å lagre data i databasen)."
 
 #~ msgid ""
 #~ "The username for Poweradmin. This new user will have limited rights only."
 #~ msgstr ""
-#~ "Brukernavnet til Poweradmin. Denne nye brukeren har begrensede rettigheter."
-
-#~ msgid "Hostmaster"
-#~ msgstr "Hostmaster"
+#~ "Brukernavnet til Poweradmin. Denne nye brukeren har begrensede "
+#~ "rettigheter."
 
 #~ msgid ""
-#~ "When creating SOA records and no hostmaster is provided, this value here "
-#~ "will be used."
-#~ msgstr ""
-#~ "Når du lager SOA pekere og hostmaster ikke er oppgitt, brukes denne verdien "
-#~ "istedenfor."
-
-#~ msgid "Primary nameserver"
-#~ msgstr "Primær navnetjener"
-
-#~ msgid ""
-#~ "When creating new zones using the template, this value will be used as "
-#~ "primary nameserver."
-#~ msgstr ""
-#~ "Når du lager nye soner med denne malen brukes informasjonen i dette feltet "
-#~ "som primær navnetjener. For eksempel \"ns1.eksempel.net\"."
-
-#~ msgid "Secondary nameserver"
-#~ msgstr "Sekundær navnetjener"
-
-#~ msgid ""
-#~ "When creating new zones using the template, this value will be used as "
-#~ "secondary nameserver."
-#~ msgstr ""
-#~ "Når du lager nye soner med denne malen brukes informasjonen i dette feltet "
-#~ "som sekundær navnetjener."
-
-#~ msgid ""
-#~ "You now want to give limited rights to Poweradmin so it can update the data "
-#~ "in the tables. To do this, you should create a new user and give it rights "
-#~ "to select, delete, insert and update records in the PowerDNS database."
+#~ "You now want to give limited rights to Poweradmin so it can update the "
+#~ "data in the tables. To do this, you should create a new user and give it "
+#~ "rights to select, delete, insert and update records in the PowerDNS "
+#~ "database."
 #~ msgstr ""
 #~ "Du må nå gi utvidede rettigheter til Poweradmin slik at programmet kan "
 #~ "oppdatere data i database tabellene. Dette gjør du ved å opprette en ny "
@@ -2179,36 +3088,6 @@ msgstr ""
 
 #~ msgid "On PgSQL you would use:"
 #~ msgstr "I PgSQL kan du bruke:"
-
-#~ msgid ""
-#~ "After you have added the new user, proceed with this installation procedure."
-#~ msgstr "Fortsett med installeringen etter at du har opprettet en ny bruker."
-
-#~ msgid "You should now create the file"
-#~ msgstr "Du må nå opprette filen"
-
-#~ msgid ""
-#~ " in the Poweradmin root directory yourself. It should contain the following "
-#~ "few lines:"
-#~ msgstr ""
-#~ " selv i root katalogen til Poweradmin. Denne filen må inneholde følgende "
-#~ "linjer:"
-
-#~ msgid ""
-#~ "Now we have finished the configuration, you should (must!) remove the "
-#~ "directory \"install/\" from the Poweradmin root directory. You will not be "
-#~ "able to use Poweradmin if it exists. Do it now."
-#~ msgstr ""
-#~ "Konfigureringen er nå fullfør. Du må nå slette katalogen \"/install\" i "
-#~ "katalogen hvor Poweradmin er lagret. Poweradmin vil ikke fungere dersom "
-#~ "denne katalogen eksisterer. Slett derfor katalogen nå."
-
-#~ msgid ""
-#~ "After you have removed the directory, you can login to <a "
-#~ "href=\"../index.php\">Poweradmin</a> with username \"admin\" and password"
-#~ msgstr ""
-#~ "Når du har slettet katalogen, kan du logge deg inn på <a "
-#~ "href=\"../index.php\">Poweradmin</a> med brukernavn \"admin\" og passord"
 
 #~ msgid "Really delete this user?"
 #~ msgstr "Skal denne brukeren virkelig slettes?"
