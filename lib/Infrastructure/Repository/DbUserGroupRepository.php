@@ -114,7 +114,7 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
         $query = "SELECT group_id, COUNT(*) as member_count FROM user_group_members WHERE group_id IN ($placeholders) GROUP BY group_id";
         $stmt = $this->db->prepare($query);
         foreach ($groupIds as $i => $id) {
-            $stmt->bindValue($i + 1, $id, PDO::PARAM_INT);
+            $stmt->bindValue((int)$i + 1, $id, PDO::PARAM_INT);
         }
         $stmt->execute();
 
