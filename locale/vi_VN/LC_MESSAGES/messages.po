@@ -13102,12 +13102,11 @@ msgstr "Truy cập trực tiếp các bảng cơ sở dữ liệu PowerDNS"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: install/templates/step4.html.twig:32
-#, fuzzy
 msgid "PowerDNS REST API"
-msgstr "Máy chủ PowerDNS"
+msgstr "PowerDNS REST API"
 
 #: install/templates/step4.html.twig:33
 msgid "Experimental"
@@ -13119,16 +13118,15 @@ msgstr "Cài đặt API PowerDNS"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
-msgstr ""
+msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
 msgstr "URL điểm cuối API của PowerDNS."
 
 #: install/templates/step4.html.twig:57
-#, fuzzy
 msgid "API Key"
-msgstr "SAML assertion không hợp lệ."
+msgstr "Khóa API"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."

@@ -12770,12 +12770,11 @@ msgstr "PowerDNS 데이터베이스 테이블에 직접 접근"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: install/templates/step4.html.twig:32
-#, fuzzy
 msgid "PowerDNS REST API"
-msgstr "PowerDNS 서버"
+msgstr "PowerDNS REST API"
 
 #: install/templates/step4.html.twig:33
 msgid "Experimental"
@@ -12787,16 +12786,15 @@ msgstr "PowerDNS API 설정"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
-msgstr ""
+msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
 msgstr "PowerDNS API 엔드포인트 URL입니다."
 
 #: install/templates/step4.html.twig:57
-#, fuzzy
 msgid "API Key"
-msgstr "작업을 대기열에서 제거할 수 없습니다."
+msgstr "API 키"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."

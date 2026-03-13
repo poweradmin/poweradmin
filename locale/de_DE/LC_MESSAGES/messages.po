@@ -13833,12 +13833,11 @@ msgstr "Direkter Zugriff auf PowerDNS-Datenbanktabellen"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: install/templates/step4.html.twig:32
-#, fuzzy
 msgid "PowerDNS REST API"
-msgstr "PowerDNS-Server"
+msgstr "PowerDNS REST API"
 
 #: install/templates/step4.html.twig:33
 msgid "Experimental"
@@ -13850,14 +13849,13 @@ msgstr "PowerDNS API-Einstellungen"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
-msgstr ""
+msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
 msgstr "PowerDNS API-Endpunkt-URL."
 
 #: install/templates/step4.html.twig:57
-#, fuzzy
 msgid "API Key"
 msgstr "API-Schlüssel"
 

@@ -13793,12 +13793,11 @@ msgstr "Acceso directo a las tablas de la base de datos de PowerDNS"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: install/templates/step4.html.twig:32
-#, fuzzy
 msgid "PowerDNS REST API"
-msgstr "Servidor PowerDNS"
+msgstr "PowerDNS REST API"
 
 #: install/templates/step4.html.twig:33
 msgid "Experimental"
@@ -13810,16 +13809,15 @@ msgstr "Configuración de la API de PowerDNS"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
-msgstr ""
+msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
 msgstr "URL del punto de acceso de la API de PowerDNS."
 
 #: install/templates/step4.html.twig:57
-#, fuzzy
 msgid "API Key"
-msgstr "Claves API"
+msgstr "Clave API"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."

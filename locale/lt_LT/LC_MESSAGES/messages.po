@@ -13588,12 +13588,11 @@ msgstr "Tiesioginė prieiga prie PowerDNS duomenų bazės lentelių"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: install/templates/step4.html.twig:32
-#, fuzzy
 msgid "PowerDNS REST API"
-msgstr "PowerDNS serveris"
+msgstr "PowerDNS REST API"
 
 #: install/templates/step4.html.twig:33
 msgid "Experimental"
@@ -13605,16 +13604,15 @@ msgstr "PowerDNS API nustatymai"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
-msgstr ""
+msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
 msgstr "PowerDNS API galinio taško URL."
 
 #: install/templates/step4.html.twig:57
-#, fuzzy
 msgid "API Key"
-msgstr "API raktai"
+msgstr "API raktas"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."

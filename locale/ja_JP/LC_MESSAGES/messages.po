@@ -13539,12 +13539,11 @@ msgstr "PowerDNSデータベーステーブルへの直接アクセス"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: install/templates/step4.html.twig:32
-#, fuzzy
 msgid "PowerDNS REST API"
-msgstr "PowerDNSサーバー"
+msgstr "PowerDNS REST API"
 
 #: install/templates/step4.html.twig:33
 msgid "Experimental"
@@ -13556,14 +13555,13 @@ msgstr "PowerDNS API設定"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
-msgstr ""
+msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
 msgstr "PowerDNS APIエンドポイントURLです。"
 
 #: install/templates/step4.html.twig:57
-#, fuzzy
 msgid "API Key"
 msgstr "APIキー"
 
