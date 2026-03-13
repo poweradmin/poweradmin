@@ -124,7 +124,9 @@ return [
     'exclude_file_regex' => '@^vendor/.*/(tests?|Tests?)/@',
 
     // A list of files that will be excluded from parsing and analysis.
-    'exclude_file_list' => [],
+    'exclude_file_list' => [
+        'config/settings.php',
+    ],
 
     // Directories excluded from static analysis, but whose class and method info should be included.
     'exclude_analysis_directory_list' => [
