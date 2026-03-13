@@ -83,7 +83,7 @@ class ZoneSearch extends BaseSearch
      * Fetch zones based on specified search criteria and pagination.
      *
      * @param array $parameters An array of search parameters.
-     * @param mixed $search_string The search string to use for matching zones.
+     * @param string $search_string The search string to use for matching zones.
      * @param bool $reverse Whether to perform a reverse search or not.
      * @param string $reverse_search_string The reverse search string to use for matching zones.
      * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).

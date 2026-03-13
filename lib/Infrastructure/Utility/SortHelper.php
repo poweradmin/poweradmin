@@ -28,7 +28,7 @@ class SortHelper
      * Get the zone sort order based on the database type.
      *
      * @param string $table
-     * @param mixed $dbType
+     * @param string $dbType
      * @param string $direction
      * @return string
      */
@@ -54,7 +54,7 @@ class SortHelper
      * Get the record sort order based on the database type.
      *
      * @param string $table
-     * @param mixed $dbType
+     * @param string $dbType
      * @param string $direction
      * @return string
      */

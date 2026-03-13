@@ -1779,7 +1779,7 @@ class DnsRecord
 
                 foreach ($templ_records as $r) {
                     //fixme: appears to be a bug and regex match should occur against $domain
-                    if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id))) {
+                    if ((preg_match('/in-addr.arpa/i', (string)$zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', (string)$zone_id))) {
                         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
                         $name = $zoneTemplate->parse_template_value($r["name"], $domain);
                         $type = $r["type"];
