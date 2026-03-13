@@ -49,9 +49,11 @@ cypress/screenshots
 playwright-report/
 test-results/
 playwright/.cache/
+/.playwright-mcp/
 
 # PHP tools
 .php-cs-fixer.cache
+.phan/phan.phar
 
 # AI assistant instruction files
 AGENTS.md
