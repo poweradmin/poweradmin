@@ -188,6 +188,7 @@ For feature sponsorship, to speed up development of specific features, or to dis
 * [terraform-provider-poweradmin](https://github.com/poweradmin/terraform-provider-poweradmin) - Terraform/OpenTofu provider for managing DNS zones and records through Poweradmin
 * [certbot-dns-poweradmin](https://github.com/poweradmin/certbot-dns-poweradmin) - Certbot DNS plugin for Poweradmin to automate Let's Encrypt certificate issuance with DNS-01 challenge
 * [external-dns-poweradmin-webhook](https://github.com/poweradmin/external-dns-poweradmin-webhook) - ExternalDNS webhook provider for Poweradmin to synchronize Kubernetes DNS records
+* [cert-manager-webhook-poweradmin](https://github.com/poweradmin/cert-manager-webhook-poweradmin) - cert-manager webhook solver for Poweradmin to automate DNS-01 challenge validation
 
 ## Note
 
