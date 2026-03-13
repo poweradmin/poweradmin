@@ -13,6 +13,9 @@
         </properties>
     </rule>
 
+    <!-- Exclude config directory (local settings, not tracked in git) -->
+    <exclude-pattern>config/</exclude-pattern>
+
     <!-- Exclude Phinx migration files from namespace requirements -->
     <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
         <exclude-pattern>*/db/migrations/*</exclude-pattern>
