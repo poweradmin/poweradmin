@@ -56,6 +56,10 @@ package-lock.json
 
 # PHP tools
 /.php-cs-fixer.cache
+.phan/phan.phar
+
+# Playwright MCP
+/.playwright-mcp/
 
 # Node.js version manager
 /.nvmrc
