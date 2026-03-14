@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Repository;
 
 use PDO;
+use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -267,6 +268,10 @@ class DomainRepository implements DomainRepositoryInterface
         $allowedSortColumns = ['name', 'type', 'count_records', 'owner'];
         $sortby = $this->tableNameService->validateOrderBy($sortby, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
+
+        if ($this->isApiBackend()) {
+            return $this->getZonesFromApi($perm, $userid, $letterstart, $rowstart, $rowamount, $sortby, $sortDirection, $excludeReverse, $showSerial, $showTemplate);
+        }
 
         $db_type = $this->config->get('database', 'type');
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
@@ -662,5 +667,173 @@ class DomainRepository implements DomainRepositoryInterface
             return -1;
         }
         return $found_domain_id;
+    }
+
+    /**
+     * Get zones from API backend with ownership enrichment, filtering, sorting, pagination.
+     */
+    private function getZonesFromApi(
+        string $perm,
+        int $userid,
+        string $letterstart,
+        int $rowstart,
+        int $rowamount,
+        string $sortby,
+        string $sortDirection,
+        bool $excludeReverse,
+        ?bool $showSerial,
+        ?bool $showTemplate
+    ): array {
+        if ($perm !== 'own' && $perm !== 'all') {
+            return [];
+        }
+
+        $iface_zonelist_serial = $showSerial ?? $this->config->get('interface', 'display_serial_in_zone_list');
+        $iface_zonelist_template = $showTemplate ?? $this->config->get('interface', 'display_template_in_zone_list');
+
+        $allZones = $this->backendProvider->getZones();
+
+        // Filter reverse zones if requested
+        if ($excludeReverse) {
+            $allZones = array_values(array_filter($allZones, function ($zone) {
+                $name = $zone['name'] ?? '';
+                return !str_ends_with($name, '.in-addr.arpa') && !str_ends_with($name, '.ip6.arpa');
+            }));
+        }
+
+        // Enrich with ownership from local tables
+        $allZones = $this->enrichZonesWithOwnership($allZones);
+
+        // Filter by ownership
+        if ($perm === 'own') {
+            $ownedDomainIds = $this->getOwnedDomainIds($userid);
+            $allZones = array_values(array_filter($allZones, function ($zone) use ($ownedDomainIds) {
+                return in_array($zone['id'] ?? 0, $ownedDomainIds, true);
+            }));
+        }
+
+        // Apply letter filter
+        if ($letterstart !== 'all') {
+            $allZones = ResultPaginator::filterByLetter($allZones, $letterstart, 'name');
+        }
+
+        // Map sortBy for API data keys
+        $apiSortBy = $sortby;
+        if ($sortby === 'owner') {
+            $apiSortBy = 'owner_username';
+        }
+
+        // Sort
+        $allZones = ResultPaginator::sort($allZones, $apiSortBy, $sortDirection);
+
+        // Paginate
+        if ($rowamount < Constants::DEFAULT_MAX_ROWS) {
+            $allZones = ResultPaginator::paginate($allZones, $rowstart, $rowamount);
+        }
+
+        // Convert to expected output shape (keyed by domain name)
+        $result = [];
+        foreach ($allZones as $zone) {
+            $name = $zone['name'];
+            $utf8Name = DnsIdnService::toUtf8($name);
+
+            $result[$name] = [
+                'id' => $zone['id'] ?? 0,
+                'name' => $name,
+                'utf8_name' => $utf8Name,
+                'type' => $zone['type'] ?? 'NATIVE',
+                'count_records' => $zone['count_records'] ?? 0,
+                'comment' => $zone['comment'] ?? '',
+                'owners' => $zone['owners'] ?? [],
+                'full_names' => $zone['full_names'] ?? [],
+                'users' => $zone['owners'] ?? [],
+            ];
+
+            if (isset($zone['secured'])) {
+                $result[$name]['secured'] = $zone['secured'];
+            }
+
+            if ($iface_zonelist_serial) {
+                $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
+                $result[$name]['serial'] = $recordRepository->getSerialByZid($zone['id'] ?? 0);
+            }
+
+            if ($iface_zonelist_template) {
+                $result[$name]['template'] = ZoneTemplate::getZoneTemplName($this->db, $zone['id'] ?? 0);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Enrich zones with ownership data from local Poweradmin tables.
+     */
+    private function enrichZonesWithOwnership(array $zones): array
+    {
+        if (empty($zones)) {
+            return $zones;
+        }
+
+        $stmt = $this->db->query(
+            "SELECT z.domain_id, z.owner, z.comment, u.username, u.fullname
+             FROM zones z
+             LEFT JOIN users u ON z.owner = u.id"
+        );
+
+        $ownershipMap = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $domainId = (int)$row['domain_id'];
+            if (!isset($ownershipMap[$domainId])) {
+                $ownershipMap[$domainId] = [
+                    'owners' => [],
+                    'full_names' => [],
+                    'comment' => $row['comment'] ?? '',
+                ];
+            }
+            if ($row['username'] !== null) {
+                $ownershipMap[$domainId]['owners'][] = $row['username'];
+                $ownershipMap[$domainId]['full_names'][] = $row['fullname'] ?: '';
+            }
+        }
+
+        foreach ($zones as &$zone) {
+            $id = $zone['id'] ?? 0;
+            if (isset($ownershipMap[$id])) {
+                $zone['owners'] = $ownershipMap[$id]['owners'];
+                $zone['full_names'] = $ownershipMap[$id]['full_names'];
+                $zone['comment'] = $ownershipMap[$id]['comment'];
+                $zone['owner_username'] = $ownershipMap[$id]['owners'][0] ?? '';
+            } else {
+                $zone['owners'] = [];
+                $zone['full_names'] = [];
+                $zone['comment'] = '';
+                $zone['owner_username'] = '';
+            }
+        }
+        unset($zone);
+
+        return $zones;
+    }
+
+    /**
+     * Get all domain IDs owned by a user (direct or group ownership).
+     *
+     * @return int[]
+     */
+    private function getOwnedDomainIds(int $userId): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT DISTINCT domain_id FROM zones WHERE owner = :uid
+             UNION
+             SELECT DISTINCT zg.domain_id FROM zones_groups zg
+             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+             WHERE ugm.user_id = :uid2"
+        );
+        $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 }
