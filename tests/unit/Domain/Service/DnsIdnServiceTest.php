@@ -331,4 +331,26 @@ class DnsIdnServiceTest extends TestCase
             DnsIdnService::convertContentToPunycode('SRV', '0 5060 sip.münchen.de.')
         );
     }
+
+    /**
+     * Test convertContentToPunycode with HTTPS/SVCB/LP record types
+     */
+    #[DataProvider('secondPartDomainContentProvider')]
+    public function testConvertContentToPunycodeSecondPartTypes(string $type, string $content, string $expected): void
+    {
+        $result = DnsIdnService::convertContentToPunycode($type, $content);
+        $this->assertEquals($expected, $result);
+    }
+
+    public static function secondPartDomainContentProvider(): array
+    {
+        return [
+            'HTTPS with IDN target' => ['HTTPS', '1 münchen.de. alpn=h2', '1 xn--mnchen-3ya.de. alpn=h2'],
+            'HTTPS with ASCII target' => ['HTTPS', '1 example.com. alpn=h2', '1 example.com. alpn=h2'],
+            'HTTPS with root target' => ['HTTPS', '0 .', '0 .'],
+            'SVCB with IDN target' => ['SVCB', '1 münchen.de. alpn=h3', '1 xn--mnchen-3ya.de. alpn=h3'],
+            'LP with IDN fqdn' => ['LP', '10 münchen.de.', '10 xn--mnchen-3ya.de.'],
+            'LP with ASCII fqdn' => ['LP', '10 example.com.', '10 example.com.'],
+        ];
+    }
 }

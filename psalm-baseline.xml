@@ -151,7 +151,6 @@
   </file>
   <file src="lib/Domain/Service/DnsIdnService.php">
     <FalsableReturnStatement>
-      <code><![CDATA[idn_to_ascii($domainName, IDNA_NONTRANSITIONAL_TO_ASCII)]]></code>
       <code><![CDATA[idn_to_utf8(htmlspecialchars($domainName), IDNA_NONTRANSITIONAL_TO_ASCII)]]></code>
     </FalsableReturnStatement>
   </file>
