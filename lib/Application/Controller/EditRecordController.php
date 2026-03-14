@@ -207,6 +207,14 @@ class EditRecordController extends BaseController
 
         $postData = $_POST;
 
+        // Convert IDN record name and content to punycode
+        if (isset($postData['name'])) {
+            $postData['name'] = DnsIdnService::toPunycode($postData['name']);
+        }
+        if (isset($postData['content']) && isset($postData['type'])) {
+            $postData['content'] = DnsIdnService::convertContentToPunycode($postData['type'], $postData['content']);
+        }
+
         // Normalize record name to full FQDN (always, regardless of display setting)
         // This converts @ to zone apex and ensures proper zone suffix
         if (isset($postData['name'])) {
