@@ -84,6 +84,7 @@ class DnsIdnService
 
     private const COMPOUND_CONTENT_TYPES = [
         'SRV', 'NAPTR', 'RP', 'MINFO',
+        'HTTPS', 'SVCB', 'LP',
     ];
 
     /**
@@ -114,6 +115,7 @@ class DnsIdnService
         return match ($type) {
             'SRV', 'NAPTR' => self::convertLastPartToPunycode($parts),
             'RP', 'MINFO' => self::convertAllPartsToPunycode($parts),
+            'HTTPS', 'SVCB', 'LP' => self::convertSecondPartToPunycode($parts),
         };
     }
 
@@ -127,6 +129,20 @@ class DnsIdnService
     {
         if (count($parts) >= 2) {
             $parts[count($parts) - 1] = self::toPunycode($parts[count($parts) - 1]);
+        }
+        return implode(' ', $parts);
+    }
+
+    /**
+     * Convert the second part (target domain) of compound content to punycode.
+     * Used for HTTPS/SVCB (priority target [params]) and LP (preference fqdn).
+     *
+     * @param string[] $parts
+     */
+    private static function convertSecondPartToPunycode(array $parts): string
+    {
+        if (count($parts) >= 2) {
+            $parts[1] = self::toPunycode($parts[1]);
         }
         return implode(' ', $parts);
     }
