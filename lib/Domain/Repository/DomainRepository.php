@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Repository;
 
 use PDO;
 use Poweradmin\Application\Service\ResultPaginator;
+use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -690,6 +691,10 @@ class DomainRepository implements DomainRepositoryInterface
 
         $iface_zonelist_serial = $showSerial ?? $this->config->get('interface', 'display_serial_in_zone_list');
         $iface_zonelist_template = $showTemplate ?? $this->config->get('interface', 'display_template_in_zone_list');
+
+        // Sync local zones table with PowerDNS API before listing
+        $syncService = new ZoneSyncService($this->db, $this->backendProvider);
+        $syncService->syncIfStale();
 
         $allZones = $this->backendProvider->getZones();
 
