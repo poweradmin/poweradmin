@@ -201,4 +201,134 @@ class DnsIdnServiceTest extends TestCase
         // depending on PHP version - the key point is it doesn't work correctly
         $this->assertNotEquals('example.com', $result);
     }
+
+    /**
+     * Test isIdn detects punycode in non-first label
+     */
+    public function testIsIdnWithPunycodeInTld(): void
+    {
+        $this->assertTrue(DnsIdnService::isIdn('example.xn--fiqs8s'));
+    }
+
+    /**
+     * Test isIdn detects punycode in subdomain
+     */
+    public function testIsIdnWithPunycodeInSubdomain(): void
+    {
+        $this->assertTrue(DnsIdnService::isIdn('xn--sub.example.com'));
+    }
+
+    /**
+     * Test isIdn with multiple punycode labels
+     */
+    public function testIsIdnWithMultiplePunycodeLabels(): void
+    {
+        $this->assertTrue(DnsIdnService::isIdn('xn--e1afmkfd.xn--p1ai'));
+    }
+
+    /**
+     * Test convertContentToPunycode with simple domain types
+     */
+    #[DataProvider('simpleDomainContentProvider')]
+    public function testConvertContentToPunycodeSimpleTypes(string $type, string $content, string $expected): void
+    {
+        $result = DnsIdnService::convertContentToPunycode($type, $content);
+        $this->assertEquals($expected, $result);
+    }
+
+    public static function simpleDomainContentProvider(): array
+    {
+        return [
+            'CNAME with IDN' => ['CNAME', 'münchen.de.', 'xn--mnchen-3ya.de.'],
+            'CNAME with ASCII' => ['CNAME', 'example.com.', 'example.com.'],
+            'NS with IDN' => ['NS', 'ns1.münchen.de.', 'ns1.xn--mnchen-3ya.de.'],
+            'PTR with IDN' => ['PTR', 'münchen.de.', 'xn--mnchen-3ya.de.'],
+            'DNAME with IDN' => ['DNAME', 'münchen.de.', 'xn--mnchen-3ya.de.'],
+            'ALIAS with IDN' => ['ALIAS', 'münchen.de.', 'xn--mnchen-3ya.de.'],
+            'MX with IDN' => ['MX', 'mail.münchen.de.', 'mail.xn--mnchen-3ya.de.'],
+            'MX with ASCII' => ['MX', 'mail.example.com.', 'mail.example.com.'],
+        ];
+    }
+
+    /**
+     * Test convertContentToPunycode with compound content types
+     */
+    #[DataProvider('compoundContentProvider')]
+    public function testConvertContentToPunycodeCompoundTypes(string $type, string $content, string $expected): void
+    {
+        $result = DnsIdnService::convertContentToPunycode($type, $content);
+        $this->assertEquals($expected, $result);
+    }
+
+    public static function compoundContentProvider(): array
+    {
+        return [
+            'SRV with IDN target' => ['SRV', '0 5060 sip.münchen.de.', '0 5060 sip.xn--mnchen-3ya.de.'],
+            'SRV with ASCII' => ['SRV', '0 5060 sip.example.com.', '0 5060 sip.example.com.'],
+            'RP with IDN domains' => ['RP', 'admin.münchen.de. info.münchen.de.', 'admin.xn--mnchen-3ya.de. info.xn--mnchen-3ya.de.'],
+            'NAPTR with IDN replacement' => ['NAPTR', '100 10 "u" "sip+E2U" "!^.*$!sip:info@münchen.de!" sip.münchen.de.', '100 10 "u" "sip+E2U" "!^.*$!sip:info@münchen.de!" sip.xn--mnchen-3ya.de.'],
+        ];
+    }
+
+    /**
+     * Test convertContentToPunycode with non-domain types returns content unchanged
+     */
+    public function testConvertContentToPunycodeNonDomainType(): void
+    {
+        $this->assertEquals('192.168.1.1', DnsIdnService::convertContentToPunycode('A', '192.168.1.1'));
+        $this->assertEquals('::1', DnsIdnService::convertContentToPunycode('AAAA', '::1'));
+        $this->assertEquals('v=spf1 +all', DnsIdnService::convertContentToPunycode('TXT', 'v=spf1 +all'));
+    }
+
+    /**
+     * Test convertContentToPunycode with empty content
+     */
+    public function testConvertContentToPunycodeWithEmptyContent(): void
+    {
+        $this->assertEquals('', DnsIdnService::convertContentToPunycode('CNAME', ''));
+    }
+
+    /**
+     * Test toPunycode preserves root label "."
+     */
+    public function testToPunycodePreservesRootLabel(): void
+    {
+        $this->assertEquals('.', DnsIdnService::toPunycode('.'));
+    }
+
+    /**
+     * Test convertContentToPunycode preserves root label for SRV target
+     */
+    public function testConvertContentPreservesRootLabelForSrv(): void
+    {
+        $this->assertEquals('0 0 .', DnsIdnService::convertContentToPunycode('SRV', '0 0 .'));
+    }
+
+    /**
+     * Test convertContentToPunycode preserves root label for NAPTR replacement
+     */
+    public function testConvertContentPreservesRootLabelForNaptr(): void
+    {
+        $result = DnsIdnService::convertContentToPunycode('NAPTR', '100 10 "u" "sip+E2U" "!^.*$!sip:info@example.com!" .');
+        $this->assertEquals('100 10 "u" "sip+E2U" "!^.*$!sip:info@example.com!" .', $result);
+    }
+
+    /**
+     * Test convertContentToPunycode preserves root label for RP
+     */
+    public function testConvertContentPreservesRootLabelForRp(): void
+    {
+        $this->assertEquals('admin.example.com. .', DnsIdnService::convertContentToPunycode('RP', 'admin.example.com. .'));
+    }
+
+    /**
+     * Test convertContentToPunycode with assembled SRV content containing IDN
+     */
+    public function testConvertContentSrvWithAssembledIdnContent(): void
+    {
+        $this->assertEquals(
+            '0 5060 sip.xn--mnchen-3ya.de.',
+            DnsIdnService::convertContentToPunycode('SRV', '0 5060 sip.münchen.de.')
+        );
+    }
 }

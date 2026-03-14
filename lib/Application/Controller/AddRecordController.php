@@ -153,6 +153,10 @@ class AddRecordController extends BaseController
         $comment = $_POST['comment'] ?? '';
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
 
+        // Convert IDN record name and content to punycode
+        $name = DnsIdnService::toPunycode($name);
+        $content = DnsIdnService::convertContentToPunycode($type, $content);
+
         // Normalize record name to full FQDN (always, regardless of display setting)
         // This converts @ to zone apex and ensures proper zone suffix
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);

@@ -56,7 +56,9 @@ class DnsIdnService
         }
 
         // Convert UTF-8 to punycode (xn--)
-        return idn_to_ascii($domainName, IDNA_NONTRANSITIONAL_TO_ASCII);
+        // idn_to_ascii returns false for inputs it cannot convert (e.g., root label ".")
+        $result = idn_to_ascii($domainName, IDNA_NONTRANSITIONAL_TO_ASCII);
+        return $result !== false ? $result : $domainName;
     }
 
     /**
@@ -67,7 +69,77 @@ class DnsIdnService
      */
     public static function isIdn(string $domainName): bool
     {
-        return str_starts_with($domainName, 'xn--');
+        foreach (explode('.', $domainName) as $label) {
+            if (str_starts_with($label, 'xn--')) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private const DOMAIN_CONTENT_TYPES = [
+        'CNAME', 'DNAME', 'ALIAS', 'NS', 'PTR', 'MR',
+        'MX', 'KX', 'AFSDB',
+    ];
+
+    private const COMPOUND_CONTENT_TYPES = [
+        'SRV', 'NAPTR', 'RP', 'MINFO',
+    ];
+
+    /**
+     * Convert domain names in record content to punycode based on record type
+     *
+     * @param string $type DNS record type
+     * @param string $content Record content
+     * @return string Content with domain names converted to punycode
+     */
+    public static function convertContentToPunycode(string $type, string $content): string
+    {
+        if ($content === '') {
+            return '';
+        }
+
+        $type = strtoupper($type);
+
+        if (in_array($type, self::DOMAIN_CONTENT_TYPES)) {
+            return self::toPunycode($content);
+        }
+
+        if (!in_array($type, self::COMPOUND_CONTENT_TYPES)) {
+            return $content;
+        }
+
+        $parts = preg_split('/\s+/', $content);
+
+        return match ($type) {
+            'SRV', 'NAPTR' => self::convertLastPartToPunycode($parts),
+            'RP', 'MINFO' => self::convertAllPartsToPunycode($parts),
+        };
+    }
+
+    /**
+     * Convert the last part (target domain) of compound content to punycode.
+     * Used for SRV (weight port target) and NAPTR (order pref flags service regexp replacement).
+     *
+     * @param string[] $parts
+     */
+    private static function convertLastPartToPunycode(array $parts): string
+    {
+        if (count($parts) >= 2) {
+            $parts[count($parts) - 1] = self::toPunycode($parts[count($parts) - 1]);
+        }
+        return implode(' ', $parts);
+    }
+
+    /**
+     * Convert all parts to punycode.
+     * Used for RP (mbox_domain txt_domain) and MINFO (rmailbx emailbx).
+     *
+     * @param string[] $parts
+     */
+    private static function convertAllPartsToPunycode(array $parts): string
+    {
+        return implode(' ', array_map([self::class, 'toPunycode'], $parts));
     }
 
     /**

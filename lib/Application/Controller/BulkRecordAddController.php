@@ -141,7 +141,7 @@ class BulkRecordAddController extends BaseController
                 continue;
             }
 
-            $name = trim($parts[0]);
+            $name = DnsIdnService::toPunycode(trim($parts[0]));
             $type = strtoupper(trim($parts[1]));
             $content = trim($parts[2]);
             // Get the other fields, with special handling for SRV records
@@ -171,6 +171,9 @@ class BulkRecordAddController extends BaseController
                 $ttl = isset($parts[4]) && $parts[4] !== '' ? (int)$parts[4] : $default_ttl;
                 $comment = isset($parts[5]) ? trim($parts[5]) : '';
             }
+
+            // Convert IDN content to punycode after full content assembly
+            $content = DnsIdnService::convertContentToPunycode($type, $content);
 
             // Normalize record name to full FQDN (always, regardless of display setting)
             // This converts @ to zone apex and ensures proper zone suffix
