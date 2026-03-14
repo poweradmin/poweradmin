@@ -105,10 +105,10 @@ interface RecordRepositoryInterface
      *
      * Gets the id of the domain by a given record id
      *
-     * @param int $id Record ID
+     * @param int|string $id Record ID (int for SQL mode, encoded string for API mode)
      * @return int Domain ID of record
      */
-    public function recidToDomid(int $id): int;
+    public function recidToDomid(int|string $id): int;
 
     /**
      * Check if record exists

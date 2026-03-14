@@ -405,7 +405,7 @@ class DnsRecord
      * @param int $id Record ID
      * @return int Domain ID of record
      */
-    public function recidToDomid(int $id): int
+    public function recidToDomid(int|string $id): int
     {
         return $this->recordRepository->recidToDomid($id);
     }

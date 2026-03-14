@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -218,6 +219,10 @@ class RecordRepository implements RecordRepositoryInterface
             return [];
         }
 
+        if ($this->isApiBackend()) {
+            return $this->getRecordsFromDomainIdApi($id, $rowstart, $rowamount, $sortby, $sortDirection, $fetchComments);
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
@@ -289,15 +294,80 @@ class RecordRepository implements RecordRepositoryInterface
     }
 
     /**
+     * Get records from domain ID via API backend.
+     */
+    private function getRecordsFromDomainIdApi(int $id, int $rowstart, int $rowamount, string $sortby, string $sortDirection, bool $fetchComments): array
+    {
+        $zoneName = $this->backendProvider->getZoneNameById($id);
+        if ($zoneName === null) {
+            return [];
+        }
+
+        $records = $this->backendProvider->getZoneRecords($id, $zoneName);
+
+        // Sort
+        $records = ResultPaginator::sort($records, $sortby, $sortDirection);
+
+        // Paginate
+        if ($rowamount < Constants::DEFAULT_MAX_ROWS) {
+            $records = ResultPaginator::paginate($records, $rowstart, $rowamount);
+        }
+
+        // Enrich with comments if requested
+        if ($fetchComments && !empty($records)) {
+            $this->enrichRecordsWithComments($records);
+        }
+
+        return $records;
+    }
+
+    /**
+     * Enrich records with comments from Poweradmin DB (record_comment_links + comments table).
+     */
+    private function enrichRecordsWithComments(array &$records): void
+    {
+        $recordIds = array_filter(array_map(fn($r) => $r['id'] ?? 0, $records));
+        if (empty($recordIds)) {
+            return;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($recordIds), '?'));
+        $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
+
+        $stmt = $this->db->prepare(
+            "SELECT rcl.record_id, c.comment
+             FROM record_comment_links rcl
+             INNER JOIN $comments_table c ON rcl.comment_id = c.id
+             WHERE rcl.record_id IN ($placeholders)"
+        );
+        $stmt->execute(array_values($recordIds));
+
+        $comments = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $comments[$row['record_id']] = $row['comment'];
+        }
+
+        foreach ($records as &$record) {
+            $rid = $record['id'] ?? 0;
+            $record['comment'] = $comments[$rid] ?? null;
+        }
+        unset($record);
+    }
+
+    /**
      * Record ID to Domain ID
      *
      * Gets the id of the domain by a given record id
      *
-     * @param int $id Record ID
+     * @param int|string $id Record ID (int for SQL mode, encoded string for API mode)
      * @return int Domain ID of record
      */
-    public function recidToDomid(int $id): int
+    public function recidToDomid(int|string $id): int
     {
+        if ($this->isApiBackend()) {
+            return $this->backendProvider->getZoneIdFromRecordId($id);
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("SELECT domain_id FROM $records_table WHERE id = :id");
