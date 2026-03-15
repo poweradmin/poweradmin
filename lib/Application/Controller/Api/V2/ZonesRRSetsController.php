@@ -65,21 +65,22 @@ class ZonesRRSetsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
-        $this->permissionService = new ApiPermissionService($this->db);
         $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        $this->zoneRepository = $this->createZoneRepository();
+        $this->recordRepository = new RecordRepository($this->db, $this->getConfig(), $this->backendProvider);
+        $this->permissionService = new ApiPermissionService($this->db);
 
         // Initialize services using factory
-        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
-        $this->soaRecordManager = new SOARecordManager($this->db, $this->getConfig());
-        $domainRepository = new DomainRepository($this->db, $this->getConfig());
+        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
+        $this->soaRecordManager = new SOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
+        $domainRepository = new DomainRepository($this->db, $this->getConfig(), $this->backendProvider);
         $this->recordManager = new RecordManager(
             $this->db,
             $this->getConfig(),
             $validationService,
             $this->soaRecordManager,
-            $domainRepository
+            $domainRepository,
+            $this->backendProvider
         );
     }
 
