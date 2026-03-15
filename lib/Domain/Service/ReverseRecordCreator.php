@@ -152,8 +152,8 @@ class ReverseRecordCreator
             $records = $this->backendProvider->getRecordsByZoneId($zoneRevId, 'PTR');
             foreach ($records as $r) {
                 if ($r['name'] === $contentRev && ($r['content'] === $name || str_starts_with($r['content'], "$name."))) {
-                    $recordId = (int)($r['id'] ?? 0);
-                    if ($recordId > 0 && $this->dnsRecord->deleteRecord($recordId)) {
+                    $recordId = $r['id'] ?? 0;
+                    if (!empty($recordId) && $this->dnsRecord->deleteRecord($recordId)) {
                         $this->recordCommentService?->deleteCommentByRecordId($recordId);
                         if ($this->config->get('dnssec', 'enabled')) {
                             $zone_name = $this->dnsRecord->getDomainNameById($zoneRevId);
@@ -227,11 +227,11 @@ class ReverseRecordCreator
             $result = $this->backendProvider->searchDnsData($hostname, 'record', 100);
             foreach ($result['records'] ?? [] as $r) {
                 if ($r['type'] === $recordType && $r['content'] === $ipAddress && ($r['name'] === $hostname || str_starts_with($r['name'], "$hostname."))) {
-                    $recordId = (int)($r['id'] ?? 0);
-                    $domainId = (int)($r['domain_id'] ?? 0);
-                    if ($recordId > 0 && $this->dnsRecord->deleteRecord($recordId)) {
+                    $recordId = $r['id'] ?? 0;
+                    $domainId = $r['domain_id'] ?? 0;
+                    if (!empty($recordId) && $this->dnsRecord->deleteRecord($recordId)) {
                         $this->recordCommentService?->deleteCommentByRecordId($recordId);
-                        if ($this->config->get('dnssec', 'enabled') && $domainId > 0) {
+                        if ($this->config->get('dnssec', 'enabled') && !empty($domainId)) {
                             $zone_name = $this->dnsRecord->getDomainNameById($domainId);
                             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
                             $dnssecProvider->rectifyZone($zone_name);
