@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -520,8 +520,24 @@ class RecordRepository implements RecordRepositoryInterface
      * @param int|null $ttl Optional TTL
      * @return int|null Record ID or null if not found
      */
-    public function getRecordId(int $domain_id, string $name, string $type, string $content, ?int $prio = null, ?int $ttl = null): ?int
+    public function getRecordId(int $domain_id, string $name, string $type, string $content, ?int $prio = null, ?int $ttl = null): int|string|null
     {
+        if ($this->isApiBackend()) {
+            $records = $this->backendProvider->getRecordsByZoneId($domain_id, $type);
+            foreach ($records as $r) {
+                if ($r['name'] === $name && $r['type'] === $type && $r['content'] === $content) {
+                    if ($prio !== null && ($r['prio'] ?? 0) != $prio) {
+                        continue;
+                    }
+                    if ($ttl !== null && ($r['ttl'] ?? 0) != $ttl) {
+                        continue;
+                    }
+                    return $r['id'] ?? null;
+                }
+            }
+            return null;
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "SELECT id FROM $records_table
@@ -690,6 +706,10 @@ class RecordRepository implements RecordRepositoryInterface
         string $type_filter = '',
         string $content_filter = ''
     ): array {
+        if ($this->isApiBackend()) {
+            return $this->getFilteredRecordsApi($zone_id, $row_start, $row_amount, $sort_by, $sort_direction, $include_comments, $search_term, $type_filter, $content_filter);
+        }
+
         // Validate sort parameters
         $allowedSortColumns = ['id', 'name', 'type', 'content', 'ttl', 'prio', 'disabled'];
         $sort_by = $this->tableNameService->validateOrderBy($sort_by, $allowedSortColumns);
@@ -831,6 +851,10 @@ class RecordRepository implements RecordRepositoryInterface
         string $type_filter = '',
         string $content_filter = ''
     ): int {
+        if ($this->isApiBackend()) {
+            return $this->getFilteredRecordCountApi($zone_id, $search_term, $type_filter, $content_filter);
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         // Prepare query parameters
@@ -887,8 +911,18 @@ class RecordRepository implements RecordRepositoryInterface
      * @param string $content Record content
      * @return int|null Record ID or null if not found
      */
-    public function getNewRecordId(int $domainId, string $name, string $type, string $content): ?int
+    public function getNewRecordId(int $domainId, string $name, string $type, string $content): int|string|null
     {
+        if ($this->isApiBackend()) {
+            $records = $this->backendProvider->getRecordsByZoneId($domainId, $type);
+            foreach ($records as $r) {
+                if (strtolower($r['name']) === strtolower($name) && $r['type'] === $type && $r['content'] === $content) {
+                    return $r['id'] ?? null;
+                }
+            }
+            return null;
+        }
+
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "SELECT id FROM $records_table
@@ -948,6 +982,77 @@ class RecordRepository implements RecordRepositoryInterface
         $stmt->execute($params);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get filtered records from a domain via API backend.
+     */
+    private function getFilteredRecordsApi(
+        int $zone_id,
+        int $row_start,
+        int $row_amount,
+        string $sort_by,
+        string $sort_direction,
+        bool $include_comments,
+        string $search_term,
+        string $type_filter,
+        string $content_filter
+    ): array {
+        $records = $this->fetchAndFilterApiRecords($zone_id, $search_term, $type_filter, $content_filter);
+
+        // Sort
+        $records = ResultPaginator::sort($records, $sort_by, $sort_direction);
+
+        // Paginate
+        $records = ResultPaginator::paginate($records, $row_start, $row_amount);
+
+        // Enrich with comments if requested (graceful no-op for API-mode IDs)
+        if ($include_comments && !empty($records)) {
+            $this->enrichRecordsWithComments($records);
+        }
+
+        return $records;
+    }
+
+    /**
+     * Get count of filtered records via API backend.
+     */
+    private function getFilteredRecordCountApi(
+        int $zone_id,
+        string $search_term,
+        string $type_filter,
+        string $content_filter
+    ): int {
+        $records = $this->fetchAndFilterApiRecords($zone_id, $search_term, $type_filter, $content_filter);
+        return count($records);
+    }
+
+    /**
+     * Fetch records from API backend and apply filters.
+     */
+    private function fetchAndFilterApiRecords(
+        int $zone_id,
+        string $search_term,
+        string $type_filter,
+        string $content_filter
+    ): array {
+        $records = $this->backendProvider->getRecordsByZoneId($zone_id, $type_filter ?: null);
+
+        // Filter ENT records (empty type)
+        $records = array_filter($records, fn($r) => !empty($r['type']));
+        $records = array_values($records);
+
+        // Apply search term filter
+        if (!empty($search_term)) {
+            $records = ResultPaginator::filterByPattern($records, $search_term, ['name', 'content']);
+        }
+
+        // Apply content filter
+        if (!empty($content_filter)) {
+            $records = ResultPaginator::filterByPattern($records, $content_filter, ['content']);
+        }
+
+        return $records;
     }
 
     public function getRecordById(int|string $recordId): ?array
