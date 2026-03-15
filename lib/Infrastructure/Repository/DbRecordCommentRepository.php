@@ -182,7 +182,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         return $this->find($domainId, $comment->getName(), $comment->getType());
     }
 
-    public function findByRecordId(int $recordId): ?RecordComment
+    public function findByRecordId(int|string $recordId): ?RecordComment
     {
         if ($this->isApiBackend()) {
             return null;
@@ -250,7 +250,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         return $stmt->execute();
     }
 
-    public function addForRecord(int $recordId, RecordComment $comment): ?RecordComment
+    public function addForRecord(int|string $recordId, RecordComment $comment): ?RecordComment
     {
         if ($this->isApiBackend()) {
             return null;

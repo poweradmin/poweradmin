@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -86,10 +86,10 @@ interface RecordCommentRepositoryInterface
     /**
      * Find a comment linked to a specific record ID.
      *
-     * @param int $recordId The record ID
+     * @param int|string $recordId The record ID
      * @return RecordComment|null
      */
-    public function findByRecordId(int $recordId): ?RecordComment;
+    public function findByRecordId(int|string $recordId): ?RecordComment;
 
     /**
      * Delete the comment linked to a specific record ID.
@@ -120,11 +120,11 @@ interface RecordCommentRepositoryInterface
      * Add a comment for a specific record.
      * Creates the comment and links it to the record.
      *
-     * @param int $recordId The record ID
+     * @param int|string $recordId The record ID
      * @param RecordComment $comment The comment to add
      * @return RecordComment|null The added comment with ID, or null on failure
      */
-    public function addForRecord(int $recordId, RecordComment $comment): ?RecordComment;
+    public function addForRecord(int|string $recordId, RecordComment $comment): ?RecordComment;
 
     /**
      * Migrate legacy RRset comments to per-record links for all records

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ class RecordCommentService
         string $name,
         string $type,
         string $comment,
-        int $recordId,
+        int|string $recordId,
         ?string $account = null
     ): ?RecordComment {
         // In API mode, per-record linking is not possible (encoded string IDs).
@@ -189,7 +189,7 @@ class RecordCommentService
         string $name,
         string $type,
         string $comment,
-        int $recordId,
+        int|string $recordId,
         ?string $account = null
     ): ?RecordComment {
         // In API mode, per-record linking is not possible (encoded string IDs).
@@ -266,7 +266,7 @@ class RecordCommentService
      * @param int $recordId Record ID
      * @return RecordComment|null
      */
-    public function findCommentByRecordId(int $recordId): ?RecordComment
+    public function findCommentByRecordId(int|string $recordId): ?RecordComment
     {
         if ($this->isApiBackend) {
             return null;
