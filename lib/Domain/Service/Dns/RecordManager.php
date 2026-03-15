@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -159,7 +159,7 @@ class RecordManager implements RecordManagerInterface
         $validatedPrio = $validatedData['prio'];
 
         // Create RecordRepository to check if record exists
-        $recordRepository = new RecordRepository($this->db, $this->config);
+        $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
         if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
             $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
             return false;
@@ -257,7 +257,7 @@ class RecordManager implements RecordManagerInterface
         $validatedPrio = $validatedData['prio'];
 
         // Create RecordRepository to check if record exists
-        $recordRepository = new RecordRepository($this->db, $this->config);
+        $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
         if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
             $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
             return null;
@@ -381,7 +381,7 @@ class RecordManager implements RecordManagerInterface
         $perm_edit = Permission::getEditPermission($this->db);
 
         // Create RecordRepository to get record details
-        $recordRepository = new RecordRepository($this->db, $this->config);
+        $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
         $record = $recordRepository->getRecordDetailsFromRecordId($rid);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
 
