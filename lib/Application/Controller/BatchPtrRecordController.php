@@ -50,7 +50,8 @@ class BatchPtrRecordController extends BaseController
         $this->auditLogger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
-        $recordRepository = new RecordRepository($this->db, $this->getConfig());
+        $backendProvider = $this->createDnsBackendProvider();
+        $recordRepository = new RecordRepository($this->db, $this->getConfig(), $backendProvider);
 
         $this->batchReverseRecordCreator = new BatchReverseRecordCreator(
             $this->db,

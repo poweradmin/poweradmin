@@ -63,22 +63,24 @@ class ZonesController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
+        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
         $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
+        $this->recordRepository = new RecordRepository($this->db, $this->getConfig(), $backendProvider);
         $this->permissionService = new ApiPermissionService($this->db);
         $this->ipAddressValidator = new IPAddressValidator();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
 
         // Initialize services using factory
-        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
-        $soaRecordManager = new SOARecordManager($this->db, $this->getConfig());
-        $domainRepository = new DomainRepository($this->db, $this->getConfig());
+        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $backendProvider);
+        $soaRecordManager = new SOARecordManager($this->db, $this->getConfig(), $backendProvider);
+        $domainRepository = new DomainRepository($this->db, $this->getConfig(), $backendProvider);
         $this->recordManager = new RecordManager(
             $this->db,
             $this->getConfig(),
             $validationService,
             $soaRecordManager,
-            $domainRepository
+            $domainRepository,
+            $backendProvider
         );
 
         // Initialize zone management service

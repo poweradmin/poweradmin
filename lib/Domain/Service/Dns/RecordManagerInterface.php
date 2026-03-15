@@ -84,7 +84,7 @@ interface RecordManagerInterface
      *
      * @return boolean true on success
      */
-    public static function deleteRecordZoneTempl($db, int $rid): bool;
+    public static function deleteRecordZoneTempl($db, int|string $rid): bool;
 
     /**
      * Get Zone comment

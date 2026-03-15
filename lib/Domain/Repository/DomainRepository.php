@@ -545,7 +545,7 @@ class DomainRepository implements DomainRepositoryInterface
 
             if ($iface_zonelist_serial) {
                 // Create RecordRepository to get the serial
-                $recordRepository = new RecordRepository($this->db, $this->config);
+                $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
                 $ret[$domainName]["serial"] = $recordRepository->getSerialByZid($r["id"]);
             }
 

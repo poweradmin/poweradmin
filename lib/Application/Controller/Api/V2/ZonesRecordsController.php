@@ -303,7 +303,7 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Record not found in this zone', 404);
             }
 
-            $domainRepository = new DomainRepository($this->db, $this->getConfig());
+            $domainRepository = new DomainRepository($this->db, $this->getConfig(), $this->backendProvider);
             $zoneName = $domainRepository->getDomainNameById($zoneId);
 
             $formattedRecord = [
@@ -457,8 +457,8 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Validate the record using the validation service
-            $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
-            $domainRepository = new DomainRepository($this->db, $this->getConfig());
+            $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
+            $domainRepository = new DomainRepository($this->db, $this->getConfig(), $this->backendProvider);
 
             // Get zone name for validation
             $zoneName = $domainRepository->getDomainNameById($zoneId);
@@ -761,7 +761,7 @@ class ZonesRecordsController extends PublicApiController
             $updatedRecord = $this->recordRepository->getRecordById($recordId);
 
             // Get zone name for stripping suffix
-            $domainRepository = new DomainRepository($this->db, $this->getConfig());
+            $domainRepository = new DomainRepository($this->db, $this->getConfig(), $this->backendProvider);
             $zoneName = $domainRepository->getDomainNameById($zoneId);
 
             $formattedRecord = [

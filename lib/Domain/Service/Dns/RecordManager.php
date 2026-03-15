@@ -406,7 +406,7 @@ class RecordManager implements RecordManagerInterface
      *
      * @return boolean true on success
      */
-    public static function deleteRecordZoneTempl($db, int $rid): bool
+    public static function deleteRecordZoneTempl($db, int|string $rid): bool
     {
         $stmt = $db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?");
         $stmt->execute([$rid]);

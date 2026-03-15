@@ -69,7 +69,7 @@ class EditRecordController extends BaseController
         $backendProvider = $this->createDnsBackendProvider();
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
         $this->recordCommentService = new RecordCommentService($recordCommentRepository, $backendProvider);
-        $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
+        $this->recordRepository = new RecordRepository($this->db, $this->getConfig(), $backendProvider);
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();

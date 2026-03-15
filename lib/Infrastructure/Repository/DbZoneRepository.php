@@ -45,6 +45,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
     private object $config;
     private TableNameService $tableNameService;
     private ?ApiZoneRepository $apiRepo;
+    private ?DnsBackendProvider $backendProvider;
 
     public function __construct($db, $config, ?DnsBackendProvider $backendProvider = null)
     {
@@ -56,6 +57,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $this->reverseDomainNaturalSorting = new ReverseDomainNaturalSorting();
         $this->reverseZoneSorting = new ReverseZoneSorting();
         $this->tableNameService = new TableNameService($config);
+        $this->backendProvider = $backendProvider;
         $isApiBackend = $config->get('dns', 'backend') === 'api';
         $this->apiRepo = ($isApiBackend && $backendProvider !== null)
             ? new ApiZoneRepository($db, $backendProvider, $this->db_type)
@@ -318,7 +320,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // Batch fetch serial numbers (optimization: N+1 -> 1 query)
         if ($showSerial && !empty($zones)) {
             $zoneIds = array_map(fn($zone) => $zone['id'], $zones);
-            $recordRepository = new RecordRepository($this->db, $this->config);
+            $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
             $serials = $recordRepository->getSerialsByZoneIds($zoneIds);
 
             foreach ($zones as $name => &$zone) {

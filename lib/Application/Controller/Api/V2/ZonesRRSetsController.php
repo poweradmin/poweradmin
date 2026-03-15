@@ -287,7 +287,7 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Get zone name for FQDN construction
-            $domainRepository = new DomainRepository($this->db, $this->getConfig());
+            $domainRepository = new DomainRepository($this->db, $this->getConfig(), $this->backendProvider);
             $zoneName = $domainRepository->getDomainNameById($zoneId);
 
             // Convert name to FQDN
@@ -421,7 +421,7 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Get zone name
-            $domainRepository = new DomainRepository($this->db, $this->getConfig());
+            $domainRepository = new DomainRepository($this->db, $this->getConfig(), $this->backendProvider);
             $zoneName = $domainRepository->getDomainNameById($zoneId);
             if ($zoneName === null) {
                 return $this->returnApiError('Zone not found', 404);
@@ -630,7 +630,7 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Get zone name
-            $domainRepository = new DomainRepository($this->db, $this->getConfig());
+            $domainRepository = new DomainRepository($this->db, $this->getConfig(), $this->backendProvider);
             $zoneName = $domainRepository->getDomainNameById($zoneId);
 
             // Convert name to FQDN

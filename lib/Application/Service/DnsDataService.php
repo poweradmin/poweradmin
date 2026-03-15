@@ -802,7 +802,7 @@ class DnsDataService
         string $typeFilter,
         string $contentFilter
     ): array {
-        $recordRepository = new RecordRepository($this->db, $this->config);
+        $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
 
         if (!empty($searchTerm) || !empty($typeFilter) || !empty($contentFilter)) {
             $records = $recordRepository->getFilteredRecords(
