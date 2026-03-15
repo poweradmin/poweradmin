@@ -295,7 +295,9 @@ class DomainManager implements DomainManagerInterface
                     }
                     if ($domain_id !== false) {
                         $this->cleanupZoneOnFailure($domain_id, $domain);
-                        if (!$wasInTransaction) {
+                        // In API mode, the zones row is inserted before beginTransaction(),
+                        // so rollBack() won't remove it. Always clean up metadata in that case.
+                        if (!$wasInTransaction || $this->backendProvider->isApiBackend()) {
                             $this->cleanupZoneMetadata($domain_id);
                         }
                     }
