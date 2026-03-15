@@ -315,7 +315,7 @@ class UserProvisioningService extends LoggingService
             }
 
             // Update permission template based on current groups
-            $newPermissionTemplateId = $this->determinePermissionTemplate($userInfo->getGroups(), $authMethod);
+            $newPermissionTemplateId = $this->determinePermissionTemplate($userInfo->getGroups(), $authMethod, false);
             if ($newPermissionTemplateId) {
                 $updateFields[] = 'perm_templ = ?';
                 $updateValues[] = $newPermissionTemplateId;
@@ -478,7 +478,7 @@ class UserProvisioningService extends LoggingService
     }
 
 
-    private function determinePermissionTemplate(array $groups, string $authMethod = self::AUTH_METHOD_OIDC): ?int
+    private function determinePermissionTemplate(array $groups, string $authMethod = self::AUTH_METHOD_OIDC, bool $useDefaultFallback = true): ?int
     {
         $this->logInfo('Determining permission template for groups: {groups}', ['groups' => $groups]);
 
@@ -505,6 +505,11 @@ class UserProvisioningService extends LoggingService
                     ]);
                 }
             }
+        }
+
+        if (!$useDefaultFallback) {
+            $this->logInfo('No matching group mapping found for existing user, keeping current permissions');
+            return null;
         }
 
         $this->logInfo('No matching groups found, proceeding to default template');
