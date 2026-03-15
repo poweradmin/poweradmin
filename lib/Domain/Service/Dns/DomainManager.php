@@ -654,20 +654,11 @@ class DomainManager implements DomainManagerInterface
             if ($zone_template_id != 0) {
                 if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                     if ($isApiBackend) {
-                        // In API mode: get record IDs from records_zone_templ, delete via backend
-                        $stmt = $this->db->prepare(
-                            "SELECT record_id FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id"
-                        );
-                        $stmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
-                        $recordIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
-                        foreach ($recordIds as $rid) {
-                            $this->backendProvider->deleteRecord((int)$rid);
-                        }
-                        // Clean up the mapping table
-                        $stmt = $this->db->prepare(
-                            "DELETE FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id"
-                        );
-                        $stmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
+                        // In API mode: resolve template records by attributes and delete matches.
+                        // The records_zone_templ mapping table has no entries for API zones
+                        // (encoded string IDs can't be stored in INT column), so we match
+                        // template definitions against actual zone records instead.
+                        $this->deleteTemplateRecordsViaApi($zone_id, $zone_template_id, $dns_ttl);
                     } else {
                         // SQL mode: delete records and mapping in one query
                         if ($db_type == 'pgsql') {
@@ -811,6 +802,63 @@ class DomainManager implements DomainManagerInterface
                 $this->db->rollBack();
             }
             $this->messageService->addSystemError(sprintf(_('Failed to update zone records: %s'), $e->getMessage()));
+        }
+    }
+
+    /**
+     * Delete records that match a zone template's definitions via the API backend.
+     *
+     * Since API-mode record IDs are encoded strings that can't be stored in the
+     * integer records_zone_templ.record_id column, this method resolves template
+     * records by attributes (name/type/content) and deletes matches from the backend.
+     */
+    private function deleteTemplateRecordsViaApi(int $zone_id, int $zone_template_id, int $dns_ttl): void
+    {
+        $domain = $this->domainRepository->getDomainNameById($zone_id);
+        if (!is_string($domain)) {
+            return;
+        }
+
+        $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
+        if (empty($templ_records)) {
+            return;
+        }
+
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+
+        // Build a set of expected name/type/content tuples from the template
+        $expectedRecords = [];
+        foreach ($templ_records as $r) {
+            $type = $r['type'];
+            if ($type === 'SOA') {
+                continue; // SOA is managed by PowerDNS in API mode
+            }
+            $name = $zoneTemplate->parseTemplateValue($r['name'], $domain);
+            $content = $zoneTemplate->parseTemplateValue($r['content'], $domain);
+            $expectedRecords[] = [
+                'name' => $name,
+                'type' => $type,
+                'content' => $content,
+            ];
+        }
+
+        if (empty($expectedRecords)) {
+            return;
+        }
+
+        // Fetch all zone records from the API and delete matches
+        $zoneRecords = $this->backendProvider->getRecordsByZoneId($zone_id);
+        foreach ($zoneRecords as $record) {
+            foreach ($expectedRecords as $expected) {
+                if (
+                    ($record['name'] ?? '') === $expected['name']
+                    && ($record['type'] ?? '') === $expected['type']
+                    && ($record['content'] ?? '') === $expected['content']
+                ) {
+                    $this->backendProvider->deleteRecord($record['id']);
+                    break;
+                }
+            }
         }
     }
 }
