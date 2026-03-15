@@ -345,7 +345,8 @@ class ZoneFileImportController extends BaseController
             $recordCommentService,
             $commentSyncService,
             $logger,
-            $this->getConfig()
+            $this->getConfig(),
+            $backendProvider
         );
 
         $successCount = 0;

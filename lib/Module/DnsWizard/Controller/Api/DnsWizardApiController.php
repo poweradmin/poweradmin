@@ -383,7 +383,8 @@ class DnsWizardApiController extends InternalApiController
                 $recordCommentService,
                 $commentSyncService,
                 $logger,
-                $this->config
+                $this->config,
+                $backendProvider
             );
 
             $userlogin = $_SESSION['userlogin'] ?? 'unknown';

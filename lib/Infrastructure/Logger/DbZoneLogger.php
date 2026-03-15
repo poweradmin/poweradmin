@@ -25,17 +25,20 @@ namespace Poweradmin\Infrastructure\Logger;
 use PDO;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 
 class DbZoneLogger
 {
     private PDO $db;
     private ConfigurationManager $config;
+    private ?DnsBackendProvider $backendProvider;
 
-    public function __construct($db)
+    public function __construct($db, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = ConfigurationManager::getInstance();
         $this->config->initialize();
+        $this->backendProvider = $backendProvider;
     }
 
     public function doLog($msg, $zone_id, $priority): void
@@ -121,7 +124,7 @@ class DbZoneLogger
             return false;
         }
 
-        $domainRepository = new DomainRepository($this->db, $this->config);
+        $domainRepository = new DomainRepository($this->db, $this->config, $this->backendProvider);
         $zones = $domainRepository->getZones('all');
         foreach ($zones as $zone) {
             if (str_contains($zone['name'], $domain_searched)) {

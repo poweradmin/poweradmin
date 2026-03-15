@@ -85,7 +85,8 @@ class AddRecordController extends BaseController
             $recordCommentService,
             $commentSyncService,
             $this->auditLogger,
-            $this->getConfig()
+            $this->getConfig(),
+            $backendProvider
         );
 
         $this->recordTypeService = new RecordTypeService($this->getConfig());

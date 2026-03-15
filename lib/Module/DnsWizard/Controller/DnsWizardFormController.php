@@ -72,7 +72,8 @@ class DnsWizardFormController extends BaseController
             $recordCommentService,
             $commentSyncService,
             $logger,
-            $this->getConfig()
+            $this->getConfig(),
+            $backendProvider
         );
     }
 

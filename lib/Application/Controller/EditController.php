@@ -105,7 +105,8 @@ class EditController extends BaseController
             $this->recordCommentService,
             $this->commentSyncService,
             $this->auditLogger,
-            $this->getConfig()
+            $this->getConfig(),
+            $backendProvider
         );
 
         $this->domainRecordCreator = new DomainRecordCreator(

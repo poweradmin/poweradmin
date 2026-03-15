@@ -27,6 +27,7 @@ use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
@@ -38,6 +39,7 @@ class RecordManagerService
     private RecordCommentSyncService $commentSyncService;
     private LegacyLogger $logger;
     private ConfigurationManager $config;
+    private ?DnsBackendProvider $backendProvider;
 
     public function __construct(
         PDO $db,
@@ -45,7 +47,8 @@ class RecordManagerService
         RecordCommentService $recordCommentService,
         RecordCommentSyncService $commentSyncService,
         LegacyLogger $logger,
-        ConfigurationManager $config
+        ConfigurationManager $config,
+        ?DnsBackendProvider $backendProvider = null
     ) {
         $this->db = $db;
         $this->dnsRecord = $dnsRecord;
@@ -53,6 +56,7 @@ class RecordManagerService
         $this->commentSyncService = $commentSyncService;
         $this->logger = $logger;
         $this->config = $config;
+        $this->backendProvider = $backendProvider;
     }
 
     public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, string $clientIp): bool
@@ -134,7 +138,7 @@ class RecordManagerService
 
         // Get record ID for per-record comment linking (via linking table)
         // Pass prio and ttl for deterministic lookup (important for MX, SRV records with same content)
-        $recordRepository = new RecordRepository($this->db, $this->config);
+        $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
         $recordId = $recordRepository->getRecordId($zoneId, strtolower($fullZoneName), $type, $content, $prio, $ttl);
 
         if ($recordId !== null) {
@@ -192,7 +196,7 @@ class RecordManagerService
 
         $ptrZoneId = $this->dnsRecord->getBestMatchingZoneIdFromName($ptrName);
         if ($ptrZoneId !== -1) {
-            $recordRepository = new RecordRepository($this->db, $this->config);
+            $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
             $rrsetRecords = $recordRepository->getRRSetRecords($ptrZoneId, $ptrName, RecordType::PTR);
 
             foreach ($rrsetRecords as $record) {
@@ -227,7 +231,7 @@ class RecordManagerService
         }
 
         if ($contentDomainId !== null) {
-            $recordRepository = new RecordRepository($this->db, $this->config);
+            $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
             $rrsetRecords = $recordRepository->getRRSetRecords($contentDomainId, $content, RecordType::A);
 
             foreach ($rrsetRecords as $record) {

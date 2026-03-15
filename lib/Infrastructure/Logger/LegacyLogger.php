@@ -23,18 +23,21 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use PDO;
 
 class LegacyLogger
 {
     private PDO $db;
     private ConfigurationManager $config;
+    private ?DnsBackendProvider $backendProvider;
 
-    public function __construct($db)
+    public function __construct($db, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = ConfigurationManager::getInstance();
         $this->config->initialize();
+        $this->backendProvider = $backendProvider;
     }
 
     private function doLog(string $message, int $priority, ?int $zone_id = null): void
@@ -54,7 +57,7 @@ class LegacyLogger
             $logType = $zone_id !== null ? LogType::ZONE : LogType::USER;
 
             if ($logType === LogType::ZONE) {
-                $dbZoneLogger = new DbZoneLogger($this->db);
+                $dbZoneLogger = new DbZoneLogger($this->db, $this->backendProvider);
                 $dbZoneLogger->doLog($message, $zone_id, $priority);
             } else {
                 $dbUserLogger = new DbUserLogger($this->db);
