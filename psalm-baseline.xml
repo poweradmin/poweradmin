@@ -19,7 +19,6 @@
       <code><![CDATA[$record_id]]></code>
       <code><![CDATA[$record_id]]></code>
       <code><![CDATA[$record_id]]></code>
-      <code><![CDATA[$record_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/DeleteUserController.php">
