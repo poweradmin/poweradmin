@@ -240,8 +240,13 @@ class ApiZoneRepository
                   WHERE z.zone_name IS NOT NULL";
         $params = [];
         if ($userId !== null && !$viewOthers) {
-            $query .= " AND z.owner = :userId";
+            $query .= " AND (z.owner = :userId OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
+            ))";
             $params[':userId'] = $userId;
+            $params[':userId_group'] = $userId;
         }
         if (isset($filters['type']) && in_array($filters['type'], ['MASTER', 'SLAVE', 'NATIVE'])) {
             $query .= " AND z.zone_type = :type";
@@ -654,8 +659,12 @@ class ApiZoneRepository
             $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE z.zone_name IS NOT NULL";
             $params = [];
         } else {
-            $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE z.owner = :user_id AND z.zone_name IS NOT NULL";
-            $params = [':user_id' => $userId];
+            $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE (z.owner = :user_id OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = z.id AND ugm.user_id = :user_id_group
+            )) AND z.zone_name IS NOT NULL";
+            $params = [':user_id' => $userId, ':user_id_group' => $userId];
         }
         if ($nameFilter !== null && $nameFilter !== '') {
             $query .= " AND z.zone_name = :name_filter";
@@ -681,8 +690,12 @@ class ApiZoneRepository
             $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
                              COALESCE(z.owner, 0) as owner
                       FROM zones z
-                      WHERE z.owner = :user_id AND z.zone_name IS NOT NULL";
-            $params = [':user_id' => $userId];
+                      WHERE (z.owner = :user_id OR EXISTS (
+                          SELECT 1 FROM zones_groups zg
+                          INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                          WHERE zg.domain_id = z.id AND ugm.user_id = :user_id_group
+                      )) AND z.zone_name IS NOT NULL";
+            $params = [':user_id' => $userId, ':user_id_group' => $userId];
         }
         if ($nameFilter !== null && $nameFilter !== '') {
             $query .= " AND z.zone_name = :name_filter";
