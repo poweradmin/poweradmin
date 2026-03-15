@@ -780,12 +780,15 @@ class DomainManager implements DomainManagerInterface
                                 }
 
                                 // Link the record to the template in the mapping table
-                                $stmt = $this->db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
-                                $stmt->execute([
-                                    ':zone_id' => $zone_id,
-                                    ':record_id' => $record_id,
-                                    ':zone_template_id' => $zone_template_id
-                                ]);
+                                // Skip for API-backed records: encoded string IDs can't be stored in INT column
+                                if (!$isApiBackend) {
+                                    $stmt = $this->db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
+                                    $stmt->execute([
+                                        ':zone_id' => $zone_id,
+                                        ':record_id' => $record_id,
+                                        ':zone_template_id' => $zone_template_id
+                                    ]);
+                                }
                             }
                         }
                     }
