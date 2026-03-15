@@ -110,7 +110,7 @@ class ApiZoneRepository
 
             $stmt = $this->db->prepare($query);
             foreach ($params as $param => $value) {
-                $stmt->bindValue($param, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+                $stmt->bindValue($param, $value, PDO::PARAM_INT);
             }
             $stmt->execute();
             return (int)$stmt->fetchColumn();
@@ -156,7 +156,7 @@ class ApiZoneRepository
 
         $stmt = $this->db->prepare($query);
         foreach ($params as $param => $value) {
-            $stmt->bindValue($param, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+            $stmt->bindValue($param, $value, PDO::PARAM_INT);
         }
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -590,7 +590,7 @@ class ApiZoneRepository
     {
         $success = true;
         if (isset($updates['type'])) {
-            $success = $success && $this->backendProvider->updateZoneType($zoneId, $updates['type']);
+            $success = $this->backendProvider->updateZoneType($zoneId, $updates['type']);
             // Update local cache
             $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type WHERE id = :id OR domain_id = :did");
             $stmt->bindValue(':type', $updates['type'], PDO::PARAM_STR);
@@ -655,7 +655,7 @@ class ApiZoneRepository
         if ($zoneIds === null && $userId === null) {
             $query = "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL";
             $params = [];
-        } elseif ($zoneIds === null && $userId !== null) {
+        } elseif ($zoneIds === null) {
             $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE z.zone_name IS NOT NULL";
             $params = [];
         } else {

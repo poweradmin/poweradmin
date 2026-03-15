@@ -120,12 +120,6 @@
       <code><![CDATA[$zone_template]]></code>
     </InvalidScalarArgument>
   </file>
-  <file src="lib/Domain/Service/Dns/RecordManager.php">
-    <TypeDoesNotContainNull>
-      <code><![CDATA[$validationResult === null]]></code>
-      <code><![CDATA[$validationResult === null]]></code>
-    </TypeDoesNotContainNull>
-  </file>
   <file src="lib/Domain/Service/Dns/SOARecordManager.php">
     <InvalidScalarArgument>
       <code><![CDATA[$curr_serial]]></code>

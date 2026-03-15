@@ -231,7 +231,7 @@ class DomainManager implements DomainManagerInterface
                             $dns_ttl = $this->config->get('dns', 'ttl');
 
                             $templ_records = ZoneTemplate::getZoneTemplRecords($db, $zone_template);
-                            if (is_array($templ_records) && !empty($templ_records)) {
+                            if (!empty($templ_records)) {
                                 // Process the template records
                                 foreach ($templ_records as $r) {
                                     if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
@@ -293,13 +293,11 @@ class DomainManager implements DomainManagerInterface
                     if ($wasInTransaction) {
                         $db->rollBack();
                     }
-                    if ($domain_id !== false) {
-                        $this->cleanupZoneOnFailure($domain_id, $domain);
-                        // In API mode, the zones row is inserted before beginTransaction(),
-                        // so rollBack() won't remove it. Always clean up metadata in that case.
-                        if (!$wasInTransaction || $this->backendProvider->isApiBackend()) {
-                            $this->cleanupZoneMetadata($domain_id);
-                        }
+                    $this->cleanupZoneOnFailure($domain_id, $domain);
+                    // In API mode, the zones row is inserted before beginTransaction(),
+                    // so rollBack() won't remove it. Always clean up metadata in that case.
+                    if (!$wasInTransaction || $this->backendProvider->isApiBackend()) {
+                        $this->cleanupZoneMetadata($domain_id);
                     }
                     $this->messageService->addSystemError(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
                     return false;
@@ -402,58 +400,53 @@ class DomainManager implements DomainManagerInterface
             $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
 
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-                if (is_numeric($id)) {
-                    // Get zone name for backend deletion.
-                    $zoneName = $this->domainRepository->getDomainNameById($id);
-                    if ($zoneName !== null) {
-                        // Delete DNS data BEFORE the transaction. API deletions are
-                        // irreversible, so they must not be inside a transaction that
-                        // could roll back and leave metadata pointing to a deleted zone.
-                        if (!$this->backendProvider->deleteZone($id, $zoneName)) {
-                            $this->messageService->addSystemError(_('Failed to delete zone from DNS backend.'));
-                            $allSucceeded = false;
-                            continue;
-                        }
-                    } elseif (!$this->backendProvider->isApiBackend()) {
-                        // Domain name row is gone but SQL backend can still
-                        // clean up by domain ID.
-                        $this->backendProvider->deleteZone($id, '');
-                    }
-
-                    // Clean up Poweradmin metadata in a transaction
-                    $this->db->beginTransaction();
-                    try {
-                        // Get zone_id before deleting zones record for sync cleanup
-                        $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
-                        $stmt->execute([':id' => $id]);
-                        $zoneId = $stmt->fetchColumn();
-
-                        // Clean up zone template sync records if zone exists
-                        if ($zoneId) {
-                            $syncService = new ZoneTemplateSyncService($this->db, $this->config);
-                            $syncService->cleanupZoneSyncRecords($zoneId);
-                        }
-
-                        // Clean up Poweradmin-internal tables (always SQL)
-                        $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
-                        $stmt->execute([':id' => $id]);
-
-                        $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
-                        $stmt->execute([':id' => $id]);
-
-                        $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
-                        $stmt->execute([':id' => $id]);
-
-                        $this->db->commit();
-                    } catch (\Exception $e) {
-                        if ($this->db->inTransaction()) {
-                            $this->db->rollBack();
-                        }
-                        $this->messageService->addSystemError(sprintf(_('Failed to delete zone metadata: %s'), $e->getMessage()));
+                // Get zone name for backend deletion.
+                $zoneName = $this->domainRepository->getDomainNameById($id);
+                if ($zoneName !== null) {
+                    // Delete DNS data BEFORE the transaction. API deletions are
+                    // irreversible, so they must not be inside a transaction that
+                    // could roll back and leave metadata pointing to a deleted zone.
+                    if (!$this->backendProvider->deleteZone($id, $zoneName)) {
+                        $this->messageService->addSystemError(_('Failed to delete zone from DNS backend.'));
                         $allSucceeded = false;
+                        continue;
                     }
-                } else {
-                    $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "deleteDomains", "id must be a number"));
+                } elseif (!$this->backendProvider->isApiBackend()) {
+                    // Domain name row is gone but SQL backend can still
+                    // clean up by domain ID.
+                    $this->backendProvider->deleteZone($id, '');
+                }
+
+                // Clean up Poweradmin metadata in a transaction
+                $this->db->beginTransaction();
+                try {
+                    // Get zone_id before deleting zones record for sync cleanup
+                    $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
+                    $zoneId = $stmt->fetchColumn();
+
+                    // Clean up zone template sync records if zone exists
+                    if ($zoneId) {
+                        $syncService = new ZoneTemplateSyncService($this->db, $this->config);
+                        $syncService->cleanupZoneSyncRecords($zoneId);
+                    }
+
+                    // Clean up Poweradmin-internal tables (always SQL)
+                    $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
+
+                    $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
+
+                    $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
+
+                    $this->db->commit();
+                } catch (\Exception $e) {
+                    if ($this->db->inTransaction()) {
+                        $this->db->rollBack();
+                    }
+                    $this->messageService->addSystemError(sprintf(_('Failed to delete zone metadata: %s'), $e->getMessage()));
                     $allSucceeded = false;
                 }
             } else {

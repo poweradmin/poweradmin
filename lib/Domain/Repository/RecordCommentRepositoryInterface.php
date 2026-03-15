@@ -102,11 +102,11 @@ interface RecordCommentRepositoryInterface
     /**
      * Link a record to a comment.
      *
-     * @param int $recordId The record ID
+     * @param int|string $recordId The record ID
      * @param int $commentId The comment ID
      * @return bool
      */
-    public function linkRecordToComment(int $recordId, int $commentId): bool;
+    public function linkRecordToComment(int|string $recordId, int $commentId): bool;
 
     /**
      * Unlink a record from its comment.

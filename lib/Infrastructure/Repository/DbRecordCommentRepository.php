@@ -225,7 +225,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         return $stmt->execute();
     }
 
-    public function linkRecordToComment(int $recordId, int $commentId): bool
+    public function linkRecordToComment(int|string $recordId, int $commentId): bool
     {
         if ($this->isApiBackend()) {
             return true;

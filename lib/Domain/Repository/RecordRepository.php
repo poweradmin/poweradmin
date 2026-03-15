@@ -26,7 +26,6 @@ use PDO;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -39,8 +38,6 @@ class RecordRepository implements RecordRepositoryInterface
 {
 
     private PDO $db;
-    private ConfigurationManager $config;
-    private MessageService $messageService;
     private TableNameService $tableNameService;
     private ?DnsBackendProvider $backendProvider;
 
@@ -54,8 +51,6 @@ class RecordRepository implements RecordRepositoryInterface
     public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
-        $this->config = $config;
-        $this->messageService = new MessageService();
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
     }
@@ -215,10 +210,6 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array
     {
-        if (!is_numeric($id)) {
-            return [];
-        }
-
         if ($this->isApiBackend()) {
             return $this->getRecordsFromDomainIdApi($id, $rowstart, $rowamount, $sortby, $sortDirection, $fetchComments);
         }
@@ -387,7 +378,7 @@ class RecordRepository implements RecordRepositoryInterface
     {
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', 1);
-            foreach ($result['records'] ?? [] as $r) {
+            foreach ($result['records'] as $r) {
                 if ($r['name'] === $name) {
                     return true;
                 }
@@ -422,7 +413,7 @@ class RecordRepository implements RecordRepositoryInterface
     {
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', 100);
-            foreach ($result['records'] ?? [] as $r) {
+            foreach ($result['records'] as $r) {
                 if ($r['name'] === $name && !in_array($r['type'], ['NS', 'DS'], true)) {
                     return true;
                 }

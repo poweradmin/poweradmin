@@ -48,7 +48,6 @@ class RecordManager implements RecordManagerInterface
     private PDO $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
-    private HostnameValidator $hostnameValidator;
     private DnsFormatter $dnsFormatter;
     private DnsRecordValidationServiceInterface $validationService;
     private SOARecordManagerInterface $soaRecordManager;
@@ -78,7 +77,6 @@ class RecordManager implements RecordManagerInterface
         $this->db = $db;
         $this->config = $config;
         $this->messageService = new MessageService();
-        $this->hostnameValidator = new HostnameValidator($config);
         $this->dnsFormatter = new DnsFormatter($config);
         $this->validationService = $validationService;
         $this->soaRecordManager = $soaRecordManager;
@@ -144,10 +142,8 @@ class RecordManager implements RecordManagerInterface
             $dns_hostmaster,
             (int)$dns_ttl
         );
-        if ($validationResult === null || !$validationResult->isValid()) {
-            if ($validationResult !== null) {
-                $this->messageService->addSystemError($validationResult->getFirstError());
-            }
+        if (!$validationResult->isValid()) {
+            $this->messageService->addSystemError($validationResult->getFirstError());
             return false;
         }
 
@@ -339,7 +335,7 @@ class RecordManager implements RecordManagerInterface
                 $dns_hostmaster,
                 (int)$dns_ttl
             );
-            if ($validationResult !== null && $validationResult->isValid()) {
+            if ($validationResult->isValid()) {
                 // Extract validated values
                 $validatedData = $validationResult->getData();
                 $content = $validatedData['content'];
