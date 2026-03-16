@@ -289,7 +289,7 @@ class UserProvisioningServiceTest extends TestCase
     {
         $stmt = $this->createMock(\PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(5);
+        $stmt->method('fetch')->willReturn(['id' => 5]);
 
         $db = $this->createMock(\PDO::class);
         $db->method('prepare')->willReturn($stmt);
@@ -317,7 +317,7 @@ class UserProvisioningServiceTest extends TestCase
     {
         $stmt = $this->createMock(\PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(1);
+        $stmt->method('fetch')->willReturn(['id' => 1]);
 
         $db = $this->createMock(\PDO::class);
         $db->method('prepare')->willReturn($stmt);

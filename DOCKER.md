@@ -449,8 +449,8 @@ Supports Docker secrets via `TRUSTED_CA_FILE__FILE` (see [DOCKER-SECRETS.md](DOC
 | `PA_OIDC_LINK_BY_EMAIL` | Link OIDC accounts to existing users by email | `true` | No |
 | `PA_OIDC_SYNC_USER_INFO` | Sync user information from OIDC provider | `true` | No |
 | `PA_OIDC_DEFAULT_PERMISSION_TEMPLATE` | Default permission template for new OIDC users | Empty | No |
-| `PA_OIDC_PERMISSION_TEMPLATE_MAPPING` | Map OIDC groups to permission templates (format: `group1:Template1,group2:Template2`) | Empty | No |
-| `PA_OIDC_GROUP_MAPPING` | Map OIDC groups to Poweradmin groups (format: `group1:PaGroup1,group2:PaGroup2`) | Empty | No |
+| `PA_OIDC_PERMISSION_TEMPLATE_MAPPING` | Map OIDC groups to permission templates (format: `group1=Template1,group2=Template2`) | Empty | No |
+| `PA_OIDC_GROUP_MAPPING` | Map OIDC groups to Poweradmin groups (format: `group1=PaGroup1,group2=PaGroup2`) | Empty | No |
 
 
 
@@ -572,8 +572,8 @@ docker run -d \
 | `PA_SAML_LINK_BY_EMAIL` | Link SAML accounts to existing users by email | `true` | No |
 | `PA_SAML_SYNC_USER_INFO` | Sync user information from SAML provider | `true` | No |
 | `PA_SAML_DEFAULT_PERMISSION_TEMPLATE` | Default permission template for new SAML users | Empty | No |
-| `PA_SAML_PERMISSION_TEMPLATE_MAPPING` | Map SAML groups to permission templates (format: `group1:Template1,group2:Template2`) | Empty | No |
-| `PA_SAML_GROUP_MAPPING` | Map SAML groups to Poweradmin groups (format: `group1:PaGroup1,group2:PaGroup2`) | Empty | No |
+| `PA_SAML_PERMISSION_TEMPLATE_MAPPING` | Map SAML groups to permission templates (format: `group1=Template1,group2=Template2`) | Empty | No |
+| `PA_SAML_GROUP_MAPPING` | Map SAML groups to Poweradmin groups (format: `group1=PaGroup1,group2=PaGroup2`) | Empty | No |
 
 ### SAML Service Provider (SP) Settings
 

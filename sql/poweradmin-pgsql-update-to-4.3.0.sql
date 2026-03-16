@@ -28,5 +28,5 @@ CREATE UNIQUE INDEX idx_zones_zone_name ON zones (zone_name);
 -- Values: 'admin' (manually by admin), 'sso' (via SSO group mapping or default)
 ALTER TABLE "users" ADD COLUMN "perm_templ_source" character varying(20) NOT NULL DEFAULT 'admin';
 
--- Set existing SSO users to 'sso' source based on auth_method
-UPDATE "users" SET "perm_templ_source" = 'sso' WHERE "auth_method" IN ('oidc', 'saml');
+-- All existing users default to 'admin' (conservative). The SSO flow will set
+-- perm_templ_source = 'sso' on the next login when a group mapping matches.

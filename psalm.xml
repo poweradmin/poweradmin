@@ -45,6 +45,11 @@
                 <directory name="tests" />
             </errorLevel>
         </InvalidOperand>
+        <InvalidAttribute>
+            <errorLevel type="suppress">
+                <directory name="lib/Application/Controller/Api" />
+            </errorLevel>
+        </InvalidAttribute>
         <MissingClosureParamType errorLevel="info" />
         <UndefinedInterfaceMethod errorLevel="info" />
         <InvalidArgument errorLevel="info" />
