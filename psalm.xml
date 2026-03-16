@@ -6,6 +6,7 @@
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
     findUnusedBaselineEntry="true"
+    findUnusedIssueHandlerSuppression="false"
     findUnusedCode="false"
     errorBaseline="psalm-baseline.xml"
 >
@@ -45,6 +46,13 @@
                 <directory name="tests" />
             </errorLevel>
         </InvalidOperand>
+        <InvalidAttribute>
+            <errorLevel type="suppress">
+                <directory name="lib/Application/Controller/Api" />
+                <directory name="tests" />
+            </errorLevel>
+        </InvalidAttribute>
+        <UnusedIssueHandlerSuppression errorLevel="info" />
         <InvalidArrayOffset>
             <errorLevel type="suppress">
                 <file name="lib/Domain/Service/DnsValidation/IPAddressValidator.php" />
