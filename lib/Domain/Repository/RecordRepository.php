@@ -313,9 +313,25 @@ class RecordRepository implements RecordRepositoryInterface
     }
 
     /**
-     * Enrich records with comments from Poweradmin DB (record_comment_links + comments table).
+     * Enrich records with comments from Poweradmin DB.
+     * In SQL mode: uses record_comment_links for per-record comments.
+     * In API mode: uses RRset-level comments (domain_id + name + type) since
+     * encoded string IDs cannot be stored in record_comment_links.
      */
     private function enrichRecordsWithComments(array &$records): void
+    {
+        if (empty($records)) {
+            return;
+        }
+
+        if ($this->isApiBackend()) {
+            $this->enrichRecordsWithRRsetComments($records);
+        } else {
+            $this->enrichRecordsWithLinkedComments($records);
+        }
+    }
+
+    private function enrichRecordsWithLinkedComments(array &$records): void
     {
         $recordIds = array_filter(array_map(fn($r) => $r['id'] ?? 0, $records));
         if (empty($recordIds)) {
@@ -341,6 +357,65 @@ class RecordRepository implements RecordRepositoryInterface
         foreach ($records as &$record) {
             $rid = $record['id'] ?? 0;
             $record['comment'] = $comments[$rid] ?? null;
+        }
+        unset($record);
+    }
+
+    private function enrichRecordsWithRRsetComments(array &$records): void
+    {
+        $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
+
+        // Collect unique domain_id + name + type combinations
+        $keys = [];
+        foreach ($records as $record) {
+            $key = ($record['domain_id'] ?? '') . '|' . ($record['name'] ?? '') . '|' . ($record['type'] ?? '');
+            $keys[$key] = true;
+        }
+
+        if (empty($keys)) {
+            return;
+        }
+
+        // Build query for RRset-level comments
+        $conditions = [];
+        $params = [];
+        $i = 0;
+        foreach (array_keys($keys) as $key) {
+            [$domainId, $name, $type] = explode('|', $key);
+            if ($domainId === '' || $name === '' || $type === '') {
+                continue;
+            }
+            $conditions[] = "(domain_id = :did{$i} AND name = :name{$i} AND type = :type{$i})";
+            $params[":did{$i}"] = (int)$domainId;
+            $params[":name{$i}"] = $name;
+            $params[":type{$i}"] = $type;
+            $i++;
+        }
+
+        if (empty($conditions)) {
+            foreach ($records as &$record) {
+                $record['comment'] = null;
+            }
+            unset($record);
+            return;
+        }
+
+        $stmt = $this->db->prepare(
+            "SELECT domain_id, name, type, comment
+             FROM $comments_table
+             WHERE " . implode(' OR ', $conditions)
+        );
+        $stmt->execute($params);
+
+        $comments = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $key = $row['domain_id'] . '|' . $row['name'] . '|' . $row['type'];
+            $comments[$key] = $row['comment'];
+        }
+
+        foreach ($records as &$record) {
+            $key = ($record['domain_id'] ?? '') . '|' . ($record['name'] ?? '') . '|' . ($record['type'] ?? '');
+            $record['comment'] = $comments[$key] ?? null;
         }
         unset($record);
     }

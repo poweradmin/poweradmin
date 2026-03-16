@@ -653,7 +653,7 @@ class ApiZoneRepository
             return 0;
         }
         if ($zoneIds === null && $userId === null) {
-            $query = "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL";
+            $query = "SELECT COUNT(*) FROM zones z WHERE z.zone_name IS NOT NULL";
             $params = [];
         } elseif ($zoneIds === null) {
             $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE z.zone_name IS NOT NULL";
