@@ -54,7 +54,7 @@ class RecordCommentService
      * @param string $name Record name
      * @param string $type Record type
      * @param string $comment Comment text
-     * @param int $recordId Record ID for per-record comment linking
+     * @param int|string $recordId Record ID for per-record comment linking
      * @param string|null $account Optional account/username
      * @return RecordComment|null
      */
@@ -180,7 +180,7 @@ class RecordCommentService
      * @param string $name Record name
      * @param string $type Record type
      * @param string $comment Comment text
-     * @param int $recordId Record ID for per-record comment linking
+     * @param int|string $recordId Record ID for per-record comment linking
      * @param string|null $account Optional account/username
      * @return RecordComment|null
      */

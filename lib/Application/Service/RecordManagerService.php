@@ -104,7 +104,7 @@ class RecordManagerService
      * This avoids the need to look up the record ID after creation.
      * Uses the record_comment_links table for per-record comment linking.
      */
-    private function handleCommentsWithId(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin, string $zone_name, int $recordId): void
+    private function handleCommentsWithId(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin, string $zone_name, int|string $recordId): void
     {
         if ($comment === '') {
             return;

@@ -283,7 +283,7 @@ class DnsRecord
      * @return int|null The new record ID, or null on failure
      * @throws Exception
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): ?int
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): int|string|null
     {
         return $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
     }

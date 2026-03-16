@@ -508,7 +508,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return null;
         }
 
-        $stmt = $this->db->prepare("SELECT id FROM zones WHERE zone_name = :name");
+        $stmt = $this->db->prepare("SELECT COALESCE(domain_id, id) FROM zones WHERE zone_name = :name");
         $stmt->execute([':name' => $zoneName]);
         $id = $stmt->fetchColumn();
 

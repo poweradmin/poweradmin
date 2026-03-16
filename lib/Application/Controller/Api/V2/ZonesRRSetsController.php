@@ -779,9 +779,9 @@ class ZonesRRSetsController extends PublicApiController
      * @param int $ttl TTL value
      * @param int $priority Priority value
      * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
-     * @return int|null Record ID if successful, null on failure
+     * @return int|string|null Record ID if successful (int for SQL, encoded string for API mode), null on failure
      */
-    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): ?int
+    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): int|string|null
     {
         try {
             return $this->backendProvider->createRecordAtomic($zoneId, $name, $type, $content, $ttl, $priority, $disabled);
