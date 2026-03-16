@@ -234,6 +234,17 @@ class DatabaseStructureHelper
                         'table' => 'users',
                         'flags' => 'not_null'
                     ),
+                    'perm_templ_source' => array
+                    (
+                        'notnull' => 1,
+                        'length' => 20,
+                        'fixed' => 0,
+                        'default' => 'admin',
+                        'type' => 'text',
+                        'name' => 'perm_templ_source',
+                        'table' => 'users',
+                        'flags' => 'not_null'
+                    ),
                     'active' => array
                     (
                         'notnull' => 1,

@@ -44,6 +44,7 @@ CREATE TABLE `users` (
                          `email` varchar(255) NOT NULL,
                          `description` varchar(1024) NOT NULL,
                          `perm_templ` int(11) NOT NULL,
+                         `perm_templ_source` varchar(20) NOT NULL DEFAULT 'admin',
                          `active` int(1) NOT NULL,
                          `use_ldap` int(1) NOT NULL,
                          `auth_method` varchar(20) NOT NULL DEFAULT 'sql',

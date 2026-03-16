@@ -26,3 +26,10 @@ WHERE z.zone_name IS NULL
   );
 
 CREATE UNIQUE INDEX `idx_zones_zone_name` ON `zones` (`zone_name`);
+
+-- Add perm_templ_source column to track how permission template was assigned
+-- Values: 'admin' (manually by admin), 'sso' (via SSO group mapping or default)
+ALTER TABLE `users` ADD COLUMN `perm_templ_source` varchar(20) NOT NULL DEFAULT 'admin';
+
+-- Set existing SSO users to 'sso' source based on auth_method
+UPDATE `users` SET `perm_templ_source` = 'sso' WHERE `auth_method` IN ('oidc', 'saml');

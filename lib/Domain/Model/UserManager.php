@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -453,7 +453,7 @@ class UserManager
             $query = "UPDATE users SET username = :username, fullname = :fullname, email = :email";
 
             if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
-                $query .= ", perm_templ = :perm_templ";
+                $query .= ", perm_templ = :perm_templ, perm_templ_source = 'admin'";
             }
 
             $query .= ", description = :description, active = :active, use_ldap = :use_ldap, auth_method = :auth_method";
@@ -926,7 +926,7 @@ class UserManager
 
             // If the user is allowed to change the permission template, set it.
             if ($perm_templ_perm_edit == "1") {
-                $query .= ", perm_templ = :templ_id";
+                $query .= ", perm_templ = :templ_id, perm_templ_source = 'admin'";
             }
 
             // If the user is allowed to change the use_ldap flag, set it.

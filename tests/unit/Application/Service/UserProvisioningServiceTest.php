@@ -231,6 +231,144 @@ class UserProvisioningServiceTest extends TestCase
     }
 
     /**
+     * Test determinePermissionTemplate with useDefaultFallback=false returns null when no groups match
+     */
+    public function testDeterminePermissionTemplateWithoutFallbackReturnsNull(): void
+    {
+        $db = $this->createMock(\PDO::class);
+        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $logger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
+
+        $configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'permission_template_mapping', [], []],
+                ['oidc', 'default_permission_template', '', 'Guest'],
+            ]);
+
+        $reflection = new ReflectionClass(UserProvisioningService::class);
+        $service = $reflection->newInstanceWithoutConstructor();
+
+        // Set private properties
+        $dbProp = $reflection->getProperty('db');
+        $dbProp->setAccessible(true);
+        $dbProp->setValue($service, $db);
+
+        $configProp = $reflection->getProperty('configManager');
+        $configProp->setAccessible(true);
+        $configProp->setValue($service, $configManager);
+
+        $loggerProp = $reflection->getProperty('logger');
+        $loggerProp->setAccessible(true);
+        $loggerProp->setValue($service, $logger);
+
+        $classNameProp = $reflection->getProperty('className');
+        $classNameProp->setAccessible(true);
+        $classNameProp->setValue($service, 'UserProvisioningService');
+
+        $method = $reflection->getMethod('determinePermissionTemplate');
+        $method->setAccessible(true);
+
+        // With useDefaultFallback=false, should return null even though default template is configured
+        $result = $method->invoke($service, [], 'oidc', false);
+        $this->assertNull($result, 'Should return null when useDefaultFallback is false and no groups match');
+    }
+
+    /**
+     * Test determinePermissionTemplate with useDefaultFallback=true falls back to default
+     */
+    public function testDeterminePermissionTemplateWithFallbackUsesDefault(): void
+    {
+        $stmt = $this->createMock(\PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchColumn')->willReturn(5); // Template ID
+
+        $db = $this->createMock(\PDO::class);
+        $db->method('prepare')->willReturn($stmt);
+
+        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'permission_template_mapping', [], []],
+                ['oidc', 'default_permission_template', '', 'Guest'],
+            ]);
+
+        $logger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
+
+        $reflection = new ReflectionClass(UserProvisioningService::class);
+        $service = $reflection->newInstanceWithoutConstructor();
+
+        $dbProp = $reflection->getProperty('db');
+        $dbProp->setAccessible(true);
+        $dbProp->setValue($service, $db);
+
+        $configProp = $reflection->getProperty('configManager');
+        $configProp->setAccessible(true);
+        $configProp->setValue($service, $configManager);
+
+        $loggerProp = $reflection->getProperty('logger');
+        $loggerProp->setAccessible(true);
+        $loggerProp->setValue($service, $logger);
+
+        $classNameProp = $reflection->getProperty('className');
+        $classNameProp->setAccessible(true);
+        $classNameProp->setValue($service, 'UserProvisioningService');
+
+        $method = $reflection->getMethod('determinePermissionTemplate');
+        $method->setAccessible(true);
+
+        // With useDefaultFallback=true (default), should return the default template ID
+        $result = $method->invoke($service, [], 'oidc', true);
+        $this->assertEquals(5, $result, 'Should return default template ID when useDefaultFallback is true');
+    }
+
+    /**
+     * Test determinePermissionTemplate returns mapped template when group matches
+     */
+    public function testDeterminePermissionTemplateWithMatchingGroup(): void
+    {
+        $stmt = $this->createMock(\PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchColumn')->willReturn(1); // Administrator template ID
+
+        $db = $this->createMock(\PDO::class);
+        $db->method('prepare')->willReturn($stmt);
+
+        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'permission_template_mapping', [], ['admins' => 'Administrator']],
+            ]);
+
+        $logger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
+
+        $reflection = new ReflectionClass(UserProvisioningService::class);
+        $service = $reflection->newInstanceWithoutConstructor();
+
+        $dbProp = $reflection->getProperty('db');
+        $dbProp->setAccessible(true);
+        $dbProp->setValue($service, $db);
+
+        $configProp = $reflection->getProperty('configManager');
+        $configProp->setAccessible(true);
+        $configProp->setValue($service, $configManager);
+
+        $loggerProp = $reflection->getProperty('logger');
+        $loggerProp->setAccessible(true);
+        $loggerProp->setValue($service, $logger);
+
+        $classNameProp = $reflection->getProperty('className');
+        $classNameProp->setAccessible(true);
+        $classNameProp->setValue($service, 'UserProvisioningService');
+
+        $method = $reflection->getMethod('determinePermissionTemplate');
+        $method->setAccessible(true);
+
+        // Even with useDefaultFallback=false, should return template when group matches
+        $result = $method->invoke($service, ['admins', 'users'], 'oidc', false);
+        $this->assertEquals(1, $result, 'Should return mapped template ID when user group matches mapping');
+    }
+
+    /**
      * Test the new determineAuthMethodFromUserInfo method
      */
     public function testDetermineAuthMethodFromUserInfo(): void

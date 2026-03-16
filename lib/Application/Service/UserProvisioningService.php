@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -225,8 +225,8 @@ class UserProvisioningService extends LoggingService
 
             // Create user
             $stmt = $this->db->prepare("
-                INSERT INTO users (username, password, fullname, email, description, active, perm_templ, use_ldap, auth_method)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO users (username, password, fullname, email, description, active, perm_templ, perm_templ_source, use_ldap, auth_method)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
             $success = $stmt->execute([
@@ -237,6 +237,7 @@ class UserProvisioningService extends LoggingService
                 'Created via ' . strtoupper($authMethod) . ' from ' . $providerId,
                 1, // Active
                 $permissionTemplateId,
+                'sso', // Template assigned via SSO provisioning
                 0,  // use_ldap = 0 for external auth users
                 $authMethod  // auth_method (oidc, saml, etc.)
             ]);
@@ -319,11 +320,31 @@ class UserProvisioningService extends LoggingService
             if ($newPermissionTemplateId) {
                 $updateFields[] = 'perm_templ = ?';
                 $updateValues[] = $newPermissionTemplateId;
+                $updateFields[] = 'perm_templ_source = ?';
+                $updateValues[] = 'sso';
             } else {
-                $this->logWarning('No permission template mapping found for existing user groups - keeping current permissions unchanged', [
-                    'groups' => $userInfo->getGroups(),
-                    'userId' => $userId
-                ]);
+                // No group mapping matched - check if we should revoke SSO-assigned template
+                $currentSource = $this->getPermTemplSource($userId);
+                if ($currentSource === 'sso') {
+                    // User previously got template from SSO mapping but no longer matches any group
+                    // Fall back to default permission template
+                    $defaultTemplateId = $this->getDefaultPermissionTemplateId($authMethod);
+                    if ($defaultTemplateId) {
+                        $updateFields[] = 'perm_templ = ?';
+                        $updateValues[] = $defaultTemplateId;
+                        $this->logInfo('Revoked SSO group-mapped template for user {userId}, falling back to default template', [
+                            'userId' => $userId
+                        ]);
+                    } else {
+                        $this->logWarning('SSO group-mapped template should be revoked for user {userId} but no default template configured', [
+                            'userId' => $userId
+                        ]);
+                    }
+                } else {
+                    $this->logInfo('No matching group mapping for user {userId}, keeping admin-assigned permissions unchanged', [
+                        'userId' => $userId
+                    ]);
+                }
             }
 
             if (!empty($updateFields)) {
@@ -547,6 +568,31 @@ class UserProvisioningService extends LoggingService
         }
 
         return $fallbackId;
+    }
+
+    private function getPermTemplSource(int $userId): ?string
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT perm_templ_source FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $result = $stmt->fetchColumn();
+            return $result ?: null;
+        } catch (\Exception $e) {
+            $this->logError('Error getting perm_templ_source for user {userId}: {error}', [
+                'userId' => $userId,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    private function getDefaultPermissionTemplateId(string $authMethod): ?int
+    {
+        $defaultTemplateName = $this->configManager->get($authMethod, 'default_permission_template', '');
+        if (empty($defaultTemplateName)) {
+            return null;
+        }
+        return $this->findPermissionTemplateByName($defaultTemplateName);
     }
 
     /**

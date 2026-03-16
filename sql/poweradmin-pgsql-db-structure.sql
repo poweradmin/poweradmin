@@ -183,6 +183,7 @@ CREATE TABLE "public"."users" (
                                   "email" character varying(255),
                                   "description" character varying(1024),
                                   "perm_templ" integer,
+                                  "perm_templ_source" character varying(20) NOT NULL DEFAULT 'admin',
                                   "active" integer,
                                   "use_ldap" integer,
                                   "auth_method" character varying(20) DEFAULT 'sql' NOT NULL,
