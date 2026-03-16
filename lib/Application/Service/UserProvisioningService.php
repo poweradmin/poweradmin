@@ -328,21 +328,15 @@ class UserProvisioningService extends LoggingService
                 if ($currentSource === 'sso') {
                     // User previously got template from SSO mapping but no longer matches any group
                     // Fall back to default permission template
-                    $fallbackTemplateId = $this->getDefaultPermissionTemplateId($authMethod);
-                    if (!$fallbackTemplateId) {
-                        $fallbackTemplateId = $this->findFirstAvailablePermissionTemplate();
-                        $this->logWarning('No default template configured, using first available template for user {userId}', [
-                            'userId' => $userId
-                        ]);
-                    }
-                    if ($fallbackTemplateId) {
+                    $defaultTemplateId = $this->getDefaultPermissionTemplateId($authMethod);
+                    if ($defaultTemplateId) {
                         $updateFields[] = 'perm_templ = ?';
-                        $updateValues[] = $fallbackTemplateId;
+                        $updateValues[] = $defaultTemplateId;
                         $this->logInfo('Revoked SSO group-mapped template for user {userId}, falling back to default template', [
                             'userId' => $userId
                         ]);
                     } else {
-                        $this->logError('Cannot revoke SSO template for user {userId}: no fallback template available', [
+                        $this->logWarning('SSO group-mapped template should be revoked for user {userId} but no default template configured - keeping current template', [
                             'userId' => $userId
                         ]);
                     }

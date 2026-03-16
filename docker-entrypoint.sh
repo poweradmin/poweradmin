@@ -598,31 +598,61 @@ generate_config() {
         custom_tlds="['$(echo "${PA_DNS_CUSTOM_TLDS}" | sed "s/,/','/g")']"
     fi
 
-    # Process OIDC permission template mapping - convert "group1=Template1,group2=Template2" to PHP array
-    # Uses = as delimiter (not :) because group names from IdPs often contain colons (SAML URNs, Keycloak paths)
-    # Single quotes in names are escaped to prevent PHP syntax errors
-    # Whitespace around commas and delimiters is trimmed
+    # Helper: convert key=value or key:value mapping to PHP associative array
+    # Supports both = and : as delimiters (= preferred, : for backward compatibility)
+    # Single quotes are escaped, whitespace around commas/delimiters is trimmed
+    parse_mapping() {
+        local input="$1"
+        echo "$input" | sed "s/'/\\\\'/g" | sed 's/ *, */,/g' | sed 's/ *= */=/g' | sed 's/ *: */:/g' | \
+            awk -F',' '{
+                for (i=1; i<=NF; i++) {
+                    # Try = first, then :
+                    if (index($i, "=") > 0) {
+                        split($i, a, "=")
+                        key = a[1]
+                        val = a[2]
+                    } else {
+                        # Split on last : for backward compatibility with group:Template format
+                        idx = 0
+                        for (j=1; j<=length($i); j++) {
+                            if (substr($i, j, 1) == ":") idx = j
+                        }
+                        if (idx > 0) {
+                            key = substr($i, 1, idx-1)
+                            val = substr($i, idx+1)
+                        } else {
+                            key = $i
+                            val = ""
+                        }
+                    }
+                    if (i > 1) printf ","
+                    printf "'\''%s'\'' => '\''%s'\''", key, val
+                }
+            }'
+    }
+
+    # Process OIDC permission template mapping
     local oidc_permission_template_mapping="[]"
     if [ -n "${PA_OIDC_PERMISSION_TEMPLATE_MAPPING}" ]; then
-        oidc_permission_template_mapping="[$(echo "${PA_OIDC_PERMISSION_TEMPLATE_MAPPING}" | sed "s/'/\\\\'/g" | sed 's/ *, */,/g' | sed 's/ *= */=/g' | sed "s/\([^=,]*\)=\([^,]*\)/'\1' => '\2'/g")]"
+        oidc_permission_template_mapping="[$(parse_mapping "${PA_OIDC_PERMISSION_TEMPLATE_MAPPING}")]"
     fi
 
-    # Process OIDC group mapping - convert "group1=PaGroup1,group2=PaGroup2" to PHP array
+    # Process OIDC group mapping
     local oidc_group_mapping="[]"
     if [ -n "${PA_OIDC_GROUP_MAPPING}" ]; then
-        oidc_group_mapping="[$(echo "${PA_OIDC_GROUP_MAPPING}" | sed "s/'/\\\\'/g" | sed 's/ *, */,/g' | sed 's/ *= */=/g' | sed "s/\([^=,]*\)=\([^,]*\)/'\1' => '\2'/g")]"
+        oidc_group_mapping="[$(parse_mapping "${PA_OIDC_GROUP_MAPPING}")]"
     fi
 
-    # Process SAML permission template mapping - convert "group1=Template1,group2=Template2" to PHP array
+    # Process SAML permission template mapping
     local saml_permission_template_mapping="[]"
     if [ -n "${PA_SAML_PERMISSION_TEMPLATE_MAPPING}" ]; then
-        saml_permission_template_mapping="[$(echo "${PA_SAML_PERMISSION_TEMPLATE_MAPPING}" | sed "s/'/\\\\'/g" | sed 's/ *, */,/g' | sed 's/ *= */=/g' | sed "s/\([^=,]*\)=\([^,]*\)/'\1' => '\2'/g")]"
+        saml_permission_template_mapping="[$(parse_mapping "${PA_SAML_PERMISSION_TEMPLATE_MAPPING}")]"
     fi
 
-    # Process SAML group mapping - convert "group1=PaGroup1,group2=PaGroup2" to PHP array
+    # Process SAML group mapping
     local saml_group_mapping="[]"
     if [ -n "${PA_SAML_GROUP_MAPPING}" ]; then
-        saml_group_mapping="[$(echo "${PA_SAML_GROUP_MAPPING}" | sed "s/'/\\\\'/g" | sed 's/ *, */,/g' | sed 's/ *= */=/g' | sed "s/\([^=,]*\)=\([^,]*\)/'\1' => '\2'/g")]"
+        saml_group_mapping="[$(parse_mapping "${PA_SAML_GROUP_MAPPING}")]"
     fi
 
     # Ensure parent directory exists for custom config paths
