@@ -389,10 +389,10 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             }
 
             if (!$found) {
-                $records[] = [
-                    'content' => $this->formatRecordContent($type, $content, $prio),
-                    'disabled' => (bool)$disabled,
-                ];
+                $this->logger->error("editRecord: encoded record content not found in RRset for '{name} {type}'", [
+                    'name' => $record['name'], 'type' => $type,
+                ]);
+                return false;
             }
 
             $rrsets[] = [
@@ -438,6 +438,13 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                 continue;
             }
             $remainingRecords[] = $r;
+        }
+
+        if (!$found) {
+            $this->logger->error("deleteRecord: encoded record content not found in RRset for '{name} {type}'", [
+                'name' => $record['name'], 'type' => $record['type'],
+            ]);
+            return false;
         }
 
         if (empty($remainingRecords)) {

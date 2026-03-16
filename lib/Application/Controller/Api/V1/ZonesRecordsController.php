@@ -182,7 +182,7 @@ class ZonesRecordsController extends PublicApiController
             // Format record data
             $formattedRecords = array_map(function ($record) {
                 return [
-                    'id' => (int)$record['id'],
+                    'id' => ctype_digit((string)$record['id']) ? (int)$record['id'] : $record['id'],
                     'name' => $record['name'],
                     'type' => $record['type'],
                     'content' => $record['content'],
@@ -575,9 +575,12 @@ class ZonesRecordsController extends PublicApiController
         try {
             $userId = $this->getAuthenticatedUserId();
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
-            $recordId = (int)($this->pathParameters['record_id'] ?? 0);
+            $recordId = $this->pathParameters['record_id'] ?? '';
+            if (ctype_digit((string)$recordId)) {
+                $recordId = (int)$recordId;
+            }
 
-            if ($zoneId <= 0 || $recordId <= 0) {
+            if ($zoneId <= 0 || empty($recordId)) {
                 return $this->returnApiError('Valid zone ID and record ID are required', 400);
             }
 
@@ -696,9 +699,12 @@ class ZonesRecordsController extends PublicApiController
         try {
             $userId = $this->getAuthenticatedUserId();
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
-            $recordId = (int)($this->pathParameters['record_id'] ?? 0);
+            $recordId = $this->pathParameters['record_id'] ?? '';
+            if (ctype_digit((string)$recordId)) {
+                $recordId = (int)$recordId;
+            }
 
-            if ($zoneId <= 0 || $recordId <= 0) {
+            if ($zoneId <= 0 || empty($recordId)) {
                 return $this->returnApiError('Valid zone ID and record ID are required', 400);
             }
 
