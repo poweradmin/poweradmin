@@ -598,6 +598,31 @@ generate_config() {
         custom_tlds="['$(echo "${PA_DNS_CUSTOM_TLDS}" | sed "s/,/','/g")']"
     fi
 
+    # Process OIDC permission template mapping - convert "group1:Template1,group2:Template2" to PHP array
+    # Single quotes in names are escaped to prevent PHP syntax errors
+    local oidc_permission_template_mapping="[]"
+    if [ -n "${PA_OIDC_PERMISSION_TEMPLATE_MAPPING}" ]; then
+        oidc_permission_template_mapping="[$(echo "${PA_OIDC_PERMISSION_TEMPLATE_MAPPING}" | sed "s/'/\\\\'/g" | sed "s/\([^:,]*\):\([^,]*\)/'\1' => '\2'/g")]"
+    fi
+
+    # Process OIDC group mapping - convert "group1:PaGroup1,group2:PaGroup2" to PHP array
+    local oidc_group_mapping="[]"
+    if [ -n "${PA_OIDC_GROUP_MAPPING}" ]; then
+        oidc_group_mapping="[$(echo "${PA_OIDC_GROUP_MAPPING}" | sed "s/'/\\\\'/g" | sed "s/\([^:,]*\):\([^,]*\)/'\1' => '\2'/g")]"
+    fi
+
+    # Process SAML permission template mapping - convert "group1:Template1,group2:Template2" to PHP array
+    local saml_permission_template_mapping="[]"
+    if [ -n "${PA_SAML_PERMISSION_TEMPLATE_MAPPING}" ]; then
+        saml_permission_template_mapping="[$(echo "${PA_SAML_PERMISSION_TEMPLATE_MAPPING}" | sed "s/'/\\\\'/g" | sed "s/\([^:,]*\):\([^,]*\)/'\1' => '\2'/g")]"
+    fi
+
+    # Process SAML group mapping - convert "group1:PaGroup1,group2:PaGroup2" to PHP array
+    local saml_group_mapping="[]"
+    if [ -n "${PA_SAML_GROUP_MAPPING}" ]; then
+        saml_group_mapping="[$(echo "${PA_SAML_GROUP_MAPPING}" | sed "s/'/\\\\'/g" | sed "s/\([^:,]*\):\([^,]*\)/'\1' => '\2'/g")]"
+    fi
+
     # Ensure parent directory exists for custom config paths
     mkdir -p "$(dirname "${CONFIG_FILE}")"
 
@@ -803,6 +828,8 @@ return [
         'link_by_email' => ${oidc_link_by_email},
         'sync_user_info' => ${oidc_sync_user_info},
         'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-}',
+        'permission_template_mapping' => ${oidc_permission_template_mapping},
+        'group_mapping' => ${oidc_group_mapping},
         'providers' => [
 EOF
 
@@ -890,6 +917,8 @@ EOF
         'link_by_email' => ${saml_link_by_email},
         'sync_user_info' => ${saml_sync_user_info},
         'default_permission_template' => '${PA_SAML_DEFAULT_PERMISSION_TEMPLATE:-}',
+        'permission_template_mapping' => ${saml_permission_template_mapping},
+        'group_mapping' => ${saml_group_mapping},
 
         // Service Provider (SP) Settings - Your PowerAdmin instance
         'sp' => [
