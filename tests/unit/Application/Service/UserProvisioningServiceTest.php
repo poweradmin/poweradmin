@@ -231,44 +231,53 @@ class UserProvisioningServiceTest extends TestCase
     }
 
     /**
+     * Create a UserProvisioningService instance with mocked dependencies for testing
+     * determinePermissionTemplate and related methods.
+     */
+    private function createServiceWithMocks(
+        ?\PDO $db = null,
+        ?\Poweradmin\Infrastructure\Configuration\ConfigurationManager $configManager = null
+    ): UserProvisioningService {
+        $reflection = new ReflectionClass(UserProvisioningService::class);
+        $service = $reflection->newInstanceWithoutConstructor();
+
+        $dbProp = $reflection->getProperty('db');
+        $dbProp->setAccessible(true);
+        $dbProp->setValue($service, $db ?? $this->createMock(\PDO::class));
+
+        $configProp = $reflection->getProperty('configManager');
+        $configProp->setAccessible(true);
+        $configProp->setValue($service, $configManager ?? $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class));
+
+        $parentReflection = $reflection->getParentClass();
+        $loggerProp = $parentReflection->getProperty('logger');
+        $loggerProp->setAccessible(true);
+        $loggerProp->setValue($service, $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class));
+
+        $classNameProp = $parentReflection->getProperty('className');
+        $classNameProp->setAccessible(true);
+        $classNameProp->setValue($service, 'UserProvisioningService');
+
+        return $service;
+    }
+
+    /**
      * Test determinePermissionTemplate with useDefaultFallback=false returns null when no groups match
      */
     public function testDeterminePermissionTemplateWithoutFallbackReturnsNull(): void
     {
-        $db = $this->createMock(\PDO::class);
         $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
-        $logger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
-
         $configManager->method('get')
             ->willReturnMap([
                 ['oidc', 'permission_template_mapping', [], []],
                 ['oidc', 'default_permission_template', '', 'Guest'],
             ]);
 
-        $reflection = new ReflectionClass(UserProvisioningService::class);
-        $service = $reflection->newInstanceWithoutConstructor();
+        $service = $this->createServiceWithMocks(null, $configManager);
 
-        // Set private properties
-        $dbProp = $reflection->getProperty('db');
-        $dbProp->setAccessible(true);
-        $dbProp->setValue($service, $db);
-
-        $configProp = $reflection->getProperty('configManager');
-        $configProp->setAccessible(true);
-        $configProp->setValue($service, $configManager);
-
-        $loggerProp = $reflection->getProperty('logger');
-        $loggerProp->setAccessible(true);
-        $loggerProp->setValue($service, $logger);
-
-        $classNameProp = $reflection->getProperty('className');
-        $classNameProp->setAccessible(true);
-        $classNameProp->setValue($service, 'UserProvisioningService');
-
-        $method = $reflection->getMethod('determinePermissionTemplate');
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
         $method->setAccessible(true);
 
-        // With useDefaultFallback=false, should return null even though default template is configured
         $result = $method->invoke($service, [], 'oidc', false);
         $this->assertNull($result, 'Should return null when useDefaultFallback is false and no groups match');
     }
@@ -280,7 +289,7 @@ class UserProvisioningServiceTest extends TestCase
     {
         $stmt = $this->createMock(\PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(5); // Template ID
+        $stmt->method('fetchColumn')->willReturn(5);
 
         $db = $this->createMock(\PDO::class);
         $db->method('prepare')->willReturn($stmt);
@@ -292,31 +301,11 @@ class UserProvisioningServiceTest extends TestCase
                 ['oidc', 'default_permission_template', '', 'Guest'],
             ]);
 
-        $logger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
+        $service = $this->createServiceWithMocks($db, $configManager);
 
-        $reflection = new ReflectionClass(UserProvisioningService::class);
-        $service = $reflection->newInstanceWithoutConstructor();
-
-        $dbProp = $reflection->getProperty('db');
-        $dbProp->setAccessible(true);
-        $dbProp->setValue($service, $db);
-
-        $configProp = $reflection->getProperty('configManager');
-        $configProp->setAccessible(true);
-        $configProp->setValue($service, $configManager);
-
-        $loggerProp = $reflection->getProperty('logger');
-        $loggerProp->setAccessible(true);
-        $loggerProp->setValue($service, $logger);
-
-        $classNameProp = $reflection->getProperty('className');
-        $classNameProp->setAccessible(true);
-        $classNameProp->setValue($service, 'UserProvisioningService');
-
-        $method = $reflection->getMethod('determinePermissionTemplate');
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
         $method->setAccessible(true);
 
-        // With useDefaultFallback=true (default), should return the default template ID
         $result = $method->invoke($service, [], 'oidc', true);
         $this->assertEquals(5, $result, 'Should return default template ID when useDefaultFallback is true');
     }
@@ -328,7 +317,7 @@ class UserProvisioningServiceTest extends TestCase
     {
         $stmt = $this->createMock(\PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(1); // Administrator template ID
+        $stmt->method('fetchColumn')->willReturn(1);
 
         $db = $this->createMock(\PDO::class);
         $db->method('prepare')->willReturn($stmt);
@@ -339,31 +328,11 @@ class UserProvisioningServiceTest extends TestCase
                 ['oidc', 'permission_template_mapping', [], ['admins' => 'Administrator']],
             ]);
 
-        $logger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
+        $service = $this->createServiceWithMocks($db, $configManager);
 
-        $reflection = new ReflectionClass(UserProvisioningService::class);
-        $service = $reflection->newInstanceWithoutConstructor();
-
-        $dbProp = $reflection->getProperty('db');
-        $dbProp->setAccessible(true);
-        $dbProp->setValue($service, $db);
-
-        $configProp = $reflection->getProperty('configManager');
-        $configProp->setAccessible(true);
-        $configProp->setValue($service, $configManager);
-
-        $loggerProp = $reflection->getProperty('logger');
-        $loggerProp->setAccessible(true);
-        $loggerProp->setValue($service, $logger);
-
-        $classNameProp = $reflection->getProperty('className');
-        $classNameProp->setAccessible(true);
-        $classNameProp->setValue($service, 'UserProvisioningService');
-
-        $method = $reflection->getMethod('determinePermissionTemplate');
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
         $method->setAccessible(true);
 
-        // Even with useDefaultFallback=false, should return template when group matches
         $result = $method->invoke($service, ['admins', 'users'], 'oidc', false);
         $this->assertEquals(1, $result, 'Should return mapped template ID when user group matches mapping');
     }
