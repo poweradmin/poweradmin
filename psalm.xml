@@ -45,12 +45,6 @@
                 <directory name="tests" />
             </errorLevel>
         </InvalidOperand>
-        <InvalidAttribute>
-            <errorLevel type="suppress">
-                <directory name="lib/Application/Controller/Api" />
-                <directory name="tests" />
-            </errorLevel>
-        </InvalidAttribute>
         <InvalidArrayOffset>
             <errorLevel type="suppress">
                 <file name="lib/Domain/Service/DnsValidation/IPAddressValidator.php" />

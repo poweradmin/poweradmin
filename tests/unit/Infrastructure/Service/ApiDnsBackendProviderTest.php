@@ -665,7 +665,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testEditRecordAppendsWhenOldRecordNotFoundInApi(): void
+    public function testEditRecordFailsWhenOldRecordNotFoundInApi(): void
     {
         // The encoded ID references a record, but API RRset doesn't contain it (stale state)
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
@@ -686,26 +686,13 @@ class ApiDnsBackendProviderTest extends TestCase
                 ],
             ]);
 
-        // Should append the new record since old one wasn't found
-        $this->mockClient->expects($this->once())
-            ->method('patchZoneRRsets')
-            ->with('example.com.', [
-                [
-                    'name' => 'www.example.com.',
-                    'type' => 'A',
-                    'ttl' => 7200,
-                    'changetype' => 'REPLACE',
-                    'records' => [
-                        ['content' => '10.0.0.99', 'disabled' => false],
-                        ['content' => '10.0.0.1', 'disabled' => false],
-                    ],
-                ],
-            ])
-            ->willReturn(true);
+        // Should NOT call patchZoneRRsets since the old record wasn't found
+        $this->mockClient->expects($this->never())
+            ->method('patchZoneRRsets');
 
         $result = $this->provider->editRecord($encodedId, 'www.example.com', 'A', '10.0.0.1', 7200, 0, 0);
 
-        $this->assertTrue($result);
+        $this->assertFalse($result, 'editRecord should return false when encoded record content is not found in RRset');
     }
 
     public function testEditRecordWithDisabledFlag(): void

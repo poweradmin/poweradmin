@@ -390,7 +390,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
             if (!$found) {
                 $this->logger->error("editRecord: encoded record content not found in RRset for '{name} {type}'", [
-                    'name' => $record['name'], 'type' => $type,
+                    'name' => $name, 'type' => $type,
                 ]);
                 return false;
             }
