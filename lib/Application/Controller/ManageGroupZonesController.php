@@ -131,7 +131,7 @@ class ManageGroupZonesController extends BaseController
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
-            $domainRepository = new DomainRepository($this->db, $this->config);
+            $domainRepository = new DomainRepository($this->db, $this->config, $this->createDnsBackendProvider());
 
             $results = $this->zoneGroupService->bulkAddZones($groupId, $domainIds);
 
@@ -218,7 +218,7 @@ class ManageGroupZonesController extends BaseController
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
-            $domainRepository = new DomainRepository($this->db, $this->config);
+            $domainRepository = new DomainRepository($this->db, $this->config, $this->createDnsBackendProvider());
 
             $results = $this->zoneGroupService->bulkRemoveZones($groupId, $domainIds);
 
@@ -298,7 +298,7 @@ class ManageGroupZonesController extends BaseController
                 return;
             }
 
-            $domainRepository = new DomainRepository($this->db, $this->config);
+            $domainRepository = new DomainRepository($this->db, $this->config, $this->createDnsBackendProvider());
 
             // Get zones owned by this group
             $zoneGroups = $this->zoneGroupService->listGroupZones($groupId);

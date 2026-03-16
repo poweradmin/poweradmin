@@ -217,7 +217,7 @@ class EditGroupController extends BaseController
             }
 
             // Get zone details
-            $domainRepository = new DomainRepository($this->db, $this->config);
+            $domainRepository = new DomainRepository($this->db, $this->config, $this->createDnsBackendProvider());
 
             $zoneDetails = [];
             foreach ($zones as $zoneGroup) {

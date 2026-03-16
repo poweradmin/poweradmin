@@ -161,7 +161,7 @@ class DeleteGroupController extends BaseController
             $impact = $this->zoneGroupService->getGroupDeletionImpact($groupId, 20);
 
             // Get zone details for display
-            $domainRepository = new DomainRepository($this->db, $this->config);
+            $domainRepository = new DomainRepository($this->db, $this->config, $this->createDnsBackendProvider());
 
             $zoneDetails = [];
             foreach ($impact['zones'] as $zoneGroup) {

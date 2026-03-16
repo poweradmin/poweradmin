@@ -48,8 +48,16 @@
         <InvalidAttribute>
             <errorLevel type="suppress">
                 <directory name="lib/Application/Controller/Api" />
+                <directory name="tests" />
             </errorLevel>
         </InvalidAttribute>
+        <InvalidArrayOffset>
+            <errorLevel type="suppress">
+                <file name="lib/Domain/Service/DnsValidation/IPAddressValidator.php" />
+                <file name="lib/Domain/Service/ReverseRecordCreator.php" />
+                <file name="lib/Module/ZoneImportExport/Service/BindZoneFileParser.php" />
+            </errorLevel>
+        </InvalidArrayOffset>
         <MissingClosureParamType errorLevel="info" />
         <UndefinedInterfaceMethod errorLevel="info" />
         <InvalidArgument errorLevel="info" />
