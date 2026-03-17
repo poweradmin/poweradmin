@@ -536,7 +536,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         if ($userId !== null) {
             $query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
-            $query .= " WHERE $domains_table.id = :id AND zones.owner = :userId";
+            $query .= " WHERE $domains_table.id = :id AND (zones.owner = :userId OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
+            ))";
         } else {
             $query .= " WHERE $domains_table.id = :id";
         }
@@ -546,6 +550,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         if ($userId !== null) {
             $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
         }
 
         $stmt->execute();

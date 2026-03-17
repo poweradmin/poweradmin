@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,20 +26,18 @@ use PDO;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\TableNameService;
 
 class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 {
     private PDO $db;
-    private ?TableNameService $tableNameService = null;
+    private ?TableNameService $tableNameService;
 
     public function __construct(PDO $db, ?ConfigurationInterface $config = null)
     {
         $this->db = $db;
-        if ($config) {
-            $this->tableNameService = new TableNameService($config);
-        }
+        $this->tableNameService = $config !== null ? new TableNameService($config) : null;
     }
 
     public function findByDomainId(int $domainId): array
@@ -54,8 +52,7 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 
     public function findByGroupId(int $groupId): array
     {
-        // Build query with proper table name handling
-        if (isset($this->tableNameService)) {
+        if ($this->tableNameService !== null) {
             $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
             $query = "SELECT zg.*, d.name as zone_name, d.type as zone_type
                       FROM zones_groups zg
@@ -63,8 +60,12 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
                       WHERE zg.group_id = :group_id
                       ORDER BY zg.created_at DESC";
         } else {
-            // Fallback without zone details if config not available
-            $query = "SELECT * FROM zones_groups WHERE group_id = :group_id ORDER BY created_at DESC";
+            $query = "SELECT zg.*, z.zone_name, z.zone_type
+                      FROM zones_groups zg
+                      LEFT JOIN zones z ON zg.domain_id = z.domain_id
+                        AND z.id = (SELECT MIN(z2.id) FROM zones z2 WHERE z2.domain_id = zg.domain_id)
+                      WHERE zg.group_id = :group_id
+                      ORDER BY zg.created_at DESC";
         }
 
         $stmt = $this->db->prepare($query);

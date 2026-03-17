@@ -178,7 +178,11 @@ class ZoneManagementService
         }
 
         // Update the zone
-        $success = $this->zoneRepository->updateZone($zoneId, $updates);
+        try {
+            $success = $this->zoneRepository->updateZone($zoneId, $updates);
+        } catch (\InvalidArgumentException $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
 
         if (!$success) {
             return ['success' => false, 'message' => 'Failed to update zone'];

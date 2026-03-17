@@ -8,4 +8,4 @@ parameters:
       message: '#Call to an undefined method .+::expects\(\).#'
       path: tests/*
     # Ignore constructor unused parameter errors
-    - '#Constructor of class .+ has an unused parameter \$_config.#'
+    - '#Constructor of class .+ has an unused parameter \$_?config.#'
