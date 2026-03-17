@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ interface DnsRecordValidationServiceInterface
     /**
      * Validate DNS record input
      *
-     * @param int $rid Record ID
+     * @param int|string $rid Record ID (-1 for new records, string in API backend mode)
      * @param int $zid Zone ID
      * @param string $type Record Type
      * @param string $content content part of record
@@ -52,7 +52,7 @@ interface DnsRecordValidationServiceInterface
      * @return ValidationResult Returns ValidationResult with validated data or error messages
      */
     public function validateRecord(
-        int $rid,
+        int|string $rid,
         int $zid,
         string $type,
         string $content,

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -68,9 +68,25 @@ class DNSViolationValidator
     }
 
     /**
+     * Check if this is a new record (sentinel value -1)
+     */
+    private function isNewRecord(int|string $recordId): bool
+    {
+        return $recordId === -1;
+    }
+
+    /**
+     * Check if record ID matches (works for both int and string IDs)
+     */
+    private function recordIdMatches(int|string $recordId, mixed $otherIdRaw): bool
+    {
+        return (string)$recordId === (string)($otherIdRaw ?? '');
+    }
+
+    /**
      * Validate that the record doesn't create DNS violations
      *
-     * @param int $recordId Record ID (0 for new records)
+     * @param int|string $recordId Record ID (-1 for new records, string in API backend mode)
      * @param int $zoneId Zone ID
      * @param string $type Record type
      * @param string $name Record name
@@ -78,7 +94,7 @@ class DNSViolationValidator
      *
      * @return ValidationResult ValidationResult object with validation result
      */
-    public function validate(int $recordId, int $zoneId, string $type, string $name, string $content): ValidationResult
+    public function validate(int|string $recordId, int $zoneId, string $type, string $name, string $content): ValidationResult
     {
         // Check specific violations based on record type
         switch ($type) {
@@ -100,13 +116,13 @@ class DNSViolationValidator
     /**
      * Validate that a CNAME record doesn't violate DNS rules
      *
-     * @param int $recordId Record ID (0 for new records)
+     * @param int|string $recordId Record ID (-1 for new records)
      * @param int $zoneId Zone ID
      * @param string $name Record name
      *
      * @return ValidationResult ValidationResult object with validation result
      */
-    private function validateCNAMEViolations(int $recordId, int $zoneId, string $name): ValidationResult
+    private function validateCNAMEViolations(int|string $recordId, int $zoneId, string $name): ValidationResult
     {
         // Check for duplicate CNAME records with the same name
         $duplicateResult = $this->checkDuplicateCNAME($recordId, $zoneId, $name);
@@ -126,18 +142,18 @@ class DNSViolationValidator
     /**
      * Check for duplicate CNAME records with the same name
      *
-     * @param int $recordId Record ID (0 for new records)
+     * @param int|string $recordId Record ID (-1 for new records)
      * @param int $zoneId Zone ID
      * @param string $name Record name
      *
      * @return ValidationResult ValidationResult object with validation result
      */
-    private function checkDuplicateCNAME(int $recordId, int $zoneId, string $name): ValidationResult
+    private function checkDuplicateCNAME(int|string $recordId, int $zoneId, string $name): ValidationResult
     {
         if ($this->isApiBackend()) {
             $records = $this->backendProvider->getRecordsByZoneId($zoneId, 'CNAME');
             foreach ($records as $r) {
-                if ($r['name'] === $name && ($recordId <= 0 || (int)($r['id'] ?? 0) !== $recordId)) {
+                if ($r['name'] === $name && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
                     return ValidationResult::failure(_('Multiple CNAME records with the same name are not allowed. This would create a DNS violation.'));
                 }
             }
@@ -147,7 +163,7 @@ class DNSViolationValidator
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
-        if ($recordId > 0) {
+        if (is_int($recordId) && $recordId > 0) {
             $query = "SELECT COUNT(*) FROM $records_table
                      WHERE name = :name
                      AND type = 'CNAME'
@@ -182,18 +198,18 @@ class DNSViolationValidator
     /**
      * Check if CNAME conflicts with other record types
      *
-     * @param int $recordId Record ID (0 for new records)
+     * @param int|string $recordId Record ID (-1 for new records)
      * @param int $zoneId Zone ID
      * @param string $name Record name
      *
      * @return ValidationResult ValidationResult object with validation result
      */
-    private function checkCNAMEConflictsWithOtherTypes(int $recordId, int $zoneId, string $name): ValidationResult
+    private function checkCNAMEConflictsWithOtherTypes(int|string $recordId, int $zoneId, string $name): ValidationResult
     {
         if ($this->isApiBackend()) {
             $records = $this->backendProvider->getRecordsByZoneId($zoneId);
             foreach ($records as $r) {
-                if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($recordId <= 0 || (int)($r['id'] ?? 0) !== $recordId)) {
+                if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
                     return ValidationResult::failure(sprintf(_('A CNAME record cannot coexist with other record types for the same name. Found existing %s record.'), $r['type']));
                 }
             }
@@ -203,7 +219,7 @@ class DNSViolationValidator
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
-        if ($recordId > 0) {
+        if (is_int($recordId) && $recordId > 0) {
             $query = "SELECT type FROM $records_table
                      WHERE name = :name
                      AND type != 'CNAME'
@@ -240,18 +256,18 @@ class DNSViolationValidator
     /**
      * Validate that a record doesn't conflict with existing CNAME records
      *
-     * @param int $recordId Record ID (0 for new records)
+     * @param int|string $recordId Record ID (-1 for new records)
      * @param int $zoneId Zone ID
      * @param string $name Record name
      *
      * @return ValidationResult ValidationResult object with validation result
      */
-    private function validateConflictsWithCNAME(int $recordId, int $zoneId, string $name): ValidationResult
+    private function validateConflictsWithCNAME(int|string $recordId, int $zoneId, string $name): ValidationResult
     {
         if ($this->isApiBackend()) {
             $records = $this->backendProvider->getRecordsByZoneId($zoneId, 'CNAME');
             foreach ($records as $r) {
-                if ($r['name'] === $name && ($recordId <= 0 || (int)($r['id'] ?? 0) !== $recordId)) {
+                if ($r['name'] === $name && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
                     return ValidationResult::failure(_('This record conflicts with an existing CNAME record with the same name. A CNAME record cannot coexist with other record types.'));
                 }
             }
@@ -261,7 +277,7 @@ class DNSViolationValidator
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
-        if ($recordId > 0) {
+        if (is_int($recordId) && $recordId > 0) {
             $query = "SELECT id FROM $records_table
                      WHERE name = :name
                      AND type = 'CNAME'

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -193,16 +193,17 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * Check if CNAME is unique (doesn't overlap other record types)
      *
      * @param string $name CNAME
-     * @param int $rid Record ID
+     * @param int|string $rid Record ID
      *
      * @return ValidationResult ValidationResult containing success or error message
      */
-    private function validateCnameUnique(string $name, int $rid): ValidationResult
+    private function validateCnameUnique(string $name, int|string $rid): ValidationResult
     {
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', 100);
+            $isNewRecord = is_int($rid) && $rid <= 0;
             foreach ($result['records'] ?? [] as $r) {
-                if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($rid <= 0 || ($r['id'] ?? 0) !== $rid)) {
+                if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($isNewRecord || ($r['id'] ?? 0) !== $rid)) {
                     return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
                 }
             }
@@ -212,7 +213,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         // Check if there are any records with this name
-        if ($rid > 0) {
+        if (is_int($rid) && $rid > 0) {
             $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE != 'CNAME' AND id != ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name, $rid]);
@@ -285,16 +286,16 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * Check if CNAME already exists
      *
      * @param string $name CNAME
-     * @param int $rid Record ID
+     * @param int|string $rid Record ID (-1 for new records, string in API backend mode)
      *
      * @return ValidationResult ValidationResult containing success or error message
      */
-    public function validateCnameExistence(string $name, int $rid): ValidationResult
+    public function validateCnameExistence(string $name, int|string $rid): ValidationResult
     {
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', 100);
             foreach ($result['records'] ?? [] as $r) {
-                if ($r['name'] === $name && $r['type'] === 'CNAME' && ($rid <= 0 || ($r['id'] ?? 0) !== $rid)) {
+                if ($r['name'] === $name && $r['type'] === 'CNAME' && ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid)) {
                     return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
                 }
             }
@@ -303,7 +304,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-        if ($rid > 0) {
+        if (is_int($rid) && $rid > 0) {
             $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME' AND id != ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name, $rid]);
