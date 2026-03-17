@@ -41,11 +41,13 @@ class ApiZoneRepository
         $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->dbType) . "(z.zone_name, 1, 1)) AS letter
                   FROM zones z";
         if (!$viewOthers) {
-            $query .= " WHERE (z.owner = :userId OR EXISTS (
-                SELECT 1 FROM zones_groups zg
-                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
-            ))
+            $query .= " WHERE (z.owner = :userId
+                OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :userId_own AND z_own.zone_name IS NULL)
+                OR EXISTS (
+                    SELECT 1 FROM zones_groups zg
+                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                    WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
+                ))
             AND z.zone_name NOT LIKE '%.in-addr.arpa'
             AND z.zone_name NOT LIKE '%.ip6.arpa'
             AND z.zone_name IS NOT NULL";
@@ -58,6 +60,7 @@ class ApiZoneRepository
         $stmt = $this->db->prepare($query);
         if (!$viewOthers) {
             $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
             $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
         }
         $stmt->execute();
@@ -87,12 +90,15 @@ class ApiZoneRepository
 
             $params = [];
             if ($permType == 'own') {
-                $query .= " AND (z.owner = :userId OR EXISTS (
-                    SELECT 1 FROM zones_groups zg
-                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
-                ))";
+                $query .= " AND (z.owner = :userId
+                    OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :userId_own AND z_own.zone_name IS NULL)
+                    OR EXISTS (
+                        SELECT 1 FROM zones_groups zg
+                        INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                        WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
+                    ))";
                 $params[':userId'] = $userId;
+                $params[':userId_own'] = $userId;
                 $params[':userId_group'] = $userId;
             }
 
@@ -125,12 +131,15 @@ class ApiZoneRepository
 
         $params = [];
         if ($permType == 'own') {
-            $query .= " AND (z.owner = :userId OR EXISTS (
-                SELECT 1 FROM zones_groups zg
-                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
-            ))";
+            $query .= " AND (z.owner = :userId
+                OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :userId_own AND z_own.zone_name IS NULL)
+                OR EXISTS (
+                    SELECT 1 FROM zones_groups zg
+                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                    WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
+                ))";
             $params[':userId'] = $userId;
+            $params[':userId_own'] = $userId;
             $params[':userId_group'] = $userId;
         }
 
@@ -200,15 +209,18 @@ class ApiZoneRepository
         }
         $query .= " WHERE z.zone_name IS NOT NULL AND (z.zone_name LIKE '%.in-addr.arpa' OR z.zone_name LIKE '%.ip6.arpa')";
         if ($permType === 'own') {
-            $query .= " AND (z.owner = :user_id OR EXISTS (
-                SELECT 1 FROM zones_groups zg2
-                INNER JOIN user_group_members ugm ON zg2.group_id = ugm.group_id
-                WHERE zg2.domain_id = z.id AND ugm.user_id = :user_id_group
-            ))";
+            $query .= " AND (z.owner = :user_id
+                OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :user_id_own AND z_own.zone_name IS NULL)
+                OR EXISTS (
+                    SELECT 1 FROM zones_groups zg2
+                    INNER JOIN user_group_members ugm ON zg2.group_id = ugm.group_id
+                    WHERE zg2.domain_id = z.id AND ugm.user_id = :user_id_group
+                ))";
         }
         $stmt = $this->db->prepare($query);
         if ($permType === 'own') {
             $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':user_id_own', $userId, PDO::PARAM_INT);
             $stmt->bindValue(':user_id_group', $userId, PDO::PARAM_INT);
         }
         $stmt->execute();
@@ -222,7 +234,7 @@ class ApiZoneRepository
 
     public function getDomainNameById(int $zoneId): ?string
     {
-        $query = "SELECT zone_name FROM zones WHERE id = :id OR domain_id = :did";
+        $query = "SELECT zone_name FROM zones WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
@@ -240,12 +252,15 @@ class ApiZoneRepository
                   WHERE z.zone_name IS NOT NULL";
         $params = [];
         if ($userId !== null && !$viewOthers) {
-            $query .= " AND (z.owner = :userId OR EXISTS (
-                SELECT 1 FROM zones_groups zg
-                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
-            ))";
+            $query .= " AND (z.owner = :userId
+                OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :userId_own AND z_own.zone_name IS NULL)
+                OR EXISTS (
+                    SELECT 1 FROM zones_groups zg
+                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                    WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
+                ))";
             $params[':userId'] = $userId;
+            $params[':userId_own'] = $userId;
             $params[':userId_group'] = $userId;
         }
         if (isset($filters['type']) && in_array($filters['type'], ['MASTER', 'SLAVE', 'NATIVE'])) {
@@ -293,13 +308,21 @@ class ApiZoneRepository
     {
         $query = "SELECT 1 FROM zones WHERE (id = :id OR domain_id = :did)";
         if ($userId !== null) {
-            $query .= " AND owner = :userId";
+            $query .= " AND (owner = :userId
+                OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (zones.id, zones.domain_id) AND z_own.owner = :userId_own AND z_own.zone_name IS NULL)
+                OR EXISTS (
+                    SELECT 1 FROM zones_groups zg
+                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                    WHERE zg.domain_id = zones.id AND ugm.user_id = :userId_group
+                ))";
         }
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         if ($userId !== null) {
             $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
         }
         $stmt->execute();
         return $stmt->fetchColumn() !== false;
@@ -311,7 +334,7 @@ class ApiZoneRepository
                          z.comment, u.username, u.fullname
                   FROM zones z
                   LEFT JOIN users u ON z.owner = u.id
-                  WHERE z.id = :id OR z.domain_id = :did";
+                  WHERE (z.id = :id OR z.domain_id = :did) AND z.zone_name IS NOT NULL";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
@@ -432,7 +455,7 @@ class ApiZoneRepository
 
     public function getDomainType(int $zoneId): string
     {
-        $query = "SELECT zone_type FROM zones WHERE id = :id OR domain_id = :did";
+        $query = "SELECT zone_type FROM zones WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
@@ -443,7 +466,7 @@ class ApiZoneRepository
 
     public function getDomainSlaveMaster(int $zoneId): ?string
     {
-        $query = "SELECT zone_master FROM zones WHERE id = :id OR domain_id = :did";
+        $query = "SELECT zone_master FROM zones WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
@@ -454,7 +477,7 @@ class ApiZoneRepository
 
     public function getZoneComment(int $zoneId): ?string
     {
-        $query = "SELECT comment FROM zones WHERE id = :id OR domain_id = :did";
+        $query = "SELECT comment FROM zones WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
@@ -488,29 +511,21 @@ class ApiZoneRepository
 
     public function addOwnerToZone(int $zoneId, int $userId): bool
     {
-        // Get the zone_templ_id from an existing zone record for this domain
-        $getTemplateQuery = "SELECT zone_templ_id FROM zones WHERE id = :id OR domain_id = :did LIMIT 1";
-        $getStmt = $this->db->prepare($getTemplateQuery);
+        // Get zone_templ_id from an existing zone record for this domain
+        $getMetaQuery = "SELECT zone_templ_id FROM zones WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL LIMIT 1";
+        $getStmt = $this->db->prepare($getMetaQuery);
         $getStmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
         $getStmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
         $getStmt->execute();
-        $templateResult = $getStmt->fetch(PDO::FETCH_ASSOC);
-        $zoneTemplId = $templateResult ? $templateResult['zone_templ_id'] : 0;
+        $metaResult = $getStmt->fetch(PDO::FETCH_ASSOC);
+        $zoneTemplId = $metaResult ? $metaResult['zone_templ_id'] : 0;
 
-        // Get the zone_name from an existing record
-        $getNameQuery = "SELECT zone_name FROM zones WHERE id = :id OR domain_id = :did LIMIT 1";
-        $getNameStmt = $this->db->prepare($getNameQuery);
-        $getNameStmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $getNameStmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
-        $getNameStmt->execute();
-        $nameResult = $getNameStmt->fetch(PDO::FETCH_ASSOC);
-
-        $query = "INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name) VALUES (:domain_id, :owner, :zone_templ_id, :zone_name)";
+        $query = "INSERT INTO zones (domain_id, owner, zone_templ_id)
+                  VALUES (:domain_id, :owner, :zone_templ_id)";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zone_templ_id', $zoneTemplId, PDO::PARAM_INT);
-        $stmt->bindValue(':zone_name', $nameResult ? $nameResult['zone_name'] : null, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->rowCount() > 0;
     }
@@ -588,6 +603,16 @@ class ApiZoneRepository
 
     public function updateZone(int $zoneId, array $updates): bool
     {
+        if (isset($updates['name'])) {
+            $currentName = $this->getDomainNameById($zoneId);
+            if ($currentName !== null && $updates['name'] !== $currentName) {
+                throw new \InvalidArgumentException(
+                    'Zone renaming is not supported in API backend mode. PowerDNS API does not support zone rename operations.'
+                );
+            }
+            unset($updates['name']);
+        }
+
         $success = true;
         if (isset($updates['type'])) {
             $success = $this->backendProvider->updateZoneType($zoneId, $updates['type']);
@@ -602,14 +627,6 @@ class ApiZoneRepository
             $success = $success && $this->backendProvider->updateZoneMaster($zoneId, $updates['master']);
             $stmt = $this->db->prepare("UPDATE zones SET zone_master = :master WHERE id = :id OR domain_id = :did");
             $stmt->bindValue(':master', $updates['master'], PDO::PARAM_STR);
-            $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-            $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
-            $stmt->execute();
-        }
-        if (isset($updates['name'])) {
-            // Zone rename - update local zone_name
-            $stmt = $this->db->prepare("UPDATE zones SET zone_name = :name WHERE id = :id OR domain_id = :did");
-            $stmt->bindValue(':name', $updates['name'], PDO::PARAM_STR);
             $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
             $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
             $stmt->execute();
@@ -659,12 +676,14 @@ class ApiZoneRepository
             $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE z.zone_name IS NOT NULL";
             $params = [];
         } else {
-            $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE (z.owner = :user_id OR EXISTS (
-                SELECT 1 FROM zones_groups zg
-                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                WHERE zg.domain_id = z.id AND ugm.user_id = :user_id_group
-            )) AND z.zone_name IS NOT NULL";
-            $params = [':user_id' => $userId, ':user_id_group' => $userId];
+            $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE (z.owner = :user_id
+                OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :user_id_own AND z_own.zone_name IS NULL)
+                OR EXISTS (
+                    SELECT 1 FROM zones_groups zg
+                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                    WHERE zg.domain_id = z.id AND ugm.user_id = :user_id_group
+                )) AND z.zone_name IS NOT NULL";
+            $params = [':user_id' => $userId, ':user_id_own' => $userId, ':user_id_group' => $userId];
         }
         if ($nameFilter !== null && $nameFilter !== '') {
             $query .= " AND z.zone_name = :name_filter";
@@ -690,12 +709,14 @@ class ApiZoneRepository
             $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
                              COALESCE(z.owner, 0) as owner
                       FROM zones z
-                      WHERE (z.owner = :user_id OR EXISTS (
-                          SELECT 1 FROM zones_groups zg
-                          INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                          WHERE zg.domain_id = z.id AND ugm.user_id = :user_id_group
-                      )) AND z.zone_name IS NOT NULL";
-            $params = [':user_id' => $userId, ':user_id_group' => $userId];
+                      WHERE (z.owner = :user_id
+                          OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :user_id_own AND z_own.zone_name IS NULL)
+                          OR EXISTS (
+                              SELECT 1 FROM zones_groups zg
+                              INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                              WHERE zg.domain_id = z.id AND ugm.user_id = :user_id_group
+                          )) AND z.zone_name IS NOT NULL";
+            $params = [':user_id' => $userId, ':user_id_own' => $userId, ':user_id_group' => $userId];
         }
         if ($nameFilter !== null && $nameFilter !== '') {
             $query .= " AND z.zone_name = :name_filter";
@@ -726,7 +747,7 @@ class ApiZoneRepository
         $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
                          COALESCE(z.owner, 0) as owner
                   FROM zones z
-                  WHERE z.id = :id OR z.domain_id = :did";
+                  WHERE (z.id = :id OR z.domain_id = :did) AND z.zone_name IS NOT NULL";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
