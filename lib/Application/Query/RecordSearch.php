@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Query;
 
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -134,6 +135,7 @@ class RecordSearch extends BaseSearch
         // Uses COALESCE with two subqueries to avoid ORDER BY with outer table
         // references which SQLite does not support in correlated subqueries.
         $links_table = 'record_comment_links';
+        $castId = DbCompat::castToString($db_type, "$records_table.id");
         $commentSelect = '';
         if ($iface_record_comments) {
             $commentSelect = ", COALESCE(
@@ -141,7 +143,7 @@ class RecordSearch extends BaseSearch
                     SELECT c.comment
                     FROM $links_table rcl
                     JOIN $comments_table c ON c.id = rcl.comment_id
-                    WHERE rcl.record_id = $records_table.id
+                    WHERE rcl.record_id = $castId
                     LIMIT 1
                 ),
                 (

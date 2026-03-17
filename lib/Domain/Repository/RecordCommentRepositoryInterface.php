@@ -134,6 +134,7 @@ interface RecordCommentRepositoryInterface
      * @param string $name Record name
      * @param string $type Record type
      * @param int|string $excludeRecordId Record ID to exclude (int for SQL, encoded string for API)
+     * @return bool True if siblings were actually migrated, false if skipped
      */
-    public function migrateLegacyComments(int $domainId, string $name, string $type, int|string $excludeRecordId): void;
+    public function migrateLegacyComments(int $domainId, string $name, string $type, int|string $excludeRecordId): bool;
 }

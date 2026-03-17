@@ -25,6 +25,7 @@ namespace integration;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 /**
  * Integration tests for record comment subquery patterns across all databases.
@@ -129,7 +130,7 @@ class RecordCommentSubqueryTest extends TestCase
             )");
             $db->exec("CREATE TABLE test_rcl_links (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                record_id INT NOT NULL,
+                record_id VARCHAR(2048) CHARACTER SET ascii NOT NULL,
                 comment_id INT NOT NULL
             )");
         } elseif ($type === 'pgsql') {
@@ -157,7 +158,7 @@ class RecordCommentSubqueryTest extends TestCase
             )");
             $db->exec("CREATE TABLE test_rcl_links (
                 id SERIAL PRIMARY KEY,
-                record_id INT NOT NULL,
+                record_id VARCHAR(2048) NOT NULL,
                 comment_id INT NOT NULL
             )");
         } else {
@@ -185,7 +186,7 @@ class RecordCommentSubqueryTest extends TestCase
             )");
             $db->exec("CREATE TABLE test_rcl_links (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                record_id INTEGER NOT NULL,
+                record_id VARCHAR(2048) NOT NULL,
                 comment_id INTEGER NOT NULL
             )");
         }
@@ -234,17 +235,19 @@ class RecordCommentSubqueryTest extends TestCase
 
     private function executeOldPattern(PDO $db): array
     {
+        $dbType = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $castId = DbCompat::castToString($dbType, 'test_rcl_records.id');
         $query = "SELECT test_rcl_records.*,
             (
                 SELECT c.comment
                 FROM test_rcl_comments c
                 LEFT JOIN test_rcl_links rcl ON rcl.comment_id = c.id
-                WHERE (rcl.record_id = test_rcl_records.id)
+                WHERE (rcl.record_id = $castId)
                    OR (rcl.record_id IS NULL
                        AND c.domain_id = test_rcl_records.domain_id
                        AND c.name = test_rcl_records.name
                        AND c.type = test_rcl_records.type)
-                ORDER BY CASE WHEN rcl.record_id = test_rcl_records.id THEN 0 ELSE 1 END
+                ORDER BY CASE WHEN rcl.record_id = $castId THEN 0 ELSE 1 END
                 LIMIT 1
             ) AS comment
             FROM test_rcl_records
@@ -264,13 +267,15 @@ class RecordCommentSubqueryTest extends TestCase
 
     private function executeNewPattern(PDO $db): array
     {
+        $dbType = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $castId = DbCompat::castToString($dbType, 'test_rcl_records.id');
         $query = "SELECT test_rcl_records.*,
             COALESCE(
                 (
                     SELECT c.comment
                     FROM test_rcl_links rcl
                     JOIN test_rcl_comments c ON c.id = rcl.comment_id
-                    WHERE rcl.record_id = test_rcl_records.id
+                    WHERE rcl.record_id = $castId
                     LIMIT 1
                 ),
                 (
@@ -532,6 +537,8 @@ class RecordCommentSubqueryTest extends TestCase
 
     private function executeSearchPattern(PDO $db, string $searchTerm): array
     {
+        $dbType = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $castId = DbCompat::castToString($dbType, 'test_rcl_records.id');
         $query = "SELECT test_rcl_records.id, test_rcl_records.domain_id,
                  test_rcl_records.name, test_rcl_records.type,
                  test_rcl_records.content, test_rcl_records.ttl,
@@ -541,7 +548,7 @@ class RecordCommentSubqueryTest extends TestCase
                         SELECT c.comment
                         FROM test_rcl_links rcl
                         JOIN test_rcl_comments c ON c.id = rcl.comment_id
-                        WHERE rcl.record_id = test_rcl_records.id
+                        WHERE rcl.record_id = $castId
                         LIMIT 1
                     ),
                     (

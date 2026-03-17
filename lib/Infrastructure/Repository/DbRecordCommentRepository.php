@@ -184,16 +184,12 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
 
     public function findByRecordId(int|string $recordId): ?RecordComment
     {
-        if ($this->isApiBackend()) {
-            return null;
-        }
-
         $query = "SELECT c.* FROM {$this->comments_table} c
                   JOIN {$this->links_table} rcl ON rcl.comment_id = c.id
                   WHERE rcl.record_id = :record_id
                   LIMIT 1";
         $stmt = $this->connection->prepare($query);
-        $stmt->bindValue(':record_id', $recordId, PDO::PARAM_INT);
+        $stmt->bindValue(':record_id', (string)$recordId, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -205,7 +201,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         // First, get the comment_id linked to this record
         $query = "SELECT comment_id FROM {$this->links_table} WHERE record_id = :record_id";
         $stmt = $this->connection->prepare($query);
-        $stmt->bindValue(':record_id', $recordId, PDO::PARAM_INT);
+        $stmt->bindValue(':record_id', (string)$recordId, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -227,17 +223,13 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
 
     public function linkRecordToComment(int|string $recordId, int $commentId): bool
     {
-        if ($this->isApiBackend()) {
-            return true;
-        }
-
         // First, remove any existing link for this record
         $this->unlinkRecord($recordId);
 
         // Create the new link
         $query = "INSERT INTO {$this->links_table} (record_id, comment_id) VALUES (:record_id, :comment_id)";
         $stmt = $this->connection->prepare($query);
-        $stmt->bindValue(':record_id', $recordId, PDO::PARAM_INT);
+        $stmt->bindValue(':record_id', (string)$recordId, PDO::PARAM_STR);
         $stmt->bindValue(':comment_id', $commentId, PDO::PARAM_INT);
         return $stmt->execute();
     }
@@ -246,16 +238,12 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
     {
         $query = "DELETE FROM {$this->links_table} WHERE record_id = :record_id";
         $stmt = $this->connection->prepare($query);
-        $stmt->bindValue(':record_id', $recordId, PDO::PARAM_INT);
+        $stmt->bindValue(':record_id', (string)$recordId, PDO::PARAM_STR);
         return $stmt->execute();
     }
 
     public function addForRecord(int|string $recordId, RecordComment $comment): ?RecordComment
     {
-        if ($this->isApiBackend()) {
-            return null;
-        }
-
         // First, delete any existing comment for this record
         $this->deleteByRecordId($recordId);
 
@@ -299,27 +287,30 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
      * @param string $type Record type
      * @param int|string $excludeRecordId Record ID to exclude (int for SQL, encoded string for API)
      */
-    public function migrateLegacyComments(int $domainId, string $name, string $type, int|string $excludeRecordId): void
+    public function migrateLegacyComments(int $domainId, string $name, string $type, int|string $excludeRecordId): bool
     {
         // Find the legacy (unlinked) comment for this RRset
         $legacyComment = $this->find($domainId, $name, $type);
         if ($legacyComment === null) {
-            return; // No legacy comment to migrate
+            return false; // No legacy comment to migrate
         }
 
-        // In API mode, record IDs are encoded strings that can't be stored
-        // in the integer record_comment_links.record_id column. Skip per-record
-        // migration; legacy RRset-level comments still work fine.
+        // In API mode, the records table has no local data (records come from the
+        // PowerDNS API), so we cannot enumerate sibling records for migration.
+        // Legacy RRset comments remain visible via fallback enrichment.
         if ($this->isApiBackend()) {
-            return;
+            return false;
         }
+
+        $dbType = $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $castId = \Poweradmin\Infrastructure\Database\DbCompat::castToString($dbType, 'r.id');
 
         // Find all records in the RRset that don't have linked comments (excluding the current record)
         $query = "SELECT r.id FROM {$this->records_table} r
                   WHERE r.domain_id = :domain_id AND r.name = :name AND r.type = :type
                   AND r.id != :exclude_record_id
                   AND NOT EXISTS (
-                      SELECT 1 FROM {$this->links_table} rcl WHERE rcl.record_id = r.id
+                      SELECT 1 FROM {$this->links_table} rcl WHERE rcl.record_id = $castId
                   )";
         $stmt = $this->connection->prepare($query);
         $stmt->execute([
@@ -343,6 +334,8 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
             );
             $this->addForRecord((int)$recordId, $newComment);
         }
+
+        return true;
     }
 
     /**

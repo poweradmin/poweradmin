@@ -28,6 +28,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Infrastructure\Utility\SortHelper;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -234,13 +235,14 @@ class RecordRepository implements RecordRepositoryInterface
         // then falls back to RRset-based comment. This avoids ORDER BY with outer table
         // references which SQLite does not support in correlated subqueries.
         $links_table = 'record_comment_links';
+        $castId = DbCompat::castToString($db_type, "$records_table.id");
         $query = "SELECT $records_table.*,
             " . ($fetchComments ? "COALESCE(
                 (
                     SELECT c.comment
                     FROM $links_table rcl
                     JOIN $comments_table c ON c.id = rcl.comment_id
-                    WHERE rcl.record_id = $records_table.id
+                    WHERE rcl.record_id = $castId
                     LIMIT 1
                 ),
                 (
@@ -314,9 +316,8 @@ class RecordRepository implements RecordRepositoryInterface
 
     /**
      * Enrich records with comments from Poweradmin DB.
-     * In SQL mode: uses record_comment_links for per-record comments.
-     * In API mode: uses RRset-level comments (domain_id + name + type) since
-     * encoded string IDs cannot be stored in record_comment_links.
+     * Uses a two-pass approach: first per-record linked comments, then
+     * RRset-level comments as fallback for records with no linked comment.
      */
     private function enrichRecordsWithComments(array &$records): void
     {
@@ -324,19 +325,24 @@ class RecordRepository implements RecordRepositoryInterface
             return;
         }
 
-        if ($this->isApiBackend()) {
-            $this->enrichRecordsWithRRsetComments($records);
-        } else {
-            $this->enrichRecordsWithLinkedComments($records);
-        }
+        // Pass 1: set per-record linked comments
+        $this->enrichRecordsWithLinkedComments($records);
+        // Pass 2: fill remaining nulls with RRset-level comments
+        $this->enrichRecordsWithRRsetComments($records);
     }
 
     private function enrichRecordsWithLinkedComments(array &$records): void
     {
-        $recordIds = array_filter(array_map(fn($r) => $r['id'] ?? 0, $records));
+        $recordIds = array_filter(
+            array_map(fn($r) => $r['id'] ?? null, $records),
+            fn($id) => $id !== null && $id !== 0
+        );
         if (empty($recordIds)) {
             return;
         }
+
+        // Convert all IDs to strings for VARCHAR column comparison
+        $recordIds = array_map('strval', $recordIds);
 
         $placeholders = implode(',', array_fill(0, count($recordIds), '?'));
         $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
@@ -355,8 +361,10 @@ class RecordRepository implements RecordRepositoryInterface
         }
 
         foreach ($records as &$record) {
-            $rid = $record['id'] ?? 0;
-            $record['comment'] = $comments[$rid] ?? null;
+            $rid = $record['id'] ?? null;
+            if ($rid !== null) {
+                $record['comment'] = $comments[(string)$rid] ?? null;
+            }
         }
         unset($record);
     }
@@ -402,8 +410,12 @@ class RecordRepository implements RecordRepositoryInterface
 
         $stmt = $this->db->prepare(
             "SELECT domain_id, name, type, comment
-             FROM $comments_table
-             WHERE " . implode(' OR ', $conditions)
+             FROM $comments_table c
+             WHERE (" . implode(' OR ', $conditions) . ")
+               AND NOT EXISTS (
+                   SELECT 1 FROM record_comment_links rcl
+                   WHERE rcl.comment_id = c.id
+               )"
         );
         $stmt->execute($params);
 
@@ -415,7 +427,10 @@ class RecordRepository implements RecordRepositoryInterface
 
         foreach ($records as &$record) {
             $key = ($record['domain_id'] ?? '') . '|' . ($record['name'] ?? '') . '|' . ($record['type'] ?? '');
-            $record['comment'] = $comments[$key] ?? null;
+            // Only fill if no linked comment was found in the first pass
+            if (!isset($record['comment']) || $record['comment'] === null) {
+                $record['comment'] = $comments[$key] ?? null;
+            }
         }
         unset($record);
     }
@@ -829,6 +844,8 @@ class RecordRepository implements RecordRepositoryInterface
         // Uses COALESCE with two subqueries to avoid ORDER BY with outer table
         // references which SQLite does not support in correlated subqueries.
         $links_table = 'record_comment_links';
+        $dbType = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $castId = DbCompat::castToString($dbType, "$records_table.id");
         $query = "SELECT $records_table.id, $records_table.domain_id, $records_table.name, $records_table.type,
                  $records_table.content, $records_table.ttl, $records_table.prio, $records_table.disabled, $records_table.auth";
 
@@ -839,7 +856,7 @@ class RecordRepository implements RecordRepositoryInterface
                     SELECT c.comment
                     FROM $links_table rcl
                     JOIN $comments_table c ON c.id = rcl.comment_id
-                    WHERE rcl.record_id = $records_table.id
+                    WHERE rcl.record_id = $castId
                     LIMIT 1
                 ),
                 (

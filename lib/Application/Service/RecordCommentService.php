@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
 
 /**
  * Service for managing DNS record comments.
@@ -36,14 +35,11 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 class RecordCommentService
 {
     private RecordCommentRepositoryInterface $recordCommentRepository;
-    private bool $isApiBackend;
 
     public function __construct(
-        RecordCommentRepositoryInterface $recordCommentRepository,
-        ?DnsBackendProvider $backendProvider = null
+        RecordCommentRepositoryInterface $recordCommentRepository
     ) {
         $this->recordCommentRepository = $recordCommentRepository;
-        $this->isApiBackend = $backendProvider !== null && $backendProvider->isApiBackend();
     }
 
     /**
@@ -66,27 +62,28 @@ class RecordCommentService
         int|string $recordId,
         ?string $account = null
     ): ?RecordComment {
-        // In API mode, per-record linking is not possible (encoded string IDs).
-        // Delegate to RRset-level comment instead.
-        if ($this->isApiBackend) {
-            return $this->createComment($domainId, $name, $type, $comment, $account);
-        }
-
         // Ensure legacy RRset comments are copied to other records before mutating this RRset
-        $this->recordCommentRepository->migrateLegacyComments($domainId, $name, $type, $recordId);
+        $migrated = $this->recordCommentRepository->migrateLegacyComments($domainId, $name, $type, $recordId);
 
         if ($comment === '') {
             // Delete per-record comment (linked via record_comment_links)
             $this->deleteCommentByRecordId($recordId);
-            // Delete legacy RRset comments (now safe since other records have been migrated)
-            $this->deleteLegacyComment($domainId, $name, $type);
+            // Delete legacy RRset comments only when siblings were actually migrated
+            if ($migrated) {
+                $this->deleteLegacyComment($domainId, $name, $type);
+            } elseif ($this->recordCommentRepository->find($domainId, $name, $type) !== null) {
+                // API mode: can't migrate siblings, but a legacy RRset comment exists.
+                // Store empty linked comment so fallback enrichment doesn't resurrect it.
+                $sentinel = RecordComment::create($domainId, $name, $type, '', $account);
+                $this->recordCommentRepository->addForRecord($recordId, $sentinel);
+            }
             return null;
         }
 
         $recordComment = RecordComment::create($domainId, $name, $type, $comment, $account);
         $addedComment = $this->recordCommentRepository->addForRecord($recordId, $recordComment);
 
-        if ($addedComment !== null) {
+        if ($addedComment !== null && $migrated) {
             // Clean up the legacy RRset comment row now that per-record links exist
             $this->deleteLegacyComment($domainId, $name, $type);
         }
@@ -156,9 +153,6 @@ class RecordCommentService
      */
     public function deleteCommentByRecordId(int|string $recordId): bool
     {
-        if ($this->isApiBackend) {
-            return true;
-        }
         return $this->recordCommentRepository->deleteByRecordId($recordId);
     }
 
@@ -192,19 +186,20 @@ class RecordCommentService
         int|string $recordId,
         ?string $account = null
     ): ?RecordComment {
-        // In API mode, per-record linking is not possible (encoded string IDs).
-        // Delegate to RRset-level comment instead.
-        if ($this->isApiBackend) {
-            return $this->updateComment($domainId, $name, $type, $name, $type, $comment, $account);
-        }
-
         if ($comment === '') {
             // Migrate legacy comments to other records before deleting
-            $this->recordCommentRepository->migrateLegacyComments($domainId, $name, $type, $recordId);
+            $migrated = $this->recordCommentRepository->migrateLegacyComments($domainId, $name, $type, $recordId);
             // Delete per-record comment (linked via record_comment_links)
             $this->deleteCommentByRecordId($recordId);
-            // Delete legacy RRset comments (now safe since other records have been migrated)
-            $this->deleteLegacyComment($domainId, $name, $type);
+            // Delete legacy RRset comments only when siblings were actually migrated
+            if ($migrated) {
+                $this->deleteLegacyComment($domainId, $name, $type);
+            } elseif ($this->recordCommentRepository->find($domainId, $name, $type) !== null) {
+                // API mode: can't migrate siblings, but a legacy RRset comment exists.
+                // Store empty linked comment so fallback enrichment doesn't resurrect it.
+                $sentinel = RecordComment::create($domainId, $name, $type, '', $account);
+                $this->recordCommentRepository->addForRecord($recordId, $sentinel);
+            }
             return null;
         }
 
@@ -268,9 +263,6 @@ class RecordCommentService
      */
     public function findCommentByRecordId(int|string $recordId): ?RecordComment
     {
-        if ($this->isApiBackend) {
-            return null;
-        }
         return $this->recordCommentRepository->findByRecordId($recordId);
     }
 }

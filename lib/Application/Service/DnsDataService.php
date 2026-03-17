@@ -896,10 +896,16 @@ class DnsDataService
      */
     private function enrichRecordsWithComments(array &$records): void
     {
-        $recordIds = array_filter(array_map(fn($r) => $r['id'] ?? 0, $records));
+        $recordIds = array_filter(
+            array_map(fn($r) => $r['id'] ?? null, $records),
+            fn($id) => $id !== null && $id !== 0
+        );
         if (empty($recordIds)) {
             return;
         }
+
+        // Convert all IDs to strings for VARCHAR column comparison
+        $recordIds = array_map('strval', $recordIds);
 
         $placeholders = implode(',', array_fill(0, count($recordIds), '?'));
         $stmt = $this->db->prepare(
@@ -912,12 +918,12 @@ class DnsDataService
 
         $comments = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $comments[(int)$row['record_id']] = $row['comment'];
+            $comments[$row['record_id']] = $row['comment'];
         }
 
         foreach ($records as &$record) {
-            $rid = $record['id'] ?? 0;
-            $record['comment'] = $comments[$rid] ?? '';
+            $rid = $record['id'] ?? null;
+            $record['comment'] = $rid !== null ? ($comments[(string)$rid] ?? '') : '';
         }
         unset($record);
     }
