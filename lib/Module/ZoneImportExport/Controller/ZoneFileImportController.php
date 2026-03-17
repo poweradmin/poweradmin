@@ -335,7 +335,7 @@ class ZoneFileImportController extends BaseController
         // Import records
         $backendProvider = $this->createDnsBackendProvider();
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
-        $recordCommentService = new RecordCommentService($recordCommentRepository, $backendProvider);
+        $recordCommentService = new RecordCommentService($recordCommentRepository);
         $recordRepository = new RecordRepository($this->db, $this->getConfig(), $backendProvider);
         $commentSyncService = new RecordCommentSyncService($recordCommentService, $recordRepository, $backendProvider);
         $logger = new LegacyLogger($this->db);

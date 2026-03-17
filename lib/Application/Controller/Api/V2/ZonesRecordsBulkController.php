@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
@@ -75,7 +76,7 @@ class ZonesRecordsBulkController extends PublicApiController
         $this->permissionService = new ApiPermissionService($this->db);
 
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $this->backendProvider);
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $this->backendProvider);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
@@ -116,7 +117,7 @@ class ZonesRecordsBulkController extends PublicApiController
         path: '/v2/zones/{id}/records/bulk',
         operationId: 'v2BulkRecordOperations',
         summary: 'Perform bulk record operations',
-        description: 'Create, update, or delete multiple records in a single atomic transaction. All operations succeed or fail together.',
+        description: 'Create, update, or delete multiple records in a single request.',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]
@@ -376,8 +377,8 @@ class ZonesRecordsBulkController extends PublicApiController
             }
         }
 
-        // Validate the record
-        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
+        // Validate the record (pass backendProvider so CNAME/violation checks use correct backend)
+        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
         $dns_hostmaster = $this->getConfig()->get('dns', 'hostmaster');
         $dns_ttl = $this->getConfig()->get('dns', 'ttl');
 
@@ -426,7 +427,7 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException("Field 'id' is required for update operation", 400);
         }
 
-        $recordId = ctype_digit((string)$operation['id']) ? (int)$operation['id'] : $operation['id'];
+        $recordId = RecordIdHelper::normalizeId($operation['id']);
 
         // Get existing record
         $existingRecord = $this->recordRepository->getRecordById($recordId);
@@ -468,7 +469,7 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException("Field 'id' is required for delete operation", 400);
         }
 
-        $recordId = ctype_digit((string)$operation['id']) ? (int)$operation['id'] : $operation['id'];
+        $recordId = RecordIdHelper::normalizeId($operation['id']);
 
         // Verify record exists in this zone
         $existingRecord = $this->recordRepository->getRecordById($recordId);

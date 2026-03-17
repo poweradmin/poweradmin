@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -68,7 +69,7 @@ class EditRecordController extends BaseController
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $backendProvider = $this->createDnsBackendProvider();
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $backendProvider);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig(), $backendProvider);
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
@@ -278,7 +279,7 @@ class EditRecordController extends BaseController
                 $new_record_info['name'],
                 $new_record_info['type'],
                 $commentValue,
-                (int)$_POST['rid'],
+                RecordIdHelper::normalizeId($_POST['rid']),
                 $this->userContextService->getLoggedInUsername()
             );
 

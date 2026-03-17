@@ -60,7 +60,7 @@ class DeleteRecordsController extends BaseController
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $backendProvider = $this->createDnsBackendProvider();
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $backendProvider);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->reverseRecordCreator = new ReverseRecordCreator(

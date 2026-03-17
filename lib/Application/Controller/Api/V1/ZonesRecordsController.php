@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
@@ -71,7 +72,7 @@ class ZonesRecordsController extends PublicApiController
         $this->permissionService = new ApiPermissionService($this->db);
 
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $this->backendProvider);
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $this->backendProvider);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
@@ -182,7 +183,7 @@ class ZonesRecordsController extends PublicApiController
             // Format record data
             $formattedRecords = array_map(function ($record) {
                 return [
-                    'id' => ctype_digit((string)$record['id']) ? (int)$record['id'] : $record['id'],
+                    'id' => RecordIdHelper::normalizeId($record['id']),
                     'name' => $record['name'],
                     'type' => $record['type'],
                     'content' => $record['content'],
@@ -575,10 +576,7 @@ class ZonesRecordsController extends PublicApiController
         try {
             $userId = $this->getAuthenticatedUserId();
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
-            $recordId = $this->pathParameters['record_id'] ?? '';
-            if (ctype_digit((string)$recordId)) {
-                $recordId = (int)$recordId;
-            }
+            $recordId = RecordIdHelper::normalizeId($this->pathParameters['record_id'] ?? '');
 
             if ($zoneId <= 0 || empty($recordId)) {
                 return $this->returnApiError('Valid zone ID and record ID are required', 400);
@@ -699,10 +697,7 @@ class ZonesRecordsController extends PublicApiController
         try {
             $userId = $this->getAuthenticatedUserId();
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
-            $recordId = $this->pathParameters['record_id'] ?? '';
-            if (ctype_digit((string)$recordId)) {
-                $recordId = (int)$recordId;
-            }
+            $recordId = RecordIdHelper::normalizeId($this->pathParameters['record_id'] ?? '');
 
             if ($zoneId <= 0 || empty($recordId)) {
                 return $this->returnApiError('Valid zone ID and record ID are required', 400);

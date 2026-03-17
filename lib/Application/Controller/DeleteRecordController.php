@@ -68,7 +68,7 @@ class DeleteRecordController extends BaseController
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $backendProvider = $this->createDnsBackendProvider();
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $backendProvider);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->reverseRecordCreator = new ReverseRecordCreator(
@@ -200,7 +200,7 @@ class DeleteRecordController extends BaseController
                 }
 
                 // Delete comment for this specific record (per-record comment by record_id)
-                $this->recordCommentService->deleteCommentByRecordId((int)$record_id);
+                $this->recordCommentService->deleteCommentByRecordId($record_id);
 
                 // For backward compatibility, also clean up RRset-based comments if no similar records remain
                 $hasSimilarRecords = $dnsRecord->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id);

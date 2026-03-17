@@ -33,6 +33,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
@@ -89,7 +90,7 @@ class EditController extends BaseController
         parent::__construct($request);
         $backendProvider = $this->createDnsBackendProvider();
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository, $backendProvider);
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig(), $backendProvider);
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
@@ -584,7 +585,7 @@ class EditController extends BaseController
 
                     $comment = '';
                     if ($this->config->get('interface', 'show_record_comments', false)) {
-                        $recordComment = $this->recordCommentService->findCommentByRecordId((int)$record['rid']);
+                        $recordComment = $this->recordCommentService->findCommentByRecordId(RecordIdHelper::normalizeId($record['rid']));
                         if ($recordComment === null) {
                             $recordComment = $this->recordCommentService->findComment($zone_id, $record['name'], $record['type']);
                         }
@@ -613,7 +614,7 @@ class EditController extends BaseController
                                 $record['name'],
                                 $record['type'],
                                 $record['comment'] ?? '',
-                                (int)$record['rid'],
+                                RecordIdHelper::normalizeId($record['rid']),
                                 $this->userContextService->getLoggedInUsername()
                             );
 
