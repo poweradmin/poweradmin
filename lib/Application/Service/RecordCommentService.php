@@ -258,7 +258,7 @@ class RecordCommentService
     /**
      * Find a comment for a specific record.
      *
-     * @param int $recordId Record ID
+     * @param int|string $recordId Record ID
      * @return RecordComment|null
      */
     public function findCommentByRecordId(int|string $recordId): ?RecordComment
