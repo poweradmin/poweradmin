@@ -55,4 +55,21 @@ ALTER TABLE users ADD COLUMN perm_templ_source VARCHAR(20) NOT NULL DEFAULT 'adm
 -- All existing users default to 'admin' (conservative). The SSO flow will set
 -- perm_templ_source = 'sso' on the next login when a group mapping matches.
 
+-- Widen record_comment_links.record_id to support API-mode encoded string IDs
+-- SQLite has no ALTER COLUMN; recreate table
+CREATE TABLE record_comment_links_new (
+    record_id VARCHAR(4096) NOT NULL,
+    comment_id INTEGER NOT NULL,
+    PRIMARY KEY (record_id),
+    UNIQUE (comment_id)
+);
+
+INSERT INTO record_comment_links_new (record_id, comment_id)
+SELECT CAST(record_id AS TEXT), comment_id FROM record_comment_links;
+
+DROP TABLE record_comment_links;
+ALTER TABLE record_comment_links_new RENAME TO record_comment_links;
+
+CREATE INDEX idx_record_comment_links_comment ON record_comment_links(comment_id);
+
 COMMIT;

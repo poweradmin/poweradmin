@@ -412,7 +412,7 @@ CREATE TABLE `zones_groups` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `record_comment_links` (
-    `record_id` INT NOT NULL,
+    `record_id` VARCHAR(3072) CHARACTER SET ascii NOT NULL,
     `comment_id` INT NOT NULL,
     PRIMARY KEY (`record_id`),
     UNIQUE KEY `idx_record_comment_links_comment` (`comment_id`)

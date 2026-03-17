@@ -33,3 +33,6 @@ ALTER TABLE `users` ADD COLUMN `perm_templ_source` varchar(20) NOT NULL DEFAULT 
 
 -- All existing users default to 'admin' (conservative). The SSO flow will set
 -- perm_templ_source = 'sso' on the next login when a group mapping matches.
+
+-- Widen record_comment_links.record_id to support API-mode encoded string IDs
+ALTER TABLE `record_comment_links` MODIFY `record_id` VARCHAR(3072) CHARACTER SET ascii NOT NULL;
