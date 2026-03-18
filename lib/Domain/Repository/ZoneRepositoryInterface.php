@@ -29,11 +29,11 @@ interface ZoneRepositoryInterface
     /**
      * Get all zones with pagination
      *
-     * @param int $offset Pagination offset
-     * @param int $limit Maximum number of records to return
+     * @param int|null $offset Pagination offset
+     * @param int|null $limit Maximum number of records to return
      * @return array Array of zones
      */
-    public function getAllZones(int $offset, int $limit): array;
+    public function getAllZones(?int $offset = null, ?int $limit = null): array;
 
     /**
      * Get total count of zones
@@ -210,4 +210,67 @@ interface ZoneRepositoryInterface
      * @return bool True if user is already an owner
      */
     public function isUserZoneOwner(int $zoneId, int $userId): bool;
+
+    /**
+     * List zones with optional user/permission filtering
+     *
+     * @param int|null $userId Optional user ID for filtering
+     * @param bool $viewOthers Whether user can view other users' zones
+     * @param array $filters Optional filters
+     * @param int $offset Pagination offset
+     * @param int $limit Maximum number of records
+     * @return array Array of zones
+     */
+    public function listZones(?int $userId = null, bool $viewOthers = false, array $filters = [], int $offset = 0, int $limit = 100): array;
+
+    /**
+     * Check if a zone exists, optionally for a specific user
+     *
+     * @param int $zoneId The zone ID
+     * @param int|null $userId Optional user ID
+     * @return bool True if zone exists
+     */
+    public function zoneExists(int $zoneId, ?int $userId = null): bool;
+
+    /**
+     * Get a zone by name
+     *
+     * @param string $zoneName The zone name
+     * @return array|null Zone data if found, null otherwise
+     */
+    public function getZoneByName(string $zoneName): ?array;
+
+    /**
+     * Create a new domain/zone
+     *
+     * @param string $domain Domain name
+     * @param int $owner Owner user ID
+     * @param string $type Zone type (MASTER, SLAVE, NATIVE)
+     * @param string $slaveMaster Slave master server
+     * @param string $zoneTemplate Zone template name
+     * @return bool True if created successfully
+     */
+    public function createDomain(string $domain, int $owner, string $type, string $slaveMaster = '', string $zoneTemplate = 'none'): bool;
+
+    /**
+     * Get count of zones with filtering
+     *
+     * @param int[]|null $zoneIds Optional array of zone IDs to filter
+     * @param int|null $userId Optional user ID filter
+     * @param string|null $nameFilter Optional name filter
+     * @return int Number of matching zones
+     */
+    public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null): int;
+
+    /**
+     * Get all zones with filtering and pagination
+     *
+     * @param int[]|null $zoneIds Optional array of zone IDs to filter
+     * @param int|null $userId Optional user ID filter
+     * @param string|null $nameFilter Optional name filter
+     * @param int|null $offset Optional pagination offset
+     * @param int|null $limit Optional pagination limit
+     * @return array Array of matching zones
+     */
+    public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null): array;
 }

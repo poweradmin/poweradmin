@@ -216,4 +216,46 @@ interface RecordRepositoryInterface
         string $type_filter = '',
         string $content_filter = ''
     ): int;
+
+    /**
+     * Get all records in an RRset (matching domain, name, and type)
+     *
+     * @param int $domainId The domain/zone ID
+     * @param string $name The record name
+     * @param string $type Record type (A, AAAA, CNAME, etc.)
+     * @return array Array of matching records
+     */
+    public function getRRSetRecords(int $domainId, string $name, string $type): array;
+
+    /**
+     * Get record ID by its attributes.
+     *
+     * @param int $domain_id Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @param string $content Record content
+     * @param int|null $prio Optional priority
+     * @param int|null $ttl Optional TTL
+     * @return int|string|null Record ID or null if not found
+     */
+    public function getRecordId(int $domain_id, string $name, string $type, string $content, ?int $prio = null, ?int $ttl = null): int|string|null;
+
+    /**
+     * Get the ID of a newly created record
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @param string $content Record content
+     * @return int|string|null Record ID or null if not found
+     */
+    public function getNewRecordId(int $domainId, string $name, string $type, string $content): int|string|null;
+
+    /**
+     * Get serial numbers for multiple zones in a single query
+     *
+     * @param array $zoneIds Array of zone IDs
+     * @return array<int, string> Array mapping zone ID to serial number
+     */
+    public function getSerialsByZoneIds(array $zoneIds): array;
 }

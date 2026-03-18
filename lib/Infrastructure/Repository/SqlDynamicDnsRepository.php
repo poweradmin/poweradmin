@@ -25,43 +25,35 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\ValueObject\HostnameValue;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
-class DynamicDnsRepository implements DynamicDnsRepositoryInterface
+/**
+ * SQL-backend dynamic DNS repository.
+ */
+class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 {
     private PDO $db;
     private DnsRecord $dnsRecord;
     private string $recordsTable;
-    private ConfigurationManager $config;
-    private ?DnsBackendProvider $backendProvider;
 
-    public function __construct(PDO $db, DnsRecord $dnsRecord, string $recordsTable, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
+    public function __construct(PDO $db, DnsRecord $dnsRecord, string $recordsTable)
     {
         $this->db = $db;
         $this->dnsRecord = $dnsRecord;
-        $this->config = $config;
         $this->recordsTable = $recordsTable;
-        $this->backendProvider = $backendProvider;
-    }
-
-    private function isApiBackend(): bool
-    {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     public function findUserByUsernameWithDynamicDnsPermissions(string $username): ?User
     {
         $query = $this->db->prepare("
-            SELECT users.id, users.password, users.use_ldap 
-            FROM users, perm_templ, perm_templ_items, perm_items 
+            SELECT users.id, users.password, users.use_ldap
+            FROM users, perm_templ, perm_templ_items, perm_items
             WHERE users.username = :username
-                AND users.active = 1 
-                AND perm_templ.id = users.perm_templ 
-                AND perm_templ_items.templ_id = perm_templ.id 
-                AND perm_items.id = perm_templ_items.perm_id 
+                AND users.active = 1
+                AND perm_templ.id = users.perm_templ
+                AND perm_templ_items.templ_id = perm_templ.id
+                AND perm_items.id = perm_templ_items.perm_id
                 AND (
                     perm_items.name = 'zone_content_edit_own'
                     OR perm_items.name = 'zone_content_edit_own_as_client'
@@ -98,17 +90,6 @@ class DynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function getDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType): array
     {
-        if ($this->isApiBackend()) {
-            $allRecords = $this->backendProvider->getRecordsByZoneId($zoneId, $recordType);
-            $records = [];
-            foreach ($allRecords as $r) {
-                if (($r['name'] ?? '') === $hostname->getValue()) {
-                    $records[$r['content'] ?? ''] = $r['id'] ?? 0;
-                }
-            }
-            return $records;
-        }
-
         $query = $this->db->prepare("
             SELECT id, content
             FROM {$this->recordsTable}
@@ -130,14 +111,6 @@ class DynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): void
     {
-        if ($this->isApiBackend()) {
-            $result = $this->backendProvider->addRecord($zoneId, $hostname->getValue(), $recordType, $content, 60, 0);
-            if (!$result) {
-                throw new \RuntimeException("Failed to add DNS record via API for zone $zoneId");
-            }
-            return;
-        }
-
         $insert = $this->db->prepare("
             INSERT INTO {$this->recordsTable} (domain_id, name, type, content, ttl, prio)
             VALUES (:domain_id, :hostname, :type, :content, 60, NULL)
@@ -152,14 +125,6 @@ class DynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function deleteDnsRecord(int|string $recordId): void
     {
-        if ($this->isApiBackend()) {
-            $result = $this->backendProvider->deleteRecord($recordId);
-            if (!$result) {
-                throw new \RuntimeException("Failed to delete DNS record via API for record $recordId");
-            }
-            return;
-        }
-
         $delete = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id = :id");
         $delete->execute([':id' => $recordId]);
     }
