@@ -172,8 +172,8 @@ class IPAddressValidator
 
         // If address is already expanded, just pad each part
         $parts = explode(':', $ipv6);
-        for ($i = 0; $i < count($parts); $i++) {
-            $parts[$i] = str_pad($parts[$i], 4, '0', STR_PAD_LEFT);
+        foreach ($parts as $key => $part) {
+            $parts[$key] = str_pad($part, 4, '0', STR_PAD_LEFT);
         }
 
         return implode(':', $parts);
