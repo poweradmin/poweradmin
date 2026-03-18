@@ -33,9 +33,8 @@ use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
@@ -47,7 +46,7 @@ class DnsWizardFormController extends BaseController
 {
     private DnsRecord $dnsRecord;
     private WizardRegistry $wizardRegistry;
-    private DbZoneRepository $zoneRepository;
+    private ZoneRepositoryInterface $zoneRepository;
     private RecordManagerService $recordManager;
     private FormStateService $formStateService;
 
@@ -62,7 +61,8 @@ class DnsWizardFormController extends BaseController
 
         $logger = new LegacyLogger($this->db);
         $backendProvider = $this->createDnsBackendProvider();
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
+        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
+        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
         $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
 

@@ -27,7 +27,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 
 /**
  * DNS Wizard Selection Controller
@@ -39,7 +39,7 @@ class DnsWizardSelectController extends BaseController
 {
     private DnsRecord $dnsRecord;
     private WizardRegistry $wizardRegistry;
-    private DbZoneRepository $zoneRepository;
+    private ZoneRepositoryInterface $zoneRepository;
 
     public function __construct(array $request)
     {

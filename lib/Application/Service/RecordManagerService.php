@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -138,7 +138,7 @@ class RecordManagerService
 
         // Get record ID for per-record comment linking (via linking table)
         // Pass prio and ttl for deterministic lookup (important for MX, SRV records with same content)
-        $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
+        $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
         $recordId = $recordRepository->getRecordId($zoneId, strtolower($fullZoneName), $type, $content, $prio, $ttl);
 
         if ($recordId !== null) {
@@ -196,7 +196,7 @@ class RecordManagerService
 
         $ptrZoneId = $this->dnsRecord->getBestMatchingZoneIdFromName($ptrName);
         if ($ptrZoneId !== -1) {
-            $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
+            $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
             $rrsetRecords = $recordRepository->getRRSetRecords($ptrZoneId, $ptrName, RecordType::PTR);
 
             foreach ($rrsetRecords as $record) {
@@ -231,7 +231,7 @@ class RecordManagerService
         }
 
         if ($contentDomainId !== null) {
-            $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
+            $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
             $rrsetRecords = $recordRepository->getRRSetRecords($contentDomainId, $content, RecordType::A);
 
             foreach ($rrsetRecords as $record) {

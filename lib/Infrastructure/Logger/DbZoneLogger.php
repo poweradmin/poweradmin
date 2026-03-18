@@ -23,7 +23,6 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
-use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 
@@ -124,7 +123,9 @@ class DbZoneLogger
             return false;
         }
 
-        $domainRepository = new DomainRepository($this->db, $this->config, $this->backendProvider);
+        $backendProvider = $this->backendProvider ?? \Poweradmin\Application\Service\DnsBackendProviderFactory::create($this->db, $this->config);
+        $repositoryFactory = new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $backendProvider);
+        $domainRepository = $repositoryFactory->createDomainRepository();
         $zones = $domainRepository->getZones('all');
         foreach ($zones as $zone) {
             if (str_contains($zone['name'], $domain_searched)) {

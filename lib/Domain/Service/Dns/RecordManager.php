@@ -30,7 +30,6 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
@@ -155,7 +154,7 @@ class RecordManager implements RecordManagerInterface
         $validatedPrio = $validatedData['prio'];
 
         // Create RecordRepository to check if record exists
-        $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
+        $recordRepository = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
         if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
             $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
             return false;
@@ -253,7 +252,7 @@ class RecordManager implements RecordManagerInterface
         $validatedPrio = $validatedData['prio'];
 
         // Create RecordRepository to check if record exists
-        $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
+        $recordRepository = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
         if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
             $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
             return null;
@@ -377,7 +376,7 @@ class RecordManager implements RecordManagerInterface
         $perm_edit = Permission::getEditPermission($this->db);
 
         // Create RecordRepository to get record details
-        $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
+        $recordRepository = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
         $record = $recordRepository->getRecordDetailsFromRecordId($rid);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
 

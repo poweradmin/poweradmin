@@ -48,7 +48,6 @@ use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -75,7 +74,8 @@ class AddRecordController extends BaseController
         $this->formStateService = new FormStateService();
 
         $backendProvider = $this->createDnsBackendProvider();
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
+        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
+        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
         $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
 

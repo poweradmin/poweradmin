@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\UserAvatarService;
@@ -37,7 +38,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -436,10 +437,15 @@ abstract class BaseController
         return new DnsDataService($backendProvider, $this->db, $this->getConfig());
     }
 
-    protected function createZoneRepository(): DbZoneRepository
+    protected function createZoneRepository(): ZoneRepositoryInterface
     {
-        $backendProvider = $this->createDnsBackendProvider();
-        return new DbZoneRepository($this->db, $this->getConfig(), $backendProvider);
+        return $this->getRepositoryFactory()->createZoneRepository();
+    }
+
+    protected function getRepositoryFactory(?DnsBackendProvider $backendProvider = null): RepositoryFactory
+    {
+        $provider = $backendProvider ?? $this->createDnsBackendProvider();
+        return new RepositoryFactory($this->db, $this->getConfig(), $provider, $this->logger);
     }
 
     /**

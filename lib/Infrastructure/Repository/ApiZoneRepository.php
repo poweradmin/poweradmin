@@ -23,11 +23,12 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
-class ApiZoneRepository
+class ApiZoneRepository implements ZoneRepositoryInterface
 {
     public function __construct(
         private readonly PDO $db,

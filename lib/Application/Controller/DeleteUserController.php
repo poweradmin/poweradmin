@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -120,7 +119,8 @@ class DeleteUserController extends BaseController
         if (!$name) {
             $name = UserEntity::getUserNameById($this->db, $uid);
         }
-        $domainRepository = new DomainRepository($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+        $repositoryFactory = $this->getRepositoryFactory();
+        $domainRepository = $repositoryFactory->createDomainRepository();
         $zones = $domainRepository->getZones("own", (int)$uid);
 
         $users = [];

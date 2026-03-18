@@ -38,7 +38,6 @@ use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -131,7 +130,8 @@ class ManageGroupZonesController extends BaseController
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
-            $domainRepository = new DomainRepository($this->db, $this->config, $this->createDnsBackendProvider());
+            $repositoryFactory = $this->getRepositoryFactory();
+            $domainRepository = $repositoryFactory->createDomainRepository();
 
             $results = $this->zoneGroupService->bulkAddZones($groupId, $domainIds);
 
@@ -218,7 +218,8 @@ class ManageGroupZonesController extends BaseController
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
-            $domainRepository = new DomainRepository($this->db, $this->config, $this->createDnsBackendProvider());
+            $repositoryFactory = $this->getRepositoryFactory();
+            $domainRepository = $repositoryFactory->createDomainRepository();
 
             $results = $this->zoneGroupService->bulkRemoveZones($groupId, $domainIds);
 
@@ -298,7 +299,8 @@ class ManageGroupZonesController extends BaseController
                 return;
             }
 
-            $domainRepository = new DomainRepository($this->db, $this->config, $this->createDnsBackendProvider());
+            $repositoryFactory = $this->getRepositoryFactory();
+            $domainRepository = $repositoryFactory->createDomainRepository();
 
             // Get zones owned by this group
             $zoneGroups = $this->zoneGroupService->listGroupZones($groupId);

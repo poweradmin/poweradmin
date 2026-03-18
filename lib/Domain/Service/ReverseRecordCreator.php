@@ -68,6 +68,14 @@ class ReverseRecordCreator
         return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
+    private function createRecordRepository(): \Poweradmin\Domain\Repository\RecordRepositoryInterface
+    {
+        if ($this->backendProvider !== null) {
+            return (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
+        }
+        return new \Poweradmin\Infrastructure\Repository\SqlRecordRepository($this->db, $this->config);
+    }
+
     public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = ''): array
     {
         $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
@@ -382,33 +390,8 @@ class ReverseRecordCreator
      */
     private function ptrRecordExists(int $zone_id, string $name, string $content): bool
     {
-        if ($this->isApiBackend()) {
-            $records = $this->backendProvider->getRecordsByZoneId($zone_id, 'PTR');
-            foreach ($records as $r) {
-                if ($r['name'] === $name && $r['content'] === $content) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        $query = "SELECT COUNT(*) FROM $records_table
-                  WHERE domain_id = :zone_id
-                  AND name = :name
-                  AND type = 'PTR'
-                  AND content = :content";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([
-            ':zone_id' => $zone_id,
-            ':name' => $name,
-            ':content' => $content
-        ]);
-
-        return (int)$stmt->fetchColumn() > 0;
+        $recordRepository = $this->createRecordRepository();
+        return $recordRepository->recordExists($zone_id, $name, 'PTR', $content);
     }
 
     /**
@@ -420,31 +403,14 @@ class ReverseRecordCreator
      */
     private function getExistingPtrRecords(int $zone_id, string $name): array
     {
-        if ($this->isApiBackend()) {
-            $records = $this->backendProvider->getRecordsByZoneId($zone_id, 'PTR');
-            $contents = [];
-            foreach ($records as $r) {
-                if ($r['name'] === $name) {
-                    $contents[] = $r['content'];
-                }
+        $recordRepository = $this->createRecordRepository();
+        $records = $recordRepository->getRecordsByDomainId($zone_id, 'PTR');
+        $contents = [];
+        foreach ($records as $r) {
+            if ($r['name'] === $name) {
+                $contents[] = $r['content'];
             }
-            return $contents;
         }
-
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        $query = "SELECT content FROM $records_table
-                  WHERE domain_id = :zone_id
-                  AND name = :name
-                  AND type = 'PTR'";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([
-            ':zone_id' => $zone_id,
-            ':name' => $name
-        ]);
-
-        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        return $contents;
     }
 }

@@ -26,17 +26,11 @@ use PDO;
 use Poweradmin\Application\Query\RecordSearch;
 use Poweradmin\Application\Query\ZoneSearch;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Domain\Repository\DomainRepository;
-use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 
 /**
  * Orchestration service for DNS data reads.
@@ -52,6 +46,7 @@ class DnsDataService
     private PDO $db;
     private ConfigurationInterface $config;
     private ?ZoneSyncService $zoneSyncService = null;
+    private RepositoryFactory $repositoryFactory;
 
     public function __construct(
         DnsBackendProvider $backendProvider,
@@ -61,6 +56,7 @@ class DnsDataService
         $this->backendProvider = $backendProvider;
         $this->db = $db;
         $this->config = $config;
+        $this->repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
 
         if ($backendProvider->isApiBackend()) {
             $this->zoneSyncService = new ZoneSyncService($db, $backendProvider);
@@ -107,23 +103,8 @@ class DnsDataService
         bool $showSerial = false,
         bool $showTemplate = false
     ): array {
-        if (!$this->backendProvider->isApiBackend()) {
-            $domainRepository = new DomainRepository($this->db, $this->config);
-            return $domainRepository->getZones(
-                $perm,
-                $userId,
-                $letterStart,
-                $rowStart,
-                $rowAmount,
-                $sortBy,
-                $sortDirection,
-                true,
-                $showSerial,
-                $showTemplate
-            );
-        }
-
-        return $this->getZonesFromApi(
+        $domainRepository = $this->repositoryFactory->createDomainRepository();
+        return $domainRepository->getZones(
             $perm,
             $userId,
             $letterStart,
@@ -131,9 +112,9 @@ class DnsDataService
             $rowAmount,
             $sortBy,
             $sortDirection,
+            true,
             $showSerial,
-            $showTemplate,
-            'forward'
+            $showTemplate
         );
     }
 
@@ -169,34 +150,18 @@ class DnsDataService
         bool $showSerial = false,
         bool $showTemplate = false
     ): array {
-        if (!$this->backendProvider->isApiBackend()) {
-            $zoneRepository = new DbZoneRepository($this->db, $this->config, $this->backendProvider);
-            return $zoneRepository->getReverseZones(
-                $perm,
-                $userId,
-                $reverseType,
-                $offset,
-                $limit,
-                $sortBy,
-                $sortDirection,
-                false,
-                $showSerial,
-                $showTemplate
-            );
-        }
-
-        return $this->getZonesFromApi(
+        $zoneRepository = $this->repositoryFactory->createZoneRepository();
+        return $zoneRepository->getReverseZones(
             $perm,
             $userId,
-            'all',
+            $reverseType,
             $offset,
             $limit,
             $sortBy,
             $sortDirection,
+            false,
             $showSerial,
-            $showTemplate,
-            'reverse',
-            $reverseType
+            $showTemplate
         );
     }
 
@@ -217,30 +182,8 @@ class DnsDataService
      */
     public function countZones(string $perm, string $letterStart = 'all', string $zoneType = 'forward'): int
     {
-        if (!$this->backendProvider->isApiBackend()) {
-            $zoneCountService = new ZoneCountService($this->db, $this->config);
-            return $zoneCountService->countZones($perm, $letterStart, $zoneType);
-        }
-
-        $this->zoneSyncService?->syncIfStale();
-
-        $zones = $this->backendProvider->getZones();
-        $zones = $this->filterZonesByType($zones, $zoneType);
-
-        if ($perm === 'own') {
-            $userId = $_SESSION['userid'] ?? null;
-            if ($userId) {
-                $zones = $this->filterZonesByOwnership($zones, (int)$userId);
-            } else {
-                return 0;
-            }
-        }
-
-        if ($letterStart !== 'all') {
-            $zones = ResultPaginator::filterByLetter($zones, $letterStart, 'name');
-        }
-
-        return count($zones);
+        $zoneCountService = new ZoneCountService($this->db, $this->config, null, $this->backendProvider);
+        return $zoneCountService->countZones($perm, $letterStart, $zoneType);
     }
 
     /**
@@ -255,39 +198,9 @@ class DnsDataService
      */
     public function getReverseZoneCounts(string $perm, int $userId): array
     {
-        if (!$this->backendProvider->isApiBackend()) {
-            $zoneRepository = new DbZoneRepository($this->db, $this->config, $this->backendProvider);
-            return $zoneRepository->getReverseZoneCounts($perm, $userId);
-        }
-
-        $zones = $this->backendProvider->getZones();
-
-        // Filter to reverse zones only
-        $reverseZones = array_filter($zones, function ($zone) {
-            $name = $zone['name'] ?? '';
-            return str_ends_with($name, '.in-addr.arpa') || str_ends_with($name, '.ip6.arpa');
-        });
-
-        if ($perm === 'own') {
-            $reverseZones = $this->filterZonesByOwnership($reverseZones, $userId);
-        }
-
-        $countIpv4 = 0;
-        $countIpv6 = 0;
-        foreach ($reverseZones as $zone) {
-            $name = $zone['name'] ?? '';
-            if (str_ends_with($name, '.in-addr.arpa')) {
-                $countIpv4++;
-            } elseif (str_ends_with($name, '.ip6.arpa')) {
-                $countIpv6++;
-            }
-        }
-
-        return [
-            'count_all' => $countIpv4 + $countIpv6,
-            'count_ipv4' => $countIpv4,
-            'count_ipv6' => $countIpv6,
-        ];
+        $this->zoneSyncService?->syncIfStale();
+        $zoneRepository = $this->repositoryFactory->createZoneRepository();
+        return $zoneRepository->getReverseZoneCounts($perm, $userId);
     }
 
     // ---------------------------------------------------------------
@@ -306,27 +219,9 @@ class DnsDataService
      */
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
     {
-        if (!$this->backendProvider->isApiBackend()) {
-            $zoneRepository = new DbZoneRepository($this->db, $this->config, $this->backendProvider);
-            return $zoneRepository->getDistinctStartingLetters($userId, $viewOthers);
-        }
-
-        $zones = $this->backendProvider->getZones();
-
-        // Filter out reverse zones
-        $zones = $this->filterZonesByType($zones, 'forward');
-
-        // Filter by ownership if needed
-        if (!$viewOthers) {
-            $zones = $this->filterZonesByOwnership($zones, $userId);
-        }
-
-        $letters = ResultPaginator::getDistinctLetters($zones, 'name');
-
-        // Filter to only alpha and numeric characters (matching SQL behavior)
-        return array_values(array_filter($letters, function ($letter) {
-            return ctype_alpha((string)$letter) || is_numeric($letter);
-        }));
+        $this->zoneSyncService?->syncIfStale();
+        $zoneRepository = $this->repositoryFactory->createZoneRepository();
+        return $zoneRepository->getDistinctStartingLetters($userId, $viewOthers);
     }
 
     // ---------------------------------------------------------------
@@ -363,23 +258,8 @@ class DnsDataService
         string $typeFilter = '',
         string $contentFilter = ''
     ): array {
-        if (!$this->backendProvider->isApiBackend()) {
-            return $this->getZoneRecordsSql(
-                $zoneId,
-                $rowStart,
-                $rowAmount,
-                $sortBy,
-                $sortDirection,
-                $includeComments,
-                $searchTerm,
-                $typeFilter,
-                $contentFilter
-            );
-        }
-
-        return $this->getZoneRecordsApi(
+        return $this->getFilteredRecordsForZone(
             $zoneId,
-            $zoneName,
             $rowStart,
             $rowAmount,
             $sortBy,
@@ -721,27 +601,7 @@ class DnsDataService
         // Enrich with record counts from the records table
         $zoneIds = array_filter(array_map(fn($z) => $z['id'] ?? 0, $zones));
         if (!empty($zoneIds)) {
-            if ($this->backendProvider->isApiBackend()) {
-                $recordCounts = [];
-                foreach ($zoneIds as $zid) {
-                    $recordCounts[$zid] = $this->backendProvider->countZoneRecords($zid);
-                }
-            } else {
-                $tableNameService = new TableNameService($this->config);
-                $recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
-                $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
-                $stmt = $this->db->prepare(
-                    "SELECT domain_id, COUNT(*) as count_records FROM $recordsTable
-                     WHERE domain_id IN ($placeholders) AND type IS NOT NULL AND type != ''
-                     GROUP BY domain_id"
-                );
-                $stmt->execute(array_values($zoneIds));
-
-                $recordCounts = [];
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $recordCounts[(int)$row['domain_id']] = (int)$row['count_records'];
-                }
-            }
+            $recordCounts = $this->batchCountZoneRecords($zoneIds);
 
             foreach ($zones as &$zone) {
                 $zone['count_records'] = $recordCounts[$zone['id'] ?? 0] ?? 0;
@@ -753,6 +613,40 @@ class DnsDataService
     }
 
     /**
+     * Batch count records for multiple zones.
+     * Uses a single SQL query for SQL backend, per-zone API calls for API backend.
+     *
+     * @param int[] $zoneIds
+     * @return array<int, int> zone ID => record count
+     */
+    private function batchCountZoneRecords(array $zoneIds): array
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            $counts = [];
+            foreach ($zoneIds as $zid) {
+                $counts[$zid] = $this->backendProvider->countZoneRecords($zid);
+            }
+            return $counts;
+        }
+
+        $tableNameService = new \Poweradmin\Infrastructure\Database\TableNameService($this->config);
+        $recordsTable = $tableNameService->getTable(\Poweradmin\Infrastructure\Database\PdnsTable::RECORDS);
+        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
+        $stmt = $this->db->prepare(
+            "SELECT domain_id, COUNT(*) as count_records FROM $recordsTable
+             WHERE domain_id IN ($placeholders) AND type IS NOT NULL AND type != ''
+             GROUP BY domain_id"
+        );
+        $stmt->execute(array_values($zoneIds));
+
+        $counts = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $counts[(int)$row['domain_id']] = (int)$row['count_records'];
+        }
+        return $counts;
+    }
+
+    /**
      * Enrich zones with SOA serial numbers.
      */
     private function enrichZonesWithSerial(array &$zones): void
@@ -761,7 +655,7 @@ class DnsDataService
             return;
         }
 
-        $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
+        $recordRepository = $this->repositoryFactory->createRecordRepository();
         $zoneIds = array_map(fn($zone) => $zone['id'] ?? 0, $zones);
         $serials = $recordRepository->getSerialsByZoneIds($zoneIds);
 
@@ -787,11 +681,11 @@ class DnsDataService
     // ---------------------------------------------------------------
 
     /**
-     * Get zone records using existing SQL repositories.
+     * Get filtered records for a zone using the repository.
      *
      * @return array{records: array, total: int}
      */
-    private function getZoneRecordsSql(
+    private function getFilteredRecordsForZone(
         int $zoneId,
         int $rowStart,
         int $rowAmount,
@@ -802,9 +696,10 @@ class DnsDataService
         string $typeFilter,
         string $contentFilter
     ): array {
-        $recordRepository = new RecordRepository($this->db, $this->config, $this->backendProvider);
+        $recordRepository = $this->repositoryFactory->createRecordRepository();
+        $hasFilters = !empty($searchTerm) || !empty($typeFilter) || !empty($contentFilter);
 
-        if (!empty($searchTerm) || !empty($typeFilter) || !empty($contentFilter)) {
+        if ($hasFilters) {
             $records = $recordRepository->getFilteredRecords(
                 $zoneId,
                 $rowStart,
@@ -824,9 +719,10 @@ class DnsDataService
                 $contentFilter
             );
         } else {
+            // Use getRecordsFromDomainId for unfiltered requests to preserve
+            // special SOA-first, NS-second, apex-third ordering
             $dbType = $this->config->get('database', 'type', 'mysql');
-            $dnsRecord = new DnsRecord($this->db, $this->config);
-            $records = $dnsRecord->getRecordsFromDomainId(
+            $records = $recordRepository->getRecordsFromDomainId(
                 $dbType,
                 $zoneId,
                 $rowStart,
@@ -835,7 +731,7 @@ class DnsDataService
                 $sortDirection,
                 $includeComments
             );
-            $total = $dnsRecord->countZoneRecords($zoneId);
+            $total = $recordRepository->countZoneRecords($zoneId);
         }
 
         return ['records' => $records, 'total' => $total];

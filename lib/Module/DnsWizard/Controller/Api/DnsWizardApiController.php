@@ -34,7 +34,6 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -374,7 +373,8 @@ class DnsWizardApiController extends InternalApiController
             // Create the record using RecordManagerService
             $logger = new LegacyLogger($this->db);
             $backendProvider = $this->createDnsBackendProvider();
-            $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->config, $backendProvider);
+            $repositoryFactory = $this->getRepositoryFactory($backendProvider);
+            $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
             $recordCommentService = new RecordCommentService($recordCommentRepository);
             $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
             $recordManager = new RecordManagerService(

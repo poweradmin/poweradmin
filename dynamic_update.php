@@ -15,7 +15,8 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Repository\DynamicDnsRepository;
+use Poweradmin\Infrastructure\Repository\ApiDynamicDnsRepository;
+use Poweradmin\Infrastructure\Repository\SqlDynamicDnsRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 // Main execution code
@@ -48,7 +49,9 @@ $db = $databaseService->connect($credentials);
 // Initialize services
 $dnsRecord = new DnsRecord($db, $config);
 $backendProvider = DnsBackendProviderFactory::create($db, $config);
-$repository = new DynamicDnsRepository($db, $dnsRecord, $records_table, $config, $backendProvider);
+$repository = $backendProvider->isApiBackend()
+    ? new ApiDynamicDnsRepository($db, $dnsRecord, $backendProvider)
+    : new SqlDynamicDnsRepository($db, $dnsRecord, $records_table);
 
 $validationService = new DynamicDnsValidationService($config);
 

@@ -22,11 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use PDO;
-use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 
 /**
  * Zone Validation Service
@@ -36,33 +32,11 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
  */
 class ZoneValidationService
 {
-    private PDO $db;
-    private string $pdnsDbName;
-    private string $dbType;
-    private ?DnsBackendProvider $backendProvider;
+    private RecordRepositoryInterface $recordRepository;
 
-    public function __construct(PDO $db, ?DnsBackendProvider $backendProvider = null)
+    public function __construct(RecordRepositoryInterface $recordRepository)
     {
-        $this->db = $db;
-        $this->backendProvider = $backendProvider;
-
-        // Get PowerDNS database name from configuration
-        $config = ConfigurationManager::getInstance();
-        $this->pdnsDbName = $config->get('database', 'pdns_db_name', 'pdns');
-        $this->dbType = $config->get('database', 'type');
-    }
-
-    private function isApiBackend(): bool
-    {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
-    }
-
-    /**
-     * Get the full table name with PowerDNS database prefix
-     */
-    private function getTableName(PdnsTable $table): string
-    {
-        return $table->getFullName($this->pdnsDbName);
+        $this->recordRepository = $recordRepository;
     }
 
     /**
@@ -118,26 +92,8 @@ class ZoneValidationService
     {
         $issues = [];
 
-        if ($this->isApiBackend()) {
-            $records = $this->backendProvider->getRecordsByZoneId($zoneId, 'SOA');
-            $soaRecords = [];
-            foreach ($records as $r) {
-                if (!($r['disabled'] ?? false)) {
-                    $soaRecords[] = $r;
-                }
-            }
-        } else {
-            $recordsTable = $this->getTableName(PdnsTable::RECORDS);
-            $query = "SELECT id, name, content
-                      FROM {$recordsTable}
-                      WHERE domain_id = :zone_id
-                      AND type = 'SOA'
-                      AND disabled = " . DbCompat::boolFalse($this->dbType);
-
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([':zone_id' => $zoneId]);
-            $soaRecords = $stmt->fetchAll();
-        }
+        $records = $this->recordRepository->getRecordsByDomainId($zoneId, 'SOA');
+        $soaRecords = array_values(array_filter($records, fn($r) => !filter_var($r['disabled'] ?? false, FILTER_VALIDATE_BOOLEAN)));
 
         if (empty($soaRecords)) {
             $issues[] = [
@@ -210,26 +166,8 @@ class ZoneValidationService
         $issues = [];
         $apex = rtrim($zoneName, '.');
 
-        if ($this->isApiBackend()) {
-            $records = $this->backendProvider->getRecordsByZoneId($zoneId, 'NS');
-            $nsRecords = [];
-            foreach ($records as $r) {
-                if (!($r['disabled'] ?? false)) {
-                    $nsRecords[] = $r;
-                }
-            }
-        } else {
-            $recordsTable = $this->getTableName(PdnsTable::RECORDS);
-            $query = "SELECT name
-                      FROM {$recordsTable}
-                      WHERE domain_id = :zone_id
-                      AND type = 'NS'
-                      AND disabled = " . DbCompat::boolFalse($this->dbType);
-
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([':zone_id' => $zoneId]);
-            $nsRecords = $stmt->fetchAll();
-        }
+        $records = $this->recordRepository->getRecordsByDomainId($zoneId, 'NS');
+        $nsRecords = array_values(array_filter($records, fn($r) => !filter_var($r['disabled'] ?? false, FILTER_VALIDATE_BOOLEAN)));
 
         // Count only apex NS records (exclude delegations)
         $apexNsCount = 0;

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,10 +28,11 @@ use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 
 /**
  * Factory for DNS services
@@ -57,12 +58,14 @@ class DnsServiceFactory
         ConfigurationManager $config,
         ?DnsBackendProvider $backendProvider = null
     ): DnsRecordValidationServiceInterface {
+        $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        $repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
         $validatorRegistry = new DnsValidatorRegistry($config, $db, $backendProvider);
         $ttlValidator = new TTLValidator();
         $dnsCommonValidator = new DnsCommonValidator($db, $config, $backendProvider);
         $messageService = new MessageService();
-        $zoneRepository = new DbZoneRepository($db, $config, $backendProvider);
-        $dnsViolationValidator = new DNSViolationValidator($db, $config, $backendProvider);
+        $zoneRepository = $repositoryFactory->createZoneRepository();
+        $dnsViolationValidator = new DNSViolationValidator($repositoryFactory->createRecordRepository());
 
         return new DnsRecordValidationService(
             $validatorRegistry,

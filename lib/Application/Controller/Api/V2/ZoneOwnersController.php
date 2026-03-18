@@ -34,14 +34,14 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
 
 class ZoneOwnersController extends PublicApiController
 {
-    private DbZoneRepository $zoneRepository;
+    private ZoneRepositoryInterface $zoneRepository;
     private DbUserRepository $userRepository;
     private ApiPermissionService $apiPermissionService;
 

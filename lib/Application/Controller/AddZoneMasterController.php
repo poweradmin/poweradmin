@@ -163,7 +163,7 @@ class AddZoneMasterController extends BaseController
 
                 if (isset($_POST['dnssec']) && $dnssecProvider->isDnssecEnabled()) {
                     // Pre-flight zone validation before DNSSEC signing
-                    $zoneValidator = new ZoneValidationService($this->db);
+                    $zoneValidator = new ZoneValidationService($this->getRepositoryFactory()->createRecordRepository());
                     $validation = $zoneValidator->validateZoneForDnssec($zone_id, $zone_name);
 
                     if (!$validation['valid']) {

@@ -46,9 +46,8 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Domain\Repository\RecordRepository;
 
 class EditRecordController extends BaseController
 {
@@ -59,7 +58,7 @@ class EditRecordController extends BaseController
     private RecordTypeService $recordTypeService;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
-    private RecordRepository $recordRepository;
+    private RecordRepositoryInterface $recordRepository;
 
     public function __construct(array $request)
     {
@@ -68,9 +67,10 @@ class EditRecordController extends BaseController
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $backendProvider = $this->createDnsBackendProvider();
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
+        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
+        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
-        $this->recordRepository = new RecordRepository($this->db, $this->getConfig(), $backendProvider);
+        $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();

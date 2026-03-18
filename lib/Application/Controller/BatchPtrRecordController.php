@@ -32,7 +32,6 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
-use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Model\Constants;
 
@@ -51,7 +50,8 @@ class BatchPtrRecordController extends BaseController
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         $backendProvider = $this->createDnsBackendProvider();
-        $recordRepository = new RecordRepository($this->db, $this->getConfig(), $backendProvider);
+        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
+        $recordRepository = $repositoryFactory->createRecordRepository();
 
         $this->batchReverseRecordCreator = new BatchReverseRecordCreator(
             $this->db,

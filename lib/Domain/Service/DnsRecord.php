@@ -25,8 +25,6 @@ namespace Poweradmin\Domain\Service;
 use Exception;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\Constants;
-use Poweradmin\Domain\Repository\DomainRepository;
-use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
@@ -54,9 +52,9 @@ class DnsRecord
     // New service instances
     /** @var SOARecordManager */
     private $soaRecordManager;
-    /** @var DomainRepository */
+    /** @var \Poweradmin\Domain\Repository\DomainRepositoryInterface */
     private $domainRepository;
-    /** @var RecordRepository */
+    /** @var \Poweradmin\Domain\Repository\RecordRepositoryInterface */
     private $recordRepository;
     /** @var RecordManager */
     private $recordManager;
@@ -86,8 +84,9 @@ class DnsRecord
     {
         // Create the new service instances with backend provider
         $this->soaRecordManager = new SOARecordManager($this->db, $this->config, $backendProvider);
-        $this->domainRepository = new DomainRepository($this->db, $this->config, $backendProvider);
-        $this->recordRepository = new RecordRepository($this->db, $this->config, $backendProvider);
+        $repositoryFactory = new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $backendProvider);
+        $this->domainRepository = $repositoryFactory->createDomainRepository();
+        $this->recordRepository = $repositoryFactory->createRecordRepository();
 
         // Create services with dependencies on repositories
         $this->recordManager = new RecordManager(

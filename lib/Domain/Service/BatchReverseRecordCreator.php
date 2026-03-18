@@ -30,7 +30,8 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
 use Poweradmin\Domain\Utility\IpHelper;
 
 class BatchReverseRecordCreator
@@ -40,7 +41,7 @@ class BatchReverseRecordCreator
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
     private IPAddressValidator $ipValidator;
-    private RecordRepository $recordRepository;
+    private RecordRepositoryInterface $recordRepository;
     private RecordMatchingService $recordMatchingService;
     private IpAddressRetriever $ipAddressRetriever;
     private UserContextService $userContextService;
@@ -51,14 +52,14 @@ class BatchReverseRecordCreator
         LegacyLogger $logger,
         DnsRecord $dnsRecord,
         ?IPAddressValidator $ipValidator = null,
-        ?RecordRepository $recordRepository = null
+        ?RecordRepositoryInterface $recordRepository = null
     ) {
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger;
         $this->dnsRecord = $dnsRecord;
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
-        $this->recordRepository = $recordRepository ?? new RecordRepository($db, $config);
+        $this->recordRepository = $recordRepository ?? new SqlRecordRepository($db, $config);
         $this->recordMatchingService = new RecordMatchingService($dnsRecord, $this->recordRepository);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->userContextService = new UserContextService();

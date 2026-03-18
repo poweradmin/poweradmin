@@ -43,7 +43,6 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -65,7 +64,8 @@ class BulkRecordAddController extends BaseController
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         $backendProvider = $this->createDnsBackendProvider();
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
+        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
+        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
         $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
 

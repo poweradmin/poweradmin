@@ -22,14 +22,14 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 
 class RecordMatchingService
 {
     private DnsRecord $dnsRecord;
-    private RecordRepository $recordRepository;
+    private RecordRepositoryInterface $recordRepository;
 
-    public function __construct(DnsRecord $dnsRecord, RecordRepository $recordRepository)
+    public function __construct(DnsRecord $dnsRecord, RecordRepositoryInterface $recordRepository)
     {
         $this->dnsRecord = $dnsRecord;
         $this->recordRepository = $recordRepository;

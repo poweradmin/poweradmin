@@ -56,14 +56,13 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ModuleRegistry;
-use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -83,15 +82,16 @@ class EditController extends BaseController
     private IpAddressRetriever $ipAddressRetriever;
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
-    private RecordRepository $recordRepository;
+    private RecordRepositoryInterface $recordRepository;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
         $backendProvider = $this->createDnsBackendProvider();
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
+        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
+        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
-        $this->recordRepository = new RecordRepository($this->db, $this->getConfig(), $backendProvider);
+        $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->formStateService = new FormStateService();
@@ -318,7 +318,7 @@ class EditController extends BaseController
                 $this->setMessage('edit', 'info', _('Zone is already signed with DNSSEC.'));
             } else {
                 // Pre-flight zone validation before DNSSEC signing
-                $zoneValidator = new ZoneValidationService($this->db);
+                $zoneValidator = new ZoneValidationService($this->recordRepository);
                 $validation = $zoneValidator->validateZoneForDnssec($zone_id, $zone_name);
 
                 if (!$validation['valid']) {

@@ -38,7 +38,6 @@ use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Error\ApiErrorException;
-use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -47,10 +46,9 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
-use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -58,8 +56,8 @@ use OpenApi\Attributes as OA;
 
 class ZonesRecordsBulkController extends PublicApiController
 {
-    private DbZoneRepository $zoneRepository;
-    private RecordRepository $recordRepository;
+    private ZoneRepositoryInterface $zoneRepository;
+    private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
     private SOARecordManager $soaRecordManager;
     private ApiPermissionService $permissionService;
@@ -71,17 +69,18 @@ class ZonesRecordsBulkController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = new RecordRepository($this->db, $this->getConfig(), $this->backendProvider);
+        $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->permissionService = new ApiPermissionService($this->db);
 
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $this->backendProvider);
+        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
         $this->soaRecordManager = new SOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
-        $domainRepository = new DomainRepository($this->db, $this->getConfig(), $this->backendProvider);
+        $domainRepository = $repositoryFactory->createDomainRepository();
         $this->recordManager = new RecordManager(
             $this->db,
             $this->getConfig(),
@@ -352,7 +351,8 @@ class ZonesRecordsBulkController extends PublicApiController
         }
 
         // Get zone name
-        $domainRepository = new DomainRepository($this->db, $this->getConfig(), $this->backendProvider);
+        $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
+        $domainRepository = $repositoryFactory->createDomainRepository();
         $zoneName = $domainRepository->getDomainNameById($zoneId);
         if ($zoneName === null) {
             throw new ApiErrorException('Zone not found', 404);

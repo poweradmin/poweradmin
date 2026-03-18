@@ -41,11 +41,9 @@ use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
-use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
-use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
@@ -54,8 +52,8 @@ use OpenApi\Attributes as OA;
 
 class ZonesRecordsController extends PublicApiController
 {
-    private DbZoneRepository $zoneRepository;
-    private RecordRepository $recordRepository;
+    private ZoneRepositoryInterface $zoneRepository;
+    private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
     private SOARecordManager $soaRecordManager;
     private ApiPermissionService $permissionService;
@@ -67,17 +65,18 @@ class ZonesRecordsController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = new RecordRepository($this->db, $this->getConfig(), $this->backendProvider);
+        $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->permissionService = new ApiPermissionService($this->db);
 
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $this->backendProvider);
+        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
         $this->soaRecordManager = new SOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
-        $domainRepository = new DomainRepository($this->db, $this->getConfig(), $this->backendProvider);
+        $domainRepository = $repositoryFactory->createDomainRepository();
         $this->recordManager = new RecordManager(
             $this->db,
             $this->getConfig(),
@@ -426,7 +425,8 @@ class ZonesRecordsController extends PublicApiController
 
             // Validate the record using the validation service
             $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-            $domainRepository = new DomainRepository($this->db, $this->getConfig(), $this->backendProvider);
+            $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
+            $domainRepository = $repositoryFactory->createDomainRepository();
 
             // Get zone name for validation
             $zoneName = $domainRepository->getDomainNameById($zoneId);

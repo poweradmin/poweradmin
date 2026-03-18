@@ -38,7 +38,6 @@ use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
@@ -217,7 +216,8 @@ class EditGroupController extends BaseController
             }
 
             // Get zone details
-            $domainRepository = new DomainRepository($this->db, $this->config, $this->createDnsBackendProvider());
+            $repositoryFactory = $this->getRepositoryFactory();
+            $domainRepository = $repositoryFactory->createDomainRepository();
 
             $zoneDetails = [];
             foreach ($zones as $zoneGroup) {

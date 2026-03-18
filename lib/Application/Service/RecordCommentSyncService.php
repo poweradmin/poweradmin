@@ -23,19 +23,19 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsRecord;
 
 class RecordCommentSyncService
 {
     private RecordCommentService $commentService;
-    private ?RecordRepository $recordRepository;
+    private ?RecordRepositoryInterface $recordRepository;
     private bool $isApiBackend;
 
     public function __construct(
         RecordCommentService $commentService,
-        ?RecordRepository $recordRepository = null,
+        ?RecordRepositoryInterface $recordRepository = null,
         ?DnsBackendProvider $backendProvider = null
     ) {
         $this->commentService = $commentService;

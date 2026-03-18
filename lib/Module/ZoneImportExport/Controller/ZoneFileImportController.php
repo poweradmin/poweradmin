@@ -32,9 +32,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
-use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
@@ -334,9 +332,10 @@ class ZoneFileImportController extends BaseController
 
         // Import records
         $backendProvider = $this->createDnsBackendProvider();
-        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig(), $backendProvider);
+        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
+        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
-        $recordRepository = new RecordRepository($this->db, $this->getConfig(), $backendProvider);
+        $recordRepository = $repositoryFactory->createRecordRepository();
         $commentSyncService = new RecordCommentSyncService($recordCommentService, $recordRepository, $backendProvider);
         $logger = new LegacyLogger($this->db);
         $recordManager = new RecordManagerService(

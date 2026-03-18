@@ -55,7 +55,7 @@ class ValidationController extends InternalApiController
         $ttlValidator = new TTLValidator();
         $messageService = new MessageService();
         $this->zoneRepository = $this->createZoneRepository();
-        $dnsViolationValidator = new DNSViolationValidator($this->db, $this->getConfig());
+        $dnsViolationValidator = new DNSViolationValidator($this->getRepositoryFactory()->createRecordRepository());
 
         $this->validationService = new DnsRecordValidationService(
             $validatorRegistry,
