@@ -81,5 +81,6 @@
         <PossiblyUndefinedIntArrayOffset errorLevel="info" />
         <DocblockTypeContradiction errorLevel="info" />
         <ForbiddenCode errorLevel="info" />
+        <InvalidAttribute errorLevel="info" />
     </issueHandlers>
 </psalm>
