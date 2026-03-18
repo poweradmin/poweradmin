@@ -1721,9 +1721,9 @@ class DatabaseStructureHelper
                 'options' => array('type' => 'innodb'),
                 'fields' => array(
                     'record_id' => array(
-                        'type' => 'integer',
+                        'type' => 'text',
+                        'length' => 3072,
                         'notnull' => 1,
-                        'unsigned' => 0,
                         'name' => 'record_id',
                         'table' => 'record_comment_links',
                         'flags' => 'primary_keynot_null'

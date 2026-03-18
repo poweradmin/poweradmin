@@ -3,8 +3,8 @@
 namespace unit;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneValidationService;
-use PDO;
 
 /**
  * Tests for ZoneValidationService
@@ -13,25 +13,13 @@ use PDO;
  */
 class ZoneValidationServiceTest extends TestCase
 {
-    private $dbMock;
+    private $recordRepoMock;
     private ZoneValidationService $validator;
 
     protected function setUp(): void
     {
-        $this->dbMock = $this->createMock(PDO::class);
-        $this->validator = new ZoneValidationService($this->dbMock);
-    }
-
-    /**
-     * Helper method to create a PDO statement mock
-     */
-    private function createStatementMock(array $returnData): \PDOStatement
-    {
-        $stmt = $this->createMock(\PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn($returnData);
-        $stmt->method('fetch')->willReturn($returnData[0] ?? false);
-        return $stmt;
+        $this->recordRepoMock = $this->createMock(RecordRepositoryInterface::class);
+        $this->validator = new ZoneValidationService($this->recordRepoMock);
     }
 
     /**
@@ -39,19 +27,16 @@ class ZoneValidationServiceTest extends TestCase
      */
     public function testValidZonePassesValidation(): void
     {
-        // Mock SOA record query
-        $soaStmt = $this->createStatementMock([
-            ['id' => 1, 'name' => 'example.com', 'content' => 'ns1.example.com hostmaster.example.com 2024010100 28800 7200 604800 86400']
-        ]);
-
-        // Mock NS record query - return apex NS records
-        $nsStmt = $this->createStatementMock([
-            ['name' => 'example.com'],
-            ['name' => 'example.com']
-        ]);
-
-        $this->dbMock->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'SOA') {
+                    return [['id' => 1, 'name' => 'example.com', 'content' => 'ns1.example.com hostmaster.example.com 2024010100 28800 7200 604800 86400', 'disabled' => 0]];
+                }
+                if ($type === 'NS') {
+                    return [['name' => 'example.com', 'disabled' => 0], ['name' => 'example.com', 'disabled' => 0]];
+                }
+                return [];
+            });
 
         $result = $this->validator->validateZoneForDnssec(1, 'example.com');
 
@@ -64,12 +49,16 @@ class ZoneValidationServiceTest extends TestCase
      */
     public function testMissingSoaRecordDetected(): void
     {
-        // Mock SOA record query (empty)
-        $soaStmt = $this->createStatementMock([]);
-        $nsStmt = $this->createStatementMock([['name' => 'example.com']]);
-
-        $this->dbMock->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'SOA') {
+                    return [];
+                }
+                if ($type === 'NS') {
+                    return [['name' => 'example.com', 'disabled' => 0]];
+                }
+                return [];
+            });
 
         $result = $this->validator->validateZoneForDnssec(1, 'example.com');
 
@@ -84,15 +73,19 @@ class ZoneValidationServiceTest extends TestCase
      */
     public function testMultipleSoaRecordsDetected(): void
     {
-        // Mock SOA record query (multiple records)
-        $soaStmt = $this->createStatementMock([
-            ['id' => 1, 'name' => 'example.com', 'content' => 'ns1.example.com hostmaster.example.com 2024010100 28800 7200 604800 86400'],
-            ['id' => 2, 'name' => 'example.com', 'content' => 'ns2.example.com hostmaster.example.com 2024010101 28800 7200 604800 86400']
-        ]);
-        $nsStmt = $this->createStatementMock([['name' => 'example.com']]);
-
-        $this->dbMock->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'SOA') {
+                    return [
+                        ['id' => 1, 'name' => 'example.com', 'content' => 'ns1.example.com hostmaster.example.com 2024010100 28800 7200 604800 86400', 'disabled' => 0],
+                        ['id' => 2, 'name' => 'example.com', 'content' => 'ns2.example.com hostmaster.example.com 2024010101 28800 7200 604800 86400', 'disabled' => 0],
+                    ];
+                }
+                if ($type === 'NS') {
+                    return [['name' => 'example.com', 'disabled' => 0]];
+                }
+                return [];
+            });
 
         $result = $this->validator->validateZoneForDnssec(1, 'example.com');
 
@@ -107,14 +100,16 @@ class ZoneValidationServiceTest extends TestCase
      */
     public function testMissingApexNsRecordsDetected(): void
     {
-        $soaStmt = $this->createStatementMock([
-            ['id' => 1, 'name' => 'example.com', 'content' => 'ns1.example.com hostmaster.example.com 2024010100 28800 7200 604800 86400']
-        ]);
-        // Mock NS query - no NS records at all
-        $nsStmt = $this->createStatementMock([]);
-
-        $this->dbMock->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'SOA') {
+                    return [['id' => 1, 'name' => 'example.com', 'content' => 'ns1.example.com hostmaster.example.com 2024010100 28800 7200 604800 86400', 'disabled' => 0]];
+                }
+                if ($type === 'NS') {
+                    return [];
+                }
+                return [];
+            });
 
         $result = $this->validator->validateZoneForDnssec(1, 'example.com');
 
@@ -129,17 +124,16 @@ class ZoneValidationServiceTest extends TestCase
      */
     public function testDelegationNsRecordsNotCountedAsApex(): void
     {
-        $soaStmt = $this->createStatementMock([
-            ['id' => 1, 'name' => 'example.com', 'content' => 'ns1.example.com hostmaster.example.com 2024010100 28800 7200 604800 86400']
-        ]);
-        // Mock NS query - only delegation NS records (child.example.com)
-        $nsStmt = $this->createStatementMock([
-            ['name' => 'child.example.com'],
-            ['name' => 'sub.example.com']
-        ]);
-
-        $this->dbMock->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'SOA') {
+                    return [['id' => 1, 'name' => 'example.com', 'content' => 'ns1.example.com hostmaster.example.com 2024010100 28800 7200 604800 86400', 'disabled' => 0]];
+                }
+                if ($type === 'NS') {
+                    return [['name' => 'child.example.com', 'disabled' => 0], ['name' => 'sub.example.com', 'disabled' => 0]];
+                }
+                return [];
+            });
 
         $result = $this->validator->validateZoneForDnssec(1, 'example.com');
 
@@ -202,14 +196,16 @@ class ZoneValidationServiceTest extends TestCase
      */
     public function testSoaNotAtApexDetected(): void
     {
-        // Mock SOA record query (SOA not at apex)
-        $soaStmt = $this->createStatementMock([
-            ['id' => 1, 'name' => 'subdomain.example.com', 'content' => 'ns1.example.com hostmaster.example.com 2024010100 28800 7200 604800 86400']
-        ]);
-        $nsStmt = $this->createStatementMock([['name' => 'example.com']]);
-
-        $this->dbMock->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'SOA') {
+                    return [['id' => 1, 'name' => 'subdomain.example.com', 'content' => 'ns1.example.com hostmaster.example.com 2024010100 28800 7200 604800 86400', 'disabled' => 0]];
+                }
+                if ($type === 'NS') {
+                    return [['name' => 'example.com', 'disabled' => 0]];
+                }
+                return [];
+            });
 
         $result = $this->validator->validateZoneForDnssec(1, 'example.com');
 
@@ -233,14 +229,16 @@ class ZoneValidationServiceTest extends TestCase
      */
     public function testInvalidSoaContentDetected(): void
     {
-        // Mock SOA record query (invalid content)
-        $soaStmt = $this->createStatementMock([
-            ['id' => 1, 'name' => 'example.com', 'content' => 'invalid soa content']
-        ]);
-        $nsStmt = $this->createStatementMock([['name' => 'example.com']]);
-
-        $this->dbMock->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'SOA') {
+                    return [['id' => 1, 'name' => 'example.com', 'content' => 'invalid soa content', 'disabled' => 0]];
+                }
+                if ($type === 'NS') {
+                    return [['name' => 'example.com', 'disabled' => 0]];
+                }
+                return [];
+            });
 
         $result = $this->validator->validateZoneForDnssec(1, 'example.com');
 
@@ -264,13 +262,17 @@ class ZoneValidationServiceTest extends TestCase
      */
     public function testDisabledSoaRecordsIgnored(): void
     {
-        // Mock SOA record query - returns empty because disabled=0 filter excludes the disabled SOA
-        // (simulating a zone where only disabled SOA exists)
-        $soaStmt = $this->createStatementMock([]);
-        $nsStmt = $this->createStatementMock([['name' => 'example.com']]);
-
-        $this->dbMock->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'SOA') {
+                    // Only disabled SOA records
+                    return [['id' => 1, 'name' => 'example.com', 'content' => 'ns1.example.com hostmaster.example.com 2024010100 28800 7200 604800 86400', 'disabled' => 1]];
+                }
+                if ($type === 'NS') {
+                    return [['name' => 'example.com', 'disabled' => 0]];
+                }
+                return [];
+            });
 
         $result = $this->validator->validateZoneForDnssec(1, 'example.com');
 

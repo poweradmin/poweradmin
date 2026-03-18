@@ -4,6 +4,7 @@ namespace TestHelpers;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
@@ -197,7 +198,9 @@ class BaseDnsTest extends TestCase
 
         $ttlValidator = new TTLValidator();
         $dnsCommonValidator = new DnsCommonValidator($dbMock, $configMock);
-        $dnsViolationValidator = new DNSViolationValidator($dbMock, $configMock);
+        $recordRepositoryMock = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepositoryMock->method('getRecordsByDomainId')->willReturn([]);
+        $dnsViolationValidator = new DNSViolationValidator($recordRepositoryMock);
 
         // Create validation service with mocked dependencies for tests
         $this->validationService = new DnsRecordValidationService(

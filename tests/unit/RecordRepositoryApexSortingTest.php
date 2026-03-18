@@ -26,14 +26,14 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use PDO;
 use PDOStatement;
-use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class RecordRepositoryApexSortingTest extends TestCase
 {
     private PDO&MockObject $db;
     private ConfigurationManager&MockObject $config;
-    private RecordRepository $repository;
+    private SqlRecordRepository $repository;
 
     protected function setUp(): void
     {
@@ -53,7 +53,7 @@ class RecordRepositoryApexSortingTest extends TestCase
                 return $default;
             });
 
-        $this->repository = new RecordRepository($this->db, $this->config);
+        $this->repository = new SqlRecordRepository($this->db, $this->config);
     }
 
     public function testApexRecordSortingInQuery(): void

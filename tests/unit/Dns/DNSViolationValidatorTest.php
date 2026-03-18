@@ -6,10 +6,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
-use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
 
 /**
  * Class DNSViolationValidatorTest
@@ -17,124 +15,78 @@ use PDO;
 #[CoversClass(DNSViolationValidator::class)]
 class DNSViolationValidatorTest extends TestCase
 {
-    private MockObject&ConfigurationManager $configMock;
-    private MockObject&PDO $dbMock;
+    private MockObject&RecordRepositoryInterface $recordRepoMock;
     private DNSViolationValidator $validator;
-    private MockObject&\PDOStatement $pdoStatementMock;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->dbMock = $this->createMock(PDO::class);
-
-        // Set up the mock PDO statement that will be returned by prepare()
-        $this->pdoStatementMock = $this->createMock(\PDOStatement::class);
-
-        // Configure the mock to return our mock PDOStatement
-        $this->dbMock->method('prepare')
-            ->willReturn($this->pdoStatementMock);
-
-        // Configure statement mock to handle bindParam calls
-        $this->pdoStatementMock->method('bindParam')
-            ->willReturn(true);
-
-        // Configure execute to succeed
-        $this->pdoStatementMock->method('execute')
-            ->willReturn(true);
-
-        $this->validator = new DNSViolationValidator($this->dbMock, $this->configMock);
+        $this->recordRepoMock = $this->createMock(RecordRepositoryInterface::class);
+        $this->validator = new DNSViolationValidator($this->recordRepoMock);
     }
 
-    /**
-     * Test validation of records with no violations
-     */
     public function testValidRecordWithNoViolations()
     {
-        // Mock configuration
-        $this->configMock->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn('');
-
-        // Configure statement mock to return no conflicts
-        $this->pdoStatementMock->method('fetchColumn')
-            ->willReturn(false);
+        // No CNAME records exist, so A record should be valid
+        $this->recordRepoMock->method('getRecordsByDomainId')->willReturn([]);
 
         $result = $this->validator->validate(0, 1, RecordType::A, 'example.com', '192.168.1.1');
         $this->assertTrue($result->isValid());
     }
 
-    /**
-     * Test validation of a CNAME record with no violations
-     */
     public function testValidCNAMERecordWithNoViolations()
     {
-        // Mock configuration
-        $this->configMock->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn('');
-
-        // Configure statement mock to return no conflicts for both queries
-        $this->pdoStatementMock->method('fetchColumn')
-            ->willReturn(false);
+        // No conflicting records exist
+        $this->recordRepoMock->method('getRecordsByDomainId')->willReturn([]);
 
         $result = $this->validator->validate(0, 1, RecordType::CNAME, 'alias.example.com', 'target.example.com');
         $this->assertTrue($result->isValid());
     }
 
-    /**
-     * Test validation with duplicate CNAME records
-     */
     public function testDuplicateCNAMERecord()
     {
-        // Mock configuration
-        $this->configMock->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn('');
+        // Existing CNAME with same name
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'CNAME') {
+                    return [['id' => 5, 'name' => 'alias.example.com', 'type' => 'CNAME', 'content' => 'other.example.com']];
+                }
+                return [];
+            });
 
-        // Configure statement mock to return a duplicate on first call (count of CNAME records)
-        $this->pdoStatementMock->method('fetchColumn')
-            ->willReturn(1);
-
-        $result = $this->validator->validate(0, 1, RecordType::CNAME, 'alias.example.com', 'target.example.com');
+        $result = $this->validator->validate(-1, 1, RecordType::CNAME, 'alias.example.com', 'target.example.com');
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Multiple CNAME records with the same name are not allowed', $result->getFirstError());
     }
 
-    /**
-     * Test validation with a CNAME record conflicting with other types
-     */
     public function testCNAMEConflictWithOtherTypes()
     {
-        // Mock configuration
-        $this->configMock->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn('');
+        // No duplicate CNAMEs, but an A record exists with same name
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'CNAME') {
+                    return [];
+                }
+                // All records in zone
+                return [['id' => 10, 'name' => 'conflict.example.com', 'type' => 'A', 'content' => '1.2.3.4']];
+            });
 
-        // First call should return false (no duplicate CNAMEs), second call should return 'A' (conflicting record type)
-        $this->pdoStatementMock->expects($this->exactly(2))
-            ->method('fetchColumn')
-            ->willReturnOnConsecutiveCalls(0, 'A');
-
-        $result = $this->validator->validate(0, 1, RecordType::CNAME, 'conflict.example.com', 'target.example.com');
+        $result = $this->validator->validate(-1, 1, RecordType::CNAME, 'conflict.example.com', 'target.example.com');
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('A CNAME record cannot coexist with other record types', $result->getFirstError());
     }
 
-    /**
-     * Test validation with a record conflicting with an existing CNAME
-     */
     public function testRecordConflictsWithExistingCNAME()
     {
-        // Mock configuration
-        $this->configMock->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn('');
+        // Existing CNAME with same name
+        $this->recordRepoMock->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) {
+                if ($type === 'CNAME') {
+                    return [['id' => 123, 'name' => 'conflict.example.com', 'type' => 'CNAME', 'content' => 'other.example.com']];
+                }
+                return [];
+            });
 
-        // Configure statement mock to return an existing CNAME record ID
-        $this->pdoStatementMock->method('fetchColumn')
-            ->willReturn(123);
-
-        $result = $this->validator->validate(0, 1, RecordType::A, 'conflict.example.com', '192.168.1.1');
+        $result = $this->validator->validate(-1, 1, RecordType::A, 'conflict.example.com', '192.168.1.1');
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('conflicts with an existing CNAME record', $result->getFirstError());
     }

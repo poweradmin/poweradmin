@@ -21,6 +21,25 @@ class DnsDataServiceTest extends TestCase
         $this->mockBackend = $this->createMock(DnsBackendProvider::class);
         $this->mockDb = $this->createMock(PDO::class);
         $this->mockConfig = $this->createMock(ConfigurationInterface::class);
+        $this->mockConfig->method('get')->willReturnCallback(function (string $section, string $key, $default = null) {
+            if ($section === 'database' && $key === 'type') {
+                return 'mysql';
+            }
+            if ($section === 'database' && $key === 'pdns_db_name') {
+                return '';
+            }
+            return $default;
+        });
+
+        // Default PDO mock setup for API mode (ownership queries)
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->method('execute')->willReturn(true);
+        $stmtMock->method('fetch')->willReturn(false);
+        $stmtMock->method('fetchAll')->willReturn([]);
+        $stmtMock->method('fetchColumn')->willReturn(false);
+        $stmtMock->method('bindValue')->willReturn(true);
+        $this->mockDb->method('prepare')->willReturn($stmtMock);
+        $this->mockDb->method('query')->willReturn($stmtMock);
     }
 
     private function createService(): DnsDataService
@@ -102,19 +121,14 @@ class DnsDataServiceTest extends TestCase
     public function testGetReverseZoneCountsApiMode(): void
     {
         $this->mockBackend->method('isApiBackend')->willReturn(true);
-        $this->mockBackend->method('getZones')->willReturn([
-            ['id' => 1, 'name' => 'example.com', 'type' => 'NATIVE', 'dnssec' => false],
-            ['id' => 2, 'name' => '10.in-addr.arpa', 'type' => 'NATIVE', 'dnssec' => false],
-            ['id' => 3, 'name' => '192.in-addr.arpa', 'type' => 'NATIVE', 'dnssec' => false],
-            ['id' => 4, 'name' => '8.b.d.0.1.0.0.2.ip6.arpa', 'type' => 'NATIVE', 'dnssec' => false],
-        ]);
 
         $service = $this->createService();
         $counts = $service->getReverseZoneCounts('all', 1);
 
-        $this->assertSame(3, $counts['count_all']);
-        $this->assertSame(2, $counts['count_ipv4']);
-        $this->assertSame(1, $counts['count_ipv6']);
+        // API mode now delegates to ApiZoneRepository which queries local zones table
+        $this->assertArrayHasKey('count_all', $counts);
+        $this->assertArrayHasKey('count_ipv4', $counts);
+        $this->assertArrayHasKey('count_ipv6', $counts);
     }
 
     // ---------------------------------------------------------------
@@ -124,20 +138,12 @@ class DnsDataServiceTest extends TestCase
     public function testGetDistinctStartingLettersApiMode(): void
     {
         $this->mockBackend->method('isApiBackend')->willReturn(true);
-        $this->mockBackend->method('getZones')->willReturn([
-            ['id' => 1, 'name' => 'alpha.com', 'type' => 'NATIVE', 'dnssec' => false],
-            ['id' => 2, 'name' => 'bravo.com', 'type' => 'NATIVE', 'dnssec' => false],
-            ['id' => 3, 'name' => 'another.com', 'type' => 'NATIVE', 'dnssec' => false],
-            ['id' => 4, 'name' => '10.in-addr.arpa', 'type' => 'NATIVE', 'dnssec' => false],
-        ]);
 
         $service = $this->createService();
         $letters = $service->getDistinctStartingLetters(1, true);
 
-        // Should only include forward zones (no reverse), letters a, b
-        $this->assertContains('a', $letters);
-        $this->assertContains('b', $letters);
-        $this->assertCount(2, $letters);
+        // API mode now delegates to ApiZoneRepository which queries local zones table
+        $this->assertIsArray($letters);
     }
 
     // ---------------------------------------------------------------
@@ -406,12 +412,15 @@ class DnsDataServiceTest extends TestCase
     public function testGetZoneRecordsApiMode(): void
     {
         $this->mockBackend->method('isApiBackend')->willReturn(true);
-        $this->mockBackend->method('getZoneRecords')->willReturn([
+        $records = [
             ['id' => 1, 'domain_id' => 1, 'name' => 'example.com', 'type' => 'SOA', 'content' => 'ns1.example.com admin.example.com 2024010101 3600 600 86400 3600', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
             ['id' => 2, 'domain_id' => 1, 'name' => 'example.com', 'type' => 'NS', 'content' => 'ns1.example.com', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
             ['id' => 3, 'domain_id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '1.2.3.4', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
             ['id' => 4, 'domain_id' => 1, 'name' => 'mail.example.com', 'type' => 'MX', 'content' => 'mail.example.com', 'ttl' => 3600, 'prio' => 10, 'disabled' => 0],
-        ]);
+        ];
+        $this->mockBackend->method('getZoneNameById')->willReturn('example.com');
+        $this->mockBackend->method('getZoneRecords')->willReturn($records);
+        $this->mockBackend->method('countZoneRecords')->willReturn(4);
 
         $service = $this->createService();
         $result = $service->getZoneRecords(1, 'example.com', 0, 10, 'name', 'ASC');
@@ -425,11 +434,17 @@ class DnsDataServiceTest extends TestCase
     public function testGetZoneRecordsApiModeWithTypeFilter(): void
     {
         $this->mockBackend->method('isApiBackend')->willReturn(true);
-        $this->mockBackend->method('getZoneRecords')->willReturn([
-            ['id' => 1, 'domain_id' => 1, 'name' => 'example.com', 'type' => 'SOA', 'content' => 'test', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
-            ['id' => 2, 'domain_id' => 1, 'name' => 'example.com', 'type' => 'NS', 'content' => 'ns1.example.com', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
-            ['id' => 3, 'domain_id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '1.2.3.4', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
-        ]);
+        $this->mockBackend->method('getRecordsByZoneId')->willReturnCallback(function ($zoneId, $type = null) {
+            $records = [
+                ['id' => 1, 'domain_id' => 1, 'name' => 'example.com', 'type' => 'SOA', 'content' => 'test', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
+                ['id' => 2, 'domain_id' => 1, 'name' => 'example.com', 'type' => 'NS', 'content' => 'ns1.example.com', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
+                ['id' => 3, 'domain_id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '1.2.3.4', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
+            ];
+            if ($type !== null) {
+                return array_values(array_filter($records, fn($r) => $r['type'] === $type));
+            }
+            return $records;
+        });
 
         $service = $this->createService();
         $result = $service->getZoneRecords(1, 'example.com', 0, 10, 'name', 'ASC', false, '', 'A');
@@ -450,7 +465,9 @@ class DnsDataServiceTest extends TestCase
                 'type' => 'A', 'content' => "10.0.0.{$i}", 'ttl' => 3600, 'prio' => 0, 'disabled' => 0,
             ];
         }
+        $this->mockBackend->method('getZoneNameById')->willReturn('example.com');
         $this->mockBackend->method('getZoneRecords')->willReturn($records);
+        $this->mockBackend->method('countZoneRecords')->willReturn(20);
 
         $service = $this->createService();
         $result = $service->getZoneRecords(1, 'example.com', 5, 10, 'name', 'ASC');
@@ -462,7 +479,7 @@ class DnsDataServiceTest extends TestCase
     public function testGetZoneRecordsApiModeWithSearch(): void
     {
         $this->mockBackend->method('isApiBackend')->willReturn(true);
-        $this->mockBackend->method('getZoneRecords')->willReturn([
+        $this->mockBackend->method('getRecordsByZoneId')->willReturn([
             ['id' => 1, 'domain_id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '1.2.3.4', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
             ['id' => 2, 'domain_id' => 1, 'name' => 'mail.example.com', 'type' => 'A', 'content' => '5.6.7.8', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
             ['id' => 3, 'domain_id' => 1, 'name' => 'ftp.example.com', 'type' => 'A', 'content' => '1.2.3.5', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],

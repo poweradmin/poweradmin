@@ -22,26 +22,25 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
-use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneValidationService;
-use PDO;
 
 #[CoversClass(ZoneValidationService::class)]
 class ZoneValidationServiceTest extends TestCase
 {
     private ZoneValidationService $service;
-    private PDO&MockObject $db;
+    private RecordRepositoryInterface&MockObject $recordRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->db = $this->createMock(PDO::class);
-        $this->service = new ZoneValidationService($this->db);
+        $this->recordRepository = $this->createMock(RecordRepositoryInterface::class);
+        $this->service = new ZoneValidationService($this->recordRepository);
     }
 
     // ========== getFormattedErrorMessage tests ==========
@@ -198,36 +197,28 @@ class ZoneValidationServiceTest extends TestCase
 
     // ========== validateZoneForDnssec tests ==========
 
+    private function mockRecordRepository(array $soaRecords, array $nsRecords): void
+    {
+        $this->recordRepository->method('getRecordsByDomainId')
+            ->willReturnCallback(function (int $zoneId, ?string $type = null) use ($soaRecords, $nsRecords) {
+                if ($type === 'SOA') {
+                    return $soaRecords;
+                }
+                if ($type === 'NS') {
+                    return $nsRecords;
+                }
+                return [];
+            });
+    }
+
     #[Test]
     public function testValidateZoneForDnssecWithValidZone(): void
     {
-        $zoneId = 1;
-        $zoneName = 'example.com';
-
-        // Mock SOA query
-        $soaStmt = $this->createMock(PDOStatement::class);
-        $soaStmt->method('execute')->willReturn(true);
-        $soaStmt->method('fetchAll')->willReturn([
-            [
-                'id' => 1,
-                'name' => 'example.com',
-                'content' => 'ns1.example.com. hostmaster.example.com. 2024010101 3600 600 86400 3600'
-            ]
-        ]);
-
-        // Mock NS query
-        $nsStmt = $this->createMock(PDOStatement::class);
-        $nsStmt->method('execute')->willReturn(true);
-        $nsStmt->method('fetchAll')->willReturn([
-            ['name' => 'example.com'],
-            ['name' => 'example.com']
-        ]);
-
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
-
-        $result = $this->service->validateZoneForDnssec($zoneId, $zoneName);
-
+        $this->mockRecordRepository(
+            [['id' => 1, 'name' => 'example.com', 'content' => 'ns1.example.com. hostmaster.example.com. 2024010101 3600 600 86400 3600', 'disabled' => 0]],
+            [['name' => 'example.com', 'disabled' => 0], ['name' => 'example.com', 'disabled' => 0]]
+        );
+        $result = $this->service->validateZoneForDnssec(1, 'example.com');
         $this->assertTrue($result['valid']);
         $this->assertEmpty($result['issues']);
     }
@@ -235,26 +226,9 @@ class ZoneValidationServiceTest extends TestCase
     #[Test]
     public function testValidateZoneForDnssecWithMissingSoa(): void
     {
-        $zoneId = 1;
-        $zoneName = 'example.com';
-
-        // Mock SOA query - no records
-        $soaStmt = $this->createMock(PDOStatement::class);
-        $soaStmt->method('execute')->willReturn(true);
-        $soaStmt->method('fetchAll')->willReturn([]);
-
-        // Mock NS query
-        $nsStmt = $this->createMock(PDOStatement::class);
-        $nsStmt->method('execute')->willReturn(true);
-        $nsStmt->method('fetchAll')->willReturn([['name' => 'example.com']]);
-
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
-
-        $result = $this->service->validateZoneForDnssec($zoneId, $zoneName);
-
+        $this->mockRecordRepository([], [['name' => 'example.com', 'disabled' => 0]]);
+        $result = $this->service->validateZoneForDnssec(1, 'example.com');
         $this->assertFalse($result['valid']);
-        $this->assertNotEmpty($result['issues']);
         $this->assertEquals('missing_soa', $result['issues'][0]['type']);
         $this->assertEquals('critical', $result['issues'][0]['severity']);
     }
@@ -262,27 +236,11 @@ class ZoneValidationServiceTest extends TestCase
     #[Test]
     public function testValidateZoneForDnssecWithMultipleSoa(): void
     {
-        $zoneId = 1;
-        $zoneName = 'example.com';
-
-        // Mock SOA query - multiple records
-        $soaStmt = $this->createMock(PDOStatement::class);
-        $soaStmt->method('execute')->willReturn(true);
-        $soaStmt->method('fetchAll')->willReturn([
-            ['id' => 1, 'name' => 'example.com', 'content' => 'ns1 host 1 1 1 1 1'],
-            ['id' => 2, 'name' => 'example.com', 'content' => 'ns2 host 2 2 2 2 2']
-        ]);
-
-        // Mock NS query
-        $nsStmt = $this->createMock(PDOStatement::class);
-        $nsStmt->method('execute')->willReturn(true);
-        $nsStmt->method('fetchAll')->willReturn([['name' => 'example.com']]);
-
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
-
-        $result = $this->service->validateZoneForDnssec($zoneId, $zoneName);
-
+        $this->mockRecordRepository(
+            [['id' => 1, 'name' => 'example.com', 'content' => 'ns1 host 1 1 1 1 1', 'disabled' => 0], ['id' => 2, 'name' => 'example.com', 'content' => 'ns2 host 2 2 2 2 2', 'disabled' => 0]],
+            [['name' => 'example.com', 'disabled' => 0]]
+        );
+        $result = $this->service->validateZoneForDnssec(1, 'example.com');
         $this->assertFalse($result['valid']);
         $this->assertEquals('multiple_soa', $result['issues'][0]['type']);
     }
@@ -290,26 +248,11 @@ class ZoneValidationServiceTest extends TestCase
     #[Test]
     public function testValidateZoneForDnssecWithSoaNotAtApex(): void
     {
-        $zoneId = 1;
-        $zoneName = 'example.com';
-
-        // Mock SOA query - SOA at wrong name
-        $soaStmt = $this->createMock(PDOStatement::class);
-        $soaStmt->method('execute')->willReturn(true);
-        $soaStmt->method('fetchAll')->willReturn([
-            ['id' => 1, 'name' => 'sub.example.com', 'content' => 'ns1 host 1 1 1 1 1']
-        ]);
-
-        // Mock NS query
-        $nsStmt = $this->createMock(PDOStatement::class);
-        $nsStmt->method('execute')->willReturn(true);
-        $nsStmt->method('fetchAll')->willReturn([['name' => 'example.com']]);
-
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
-
-        $result = $this->service->validateZoneForDnssec($zoneId, $zoneName);
-
+        $this->mockRecordRepository(
+            [['id' => 1, 'name' => 'sub.example.com', 'content' => 'ns1 host 1 1 1 1 1', 'disabled' => 0]],
+            [['name' => 'example.com', 'disabled' => 0]]
+        );
+        $result = $this->service->validateZoneForDnssec(1, 'example.com');
         $this->assertFalse($result['valid']);
         $this->assertEquals('soa_not_at_apex', $result['issues'][0]['type']);
     }
@@ -317,26 +260,11 @@ class ZoneValidationServiceTest extends TestCase
     #[Test]
     public function testValidateZoneForDnssecWithInvalidSoaContent(): void
     {
-        $zoneId = 1;
-        $zoneName = 'example.com';
-
-        // Mock SOA query - invalid content format
-        $soaStmt = $this->createMock(PDOStatement::class);
-        $soaStmt->method('execute')->willReturn(true);
-        $soaStmt->method('fetchAll')->willReturn([
-            ['id' => 1, 'name' => 'example.com', 'content' => 'incomplete content']
-        ]);
-
-        // Mock NS query
-        $nsStmt = $this->createMock(PDOStatement::class);
-        $nsStmt->method('execute')->willReturn(true);
-        $nsStmt->method('fetchAll')->willReturn([['name' => 'example.com']]);
-
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
-
-        $result = $this->service->validateZoneForDnssec($zoneId, $zoneName);
-
+        $this->mockRecordRepository(
+            [['id' => 1, 'name' => 'example.com', 'content' => 'incomplete content', 'disabled' => 0]],
+            [['name' => 'example.com', 'disabled' => 0]]
+        );
+        $result = $this->service->validateZoneForDnssec(1, 'example.com');
         $this->assertFalse($result['valid']);
         $this->assertEquals('invalid_soa_content', $result['issues'][0]['type']);
     }
@@ -344,28 +272,11 @@ class ZoneValidationServiceTest extends TestCase
     #[Test]
     public function testValidateZoneForDnssecWithMissingApexNs(): void
     {
-        $zoneId = 1;
-        $zoneName = 'example.com';
-
-        // Mock SOA query - valid
-        $soaStmt = $this->createMock(PDOStatement::class);
-        $soaStmt->method('execute')->willReturn(true);
-        $soaStmt->method('fetchAll')->willReturn([
-            ['id' => 1, 'name' => 'example.com', 'content' => 'ns1 host 1 1 1 1 1']
-        ]);
-
-        // Mock NS query - no apex NS records (only delegation)
-        $nsStmt = $this->createMock(PDOStatement::class);
-        $nsStmt->method('execute')->willReturn(true);
-        $nsStmt->method('fetchAll')->willReturn([
-            ['name' => 'sub.example.com'] // This is a delegation, not apex
-        ]);
-
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
-
-        $result = $this->service->validateZoneForDnssec($zoneId, $zoneName);
-
+        $this->mockRecordRepository(
+            [['id' => 1, 'name' => 'example.com', 'content' => 'ns1 host 1 1 1 1 1', 'disabled' => 0]],
+            [['name' => 'sub.example.com', 'disabled' => 0]]
+        );
+        $result = $this->service->validateZoneForDnssec(1, 'example.com');
         $this->assertFalse($result['valid']);
         $this->assertEquals('missing_apex_ns', $result['issues'][0]['type']);
     }
@@ -373,26 +284,11 @@ class ZoneValidationServiceTest extends TestCase
     #[Test]
     public function testValidateZoneForDnssecWithNoNsRecords(): void
     {
-        $zoneId = 1;
-        $zoneName = 'example.com';
-
-        // Mock SOA query - valid
-        $soaStmt = $this->createMock(PDOStatement::class);
-        $soaStmt->method('execute')->willReturn(true);
-        $soaStmt->method('fetchAll')->willReturn([
-            ['id' => 1, 'name' => 'example.com', 'content' => 'ns1 host 1 1 1 1 1']
-        ]);
-
-        // Mock NS query - no records at all
-        $nsStmt = $this->createMock(PDOStatement::class);
-        $nsStmt->method('execute')->willReturn(true);
-        $nsStmt->method('fetchAll')->willReturn([]);
-
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
-
-        $result = $this->service->validateZoneForDnssec($zoneId, $zoneName);
-
+        $this->mockRecordRepository(
+            [['id' => 1, 'name' => 'example.com', 'content' => 'ns1 host 1 1 1 1 1', 'disabled' => 0]],
+            []
+        );
+        $result = $this->service->validateZoneForDnssec(1, 'example.com');
         $this->assertFalse($result['valid']);
         $this->assertEquals('missing_apex_ns', $result['issues'][0]['type']);
     }
@@ -400,56 +296,22 @@ class ZoneValidationServiceTest extends TestCase
     #[Test]
     public function testValidateZoneForDnssecHandlesTrailingDots(): void
     {
-        $zoneId = 1;
-        $zoneName = 'example.com.';
-
-        // Mock SOA query - with trailing dot
-        $soaStmt = $this->createMock(PDOStatement::class);
-        $soaStmt->method('execute')->willReturn(true);
-        $soaStmt->method('fetchAll')->willReturn([
-            ['id' => 1, 'name' => 'example.com.', 'content' => 'ns1 host 1 1 1 1 1']
-        ]);
-
-        // Mock NS query - with trailing dot
-        $nsStmt = $this->createMock(PDOStatement::class);
-        $nsStmt->method('execute')->willReturn(true);
-        $nsStmt->method('fetchAll')->willReturn([['name' => 'example.com.']]);
-
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
-
-        $result = $this->service->validateZoneForDnssec($zoneId, $zoneName);
-
+        $this->mockRecordRepository(
+            [['id' => 1, 'name' => 'example.com.', 'content' => 'ns1 host 1 1 1 1 1', 'disabled' => 0]],
+            [['name' => 'example.com.', 'disabled' => 0]]
+        );
+        $result = $this->service->validateZoneForDnssec(1, 'example.com.');
         $this->assertTrue($result['valid']);
     }
 
     #[Test]
     public function testValidateZoneForDnssecCountsMultipleApexNs(): void
     {
-        $zoneId = 1;
-        $zoneName = 'example.com';
-
-        // Mock SOA query - valid
-        $soaStmt = $this->createMock(PDOStatement::class);
-        $soaStmt->method('execute')->willReturn(true);
-        $soaStmt->method('fetchAll')->willReturn([
-            ['id' => 1, 'name' => 'example.com', 'content' => 'ns1 host 1 1 1 1 1']
-        ]);
-
-        // Mock NS query - multiple apex NS + delegation
-        $nsStmt = $this->createMock(PDOStatement::class);
-        $nsStmt->method('execute')->willReturn(true);
-        $nsStmt->method('fetchAll')->willReturn([
-            ['name' => 'example.com'],
-            ['name' => 'example.com'],
-            ['name' => 'sub.example.com'] // delegation - should be ignored
-        ]);
-
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($soaStmt, $nsStmt);
-
-        $result = $this->service->validateZoneForDnssec($zoneId, $zoneName);
-
+        $this->mockRecordRepository(
+            [['id' => 1, 'name' => 'example.com', 'content' => 'ns1 host 1 1 1 1 1', 'disabled' => 0]],
+            [['name' => 'example.com', 'disabled' => 0], ['name' => 'example.com', 'disabled' => 0], ['name' => 'sub.example.com', 'disabled' => 0]]
+        );
+        $result = $this->service->validateZoneForDnssec(1, 'example.com');
         $this->assertTrue($result['valid']);
     }
 }
