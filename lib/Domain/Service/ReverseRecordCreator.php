@@ -241,11 +241,11 @@ class ReverseRecordCreator
         if (str_ends_with($ptrName, '.ip6.arpa')) {
             $nibbles = explode('.', str_replace('.ip6.arpa', '', $ptrName));
             if (count($nibbles) === 32) {
-                /** @var list<string> $reversedNibbles */
-                $reversedNibbles = array_values(array_reverse($nibbles));
+                $reversedNibbles = array_reverse($nibbles);
                 $groups = [];
                 for ($g = 0; $g < 8; $g++) {
                     $offset = $g * 4;
+                    /** @psalm-suppress InvalidArrayOffset */
                     $groups[] = $reversedNibbles[$offset] . $reversedNibbles[$offset + 1] . $reversedNibbles[$offset + 2] . $reversedNibbles[$offset + 3];
                 }
                 return implode(':', $groups);
