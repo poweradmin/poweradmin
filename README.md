@@ -35,21 +35,17 @@ DNSSEC operations.
 
 ## Screenshots
 
-### Login Screen
-
-![Login interface with multi-language and MFA support](https://docs.poweradmin.org/screenshots/light_login.png)
-
 ### Dashboard
 
-![Dashboard with quick actions and navigation](https://docs.poweradmin.org/screenshots/light_index_page.png)
+![Dashboard with quick actions and navigation](https://docs.poweradmin.org/screenshots/dashboard.png)
 
 ### Zone Management
 
-![Zone list with sorting and filtering](https://docs.poweradmin.org/screenshots/light_zone_list.png)
+![Zone list with sorting and filtering](https://docs.poweradmin.org/screenshots/zone-list.png)
 
 ### Zone Editor
 
-![Zone editor with inline record management](https://docs.poweradmin.org/screenshots/light_zone_edit.png)
+![Zone editor with inline record management](https://docs.poweradmin.org/screenshots/zone-editor.png)
 
 ## Installation
 
