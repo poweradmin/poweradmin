@@ -54,7 +54,16 @@ jobs:
           echo "name=$BRANCH" >> "$GITHUB_OUTPUT"
           echo "Resolved branch: $BRANCH"
 
+          # Skip protected branches that require PRs
+          if [ "$BRANCH" = "master" ] || [ "$BRANCH" = "main" ]; then
+            echo "::warning::Skipping version bump on protected branch $BRANCH - bump manually"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Update version file
+        if: steps.branch.outputs.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
