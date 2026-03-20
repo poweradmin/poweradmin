@@ -85,14 +85,15 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
     && cp /app/config/settings.defaults.php /usr/local/share/settings.defaults.php
 
 # Create Caddyfile for FrankenPHP
-COPY <<EOF /etc/caddy/Caddyfile
+# Uses RUN with single-quoted heredoc to preserve Caddy's {$ENV} syntax literally
+RUN cat > /etc/caddy/Caddyfile <<'CADDYEOF'
 {
     frankenphp
     admin off
     order php_server before file_server
 }
 
-:80 {
+:{$SERVER_PORT:80} {
     root * /app
     encode gzip
 
@@ -156,25 +157,34 @@ COPY <<EOF /etc/caddy/Caddyfile
         env HTTP_AUTHORIZATION {http.request.header.Authorization}
     }
 }
-EOF
+CADDYEOF
 
 # Move Caddy data/config to /var/caddy to free up /config for user settings
 ENV XDG_CONFIG_HOME=/var/caddy
 ENV XDG_DATA_HOME=/var/caddy
 
 # Set proper ownership and install su-exec for dropping privileges
-RUN chown -R www-data:www-data /app /db \
+# Group set to root (GID 0) + group-writable supports both:
+#   - K8s with fsGroup (overrides group at mount time)
+#   - OpenShift arbitrary UIDs (which always run as GID 0)
+# Root-mode entrypoint re-asserts www-data ownership via setup_permissions()
+RUN chown -R www-data:0 /app /db \
+    && chmod -R g+w /app/config /db \
     && mkdir -p /var/caddy/caddy \
-    && chown -R www-data:www-data /var/caddy \
-    && apk add --no-cache su-exec
+    && chown -R www-data:0 /var/caddy \
+    && chmod -R g+w /var/caddy \
+    && apk add --no-cache su-exec \
+    && setcap -r /usr/local/bin/frankenphp
 
 # Run as root initially, entrypoint will drop to www-data
+# For rootless/restricted K8s: set runAsUser: 82, fsGroup: 82, container auto-switches to port 8080
 
-EXPOSE 80
+EXPOSE 80 8080
 
-# Override base image healthcheck to use port 80 instead of Caddy admin port 2019
+# Healthcheck reads the port from file written by entrypoint (healthcheck runs
+# as a separate process and does not inherit entrypoint's exported env vars)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -sf http://localhost:80/ -o /dev/null || exit 1
+    CMD curl -sf http://localhost:$(cat /tmp/.server_port 2>/dev/null || echo 80)/ -o /dev/null || exit 1
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]

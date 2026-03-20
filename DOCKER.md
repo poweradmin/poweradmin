@@ -1259,6 +1259,85 @@ spec:
           emptyDir: {}
 ```
 
+## Non-Root / Rootless Deployment
+
+The Poweradmin Docker image supports running as a non-root user, which is required by restricted Kubernetes clusters and OpenShift. A single image adapts automatically based on the runtime UID - no separate `-rootless` variant is needed.
+
+### How It Works
+
+- **Default (root start)**: The container starts as root, sets up file permissions, then drops to `www-data` (UID 82) via `su-exec`. Listens on port **80**. This is the existing behavior and requires no changes.
+- **Non-root start**: When the container starts as a non-root user (e.g., via `runAsUser`), it skips all privileged operations (`chown`, `chmod`, CA certificate installation) and listens on port **8080** by default. Volumes must be pre-configured as writable (see `fsGroup` below).
+
+The entrypoint detects the runtime UID with `id -u` and adapts automatically.
+
+### Docker Usage (Non-Root)
+
+```bash
+docker run --rm --user 82:82 -p 8080:8080 -e DB_TYPE=sqlite poweradmin/poweradmin
+```
+
+### Custom Port Override
+
+Override the auto-detected port with `SERVER_PORT`:
+
+```bash
+docker run --rm -e DB_TYPE=sqlite -e SERVER_PORT=9090 -p 9090:9090 poweradmin/poweradmin
+```
+
+### Kubernetes Deployment (Restricted)
+
+For clusters that enforce `runAsNonRoot: true` and drop all capabilities:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poweradmin
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 82
+        runAsGroup: 82
+        fsGroup: 82
+      containers:
+        - name: poweradmin
+          image: poweradmin/poweradmin
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          env:
+            - name: DB_TYPE
+              value: sqlite
+          volumeMounts:
+            - name: db
+              mountPath: /db
+            - name: config
+              mountPath: /app/config
+      volumes:
+        - name: db
+          emptyDir: {}
+        - name: config
+          emptyDir: {}
+```
+
+The `fsGroup: 82` setting ensures volumes are group-writable for the `www-data` group (GID 82). The image's build-time `chmod g+w` on `/app/config`, `/db`, and `/var/caddy` ensures the container can write to these directories when running with a matching group.
+
+### Limitations When Running Non-Root
+
+- **Custom CA certificates**: `TRUSTED_CA_FILE` requires root to install into the system trust store. A warning is logged if this variable is set in non-root mode.
+- **Volume permissions**: The container cannot `chown` volumes. Use `fsGroup` in Kubernetes or pre-set permissions on Docker bind mounts.
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `SERVER_PORT` | Port for the web server to listen on | `80` (root) / `8080` (non-root, auto-detected) |
+
 ## Performance Benefits
 
 FrankenPHP provides significant performance improvements over traditional PHP deployments:
