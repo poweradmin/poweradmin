@@ -1085,9 +1085,11 @@ EOF
 ];
 EOF
 
-    # Set proper permissions
-    chmod 644 "${CONFIG_FILE}"
-    chown www-data:www-data "${CONFIG_FILE}"
+    # Set proper permissions (root only - non-root already owns the file)
+    if [ "$IS_ROOT" = true ]; then
+        chmod 644 "${CONFIG_FILE}"
+        chown www-data:www-data "${CONFIG_FILE}"
+    fi
 
     log "Configuration file generated successfully"
 }
@@ -1174,8 +1176,31 @@ main() {
     log "Processing Docker secrets..."
     process_secret_files
 
+    # Detect root vs non-root execution
+    if [ "$(id -u)" = '0' ]; then
+        IS_ROOT=true
+        log "Running as root - will drop privileges after setup"
+    else
+        IS_ROOT=false
+        log "Running as non-root (UID $(id -u)) - skipping privilege operations"
+
+        # Auto-switch to unprivileged port when running as non-root
+        if [ -z "${SERVER_PORT:-}" ]; then
+            export SERVER_PORT=8080
+            log "Auto-configured SERVER_PORT=8080 for non-root execution"
+        fi
+    fi
+
+    # Persist SERVER_PORT for healthcheck early, before any long initialization.
+    # Healthcheck runs as a separate process and does not inherit entrypoint env vars.
+    echo "${SERVER_PORT:-80}" > /tmp/.server_port
+
     # Install custom CA certificate if provided (must run before any HTTPS calls)
-    install_trusted_ca
+    if [ "$IS_ROOT" = true ]; then
+        install_trusted_ca
+    elif [ -n "${TRUSTED_CA_FILE:-}" ]; then
+        log "WARNING: TRUSTED_CA_FILE is set but container is not running as root - cannot install CA certificate"
+    fi
 
     # Set CONFIG_FILE after secrets are processed (supports PA_CONFIG_PATH__FILE)
     CONFIG_FILE="${PA_CONFIG_PATH:-/app/config/settings.php}"
@@ -1189,8 +1214,13 @@ main() {
     defaults_file="${config_dir}/settings.defaults.php"
     if [ ! -f "${defaults_file}" ] && [ -f "/usr/local/share/settings.defaults.php" ]; then
         log "Restoring settings.defaults.php into config directory..."
-        cp /usr/local/share/settings.defaults.php "${defaults_file}"
-        chown www-data:www-data "${defaults_file}"
+        if [ "$IS_ROOT" = true ]; then
+            cp /usr/local/share/settings.defaults.php "${defaults_file}"
+            chown www-data:www-data "${defaults_file}"
+        else
+            cp /usr/local/share/settings.defaults.php "${defaults_file}" 2>/dev/null || \
+                log "WARNING: Could not restore settings.defaults.php - directory may not be writable"
+        fi
     fi
 
     if [ -f "${CONFIG_FILE}" ] && [ -s "${CONFIG_FILE}" ]; then
@@ -1223,17 +1253,19 @@ main() {
     # Create admin user if requested (after database and config are ready)
     create_admin_user
 
-    # Setup file permissions
-    setup_permissions
-
     # Print configuration summary
     print_config_summary
 
     log "Configuration loaded successfully"
     log "Starting Poweradmin..."
 
-    # Drop privileges and execute the command as www-data
-    exec su-exec www-data "$@"
+    # Setup permissions and drop privileges (root only)
+    if [ "$IS_ROOT" = true ]; then
+        setup_permissions
+        exec su-exec www-data "$@"
+    else
+        exec "$@"
+    fi
 }
 
 # Run main function with all arguments
