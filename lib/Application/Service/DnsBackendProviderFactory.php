@@ -71,4 +71,18 @@ class DnsBackendProviderFactory
 
         return new SqlDnsBackendProvider($db, $config, $logger);
     }
+
+    /**
+     * Check whether the resolved backend is API mode.
+     *
+     * Mirrors the create() logic: returns true only when dns.backend is 'api'
+     * AND the API URL/key are configured. When credentials are missing, the
+     * factory falls back to SQL, so this returns false.
+     */
+    public static function isApiBackend(ConfigurationInterface $config): bool
+    {
+        return $config->get('dns', 'backend') === 'api'
+            && $config->get('pdns_api', 'url')
+            && $config->get('pdns_api', 'key');
+    }
 }

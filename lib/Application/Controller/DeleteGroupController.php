@@ -39,6 +39,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 
 class DeleteGroupController extends BaseController
@@ -53,7 +54,7 @@ class DeleteGroupController extends BaseController
         parent::__construct($request);
 
         $groupRepository = new DbUserGroupRepository($this->db);
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config);
+        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
 
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);

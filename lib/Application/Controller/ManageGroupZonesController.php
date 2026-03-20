@@ -57,7 +57,7 @@ class ManageGroupZonesController extends BaseController
         parent::__construct($request);
 
         $groupRepository = new DbUserGroupRepository($this->db);
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config);
+        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
 
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);

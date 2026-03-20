@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 
 /**
  * Hybrid Permission Resolution Service
@@ -44,18 +43,15 @@ class HybridPermissionService
     private PDO $db;
     private UserGroupRepositoryInterface $groupRepository;
     private UserGroupMemberRepositoryInterface $memberRepository;
-    private ZoneGroupRepositoryInterface $zoneGroupRepository;
 
     public function __construct(
         PDO $db,
         UserGroupRepositoryInterface $groupRepository,
-        UserGroupMemberRepositoryInterface $memberRepository,
-        ZoneGroupRepositoryInterface $zoneGroupRepository
+        UserGroupMemberRepositoryInterface $memberRepository
     ) {
         $this->db = $db;
         $this->groupRepository = $groupRepository;
         $this->memberRepository = $memberRepository;
-        $this->zoneGroupRepository = $zoneGroupRepository;
     }
 
     /**

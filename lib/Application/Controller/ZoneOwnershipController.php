@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
@@ -114,7 +115,7 @@ class ZoneOwnershipController extends BaseController
         }));
 
         // Fetch group ownership
-        $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
+        $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
         $groupOwnerships = $zoneGroupRepo->findByDomainId($zone_id);
 
         // Fetch groups - all for name lookup, filtered for dropdown
@@ -209,14 +210,14 @@ class ZoneOwnershipController extends BaseController
                 }
             }
 
-            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
+            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
             $zoneGroupRepo->add($zone_id, $groupId);
             $this->setMessage('zone_ownership', 'success', _('Group has been added successfully.'));
         }
 
         // Delete group
         if (isset($_POST["delete_group"]) && is_numeric($_POST["delete_group"]) && $meta_edit) {
-            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
+            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
             $zoneGroupRepo->remove($zone_id, (int)$_POST["delete_group"]);
             $this->setMessage('zone_ownership', 'success', _('Group has been removed successfully.'));
         }

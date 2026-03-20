@@ -30,7 +30,6 @@ use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 class UserManager
@@ -1076,13 +1075,11 @@ class UserManager
         if ($hybridPermissionService === null) {
             $groupRepository = new DbUserGroupRepository($db);
             $memberRepository = new DbUserGroupMemberRepository($db);
-            $zoneGroupRepository = new DbZoneGroupRepository($db);
 
             $hybridPermissionService = new HybridPermissionService(
                 $db,
                 $groupRepository,
-                $memberRepository,
-                $zoneGroupRepository
+                $memberRepository
             );
         }
 
@@ -1121,13 +1118,11 @@ class UserManager
         if ($hybridPermissionService === null) {
             $groupRepository = new DbUserGroupRepository($db);
             $memberRepository = new DbUserGroupMemberRepository($db);
-            $zoneGroupRepository = new DbZoneGroupRepository($db);
 
             $hybridPermissionService = new HybridPermissionService(
                 $db,
                 $groupRepository,
-                $memberRepository,
-                $zoneGroupRepository
+                $memberRepository
             );
         }
 

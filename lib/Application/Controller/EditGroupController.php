@@ -41,6 +41,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -60,7 +61,7 @@ class EditGroupController extends BaseController
 
         $groupRepository = new DbUserGroupRepository($this->db);
         $memberRepository = new DbUserGroupMemberRepository($this->db);
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config);
+        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
 
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);

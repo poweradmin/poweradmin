@@ -33,11 +33,13 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 {
     private PDO $db;
     private ?TableNameService $tableNameService;
+    private bool $isApiBackend;
 
-    public function __construct(PDO $db, ?ConfigurationInterface $config = null)
+    public function __construct(PDO $db, ?ConfigurationInterface $config = null, bool $isApiBackend = false)
     {
         $this->db = $db;
         $this->tableNameService = $config !== null ? new TableNameService($config) : null;
+        $this->isApiBackend = $isApiBackend;
     }
 
     public function findByDomainId(int $domainId): array
@@ -52,7 +54,7 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 
     public function findByGroupId(int $groupId): array
     {
-        if ($this->tableNameService !== null) {
+        if (!$this->isApiBackend && $this->tableNameService !== null) {
             $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
             $query = "SELECT zg.*, d.name as zone_name, d.type as zone_type
                       FROM zones_groups zg
@@ -63,7 +65,8 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
             $query = "SELECT zg.*, z.zone_name, z.zone_type
                       FROM zones_groups zg
                       LEFT JOIN zones z ON zg.domain_id = z.domain_id
-                        AND z.id = (SELECT MIN(z2.id) FROM zones z2 WHERE z2.domain_id = zg.domain_id)
+                        AND z.zone_name IS NOT NULL
+                        AND z.id = (SELECT MIN(z2.id) FROM zones z2 WHERE z2.domain_id = zg.domain_id AND z2.zone_name IS NOT NULL)
                       WHERE zg.group_id = :group_id
                       ORDER BY zg.created_at DESC";
         }
