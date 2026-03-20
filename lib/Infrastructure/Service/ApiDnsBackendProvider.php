@@ -568,31 +568,42 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         $zoneName = $decoded['zone_name'];
         $zoneId = $this->getZoneIdByName($zoneName);
 
-        // Fetch record from API to get current TTL and disabled state
+        if ($zoneId === null || $zoneId === 0) {
+            return null;
+        }
+
+        // Fetch record from API to verify it still exists
         $apiZoneName = self::ensureTrailingDot($zoneName);
         $apiRecordName = self::ensureTrailingDot($decoded['name']);
         $rrsetData = $this->getRRsetFromApi($apiZoneName, $apiRecordName, $decoded['type']);
 
+        if ($rrsetData === null) {
+            return null;
+        }
+
+        // Find the specific record within the RRset
+        $targetContent = $this->formatRecordContent($decoded['type'], $decoded['content'], $decoded['prio']);
+        $found = false;
         $disabled = 0;
-        $ttl = 3600;
-        if ($rrsetData !== null) {
-            $ttl = $rrsetData['ttl'];
-            $targetContent = $this->formatRecordContent($decoded['type'], $decoded['content'], $decoded['prio']);
-            foreach ($rrsetData['records'] as $r) {
-                if (self::contentMatchesApi($r['content'], $targetContent)) {
-                    $disabled = ($r['disabled'] ?? false) ? 1 : 0;
-                    break;
-                }
+        foreach ($rrsetData['records'] as $r) {
+            if (self::contentMatchesApi($r['content'], $targetContent)) {
+                $disabled = ($r['disabled'] ?? false) ? 1 : 0;
+                $found = true;
+                break;
             }
+        }
+
+        if (!$found) {
+            return null;
         }
 
         return [
             'id' => $recordId,
-            'domain_id' => $zoneId ?? 0,
+            'domain_id' => $zoneId,
             'name' => $decoded['name'],
             'type' => $decoded['type'],
             'content' => $decoded['content'],
-            'ttl' => $ttl,
+            'ttl' => $rrsetData['ttl'],
             'prio' => $decoded['prio'],
             'disabled' => $disabled,
         ];

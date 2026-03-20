@@ -72,6 +72,17 @@ class RecordIdentifier
             return false;
         }
 
-        return !ctype_digit($id) && strlen($id) > 10;
+        if (ctype_digit($id) || strlen($id) <= 10) {
+            return false;
+        }
+
+        // Verify the value actually decodes to a valid record identifier
+        $json = base64_decode(strtr($id, '-_', '+/'), true);
+        if ($json === false) {
+            return false;
+        }
+
+        $data = json_decode($json, true);
+        return is_array($data) && isset($data['z'], $data['n'], $data['t'], $data['c']);
     }
 }
