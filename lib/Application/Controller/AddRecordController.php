@@ -201,7 +201,7 @@ class AddRecordController extends BaseController
                 ];
                 $this->formStateService->saveFormData($formId, $formData);
 
-                $this->redirect('/zones/' . $zone_id . '/edit?form_id=' . $formId);
+                $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);
                 return;
             }
         } catch (Exception $e) {
@@ -223,7 +223,7 @@ class AddRecordController extends BaseController
             ];
             $this->formStateService->saveFormData($formId, $formData);
 
-            $this->redirect('/zones/' . $zone_id . '/edit?form_id=' . $formId);
+            $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);
             return;
         }
 
@@ -281,14 +281,26 @@ class AddRecordController extends BaseController
             $idn_zone_name = "";
         }
 
+        // Retrieve form state data from session (e.g. after validation error redirect)
+        $formData = null;
+        if (isset($_REQUEST['form_id']) && !empty($_REQUEST['form_id'])) {
+            $formData = $this->formStateService->getFormData($_REQUEST['form_id']);
+        }
+
+        // Build saved_records array for multi-row restore
+        $savedRecords = [];
+        if ($formData && isset($formData['saved_records']) && is_array($formData['saved_records'])) {
+            $savedRecords = $formData['saved_records'];
+        }
+
         $this->render('add_record.html', [
             'types' => $isReverseZone ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled) : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled),
             'deprecated_types' => RecordType::DEPRECATED_TYPES,
-            'name' => $_POST['name'] ?? '',
-            'type' => $_POST['type'] ?? '',
-            'content' => $_POST['content'] ?? '',
-            'ttl' => $_POST['ttl'] ?? $ttl,
-            'prio' => $_POST['prio'] ?? 0,
+            'name' => $formData['name'] ?? $_POST['name'] ?? '',
+            'type' => $formData['type'] ?? $_POST['type'] ?? '',
+            'content' => $formData['content'] ?? $_POST['content'] ?? '',
+            'ttl' => $formData['ttl'] ?? $_POST['ttl'] ?? $ttl,
+            'prio' => $formData['prio'] ?? $_POST['prio'] ?? 0,
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
@@ -297,6 +309,8 @@ class AddRecordController extends BaseController
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
             'display_hostname_only' => $this->config->get('interface', 'display_hostname_only', false),
+            'form_data' => $formData,
+            'saved_records' => $savedRecords,
         ]);
     }
 
@@ -411,8 +425,12 @@ class AddRecordController extends BaseController
         $formId = $this->formStateService->generateFormId('add_record');
 
         if (empty($records)) {
-            $this->setMessage('edit', 'error', _('No records were provided.'));
-            $this->redirect('/zones/' . $zone_id . '/edit?form_id=' . $formId);
+            $formData = [
+                'error' => true,
+                'errorMessage' => _('No records were provided.'),
+            ];
+            $this->formStateService->saveFormData($formId, $formData);
+            $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);
             return;
         }
 
@@ -478,7 +496,7 @@ class AddRecordController extends BaseController
                 ];
                 $this->formStateService->saveFormData($formId, $formData);
 
-                // Redirect with form_id to show errors
+                // Redirect to edit page since some records were already created
                 $this->redirect('/zones/' . $zone_id . '/edit?form_id=' . $formId);
                 return;
             } elseif (!empty($ptrWarnings)) {
@@ -495,17 +513,26 @@ class AddRecordController extends BaseController
                 _('Failed to add any records. They may contain invalid data.');
 
             // Store form data with error flag for all failed records
+            // Include all records so the form can be fully restored
+            $firstRecord = reset($records);
             $formId = $this->formStateService->generateFormId('add_record');
             $formData = [
                 'error' => true,
                 'multi_record_error' => true,
                 'failure_count' => $failureCount,
-                'errorMessage' => $errorMessage
+                'errorMessage' => $errorMessage,
+                'name' => $firstRecord['name'] ?? '',
+                'type' => $firstRecord['type'] ?? '',
+                'content' => $firstRecord['content'] ?? '',
+                'prio' => $firstRecord['prio'] ?? 0,
+                'ttl' => $firstRecord['ttl'] ?? '',
+                'comment' => $firstRecord['comment'] ?? '',
+                'saved_records' => array_values($records),
             ];
             $this->formStateService->saveFormData($formId, $formData);
 
             // Redirect with form_id to show errors
-            $this->redirect('/zones/' . $zone_id . '/edit?form_id=' . $formId);
+            $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);
             return;
         }
 

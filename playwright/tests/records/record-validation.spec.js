@@ -247,6 +247,94 @@ test.describe('Record Validation - All Types', () => {
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
+
+    test('should show error for unquoted TXT content on add page', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      const recordName = `unquoted-${Date.now()}`;
+      await page.goto(`/zones/${zoneId}/records/add`);
+      await page.locator('select[name*="type"]').first().selectOption('TXT');
+      await page.locator('input[name*="name"]').first().fill(recordName);
+      await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('v=spf1 include:example.com ~all');
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      // Should stay on add record page with visible error
+      await expect(page).toHaveURL(/\/records\/add/);
+      await expect(page.locator('.alert-danger')).toBeVisible();
+      const alertText = await page.locator('.alert-danger').textContent();
+      expect(alertText).toMatch(/quotes|content/i);
+
+      // Form data should be restored
+      const contentValue = await page.locator('input[name*="content"], input[name*="value"], textarea').first().inputValue();
+      expect(contentValue).toContain('v=spf1');
+      const typeValue = await page.locator('select[name*="type"]').first().inputValue();
+      expect(typeValue).toBe('TXT');
+    });
+
+    test('should restore all rows on multi-row batch failure', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/records/add`);
+
+      // Fill first row with unquoted TXT
+      await page.locator('select[name="records[0][type]"]').selectOption('TXT');
+      await page.locator('input[name="records[0][name]"]').fill('row1');
+      await page.locator('input[name="records[0][content]"]').fill('unquoted content');
+
+      // Add a second row
+      await page.locator('button', { hasText: 'Add another record' }).click();
+      await page.locator('select[name="records[1][type]"]').selectOption('TXT');
+      await page.locator('input[name="records[1][name]"]').fill('row2');
+      await page.locator('input[name="records[1][content]"]').fill('also unquoted');
+
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      // Should stay on add page with error
+      await expect(page).toHaveURL(/\/records\/add/);
+      await expect(page.locator('.alert-danger')).toBeVisible();
+
+      // Both rows should be restored
+      const rows = page.locator('#recordsTableBody .record-row');
+      await expect(rows).toHaveCount(2);
+
+      const row1Content = await page.locator('input[name="records[0][content]"]').inputValue();
+      expect(row1Content).toContain('unquoted content');
+      const row2Content = await page.locator('input[name="records[1][content]"]').inputValue();
+      expect(row2Content).toContain('also unquoted');
+    });
+
+    test('should preserve PTR checkbox after validation error', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = await getTestZoneId(page);
+      if (!zoneId) return;
+
+      await page.goto(`/zones/${zoneId}/records/add`);
+
+      // A record type - PTR checkbox should become visible
+      await page.locator('select[name="records[0][type]"]').selectOption('A');
+      await page.locator('input[name="records[0][name]"]').fill(`ptr-test-${Date.now()}`);
+      await page.locator('input[name="records[0][content]"]').fill('not-an-ip');
+
+      // Check the PTR checkbox (need to wait for JS visibility toggle)
+      const ptrCheckbox = page.locator('input[name="records[0][reverse]"]');
+      await ptrCheckbox.waitFor({ state: 'attached' });
+      await ptrCheckbox.evaluate(el => { el.style.visibility = 'visible'; });
+      await ptrCheckbox.check();
+
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      // Should stay on add page with error
+      await expect(page).toHaveURL(/\/records\/add/);
+      await expect(page.locator('.alert-danger')).toBeVisible();
+
+      // PTR checkbox should still be checked
+      const restoredCheckbox = page.locator('input[name="records[0][reverse]"]');
+      await expect(restoredCheckbox).toBeChecked();
+    });
   });
 
   test.describe('CNAME Record Validation', () => {
