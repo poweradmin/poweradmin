@@ -398,6 +398,7 @@ class AddRecordController extends BaseController
         $records = $_POST['records'] ?? [];
         $successCount = 0;
         $failureCount = 0;
+        $matchingRecordCount = 0;
         $formId = $this->formStateService->generateFormId('add_record');
 
         if (empty($records)) {
@@ -434,9 +435,16 @@ class AddRecordController extends BaseController
 
                 // Handle reverse or domain record creation for individual records
                 if (isset($record['reverse']) && $record['reverse']) {
-                    $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+                    $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+                    if (!empty($reverseResult['success'])) {
+                        $matchingRecordCount++;
+                    }
                 } elseif (isset($record['create_domain_record']) && $record['create_domain_record']) {
-                    $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
+                    // Strip zone suffix - DomainRecordCreator expects relative hostname
+                    $relativeHostname = DnsHelper::stripZoneSuffix($name, $zone_name);
+                    if ($this->createDomainRecord($relativeHostname, $type, $content, $zone_id, $comment)) {
+                        $matchingRecordCount++;
+                    }
                 }
             } else {
                 $failureCount++;
@@ -450,6 +458,9 @@ class AddRecordController extends BaseController
 
         if ($successCount > 0) {
             $message = sprintf(_('%d record(s) were successfully added.'), $successCount);
+            if ($matchingRecordCount > 0) {
+                $message .= ' ' . sprintf(_('%d matching record(s) were also created.'), $matchingRecordCount);
+            }
             if ($failureCount > 0) {
                 $message .= ' ' . sprintf(_('%d record(s) failed to be added.'), $failureCount);
 

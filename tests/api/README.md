@@ -114,7 +114,7 @@ Simplified interface for running all API tests.
 ./run-tests.sh load rate-limit    # Test rate limiting
 ```
 
-### `api-test.sh` - API v1 Tests
+### `api-v1-test.sh` - API v1 Tests
 Full API test suite covering all endpoints with success and failure scenarios.
 
 **Test Categories:**
@@ -131,13 +131,13 @@ Full API test suite covering all endpoints with success and failure scenarios.
 
 **Usage:**
 ```bash
-./api-test.sh                     # Run all tests
-./api-test.sh auth               # Authentication tests only
-./api-test.sh users              # User management tests
-./api-test.sh zones              # Zone management tests
-./api-test.sh records            # Record management tests
-./api-test.sh security           # Security tests only
-./api-test.sh performance        # Performance tests only
+./api-v1-test.sh                     # Run all tests
+./api-v1-test.sh auth               # Authentication tests only
+./api-v1-test.sh users              # User management tests
+./api-v1-test.sh zones              # Zone management tests
+./api-v1-test.sh records            # Record management tests
+./api-v1-test.sh security           # Security tests only
+./api-v1-test.sh performance        # Performance tests only
 ```
 
 ### `api-v2-test.sh` - API v2 Tests
@@ -310,7 +310,7 @@ Success Rate: 98%
 You can extend the test scripts by adding custom functions:
 
 ```bash
-# Add to api-test.sh
+# Add to api-v1-test.sh
 test_custom_scenario() {
     print_section "Custom Test Scenario"
     
@@ -425,7 +425,7 @@ Enable verbose output for debugging:
 export DEBUG=1
 
 # Run tests with maximum verbosity
-./api-test.sh auth 2>&1 | tee debug.log
+./api-v1-test.sh auth 2>&1 | tee debug.log
 ```
 
 ### Performance Tuning
