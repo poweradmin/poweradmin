@@ -119,6 +119,44 @@ class DomainRecordCreatorTest extends TestCase
     }
 
     // =========================================================================
+    // FQDN input (callers may pass either relative or FQDN names)
+    // =========================================================================
+
+    public function testAcceptsFqdnName(): void
+    {
+        $creator = $this->createCreator([
+            'example.com' => 1,
+            '2.0.192.in-addr.arpa' => 5,
+        ]);
+
+        $result = $creator->addDomainRecord(
+            '55.2.0.192.in-addr.arpa',  // FQDN instead of relative "55"
+            'PTR',
+            'host.example.com',
+            5,
+        );
+
+        $this->assertTrue($result['success']);
+    }
+
+    public function testAcceptsFqdnNameForSubdomainZone(): void
+    {
+        $creator = $this->createCreator([
+            'manager-zone.example.com' => 2,
+            '2.0.192.in-addr.arpa' => 5,
+        ]);
+
+        $result = $creator->addDomainRecord(
+            '55.2.0.192.in-addr.arpa',
+            'PTR',
+            'test.manager-zone.example.com',
+            5,
+        );
+
+        $this->assertTrue($result['success']);
+    }
+
+    // =========================================================================
     // Type and config checks
     // =========================================================================
 

@@ -51,6 +51,16 @@ class DomainRecordCreator
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
     }
 
+    /**
+     * Create a matching A/AAAA record in the forward zone when adding a PTR record.
+     *
+     * @param string $name PTR record name - accepts both relative ("55") and FQDN ("55.2.0.192.in-addr.arpa")
+     * @param string $type Record type (must be "PTR")
+     * @param string $content Forward hostname the PTR points to (e.g. "host.example.com")
+     * @param int $zone_id Reverse zone ID
+     * @param string $comment Optional record comment
+     * @param string $account Optional account name for logging
+     */
     public function addDomainRecord(string $name, string $type, string $content, int $zone_id, string $comment = '', string $account = ''): array
     {
         $iface_add_domain_record = $this->config->get('interface', 'add_domain_record');
@@ -63,6 +73,11 @@ class DomainRecordCreator
 
         if ($name && $iface_add_domain_record && $type === 'PTR') {
             $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+
+            // Strip reverse zone suffix if caller passed FQDN instead of relative name
+            if (str_ends_with($name, self::IPV4_SUFFIX) || str_ends_with($name, self::IPV6_SUFFIX)) {
+                $name = DnsHelper::stripZoneSuffix($name, $zone_name);
+            }
 
             if (str_ends_with($zone_name, self::IPV4_SUFFIX)) {
                 return $this->processIPv4($name, $zone_name, $content, $domainId, $comment, $account);

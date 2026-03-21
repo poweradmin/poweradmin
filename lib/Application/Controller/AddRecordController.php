@@ -253,9 +253,7 @@ class AddRecordController extends BaseController
                 $this->setMessage('edit', 'success', _('The record was successfully added, but PTR record creation failed.'));
             }
         } elseif (isset($_POST['create_domain_record'])) {
-            // Strip zone suffix for PTR record processing - DomainRecordCreator expects relative hostname
-            $relativeHostname = DnsHelper::stripZoneSuffix($name, $zone_name);
-            $domainRecord = $this->createDomainRecord($relativeHostname, $type, $content, $zone_id, $comment);
+            $domainRecord = $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
             $message = $domainRecord ? _('Record successfully added. A matching A record was also created.') : _('The record was successfully added.');
             $this->setMessage('edit', 'success', $message);
         } else {
@@ -467,9 +465,7 @@ class AddRecordController extends BaseController
                         $ptrWarnings[] = $reverseResult['message'];
                     }
                 } elseif (isset($record['create_domain_record']) && $record['create_domain_record']) {
-                    // Strip zone suffix - DomainRecordCreator expects relative hostname
-                    $relativeHostname = DnsHelper::stripZoneSuffix($name, $zone_name);
-                    if ($this->createDomainRecord($relativeHostname, $type, $content, $zone_id, $comment)) {
+                    if ($this->createDomainRecord($name, $type, $content, $zone_id, $comment)) {
                         $matchingRecordCount++;
                     }
                 }
