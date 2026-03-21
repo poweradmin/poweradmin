@@ -52,8 +52,11 @@ class BadgeTwigExtension extends AbstractExtension
         ];
     }
 
-    public function getRecordTypeClass(string $type): string
+    public function getRecordTypeClass(?string $type): string
     {
+        if ($type === null || $type === '') {
+            return 'bg-secondary';
+        }
         return self::RECORD_TYPE_CLASSES[strtoupper($type)] ?? 'bg-secondary';
     }
 
