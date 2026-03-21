@@ -55,8 +55,8 @@ class DomainRecordCreator
     {
         $iface_add_domain_record = $this->config->get('interface', 'add_domain_record');
 
-        $registeredDomain = DnsHelper::getRegisteredDomain($content);
-        $domainId = $this->dnsRecord->getDomainIdByName($registeredDomain);
+        // Walk up the hostname hierarchy to find the managed forward zone
+        $domainId = $this->findManagedZoneId($content);
         if ($domainId === null) {
             return $this->errorResponse(sprintf(_('There is no managed zone for domain: %s.'), $content));
         }
@@ -98,7 +98,9 @@ class DomainRecordCreator
 
     private function addRecord(int $domainId, string $content, string $proposedIP, string $comment, string $account): array
     {
-        $domainName = DnsHelper::getSubDomainName($content);
+        // Get the actual zone name so we can derive the correct hostname
+        $zoneName = $this->dnsRecord->getDomainNameById($domainId);
+        $domainName = DnsHelper::stripZoneSuffix(rtrim($content, '.'), $zoneName);
         $result = $this->dnsRecord->addRecord($domainId, $domainName, RecordType::A, $proposedIP, $this->config->get('dns', 'ttl'), 0);
 
         if ($result) {
@@ -110,6 +112,24 @@ class DomainRecordCreator
         }
 
         return $this->errorResponse(_('This domain record was not valid and could not be added.'));
+    }
+
+    /**
+     * Walk up the hostname hierarchy to find the best matching managed zone.
+     * For "test.sub.example.com", tries: sub.example.com, then example.com.
+     */
+    private function findManagedZoneId(string $hostname): ?int
+    {
+        $parts = explode('.', rtrim($hostname, '.'));
+        // Start from the first parent domain (skip the hostname itself)
+        for ($i = 1; $i < count($parts); $i++) {
+            $candidate = implode('.', array_slice($parts, $i));
+            $domainId = $this->dnsRecord->getDomainIdByName($candidate);
+            if ($domainId !== null) {
+                return $domainId;
+            }
+        }
+        return null;
     }
 
     private function errorResponse(string $message): array
