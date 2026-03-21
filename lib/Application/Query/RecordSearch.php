@@ -300,7 +300,16 @@ class RecordSearch extends BaseSearch
         }
 
         if ($iface_record_comments && $parameters['comments']) {
-            $whereConditions .= " OR c.comment LIKE :search_string_comment";
+            $tableNameService = new TableNameService($this->config);
+            $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
+            $links_table = 'record_comment_links';
+            $whereConditions .= " OR EXISTS (
+                SELECT 1 FROM $comments_table c
+                LEFT JOIN $links_table rcl ON rcl.comment_id = c.id
+                WHERE (rcl.record_id = $records_table.id
+                    OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type))
+                AND c.comment LIKE :search_string_comment
+            )";
             $params[':search_string_comment'] = $search_string;
         }
 
@@ -340,7 +349,16 @@ class RecordSearch extends BaseSearch
         }
 
         if ($parameters['comments']) {
-            $whereConditions .= " OR c.comment LIKE :search_string_comment";
+            $tableNameService = new TableNameService($this->config);
+            $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
+            $links_table = 'record_comment_links';
+            $whereConditions .= " OR EXISTS (
+                SELECT 1 FROM $comments_table c
+                LEFT JOIN $links_table rcl ON rcl.comment_id = c.id
+                WHERE (rcl.record_id = $records_table.id
+                    OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type))
+                AND c.comment LIKE :search_string_comment
+            )";
             $params[':search_string_comment'] = $search_string;
         }
 
