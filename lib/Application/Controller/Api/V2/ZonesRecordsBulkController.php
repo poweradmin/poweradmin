@@ -324,17 +324,22 @@ class ZonesRecordsBulkController extends PublicApiController
         // Validate required fields
         $requiredFields = ['name', 'type', 'content'];
         foreach ($requiredFields as $field) {
-            if (!isset($operation[$field]) || trim($operation[$field]) === '') {
+            $value = $this->inputString($operation, $field);
+            if ($value === null || trim($value) === '') {
                 throw new ApiErrorException("Field '$field' is required for create operation", 400);
             }
         }
 
-        $name = trim($operation['name']);
-        $type = strtoupper(trim($operation['type']));
-        $content = trim($operation['content']);
-        $ttl = isset($operation['ttl']) ? (int)$operation['ttl'] : 3600;
-        $priority = isset($operation['priority']) ? (int)$operation['priority'] : 0;
-        $disabled = isset($operation['disabled']) ? (int)$operation['disabled'] : 0;
+        $name = trim($this->inputString($operation, 'name', ''));
+        $type = strtoupper(trim($this->inputString($operation, 'type', '')));
+        $content = trim($this->inputString($operation, 'content', ''));
+        $ttl = $this->inputInt($operation, 'ttl', 3600);
+        $priority = $this->inputInt($operation, 'priority', 0);
+        $disabled = $this->inputIntFromBool($operation, 'disabled', 0);
+
+        if ($ttl === null || $priority === null || $disabled === null) {
+            throw new ApiErrorException('Fields ttl, priority, and disabled must be numeric', 400);
+        }
 
         // Validate TTL
         if ($ttl < 1) {
@@ -425,15 +430,24 @@ class ZonesRecordsBulkController extends PublicApiController
         }
 
         // Prepare record data for update
+        $name = $this->inputString($operation, 'name', $existingRecord['name']);
+        $type = $this->inputString($operation, 'type', $existingRecord['type']);
+        $content = $this->inputString($operation, 'content', $existingRecord['content']);
+        $ttl = $this->inputInt($operation, 'ttl', (int)$existingRecord['ttl']);
+        $prio = $this->inputInt($operation, 'priority', (int)($existingRecord['prio'] ?? 0));
+        $disabled = $this->inputIntFromBool($operation, 'disabled', (int)($existingRecord['disabled'] ?? 0));
+        if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
+            throw new ApiErrorException('Invalid field types in request body', 400);
+        }
         $recordData = [
             'rid' => $recordId,
             'zid' => $zoneId,
-            'name' => $operation['name'] ?? $existingRecord['name'],
-            'type' => isset($operation['type']) ? strtoupper(trim($operation['type'])) : $existingRecord['type'],
-            'content' => $operation['content'] ?? $existingRecord['content'],
-            'ttl' => isset($operation['ttl']) ? (int)$operation['ttl'] : (int)$existingRecord['ttl'],
-            'prio' => isset($operation['priority']) ? (int)$operation['priority'] : (int)($existingRecord['prio'] ?? 0),
-            'disabled' => isset($operation['disabled']) ? (int)$operation['disabled'] : (int)($existingRecord['disabled'] ?? 0)
+            'name' => $name,
+            'type' => strtoupper($type),
+            'content' => $content,
+            'ttl' => $ttl,
+            'prio' => $prio,
+            'disabled' => $disabled
         ];
 
         // Use RecordManager to edit the record

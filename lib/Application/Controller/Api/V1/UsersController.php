@@ -921,7 +921,10 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('Missing required field: perm_templ', 400);
             }
 
-            $permTemplId = (int)$input['perm_templ'];
+            $permTemplId = $this->inputInt($input, 'perm_templ', 0);
+            if ($permTemplId === null) {
+                return $this->returnApiError('perm_templ must be a numeric ID', 400);
+            }
 
             // Use the domain service to assign permission template
             $result = $this->userManagementService->assignPermissionTemplate($targetUserId, $permTemplId);
