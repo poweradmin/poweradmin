@@ -88,7 +88,7 @@
     "check:all": "phpcs --standard=phpcs.xml addons config index.php install lib tests dynamic_update.php",
     "format:all": "phpcbf --standard=phpcs.xml addons config index.php install lib tests dynamic_update.php",
     "style:all": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- addons config index.php install lib tests dynamic_update.php",
-    "analyse:phpstan": "phpstan analyse --level=3 addons config index.php install lib tests dynamic_update.php",
+    "analyse:phpstan": "phpstan analyse --level=3 --memory-limit=256M addons config index.php install lib tests dynamic_update.php",
     "analyse:psalm": "psalm",
     "quality:all": "phpmd addons,config,index.php,install,lib,dynamic_update.php ansi phpmd.xml",
     "lint:twig": "! grep -rn 'name=\"csrf_token\"' templates/ --include='*.html' || (echo 'ERROR: Use name=\"_token\" instead of name=\"csrf_token\" for CSRF token fields' && false)",

@@ -412,9 +412,14 @@ class ZonesRRSetsController extends PublicApiController
                 return $this->returnApiError("Field 'records' must be a non-empty array", 400);
             }
 
-            $name = trim($input['name']);
-            $type = strtoupper(trim($input['type']));
-            $ttl = isset($input['ttl']) ? (int)$input['ttl'] : 3600;
+            $nameRaw = $this->inputString($input, 'name', '');
+            $typeRaw = $this->inputString($input, 'type', '');
+            $ttl = $this->inputInt($input, 'ttl', 3600);
+            if ($nameRaw === null || $typeRaw === null || $ttl === null) {
+                return $this->returnApiError('Invalid field types in request body', 400);
+            }
+            $name = trim($nameRaw);
+            $type = strtoupper(trim($typeRaw));
 
             // Validate TTL
             if ($ttl < 1) {
@@ -457,8 +462,8 @@ class ZonesRRSetsController extends PublicApiController
                     }
 
                     $content = trim($recordData['content']);
-                    $disabled = isset($recordData['disabled']) ? (int)$recordData['disabled'] : 0;
-                    $priority = isset($recordData['priority']) ? (int)$recordData['priority'] : 0;
+                    $disabled = $this->inputIntFromBool($recordData, 'disabled', 0);
+                    $priority = $this->inputInt($recordData, 'priority', 0);
 
                     $content = $dnsFormatter->formatContent($type, $content);
 

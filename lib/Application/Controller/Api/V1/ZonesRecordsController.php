@@ -400,18 +400,23 @@ class ZonesRecordsController extends PublicApiController
             // Validate required fields
             $requiredFields = ['name', 'type', 'content'];
             foreach ($requiredFields as $field) {
-                if (!isset($input[$field]) || trim($input[$field]) === '') {
+                $value = $this->inputString($input, $field);
+                if ($value === null || trim($value) === '') {
                     return $this->returnApiError("Field '$field' is required", 400);
                 }
             }
 
             // Extract and validate input
-            $name = trim($input['name']);
-            $type = strtoupper(trim($input['type']));
-            $content = trim($input['content']);
-            $ttl = isset($input['ttl']) ? (int)$input['ttl'] : 3600;
-            $priority = isset($input['priority']) ? (int)$input['priority'] : 0;
-            $disabled = isset($input['disabled']) ? (int)$input['disabled'] : 0;
+            $name = trim($this->inputString($input, 'name', ''));
+            $type = strtoupper(trim($this->inputString($input, 'type', '')));
+            $content = trim($this->inputString($input, 'content', ''));
+            $ttl = $this->inputInt($input, 'ttl', 3600);
+            $priority = $this->inputInt($input, 'priority', 0);
+            $disabled = $this->inputIntFromBool($input, 'disabled', 0);
+
+            if ($ttl === null || $priority === null || $disabled === null) {
+                return $this->returnApiError('Fields ttl, priority, and disabled must be numeric', 400);
+            }
 
             // Validate TTL
             if ($ttl < 1) {
@@ -605,15 +610,24 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Prepare record data for update - use existing values if not provided
+            $name = $this->inputString($input, 'name', $existingRecord['name']);
+            $type = $this->inputString($input, 'type', $existingRecord['type']);
+            $content = $this->inputString($input, 'content', $existingRecord['content']);
+            $ttl = $this->inputInt($input, 'ttl', (int)$existingRecord['ttl']);
+            $prio = $this->inputInt($input, 'priority', (int)($existingRecord['prio'] ?? 0));
+            $disabled = $this->inputIntFromBool($input, 'disabled', DbCompat::boolFromDb($existingRecord['disabled'] ?? 0));
+            if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
+                return $this->returnApiError('Invalid field types in request body', 400);
+            }
             $recordData = [
                 'rid' => $recordId,
                 'zid' => $zoneId,
-                'name' => $input['name'] ?? $existingRecord['name'],
-                'type' => isset($input['type']) ? strtoupper(trim($input['type'])) : $existingRecord['type'],
-                'content' => $input['content'] ?? $existingRecord['content'],
-                'ttl' => isset($input['ttl']) ? (int)$input['ttl'] : (int)$existingRecord['ttl'],
-                'prio' => isset($input['priority']) ? (int)$input['priority'] : (int)($existingRecord['prio'] ?? 0),
-                'disabled' => isset($input['disabled']) ? (int)$input['disabled'] : DbCompat::boolFromDb($existingRecord['disabled'] ?? 0)
+                'name' => $name,
+                'type' => strtoupper($type),
+                'content' => $content,
+                'ttl' => $ttl,
+                'prio' => $prio,
+                'disabled' => $disabled
             ];
 
             // Validate TTL

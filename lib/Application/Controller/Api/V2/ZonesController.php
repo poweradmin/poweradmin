@@ -464,18 +464,23 @@ class ZonesController extends PublicApiController
             }
 
             // Extract required parameters
-            $domain = $input['name'] ?? '';
-            $type = strtoupper($input['type'] ?? 'MASTER');
-            $slaveMaster = $input['masters'] ?? $input['master'] ?? '';
-            $zoneTemplate = (string)($input['template'] ?? 'none');
+            $domain = $this->inputString($input, 'name', '');
+            $type = $this->inputString($input, 'type', 'MASTER');
+            $slaveMaster = $this->inputString($input, 'masters') ?? $this->inputString($input, 'master', '');
+            $enableDnssec = $this->inputBool($input, 'enable_dnssec', false);
+            $description = $this->inputString($input, 'description', '');
+            $account = $this->inputString($input, 'account', '');
+            if (
+                $domain === null || $type === null || $slaveMaster === null || $enableDnssec === null
+                || $description === null || $account === null
+            ) {
+                return $this->returnApiError('Invalid field types in request body', 400);
+            }
+            $type = strtoupper($type);
+            $zoneTemplate = $this->inputTemplate($input);
             if ($zoneTemplate !== 'none' && !is_numeric($zoneTemplate)) {
                 return $this->returnApiError('Template must be a numeric ID', 400);
             }
-            $enableDnssec = $input['enable_dnssec'] ?? false;
-
-            // Extract optional parameters
-            $description = $input['description'] ?? '';
-            $account = $input['account'] ?? '';
 
             // Validate master servers format if provided
             if (!empty($slaveMaster)) {
@@ -493,7 +498,10 @@ class ZonesController extends PublicApiController
 
             // Default owner to authenticated user if not specified
             // Allow specifying different owner only if user has zone_content_edit_others permission
-            $owner = (int)($input['owner_user_id'] ?? $userId);
+            $owner = $this->inputInt($input, 'owner_user_id', $userId);
+            if ($owner === null) {
+                return $this->returnApiError('owner_user_id must be a numeric ID', 400);
+            }
 
             if ($owner !== $userId) {
                 // User wants to create zone for a different owner - check if they have permission

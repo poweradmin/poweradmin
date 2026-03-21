@@ -191,6 +191,102 @@ abstract class AbstractApiController extends BaseController
     }
 
     /**
+     * Extract a string value from input array.
+     * Returns default only when key is absent; returns null for present non-string values
+     * so callers can distinguish missing from malformed.
+     */
+    protected function inputString(array $input, string $key, ?string $default = null): ?string
+    {
+        if (!array_key_exists($key, $input)) {
+            return $default;
+        }
+        return is_string($input[$key]) ? $input[$key] : null;
+    }
+
+    /**
+     * Extract an integer value from input array.
+     * Accepts integers and numeric strings. Returns default when key is absent;
+     * returns null for present non-numeric values.
+     */
+    protected function inputInt(array $input, string $key, ?int $default = null): ?int
+    {
+        if (!array_key_exists($key, $input)) {
+            return $default;
+        }
+        $value = $input[$key];
+        if (is_int($value)) {
+            return $value;
+        }
+        if (is_string($value) && is_numeric($value)) {
+            return (int)$value;
+        }
+        return null;
+    }
+
+    /**
+     * Extract a boolean value from input array.
+     * Accepts native booleans, int 1/0, and strings "1"/"0"/"true"/"false"
+     * for form-encoded compatibility. Returns default when key is absent;
+     * returns null for present invalid values.
+     */
+    protected function inputBool(array $input, string $key, ?bool $default = null): ?bool
+    {
+        if (!array_key_exists($key, $input)) {
+            return $default;
+        }
+        $value = $input[$key];
+        if (is_bool($value)) {
+            return $value;
+        }
+        if ($value === 1 || $value === '1' || $value === 'true') {
+            return true;
+        }
+        if ($value === 0 || $value === '0' || $value === 'false') {
+            return false;
+        }
+        return null;
+    }
+
+    /**
+     * Extract an integer value that also accepts JSON booleans and "true"/"false" strings.
+     * Use for fields like 'disabled' where the API documents boolean but stores as int.
+     * Returns default when key is absent; returns null for present invalid values.
+     */
+    protected function inputIntFromBool(array $input, string $key, ?int $default = 0): ?int
+    {
+        if (!array_key_exists($key, $input)) {
+            return $default;
+        }
+        $value = $input[$key];
+        if (is_bool($value)) {
+            return $value ? 1 : 0;
+        }
+        if (is_int($value)) {
+            return $value;
+        }
+        if ($value === 'true' || $value === 'false') {
+            return $value === 'true' ? 1 : 0;
+        }
+        if (is_string($value) && is_numeric($value)) {
+            return (int)$value;
+        }
+        return null;
+    }
+
+    /**
+     * Extract a template ID from input. Accepts string IDs, "none", and JSON integers.
+     * Rejects booleans, arrays, and non-numeric strings.
+     */
+    protected function inputTemplate(array $input): string
+    {
+        $raw = $input['template'] ?? 'none';
+        if (is_int($raw)) {
+            return (string)$raw;
+        }
+        return is_string($raw) ? $raw : 'none';
+    }
+
+    /**
      * Determines if this is a public API route (v1, v2, etc.) or internal API route
      *
      * @return bool True if this is a public API route, false otherwise
