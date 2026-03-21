@@ -521,12 +521,12 @@ class AddRecordController extends BaseController
                 'multi_record_error' => true,
                 'failure_count' => $failureCount,
                 'errorMessage' => $errorMessage,
-                'name' => $firstRecord['name'] ?? '',
-                'type' => $firstRecord['type'] ?? '',
-                'content' => $firstRecord['content'] ?? '',
-                'prio' => $firstRecord['prio'] ?? 0,
-                'ttl' => $firstRecord['ttl'] ?? '',
-                'comment' => $firstRecord['comment'] ?? '',
+                'name' => is_array($firstRecord) ? ($firstRecord['name'] ?? '') : '',
+                'type' => is_array($firstRecord) ? ($firstRecord['type'] ?? '') : '',
+                'content' => is_array($firstRecord) ? ($firstRecord['content'] ?? '') : '',
+                'prio' => is_array($firstRecord) ? ($firstRecord['prio'] ?? 0) : 0,
+                'ttl' => is_array($firstRecord) ? ($firstRecord['ttl'] ?? '') : '',
+                'comment' => is_array($firstRecord) ? ($firstRecord['comment'] ?? '') : '',
                 'saved_records' => array_values($records),
             ];
             $this->formStateService->saveFormData($formId, $formData);
