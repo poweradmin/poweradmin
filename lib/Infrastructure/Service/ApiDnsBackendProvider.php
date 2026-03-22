@@ -807,6 +807,10 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             $name = rtrim($rrset['name'] ?? '', '.');
             $ttl = $rrset['ttl'] ?? 3600;
 
+            // Extract RRset-level comment (first comment if present)
+            $rrsetComments = $rrset['comments'] ?? [];
+            $rrsetComment = !empty($rrsetComments) ? ($rrsetComments[0]['content'] ?? null) : null;
+
             foreach ($rrset['records'] ?? [] as $record) {
                 $content = $record['content'] ?? '';
                 $prio = 0;
@@ -832,6 +836,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                     'ttl' => (int)$ttl,
                     'prio' => $prio,
                     'disabled' => ($record['disabled'] ?? false) ? 1 : 0,
+                    'api_comment' => $rrsetComment,
                 ];
             }
         }

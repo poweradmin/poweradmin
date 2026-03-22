@@ -85,4 +85,20 @@ class DnsBackendProviderFactory
             && $config->get('pdns_api', 'url')
             && $config->get('pdns_api', 'key');
     }
+
+    public static function createApiClient(ConfigurationInterface $config, ?LoggerInterface $logger = null): ?PowerdnsApiClient
+    {
+        $pdnsApiUrl = $config->get('pdns_api', 'url');
+        $pdnsApiKey = $config->get('pdns_api', 'key');
+
+        if (!$pdnsApiUrl || !$pdnsApiKey) {
+            return null;
+        }
+
+        $logger = $logger ?? new NullLogger();
+        $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey, $logger);
+        $serverName = $config->get('pdns_api', 'server_name') ?: 'localhost';
+
+        return new PowerdnsApiClient($httpClient, $serverName, $logger);
+    }
 }
