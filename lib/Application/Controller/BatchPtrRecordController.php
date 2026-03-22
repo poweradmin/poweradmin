@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Repository\RecordRepository;
@@ -306,10 +307,25 @@ class BatchPtrRecordController extends BaseController
                     'type' => 'ipv4'
                 ];
             } elseif (str_ends_with($zone['name'], '.ip6.arpa')) {
-                // For IPv6, show the zone name as is
+                // Convert ip6.arpa zone to /64 prefix (4 hextets)
+                // The form validation expects exactly 4 colon-separated groups
+                $shortened = IpHelper::shortenIPv6ReverseZone($zone['name']);
+                if ($shortened !== null) {
+                    $binary = inet_pton($shortened);
+                    $expanded = implode(':', str_split(bin2hex($binary), 4));
+                    $hextets = explode(':', $expanded);
+                    // Take first 4 hextets and strip leading zeros for readability
+                    $prefix = array_slice($hextets, 0, 4);
+                    $network = implode(':', array_map(function ($h) {
+                        return ltrim($h, '0') ?: '0';
+                    }, $prefix));
+                } else {
+                    $network = $zone['name'];
+                }
+
                 $reverseZones[] = [
                     'name' => $zone['name'],
-                    'network' => $zone['name'],
+                    'network' => $network,
                     'type' => 'ipv6'
                 ];
             }
