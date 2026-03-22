@@ -277,6 +277,59 @@ test.describe('Batch PTR Records (Issue #968)', () => {
   });
 });
 
+test.describe('Batch PTR IPv6 Support (Issue #1110)', () => {
+  test('should show IPv6 option in IP version dropdown', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    const zoneId = await getForwardZoneId(page);
+    if (!zoneId) {
+      test.skip('No forward zones available');
+      return;
+    }
+
+    await page.goto(`/zones/batch-ptr?id=${zoneId}`);
+
+    const ipv6Option = page.locator('select#network_type option[value="ipv6"]');
+    await expect(ipv6Option).toHaveCount(1);
+    await expect(ipv6Option).toContainText('IPv6');
+  });
+
+  test('should disable matching-only checkbox when IPv6 is selected', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    const zoneId = await getForwardZoneId(page);
+    if (!zoneId) {
+      test.skip('No forward zones available');
+      return;
+    }
+
+    await page.goto(`/zones/batch-ptr?id=${zoneId}`);
+
+    // Select IPv6
+    await page.selectOption('#network_type', 'ipv6');
+
+    const matchingCheckbox = page.locator('#only_matching_records');
+    await expect(matchingCheckbox).toBeDisabled();
+    await expect(matchingCheckbox).not.toBeChecked();
+  });
+
+  test('should re-enable matching-only checkbox when switching back to IPv4', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    const zoneId = await getForwardZoneId(page);
+    if (!zoneId) {
+      test.skip('No forward zones available');
+      return;
+    }
+
+    await page.goto(`/zones/batch-ptr?id=${zoneId}`);
+
+    // Switch to IPv6 then back to IPv4
+    await page.selectOption('#network_type', 'ipv6');
+    await page.selectOption('#network_type', 'ipv4');
+
+    const matchingCheckbox = page.locator('#only_matching_records');
+    await expect(matchingCheckbox).toBeEnabled();
+  });
+});
+
 test.describe('Batch PTR with Forward Zone', () => {
   test('should link PTR records to forward zone A records', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
