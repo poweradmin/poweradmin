@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ class OidcService extends LoggingService
     private CsrfTokenService $csrfTokenService;
     private PDO $db;
     private ?MfaService $mfaService = null;
+    private UserEventLogger $userEventLogger;
 
     public function __construct(
         ConfigurationManager $configManager,
@@ -73,6 +74,7 @@ class OidcService extends LoggingService
         $redirectService = new RedirectService();
         $this->authenticationService = new AuthenticationService($this->sessionService, $redirectService);
         $this->csrfTokenService = new CsrfTokenService();
+        $this->userEventLogger = new UserEventLogger($db);
 
         // Initialize MFA service
         $userMfaRepository = new DbUserMfaRepository($db, $configManager);
@@ -279,6 +281,9 @@ class OidcService extends LoggingService
                 // Set userlogin for MFA verification page
                 $this->setSessionValue('userlogin', $databaseUsername);
 
+                // Log successful authentication to database
+                $this->userEventLogger->logSuccessfulAuth();
+
                 // Ensure a CSRF token exists for subsequent requests
                 $this->csrfTokenService->ensureTokenExists();
                 $this->logInfo('CSRF token ensured for OIDC session.');
@@ -348,6 +353,8 @@ class OidcService extends LoggingService
                 }
             } else {
                 $this->logWarning('Failed to provision OIDC user: {username}', ['username' => $userInfo->getUsername()]);
+                $this->setSessionValue('userlogin', $userInfo->getUsername());
+                $this->userEventLogger->logFailedAuth();
                 $sessionEntity = new SessionEntity(_('Authentication failed: Unable to create or update user account'), 'danger');
                 $this->authenticationService->auth($sessionEntity);
             }
