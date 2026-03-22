@@ -32,6 +32,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 use Poweradmin\Infrastructure\Repository\ApiRecordRepository;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
+use Poweradmin\Infrastructure\Repository\ApiRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
@@ -66,7 +67,7 @@ class RepositoryFactory
     public function createRecordRepository(): RecordRepositoryInterface
     {
         if ($this->backendProvider->isApiBackend()) {
-            return new ApiRecordRepository($this->db, $this->config, $this->backendProvider);
+            return new ApiRecordRepository($this->backendProvider);
         }
         return new SqlRecordRepository($this->db, $this->config);
     }
@@ -82,6 +83,12 @@ class RepositoryFactory
 
     public function createRecordCommentRepository(): RecordCommentRepositoryInterface
     {
+        if ($this->backendProvider->isApiBackend()) {
+            $apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+            if ($apiClient !== null) {
+                return new ApiRecordCommentRepository($apiClient, $this->backendProvider);
+            }
+        }
         return new DbRecordCommentRepository($this->db, $this->config, $this->backendProvider);
     }
 
