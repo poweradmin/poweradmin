@@ -1651,6 +1651,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Infrastructure\\Logger\\SyslogLegacyLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/SyslogLegacyLogger.php',
         'Poweradmin\\Infrastructure\\Repository\\ApiDomainRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/ApiDomainRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\ApiDynamicDnsRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/ApiDynamicDnsRepository.php',
+        'Poweradmin\\Infrastructure\\Repository\\ApiRecordCommentRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/ApiRecordCommentRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\ApiRecordRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/ApiRecordRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\ApiZoneRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/ApiZoneRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\DbApiKeyRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/DbApiKeyRepository.php',

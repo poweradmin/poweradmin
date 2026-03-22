@@ -1256,6 +1256,7 @@ return array(
     'Poweradmin\\Infrastructure\\Logger\\SyslogLegacyLogger' => $baseDir . '/lib/Infrastructure/Logger/SyslogLegacyLogger.php',
     'Poweradmin\\Infrastructure\\Repository\\ApiDomainRepository' => $baseDir . '/lib/Infrastructure/Repository/ApiDomainRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\ApiDynamicDnsRepository' => $baseDir . '/lib/Infrastructure/Repository/ApiDynamicDnsRepository.php',
+    'Poweradmin\\Infrastructure\\Repository\\ApiRecordCommentRepository' => $baseDir . '/lib/Infrastructure/Repository/ApiRecordCommentRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\ApiRecordRepository' => $baseDir . '/lib/Infrastructure/Repository/ApiRecordRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\ApiZoneRepository' => $baseDir . '/lib/Infrastructure/Repository/ApiZoneRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\DbApiKeyRepository' => $baseDir . '/lib/Infrastructure/Repository/DbApiKeyRepository.php',
