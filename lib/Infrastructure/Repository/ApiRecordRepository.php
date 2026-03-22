@@ -22,31 +22,35 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use PDO;
 use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\TableNameService;
 
 /**
  * API-backend record repository.
- * Fetches DNS data via PowerDNS REST API, uses Poweradmin DB for comments.
+ * Fetches DNS data via PowerDNS REST API, comments from API RRset data.
  */
 class ApiRecordRepository implements RecordRepositoryInterface
 {
-    use RecordCommentEnrichmentTrait;
-
-    private PDO $db;
-    private TableNameService $tableNameService;
     private DnsBackendProvider $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, DnsBackendProvider $backendProvider)
+    public function __construct(DnsBackendProvider $backendProvider)
     {
-        $this->db = $db;
-        $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
+    }
+
+    /**
+     * Enrich records with comments from API RRset data.
+     * The API is the sole source of truth for comments in API mode.
+     */
+    private function enrichRecordsWithComments(array &$records): void
+    {
+        foreach ($records as &$record) {
+            $record['comment'] = $record['api_comment'] ?? null;
+            unset($record['api_comment']);
+        }
+        unset($record);
     }
 
     public function getZoneIdFromRecordId(int|string $rid): int

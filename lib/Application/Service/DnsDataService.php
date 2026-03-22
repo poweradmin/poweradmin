@@ -779,49 +779,15 @@ class DnsDataService
         // Paginate
         $records = ResultPaginator::paginate($records, $rowStart, $rowAmount);
 
-        // Enrich with comments if requested
-        if ($includeComments && !empty($records)) {
-            $this->enrichRecordsWithComments($records);
+        if ($includeComments) {
+            foreach ($records as &$record) {
+                $record['comment'] = $record['api_comment'] ?? null;
+                unset($record['api_comment']);
+            }
+            unset($record);
         }
 
         return ['records' => $records, 'total' => $total];
-    }
-
-    /**
-     * Enrich records with comments from Poweradmin DB.
-     */
-    private function enrichRecordsWithComments(array &$records): void
-    {
-        $recordIds = array_filter(
-            array_map(fn($r) => $r['id'] ?? null, $records),
-            fn($id) => $id !== null && $id !== 0
-        );
-        if (empty($recordIds)) {
-            return;
-        }
-
-        // Convert all IDs to strings for VARCHAR column comparison
-        $recordIds = array_map('strval', $recordIds);
-
-        $placeholders = implode(',', array_fill(0, count($recordIds), '?'));
-        $stmt = $this->db->prepare(
-            "SELECT rcl.record_id, rc.comment
-             FROM record_comment_links rcl
-             INNER JOIN record_comments rc ON rcl.comment_id = rc.id
-             WHERE rcl.record_id IN ($placeholders)"
-        );
-        $stmt->execute(array_values($recordIds));
-
-        $comments = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $comments[$row['record_id']] = $row['comment'];
-        }
-
-        foreach ($records as &$record) {
-            $rid = $record['id'] ?? null;
-            $record['comment'] = $rid !== null ? ($comments[(string)$rid] ?? '') : '';
-        }
-        unset($record);
     }
 
     // ---------------------------------------------------------------
@@ -1089,15 +1055,52 @@ class DnsDataService
                 'fullname' => $record['zone_owner_fullname'] ?? '',
             ];
 
-            $result[] = $formatted;
+                $result[] = $formatted;
         }
 
-        // Bulk enrich with comments in a single query instead of per-record
         if ($includeComments) {
-            $this->enrichRecordsWithComments($result);
+            $this->enrichSearchResultsWithComments($records, $result);
         }
 
         return $result;
+    }
+
+    /**
+     * Enrich search results with comments from API RRset data.
+     */
+    private function enrichSearchResultsWithComments(array $sourceRecords, array &$formattedResult): void
+    {
+        $apiComments = $this->loadApiRRsetComments($sourceRecords);
+
+        foreach ($formattedResult as $i => &$row) {
+            $name = $sourceRecords[$i]['name'] ?? '';
+            $type = $sourceRecords[$i]['type'] ?? '';
+            $zoneName = $sourceRecords[$i]['zone_name'] ?? '';
+            $zoneKey = $name . '|' . $type;
+            $row['comment'] = $apiComments[$zoneName][$zoneKey] ?? '';
+        }
+        unset($row);
+    }
+
+    private function loadApiRRsetComments(array $sourceRecords): array
+    {
+        $zoneComments = [];
+        foreach ($sourceRecords as $record) {
+            $zoneName = $record['zone_name'] ?? '';
+            if ($zoneName === '' || isset($zoneComments[$zoneName])) {
+                continue;
+            }
+
+            $zoneComments[$zoneName] = [];
+            $zoneRecords = $this->backendProvider->getZoneRecords($record['domain_id'] ?? 0, $zoneName);
+            foreach ($zoneRecords as $zr) {
+                $key = ($zr['name'] ?? '') . '|' . ($zr['type'] ?? '');
+                if (!empty($zr['api_comment']) && !isset($zoneComments[$zoneName][$key])) {
+                    $zoneComments[$zoneName][$key] = $zr['api_comment'];
+                }
+            }
+        }
+        return $zoneComments;
     }
 
     /**

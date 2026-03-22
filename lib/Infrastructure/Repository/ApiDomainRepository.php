@@ -197,7 +197,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
             }
 
             if ($iface_zonelist_serial) {
-                $recordRepository = new ApiRecordRepository($this->db, $this->config, $this->backendProvider);
+                $recordRepository = new ApiRecordRepository($this->backendProvider);
                 $result[$name]['serial'] = $recordRepository->getSerialByZid($zone['id'] ?? 0);
             }
 
