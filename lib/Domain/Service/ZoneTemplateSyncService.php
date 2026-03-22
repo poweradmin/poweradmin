@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,11 +33,18 @@ class ZoneTemplateSyncService
 {
     private PDO $db;
     private ConfigurationInterface $config;
+    private ?DnsBackendProvider $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->backendProvider = $backendProvider;
+    }
+
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     /**
@@ -248,17 +255,31 @@ class ZoneTemplateSyncService
     public function getUnsyncedZones(int $templateId): array
     {
         $db_type = $this->config->get('database', 'type');
-        $query = "SELECT 
-                    d.id,
-                    d.name,
-                    zts.template_last_modified,
-                    zts.last_synced
-                  FROM zone_template_sync zts
-                  JOIN zones z ON zts.zone_id = z.id
-                  JOIN domains d ON z.domain_id = d.id
-                  WHERE zts.zone_templ_id = :template_id
-                    AND zts.needs_sync = " . DbCompat::boolTrue($db_type) . "
-                  ORDER BY d.name";
+
+        if ($this->isApiBackend()) {
+            $query = "SELECT
+                        z.id,
+                        z.zone_name as name,
+                        zts.template_last_modified,
+                        zts.last_synced
+                      FROM zone_template_sync zts
+                      JOIN zones z ON zts.zone_id = z.id
+                      WHERE zts.zone_templ_id = :template_id
+                        AND zts.needs_sync = " . DbCompat::boolTrue($db_type) . "
+                      ORDER BY z.zone_name";
+        } else {
+            $query = "SELECT
+                        d.id,
+                        d.name,
+                        zts.template_last_modified,
+                        zts.last_synced
+                      FROM zone_template_sync zts
+                      JOIN zones z ON zts.zone_id = z.id
+                      JOIN domains d ON z.domain_id = d.id
+                      WHERE zts.zone_templ_id = :template_id
+                        AND zts.needs_sync = " . DbCompat::boolTrue($db_type) . "
+                      ORDER BY d.name";
+        }
 
         $stmt = $this->db->prepare($query);
         $stmt->execute(['template_id' => $templateId]);

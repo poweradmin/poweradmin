@@ -157,7 +157,7 @@ class DomainManager implements DomainManagerInterface
 
                     // Create sync tracking record if using a template
                     if ($zone_template != "none" && is_numeric($zone_template)) {
-                        $syncService = new ZoneTemplateSyncService($db, $this->config);
+                        $syncService = new ZoneTemplateSyncService($db, $this->config, $this->backendProvider);
                         $syncService->createSyncRecord($zone_id, (int)$zone_template);
                         // Mark as synced since we're creating from template
                         $syncService->markZoneAsSynced($zone_id, (int)$zone_template);
@@ -355,7 +355,7 @@ class DomainManager implements DomainManagerInterface
 
                 // Clean up zone template sync records if zone exists
                 if ($zoneId) {
-                    $syncService = new ZoneTemplateSyncService($this->db, $this->config);
+                    $syncService = new ZoneTemplateSyncService($this->db, $this->config, $this->backendProvider);
                     $syncService->cleanupZoneSyncRecords($zoneId);
                 }
 
@@ -427,7 +427,7 @@ class DomainManager implements DomainManagerInterface
 
                     // Clean up zone template sync records if zone exists
                     if ($zoneId) {
-                        $syncService = new ZoneTemplateSyncService($this->db, $this->config);
+                        $syncService = new ZoneTemplateSyncService($this->db, $this->config, $this->backendProvider);
                         $syncService->cleanupZoneSyncRecords($zoneId);
                     }
 

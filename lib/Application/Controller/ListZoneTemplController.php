@@ -73,7 +73,7 @@ class ListZoneTemplController extends BaseController
         $templatesList = $zone_templates->getListZoneTempl($userId);
 
         // Get sync status for all templates
-        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
+        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $syncStatus = $syncService->getTemplateSyncStatus($userId);
 
         $this->render('list_zone_templ.html', [
