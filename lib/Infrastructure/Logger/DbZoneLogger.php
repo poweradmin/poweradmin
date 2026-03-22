@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,6 +40,11 @@ class DbZoneLogger
         $this->backendProvider = $backendProvider;
     }
 
+    private function isApiBackend(): bool
+    {
+        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
+    }
+
     public function doLog($msg, $zone_id, $priority): void
     {
         $stmt = $this->db->prepare('INSERT INTO log_zones (zone_id, event, priority) VALUES (:zone_id, :msg, :priority)');
@@ -58,16 +63,25 @@ class DbZoneLogger
 
     public function countLogsByDomain($domain)
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
+        if ($this->isApiBackend()) {
+            $stmt = $this->db->prepare("
+                SELECT count(zones.id) as number_of_logs
+                FROM log_zones
+                INNER JOIN zones ON COALESCE(zones.domain_id, zones.id) = log_zones.zone_id
+                WHERE zones.zone_name IS NOT NULL AND zones.zone_name LIKE :search_by
+            ");
+        } else {
+            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
+            $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
 
-        $stmt = $this->db->prepare("
-                    SELECT count($domains_table.id) as number_of_logs
-                    FROM log_zones
-                    INNER JOIN $domains_table 
-                    ON $domains_table.id = log_zones.zone_id
-                    WHERE $domains_table.name LIKE :search_by
-        ");
+            $stmt = $this->db->prepare("
+                SELECT count($domains_table.id) as number_of_logs
+                FROM log_zones
+                INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id
+                WHERE $domains_table.name LIKE :search_by
+            ");
+        }
+
         $name = "%$domain%";
         $stmt->execute(['search_by' => $name]);
         return $stmt->fetch()['number_of_logs'];
@@ -96,16 +110,28 @@ class DbZoneLogger
             return array();
         }
 
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
+        if ($this->isApiBackend()) {
+            $stmt = $this->db->prepare("
+                SELECT log_zones.id, log_zones.event, log_zones.created_at, zones.zone_name as name
+                FROM log_zones
+                INNER JOIN zones ON COALESCE(zones.domain_id, zones.id) = log_zones.zone_id
+                WHERE zones.zone_name IS NOT NULL AND zones.zone_name LIKE :search_by
+                ORDER BY log_zones.created_at DESC
+                LIMIT :limit
+                OFFSET :offset");
+        } else {
+            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
+            $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
 
-        $stmt = $this->db->prepare("
-            SELECT log_zones.id, log_zones.event, log_zones.created_at, $domains_table.name FROM log_zones
-            INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id
-            WHERE $domains_table.name LIKE :search_by
-            ORDER BY log_zones.created_at DESC
-            LIMIT :limit
-            OFFSET :offset");
+            $stmt = $this->db->prepare("
+                SELECT log_zones.id, log_zones.event, log_zones.created_at, $domains_table.name
+                FROM log_zones
+                INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id
+                WHERE $domains_table.name LIKE :search_by
+                ORDER BY log_zones.created_at DESC
+                LIMIT :limit
+                OFFSET :offset");
+        }
 
         $domain = "%$domain%";
         $stmt->bindValue(':search_by', $domain, PDO::PARAM_STR);
