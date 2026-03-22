@@ -39,6 +39,7 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -55,6 +56,7 @@ class AddUserController extends BaseController
     private DbUserGroupRepository $groupRepository;
     private DbUserGroupMemberRepository $memberRepository;
     private UserContextService $userContextService;
+    private LegacyLogger $auditLogger;
     protected Request $request;
 
 
@@ -77,6 +79,7 @@ class AddUserController extends BaseController
         $this->groupRepository = new DbUserGroupRepository($this->db);
         $this->memberRepository = new DbUserGroupMemberRepository($this->db);
         $this->userContextService = new UserContextService();
+        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     public function run(): void
@@ -172,6 +175,14 @@ class AddUserController extends BaseController
                     $successMessage .= ' ' . _('A password was generated but is not displayed for security reasons.');
                 }
             }
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:add_user username:%s email:%s',
+                $_SERVER['REMOTE_ADDR'] ?? '',
+                $this->userContextService->getLoggedInUsername(),
+                $userParams['username'],
+                $userParams['email']
+            ));
 
             $this->setMessage('users', 'success', $successMessage);
             $this->redirect('/users');
