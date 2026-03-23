@@ -59,11 +59,11 @@ class ZoneTemplatesControllerTest extends TestCase
 
         $content = json_decode($response->getContent(), true);
         $this->assertTrue($content['success']);
-        $this->assertCount(2, $content['data']);
-        $this->assertEquals('Default', $content['data'][0]['name']);
-        $this->assertEquals('Default template', $content['data'][0]['description']);
-        $this->assertTrue($content['data'][0]['is_global']);
-        $this->assertFalse($content['data'][1]['is_global']);
+        $this->assertCount(2, $content['data']['templates']);
+        $this->assertEquals('Default', $content['data']['templates'][0]['name']);
+        $this->assertEquals('Default template', $content['data']['templates'][0]['description']);
+        $this->assertTrue($content['data']['templates'][0]['is_global']);
+        $this->assertFalse($content['data']['templates'][1]['is_global']);
     }
 
     public function testListZoneTemplatesException(): void
@@ -118,12 +118,12 @@ class ZoneTemplatesControllerTest extends TestCase
 
         $content = json_decode($response->getContent(), true);
         $this->assertTrue($content['success']);
-        $this->assertEquals(1, $content['data']['id']);
-        $this->assertEquals('Default template', $content['data']['description']);
-        $this->assertTrue($content['data']['is_global']);
-        $this->assertCount(1, $content['data']['records']);
-        $this->assertEquals('SOA', $content['data']['records'][0]['type']);
-        $this->assertEquals(0, $content['data']['records'][0]['priority']);
+        $this->assertEquals(1, $content['data']['template']['id']);
+        $this->assertEquals('Default template', $content['data']['template']['description']);
+        $this->assertTrue($content['data']['template']['is_global']);
+        $this->assertCount(1, $content['data']['template']['records']);
+        $this->assertEquals('SOA', $content['data']['template']['records'][0]['type']);
+        $this->assertEquals(0, $content['data']['template']['records'][0]['priority']);
     }
 
     public function testGetZoneTemplateNotFound(): void
