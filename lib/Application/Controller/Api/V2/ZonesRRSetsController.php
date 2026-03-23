@@ -366,7 +366,18 @@ class ZonesRRSetsController extends PublicApiController
                         new OA\Property(property: 'name', type: 'string', example: 'www'),
                         new OA\Property(property: 'type', type: 'string', example: 'A'),
                         new OA\Property(property: 'ttl', type: 'integer', example: 3600),
-                        new OA\Property(property: 'records_created', type: 'integer', example: 2)
+                        new OA\Property(
+                            property: 'records',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
+                                    new OA\Property(property: 'priority', type: 'integer', example: 0),
+                                    new OA\Property(property: 'disabled', type: 'boolean', example: false)
+                                ],
+                                type: 'object'
+                            )
+                        )
                     ],
                     type: 'object'
                 )
@@ -519,14 +530,11 @@ class ZonesRRSetsController extends PublicApiController
 
                 $this->db->commit();
 
-                $responseData = [
-                    'name' => $name,
-                    'type' => $type,
-                    'ttl' => $ttl,
-                    'records_created' => $recordsCreated
-                ];
+                // Fetch and return the full RRSet
+                $rrsetRecords = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
+                $rrset = $this->formatRRSet($rrsetRecords, $zoneName);
 
-                return $this->returnApiResponse($responseData, true, 'RRSet replaced successfully', 200);
+                return $this->returnApiResponse($rrset, true, 'RRSet replaced successfully', 200);
             } catch (\Throwable $e) {
                 $this->db->rollBack();
                 throw $e;
