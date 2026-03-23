@@ -457,6 +457,7 @@ class ZonesRRSetsController extends PublicApiController
 
                 // Create new records
                 $recordsCreated = 0;
+                $validatedRecords = [];
                 $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
                 $hostnameValidator = new HostnameValidator($this->getConfig());
                 $dnsFormatter = new DnsFormatter($this->getConfig());
@@ -515,6 +516,11 @@ class ZonesRRSetsController extends PublicApiController
                         $this->db->rollBack();
                         return $this->returnApiError('Failed to insert record: ' . $content, 500);
                     }
+                    $validatedRecords[] = [
+                        'content' => $validatedContent,
+                        'priority' => $validatedPriority,
+                        'disabled' => $disabled,
+                    ];
                     $recordsCreated++;
                 }
 
