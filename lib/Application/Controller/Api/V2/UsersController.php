@@ -603,7 +603,7 @@ class UsersController extends PublicApiController
                 ),
                 new OA\Property(
                     property: 'active',
-                    description: 'Whether the user account should be active',
+                    description: 'Whether the user account should be active. Must be explicitly included in the request even when setting to false - omitting this field leaves the current value unchanged.',
                     type: 'boolean',
                     example: true
                 ),
@@ -615,7 +615,7 @@ class UsersController extends PublicApiController
                 ),
                 new OA\Property(
                     property: 'use_ldap',
-                    description: 'Whether the user should use LDAP authentication',
+                    description: 'Whether the user should use LDAP authentication. Must be explicitly included when setting to false - omitting leaves the current value unchanged.',
                     type: 'boolean',
                     example: false
                 )
