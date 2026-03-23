@@ -288,7 +288,7 @@ class GroupsController extends PublicApiController
                 properties: [
                     new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
                     new OA\Property(property: 'description', type: 'string', example: 'DNS Administration Group'),
-                    new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                    new OA\Property(property: 'perm_templ_id', description: 'ID of a group-type permission template (user-type templates are not accepted)', type: 'integer', example: 1),
                 ]
             )
         ),
@@ -324,13 +324,13 @@ class GroupsController extends PublicApiController
             $data = json_decode($this->request->getContent(), true);
 
             if (empty($data['name']) || empty($data['perm_templ_id'])) {
-                return $this->returnApiError('Missing required fields: name, perm_templ_id', 400);
+                return $this->returnApiError('Missing required fields: name, perm_templ_id (must be a group-type permission template ID)', 400);
             }
 
             // Validate that the template is a group template
             $permTemplateRepo = new DbPermissionTemplateRepository($this->db, $this->config);
             if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
-                return $this->returnApiError('Invalid permission template: must be a group template', 400);
+                return $this->returnApiError('Invalid perm_templ_id: the specified permission template must be of type "group", not "user"', 400);
             }
 
             $group = $this->groupService->createGroup(
