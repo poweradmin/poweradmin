@@ -605,6 +605,12 @@ class ZonesController extends PublicApiController
                     description: 'Master IP address for SLAVE zones',
                     type: 'string',
                     example: '192.168.1.100'
+                ),
+                new OA\Property(
+                    property: 'description',
+                    description: 'Zone description or comment',
+                    type: 'string',
+                    example: 'Production DNS zone'
                 )
             ]
         )
@@ -696,19 +702,28 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('Master IP address is required for SLAVE zones', 400);
             }
 
-            if (empty($updates)) {
+            // Handle description update separately (stored in zones table, not domains)
+            $descriptionUpdated = false;
+            if (array_key_exists('description', $input)) {
+                $this->zoneRepository->updateZoneComment($zoneId, (string)$input['description']);
+                $descriptionUpdated = true;
+            }
+
+            if (empty($updates) && !$descriptionUpdated) {
                 return $this->returnApiError('No valid fields provided for update', 400);
             }
 
-            // Use the zone management service to update zone
-            $result = $this->zoneManagementService->updateZone($zoneId, $updates);
+            // Use the zone management service to update zone (domains table fields)
+            if (!empty($updates)) {
+                $result = $this->zoneManagementService->updateZone($zoneId, $updates);
 
-            if (!$result['success']) {
-                $statusCode = match ($result['message']) {
-                    'Zone not found' => 404,
-                    default => 400
-                };
-                return $this->returnApiError($result['message'], $statusCode);
+                if (!$result['success']) {
+                    $statusCode = match ($result['message']) {
+                        'Zone not found' => 404,
+                        default => 400
+                    };
+                    return $this->returnApiError($result['message'], $statusCode);
+                }
             }
 
             return $this->returnApiResponse(null, true, 'Zone updated successfully', 200);
