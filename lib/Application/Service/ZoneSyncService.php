@@ -89,6 +89,16 @@ class ZoneSyncService
         $apiZones = $this->backendProvider->getZones();
         $localZones = $this->getLocalZones();
 
+        // When the API is unreachable, getZones() returns [] after catching the
+        // exception internally. Without this guard we would delete every local
+        // zone, mistaking an outage for "all zones removed." The trade-off is
+        // that a genuine "delete every zone in PowerDNS" won't auto-sync; an
+        // admin must remove the local entries manually in that rare scenario.
+        if (empty($apiZones) && !empty($localZones)) {
+            $this->logger->info('Zone sync: API returned empty while local zones exist, skipping removal');
+            return ['added' => 0, 'removed' => 0, 'updated' => 0];
+        }
+
         $added = $this->addMissingZones($apiZones, $localZones);
         $removed = $this->removeOrphanedZones($apiZones, $localZones);
         $updated = $this->updateZoneMetadata($apiZones, $localZones);

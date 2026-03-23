@@ -125,12 +125,12 @@ class ZoneSyncServiceTest extends TestCase
         $this->assertSame(0, $result['updated']);
     }
 
-    public function testSyncCleansUpLocalZonesWhenApiGenuinelyEmpty(): void
+    public function testSyncSkipsRemovalWhenApiReturnsEmptyButLocalZonesExist(): void
     {
-        // API returns empty - all zones were deleted from PowerDNS
+        // API returns empty (could be an outage - getZones() catches ApiErrorException)
         $this->mockBackend->method('getZones')->willReturn([]);
 
-        // Local still has zones
+        // But we have local zones
         $localStmt = $this->createMock(PDOStatement::class);
         $localStmt->method('fetch')->willReturnOnConsecutiveCalls(
             ['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'NATIVE', 'zone_master' => null],
@@ -139,15 +139,13 @@ class ZoneSyncServiceTest extends TestCase
         );
         $this->mockDb->method('query')->willReturn($localStmt);
 
-        $deleteStmt = $this->createMock(PDOStatement::class);
-        $deleteStmt->method('execute')->willReturn(true);
-        $this->mockDb->method('prepare')->willReturn($deleteStmt);
+        // Should NOT call prepare for DELETE
+        $this->mockDb->expects($this->never())->method('prepare');
 
         $result = $this->service->sync();
 
-        // Both local zones should be removed
         $this->assertSame(0, $result['added']);
-        $this->assertSame(2, $result['removed']);
+        $this->assertSame(0, $result['removed']);
         $this->assertSame(0, $result['updated']);
     }
 

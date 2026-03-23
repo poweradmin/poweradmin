@@ -713,7 +713,12 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function getZones(): array
     {
-        $apiZones = $this->client->getAllZones();
+        try {
+            $apiZones = $this->client->getAllZones();
+        } catch (\Poweradmin\Domain\Error\ApiErrorException $e) {
+            $this->logger->error('Failed to get zones from API: {error}', ['error' => $e->getMessage()]);
+            return [];
+        }
 
         $zones = [];
         foreach ($apiZones as $zone) {
