@@ -24,6 +24,8 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Synchronizes zone metadata between the PowerDNS API and the local zones table.
@@ -38,6 +40,7 @@ class ZoneSyncService
 {
     private PDO $db;
     private DnsBackendProvider $backendProvider;
+    private LoggerInterface $logger;
 
     /** @var int Minimum seconds between syncs */
     private int $syncInterval;
@@ -45,11 +48,12 @@ class ZoneSyncService
     /** @var string Session key for tracking last sync time */
     private const LAST_SYNC_KEY = 'zone_sync_last';
 
-    public function __construct(PDO $db, DnsBackendProvider $backendProvider, int $syncInterval = 300)
+    public function __construct(PDO $db, DnsBackendProvider $backendProvider, int $syncInterval = 300, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->backendProvider = $backendProvider;
         $this->syncInterval = $syncInterval;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -67,7 +71,7 @@ class ZoneSyncService
         try {
             $result = $this->sync();
         } catch (\Throwable $e) {
-            // Log but don't crash the page when sync fails
+            $this->logger->warning('Zone sync failed: {error}', ['error' => $e->getMessage(), 'exception' => $e]);
             return null;
         }
 
@@ -83,13 +87,7 @@ class ZoneSyncService
     public function sync(): array
     {
         $apiZones = $this->backendProvider->getZones();
-
-        // Guard: if API returns empty but we have local zones, the API may be
-        // unreachable. Refuse to delete everything based on an empty response.
         $localZones = $this->getLocalZones();
-        if (empty($apiZones) && !empty($localZones)) {
-            return ['added' => 0, 'removed' => 0, 'updated' => 0];
-        }
 
         $added = $this->addMissingZones($apiZones, $localZones);
         $removed = $this->removeOrphanedZones($apiZones, $localZones);

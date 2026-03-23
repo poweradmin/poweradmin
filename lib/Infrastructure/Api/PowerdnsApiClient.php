@@ -123,24 +123,17 @@ class PowerdnsApiClient
      */
     public function getAllZones(): array
     {
-        try {
-            $endpoint = $this->buildEndpoint("/zones");
-            $response = $this->httpClient->makeRequest('GET', $endpoint);
+        $endpoint = $this->buildEndpoint("/zones");
+        $response = $this->httpClient->makeRequest('GET', $endpoint);
 
-            $zones = [];
-            if ($response && $response['responseCode'] === 200) {
-                foreach ($response['data'] as $zoneData) {
-                    $zones[] = new Zone($zoneData['name'], $zoneData['dnssec'] ?? false);
-                }
+        $zones = [];
+        if ($response && $response['responseCode'] === 200) {
+            foreach ($response['data'] as $zoneData) {
+                $zones[] = new Zone($zoneData['name'], $zoneData['dnssec'] ?? false);
             }
-
-            return $zones;
-        } catch (ApiErrorException $e) {
-            $this->logger->error('Failed to get zones: {error}', ['error' => $e->getMessage()]);
-
-            // Return empty array instead of breaking the UI
-            return [];
         }
+
+        return $zones;
     }
 
     /**
