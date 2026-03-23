@@ -3,12 +3,12 @@
 namespace Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class BatchReverseRecordCreatorTest extends TestCase
@@ -16,9 +16,9 @@ class BatchReverseRecordCreatorTest extends TestCase
     private function createService(
         ?DnsRecord $dnsRecord = null,
         ?ConfigurationManager $config = null,
-        ?RecordRepository $recordRepository = null
+        ?RecordRepositoryInterface $recordRepository = null
     ): BatchReverseRecordCreator {
-        $db = $this->createMock(PDOCommon::class);
+        $db = $this->createMock(PDO::class);
         $logger = $this->createMock(LegacyLogger::class);
 
         if ($config === null) {
@@ -58,7 +58,7 @@ class BatchReverseRecordCreatorTest extends TestCase
                 return true;
             });
 
-        $recordRepo = $this->createMock(RecordRepository::class);
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
         $recordRepo->method('hasPtrRecord')->willReturn(false);
 
         $service = $this->createService($dnsRecord, null, $recordRepo);
@@ -143,7 +143,7 @@ class BatchReverseRecordCreatorTest extends TestCase
                 return true;
             });
 
-        $recordRepo = $this->createMock(RecordRepository::class);
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
         $recordRepo->method('hasPtrRecord')->willReturn(false);
 
         $service = $this->createService($dnsRecord, null, $recordRepo);
@@ -183,7 +183,7 @@ class BatchReverseRecordCreatorTest extends TestCase
                 return true;
             });
 
-        $recordRepo = $this->createMock(RecordRepository::class);
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
         $recordRepo->method('hasPtrRecord')->willReturn(false);
 
         $service = $this->createService($dnsRecord, null, $recordRepo);
