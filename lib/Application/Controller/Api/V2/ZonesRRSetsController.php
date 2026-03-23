@@ -529,15 +529,39 @@ class ZonesRRSetsController extends PublicApiController
                 }
 
                 $this->db->commit();
-
-                // Fetch and return the full RRSet
-                $rrsetRecords = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
-                $rrset = $this->formatRRSet($rrsetRecords, $zoneName);
-
-                return $this->returnApiResponse($rrset, true, 'RRSet replaced successfully', 200);
             } catch (\Throwable $e) {
                 $this->db->rollBack();
                 throw $e;
+            }
+
+            // Fetch and return the full RRSet (outside transaction block so readback
+            // failures don't trigger rollback or mask the successful write)
+            try {
+                $rrsetRecords = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
+                $rrset = $this->formatRRSet($rrsetRecords, $zoneName);
+                return $this->returnApiResponse($rrset, true, 'RRSet replaced successfully', 200);
+            } catch (\Throwable $e) {
+                // Readback failed but write succeeded - reconstruct from validated input
+                // using the same transformations as formatRRSet()
+                $fallbackRecords = array_map(function ($vr) use ($type) {
+                    return [
+                        'content' => $this->stripTxtQuotes($vr['content'], $type),
+                        'priority' => (int)$vr['priority'],
+                        'disabled' => (bool)$vr['disabled'],
+                    ];
+                }, $validatedRecords);
+
+                return $this->returnApiResponse(
+                    [
+                        'name' => DnsHelper::stripZoneSuffix($normalizedName, $zoneName),
+                        'type' => $type,
+                        'ttl' => $ttl,
+                        'records' => $fallbackRecords,
+                    ],
+                    true,
+                    'RRSet replaced successfully',
+                    200
+                );
             }
         } catch (\Throwable $e) {
             return $this->returnApiError('Failed to replace RRSet: ' . $e->getMessage(), 500);
