@@ -319,19 +319,11 @@ class ZonesController extends PublicApiController
                 'id' => (int)$zone['id'],
                 'name' => $zone['name'],
                 'type' => $zone['type'] ?? 'MASTER',
+                'masters' => $masters !== '' ? $masters : null,
+                'account' => $account !== '' ? $account : null,
+                'description' => ($comment !== null && $comment !== '') ? $comment : null,
                 'created_at' => $zone['created_at'] ?? null
             ];
-
-            // Add optional fields only if they have values
-            if ($masters !== '') {
-                $formattedZone['masters'] = $masters;
-            }
-            if ($account !== '') {
-                $formattedZone['account'] = $account;
-            }
-            if ($comment !== null && $comment !== '') {
-                $formattedZone['description'] = $comment;
-            }
 
             return $this->returnApiResponse(['zone' => $formattedZone], true, 'Zone retrieved successfully', 200);
         } catch (\Throwable $e) {
