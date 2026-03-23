@@ -614,7 +614,25 @@ class ZonesController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'Zone updated successfully'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(
+                    property: 'data',
+                    properties: [
+                        new OA\Property(
+                            property: 'zone',
+                            properties: [
+                                new OA\Property(property: 'id', type: 'integer', example: 123),
+                                new OA\Property(property: 'name', type: 'string', example: 'example.com'),
+                                new OA\Property(property: 'type', type: 'string', example: 'MASTER'),
+                                new OA\Property(property: 'masters', type: 'string', nullable: true, example: null),
+                                new OA\Property(property: 'account', type: 'string', nullable: true, example: null),
+                                new OA\Property(property: 'description', type: 'string', nullable: true, example: 'Production DNS zone'),
+                                new OA\Property(property: 'created_at', type: 'string', nullable: true, example: '2024-01-01 00:00:00'),
+                            ],
+                            type: 'object'
+                        )
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -723,7 +741,23 @@ class ZonesController extends PublicApiController
                 $this->zoneRepository->updateZoneComment($zoneId, (string)$input['description']);
             }
 
-            return $this->returnApiResponse(null, true, 'Zone updated successfully', 200);
+            // Return updated zone data
+            $zone = $this->zoneRepository->getZoneById($zoneId);
+            $comment = $this->zoneRepository->getZoneComment($zoneId);
+            $account = $zone['account'] ?? '';
+            $masters = $zone['master'] ?? '';
+
+            $formattedZone = [
+                'id' => (int)$zone['id'],
+                'name' => $zone['name'],
+                'type' => $zone['type'] ?? 'MASTER',
+                'masters' => $masters !== '' ? $masters : null,
+                'account' => $account !== '' ? $account : null,
+                'description' => ($comment !== null && $comment !== '') ? $comment : null,
+                'created_at' => $zone['created_at'] ?? null
+            ];
+
+            return $this->returnApiResponse(['zone' => $formattedZone], true, 'Zone updated successfully', 200);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZonesController::updateZone', 'Failed to update zone');
         }
