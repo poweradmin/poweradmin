@@ -142,7 +142,7 @@ class GroupZonesController extends PublicApiController
                 'created_at' => $z->getCreatedAt(),
             ], $zones);
 
-            return $this->returnApiResponse($zonesData, true, 'Zones retrieved successfully');
+            return $this->returnApiResponse(['zones' => $zonesData], true, 'Zones retrieved successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }

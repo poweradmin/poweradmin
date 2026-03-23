@@ -141,7 +141,7 @@ class ZoneOwnersController extends PublicApiController
                 'fullname' => $o['fullname'],
             ], $owners);
 
-            return $this->returnApiResponse($ownersData, true, 'Owners retrieved successfully');
+            return $this->returnApiResponse(['owners' => $ownersData], true, 'Owners retrieved successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }

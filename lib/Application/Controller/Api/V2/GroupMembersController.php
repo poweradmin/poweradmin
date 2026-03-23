@@ -140,7 +140,7 @@ class GroupMembersController extends PublicApiController
                 'joined_at' => $m->getCreatedAt(),
             ], $members);
 
-            return $this->returnApiResponse($membersData, true, 'Members retrieved successfully');
+            return $this->returnApiResponse(['members' => $membersData], true, 'Members retrieved successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }

@@ -190,7 +190,7 @@ class ZonesRRSetsController extends PublicApiController
             // Group records into RRSets (by name + type)
             $rrsets = $this->groupIntoRRSets($records);
 
-            return $this->returnApiResponse($rrsets, true, 'RRSets retrieved successfully', 200);
+            return $this->returnApiResponse(['rrsets' => $rrsets], true, 'RRSets retrieved successfully', 200);
         } catch (\Throwable $e) {
             return $this->returnApiError('Failed to retrieve RRSets: ' . $e->getMessage(), 500);
         }
@@ -240,25 +240,31 @@ class ZonesRRSetsController extends PublicApiController
                 new OA\Property(
                     property: 'data',
                     properties: [
-                        new OA\Property(property: 'name', type: 'string', example: 'www', description: 'Record name without zone suffix'),
-                        new OA\Property(property: 'type', type: 'string', example: 'A', description: 'Record type'),
-                        new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'Time to live in seconds'),
                         new OA\Property(
-                            property: 'records',
-                            type: 'array',
-                            items: new OA\Items(
-                                properties: [
-                                    new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content/value'),
-                                    new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.)'),
-                                    new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag')
-                                ],
-                                type: 'object'
-                            ),
-                            description: 'Array of record data with same name and type'
+                            property: 'rrset',
+                            properties: [
+                                new OA\Property(property: 'name', type: 'string', example: 'www', description: 'Record name without zone suffix'),
+                                new OA\Property(property: 'type', type: 'string', example: 'A', description: 'Record type'),
+                                new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'Time to live in seconds'),
+                                new OA\Property(
+                                    property: 'records',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content/value'),
+                                            new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.)'),
+                                            new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag')
+                                        ],
+                                        type: 'object'
+                                    ),
+                                    description: 'Array of record data with same name and type'
+                                )
+                            ],
+                            type: 'object',
+                            description: 'RRSet object containing all records with the same name and type'
                         )
                     ],
-                    type: 'object',
-                    description: 'RRSet object containing all records with the same name and type'
+                    type: 'object'
                 )
             ]
         )
@@ -304,7 +310,7 @@ class ZonesRRSetsController extends PublicApiController
             // Format as RRSet
             $rrset = $this->formatRRSet($records, $zoneName);
 
-            return $this->returnApiResponse($rrset, true, 'RRSet retrieved successfully', 200);
+            return $this->returnApiResponse(['rrset' => $rrset], true, 'RRSet retrieved successfully', 200);
         } catch (\Throwable $e) {
             return $this->returnApiError('Failed to retrieve RRSet: ' . $e->getMessage(), 500);
         }
@@ -565,7 +571,7 @@ class ZonesRRSetsController extends PublicApiController
             try {
                 $rrsetRecords = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
                 $rrset = $this->formatRRSet($rrsetRecords, $zoneName);
-                return $this->returnApiResponse($rrset, true, 'RRSet replaced successfully', 200);
+                return $this->returnApiResponse(['rrset' => $rrset], true, 'RRSet replaced successfully', 200);
             } catch (\Throwable $e) {
                 // Readback failed but write succeeded - reconstruct from validated input
                 // using the same transformations as formatRRSet()
@@ -578,12 +584,12 @@ class ZonesRRSetsController extends PublicApiController
                 }, $validatedRecords);
 
                 return $this->returnApiResponse(
-                    [
+                    ['rrset' => [
                         'name' => DnsHelper::stripZoneSuffix($normalizedName, $zoneName),
                         'type' => $type,
                         'ttl' => $ttl,
                         'records' => $fallbackRecords,
-                    ],
+                    ]],
                     true,
                     'RRSet replaced successfully',
                     200

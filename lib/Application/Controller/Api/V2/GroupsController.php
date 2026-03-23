@@ -108,19 +108,25 @@ class GroupsController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'Groups retrieved successfully'),
                 new OA\Property(
                     property: 'data',
-                    type: 'array',
-                    items: new OA\Items(
-                        properties: [
-                            new OA\Property(property: 'id', type: 'integer', example: 1),
-                            new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
-                            new OA\Property(property: 'description', type: 'string', example: 'DNS Administration Group'),
-                            new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
-                            new OA\Property(property: 'member_count', type: 'integer', example: 5),
-                            new OA\Property(property: 'zone_count', type: 'integer', example: 10),
-                            new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00'),
-                        ],
-                        type: 'object'
-                    )
+                    properties: [
+                        new OA\Property(
+                            property: 'groups',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
+                                    new OA\Property(property: 'description', type: 'string', example: 'DNS Administration Group'),
+                                    new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'member_count', type: 'integer', example: 5),
+                                    new OA\Property(property: 'zone_count', type: 'integer', example: 10),
+                                    new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00'),
+                                ],
+                                type: 'object'
+                            )
+                        )
+                    ],
+                    type: 'object'
                 )
             ],
             type: 'object'
@@ -149,7 +155,7 @@ class GroupsController extends PublicApiController
                 ];
             }
 
-            return $this->returnApiResponse($enrichedGroups, true, 'Groups retrieved successfully');
+            return $this->returnApiResponse(['groups' => $enrichedGroups], true, 'Groups retrieved successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -264,7 +270,7 @@ class GroupsController extends PublicApiController
                 'created_at' => $group->getCreatedAt(),
             ];
 
-            return $this->returnApiResponse($data, true, 'Group retrieved successfully');
+            return $this->returnApiResponse(['group' => $data], true, 'Group retrieved successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -340,10 +346,10 @@ class GroupsController extends PublicApiController
                 $this->authenticatedUserId
             );
 
-            return $this->returnApiResponse([
+            return $this->returnApiResponse(['group' => [
                 'id' => $group->getId(),
                 'name' => $group->getName(),
-            ], true, 'Group created successfully', 201);
+            ]], true, 'Group created successfully', 201);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -434,14 +440,14 @@ class GroupsController extends PublicApiController
                 return $this->returnApiError('Group not found or update failed', 404);
             }
 
-            return $this->returnApiResponse([
+            return $this->returnApiResponse(['group' => [
                 'id' => $group->getId(),
                 'name' => $group->getName(),
                 'description' => $group->getDescription(),
                 'perm_templ_id' => $group->getPermTemplId(),
                 'created_at' => $group->getCreatedAt(),
                 'updated_at' => $group->getUpdatedAt(),
-            ], true, 'Group updated successfully');
+            ]], true, 'Group updated successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }

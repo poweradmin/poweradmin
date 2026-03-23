@@ -122,7 +122,7 @@ class ZoneTemplatesController extends PublicApiController
                 ];
             }, $templates);
 
-            return $this->returnApiResponse($formatted);
+            return $this->returnApiResponse(['templates' => $formatted]);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplatesController::listZoneTemplates', 'Failed to fetch zone templates');
         }
@@ -216,14 +216,14 @@ class ZoneTemplatesController extends PublicApiController
                 ];
             }, $records);
 
-            return $this->returnApiResponse([
+            return $this->returnApiResponse(['template' => [
                 'id' => (int)$template['id'],
                 'name' => $template['name'],
                 'description' => $template['descr'],
                 'owner' => $owner,
                 'is_global' => $owner === 0,
                 'records' => $formattedRecords,
-            ]);
+            ]]);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplatesController::getZoneTemplate', 'Failed to fetch zone template');
         }

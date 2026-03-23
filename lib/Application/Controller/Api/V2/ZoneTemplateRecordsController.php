@@ -175,7 +175,7 @@ class ZoneTemplateRecordsController extends PublicApiController
             $records = $this->repository->getZoneTemplateRecords($templateId);
             $formattedRecords = array_map([$this, 'formatRecord'], $records);
 
-            return $this->returnApiResponse(array_values($formattedRecords));
+            return $this->returnApiResponse(['records' => array_values($formattedRecords)]);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplateRecordsController::listRecords', 'Failed to fetch zone template records');
         }
@@ -341,7 +341,7 @@ class ZoneTemplateRecordsController extends PublicApiController
                 return $this->returnApiError('Record not found in this zone template', 404);
             }
 
-            return $this->returnApiResponse($this->formatRecord($record));
+            return $this->returnApiResponse(['record' => $this->formatRecord($record)]);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplateRecordsController::getRecord', 'Failed to fetch zone template record');
         }

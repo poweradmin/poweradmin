@@ -331,7 +331,7 @@ class UsersController extends PublicApiController
                     }
                 }
 
-                return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200);
+                return $this->returnApiResponse(['users' => $users], true, 'Users retrieved successfully', 200);
             }
 
             // Get pagination parameters (defaults to returning all users)
@@ -350,7 +350,7 @@ class UsersController extends PublicApiController
                     ]
                 ];
 
-                return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200, $responseData);
+                return $this->returnApiResponse(['users' => $users], true, 'Users retrieved successfully', 200, $responseData);
             } else {
                 // Use pagination
                 $page = max(1, (int)$this->request->query->get('page', 1));
@@ -376,7 +376,7 @@ class UsersController extends PublicApiController
                     ]
                 ];
 
-                return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200, $responseData);
+                return $this->returnApiResponse(['users' => $users], true, 'Users retrieved successfully', 200, $responseData);
             }
         } catch (\Throwable $e) {
             return $this->handleException($e, 'UsersController::listUsers', 'Failed to retrieve users');
