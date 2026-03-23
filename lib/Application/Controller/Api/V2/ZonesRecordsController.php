@@ -578,12 +578,15 @@ class ZonesRecordsController extends PublicApiController
                 }
             }
 
+            // Return stored content (not raw input) so POST and GET responses are consistent
+            $storedContent = $newRecord ? $this->stripTxtQuotes($newRecord['content'], $type) : $originalContent;
+
             $responseData = [
                 'id' => $newRecord ? $this->formatRecordId($newRecord['id']) : null,
                 'zone_id' => $zoneId,
                 'name' => DnsHelper::stripZoneSuffix($name, $zoneName),
                 'type' => $type,
-                'content' => $originalContent,
+                'content' => $storedContent,
                 'ttl' => $validatedTtl,
                 'priority' => $validatedPriority,
                 'disabled' => (bool)$disabled,
