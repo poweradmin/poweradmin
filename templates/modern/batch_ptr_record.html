@@ -39,7 +39,7 @@
                         <label for="network_type" class="form-label">{% trans %}IP Version{% endtrans %}</label>
                         <select id="network_type" name="network_type" class="form-select form-select-sm">
                             <option value="ipv4" {% if network_type == 'ipv4' %}selected{% endif %}>{% trans %}IPv4 network{% endtrans %}</option>
-<!--                            <option value="ipv6" {% if network_type == 'ipv6' %}selected{% endif %}>{% trans %}IPv6 (/64 network){% endtrans %}</option>-->
+                            <option value="ipv6" {% if network_type == 'ipv6' %}selected{% endif %}>{% trans %}IPv6 (/64 network){% endtrans %}</option>
                         </select>
                     </div>
 
@@ -56,7 +56,9 @@
                                 <li><hr class="dropdown-divider"></li>
                                 {% for zone in reverse_zones %}
                                     {% if zone.type == 'ipv4' %}
-                                    <li><a class="dropdown-item" href="#" data-network="{{ zone.network }}">{{ zone.network }} <small class="text-muted">({{ zone.name }})</small></a></li>
+                                    <li class="zone-item zone-ipv4"><a class="dropdown-item" href="#" data-network="{{ zone.network }}">{{ zone.network }} <small class="text-muted">({{ zone.name }})</small></a></li>
+                                    {% elseif zone.type == 'ipv6' %}
+                                    <li class="zone-item zone-ipv6" style="display: none;"><a class="dropdown-item" href="#" data-network="{{ zone.network }}">{{ zone.network }} <small class="text-muted">({{ zone.name }})</small></a></li>
                                     {% endif %}
                                 {% endfor %}
                             </ul>
@@ -198,11 +200,30 @@
         const ipv6Help = document.querySelector('.ipv6-help');
         const ipv6CountGroup = document.querySelector('.ipv6-count');
 
+        // Shared references for checkbox interaction
+        const onlyMatchingCheckbox = document.getElementById('only_matching_records');
+        const createForwardCheckbox = document.getElementById('create_forward_records');
+        const hostPrefixInput = document.getElementById('host_prefix');
+
         function updateVisibility() {
             const isIPv4 = networkTypeSelect.value === 'ipv4';
             ipv4Help.style.display = isIPv4 ? 'block' : 'none';
             ipv6Help.style.display = isIPv4 ? 'none' : 'block';
             ipv6CountGroup.style.display = isIPv4 ? 'none' : 'block';
+
+            // Disable matching-only mode for IPv6 (not supported in backend)
+            if (!isIPv4) {
+                onlyMatchingCheckbox.checked = false;
+                onlyMatchingCheckbox.disabled = true;
+                createForwardCheckbox.disabled = false;
+                hostPrefixInput.disabled = false;
+            } else {
+                onlyMatchingCheckbox.disabled = false;
+            }
+
+            // Toggle reverse zone dropdown items by type
+            document.querySelectorAll('.zone-ipv4').forEach(function(el) { el.style.display = isIPv4 ? '' : 'none'; });
+            document.querySelectorAll('.zone-ipv6').forEach(function(el) { el.style.display = isIPv4 ? 'none' : ''; });
         }
 
         networkTypeSelect.addEventListener('change', updateVisibility);
@@ -211,7 +232,7 @@
         // Handle dropdown selection for network prefix
         const dropdownItems = document.querySelectorAll('.dropdown-item[data-network]');
         const networkPrefixInput = document.getElementById('network_prefix');
-        
+
         dropdownItems.forEach(function(item) {
             item.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -220,10 +241,6 @@
         });
 
         // Handle checkbox interaction
-        const onlyMatchingCheckbox = document.getElementById('only_matching_records');
-        const createForwardCheckbox = document.getElementById('create_forward_records');
-        const hostPrefixInput = document.getElementById('host_prefix');
-        
         onlyMatchingCheckbox.addEventListener('change', function() {
             if (this.checked) {
                 // Disable create forward records when only matching is selected
