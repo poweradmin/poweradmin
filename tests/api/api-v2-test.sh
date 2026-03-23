@@ -159,6 +159,41 @@ extract_json_field() {
     echo "$json" | grep -o "\"$field\":[^,}]*" | head -1 | sed 's/.*://; s/"//g; s/ //g' || true
 }
 
+# Assert a jq expression evaluates to expected value
+assert_json() {
+    local description="$1"
+    local json="$2"
+    local jq_expr="$3"
+    local expected="$4"
+
+    increment_test
+    local actual
+    actual=$(echo "$json" | jq -r "$jq_expr" 2>/dev/null)
+
+    if [[ "$actual" == "$expected" ]]; then
+        print_pass "$description"
+    else
+        print_fail "$description - Expected '$expected', got '$actual'"
+    fi
+}
+
+# Assert a jq expression returns non-null/non-empty
+assert_json_exists() {
+    local description="$1"
+    local json="$2"
+    local jq_expr="$3"
+
+    increment_test
+    local actual
+    actual=$(echo "$json" | jq -r "$jq_expr" 2>/dev/null)
+
+    if [[ -n "$actual" ]] && [[ "$actual" != "null" ]]; then
+        print_pass "$description"
+    else
+        print_fail "$description - Field not found or null"
+    fi
+}
+
 ##############################################################################
 # Test: RRSet Endpoints
 ##############################################################################
@@ -191,21 +226,30 @@ test_rrsets() {
     }'
     api_request_v2 "PUT" "/zones/$TEST_ZONE_ID/rrsets" "$rrset_data" 200 "Create RRSet with 3 A records"
 
+    # Verify PUT returns full rrset data
+    assert_json_exists "RRSet PUT returns rrset name" "$LAST_RESPONSE_BODY" '.data.rrset.name'
+    assert_json_exists "RRSet PUT returns rrset records" "$LAST_RESPONSE_BODY" '.data.rrset.records'
+
     # Test 2: Get all RRSets
     api_request_v2 "GET" "/zones/$TEST_ZONE_ID/rrsets" "" 200 "List all RRSets in zone"
+
+    # Verify list response wrapping
+    assert_json_exists "RRSet list wrapped in data.rrsets" "$LAST_RESPONSE_BODY" '.data.rrsets'
 
     # Test 3: Get specific RRSet
     api_request_v2 "GET" "/zones/$TEST_ZONE_ID/rrsets/www/A" "" 200 "Get specific RRSet (www/A)"
 
+    # Verify single response wrapping
+    assert_json_exists "RRSet GET wrapped in data.rrset" "$LAST_RESPONSE_BODY" '.data.rrset.name'
+
     # Test 4: Verify RRSet contains 3 records
-    if [[ "$LAST_RESPONSE_BODY" =~ \"records\" ]]; then
-        local record_count=$(echo "$LAST_RESPONSE_BODY" | grep -o "\"content\"" | wc -l)
-        increment_test
-        if [[ $record_count -eq 3 ]]; then
-            print_pass "RRSet contains exactly 3 records"
-        else
-            print_fail "RRSet should contain 3 records, found $record_count"
-        fi
+    # Verify record count using jq
+    increment_test
+    local record_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.rrset.records | length' 2>/dev/null)
+    if [[ "$record_count" -eq 3 ]]; then
+        print_pass "RRSet contains exactly 3 records"
+    else
+        print_fail "RRSet should contain 3 records, found $record_count"
     fi
 
     # Test 5: Update RRSet (replace with 2 records)
@@ -223,14 +267,13 @@ test_rrsets() {
     # Test 6: Verify update
     api_request_v2 "GET" "/zones/$TEST_ZONE_ID/rrsets/www/A" "" 200 "Verify RRSet update"
 
-    if [[ "$LAST_RESPONSE_BODY" =~ \"records\" ]]; then
-        local updated_count=$(echo "$LAST_RESPONSE_BODY" | grep -o "\"content\"" | wc -l)
-        increment_test
-        if [[ $updated_count -eq 2 ]]; then
-            print_pass "RRSet correctly updated to 2 records"
-        else
-            print_fail "RRSet should contain 2 records after update, found $updated_count"
-        fi
+    # Verify updated record count
+    increment_test
+    local updated_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.rrset.records | length' 2>/dev/null)
+    if [[ "$updated_count" -eq 2 ]]; then
+        print_pass "RRSet correctly updated to 2 records"
+    else
+        print_fail "RRSet should contain 2 records after update, found $updated_count"
     fi
 
     # Test 7: Create another RRSet (AAAA)
@@ -690,17 +733,35 @@ test_master_port_syntax() {
     if [[ -n "$TEST_SLAVE_ZONE_ID" ]]; then
         local update_master='{"master":"192.0.2.10:5300,192.0.2.11:5300"}'
         api_request_v2 "PUT" "/zones/$TEST_SLAVE_ZONE_ID" "$update_master" 200 "Update zone master servers"
+
+        # Verify PUT returns zone object
+        assert_json_exists "Zone PUT returns zone name" "$LAST_RESPONSE_BODY" '.data.zone.name'
+        assert_json_exists "Zone PUT returns zone type" "$LAST_RESPONSE_BODY" '.data.zone.type'
+    fi
+
+    # Test: Update zone description
+    if [[ -n "$TEST_SLAVE_ZONE_ID" ]]; then
+        local update_desc='{"description":"Updated description via API"}'
+        api_request_v2 "PUT" "/zones/$TEST_SLAVE_ZONE_ID" "$update_desc" 200 "Update zone description"
+        assert_json "Zone description updated" "$LAST_RESPONSE_BODY" '.data.zone.description' "Updated description via API"
     fi
 
     # Test 12: Verify master servers format in GET response
     if [[ -n "$TEST_SLAVE_ZONE_ID" ]]; then
         api_request_v2 "GET" "/zones/$TEST_SLAVE_ZONE_ID" "" 200 "Get SLAVE zone details"
 
+        # Verify zone GET returns all fields
+        assert_json_exists "Zone GET returns masters field" "$LAST_RESPONSE_BODY" '.data.zone.masters'
+        assert_json_exists "Zone GET returns zone name" "$LAST_RESPONSE_BODY" '.data.zone.name'
+        assert_json_exists "Zone GET returns zone type" "$LAST_RESPONSE_BODY" '.data.zone.type'
+        # Verify account and description are present (even if null)
         increment_test
-        if [[ "$LAST_RESPONSE_BODY" =~ "\"masters\":" ]]; then
-            print_pass "Master servers field present in response"
+        local has_account=$(echo "$LAST_RESPONSE_BODY" | jq 'has("data") and (.data.zone | has("account"))' 2>/dev/null)
+        local has_description=$(echo "$LAST_RESPONSE_BODY" | jq 'has("data") and (.data.zone | has("description"))' 2>/dev/null)
+        if [[ "$has_account" == "true" ]] && [[ "$has_description" == "true" ]]; then
+            print_pass "Zone GET includes account and description fields"
         else
-            print_fail "Master servers field missing from response"
+            print_fail "Zone GET missing account or description field"
         fi
     fi
 
@@ -744,7 +805,7 @@ cleanup_existing_test_groups() {
     local test_names=("Test Admins" "Updated Test Admins" "Debug Test" "Test Update Group" "Updated Name")
 
     for name in "${test_names[@]}"; do
-        local group_id=$(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/groups" | jq -r ".data[] | select(.name == \"$name\") | .id" 2>/dev/null)
+        local group_id=$(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/groups" | jq -r ".data.groups[]? | select(.name == \"$name\") | .id" 2>/dev/null)
         if [[ -n "$group_id" ]]; then
             curl -s -X DELETE -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/groups/${group_id}" >/dev/null 2>&1 || true
         fi
@@ -766,7 +827,7 @@ test_groups() {
     if [[ "$http_code" == "201" ]]; then
         local success=$(echo "$body" | jq -r '.success')
         if [[ "$success" == "true" ]]; then
-            TEST_GROUP_ID=$(echo "$body" | jq -r '.data.id')
+            TEST_GROUP_ID=$(echo "$body" | jq -r '.data.group.id')
             print_pass "Group created successfully (ID: $TEST_GROUP_ID)"
         else
             print_fail "Failed to create group"
@@ -788,7 +849,7 @@ test_groups() {
 
         if [[ "$http_code" == "200" ]]; then
             local success=$(echo "$body" | jq -r '.success')
-            local name=$(echo "$body" | jq -r '.data.name')
+            local name=$(echo "$body" | jq -r '.data.group.name')
             if [[ "$success" == "true" ]] && [[ "$name" == "Test Admins" ]]; then
                 print_pass "Retrieved group details"
             else
@@ -811,6 +872,12 @@ test_groups() {
             local success=$(echo "$body" | jq -r '.success')
             if [[ "$success" == "true" ]]; then
                 print_pass "Group updated successfully"
+                # Verify PUT returns group object
+                local updated_name=$(echo "$body" | jq -r '.data.group.name')
+                if [[ "$updated_name" == "Updated Test Admins" ]]; then
+                    increment_test
+                    print_pass "Group PUT returns updated group data"
+                fi
             else
                 print_fail "Failed to update group"
             fi
@@ -889,7 +956,7 @@ test_groups() {
             # Zone may already exist, look it up
             TEST_ZONE_ASSIGN_ID=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
                 "${API_BASE_URL}/api/v2/zones?name=group-assign-test.example.com" --max-time 30 \
-                | jq -r '.data[0].id // empty')
+                | jq -r '.data.zones[0].id // empty')
         fi
         increment_test
         print_test "Assign zone to group"
@@ -990,7 +1057,7 @@ cleanup_existing_test_templates() {
 
     for name in "${test_names[@]}"; do
         local template_id
-        template_id=$(echo "$templates" | jq -r ".data[]? | select(.name == \"$name\") | .id" 2>/dev/null)
+        template_id=$(echo "$templates" | jq -r ".data.templates[]? | select(.name == \"$name\") | .id" 2>/dev/null)
         if [[ -n "$template_id" ]]; then
             curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
                 "${API_BASE_URL}/api/v2/zone-templates/${template_id}" >/dev/null 2>&1 || true
@@ -1159,12 +1226,7 @@ test_zone_owners() {
     api_request_v2 "GET" "/zones/${TEST_OWNER_ZONE_ID}/owners" "" 200 "List zone owners"
 
     # Test 2: Verify initial owner exists
-    increment_test
-    if [[ "$LAST_RESPONSE_BODY" =~ "user_id" ]]; then
-        print_pass "Zone owners response contains user data"
-    else
-        print_fail "Zone owners response missing user data"
-    fi
+    assert_json_exists "Zone owners response contains user data" "$LAST_RESPONSE_BODY" '.data.owners[0].user_id'
 
     # Test 3: Add test user as owner
     increment_test
@@ -1189,7 +1251,7 @@ test_zone_owners() {
 
     # Test 5: Verify new owner appears in list
     increment_test
-    local owner_count=$(echo "$LAST_RESPONSE_BODY" | grep -o "\"user_id\"" | wc -l | tr -d ' ')
+    local owner_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.owners | length' 2>/dev/null)
     if [[ $owner_count -ge 2 ]]; then
         print_pass "Zone now has multiple owners ($owner_count)"
     else
