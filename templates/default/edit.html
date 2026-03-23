@@ -198,6 +198,13 @@
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
             </a>
             {% endif %}
+            {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone and (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and domain_type != "SLAVE" %}
+            {% for action in dns_wizard_actions %}
+            <a href="{{ base_url_prefix }}{{ action.url }}" class="btn btn-primary btn-sm" title="{% trans %}Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records{% endtrans %}">
+                <i class="bi bi-{{ action.icon }} me-1 text-white"></i>{{ action.label|trans }}
+            </a>
+            {% endfor %}
+            {% endif %}
             {% if whois_actions is defined and whois_actions|length > 0 %}
             {% for action in whois_actions %}
             <a href="{{ base_url_prefix }}{{ action.url }}" class="btn btn-secondary btn-sm">
