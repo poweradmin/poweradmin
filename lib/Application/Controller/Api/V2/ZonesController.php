@@ -702,15 +702,15 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('Master IP address is required for SLAVE zones', 400);
             }
 
-            // Handle description update separately (stored in zones table, not domains)
-            $descriptionUpdated = false;
-            if (array_key_exists('description', $input)) {
-                $this->zoneRepository->updateZoneComment($zoneId, (string)$input['description']);
-                $descriptionUpdated = true;
+            $hasDescriptionUpdate = array_key_exists('description', $input);
+
+            if (empty($updates) && !$hasDescriptionUpdate) {
+                return $this->returnApiError('No valid fields provided for update', 400);
             }
 
-            if (empty($updates) && !$descriptionUpdated) {
-                return $this->returnApiError('No valid fields provided for update', 400);
+            // Verify zone exists before making any changes
+            if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+                return $this->returnApiError('Zone not found', 404);
             }
 
             // Use the zone management service to update zone (domains table fields)
@@ -724,6 +724,11 @@ class ZonesController extends PublicApiController
                     };
                     return $this->returnApiError($result['message'], $statusCode);
                 }
+            }
+
+            // Update description after main update succeeds (stored in zones table, not domains)
+            if ($hasDescriptionUpdate) {
+                $this->zoneRepository->updateZoneComment($zoneId, (string)$input['description']);
             }
 
             return $this->returnApiResponse(null, true, 'Zone updated successfully', 200);
