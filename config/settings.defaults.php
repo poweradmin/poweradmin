@@ -785,9 +785,11 @@ return [
             'restrict_to_admin' => true,
         ],
         'email_previews' => [
+            'enabled' => false,
             'restrict_to_admin' => true,
         ],
         'dns_wizards' => [
+            'enabled' => false,
             'available_types' => ['DMARC', 'SPF', 'DKIM', 'CAA', 'TLSA', 'SRV'],
             'caa_providers' => [
                 'letsencrypt.org' => "Let's Encrypt",
