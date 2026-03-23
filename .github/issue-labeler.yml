@@ -45,7 +45,7 @@ infra:
   - '(docker|container|dockerfile|deployment|nginx|apache|caddy|frankenphp|ci/cd|github.actions|\.yml\sworkflow)'
 
 installer:
-  - '(installation|setup.wizard|first.time.setup|getting.started|install\.php|initial.config)'
+  - '(install(ation)?\s(wizard|process|step|page|screen|guide)|setup.wizard|first.time.setup|getting.started|install\.php|initial.config)'
 
 # === Internationalization ===
 i18n:
