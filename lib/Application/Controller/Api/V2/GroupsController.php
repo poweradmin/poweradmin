@@ -388,7 +388,18 @@ class GroupsController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'Group updated successfully'),
-                new OA\Property(property: 'data', type: 'object', nullable: true)
+                new OA\Property(
+                    property: 'data',
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer', example: 1),
+                        new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
+                        new OA\Property(property: 'description', type: 'string', nullable: true, example: 'DNS Administration Group'),
+                        new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                        new OA\Property(property: 'created_at', type: 'string', nullable: true),
+                        new OA\Property(property: 'updated_at', type: 'string', nullable: true),
+                    ],
+                    type: 'object'
+                )
             ],
             type: 'object'
         )
@@ -412,18 +423,25 @@ class GroupsController extends PublicApiController
                 }
             }
 
-            $success = $this->groupService->updateGroup(
+            $group = $this->groupService->updateGroup(
                 $groupId,
                 $data['name'] ?? null,
                 $data['description'] ?? null,
                 isset($data['perm_templ_id']) ? (int)$data['perm_templ_id'] : null
             );
 
-            if (!$success) {
+            if (!$group) {
                 return $this->returnApiError('Group not found or update failed', 404);
             }
 
-            return $this->returnApiResponse(null, true, 'Group updated successfully');
+            return $this->returnApiResponse([
+                'id' => $group->getId(),
+                'name' => $group->getName(),
+                'description' => $group->getDescription(),
+                'perm_templ_id' => $group->getPermTemplId(),
+                'created_at' => $group->getCreatedAt(),
+                'updated_at' => $group->getUpdatedAt(),
+            ], true, 'Group updated successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
