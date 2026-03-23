@@ -64,7 +64,13 @@ class ZoneSyncService
             return null;
         }
 
-        $result = $this->sync();
+        try {
+            $result = $this->sync();
+        } catch (\Throwable $e) {
+            // Log but don't crash the page when sync fails
+            return null;
+        }
+
         $_SESSION[self::LAST_SYNC_KEY] = time();
         return $result;
     }
@@ -76,22 +82,24 @@ class ZoneSyncService
      */
     public function sync(): array
     {
-        try {
-            $apiZones = $this->backendProvider->getZones();
-            $localZones = $this->getLocalZones();
+        $apiZones = $this->backendProvider->getZones();
 
-            $added = $this->addMissingZones($apiZones, $localZones);
-            $removed = $this->removeOrphanedZones($apiZones, $localZones);
-            $updated = $this->updateZoneMetadata($apiZones, $localZones);
-
-            return [
-                'added' => $added,
-                'removed' => $removed,
-                'updated' => $updated,
-            ];
-        } catch (\Throwable $e) {
+        // Guard: if API returns empty but we have local zones, the API may be
+        // unreachable. Refuse to delete everything based on an empty response.
+        $localZones = $this->getLocalZones();
+        if (empty($apiZones) && !empty($localZones)) {
             return ['added' => 0, 'removed' => 0, 'updated' => 0];
         }
+
+        $added = $this->addMissingZones($apiZones, $localZones);
+        $removed = $this->removeOrphanedZones($apiZones, $localZones);
+        $updated = $this->updateZoneMetadata($apiZones, $localZones);
+
+        return [
+            'added' => $added,
+            'removed' => $removed,
+            'updated' => $updated,
+        ];
     }
 
     /**
