@@ -59,7 +59,7 @@
                         {% endif %}
                     </div>
 
-                    {% if edit_templ_perm %}
+                    {% if show_user_access_templates and edit_templ_perm %}
                     <div class="mb-3">
                         <label for="perm_templ" class="form-label">{% trans %}Access template{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="perm_templ" name="perm_templ">
@@ -165,6 +165,7 @@
                             {% endif %}
                         </ul>
                     </div>
+                    {% if show_user_access_templates %}
                     <div class="list-group-item">
                         <h6 class="mb-1" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#permissionsBody" role="button" aria-expanded="false">
                             <i class="bi bi-key text-warning me-2"></i>{% trans %}User Permissions{% endtrans %}
@@ -195,11 +196,13 @@
                         {% endif %}
                         </div>
                     </div>
+                    {% endif %}
                 </div>
             </div>
             </div>
         </div>
 
+        {% if show_group_access_templates %}
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
                 <strong><i class="bi bi-people me-2"></i>{% trans %}Group Memberships{% endtrans %}</strong>
@@ -288,9 +291,11 @@
                 {% endif %}
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 
+{% if show_group_access_templates %}
 <form id="removeGroupForm" method="post" action="{{ base_url_prefix }}/users/groups/remove" style="display: none;">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="user_id" id="remove_user_id" value="">
@@ -322,6 +327,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <script>
 function disablePasswordField() {
@@ -352,9 +358,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Handle remove confirmation
-    document.getElementById('confirmRemoveBtn').addEventListener('click', function() {
-        document.getElementById('removeGroupForm').submit();
-    });
+    const confirmRemoveBtn = document.getElementById('confirmRemoveBtn');
+    if (confirmRemoveBtn) {
+        confirmRemoveBtn.addEventListener('click', function() {
+            document.getElementById('removeGroupForm').submit();
+        });
+    }
 
     // Available groups search functionality
     const availableGroupsSearch = document.getElementById('available_groups_search');

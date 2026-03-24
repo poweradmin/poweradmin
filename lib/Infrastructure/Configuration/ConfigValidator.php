@@ -48,6 +48,7 @@ class ConfigValidator
         $this->validatePdnsApiUrl();
         $this->validatePdnsApiKey();
         $this->validatePdnsDbName();
+        $this->validatePermissions();
 
         return empty($this->errors);
     }
@@ -229,6 +230,21 @@ class ConfigValidator
 
         if (!is_string($apiKey) || empty($apiKey)) {
             $this->errors['pdns_api.key'] = 'PowerDNS API key must be a non-empty string when API URL is configured';
+        }
+    }
+
+    /**
+     * At least one permission template type (user or group) must remain visible
+     * in the UI so admins can manage access. Both toggles control UI visibility
+     * only; backend permission resolution always evaluates both types.
+     */
+    private function validatePermissions(): void
+    {
+        $showUser = $this->getSetting('permissions', 'show_user_access_templates', true);
+        $showGroup = $this->getSetting('permissions', 'show_group_access_templates', true);
+
+        if (!$showUser && !$showGroup) {
+            $this->errors['permissions'] = 'At least one of show_user_access_templates or show_group_access_templates must be enabled';
         }
     }
 

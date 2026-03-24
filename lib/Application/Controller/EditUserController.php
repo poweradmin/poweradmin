@@ -239,9 +239,16 @@ class EditUserController extends BaseController
         // Determine permission template
         $permTempl = $this->request->getPostParam('perm_templ');
 
+        // When user access templates are hidden, always preserve existing template
+        $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
+        if (!$showUserAccessTemplates) {
+            $userData = $this->getUserDetails($editId);
+            $permTempl = $userData['tpl_id'];
+        }
+
         // If editing own profile and not an admin, maintain existing template
         if ($isOwnProfile && !$canEditOthers) {
-            $userData = $this->getUserDetails($editId);
+            $userData = $userData ?? $this->getUserDetails($editId);
             $permTempl = $userData['tpl_id'];
         }
 
@@ -333,6 +340,8 @@ class EditUserController extends BaseController
             'user_groups' => $userGroups,
             'available_groups' => $availableGroupsArray,
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
+            'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
     }
 

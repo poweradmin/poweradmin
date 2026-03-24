@@ -186,19 +186,28 @@ class UserManager
      * @param object $db Database connection
      * @return int|null Template ID with minimal permissions, or null if no templates exist
      */
-    public static function getMinimalPermissionTemplateId($db): ?int
+    public static function getMinimalPermissionTemplateId($db, ?string $templateType = null): ?int
     {
         // Find the template with the fewest permissions assigned
         // If multiple templates have the same number of permissions, prefer by name order
         // This query returns the template with 0 or minimal permissions
         $query = "SELECT pt.id, pt.name, COUNT(pti.perm_id) as perm_count
                   FROM perm_templ pt
-                  LEFT JOIN perm_templ_items pti ON pt.id = pti.templ_id
-                  GROUP BY pt.id, pt.name
+                  LEFT JOIN perm_templ_items pti ON pt.id = pti.templ_id";
+
+        if ($templateType !== null) {
+            $query .= " WHERE pt.template_type = :template_type";
+        }
+
+        $query .= " GROUP BY pt.id, pt.name
                   ORDER BY perm_count ASC, pt.name ASC
                   LIMIT 1";
 
-        $stmt = $db->query($query);
+        $stmt = $db->prepare($query);
+        if ($templateType !== null) {
+            $stmt->bindValue(':template_type', $templateType);
+        }
+        $stmt->execute();
         $result = $stmt->fetch();
 
         return $result ? (int)$result['id'] : null;

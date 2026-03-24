@@ -630,6 +630,8 @@ abstract class BaseController
                 'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
                 'api_docs_enabled' => $this->config->get('api', 'docs_enabled', false),
                 'module_nav_items' => $this->getModuleNavItems(),
+                'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
+                'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
             ]);
         }
 

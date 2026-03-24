@@ -50,6 +50,11 @@ class ListGroupsController extends BaseController
 
     public function run(): void
     {
+        if (!$this->config->get('permissions', 'show_group_access_templates', true)) {
+            $this->showError(_('Group management is not enabled.'));
+            return;
+        }
+
         // Set the current page for navigation highlighting
         $this->setCurrentPage('list_groups');
         $this->setPageTitle(_('Groups'));

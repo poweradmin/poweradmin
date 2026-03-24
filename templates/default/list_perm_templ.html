@@ -5,18 +5,22 @@
     </ol>
 </nav>
 
+{% if show_user_access_templates and show_group_access_templates %}
 <div class="alert alert-info mb-4">
     <p class="mb-0 small"><i class="bi bi-info-circle me-2"></i><strong>{% trans %}User{% endtrans %}</strong> {% trans %}templates apply globally{% endtrans %}; <strong>{% trans %}Group{% endtrans %}</strong> {% trans %}templates apply only to group-owned zones{% endtrans %}</p>
 </div>
+{% endif %}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <strong><i class="bi bi-shield-lock me-2"></i>{% trans %}Access Templates{% endtrans %}</strong>
+        <strong><i class="bi bi-shield-lock me-2"></i>{% if show_user_access_templates %}{% trans %}Access Templates{% endtrans %}{% else %}{% trans %}Group Templates{% endtrans %}{% endif %}</strong>
+        {% if show_user_access_templates and show_group_access_templates %}
         <div class="btn-group btn-group-sm" role="group">
             <button class="btn btn-sm btn-secondary active" data-filter="all">{% trans %}All{% endtrans %}</button>
             <button class="btn btn-sm btn-outline-secondary" data-filter="user">{% trans %}User{% endtrans %}</button>
             <button class="btn btn-sm btn-outline-secondary" data-filter="group">{% trans %}Group{% endtrans %}</button>
         </div>
+        {% endif %}
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -25,7 +29,7 @@
                 <tr>
                     <th>{% trans %}Name{% endtrans %}</th>
                     <th>{% trans %}Description{% endtrans %}</th>
-                    <th>{% trans %}Type{% endtrans %}</th>
+                    {% if show_user_access_templates and show_group_access_templates %}<th>{% trans %}Type{% endtrans %}</th>{% endif %}
                     <th class="text-end">{% trans %}Actions{% endtrans %}</th>
                 </tr>
                 </thead>
@@ -39,6 +43,7 @@
                 <tr data-type="{{ template['template_type']|default('user') }}">
                     <td>{{ template['name'] }}</td>
                     <td class="text-truncate" style="max-width: 300px;" title="{{ template['descr']|default('') }}">{{ template['descr']|default('-') }}</td>
+                    {% if show_user_access_templates and show_group_access_templates %}
                     <td>
                         {% if template['template_type'] == 'user' or not template['template_type'] %}
                         <span class="badge bg-primary">{% trans %}User{% endtrans %}</span>
@@ -46,6 +51,7 @@
                         <span class="badge bg-success">{% trans %}Group{% endtrans %}</span>
                         {% endif %}
                     </td>
+                    {% endif %}
                     <td class="text-end">
                         <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/permissions/templates/{{ template['id'] }}/edit" title="{% trans %}Edit{% endtrans %}">
                             <i class="bi bi-pencil-square text-primary"></i>
@@ -70,6 +76,7 @@
     {% endif %}
 </div>
 
+{% if show_user_access_templates and show_group_access_templates %}
 <script>
 (function() {
     const filterButtons = document.querySelectorAll('[data-filter]');
@@ -95,3 +102,4 @@
     });
 })();
 </script>
+{% endif %}

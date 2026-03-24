@@ -67,6 +67,11 @@ class ManageGroupZonesController extends BaseController
 
     public function run(): void
     {
+        if (!$this->config->get('permissions', 'show_group_access_templates', true)) {
+            $this->showError(_('Group management is not enabled.'));
+            return;
+        }
+
         // Any admin can manage zone ownership (same as user ownership model)
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();

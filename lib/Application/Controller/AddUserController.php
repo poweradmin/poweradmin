@@ -117,6 +117,12 @@ class AddUserController extends BaseController
         $legacyUsers = new UserManager($this->db, $this->getConfig());
         $userParams = $this->request->getPostParams();
 
+        // When user access templates are hidden, force minimal user template assignment
+        $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
+        if (!$showUserAccessTemplates) {
+            $userParams['perm_templ'] = UserManager::getMinimalPermissionTemplateId($this->db, 'user') ?? '1';
+        }
+
         // Validate that the template is a user template
         if (isset($userParams['perm_templ']) && $userParams['perm_templ'] !== '') {
             if (!$this->permissionTemplateRepository->validateTemplateType((int)$userParams['perm_templ'], 'user')) {
@@ -244,6 +250,8 @@ class AddUserController extends BaseController
             'available_groups' => $availableGroups,
             'selected_groups' => $selectedGroups,
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
+            'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
     }
 

@@ -61,6 +61,11 @@ class AddGroupController extends BaseController
 
     public function run(): void
     {
+        if (!$this->config->get('permissions', 'show_group_access_templates', true)) {
+            $this->showError(_('Group management is not enabled.'));
+            return;
+        }
+
         // Only admin (überuser) can create groups
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();

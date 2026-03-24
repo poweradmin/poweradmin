@@ -65,7 +65,7 @@
                     </div>
                     {% endif %}
 
-                    {% if user_edit_templ_perm %}
+                    {% if show_user_access_templates and user_edit_templ_perm %}
                     <div class="mb-3">
                         <label for="perm_templ" class="form-label">{% trans %}Access template{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="perm_templ" name="perm_templ">
@@ -166,7 +166,7 @@
             </div>
         </div>
 
-        {% if perm_is_godlike and available_groups is not empty %}
+        {% if show_group_access_templates and perm_is_godlike and available_groups is not empty %}
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
                 <strong><i class="bi bi-people me-2"></i>{% trans %}Group Memberships{% endtrans %}</strong>

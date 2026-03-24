@@ -125,6 +125,8 @@ class UsersController extends BaseController
             'total_users' => $totalUsers,
             'rows_per_page' => $rowsPerPage,
             'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
+            'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
+            'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
     }
 }

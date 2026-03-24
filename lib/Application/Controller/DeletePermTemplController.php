@@ -86,12 +86,11 @@ class DeletePermTemplController extends BaseController
             ));
 
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been deleted successfully.'));
-            $this->redirect('/permissions/templates');
+        } else {
+            $this->setMessage('list_perm_templ', 'error', _('The permission template could not be deleted.'));
         }
 
-        $this->render('list_perm_templ.html', [
-            'permission_templates' => $this->permissionTemplate->listPermissionTemplates(),
-        ]);
+        $this->redirect('/permissions/templates');
     }
 
     private function showForm(): void

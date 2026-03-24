@@ -123,6 +123,15 @@ return [
     ],
 
     /**
+     * Permissions Settings
+     */
+    // UI visibility only - backend always evaluates both; clean up existing assignments before disabling
+    'permissions' => [
+        'show_user_access_templates' => true,  // Show per-user access template assignment (added in 4.3.0)
+        'show_group_access_templates' => true,  // Show group-based access template management (added in 4.3.0)
+    ],
+
+    /**
      * Interface Settings
      */
     'interface' => [

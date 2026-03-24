@@ -52,6 +52,11 @@ class ListLogGroupsController extends BaseController
 
     public function run(): void
     {
+        if (!$this->config->get('permissions', 'show_group_access_templates', true)) {
+            $this->showError(_('Group management is not enabled.'));
+            return;
+        }
+
         $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
 
         // Set the current page for navigation highlighting

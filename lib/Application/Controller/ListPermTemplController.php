@@ -50,9 +50,24 @@ class ListPermTemplController extends BaseController
 
     private function showListPermTempl(): void
     {
+        $showUser = $this->config->get('permissions', 'show_user_access_templates', true);
+        $showGroup = $this->config->get('permissions', 'show_group_access_templates', true);
+
+        if ($showUser && $showGroup) {
+            $templates = UserManager::listPermissionTemplates($this->db);
+        } elseif ($showGroup) {
+            $templates = UserManager::listPermissionTemplates($this->db, 'group');
+        } elseif ($showUser) {
+            $templates = UserManager::listPermissionTemplates($this->db, 'user');
+        } else {
+            $templates = UserManager::listPermissionTemplates($this->db);
+        }
+
         $this->render('list_perm_templ.html', [
             'templ_perm_add' => UserManager::verifyPermission($this->db, 'templ_perm_add'),
-            'permission_templates' => UserManager::listPermissionTemplates($this->db),
+            'permission_templates' => $templates,
+            'show_user_access_templates' => $showUser,
+            'show_group_access_templates' => $showGroup,
         ]);
     }
 }

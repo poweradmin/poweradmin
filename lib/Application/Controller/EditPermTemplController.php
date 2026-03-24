@@ -105,6 +105,8 @@ class EditPermTemplController extends BaseController
             'templ' => $this->permissionTemplate->getPermissionTemplateDetails($id),
             'perms_templ' => $this->permissionTemplate->getPermissionsByTemplateId($id),
             'perms_avail' => $this->permissionTemplate->getPermissionsByTemplateId(),
+            'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
+            'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
     }
 

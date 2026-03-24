@@ -94,7 +94,9 @@ class AddPermTemplController extends BaseController
     private function showForm(): void
     {
         $this->render('add_perm_templ.html', [
-            'perms_avail' => $this->permissionTemplate->getPermissionsByTemplateId()
+            'perms_avail' => $this->permissionTemplate->getPermissionsByTemplateId(),
+            'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
+            'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
     }
 

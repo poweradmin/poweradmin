@@ -40,8 +40,8 @@
                         <th>{% trans %}Username{% endtrans %}</th>
                         <th>{% trans %}Fullname{% endtrans %}</th>
                         <th>{% trans %}Email address{% endtrans %}</th>
-                        <th>{% trans %}Template{% endtrans %}</th>
-                        <th>{% trans %}Groups{% endtrans %}</th>
+                        {% if show_user_access_templates %}<th>{% trans %}Template{% endtrans %}</th>{% endif %}
+                        {% if show_group_access_templates %}<th>{% trans %}Groups{% endtrans %}</th>{% endif %}
                         <th class="text-center">{% trans %}Auth Type{% endtrans %}</th>
                         {% if mfa_enabled %}
                         <th class="text-center">{% trans %}MFA{% endtrans %}</th>
@@ -66,6 +66,7 @@
                         <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"></td>
                         <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][fullname]" value="{{ user ['fullname'] }}"></td>
                         <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}"></td>
+                        {% if show_user_access_templates %}
                         <td>
                             {% if permissions['user_edit_templ_perm'] %}
                             <select class="form-select form-select-sm" name="user[{{ user['uid'] }}][templ_id]">
@@ -83,7 +84,11 @@
                             {{ user['tpl_name'] }}
                             {% endif %}
                         </td>
+                        {% else %}
+                        <input type="hidden" name="user[{{ user['uid'] }}][templ_id]" value="{{ user['tpl_id'] }}">
+                        {% endif %}
 
+                        {% if show_group_access_templates %}
                         <td class="small text-muted">
                             {% if user['groups'] is not empty %}
                                 {% for group in user['groups'] %}
@@ -93,6 +98,7 @@
                             -
                             {% endif %}
                         </td>
+                        {% endif %}
 
                         <td class="text-center">
                             {% if user['auth_type'] == 'sql' %}
@@ -144,8 +150,9 @@
                         <td>{{ user['username'] }}</td>
                         <td>{{ user['fullname'] }}</td>
                         <td>{{ user['email'] }}</td>
-                        <td>{{ user['tpl_name'] }}</td>
+                        {% if show_user_access_templates %}<td>{{ user['tpl_name'] }}</td>{% endif %}
 
+                        {% if show_group_access_templates %}
                         <td class="small text-muted">
                             {% if user['groups'] is not empty %}
                                 {% for group in user['groups'] %}
@@ -155,6 +162,7 @@
                             -
                             {% endif %}
                         </td>
+                        {% endif %}
 
                         <td class="text-center">
                             {% if user['auth_type'] == 'sql' %}
