@@ -907,6 +907,68 @@ class DbZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
+     * Get raw PowerDNS domain metadata rows for a zone.
+     *
+     * @param int $zoneId The zone ID
+     * @return array Array of metadata rows [['kind' => string, 'content' => string], ...]
+     */
+    public function getDomainMetadata(int $zoneId): array
+    {
+        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+
+        $query = "SELECT kind, content
+                  FROM $domainmetadata_table
+                  WHERE domain_id = :domain_id
+                  ORDER BY kind, id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    /**
+     * Replace all PowerDNS domain metadata rows for a zone.
+     *
+     * @param int $zoneId The zone ID
+     * @param array $metadata Array of metadata rows [['kind' => string, 'content' => string], ...]
+     * @return bool True if metadata was replaced successfully
+     */
+    public function replaceDomainMetadata(int $zoneId, array $metadata): bool
+    {
+        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+
+        $this->db->beginTransaction();
+
+        try {
+            $deleteQuery = "DELETE FROM $domainmetadata_table WHERE domain_id = :domain_id";
+            $deleteStmt = $this->db->prepare($deleteQuery);
+            $deleteStmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+            $deleteStmt->execute();
+
+            if (!empty($metadata)) {
+                $insertQuery = "INSERT INTO $domainmetadata_table (domain_id, kind, content)
+                                VALUES (:domain_id, :kind, :content)";
+                $insertStmt = $this->db->prepare($insertQuery);
+
+                foreach ($metadata as $row) {
+                    $insertStmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+                    $insertStmt->bindValue(':kind', $row['kind'], PDO::PARAM_STR);
+                    $insertStmt->bindValue(':content', $row['content'], PDO::PARAM_STR);
+                    $insertStmt->execute();
+                }
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (\Throwable $e) {
+            $this->db->rollBack();
+            error_log(sprintf('Failed to replace domain metadata for zone %d: %s', $zoneId, $e->getMessage()));
+            return false;
+        }
+    }
+
+    /**
      * Create a new domain
      *
      * @param string $domain Domain name

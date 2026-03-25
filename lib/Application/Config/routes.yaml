@@ -150,6 +150,13 @@ zone_edit:
   requirements:
     id: '\d+'
 
+zone_metadata:
+  path: /zones/{id}/metadata
+  controller: Poweradmin\Application\Controller\EditZoneMetadataController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
 zone_ownership:
   path: /zones/{id}/ownership
   controller: Poweradmin\Application\Controller\ZoneOwnershipController::run

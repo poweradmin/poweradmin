@@ -38,11 +38,13 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ForwardZoneAssociationService;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Utility\IpHelper;
@@ -107,6 +109,8 @@ class ListReverseZonesController extends BaseController
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
         $perm_delete = Permission::getDeletePermission($this->db);
+        $permissionService = new PermissionService(new DbUserRepository($this->db, $this->getConfig()));
+        $perm_zone_meta = $permissionService->getZoneMetaEditPermissionLevel($userId);
 
         $zoneCountService = new ZoneCountService($this->db, $this->getConfig());
         $count_zones_view = $zoneCountService->countZones($perm_view, 'all', 'reverse');
@@ -202,6 +206,7 @@ class ListReverseZonesController extends BaseController
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
+            'perm_zone_meta' => $perm_zone_meta,
             'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
             'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),

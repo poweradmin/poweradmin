@@ -178,6 +178,23 @@ interface ZoneRepositoryInterface
     public function getZoneIdByName(string $zoneName): ?int;
 
     /**
+     * Get raw PowerDNS domain metadata rows for a zone.
+     *
+     * @param int $zoneId The zone ID
+     * @return array Array of metadata rows [['kind' => string, 'content' => string], ...]
+     */
+    public function getDomainMetadata(int $zoneId): array;
+
+    /**
+     * Replace all PowerDNS domain metadata rows for a zone.
+     *
+     * @param int $zoneId The zone ID
+     * @param array $metadata Array of metadata rows [['kind' => string, 'content' => string], ...]
+     * @return bool True if metadata was replaced successfully
+     */
+    public function replaceDomainMetadata(int $zoneId, array $metadata): bool;
+
+    /**
      * Update zone metadata
      *
      * @param int $zoneId The zone ID
