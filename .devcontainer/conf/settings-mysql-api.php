@@ -134,7 +134,16 @@ return [
      * LDAP Settings
      */
     'ldap' => [
-        'enabled' => false,
+        'enabled' => true,
+        'debug' => false,
+        'uri' => 'ldap://ldap',
+        'base_dn' => 'ou=users,dc=poweradmin,dc=org',
+        'bind_dn' => 'cn=admin,dc=poweradmin,dc=org',
+        'bind_password' => 'poweradmin',
+        'user_attribute' => 'uid',
+        'protocol_version' => 3,
+        'search_filter' => '',
+        'session_cache_timeout' => 300,
     ],
 
     /**

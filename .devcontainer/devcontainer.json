@@ -20,7 +20,7 @@
     "pdns-sqlite:1055",
     "pdns-sqlite:8183",
     "ldap:389",
-    "ldapadmin:8080"
+    "ldapadmin:8443"
   ],
   "portsAttributes": {
     "webserver:8080": {
@@ -77,7 +77,7 @@
     "ldap:389": {
       "label": "LDAP"
     },
-    "ldapadmin:8080": {
+    "ldapadmin:8443": {
       "label": "phpLDAPadmin v2"
     }
   },
