@@ -393,7 +393,9 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_MODULE_RDAP_DEFAULT_SERVER` | Default RDAP server | Empty | No |
 | `PA_MODULE_RDAP_REQUEST_TIMEOUT` | RDAP request timeout in seconds | `10` | No |
 | `PA_MODULE_RDAP_RESTRICT_TO_ADMIN` | Restrict RDAP to administrators | `true` | No |
+| `PA_MODULE_EMAIL_PREVIEWS_ENABLED` | Enable email template previews module | `false` | No |
 | `PA_MODULE_EMAIL_PREVIEWS_RESTRICT_TO_ADMIN` | Restrict email previews to administrators | `true` | No |
+| `PA_MODULE_DNS_WIZARDS_ENABLED` | Enable DNS record wizards module | `false` | No |
 | `PA_MODULE_DNS_WIZARDS_TYPES` | Comma-separated list of DNS wizard types | `DMARC,SPF,DKIM,CAA,TLSA,SRV` | No |
 
 ### LDAP Authentication

@@ -573,7 +573,9 @@ generate_config() {
     local mod_whois_restrict_to_admin=$(echo "${PA_MODULE_WHOIS_RESTRICT_TO_ADMIN:-true}" | tr '[:upper:]' '[:lower:]')
     local mod_rdap_enabled=$(echo "${PA_MODULE_RDAP_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local mod_rdap_restrict_to_admin=$(echo "${PA_MODULE_RDAP_RESTRICT_TO_ADMIN:-true}" | tr '[:upper:]' '[:lower:]')
+    local mod_email_previews_enabled=$(echo "${PA_MODULE_EMAIL_PREVIEWS_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local mod_email_previews_restrict_to_admin=$(echo "${PA_MODULE_EMAIL_PREVIEWS_RESTRICT_TO_ADMIN:-true}" | tr '[:upper:]' '[:lower:]')
+    local mod_dns_wizards_enabled=$(echo "${PA_MODULE_DNS_WIZARDS_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
 
     # Process DNS record types - convert comma-separated values to PHP array format or null
     local domain_record_types="null"
@@ -1076,9 +1078,11 @@ EOF
             'restrict_to_admin' => ${mod_rdap_restrict_to_admin},
         ],
         'email_previews' => [
+            'enabled' => ${mod_email_previews_enabled},
             'restrict_to_admin' => ${mod_email_previews_restrict_to_admin},
         ],
         'dns_wizards' => [
+            'enabled' => ${mod_dns_wizards_enabled},
             'available_types' => ${dns_wizards_types},
         ],
     ],
@@ -1127,7 +1131,7 @@ print_config_summary() {
         log "Account Lockout: ${PA_LOCKOUT_ENABLED:-false}"
         log "Password Reset: ${PA_PASSWORD_RESET_ENABLED:-false}"
         log "Username Recovery: ${PA_USERNAME_RECOVERY_ENABLED:-false}"
-        log "Modules: csv_export=${PA_MODULE_CSV_EXPORT_ENABLED:-true}, zone_import_export=${PA_MODULE_ZONE_IMPORT_EXPORT_ENABLED:-false}, whois=${PA_MODULE_WHOIS_ENABLED:-false}, rdap=${PA_MODULE_RDAP_ENABLED:-false}"
+        log "Modules: csv_export=${PA_MODULE_CSV_EXPORT_ENABLED:-true}, zone_import_export=${PA_MODULE_ZONE_IMPORT_EXPORT_ENABLED:-false}, whois=${PA_MODULE_WHOIS_ENABLED:-false}, rdap=${PA_MODULE_RDAP_ENABLED:-false}, email_previews=${PA_MODULE_EMAIL_PREVIEWS_ENABLED:-false}, dns_wizards=${PA_MODULE_DNS_WIZARDS_ENABLED:-false}"
     fi
 
     log "Admin User Creation: ${PA_CREATE_ADMIN:-false}"
