@@ -369,21 +369,25 @@ services:
       start_period: 10s
 
   ldapadmin:
-    image: osixia/phpldapadmin:0.9.0
+    image: phpldapadmin/phpldapadmin:2.3.9
     container_name: ldapadmin
     networks:
       - internal
     environment:
-      - PHPLDAPADMIN_LDAP_HOSTS=ldap
+      - LDAP_HOST=ldap
+      - LDAP_PORT=389
+      - LDAP_USERNAME=cn=admin,dc=poweradmin,dc=org
+      - LDAP_PASSWORD=poweradmin
+      - LDAP_BASE_DN=dc=poweradmin,dc=org
     ports:
-      - 8443:443
+      - 8443:8080
 
   # =============================================================================
   # Keycloak (commented out by default - uncomment to use)
   # =============================================================================
 
   # keycloak:
-  #   image: quay.io/keycloak/keycloak:24.0
+  #   image: quay.io/keycloak/keycloak:26.2
   #   container_name: keycloak
   #   networks:
   #     - internal
