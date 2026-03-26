@@ -429,10 +429,15 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $params = [];
 
-        // Filter by owner if requested
+        // Filter by owner if requested (direct ownership or group membership)
         if ($userId !== null && !$viewOthers) {
-            $query .= " AND zones.owner = :userId";
+            $query .= " AND (zones.owner = :userId OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
+            ))";
             $params[':userId'] = $userId;
+            $params[':userId_group'] = $userId;
         }
 
         // Apply additional filters
