@@ -168,7 +168,7 @@ JetBrains provides IDE licenses used for development of this project.
     </td>
     <td align="center" width="200">
       <a href="https://www.ybaca.net/">
-        <img src="https://www.ybaca.net/static/ybaca-logo.svg" alt="yBaca s.r.o." height="40">
+        <img src="https://docs.poweradmin.org/img/sponsors/ybaca.svg" alt="yBaca s.r.o." height="40">
       </a>
       <br>yBaca s.r.o.
     </td>
