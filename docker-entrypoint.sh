@@ -1266,6 +1266,20 @@ main() {
     # Setup permissions and drop privileges (root only)
     if [ "$IS_ROOT" = true ]; then
         setup_permissions
+        # Restore capability to bind privileged ports (stripped in Dockerfile for rootless support).
+        # Only relevant when starting FrankenPHP server, not for maintenance/debug commands.
+        if [ "$1" = "frankenphp" ]; then
+            if ! setcap cap_net_bind_service=+ep /usr/local/bin/frankenphp 2>/dev/null; then
+                if [ -n "${SERVER_PORT:-}" ] && [ "${SERVER_PORT}" -lt 1024 ] 2>/dev/null; then
+                    log "ERROR: Cannot bind port ${SERVER_PORT} - setcap failed (read-only rootfs or CAP_SETFCAP dropped). Use SERVER_PORT=8080 or grant CAP_SETFCAP."
+                    exit 1
+                elif [ -z "${SERVER_PORT:-}" ]; then
+                    export SERVER_PORT=8080
+                    echo "${SERVER_PORT}" > /tmp/.server_port
+                    log "WARNING: Could not restore port binding capability - falling back to port 8080"
+                fi
+            fi
+        fi
         exec su-exec www-data "$@"
     else
         exec "$@"

@@ -90,6 +90,69 @@ jobs:
             type=raw,value=stable,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.x') }}
             type=raw,value=next,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.1.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.1.x') }}
 
+      - name: Build local image for smoke test
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: poweradmin:smoke-test
+          cache-from: type=gha
+
+      - name: Smoke test (root mode - port 80)
+        run: |
+          docker run -d --name smoke-root \
+            -p 80:80 \
+            -e DB_TYPE=sqlite \
+            -e DB_NAME=/db/poweradmin.db \
+            -e DNS_HOSTMASTER=test.example.com \
+            -e DNS_NS1=ns1.example.com \
+            -e DNS_NS2=ns2.example.com \
+            poweradmin:smoke-test
+
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:80/ -o /dev/null 2>/dev/null; then
+              echo "Root mode: container responded on port 80"
+              break
+            fi
+            if [ "$i" = "30" ]; then
+              echo "Root mode: container failed to respond"
+              docker logs smoke-root
+              exit 1
+            fi
+            sleep 1
+          done
+
+          docker rm -f smoke-root
+
+      - name: Smoke test (non-root mode - port 8080)
+        run: |
+          docker run -d --name smoke-nonroot \
+            --user 82:82 \
+            -p 8080:8080 \
+            -e DB_TYPE=sqlite \
+            -e DB_NAME=/db/poweradmin.db \
+            -e DNS_HOSTMASTER=test.example.com \
+            -e DNS_NS1=ns1.example.com \
+            -e DNS_NS2=ns2.example.com \
+            poweradmin:smoke-test
+
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8080/ -o /dev/null 2>/dev/null; then
+              echo "Non-root mode: container responded on port 8080"
+              break
+            fi
+            if [ "$i" = "30" ]; then
+              echo "Non-root mode: container failed to respond"
+              docker logs smoke-nonroot
+              exit 1
+            fi
+            sleep 1
+          done
+
+          docker rm -f smoke-nonroot
+
       - name: Build and push
         id: build
         uses: docker/build-push-action@v7

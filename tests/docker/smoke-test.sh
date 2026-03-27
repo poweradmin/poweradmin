@@ -9,11 +9,12 @@
 # - SQLite
 #
 # Usage:
-#   ./tests/docker/smoke-test.sh          # Run all database tests
+#   ./tests/docker/smoke-test.sh          # Run all tests
 #   ./tests/docker/smoke-test.sh mariadb  # Run only MariaDB test
 #   ./tests/docker/smoke-test.sh mysql    # Run only MySQL test
 #   ./tests/docker/smoke-test.sh pgsql    # Run only PostgreSQL test
 #   ./tests/docker/smoke-test.sh sqlite   # Run only SQLite test
+#   ./tests/docker/smoke-test.sh startup  # Run only startup mode tests
 #
 # Requirements:
 #   - Docker
@@ -341,6 +342,145 @@ test_sqlite() {
     run_smoke_tests
 }
 
+test_startup_modes() {
+    log_header "Testing Container Startup Modes"
+    local modes_passed=0
+    local modes_failed=0
+
+    # Test: Root mode (default port 80)
+    log_info "Test: Root mode (default port 80)..."
+    cleanup
+    docker run -d --name "$APP_CONTAINER" \
+        -p 8888:80 \
+        -e DB_TYPE=sqlite \
+        -e DB_NAME=/db/poweradmin.db \
+        -e DNS_HOSTMASTER=test.example.com \
+        -e DNS_NS1=ns1.example.com \
+        -e DNS_NS2=ns2.example.com \
+        "$IMAGE_NAME"
+
+    if wait_for_http 8888; then
+        log_info "  PASS"
+        ((modes_passed++))
+    else
+        log_error "  FAIL"
+        docker logs "$APP_CONTAINER"
+        ((modes_failed++))
+    fi
+    cleanup
+
+    # Test: Non-root mode (auto port 8080)
+    log_info "Test: Non-root mode (auto port 8080)..."
+    docker run -d --name "$APP_CONTAINER" \
+        --user 82:82 \
+        -p 8888:8080 \
+        -e DB_TYPE=sqlite \
+        -e DB_NAME=/db/poweradmin.db \
+        -e DNS_HOSTMASTER=test.example.com \
+        -e DNS_NS1=ns1.example.com \
+        -e DNS_NS2=ns2.example.com \
+        "$IMAGE_NAME"
+
+    if wait_for_http 8888; then
+        log_info "  PASS"
+        ((modes_passed++))
+    else
+        log_error "  FAIL"
+        docker logs "$APP_CONTAINER"
+        ((modes_failed++))
+    fi
+    cleanup
+
+    # Test: Root mode with read-only rootfs (should fall back to 8080)
+    log_info "Test: Root mode with read-only rootfs (fallback to 8080)..."
+    docker run -d --name "$APP_CONTAINER" \
+        --read-only \
+        --tmpfs /tmp --tmpfs /db --tmpfs /app/config --tmpfs /var/caddy \
+        -p 8888:8080 \
+        -e DB_TYPE=sqlite \
+        -e DB_NAME=/db/poweradmin.db \
+        -e DNS_HOSTMASTER=test.example.com \
+        -e DNS_NS1=ns1.example.com \
+        -e DNS_NS2=ns2.example.com \
+        "$IMAGE_NAME"
+
+    if wait_for_http 8888; then
+        log_info "  PASS"
+        ((modes_passed++))
+    else
+        log_error "  FAIL"
+        docker logs "$APP_CONTAINER"
+        ((modes_failed++))
+    fi
+    cleanup
+
+    # Test: Read-only rootfs with explicit SERVER_PORT=80 (should fail loudly)
+    log_info "Test: Read-only rootfs with explicit SERVER_PORT=80 (expect failure)..."
+    local exit_code=0
+    docker run --name "$APP_CONTAINER" \
+        --read-only \
+        --tmpfs /tmp --tmpfs /db --tmpfs /app/config --tmpfs /var/caddy \
+        -e SERVER_PORT=80 \
+        -e DB_TYPE=sqlite \
+        -e DB_NAME=/db/poweradmin.db \
+        -e DNS_HOSTMASTER=test.example.com \
+        -e DNS_NS1=ns1.example.com \
+        -e DNS_NS2=ns2.example.com \
+        "$IMAGE_NAME" 2>&1 || exit_code=$?
+
+    if [ "$exit_code" -ne 0 ] && docker logs "$APP_CONTAINER" 2>&1 | grep -q "Cannot bind port 80"; then
+        log_info "  PASS (exited with clear error)"
+        ((modes_passed++))
+    else
+        log_error "  FAIL (expected failure with clear error message)"
+        docker logs "$APP_CONTAINER"
+        ((modes_failed++))
+    fi
+    cleanup
+
+    # Test: Non-server command on read-only rootfs (should not be blocked by setcap)
+    log_info "Test: Non-server command on read-only rootfs..."
+    local cmd_output
+    cmd_output=$(docker run --rm \
+        --read-only \
+        --tmpfs /tmp --tmpfs /db --tmpfs /app/config --tmpfs /var/caddy \
+        -e SERVER_PORT=80 \
+        -e DB_TYPE=sqlite \
+        -e DB_NAME=/db/poweradmin.db \
+        -e DNS_HOSTMASTER=test.example.com \
+        -e DNS_NS1=ns1.example.com \
+        -e DNS_NS2=ns2.example.com \
+        "$IMAGE_NAME" echo "CMD_OK" 2>&1)
+
+    if echo "$cmd_output" | grep -q "CMD_OK"; then
+        log_info "  PASS"
+        ((modes_passed++))
+    else
+        log_error "  FAIL"
+        echo "$cmd_output"
+        ((modes_failed++))
+    fi
+
+    echo ""
+    log_info "Startup mode tests: $modes_passed passed, $modes_failed failed"
+    [ "$modes_failed" -eq 0 ]
+}
+
+wait_for_http() {
+    local port=$1
+    local max_attempts=${2:-30}
+    local attempt=0
+
+    while [ $attempt -lt $max_attempts ]; do
+        if curl -sf "http://localhost:${port}/" -o /dev/null 2>/dev/null; then
+            return 0
+        fi
+        attempt=$((attempt + 1))
+        sleep 1
+    done
+    return 1
+}
+
 build_image() {
     log_info "Building Docker image..."
     docker build -t "$IMAGE_NAME" "$PROJECT_ROOT"
@@ -374,7 +514,11 @@ main() {
         sqlite)
             if test_sqlite; then ((passed++)); else ((failed++)); fi
             ;;
+        startup)
+            if test_startup_modes; then ((passed++)); else ((failed++)); fi
+            ;;
         all)
+            if test_startup_modes; then ((passed++)); else ((failed++)); fi
             if test_mariadb; then ((passed++)); else ((failed++)); fi
             if test_mysql; then ((passed++)); else ((failed++)); fi
             if test_pgsql; then ((passed++)); else ((failed++)); fi
@@ -382,7 +526,7 @@ main() {
             ;;
         *)
             log_error "Unknown database type: $db_type"
-            echo "Usage: $0 [mariadb|mysql|pgsql|sqlite|all]"
+            echo "Usage: $0 [mariadb|mysql|pgsql|sqlite|startup|all]"
             exit 1
             ;;
     esac
