@@ -546,7 +546,8 @@ class EditController extends BaseController
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
 
         // Build base URL with any active filters
-        $baseUrl = '/zones/' . $id . '/edit?start={PageNumber}';
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+        $baseUrl = $baseUrlPrefix . '/zones/' . $id . '/edit?start={PageNumber}';
 
         // Add filters to pagination links if they exist
         if (isset($_GET['search']) && !empty($_GET['search'])) {

@@ -107,7 +107,8 @@ class ListLogUsersController extends BaseController
 
         $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $presenter = new PaginationPresenter($pagination, '/users/logs?start={PageNumber}');
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/users/logs?start={PageNumber}');
 
         return $presenter->present();
     }

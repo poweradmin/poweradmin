@@ -89,9 +89,10 @@ class ListTemplateZonesController extends BaseController
         $paginationHtml = '';
 
         if ($totalZones > $itemsPerPage) {
+            $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
             $presenter = new PaginationPresenter(
                 $pagination,
-                '/zones/templates/' . $zone_templ_id . '/zones?start={PageNumber}'
+                $baseUrlPrefix . '/zones/templates/' . $zone_templ_id . '/zones?start={PageNumber}'
             );
             $paginationHtml = $presenter->present();
         }

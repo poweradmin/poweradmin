@@ -157,8 +157,9 @@ class ListForwardZonesController extends BaseController
         $availableChars = $zoneService->getAvailableStartingLetters($userId, $allow_view_others);
         $digitsAvailable = $zoneService->checkDigitsAvailable($availableChars);
 
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
         $presenter = new ZoneStartingLettersPresenter();
-        return $presenter->present($availableChars, $digitsAvailable, $letterStart);
+        return $presenter->present($availableChars, $digitsAvailable, $letterStart, $baseUrlPrefix);
     }
 
     private function createAndPresentPagination(int $totalItems, string $itemsPerPage): string
@@ -166,9 +167,10 @@ class ListForwardZonesController extends BaseController
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();
 
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
         $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $presenter = new PaginationPresenter($pagination, '/zones/forward?start={PageNumber}');
+        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/zones/forward?start={PageNumber}');
 
         return $presenter->present();
     }
