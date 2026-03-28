@@ -105,6 +105,10 @@ class DatabaseSchemaService
                 $line = $key . ' ' . $arr['type'] . (isset($arr['length']) ? '(' . $arr['length'] . ')' : '');
             }
 
+            if ($db_type == 'mysql' && isset($arr['charset'])) {
+                $line .= ' CHARACTER SET ' . $arr['charset'];
+            }
+
             if (isset($arr['notnull']) && $arr['notnull'] && $db_type != 'pgsql' && !isset($arr['autoincrement'])) {
                 $line .= ' NOT NULL';
             }

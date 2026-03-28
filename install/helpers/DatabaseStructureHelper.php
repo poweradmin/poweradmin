@@ -1723,6 +1723,7 @@ class DatabaseStructureHelper
                     'record_id' => array(
                         'type' => 'text',
                         'length' => 3072,
+                        'charset' => 'ascii',
                         'notnull' => 1,
                         'name' => 'record_id',
                         'table' => 'record_comment_links',
