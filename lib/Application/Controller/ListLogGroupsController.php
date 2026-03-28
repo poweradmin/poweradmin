@@ -110,9 +110,10 @@ class ListLogGroupsController extends BaseController
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
 
         // Preserve the filter parameter in pagination links
-        $paginationUrl = '/groups/logs?start={PageNumber}';
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+        $paginationUrl = $baseUrlPrefix . '/groups/logs?start={PageNumber}';
         if (isset($_GET['name']) && $_GET['name'] != '') {
-            $paginationUrl = '/groups/logs?name=' . urlencode($_GET['name']) . '&start={PageNumber}';
+            $paginationUrl = $baseUrlPrefix . '/groups/logs?name=' . urlencode($_GET['name']) . '&start={PageNumber}';
         }
 
         $presenter = new PaginationPresenter($pagination, $paginationUrl);

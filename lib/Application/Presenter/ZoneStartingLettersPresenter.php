@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Presenter;
 
 class ZoneStartingLettersPresenter
 {
-    public function present(array $availableChars, bool $digitsAvailable, string $letterStart): string
+    public function present(array $availableChars, bool $digitsAvailable, string $letterStart, string $baseUrlPrefix = ''): string
     {
         $html = '<span class="text-secondary">' . _('Show zones beginning with') . "</span><br>";
         $html .= '<nav>';
@@ -37,7 +37,7 @@ class ZoneStartingLettersPresenter
         if ($letterStart === "1") {
             $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">0-9</span></li>';
         } elseif ($digitsAvailable) {
-            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"/zones/forward?letter=1" . $rowsPerPageParam . "\">0-9</a></li>";
+            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . $baseUrlPrefix . "/zones/forward?letter=1" . $rowsPerPageParam . "\">0-9</a></li>";
         } else {
             $html .= '<li class="page-item disabled"><span class="page-link" tabindex="-1">0-9</span></li>';
         }
@@ -47,7 +47,7 @@ class ZoneStartingLettersPresenter
             if ($letter === $letterStart) {
                 $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
             } elseif (in_array($letter, $availableChars)) {
-                $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"/zones/forward?letter=" . $letter . $rowsPerPageParam . "\">" . $letter . "</a></li>";
+                $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . $baseUrlPrefix . "/zones/forward?letter=" . $letter . $rowsPerPageParam . "\">" . $letter . "</a></li>";
             } else {
                 $html .= '<li class="page-item disabled"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
             }
@@ -56,7 +56,7 @@ class ZoneStartingLettersPresenter
         if ($letterStart === 'all') {
             $html .= '<li class="page-item active"><span class="page-link" href="#">' . _('Show all') . '</span></li>';
         } else {
-            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"/zones/forward?letter=all" . $rowsPerPageParam . "\">" . _('Show all') . '</a></li>';
+            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . $baseUrlPrefix . "/zones/forward?letter=all" . $rowsPerPageParam . "\">" . _('Show all') . '</a></li>';
         }
 
         $html .= "</ul>";
