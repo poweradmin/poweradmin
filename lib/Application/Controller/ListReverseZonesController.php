@@ -229,7 +229,8 @@ class ListReverseZonesController extends BaseController
         $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
 
-        $paginationUrl = '/zones/reverse?start={PageNumber}';
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+        $paginationUrl = $baseUrlPrefix . '/zones/reverse?start={PageNumber}';
 
         // Add reverse_type parameter if it exists
         if (isset($_GET['reverse_type'])) {

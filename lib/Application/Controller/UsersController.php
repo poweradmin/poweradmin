@@ -113,7 +113,8 @@ class UsersController extends BaseController
 
         // Create pagination
         $pagination = $paginationService->createPagination($totalUsers, $rowsPerPage, $currentPage);
-        $paginationPresenter = new PaginationPresenter($pagination, '/users?start={PageNumber}');
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+        $paginationPresenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/users?start={PageNumber}');
 
         $this->render('users.html', [
             'permissions' => $permissions,
