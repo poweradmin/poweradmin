@@ -10,6 +10,7 @@
     "web-mysql-api:8083",
     "web-pgsql-api:8084",
     "web-sqlite-api:8085",
+    "web-subfolder:8086",
     "mysql:3306",
     "pgsql:5432",
     "adminer:8090",
@@ -45,6 +46,10 @@
     },
     "web-sqlite-api:8085": {
       "label": "Poweradmin (SQLite + API)",
+      "onAutoForward": "notify"
+    },
+    "web-subfolder:8086": {
+      "label": "Poweradmin (MySQL + Subfolder)",
       "onAutoForward": "notify"
     },
     "mysql:3306": {

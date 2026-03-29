@@ -18,6 +18,7 @@
     "test:e2e:mysql-api": "BASE_URL=http://localhost:8083 playwright test",
     "test:e2e:pgsql-api": "BASE_URL=http://localhost:8084 playwright test",
     "test:e2e:sqlite-api": "BASE_URL=http://localhost:8085 playwright test",
+    "test:e2e:subfolder": "BASE_URL=http://localhost:8086 playwright test playwright/tests/subfolder",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
