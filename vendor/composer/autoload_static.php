@@ -1293,7 +1293,6 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Controller\\AddZoneTemplRecordController' => __DIR__ . '/../..' . '/lib/Application/Controller/AddZoneTemplRecordController.php',
         'Poweradmin\\Application\\Controller\\ApiKeysController' => __DIR__ . '/../..' . '/lib/Application/Controller/ApiKeysController.php',
         'Poweradmin\\Application\\Controller\\Api\\AbstractApiController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/AbstractApiController.php',
-        'Poweradmin\\Application\\Controller\\Api\\ApiTags' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/ApiTags.php',
         'Poweradmin\\Application\\Controller\\Api\\DocsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/DocsController.php',
         'Poweradmin\\Application\\Controller\\Api\\Docs\\JsonController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/Docs/JsonController.php',
         'Poweradmin\\Application\\Controller\\Api\\InternalApiController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/InternalApiController.php',
