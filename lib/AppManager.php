@@ -170,17 +170,6 @@ class AppManager
     }
 
     /**
-     * Gets the application configuration.
-     *
-     * @return ConfigurationManager The application configuration
-     */
-    public function getConfig(): ConfigurationManager
-    {
-        return $this->configuration;
-    }
-
-
-    /**
      * Gets the locale file path for the given interface language.
      *
      * @param string $interfaceLang The interface language

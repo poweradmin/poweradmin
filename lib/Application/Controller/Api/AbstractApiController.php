@@ -35,9 +35,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 abstract class AbstractApiController extends BaseController
 {
@@ -45,11 +42,6 @@ abstract class AbstractApiController extends BaseController
      * @var Request The current HTTP request
      */
     protected Request $request;
-
-    /**
-     * @var Serializer The Symfony serializer
-     */
-    protected Serializer $serializer;
 
     /**
      * @var Request|null Temporary request for initialization
@@ -88,11 +80,6 @@ abstract class AbstractApiController extends BaseController
 
         // Assign the already created Symfony Request object to the instance property
         $this->request = self::$tempRequest;
-
-        // Initialize the serializer
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $this->serializer = new Serializer($normalizers, $encoders);
     }
 
     /**
@@ -176,18 +163,6 @@ abstract class AbstractApiController extends BaseController
         }
 
         return $this->returnJsonResponse($response, $status);
-    }
-
-    /**
-     * Helper method to serialize objects to JSON
-     *
-     * @param mixed $data The data to serialize
-     * @param array $context Serialization context
-     * @return string The serialized JSON
-     */
-    protected function serialize($data, array $context = []): string
-    {
-        return $this->serializer->serialize($data, 'json', $context);
     }
 
     /**
