@@ -62,6 +62,7 @@ return [
         'show_zone_comments' => false,
         'enable_consistency_checks' => true,
         'add_reverse_record' => true,
+        'search_group_records' => true,
     ],
 
     /**
