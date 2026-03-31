@@ -134,9 +134,9 @@ class RecordSearch extends BaseSearch
         // Uses COALESCE with two subqueries to avoid ORDER BY with outer table
         // references which SQLite does not support in correlated subqueries.
         $links_table = 'record_comment_links';
-        $commentSelect = '';
+        $commentExpr = '';
         if ($iface_record_comments) {
-            $commentSelect = ", COALESCE(
+            $commentExpr = "COALESCE(
                 (
                     SELECT c.comment
                     FROM $links_table rcl
@@ -156,24 +156,48 @@ class RecordSearch extends BaseSearch
                       )
                     LIMIT 1
                 )
-            ) AS comment";
+            )";
         }
 
+        // Use aggregate functions when grouping to ensure SQL standard compliance (PostgreSQL)
+        if ($iface_search_group_records) {
+            $selectColumns = "
+                MIN($records_table.id) as id,
+                MIN($records_table.domain_id) as domain_id,
+                $records_table.name,
+                $records_table.type,
+                $records_table.content,
+                MIN($records_table.ttl) as ttl,
+                MIN($records_table.prio) as prio,
+                $records_table.disabled,
+                MIN(z.id) as zone_id,
+                MIN(z.owner) as owner,
+                MIN(u.id) as user_id,
+                MIN(u.fullname) as fullname" .
+                ($commentExpr ? ", MIN($commentExpr) AS comment" : "");
+        } else {
+            $selectColumns = "
+                $records_table.id,
+                $records_table.domain_id,
+                $records_table.name,
+                $records_table.type,
+                $records_table.content,
+                $records_table.ttl,
+                $records_table.prio,
+                $records_table.disabled,
+                z.id as zone_id,
+                z.owner,
+                u.id as user_id,
+                u.fullname" .
+                ($commentExpr ? ", $commentExpr AS comment" : "");
+        }
+
+        $groupByClause = $iface_search_group_records
+            ? " GROUP BY $records_table.name, $records_table.type, $records_table.content, $records_table.disabled "
+            : '';
+
         $recordsQuery = "
-        SELECT
-            $records_table.id,
-            $records_table.domain_id,
-            $records_table.name,
-            $records_table.type,
-            $records_table.content,
-            $records_table.ttl,
-            $records_table.prio,
-            $records_table.disabled,
-            z.id as zone_id,
-            z.owner,
-            u.id as user_id,
-            u.fullname" .
-            $commentSelect . "
+        SELECT $selectColumns
         FROM
             $records_table
         LEFT JOIN zones z on $records_table.domain_id = z.domain_id
@@ -182,7 +206,7 @@ class RecordSearch extends BaseSearch
             " . $this->buildWhereConditionsFetch($records_table, $search_string, $reverse, $reverse_search_string, $iface_record_comments, $parameters, $permission_view, $params) .
             $typeFilter .
             $contentFilter .
-            ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '') .
+            $groupByClause .
             ' ORDER BY ' . $sort_records_by .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
@@ -235,7 +259,9 @@ class RecordSearch extends BaseSearch
     {
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-        $groupByClause = $iface_search_group_records ? "GROUP BY $records_table.name, $records_table.content" : '';
+        $groupByClause = $iface_search_group_records
+            ? "GROUP BY $records_table.name, $records_table.type, $records_table.content, $records_table.disabled"
+            : '';
 
         // Prepare query parameters
         $params = [];
@@ -258,13 +284,18 @@ class RecordSearch extends BaseSearch
             $params[':content_filter'] = $content;
         }
 
+        // Use MIN() aggregate in subquery for SQL standard compliance (PostgreSQL)
+        $innerSelect = $iface_search_group_records
+            ? "MIN($records_table.id)"
+            : "$records_table.id";
+
         // Build a query that correctly applies permission filters for accurate counting
         $recordsQuery = "
         SELECT
             COUNT(*)
         FROM (
             SELECT
-                $records_table.id
+                $innerSelect
             FROM
                 $records_table
             LEFT JOIN zones z on $records_table.domain_id = z.domain_id
