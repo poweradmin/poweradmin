@@ -53,6 +53,11 @@ package-lock.json
 *.diff
 *.patch
 
+# Translation working files
+*_untranslated.json
+locale/**/*.po.bak
+locale/**/*.po.backup.*
+
 # Playwright
 /playwright-report/
 /playwright/.cache/
