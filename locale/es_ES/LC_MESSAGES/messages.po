@@ -2185,7 +2185,7 @@ msgstr "%d registro(s) se agregaron correctamente."
 #: lib/Application/Controller/AddRecordController.php:475
 #, php-format
 msgid "%d matching record(s) were also created."
-msgstr ""
+msgstr "También se crearon %d registro(s) coincidente(s)."
 
 #: lib/Application/Controller/AddRecordController.php:478
 #, php-format
@@ -13099,7 +13099,7 @@ msgstr "Agregar registro a zona"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
 msgid "Record could not be added. Please check the record data and try again."
-msgstr ""
+msgstr "No se pudo agregar el registro. Verifique los datos del registro e intente de nuevo."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
