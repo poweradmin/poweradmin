@@ -6583,7 +6583,8 @@ msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
 msgstr ""
-"Dalam Mode Layanan (prioritas > 0) dengan target \".\", setidaknya satu SvcParam diperlukan."
+"Dalam Mode Layanan (prioritas > 0) dengan target \".\", setidaknya satu "
+"SvcParam diperlukan."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
@@ -12454,7 +12455,9 @@ msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
 msgstr ""
-"Grup memungkinkan Anda mengatur pengguna dan mengelola akses zona secara kolektif. Anggota mewarisi izin grup untuk semua zona yang dimiliki oleh grup."
+"Grup memungkinkan Anda mengatur pengguna dan mengelola akses zona secara "
+"kolektif. Anggota mewarisi izin grup untuk semua zona yang dimiliki oleh "
+"grup."
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
@@ -12465,8 +12468,9 @@ msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
 msgstr ""
-"Setelah membuat grup, Anda dapat menambahkan anggota dan menetapkan zona kepadanya. Semua anggota akan secara otomatis mendapatkan akses ke zona grup."
-"kepadanya."
+"Setelah membuat grup, Anda dapat menambahkan anggota dan menetapkan zona "
+"kepadanya. Semua anggota akan secara otomatis mendapatkan akses ke zona "
+"grup.kepadanya."
 
 #: templates/modern/list_perm_templ.html:45
 msgid "User"
@@ -12566,9 +12570,11 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"Templat ini dapat ditetapkan ke pengguna untuk dengan cepat menerapkan set izinnya. Perubahan yang dibuat di sini akan memengaruhi semua pengguna yang memiliki templat ini ditetapkan."
-"menerapkan set izinnya. Perubahan yang dibuat di sini akan memengaruhi semua "
-"pengguna dan grup yang memiliki templat ini ditetapkan."
+"Templat ini dapat ditetapkan ke pengguna untuk dengan cepat menerapkan set "
+"izinnya. Perubahan yang dibuat di sini akan memengaruhi semua pengguna yang "
+"memiliki templat ini ditetapkan.menerapkan set izinnya. Perubahan yang "
+"dibuat di sini akan memengaruhi semua pengguna dan grup yang memiliki "
+"templat ini ditetapkan."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
@@ -13374,27 +13380,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Tidak dapat terhubung ke database PowerDNS \"%s\": %s"
-
-#~ msgid "WHOIS lookup functionality is disabled."
-#~ msgstr "Fungsi pencarian WHOIS dinonaktifkan."
-
-#~ msgid "RDAP lookup functionality is disabled."
-#~ msgstr "Fungsi pencarian RDAP dinonaktifkan."
-
-#~ msgid "Slave"
-#~ msgstr "Ditemukan record duplikat."
-
-#~ msgid "Lookup domain WHOIS information"
-#~ msgstr "Metadata added"
-
-#~ msgid "Lookup domain RDAP information"
-#~ msgstr "Metadata modified"
-
-#~ msgid "Record Wizard"
-#~ msgstr "Wizard Rekod"
-
-#~ msgid "Please enter a domain name to perform an RDAP lookup."
-#~ msgstr "Silakan masukkan nama domain untuk melakukan pencarian RDAP."
-
-#~ msgid "Toggle all"
-#~ msgstr "Toggle semua"

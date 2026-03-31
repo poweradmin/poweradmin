@@ -6942,8 +6942,8 @@ msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
 msgstr ""
-"Service Mode (prioritetas > 0) su \".\" tikslu reikalauja bent vieno SvcParam."
-"SvcParam."
+"Service Mode (prioritetas > 0) su \".\" tikslu reikalauja bent vieno "
+"SvcParam.SvcParam."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
@@ -13125,7 +13125,9 @@ msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
 msgstr ""
-"Grupės leidžia organizuoti vartotojus ir valdyti prieigą prie zonų kolektyviai. Nariai paveldi grupės teises visoms grupei priklausančioms zonoms."
+"Grupės leidžia organizuoti vartotojus ir valdyti prieigą prie zonų "
+"kolektyviai. Nariai paveldi grupės teises visoms grupei priklausančioms "
+"zonoms."
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
@@ -13136,7 +13138,8 @@ msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
 msgstr ""
-"Sukūrę grupę, galėsite pridėti narius ir priskirti jai zonas. Visi nariai automatiškai gaus prieigą prie grupės zonų."
+"Sukūrę grupę, galėsite pridėti narius ir priskirti jai zonas. Visi nariai "
+"automatiškai gaus prieigą prie grupės zonų."
 
 #: templates/modern/list_perm_templ.html:45
 msgid "User"
@@ -13236,9 +13239,10 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"Šis šablonas gali būti priskirtas vartotojams greitam jo teisių rinkinio taikymui. Čia atlikti pakeitimai paveiks visus vartotojus, kuriems priskirtas šis šablonas."
-"taikymui. Čia atlikti keitimai paveiks visus naudotojus, kuriems priskirtas "
-"šis šablonas."
+"Šis šablonas gali būti priskirtas vartotojams greitam jo teisių rinkinio "
+"taikymui. Čia atlikti pakeitimai paveiks visus vartotojus, kuriems "
+"priskirtas šis šablonas.taikymui. Čia atlikti keitimai paveiks visus "
+"naudotojus, kuriems priskirtas šis šablonas."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
@@ -14054,125 +14058,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
-
-#~ msgid "WHOIS lookup functionality is disabled."
-#~ msgstr "WHOIS paieškos funkcija išjungta."
-
-#~ msgid "RDAP lookup functionality is disabled."
-#~ msgstr "RDAP paieškos funkcija išjungta."
-
-#~ msgid "Slave"
-#~ msgstr "Pavaldusis"
-
-#~ msgid "Lookup domain WHOIS information"
-#~ msgstr "Ieškoti domeno WHOIS informacijos"
-
-#~ msgid "Lookup domain RDAP information"
-#~ msgstr "Ieškoti domeno RDAP informacijos"
-
-#~ msgid "Record Wizard"
-#~ msgstr "Įrašo vedlys"
-
-#~ msgid "Please enter a domain name to perform an RDAP lookup."
-#~ msgstr "Įveskite domeno vardą RDAP paieškai atlikti."
-
-#~ msgid "Toggle all"
-#~ msgstr "Perjungti visus"
-
-#~ msgid ""
-#~ "No configuration file found. Please use the <a href=\"install/"
-#~ "\">installer</a> to create one, or create a config/settings.php file "
-#~ "manually."
-#~ msgstr ""
-#~ "Konfigūracijos failas nerastas. Naudokitės <a href=\"install/\">diegimo "
-#~ "programa</a> jo sukūrimui arba sukurkite config/settings.php failą "
-#~ "rankiniu būdu."
-
-#~ msgid "Invalid authentication provider"
-#~ msgstr "Neteisingas autentifikacijos tiekėjas"
-
-#~ msgid "Failed to sign zone. Check PowerDNS logs for details."
-#~ msgstr ""
-#~ "Nepavyko pasirašyti zonos. Patikrinkite PowerDNS žurnalus dėl išsamesnės "
-#~ "informacijos."
-
-#~ msgid "Zone was created, but securing it with DNSSEC failed."
-#~ msgstr "Zona sukurta, bet jos apsauga su DNSSEC nepavyko."
-
-#~ msgid "Failed to delete DNSSEC key."
-#~ msgstr "Nepavyko ištrinti DNSSEC rakto."
-
-#, php-format
-#~ msgid ""
-#~ "Duplicate %s mechanism found. Each mechanism type should appear at most "
-#~ "once."
-#~ msgstr ""
-#~ "Rastas dubliuojamas %s mechanizmas. Kiekvienas mechanizmo tipas turėtų "
-#~ "pasirodyti daugiausiai vieną kartą."
-
-#~ msgid "IPv6 address should use lowercase for hexadecimal digits."
-#~ msgstr ""
-#~ "IPv6 adresas turėtų naudoti mažąsias raides šešioliktainiams skaičiams."
-
-#, php-format
-#~ msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-#~ msgstr ""
-#~ "IPv6 adresas nėra kanoniškoje formoje (RFC 5952). Kanoniška forma: %s"
-
-#, php-format
-#~ msgid ""
-#~ "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-#~ msgstr ""
-#~ "IP adresas \"%s\" neteisingas. Turi būti teisingas IPv4 arba IPv6 adresas."
-
-#~ msgid "HTML tags are not allowed in content field."
-#~ msgstr "HTML žymės neleidžiamos turinio lauke."
-
-#~ msgid ""
-#~ "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-#~ "less. For longer content, split into multiple quoted strings separated by "
-#~ "spaces."
-#~ msgstr ""
-#~ "TXT įrašo eilutė viršija 255 baitus. TXT eilutės turi būti 255 baitų ar "
-#~ "mažiau. Ilgesniam turiniui padalinkite į kelias kabutėse esančias "
-#~ "eilutes, atskirtas tarpais."
-
-#~ msgid ""
-#~ "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-#~ "not both."
-#~ msgstr ""
-#~ "NAPTR įrašas turi turėti arba regexp, arba pakeitimą (su \".\"), bet ne "
-#~ "abu."
-
-#~ msgid ""
-#~ "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-#~ "protocol and rs start with a letter and contain only alphanumeric "
-#~ "characters (max 32 chars each)."
-#~ msgstr ""
-#~ "NAPTR paslauga turi sekti formatą: [protokolas][+rs][+rs]... kur "
-#~ "protokolas ir rs prasideda raide ir turi tik raidinio skaitmeninius "
-#~ "simbolius (maks 32 simboliai kiekvienam)."
-
-#~ msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-#~ msgstr ""
-#~ "Nustatykite standartinius įrašus, tokius kaip MX, TXT SPF ir CNAME www"
-
-#~ msgid ""
-#~ "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-#~ "[SERIAL] in record content"
-#~ msgstr ""
-#~ "Naudokite vietrženklius, tokius kaip [ZONE], [DOMAIN], [TLD], [NS1], "
-#~ "[HOSTMASTER] ir [SERIAL] įrašų turinyje"
-
-#~ msgid ""
-#~ "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-#~ "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-#~ msgstr ""
-#~ "[DOMAIN] ir [TLD] vietrženkiai naudingi Microsoft 365 MX įrašams (pvz., "
-#~ "[DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-#~ msgid "LDAP users cannot have passwords managed through this interface"
-#~ msgstr "LDAP naudotojų slaptažodžiai negali būti valdomi per šią sąsają"
-
-#~ msgid "Select All Filtered"
-#~ msgstr "Pasirinkti visus filtruotus"

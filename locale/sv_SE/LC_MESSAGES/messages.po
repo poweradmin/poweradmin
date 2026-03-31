@@ -12417,7 +12417,8 @@ msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
 msgstr ""
-"Grupper låter dig organisera användare och hantera zonåtkomst gemensamt. Medlemmar ärver gruppens behörigheter för alla zoner som ägs av gruppen."
+"Grupper låter dig organisera användare och hantera zonåtkomst gemensamt. "
+"Medlemmar ärver gruppens behörigheter för alla zoner som ägs av gruppen."
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
@@ -12428,8 +12429,9 @@ msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
 msgstr ""
-"Efter att ha skapat gruppen kan du lägga till medlemmar och tilldela zoner till den. Alla medlemmar får automatiskt åtkomst till gruppens zoner."
-"till den."
+"Efter att ha skapat gruppen kan du lägga till medlemmar och tilldela zoner "
+"till den. Alla medlemmar får automatiskt åtkomst till gruppens zoner.till "
+"den."
 
 #: templates/modern/list_perm_templ.html:45
 msgid "User"
@@ -12529,9 +12531,11 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"Denna mall kan tilldelas till användare för att snabbt tillämpa dess uppsättning behörigheter. Ändringar som görs här kommer att påverka alla användare som har denna mall tilldelad."
-"dess uppsättning behörigheter. Ändringar som görs här kommer att påverka "
-"alla användare och grupper som har denna mall tilldelad."
+"Denna mall kan tilldelas till användare för att snabbt tillämpa dess "
+"uppsättning behörigheter. Ändringar som görs här kommer att påverka alla "
+"användare som har denna mall tilldelad.dess uppsättning behörigheter. "
+"Ändringar som görs här kommer att påverka alla användare och grupper som har "
+"denna mall tilldelad."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
@@ -13338,27 +13342,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan inte ansluta till PowerDNS-databasen \"%s\": %s"
-
-#~ msgid "WHOIS lookup functionality is disabled."
-#~ msgstr "WHOIS-sökfunktionen är inaktiverad."
-
-#~ msgid "RDAP lookup functionality is disabled."
-#~ msgstr "RDAP-sökfunktionen är inaktiverad."
-
-#~ msgid "Slave"
-#~ msgstr "Kunde inte inaktivera automatisk säkerhetskopiering"
-
-#~ msgid "Lookup domain WHOIS information"
-#~ msgstr "Konfigurationsökväg"
-
-#~ msgid "Lookup domain RDAP information"
-#~ msgstr "Cachesökväg"
-
-#~ msgid "Record Wizard"
-#~ msgstr "Postguide"
-
-#~ msgid "Please enter a domain name to perform an RDAP lookup."
-#~ msgstr "Vänligen ange ett domännamn för att utföra en RDAP-sökning."
-
-#~ msgid "Toggle all"
-#~ msgstr "Växla alla"

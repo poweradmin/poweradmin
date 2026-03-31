@@ -7045,8 +7045,7 @@ msgstr "La priorità SVCB deve essere compresa tra 0 e 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
-msgstr "La destinazione SVCB deve essere \".\" o un nome host valido."
-"valido."
+msgstr "La destinazione SVCB deve essere \".\" o un nome host valido.valido."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
@@ -7061,8 +7060,8 @@ msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
 msgstr ""
-"In Service Mode (priorità > 0) con destinazione \".\", è richiesto almeno un SvcParam."
-"un SvcParam."
+"In Service Mode (priorità > 0) con destinazione \".\", è richiesto almeno un "
+"SvcParam.un SvcParam."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
@@ -13327,8 +13326,9 @@ msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
 msgstr ""
-"I gruppi consentono di organizzare gli utenti e gestire l'accesso alle zone collettivamente. I membri ereditano i permessi del gruppo per tutte le zone possedute dal gruppo."
-"questo gruppo"
+"I gruppi consentono di organizzare gli utenti e gestire l'accesso alle zone "
+"collettivamente. I membri ereditano i permessi del gruppo per tutte le zone "
+"possedute dal gruppo.questo gruppo"
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
@@ -13339,7 +13339,9 @@ msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
 msgstr ""
-"Dopo aver creato il gruppo, è possibile aggiungere membri e assegnargli zone. Tutti i membri otterranno automaticamente l'accesso alle zone del gruppo."
+"Dopo aver creato il gruppo, è possibile aggiungere membri e assegnargli "
+"zone. Tutti i membri otterranno automaticamente l'accesso alle zone del "
+"gruppo."
 
 #: templates/modern/list_perm_templ.html:45
 msgid "User"
@@ -13439,9 +13441,11 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"Questo modello può essere assegnato agli utenti per applicare rapidamente il suo insieme di permessi. Le modifiche apportate qui influenzeranno tutti gli utenti a cui è assegnato questo modello."
-"il suo set di permessi. Le modifiche fatte qui influenzeranno tutti gli "
-"utenti che hanno questo template assegnato."
+"Questo modello può essere assegnato agli utenti per applicare rapidamente il "
+"suo insieme di permessi. Le modifiche apportate qui influenzeranno tutti gli "
+"utenti a cui è assegnato questo modello.il suo set di permessi. Le modifiche "
+"fatte qui influenzeranno tutti gli utenti che hanno questo template "
+"assegnato."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
@@ -14260,127 +14264,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Impossibile connettersi al database PowerDNS \"%s\": %s"
-
-#~ msgid "WHOIS lookup functionality is disabled."
-#~ msgstr "La funzionalità di ricerca WHOIS è disabilitata."
-
-#~ msgid "RDAP lookup functionality is disabled."
-#~ msgstr "La funzionalità di ricerca RDAP è disabilitata."
-
-#~ msgid "Slave"
-#~ msgstr "Secondario"
-
-#~ msgid "Lookup domain WHOIS information"
-#~ msgstr "Ricerca informazioni WHOIS del dominio"
-
-#~ msgid "Lookup domain RDAP information"
-#~ msgstr "Ricerca informazioni RDAP del dominio"
-
-#~ msgid "Record Wizard"
-#~ msgstr "Procedura guidata record"
-
-#~ msgid "Please enter a domain name to perform an RDAP lookup."
-#~ msgstr "Inserisci un nome di dominio per eseguire una ricerca RDAP."
-
-#~ msgid "Toggle all"
-#~ msgstr "Seleziona tutto"
-
-#~ msgid ""
-#~ "No configuration file found. Please use the <a href=\"install/"
-#~ "\">installer</a> to create one, or create a config/settings.php file "
-#~ "manually."
-#~ msgstr ""
-#~ "Nessun file di configurazione trovato. Utilizzare l'<a href=\"install/"
-#~ "\">installer</a> per crearne uno, o creare manualmente un file config/"
-#~ "settings.php."
-
-#~ msgid "Invalid authentication provider"
-#~ msgstr "Provider di autenticazione non valido"
-
-#~ msgid "Failed to sign zone. Check PowerDNS logs for details."
-#~ msgstr ""
-#~ "Impossibile firmare la zona. Controllare i log di PowerDNS per i dettagli."
-
-#~ msgid "Zone was created, but securing it with DNSSEC failed."
-#~ msgstr "La zona è stata creata, ma la protezione con DNSSEC è fallita."
-
-#~ msgid "Failed to delete DNSSEC key."
-#~ msgstr "Impossibile eliminare la chiave DNSSEC."
-
-#, php-format
-#~ msgid ""
-#~ "Duplicate %s mechanism found. Each mechanism type should appear at most "
-#~ "once."
-#~ msgstr ""
-#~ "Trovato meccanismo %s duplicato. Ogni tipo di meccanismo deve apparire al "
-#~ "massimo una volta."
-
-#~ msgid "IPv6 address should use lowercase for hexadecimal digits."
-#~ msgstr ""
-#~ "L'indirizzo IPv6 dovrebbe usare caratteri minuscoli per le cifre "
-#~ "esadecimali."
-
-#, php-format
-#~ msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-#~ msgstr ""
-#~ "L'indirizzo IPv6 non è in forma canonica (RFC 5952). Forma canonica: %s"
-
-#, php-format
-#~ msgid ""
-#~ "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-#~ msgstr ""
-#~ "L'indirizzo IP \"%s\" non è valido. Deve essere un indirizzo IPv4 o IPv6 "
-#~ "valido."
-
-#~ msgid "HTML tags are not allowed in content field."
-#~ msgstr "I tag HTML non sono consentiti nel campo contenuto."
-
-#~ msgid ""
-#~ "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-#~ "less. For longer content, split into multiple quoted strings separated by "
-#~ "spaces."
-#~ msgstr ""
-#~ "La stringa del record TXT supera 255 byte. Le stringhe TXT devono essere "
-#~ "di 255 byte o meno. Per contenuti più lunghi, dividi in più stringhe "
-#~ "quotate separate da spazi."
-
-#~ msgid ""
-#~ "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-#~ "not both."
-#~ msgstr ""
-#~ "Il record NAPTR deve avere o un regexp o una sostituzione (con \".\"), ma "
-#~ "non entrambi."
-
-#~ msgid ""
-#~ "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-#~ "protocol and rs start with a letter and contain only alphanumeric "
-#~ "characters (max 32 chars each)."
-#~ msgstr ""
-#~ "Il servizio NAPTR deve seguire il formato: [protocollo][+rs][+rs]... dove "
-#~ "protocollo e rs iniziano con una lettera e contengono solo caratteri "
-#~ "alfanumerici (max 32 caratteri ciascuno)."
-
-#~ msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-#~ msgstr "Configura record standard come MX, TXT per SPF e CNAME per www"
-
-#~ msgid ""
-#~ "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-#~ "[SERIAL] in record content"
-#~ msgstr ""
-#~ "Usa segnaposto come [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER] e "
-#~ "[SERIAL] nel contenuto dei record"
-
-#~ msgid ""
-#~ "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-#~ "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-#~ msgstr ""
-#~ "I segnaposto [DOMAIN] e [TLD] sono utili per i record MX di Microsoft 365 "
-#~ "(es. [DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-#~ msgid "LDAP users cannot have passwords managed through this interface"
-#~ msgstr ""
-#~ "Gli utenti LDAP non possono avere le password gestite attraverso questa "
-#~ "interfaccia"
-
-#~ msgid "Select All Filtered"
-#~ msgstr "Seleziona Tutti i Filtrati"

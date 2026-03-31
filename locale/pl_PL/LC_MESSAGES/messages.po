@@ -6981,8 +6981,8 @@ msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
 msgstr ""
-"W trybie usługi (priorytet > 0) z celem \".\" wymagany jest co najmniej jeden SvcParam."
-"jeden SvcParam."
+"W trybie usługi (priorytet > 0) z celem \".\" wymagany jest co najmniej "
+"jeden SvcParam.jeden SvcParam."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
@@ -13211,8 +13211,9 @@ msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
 msgstr ""
-"Grupy pozwalają organizować użytkowników i zarządzać dostępem do stref zbiorowo. Członkowie dziedziczą uprawnienia grupy do wszystkich stref należących do grupy."
-"własnością tej grupy"
+"Grupy pozwalają organizować użytkowników i zarządzać dostępem do stref "
+"zbiorowo. Członkowie dziedziczą uprawnienia grupy do wszystkich stref "
+"należących do grupy.własnością tej grupy"
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
@@ -13223,7 +13224,8 @@ msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
 msgstr ""
-"Po utworzeniu grupy możesz dodać do niej członków i przypisać strefy. Wszyscy członkowie automatycznie uzyskają dostęp do stref grupy."
+"Po utworzeniu grupy możesz dodać do niej członków i przypisać strefy. "
+"Wszyscy członkowie automatycznie uzyskają dostęp do stref grupy."
 
 #: templates/modern/list_perm_templ.html:45
 msgid "User"
@@ -13323,9 +13325,11 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"Ten szablon może zostać przypisany do użytkowników, aby szybko zastosować jego zestaw uprawnień. Zmiany wprowadzone tutaj wpłyną na wszystkich użytkowników, którzy mają przypisany ten szablon."
+"Ten szablon może zostać przypisany do użytkowników, aby szybko zastosować "
 "jego zestaw uprawnień. Zmiany wprowadzone tutaj wpłyną na wszystkich "
-"użytkowników, którzy mają przypisany ten szablon."
+"użytkowników, którzy mają przypisany ten szablon.jego zestaw uprawnień. "
+"Zmiany wprowadzone tutaj wpłyną na wszystkich użytkowników, którzy mają "
+"przypisany ten szablon."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
@@ -14140,128 +14144,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nie można połączyć się z bazą danych PowerDNS \"%s\": %s"
-
-#~ msgid "WHOIS lookup functionality is disabled."
-#~ msgstr "Funkcjonalność wyszukiwania WHOIS jest wyłączona."
-
-#~ msgid "RDAP lookup functionality is disabled."
-#~ msgstr "Funkcjonalność wyszukiwania RDAP jest wyłączona."
-
-#~ msgid "Slave"
-#~ msgstr "Podrzędny"
-
-#~ msgid "Lookup domain WHOIS information"
-#~ msgstr "Wyszukaj informacje WHOIS domeny"
-
-#~ msgid "Lookup domain RDAP information"
-#~ msgstr "Wyszukaj informacje RDAP domeny"
-
-#~ msgid "Record Wizard"
-#~ msgstr "Kreator rekordów"
-
-#~ msgid "Please enter a domain name to perform an RDAP lookup."
-#~ msgstr "Wprowadź nazwę domeny, aby wykonać wyszukiwanie RDAP."
-
-#~ msgid "Toggle all"
-#~ msgstr "Przełącz wszystkie"
-
-#~ msgid ""
-#~ "No configuration file found. Please use the <a href=\"install/"
-#~ "\">installer</a> to create one, or create a config/settings.php file "
-#~ "manually."
-#~ msgstr ""
-#~ "Nie znaleziono pliku konfiguracyjnego. Użyj <a href=\"install/"
-#~ "\">instalatora</a> aby go utworzyć, lub utwórz plik config/settings.php "
-#~ "ręcznie."
-
-#~ msgid "Invalid authentication provider"
-#~ msgstr "Nieprawidłowy dostawca uwierzytelniania"
-
-#~ msgid "Failed to sign zone. Check PowerDNS logs for details."
-#~ msgstr ""
-#~ "Nie udało się podpisać strefy. Sprawdź logi PowerDNS, aby uzyskać "
-#~ "szczegóły."
-
-#~ msgid "Zone was created, but securing it with DNSSEC failed."
-#~ msgstr ""
-#~ "Strefa została utworzona, ale zabezpieczenie jej za pomocą DNSSEC nie "
-#~ "powiodło się."
-
-#~ msgid "Failed to delete DNSSEC key."
-#~ msgstr "Nie udało się usunąć klucza DNSSEC."
-
-#, php-format
-#~ msgid ""
-#~ "Duplicate %s mechanism found. Each mechanism type should appear at most "
-#~ "once."
-#~ msgstr ""
-#~ "Znaleziono zduplikowany mechanizm %s. Każdy typ mechanizmu powinien "
-#~ "wystąpić co najwyżej raz."
-
-#~ msgid "IPv6 address should use lowercase for hexadecimal digits."
-#~ msgstr "Adres IPv6 powinien używać małych liter dla cyfr szesnastkowych."
-
-#, php-format
-#~ msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-#~ msgstr ""
-#~ "Adres IPv6 nie jest w formie kanonicznej (RFC 5952). Forma kanoniczna: %s"
-
-#, php-format
-#~ msgid ""
-#~ "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-#~ msgstr ""
-#~ "Adres IP \"%s\" nie jest prawidłowy. Musi być prawidłowym adresem IPv4 "
-#~ "lub IPv6."
-
-#~ msgid "HTML tags are not allowed in content field."
-#~ msgstr "Tagi HTML nie są dozwolone w polu zawartości."
-
-#~ msgid ""
-#~ "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-#~ "less. For longer content, split into multiple quoted strings separated by "
-#~ "spaces."
-#~ msgstr ""
-#~ "Ciąg rekordu TXT przekracza 255 bajtów. Ciągi TXT muszą mieć 255 bajtów "
-#~ "lub mniej. Dla dłuższej zawartości podziel na wiele ciągów w cudzysłowach "
-#~ "oddzielonych spacjami."
-
-#~ msgid ""
-#~ "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-#~ "not both."
-#~ msgstr ""
-#~ "Rekord NAPTR musi mieć albo wyrażenie regularne albo zamiennik (z \".\"), "
-#~ "ale nie oba."
-
-#~ msgid ""
-#~ "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-#~ "protocol and rs start with a letter and contain only alphanumeric "
-#~ "characters (max 32 chars each)."
-#~ msgstr ""
-#~ "Usługa NAPTR musi być zgodna z formatem: [protokół][+rs][+rs]... gdzie "
-#~ "protokół i rs zaczynają się od litery i zawierają tylko znaki "
-#~ "alfanumeryczne (maks. 32 znaki każdy)."
-
-#~ msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-#~ msgstr ""
-#~ "Skonfiguruj standardowe rekordy takie jak MX, TXT dla SPF i CNAME dla www"
-
-#~ msgid ""
-#~ "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-#~ "[SERIAL] in record content"
-#~ msgstr ""
-#~ "Używaj symboli zastępczych takich jak [ZONE], [DOMAIN], [TLD], [NS1], "
-#~ "[HOSTMASTER] i [SERIAL] w treści rekordów"
-
-#~ msgid ""
-#~ "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-#~ "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-#~ msgstr ""
-#~ "Symbole zastępcze [DOMAIN] i [TLD] są przydatne dla rekordów MX Microsoft "
-#~ "365 (np. [DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-#~ msgid "LDAP users cannot have passwords managed through this interface"
-#~ msgstr ""
-#~ "Użytkownicy LDAP nie mogą mieć haseł zarządzanych przez ten interfejs"
-
-#~ msgid "Select All Filtered"
-#~ msgstr "Zaznacz wszystkie przefiltrowane"

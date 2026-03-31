@@ -6987,8 +6987,8 @@ msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
 msgstr ""
-"In Service Mode (prioriteit > 0) met \".\" als doel is minstens een SvcParam vereist."
-"vereist."
+"In Service Mode (prioriteit > 0) met \".\" als doel is minstens een SvcParam "
+"vereist.vereist."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
@@ -13235,8 +13235,9 @@ msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
 msgstr ""
-"Met groepen kunt u gebruikers organiseren en zonetoegang collectief beheren. Leden erven de machtigingen van de groep voor alle zones die eigendom zijn van de groep."
-"deze groep"
+"Met groepen kunt u gebruikers organiseren en zonetoegang collectief beheren. "
+"Leden erven de machtigingen van de groep voor alle zones die eigendom zijn "
+"van de groep.deze groep"
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
@@ -13247,7 +13248,8 @@ msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
 msgstr ""
-"Na het aanmaken van de groep kunt u leden toevoegen en zones eraan toewijzen. Alle leden krijgen automatisch toegang tot de zones van de groep."
+"Na het aanmaken van de groep kunt u leden toevoegen en zones eraan "
+"toewijzen. Alle leden krijgen automatisch toegang tot de zones van de groep."
 
 #: templates/modern/list_perm_templ.html:45
 msgid "User"
@@ -13348,9 +13350,11 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"Dit sjabloon kan aan gebruikers worden toegewezen om snel de bijbehorende machtigingen toe te passen. Wijzigingen die hier worden aangebracht, zijn van invloed op alle gebruikers aan wie dit sjabloon is toegewezen."
-"machtigingen toe te passen. Wijzigingen hier beïnvloeden alle gebruikers die "
-"dit sjabloon hebben toegewezen."
+"Dit sjabloon kan aan gebruikers worden toegewezen om snel de bijbehorende "
+"machtigingen toe te passen. Wijzigingen die hier worden aangebracht, zijn "
+"van invloed op alle gebruikers aan wie dit sjabloon is "
+"toegewezen.machtigingen toe te passen. Wijzigingen hier beïnvloeden alle "
+"gebruikers die dit sjabloon hebben toegewezen."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
@@ -14168,121 +14172,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan geen verbinding maken met PowerDNS-database \"%s\": %s"
-
-#~ msgid "WHOIS lookup functionality is disabled."
-#~ msgstr "WHOIS-opzoekfunctionaliteit is uitgeschakeld."
-
-#~ msgid "RDAP lookup functionality is disabled."
-#~ msgstr "RDAP-opzoekfunctionaliteit is uitgeschakeld."
-
-#~ msgid "Slave"
-#~ msgstr "Slave"
-
-#~ msgid "Lookup domain WHOIS information"
-#~ msgstr "Domein WHOIS informatie opzoeken"
-
-#~ msgid "Lookup domain RDAP information"
-#~ msgstr "Domein RDAP informatie opzoeken"
-
-#~ msgid "Record Wizard"
-#~ msgstr "Recordwizard"
-
-#~ msgid "Please enter a domain name to perform an RDAP lookup."
-#~ msgstr "Voer een domeinnaam in om een RDAP opzoeking uit te voeren."
-
-#~ msgid "Toggle all"
-#~ msgstr "Alles omschakelen"
-
-#~ msgid ""
-#~ "No configuration file found. Please use the <a href=\"install/"
-#~ "\">installer</a> to create one, or create a config/settings.php file "
-#~ "manually."
-#~ msgstr ""
-#~ "Geen configuratiebestand gevonden. Gebruik de <a href=\"install/"
-#~ "\">installer</a> om er een te maken, of maak handmatig een config/"
-#~ "settings.php bestand aan."
-
-#~ msgid "Invalid authentication provider"
-#~ msgstr "Ongeldige authenticatieprovider"
-
-#~ msgid "Failed to sign zone. Check PowerDNS logs for details."
-#~ msgstr "Kan zone niet ondertekenen. Controleer PowerDNS-logs voor details."
-
-#~ msgid "Zone was created, but securing it with DNSSEC failed."
-#~ msgstr "Zone is aangemaakt, maar beveiligen met DNSSEC is mislukt."
-
-#~ msgid "Failed to delete DNSSEC key."
-#~ msgstr "Kan DNSSEC-sleutel niet verwijderen."
-
-#, php-format
-#~ msgid ""
-#~ "Duplicate %s mechanism found. Each mechanism type should appear at most "
-#~ "once."
-#~ msgstr ""
-#~ "Dubbel %s mechanisme gevonden. Elk mechanisme type mag hoogstens één keer "
-#~ "voorkomen."
-
-#~ msgid "IPv6 address should use lowercase for hexadecimal digits."
-#~ msgstr "IPv6 adres moet kleine letters gebruiken voor hexadecimale cijfers."
-
-#, php-format
-#~ msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-#~ msgstr "IPv6 adres is niet in canonieke vorm (RFC 5952). Canonieke vorm: %s"
-
-#, php-format
-#~ msgid ""
-#~ "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-#~ msgstr ""
-#~ "IP adres \"%s\" is niet geldig. Moet een geldig IPv4 of IPv6 adres zijn."
-
-#~ msgid "HTML tags are not allowed in content field."
-#~ msgstr "HTML tags zijn niet toegestaan in het inhoudsveld."
-
-#~ msgid ""
-#~ "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-#~ "less. For longer content, split into multiple quoted strings separated by "
-#~ "spaces."
-#~ msgstr ""
-#~ "TXT record string overschrijdt 255 bytes. TXT strings moeten 255 bytes of "
-#~ "minder zijn. Voor langere inhoud, verdeel in meerdere quoted strings "
-#~ "gescheiden door spaties."
-
-#~ msgid ""
-#~ "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-#~ "not both."
-#~ msgstr ""
-#~ "NAPTR record moet ofwel een regexp of een replacement (met \".\") hebben, "
-#~ "maar niet beide."
-
-#~ msgid ""
-#~ "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-#~ "protocol and rs start with a letter and contain only alphanumeric "
-#~ "characters (max 32 chars each)."
-#~ msgstr ""
-#~ "NAPTR service moet het formaat volgen: [protocol][+rs][+rs]... waarbij "
-#~ "protocol en rs beginnen met een letter en alleen alfanumerieke karakters "
-#~ "bevatten (max 32 tekens elk)."
-
-#~ msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-#~ msgstr "Stel standaard records in zoals MX, TXT voor SPF, en CNAME voor www"
-
-#~ msgid ""
-#~ "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-#~ "[SERIAL] in record content"
-#~ msgstr ""
-#~ "Gebruik placeholders zoals [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], "
-#~ "en [SERIAL] in record inhoud"
-
-#~ msgid ""
-#~ "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-#~ "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-#~ msgstr ""
-#~ "[DOMAIN] en [TLD] placeholders zijn nuttig voor Microsoft 365 MX records "
-#~ "(bijv. [DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-#~ msgid "LDAP users cannot have passwords managed through this interface"
-#~ msgstr ""
-#~ "LDAP gebruikers kunnen geen wachtwoorden beheerd hebben via deze interface"
-
-#~ msgid "Select All Filtered"
-#~ msgstr "Selecteer Alle Gefilterde"

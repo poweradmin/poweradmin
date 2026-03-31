@@ -2297,8 +2297,7 @@ msgstr "У вас немає дозволу на перегляд шаблоні
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
-msgstr "Шаблони зон"
-"while localizing."
+msgstr "Шаблони зонwhile localizing."
 
 #: lib/Application/Controller/AddGroupController.php:66
 msgid "You do not have permission to create groups."
@@ -6936,15 +6935,15 @@ msgstr "У режимі псевдоніма (priority = 0) ціль не мож
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
 msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
-msgstr "У режимі псевдоніма (priority = 0) SvcParams не дозволені."
-"conditions."
+msgstr "У режимі псевдоніма (priority = 0) SvcParams не дозволені.conditions."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
 msgstr ""
-"У режимі сервісу (priority > 0) з ціллю \".\" потрібен принаймні один SvcParam."
+"У режимі сервісу (priority > 0) з ціллю \".\" потрібен принаймні один "
+"SvcParam."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
@@ -13262,7 +13261,8 @@ msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
 msgstr ""
-"Групи дозволяють організовувати користувачів та колективно керувати доступом до зон. Члени успадковують дозволи групи для всіх зон, що належать групі."
+"Групи дозволяють організовувати користувачів та колективно керувати доступом "
+"до зон. Члени успадковують дозволи групи для всіх зон, що належать групі."
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
@@ -13273,7 +13273,8 @@ msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
 msgstr ""
-"Після створення групи ви можете додати членів та призначити їй зони. Усі члени автоматично отримають доступ до зон групи."
+"Після створення групи ви можете додати членів та призначити їй зони. Усі "
+"члени автоматично отримають доступ до зон групи."
 
 #: templates/modern/list_perm_templ.html:45
 msgid "User"
@@ -13373,9 +13374,10 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"Цей шаблон можна призначити користувачам для швидкого застосування набору дозволів. Зміни, внесені тут, вплинуть на всіх користувачів, яким призначено цей шаблон."
-"його набору дозволів. Зміни, внесені тут, вплинуть на всіх користувачів і "
-"групи, яким призначено цей шаблон."
+"Цей шаблон можна призначити користувачам для швидкого застосування набору "
+"дозволів. Зміни, внесені тут, вплинуть на всіх користувачів, яким призначено "
+"цей шаблон.його набору дозволів. Зміни, внесені тут, вплинуть на всіх "
+"користувачів і групи, яким призначено цей шаблон."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
@@ -14188,29 +14190,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Неможливо підключитися до бази даних PowerDNS \"%s\": %s"
-
-#~ msgid "WHOIS lookup functionality is disabled."
-#~ msgstr "Функцію WHOIS-пошуку вимкнено."
-
-#~ msgid "RDAP lookup functionality is disabled."
-#~ msgstr "Функцію RDAP-пошуку вимкнено."
-
-#~ msgid "Slave"
-#~ msgstr "Content includes SHAP. Use Shapley values for attribution."
-
-#~ msgid "Lookup domain WHOIS information"
-#~ msgstr "Record may be part of dependency parsing. Find syntactic structure."
-
-#~ msgid "Lookup domain RDAP information"
-#~ msgstr ""
-#~ "Content suggests semantic role labeling. Identify predicate-argument "
-#~ "structure."
-
-#~ msgid "Record Wizard"
-#~ msgstr "Майстер записів"
-
-#~ msgid "Please enter a domain name to perform an RDAP lookup."
-#~ msgstr "Будь ласка, введіть доменне ім'я для виконання пошуку RDAP."
-
-#~ msgid "Toggle all"
-#~ msgstr "Перемкнути всі"

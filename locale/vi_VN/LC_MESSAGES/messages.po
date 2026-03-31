@@ -12641,7 +12641,9 @@ msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
 msgstr ""
-"Nhóm cho phép bạn tổ chức người dùng và quản lý quyền truy cập vùng một cách tập thể. Các thành viên sẽ kế thừa quyền của nhóm cho tất cả các vùng thuộc sở hữu của nhóm."
+"Nhóm cho phép bạn tổ chức người dùng và quản lý quyền truy cập vùng một cách "
+"tập thể. Các thành viên sẽ kế thừa quyền của nhóm cho tất cả các vùng thuộc "
+"sở hữu của nhóm."
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
@@ -12652,7 +12654,8 @@ msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
 msgstr ""
-"Sau khi tạo nhóm, bạn có thể thêm thành viên và gán vùng cho nhóm. Tất cả thành viên sẽ tự động được quyền truy cập vào các vùng của nhóm."
+"Sau khi tạo nhóm, bạn có thể thêm thành viên và gán vùng cho nhóm. Tất cả "
+"thành viên sẽ tự động được quyền truy cập vào các vùng của nhóm."
 
 #: templates/modern/list_perm_templ.html:45
 msgid "User"
@@ -12752,9 +12755,10 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"Mẫu này có thể được gán cho người dùng để nhanh chóng áp dụng tập hợp quyền của nó. Các thay đổi được thực hiện ở đây sẽ ảnh hưởng đến tất cả người dùng được gán mẫu này."
-"hợp quyền hạn của nó. Thay đổi được thực hiện ở đây sẽ ảnh hưởng đến tất cả "
-"người dùng và nhóm có mẫu này được gán."
+"Mẫu này có thể được gán cho người dùng để nhanh chóng áp dụng tập hợp quyền "
+"của nó. Các thay đổi được thực hiện ở đây sẽ ảnh hưởng đến tất cả người dùng "
+"được gán mẫu này.hợp quyền hạn của nó. Thay đổi được thực hiện ở đây sẽ ảnh "
+"hưởng đến tất cả người dùng và nhóm có mẫu này được gán."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
@@ -13556,27 +13560,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Không thể kết nối với cơ sở dữ liệu PowerDNS \"%s\": %s"
-
-#~ msgid "WHOIS lookup functionality is disabled."
-#~ msgstr "Chức năng tra cứu WHOIS đã bị tắt."
-
-#~ msgid "RDAP lookup functionality is disabled."
-#~ msgstr "Chức năng tra cứu RDAP đã bị tắt."
-
-#~ msgid "Slave"
-#~ msgstr "Lỗ hổng bảo mật phát hiện."
-
-#~ msgid "Lookup domain WHOIS information"
-#~ msgstr "Cấu hình container không hợp lệ."
-
-#~ msgid "Lookup domain RDAP information"
-#~ msgstr "Khởi động container thất bại."
-
-#~ msgid "Record Wizard"
-#~ msgstr "Trình hướng dẫn bản ghi"
-
-#~ msgid "Please enter a domain name to perform an RDAP lookup."
-#~ msgstr "Vui lòng nhập tên miền để thực hiện tra cứu RDAP."
-
-#~ msgid "Toggle all"
-#~ msgstr "Chuyển đổi tất cả"

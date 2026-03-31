@@ -13101,7 +13101,9 @@ msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
 msgstr ""
-"Gruplar, kullanıcıları organize etmenize ve bölge erişimini toplu olarak yönetmenize olanak tanır. Üyeler, gruba ait tüm bölgeler için grubun yetkilerini devralır."
+"Gruplar, kullanıcıları organize etmenize ve bölge erişimini toplu olarak "
+"yönetmenize olanak tanır. Üyeler, gruba ait tüm bölgeler için grubun "
+"yetkilerini devralır."
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
@@ -13112,7 +13114,8 @@ msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
 msgstr ""
-"Grubu oluşturduktan sonra üye ekleyebilir ve bölgeler atayabilirsiniz. Tüm üyeler otomatik olarak grubun bölgelerine erişim kazanacaktır."
+"Grubu oluşturduktan sonra üye ekleyebilir ve bölgeler atayabilirsiniz. Tüm "
+"üyeler otomatik olarak grubun bölgelerine erişim kazanacaktır."
 
 #: templates/modern/list_perm_templ.html:45
 msgid "User"
@@ -13212,9 +13215,10 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"Bu şablon, yetki setini hızlıca uygulamak için kullanıcılara atanabilir. Burada yapılan değişiklikler bu şablonun atandığı tüm kullanıcıları etkileyecektir."
+"Bu şablon, yetki setini hızlıca uygulamak için kullanıcılara atanabilir. "
 "Burada yapılan değişiklikler bu şablonun atandığı tüm kullanıcıları "
-"etkileyecektir."
+"etkileyecektir.Burada yapılan değişiklikler bu şablonun atandığı tüm "
+"kullanıcıları etkileyecektir."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
@@ -14029,27 +14033,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS veritabanına bağlanılamıyor \"%s\": %s"
-
-#~ msgid "WHOIS lookup functionality is disabled."
-#~ msgstr "WHOIS sorgulama özelliği kapalı."
-
-#~ msgid "RDAP lookup functionality is disabled."
-#~ msgstr "RDAP sorgulama özelliği kapalı."
-
-#~ msgid "Slave"
-#~ msgstr "Bağımlı"
-
-#~ msgid "Lookup domain WHOIS information"
-#~ msgstr "Domain WHOIS bilgilerini ara"
-
-#~ msgid "Lookup domain RDAP information"
-#~ msgstr "Domain RDAP bilgilerini ara"
-
-#~ msgid "Record Wizard"
-#~ msgstr "Kayıt Sihirbazı"
-
-#~ msgid "Please enter a domain name to perform an RDAP lookup."
-#~ msgstr "RDAP sorgusu yapmak için lütfen bir domain adı girin."
-
-#~ msgid "Toggle all"
-#~ msgstr "Tümünü değiştir"

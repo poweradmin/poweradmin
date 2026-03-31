@@ -13029,7 +13029,8 @@ msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
 msgstr ""
-"Grupper lar deg organisere brukere og administrere sonetilgang samlet. Medlemmer arver gruppens tillatelser for alle soner eid av gruppen."
+"Grupper lar deg organisere brukere og administrere sonetilgang samlet. "
+"Medlemmer arver gruppens tillatelser for alle soner eid av gruppen."
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
@@ -13040,8 +13041,8 @@ msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
 msgstr ""
-"Etter opprettelse av gruppen kan du legge til medlemmer og tilordne soner til den. Alle medlemmer vil automatisk få tilgang til gruppens soner."
-"til den."
+"Etter opprettelse av gruppen kan du legge til medlemmer og tilordne soner "
+"til den. Alle medlemmer vil automatisk få tilgang til gruppens soner.til den."
 
 #: templates/modern/list_perm_templ.html:45
 msgid "User"
@@ -13141,8 +13142,10 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"Denne malen kan tildeles brukere for raskt å anvende dens tillatelser. Endringer gjort her vil påvirke alle brukere som har denne malen tildelt."
-"Endringer gjort her vil påvirke alle brukere som har denne malen tildelt."
+"Denne malen kan tildeles brukere for raskt å anvende dens tillatelser. "
+"Endringer gjort her vil påvirke alle brukere som har denne malen "
+"tildelt.Endringer gjort her vil påvirke alle brukere som har denne malen "
+"tildelt."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
@@ -13949,122 +13952,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan ikke koble til PowerDNS-database \"%s\": %s"
-
-#~ msgid "WHOIS lookup functionality is disabled."
-#~ msgstr "WHOIS-oppslag er deaktivert."
-
-#~ msgid "RDAP lookup functionality is disabled."
-#~ msgstr "RDAP oppslag-funksjonalitet er deaktivert."
-
-#~ msgid "Slave"
-#~ msgstr "Slaveserver"
-
-#~ msgid "Lookup domain WHOIS information"
-#~ msgstr "Slå opp domene WHOIS-informasjon"
-
-#~ msgid "Lookup domain RDAP information"
-#~ msgstr "Slå opp domene RDAP-informasjon"
-
-#~ msgid "Record Wizard"
-#~ msgstr "Postveiviser"
-
-#~ msgid "Please enter a domain name to perform an RDAP lookup."
-#~ msgstr "Vennligst oppgi et domenenavn for å utføre et RDAP-oppslag."
-
-#~ msgid "Toggle all"
-#~ msgstr "Bytt alle"
-
-#~ msgid ""
-#~ "No configuration file found. Please use the <a href=\"install/"
-#~ "\">installer</a> to create one, or create a config/settings.php file "
-#~ "manually."
-#~ msgstr ""
-#~ "Ingen konfigurasjonsfil funnet. Vennligst bruk <a href=\"install/"
-#~ "\">installasjonsprogrammet</a> for å opprette en, eller opprett en config/"
-#~ "settings.php fil manuelt."
-
-#~ msgid "Invalid authentication provider"
-#~ msgstr "Ugyldig autentiseringsleverandør"
-
-#~ msgid "Failed to sign zone. Check PowerDNS logs for details."
-#~ msgstr "Kunne ikke signere sone. Sjekk PowerDNS-logger for detaljer."
-
-#~ msgid "Zone was created, but securing it with DNSSEC failed."
-#~ msgstr "Sonen ble opprettet, men sikring med DNSSEC mislyktes."
-
-#~ msgid "Failed to delete DNSSEC key."
-#~ msgstr "Kunne ikke slette DNSSEC-nøkkel."
-
-#, php-format
-#~ msgid ""
-#~ "Duplicate %s mechanism found. Each mechanism type should appear at most "
-#~ "once."
-#~ msgstr ""
-#~ "Duplikat %s mekanisme funnet. Hver mekanisme-type bør kun forekomme "
-#~ "maksimalt én gang."
-
-#~ msgid "IPv6 address should use lowercase for hexadecimal digits."
-#~ msgstr "IPv6-adresse bør bruke små bokstaver for heksadesimale siffer."
-
-#, php-format
-#~ msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-#~ msgstr "IPv6-adressen er ikke i kanonisk form (RFC 5952). Kanonisk form: %s"
-
-#, php-format
-#~ msgid ""
-#~ "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-#~ msgstr ""
-#~ "IP-adresse \"%s\" er ikke gyldig. Må være en gyldig IPv4- eller IPv6-"
-#~ "adresse."
-
-#~ msgid "HTML tags are not allowed in content field."
-#~ msgstr "HTML-tagger er ikke tillatt i innholdsfelt."
-
-#~ msgid ""
-#~ "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-#~ "less. For longer content, split into multiple quoted strings separated by "
-#~ "spaces."
-#~ msgstr ""
-#~ "TXT-poststreng overskrider 255 byte. TXT-strenger må være 255 byte eller "
-#~ "mindre. For lengre innhold, del opp i flere strenger med anførselstegn "
-#~ "separert med mellomrom."
-
-#~ msgid ""
-#~ "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-#~ "not both."
-#~ msgstr ""
-#~ "NAPTR-post må ha enten en regexp eller en erstatning (med \".\"), men "
-#~ "ikke begge deler."
-
-#~ msgid ""
-#~ "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-#~ "protocol and rs start with a letter and contain only alphanumeric "
-#~ "characters (max 32 chars each)."
-#~ msgstr ""
-#~ "NAPTR-tjeneste må følge formatet: [protokoll][+rs][+rs]... hvor protokoll "
-#~ "og rs starter med en bokstav og kun inneholder alfanumeriske tegn (maks "
-#~ "32 tegn hver)."
-
-#~ msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-#~ msgstr "Sett opp standardposter som MX, TXT for SPF og CNAME for www"
-
-#~ msgid ""
-#~ "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-#~ "[SERIAL] in record content"
-#~ msgstr ""
-#~ "Bruk plassholdere som [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER] og "
-#~ "[SERIAL] i postinnhold"
-
-#~ msgid ""
-#~ "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-#~ "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-#~ msgstr ""
-#~ "[DOMAIN] og [TLD] plassholdere er nyttige for Microsoft 365 MX-poster "
-#~ "(f.eks. [DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-#~ msgid "LDAP users cannot have passwords managed through this interface"
-#~ msgstr ""
-#~ "LDAP-brukere kan ikke ha passord administrert gjennom dette grensesnittet"
-
-#~ msgid "Select All Filtered"
-#~ msgstr "Velg alle filtrerte"
