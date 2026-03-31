@@ -28,6 +28,9 @@ use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
+// TODO: The search_group_records feature relies on MySQL-specific sql_mode workarounds (handleSqlMode)
+// and was patched for PostgreSQL/SQLite with MIN() aggregates (#1121). This should be reimplemented
+// with proper cross-database GROUP BY support from scratch.
 class RecordSearch extends BaseSearch
 {
     /**
