@@ -137,4 +137,36 @@ test.describe('Search Record Grouping', () => {
     const bodyText = await page.locator('body').textContent();
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
+
+  /**
+   * Test grouped search returns results without SQL errors (regression test for #1121)
+   *
+   * When search_group_records is enabled, the GROUP BY clause must use aggregate
+   * functions for non-grouped columns to comply with the SQL standard.
+   * PostgreSQL strictly enforces this, unlike MySQL.
+   */
+  test('should return grouped results without SQL errors (#1121)', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto('/search');
+
+    const searchInput = page.locator('input[name="query"], input[name*="search"], input[type="text"]').first();
+    await searchInput.fill('example');
+
+    const recordsCheckbox = page.locator('input[name="records"]');
+    if (await recordsCheckbox.isVisible()) {
+      await recordsCheckbox.check();
+    }
+
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await page.waitForLoadState('networkidle');
+
+    const bodyText = await page.locator('body').textContent();
+    expect(bodyText).not.toMatch(/fatal|exception|error occurred|SQLSTATE/i);
+    expect(bodyText).toContain('Records found');
+
+    const recordsTable = page.locator('table').nth(1);
+    await expect(recordsTable).toBeVisible();
+    const rows = recordsTable.locator('tbody tr');
+    expect(await rows.count()).toBeGreaterThan(0);
+  });
 });
