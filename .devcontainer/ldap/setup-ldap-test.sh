@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 echo "Setting up LDAP test environment..."
 
@@ -9,17 +8,17 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 # Wait for LDAP service to be ready
 echo "Waiting for LDAP service..."
-timeout=30
+timeout=60
 counter=0
 until docker exec ldap ldapsearch -x -H ldap://localhost -b dc=poweradmin,dc=org -D 'cn=admin,dc=poweradmin,dc=org' -w poweradmin >/dev/null 2>&1; do
     sleep 1
     counter=$((counter + 1))
     if [ $counter -ge $timeout ]; then
-        echo "✗ LDAP service failed to start within ${timeout} seconds"
-        exit 1
+        echo "Warning: LDAP service not ready within ${timeout} seconds, skipping LDAP setup"
+        exit 0
     fi
 done
-echo "✓ LDAP service is ready"
+echo "LDAP service is ready"
 
 # Wait for MariaDB service to be ready
 echo "Waiting for MariaDB service..."
@@ -28,19 +27,29 @@ until docker exec mariadb mysqladmin ping -h localhost -uroot -puberuser >/dev/n
     sleep 1
     counter=$((counter + 1))
     if [ $counter -ge $timeout ]; then
-        echo "✗ MariaDB service failed to start within ${timeout} seconds"
-        exit 1
+        echo "Warning: MariaDB service not ready within ${timeout} seconds, skipping database setup"
+        exit 0
     fi
 done
-echo "✓ MariaDB service is ready"
+echo "MariaDB service is ready"
 
 # Add LDAP test user
 echo ""
 echo "Adding LDAP test user..."
 if docker exec ldap ldapadd -x -D "cn=admin,dc=poweradmin,dc=org" -w poweradmin -f /ldap-test-user.ldif 2>/dev/null; then
-    echo "✓ LDAP user created successfully"
+    echo "LDAP user created successfully"
 else
-    echo "⚠ LDAP user might already exist or failed to create"
+    echo "LDAP user might already exist or failed to create (non-fatal)"
+fi
+
+# Check if Poweradmin schema exists before adding database users
+if ! docker exec mariadb mysql -uroot -puberuser poweradmin -e "SELECT 1 FROM users LIMIT 1" >/dev/null 2>&1; then
+    echo ""
+    echo "Poweradmin schema not initialized yet, skipping database user creation"
+    echo "Run .devcontainer/scripts/import-test-data.sh first, then re-run this script"
+    echo ""
+    echo "LDAP setup partially complete (LDAP users created, database users skipped)"
+    exit 0
 fi
 
 # Add corresponding database users (testuser + testuser2)
@@ -50,15 +59,15 @@ echo "Adding database users..."
 SQL_FILE="$REPO_ROOT/.devcontainer/sql/add-ldap-test-users.sql"
 if [ -f "$SQL_FILE" ]; then
     if docker exec -i mariadb mysql -uroot -puberuser poweradmin < "$SQL_FILE" >/dev/null 2>&1; then
-        echo "✓ Database users created successfully (testuser, testuser2)"
+        echo "Database users created successfully (testuser, testuser2)"
     else
-        echo "⚠ Database users might already exist or failed to create"
+        echo "Database users might already exist or failed to create (non-fatal)"
     fi
 else
-    echo "⚠ SQL file not found: $SQL_FILE"
+    echo "SQL file not found: $SQL_FILE"
     echo "  Attempting fallback inline user creation..."
     # Fallback: Create users inline if SQL file not found
-    docker exec mariadb mysql -uroot -puberuser poweradmin -e "
+    if docker exec mariadb mysql -uroot -puberuser poweradmin -e "
     INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method)
     SELECT 'testuser', '', 'Test User (LDAP)', 'testuser@poweradmin.org', 'LDAP test user', 1, 1, 1, 'ldap'
     WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'testuser');
@@ -66,7 +75,11 @@ else
     INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method)
     SELECT 'testuser2', '', 'Test User 2 (LDAP)', 'testuser2@poweradmin.org', 'LDAP test user 2', 2, 1, 1, 'ldap'
     WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'testuser2');
-    " >/dev/null 2>&1 && echo "✓ Fallback user creation successful"
+    " >/dev/null 2>&1; then
+        echo "Fallback user creation successful"
+    else
+        echo "Fallback user creation failed (non-fatal)"
+    fi
 fi
 
 echo ""
