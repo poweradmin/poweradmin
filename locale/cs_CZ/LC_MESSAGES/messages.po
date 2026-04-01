@@ -5154,10 +5154,7 @@ msgstr ""
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"Název SMIMEA záznamu je ve formátu: SHA256(lokální-"
-"část)._smimecert.doména.tld pro e-mailové adresy jako lokální-"
-"část@doména.tld"
+msgstr "SMIMEA record name is in the format: SHA256(local-part)._smimecert.domain.tld for email addresses like %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
