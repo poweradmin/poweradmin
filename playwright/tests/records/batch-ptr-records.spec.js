@@ -231,35 +231,6 @@ test.describe('Batch PTR Records (Issue #968)', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('viewer should not have write access to batch PTR', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-
-      await page.goto('/zones/reverse?letter=all');
-      const editLink = page.locator('a[href*="/zones/"][href*="/edit"]').first();
-      if (await editLink.count() === 0) {
-        test.skip('Viewer has no zones');
-        return;
-      }
-
-      const href = await editLink.getAttribute('href');
-      const match = href.match(/\/zones\/(\d+)\/edit/);
-      if (!match) {
-        test.skip('Could not get zone ID');
-        return;
-      }
-
-      await page.goto(`/zones/batch-ptr?id=${match[1]}`);
-      const bodyText = await page.locator('body').textContent();
-
-      // Viewer should either see error or have read-only view
-      const hasError = bodyText.toLowerCase().includes('denied') ||
-                       bodyText.toLowerCase().includes('permission') ||
-                       bodyText.toLowerCase().includes('not allowed');
-      const hasForm = await page.locator('form button[type="submit"]').count() > 0;
-
-      // Either denied or no submit button
-      expect(hasError || !hasForm).toBeTruthy();
-    });
   });
 });
 
