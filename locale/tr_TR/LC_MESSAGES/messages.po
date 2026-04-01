@@ -1751,7 +1751,7 @@ msgstr "Yüzde 0 ile 100 arasında olmalıdır"
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:277
 #, php-format
 msgid "Policy will only apply to %d%% of messages. Use 100%% once testing is complete."
-msgstr "Politika sadece mesajların %%d'sine uygulanacak. Test tamamlandığında %%100 kullanın."
+msgstr "Politika sadece mesajların %d%%'sine uygulanacak. Test tamamlandığında 100%% kullanın."
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:283
 msgid "Invalid aggregate report email address"

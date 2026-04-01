@@ -4841,7 +4841,7 @@ msgstr "Le hachage de la partie locale dans les enregistrements SMIMEA doit êtr
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 #, php-format
 msgid "SMIMEA record name is in the format: SHA256(local-part)._smimecert.domain.tld for email addresses like %s"
-msgstr "Le nom d'enregistrement SMIMEA est au format : SHA256(partie-locale)._smimecert.domaine.tld pour les adresses e-mail comme partie-locale@domaine.tld"
+msgstr "Le nom d'enregistrement SMIMEA est au format : SHA256(partie-locale)._smimecert.domaine.tld pour les adresses e-mail comme %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid "This does not use the standard SMIMEA name format. SMIMEA records should typically use: SHA256(local-part)._smimecert.domain.tld"

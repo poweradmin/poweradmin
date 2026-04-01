@@ -1751,7 +1751,7 @@ msgstr "百分比必须在0到100之间"
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:277
 #, php-format
 msgid "Policy will only apply to %d%% of messages. Use 100%% once testing is complete."
-msgstr "策略仅适用于%%d的消息。测试完成后使用%%100。"
+msgstr "策略仅适用于 %d%% 的消息。测试完成后使用 100%%。"
 
 #: lib/Domain/Service/DnsWizard/DMARCWizard.php:283
 msgid "Invalid aggregate report email address"
