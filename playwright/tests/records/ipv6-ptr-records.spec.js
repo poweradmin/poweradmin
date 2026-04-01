@@ -117,7 +117,9 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
     const ptrNibbles = '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0';
     const expectedContent = 'test-ipv6-host.example.com';
 
-    const recordRow = page.locator('tr, .record-row').filter({ hasText: expectedContent });
+    // Record content is in input fields, not text nodes - find by input value
+    const contentInput = page.locator(`input[value*="${expectedContent}"]`).first();
+    const recordRow = contentInput.locator('xpath=ancestor::tr');
     if (await recordRow.count() === 0) {
       const anyPtrRecords = page.locator('tr').filter({ hasText: 'PTR' });
       const ptrCount = await anyPtrRecords.count();
@@ -173,10 +175,11 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
       zoneId = zoneIdMatch[1];
     }
 
-    // Find a PTR record with our test content
+    // Find a PTR record with our test content (content is in input fields)
     const expectedContent = 'test-ipv6-host.example.com';
-    const recordRow = page.locator('tr').filter({ hasText: expectedContent });
-    if (await recordRow.count() === 0) {
+    const contentInput = page.locator(`input[value*="${expectedContent}"]`).first();
+    const recordRow = contentInput.locator('xpath=ancestor::tr');
+    if (await contentInput.count() === 0) {
       test.skip(true, 'PTR record not found for editing test');
       return;
     }
