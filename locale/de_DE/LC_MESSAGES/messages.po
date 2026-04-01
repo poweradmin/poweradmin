@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-03-12 12:00+0200\n"
+"POT-Creation-Date: 2026-04-01 08:16+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -538,11 +538,11 @@ msgstr "Es gibt keine Zonenvorlage mit dieser ID."
 msgid "Zone template has been updated successfully."
 msgstr "Zonenvorlage wurde erfolgreich aktualisiert."
 
-#: lib/Application/Controller/EditZoneTemplController.php:228
+#: lib/Application/Controller/EditZoneTemplController.php:229
 msgid "Zones have been updated successfully."
 msgstr "Zonen wurden erfolgreich aktualisiert."
 
-#: lib/Application/Controller/EditZoneTemplController.php:239
+#: lib/Application/Controller/EditZoneTemplController.php:240
 msgid "You do not have permission to create new zone templates."
 msgstr "Sie haben keine Berechtigung, neue Zonenvorlagen zu erstellen."
 
@@ -552,13 +552,13 @@ msgstr ""
 "Eine Zonenvorlage mit diesem Namen existiert bereits, bitte wählen Sie einen "
 "anderen."
 
-#: lib/Application/Controller/EditZoneTemplController.php:270
+#: lib/Application/Controller/EditZoneTemplController.php:271
 msgid "Please enter a different name when using Save As."
 msgstr ""
 "Bitte geben Sie einen anderen Namen ein, wenn Sie \"Speichern unter\" "
 "verwenden."
 
-#: lib/Application/Controller/EditZoneTemplController.php:294
+#: lib/Application/Controller/EditZoneTemplController.php:295
 msgid "Zone template has been copied successfully."
 msgstr "Zonenvorlage wurde erfolgreich kopiert."
 
@@ -694,7 +694,7 @@ msgstr ""
 "Fehler beim Aufheben der Zonensignierung. Überprüfen Sie die PowerDNS-Logs "
 "für Details."
 
-#: lib/Application/Controller/EditController.php:693
+#: lib/Application/Controller/EditController.php:694
 msgid "Template name can't be an empty string."
 msgstr "Vorlagenname kann nicht leer sein."
 
@@ -702,27 +702,27 @@ msgstr "Vorlagenname kann nicht leer sein."
 msgid "Zone template has been added successfully."
 msgstr "Zonenvorlage wurde erfolgreich hinzugefügt."
 
-#: lib/Application/Controller/EditController.php:713
+#: lib/Application/Controller/EditController.php:714
 msgid "You need to be logged in to export zone data."
 msgstr "Sie müssen angemeldet sein, um Zonendaten zu exportieren."
 
-#: lib/Application/Controller/EditController.php:723
+#: lib/Application/Controller/EditController.php:724
 msgid "You do not have permission to export this zone."
 msgstr "Sie haben keine Berechtigung, diese Zone zu exportieren."
 
-#: lib/Application/Controller/EditController.php:747
+#: lib/Application/Controller/EditController.php:748
 msgid "This zone does not have any records to export."
 msgstr "Diese Zone hat keine Einträge zum Exportieren."
 
-#: lib/Application/Controller/EditController.php:847
+#: lib/Application/Controller/EditController.php:848
 msgid "Request has expired, please try again."
 msgstr "Anfrage ist abgelaufen, bitte versuchen Sie es erneut."
 
-#: lib/Application/Controller/EditController.php:852
+#: lib/Application/Controller/EditController.php:853
 msgid "Zone has been updated successfully."
 msgstr "Zone wurde erfolgreich aktualisiert."
 
-#: lib/Application/Controller/EditController.php:854
+#: lib/Application/Controller/EditController.php:855
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -730,11 +730,11 @@ msgstr ""
 "Zone erfolgreich gespeichert. Es wurden keine Datensatzänderungen "
 "vorgenommen, aber die SOA-Seriennummer wurde erhöht."
 
-#: lib/Application/Controller/EditController.php:863
+#: lib/Application/Controller/EditController.php:864
 msgid "Zone has not been updated successfully."
 msgstr "Zone wurde nicht erfolgreich aktualisiert."
 
-#: lib/Application/Controller/EditController.php:891
+#: lib/Application/Controller/EditController.php:892
 msgid "Please provide all required fields."
 msgstr "Bitte geben Sie alle erforderlichen Felder an."
 
@@ -802,21 +802,26 @@ msgid "You do not have the permission to add a record to this zone."
 msgstr ""
 "Sie haben keine Berechtigung, einen Eintrag zu dieser Zone hinzuzufügen."
 
-#: lib/Application/Controller/AddRecordController.php:390
+#: lib/Application/Controller/AddRecordController.php:407
 msgid "No records were provided."
 msgstr "Keine Einträge wurden bereitgestellt."
 
-#: lib/Application/Controller/AddRecordController.php:434
+#: lib/Application/Controller/AddRecordController.php:460
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d Eintrag/Einträge wurden erfolgreich hinzugefügt."
 
-#: lib/Application/Controller/AddRecordController.php:436
+#: lib/Application/Controller/AddRecordController.php:462
+#, php-format
+msgid "%d matching record(s) were also created."
+msgstr "%d passende(r) Eintrag/Einträge wurde(n) ebenfalls erstellt."
+
+#: lib/Application/Controller/AddRecordController.php:465
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d Eintrag/Einträge konnten nicht hinzugefügt werden."
 
-#: lib/Application/Controller/AddRecordController.php:441
+#: lib/Application/Controller/AddRecordController.php:470
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -824,7 +829,7 @@ msgstr ""
 "Einige Einträge konnten nicht hinzugefügt werden. Sie existieren "
 "möglicherweise bereits oder enthalten ungültige Daten."
 
-#: lib/Application/Controller/AddRecordController.php:463
+#: lib/Application/Controller/AddRecordController.php:492
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Fehler beim Hinzufügen von Einträgen. Sie enthalten möglicherweise ungültige "
@@ -1401,12 +1406,12 @@ msgstr "Authentifizierung gegenüber LDAP fehlgeschlagen."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Authentifizierung fehlgeschlagen: Ungültige SAML-Antwort"
 
-#: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:435
+#: lib/Application/Query/RecordSearch.php:193 templates/modern/edit.html:435
 #: templates/modern/users.html:125
 msgid "Yes"
 msgstr "Ja"
 
-#: lib/Application/Query/RecordSearch.php:169 templates/modern/edit.html:435
+#: lib/Application/Query/RecordSearch.php:193 templates/modern/edit.html:435
 #: templates/modern/users.html:127
 msgid "No"
 msgstr "Nein"
@@ -6581,8 +6586,7 @@ msgstr "SVCB-Priorität muss zwischen 0 und 65535 liegen."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
-msgstr "SVCB-Ziel muss entweder \".\" oder ein gültiger Hostname sein."
-"sein."
+msgstr "SVCB-Ziel muss entweder \".\" oder ein gültiger Hostname sein.sein."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
@@ -6597,8 +6601,8 @@ msgid ""
 "In Service Mode (priority > 0) with \".\" target, at least one SvcParam is "
 "required."
 msgstr ""
-"Im Service-Modus (Priorität > 0) mit \".\"-Ziel ist mindestens ein SvcParam erforderlich."
-"erforderlich."
+"Im Service-Modus (Priorität > 0) mit \".\"-Ziel ist mindestens ein SvcParam "
+"erforderlich.erforderlich."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
@@ -8178,12 +8182,12 @@ msgstr ""
 "Das Hinzufügen von IPv6-Domain-Records aus Reverse-Zonen wird noch nicht "
 "unterstützt."
 
-#: lib/Domain/Service/DomainRecordCreator.php:112
+#: lib/Domain/Service/DomainRecordCreator.php:114
 msgid "This domain record was not valid and could not be added."
 msgstr ""
 "Dieser Domain-Record war nicht gültig und konnte nicht hinzugefügt werden."
 
-#: lib/Domain/Service/DomainRecordCreator.php:108
+#: lib/Domain/Service/DomainRecordCreator.php:110
 msgid "The domain record was successfully added."
 msgstr "Der Domain-Record wurde erfolgreich hinzugefügt."
 
@@ -8655,7 +8659,7 @@ msgstr "Inhalt"
 msgid "Provide content for your zone record"
 msgstr "Bitte Inhalt für den Eintrag angeben"
 
-#: templates/modern/add_record.html:93
+#: templates/modern/add_record.html:104 templates/modern/add_record.html:153
 msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
 "and may cause issues. SOA and NS records are required at the domain root and "
@@ -8968,11 +8972,11 @@ msgstr "Eintrag in Zone bearbeiten"
 msgid "Modify DNS record properties"
 msgstr "DNS-Eintrag-Eigenschaften ändern"
 
-#: templates/modern/add_record.html:58
+#: templates/modern/add_record.html:69
 msgid "Comment"
 msgstr "Kommentar"
 
-#: templates/modern/edit.html:642 templates/modern/add_record.html:91
+#: templates/modern/add_record.html:102 templates/modern/add_record.html:151
 msgid "Provide content"
 msgstr "Inhalt angeben"
 
@@ -10672,11 +10676,11 @@ msgstr "Ungültiger Wert für Record-Typ"
 msgid "Please provide all required information."
 msgstr "Bitte geben Sie alle erforderlichen Informationen an."
 
-#: templates/modern/edit.html:598 templates/modern/add_record.html:61
+#: templates/modern/edit.html:598 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "PTR hinzufügen"
 
-#: templates/modern/edit.html:601 templates/modern/add_record.html:64
+#: templates/modern/edit.html:601 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "A/AAAA hinzufügen"
 
@@ -10696,7 +10700,7 @@ msgstr "Ungültiger TTL-Wert"
 msgid "Provide TTL"
 msgstr "TTL angeben"
 
-#: templates/modern/edit.html:687 templates/modern/add_record.html:139
+#: templates/modern/edit.html:687 templates/modern/add_record.html:204
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -12519,15 +12523,27 @@ msgstr ""
 msgid "Add record to zone"
 msgstr "Eintrag zur Zone hinzufügen"
 
-#: templates/default/add_record.html:35 templates/modern/add_record.html:35
+#: templates/default/add_record.html:41 templates/modern/add_record.html:41
+msgid "Record could not be added. Please check the record data and try again."
+msgstr "Der Eintrag konnte nicht hinzugefügt werden. Bitte überprüfen Sie die Eintragsdaten und versuchen Sie es erneut."
+
+#: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
 msgstr "Einen neuen DNS-Eintrag in dieser Zone erstellen"
 
-#: templates/default/add_record.html:128 templates/modern/add_record.html:128
+#: templates/default/add_record.html:143 templates/modern/add_record.html:143
+msgid "deprecated"
+msgstr "veraltet"
+
+#: templates/default/add_record.html:156 templates/modern/add_record.html:156
+msgid "This record type is deprecated and should not be used for new records."
+msgstr "Dieser Eintragstyp ist veraltet und sollte nicht für neue Einträge verwendet werden."
+
+#: templates/default/add_record.html:193 templates/modern/add_record.html:193
 msgid "Add another record"
 msgstr "Weiteren Eintrag hinzufügen"
 
-#: templates/default/add_record.html:143 templates/modern/add_record.html:143
+#: templates/default/add_record.html:208 templates/modern/add_record.html:208
 msgid "Add records"
 msgstr "Einträge hinzufügen"
 
@@ -13333,3 +13349,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kann nicht zur PowerDNS-Datenbank \"%s\" verbinden: %s"
+
+
