@@ -551,9 +551,7 @@ msgstr "Yüzde 0 ile 100 arasında olmalıdır"
 msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
-msgstr ""
-"Politika sadece mesajların %%d'sine uygulanacak. Test tamamlandığında %%100 "
-"kullanın."
+msgstr "Policy will only apply to %d%% of messages. Use 100%% once testing is complete."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:283
 msgid "Invalid aggregate report email address"
@@ -8022,9 +8020,7 @@ msgstr ""
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr ""
-"Port %1$d, %3$s servisi için standart port %2$d'den farklı. Bu izin verilen "
-"ancak alışılmamış bir durumdur."
+msgstr "Port %d differs from the standard port %d for %s service. This is allowed but unusual."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."

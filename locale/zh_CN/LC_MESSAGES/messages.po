@@ -521,7 +521,7 @@ msgstr "百分比必须在0到100之间"
 msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
-msgstr "策略仅适用于%%d的消息。测试完成后使用%%100。"
+msgstr "Policy will only apply to %d%% of messages. Use 100%% once testing is complete."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:283
 msgid "Invalid aggregate report email address"
@@ -7283,7 +7283,7 @@ msgstr "SRV 记录端口字段的值无效。必须为 1-65535。"
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr "端口 %1$d 与 %3$s 服务的标准端口 %2$d 不同。这是允许的，但不常见。"
+msgstr "Port %d differs from the standard port %d for %s service. This is allowed but unusual."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
