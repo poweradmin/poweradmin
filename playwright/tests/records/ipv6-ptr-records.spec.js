@@ -234,6 +234,7 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
 test.describe('IPv6 PTR - Short Nibble Sequence', () => {
   const timestamp = Date.now();
   const uniqueHex = ((timestamp + 1) % 65536).toString(16).padStart(4, '0');
+  const uniqueHex2 = (Math.floor(Math.random() * 65536)).toString(16).padStart(4, '0');
   const ipv6Zone = `0.0.0.0.0.0.0.0.0.0.${uniqueHex.split('').join('.')}.b.d.0.1.0.0.2.ip6.arpa`;
   let zoneId = null;
 
@@ -242,7 +243,8 @@ test.describe('IPv6 PTR - Short Nibble Sequence', () => {
   });
 
   test('should handle short nibble input correctly', async ({ page }) => {
-    const simpleZone = `${uniqueHex.slice(0, 2)}.8.b.d.0.1.0.0.2.ip6.arpa`;
+    // Use random hex to avoid collision with leftover zones from previous runs
+    const simpleZone = `${uniqueHex2.split('').join('.')}.8.b.d.0.1.0.0.2.ip6.arpa`;
 
     await page.goto('/zones/add/master');
     await page.waitForLoadState('networkidle');
@@ -250,30 +252,32 @@ test.describe('IPv6 PTR - Short Nibble Sequence', () => {
     await page.locator('[data-testid="add-zone-button"]').click();
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    if (bodyText.toLowerCase().includes('already exists') || bodyText.toLowerCase().includes('error')) {
-      test.skip('Zone already exists or error creating zone');
+    const alertDanger = page.locator('.alert-danger');
+    const dangerCount = await alertDanger.count();
+    if (dangerCount > 0) {
+      const alertText = await alertDanger.textContent();
+      test.skip(`Zone creation failed: ${alertText.trim().substring(0, 80)}`);
       return;
     }
 
+    // Find zone ID from redirect URL or zone list
     const url = page.url();
-    let zoneIdMatch = url.match(/\/zones\/(\d+)/);
-    if (!zoneIdMatch) {
-      await page.goto('/zones/reverse?letter=all');
-      const zoneRow = page.locator(`tr:has-text("${simpleZone}")`);
-      if (await zoneRow.count() === 0) {
-        test.skip('Could not create zone');
-        return;
+    let foundZoneId = url.match(/\/zones\/(\d+)\/edit/)?.[1];
+    if (!foundZoneId) {
+      // Zone created successfully but redirected to list - search for it
+      await page.goto('/zones/reverse?rows_per_page=100');
+      const zoneRow = page.locator(`table tbody tr:has(td:has-text("${simpleZone}"))`).first();
+      if (await zoneRow.count() > 0) {
+        const editLink = zoneRow.locator('a[data-testid^="edit-zone-"]').first();
+        const href = await editLink.getAttribute('href');
+        foundZoneId = href?.match(/\/zones\/(\d+)/)?.[1];
       }
-      const editLink = zoneRow.locator('a[href*="/edit"]').first();
-      const href = await editLink.getAttribute('href');
-      zoneIdMatch = href?.match(/\/zones\/(\d+)/);
     }
-    if (!zoneIdMatch) {
-      test.skip('Could not find zone ID');
+    if (!foundZoneId) {
+      test.skip('Could not find zone ID after creation');
       return;
     }
-    zoneId = zoneIdMatch[1];
+    zoneId = foundZoneId;
 
     await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('networkidle');
