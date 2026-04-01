@@ -99,6 +99,13 @@
         "@lint:twig"
     ],
 
+    "locale:check": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -q 'fatal error'; then echo \"FAIL: $f\"; failed=1; fi; done; exit $failed",
+    "locale:stats": "./scripts/check_translation_stats.sh",
+    "locale:all": [
+        "@locale:check",
+        "@locale:stats"
+    ],
+
     "compat:8.1": "phan --target-php-version=8.1 --allow-polyfill-parser",
     "compat:8.2": "phan --target-php-version=8.2 --allow-polyfill-parser",
     "compat:8.3": "phan --target-php-version=8.3 --allow-polyfill-parser",
