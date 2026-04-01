@@ -24,11 +24,14 @@ async function getZoneIdByName(page, zoneName, zoneType) {
   const listUrl = zoneType === 'reverse' ? '/zones/reverse?letter=all' : '/zones/forward?letter=all';
   await page.goto(listUrl);
 
-  const zoneLink = page.locator(`a[href*="/edit"]:has-text("${zoneName}")`).first();
-  if (await zoneLink.count() > 0) {
-    const href = await zoneLink.getAttribute('href');
-    const match = href.match(/\/zones\/(\d+)\/edit/);
-    return match ? match[1] : null;
+  const zoneRow = page.locator(`tr:has-text("${zoneName}")`).first();
+  if (await zoneRow.count() > 0) {
+    const editLink = zoneRow.locator('a[href*="/edit"]').first();
+    if (await editLink.count() > 0) {
+      const href = await editLink.getAttribute('href');
+      const match = href.match(/\/zones\/(\d+)\/edit/);
+      return match ? match[1] : null;
+    }
   }
   return null;
 }
