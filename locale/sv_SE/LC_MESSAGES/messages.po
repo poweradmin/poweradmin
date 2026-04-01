@@ -4932,12 +4932,12 @@ msgstr "Du måste ange en SSHFP-algoritm för en SSHFP-post."
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr "Ogiltigt tecken i SSHFP-fingeravtryckstyp."
+msgstr "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
-msgstr "Du måste ange en SSHFP-fingeravtryckstyp för en SSHFP-post."
+msgstr "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
@@ -4954,12 +4954,12 @@ msgstr "Ogiltigt tecken i TLSA-väljare."
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:252
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
-msgstr "Du måste ange en TLSA-väljare för en TLSA-post."
+msgstr "Invalid IPv4 address in ipv4hint: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:262
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
-msgstr "Ogiltigt tecken i TLSA-matchningstyp."
+msgstr "Invalid IPv6 address in ipv6hint: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:270
 msgid "DoH path must start with a forward slash (/)."
@@ -4968,7 +4968,7 @@ msgstr "Du måste ange en TLSA-matchningstyp för en TLSA-post."
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr "Ogiltigt tecken i CAA-flaggor."
+msgstr "Parameter \"%s\" is marked as mandatory but not included in the record."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
@@ -5095,27 +5095,27 @@ msgstr "Du måste ange en SMIMEA-väljare för en SMIMEA-post."
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr "Ogiltigt tecken i SMIMEA-matchningstyp."
+msgstr "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-bit integer."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
 msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
 "Low TTL values increase DNS traffic."
-msgstr "Du måste ange en SMIMEA-matchningstyp för en SMIMEA-post."
+msgstr "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). Low TTL values increase DNS traffic."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr "Ogiltigt tecken i CERT-typ."
+msgstr "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High TTL values delay DNS updates."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
 msgid ""
 "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
-msgstr "Du måste ange en CERT-typ för en CERT-post."
+msgstr "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:132
 msgid ""
@@ -5322,7 +5322,7 @@ msgstr "CAA-flaggorna måste vara ett heltal mellan 0 och 255."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
-msgstr "CAA-taggen måste vara 'issue', 'issuewild' eller 'iodef'."
+msgstr "Duplicate %s modifier found. Each modifier can appear at most once."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
@@ -5335,12 +5335,12 @@ msgstr "LOC-längdgraden måste vara ett giltigt decimaltal."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:238
 #, php-format
 msgid "Invalid domain name in %s mechanism."
-msgstr "LOC-höjden måste vara ett giltigt decimaltal."
+msgstr "Invalid domain name in %s mechanism."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:244
 #, php-format
 msgid "CIDR notation is not valid with the %s mechanism."
-msgstr "LOC-horisontell precision måste vara ett giltigt decimaltal."
+msgstr "CIDR notation is not valid with the %s mechanism."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:247
 msgid "Invalid CIDR length in mechanism."
@@ -5369,12 +5369,12 @@ msgstr "SMIMEA-matchningstypen måste vara ett heltal mellan 0 och 255."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
 msgid "Unknown modifier: %s"
-msgstr "CERT-typen måste vara ett heltal mellan 0 och 65535."
+msgstr "Unknown modifier: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:285
 #, php-format
 msgid "Unknown mechanism: %s"
-msgstr "CERT-nyckeltaggen måste vara ett heltal mellan 0 och 65535."
+msgstr "Unknown mechanism: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:292
 msgid ""
@@ -5482,14 +5482,14 @@ msgstr "Ta bort post"
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr "Är du säker på att du vill ta bort denna post?"
+msgstr "DHCID identifier type 0x%04X is not one of the standard types defined in RFC 4701 (0x0000, 0x0001, 0x0002)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr "Post tillagd"
+msgstr "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -5790,7 +5790,7 @@ msgstr "Zonmallbeskrivning"
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:238
 #, php-format
 msgid "The mailbox domain represents the email address: %s"
-msgstr "Uppdatera zonmall"
+msgstr "The mailbox domain represents the email address: %s"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
@@ -5867,7 +5867,7 @@ msgstr "Zonkommentar"
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
 msgid "You should create a TXT record at domain: %s"
-msgstr "Zonkommentar uppdaterad"
+msgstr "You should create a TXT record at domain: %s"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:191
 msgid ""
@@ -6020,26 +6020,26 @@ msgstr "DNSSEC-nyckel uppdaterad"
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr "Kunde inte uppdatera DNSSEC-nyckel"
+msgstr "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr "Aktivera DNSSEC"
+msgstr "%s (algorithm %d) is in common use, but newer algorithms like ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
 msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
-msgstr "Inaktivera DNSSEC"
+msgstr "%s (algorithm %d) is optional for implementation according to RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
-msgstr "DNSSEC aktiverad för zon"
+msgstr "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider using ECDSAP256SHA256 (13) or ED25519 (15) instead."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
@@ -6279,27 +6279,27 @@ msgstr "Värde"
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
-msgstr "Redigera metadata"
+msgstr "Invalid IPv6 address in %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
-msgstr "Uppdatera metadata"
+msgstr "Invalid port number: %d (must be 1-65535)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
-msgstr "NSEC3"
+msgstr "Invalid server format: %s (expected IP:port or [IPv6]:port)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
-msgstr "NSEC3-parametrar"
+msgstr "Invalid IPv4 address in %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
 #, php-format
 msgid "Invalid IP address: %s"
-msgstr "NSEC3-salt"
+msgstr "Invalid IP address: %s"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
@@ -6322,7 +6322,7 @@ msgstr "Uppdatera NSEC3-parametrar"
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr "NSEC3-parametrar uppdaterade"
+msgstr "Critical flag set for unknown tag \"%s\". This may cause certificate issuance failures."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -6351,7 +6351,7 @@ msgstr "Aktivera NSEC3"
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
-msgstr "NSEC3 aktiverad"
+msgstr "CAA iodef value must be a URL starting with %s, %s, or %s."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -6433,7 +6433,7 @@ msgstr "API-nyckeln finns redan"
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
-msgstr "API-nyckeln finns inte"
+msgstr "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
 msgid "Invalid IPv6 prefix length. Must be 0-128."
@@ -6498,19 +6498,19 @@ msgstr "API-behörighet tillagd"
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:265
 #, php-format
 msgid "SOA %s field must be numeric."
-msgstr "Kunde inte lägga till API-behörighet"
+msgstr "SOA %s field must be numeric."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:271
 #, php-format
 msgid "SOA %s field must be a positive integer."
-msgstr "API-behörighet borttagen"
+msgstr "SOA %s field must be a positive integer."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr "Kunde inte ta bort API-behörighet"
+msgstr "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is allowed but not recommended."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:288
 msgid ""
@@ -6560,12 +6560,12 @@ msgstr "Resurs"
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
-msgstr "Åtkomst"
+msgstr "Unknown SVCB parameter key: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "Uppdatera API-behörighet"
+msgstr "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid ""
@@ -6578,7 +6578,7 @@ msgstr "API-dokumentation"
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr "API-endpoint"
+msgstr "A CNAME record cannot coexist with other record types for the same name. Found existing %s record."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:255
 msgid ""
@@ -6597,7 +6597,7 @@ msgstr "Metod"
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "Beskrivning"
+msgstr "SMIMEA record name is in the format: SHA256(local-part)._smimecert.domain.tld for email addresses like %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7190,7 +7190,7 @@ msgstr "API-webhooken finns redan"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr "API-webhooken finns inte"
+msgstr "DMARC policy is applied to only %d%% of messages. This should only be used during policy rollout."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -7205,12 +7205,12 @@ msgstr "Ta bort API-webhook"
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
 msgid "DMARC %s tag must contain valid mailto: or https: URIs"
-msgstr "Är du säker på att du vill ta bort denna API-webhook?"
+msgstr "DMARC %s tag must contain valid mailto: or https: URIs"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
 msgid "Invalid email address in DMARC %s tag: %s"
-msgstr "API-webhook uppdaterad"
+msgstr "Invalid email address in DMARC %s tag: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
@@ -7219,12 +7219,12 @@ msgstr "Kunde inte uppdatera API-webhook"
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
 msgid "Unknown DMARC tag: %s"
-msgstr "Uppdatera API-webhook"
+msgstr "Unknown DMARC tag: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:293
 #, php-format
 msgid "Required DMARC tag missing: %s"
-msgstr "Webhook-URL"
+msgstr "Required DMARC tag missing: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:299
 msgid ""
@@ -7251,7 +7251,7 @@ msgstr "Webhook-timeout"
 msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
-msgstr "Webhook-återförsök"
+msgstr "TXT record content exceeds maximum length of %d bytes. Please reduce the content size."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
@@ -7264,7 +7264,7 @@ msgstr "Testa webhook"
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr "Webhook testad"
+msgstr "Total TXT record content exceeds maximum length of %d bytes. Please reduce the content size."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
@@ -7335,7 +7335,7 @@ msgstr "Lyckades"
 msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
-msgstr "Misslyckades"
+msgstr "CDS digest must be a valid hex string of length %d for the selected digest type."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
@@ -7420,14 +7420,14 @@ msgstr "Händelsedata"
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr "Innan"
+msgstr "Service name \"%s\" is not in the list of well-known services. This is allowed but unusual."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "Efter"
+msgstr "Protocol \"%s\" is not in the list of well-known protocols. Common protocols are _tcp and _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -7452,7 +7452,7 @@ msgstr "Exportera granskningslogg"
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr "Granskningslogg exporterad"
+msgstr "Port %d differs from the standard port %d for %s service. This is allowed but unusual."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -7562,7 +7562,7 @@ msgstr "Lösenordspolicy uppdaterad"
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
 msgid "NSEC3 record contains an invalid record type: %s"
-msgstr "Kunde inte uppdatera lösenordspolicy"
+msgstr "NSEC3 record contains an invalid record type: %s"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:361
 msgid ""
@@ -7764,27 +7764,27 @@ msgstr "IP-vitlistor"
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "Lägg till IP-vitlista"
+msgstr "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr "IP-vitlista tillagd"
+msgstr "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr "Kunde inte lägga till IP-vitlista"
+msgstr "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this algorithm for new deployments."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr "IP-vitlista borttagen"
+msgstr "Algorithm %d MUST NOT be implemented according to RFC 8624. This value should not be used."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -7811,7 +7811,7 @@ msgstr "Redigera IP-vitlista"
 #: lib/Domain/Service/DomainRecordCreator.php:61
 #, php-format
 msgid "There is no managed zone for domain: %s."
-msgstr "Ta bort IP-vitlista"
+msgstr "There is no managed zone for domain: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:74
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
@@ -7869,7 +7869,7 @@ msgstr "Kunde inte ta bort IP-svartlista"
 #: lib/Domain/Service/ZoneValidationService.php:135
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
-msgstr "Ogiltig IP-svartlista"
+msgstr "Zone has %d SOA records. Only one SOA record is allowed per zone."
 
 #: lib/Domain/Service/ZoneValidationService.php:136
 msgid "Remove duplicate SOA records, keeping only one."
@@ -7878,7 +7878,7 @@ msgstr "IP-svartlistan finns redan"
 #: lib/Domain/Service/ZoneValidationService.php:147
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr "IP-svartlistan finns inte"
+msgstr "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:148
 msgid "Move the SOA record to the zone apex."
@@ -7923,19 +7923,19 @@ msgstr "Händelseseveritet"
 #: lib/Domain/Service/ReverseRecordCreator.php:69
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
-msgstr "Låg"
+msgstr "There is no matching reverse-zone for: %s."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:77
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
-msgstr "Medel"
+msgstr "A PTR record for %s pointing to %s already exists."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:91
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
-msgstr "Hög"
+msgstr "Reverse record added. Warning: A PTR record for %s already exists pointing to: %s. Having multiple PTR records for the same IP is not recommended."
 
 #: lib/Domain/Service/Dns/RecordManager.php:215
 msgid "You do not have the permission to add SOA record."
@@ -7968,7 +7968,7 @@ msgstr "Brutit mot policy"
 #: lib/Domain/Service/Dns/DomainManager.php:465
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
-msgstr "Säkerhetsintrång"
+msgstr "Invalid argument(s) given to function %s %s"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:291
 msgid "There is already a supermaster with this IP address and hostname."
@@ -7982,7 +7982,7 @@ msgstr "Kunde inte skapa zonen: %s"
 #: lib/Domain/Service/Dns/DomainManager.php:230
 #, php-format
 msgid "Invalid argument(s) given to function %s"
-msgstr "Säkerhetsvarningar"
+msgstr "Invalid argument(s) given to function %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:428
 msgid "The selected user already owns the zone."

@@ -5051,27 +5051,27 @@ msgstr "URI 레코드에는 우선순위, 가중치 및 대상 필드가 포함�
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr "URI 우선순위는 0에서 65535 사이의 숫자여야 합니다."
+msgstr "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-bit integer."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
 msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
 "Low TTL values increase DNS traffic."
-msgstr "URI 가중치는 0에서 65535 사이의 숫자여야 합니다."
+msgstr "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). Low TTL values increase DNS traffic."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr "URI 대상은 유효한 URI여야 합니다."
+msgstr "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High TTL values delay DNS updates."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
 msgid ""
 "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
-msgstr "URI가 너무 깁니다. 최대 길이는 %d 문자입니다."
+msgstr "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:132
 msgid ""
@@ -5277,7 +5277,7 @@ msgstr "zone_templ_id는 양의 정수여야 합니다."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
-msgstr "잘못된 템플릿 ID입니다."
+msgstr "Duplicate %s modifier found. Each modifier can appear at most once."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
@@ -5290,12 +5290,12 @@ msgstr "잘못된 레코드 ID입니다."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:238
 #, php-format
 msgid "Invalid domain name in %s mechanism."
-msgstr "사용자 이름은 필수이며 1-64자 사이여야 합니다."
+msgstr "Invalid domain name in %s mechanism."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:244
 #, php-format
 msgid "CIDR notation is not valid with the %s mechanism."
-msgstr "전체 이름은 필수이며 1-255자 사이여야 합니다."
+msgstr "CIDR notation is not valid with the %s mechanism."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:247
 msgid "Invalid CIDR length in mechanism."
@@ -5324,12 +5324,12 @@ msgstr "비밀번호는 최소 하나의 숫자를 포함해야 합니다."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
 msgid "Unknown modifier: %s"
-msgstr "설명은 255자를 초과할 수 없습니다."
+msgstr "Unknown modifier: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:285
 #, php-format
 msgid "Unknown mechanism: %s"
-msgstr "perm_templ은 0에서 255 사이의 정수여야 합니다."
+msgstr "Unknown mechanism: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:292
 msgid ""
@@ -5435,14 +5435,14 @@ msgstr "정렬 필드가 잘못되었습니다."
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr "정렬 순서는 'asc' 또는 'desc'여야 합니다."
+msgstr "DHCID identifier type 0x%04X is not one of the standard types defined in RFC 4701 (0x0000, 0x0001, 0x0002)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr "필터 유형이 잘못되었습니다."
+msgstr "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC 4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -5743,7 +5743,7 @@ msgstr "존은 이미 존재합니다."
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:238
 #, php-format
 msgid "The mailbox domain represents the email address: %s"
-msgstr "존을 생성할 수 없습니다."
+msgstr "The mailbox domain represents the email address: %s"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
@@ -5820,7 +5820,7 @@ msgstr "필수 필드가 누락되었습니다."
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
 msgid "You should create a TXT record at domain: %s"
-msgstr "잘못된 요청입니다."
+msgstr "You should create a TXT record at domain: %s"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:191
 msgid ""
@@ -5973,26 +5973,26 @@ msgstr "업로드가 허용되지 않습니다."
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr "다운로드에 실패했습니다."
+msgstr "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr "파일을 찾을 수 없습니다."
+msgstr "%s (algorithm %d) is in common use, but newer algorithms like ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
 msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
-msgstr "디렉터리를 생성할 수 없습니다."
+msgstr "%s (algorithm %d) is optional for implementation according to RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
-msgstr "파일을 쓸 수 없습니다."
+msgstr "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider using ECDSAP256SHA256 (13) or ED25519 (15) instead."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
@@ -6232,12 +6232,12 @@ msgstr "필드 '%s'는 유효한 IP 주소여야 합니다."
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
-msgstr "필드 '%s'는 유효한 도메인이어야 합니다."
+msgstr "Invalid IPv6 address in %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
 #, php-format
 msgid "Invalid port number: %d (must be 1-65535)"
-msgstr "필드 '%s'는 유효한 날짜여야 합니다."
+msgstr "Invalid port number: %d (must be 1-65535)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
 #, php-format
@@ -6247,7 +6247,7 @@ msgstr "필드 '%s'는 유효한 시간이어야 합니다."
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
-msgstr "필드 '%s'는 유효한 날짜/시간이어야 합니다."
+msgstr "Invalid IPv4 address in %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
 #, php-format
@@ -6304,7 +6304,7 @@ msgstr "필드 '%s'는 %d와 %d 사이여야 합니다."
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
-msgstr "필드 '%s'는 %d보다 커야 합니다."
+msgstr "CAA iodef value must be a URL starting with %s, %s, or %s."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -6386,7 +6386,7 @@ msgstr "잘못된 MFA 코드입니다."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
-msgstr "MFA 설정에 실패했습니다."
+msgstr "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
 msgid "Invalid IPv6 prefix length. Must be 0-128."
@@ -6451,19 +6451,19 @@ msgstr "새로고침 토큰이 잘못되었습니다."
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:265
 #, php-format
 msgid "SOA %s field must be numeric."
-msgstr "새로고침 토큰이 만료되었습니다."
+msgstr "SOA %s field must be numeric."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:271
 #, php-format
 msgid "SOA %s field must be a positive integer."
-msgstr "토큰 생성에 실패했습니다."
+msgstr "SOA %s field must be a positive integer."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr "토큰 검증에 실패했습니다."
+msgstr "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is allowed but not recommended."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:288
 msgid ""
@@ -6514,12 +6514,12 @@ msgstr "LDAP 바인드에 실패했습니다."
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
-msgstr "LDAP 검색에 실패했습니다."
+msgstr "Unknown SVCB parameter key: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "사용자를 찾을 수 없습니다."
+msgstr "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid ""
@@ -6532,7 +6532,7 @@ msgstr "그룹을 찾을 수 없습니다."
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr "역할을 찾을 수 없습니다."
+msgstr "A CNAME record cannot coexist with other record types for the same name. Found existing %s record."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:255
 msgid ""
@@ -6551,7 +6551,7 @@ msgstr "사용자가 이미 존재합니다."
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "그룹이 이미 존재합니다."
+msgstr "SMIMEA record name is in the format: SHA256(local-part)._smimecert.domain.tld for email addresses like %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7144,7 +7144,7 @@ msgstr "압축에 실패했습니다."
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr "압축 해제에 실패했습니다."
+msgstr "DMARC policy is applied to only %d%% of messages. This should only be used during policy rollout."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -7159,12 +7159,12 @@ msgstr "압축 수준이 잘못되었습니다."
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
 msgid "DMARC %s tag must contain valid mailto: or https: URIs"
-msgstr "인코딩에 실패했습니다."
+msgstr "DMARC %s tag must contain valid mailto: or https: URIs"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
 msgid "Invalid email address in DMARC %s tag: %s"
-msgstr "디코딩에 실패했습니다."
+msgstr "Invalid email address in DMARC %s tag: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
@@ -7173,12 +7173,12 @@ msgstr "잘못된 인코딩입니다."
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
 msgid "Unknown DMARC tag: %s"
-msgstr "잘못된 문자 집합입니다."
+msgstr "Unknown DMARC tag: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:293
 #, php-format
 msgid "Required DMARC tag missing: %s"
-msgstr "직렬화에 실패했습니다."
+msgstr "Required DMARC tag missing: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:299
 msgid ""
@@ -7205,7 +7205,7 @@ msgstr "잘못된 구문입니다."
 msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
-msgstr "예기치 않은 토큰입니다."
+msgstr "TXT record content exceeds maximum length of %d bytes. Please reduce the content size."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
@@ -7218,7 +7218,7 @@ msgstr "예기치 않은 파일 끝입니다."
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr "예기치 않은 문자입니다."
+msgstr "Total TXT record content exceeds maximum length of %d bytes. Please reduce the content size."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
@@ -7289,7 +7289,7 @@ msgstr "잘못된 피연산자입니다."
 msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
-msgstr "잘못된 연산자입니다."
+msgstr "CDS digest must be a valid hex string of length %d for the selected digest type."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
@@ -7374,14 +7374,14 @@ msgstr "스택 오버플로입니다."
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr "힙 오버플로입니다."
+msgstr "Service name \"%s\" is not in the list of well-known services. This is allowed but unusual."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "버퍼 오버플로입니다."
+msgstr "Protocol \"%s\" is not in the list of well-known protocols. Common protocols are _tcp and _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -7406,7 +7406,7 @@ msgstr "댕글링 포인터입니다."
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr "메모리 누수입니다."
+msgstr "Port %d differs from the standard port %d for %s service. This is allowed but unusual."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -7516,7 +7516,7 @@ msgstr "프로세스를 종료할 수 없습니다."
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
 msgid "NSEC3 record contains an invalid record type: %s"
-msgstr "프로세스를 대기할 수 없습니다."
+msgstr "NSEC3 record contains an invalid record type: %s"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:361
 msgid ""
@@ -7718,27 +7718,27 @@ msgstr "CRC를 확인할 수 없습니다."
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "서명을 생성할 수 없습니다."
+msgstr "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr "서명을 확인할 수 없습니다."
+msgstr "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr "인증서를 생성할 수 없습니다."
+msgstr "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this algorithm for new deployments."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr "인증서를 확인할 수 없습니다."
+msgstr "Algorithm %d MUST NOT be implemented according to RFC 8624. This value should not be used."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -7765,7 +7765,7 @@ msgstr "인증서 목적이 잘못되었습니다."
 #: lib/Domain/Service/DomainRecordCreator.php:61
 #, php-format
 msgid "There is no managed zone for domain: %s."
-msgstr "인증서 주체가 잘못되었습니다."
+msgstr "There is no managed zone for domain: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:74
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
@@ -7823,7 +7823,7 @@ msgstr "인증서 권한 정보 액세스가 잘못되었습니다."
 #: lib/Domain/Service/ZoneValidationService.php:135
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
-msgstr "인증서 주체 키 식별자가 잘못되었습니다."
+msgstr "Zone has %d SOA records. Only one SOA record is allowed per zone."
 
 #: lib/Domain/Service/ZoneValidationService.php:136
 msgid "Remove duplicate SOA records, keeping only one."
@@ -7832,7 +7832,7 @@ msgstr "인증서 권한 키 식별자가 잘못되었습니다."
 #: lib/Domain/Service/ZoneValidationService.php:147
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr "백업 작업을 생성할 수 없습니다."
+msgstr "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:148
 msgid "Move the SOA record to the zone apex."
@@ -7877,19 +7877,19 @@ msgstr "예약 작업을 시작할 수 없습니다."
 #: lib/Domain/Service/ReverseRecordCreator.php:69
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
-msgstr "예약 작업을 중지할 수 없습니다."
+msgstr "There is no matching reverse-zone for: %s."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:77
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
-msgstr "예약 작업을 삭제할 수 없습니다."
+msgstr "A PTR record for %s pointing to %s already exists."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:91
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
-msgstr "크론 작업을 생성할 수 없습니다."
+msgstr "Reverse record added. Warning: A PTR record for %s already exists pointing to: %s. Having multiple PTR records for the same IP is not recommended."
 
 #: lib/Domain/Service/Dns/RecordManager.php:215
 msgid "You do not have the permission to add SOA record."
@@ -7922,7 +7922,7 @@ msgstr "대기열 작업을 삭제할 수 없습니다."
 #: lib/Domain/Service/Dns/DomainManager.php:465
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
-msgstr "워커를 생성할 수 없습니다."
+msgstr "Invalid argument(s) given to function %s %s"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:291
 msgid "There is already a supermaster with this IP address and hostname."
@@ -7936,7 +7936,7 @@ msgstr "존을 생성하지 못했습니다: %s"
 #: lib/Domain/Service/Dns/DomainManager.php:230
 #, php-format
 msgid "Invalid argument(s) given to function %s"
-msgstr "워커를 중지할 수 없습니다."
+msgstr "Invalid argument(s) given to function %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:428
 msgid "The selected user already owns the zone."
