@@ -244,7 +244,7 @@ test.describe('Edit Zone Comment', () => {
     test('should display comment form on edit comment page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
-      const editLink = page.locator('a[href*="/edit"]').first();
+      const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
       if (await editLink.count() > 0) {
         const href = await editLink.getAttribute('href');
         const match = href.match(/\/zones\/(\d+)\/edit/);
@@ -261,7 +261,7 @@ test.describe('Edit Zone Comment', () => {
     test('should display update button on edit comment page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
-      const editLink = page.locator('a[href*="/edit"]').first();
+      const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
       if (await editLink.count() > 0) {
         const href = await editLink.getAttribute('href');
         const match = href.match(/\/zones\/(\d+)\/edit/);

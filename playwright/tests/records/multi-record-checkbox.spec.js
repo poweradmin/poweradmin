@@ -13,7 +13,7 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
   async function getTestZoneId(page) {
     await page.goto('/zones/forward?letter=all');
     await page.waitForLoadState('networkidle');
-    const editLink = page.locator('a[href*="/edit"]').first();
+    const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
     if (await editLink.count() > 0) {
       const href = await editLink.getAttribute('href');
       const match = href.match(/\/zones\/(\d+)\/edit/);

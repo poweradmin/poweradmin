@@ -15,7 +15,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
   // Helper to get a zone ID for testing
   async function getTestZoneId(page) {
     await page.goto('/zones/forward?letter=all');
-    const editLink = page.locator('a[href*="/edit"]').first();
+    const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
     if (await editLink.count() > 0) {
       const href = await editLink.getAttribute('href');
       const match = href.match(/\/zones\/(\d+)\/edit/);
@@ -339,7 +339,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       await page.goto('/zones/forward?letter=all');
       await page.waitForLoadState('networkidle');
 
-      const editLink = page.locator('a[href*="/edit"]').first();
+      const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
       if (await editLink.count() === 0) {
         test.skip('No zones available for manager user');
         return;
@@ -357,7 +357,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     test('viewer should have appropriate DNSSEC access', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
       await page.goto('/zones/forward?letter=all');
-      const editLink = page.locator('a[href*="/edit"]').first();
+      const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
       if (await editLink.count() > 0) {
         const href = await editLink.getAttribute('href');
         const zoneIdMatch = href?.match(/\/zones\/(\d+)\/edit/);

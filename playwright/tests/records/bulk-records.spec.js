@@ -288,7 +288,7 @@ test.describe('Bulk Record Operations', () => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
       await page.goto('/zones/forward?letter=all');
 
-      const editLink = page.locator('a[href*="/edit"]').first();
+      const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
 
