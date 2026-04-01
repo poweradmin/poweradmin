@@ -169,16 +169,16 @@ test.describe('Multi-Record Add Form Checkbox Handling', () => {
       const zoneId = await getTestZoneId(page);
 
       if (zoneId) {
-        await page.goto(`/zones/${zoneId}/edit`);
+        await page.goto(`/zones/${zoneId}/records/add`);
         await page.waitForLoadState('networkidle');
 
-        const addBtn = page.locator('button:has-text("Add row"), button[onclick*="addRecord"], .bi-plus-circle').first();
+        const addBtn = page.locator('button:has-text("Add another record"), button:has-text("Add row"), [data-testid="add-another-record"]').first();
         if (await addBtn.count() > 0) {
-          const initialRows = await page.locator('input[name*="name"]').count();
+          const initialRows = await page.locator('input[name*="[name]"]').count();
           await addBtn.click();
           await page.waitForTimeout(500);
-          const newRows = await page.locator('input[name*="name"]').count();
-          expect(newRows).toBeGreaterThanOrEqual(initialRows);
+          const newRows = await page.locator('input[name*="[name]"]').count();
+          expect(newRows).toBeGreaterThan(initialRows);
         }
       }
     });
