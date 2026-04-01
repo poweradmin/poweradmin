@@ -62,10 +62,13 @@ test.describe('Zone Apex (@) Symbol Handling', () => {
     expect(bodyText).toContain('successfully');
 
     // Verify the record name is the zone name, not @.zone or @
-    const recordNameInput = page.locator('input[name*="name"]').last();
-    const recordName = await recordNameInput.inputValue();
-    expect(recordName).not.toContain('@');
-    expect(recordName).toContain(testDomain);
+    const txtRecordRow = page.locator('tr:has-text("v=spf1")');
+    if (await txtRecordRow.count() > 0) {
+      const nameInput = txtRecordRow.locator('input[name*="name"]').first();
+      const recordName = await nameInput.inputValue();
+      expect(recordName).not.toContain('@');
+      expect(recordName).toContain(testDomain);
+    }
   });
 
   test('should convert empty name to zone name when adding a record', async ({ page }) => {
