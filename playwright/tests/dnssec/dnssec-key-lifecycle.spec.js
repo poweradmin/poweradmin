@@ -45,7 +45,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
         return;
       }
       await page.goto(`/zones/${zoneId}/dnssec`);
-      const addBtn = page.locator('a[href*="/dnssec/add"], input[value*="Add"], button:has-text("Add")');
+      const addBtn = page.locator('a[href*="/dnssec/keys/add"], input[value*="Add"], button:has-text("Add")');
       if (await addBtn.count() > 0) {
         await expect(addBtn.first()).toBeVisible();
       }
@@ -58,7 +58,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
         test.skip('No zones available for DNSSEC test');
         return;
       }
-      await page.goto(`/zones/${zoneId}/dnssec/add`);
+      await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
@@ -70,7 +70,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
         test.skip('No zones available for DNSSEC test');
         return;
       }
-      await page.goto(`/zones/${zoneId}/dnssec/add`);
+      await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const cskInfoAlert = page.locator('#csk-info-alert');
       await expect(cskInfoAlert).toBeVisible();
       await expect(cskInfoAlert).toContainText('PowerDNS 4.0');
@@ -84,7 +84,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
         test.skip('No zones available for DNSSEC test');
         return;
       }
-      await page.goto(`/zones/${zoneId}/dnssec/add`);
+      await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const typeSelector = page.locator('select[name*="type"], input[name*="type"], input[type="radio"]');
       expect(await typeSelector.count()).toBeGreaterThan(0);
     });
@@ -96,7 +96,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
         test.skip('No zones available for DNSSEC test');
         return;
       }
-      await page.goto(`/zones/${zoneId}/dnssec/add`);
+      await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const algoSelector = page.locator('select[name*="algo"], select[name*="algorithm"]');
       if (await algoSelector.count() > 0) {
         await expect(algoSelector.first()).toBeVisible();
@@ -110,7 +110,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
         test.skip('No zones available for DNSSEC test');
         return;
       }
-      await page.goto(`/zones/${zoneId}/dnssec/add`);
+      await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const sizeSelector = page.locator('select[name*="size"], select[name*="bits"], input[name*="size"]');
       if (await sizeSelector.count() > 0) {
         await expect(sizeSelector.first()).toBeVisible();
@@ -124,7 +124,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
         test.skip('No zones available for DNSSEC test');
         return;
       }
-      await page.goto(`/zones/${zoneId}/dnssec/add`);
+      await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
 
       const kskRadio = page.locator('input[value="ksk"], input[value="KSK"]');
       if (await kskRadio.count() > 0) {
@@ -143,7 +143,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
         test.skip('No zones available for DNSSEC test');
         return;
       }
-      await page.goto(`/zones/${zoneId}/dnssec/add`);
+      await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
 
       const zskRadio = page.locator('input[value="zsk"], input[value="ZSK"]');
       if (await zskRadio.count() > 0) {

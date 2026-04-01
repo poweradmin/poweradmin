@@ -233,7 +233,7 @@ test.describe('DNSSEC Key Management', () => {
 
       await page.goto(`/zones/${zoneId}/dnssec`);
 
-      const activateLinks = page.locator('a[href*="/edit"], a[href*="/activate"], a[href*="/deactivate"]');
+      const activateLinks = page.locator('table a[href*="/dnssec/keys/"][href*="/edit"]');
       if (await activateLinks.count() > 0) {
         await expect(activateLinks.first()).toBeVisible();
       }
