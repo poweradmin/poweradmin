@@ -983,9 +983,6 @@ class EditController extends BaseController
             $this->setMessage('edit', 'success', _('The record was successfully added.'));
         }
 
-        // Update the zone's SOA serial
-        $this->dnsRecord->updateSOASerial($zone_id);
-
         return true;
     }
 
