@@ -58,6 +58,7 @@ return [
         'enable_consistency_checks' => true,
         'search_group_records' => true,
         'add_reverse_record' => true,
+        'show_add_record_form' => true,
     ],
 
     /**
