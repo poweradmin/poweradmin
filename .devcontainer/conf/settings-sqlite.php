@@ -60,6 +60,7 @@ return [
         'enable_consistency_checks' => true,
         'add_reverse_record' => true,
         'search_group_records' => true,
+        'show_add_record_form' => true,
     ],
 
     /**
