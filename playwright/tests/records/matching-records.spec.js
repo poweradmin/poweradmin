@@ -24,22 +24,30 @@ async function getZoneIdByName(page, zoneName, zoneType) {
   const listUrl = zoneType === 'reverse' ? '/zones/reverse?letter=all' : '/zones/forward?letter=all';
   await page.goto(listUrl);
 
-  const zoneLink = page.locator(`a[href*="/edit"]:has-text("${zoneName}")`).first();
-  if (await zoneLink.count() > 0) {
-    const href = await zoneLink.getAttribute('href');
-    const match = href.match(/\/zones\/(\d+)\/edit/);
-    return match ? match[1] : null;
+  const zoneRow = page.locator(`table tbody tr:has-text("${zoneName}")`).first();
+  if (await zoneRow.count() > 0) {
+    // Use the checkbox value which contains the zone ID
+    const checkbox = zoneRow.locator('input[name="zone_id[]"]').first();
+    if (await checkbox.count() > 0) {
+      return await checkbox.getAttribute('value');
+    }
+    // Fallback: use the action button edit link (not matching zone links)
+    const editLink = zoneRow.locator('a.btn[href*="/edit"]').first();
+    if (await editLink.count() > 0) {
+      const href = await editLink.getAttribute('href');
+      const match = href.match(/\/zones\/(\d+)/);
+      return match ? match[1] : null;
+    }
   }
   return null;
 }
 
 // Check if a record with the given type and content exists in a zone
 async function recordExistsInZone(page, zoneId, recordName, recordType, recordContent) {
-  await page.goto(`/zones/${zoneId}/edit`);
-  const matchingRow = page.locator('tr')
-    .filter({ hasText: recordType })
-    .filter({ hasText: recordContent });
-  return await matchingRow.count() > 0;
+  await page.goto(`/zones/${zoneId}/edit?rows_per_page=100`);
+  // Record content is in input fields, so search by input value
+  const contentInputs = page.locator(`input[value*="${recordContent}"]`);
+  return await contentInputs.count() > 0;
 }
 
 test.describe('Matching Record Creation (Issue #1104)', () => {
