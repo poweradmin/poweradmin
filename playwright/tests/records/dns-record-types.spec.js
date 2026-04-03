@@ -79,8 +79,8 @@ test.describe('DNS Record Types Management', () => {
 
     await page.locator('input[name*="content"]').first().fill('mail.example.com');
 
-    // Set priority if available
-    const prioField = page.locator('input[name*="prio"]');
+    // Set priority using the add-form's dedicated priority field
+    const prioField = page.locator('#priorityFieldTop');
     if (await prioField.count() > 0) {
       await prioField.fill('10');
     }

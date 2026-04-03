@@ -7,11 +7,37 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { getZoneIdForTest } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
+
+// Serial mode: the first test creates a record that later tests depend on
+test.describe.configure({ mode: 'serial' });
 
 test.describe('Search with Comments', () => {
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+  });
+
+  test('should create a record with a searchable comment', async ({ page }) => {
+    const zoneId = await getZoneIdForTest(page);
+    test.skip(!zoneId, 'No zone available');
+
+    await page.goto(`/zones/${zoneId}/records/add`);
+
+    await page.locator('select[name*="type"]').first().selectOption('A');
+    await page.locator('input[name*="name"]').first().fill(`comment-test-${Date.now()}`);
+    await page.locator('input[name*="content"]').first().fill('10.99.99.99');
+
+    const commentField = page.locator('input[name*="comment"]').first();
+    if (await commentField.isVisible()) {
+      await commentField.fill('searchable comment');
+    }
+
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await page.waitForLoadState('networkidle');
+
+    const bodyText = await page.locator('body').textContent();
+    expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
   /**
