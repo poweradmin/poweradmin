@@ -11,14 +11,13 @@ Poweradmin official Docker images are available at:
 
 ### Image Tags
 
-- **`latest`** - Latest tagged release (e.g., `v4.2.1`). Only updates when a new version is tagged, never from branch pushes.
+- **`stable`** - Stable release from the `release/4.2.x` branch (recommended for production)
+- **`latest`** - Latest release from the `master` branch
+- **`dev`** - Development version from the `develop` branch (not for production)
 - **`lts`** - Long-term support release from the `release/3.x` branch
-- **`dev`** - Development version from the `develop` branch (includes experimental features)
 - **`v*`** - Specific version tags (e.g., `v4.2.1`)
 
-For production deployments, use the `latest` tag or pin to a specific version tag (e.g., `v4.2.1`). The `lts` tag provides long-term support with bug fixes and security updates only. The `dev` tag is intended for testing upcoming features and should not be used in production.
-
-> **Note:** The `stable` and `next` tags have been removed. If you were using either of these, switch to `latest` or a version-pinned tag.
+For production deployments, use the `stable` tag or a specific version tag. The `lts` tag provides long-term support with bug fixes and security updates only. The `dev` tag is intended for testing upcoming features and should not be used in production.
 
 ## Quick Start
 
