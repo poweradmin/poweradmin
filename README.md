@@ -56,7 +56,7 @@ For detailed installation instructions, please visit [the official documentation
 * **Recommended method - via releases**:
     * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
 * **For specific needs - via Git**:
-    * **Warning**: The master branch is used for pre-release integration testing and may be unstable. For production use, stick with the stable release/4.0.x branch or use the `stable` Docker tag.
+    * For production use, use the `release/4.2.x` branch or a specific version tag (e.g., `v4.2.1`). The `master` branch may contain unreleased features.
 
 ### Docker Deployment
 
@@ -91,8 +91,7 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 ## Tested on
 
 **Officially tested versions:**
-- **master (pre-release)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
-- **release/4.0.x (stable)**: PHP 8.2, PowerDNS 4.9.5, MariaDB 10.11, PostgreSQL 16.3
+- **release/4.2.x (stable)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
 
 **User-reported compatibility:**
@@ -102,15 +101,14 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 
 ## Version Support
 
-Poweradmin maintains multiple release branches:
-
 | Branch | Status | Support |
 |--------|--------|---------|
-| `develop` | Development | Experimental features, unstable |
-| `master` | Pre-release | Integration testing, may be unstable |
-| `release/4.1.x` | Current | Latest release, stabilizing |
-| `release/4.0.x` | Stable | 4.0.x bug fixes and security updates |
+| `release/4.2.x` | Stable | Current stable release, patch releases |
+| `master` | Development | Next release development (4.3.x) |
+| `develop` | Experimental | Experimental features, may be unstable |
 | `release/3.x` | LTS | Bug fixes and security updates until December 2027 |
+
+> **Note:** The `release/4.0.x` and `release/4.1.x` branches are in maintenance mode and will not receive new releases.
 
 ### PHP Version Support
 
