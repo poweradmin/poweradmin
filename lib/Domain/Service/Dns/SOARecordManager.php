@@ -130,7 +130,6 @@ class SOARecordManager implements SOARecordManagerInterface
             return 1;
         }
 
-        $this->setTimezone();
         $today = date('Ymd');
 
         $revision = (int)substr($curr_serial, -2);
@@ -250,21 +249,5 @@ class SOARecordManager implements SOARecordManagerInterface
         }
 
         return true;
-    }
-
-    /**
-     * Set timezone
-     *
-     * Set timezone to configured tz or UTC it not set
-     */
-    public function setTimezone(): void
-    {
-        $timezone = $this->config->get('misc', 'timezone');
-
-        if (isset($timezone)) {
-            date_default_timezone_set($timezone);
-        } elseif (!ini_get('date.timezone')) {
-            date_default_timezone_set('UTC');
-        }
     }
 }

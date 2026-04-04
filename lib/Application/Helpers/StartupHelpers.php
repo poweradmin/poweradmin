@@ -20,7 +20,22 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
+
+/**
+ * Priority: configured timezone > php.ini date.timezone > UTC
+ */
+function initializeTimezone(ConfigurationInterface $config): void
+{
+    $timezone = $config->get('misc', 'timezone');
+
+    if ($timezone) {
+        date_default_timezone_set($timezone);
+    } elseif (!ini_get('date.timezone')) {
+        date_default_timezone_set('UTC');
+    }
+}
 
 /**
  * Initialize secure session configuration

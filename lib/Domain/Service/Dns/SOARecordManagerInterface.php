@@ -102,9 +102,4 @@ interface SOARecordManagerInterface
      * @return string Date +1 day
      */
     public static function getNextDate(string $curr_date): string;
-
-    /**
-     * Set timezone to configured tz or UTC it not set
-     */
-    public function setTimezone(): void;
 }
