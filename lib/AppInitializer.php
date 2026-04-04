@@ -57,7 +57,6 @@ class AppInitializer
         $this->checkDependencies();
         $this->checkConfigurationFile();
         $this->loadConfiguration();
-        $this->setTimezone();
         $this->loadLocale();
         $this->connectToDatabase();
         if ($authenticate) {
@@ -102,20 +101,6 @@ class AppInitializer
     {
         $this->configManager = ConfigurationManager::getInstance();
         $this->configManager->initialize();
-    }
-
-    /**
-     * Sets the default timezone for the application based on configuration.
-     */
-    private function setTimezone(): void
-    {
-        $timezone = $this->configManager->get('misc', 'timezone');
-
-        if ($timezone) {
-            date_default_timezone_set($timezone);
-        } elseif (!ini_get('date.timezone')) {
-            date_default_timezone_set('UTC');
-        }
     }
 
     /**

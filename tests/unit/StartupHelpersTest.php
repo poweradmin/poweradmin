@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Unit tests for startup helper functions
@@ -235,6 +236,40 @@ class StartupHelpersTest extends TestCase
             $this->assertStringContainsString('<pre>', $output);
             $this->assertStringContainsString('Trace:', $output);
         }
+    }
+
+    public function testInitializeTimezoneUsesConfiguredTimezone(): void
+    {
+        $originalTz = date_default_timezone_get();
+
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $configMock->method('get')
+            ->with('misc', 'timezone')
+            ->willReturn('Asia/Shanghai');
+
+        initializeTimezone($configMock);
+
+        $this->assertEquals('Asia/Shanghai', date_default_timezone_get());
+
+        date_default_timezone_set($originalTz);
+    }
+
+    public function testInitializeTimezoneDoesNotOverrideWhenNotConfigured(): void
+    {
+        $originalTz = date_default_timezone_get();
+        date_default_timezone_set('Asia/Tokyo');
+
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $configMock->method('get')
+            ->with('misc', 'timezone')
+            ->willReturn(null);
+
+        initializeTimezone($configMock);
+
+        // With no configured timezone and php.ini timezone set, existing timezone is preserved
+        $this->assertEquals('Asia/Tokyo', date_default_timezone_get());
+
+        date_default_timezone_set($originalTz);
     }
 
     /**

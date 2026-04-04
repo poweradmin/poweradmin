@@ -32,7 +32,8 @@ require_once __DIR__ . '/lib/Domain/Model/TopLevelDomainInit.php';
 $configManager = ConfigurationManager::getInstance();
 $configManager->initialize();
 
-// Initialize session
+// Initialize timezone and session
+initializeTimezone($configManager);
 initializeSession();
 
 // Create and process routes

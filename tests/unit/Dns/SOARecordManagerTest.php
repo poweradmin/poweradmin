@@ -111,4 +111,20 @@ class SOARecordManagerTest extends TestCase
     {
         $this->assertEquals('', $this->soaRecordManager->getUpdatedSOARecord(''));
     }
+
+    public function testGetNextSerialUsesBootstrapTimezone(): void
+    {
+        $originalTz = date_default_timezone_get();
+
+        // Simulate bootstrap setting the timezone before getNextSerial is called
+        date_default_timezone_set('Pacific/Auckland');
+        $expectedDate = date('Ymd');
+
+        // getNextSerial relies on the globally set timezone (set at bootstrap)
+        $result = $this->soaRecordManager->getNextSerial('2020010100');
+
+        $this->assertStringStartsWith($expectedDate, (string)$result);
+
+        date_default_timezone_set($originalTz);
+    }
 }

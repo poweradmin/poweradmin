@@ -197,7 +197,6 @@ class DomainManager implements DomainManagerInterface
                             $soa_expire = $this->config->get('dns', 'soa_expire', 604800);
                             $soa_minimum = $this->config->get('dns', 'soa_minimum', 86400);
 
-                            $this->soaRecordManager->setTimezone();
                             $serial = date("Ymd") . "00";
 
                             // Construct complete SOA record with all parameters

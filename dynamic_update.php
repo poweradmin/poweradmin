@@ -25,6 +25,9 @@ $request = Request::createFromGlobals();
 $config = ConfigurationManager::getInstance();
 $config->initialize();
 
+require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
+initializeTimezone($config);
+
 $db_type = $config->get('database', 'type');
 $tableNameService = new TableNameService($config);
 $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
