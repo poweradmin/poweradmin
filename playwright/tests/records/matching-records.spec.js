@@ -24,22 +24,33 @@ async function getZoneIdByName(page, zoneName, zoneType) {
   const listUrl = zoneType === 'reverse' ? '/zones/reverse?letter=all' : '/zones/forward?letter=all';
   await page.goto(listUrl);
 
-  const zoneLink = page.locator(`a[href*="/edit"]:has-text("${zoneName}")`).first();
-  if (await zoneLink.count() > 0) {
-    const href = await zoneLink.getAttribute('href');
-    const match = href.match(/\/zones\/(\d+)\/edit/);
-    return match ? match[1] : null;
+  // Zone name is in a table cell, not inside the edit link itself.
+  // Find the row containing the zone name, then extract the zone ID from its checkbox.
+  const row = page.locator(`tr:has-text("${zoneName}")`).first();
+  if (await row.count() > 0) {
+    const checkbox = row.locator('input[name="zone_id[]"]');
+    if (await checkbox.count() > 0) {
+      return await checkbox.getAttribute('value');
+    }
   }
   return null;
 }
 
-// Check if a record with the given type and content exists in a zone
+// Check if a record with the given content exists in a zone.
+// Uses the search filter to find records across all pages.
 async function recordExistsInZone(page, zoneId, recordName, recordType, recordContent) {
   await page.goto(`/zones/${zoneId}/edit`);
-  const matchingRow = page.locator('tr')
-    .filter({ hasText: recordType })
-    .filter({ hasText: recordContent });
-  return await matchingRow.count() > 0;
+
+  // Use the content filter to narrow results and avoid pagination issues
+  const contentFilter = page.locator('input[placeholder="Filter by content"]');
+  if (await contentFilter.count() > 0) {
+    await contentFilter.fill(recordContent);
+    await page.locator('button:has-text("Apply")').click();
+    await page.waitForLoadState('domcontentloaded');
+  }
+
+  const contentInput = page.locator(`input[value="${recordContent}"]`);
+  return await contentInput.count() > 0;
 }
 
 test.describe('Matching Record Creation (Issue #1104)', () => {
