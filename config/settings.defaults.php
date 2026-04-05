@@ -161,6 +161,7 @@ return [
         'search_group_records' => false,      // Group records by name and content in search results (added in 3.8.0)
         'reverse_zone_sort' => 'natural',     // Reverse zone sorting algorithm: 'natural' (default) or 'hierarchical' (experimental) (added in 4.0.0)
         'show_pdns_status' => false,          // Show PowerDNS server status page and dashboard card (added in 4.0.0)
+        'show_dashboard_stats' => true,      // Show zone, record, user, and group counts on dashboard (added in 4.3.0)
         'show_forward_zone_associations' => true, // Show associated forward zones in reverse zone list (added in 4.0.5)
 
         // Zone Editing Features

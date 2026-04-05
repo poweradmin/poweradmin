@@ -111,7 +111,15 @@ class IndexController extends BaseController
         // Determine if user can change password (internal auth only, not ldap/oidc/saml)
         $canChangePassword = !in_array($this->userContextService->getAuthMethod(), ['ldap', 'oidc', 'saml']);
 
+        // Dashboard stats for admin users
+        $dashboardStats = null;
+        $showDashboardStats = $this->config->get('interface', 'show_dashboard_stats', true);
+        if ($permissions['user_is_ueberuser'] && $showDashboardStats) {
+            $dashboardStats = $this->getDashboardStats();
+        }
+
         $this->render("index.html", [
+            'dashboard_stats' => $dashboardStats,
             'user_name' => $this->userContextService->getDisplayName(),
             'auth_used' => $this->userContextService->getAuthMethod() ?? '',
             'can_change_password' => $canChangePassword,
@@ -128,6 +136,25 @@ class IndexController extends BaseController
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
             'module_nav_items' => $this->getModuleNavItemsForDashboard(),
         ]);
+    }
+
+    private function getDashboardStats(): array
+    {
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
+        $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
+        $records_table = $pdns_db_name ? "$pdns_db_name.records" : "records";
+
+        $zoneCount = (int) $this->db->query("SELECT COUNT(*) FROM $domains_table")->fetchColumn();
+        $recordCount = (int) $this->db->query("SELECT COUNT(*) FROM $records_table")->fetchColumn();
+        $userCount = UserManager::countUsers($this->db);
+        $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
+
+        return [
+            'zones' => $zoneCount,
+            'records' => $recordCount,
+            'users' => $userCount,
+            'groups' => $groupCount,
+        ];
     }
 
     private function getModuleNavItemsForDashboard(): array
