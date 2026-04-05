@@ -79,13 +79,10 @@
                                         </button>
                                     </form>
                                 {% else %}
-                                    <form method="post" action="{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle" class="d-inline" onsubmit="return confirm('{% trans %}Are you sure you want to disable this API key? External applications using it will lose access.{% endtrans %}');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token }}">
-                                        <input type="hidden" name="disable" value="1">
-                                        <button type="submit" class="btn btn-sm btn-outline-secondary" title="{% trans %}Disable{% endtrans %}">
-                                            <i class="bi bi-slash-circle text-secondary"></i>
-                                        </button>
-                                    </form>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" title="{% trans %}Disable{% endtrans %}"
+                                            onclick="showDisableModal('{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle', '{{ key.name }}')">
+                                        <i class="bi bi-slash-circle text-secondary"></i>
+                                    </button>
                                 {% endif %}
                                 <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/edit" title="{% trans %}Edit{% endtrans %}">
                                     <i class="bi bi-pencil-square text-primary"></i>
@@ -108,5 +105,44 @@
         </div>
     </div>
 </div>
+
+<!-- Disable API Key Confirmation Modal -->
+<div class="modal fade" id="disableApiKeyModal" tabindex="-1" aria-labelledby="disableApiKeyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="disableApiKeyModalLabel">
+                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Disable API Key{% endtrans %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans %}Are you sure you want to disable the API key{% endtrans %} <strong id="disableKeyName"></strong>?</p>
+                <p class="text-muted small mb-0">{% trans %}External applications using this key will lose access.{% endtrans %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                </button>
+                <form method="post" id="disableApiKeyForm" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="disable" value="1">
+                    <button type="submit" class="btn btn-warning btn-sm">
+                        <i class="bi bi-slash-circle me-1"></i>{% trans %}Disable{% endtrans %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showDisableModal(actionUrl, keyName) {
+    document.getElementById('disableApiKeyForm').action = actionUrl;
+    document.getElementById('disableKeyName').textContent = keyName;
+    const modal = new bootstrap.Modal(document.getElementById('disableApiKeyModal'));
+    modal.show();
+}
+</script>
 
 <p class="text-muted small"><i class="bi bi-info-circle me-1"></i>{% trans %}API keys allow external applications to access the Poweradmin API. Each key is linked to your user account and inherits your permissions.{% endtrans %}</p>
