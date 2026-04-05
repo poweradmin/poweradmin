@@ -56,7 +56,20 @@
                     <td class="log-id-cell">{{ row['id'] }}</td>
                     {% endif %}
                     <td class="log-timestamp-cell">{{ row['created_at'] }}</td>
-                    <td class="log-event-cell">{{ row['event'] }}</td>
+                    <td class="log-event-cell small">
+                        {% if 'deleted' in row['event']|lower %}
+                            <span class="badge bg-danger me-1">delete</span>
+                        {% elseif 'created' in row['event']|lower %}
+                            <span class="badge bg-success me-1">create</span>
+                        {% elseif 'Added' in row['event'] %}
+                            <span class="badge bg-success me-1">add</span>
+                        {% elseif 'Removed' in row['event'] %}
+                            <span class="badge bg-warning text-dark me-1">remove</span>
+                        {% elseif 'edit' in row['event']|lower or 'update' in row['event']|lower %}
+                            <span class="badge bg-primary me-1">edit</span>
+                        {% endif %}
+                        {{ row['event'] }}
+                    </td>
                 </tr>
                 {% endfor %}
                 </tbody>
