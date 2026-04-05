@@ -451,12 +451,12 @@ test.describe('API Key Actions', () => {
   });
 
   test.describe('Enable/Disable API Key', () => {
-    test('should have toggle (enable/disable) link', async ({ page }) => {
+    test('should have toggle (enable/disable) button', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/settings/api-keys');
 
-      const toggleLink = page.locator('a[href*="/toggle"]');
-      const hasToggle = await toggleLink.count() > 0;
+      const toggleForm = page.locator('form[action*="/toggle"]');
+      const hasToggle = await toggleForm.count() > 0;
 
       const bodyText = await page.locator('body').textContent();
       const hasNoKeys = bodyText.toLowerCase().includes('no api keys');

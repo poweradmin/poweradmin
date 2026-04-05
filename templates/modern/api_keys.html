@@ -71,13 +71,21 @@
                                     <i class="bi bi-arrow-repeat text-secondary"></i>
                                 </a>
                                 {% if key.isDisabled %}
-                                    <a class="btn btn-sm btn-outline-secondary" href="{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle?disable=0" title="{% trans %}Enable{% endtrans %}">
-                                        <i class="bi bi-check-circle text-secondary"></i>
-                                    </a>
+                                    <form method="post" action="{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                        <input type="hidden" name="disable" value="0">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary" title="{% trans %}Enable{% endtrans %}">
+                                            <i class="bi bi-check-circle text-secondary"></i>
+                                        </button>
+                                    </form>
                                 {% else %}
-                                    <a class="btn btn-sm btn-outline-secondary" href="{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle?disable=1" title="{% trans %}Disable{% endtrans %}">
-                                        <i class="bi bi-slash-circle text-secondary"></i>
-                                    </a>
+                                    <form method="post" action="{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle" class="d-inline" onsubmit="return confirm('{% trans %}Are you sure you want to disable this API key? External applications using it will lose access.{% endtrans %}');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                        <input type="hidden" name="disable" value="1">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary" title="{% trans %}Disable{% endtrans %}">
+                                            <i class="bi bi-slash-circle text-secondary"></i>
+                                        </button>
+                                    </form>
                                 {% endif %}
                                 <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/edit" title="{% trans %}Edit{% endtrans %}">
                                     <i class="bi bi-pencil-square text-primary"></i>

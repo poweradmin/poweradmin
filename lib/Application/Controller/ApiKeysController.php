@@ -346,6 +346,8 @@ class ApiKeysController extends BaseController
      */
     private function toggleApiKey(): void
     {
+        $this->validateCsrfToken();
+
         $id = (int)$this->getSafeRequestValue('id');
         $disable = $this->getSafeRequestValue('disable') === '1';
 
