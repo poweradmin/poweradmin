@@ -29,7 +29,6 @@
             <table class="table table-striped table-hover table-sm mb-0">
                 <thead class="table-light">
                 <tr>
-                    <th>{% trans %}In use{% endtrans%}</th>
                     <th>{% trans %}Template name{% endtrans %}</th>
                     <th>{% trans %}Description{% endtrans %}</th>
                     <th>{% trans %}Owner{% endtrans %}</th>
@@ -43,18 +42,11 @@
                 <tbody>
                 {% if not zone_templates %}
                 <tr>
-                    <td colspan="8" class="text-center py-3">{% trans %}No results found{% endtrans %}</td>
+                    <td colspan="7" class="text-center py-3">{% trans %}No results found{% endtrans %}</td>
                 </tr>
                 {% endif %}
                 {% for template in zone_templates %}
                 <tr class="template-row" data-name="{{ template['name']|lower }}" data-description="{{ template['descr']|default('')|lower }}">
-                    <td>
-                        {% if template['zones_linked'] == '0' %}
-                        <i class="bi bi-circle"></i>
-                        {% else %}
-                        <i class="bi bi-check-circle"></i>
-                        {% endif %}
-                    </td>
                     <td>{{ template['name'] }}</td>
                     <td>
                         {% if template['descr'] %}
