@@ -6,11 +6,24 @@
 </nav>
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-server me-2"></i>{% trans %}Supermasters{% endtrans %}</strong>
+        {% if perm_sm_add %}
+        <a class="btn btn-primary btn-sm" href="{{ base_url_prefix }}/supermasters/add">
+            <i class="bi bi-plus-circle-fill me-1 text-white"></i>{% trans %}Add supermaster{% endtrans %}
+        </a>
+        {% endif %}
     </div>
     <div class="card-body">
         {% if supermasters %}
+        <div class="mb-2">
+            <div class="input-group input-group-sm" style="max-width: 300px;">
+                <input type="text" id="supermaster-search" class="form-control form-control-sm" placeholder="{% trans %}Search supermasters...{% endtrans %}">
+                <button class="btn btn-outline-secondary" type="button" id="clear-supermaster-search">
+                    <i class="bi bi-x-circle text-secondary"></i>
+                </button>
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table table-striped table-hover table-sm">
                 <thead class="table-light">
@@ -25,7 +38,7 @@
                 </thead>
                 <tbody>
                 {% for server in supermasters %}
-                    <tr>
+                    <tr class="supermaster-row" data-ip="{{ server['master_ip']|lower }}" data-ns="{{ server['ns_name']|lower }}" data-account="{{ server['account']|lower }}">
                         <td>{{ server['master_ip'] }}</td>
                         <td>{{ server['ns_name'] }}</td>
                         <td>
@@ -37,12 +50,14 @@
                         </td>
                         {% if perm_sm_edit %}
                         <td class="text-end">
-                            <a class="btn btn-outline-primary btn-sm me-2" href="{{ base_url_prefix }}/supermasters/edit?master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">
-                                <i class="bi bi-pencil-square text-primary me-1"></i><span class="text-primary">{% trans %}Edit{% endtrans %}</span>
-                            </a>
-                            <a class="btn btn-outline-danger btn-sm" href="{{ base_url_prefix }}/supermasters/delete?master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">
-                                <i class="bi bi-trash text-danger me-1"></i><span class="text-danger">{% trans %}Delete{% endtrans %}</span>
-                            </a>
+                            <div class="d-flex gap-1 justify-content-end flex-nowrap">
+                                <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/supermasters/edit?master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}" title="{% trans %}Edit{% endtrans %}">
+                                    <i class="bi bi-pencil-square text-primary"></i>
+                                </a>
+                                <a class="btn btn-outline-danger btn-sm" href="{{ base_url_prefix }}/supermasters/delete?master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}" title="{% trans %}Delete{% endtrans %}">
+                                    <i class="bi bi-trash text-danger"></i>
+                                </a>
+                            </div>
                         </td>
                         {% endif %}
                     </tr>
@@ -56,13 +71,36 @@
             <p class="text-muted mb-0">{% trans %}There are no supermasters to show in this listing.{% endtrans %}</p>
         </div>
         {% endif %}
-
-        {% if perm_sm_add %}
-        <div class="mt-4">
-            <a class="btn btn-primary btn-sm" href="{{ base_url_prefix }}/supermasters/add">
-                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add supermaster{% endtrans %}
-            </a>
-        </div>
-        {% endif %}
     </div>
 </div>
+
+<script>
+(function() {
+    var searchInput = document.getElementById('supermaster-search');
+    var clearBtn = document.getElementById('clear-supermaster-search');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            var searchTerm = this.value.toLowerCase();
+            document.querySelectorAll('.supermaster-row').forEach(function(row) {
+                var ip = row.dataset.ip;
+                var ns = row.dataset.ns;
+                var account = row.dataset.account;
+                row.style.display = (ip.includes(searchTerm) || ns.includes(searchTerm) || account.includes(searchTerm)) ? '' : 'none';
+            });
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            if (searchInput) {
+                searchInput.value = '';
+                document.querySelectorAll('.supermaster-row').forEach(function(row) {
+                    row.style.display = '';
+                });
+                searchInput.focus();
+            }
+        });
+    }
+})();
+</script>
