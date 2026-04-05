@@ -29,7 +29,7 @@ test.describe('Zone Logs', () => {
 
     test('should display search button', async ({ page }) => {
       await page.goto('/zones/logs');
-      const searchBtn = page.locator('button:has-text("Search"), input[value="Search"]').first();
+      const searchBtn = page.locator('button[type="submit"]').first();
       await expect(searchBtn).toBeVisible();
     });
 
@@ -62,7 +62,7 @@ test.describe('Zone Logs', () => {
       await page.goto('/zones/logs');
       const searchInput = page.locator('input[type="text"], input[name*="search"], input[name*="name"]').first();
       await searchInput.fill('test');
-      const searchBtn = page.locator('button:has-text("Search"), input[value="Search"]').first();
+      const searchBtn = page.locator('button[type="submit"]').first();
       await searchBtn.click();
       await expect(page).toHaveURL(/zones\/logs/);
     });
@@ -85,9 +85,52 @@ test.describe('Zone Logs', () => {
 
     test('should display details button when logs exist', async ({ page }) => {
       await page.goto('/zones/logs');
-      const detailsBtn = page.locator('button:has-text("Details"), a:has-text("Details")');
+      const detailsBtn = page.locator('button[data-bs-toggle="modal"]');
       if (await detailsBtn.count() > 0) {
         await expect(detailsBtn.first()).toBeVisible();
+      }
+    });
+
+    test('should display total logs count in header', async ({ page }) => {
+      await page.goto('/zones/logs');
+      const header = page.locator('.card-header');
+      const headerText = await header.first().textContent();
+      expect(headerText).toMatch(/Total logs/i);
+    });
+
+    test('should have operation filter dropdown', async ({ page }) => {
+      await page.goto('/zones/logs');
+      const operationSelect = page.locator('select[name="operation"]');
+      await expect(operationSelect).toBeVisible();
+    });
+
+    test('should have user filter dropdown', async ({ page }) => {
+      await page.goto('/zones/logs');
+      const userSelect = page.locator('select[name="user"]');
+      await expect(userSelect).toBeVisible();
+    });
+
+    test('should have date range filters', async ({ page }) => {
+      await page.goto('/zones/logs');
+      const dateFrom = page.locator('input[name="date_from"]');
+      const dateTo = page.locator('input[name="date_to"]');
+      await expect(dateFrom).toBeVisible();
+      await expect(dateTo).toBeVisible();
+    });
+
+    test('should filter by operation', async ({ page }) => {
+      await page.goto('/zones/logs');
+      const operationSelect = page.locator('select[name="operation"]');
+      await operationSelect.selectOption('add_zone');
+      await page.locator('button[type="submit"]').first().click();
+      await expect(page).toHaveURL(/operation=add_zone/);
+    });
+
+    test('should display color-coded operation badges', async ({ page }) => {
+      await page.goto('/zones/logs');
+      const badges = page.locator('.log-event-cell .badge');
+      if (await badges.count() > 0) {
+        await expect(badges.first()).toBeVisible();
       }
     });
   });

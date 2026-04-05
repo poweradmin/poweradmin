@@ -108,6 +108,48 @@ test.describe('Dashboard', () => {
       await page.locator('a[href*="/zones/forward"]').first().click();
       await expect(page).toHaveURL(/.*zones\/forward/);
     });
+
+    test('should display collapsible sections', async ({ page }) => {
+      const sections = page.locator('[data-bs-toggle="collapse"]');
+      expect(await sections.count()).toBeGreaterThanOrEqual(3);
+    });
+
+    test('should collapse and expand sections', async ({ page }) => {
+      const firstSection = page.locator('[data-bs-toggle="collapse"]').first();
+      const targetId = await firstSection.getAttribute('data-bs-target');
+      const targetContent = page.locator(targetId);
+
+      await expect(targetContent).toBeVisible();
+      await firstSection.click();
+      await page.waitForTimeout(300);
+      await expect(targetContent).not.toBeVisible();
+      await firstSection.click();
+      await page.waitForTimeout(300);
+      await expect(targetContent).toBeVisible();
+    });
+
+    test('should display dashboard stats for admin', async ({ page }) => {
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).toMatch(/\d+\s+zones/);
+      expect(bodyText).toMatch(/\d+\s+records/);
+      expect(bodyText).toMatch(/\d+\s+users/);
+      expect(bodyText).toMatch(/\d+\s+groups/);
+    });
+
+    test('should have Groups link', async ({ page }) => {
+      const groupsLink = page.locator('a[href*="/groups"]').first();
+      await expect(groupsLink).toBeVisible();
+    });
+
+    test('should have API Keys link in Tools section', async ({ page }) => {
+      const apiKeysLink = page.locator('a[href*="/settings/api-keys"]');
+      expect(await apiKeysLink.count()).toBeGreaterThan(0);
+    });
+
+    test('should have Database Consistency link in Tools section', async ({ page }) => {
+      const dbLink = page.locator('a[href*="/tools/database-consistency"]');
+      expect(await dbLink.count()).toBeGreaterThan(0);
+    });
   });
 
   test.describe('Manager User', () => {
@@ -133,6 +175,11 @@ test.describe('Dashboard', () => {
     test('should not have Permission templates link', async ({ page }) => {
       const permTemplatesLink = page.locator('a[href*="/permissions/templates"]');
       expect(await permTemplatesLink.count()).toBe(0);
+    });
+
+    test('should not display dashboard stats', async ({ page }) => {
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/\d+\s+zones.*\d+\s+records.*\d+\s+users/);
     });
   });
 

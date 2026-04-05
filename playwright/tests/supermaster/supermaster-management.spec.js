@@ -31,6 +31,37 @@ test.describe('Supermaster Management', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
+  test('should have add button in card header', async ({ page }) => {
+    await page.goto('/supermasters');
+    await page.waitForLoadState('networkidle');
+
+    const addButton = page.locator('.card-header a[href*="supermasters/add"]');
+    await expect(addButton).toBeVisible();
+  });
+
+  test('should have search input for filtering', async ({ page }) => {
+    await page.goto('/supermasters');
+    await page.waitForLoadState('networkidle');
+
+    const searchInput = page.locator('#supermaster-search');
+    const hasSupermasters = await page.locator('.supermaster-row').count() > 0;
+
+    if (hasSupermasters) {
+      await expect(searchInput).toBeVisible();
+
+      // Type search and verify filtering
+      const initialCount = await page.locator('.supermaster-row').count();
+      await searchInput.fill('zzzznonexistent');
+      const visibleAfter = await page.locator('.supermaster-row:visible').count();
+      expect(visibleAfter).toBe(0);
+
+      // Clear search
+      await page.locator('#clear-supermaster-search').click();
+      const visibleAfterClear = await page.locator('.supermaster-row:visible').count();
+      expect(visibleAfterClear).toBe(initialCount);
+    }
+  });
+
   test('should add a new supermaster', async ({ page }) => {
     // Navigate to add supermaster page
     await page.goto('/supermasters/add');
