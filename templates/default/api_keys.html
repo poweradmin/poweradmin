@@ -14,14 +14,14 @@
         </a>
         {% endif %}
     </div>
-    <div class="card-body">
-        {% if not can_add_more %}
-        <div class="alert alert-warning">
+    {% if not can_add_more %}
+    <div class="card-body pb-0">
+        <div class="alert alert-warning mb-0">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
             {% trans %}You have reached the maximum number of API keys allowed.{% endtrans %} ({{ max_keys_per_user }})
         </div>
-        {% endif %}
     </div>
+    {% endif %}
     <div class="card-body p-0">
         <div class="table-responsive">
             {% if api_keys|length > 0 %}
@@ -70,17 +70,14 @@
                                     <i class="bi bi-arrow-repeat text-secondary"></i>
                                 </a>
                                 {% if key.isDisabled %}
-                                    <form method="post" action="{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle" class="d-inline">
-                                        <input type="hidden" name="_token" value="{{ csrf_token }}">
-                                        <input type="hidden" name="disable" value="0">
-                                        <button type="submit" class="btn btn-sm btn-outline-secondary" title="{% trans %}Enable{% endtrans %}">
-                                            <i class="bi bi-check-circle text-secondary"></i>
-                                        </button>
-                                    </form>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" title="{% trans %}Enable{% endtrans %}"
+                                            onclick="showEnableModal('{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle', '{{ key.name }}')">
+                                        <i class="bi bi-play-circle text-secondary"></i>
+                                    </button>
                                 {% else %}
                                     <button type="button" class="btn btn-sm btn-outline-secondary" title="{% trans %}Disable{% endtrans %}"
                                             onclick="showDisableModal('{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/toggle', '{{ key.name }}')">
-                                        <i class="bi bi-slash-circle text-secondary"></i>
+                                        <i class="bi bi-pause-circle text-secondary"></i>
                                     </button>
                                 {% endif %}
                                 <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/settings/api-keys/{{ key.id }}/edit" title="{% trans %}Edit{% endtrans %}">
@@ -127,7 +124,37 @@
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <input type="hidden" name="disable" value="1">
                     <button type="submit" class="btn btn-warning btn-sm">
-                        <i class="bi bi-slash-circle me-1"></i>{% trans %}Disable{% endtrans %}
+                        <i class="bi bi-pause-circle me-1"></i>{% trans %}Disable{% endtrans %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enable API Key Confirmation Modal -->
+<div class="modal fade" id="enableApiKeyModal" tabindex="-1" aria-labelledby="enableApiKeyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="enableApiKeyModalLabel">
+                    <i class="bi bi-play-circle text-success me-2"></i>{% trans %}Enable API Key{% endtrans %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans %}Are you sure you want to enable the API key{% endtrans %} <strong id="enableKeyName"></strong>?</p>
+                <p class="text-muted small mb-0">{% trans %}External applications will be able to authenticate using this key.{% endtrans %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                </button>
+                <form method="post" id="enableApiKeyForm" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="disable" value="0">
+                    <button type="submit" class="btn btn-success btn-sm">
+                        <i class="bi bi-toggle2-on me-1"></i>{% trans %}Enable{% endtrans %}
                     </button>
                 </form>
             </div>
@@ -140,6 +167,13 @@ function showDisableModal(actionUrl, keyName) {
     document.getElementById('disableApiKeyForm').action = actionUrl;
     document.getElementById('disableKeyName').textContent = keyName;
     const modal = new bootstrap.Modal(document.getElementById('disableApiKeyModal'));
+    modal.show();
+}
+
+function showEnableModal(actionUrl, keyName) {
+    document.getElementById('enableApiKeyForm').action = actionUrl;
+    document.getElementById('enableKeyName').textContent = keyName;
+    const modal = new bootstrap.Modal(document.getElementById('enableApiKeyModal'));
     modal.show();
 }
 </script>
