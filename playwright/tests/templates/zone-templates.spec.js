@@ -216,6 +216,60 @@ test.describe('Zone Templates Management', () => {
     }
   });
 
+  test('should have add button in card header', async ({ page }) => {
+    await page.goto('/zones/templates');
+    await page.waitForLoadState('networkidle');
+
+    const addButton = page.locator('.card-header a[href*="templates/add"]');
+    await expect(addButton).toBeVisible();
+    await expect(addButton).toContainText(/Add zone template/i);
+  });
+
+  test('should have search input that filters templates', async ({ page }) => {
+    await page.goto('/zones/templates');
+    await page.waitForLoadState('networkidle');
+
+    const searchInput = page.locator('#template-search');
+    const hasTemplates = await page.locator('.template-row').count() > 0;
+
+    if (!hasTemplates) {
+      test.skip('No templates to search');
+      return;
+    }
+
+    await expect(searchInput).toBeVisible();
+
+    // Get initial row count
+    const initialCount = await page.locator('.template-row').count();
+
+    // Type a search term that likely won't match all rows
+    await searchInput.fill('zzzznonexistent');
+
+    // All rows should be hidden
+    const visibleAfterSearch = await page.locator('.template-row:visible').count();
+    expect(visibleAfterSearch).toBe(0);
+
+    // Clear search
+    await page.locator('#clear-template-search').click();
+
+    // All rows should be visible again
+    const visibleAfterClear = await page.locator('.template-row:visible').count();
+    expect(visibleAfterClear).toBe(initialCount);
+  });
+
+  test('should show action buttons on single line', async ({ page }) => {
+    await page.goto('/zones/templates');
+    await page.waitForLoadState('networkidle');
+
+    const actionCells = page.locator('.d-flex.flex-nowrap');
+    if (await actionCells.count() > 0) {
+      const firstCell = actionCells.first();
+      const cellBox = await firstCell.boundingBox();
+      // All buttons should fit within a reasonable height (single line)
+      expect(cellBox.height).toBeLessThan(50);
+    }
+  });
+
   // Cleanup
   test.afterAll(async ({ browser }) => {
     const page = await browser.newPage();

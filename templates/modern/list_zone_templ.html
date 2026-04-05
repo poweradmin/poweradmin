@@ -14,6 +14,16 @@
         </a>
         {% endif %}
     </div>
+    {% if zone_templates %}
+    <div class="px-3 py-2">
+        <div class="input-group input-group-sm" style="max-width: 300px;">
+            <input type="text" id="template-search" class="form-control form-control-sm" placeholder="{% trans %}Search templates...{% endtrans %}">
+            <button class="btn btn-outline-secondary" type="button" id="clear-template-search">
+                <i class="bi bi-x-circle text-secondary"></i>
+            </button>
+        </div>
+    </div>
+    {% endif %}
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-striped table-hover table-sm mb-0">
@@ -37,7 +47,7 @@
                 </tr>
                 {% endif %}
                 {% for template in zone_templates %}
-                <tr>
+                <tr class="template-row" data-name="{{ template['name']|lower }}" data-description="{{ template['descr']|default('')|lower }}">
                     <td>
                         {% if template['zones_linked'] == '0' %}
                         <i class="bi bi-circle"></i>
@@ -96,21 +106,21 @@
                     </td>
                     {% if (perm_zone_templ_edit and template['owner'] != 0) or perm_is_godlike %}
                     <td class="text-end">
-                        <div class="gap-2">
+                        <div class="d-flex gap-1 justify-content-end flex-nowrap">
                             <a class="btn btn-sm btn-outline-secondary {% if template['zones_linked'] == '0' %}disabled{% endif %}"
                                href="{% if template['zones_linked'] != '0' %}{{ base_url_prefix }}/zones/templates/{{ template['id'] }}/zones{% else %}#{% endif %}"
-                               data-bs-toggle="tooltip"
-                               data-bs-placement="top"
                                title="{% if template['zones_linked'] == '0' %}{% trans %}No zones are using this template{% endtrans %}{% else %}{% trans %}View zones using this template{% endtrans %}{% endif %}"
                                {% if template['zones_linked'] == '0' %}tabindex="-1" aria-disabled="true"{% endif %}>
                                 <i class="bi bi-list text-secondary"></i>
                             </a>
                             <a class="btn btn-sm btn-outline-primary"
-                               href="{{ base_url_prefix }}/zones/templates/{{ template['id'] }}/edit">
+                               href="{{ base_url_prefix }}/zones/templates/{{ template['id'] }}/edit"
+                               title="{% trans %}Edit{% endtrans %}">
                                 <i class="bi bi-pencil-square text-primary"></i>
                             </a>
                             <a class="btn btn-sm btn-outline-danger"
-                               href="{{ base_url_prefix }}/zones/templates/{{ template['id'] }}/delete">
+                               href="{{ base_url_prefix }}/zones/templates/{{ template['id'] }}/delete"
+                               title="{% trans %}Delete{% endtrans %}">
                                 <i class="bi bi-trash text-danger"></i>
                             </a>
                         </div>
@@ -134,11 +144,38 @@
 </div>
 
 <script>
-    // Initialize Bootstrap tooltips
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap tooltips
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
+        });
+
+        // Template search
+        var searchInput = document.getElementById('template-search');
+        var clearBtn = document.getElementById('clear-template-search');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                var searchTerm = this.value.toLowerCase();
+                document.querySelectorAll('.template-row').forEach(function(row) {
+                    var name = row.dataset.name;
+                    var description = row.dataset.description;
+                    row.style.display = (name.includes(searchTerm) || description.includes(searchTerm)) ? '' : 'none';
+                });
+            });
+        }
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function() {
+                if (searchInput) {
+                    searchInput.value = '';
+                    document.querySelectorAll('.template-row').forEach(function(row) {
+                        row.style.display = '';
+                    });
+                    searchInput.focus();
+                }
+            });
+        }
     });
 </script>
