@@ -7,28 +7,49 @@
 </nav>
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-journal-text me-2"></i>{% trans %}User Activity Logs{% endtrans %}</strong>
+        <div>
+            <span class="badge bg-secondary">{{ number_of_logs }}</span>
+            <span class="ms-1 small text-muted">{% trans %}Total logs{% endtrans %}</span>
+        </div>
     </div>
     <div class="card-body">
         <form method="GET" action="{{ base_url_prefix }}/users/logs">
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <input name="name" id="name" type="text" class="form-control form-control-sm"
-                               placeholder="{% trans %}Search logs by user{% endtrans %}"
-                               {% if name %}value="{{ name }}"{% endif %}>
-                        <button for="name" type="submit" class="btn btn-primary btn-sm">
-                            <i class="bi bi-search me-1 text-white"></i> {% trans %}Search{% endtrans %}
-                        </button>
-                        <a href="{{ base_url_prefix }}/users/logs" class="btn btn-secondary btn-sm" role="button">
-                            <i class="bi bi-eraser me-1 text-white"></i> {% trans %}Clear{% endtrans %}
-                        </a>
-                    </div>
+            <div class="row g-2 mb-2">
+                <div class="col-md-3">
+                    <select name="name" class="form-select form-select-sm">
+                        <option value="">{% trans %}All users{% endtrans %}</option>
+                        {% for u in users %}
+                        <option value="{{ u }}" {% if name == u %}selected{% endif %}>{{ u }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="col-md-6 d-flex align-items-center justify-content-end">
-                    <span class="badge bg-secondary">{{ number_of_logs }}</span>
-                    <span class="ms-2 small text-muted">{% trans %}Total logs{% endtrans %}</span>
+                <div class="col-md-3">
+                    <select name="event_type" class="form-select form-select-sm">
+                        <option value="">{% trans %}All events{% endtrans %}</option>
+                        {% for et in event_types %}
+                        <option value="{{ et }}" {% if event_type == et %}selected{% endif %}>{{ et }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input name="date_from" type="date" class="form-control form-control-sm"
+                           {% if date_from %}value="{{ date_from }}"{% endif %}
+                           title="{% trans %}From date{% endtrans %}">
+                </div>
+                <div class="col-md-2">
+                    <input name="date_to" type="date" class="form-control form-control-sm"
+                           {% if date_to %}value="{{ date_to }}"{% endif %}
+                           title="{% trans %}To date{% endtrans %}">
+                </div>
+                <div class="col-md-2 d-flex gap-1">
+                    <button type="submit" class="btn btn-primary btn-sm" title="{% trans %}Search{% endtrans %}">
+                        <i class="bi bi-search text-white"></i>
+                    </button>
+                    <a href="{{ base_url_prefix }}/users/logs" class="btn btn-outline-secondary btn-sm" title="{% trans %}Clear{% endtrans %}">
+                        <i class="bi bi-x-circle text-secondary"></i>
+                    </a>
                 </div>
             </div>
         </form>
@@ -57,20 +78,34 @@
                     {% endif %}
                     <td class="log-timestamp-cell">{{ row['created_at'] }}</td>
                     <td class="log-event-cell small">
-                        {% if 'Successful authentication' in row['event'] %}
-                            <span class="badge bg-success me-1">login</span>
-                        {% elseif 'Failed authentication' in row['event'] %}
-                            <span class="badge bg-danger me-1">failed_login</span>
-                        {% elseif 'password' in row['event']|lower %}
-                            <span class="badge bg-warning text-dark me-1">password</span>
-                        {% elseif 'delete' in row['event']|lower %}
-                            <span class="badge bg-danger me-1">delete</span>
-                        {% elseif 'added' in row['event']|lower or 'created' in row['event']|lower %}
-                            <span class="badge bg-success me-1">create</span>
-                        {% elseif 'edit' in row['event']|lower or 'update' in row['event']|lower %}
-                            <span class="badge bg-primary me-1">edit</span>
+                        {% if 'operation:' in row['event'] %}
+                            {# key:value format - parse like zone logs #}
+                            {% set parts = row['event']|split(' ') %}
+                            {% set log_data = {} %}
+                            {% for part in parts %}
+                                {% set kv = part|split(':') %}
+                                {% if kv|length >= 2 %}
+                                    {% set log_data = log_data|merge({(kv[0]): kv|slice(1)|join(':')}) %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if log_data.operation is defined %}
+                                <span class="badge {% if 'delete' in log_data.operation %}bg-danger{% elseif 'add' in log_data.operation %}bg-success{% elseif 'edit' in log_data.operation %}bg-primary{% elseif 'change_password' in log_data.operation %}bg-warning text-dark{% elseif 'logout' in log_data.operation %}bg-secondary{% elseif 'mfa' in log_data.operation %}bg-info{% else %}bg-secondary{% endif %} me-1">{{ log_data.operation }}</span>
+                            {% endif %}
+                            {% if log_data.username is defined %}<strong>{{ log_data.username }}</strong>{% endif %}
+                            {% if log_data.target_user is defined %}<strong>{{ log_data.target_user }}</strong>{% endif %}
+                            {% if log_data.email is defined %}<span class="text-muted ms-1"><i class="bi bi-envelope"></i> {{ log_data.email }}</span>{% endif %}
+                            {% if log_data.perm_template is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.perm_template }}</span>{% endif %}
+                            {% if log_data.auth_type is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.auth_type }}</span>{% endif %}
+                            {% if log_data.user is defined %}<span class="text-muted ms-1"><i class="bi bi-person-fill"></i> {{ log_data.user }}</span>{% endif %}
+                        {% else %}
+                            {# Plain English format - login/failed events #}
+                            {% if 'Successful authentication' in row['event'] %}
+                                <span class="badge bg-success me-1">login_success</span>
+                            {% elseif 'Failed authentication' in row['event'] %}
+                                <span class="badge bg-danger me-1">login_failed</span>
+                            {% endif %}
+                            {{ row['event'] }}
                         {% endif %}
-                        {{ row['event'] }}
                     </td>
                 </tr>
                 {% endfor %}
@@ -88,5 +123,6 @@
             <p class="text-muted mb-0">{% trans %}Try different search criteria or check back later{% endtrans %}</p>
         </div>
         {% endif %}
+
     </div>
 </div>

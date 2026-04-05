@@ -74,34 +74,45 @@ class ListLogUsersController extends BaseController
         $configManager = ConfigurationManager::getInstance();
         $logs_per_page = $configManager->get('interface', 'rows_per_page', 50);
 
-        if (isset($_GET['name']) && $_GET['name'] != '') {
-            $number_of_logs = $this->dbUserLogger->countLogsByUser($_GET['name']);
-            $number_of_pages = ceil($number_of_logs / $logs_per_page);
-            if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
-                die(_('Page number exceeds available pages.'));
-            }
-            $logs = $this->dbUserLogger->getLogsForUser($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
-        } else {
-            $number_of_logs = $this->dbUserLogger->countAllLogs();
-            $number_of_pages = ceil($number_of_logs / $logs_per_page);
-            if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
-                die(_('Page number exceeds available pages.'));
-            }
-            $logs = $this->dbUserLogger->getAllLogs($logs_per_page, ($selected_page - 1) * $logs_per_page);
+        $filters = [];
+        if (!empty($_GET['name'])) {
+            $filters['name'] = $_GET['name'];
         }
+        if (!empty($_GET['event_type'])) {
+            $filters['event_type'] = $_GET['event_type'];
+        }
+        if (!empty($_GET['date_from']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['date_from'])) {
+            $filters['date_from'] = $_GET['date_from'];
+        }
+        if (!empty($_GET['date_to']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['date_to'])) {
+            $filters['date_to'] = $_GET['date_to'];
+        }
+
+        $number_of_logs = $this->dbUserLogger->countFilteredLogs($filters);
+        $number_of_pages = ceil($number_of_logs / $logs_per_page);
+        if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
+            die(_('Page number exceeds available pages.'));
+        }
+        $offset = ($selected_page - 1) * $logs_per_page;
+        $logs = $this->dbUserLogger->getFilteredLogs($filters, $logs_per_page, $offset);
 
         $this->render('list_log_users.html', [
             'number_of_logs' => $number_of_logs,
             'name' => isset($_GET['name']) ? htmlspecialchars($_GET['name']) : null,
+            'event_type' => isset($_GET['event_type']) ? htmlspecialchars($_GET['event_type']) : null,
+            'date_from' => isset($_GET['date_from']) ? htmlspecialchars($_GET['date_from']) : null,
+            'date_to' => isset($_GET['date_to']) ? htmlspecialchars($_GET['date_to']) : null,
+            'event_types' => $this->dbUserLogger->getDistinctEventTypes(),
+            'users' => $this->dbUserLogger->getDistinctUsers(),
             'data' => $logs,
             'selected_page' => $selected_page,
             'logs_per_page' => $logs_per_page,
-            'pagination' => $this->createAndPresentPagination($number_of_logs, $logs_per_page),
+            'pagination' => $this->createAndPresentPagination($number_of_logs, $logs_per_page, $filters),
             'iface_edit_show_id' => $configManager->get('interface', 'show_record_id', false),
         ]);
     }
 
-    private function createAndPresentPagination(int $totalItems, string $itemsPerPage): string
+    private function createAndPresentPagination(int $totalItems, string $itemsPerPage, array $filters = []): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();
@@ -109,7 +120,13 @@ class ListLogUsersController extends BaseController
         $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/users/logs?start={PageNumber}');
+
+        $queryParams = '';
+        foreach ($filters as $key => $value) {
+            $queryParams .= '&' . urlencode($key) . '=' . urlencode($value);
+        }
+
+        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/users/logs?start={PageNumber}' . $queryParams);
 
         return $presenter->present();
     }
