@@ -5,23 +5,24 @@
     </ol>
 </nav>
 
-{% if show_user_access_templates and show_group_access_templates %}
-<div class="alert alert-info mb-4">
-    <p class="mb-0 small"><i class="bi bi-info-circle me-2"></i><strong>{% trans %}User{% endtrans %}</strong> {% trans %}templates apply globally{% endtrans %}; <strong>{% trans %}Group{% endtrans %}</strong> {% trans %}templates apply only to group-owned zones{% endtrans %}</p>
-</div>
-{% endif %}
-
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-shield-lock me-2"></i>{% if show_user_access_templates %}{% trans %}Access Templates{% endtrans %}{% else %}{% trans %}Group Templates{% endtrans %}{% endif %}</strong>
-        {% if show_user_access_templates and show_group_access_templates %}
+        {% if templ_perm_add %}
+        <a class="btn btn-primary btn-sm" href="{{ base_url_prefix }}/permissions/templates/add">
+            <i class="bi bi-plus-circle-fill me-1 text-white"></i>{% trans %}Add access template{% endtrans %}
+        </a>
+        {% endif %}
+    </div>
+    {% if show_user_access_templates and show_group_access_templates %}
+    <div class="px-3 py-2 border-bottom">
         <div class="btn-group btn-group-sm" role="group">
             <button class="btn btn-sm btn-secondary active" data-filter="all">{% trans %}All{% endtrans %}</button>
             <button class="btn btn-sm btn-outline-secondary" data-filter="user">{% trans %}User{% endtrans %}</button>
             <button class="btn btn-sm btn-outline-secondary" data-filter="group">{% trans %}Group{% endtrans %}</button>
         </div>
-        {% endif %}
     </div>
+    {% endif %}
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-striped table-hover table-sm mb-0">
@@ -42,7 +43,7 @@
                 {% for template in permission_templates %}
                 <tr data-type="{{ template['template_type']|default('user') }}">
                     <td>{{ template['name'] }}</td>
-                    <td class="text-truncate" style="max-width: 300px;" title="{{ template['descr']|default('') }}">{{ template['descr']|default('-') }}</td>
+                    <td class="text-truncate" style="max-width: 500px;" title="{{ template['descr']|default('') }}">{{ template['descr']|default('-') }}</td>
                     {% if show_user_access_templates and show_group_access_templates %}
                     <td>
                         {% if template['template_type'] == 'user' or not template['template_type'] %}
@@ -67,14 +68,11 @@
             </table>
         </div>
     </div>
-    {% if templ_perm_add %}
-    <div class="card-footer py-3">
-        <a class="btn btn-primary btn-sm" href="{{ base_url_prefix }}/permissions/templates/add">
-            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add access template{% endtrans %}
-        </a>
-    </div>
-    {% endif %}
 </div>
+
+{% if show_user_access_templates and show_group_access_templates %}
+<p class="text-muted small"><i class="bi bi-info-circle me-1"></i><strong>{% trans %}Template Types:{% endtrans %}</strong> <strong>{% trans %}User{% endtrans %}</strong> {% trans %}templates apply globally{% endtrans %}; <strong>{% trans %}Group{% endtrans %}</strong> {% trans %}templates apply only to group-owned zones{% endtrans %}</p>
+{% endif %}
 
 {% if show_user_access_templates and show_group_access_templates %}
 <script>
