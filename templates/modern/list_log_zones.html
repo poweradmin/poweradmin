@@ -63,7 +63,24 @@
                     <td class="log-id-cell">{{ row['id'] }}</td>
                     {% endif %}
                     <td class="log-timestamp-cell">{{ row['created_at'] }}</td>
-                    <td class="log-event-cell">{{ row['event'] }}</td>
+                    <td class="log-event-cell small">
+                        {% set parts = row['event']|split(' ') %}
+                        {% set log_data = {} %}
+                        {% for part in parts %}
+                            {% set kv = part|split(':') %}
+                            {% if kv|length >= 2 %}
+                                {% set log_data = log_data|merge({(kv[0]): kv|slice(1)|join(':')}) %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if log_data.operation is defined %}
+                            <span class="badge {% if 'delete' in log_data.operation %}bg-danger{% elseif 'add' in log_data.operation %}bg-success{% elseif 'edit' in log_data.operation or 'update' in log_data.operation %}bg-primary{% else %}bg-secondary{% endif %} me-1">{{ log_data.operation }}</span>
+                        {% endif %}
+                        {% if log_data.zone is defined %}<strong>{{ log_data.zone }}</strong>{% endif %}
+                        {% if log_data.zone_name is defined %}<strong>{{ log_data.zone_name }}</strong>{% endif %}
+                        {% if log_data.zone_type is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.zone_type }}</span>{% endif %}
+                        {% if log_data.user is defined %}<span class="text-muted ms-1"><i class="bi bi-person-fill"></i> {{ log_data.user }}</span>{% endif %}
+                        {% if log_data.zone_master is defined %}<span class="text-muted ms-1"><i class="bi bi-arrow-right"></i> {{ log_data.zone_master }}</span>{% endif %}
+                    </td>
                     <td class="text-end">
                         <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#logModal" data-bs-content="{{ row['details'] }}">
                             <i class="bi bi-eye-fill text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Details{% endtrans %}</span>
