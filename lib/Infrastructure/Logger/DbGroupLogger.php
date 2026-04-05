@@ -127,6 +127,100 @@ class DbGroupLogger
         return false;
     }
 
+    public function getDistinctEventTypes(): array
+    {
+        return [
+            'created',
+            'updated',
+            'deleted',
+            'added_members',
+            'removed_members',
+            'added_zones',
+            'removed_zones',
+        ];
+    }
+
+    public function countFilteredLogs(array $filters): int
+    {
+        $query = "SELECT COUNT(*) AS number_of_logs FROM log_groups";
+        $conditions = [];
+        $params = [];
+
+        $this->buildFilterConditions($filters, $query, $conditions, $params);
+
+        if (!empty($conditions)) {
+            $query .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $stmt = $this->db->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value[0], $value[1]);
+        }
+        $stmt->execute();
+        return (int) $stmt->fetch()['number_of_logs'];
+    }
+
+    public function getFilteredLogs(array $filters, int $limit, int $offset): array
+    {
+        $query = "SELECT log_groups.* FROM log_groups";
+        $conditions = [];
+        $params = [];
+
+        $this->buildFilterConditions($filters, $query, $conditions, $params);
+
+        if (!empty($conditions)) {
+            $query .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $query .= " ORDER BY log_groups.created_at DESC LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->db->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value[0], $value[1]);
+        }
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $records = $stmt->fetchAll();
+        return $this->processFetchedLogs($records);
+    }
+
+    private function buildFilterConditions(array $filters, string &$query, array &$conditions, array &$params): void
+    {
+        if (!empty($filters['name'])) {
+            $query = str_replace('FROM log_groups', 'FROM log_groups INNER JOIN user_groups ON user_groups.id = log_groups.group_id', $query);
+            $conditions[] = "user_groups.name LIKE :search_by";
+            $params[':search_by'] = ["%" . $filters['name'] . "%", PDO::PARAM_STR];
+        }
+
+        if (!empty($filters['event_type'])) {
+            $typePatterns = [
+                'created' => '%created%',
+                'updated' => '%updated%',
+                'deleted' => '%deleted%',
+                'added_members' => '%Added%user(s)%',
+                'removed_members' => '%Removed%user(s)%',
+                'added_zones' => '%Added%zone(s)%',
+                'removed_zones' => '%Removed%zone(s)%',
+            ];
+            if (isset($typePatterns[$filters['event_type']])) {
+                $conditions[] = "log_groups.event LIKE :event_type";
+                $params[':event_type'] = [$typePatterns[$filters['event_type']], PDO::PARAM_STR];
+            }
+        }
+
+        if (!empty($filters['date_from'])) {
+            $conditions[] = "log_groups.created_at >= :date_from";
+            $params[':date_from'] = [$filters['date_from'] . " 00:00:00", PDO::PARAM_STR];
+        }
+
+        if (!empty($filters['date_to'])) {
+            $conditions[] = "log_groups.created_at <= :date_to";
+            $params[':date_to'] = [$filters['date_to'] . " 23:59:59", PDO::PARAM_STR];
+        }
+    }
+
     private function processDetails($event): string
     {
         return strtr($event, [" " => "<br>", ":" => ": "]);

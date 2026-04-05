@@ -7,28 +7,46 @@
 </nav>
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-journal-text me-2"></i>{% trans %}Group Activity Logs{% endtrans %}</strong>
+        <div>
+            <span class="badge bg-secondary">{{ number_of_logs }}</span>
+            <span class="ms-1 small text-muted">{% trans %}Total logs{% endtrans %}</span>
+        </div>
     </div>
     <div class="card-body">
         <form method="GET" action="{{ base_url_prefix }}/groups/logs">
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <input name="name" id="name" type="text" class="form-control form-control-sm"
-                               placeholder="{% trans %}Search logs by group{% endtrans %}"
-                               {% if name %}value="{{ name }}"{% endif %}>
-                        <button for="name" type="submit" class="btn btn-primary btn-sm">
-                            <i class="bi bi-search me-1 text-white"></i> {% trans %}Search{% endtrans %}
-                        </button>
-                        <a href="{{ base_url_prefix }}/groups/logs" class="btn btn-secondary btn-sm" role="button">
-                            <i class="bi bi-eraser me-1 text-white"></i> {% trans %}Clear{% endtrans %}
-                        </a>
-                    </div>
+            <div class="row g-2 mb-2">
+                <div class="col-md-3">
+                    <input name="name" type="text" class="form-control form-control-sm"
+                           placeholder="{% trans %}Group name{% endtrans %}"
+                           {% if name %}value="{{ name }}"{% endif %}>
                 </div>
-                <div class="col-md-6 d-flex align-items-center justify-content-end">
-                    <span class="badge bg-secondary">{{ number_of_logs }}</span>
-                    <span class="ms-2 small text-muted">{% trans %}Total logs{% endtrans %}</span>
+                <div class="col-md-3">
+                    <select name="event_type" class="form-select form-select-sm">
+                        <option value="">{% trans %}All events{% endtrans %}</option>
+                        {% for et in event_types %}
+                        <option value="{{ et }}" {% if event_type == et %}selected{% endif %}>{{ et }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input name="date_from" type="date" class="form-control form-control-sm"
+                           {% if date_from %}value="{{ date_from }}"{% endif %}
+                           title="{% trans %}From date{% endtrans %}">
+                </div>
+                <div class="col-md-2">
+                    <input name="date_to" type="date" class="form-control form-control-sm"
+                           {% if date_to %}value="{{ date_to }}"{% endif %}
+                           title="{% trans %}To date{% endtrans %}">
+                </div>
+                <div class="col-md-2 d-flex gap-1">
+                    <button type="submit" class="btn btn-primary btn-sm" title="{% trans %}Search{% endtrans %}">
+                        <i class="bi bi-search text-white"></i>
+                    </button>
+                    <a href="{{ base_url_prefix }}/groups/logs" class="btn btn-outline-secondary btn-sm" title="{% trans %}Clear{% endtrans %}">
+                        <i class="bi bi-x-circle text-secondary"></i>
+                    </a>
                 </div>
             </div>
         </form>
@@ -58,15 +76,21 @@
                     <td class="log-timestamp-cell">{{ row['created_at'] }}</td>
                     <td class="log-event-cell small">
                         {% if 'deleted' in row['event']|lower %}
-                            <span class="badge bg-danger me-1">delete</span>
+                            <span class="badge bg-danger me-1">deleted</span>
                         {% elseif 'created' in row['event']|lower %}
-                            <span class="badge bg-success me-1">create</span>
-                        {% elseif 'Added' in row['event'] %}
-                            <span class="badge bg-success me-1">add</span>
-                        {% elseif 'Removed' in row['event'] %}
-                            <span class="badge bg-warning text-dark me-1">remove</span>
-                        {% elseif 'edit' in row['event']|lower or 'update' in row['event']|lower %}
-                            <span class="badge bg-primary me-1">edit</span>
+                            <span class="badge bg-success me-1">created</span>
+                        {% elseif 'Added' in row['event'] and 'user(s)' in row['event'] %}
+                            <span class="badge bg-success me-1">added_members</span>
+                        {% elseif 'Added' in row['event'] and 'zone(s)' in row['event'] %}
+                            <span class="badge bg-success me-1">added_zones</span>
+                        {% elseif 'Removed' in row['event'] and 'user(s)' in row['event'] %}
+                            <span class="badge bg-warning text-dark me-1">removed_members</span>
+                        {% elseif 'Removed' in row['event'] and 'zone(s)' in row['event'] %}
+                            <span class="badge bg-warning text-dark me-1">removed_zones</span>
+                        {% elseif 'updated' in row['event']|lower %}
+                            <span class="badge bg-primary me-1">updated</span>
+                        {% elseif 'added to group' in row['event']|lower %}
+                            <span class="badge bg-success me-1">added_members</span>
                         {% endif %}
                         {{ row['event'] }}
                     </td>
