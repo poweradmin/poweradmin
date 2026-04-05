@@ -2,7 +2,7 @@
  * WHOIS/RDAP Zone Links E2E Tests
  *
  * Tests for the WHOIS and RDAP lookup buttons that appear
- * next to zones in the zone list pages.
+ * on the zone edit page.
  */
 
 import { test, expect } from '@playwright/test';
@@ -12,11 +12,12 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
 // Helper to get a zone ID from the zone list
 async function getTestZoneId(page) {
   await page.goto('/zones/forward?letter=all');
-  const editLink = page.locator('a[href*="/edit"]').first();
-  if (await editLink.count() > 0) {
-    const href = await editLink.getAttribute('href');
-    const match = href.match(/\/zones\/(\d+)\/edit/);
-    return match ? match[1] : null;
+  const row = page.locator('tr:has-text("admin-zone.example.com")').first();
+  if (await row.count() > 0) {
+    const checkbox = row.locator('input[name="zone_id[]"]');
+    if (await checkbox.count() > 0) {
+      return await checkbox.getAttribute('value');
+    }
   }
   return null;
 }
@@ -115,27 +116,40 @@ test.describe('WHOIS/RDAP Zone Links', () => {
     }
   });
 
-  test('should show WHOIS buttons in zone list for admin', async ({ page }) => {
+  test('should show WHOIS button on zone edit page for admin', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
+    const zoneId = await getTestZoneId(page);
+    if (!zoneId) return;
 
-    // Check for WHOIS buttons using data-testid
-    const whoisButtons = page.locator('a[data-testid^="whois-zone-"]');
-    const rdapButtons = page.locator('a[data-testid^="rdap-zone-"]');
+    await page.goto(`/zones/${zoneId}/edit`);
 
-    // At least one of these should be visible if WHOIS/RDAP is enabled
-    const whoisCount = await whoisButtons.count();
-    const rdapCount = await rdapButtons.count();
+    // Check for zone-specific WHOIS button (not the nav link)
+    const whoisButton = page.locator(`a[href*="/zones/${zoneId}/whois"]`);
+    const whoisCount = await whoisButton.count();
 
-    // If either tool is enabled, buttons should be present
     if (whoisCount > 0) {
-      const href = await whoisButtons.first().getAttribute('href');
+      const href = await whoisButton.first().getAttribute('href');
       expect(href).toMatch(/\/zones\/\d+\/whois/);
     }
 
+    // No fatal errors on the page
+    const bodyText = await page.locator('body').textContent();
+    expect(bodyText).not.toMatch(/fatal|exception/i);
+  });
+
+  test('should show RDAP button on zone edit page for admin', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    const zoneId = await getTestZoneId(page);
+    if (!zoneId) return;
+
+    await page.goto(`/zones/${zoneId}/edit`);
+
+    // Check for zone-specific RDAP button (not the nav link)
+    const rdapButton = page.locator(`a[href*="/zones/${zoneId}/rdap"]`);
+    const rdapCount = await rdapButton.count();
+
     if (rdapCount > 0) {
-      const href = await rdapButtons.first().getAttribute('href');
+      const href = await rdapButton.first().getAttribute('href');
       expect(href).toMatch(/\/zones\/\d+\/rdap/);
     }
 
@@ -144,47 +158,15 @@ test.describe('WHOIS/RDAP Zone Links', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should handle clicking WHOIS button from zone list', async ({ page }) => {
+  test('should not show WHOIS or RDAP buttons in zone list', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
 
-    const whoisButton = page.locator('a[data-testid^="whois-zone-"]').first();
-    if (await whoisButton.count() === 0) {
-      // WHOIS not enabled - skip
-      return;
-    }
+    // WHOIS/RDAP buttons should not appear in zone list rows
+    const whoisButtons = page.locator('a[data-testid^="whois-zone-"]');
+    const rdapButtons = page.locator('a[data-testid^="rdap-zone-"]');
 
-    await whoisButton.click();
-    await page.waitForLoadState('networkidle');
-
-    const bodyText = await page.locator('body').textContent();
-
-    // Should not crash
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-    // Should not show a "not found" page
-    expect(bodyText.toLowerCase()).not.toContain('not found');
-  });
-
-  test('should handle clicking RDAP button from zone list', async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
-
-    const rdapButton = page.locator('a[data-testid^="rdap-zone-"]').first();
-    if (await rdapButton.count() === 0) {
-      // RDAP not enabled - skip
-      return;
-    }
-
-    await rdapButton.click();
-    await page.waitForLoadState('networkidle');
-
-    const bodyText = await page.locator('body').textContent();
-
-    // Should not crash
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-    // Should not show a "not found" page
-    expect(bodyText.toLowerCase()).not.toContain('not found');
+    expect(await whoisButtons.count()).toBe(0);
+    expect(await rdapButtons.count()).toBe(0);
   });
 });

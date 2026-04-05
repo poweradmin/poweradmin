@@ -212,6 +212,13 @@
             </a>
             {% endfor %}
             {% endif %}
+            {% if rdap_actions is defined and rdap_actions|length > 0 %}
+            {% for action in rdap_actions %}
+            <a href="{{ base_url_prefix }}{{ action.url }}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-{{ action.icon }} me-1 text-white"></i>{{ action.label }}
+            </a>
+            {% endfor %}
+            {% endif %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership" class="btn btn-secondary btn-sm">
                 <i class="bi bi-people me-1 text-white"></i>{% trans %}Ownership{% endtrans %}
             </a>

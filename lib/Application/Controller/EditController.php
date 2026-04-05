@@ -487,6 +487,7 @@ class EditController extends BaseController
             'serial' => DnsRecord::getSOASerial($soa_record),
             'file_version' => time(),
             'whois_actions' => $this->getWhoisActions($zone_id),
+            'rdap_actions' => $this->getRdapActions($zone_id),
             'form_token' => $formToken,
             'form_data' => $formData,
             'search_term' => $searchTerm,
@@ -655,6 +656,14 @@ class EditController extends BaseController
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
         return $registry->getCapabilityData('whois_lookup', ['zone_id' => $zone_id], $isAdmin);
+    }
+
+    private function getRdapActions(int $zone_id): array
+    {
+        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $registry = new ModuleRegistry($this->config);
+        $registry->loadModules();
+        return $registry->getCapabilityData('rdap_lookup', ['zone_id' => $zone_id], $isAdmin);
     }
 
     private function getExportFormats(int $zone_id): array

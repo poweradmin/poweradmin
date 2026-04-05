@@ -248,22 +248,6 @@
                         {% endif %}
                         <td class="text-end">
                             <div class="gap-2">
-                                {% if whois_action_patterns is defined and whois_action_patterns|length > 0 %}
-                                {% for action in whois_action_patterns %}
-                                <a class="btn btn-outline-secondary btn-sm" href="{{ base_url_prefix }}{{ action.url_pattern|replace({'{id}': zone['id']}) }}" data-testid="whois-zone-{{ zone['id'] }}">
-                                    <i class="bi bi-{{ action.icon }} text-secondary"></i>
-                                    <span class="d-none d-md-inline">{{ action.label }}</span>
-                                </a>
-                                {% endfor %}
-                                {% endif %}
-                                {% if rdap_action_patterns is defined and rdap_action_patterns|length > 0 %}
-                                {% for action in rdap_action_patterns %}
-                                <a class="btn btn-outline-secondary btn-sm" href="{{ base_url_prefix }}{{ action.url_pattern|replace({'{id}': zone['id']}) }}" data-testid="rdap-zone-{{ zone['id'] }}">
-                                    <i class="bi bi-{{ action.icon }} text-secondary"></i>
-                                    <span class="d-none d-md-inline">{{ action.label }}</span>
-                                </a>
-                                {% endfor %}
-                                {% endif %}
                                 <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/edit" data-testid="edit-zone-{{ zone['id'] }}">
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
