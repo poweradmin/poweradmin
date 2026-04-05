@@ -1,291 +1,353 @@
-<!-- Quick Stats Row - For future DNS statistics visualization -->
-<div class="row">
-    {% if permissions['user_is_ueberuser'] and pdns_api_enabled and show_pdns_status %}
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm {% if pdns_server_status is defined %}{% if pdns_server_status.running %}border-success{% else %}border-danger{% endif %}{% endif %}">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{% trans %}PowerDNS Server{% endtrans %}</h6>
-                        <p class="card-text">
-                            {% if pdns_server_status is defined and pdns_server_status.running %}
-                                <span class="badge bg-success">{% trans %}Online{% endtrans %}</span> v{{ pdns_server_status.version }}
-                            {% else %}
-                                <span class="badge bg-danger">{% trans %}Offline{% endtrans %}</span>
-                            {% endif %}
-                        </p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-server display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}/tools/pdns-status" class="btn btn-sm btn-outline-primary" data-testid="pdns-status-link">
-                    {% trans %}View Details{% endtrans %}
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if permissions['zone_master_add'] %}
-    <!-- Add Master Zone -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{% trans %}Master Zone{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Create new master zone{% endtrans %}</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-plus-circle display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}/zones/add/master" class="btn btn-sm btn-outline-primary mt-2" data-testid="add-master-zone-link">
-                    {% trans %}Add Master Zone{% endtrans %}
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
-    <!-- Forward Zones -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{% trans %}Forward Zones{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Manage forward DNS zones{% endtrans %}</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-diagram-3 display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-sm btn-outline-primary mt-2" data-testid="list-forward-zones-link">
-                    {% trans %}List Forward Zones{% endtrans %}
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if permissions['search'] %}
-    <!-- Search -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{% trans %}Search{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Find zones and records{% endtrans %}</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-search display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}/search" class="btn btn-sm btn-outline-primary mt-2" data-testid="search-link">
-                    {% trans %}Search Zones{% endtrans %}
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
-    <!-- Reverse Zones -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{% trans %}Reverse Zones{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Manage reverse DNS zones{% endtrans %}</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-arrow-left-right display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}/zones/reverse" class="btn btn-sm btn-outline-primary mt-2" data-testid="list-reverse-zones-link">
-                    {% trans %}List Reverse Zones{% endtrans %}
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if permissions['zone_slave_add'] %}
-    <!-- Add Slave Zone -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{% trans %}Slave Zone{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Add new slave zone{% endtrans %}</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-plus-circle-dotted display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}/zones/add/slave" class="btn btn-sm btn-outline-primary mt-2" data-testid="add-slave-zone-link">
-                    {% trans %}Add Slave Zone{% endtrans %}
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if permissions['zone_templ_add'] or permissions['zone_templ_edit'] %}
-    <!-- Zone Templates -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{% trans %}Templates{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Manage zone templates{% endtrans %}</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-files display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}/zones/templates" class="btn btn-sm btn-outline-primary mt-2" data-testid="list-zone-templates-link">
-                    {% trans %}List Zone Templates{% endtrans %}
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if permissions['zone_master_add'] %}
-    <!-- Bulk Registration -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{% trans %}Bulk Registration{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Register multiple domains at once{% endtrans %}</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-collection display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}/zones/bulk-registration" class="btn btn-sm btn-outline-primary mt-2" data-testid="bulk-registration-link">
-                    {% trans %}Bulk Domain Registration{% endtrans %}
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if permissions['user_view_others'] or permissions['user_edit_others'] or permissions['user_add_new'] or permissions['user_is_ueberuser'] %}
-    <!-- Users -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{% trans %}Users{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Manage system users and access{% endtrans %}</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-people display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}/users" class="btn btn-sm btn-outline-primary mt-2" data-testid="user-administration-link">
-                    {% trans %}List users{% endtrans %}
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    {% if can_change_password %}
-    <!-- Change Password -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{% trans %}Password{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Update your account password{% endtrans %}</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-key display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}/password/change" class="btn btn-sm btn-outline-primary mt-2" data-testid="change-password-link">
-                    {% trans %}Change Password{% endtrans %}
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- User Preferences -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{% trans %}Preferences{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Customize your interface settings{% endtrans %}</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-gear display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}/user/preferences" class="btn btn-sm btn-outline-primary mt-2" data-testid="user-preferences-link">
-                    {% trans %}User Preferences{% endtrans %}
-                </a>
-            </div>
-        </div>
-    </div>
-
-    {% if module_nav_items is defined %}
-    {% for item in module_nav_items %}
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{{ item.label|trans }}</h6>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-{{ item.icon }} display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}{{ item.url }}" class="btn btn-sm btn-outline-primary mt-2" data-testid="{{ item.page_id }}-link">
-                    {{ item.label|trans }}
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-    {% endif %}
-
-    {% if iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others']) %}
-    <!-- PTR Records -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">{% trans %}PTR Records{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Manage reverse DNS records{% endtrans %}</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-arrow-repeat display-4 text-muted"></i>
-                    </div>
-                </div>
-                <a href="{{ base_url_prefix }}/zones/batch-ptr" class="btn btn-sm btn-outline-primary mt-2" data-testid="batch-ptr-records-link">
-                    {% trans %}Batch PTR Records{% endtrans %}
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
+<div class="mb-2">
+    <h5>{% trans %}Welcome{% endtrans %} {{ user_name }}</h5>
 </div>
+
+{# --- DNS Management --- #}
+{% set has_dns_management = (permissions['user_is_ueberuser'] and pdns_api_enabled and show_pdns_status)
+    or permissions['search']
+    or permissions['zone_content_view_own'] or permissions['zone_content_view_others']
+    or permissions['zone_templ_add'] or permissions['zone_templ_edit']
+    or permissions['supermaster_view'] %}
+{% if has_dns_management %}
+<div class="card mb-2">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center py-1 px-3" role="button" data-bs-toggle="collapse" data-bs-target="#dns-management" aria-expanded="true">
+        <small class="fw-semibold"><i class="bi bi-globe me-1"></i>{% trans %}DNS Management{% endtrans %}</small>
+        <i class="bi bi-chevron-up collapse-icon small"></i>
+    </div>
+    <div class="collapse show" id="dns-management">
+        <div class="card-body py-2 px-2">
+            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-5 row-cols-xl-6 g-1">
+                {% if permissions['user_is_ueberuser'] and pdns_api_enabled and show_pdns_status %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/tools/pdns-status" class="card h-100 text-decoration-none text-body {% if pdns_server_status is defined %}{% if pdns_server_status.running %}border-success{% else %}border-danger{% endif %}{% endif %}" data-testid="pdns-status-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-server fs-2 d-block mb-1"></i>
+                            {% if pdns_server_status is defined %}
+                                {% if pdns_server_status.running %}
+                                <span class="badge bg-success" style="font-size: .6rem; position: absolute; top: 4px; right: 4px;">{% trans %}Online{% endtrans %}</span>
+                                {% else %}
+                                <span class="badge bg-danger" style="font-size: .6rem; position: absolute; top: 4px; right: 4px;">{% trans %}Offline{% endtrans %}</span>
+                                {% endif %}
+                            {% endif %}
+                            <small class="d-block text-truncate">{{ pdns_server_status.display }}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['search'] %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/search" class="card h-100 text-decoration-none text-body" data-testid="search-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-search fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Search{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/zones/forward" class="card h-100 text-decoration-none text-body" data-testid="list-forward-zones-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-diagram-3 fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Forward Zones{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/zones/reverse" class="card h-100 text-decoration-none text-body" data-testid="list-reverse-zones-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-arrow-left-right fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Reverse Zones{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['zone_templ_add'] or permissions['zone_templ_edit'] %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/zones/templates" class="card h-100 text-decoration-none text-body" data-testid="list-zone-templates-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-files fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Templates{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['supermaster_view'] %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/supermasters" class="card h-100 text-decoration-none text-body" data-testid="list-supermasters-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-hdd-rack fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Supermasters{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# --- Zone Operations --- #}
+{% set has_zone_operations = permissions['zone_master_add']
+    or permissions['zone_slave_add']
+    or permissions['supermaster_add']
+    or (iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others'])) %}
+{% if has_zone_operations %}
+<div class="card mb-2">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center py-1 px-3" role="button" data-bs-toggle="collapse" data-bs-target="#zone-operations" aria-expanded="true">
+        <small class="fw-semibold"><i class="bi bi-plus-square me-1"></i>{% trans %}Zone Operations{% endtrans %}</small>
+        <i class="bi bi-chevron-up collapse-icon small"></i>
+    </div>
+    <div class="collapse show" id="zone-operations">
+        <div class="card-body py-2 px-2">
+            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-5 row-cols-xl-6 g-1">
+                {% if permissions['zone_master_add'] %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/zones/add/master" class="card h-100 text-decoration-none text-body" data-testid="add-master-zone-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-plus-circle fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Master Zone{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['zone_slave_add'] %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/zones/add/slave" class="card h-100 text-decoration-none text-body" data-testid="add-slave-zone-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-plus-circle-dotted fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Slave Zone{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['supermaster_add'] %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/supermasters/add" class="card h-100 text-decoration-none text-body" data-testid="add-supermaster-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-hdd-network fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Supermaster{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['zone_master_add'] %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/zones/bulk-registration" class="card h-100 text-decoration-none text-body" data-testid="bulk-registration-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-collection fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Bulk Registration{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others']) %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/zones/batch-ptr" class="card h-100 text-decoration-none text-body" data-testid="batch-ptr-records-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-arrow-repeat fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}PTR Records{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# --- Administration --- #}
+{% set has_administration = (permissions['user_view_others'] or permissions['user_edit_others'] or permissions['user_add_new'] or permissions['user_is_ueberuser'])
+    or permissions['templ_perm_edit']
+    or (permissions['user_is_ueberuser'] and dblog_use == true) %}
+{% if has_administration %}
+<div class="card mb-2">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center py-1 px-3" role="button" data-bs-toggle="collapse" data-bs-target="#administration" aria-expanded="true">
+        <small class="fw-semibold"><i class="bi bi-shield-lock me-1"></i>{% trans %}Administration{% endtrans %}</small>
+        <i class="bi bi-chevron-up collapse-icon small"></i>
+    </div>
+    <div class="collapse show" id="administration">
+        <div class="card-body py-2 px-2">
+            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-5 row-cols-xl-6 g-1">
+                {% if permissions['user_view_others'] or permissions['user_edit_others'] or permissions['user_add_new'] or permissions['user_is_ueberuser'] %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/users" class="card h-100 text-decoration-none text-body" data-testid="user-administration-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-people fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Users{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['user_is_ueberuser'] and show_group_access_templates %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/groups" class="card h-100 text-decoration-none text-body" data-testid="list-groups-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-people-fill fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Groups{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['templ_perm_edit'] %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/permissions/templates" class="card h-100 text-decoration-none text-body" data-testid="list-permission-templates-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-person-lock fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Access{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['user_is_ueberuser'] and dblog_use == true %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/zones/logs" class="card h-100 text-decoration-none text-body" data-testid="zone-logs-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-list-ul fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Zone Logs{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['user_is_ueberuser'] and dblog_use == true %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/users/logs" class="card h-100 text-decoration-none text-body" data-testid="user-logs-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-journal-text fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}User Logs{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['user_is_ueberuser'] and dblog_use == true and show_group_access_templates %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/groups/logs" class="card h-100 text-decoration-none text-body" data-testid="group-logs-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-journal-bookmark fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Group Logs{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# --- Tools & Modules --- #}
+{% set has_tools = (permissions['user_is_ueberuser'] and enable_consistency_checks)
+    or ((permissions['user_is_ueberuser'] or permissions['api_manage_keys']) and api_enabled)
+    or (module_nav_items is defined and module_nav_items|length > 0) %}
+{% if has_tools %}
+<div class="card mb-2">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center py-1 px-3" role="button" data-bs-toggle="collapse" data-bs-target="#tools-modules" aria-expanded="true">
+        <small class="fw-semibold"><i class="bi bi-tools me-1"></i>{% trans %}Tools{% endtrans %}</small>
+        <i class="bi bi-chevron-up collapse-icon small"></i>
+    </div>
+    <div class="collapse show" id="tools-modules">
+        <div class="card-body py-2 px-2">
+            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-5 row-cols-xl-6 g-1">
+                {% if permissions['user_is_ueberuser'] and enable_consistency_checks %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/tools/database-consistency" class="card h-100 text-decoration-none text-body" data-testid="database-consistency-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-database-check fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Database{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if (permissions['user_is_ueberuser'] or permissions['api_manage_keys']) and api_enabled %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/settings/api-keys" class="card h-100 text-decoration-none text-body" data-testid="api-keys-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-key-fill fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}API Keys{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if module_nav_items is defined %}
+                {% for item in module_nav_items %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}{{ item.url }}" class="card h-100 text-decoration-none text-body" data-testid="{{ item.page_id }}-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-{{ item.icon }} fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{{ item.label|trans }}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# --- Account --- #}
+<div class="card mb-2">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center py-1 px-3" role="button" data-bs-toggle="collapse" data-bs-target="#account-section" aria-expanded="true">
+        <small class="fw-semibold"><i class="bi bi-person-circle me-1"></i>{% trans %}Account{% endtrans %}</small>
+        <i class="bi bi-chevron-up collapse-icon small"></i>
+    </div>
+    <div class="collapse show" id="account-section">
+        <div class="card-body py-2 px-2">
+            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-5 row-cols-xl-6 g-1">
+                {% if is_limited_user and permissions['user_edit_own'] %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/users/{{ user_id }}/edit" class="card h-100 text-decoration-none text-body" data-testid="edit-profile-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-person-fill-gear fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}My Profile{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if can_change_password %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/password/change" class="card h-100 text-decoration-none text-body" data-testid="change-password-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-key fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Password{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/user/preferences" class="card h-100 text-decoration-none text-body" data-testid="user-preferences-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-gear fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Preferences{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/logout" class="card h-100 text-decoration-none text-body" data-testid="logout-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-box-arrow-right fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Logout{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    [data-bs-toggle="collapse"] .collapse-icon {
+        transition: transform 0.2s ease;
+    }
+    [data-bs-toggle="collapse"].collapsed .collapse-icon {
+        transform: rotate(180deg);
+    }
+    .card-item .card:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+</style>

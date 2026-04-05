@@ -125,6 +125,7 @@ class IndexController extends BaseController
             'is_limited_user' => $isLimitedUser,
             'user_id' => $userId,
             'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
+            'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
             'module_nav_items' => $this->getModuleNavItemsForDashboard(),
         ]);
     }
