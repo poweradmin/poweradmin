@@ -18,24 +18,50 @@
     </div>
     <div class="card-body">
         <form method="GET" action="{{ base_url_prefix }}/zones/logs">
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <input name="name" id="name" type="text" class="form-control form-control-sm"
-                               placeholder="{% trans %}Search logs by domain{% endtrans %}"
-                               {% if name %}value="{{ name }}"{% endif %}>
-                        <button for="name" type="submit" class="btn btn-primary btn-sm">
-                            <i class="bi bi-search me-1 text-white"></i> {% trans %}Search{% endtrans %}
-                        </button>
-                        <a href="{{ base_url_prefix }}/zones/logs" class="btn btn-secondary btn-sm" role="button">
-                            <i class="bi bi-eraser me-1 text-white"></i> {% trans %}Clear{% endtrans %}
-                        </a>
-                    </div>
+            <div class="row g-2 mb-2">
+                <div class="col-md-3">
+                    <input name="name" type="text" class="form-control form-control-sm"
+                           placeholder="{% trans %}Domain name{% endtrans %}"
+                           {% if name %}value="{{ name }}"{% endif %}>
                 </div>
-                <div class="col-md-6 d-flex align-items-center justify-content-end">
-                    <span class="badge bg-secondary">{{ number_of_logs }}</span>
-                    <span class="ms-2 small text-muted">{% trans %}Total logs{% endtrans %}</span>
+                <div class="col-md-2">
+                    <select name="operation" class="form-select form-select-sm">
+                        <option value="">{% trans %}All operations{% endtrans %}</option>
+                        {% for op in operations %}
+                        <option value="{{ op }}" {% if operation == op %}selected{% endif %}>{{ op }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
+                <div class="col-md-2">
+                    <select name="user" class="form-select form-select-sm">
+                        <option value="">{% trans %}All users{% endtrans %}</option>
+                        {% for u in users %}
+                        <option value="{{ u }}" {% if user_filter == u %}selected{% endif %}>{{ u }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input name="date_from" type="date" class="form-control form-control-sm"
+                           {% if date_from %}value="{{ date_from }}"{% endif %}
+                           title="{% trans %}From date{% endtrans %}">
+                </div>
+                <div class="col-md-2">
+                    <input name="date_to" type="date" class="form-control form-control-sm"
+                           {% if date_to %}value="{{ date_to }}"{% endif %}
+                           title="{% trans %}To date{% endtrans %}">
+                </div>
+                <div class="col-md-1 d-flex gap-1">
+                    <button type="submit" class="btn btn-primary btn-sm" title="{% trans %}Search{% endtrans %}">
+                        <i class="bi bi-search text-white"></i>
+                    </button>
+                    <a href="{{ base_url_prefix }}/zones/logs" class="btn btn-outline-secondary btn-sm" title="{% trans %}Clear{% endtrans %}">
+                        <i class="bi bi-x-circle text-secondary"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <span class="badge bg-secondary">{{ number_of_logs }}</span>
+                <span class="ms-2 small text-muted">{% trans %}Total logs{% endtrans %}</span>
             </div>
         </form>
 

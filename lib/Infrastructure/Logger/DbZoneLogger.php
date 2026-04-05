@@ -161,6 +161,106 @@ class DbZoneLogger
         return false;
     }
 
+    public function getDistinctOperations(): array
+    {
+        return [
+            'add_zone', 'edit_zone', 'delete_zone',
+            'add_record', 'edit_record', 'delete_record',
+            'add_supermaster', 'edit_supermaster', 'delete_supermaster',
+            'dnssec_add_key', 'dnssec_edit_key', 'dnssec_delete_key',
+            'sign_zone', 'unsign_zone',
+            'update_soa_serial',
+        ];
+    }
+
+    public function getDistinctUsers(): array
+    {
+        $stmt = $this->db->query("SELECT DISTINCT username FROM users ORDER BY username");
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function countFilteredLogs(array $filters): int
+    {
+        $query = "SELECT COUNT(*) AS number_of_logs FROM log_zones";
+        $conditions = [];
+        $params = [];
+
+        $this->buildFilterConditions($filters, $query, $conditions, $params);
+
+        if (!empty($conditions)) {
+            $query .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $stmt = $this->db->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value[0], $value[1]);
+        }
+        $stmt->execute();
+        return (int) $stmt->fetch()['number_of_logs'];
+    }
+
+    public function getFilteredLogs(array $filters, int $limit, int $offset): array
+    {
+        $query = "SELECT log_zones.id, log_zones.event, log_zones.created_at FROM log_zones";
+        $conditions = [];
+        $params = [];
+
+        $this->buildFilterConditions($filters, $query, $conditions, $params);
+
+        if (!empty($conditions)) {
+            $query .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $query .= " ORDER BY log_zones.created_at DESC LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->db->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value[0], $value[1]);
+        }
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $records = $stmt->fetchAll();
+        return $this->processFetchedLogs($records);
+    }
+
+    private function buildFilterConditions(array $filters, string &$query, array &$conditions, array &$params): void
+    {
+        if (!empty($filters['name'])) {
+            if ($this->isApiBackend()) {
+                $query = str_replace('FROM log_zones', 'FROM log_zones INNER JOIN zones ON COALESCE(zones.domain_id, zones.id) = log_zones.zone_id', $query);
+                $conditions[] = "zones.zone_name LIKE :search_by";
+            } else {
+                $pdns_db_name = $this->config->get('database', 'pdns_db_name');
+                $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
+                $query = str_replace('FROM log_zones', "FROM log_zones INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id", $query);
+                $conditions[] = "$domains_table.name LIKE :search_by";
+            }
+            $params[':search_by'] = ["%" . $filters['name'] . "%", PDO::PARAM_STR];
+        }
+
+        if (!empty($filters['operation'])) {
+            $conditions[] = "log_zones.event LIKE :operation";
+            $params[':operation'] = ["%operation:" . $filters['operation'] . " %", PDO::PARAM_STR];
+        }
+
+        if (!empty($filters['user'])) {
+            $conditions[] = "log_zones.event LIKE :user_filter";
+            $params[':user_filter'] = ["%user:" . $filters['user'] . " %", PDO::PARAM_STR];
+        }
+
+        if (!empty($filters['date_from'])) {
+            $conditions[] = "log_zones.created_at >= :date_from";
+            $params[':date_from'] = [$filters['date_from'] . " 00:00:00", PDO::PARAM_STR];
+        }
+
+        if (!empty($filters['date_to'])) {
+            $conditions[] = "log_zones.created_at <= :date_to";
+            $params[':date_to'] = [$filters['date_to'] . " 23:59:59", PDO::PARAM_STR];
+        }
+    }
+
     private function processDetails($event): string
     {
         return strtr($event, [" " => "<br>", ":" => ": "]);
