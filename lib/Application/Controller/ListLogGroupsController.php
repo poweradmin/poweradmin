@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
@@ -40,14 +41,15 @@ use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
 class ListLogGroupsController extends BaseController
 {
-
     private DbGroupLogger $dbGroupLogger;
+    private Request $httpRequest;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->dbGroupLogger = new DbGroupLogger($this->db);
+        $this->httpRequest = new Request();
     }
 
     public function run(): void
@@ -66,11 +68,34 @@ class ListLogGroupsController extends BaseController
         $this->showListLogGroups();
     }
 
+    private function buildFilters(): array
+    {
+        $filters = [];
+        $name = $this->httpRequest->getQueryParam('name');
+        if (!empty($name)) {
+            $filters['name'] = $name;
+        }
+        $eventType = $this->httpRequest->getQueryParam('event_type');
+        if (!empty($eventType)) {
+            $filters['event_type'] = $eventType;
+        }
+        $dateFrom = $this->httpRequest->getQueryParam('date_from');
+        if (!empty($dateFrom) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
+            $filters['date_from'] = $dateFrom;
+        }
+        $dateTo = $this->httpRequest->getQueryParam('date_to');
+        if (!empty($dateTo) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateTo)) {
+            $filters['date_to'] = $dateTo;
+        }
+        return $filters;
+    }
+
     private function showListLogGroups(): void
     {
         $selected_page = 1;
-        if (isset($_GET['start'])) {
-            is_numeric($_GET['start']) ? $selected_page = $_GET['start'] : die("Unknown page.");
+        $start = $this->httpRequest->getQueryParam('start');
+        if ($start !== null) {
+            is_numeric($start) ? $selected_page = (int)$start : die("Unknown page.");
             if ($selected_page < 0) {
                 die('Unknown page.');
             }
@@ -79,18 +104,13 @@ class ListLogGroupsController extends BaseController
         $configManager = ConfigurationManager::getInstance();
         $logs_per_page = $configManager->get('interface', 'rows_per_page', 50);
 
-        $filters = [];
-        if (!empty($_GET['name'])) {
-            $filters['name'] = $_GET['name'];
-        }
-        if (!empty($_GET['event_type'])) {
-            $filters['event_type'] = $_GET['event_type'];
-        }
-        if (!empty($_GET['date_from']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['date_from'])) {
-            $filters['date_from'] = $_GET['date_from'];
-        }
-        if (!empty($_GET['date_to']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['date_to'])) {
-            $filters['date_to'] = $_GET['date_to'];
+        $filters = $this->buildFilters();
+
+        // Handle export
+        $exportFormat = $this->httpRequest->getQueryParam('export');
+        if (!empty($exportFormat) && in_array($exportFormat, ['csv', 'json'])) {
+            $this->exportLogs($filters, $exportFormat);
+            return;
         }
 
         $number_of_logs = $this->dbGroupLogger->countFilteredLogs($filters);
@@ -103,10 +123,10 @@ class ListLogGroupsController extends BaseController
 
         $this->render('list_log_groups.html', [
             'number_of_logs' => $number_of_logs,
-            'name' => isset($_GET['name']) ? htmlspecialchars($_GET['name']) : null,
-            'event_type' => isset($_GET['event_type']) ? htmlspecialchars($_GET['event_type']) : null,
-            'date_from' => isset($_GET['date_from']) ? htmlspecialchars($_GET['date_from']) : null,
-            'date_to' => isset($_GET['date_to']) ? htmlspecialchars($_GET['date_to']) : null,
+            'name' => htmlspecialchars($this->httpRequest->getQueryParam('name', '')),
+            'event_type' => htmlspecialchars($this->httpRequest->getQueryParam('event_type', '')),
+            'date_from' => htmlspecialchars($this->httpRequest->getQueryParam('date_from', '')),
+            'date_to' => htmlspecialchars($this->httpRequest->getQueryParam('date_to', '')),
             'event_types' => $this->dbGroupLogger->getDistinctEventTypes(),
             'data' => $logs,
             'selected_page' => $selected_page,
@@ -134,5 +154,53 @@ class ListLogGroupsController extends BaseController
         $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/groups/logs?start={PageNumber}' . $queryParams);
 
         return $presenter->present();
+    }
+
+    private function exportLogs(array $filters, string $format): void
+    {
+        $logs = $this->dbGroupLogger->getFilteredLogs($filters, 100000, 0);
+        $parsed = [];
+        foreach ($logs as $log) {
+            $row = ['timestamp' => $log['created_at']];
+            if (str_contains($log['event'], 'operation:')) {
+                $parts = explode(' ', $log['event']);
+                foreach ($parts as $part) {
+                    $kv = explode(':', $part, 2);
+                    if (count($kv) === 2) {
+                        $row[$kv[0]] = $kv[1];
+                    }
+                }
+            } else {
+                $row['event'] = $log['event'];
+            }
+            $parsed[] = $row;
+        }
+
+        if ($format === 'json') {
+            header('Content-Type: application/json');
+            header('Content-Disposition: attachment; filename="group-logs-' . date('Y-m-d') . '.json"');
+            echo json_encode($parsed, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        } else {
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="group-logs-' . date('Y-m-d') . '.csv"');
+            $output = fopen('php://output', 'w');
+            if (!empty($parsed)) {
+                $allKeys = [];
+                foreach ($parsed as $row) {
+                    $allKeys = array_merge($allKeys, array_keys($row));
+                }
+                $allKeys = array_unique($allKeys);
+                fputcsv($output, $allKeys);
+                foreach ($parsed as $row) {
+                    $csvRow = [];
+                    foreach ($allKeys as $key) {
+                        $csvRow[] = $row[$key] ?? '';
+                    }
+                    fputcsv($output, $csvRow);
+                }
+            }
+            fclose($output);
+        }
+        exit;
     }
 }

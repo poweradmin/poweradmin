@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
@@ -42,12 +43,14 @@ use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 class ListLogZonesController extends BaseController
 {
     private DbZoneLogger $dbZoneLogger;
+    private Request $httpRequest;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->dbZoneLogger = new DbZoneLogger($this->db, $this->createDnsBackendProvider());
+        $this->httpRequest = new Request();
     }
 
     public function run(): void
@@ -61,11 +64,38 @@ class ListLogZonesController extends BaseController
         $this->showListLogZones();
     }
 
+    private function buildFilters(): array
+    {
+        $filters = [];
+        $name = $this->httpRequest->getQueryParam('name');
+        if (!empty($name)) {
+            $filters['name'] = DnsIdnService::toPunycode($name);
+        }
+        $operation = $this->httpRequest->getQueryParam('operation');
+        if (!empty($operation)) {
+            $filters['operation'] = $operation;
+        }
+        $user = $this->httpRequest->getQueryParam('user');
+        if (!empty($user)) {
+            $filters['user'] = $user;
+        }
+        $dateFrom = $this->httpRequest->getQueryParam('date_from');
+        if (!empty($dateFrom) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
+            $filters['date_from'] = $dateFrom;
+        }
+        $dateTo = $this->httpRequest->getQueryParam('date_to');
+        if (!empty($dateTo) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateTo)) {
+            $filters['date_to'] = $dateTo;
+        }
+        return $filters;
+    }
+
     private function showListLogZones(): void
     {
         $selected_page = 1;
-        if (isset($_GET['start'])) {
-            is_numeric($_GET['start']) ? $selected_page = $_GET['start'] : die(_('Invalid page number.'));
+        $start = $this->httpRequest->getQueryParam('start');
+        if ($start !== null) {
+            is_numeric($start) ? $selected_page = (int)$start : die(_('Invalid page number.'));
             if ($selected_page < 1) {
                 die(_('Page number must be at least 1.'));
             }
@@ -74,21 +104,13 @@ class ListLogZonesController extends BaseController
         $configManager = ConfigurationManager::getInstance();
         $logs_per_page = $configManager->get('interface', 'rows_per_page', 50);
 
-        $filters = [];
-        if (!empty($_GET['name'])) {
-            $filters['name'] = DnsIdnService::toPunycode($_GET['name']);
-        }
-        if (!empty($_GET['operation'])) {
-            $filters['operation'] = $_GET['operation'];
-        }
-        if (!empty($_GET['user'])) {
-            $filters['user'] = $_GET['user'];
-        }
-        if (!empty($_GET['date_from']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['date_from'])) {
-            $filters['date_from'] = $_GET['date_from'];
-        }
-        if (!empty($_GET['date_to']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $_GET['date_to'])) {
-            $filters['date_to'] = $_GET['date_to'];
+        $filters = $this->buildFilters();
+
+        // Handle export
+        $exportFormat = $this->httpRequest->getQueryParam('export');
+        if (!empty($exportFormat) && in_array($exportFormat, ['csv', 'json'])) {
+            $this->exportLogs($filters, $exportFormat);
+            return;
         }
 
         $number_of_logs = $this->dbZoneLogger->countFilteredLogs($filters);
@@ -101,11 +123,11 @@ class ListLogZonesController extends BaseController
 
         $this->render('list_log_zones.html', [
             'number_of_logs' => $number_of_logs,
-            'name' => isset($_GET['name']) ? htmlspecialchars($_GET['name']) : null,
-            'operation' => isset($_GET['operation']) ? htmlspecialchars($_GET['operation']) : null,
-            'user_filter' => isset($_GET['user']) ? htmlspecialchars($_GET['user']) : null,
-            'date_from' => isset($_GET['date_from']) ? htmlspecialchars($_GET['date_from']) : null,
-            'date_to' => isset($_GET['date_to']) ? htmlspecialchars($_GET['date_to']) : null,
+            'name' => htmlspecialchars($this->httpRequest->getQueryParam('name', '')),
+            'operation' => htmlspecialchars($this->httpRequest->getQueryParam('operation', '')),
+            'user_filter' => htmlspecialchars($this->httpRequest->getQueryParam('user', '')),
+            'date_from' => htmlspecialchars($this->httpRequest->getQueryParam('date_from', '')),
+            'date_to' => htmlspecialchars($this->httpRequest->getQueryParam('date_to', '')),
             'operations' => $this->dbZoneLogger->getDistinctOperations(),
             'users' => $this->dbZoneLogger->getDistinctUsers(),
             'data' => $logs,
@@ -133,5 +155,48 @@ class ListLogZonesController extends BaseController
         $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/zones/logs?start={PageNumber}' . $queryParams);
 
         return $presenter->present();
+    }
+
+    private function exportLogs(array $filters, string $format): void
+    {
+        $logs = $this->dbZoneLogger->getFilteredLogs($filters, 100000, 0);
+        $parsed = $this->parseLogEvents($logs);
+
+        if ($format === 'json') {
+            header('Content-Type: application/json');
+            header('Content-Disposition: attachment; filename="zone-logs-' . date('Y-m-d') . '.json"');
+            echo json_encode($parsed, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        } else {
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment; filename="zone-logs-' . date('Y-m-d') . '.csv"');
+            $output = fopen('php://output', 'w');
+            if (!empty($parsed)) {
+                fputcsv($output, array_keys($parsed[0]));
+                foreach ($parsed as $row) {
+                    fputcsv($output, $row);
+                }
+            }
+            fclose($output);
+        }
+        exit;
+    }
+
+    private function parseLogEvents(array $logs): array
+    {
+        $result = [];
+        foreach ($logs as $log) {
+            $row = [
+                'timestamp' => $log['created_at'],
+            ];
+            $parts = explode(' ', $log['event']);
+            foreach ($parts as $part) {
+                $kv = explode(':', $part, 2);
+                if (count($kv) === 2) {
+                    $row[$kv[0]] = $kv[1];
+                }
+            }
+            $result[] = $row;
+        }
+        return $result;
     }
 }
