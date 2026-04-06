@@ -419,18 +419,14 @@ class EditUserController extends BaseController
             );
             $this->setMessage('edit_user', 'success', $message);
 
-            // Log the additions for each group in the same format as group management
-            $currentUserId = $this->userContextService->getLoggedInUserId();
-            $ldapUse = $this->config->get('ldap', 'enabled');
-            $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
-            $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
-
+            // Log the additions for each group
             foreach ($successfulGroups as $groupInfo) {
                 $logMessage = sprintf(
-                    "Added 1 user(s) to group '%s' (ID: %d) by %s: %s",
+                    "client_ip:%s user:%s operation:add_members group:%s group_id:%d count:1 members:%s",
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->userContextService->getLoggedInUsername(),
                     $groupInfo['name'],
                     $groupInfo['id'],
-                    $actorUsername,
                     $targetUsername
                 );
                 $this->auditLogger->logGroupInfo($logMessage, $groupInfo['id']);

@@ -40,6 +40,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Web\IpAddressRetriever;
 
 class ManageGroupMembersController extends BaseController
 {
@@ -47,6 +48,7 @@ class ManageGroupMembersController extends BaseController
     private GroupService $groupService;
     private Request $request;
     private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -59,6 +61,7 @@ class ManageGroupMembersController extends BaseController
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -151,20 +154,16 @@ class ManageGroupMembersController extends BaseController
                 );
                 $this->setMessage('manage_group_members', 'success', $message);
 
-                // Get current admin username
-                $ldapUse = $this->config->get('ldap', 'enabled');
-                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
-                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
-
                 // Build detailed log message with usernames
                 $addedUsernames = array_map(fn($id) => $userMap[$id] ?? "ID: $id", $results['success']);
                 $logMessage = sprintf(
-                    "Added %d user(s) to group '%s' (ID: %d) by %s: %s",
-                    count($results['success']),
+                    "client_ip:%s user:%s operation:add_members group:%s group_id:%d count:%d members:%s",
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getUserContextService()->getLoggedInUsername(),
                     $groupName,
                     $groupId,
-                    $actorUsername,
-                    implode(', ', $addedUsernames)
+                    count($results['success']),
+                    implode(',', $addedUsernames)
                 );
 
                 $this->auditLogger->logGroupInfo($logMessage, $groupId);
@@ -231,20 +230,16 @@ class ManageGroupMembersController extends BaseController
                 );
                 $this->setMessage('manage_group_members', 'success', $message);
 
-                // Get current admin username
-                $ldapUse = $this->config->get('ldap', 'enabled');
-                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
-                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
-
                 // Build detailed log message with usernames
                 $removedUsernames = array_map(fn($id) => $userMap[$id] ?? "ID: $id", $results['success']);
                 $logMessage = sprintf(
-                    "Removed %d user(s) from group '%s' (ID: %d) by %s: %s",
-                    count($results['success']),
+                    "client_ip:%s user:%s operation:remove_members group:%s group_id:%d count:%d members:%s",
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getUserContextService()->getLoggedInUsername(),
                     $groupName,
                     $groupId,
-                    $actorUsername,
-                    implode(', ', $removedUsernames)
+                    count($results['success']),
+                    implode(',', $removedUsernames)
                 );
 
                 $this->auditLogger->logGroupInfo($logMessage, $groupId);

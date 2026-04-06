@@ -39,6 +39,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Infrastructure\Web\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddGroupController extends BaseController
@@ -47,6 +48,7 @@ class AddGroupController extends BaseController
     private Request $request;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
     private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -57,6 +59,7 @@ class AddGroupController extends BaseController
         $this->request = new Request();
         $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -110,12 +113,9 @@ class AddGroupController extends BaseController
         try {
             $group = $this->groupService->createGroup($name, $permTemplId, $description, $userId);
 
-            // Log group creation with actor and template details
-            $ldapUse = $this->config->get('ldap', 'enabled');
-            $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $userId);
-            $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $userId";
+            // Log group creation with template details
+            $actorUsername = $this->getUserContextService()->getLoggedInUsername();
 
-            // Get permission template name for logging (no filter - need to find any template type)
             $permTemplates = UserManager::listPermissionTemplates($this->db);
             $templateName = 'Unknown';
             foreach ($permTemplates as $template) {
@@ -126,10 +126,11 @@ class AddGroupController extends BaseController
             }
 
             $logMessage = sprintf(
-                "Group created: '%s' (ID: %d) by %s with permission template '%s' (ID: %d)",
+                "client_ip:%s user:%s operation:create_group group:%s group_id:%d perm_template:%s perm_template_id:%d",
+                $this->ipAddressRetriever->getClientIp(),
+                $actorUsername,
                 $name,
                 $group->getId(),
-                $actorUsername,
                 $templateName,
                 $permTemplId
             );

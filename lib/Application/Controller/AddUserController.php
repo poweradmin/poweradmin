@@ -347,17 +347,13 @@ class AddUserController extends BaseController
 
         // Log the additions
         if (!empty($successfulGroups)) {
-            $currentUserId = $this->userContextService->getLoggedInUserId();
-            $ldapUse = $this->config->get('ldap', 'enabled');
-            $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
-            $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
-
             foreach ($successfulGroups as $groupInfo) {
                 $logMessage = sprintf(
-                    "Added 1 user(s) to group '%s' (ID: %d) by %s: %s",
+                    "client_ip:%s user:%s operation:add_members group:%s group_id:%d count:1 members:%s",
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->userContextService->getLoggedInUsername(),
                     $groupInfo['name'],
                     $groupInfo['id'],
-                    $actorUsername,
                     $username
                 );
                 $this->auditLogger->logGroupInfo($logMessage, $groupInfo['id']);

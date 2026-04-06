@@ -75,24 +75,30 @@
                     {% endif %}
                     <td class="log-timestamp-cell">{{ row['created_at'] }}</td>
                     <td class="log-event-cell small">
-                        {% if 'deleted' in row['event']|lower %}
-                            <span class="badge bg-danger me-1">deleted</span>
-                        {% elseif 'created' in row['event']|lower %}
-                            <span class="badge bg-success me-1">created</span>
-                        {% elseif 'Added' in row['event'] and 'user(s)' in row['event'] %}
-                            <span class="badge bg-success me-1">added_members</span>
-                        {% elseif 'Added' in row['event'] and 'zone(s)' in row['event'] %}
-                            <span class="badge bg-success me-1">added_zones</span>
-                        {% elseif 'Removed' in row['event'] and 'user(s)' in row['event'] %}
-                            <span class="badge bg-warning text-dark me-1">removed_members</span>
-                        {% elseif 'Removed' in row['event'] and 'zone(s)' in row['event'] %}
-                            <span class="badge bg-warning text-dark me-1">removed_zones</span>
-                        {% elseif 'updated' in row['event']|lower %}
-                            <span class="badge bg-primary me-1">updated</span>
-                        {% elseif 'added to group' in row['event']|lower %}
-                            <span class="badge bg-success me-1">added_members</span>
+                        {% if 'operation:' in row['event'] %}
+                            {# key:value format - parse like zone logs #}
+                            {% set parts = row['event']|split(' ') %}
+                            {% set log_data = {} %}
+                            {% for part in parts %}
+                                {% set kv = part|split(':') %}
+                                {% if kv|length >= 2 %}
+                                    {% set log_data = log_data|merge({(kv[0]): kv|slice(1)|join(':')}) %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if log_data.operation is defined %}
+                                <span class="badge {% if 'delete' in log_data.operation %}bg-danger{% elseif 'remove' in log_data.operation %}bg-warning text-dark{% elseif 'add' in log_data.operation or 'create' in log_data.operation %}bg-success{% elseif 'edit' in log_data.operation %}bg-primary{% else %}bg-secondary{% endif %} me-1">{{ log_data.operation }}</span>
+                            {% endif %}
+                            {% if log_data.group is defined %}<strong>{{ log_data.group }}</strong>{% endif %}
+                            {% if log_data.members is defined %}<span class="text-muted ms-1"><i class="bi bi-people"></i> {{ log_data.members }}</span>{% endif %}
+                            {% if log_data.zones is defined %}<span class="text-muted ms-1"><i class="bi bi-globe2"></i> {{ log_data.zones }}</span>{% endif %}
+                            {% if log_data.count is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.count }}</span>{% endif %}
+                            {% if log_data.user is defined %}<span class="text-muted ms-1"><i class="bi bi-person-fill"></i> {{ log_data.user }}</span>{% endif %}
+                            {% if log_data.changes is defined %}<span class="text-muted ms-1">{{ log_data.changes }}</span>{% endif %}
+                        {% else %}
+                            {# Legacy plain English format #}
+                            <span class="badge bg-secondary me-1">legacy</span>
+                            {{ row['event'] }}
                         {% endif %}
-                        {{ row['event'] }}
                     </td>
                 </tr>
                 {% endfor %}

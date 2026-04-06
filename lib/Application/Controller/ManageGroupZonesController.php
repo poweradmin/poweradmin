@@ -43,6 +43,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Web\IpAddressRetriever;
 use Poweradmin\Domain\Utility\IpHelper;
 
 class ManageGroupZonesController extends BaseController
@@ -51,6 +52,7 @@ class ManageGroupZonesController extends BaseController
     private GroupService $groupService;
     private Request $request;
     private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -63,6 +65,7 @@ class ManageGroupZonesController extends BaseController
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
         $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -171,12 +174,13 @@ class ManageGroupZonesController extends BaseController
                 }, $zoneNames);
 
                 $logMessage = sprintf(
-                    "Added %d zone(s) to group '%s' (ID: %d) by %s: %s",
-                    count($results['success']),
+                    "client_ip:%s user:%s operation:add_zones group:%s group_id:%d count:%d zones:%s",
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getUserContextService()->getLoggedInUsername(),
                     $groupName,
                     $groupId,
-                    $actorUsername,
-                    implode(', ', $displayNames)
+                    count($results['success']),
+                    implode(',', $displayNames)
                 );
 
                 $this->auditLogger->logGroupInfo($logMessage, $groupId);
@@ -259,12 +263,13 @@ class ManageGroupZonesController extends BaseController
                 }, $zoneNames);
 
                 $logMessage = sprintf(
-                    "Removed %d zone(s) from group '%s' (ID: %d) by %s: %s",
-                    count($results['success']),
+                    "client_ip:%s user:%s operation:remove_zones group:%s group_id:%d count:%d zones:%s",
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getUserContextService()->getLoggedInUsername(),
                     $groupName,
                     $groupId,
-                    $actorUsername,
-                    implode(', ', $displayNames)
+                    count($results['success']),
+                    implode(',', $displayNames)
                 );
 
                 $this->auditLogger->logGroupInfo($logMessage, $groupId);

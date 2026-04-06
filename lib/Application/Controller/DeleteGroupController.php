@@ -38,6 +38,7 @@ use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Web\IpAddressRetriever;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -48,6 +49,7 @@ class DeleteGroupController extends BaseController
     private ZoneGroupService $zoneGroupService;
     private Request $request;
     private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -60,6 +62,7 @@ class DeleteGroupController extends BaseController
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
         $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -122,16 +125,13 @@ class DeleteGroupController extends BaseController
 
             $this->groupService->deleteGroup($groupId);
 
-            // Log group deletion with actor and impact details
-            $ldapUse = $this->config->get('ldap', 'enabled');
-            $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $userId);
-            $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $userId";
-
+            // Log group deletion with impact details
             $logMessage = sprintf(
-                "Group deleted: '%s' (ID: %d) by %s - Impact: %d member(s), %d zone(s) lost access",
+                "client_ip:%s user:%s operation:delete_group group:%s group_id:%d members_affected:%d zones_affected:%d",
+                $this->ipAddressRetriever->getClientIp(),
+                $this->getUserContextService()->getLoggedInUsername(),
                 $groupName,
                 $groupId,
-                $actorUsername,
                 $memberCount,
                 $zoneCount
             );

@@ -39,6 +39,7 @@ use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Web\IpAddressRetriever;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
@@ -54,6 +55,7 @@ class EditGroupController extends BaseController
     private Request $request;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
     private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -69,6 +71,7 @@ class EditGroupController extends BaseController
         $this->request = new Request();
         $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -168,15 +171,12 @@ class EditGroupController extends BaseController
 
             // Log group update with details
             if (!empty($changes)) {
-                $ldapUse = $this->config->get('ldap', 'enabled');
-                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
-                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
-
                 $logMessage = sprintf(
-                    "Group '%s' (ID: %d) updated by %s - Changes: %s",
+                    "client_ip:%s user:%s operation:edit_group group:%s group_id:%d changes:%s",
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getUserContextService()->getLoggedInUsername(),
                     $name,
                     $groupId,
-                    $actorUsername,
                     implode('; ', $changes)
                 );
 

@@ -130,13 +130,13 @@ class DbGroupLogger
     public function getDistinctEventTypes(): array
     {
         return [
-            'created',
-            'updated',
-            'deleted',
-            'added_members',
-            'removed_members',
-            'added_zones',
-            'removed_zones',
+            'create_group',
+            'edit_group',
+            'delete_group',
+            'add_members',
+            'remove_members',
+            'add_zones',
+            'remove_zones',
         ];
     }
 
@@ -196,13 +196,13 @@ class DbGroupLogger
 
         if (!empty($filters['event_type'])) {
             $typePatterns = [
-                'created' => '%created%',
-                'updated' => '%updated%',
-                'deleted' => '%deleted%',
-                'added_members' => '%Added%user(s)%',
-                'removed_members' => '%Removed%user(s)%',
-                'added_zones' => '%Added%zone(s)%',
-                'removed_zones' => '%Removed%zone(s)%',
+                'create_group' => '%operation:create_group%',
+                'edit_group' => '%operation:edit_group%',
+                'delete_group' => '%operation:delete_group%',
+                'add_members' => '%operation:add_members%',
+                'remove_members' => '%operation:remove_members%',
+                'add_zones' => '%operation:add_zones%',
+                'remove_zones' => '%operation:remove_zones%',
             ];
             if (isset($typePatterns[$filters['event_type']])) {
                 $conditions[] = "log_groups.event LIKE :event_type";
