@@ -164,12 +164,16 @@ class DbZoneLogger
     public function getDistinctOperations(): array
     {
         return [
-            'add_zone', 'edit_zone', 'delete_zone',
-            'add_record', 'edit_record', 'delete_record',
-            'add_supermaster', 'edit_supermaster', 'delete_supermaster',
-            'dnssec_add_key', 'dnssec_edit_key', 'dnssec_delete_key',
-            'sign_zone', 'unsign_zone',
-            'update_soa_serial',
+            'add_record',
+            'add_zone',
+            'api_add_record',
+            'api_add_zone',
+            'api_delete_record',
+            'api_delete_zone',
+            'api_edit_record',
+            'delete_record',
+            'delete_zone',
+            'edit_record',
         ];
     }
 
