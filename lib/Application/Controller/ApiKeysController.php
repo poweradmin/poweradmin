@@ -199,6 +199,14 @@ class ApiKeysController extends BaseController
             $apiKey = $this->apiKeyService->createApiKey($name, $expiresAtDate);
 
             if ($apiKey !== null) {
+                $this->auditLogger->logInfo(sprintf(
+                    'client_ip:%s user:%s operation:api_key_create key_id:%d key_name:%s',
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getUserContextService()->getLoggedInUsername(),
+                    $apiKey->getId(),
+                    $apiKey->getName()
+                ));
+
                 // Show confirmation with the secret key - user needs to save it
                 $this->render('api_key_created.html', [
                     'api_key' => $apiKey
@@ -258,6 +266,14 @@ class ApiKeysController extends BaseController
             $apiKey = $this->apiKeyService->updateApiKey($id, $name, $expiresAtDate, $disabled);
 
             if ($apiKey !== null) {
+                $this->auditLogger->logInfo(sprintf(
+                    'client_ip:%s user:%s operation:api_key_edit key_id:%d key_name:%s',
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getUserContextService()->getLoggedInUsername(),
+                    $id,
+                    $apiKey->getName()
+                ));
+
                 $this->messageService->addMessage('api_keys', 'success', _('API key updated successfully.'));
                 $this->redirect('/settings/api-keys');
                 return;
@@ -283,10 +299,22 @@ class ApiKeysController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
+            // Get key name before deletion for logging
+            $apiKeyForLog = $this->apiKeyService->getApiKey($id);
+            $keyName = $apiKeyForLog !== null ? $apiKeyForLog->getName() : 'unknown';
+
             // Delete the API key
             $success = $this->apiKeyService->deleteApiKey($id);
 
             if ($success) {
+                $this->auditLogger->logInfo(sprintf(
+                    'client_ip:%s user:%s operation:api_key_delete key_id:%d key_name:%s',
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getUserContextService()->getLoggedInUsername(),
+                    $id,
+                    $keyName
+                ));
+
                 $this->messageService->addMessage('api_keys', 'success', _('API key deleted successfully.'));
             }
 
@@ -323,6 +351,14 @@ class ApiKeysController extends BaseController
             $apiKey = $this->apiKeyService->regenerateSecretKey($id);
 
             if ($apiKey !== null) {
+                $this->auditLogger->logInfo(sprintf(
+                    'client_ip:%s user:%s operation:api_key_regenerate key_id:%d key_name:%s',
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getUserContextService()->getLoggedInUsername(),
+                    $id,
+                    $apiKey->getName()
+                ));
+
                 // Show confirmation with the new secret key
                 $this->render('api_key_regenerated.html', [
                     'api_key' => $apiKey

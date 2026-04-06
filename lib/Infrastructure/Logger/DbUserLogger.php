@@ -113,6 +113,10 @@ class DbUserLogger
             'mfa_disable',
             'mfa_verify',
             'mfa_regenerate_codes',
+            'api_key_create',
+            'api_key_edit',
+            'api_key_delete',
+            'api_key_regenerate',
             'api_key_toggle',
         ];
     }
@@ -188,6 +192,10 @@ class DbUserLogger
                 'mfa_disable' => '%operation:mfa_disable%',
                 'mfa_verify' => '%operation:mfa_verify%',
                 'mfa_regenerate_codes' => '%operation:mfa_regenerate_codes%',
+                'api_key_create' => '%operation:api_key_create%',
+                'api_key_edit' => '%operation:api_key_edit%',
+                'api_key_delete' => '%operation:api_key_delete%',
+                'api_key_regenerate' => '%operation:api_key_regenerate%',
                 'api_key_toggle' => '%operation:api_key_toggle%',
             ];
             if (isset($typePatterns[$filters['event_type']])) {
