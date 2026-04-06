@@ -43,7 +43,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
-use Poweradmin\Infrastructure\Web\IpAddressRetriever;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Utility\IpHelper;
 
 class ManageGroupZonesController extends BaseController

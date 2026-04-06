@@ -28,7 +28,9 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
  * Controller for managing API keys
@@ -39,6 +41,8 @@ class ApiKeysController extends BaseController
 {
     private ApiKeyService $apiKeyService;
     private ApiKeyRepositoryInterface $apiKeyRepository;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     /**
      * Constructor
@@ -56,6 +60,8 @@ class ApiKeysController extends BaseController
             $this->config,
             $this->messageService
         );
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     /**
@@ -355,8 +361,19 @@ class ApiKeysController extends BaseController
         $apiKey = $this->apiKeyService->toggleApiKey($id, $disable);
 
         if ($apiKey !== null) {
-            $status = $disable ? _('disabled') : _('enabled');
-            $this->messageService->addMessage('api_keys', 'success', sprintf(_('API key %s successfully.'), $status));
+            $status = $disable ? 'disabled' : 'enabled';
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_key_toggle key_id:%d key_name:%s status:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->getUserContextService()->getLoggedInUsername(),
+                $id,
+                $apiKey->getName(),
+                $status
+            ));
+
+            $translatedStatus = $disable ? _('disabled') : _('enabled');
+            $this->messageService->addMessage('api_keys', 'success', sprintf(_('API key %s successfully.'), $translatedStatus));
         }
 
         $this->redirect('/settings/api-keys');

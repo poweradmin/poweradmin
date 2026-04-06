@@ -29,6 +29,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use RuntimeException;
@@ -38,6 +39,8 @@ class MfaVerifyController extends BaseController
     private MfaService $mfaService;
     private CsrfTokenService $csrfTokenService;
     private UserContextService $userContextService;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -49,6 +52,8 @@ class MfaVerifyController extends BaseController
 
         $this->csrfTokenService = new CsrfTokenService();
         $this->userContextService = new UserContextService();
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -220,6 +225,13 @@ class MfaVerifyController extends BaseController
 
             // Use the centralized session manager to mark MFA as verified
             MfaSessionManager::setMfaVerified();
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:mfa_verify mfa_type:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->userContextService->getLoggedInUsername() ?? $_SESSION['userlogin'] ?? 'unknown',
+                $this->mfaService->getMfaType($userId) ?? 'unknown'
+            ));
 
             // Populate LDAP authentication cache for LDAP users (if auth_used is ldap)
             // This ensures LDAP+MFA users benefit from session caching

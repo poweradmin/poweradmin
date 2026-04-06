@@ -39,7 +39,7 @@ use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Web\IpAddressRetriever;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;

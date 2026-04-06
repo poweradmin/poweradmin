@@ -39,7 +39,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\Infrastructure\Web\IpAddressRetriever;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddGroupController extends BaseController

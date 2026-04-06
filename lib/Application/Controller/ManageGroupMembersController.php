@@ -40,7 +40,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Poweradmin\Infrastructure\Web\IpAddressRetriever;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class ManageGroupMembersController extends BaseController
 {

@@ -109,6 +109,11 @@ class DbUserLogger
             'delete_user',
             'change_password',
             'logout',
+            'mfa_enable',
+            'mfa_disable',
+            'mfa_verify',
+            'mfa_regenerate_codes',
+            'api_key_toggle',
         ];
     }
 
@@ -179,6 +184,11 @@ class DbUserLogger
                 'delete_user' => '%operation:delete_user%',
                 'change_password' => '%operation:change_password%',
                 'logout' => '%operation:logout%',
+                'mfa_enable' => '%operation:mfa_enable%',
+                'mfa_disable' => '%operation:mfa_disable%',
+                'mfa_verify' => '%operation:mfa_verify%',
+                'mfa_regenerate_codes' => '%operation:mfa_regenerate_codes%',
+                'api_key_toggle' => '%operation:api_key_toggle%',
             ];
             if (isset($typePatterns[$filters['event_type']])) {
                 $conditions[] = "log_users.event LIKE :event_type";
