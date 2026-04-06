@@ -120,6 +120,12 @@ class AppInitializer
         $userContextService = new UserContextService();
         $defaultLanguage = $this->configManager->get('interface', 'language', 'en_EN');
         $userLang = $userContextService->getUserLanguage() ?? $defaultLanguage;
+
+        // Allow language override via GET parameter (login page language switcher)
+        if (!empty($_GET['lang']) && in_array($_GET['lang'], $supportedLocales)) {
+            $userLang = $_GET['lang'];
+        }
+
         $locale->setLocale($userLang);
     }
 

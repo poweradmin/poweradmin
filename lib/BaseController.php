@@ -590,6 +590,31 @@ abstract class BaseController
             'show_style_switcher' => true,
         ];
 
+        // Language selector for login page
+        $enabledLanguages = $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
+        $localeList = explode(',', $enabledLanguages);
+        if (count($localeList) > 1) {
+            $interfaceLanguage = $this->config->get('interface', 'language', 'en_EN');
+            // Check for GET lang parameter override
+            if (!empty($_GET['lang']) && in_array($_GET['lang'], $localeList)) {
+                $interfaceLanguage = $_GET['lang'];
+            }
+            $preparedLocales = [];
+            foreach ($localeList as $locale) {
+                $locale = trim($locale);
+                $language = \Poweradmin\Infrastructure\Utility\LanguageCode::getByLocale($locale);
+                $preparedLocales[] = [
+                    'locale' => $locale,
+                    'language' => $language,
+                    'selected' => $locale === $interfaceLanguage,
+                ];
+            }
+            usort($preparedLocales, fn($a, $b) => strcmp($a['language'], $b['language']));
+            $vars['locales'] = $preparedLocales;
+            $vars['show_language_selector'] = true;
+            $vars['current_language'] = $interfaceLanguage;
+        }
+
         $dblog_use = $this->config->get('logging', 'database_enabled');
         $session_key = $this->config->get('security', 'session_key');
 

@@ -131,6 +131,15 @@ class AppManager
             $interfaceLang = $userLang;
         }
 
+        // Allow language override via GET parameter (login page language switcher)
+        if (!empty($_GET['lang'])) {
+            $enabledLanguages = $this->configuration->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
+            $supportedLocales = explode(',', $enabledLanguages);
+            if (in_array($_GET['lang'], $supportedLocales)) {
+                $interfaceLang = $_GET['lang'];
+            }
+        }
+
         $translator = new Translator($interfaceLang);
         $translator->addLoader('po', new PoFileLoader());
         $translator->addResource('po', $this->getLocaleFile($interfaceLang), $interfaceLang);

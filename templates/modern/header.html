@@ -53,6 +53,36 @@
                 <span class="fs-4">{{ iface_title }}</span>
                 {% endif %}
             </a>
+
+            {% if current_page == 'login' and show_language_selector is defined and show_language_selector and locales is defined %}
+            <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="langSwitcher" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-globe me-1"></i><span id="currentLangLabel">{% for loc in locales %}{% if loc.selected %}{{ loc.language }}{% endif %}{% endfor %}</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" style="max-height: 300px; overflow-y: auto;">
+                    {% for loc in locales %}
+                    <li>
+                        <a class="dropdown-item small {% if loc.selected %}active{% endif %}" href="#"
+                           data-lang="{{ loc.locale }}" data-label="{{ loc.language }}">
+                            {{ loc.language }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <script>
+            (function() {
+                document.querySelectorAll('#langSwitcher + .dropdown-menu .dropdown-item').forEach(function(item) {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        var lang = this.dataset.lang;
+                        localStorage.setItem('poweradmin_language', lang);
+                        window.location.href = '{{ base_url_prefix }}/login?lang=' + lang;
+                    });
+                });
+            })();
+            </script>
+            {% endif %}
         </div>
     </div>
 </header>

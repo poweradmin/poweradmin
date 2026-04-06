@@ -76,8 +76,10 @@ class LoginController extends BaseController
         }
 
 
+        $currentLanguage = $_GET['lang'] ?? $this->config->get('interface', 'language', 'en_EN');
+
         $localesData = $this->getLocalesData();
-        $preparedLocales = $this->localeService->prepareLocales($localesData, $this->config->get('interface', 'language', 'en_EN'));
+        $preparedLocales = $this->localeService->prepareLocales($localesData, $currentLanguage);
 
         list($msg, $type) = $this->getSessionMessages();
 
@@ -139,6 +141,7 @@ class LoginController extends BaseController
             'login_token' => $loginToken,
             'query_string' => $_SERVER['QUERY_STRING'] ?? '',
             'locale_options' => $this->localePresenter->generateLocaleOptions($preparedLocales),
+            'locales' => $preparedLocales,
             'show_language_selector' => $showLanguageSelector,
             'msg' => $msg,
             'type' => $type,
