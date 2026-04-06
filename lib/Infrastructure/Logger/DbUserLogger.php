@@ -172,8 +172,8 @@ class DbUserLogger
 
         if (!empty($filters['event_type'])) {
             $typePatterns = [
-                'login_success' => '%Successful authentication%',
-                'login_failed' => '%Failed authentication%',
+                'login_success' => '%operation:login_success%',
+                'login_failed' => '%operation:login_failed%',
                 'add_user' => '%operation:add_user%',
                 'edit_user' => '%operation:edit_user%',
                 'delete_user' => '%operation:delete_user%',

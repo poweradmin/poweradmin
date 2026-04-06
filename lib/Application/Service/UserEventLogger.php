@@ -39,11 +39,11 @@ class UserEventLogger
 
     public function logSuccessfulAuth(): void
     {
-        $this->logger->logNotice(sprintf('Successful authentication attempt from [%s] for user \'%s\'', $this->ipRetriever->getClientIp(), $_SESSION['userlogin']));
+        $this->logger->logNotice(sprintf('client_ip:%s user:%s operation:login_success', $this->ipRetriever->getClientIp(), $_SESSION['userlogin']));
     }
 
     public function logFailedAuth(): void
     {
-        $this->logger->logWarn(sprintf('Failed authentication attempt from [%s] for user \'%s\'', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
+        $this->logger->logWarn(sprintf('client_ip:%s user:%s operation:login_failed', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
     }
 }
