@@ -30,15 +30,19 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class SamlCallbackController extends BaseController
 {
     private SamlService $samlService;
     private AuthenticationService $authService;
     private Request $httpRequest;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -68,6 +72,8 @@ class SamlCallbackController extends BaseController
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authService = new AuthenticationService($sessionService, $redirectService);
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -100,7 +106,22 @@ class SamlCallbackController extends BaseController
         try {
             // Process the SAML assertion
             $this->samlService->handleAssertion();
+
+            // Log successful SAML login if session was established
+            if (isset($_SESSION['userid'])) {
+                $this->auditLogger->logInfo(sprintf(
+                    'client_ip:%s user:%s operation:saml_login_success',
+                    $this->ipAddressRetriever->getClientIp(),
+                    $_SESSION['userlogin'] ?? 'unknown'
+                ));
+            }
         } catch (\Exception $e) {
+            $this->auditLogger->logWarn(sprintf(
+                'client_ip:%s operation:saml_login_failed error:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $e->getMessage()
+            ));
+
             $sessionEntity = new SessionEntity(
                 _('SAML authentication failed: ') . $e->getMessage(),
                 'danger'
@@ -111,9 +132,17 @@ class SamlCallbackController extends BaseController
 
     private function handleSingleLogout(): void
     {
+        $username = $_SESSION['userlogin'] ?? 'unknown';
+
         try {
             // Process SAML Single Logout
             $this->samlService->handleSingleLogout();
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:saml_logout',
+                $this->ipAddressRetriever->getClientIp(),
+                $username
+            ));
 
             // Clear the session and redirect to login
             $sessionEntity = new SessionEntity(_('You have been logged out'), 'info');

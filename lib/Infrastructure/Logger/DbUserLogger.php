@@ -121,6 +121,11 @@ class DbUserLogger
             'password_reset_request',
             'password_reset',
             'username_recovery',
+            'oidc_login_success',
+            'oidc_login_failed',
+            'saml_login_success',
+            'saml_login_failed',
+            'saml_logout',
         ];
     }
 
@@ -203,6 +208,11 @@ class DbUserLogger
                 'password_reset_request' => '%operation:password_reset_request%',
                 'password_reset' => '%operation:password_reset%',
                 'username_recovery' => '%operation:username_recovery%',
+                'oidc_login_success' => '%operation:oidc_login_success%',
+                'oidc_login_failed' => '%operation:oidc_login_failed%',
+                'saml_login_success' => '%operation:saml_login_success%',
+                'saml_login_failed' => '%operation:saml_login_failed%',
+                'saml_logout' => '%operation:saml_logout%',
             ];
             if (isset($typePatterns[$filters['event_type']])) {
                 $conditions[] = "log_users.event LIKE :event_type";

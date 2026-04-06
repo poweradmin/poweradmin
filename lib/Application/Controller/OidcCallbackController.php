@@ -30,15 +30,19 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class OidcCallbackController extends BaseController
 {
     private OidcService $oidcService;
     private AuthenticationService $authService;
     private Request $httpRequest;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -68,6 +72,8 @@ class OidcCallbackController extends BaseController
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authService = new AuthenticationService($sessionService, $redirectService);
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -83,6 +89,13 @@ class OidcCallbackController extends BaseController
         $error = $this->httpRequest->getQueryParam('error');
         if (!empty($error)) {
             $errorDescription = $this->httpRequest->getQueryParam('error_description', 'Unknown error');
+
+            $this->auditLogger->logWarn(sprintf(
+                'client_ip:%s operation:oidc_login_failed error:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $error
+            ));
+
             $sessionEntity = new SessionEntity(
                 _('Authentication failed: ') . $errorDescription,
                 'danger'
@@ -93,5 +106,14 @@ class OidcCallbackController extends BaseController
 
         // Process the OIDC callback
         $this->oidcService->handleCallback();
+
+        // Log successful OIDC login if session was established
+        if (isset($_SESSION['userid'])) {
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:oidc_login_success',
+                $this->ipAddressRetriever->getClientIp(),
+                $_SESSION['userlogin'] ?? 'unknown'
+            ));
+        }
     }
 }
