@@ -116,7 +116,7 @@ class ListLogZonesController extends BaseController
         ]);
     }
 
-    private function createAndPresentPagination(int $totalItems, string $itemsPerPage, array $filters = []): string
+    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, array $filters = []): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();
