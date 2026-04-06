@@ -118,6 +118,9 @@ class DbUserLogger
             'api_key_delete',
             'api_key_regenerate',
             'api_key_toggle',
+            'password_reset_request',
+            'password_reset',
+            'username_recovery',
         ];
     }
 
@@ -197,6 +200,9 @@ class DbUserLogger
                 'api_key_delete' => '%operation:api_key_delete%',
                 'api_key_regenerate' => '%operation:api_key_regenerate%',
                 'api_key_toggle' => '%operation:api_key_toggle%',
+                'password_reset_request' => '%operation:password_reset_request%',
+                'password_reset' => '%operation:password_reset%',
+                'username_recovery' => '%operation:username_recovery%',
             ];
             if (isset($typePatterns[$filters['event_type']])) {
                 $conditions[] = "log_users.event LIKE :event_type";

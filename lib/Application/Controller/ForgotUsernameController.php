@@ -34,6 +34,7 @@ use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Utility\UserAgentService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 
@@ -45,6 +46,7 @@ class ForgotUsernameController extends BaseController
     private CsrfTokenService $csrfTokenService;
     private IpAddressRetriever $ipRetriever;
     private UserAgentService $userAgentService;
+    private LegacyLogger $auditLogger;
 
     public function __construct(array $request)
     {
@@ -80,6 +82,7 @@ class ForgotUsernameController extends BaseController
 
             $this->recaptchaService = new RecaptchaService($this->config);
             $this->userContextService = new UserContextService();
+            $this->auditLogger = new LegacyLogger($this->db);
         } catch (\Exception $e) {
             $this->logger->error('Failed to initialize username recovery controller', [
                 'error' => $e->getMessage(),
@@ -190,6 +193,12 @@ class ForgotUsernameController extends BaseController
         try {
             // Create username recovery request
             $this->usernameRecoveryService->createRecoveryRequest($email);
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s operation:username_recovery email:%s',
+                $this->ipRetriever->getClientIp(),
+                $email
+            ));
 
             // Always show success message (for security - don't reveal if email exists)
             $this->showSuccessMessage();

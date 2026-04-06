@@ -35,6 +35,7 @@ use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Utility\UserAgentService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 
@@ -46,6 +47,7 @@ class ForgotPasswordController extends BaseController
     private CsrfTokenService $csrfTokenService;
     private IpAddressRetriever $ipRetriever;
     private UserAgentService $userAgentService;
+    private LegacyLogger $auditLogger;
 
     public function __construct(array $request)
     {
@@ -83,6 +85,7 @@ class ForgotPasswordController extends BaseController
 
         $this->recaptchaService = new RecaptchaService($this->config);
         $this->userContextService = new UserContextService();
+        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     public function run(): void
@@ -204,6 +207,12 @@ class ForgotPasswordController extends BaseController
         try {
             // Create password reset request
             $this->passwordResetService->createResetRequest($email);
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s operation:password_reset_request email:%s',
+                $this->ipRetriever->getClientIp(),
+                $email
+            ));
 
             // Always show success message (for security - don't reveal if email exists)
             $this->showSuccessMessage();

@@ -35,6 +35,7 @@ use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Utility\UserAgentService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 
@@ -46,6 +47,7 @@ class ResetPasswordController extends BaseController
     private CsrfTokenService $csrfTokenService;
     private IpAddressRetriever $ipRetriever;
     private UserAgentService $userAgentService;
+    private LegacyLogger $auditLogger;
     private ?string $token = null;
 
     public function __construct(array $request)
@@ -84,6 +86,7 @@ class ResetPasswordController extends BaseController
 
         $this->passwordPolicyService = new PasswordPolicyService($this->config);
         $this->userContextService = new UserContextService();
+        $this->auditLogger = new LegacyLogger($this->db);
 
         // Extract token from URL parameters
         $this->token = $_GET['token'] ?? null;
@@ -236,6 +239,12 @@ class ResetPasswordController extends BaseController
                 'browser' => $this->userAgentService->getBrowserInfo(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s operation:password_reset user_id:%d',
+                $this->ipRetriever->getClientIp(),
+                $userId
+            ));
 
             // Set success message and redirect to login
             $this->setMessage('login', 'success', 'Your password has been successfully reset. You can now log in with your new password.');
