@@ -34,12 +34,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\Dns\RecordManager;
-use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -50,8 +45,6 @@ use OpenApi\Attributes as OA;
 class ZonesController extends PublicApiController
 {
     private ZoneRepositoryInterface $zoneRepository;
-    private RecordRepositoryInterface $recordRepository;
-    private RecordManagerInterface $recordManager;
     private ZoneManagementService $zoneManagementService;
     private ApiPermissionService $permissionService;
     private IPAddressValidator $ipAddressValidator;
@@ -62,26 +55,10 @@ class ZonesController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->permissionService = new ApiPermissionService($this->db);
         $this->ipAddressValidator = new IPAddressValidator();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-
-        // Initialize services using factory
-        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $backendProvider);
-        $soaRecordManager = new SOARecordManager($this->db, $this->getConfig(), $backendProvider);
-        $domainRepository = $repositoryFactory->createDomainRepository();
-        $this->recordManager = new RecordManager(
-            $this->db,
-            $this->getConfig(),
-            $validationService,
-            $soaRecordManager,
-            $domainRepository,
-            $backendProvider
-        );
 
         // Initialize zone management service
         $this->zoneManagementService = new ZoneManagementService(
