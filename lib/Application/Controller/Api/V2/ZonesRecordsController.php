@@ -601,12 +601,12 @@ class ZonesRecordsController extends PublicApiController
             ];
 
             $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user_id:%d operation:api_add_record zone_id:%d type:%s name:%s',
+                'client_ip:%s user:%s operation:api_add_record name:%s type:%s content:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $userId,
-                $zoneId,
+                $this->getAuthenticatedUsername(),
+                $name,
                 $type,
-                $name
+                $content
             ), $zoneId);
 
             $message = 'Record created successfully' . $ptrMessage;
@@ -797,11 +797,12 @@ class ZonesRecordsController extends PublicApiController
             ];
 
             $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user_id:%d operation:api_edit_record zone_id:%d record_id:%s',
+                'client_ip:%s user:%s operation:api_edit_record name:%s type:%s content:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $userId,
-                $zoneId,
-                $recordId
+                $this->getAuthenticatedUsername(),
+                $updatedRecord['name'] ?? '',
+                $updatedRecord['type'] ?? '',
+                $updatedRecord['content'] ?? ''
             ), $zoneId);
 
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record updated successfully', 200);
@@ -910,11 +911,12 @@ class ZonesRecordsController extends PublicApiController
             }
 
             $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user_id:%d operation:api_delete_record zone_id:%d record_id:%s',
+                'client_ip:%s user:%s operation:api_delete_record name:%s type:%s content:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $userId,
-                $zoneId,
-                $recordId
+                $this->getAuthenticatedUsername(),
+                $existingRecord['name'] ?? '',
+                $existingRecord['type'] ?? '',
+                $existingRecord['content'] ?? ''
             ), $zoneId);
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204);
