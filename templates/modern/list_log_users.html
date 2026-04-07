@@ -80,36 +80,30 @@
                     <td class="log-timestamp-cell">{{ row['created_at'] }}</td>
                     <td class="log-event-cell small">
                         {% if 'operation:' in row['event'] %}
-                            {# key:value format - parse like zone logs #}
                             {% set parts = row['event']|split(' ') %}
-                            {% set log_data = {} %}
+                            {% set operation = '' %}
                             {% for part in parts %}
                                 {% set kv = part|split(':') %}
-                                {% if kv|length >= 2 %}
-                                    {% set log_data = log_data|merge({(kv[0]): kv|slice(1)|join(':')}) %}
+                                {% if kv[0] == 'operation' and kv|length >= 2 %}
+                                    {% set operation = kv|slice(1)|join(':') %}
                                 {% endif %}
                             {% endfor %}
-                            {% if log_data.operation is defined %}
-                                <span class="badge {% if 'failed' in log_data.operation %}bg-danger{% elseif 'delete' in log_data.operation %}bg-danger{% elseif 'login_success' in log_data.operation %}bg-success{% elseif 'add' in log_data.operation or 'create' in log_data.operation %}bg-success{% elseif 'edit' in log_data.operation %}bg-primary{% elseif 'change_password' in log_data.operation or 'password_reset' in log_data.operation %}bg-warning text-dark{% elseif 'mfa' in log_data.operation %}bg-info{% elseif 'logout' in log_data.operation %}bg-secondary{% else %}bg-secondary{% endif %} me-1">{{ log_data.operation }}</span>
+                            {% if operation %}
+                                <span class="badge {% if 'failed' in operation %}bg-danger{% elseif 'delete' in operation %}bg-danger{% elseif 'login_success' in operation %}bg-success{% elseif 'add' in operation or 'create' in operation %}bg-success{% elseif 'edit' in operation %}bg-primary{% elseif 'change_password' in operation or 'password_reset' in operation %}bg-warning text-dark{% elseif 'mfa' in operation %}bg-info{% elseif 'logout' in operation %}bg-secondary{% else %}bg-secondary{% endif %} me-1">{{ operation }}</span>
                             {% endif %}
-                            {% if log_data.username is defined %}{{ log_data.username }}{% endif %}
-                            {% if log_data.target_user is defined %}{{ log_data.target_user }}{% endif %}
-                            {% if log_data.email is defined %}<span class="text-muted ms-1"><i class="bi bi-envelope"></i> {{ log_data.email }}</span>{% endif %}
-                            {% if log_data.perm_template is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.perm_template }}</span>{% endif %}
-                            {% if log_data.auth_type is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.auth_type }}</span>{% endif %}
-                            {% if log_data.key_name is defined %}<span class="text-muted ms-1"><i class="bi bi-key"></i> {{ log_data.key_name }}</span>{% endif %}
-                            {% if log_data.status is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.status }}</span>{% endif %}
-                            {% if log_data.mfa_type is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.mfa_type }}</span>{% endif %}
-                            {% if log_data.user is defined %}<span class="text-muted ms-1"><i class="bi bi-person-fill"></i> {{ log_data.user }}</span>{% endif %}
-                            {% if log_data.client_ip is defined %}<span class="text-muted ms-1 small"><i class="bi bi-globe2"></i> {{ log_data.client_ip }}</span>{% endif %}
+                            {% for part in parts %}
+                                {% set kv = part|split(':') %}
+                                {% if kv|length >= 2 and kv[0] != 'client_ip' and kv[0] != 'operation' %}
+                                    <strong class="text-muted">{{ kv[0] }}</strong>:{{ kv|slice(1)|join(':') }}
+                                {% endif %}
+                            {% endfor %}
                         {% else %}
-                            {# Legacy plain English format #}
                             <span class="badge bg-secondary me-1">legacy</span>
                             {{ row['event'] }}
                         {% endif %}
                     </td>
                     <td class="text-end">
-                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#userLogModal" data-bs-content="{{ row['event']|replace({' ': '<br>'}) }}" title="{% trans %}Details{% endtrans %}">
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#userLogModal" data-bs-content="{{ row['event'] }}" title="{% trans %}Details{% endtrans %}">
                             <i class="bi bi-eye-fill text-primary"></i>
                         </button>
                     </td>
@@ -198,9 +192,10 @@
             if (userLogModal) {
                 userLogModal.addEventListener('show.bs.modal', function(event) {
                     var triggerButton = event.relatedTarget;
-                    var content = triggerButton.getAttribute('data-bs-content');
-                    logRawText = content.replace(/<br>/g, '\n').replace(/: /g, ':');
-                    userLogModal.querySelector('.modal-body').innerHTML = '<div class="log-details">' + content + '</div>';
+                    var raw = triggerButton.getAttribute('data-bs-content');
+                    logRawText = raw;
+                    var formatted = raw.replace(/(\w+):/g, '<br>$1:').replace(/^<br>/, '');
+                    userLogModal.querySelector('.modal-body').innerHTML = '<div class="log-details">' + formatted + '</div>';
                 });
             }
             function copyLogDetails() {

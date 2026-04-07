@@ -77,33 +77,30 @@
                     <td class="log-timestamp-cell">{{ row['created_at'] }}</td>
                     <td class="log-event-cell small">
                         {% if 'operation:' in row['event'] %}
-                            {# key:value format - parse like zone logs #}
                             {% set parts = row['event']|split(' ') %}
-                            {% set log_data = {} %}
+                            {% set operation = '' %}
                             {% for part in parts %}
                                 {% set kv = part|split(':') %}
-                                {% if kv|length >= 2 %}
-                                    {% set log_data = log_data|merge({(kv[0]): kv|slice(1)|join(':')}) %}
+                                {% if kv[0] == 'operation' and kv|length >= 2 %}
+                                    {% set operation = kv|slice(1)|join(':') %}
                                 {% endif %}
                             {% endfor %}
-                            {% if log_data.operation is defined %}
-                                <span class="badge {% if 'delete' in log_data.operation %}bg-danger{% elseif 'remove' in log_data.operation %}bg-warning text-dark{% elseif 'add' in log_data.operation or 'create' in log_data.operation %}bg-success{% elseif 'edit' in log_data.operation %}bg-primary{% else %}bg-secondary{% endif %} me-1">{{ log_data.operation }}</span>
+                            {% if operation %}
+                                <span class="badge {% if 'delete' in operation %}bg-danger{% elseif 'remove' in operation %}bg-warning text-dark{% elseif 'add' in operation or 'create' in operation %}bg-success{% elseif 'edit' in operation %}bg-primary{% else %}bg-secondary{% endif %} me-1">{{ operation }}</span>
                             {% endif %}
-                            {% if log_data.group is defined %}<strong>{{ log_data.group }}</strong>{% endif %}
-                            {% if log_data.members is defined %}<span class="text-muted ms-1"><i class="bi bi-people"></i> {{ log_data.members }}</span>{% endif %}
-                            {% if log_data.zones is defined %}<span class="text-muted ms-1"><i class="bi bi-globe2"></i> {{ log_data.zones }}</span>{% endif %}
-                            {% if log_data.count is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.count }}</span>{% endif %}
-                            {% if log_data.user is defined %}<span class="text-muted ms-1"><i class="bi bi-person-fill"></i> {{ log_data.user }}</span>{% endif %}
-                            {% if log_data.client_ip is defined %}<span class="text-muted ms-1 small"><i class="bi bi-globe2"></i> {{ log_data.client_ip }}</span>{% endif %}
-                            {% if log_data.changes is defined %}<span class="text-muted ms-1">{{ log_data.changes }}</span>{% endif %}
+                            {% for part in parts %}
+                                {% set kv = part|split(':') %}
+                                {% if kv|length >= 2 and kv[0] != 'client_ip' and kv[0] != 'operation' %}
+                                    <strong class="text-muted">{{ kv[0] }}</strong>:{{ kv|slice(1)|join(':') }}
+                                {% endif %}
+                            {% endfor %}
                         {% else %}
-                            {# Legacy plain English format #}
                             <span class="badge bg-secondary me-1">legacy</span>
                             {{ row['event'] }}
                         {% endif %}
                     </td>
                     <td class="text-end">
-                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#groupLogModal" data-bs-content="{{ row['event']|replace({' ': '<br>'}) }}" title="{% trans %}Details{% endtrans %}">
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#groupLogModal" data-bs-content="{{ row['event'] }}" title="{% trans %}Details{% endtrans %}">
                             <i class="bi bi-eye-fill text-primary"></i>
                         </button>
                     </td>
@@ -192,9 +189,10 @@
             if (groupLogModal) {
                 groupLogModal.addEventListener('show.bs.modal', function(event) {
                     var triggerButton = event.relatedTarget;
-                    var content = triggerButton.getAttribute('data-bs-content');
-                    logRawText = content.replace(/<br>/g, '\n').replace(/: /g, ':');
-                    groupLogModal.querySelector('.modal-body').innerHTML = '<div class="log-details">' + content + '</div>';
+                    var raw = triggerButton.getAttribute('data-bs-content');
+                    logRawText = raw;
+                    var formatted = raw.replace(/(\w+):/g, '<br>$1:').replace(/^<br>/, '');
+                    groupLogModal.querySelector('.modal-body').innerHTML = '<div class="log-details">' + formatted + '</div>';
                 });
             }
             function copyLogDetails() {

@@ -160,7 +160,7 @@ class ManageGroupMembersController extends BaseController
                     "client_ip:%s user:%s operation:add_members group:%s group_id:%d count:%d members:%s",
                     $this->ipAddressRetriever->getClientIp(),
                     $this->getUserContextService()->getLoggedInUsername(),
-                    $groupName,
+                    str_replace(' ', '_', $groupName),
                     $groupId,
                     count($results['success']),
                     implode(',', $addedUsernames)
@@ -236,7 +236,7 @@ class ManageGroupMembersController extends BaseController
                     "client_ip:%s user:%s operation:remove_members group:%s group_id:%d count:%d members:%s",
                     $this->ipAddressRetriever->getClientIp(),
                     $this->getUserContextService()->getLoggedInUsername(),
-                    $groupName,
+                    str_replace(' ', '_', $groupName),
                     $groupId,
                     count($results['success']),
                     implode(',', $removedUsernames)

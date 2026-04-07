@@ -91,29 +91,22 @@
                     <td class="log-timestamp-cell">{{ row['created_at'] }}</td>
                     <td class="log-event-cell small">
                         {% set parts = row['event']|split(' ') %}
-                        {% set log_data = {} %}
+                        {% set operation = '' %}
                         {% for part in parts %}
                             {% set kv = part|split(':') %}
-                            {% if kv|length >= 2 %}
-                                {% set log_data = log_data|merge({(kv[0]): kv|slice(1)|join(':')}) %}
+                            {% if kv[0] == 'operation' and kv|length >= 2 %}
+                                {% set operation = kv|slice(1)|join(':') %}
                             {% endif %}
                         {% endfor %}
-                        {% if log_data.operation is defined %}
-                            <span class="badge {% if 'delete' in log_data.operation %}bg-danger{% elseif 'add' in log_data.operation %}bg-success{% elseif 'edit' in log_data.operation or 'update' in log_data.operation %}bg-primary{% else %}bg-secondary{% endif %} me-1">{{ log_data.operation }}</span>
+                        {% if operation %}
+                            <span class="badge {% if 'delete' in operation %}bg-danger{% elseif 'add' in operation %}bg-success{% elseif 'edit' in operation or 'update' in operation %}bg-primary{% else %}bg-secondary{% endif %} me-1">{{ operation }}</span>
                         {% endif %}
-                        {% if log_data.zone is defined %}{{ log_data.zone }}{% endif %}
-                        {% if log_data.zone_name is defined %}{{ log_data.zone_name }}{% endif %}
-                        {% if log_data.name is defined %}{{ log_data.name }}{% endif %}
-                        {% if log_data.record is defined %}{{ log_data.record }}{% endif %}
-                        {% if log_data.zone_type is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.zone_type }}</span>{% endif %}
-                        {% if log_data.type is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.type }}</span>{% endif %}
-                        {% if log_data.record_type is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.record_type }}</span>{% endif %}
-                        {% if log_data.content is defined %}<code class="ms-1">{{ log_data.content }}</code>{% endif %}
-                        {% if log_data.user is defined %}<span class="text-muted ms-1"><i class="bi bi-person-fill"></i> {{ log_data.user }}</span>{% endif %}
-                        {% if log_data.client_ip is defined %}<span class="text-muted ms-1 small"><i class="bi bi-globe2"></i> {{ log_data.client_ip }}</span>{% endif %}
-                        {% if log_data.user_id is defined %}<span class="text-muted ms-1"><i class="bi bi-person-fill"></i> ID:{{ log_data.user_id }}</span>{% endif %}
-                        {% if log_data.zone_master is defined %}<span class="text-muted ms-1"><i class="bi bi-arrow-right"></i> {{ log_data.zone_master }}</span>{% endif %}
-                        {% if log_data.zone_template is defined %}<span class="text-muted ms-1"><i class="bi bi-files"></i> {{ log_data.zone_template }}</span>{% endif %}
+                        {% for part in parts %}
+                            {% set kv = part|split(':') %}
+                            {% if kv|length >= 2 and kv[0] != 'client_ip' and kv[0] != 'operation' %}
+                                <strong class="text-muted">{{ kv[0] }}</strong>:{{ kv|slice(1)|join(':') }}
+                            {% endif %}
+                        {% endfor %}
                     </td>
                     <td class="text-end">
                         <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#logModal" data-bs-content="{{ row['details'] }}" title="{% trans %}Details{% endtrans %}">
@@ -205,10 +198,10 @@
             if (logDetailsModal) {
                 logDetailsModal.addEventListener('show.bs.modal', event => {
                     const triggerButton = event.relatedTarget;
-                    const logDetailsContent = triggerButton.getAttribute('data-bs-content');
-                    logRawText = logDetailsContent.replace(/<br>/g, '\n').replace(/: /g, ':');
-                    const modalBody = logDetailsModal.querySelector('.modal-body');
-                    modalBody.innerHTML = '<div class="log-details">' + logDetailsContent + '</div>';
+                    var raw = triggerButton.getAttribute('data-bs-content');
+                    logRawText = raw;
+                    var formatted = raw.replace(/(\w+):/g, '<br><strong>$1</strong>:').replace(/^<br>/, '');
+                    logDetailsModal.querySelector('.modal-body').innerHTML = '<div class="log-details">' + formatted + '</div>';
                 });
             }
             function copyLogDetails() {

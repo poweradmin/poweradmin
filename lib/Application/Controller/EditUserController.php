@@ -425,7 +425,7 @@ class EditUserController extends BaseController
                     "client_ip:%s user:%s operation:add_members group:%s group_id:%d count:1 members:%s",
                     $this->ipAddressRetriever->getClientIp(),
                     $this->userContextService->getLoggedInUsername(),
-                    $groupInfo['name'],
+                    str_replace(' ', '_', $groupInfo['name']),
                     $groupInfo['id'],
                     $targetUsername
                 );
