@@ -65,6 +65,7 @@
                     {% endif %}
                     <th>{% trans %}Created at{% endtrans %}</th>
                     <th>{% trans %}Event{% endtrans %}</th>
+                    <th class="text-end">{% trans %}Actions{% endtrans %}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -100,6 +101,11 @@
                             <span class="badge bg-secondary me-1">legacy</span>
                             {{ row['event'] }}
                         {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#groupLogModal" data-bs-content="{{ row['event']|replace({' ': '<br>'}) }}" title="{% trans %}Details{% endtrans %}">
+                            <i class="bi bi-eye-fill text-primary"></i>
+                        </button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -156,6 +162,49 @@
             params.delete('start');
             window.location.href = window.location.pathname + '?' + params.toString();
         }
+        </script>
+
+        <!-- Details Modal -->
+        <div class="modal fade" tabindex="-1" id="groupLogModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>{% trans %}Log Details{% endtrans %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyLogDetails()">
+                            <i class="bi bi-clipboard me-1 text-secondary"></i>{% trans %}Copy{% endtrans %}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Close{% endtrans %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            var logRawText = '';
+            var groupLogModal = document.getElementById('groupLogModal');
+            if (groupLogModal) {
+                groupLogModal.addEventListener('show.bs.modal', function(event) {
+                    var triggerButton = event.relatedTarget;
+                    var content = triggerButton.getAttribute('data-bs-content');
+                    logRawText = content.replace(/<br>/g, '\n').replace(/: /g, ':');
+                    groupLogModal.querySelector('.modal-body').innerHTML = '<div class="log-details">' + content + '</div>';
+                });
+            }
+            function copyLogDetails() {
+                navigator.clipboard.writeText(logRawText).then(function() {
+                    var btn = document.querySelector('#groupLogModal .btn-outline-secondary');
+                    var origHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="bi bi-check me-1 text-success"></i>{% trans %}Copied{% endtrans %}';
+                    setTimeout(function() { btn.innerHTML = origHtml; }, 1500);
+                });
+            }
         </script>
         {% else %}
         <div class="text-center py-5">

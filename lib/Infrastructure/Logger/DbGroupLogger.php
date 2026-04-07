@@ -130,12 +130,12 @@ class DbGroupLogger
     public function getDistinctEventTypes(): array
     {
         return [
-            'create_group',
-            'edit_group',
-            'delete_group',
             'add_members',
-            'remove_members',
             'add_zones',
+            'create_group',
+            'delete_group',
+            'edit_group',
+            'remove_members',
             'remove_zones',
         ];
     }
