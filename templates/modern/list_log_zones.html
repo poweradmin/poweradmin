@@ -187,6 +187,9 @@
                     <div class="modal-body">
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyLogDetails()">
+                            <i class="bi bi-clipboard me-1 text-secondary"></i>{% trans %}Copy{% endtrans %}
+                        </button>
                         <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
                             <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Close{% endtrans %}
                         </button>
@@ -196,13 +199,23 @@
         </div>
 
         <script>
+            var logRawText = '';
             const logDetailsModal = document.getElementById('logModal');
             if (logDetailsModal) {
                 logDetailsModal.addEventListener('show.bs.modal', event => {
                     const triggerButton = event.relatedTarget;
                     const logDetailsContent = triggerButton.getAttribute('data-bs-content');
+                    logRawText = logDetailsContent.replace(/<br>/g, '\n').replace(/: /g, ':');
                     const modalBody = logDetailsModal.querySelector('.modal-body');
-                    modalBody.innerHTML = `<div class="log-details">${logDetailsContent}</div>`;
+                    modalBody.innerHTML = '<div class="log-details">' + logDetailsContent + '</div>';
+                });
+            }
+            function copyLogDetails() {
+                navigator.clipboard.writeText(logRawText).then(function() {
+                    var btn = document.querySelector('#logModal .btn-outline-secondary');
+                    var origHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="bi bi-check me-1 text-success"></i>{% trans %}Copied{% endtrans %}';
+                    setTimeout(function() { btn.innerHTML = origHtml; }, 1500);
                 });
             }
         </script>
