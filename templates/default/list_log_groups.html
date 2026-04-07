@@ -93,6 +93,7 @@
                             {% if log_data.zones is defined %}<span class="text-muted ms-1"><i class="bi bi-globe2"></i> {{ log_data.zones }}</span>{% endif %}
                             {% if log_data.count is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.count }}</span>{% endif %}
                             {% if log_data.user is defined %}<span class="text-muted ms-1"><i class="bi bi-person-fill"></i> {{ log_data.user }}</span>{% endif %}
+                            {% if log_data.client_ip is defined %}<span class="text-muted ms-1 small"><i class="bi bi-globe2"></i> {{ log_data.client_ip }}</span>{% endif %}
                             {% if log_data.changes is defined %}<span class="text-muted ms-1">{{ log_data.changes }}</span>{% endif %}
                         {% else %}
                             {# Legacy plain English format #}

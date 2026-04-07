@@ -68,6 +68,7 @@
                     {% endif %}
                     <th>{% trans %}Created at{% endtrans %}</th>
                     <th>{% trans %}Event{% endtrans %}</th>
+                    <th class="text-end">{% trans %}Actions{% endtrans %}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -89,23 +90,28 @@
                                 {% endif %}
                             {% endfor %}
                             {% if log_data.operation is defined %}
-                                <span class="badge {% if 'delete' in log_data.operation %}bg-danger{% elseif 'add' in log_data.operation %}bg-success{% elseif 'edit' in log_data.operation %}bg-primary{% elseif 'change_password' in log_data.operation %}bg-warning text-dark{% elseif 'logout' in log_data.operation %}bg-secondary{% elseif 'mfa' in log_data.operation %}bg-info{% else %}bg-secondary{% endif %} me-1">{{ log_data.operation }}</span>
+                                <span class="badge {% if 'failed' in log_data.operation %}bg-danger{% elseif 'delete' in log_data.operation %}bg-danger{% elseif 'login_success' in log_data.operation %}bg-success{% elseif 'add' in log_data.operation or 'create' in log_data.operation %}bg-success{% elseif 'edit' in log_data.operation %}bg-primary{% elseif 'change_password' in log_data.operation or 'password_reset' in log_data.operation %}bg-warning text-dark{% elseif 'mfa' in log_data.operation %}bg-info{% elseif 'logout' in log_data.operation %}bg-secondary{% else %}bg-secondary{% endif %} me-1">{{ log_data.operation }}</span>
                             {% endif %}
-                            {% if log_data.username is defined %}<strong>{{ log_data.username }}</strong>{% endif %}
-                            {% if log_data.target_user is defined %}<strong>{{ log_data.target_user }}</strong>{% endif %}
+                            {% if log_data.username is defined %}{{ log_data.username }}{% endif %}
+                            {% if log_data.target_user is defined %}{{ log_data.target_user }}{% endif %}
                             {% if log_data.email is defined %}<span class="text-muted ms-1"><i class="bi bi-envelope"></i> {{ log_data.email }}</span>{% endif %}
                             {% if log_data.perm_template is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.perm_template }}</span>{% endif %}
                             {% if log_data.auth_type is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.auth_type }}</span>{% endif %}
+                            {% if log_data.key_name is defined %}<span class="text-muted ms-1"><i class="bi bi-key"></i> {{ log_data.key_name }}</span>{% endif %}
+                            {% if log_data.status is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.status }}</span>{% endif %}
+                            {% if log_data.mfa_type is defined %}<span class="badge bg-light text-dark border ms-1">{{ log_data.mfa_type }}</span>{% endif %}
                             {% if log_data.user is defined %}<span class="text-muted ms-1"><i class="bi bi-person-fill"></i> {{ log_data.user }}</span>{% endif %}
+                            {% if log_data.client_ip is defined %}<span class="text-muted ms-1 small"><i class="bi bi-globe2"></i> {{ log_data.client_ip }}</span>{% endif %}
                         {% else %}
-                            {# Plain English format - login/failed events #}
-                            {% if 'Successful authentication' in row['event'] %}
-                                <span class="badge bg-success me-1">login_success</span>
-                            {% elseif 'Failed authentication' in row['event'] %}
-                                <span class="badge bg-danger me-1">login_failed</span>
-                            {% endif %}
+                            {# Legacy plain English format #}
+                            <span class="badge bg-secondary me-1">legacy</span>
                             {{ row['event'] }}
                         {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#userLogModal" data-bs-content="{{ row['event']|replace({' ': '<br>'}) }}" title="{% trans %}Details{% endtrans %}">
+                            <i class="bi bi-eye-fill text-primary"></i>
+                        </button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -163,6 +169,49 @@
             params.delete('start');
             window.location.href = window.location.pathname + '?' + params.toString();
         }
+        </script>
+
+        <!-- Details Modal -->
+        <div class="modal fade" tabindex="-1" id="userLogModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>{% trans %}Log Details{% endtrans %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyLogDetails()">
+                            <i class="bi bi-clipboard me-1 text-secondary"></i>{% trans %}Copy{% endtrans %}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Close{% endtrans %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            var logRawText = '';
+            var userLogModal = document.getElementById('userLogModal');
+            if (userLogModal) {
+                userLogModal.addEventListener('show.bs.modal', function(event) {
+                    var triggerButton = event.relatedTarget;
+                    var content = triggerButton.getAttribute('data-bs-content');
+                    logRawText = content.replace(/<br>/g, '\n').replace(/: /g, ':');
+                    userLogModal.querySelector('.modal-body').innerHTML = '<div class="log-details">' + content + '</div>';
+                });
+            }
+            function copyLogDetails() {
+                navigator.clipboard.writeText(logRawText).then(function() {
+                    var btn = document.querySelector('#userLogModal .btn-outline-secondary');
+                    var origHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="bi bi-check me-1 text-success"></i>{% trans %}Copied{% endtrans %}';
+                    setTimeout(function() { btn.innerHTML = origHtml; }, 1500);
+                });
+            }
         </script>
         {% else %}
         <div class="text-center py-5">
