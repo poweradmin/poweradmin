@@ -80,15 +80,7 @@ class UserAuthenticationService
             return password_hash($password, PASSWORD_ARGON2ID);
         }
 
-        if ($this->passwordEncryption === 'md5salt') {
-            return $this->generateCombinedSalt($password);
-        }
-
-        if ($this->passwordEncryption === 'md5') {
-            return md5($password);
-        }
-
-        throw new InvalidArgumentException('Invalid password encryption method');
+        throw new InvalidArgumentException("Invalid password encryption method: '{$this->passwordEncryption}'. Supported methods: bcrypt, argon2i, argon2id");
     }
 
     /**

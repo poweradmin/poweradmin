@@ -59,26 +59,18 @@ class UserAuthenticationServiceTest extends TestCase
         $this->assertNotEquals($salt1, $salt2, 'Two generated salts should not be equal');
     }
 
-    public function testHashMd5(): void
+    public function testHashMd5Rejected(): void
     {
-        $password_encryption = 'md5';
-        $password = 'test_password';
-
-        $userAuthService = new UserAuthenticationService($password_encryption);
-        $hash = $userAuthService->hashPassword($password);
-        $this->assertEquals(md5($password), $hash, 'Generated hash should match MD5 hash');
+        $this->expectException(InvalidArgumentException::class);
+        $userAuthService = new UserAuthenticationService('md5');
+        $userAuthService->hashPassword('test_password');
     }
 
-    public function testHashMd5Salt(): void
+    public function testHashMd5SaltRejected(): void
     {
+        $this->expectException(InvalidArgumentException::class);
         $userAuthService = new UserAuthenticationService('md5salt');
-        $password = 'test_password';
-
-        $hash = $userAuthService->hashPassword($password);
-        $salt = $userAuthService->extractUserSalt($hash);
-        $expected_hash = $userAuthService->combineSalts($salt, $password);
-
-        $this->assertEquals($expected_hash, $hash, 'Generated hash should match MD5 hash with salt');
+        $userAuthService->hashPassword('test_password');
     }
 
     public function testHashBcrypt(): void
@@ -91,35 +83,30 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testHashEdgeCaseEmptyPassword(): void
     {
-        $userAuthService = new UserAuthenticationService('md5');
         $password = '';
 
-        $hash = $userAuthService->hashPassword($password);
-        $this->assertEquals(md5($password), $hash, 'Generated hash should match MD5 hash for an empty password');
+        $hash = $this->userAuthService->hashPassword($password);
+        $this->assertTrue(password_verify($password, $hash), 'Generated hash should match bcrypt hash for an empty password');
     }
 
-    public function testVerifyMd5(): void
+    public function testVerifyLegacyMd5(): void
     {
-        $password_encryption = 'md5';
         $password = 'test_password';
+        // Pre-computed md5 hash simulating an existing database record
+        $hash = md5($password);
+        $result = $this->userAuthService->verifyPassword($password, $hash);
 
-        $userAuthService = new UserAuthenticationService($password_encryption);
-        $hash = $userAuthService->hashPassword($password);
-        $result = $userAuthService->verifyPassword($password, $hash);
-
-        $this->assertTrue($result, 'Password verification should be successful for MD5 hash');
+        $this->assertTrue($result, 'Password verification should be successful for legacy MD5 hash');
     }
 
-    public function testVerifyMd5Salt(): void
+    public function testVerifyLegacyMd5Salt(): void
     {
-        $password_encryption = 'md5salt';
         $password = 'test_password';
+        // Pre-computed md5salt hash simulating an existing database record
+        $hash = $this->userAuthService->combineSalts('abcde', $password);
+        $result = $this->userAuthService->verifyPassword($password, $hash);
 
-        $userAuthService = new UserAuthenticationService($password_encryption);
-        $hash = $userAuthService->hashPassword($password);
-        $result = $userAuthService->verifyPassword($password, $hash);
-
-        $this->assertTrue($result, 'Password verification should be successful for MD5 hash with salt');
+        $this->assertTrue($result, 'Password verification should be successful for legacy MD5 hash with salt');
     }
 
     public function testVerifyBcrypt(): void
@@ -134,26 +121,22 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testVerifyEdgeCaseIncorrectPassword(): void
     {
-        $password_encryption = 'md5';
         $password = 'test_password';
         $incorrect_password = 'wrong_password';
 
-        $userAuthService = new UserAuthenticationService($password_encryption);
-        $hash = $userAuthService->hashPassword($password);
-        $result = $userAuthService->verifyPassword($incorrect_password, $hash);
+        $hash = $this->userAuthService->hashPassword($password);
+        $result = $this->userAuthService->verifyPassword($incorrect_password, $hash);
 
         $this->assertFalse($result, 'Password verification should fail for an incorrect password');
     }
 
     public function testVerifyEdgeCaseEmptyPassword(): void
     {
-        $password_encryption = 'md5';
         $password = 'test_password';
         $empty_password = '';
 
-        $userAuthService = new UserAuthenticationService($password_encryption);
-        $hash = $userAuthService->hashPassword($password);
-        $result = $userAuthService->verifyPassword($empty_password, $hash);
+        $hash = $this->userAuthService->hashPassword($password);
+        $result = $this->userAuthService->verifyPassword($empty_password, $hash);
 
         $this->assertFalse($result, 'Password verification should fail for an empty password');
     }
@@ -184,17 +167,16 @@ class UserAuthenticationServiceTest extends TestCase
         $this->assertTrue($result, 'Password hash should need rehash for changed bcrypt cost');
     }
 
-    public function testNeedsRehashChangedEncryption(): void
+    public function testNeedsRehashLegacyMd5(): void
     {
-        $userAuthServiceOld = new UserAuthenticationService('md5');
         $password = 'test_password';
-
-        $hash = $userAuthServiceOld->hashPassword($password);
+        // Pre-computed md5 hash simulating an existing database record
+        $hash = md5($password);
 
         $userAuthServiceNew = new UserAuthenticationService('bcrypt');
         $result = $userAuthServiceNew->requiresRehash($hash);
 
-        $this->assertTrue($result, 'Password hash should need rehash for changed encryption method');
+        $this->assertTrue($result, 'Legacy MD5 hash should need rehash when encryption is bcrypt');
     }
 
     public function testNeedsRehashEdgeCaseInvalidHash(): void
@@ -215,11 +197,9 @@ class UserAuthenticationServiceTest extends TestCase
 
     public function testDetermineHashAlgorithmMd5Salt(): void
     {
-        $userAuthService = new UserAuthenticationService('md5salt');
-        $password = 'test_password';
-
-        $md5salt_hash = $userAuthService->hashPassword($password);
-        $hash_type = $userAuthService->identifyHashAlgorithm($md5salt_hash);
+        // Pre-computed md5salt hash simulating an existing database record
+        $md5salt_hash = $this->userAuthService->combineSalts('abcde', 'test_password');
+        $hash_type = $this->userAuthService->identifyHashAlgorithm($md5salt_hash);
 
         $this->assertEquals('md5salt', $hash_type, 'Hash type should be determined as MD5 with salt');
     }

@@ -51,7 +51,7 @@ return [
      */
     'security' => [
         'session_key' => 'change_this_key',      // IMPORTANT: Change this to a unique random string (default was p0w3r4dm1n, added in 2.1.6)
-        'password_encryption' => 'bcrypt',       // Options: 'md5', 'md5salt', 'bcrypt', 'argon2i', 'argon2id' (added in 2.1.6)
+        'password_encryption' => 'bcrypt',       // Options: 'bcrypt', 'argon2i', 'argon2id' (md5 and md5salt removed in 4.3.0)
         'password_cost' => 12,                   // Cost factor for bcrypt (added in 2.1.8)
         'login_token_validation' => true,        // Enable token validation for login form (added in 3.9.0)
         'global_token_validation' => true,       // Enable token validation for all forms (added in 3.9.0)
