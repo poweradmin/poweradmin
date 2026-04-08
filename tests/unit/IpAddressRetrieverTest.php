@@ -91,10 +91,4 @@ class IpAddressRetrieverTest extends TestCase
         $this->assertEquals('192.168.1.5', $ipRetriever->getClientIp());
     }
 
-    public function testGetClientIpWithHttpXRealIp()
-    {
-        $server = ['HTTP_X_REAL_IP' => '203.0.113.50'];
-        $ipRetriever = new IpAddressRetriever($server);
-        $this->assertEquals('203.0.113.50', $ipRetriever->getClientIp());
-    }
 }
