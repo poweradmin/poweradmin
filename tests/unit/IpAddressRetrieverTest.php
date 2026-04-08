@@ -32,7 +32,7 @@ class IpAddressRetrieverTest extends TestCase
     {
         $server = ['HTTP_X_FORWARDED_FOR' => 'invalid_ip, 192.168.1.3'];
         $ipRetriever = new IpAddressRetriever($server);
-        $this->assertEquals('', $ipRetriever->getClientIp());
+        $this->assertEquals('192.168.1.3', $ipRetriever->getClientIp());
     }
 
     public function testGetClientIpWithAllInvalidIps()
@@ -68,5 +68,33 @@ class IpAddressRetrieverTest extends TestCase
         $server = [];
         $ipRetriever = new IpAddressRetriever($server);
         $this->assertEquals('', $ipRetriever->getClientIp());
+    }
+
+    public function testGetClientIpWithMultipleIpsFirstInvalidReturnsSecond()
+    {
+        $server = ['HTTP_X_FORWARDED_FOR' => 'invalid_ip, 192.168.1.3'];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('192.168.1.3', $ipRetriever->getClientIp());
+    }
+
+    public function testGetClientIpWithSpacesAfterComma()
+    {
+        $server = ['HTTP_X_FORWARDED_FOR' => '10.0.0.1, 192.168.1.4'];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('10.0.0.1', $ipRetriever->getClientIp());
+    }
+
+    public function testGetClientIpWithSpacesOnlySecondValid()
+    {
+        $server = ['HTTP_X_FORWARDED_FOR' => 'bad, 192.168.1.5'];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('192.168.1.5', $ipRetriever->getClientIp());
+    }
+
+    public function testGetClientIpWithHttpXRealIp()
+    {
+        $server = ['HTTP_X_REAL_IP' => '203.0.113.50'];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('203.0.113.50', $ipRetriever->getClientIp());
     }
 }
