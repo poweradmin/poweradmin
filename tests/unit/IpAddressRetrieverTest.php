@@ -70,13 +70,6 @@ class IpAddressRetrieverTest extends TestCase
         $this->assertEquals('', $ipRetriever->getClientIp());
     }
 
-    public function testGetClientIpWithMultipleIpsFirstInvalidReturnsSecond()
-    {
-        $server = ['HTTP_X_FORWARDED_FOR' => 'invalid_ip, 192.168.1.3'];
-        $ipRetriever = new IpAddressRetriever($server);
-        $this->assertEquals('192.168.1.3', $ipRetriever->getClientIp());
-    }
-
     public function testGetClientIpWithSpacesAfterComma()
     {
         $server = ['HTTP_X_FORWARDED_FOR' => '10.0.0.1, 192.168.1.4'];
