@@ -66,7 +66,7 @@ class BasicAuthenticationMiddleware
         // Initialize authenticators
         $authService = new UserAuthenticationService(
             $this->config->get('security', 'password_encryption', 'bcrypt'),
-            $this->config->get('security', 'password_cost', 10)
+            $this->config->get('security', 'password_cost', 12)
         );
 
         // Create minimal dependencies required for authenticators
@@ -224,7 +224,7 @@ class BasicAuthenticationMiddleware
     private function sqlAuthenticatorApiAuth(User $userModel, string $password): bool
     {
         $passwordEncryption = $this->config->get('security', 'password_encryption', 'bcrypt');
-        $passwordCost = $this->config->get('security', 'password_cost', 10);
+        $passwordCost = $this->config->get('security', 'password_cost', 12);
 
         $authService = new UserAuthenticationService($passwordEncryption, $passwordCost);
 

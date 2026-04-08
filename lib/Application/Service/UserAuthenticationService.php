@@ -34,7 +34,7 @@ class UserAuthenticationService
     private string $passwordEncryption;
     private int $passwordEncryptionCost;
 
-    public function __construct(string $passwordEncryption = 'bcrypt', int $passwordEncryptionCost = 10)
+    public function __construct(string $passwordEncryption = 'bcrypt', int $passwordEncryptionCost = 12)
     {
         $this->passwordEncryption = $passwordEncryption;
         $this->passwordEncryptionCost = $passwordEncryptionCost;
