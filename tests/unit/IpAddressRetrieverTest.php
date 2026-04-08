@@ -90,5 +90,4 @@ class IpAddressRetrieverTest extends TestCase
         $ipRetriever = new IpAddressRetriever($server);
         $this->assertEquals('192.168.1.5', $ipRetriever->getClientIp());
     }
-
 }
