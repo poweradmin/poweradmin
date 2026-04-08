@@ -42,24 +42,32 @@ class IpAddressRetriever
      */
     public function getClientIp(): string
     {
-        $clientIpHeaders = [
+        $remoteAddr = $this->server['REMOTE_ADDR'] ?? '';
+
+        $proxyHeaders = [
             'HTTP_CLIENT_IP',
             'HTTP_X_FORWARDED_FOR',
             'HTTP_X_REAL_IP',
-            'REMOTE_ADDR'
         ];
 
-        foreach ($clientIpHeaders as $header) {
+        foreach ($proxyHeaders as $header) {
             if (!empty($this->server[$header])) {
                 $ips = array_values(array_filter(
                     array_map('trim', explode(',', $this->server[$header])),
-                    function (string $ip): bool {
-                        return $this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip);
+                    function (string $ip) use ($remoteAddr): bool {
+                        return $ip !== $remoteAddr
+                            && ($this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip));
                     }
                 ));
 
-                return $ips[0] ?? '';
+                if (!empty($ips)) {
+                    return $ips[0];
+                }
             }
+        }
+
+        if ($remoteAddr !== '' && ($this->ipValidator->isValidIPv4($remoteAddr) || $this->ipValidator->isValidIPv6($remoteAddr))) {
+            return $remoteAddr;
         }
 
         return '';
