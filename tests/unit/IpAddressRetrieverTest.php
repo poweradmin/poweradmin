@@ -90,4 +90,22 @@ class IpAddressRetrieverTest extends TestCase
         $ipRetriever = new IpAddressRetriever($server);
         $this->assertEquals('192.168.1.5', $ipRetriever->getClientIp());
     }
+
+    public function testGetClientIpWithHttpXRealIp()
+    {
+        $server = ['HTTP_X_REAL_IP' => '203.0.113.50'];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('203.0.113.50', $ipRetriever->getClientIp());
+    }
+
+    public function testGetClientIpPrefersXRealIpWhenXForwardedForMatchesRemoteAddr()
+    {
+        $server = [
+            'REMOTE_ADDR' => '172.17.0.1',
+            'HTTP_X_FORWARDED_FOR' => '172.17.0.1',
+            'HTTP_X_REAL_IP' => '203.0.113.50',
+        ];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('203.0.113.50', $ipRetriever->getClientIp());
+    }
 }
