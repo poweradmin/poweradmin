@@ -36,6 +36,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Service\BulkRecordParser;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -131,6 +132,7 @@ class BulkRecordAddController extends BaseController
 
         $success_count = 0;
         $failed_records = [];
+        $parser = new BulkRecordParser();
 
         foreach ($lines as $line) {
             $line = trim($line);
@@ -138,44 +140,18 @@ class BulkRecordAddController extends BaseController
                 continue;
             }
 
-            $parts = str_getcsv($line);
-
-            // Expected format: name,type,content,priority,ttl
-            if (count($parts) < 3) {
-                $failed_records[] = $line . " - " . _('Invalid format. Expected at least: name,type,content');
+            $result = $parser->parseLine($line, $default_ttl);
+            if (is_string($result)) {
+                $failed_records[] = $line . " - " . $result;
                 continue;
             }
 
-            $name = DnsIdnService::toPunycode(trim($parts[0]));
-            $type = strtoupper(trim($parts[1]));
-            $content = trim($parts[2]);
-            // Get the other fields, with special handling for SRV records
-            if ($type === 'SRV' && count($parts) >= 5) {
-                // For SRV records, parts[3] is typically the priority field (second number in the content)
-                // This needs to be parsed differently to match PowerDNS expected format
-                $prio = 0; // SRV priority is handled in content
-                $ttl = isset($parts[4]) && $parts[4] !== '' ? (int)$parts[4] : $default_ttl;
-                $comment = isset($parts[5]) ? trim($parts[5]) : '';
-
-                // For SRV records, we need to reformat the content to be: weight port target
-                // Example: sip.example.com.,0,5060 becomes "0 5060 sip.example.com."
-                if (isset($parts[3]) && is_numeric($parts[3])) {
-                    $weight = (int)$parts[3];
-                    $port = isset($parts[4]) && is_numeric($parts[4]) ? (int)$parts[4] : 0;
-                    $target = $content;
-
-                    // Rebuild content in the format PowerDNS expects for SRV
-                    $content = "$weight $port $target";
-
-                    // Use the next field as TTL if provided
-                    $ttl = isset($parts[5]) && is_numeric($parts[5]) ? (int)$parts[5] : $default_ttl;
-                    $comment = isset($parts[6]) ? trim($parts[6]) : '';
-                }
-            } else {
-                $prio = isset($parts[3]) && $parts[3] !== '' ? (int)$parts[3] : 0;
-                $ttl = isset($parts[4]) && $parts[4] !== '' ? (int)$parts[4] : $default_ttl;
-                $comment = isset($parts[5]) ? trim($parts[5]) : '';
-            }
+            $name = DnsIdnService::toPunycode($result['name']);
+            $type = $result['type'];
+            $content = $result['content'];
+            $prio = $result['prio'];
+            $ttl = $result['ttl'];
+            $comment = $result['comment'];
 
             // Convert IDN content to punycode after full content assembly
             $content = DnsIdnService::convertContentToPunycode($type, $content);

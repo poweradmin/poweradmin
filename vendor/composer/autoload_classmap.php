@@ -1093,6 +1093,7 @@ return array(
     'Poweradmin\\Domain\\Service\\ApiPermissionService' => $baseDir . '/lib/Domain/Service/ApiPermissionService.php',
     'Poweradmin\\Domain\\Service\\AuthenticationService' => $baseDir . '/lib/Domain/Service/AuthenticationService.php',
     'Poweradmin\\Domain\\Service\\BatchReverseRecordCreator' => $baseDir . '/lib/Domain/Service/BatchReverseRecordCreator.php',
+    'Poweradmin\\Domain\\Service\\BulkRecordParser' => $baseDir . '/lib/Domain/Service/BulkRecordParser.php',
     'Poweradmin\\Domain\\Service\\DatabaseConnection' => $baseDir . '/lib/Domain/Service/DatabaseConnection.php',
     'Poweradmin\\Domain\\Service\\DatabaseConsistencyService' => $baseDir . '/lib/Domain/Service/DatabaseConsistencyService.php',
     'Poweradmin\\Domain\\Service\\DatabaseCredentialMapper' => $baseDir . '/lib/Domain/Service/DatabaseCredentialMapper.php',

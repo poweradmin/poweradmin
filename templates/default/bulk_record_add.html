@@ -115,7 +115,8 @@
                         <ul class="mb-0 ps-4 small">
                             <li><code>_acme,TXT,"verification=12345"</code></li>
                             <li><code>@,TXT,"v=spf1 mx a ip4:192.168.0.0/24 ~all"</code></li>
-                            <li><code>_sip._tcp,SRV,sip.example.com.,0,5060,3600</code></li>
+                            <li><code>_sip._tcp,SRV,"0 5060 sip.example.com.",0,3600</code></li>
+                            <li><code>_sip._tcp,SRV,sip.example.com.,0,5060,3600</code> <small class="text-muted">({% trans %}legacy{% endtrans %})</small></li>
                         </ul>
                     </div>
                 </div>
