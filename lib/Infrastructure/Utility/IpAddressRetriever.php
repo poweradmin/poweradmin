@@ -51,9 +51,12 @@ class IpAddressRetriever
 
         foreach ($clientIpHeaders as $header) {
             if (!empty($this->server[$header])) {
-                $ips = array_filter(explode(',', $this->server[$header]), function ($ip) {
-                    return $this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip);
-                });
+                $ips = array_values(array_filter(
+                    array_map('trim', explode(',', $this->server[$header])),
+                    function (string $ip): bool {
+                        return $this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip);
+                    }
+                ));
 
                 return $ips[0] ?? '';
             }
