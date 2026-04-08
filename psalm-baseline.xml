@@ -83,16 +83,6 @@
       <code><![CDATA[$itemsPerPage]]></code>
     </InvalidScalarArgument>
   </file>
-  <file src="lib/Application/Controller/ListLogUsersController.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$itemsPerPage]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="lib/Application/Controller/ListLogZonesController.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$itemsPerPage]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Application/Controller/ListReverseZonesController.php">
     <InvalidScalarArgument>
       <code><![CDATA[$iface_rowamount]]></code>
