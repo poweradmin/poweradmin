@@ -1702,13 +1702,13 @@ msgstr "Rediger sonemetadata"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
+msgstr "Metadatatypen %s godtar bare en enkelt verdi. Legg kun til en rad for denne typen."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:646
 #: templates/modern/edit_zone_metadata.html:146
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
+msgstr "Egendefinert metadatatype lagret direkte i PowerDNS domainmetadata-tabellen."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:654
 #: templates/modern/pdns_status.html:412
@@ -8566,7 +8566,7 @@ msgstr "Ugyldig format. Forventet minst: navn,type,innhold"
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
+msgstr "Ugyldig SRV-format. Bruk: name,SRV,\"weight port target\",priority,ttl eller name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -11863,7 +11863,7 @@ msgstr "Flere verdier"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
+msgstr "For metadata som ALLOW-AXFR-FROM, legg til flere rader med samme type. Hver verdi lagres separat, en rad per verdi."
 
 #: templates/modern/edit_zone_metadata.html:42
 msgid "Multi value"

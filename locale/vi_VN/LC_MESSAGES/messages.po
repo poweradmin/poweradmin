@@ -1689,13 +1689,13 @@ msgstr "Chinh sua sieu du lieu vung"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
+msgstr "Loai sieu du lieu %s chi chap nhan mot gia tri duy nhat. Chi them mot dong cho loai nay."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:646
 #: templates/modern/edit_zone_metadata.html:146
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
+msgstr "Loai sieu du lieu tuy chinh duoc luu truc tiep trong bang domainmetadata cua PowerDNS."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:654
 #: templates/modern/pdns_status.html:412
@@ -8237,7 +8237,7 @@ msgstr "Định dạng không hợp lệ. Yêu cầu tối thiểu: tên,loại,
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
+msgstr "Dinh dang SRV khong hop le. Su dung: name,SRV,\"weight port target\",priority,ttl hoac name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -11499,7 +11499,7 @@ msgstr "Nhieu gia tri"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
+msgstr "Doi voi sieu du lieu nhu ALLOW-AXFR-FROM, them nhieu dong voi cung loai. Moi gia tri duoc luu rieng, mot dong cho moi gia tri."
 
 #: templates/modern/edit_zone_metadata.html:42
 msgid "Multi value"

@@ -1695,13 +1695,13 @@ msgstr "Alan Meta Verilerini Duzenle"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
+msgstr "Meta veri turu %s yalnizca tek bir deger kabul eder. Bu tur icin yalnizca bir satir ekleyin."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:646
 #: templates/modern/edit_zone_metadata.html:146
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
+msgstr "PowerDNS domainmetadata tablosunda dogrudan depolanan ozel meta veri turu."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:654
 #: templates/modern/pdns_status.html:412
@@ -8635,7 +8635,7 @@ msgstr "Geçersiz format. En az şunlar bekleniyor: ad,tip,içerik"
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
+msgstr "Gecersiz SRV formati. Kullanin: name,SRV,\"weight port target\",priority,ttl veya name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -11939,7 +11939,7 @@ msgstr "Birden fazla deger"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
+msgstr "ALLOW-AXFR-FROM gibi meta veriler icin ayni turde birden fazla satir ekleyin. Her deger ayri ayri depolanir, deger basina bir satir."
 
 #: templates/modern/edit_zone_metadata.html:42
 msgid "Multi value"

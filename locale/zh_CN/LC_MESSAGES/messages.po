@@ -1605,13 +1605,13 @@ msgstr "编辑区域元数据"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
+msgstr "元数据类型 %s 仅接受单个值。请只为此类型添加一行。"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:646
 #: templates/modern/edit_zone_metadata.html:146
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
+msgstr "自定义元数据类型，直接存储在 PowerDNS domainmetadata 表中。"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:654
 #: templates/modern/pdns_status.html:412
@@ -7841,7 +7841,7 @@ msgstr "格式无效。至少需要：名称,类型,内容"
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
+msgstr "无效的 SRV 格式。请使用：name,SRV,\"weight port target\",priority,ttl 或 name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -11054,7 +11054,7 @@ msgstr "多个值"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
+msgstr "对于 ALLOW-AXFR-FROM 等元数据，请添加多行相同类型。每个值单独存储，每行一个值。"
 
 #: templates/modern/edit_zone_metadata.html:42
 msgid "Multi value"

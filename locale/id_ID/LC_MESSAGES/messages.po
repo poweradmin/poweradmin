@@ -1709,13 +1709,13 @@ msgstr "Edit metadata zona"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
+msgstr "Jenis metadata %s hanya menerima satu nilai. Tambahkan hanya satu baris untuk jenis ini."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:646
 #: templates/modern/edit_zone_metadata.html:146
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
+msgstr "Jenis metadata kustom yang disimpan langsung di tabel domainmetadata PowerDNS."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:654
 #: templates/modern/pdns_status.html:412
@@ -8078,7 +8078,7 @@ msgstr "Format tidak valid. Minimal diperlukan: nama,tipe,konten"
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
+msgstr "Format SRV tidak valid. Gunakan: name,SRV,\"weight port target\",priority,ttl atau name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -11347,7 +11347,7 @@ msgstr "Beberapa nilai"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
+msgstr "Untuk metadata seperti ALLOW-AXFR-FROM, tambahkan beberapa baris dengan jenis yang sama. Setiap nilai disimpan terpisah, satu baris per nilai."
 
 #: templates/modern/edit_zone_metadata.html:42
 msgid "Multi value"

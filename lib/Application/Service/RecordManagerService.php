@@ -63,9 +63,8 @@ class RecordManagerService
     {
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
 
-        // Use createRecordAtomic when disabled flag is set, otherwise addRecordGetId
-        $recordId = $disabled
-            ? $this->dnsRecord->createRecordAtomic($zone_id, $name, $type, $content, $ttl, $prio, $disabled)
+        $recordId = ($disabled && $this->backendProvider !== null)
+            ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $ttl, $prio, $disabled)
             : $this->dnsRecord->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
         if ($recordId === null) {
             return false;

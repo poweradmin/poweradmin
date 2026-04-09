@@ -1714,13 +1714,13 @@ msgstr "Redaktirovat' metadannye zony"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
+msgstr "Tip metadannykh %s prinimaet tolko odno znachenie. Dobavte tolko odnu stroku dlya etogo tipa."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:646
 #: templates/modern/edit_zone_metadata.html:146
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
+msgstr "Polzovatelskiy tip metadannykh, khranyashchiysya neposredstvenno v tablitse domainmetadata PowerDNS."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:654
 #: templates/modern/pdns_status.html:412
@@ -8761,7 +8761,7 @@ msgstr "Неверный формат. Ожидается как минимум:
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
+msgstr "Nevernyy format SRV. Ispolzuyte: name,SRV,\"weight port target\",priority,ttl ili name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -12070,7 +12070,7 @@ msgstr "Neskolko znacheniy"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
+msgstr "Dlya metadannykh, takikh kak ALLOW-AXFR-FROM, dobavte neskolko strok s tem zhe tipom. Kazhdoe znachenie khranitsya otdelno, odna stroka na znachenie."
 
 #: templates/modern/edit_zone_metadata.html:42
 msgid "Multi value"

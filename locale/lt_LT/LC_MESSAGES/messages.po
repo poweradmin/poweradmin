@@ -1707,13 +1707,13 @@ msgstr "Redaguoti zonos metaduomenis"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
+msgstr "Metaduomenu tipas %s priima tik viena reiksme. Pridekite tik viena eilute siam tipui."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:646
 #: templates/modern/edit_zone_metadata.html:146
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
+msgstr "Pasirinktinis metaduomenu tipas, saugomas tiesiogiai PowerDNS domainmetadata lenteleje."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:654
 #: templates/modern/pdns_status.html:412
@@ -8668,7 +8668,7 @@ msgstr "Neteisingas formatas. Tikėtasi bent: pavadinimas,tipas,turinys"
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
+msgstr "Neteisingas SRV formatas. Naudokite: name,SRV,\"weight port target\",priority,ttl arba name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -11961,7 +11961,7 @@ msgstr "Kelios reiksmes"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
+msgstr "Tokiems metaduomenims kaip ALLOW-AXFR-FROM pridekite kelias eilutes su tuo paciu tipu. Kiekviena reiksme saugoma atskirai, viena eilute vienai reiksmei."
 
 #: templates/modern/edit_zone_metadata.html:42
 msgid "Multi value"

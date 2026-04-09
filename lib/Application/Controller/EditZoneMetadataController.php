@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
@@ -31,7 +32,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Service\IpAddressRetriever;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -252,6 +253,8 @@ class EditZoneMetadataController extends BaseController
         ],
     ];
 
+    private Request $request;
+
     /**
      * Repository used for loading zones and replacing domainmetadata rows.
      */
@@ -273,6 +276,7 @@ class EditZoneMetadataController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
+        $this->request = new Request();
         $this->zoneRepository = $this->getRepositoryFactory()->createZoneRepository();
         if (DnsBackendProviderFactory::isApiBackend($this->getConfig())) {
             $this->apiClient = DnsBackendProviderFactory::createApiClient($this->getConfig(), $this->logger);
