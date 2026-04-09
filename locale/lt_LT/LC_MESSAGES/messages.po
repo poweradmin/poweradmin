@@ -1687,25 +1687,21 @@ msgid "You do not have the permission to view supermasters."
 msgstr "Neturite leidimo peržiūrėti supermasters."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:314
-#, auto-english-fallback
 msgid "You do not have the permission to edit zone metadata."
-msgstr "You do not have the permission to edit zone metadata."
+msgstr "Neturite teises redaguoti zonos metaduomenu."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:341
-#, auto-english-fallback
 msgid "Zone metadata has been updated successfully."
-msgstr "Zone metadata has been updated successfully."
+msgstr "Zonos metaduomenys sekmingai atnaujinti."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:346
-#, auto-english-fallback
 msgid "Failed to update zone metadata."
-msgstr "Failed to update zone metadata."
+msgstr "Nepavyko atnaujinti zonos metaduomenu."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:368
 #: templates/modern/edit_zone_metadata.html:24
-#, auto-english-fallback
 msgid "Edit Zone Metadata"
-msgstr "Edit Zone Metadata"
+msgstr "Redaguoti zonos metaduomenis"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:558
 #, php-format
@@ -1730,14 +1726,12 @@ msgid "Custom"
 msgstr "Pasirinktinis"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:697
-#, auto-english-fallback
 msgid "Multi"
-msgstr "Multi"
+msgstr "Daug"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:698
-#, auto-english-fallback
 msgid "Single"
-msgstr "Single"
+msgstr "Vienas"
 
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
@@ -8663,9 +8657,8 @@ msgid "The following warnings were found:"
 msgstr "Rasti šie įspėjimai:"
 
 #: lib/Domain/Service/BulkRecordParser.php:36
-#, auto-english-fallback
 msgid "Empty line."
-msgstr "Empty line."
+msgstr "Tuscia eilute."
 
 #: lib/Domain/Service/BulkRecordParser.php:42
 msgid "Invalid format. Expected at least: name,type,content"
@@ -9974,9 +9967,8 @@ msgid "Advanced Records"
 msgstr "Pažangūs įrašai"
 
 #: templates/default/bulk_record_add.html:119
-#, auto-english-fallback
 msgid "legacy"
-msgstr "legacy"
+msgstr "pasenusi"
 
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
@@ -11265,9 +11257,8 @@ msgid "Edit zone"
 msgstr "Redaguoti zoną"
 
 #: templates/default/edit.html:227 templates/modern/edit.html:227
-#, auto-english-fallback
 msgid "Metadata"
-msgstr "Metadata"
+msgstr "Metaduomenys"
 
 #: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
@@ -11959,14 +11950,12 @@ msgid "There are no supermasters to show in this listing."
 msgstr "Šiame sąraše nėra supermasterių, kuriuos būtų galima rodyti."
 
 #: templates/modern/edit_zone_metadata.html:18
-#, auto-english-fallback
 msgid "Edit Metadata"
-msgstr "Edit Metadata"
+msgstr "Redaguoti metaduomenis"
 
 #: templates/modern/edit_zone_metadata.html:36
-#, auto-english-fallback
 msgid "Multiple values"
-msgstr "Multiple values"
+msgstr "Kelios reiksmes"
 
 #: templates/modern/edit_zone_metadata.html:37
 msgid ""
@@ -11975,34 +11964,28 @@ msgid ""
 msgstr ""
 
 #: templates/modern/edit_zone_metadata.html:42
-#, auto-english-fallback
 msgid "Multi value"
-msgstr "Multi value"
+msgstr "Kelios reiksmes"
 
 #: templates/modern/edit_zone_metadata.html:43
-#, auto-english-fallback
 msgid "Single value"
-msgstr "Single value"
+msgstr "Viena reiksme"
 
 #: templates/modern/edit_zone_metadata.html:53
-#, auto-english-fallback
 msgid "Kind"
-msgstr "Kind"
+msgstr "Tipas"
 
 #: templates/modern/edit_zone_metadata.html:100
-#, auto-english-fallback
 msgid "Add metadata row"
-msgstr "Add metadata row"
+msgstr "Prideti metaduomenu eilute"
 
 #: templates/modern/edit_zone_metadata.html:103
-#, auto-english-fallback
 msgid "Save metadata"
-msgstr "Save metadata"
+msgstr "Issaugoti metaduomenis"
 
 #: templates/modern/edit_zone_metadata.html:106
-#, auto-english-fallback
 msgid "Back to zone"
-msgstr "Back to zone"
+msgstr "Grizti i zona"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"

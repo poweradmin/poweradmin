@@ -1700,25 +1700,21 @@ msgid "You do not have the permission to view supermasters."
 msgstr "Non si dispone del permesso di visualizzare i supermaster."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:314
-#, auto-english-fallback
 msgid "You do not have the permission to edit zone metadata."
-msgstr "You do not have the permission to edit zone metadata."
+msgstr "Non hai il permesso di modificare i metadati della zona."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:341
-#, auto-english-fallback
 msgid "Zone metadata has been updated successfully."
-msgstr "Zone metadata has been updated successfully."
+msgstr "I metadati della zona sono stati aggiornati con successo."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:346
-#, auto-english-fallback
 msgid "Failed to update zone metadata."
-msgstr "Failed to update zone metadata."
+msgstr "Aggiornamento dei metadati della zona non riuscito."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:368
 #: templates/modern/edit_zone_metadata.html:24
-#, auto-english-fallback
 msgid "Edit Zone Metadata"
-msgstr "Edit Zone Metadata"
+msgstr "Modifica metadati zona"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:558
 #, php-format
@@ -1743,14 +1739,12 @@ msgid "Custom"
 msgstr "Personalizzato"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:697
-#, auto-english-fallback
 msgid "Multi"
-msgstr "Multi"
+msgstr "Multiplo"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:698
-#, auto-english-fallback
 msgid "Single"
-msgstr "Single"
+msgstr "Singolo"
 
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
@@ -8821,9 +8815,8 @@ msgid "The following warnings were found:"
 msgstr "Sono stati trovati i seguenti avvisi:"
 
 #: lib/Domain/Service/BulkRecordParser.php:36
-#, auto-english-fallback
 msgid "Empty line."
-msgstr "Empty line."
+msgstr "Riga vuota."
 
 #: lib/Domain/Service/BulkRecordParser.php:42
 msgid "Invalid format. Expected at least: name,type,content"
@@ -10143,7 +10136,6 @@ msgid "Advanced Records"
 msgstr "Record Avanzati"
 
 #: templates/default/bulk_record_add.html:119
-#, auto-english-fallback
 msgid "legacy"
 msgstr "legacy"
 
@@ -11448,9 +11440,8 @@ msgid "Edit zone"
 msgstr "Modifica zona"
 
 #: templates/default/edit.html:227 templates/modern/edit.html:227
-#, auto-english-fallback
 msgid "Metadata"
-msgstr "Metadata"
+msgstr "Metadati"
 
 #: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
@@ -12145,14 +12136,12 @@ msgid "There are no supermasters to show in this listing."
 msgstr "Non ci sono supermasters da mostrare in questo elenco."
 
 #: templates/modern/edit_zone_metadata.html:18
-#, auto-english-fallback
 msgid "Edit Metadata"
-msgstr "Edit Metadata"
+msgstr "Modifica metadati"
 
 #: templates/modern/edit_zone_metadata.html:36
-#, auto-english-fallback
 msgid "Multiple values"
-msgstr "Multiple values"
+msgstr "Valori multipli"
 
 #: templates/modern/edit_zone_metadata.html:37
 msgid ""
@@ -12161,34 +12150,28 @@ msgid ""
 msgstr ""
 
 #: templates/modern/edit_zone_metadata.html:42
-#, auto-english-fallback
 msgid "Multi value"
-msgstr "Multi value"
+msgstr "Valore multiplo"
 
 #: templates/modern/edit_zone_metadata.html:43
-#, auto-english-fallback
 msgid "Single value"
-msgstr "Single value"
+msgstr "Valore singolo"
 
 #: templates/modern/edit_zone_metadata.html:53
-#, auto-english-fallback
 msgid "Kind"
-msgstr "Kind"
+msgstr "Tipo"
 
 #: templates/modern/edit_zone_metadata.html:100
-#, auto-english-fallback
 msgid "Add metadata row"
-msgstr "Add metadata row"
+msgstr "Aggiungi riga metadati"
 
 #: templates/modern/edit_zone_metadata.html:103
-#, auto-english-fallback
 msgid "Save metadata"
-msgstr "Save metadata"
+msgstr "Salva metadati"
 
 #: templates/modern/edit_zone_metadata.html:106
-#, auto-english-fallback
 msgid "Back to zone"
-msgstr "Back to zone"
+msgstr "Torna alla zona"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"

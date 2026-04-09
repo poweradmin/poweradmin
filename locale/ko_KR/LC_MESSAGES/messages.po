@@ -1649,25 +1649,21 @@ msgid "You do not have the permission to view supermasters."
 msgstr "슈퍼마스터를 볼 권한이 없습니다."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:314
-#, auto-english-fallback
 msgid "You do not have the permission to edit zone metadata."
-msgstr "You do not have the permission to edit zone metadata."
+msgstr "존 메타데이터를 편집할 권한이 없습니다."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:341
-#, auto-english-fallback
 msgid "Zone metadata has been updated successfully."
-msgstr "Zone metadata has been updated successfully."
+msgstr "존 메타데이터가 성공적으로 업데이트되었습니다."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:346
-#, auto-english-fallback
 msgid "Failed to update zone metadata."
-msgstr "Failed to update zone metadata."
+msgstr "존 메타데이터 업데이트에 실패했습니다."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:368
 #: templates/modern/edit_zone_metadata.html:24
-#, auto-english-fallback
 msgid "Edit Zone Metadata"
-msgstr "Edit Zone Metadata"
+msgstr "존 메타데이터 편집"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:558
 #, php-format
@@ -1692,14 +1688,12 @@ msgid "Custom"
 msgstr "사용자 지정"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:697
-#, auto-english-fallback
 msgid "Multi"
-msgstr "Multi"
+msgstr "다중"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:698
-#, auto-english-fallback
 msgid "Single"
-msgstr "Single"
+msgstr "단일"
 
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
@@ -7976,9 +7970,8 @@ msgid "The following warnings were found:"
 msgstr "예약 작업을 생성할 수 없습니다."
 
 #: lib/Domain/Service/BulkRecordParser.php:36
-#, auto-english-fallback
 msgid "Empty line."
-msgstr "Empty line."
+msgstr "빈 줄."
 
 #: lib/Domain/Service/BulkRecordParser.php:42
 msgid "Invalid format. Expected at least: name,type,content"
@@ -9251,9 +9244,8 @@ msgid "Advanced Records"
 msgstr "고급 레코드"
 
 #: templates/default/bulk_record_add.html:119
-#, auto-english-fallback
 msgid "legacy"
-msgstr "legacy"
+msgstr "레거시"
 
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
@@ -10525,9 +10517,8 @@ msgid "Edit zone"
 msgstr "존 편집"
 
 #: templates/default/edit.html:227 templates/modern/edit.html:227
-#, auto-english-fallback
 msgid "Metadata"
-msgstr "Metadata"
+msgstr "메타데이터"
 
 #: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
@@ -11211,14 +11202,12 @@ msgid "There are no supermasters to show in this listing."
 msgstr "이 목록에 표시할 supermaster가 없습니다."
 
 #: templates/modern/edit_zone_metadata.html:18
-#, auto-english-fallback
 msgid "Edit Metadata"
-msgstr "Edit Metadata"
+msgstr "메타데이터 편집"
 
 #: templates/modern/edit_zone_metadata.html:36
-#, auto-english-fallback
 msgid "Multiple values"
-msgstr "Multiple values"
+msgstr "여러 값"
 
 #: templates/modern/edit_zone_metadata.html:37
 msgid ""
@@ -11227,34 +11216,28 @@ msgid ""
 msgstr ""
 
 #: templates/modern/edit_zone_metadata.html:42
-#, auto-english-fallback
 msgid "Multi value"
-msgstr "Multi value"
+msgstr "다중 값"
 
 #: templates/modern/edit_zone_metadata.html:43
-#, auto-english-fallback
 msgid "Single value"
-msgstr "Single value"
+msgstr "단일 값"
 
 #: templates/modern/edit_zone_metadata.html:53
-#, auto-english-fallback
 msgid "Kind"
-msgstr "Kind"
+msgstr "종류"
 
 #: templates/modern/edit_zone_metadata.html:100
-#, auto-english-fallback
 msgid "Add metadata row"
-msgstr "Add metadata row"
+msgstr "메타데이터 행 추가"
 
 #: templates/modern/edit_zone_metadata.html:103
-#, auto-english-fallback
 msgid "Save metadata"
-msgstr "Save metadata"
+msgstr "메타데이터 저장"
 
 #: templates/modern/edit_zone_metadata.html:106
-#, auto-english-fallback
 msgid "Back to zone"
-msgstr "Back to zone"
+msgstr "존으로 돌아가기"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"

@@ -1692,25 +1692,21 @@ msgid "You do not have the permission to view supermasters."
 msgstr "U hebt geen toestemming om supermasters te bekijken."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:314
-#, auto-english-fallback
 msgid "You do not have the permission to edit zone metadata."
-msgstr "You do not have the permission to edit zone metadata."
+msgstr "U heeft geen toestemming om zone-metadata te bewerken."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:341
-#, auto-english-fallback
 msgid "Zone metadata has been updated successfully."
-msgstr "Zone metadata has been updated successfully."
+msgstr "De zone-metadata is succesvol bijgewerkt."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:346
-#, auto-english-fallback
 msgid "Failed to update zone metadata."
-msgstr "Failed to update zone metadata."
+msgstr "Bijwerken van zone-metadata mislukt."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:368
 #: templates/modern/edit_zone_metadata.html:24
-#, auto-english-fallback
 msgid "Edit Zone Metadata"
-msgstr "Edit Zone Metadata"
+msgstr "Zone-metadata bewerken"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:558
 #, php-format
@@ -1735,14 +1731,12 @@ msgid "Custom"
 msgstr "Aangepast"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:697
-#, auto-english-fallback
 msgid "Multi"
-msgstr "Multi"
+msgstr "Meervoudig"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:698
-#, auto-english-fallback
 msgid "Single"
-msgstr "Single"
+msgstr "Enkelvoudig"
 
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
@@ -8723,9 +8717,8 @@ msgid "The following warnings were found:"
 msgstr "De volgende waarschuwingen werden gevonden:"
 
 #: lib/Domain/Service/BulkRecordParser.php:36
-#, auto-english-fallback
 msgid "Empty line."
-msgstr "Empty line."
+msgstr "Lege regel."
 
 #: lib/Domain/Service/BulkRecordParser.php:42
 msgid "Invalid format. Expected at least: name,type,content"
@@ -10045,9 +10038,8 @@ msgid "Advanced Records"
 msgstr "Geavanceerde Records"
 
 #: templates/default/bulk_record_add.html:119
-#, auto-english-fallback
 msgid "legacy"
-msgstr "legacy"
+msgstr "verouderd"
 
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
@@ -11357,7 +11349,6 @@ msgid "Edit zone"
 msgstr "Zone bewerken"
 
 #: templates/default/edit.html:227 templates/modern/edit.html:227
-#, auto-english-fallback
 msgid "Metadata"
 msgstr "Metadata"
 
@@ -12055,14 +12046,12 @@ msgid "There are no supermasters to show in this listing."
 msgstr "Er zijn geen supermasters om te tonen in deze lijst."
 
 #: templates/modern/edit_zone_metadata.html:18
-#, auto-english-fallback
 msgid "Edit Metadata"
-msgstr "Edit Metadata"
+msgstr "Metadata bewerken"
 
 #: templates/modern/edit_zone_metadata.html:36
-#, auto-english-fallback
 msgid "Multiple values"
-msgstr "Multiple values"
+msgstr "Meerdere waarden"
 
 #: templates/modern/edit_zone_metadata.html:37
 msgid ""
@@ -12071,34 +12060,28 @@ msgid ""
 msgstr ""
 
 #: templates/modern/edit_zone_metadata.html:42
-#, auto-english-fallback
 msgid "Multi value"
-msgstr "Multi value"
+msgstr "Meervoudige waarde"
 
 #: templates/modern/edit_zone_metadata.html:43
-#, auto-english-fallback
 msgid "Single value"
-msgstr "Single value"
+msgstr "Enkele waarde"
 
 #: templates/modern/edit_zone_metadata.html:53
-#, auto-english-fallback
 msgid "Kind"
-msgstr "Kind"
+msgstr "Soort"
 
 #: templates/modern/edit_zone_metadata.html:100
-#, auto-english-fallback
 msgid "Add metadata row"
-msgstr "Add metadata row"
+msgstr "Metadatarij toevoegen"
 
 #: templates/modern/edit_zone_metadata.html:103
-#, auto-english-fallback
 msgid "Save metadata"
-msgstr "Save metadata"
+msgstr "Metadata opslaan"
 
 #: templates/modern/edit_zone_metadata.html:106
-#, auto-english-fallback
 msgid "Back to zone"
-msgstr "Back to zone"
+msgstr "Terug naar zone"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"

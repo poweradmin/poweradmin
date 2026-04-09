@@ -1681,25 +1681,21 @@ msgid "You do not have the permission to view supermasters."
 msgstr "Nemáte oprávnění zobrazit supermasters."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:314
-#, auto-english-fallback
 msgid "You do not have the permission to edit zone metadata."
-msgstr "You do not have the permission to edit zone metadata."
+msgstr "Nemate opravneni upravovat metadata zony."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:341
-#, auto-english-fallback
 msgid "Zone metadata has been updated successfully."
-msgstr "Zone metadata has been updated successfully."
+msgstr "Metadata zony byla uspesne aktualizovana."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:346
-#, auto-english-fallback
 msgid "Failed to update zone metadata."
-msgstr "Failed to update zone metadata."
+msgstr "Aktualizace metadat zony se nezdarila."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:368
 #: templates/modern/edit_zone_metadata.html:24
-#, auto-english-fallback
 msgid "Edit Zone Metadata"
-msgstr "Edit Zone Metadata"
+msgstr "Upravit metadata zony"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:558
 #, php-format
@@ -1724,14 +1720,12 @@ msgid "Custom"
 msgstr "Vlastní"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:697
-#, auto-english-fallback
 msgid "Multi"
-msgstr "Multi"
+msgstr "Vice"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:698
-#, auto-english-fallback
 msgid "Single"
-msgstr "Single"
+msgstr "Jeden"
 
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
@@ -8593,9 +8587,8 @@ msgid "The following warnings were found:"
 msgstr "Byla nalezena následující varování:"
 
 #: lib/Domain/Service/BulkRecordParser.php:36
-#, auto-english-fallback
 msgid "Empty line."
-msgstr "Empty line."
+msgstr "Prazdny radek."
 
 #: lib/Domain/Service/BulkRecordParser.php:42
 msgid "Invalid format. Expected at least: name,type,content"
@@ -9896,9 +9889,8 @@ msgid "Advanced Records"
 msgstr "Pokročilé záznamy"
 
 #: templates/default/bulk_record_add.html:119
-#, auto-english-fallback
 msgid "legacy"
-msgstr "legacy"
+msgstr "zastaraly"
 
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
@@ -11195,7 +11187,6 @@ msgid "Edit zone"
 msgstr "Upravit zónu"
 
 #: templates/default/edit.html:227 templates/modern/edit.html:227
-#, auto-english-fallback
 msgid "Metadata"
 msgstr "Metadata"
 
@@ -11886,14 +11877,12 @@ msgid "There are no supermasters to show in this listing."
 msgstr "V tomto seznamu nejsou žádní supermastři k zobrazení."
 
 #: templates/modern/edit_zone_metadata.html:18
-#, auto-english-fallback
 msgid "Edit Metadata"
-msgstr "Edit Metadata"
+msgstr "Upravit metadata"
 
 #: templates/modern/edit_zone_metadata.html:36
-#, auto-english-fallback
 msgid "Multiple values"
-msgstr "Multiple values"
+msgstr "Vice hodnot"
 
 #: templates/modern/edit_zone_metadata.html:37
 msgid ""
@@ -11902,34 +11891,28 @@ msgid ""
 msgstr ""
 
 #: templates/modern/edit_zone_metadata.html:42
-#, auto-english-fallback
 msgid "Multi value"
-msgstr "Multi value"
+msgstr "Vice hodnot"
 
 #: templates/modern/edit_zone_metadata.html:43
-#, auto-english-fallback
 msgid "Single value"
-msgstr "Single value"
+msgstr "Jedna hodnota"
 
 #: templates/modern/edit_zone_metadata.html:53
-#, auto-english-fallback
 msgid "Kind"
-msgstr "Kind"
+msgstr "Druh"
 
 #: templates/modern/edit_zone_metadata.html:100
-#, auto-english-fallback
 msgid "Add metadata row"
-msgstr "Add metadata row"
+msgstr "Pridat radek metadat"
 
 #: templates/modern/edit_zone_metadata.html:103
-#, auto-english-fallback
 msgid "Save metadata"
-msgstr "Save metadata"
+msgstr "Ulozit metadata"
 
 #: templates/modern/edit_zone_metadata.html:106
-#, auto-english-fallback
 msgid "Back to zone"
-msgstr "Back to zone"
+msgstr "Zpet na zonu"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"

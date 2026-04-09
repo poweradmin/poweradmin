@@ -1669,25 +1669,21 @@ msgid "You do not have the permission to view supermasters."
 msgstr "Bạn không có quyền xem các supermaster."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:314
-#, auto-english-fallback
 msgid "You do not have the permission to edit zone metadata."
-msgstr "You do not have the permission to edit zone metadata."
+msgstr "Ban khong co quyen chinh sua sieu du lieu vung."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:341
-#, auto-english-fallback
 msgid "Zone metadata has been updated successfully."
-msgstr "Zone metadata has been updated successfully."
+msgstr "Sieu du lieu vung da duoc cap nhat thanh cong."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:346
-#, auto-english-fallback
 msgid "Failed to update zone metadata."
-msgstr "Failed to update zone metadata."
+msgstr "Cap nhat sieu du lieu vung that bai."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:368
 #: templates/modern/edit_zone_metadata.html:24
-#, auto-english-fallback
 msgid "Edit Zone Metadata"
-msgstr "Edit Zone Metadata"
+msgstr "Chinh sua sieu du lieu vung"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:558
 #, php-format
@@ -1712,14 +1708,12 @@ msgid "Custom"
 msgstr "Tùy chỉnh"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:697
-#, auto-english-fallback
 msgid "Multi"
-msgstr "Multi"
+msgstr "Nhieu"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:698
-#, auto-english-fallback
 msgid "Single"
-msgstr "Single"
+msgstr "Don"
 
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
@@ -8232,9 +8226,8 @@ msgid "The following warnings were found:"
 msgstr "Endpoint webhook không thể truy cập."
 
 #: lib/Domain/Service/BulkRecordParser.php:36
-#, auto-english-fallback
 msgid "Empty line."
-msgstr "Empty line."
+msgstr "Dong trong."
 
 #: lib/Domain/Service/BulkRecordParser.php:42
 msgid "Invalid format. Expected at least: name,type,content"
@@ -9509,9 +9502,8 @@ msgid "Advanced Records"
 msgstr "Bản ghi nâng cao"
 
 #: templates/default/bulk_record_add.html:119
-#, auto-english-fallback
 msgid "legacy"
-msgstr "legacy"
+msgstr "cu"
 
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
@@ -10807,9 +10799,8 @@ msgid "Edit zone"
 msgstr "Sửa vùng"
 
 #: templates/default/edit.html:227 templates/modern/edit.html:227
-#, auto-english-fallback
 msgid "Metadata"
-msgstr "Metadata"
+msgstr "Sieu du lieu"
 
 #: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
@@ -11497,14 +11488,12 @@ msgid "There are no supermasters to show in this listing."
 msgstr "Không có supermaster nào để hiển thị trong danh sách này."
 
 #: templates/modern/edit_zone_metadata.html:18
-#, auto-english-fallback
 msgid "Edit Metadata"
-msgstr "Edit Metadata"
+msgstr "Chinh sua sieu du lieu"
 
 #: templates/modern/edit_zone_metadata.html:36
-#, auto-english-fallback
 msgid "Multiple values"
-msgstr "Multiple values"
+msgstr "Nhieu gia tri"
 
 #: templates/modern/edit_zone_metadata.html:37
 msgid ""
@@ -11513,34 +11502,28 @@ msgid ""
 msgstr ""
 
 #: templates/modern/edit_zone_metadata.html:42
-#, auto-english-fallback
 msgid "Multi value"
-msgstr "Multi value"
+msgstr "Nhieu gia tri"
 
 #: templates/modern/edit_zone_metadata.html:43
-#, auto-english-fallback
 msgid "Single value"
-msgstr "Single value"
+msgstr "Gia tri don"
 
 #: templates/modern/edit_zone_metadata.html:53
-#, auto-english-fallback
 msgid "Kind"
-msgstr "Kind"
+msgstr "Loai"
 
 #: templates/modern/edit_zone_metadata.html:100
-#, auto-english-fallback
 msgid "Add metadata row"
-msgstr "Add metadata row"
+msgstr "Them dong sieu du lieu"
 
 #: templates/modern/edit_zone_metadata.html:103
-#, auto-english-fallback
 msgid "Save metadata"
-msgstr "Save metadata"
+msgstr "Luu sieu du lieu"
 
 #: templates/modern/edit_zone_metadata.html:106
-#, auto-english-fallback
 msgid "Back to zone"
-msgstr "Back to zone"
+msgstr "Quay lai vung"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
