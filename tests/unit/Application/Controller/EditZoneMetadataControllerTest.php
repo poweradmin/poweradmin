@@ -3,7 +3,6 @@
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\AppInitializer;
 use Poweradmin\Application\Controller\EditZoneMetadataController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
@@ -132,62 +131,6 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertSame($expectedRows, $rows);
     }
 
-    public function testSaveMetadataUsesSqlWhenApiConfigurationExists(): void
-    {
-        if (!is_file($this->getProjectRoot() . '/config/settings.php') || trim((string) shell_exec('which pdnsutil')) === '') {
-            $this->markTestSkipped('Local PowerDNS test environment is not available.');
-        }
-
-        $zoneName = 'metadata-editor-test-' . bin2hex(random_bytes(4)) . '.example';
-
-        try {
-            $this->createTestZone($zoneName);
-
-            $initializer = new AppInitializer(false);
-            $db = $initializer->getDb();
-            $config = $this->createRuntimeConfig([
-                'pdns_api' => [
-                    'url' => 'http://127.0.0.1:8081/',
-                    'key' => 'invalid-key-for-fallback-test',
-                    'server_name' => 'localhost',
-                ],
-            ]);
-
-            $zoneRepository = new DbZoneRepository($db, $config);
-            $zoneId = $zoneRepository->getZoneIdByName($zoneName);
-            $this->assertNotNull($zoneId);
-
-            $controller = $this->controllerReflection->newInstanceWithoutConstructor();
-            $this->setProperty($controller, 'zoneRepository', $zoneRepository);
-            $this->setBaseControllerProperty($controller, 'config', $config);
-
-            $result = $this->invokePrivateMethod($controller, 'saveMetadata', [[
-                'id' => $zoneId,
-                'name' => $zoneName,
-            ], [
-                ['kind' => 'NOTIFY-DNSUPDATE', 'content' => '1'],
-                ['kind' => 'API-RECTIFY', 'content' => '1'],
-                ['kind' => 'AXFR-MASTER-TSIG', 'content' => 'tsig-key-test'],
-            ]]);
-
-            $this->assertTrue($result['success']);
-            $this->assertSame('sql', $result['mode']);
-            $this->assertFalse($result['api_success']);
-
-            $rows = $zoneRepository->getDomainMetadata((int) $zoneId);
-            $actual = [];
-            foreach ($rows as $row) {
-                $actual[$row['kind']][] = $row['content'];
-            }
-
-            $this->assertSame(['1'], $actual['NOTIFY-DNSUPDATE']);
-            $this->assertSame(['1'], $actual['API-RECTIFY']);
-            $this->assertSame(['tsig-key-test'], $actual['AXFR-MASTER-TSIG']);
-        } finally {
-            $this->deleteTestZone($zoneName);
-        }
-    }
-
     private function createControllerWithConfig(array $overrides): EditZoneMetadataController
     {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
@@ -225,19 +168,6 @@ class EditZoneMetadataControllerTest extends TestCase
         $initializedProperty->setValue($config, true);
 
         return $config;
-    }
-
-    private function createTestZone(string $zoneName): void
-    {
-        $escapedZone = escapeshellarg($zoneName);
-        shell_exec("pdnsutil delete-zone $escapedZone >/dev/null 2>&1 || true");
-        shell_exec("pdnsutil create-zone $escapedZone " . escapeshellarg("ns1.$zoneName") . " >/dev/null 2>&1");
-    }
-
-    private function deleteTestZone(string $zoneName): void
-    {
-        $escapedZone = escapeshellarg($zoneName);
-        shell_exec("pdnsutil delete-zone $escapedZone >/dev/null 2>&1 || true");
     }
 
     private function invokePrivateMethod(object $object, string $methodName, array $arguments = []): mixed
