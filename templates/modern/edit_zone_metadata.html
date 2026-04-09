@@ -1,0 +1,230 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+            {% if is_reverse_zone %}
+            <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
+            {% else %}
+            <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
+            {% endif %}
+        </li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">
+            {% if idn_zone_name %}
+            {{ idn_zone_name }}
+            {% else %}
+            {{ zone['name'] }}
+            {% endif %}
+        </a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit Metadata{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <strong><span class="text-primary me-2">M</span>{% trans %}Edit Zone Metadata{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info bg-info bg-opacity-10">
+            <div><strong>{% trans %}Zone{% endtrans %}:</strong>
+                {% if idn_zone_name %}
+                {{ idn_zone_name }} <small class="text-muted">({{ zone['name'] }})</small>
+                {% else %}
+                {{ zone['name'] }}
+                {% endif %}
+            </div>
+            <div class="mb-0">
+                <strong>{% trans %}Multiple values{% endtrans %}:</strong>
+                {% trans %}For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. Each value is stored separately, one row per value.{% endtrans %}
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">{% trans %}Multi value{% endtrans %}</span>
+            <span class="badge bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">{% trans %}Single value{% endtrans %}</span>
+        </div>
+
+        <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/metadata" id="zone-metadata-form">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+            <div class="table-responsive">
+                <table class="table table-striped align-top">
+                    <thead>
+                        <tr>
+                            <th style="width: 34%;">{% trans %}Kind{% endtrans %}</th>
+                            <th>{% trans %}Value{% endtrans %}</th>
+                            <th class="text-end" style="width: 1%;">{% trans %}Actions{% endtrans %}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="metadata-rows">
+                        {% for row in metadata_rows %}
+                        <tr>
+                            <td class="align-top">
+                                <select class="form-select form-select-sm metadata-kind-select">
+                                    {% for definition in metadata_definitions %}
+                                    <option value="{{ definition.kind }}" {{ row.kind_key == definition.kind ? 'selected' : '' }}>{{ definition.label }}</option>
+                                    {% endfor %}
+                                    <option value="__CUSTOM__" {{ row.kind_key == '__CUSTOM__' ? 'selected' : '' }}>{% trans %}Custom{% endtrans %}</option>
+                                </select>
+                                <div class="mt-2 metadata-custom-kind-wrapper {{ row.kind_key == '__CUSTOM__' ? '' : 'd-none' }}">
+                                    <input type="text" class="form-control form-control-sm font-monospace metadata-custom-kind" maxlength="32" value="{{ row.custom_kind }}" placeholder="CUSTOM-KIND">
+                                </div>
+                            </td>
+                            <td class="align-top">
+                                <input type="text" class="form-control form-control-sm font-monospace metadata-content" value="{{ row.content }}" placeholder="{{ row.kind_placeholder ?: ('Value'|trans) }}">
+                                <div class="metadata-kind-hint small text-muted mt-2">
+                                    {% if row.kind_help %}
+                                    {{ row.kind_help }}
+                                    {% else %}
+                                    {% trans %}Custom metadata kind stored directly in the PowerDNS domainmetadata table.{% endtrans %}
+                                    {% endif %}
+                                </div>
+                                <div class="metadata-kind-badges mt-2 d-flex flex-wrap gap-1">
+                                    {% for badge in row.kind_badges %}
+                                    <span class="badge {{ badge.class }}">{{ badge.label }}</span>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td class="text-end align-top">
+                                <button type="button" class="btn btn-outline-danger btn-sm metadata-remove-row">
+                                    <i class="bi bi-trash text-danger"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex gap-2 mt-3">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="add-metadata-row">
+                    <i class="bi bi-plus-circle me-1 text-primary"></i>{% trans %}Add metadata row{% endtrans %}
+                </button>
+                <button type="submit" class="btn btn-primary btn-sm" data-testid="save-zone-metadata">
+                    <i class="bi bi-floppy me-1 text-white"></i>{% trans %}Save metadata{% endtrans %}
+                </button>
+                <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1 text-white"></i>{% trans %}Back to zone{% endtrans %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<template id="metadata-row-template">
+    <tr>
+        <td class="align-top">
+            <select class="form-select form-select-sm metadata-kind-select">
+                {% for definition in metadata_definitions %}
+                <option value="{{ definition.kind }}">{{ definition.label }}</option>
+                {% endfor %}
+                <option value="__CUSTOM__">{% trans %}Custom{% endtrans %}</option>
+            </select>
+            <div class="mt-2 metadata-custom-kind-wrapper d-none">
+                <input type="text" class="form-control form-control-sm font-monospace metadata-custom-kind" maxlength="32" placeholder="CUSTOM-KIND">
+            </div>
+        </td>
+        <td class="align-top">
+            <input type="text" class="form-control form-control-sm font-monospace metadata-content" placeholder="Value">
+            <div class="metadata-kind-hint small text-muted mt-2"></div>
+            <div class="metadata-kind-badges mt-2 d-flex flex-wrap gap-1"></div>
+        </td>
+        <td class="text-end align-top">
+            <button type="button" class="btn btn-outline-danger btn-sm metadata-remove-row">
+                <i class="bi bi-trash text-danger"></i>
+            </button>
+        </td>
+    </tr>
+</template>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rows = document.getElementById('metadata-rows');
+    const addButton = document.getElementById('add-metadata-row');
+    const template = document.getElementById('metadata-row-template');
+    const definitions = {};
+    const defaultValueLabel = '{% trans %}Value{% endtrans %}';
+    const customMetadataHelp = '{% trans %}Custom metadata kind stored directly in the PowerDNS domainmetadata table.{% endtrans %}';
+    const customBadgeLabel = '{% trans %}Custom{% endtrans %}';
+
+    {% for definition in metadata_definitions %}
+    definitions['{{ definition.kind }}'] = {
+        multi: {{ definition.multi ? 'true' : 'false' }},
+        placeholder: {{ definition.placeholder|json_encode|raw }},
+        help: {{ definition.help|json_encode|raw }},
+        badges: {{ definition.badges|json_encode|raw }}
+    };
+    {% endfor %}
+
+    function refreshNames() {
+        rows.querySelectorAll('tr').forEach(function (row, index) {
+            row.querySelector('.metadata-kind-select').name = 'metadata[' + index + '][kind_key]';
+            row.querySelector('.metadata-custom-kind').name = 'metadata[' + index + '][custom_kind]';
+            row.querySelector('.metadata-content').name = 'metadata[' + index + '][content]';
+        });
+    }
+
+    function updateRowUi(row) {
+        const select = row.querySelector('.metadata-kind-select');
+        const customWrapper = row.querySelector('.metadata-custom-kind-wrapper');
+        const content = row.querySelector('.metadata-content');
+        const hint = row.querySelector('.metadata-kind-hint');
+        const badgeContainer = row.querySelector('.metadata-kind-badges');
+        const definition = definitions[select.value] || null;
+
+        customWrapper.classList.toggle('d-none', select.value !== '__CUSTOM__');
+
+        if (definition) {
+            content.placeholder = definition.placeholder || defaultValueLabel;
+            hint.textContent = definition.help || '';
+            badgeContainer.innerHTML = (definition.badges || []).map(function (badge) {
+                return '<span class="badge ' + badge.class + '">' + badge.label + '</span>';
+            }).join('');
+        } else {
+            content.placeholder = defaultValueLabel;
+            hint.textContent = customMetadataHelp;
+            badgeContainer.innerHTML = '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">' + customBadgeLabel + '</span>';
+        }
+    }
+
+    function ensureAtLeastOneRow() {
+        if (rows.querySelectorAll('tr').length === 0) {
+            const clone = template.content.firstElementChild.cloneNode(true);
+            rows.appendChild(clone);
+            refreshNames();
+            updateRowUi(clone);
+        }
+    }
+
+    function rebuild() {
+        refreshNames();
+        rows.querySelectorAll('tr').forEach(updateRowUi);
+    }
+
+    addButton.addEventListener('click', function () {
+        const clone = template.content.firstElementChild.cloneNode(true);
+        rows.appendChild(clone);
+        rebuild();
+    });
+
+    rows.addEventListener('change', function (event) {
+        const row = event.target.closest('tr');
+        if (row) {
+            updateRowUi(row);
+            refreshNames();
+        }
+    });
+
+    rows.addEventListener('click', function (event) {
+        const button = event.target.closest('.metadata-remove-row');
+        if (!button) {
+            return;
+        }
+
+        button.closest('tr').remove();
+        ensureAtLeastOneRow();
+        rebuild();
+    });
+
+    rebuild();
+});
+</script>
