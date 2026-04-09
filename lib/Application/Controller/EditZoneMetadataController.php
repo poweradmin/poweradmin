@@ -30,6 +30,8 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Service\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -325,6 +327,17 @@ class EditZoneMetadataController extends BaseController
             $saveResult = $this->saveMetadata($zone, $submittedMetadata);
 
             if ($saveResult['success']) {
+                $kinds = array_unique(array_column($submittedMetadata, 'kind'));
+                $auditLogger = new LegacyLogger($this->db);
+                $ipRetriever = new IpAddressRetriever($this->getConfig());
+                $auditLogger->logInfo(sprintf(
+                    'client_ip:%s user:%s operation:edit_zone_metadata zone:%s kinds:%s',
+                    $ipRetriever->getClientIp(),
+                    $this->getUserContextService()->getLoggedInUsername(),
+                    $zone['name'],
+                    implode(',', $kinds)
+                ), $zoneId);
+
                 $this->setMessage('zone_metadata', 'success', _('Zone metadata has been updated successfully.'));
                 $this->redirect('/zones/' . $zoneId . '/metadata');
                 return;
