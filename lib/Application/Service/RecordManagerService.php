@@ -59,12 +59,14 @@ class RecordManagerService
         $this->backendProvider = $backendProvider;
     }
 
-    public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, string $clientIp): bool
+    public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, string $clientIp, int $disabled = 0): bool
     {
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
 
-        // Use addRecordGetId to get the newly created record ID directly
-        $recordId = $this->dnsRecord->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
+        // Use createRecordAtomic when disabled flag is set, otherwise addRecordGetId
+        $recordId = $disabled
+            ? $this->dnsRecord->createRecordAtomic($zone_id, $name, $type, $content, $ttl, $prio, $disabled)
+            : $this->dnsRecord->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
         if ($recordId === null) {
             return false;
         }

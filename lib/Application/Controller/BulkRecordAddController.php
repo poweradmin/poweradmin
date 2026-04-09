@@ -151,6 +151,7 @@ class BulkRecordAddController extends BaseController
             $content = $result['content'];
             $prio = $result['prio'];
             $ttl = $result['ttl'];
+            $disabled = $result['disabled'];
             $comment = $result['comment'];
 
             // Convert IDN content to punycode after full content assembly
@@ -191,7 +192,8 @@ class BulkRecordAddController extends BaseController
                         $prio,
                         $comment,
                         $this->userContextService->getLoggedInUsername(),
-                        $this->ipAddressRetriever->getClientIp()
+                        $this->ipAddressRetriever->getClientIp(),
+                        $disabled
                     )
                 ) {
                     $success_count++;

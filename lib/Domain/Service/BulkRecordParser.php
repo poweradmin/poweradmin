@@ -27,7 +27,7 @@ class BulkRecordParser
     /**
      * Parse a CSV line into a record array.
      *
-     * @return array{name: string, type: string, content: string, prio: int, ttl: int, comment: string}|string Error message on failure
+     * @return array{name: string, type: string, content: string, prio: int, ttl: int, disabled: int, comment: string}|string Error message on failure
      */
     public function parseLine(string $line, int $defaultTtl): array|string
     {
@@ -52,7 +52,7 @@ class BulkRecordParser
 
         $prio = isset($parts[3]) && $parts[3] !== '' ? (int)$parts[3] : 0;
         $ttl = isset($parts[4]) && $parts[4] !== '' ? (int)$parts[4] : $defaultTtl;
-        $comment = isset($parts[5]) ? trim($parts[5]) : '';
+        [$disabled, $comment] = $this->parseDisabledAndComment($parts, 5);
 
         return [
             'name' => $name,
@@ -60,29 +60,30 @@ class BulkRecordParser
             'content' => $content,
             'prio' => $prio,
             'ttl' => $ttl,
+            'disabled' => $disabled,
             'comment' => $comment,
         ];
     }
 
     /**
      * @param array<int, string> $parts
-     * @return array{name: string, type: string, content: string, prio: int, ttl: int, comment: string}|string
+     * @return array{name: string, type: string, content: string, prio: int, ttl: int, disabled: int, comment: string}|string
      */
     private function parseSrvRecord(array $parts, string $name, string $content, int $defaultTtl): array|string
     {
         if (str_contains($content, ' ')) {
-            // CSV export format: name,SRV,"weight port target",priority,ttl[,comment]
+            // CSV export format: name,SRV,"weight port target",priority,ttl[,disabled][,comment]
             $prio = isset($parts[3]) && $parts[3] !== '' ? (int)$parts[3] : 0;
             $ttl = isset($parts[4]) && $parts[4] !== '' ? (int)$parts[4] : $defaultTtl;
-            $comment = isset($parts[5]) ? trim($parts[5]) : '';
+            [$disabled, $comment] = $this->parseDisabledAndComment($parts, 5);
         } elseif (count($parts) >= 5) {
-            // Legacy format: name,SRV,target,weight,port,ttl[,comment]
+            // Legacy format: name,SRV,target,weight,port,ttl[,disabled][,comment]
             $prio = 0;
             $weight = (int)$parts[3];
             $port = isset($parts[4]) && is_numeric($parts[4]) ? (int)$parts[4] : 0;
             $content = "$weight $port $content";
             $ttl = isset($parts[5]) && is_numeric($parts[5]) ? (int)$parts[5] : $defaultTtl;
-            $comment = isset($parts[6]) ? trim($parts[6]) : '';
+            [$disabled, $comment] = $this->parseDisabledAndComment($parts, 6);
         } else {
             return _('Invalid SRV format. Use: name,SRV,"weight port target",priority,ttl or name,SRV,target,weight,port,ttl');
         }
@@ -93,7 +94,34 @@ class BulkRecordParser
             'content' => $content,
             'prio' => $prio,
             'ttl' => $ttl,
+            'disabled' => $disabled,
             'comment' => $comment,
         ];
+    }
+
+    /**
+     * Parse optional disabled and comment fields from CSV parts.
+     *
+     * Detects "Yes"/"No" as the disabled flag (matching CSV export format).
+     * If not present, treats the field as a comment.
+     *
+     * @param array<int, string> $parts
+     * @return array{0: int, 1: string} [disabled, comment]
+     */
+    private function parseDisabledAndComment(array $parts, int $offset): array
+    {
+        $field = isset($parts[$offset]) ? trim($parts[$offset]) : '';
+
+        if (strcasecmp($field, 'Yes') === 0) {
+            $comment = isset($parts[$offset + 1]) ? trim($parts[$offset + 1]) : '';
+            return [1, $comment];
+        }
+
+        if (strcasecmp($field, 'No') === 0) {
+            $comment = isset($parts[$offset + 1]) ? trim($parts[$offset + 1]) : '';
+            return [0, $comment];
+        }
+
+        return [0, $field];
     }
 }

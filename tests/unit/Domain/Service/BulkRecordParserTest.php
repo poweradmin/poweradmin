@@ -162,6 +162,59 @@ class BulkRecordParserTest extends TestCase
         $this->assertSame(7200, $result['ttl']);
     }
 
+    public function testParseDisabledFieldYes(): void
+    {
+        $result = $this->parser->parseLine('www,A,192.168.1.1,0,300,Yes', $this->defaultTtl);
+
+        $this->assertIsArray($result);
+        $this->assertSame(1, $result['disabled']);
+        $this->assertSame('', $result['comment']);
+    }
+
+    public function testParseDisabledFieldNo(): void
+    {
+        $result = $this->parser->parseLine('www,A,192.168.1.1,0,300,No', $this->defaultTtl);
+
+        $this->assertIsArray($result);
+        $this->assertSame(0, $result['disabled']);
+        $this->assertSame('', $result['comment']);
+    }
+
+    public function testParseDisabledFieldWithComment(): void
+    {
+        $result = $this->parser->parseLine('www,A,192.168.1.1,0,300,Yes,web server', $this->defaultTtl);
+
+        $this->assertIsArray($result);
+        $this->assertSame(1, $result['disabled']);
+        $this->assertSame('web server', $result['comment']);
+    }
+
+    public function testParseWithoutDisabledField(): void
+    {
+        $result = $this->parser->parseLine('www,A,192.168.1.1,0,300,web server', $this->defaultTtl);
+
+        $this->assertIsArray($result);
+        $this->assertSame(0, $result['disabled']);
+        $this->assertSame('web server', $result['comment']);
+    }
+
+    public function testParseSrvCsvExportWithDisabled(): void
+    {
+        $result = $this->parser->parseLine('_sip._tcp,SRV,"0 5060 sip.example.com.",0,3600,Yes', $this->defaultTtl);
+
+        $this->assertIsArray($result);
+        $this->assertSame(1, $result['disabled']);
+        $this->assertSame('', $result['comment']);
+    }
+
+    public function testDefaultDisabledIsZero(): void
+    {
+        $result = $this->parser->parseLine('www,A,192.168.1.1', $this->defaultTtl);
+
+        $this->assertIsArray($result);
+        $this->assertSame(0, $result['disabled']);
+    }
+
     public function testWhitespaceIsTrimmed(): void
     {
         $result = $this->parser->parseLine('  www , A , 192.168.1.1 ', $this->defaultTtl);
