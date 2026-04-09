@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-07 23:53+0300\n"
+"POT-Creation-Date: 2026-04-09 10:38+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -333,7 +333,7 @@ msgstr ""
 "sertifikat lengkap."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:641
+#: templates/modern/edit.html:93 templates/modern/edit.html:646
 msgid "Invalid hostname format"
 msgstr "Format nama host tidak valid"
 
@@ -1688,6 +1688,59 @@ msgstr "Kode pemulihan telah dibuat ulang. Silakan simpan di tempat yang aman."
 msgid "You do not have the permission to view supermasters."
 msgstr "Anda tidak memiliki izin untuk melihat supermaster."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:314
+#, auto-english-fallback
+msgid "You do not have the permission to edit zone metadata."
+msgstr "You do not have the permission to edit zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:341
+#, auto-english-fallback
+msgid "Zone metadata has been updated successfully."
+msgstr "Zone metadata has been updated successfully."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:346
+#, auto-english-fallback
+msgid "Failed to update zone metadata."
+msgstr "Failed to update zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:368
+#: templates/modern/edit_zone_metadata.html:24
+#, auto-english-fallback
+msgid "Edit Zone Metadata"
+msgstr "Edit Zone Metadata"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:558
+#, php-format
+msgid ""
+"Metadata kind %s accepts only a single value. Add only one row for this kind."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:646
+#: templates/modern/edit_zone_metadata.html:146
+msgid ""
+"Custom metadata kind stored directly in the PowerDNS domainmetadata table."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:654
+#: templates/modern/pdns_status.html:412
+msgid "Value"
+msgstr "Nilai"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:692
+#: templates/modern/email_previews.html:47
+msgid "Custom"
+msgstr "Kustom"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:697
+#, auto-english-fallback
+msgid "Multi"
+msgstr "Multi"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:698
+#, auto-english-fallback
+msgid "Single"
+msgstr "Single"
+
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
 msgstr "Fitur API dinonaktifkan dalam konfigurasi sistem."
@@ -1744,32 +1797,28 @@ msgstr "Kunci API %s berhasil."
 msgid "You do not have the permission to add records to this zone."
 msgstr "Anda tidak memiliki izin untuk menambahkan rekaman ke zona ini."
 
-#: lib/Application/Controller/BulkRecordAddController.php:117
+#: lib/Application/Controller/BulkRecordAddController.php:118
 msgid "Please provide at least one record."
 msgstr "Silakan berikan setidaknya satu rekaman."
 
-#: lib/Application/Controller/BulkRecordAddController.php:145
-msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Format tidak valid. Minimal diperlukan: nama,tipe,konten"
-
-#: lib/Application/Controller/BulkRecordAddController.php:198
+#: lib/Application/Controller/BulkRecordAddController.php:175
 msgid "Invalid record type."
 msgstr "Tipe rekaman tidak valid."
 
-#: lib/Application/Controller/BulkRecordAddController.php:235
+#: lib/Application/Controller/BulkRecordAddController.php:213
 msgid "Record could not be added."
 msgstr "Rekaman tidak dapat ditambahkan."
 
-#: lib/Application/Controller/BulkRecordAddController.php:243
+#: lib/Application/Controller/BulkRecordAddController.php:221
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d rekaman telah berhasil ditambahkan."
 
-#: lib/Application/Controller/BulkRecordAddController.php:246
+#: lib/Application/Controller/BulkRecordAddController.php:224
 msgid "Some record(s) could not be added."
 msgstr "Beberapa rekaman tidak dapat ditambahkan."
 
-#: lib/Application/Controller/BulkRecordAddController.php:279
+#: lib/Application/Controller/BulkRecordAddController.php:257
 msgid "Zone ID is required."
 msgstr "ID zona diperlukan."
 
@@ -2378,7 +2427,7 @@ msgstr "Anda tidak memiliki izin yang cukup untuk melihat halaman ini."
 msgid "Reverse Zones"
 msgstr "Pilih semua zone"
 
-#: lib/Application/Controller/ListForwardZonesController.php:145
+#: lib/Application/Controller/ListForwardZonesController.php:144
 msgid "You do not have the permission to see any zones."
 msgstr "Anda tidak memiliki izin untuk melihat zona apa pun."
 
@@ -2896,12 +2945,12 @@ msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr ""
 "Terjadi kesalahan saat mengubah status kunci DNSSEC. Silakan coba lagi."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Ya"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Tidak"
@@ -8023,6 +8072,21 @@ msgstr "Export zone"
 msgid "The following warnings were found:"
 msgstr "Ekspor zone"
 
+#: lib/Domain/Service/BulkRecordParser.php:36
+#, auto-english-fallback
+msgid "Empty line."
+msgstr "Empty line."
+
+#: lib/Domain/Service/BulkRecordParser.php:42
+msgid "Invalid format. Expected at least: name,type,content"
+msgstr "Format tidak valid. Minimal diperlukan: nama,tipe,konten"
+
+#: lib/Domain/Service/BulkRecordParser.php:88
+msgid ""
+"Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
+"name,SRV,target,weight,port,ttl"
+msgstr ""
+
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr "Export zone as BIND format"
@@ -8443,7 +8507,7 @@ msgstr "Urutkan turun"
 msgid "Update record"
 msgstr "Zones per page"
 
-#: templates/modern/edit.html:524 templates/modern/users.html:219
+#: templates/modern/edit.html:529 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Zone per halaman"
 
@@ -8586,7 +8650,7 @@ msgstr "Zone favorit"
 msgid "Select the account that will own this supermaster"
 msgstr "Add to favorites"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:521
+#: templates/modern/edit.html:190 templates/modern/edit.html:526
 msgid "Save changes"
 msgstr "Tambahkan ke favorit"
 
@@ -9023,7 +9087,7 @@ msgstr "DNSSEC key deleted"
 msgid "Logout"
 msgstr "Template applied"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:509
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
 msgid "Edit comment"
 msgstr "Activity details"
 
@@ -9284,6 +9348,11 @@ msgstr "Rekod Umum"
 msgid "Advanced Records"
 msgstr "Rekod Lanjutan"
 
+#: templates/default/bulk_record_add.html:119
+#, auto-english-fallback
+msgid "legacy"
+msgstr "legacy"
+
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
 msgstr "Wizard DNS"
@@ -9364,7 +9433,7 @@ msgstr "Ya, hapus pengguna ini"
 msgid "No, keep this user"
 msgstr "Tidak, pertahankan pengguna ini"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:227
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
 msgstr "Simpan sebagai Templat"
 
@@ -10505,71 +10574,71 @@ msgstr "Jika Anda kehilangan kunci, Anda perlu meregenerasinya."
 msgid "Edit"
 msgstr "No saved searches found."
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:572
+#: templates/modern/edit.html:25 templates/modern/edit.html:577
 msgid "Add new record"
 msgstr "Tambah rekod baru"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:576
+#: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Wizard terpandu untuk rekod DMARC, SPF, DKIM, CAA, TLSA, dan SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:582
+#: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
 msgstr "Mode multi-rekod"
 
-#: templates/modern/edit.html:530 templates/modern/edit.html:585
+#: templates/modern/edit.html:535 templates/modern/edit.html:590
 msgid "Bulk add"
 msgstr "Tambah massal"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "Failed to add"
 msgstr "Gagal menambahkan"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "record(s). Please check the record format."
 msgstr "rekod. Silakan periksa format rekod."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:599
+#: templates/modern/edit.html:52 templates/modern/edit.html:604
 msgid "Failed to add records. Please check the record format."
 msgstr "Gagal menambahkan rekod. Silakan periksa format rekod."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Content validation failed:"
 msgstr "Validasi konten gagal:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Invalid value for record type"
 msgstr "Nilai tidak valid untuk tipe rekod"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:604
+#: templates/modern/edit.html:57 templates/modern/edit.html:609
 msgid "Please provide all required information."
 msgstr "Silakan berikan semua informasi yang diperlukan."
 
-#: templates/modern/edit.html:627 templates/modern/add_record.html:72
+#: templates/modern/edit.html:632 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Tambah PTR"
 
-#: templates/modern/edit.html:630 templates/modern/add_record.html:75
+#: templates/modern/edit.html:635 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Tambah A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:669
+#: templates/modern/edit.html:121 templates/modern/edit.html:674
 msgid "This record already exists"
 msgstr "Rekod ini sudah ada"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:681
+#: templates/modern/edit.html:133 templates/modern/edit.html:686
 msgid "Invalid priority"
 msgstr "Prioritas tidak valid"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:688
+#: templates/modern/edit.html:140 templates/modern/edit.html:693
 msgid "Invalid TTL value"
 msgstr "Nilai TTL tidak valid"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:690
+#: templates/modern/edit.html:142 templates/modern/edit.html:695
 msgid "Provide TTL"
 msgstr "Berikan TTL"
 
-#: templates/modern/edit.html:716 templates/modern/add_record.html:207
+#: templates/modern/edit.html:721 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -10581,87 +10650,92 @@ msgstr ""
 msgid "Edit zone"
 msgstr "Edit zona"
 
-#: templates/default/edit.html:238 templates/modern/edit.html:238
+#: templates/default/edit.html:227 templates/modern/edit.html:227
+#, auto-english-fallback
+msgid "Metadata"
+msgstr "Metadata"
+
+#: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "Tidak ada rekod yang cocok dengan kriteria filter Anda."
 
-#: templates/default/edit.html:246 templates/modern/edit.html:246
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "This zone does not have any records."
 msgstr "Zona ini tidak memiliki rekod."
 
-#: templates/default/edit.html:258 templates/modern/edit.html:258
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "Filter:"
 msgstr "Filter:"
 
-#: templates/default/edit.html:264 templates/modern/edit.html:264
+#: templates/default/edit.html:269 templates/modern/edit.html:269
 msgid "Search by name or content"
 msgstr "Cari berdasarkan nama atau konten"
 
-#: templates/default/edit.html:270 templates/modern/edit.html:270
+#: templates/default/edit.html:275 templates/modern/edit.html:275
 msgid "All Types"
 msgstr "Semua Tipe"
 
-#: templates/default/edit.html:280 templates/modern/edit.html:280
+#: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
 msgstr "Filter berdasarkan konten"
 
-#: templates/default/edit.html:286 templates/modern/edit.html:286
+#: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
 msgstr "Terapkan"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "Showing"
 msgstr "Menampilkan"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "of"
 msgstr "dari"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "total records"
 msgstr "total rekod"
 
-#: templates/default/edit.html:492 templates/modern/edit.html:492
+#: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
 msgstr "Edit yang dipilih"
 
-#: templates/modern/edit.html:496 templates/modern/search.html:486
+#: templates/modern/edit.html:501 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Hapus rekod"
 
-#: templates/modern/edit.html:504 templates/modern/search.html:93
+#: templates/modern/edit.html:509 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentar"
 
-#: templates/default/edit.html:534 templates/modern/edit.html:534
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Import"
 msgstr "Impor"
 
-#: templates/default/edit.html:551 templates/modern/edit.html:551
+#: templates/default/edit.html:556 templates/modern/edit.html:556
 msgid "Generate PTR"
 msgstr "Buat PTR"
 
-#: templates/modern/edit.html:730 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Konfigurasi Zona"
 
-#: templates/modern/edit.html:772 templates/modern/edit.html:801
+#: templates/modern/edit.html:777 templates/modern/edit.html:806
 msgid "Change"
 msgstr "Ubah"
 
-#: templates/modern/edit.html:765 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Alamat IP master NS"
 
-#: templates/default/edit.html:822 templates/modern/edit.html:822
+#: templates/default/edit.html:827 templates/modern/edit.html:827
 msgid "Manage DNSSEC"
 msgstr "Kelola DNSSEC"
 
-#: templates/default/edit.html:829 templates/modern/edit.html:829
+#: templates/default/edit.html:834 templates/modern/edit.html:834
 msgid "Sign zone"
 msgstr "Tandatangani zona"
 
-#: templates/default/edit.html:833 templates/modern/edit.html:833
+#: templates/default/edit.html:838 templates/modern/edit.html:838
 msgid "Not signed"
 msgstr "Tidak ditandatangani"
 
@@ -11269,6 +11343,52 @@ msgstr "Cari supermaster..."
 #: templates/modern/list_supermasters.html:71
 msgid "There are no supermasters to show in this listing."
 msgstr "Tidak ada supermaster yang ditampilkan dalam daftar ini."
+
+#: templates/modern/edit_zone_metadata.html:18
+#, auto-english-fallback
+msgid "Edit Metadata"
+msgstr "Edit Metadata"
+
+#: templates/modern/edit_zone_metadata.html:36
+#, auto-english-fallback
+msgid "Multiple values"
+msgstr "Multiple values"
+
+#: templates/modern/edit_zone_metadata.html:37
+msgid ""
+"For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
+"Each value is stored separately, one row per value."
+msgstr ""
+
+#: templates/modern/edit_zone_metadata.html:42
+#, auto-english-fallback
+msgid "Multi value"
+msgstr "Multi value"
+
+#: templates/modern/edit_zone_metadata.html:43
+#, auto-english-fallback
+msgid "Single value"
+msgstr "Single value"
+
+#: templates/modern/edit_zone_metadata.html:53
+#, auto-english-fallback
+msgid "Kind"
+msgstr "Kind"
+
+#: templates/modern/edit_zone_metadata.html:100
+#, auto-english-fallback
+msgid "Add metadata row"
+msgstr "Add metadata row"
+
+#: templates/modern/edit_zone_metadata.html:103
+#, auto-english-fallback
+msgid "Save metadata"
+msgstr "Save metadata"
+
+#: templates/modern/edit_zone_metadata.html:106
+#, auto-english-fallback
+msgid "Back to zone"
+msgstr "Back to zone"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
@@ -11936,10 +12056,6 @@ msgstr ""
 msgid "Active Email Templates"
 msgstr "Templat Email Aktif"
 
-#: templates/modern/email_previews.html:47
-msgid "Custom"
-msgstr "Kustom"
-
 #: templates/modern/email_previews.html:23
 msgid "Standard"
 msgstr "Standar"
@@ -12177,10 +12293,6 @@ msgstr "Byte"
 msgid "Metric"
 msgstr "Metrik"
 
-#: templates/default/pdns_status.html:411 templates/modern/pdns_status.html:412
-msgid "Value"
-msgstr "Nilai"
-
 #: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
 msgid "No detailed metrics available."
 msgstr "Tidak ada metrik detail yang tersedia."
@@ -12358,7 +12470,8 @@ msgstr "Apakah Anda yakin ingin mengaktifkan kunci API"
 
 #: templates/default/api_keys.html:147 templates/modern/api_keys.html:148
 msgid "External applications will be able to authenticate using this key."
-msgstr "Aplikasi eksternal akan dapat melakukan autentikasi menggunakan kunci ini."
+msgstr ""
+"Aplikasi eksternal akan dapat melakukan autentikasi menggunakan kunci ini."
 
 #: templates/default/api_keys.html:181 templates/modern/api_keys.html:182
 msgid ""
@@ -13478,189 +13591,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Tidak dapat terhubung ke database PowerDNS \"%s\": %s"
-
-# OBSOLETE: msgid "Server running"
-# OBSOLETE: msgstr "Gagal memperbaiki beberapa masalah."
-
-# OBSOLETE: msgid "Check PowerDNS server status"
-# OBSOLETE: msgstr "Cannot auto-fix these issues."
-
-# OBSOLETE: msgid "View Server Status"
-# OBSOLETE: msgstr "Tidak dapat memperbaiki masalah ini secara otomatis."
-
-# OBSOLETE: msgid "Server Status"
-# OBSOLETE: msgstr "Zone health"
-
-# OBSOLETE: msgid "Edit your account details"
-# OBSOLETE: msgstr "Health status"
-
-# OBSOLETE: msgid "Profile"
-# OBSOLETE: msgstr "Healthy"
-
-# OBSOLETE: msgid "Find zones and records"
-# OBSOLETE: msgstr "Needs attention"
-
-# OBSOLETE: msgid "Search zones"
-# OBSOLETE: msgstr "Perlu perhatian"
-
-# OBSOLETE: msgid "Manage forward DNS zones"
-# OBSOLETE: msgstr "Critical"
-
-# OBSOLETE: msgid "List forward zones"
-# OBSOLETE: msgstr "Kritis"
-
-# OBSOLETE: msgid "Manage reverse DNS zones"
-# OBSOLETE: msgstr "Health check"
-
-# OBSOLETE: msgid "List reverse zones"
-# OBSOLETE: msgstr "Pemeriksaan kesehatan"
-
-# OBSOLETE: msgid "Manage zone templates"
-# OBSOLETE: msgstr "Jalankan pemeriksaan kesehatan"
-
-# OBSOLETE: msgid "Manage supermaster servers"
-# OBSOLETE: msgstr "Pemeriksaan kesehatan terakhir"
-
-# OBSOLETE: msgid "List supermasters"
-# OBSOLETE: msgstr "Never checked"
-
-# OBSOLETE: msgid "Create new master zone"
-# OBSOLETE: msgstr "Zone activity"
-
-# OBSOLETE: msgid "Add Master"
-# OBSOLETE: msgstr "Activity log"
-
-# OBSOLETE: msgid "Add new slave zone"
-# OBSOLETE: msgstr "Show activity"
-
-# OBSOLETE: msgid "Add Slave"
-# OBSOLETE: msgstr "No activity recorded."
-
-# OBSOLETE: msgid "Add new supermaster server"
-# OBSOLETE: msgstr "Record added"
-
-# OBSOLETE: msgid "Register multiple domains at once"
-# OBSOLETE: msgstr "Record dimodifikasi"
-
-# OBSOLETE: msgid "Bulk domain registration"
-# OBSOLETE: msgstr "Record deleted"
-
-# OBSOLETE: msgid "Registration"
-# OBSOLETE: msgstr "Record dihapus"
-
-# OBSOLETE: msgid "Manage reverse DNS records"
-# OBSOLETE: msgstr "Zone dibuat"
-
-# OBSOLETE: msgid "View zone change history"
-# OBSOLETE: msgstr "Zone deleted"
-
-# OBSOLETE: msgid "View zone logs"
-# OBSOLETE: msgstr "Zone dihapus"
-
-# OBSOLETE: msgid "View user activity history"
-# OBSOLETE: msgstr "DNSSEC diaktifkan"
-
-# OBSOLETE: msgid "View user logs"
-# OBSOLETE: msgstr "DNSSEC disabled"
-
-# OBSOLETE: msgid "Update your account password"
-# OBSOLETE: msgstr "DNSSEC key added"
-
-# OBSOLETE: msgid "Customize your interface settings"
-# OBSOLETE: msgstr "Key DNSSEC dihapus"
-
-# OBSOLETE: msgid "User preferences"
-# OBSOLETE: msgstr "Zone exported"
-
-# OBSOLETE: msgid "Manage system users and access"
-# OBSOLETE: msgstr "Zone imported"
-
-# OBSOLETE: msgid "Manage access templates"
-# OBSOLETE: msgstr "Pemilik diubah"
-
-# OBSOLETE: msgid "End your session"
-# OBSOLETE: msgstr "Template diterapkan"
-
-# OBSOLETE: msgid "Manage API access keys"
-# OBSOLETE: msgstr "Metadata deleted"
-
-# OBSOLETE: msgid "Manage API Keys"
-# OBSOLETE: msgstr "Metadata dihapus"
-
-# OBSOLETE: msgid "Check database integrity"
-# OBSOLETE: msgstr "Tanggal aktivitas"
-
-# OBSOLETE: msgid "Check Database"
-# OBSOLETE: msgstr "Activity type"
-
-# OBSOLETE: msgid "Check DB"
-# OBSOLETE: msgstr "Tipe aktivitas"
-
-# OBSOLETE: msgid "Search logs by domain"
-# OBSOLETE: msgstr "Failed to clear activity log."
-
-# OBSOLETE: msgid "Language"
-# OBSOLETE: msgstr "Bahasa"
-
-# OBSOLETE: msgid "In use"
-# OBSOLETE: msgstr "Digunakan"
-
-# OBSOLETE: msgid "Search logs by user"
-# OBSOLETE: msgstr "Cari log berdasarkan pengguna"
-
-# OBSOLETE: msgid "Search logs by group"
-# OBSOLETE: msgstr "Cari log berdasarkan grup"
-
-# OBSOLETE: msgid "PowerDNS Server"
-# OBSOLETE: msgstr "Server PowerDNS"
-
-# OBSOLETE: msgid "View Details"
-# OBSOLETE: msgstr "Lihat Detail"
-
-# OBSOLETE: msgid "Add Master Zone"
-# OBSOLETE: msgstr "Tambah Zona Master"
-
-# OBSOLETE: msgid "List Forward Zones"
-# OBSOLETE: msgstr "Daftar Zona Forward"
-
-# OBSOLETE: msgid "Search Zones"
-# OBSOLETE: msgstr "Cari Zona"
-
-# OBSOLETE: msgid "List Reverse Zones"
-# OBSOLETE: msgstr "Daftar Zona Reverse"
-
-# OBSOLETE: msgid "Add Slave Zone"
-# OBSOLETE: msgstr "Tambah Zona Slave"
-
-# OBSOLETE: msgid "List Zone Templates"
-# OBSOLETE: msgstr "Daftar Templat Zona"
-
-# OBSOLETE: msgid "Bulk Domain Registration"
-# OBSOLETE: msgstr "Registrasi Domain Massal"
-
-# OBSOLETE: msgid "WHOIS lookup functionality is disabled."
-# OBSOLETE: msgstr "Fungsi pencarian WHOIS dinonaktifkan."
-
-# OBSOLETE: msgid "RDAP lookup functionality is disabled."
-# OBSOLETE: msgstr "Fungsi pencarian RDAP dinonaktifkan."
-
-# OBSOLETE: msgid "Slave"
-# OBSOLETE: msgstr "Ditemukan record duplikat."
-
-# OBSOLETE: msgid "Lookup domain WHOIS information"
-# OBSOLETE: msgstr "Metadata added"
-
-# OBSOLETE: msgid "Lookup domain RDAP information"
-# OBSOLETE: msgstr "Metadata modified"
-
-# OBSOLETE: msgid "Record Wizard"
-# OBSOLETE: msgstr "Wizard Rekod"
-
-# OBSOLETE: msgid "Please enter a domain name to perform an RDAP lookup."
-# OBSOLETE: msgstr "Silakan masukkan nama domain untuk melakukan pencarian RDAP."
-
-# OBSOLETE: msgid "Toggle all"
-# OBSOLETE: msgstr "Toggle semua"
-
 
 

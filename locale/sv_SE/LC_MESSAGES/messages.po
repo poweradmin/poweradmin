@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-07 23:53+0300\n"
+"POT-Creation-Date: 2026-04-09 10:38+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -332,7 +332,7 @@ msgstr ""
 "certifikatet."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:641
+#: templates/modern/edit.html:93 templates/modern/edit.html:646
 msgid "Invalid hostname format"
 msgstr "Ogiltigt värdnamnsformat"
 
@@ -1673,6 +1673,59 @@ msgstr "Återställningskoder har genererats om. Spara dem på en säker plats."
 msgid "You do not have the permission to view supermasters."
 msgstr "Du har inte behörighet att visa supermasters."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:314
+#, auto-english-fallback
+msgid "You do not have the permission to edit zone metadata."
+msgstr "You do not have the permission to edit zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:341
+#, auto-english-fallback
+msgid "Zone metadata has been updated successfully."
+msgstr "Zone metadata has been updated successfully."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:346
+#, auto-english-fallback
+msgid "Failed to update zone metadata."
+msgstr "Failed to update zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:368
+#: templates/modern/edit_zone_metadata.html:24
+#, auto-english-fallback
+msgid "Edit Zone Metadata"
+msgstr "Edit Zone Metadata"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:558
+#, php-format
+msgid ""
+"Metadata kind %s accepts only a single value. Add only one row for this kind."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:646
+#: templates/modern/edit_zone_metadata.html:146
+msgid ""
+"Custom metadata kind stored directly in the PowerDNS domainmetadata table."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:654
+#: templates/modern/pdns_status.html:412
+msgid "Value"
+msgstr "Värde"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:692
+#: templates/modern/email_previews.html:47
+msgid "Custom"
+msgstr "Anpassad"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:697
+#, auto-english-fallback
+msgid "Multi"
+msgstr "Multi"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:698
+#, auto-english-fallback
+msgid "Single"
+msgstr "Single"
+
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
 msgstr "API-funktionen är inaktiverad i systemkonfigurationen."
@@ -1729,32 +1782,28 @@ msgstr "API-nyckel %s."
 msgid "You do not have the permission to add records to this zone."
 msgstr "Du har inte behörighet att lägga till poster i denna zon."
 
-#: lib/Application/Controller/BulkRecordAddController.php:117
+#: lib/Application/Controller/BulkRecordAddController.php:118
 msgid "Please provide at least one record."
 msgstr "Ange minst en post."
 
-#: lib/Application/Controller/BulkRecordAddController.php:145
-msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Ogiltigt format. Förväntat minst: namn,typ,innehåll"
-
-#: lib/Application/Controller/BulkRecordAddController.php:198
+#: lib/Application/Controller/BulkRecordAddController.php:175
 msgid "Invalid record type."
 msgstr "Ogiltig posttyp."
 
-#: lib/Application/Controller/BulkRecordAddController.php:235
+#: lib/Application/Controller/BulkRecordAddController.php:213
 msgid "Record could not be added."
 msgstr "Posten kunde inte läggas till."
 
-#: lib/Application/Controller/BulkRecordAddController.php:243
+#: lib/Application/Controller/BulkRecordAddController.php:221
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d post(er) har lagts till."
 
-#: lib/Application/Controller/BulkRecordAddController.php:246
+#: lib/Application/Controller/BulkRecordAddController.php:224
 msgid "Some record(s) could not be added."
 msgstr "Vissa post(er) kunde inte läggas till."
 
-#: lib/Application/Controller/BulkRecordAddController.php:279
+#: lib/Application/Controller/BulkRecordAddController.php:257
 msgid "Zone ID is required."
 msgstr "Zon-ID krävs."
 
@@ -2356,7 +2405,7 @@ msgstr "Du har inte tillräcklig behörighet att visa denna sida."
 msgid "Reverse Zones"
 msgstr "Rapporttyp"
 
-#: lib/Application/Controller/ListForwardZonesController.php:145
+#: lib/Application/Controller/ListForwardZonesController.php:144
 msgid "You do not have the permission to see any zones."
 msgstr "Du har inte behörighet att se några zoner."
 
@@ -2874,12 +2923,12 @@ msgstr "Kunde inte aktivera zonnyckeln."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Ett fel uppstod vid växling av DNSSEC-nyckeln. Försök igen."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Ja"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Nej"
@@ -7975,6 +8024,21 @@ msgstr "Säkerhetshändelser"
 msgid "The following warnings were found:"
 msgstr "Säkerhetshändelse"
 
+#: lib/Domain/Service/BulkRecordParser.php:36
+#, auto-english-fallback
+msgid "Empty line."
+msgstr "Empty line."
+
+#: lib/Domain/Service/BulkRecordParser.php:42
+msgid "Invalid format. Expected at least: name,type,content"
+msgstr "Ogiltigt format. Förväntat minst: namn,typ,innehåll"
+
+#: lib/Domain/Service/BulkRecordParser.php:88
+msgid ""
+"Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
+"name,SRV,target,weight,port,ttl"
+msgstr ""
+
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr "Händelseseveritet"
@@ -8395,7 +8459,7 @@ msgstr "Mottagare"
 msgid "Update record"
 msgstr "Ämne"
 
-#: templates/modern/edit.html:524 templates/modern/users.html:219
+#: templates/modern/edit.html:529 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Skickad"
 
@@ -8537,7 +8601,7 @@ msgstr "Systemmeddelande"
 msgid "Select the account that will own this supermaster"
 msgstr "Lägg till systemmeddelande"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:521
+#: templates/modern/edit.html:190 templates/modern/edit.html:526
 msgid "Save changes"
 msgstr "Systemmeddelande tillagt"
 
@@ -8974,7 +9038,7 @@ msgstr "Nästa kontroll"
 msgid "Logout"
 msgstr "Applikationsversion"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:509
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
 msgid "Edit comment"
 msgstr "Debug-läge"
 
@@ -9236,6 +9300,11 @@ msgstr "Vanliga poster"
 msgid "Advanced Records"
 msgstr "Avancerade poster"
 
+#: templates/default/bulk_record_add.html:119
+#, auto-english-fallback
+msgid "legacy"
+msgstr "legacy"
+
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
 msgstr "DNS-guide"
@@ -9316,7 +9385,7 @@ msgstr "Ja, ta bort denna användare"
 msgid "No, keep this user"
 msgstr "Nej, behåll denna användare"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:227
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
 msgstr "Spara som mall"
 
@@ -10460,71 +10529,71 @@ msgstr "Om du förlorar nyckeln måste du generera om den."
 msgid "Edit"
 msgstr "Schemalagd underhållsstart"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:572
+#: templates/modern/edit.html:25 templates/modern/edit.html:577
 msgid "Add new record"
 msgstr "Lägg till ny post"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:576
+#: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Guidade guider för DMARC, SPF, DKIM, CAA, TLSA och SRV-poster"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:582
+#: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
 msgstr "Flerpostsläge"
 
-#: templates/modern/edit.html:530 templates/modern/edit.html:585
+#: templates/modern/edit.html:535 templates/modern/edit.html:590
 msgid "Bulk add"
 msgstr "Massinlägg"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "Failed to add"
 msgstr "Misslyckades att lägga till"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "record(s). Please check the record format."
 msgstr "post(er). Vänligen kontrollera postformatet."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:599
+#: templates/modern/edit.html:52 templates/modern/edit.html:604
 msgid "Failed to add records. Please check the record format."
 msgstr "Misslyckades att lägga till poster. Vänligen kontrollera postformatet."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Content validation failed:"
 msgstr "Innehållsvalidering misslyckades:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Invalid value for record type"
 msgstr "Ogiltigt värde för posttyp"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:604
+#: templates/modern/edit.html:57 templates/modern/edit.html:609
 msgid "Please provide all required information."
 msgstr "Vänligen ange all nödvändig information."
 
-#: templates/modern/edit.html:627 templates/modern/add_record.html:72
+#: templates/modern/edit.html:632 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Lägg till PTR"
 
-#: templates/modern/edit.html:630 templates/modern/add_record.html:75
+#: templates/modern/edit.html:635 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Lägg till A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:669
+#: templates/modern/edit.html:121 templates/modern/edit.html:674
 msgid "This record already exists"
 msgstr "Denna post finns redan"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:681
+#: templates/modern/edit.html:133 templates/modern/edit.html:686
 msgid "Invalid priority"
 msgstr "Ogiltig prioritet"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:688
+#: templates/modern/edit.html:140 templates/modern/edit.html:693
 msgid "Invalid TTL value"
 msgstr "Ogiltigt TTL-värde"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:690
+#: templates/modern/edit.html:142 templates/modern/edit.html:695
 msgid "Provide TTL"
 msgstr "Ange TTL"
 
-#: templates/modern/edit.html:716 templates/modern/add_record.html:207
+#: templates/modern/edit.html:721 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -10536,87 +10605,92 @@ msgstr ""
 msgid "Edit zone"
 msgstr "Redigera zon"
 
-#: templates/default/edit.html:238 templates/modern/edit.html:238
+#: templates/default/edit.html:227 templates/modern/edit.html:227
+#, auto-english-fallback
+msgid "Metadata"
+msgstr "Metadata"
+
+#: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "Inga poster matchar dina filterkriterier."
 
-#: templates/default/edit.html:246 templates/modern/edit.html:246
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "This zone does not have any records."
 msgstr "Denna zon har inga poster."
 
-#: templates/default/edit.html:258 templates/modern/edit.html:258
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "Filter:"
 msgstr "Filter:"
 
-#: templates/default/edit.html:264 templates/modern/edit.html:264
+#: templates/default/edit.html:269 templates/modern/edit.html:269
 msgid "Search by name or content"
 msgstr "Sök efter namn eller innehåll"
 
-#: templates/default/edit.html:270 templates/modern/edit.html:270
+#: templates/default/edit.html:275 templates/modern/edit.html:275
 msgid "All Types"
 msgstr "Alla typer"
 
-#: templates/default/edit.html:280 templates/modern/edit.html:280
+#: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
 msgstr "Filtrera efter innehåll"
 
-#: templates/default/edit.html:286 templates/modern/edit.html:286
+#: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
 msgstr "Använd"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "Showing"
 msgstr "Visar"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "of"
 msgstr "av"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "total records"
 msgstr "totalt antal poster"
 
-#: templates/default/edit.html:492 templates/modern/edit.html:492
+#: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
 msgstr "Redigera valda"
 
-#: templates/modern/edit.html:496 templates/modern/search.html:486
+#: templates/modern/edit.html:501 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Ta bort post(er)"
 
-#: templates/modern/edit.html:504 templates/modern/search.html:93
+#: templates/modern/edit.html:509 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Kommentarer"
 
-#: templates/default/edit.html:534 templates/modern/edit.html:534
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Import"
 msgstr "Importera"
 
-#: templates/default/edit.html:551 templates/modern/edit.html:551
+#: templates/default/edit.html:556 templates/modern/edit.html:556
 msgid "Generate PTR"
 msgstr "Generera PTR"
 
-#: templates/modern/edit.html:730 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Zonkonfiguration"
 
-#: templates/modern/edit.html:772 templates/modern/edit.html:801
+#: templates/modern/edit.html:777 templates/modern/edit.html:806
 msgid "Change"
 msgstr "Ändra"
 
-#: templates/modern/edit.html:765 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "IP-adress för master NS"
 
-#: templates/default/edit.html:822 templates/modern/edit.html:822
+#: templates/default/edit.html:827 templates/modern/edit.html:827
 msgid "Manage DNSSEC"
 msgstr "Hantera DNSSEC"
 
-#: templates/default/edit.html:829 templates/modern/edit.html:829
+#: templates/default/edit.html:834 templates/modern/edit.html:834
 msgid "Sign zone"
 msgstr "Signera zon"
 
-#: templates/default/edit.html:833 templates/modern/edit.html:833
+#: templates/default/edit.html:838 templates/modern/edit.html:838
 msgid "Not signed"
 msgstr "Inte signerad"
 
@@ -11222,6 +11296,52 @@ msgstr "Sök supermasters..."
 #: templates/modern/list_supermasters.html:71
 msgid "There are no supermasters to show in this listing."
 msgstr "Det finns inga supermasters att visa i denna lista."
+
+#: templates/modern/edit_zone_metadata.html:18
+#, auto-english-fallback
+msgid "Edit Metadata"
+msgstr "Edit Metadata"
+
+#: templates/modern/edit_zone_metadata.html:36
+#, auto-english-fallback
+msgid "Multiple values"
+msgstr "Multiple values"
+
+#: templates/modern/edit_zone_metadata.html:37
+msgid ""
+"For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
+"Each value is stored separately, one row per value."
+msgstr ""
+
+#: templates/modern/edit_zone_metadata.html:42
+#, auto-english-fallback
+msgid "Multi value"
+msgstr "Multi value"
+
+#: templates/modern/edit_zone_metadata.html:43
+#, auto-english-fallback
+msgid "Single value"
+msgstr "Single value"
+
+#: templates/modern/edit_zone_metadata.html:53
+#, auto-english-fallback
+msgid "Kind"
+msgstr "Kind"
+
+#: templates/modern/edit_zone_metadata.html:100
+#, auto-english-fallback
+msgid "Add metadata row"
+msgstr "Add metadata row"
+
+#: templates/modern/edit_zone_metadata.html:103
+#, auto-english-fallback
+msgid "Save metadata"
+msgstr "Save metadata"
+
+#: templates/modern/edit_zone_metadata.html:106
+#, auto-english-fallback
+msgid "Back to zone"
+msgstr "Back to zone"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
@@ -11884,10 +12004,6 @@ msgstr ""
 msgid "Active Email Templates"
 msgstr "Aktiva e-postmallar"
 
-#: templates/modern/email_previews.html:47
-msgid "Custom"
-msgstr "Anpassad"
-
 #: templates/modern/email_previews.html:23
 msgid "Standard"
 msgstr "Standard"
@@ -12125,10 +12241,6 @@ msgstr "Bytes"
 msgid "Metric"
 msgstr "Mått"
 
-#: templates/default/pdns_status.html:411 templates/modern/pdns_status.html:412
-msgid "Value"
-msgstr "Värde"
-
 #: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
 msgid "No detailed metrics available."
 msgstr "Inga detaljerade mätvärden tillgängliga."
@@ -12198,7 +12310,8 @@ msgstr "Lägg till post i zon"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Posten kunde inte läggas till. Kontrollera uppgifterna och försök igen."
+msgstr ""
+"Posten kunde inte läggas till. Kontrollera uppgifterna och försök igen."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
@@ -13427,189 +13540,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan inte ansluta till PowerDNS-databasen \"%s\": %s"
-
-# OBSOLETE: msgid "Server running"
-# OBSOLETE: msgstr "Kritisk"
-
-# OBSOLETE: msgid "Check PowerDNS server status"
-# OBSOLETE: msgstr "Loggmeddelande"
-
-# OBSOLETE: msgid "View Server Status"
-# OBSOLETE: msgstr "Loggkälla"
-
-# OBSOLETE: msgid "Server Status"
-# OBSOLETE: msgstr "Loggtid"
-
-# OBSOLETE: msgid "Edit your account details"
-# OBSOLETE: msgstr "Loggar exporterade"
-
-# OBSOLETE: msgid "Profile"
-# OBSOLETE: msgstr "Rensa loggar"
-
-# OBSOLETE: msgid "Find zones and records"
-# OBSOLETE: msgstr "Kunde inte rensa loggar"
-
-# OBSOLETE: msgid "Search zones"
-# OBSOLETE: msgstr "Är du säker på att du vill rensa loggarna?"
-
-# OBSOLETE: msgid "Manage forward DNS zones"
-# OBSOLETE: msgstr "Loggretention"
-
-# OBSOLETE: msgid "List forward zones"
-# OBSOLETE: msgstr "Behåll loggar i"
-
-# OBSOLETE: msgid "Manage reverse DNS zones"
-# OBSOLETE: msgstr "Loggretention uppdaterad"
-
-# OBSOLETE: msgid "List reverse zones"
-# OBSOLETE: msgstr "Kunde inte uppdatera loggretention"
-
-# OBSOLETE: msgid "Manage zone templates"
-# OBSOLETE: msgstr "Aktivera loggning"
-
-# OBSOLETE: msgid "Manage supermaster servers"
-# OBSOLETE: msgstr "Loggning aktiverad"
-
-# OBSOLETE: msgid "List supermasters"
-# OBSOLETE: msgstr "Loggning inaktiverad"
-
-# OBSOLETE: msgid "Create new master zone"
-# OBSOLETE: msgstr "Kunde inte inaktivera loggning"
-
-# OBSOLETE: msgid "Add Master"
-# OBSOLETE: msgstr "Logga till databas"
-
-# OBSOLETE: msgid "Add new slave zone"
-# OBSOLETE: msgstr "Loggfilsökväg"
-
-# OBSOLETE: msgid "Add Slave"
-# OBSOLETE: msgstr "Loggfilsrotation"
-
-# OBSOLETE: msgid "Add new supermaster server"
-# OBSOLETE: msgstr "Kunde inte uppdatera logginställningar"
-
-# OBSOLETE: msgid "Register multiple domains at once"
-# OBSOLETE: msgstr "CPU-användning"
-
-# OBSOLETE: msgid "Bulk domain registration"
-# OBSOLETE: msgstr "Minnesanvändning"
-
-# OBSOLETE: msgid "Registration"
-# OBSOLETE: msgstr "Diskanvändning"
-
-# OBSOLETE: msgid "Manage reverse DNS records"
-# OBSOLETE: msgstr "Aktiva sessioner"
-
-# OBSOLETE: msgid "View zone change history"
-# OBSOLETE: msgstr "Cacheanvändning"
-
-# OBSOLETE: msgid "View zone logs"
-# OBSOLETE: msgstr "Köstorlek"
-
-# OBSOLETE: msgid "View user activity history"
-# OBSOLETE: msgstr "Felfri"
-
-# OBSOLETE: msgid "View user logs"
-# OBSOLETE: msgstr "Varning"
-
-# OBSOLETE: msgid "Update your account password"
-# OBSOLETE: msgstr "Okänd"
-
-# OBSOLETE: msgid "Customize your interface settings"
-# OBSOLETE: msgstr "Systeminformation"
-
-# OBSOLETE: msgid "User preferences"
-# OBSOLETE: msgstr "Serverinformation"
-
-# OBSOLETE: msgid "Manage system users and access"
-# OBSOLETE: msgstr "PHP-version"
-
-# OBSOLETE: msgid "Manage access templates"
-# OBSOLETE: msgstr "Databasversion"
-
-# OBSOLETE: msgid "End your session"
-# OBSOLETE: msgstr "Installationsökväg"
-
-# OBSOLETE: msgid "Manage API access keys"
-# OBSOLETE: msgstr "Systemmiljö"
-
-# OBSOLETE: msgid "Manage API Keys"
-# OBSOLETE: msgstr "Produktion"
-
-# OBSOLETE: msgid "Check database integrity"
-# OBSOLETE: msgstr "Testning"
-
-# OBSOLETE: msgid "Check Database"
-# OBSOLETE: msgstr "Systemtimezone"
-
-# OBSOLETE: msgid "Check DB"
-# OBSOLETE: msgstr "Systemspråk"
-
-# OBSOLETE: msgid "Search logs by domain"
-# OBSOLETE: msgstr "Senaste version"
-
-# OBSOLETE: msgid "Language"
-# OBSOLETE: msgstr "Språk"
-
-# OBSOLETE: msgid "In use"
-# OBSOLETE: msgstr "I bruk"
-
-# OBSOLETE: msgid "Search logs by user"
-# OBSOLETE: msgstr "Sök loggar efter användare"
-
-# OBSOLETE: msgid "Search logs by group"
-# OBSOLETE: msgstr "Sök loggar efter grupp"
-
-# OBSOLETE: msgid "PowerDNS Server"
-# OBSOLETE: msgstr "PowerDNS-server"
-
-# OBSOLETE: msgid "View Details"
-# OBSOLETE: msgstr "Visa detaljer"
-
-# OBSOLETE: msgid "Add Master Zone"
-# OBSOLETE: msgstr "Lägg till masterzon"
-
-# OBSOLETE: msgid "List Forward Zones"
-# OBSOLETE: msgstr "Lista forward-zoner"
-
-# OBSOLETE: msgid "Search Zones"
-# OBSOLETE: msgstr "Sök zoner"
-
-# OBSOLETE: msgid "List Reverse Zones"
-# OBSOLETE: msgstr "Lista reverse-zoner"
-
-# OBSOLETE: msgid "Add Slave Zone"
-# OBSOLETE: msgstr "Lägg till slavzon"
-
-# OBSOLETE: msgid "List Zone Templates"
-# OBSOLETE: msgstr "Lista zonmallar"
-
-# OBSOLETE: msgid "Bulk Domain Registration"
-# OBSOLETE: msgstr "Massdomänregistrering"
-
-# OBSOLETE: msgid "WHOIS lookup functionality is disabled."
-# OBSOLETE: msgstr "WHOIS-sökfunktionen är inaktiverad."
-
-# OBSOLETE: msgid "RDAP lookup functionality is disabled."
-# OBSOLETE: msgstr "RDAP-sökfunktionen är inaktiverad."
-
-# OBSOLETE: msgid "Slave"
-# OBSOLETE: msgstr "Kunde inte inaktivera automatisk säkerhetskopiering"
-
-# OBSOLETE: msgid "Lookup domain WHOIS information"
-# OBSOLETE: msgstr "Konfigurationsökväg"
-
-# OBSOLETE: msgid "Lookup domain RDAP information"
-# OBSOLETE: msgstr "Cachesökväg"
-
-# OBSOLETE: msgid "Record Wizard"
-# OBSOLETE: msgstr "Postguide"
-
-# OBSOLETE: msgid "Please enter a domain name to perform an RDAP lookup."
-# OBSOLETE: msgstr "Vänligen ange ett domännamn för att utföra en RDAP-sökning."
-
-# OBSOLETE: msgid "Toggle all"
-# OBSOLETE: msgstr "Växla alla"
-
 
 

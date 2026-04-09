@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-07 23:53+0300\n"
+"POT-Creation-Date: 2026-04-09 10:38+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -333,7 +333,7 @@ msgstr ""
 "kompletny certyfikat."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:641
+#: templates/modern/edit.html:93 templates/modern/edit.html:646
 msgid "Invalid hostname format"
 msgstr "Nieprawidłowy format nazwy hosta"
 
@@ -1687,6 +1687,59 @@ msgstr ""
 msgid "You do not have the permission to view supermasters."
 msgstr "Nie masz uprawnień do przeglądania supermasterów."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:314
+#, auto-english-fallback
+msgid "You do not have the permission to edit zone metadata."
+msgstr "You do not have the permission to edit zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:341
+#, auto-english-fallback
+msgid "Zone metadata has been updated successfully."
+msgstr "Zone metadata has been updated successfully."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:346
+#, auto-english-fallback
+msgid "Failed to update zone metadata."
+msgstr "Failed to update zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:368
+#: templates/modern/edit_zone_metadata.html:24
+#, auto-english-fallback
+msgid "Edit Zone Metadata"
+msgstr "Edit Zone Metadata"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:558
+#, php-format
+msgid ""
+"Metadata kind %s accepts only a single value. Add only one row for this kind."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:646
+#: templates/modern/edit_zone_metadata.html:146
+msgid ""
+"Custom metadata kind stored directly in the PowerDNS domainmetadata table."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:654
+#: templates/modern/pdns_status.html:412
+msgid "Value"
+msgstr "Wartość"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:692
+#: templates/modern/email_previews.html:47
+msgid "Custom"
+msgstr "Niestandardowe"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:697
+#, auto-english-fallback
+msgid "Multi"
+msgstr "Multi"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:698
+#, auto-english-fallback
+msgid "Single"
+msgstr "Single"
+
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
 msgstr "Funkcja API jest wyłączona w konfiguracji systemu."
@@ -1742,32 +1795,28 @@ msgstr "Klucz API został %s pomyślnie."
 msgid "You do not have the permission to add records to this zone."
 msgstr "Nie masz uprawnień do dodawania rekordów do tej strefy."
 
-#: lib/Application/Controller/BulkRecordAddController.php:117
+#: lib/Application/Controller/BulkRecordAddController.php:118
 msgid "Please provide at least one record."
 msgstr "Podaj przynajmniej jeden rekord."
 
-#: lib/Application/Controller/BulkRecordAddController.php:145
-msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Nieprawidłowy format. Oczekiwano przynajmniej: nazwa,typ,zawartość"
-
-#: lib/Application/Controller/BulkRecordAddController.php:198
+#: lib/Application/Controller/BulkRecordAddController.php:175
 msgid "Invalid record type."
 msgstr "Nieprawidłowy typ rekordu."
 
-#: lib/Application/Controller/BulkRecordAddController.php:235
+#: lib/Application/Controller/BulkRecordAddController.php:213
 msgid "Record could not be added."
 msgstr "Nie można dodać rekordu."
 
-#: lib/Application/Controller/BulkRecordAddController.php:243
+#: lib/Application/Controller/BulkRecordAddController.php:221
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "Pomyślnie dodano %d rekordów."
 
-#: lib/Application/Controller/BulkRecordAddController.php:246
+#: lib/Application/Controller/BulkRecordAddController.php:224
 msgid "Some record(s) could not be added."
 msgstr "Niektóre rekordy nie mogły zostać dodane."
 
-#: lib/Application/Controller/BulkRecordAddController.php:279
+#: lib/Application/Controller/BulkRecordAddController.php:257
 msgid "Zone ID is required."
 msgstr "Identyfikator strefy jest wymagany."
 
@@ -2387,7 +2436,7 @@ msgstr "Nie masz wystarczających uprawnień do przeglądania tej strony."
 msgid "Reverse Zones"
 msgstr "Strefy odwrotne"
 
-#: lib/Application/Controller/ListForwardZonesController.php:145
+#: lib/Application/Controller/ListForwardZonesController.php:144
 msgid "You do not have the permission to see any zones."
 msgstr "Nie masz uprawnień do przeglądania żadnych stref."
 
@@ -2913,12 +2962,12 @@ msgstr "Nie udało się aktywować klucza strefy."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Wystąpił błąd podczas przełączania klucza DNSSEC. Spróbuj ponownie."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Tak"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Nie"
@@ -8681,6 +8730,21 @@ msgstr "Dodatkowo znaleziono następujące ostrzeżenia:"
 msgid "The following warnings were found:"
 msgstr "Znaleziono następujące ostrzeżenia:"
 
+#: lib/Domain/Service/BulkRecordParser.php:36
+#, auto-english-fallback
+msgid "Empty line."
+msgstr "Empty line."
+
+#: lib/Domain/Service/BulkRecordParser.php:42
+msgid "Invalid format. Expected at least: name,type,content"
+msgstr "Nieprawidłowy format. Oczekiwano przynajmniej: nazwa,typ,zawartość"
+
+#: lib/Domain/Service/BulkRecordParser.php:88
+msgid ""
+"Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
+"name,SRV,target,weight,port,ttl"
+msgstr ""
+
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr "Nieznany typ bazy danych."
@@ -9118,7 +9182,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Zaktualizuj rekord"
 
-#: templates/modern/edit.html:524 templates/modern/users.html:219
+#: templates/modern/edit.html:529 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Resetuj"
 
@@ -9262,7 +9326,7 @@ msgstr "Konto"
 msgid "Select the account that will own this supermaster"
 msgstr "Wybierz konto, które będzie właścicielem tego supermastera"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:521
+#: templates/modern/edit.html:190 templates/modern/edit.html:526
 msgid "Save changes"
 msgstr "Zapisz zmiany"
 
@@ -9714,7 +9778,7 @@ msgstr "Preferencje"
 msgid "Logout"
 msgstr "Wyloguj"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:509
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
 msgid "Edit comment"
 msgstr "Edytuj komentarz"
 
@@ -9862,7 +9926,8 @@ msgstr "Eksportuj dzienniki"
 
 #: templates/modern/list_log_groups.html:128
 msgid "Export filtered log entries. Current filters will be applied."
-msgstr "Eksportuj przefiltrowane wpisy dziennika. Zostaną zastosowane bieżące filtry."
+msgstr ""
+"Eksportuj przefiltrowane wpisy dziennika. Zostaną zastosowane bieżące filtry."
 
 #: templates/modern/list_log_groups.html:129
 msgid "records to export"
@@ -9983,6 +10048,11 @@ msgstr "Popularne rekordy"
 msgid "Advanced Records"
 msgstr "Zaawansowane rekordy"
 
+#: templates/default/bulk_record_add.html:119
+#, auto-english-fallback
+msgid "legacy"
+msgstr "legacy"
+
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
 msgstr "Kreator DNS"
@@ -10063,7 +10133,7 @@ msgstr "Tak, usuń tego użytkownika"
 msgid "No, keep this user"
 msgstr "Nie, zachowaj tego użytkownika"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:227
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
 msgstr "Zapisz jako szablon"
 
@@ -11209,71 +11279,71 @@ msgstr "Jeśli zgubisz klucz, będziesz musiał go wygenerować ponownie."
 msgid "Edit"
 msgstr "Edytuj"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:572
+#: templates/modern/edit.html:25 templates/modern/edit.html:577
 msgid "Add new record"
 msgstr "Dodaj nowy rekord"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:576
+#: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Przewodniki kreatorów dla rekordów DMARC, SPF, DKIM, CAA, TLSA i SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:582
+#: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
 msgstr "Tryb wielu rekordów"
 
-#: templates/modern/edit.html:530 templates/modern/edit.html:585
+#: templates/modern/edit.html:535 templates/modern/edit.html:590
 msgid "Bulk add"
 msgstr "Dodaj zbiorczo"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "Failed to add"
 msgstr "Nie udało się dodać"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "record(s). Please check the record format."
 msgstr "rekordów. Proszę sprawdzić format rekordu."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:599
+#: templates/modern/edit.html:52 templates/modern/edit.html:604
 msgid "Failed to add records. Please check the record format."
 msgstr "Nie udało się dodać rekordów. Proszę sprawdzić format rekordu."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Content validation failed:"
 msgstr "Walidacja zawartości nie powiodła się:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Invalid value for record type"
 msgstr "Nieprawidłowa wartość dla typu rekordu"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:604
+#: templates/modern/edit.html:57 templates/modern/edit.html:609
 msgid "Please provide all required information."
 msgstr "Proszę podać wszystkie wymagane informacje."
 
-#: templates/modern/edit.html:627 templates/modern/add_record.html:72
+#: templates/modern/edit.html:632 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Dodaj PTR"
 
-#: templates/modern/edit.html:630 templates/modern/add_record.html:75
+#: templates/modern/edit.html:635 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Dodaj A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:669
+#: templates/modern/edit.html:121 templates/modern/edit.html:674
 msgid "This record already exists"
 msgstr "Ten rekord już istnieje"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:681
+#: templates/modern/edit.html:133 templates/modern/edit.html:686
 msgid "Invalid priority"
 msgstr "Nieprawidłowy priorytet"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:688
+#: templates/modern/edit.html:140 templates/modern/edit.html:693
 msgid "Invalid TTL value"
 msgstr "Nieprawidłowa wartość TTL"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:690
+#: templates/modern/edit.html:142 templates/modern/edit.html:695
 msgid "Provide TTL"
 msgstr "Podaj TTL"
 
-#: templates/modern/edit.html:716 templates/modern/add_record.html:207
+#: templates/modern/edit.html:721 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11285,87 +11355,92 @@ msgstr ""
 msgid "Edit zone"
 msgstr "Edytuj strefę"
 
-#: templates/default/edit.html:238 templates/modern/edit.html:238
+#: templates/default/edit.html:227 templates/modern/edit.html:227
+#, auto-english-fallback
+msgid "Metadata"
+msgstr "Metadata"
+
+#: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "Żadne rekordy nie spełniają kryteriów filtra."
 
-#: templates/default/edit.html:246 templates/modern/edit.html:246
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "This zone does not have any records."
 msgstr "Ta strefa nie zawiera żadnych rekordów."
 
-#: templates/default/edit.html:258 templates/modern/edit.html:258
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "Filter:"
 msgstr "Filtr:"
 
-#: templates/default/edit.html:264 templates/modern/edit.html:264
+#: templates/default/edit.html:269 templates/modern/edit.html:269
 msgid "Search by name or content"
 msgstr "Szukaj według nazwy lub zawartości"
 
-#: templates/default/edit.html:270 templates/modern/edit.html:270
+#: templates/default/edit.html:275 templates/modern/edit.html:275
 msgid "All Types"
 msgstr "Wszystkie typy"
 
-#: templates/default/edit.html:280 templates/modern/edit.html:280
+#: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
 msgstr "Filtruj według zawartości"
 
-#: templates/default/edit.html:286 templates/modern/edit.html:286
+#: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
 msgstr "Zastosuj"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "Showing"
 msgstr "Wyświetlanie"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "of"
 msgstr "z"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "total records"
 msgstr "rekordów łącznie"
 
-#: templates/default/edit.html:492 templates/modern/edit.html:492
+#: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
 msgstr "Edytuj wybrane"
 
-#: templates/modern/edit.html:496 templates/modern/search.html:486
+#: templates/modern/edit.html:501 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Usuń rekord(y)"
 
-#: templates/modern/edit.html:504 templates/modern/search.html:93
+#: templates/modern/edit.html:509 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentarze"
 
-#: templates/default/edit.html:534 templates/modern/edit.html:534
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Import"
 msgstr "Importuj"
 
-#: templates/default/edit.html:551 templates/modern/edit.html:551
+#: templates/default/edit.html:556 templates/modern/edit.html:556
 msgid "Generate PTR"
 msgstr "Generuj PTR"
 
-#: templates/modern/edit.html:730 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Konfiguracja strefy"
 
-#: templates/modern/edit.html:772 templates/modern/edit.html:801
+#: templates/modern/edit.html:777 templates/modern/edit.html:806
 msgid "Change"
 msgstr "Zmień"
 
-#: templates/modern/edit.html:765 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Adres IP serwera głównego NS"
 
-#: templates/default/edit.html:822 templates/modern/edit.html:822
+#: templates/default/edit.html:827 templates/modern/edit.html:827
 msgid "Manage DNSSEC"
 msgstr "Zarządzaj DNSSEC"
 
-#: templates/default/edit.html:829 templates/modern/edit.html:829
+#: templates/default/edit.html:834 templates/modern/edit.html:834
 msgid "Sign zone"
 msgstr "Podpisz strefę"
 
-#: templates/default/edit.html:833 templates/modern/edit.html:833
+#: templates/default/edit.html:838 templates/modern/edit.html:838
 msgid "Not signed"
 msgstr "Nie podpisane"
 
@@ -11975,6 +12050,52 @@ msgstr "Szukaj supermasterów..."
 #: templates/modern/list_supermasters.html:71
 msgid "There are no supermasters to show in this listing."
 msgstr "Nie ma żadnych supermasterów do wyświetlenia na tej liście."
+
+#: templates/modern/edit_zone_metadata.html:18
+#, auto-english-fallback
+msgid "Edit Metadata"
+msgstr "Edit Metadata"
+
+#: templates/modern/edit_zone_metadata.html:36
+#, auto-english-fallback
+msgid "Multiple values"
+msgstr "Multiple values"
+
+#: templates/modern/edit_zone_metadata.html:37
+msgid ""
+"For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
+"Each value is stored separately, one row per value."
+msgstr ""
+
+#: templates/modern/edit_zone_metadata.html:42
+#, auto-english-fallback
+msgid "Multi value"
+msgstr "Multi value"
+
+#: templates/modern/edit_zone_metadata.html:43
+#, auto-english-fallback
+msgid "Single value"
+msgstr "Single value"
+
+#: templates/modern/edit_zone_metadata.html:53
+#, auto-english-fallback
+msgid "Kind"
+msgstr "Kind"
+
+#: templates/modern/edit_zone_metadata.html:100
+#, auto-english-fallback
+msgid "Add metadata row"
+msgstr "Add metadata row"
+
+#: templates/modern/edit_zone_metadata.html:103
+#, auto-english-fallback
+msgid "Save metadata"
+msgstr "Save metadata"
+
+#: templates/modern/edit_zone_metadata.html:106
+#, auto-english-fallback
+msgid "Back to zone"
+msgstr "Back to zone"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
@@ -12644,10 +12765,6 @@ msgstr ""
 msgid "Active Email Templates"
 msgstr "Aktywne szablony e-mail"
 
-#: templates/modern/email_previews.html:47
-msgid "Custom"
-msgstr "Niestandardowe"
-
 #: templates/modern/email_previews.html:23
 msgid "Standard"
 msgstr "Standardowe"
@@ -12883,10 +13000,6 @@ msgstr "Bajty"
 msgid "Metric"
 msgstr "Metryka"
 
-#: templates/default/pdns_status.html:411 templates/modern/pdns_status.html:412
-msgid "Value"
-msgstr "Wartość"
-
 #: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
 msgid "No detailed metrics available."
 msgstr "Brak szczegółowych metryk."
@@ -13065,7 +13178,8 @@ msgstr "Czy na pewno chcesz włączyć klucz API"
 
 #: templates/default/api_keys.html:147 templates/modern/api_keys.html:148
 msgid "External applications will be able to authenticate using this key."
-msgstr "Aplikacje zewnętrzne będą mogły uwierzytelniać się za pomocą tego klucza."
+msgstr ""
+"Aplikacje zewnętrzne będą mogły uwierzytelniać się za pomocą tego klucza."
 
 #: templates/default/api_keys.html:181 templates/modern/api_keys.html:182
 msgid ""
@@ -14195,287 +14309,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nie można połączyć się z bazą danych PowerDNS \"%s\": %s"
-
-# OBSOLETE: msgid "Server running"
-# OBSOLETE: msgstr "Serwer działa"
-
-# OBSOLETE: msgid "Check PowerDNS server status"
-# OBSOLETE: msgstr "Sprawdź status serwera PowerDNS"
-
-# OBSOLETE: msgid "View Server Status"
-# OBSOLETE: msgstr "Zobacz status serwera"
-
-# OBSOLETE: msgid "Server Status"
-# OBSOLETE: msgstr "Status serwera"
-
-# OBSOLETE: msgid "Edit your account details"
-# OBSOLETE: msgstr "Edytuj szczegóły swojego konta"
-
-# OBSOLETE: msgid "Profile"
-# OBSOLETE: msgstr "Profil"
-
-# OBSOLETE: msgid "Find zones and records"
-# OBSOLETE: msgstr "Znajdź strefy i rekordy"
-
-# OBSOLETE: msgid "Search zones"
-# OBSOLETE: msgstr "Przeszukaj strefy"
-
-# OBSOLETE: msgid "Manage forward DNS zones"
-# OBSOLETE: msgstr "Zarządzaj strefami DNS forward"
-
-# OBSOLETE: msgid "List forward zones"
-# OBSOLETE: msgstr "Lista stref forward"
-
-# OBSOLETE: msgid "Manage reverse DNS zones"
-# OBSOLETE: msgstr "Zarządzaj strefami DNS reverse"
-
-# OBSOLETE: msgid "List reverse zones"
-# OBSOLETE: msgstr "Lista stref reverse"
-
-# OBSOLETE: msgid "Manage zone templates"
-# OBSOLETE: msgstr "Zarządzaj szablonami stref"
-
-# OBSOLETE: msgid "Manage supermaster servers"
-# OBSOLETE: msgstr "Zarządzaj serwerami supermaster"
-
-# OBSOLETE: msgid "List supermasters"
-# OBSOLETE: msgstr "Lista supermasterów"
-
-# OBSOLETE: msgid "Create new master zone"
-# OBSOLETE: msgstr "Utwórz nową strefę master"
-
-# OBSOLETE: msgid "Add Master"
-# OBSOLETE: msgstr "Dodaj Master"
-
-# OBSOLETE: msgid "Add new slave zone"
-# OBSOLETE: msgstr "Dodaj nową strefę slave"
-
-# OBSOLETE: msgid "Add Slave"
-# OBSOLETE: msgstr "Dodaj Slave"
-
-# OBSOLETE: msgid "Add new supermaster server"
-# OBSOLETE: msgstr "Dodaj nowy serwer supermaster"
-
-# OBSOLETE: msgid "Register multiple domains at once"
-# OBSOLETE: msgstr "Zarejestruj wiele domen jednocześnie"
-
-# OBSOLETE: msgid "Bulk domain registration"
-# OBSOLETE: msgstr "Zbiorcza rejestracja domen"
-
-# OBSOLETE: msgid "Registration"
-# OBSOLETE: msgstr "Rejestracja"
-
-# OBSOLETE: msgid "Manage reverse DNS records"
-# OBSOLETE: msgstr "Zarządzaj rekordami DNS reverse"
-
-# OBSOLETE: msgid "View zone change history"
-# OBSOLETE: msgstr "Zobacz historię zmian w strefach"
-
-# OBSOLETE: msgid "View zone logs"
-# OBSOLETE: msgstr "Zobacz logi stref"
-
-# OBSOLETE: msgid "View user activity history"
-# OBSOLETE: msgstr "Zobacz historię aktywności użytkowników"
-
-# OBSOLETE: msgid "View user logs"
-# OBSOLETE: msgstr "Zobacz logi użytkowników"
-
-# OBSOLETE: msgid "Update your account password"
-# OBSOLETE: msgstr "Zaktualizuj hasło do swojego konta"
-
-# OBSOLETE: msgid "Customize your interface settings"
-# OBSOLETE: msgstr "Dostosuj ustawienia interfejsu"
-
-# OBSOLETE: msgid "User preferences"
-# OBSOLETE: msgstr "Preferencje użytkownika"
-
-# OBSOLETE: msgid "Manage system users and access"
-# OBSOLETE: msgstr "Zarządzaj użytkownikami systemu i dostępem"
-
-# OBSOLETE: msgid "Manage access templates"
-# OBSOLETE: msgstr "Zarządzaj szablonami dostępu"
-
-# OBSOLETE: msgid "End your session"
-# OBSOLETE: msgstr "Zakończ sesję"
-
-# OBSOLETE: msgid "Manage API access keys"
-# OBSOLETE: msgstr "Zarządzanie kluczami dostępu API"
-
-# OBSOLETE: msgid "Manage API Keys"
-# OBSOLETE: msgstr "Zarządzanie kluczami API"
-
-# OBSOLETE: msgid "Check database integrity"
-# OBSOLETE: msgstr "Sprawdź integralność bazy danych"
-
-# OBSOLETE: msgid "Check Database"
-# OBSOLETE: msgstr "Sprawdź bazę danych"
-
-# OBSOLETE: msgid "Check DB"
-# OBSOLETE: msgstr "Sprawdź BD"
-
-# OBSOLETE: msgid "Search logs by domain"
-# OBSOLETE: msgstr "Wyszukaj logi według domeny"
-
-# OBSOLETE: msgid "Language"
-# OBSOLETE: msgstr "Język"
-
-# OBSOLETE: msgid "In use"
-# OBSOLETE: msgstr "W użyciu"
-
-# OBSOLETE: msgid "Search logs by user"
-# OBSOLETE: msgstr "Wyszukaj logi według użytkownika"
-
-# OBSOLETE: msgid "Search logs by group"
-# OBSOLETE: msgstr "Szukaj logów według grupy"
-
-# OBSOLETE: msgid "PowerDNS Server"
-# OBSOLETE: msgstr "Serwer PowerDNS"
-
-# OBSOLETE: msgid "View Details"
-# OBSOLETE: msgstr "Pokaż szczegóły"
-
-# OBSOLETE: msgid "Add Master Zone"
-# OBSOLETE: msgstr "Dodaj strefę główną"
-
-# OBSOLETE: msgid "List Forward Zones"
-# OBSOLETE: msgstr "Lista stref przesyłania"
-
-# OBSOLETE: msgid "Search Zones"
-# OBSOLETE: msgstr "Szukaj stref"
-
-# OBSOLETE: msgid "List Reverse Zones"
-# OBSOLETE: msgstr "Lista stref odwrotnych"
-
-# OBSOLETE: msgid "Add Slave Zone"
-# OBSOLETE: msgstr "Dodaj strefę podrzędną"
-
-# OBSOLETE: msgid "List Zone Templates"
-# OBSOLETE: msgstr "Lista szablonów stref"
-
-# OBSOLETE: msgid "Bulk Domain Registration"
-# OBSOLETE: msgstr "Masowa rejestracja domen"
-
-# OBSOLETE: msgid "WHOIS lookup functionality is disabled."
-# OBSOLETE: msgstr "Funkcjonalność wyszukiwania WHOIS jest wyłączona."
-
-# OBSOLETE: msgid "RDAP lookup functionality is disabled."
-# OBSOLETE: msgstr "Funkcjonalność wyszukiwania RDAP jest wyłączona."
-
-# OBSOLETE: msgid "Slave"
-# OBSOLETE: msgstr "Podrzędny"
-
-# OBSOLETE: msgid "Lookup domain WHOIS information"
-# OBSOLETE: msgstr "Wyszukaj informacje WHOIS domeny"
-
-# OBSOLETE: msgid "Lookup domain RDAP information"
-# OBSOLETE: msgstr "Wyszukaj informacje RDAP domeny"
-
-# OBSOLETE: msgid "Record Wizard"
-# OBSOLETE: msgstr "Kreator rekordów"
-
-# OBSOLETE: msgid "Please enter a domain name to perform an RDAP lookup."
-# OBSOLETE: msgstr "Wprowadź nazwę domeny, aby wykonać wyszukiwanie RDAP."
-
-# OBSOLETE: msgid "Toggle all"
-# OBSOLETE: msgstr "Przełącz wszystkie"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create a config/settings.php file "
-# OBSOLETE: "manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nie znaleziono pliku konfiguracyjnego. Użyj <a href=\"install/"
-# OBSOLETE: "\">instalatora</a> aby go utworzyć, lub utwórz plik config/settings.php "
-# OBSOLETE: "ręcznie."
-
-# OBSOLETE: msgid "Invalid authentication provider"
-# OBSOLETE: msgstr "Nieprawidłowy dostawca uwierzytelniania"
-
-# OBSOLETE: msgid "Failed to sign zone. Check PowerDNS logs for details."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nie udało się podpisać strefy. Sprawdź logi PowerDNS, aby uzyskać "
-# OBSOLETE: "szczegóły."
-
-# OBSOLETE: msgid "Zone was created, but securing it with DNSSEC failed."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Strefa została utworzona, ale zabezpieczenie jej za pomocą DNSSEC nie "
-# OBSOLETE: "powiodło się."
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
-# OBSOLETE: "once."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Znaleziono zduplikowany mechanizm %s. Każdy typ mechanizmu powinien "
-# OBSOLETE: "wystąpić co najwyżej raz."
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr "Adres IPv6 powinien używać małych liter dla cyfr szesnastkowych."
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Adres IPv6 nie jest w formie kanonicznej (RFC 5952). Forma kanoniczna: %s"
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Adres IP \"%s\" nie jest prawidłowy. Musi być prawidłowym adresem IPv4 "
-# OBSOLETE: "lub IPv6."
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "Tagi HTML nie są dozwolone w polu zawartości."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ciąg rekordu TXT przekracza 255 bajtów. Ciągi TXT muszą mieć 255 bajtów "
-# OBSOLETE: "lub mniej. Dla dłuższej zawartości podziel na wiele ciągów w cudzysłowach "
-# OBSOLETE: "oddzielonych spacjami."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Rekord NAPTR musi mieć albo wyrażenie regularne albo zamiennik (z \".\"), "
-# OBSOLETE: "ale nie oba."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Usługa NAPTR musi być zgodna z formatem: [protokół][+rs][+rs]... gdzie "
-# OBSOLETE: "protokół i rs zaczynają się od litery i zawierają tylko znaki "
-# OBSOLETE: "alfanumeryczne (maks. 32 znaki każdy)."
-
-# OBSOLETE: msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Skonfiguruj standardowe rekordy takie jak MX, TXT dla SPF i CNAME dla www"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-# OBSOLETE: "[SERIAL] in record content"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Używaj symboli zastępczych takich jak [ZONE], [DOMAIN], [TLD], [NS1], "
-# OBSOLETE: "[HOSTMASTER] i [SERIAL] w treści rekordów"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-# OBSOLETE: "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Symbole zastępcze [DOMAIN] i [TLD] są przydatne dla rekordów MX Microsoft "
-# OBSOLETE: "365 (np. [DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-# OBSOLETE: msgid "LDAP users cannot have passwords managed through this interface"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Użytkownicy LDAP nie mogą mieć haseł zarządzanych przez ten interfejs"
-
-# OBSOLETE: msgid "Select All Filtered"
-# OBSOLETE: msgstr "Zaznacz wszystkie przefiltrowane"
-
 
 

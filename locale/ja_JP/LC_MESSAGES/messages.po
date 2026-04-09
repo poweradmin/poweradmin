@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-07 23:53+0300\n"
+"POT-Creation-Date: 2026-04-09 10:38+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -328,7 +328,7 @@ msgstr ""
 "ださい。"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:641
+#: templates/modern/edit.html:93 templates/modern/edit.html:646
 msgid "Invalid hostname format"
 msgstr "ホスト名の形式が無効です"
 
@@ -1664,6 +1664,59 @@ msgstr "復旧コードが再生成されました。安全な場所に保存し
 msgid "You do not have the permission to view supermasters."
 msgstr "スーパーマスターを表示する権限がありません。"
 
+#: lib/Application/Controller/EditZoneMetadataController.php:314
+#, auto-english-fallback
+msgid "You do not have the permission to edit zone metadata."
+msgstr "You do not have the permission to edit zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:341
+#, auto-english-fallback
+msgid "Zone metadata has been updated successfully."
+msgstr "Zone metadata has been updated successfully."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:346
+#, auto-english-fallback
+msgid "Failed to update zone metadata."
+msgstr "Failed to update zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:368
+#: templates/modern/edit_zone_metadata.html:24
+#, auto-english-fallback
+msgid "Edit Zone Metadata"
+msgstr "Edit Zone Metadata"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:558
+#, php-format
+msgid ""
+"Metadata kind %s accepts only a single value. Add only one row for this kind."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:646
+#: templates/modern/edit_zone_metadata.html:146
+msgid ""
+"Custom metadata kind stored directly in the PowerDNS domainmetadata table."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:654
+#: templates/modern/pdns_status.html:412
+msgid "Value"
+msgstr "値"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:692
+#: templates/modern/email_previews.html:47
+msgid "Custom"
+msgstr "カスタム"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:697
+#, auto-english-fallback
+msgid "Multi"
+msgstr "Multi"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:698
+#, auto-english-fallback
+msgid "Single"
+msgstr "Single"
+
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
 msgstr "システム設定でAPI機能が無効になっています。"
@@ -1718,32 +1771,28 @@ msgstr "APIキーが正常に%sされました。"
 msgid "You do not have the permission to add records to this zone."
 msgstr "このゾーンにレコードを追加する権限がありません。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:117
+#: lib/Application/Controller/BulkRecordAddController.php:118
 msgid "Please provide at least one record."
 msgstr "少なくとも1つのレコードを提供してください。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:145
-msgid "Invalid format. Expected at least: name,type,content"
-msgstr "無効な形式です。少なくとも次の形式が必要です：name,type,content"
-
-#: lib/Application/Controller/BulkRecordAddController.php:198
+#: lib/Application/Controller/BulkRecordAddController.php:175
 msgid "Invalid record type."
 msgstr "無効なレコードタイプです。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:235
+#: lib/Application/Controller/BulkRecordAddController.php:213
 msgid "Record could not be added."
 msgstr "レコードを追加できませんでした。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:243
+#: lib/Application/Controller/BulkRecordAddController.php:221
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d件のレコードが正常に追加されました。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:246
+#: lib/Application/Controller/BulkRecordAddController.php:224
 msgid "Some record(s) could not be added."
 msgstr "一部のレコードを追加できませんでした。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:279
+#: lib/Application/Controller/BulkRecordAddController.php:257
 msgid "Zone ID is required."
 msgstr "ゾーンIDが必要です。"
 
@@ -2352,7 +2401,7 @@ msgstr "このページを表示する十分な権限がありません。"
 msgid "Reverse Zones"
 msgstr "逆引きゾーン"
 
-#: lib/Application/Controller/ListForwardZonesController.php:145
+#: lib/Application/Controller/ListForwardZonesController.php:144
 msgid "You do not have the permission to see any zones."
 msgstr "ゾーンを表示する権限がありません。"
 
@@ -2862,12 +2911,12 @@ msgstr "ゾーンキーの有効化に失敗しました。"
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "DNSSECキーの切り替え中にエラーが発生しました。もう一度お試しください。"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "はい"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "いいえ"
@@ -8578,6 +8627,21 @@ msgstr "さらに、次の警告が見つかりました:"
 msgid "The following warnings were found:"
 msgstr "次の警告が見つかりました:"
 
+#: lib/Domain/Service/BulkRecordParser.php:36
+#, auto-english-fallback
+msgid "Empty line."
+msgstr "Empty line."
+
+#: lib/Domain/Service/BulkRecordParser.php:42
+msgid "Invalid format. Expected at least: name,type,content"
+msgstr "無効な形式です。少なくとも次の形式が必要です：name,type,content"
+
+#: lib/Domain/Service/BulkRecordParser.php:88
+msgid ""
+"Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
+"name,SRV,target,weight,port,ttl"
+msgstr ""
+
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr "不明なデータベースタイプです。"
@@ -9012,7 +9076,7 @@ msgstr ""
 msgid "Update record"
 msgstr "レコードを更新"
 
-#: templates/modern/edit.html:524 templates/modern/users.html:219
+#: templates/modern/edit.html:529 templates/modern/users.html:219
 msgid "Reset"
 msgstr "リセット"
 
@@ -9154,7 +9218,7 @@ msgstr "アカウント"
 msgid "Select the account that will own this supermaster"
 msgstr "このスーパーマスターを所有するアカウントを選択してください"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:521
+#: templates/modern/edit.html:190 templates/modern/edit.html:526
 msgid "Save changes"
 msgstr "変更を保存"
 
@@ -9605,7 +9669,7 @@ msgstr "設定"
 msgid "Logout"
 msgstr "ログアウト"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:509
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
 msgid "Edit comment"
 msgstr "コメントを編集"
 
@@ -9752,7 +9816,9 @@ msgstr "ログをエクスポート"
 
 #: templates/modern/list_log_groups.html:128
 msgid "Export filtered log entries. Current filters will be applied."
-msgstr "フィルタされたログエントリをエクスポートします。現在のフィルタが適用されます。"
+msgstr ""
+"フィルタされたログエントリをエクスポートします。現在のフィルタが適用されま"
+"す。"
 
 #: templates/modern/list_log_groups.html:129
 msgid "records to export"
@@ -9871,6 +9937,11 @@ msgstr "一般的なレコード"
 msgid "Advanced Records"
 msgstr "高度なレコード"
 
+#: templates/default/bulk_record_add.html:119
+#, auto-english-fallback
+msgid "legacy"
+msgstr "legacy"
+
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
 msgstr "DNSウィザード"
@@ -9951,7 +10022,7 @@ msgstr "はい、このユーザーを削除します"
 msgid "No, keep this user"
 msgstr "いいえ、このユーザーを保持します"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:227
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
 msgstr "テンプレートとして保存"
 
@@ -11078,71 +11149,71 @@ msgstr "キーを紛失した場合は、再生成する必要があります。
 msgid "Edit"
 msgstr "編集"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:572
+#: templates/modern/edit.html:25 templates/modern/edit.html:577
 msgid "Add new record"
 msgstr "新しいレコードを追加"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:576
+#: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "DMARC、SPF、DKIM、CAA、TLSA、SRVレコード用のガイド付きウィザード"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:582
+#: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
 msgstr "マルチレコードモード"
 
-#: templates/modern/edit.html:530 templates/modern/edit.html:585
+#: templates/modern/edit.html:535 templates/modern/edit.html:590
 msgid "Bulk add"
 msgstr "一括追加"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "Failed to add"
 msgstr "追加に失敗しました"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "record(s). Please check the record format."
 msgstr "レコード。レコード形式を確認してください。"
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:599
+#: templates/modern/edit.html:52 templates/modern/edit.html:604
 msgid "Failed to add records. Please check the record format."
 msgstr "レコードの追加に失敗しました。レコード形式を確認してください。"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Content validation failed:"
 msgstr "内容の検証に失敗しました："
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Invalid value for record type"
 msgstr "レコードタイプの値が無効です"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:604
+#: templates/modern/edit.html:57 templates/modern/edit.html:609
 msgid "Please provide all required information."
 msgstr "必要な情報をすべて入力してください。"
 
-#: templates/modern/edit.html:627 templates/modern/add_record.html:72
+#: templates/modern/edit.html:632 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "PTRを追加"
 
-#: templates/modern/edit.html:630 templates/modern/add_record.html:75
+#: templates/modern/edit.html:635 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "A/AAAAを追加"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:669
+#: templates/modern/edit.html:121 templates/modern/edit.html:674
 msgid "This record already exists"
 msgstr "このレコードは既に存在します"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:681
+#: templates/modern/edit.html:133 templates/modern/edit.html:686
 msgid "Invalid priority"
 msgstr "優先度が無効です"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:688
+#: templates/modern/edit.html:140 templates/modern/edit.html:693
 msgid "Invalid TTL value"
 msgstr "TTL値が無効です"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:690
+#: templates/modern/edit.html:142 templates/modern/edit.html:695
 msgid "Provide TTL"
 msgstr "TTLを入力してください"
 
-#: templates/modern/edit.html:716 templates/modern/add_record.html:207
+#: templates/modern/edit.html:721 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11154,87 +11225,92 @@ msgstr ""
 msgid "Edit zone"
 msgstr "ゾーンの編集"
 
-#: templates/default/edit.html:238 templates/modern/edit.html:238
+#: templates/default/edit.html:227 templates/modern/edit.html:227
+#, auto-english-fallback
+msgid "Metadata"
+msgstr "Metadata"
+
+#: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "フィルタ条件に一致するレコードがありません。"
 
-#: templates/default/edit.html:246 templates/modern/edit.html:246
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "This zone does not have any records."
 msgstr "このゾーンにはレコードがありません。"
 
-#: templates/default/edit.html:258 templates/modern/edit.html:258
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "Filter:"
 msgstr "フィルタ："
 
-#: templates/default/edit.html:264 templates/modern/edit.html:264
+#: templates/default/edit.html:269 templates/modern/edit.html:269
 msgid "Search by name or content"
 msgstr "名前または内容で検索"
 
-#: templates/default/edit.html:270 templates/modern/edit.html:270
+#: templates/default/edit.html:275 templates/modern/edit.html:275
 msgid "All Types"
 msgstr "すべてのタイプ"
 
-#: templates/default/edit.html:280 templates/modern/edit.html:280
+#: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
 msgstr "内容でフィルタ"
 
-#: templates/default/edit.html:286 templates/modern/edit.html:286
+#: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
 msgstr "適用"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "Showing"
 msgstr "表示中"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "of"
 msgstr "/"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "total records"
 msgstr "レコードの合計"
 
-#: templates/default/edit.html:492 templates/modern/edit.html:492
+#: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
 msgstr "選択項目を編集"
 
-#: templates/modern/edit.html:496 templates/modern/search.html:486
+#: templates/modern/edit.html:501 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "レコードを削除"
 
-#: templates/modern/edit.html:504 templates/modern/search.html:93
+#: templates/modern/edit.html:509 templates/modern/search.html:93
 msgid "Comments"
 msgstr "コメント"
 
-#: templates/default/edit.html:534 templates/modern/edit.html:534
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Import"
 msgstr "インポート"
 
-#: templates/default/edit.html:551 templates/modern/edit.html:551
+#: templates/default/edit.html:556 templates/modern/edit.html:556
 msgid "Generate PTR"
 msgstr "PTRを生成"
 
-#: templates/modern/edit.html:730 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "ゾーン構成"
 
-#: templates/modern/edit.html:772 templates/modern/edit.html:801
+#: templates/modern/edit.html:777 templates/modern/edit.html:806
 msgid "Change"
 msgstr "変更"
 
-#: templates/modern/edit.html:765 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "マスターNSのIPアドレス"
 
-#: templates/default/edit.html:822 templates/modern/edit.html:822
+#: templates/default/edit.html:827 templates/modern/edit.html:827
 msgid "Manage DNSSEC"
 msgstr "DNSSECを管理"
 
-#: templates/default/edit.html:829 templates/modern/edit.html:829
+#: templates/default/edit.html:834 templates/modern/edit.html:834
 msgid "Sign zone"
 msgstr "ゾーンの署名"
 
-#: templates/default/edit.html:833 templates/modern/edit.html:833
+#: templates/default/edit.html:838 templates/modern/edit.html:838
 msgid "Not signed"
 msgstr "署名なし"
 
@@ -11840,6 +11916,52 @@ msgstr "スーパーマスターを検索..."
 #: templates/modern/list_supermasters.html:71
 msgid "There are no supermasters to show in this listing."
 msgstr "この一覧に表示するスーパーマスターがありません。"
+
+#: templates/modern/edit_zone_metadata.html:18
+#, auto-english-fallback
+msgid "Edit Metadata"
+msgstr "Edit Metadata"
+
+#: templates/modern/edit_zone_metadata.html:36
+#, auto-english-fallback
+msgid "Multiple values"
+msgstr "Multiple values"
+
+#: templates/modern/edit_zone_metadata.html:37
+msgid ""
+"For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
+"Each value is stored separately, one row per value."
+msgstr ""
+
+#: templates/modern/edit_zone_metadata.html:42
+#, auto-english-fallback
+msgid "Multi value"
+msgstr "Multi value"
+
+#: templates/modern/edit_zone_metadata.html:43
+#, auto-english-fallback
+msgid "Single value"
+msgstr "Single value"
+
+#: templates/modern/edit_zone_metadata.html:53
+#, auto-english-fallback
+msgid "Kind"
+msgstr "Kind"
+
+#: templates/modern/edit_zone_metadata.html:100
+#, auto-english-fallback
+msgid "Add metadata row"
+msgstr "Add metadata row"
+
+#: templates/modern/edit_zone_metadata.html:103
+#, auto-english-fallback
+msgid "Save metadata"
+msgstr "Save metadata"
+
+#: templates/modern/edit_zone_metadata.html:106
+#, auto-english-fallback
+msgid "Back to zone"
+msgstr "Back to zone"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
@@ -12495,10 +12617,6 @@ msgstr ""
 msgid "Active Email Templates"
 msgstr "アクティブなメールテンプレート"
 
-#: templates/modern/email_previews.html:47
-msgid "Custom"
-msgstr "カスタム"
-
 #: templates/modern/email_previews.html:23
 msgid "Standard"
 msgstr "標準"
@@ -12735,10 +12853,6 @@ msgstr "バイト"
 #: templates/default/pdns_status.html:410 templates/modern/pdns_status.html:411
 msgid "Metric"
 msgstr "メトリック"
-
-#: templates/default/pdns_status.html:411 templates/modern/pdns_status.html:412
-msgid "Value"
-msgstr "値"
 
 #: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
 msgid "No detailed metrics available."
@@ -14044,280 +14158,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNSデータベース\"%s\"に接続できません: %s"
-
-# OBSOLETE: msgid "Server running"
-# OBSOLETE: msgstr "サーバー稼働中"
-
-# OBSOLETE: msgid "Check PowerDNS server status"
-# OBSOLETE: msgstr "PowerDNSサーバーのステータスを確認"
-
-# OBSOLETE: msgid "View Server Status"
-# OBSOLETE: msgstr "サーバーステータスを表示"
-
-# OBSOLETE: msgid "Server Status"
-# OBSOLETE: msgstr "サーバーステータス"
-
-# OBSOLETE: msgid "Edit your account details"
-# OBSOLETE: msgstr "アカウントの詳細を編集"
-
-# OBSOLETE: msgid "Profile"
-# OBSOLETE: msgstr "プロフィール"
-
-# OBSOLETE: msgid "Find zones and records"
-# OBSOLETE: msgstr "ゾーンとレコードを検索"
-
-# OBSOLETE: msgid "Search zones"
-# OBSOLETE: msgstr "ゾーンを検索"
-
-# OBSOLETE: msgid "Manage forward DNS zones"
-# OBSOLETE: msgstr "正引きDNSゾーンを管理"
-
-# OBSOLETE: msgid "List forward zones"
-# OBSOLETE: msgstr "正引きゾーンを一覧表示"
-
-# OBSOLETE: msgid "Manage reverse DNS zones"
-# OBSOLETE: msgstr "逆引きDNSゾーンを管理"
-
-# OBSOLETE: msgid "List reverse zones"
-# OBSOLETE: msgstr "逆引きゾーンを一覧表示"
-
-# OBSOLETE: msgid "Manage zone templates"
-# OBSOLETE: msgstr "ゾーンテンプレートを管理"
-
-# OBSOLETE: msgid "Manage supermaster servers"
-# OBSOLETE: msgstr "スーパーマスターサーバーを管理"
-
-# OBSOLETE: msgid "List supermasters"
-# OBSOLETE: msgstr "スーパーマスターを一覧表示"
-
-# OBSOLETE: msgid "Create new master zone"
-# OBSOLETE: msgstr "新しいマスターゾーンを作成"
-
-# OBSOLETE: msgid "Add Master"
-# OBSOLETE: msgstr "マスターを追加"
-
-# OBSOLETE: msgid "Add new slave zone"
-# OBSOLETE: msgstr "新しいスレーブゾーンを追加"
-
-# OBSOLETE: msgid "Add Slave"
-# OBSOLETE: msgstr "スレーブを追加"
-
-# OBSOLETE: msgid "Add new supermaster server"
-# OBSOLETE: msgstr "新しいスーパーマスターサーバーを追加"
-
-# OBSOLETE: msgid "Register multiple domains at once"
-# OBSOLETE: msgstr "複数のドメインを一度に登録"
-
-# OBSOLETE: msgid "Bulk domain registration"
-# OBSOLETE: msgstr "ドメインの一括登録"
-
-# OBSOLETE: msgid "Registration"
-# OBSOLETE: msgstr "登録"
-
-# OBSOLETE: msgid "Manage reverse DNS records"
-# OBSOLETE: msgstr "逆引きDNSレコードを管理"
-
-# OBSOLETE: msgid "View zone change history"
-# OBSOLETE: msgstr "ゾーンの変更履歴を表示"
-
-# OBSOLETE: msgid "View zone logs"
-# OBSOLETE: msgstr "ゾーンログを表示"
-
-# OBSOLETE: msgid "View user activity history"
-# OBSOLETE: msgstr "ユーザー活動履歴を表示"
-
-# OBSOLETE: msgid "View user logs"
-# OBSOLETE: msgstr "ユーザーログを表示"
-
-# OBSOLETE: msgid "Update your account password"
-# OBSOLETE: msgstr "アカウントのパスワードを更新"
-
-# OBSOLETE: msgid "Customize your interface settings"
-# OBSOLETE: msgstr "インターフェース設定をカスタマイズ"
-
-# OBSOLETE: msgid "User preferences"
-# OBSOLETE: msgstr "ユーザー設定"
-
-# OBSOLETE: msgid "Manage system users and access"
-# OBSOLETE: msgstr "システムユーザーとアクセスを管理"
-
-# OBSOLETE: msgid "Manage access templates"
-# OBSOLETE: msgstr "アクセステンプレートを管理"
-
-# OBSOLETE: msgid "End your session"
-# OBSOLETE: msgstr "セッションを終了"
-
-# OBSOLETE: msgid "Manage API access keys"
-# OBSOLETE: msgstr "APIアクセスキーを管理"
-
-# OBSOLETE: msgid "Manage API Keys"
-# OBSOLETE: msgstr "APIキーを管理"
-
-# OBSOLETE: msgid "Check database integrity"
-# OBSOLETE: msgstr "データベースの整合性をチェック"
-
-# OBSOLETE: msgid "Check Database"
-# OBSOLETE: msgstr "データベースをチェック"
-
-# OBSOLETE: msgid "Check DB"
-# OBSOLETE: msgstr "DBをチェック"
-
-# OBSOLETE: msgid "Search logs by domain"
-# OBSOLETE: msgstr "ドメインでログを検索"
-
-# OBSOLETE: msgid "Language"
-# OBSOLETE: msgstr "言語"
-
-# OBSOLETE: msgid "In use"
-# OBSOLETE: msgstr "使用中"
-
-# OBSOLETE: msgid "Search logs by user"
-# OBSOLETE: msgstr "ユーザーでログを検索"
-
-# OBSOLETE: msgid "Search logs by group"
-# OBSOLETE: msgstr "グループでログを検索"
-
-# OBSOLETE: msgid "PowerDNS Server"
-# OBSOLETE: msgstr "PowerDNSサーバー"
-
-# OBSOLETE: msgid "View Details"
-# OBSOLETE: msgstr "詳細を表示"
-
-# OBSOLETE: msgid "Add Master Zone"
-# OBSOLETE: msgstr "マスターゾーンを追加"
-
-# OBSOLETE: msgid "List Forward Zones"
-# OBSOLETE: msgstr "正引きゾーンをリスト"
-
-# OBSOLETE: msgid "Search Zones"
-# OBSOLETE: msgstr "ゾーンを検索"
-
-# OBSOLETE: msgid "List Reverse Zones"
-# OBSOLETE: msgstr "逆引きゾーンをリスト"
-
-# OBSOLETE: msgid "Add Slave Zone"
-# OBSOLETE: msgstr "スレーブゾーンを追加"
-
-# OBSOLETE: msgid "List Zone Templates"
-# OBSOLETE: msgstr "ゾーンテンプレートをリスト"
-
-# OBSOLETE: msgid "Bulk Domain Registration"
-# OBSOLETE: msgstr "一括ドメイン登録"
-
-# OBSOLETE: msgid "WHOIS lookup functionality is disabled."
-# OBSOLETE: msgstr "WHOIS検索機能が無効になっています。"
-
-# OBSOLETE: msgid "RDAP lookup functionality is disabled."
-# OBSOLETE: msgstr "RDAP検索機能が無効になっています。"
-
-# OBSOLETE: msgid "Slave"
-# OBSOLETE: msgstr "スレーブ"
-
-# OBSOLETE: msgid "Lookup domain WHOIS information"
-# OBSOLETE: msgstr "ドメインのWHOIS情報を検索"
-
-# OBSOLETE: msgid "Lookup domain RDAP information"
-# OBSOLETE: msgstr "ドメインのRDAP情報を検索"
-
-# OBSOLETE: msgid "Record Wizard"
-# OBSOLETE: msgstr "レコードウィザード"
-
-# OBSOLETE: msgid "Please enter a domain name to perform an RDAP lookup."
-# OBSOLETE: msgstr "RDAP検索を実行するにはドメイン名を入力してください。"
-
-# OBSOLETE: msgid "Toggle all"
-# OBSOLETE: msgstr "すべて切り替え"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create a config/settings.php file "
-# OBSOLETE: "manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "設定ファイルが見つかりません。<a href=\"install/\">インストーラー</a>を使"
-# OBSOLETE: "用して作成するか、config/settings.phpファイルを手動で作成してください。"
-
-# OBSOLETE: msgid "Invalid authentication provider"
-# OBSOLETE: msgstr "Invalid authentication provider"
-
-# OBSOLETE: msgid "Failed to sign zone. Check PowerDNS logs for details."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "ゾーンの署名に失敗しました。詳細についてはPowerDNSログを確認してください。"
-
-# OBSOLETE: msgid "Zone was created, but securing it with DNSSEC failed."
-# OBSOLETE: msgstr "ゾーンは作成されましたが、DNSSECでの保護に失敗しました。"
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
-# OBSOLETE: "once."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "重複する%sメカニズムが見つかりました。各メカニズムタイプは最大1回まで表示"
-# OBSOLETE: "されるべきです。"
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr "IPv6アドレスは16進数に小文字を使用すべきです。"
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr "IPv6アドレスは正規形式（RFC 5952）ではありません。正規形式：%s"
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IPアドレス「%s」は有効ではありません。有効なIPv4またはIPv6アドレスである必"
-# OBSOLETE: "要があります。"
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "内容フィールドにHTMLタグは使用できません。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "TXTレコード文字列が255バイトを超えています。TXT文字列は255バイト以下である"
-# OBSOLETE: "必要があります。より長い内容の場合は、スペースで区切られた複数の引用符付き"
-# OBSOLETE: "文字列に分割してください。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTRレコードは正規表現または置換（「.」付き）のいずれかを持つ必要がありま"
-# OBSOLETE: "すが、両方は不可です。"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTRサービスは次の形式に従う必要があります：[protocol][+rs][+rs]... ここ"
-# OBSOLETE: "で、protocolとrsは文字で始まり、英数字のみを含みます（それぞれ最大32文"
-# OBSOLETE: "字）。"
-
-# OBSOLETE: msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-# OBSOLETE: msgstr "MX、SPF用TXT、www用CNAMEなどの標準レコードを設定"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-# OBSOLETE: "[SERIAL] in record content"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "レコード内容で[ZONE]、[DOMAIN]、[TLD]、[NS1]、[HOSTMASTER]、[SERIAL]などの"
-# OBSOLETE: "プレースホルダーを使用"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-# OBSOLETE: "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "[DOMAIN]と[TLD]プレースホルダーは、Microsoft 365 MXレコードに便利です"
-# OBSOLETE: "（例：[DOMAIN]-[TLD].mail.protection.outlook.com）"
-
-# OBSOLETE: msgid "LDAP users cannot have passwords managed through this interface"
-# OBSOLETE: msgstr "LDAPユーザーはこのインターフェースでパスワードを管理できません"
-
-# OBSOLETE: msgid "Select All Filtered"
-# OBSOLETE: msgstr "フィルタされたすべてを選択"
-
 
 

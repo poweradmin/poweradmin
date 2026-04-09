@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-07 23:53+0300\n"
+"POT-Creation-Date: 2026-04-09 10:38+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -333,7 +333,7 @@ msgstr ""
 "сертифікат."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:641
+#: templates/modern/edit.html:93 templates/modern/edit.html:646
 msgid "Invalid hostname format"
 msgstr "Недійсний формат імені хоста"
 
@@ -1690,6 +1690,59 @@ msgstr ""
 msgid "You do not have the permission to view supermasters."
 msgstr "У вас немає дозволу на перегляд суперсерверів."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:314
+#, auto-english-fallback
+msgid "You do not have the permission to edit zone metadata."
+msgstr "You do not have the permission to edit zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:341
+#, auto-english-fallback
+msgid "Zone metadata has been updated successfully."
+msgstr "Zone metadata has been updated successfully."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:346
+#, auto-english-fallback
+msgid "Failed to update zone metadata."
+msgstr "Failed to update zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:368
+#: templates/modern/edit_zone_metadata.html:24
+#, auto-english-fallback
+msgid "Edit Zone Metadata"
+msgstr "Edit Zone Metadata"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:558
+#, php-format
+msgid ""
+"Metadata kind %s accepts only a single value. Add only one row for this kind."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:646
+#: templates/modern/edit_zone_metadata.html:146
+msgid ""
+"Custom metadata kind stored directly in the PowerDNS domainmetadata table."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:654
+#: templates/modern/pdns_status.html:412
+msgid "Value"
+msgstr "Значення"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:692
+#: templates/modern/email_previews.html:47
+msgid "Custom"
+msgstr "Користувацький"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:697
+#, auto-english-fallback
+msgid "Multi"
+msgstr "Multi"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:698
+#, auto-english-fallback
+msgid "Single"
+msgstr "Single"
+
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
 msgstr "Функцію API вимкнено в конфігурації системи."
@@ -1745,32 +1798,28 @@ msgstr "Ключ API %s успішно."
 msgid "You do not have the permission to add records to this zone."
 msgstr "У вас немає дозволу на додавання записів до цієї зони."
 
-#: lib/Application/Controller/BulkRecordAddController.php:117
+#: lib/Application/Controller/BulkRecordAddController.php:118
 msgid "Please provide at least one record."
 msgstr "Будь ласка, надайте принаймні один запис."
 
-#: lib/Application/Controller/BulkRecordAddController.php:145
-msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Недійсний формат. Очікується щонайменше: ім'я,тип,вміст"
-
-#: lib/Application/Controller/BulkRecordAddController.php:198
+#: lib/Application/Controller/BulkRecordAddController.php:175
 msgid "Invalid record type."
 msgstr "Недійсний тип запису."
 
-#: lib/Application/Controller/BulkRecordAddController.php:235
+#: lib/Application/Controller/BulkRecordAddController.php:213
 msgid "Record could not be added."
 msgstr "Не вдалося додати запис."
 
-#: lib/Application/Controller/BulkRecordAddController.php:243
+#: lib/Application/Controller/BulkRecordAddController.php:221
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d запис(ів) було успішно додано."
 
-#: lib/Application/Controller/BulkRecordAddController.php:246
+#: lib/Application/Controller/BulkRecordAddController.php:224
 msgid "Some record(s) could not be added."
 msgstr "Деякі записи не вдалося додати."
 
-#: lib/Application/Controller/BulkRecordAddController.php:279
+#: lib/Application/Controller/BulkRecordAddController.php:257
 msgid "Zone ID is required."
 msgstr "ID зони є обов'язковим."
 
@@ -2380,7 +2429,7 @@ msgid "Reverse Zones"
 msgstr ""
 "This record type may have uniform cost search. Expand lowest-cost node."
 
-#: lib/Application/Controller/ListForwardZonesController.php:145
+#: lib/Application/Controller/ListForwardZonesController.php:144
 msgid "You do not have the permission to see any zones."
 msgstr "У вас немає дозволу на перегляд будь-яких зон."
 
@@ -2910,12 +2959,12 @@ msgstr "Не вдалося активувати ключ зони."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Сталася помилка під час перемикання ключа DNSSEC. Спробуйте ще раз."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Так"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Ні"
@@ -8558,6 +8607,21 @@ msgstr ""
 "Record may be affected by DNS SOA query for zone discovery. Protect zone "
 "enumeration."
 
+#: lib/Domain/Service/BulkRecordParser.php:36
+#, auto-english-fallback
+msgid "Empty line."
+msgstr "Empty line."
+
+#: lib/Domain/Service/BulkRecordParser.php:42
+msgid "Invalid format. Expected at least: name,type,content"
+msgstr "Недійсний формат. Очікується щонайменше: ім'я,тип,вміст"
+
+#: lib/Domain/Service/BulkRecordParser.php:88
+msgid ""
+"Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
+"name,SRV,target,weight,port,ttl"
+msgstr ""
+
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr ""
@@ -9052,7 +9116,7 @@ msgstr ""
 msgid "Update record"
 msgstr "This configuration may have feature detection. Use SIFT, SURF, or ORB."
 
-#: templates/modern/edit.html:524 templates/modern/users.html:219
+#: templates/modern/edit.html:529 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Content may be affected by corner detection. Use Harris or Shi-Tomasi."
 
@@ -9218,7 +9282,7 @@ msgstr ""
 "Record may be affected by DNS Secondary Server Transfer (zone transfer "
 "timing)."
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:521
+#: templates/modern/edit.html:190 templates/modern/edit.html:526
 msgid "Save changes"
 msgstr ""
 "This configuration may have watershed algorithm. Use gradient as height."
@@ -9711,7 +9775,7 @@ msgstr ""
 "This configuration may have named entity recognition. Identify entity "
 "mentions."
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:509
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
 msgid "Edit comment"
 msgstr "This record type may have extractive QA. Select answer span."
 
@@ -9867,7 +9931,9 @@ msgstr "Експорт журналів"
 
 #: templates/modern/list_log_groups.html:128
 msgid "Export filtered log entries. Current filters will be applied."
-msgstr "Експортувати відфільтровані записи журналу. Поточні фільтри будуть застосовані."
+msgstr ""
+"Експортувати відфільтровані записи журналу. Поточні фільтри будуть "
+"застосовані."
 
 #: templates/modern/list_log_groups.html:129
 msgid "records to export"
@@ -9986,6 +10052,11 @@ msgstr "Загальні записи"
 msgid "Advanced Records"
 msgstr "Розширені записи"
 
+#: templates/default/bulk_record_add.html:119
+#, auto-english-fallback
+msgid "legacy"
+msgstr "legacy"
+
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
 msgstr "Майстер DNS"
@@ -10066,7 +10137,7 @@ msgstr "Так, видалити цього користувача"
 msgid "No, keep this user"
 msgstr "Ні, залишити цього користувача"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:227
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
 msgstr "Зберегти як шаблон"
 
@@ -11213,71 +11284,71 @@ msgid "Edit"
 msgstr ""
 "This configuration may have mixup. Linearly interpolate examples and labels."
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:572
+#: templates/modern/edit.html:25 templates/modern/edit.html:577
 msgid "Add new record"
 msgstr "Додати новий запис"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:576
+#: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Керовані майстри для записів DMARC, SPF, DKIM, CAA, TLSA та SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:582
+#: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
 msgstr "Багаторядковий режим"
 
-#: templates/modern/edit.html:530 templates/modern/edit.html:585
+#: templates/modern/edit.html:535 templates/modern/edit.html:590
 msgid "Bulk add"
 msgstr "Масове додавання"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "Failed to add"
 msgstr "Не вдалося додати"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "record(s). Please check the record format."
 msgstr "запис(ів). Будь ласка, перевірте формат запису."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:599
+#: templates/modern/edit.html:52 templates/modern/edit.html:604
 msgid "Failed to add records. Please check the record format."
 msgstr "Не вдалося додати записи. Будь ласка, перевірте формат запису."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Content validation failed:"
 msgstr "Помилка перевірки вмісту:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Invalid value for record type"
 msgstr "Недійсне значення для типу запису"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:604
+#: templates/modern/edit.html:57 templates/modern/edit.html:609
 msgid "Please provide all required information."
 msgstr "Будь ласка, надайте всю необхідну інформацію."
 
-#: templates/modern/edit.html:627 templates/modern/add_record.html:72
+#: templates/modern/edit.html:632 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Додати PTR"
 
-#: templates/modern/edit.html:630 templates/modern/add_record.html:75
+#: templates/modern/edit.html:635 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Додати A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:669
+#: templates/modern/edit.html:121 templates/modern/edit.html:674
 msgid "This record already exists"
 msgstr "Цей запис вже існує"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:681
+#: templates/modern/edit.html:133 templates/modern/edit.html:686
 msgid "Invalid priority"
 msgstr "Недійсний пріоритет"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:688
+#: templates/modern/edit.html:140 templates/modern/edit.html:693
 msgid "Invalid TTL value"
 msgstr "Недійсне значення TTL"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:690
+#: templates/modern/edit.html:142 templates/modern/edit.html:695
 msgid "Provide TTL"
 msgstr "Надайте TTL"
 
-#: templates/modern/edit.html:716 templates/modern/add_record.html:207
+#: templates/modern/edit.html:721 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11289,87 +11360,92 @@ msgstr ""
 msgid "Edit zone"
 msgstr "Редагувати зону"
 
-#: templates/default/edit.html:238 templates/modern/edit.html:238
+#: templates/default/edit.html:227 templates/modern/edit.html:227
+#, auto-english-fallback
+msgid "Metadata"
+msgstr "Metadata"
+
+#: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "Жодних записів не відповідає вашим критеріям фільтрації."
 
-#: templates/default/edit.html:246 templates/modern/edit.html:246
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "This zone does not have any records."
 msgstr "Ця зона не має жодних записів."
 
-#: templates/default/edit.html:258 templates/modern/edit.html:258
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "Filter:"
 msgstr "Фільтр:"
 
-#: templates/default/edit.html:264 templates/modern/edit.html:264
+#: templates/default/edit.html:269 templates/modern/edit.html:269
 msgid "Search by name or content"
 msgstr "Пошук за ім'ям або вмістом"
 
-#: templates/default/edit.html:270 templates/modern/edit.html:270
+#: templates/default/edit.html:275 templates/modern/edit.html:275
 msgid "All Types"
 msgstr "Всі типи"
 
-#: templates/default/edit.html:280 templates/modern/edit.html:280
+#: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
 msgstr "Фільтрувати за вмістом"
 
-#: templates/default/edit.html:286 templates/modern/edit.html:286
+#: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
 msgstr "Застосувати"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "Showing"
 msgstr "Показано"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "of"
 msgstr "з"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "total records"
 msgstr "всього записів"
 
-#: templates/default/edit.html:492 templates/modern/edit.html:492
+#: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
 msgstr "Редагувати вибране"
 
-#: templates/modern/edit.html:496 templates/modern/search.html:486
+#: templates/modern/edit.html:501 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Видалити запис(и)"
 
-#: templates/modern/edit.html:504 templates/modern/search.html:93
+#: templates/modern/edit.html:509 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Коментарі"
 
-#: templates/default/edit.html:534 templates/modern/edit.html:534
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Import"
 msgstr "Імпорт"
 
-#: templates/default/edit.html:551 templates/modern/edit.html:551
+#: templates/default/edit.html:556 templates/modern/edit.html:556
 msgid "Generate PTR"
 msgstr "Створити PTR"
 
-#: templates/modern/edit.html:730 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Конфігурація зони"
 
-#: templates/modern/edit.html:772 templates/modern/edit.html:801
+#: templates/modern/edit.html:777 templates/modern/edit.html:806
 msgid "Change"
 msgstr "Змінити"
 
-#: templates/modern/edit.html:765 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "IP-адреса головного NS"
 
-#: templates/default/edit.html:822 templates/modern/edit.html:822
+#: templates/default/edit.html:827 templates/modern/edit.html:827
 msgid "Manage DNSSEC"
 msgstr "Керування DNSSEC"
 
-#: templates/default/edit.html:829 templates/modern/edit.html:829
+#: templates/default/edit.html:834 templates/modern/edit.html:834
 msgid "Sign zone"
 msgstr "Підписати зону"
 
-#: templates/default/edit.html:833 templates/modern/edit.html:833
+#: templates/default/edit.html:838 templates/modern/edit.html:838
 msgid "Not signed"
 msgstr "Не підписано"
 
@@ -11977,6 +12053,52 @@ msgstr "Пошук суперсерверів..."
 #: templates/modern/list_supermasters.html:71
 msgid "There are no supermasters to show in this listing."
 msgstr "Немає supermaster для відображення в цьому списку."
+
+#: templates/modern/edit_zone_metadata.html:18
+#, auto-english-fallback
+msgid "Edit Metadata"
+msgstr "Edit Metadata"
+
+#: templates/modern/edit_zone_metadata.html:36
+#, auto-english-fallback
+msgid "Multiple values"
+msgstr "Multiple values"
+
+#: templates/modern/edit_zone_metadata.html:37
+msgid ""
+"For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
+"Each value is stored separately, one row per value."
+msgstr ""
+
+#: templates/modern/edit_zone_metadata.html:42
+#, auto-english-fallback
+msgid "Multi value"
+msgstr "Multi value"
+
+#: templates/modern/edit_zone_metadata.html:43
+#, auto-english-fallback
+msgid "Single value"
+msgstr "Single value"
+
+#: templates/modern/edit_zone_metadata.html:53
+#, auto-english-fallback
+msgid "Kind"
+msgstr "Kind"
+
+#: templates/modern/edit_zone_metadata.html:100
+#, auto-english-fallback
+msgid "Add metadata row"
+msgstr "Add metadata row"
+
+#: templates/modern/edit_zone_metadata.html:103
+#, auto-english-fallback
+msgid "Save metadata"
+msgstr "Save metadata"
+
+#: templates/modern/edit_zone_metadata.html:106
+#, auto-english-fallback
+msgid "Back to zone"
+msgstr "Back to zone"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
@@ -12643,10 +12765,6 @@ msgstr ""
 msgid "Active Email Templates"
 msgstr "Активні шаблони електронної пошти"
 
-#: templates/modern/email_previews.html:47
-msgid "Custom"
-msgstr "Користувацький"
-
 #: templates/modern/email_previews.html:23
 msgid "Standard"
 msgstr "Стандартний"
@@ -12888,10 +13006,6 @@ msgstr "Байти"
 #: templates/default/pdns_status.html:410 templates/modern/pdns_status.html:411
 msgid "Metric"
 msgstr "Метрика"
-
-#: templates/default/pdns_status.html:411 templates/modern/pdns_status.html:412
-msgid "Value"
-msgstr "Значення"
 
 #: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
 msgid "No detailed metrics available."
@@ -14195,226 +14309,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Неможливо підключитися до бази даних PowerDNS \"%s\": %s"
-
-# OBSOLETE: msgid "Server running"
-# OBSOLETE: msgstr "Record appears to be using node2vec. Biased random walks."
-
-# OBSOLETE: msgid "Check PowerDNS server status"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "This configuration may have LINE. Preserve first and second order "
-# OBSOLETE: "proximity."
-
-# OBSOLETE: msgid "View Server Status"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Content may be affected by metapath2vec. Use metapaths in heterogeneous "
-# OBSOLETE: "graphs."
-
-# OBSOLETE: msgid "Server Status"
-# OBSOLETE: msgstr "Record may be part of graph embedding. Embed entire graph."
-
-# OBSOLETE: msgid "Edit your account details"
-# OBSOLETE: msgstr "Content suggests Weisfeiler-Lehman kernel. Use subtree patterns."
-
-# OBSOLETE: msgid "Profile"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "This configuration may have temporal graph network. Handle time-evolving "
-# OBSOLETE: "graphs."
-
-# OBSOLETE: msgid "Find zones and records"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Record appears to be using recurrent neural network. Process sequences."
-
-# OBSOLETE: msgid "Search zones"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "This configuration may have LSTM. Use gates to control information flow."
-
-# OBSOLETE: msgid "Manage forward DNS zones"
-# OBSOLETE: msgstr "Content may be affected by GRU. Simplify LSTM with fewer gates."
-
-# OBSOLETE: msgid "List forward zones"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Record may be part of bidirectional RNN. Process forward and backward."
-
-# OBSOLETE: msgid "Manage reverse DNS zones"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "This record type may have sequence-to-sequence model. Map input to output "
-# OBSOLETE: "sequence."
-
-# OBSOLETE: msgid "List reverse zones"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Content suggests encoder-decoder with attention. Focus on relevant parts."
-
-# OBSOLETE: msgid "Manage zone templates"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "This configuration may have attention mechanism. Compute context vector."
-
-# OBSOLETE: msgid "Manage supermaster servers"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Record appears to be using Luong attention. Use current hidden state."
-
-# OBSOLETE: msgid "List supermasters"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "This configuration may have self-attention. Attend to different positions "
-# OBSOLETE: "in same sequence."
-
-# OBSOLETE: msgid "Create new master zone"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Record may be part of scaled dot-product attention. Scale by dimension."
-
-# OBSOLETE: msgid "Add Master"
-# OBSOLETE: msgstr "Content suggests memory network. Use external memory."
-
-# OBSOLETE: msgid "Add new slave zone"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "This configuration may have neural Turing machine. Read and write to "
-# OBSOLETE: "memory."
-
-# OBSOLETE: msgid "Add Slave"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Record appears to be using pointer network. Point to input positions."
-
-# OBSOLETE: msgid "Add new supermaster server"
-# OBSOLETE: msgstr "Content may be affected by coverage mechanism. Avoid repetition."
-
-# OBSOLETE: msgid "Register multiple domains at once"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Content suggests autoregressive model. Condition on previous tokens."
-
-# OBSOLETE: msgid "Bulk domain registration"
-# OBSOLETE: msgstr "Record may be affected by DNS Query Pattern Anomalies."
-
-# OBSOLETE: msgid "Registration"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "This configuration may have causal language model. Use left-to-right "
-# OBSOLETE: "context."
-
-# OBSOLETE: msgid "Manage reverse DNS records"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Record appears to be using BLEU score. Evaluate translation quality."
-
-# OBSOLETE: msgid "View zone change history"
-# OBSOLETE: msgstr "Record may be part of word embedding. Map words to vectors."
-
-# OBSOLETE: msgid "View zone logs"
-# OBSOLETE: msgstr "This record type may have word2vec. Use skip-gram or CBOW."
-
-# OBSOLETE: msgid "View user activity history"
-# OBSOLETE: msgstr "Record may be affected by DNS Resolver Behavior Differences."
-
-# OBSOLETE: msgid "View user logs"
-# OBSOLETE: msgstr "This configuration may have FastText. Use subword information."
-
-# OBSOLETE: msgid "Update your account password"
-# OBSOLETE: msgstr "Record appears to be using ELMo. Bidirectional language model."
-
-# OBSOLETE: msgid "Customize your interface settings"
-# OBSOLETE: msgstr "Record may be part of RoBERTa. Optimize BERT training."
-
-# OBSOLETE: msgid "User preferences"
-# OBSOLETE: msgstr "This record type may have ALBERT. Share parameters across layers."
-
-# OBSOLETE: msgid "Manage system users and access"
-# OBSOLETE: msgstr "Record may be affected by DNS Infrastructure Upgrade Planning."
-
-# OBSOLETE: msgid "Manage access templates"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Record appears to be using XLNet. Use permutation language modeling."
-
-# OBSOLETE: msgid "End your session"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Content may be affected by part-of-speech tagging. Assign grammatical "
-# OBSOLETE: "tags."
-
-# OBSOLETE: msgid "Manage API access keys"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "This configuration may have coreference resolution. Link mentions to "
-# OBSOLETE: "entities."
-
-# OBSOLETE: msgid "Manage API Keys"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Content includes relation extraction. Identify relationships between "
-# OBSOLETE: "entities."
-
-# OBSOLETE: msgid "Check database integrity"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "This configuration may have aspect-based sentiment. Sentiment for "
-# OBSOLETE: "specific aspects."
-
-# OBSOLETE: msgid "Check Database"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Content may be affected by text classification. Assign categories to text."
-
-# OBSOLETE: msgid "Check DB"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Record may be part of question answering. Extract or generate answers."
-
-# OBSOLETE: msgid "Search logs by domain"
-# OBSOLETE: msgstr "Content includes knowledge graph embedding. Map KG to vector space."
-
-# OBSOLETE: msgid "Language"
-# OBSOLETE: msgstr "Мова"
-
-# OBSOLETE: msgid "In use"
-# OBSOLETE: msgstr "Використовується"
-
-# OBSOLETE: msgid "Search logs by user"
-# OBSOLETE: msgstr "Пошук журналів за користувачем"
-
-# OBSOLETE: msgid "Search logs by group"
-# OBSOLETE: msgstr "Пошук журналів за групою"
-
-# OBSOLETE: msgid "PowerDNS Server"
-# OBSOLETE: msgstr "Сервер PowerDNS"
-
-# OBSOLETE: msgid "View Details"
-# OBSOLETE: msgstr "Переглянути деталі"
-
-# OBSOLETE: msgid "Add Master Zone"
-# OBSOLETE: msgstr "Додати головну зону"
-
-# OBSOLETE: msgid "List Forward Zones"
-# OBSOLETE: msgstr "Список прямих зон"
-
-# OBSOLETE: msgid "Search Zones"
-# OBSOLETE: msgstr "Пошук зон"
-
-# OBSOLETE: msgid "List Reverse Zones"
-# OBSOLETE: msgstr "Список реверсних зон"
-
-# OBSOLETE: msgid "Add Slave Zone"
-# OBSOLETE: msgstr "Додати підлеглу зону"
-
-# OBSOLETE: msgid "List Zone Templates"
-# OBSOLETE: msgstr "Список шаблонів зон"
-
-# OBSOLETE: msgid "Bulk Domain Registration"
-# OBSOLETE: msgstr "Масова реєстрація доменів"
-
-# OBSOLETE: msgid "WHOIS lookup functionality is disabled."
-# OBSOLETE: msgstr "Функцію WHOIS-пошуку вимкнено."
-
-# OBSOLETE: msgid "RDAP lookup functionality is disabled."
-# OBSOLETE: msgstr "Функцію RDAP-пошуку вимкнено."
-
-# OBSOLETE: msgid "Slave"
-# OBSOLETE: msgstr "Content includes SHAP. Use Shapley values for attribution."
-
-# OBSOLETE: msgid "Lookup domain WHOIS information"
-# OBSOLETE: msgstr "Record may be part of dependency parsing. Find syntactic structure."
-
-# OBSOLETE: msgid "Lookup domain RDAP information"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Content suggests semantic role labeling. Identify predicate-argument "
-# OBSOLETE: "structure."
-
-# OBSOLETE: msgid "Record Wizard"
-# OBSOLETE: msgstr "Майстер записів"
-
-# OBSOLETE: msgid "Please enter a domain name to perform an RDAP lookup."
-# OBSOLETE: msgstr "Будь ласка, введіть доменне ім'я для виконання пошуку RDAP."
-
-# OBSOLETE: msgid "Toggle all"
-# OBSOLETE: msgstr "Перемкнути всі"
-
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-07 23:53+0300\n"
+"POT-Creation-Date: 2026-04-09 10:38+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -331,7 +331,7 @@ msgstr ""
 "visą sertifikatą."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:641
+#: templates/modern/edit.html:93 templates/modern/edit.html:646
 msgid "Invalid hostname format"
 msgstr "Neteisingas serverio vardo formatas"
 
@@ -1686,6 +1686,59 @@ msgstr "Atkuriamieji kodai regeneruoti. Išsaugokite juos saugioje vietoje."
 msgid "You do not have the permission to view supermasters."
 msgstr "Neturite leidimo peržiūrėti supermasters."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:314
+#, auto-english-fallback
+msgid "You do not have the permission to edit zone metadata."
+msgstr "You do not have the permission to edit zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:341
+#, auto-english-fallback
+msgid "Zone metadata has been updated successfully."
+msgstr "Zone metadata has been updated successfully."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:346
+#, auto-english-fallback
+msgid "Failed to update zone metadata."
+msgstr "Failed to update zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:368
+#: templates/modern/edit_zone_metadata.html:24
+#, auto-english-fallback
+msgid "Edit Zone Metadata"
+msgstr "Edit Zone Metadata"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:558
+#, php-format
+msgid ""
+"Metadata kind %s accepts only a single value. Add only one row for this kind."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:646
+#: templates/modern/edit_zone_metadata.html:146
+msgid ""
+"Custom metadata kind stored directly in the PowerDNS domainmetadata table."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:654
+#: templates/modern/pdns_status.html:412
+msgid "Value"
+msgstr "Reikšmė"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:692
+#: templates/modern/email_previews.html:47
+msgid "Custom"
+msgstr "Pasirinktinis"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:697
+#, auto-english-fallback
+msgid "Multi"
+msgstr "Multi"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:698
+#, auto-english-fallback
+msgid "Single"
+msgstr "Single"
+
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
 msgstr "API funkcija išjungta sistemos konfiguracijoje."
@@ -1740,32 +1793,28 @@ msgstr "API raktas %s sėkmingai."
 msgid "You do not have the permission to add records to this zone."
 msgstr "Neturite leidimo pridėti įrašų į šią zoną."
 
-#: lib/Application/Controller/BulkRecordAddController.php:117
+#: lib/Application/Controller/BulkRecordAddController.php:118
 msgid "Please provide at least one record."
 msgstr "Prašome pateikti bent vieną įrašą."
 
-#: lib/Application/Controller/BulkRecordAddController.php:145
-msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Neteisingas formatas. Tikėtasi bent: pavadinimas,tipas,turinys"
-
-#: lib/Application/Controller/BulkRecordAddController.php:198
+#: lib/Application/Controller/BulkRecordAddController.php:175
 msgid "Invalid record type."
 msgstr "Neteisingas įrašo tipas."
 
-#: lib/Application/Controller/BulkRecordAddController.php:235
+#: lib/Application/Controller/BulkRecordAddController.php:213
 msgid "Record could not be added."
 msgstr "Įrašo pridėti nepavyko."
 
-#: lib/Application/Controller/BulkRecordAddController.php:243
+#: lib/Application/Controller/BulkRecordAddController.php:221
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d įrašas(-ai) sėkmingai pridėti."
 
-#: lib/Application/Controller/BulkRecordAddController.php:246
+#: lib/Application/Controller/BulkRecordAddController.php:224
 msgid "Some record(s) could not be added."
 msgstr "Kai kurių įrašų pridėti nepavyko."
 
-#: lib/Application/Controller/BulkRecordAddController.php:279
+#: lib/Application/Controller/BulkRecordAddController.php:257
 msgid "Zone ID is required."
 msgstr "Zonos ID būtinas."
 
@@ -2374,7 +2423,7 @@ msgstr "Neturite pakankamų leidimų peržiūrėti šį puslapį."
 msgid "Reverse Zones"
 msgstr "Atvirkštinės zonos"
 
-#: lib/Application/Controller/ListForwardZonesController.php:145
+#: lib/Application/Controller/ListForwardZonesController.php:144
 msgid "You do not have the permission to see any zones."
 msgstr "Neturite leidimo matyti jokių zonų."
 
@@ -2895,12 +2944,12 @@ msgstr "Nepavyko įjungti zonos rakto."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Įvyko klaida perjungiant DNSSEC raktą. Bandykite dar kartą."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Taip"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Ne"
@@ -8613,6 +8662,21 @@ msgstr "Be to, rasti šie įspėjimai:"
 msgid "The following warnings were found:"
 msgstr "Rasti šie įspėjimai:"
 
+#: lib/Domain/Service/BulkRecordParser.php:36
+#, auto-english-fallback
+msgid "Empty line."
+msgstr "Empty line."
+
+#: lib/Domain/Service/BulkRecordParser.php:42
+msgid "Invalid format. Expected at least: name,type,content"
+msgstr "Neteisingas formatas. Tikėtasi bent: pavadinimas,tipas,turinys"
+
+#: lib/Domain/Service/BulkRecordParser.php:88
+msgid ""
+"Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
+"name,SRV,target,weight,port,ttl"
+msgstr ""
+
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr "Nežinomas duomenų bazės tipas."
@@ -9048,7 +9112,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Atnaujinti įrašą"
 
-#: templates/modern/edit.html:524 templates/modern/users.html:219
+#: templates/modern/edit.html:529 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Atkurti"
 
@@ -9190,7 +9254,7 @@ msgstr "Paskyra"
 msgid "Select the account that will own this supermaster"
 msgstr "Pasirinkite paskyrą, kuri valdys šį supermasterį"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:521
+#: templates/modern/edit.html:190 templates/modern/edit.html:526
 msgid "Save changes"
 msgstr "Išsaugoti pakeitimus"
 
@@ -9639,7 +9703,7 @@ msgstr "Nuostatos"
 msgid "Logout"
 msgstr "Atsijungti"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:509
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
 msgid "Edit comment"
 msgstr "Redaguoti komentarą"
 
@@ -9909,6 +9973,11 @@ msgstr "Įprasti įrašai"
 msgid "Advanced Records"
 msgstr "Pažangūs įrašai"
 
+#: templates/default/bulk_record_add.html:119
+#, auto-english-fallback
+msgid "legacy"
+msgstr "legacy"
+
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
 msgstr "DNS vedlys"
@@ -9989,7 +10058,7 @@ msgstr "Taip, pašalinti šį naudotoją"
 msgid "No, keep this user"
 msgstr "Ne, palikti šį naudotoją"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:227
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
 msgstr "Išsaugoti kaip šabloną"
 
@@ -11119,71 +11188,71 @@ msgstr "Jei prarasite raktą, turėsite jį generuoti iš naujo."
 msgid "Edit"
 msgstr "Redaguoti"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:572
+#: templates/modern/edit.html:25 templates/modern/edit.html:577
 msgid "Add new record"
 msgstr "Pridėti naują įrašą"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:576
+#: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Vadovaujami vedliai DMARC, SPF, DKIM, CAA, TLSA ir SRV įrašams"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:582
+#: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
 msgstr "Kelių įrašų režimas"
 
-#: templates/modern/edit.html:530 templates/modern/edit.html:585
+#: templates/modern/edit.html:535 templates/modern/edit.html:590
 msgid "Bulk add"
 msgstr "Masiškai pridėti"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "Failed to add"
 msgstr "Nepavyko pridėti"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "record(s). Please check the record format."
 msgstr "įrašų. Patikrinkite įrašo formatą."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:599
+#: templates/modern/edit.html:52 templates/modern/edit.html:604
 msgid "Failed to add records. Please check the record format."
 msgstr "Nepavyko pridėti įrašų. Patikrinkite įrašų formatą."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Content validation failed:"
 msgstr "Turinio tikrinimas nepavyko:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Invalid value for record type"
 msgstr "Neteisinga reikšmė įrašo tipui"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:604
+#: templates/modern/edit.html:57 templates/modern/edit.html:609
 msgid "Please provide all required information."
 msgstr "Pateikite visą reikalingą informaciją."
 
-#: templates/modern/edit.html:627 templates/modern/add_record.html:72
+#: templates/modern/edit.html:632 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Pridėti PTR"
 
-#: templates/modern/edit.html:630 templates/modern/add_record.html:75
+#: templates/modern/edit.html:635 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Pridėti A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:669
+#: templates/modern/edit.html:121 templates/modern/edit.html:674
 msgid "This record already exists"
 msgstr "Šis įrašas jau egzistuoja"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:681
+#: templates/modern/edit.html:133 templates/modern/edit.html:686
 msgid "Invalid priority"
 msgstr "Neteisingas prioritetas"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:688
+#: templates/modern/edit.html:140 templates/modern/edit.html:693
 msgid "Invalid TTL value"
 msgstr "Neteisinga TTL reikšmė"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:690
+#: templates/modern/edit.html:142 templates/modern/edit.html:695
 msgid "Provide TTL"
 msgstr "Pateikite TTL"
 
-#: templates/modern/edit.html:716 templates/modern/add_record.html:207
+#: templates/modern/edit.html:721 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11195,87 +11264,92 @@ msgstr ""
 msgid "Edit zone"
 msgstr "Redaguoti zoną"
 
-#: templates/default/edit.html:238 templates/modern/edit.html:238
+#: templates/default/edit.html:227 templates/modern/edit.html:227
+#, auto-english-fallback
+msgid "Metadata"
+msgstr "Metadata"
+
+#: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "Jokie įrašai neatitinka jūsų filtro kriterijų."
 
-#: templates/default/edit.html:246 templates/modern/edit.html:246
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "This zone does not have any records."
 msgstr "Ši zona neturi jokių įrašų."
 
-#: templates/default/edit.html:258 templates/modern/edit.html:258
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "Filter:"
 msgstr "Filtras:"
 
-#: templates/default/edit.html:264 templates/modern/edit.html:264
+#: templates/default/edit.html:269 templates/modern/edit.html:269
 msgid "Search by name or content"
 msgstr "Ieškoti pagal vardą arba turinį"
 
-#: templates/default/edit.html:270 templates/modern/edit.html:270
+#: templates/default/edit.html:275 templates/modern/edit.html:275
 msgid "All Types"
 msgstr "Visi tipai"
 
-#: templates/default/edit.html:280 templates/modern/edit.html:280
+#: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
 msgstr "Filtruoti pagal turinį"
 
-#: templates/default/edit.html:286 templates/modern/edit.html:286
+#: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
 msgstr "Taikyti"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "Showing"
 msgstr "Rodoma"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "of"
 msgstr "iš"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "total records"
 msgstr "iš viso įrašų"
 
-#: templates/default/edit.html:492 templates/modern/edit.html:492
+#: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
 msgstr "Redaguoti pasirinktus"
 
-#: templates/modern/edit.html:496 templates/modern/search.html:486
+#: templates/modern/edit.html:501 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Pašalinti įrašą(us)"
 
-#: templates/modern/edit.html:504 templates/modern/search.html:93
+#: templates/modern/edit.html:509 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentarai"
 
-#: templates/default/edit.html:534 templates/modern/edit.html:534
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Import"
 msgstr "Importuoti"
 
-#: templates/default/edit.html:551 templates/modern/edit.html:551
+#: templates/default/edit.html:556 templates/modern/edit.html:556
 msgid "Generate PTR"
 msgstr "Generuoti PTR"
 
-#: templates/modern/edit.html:730 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Zonos konfigūracija"
 
-#: templates/modern/edit.html:772 templates/modern/edit.html:801
+#: templates/modern/edit.html:777 templates/modern/edit.html:806
 msgid "Change"
 msgstr "Keisti"
 
-#: templates/modern/edit.html:765 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Master NS IP adresas"
 
-#: templates/default/edit.html:822 templates/modern/edit.html:822
+#: templates/default/edit.html:827 templates/modern/edit.html:827
 msgid "Manage DNSSEC"
 msgstr "Valdyti DNSSEC"
 
-#: templates/default/edit.html:829 templates/modern/edit.html:829
+#: templates/default/edit.html:834 templates/modern/edit.html:834
 msgid "Sign zone"
 msgstr "Pasirašyti zoną"
 
-#: templates/default/edit.html:833 templates/modern/edit.html:833
+#: templates/default/edit.html:838 templates/modern/edit.html:838
 msgid "Not signed"
 msgstr "Nepasirašyta"
 
@@ -11883,6 +11957,52 @@ msgstr "Ieškoti supermasterių..."
 #: templates/modern/list_supermasters.html:71
 msgid "There are no supermasters to show in this listing."
 msgstr "Šiame sąraše nėra supermasterių, kuriuos būtų galima rodyti."
+
+#: templates/modern/edit_zone_metadata.html:18
+#, auto-english-fallback
+msgid "Edit Metadata"
+msgstr "Edit Metadata"
+
+#: templates/modern/edit_zone_metadata.html:36
+#, auto-english-fallback
+msgid "Multiple values"
+msgstr "Multiple values"
+
+#: templates/modern/edit_zone_metadata.html:37
+msgid ""
+"For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
+"Each value is stored separately, one row per value."
+msgstr ""
+
+#: templates/modern/edit_zone_metadata.html:42
+#, auto-english-fallback
+msgid "Multi value"
+msgstr "Multi value"
+
+#: templates/modern/edit_zone_metadata.html:43
+#, auto-english-fallback
+msgid "Single value"
+msgstr "Single value"
+
+#: templates/modern/edit_zone_metadata.html:53
+#, auto-english-fallback
+msgid "Kind"
+msgstr "Kind"
+
+#: templates/modern/edit_zone_metadata.html:100
+#, auto-english-fallback
+msgid "Add metadata row"
+msgstr "Add metadata row"
+
+#: templates/modern/edit_zone_metadata.html:103
+#, auto-english-fallback
+msgid "Save metadata"
+msgstr "Save metadata"
+
+#: templates/modern/edit_zone_metadata.html:106
+#, auto-english-fallback
+msgid "Back to zone"
+msgstr "Back to zone"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
@@ -12544,10 +12664,6 @@ msgstr ""
 msgid "Active Email Templates"
 msgstr "Aktyvus el. pašto šablonai"
 
-#: templates/modern/email_previews.html:47
-msgid "Custom"
-msgstr "Pasirinktinis"
-
 #: templates/modern/email_previews.html:23
 msgid "Standard"
 msgstr "Standartinis"
@@ -12784,10 +12900,6 @@ msgstr "Baitai"
 msgid "Metric"
 msgstr "Metrika"
 
-#: templates/default/pdns_status.html:411 templates/modern/pdns_status.html:412
-msgid "Value"
-msgstr "Reikšmė"
-
 #: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
 msgid "No detailed metrics available."
 msgstr "Išsamios metrikos neprieinamos."
@@ -12858,7 +12970,8 @@ msgstr "Pridėti įrašą į zoną"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Nepavyko pridėti įrašo. Patikrinkite įrašo duomenis ir bandykite dar kartą."
+msgstr ""
+"Nepavyko pridėti įrašo. Patikrinkite įrašo duomenis ir bandykite dar kartą."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
@@ -14097,284 +14210,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
-
-# OBSOLETE: msgid "Server running"
-# OBSOLETE: msgstr "Serveris veikia"
-
-# OBSOLETE: msgid "Check PowerDNS server status"
-# OBSOLETE: msgstr "Patikrinti PowerDNS serverio būseną"
-
-# OBSOLETE: msgid "View Server Status"
-# OBSOLETE: msgstr "Peržiūrėti serverio būseną"
-
-# OBSOLETE: msgid "Server Status"
-# OBSOLETE: msgstr "Serverio būsena"
-
-# OBSOLETE: msgid "Edit your account details"
-# OBSOLETE: msgstr "Redaguoti paskyros duomenis"
-
-# OBSOLETE: msgid "Profile"
-# OBSOLETE: msgstr "Profilis"
-
-# OBSOLETE: msgid "Find zones and records"
-# OBSOLETE: msgstr "Rasti zonas ir įrašus"
-
-# OBSOLETE: msgid "Search zones"
-# OBSOLETE: msgstr "Ieškoti zonų"
-
-# OBSOLETE: msgid "Manage forward DNS zones"
-# OBSOLETE: msgstr "Valdyti tiesioginės DNS zonas"
-
-# OBSOLETE: msgid "List forward zones"
-# OBSOLETE: msgstr "Rodyti tiesioginės zonas"
-
-# OBSOLETE: msgid "Manage reverse DNS zones"
-# OBSOLETE: msgstr "Valdyti atvirkštinės DNS zonas"
-
-# OBSOLETE: msgid "List reverse zones"
-# OBSOLETE: msgstr "Rodyti atvirkštinės zonas"
-
-# OBSOLETE: msgid "Manage zone templates"
-# OBSOLETE: msgstr "Valdyti zonų šablonus"
-
-# OBSOLETE: msgid "Manage supermaster servers"
-# OBSOLETE: msgstr "Valdyti supermaster serverius"
-
-# OBSOLETE: msgid "List supermasters"
-# OBSOLETE: msgstr "Rodyti supermasterius"
-
-# OBSOLETE: msgid "Create new master zone"
-# OBSOLETE: msgstr "Sukurti naują master zoną"
-
-# OBSOLETE: msgid "Add Master"
-# OBSOLETE: msgstr "Pridėti Master"
-
-# OBSOLETE: msgid "Add new slave zone"
-# OBSOLETE: msgstr "Pridėti naują slave zoną"
-
-# OBSOLETE: msgid "Add Slave"
-# OBSOLETE: msgstr "Pridėti Slave"
-
-# OBSOLETE: msgid "Add new supermaster server"
-# OBSOLETE: msgstr "Pridėti naują supermaster serverį"
-
-# OBSOLETE: msgid "Register multiple domains at once"
-# OBSOLETE: msgstr "Registruoti keletą domenų vienu metu"
-
-# OBSOLETE: msgid "Bulk domain registration"
-# OBSOLETE: msgstr "Masinis domenų registravimas"
-
-# OBSOLETE: msgid "Registration"
-# OBSOLETE: msgstr "Registravimas"
-
-# OBSOLETE: msgid "Manage reverse DNS records"
-# OBSOLETE: msgstr "Valdyti atvirkštinės DNS įrašus"
-
-# OBSOLETE: msgid "View zone change history"
-# OBSOLETE: msgstr "Peržiūrėti zonų pakeitimų istoriją"
-
-# OBSOLETE: msgid "View zone logs"
-# OBSOLETE: msgstr "Peržiūrėti zonų žurnalus"
-
-# OBSOLETE: msgid "View user activity history"
-# OBSOLETE: msgstr "Peržiūrėti naudotojų veiklos istoriją"
-
-# OBSOLETE: msgid "View user logs"
-# OBSOLETE: msgstr "Peržiūrėti naudotojų žurnalus"
-
-# OBSOLETE: msgid "Update your account password"
-# OBSOLETE: msgstr "Atnaujinti paskyros slaptažodį"
-
-# OBSOLETE: msgid "Customize your interface settings"
-# OBSOLETE: msgstr "Pritaikykite savo sąsajos nustatymus"
-
-# OBSOLETE: msgid "User preferences"
-# OBSOLETE: msgstr "Vartotojo nuostatos"
-
-# OBSOLETE: msgid "Manage system users and access"
-# OBSOLETE: msgstr "Valdyti sistemos naudotojus ir prieigą"
-
-# OBSOLETE: msgid "Manage access templates"
-# OBSOLETE: msgstr "Valdyti prieigos šablonus"
-
-# OBSOLETE: msgid "End your session"
-# OBSOLETE: msgstr "Užbaigti seansą"
-
-# OBSOLETE: msgid "Manage API access keys"
-# OBSOLETE: msgstr "Valdyti API prieigos raktus"
-
-# OBSOLETE: msgid "Manage API Keys"
-# OBSOLETE: msgstr "Valdyti API raktus"
-
-# OBSOLETE: msgid "Check database integrity"
-# OBSOLETE: msgstr "Patikrinti duomenų bazės vientisumą"
-
-# OBSOLETE: msgid "Check Database"
-# OBSOLETE: msgstr "Patikrinti duomenų bazę"
-
-# OBSOLETE: msgid "Check DB"
-# OBSOLETE: msgstr "Patikrinti DB"
-
-# OBSOLETE: msgid "Search logs by domain"
-# OBSOLETE: msgstr "Ieškoti žurnalų pagal domeną"
-
-# OBSOLETE: msgid "Language"
-# OBSOLETE: msgstr "Kalba"
-
-# OBSOLETE: msgid "In use"
-# OBSOLETE: msgstr "Naudojama"
-
-# OBSOLETE: msgid "Search logs by user"
-# OBSOLETE: msgstr "Ieškoti žurnalų pagal naudotoją"
-
-# OBSOLETE: msgid "Search logs by group"
-# OBSOLETE: msgstr "Ieškoti žurnalų pagal grupę"
-
-# OBSOLETE: msgid "PowerDNS Server"
-# OBSOLETE: msgstr "PowerDNS serveris"
-
-# OBSOLETE: msgid "View Details"
-# OBSOLETE: msgstr "Peržiūrėti išsamią informaciją"
-
-# OBSOLETE: msgid "Add Master Zone"
-# OBSOLETE: msgstr "Pridėti Master zoną"
-
-# OBSOLETE: msgid "List Forward Zones"
-# OBSOLETE: msgstr "Parodyti tiesiogines zonas"
-
-# OBSOLETE: msgid "Search Zones"
-# OBSOLETE: msgstr "Ieškoti zonų"
-
-# OBSOLETE: msgid "List Reverse Zones"
-# OBSOLETE: msgstr "Parodyti atvirkštines zonas"
-
-# OBSOLETE: msgid "Add Slave Zone"
-# OBSOLETE: msgstr "Pridėti antrinę zoną"
-
-# OBSOLETE: msgid "List Zone Templates"
-# OBSOLETE: msgstr "Parodyti zonų šablonus"
-
-# OBSOLETE: msgid "Bulk Domain Registration"
-# OBSOLETE: msgstr "Masinė domenų registracija"
-
-# OBSOLETE: msgid "WHOIS lookup functionality is disabled."
-# OBSOLETE: msgstr "WHOIS paieškos funkcija išjungta."
-
-# OBSOLETE: msgid "RDAP lookup functionality is disabled."
-# OBSOLETE: msgstr "RDAP paieškos funkcija išjungta."
-
-# OBSOLETE: msgid "Slave"
-# OBSOLETE: msgstr "Pavaldusis"
-
-# OBSOLETE: msgid "Lookup domain WHOIS information"
-# OBSOLETE: msgstr "Ieškoti domeno WHOIS informacijos"
-
-# OBSOLETE: msgid "Lookup domain RDAP information"
-# OBSOLETE: msgstr "Ieškoti domeno RDAP informacijos"
-
-# OBSOLETE: msgid "Record Wizard"
-# OBSOLETE: msgstr "Įrašo vedlys"
-
-# OBSOLETE: msgid "Please enter a domain name to perform an RDAP lookup."
-# OBSOLETE: msgstr "Įveskite domeno vardą RDAP paieškai atlikti."
-
-# OBSOLETE: msgid "Toggle all"
-# OBSOLETE: msgstr "Perjungti visus"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create a config/settings.php file "
-# OBSOLETE: "manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Konfigūracijos failas nerastas. Naudokitės <a href=\"install/\">diegimo "
-# OBSOLETE: "programa</a> jo sukūrimui arba sukurkite config/settings.php failą "
-# OBSOLETE: "rankiniu būdu."
-
-# OBSOLETE: msgid "Invalid authentication provider"
-# OBSOLETE: msgstr "Neteisingas autentifikacijos tiekėjas"
-
-# OBSOLETE: msgid "Failed to sign zone. Check PowerDNS logs for details."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nepavyko pasirašyti zonos. Patikrinkite PowerDNS žurnalus dėl išsamesnės "
-# OBSOLETE: "informacijos."
-
-# OBSOLETE: msgid "Zone was created, but securing it with DNSSEC failed."
-# OBSOLETE: msgstr "Zona sukurta, bet jos apsauga su DNSSEC nepavyko."
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
-# OBSOLETE: "once."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Rastas dubliuojamas %s mechanizmas. Kiekvienas mechanizmo tipas turėtų "
-# OBSOLETE: "pasirodyti daugiausiai vieną kartą."
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IPv6 adresas turėtų naudoti mažąsias raides šešioliktainiams skaičiams."
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IPv6 adresas nėra kanoniškoje formoje (RFC 5952). Kanoniška forma: %s"
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IP adresas \"%s\" neteisingas. Turi būti teisingas IPv4 arba IPv6 adresas."
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "HTML žymės neleidžiamos turinio lauke."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "TXT įrašo eilutė viršija 255 baitus. TXT eilutės turi būti 255 baitų ar "
-# OBSOLETE: "mažiau. Ilgesniam turiniui padalinkite į kelias kabutėse esančias "
-# OBSOLETE: "eilutes, atskirtas tarpais."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR įrašas turi turėti arba regexp, arba pakeitimą (su \".\"), bet ne "
-# OBSOLETE: "abu."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR paslauga turi sekti formatą: [protokolas][+rs][+rs]... kur "
-# OBSOLETE: "protokolas ir rs prasideda raide ir turi tik raidinio skaitmeninius "
-# OBSOLETE: "simbolius (maks 32 simboliai kiekvienam)."
-
-# OBSOLETE: msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nustatykite standartinius įrašus, tokius kaip MX, TXT SPF ir CNAME www"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-# OBSOLETE: "[SERIAL] in record content"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Naudokite vietrženklius, tokius kaip [ZONE], [DOMAIN], [TLD], [NS1], "
-# OBSOLETE: "[HOSTMASTER] ir [SERIAL] įrašų turinyje"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-# OBSOLETE: "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "[DOMAIN] ir [TLD] vietrženkiai naudingi Microsoft 365 MX įrašams (pvz., "
-# OBSOLETE: "[DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-# OBSOLETE: msgid "LDAP users cannot have passwords managed through this interface"
-# OBSOLETE: msgstr "LDAP naudotojų slaptažodžiai negali būti valdomi per šią sąsają"
-
-# OBSOLETE: msgid "Select All Filtered"
-# OBSOLETE: msgstr "Pasirinkti visus filtruotus"
-
 
 

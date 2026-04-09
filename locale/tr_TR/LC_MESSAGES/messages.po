@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-07 23:53+0300\n"
+"POT-Creation-Date: 2026-04-09 10:38+0300\n"
 "PO-Revision-Date: 2025-06-05 21:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -336,7 +336,7 @@ msgstr ""
 "emin olun."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:641
+#: templates/modern/edit.html:93 templates/modern/edit.html:646
 msgid "Invalid hostname format"
 msgstr "Geçersiz sunucu adı formatı"
 
@@ -1674,6 +1674,59 @@ msgstr ""
 msgid "You do not have the permission to view supermasters."
 msgstr "Üst sunucuları görüntüleme yetkiniz yok."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:314
+#, auto-english-fallback
+msgid "You do not have the permission to edit zone metadata."
+msgstr "You do not have the permission to edit zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:341
+#, auto-english-fallback
+msgid "Zone metadata has been updated successfully."
+msgstr "Zone metadata has been updated successfully."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:346
+#, auto-english-fallback
+msgid "Failed to update zone metadata."
+msgstr "Failed to update zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:368
+#: templates/modern/edit_zone_metadata.html:24
+#, auto-english-fallback
+msgid "Edit Zone Metadata"
+msgstr "Edit Zone Metadata"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:558
+#, php-format
+msgid ""
+"Metadata kind %s accepts only a single value. Add only one row for this kind."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:646
+#: templates/modern/edit_zone_metadata.html:146
+msgid ""
+"Custom metadata kind stored directly in the PowerDNS domainmetadata table."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:654
+#: templates/modern/pdns_status.html:412
+msgid "Value"
+msgstr "Değer"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:692
+#: templates/modern/email_previews.html:47
+msgid "Custom"
+msgstr "Özel"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:697
+#, auto-english-fallback
+msgid "Multi"
+msgstr "Multi"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:698
+#, auto-english-fallback
+msgid "Single"
+msgstr "Single"
+
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
 msgstr "API özelliği sistem yapılandırmasında devre dışı."
@@ -1728,32 +1781,28 @@ msgstr "API anahtarı başarıyla %s."
 msgid "You do not have the permission to add records to this zone."
 msgstr "Bu alana kayıt ekleme yetkiniz bulunmuyor."
 
-#: lib/Application/Controller/BulkRecordAddController.php:117
+#: lib/Application/Controller/BulkRecordAddController.php:118
 msgid "Please provide at least one record."
 msgstr "Lütfen en az bir kayıt sağlayın."
 
-#: lib/Application/Controller/BulkRecordAddController.php:145
-msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Geçersiz format. En az şunlar bekleniyor: ad,tip,içerik"
-
-#: lib/Application/Controller/BulkRecordAddController.php:198
+#: lib/Application/Controller/BulkRecordAddController.php:175
 msgid "Invalid record type."
 msgstr "Geçersiz kayıt tipi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:235
+#: lib/Application/Controller/BulkRecordAddController.php:213
 msgid "Record could not be added."
 msgstr "Kayıt eklenemedi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:243
+#: lib/Application/Controller/BulkRecordAddController.php:221
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d kayıt başarıyla eklendi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:246
+#: lib/Application/Controller/BulkRecordAddController.php:224
 msgid "Some record(s) could not be added."
 msgstr "Bazı kayıtlar eklenemedi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:279
+#: lib/Application/Controller/BulkRecordAddController.php:257
 msgid "Zone ID is required."
 msgstr "Zon kimliği gereklidir."
 
@@ -2359,7 +2408,7 @@ msgstr "Bu sayfayı görüntülemek için yeterli izniniz yok."
 msgid "Reverse Zones"
 msgstr "Ters Zonlar"
 
-#: lib/Application/Controller/ListForwardZonesController.php:145
+#: lib/Application/Controller/ListForwardZonesController.php:144
 msgid "You do not have the permission to see any zones."
 msgstr "Hiçbir zonu görme izniniz yok."
 
@@ -2874,12 +2923,12 @@ msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr ""
 "DNSSEC anahtarı değiştirilirken bir hata oluştu. Lütfen tekrar deneyin."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Evet"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Hayır"
@@ -8580,6 +8629,21 @@ msgstr "Ayrıca, aşağıdaki uyarılar bulundu:"
 msgid "The following warnings were found:"
 msgstr "Aşağıdaki uyarılar bulundu:"
 
+#: lib/Domain/Service/BulkRecordParser.php:36
+#, auto-english-fallback
+msgid "Empty line."
+msgstr "Empty line."
+
+#: lib/Domain/Service/BulkRecordParser.php:42
+msgid "Invalid format. Expected at least: name,type,content"
+msgstr "Geçersiz format. En az şunlar bekleniyor: ad,tip,içerik"
+
+#: lib/Domain/Service/BulkRecordParser.php:88
+msgid ""
+"Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
+"name,SRV,target,weight,port,ttl"
+msgstr ""
+
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr "Bilinmeyen veritabanı tipi."
@@ -9015,7 +9079,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Kaydı güncelle"
 
-#: templates/modern/edit.html:524 templates/modern/users.html:219
+#: templates/modern/edit.html:529 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Sıfırla"
 
@@ -9158,7 +9222,7 @@ msgstr "Hesap"
 msgid "Select the account that will own this supermaster"
 msgstr "Bu süper master'ın sahibi olacak hesabı seçin"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:521
+#: templates/modern/edit.html:190 templates/modern/edit.html:526
 msgid "Save changes"
 msgstr "Değişiklikleri kaydet"
 
@@ -9607,7 +9671,7 @@ msgstr "Tercihler"
 msgid "Logout"
 msgstr "Çıkış"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:509
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
 msgid "Edit comment"
 msgstr "Yorumu düzenle"
 
@@ -9755,7 +9819,8 @@ msgstr "Günlükleri dışa aktar"
 
 #: templates/modern/list_log_groups.html:128
 msgid "Export filtered log entries. Current filters will be applied."
-msgstr "Filtrelenmiş günlük girişlerini dışa aktar. Mevcut filtreler uygulanacaktır."
+msgstr ""
+"Filtrelenmiş günlük girişlerini dışa aktar. Mevcut filtreler uygulanacaktır."
 
 #: templates/modern/list_log_groups.html:129
 msgid "records to export"
@@ -9874,6 +9939,11 @@ msgstr "Yaygın Kayıtlar"
 msgid "Advanced Records"
 msgstr "Gelişmiş Kayıtlar"
 
+#: templates/default/bulk_record_add.html:119
+#, auto-english-fallback
+msgid "legacy"
+msgstr "legacy"
+
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
 msgstr "DNS Sihirbazı"
@@ -9954,7 +10024,7 @@ msgstr "Evet, bu kullanıcıyı sil"
 msgid "No, keep this user"
 msgstr "Hayır, bu kullanıcıyı tut"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:227
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
 msgstr "Şablon Olarak Kaydet"
 
@@ -11095,72 +11165,72 @@ msgstr "Anahtarı kaybederseniz, yeniden oluşturmanız gerekecektir."
 msgid "Edit"
 msgstr "Düzenle"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:572
+#: templates/modern/edit.html:25 templates/modern/edit.html:577
 msgid "Add new record"
 msgstr "Yeni kayıt ekle"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:576
+#: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr ""
 "DMARC, SPF, DKIM, CAA, TLSA ve SRV kayıtları için yönlendirmeli sihirbazlar"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:582
+#: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
 msgstr "Çoklu kayıt kipi"
 
-#: templates/modern/edit.html:530 templates/modern/edit.html:585
+#: templates/modern/edit.html:535 templates/modern/edit.html:590
 msgid "Bulk add"
 msgstr "Toplu ekleme"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "Failed to add"
 msgstr "Ekleme başarısız"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "record(s). Please check the record format."
 msgstr "kayıt(lar). Lütfen kayıt formatını kontrol edin."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:599
+#: templates/modern/edit.html:52 templates/modern/edit.html:604
 msgid "Failed to add records. Please check the record format."
 msgstr "Kayıt ekleme başarısız. Lütfen kayıt formatını kontrol edin."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Content validation failed:"
 msgstr "İçerik doğrulama başarısız:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Invalid value for record type"
 msgstr "Kayıt tipi için geçersiz değer"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:604
+#: templates/modern/edit.html:57 templates/modern/edit.html:609
 msgid "Please provide all required information."
 msgstr "Lütfen tüm gerekli bilgileri sağlayın."
 
-#: templates/modern/edit.html:627 templates/modern/add_record.html:72
+#: templates/modern/edit.html:632 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "PTR Ekle"
 
-#: templates/modern/edit.html:630 templates/modern/add_record.html:75
+#: templates/modern/edit.html:635 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "A/AAAA Ekle"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:669
+#: templates/modern/edit.html:121 templates/modern/edit.html:674
 msgid "This record already exists"
 msgstr "Bu kayıt zaten mevcut"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:681
+#: templates/modern/edit.html:133 templates/modern/edit.html:686
 msgid "Invalid priority"
 msgstr "Geçersiz öncelik"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:688
+#: templates/modern/edit.html:140 templates/modern/edit.html:693
 msgid "Invalid TTL value"
 msgstr "Geçersiz TTL değeri"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:690
+#: templates/modern/edit.html:142 templates/modern/edit.html:695
 msgid "Provide TTL"
 msgstr "TTL sağlayın"
 
-#: templates/modern/edit.html:716 templates/modern/add_record.html:207
+#: templates/modern/edit.html:721 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11172,87 +11242,92 @@ msgstr ""
 msgid "Edit zone"
 msgstr "Zonu düzenle"
 
-#: templates/default/edit.html:238 templates/modern/edit.html:238
+#: templates/default/edit.html:227 templates/modern/edit.html:227
+#, auto-english-fallback
+msgid "Metadata"
+msgstr "Metadata"
+
+#: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "Hiçbir kayıt filtre kriterlerinizle eşleşmiyor."
 
-#: templates/default/edit.html:246 templates/modern/edit.html:246
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "This zone does not have any records."
 msgstr "Bu zonun hiçbir kaydı bulunmuyor."
 
-#: templates/default/edit.html:258 templates/modern/edit.html:258
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "Filter:"
 msgstr "Filtre:"
 
-#: templates/default/edit.html:264 templates/modern/edit.html:264
+#: templates/default/edit.html:269 templates/modern/edit.html:269
 msgid "Search by name or content"
 msgstr "Ad veya içerikle ara"
 
-#: templates/default/edit.html:270 templates/modern/edit.html:270
+#: templates/default/edit.html:275 templates/modern/edit.html:275
 msgid "All Types"
 msgstr "Tüm Tipler"
 
-#: templates/default/edit.html:280 templates/modern/edit.html:280
+#: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
 msgstr "İçeriğe göre filtrele"
 
-#: templates/default/edit.html:286 templates/modern/edit.html:286
+#: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
 msgstr "Uygula"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "Showing"
 msgstr "Gösteriliyor"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "of"
 msgstr "/"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "total records"
 msgstr "toplam kayıt"
 
-#: templates/default/edit.html:492 templates/modern/edit.html:492
+#: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
 msgstr "Seçileni düzenle"
 
-#: templates/modern/edit.html:496 templates/modern/search.html:486
+#: templates/modern/edit.html:501 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Kayıt(ları) sil"
 
-#: templates/modern/edit.html:504 templates/modern/search.html:93
+#: templates/modern/edit.html:509 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Yorumlar"
 
-#: templates/default/edit.html:534 templates/modern/edit.html:534
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Import"
 msgstr "İçe Aktar"
 
-#: templates/default/edit.html:551 templates/modern/edit.html:551
+#: templates/default/edit.html:556 templates/modern/edit.html:556
 msgid "Generate PTR"
 msgstr "PTR Oluştur"
 
-#: templates/modern/edit.html:730 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Bölge Yapılandırması"
 
-#: templates/modern/edit.html:772 templates/modern/edit.html:801
+#: templates/modern/edit.html:777 templates/modern/edit.html:806
 msgid "Change"
 msgstr "Değiştir"
 
-#: templates/modern/edit.html:765 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Ana NS'nin IP adresi"
 
-#: templates/default/edit.html:822 templates/modern/edit.html:822
+#: templates/default/edit.html:827 templates/modern/edit.html:827
 msgid "Manage DNSSEC"
 msgstr "DNSSEC Yönet"
 
-#: templates/default/edit.html:829 templates/modern/edit.html:829
+#: templates/default/edit.html:834 templates/modern/edit.html:834
 msgid "Sign zone"
 msgstr "Zonu imzala"
 
-#: templates/default/edit.html:833 templates/modern/edit.html:833
+#: templates/default/edit.html:838 templates/modern/edit.html:838
 msgid "Not signed"
 msgstr "İmzalanmamış"
 
@@ -11860,6 +11935,52 @@ msgstr "Supermaster ara..."
 #: templates/modern/list_supermasters.html:71
 msgid "There are no supermasters to show in this listing."
 msgstr "Bu listede gösterilecek supermaster bulunmuyor."
+
+#: templates/modern/edit_zone_metadata.html:18
+#, auto-english-fallback
+msgid "Edit Metadata"
+msgstr "Edit Metadata"
+
+#: templates/modern/edit_zone_metadata.html:36
+#, auto-english-fallback
+msgid "Multiple values"
+msgstr "Multiple values"
+
+#: templates/modern/edit_zone_metadata.html:37
+msgid ""
+"For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
+"Each value is stored separately, one row per value."
+msgstr ""
+
+#: templates/modern/edit_zone_metadata.html:42
+#, auto-english-fallback
+msgid "Multi value"
+msgstr "Multi value"
+
+#: templates/modern/edit_zone_metadata.html:43
+#, auto-english-fallback
+msgid "Single value"
+msgstr "Single value"
+
+#: templates/modern/edit_zone_metadata.html:53
+#, auto-english-fallback
+msgid "Kind"
+msgstr "Kind"
+
+#: templates/modern/edit_zone_metadata.html:100
+#, auto-english-fallback
+msgid "Add metadata row"
+msgstr "Add metadata row"
+
+#: templates/modern/edit_zone_metadata.html:103
+#, auto-english-fallback
+msgid "Save metadata"
+msgstr "Save metadata"
+
+#: templates/modern/edit_zone_metadata.html:106
+#, auto-english-fallback
+msgid "Back to zone"
+msgstr "Back to zone"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
@@ -12524,10 +12645,6 @@ msgstr ""
 msgid "Active Email Templates"
 msgstr "Aktif E-posta Şablonları"
 
-#: templates/modern/email_previews.html:47
-msgid "Custom"
-msgstr "Özel"
-
 #: templates/modern/email_previews.html:23
 msgid "Standard"
 msgstr "Standart"
@@ -12764,10 +12881,6 @@ msgstr "Bayt"
 #: templates/default/pdns_status.html:410 templates/modern/pdns_status.html:411
 msgid "Metric"
 msgstr "Metrik"
-
-#: templates/default/pdns_status.html:411 templates/modern/pdns_status.html:412
-msgid "Value"
-msgstr "Değer"
 
 #: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
 msgid "No detailed metrics available."
@@ -14071,189 +14184,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS veritabanına bağlanılamıyor \"%s\": %s"
-
-# OBSOLETE: msgid "Server running"
-# OBSOLETE: msgstr "Sunucu çalışıyor"
-
-# OBSOLETE: msgid "Check PowerDNS server status"
-# OBSOLETE: msgstr "PowerDNS sunucu durumunu kontrol et"
-
-# OBSOLETE: msgid "View Server Status"
-# OBSOLETE: msgstr "Sunucu Durumunu Görüntüle"
-
-# OBSOLETE: msgid "Server Status"
-# OBSOLETE: msgstr "Sunucu Durumu"
-
-# OBSOLETE: msgid "Edit your account details"
-# OBSOLETE: msgstr "Hesap detaylarınızı düzenleyin"
-
-# OBSOLETE: msgid "Profile"
-# OBSOLETE: msgstr "Profil"
-
-# OBSOLETE: msgid "Find zones and records"
-# OBSOLETE: msgstr "Zonları ve kayıtları bul"
-
-# OBSOLETE: msgid "Search zones"
-# OBSOLETE: msgstr "Zonları ara"
-
-# OBSOLETE: msgid "Manage forward DNS zones"
-# OBSOLETE: msgstr "Düz DNS zonlarını yönet"
-
-# OBSOLETE: msgid "List forward zones"
-# OBSOLETE: msgstr "Düz zonları listele"
-
-# OBSOLETE: msgid "Manage reverse DNS zones"
-# OBSOLETE: msgstr "Ters DNS zonlarını yönet"
-
-# OBSOLETE: msgid "List reverse zones"
-# OBSOLETE: msgstr "Ters zonları listele"
-
-# OBSOLETE: msgid "Manage zone templates"
-# OBSOLETE: msgstr "Zon şablonlarını yönet"
-
-# OBSOLETE: msgid "Manage supermaster servers"
-# OBSOLETE: msgstr "Süper master sunucularını yönet"
-
-# OBSOLETE: msgid "List supermasters"
-# OBSOLETE: msgstr "Süper master'ları listele"
-
-# OBSOLETE: msgid "Create new master zone"
-# OBSOLETE: msgstr "Yeni master zon oluştur"
-
-# OBSOLETE: msgid "Add Master"
-# OBSOLETE: msgstr "Master Ekle"
-
-# OBSOLETE: msgid "Add new slave zone"
-# OBSOLETE: msgstr "Yeni slave zon ekle"
-
-# OBSOLETE: msgid "Add Slave"
-# OBSOLETE: msgstr "Slave Ekle"
-
-# OBSOLETE: msgid "Add new supermaster server"
-# OBSOLETE: msgstr "Yeni süper master sunucu ekle"
-
-# OBSOLETE: msgid "Register multiple domains at once"
-# OBSOLETE: msgstr "Birden fazla domain'ı aynı anda kaydet"
-
-# OBSOLETE: msgid "Bulk domain registration"
-# OBSOLETE: msgstr "Toplu domain kaydı"
-
-# OBSOLETE: msgid "Registration"
-# OBSOLETE: msgstr "Kayıt"
-
-# OBSOLETE: msgid "Manage reverse DNS records"
-# OBSOLETE: msgstr "Ters DNS kayıtlarını yönet"
-
-# OBSOLETE: msgid "View zone change history"
-# OBSOLETE: msgstr "Zon değişiklik geçmişini görüntüle"
-
-# OBSOLETE: msgid "View zone logs"
-# OBSOLETE: msgstr "Zon kayıtlarını görüntüle"
-
-# OBSOLETE: msgid "View user activity history"
-# OBSOLETE: msgstr "Kullanıcı etkinlik geçmişini görüntüle"
-
-# OBSOLETE: msgid "View user logs"
-# OBSOLETE: msgstr "Kullanıcı kayıtlarını görüntüle"
-
-# OBSOLETE: msgid "Update your account password"
-# OBSOLETE: msgstr "Hesap şifrenizi güncelleyin"
-
-# OBSOLETE: msgid "Customize your interface settings"
-# OBSOLETE: msgstr "Arayüz ayarlarınızı özelleştirin"
-
-# OBSOLETE: msgid "User preferences"
-# OBSOLETE: msgstr "Kullanıcı tercihleri"
-
-# OBSOLETE: msgid "Manage system users and access"
-# OBSOLETE: msgstr "Sistem kullanıcılarını ve erişimi yönet"
-
-# OBSOLETE: msgid "Manage access templates"
-# OBSOLETE: msgstr "Erişim şablonlarını yönet"
-
-# OBSOLETE: msgid "End your session"
-# OBSOLETE: msgstr "Oturumunuzu sonlandırın"
-
-# OBSOLETE: msgid "Manage API access keys"
-# OBSOLETE: msgstr "API erişim anahtarlarını yönet"
-
-# OBSOLETE: msgid "Manage API Keys"
-# OBSOLETE: msgstr "API Anahtarlarını Yönet"
-
-# OBSOLETE: msgid "Check database integrity"
-# OBSOLETE: msgstr "Veritabanı bütünlüğünü kontrol et"
-
-# OBSOLETE: msgid "Check Database"
-# OBSOLETE: msgstr "Veritabanını Kontrol Et"
-
-# OBSOLETE: msgid "Check DB"
-# OBSOLETE: msgstr "VT Kontrol"
-
-# OBSOLETE: msgid "Search logs by domain"
-# OBSOLETE: msgstr "Domain'e göre kayıtları ara"
-
-# OBSOLETE: msgid "Language"
-# OBSOLETE: msgstr "Dil"
-
-# OBSOLETE: msgid "In use"
-# OBSOLETE: msgstr "Kullanımda"
-
-# OBSOLETE: msgid "Search logs by user"
-# OBSOLETE: msgstr "Kullanıcıya göre log ara"
-
-# OBSOLETE: msgid "Search logs by group"
-# OBSOLETE: msgstr "Gruba göre günlük ara"
-
-# OBSOLETE: msgid "PowerDNS Server"
-# OBSOLETE: msgstr "PowerDNS Sunucusu"
-
-# OBSOLETE: msgid "View Details"
-# OBSOLETE: msgstr "Detayları Görüntüle"
-
-# OBSOLETE: msgid "Add Master Zone"
-# OBSOLETE: msgstr "Master Zon Ekle"
-
-# OBSOLETE: msgid "List Forward Zones"
-# OBSOLETE: msgstr "İleri Zonları Listele"
-
-# OBSOLETE: msgid "Search Zones"
-# OBSOLETE: msgstr "Zon Ara"
-
-# OBSOLETE: msgid "List Reverse Zones"
-# OBSOLETE: msgstr "Ters Zonları Listele"
-
-# OBSOLETE: msgid "Add Slave Zone"
-# OBSOLETE: msgstr "Slave Zon Ekle"
-
-# OBSOLETE: msgid "List Zone Templates"
-# OBSOLETE: msgstr "Zon Şablonlarını Listele"
-
-# OBSOLETE: msgid "Bulk Domain Registration"
-# OBSOLETE: msgstr "Toplu Domain Kayıt"
-
-# OBSOLETE: msgid "WHOIS lookup functionality is disabled."
-# OBSOLETE: msgstr "WHOIS sorgulama özelliği kapalı."
-
-# OBSOLETE: msgid "RDAP lookup functionality is disabled."
-# OBSOLETE: msgstr "RDAP sorgulama özelliği kapalı."
-
-# OBSOLETE: msgid "Slave"
-# OBSOLETE: msgstr "Bağımlı"
-
-# OBSOLETE: msgid "Lookup domain WHOIS information"
-# OBSOLETE: msgstr "Domain WHOIS bilgilerini ara"
-
-# OBSOLETE: msgid "Lookup domain RDAP information"
-# OBSOLETE: msgstr "Domain RDAP bilgilerini ara"
-
-# OBSOLETE: msgid "Record Wizard"
-# OBSOLETE: msgstr "Kayıt Sihirbazı"
-
-# OBSOLETE: msgid "Please enter a domain name to perform an RDAP lookup."
-# OBSOLETE: msgstr "RDAP sorgusu yapmak için lütfen bir domain adı girin."
-
-# OBSOLETE: msgid "Toggle all"
-# OBSOLETE: msgstr "Tümünü değiştir"
-
 
 

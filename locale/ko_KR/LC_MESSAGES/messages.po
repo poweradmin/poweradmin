@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-07 23:53+0300\n"
+"POT-Creation-Date: 2026-04-09 10:38+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -326,7 +326,7 @@ msgstr ""
 "전체 인증서 데이터가 너무 짧습니다. 완전한 인증서를 제공했는지 확인하세요."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:641
+#: templates/modern/edit.html:93 templates/modern/edit.html:646
 msgid "Invalid hostname format"
 msgstr "유효하지 않은 호스트 이름 형식"
 
@@ -1648,6 +1648,59 @@ msgstr "복구 코드가 재생성되었습니다. 안전한 곳에 저장하십
 msgid "You do not have the permission to view supermasters."
 msgstr "슈퍼마스터를 볼 권한이 없습니다."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:314
+#, auto-english-fallback
+msgid "You do not have the permission to edit zone metadata."
+msgstr "You do not have the permission to edit zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:341
+#, auto-english-fallback
+msgid "Zone metadata has been updated successfully."
+msgstr "Zone metadata has been updated successfully."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:346
+#, auto-english-fallback
+msgid "Failed to update zone metadata."
+msgstr "Failed to update zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:368
+#: templates/modern/edit_zone_metadata.html:24
+#, auto-english-fallback
+msgid "Edit Zone Metadata"
+msgstr "Edit Zone Metadata"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:558
+#, php-format
+msgid ""
+"Metadata kind %s accepts only a single value. Add only one row for this kind."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:646
+#: templates/modern/edit_zone_metadata.html:146
+msgid ""
+"Custom metadata kind stored directly in the PowerDNS domainmetadata table."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:654
+#: templates/modern/pdns_status.html:412
+msgid "Value"
+msgstr "값"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:692
+#: templates/modern/email_previews.html:47
+msgid "Custom"
+msgstr "사용자 지정"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:697
+#, auto-english-fallback
+msgid "Multi"
+msgstr "Multi"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:698
+#, auto-english-fallback
+msgid "Single"
+msgstr "Single"
+
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
 msgstr "시스템 구성에서 API 기능이 비활성화되어 있습니다."
@@ -1702,32 +1755,28 @@ msgstr "API 키가 성공적으로 %s되었습니다."
 msgid "You do not have the permission to add records to this zone."
 msgstr "이 존에 레코드를 추가할 권한이 없습니다."
 
-#: lib/Application/Controller/BulkRecordAddController.php:117
+#: lib/Application/Controller/BulkRecordAddController.php:118
 msgid "Please provide at least one record."
 msgstr "최소 하나의 레코드를 제공하십시오."
 
-#: lib/Application/Controller/BulkRecordAddController.php:145
-msgid "Invalid format. Expected at least: name,type,content"
-msgstr "유효하지 않은 형식입니다. 최소한 이름,유형,내용이 필요합니다."
-
-#: lib/Application/Controller/BulkRecordAddController.php:198
+#: lib/Application/Controller/BulkRecordAddController.php:175
 msgid "Invalid record type."
 msgstr "유효하지 않은 레코드 유형입니다."
 
-#: lib/Application/Controller/BulkRecordAddController.php:235
+#: lib/Application/Controller/BulkRecordAddController.php:213
 msgid "Record could not be added."
 msgstr "레코드를 추가할 수 없습니다."
 
-#: lib/Application/Controller/BulkRecordAddController.php:243
+#: lib/Application/Controller/BulkRecordAddController.php:221
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d개의 레코드가 성공적으로 추가되었습니다."
 
-#: lib/Application/Controller/BulkRecordAddController.php:246
+#: lib/Application/Controller/BulkRecordAddController.php:224
 msgid "Some record(s) could not be added."
 msgstr "일부 레코드를 추가할 수 없습니다."
 
-#: lib/Application/Controller/BulkRecordAddController.php:279
+#: lib/Application/Controller/BulkRecordAddController.php:257
 msgid "Zone ID is required."
 msgstr "존 ID가 필요합니다."
 
@@ -2334,7 +2383,7 @@ msgstr "이 페이지를 볼 수 있는 충분한 권한이 없습니다."
 msgid "Reverse Zones"
 msgstr "캐시 항목을 검색할 수 없습니다."
 
-#: lib/Application/Controller/ListForwardZonesController.php:145
+#: lib/Application/Controller/ListForwardZonesController.php:144
 msgid "You do not have the permission to see any zones."
 msgstr "존을 볼 권한이 없습니다."
 
@@ -2841,12 +2890,12 @@ msgstr "존 키를 활성화하지 못했습니다."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "DNSSEC 키를 전환하는 중 오류가 발생했습니다. 다시 시도하세요."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "예"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "아니오"
@@ -7926,6 +7975,21 @@ msgstr "복원 작업을 삭제할 수 없습니다."
 msgid "The following warnings were found:"
 msgstr "예약 작업을 생성할 수 없습니다."
 
+#: lib/Domain/Service/BulkRecordParser.php:36
+#, auto-english-fallback
+msgid "Empty line."
+msgstr "Empty line."
+
+#: lib/Domain/Service/BulkRecordParser.php:42
+msgid "Invalid format. Expected at least: name,type,content"
+msgstr "유효하지 않은 형식입니다. 최소한 이름,유형,내용이 필요합니다."
+
+#: lib/Domain/Service/BulkRecordParser.php:88
+msgid ""
+"Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
+"name,SRV,target,weight,port,ttl"
+msgstr ""
+
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr "예약 작업을 시작할 수 없습니다."
@@ -8346,7 +8410,7 @@ msgstr "저장소를 찾을 수 없습니다."
 msgid "Update record"
 msgstr "모델을 찾을 수 없습니다."
 
-#: templates/modern/edit.html:524 templates/modern/users.html:219
+#: templates/modern/edit.html:529 templates/modern/users.html:219
 msgid "Reset"
 msgstr "엔터티를 찾을 수 없습니다."
 
@@ -8488,7 +8552,7 @@ msgstr "컴포지트를 찾을 수 없습니다."
 msgid "Select the account that will own this supermaster"
 msgstr "데코레이터를 찾을 수 없습니다."
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:521
+#: templates/modern/edit.html:190 templates/modern/edit.html:526
 msgid "Save changes"
 msgstr "파사드를 찾을 수 없습니다."
 
@@ -8925,7 +8989,7 @@ msgstr "채널을 생성할 수 없습니다."
 msgid "Logout"
 msgstr "샤드에 연결할 수 없습니다."
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:509
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
 msgid "Edit comment"
 msgstr "뷰를 새로고침할 수 없습니다."
 
@@ -9186,6 +9250,11 @@ msgstr "일반 레코드"
 msgid "Advanced Records"
 msgstr "고급 레코드"
 
+#: templates/default/bulk_record_add.html:119
+#, auto-english-fallback
+msgid "legacy"
+msgstr "legacy"
+
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
 msgstr "DNS 마법사"
@@ -9265,7 +9334,7 @@ msgstr "네, 이 사용자를 삭제합니다"
 msgid "No, keep this user"
 msgstr "아니요, 이 사용자를 유지합니다"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:227
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
 msgstr "템플릿으로 저장"
 
@@ -10379,71 +10448,71 @@ msgstr "키를 분실한 경우 재생성해야 합니다."
 msgid "Edit"
 msgstr "버전 충돌입니다."
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:572
+#: templates/modern/edit.html:25 templates/modern/edit.html:577
 msgid "Add new record"
 msgstr "새 레코드 추가"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:576
+#: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "DMARC, SPF, DKIM, CAA, TLSA, SRV 레코드에 대한 가이드 마법사"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:582
+#: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
 msgstr "다중 레코드 모드"
 
-#: templates/modern/edit.html:530 templates/modern/edit.html:585
+#: templates/modern/edit.html:535 templates/modern/edit.html:590
 msgid "Bulk add"
 msgstr "일괄 추가"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "Failed to add"
 msgstr "추가 실패"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "record(s). Please check the record format."
 msgstr "레코드. 레코드 형식을 확인하세요."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:599
+#: templates/modern/edit.html:52 templates/modern/edit.html:604
 msgid "Failed to add records. Please check the record format."
 msgstr "레코드를 추가하지 못했습니다. 레코드 형식을 확인하세요."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Content validation failed:"
 msgstr "콘텐츠 검증 실패:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Invalid value for record type"
 msgstr "레코드 유형에 대한 값이 올바르지 않습니다"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:604
+#: templates/modern/edit.html:57 templates/modern/edit.html:609
 msgid "Please provide all required information."
 msgstr "모든 필수 정보를 입력하세요."
 
-#: templates/modern/edit.html:627 templates/modern/add_record.html:72
+#: templates/modern/edit.html:632 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "PTR 추가"
 
-#: templates/modern/edit.html:630 templates/modern/add_record.html:75
+#: templates/modern/edit.html:635 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "A/AAAA 추가"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:669
+#: templates/modern/edit.html:121 templates/modern/edit.html:674
 msgid "This record already exists"
 msgstr "이 레코드는 이미 존재합니다"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:681
+#: templates/modern/edit.html:133 templates/modern/edit.html:686
 msgid "Invalid priority"
 msgstr "우선순위가 올바르지 않습니다"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:688
+#: templates/modern/edit.html:140 templates/modern/edit.html:693
 msgid "Invalid TTL value"
 msgstr "TTL 값이 올바르지 않습니다"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:690
+#: templates/modern/edit.html:142 templates/modern/edit.html:695
 msgid "Provide TTL"
 msgstr "TTL을 입력하세요"
 
-#: templates/modern/edit.html:716 templates/modern/add_record.html:207
+#: templates/modern/edit.html:721 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -10455,87 +10524,92 @@ msgstr ""
 msgid "Edit zone"
 msgstr "존 편집"
 
-#: templates/default/edit.html:238 templates/modern/edit.html:238
+#: templates/default/edit.html:227 templates/modern/edit.html:227
+#, auto-english-fallback
+msgid "Metadata"
+msgstr "Metadata"
+
+#: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "필터 조건과 일치하는 레코드가 없습니다."
 
-#: templates/default/edit.html:246 templates/modern/edit.html:246
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "This zone does not have any records."
 msgstr "이 존에는 레코드가 없습니다."
 
-#: templates/default/edit.html:258 templates/modern/edit.html:258
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "Filter:"
 msgstr "필터:"
 
-#: templates/default/edit.html:264 templates/modern/edit.html:264
+#: templates/default/edit.html:269 templates/modern/edit.html:269
 msgid "Search by name or content"
 msgstr "이름 또는 콘텐츠로 검색"
 
-#: templates/default/edit.html:270 templates/modern/edit.html:270
+#: templates/default/edit.html:275 templates/modern/edit.html:275
 msgid "All Types"
 msgstr "모든 유형"
 
-#: templates/default/edit.html:280 templates/modern/edit.html:280
+#: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
 msgstr "콘텐츠로 필터"
 
-#: templates/default/edit.html:286 templates/modern/edit.html:286
+#: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
 msgstr "적용"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "Showing"
 msgstr "표시 중"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "of"
 msgstr "/"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "total records"
 msgstr "전체 레코드"
 
-#: templates/default/edit.html:492 templates/modern/edit.html:492
+#: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
 msgstr "선택한 항목 편집"
 
-#: templates/modern/edit.html:496 templates/modern/search.html:486
+#: templates/modern/edit.html:501 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "레코드 삭제"
 
-#: templates/modern/edit.html:504 templates/modern/search.html:93
+#: templates/modern/edit.html:509 templates/modern/search.html:93
 msgid "Comments"
 msgstr "주석"
 
-#: templates/default/edit.html:534 templates/modern/edit.html:534
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Import"
 msgstr "가져오기"
 
-#: templates/default/edit.html:551 templates/modern/edit.html:551
+#: templates/default/edit.html:556 templates/modern/edit.html:556
 msgid "Generate PTR"
 msgstr "PTR 생성"
 
-#: templates/modern/edit.html:730 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "존 구성"
 
-#: templates/modern/edit.html:772 templates/modern/edit.html:801
+#: templates/modern/edit.html:777 templates/modern/edit.html:806
 msgid "Change"
 msgstr "변경"
 
-#: templates/modern/edit.html:765 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "마스터 NS의 IP 주소"
 
-#: templates/default/edit.html:822 templates/modern/edit.html:822
+#: templates/default/edit.html:827 templates/modern/edit.html:827
 msgid "Manage DNSSEC"
 msgstr "DNSSEC 관리"
 
-#: templates/default/edit.html:829 templates/modern/edit.html:829
+#: templates/default/edit.html:834 templates/modern/edit.html:834
 msgid "Sign zone"
 msgstr "존 서명"
 
-#: templates/default/edit.html:833 templates/modern/edit.html:833
+#: templates/default/edit.html:838 templates/modern/edit.html:838
 msgid "Not signed"
 msgstr "서명되지 않음"
 
@@ -11135,6 +11209,52 @@ msgstr "슈퍼마스터 검색..."
 #: templates/modern/list_supermasters.html:71
 msgid "There are no supermasters to show in this listing."
 msgstr "이 목록에 표시할 supermaster가 없습니다."
+
+#: templates/modern/edit_zone_metadata.html:18
+#, auto-english-fallback
+msgid "Edit Metadata"
+msgstr "Edit Metadata"
+
+#: templates/modern/edit_zone_metadata.html:36
+#, auto-english-fallback
+msgid "Multiple values"
+msgstr "Multiple values"
+
+#: templates/modern/edit_zone_metadata.html:37
+msgid ""
+"For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
+"Each value is stored separately, one row per value."
+msgstr ""
+
+#: templates/modern/edit_zone_metadata.html:42
+#, auto-english-fallback
+msgid "Multi value"
+msgstr "Multi value"
+
+#: templates/modern/edit_zone_metadata.html:43
+#, auto-english-fallback
+msgid "Single value"
+msgstr "Single value"
+
+#: templates/modern/edit_zone_metadata.html:53
+#, auto-english-fallback
+msgid "Kind"
+msgstr "Kind"
+
+#: templates/modern/edit_zone_metadata.html:100
+#, auto-english-fallback
+msgid "Add metadata row"
+msgstr "Add metadata row"
+
+#: templates/modern/edit_zone_metadata.html:103
+#, auto-english-fallback
+msgid "Save metadata"
+msgstr "Save metadata"
+
+#: templates/modern/edit_zone_metadata.html:106
+#, auto-english-fallback
+msgid "Back to zone"
+msgstr "Back to zone"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
@@ -11786,10 +11906,6 @@ msgstr ""
 msgid "Active Email Templates"
 msgstr "활성 이메일 템플릿"
 
-#: templates/modern/email_previews.html:47
-msgid "Custom"
-msgstr "사용자 지정"
-
 #: templates/modern/email_previews.html:23
 msgid "Standard"
 msgstr "표준"
@@ -12021,10 +12137,6 @@ msgstr "바이트"
 #: templates/default/pdns_status.html:410 templates/modern/pdns_status.html:411
 msgid "Metric"
 msgstr "메트릭"
-
-#: templates/default/pdns_status.html:411 templates/modern/pdns_status.html:412
-msgid "Value"
-msgstr "값"
 
 #: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
 msgid "No detailed metrics available."
@@ -13301,189 +13413,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS 데이터베이스 \"%s\"에 연결할 수 없습니다: %s"
-
-# OBSOLETE: msgid "Server running"
-# OBSOLETE: msgstr "코드를 트랜스파일할 수 없습니다."
-
-# OBSOLETE: msgid "Check PowerDNS server status"
-# OBSOLETE: msgstr "코드를 컴파일할 수 없습니다."
-
-# OBSOLETE: msgid "View Server Status"
-# OBSOLETE: msgstr "코드를 디컴파일할 수 없습니다."
-
-# OBSOLETE: msgid "Server Status"
-# OBSOLETE: msgstr "코드를 역어셈블할 수 없습니다."
-
-# OBSOLETE: msgid "Edit your account details"
-# OBSOLETE: msgstr "중단점을 설정할 수 없습니다."
-
-# OBSOLETE: msgid "Profile"
-# OBSOLETE: msgstr "변수를 검사할 수 없습니다."
-
-# OBSOLETE: msgid "Find zones and records"
-# OBSOLETE: msgstr "프로파일을 시작할 수 없습니다."
-
-# OBSOLETE: msgid "Search zones"
-# OBSOLETE: msgstr "프로파일을 중지할 수 없습니다."
-
-# OBSOLETE: msgid "Manage forward DNS zones"
-# OBSOLETE: msgstr "프로파일 데이터를 가져올 수 없습니다."
-
-# OBSOLETE: msgid "List forward zones"
-# OBSOLETE: msgstr "프로파일 데이터를 분석할 수 없습니다."
-
-# OBSOLETE: msgid "Manage reverse DNS zones"
-# OBSOLETE: msgstr "벤치마크를 실행할 수 없습니다."
-
-# OBSOLETE: msgid "List reverse zones"
-# OBSOLETE: msgstr "벤치마크 결과를 가져올 수 없습니다."
-
-# OBSOLETE: msgid "Manage zone templates"
-# OBSOLETE: msgstr "메트릭을 수집할 수 없습니다."
-
-# OBSOLETE: msgid "Manage supermaster servers"
-# OBSOLETE: msgstr "추적을 시작할 수 없습니다."
-
-# OBSOLETE: msgid "List supermasters"
-# OBSOLETE: msgstr "추적을 중지할 수 없습니다."
-
-# OBSOLETE: msgid "Create new master zone"
-# OBSOLETE: msgstr "스팬을 생성할 수 없습니다."
-
-# OBSOLETE: msgid "Add Master"
-# OBSOLETE: msgstr "이벤트를 기록할 수 없습니다."
-
-# OBSOLETE: msgid "Add new slave zone"
-# OBSOLETE: msgstr "이벤트를 수신할 수 없습니다."
-
-# OBSOLETE: msgid "Add Slave"
-# OBSOLETE: msgstr "리스너 등록을 취소할 수 없습니다."
-
-# OBSOLETE: msgid "Add new supermaster server"
-# OBSOLETE: msgstr "구독자 등록을 취소할 수 없습니다."
-
-# OBSOLETE: msgid "Register multiple domains at once"
-# OBSOLETE: msgstr "메시지 구독을 취소할 수 없습니다."
-
-# OBSOLETE: msgid "Bulk domain registration"
-# OBSOLETE: msgstr "메시지를 소비할 수 없습니다."
-
-# OBSOLETE: msgid "Registration"
-# OBSOLETE: msgstr "메시지를 확인할 수 없습니다."
-
-# OBSOLETE: msgid "Manage reverse DNS records"
-# OBSOLETE: msgstr "토픽을 생성할 수 없습니다."
-
-# OBSOLETE: msgid "View zone change history"
-# OBSOLETE: msgstr "큐를 삭제할 수 없습니다."
-
-# OBSOLETE: msgid "View zone logs"
-# OBSOLETE: msgstr "큐를 제거할 수 없습니다."
-
-# OBSOLETE: msgid "View user activity history"
-# OBSOLETE: msgstr "교환을 삭제할 수 없습니다."
-
-# OBSOLETE: msgid "View user logs"
-# OBSOLETE: msgstr "바인딩을 생성할 수 없습니다."
-
-# OBSOLETE: msgid "Update your account password"
-# OBSOLETE: msgstr "연결을 생성할 수 없습니다."
-
-# OBSOLETE: msgid "Customize your interface settings"
-# OBSOLETE: msgstr "채널을 닫을 수 없습니다."
-
-# OBSOLETE: msgid "User preferences"
-# OBSOLETE: msgstr "소비자를 생성할 수 없습니다."
-
-# OBSOLETE: msgid "Manage system users and access"
-# OBSOLETE: msgstr "생산자를 생성할 수 없습니다."
-
-# OBSOLETE: msgid "Manage access templates"
-# OBSOLETE: msgstr "노드에 연결할 수 없습니다."
-
-# OBSOLETE: msgid "End your session"
-# OBSOLETE: msgstr "복제본에 연결할 수 없습니다."
-
-# OBSOLETE: msgid "Manage API access keys"
-# OBSOLETE: msgstr "파티션을 삭제할 수 없습니다."
-
-# OBSOLETE: msgid "Manage API Keys"
-# OBSOLETE: msgstr "인덱스를 생성할 수 없습니다."
-
-# OBSOLETE: msgid "Check database integrity"
-# OBSOLETE: msgstr "인덱스를 재구축할 수 없습니다."
-
-# OBSOLETE: msgid "Check Database"
-# OBSOLETE: msgstr "뷰를 생성할 수 없습니다."
-
-# OBSOLETE: msgid "Check DB"
-# OBSOLETE: msgstr "뷰를 삭제할 수 없습니다."
-
-# OBSOLETE: msgid "Search logs by domain"
-# OBSOLETE: msgstr "도메인별 로그 검색"
-
-# OBSOLETE: msgid "Language"
-# OBSOLETE: msgstr "언어"
-
-# OBSOLETE: msgid "In use"
-# OBSOLETE: msgstr "사용 중"
-
-# OBSOLETE: msgid "Search logs by user"
-# OBSOLETE: msgstr "사용자별 로그 검색"
-
-# OBSOLETE: msgid "Search logs by group"
-# OBSOLETE: msgstr "그룹별 로그 검색"
-
-# OBSOLETE: msgid "PowerDNS Server"
-# OBSOLETE: msgstr "PowerDNS 서버"
-
-# OBSOLETE: msgid "View Details"
-# OBSOLETE: msgstr "상세 정보 보기"
-
-# OBSOLETE: msgid "Add Master Zone"
-# OBSOLETE: msgstr "마스터 존 추가"
-
-# OBSOLETE: msgid "List Forward Zones"
-# OBSOLETE: msgstr "정방향 존 목록"
-
-# OBSOLETE: msgid "Search Zones"
-# OBSOLETE: msgstr "존 검색"
-
-# OBSOLETE: msgid "List Reverse Zones"
-# OBSOLETE: msgstr "역방향 존 목록"
-
-# OBSOLETE: msgid "Add Slave Zone"
-# OBSOLETE: msgstr "슬레이브 존 추가"
-
-# OBSOLETE: msgid "List Zone Templates"
-# OBSOLETE: msgstr "존 템플릿 목록"
-
-# OBSOLETE: msgid "Bulk Domain Registration"
-# OBSOLETE: msgstr "일괄 도메인 등록"
-
-# OBSOLETE: msgid "WHOIS lookup functionality is disabled."
-# OBSOLETE: msgstr "WHOIS 조회 기능이 비활성화되어 있습니다."
-
-# OBSOLETE: msgid "RDAP lookup functionality is disabled."
-# OBSOLETE: msgstr "RDAP 조회 기능이 비활성화되어 있습니다."
-
-# OBSOLETE: msgid "Slave"
-# OBSOLETE: msgstr "코드 적용 범위를 수집할 수 없습니다."
-
-# OBSOLETE: msgid "Lookup domain WHOIS information"
-# OBSOLETE: msgstr "마스터에 연결할 수 없습니다."
-
-# OBSOLETE: msgid "Lookup domain RDAP information"
-# OBSOLETE: msgstr "피어에 연결할 수 없습니다."
-
-# OBSOLETE: msgid "Record Wizard"
-# OBSOLETE: msgstr "레코드 마법사"
-
-# OBSOLETE: msgid "Please enter a domain name to perform an RDAP lookup."
-# OBSOLETE: msgstr "RDAP 조회를 수행하려면 도메인 이름을 입력하세요."
-
-# OBSOLETE: msgid "Toggle all"
-# OBSOLETE: msgstr "모두 토글"
-
 
 

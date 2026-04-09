@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-07 23:53+0300\n"
+"POT-Creation-Date: 2026-04-09 10:38+0300\n"
 "PO-Revision-Date: 2025-06-02 07:22+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -333,7 +333,7 @@ msgstr ""
 "celý certifikát."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:641
+#: templates/modern/edit.html:93 templates/modern/edit.html:646
 msgid "Invalid hostname format"
 msgstr "Neplatný formát názvu hostitele"
 
@@ -1680,6 +1680,59 @@ msgstr "Záchanné kódy byly regenerovány. Uložte je na bezpečné místo."
 msgid "You do not have the permission to view supermasters."
 msgstr "Nemáte oprávnění zobrazit supermasters."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:314
+#, auto-english-fallback
+msgid "You do not have the permission to edit zone metadata."
+msgstr "You do not have the permission to edit zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:341
+#, auto-english-fallback
+msgid "Zone metadata has been updated successfully."
+msgstr "Zone metadata has been updated successfully."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:346
+#, auto-english-fallback
+msgid "Failed to update zone metadata."
+msgstr "Failed to update zone metadata."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:368
+#: templates/modern/edit_zone_metadata.html:24
+#, auto-english-fallback
+msgid "Edit Zone Metadata"
+msgstr "Edit Zone Metadata"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:558
+#, php-format
+msgid ""
+"Metadata kind %s accepts only a single value. Add only one row for this kind."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:646
+#: templates/modern/edit_zone_metadata.html:146
+msgid ""
+"Custom metadata kind stored directly in the PowerDNS domainmetadata table."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:654
+#: templates/modern/pdns_status.html:412
+msgid "Value"
+msgstr "Hodnota"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:692
+#: templates/modern/email_previews.html:47
+msgid "Custom"
+msgstr "Vlastní"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:697
+#, auto-english-fallback
+msgid "Multi"
+msgstr "Multi"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:698
+#, auto-english-fallback
+msgid "Single"
+msgstr "Single"
+
 #: lib/Application/Controller/ApiKeysController.php:74
 msgid "The API feature is disabled in the system configuration."
 msgstr "API funkce je v systémové konfiguraci zakázána."
@@ -1734,32 +1787,28 @@ msgstr "API klíč %s úspěšně."
 msgid "You do not have the permission to add records to this zone."
 msgstr "Nemáte oprávnění přidávat záznamy do této zóny."
 
-#: lib/Application/Controller/BulkRecordAddController.php:117
+#: lib/Application/Controller/BulkRecordAddController.php:118
 msgid "Please provide at least one record."
 msgstr "Zadejte prosím alespoň jeden záznam."
 
-#: lib/Application/Controller/BulkRecordAddController.php:145
-msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Neplatný formát. Očekáváno minimálně: název,typ,obsah"
-
-#: lib/Application/Controller/BulkRecordAddController.php:198
+#: lib/Application/Controller/BulkRecordAddController.php:175
 msgid "Invalid record type."
 msgstr "Neplatný typ záznamu."
 
-#: lib/Application/Controller/BulkRecordAddController.php:235
+#: lib/Application/Controller/BulkRecordAddController.php:213
 msgid "Record could not be added."
 msgstr "Záznam nemohl být přidán."
 
-#: lib/Application/Controller/BulkRecordAddController.php:243
+#: lib/Application/Controller/BulkRecordAddController.php:221
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d záznam(y) byly úspěšně přidány."
 
-#: lib/Application/Controller/BulkRecordAddController.php:246
+#: lib/Application/Controller/BulkRecordAddController.php:224
 msgid "Some record(s) could not be added."
 msgstr "Některé záznamy nemohly být přidány."
 
-#: lib/Application/Controller/BulkRecordAddController.php:279
+#: lib/Application/Controller/BulkRecordAddController.php:257
 msgid "Zone ID is required."
 msgstr "ID zóny je povinné."
 
@@ -2366,7 +2415,7 @@ msgstr "Nemáte dostatečná oprávnění k zobrazení této stránky."
 msgid "Reverse Zones"
 msgstr "Reverzní zóny"
 
-#: lib/Application/Controller/ListForwardZonesController.php:145
+#: lib/Application/Controller/ListForwardZonesController.php:144
 msgid "You do not have the permission to see any zones."
 msgstr "Nemáte oprávnění zobrazit žádné zóny."
 
@@ -2891,12 +2940,12 @@ msgstr "Nepodařilo se aktivovat klíč zóny."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Při přepínání klíče DNSSEC došlo k chybě. Zkuste to prosím znovu."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Ano"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:429
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Ne"
@@ -8543,6 +8592,21 @@ msgstr "Navíc byla nalezena následující varování:"
 msgid "The following warnings were found:"
 msgstr "Byla nalezena následující varování:"
 
+#: lib/Domain/Service/BulkRecordParser.php:36
+#, auto-english-fallback
+msgid "Empty line."
+msgstr "Empty line."
+
+#: lib/Domain/Service/BulkRecordParser.php:42
+msgid "Invalid format. Expected at least: name,type,content"
+msgstr "Neplatný formát. Očekáváno minimálně: název,typ,obsah"
+
+#: lib/Domain/Service/BulkRecordParser.php:88
+msgid ""
+"Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
+"name,SRV,target,weight,port,ttl"
+msgstr ""
+
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr "Neznámý typ databáze."
@@ -8977,7 +9041,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Aktualizovat záznam"
 
-#: templates/modern/edit.html:524 templates/modern/users.html:219
+#: templates/modern/edit.html:529 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Resetovat"
 
@@ -9119,7 +9183,7 @@ msgstr "Účet"
 msgid "Select the account that will own this supermaster"
 msgstr "Vyberte účet, který bude vlastnit tento supermaster"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:521
+#: templates/modern/edit.html:190 templates/modern/edit.html:526
 msgid "Save changes"
 msgstr "Uložit změny"
 
@@ -9565,7 +9629,7 @@ msgstr "Předvolby"
 msgid "Logout"
 msgstr "Odhlásit"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:509
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
 msgid "Edit comment"
 msgstr "Upravit komentář"
 
@@ -9712,7 +9776,8 @@ msgstr "Exportovat protokoly"
 
 #: templates/modern/list_log_groups.html:128
 msgid "Export filtered log entries. Current filters will be applied."
-msgstr "Exportovat filtrované záznamy protokolu. Budou použity aktuální filtry."
+msgstr ""
+"Exportovat filtrované záznamy protokolu. Budou použity aktuální filtry."
 
 #: templates/modern/list_log_groups.html:129
 msgid "records to export"
@@ -9830,6 +9895,11 @@ msgstr "Běžné záznamy"
 msgid "Advanced Records"
 msgstr "Pokročilé záznamy"
 
+#: templates/default/bulk_record_add.html:119
+#, auto-english-fallback
+msgid "legacy"
+msgstr "legacy"
+
 #: templates/modern/dns_wizard_select.html:6
 msgid "DNS Wizard"
 msgstr "Průvodce DNS"
@@ -9910,7 +9980,7 @@ msgstr "Ano, smazat tohoto uživatele"
 msgid "No, keep this user"
 msgstr "Ne, ponechat tohoto uživatele"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:227
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
 msgstr "Uložit jako šablonu"
 
@@ -11048,71 +11118,71 @@ msgstr "Pokud klíč ztratíte, budete ho muset obnovit."
 msgid "Edit"
 msgstr "Upravit"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:572
+#: templates/modern/edit.html:25 templates/modern/edit.html:577
 msgid "Add new record"
 msgstr "Přidat nový záznam"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:576
+#: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Průvodci pro záznamy DMARC, SPF, DKIM, CAA, TLSA a SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:582
+#: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
 msgstr "Režim více záznamů"
 
-#: templates/modern/edit.html:530 templates/modern/edit.html:585
+#: templates/modern/edit.html:535 templates/modern/edit.html:590
 msgid "Bulk add"
 msgstr "Hromadné přidání"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "Failed to add"
 msgstr "Nepodařilo se přidat"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:597
+#: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "record(s). Please check the record format."
 msgstr "záznam(y). Zkontrolujte prosím formát záznamu."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:599
+#: templates/modern/edit.html:52 templates/modern/edit.html:604
 msgid "Failed to add records. Please check the record format."
 msgstr "Nepodařilo se přidat záznamy. Zkontrolujte prosím formát záznamu."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Content validation failed:"
 msgstr "Ověření obsahu selhalo:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:602
+#: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Invalid value for record type"
 msgstr "Neplatná hodnota pro typ záznamu"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:604
+#: templates/modern/edit.html:57 templates/modern/edit.html:609
 msgid "Please provide all required information."
 msgstr "Zadejte prosím všechny požadované informace."
 
-#: templates/modern/edit.html:627 templates/modern/add_record.html:72
+#: templates/modern/edit.html:632 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Přidat PTR"
 
-#: templates/modern/edit.html:630 templates/modern/add_record.html:75
+#: templates/modern/edit.html:635 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Přidat A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:669
+#: templates/modern/edit.html:121 templates/modern/edit.html:674
 msgid "This record already exists"
 msgstr "Tento záznam již existuje"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:681
+#: templates/modern/edit.html:133 templates/modern/edit.html:686
 msgid "Invalid priority"
 msgstr "Neplatná priorita"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:688
+#: templates/modern/edit.html:140 templates/modern/edit.html:693
 msgid "Invalid TTL value"
 msgstr "Neplatná hodnota TTL"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:690
+#: templates/modern/edit.html:142 templates/modern/edit.html:695
 msgid "Provide TTL"
 msgstr "Zadejte TTL"
 
-#: templates/modern/edit.html:716 templates/modern/add_record.html:207
+#: templates/modern/edit.html:721 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11124,87 +11194,92 @@ msgstr ""
 msgid "Edit zone"
 msgstr "Upravit zónu"
 
-#: templates/default/edit.html:238 templates/modern/edit.html:238
+#: templates/default/edit.html:227 templates/modern/edit.html:227
+#, auto-english-fallback
+msgid "Metadata"
+msgstr "Metadata"
+
+#: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "Žádné záznamy neodpovídají vašim filtrovacím kritériím."
 
-#: templates/default/edit.html:246 templates/modern/edit.html:246
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "This zone does not have any records."
 msgstr "Tato zóna nemá žádné záznamy."
 
-#: templates/default/edit.html:258 templates/modern/edit.html:258
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "Filter:"
 msgstr "Filtr:"
 
-#: templates/default/edit.html:264 templates/modern/edit.html:264
+#: templates/default/edit.html:269 templates/modern/edit.html:269
 msgid "Search by name or content"
 msgstr "Hledat podle názvu nebo obsahu"
 
-#: templates/default/edit.html:270 templates/modern/edit.html:270
+#: templates/default/edit.html:275 templates/modern/edit.html:275
 msgid "All Types"
 msgstr "Všechny typy"
 
-#: templates/default/edit.html:280 templates/modern/edit.html:280
+#: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
 msgstr "Filtrovat podle obsahu"
 
-#: templates/default/edit.html:286 templates/modern/edit.html:286
+#: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
 msgstr "Použít"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "Showing"
 msgstr "Zobrazuje se"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "of"
 msgstr "z"
 
-#: templates/default/edit.html:322 templates/modern/edit.html:322
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "total records"
 msgstr "celkem záznamů"
 
-#: templates/default/edit.html:492 templates/modern/edit.html:492
+#: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
 msgstr "Upravit vybrané"
 
-#: templates/modern/edit.html:496 templates/modern/search.html:486
+#: templates/modern/edit.html:501 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Smazat záznam(y)"
 
-#: templates/modern/edit.html:504 templates/modern/search.html:93
+#: templates/modern/edit.html:509 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentáře"
 
-#: templates/default/edit.html:534 templates/modern/edit.html:534
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Import"
 msgstr "Importovat"
 
-#: templates/default/edit.html:551 templates/modern/edit.html:551
+#: templates/default/edit.html:556 templates/modern/edit.html:556
 msgid "Generate PTR"
 msgstr "Generovat PTR"
 
-#: templates/modern/edit.html:730 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Konfigurace zóny"
 
-#: templates/modern/edit.html:772 templates/modern/edit.html:801
+#: templates/modern/edit.html:777 templates/modern/edit.html:806
 msgid "Change"
 msgstr "Změnit"
 
-#: templates/modern/edit.html:765 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "IP adresa hlavního NS"
 
-#: templates/default/edit.html:822 templates/modern/edit.html:822
+#: templates/default/edit.html:827 templates/modern/edit.html:827
 msgid "Manage DNSSEC"
 msgstr "Spravovat DNSSEC"
 
-#: templates/default/edit.html:829 templates/modern/edit.html:829
+#: templates/default/edit.html:834 templates/modern/edit.html:834
 msgid "Sign zone"
 msgstr "Podepsat zónu"
 
-#: templates/default/edit.html:833 templates/modern/edit.html:833
+#: templates/default/edit.html:838 templates/modern/edit.html:838
 msgid "Not signed"
 msgstr "Nepodepsáno"
 
@@ -11809,6 +11884,52 @@ msgstr "Hledat supermasters..."
 #: templates/modern/list_supermasters.html:71
 msgid "There are no supermasters to show in this listing."
 msgstr "V tomto seznamu nejsou žádní supermastři k zobrazení."
+
+#: templates/modern/edit_zone_metadata.html:18
+#, auto-english-fallback
+msgid "Edit Metadata"
+msgstr "Edit Metadata"
+
+#: templates/modern/edit_zone_metadata.html:36
+#, auto-english-fallback
+msgid "Multiple values"
+msgstr "Multiple values"
+
+#: templates/modern/edit_zone_metadata.html:37
+msgid ""
+"For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
+"Each value is stored separately, one row per value."
+msgstr ""
+
+#: templates/modern/edit_zone_metadata.html:42
+#, auto-english-fallback
+msgid "Multi value"
+msgstr "Multi value"
+
+#: templates/modern/edit_zone_metadata.html:43
+#, auto-english-fallback
+msgid "Single value"
+msgstr "Single value"
+
+#: templates/modern/edit_zone_metadata.html:53
+#, auto-english-fallback
+msgid "Kind"
+msgstr "Kind"
+
+#: templates/modern/edit_zone_metadata.html:100
+#, auto-english-fallback
+msgid "Add metadata row"
+msgstr "Add metadata row"
+
+#: templates/modern/edit_zone_metadata.html:103
+#, auto-english-fallback
+msgid "Save metadata"
+msgstr "Save metadata"
+
+#: templates/modern/edit_zone_metadata.html:106
+#, auto-english-fallback
+msgid "Back to zone"
+msgstr "Back to zone"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
@@ -12468,10 +12589,6 @@ msgstr ""
 msgid "Active Email Templates"
 msgstr "Aktivní emailové šablony"
 
-#: templates/modern/email_previews.html:47
-msgid "Custom"
-msgstr "Vlastní"
-
 #: templates/modern/email_previews.html:23
 msgid "Standard"
 msgstr "Standardní"
@@ -12707,10 +12824,6 @@ msgstr "Bajty"
 msgid "Metric"
 msgstr "Metrika"
 
-#: templates/default/pdns_status.html:411 templates/modern/pdns_status.html:412
-msgid "Value"
-msgstr "Hodnota"
-
 #: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
 msgid "No detailed metrics available."
 msgstr "Nejsou dostupné podrobné metriky."
@@ -12781,7 +12894,8 @@ msgstr "Přidat záznam do zóny"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Záznam se nepodařilo přidat. Zkontrolujte data záznamu a zkuste to znovu."
+msgstr ""
+"Záznam se nepodařilo přidat. Zkontrolujte data záznamu a zkuste to znovu."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
@@ -14010,282 +14124,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nelze se připojit k databázi PowerDNS \"%s\": %s"
-
-# OBSOLETE: msgid "Server running"
-# OBSOLETE: msgstr "Server běží"
-
-# OBSOLETE: msgid "Check PowerDNS server status"
-# OBSOLETE: msgstr "Zkontrolovat stav serveru PowerDNS"
-
-# OBSOLETE: msgid "View Server Status"
-# OBSOLETE: msgstr "Zobrazit stav serveru"
-
-# OBSOLETE: msgid "Server Status"
-# OBSOLETE: msgstr "Stav serveru"
-
-# OBSOLETE: msgid "Edit your account details"
-# OBSOLETE: msgstr "Upravit podrobnosti účtu"
-
-# OBSOLETE: msgid "Profile"
-# OBSOLETE: msgstr "Profil"
-
-# OBSOLETE: msgid "Find zones and records"
-# OBSOLETE: msgstr "Najít zóny a záznamy"
-
-# OBSOLETE: msgid "Search zones"
-# OBSOLETE: msgstr "Prohledat zóny"
-
-# OBSOLETE: msgid "Manage forward DNS zones"
-# OBSOLETE: msgstr "Správa přímých DNS zón"
-
-# OBSOLETE: msgid "List forward zones"
-# OBSOLETE: msgstr "Seznam přímých zón"
-
-# OBSOLETE: msgid "Manage reverse DNS zones"
-# OBSOLETE: msgstr "Správa reverzních DNS zón"
-
-# OBSOLETE: msgid "List reverse zones"
-# OBSOLETE: msgstr "Seznam reverzních zón"
-
-# OBSOLETE: msgid "Manage zone templates"
-# OBSOLETE: msgstr "Správa šablon zón"
-
-# OBSOLETE: msgid "Manage supermaster servers"
-# OBSOLETE: msgstr "Správa supermaster serverů"
-
-# OBSOLETE: msgid "List supermasters"
-# OBSOLETE: msgstr "Seznam supermasterů"
-
-# OBSOLETE: msgid "Create new master zone"
-# OBSOLETE: msgstr "Vytvořit novou hlavní zónu"
-
-# OBSOLETE: msgid "Add Master"
-# OBSOLETE: msgstr "Přidat hlavní"
-
-# OBSOLETE: msgid "Add new slave zone"
-# OBSOLETE: msgstr "Přidat novou podružnou zónu"
-
-# OBSOLETE: msgid "Add Slave"
-# OBSOLETE: msgstr "Přidat podružnou"
-
-# OBSOLETE: msgid "Add new supermaster server"
-# OBSOLETE: msgstr "Přidat nový supermaster server"
-
-# OBSOLETE: msgid "Register multiple domains at once"
-# OBSOLETE: msgstr "Zaregistrovat více domén najednou"
-
-# OBSOLETE: msgid "Bulk domain registration"
-# OBSOLETE: msgstr "Hromadná registrace domén"
-
-# OBSOLETE: msgid "Registration"
-# OBSOLETE: msgstr "Registrace"
-
-# OBSOLETE: msgid "Manage reverse DNS records"
-# OBSOLETE: msgstr "Správa reverzních DNS záznamů"
-
-# OBSOLETE: msgid "View zone change history"
-# OBSOLETE: msgstr "Zobrazit historii změn zóny"
-
-# OBSOLETE: msgid "View zone logs"
-# OBSOLETE: msgstr "Zobrazit protokoly zóny"
-
-# OBSOLETE: msgid "View user activity history"
-# OBSOLETE: msgstr "Zobrazit historii aktivity uživatele"
-
-# OBSOLETE: msgid "View user logs"
-# OBSOLETE: msgstr "Zobrazit protokoly uživatele"
-
-# OBSOLETE: msgid "Update your account password"
-# OBSOLETE: msgstr "Aktualizovat heslo účtu"
-
-# OBSOLETE: msgid "Customize your interface settings"
-# OBSOLETE: msgstr "Přizpůsobte nastavení svého rozhraní"
-
-# OBSOLETE: msgid "User preferences"
-# OBSOLETE: msgstr "Uživatelské předvolby"
-
-# OBSOLETE: msgid "Manage system users and access"
-# OBSOLETE: msgstr "Správa systémových uživatelů a přístupu"
-
-# OBSOLETE: msgid "Manage access templates"
-# OBSOLETE: msgstr "Spravovat šablony přístupu"
-
-# OBSOLETE: msgid "End your session"
-# OBSOLETE: msgstr "Ukončit relaci"
-
-# OBSOLETE: msgid "Manage API access keys"
-# OBSOLETE: msgstr "Správa přístupových klíčů API"
-
-# OBSOLETE: msgid "Manage API Keys"
-# OBSOLETE: msgstr "Správa klíčů API"
-
-# OBSOLETE: msgid "Check database integrity"
-# OBSOLETE: msgstr "Zkontrolovat integritu databáze"
-
-# OBSOLETE: msgid "Check Database"
-# OBSOLETE: msgstr "Zkontrolovat databázi"
-
-# OBSOLETE: msgid "Check DB"
-# OBSOLETE: msgstr "Zkontrolovat DB"
-
-# OBSOLETE: msgid "Search logs by domain"
-# OBSOLETE: msgstr "Hledat protokoly podle domény"
-
-# OBSOLETE: msgid "Language"
-# OBSOLETE: msgstr "Jazyk"
-
-# OBSOLETE: msgid "In use"
-# OBSOLETE: msgstr "V použití"
-
-# OBSOLETE: msgid "Search logs by user"
-# OBSOLETE: msgstr "Hledat protokoly podle uživatele"
-
-# OBSOLETE: msgid "Search logs by group"
-# OBSOLETE: msgstr "Hledat protokoly podle skupiny"
-
-# OBSOLETE: msgid "PowerDNS Server"
-# OBSOLETE: msgstr "Server PowerDNS"
-
-# OBSOLETE: msgid "View Details"
-# OBSOLETE: msgstr "Zobrazit podrobnosti"
-
-# OBSOLETE: msgid "Add Master Zone"
-# OBSOLETE: msgstr "Přidat hlavní zónu"
-
-# OBSOLETE: msgid "List Forward Zones"
-# OBSOLETE: msgstr "Seznam přísměrovacích zón"
-
-# OBSOLETE: msgid "Search Zones"
-# OBSOLETE: msgstr "Hledat zóny"
-
-# OBSOLETE: msgid "List Reverse Zones"
-# OBSOLETE: msgstr "Seznam zpětných zón"
-
-# OBSOLETE: msgid "Add Slave Zone"
-# OBSOLETE: msgstr "Přidat podružnou zónu"
-
-# OBSOLETE: msgid "List Zone Templates"
-# OBSOLETE: msgstr "Seznam šablon zón"
-
-# OBSOLETE: msgid "Bulk Domain Registration"
-# OBSOLETE: msgstr "Hromadná registrace domén"
-
-# OBSOLETE: msgid "WHOIS lookup functionality is disabled."
-# OBSOLETE: msgstr "Funkce WHOIS vyhledávání je zakázána."
-
-# OBSOLETE: msgid "RDAP lookup functionality is disabled."
-# OBSOLETE: msgstr "Funkce RDAP vyhledávání je zakázána."
-
-# OBSOLETE: msgid "Slave"
-# OBSOLETE: msgstr "Podřízený"
-
-# OBSOLETE: msgid "Lookup domain WHOIS information"
-# OBSOLETE: msgstr "Vyhledat WHOIS informace domény"
-
-# OBSOLETE: msgid "Lookup domain RDAP information"
-# OBSOLETE: msgstr "Vyhledat RDAP informace domény"
-
-# OBSOLETE: msgid "Record Wizard"
-# OBSOLETE: msgstr "Průvodce záznamy"
-
-# OBSOLETE: msgid "Please enter a domain name to perform an RDAP lookup."
-# OBSOLETE: msgstr "Zadejte prosím název domény pro provedení RDAP vyhledávání."
-
-# OBSOLETE: msgid "Toggle all"
-# OBSOLETE: msgstr "Přepnout vše"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found. Please use the <a href=\"install/"
-# OBSOLETE: "\">installer</a> to create one, or create a config/settings.php file "
-# OBSOLETE: "manually."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Konfigurační soubor nebyl nalezen. Použijte <a href=\"install/"
-# OBSOLETE: "\">instalátor</a> k vytvoření jednoho, nebo vytvořte soubor config/"
-# OBSOLETE: "settings.php ručně."
-
-# OBSOLETE: msgid "Invalid authentication provider"
-# OBSOLETE: msgstr "Neplatný poskytovatel ověření"
-
-# OBSOLETE: msgid "Failed to sign zone. Check PowerDNS logs for details."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nepodařilo se podepsat zónu. Zkontrolujte logy PowerDNS pro detaily."
-
-# OBSOLETE: msgid "Zone was created, but securing it with DNSSEC failed."
-# OBSOLETE: msgstr "Zóna byla vytvořena, ale zabezpečení pomocí DNSSEC selhalo."
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
-# OBSOLETE: "once."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nalezen duplicitní mechanismus %s. Každý typ mechanismu by se měl objevit "
-# OBSOLETE: "nejvýše jednou."
-
-# OBSOLETE: msgid "IPv6 address should use lowercase for hexadecimal digits."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IPv6 adresa by měla používat malá písmena pro hexadecimální číslice."
-
-#, php-format
-# OBSOLETE: msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-# OBSOLETE: msgstr "IPv6 adresa není v kanonické formě (RFC 5952). Kanonická forma: %s"
-
-#, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "IP adresa \"%s\" není platná. Musí být platná IPv4 nebo IPv6 adresa."
-
-# OBSOLETE: msgid "HTML tags are not allowed in content field."
-# OBSOLETE: msgstr "HTML tagy nejsou povoleny v poli obsahu."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or "
-# OBSOLETE: "less. For longer content, split into multiple quoted strings separated by "
-# OBSOLETE: "spaces."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Řetězec TXT záznamu překračuje 255 bajtů. TXT řetězce musí mít 255 bajtů "
-# OBSOLETE: "nebo méně. Pro delší obsah rozdělte na více řetězců v uvozovkách "
-# OBSOLETE: "oddělených mezerami."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR record must have either a regexp or a replacement (with \".\"), but "
-# OBSOLETE: "not both."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR záznam musí mít buď regexp nebo náhradu (s \".\"), ale ne obojí."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "NAPTR service must follow the format: [protocol][+rs][+rs]... where "
-# OBSOLETE: "protocol and rs start with a letter and contain only alphanumeric "
-# OBSOLETE: "characters (max 32 chars each)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "NAPTR služba musí následovat formát: [protokol][+rs][+rs]... kde protokol "
-# OBSOLETE: "a rs začínají písmenem a obsahují pouze alfanumerické znaky (max 32 znaků "
-# OBSOLETE: "každý)."
-
-# OBSOLETE: msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-# OBSOLETE: msgstr "Nastavte standardní záznamy jako MX, TXT pro SPF a CNAME pro www"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
-# OBSOLETE: "[SERIAL] in record content"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Používejte zástupné symboly jako [ZONE], [DOMAIN], [TLD], [NS1], "
-# OBSOLETE: "[HOSTMASTER] a [SERIAL] v obsahu záznamu"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
-# OBSOLETE: "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Zástupné symboly [DOMAIN] a [TLD] jsou užitečné pro Microsoft 365 MX "
-# OBSOLETE: "záznamy (např. [DOMAIN]-[TLD].mail.protection.outlook.com)"
-
-# OBSOLETE: msgid "LDAP users cannot have passwords managed through this interface"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "LDAP uživatelé nemohou mít hesla spravovaná prostřednictvím tohoto "
-# OBSOLETE: "rozhraní"
-
-# OBSOLETE: msgid "Select All Filtered"
-# OBSOLETE: msgstr "Vybrat všechny filtrované"
-
 
 
