@@ -1,0 +1,644 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller;
+
+use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Infrastructure\Api\HttpClient;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Handles reading and replacing raw PowerDNS domain metadata for a single zone.
+ */
+class EditZoneMetadataController extends BaseController
+{
+    /**
+     * Sentinel value used by the UI when the user selects a free-form metadata kind.
+     */
+    private const CUSTOM_KIND = '__CUSTOM__';
+
+    /**
+     * Built-in metadata kinds shown in the editor.
+     *
+     * @var array<string, array<string, bool|string>>
+     */
+    private const METADATA_DEFINITIONS = [
+        'ALLOW-AXFR-FROM' => [
+            'label' => 'ALLOW-AXFR-FROM',
+            'multi' => true,
+            'placeholder' => '192.0.2.10 or AUTO-NS',
+            'help' => 'Allow zone transfers from these IPs or networks. Add one value per row.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'ALLOW-DNSUPDATE-FROM' => [
+            'label' => 'ALLOW-DNSUPDATE-FROM',
+            'multi' => true,
+            'placeholder' => '192.0.2.20/32',
+            'help' => 'Allow dynamic updates from these IPs or networks. Add one value per row.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'FORWARD-DNSUPDATE' => [
+            'label' => 'FORWARD-DNSUPDATE',
+            'multi' => false,
+            'placeholder' => '1',
+            'help' => 'Forward dynamic DNS updates for this zone.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'ALSO-NOTIFY' => [
+            'label' => 'ALSO-NOTIFY',
+            'multi' => true,
+            'placeholder' => '198.51.100.10:5300',
+            'help' => 'Send NOTIFY messages to these extra targets. Add one destination per row.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'AXFR-SOURCE' => [
+            'label' => 'AXFR-SOURCE',
+            'multi' => false,
+            'placeholder' => '192.0.2.30',
+            'help' => 'Use this source address for outgoing AXFR.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'GSS-ACCEPTOR-PRINCIPAL' => [
+            'label' => 'GSS-ACCEPTOR-PRINCIPAL',
+            'multi' => false,
+            'placeholder' => 'DNS/ns1.example.com@REALM',
+            'help' => 'Kerberos principal used to accept GSS-TSIG requests.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'GSS-ALLOW-AXFR-PRINCIPAL' => [
+            'label' => 'GSS-ALLOW-AXFR-PRINCIPAL',
+            'multi' => false,
+            'placeholder' => 'host/ns1.example.com@REALM',
+            'help' => 'Allow this GSS principal to retrieve AXFR for the zone.',
+            'api_write' => true,
+            'min_version' => '4.7.0',
+        ],
+        'IXFR' => [
+            'label' => 'IXFR',
+            'multi' => false,
+            'placeholder' => '1',
+            'help' => 'Enable or disable IXFR behaviour for the zone.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'NOTIFY-DNSUPDATE' => [
+            'label' => 'NOTIFY-DNSUPDATE',
+            'multi' => false,
+            'placeholder' => '1',
+            'help' => 'Trigger NOTIFY when a DNS update changes the zone.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'SOA-EDIT-DNSUPDATE' => [
+            'label' => 'SOA-EDIT-DNSUPDATE',
+            'multi' => false,
+            'placeholder' => 'INCEPTION-INCREMENT',
+            'help' => 'SOA serial policy applied after DNS updates.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'TSIG-ALLOW-AXFR' => [
+            'label' => 'TSIG-ALLOW-AXFR',
+            'multi' => true,
+            'placeholder' => 'axfr-key-name',
+            'help' => 'TSIG keys allowed for AXFR. Add one key name per row.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'TSIG-ALLOW-DNSUPDATE' => [
+            'label' => 'TSIG-ALLOW-DNSUPDATE',
+            'multi' => false,
+            'placeholder' => 'update-key-name',
+            'help' => 'TSIG key required for DNS updates.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'AXFR-MASTER-TSIG' => [
+            'label' => 'AXFR-MASTER-TSIG',
+            'multi' => false,
+            'placeholder' => 'primary-key-name',
+            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'api_write' => false,
+        ],
+        'LUA-AXFR-SCRIPT' => [
+            'label' => 'LUA-AXFR-SCRIPT',
+            'multi' => false,
+            'placeholder' => '/path/to/script.lua',
+            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'api_write' => false,
+        ],
+        'NSEC3NARROW' => [
+            'label' => 'NSEC3NARROW',
+            'multi' => false,
+            'placeholder' => '1',
+            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'api_write' => false,
+        ],
+        'NSEC3PARAM' => [
+            'label' => 'NSEC3PARAM',
+            'multi' => false,
+            'placeholder' => '1 0 0 -',
+            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'api_write' => false,
+        ],
+        'PRESIGNED' => [
+            'label' => 'PRESIGNED',
+            'multi' => false,
+            'placeholder' => '1',
+            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'api_write' => false,
+        ],
+        'PUBLISH-CDNSKEY' => [
+            'label' => 'PUBLISH-CDNSKEY',
+            'multi' => false,
+            'placeholder' => '1',
+            'help' => 'Publish CDNSKEY records for the zone KSKs.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'PUBLISH-CDS' => [
+            'label' => 'PUBLISH-CDS',
+            'multi' => false,
+            'placeholder' => '2',
+            'help' => 'Publish CDS records using a comma-separated list of digest algorithm numbers.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
+        ],
+        'RFC1123-CONFORMANCE' => [
+            'label' => 'RFC1123-CONFORMANCE',
+            'multi' => false,
+            'placeholder' => '0',
+            'help' => 'New in PowerDNS 5.1.0. Set to 0 to allow underscores beyond RFC 1123 hostname rules.',
+            'api_write' => true,
+            'min_version' => '5.1.0',
+        ],
+        'SIGNALING-ZONE' => [
+            'label' => 'SIGNALING-ZONE',
+            'multi' => false,
+            'placeholder' => '1',
+            'help' => 'New in PowerDNS 5.0.0. Enable RFC 9615 signaling zone behaviour.',
+            'api_write' => true,
+            'min_version' => '5.0.0',
+        ],
+        'SLAVE-RENOTIFY' => [
+            'label' => 'SLAVE-RENOTIFY',
+            'multi' => false,
+            'placeholder' => '1',
+            'help' => 'New in PowerDNS 4.3.0. Renotify secondaries after a fresh AXFR from the primary.',
+            'api_write' => true,
+            'min_version' => '4.3.0',
+        ],
+        'SOA-EDIT' => [
+            'label' => 'SOA-EDIT',
+            'multi' => false,
+            'placeholder' => 'INCEPTION-INCREMENT',
+            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'api_write' => false,
+        ],
+        'API-RECTIFY' => [
+            'label' => 'API-RECTIFY',
+            'multi' => false,
+            'placeholder' => '1',
+            'help' => 'Not writable through the metadata API endpoint.',
+            'api_write' => false,
+        ],
+        'ENABLE-LUA-RECORDS' => [
+            'label' => 'ENABLE-LUA-RECORDS',
+            'multi' => false,
+            'placeholder' => '1',
+            'help' => 'Not writable through the metadata API endpoint.',
+            'api_write' => false,
+        ],
+        'SOA-EDIT-API' => [
+            'label' => 'SOA-EDIT-API',
+            'multi' => false,
+            'placeholder' => 'DEFAULT',
+            'help' => 'Not writable through the metadata API endpoint.',
+            'api_write' => false,
+        ],
+    ];
+
+    /**
+     * Repository used for loading zones and replacing domainmetadata rows.
+     */
+    private DbZoneRepository $zoneRepository;
+
+    /**
+     * Cached PowerDNS version used to hide metadata kinds unsupported by the current server.
+     */
+    private ?string $powerDnsVersion = null;
+
+    /**
+     * @param array<string, mixed> $request
+     */
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+    }
+
+    /**
+     * Render the editor on GET and replace zone metadata on POST.
+     */
+    public function run(): void
+    {
+        $constraints = [
+            'id' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric'),
+            ],
+        ];
+
+        $this->setValidationConstraints($constraints);
+        if (!$this->doValidateRequest($this->getRequest())) {
+            $this->showFirstValidationError($this->getRequest());
+            return;
+        }
+
+        $zoneId = (int) $this->getSafeRequestValue('id');
+        $zone = $this->zoneRepository->getZone($zoneId);
+
+        if ($zone === null) {
+            $this->showError(_('Zone not found.'));
+            return;
+        }
+
+        $canEditMetadata = UserManager::verifyPermission($this->db, 'zone_meta_edit_others')
+            || (
+                UserManager::verifyPermission($this->db, 'zone_meta_edit_own')
+                && UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId)
+            );
+
+        $this->checkCondition(!$canEditMetadata, _('You do not have the permission to edit zone metadata.'));
+
+        if ($this->isPost()) {
+            $this->validateCsrfToken();
+            $submittedMetadata = $this->normalizeSubmittedMetadata($_POST['metadata'] ?? []);
+            $validationErrors = $this->validateMetadataRows($submittedMetadata);
+
+            if (!empty($validationErrors)) {
+                $this->setMessage('zone_metadata', 'error', $validationErrors[0]);
+                $this->renderPage($zoneId, $zone, $submittedMetadata);
+                return;
+            }
+
+            $saveResult = $this->saveMetadata($zone, $submittedMetadata);
+
+            if ($saveResult['success']) {
+                $this->setMessage('zone_metadata', 'success', _('Zone metadata has been updated successfully.'));
+                $this->redirect('/zones/' . $zoneId . '/metadata');
+                return;
+            }
+
+            $this->setMessage('zone_metadata', 'error', _('Failed to update zone metadata.'));
+            $this->renderPage($zoneId, $zone, $submittedMetadata);
+            return;
+        }
+
+        $this->renderPage($zoneId, $zone, $this->loadMetadata($zoneId, $zone['name']));
+    }
+
+    /**
+     * Prepare and render the metadata editor page.
+     *
+     * @param array<string, mixed> $zone
+     * @param array<int, array<string, string>> $metadataRows
+     */
+    private function renderPage(int $zoneId, array $zone, array $metadataRows): void
+    {
+        $idnZoneName = str_starts_with($zone['name'], 'xn--') ? DnsIdnService::toUtf8($zone['name']) : '';
+        if (empty($metadataRows)) {
+            $metadataRows = [['kind' => '', 'content' => '']];
+        }
+
+        $this->setCurrentPage('zone_metadata');
+        $this->setPageTitle(_('Edit Zone Metadata'));
+
+        $this->render('edit_zone_metadata.html', [
+            'zone_id' => $zoneId,
+            'zone' => $zone,
+            'idn_zone_name' => $idnZoneName,
+            'metadata_rows' => $this->prepareRowsForTemplate($metadataRows),
+            'metadata_definitions' => $this->getMetadataDefinitionsForTemplate(),
+            'is_reverse_zone' => DnsHelper::isReverseZone($zone['name']),
+        ]);
+    }
+
+    /**
+     * Load raw PowerDNS domainmetadata rows for the given zone.
+     *
+     * @return array<int, array<string, string>>
+     */
+    private function loadMetadata(int $zoneId, string $zoneName): array
+    {
+        return $this->zoneRepository->getDomainMetadata($zoneId);
+    }
+
+    /**
+     * Replace all stored metadata rows for the zone in a single SQL operation.
+     *
+     * @param array<string, mixed> $zone
+     * @param array<int, array<string, string>> $metadataRows
+     * @return array<string, bool|string>
+     */
+    private function saveMetadata(array $zone, array $metadataRows): array
+    {
+        return [
+            'success' => $this->zoneRepository->replaceDomainMetadata((int) $zone['id'], $metadataRows),
+            'mode' => 'sql',
+            'api_success' => false,
+        ];
+    }
+
+    /**
+     * Convert submitted rows into a compact list of valid domainmetadata entries.
+     *
+     * Empty rows are ignored and partially filled rows are dropped so the editor can
+     * preserve a simple add/remove-row workflow without producing invalid writes.
+     *
+     * @param array<int, array<string, mixed>> $submittedMetadata
+     * @return array<int, array{kind: string, content: string}>
+     */
+    private function normalizeSubmittedMetadata(array $submittedMetadata): array
+    {
+        $rows = [];
+
+        foreach ($submittedMetadata as $row) {
+            $kind = $this->resolveSubmittedKind($row);
+            $content = trim((string) ($row['content'] ?? ''));
+
+            if ($kind === '' && $content === '') {
+                continue;
+            }
+
+            if ($kind === '' || $content === '') {
+                continue;
+            }
+
+            $rows[] = [
+                'kind' => substr($kind, 0, 32),
+                'content' => $content,
+            ];
+        }
+
+        return $rows;
+    }
+
+    /**
+     * Resolve the effective metadata kind from either a predefined selection or custom input.
+     *
+     * @param array<string, mixed> $row
+     */
+    private function resolveSubmittedKind(array $row): string
+    {
+        $selectedKind = strtoupper(trim((string) ($row['kind_key'] ?? '')));
+        if ($selectedKind === self::CUSTOM_KIND) {
+            $selectedKind = strtoupper(trim((string) ($row['custom_kind'] ?? '')));
+        }
+
+        return $selectedKind;
+    }
+
+    /**
+     * Validate metadata rows against single-value metadata constraints.
+     *
+     * @param array<int, array{kind: string, content: string}> $rows
+     * @return array<int, string>
+     */
+    private function validateMetadataRows(array $rows): array
+    {
+        $errors = [];
+        $countsByKind = [];
+
+        foreach ($rows as $row) {
+            $kind = $row['kind'];
+            $definition = $this->getMetadataDefinition($kind);
+            $countsByKind[$kind] = ($countsByKind[$kind] ?? 0) + 1;
+
+            if (!$definition['multi'] && $countsByKind[$kind] > 1) {
+                $errors[] = sprintf(_('Metadata kind %s accepts only a single value. Add only one row for this kind.'), $kind);
+            }
+        }
+
+        return array_values(array_unique($errors));
+    }
+
+    /**
+     * Build metadata definitions for the template, already localized for display.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function getMetadataDefinitionsForTemplate(): array
+    {
+        $definitions = [];
+
+        foreach (self::METADATA_DEFINITIONS as $kind => $definition) {
+            // Hide version-gated metadata kinds when the connected PowerDNS server
+            // is known to be too old to support them.
+            if (!$this->isDefinitionSupportedInCurrentEnvironment($definition)) {
+                continue;
+            }
+
+            $definitions[] = [
+                'kind' => $kind,
+                'label' => $definition['label'],
+                'multi' => $definition['multi'],
+                'placeholder' => $definition['placeholder'],
+                'help' => _($definition['help']),
+                'badges' => $this->buildBadgeDescriptors($kind, $definition),
+            ];
+        }
+
+        return $definitions;
+    }
+
+    /**
+     * Expand stored metadata rows with UI-specific fields used by the editor template.
+     *
+     * @param array<int, array<string, string>> $rows
+     * @return array<int, array<string, mixed>>
+     */
+    private function prepareRowsForTemplate(array $rows): array
+    {
+        $preparedRows = [];
+
+        foreach ($rows as $row) {
+            $definition = $this->getMetadataDefinition($row['kind']);
+            $isKnownKind = isset(self::METADATA_DEFINITIONS[$row['kind']]);
+
+            $preparedRows[] = [
+                'kind' => $row['kind'],
+                'content' => $row['content'],
+                'kind_key' => $isKnownKind ? $row['kind'] : self::CUSTOM_KIND,
+                'custom_kind' => $isKnownKind ? '' : $row['kind'],
+                'kind_help' => $isKnownKind
+                    ? _($definition['help'])
+                    : $this->getCustomMetadataKindHelpText(),
+                'kind_placeholder' => $definition['placeholder'] ?? $this->getDefaultValueLabel(),
+                'kind_multi' => $isKnownKind ? $definition['multi'] : null,
+                'kind_badges' => $this->buildBadgeDescriptors($row['kind'], $definition, !$isKnownKind),
+            ];
+        }
+
+        return $preparedRows;
+    }
+
+    /**
+     * Return the metadata definition for a known kind or a generic fallback for custom kinds.
+     *
+     * @return array<string, mixed>
+     */
+    private function getMetadataDefinition(string $kind): array
+    {
+        return self::METADATA_DEFINITIONS[$kind] ?? [
+            'label' => $kind,
+            'multi' => true,
+            'placeholder' => $this->getDefaultValueLabel(),
+            'help' => $this->getCustomMetadataKindHelpText(),
+            'api_write' => true,
+        ];
+    }
+
+    /**
+     * Default help text for custom metadata kinds that are not part of the built-in list.
+     */
+    private function getCustomMetadataKindHelpText(): string
+    {
+        return _('Custom metadata kind stored directly in the PowerDNS domainmetadata table.');
+    }
+
+    /**
+     * Default placeholder shown for metadata values without a kind-specific example.
+     */
+    private function getDefaultValueLabel(): string
+    {
+        return _('Value');
+    }
+
+    /**
+     * Determine whether PowerDNS API credentials are configured.
+     */
+    private function isPowerdnsApiConfigured(): bool
+    {
+        return (bool) $this->config->get('pdns_api', 'url') && (bool) $this->config->get('pdns_api', 'key');
+    }
+
+    /**
+     * Create a PowerDNS API client used only for server version discovery.
+     */
+    private function createPowerdnsApiClient(): PowerdnsApiClient
+    {
+        $httpClient = new HttpClient(
+            (string) $this->config->get('pdns_api', 'url'),
+            (string) $this->config->get('pdns_api', 'key')
+        );
+        $serverName = (string) ($this->config->get('pdns_api', 'server_name') ?: 'localhost');
+
+        return new PowerdnsApiClient($httpClient, $serverName);
+    }
+
+    /**
+     * Check whether a metadata definition should be shown for the current environment.
+     *
+     * @param array<string, mixed> $definition
+     */
+    private function isDefinitionSupportedInCurrentEnvironment(array $definition): bool
+    {
+        if (!$this->isPowerdnsApiConfigured()) {
+            return true;
+        }
+
+        $minVersion = $definition['min_version'] ?? null;
+        if ($minVersion === null) {
+            return true;
+        }
+
+        $currentVersion = $this->getPowerDnsVersion();
+        if ($currentVersion === '') {
+            return true;
+        }
+
+        return version_compare($currentVersion, $minVersion, '>=');
+    }
+
+    /**
+     * Build UI badges describing whether a kind is custom, single-value, multi-value, or version-gated.
+     *
+     * @param array<string, mixed> $definition
+     * @return array<int, array{label: string, class: string}>
+     */
+    private function buildBadgeDescriptors(string $kind, array $definition, bool $isCustom = false): array
+    {
+        $badges = [];
+
+        if ($isCustom) {
+            $badges[] = ['label' => _('Custom'), 'class' => 'bg-warning-subtle text-warning-emphasis border border-warning-subtle'];
+            return $badges;
+        }
+
+        $badges[] = $definition['multi']
+            ? ['label' => _('Multi'), 'class' => 'bg-info-subtle text-info-emphasis border border-info-subtle']
+            : ['label' => _('Single'), 'class' => 'bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle'];
+
+        if (!empty($definition['min_version']) && version_compare($definition['min_version'], '4.0.0', '>')) {
+            $badges[] = [
+                'label' => $definition['min_version'] . '+',
+                'class' => 'bg-light text-dark border',
+            ];
+        }
+
+        return $badges;
+    }
+
+    /**
+     * Get and cache the PowerDNS version string returned by the API.
+     */
+    private function getPowerDnsVersion(): string
+    {
+        if ($this->powerDnsVersion !== null) {
+            return $this->powerDnsVersion;
+        }
+
+        if (!$this->isPowerdnsApiConfigured()) {
+            $this->powerDnsVersion = '';
+            return $this->powerDnsVersion;
+        }
+
+        $serverInfo = $this->createPowerdnsApiClient()->getServerInfo();
+        $version = (string) ($serverInfo['version'] ?? '');
+        $version = preg_replace('/^[^0-9]*/', '', $version);
+        $this->powerDnsVersion = $version ?: '';
+
+        return $this->powerDnsVersion;
+    }
+}

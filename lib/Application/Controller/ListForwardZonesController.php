@@ -39,6 +39,7 @@ use Poweradmin\Application\Service\ZoneService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -87,6 +88,8 @@ class ListForwardZonesController extends BaseController
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
         $perm_delete = Permission::getDeletePermission($this->db);
+        $permissionService = new PermissionService(new DbUserRepository($this->db, $this->getConfig()));
+        $perm_zone_meta = $permissionService->getZoneMetaEditPermissionLevel($userId);
 
         $dnsDataService = $this->createDnsDataService();
 
@@ -164,6 +167,7 @@ class ListForwardZonesController extends BaseController
             'session_userlogin' => $_SESSION['userlogin'],
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
+            'perm_zone_meta' => $perm_zone_meta,
             'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
             'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),

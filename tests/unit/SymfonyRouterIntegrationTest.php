@@ -250,6 +250,10 @@ class SymfonyRouterIntegrationTest extends TestCase
         // Test zone edit URL
         $url = $router->generateUrl('zone_edit', ['id' => 999]);
         $this->assertEquals('/zones/999/edit', $url);
+
+        // Test zone metadata URL
+        $url = $router->generateUrl('zone_metadata', ['id' => 999]);
+        $this->assertEquals('/zones/999/metadata', $url);
     }
 
     public function testRouteParameterConstraints(): void
@@ -303,6 +307,13 @@ class SymfonyRouterIntegrationTest extends TestCase
 
     public function testDnssecRoutes(): void
     {
+        $_SERVER['REQUEST_URI'] = '/zones/321/metadata';
+        $router = $this->createRouter();
+        $routeInfo = $router->match();
+        $this->assertEquals('Poweradmin\Application\Controller\EditZoneMetadataController', $routeInfo['controller']);
+        $this->assertEquals('zone_metadata', $routeInfo['route']);
+        $this->assertEquals(['id' => '321'], $routeInfo['parameters']);
+
         // DNSSEC management for zone
         $_SERVER['REQUEST_URI'] = '/zones/123/dnssec';
         $router = $this->createRouter();

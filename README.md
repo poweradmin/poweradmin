@@ -18,6 +18,7 @@ DNSSEC operations.
 - Supermasters for automatic provisioning of slave zones
 - Zone templates for quick zone creation
 - Bulk operations for records and reverse DNS
+- Zone metadata editor for PowerDNS `domainmetadata`, including multi-value metadata kinds
 - IPv6 support
 - Multi-language support (15+ languages)
 - DNSSEC operations via PowerDNS API
@@ -50,6 +51,14 @@ DNSSEC operations.
 ### Zone Editor
 
 ![Zone editor with inline record management](https://docs.poweradmin.org/screenshots/light_zone_edit.png)
+
+### Zone Metadata Editor
+
+Poweradmin includes a zone metadata editor for PowerDNS `domainmetadata`. The editor supports:
+
+- selecting known metadata kinds with inline guidance
+- entering custom metadata kinds when needed
+- multi-value metadata such as `ALLOW-AXFR-FROM` using one row per value
 
 ## Installation
 
