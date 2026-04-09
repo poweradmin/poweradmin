@@ -951,6 +951,7 @@ return array(
     'Poweradmin\\Application\\Controller\\EditRecordController' => $baseDir . '/lib/Application/Controller/EditRecordController.php',
     'Poweradmin\\Application\\Controller\\EditSupermasterController' => $baseDir . '/lib/Application/Controller/EditSupermasterController.php',
     'Poweradmin\\Application\\Controller\\EditUserController' => $baseDir . '/lib/Application/Controller/EditUserController.php',
+    'Poweradmin\\Application\\Controller\\EditZoneMetadataController' => $baseDir . '/lib/Application/Controller/EditZoneMetadataController.php',
     'Poweradmin\\Application\\Controller\\EditZoneTemplController' => $baseDir . '/lib/Application/Controller/EditZoneTemplController.php',
     'Poweradmin\\Application\\Controller\\EditZoneTemplRecordController' => $baseDir . '/lib/Application/Controller/EditZoneTemplRecordController.php',
     'Poweradmin\\Application\\Controller\\ExampleController' => $baseDir . '/lib/Application/Controller/ExampleController.php',
