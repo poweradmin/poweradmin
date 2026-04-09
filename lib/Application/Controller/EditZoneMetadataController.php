@@ -303,7 +303,7 @@ class EditZoneMetadataController extends BaseController
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $submittedMetadata = $this->normalizeSubmittedMetadata($_POST['metadata'] ?? []);
+            $submittedMetadata = $this->normalizeSubmittedMetadata($this->request->getPostParam('metadata', []));
             $validationErrors = $this->validateMetadataRows($submittedMetadata);
 
             if (!empty($validationErrors)) {

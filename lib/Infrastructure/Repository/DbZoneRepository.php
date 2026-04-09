@@ -994,7 +994,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
             return true;
         } catch (\Throwable $e) {
             $this->db->rollBack();
-            error_log(sprintf('Failed to replace domain metadata for zone %d: %s', $zoneId, $e->getMessage()));
             return false;
         }
     }
