@@ -22,13 +22,14 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\Zone;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -243,15 +244,16 @@ class EditZoneMetadataController extends BaseController
             'label' => 'SOA-EDIT-API',
             'multi' => false,
             'placeholder' => 'DEFAULT',
-            'help' => 'Not writable through the metadata API endpoint.',
-            'api_write' => false,
+            'help' => 'SOA serial update policy for API changes. Options: DEFAULT, INCREASE, EPOCH, SOA-EDIT, SOA-EDIT-INCREASE, OFF.',
+            'api_write' => true,
+            'min_version' => '4.0.0',
         ],
     ];
 
     /**
      * Repository used for loading zones and replacing domainmetadata rows.
      */
-    private DbZoneRepository $zoneRepository;
+    private ZoneRepositoryInterface $zoneRepository;
 
     /**
      * Cached PowerDNS version used to hide metadata kinds unsupported by the current server.
@@ -259,12 +261,20 @@ class EditZoneMetadataController extends BaseController
     private ?string $powerDnsVersion = null;
 
     /**
+     * Cached API client for metadata operations in API mode.
+     */
+    private ?PowerdnsApiClient $apiClient = null;
+
+    /**
      * @param array<string, mixed> $request
      */
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $this->zoneRepository = $this->getRepositoryFactory()->createZoneRepository();
+        if (DnsBackendProviderFactory::isApiBackend($this->getConfig())) {
+            $this->apiClient = DnsBackendProviderFactory::createApiClient($this->getConfig(), $this->logger);
+        }
     }
 
     /**
@@ -361,11 +371,36 @@ class EditZoneMetadataController extends BaseController
      */
     private function loadMetadata(int $zoneId, string $zoneName): array
     {
+        if ($this->apiClient !== null) {
+            return $this->loadMetadataViaApi($zoneName);
+        }
+
         return $this->zoneRepository->getDomainMetadata($zoneId);
     }
 
     /**
-     * Replace all stored metadata rows for the zone in a single SQL operation.
+     * Load metadata via the PowerDNS API.
+     *
+     * @return array<int, array<string, string>>
+     */
+    private function loadMetadataViaApi(string $zoneName): array
+    {
+        $zone = new Zone($zoneName);
+        $apiMetadata = $this->apiClient->getZoneMetadata($zone);
+        $rows = [];
+        foreach ($apiMetadata as $entry) {
+            $kind = $entry['kind'] ?? '';
+            foreach (($entry['metadata'] ?? []) as $value) {
+                $rows[] = ['kind' => $kind, 'content' => (string) $value];
+            }
+        }
+
+        usort($rows, fn($a, $b) => strcmp($a['kind'], $b['kind']));
+        return $rows;
+    }
+
+    /**
+     * Replace all stored metadata rows for the zone.
      *
      * @param array<string, mixed> $zone
      * @param array<int, array<string, string>> $metadataRows
@@ -373,11 +408,72 @@ class EditZoneMetadataController extends BaseController
      */
     private function saveMetadata(array $zone, array $metadataRows): array
     {
+        if ($this->apiClient !== null) {
+            return $this->saveMetadataViaApi($zone['name'], $metadataRows);
+        }
+
         return [
             'success' => $this->zoneRepository->replaceDomainMetadata((int) $zone['id'], $metadataRows),
-            'mode' => 'sql',
-            'api_success' => false,
         ];
+    }
+
+    /**
+     * Save metadata via the PowerDNS API.
+     *
+     * Groups rows by kind and uses PUT per kind. Handles SOA-EDIT-API specially
+     * via the zone properties endpoint. Deletes kinds that were removed.
+     *
+     * @param array<int, array<string, string>> $metadataRows
+     * @return array<string, bool|string>
+     */
+    private function saveMetadataViaApi(string $zoneName, array $metadataRows): array
+    {
+        $zone = new Zone($zoneName);
+
+        // Group submitted rows by kind
+        $grouped = [];
+        foreach ($metadataRows as $row) {
+            $grouped[$row['kind']][] = $row['content'];
+        }
+
+        // Load current metadata to detect removed kinds
+        $currentMetadata = $this->apiClient->getZoneMetadata($zone);
+        $currentKinds = [];
+        foreach ($currentMetadata as $entry) {
+            $currentKinds[] = $entry['kind'] ?? '';
+        }
+
+        $success = true;
+
+        // Handle SOA-EDIT-API via zone properties endpoint
+        if (isset($grouped['SOA-EDIT-API'])) {
+            $soaEditApi = $grouped['SOA-EDIT-API'][0] ?? '';
+            $success = $this->apiClient->updateZoneProperties($zoneName, ['soa_edit_api' => $soaEditApi]);
+            unset($grouped['SOA-EDIT-API']);
+        }
+
+        // Update or create each metadata kind
+        foreach ($grouped as $kind => $values) {
+            $definition = $this->getMetadataDefinition($kind);
+            if (isset($definition['api_write']) && $definition['api_write'] === false) {
+                continue;
+            }
+            $result = $this->apiClient->updateZoneMetadata($zone, $kind, $values);
+            $success = $success && $result;
+        }
+
+        // Delete kinds that were removed
+        foreach ($currentKinds as $kind) {
+            if ($kind !== '' && !isset($grouped[$kind]) && $kind !== 'SOA-EDIT-API') {
+                $definition = $this->getMetadataDefinition($kind);
+                if (isset($definition['api_write']) && $definition['api_write'] === false) {
+                    continue;
+                }
+                $this->apiClient->deleteZoneMetadata($zone, $kind);
+            }
+        }
+
+        return ['success' => $success];
     }
 
     /**
@@ -546,35 +642,13 @@ class EditZoneMetadataController extends BaseController
     }
 
     /**
-     * Determine whether PowerDNS API credentials are configured.
-     */
-    private function isPowerdnsApiConfigured(): bool
-    {
-        return (bool) $this->config->get('pdns_api', 'url') && (bool) $this->config->get('pdns_api', 'key');
-    }
-
-    /**
-     * Create a PowerDNS API client used only for server version discovery.
-     */
-    private function createPowerdnsApiClient(): PowerdnsApiClient
-    {
-        $httpClient = new HttpClient(
-            (string) $this->config->get('pdns_api', 'url'),
-            (string) $this->config->get('pdns_api', 'key')
-        );
-        $serverName = (string) ($this->config->get('pdns_api', 'server_name') ?: 'localhost');
-
-        return new PowerdnsApiClient($httpClient, $serverName);
-    }
-
-    /**
      * Check whether a metadata definition should be shown for the current environment.
      *
      * @param array<string, mixed> $definition
      */
     private function isDefinitionSupportedInCurrentEnvironment(array $definition): bool
     {
-        if (!$this->isPowerdnsApiConfigured()) {
+        if ($this->apiClient === null) {
             return true;
         }
 
@@ -629,12 +703,12 @@ class EditZoneMetadataController extends BaseController
             return $this->powerDnsVersion;
         }
 
-        if (!$this->isPowerdnsApiConfigured()) {
+        if ($this->apiClient === null) {
             $this->powerDnsVersion = '';
             return $this->powerDnsVersion;
         }
 
-        $serverInfo = $this->createPowerdnsApiClient()->getServerInfo();
+        $serverInfo = $this->apiClient->getServerInfo();
         $version = (string) ($serverInfo['version'] ?? '');
         $version = preg_replace('/^[^0-9]*/', '', $version);
         $this->powerDnsVersion = $version ?: '';

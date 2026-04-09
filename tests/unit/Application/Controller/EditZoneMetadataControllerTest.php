@@ -93,6 +93,7 @@ class EditZoneMetadataControllerTest extends TestCase
             ],
         ]);
         $this->setProperty($controller, 'powerDnsVersion', '4.8.3');
+        $this->setProperty($controller, 'apiClient', $this->createMock(\Poweradmin\Infrastructure\Api\PowerdnsApiClient::class));
 
         $definitions = $this->invokePrivateMethod($controller, 'getMetadataDefinitionsForTemplate');
         $kinds = array_column($definitions, 'kind');
