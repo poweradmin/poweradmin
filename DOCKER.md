@@ -440,6 +440,39 @@ services:
 
 Supports Docker secrets via `TRUSTED_CA_FILE__FILE` (see [DOCKER-SECRETS.md](DOCKER-SECRETS.md)).
 
+### Trusted Proxies
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `TRUSTED_PROXIES` | Comma-separated list of trusted proxy CIDRs or `private_ranges` | Empty | No |
+
+When running behind a reverse proxy (Nginx, Traefik, HAProxy, etc.), the container sees the proxy's IP instead of the real client IP. Setting `TRUSTED_PROXIES` configures Caddy to resolve the real client IP from `X-Forwarded-For` headers, so both access logs and application logs show the correct IP.
+
+For most Docker setups, `private_ranges` is the recommended value - it trusts all private/reserved IP ranges (RFC 1918, RFC 4193, link-local):
+
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -e TRUSTED_PROXIES=private_ranges \
+  poweradmin/poweradmin
+```
+
+For specific proxy CIDRs:
+
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -e TRUSTED_PROXIES=172.17.0.0/16,10.0.0.0/8 \
+  poweradmin/poweradmin
+```
+
+Docker Compose example:
+```yaml
+services:
+  poweradmin:
+    image: poweradmin/poweradmin
+    environment:
+      TRUSTED_PROXIES: private_ranges
+```
+
 ### OIDC (OpenID Connect) Authentication
 
 | Variable | Description | Default | Required |
@@ -1326,6 +1359,7 @@ The `fsGroup: 82` setting ensures volumes are group-writable for the `www-data` 
 ### Limitations When Running Non-Root
 
 - **Custom CA certificates**: `TRUSTED_CA_FILE` requires root to install into the system trust store. A warning is logged if this variable is set in non-root mode.
+- **Trusted proxies**: `TRUSTED_PROXIES` requires write access to the Caddyfile. A warning is logged if the file is not writable in non-root mode.
 - **Volume permissions**: The container cannot `chown` volumes. Use `fsGroup` in Kubernetes or pre-set permissions on Docker bind mounts.
 
 ### Environment Variables
@@ -1333,6 +1367,7 @@ The `fsGroup: 82` setting ensures volumes are group-writable for the `www-data` 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `SERVER_PORT` | Port for the web server to listen on | `80` (root) / `8080` (non-root, auto-detected) |
+| `TRUSTED_PROXIES` | Trusted proxy CIDRs for real client IP resolution | Empty |
 
 ## Performance Benefits
 

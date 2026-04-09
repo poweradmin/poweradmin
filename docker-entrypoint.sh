@@ -54,6 +54,36 @@ install_trusted_ca() {
     fi
 }
 
+# Configure Caddy trusted_proxies for correct client IP behind reverse proxies
+configure_trusted_proxies() {
+    if [ -z "${TRUSTED_PROXIES:-}" ]; then
+        return
+    fi
+
+    local caddyfile="/etc/caddy/Caddyfile"
+
+    if [ ! -w "${caddyfile}" ]; then
+        log "WARNING: TRUSTED_PROXIES is set but ${caddyfile} is not writable - skipping"
+        return
+    fi
+
+    # Skip if already configured (container restart)
+    if grep -q 'trusted_proxies' "${caddyfile}"; then
+        debug_log "trusted_proxies already present in Caddyfile, skipping"
+        return
+    fi
+
+    # Convert comma-separated input to space-separated (Caddy format)
+    local proxies
+    proxies=$(echo "${TRUSTED_PROXIES}" | tr ',' ' ' | tr -s ' ')
+
+    log "Configuring trusted proxies: ${proxies}"
+
+    sed -i "s|order php_server before file_server|order php_server before file_server\n    servers {\n        trusted_proxies static ${proxies}\n        client_ip_headers X-Forwarded-For X-Real-IP\n    }|" "${caddyfile}"
+
+    log "Trusted proxies configured in Caddyfile"
+}
+
 # Escape single quotes for SQL by replacing ' with ''
 escape_sql() {
     printf '%s' "$1" | sed "s/'/''/g"
@@ -1205,6 +1235,9 @@ main() {
     elif [ -n "${TRUSTED_CA_FILE:-}" ]; then
         log "WARNING: TRUSTED_CA_FILE is set but container is not running as root - cannot install CA certificate"
     fi
+
+    # Configure trusted proxies in Caddyfile (must run after secrets are processed)
+    configure_trusted_proxies
 
     # Set CONFIG_FILE after secrets are processed (supports PA_CONFIG_PATH__FILE)
     CONFIG_FILE="${PA_CONFIG_PATH:-/app/config/settings.php}"
