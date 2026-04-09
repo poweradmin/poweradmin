@@ -3,7 +3,7 @@
 /**
  * WHOIS servers list
  *
- * Updated on 2026-02-05 - 1260 entries
+ * Updated on 2026-04-09 - 1261 entries
  * Source: IANA WHOIS database
  *
  * Do not edit manually - use scripts/update_whois_servers.php to regenerate
@@ -1149,6 +1149,7 @@ return array(
     'yokohama' => 'whois.nic.yokohama',
     'yt' => 'whois.nic.yt',
     'yun' => 'whois.teleinfo.cn',
+    'za' => 'whois.registry.net.za',
     'zara' => 'whois.nic.zara',
     'zero' => 'whois.nic.zero',
     'zm' => 'whois.zicta.zm',
