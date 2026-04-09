@@ -761,4 +761,22 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $result['record_count'] = $this->backendProvider->countZoneRecords($zoneId);
         return $result;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDomainMetadata(int $zoneId): array
+    {
+        // TODO: Implement via PowerDNS API metadata endpoints
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function replaceDomainMetadata(int $zoneId, array $metadata): bool
+    {
+        // TODO: Implement via PowerDNS API metadata endpoints
+        return false;
+    }
 }
