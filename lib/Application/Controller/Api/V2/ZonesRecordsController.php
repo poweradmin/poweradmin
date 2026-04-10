@@ -776,7 +776,9 @@ class ZonesRecordsController extends PublicApiController
                 $this->updateSOASerial($zoneId);
             }
 
-            // Get the updated record to return
+            // Get the updated record to return.
+            // In API mode the record ID may change when name/type/content/prio change,
+            // so fall back to the submitted data if the old ID no longer resolves.
             $updatedRecord = $this->recordRepository->getRecordById($recordId);
 
             // Get zone name for stripping suffix
@@ -784,25 +786,39 @@ class ZonesRecordsController extends PublicApiController
             $domainRepository = $repositoryFactory->createDomainRepository();
             $zoneName = $domainRepository->getDomainNameById($zoneId);
 
-            $formattedRecord = [
-                'id' => $this->formatRecordId($updatedRecord['id']),
-                'zone_id' => $zoneId,
-                'name' => DnsHelper::stripZoneSuffix($updatedRecord['name'], $zoneName),
-                'type' => $updatedRecord['type'],
-                'content' => $this->stripTxtQuotes($updatedRecord['content'], $updatedRecord['type']),
-                'ttl' => (int)$updatedRecord['ttl'],
-                'priority' => isset($updatedRecord['prio']) ? (int)$updatedRecord['prio'] : 0,
-                'disabled' => isset($updatedRecord['disabled']) ? (bool)DbCompat::boolFromDb($updatedRecord['disabled']) : false,
-                'auth' => isset($updatedRecord['auth']) ? (bool)DbCompat::boolFromDb($updatedRecord['auth']) : true
-            ];
+            if ($updatedRecord !== null) {
+                $formattedRecord = [
+                    'id' => $this->formatRecordId($updatedRecord['id']),
+                    'zone_id' => $zoneId,
+                    'name' => DnsHelper::stripZoneSuffix($updatedRecord['name'], $zoneName),
+                    'type' => $updatedRecord['type'],
+                    'content' => $this->stripTxtQuotes($updatedRecord['content'], $updatedRecord['type']),
+                    'ttl' => (int)$updatedRecord['ttl'],
+                    'priority' => isset($updatedRecord['prio']) ? (int)$updatedRecord['prio'] : 0,
+                    'disabled' => isset($updatedRecord['disabled']) ? (bool)DbCompat::boolFromDb($updatedRecord['disabled']) : false,
+                    'auth' => isset($updatedRecord['auth']) ? (bool)DbCompat::boolFromDb($updatedRecord['auth']) : true
+                ];
+            } else {
+                $formattedRecord = [
+                    'id' => $this->formatRecordId($recordId),
+                    'zone_id' => $zoneId,
+                    'name' => DnsHelper::stripZoneSuffix($recordData['name'], $zoneName),
+                    'type' => $recordData['type'],
+                    'content' => $this->stripTxtQuotes($recordData['content'], $recordData['type']),
+                    'ttl' => $recordData['ttl'],
+                    'priority' => $recordData['prio'],
+                    'disabled' => (bool)$recordData['disabled'],
+                    'auth' => true
+                ];
+            }
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:api_edit_record name:%s type:%s content:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $this->getAuthenticatedUsername(),
-                $updatedRecord['name'] ?? '',
-                $updatedRecord['type'] ?? '',
-                $updatedRecord['content'] ?? ''
+                $formattedRecord['name'],
+                $formattedRecord['type'],
+                $formattedRecord['content']
             ), $zoneId);
 
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record updated successfully', 200);

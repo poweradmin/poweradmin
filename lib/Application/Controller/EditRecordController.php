@@ -241,8 +241,15 @@ class EditRecordController extends BaseController
 
         $new_record_info = $dnsRecord->getRecordFromId($_POST["rid"]);
         if ($new_record_info === null) {
-            $this->setMessage('edit', 'error', _('Failed to retrieve updated record information.'));
-            return false;
+            // In API mode the record ID changes when name/type/content/prio change,
+            // so the old ID won't match. Use POST data for audit logging instead.
+            $new_record_info = [
+                'type' => $postData['type'],
+                'name' => $postData['name'],
+                'content' => $postData['content'],
+                'ttl' => $postData['ttl'],
+                'prio' => $postData['prio'] ?? 0,
+            ];
         }
 
         $this->auditLogger->logInfo(
