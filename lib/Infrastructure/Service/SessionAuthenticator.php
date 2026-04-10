@@ -220,7 +220,9 @@ class SessionAuthenticator extends LoggingService
                 break;
             case 'sql':
             default:
-                $this->logInfo('User {username} uses SQL for authentication', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+                if (isset($_SESSION["userlogin"])) {
+                    $this->logInfo('User {username} uses SQL for authentication', ['username' => $_SESSION["userlogin"]]);
+                }
                 $this->sqlAuthenticator->authenticate();
                 break;
         }
