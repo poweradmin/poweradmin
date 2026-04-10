@@ -83,6 +83,41 @@ test.describe('Group Logs', () => {
     });
   });
 
+  test.describe('Log Filters', () => {
+    test('should have event type filter dropdown', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/groups/logs');
+
+      const eventSelect = page.locator('select[name="event_type"]');
+      await expect(eventSelect).toBeVisible();
+    });
+
+    test('should have date range filters', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/groups/logs');
+
+      const dateFrom = page.locator('input[name="date_from"]');
+      const dateTo = page.locator('input[name="date_to"]');
+      await expect(dateFrom).toBeVisible();
+      await expect(dateTo).toBeVisible();
+    });
+
+    test('should filter by event type', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/groups/logs');
+
+      const eventSelect = page.locator('select[name="event_type"]');
+      const options = eventSelect.locator('option');
+      const count = await options.count();
+      if (count > 1) {
+        const value = await options.nth(1).getAttribute('value');
+        await eventSelect.selectOption(value);
+        await page.locator('button[type="submit"]').first().click();
+        await expect(page).toHaveURL(/event_type=/);
+      }
+    });
+  });
+
   test.describe('Log Content', () => {
     test('should display group operation events', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);

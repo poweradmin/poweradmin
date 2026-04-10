@@ -3,7 +3,7 @@
 ##############################################################################
 # Poweradmin API v2 Test Suite
 # Comprehensive testing for API v2 endpoints
-# Tests: RRSets, PTR auto-creation, Bulk operations, Master port syntax, Groups, Metadata
+# Tests: RRSets, PTR auto-creation, Bulk operations, Master port syntax, Groups, Metadata, Users
 ##############################################################################
 
 set -euo pipefail
@@ -1540,6 +1540,98 @@ test_zone_metadata() {
     fi
 }
 
+##############################################################################
+# Users CRUD Tests
+##############################################################################
+
+TEST_CRUD_USER_ID=""
+
+test_users_crud() {
+    print_section "Users CRUD API Tests"
+
+    # Test 1: List users
+    api_request_v2 "GET" "/users" "" 200 "List all users"
+
+    increment_test
+    local user_count
+    user_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data | length' 2>/dev/null)
+    if [[ "$user_count" -ge 1 ]]; then
+        print_pass "Users list contains at least 1 user ($user_count)"
+    else
+        print_fail "Expected at least 1 user, got $user_count"
+    fi
+
+    # Test 2: Create user
+    local create_data='{"username":"api_crud_test_user","password":"SecureTestPass1234","fullname":"API CRUD Test","email":"api_crud_test@example.com","description":"User created by API test","perm_templ":1,"active":true}'
+    if api_request_v2 "POST" "/users" "$create_data" 201 "Create user"; then
+        TEST_CRUD_USER_ID=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')
+        print_info "Created user ID: $TEST_CRUD_USER_ID"
+    fi
+
+    # Test 3: Get user by ID
+    if [[ -n "$TEST_CRUD_USER_ID" ]]; then
+        api_request_v2 "GET" "/users/${TEST_CRUD_USER_ID}" "" 200 "Get user by ID"
+
+        increment_test
+        local username
+        username=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.username' 2>/dev/null)
+        if [[ "$username" == "api_crud_test_user" ]]; then
+            print_pass "User data matches (username: $username)"
+        else
+            print_fail "Expected username 'api_crud_test_user', got '$username'"
+        fi
+    fi
+
+    # Test 4: Update user
+    if [[ -n "$TEST_CRUD_USER_ID" ]]; then
+        local update_data='{"fullname":"API CRUD Updated","description":"Updated description"}'
+        api_request_v2 "PUT" "/users/${TEST_CRUD_USER_ID}" "$update_data" 200 "Update user"
+
+        # Verify update
+        api_request_v2 "GET" "/users/${TEST_CRUD_USER_ID}" "" 200 "Get updated user"
+
+        increment_test
+        local fullname
+        fullname=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.fullname' 2>/dev/null)
+        if [[ "$fullname" == "API CRUD Updated" ]]; then
+            print_pass "User fullname updated correctly"
+        else
+            print_fail "Expected fullname 'API CRUD Updated', got '$fullname'"
+        fi
+    fi
+
+    # Test 5: Create duplicate user (should fail)
+    api_request_v2 "POST" "/users" "$create_data" 409 "Create duplicate user (should fail)"
+
+    # Test 6: Get non-existent user
+    api_request_v2 "GET" "/users/999999" "" 404 "Get non-existent user"
+
+    # Test 7: Create user with missing required fields
+    api_request_v2 "POST" "/users" '{"username":"incomplete"}' 400 "Create user with missing fields"
+
+    # Test 8: Delete user
+    if [[ -n "$TEST_CRUD_USER_ID" ]]; then
+        api_request_v2 "DELETE" "/users/${TEST_CRUD_USER_ID}" "" 200 "Delete user"
+
+        # Verify deletion
+        api_request_v2 "GET" "/users/${TEST_CRUD_USER_ID}" "" 404 "Get deleted user returns 404"
+        TEST_CRUD_USER_ID=""
+    fi
+
+    # Test 9: Delete non-existent user
+    api_request_v2 "DELETE" "/users/999999" "" 404 "Delete non-existent user"
+}
+
+cleanup_existing_test_crud_user() {
+    local user_id
+    user_id=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "api_crud_test_user") | .user_id' 2>/dev/null)
+    if [[ -n "$user_id" ]]; then
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" \
+            "${API_BASE_URL}/api/v2/users/$user_id" >/dev/null 2>&1 || true
+    fi
+}
+
 cleanup() {
     print_section "Cleanup"
 
@@ -1595,9 +1687,16 @@ cleanup() {
     print_info "Cleaning up any remaining test zones..."
     # This would require listing zones and filtering - simplified for now
 
+    # Delete CRUD test user
+    if [[ -n "$TEST_CRUD_USER_ID" ]]; then
+        print_info "Deleting CRUD test user $TEST_CRUD_USER_ID..."
+        api_request_v2 "DELETE" "/users/$TEST_CRUD_USER_ID" "" 200 "Delete CRUD test user" || true
+    fi
+
     # Cleanup any remaining test groups and users
     cleanup_existing_test_groups
     cleanup_existing_test_owner_user
+    cleanup_existing_test_crud_user
 }
 
 ##############################################################################
@@ -1645,8 +1744,9 @@ main() {
 
     load_config
 
-    # Clean up leftover zones from previous test runs
+    # Clean up leftover data from previous test runs
     cleanup_existing_test_zones
+    cleanup_existing_test_crud_user
 
     echo -e "\n${YELLOW}Starting tests...${NC}\n"
 
@@ -1659,6 +1759,7 @@ main() {
     test_groups
     test_zone_owners
     test_zone_metadata
+    test_users_crud
     test_zone_templates
 
     # Cleanup

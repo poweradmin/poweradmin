@@ -76,6 +76,52 @@ test.describe('User Logs', () => {
         await expect(rows.first()).toBeVisible();
       }
     });
+
+    test('should have user filter dropdown', async ({ page }) => {
+      await page.goto('/users/logs');
+      const userSelect = page.locator('select[name="name"]');
+      await expect(userSelect).toBeVisible();
+    });
+
+    test('should have event type filter dropdown', async ({ page }) => {
+      await page.goto('/users/logs');
+      const eventSelect = page.locator('select[name="event_type"]');
+      await expect(eventSelect).toBeVisible();
+    });
+
+    test('should have date range filters', async ({ page }) => {
+      await page.goto('/users/logs');
+      const dateFrom = page.locator('input[name="date_from"]');
+      const dateTo = page.locator('input[name="date_to"]');
+      await expect(dateFrom).toBeVisible();
+      await expect(dateTo).toBeVisible();
+    });
+
+    test('should filter by user', async ({ page }) => {
+      await page.goto('/users/logs');
+      const userSelect = page.locator('select[name="name"]');
+      const options = userSelect.locator('option');
+      const count = await options.count();
+      if (count > 1) {
+        const value = await options.nth(1).getAttribute('value');
+        await userSelect.selectOption(value);
+        await page.locator('button[type="submit"]').first().click();
+        await expect(page).toHaveURL(/name=/);
+      }
+    });
+
+    test('should filter by event type', async ({ page }) => {
+      await page.goto('/users/logs');
+      const eventSelect = page.locator('select[name="event_type"]');
+      const options = eventSelect.locator('option');
+      const count = await options.count();
+      if (count > 1) {
+        const value = await options.nth(1).getAttribute('value');
+        await eventSelect.selectOption(value);
+        await page.locator('button[type="submit"]').first().click();
+        await expect(page).toHaveURL(/event_type=/);
+      }
+    });
   });
 
   test.describe('Manager User - Permission Check', () => {
