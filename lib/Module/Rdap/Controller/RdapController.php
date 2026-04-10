@@ -41,6 +41,11 @@ class RdapController extends BaseController
 
         $timeout = $this->getModuleConfig('rdap', 'request_timeout', 10);
         $this->rdapService->setRequestTimeout($timeout);
+
+        $customServers = $this->getModuleConfig('rdap', 'custom_servers', []);
+        if (is_array($customServers) && !empty($customServers)) {
+            $this->rdapService->setCustomServers($customServers);
+        }
     }
 
     public function run(): void

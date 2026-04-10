@@ -785,12 +785,14 @@ return [
         'whois' => [
             'enabled' => false,
             'default_server' => '',
+            'custom_servers' => [],
             'socket_timeout' => 10,
             'restrict_to_admin' => true,
         ],
         'rdap' => [
             'enabled' => false,
             'default_server' => '',
+            'custom_servers' => [],
             'request_timeout' => 10,
             'restrict_to_admin' => true,
         ],

@@ -177,6 +177,33 @@ class WhoisServiceTest extends TestCase
         $this->assertEquals($expectedOutput, $this->whoisService->formatWhoisResponse($rawResponse));
     }
 
+    public function testSetCustomServersOverridesBuiltIn(): void
+    {
+        $this->assertEquals('whois.verisign-grs.com', $this->whoisService->getWhoisServer('com'));
+
+        $this->whoisService->setCustomServers(['com' => 'custom.whois.server.com']);
+
+        $this->assertEquals('custom.whois.server.com', $this->whoisService->getWhoisServer('com'));
+    }
+
+    public function testSetCustomServersAddsNewTld(): void
+    {
+        $this->assertNull($this->whoisService->getWhoisServer('za'));
+
+        $this->whoisService->setCustomServers(['za' => 'whois.registry.net.za']);
+
+        $this->assertEquals('whois.registry.net.za', $this->whoisService->getWhoisServer('za'));
+        $this->assertEquals('whois.registry.net.za', $this->whoisService->getWhoisServerForDomain('example.co.za'));
+    }
+
+    public function testSetCustomServersPreservesExisting(): void
+    {
+        $this->whoisService->setCustomServers(['za' => 'whois.registry.net.za']);
+
+        $this->assertEquals('whois.verisign-grs.com', $this->whoisService->getWhoisServer('com'));
+        $this->assertEquals('whois.pir.org', $this->whoisService->getWhoisServer('org'));
+    }
+
     public function testGetWhoisInfoWithNoServer(): void
     {
         $mockWhoisService = $this->getMockBuilder(WhoisService::class)

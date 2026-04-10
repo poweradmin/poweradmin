@@ -117,6 +117,11 @@ class RdapService
         return $this->rdapServers;
     }
 
+    public function setCustomServers(array $servers): void
+    {
+        $this->rdapServers = array_merge($this->rdapServers, $servers);
+    }
+
     public function refresh(): bool
     {
         return $this->loadRdapServers();

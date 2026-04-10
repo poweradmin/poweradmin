@@ -142,6 +142,11 @@ class WhoisService
         return implode('.', $parts);
     }
 
+    public function setCustomServers(array $servers): void
+    {
+        $this->whoisServers = array_merge($this->whoisServers, $servers);
+    }
+
     public function refresh(): bool
     {
         return $this->loadWhoisServers();

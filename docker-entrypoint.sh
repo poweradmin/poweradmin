@@ -603,6 +603,7 @@ generate_config() {
     local mod_whois_restrict_to_admin=$(echo "${PA_MODULE_WHOIS_RESTRICT_TO_ADMIN:-true}" | tr '[:upper:]' '[:lower:]')
     local mod_rdap_enabled=$(echo "${PA_MODULE_RDAP_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local mod_rdap_restrict_to_admin=$(echo "${PA_MODULE_RDAP_RESTRICT_TO_ADMIN:-true}" | tr '[:upper:]' '[:lower:]')
+
     local mod_email_previews_enabled=$(echo "${PA_MODULE_EMAIL_PREVIEWS_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local mod_email_previews_restrict_to_admin=$(echo "${PA_MODULE_EMAIL_PREVIEWS_RESTRICT_TO_ADMIN:-true}" | tr '[:upper:]' '[:lower:]')
     local mod_dns_wizards_enabled=$(echo "${PA_MODULE_DNS_WIZARDS_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
@@ -685,6 +686,18 @@ generate_config() {
     local saml_group_mapping="[]"
     if [ -n "${PA_SAML_GROUP_MAPPING}" ]; then
         saml_group_mapping="[$(parse_mapping "${PA_SAML_GROUP_MAPPING}")]"
+    fi
+
+    # Process WHOIS custom servers mapping
+    local whois_custom_servers="[]"
+    if [ -n "${PA_MODULE_WHOIS_CUSTOM_SERVERS:-}" ]; then
+        whois_custom_servers="[$(parse_mapping "${PA_MODULE_WHOIS_CUSTOM_SERVERS}")]"
+    fi
+
+    # Process RDAP custom servers mapping
+    local rdap_custom_servers="[]"
+    if [ -n "${PA_MODULE_RDAP_CUSTOM_SERVERS:-}" ]; then
+        rdap_custom_servers="[$(parse_mapping "${PA_MODULE_RDAP_CUSTOM_SERVERS}")]"
     fi
 
     # Ensure parent directory exists for custom config paths
@@ -1160,12 +1173,14 @@ EOF
         'whois' => [
             'enabled' => ${mod_whois_enabled},
             'default_server' => '${PA_MODULE_WHOIS_DEFAULT_SERVER:-}',
+            'custom_servers' => ${whois_custom_servers},
             'socket_timeout' => ${PA_MODULE_WHOIS_SOCKET_TIMEOUT:-10},
             'restrict_to_admin' => ${mod_whois_restrict_to_admin},
         ],
         'rdap' => [
             'enabled' => ${mod_rdap_enabled},
             'default_server' => '${PA_MODULE_RDAP_DEFAULT_SERVER:-}',
+            'custom_servers' => ${rdap_custom_servers},
             'request_timeout' => ${PA_MODULE_RDAP_REQUEST_TIMEOUT:-10},
             'restrict_to_admin' => ${mod_rdap_restrict_to_admin},
         ],

@@ -41,6 +41,11 @@ class WhoisController extends BaseController
 
         $timeout = $this->getModuleConfig('whois', 'socket_timeout', 10);
         $this->whoisService->setSocketTimeout($timeout);
+
+        $customServers = $this->getModuleConfig('whois', 'custom_servers', []);
+        if (is_array($customServers) && !empty($customServers)) {
+            $this->whoisService->setCustomServers($customServers);
+        }
     }
 
     public function run(): void

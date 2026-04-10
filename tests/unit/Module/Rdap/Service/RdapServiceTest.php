@@ -190,6 +190,33 @@ class RdapServiceTest extends TestCase
         $this->assertNull($this->rdapService->getRdapServer('org'));
     }
 
+    public function testSetCustomServersOverridesBuiltIn(): void
+    {
+        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServer('com'));
+
+        $this->rdapService->setCustomServers(['com' => 'https://custom.rdap.server/']);
+
+        $this->assertEquals('https://custom.rdap.server/', $this->rdapService->getRdapServer('com'));
+    }
+
+    public function testSetCustomServersAddsNewTld(): void
+    {
+        $this->assertNull($this->rdapService->getRdapServer('za'));
+
+        $this->rdapService->setCustomServers(['za' => 'https://rdap.registry.net.za/']);
+
+        $this->assertEquals('https://rdap.registry.net.za/', $this->rdapService->getRdapServer('za'));
+        $this->assertEquals('https://rdap.registry.net.za/', $this->rdapService->getRdapServerForDomain('example.co.za'));
+    }
+
+    public function testSetCustomServersPreservesExisting(): void
+    {
+        $this->rdapService->setCustomServers(['za' => 'https://rdap.registry.net.za/']);
+
+        $this->assertEquals('https://rdap.verisign.com/com/v1/', $this->rdapService->getRdapServer('com'));
+        $this->assertEquals('https://rdap.identitydigital.services/rdap/', $this->rdapService->getRdapServer('org'));
+    }
+
     public function testGetRdapInfoWithNoServer(): void
     {
         $this->createTestDataFile([]);

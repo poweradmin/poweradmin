@@ -388,10 +388,12 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_MODULE_ZONE_IMPORT_EXPORT_MAX_FILE_SIZE` | Max upload file size in bytes | `1048576` | No |
 | `PA_MODULE_WHOIS_ENABLED` | Enable WHOIS lookup module | `false` | No |
 | `PA_MODULE_WHOIS_DEFAULT_SERVER` | Default WHOIS server | Empty | No |
+| `PA_MODULE_WHOIS_CUSTOM_SERVERS` | Custom TLD-to-server mapping (e.g., `za=whois.registry.net.za,co.za=whois.registry.net.za`) | Empty | No |
 | `PA_MODULE_WHOIS_SOCKET_TIMEOUT` | WHOIS socket timeout in seconds | `10` | No |
 | `PA_MODULE_WHOIS_RESTRICT_TO_ADMIN` | Restrict WHOIS to administrators | `true` | No |
 | `PA_MODULE_RDAP_ENABLED` | Enable RDAP lookup module | `false` | No |
 | `PA_MODULE_RDAP_DEFAULT_SERVER` | Default RDAP server | Empty | No |
+| `PA_MODULE_RDAP_CUSTOM_SERVERS` | Custom TLD-to-server mapping (e.g., `za=https://rdap.example.com/`) | Empty | No |
 | `PA_MODULE_RDAP_REQUEST_TIMEOUT` | RDAP request timeout in seconds | `10` | No |
 | `PA_MODULE_RDAP_RESTRICT_TO_ADMIN` | Restrict RDAP to administrators | `true` | No |
 | `PA_MODULE_EMAIL_PREVIEWS_ENABLED` | Enable email template previews module | `false` | No |
