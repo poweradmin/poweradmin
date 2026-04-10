@@ -137,6 +137,30 @@ class PowerdnsApiClient
     }
 
     /**
+     * Get zone stats (record count, DNSSEC) for all zones in a single API call.
+     *
+     * @return array<string, array{rrset_count: int, dnssec: bool}>
+     */
+    public function getAllZoneStats(): array
+    {
+        $endpoint = $this->buildEndpoint("/zones");
+        $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+        $stats = [];
+        if ($response && $response['responseCode'] === 200) {
+            foreach ($response['data'] as $zoneData) {
+                $name = $zoneData['name'] ?? '';
+                $stats[$name] = [
+                    'rrset_count' => (int)($zoneData['rrset_count'] ?? 0),
+                    'dnssec' => (bool)($zoneData['dnssec'] ?? false),
+                ];
+            }
+        }
+
+        return $stats;
+    }
+
+    /**
      * Create a new zone
      *
      * @param Zone $zone

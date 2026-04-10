@@ -621,6 +621,11 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         return $zoneId ?? 0;
     }
 
+    public function getZoneStats(): array
+    {
+        return $this->client->getAllZoneStats();
+    }
+
     public function countZoneRecords(int $domainId): int
     {
         $zoneName = $this->getZoneNameByLocalId($domainId);

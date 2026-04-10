@@ -173,18 +173,21 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $zoneStats = $this->backendProvider->getZoneStats();
         $zones = [];
         foreach ($results as $row) {
             $name = (string)$row['name'];
             if (!isset($zones[$name])) {
+                $apiName = $name . '.';
+                $stats = $zoneStats[$apiName] ?? [];
                 $zones[$name] = [
                     'id' => $row['id'],
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'] ?? 'NATIVE',
-                    'count_records' => 0,
+                    'count_records' => $stats['rrset_count'] ?? 0,
                     'comment' => $row['comment'] ?? '',
-                    'secured' => false,
+                    'secured' => $stats['dnssec'] ?? false,
                     'owners' => [],
                     'full_names' => [],
                     'users' => []
@@ -281,18 +284,21 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $zoneStats = $this->backendProvider->getZoneStats();
         $zones = [];
         foreach ($results as $row) {
             $name = (string)$row['name'];
             if (!isset($zones[$name])) {
+                $apiName = $name . '.';
+                $stats = $zoneStats[$apiName] ?? [];
                 $zones[$name] = [
                     'id' => $row['id'],
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
-                    'count_records' => 0,
+                    'count_records' => $stats['rrset_count'] ?? 0,
                     'comment' => $row['comment'] ?? '',
-                    'secured' => false,
+                    'secured' => $stats['dnssec'] ?? false,
                     'owners' => [],
                     'full_names' => [],
                     'users' => []

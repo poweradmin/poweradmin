@@ -292,6 +292,13 @@ interface DnsBackendProvider
     public function getZoneIdFromRecordId(int|string $recordId): int;
 
     /**
+     * Get bulk zone stats (record count, DNSSEC state) keyed by zone name.
+     *
+     * @return array<string, array{rrset_count: int, dnssec: bool}>
+     */
+    public function getZoneStats(): array;
+
+    /**
      * Count non-ENT records in a zone.
      *
      * @param int $domainId Domain ID

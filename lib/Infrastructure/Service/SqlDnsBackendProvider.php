@@ -380,6 +380,11 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return (int)($stmt->fetchColumn() ?: 0);
     }
 
+    public function getZoneStats(): array
+    {
+        return [];
+    }
+
     public function countZoneRecords(int $domainId): int
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
