@@ -145,7 +145,7 @@ class IndexController extends BaseController
         $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
 
         if (DnsBackendProviderFactory::isApiBackend($this->config)) {
-            $zoneCount = (int) $this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn();
+            $zoneCount = (int) $this->db->query("SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL")->fetchColumn();
             return [
                 'zones' => $zoneCount,
                 'records' => null,
