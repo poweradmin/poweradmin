@@ -22,42 +22,46 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+
 class LdapUserEventLogger
 {
     private LegacyLogger $logger;
+    private IpAddressRetriever $ipRetriever;
 
     public function __construct($db)
     {
         $this->logger = new LegacyLogger($db);
+        $this->ipRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function logFailedReason($reason): void
     {
-        $this->logger->logError(sprintf('Failed LDAP authentication attempt from [%s] Reason: %s failed', $_SERVER['REMOTE_ADDR'], $reason));
+        $this->logger->logError(sprintf('Failed LDAP authentication attempt from [%s] Reason: %s failed', $this->ipRetriever->getClientIp(), $reason));
     }
 
     public function logSuccessAuth(): void
     {
-        $this->logger->logNotice(sprintf('Successful LDAP authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        $this->logger->logNotice(sprintf('Successful LDAP authentication attempt from [%s] for user \'%s\'', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
     }
 
     public function logFailedAuth(): void
     {
-        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: No such user', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: No such user', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
     }
 
     public function logFailedDuplicateAuth(): void
     {
-        $this->logger->logError(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Duplicate usernames detected', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        $this->logger->logError(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Duplicate usernames detected', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
     }
 
     public function logFailedIncorrectPass(): void
     {
-        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
     }
 
     public function logFailedUserInactive(): void
     {
-        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
     }
 }
