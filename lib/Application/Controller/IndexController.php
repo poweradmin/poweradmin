@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -140,14 +141,25 @@ class IndexController extends BaseController
 
     private function getDashboardStats(): array
     {
+        $userCount = UserManager::countUsers($this->db);
+        $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
+
+        if (DnsBackendProviderFactory::isApiBackend($this->config)) {
+            $zoneCount = (int) $this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn();
+            return [
+                'zones' => $zoneCount,
+                'records' => null,
+                'users' => $userCount,
+                'groups' => $groupCount,
+            ];
+        }
+
         $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
         $records_table = $pdns_db_name ? "$pdns_db_name.records" : "records";
 
         $zoneCount = (int) $this->db->query("SELECT COUNT(*) FROM $domains_table")->fetchColumn();
         $recordCount = (int) $this->db->query("SELECT COUNT(*) FROM $records_table")->fetchColumn();
-        $userCount = UserManager::countUsers($this->db);
-        $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
 
         return [
             'zones' => $zoneCount,

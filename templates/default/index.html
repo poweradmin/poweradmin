@@ -3,7 +3,7 @@
     {% if dashboard_stats %}
     <div class="d-flex gap-3">
         <span class="text-muted small"><i class="bi bi-globe2 me-1"></i>{{ dashboard_stats.zones }} {% trans %}zones{% endtrans %}</span>
-        <span class="text-muted small"><i class="bi bi-list-ul me-1"></i>{{ dashboard_stats.records }} {% trans %}records{% endtrans %}</span>
+        {% if dashboard_stats.records is not null %}<span class="text-muted small"><i class="bi bi-list-ul me-1"></i>{{ dashboard_stats.records }} {% trans %}records{% endtrans %}</span>{% endif %}
         <span class="text-muted small"><i class="bi bi-people me-1"></i>{{ dashboard_stats.users }} {% trans %}users{% endtrans %}</span>
         <span class="text-muted small"><i class="bi bi-people-fill me-1"></i>{{ dashboard_stats.groups }} {% trans %}groups{% endtrans %}</span>
     </div>
