@@ -39,28 +39,28 @@ test.describe('Language Selector - Limited Configuration', () => {
     await page.goto('/login');
 
     // Skip all tests in this suite if the instance does not have limited languages
-    const count = await page.locator('select[name="userlang"] option').count();
+    const count = await page.locator('#langSwitcher + .dropdown-menu .dropdown-item').count();
     test.skip(count !== EXPECTED_COUNT, `Skipping: instance has ${count} languages (expected ${EXPECTED_COUNT} for limited config)`);
   });
 
   test('should show exactly the configured number of languages', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const count = await options.count();
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const count = await items.count();
     expect(count).toBe(EXPECTED_COUNT);
   });
 
   test('should contain only the configured locales', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
 
     const expectedLocales = Object.keys(CONFIGURED_LANGUAGES);
     expect(values.sort()).toEqual(expectedLocales.sort());
   });
 
   test('should display correct native names for configured languages', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const optionData = await options.evaluateAll(opts =>
-      opts.map(o => ({ value: o.value, label: o.textContent.trim() }))
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const optionData = await items.evaluateAll(els =>
+      els.map(el => ({ value: el.dataset.lang, label: el.textContent.trim() }))
     );
 
     for (const opt of optionData) {
@@ -69,8 +69,8 @@ test.describe('Language Selector - Limited Configuration', () => {
   });
 
   test('should not contain excluded languages', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
 
     for (const locale of EXCLUDED_LANGUAGES) {
       expect(values).not.toContain(locale);
@@ -78,7 +78,10 @@ test.describe('Language Selector - Limited Configuration', () => {
   });
 
   test('should switch to German and show German interface', async ({ page }) => {
-    await page.locator('select[name="userlang"]').selectOption('de_DE');
+    await page.locator('#langSwitcher').click();
+    await page.locator('#langSwitcher + .dropdown-menu .dropdown-item[data-lang="de_DE"]').click();
+    await page.waitForURL(/lang=de_DE/, { timeout: 10000 });
+
     await page.locator('[data-testid="username-input"]').fill(users.admin.username);
     await page.locator('[data-testid="password-input"]').fill(users.admin.password);
     await page.locator('[data-testid="login-button"]').click();
@@ -89,7 +92,10 @@ test.describe('Language Selector - Limited Configuration', () => {
   });
 
   test('should switch to French and show French interface', async ({ page }) => {
-    await page.locator('select[name="userlang"]').selectOption('fr_FR');
+    await page.locator('#langSwitcher').click();
+    await page.locator('#langSwitcher + .dropdown-menu .dropdown-item[data-lang="fr_FR"]').click();
+    await page.waitForURL(/lang=fr_FR/, { timeout: 10000 });
+
     await page.locator('[data-testid="username-input"]').fill(users.admin.username);
     await page.locator('[data-testid="password-input"]').fill(users.admin.password);
     await page.locator('[data-testid="login-button"]').click();
@@ -100,7 +106,10 @@ test.describe('Language Selector - Limited Configuration', () => {
   });
 
   test('should switch to Japanese and show Japanese interface', async ({ page }) => {
-    await page.locator('select[name="userlang"]').selectOption('ja_JP');
+    await page.locator('#langSwitcher').click();
+    await page.locator('#langSwitcher + .dropdown-menu .dropdown-item[data-lang="ja_JP"]').click();
+    await page.waitForURL(/lang=ja_JP/, { timeout: 10000 });
+
     await page.locator('[data-testid="username-input"]').fill(users.admin.username);
     await page.locator('[data-testid="password-input"]').fill(users.admin.password);
     await page.locator('[data-testid="login-button"]').click();
@@ -111,7 +120,10 @@ test.describe('Language Selector - Limited Configuration', () => {
   });
 
   test('should switch to Polish and show Polish interface', async ({ page }) => {
-    await page.locator('select[name="userlang"]').selectOption('pl_PL');
+    await page.locator('#langSwitcher').click();
+    await page.locator('#langSwitcher + .dropdown-menu .dropdown-item[data-lang="pl_PL"]').click();
+    await page.waitForURL(/lang=pl_PL/, { timeout: 10000 });
+
     await page.locator('[data-testid="username-input"]').fill(users.admin.username);
     await page.locator('[data-testid="password-input"]').fill(users.admin.password);
     await page.locator('[data-testid="login-button"]').click();
@@ -122,7 +134,10 @@ test.describe('Language Selector - Limited Configuration', () => {
   });
 
   test('should persist limited language selection across navigation', async ({ page }) => {
-    await page.locator('select[name="userlang"]').selectOption('fr_FR');
+    await page.locator('#langSwitcher').click();
+    await page.locator('#langSwitcher + .dropdown-menu .dropdown-item[data-lang="fr_FR"]').click();
+    await page.waitForURL(/lang=fr_FR/, { timeout: 10000 });
+
     await page.locator('[data-testid="username-input"]').fill(users.admin.username);
     await page.locator('[data-testid="password-input"]').fill(users.admin.password);
     await page.locator('[data-testid="login-button"]').click();
@@ -145,8 +160,8 @@ test.describe('Language Selector - Limited Configuration', () => {
     await page.waitForURL(/login/, { timeout: 10000 });
 
     // Verify still limited to configured languages
-    const options = page.locator('select[name="userlang"] option');
-    const count = await options.count();
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const count = await items.count();
     expect(count).toBe(EXPECTED_COUNT);
   });
 });

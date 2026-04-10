@@ -29,14 +29,14 @@ test.describe('Language Selector - Full Configuration', () => {
   });
 
   test('should have all 20 supported languages', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const count = await options.count();
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const count = await items.count();
     expect(count).toBe(ALL_LOCALES.length);
   });
 
   test('should contain all original languages', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
 
     for (const locale of ORIGINAL_LOCALES) {
       expect(values).toContain(locale);
@@ -44,8 +44,8 @@ test.describe('Language Selector - Full Configuration', () => {
   });
 
   test('should contain all newly added languages', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
 
     for (const locale of NEW_LOCALES) {
       expect(values).toContain(locale);
@@ -53,8 +53,8 @@ test.describe('Language Selector - Full Configuration', () => {
   });
 
   test('should have no extra unexpected locales', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
 
     for (const value of values) {
       expect(ALL_LOCALES).toContain(value);

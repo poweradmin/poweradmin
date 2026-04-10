@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -137,12 +137,18 @@ class LoginController extends BaseController
             $samlProviders = $this->samlService->getAvailableProviders();
         }
 
+        $currentLanguage = $_GET['lang'] ?? $this->config->get('interface', 'language', 'en_EN');
+        if (!in_array($currentLanguage, $locales)) {
+            $currentLanguage = $this->config->get('interface', 'language', 'en_EN');
+        }
+
         $this->render('login.html', [
             'login_token' => $loginToken,
             'query_string' => $_SERVER['QUERY_STRING'] ?? '',
             'locale_options' => $this->localePresenter->generateLocaleOptions($preparedLocales),
             'locales' => $preparedLocales,
             'show_language_selector' => $showLanguageSelector,
+            'current_language' => $currentLanguage,
             'msg' => $msg,
             'type' => $type,
             'recaptcha_enabled' => $this->config->get('security', 'recaptcha.enabled', false),

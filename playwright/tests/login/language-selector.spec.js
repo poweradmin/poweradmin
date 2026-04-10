@@ -7,56 +7,59 @@ test.describe('Language Selector', () => {
   });
 
   test('should display language selector on login page', async ({ page }) => {
-    const selector = page.locator('select[name="userlang"]');
-    await expect(selector).toBeVisible();
+    const switcher = page.locator('#langSwitcher');
+    await expect(switcher).toBeVisible();
   });
 
   test('should have English selected by default', async ({ page }) => {
-    const selector = page.locator('select[name="userlang"]');
-    const selectedValue = await selector.inputValue();
-    expect(selectedValue).toBe('en_EN');
+    const currentLabel = page.locator('#currentLangLabel');
+    await expect(currentLabel).toHaveText('English');
   });
 
   test('should always include English locale', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
     expect(values).toContain('en_EN');
   });
 
   test('should have at least 2 languages available', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const count = await options.count();
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const count = await items.count();
     expect(count).toBeGreaterThanOrEqual(2);
   });
 
   test('should list languages in alphabetical order by name', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const labels = await options.evaluateAll(opts => opts.map(o => o.textContent.trim()));
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const labels = await items.evaluateAll(els => els.map(el => el.textContent.trim()));
     const sorted = [...labels].sort((a, b) => a.localeCompare(b));
     expect(labels).toEqual(sorted);
   });
 
   test('should have non-empty labels for all options', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const labels = await options.evaluateAll(opts => opts.map(o => o.textContent.trim()));
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const labels = await items.evaluateAll(els => els.map(el => el.textContent.trim()));
     for (const label of labels) {
       expect(label.length).toBeGreaterThan(0);
     }
   });
 
   test('should have unique locale values', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
     const unique = new Set(values);
     expect(unique.size).toBe(values.length);
   });
 
   test('should change interface language to German after login', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
     test.skip(!values.includes('de_DE'), 'German not in enabled languages');
 
-    await page.locator('select[name="userlang"]').selectOption('de_DE');
+    // Open dropdown and click German
+    await page.locator('#langSwitcher').click();
+    await page.locator('#langSwitcher + .dropdown-menu .dropdown-item[data-lang="de_DE"]').click();
+    await page.waitForURL(/lang=de_DE/, { timeout: 10000 });
+
     await page.locator('[data-testid="username-input"]').fill(users.admin.username);
     await page.locator('[data-testid="password-input"]').fill(users.admin.password);
     await page.locator('[data-testid="login-button"]').click();
@@ -67,11 +70,15 @@ test.describe('Language Selector', () => {
   });
 
   test('should change interface language to French after login', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
     test.skip(!values.includes('fr_FR'), 'French not in enabled languages');
 
-    await page.locator('select[name="userlang"]').selectOption('fr_FR');
+    // Open dropdown and click French
+    await page.locator('#langSwitcher').click();
+    await page.locator('#langSwitcher + .dropdown-menu .dropdown-item[data-lang="fr_FR"]').click();
+    await page.waitForURL(/lang=fr_FR/, { timeout: 10000 });
+
     await page.locator('[data-testid="username-input"]').fill(users.admin.username);
     await page.locator('[data-testid="password-input"]').fill(users.admin.password);
     await page.locator('[data-testid="login-button"]').click();
@@ -92,11 +99,15 @@ test.describe('Language Selector', () => {
   });
 
   test('should persist language selection across page navigation', async ({ page }) => {
-    const options = page.locator('select[name="userlang"] option');
-    const values = await options.evaluateAll(opts => opts.map(o => o.value));
+    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
+    const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
     test.skip(!values.includes('de_DE'), 'German not in enabled languages');
 
-    await page.locator('select[name="userlang"]').selectOption('de_DE');
+    // Open dropdown and click German
+    await page.locator('#langSwitcher').click();
+    await page.locator('#langSwitcher + .dropdown-menu .dropdown-item[data-lang="de_DE"]').click();
+    await page.waitForURL(/lang=de_DE/, { timeout: 10000 });
+
     await page.locator('[data-testid="username-input"]').fill(users.admin.username);
     await page.locator('[data-testid="password-input"]').fill(users.admin.password);
     await page.locator('[data-testid="login-button"]').click();
@@ -117,7 +128,7 @@ test.describe('Language Selector', () => {
     await page.goto('/logout');
     await page.waitForURL(/login/, { timeout: 10000 });
 
-    const selector = page.locator('select[name="userlang"]');
-    await expect(selector).toBeVisible();
+    const switcher = page.locator('#langSwitcher');
+    await expect(switcher).toBeVisible();
   });
 });
