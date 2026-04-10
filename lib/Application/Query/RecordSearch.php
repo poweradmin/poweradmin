@@ -339,10 +339,11 @@ class RecordSearch extends BaseSearch
             $tableNameService = new TableNameService($this->config);
             $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
             $links_table = 'record_comment_links';
+            $castId = DbCompat::castToString($db_type, "$records_table.id");
             $whereConditions .= " OR EXISTS (
                 SELECT 1 FROM $comments_table c
                 LEFT JOIN $links_table rcl ON rcl.comment_id = c.id
-                WHERE (rcl.record_id = $records_table.id
+                WHERE (rcl.record_id = $castId
                     OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type))
                 AND c.comment LIKE :search_string_comment
             )";
@@ -388,10 +389,12 @@ class RecordSearch extends BaseSearch
             $tableNameService = new TableNameService($this->config);
             $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
             $links_table = 'record_comment_links';
+            $db_type = $this->config->get('database', 'type');
+            $castId = DbCompat::castToString($db_type, "$records_table.id");
             $whereConditions .= " OR EXISTS (
                 SELECT 1 FROM $comments_table c
                 LEFT JOIN $links_table rcl ON rcl.comment_id = c.id
-                WHERE (rcl.record_id = $records_table.id
+                WHERE (rcl.record_id = $castId
                     OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type))
                 AND c.comment LIKE :search_string_comment
             )";
