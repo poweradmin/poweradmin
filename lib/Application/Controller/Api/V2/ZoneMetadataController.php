@@ -325,7 +325,9 @@ class ZoneMetadataController extends PublicApiController
                 return $this->returnApiError('Metadata kind ' . $kind . ' accepts only a single value', 400);
             }
 
-            $this->saveMetadataKind($zoneId, $kind, $values);
+            if (!$this->saveMetadataKind($zoneId, $kind, $values)) {
+                return $this->returnApiError('Failed to update metadata', 500);
+            }
 
             return $this->returnApiResponse(null, true, 'Metadata updated successfully');
         } catch (Exception $e) {
@@ -390,7 +392,9 @@ class ZoneMetadataController extends PublicApiController
         }
 
         try {
-            $this->deleteMetadataKindStorage($zoneId, $kind);
+            if (!$this->deleteMetadataKindStorage($zoneId, $kind)) {
+                return $this->returnApiError('Failed to delete metadata', 500);
+            }
 
             return $this->returnApiResponse(null, true, 'Metadata deleted successfully');
         } catch (Exception $e) {
@@ -455,23 +459,22 @@ class ZoneMetadataController extends PublicApiController
      * Save metadata values for a specific kind.
      *
      * @param array<string> $values
+     * @return bool True on success
      */
-    private function saveMetadataKind(int $zoneId, string $kind, array $values): void
+    private function saveMetadataKind(int $zoneId, string $kind, array $values): bool
     {
         if ($this->apiClient !== null) {
             $zone = $this->zoneRepository->getZone($zoneId);
             if ($zone === null) {
-                return;
+                return false;
             }
             $zoneObj = new Zone($zone['name']);
 
             if ($kind === 'SOA-EDIT-API') {
-                $this->apiClient->updateZoneProperties($zone['name'], ['soa_edit_api' => $values[0] ?? '']);
-                return;
+                return $this->apiClient->updateZoneProperties($zone['name'], ['soa_edit_api' => $values[0] ?? '']);
             }
 
-            $this->apiClient->updateZoneMetadata($zoneObj, $kind, $values);
-            return;
+            return $this->apiClient->updateZoneMetadata($zoneObj, $kind, $values);
         }
 
         // DB backend: load current metadata, replace this kind, save all
@@ -480,27 +483,28 @@ class ZoneMetadataController extends PublicApiController
         foreach ($values as $value) {
             $newRows[] = ['kind' => $kind, 'content' => $value];
         }
-        $this->zoneRepository->replaceDomainMetadata($zoneId, array_values($newRows));
+        return $this->zoneRepository->replaceDomainMetadata($zoneId, array_values($newRows));
     }
 
     /**
      * Delete all metadata values for a specific kind.
+     *
+     * @return bool True on success
      */
-    private function deleteMetadataKindStorage(int $zoneId, string $kind): void
+    private function deleteMetadataKindStorage(int $zoneId, string $kind): bool
     {
         if ($this->apiClient !== null) {
             $zone = $this->zoneRepository->getZone($zoneId);
             if ($zone === null) {
-                return;
+                return false;
             }
             $zoneObj = new Zone($zone['name']);
-            $this->apiClient->deleteZoneMetadata($zoneObj, $kind);
-            return;
+            return $this->apiClient->deleteZoneMetadata($zoneObj, $kind);
         }
 
         // DB backend: load current metadata, remove this kind, save remaining
         $currentRows = $this->zoneRepository->getDomainMetadata($zoneId);
         $newRows = array_filter($currentRows, fn($row) => strtoupper($row['kind']) !== $kind);
-        $this->zoneRepository->replaceDomainMetadata($zoneId, array_values($newRows));
+        return $this->zoneRepository->replaceDomainMetadata($zoneId, array_values($newRows));
     }
 }
