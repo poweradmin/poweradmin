@@ -505,6 +505,11 @@ class ZoneMetadataController extends PublicApiController
             if ($zone === null) {
                 return false;
             }
+
+            if ($kind === 'SOA-EDIT-API') {
+                return $this->apiClient->updateZoneProperties($zone['name'], ['soa_edit_api' => '']);
+            }
+
             $zoneObj = new Zone($zone['name']);
             return $this->apiClient->deleteZoneMetadata($zoneObj, $kind);
         }

@@ -280,6 +280,12 @@ class EditZoneMetadataController extends BaseController
             $soaEditApi = $grouped['SOA-EDIT-API'][0] ?? '';
             $success = $this->apiClient->updateZoneProperties($zoneName, ['soa_edit_api' => $soaEditApi]);
             unset($grouped['SOA-EDIT-API']);
+        } else {
+            // SOA-EDIT-API was removed from the form - clear it via zone properties
+            $zoneData = $this->apiClient->getZone($zoneName);
+            if ($zoneData !== null && !empty($zoneData['soa_edit_api'])) {
+                $this->apiClient->updateZoneProperties($zoneName, ['soa_edit_api' => '']);
+            }
         }
 
         // Update or create each metadata kind
