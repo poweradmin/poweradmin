@@ -423,6 +423,13 @@ class ZoneMetadataController extends PublicApiController
                     $rows[] = ['kind' => $kind, 'content' => (string)$value];
                 }
             }
+
+            // SOA-EDIT-API is stored on the zone object, not in /metadata
+            $zoneData = $this->apiClient->getZone($zone['name']);
+            if ($zoneData !== null && !empty($zoneData['soa_edit_api'])) {
+                $rows[] = ['kind' => 'SOA-EDIT-API', 'content' => $zoneData['soa_edit_api']];
+            }
+
             return $rows;
         }
 

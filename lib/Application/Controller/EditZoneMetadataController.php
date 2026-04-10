@@ -208,7 +208,8 @@ class EditZoneMetadataController extends BaseController
      */
     private function loadMetadataViaApi(string $zoneName): array
     {
-        $zone = new Zone(str_ends_with($zoneName, '.') ? $zoneName : $zoneName . '.');
+        $apiName = str_ends_with($zoneName, '.') ? $zoneName : $zoneName . '.';
+        $zone = new Zone($apiName);
         $apiMetadata = $this->apiClient->getZoneMetadata($zone);
         $rows = [];
         foreach ($apiMetadata as $entry) {
@@ -216,6 +217,12 @@ class EditZoneMetadataController extends BaseController
             foreach (($entry['metadata'] ?? []) as $value) {
                 $rows[] = ['kind' => $kind, 'content' => (string) $value];
             }
+        }
+
+        // SOA-EDIT-API is stored on the zone object, not in /metadata
+        $zoneData = $this->apiClient->getZone($apiName);
+        if ($zoneData !== null && !empty($zoneData['soa_edit_api'])) {
+            $rows[] = ['kind' => 'SOA-EDIT-API', 'content' => $zoneData['soa_edit_api']];
         }
 
         usort($rows, fn($a, $b) => strcmp($a['kind'], $b['kind']));
