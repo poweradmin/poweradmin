@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
@@ -145,7 +146,7 @@ class SessionAuthenticator extends LoggingService
             // Verify reCAPTCHA if enabled
             if ($this->recaptchaService->isEnabled()) {
                 $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
-                $remoteIp = $_SERVER['REMOTE_ADDR'] ?? '';
+                $remoteIp = (new IpAddressRetriever($_SERVER))->getClientIp();
 
                 if (!$this->recaptchaService->verify($recaptchaResponse, $remoteIp)) {
                     $this->logWarning('reCAPTCHA verification failed for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
