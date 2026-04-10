@@ -15,13 +15,13 @@
             {{ zone['name'] }}
             {% endif %}
         </a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit Metadata{% endtrans %}</li>
+        <li class="breadcrumb-item" aria-current="page">{% if can_edit_metadata %}{% trans %}Edit Metadata{% endtrans %}{% else %}{% trans %}View Metadata{% endtrans %}{% endif %}</li>
     </ol>
 </nav>
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <strong><i class="bi bi-database-gear text-primary me-2"></i>{% trans %}Edit Zone Metadata{% endtrans %}</strong>
+        <strong><i class="bi bi-database-gear text-primary me-2"></i>{% if can_edit_metadata %}{% trans %}Edit Zone Metadata{% endtrans %}{% else %}{% trans %}Zone Metadata{% endtrans %}{% endif %}</strong>
     </div>
     <div class="card-body">
         <div class="alert alert-info bg-info bg-opacity-10">
@@ -52,25 +52,27 @@
                         <tr>
                             <th style="width: 34%;">{% trans %}Kind{% endtrans %}</th>
                             <th>{% trans %}Value{% endtrans %}</th>
+                            {% if can_edit_metadata %}
                             <th class="text-end" style="width: 1%;">{% trans %}Actions{% endtrans %}</th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody id="metadata-rows">
                         {% for row in metadata_rows %}
                         <tr>
                             <td class="align-top">
-                                <select class="form-select form-select-sm metadata-kind-select">
+                                <select class="form-select form-select-sm metadata-kind-select" {{ not can_edit_metadata ? 'disabled' : '' }}>
                                     {% for definition in metadata_definitions %}
                                     <option value="{{ definition.kind }}" {{ row.kind_key == definition.kind ? 'selected' : '' }}>{{ definition.label }}</option>
                                     {% endfor %}
                                     <option value="__CUSTOM__" {{ row.kind_key == '__CUSTOM__' ? 'selected' : '' }}>{% trans %}Custom{% endtrans %}</option>
                                 </select>
                                 <div class="mt-2 metadata-custom-kind-wrapper {{ row.kind_key == '__CUSTOM__' ? '' : 'd-none' }}">
-                                    <input type="text" class="form-control form-control-sm font-monospace metadata-custom-kind" maxlength="32" value="{{ row.custom_kind }}" placeholder="CUSTOM-KIND">
+                                    <input type="text" class="form-control form-control-sm font-monospace metadata-custom-kind" maxlength="32" value="{{ row.custom_kind }}" placeholder="CUSTOM-KIND" {{ not can_edit_metadata ? 'disabled' : '' }}>
                                 </div>
                             </td>
                             <td class="align-top">
-                                <input type="text" class="form-control form-control-sm font-monospace metadata-content" value="{{ row.content }}" placeholder="{{ row.kind_placeholder ?: ('Value'|trans) }}">
+                                <input type="text" class="form-control form-control-sm font-monospace metadata-content" value="{{ row.content }}" placeholder="{{ row.kind_placeholder ?: ('Value'|trans) }}" {{ not can_edit_metadata ? 'readonly' : '' }}>
                                 <div class="metadata-kind-hint small text-muted mt-2">
                                     {% if row.kind_help %}
                                     {{ row.kind_help }}
@@ -84,11 +86,13 @@
                                     {% endfor %}
                                 </div>
                             </td>
+                            {% if can_edit_metadata %}
                             <td class="text-end align-top">
                                 <button type="button" class="btn btn-outline-danger btn-sm metadata-remove-row">
                                     <i class="bi bi-trash text-danger"></i>
                                 </button>
                             </td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -96,12 +100,14 @@
             </div>
 
             <div class="d-flex gap-2 mt-3">
+                {% if can_edit_metadata %}
                 <button type="button" class="btn btn-outline-primary btn-sm" id="add-metadata-row">
                     <i class="bi bi-plus-circle me-1 text-primary"></i>{% trans %}Add metadata row{% endtrans %}
                 </button>
                 <button type="submit" class="btn btn-primary btn-sm" data-testid="save-zone-metadata">
                     <i class="bi bi-floppy me-1 text-white"></i>{% trans %}Save metadata{% endtrans %}
                 </button>
+                {% endif %}
                 <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
                     <i class="bi bi-arrow-left me-1 text-white"></i>{% trans %}Back to zone{% endtrans %}
                 </a>
@@ -110,6 +116,7 @@
     </div>
 </div>
 
+{% if can_edit_metadata %}
 <template id="metadata-row-template">
     <tr>
         <td class="align-top">
@@ -228,3 +235,4 @@ document.addEventListener('DOMContentLoaded', function () {
     rebuild();
 });
 </script>
+{% endif %}

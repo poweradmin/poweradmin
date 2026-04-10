@@ -222,9 +222,9 @@
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership" class="btn btn-secondary btn-sm">
                 <i class="bi bi-people me-1 text-white"></i>{% trans %}Ownership{% endtrans %}
             </a>
-            {% if meta_edit %}
+            {% if meta_edit or perm_view != "none" %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/metadata" class="btn btn-secondary btn-sm">
-                <i class="bi bi-database-gear me-1 text-white"></i>{% trans %}Metadata{% endtrans %}
+                <i class="bi bi-database-gear me-1 text-white"></i>{% if meta_edit %}{% trans %}Metadata{% endtrans %}{% else %}{% trans %}View Metadata{% endtrans %}{% endif %}
             </a>
             {% endif %}
             {% if (perm_zone_templ_add or perm_is_godlike) and domain_type != "SLAVE" %}

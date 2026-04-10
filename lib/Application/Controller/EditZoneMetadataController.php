@@ -315,7 +315,19 @@ class EditZoneMetadataController extends BaseController
                 && UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId)
             );
 
-        $this->checkCondition(!$canEditMetadata, _('You do not have the permission to edit zone metadata.'));
+        $canViewMetadata = $canEditMetadata
+            || UserManager::verifyPermission($this->db, 'zone_content_view_others')
+            || (
+                UserManager::verifyPermission($this->db, 'zone_content_view_own')
+                && UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId)
+            );
+
+        $this->checkCondition(!$canViewMetadata, _('You do not have the permission to view zone metadata.'));
+
+        if ($this->isPost() && !$canEditMetadata) {
+            $this->showError(_('You do not have the permission to edit zone metadata.'));
+            return;
+        }
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -324,7 +336,7 @@ class EditZoneMetadataController extends BaseController
 
             if (!empty($validationErrors)) {
                 $this->setMessage('zone_metadata', 'error', $validationErrors[0]);
-                $this->renderPage($zoneId, $zone, $submittedMetadata);
+                $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
                 return;
             }
 
@@ -348,11 +360,11 @@ class EditZoneMetadataController extends BaseController
             }
 
             $this->setMessage('zone_metadata', 'error', _('Failed to update zone metadata.'));
-            $this->renderPage($zoneId, $zone, $submittedMetadata);
+            $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
             return;
         }
 
-        $this->renderPage($zoneId, $zone, $this->loadMetadata($zoneId, $zone['name']));
+        $this->renderPage($zoneId, $zone, $this->loadMetadata($zoneId, $zone['name']), $canEditMetadata);
     }
 
     /**
@@ -361,7 +373,7 @@ class EditZoneMetadataController extends BaseController
      * @param array<string, mixed> $zone
      * @param array<int, array<string, string>> $metadataRows
      */
-    private function renderPage(int $zoneId, array $zone, array $metadataRows): void
+    private function renderPage(int $zoneId, array $zone, array $metadataRows, bool $canEdit = true): void
     {
         $idnZoneName = str_starts_with($zone['name'], 'xn--') ? DnsIdnService::toUtf8($zone['name']) : '';
         if (empty($metadataRows)) {
@@ -369,7 +381,7 @@ class EditZoneMetadataController extends BaseController
         }
 
         $this->setCurrentPage('zone_metadata');
-        $this->setPageTitle(_('Edit Zone Metadata'));
+        $this->setPageTitle($canEdit ? _('Edit Zone Metadata') : _('Zone Metadata'));
 
         $this->render('edit_zone_metadata.html', [
             'zone_id' => $zoneId,
@@ -378,6 +390,7 @@ class EditZoneMetadataController extends BaseController
             'metadata_rows' => $this->prepareRowsForTemplate($metadataRows),
             'metadata_definitions' => $this->getMetadataDefinitionsForTemplate(),
             'is_reverse_zone' => DnsHelper::isReverseZone($zone['name']),
+            'can_edit_metadata' => $canEdit,
         ]);
     }
 
