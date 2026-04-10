@@ -31,6 +31,7 @@ use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class BatchReverseRecordCreator
 {
@@ -535,7 +536,7 @@ class BatchReverseRecordCreator
             if ($result) {
                 $this->logger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_batch_ptr_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
-                    $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+                    (new IpAddressRetriever($_SERVER))->getClientIp(),
                     $_SESSION["userlogin"] ?? 'unknown',
                     $content_rev,
                     $fqdn_name,

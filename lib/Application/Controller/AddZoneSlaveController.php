@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -141,7 +142,7 @@ class AddZoneSlaveController extends BaseController
 
                 $this->logger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
-                    $_SERVER['REMOTE_ADDR'],
+                    (new IpAddressRetriever($_SERVER))->getClientIp(),
                     $_SESSION["userlogin"],
                     $zone,
                     $master

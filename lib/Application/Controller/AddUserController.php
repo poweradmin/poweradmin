@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\PasswordGenerationService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -178,7 +179,7 @@ class AddUserController extends BaseController
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_user username:%s email:%s',
-                $_SERVER['REMOTE_ADDR'] ?? '',
+                (new IpAddressRetriever($_SERVER))->getClientIp(),
                 $this->userContextService->getLoggedInUsername(),
                 $userParams['username'],
                 $userParams['email']

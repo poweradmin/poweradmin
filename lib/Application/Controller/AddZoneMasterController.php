@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -146,7 +147,7 @@ class AddZoneMasterController extends BaseController
 
             $this->logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
-                $_SERVER['REMOTE_ADDR'],
+                (new IpAddressRetriever($_SERVER))->getClientIp(),
                 $this->userContext->getLoggedInUsername(),
                 $zone_name,
                 $dom_type,

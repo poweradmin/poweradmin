@@ -23,6 +23,7 @@
 namespace Poweradmin\Module\ZoneImportExport\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -258,7 +259,7 @@ class ZoneFileImportController extends BaseController
 
         $userId = $this->userContextService->getLoggedInUserId();
         $userLogin = $this->userContextService->getLoggedInUsername();
-        $clientIp = $_SERVER['REMOTE_ADDR'] ?? '';
+        $clientIp = (new IpAddressRetriever($_SERVER))->getClientIp();
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 

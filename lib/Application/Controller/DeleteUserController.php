@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\DomainRepository;
@@ -100,7 +101,7 @@ class DeleteUserController extends BaseController
         if ($legacyUsers->deleteUser($uid, $zones)) {
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_user target_user:%s',
-                $_SERVER['REMOTE_ADDR'] ?? '',
+                (new IpAddressRetriever($_SERVER))->getClientIp(),
                 $this->userContextService->getLoggedInUsername(),
                 $targetUsername
             ));

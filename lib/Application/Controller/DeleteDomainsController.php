@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -115,7 +116,7 @@ class DeleteDomainsController extends BaseController
                 if (!empty($deleted_zone['name'])) {
                     $this->logger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
-                        $_SERVER['REMOTE_ADDR'],
+                        (new IpAddressRetriever($_SERVER))->getClientIp(),
                         $this->userContextService->getLoggedInUsername(),
                         $deleted_zone['name'],
                         $deleted_zone['type']

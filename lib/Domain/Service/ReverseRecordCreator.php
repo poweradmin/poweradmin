@@ -31,6 +31,7 @@ use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class ReverseRecordCreator
 {
@@ -268,7 +269,7 @@ class ReverseRecordCreator
 
             $this->logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
-                $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+                (new IpAddressRetriever($_SERVER))->getClientIp(),
                 $username,
                 $content_rev,
                 $fqdn_name,
