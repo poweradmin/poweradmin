@@ -539,7 +539,19 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function removeOwnerFromZone(int $zoneId, int $userId): bool
     {
-        $query = "DELETE FROM zones WHERE (id = :id OR domain_id = :did) AND owner = :owner";
+        // First try to delete extra ownership rows (zone_name IS NULL) to preserve the canonical row
+        $query = "DELETE FROM zones WHERE domain_id = :did AND owner = :owner AND zone_name IS NULL";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            return true;
+        }
+
+        // If the user is on the canonical row, clear the owner instead of deleting the row
+        $query = "UPDATE zones SET owner = 0 WHERE (id = :id OR domain_id = :did) AND owner = :owner AND zone_name IS NOT NULL";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
