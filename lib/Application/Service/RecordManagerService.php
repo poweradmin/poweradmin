@@ -206,7 +206,7 @@ class RecordManagerService
                     $ptrName,
                     RecordType::PTR,
                     $comment,
-                    (int)$record['id'],
+                    $record['id'],
                     $userlogin
                 );
             }
@@ -241,7 +241,7 @@ class RecordManagerService
                     $content,
                     RecordType::A,
                     $comment,
-                    (int)$record['id'],
+                    $record['id'],
                     $userlogin
                 );
             }
