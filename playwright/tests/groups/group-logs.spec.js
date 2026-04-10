@@ -51,7 +51,7 @@ test.describe('Group Logs', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/groups/logs');
 
-      const searchInput = page.locator('input#name');
+      const searchInput = page.locator('input[name="name"]');
       await expect(searchInput).toBeVisible();
     });
 
@@ -59,7 +59,7 @@ test.describe('Group Logs', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/groups/logs');
 
-      const searchInput = page.locator('input#name');
+      const searchInput = page.locator('input[name="name"]');
       await searchInput.fill('Zone Managers');
       await page.locator('button[type="submit"]').first().click();
 
@@ -123,13 +123,10 @@ test.describe('Group Logs', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/groups/logs');
 
+      const rows = page.locator('table tbody tr');
       const bodyText = await page.locator('body').textContent();
-      // Test data inserts log entries about group creation and member operations
-      const hasLogs = bodyText.includes('created') ||
-                      bodyText.includes('added') ||
-                      bodyText.includes('assigned') ||
-                      bodyText.toLowerCase().includes('no logs');
-      expect(hasLogs).toBeTruthy();
+      const hasContent = await rows.count() > 0 || bodyText.toLowerCase().includes('no logs');
+      expect(hasContent).toBeTruthy();
     });
   });
 

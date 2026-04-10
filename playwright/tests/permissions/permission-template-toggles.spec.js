@@ -16,14 +16,14 @@ test.describe('Permission Template Toggles', () => {
     });
 
     test('should display access templates page', async ({ page }) => {
-      await page.goto('/templates');
+      await page.goto('/permissions/templates');
       await expect(page).toHaveURL(/.*templates/);
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
     test('should show template type column when both types visible', async ({ page }) => {
-      await page.goto('/templates');
+      await page.goto('/permissions/templates');
       const bodyText = await page.locator('body').textContent();
       // When both user and group templates are shown, a Type column should appear
       const hasTypeColumn = bodyText.includes('Type') || bodyText.includes('User') || bodyText.includes('Group');
@@ -31,7 +31,7 @@ test.describe('Permission Template Toggles', () => {
     });
 
     test('should list both user and group templates', async ({ page }) => {
-      await page.goto('/templates');
+      await page.goto('/permissions/templates');
       const rows = page.locator('table tbody tr');
       expect(await rows.count()).toBeGreaterThan(0);
     });

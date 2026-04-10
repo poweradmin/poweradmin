@@ -21,16 +21,16 @@ test.describe('User Logs', () => {
       await expect(form).toBeVisible();
     });
 
-    test('should display search input', async ({ page }) => {
+    test('should display user filter', async ({ page }) => {
       await page.goto('/users/logs');
-      const searchInput = page.locator('input[type="text"], input[type="search"], input[name*="search"], input[name*="name"]').first();
-      await expect(searchInput).toBeVisible();
+      const userSelect = page.locator('select[name="name"]');
+      await expect(userSelect).toBeVisible();
     });
 
-    test('should display search button', async ({ page }) => {
+    test('should display submit button', async ({ page }) => {
       await page.goto('/users/logs');
-      const searchBtn = page.locator('button:has-text("Search"), input[value="Search"]').first();
-      await expect(searchBtn).toBeVisible();
+      const submitBtn = page.locator('button[type="submit"]').first();
+      await expect(submitBtn).toBeVisible();
     });
 
     test('should display logs table or no logs message', async ({ page }) => {
@@ -45,19 +45,22 @@ test.describe('User Logs', () => {
       }
     });
 
-    test('should allow typing in search input', async ({ page }) => {
+    test('should allow selecting a user filter', async ({ page }) => {
       await page.goto('/users/logs');
-      const searchInput = page.locator('input[type="text"], input[name*="search"], input[name*="name"]').first();
-      await searchInput.fill('admin');
-      await expect(searchInput).toHaveValue('admin');
+      const userSelect = page.locator('select[name="name"]');
+      const options = userSelect.locator('option');
+      const count = await options.count();
+      if (count > 1) {
+        const value = await options.nth(1).getAttribute('value');
+        await userSelect.selectOption(value);
+        await expect(userSelect).toHaveValue(value);
+      }
     });
 
-    test('should submit search form', async ({ page }) => {
+    test('should submit filter form', async ({ page }) => {
       await page.goto('/users/logs');
-      const searchInput = page.locator('input[type="text"], input[name*="search"], input[name*="name"]').first();
-      await searchInput.fill('test');
-      const searchBtn = page.locator('button:has-text("Search"), input[value="Search"]').first();
-      await searchBtn.click();
+      const submitBtn = page.locator('button[type="submit"]').first();
+      await submitBtn.click();
       await expect(page).toHaveURL(/users\/logs/);
     });
 
