@@ -138,7 +138,7 @@ class EditZoneMetadataController extends BaseController
             if ($saveResult['success']) {
                 $kinds = array_unique(array_column($submittedMetadata, 'kind'));
                 $auditLogger = new LegacyLogger($this->db);
-                $ipRetriever = new IpAddressRetriever($this->getConfig());
+                $ipRetriever = new IpAddressRetriever($_SERVER);
                 $auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:edit_zone_metadata zone:%s kinds:%s',
                     $ipRetriever->getClientIp(),
