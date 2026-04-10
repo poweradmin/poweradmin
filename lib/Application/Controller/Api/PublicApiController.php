@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -73,6 +73,15 @@ abstract class PublicApiController extends AbstractApiController
 
         // Authenticate the API request using API key or HTTP Basic auth
         $this->authenticateApiRequest();
+
+        // Log deprecation warning for V1 API requests
+        if (!$this->isV2Controller()) {
+            $this->logger->warning('Deprecated API v1 request: {method} {path} from {ip}', [
+                'method' => $this->request->getMethod(),
+                'path' => $this->request->getPathInfo(),
+                'ip' => $this->request->getClientIp(),
+            ]);
+        }
     }
 
     /**
@@ -246,6 +255,24 @@ abstract class PublicApiController extends AbstractApiController
         $stmt = $this->db->prepare("SELECT username FROM users WHERE id = :id");
         $stmt->execute([':id' => $this->authenticatedUserId]);
         return $stmt->fetchColumn() ?: 'user_id:' . $this->authenticatedUserId;
+    }
+
+    /**
+     * Override to inject deprecation headers for V1 API responses
+     *
+     * @param mixed $data The data to return
+     * @param int $status HTTP status code
+     * @param array $headers Additional headers to include
+     * @return JsonResponse
+     */
+    protected function returnJsonResponse($data, int $status = 200, array $headers = []): JsonResponse
+    {
+        if (!$this->isV2Controller()) {
+            $headers['Deprecation'] = 'true';
+            $headers['Link'] = '</api/v2/>; rel="successor-version"';
+        }
+
+        return parent::returnJsonResponse($data, $status, $headers);
     }
 
     /**

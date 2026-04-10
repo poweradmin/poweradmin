@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -111,7 +111,8 @@ class ZonesController extends PublicApiController
     #[OA\Get(
         path: '/v1/zones',
         operationId: 'v1ListZones',
-        summary: 'List all zones',
+        deprecated: true,
+        summary: 'List all zones. Use /v2/ endpoints instead.',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['zones']
     )]
@@ -224,7 +225,8 @@ class ZonesController extends PublicApiController
     #[OA\Get(
         path: '/v1/zones/{id}',
         operationId: 'v1GetZone',
-        summary: 'Get a specific zone',
+        deprecated: true,
+        summary: 'Get a specific zone. Use /v2/ endpoints instead.',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['zones']
     )]
@@ -298,8 +300,9 @@ class ZonesController extends PublicApiController
     #[OA\Post(
         path: '/v1/zones',
         operationId: 'v1CreateZone',
-        description: 'Creates a new DNS zone with the provided information',
-        summary: 'Create a new zone',
+        deprecated: true,
+        description: 'Creates a new DNS zone with the provided information. Use /v2/ endpoints instead.',
+        summary: 'Create a new zone (deprecated)',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['zones']
     )]
@@ -482,7 +485,8 @@ class ZonesController extends PublicApiController
     #[OA\Put(
         path: '/v1/zones/{id}',
         operationId: 'v1UpdateZone',
-        summary: 'Update an existing zone',
+        deprecated: true,
+        summary: 'Update an existing zone. Use /v2/ endpoints instead.',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['zones']
     )]
@@ -627,7 +631,8 @@ class ZonesController extends PublicApiController
     #[OA\Delete(
         path: '/v1/zones/{id}',
         operationId: 'v1DeleteZone',
-        summary: 'Delete a zone',
+        deprecated: true,
+        summary: 'Delete a zone. Use /v2/ endpoints instead.',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['zones']
     )]

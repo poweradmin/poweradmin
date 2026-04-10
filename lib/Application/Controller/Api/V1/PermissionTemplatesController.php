@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,7 +74,8 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Get(
         path: '/v1/permission-templates',
-        summary: 'Get list of permission templates',
+        deprecated: true,
+        summary: 'Get list of permission templates. Use /v2/ endpoints instead.',
         tags: ['Permission Templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         responses: [
@@ -130,7 +131,8 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Get(
         path: '/v1/permission-templates/{id}',
-        summary: 'Get specific permission template',
+        deprecated: true,
+        summary: 'Get specific permission template. Use /v2/ endpoints instead.',
         tags: ['Permission Templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
@@ -213,7 +215,8 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Post(
         path: '/v1/permission-templates',
-        summary: 'Create new permission template',
+        deprecated: true,
+        summary: 'Create new permission template. Use /v2/ endpoints instead.',
         tags: ['Permission Templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         requestBody: new OA\RequestBody(
@@ -299,7 +302,8 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Put(
         path: '/v1/permission-templates/{id}',
-        summary: 'Update permission template',
+        deprecated: true,
+        summary: 'Update permission template. Use /v2/ endpoints instead.',
         tags: ['Permission Templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
@@ -406,7 +410,8 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Delete(
         path: '/v1/permission-templates/{id}',
-        summary: 'Delete permission template',
+        deprecated: true,
+        summary: 'Delete permission template. Use /v2/ endpoints instead.',
         tags: ['Permission Templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [

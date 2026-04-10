@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -114,7 +114,8 @@ class ZonesRecordsController extends PublicApiController
     #[OA\Get(
         path: '/v1/zones/{id}/records',
         operationId: 'v1ListZoneRecords',
-        summary: 'List all records in a zone',
+        deprecated: true,
+        summary: 'List all records in a zone. Use /v2/ endpoints instead.',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]
@@ -207,7 +208,8 @@ class ZonesRecordsController extends PublicApiController
     #[OA\Get(
         path: '/v1/zones/{id}/records/{recordId}',
         operationId: 'v1GetZoneRecord',
-        summary: 'Get a specific record',
+        deprecated: true,
+        summary: 'Get a specific record. Use /v2/ endpoints instead.',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]
@@ -302,7 +304,8 @@ class ZonesRecordsController extends PublicApiController
     #[OA\Post(
         path: '/v1/zones/{id}/records',
         operationId: 'v1CreateZoneRecord',
-        summary: 'Create a new record in a zone',
+        deprecated: true,
+        summary: 'Create a new record in a zone. Use /v2/ endpoints instead.',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]
@@ -522,7 +525,8 @@ class ZonesRecordsController extends PublicApiController
     #[OA\Put(
         path: '/v1/zones/{id}/records/{recordId}',
         operationId: 'v1UpdateZoneRecord',
-        summary: 'Update an existing record',
+        deprecated: true,
+        summary: 'Update an existing record. Use /v2/ endpoints instead.',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]
@@ -666,7 +670,8 @@ class ZonesRecordsController extends PublicApiController
     #[OA\Delete(
         path: '/v1/zones/{id}/records/{recordId}',
         operationId: 'v1DeleteZoneRecord',
-        summary: 'Delete a record',
+        deprecated: true,
+        summary: 'Delete a record. Use /v2/ endpoints instead.',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]

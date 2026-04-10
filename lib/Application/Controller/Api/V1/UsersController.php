@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -107,8 +107,9 @@ class UsersController extends PublicApiController
     #[OA\Get(
         path: '/v1/users/{id}',
         operationId: 'v1GetUser',
-        description: 'Retrieves user information and permissions for a specific user ID',
-        summary: 'Get user information by ID',
+        deprecated: true,
+        description: 'Retrieves user information and permissions for a specific user ID. Use /v2/ endpoints instead.',
+        summary: 'Get user information by ID (deprecated)',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['users'],
         parameters: [
@@ -228,8 +229,9 @@ class UsersController extends PublicApiController
     #[OA\Get(
         path: '/v1/users',
         operationId: 'v1ListUsers',
-        description: 'Get a list of users. Can optionally filter by username or email.',
-        summary: 'List all users with optional filtering',
+        deprecated: true,
+        description: 'Get a list of users. Can optionally filter by username or email. Use /v2/ endpoints instead.',
+        summary: 'List all users with optional filtering (deprecated)',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['users']
     )]
@@ -386,8 +388,9 @@ class UsersController extends PublicApiController
     #[OA\Post(
         path: '/v1/users',
         operationId: 'v1CreateUser',
-        description: 'Creates a new user in the system with the provided information',
-        summary: 'Create a new user',
+        deprecated: true,
+        description: 'Creates a new user in the system with the provided information. Use /v2/ endpoints instead.',
+        summary: 'Create a new user (deprecated)',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['users']
     )]
@@ -549,8 +552,9 @@ class UsersController extends PublicApiController
     #[OA\Put(
         path: '/v1/users/{id}',
         operationId: 'v1UpdateUser',
-        description: 'Updates an existing user with the provided information. All fields are optional - only provided fields will be updated.',
-        summary: 'Update an existing user',
+        deprecated: true,
+        description: 'Updates an existing user with the provided information. All fields are optional - only provided fields will be updated. Use /v2/ endpoints instead.',
+        summary: 'Update an existing user (deprecated)',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['users']
     )]
@@ -733,8 +737,9 @@ class UsersController extends PublicApiController
     #[OA\Delete(
         path: '/v1/users/{id}',
         operationId: 'v1DeleteUser',
-        description: 'Delete a user from the system. Prevents deletion of the last remaining super admin to avoid system lockout. If user owns zones, you must specify transfer_to_user_id to transfer zones to another user.',
-        summary: 'Delete a user',
+        deprecated: true,
+        description: 'Delete a user from the system. Prevents deletion of the last remaining super admin to avoid system lockout. If user owns zones, you must specify transfer_to_user_id to transfer zones to another user. Use /v2/ endpoints instead.',
+        summary: 'Delete a user (deprecated)',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['users']
     )]
@@ -841,8 +846,9 @@ class UsersController extends PublicApiController
     #[OA\Patch(
         path: '/v1/users/{id}',
         operationId: 'v1AssignPermissionTemplate',
-        description: 'Assigns a permission template to a specific user',
-        summary: 'Assign permission template to user',
+        deprecated: true,
+        description: 'Assigns a permission template to a specific user. Use /v2/ endpoints instead.',
+        summary: 'Assign permission template to user (deprecated)',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['users']
     )]
