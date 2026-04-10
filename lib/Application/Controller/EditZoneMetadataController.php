@@ -208,7 +208,7 @@ class EditZoneMetadataController extends BaseController
      */
     private function loadMetadataViaApi(string $zoneName): array
     {
-        $zone = new Zone($zoneName);
+        $zone = new Zone(str_ends_with($zoneName, '.') ? $zoneName : $zoneName . '.');
         $apiMetadata = $this->apiClient->getZoneMetadata($zone);
         $rows = [];
         foreach ($apiMetadata as $entry) {

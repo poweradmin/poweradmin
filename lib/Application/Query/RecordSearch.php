@@ -339,6 +339,7 @@ class RecordSearch extends BaseSearch
             $tableNameService = new TableNameService($this->config);
             $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
             $links_table = 'record_comment_links';
+            $db_type = $this->config->get('database', 'type');
             $castId = DbCompat::castToString($db_type, "$records_table.id");
             $whereConditions .= " OR EXISTS (
                 SELECT 1 FROM $comments_table c
