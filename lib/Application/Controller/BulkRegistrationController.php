@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -109,7 +110,7 @@ class BulkRegistrationController extends BaseController
                 $zone_id = $dnsRecord->getZoneIdFromName($domain);
                 $this->logger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
-                    $_SERVER['REMOTE_ADDR'],
+                    (new IpAddressRetriever($_SERVER))->getClientIp(),
                     $_SESSION["userlogin"],
                     $domain,
                     $dom_type,

@@ -26,6 +26,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -240,7 +241,7 @@ class DnsWizardFormController extends BaseController
 
         // Create the record
         $userlogin = $_SESSION['userlogin'] ?? 'unknown';
-        $clientIp = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $clientIp = (new IpAddressRetriever($_SERVER))->getClientIp();
 
         $success = $this->recordManager->createRecord(
             $zone_id,

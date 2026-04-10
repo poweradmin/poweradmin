@@ -33,6 +33,7 @@ use Poweradmin\Infrastructure\Logger\CompositeLegacyLogger;
 use Poweradmin\Infrastructure\Logger\SyslogLegacyLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Service\NullDnssecProvider;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DnssecProviderFactory
 {
@@ -131,7 +132,7 @@ class DnssecProviderFactory
             $apiClient,
             $logger,
             $transformer,
-            $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+            (new IpAddressRetriever($_SERVER))->getClientIp(),
             $_SESSION['userlogin'] ?? 'api_user_' . ($_SESSION['userid'] ?? 'unknown')
         );
     }

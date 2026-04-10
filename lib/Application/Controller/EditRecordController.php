@@ -36,6 +36,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -242,7 +243,7 @@ class EditRecordController extends BaseController
                 'client_ip:%s user:%s operation:edit_record'
                 . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
                 . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
-                $_SERVER['REMOTE_ADDR'],
+                (new IpAddressRetriever($_SERVER))->getClientIp(),
                 $this->userContextService->getLoggedInUsername(),
                 $old_record_info['type'],
                 $old_record_info['name'],

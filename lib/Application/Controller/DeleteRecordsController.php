@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -118,7 +119,7 @@ class DeleteRecordsController extends BaseController
                     if (isset($record_info['prio'])) {
                         $this->logger->logInfo(sprintf(
                             'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
-                            $_SERVER['REMOTE_ADDR'],
+                            (new IpAddressRetriever($_SERVER))->getClientIp(),
                             $_SESSION["userlogin"],
                             $record_info['type'],
                             $record_info['name'],
@@ -129,7 +130,7 @@ class DeleteRecordsController extends BaseController
                     } else {
                         $this->logger->logInfo(sprintf(
                             'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
-                            $_SERVER['REMOTE_ADDR'],
+                            (new IpAddressRetriever($_SERVER))->getClientIp(),
                             $_SESSION["userlogin"],
                             $record_info['type'],
                             $record_info['name'],

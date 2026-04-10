@@ -36,6 +36,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -210,7 +211,7 @@ class BulkRecordAddController extends BaseController
                         $prio,
                         $comment,
                         $this->userContextService->getLoggedInUsername(),
-                        $_SERVER['REMOTE_ADDR']
+                        (new IpAddressRetriever($_SERVER))->getClientIp()
                     )
                 ) {
                     $success_count++;
@@ -218,7 +219,7 @@ class BulkRecordAddController extends BaseController
                     // Log the record creation
                     $this->logger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:add_record name:%s type:%s content:%s ttl:%s prio:%s',
-                        $_SERVER['REMOTE_ADDR'],
+                        (new IpAddressRetriever($_SERVER))->getClientIp(),
                         $this->userContextService->getLoggedInUsername(),
                         $name,
                         $type,

@@ -26,6 +26,7 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class RecordLog
 {
@@ -95,7 +96,7 @@ class RecordLog
             'client_ip:%s user:%s operation:edit_record'
             . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
             . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
-            $_SERVER['REMOTE_ADDR'],
+            (new IpAddressRetriever($_SERVER))->getClientIp(),
             $_SESSION["userlogin"],
             $this->record_prior['type'],
             $this->record_prior['name'],

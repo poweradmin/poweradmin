@@ -40,6 +40,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Model\RecordLog;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
@@ -894,7 +895,7 @@ class EditController extends BaseController
             $prio,
             $comment,
             $this->userContextService->getLoggedInUsername(),
-            $_SERVER['REMOTE_ADDR']
+            (new IpAddressRetriever($_SERVER))->getClientIp()
         );
     }
 

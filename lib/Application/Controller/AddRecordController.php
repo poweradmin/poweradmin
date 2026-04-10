@@ -36,6 +36,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\RecordTypeService;
@@ -330,7 +331,7 @@ class AddRecordController extends BaseController
             $prio,
             $comment,
             $_SESSION['userlogin'],
-            $_SERVER['REMOTE_ADDR']
+            (new IpAddressRetriever($_SERVER))->getClientIp()
         );
     }
 
