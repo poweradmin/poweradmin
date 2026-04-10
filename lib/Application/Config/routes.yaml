@@ -539,6 +539,21 @@ api_v2_zone:
     id: '\d+'
   methods: [GET, PUT, DELETE]
 
+api_v2_zone_metadata:
+  path: /api/v2/zones/{id}/metadata
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneMetadataController::run
+  requirements:
+    id: '\d+'
+  methods: [GET]
+
+api_v2_zone_metadata_kind:
+  path: /api/v2/zones/{id}/metadata/{kind}
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneMetadataController::run
+  requirements:
+    id: '\d+'
+    kind: '[\w\-]+'
+  methods: [GET, PUT, DELETE]
+
 api_v2_zone_owners:
   path: /api/v2/zones/{id}/owners
   controller: Poweradmin\Application\Controller\Api\V2\ZoneOwnersController::run

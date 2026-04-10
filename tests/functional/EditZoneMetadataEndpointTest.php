@@ -6,10 +6,9 @@ namespace Poweradmin\Tests\Functional;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\AppInitializer;
-use Poweradmin\Application\Controller\EditZoneMetadataController;
+use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
-use ReflectionClass;
 
 class EditZoneMetadataEndpointTest extends TestCase
 {
@@ -116,10 +115,7 @@ class EditZoneMetadataEndpointTest extends TestCase
 
     private function getMetadataDefinitions(): array
     {
-        $reflection = new ReflectionClass(EditZoneMetadataController::class);
-        $constant = $reflection->getReflectionConstant('METADATA_DEFINITIONS');
-
-        return $constant->getValue();
+        return MetadataDefinitions::DEFINITIONS;
     }
 
     private function buildAllMetadataRows(): array

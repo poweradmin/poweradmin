@@ -3,7 +3,7 @@
 ##############################################################################
 # Poweradmin API v2 Test Suite
 # Comprehensive testing for API v2 endpoints
-# Tests: RRSets, PTR auto-creation, Bulk operations, Master port syntax, Groups
+# Tests: RRSets, PTR auto-creation, Bulk operations, Master port syntax, Groups, Metadata
 ##############################################################################
 
 set -euo pipefail
@@ -1423,6 +1423,123 @@ test_zone_owners() {
 # Cleanup Function
 ##############################################################################
 
+##############################################################################
+# Zone Metadata Tests
+##############################################################################
+
+TEST_METADATA_ZONE_ID=""
+
+test_zone_metadata() {
+    print_section "Zone Metadata API Tests"
+
+    # Create test zone
+    print_info "Creating test zone for metadata tests..."
+    local zone_data='{"name":"metadata-test.example.com","type":"MASTER"}'
+
+    if api_request_v2 "POST" "/zones" "$zone_data" 201 "Create test zone for metadata"; then
+        TEST_METADATA_ZONE_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+        print_info "Created zone ID: $TEST_METADATA_ZONE_ID"
+    else
+        print_fail "Failed to create test zone - skipping metadata tests"
+        return 1
+    fi
+
+    # Test 1: List metadata (initially empty or default)
+    api_request_v2 "GET" "/zones/${TEST_METADATA_ZONE_ID}/metadata" "" 200 "List zone metadata"
+    assert_json_exists "Metadata response has metadata array" "$LAST_RESPONSE_BODY" '.data.metadata'
+
+    # Test 2: Set metadata kind (single value)
+    api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" '{"values":["1"]}' 200 "Set single-value metadata (IXFR)"
+
+    # Test 3: Get metadata kind
+    api_request_v2 "GET" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" "" 200 "Get metadata kind (IXFR)"
+
+    # Verify value
+    increment_test
+    local ixfr_value
+    ixfr_value=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.values[0]' 2>/dev/null)
+    if [[ "$ixfr_value" == "1" ]]; then
+        print_pass "IXFR metadata value is correct"
+    else
+        print_fail "Expected IXFR value '1', got '$ixfr_value'"
+    fi
+
+    # Test 4: Set multi-value metadata
+    api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/ALLOW-AXFR-FROM" '{"values":["192.0.2.10","10.0.0.0/8"]}' 200 "Set multi-value metadata (ALLOW-AXFR-FROM)"
+
+    # Test 5: Get multi-value metadata
+    api_request_v2 "GET" "/zones/${TEST_METADATA_ZONE_ID}/metadata/ALLOW-AXFR-FROM" "" 200 "Get multi-value metadata (ALLOW-AXFR-FROM)"
+
+    # Verify count
+    increment_test
+    local value_count
+    value_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.values | length' 2>/dev/null)
+    if [[ "$value_count" == "2" ]]; then
+        print_pass "ALLOW-AXFR-FROM has 2 values"
+    else
+        print_fail "Expected 2 values for ALLOW-AXFR-FROM, got $value_count"
+    fi
+
+    # Test 6: List all metadata (should include both kinds)
+    api_request_v2 "GET" "/zones/${TEST_METADATA_ZONE_ID}/metadata" "" 200 "List all metadata after setting values"
+
+    increment_test
+    local metadata_count
+    metadata_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.metadata | length' 2>/dev/null)
+    if [[ "$metadata_count" -ge 2 ]]; then
+        print_pass "Metadata list contains at least 2 kinds ($metadata_count)"
+    else
+        print_fail "Expected at least 2 metadata kinds, got $metadata_count"
+    fi
+
+    # Test 7: Replace metadata kind (update)
+    api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" '{"values":["0"]}' 200 "Replace metadata value (IXFR -> 0)"
+
+    api_request_v2 "GET" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" "" 200 "Verify replaced metadata value"
+
+    increment_test
+    ixfr_value=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.values[0]' 2>/dev/null)
+    if [[ "$ixfr_value" == "0" ]]; then
+        print_pass "IXFR metadata value updated to 0"
+    else
+        print_fail "Expected IXFR value '0', got '$ixfr_value'"
+    fi
+
+    # Test 8: Reject multiple values for single-value kind
+    api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" '{"values":["0","1"]}' 400 "Reject multiple values for single-value kind"
+
+    # Test 9: Reject write to read-only kind
+    api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/SOA-EDIT" '{"values":["INCEPTION-INCREMENT"]}' 403 "Reject write to read-only metadata kind"
+
+    # Test 10: Reject delete of read-only kind
+    api_request_v2 "DELETE" "/zones/${TEST_METADATA_ZONE_ID}/metadata/SOA-EDIT" "" 403 "Reject delete of read-only metadata kind"
+
+    # Test 11: Reject empty values array
+    api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" '{"values":[]}' 400 "Reject empty values array"
+
+    # Test 12: Reject missing values field
+    api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" '{}' 400 "Reject missing values field"
+
+    # Test 13: Delete metadata kind
+    api_request_v2 "DELETE" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" "" 200 "Delete metadata kind (IXFR)"
+
+    # Test 14: Get deleted kind returns 404
+    api_request_v2 "GET" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" "" 404 "Get deleted metadata kind returns 404"
+
+    # Test 15: Get metadata for non-existent zone
+    api_request_v2 "GET" "/zones/999999/metadata" "" 404 "Get metadata for non-existent zone"
+
+    # Test 16: Delete metadata kind on non-existent zone
+    api_request_v2 "DELETE" "/zones/999999/metadata/IXFR" "" 404 "Delete metadata on non-existent zone"
+
+    # Cleanup test zone
+    if [[ -n "$TEST_METADATA_ZONE_ID" ]]; then
+        print_info "Deleting metadata test zone $TEST_METADATA_ZONE_ID..."
+        api_request_v2 "DELETE" "/zones/$TEST_METADATA_ZONE_ID" "" 204 "Delete metadata test zone" || true
+        TEST_METADATA_ZONE_ID=""
+    fi
+}
+
 cleanup() {
     print_section "Cleanup"
 
@@ -1440,6 +1557,12 @@ cleanup() {
     if [[ -n "$TEST_REVERSE_ZONE_ID" && "${CREATED_REVERSE_ZONE:-false}" == "true" ]]; then
         print_info "Deleting reverse zone $TEST_REVERSE_ZONE_ID..."
         api_request_v2 "DELETE" "/zones/$TEST_REVERSE_ZONE_ID" "" 204 "Delete reverse zone" || true
+    fi
+
+    # Delete metadata test zone
+    if [[ -n "$TEST_METADATA_ZONE_ID" ]]; then
+        print_info "Deleting metadata test zone $TEST_METADATA_ZONE_ID..."
+        api_request_v2 "DELETE" "/zones/$TEST_METADATA_ZONE_ID" "" 204 "Delete metadata test zone" || true
     fi
 
     # Delete zone owner test zone and user
@@ -1498,6 +1621,7 @@ cleanup_existing_test_zones() {
         "bad-template-test.example.com"
         "name-template-test.example.com"
         "owner-test.example.com"
+        "metadata-test.example.com"
         "disabled-test.example.com"
         "group-assign-test.example.com"
     )
@@ -1534,6 +1658,7 @@ main() {
     test_master_port_syntax
     test_groups
     test_zone_owners
+    test_zone_metadata
     test_zone_templates
 
     # Cleanup
