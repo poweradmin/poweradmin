@@ -88,6 +88,8 @@ class QuickRemoveGroupMemberController extends BaseController
             $success = $this->membershipService->removeUserFromGroup($groupId, $memberId);
 
             if ($success) {
+                $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+                $auditService->logGroupMemberRemove($groupId, $memberId);
                 $this->setMessage('edit_group', 'success', _('Member removed from group successfully.'));
             } else {
                 $this->setMessage('edit_group', 'warning', _('User was not a member of this group.'));

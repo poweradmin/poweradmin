@@ -166,6 +166,18 @@ class AuditService
         ), $zoneId);
     }
 
+    // Group membership
+
+    public function logGroupMemberRemove(int $groupId, int $userId): void
+    {
+        $this->logger->logGroupInfo(sprintf(
+            '%s operation:remove_members group_id:%d user_id:%d',
+            $this->getContext(),
+            $groupId,
+            $userId
+        ), $groupId);
+    }
+
     // Zone templates
 
     public function logZoneTemplateAdd(string $templateName): void
