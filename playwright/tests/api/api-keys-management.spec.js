@@ -75,7 +75,7 @@ test.describe('API Keys Management', () => {
         await expect(page.locator('body')).toContainText('Add API Key');
 
         // Fill form
-        await page.locator('input[name="name"]').fill('Test API Key');
+        await page.locator('input[name="name"]').fill('E2E Playwright Key');
         await page.locator('button[type="submit"]:has-text("Create API Key")').click();
 
         // Verify success
@@ -86,19 +86,19 @@ test.describe('API Keys Management', () => {
         await page.locator('text=Return to API Keys').click();
 
         // Verify key appears in list
-        await expect(page.locator('table tbody')).toContainText('Test API Key');
+        await expect(page.locator('table tbody')).toContainText('E2E Playwright Key');
 
-        // Clean up: Delete the test key
-        await page.locator('tr:has-text("Test API Key") >> a:has-text("Delete")').click();
+        // Clean up: Delete the test key (icon-only button, match by href pattern)
+        await page.locator('tr', { hasText: 'E2E Playwright Key' }).locator('a[href*="/delete"]').click();
 
         // Confirm deletion
         await expect(page.locator('body')).toContainText('Delete API Key');
-        await page.locator('button[type="submit"]:has-text("Yes, delete this API key")').click();
+        await page.locator('button[type="submit"]').click();
 
         // Verify deletion
         await expect(page).toHaveURL(/.*settings\/api-keys/);
-        await expect(page.locator('body')).not.toContainText('Test API Key');
-        console.log('✓ Test API Key created and cleaned up successfully');
+        await expect(page.locator('body')).not.toContainText('E2E Playwright Key');
+        console.log('✓ E2E Playwright Key created and cleaned up successfully');
       } else {
         console.log('Add button not available - might be at max capacity');
         if (bodyText?.includes('maximum number of API keys')) {

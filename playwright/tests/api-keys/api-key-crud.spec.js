@@ -455,8 +455,9 @@ test.describe('API Key Actions', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/settings/api-keys');
 
-      const toggleForm = page.locator('form[action*="/toggle"]');
-      const hasToggle = await toggleForm.count() > 0;
+      // Toggle buttons use onclick handlers that open modal dialogs
+      const toggleButton = page.locator('button[onclick*="Modal"]');
+      const hasToggle = await toggleButton.count() > 0;
 
       const bodyText = await page.locator('body').textContent();
       const hasNoKeys = bodyText.toLowerCase().includes('no api keys');

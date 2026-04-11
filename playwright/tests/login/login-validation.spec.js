@@ -245,6 +245,8 @@ test.describe('Login Authentication', () => {
     test('should show error message on failed login', async ({ page }) => {
       await page.goto('/login');
       await login(page, 'wronguser', 'wrongpassword');
+      await page.waitForURL(/login/, { timeout: 10000 });
+      await page.waitForLoadState('domcontentloaded');
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/error|invalid|incorrect|failed/i);
@@ -254,11 +256,15 @@ test.describe('Login Authentication', () => {
       // Login with wrong username
       await page.goto('/login');
       await login(page, 'nonexistentuser123', 'wrongpassword');
+      await page.waitForURL(/login/, { timeout: 10000 });
+      await page.waitForLoadState('domcontentloaded');
       const bodyText1 = await page.locator('body').textContent();
 
       // Login with correct username but wrong password
       await page.goto('/login');
       await login(page, users.admin.username, 'wrongpassword');
+      await page.waitForURL(/login/, { timeout: 10000 });
+      await page.waitForLoadState('domcontentloaded');
       const bodyText2 = await page.locator('body').textContent();
 
       // Error messages should be similar (not revealing username existence)

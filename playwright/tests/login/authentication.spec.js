@@ -44,6 +44,9 @@ test.describe('Login Authentication', () => {
       await page.locator('input[name="username"]').fill(users.invalidUser.username);
       await page.locator('input[name="password"]').fill(users.invalidUser.password);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      // Wait for the POST -> redirect -> render cycle to complete
+      await page.waitForURL(/login/, { timeout: 10000 });
+      await page.waitForLoadState('domcontentloaded');
       // Check for error message or alert
       const hasError = await page.locator('.alert-danger, .error, [data-testid="session-error"]').first().isVisible().catch(() => false);
       const bodyText = await page.locator('body').textContent();
