@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
@@ -103,7 +104,7 @@ class DnssecDeleteKeyController extends BaseController
                 $keyStillExists = $domain_name !== null && $dnssecProvider->keyExists($domain_name, $key_id);
 
                 if ($result && !$keyStillExists) {
-                    $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+                    $auditService = new AuditService($this->db);
                     $auditService->logDnssecDeleteKey($zone_id, $domain_name, $key_id);
                     $this->setMessage('dnssec', 'success', _('Zone key has been deleted successfully.'));
                 } else {

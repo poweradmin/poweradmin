@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
@@ -88,7 +89,7 @@ class QuickRemoveGroupMemberController extends BaseController
             $success = $this->membershipService->removeUserFromGroup($groupId, $memberId);
 
             if ($success) {
-                $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+                $auditService = new AuditService($this->db);
                 $auditService->logGroupMemberRemove($groupId, $memberId);
                 $this->setMessage('edit_group', 'success', _('Member removed from group successfully.'));
             } else {

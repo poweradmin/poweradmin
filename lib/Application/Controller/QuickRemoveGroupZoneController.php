@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\GroupZoneService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
@@ -89,7 +90,7 @@ class QuickRemoveGroupZoneController extends BaseController
             $success = $this->groupZoneService->removeZoneFromGroup($groupId, $zoneId);
 
             if ($success) {
-                $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+                $auditService = new AuditService($this->db);
                 $auditService->logZoneGroupRemove($zoneId, (string)$zoneId, $groupId);
                 $this->setMessage('edit_group', 'success', _('Zone removed from group successfully.'));
             } else {

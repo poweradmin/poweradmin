@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -107,7 +108,7 @@ class DnssecToggleKeyController extends BaseController
 
             // Set appropriate message and redirect
             if ($result) {
-                $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+                $auditService = new AuditService($this->db);
                 $auditService->logDnssecToggleKey($zone_id, $domain_name, $key_id, $action);
                 $this->setMessage('dnssec', 'success', $success_message);
             } else {

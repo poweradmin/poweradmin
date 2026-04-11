@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -84,7 +85,7 @@ class UnlinkZonesTemplController extends BaseController
 
             $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
             if ($zoneTemplate->unlinkZoneFromTemplate($zone_id)) {
-                $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+                $auditService = new AuditService($this->db);
                 $auditService->logZoneTemplateUnlink($zone_id);
                 $successful++;
             } else {

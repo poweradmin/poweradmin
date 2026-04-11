@@ -32,6 +32,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
@@ -101,7 +102,7 @@ class DnssecController extends BaseController
                     if (!$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
                         // Update SOA serial after unsigning
                         $dnsRecord->updateSOASerial($zone_id);
-                        $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+                        $auditService = new AuditService($this->db);
                         $auditService->logDnssecUnsignZone($zone_id, (string)$zone_name);
                         $this->setMessage('dnssec', 'success', _('Zone has been unsigned successfully.'));
                         // Redirect to edit page since DNSSEC is no longer relevant

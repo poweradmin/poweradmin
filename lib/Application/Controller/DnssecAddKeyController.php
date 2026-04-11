@@ -39,6 +39,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 
 class DnssecAddKeyController extends BaseController
@@ -155,8 +156,8 @@ class DnssecAddKeyController extends BaseController
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                     try {
                         if ($dnssecProvider->addZoneKey($domain_name, $key_type, $bits, $algorithm)) {
-                            $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
-                            $auditService->logDnssecAddKey($zone_id, $domain_name, $key_type, $bits, $algorithm);
+                            $auditService = new AuditService($this->db);
+                            $auditService->logDnssecAddKey((int)$zone_id, $domain_name, $key_type, $bits, $algorithm);
                             $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
                             $this->redirect('/zones/' . $zone_id . '/dnssec');
                         } else {
