@@ -173,7 +173,18 @@ class DbZoneLogger
             'api_edit_record',
             'delete_record',
             'delete_zone',
+            'dnssec_add_key',
+            'dnssec_delete_key',
+            'dnssec_toggle_key',
+            'dnssec_unsign_zone',
             'edit_record',
+            'edit_zone_metadata',
+            'unlink_zone_template',
+            'zone_group_add',
+            'zone_group_remove',
+            'zone_import',
+            'zone_owner_add',
+            'zone_owner_remove',
         ];
     }
 

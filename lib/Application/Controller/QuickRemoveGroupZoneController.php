@@ -89,6 +89,8 @@ class QuickRemoveGroupZoneController extends BaseController
             $success = $this->groupZoneService->removeZoneFromGroup($groupId, $zoneId);
 
             if ($success) {
+                $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+                $auditService->logZoneGroupRemove($zoneId, (string)$zoneId, $groupId);
                 $this->setMessage('edit_group', 'success', _('Zone removed from group successfully.'));
             } else {
                 $this->setMessage('edit_group', 'warning', _('Zone was not owned by this group.'));

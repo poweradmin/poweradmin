@@ -79,4 +79,129 @@ class AuditService
             $requestUri
         ));
     }
+
+    // Zone ownership
+
+    public function logZoneOwnerAdd(int $zoneId, string $zoneName, int $ownerId): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:zone_owner_add zone:%s owner_id:%d',
+            $this->getContext(),
+            $zoneName,
+            $ownerId
+        ), $zoneId);
+    }
+
+    public function logZoneOwnerRemove(int $zoneId, string $zoneName, int $ownerId): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:zone_owner_remove zone:%s owner_id:%d',
+            $this->getContext(),
+            $zoneName,
+            $ownerId
+        ), $zoneId);
+    }
+
+    public function logZoneGroupAdd(int $zoneId, string $zoneName, int $groupId): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:zone_group_add zone:%s group_id:%d',
+            $this->getContext(),
+            $zoneName,
+            $groupId
+        ), $zoneId);
+    }
+
+    public function logZoneGroupRemove(int $zoneId, string $zoneName, int $groupId): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:zone_group_remove zone:%s group_id:%d',
+            $this->getContext(),
+            $zoneName,
+            $groupId
+        ), $zoneId);
+    }
+
+    // DNSSEC
+
+    public function logDnssecAddKey(int $zoneId, string $zoneName, string $keyType, string $bits, string $algorithm): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:dnssec_add_key zone:%s key_type:%s bits:%s algorithm:%s',
+            $this->getContext(),
+            $zoneName,
+            $keyType,
+            $bits,
+            $algorithm
+        ), $zoneId);
+    }
+
+    public function logDnssecDeleteKey(int $zoneId, string $zoneName, int $keyId): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:dnssec_delete_key zone:%s key_id:%d',
+            $this->getContext(),
+            $zoneName,
+            $keyId
+        ), $zoneId);
+    }
+
+    public function logDnssecToggleKey(int $zoneId, string $zoneName, int $keyId, string $action): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:dnssec_toggle_key zone:%s key_id:%d action:%s',
+            $this->getContext(),
+            $zoneName,
+            $keyId,
+            $action
+        ), $zoneId);
+    }
+
+    public function logDnssecUnsignZone(int $zoneId, string $zoneName): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:dnssec_unsign_zone zone:%s',
+            $this->getContext(),
+            $zoneName
+        ), $zoneId);
+    }
+
+    // Zone templates
+
+    public function logZoneTemplateAdd(string $templateName): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:add_zone_template template_name:%s',
+            $this->getContext(),
+            str_replace(' ', '_', $templateName)
+        ));
+    }
+
+    public function logZoneTemplateEdit(int $templateId, string $templateName): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:edit_zone_template template_id:%d template_name:%s',
+            $this->getContext(),
+            $templateId,
+            str_replace(' ', '_', $templateName)
+        ));
+    }
+
+    public function logZoneTemplateDelete(int $templateId): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:delete_zone_template template_id:%d',
+            $this->getContext(),
+            $templateId
+        ));
+    }
+
+    public function logZoneTemplateUnlink(int $zoneId): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:unlink_zone_template zone_id:%d',
+            $this->getContext(),
+            $zoneId
+        ), $zoneId);
+    }
 }

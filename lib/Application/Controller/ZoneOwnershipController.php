@@ -32,6 +32,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\ZoneAccessNotificationService;
@@ -98,7 +99,7 @@ class ZoneOwnershipController extends BaseController
         // Handle form submissions
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $this->handleFormSubmission($zone_id, $userId, $meta_edit);
+            $this->handleFormSubmission($zone_id, $zone_name, $userId, $meta_edit);
         }
 
         // Get owners
@@ -162,13 +163,16 @@ class ZoneOwnershipController extends BaseController
         ]);
     }
 
-    private function handleFormSubmission(int $zone_id, int $userId, bool $meta_edit): void
+    private function handleFormSubmission(int $zone_id, string $zone_name, int $userId, bool $meta_edit): void
     {
+        $auditService = new AuditService($this->db);
+
         // Add owner
         if (isset($_POST["newowner"]) && is_numeric($_POST["newowner"]) && $meta_edit) {
             $ownerAdded = $this->zoneRepository->addOwnerToZone($zone_id, (int)$_POST["newowner"]);
 
             if ($ownerAdded) {
+                $auditService->logZoneOwnerAdd($zone_id, $zone_name, (int)$_POST["newowner"]);
                 $this->setMessage('zone_ownership', 'success', _('Owner has been added successfully.'));
 
                 // Send zone access granted notification
@@ -184,6 +188,7 @@ class ZoneOwnershipController extends BaseController
             $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, (int)$_POST["delete_owner"]);
 
             if ($ownerRemoved) {
+                $auditService->logZoneOwnerRemove($zone_id, $zone_name, (int)$_POST["delete_owner"]);
                 $this->setMessage('zone_ownership', 'success', _('Owner has been removed successfully.'));
 
                 // Send zone access revoked notification
@@ -212,6 +217,7 @@ class ZoneOwnershipController extends BaseController
 
             $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
             $zoneGroupRepo->add($zone_id, $groupId);
+            $auditService->logZoneGroupAdd($zone_id, $zone_name, $groupId);
             $this->setMessage('zone_ownership', 'success', _('Group has been added successfully.'));
         }
 
@@ -219,6 +225,7 @@ class ZoneOwnershipController extends BaseController
         if (isset($_POST["delete_group"]) && is_numeric($_POST["delete_group"]) && $meta_edit) {
             $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
             $zoneGroupRepo->remove($zone_id, (int)$_POST["delete_group"]);
+            $auditService->logZoneGroupRemove($zone_id, $zone_name, (int)$_POST["delete_group"]);
             $this->setMessage('zone_ownership', 'success', _('Group has been removed successfully.'));
         }
     }
