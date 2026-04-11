@@ -102,6 +102,7 @@ class DbUserLogger
     public function getDistinctEventTypes(): array
     {
         return [
+            'access_denied',
             'add_user',
             'change_password',
             'delete_user',
@@ -186,6 +187,7 @@ class DbUserLogger
 
         if (!empty($filters['event_type'])) {
             $typePatterns = [
+                'access_denied' => '%operation:access_denied%',
                 'login_success' => '%operation:login_success%',
                 'login_failed' => '%operation:login_failed%',
                 'add_user' => '%operation:add_user%',

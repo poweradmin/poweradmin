@@ -23,6 +23,7 @@
 namespace Poweradmin;
 
 use InvalidArgumentException;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
@@ -497,6 +498,9 @@ abstract class BaseController
     public function checkPermission(string $permission, string $errorMessage): void
     {
         if (!UserManager::verifyPermission($this->db, $permission)) {
+            $auditService = new AuditService($this->db);
+            $auditService->logAccessDenied($permission, $_SERVER['REQUEST_URI'] ?? '');
+
             // Check if this request expects JSON
             if (self::expectsJson()) {
                 header('Content-Type: application/json');
