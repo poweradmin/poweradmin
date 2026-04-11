@@ -26,40 +26,35 @@ use PDO;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Infrastructure\Utility\UserAgentService;
 
 class UserEventLogger
 {
     private LegacyLogger $logger;
     private IpAddressRetriever $ipRetriever;
-    private UserAgentService $userAgentService;
 
     public function __construct(PDO $db)
     {
         $this->logger = new LegacyLogger($db);
         $this->ipRetriever = new IpAddressRetriever($_SERVER);
-        $this->userAgentService = new UserAgentService($_SERVER);
     }
 
     public function logSuccessfulAuth(AuthMethod $authMethod = AuthMethod::SQL): void
     {
         $this->logger->logNotice(sprintf(
-            'client_ip:%s user:%s operation:login_success auth_method:%s browser:%s',
+            'client_ip:%s user:%s operation:login_success auth_method:%s',
             $this->ipRetriever->getClientIp(),
             $_SESSION['userlogin'],
-            $authMethod->value,
-            $this->userAgentService->getBrowserInfo()
+            $authMethod->value
         ));
     }
 
     public function logFailedAuth(AuthMethod $authMethod = AuthMethod::SQL): void
     {
         $this->logger->logWarn(sprintf(
-            'client_ip:%s user:%s operation:login_failed auth_method:%s browser:%s',
+            'client_ip:%s user:%s operation:login_failed auth_method:%s',
             $this->ipRetriever->getClientIp(),
             $_SESSION["userlogin"],
-            $authMethod->value,
-            $this->userAgentService->getBrowserInfo()
+            $authMethod->value
         ));
     }
 }

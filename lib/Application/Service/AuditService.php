@@ -25,29 +25,25 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Infrastructure\Utility\UserAgentService;
 
 class AuditService
 {
     private LegacyLogger $logger;
     private IpAddressRetriever $ipRetriever;
-    private UserAgentService $userAgentService;
 
     public function __construct(PDO $db)
     {
         $this->logger = new LegacyLogger($db);
         $this->ipRetriever = new IpAddressRetriever($_SERVER);
-        $this->userAgentService = new UserAgentService($_SERVER);
     }
 
     private function getContext(): string
     {
         $username = $_SESSION['userlogin'] ?? 'unknown';
         return sprintf(
-            'client_ip:%s user:%s browser:%s',
+            'client_ip:%s user:%s',
             $this->ipRetriever->getClientIp(),
-            $username,
-            $this->userAgentService->getBrowserInfo()
+            $username
         );
     }
 

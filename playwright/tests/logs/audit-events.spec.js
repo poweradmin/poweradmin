@@ -128,7 +128,7 @@ test.describe('Audit Events - Verify in User Logs', () => {
     expect(options.some(o => o.includes('session_expired'))).toBeTruthy();
   });
 
-  test('should show browser in login events', async ({ page }) => {
+  test('should show auth_method in login events', async ({ page }) => {
     await page.goto('/users/logs');
 
     // Filter by login_success
@@ -146,7 +146,7 @@ test.describe('Audit Events - Verify in User Logs', () => {
       await expect(modal).toBeVisible();
 
       const modalText = await modal.textContent();
-      expect(modalText).toMatch(/browser:/);
+      expect(modalText).toMatch(/auth_method:/);
     }
   });
 
