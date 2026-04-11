@@ -87,6 +87,8 @@ class DeleteZoneTemplController extends BaseController
             $zoneTemplate = new ZoneTemplate($this->db, $this->config);
             $zoneTemplate->deleteZoneTempl($zone_templ_id);
 
+            $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+            $auditService->logZoneTemplateDelete((int)$zone_templ_id);
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been deleted successfully.'));
             $this->redirect('/zones/templates');
         } else {

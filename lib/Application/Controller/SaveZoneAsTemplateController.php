@@ -147,6 +147,8 @@ class SaveZoneAsTemplateController extends BaseController
             $zone_name
         );
 
+        $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+        $auditService->logZoneTemplateAdd($template_name);
         $this->setMessage('save_zone_template', 'success', _('Zone template has been created successfully.'));
 
         // Redirect to template list after successful save

@@ -87,6 +87,8 @@ class AddZoneTemplController extends BaseController
 
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
         if ($zoneTemplate->addZoneTempl($_POST, $_SESSION['userid'])) {
+            $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+            $auditService->logZoneTemplateAdd($_POST['templ_name'] ?? '');
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been added successfully.'));
             $this->redirect('/zones/templates');
         } else {

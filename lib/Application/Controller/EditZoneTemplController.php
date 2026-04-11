@@ -208,6 +208,8 @@ class EditZoneTemplController extends BaseController
         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
         $userId = $this->userContext->getLoggedInUserId();
         $zoneTemplate->editZoneTempl($_POST, $zone_templ_id, $userId);
+        $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+        $auditService->logZoneTemplateEdit($zone_templ_id, $_POST['templ_name'] ?? '');
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been updated successfully.'));
         $this->redirect('/zones/templates');
     }
