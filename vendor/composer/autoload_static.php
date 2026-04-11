@@ -1446,6 +1446,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Service\\ZoneService' => __DIR__ . '/../..' . '/lib/Application/Service/ZoneService.php',
         'Poweradmin\\Application\\Service\\ZoneSyncService' => __DIR__ . '/../..' . '/lib/Application/Service/ZoneSyncService.php',
         'Poweradmin\\BaseController' => __DIR__ . '/../..' . '/lib/BaseController.php',
+        'Poweradmin\\Domain\\Enum\\AuthMethod' => __DIR__ . '/../..' . '/lib/Domain/Enum/AuthMethod.php',
         'Poweradmin\\Domain\\Error\\ApiErrorException' => __DIR__ . '/../..' . '/lib/Domain/Error/ApiErrorException.php',
         'Poweradmin\\Domain\\Error\\ErrorMessage' => __DIR__ . '/../..' . '/lib/Domain/Error/ErrorMessage.php',
         'Poweradmin\\Domain\\Error\\RecordIdNotFoundException' => __DIR__ . '/../..' . '/lib/Domain/Error/RecordIdNotFoundException.php',

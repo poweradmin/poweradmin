@@ -92,7 +92,7 @@
                             {% endif %}
                             {% for part in parts %}
                                 {% set kv = part|split(':') %}
-                                {% if kv|length >= 2 and kv[0] != 'client_ip' and kv[0] != 'operation' %}
+                                {% if kv|length >= 2 and kv[0] != 'operation' %}
                                     <strong class="text-muted">{{ kv[0] }}</strong>:{{ kv|slice(1)|join(':') }}
                                 {% endif %}
                             {% endfor %}

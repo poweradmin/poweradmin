@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
@@ -37,13 +38,13 @@ class UserEventLogger
         $this->ipRetriever = new IpAddressRetriever($_SERVER);
     }
 
-    public function logSuccessfulAuth(): void
+    public function logSuccessfulAuth(AuthMethod $authMethod = AuthMethod::SQL): void
     {
-        $this->logger->logNotice(sprintf('client_ip:%s user:%s operation:login_success', $this->ipRetriever->getClientIp(), $_SESSION['userlogin']));
+        $this->logger->logNotice(sprintf('client_ip:%s user:%s operation:login_success auth_method:%s', $this->ipRetriever->getClientIp(), $_SESSION['userlogin'], $authMethod->value));
     }
 
-    public function logFailedAuth(): void
+    public function logFailedAuth(AuthMethod $authMethod = AuthMethod::SQL): void
     {
-        $this->logger->logWarn(sprintf('client_ip:%s user:%s operation:login_failed', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
+        $this->logger->logWarn(sprintf('client_ip:%s user:%s operation:login_failed auth_method:%s', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"], $authMethod->value));
     }
 }

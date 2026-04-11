@@ -26,6 +26,7 @@ use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
@@ -282,7 +283,7 @@ class OidcService extends LoggingService
                 $this->setSessionValue('userlogin', $databaseUsername);
 
                 // Log successful authentication to database
-                $this->userEventLogger->logSuccessfulAuth();
+                $this->userEventLogger->logSuccessfulAuth(AuthMethod::OIDC);
 
                 // Ensure a CSRF token exists for subsequent requests
                 $this->csrfTokenService->ensureTokenExists();
@@ -354,7 +355,7 @@ class OidcService extends LoggingService
             } else {
                 $this->logWarning('Failed to provision OIDC user: {username}', ['username' => $userInfo->getUsername()]);
                 $this->setSessionValue('userlogin', $userInfo->getUsername());
-                $this->userEventLogger->logFailedAuth();
+                $this->userEventLogger->logFailedAuth(AuthMethod::OIDC);
                 $sessionEntity = new SessionEntity(_('Authentication failed: Unable to create or update user account'), 'danger');
                 $this->authenticationService->auth($sessionEntity);
             }

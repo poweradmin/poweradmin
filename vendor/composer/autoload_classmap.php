@@ -1051,6 +1051,7 @@ return array(
     'Poweradmin\\Application\\Service\\ZoneService' => $baseDir . '/lib/Application/Service/ZoneService.php',
     'Poweradmin\\Application\\Service\\ZoneSyncService' => $baseDir . '/lib/Application/Service/ZoneSyncService.php',
     'Poweradmin\\BaseController' => $baseDir . '/lib/BaseController.php',
+    'Poweradmin\\Domain\\Enum\\AuthMethod' => $baseDir . '/lib/Domain/Enum/AuthMethod.php',
     'Poweradmin\\Domain\\Error\\ApiErrorException' => $baseDir . '/lib/Domain/Error/ApiErrorException.php',
     'Poweradmin\\Domain\\Error\\ErrorMessage' => $baseDir . '/lib/Domain/Error/ErrorMessage.php',
     'Poweradmin\\Domain\\Error\\RecordIdNotFoundException' => $baseDir . '/lib/Domain/Error/RecordIdNotFoundException.php',

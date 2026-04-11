@@ -26,6 +26,7 @@ use OneLogin\Saml2\Auth;
 use OneLogin\Saml2\Settings;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
@@ -282,7 +283,7 @@ class SamlService extends LoggingService
                 $this->setSessionValue('userlogin', $databaseUsername);
 
                 // Log successful authentication to database
-                $this->userEventLogger->logSuccessfulAuth();
+                $this->userEventLogger->logSuccessfulAuth(AuthMethod::SAML);
 
                 // Ensure a CSRF token exists for subsequent requests
                 $this->csrfTokenService->ensureTokenExists();
@@ -342,7 +343,7 @@ class SamlService extends LoggingService
             } else {
                 $this->logWarning('Failed to provision SAML user: {username}', ['username' => $userInfo->getUsername()]);
                 $this->setSessionValue('userlogin', $userInfo->getUsername());
-                $this->userEventLogger->logFailedAuth();
+                $this->userEventLogger->logFailedAuth(AuthMethod::SAML);
                 $sessionEntity = new SessionEntity(_('Authentication failed: Unable to create or update user account'), 'danger');
                 $this->authenticationService->auth($sessionEntity);
 
