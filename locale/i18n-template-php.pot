@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-09 10:38+0300\n"
+"POT-Creation-Date: 2026-04-11 19:44+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,11 +28,11 @@ msgstr ""
 msgid "DNS wizards are not enabled."
 msgstr ""
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:47
+#: lib/Application/Controller/DnssecToggleKeyController.php:48
 msgid "Invalid zone ID."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:94
+#: lib/Application/Controller/ZoneOwnershipController.php:95
 msgid "Zone not found."
 msgstr ""
 
@@ -1170,7 +1170,7 @@ msgstr ""
 msgid "You do not have permission to export this zone."
 msgstr ""
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Application/Controller/DnssecToggleKeyController.php:72
 msgid "There is no zone with this ID."
 msgstr ""
 
@@ -1178,54 +1178,54 @@ msgstr ""
 msgid "This zone does not have any records to export."
 msgstr ""
 
-#: lib/Module/Whois/Controller/WhoisController.php:50
+#: lib/Module/Whois/Controller/WhoisController.php:55
 msgid "You do not have permission to perform WHOIS lookups."
 msgstr ""
 
-#: lib/Module/Whois/Controller/WhoisController.php:54
+#: lib/Module/Whois/Controller/WhoisController.php:59
 msgid "WHOIS"
 msgstr ""
 
-#: lib/Module/Whois/Controller/WhoisController.php:112
+#: lib/Module/Whois/Controller/WhoisController.php:117
 #, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr ""
 
-#: lib/Module/Rdap/Controller/RdapController.php:50
+#: lib/Module/Rdap/Controller/RdapController.php:55
 msgid "You do not have permission to perform RDAP lookups."
 msgstr ""
 
-#: lib/Module/Rdap/Controller/RdapController.php:54
+#: lib/Module/Rdap/Controller/RdapController.php:59
 msgid "RDAP"
 msgstr ""
 
-#: lib/Module/Rdap/Controller/RdapController.php:112
+#: lib/Module/Rdap/Controller/RdapController.php:117
 #, php-format
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr ""
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:134
+#: lib/Infrastructure/Service/SessionAuthenticator.php:135
 msgid "Invalid CSRF token."
 msgstr ""
 
-#: lib/BaseController.php:588
+#: lib/BaseController.php:592
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr ""
 
-#: lib/BaseController.php:644
+#: lib/BaseController.php:648
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
 
-#: lib/BaseController.php:783
+#: lib/BaseController.php:787
 #, php-format
 msgid "The %s field is required."
 msgstr ""
 
-#: lib/BaseController.php:791
+#: lib/BaseController.php:795
 #, php-format
 msgid "The %s field must be a number."
 msgstr ""
@@ -1272,7 +1272,7 @@ msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:72
+#: lib/Application/Controller/ZoneOwnershipController.php:73
 msgid "Invalid or unexpected input given."
 msgstr ""
 
@@ -1284,7 +1284,7 @@ msgstr ""
 msgid "You do not have permission to delete a superuser account."
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:457
+#: lib/Application/Controller/EditUserController.php:473
 msgid "User does not exist."
 msgstr ""
 
@@ -1430,7 +1430,7 @@ msgstr ""
 msgid "Bottom"
 msgstr ""
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:65
+#: lib/Application/Controller/QuickRemoveGroupMemberController.php:66
 msgid "You do not have permission to manage group members."
 msgstr ""
 
@@ -1551,54 +1551,80 @@ msgstr ""
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr ""
 
+#: lib/Application/Controller/ListLogApiController.php:51
+#: templates/modern/list_log_api.html:4 templates/modern/header.html:323
+msgid "API Logs"
+msgstr ""
+
+#: lib/Application/Controller/ListLogUsersController.php:93
+msgid "Invalid page number."
+msgstr ""
+
+#: lib/Application/Controller/ListLogUsersController.php:95
+msgid "Page number must be at least 1."
+msgstr ""
+
+#: lib/Application/Controller/ListLogUsersController.php:114
+msgid "Page number exceeds available pages."
+msgstr ""
+
 #: lib/Application/Controller/ListSupermastersController.php:43
 msgid "You do not have the permission to view supermasters."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneMetadataController.php:314
+#: lib/Application/Controller/EditZoneMetadataController.php:118
+msgid "You do not have the permission to view zone metadata."
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:121
 msgid "You do not have the permission to edit zone metadata."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneMetadataController.php:341
+#: lib/Application/Controller/EditZoneMetadataController.php:150
 msgid "Zone metadata has been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneMetadataController.php:346
+#: lib/Application/Controller/EditZoneMetadataController.php:155
 msgid "Failed to update zone metadata."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneMetadataController.php:368
+#: lib/Application/Controller/EditZoneMetadataController.php:177
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr ""
 
-#: lib/Application/Controller/EditZoneMetadataController.php:558
+#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: templates/modern/edit_zone_metadata.html:24
+msgid "Zone Metadata"
+msgstr ""
+
+#: lib/Application/Controller/EditZoneMetadataController.php:381
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneMetadataController.php:646
-#: templates/modern/edit_zone_metadata.html:146
+#: lib/Application/Controller/EditZoneMetadataController.php:469
+#: templates/modern/edit_zone_metadata.html:153
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneMetadataController.php:654
+#: lib/Application/Controller/EditZoneMetadataController.php:477
 #: templates/modern/pdns_status.html:412
 msgid "Value"
 msgstr ""
 
-#: lib/Application/Controller/EditZoneMetadataController.php:692
+#: lib/Application/Controller/EditZoneMetadataController.php:515
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr ""
 
-#: lib/Application/Controller/EditZoneMetadataController.php:697
+#: lib/Application/Controller/EditZoneMetadataController.php:520
 msgid "Multi"
 msgstr ""
 
-#: lib/Application/Controller/EditZoneMetadataController.php:698
+#: lib/Application/Controller/EditZoneMetadataController.php:521
 msgid "Single"
 msgstr ""
 
@@ -1707,15 +1733,15 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:72
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
 msgid "Invalid request method."
 msgstr ""
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:82
+#: lib/Application/Controller/QuickRemoveGroupMemberController.php:83
 msgid "Invalid group or user ID."
 msgstr ""
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:91
+#: lib/Application/Controller/QuickRemoveGroupMemberController.php:94
 msgid "Member removed from group successfully."
 msgstr ""
 
@@ -1732,7 +1758,7 @@ msgstr ""
 msgid "Add User"
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:258
+#: lib/Application/Controller/EditUserController.php:274
 msgid "Invalid permission template: must be a user template"
 msgstr ""
 
@@ -1774,18 +1800,6 @@ msgstr ""
 msgid "Zone Logs"
 msgstr ""
 
-#: lib/Application/Controller/ListLogUsersController.php:93
-msgid "Invalid page number."
-msgstr ""
-
-#: lib/Application/Controller/ListLogUsersController.php:95
-msgid "Page number must be at least 1."
-msgstr ""
-
-#: lib/Application/Controller/ListLogUsersController.php:114
-msgid "Page number exceeds available pages."
-msgstr ""
-
 #: lib/Application/Controller/UsersController.php:51
 msgid "You do not have permission to view the users list."
 msgstr ""
@@ -1799,19 +1813,19 @@ msgstr ""
 msgid "User details updated"
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplController.php:59
+#: lib/Application/Controller/EditZoneTemplController.php:60
 msgid "No template ID provided."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplController.php:69
+#: lib/Application/Controller/EditZoneTemplController.php:70
 msgid "You do not have the permission to edit zone templates."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplController.php:73
+#: lib/Application/Controller/EditZoneTemplController.php:74
 msgid "Edit Zone Template"
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplController.php:89
+#: lib/Application/Controller/EditZoneTemplController.php:90
 msgid "There is no zone template with this ID."
 msgstr ""
 
@@ -1819,11 +1833,11 @@ msgstr ""
 msgid "Zone template has been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplController.php:230
+#: lib/Application/Controller/EditZoneTemplController.php:233
 msgid "Zones have been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplController.php:241
+#: lib/Application/Controller/EditZoneTemplController.php:244
 msgid "You do not have permission to create new zone templates."
 msgstr ""
 
@@ -1831,11 +1845,11 @@ msgstr ""
 msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplController.php:272
+#: lib/Application/Controller/EditZoneTemplController.php:275
 msgid "Please enter a different name when using Save As."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplController.php:296
+#: lib/Application/Controller/EditZoneTemplController.php:299
 msgid "Zone template has been copied successfully."
 msgstr ""
 
@@ -1847,7 +1861,7 @@ msgstr ""
 msgid "Template Zones"
 msgstr ""
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:52
+#: lib/Application/Controller/UnlinkZonesTemplController.php:53
 msgid "Invalid template ID."
 msgstr ""
 
@@ -1855,7 +1869,7 @@ msgstr ""
 msgid "Template does not exist."
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:62
+#: lib/Application/Controller/DnssecAddKeyController.php:63
 msgid "You do not have permission to view this zone."
 msgstr ""
 
@@ -1864,37 +1878,37 @@ msgstr ""
 msgid "User Logs"
 msgstr ""
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:38
+#: lib/Application/Controller/UnlinkZonesTemplController.php:39
 msgid "You do not have permission to unlink zones from templates."
 msgstr ""
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:47
+#: lib/Application/Controller/UnlinkZonesTemplController.php:48
 msgid "No zones selected."
 msgstr ""
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:96
+#: lib/Application/Controller/UnlinkZonesTemplController.php:99
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:106
+#: lib/Application/Controller/UnlinkZonesTemplController.php:109
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:116
+#: lib/Application/Controller/UnlinkZonesTemplController.php:119
 msgid "Failed to unlink zones from template."
 msgstr ""
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:128
+#: lib/Application/Controller/UnlinkZonesTemplController.php:131
 msgid "No valid zones selected."
 msgstr ""
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:136
+#: lib/Application/Controller/UnlinkZonesTemplController.php:139
 msgid "Template not found."
 msgstr ""
 
@@ -1902,11 +1916,11 @@ msgstr ""
 msgid "User agreement accepted successfully."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:68
+#: lib/Application/Controller/ZoneOwnershipController.php:69
 msgid "Edit Zone"
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:85
+#: lib/Application/Controller/ZoneOwnershipController.php:86
 msgid "You do not have permission to access this zone."
 msgstr ""
 
@@ -1950,19 +1964,19 @@ msgid ""
 "error. Check PowerDNS logs for details."
 msgstr ""
 
-#: lib/Application/Controller/DnssecController.php:94
+#: lib/Application/Controller/DnssecController.php:95
 msgid "Zone is not currently signed with DNSSEC."
 msgstr ""
 
-#: lib/Application/Controller/DnssecController.php:104
+#: lib/Application/Controller/DnssecController.php:107
 msgid "Zone has been unsigned successfully."
 msgstr ""
 
-#: lib/Application/Controller/DnssecController.php:109
+#: lib/Application/Controller/DnssecController.php:112
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr ""
 
-#: lib/Application/Controller/DnssecController.php:113
+#: lib/Application/Controller/DnssecController.php:116
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 
@@ -2097,19 +2111,19 @@ msgstr ""
 msgid "OIDC authentication is not enabled"
 msgstr ""
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:387
 msgid "Authentication failed: "
 msgstr ""
 
-#: lib/Application/Controller/SaveZoneAsTemplateController.php:80
+#: lib/Application/Controller/SaveZoneAsTemplateController.php:81
 msgid "You do not have permission to create zone templates."
 msgstr ""
 
-#: lib/Application/Controller/SaveZoneAsTemplateController.php:127
+#: lib/Application/Controller/SaveZoneAsTemplateController.php:128
 msgid "Template name can't be an empty string."
 msgstr ""
 
-#: lib/Application/Controller/SaveZoneAsTemplateController.php:150
+#: lib/Application/Controller/SaveZoneAsTemplateController.php:153
 msgid "Zone template has been created successfully."
 msgstr ""
 
@@ -2210,27 +2224,27 @@ msgstr ""
 msgid "Group has been created successfully."
 msgstr ""
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:54
+#: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid key ID."
 msgstr ""
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:64
+#: lib/Application/Controller/DnssecToggleKeyController.php:65
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr ""
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:89
+#: lib/Application/Controller/DnssecToggleKeyController.php:90
 msgid "DNSSEC key not found or no longer exists."
 msgstr ""
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:106
+#: lib/Application/Controller/DnssecDeleteKeyController.php:109
 msgid "Zone key has been deleted successfully."
 msgstr ""
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:114
+#: lib/Application/Controller/DnssecDeleteKeyController.php:117
 msgid "Failed to delete the zone key."
 msgstr ""
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:121
+#: lib/Application/Controller/DnssecDeleteKeyController.php:124
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr ""
 
@@ -2328,7 +2342,7 @@ msgid "You do not have the permission to view this page."
 msgstr ""
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:42
-#: templates/default/header.html:227 templates/modern/header.html:330
+#: templates/default/header.html:232 templates/modern/header.html:337
 msgid "Database Consistency"
 msgstr ""
 
@@ -2393,19 +2407,19 @@ msgstr ""
 msgid "You do not have the permission to add a zone template."
 msgstr ""
 
-#: lib/Application/Controller/AddZoneTemplController.php:52
+#: lib/Application/Controller/AddZoneTemplController.php:53
 msgid "Add Zone Template"
 msgstr ""
 
-#: lib/Application/Controller/AddZoneTemplController.php:90
+#: lib/Application/Controller/AddZoneTemplController.php:93
 msgid "Zone template has been added successfully."
 msgstr ""
 
-#: lib/Application/Controller/IndexController.php:60
+#: lib/Application/Controller/IndexController.php:61
 msgid "Dashboard"
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:365
+#: lib/Application/Controller/EditUserController.php:381
 msgid "You do not have permission to manage group memberships."
 msgstr ""
 
@@ -2437,7 +2451,7 @@ msgstr ""
 msgid "You do not have the permission to delete zone templates."
 msgstr ""
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:90
+#: lib/Application/Controller/DeleteZoneTemplController.php:93
 msgid "Zone template has been deleted successfully."
 msgstr ""
 
@@ -2453,19 +2467,19 @@ msgstr ""
 msgid "The supermaster has been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:66
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:67
 msgid "You do not have permission to manage group zones."
 msgstr ""
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:83
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:84
 msgid "Invalid group or zone ID."
 msgstr ""
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:92
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:95
 msgid "Zone removed from group successfully."
 msgstr ""
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:94
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
 msgid "Zone was not owned by this group."
 msgstr ""
 
@@ -2486,20 +2500,20 @@ msgstr ""
 msgid "You do not have the permission to add records to zone templates."
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:82
+#: lib/Application/Controller/EditUserController.php:85
 #: templates/default/edit_user.html:22 templates/modern/edit_user.html:22
 msgid "Edit User"
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:151
+#: lib/Application/Controller/EditUserController.php:167
 msgid "Your profile has been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:155
+#: lib/Application/Controller/EditUserController.php:171
 msgid "The user has been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:159
+#: lib/Application/Controller/EditUserController.php:175
 msgid "The user could not be updated."
 msgstr ""
 
@@ -2507,22 +2521,22 @@ msgstr ""
 msgid "You do not have the permission to edit this user."
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:226
+#: lib/Application/Controller/EditUserController.php:242
 msgid "You do not have permission to edit a superuser account."
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:373
+#: lib/Application/Controller/EditUserController.php:389
 msgid "Please select at least one group."
 msgstr ""
 
-#: lib/Application/Controller/EditUserController.php:414
+#: lib/Application/Controller/EditUserController.php:430
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/Application/Controller/EditUserController.php:439
+#: lib/Application/Controller/EditUserController.php:455
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
@@ -2598,11 +2612,7 @@ msgstr ""
 msgid "You do not have permission to edit this record."
 msgstr ""
 
-#: lib/Application/Controller/EditRecordController.php:244
-msgid "Failed to retrieve updated record information."
-msgstr ""
-
-#: lib/Application/Controller/EditRecordController.php:323
+#: lib/Application/Controller/EditRecordController.php:330
 msgid "The record has been updated successfully."
 msgstr ""
 
@@ -2630,39 +2640,39 @@ msgstr ""
 msgid "Change Password"
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:116
+#: lib/Application/Controller/DnssecAddKeyController.php:117
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:119
+#: lib/Application/Controller/DnssecAddKeyController.php:120
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:125
+#: lib/Application/Controller/DnssecAddKeyController.php:126
 msgid "ED25519 algorithm must use 256 bits"
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:130
+#: lib/Application/Controller/DnssecAddKeyController.php:131
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:137
+#: lib/Application/Controller/DnssecAddKeyController.php:138
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:158
+#: lib/Application/Controller/DnssecAddKeyController.php:161
 msgid "Zone key has been added successfully."
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:162
+#: lib/Application/Controller/DnssecAddKeyController.php:165
 msgid "Failed to add new DNSSEC key."
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:166
+#: lib/Application/Controller/DnssecAddKeyController.php:169
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr ""
 
-#: lib/Application/Controller/DnssecAddKeyController.php:170
+#: lib/Application/Controller/DnssecAddKeyController.php:173
 msgid "Please select both algorithm and bits"
 msgstr ""
 
@@ -2712,23 +2722,23 @@ msgstr ""
 msgid "Some zone(s) could not be added."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:172
+#: lib/Application/Controller/ZoneOwnershipController.php:176
 msgid "Owner has been added successfully."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:187
+#: lib/Application/Controller/ZoneOwnershipController.php:192
 msgid "Owner has been removed successfully."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:208
+#: lib/Application/Controller/ZoneOwnershipController.php:213
 msgid "You do not have permission to assign this group."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:215
+#: lib/Application/Controller/ZoneOwnershipController.php:221
 msgid "Group has been added successfully."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:222
+#: lib/Application/Controller/ZoneOwnershipController.php:229
 msgid "Group has been removed successfully."
 msgstr ""
 
@@ -2737,29 +2747,29 @@ msgstr ""
 msgid "Page Not Found"
 msgstr ""
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:80
+#: lib/Application/Controller/DnssecToggleKeyController.php:81
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr ""
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:100
+#: lib/Application/Controller/DnssecToggleKeyController.php:101
 msgid "Zone key has been successfully deactivated."
 msgstr ""
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:101
+#: lib/Application/Controller/DnssecToggleKeyController.php:102
 msgid "Failed to deactivate zone key."
 msgstr ""
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:104
+#: lib/Application/Controller/DnssecToggleKeyController.php:105
 msgid "Zone key has been successfully activated."
 msgstr ""
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:105
+#: lib/Application/Controller/DnssecToggleKeyController.php:106
 msgid "Failed to activate zone key."
 msgstr ""
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:116
+#: lib/Application/Controller/DnssecToggleKeyController.php:119
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr ""
 
@@ -2785,7 +2795,7 @@ msgstr ""
 msgid "Authentication failed!"
 msgstr ""
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:188
+#: lib/Infrastructure/Service/SessionAuthenticator.php:192
 msgid "Session expired, please login again."
 msgstr ""
 
@@ -2793,19 +2803,19 @@ msgstr ""
 msgid "Failed to update password"
 msgstr ""
 
-#: lib/Application/Service/OidcService.php:182
+#: lib/Application/Service/OidcService.php:183
 msgid "Authentication failed: Invalid state parameter"
 msgstr ""
 
-#: lib/Application/Service/OidcService.php:203
+#: lib/Application/Service/OidcService.php:204
 msgid "Authentication failed: No authorization code"
 msgstr ""
 
-#: lib/Application/Service/SamlService.php:187
+#: lib/Application/Service/SamlService.php:188
 msgid "Authentication failed: Invalid session"
 msgstr ""
 
-#: lib/Application/Service/SamlService.php:346
+#: lib/Application/Service/SamlService.php:347
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 
@@ -2829,7 +2839,7 @@ msgstr ""
 msgid "Failed to authenticate against LDAP."
 msgstr ""
 
-#: lib/Application/Service/SamlService.php:245
+#: lib/Application/Service/SamlService.php:246
 msgid "Authentication failed: Invalid SAML response"
 msgstr ""
 
@@ -2849,20 +2859,20 @@ msgstr ""
 msgid "This template is assigned to at least one group."
 msgstr ""
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:153
+#: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr ""
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:176
+#: lib/Infrastructure/Service/SessionAuthenticator.php:177
 msgid "An empty password is not allowed"
 msgstr ""
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:216
+#: lib/Infrastructure/Service/SessionAuthenticator.php:220
 msgid "LDAP authentication is disabled"
 msgstr ""
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:400
+#: lib/Infrastructure/Service/SessionAuthenticator.php:406
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
@@ -8040,7 +8050,7 @@ msgstr ""
 msgid "Provide host name"
 msgstr ""
 
-#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:352
+#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:359
 msgid "Account"
 msgstr ""
 
@@ -8477,11 +8487,11 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: templates/modern/index.html:334 templates/modern/header.html:365
+#: templates/modern/index.html:334 templates/modern/header.html:372
 msgid "Preferences"
 msgstr ""
 
-#: templates/modern/header.html:429
+#: templates/modern/header.html:436
 msgid "Logout"
 msgstr ""
 
@@ -8570,28 +8580,20 @@ msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
 msgstr ""
 
-#: templates/modern/list_log_zones.html:11 templates/modern/header.html:184
-msgid "Zone logs"
-msgstr ""
-
-#: templates/modern/list_log_zones.html:17
-msgid "Zone Change Logs"
+#: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
+msgid "API Activity Logs"
 msgstr ""
 
 #: templates/modern/list_log_groups.html:14
 msgid "Total logs"
 msgstr ""
 
-#: templates/modern/list_template_zones.html:54
-msgid "Domain name"
-msgstr ""
-
-#: templates/modern/list_log_zones.html:33
-msgid "All operations"
-msgstr ""
-
 #: templates/modern/list_log_users.html:22
 msgid "All users"
+msgstr ""
+
+#: templates/modern/list_log_groups.html:27
+msgid "All events"
 msgstr ""
 
 #: templates/modern/list_log_groups.html:36
@@ -8656,6 +8658,22 @@ msgstr ""
 
 #: templates/modern/list_log_groups.html:211
 msgid "Try different search criteria or check back later"
+msgstr ""
+
+#: templates/modern/list_log_zones.html:11 templates/modern/header.html:184
+msgid "Zone logs"
+msgstr ""
+
+#: templates/modern/list_log_zones.html:17
+msgid "Zone Change Logs"
+msgstr ""
+
+#: templates/modern/list_template_zones.html:54
+msgid "Domain name"
+msgstr ""
+
+#: templates/modern/list_log_zones.html:33
+msgid "All operations"
 msgstr ""
 
 #: templates/modern/bulk_record_add.html:18
@@ -9198,7 +9216,7 @@ msgid ""
 "provides strong security with better performance."
 msgstr ""
 
-#: templates/modern/edit_user.html:5 templates/modern/header.html:359
+#: templates/modern/edit_user.html:5 templates/modern/header.html:366
 msgid "Edit profile"
 msgstr ""
 
@@ -9968,6 +9986,10 @@ msgstr ""
 msgid "Metadata"
 msgstr ""
 
+#: templates/modern/edit.html:227 templates/modern/edit_zone_metadata.html:18
+msgid "View Metadata"
+msgstr ""
+
 #: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr ""
@@ -10455,7 +10477,7 @@ msgid ""
 "use \"Update Zones\" button when editing templates to apply changes."
 msgstr ""
 
-#: templates/modern/change_password.html:49 templates/modern/header.html:371
+#: templates/modern/change_password.html:49 templates/modern/header.html:378
 msgid "Change password"
 msgstr ""
 
@@ -10507,7 +10529,7 @@ msgstr ""
 msgid "Consider using a password manager"
 msgstr ""
 
-#: templates/modern/header.html:378
+#: templates/modern/header.html:385
 msgid "Multi-Factor Authentication"
 msgstr ""
 
@@ -10666,15 +10688,15 @@ msgstr ""
 msgid "Kind"
 msgstr ""
 
-#: templates/modern/edit_zone_metadata.html:100
+#: templates/modern/edit_zone_metadata.html:105
 msgid "Add metadata row"
 msgstr ""
 
-#: templates/modern/edit_zone_metadata.html:103
+#: templates/modern/edit_zone_metadata.html:108
 msgid "Save metadata"
 msgstr ""
 
-#: templates/modern/edit_zone_metadata.html:106
+#: templates/modern/edit_zone_metadata.html:112
 msgid "Back to zone"
 msgstr ""
 
@@ -11252,10 +11274,6 @@ msgstr ""
 msgid "User Activity Logs"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:27
-msgid "All events"
-msgstr ""
-
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
 msgstr ""
@@ -11553,7 +11571,7 @@ msgstr ""
 msgid "List zone templates"
 msgstr ""
 
-#: templates/default/header.html:222 templates/modern/header.html:323
+#: templates/default/header.html:227 templates/modern/header.html:330
 msgid "API Documentation"
 msgstr ""
 

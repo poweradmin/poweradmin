@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-09 10:38+0300\n"
+"POT-Creation-Date: 2026-04-11 19:44+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -31,11 +31,11 @@ msgstr ""
 msgid "DNS wizards are not enabled."
 msgstr "Kreatory DNS nie są włączone."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:47
+#: lib/Application/Controller/DnssecToggleKeyController.php:48
 msgid "Invalid zone ID."
 msgstr "Nieprawidłowy identyfikator strefy."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:94
+#: lib/Application/Controller/ZoneOwnershipController.php:95
 msgid "Zone not found."
 msgstr "Strefa nie znaleziona."
 
@@ -1268,7 +1268,7 @@ msgstr "Musisz być zalogowany, aby eksportować dane strefy."
 msgid "You do not have permission to export this zone."
 msgstr "Nie masz uprawnień do eksportowania tej strefy."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Application/Controller/DnssecToggleKeyController.php:72
 msgid "There is no zone with this ID."
 msgstr "Nie znaleziono strefy o podanym identyfikatorze."
 
@@ -1276,37 +1276,37 @@ msgstr "Nie znaleziono strefy o podanym identyfikatorze."
 msgid "This zone does not have any records to export."
 msgstr "Ta strefa nie ma żadnych rekordów do eksportowania."
 
-#: lib/Module/Whois/Controller/WhoisController.php:50
+#: lib/Module/Whois/Controller/WhoisController.php:55
 msgid "You do not have permission to perform WHOIS lookups."
 msgstr "Nie masz uprawnień do wykonywania zapytań WHOIS."
 
-#: lib/Module/Whois/Controller/WhoisController.php:54
+#: lib/Module/Whois/Controller/WhoisController.php:59
 msgid "WHOIS"
 msgstr "WHOIS"
 
-#: lib/Module/Whois/Controller/WhoisController.php:112
+#: lib/Module/Whois/Controller/WhoisController.php:117
 #, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "Nie udało się pobrać informacji WHOIS przy użyciu serwera %s"
 
-#: lib/Module/Rdap/Controller/RdapController.php:50
+#: lib/Module/Rdap/Controller/RdapController.php:55
 msgid "You do not have permission to perform RDAP lookups."
 msgstr "Nie masz uprawnień do wykonywania zapytań RDAP."
 
-#: lib/Module/Rdap/Controller/RdapController.php:54
+#: lib/Module/Rdap/Controller/RdapController.php:59
 msgid "RDAP"
 msgstr "RDAP"
 
-#: lib/Module/Rdap/Controller/RdapController.php:112
+#: lib/Module/Rdap/Controller/RdapController.php:117
 #, php-format
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Nie udało się pobrać informacji RDAP przy użyciu serwera %s"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:134
+#: lib/Infrastructure/Service/SessionAuthenticator.php:135
 msgid "Invalid CSRF token."
 msgstr "Nieprawidłowy token CSRF."
 
-#: lib/BaseController.php:588
+#: lib/BaseController.php:592
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1314,7 +1314,7 @@ msgstr ""
 "Katalog <a href=\"install/\">install/</a> istnieje, musisz go usunąć przed "
 "kontynuowaniem."
 
-#: lib/BaseController.php:644
+#: lib/BaseController.php:648
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1322,12 +1322,12 @@ msgstr ""
 "Używany jest domyślny klucz szyfrowania sesji, ustaw go w pliku "
 "konfiguracyjnym."
 
-#: lib/BaseController.php:783
+#: lib/BaseController.php:787
 #, php-format
 msgid "The %s field is required."
 msgstr "Pole %s jest wymagane."
 
-#: lib/BaseController.php:791
+#: lib/BaseController.php:795
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Pole %s musi być liczbą."
@@ -1380,7 +1380,7 @@ msgstr ""
 "Nie wybrano prawidłowych rekordów do usunięcia lub brak uprawnień do ich "
 "usunięcia."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:72
+#: lib/Application/Controller/ZoneOwnershipController.php:73
 msgid "Invalid or unexpected input given."
 msgstr "Podano nieprawidłowe lub nieoczekiwane dane wejściowe."
 
@@ -1392,7 +1392,7 @@ msgstr "Nie masz uprawnień do usunięcia tego użytkownika."
 msgid "You do not have permission to delete a superuser account."
 msgstr "Nie masz uprawnień do usunięcia konta superużytkownika."
 
-#: lib/Application/Controller/EditUserController.php:457
+#: lib/Application/Controller/EditUserController.php:473
 msgid "User does not exist."
 msgstr "Użytkownik nie istnieje."
 
@@ -1549,7 +1549,7 @@ msgstr "Góra"
 msgid "Bottom"
 msgstr "Dół"
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:65
+#: lib/Application/Controller/QuickRemoveGroupMemberController.php:66
 msgid "You do not have permission to manage group members."
 msgstr "Nie masz uprawnień do zarządzania członkami grupy."
 
@@ -1683,54 +1683,82 @@ msgstr ""
 "Kody odzyskiwania zostały wygenerowane ponownie. Zapisz je w bezpiecznym "
 "miejscu."
 
+#: templates/modern/list_log_api.html:4 templates/modern/header.html:323
+msgid "API Logs"
+msgstr "Logi API"
+
+#: lib/Application/Controller/ListLogUsersController.php:93
+msgid "Invalid page number."
+msgstr "Nieprawidłowy numer strony."
+
+#: lib/Application/Controller/ListLogUsersController.php:95
+msgid "Page number must be at least 1."
+msgstr "Numer strony musi wynosić co najmniej 1."
+
+#: lib/Application/Controller/ListLogUsersController.php:114
+msgid "Page number exceeds available pages."
+msgstr "Numer strony przekracza dostępne strony."
+
 #: lib/Application/Controller/ListSupermastersController.php:43
 msgid "You do not have the permission to view supermasters."
 msgstr "Nie masz uprawnień do przeglądania supermasterów."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:314
+#: lib/Application/Controller/EditZoneMetadataController.php:118
+msgid "You do not have the permission to view zone metadata."
+msgstr "Nie masz uprawnień do przeglądania metadanych strefy."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:121
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Nie masz uprawnien do edycji metadanych strefy."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:341
+#: lib/Application/Controller/EditZoneMetadataController.php:150
 msgid "Zone metadata has been updated successfully."
 msgstr "Metadane strefy zostaly pomyslnie zaktualizowane."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:346
+#: lib/Application/Controller/EditZoneMetadataController.php:155
 msgid "Failed to update zone metadata."
 msgstr "Nie udalo sie zaktualizowac metadanych strefy."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:368
+#: lib/Application/Controller/EditZoneMetadataController.php:177
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr "Edytuj metadane strefy"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:558
+#: templates/modern/edit_zone_metadata.html:24
+msgid "Zone Metadata"
+msgstr "Metadane strefy"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:381
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr "Rodzaj metadanych %s akceptuje tylko jedna wartosc. Dodaj tylko jeden wiersz dla tego rodzaju."
+msgstr ""
+"Rodzaj metadanych %s akceptuje tylko jedna wartosc. Dodaj tylko jeden wiersz "
+"dla tego rodzaju."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:646
-#: templates/modern/edit_zone_metadata.html:146
+#: lib/Application/Controller/EditZoneMetadataController.php:469
+#: templates/modern/edit_zone_metadata.html:153
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr "Niestandardowy rodzaj metadanych przechowywany bezposrednio w tabeli domainmetadata PowerDNS."
+msgstr ""
+"Niestandardowy rodzaj metadanych przechowywany bezposrednio w tabeli "
+"domainmetadata PowerDNS."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:654
+#: lib/Application/Controller/EditZoneMetadataController.php:477
 #: templates/modern/pdns_status.html:412
 msgid "Value"
 msgstr "Wartość"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:692
+#: lib/Application/Controller/EditZoneMetadataController.php:515
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "Niestandardowe"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:697
+#: lib/Application/Controller/EditZoneMetadataController.php:520
 msgid "Multi"
 msgstr "Wiele"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:698
+#: lib/Application/Controller/EditZoneMetadataController.php:521
 msgid "Single"
 msgstr "Pojedynczy"
 
@@ -1840,15 +1868,15 @@ msgstr "Nie masz uprawnień do wykonywania wyszukiwań."
 msgid "Search"
 msgstr "Szukaj"
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:72
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
 msgid "Invalid request method."
 msgstr "Nieprawidłowa metoda żądania."
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:82
+#: lib/Application/Controller/QuickRemoveGroupMemberController.php:83
 msgid "Invalid group or user ID."
 msgstr "Nieprawidłowy identyfikator grupy lub użytkownika."
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:91
+#: lib/Application/Controller/QuickRemoveGroupMemberController.php:94
 msgid "Member removed from group successfully."
 msgstr "Członek usunięty z grupy."
 
@@ -1865,7 +1893,7 @@ msgstr "Nie masz uprawnień do dodawania nowego użytkownika."
 msgid "Add User"
 msgstr "Dodaj użytkownika"
 
-#: lib/Application/Controller/EditUserController.php:258
+#: lib/Application/Controller/EditUserController.php:274
 msgid "Invalid permission template: must be a user template"
 msgstr "Nieprawidłowy szablon uprawnień: musi być szablonem użytkownika"
 
@@ -1909,18 +1937,6 @@ msgstr "Nie można usunąć rekordu."
 msgid "Zone Logs"
 msgstr "Logi stref"
 
-#: lib/Application/Controller/ListLogUsersController.php:93
-msgid "Invalid page number."
-msgstr "Nieprawidłowy numer strony."
-
-#: lib/Application/Controller/ListLogUsersController.php:95
-msgid "Page number must be at least 1."
-msgstr "Numer strony musi wynosić co najmniej 1."
-
-#: lib/Application/Controller/ListLogUsersController.php:114
-msgid "Page number exceeds available pages."
-msgstr "Numer strony przekracza dostępne strony."
-
 #: lib/Application/Controller/UsersController.php:51
 msgid "You do not have permission to view the users list."
 msgstr "Nie masz uprawnień do przeglądania listy użytkowników."
@@ -1934,19 +1950,19 @@ msgstr "Użytkownicy"
 msgid "User details updated"
 msgstr "Szczegóły użytkownika zaktualizowane"
 
-#: lib/Application/Controller/EditZoneTemplController.php:59
+#: lib/Application/Controller/EditZoneTemplController.php:60
 msgid "No template ID provided."
 msgstr "Nie podano identyfikatora szablonu."
 
-#: lib/Application/Controller/EditZoneTemplController.php:69
+#: lib/Application/Controller/EditZoneTemplController.php:70
 msgid "You do not have the permission to edit zone templates."
 msgstr "Nie masz uprawnień do edycji szablonów stref."
 
-#: lib/Application/Controller/EditZoneTemplController.php:73
+#: lib/Application/Controller/EditZoneTemplController.php:74
 msgid "Edit Zone Template"
 msgstr "Edytuj szablon strefy"
 
-#: lib/Application/Controller/EditZoneTemplController.php:89
+#: lib/Application/Controller/EditZoneTemplController.php:90
 msgid "There is no zone template with this ID."
 msgstr "Nie ma szablonu strefy o tym identyfikatorze."
 
@@ -1954,11 +1970,11 @@ msgstr "Nie ma szablonu strefy o tym identyfikatorze."
 msgid "Zone template has been updated successfully."
 msgstr "Szablon strefy został pomyślnie zaktualizowany."
 
-#: lib/Application/Controller/EditZoneTemplController.php:230
+#: lib/Application/Controller/EditZoneTemplController.php:233
 msgid "Zones have been updated successfully."
 msgstr "Strefy zostały pomyślnie zaktualizowane."
 
-#: lib/Application/Controller/EditZoneTemplController.php:241
+#: lib/Application/Controller/EditZoneTemplController.php:244
 msgid "You do not have permission to create new zone templates."
 msgstr "Nie masz uprawnień do tworzenia nowych szablonów stref."
 
@@ -1966,11 +1982,11 @@ msgstr "Nie masz uprawnień do tworzenia nowych szablonów stref."
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Szablon strefy o tej nazwie już istnieje, proszę wybrać inną."
 
-#: lib/Application/Controller/EditZoneTemplController.php:272
+#: lib/Application/Controller/EditZoneTemplController.php:275
 msgid "Please enter a different name when using Save As."
 msgstr "Wprowadź inną nazwę podczas używania opcji \"Zapisz jako\"."
 
-#: lib/Application/Controller/EditZoneTemplController.php:296
+#: lib/Application/Controller/EditZoneTemplController.php:299
 msgid "Zone template has been copied successfully."
 msgstr "Szablon strefy został pomyślnie skopiowany."
 
@@ -1982,7 +1998,7 @@ msgstr "Nie masz uprawnień do przeglądania szablonów stref."
 msgid "Template Zones"
 msgstr "Strefy szablonu"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:52
+#: lib/Application/Controller/UnlinkZonesTemplController.php:53
 msgid "Invalid template ID."
 msgstr "Nieprawidłowy identyfikator szablonu."
 
@@ -1990,7 +2006,7 @@ msgstr "Nieprawidłowy identyfikator szablonu."
 msgid "Template does not exist."
 msgstr "Szablon nie istnieje."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:62
+#: lib/Application/Controller/DnssecAddKeyController.php:63
 msgid "You do not have permission to view this zone."
 msgstr "Nie masz uprawnień do przeglądania tej strefy."
 
@@ -1999,15 +2015,15 @@ msgstr "Nie masz uprawnień do przeglądania tej strefy."
 msgid "User Logs"
 msgstr "Logi użytkowników"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:38
+#: lib/Application/Controller/UnlinkZonesTemplController.php:39
 msgid "You do not have permission to unlink zones from templates."
 msgstr "Nie masz uprawnień do odłączania stref od szablonów."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:47
+#: lib/Application/Controller/UnlinkZonesTemplController.php:48
 msgid "No zones selected."
 msgstr "Nie wybrano żadnych stref."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:96
+#: lib/Application/Controller/UnlinkZonesTemplController.php:99
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
@@ -2015,7 +2031,7 @@ msgstr[0] "Pomyślnie odłączono %d strefę od szablonu."
 msgstr[1] "Pomyślnie odłączono %d strefy od szablonu."
 msgstr[2] "Pomyślnie odłączono %d stref od szablonu."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:106
+#: lib/Application/Controller/UnlinkZonesTemplController.php:109
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
@@ -2023,15 +2039,15 @@ msgstr[0] "Nie można było odłączyć %d strefy."
 msgstr[1] "Nie można było odłączyć %d stref."
 msgstr[2] "Nie można było odłączyć %d stref."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:116
+#: lib/Application/Controller/UnlinkZonesTemplController.php:119
 msgid "Failed to unlink zones from template."
 msgstr "Nie udało się odłączyć stref od szablonu."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:128
+#: lib/Application/Controller/UnlinkZonesTemplController.php:131
 msgid "No valid zones selected."
 msgstr "Nie wybrano prawidłowych stref."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:136
+#: lib/Application/Controller/UnlinkZonesTemplController.php:139
 msgid "Template not found."
 msgstr "Szablon nie został znaleziony."
 
@@ -2039,11 +2055,11 @@ msgstr "Szablon nie został znaleziony."
 msgid "User agreement accepted successfully."
 msgstr "Umowa użytkownika została pomyślnie zaakceptowana."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:68
+#: lib/Application/Controller/ZoneOwnershipController.php:69
 msgid "Edit Zone"
 msgstr "Edytuj strefę"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:85
+#: lib/Application/Controller/ZoneOwnershipController.php:86
 msgid "You do not have permission to access this zone."
 msgstr "Nie masz uprawnień do dostępu do tej strefy."
 
@@ -2091,21 +2107,21 @@ msgstr ""
 "Nie udało się podpisać strefy. Walidacja strefy przeszła pomyślnie, ale "
 "PowerDNS API zwróciło błąd. Sprawdź logi PowerDNS, aby uzyskać szczegóły."
 
-#: lib/Application/Controller/DnssecController.php:94
+#: lib/Application/Controller/DnssecController.php:95
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Strefa nie jest obecnie podpisana DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:104
+#: lib/Application/Controller/DnssecController.php:107
 msgid "Zone has been unsigned successfully."
 msgstr "Podpis strefy został pomyślnie usunięty."
 
-#: lib/Application/Controller/DnssecController.php:109
+#: lib/Application/Controller/DnssecController.php:112
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr ""
 "Żądanie usunięcia podpisu strefy zostało pomyślnie wysłane, ale weryfikacja "
 "nie powiodła się."
 
-#: lib/Application/Controller/DnssecController.php:113
+#: lib/Application/Controller/DnssecController.php:116
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Nie udało się usunąć podpisu strefy. Sprawdź logi PowerDNS, aby uzyskać "
@@ -2255,19 +2271,19 @@ msgstr "Nie masz uprawnień do edycji rekordów szablonu strefy."
 msgid "OIDC authentication is not enabled"
 msgstr "Uwierzytelnianie OIDC nie jest włączone"
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:387
 msgid "Authentication failed: "
 msgstr "Uwierzytelnianie nie powiodło się: "
 
-#: lib/Application/Controller/SaveZoneAsTemplateController.php:80
+#: lib/Application/Controller/SaveZoneAsTemplateController.php:81
 msgid "You do not have permission to create zone templates."
 msgstr "Nie masz uprawnień do tworzenia szablonów stref."
 
-#: lib/Application/Controller/SaveZoneAsTemplateController.php:127
+#: lib/Application/Controller/SaveZoneAsTemplateController.php:128
 msgid "Template name can't be an empty string."
 msgstr "Nazwa szablonu nie może być pusta."
 
-#: lib/Application/Controller/SaveZoneAsTemplateController.php:150
+#: lib/Application/Controller/SaveZoneAsTemplateController.php:153
 msgid "Zone template has been created successfully."
 msgstr "Szablon strefy został utworzony."
 
@@ -2377,27 +2393,27 @@ msgstr "Nieprawidłowy szablon uprawnień: musi być szablonem grupy"
 msgid "Group has been created successfully."
 msgstr "Grupa została utworzona."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:54
+#: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid key ID."
 msgstr "Nieprawidłowy identyfikator klucza."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:64
+#: lib/Application/Controller/DnssecToggleKeyController.php:65
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Nie masz uprawnień do zarządzania DNSSEC dla tej strefy."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:89
+#: lib/Application/Controller/DnssecToggleKeyController.php:90
 msgid "DNSSEC key not found or no longer exists."
 msgstr "Klucz DNSSEC nie znaleziony lub już nie istnieje."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:106
+#: lib/Application/Controller/DnssecDeleteKeyController.php:109
 msgid "Zone key has been deleted successfully."
 msgstr "Klucz strefy został pomyślnie usunięty."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:114
+#: lib/Application/Controller/DnssecDeleteKeyController.php:117
 msgid "Failed to delete the zone key."
 msgstr "Nie udało się usunąć klucza strefy."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:121
+#: lib/Application/Controller/DnssecDeleteKeyController.php:124
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Wystąpił błąd podczas usuwania klucza DNSSEC: "
 
@@ -2499,7 +2515,7 @@ msgid "You do not have the permission to view this page."
 msgstr "Nie masz uprawnień do przeglądania tej strony."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:42
-#: templates/default/header.html:227 templates/modern/header.html:330
+#: templates/default/header.html:232 templates/modern/header.html:337
 msgid "Database Consistency"
 msgstr "Spójność bazy danych"
 
@@ -2564,19 +2580,19 @@ msgstr "Zostałeś wylogowany."
 msgid "You do not have the permission to add a zone template."
 msgstr "Nie masz uprawnień do dodawania szablonu strefy."
 
-#: lib/Application/Controller/AddZoneTemplController.php:52
+#: lib/Application/Controller/AddZoneTemplController.php:53
 msgid "Add Zone Template"
 msgstr "Dodaj szablon strefy"
 
-#: lib/Application/Controller/AddZoneTemplController.php:90
+#: lib/Application/Controller/AddZoneTemplController.php:93
 msgid "Zone template has been added successfully."
 msgstr "Szablon strefy został pomyślnie dodany."
 
-#: lib/Application/Controller/IndexController.php:60
+#: lib/Application/Controller/IndexController.php:61
 msgid "Dashboard"
 msgstr "Pulpit"
 
-#: lib/Application/Controller/EditUserController.php:365
+#: lib/Application/Controller/EditUserController.php:381
 msgid "You do not have permission to manage group memberships."
 msgstr "Nie masz uprawnień do zarządzania członkostwem w grupach."
 
@@ -2608,7 +2624,7 @@ msgstr "To nie jest prawidłowy adres IPv4 lub IPv6."
 msgid "You do not have the permission to delete zone templates."
 msgstr "Nie masz uprawnień do usuwania szablonów stref."
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:90
+#: lib/Application/Controller/DeleteZoneTemplController.php:93
 msgid "Zone template has been deleted successfully."
 msgstr "Szablon strefy został pomyślnie usunięty."
 
@@ -2624,19 +2640,19 @@ msgstr "Supermaster, który próbujesz edytować, nie istnieje."
 msgid "The supermaster has been updated successfully."
 msgstr "Supermaster został pomyślnie zaktualizowany."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:66
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:67
 msgid "You do not have permission to manage group zones."
 msgstr "Nie masz uprawnień do zarządzania strefami grupy."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:83
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:84
 msgid "Invalid group or zone ID."
 msgstr "Nieprawidłowy identyfikator grupy lub strefy."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:92
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:95
 msgid "Zone removed from group successfully."
 msgstr "Strefa usunięta z grupy."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:94
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
 msgid "Zone was not owned by this group."
 msgstr "Strefa nie należała do tej grupy."
 
@@ -2657,20 +2673,20 @@ msgstr "Supermaster został pomyślnie dodany."
 msgid "You do not have the permission to add records to zone templates."
 msgstr "Nie masz uprawnień do dodawania rekordów do szablonów stref."
 
-#: lib/Application/Controller/EditUserController.php:82
+#: lib/Application/Controller/EditUserController.php:85
 #: templates/default/edit_user.html:22 templates/modern/edit_user.html:22
 msgid "Edit User"
 msgstr "Edytuj użytkownika"
 
-#: lib/Application/Controller/EditUserController.php:151
+#: lib/Application/Controller/EditUserController.php:167
 msgid "Your profile has been updated successfully."
 msgstr "Twój profil został pomyślnie zaktualizowany."
 
-#: lib/Application/Controller/EditUserController.php:155
+#: lib/Application/Controller/EditUserController.php:171
 msgid "The user has been updated successfully."
 msgstr "Użytkownik został pomyślnie zaktualizowany."
 
-#: lib/Application/Controller/EditUserController.php:159
+#: lib/Application/Controller/EditUserController.php:175
 msgid "The user could not be updated."
 msgstr "Nie można zaktualizować użytkownika."
 
@@ -2678,15 +2694,15 @@ msgstr "Nie można zaktualizować użytkownika."
 msgid "You do not have the permission to edit this user."
 msgstr "Nie masz uprawnień do edycji tego użytkownika."
 
-#: lib/Application/Controller/EditUserController.php:226
+#: lib/Application/Controller/EditUserController.php:242
 msgid "You do not have permission to edit a superuser account."
 msgstr "Nie masz uprawnień do edycji konta superużytkownika."
 
-#: lib/Application/Controller/EditUserController.php:373
+#: lib/Application/Controller/EditUserController.php:389
 msgid "Please select at least one group."
 msgstr "Proszę wybrać przynajmniej jedną grupę."
 
-#: lib/Application/Controller/EditUserController.php:414
+#: lib/Application/Controller/EditUserController.php:430
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
@@ -2694,7 +2710,7 @@ msgstr[0] "Użytkownik dodany do %d grupy."
 msgstr[1] "Użytkownik dodany do %d grup."
 msgstr[2] "User added to %d groups successfully."
 
-#: lib/Application/Controller/EditUserController.php:439
+#: lib/Application/Controller/EditUserController.php:455
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
@@ -2780,11 +2796,7 @@ msgstr "Nie możesz edytować rekordów w strefie SLAVE."
 msgid "You do not have permission to edit this record."
 msgstr "Nie masz uprawnień do edycji tego rekordu."
 
-#: lib/Application/Controller/EditRecordController.php:244
-msgid "Failed to retrieve updated record information."
-msgstr "Nie udało się pobrać zaktualizowanych informacji o rekordzie."
-
-#: lib/Application/Controller/EditRecordController.php:323
+#: lib/Application/Controller/EditRecordController.php:330
 msgid "The record has been updated successfully."
 msgstr "Rekord został pomyślnie zaktualizowany."
 
@@ -2819,42 +2831,42 @@ msgstr ""
 msgid "Change Password"
 msgstr "Zmień hasło"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:116
+#: lib/Application/Controller/DnssecAddKeyController.php:117
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "Algorytm ECDSA P-256 musi używać 256 bitów"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:119
+#: lib/Application/Controller/DnssecAddKeyController.php:120
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "Algorytm ECDSA P-384 musi używać 384 bitów"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:125
+#: lib/Application/Controller/DnssecAddKeyController.php:126
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "Algorytm ED25519 musi używać 256 bitów"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:130
+#: lib/Application/Controller/DnssecAddKeyController.php:131
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr ""
 "Algorytm ED448 musi używać 456 bitów (nieobsługiwany w tym interfejsie)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:137
+#: lib/Application/Controller/DnssecAddKeyController.php:138
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "Algorytmy RSA powinny używać 1024 lub 2048 bitów dla odpowiedniego "
 "bezpieczeństwa"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:158
+#: lib/Application/Controller/DnssecAddKeyController.php:161
 msgid "Zone key has been added successfully."
 msgstr "Klucz strefy został pomyślnie dodany."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:162
+#: lib/Application/Controller/DnssecAddKeyController.php:165
 msgid "Failed to add new DNSSEC key."
 msgstr "Nie udało się dodać nowego klucza DNSSEC."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:166
+#: lib/Application/Controller/DnssecAddKeyController.php:169
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Wystąpił błąd podczas dodawania klucza DNSSEC: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:170
+#: lib/Application/Controller/DnssecAddKeyController.php:173
 msgid "Please select both algorithm and bits"
 msgstr "Wybierz zarówno algorytm, jak i liczbę bitów"
 
@@ -2904,23 +2916,23 @@ msgstr "Strefy zostały pomyślnie dodane."
 msgid "Some zone(s) could not be added."
 msgstr "Niektóre strefy nie mogły zostać dodane."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:172
+#: lib/Application/Controller/ZoneOwnershipController.php:176
 msgid "Owner has been added successfully."
 msgstr "Właściciel został dodany."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:187
+#: lib/Application/Controller/ZoneOwnershipController.php:192
 msgid "Owner has been removed successfully."
 msgstr "Właściciel został usunięty."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:208
+#: lib/Application/Controller/ZoneOwnershipController.php:213
 msgid "You do not have permission to assign this group."
 msgstr "Nie masz uprawnień do przypisania tej grupy."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:215
+#: lib/Application/Controller/ZoneOwnershipController.php:221
 msgid "Group has been added successfully."
 msgstr "Grupa została dodana."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:222
+#: lib/Application/Controller/ZoneOwnershipController.php:229
 msgid "Group has been removed successfully."
 msgstr "Grupa została usunięta."
 
@@ -2929,30 +2941,30 @@ msgstr "Grupa została usunięta."
 msgid "Page Not Found"
 msgstr "Strona nie została znaleziona"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:80
+#: lib/Application/Controller/DnssecToggleKeyController.php:81
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr ""
 "Funkcjonalność DNSSEC nie jest dostępna. Sprawdź konfigurację PowerDNS API."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:100
+#: lib/Application/Controller/DnssecToggleKeyController.php:101
 msgid "Zone key has been successfully deactivated."
 msgstr "Klucz strefy został pomyślnie dezaktywowany."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:101
+#: lib/Application/Controller/DnssecToggleKeyController.php:102
 msgid "Failed to deactivate zone key."
 msgstr "Nie udało się dezaktywować klucza strefy."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:104
+#: lib/Application/Controller/DnssecToggleKeyController.php:105
 msgid "Zone key has been successfully activated."
 msgstr "Klucz strefy został pomyślnie aktywowany."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:105
+#: lib/Application/Controller/DnssecToggleKeyController.php:106
 msgid "Failed to activate zone key."
 msgstr "Nie udało się aktywować klucza strefy."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:116
+#: lib/Application/Controller/DnssecToggleKeyController.php:119
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Wystąpił błąd podczas przełączania klucza DNSSEC. Spróbuj ponownie."
 
@@ -2978,7 +2990,7 @@ msgstr "Konto użytkownika jest wyłączone."
 msgid "Authentication failed!"
 msgstr "Uwierzytelnienie nie powiodło się!"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:188
+#: lib/Infrastructure/Service/SessionAuthenticator.php:192
 msgid "Session expired, please login again."
 msgstr "Sesja wygasła, zaloguj się ponownie."
 
@@ -2986,19 +2998,19 @@ msgstr "Sesja wygasła, zaloguj się ponownie."
 msgid "Failed to update password"
 msgstr "Nie udało się zaktualizować hasła"
 
-#: lib/Application/Service/OidcService.php:182
+#: lib/Application/Service/OidcService.php:183
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Uwierzytelnianie nie powiodło się: Nieprawidłowy parametr stanu"
 
-#: lib/Application/Service/OidcService.php:203
+#: lib/Application/Service/OidcService.php:204
 msgid "Authentication failed: No authorization code"
 msgstr "Uwierzytelnianie nie powiodło się: Brak kodu autoryzacji"
 
-#: lib/Application/Service/SamlService.php:187
+#: lib/Application/Service/SamlService.php:188
 msgid "Authentication failed: Invalid session"
 msgstr "Uwierzytelnianie nie powiodło się: Nieprawidłowa sesja"
 
-#: lib/Application/Service/SamlService.php:346
+#: lib/Application/Service/SamlService.php:347
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Uwierzytelnianie nie powiodło się: Nie można utworzyć lub zaktualizować "
@@ -3024,7 +3036,7 @@ msgstr "Nie udało się przeszukać LDAP."
 msgid "Failed to authenticate against LDAP."
 msgstr "Nie udało się uwierzytelnić w LDAP."
 
-#: lib/Application/Service/SamlService.php:245
+#: lib/Application/Service/SamlService.php:246
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Uwierzytelnianie nie powiodło się: Nieprawidłowa odpowiedź SAML"
 
@@ -3046,20 +3058,20 @@ msgstr "Ten szablon jest przypisany do co najmniej jednego użytkownika."
 msgid "This template is assigned to at least one group."
 msgstr "Ten szablon jest przypisany do przynajmniej jednej grupy."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:153
+#: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "Weryfikacja reCAPTCHA nie powiodła się. Spróbuj ponownie."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:176
+#: lib/Infrastructure/Service/SessionAuthenticator.php:177
 msgid "An empty password is not allowed"
 msgstr "Puste hasło nie jest dozwolone"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:216
+#: lib/Infrastructure/Service/SessionAuthenticator.php:220
 msgid "LDAP authentication is disabled"
 msgstr "Uwierzytelnianie LDAP jest wyłączone"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:400
+#: lib/Infrastructure/Service/SessionAuthenticator.php:406
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
@@ -8736,7 +8748,9 @@ msgstr "Nieprawidłowy format. Oczekiwano przynajmniej: nazwa,typ,zawartość"
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr "Nieprawidlowy format SRV. Uzyj: name,SRV,\"weight port target\",priority,ttl lub name,SRV,target,weight,port,ttl"
+msgstr ""
+"Nieprawidlowy format SRV. Uzyj: name,SRV,\"weight port target\",priority,ttl "
+"lub name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -9311,7 +9325,7 @@ msgstr "Wprowadź nazwę hosta tak, jak pojawia się w rekordzie NS"
 msgid "Provide host name"
 msgstr "Podaj nazwę hosta"
 
-#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:352
+#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:359
 msgid "Account"
 msgstr "Konto"
 
@@ -9763,11 +9777,11 @@ msgstr "Mój profil"
 msgid "Password"
 msgstr "Hasło"
 
-#: templates/modern/index.html:334 templates/modern/header.html:365
+#: templates/modern/index.html:334 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "Preferencje"
 
-#: templates/modern/header.html:429
+#: templates/modern/header.html:436
 msgid "Logout"
 msgstr "Wyloguj"
 
@@ -9861,29 +9875,21 @@ msgid ""
 msgstr ""
 "Używaj opisowych nazw i opisów, aby szablony były łatwe do identyfikacji"
 
-#: templates/modern/list_log_zones.html:11 templates/modern/header.html:184
-msgid "Zone logs"
-msgstr "Logi stref"
-
-#: templates/modern/list_log_zones.html:17
-msgid "Zone Change Logs"
-msgstr "Logi zmian stref"
+#: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
+msgid "API Activity Logs"
+msgstr "Logi aktywności API"
 
 #: templates/modern/list_log_groups.html:14
 msgid "Total logs"
 msgstr "Łącznie logów"
 
-#: templates/modern/list_template_zones.html:54
-msgid "Domain name"
-msgstr "Nazwa domeny"
-
-#: templates/modern/list_log_zones.html:33
-msgid "All operations"
-msgstr "Wszystkie operacje"
-
 #: templates/modern/list_log_users.html:22
 msgid "All users"
 msgstr "Wszyscy użytkownicy"
+
+#: templates/modern/list_log_groups.html:27
+msgid "All events"
+msgstr "Wszystkie zdarzenia"
 
 #: templates/modern/list_log_groups.html:36
 msgid "From date"
@@ -9949,6 +9955,22 @@ msgstr "Nie znaleziono logów"
 #: templates/modern/list_log_groups.html:211
 msgid "Try different search criteria or check back later"
 msgstr "Spróbuj innych kryteriów wyszukiwania lub sprawdź ponownie później"
+
+#: templates/modern/list_log_zones.html:11 templates/modern/header.html:184
+msgid "Zone logs"
+msgstr "Logi stref"
+
+#: templates/modern/list_log_zones.html:17
+msgid "Zone Change Logs"
+msgstr "Logi zmian stref"
+
+#: templates/modern/list_template_zones.html:54
+msgid "Domain name"
+msgstr "Nazwa domeny"
+
+#: templates/modern/list_log_zones.html:33
+msgid "All operations"
+msgstr "Wszystkie operacje"
 
 #: templates/modern/bulk_record_add.html:18
 msgid "Bulk add records"
@@ -10529,7 +10551,7 @@ msgstr ""
 "Dla nowoczesnych wdrożeń, ECDSA (algorytm 13, ECDSAP256SHA256) z 256 bitami "
 "zapewnia silne bezpieczeństwo z lepszą wydajnością."
 
-#: templates/modern/edit_user.html:5 templates/modern/header.html:359
+#: templates/modern/edit_user.html:5 templates/modern/header.html:366
 msgid "Edit profile"
 msgstr "Edytuj profil"
 
@@ -11351,6 +11373,10 @@ msgstr "Edytuj strefę"
 msgid "Metadata"
 msgstr "Metadane"
 
+#: templates/modern/edit.html:227 templates/modern/edit_zone_metadata.html:18
+msgid "View Metadata"
+msgstr "Zobacz metadane"
+
 #: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "Żadne rekordy nie spełniają kryteriów filtra."
@@ -11850,7 +11876,7 @@ msgstr ""
 "użyj przycisku \"Aktualizuj strefy\" podczas edycji szablonów, aby "
 "zastosować zmiany."
 
-#: templates/modern/change_password.html:49 templates/modern/header.html:371
+#: templates/modern/change_password.html:49 templates/modern/header.html:378
 msgid "Change password"
 msgstr "Zmień hasło"
 
@@ -11902,7 +11928,7 @@ msgstr "Użyj kombinacji liter, cyfr i symboli"
 msgid "Consider using a password manager"
 msgstr "Rozważ użycie menedżera haseł"
 
-#: templates/modern/header.html:378
+#: templates/modern/header.html:385
 msgid "Multi-Factor Authentication"
 msgstr "Uwierzytelnianie wieloskładnikowe"
 
@@ -12054,7 +12080,10 @@ msgstr "Wiele wartosci"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr "Dla metadanych takich jak ALLOW-AXFR-FROM dodaj wiele wierszy z tym samym rodzajem. Kazda wartosc jest przechowywana oddzielnie, jeden wiersz na wartosc."
+msgstr ""
+"Dla metadanych takich jak ALLOW-AXFR-FROM dodaj wiele wierszy z tym samym "
+"rodzajem. Kazda wartosc jest przechowywana oddzielnie, jeden wiersz na "
+"wartosc."
 
 #: templates/modern/edit_zone_metadata.html:42
 msgid "Multi value"
@@ -12068,15 +12097,15 @@ msgstr "Pojedyncza wartosc"
 msgid "Kind"
 msgstr "Rodzaj"
 
-#: templates/modern/edit_zone_metadata.html:100
+#: templates/modern/edit_zone_metadata.html:105
 msgid "Add metadata row"
 msgstr "Dodaj wiersz metadanych"
 
-#: templates/modern/edit_zone_metadata.html:103
+#: templates/modern/edit_zone_metadata.html:108
 msgid "Save metadata"
 msgstr "Zapisz metadane"
 
-#: templates/modern/edit_zone_metadata.html:106
+#: templates/modern/edit_zone_metadata.html:112
 msgid "Back to zone"
 msgstr "Powrot do strefy"
 
@@ -12694,10 +12723,6 @@ msgstr "Logi użytkowników"
 msgid "User Activity Logs"
 msgstr "Logi aktywności użytkowników"
 
-#: templates/modern/list_log_groups.html:27
-msgid "All events"
-msgstr "Wszystkie zdarzenia"
-
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
 msgstr "Konfiguracja strefy Slave"
@@ -13015,7 +13040,7 @@ msgstr "Lista szablonów"
 msgid "List zone templates"
 msgstr "Lista szablonów stref"
 
-#: templates/default/header.html:222 templates/modern/header.html:323
+#: templates/default/header.html:227 templates/modern/header.html:330
 msgid "API Documentation"
 msgstr "Dokumentacja API"
 
@@ -14292,5 +14317,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nie można połączyć się z bazą danych PowerDNS \"%s\": %s"
+
+# OBSOLETE: msgid "Failed to retrieve updated record information."
+# OBSOLETE: msgstr "Nie udało się pobrać zaktualizowanych informacji o rekordzie."
+
 
 

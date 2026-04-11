@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-09 10:38+0300\n"
+"POT-Creation-Date: 2026-04-11 19:44+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -30,11 +30,11 @@ msgstr ""
 msgid "DNS wizards are not enabled."
 msgstr "DNS 마법사가 활성화되어 있지 않습니다."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:47
+#: lib/Application/Controller/DnssecToggleKeyController.php:48
 msgid "Invalid zone ID."
 msgstr "유효하지 않은 존 ID입니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:94
+#: lib/Application/Controller/ZoneOwnershipController.php:95
 msgid "Zone not found."
 msgstr "존을 찾을 수 없습니다."
 
@@ -1246,7 +1246,7 @@ msgstr "존 데이터를 내보내려면 로그인이 필요합니다."
 msgid "You do not have permission to export this zone."
 msgstr "이 존을 내보낼 권한이 없습니다."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Application/Controller/DnssecToggleKeyController.php:72
 msgid "There is no zone with this ID."
 msgstr "이 ID의 존이 없습니다."
 
@@ -1254,37 +1254,37 @@ msgstr "이 ID의 존이 없습니다."
 msgid "This zone does not have any records to export."
 msgstr "이 존에는 내보낼 레코드가 없습니다."
 
-#: lib/Module/Whois/Controller/WhoisController.php:50
+#: lib/Module/Whois/Controller/WhoisController.php:55
 msgid "You do not have permission to perform WHOIS lookups."
 msgstr "WHOIS 조회를 수행할 권한이 없습니다."
 
-#: lib/Module/Whois/Controller/WhoisController.php:54
+#: lib/Module/Whois/Controller/WhoisController.php:59
 msgid "WHOIS"
 msgstr "WHOIS"
 
-#: lib/Module/Whois/Controller/WhoisController.php:112
+#: lib/Module/Whois/Controller/WhoisController.php:117
 #, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "서버 %s을(를) 사용하여 WHOIS 정보를 가져오지 못했습니다"
 
-#: lib/Module/Rdap/Controller/RdapController.php:50
+#: lib/Module/Rdap/Controller/RdapController.php:55
 msgid "You do not have permission to perform RDAP lookups."
 msgstr "RDAP 조회를 수행할 권한이 없습니다."
 
-#: lib/Module/Rdap/Controller/RdapController.php:54
+#: lib/Module/Rdap/Controller/RdapController.php:59
 msgid "RDAP"
 msgstr "RDAP"
 
-#: lib/Module/Rdap/Controller/RdapController.php:112
+#: lib/Module/Rdap/Controller/RdapController.php:117
 #, php-format
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "서버 %s을(를) 사용하여 RDAP 정보를 가져오지 못했습니다"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:134
+#: lib/Infrastructure/Service/SessionAuthenticator.php:135
 msgid "Invalid CSRF token."
 msgstr "유효하지 않은 CSRF 토큰입니다."
 
-#: lib/BaseController.php:588
+#: lib/BaseController.php:592
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1292,18 +1292,18 @@ msgstr ""
 "<a href=\"install/\">install/</a> 디렉터리가 존재합니다. 계속하기 전에 먼저 "
 "제거해야 합니다."
 
-#: lib/BaseController.php:644
+#: lib/BaseController.php:648
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr "기본 세션 암호화 키가 사용되고 있습니다. 구성 파일에서 설정하십시오."
 
-#: lib/BaseController.php:783
+#: lib/BaseController.php:787
 #, php-format
 msgid "The %s field is required."
 msgstr "%s 필드는 필수입니다."
 
-#: lib/BaseController.php:791
+#: lib/BaseController.php:795
 #, php-format
 msgid "The %s field must be a number."
 msgstr "%s 필드는 숫자여야 합니다."
@@ -1354,7 +1354,7 @@ msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr "삭제할 유효한 레코드가 선택되지 않았거나 삭제 권한이 없습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:72
+#: lib/Application/Controller/ZoneOwnershipController.php:73
 msgid "Invalid or unexpected input given."
 msgstr "유효하지 않거나 예상치 못한 입력이 제공되었습니다."
 
@@ -1366,7 +1366,7 @@ msgstr "이 사용자를 삭제할 권한이 없습니다."
 msgid "You do not have permission to delete a superuser account."
 msgstr "슈퍼유저 계정을 삭제할 권한이 없습니다."
 
-#: lib/Application/Controller/EditUserController.php:457
+#: lib/Application/Controller/EditUserController.php:473
 msgid "User does not exist."
 msgstr "사용자가 존재하지 않습니다."
 
@@ -1522,7 +1522,7 @@ msgstr "위"
 msgid "Bottom"
 msgstr "아래"
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:65
+#: lib/Application/Controller/QuickRemoveGroupMemberController.php:66
 msgid "You do not have permission to manage group members."
 msgstr "그룹 구성원을 관리할 권한이 없습니다."
 
@@ -1644,54 +1644,81 @@ msgstr "복구 코드를 재생성하려면 MFA가 활성화되어 있어야 합
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "복구 코드가 재생성되었습니다. 안전한 곳에 저장하십시오."
 
+#: templates/modern/list_log_api.html:4 templates/modern/header.html:323
+msgid "API Logs"
+msgstr "API 로그"
+
+#: lib/Application/Controller/ListLogUsersController.php:93
+msgid "Invalid page number."
+msgstr "유효하지 않은 페이지 번호입니다."
+
+#: lib/Application/Controller/ListLogUsersController.php:95
+msgid "Page number must be at least 1."
+msgstr "페이지 번호는 최소 1이어야 합니다."
+
+#: lib/Application/Controller/ListLogUsersController.php:114
+msgid "Page number exceeds available pages."
+msgstr "페이지 번호가 사용 가능한 페이지 수를 초과합니다."
+
 #: lib/Application/Controller/ListSupermastersController.php:43
 msgid "You do not have the permission to view supermasters."
 msgstr "슈퍼마스터를 볼 권한이 없습니다."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:314
+#: lib/Application/Controller/EditZoneMetadataController.php:118
+msgid "You do not have the permission to view zone metadata."
+msgstr "존 메타데이터를 볼 권한이 없습니다."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:121
 msgid "You do not have the permission to edit zone metadata."
 msgstr "존 메타데이터를 편집할 권한이 없습니다."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:341
+#: lib/Application/Controller/EditZoneMetadataController.php:150
 msgid "Zone metadata has been updated successfully."
 msgstr "존 메타데이터가 성공적으로 업데이트되었습니다."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:346
+#: lib/Application/Controller/EditZoneMetadataController.php:155
 msgid "Failed to update zone metadata."
 msgstr "존 메타데이터 업데이트에 실패했습니다."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:368
+#: lib/Application/Controller/EditZoneMetadataController.php:177
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr "존 메타데이터 편집"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:558
+#: templates/modern/edit_zone_metadata.html:24
+msgid "Zone Metadata"
+msgstr "존 메타데이터"
+
+#: lib/Application/Controller/EditZoneMetadataController.php:381
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr "메타데이터 종류 %s은(는) 단일 값만 허용합니다. 이 종류에는 한 행만 추가하세요."
+msgstr ""
+"메타데이터 종류 %s은(는) 단일 값만 허용합니다. 이 종류에는 한 행만 추가하세"
+"요."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:646
-#: templates/modern/edit_zone_metadata.html:146
+#: lib/Application/Controller/EditZoneMetadataController.php:469
+#: templates/modern/edit_zone_metadata.html:153
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr "PowerDNS domainmetadata 테이블에 직접 저장되는 사용자 정의 메타데이터 종류."
+msgstr ""
+"PowerDNS domainmetadata 테이블에 직접 저장되는 사용자 정의 메타데이터 종류."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:654
+#: lib/Application/Controller/EditZoneMetadataController.php:477
 #: templates/modern/pdns_status.html:412
 msgid "Value"
 msgstr "값"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:692
+#: lib/Application/Controller/EditZoneMetadataController.php:515
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "사용자 지정"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:697
+#: lib/Application/Controller/EditZoneMetadataController.php:520
 msgid "Multi"
 msgstr "다중"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:698
+#: lib/Application/Controller/EditZoneMetadataController.php:521
 msgid "Single"
 msgstr "단일"
 
@@ -1800,15 +1827,15 @@ msgstr "검색을 수행할 권한이 없습니다."
 msgid "Search"
 msgstr "스택 트레이스를 가져올 수 없습니다."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:72
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
 msgid "Invalid request method."
 msgstr "유효하지 않은 요청 방법입니다."
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:82
+#: lib/Application/Controller/QuickRemoveGroupMemberController.php:83
 msgid "Invalid group or user ID."
 msgstr "유효하지 않은 그룹 또는 사용자 ID입니다."
 
-#: lib/Application/Controller/QuickRemoveGroupMemberController.php:91
+#: lib/Application/Controller/QuickRemoveGroupMemberController.php:94
 msgid "Member removed from group successfully."
 msgstr "구성원이 그룹에서 성공적으로 제거되었습니다."
 
@@ -1825,7 +1852,7 @@ msgstr "새 사용자를 추가할 권한이 없습니다."
 msgid "Add User"
 msgstr "사용자 추가"
 
-#: lib/Application/Controller/EditUserController.php:258
+#: lib/Application/Controller/EditUserController.php:274
 msgid "Invalid permission template: must be a user template"
 msgstr "유효하지 않은 권한 템플릿: 사용자 템플릿이어야 합니다"
 
@@ -1867,18 +1894,6 @@ msgstr "레코드를 삭제할 수 없습니다."
 msgid "Zone Logs"
 msgstr "큐를 생성할 수 없습니다."
 
-#: lib/Application/Controller/ListLogUsersController.php:93
-msgid "Invalid page number."
-msgstr "유효하지 않은 페이지 번호입니다."
-
-#: lib/Application/Controller/ListLogUsersController.php:95
-msgid "Page number must be at least 1."
-msgstr "페이지 번호는 최소 1이어야 합니다."
-
-#: lib/Application/Controller/ListLogUsersController.php:114
-msgid "Page number exceeds available pages."
-msgstr "페이지 번호가 사용 가능한 페이지 수를 초과합니다."
-
 #: lib/Application/Controller/UsersController.php:51
 msgid "You do not have permission to view the users list."
 msgstr "사용자 목록을 볼 권한이 없습니다."
@@ -1892,19 +1907,19 @@ msgstr "소비자를 취소할 수 없습니다."
 msgid "User details updated"
 msgstr "사용자 세부 정보가 업데이트되었습니다"
 
-#: lib/Application/Controller/EditZoneTemplController.php:59
+#: lib/Application/Controller/EditZoneTemplController.php:60
 msgid "No template ID provided."
 msgstr "템플릿 ID가 제공되지 않았습니다."
 
-#: lib/Application/Controller/EditZoneTemplController.php:69
+#: lib/Application/Controller/EditZoneTemplController.php:70
 msgid "You do not have the permission to edit zone templates."
 msgstr "존 템플릿을 편집할 권한이 없습니다."
 
-#: lib/Application/Controller/EditZoneTemplController.php:73
+#: lib/Application/Controller/EditZoneTemplController.php:74
 msgid "Edit Zone Template"
 msgstr "존 템플릿 편집"
 
-#: lib/Application/Controller/EditZoneTemplController.php:89
+#: lib/Application/Controller/EditZoneTemplController.php:90
 msgid "There is no zone template with this ID."
 msgstr "이 ID의 존 템플릿이 없습니다."
 
@@ -1912,11 +1927,11 @@ msgstr "이 ID의 존 템플릿이 없습니다."
 msgid "Zone template has been updated successfully."
 msgstr "존 템플릿이 성공적으로 업데이트되었습니다."
 
-#: lib/Application/Controller/EditZoneTemplController.php:230
+#: lib/Application/Controller/EditZoneTemplController.php:233
 msgid "Zones have been updated successfully."
 msgstr "존이 성공적으로 업데이트되었습니다."
 
-#: lib/Application/Controller/EditZoneTemplController.php:241
+#: lib/Application/Controller/EditZoneTemplController.php:244
 msgid "You do not have permission to create new zone templates."
 msgstr "새 존 템플릿을 생성할 권한이 없습니다."
 
@@ -1924,11 +1939,11 @@ msgstr "새 존 템플릿을 생성할 권한이 없습니다."
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "이 이름의 존 템플릿이 이미 존재합니다. 다른 이름을 선택하십시오."
 
-#: lib/Application/Controller/EditZoneTemplController.php:272
+#: lib/Application/Controller/EditZoneTemplController.php:275
 msgid "Please enter a different name when using Save As."
 msgstr "다른 이름으로 저장할 때는 다른 이름을 입력하십시오."
 
-#: lib/Application/Controller/EditZoneTemplController.php:296
+#: lib/Application/Controller/EditZoneTemplController.php:299
 msgid "Zone template has been copied successfully."
 msgstr "존 템플릿이 성공적으로 복사되었습니다."
 
@@ -1940,7 +1955,7 @@ msgstr "존 템플릿을 볼 권한이 없습니다."
 msgid "Template Zones"
 msgstr "템플릿 존"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:52
+#: lib/Application/Controller/UnlinkZonesTemplController.php:53
 msgid "Invalid template ID."
 msgstr "유효하지 않은 템플릿 ID입니다."
 
@@ -1948,7 +1963,7 @@ msgstr "유효하지 않은 템플릿 ID입니다."
 msgid "Template does not exist."
 msgstr "템플릿이 존재하지 않습니다."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:62
+#: lib/Application/Controller/DnssecAddKeyController.php:63
 msgid "You do not have permission to view this zone."
 msgstr "이 존을 볼 권한이 없습니다."
 
@@ -1957,35 +1972,35 @@ msgstr "이 존을 볼 권한이 없습니다."
 msgid "User Logs"
 msgstr "교환을 생성할 수 없습니다."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:38
+#: lib/Application/Controller/UnlinkZonesTemplController.php:39
 msgid "You do not have permission to unlink zones from templates."
 msgstr "템플릿에서 존 연결을 해제할 권한이 없습니다."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:47
+#: lib/Application/Controller/UnlinkZonesTemplController.php:48
 msgid "No zones selected."
 msgstr "선택된 존이 없습니다."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:96
+#: lib/Application/Controller/UnlinkZonesTemplController.php:99
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
 msgstr[0] "%d개의 존이 템플릿에서 성공적으로 연결 해제되었습니다."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:106
+#: lib/Application/Controller/UnlinkZonesTemplController.php:109
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
 msgstr[0] "%d개의 존을 연결 해제할 수 없습니다."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:116
+#: lib/Application/Controller/UnlinkZonesTemplController.php:119
 msgid "Failed to unlink zones from template."
 msgstr "템플릿에서 존 연결 해제에 실패했습니다."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:128
+#: lib/Application/Controller/UnlinkZonesTemplController.php:131
 msgid "No valid zones selected."
 msgstr "유효한 존이 선택되지 않았습니다."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:136
+#: lib/Application/Controller/UnlinkZonesTemplController.php:139
 msgid "Template not found."
 msgstr "템플릿을 찾을 수 없습니다."
 
@@ -1993,11 +2008,11 @@ msgstr "템플릿을 찾을 수 없습니다."
 msgid "User agreement accepted successfully."
 msgstr "사용자 동의가 성공적으로 수락되었습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:68
+#: lib/Application/Controller/ZoneOwnershipController.php:69
 msgid "Edit Zone"
 msgstr "존 편집"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:85
+#: lib/Application/Controller/ZoneOwnershipController.php:86
 msgid "You do not have permission to access this zone."
 msgstr "이 존에 접근할 권한이 없습니다."
 
@@ -2045,19 +2060,19 @@ msgstr ""
 "존 서명에 실패했습니다. 존 유효성 검사는 통과했지만, PowerDNS API에서 오류를 "
 "반환했습니다. 자세한 내용은 PowerDNS 로그를 확인하십시오."
 
-#: lib/Application/Controller/DnssecController.php:94
+#: lib/Application/Controller/DnssecController.php:95
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "존이 현재 DNSSEC으로 서명되어 있지 않습니다."
 
-#: lib/Application/Controller/DnssecController.php:104
+#: lib/Application/Controller/DnssecController.php:107
 msgid "Zone has been unsigned successfully."
 msgstr "존의 서명이 성공적으로 해제되었습니다."
 
-#: lib/Application/Controller/DnssecController.php:109
+#: lib/Application/Controller/DnssecController.php:112
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "존 서명 해제가 성공적으로 요청되었지만, 검증에 실패했습니다."
 
-#: lib/Application/Controller/DnssecController.php:113
+#: lib/Application/Controller/DnssecController.php:116
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "존 서명 해제에 실패했습니다. 자세한 내용은 PowerDNS 로그를 확인하십시오."
@@ -2204,19 +2219,19 @@ msgstr "존 템플릿 레코드를 편집할 권한이 없습니다."
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC 인증이 활성화되어 있지 않습니다"
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:387
 msgid "Authentication failed: "
 msgstr "인증 실패: "
 
-#: lib/Application/Controller/SaveZoneAsTemplateController.php:80
+#: lib/Application/Controller/SaveZoneAsTemplateController.php:81
 msgid "You do not have permission to create zone templates."
 msgstr "존 템플릿을 생성할 권한이 없습니다."
 
-#: lib/Application/Controller/SaveZoneAsTemplateController.php:127
+#: lib/Application/Controller/SaveZoneAsTemplateController.php:128
 msgid "Template name can't be an empty string."
 msgstr "템플릿 이름은 빈 문자열일 수 없습니다."
 
-#: lib/Application/Controller/SaveZoneAsTemplateController.php:150
+#: lib/Application/Controller/SaveZoneAsTemplateController.php:153
 msgid "Zone template has been created successfully."
 msgstr "존 템플릿이 성공적으로 생성되었습니다."
 
@@ -2324,27 +2339,27 @@ msgstr "유효하지 않은 권한 템플릿: 그룹 템플릿이어야 합니�
 msgid "Group has been created successfully."
 msgstr "그룹이 성공적으로 생성되었습니다."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:54
+#: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid key ID."
 msgstr "유효하지 않은 키 ID입니다."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:64
+#: lib/Application/Controller/DnssecToggleKeyController.php:65
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "이 존의 DNSSEC을 관리할 권한이 없습니다."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:89
+#: lib/Application/Controller/DnssecToggleKeyController.php:90
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC 키를 찾을 수 없거나 더 이상 존재하지 않습니다."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:106
+#: lib/Application/Controller/DnssecDeleteKeyController.php:109
 msgid "Zone key has been deleted successfully."
 msgstr "존 키가 성공적으로 삭제되었습니다."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:114
+#: lib/Application/Controller/DnssecDeleteKeyController.php:117
 msgid "Failed to delete the zone key."
 msgstr "존 키를 삭제하지 못했습니다."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:121
+#: lib/Application/Controller/DnssecDeleteKeyController.php:124
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "DNSSEC 키를 삭제하는 중 오류가 발생했습니다: "
 
@@ -2438,7 +2453,7 @@ msgid "You do not have the permission to view this page."
 msgstr "이 페이지를 볼 권한이 없습니다."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:42
-#: templates/default/header.html:227 templates/modern/header.html:330
+#: templates/default/header.html:232 templates/modern/header.html:337
 msgid "Database Consistency"
 msgstr "인덱스를 삭제할 수 없습니다."
 
@@ -2503,19 +2518,19 @@ msgstr "로그아웃되었습니다."
 msgid "You do not have the permission to add a zone template."
 msgstr "존 템플릿을 추가할 권한이 없습니다."
 
-#: lib/Application/Controller/AddZoneTemplController.php:52
+#: lib/Application/Controller/AddZoneTemplController.php:53
 msgid "Add Zone Template"
 msgstr "존 템플릿 추가"
 
-#: lib/Application/Controller/AddZoneTemplController.php:90
+#: lib/Application/Controller/AddZoneTemplController.php:93
 msgid "Zone template has been added successfully."
 msgstr "존 템플릿이 성공적으로 추가되었습니다."
 
-#: lib/Application/Controller/IndexController.php:60
+#: lib/Application/Controller/IndexController.php:61
 msgid "Dashboard"
 msgstr "대시보드"
 
-#: lib/Application/Controller/EditUserController.php:365
+#: lib/Application/Controller/EditUserController.php:381
 msgid "You do not have permission to manage group memberships."
 msgstr "그룹 구성원을 관리할 권한이 없습니다."
 
@@ -2547,7 +2562,7 @@ msgstr "유효한 IPv4 또는 IPv6 주소가 아닙니다."
 msgid "You do not have the permission to delete zone templates."
 msgstr "존 템플릿을 삭제할 권한이 없습니다."
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:90
+#: lib/Application/Controller/DeleteZoneTemplController.php:93
 msgid "Zone template has been deleted successfully."
 msgstr "존 템플릿이 성공적으로 삭제되었습니다."
 
@@ -2563,19 +2578,19 @@ msgstr "편집하려는 슈퍼마스터가 존재하지 않습니다."
 msgid "The supermaster has been updated successfully."
 msgstr "슈퍼마스터가 성공적으로 업데이트되었습니다."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:66
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:67
 msgid "You do not have permission to manage group zones."
 msgstr "그룹 존을 관리할 권한이 없습니다."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:83
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:84
 msgid "Invalid group or zone ID."
 msgstr "유효하지 않은 그룹 또는 존 ID입니다."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:92
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:95
 msgid "Zone removed from group successfully."
 msgstr "존이 그룹에서 성공적으로 제거되었습니다."
 
-#: lib/Application/Controller/QuickRemoveGroupZoneController.php:94
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
 msgid "Zone was not owned by this group."
 msgstr "존이 이 그룹의 소유가 아닙니다."
 
@@ -2596,20 +2611,20 @@ msgstr "슈퍼마스터가 성공적으로 추가되었습니다."
 msgid "You do not have the permission to add records to zone templates."
 msgstr "존 템플릿에 레코드를 추가할 권한이 없습니다."
 
-#: lib/Application/Controller/EditUserController.php:82
+#: lib/Application/Controller/EditUserController.php:85
 #: templates/default/edit_user.html:22 templates/modern/edit_user.html:22
 msgid "Edit User"
 msgstr "사용자 편집"
 
-#: lib/Application/Controller/EditUserController.php:151
+#: lib/Application/Controller/EditUserController.php:167
 msgid "Your profile has been updated successfully."
 msgstr "프로필이 성공적으로 업데이트되었습니다."
 
-#: lib/Application/Controller/EditUserController.php:155
+#: lib/Application/Controller/EditUserController.php:171
 msgid "The user has been updated successfully."
 msgstr "사용자가 성공적으로 업데이트되었습니다."
 
-#: lib/Application/Controller/EditUserController.php:159
+#: lib/Application/Controller/EditUserController.php:175
 msgid "The user could not be updated."
 msgstr "사용자를 업데이트할 수 없습니다."
 
@@ -2617,21 +2632,21 @@ msgstr "사용자를 업데이트할 수 없습니다."
 msgid "You do not have the permission to edit this user."
 msgstr "이 사용자를 편집할 권한이 없습니다."
 
-#: lib/Application/Controller/EditUserController.php:226
+#: lib/Application/Controller/EditUserController.php:242
 msgid "You do not have permission to edit a superuser account."
 msgstr "슈퍼유저 계정을 편집할 권한이 없습니다."
 
-#: lib/Application/Controller/EditUserController.php:373
+#: lib/Application/Controller/EditUserController.php:389
 msgid "Please select at least one group."
 msgstr "최소 하나의 그룹을 선택하십시오."
 
-#: lib/Application/Controller/EditUserController.php:414
+#: lib/Application/Controller/EditUserController.php:430
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
 msgstr[0] "사용자가 %d개의 그룹에 성공적으로 추가되었습니다."
 
-#: lib/Application/Controller/EditUserController.php:439
+#: lib/Application/Controller/EditUserController.php:455
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
@@ -2712,11 +2727,7 @@ msgstr "SLAVE 존에서는 레코드를 편집할 수 없습니다."
 msgid "You do not have permission to edit this record."
 msgstr "이 레코드를 편집할 권한이 없습니다."
 
-#: lib/Application/Controller/EditRecordController.php:244
-msgid "Failed to retrieve updated record information."
-msgstr "업데이트된 레코드 정보를 가져오지 못했습니다."
-
-#: lib/Application/Controller/EditRecordController.php:323
+#: lib/Application/Controller/EditRecordController.php:330
 msgid "The record has been updated successfully."
 msgstr "레코드가 성공적으로 업데이트되었습니다."
 
@@ -2749,41 +2760,41 @@ msgstr ""
 msgid "Change Password"
 msgstr "비밀번호 변경"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:116
+#: lib/Application/Controller/DnssecAddKeyController.php:117
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "ECDSA P-256 알고리즘은 256 비트를 사용해야 합니다"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:119
+#: lib/Application/Controller/DnssecAddKeyController.php:120
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "ECDSA P-384 알고리즘은 384 비트를 사용해야 합니다"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:125
+#: lib/Application/Controller/DnssecAddKeyController.php:126
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519 알고리즘은 256 비트를 사용해야 합니다"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:130
+#: lib/Application/Controller/DnssecAddKeyController.php:131
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr ""
 "ED448 알고리즘은 456 비트를 사용해야 합니다 (이 UI에서는 지원되지 않음)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:137
+#: lib/Application/Controller/DnssecAddKeyController.php:138
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "RSA 알고리즘은 적절한 보안을 위해 1024 또는 2048 비트를 사용해야 합니다"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:158
+#: lib/Application/Controller/DnssecAddKeyController.php:161
 msgid "Zone key has been added successfully."
 msgstr "존 키가 성공적으로 추가되었습니다."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:162
+#: lib/Application/Controller/DnssecAddKeyController.php:165
 msgid "Failed to add new DNSSEC key."
 msgstr "새 DNSSEC 키를 추가하지 못했습니다."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:166
+#: lib/Application/Controller/DnssecAddKeyController.php:169
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "DNSSEC 키를 추가하는 중 오류가 발생했습니다: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:170
+#: lib/Application/Controller/DnssecAddKeyController.php:173
 msgid "Please select both algorithm and bits"
 msgstr "알고리즘과 비트를 모두 선택하세요"
 
@@ -2833,23 +2844,23 @@ msgstr "존이 성공적으로 추가되었습니다."
 msgid "Some zone(s) could not be added."
 msgstr "일부 존을 추가할 수 없습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:172
+#: lib/Application/Controller/ZoneOwnershipController.php:176
 msgid "Owner has been added successfully."
 msgstr "소유자가 성공적으로 추가되었습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:187
+#: lib/Application/Controller/ZoneOwnershipController.php:192
 msgid "Owner has been removed successfully."
 msgstr "소유자가 성공적으로 제거되었습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:208
+#: lib/Application/Controller/ZoneOwnershipController.php:213
 msgid "You do not have permission to assign this group."
 msgstr "이 그룹을 할당할 권한이 없습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:215
+#: lib/Application/Controller/ZoneOwnershipController.php:221
 msgid "Group has been added successfully."
 msgstr "그룹이 성공적으로 추가되었습니다."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:222
+#: lib/Application/Controller/ZoneOwnershipController.php:229
 msgid "Group has been removed successfully."
 msgstr "그룹이 성공적으로 제거되었습니다."
 
@@ -2858,29 +2869,29 @@ msgstr "그룹이 성공적으로 제거되었습니다."
 msgid "Page Not Found"
 msgstr "페이지를 찾을 수 없습니다"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:80
+#: lib/Application/Controller/DnssecToggleKeyController.php:81
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr "DNSSEC 기능을 사용할 수 없습니다. PowerDNS API 설정을 확인하세요."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:100
+#: lib/Application/Controller/DnssecToggleKeyController.php:101
 msgid "Zone key has been successfully deactivated."
 msgstr "존 키가 성공적으로 비활성화되었습니다."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:101
+#: lib/Application/Controller/DnssecToggleKeyController.php:102
 msgid "Failed to deactivate zone key."
 msgstr "존 키를 비활성화하지 못했습니다."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:104
+#: lib/Application/Controller/DnssecToggleKeyController.php:105
 msgid "Zone key has been successfully activated."
 msgstr "존 키가 성공적으로 활성화되었습니다."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:105
+#: lib/Application/Controller/DnssecToggleKeyController.php:106
 msgid "Failed to activate zone key."
 msgstr "존 키를 활성화하지 못했습니다."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:116
+#: lib/Application/Controller/DnssecToggleKeyController.php:119
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "DNSSEC 키를 전환하는 중 오류가 발생했습니다. 다시 시도하세요."
 
@@ -2906,7 +2917,7 @@ msgstr "사용자 계정이 비활성화되었습니다."
 msgid "Authentication failed!"
 msgstr "인증에 실패했습니다!"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:188
+#: lib/Infrastructure/Service/SessionAuthenticator.php:192
 msgid "Session expired, please login again."
 msgstr "세션이 만료되었습니다. 다시 로그인하세요."
 
@@ -2914,19 +2925,19 @@ msgstr "세션이 만료되었습니다. 다시 로그인하세요."
 msgid "Failed to update password"
 msgstr "비밀번호를 업데이트하지 못했습니다"
 
-#: lib/Application/Service/OidcService.php:182
+#: lib/Application/Service/OidcService.php:183
 msgid "Authentication failed: Invalid state parameter"
 msgstr "인증 실패: 유효하지 않은 state 매개변수"
 
-#: lib/Application/Service/OidcService.php:203
+#: lib/Application/Service/OidcService.php:204
 msgid "Authentication failed: No authorization code"
 msgstr "인증 실패: 인증 코드 없음"
 
-#: lib/Application/Service/SamlService.php:187
+#: lib/Application/Service/SamlService.php:188
 msgid "Authentication failed: Invalid session"
 msgstr "인증 실패: 유효하지 않은 세션"
 
-#: lib/Application/Service/SamlService.php:346
+#: lib/Application/Service/SamlService.php:347
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "인증 실패: 사용자 계정을 생성하거나 업데이트할 수 없습니다"
 
@@ -2950,7 +2961,7 @@ msgstr "LDAP 검색에 실패했습니다."
 msgid "Failed to authenticate against LDAP."
 msgstr "LDAP에 대한 인증에 실패했습니다."
 
-#: lib/Application/Service/SamlService.php:245
+#: lib/Application/Service/SamlService.php:246
 msgid "Authentication failed: Invalid SAML response"
 msgstr "인증 실패: 유효하지 않은 SAML 응답"
 
@@ -2970,20 +2981,20 @@ msgstr "이 템플릿은 최소 한 명의 사용자에게 할당되어 있습�
 msgid "This template is assigned to at least one group."
 msgstr "이 템플릿은 최소 한 개의 그룹에 할당되어 있습니다."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:153
+#: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "reCAPTCHA 확인에 실패했습니다. 다시 시도하세요."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:176
+#: lib/Infrastructure/Service/SessionAuthenticator.php:177
 msgid "An empty password is not allowed"
 msgstr "빈 비밀번호는 허용되지 않습니다"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:216
+#: lib/Infrastructure/Service/SessionAuthenticator.php:220
 msgid "LDAP authentication is disabled"
 msgstr "LDAP 인증이 비활성화되었습니다"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:400
+#: lib/Infrastructure/Service/SessionAuthenticator.php:406
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
@@ -7981,7 +7992,9 @@ msgstr "유효하지 않은 형식입니다. 최소한 이름,유형,내용이 �
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr "잘못된 SRV 형식입니다. 사용: name,SRV,\"weight port target\",priority,ttl 또는 name,SRV,target,weight,port,ttl"
+msgstr ""
+"잘못된 SRV 형식입니다. 사용: name,SRV,\"weight port target\",priority,ttl 또"
+"는 name,SRV,target,weight,port,ttl"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
@@ -8537,7 +8550,7 @@ msgstr "어댑터를 찾을 수 없습니다."
 msgid "Provide host name"
 msgstr "브리지를 찾을 수 없습니다."
 
-#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:352
+#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:359
 msgid "Account"
 msgstr "컴포지트를 찾을 수 없습니다."
 
@@ -8974,11 +8987,11 @@ msgstr "코드를 디버그할 수 없습니다."
 msgid "Password"
 msgstr "바인딩을 삭제할 수 없습니다."
 
-#: templates/modern/index.html:334 templates/modern/header.html:365
+#: templates/modern/index.html:334 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "채널을 생성할 수 없습니다."
 
-#: templates/modern/header.html:429
+#: templates/modern/header.html:436
 msgid "Logout"
 msgstr "샤드에 연결할 수 없습니다."
 
@@ -9067,29 +9080,21 @@ msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
 msgstr "결과를 집계할 수 없습니다."
 
-#: templates/modern/list_log_zones.html:11 templates/modern/header.html:184
-msgid "Zone logs"
-msgstr "결과를 조인할 수 없습니다."
-
-#: templates/modern/list_log_zones.html:17
-msgid "Zone Change Logs"
-msgstr "존 변경 로그"
+#: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
+msgid "API Activity Logs"
+msgstr "API 활동 로그"
 
 #: templates/modern/list_log_groups.html:14
 msgid "Total logs"
 msgstr "전체 로그"
 
-#: templates/modern/list_template_zones.html:54
-msgid "Domain name"
-msgstr "도메인 이름"
-
-#: templates/modern/list_log_zones.html:33
-msgid "All operations"
-msgstr "모든 작업"
-
 #: templates/modern/list_log_users.html:22
 msgid "All users"
 msgstr "모든 사용자"
+
+#: templates/modern/list_log_groups.html:27
+msgid "All events"
+msgstr "모든 이벤트"
 
 #: templates/modern/list_log_groups.html:36
 msgid "From date"
@@ -9154,6 +9159,22 @@ msgstr "로그를 찾을 수 없습니다"
 #: templates/modern/list_log_groups.html:211
 msgid "Try different search criteria or check back later"
 msgstr "다른 검색 조건을 시도하거나 나중에 다시 확인하세요"
+
+#: templates/modern/list_log_zones.html:11 templates/modern/header.html:184
+msgid "Zone logs"
+msgstr "결과를 조인할 수 없습니다."
+
+#: templates/modern/list_log_zones.html:17
+msgid "Zone Change Logs"
+msgstr "존 변경 로그"
+
+#: templates/modern/list_template_zones.html:54
+msgid "Domain name"
+msgstr "도메인 이름"
+
+#: templates/modern/list_log_zones.html:33
+msgid "All operations"
+msgstr "모든 작업"
 
 #: templates/modern/bulk_record_add.html:18
 msgid "Bulk add records"
@@ -9712,7 +9733,7 @@ msgstr ""
 "최신 배포의 경우 ECDSA(알고리즘 13, ECDSAP256SHA256) 256비트가 더 나은 성능으"
 "로 강력한 보안을 제공합니다."
 
-#: templates/modern/edit_user.html:5 templates/modern/header.html:359
+#: templates/modern/edit_user.html:5 templates/modern/header.html:366
 msgid "Edit profile"
 msgstr "중단점을 제거할 수 없습니다."
 
@@ -10520,6 +10541,10 @@ msgstr "존 편집"
 msgid "Metadata"
 msgstr "메타데이터"
 
+#: templates/modern/edit.html:227 templates/modern/edit_zone_metadata.html:18
+msgid "View Metadata"
+msgstr "메타데이터 보기"
+
 #: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "필터 조건과 일치하는 레코드가 없습니다."
@@ -11012,7 +11037,7 @@ msgstr ""
 "다. 템플릿 수정은 존을 자동으로 업데이트하지 않습니다 - 템플릿 편집 시 \"존 "
 "업데이트\" 버튼을 사용하여 변경 사항을 적용하세요."
 
-#: templates/modern/change_password.html:49 templates/modern/header.html:371
+#: templates/modern/change_password.html:49 templates/modern/header.html:378
 msgid "Change password"
 msgstr "연결을 닫을 수 없습니다."
 
@@ -11064,7 +11089,7 @@ msgstr "문자, 숫자, 기호를 혼합하여 포함"
 msgid "Consider using a password manager"
 msgstr "비밀번호 관리자 사용 고려"
 
-#: templates/modern/header.html:378
+#: templates/modern/header.html:385
 msgid "Multi-Factor Authentication"
 msgstr "다중 인증"
 
@@ -11213,7 +11238,9 @@ msgstr "여러 값"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr "ALLOW-AXFR-FROM과 같은 메타데이터의 경우 동일한 종류로 여러 행을 추가하세요. 각 값은 별도로 저장됩니다."
+msgstr ""
+"ALLOW-AXFR-FROM과 같은 메타데이터의 경우 동일한 종류로 여러 행을 추가하세요. "
+"각 값은 별도로 저장됩니다."
 
 #: templates/modern/edit_zone_metadata.html:42
 msgid "Multi value"
@@ -11227,15 +11254,15 @@ msgstr "단일 값"
 msgid "Kind"
 msgstr "종류"
 
-#: templates/modern/edit_zone_metadata.html:100
+#: templates/modern/edit_zone_metadata.html:105
 msgid "Add metadata row"
 msgstr "메타데이터 행 추가"
 
-#: templates/modern/edit_zone_metadata.html:103
+#: templates/modern/edit_zone_metadata.html:108
 msgid "Save metadata"
 msgstr "메타데이터 저장"
 
-#: templates/modern/edit_zone_metadata.html:106
+#: templates/modern/edit_zone_metadata.html:112
 msgid "Back to zone"
 msgstr "존으로 돌아가기"
 
@@ -11837,10 +11864,6 @@ msgstr "사용자 로그"
 msgid "User Activity Logs"
 msgstr "사용자 활동 로그"
 
-#: templates/modern/list_log_groups.html:27
-msgid "All events"
-msgstr "모든 이벤트"
-
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
 msgstr "슬레이브 존 구성"
@@ -12153,7 +12176,7 @@ msgstr "템플릿 목록"
 msgid "List zone templates"
 msgstr "메트릭을 내보낼 수 없습니다."
 
-#: templates/default/header.html:222 templates/modern/header.html:323
+#: templates/default/header.html:227 templates/modern/header.html:330
 msgid "API Documentation"
 msgstr "API 문서"
 
@@ -13396,5 +13419,9 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS 데이터베이스 \"%s\"에 연결할 수 없습니다: %s"
+
+# OBSOLETE: msgid "Failed to retrieve updated record information."
+# OBSOLETE: msgstr "업데이트된 레코드 정보를 가져오지 못했습니다."
+
 
 
