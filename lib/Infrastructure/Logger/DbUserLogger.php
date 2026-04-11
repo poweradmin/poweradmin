@@ -121,6 +121,7 @@ class DbUserLogger
             'saml_login_failed',
             'saml_login_success',
             'saml_logout',
+            'session_expired',
             'username_recovery',
         ];
     }
@@ -205,6 +206,7 @@ class DbUserLogger
                 'saml_login_success' => '%operation:saml_login_success%',
                 'saml_login_failed' => '%operation:saml_login_failed%',
                 'saml_logout' => '%operation:saml_logout%',
+                'session_expired' => '%operation:session_expired%',
             ];
             if (isset($typePatterns[$filters['event_type']])) {
                 $conditions[] = "log_users.event LIKE :event_type";

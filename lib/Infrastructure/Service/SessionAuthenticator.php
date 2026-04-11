@@ -43,6 +43,7 @@ use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Application\Service\MailService;
@@ -184,6 +185,9 @@ class SessionAuthenticator extends LoggingService
         // Check if the session hasn't expired yet.
         if (isset($_SESSION["userid"]) && isset($_SESSION["lastmod"]) && $_SESSION["lastmod"] !== "" && ((time() - $_SESSION["lastmod"]) > $iface_expire)) {
             $this->logInfo('Session expired for user {userid}', ['userid' => $_SESSION["userid"]]);
+
+            $auditService = new AuditService($this->db);
+            $auditService->logSessionExpired();
 
             $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
             $this->authService->logout($sessionEntity);
