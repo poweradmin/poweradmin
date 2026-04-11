@@ -16,6 +16,15 @@ CREATE TABLE `log_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+CREATE TABLE `log_api` (
+                             `id` int(11) NOT NULL AUTO_INCREMENT,
+                             `event` varchar(2048) NOT NULL,
+                             `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+                             `priority` int(11) NOT NULL,
+                             PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 CREATE TABLE `log_zones` (
                              `id` int(11) NOT NULL AUTO_INCREMENT,
                              `event` varchar(2048) NOT NULL,

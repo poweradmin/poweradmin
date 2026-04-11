@@ -199,7 +199,7 @@ class ApiKeysController extends BaseController
             $apiKey = $this->apiKeyService->createApiKey($name, $expiresAtDate);
 
             if ($apiKey !== null) {
-                $this->auditLogger->logInfo(sprintf(
+                $this->auditLogger->logApiInfo(sprintf(
                     'client_ip:%s user:%s operation:api_key_create key_id:%d key_name:%s',
                     $this->ipAddressRetriever->getClientIp(),
                     $this->getUserContextService()->getLoggedInUsername(),
@@ -266,7 +266,7 @@ class ApiKeysController extends BaseController
             $apiKey = $this->apiKeyService->updateApiKey($id, $name, $expiresAtDate, $disabled);
 
             if ($apiKey !== null) {
-                $this->auditLogger->logInfo(sprintf(
+                $this->auditLogger->logApiInfo(sprintf(
                     'client_ip:%s user:%s operation:api_key_edit key_id:%d key_name:%s',
                     $this->ipAddressRetriever->getClientIp(),
                     $this->getUserContextService()->getLoggedInUsername(),
@@ -307,7 +307,7 @@ class ApiKeysController extends BaseController
             $success = $this->apiKeyService->deleteApiKey($id);
 
             if ($success) {
-                $this->auditLogger->logInfo(sprintf(
+                $this->auditLogger->logApiInfo(sprintf(
                     'client_ip:%s user:%s operation:api_key_delete key_id:%d key_name:%s',
                     $this->ipAddressRetriever->getClientIp(),
                     $this->getUserContextService()->getLoggedInUsername(),
@@ -351,7 +351,7 @@ class ApiKeysController extends BaseController
             $apiKey = $this->apiKeyService->regenerateSecretKey($id);
 
             if ($apiKey !== null) {
-                $this->auditLogger->logInfo(sprintf(
+                $this->auditLogger->logApiInfo(sprintf(
                     'client_ip:%s user:%s operation:api_key_regenerate key_id:%d key_name:%s',
                     $this->ipAddressRetriever->getClientIp(),
                     $this->getUserContextService()->getLoggedInUsername(),
@@ -399,7 +399,7 @@ class ApiKeysController extends BaseController
         if ($apiKey !== null) {
             $status = $disable ? 'disabled' : 'enabled';
 
-            $this->auditLogger->logInfo(sprintf(
+            $this->auditLogger->logApiInfo(sprintf(
                 'client_ip:%s user:%s operation:api_key_toggle key_id:%d key_name:%s status:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $this->getUserContextService()->getLoggedInUsername(),

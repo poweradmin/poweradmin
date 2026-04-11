@@ -346,6 +346,11 @@ users_logs:
   path: /users/logs
   controller: Poweradmin\Application\Controller\ListLogUsersController::run
 
+# API Logs
+api_logs:
+  path: /settings/api/logs
+  controller: Poweradmin\Application\Controller\ListLogApiController::run
+
 # Group Logs
 groups_logs:
   path: /groups/logs

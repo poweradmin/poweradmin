@@ -36,3 +36,21 @@ ALTER TABLE `users` ADD COLUMN `perm_templ_source` varchar(20) NOT NULL DEFAULT 
 
 -- Widen record_comment_links.record_id to support API-mode encoded string IDs
 ALTER TABLE `record_comment_links` MODIFY `record_id` VARCHAR(3072) CHARACTER SET ascii NOT NULL;
+
+-- Create separate log table for API key events
+CREATE TABLE IF NOT EXISTS `log_api` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `event` varchar(2048) NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `priority` int(11) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Migrate existing API key log entries from log_users to log_api
+INSERT INTO `log_api` (`event`, `created_at`, `priority`)
+SELECT `event`, `created_at`, `priority`
+FROM `log_users`
+WHERE `event` LIKE '%operation:api_key_%';
+
+-- Remove migrated API key entries from log_users
+DELETE FROM `log_users` WHERE `event` LIKE '%operation:api_key_%';

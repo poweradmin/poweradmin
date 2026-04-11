@@ -33,3 +33,23 @@ ALTER TABLE "users" ADD COLUMN "perm_templ_source" character varying(20) NOT NUL
 
 -- Widen record_comment_links.record_id to support API-mode encoded string IDs
 ALTER TABLE record_comment_links ALTER COLUMN record_id TYPE VARCHAR(4096);
+
+-- Create separate log table for API key events
+CREATE SEQUENCE IF NOT EXISTS log_api_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE IF NOT EXISTS "public"."log_api" (
+    "id" integer DEFAULT nextval('log_api_id_seq1') NOT NULL,
+    "event" character varying(2048),
+    "created_at" timestamp DEFAULT CURRENT_TIMESTAMP,
+    "priority" integer,
+    CONSTRAINT "log_api_pkey" PRIMARY KEY ("id")
+);
+
+-- Migrate existing API key log entries from log_users to log_api
+INSERT INTO log_api (event, created_at, priority)
+SELECT event, created_at, priority
+FROM log_users
+WHERE event LIKE '%operation:api_key_%';
+
+-- Remove migrated API key entries from log_users
+DELETE FROM log_users WHERE event LIKE '%operation:api_key_%';

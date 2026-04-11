@@ -96,6 +96,30 @@ class LegacyLogger
         $this->doLogWithGroup($message, LOG_WARNING, $group_id);
     }
 
+    public function logApiInfo(string $message): void
+    {
+        $this->doLogWithApi($message, LOG_INFO);
+    }
+
+    private function doLogWithApi(string $message, int $priority): void
+    {
+        $syslog_use = $this->config->get('logging', 'syslog_enabled');
+        $syslog_ident = $this->config->get('logging', 'syslog_identity');
+        $syslog_facility = $this->config->get('logging', 'syslog_facility');
+        $dblog_use = $this->config->get('logging', 'database_enabled');
+
+        if ($syslog_use) {
+            openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+            syslog($priority, $message);
+            closelog();
+        }
+
+        if ($dblog_use) {
+            $dbApiLogger = new DbApiLogger($this->db);
+            $dbApiLogger->doLog($message, $priority);
+        }
+    }
+
     private function doLogWithGroup(string $message, int $priority, ?int $group_id): void
     {
         $syslog_use = $this->config->get('logging', 'syslog_enabled');

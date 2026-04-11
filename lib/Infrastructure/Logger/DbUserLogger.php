@@ -103,11 +103,6 @@ class DbUserLogger
     {
         return [
             'add_user',
-            'api_key_create',
-            'api_key_delete',
-            'api_key_edit',
-            'api_key_regenerate',
-            'api_key_toggle',
             'change_password',
             'delete_user',
             'edit_user',
@@ -200,11 +195,6 @@ class DbUserLogger
                 'mfa_disable' => '%operation:mfa_disable%',
                 'mfa_verify' => '%operation:mfa_verify%',
                 'mfa_regenerate_codes' => '%operation:mfa_regenerate_codes%',
-                'api_key_create' => '%operation:api_key_create%',
-                'api_key_edit' => '%operation:api_key_edit%',
-                'api_key_delete' => '%operation:api_key_delete%',
-                'api_key_regenerate' => '%operation:api_key_regenerate%',
-                'api_key_toggle' => '%operation:api_key_toggle%',
                 'password_reset_request' => '%operation:password_reset_request%',
                 'password_reset' => '%operation:password_reset%',
                 'username_recovery' => '%operation:username_recovery%',

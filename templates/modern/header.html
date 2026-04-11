@@ -303,7 +303,7 @@
 
                     {% if (perm_is_godlike and api_enabled) or (perm_is_godlike and enable_consistency_checks) or (module_nav_items is defined and module_nav_items|length > 0) %}
                     <!-- Tools Section -->
-                    {% set tools_active = current_page in ['api_keys', 'database_consistency'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') %}
+                    {% set tools_active = current_page in ['api_keys', 'list_log_api', 'database_consistency'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') %}
                     <li class="nav-item">
                         <div class="nav-section-header {{ tools_active ? 'text-primary' : '' }}" role="button" data-bs-target="#navTools" aria-expanded="{{ tools_active ? 'true' : 'false' }}" aria-controls="navTools">
                             <i class="bi bi-tools me-2"></i>{% trans %}Tools{% endtrans %}
@@ -314,6 +314,13 @@
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'api_keys' ? 'active' : '' }}" href="{{ base_url_prefix }}/settings/api-keys">
                                     <i class="bi bi-key-fill me-2"></i>{% trans %}API Keys{% endtrans %}
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if perm_is_godlike and api_enabled and dblog_use == true %}
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_log_api' ? 'active' : '' }}" href="{{ base_url_prefix }}/settings/api/logs">
+                                    <i class="bi bi-journal-text me-2"></i>{% trans %}API Logs{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}

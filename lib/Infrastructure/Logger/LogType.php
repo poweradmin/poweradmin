@@ -27,4 +27,5 @@ enum LogType
     case USER;
     case ZONE;
     case GROUP;
+    case API;
 }

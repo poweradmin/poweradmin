@@ -72,4 +72,16 @@ ALTER TABLE record_comment_links_new RENAME TO record_comment_links;
 
 CREATE INDEX idx_record_comment_links_comment ON record_comment_links(comment_id);
 
+-- Create separate log table for API key events
+CREATE TABLE IF NOT EXISTS log_api (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL);
+
+-- Migrate existing API key log entries from log_users to log_api
+INSERT INTO log_api (event, created_at, priority)
+SELECT event, created_at, priority
+FROM log_users
+WHERE event LIKE '%operation:api_key_%';
+
+-- Remove migrated API key entries from log_users
+DELETE FROM log_users WHERE event LIKE '%operation:api_key_%';
+
 COMMIT;

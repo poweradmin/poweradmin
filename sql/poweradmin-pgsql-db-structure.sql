@@ -11,6 +11,17 @@ CREATE TABLE "public"."log_users" (
 ) WITH (oids = false);
 
 
+CREATE SEQUENCE log_api_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."log_api" (
+                                      "id" integer DEFAULT nextval('log_api_id_seq1') NOT NULL,
+                                      "event" character varying(2048),
+                                      "created_at" timestamp DEFAULT CURRENT_TIMESTAMP,
+                                      "priority" integer,
+                                      CONSTRAINT "log_api_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+
 CREATE SEQUENCE log_zones_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
 CREATE TABLE "public"."log_zones" (
