@@ -44,10 +44,10 @@ class AuditService
     {
         $username = $_SESSION['userlogin'] ?? 'unknown';
         return sprintf(
-            'client_ip:%s user:%s user_agent:%s',
+            'client_ip:%s user:%s browser:%s',
             $this->ipRetriever->getClientIp(),
             $username,
-            $this->userAgentService->getShortUserAgent()
+            $this->userAgentService->getBrowserInfo()
         );
     }
 

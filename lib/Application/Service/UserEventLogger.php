@@ -44,22 +44,22 @@ class UserEventLogger
     public function logSuccessfulAuth(AuthMethod $authMethod = AuthMethod::SQL): void
     {
         $this->logger->logNotice(sprintf(
-            'client_ip:%s user:%s operation:login_success auth_method:%s user_agent:%s',
+            'client_ip:%s user:%s operation:login_success auth_method:%s browser:%s',
             $this->ipRetriever->getClientIp(),
             $_SESSION['userlogin'],
             $authMethod->value,
-            $this->userAgentService->getShortUserAgent()
+            $this->userAgentService->getBrowserInfo()
         ));
     }
 
     public function logFailedAuth(AuthMethod $authMethod = AuthMethod::SQL): void
     {
         $this->logger->logWarn(sprintf(
-            'client_ip:%s user:%s operation:login_failed auth_method:%s user_agent:%s',
+            'client_ip:%s user:%s operation:login_failed auth_method:%s browser:%s',
             $this->ipRetriever->getClientIp(),
             $_SESSION["userlogin"],
             $authMethod->value,
-            $this->userAgentService->getShortUserAgent()
+            $this->userAgentService->getBrowserInfo()
         ));
     }
 }

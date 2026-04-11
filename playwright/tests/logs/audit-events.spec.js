@@ -4,7 +4,7 @@
  * Tests that verify audit logging for:
  * - Permission template changes (perm_template_change)
  * - Failed access attempts (access_denied)
- * - User agent in login events (user_agent)
+ * - User agent in login events (browser)
  *
  * These tests generate events then verify they appear in user logs.
  */
@@ -128,7 +128,7 @@ test.describe('Audit Events - Verify in User Logs', () => {
     expect(options.some(o => o.includes('session_expired'))).toBeTruthy();
   });
 
-  test('should show user_agent in login events', async ({ page }) => {
+  test('should show browser in login events', async ({ page }) => {
     await page.goto('/users/logs');
 
     // Filter by login_success
@@ -146,7 +146,7 @@ test.describe('Audit Events - Verify in User Logs', () => {
       await expect(modal).toBeVisible();
 
       const modalText = await modal.textContent();
-      expect(modalText).toMatch(/user_agent:/);
+      expect(modalText).toMatch(/browser:/);
     }
   });
 
