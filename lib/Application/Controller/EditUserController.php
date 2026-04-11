@@ -38,6 +38,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -53,6 +54,7 @@ class EditUserController extends BaseController
     private readonly UserContextService $userContextService;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
+    private AuditService $auditService;
 
     public function __construct(
         array $request
@@ -65,6 +67,7 @@ class EditUserController extends BaseController
         $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->auditService = new AuditService($this->db);
     }
 
     public function run(): void
@@ -120,6 +123,11 @@ class EditUserController extends BaseController
 
         $legacyUsers = new UserManager($this->db, $this->getConfig());
 
+        // Fetch old permission template before edit for audit logging
+        $stmt = $this->db->prepare("SELECT perm_templ FROM users WHERE id = :id");
+        $stmt->execute([':id' => $editId]);
+        $oldPermTempl = (int)($stmt->fetchColumn() ?: 0);
+
         if (
             $legacyUsers->editUser(
                 $editId,
@@ -141,6 +149,14 @@ class EditUserController extends BaseController
                 $params['perm_templ'],
                 $params['use_ldap'] ? 'ldap' : 'sql'
             ));
+
+            if ($oldPermTempl !== (int)$params['perm_templ']) {
+                $this->auditService->logPermTemplateChange(
+                    $params['username'],
+                    $oldPermTempl,
+                    (int)$params['perm_templ']
+                );
+            }
 
             $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
             $canViewAllUsers = UserManager::verifyPermission($this->db, 'user_view_others');
