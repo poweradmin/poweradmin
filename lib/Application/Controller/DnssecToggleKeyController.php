@@ -107,6 +107,8 @@ class DnssecToggleKeyController extends BaseController
 
             // Set appropriate message and redirect
             if ($result) {
+                $auditService = new \Poweradmin\Application\Service\AuditService($this->db);
+                $auditService->logDnssecToggleKey($zone_id, $domain_name, $key_id, $action);
                 $this->setMessage('dnssec', 'success', $success_message);
             } else {
                 $this->setMessage('dnssec', 'error', $error_message);
