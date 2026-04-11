@@ -738,7 +738,7 @@ class UsersController extends PublicApiController
         path: '/v1/users/{id}',
         operationId: 'v1DeleteUser',
         deprecated: true,
-        description: 'Delete a user from the system. Prevents deletion of the last remaining super admin to avoid system lockout. If user owns zones, you must specify transfer_to_user_id to transfer zones to another user. Use /v2/ endpoints instead.',
+        description: 'Delete a user. Prevents deleting the last super admin. If user owns zones, specify transfer_to_user_id. Use /v2/ endpoints instead.',
         summary: 'Delete a user (deprecated)',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['users']
