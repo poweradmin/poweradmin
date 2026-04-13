@@ -98,8 +98,8 @@ INSERT IGNORE INTO `supermasters` (`ip`, `nameserver`, `account`) VALUES
 USE poweradmin;
 
 -- Viewer owns viewer-zone.example.com
-INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
-SELECT d.`id`, u.`id`, 0
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
+SELECT d.`id`, u.`id`, 0, d.`name`
 FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = 'viewer-zone.example.com' AND u.`username` = 'viewer'
@@ -108,8 +108,8 @@ WHERE d.`name` = 'viewer-zone.example.com' AND u.`username` = 'viewer'
   );
 
 -- Admin owns slave-zone.example.com
-INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
-SELECT d.`id`, u.`id`, 0
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
+SELECT d.`id`, u.`id`, 0, d.`name`
 FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = 'slave-zone.example.com' AND u.`username` = 'admin'
@@ -118,8 +118,8 @@ WHERE d.`name` = 'slave-zone.example.com' AND u.`username` = 'admin'
   );
 
 -- Admin owns native-zone.example.com
-INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
-SELECT d.`id`, u.`id`, 0
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
+SELECT d.`id`, u.`id`, 0, d.`name`
 FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = 'native-zone.example.com' AND u.`username` = 'admin'
@@ -129,8 +129,8 @@ WHERE d.`name` = 'native-zone.example.com' AND u.`username` = 'admin'
 
 -- group-only-zone.example.com has NO direct owner (only group ownership via zones_groups)
 -- We still need a zones record for Poweradmin to track it, but owner is NULL
-INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
-SELECT d.`id`, NULL, 0
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
+SELECT d.`id`, NULL, 0, d.`name`
 FROM pdns.`domains` d
 WHERE d.`name` = 'group-only-zone.example.com'
   AND NOT EXISTS (

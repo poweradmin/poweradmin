@@ -97,8 +97,8 @@ WHERE d.`name` = '8.b.d.0.1.0.0.2.ip6.arpa'
 USE poweradmin;
 
 -- Admin owns IPv4 reverse zone
-INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
-SELECT d.`id`, u.`id`, 0
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
+SELECT d.`id`, u.`id`, 0, d.`name`
 FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = '2.0.192.in-addr.arpa' AND u.`username` = 'admin'
@@ -106,7 +106,7 @@ WHERE d.`name` = '2.0.192.in-addr.arpa' AND u.`username` = 'admin'
     SELECT 1 FROM poweradmin.`zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
   );
 
--- Manager also owns IPv4 reverse zone
+-- Manager also owns IPv4 reverse zone (no zone_name - unique index constraint)
 INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
 SELECT d.`id`, u.`id`, 0
 FROM pdns.`domains` d
@@ -117,8 +117,8 @@ WHERE d.`name` = '2.0.192.in-addr.arpa' AND u.`username` = 'manager'
   );
 
 -- Admin owns IPv6 reverse zone
-INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
-SELECT d.`id`, u.`id`, 0
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
+SELECT d.`id`, u.`id`, 0, d.`name`
 FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = '8.b.d.0.1.0.0.2.ip6.arpa' AND u.`username` = 'admin'
