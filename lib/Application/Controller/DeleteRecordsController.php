@@ -76,12 +76,14 @@ class DeleteRecordsController extends BaseController
 
     public function run(): void
     {
-        $record_ids = $_POST['record_id'] ?? null;
-        if (!$record_ids) {
+        $raw_ids = $_POST['record_id'] ?? null;
+        if (!is_array($raw_ids) || empty($raw_ids)) {
             $this->setMessage('search', 'error', _('No records selected for deletion.'));
             $this->redirect('/search');
             return;
         }
+
+        $record_ids = array_values(array_filter($raw_ids, fn($id) => is_int($id) || is_string($id)));
 
         if (isset($_POST['confirm'])) {
             $this->deleteRecords($record_ids);
@@ -90,7 +92,10 @@ class DeleteRecordsController extends BaseController
         $this->showRecords($record_ids);
     }
 
-    public function deleteRecords($record_ids): void
+    /**
+     * @param array<int|string> $record_ids
+     */
+    public function deleteRecords(array $record_ids): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $deleted_count = 0;
@@ -206,7 +211,10 @@ class DeleteRecordsController extends BaseController
         $this->redirect($route);
     }
 
-    public function showRecords($record_ids): void
+    /**
+     * @param array<int|string> $record_ids
+     */
+    public function showRecords(array $record_ids): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $records = [];
