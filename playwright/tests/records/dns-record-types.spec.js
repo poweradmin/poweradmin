@@ -21,15 +21,23 @@ test.describe('DNS Record Types Management', () => {
     await page.locator('[data-testid="add-zone-button"]').click();
     await page.waitForLoadState('networkidle');
 
-    // Verify zone was created and get zone ID
-    await page.goto('/zones/forward?letter=all');
-    const zoneRow = page.locator(`tr:has-text("${testDomain}")`);
-    await expect(zoneRow).toBeVisible();
-    const editLink = await zoneRow.locator('a[href*="/edit"]').first().getAttribute('href');
-    const match = editLink.match(/\/zones\/(\d+)/);
-    if (match) {
-      zoneId = match[1];
+    // After zone creation, page redirects to zone list
+    // Find the zone by searching all pages via letter filter
+    const letter = testDomain.charAt(0);
+    let found = false;
+    for (let page_num = 1; page_num <= 20 && !found; page_num++) {
+      await page.goto(`/zones/forward?letter=${letter}&start=${page_num}`);
+      const zoneRow = page.locator(`tr:has-text("${testDomain}")`);
+      if (await zoneRow.count() > 0) {
+        const editLink = await zoneRow.locator('a[href*="/edit"]').first().getAttribute('href');
+        const match = editLink.match(/\/zones\/(\d+)/);
+        if (match) {
+          zoneId = match[1];
+        }
+        found = true;
+      }
     }
+    expect(found).toBeTruthy();
     zoneCreated = true;
   });
 

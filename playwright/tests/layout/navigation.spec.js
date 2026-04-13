@@ -108,8 +108,9 @@ test.describe('Header Navigation', () => {
     test('should display user logs for admin', async ({ page }) => {
       await page.goto('/users/logs');
       await expect(page).toHaveURL(/.*users\/logs/);
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).not.toMatch(/error|denied/);
+      await expect(page.locator('table')).toBeVisible();
+      const alertDanger = page.locator('.alert-danger');
+      await expect(alertDanger).toHaveCount(0);
     });
 
     test('should display templates navigation', async ({ page }) => {

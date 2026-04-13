@@ -72,16 +72,18 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
     await page.waitForLoadState('networkidle');
 
     // Navigate to zone edit page to find our record's ID
-    await page.goto(`/zones/${zoneId}/edit`);
+    // Use search filter to find the record across paginated pages
+    await page.goto(`/zones/${zoneId}/edit?search=${uniquePrefix}`);
     await page.waitForLoadState('networkidle');
 
-    // Find the record input and get the record ID from the hidden input
-    const recordNameInput = page.locator(`input[value*="${uniquePrefix}"]`).first();
+    // Find the record input (exclude the search input by matching name attribute)
+    const recordNameInput = page.locator(`input[name*="record"][name*="[name]"][value*="${uniquePrefix}"]`).first();
     await expect(recordNameInput).toBeVisible({ timeout: 10000 });
 
     // Get the record ID from the input name (format: record[ID][name])
+    // On API backend, ID may be an encoded string, not just digits
     const inputName = await recordNameInput.getAttribute('name');
-    const recordIdMatch = inputName?.match(/record\[(\d+)\]/);
+    const recordIdMatch = inputName?.match(/record\[([^\]]+)\]/);
 
     if (!recordIdMatch) {
       test.skip(true, 'Could not find record ID');

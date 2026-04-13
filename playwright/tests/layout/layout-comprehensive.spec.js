@@ -206,6 +206,7 @@ test.describe('Layout - Navigation', () => {
           }
         }
         await logoutLink.first().click();
+        await page.waitForLoadState('networkidle');
         const bodyText = await page.locator('body').textContent();
         expect(bodyText.toLowerCase()).toMatch(/login|password|username/i);
       }
