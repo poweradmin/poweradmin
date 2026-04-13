@@ -563,7 +563,7 @@ class DnsRecord
      * @param int $id Record ID
      * @return array|null array of record detail, or null if nothing found
      */
-    public function getRecordFromId(int $id): ?array
+    public function getRecordFromId(int|string $id): ?array
     {
         return $this->recordRepository->getRecordFromId($id);
     }

@@ -412,4 +412,10 @@ interface DnsBackendProvider
      * @return bool
      */
     public function isApiBackend(): bool;
+
+    /**
+     * Check whether the zone has soa_edit_api configured in PowerDNS.
+     * Returns false for SQL backends (not applicable).
+     */
+    public function hasSoaEditApi(int $domainId): bool;
 }

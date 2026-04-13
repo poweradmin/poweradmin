@@ -1003,6 +1003,19 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         return true;
     }
 
+    public function hasSoaEditApi(int $domainId): bool
+    {
+        $zoneName = $this->getZoneNameByLocalId($domainId);
+        if ($zoneName === null) {
+            return false;
+        }
+
+        $apiZoneName = self::ensureTrailingDot($zoneName);
+        $zoneData = $this->client->getZone($apiZoneName);
+
+        return $zoneData !== null && !empty($zoneData['soa_edit_api']);
+    }
+
     // ---------------------------------------------------------------
     // Helper methods
     // ---------------------------------------------------------------
@@ -1045,7 +1058,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     private function formatRecordContent(string $type, string $content, int $prio): string
     {
         if ($type === 'MX' || $type === 'SRV') {
-            return $prio . ' ' . $content;
+            return $prio . ' ' . self::ensureTrailingDot($content);
         }
 
         if ($type === 'SOA') {
@@ -1055,6 +1068,11 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                 $parts[1] = self::ensureTrailingDot($parts[1]);
                 return implode(' ', $parts);
             }
+        }
+
+        $hostnameTypes = ['CNAME', 'NS', 'PTR', 'AFSDB', 'DNAME', 'ALIAS'];
+        if (in_array($type, $hostnameTypes, true)) {
+            return self::ensureTrailingDot($content);
         }
 
         return $content;

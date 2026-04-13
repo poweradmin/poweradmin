@@ -165,7 +165,7 @@ class RecordManager implements RecordManagerInterface
             return false;
         }
 
-        if ($type != 'SOA' && !$this->backendProvider->isApiBackend()) {
+        if ($type != 'SOA') {
             $this->soaRecordManager->updateSOASerial($zone_id);
         }
 
@@ -265,7 +265,7 @@ class RecordManager implements RecordManagerInterface
             return null;
         }
 
-        if ($type != 'SOA' && !$this->backendProvider->isApiBackend()) {
+        if ($type != 'SOA') {
             $this->soaRecordManager->updateSOASerial($zone_id);
         }
 

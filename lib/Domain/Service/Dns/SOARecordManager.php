@@ -187,8 +187,12 @@ class SOARecordManager implements SOARecordManagerInterface
     public function updateSOARecord(int $domain_id, string $content): bool
     {
         if ($this->isApiBackend()) {
-            // In API mode, PowerDNS handles SOA updates via soa_edit_api.
-            return true;
+            $zoneName = $this->backendProvider->getZoneNameById($domain_id);
+            if ($zoneName === null) {
+                return false;
+            }
+            $soa_ttl = (int)$this->config->get('dns', 'soa_rec_default_ttl', 86400);
+            return $this->backendProvider->addRecord($domain_id, $zoneName, 'SOA', $content, $soa_ttl, 0);
         }
 
         $tableNameService = new TableNameService($this->config);
@@ -254,8 +258,10 @@ class SOARecordManager implements SOARecordManagerInterface
     public function updateSOASerial(int $domain_id): bool
     {
         if ($this->isApiBackend()) {
-            // In API mode, PowerDNS auto-increments SOA serial via soa_edit_api.
-            return true;
+            if ($this->backendProvider->hasSoaEditApi($domain_id)) {
+                return true;
+            }
+            // PowerDNS soa_edit_api is not configured, update SOA serial via API PATCH
         }
 
         $soa_rec = $this->getSOARecord($domain_id);

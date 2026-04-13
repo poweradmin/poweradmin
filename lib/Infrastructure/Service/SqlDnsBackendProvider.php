@@ -696,6 +696,11 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return false;
     }
 
+    public function hasSoaEditApi(int $domainId): bool
+    {
+        return false;
+    }
+
     // ---------------------------------------------------------------
     // Private helpers
     // ---------------------------------------------------------------
