@@ -359,7 +359,7 @@ class DnsRecord
 
     /** Delete record reference to zone template
      *
-     * @param int $rid Record ID
+     * @param int|string $rid Record ID
      *
      * @return boolean true on success
      */
@@ -401,7 +401,7 @@ class DnsRecord
      *
      * Gets the id of the domain by a given record id
      *
-     * @param int $id Record ID
+     * @param int|string $id Record ID
      * @return int Domain ID of record
      */
     public function recidToDomid(int|string $id): int
@@ -560,7 +560,7 @@ class DnsRecord
      *
      * Retrieve all fields of the record and send it back to the function caller.
      *
-     * @param int $id Record ID
+     * @param int|string $id Record ID (numeric for SQL backend, encoded string for API backend)
      * @return array|null array of record detail, or null if nothing found
      */
     public function getRecordFromId(int|string $id): ?array

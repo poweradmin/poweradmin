@@ -401,7 +401,7 @@ class RecordManager implements RecordManagerInterface
     /**
      * Delete record reference to zone template
      *
-     * @param int $rid Record ID
+     * @param int|string $rid Record ID
      *
      * @return boolean true on success
      */

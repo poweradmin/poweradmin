@@ -15,10 +15,6 @@
   <file src="lib/Application/Controller/DeleteRecordController.php">
     <InvalidScalarArgument>
       <code><![CDATA[$record_id]]></code>
-      <code><![CDATA[$record_id]]></code>
-      <code><![CDATA[$record_id]]></code>
-      <code><![CDATA[$record_id]]></code>
-      <code><![CDATA[$record_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/DeleteUserController.php">
@@ -65,10 +61,6 @@
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/EditRecordController.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$_POST["rid"]]]></code>
-      <code><![CDATA[$_POST["rid"]]]></code>
-    </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/EditZoneTemplController.php">
     <InvalidScalarArgument>
