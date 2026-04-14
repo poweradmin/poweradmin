@@ -103,9 +103,9 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
         recordName = await nameInput.inputValue();
       }
 
-      // Extract record ID for later tests
+      // Extract record ID for later tests (numeric on SQL, encoded string on API backend)
       const inputName = await contentInput.getAttribute('name');
-      const idMatch = inputName?.match(/record\[(\d+)\]/);
+      const idMatch = inputName?.match(/record\[([^\]]+)\]/);
       if (idMatch) {
         recordId = idMatch[1];
       }
