@@ -56,9 +56,9 @@ BEGIN
             (zone_id, zone_name, 'MX', 'mail2.' || zone_name, 3600, 20, false),
 
             -- TXT records (3 total) - Long content for UI testing
-            (zone_id, zone_name, 'TXT', 'v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com ~all', 3600, 0, false),
-            (zone_id, '_dmarc.' || zone_name, 'TXT', 'v=DMARC1; p=quarantine; rua=mailto:dmarc-reports@example.com; ruf=mailto:dmarc-forensics@example.com; fo=1', 3600, 0, false),
-            (zone_id, 'default._domainkey.' || zone_name, 'TXT', 'v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3QEKyU1fSma0axspqYK5iAj+54lsAg4qRRCnpKK68hawSI8zvKBSjzQAHNxfh3UDPz6WIl0d8AJ7g', 3600, 0, false),
+            (zone_id, zone_name, 'TXT', '"v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com ~all"', 3600, 0, false),
+            (zone_id, '_dmarc.' || zone_name, 'TXT', '"v=DMARC1; p=quarantine; rua=mailto:dmarc-reports@example.com; ruf=mailto:dmarc-forensics@example.com; fo=1"', 3600, 0, false),
+            (zone_id, 'default._domainkey.' || zone_name, 'TXT', '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3QEKyU1fSma0axspqYK5iAj+54lsAg4qRRCnpKK68hawSI8zvKBSjzQAHNxfh3UDPz6WIl0d8AJ7g"', 3600, 0, false),
 
             -- CNAME records (3 total)
             (zone_id, 'cdn.' || zone_name, 'CNAME', 'cdn.provider.example.net', 3600, 0, false),
@@ -123,9 +123,9 @@ BEGIN
             (zone_id, zone_name, 'MX', 'mail2.' || zone_name, 3600, 20, false),
 
             -- TXT records (3 total) - Long content for UI testing
-            (zone_id, zone_name, 'TXT', 'v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com ~all', 3600, 0, false),
-            (zone_id, '_dmarc.' || zone_name, 'TXT', 'v=DMARC1; p=quarantine; rua=mailto:dmarc-reports@example.com; ruf=mailto:dmarc-forensics@example.com; fo=1', 3600, 0, false),
-            (zone_id, 'default._domainkey.' || zone_name, 'TXT', 'v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3QEKyU1fSma0axspqYK5iAj+54lsAg4qRRCnpKK68hawSI8zvKBSjzQAHNxfh3UDPz6WIl0d8AJ7g', 3600, 0, false),
+            (zone_id, zone_name, 'TXT', '"v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com ~all"', 3600, 0, false),
+            (zone_id, '_dmarc.' || zone_name, 'TXT', '"v=DMARC1; p=quarantine; rua=mailto:dmarc-reports@example.com; ruf=mailto:dmarc-forensics@example.com; fo=1"', 3600, 0, false),
+            (zone_id, 'default._domainkey.' || zone_name, 'TXT', '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3QEKyU1fSma0axspqYK5iAj+54lsAg4qRRCnpKK68hawSI8zvKBSjzQAHNxfh3UDPz6WIl0d8AJ7g"', 3600, 0, false),
 
             -- CNAME records (3 total)
             (zone_id, 'cdn.' || zone_name, 'CNAME', 'cdn.provider.example.net', 3600, 0, false),

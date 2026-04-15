@@ -53,9 +53,9 @@ FROM (
     UNION ALL SELECT 'manager-zone.example.com', 'MX', 'mail2.manager-zone.example.com', 3600, 20, 0
 
     -- TXT records (3 total) - Long content for UI testing
-    UNION ALL SELECT 'manager-zone.example.com', 'TXT', 'v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com ~all', 3600, 0, 0
-    UNION ALL SELECT '_dmarc.manager-zone.example.com', 'TXT', 'v=DMARC1; p=quarantine; rua=mailto:dmarc-reports@example.com; ruf=mailto:dmarc-forensics@example.com; fo=1', 3600, 0, 0
-    UNION ALL SELECT 'default._domainkey.manager-zone.example.com', 'TXT', 'v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3QEKyU1fSma0axspqYK5iAj+54lsAg4qRRCnpKK68hawSI8zvKBSjzQAHNxfh3UDPz6WIl0d8AJ7g', 3600, 0, 0
+    UNION ALL SELECT 'manager-zone.example.com', 'TXT', '"v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com ~all"', 3600, 0, 0
+    UNION ALL SELECT '_dmarc.manager-zone.example.com', 'TXT', '"v=DMARC1; p=quarantine; rua=mailto:dmarc-reports@example.com; ruf=mailto:dmarc-forensics@example.com; fo=1"', 3600, 0, 0
+    UNION ALL SELECT 'default._domainkey.manager-zone.example.com', 'TXT', '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3QEKyU1fSma0axspqYK5iAj+54lsAg4qRRCnpKK68hawSI8zvKBSjzQAHNxfh3UDPz6WIl0d8AJ7g"', 3600, 0, 0
 
     -- CNAME records (3 total)
     UNION ALL SELECT 'cdn.manager-zone.example.com', 'CNAME', 'cdn.provider.example.net', 3600, 0, 0
@@ -118,9 +118,9 @@ FROM (
     UNION ALL SELECT 'client-zone.example.com', 'MX', 'mail2.client-zone.example.com', 3600, 20, 0
 
     -- TXT records (3 total) - Long content for UI testing
-    UNION ALL SELECT 'client-zone.example.com', 'TXT', 'v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com ~all', 3600, 0, 0
-    UNION ALL SELECT '_dmarc.client-zone.example.com', 'TXT', 'v=DMARC1; p=quarantine; rua=mailto:dmarc-reports@example.com; ruf=mailto:dmarc-forensics@example.com; fo=1', 3600, 0, 0
-    UNION ALL SELECT 'default._domainkey.client-zone.example.com', 'TXT', 'v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3QEKyU1fSma0axspqYK5iAj+54lsAg4qRRCnpKK68hawSI8zvKBSjzQAHNxfh3UDPz6WIl0d8AJ7g', 3600, 0, 0
+    UNION ALL SELECT 'client-zone.example.com', 'TXT', '"v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com ~all"', 3600, 0, 0
+    UNION ALL SELECT '_dmarc.client-zone.example.com', 'TXT', '"v=DMARC1; p=quarantine; rua=mailto:dmarc-reports@example.com; ruf=mailto:dmarc-forensics@example.com; fo=1"', 3600, 0, 0
+    UNION ALL SELECT 'default._domainkey.client-zone.example.com', 'TXT', '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3QEKyU1fSma0axspqYK5iAj+54lsAg4qRRCnpKK68hawSI8zvKBSjzQAHNxfh3UDPz6WIl0d8AJ7g"', 3600, 0, 0
 
     -- CNAME records (3 total)
     UNION ALL SELECT 'cdn.client-zone.example.com', 'CNAME', 'cdn.provider.example.net', 3600, 0, 0

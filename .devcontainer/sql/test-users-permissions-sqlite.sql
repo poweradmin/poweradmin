@@ -174,8 +174,8 @@ WHERE d."name" IN ('admin-zone.example.com', 'manager-zone.example.com', 'client
 -- =============================================================================
 
 -- Admin owns admin-zone.example.com
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'admin-zone.example.com' AND u."username" = 'admin'
@@ -184,8 +184,8 @@ WHERE d."name" = 'admin-zone.example.com' AND u."username" = 'admin'
   );
 
 -- Manager owns manager-zone.example.com
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'manager-zone.example.com' AND u."username" = 'manager'
@@ -194,8 +194,8 @@ WHERE d."name" = 'manager-zone.example.com' AND u."username" = 'manager'
   );
 
 -- Client owns client-zone.example.com
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'client-zone.example.com' AND u."username" = 'client'
@@ -204,20 +204,27 @@ WHERE d."name" = 'client-zone.example.com' AND u."username" = 'client'
   );
 
 -- Shared zone with MULTIPLE OWNERS (manager and client both own it)
--- This tests the multi-owner functionality
+-- First owner gets zone_name, second gets NULL (unique index constraint)
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
+FROM pdns."domains" d
+CROSS JOIN "users" u
+WHERE d."name" = 'shared-zone.example.com' AND u."username" = 'manager'
+  AND NOT EXISTS (
+    SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id"
+  );
 INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
 SELECT d."id", u."id", 0
 FROM pdns."domains" d
 CROSS JOIN "users" u
-WHERE d."name" = 'shared-zone.example.com'
-  AND u."username" IN ('manager', 'client')
+WHERE d."name" = 'shared-zone.example.com' AND u."username" = 'client'
   AND NOT EXISTS (
     SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id"
   );
 
 -- Admin owns test858.example.com (for issue #858 comment testing)
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'test858.example.com' AND u."username" = 'admin'
@@ -226,8 +233,8 @@ WHERE d."name" = 'test858.example.com' AND u."username" = 'admin'
   );
 
 -- Admin owns 168.192.in-addr.arpa reverse zone (for A/PTR sync testing)
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = '168.192.in-addr.arpa' AND u."username" = 'admin'
@@ -240,8 +247,8 @@ WHERE d."name" = '168.192.in-addr.arpa' AND u."username" = 'admin'
 -- =============================================================================
 
 -- Swedish IDN (översätt.info) owned by manager
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'xn--verstt-eua3l.info' AND u."username" = 'manager'
@@ -250,8 +257,8 @@ WHERE d."name" = 'xn--verstt-eua3l.info' AND u."username" = 'manager'
   );
 
 -- German IDN (münchen.de) owned by admin
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'xn--mnchen-3ya.de' AND u."username" = 'admin'
@@ -260,8 +267,8 @@ WHERE d."name" = 'xn--mnchen-3ya.de' AND u."username" = 'admin'
   );
 
 -- Russian IDN (автоэлектрик.net) owned by manager
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'xn--80aejmjbdxvpe2k.net' AND u."username" = 'manager'
@@ -270,8 +277,8 @@ WHERE d."name" = 'xn--80aejmjbdxvpe2k.net' AND u."username" = 'manager'
   );
 
 -- Korean IDN (베스트공포닷컴.com) owned by client
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'xn--ob0bz7i69i99fm8qgkfwlc.com' AND u."username" = 'client'
@@ -280,8 +287,8 @@ WHERE d."name" = 'xn--ob0bz7i69i99fm8qgkfwlc.com' AND u."username" = 'client'
   );
 
 -- Vietnamese IDN (chợtânbiên.vn) owned by viewer
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'xn--chtnbin-rwa9e0573b.vn' AND u."username" = 'viewer'
@@ -294,8 +301,8 @@ WHERE d."name" = 'xn--chtnbin-rwa9e0573b.vn' AND u."username" = 'viewer'
 -- =============================================================================
 
 -- Swedish IDN (översätt.info) owned by manager
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'xn--verstt-eua3l.info' AND u."username" = 'manager'
@@ -304,8 +311,8 @@ WHERE d."name" = 'xn--verstt-eua3l.info' AND u."username" = 'manager'
   );
 
 -- German IDN (münchen.de) owned by admin
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'xn--mnchen-3ya.de' AND u."username" = 'admin'
@@ -314,8 +321,8 @@ WHERE d."name" = 'xn--mnchen-3ya.de' AND u."username" = 'admin'
   );
 
 -- Russian IDN (автоэлектрик.net) owned by manager
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'xn--80aejmjbdxvpe2k.net' AND u."username" = 'manager'
@@ -324,8 +331,8 @@ WHERE d."name" = 'xn--80aejmjbdxvpe2k.net' AND u."username" = 'manager'
   );
 
 -- Korean IDN (베스트공포닷컴.com) owned by client
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'xn--ob0bz7i69i99fm8qgkfwlc.com' AND u."username" = 'client'
@@ -334,8 +341,8 @@ WHERE d."name" = 'xn--ob0bz7i69i99fm8qgkfwlc.com' AND u."username" = 'client'
   );
 
 -- Vietnamese IDN (chợtânbiên.vn) owned by viewer
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'xn--chtnbin-rwa9e0573b.vn' AND u."username" = 'viewer'

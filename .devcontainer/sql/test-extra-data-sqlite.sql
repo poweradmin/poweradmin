@@ -87,29 +87,29 @@ INSERT OR IGNORE INTO pdns."supermasters" ("ip", "nameserver", "account") VALUES
 -- =============================================================================
 
 -- Viewer owns viewer-zone.example.com
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d, "users" u
 WHERE d."name" = 'viewer-zone.example.com' AND u."username" = 'viewer'
   AND NOT EXISTS (SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id");
 
 -- Admin owns slave-zone.example.com
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d, "users" u
 WHERE d."name" = 'slave-zone.example.com' AND u."username" = 'admin'
   AND NOT EXISTS (SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id");
 
 -- Admin owns native-zone.example.com
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", u."id", 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d, "users" u
 WHERE d."name" = 'native-zone.example.com' AND u."username" = 'admin'
   AND NOT EXISTS (SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id");
 
 -- group-only-zone.example.com has NO direct owner (only group ownership)
-INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
-SELECT d."id", NULL, 0
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", NULL, 0, d."name"
 FROM pdns."domains" d
 WHERE d."name" = 'group-only-zone.example.com'
   AND NOT EXISTS (SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id");

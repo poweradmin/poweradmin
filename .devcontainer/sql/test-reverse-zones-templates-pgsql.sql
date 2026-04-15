@@ -75,13 +75,13 @@ WHERE d.name = '8.b.d.0.1.0.0.2.ip6.arpa'
 -- =============================================================================
 
 -- Admin owns IPv4 reverse zone
-INSERT INTO zones (domain_id, owner, zone_templ_id)
-SELECT d.id, u.id, 0
+INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name)
+SELECT d.id, u.id, 0, d.name
 FROM domains d, users u
 WHERE d.name = '2.0.192.in-addr.arpa' AND u.username = 'admin'
   AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
--- Manager also owns IPv4 reverse zone
+-- Manager also owns IPv4 reverse zone (no zone_name - unique index constraint)
 INSERT INTO zones (domain_id, owner, zone_templ_id)
 SELECT d.id, u.id, 0
 FROM domains d, users u
@@ -89,8 +89,8 @@ WHERE d.name = '2.0.192.in-addr.arpa' AND u.username = 'manager'
   AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
 -- Admin owns IPv6 reverse zone
-INSERT INTO zones (domain_id, owner, zone_templ_id)
-SELECT d.id, u.id, 0
+INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name)
+SELECT d.id, u.id, 0, d.name
 FROM domains d, users u
 WHERE d.name = '8.b.d.0.1.0.0.2.ip6.arpa' AND u.username = 'admin'
   AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);

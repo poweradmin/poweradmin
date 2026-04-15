@@ -56,7 +56,7 @@ return [
      * Interface Settings
      */
     'interface' => [
-        'language' => 'de_DE',
+        'language' => 'en_EN',
         'title' => 'Poweradmin (PostgreSQL + API)',
         'show_pdns_status' => true,
         'show_record_comments' => true,
