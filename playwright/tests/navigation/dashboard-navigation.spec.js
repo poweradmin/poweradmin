@@ -23,7 +23,7 @@ test.describe('Dashboard and Navigation', () => {
   });
 
   test('should display main navigation menu', async ({ page }) => {
-    await expect(page.locator('nav, .navbar, .navigation, header')).toBeVisible();
+    await expect(page.locator('nav, .navbar, .navigation, header').first()).toBeVisible();
 
     // Check for key navigation items
     await expect(page.locator('body')).toContainText('Zones');
