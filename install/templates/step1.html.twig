@@ -3,21 +3,21 @@
 {% block step_description %}{% trans %}Choose a language{% endtrans %}{% endblock %}
 
 {% block content %}
-    <div class="card shadow-sm mb-4">
+    <div class="card shadow-sm mb-3">
         <div class="card-header bg-secondary text-white">
             {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Choose a language for installation{% endtrans %}
         </div>
-        <div class="card-body">
-            <div class="text-center mb-4">
-                <p>{% trans %}Please select your preferred language to continue with the installation:{% endtrans %}</p>
+        <div class="card-body py-3">
+            <div class="text-center mb-3">
+                <p class="mb-0">{% trans %}Please select your preferred language to continue with the installation:{% endtrans %}</p>
             </div>
 
             <form method="post">
                 <input type="hidden" name="install_token" value="{{ install_token }}">
                 <div class="row justify-content-center">
-                    <div class="col-lg-10">
+                    <div class="col-12">
                         <div class="language-selection">
-                            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2">
                                 <div class="col">
                                     <div class="card h-100 language-card">
                                         <div class="card-body d-flex align-items-center">
@@ -283,7 +283,7 @@
                 </div>
                 
                 <input type="hidden" name="step" value="{{ next_step }}">
-                <div class="mt-4 text-center">
+                <div class="mt-3 text-center">
                     <input type="submit" name="submit" class="btn btn-sm btn-primary" value="{% trans %}Begin Installation{% endtrans %}">
                 </div>
             </form>
@@ -312,12 +312,16 @@
             cursor: pointer;
         }
         
-        .card-body {
-            padding: 0.75rem;
+        .language-card .card-body {
+            padding: 0.5rem 0.75rem;
         }
-        
+
         .language-card .form-check {
             width: 100%;
+        }
+
+        .language-card .form-check-label {
+            font-size: 0.925rem;
         }
     </style>
 
