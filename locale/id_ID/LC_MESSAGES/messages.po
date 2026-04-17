@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-11 19:44+0300\n"
+"POT-Creation-Date: 2026-04-16 18:36+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1360,14 +1360,14 @@ msgstr "Tampilkan semua"
 msgid "No records selected for deletion."
 msgstr "Tidak ada rekaman yang dipilih untuk dihapus."
 
-#: lib/Application/Controller/DeleteRecordsController.php:197
+#: lib/Application/Controller/DeleteRecordsController.php:202
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr ""
 "Rekaman telah berhasil dihapus. Rekaman PTR yang terkait juga telah dihapus."
 
-#: lib/Application/Controller/DeleteRecordsController.php:199
+#: lib/Application/Controller/DeleteRecordsController.php:204
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1376,11 +1376,11 @@ msgstr ""
 "%d rekaman telah berhasil dihapus. Rekaman PTR yang terkait juga telah "
 "dihapus."
 
-#: lib/Application/Controller/DeleteRecordsController.php:202
+#: lib/Application/Controller/DeleteRecordsController.php:207
 msgid "No records could be deleted. Please check permissions."
 msgstr "Tidak ada rekaman yang dapat dihapus. Silakan periksa izin akses."
 
-#: lib/Application/Controller/DeleteRecordsController.php:268
+#: lib/Application/Controller/DeleteRecordsController.php:276
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
@@ -1684,6 +1684,7 @@ msgstr "MFA harus diaktifkan untuk membuat ulang kode pemulihan."
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "Kode pemulihan telah dibuat ulang. Silakan simpan di tempat yang aman."
 
+#: lib/Application/Controller/ListLogApiController.php:51
 #: templates/modern/list_log_api.html:4 templates/modern/header.html:323
 msgid "API Logs"
 msgstr "Log API"
@@ -1725,6 +1726,7 @@ msgstr "Gagal memperbarui metadata zona."
 msgid "Edit Zone Metadata"
 msgstr "Edit metadata zona"
 
+#: lib/Application/Controller/EditZoneMetadataController.php:177
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "Metadata Zona"
@@ -13598,9 +13600,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Tidak dapat terhubung ke database PowerDNS \"%s\": %s"
-
-# OBSOLETE: msgid "Failed to retrieve updated record information."
-# OBSOLETE: msgstr "Gagal mengambil informasi rekaman yang diperbarui."
-
 
 

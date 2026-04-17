@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-11 19:44+0300\n"
+"POT-Creation-Date: 2026-04-16 18:36+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -1279,24 +1279,24 @@ msgstr "显示全部"
 msgid "No records selected for deletion."
 msgstr "没有选择要删除的记录。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:197
+#: lib/Application/Controller/DeleteRecordsController.php:202
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr "记录已成功删除。相应的 PTR 记录也已删除。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:199
+#: lib/Application/Controller/DeleteRecordsController.php:204
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
 msgstr "已成功删除 %d 条记录。相应的 PTR 记录也已删除。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:202
+#: lib/Application/Controller/DeleteRecordsController.php:207
 msgid "No records could be deleted. Please check permissions."
 msgstr "无法删除记录。请检查权限。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:268
+#: lib/Application/Controller/DeleteRecordsController.php:276
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr "没有选择有效的删除记录或您没有删除权限。"
@@ -1580,6 +1580,7 @@ msgstr "必须启用多因素认证才能重新生成恢复代码。"
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "恢复代码已重新生成。请将它们保存在安全的地方。"
 
+#: lib/Application/Controller/ListLogApiController.php:51
 #: templates/modern/list_log_api.html:4 templates/modern/header.html:323
 msgid "API Logs"
 msgstr "API 日志"
@@ -1621,6 +1622,7 @@ msgstr "更新区域元数据失败。"
 msgid "Edit Zone Metadata"
 msgstr "编辑区域元数据"
 
+#: lib/Application/Controller/EditZoneMetadataController.php:177
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "区域元数据"
@@ -13199,9 +13201,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "无法连接到PowerDNS数据库\"%s\"：%s"
-
-# OBSOLETE: msgid "Failed to retrieve updated record information."
-# OBSOLETE: msgstr "无法检索更新的记录信息。"
-
 
 

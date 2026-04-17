@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-11 19:44+0300\n"
+"POT-Creation-Date: 2026-04-16 18:36+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1347,14 +1347,14 @@ msgstr "Hiển thị tất cả"
 msgid "No records selected for deletion."
 msgstr "Không có bản ghi nào được chọn để xóa."
 
-#: lib/Application/Controller/DeleteRecordsController.php:197
+#: lib/Application/Controller/DeleteRecordsController.php:202
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr ""
 "Bản ghi đã được xóa thành công. Các bản ghi PTR tương ứng cũng đã được xóa."
 
-#: lib/Application/Controller/DeleteRecordsController.php:199
+#: lib/Application/Controller/DeleteRecordsController.php:204
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1363,11 +1363,11 @@ msgstr ""
 "%d bản ghi đã được xóa thành công. Các bản ghi PTR tương ứng cũng đã được "
 "xóa."
 
-#: lib/Application/Controller/DeleteRecordsController.php:202
+#: lib/Application/Controller/DeleteRecordsController.php:207
 msgid "No records could be deleted. Please check permissions."
 msgstr "Không thể xóa bản ghi nào. Vui lòng kiểm tra quyền hạn."
 
-#: lib/Application/Controller/DeleteRecordsController.php:268
+#: lib/Application/Controller/DeleteRecordsController.php:276
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
@@ -1664,6 +1664,7 @@ msgstr "MFA phải được bật để tạo lại mã khôi phục."
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "Mã khôi phục đã được tạo lại. Vui lòng lưu chúng ở nơi an toàn."
 
+#: lib/Application/Controller/ListLogApiController.php:51
 #: templates/modern/list_log_api.html:4 templates/modern/header.html:323
 msgid "API Logs"
 msgstr "Nhật ký API"
@@ -1705,6 +1706,7 @@ msgstr "Cap nhat sieu du lieu vung that bai."
 msgid "Edit Zone Metadata"
 msgstr "Chinh sua sieu du lieu vung"
 
+#: lib/Application/Controller/EditZoneMetadataController.php:177
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "Siêu dữ liệu vùng"
@@ -13729,9 +13731,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Không thể kết nối với cơ sở dữ liệu PowerDNS \"%s\": %s"
-
-# OBSOLETE: msgid "Failed to retrieve updated record information."
-# OBSOLETE: msgstr "Không thể truy xuất thông tin bản ghi đã cập nhật."
-
 
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-11 19:44+0300\n"
+"POT-Creation-Date: 2026-04-16 18:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1250,24 +1250,24 @@ msgstr ""
 msgid "No records selected for deletion."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordsController.php:197
+#: lib/Application/Controller/DeleteRecordsController.php:202
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordsController.php:199
+#: lib/Application/Controller/DeleteRecordsController.php:204
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordsController.php:202
+#: lib/Application/Controller/DeleteRecordsController.php:207
 msgid "No records could be deleted. Please check permissions."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordsController.php:268
+#: lib/Application/Controller/DeleteRecordsController.php:276
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""

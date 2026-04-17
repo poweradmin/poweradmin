@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-11 19:44+0300\n"
+"POT-Creation-Date: 2026-04-16 18:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1370,7 +1370,7 @@ msgstr "Mostrar todo"
 msgid "No records selected for deletion."
 msgstr "No se seleccionaron registros para eliminar."
 
-#: lib/Application/Controller/DeleteRecordsController.php:197
+#: lib/Application/Controller/DeleteRecordsController.php:202
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
@@ -1378,7 +1378,7 @@ msgstr ""
 "El registro se ha eliminado correctamente. También se eliminaron los "
 "registros PTR correspondientes."
 
-#: lib/Application/Controller/DeleteRecordsController.php:199
+#: lib/Application/Controller/DeleteRecordsController.php:204
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1387,11 +1387,11 @@ msgstr ""
 "%d registros se han eliminado correctamente. También se eliminaron los "
 "registros PTR correspondientes."
 
-#: lib/Application/Controller/DeleteRecordsController.php:202
+#: lib/Application/Controller/DeleteRecordsController.php:207
 msgid "No records could be deleted. Please check permissions."
 msgstr "No se pudieron eliminar registros. Verifique los permisos."
 
-#: lib/Application/Controller/DeleteRecordsController.php:268
+#: lib/Application/Controller/DeleteRecordsController.php:276
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
@@ -1706,6 +1706,7 @@ msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr ""
 "Los códigos de recuperación se han regenerado. Guárdelos en un lugar seguro."
 
+#: lib/Application/Controller/ListLogApiController.php:51
 #: templates/modern/list_log_api.html:4 templates/modern/header.html:323
 msgid "API Logs"
 msgstr "Registros de API"
@@ -1747,6 +1748,7 @@ msgstr "Error al actualizar los metadatos de zona."
 msgid "Edit Zone Metadata"
 msgstr "Editar metadatos de zona"
 
+#: lib/Application/Controller/EditZoneMetadataController.php:177
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "Metadatos de zona"
@@ -14434,9 +14436,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "No se puede conectar a la base de datos PowerDNS \"%s\": %s"
-
-# OBSOLETE: msgid "Failed to retrieve updated record information."
-# OBSOLETE: msgstr "Error al recuperar información de registro actualizada."
-
 
 

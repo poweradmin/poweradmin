@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-11 19:44+0300\n"
+"POT-Creation-Date: 2026-04-16 18:36+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1328,7 +1328,7 @@ msgstr "모두 표시"
 msgid "No records selected for deletion."
 msgstr "삭제할 레코드가 선택되지 않았습니다."
 
-#: lib/Application/Controller/DeleteRecordsController.php:197
+#: lib/Application/Controller/DeleteRecordsController.php:202
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
@@ -1336,7 +1336,7 @@ msgstr ""
 "레코드가 성공적으로 삭제되었습니다. 해당하는 PTR 레코드도 함께 제거되었습니"
 "다."
 
-#: lib/Application/Controller/DeleteRecordsController.php:199
+#: lib/Application/Controller/DeleteRecordsController.php:204
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1345,11 +1345,11 @@ msgstr ""
 "%d개의 레코드가 성공적으로 삭제되었습니다. 해당하는 PTR 레코드도 함께 제거되"
 "었습니다."
 
-#: lib/Application/Controller/DeleteRecordsController.php:202
+#: lib/Application/Controller/DeleteRecordsController.php:207
 msgid "No records could be deleted. Please check permissions."
 msgstr "레코드를 삭제할 수 없습니다. 권한을 확인하십시오."
 
-#: lib/Application/Controller/DeleteRecordsController.php:268
+#: lib/Application/Controller/DeleteRecordsController.php:276
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr "삭제할 유효한 레코드가 선택되지 않았거나 삭제 권한이 없습니다."
@@ -1644,6 +1644,7 @@ msgstr "복구 코드를 재생성하려면 MFA가 활성화되어 있어야 합
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "복구 코드가 재생성되었습니다. 안전한 곳에 저장하십시오."
 
+#: lib/Application/Controller/ListLogApiController.php:51
 #: templates/modern/list_log_api.html:4 templates/modern/header.html:323
 msgid "API Logs"
 msgstr "API 로그"
@@ -1685,6 +1686,7 @@ msgstr "존 메타데이터 업데이트에 실패했습니다."
 msgid "Edit Zone Metadata"
 msgstr "존 메타데이터 편집"
 
+#: lib/Application/Controller/EditZoneMetadataController.php:177
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "존 메타데이터"
@@ -13419,9 +13421,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS 데이터베이스 \"%s\"에 연결할 수 없습니다: %s"
-
-# OBSOLETE: msgid "Failed to retrieve updated record information."
-# OBSOLETE: msgstr "업데이트된 레코드 정보를 가져오지 못했습니다."
-
 
 
