@@ -765,6 +765,111 @@ class ConfigValidatorTest extends TestCase
         $this->assertStringContainsString('http', strtolower($validator->getErrors()['pdns_api.url']));
     }
 
+    public function testDnsBackendApiRequiresUrl(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'dns' => [
+                'backend' => 'api',
+            ],
+            'pdns_api' => [
+                'url' => '',
+                'key' => 'test-api-key',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $this->assertArrayHasKey('pdns_api.url', $validator->getErrors());
+        $this->assertStringContainsString('required', strtolower($validator->getErrors()['pdns_api.url']));
+    }
+
+    public function testDnsBackendApiRequiresKey(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'dns' => [
+                'backend' => 'api',
+            ],
+            'pdns_api' => [
+                'url' => 'http://127.0.0.1:8081',
+                'key' => '',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $this->assertArrayHasKey('pdns_api.key', $validator->getErrors());
+    }
+
+    public function testDnsBackendApiWithBothConfiguredIsValid(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'dns' => [
+                'backend' => 'api',
+            ],
+            'pdns_api' => [
+                'url' => 'http://127.0.0.1:8081',
+                'key' => 'test-api-key',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getErrors());
+    }
+
+    public function testDnsBackendSqlDoesNotRequirePdnsApi(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'dns' => [
+                'backend' => 'sql',
+            ],
+            'pdns_api' => [
+                'url' => '',
+                'key' => '',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getErrors());
+    }
+
     public function testPdnsDbNameNullIsValidForPostgresql(): void
     {
         $config = [

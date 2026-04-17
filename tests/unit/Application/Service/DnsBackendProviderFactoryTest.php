@@ -69,7 +69,7 @@ class DnsBackendProviderFactoryTest extends TestCase
         $this->assertTrue($provider->isApiBackend());
     }
 
-    public function testApiBackendWithoutUrlFallsBackToSql(): void
+    public function testApiBackendWithoutUrlThrows(): void
     {
         $this->mockConfig->method('get')->willReturnMap([
             ['dns', 'backend', null, 'api'],
@@ -79,12 +79,13 @@ class DnsBackendProviderFactoryTest extends TestCase
             ['database', 'pdns_db_name', null, ''],
         ]);
 
-        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('pdns_api.url');
 
-        $this->assertInstanceOf(SqlDnsBackendProvider::class, $provider);
+        DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
     }
 
-    public function testApiBackendWithoutKeyFallsBackToSql(): void
+    public function testApiBackendWithoutKeyThrows(): void
     {
         $this->mockConfig->method('get')->willReturnMap([
             ['dns', 'backend', null, 'api'],
@@ -94,9 +95,21 @@ class DnsBackendProviderFactoryTest extends TestCase
             ['database', 'pdns_db_name', null, ''],
         ]);
 
-        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('pdns_api.key');
 
-        $this->assertInstanceOf(SqlDnsBackendProvider::class, $provider);
+        DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
+    }
+
+    public function testIsApiBackendReturnsTrueWhenBackendIsApi(): void
+    {
+        $this->mockConfig->method('get')->willReturnMap([
+            ['dns', 'backend', null, 'api'],
+            ['pdns_api', 'url', null, ''],
+            ['pdns_api', 'key', null, ''],
+        ]);
+
+        $this->assertTrue(DnsBackendProviderFactory::isApiBackend($this->mockConfig));
     }
 
     public function testApiBackendWithCustomServerName(): void

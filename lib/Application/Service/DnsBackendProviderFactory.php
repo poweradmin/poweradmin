@@ -53,10 +53,18 @@ class DnsBackendProviderFactory
     {
         $logger = $logger ?? new NullLogger();
         $backend = $config->get('dns', 'backend');
-        $pdnsApiUrl = $config->get('pdns_api', 'url');
-        $pdnsApiKey = $config->get('pdns_api', 'key');
 
-        if ($backend === 'api' && $pdnsApiUrl && $pdnsApiKey) {
+        if ($backend === 'api') {
+            $pdnsApiUrl = $config->get('pdns_api', 'url');
+            $pdnsApiKey = $config->get('pdns_api', 'key');
+
+            if (!$pdnsApiUrl || !$pdnsApiKey) {
+                throw new \RuntimeException(
+                    'dns.backend is set to "api" but pdns_api.url and/or pdns_api.key are not configured. '
+                    . 'Set both values or change dns.backend to "sql".'
+                );
+            }
+
             $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey, $logger);
             $serverNameFromConfig = $config->get('pdns_api', 'server_name');
             $serverName = $serverNameFromConfig ?: 'localhost';
@@ -65,25 +73,19 @@ class DnsBackendProviderFactory
             return new ApiDnsBackendProvider($apiClient, $db, $config, $logger);
         }
 
-        if ($backend === 'api' && (!$pdnsApiUrl || !$pdnsApiKey)) {
-            $logger->warning('dns.backend is set to "api" but pdns_api url/key are not configured. Falling back to SQL backend.');
-        }
-
         return new SqlDnsBackendProvider($db, $config, $logger);
     }
 
     /**
-     * Check whether the resolved backend is API mode.
+     * Check whether the admin configured API mode.
      *
-     * Mirrors the create() logic: returns true only when dns.backend is 'api'
-     * AND the API URL/key are configured. When credentials are missing, the
-     * factory falls back to SQL, so this returns false.
+     * Mirrors the create() intent: returns true when dns.backend is 'api'.
+     * Misconfiguration (missing url/key) is surfaced by create() as an
+     * exception and by ConfigValidator as an error, not masked here.
      */
     public static function isApiBackend(ConfigurationInterface $config): bool
     {
-        return $config->get('dns', 'backend') === 'api'
-            && $config->get('pdns_api', 'url')
-            && $config->get('pdns_api', 'key');
+        return $config->get('dns', 'backend') === 'api';
     }
 
     public static function createApiClient(ConfigurationInterface $config, ?LoggerInterface $logger = null): ?PowerdnsApiClient

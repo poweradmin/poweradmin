@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,6 +47,7 @@ class ConfigValidator
         }
         $this->validatePdnsApiUrl();
         $this->validatePdnsApiKey();
+        $this->validateDnsBackend();
         $this->validatePdnsDbName();
         $this->validatePermissions();
 
@@ -164,6 +165,31 @@ class ConfigValidator
                 $this->errors['interface.theme'] = "Theme directory '$themePath' does not exist. " .
                     "Please check your theme configuration or use the default theme.";
             }
+        }
+    }
+
+    /**
+     * When dns.backend is "api", both pdns_api.url and pdns_api.key must be set.
+     * DnsBackendProviderFactory throws on this misconfiguration at runtime;
+     * surfacing it here lets the install flow and config diagnostics catch it
+     * before the first DNS operation.
+     */
+    private function validateDnsBackend(): void
+    {
+        $backend = $this->getSetting('dns', 'backend');
+        if ($backend !== 'api') {
+            return;
+        }
+
+        $apiUrl = $this->getSetting('pdns_api', 'url');
+        $apiKey = $this->getSetting('pdns_api', 'key');
+
+        if (($apiUrl === null || $apiUrl === '') && !isset($this->errors['pdns_api.url'])) {
+            $this->errors['pdns_api.url'] = 'PowerDNS API URL is required when dns.backend is "api"';
+        }
+
+        if ((!is_string($apiKey) || $apiKey === '') && !isset($this->errors['pdns_api.key'])) {
+            $this->errors['pdns_api.key'] = 'PowerDNS API key is required when dns.backend is "api"';
         }
     }
 
