@@ -46,6 +46,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class PublicApiController extends AbstractApiController
 {
+    /**
+     * RFC 8594 sunset date for API v1. V1 is superseded by v2 and scheduled
+     * for removal in Poweradmin 4.4.0. Clients should migrate before this date.
+     */
+    private const V1_SUNSET_DATE = 'Tue, 01 Sep 2026 00:00:00 GMT';
+
     protected array $pathParameters;
     protected int $authenticatedUserId = 0;
     protected LoggerInterface $logger;
@@ -269,6 +275,7 @@ abstract class PublicApiController extends AbstractApiController
     {
         if (!$this->isV2Controller()) {
             $headers['Deprecation'] = 'true';
+            $headers['Sunset'] = self::V1_SUNSET_DATE;
             $headers['Link'] = '</api/v2/>; rel="successor-version"';
         }
 

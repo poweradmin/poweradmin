@@ -44,8 +44,8 @@ use Exception;
 #[OA\OpenApi(
     info: new OA\Info(
         version: '1.0.0',
-        description: 'RESTful API for Poweradmin DNS Management',
-        title: 'Poweradmin API'
+        description: 'Deprecated. Use /api/v2 instead. Scheduled for removal 2026-09-01 (Poweradmin 4.4.0).',
+        title: 'Poweradmin API (v1 - Deprecated)'
     ),
     servers: [
         new OA\Server(url: '/api', description: 'API Server')
