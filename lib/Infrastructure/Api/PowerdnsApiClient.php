@@ -137,9 +137,9 @@ class PowerdnsApiClient
     }
 
     /**
-     * Get zone stats (record count, DNSSEC) for all zones in a single API call.
+     * Get zone stats (record count, DNSSEC, serial) for all zones in a single API call.
      *
-     * @return array<string, array{rrset_count: int, dnssec: bool}>
+     * @return array<string, array{rrset_count: int, dnssec: bool, serial: int}>
      */
     public function getAllZoneStats(): array
     {
@@ -153,6 +153,7 @@ class PowerdnsApiClient
                 $stats[$name] = [
                     'rrset_count' => (int)($zoneData['rrset_count'] ?? 0),
                     'dnssec' => (bool)($zoneData['dnssec'] ?? false),
+                    'serial' => (int)($zoneData['serial'] ?? 0),
                 ];
             }
         }

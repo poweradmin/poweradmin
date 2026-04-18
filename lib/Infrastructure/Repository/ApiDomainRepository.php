@@ -27,7 +27,6 @@ use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -174,14 +173,18 @@ class ApiDomainRepository implements DomainRepositoryInterface
             $allZones = ResultPaginator::paginate($allZones, $rowstart, $rowamount);
         }
 
+        $zoneStats = $iface_zonelist_serial ? $this->backendProvider->getZoneStats() : [];
+        $templateMap = $iface_zonelist_template ? $this->fetchTemplateNames($allZones) : [];
+
         // Convert to expected output shape (keyed by domain name)
         $result = [];
         foreach ($allZones as $zone) {
             $name = $zone['name'];
             $utf8Name = DnsIdnService::toUtf8($name);
+            $zoneId = (int)($zone['id'] ?? 0);
 
             $result[$name] = [
-                'id' => $zone['id'] ?? 0,
+                'id' => $zoneId,
                 'name' => $name,
                 'utf8_name' => $utf8Name,
                 'type' => $zone['type'] ?? 'NATIVE',
@@ -197,16 +200,59 @@ class ApiDomainRepository implements DomainRepositoryInterface
             }
 
             if ($iface_zonelist_serial) {
-                $recordRepository = new ApiRecordRepository($this->backendProvider);
-                $result[$name]['serial'] = $recordRepository->getSerialByZid($zone['id'] ?? 0);
+                $serial = $zoneStats[$name . '.']['serial'] ?? 0;
+                $result[$name]['serial'] = $serial > 0 ? (string)$serial : '';
             }
 
             if ($iface_zonelist_template) {
-                $result[$name]['template'] = ZoneTemplate::getZoneTemplName($this->db, $zone['id'] ?? 0);
+                $result[$name]['template'] = $templateMap[$zoneId] ?? '';
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Batch-fetch template names for all zones in a single query.
+     * Matches on either z.id or z.domain_id because API-mode zone rows
+     * can have domain_id = NULL while SQL-mode zones use domain_id.
+     *
+     * @param array<int, array{id?: int}> $zones
+     * @return array<int, string> Map of zone id → template name
+     */
+    private function fetchTemplateNames(array $zones): array
+    {
+        if (empty($zones)) {
+            return [];
+        }
+
+        $ids = array_values(array_unique(array_filter(array_map(
+            fn($z) => (int)($z['id'] ?? 0),
+            $zones
+        ))));
+        if (empty($ids)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $this->db->prepare(
+            "SELECT z.id, z.domain_id, zt.name
+             FROM zones z
+             JOIN zone_templ zt ON zt.id = z.zone_templ_id
+             WHERE z.id IN ($placeholders) OR z.domain_id IN ($placeholders)"
+        );
+        $params = array_merge($ids, $ids);
+        foreach ($params as $i => $v) {
+            $stmt->bindValue($i + 1, $v, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $map = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $id = (int)($row['domain_id'] ?: $row['id']);
+            $map[$id] = (string)$row['name'];
+        }
+        return $map;
     }
 
     public function getZoneInfoFromId(int $zid): array

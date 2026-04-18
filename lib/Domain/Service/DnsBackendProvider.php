@@ -292,9 +292,12 @@ interface DnsBackendProvider
     public function getZoneIdFromRecordId(int|string $recordId): int;
 
     /**
-     * Get bulk zone stats (record count, DNSSEC state) keyed by zone name.
+     * Get bulk zone stats (record count, DNSSEC state, SOA serial) keyed by zone name.
      *
-     * @return array<string, array{rrset_count: int, dnssec: bool}>
+     * SQL backends may return an empty array when this data is not needed;
+     * API backends fetch it in a single call to avoid N+1 lookups in zone lists.
+     *
+     * @return array<string, array{rrset_count: int, dnssec: bool, serial?: int}>
      */
     public function getZoneStats(): array;
 
