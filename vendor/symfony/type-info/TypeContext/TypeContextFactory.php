@@ -201,7 +201,7 @@ final class TypeContextFactory
         }
 
         $templates = [];
-        foreach ($this->getPhpDocNode($rawDocNode)->getTagsByName('@template') as $tag) {
+        foreach ($this->getPhpDocNode($rawDocNode)->getTagsByName('@template') + $this->getPhpDocNode($rawDocNode)->getTagsByName('@phpstan-template') + $this->getPhpDocNode($rawDocNode)->getTagsByName('@psalm-template') as $tag) {
             if (!$tag->value instanceof TemplateTagValueNode) {
                 continue;
             }

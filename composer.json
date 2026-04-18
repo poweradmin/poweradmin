@@ -129,6 +129,11 @@
     },
     "allow-plugins": {
       "cweagans/composer-patches": true
+    },
+    "audit": {
+      "ignore": {
+        "GHSA-qrr6-mg7r-m243": "phpunit is a dev-only dependency; 11.x line did not receive a back-port. Upgrading requires dropping PHP 8.2 support."
+      }
     }
   },
   "archive": {

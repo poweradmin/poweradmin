@@ -42,6 +42,7 @@ use Symfony\Component\TypeInfo\Type\BackedEnumType;
 use Symfony\Component\TypeInfo\Type\BuiltinType;
 use Symfony\Component\TypeInfo\Type\CollectionType;
 use Symfony\Component\TypeInfo\Type\GenericType;
+use Symfony\Component\TypeInfo\Type\ObjectType;
 use Symfony\Component\TypeInfo\TypeContext\TypeContext;
 use Symfony\Component\TypeInfo\TypeIdentifier;
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolverInterface;
@@ -97,7 +98,7 @@ final class StringTypeResolver implements TypeResolverInterface
 
     private function getTypeFromNode(TypeNode $node, ?TypeContext $typeContext): BaseType
     {
-        $typeIsCollectionObject = fn (BaseType $type): bool => $type->isIdentifiedBy(\Traversable::class) || $type->isIdentifiedBy(\ArrayAccess::class);
+        $typeIsCollectionObject = static fn (BaseType $type): bool => $type->isIdentifiedBy(\Traversable::class) || $type->isIdentifiedBy(\ArrayAccess::class);
 
         if ($node instanceof CallableTypeNode) {
             return Type::callable();
@@ -152,8 +153,17 @@ final class StringTypeResolver implements TypeResolverInterface
                     'self' => $typeContext->getDeclaringClass(),
                     'static' => $typeContext->getCalledClass(),
                     'parent' => $typeContext->getParentClass(),
-                    default => $node->constExpr->className,
+                    default => null,
                 };
+
+                if (null === $className) {
+                    $classType = $this->resolveCustomIdentifier($node->constExpr->className, $typeContext);
+                    if (!$classType instanceof ObjectType) {
+                        return Type::mixed();
+                    }
+
+                    $className = $classType->getClassName();
+                }
 
                 if (!class_exists($className)) {
                     return Type::mixed();
@@ -286,7 +296,7 @@ final class StringTypeResolver implements TypeResolverInterface
                         throw new \DomainException(\sprintf('"%s" type cannot have a key type defined.', $node->type));
                     }
 
-                    return Type::collection($type, $variableTypes[1], $variableTypes[0], $asList);
+                    return Type::collection($type, $variableTypes[1], $this->reduceToBuiltinType($variableTypes[0]), $asList);
                 }
             }
 
@@ -351,7 +361,7 @@ final class StringTypeResolver implements TypeResolverInterface
         }
 
         if (self::$classExistCache[$className]) {
-            if (is_subclass_of($className, \UnitEnum::class)) {
+            if (is_subclass_of($className, \UnitEnum::class) && !interface_exists($className)) {
                 return Type::enum($className);
             }
 

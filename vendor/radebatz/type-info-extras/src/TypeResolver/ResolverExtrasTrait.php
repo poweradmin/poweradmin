@@ -52,4 +52,11 @@ trait ResolverExtrasTrait
 
         return null;
     }
+
+    public function reduceToBuiltinType(?BaseType $type)
+    {
+        return $type instanceof ExplicitType
+            ? $type->getBuiltinType()
+            : $type;
+    }
 }
