@@ -12,7 +12,8 @@
     "master",
     "release/3.x",
     "release/4.0.x",
-    "release/4.1.x"
+    "release/4.1.x",
+    "release/4.2.x"
   ],
   "constraints": {
     "php": ">=8.2 <8.3"
@@ -42,7 +43,8 @@
       "matchBaseBranches": [
         "release/3.x",
         "release/4.0.x",
-        "release/4.1.x"
+        "release/4.1.x",
+        "release/4.2.x"
       ],
       "matchUpdateTypes": [
         "major",
