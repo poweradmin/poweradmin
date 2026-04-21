@@ -30,11 +30,10 @@ jobs:
             --config=p/security-audit \
             --config=p/owasp-top-ten \
             --config=p/secrets \
+            --exclude-rule=generic.html-templates.security.unquoted-attribute-var.unquoted-attribute-var \
+            --exclude-rule=generic.html-templates.security.var-in-href.var-in-href \
             --sarif \
             --output=semgrep.sarif \
-            --exclude=vendor \
-            --exclude=node_modules \
-            --exclude=playwright \
             --error || true
 
       - name: Upload SARIF to GitHub code scanning

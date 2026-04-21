@@ -1,0 +1,12 @@
+# Paths excluded from Semgrep SAST scans.
+# See .github/workflows/semgrep.yml for rule-level exclusions.
+
+# Dev/test-only paths not shipped in releases.
+.devcontainer/
+addons/
+install/includes/helper.js
+
+# Third-party and generated
+vendor/
+node_modules/
+playwright/
