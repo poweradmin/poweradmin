@@ -1188,10 +1188,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $query = "SELECT COUNT(DISTINCT d.id) FROM $domains_table d";
             $params = [];
         } else {
-            // User can see specific zones via direct ownership or group membership
+            // Include zones owned only via a group (no direct owner).
             $query = "SELECT COUNT(DISTINCT d.id)
                       FROM $domains_table d
-                      INNER JOIN zones z ON d.id = z.domain_id
+                      LEFT JOIN zones z ON d.id = z.domain_id
                       WHERE (z.owner = :user_id OR EXISTS (
                           SELECT 1 FROM zones_groups zg
                           INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
@@ -1246,12 +1246,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $whereAdded = false;
             $params = [];
         } else {
-            // User can see zones via direct ownership or group membership
+            // Include zones owned only via a group (no direct owner).
             $query = "SELECT d.id, d.name, d.type, d.master,
                              COALESCE(MIN(z.owner), 0) as owner,
                              COUNT(DISTINCT r.id) as record_count
                       FROM $domains_table d
-                      INNER JOIN zones z ON d.id = z.domain_id
+                      LEFT JOIN zones z ON d.id = z.domain_id
                       LEFT JOIN $records_table r ON d.id = r.domain_id
                       WHERE (z.owner = :user_id OR EXISTS (
                           SELECT 1 FROM zones_groups zg
