@@ -1100,12 +1100,16 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $query = "SELECT COUNT(DISTINCT d.id) FROM $domains_table d";
             $params = [];
         } else {
-            // User can see only specific zones - use JOIN to avoid SQLite 999 parameter limit
+            // Include zones owned directly or only via a group.
             $query = "SELECT COUNT(DISTINCT d.id)
                       FROM $domains_table d
-                      INNER JOIN zones z ON d.id = z.domain_id
-                      WHERE z.owner = :user_id";
-            $params = [':user_id' => $userId];
+                      LEFT JOIN zones z ON d.id = z.domain_id
+                      WHERE (z.owner = :user_id OR EXISTS (
+                          SELECT 1 FROM zones_groups zg
+                          INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                          WHERE zg.domain_id = d.id AND ugm.user_id = :user_id_group
+                      ))";
+            $params = [':user_id' => $userId, ':user_id_group' => $userId];
         }
 
         // Add name filter if specified
@@ -1153,16 +1157,20 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $whereAdded = false;
             $params = [];
         } else {
-            // User can see only their own zones - use JOIN to avoid SQLite 999 parameter limit
+            // Include zones owned directly or only via a group.
             $query = "SELECT d.id, d.name, d.type, d.master,
                              COALESCE(z.owner, 0) as owner,
                              COUNT(DISTINCT r.id) as record_count
                       FROM $domains_table d
-                      INNER JOIN zones z ON d.id = z.domain_id
+                      LEFT JOIN zones z ON d.id = z.domain_id
                       LEFT JOIN $records_table r ON d.id = r.domain_id
-                      WHERE z.owner = :user_id";
+                      WHERE (z.owner = :user_id OR EXISTS (
+                          SELECT 1 FROM zones_groups zg
+                          INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                          WHERE zg.domain_id = d.id AND ugm.user_id = :user_id_group
+                      ))";
             $whereAdded = true;
-            $params = [':user_id' => $userId];
+            $params = [':user_id' => $userId, ':user_id_group' => $userId];
         }
 
         // Add name filter if specified
