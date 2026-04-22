@@ -31,7 +31,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2
       with:
         php-version: '8.4'
 
@@ -75,7 +75,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2
       with:
         php-version: '8.4'
 
@@ -91,7 +91,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2
       with:
         php-version: '8.4'
 
@@ -113,7 +113,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2
       with:
         php-version: '8.4'
 
@@ -135,7 +135,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2
       with:
         php-version: '8.4'
 
@@ -157,7 +157,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2
       with:
         php-version: '8.4'
 
@@ -180,7 +180,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2
       with:
         php-version: '8.4'
 
@@ -202,7 +202,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2
       with:
         php-version: '8.4'
 
@@ -229,7 +229,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: Setup PHP ${{ matrix.php-version }}
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2
       with:
         php-version: ${{ matrix.php-version }}
         coverage: none

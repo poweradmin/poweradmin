@@ -47,19 +47,19 @@ jobs:
           ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.ref }}
 
       - name: Lint Dockerfile with hadolint
-        uses: hadolint/hadolint-action@v3.3.0
+        uses: hadolint/hadolint-action@2332a7b74a6de0dda2e2221d575162eba76ba5e5 # v3.3.0
         with:
           dockerfile: Dockerfile
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4
 
       - name: Login to GitHub Container Registry
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v4
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -67,7 +67,7 @@ jobs:
 
       - name: Login to Docker Hub
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v4
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
         with:
           registry: docker.io
           username: ${{ github.repository_owner }}
@@ -75,7 +75,7 @@ jobs:
 
       - name: Extract metadata
         id: meta
-        uses: docker/metadata-action@v6
+        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6
         with:
           images: |
             ghcr.io/${{ github.repository_owner }}/${{ env.GHCR_IMAGE_NAME }}
@@ -91,7 +91,7 @@ jobs:
             type=raw,value=next,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.1.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.1.x') }}
 
       - name: Build local image for smoke test
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7
         with:
           context: .
           file: ./Dockerfile
@@ -155,7 +155,7 @@ jobs:
 
       - name: Build and push
         id: build
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7
         with:
           context: .
           file: ./Dockerfile
@@ -168,7 +168,7 @@ jobs:
 
       - name: Run Trivy vulnerability scanner
         if: github.event_name != 'pull_request' && success()
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           format: 'sarif'
@@ -182,7 +182,7 @@ jobs:
 
       - name: Generate SBOM
         if: github.event_name != 'pull_request' && success()
-        uses: anchore/sbom-action@v0.24.0
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
         with:
           image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           format: spdx-json

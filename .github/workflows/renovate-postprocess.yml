@@ -17,7 +17,7 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2
         with:
           php-version: '8.2'
 
@@ -28,7 +28,7 @@ jobs:
           git checkout -- vendor/composer/installed.php
 
       - name: Commit if changed
-        uses: stefanzweifel/git-auto-commit-action@v7
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7
         with:
           commit_message: "chore(deps): optimize vendor for production"
           file_pattern: "vendor/"
