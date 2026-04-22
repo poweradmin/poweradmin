@@ -271,7 +271,7 @@
                     </li>
                     {% endif %}
 
-                    {% if (perm_is_godlike and api_enabled) or (perm_is_godlike and enable_consistency_checks) or (module_nav_items is defined and module_nav_items|length > 0) %}
+                    {% if ((perm_is_godlike or perm_api_manage_keys) and api_enabled) or (perm_is_godlike and enable_consistency_checks) or (module_nav_items is defined and module_nav_items|length > 0) %}
                     <!-- Tools Section -->
                     {% set tools_active = current_page in ['api_keys', 'database_consistency'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') %}
                     <li class="nav-item">
@@ -287,7 +287,7 @@
                                 </a>
                             </li>
                             {% endif %}
-                            {% if perm_is_godlike and api_enabled %}
+                            {% if (perm_is_godlike or perm_api_manage_keys) and api_enabled %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'api_keys' ? 'active' : '' }}" href="{{ base_url_prefix }}/settings/api-keys">
                                     <i class="bi bi-key-fill me-2"></i>{% trans %}API Keys{% endtrans %}
