@@ -89,7 +89,8 @@ class ZoneCountService
             $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION['userid'] ?? null);
 
             if ($userId) {
-                $conditions[] = "zones.domain_id = $domains_table.id";
+                // Include zones accessible via direct ownership or group membership.
+                $tables .= " LEFT JOIN zones ON zones.domain_id = $domains_table.id";
                 $conditions[] = "(zones.owner = ? OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
@@ -97,7 +98,6 @@ class ZoneCountService
                 ))";
                 $params[] = (string)$userId;
                 $params[] = (string)$userId; // For the EXISTS subquery
-                $tables .= ', zones';
             } else {
                 return 0; // No user ID available
             }
@@ -123,7 +123,7 @@ class ZoneCountService
         }
 
         $whereClause = empty($conditions) ? '' : ' WHERE ' . implode(' AND ', $conditions);
-        $query = "SELECT COUNT($domains_table.id) AS count_zones FROM $tables" . $whereClause;
+        $query = "SELECT COUNT(DISTINCT $domains_table.id) AS count_zones FROM $tables" . $whereClause;
 
         if (empty($params)) {
             // No parameters, use direct query and fetch
