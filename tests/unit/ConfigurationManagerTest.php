@@ -507,6 +507,57 @@ class ConfigurationManagerTest extends TestCase
     }
 
     /**
+     * A valid defaults file marks the loaded flag and exposes its absolute path.
+     */
+    public function testIsDefaultsFileLoadedTrueWhenFileExistsAndReturnsArray(): void
+    {
+        $configManager = ConfigurationManager::getInstance();
+
+        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
+
+        $pathProperty = $reflectionClass->getProperty('defaultsFilePath');
+        $pathProperty->setAccessible(true);
+        $pathProperty->setValue($configManager, '/tmp/settings.defaults.php');
+
+        $loadedProperty = $reflectionClass->getProperty('defaultsFileLoaded');
+        $loadedProperty->setAccessible(true);
+        $loadedProperty->setValue($configManager, true);
+
+        $initializedProperty = $reflectionClass->getProperty('initialized');
+        $initializedProperty->setAccessible(true);
+        $initializedProperty->setValue($configManager, true);
+
+        $this->assertTrue($configManager->isDefaultsFileLoaded());
+        $this->assertSame('/tmp/settings.defaults.php', $configManager->getDefaultsFilePath());
+    }
+
+    /**
+     * A missing defaults file leaves the loaded flag false so callers can surface a
+     * specific error instead of the cryptic ConfigValidator messages reported in #1158.
+     */
+    public function testIsDefaultsFileLoadedFalseWhenFileMissing(): void
+    {
+        $configManager = ConfigurationManager::getInstance();
+
+        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
+
+        $pathProperty = $reflectionClass->getProperty('defaultsFilePath');
+        $pathProperty->setAccessible(true);
+        $pathProperty->setValue($configManager, '/nonexistent/settings.defaults.php');
+
+        $loadedProperty = $reflectionClass->getProperty('defaultsFileLoaded');
+        $loadedProperty->setAccessible(true);
+        $loadedProperty->setValue($configManager, false);
+
+        $initializedProperty = $reflectionClass->getProperty('initialized');
+        $initializedProperty->setAccessible(true);
+        $initializedProperty->setValue($configManager, true);
+
+        $this->assertFalse($configManager->isDefaultsFileLoaded());
+        $this->assertSame('/nonexistent/settings.defaults.php', $configManager->getDefaultsFilePath());
+    }
+
+    /**
      * Test that PA_CONFIG_PATH with empty string is treated as unset
      */
     public function testEmptyStringConfigPathTreatedAsUnset(): void

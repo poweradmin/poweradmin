@@ -52,6 +52,11 @@
                         <strong>{% trans %}Database User{% endtrans %}</strong>
                     </div>
                     <div class="card-body">
+                        {% if pdns_api_backend is defined and pdns_api_backend == 'api' %}
+                            <div class="alert alert-info py-1 mb-2 small">
+                                {% trans %}Poweradmin keeps its own tables (users, permissions, zone metadata) in the configured database even when the PowerDNS API backend is selected. These credentials are for that database, not for PowerDNS.{% endtrans %}
+                            </div>
+                        {% endif %}
                         <div class="row mb-3">
                             <label for="pa_db_user" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Username{% endtrans %}</label>
                             <div class="col-md-4">

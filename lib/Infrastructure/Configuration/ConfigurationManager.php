@@ -36,6 +36,8 @@ class ConfigurationManager implements ConfigurationInterface
     private static ?ConfigurationManager $instance = null;
     private array $settings = [];
     private bool $initialized = false;
+    private bool $defaultsFileLoaded = false;
+    private string $defaultsFilePath = '';
     private LoggerInterface $logger;
 
     /**
@@ -98,10 +100,16 @@ class ConfigurationManager implements ConfigurationInterface
 
         // Load default values first
         $defaultConfigFile = __DIR__ . '/../../../config/settings.defaults.php';
+        // Normalize "../.." segments so error messages show a clean absolute path.
+        $canonicalParent = realpath(dirname($defaultConfigFile));
+        $this->defaultsFilePath = $canonicalParent !== false
+            ? $canonicalParent . DIRECTORY_SEPARATOR . basename($defaultConfigFile)
+            : $defaultConfigFile;
         if (file_exists($defaultConfigFile)) {
             $defaultSettings = require $defaultConfigFile;
             if (is_array($defaultSettings)) {
                 $this->settings = $this->mergeConfig($this->settings, $defaultSettings);
+                $this->defaultsFileLoaded = true;
             }
         }
 
@@ -181,6 +189,34 @@ class ConfigurationManager implements ConfigurationInterface
         }
 
         return $this->settings[$group] ?? [];
+    }
+
+    /**
+     * Whether the defaults file (config/settings.defaults.php) was successfully loaded.
+     *
+     * When this returns false the in-memory settings only contain whatever the user's
+     * settings.php provides. Code-level fallbacks still keep the app running, but
+     * ConfigValidator will flag keys the installer expects defaults to fill in.
+     */
+    public function isDefaultsFileLoaded(): bool
+    {
+        if (!$this->initialized) {
+            $this->initialize();
+        }
+
+        return $this->defaultsFileLoaded;
+    }
+
+    /**
+     * Absolute path that initialize() probed for the defaults file.
+     */
+    public function getDefaultsFilePath(): string
+    {
+        if (!$this->initialized) {
+            $this->initialize();
+        }
+
+        return $this->defaultsFilePath;
     }
 
     /**
