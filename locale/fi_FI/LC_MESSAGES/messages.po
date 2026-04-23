@@ -5694,7 +5694,7 @@ msgstr "Validation failed:"
 
 #: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:228
 msgid "Failed to generate record:"
-msgstr "Failed to generate record:"
+msgstr "Tietueen luonti epäonnistui:"
 
 #: lib/Application/Controller/AddRecordController.php:260
 msgid "The record was successfully added."
@@ -5799,7 +5799,7 @@ msgstr "0 - Full Certificate"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:126
 msgid "Use the entire certificate"
-msgstr "Use the entire certificate"
+msgstr "Käytä koko varmennetta"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:127
 msgid "1 - Public Key"
@@ -5968,7 +5968,7 @@ msgstr "Reporting Settings"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:105
 msgid "Aggregate Report Email"
-msgstr "Aggregate Report Email"
+msgstr "Koostavan raportin sähköposti"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:109
 msgid "Email address to receive daily aggregate reports"
@@ -5980,7 +5980,7 @@ msgstr "Forensisen raportin sähköposti"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:121
 msgid "Forensic Reporting Options"
-msgstr "Forensic Reporting Options"
+msgstr "Forensisen raportoinnin asetukset"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:125
 msgid "Generate reports if all authentication mechanisms fail"
@@ -6136,7 +6136,7 @@ msgstr "Lisämekanismit"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:121
 msgid "Additional A/AAAA Hosts"
-msgstr "Additional A/AAAA Hosts"
+msgstr "Lisä-A/AAAA-palvelimet"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
@@ -6183,7 +6183,7 @@ msgstr "Invalid IPv6 address or network: %s"
 #: lib/Module/DnsWizard/Service/SPFWizard.php:323
 #, php-format
 msgid "Invalid include domain: %s"
-msgstr "Invalid include domain: %s"
+msgstr "Virheellinen sisällytetty toimialue: %s"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:43
 msgid "CAA Record"
@@ -6284,7 +6284,7 @@ msgstr "Invalid CAA tag. Must be issue, issuewild, or iodef"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:210
 msgid "CA provider is required"
-msgstr "CA provider is required"
+msgstr "CA-tarjoaja on pakollinen"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:215
 msgid "Invalid CA domain format"
@@ -6301,7 +6301,7 @@ msgstr "Reporting URL must start with %s, %s, or %s"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:236
 msgid "Flags must be 0 or 128"
-msgstr "Flags must be 0 or 128"
+msgstr "Lippujen on oltava 0 tai 128"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:46
 msgid "DKIM Record"
@@ -6354,7 +6354,7 @@ msgstr "Valitsin on pakollinen"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:205
 msgid "Public key is required"
-msgstr "Public key is required"
+msgstr "Julkinen avain on pakollinen"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:211
 msgid "Public key must be valid base64-encoded data"
@@ -6411,7 +6411,7 @@ msgstr "Kohdepalvelin"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:159
 msgid "Priority & Load Balancing"
-msgstr "Priority & Load Balancing"
+msgstr "Prioriteetti ja kuormantasaus"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:163
 #: lib/Module/ZoneImportExport/templates/import.html:82
@@ -6501,7 +6501,7 @@ msgstr "You do not have permission to add zones."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:300
 msgid "Zone name is required."
-msgstr "Zone name is required."
+msgstr "Alueen nimi on pakollinen."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:305
 msgid "A zone with this name already exists."
@@ -6509,7 +6509,7 @@ msgstr "A zone with this name already exists."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:311
 msgid "Failed to create zone."
-msgstr "Failed to create zone."
+msgstr "Alueen luonti epäonnistui."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:317
 msgid "Failed to retrieve created zone."
@@ -6564,7 +6564,7 @@ msgstr "Invalid CSRF token."
 #: lib/BaseController.php:788
 #, php-format
 msgid "The %s field is required."
-msgstr "The %s field is required."
+msgstr "Kenttä %s on pakollinen."
 
 #: lib/BaseController.php:796
 #, php-format
@@ -6581,7 +6581,7 @@ msgstr "Seuraava"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:29
 msgid "Show zones beginning with"
-msgstr "Show zones beginning with"
+msgstr "Näytä alueet, jotka alkavat"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:59
 msgid "Show all"
@@ -6759,7 +6759,7 @@ msgstr "MFA is not enabled."
 
 #: lib/Application/Controller/MfaSetupController.php:323
 msgid "MFA has been disabled."
-msgstr "MFA has been disabled."
+msgstr "MFA on poistettu käytöstä."
 
 #: lib/Application/Controller/MfaSetupController.php:338
 msgid "MFA must be enabled to regenerate recovery codes."
@@ -6894,7 +6894,7 @@ msgstr "Virheellinen tietuetyyppi."
 
 #: lib/Application/Controller/BulkRecordAddController.php:213
 msgid "Record could not be added."
-msgstr "Record could not be added."
+msgstr "Tietuetta ei voitu lisätä."
 
 #: lib/Application/Controller/BulkRecordAddController.php:221
 #, php-format
@@ -6971,7 +6971,7 @@ msgstr "The user has been created successfully."
 #: lib/Application/Controller/AddUserController.php:159
 #, php-format
 msgid "Generated password: %s"
-msgstr "Generated password: %s"
+msgstr "Luotu salasana: %s"
 
 #: lib/Application/Controller/AddUserController.php:175
 msgid "Login details have been sent to the user via email."
@@ -7210,11 +7210,11 @@ msgstr "You do not have the permission to add a record to this zone."
 
 #: lib/Application/Controller/AddRecordController.php:241
 msgid "Record successfully added."
-msgstr "Record successfully added."
+msgstr "Tietue lisätty onnistuneesti."
 
 #: lib/Application/Controller/AddRecordController.php:429
 msgid "No records were provided."
-msgstr "No records were provided."
+msgstr "Tietueita ei annettu."
 
 #: lib/Application/Controller/AddRecordController.php:483
 #, php-format
@@ -7261,7 +7261,7 @@ msgstr "OIDC authentication is not enabled"
 
 #: lib/Application/Service/SamlService.php:387
 msgid "Authentication failed: "
-msgstr "Authentication failed: "
+msgstr "Todennus epäonnistui:"
 
 #: lib/Application/Controller/SaveZoneAsTemplateController.php:81
 msgid "You do not have permission to create zone templates."
@@ -7429,7 +7429,7 @@ msgstr "You do not have the permission to add permission templates."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "Add Permission Template"
-msgstr "Add Permission Template"
+msgstr "Lisää käyttöoikeusmalli"
 
 #: lib/Application/Controller/AddPermTemplController.php:90
 msgid "The permission template has been added successfully."
@@ -7455,7 +7455,7 @@ msgstr "Database consistency checks are disabled."
 #: lib/Application/Controller/DatabaseConsistencyController.php:82
 #: templates/modern/database_consistency.html:30
 msgid "Database Consistency Check"
-msgstr "Database Consistency Check"
+msgstr "Tietokannan eheyden tarkistus"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:101
 msgid "Zone owner assigned successfully"
@@ -7527,7 +7527,7 @@ msgstr "You do not have permission to manage group memberships."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:86
 msgid "Invalid user or group ID."
-msgstr "Invalid user or group ID."
+msgstr "Virheellinen käyttäjän tai ryhmän tunnus."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:107
 msgid "User removed from group successfully."
@@ -7575,7 +7575,7 @@ msgstr "You do not have permission to manage group zones."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:84
 msgid "Invalid group or zone ID."
-msgstr "Invalid group or zone ID."
+msgstr "Virheellinen ryhmän tai alueen tunnus."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:95
 msgid "Zone removed from group successfully."
@@ -7843,7 +7843,7 @@ msgstr "The user account is disabled."
 
 #: lib/Application/Service/SqlAuthenticator.php:216
 msgid "Authentication failed!"
-msgstr "Authentication failed!"
+msgstr "Todennus epäonnistui!"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:192
 msgid "Session expired, please login again."
@@ -7883,7 +7883,7 @@ msgstr "Failed to bind to LDAP server!"
 
 #: lib/Application/Service/LdapAuthenticator.php:185
 msgid "Failed to search LDAP."
-msgstr "Failed to search LDAP."
+msgstr "LDAP-haku epäonnistui."
 
 #: lib/Application/Service/LdapAuthenticator.php:202
 msgid "Failed to authenticate against LDAP."
@@ -8048,7 +8048,7 @@ msgstr "%d zones have duplicate SOA records"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:334
 msgid "All zones have SOA records"
-msgstr "All zones have SOA records"
+msgstr "Kaikilla alueilla on SOA-tietueet"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:341
 #, php-format
@@ -8358,7 +8358,7 @@ msgstr "HINFO record must have exactly two fields: CPU type and OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:200
 msgid "Invalid quoting in HINFO "
-msgstr "Invalid quoting in HINFO "
+msgstr "Virheellinen lainaus HINFO:ssa"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:229
 msgid "HINFO "
@@ -8610,7 +8610,7 @@ msgstr "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:256
 msgid "URI must not be empty."
-msgstr "URI must not be empty."
+msgstr "URI ei saa olla tyhjä."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:289
 msgid "HTTP/HTTPS URIs must include a hostname."
@@ -8970,7 +8970,7 @@ msgstr "Invalid IPv4 address in %s: %s"
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
 #, php-format
 msgid "Invalid IP address: %s"
-msgstr "Invalid IP address: %s"
+msgstr "Virheellinen IP-osoite: %s"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
@@ -9031,7 +9031,7 @@ msgstr "CAA property value cannot contain NUL (0) characters."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
-msgstr "The hostname is too long."
+msgstr "Palvelimen nimi on liian pitkä."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:78
 msgid "Single-label hostnames are not allowed."
@@ -9507,7 +9507,7 @@ msgstr "DNSKEY flags must be 0, 256, or 257."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:167
 msgid "DNSKEY protocol must be 3."
-msgstr "DNSKEY protocol must be 3."
+msgstr "DNSKEY-protokollan on oltava 3."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:173
 msgid "DNSKEY algorithm must be a number between 1 and 16."
@@ -9631,7 +9631,7 @@ msgstr "Invalid format. Expected at least: name,type,content"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
-msgstr "Unknown database type."
+msgstr "Tuntematon tietokannan tyyppi."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:91
 #, php-format
@@ -9983,7 +9983,7 @@ msgstr "TTL"
 
 #: templates/modern/add_zone_templ_record.html:70
 msgid "Valid range: 0-2147483647"
-msgstr "Valid range: 0-2147483647"
+msgstr "Kelvollinen alue: 0-2147483647"
 
 #: lib/Module/ZoneImportExport/templates/import.html:80
 msgid "Content"
@@ -10139,11 +10139,11 @@ msgstr "Tallenna muutokset"
 
 #: templates/modern/change_password.html:55
 msgid "All fields are required"
-msgstr "All fields are required"
+msgstr "Kaikki kentät ovat pakollisia"
 
 #: templates/modern/edit_supermaster.html:74
 msgid "About Editing Supermasters"
-msgstr "About Editing Supermasters"
+msgstr "Supermastereiden muokkaamisesta"
 
 #: templates/modern/edit_supermaster.html:79
 msgid "Update Credentials"
@@ -10315,7 +10315,7 @@ msgstr "Ryhmän nimi"
 
 #: templates/modern/edit_group.html:25 templates/modern/add_group.html:22
 msgid "Unique name for this group"
-msgstr "Unique name for this group"
+msgstr "Tämän ryhmän yksilöivä nimi"
 
 #: templates/modern/edit_group.html:26 templates/modern/add_group.html:23
 msgid "Provide group name"
@@ -10331,7 +10331,7 @@ msgstr "Access template"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
 msgid "Select an access template"
-msgstr "Select an access template"
+msgstr "Valitse käyttöoikeusmalli"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -10367,7 +10367,7 @@ msgstr "This group doesn't own any zones yet."
 
 #: templates/default/edit_group.html:176 templates/modern/edit_group.html:176
 msgid "Confirm Member Removal"
-msgstr "Confirm Member Removal"
+msgstr "Vahvista jäsenen poistaminen"
 
 #: templates/default/edit_group.html:181 templates/modern/edit_group.html:181
 msgid "Are you sure you want to remove user"
@@ -10431,7 +10431,7 @@ msgstr "Important Note"
 
 #: templates/default/delete_group.html:85 templates/modern/delete_group.html:85
 msgid "Yes, delete this group"
-msgstr "Yes, delete this group"
+msgstr "Kyllä, poista tämä ryhmä"
 
 #: templates/default/delete_group.html:89 templates/modern/delete_group.html:89
 msgid "No, keep this group"
@@ -10953,7 +10953,7 @@ msgstr "Siirry kirjautumiseen"
 
 #: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
-msgstr "Request New Reset Link"
+msgstr "Pyydä uusi palautuslinkki"
 
 #: templates/modern/reset_password.html:30
 msgid "Password does not meet requirements"
@@ -10969,7 +10969,7 @@ msgstr "Uusi salasana"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
 msgid "Please provide a password"
-msgstr "Please provide a password"
+msgstr "Anna salasana"
 
 #: templates/modern/reset_password.html:54
 msgid "Confirm Password"
@@ -10977,7 +10977,7 @@ msgstr "Vahvista salasana"
 
 #: templates/modern/reset_password.html:119
 msgid "Passwords do not match"
-msgstr "Passwords do not match"
+msgstr "Salasanat eivät täsmää"
 
 #: templates/modern/add_user.html:133
 msgid "Password Requirements"
@@ -11126,7 +11126,7 @@ msgstr "bits is not recommended for"
 
 #: templates/modern/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
-msgstr "About DNSSEC Key Types"
+msgstr "DNSSEC-avaintyypeistä"
 
 #: templates/modern/dnssec_add_key.html:191
 msgid "Key Types Explained"
@@ -11272,7 +11272,7 @@ msgstr "Add to Groups"
 
 #: templates/modern/edit_user.html:253 templates/modern/add_user.html:180
 msgid "Search available groups..."
-msgstr "Search available groups..."
+msgstr "Hae saatavilla olevia ryhmiä..."
 
 #: templates/modern/edit_user.html:254 templates/modern/add_user.html:181
 msgid "Clear search"
@@ -11308,7 +11308,7 @@ msgstr "Poista alueiden linkitys"
 
 #: templates/modern/confirm_unlink_zones_templ.html:12
 msgid "Unlink Zones from Template"
-msgstr "Unlink Zones from Template"
+msgstr "Poista alueiden linkitys mallista"
 
 #: templates/modern/confirm_unlink_zones_templ.html:19
 msgid "You are about to unlink 1 zone from template"
@@ -11376,11 +11376,11 @@ msgstr "Lisää malli"
 
 #: templates/modern/add_perm_templ.html:68
 msgid "About Access Templates"
-msgstr "About Access Templates"
+msgstr "Käyttöoikeusmalleista"
 
 #: templates/modern/add_perm_templ.html:73
 msgid "What are Access Templates?"
-msgstr "What are Access Templates?"
+msgstr "Mitä käyttöoikeusmallit ovat?"
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
@@ -11412,7 +11412,7 @@ msgstr "The page you are looking for does not exist."
 
 #: templates/default/404.html:22 templates/modern/404.html:22
 msgid "This could be because:"
-msgstr "This could be because:"
+msgstr "Tämä voi johtua siitä, että:"
 
 #: templates/default/404.html:26 templates/modern/404.html:26
 msgid "The URL is incorrect or has been mistyped"
@@ -11448,7 +11448,7 @@ msgstr "About Supermasters"
 
 #: templates/modern/add_supermaster.html:75
 msgid "What is a Supermaster?"
-msgstr "What is a Supermaster?"
+msgstr "Mikä on supermaster?"
 
 #: templates/modern/add_supermaster.html:79
 msgid "How it works"
@@ -11464,7 +11464,7 @@ msgstr "Kirjaudu sisään"
 
 #: templates/default/login.html:20 templates/modern/login.html:20
 msgid "Please provide a username"
-msgstr "Please provide a username"
+msgstr "Anna käyttäjänimi"
 
 #: templates/default/login.html:48 templates/modern/login.html:48
 msgid "Or sign in with"
@@ -11541,7 +11541,7 @@ msgstr "Create PTR Records"
 
 #: templates/modern/batch_ptr_record.html:136
 msgid "PTR Record Information"
-msgstr "PTR Record Information"
+msgstr "PTR-tietueen tiedot"
 
 #: templates/modern/api_key_add.html:50
 msgid "Important Information"
@@ -11633,7 +11633,7 @@ msgstr "Create a new record for this zone template"
 
 #: templates/modern/delete_perm_templ.html:12
 msgid "Delete Access Template"
-msgstr "Delete Access Template"
+msgstr "Poista käyttöoikeusmalli"
 
 #: templates/modern/delete_perm_templ.html:17
 msgid "You are about to delete the access template"
@@ -11645,11 +11645,11 @@ msgstr "This template is currently assigned to"
 
 #: templates/modern/delete_zone_templ.html:35
 msgid "Yes, delete this template"
-msgstr "Yes, delete this template"
+msgstr "Kyllä, poista tämä malli"
 
 #: templates/modern/delete_zone_templ.html:38
 msgid "No, keep this template"
-msgstr "No, keep this template"
+msgstr "Ei, säilytä tämä malli"
 
 #: templates/modern/dns_wizard_select.html:14
 msgid "DNS Record Wizard"
@@ -11717,7 +11717,7 @@ msgstr "Failed to add records. Please check the record format."
 
 #: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Content validation failed:"
-msgstr "Content validation failed:"
+msgstr "Sisällön vahvistus epäonnistui:"
 
 #: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Invalid value for record type"
@@ -11737,7 +11737,7 @@ msgstr "Lisää A/AAAA"
 
 #: templates/modern/edit.html:121 templates/modern/edit.html:674
 msgid "This record already exists"
-msgstr "This record already exists"
+msgstr "Tämä tietue on jo olemassa"
 
 #: templates/modern/edit.html:133 templates/modern/edit.html:686
 msgid "Invalid priority"
@@ -11777,7 +11777,7 @@ msgstr "Suodatin:"
 
 #: templates/default/edit.html:269 templates/modern/edit.html:269
 msgid "Search by name or content"
-msgstr "Search by name or content"
+msgstr "Hae nimellä tai sisällöllä"
 
 #: templates/default/edit.html:275 templates/modern/edit.html:275
 msgid "All Types"
@@ -11890,7 +11890,7 @@ msgstr "MFA not configured"
 
 #: templates/modern/list_template_zones.html:15
 msgid "Total number of zones:"
-msgstr "Total number of zones:"
+msgstr "Alueiden kokonaismäärä:"
 
 #: templates/modern/list_forward_zones.html:57
 msgid "There are no forward zones to show in this listing."
@@ -11934,7 +11934,7 @@ msgstr "Ei, säilytä tämä tietue"
 
 #: templates/default/mfa_verify.html:6 templates/modern/mfa_verify.html:6
 msgid "Two-Factor Authentication"
-msgstr "Two-Factor Authentication"
+msgstr "Kaksivaiheinen todennus"
 
 #: templates/default/mfa_verify.html:21 templates/modern/mfa_verify.html:21
 msgid "Enter verification code"
@@ -12038,7 +12038,7 @@ msgstr "Tietueen tunnus"
 
 #: templates/modern/database_consistency.html:183
 msgid "Delete orphaned record"
-msgstr "Delete orphaned record"
+msgstr "Poista orpotietue"
 
 #: templates/modern/database_consistency.html:199
 msgid "Zones with Duplicate SOA Records"
@@ -12054,7 +12054,7 @@ msgstr "Keep first SOA, delete duplicates"
 
 #: templates/modern/database_consistency.html:248
 msgid "Zones Without SOA Records"
-msgstr "Zones Without SOA Records"
+msgstr "Alueet ilman SOA-tietueita"
 
 #: templates/modern/database_consistency.html:277
 msgid "Create default SOA record"
@@ -12087,7 +12087,7 @@ msgstr "Anna käyttäjän salasana"
 
 #: templates/default/add_user.html:51 templates/modern/add_user.html:51
 msgid "Auto-generate password"
-msgstr "Auto-generate password"
+msgstr "Luo salasana automaattisesti"
 
 #: templates/default/add_user.html:53 templates/modern/add_user.html:53
 msgid "Generate a secure password that meets all requirements"
@@ -12095,7 +12095,7 @@ msgstr "Generate a secure password that meets all requirements"
 
 #: templates/default/add_user.html:61 templates/modern/add_user.html:61
 msgid "Send password by email"
-msgstr "Send password by email"
+msgstr "Lähetä salasana sähköpostitse"
 
 #: templates/default/add_user.html:63 templates/modern/add_user.html:63
 msgid "Send login credentials to user's email address"
@@ -12123,7 +12123,7 @@ msgstr "Esimerkki: example.com"
 
 #: templates/modern/add_zone_master.html:46
 msgid "Zone type (usually NATIVE)"
-msgstr "Zone type (usually NATIVE)"
+msgstr "Alueen tyyppi (yleensä NATIVE)"
 
 #: templates/modern/add_zone_master.html:58
 msgid "Optional: Apply predefined records from a template"
@@ -12203,7 +12203,7 @@ msgstr "Alueita tarvitsee päivittää"
 
 #: templates/modern/list_zone_templ.html:91
 msgid "All zones are synchronized"
-msgstr "All zones are synchronized"
+msgstr "Kaikki alueet on synkronoitu"
 
 #: templates/modern/list_zone_templ.html:92
 msgid "Synced"
@@ -12383,7 +12383,7 @@ msgstr "Jatka ilman SOA:ta"
 
 #: templates/modern/list_supermasters.html:21
 msgid "Search supermasters..."
-msgstr "Search supermasters..."
+msgstr "Hae supermastereita..."
 
 #: templates/modern/list_supermasters.html:71
 msgid "There are no supermasters to show in this listing."
@@ -12443,7 +12443,7 @@ msgstr "Bulk registration"
 
 #: templates/modern/bulk_registration.html:46
 msgid "Please select an owner"
-msgstr "Please select an owner"
+msgstr "Valitse omistaja"
 
 #: templates/modern/bulk_registration.html:50
 msgid "Zone Type"
@@ -12467,7 +12467,7 @@ msgstr "Lisää alueet"
 
 #: templates/modern/bulk_registration.html:99
 msgid "About Bulk Registration"
-msgstr "About Bulk Registration"
+msgstr "Joukkorekisteröinnistä"
 
 #: templates/modern/bulk_registration.html:105
 msgid "This tool allows you to create multiple DNS zones at once."
@@ -12491,7 +12491,7 @@ msgstr "Näin se toimii"
 
 #: templates/modern/bulk_registration.html:122
 msgid "Tips & Recommendations"
-msgstr "Tips & Recommendations"
+msgstr "Vinkkejä ja suosituksia"
 
 #: templates/modern/bulk_registration.html:128
 msgid "Use NATIVE zone type for most standard setups"
@@ -12539,7 +12539,7 @@ msgstr "Also delete corresponding PTR records (if they exist)"
 
 #: templates/modern/delete_records.html:84
 msgid "Yes, delete these records"
-msgstr "Yes, delete these records"
+msgstr "Kyllä, poista nämä tietueet"
 
 #: templates/modern/mfa_recovery_codes.html:36
 msgid "Recovery Codes"
@@ -12559,7 +12559,7 @@ msgstr "Your account is now protected with multi-factor authentication."
 
 #: templates/modern/mfa_setup.html:32 templates/modern/mfa_setup.html:34
 msgid "Authentication method:"
-msgstr "Authentication method:"
+msgstr "Todennustapa:"
 
 #: templates/modern/mfa_setup.html:32
 msgid "Authenticator app"
@@ -12619,11 +12619,11 @@ msgstr "Your account is protected with multi-factor authentication."
 
 #: templates/default/mfa_setup.html:45 templates/modern/mfa_setup.html:45
 msgid "Regenerate Recovery Codes"
-msgstr "Regenerate Recovery Codes"
+msgstr "Luo palautuskoodit uudelleen"
 
 #: templates/default/mfa_setup.html:60 templates/modern/mfa_setup.html:60
 msgid "MFA is currently disabled"
-msgstr "MFA is currently disabled"
+msgstr "MFA on tällä hetkellä pois käytöstä"
 
 #: templates/default/mfa_setup.html:61 templates/modern/mfa_setup.html:61
 msgid "Your account is not protected with multi-factor authentication."
@@ -12647,7 +12647,7 @@ msgstr "Helppokäyttöinen"
 
 #: templates/default/mfa_setup.html:83 templates/modern/mfa_setup.html:83
 msgid "Set up app authentication"
-msgstr "Set up app authentication"
+msgstr "Määritä sovelluksen todennus"
 
 #: templates/modern/mfa_verify_email.html:5
 msgid "Email Verification"
@@ -12659,7 +12659,7 @@ msgstr "Receive a verification code via email when you log in."
 
 #: templates/default/mfa_setup.html:97 templates/modern/mfa_setup.html:97
 msgid "No additional app required"
-msgstr "No additional app required"
+msgstr "Lisäsovellusta ei tarvita"
 
 #: templates/default/mfa_setup.html:98 templates/modern/mfa_setup.html:98
 msgid "Requires internet connection"
@@ -12671,7 +12671,7 @@ msgstr "Relies on email delivery"
 
 #: templates/default/mfa_setup.html:117 templates/modern/mfa_setup.html:117
 msgid "Set up email verification"
-msgstr "Set up email verification"
+msgstr "Määritä sähköpostivahvistus"
 
 #: templates/modern/mfa_verify_email.html:14
 msgid "Verify Email Code"
@@ -12839,7 +12839,7 @@ msgstr "selected zone(s)?"
 
 #: templates/default/search.html:690 templates/modern/search.html:701
 msgid "Confirm Record Deletion"
-msgstr "Confirm Record Deletion"
+msgstr "Vahvista tietueen poisto"
 
 #: templates/default/search.html:695 templates/modern/search.html:706
 msgid "selected record(s)?"
@@ -12895,7 +12895,7 @@ msgstr "Yes, delete this supermaster"
 
 #: templates/modern/delete_supermaster.html:56
 msgid "No, keep this supermaster"
-msgstr "No, keep this supermaster"
+msgstr "Ei, säilytä tämä supermaster"
 
 #: templates/modern/list_log_users.html:5 templates/modern/header.html:216
 msgid "User logs"
@@ -12935,7 +12935,7 @@ msgstr "Email Template Previews"
 
 #: templates/modern/email_previews.html:22
 msgid "Active Email Templates"
-msgstr "Active Email Templates"
+msgstr "Aktiiviset sähköpostimallit"
 
 #: templates/modern/email_previews.html:23
 msgid "Standard"
@@ -12983,7 +12983,7 @@ msgstr "These previews reflect the actual templates used in production"
 
 #: templates/modern/pdns_status.html:6 templates/modern/pdns_status.html:12
 msgid "PowerDNS Server Status"
-msgstr "PowerDNS Server Status"
+msgstr "PowerDNS-palvelimen tila"
 
 #: templates/default/pdns_status.html:16 templates/modern/pdns_status.html:17
 msgid "Refresh Status"
@@ -13300,7 +13300,7 @@ msgstr "Muokkaa käyttöoikeusmallia"
 
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
-msgstr "Template Usage Information"
+msgstr "Mallin käyttötiedot"
 
 #: templates/modern/edit_perm_templ.html:73
 msgid "Template Assignment"
@@ -13320,7 +13320,7 @@ msgstr "Poista tietue"
 
 #: templates/modern/delete_zone_templ_record.html:19
 msgid "Delete Template Record"
-msgstr "Delete Template Record"
+msgstr "Poista mallin tietue"
 
 #: templates/modern/delete_zone_templ_record.html:24
 msgid "You are about to delete a record from template"
@@ -13384,7 +13384,7 @@ msgstr "Ryhmä"
 
 #: templates/modern/list_perm_templ.html:41
 msgid "No access templates found"
-msgstr "No access templates found"
+msgstr "Käyttöoikeusmalleja ei löytynyt"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
@@ -13544,7 +13544,7 @@ msgstr "Standard BIND zone files"
 
 #: lib/Module/ZoneImportExport/templates/import.html:192
 msgid "Cloudflare zone exports"
-msgstr "Cloudflare zone exports"
+msgstr "Cloudflare-alueviennit"
 
 #: lib/Module/ZoneImportExport/templates/import.html:193
 msgid "$ORIGIN and $TTL directives"
@@ -13592,7 +13592,7 @@ msgstr "RDAP-tulokset"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Create limited rights user"
+msgstr "Luo käyttäjä rajoitetuilla oikeuksilla"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
@@ -13600,7 +13600,7 @@ msgstr "Vaihe"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Create limited-rights user"
+msgstr "luo käyttäjä rajoitetuilla oikeuksilla"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
@@ -13696,7 +13696,7 @@ msgstr "API-URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "PowerDNS API -päätepisteen URL."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -13812,7 +13812,7 @@ msgstr "Poweradmin Account"
 
 #: install/templates/step4.html.twig:228
 msgid "Administrator password"
-msgstr "Administrator password"
+msgstr "Ylläpitäjän salasana"
 
 #: install/templates/step4.html.twig:233
 msgid "Provide a password"
@@ -13824,7 +13824,7 @@ msgstr "Järjestelmävaatimukset"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "Järjestelmävaatimusten tarkistus"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
@@ -13912,7 +13912,7 @@ msgstr "Database User"
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "Anna käyttäjän salasana"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
@@ -13928,7 +13928,7 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "Anna DNS-hostmaster"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
@@ -13984,7 +13984,7 @@ msgstr "Asennus valmis"
 
 #: install/templates/step8.html.twig:12
 msgid "Installation Complete!"
-msgstr "Installation Complete!"
+msgstr "Asennus valmis!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
@@ -13992,7 +13992,7 @@ msgstr "Congratulations! Your Poweradmin installation is now configured."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Important Security Notice:"
+msgstr "Tärkeä tietoturvailmoitus:"
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -14036,7 +14036,7 @@ msgstr "Poweradmin requires these PowerDNS tables to function properly."
 
 #: install/helpers/InstallStepHandler.php:185
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "Päivitetään tietokantaa... valmis!"
 
 #: install/helpers/InstallStepHandler.php:207
 msgid "Foreign Key Constraint Issues:"

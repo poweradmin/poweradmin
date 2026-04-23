@@ -29,7 +29,7 @@ msgstr "Peruuta"
 
 #: lib/Module/ZoneImportExport/templates/import.html:170
 msgid "Cloudflare zone exports"
-msgstr "Cloudflare zone exports"
+msgstr "Cloudflare-alueviennit"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
@@ -45,7 +45,7 @@ msgstr "Muokkaa aluetta"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:222
 msgid "Failed to create zone."
-msgstr "Failed to create zone."
+msgstr "Alueen luonti epäonnistui."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:228
 msgid "Failed to retrieve created zone."
@@ -198,7 +198,7 @@ msgstr "alueen nimi"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:211
 msgid "Zone name is required."
-msgstr "Zone name is required."
+msgstr "Alueen nimi on pakollinen."
 
 #: lib/Module/ZoneImportExport/templates/import.html:99
 msgid "Zone type"

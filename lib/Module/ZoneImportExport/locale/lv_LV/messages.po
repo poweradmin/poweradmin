@@ -29,7 +29,7 @@ msgstr "Atcelt"
 
 #: lib/Module/ZoneImportExport/templates/import.html:170
 msgid "Cloudflare zone exports"
-msgstr "Cloudflare zone exports"
+msgstr "Cloudflare zonas eksporti"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
@@ -45,7 +45,7 @@ msgstr "Rediģēt zonu"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:222
 msgid "Failed to create zone."
-msgstr "Failed to create zone."
+msgstr "Neizdevās izveidot zonu."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:228
 msgid "Failed to retrieve created zone."
@@ -198,7 +198,7 @@ msgstr "zonas nosaukums"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:211
 msgid "Zone name is required."
-msgstr "Zone name is required."
+msgstr "Zonas nosaukums ir nepieciešams."
 
 #: lib/Module/ZoneImportExport/templates/import.html:99
 msgid "Zone type"

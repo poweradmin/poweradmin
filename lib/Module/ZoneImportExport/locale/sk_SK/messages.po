@@ -29,7 +29,7 @@ msgstr "Zrušiť"
 
 #: lib/Module/ZoneImportExport/templates/import.html:170
 msgid "Cloudflare zone exports"
-msgstr "Cloudflare zone exports"
+msgstr "Exporty zón Cloudflare"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
@@ -45,7 +45,7 @@ msgstr "Upraviť zónu"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:222
 msgid "Failed to create zone."
-msgstr "Failed to create zone."
+msgstr "Nepodarilo sa vytvoriť zónu."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:228
 msgid "Failed to retrieve created zone."
@@ -198,7 +198,7 @@ msgstr "názov zóny"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:211
 msgid "Zone name is required."
-msgstr "Zone name is required."
+msgstr "Názov zóny je povinný."
 
 #: lib/Module/ZoneImportExport/templates/import.html:99
 msgid "Zone type"
