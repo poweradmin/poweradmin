@@ -15,15 +15,13 @@ ALTER TABLE `zones` ADD COLUMN `zone_master` varchar(255) DEFAULT NULL;
 -- Only updates the lowest-id row per domain_id to respect the UNIQUE index on zone_name.
 UPDATE `zones` z
 INNER JOIN `domains` d ON z.domain_id = d.id
+INNER JOIN (
+    SELECT domain_id, MIN(id) AS min_id FROM `zones` GROUP BY domain_id
+) m ON m.domain_id = z.domain_id AND m.min_id = z.id
 SET z.zone_name = d.name,
     z.zone_type = d.type,
     z.zone_master = d.master
-WHERE z.zone_name IS NULL
-  AND z.id = (
-    SELECT min_id FROM (
-      SELECT MIN(id) AS min_id FROM `zones` WHERE domain_id = z.domain_id
-    ) AS t
-  );
+WHERE z.zone_name IS NULL;
 
 CREATE UNIQUE INDEX `idx_zones_zone_name` ON `zones` (`zone_name`);
 
