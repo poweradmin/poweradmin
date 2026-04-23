@@ -121,6 +121,14 @@ class AppManager
             $this->statsDisplayService = new StatsDisplayService($memoryUsage, $timer, $sizeFormatter);
         }
 
+        if ($this->configuration instanceof ConfigurationManager && !$this->configuration->isDefaultsFileLoaded()) {
+            $messageService = new MessageService();
+            $messageService->displayDirectSystemError(sprintf(
+                'Default settings file is missing or unreadable: %s. Please restore it from the Poweradmin distribution before continuing.',
+                htmlspecialchars($this->configuration->getDefaultsFilePath(), ENT_QUOTES)
+            ));
+        }
+
         $validator = new ConfigValidator($this->configuration->getAll());
         $this->showValidationErrors($validator);
 

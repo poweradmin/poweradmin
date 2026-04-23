@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-16 18:36+0300\n"
+"POT-Creation-Date: 2026-04-23 19:29+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1309,7 +1309,7 @@ msgstr ""
 "Thư mục <a href=\"install/\">install/</a> vẫn tồn tại, bạn phải xóa nó trước "
 "khi tiếp tục."
 
-#: lib/BaseController.php:648
+#: lib/BaseController.php:649
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1317,12 +1317,12 @@ msgstr ""
 "Khóa mã hóa phiên mặc định đang được sử dụng, vui lòng thiết lập khóa trong "
 "tệp cấu hình của bạn."
 
-#: lib/BaseController.php:787
+#: lib/BaseController.php:788
 #, php-format
 msgid "The %s field is required."
 msgstr "Trường %s là bắt buộc."
 
-#: lib/BaseController.php:795
+#: lib/BaseController.php:796
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Trường %s phải là một số."
@@ -9242,7 +9242,7 @@ msgid "My Profile"
 msgstr "Split-brain phát hiện."
 
 #: templates/modern/login.html:23 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:122 install/templates/step5.html.twig:67
+#: install/templates/step4.html.twig:122 install/templates/step5.html.twig:72
 msgid "Password"
 msgstr "Tải plugin thất bại."
 
@@ -10018,7 +10018,7 @@ msgid "Edit user"
 msgstr "Sửa người dùng"
 
 #: templates/modern/manage_group_members.html:93
-#: install/templates/step4.html.twig:111 install/templates/step5.html.twig:56
+#: install/templates/step4.html.twig:111 install/templates/step5.html.twig:61
 msgid "Username"
 msgstr "Tên người dùng"
 
@@ -10063,7 +10063,7 @@ msgid "Optional information about this user"
 msgstr "Thông tin tùy chọn về người dùng này"
 
 #: templates/modern/users.html:49 templates/modern/add_user.html:94
-#: install/templates/step2.html.twig:116
+#: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Đã kích hoạt"
 
@@ -12372,7 +12372,7 @@ msgid "Last Checked"
 msgstr "Kiểm tra lần cuối"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:126
-#: install/templates/step2.html.twig:27
+#: install/templates/step2.html.twig:18
 msgid "OK"
 msgstr "OK"
 
@@ -13086,11 +13086,11 @@ msgstr ""
 "Vì bạn đang sử dụng SQLite, không cần tạo người dùng mới với quyền hạn giới "
 "hạn."
 
-#: install/templates/step5.html.twig:171 install/templates/step3.html.twig:38
+#: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
 msgstr "Tiếp tục đến bước"
 
-#: install/templates/base.html.twig:29
+#: install/templates/base.html.twig:37
 msgid "Installation step"
 msgstr "Bước cài đặt"
 
@@ -13219,7 +13219,7 @@ msgstr "Loại cơ sở dữ liệu"
 msgid "Database server type."
 msgstr "Loại máy chủ cơ sở dữ liệu."
 
-#: install/templates/step4.html.twig:114 install/templates/step5.html.twig:59
+#: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
 msgid "Provide the user name"
 msgstr "Cung cấp tên người dùng"
 
@@ -13231,7 +13231,7 @@ msgstr "Tên người dùng cơ sở dữ liệu với quyền tạo bảng."
 msgid "Password for this database user."
 msgstr "Mật khẩu cho người dùng cơ sở dữ liệu này."
 
-#: install/templates/step4.html.twig:132 install/templates/step5.html.twig:77
+#: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
 msgstr "Tránh dấu ngoặc kép, dấu gạch chéo ngược và ngắt dòng."
 
@@ -13335,44 +13335,35 @@ msgstr "Yêu cầu hệ thống"
 msgid "System Requirements Check"
 msgstr "Kiểm tra yêu cầu hệ thống"
 
-#: install/templates/step2.html.twig:12
-msgid "Requirements Check:"
-msgstr "Kiểm tra yêu cầu:"
-
-#: install/templates/step2.html.twig:12
-msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr ""
-"Xác minh rằng máy chủ của bạn đáp ứng tất cả yêu cầu để chạy Poweradmin."
-
-#: install/templates/step2.html.twig:20
+#: install/templates/step2.html.twig:13
 msgid "PHP Version"
 msgstr "Phiên bản PHP"
 
-#: install/templates/step2.html.twig:29
+#: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
 msgstr "Yêu cầu PHP 8.2.0+"
 
-#: install/templates/step2.html.twig:40
+#: install/templates/step2.html.twig:30
 msgid "Database Extensions"
 msgstr "Extension cơ sở dữ liệu"
 
-#: install/templates/step2.html.twig:40
+#: install/templates/step2.html.twig:31
 msgid "at least one required"
 msgstr "ít nhất một bắt buộc"
 
-#: install/templates/step2.html.twig:61
+#: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
 msgstr "Extension PHP bắt buộc"
 
-#: install/templates/step2.html.twig:80
+#: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
 msgstr "Extension tùy chọn"
 
-#: install/templates/step2.html.twig:99
+#: install/templates/step2.html.twig:97
 msgid "Web Server"
 msgstr "Máy chủ Web"
 
-#: install/templates/step2.html.twig:106
+#: install/templates/step2.html.twig:102
 msgid "Server"
 msgstr "Máy chủ"
 
@@ -13392,19 +13383,19 @@ msgstr "Đảm bảo URL rewriting được cấu hình (xem nginx.conf.example)
 msgid "Ensure URL rewriting is configured for your web server"
 msgstr "Đảm bảo URL rewriting được cấu hình cho máy chủ web của bạn"
 
-#: install/templates/step2.html.twig:151
+#: install/templates/step2.html.twig:149
 msgid "All required components are available."
 msgstr "Tất cả các thành phần bắt buộc đều có sẵn."
 
-#: install/templates/step2.html.twig:152
+#: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
 msgstr "Bạn có thể tiếp tục cài đặt."
 
-#: install/templates/step2.html.twig:160
+#: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
 msgstr "Một số thành phần bắt buộc bị thiếu."
 
-#: install/templates/step2.html.twig:161
+#: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
 msgstr "Vui lòng cài đặt các thành phần bị thiếu trước khi tiếp tục."
 
@@ -13428,78 +13419,85 @@ msgstr "Bây giờ chúng tôi sẽ thu thập tất cả chi tiết cho bản t
 msgid "Database User"
 msgstr "Người dùng cơ sở dữ liệu"
 
-#: install/templates/step5.html.twig:62
+#: install/templates/step5.html.twig:57
+msgid ""
+"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
+"configured database even when the PowerDNS API backend is selected. These "
+"credentials are for that database, not for PowerDNS."
+msgstr ""
+
+#: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
 "Tên người dùng cơ sở dữ liệu Poweradmin với quyền truy cập hạn chế. Không "
 "dành cho đăng nhập giao diện web."
 
-#: install/templates/step5.html.twig:72
+#: install/templates/step5.html.twig:77
 msgid "Provide the user password"
 msgstr "Cung cấp mật khẩu người dùng"
 
-#: install/templates/step5.html.twig:76
+#: install/templates/step5.html.twig:81
 msgid "The password for this username."
 msgstr "Mật khẩu cho tên người dùng này."
 
-#: install/templates/step5.html.twig:86
+#: install/templates/step5.html.twig:91
 msgid "DNS Settings"
 msgstr "Cài đặt DNS"
 
-#: install/templates/step5.html.twig:90
+#: install/templates/step5.html.twig:95
 msgid "Hostmaster"
 msgstr "Hostmaster"
 
-#: install/templates/step5.html.twig:94
+#: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
 msgstr "Cung cấp DNS hostmaster"
 
-#: install/templates/step5.html.twig:97
+#: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
 msgstr "Hostmaster mặc định cho bản ghi SOA."
 
-#: install/templates/step5.html.twig:102
+#: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
 msgstr "Máy chủ tên chính"
 
-#: install/templates/step5.html.twig:106
+#: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
 msgstr "Cung cấp máy chủ tên chính"
 
-#: install/templates/step5.html.twig:109
+#: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
 msgstr "Máy chủ tên chính cho các vùng mới."
 
-#: install/templates/step5.html.twig:114
+#: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
 msgstr "Máy chủ tên phụ"
 
-#: install/templates/step5.html.twig:118
+#: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
 msgstr "Cung cấp máy chủ tên phụ"
 
-#: install/templates/step5.html.twig:121
+#: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
 msgstr "Máy chủ tên phụ cho các vùng mới."
 
-#: install/templates/step5.html.twig:127
+#: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
 msgstr "Máy chủ tên thứ ba"
 
-#: install/templates/step5.html.twig:127 install/templates/step5.html.twig:140
+#: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
 msgid "optional"
 msgstr "tùy chọn"
 
-#: install/templates/step5.html.twig:134
+#: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
 msgstr "Máy chủ tên thứ ba tùy chọn cho các vùng mới."
 
-#: install/templates/step5.html.twig:140
+#: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
 msgstr "Máy chủ tên thứ tư"
 
-#: install/templates/step5.html.twig:147
+#: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
 msgstr "Máy chủ tên thứ tư tùy chọn cho các vùng mới."
 
@@ -13731,5 +13729,13 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Không thể kết nối với cơ sở dữ liệu PowerDNS \"%s\": %s"
+
+# OBSOLETE: msgid "Requirements Check:"
+# OBSOLETE: msgstr "Kiểm tra yêu cầu:"
+
+# OBSOLETE: msgid "Verifying that your server meets all requirements to run Poweradmin."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Xác minh rằng máy chủ của bạn đáp ứng tất cả yêu cầu để chạy Poweradmin."
+
 
 

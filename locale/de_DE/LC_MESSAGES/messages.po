@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-16 18:36+0300\n"
+"POT-Creation-Date: 2026-04-23 19:29+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -1332,7 +1332,7 @@ msgstr ""
 "Das <a href=\"install/\">install/</a>-Verzeichnis existiert, Sie müssen es "
 "zuerst entfernen, bevor Sie fortfahren können."
 
-#: lib/BaseController.php:648
+#: lib/BaseController.php:649
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1340,12 +1340,12 @@ msgstr ""
 "Der Standard-Verschlüsselungsschlüssel für Sitzungen wird verwendet, bitte "
 "stellen Sie ihn in Ihrer Konfigurationsdatei ein."
 
-#: lib/BaseController.php:787
+#: lib/BaseController.php:788
 #, php-format
 msgid "The %s field is required."
 msgstr "Das Feld %s ist erforderlich."
 
-#: lib/BaseController.php:795
+#: lib/BaseController.php:796
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Das Feld %s muss eine Zahl sein."
@@ -9876,7 +9876,7 @@ msgid "My Profile"
 msgstr "Mein Profil"
 
 #: templates/modern/login.html:23 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:122 install/templates/step5.html.twig:67
+#: install/templates/step4.html.twig:122 install/templates/step5.html.twig:72
 msgid "Password"
 msgstr "Passwort"
 
@@ -10668,7 +10668,7 @@ msgid "Edit user"
 msgstr "Benutzer bearbeiten"
 
 #: templates/modern/manage_group_members.html:93
-#: install/templates/step4.html.twig:111 install/templates/step5.html.twig:56
+#: install/templates/step4.html.twig:111 install/templates/step5.html.twig:61
 msgid "Username"
 msgstr "Benutzername"
 
@@ -10712,7 +10712,7 @@ msgid "Optional information about this user"
 msgstr "Optionale Informationen über den Benutzer"
 
 #: templates/modern/users.html:49 templates/modern/add_user.html:94
-#: install/templates/step2.html.twig:116
+#: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Aktiviert"
 
@@ -13079,7 +13079,7 @@ msgid "Last Checked"
 msgstr "Zuletzt geprüft"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:126
-#: install/templates/step2.html.twig:27
+#: install/templates/step2.html.twig:18
 msgid "OK"
 msgstr "OK"
 
@@ -13806,11 +13806,11 @@ msgstr ""
 "Da Sie SQLite verwenden, müssen Sie keinen neuen Benutzer mit "
 "eingeschränkten Rechten erstellen."
 
-#: install/templates/step5.html.twig:171 install/templates/step3.html.twig:38
+#: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
 msgstr "Weiter zu Schritt"
 
-#: install/templates/base.html.twig:29
+#: install/templates/base.html.twig:37
 msgid "Installation step"
 msgstr "Installationsschritt"
 
@@ -13944,7 +13944,7 @@ msgstr "Datenbanktyp"
 msgid "Database server type."
 msgstr "Datenbankservertyp."
 
-#: install/templates/step4.html.twig:114 install/templates/step5.html.twig:59
+#: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
 msgid "Provide the user name"
 msgstr "Geben Sie den Benutzernamen an"
 
@@ -13956,7 +13956,7 @@ msgstr "Datenbankbenutzername mit Rechten zur Tabellenerstellung."
 msgid "Password for this database user."
 msgstr "Passwort für diesen Datenbankbenutzer."
 
-#: install/templates/step4.html.twig:132 install/templates/step5.html.twig:77
+#: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
 msgstr "Vermeiden Sie Anführungszeichen, Backslashes und Zeilenumbrüche."
 
@@ -14063,43 +14063,35 @@ msgstr "Systemanforderungen"
 msgid "System Requirements Check"
 msgstr "Prüfung der Systemanforderungen"
 
-#: install/templates/step2.html.twig:12
-msgid "Requirements Check:"
-msgstr "Anforderungsprüfung:"
-
-#: install/templates/step2.html.twig:12
-msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr "Überprüfung, ob Ihr Server alle Anforderungen für Poweradmin erfüllt."
-
-#: install/templates/step2.html.twig:20
+#: install/templates/step2.html.twig:13
 msgid "PHP Version"
 msgstr "PHP-Version"
 
-#: install/templates/step2.html.twig:29
+#: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
 msgstr "Benötigt PHP 8.2.0+"
 
-#: install/templates/step2.html.twig:40
+#: install/templates/step2.html.twig:30
 msgid "Database Extensions"
 msgstr "Datenbankerweiterungen"
 
-#: install/templates/step2.html.twig:40
+#: install/templates/step2.html.twig:31
 msgid "at least one required"
 msgstr "mindestens eine erforderlich"
 
-#: install/templates/step2.html.twig:61
+#: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
 msgstr "Erforderliche PHP-Erweiterungen"
 
-#: install/templates/step2.html.twig:80
+#: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
 msgstr "Optionale Erweiterungen"
 
-#: install/templates/step2.html.twig:99
+#: install/templates/step2.html.twig:97
 msgid "Web Server"
 msgstr "Webserver"
 
-#: install/templates/step2.html.twig:106
+#: install/templates/step2.html.twig:102
 msgid "Server"
 msgstr "Server"
 
@@ -14124,19 +14116,19 @@ msgid "Ensure URL rewriting is configured for your web server"
 msgstr ""
 "Stellen Sie sicher, dass URL-Rewriting für Ihren Webserver konfiguriert ist"
 
-#: install/templates/step2.html.twig:151
+#: install/templates/step2.html.twig:149
 msgid "All required components are available."
 msgstr "Alle erforderlichen Komponenten sind verfügbar."
 
-#: install/templates/step2.html.twig:152
+#: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
 msgstr "Sie können mit der Installation fortfahren."
 
-#: install/templates/step2.html.twig:160
+#: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
 msgstr "Einige erforderliche Komponenten fehlen."
 
-#: install/templates/step2.html.twig:161
+#: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
 msgstr ""
 "Bitte installieren Sie die fehlenden Komponenten, bevor Sie fortfahren."
@@ -14161,78 +14153,85 @@ msgstr "Jetzt sammeln wir alle Details für die Konfiguration selbst."
 msgid "Database User"
 msgstr "Datenbankbenutzer"
 
-#: install/templates/step5.html.twig:62
+#: install/templates/step5.html.twig:57
+msgid ""
+"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
+"configured database even when the PowerDNS API backend is selected. These "
+"credentials are for that database, not for PowerDNS."
+msgstr ""
+
+#: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
 "Poweradmin-Datenbankbenutzername mit eingeschränktem Zugriff. Nicht für die "
 "Web-UI-Anmeldung."
 
-#: install/templates/step5.html.twig:72
+#: install/templates/step5.html.twig:77
 msgid "Provide the user password"
 msgstr "Geben Sie das Benutzerpasswort an"
 
-#: install/templates/step5.html.twig:76
+#: install/templates/step5.html.twig:81
 msgid "The password for this username."
 msgstr "Das Passwort für diesen Benutzernamen."
 
-#: install/templates/step5.html.twig:86
+#: install/templates/step5.html.twig:91
 msgid "DNS Settings"
 msgstr "DNS-Einstellungen"
 
-#: install/templates/step5.html.twig:90
+#: install/templates/step5.html.twig:95
 msgid "Hostmaster"
 msgstr "Hostmaster"
 
-#: install/templates/step5.html.twig:94
+#: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
 msgstr "Geben Sie den DNS-Hostmaster an"
 
-#: install/templates/step5.html.twig:97
+#: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
 msgstr "Standard-Hostmaster für SOA-Einträge."
 
-#: install/templates/step5.html.twig:102
+#: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
 msgstr "Primärer Nameserver"
 
-#: install/templates/step5.html.twig:106
+#: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
 msgstr "Geben Sie den primären Nameserver an"
 
-#: install/templates/step5.html.twig:109
+#: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
 msgstr "Primärer Nameserver für neue Zonen."
 
-#: install/templates/step5.html.twig:114
+#: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
 msgstr "Sekundärer Nameserver"
 
-#: install/templates/step5.html.twig:118
+#: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
 msgstr "Geben Sie den sekundären Nameserver an"
 
-#: install/templates/step5.html.twig:121
+#: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
 msgstr "Sekundärer Nameserver für neue Zonen."
 
-#: install/templates/step5.html.twig:127
+#: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
 msgstr "Tertiärer Nameserver"
 
-#: install/templates/step5.html.twig:127 install/templates/step5.html.twig:140
+#: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
 msgid "optional"
 msgstr "optional"
 
-#: install/templates/step5.html.twig:134
+#: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
 msgstr "Optionaler tertiärer Nameserver für neue Zonen."
 
-#: install/templates/step5.html.twig:140
+#: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
 msgstr "Quartärer Nameserver"
 
-#: install/templates/step5.html.twig:147
+#: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
 msgstr "Optionaler quaternärer Nameserver für neue Zonen."
 
@@ -14477,5 +14476,13 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kann nicht zur PowerDNS-Datenbank \"%s\" verbinden: %s"
+
+# OBSOLETE: msgid "Requirements Check:"
+# OBSOLETE: msgstr "Anforderungsprüfung:"
+
+# OBSOLETE: msgid "Verifying that your server meets all requirements to run Poweradmin."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Überprüfung, ob Ihr Server alle Anforderungen für Poweradmin erfüllt."
+
 
 
