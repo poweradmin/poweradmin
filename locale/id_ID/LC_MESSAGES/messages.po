@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-16 18:36+0300\n"
+"POT-Creation-Date: 2026-04-23 19:29+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1322,7 +1322,7 @@ msgstr ""
 "Direktori <a href=\"install/\">install/</a> masih ada, Anda harus "
 "menghapusnya terlebih dahulu sebelum melanjutkan."
 
-#: lib/BaseController.php:648
+#: lib/BaseController.php:649
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1330,12 +1330,12 @@ msgstr ""
 "Kunci enkripsi sesi default sedang digunakan, silakan atur di file "
 "konfigurasi Anda."
 
-#: lib/BaseController.php:787
+#: lib/BaseController.php:788
 #, php-format
 msgid "The %s field is required."
 msgstr "Kolom %s wajib diisi."
 
-#: lib/BaseController.php:795
+#: lib/BaseController.php:796
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Kolom %s harus berupa angka."
@@ -9084,7 +9084,7 @@ msgid "My Profile"
 msgstr "Kesehatan zone"
 
 #: templates/modern/login.html:23 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:122 install/templates/step5.html.twig:67
+#: install/templates/step4.html.twig:122 install/templates/step5.html.twig:72
 msgid "Password"
 msgstr "DNSSEC dinonaktifkan"
 
@@ -9860,7 +9860,7 @@ msgid "Edit user"
 msgstr "Edit pengguna"
 
 #: templates/modern/manage_group_members.html:93
-#: install/templates/step4.html.twig:111 install/templates/step5.html.twig:56
+#: install/templates/step4.html.twig:111 install/templates/step5.html.twig:61
 msgid "Username"
 msgstr "Nama pengguna"
 
@@ -9905,7 +9905,7 @@ msgid "Optional information about this user"
 msgstr "Informasi opsional tentang pengguna ini"
 
 #: templates/modern/users.html:49 templates/modern/add_user.html:94
-#: install/templates/step2.html.twig:116
+#: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Diaktifkan"
 
@@ -12234,7 +12234,7 @@ msgid "Last Checked"
 msgstr "Terakhir Diperiksa"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:126
-#: install/templates/step2.html.twig:27
+#: install/templates/step2.html.twig:18
 msgid "OK"
 msgstr "OK"
 
@@ -12953,11 +12953,11 @@ msgstr ""
 "Karena Anda menggunakan SQLite, tidak perlu membuat pengguna baru dengan hak "
 "terbatas."
 
-#: install/templates/step5.html.twig:171 install/templates/step3.html.twig:38
+#: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
 msgstr "Lanjutkan ke langkah"
 
-#: install/templates/base.html.twig:29
+#: install/templates/base.html.twig:37
 msgid "Installation step"
 msgstr "Langkah instalasi"
 
@@ -13087,7 +13087,7 @@ msgstr "Tipe database"
 msgid "Database server type."
 msgstr "Tipe server database."
 
-#: install/templates/step4.html.twig:114 install/templates/step5.html.twig:59
+#: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
 msgid "Provide the user name"
 msgstr "Berikan nama pengguna"
 
@@ -13099,7 +13099,7 @@ msgstr "Nama pengguna database dengan hak untuk membuat tabel."
 msgid "Password for this database user."
 msgstr "Kata sandi untuk pengguna database ini."
 
-#: install/templates/step4.html.twig:132 install/templates/step5.html.twig:77
+#: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
 msgstr "Hindari tanda kutip, backslash, dan jeda baris."
 
@@ -13203,45 +13203,35 @@ msgstr "Persyaratan Sistem"
 msgid "System Requirements Check"
 msgstr "Pemeriksaan Persyaratan Sistem"
 
-#: install/templates/step2.html.twig:12
-msgid "Requirements Check:"
-msgstr "Pemeriksaan Persyaratan:"
-
-#: install/templates/step2.html.twig:12
-msgid "Verifying that your server meets all requirements to run Poweradmin."
-msgstr ""
-"Memverifikasi bahwa server Anda memenuhi semua persyaratan untuk menjalankan "
-"Poweradmin."
-
-#: install/templates/step2.html.twig:20
+#: install/templates/step2.html.twig:13
 msgid "PHP Version"
 msgstr "Versi PHP"
 
-#: install/templates/step2.html.twig:29
+#: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
 msgstr "Memerlukan PHP 8.2.0+"
 
-#: install/templates/step2.html.twig:40
+#: install/templates/step2.html.twig:30
 msgid "Database Extensions"
 msgstr "Ekstensi Database"
 
-#: install/templates/step2.html.twig:40
+#: install/templates/step2.html.twig:31
 msgid "at least one required"
 msgstr "setidaknya satu diperlukan"
 
-#: install/templates/step2.html.twig:61
+#: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
 msgstr "Ekstensi PHP yang Diperlukan"
 
-#: install/templates/step2.html.twig:80
+#: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
 msgstr "Ekstensi Opsional"
 
-#: install/templates/step2.html.twig:99
+#: install/templates/step2.html.twig:97
 msgid "Web Server"
 msgstr "Server Web"
 
-#: install/templates/step2.html.twig:106
+#: install/templates/step2.html.twig:102
 msgid "Server"
 msgstr "Server"
 
@@ -13261,19 +13251,19 @@ msgstr "Pastikan URL rewriting dikonfigurasi (lihat nginx.conf.example)"
 msgid "Ensure URL rewriting is configured for your web server"
 msgstr "Pastikan URL rewriting dikonfigurasi untuk web server Anda"
 
-#: install/templates/step2.html.twig:151
+#: install/templates/step2.html.twig:149
 msgid "All required components are available."
 msgstr "Semua komponen yang diperlukan tersedia."
 
-#: install/templates/step2.html.twig:152
+#: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
 msgstr "Anda dapat melanjutkan instalasi."
 
-#: install/templates/step2.html.twig:160
+#: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
 msgstr "Beberapa komponen yang diperlukan hilang."
 
-#: install/templates/step2.html.twig:161
+#: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
 msgstr "Silakan instal komponen yang hilang sebelum melanjutkan."
 
@@ -13298,78 +13288,85 @@ msgstr ""
 msgid "Database User"
 msgstr "Pengguna Database"
 
-#: install/templates/step5.html.twig:62
+#: install/templates/step5.html.twig:57
+msgid ""
+"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
+"configured database even when the PowerDNS API backend is selected. These "
+"credentials are for that database, not for PowerDNS."
+msgstr ""
+
+#: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
 "Nama pengguna database Poweradmin dengan akses terbatas. Bukan untuk login "
 "UI web."
 
-#: install/templates/step5.html.twig:72
+#: install/templates/step5.html.twig:77
 msgid "Provide the user password"
 msgstr "Berikan kata sandi pengguna"
 
-#: install/templates/step5.html.twig:76
+#: install/templates/step5.html.twig:81
 msgid "The password for this username."
 msgstr "Kata sandi untuk nama pengguna ini."
 
-#: install/templates/step5.html.twig:86
+#: install/templates/step5.html.twig:91
 msgid "DNS Settings"
 msgstr "Pengaturan DNS"
 
-#: install/templates/step5.html.twig:90
+#: install/templates/step5.html.twig:95
 msgid "Hostmaster"
 msgstr "Hostmaster"
 
-#: install/templates/step5.html.twig:94
+#: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
 msgstr "Berikan DNS hostmaster"
 
-#: install/templates/step5.html.twig:97
+#: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
 msgstr "Hostmaster default untuk rekod SOA."
 
-#: install/templates/step5.html.twig:102
+#: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
 msgstr "Nameserver primer"
 
-#: install/templates/step5.html.twig:106
+#: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
 msgstr "Berikan nameserver primer"
 
-#: install/templates/step5.html.twig:109
+#: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
 msgstr "Nameserver primer untuk zona baru."
 
-#: install/templates/step5.html.twig:114
+#: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
 msgstr "Nameserver sekunder"
 
-#: install/templates/step5.html.twig:118
+#: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
 msgstr "Berikan nameserver sekunder"
 
-#: install/templates/step5.html.twig:121
+#: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
 msgstr "Nameserver sekunder untuk zona baru."
 
-#: install/templates/step5.html.twig:127
+#: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
 msgstr "Nameserver Tersier"
 
-#: install/templates/step5.html.twig:127 install/templates/step5.html.twig:140
+#: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
 msgid "optional"
 msgstr "opsional"
 
-#: install/templates/step5.html.twig:134
+#: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
 msgstr "Nameserver tersier opsional untuk zona baru."
 
-#: install/templates/step5.html.twig:140
+#: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
 msgstr "Nameserver Kuarterner"
 
-#: install/templates/step5.html.twig:147
+#: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
 msgstr "Nameserver kuarterner opsional untuk zona baru."
 
@@ -13600,5 +13597,14 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Tidak dapat terhubung ke database PowerDNS \"%s\": %s"
+
+# OBSOLETE: msgid "Requirements Check:"
+# OBSOLETE: msgstr "Pemeriksaan Persyaratan:"
+
+# OBSOLETE: msgid "Verifying that your server meets all requirements to run Poweradmin."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Memverifikasi bahwa server Anda memenuhi semua persyaratan untuk "
+# OBSOLETE: "menjalankan Poweradmin."
+
 
 
