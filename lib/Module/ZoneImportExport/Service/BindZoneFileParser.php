@@ -139,11 +139,14 @@ class BindZoneFileParser
 
         // Find the longest common prefix of reversed label arrays
         $common = $reversedLabelSets[0];
-        for ($i = 1; $i < count($reversedLabelSets); $i++) {
+        $setCount = count($reversedLabelSets);
+        for ($i = 1; $i < $setCount; $i++) {
             $newCommon = [];
-            $limit = min(count($common), count($reversedLabelSets[$i]));
+            $currentSet = $reversedLabelSets[$i];
+            $limit = min(count($common), count($currentSet));
             for ($j = 0; $j < $limit; $j++) {
-                if ($common[$j] === $reversedLabelSets[$i][$j]) {
+                /** @psalm-suppress InvalidArrayOffset */
+                if ($common[$j] === $currentSet[$j]) {
                     $newCommon[] = $common[$j];
                 } else {
                     break;
@@ -263,6 +266,7 @@ class BindZoneFileParser
 
         // Look for TTL and/or class before the record type
         for ($i = 0; $i < 2 && ($pos + $i) < count($tokens); $i++) {
+            /** @psalm-suppress InvalidArrayOffset */
             $token = $tokens[$pos];
 
             if (!$foundClass && strtoupper($token) === 'IN') {
@@ -289,6 +293,7 @@ class BindZoneFileParser
             return null;
         }
 
+        /** @psalm-suppress InvalidArrayOffset */
         $type = strtoupper($tokens[$pos]);
         $pos++;
 

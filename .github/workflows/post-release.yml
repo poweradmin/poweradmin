@@ -37,14 +37,43 @@ jobs:
           echo "version=$NEXT" >> "$GITHUB_OUTPUT"
           echo "Next development version: $NEXT"
 
+      - name: Resolve branch name
+        id: branch
+        run: |
+          TARGET="${{ github.event.release.target_commitish }}"
+          # If target_commitish is a SHA, resolve the branch name from the tag
+          if [[ "$TARGET" =~ ^[0-9a-f]{40}$ ]]; then
+            BRANCH=$(git branch -r --contains "$TARGET" | grep -v HEAD | head -1 | sed 's|^ *origin/||')
+            if [ -z "$BRANCH" ]; then
+              echo "::error::Could not resolve branch for commit $TARGET"
+              exit 1
+            fi
+          else
+            BRANCH="$TARGET"
+          fi
+          echo "name=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "Resolved branch: $BRANCH"
+
+          # Skip protected branches that require PRs
+          if [ "$BRANCH" = "master" ] || [ "$BRANCH" = "main" ]; then
+            echo "::warning::Skipping version bump on protected branch $BRANCH - bump manually"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Update version file
+        if: steps.branch.outputs.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Ensure we're on the branch, not detached HEAD
+          git checkout "${{ steps.branch.outputs.name }}"
 
           # Update version in lib/Version.php
           sed -i "s/VERSION = '[^']*'/VERSION = '${{ steps.next_version.outputs.version }}'/" lib/Version.php
 
           git add lib/Version.php
           git commit -m "chore(release): bump version to ${{ steps.next_version.outputs.version }}"
-          git push origin "${{ github.event.release.target_commitish }}"
+          git push origin "${{ steps.branch.outputs.name }}"

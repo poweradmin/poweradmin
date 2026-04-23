@@ -94,8 +94,8 @@ class ZonesController extends PublicApiController
         $response = match ($method) {
             'GET' => isset($this->pathParameters['id']) ? $this->getZone() : $this->listZones(),
             'POST' => $this->createZone(),
-            'PUT' => $this->updateZone(),
-            'DELETE' => $this->deleteZone(),
+            'PUT' => isset($this->pathParameters['id']) ? $this->updateZone() : $this->returnApiError('Method not allowed', 405),
+            'DELETE' => isset($this->pathParameters['id']) ? $this->deleteZone() : $this->returnApiError('Method not allowed', 405),
             default => $this->returnApiError('Method not allowed', 405),
         };
 
