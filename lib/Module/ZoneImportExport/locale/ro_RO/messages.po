@@ -12,7 +12,7 @@ msgstr ""
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lib/Module/ZoneImportExport/templates/import.html:171
@@ -37,7 +37,7 @@ msgstr "Confirm import"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
-msgstr "Content"
+msgstr "Conținut"
 
 #: lib/Module/ZoneImportExport/templates/import.html:30
 msgid "Edit zone"
@@ -57,7 +57,7 @@ msgstr "File size exceeds the maximum allowed size of %s."
 
 #: lib/Module/ZoneImportExport/templates/import.html:58
 msgid "File:"
-msgstr "File:"
+msgstr "Fișier:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:3
 msgid "Home"
@@ -134,7 +134,7 @@ msgid "Supported formats"
 msgstr "Supported formats"
 
 msgid "Success:"
-msgstr "Success:"
+msgstr "Succes:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
@@ -165,11 +165,11 @@ msgid "Upload and preview"
 msgstr "Upload and preview"
 
 msgid "Warning:"
-msgstr "Warning:"
+msgstr "Avertisment:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"
-msgstr "Warnings:"
+msgstr "Avertismente:"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:56
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:67
@@ -190,11 +190,11 @@ msgstr "Zone Import"
 
 #: lib/Module/ZoneImportExport/templates/import.html:131
 msgid "Zone file"
-msgstr "Zone file"
+msgstr "Fișier zonă"
 
 #: lib/Module/ZoneImportExport/templates/import.html:95
 msgid "Zone name"
-msgstr "Zone name"
+msgstr "nume zonă"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:211
 msgid "Zone name is required."
@@ -202,15 +202,15 @@ msgstr "Zone name is required."
 
 #: lib/Module/ZoneImportExport/templates/import.html:99
 msgid "Zone type"
-msgstr "Zone type"
+msgstr "tip zonă"
 
 #: lib/Module/ZoneImportExport/templates/import.html:59
 msgid "Zone:"
-msgstr "Zone:"
+msgstr "Zonă:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:43
 msgid "records"
-msgstr "records"
+msgstr "înregistrări"
 
 #: lib/Module/ZoneImportExport/templates/import.html:26
 msgid "records failed."

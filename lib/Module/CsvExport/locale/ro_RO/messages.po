@@ -12,7 +12,7 @@ msgstr ""
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:45
