@@ -9182,7 +9182,7 @@ msgstr "CDNSKEY flags must be 0, 256, or 257."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:189
 msgid "CDNSKEY protocol must be 3."
-msgstr "CDNSKEY protocol must be 3."
+msgstr "A CDNSKEY protokoll értéke 3 kell legyen."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:195
 msgid "CDNSKEY algorithm must be a number between 1 and 16."
