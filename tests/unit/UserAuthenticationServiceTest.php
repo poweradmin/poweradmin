@@ -93,7 +93,7 @@ class UserAuthenticationServiceTest extends TestCase
     {
         $password = 'test_password';
         // Pre-computed md5 hash simulating an existing database record
-        $hash = md5($password);
+        $hash = '16ec1ebb01fe02ded9b7d5447d3dfc65';
         $result = $this->userAuthService->verifyPassword($password, $hash);
 
         $this->assertTrue($result, 'Password verification should be successful for legacy MD5 hash');

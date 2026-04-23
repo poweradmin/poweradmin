@@ -140,10 +140,10 @@ class AppManager
         }
 
         // Allow language override via GET parameter (login page language switcher)
-        if (!empty($_GET['lang'])) {
+        if (!empty($_GET['lang']) && is_string($_GET['lang']) && preg_match('/^[a-zA-Z_]+$/', $_GET['lang'])) {
             $enabledLanguages = $this->configuration->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
             $supportedLocales = explode(',', $enabledLanguages);
-            if (in_array($_GET['lang'], $supportedLocales)) {
+            if (in_array($_GET['lang'], $supportedLocales, true)) {
                 $interfaceLang = $_GET['lang'];
             }
         }
