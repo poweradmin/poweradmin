@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-23 19:29+0300\n"
+"POT-Creation-Date: 2026-04-23 21:11+0300\n"
 "PO-Revision-Date: 2025-06-02 07:22+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -14132,14 +14132,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nelze se připojit k databázi PowerDNS \"%s\": %s"
-
-# OBSOLETE: msgid "Requirements Check:"
-# OBSOLETE: msgstr "Kontrola požadavků:"
-
-# OBSOLETE: msgid "Verifying that your server meets all requirements to run Poweradmin."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ověřování, že váš server splňuje všechny požadavky pro spuštění "
-# OBSOLETE: "Poweradmin."
-
 
 

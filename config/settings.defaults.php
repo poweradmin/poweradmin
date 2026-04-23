@@ -136,7 +136,7 @@ return [
      */
     'interface' => [
         'language' => 'en_EN',                // Default language for the interface
-        'enabled_languages' => 'cs_CZ,de_DE,en_EN,es_ES,fr_FR,id_ID,it_IT,ja_JP,ko_KR,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,sv_SE,tr_TR,uk_UA,vi_VN,zh_CN', // Added in 3.8.0
+        'enabled_languages' => 'cs_CZ,de_DE,en_EN,es_ES,et_EE,fi_FI,fr_FR,hr_HR,hu_HU,id_ID,it_IT,ja_JP,ko_KR,lt_LT,lv_LV,nb_NO,nl_NL,pl_PL,pt_PT,ro_RO,ru_RU,sk_SK,sr_RS,sv_SE,tr_TR,uk_UA,vi_VN,zh_CN', // Added in 3.8.0
         'title' => 'Poweradmin',              // Application title (browser tab and header logo). Useful for distinguishing multiple server instances. (added in 2.1.5)
         'session_timeout' => 1800,            // Session timeout in seconds (30 minutes)
         'rows_per_page' => 10,
