@@ -65,7 +65,7 @@ msgstr "Sākums"
 
 #: lib/Module/ZoneImportExport/templates/import.html:173
 msgid "IDN domain names"
-msgstr "IDN domain names"
+msgstr "IDN domēnu vārdi"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
@@ -77,7 +77,7 @@ msgstr "Import Results"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
-msgstr "Import Zone File"
+msgstr "Importēt zonas failu"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
 msgid "Import another zone"
@@ -93,7 +93,7 @@ msgstr "Import session expired. Please upload the file again."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:48
 msgid "Invalid zone ID."
-msgstr "Invalid zone ID."
+msgstr "Nederīgs zonas ID."
 
 msgid "Master"
 msgstr "Galvenais"
@@ -214,7 +214,7 @@ msgstr "ieraksti"
 
 #: lib/Module/ZoneImportExport/templates/import.html:26
 msgid "records failed."
-msgstr "records failed."
+msgstr "ierakstu neizdevās."
 
 #: lib/Module/ZoneImportExport/templates/import.html:25
 msgid "records imported,"
@@ -240,7 +240,7 @@ msgid "Replace matching records"
 msgstr "Replace matching records"
 
 msgid "Skip duplicates"
-msgstr "Skip duplicates"
+msgstr "Izlaist dublikātus"
 
 msgid "Target zone"
 msgstr "Mērķa zona"

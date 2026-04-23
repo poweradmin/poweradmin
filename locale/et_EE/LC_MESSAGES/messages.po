@@ -3239,7 +3239,7 @@ msgstr "Tüüp \""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:254
 msgid "Duplicate type \""
-msgstr "Duplicate type \""
+msgstr "Topelt tüüp \""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:262
 msgid ""
@@ -5674,11 +5674,11 @@ msgstr "DNS wizards are not enabled."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:48
 msgid "Invalid zone ID."
-msgstr "Invalid zone ID."
+msgstr "Vigane tsooni ID."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:95
 msgid "Zone not found."
-msgstr "Zone not found."
+msgstr "Tsooni ei leitud."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:80
 msgid "You do not have permission to add records to this zone."
@@ -5839,7 +5839,7 @@ msgstr "SHA-512 hash of certificate/key (more secure but longer)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:152
 msgid "Certificate Data"
-msgstr "Certificate Data"
+msgstr "Sertifikaadi andmed"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:156
 msgid "Certificate Association Data"
@@ -5847,7 +5847,7 @@ msgstr "Certificate Association Data"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:184
 msgid "Record Settings"
-msgstr "Record Settings"
+msgstr "Kirje seaded"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:188
 msgid "TTL (seconds)"
@@ -5896,7 +5896,7 @@ msgstr "Email authentication policy and reporting configuration"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:59
 msgid "Policy Settings"
-msgstr "Policy Settings"
+msgstr "Reeglite seaded"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:138
 msgid "Policy"
@@ -5928,7 +5928,7 @@ msgstr "Block delivery of suspicious emails entirely"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:76
 msgid "Subdomain Policy"
-msgstr "Subdomain Policy"
+msgstr "Alamdomeeni reeglid"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:81
 msgid "Same as domain policy"
@@ -6072,7 +6072,7 @@ msgstr "Authorized mail server configuration"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:61
 msgid "Basic Mechanisms"
-msgstr "Basic Mechanisms"
+msgstr "Põhimehhanismid"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:62
 msgid "Select common mechanisms to authorize email sending"
@@ -6128,7 +6128,7 @@ msgstr "Include SPF records from other domains"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:108
 msgid "Include Domains"
-msgstr "Include Domains"
+msgstr "Kaasa domeenid"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
@@ -6211,7 +6211,7 @@ msgstr "CA Domain (Custom)"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:97
 msgid "Certificate Type"
-msgstr "Certificate Type"
+msgstr "Sertifikaadi tüüp"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:101
 #: templates/modern/dnssec_delete_key.html:82
@@ -6256,7 +6256,7 @@ msgstr "URL or email for incident reports (mailto: or https:)"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:103
 msgid "Advanced Options"
-msgstr "Advanced Options"
+msgstr "Täpsemad valikud"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:130
 msgid "Flags"
@@ -6407,7 +6407,7 @@ msgstr "Target Server"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:140
 msgid "Target Hostname"
-msgstr "Target Hostname"
+msgstr "Siht-hostinimi"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:159
 msgid "Priority & Load Balancing"
@@ -6678,12 +6678,12 @@ msgstr "Group has been deleted successfully."
 
 #: lib/Application/Controller/EditGroupController.php:203
 msgid "Group not found."
-msgstr "Group not found."
+msgstr "Gruppi ei leitud."
 
 #: lib/Application/Controller/UserPreferencesController.php:42
 #: templates/modern/user_preferences.html:4
 msgid "User Preferences"
-msgstr "User Preferences"
+msgstr "Kasutaja eelistused"
 
 #: lib/Application/Controller/UserPreferencesController.php:100
 msgid "Preferences saved successfully."
@@ -6711,7 +6711,7 @@ msgstr "Manage Group Members"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:115
 msgid "Invalid action."
-msgstr "Invalid action."
+msgstr "Vigane tegevus."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:197
 msgid "Please select at least one user."
@@ -7294,7 +7294,7 @@ msgstr "You do not have the permission to add a master zone."
 
 #: lib/Application/Controller/AddZoneMasterController.php:71
 msgid "Add Primary Zone"
-msgstr "Add Primary Zone"
+msgstr "Lisa esmane tsoon"
 
 #: lib/Application/Controller/AddZoneSlaveController.php:122
 msgid "At least one user or group must be selected as owner."
@@ -7356,7 +7356,7 @@ msgstr "Group has been created successfully."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid key ID."
-msgstr "Invalid key ID."
+msgstr "Vigane võtme ID."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:65
 msgid "You do not have permission to manage DNSSEC for this zone."
@@ -7694,7 +7694,7 @@ msgstr "The record has been updated successfully."
 #: lib/Application/Controller/ChangePasswordController.php:102
 #: templates/modern/change_password.html:16
 msgid "Change Password"
-msgstr "Change Password"
+msgstr "Muuda parooli"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:117
 msgid "ECDSA P-256 algorithm must use 256 bits"
@@ -7755,7 +7755,7 @@ msgstr "Invalid IP address."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid NS name."
-msgstr "Invalid NS name."
+msgstr "Vigane NS-nimi."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:91
 msgid "Super master does not exist."
@@ -8454,7 +8454,7 @@ msgstr "CERT type must be a number between 0 and 65535 or a valid mnemonic."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "CERT type value "
+msgstr "CERT tüübi väärtus "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:197
 msgid "CERT key tag must be a number between 0 and 65535."
@@ -10051,7 +10051,7 @@ msgstr "Substituted with hostmaster"
 
 #: templates/modern/add_zone_templ_record.html:161
 msgid "Example Records"
-msgstr "Example Records"
+msgstr "Näidiskirjed"
 
 #: templates/modern/add_zone_templ_record.html:166
 msgid "Name Examples"
@@ -10071,7 +10071,7 @@ msgstr "For the domain itself: <code>[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:173
 msgid "Content Examples"
-msgstr "Content Examples"
+msgstr "Sisu näited"
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
@@ -10095,11 +10095,11 @@ msgstr "Supermasteri"
 
 #: templates/modern/edit_supermaster.html:5
 msgid "Edit supermaster"
-msgstr "Edit supermaster"
+msgstr "muuda supermasterit"
 
 #: templates/modern/edit_supermaster.html:13
 msgid "Edit Supermaster"
-msgstr "Edit Supermaster"
+msgstr "Muuda supermasterit"
 
 #: templates/modern/list_supermasters.html:31
 msgid "IP address of supermaster"
@@ -10223,7 +10223,7 @@ msgstr "Kustuta"
 
 #: templates/modern/forgot_password.html:4
 msgid "Forgot Password"
-msgstr "Forgot Password"
+msgstr "Unustatud parool"
 
 #: templates/modern/forgot_username.html:46
 msgid "Back to Login"
@@ -10239,11 +10239,11 @@ msgstr "Please provide a valid email address"
 
 #: templates/modern/forgot_password.html:41
 msgid "Send Reset Link"
-msgstr "Send Reset Link"
+msgstr "Saada lähtestamise link"
 
 #: templates/default/list_groups.html:10 templates/modern/list_groups.html:10
 msgid "Group Management"
-msgstr "Group Management"
+msgstr "Gruppide haldus"
 
 #: templates/modern/header.html:240 templates/modern/add_group.html:5
 msgid "Add group"
@@ -10251,11 +10251,11 @@ msgstr "Lisa grupp"
 
 #: templates/modern/edit_user.html:262 templates/modern/add_user.html:189
 msgid "No groups found"
-msgstr "No groups found"
+msgstr "Gruppe ei leitud"
 
 #: templates/modern/add_zone_slave.html:94
 msgid "Search groups..."
-msgstr "Search groups..."
+msgstr "Otsi gruppe..."
 
 #: templates/modern/list_groups.html:58 templates/modern/edit_group.html:70
 msgid "Members"
@@ -10299,7 +10299,7 @@ msgstr "aegunud"
 
 #: templates/modern/add_record.html:102 templates/modern/add_record.html:154
 msgid "Provide content"
-msgstr "Provide content"
+msgstr "Andke sisu"
 
 #: templates/modern/add_record.html:107 templates/modern/add_record.html:159
 msgid "This record type is deprecated and should not be used for new records."
@@ -10375,7 +10375,7 @@ msgstr "Are you sure you want to remove user"
 
 #: templates/modern/edit_group.html:181 templates/modern/edit_group.html:207
 msgid "from this group?"
-msgstr "from this group?"
+msgstr "sellest grupist?"
 
 #: templates/default/edit_group.html:202 templates/modern/edit_group.html:202
 msgid "Confirm Zone Removal"
@@ -10395,7 +10395,7 @@ msgstr "This action cannot be undone. Are you sure you want to proceed?"
 
 #: templates/default/delete_group.html:22 templates/modern/delete_group.html:22
 msgid "Deletion Impact"
-msgstr "Deletion Impact"
+msgstr "Kustutamise mõju"
 
 #: templates/default/delete_group.html:29 templates/modern/delete_group.html:29
 msgid "member will be removed from this group"
@@ -10419,7 +10419,7 @@ msgstr "Affected Zones"
 
 #: templates/default/delete_group.html:51 templates/modern/delete_group.html:51
 msgid "showing first 20"
-msgstr "showing first 20"
+msgstr "näitab esimest 20"
 
 #: templates/default/delete_group.html:68 templates/modern/delete_group.html:68
 msgid "more zones..."
@@ -10471,7 +10471,7 @@ msgstr "Mallid"
 
 #: templates/default/index.html:109 templates/modern/index.html:109
 msgid "Zone Operations"
-msgstr "Zone Operations"
+msgstr "Tsooni tegevused"
 
 #: templates/default/index.html:120 templates/modern/index.html:120
 msgid "Master Zone"
@@ -10549,7 +10549,7 @@ msgstr "Optional description to help identify this template"
 
 #: templates/modern/edit_zone_templ.html:150
 msgid "Global template"
-msgstr "Global template"
+msgstr "Globaalne mall"
 
 #: templates/modern/edit_zone_templ.html:152
 msgid "Make this template available to all users"
@@ -10589,7 +10589,7 @@ msgstr "Maintain standardized DNS setups"
 
 #: templates/modern/add_zone_templ.html:91
 msgid "Tips & Examples"
-msgstr "Tips & Examples"
+msgstr "Näpunäited ja näited"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Activity Logs"
@@ -10677,7 +10677,7 @@ msgstr "tsooni logid"
 
 #: templates/modern/list_log_zones.html:17
 msgid "Zone Change Logs"
-msgstr "Zone Change Logs"
+msgstr "Tsooni muudatuste logid"
 
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
@@ -10689,11 +10689,11 @@ msgstr "All operations"
 
 #: templates/modern/bulk_record_add.html:18
 msgid "Bulk add records"
-msgstr "Bulk add records"
+msgstr "lisa kirjeid hulgi"
 
 #: templates/modern/bulk_record_add.html:30
 msgid "Bulk Add Records"
-msgstr "Bulk Add Records"
+msgstr "Lisa kirjeid hulgi"
 
 #: templates/modern/search.html:163
 msgid "Records"
@@ -10773,7 +10773,7 @@ msgstr "Common Records"
 
 #: templates/modern/bulk_record_add.html:114
 msgid "Advanced Records"
-msgstr "Advanced Records"
+msgstr "Täpsemad kirjed"
 
 #: templates/default/bulk_record_add.html:119
 msgid "legacy"
@@ -10853,7 +10853,7 @@ msgstr "No, keep this user"
 
 #: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
-msgstr "Save as Template"
+msgstr "Salvesta mallina"
 
 #: templates/modern/save-zone-template.html:14
 msgid "Save Zone as Template"
@@ -10873,7 +10873,7 @@ msgstr "Provide template name"
 
 #: templates/modern/save-zone-template.html:44
 msgid "Create Template"
-msgstr "Create Template"
+msgstr "Loo mall"
 
 #: templates/modern/user_agreement_content.html:1
 msgid "Terms of Use"
@@ -10897,7 +10897,7 @@ msgstr "You will not use this system for any malicious or illegal activities"
 
 #: templates/modern/user_agreement_content.html:12
 msgid "Data Protection"
-msgstr "Data Protection"
+msgstr "Andmekaitse"
 
 #: templates/modern/user_agreement_content.html:19
 msgid "System Availability"
@@ -10973,7 +10973,7 @@ msgstr "Please provide a password"
 
 #: templates/modern/reset_password.html:54
 msgid "Confirm Password"
-msgstr "Confirm Password"
+msgstr "Kinnita parool"
 
 #: templates/modern/reset_password.html:119
 msgid "Passwords do not match"
@@ -11085,7 +11085,7 @@ msgstr "Lisa võti"
 
 #: templates/modern/dnssec_add_key.html:34
 msgid "Add key for zone"
-msgstr "Add key for zone"
+msgstr "Lisa tsoonile võti"
 
 #: templates/modern/dnssec_add_key.html:43
 msgid "PowerDNS 4.0+ uses CSK by default"
@@ -11097,11 +11097,11 @@ msgstr "võtme tüüp"
 
 #: templates/modern/dnssec_add_key.html:60
 msgid "Select key type"
-msgstr "Select key type"
+msgstr "Valige võtme tüüp"
 
 #: templates/modern/dnssec_add_key.html:71
 msgid "Select algorithm"
-msgstr "Select algorithm"
+msgstr "Valige algoritm"
 
 #: templates/modern/dnssec_add_key.html:76
 msgid "Bits in length"
@@ -11236,7 +11236,7 @@ msgstr "No specific password requirements"
 
 #: templates/modern/add_user.html:160 templates/modern/edit_perm_templ.html:155
 msgid "User Permissions"
-msgstr "User Permissions"
+msgstr "Kasutaja õigused"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
 msgid "This user has been assigned the access template"
@@ -11296,7 +11296,7 @@ msgstr "Add Selected Groups"
 
 #: templates/modern/manage_group_members.html:128
 msgid "Confirm Removal"
-msgstr "Confirm Removal"
+msgstr "Kinnita eemaldamine"
 
 #: templates/default/edit_user.html:316 templates/modern/edit_user.html:313
 msgid "Are you sure you want to remove this user from the group"
@@ -11336,7 +11336,7 @@ msgstr "Yes, unlink these zones"
 
 #: templates/modern/list_perm_templ.html:5
 msgid "Access templates"
-msgstr "Access templates"
+msgstr "juurdepääsu mallid"
 
 #: templates/modern/add_perm_templ.html:6
 msgid "Add"
@@ -11396,7 +11396,7 @@ msgstr "Search permissions..."
 
 #: templates/modern/edit_perm_templ.html:109
 msgid "Zone Permissions"
-msgstr "Zone Permissions"
+msgstr "Tsooni õigused"
 
 #: templates/modern/edit_perm_templ.html:201
 msgid "Template Permissions"
@@ -11456,7 +11456,7 @@ msgstr "kuidas see töötab"
 
 #: templates/modern/add_supermaster.html:83
 msgid "Important Notes"
-msgstr "Important Notes"
+msgstr "Olulised märkused"
 
 #: templates/modern/login.html:11 templates/modern/login.html:43
 msgid "Log in"
@@ -11468,7 +11468,7 @@ msgstr "Please provide a username"
 
 #: templates/default/login.html:48 templates/modern/login.html:48
 msgid "Or sign in with"
-msgstr "Or sign in with"
+msgstr "Või logige sisse"
 
 #: templates/default/login.html:76 templates/modern/login.html:76
 msgid "Forgot your password?"
@@ -11597,7 +11597,7 @@ msgstr "Add User Owner"
 
 #: templates/modern/manage_group_members.html:85
 msgid "Search users..."
-msgstr "Search users..."
+msgstr "Otsi kasutajaid..."
 
 #: templates/modern/add_zone_slave.html:76
 msgid "You"
@@ -11609,7 +11609,7 @@ msgstr "Lisa omanik"
 
 #: templates/modern/add_zone_slave.html:90
 msgid "Group Ownership"
-msgstr "Group Ownership"
+msgstr "Grupi omand"
 
 #: templates/modern/zone-ownership.html:127
 msgid "No groups assigned to this zone."
@@ -11741,7 +11741,7 @@ msgstr "This record already exists"
 
 #: templates/modern/edit.html:133 templates/modern/edit.html:686
 msgid "Invalid priority"
-msgstr "Invalid priority"
+msgstr "Vigane prioriteet"
 
 #: templates/modern/edit.html:140 templates/modern/edit.html:693
 msgid "Invalid TTL value"
@@ -11809,7 +11809,7 @@ msgstr "Edit selected"
 
 #: templates/modern/edit.html:501 templates/modern/search.html:486
 msgid "Delete record(s)"
-msgstr "Delete record(s)"
+msgstr "Kustuta kirje(d)"
 
 #: templates/modern/edit.html:509 templates/modern/search.html:93
 msgid "Comments"
@@ -11849,7 +11849,7 @@ msgstr "Allkirjastamata"
 
 #: templates/default/users.html:10 templates/modern/users.html:10
 msgid "User Management"
-msgstr "User Management"
+msgstr "Kasutajate haldus"
 
 #: templates/modern/add_user.html:5 templates/modern/header.html:209
 msgid "Add user"
@@ -12074,7 +12074,7 @@ msgstr "Are you sure you want to delete this item?"
 
 #: templates/modern/forgot_username.html:4
 msgid "Forgot Username"
-msgstr "Forgot Username"
+msgstr "Unustatud kasutajanimi"
 
 #: templates/modern/forgot_username.html:41
 msgid "Send Username"
@@ -12187,7 +12187,7 @@ msgstr "Sünkr. olek"
 
 #: templates/modern/list_zone_templ.html:45 templates/modern/search.html:500
 msgid "No results found"
-msgstr "No results found"
+msgstr "Tulemusi ei leitud"
 
 #: templates/modern/list_zone_templ.html:77
 msgid "private"
@@ -12227,7 +12227,7 @@ msgstr "Muuda parooli"
 
 #: templates/modern/change_password.html:23
 msgid "Current password"
-msgstr "Current password"
+msgstr "Praegune parool"
 
 #: templates/modern/change_password.html:27
 msgid "Provide current password"
@@ -12243,7 +12243,7 @@ msgstr "Provide new password"
 
 #: templates/modern/change_password.html:39
 msgid "Repeat password"
-msgstr "Repeat password"
+msgstr "Korda parooli"
 
 #: templates/modern/change_password.html:65
 msgid "Password Guidelines"
@@ -12335,7 +12335,7 @@ msgstr "On"
 
 #: templates/modern/edit_zone_templ.html:28
 msgid "Template Records"
-msgstr "Template Records"
+msgstr "Malli kirjed"
 
 #: templates/modern/edit_zone_templ.html:38
 msgid "This zone template does not have any records yet."
@@ -12395,7 +12395,7 @@ msgstr "Edit Metadata"
 
 #: templates/modern/edit_zone_metadata.html:36
 msgid "Multiple values"
-msgstr "Multiple values"
+msgstr "Mitu väärtust"
 
 #: templates/modern/edit_zone_metadata.html:42
 msgid "Multi value"
@@ -12411,7 +12411,7 @@ msgstr "Liik"
 
 #: templates/modern/edit_zone_metadata.html:105
 msgid "Add metadata row"
-msgstr "Add metadata row"
+msgstr "Lisa metaandmete rida"
 
 #: templates/modern/edit_zone_metadata.html:108
 msgid "Save metadata"
@@ -12523,7 +12523,7 @@ msgstr "You must accept the agreement to continue"
 
 #: templates/modern/user_agreement.html:41
 msgid "Decline & Logout"
-msgstr "Decline & Logout"
+msgstr "Keeldu ja logi välja"
 
 #: templates/modern/user_agreement.html:45
 msgid "Accept & Continue"
@@ -12723,7 +12723,7 @@ msgstr "No, keep this zone"
 
 #: templates/modern/user_preferences.html:17
 msgid "Display Settings"
-msgstr "Display Settings"
+msgstr "Kuvamise seaded"
 
 #: templates/modern/user_preferences.html:22
 msgid "Items per page"
@@ -12795,7 +12795,7 @@ msgstr "Display individual delete button per record"
 
 #: templates/modern/user_preferences.html:133
 msgid "Save Preferences"
-msgstr "Save Preferences"
+msgstr "Salvesta eelistused"
 
 #: templates/modern/user_preferences.html:139
 msgid "Changes will be applied after saving"
@@ -12859,7 +12859,7 @@ msgstr "You are about to delete multiple zones. This action cannot be undone."
 
 #: templates/modern/delete_domains.html:27
 msgid "Zones to Delete"
-msgstr "Zones to Delete"
+msgstr "Kustutatavad tsoonid"
 
 #: templates/modern/delete_domains.html:40
 msgid "Note"
@@ -12915,7 +12915,7 @@ msgstr "Provide IP address"
 
 #: templates/modern/delete_zone_templ.html:12
 msgid "Delete template"
-msgstr "Delete template"
+msgstr "Kustuta mall"
 
 #: templates/modern/delete_zone_templ.html:18
 msgid "Delete Zone Template"
@@ -12947,7 +12947,7 @@ msgstr "Teema:"
 
 #: templates/modern/email_previews.html:61
 msgid "View Light Mode"
-msgstr "View Light Mode"
+msgstr "Vaata heledat režiimi"
 
 #: templates/modern/email_previews.html:65
 msgid "View Dark Mode"
@@ -12963,7 +12963,7 @@ msgstr "using custom template"
 
 #: templates/modern/email_previews.html:88
 msgid "Custom Templates"
-msgstr "Custom Templates"
+msgstr "Kohandatud mallid"
 
 #: templates/modern/email_previews.html:94
 msgid "About Email Previews"
@@ -13015,7 +13015,7 @@ msgstr "Serveri ID"
 
 #: templates/default/pdns_status.html:72 templates/modern/pdns_status.html:73
 msgid "PowerDNS Version"
-msgstr "PowerDNS Version"
+msgstr "PowerDNS versioon"
 
 #: templates/default/pdns_status.html:76 templates/modern/pdns_status.html:77
 msgid "Daemon Type"
@@ -13076,7 +13076,7 @@ msgstr "CPU kasutus"
 
 #: templates/default/pdns_status.html:223 templates/modern/pdns_status.html:224
 msgid "Query Statistics"
-msgstr "Query Statistics"
+msgstr "Päringustatistika"
 
 #: templates/default/pdns_status.html:243 templates/modern/pdns_status.html:244
 msgid "UDP Queries"
@@ -13148,7 +13148,7 @@ msgstr "API Documentation"
 
 #: templates/modern/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
-msgstr "DS and DNS keys"
+msgstr "DS ja DNS võtmed"
 
 #: templates/modern/dnssec_ds_dnskey.html:36
 msgid "DNSSEC public records for zone"
@@ -13200,11 +13200,11 @@ msgstr "This group doesn't own any zones yet"
 
 #: templates/modern/manage_group_members.html:58
 msgid "Remove Selected"
-msgstr "Remove Selected"
+msgstr "Eemalda valitud"
 
 #: templates/modern/manage_group_zones.html:72
 msgid "Available Zones"
-msgstr "Available Zones"
+msgstr "Saadaolevad tsoonid"
 
 #: templates/modern/manage_group_zones.html:79
 msgid "This group already owns all zones or no zones are available"
@@ -13212,7 +13212,7 @@ msgstr "This group already owns all zones or no zones are available"
 
 #: templates/modern/manage_group_zones.html:87
 msgid "Search zones..."
-msgstr "Search zones..."
+msgstr "Otsi tsoone..."
 
 #: templates/modern/manage_group_members.html:112
 msgid "Add Selected"
@@ -13260,7 +13260,7 @@ msgstr "No API keys found."
 
 #: templates/default/api_keys.html:111 templates/modern/api_keys.html:112
 msgid "Disable API Key"
-msgstr "Disable API Key"
+msgstr "Keela API võti"
 
 #: templates/default/api_keys.html:116 templates/modern/api_keys.html:117
 msgid "Are you sure you want to disable the API key"
@@ -13308,7 +13308,7 @@ msgstr "Template Assignment"
 
 #: templates/default/edit_perm_templ.html:76
 msgid "Users vs Groups"
-msgstr "Users vs Groups"
+msgstr "Kasutajad vs grupid"
 
 #: templates/modern/edit_perm_templ.html:77
 msgid "Permission Groups"
@@ -13356,7 +13356,7 @@ msgstr "Gruppidest"
 
 #: templates/default/add_group.html:63 templates/modern/add_group.html:68
 msgid "What are Groups?"
-msgstr "What are Groups?"
+msgstr "Mis on grupid?"
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
@@ -13364,11 +13364,11 @@ msgstr "How to Use Groups"
 
 #: templates/modern/list_perm_templ.html:11
 msgid "Access Templates"
-msgstr "Access Templates"
+msgstr "Juurdepääsu mallid"
 
 #: templates/modern/list_perm_templ.html:11
 msgid "Group Templates"
-msgstr "Group Templates"
+msgstr "Grupi mallid"
 
 #: templates/modern/list_perm_templ.html:14
 msgid "Add access template"
@@ -13388,7 +13388,7 @@ msgstr "No access templates found"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "Template Types:"
-msgstr "Template Types:"
+msgstr "Malli tüübid:"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "templates apply globally"
@@ -13408,7 +13408,7 @@ msgstr "grupi nimi"
 
 #: templates/modern/manage_group_members.html:20
 msgid "Current Members"
-msgstr "Current Members"
+msgstr "Praegused liikmed"
 
 #: templates/modern/manage_group_members.html:27
 msgid "No members in this group yet"
@@ -13460,7 +13460,7 @@ msgstr "records skipped (duplicates),"
 
 #: lib/Module/ZoneImportExport/templates/import.html:38
 msgid "records failed."
-msgstr "records failed."
+msgstr "kirjeid ebaõnnestus."
 
 #: lib/Module/ZoneImportExport/templates/import.html:45
 msgid "Import another zone"
@@ -13492,7 +13492,7 @@ msgstr "Conflict strategy"
 
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Skip duplicates"
-msgstr "Skip duplicates"
+msgstr "Jäta duplikaadid vahele"
 
 #: lib/Module/ZoneImportExport/templates/import.html:116
 msgid "Replace matching records"
@@ -13520,7 +13520,7 @@ msgstr "Confirm import"
 
 #: lib/Module/ZoneImportExport/templates/import.html:153
 msgid "Import Zone File"
-msgstr "Import Zone File"
+msgstr "Impordi tsooni fail"
 
 #: lib/Module/ZoneImportExport/templates/import.html:160
 msgid "Zone file"
@@ -13556,7 +13556,7 @@ msgstr "Multi-line records"
 
 #: lib/Module/ZoneImportExport/templates/import.html:195
 msgid "IDN domain names"
-msgstr "IDN domain names"
+msgstr "IDN domeeninimed"
 
 #: lib/Module/Whois/templates/whois.html:11
 msgid "WHOIS Lookup"
@@ -13588,7 +13588,7 @@ msgstr "Enter a domain name (e.g., example.com) to lookup its RDAP information"
 
 #: lib/Module/Rdap/templates/rdap.html:35
 msgid "RDAP results for"
-msgstr "RDAP results for"
+msgstr "RDAP tulemused"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -13620,7 +13620,7 @@ msgstr "Märkus:"
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "Jätka sammuni"
 
 #: install/templates/base.html.twig:37
 msgid "Installation step"
@@ -13636,7 +13636,7 @@ msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "Loo fail"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
@@ -13664,7 +13664,7 @@ msgstr "Configuring Database Connection"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
-msgstr "PowerDNS Backend"
+msgstr "PowerDNS taust"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
