@@ -4981,7 +4981,7 @@ msgstr "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
 
 #: templates/modern/batch_ptr_record.html:69
 msgid "e.g., \"2001:db8:1:1\""
-msgstr "e.g., \"2001:db8:1:1\""
+msgstr "piem., \"2001:db8:1:1\""
 
 #: templates/modern/batch_ptr_record.html:108
 msgid ""
@@ -5700,7 +5700,7 @@ msgstr "You do not have permission to add records to this zone."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:118
 msgid "Invalid wizard type."
-msgstr "Invalid wizard type."
+msgstr "Nederīgs vedņa veids."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:204
 msgid "Validation failed:"
@@ -5732,7 +5732,7 @@ msgstr "DNSSEC Requirement"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:91
 msgid "Service Configuration"
-msgstr "Service Configuration"
+msgstr "Pakalpojuma konfigurācija"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:148
 msgid "Port Number"
@@ -5946,7 +5946,7 @@ msgstr "Apakšdomēna politika"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:81
 msgid "Same as domain policy"
-msgstr "Same as domain policy"
+msgstr "Tāpat kā domēna politika"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:81
 msgid "Use the same policy as the main domain"
@@ -5990,7 +5990,7 @@ msgstr "Email address to receive daily aggregate reports"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:113
 msgid "Forensic Report Email"
-msgstr "Forensic Report Email"
+msgstr "Tiesas ziņojuma e-pasts"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:121
 msgid "Forensic Reporting Options"
@@ -6058,7 +6058,7 @@ msgstr "Policy is required"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:263
 msgid "Invalid policy value"
-msgstr "Invalid policy value"
+msgstr "Nederīga politikas vērtība"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:268
 msgid "Invalid subdomain policy value"
@@ -6146,7 +6146,7 @@ msgstr "Iekļaut domēnus"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:117
 msgid "Additional Mechanisms"
-msgstr "Additional Mechanisms"
+msgstr "Papildu mehānismi"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:121
 msgid "Additional A/AAAA Hosts"
@@ -6213,7 +6213,7 @@ msgstr "Custom (enter manually)"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:74
 msgid "Certificate Authority"
-msgstr "Certificate Authority"
+msgstr "Sertifikācijas iestāde"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:78
 msgid "CA Provider"
@@ -6360,11 +6360,11 @@ msgstr "Testēšanas režīms"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:116
 msgid "Strict Subdomain Mode"
-msgstr "Strict Subdomain Mode"
+msgstr "Stingrs apakšdomēna režīms"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:198
 msgid "Selector is required"
-msgstr "Selector is required"
+msgstr "Atlasītājs ir nepieciešams"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:205
 msgid "Public key is required"
@@ -6438,7 +6438,7 @@ msgstr "Svars"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:261
 msgid "Service is required"
-msgstr "Service is required"
+msgstr "Pakalpojums ir nepieciešams"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:265
 msgid "Custom service name is required"
@@ -6466,7 +6466,7 @@ msgstr "Weight must be between 0 and 65535"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:310
 msgid "Invalid domain format"
-msgstr "Invalid domain format"
+msgstr "Nederīgs domēna formāts"
 
 #: lib/Module/EmailPreviews/Controller/EmailPreviewsController.php:58
 msgid "Email Previews"
@@ -6623,7 +6623,7 @@ msgstr "You do not have permission to delete a superuser account."
 
 #: lib/Application/Controller/EditUserController.php:473
 msgid "User does not exist."
-msgstr "User does not exist."
+msgstr "Lietotājs neeksistē."
 
 #: lib/Application/Controller/DeleteUserController.php:111
 msgid "The user has been deleted successfully."
@@ -6721,7 +6721,7 @@ msgstr "You do not have permission to manage group members."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:92
 msgid "Manage Group Members"
-msgstr "Manage Group Members"
+msgstr "Pārvaldīt grupas dalībniekus"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:115
 msgid "Invalid action."
@@ -6786,7 +6786,7 @@ msgstr "API žurnāli"
 
 #: lib/Application/Controller/ListLogUsersController.php:93
 msgid "Invalid page number."
-msgstr "Invalid page number."
+msgstr "Nederīgs lapas numurs."
 
 #: lib/Application/Controller/ListLogUsersController.php:95
 msgid "Page number must be at least 1."
@@ -6904,7 +6904,7 @@ msgstr "Please provide at least one record."
 
 #: lib/Application/Controller/BulkRecordAddController.php:175
 msgid "Invalid record type."
-msgstr "Invalid record type."
+msgstr "Nederīgs ieraksta veids."
 
 #: lib/Application/Controller/BulkRecordAddController.php:213
 msgid "Record could not be added."
@@ -6921,7 +6921,7 @@ msgstr "Some record(s) could not be added."
 
 #: lib/Application/Controller/BulkRecordAddController.php:257
 msgid "Zone ID is required."
-msgstr "Zone ID is required."
+msgstr "Zonas ID ir nepieciešams."
 
 #: lib/Application/Controller/ListPermTemplController.php:42
 msgid "You do not have the permission to edit permission templates."
@@ -7027,7 +7027,7 @@ msgstr "Lietotāji"
 
 #: lib/Application/Controller/UsersController.php:78
 msgid "User details updated"
-msgstr "User details updated"
+msgstr "Lietotāja dati atjaunināti"
 
 #: lib/Application/Controller/EditZoneTemplController.php:60
 msgid "No template ID provided."
@@ -7075,7 +7075,7 @@ msgstr "Template Zones"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:53
 msgid "Invalid template ID."
-msgstr "Invalid template ID."
+msgstr "Nederīgs veidnes ID."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:54
 msgid "Template does not exist."
@@ -7108,7 +7108,7 @@ msgstr "No valid zones selected."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:139
 msgid "Template not found."
-msgstr "Template not found."
+msgstr "Veidne nav atrasta."
 
 #: lib/Application/Controller/UserAgreementController.php:97
 msgid "User agreement accepted successfully."
@@ -7394,7 +7394,7 @@ msgstr "An error occurred while deleting the DNSSEC key: "
 
 #: lib/Application/Controller/ListPermTemplController.php:46
 msgid "Permission Templates"
-msgstr "Permission Templates"
+msgstr "Atļauju veidnes"
 
 #: lib/Application/Controller/SamlCallbackController.php:83
 msgid "SAML authentication is not enabled"
@@ -7406,7 +7406,7 @@ msgstr "No SAML providers are configured"
 
 #: lib/Application/Controller/SamlLoginController.php:100
 msgid "Invalid SAML provider"
-msgstr "Invalid SAML provider"
+msgstr "Nederīgs SAML sniedzējs"
 
 #: lib/Application/Controller/SamlCallbackController.php:126
 msgid "SAML authentication failed: "
@@ -7460,7 +7460,7 @@ msgstr "You do not have the permission to view this page."
 #: lib/Application/Controller/DatabaseConsistencyController.php:42
 #: templates/default/header.html:232 templates/modern/header.html:337
 msgid "Database Consistency"
-msgstr "Database Consistency"
+msgstr "Datubāzes konsekvence"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:46
 msgid "Database consistency checks are disabled."
@@ -7517,7 +7517,7 @@ msgstr "Invalid check type"
 
 #: lib/Application/Controller/LogoutController.php:131
 msgid "You have logged out."
-msgstr "You have logged out."
+msgstr "Jūs esat izgājis."
 
 #: lib/Domain/Model/ZoneTemplate.php:186 lib/Domain/Model/ZoneTemplate.php:626
 msgid "You do not have the permission to add a zone template."
@@ -7679,7 +7679,7 @@ msgstr "An unexpected error occurred. Please contact the administrator."
 
 #: lib/Application/Controller/SamlCallbackController.php:99
 msgid "Unknown SAML endpoint"
-msgstr "Unknown SAML endpoint"
+msgstr "Nezināms SAML galapunkts"
 
 #: lib/Application/Controller/SamlCallbackController.php:148
 msgid "You have been logged out"
@@ -8026,7 +8026,7 @@ msgstr "Error checking template existence: "
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:101
 msgid "All zones have owners"
-msgstr "All zones have owners"
+msgstr "Visām zonām ir īpašnieki"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:108
 #, php-format
@@ -8488,7 +8488,7 @@ msgstr "For URL-based CERT types, the certificate data must be a valid URL."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "Certificate data is "
+msgstr "Sertifikāta dati ir "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:299
 msgid "CERT certificate data must be valid base64-encoded data."
@@ -8692,12 +8692,12 @@ msgstr "Invalid domain in exp modifier."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
 msgid "Unknown modifier: %s"
-msgstr "Unknown modifier: %s"
+msgstr "Nezināms modifikators: %s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:285
 #, php-format
 msgid "Unknown mechanism: %s"
-msgstr "Unknown mechanism: %s"
+msgstr "Nezināms mehānisms: %s"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:280
 msgid "Empty CNAME records are not allowed."
@@ -9351,7 +9351,7 @@ msgstr "DMARC report format tag (rf) must be afrf or iodef"
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
 msgid "Unknown DMARC tag: %s"
-msgstr "Unknown DMARC tag: %s"
+msgstr "Nezināms DMARC tags: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:293
 #, php-format
@@ -9571,7 +9571,7 @@ msgstr "Unable to find domain with the given ID."
 
 #: lib/Domain/Service/DnsRecordValidationService.php:105
 msgid "Unknown record type."
-msgstr "Unknown record type."
+msgstr "Nezināms ieraksta veids."
 
 #: lib/Domain/Service/ApiKeyService.php:176
 msgid "API functionality is disabled."
@@ -9833,7 +9833,7 @@ msgstr "Aktivizēt atslēgu"
 
 #: templates/modern/dnssec_edit_key.html:35
 msgid "Deactivate DNSSEC Key"
-msgstr "Deactivate DNSSEC Key"
+msgstr "Deaktivizēt DNSSEC atslēgu"
 
 #: templates/modern/dnssec_edit_key.html:37
 msgid "Activate DNSSEC Key"
@@ -9913,7 +9913,7 @@ msgstr "Leave empty for a key that never expires"
 
 #: templates/default/api_key_edit.html:35 templates/modern/api_key_edit.html:36
 msgid "Disable this API key"
-msgstr "Disable this API key"
+msgstr "Atspējot šo API atslēgu"
 
 #: templates/default/api_key_edit.html:37 templates/modern/api_key_edit.html:38
 msgid "Disabled keys cannot be used for authentication"
@@ -9985,7 +9985,7 @@ msgstr "Provide a name for your record"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-65535"
-msgstr "Valid range: 0-65535"
+msgstr "Derīgs diapazons: 0-65535"
 
 #: templates/modern/add_zone_templ_record.html:63
 msgid "Only for MX, SRV, KX, NAPTR"
@@ -10017,7 +10017,7 @@ msgstr "Atiestatīt"
 
 #: templates/modern/edit_zone_templ.html:178
 msgid "Template Placeholders"
-msgstr "Template Placeholders"
+msgstr "Veidnes vietturi"
 
 #: templates/modern/edit_zone_templ.html:186
 msgid "Placeholder"
@@ -10129,7 +10129,7 @@ msgstr "Provide ip address"
 
 #: templates/modern/delete_supermaster.html:27
 msgid "Hostname in NS record"
-msgstr "Hostname in NS record"
+msgstr "Resursdatora vārds NS ierakstā"
 
 #: templates/modern/add_supermaster.html:29
 msgid "Enter the hostname as it appears in the NS record"
@@ -10189,7 +10189,7 @@ msgstr "Noņemt zonas parakstu"
 
 #: templates/modern/dnssec.html:55 templates/modern/dnssec.html:57
 msgid "DNSSEC keys for zone"
-msgstr "DNSSEC keys for zone"
+msgstr "DNSSEC atslēgas zonai"
 
 #: templates/default/dnssec.html:62 templates/modern/dnssec.html:62
 msgid "Add new key"
@@ -10393,7 +10393,7 @@ msgstr "no šīs grupas?"
 
 #: templates/default/edit_group.html:202 templates/modern/edit_group.html:202
 msgid "Confirm Zone Removal"
-msgstr "Confirm Zone Removal"
+msgstr "Apstiprināt zonas noņemšanu"
 
 #: templates/default/edit_group.html:207 templates/modern/edit_group.html:207
 msgid "Are you sure you want to remove zone"
@@ -10543,7 +10543,7 @@ msgstr "Rediģēt komentāru"
 
 #: templates/modern/edit_comment.html:25
 msgid "Edit comment in zone"
-msgstr "Edit comment in zone"
+msgstr "Rediģēt komentāru zonā"
 
 #: templates/modern/add_zone_templ.html:12 templates/modern/header.html:271
 msgid "Add template"
@@ -10551,7 +10551,7 @@ msgstr "pievienot veidni"
 
 #: templates/modern/add_zone_templ.html:24
 msgid "Add zone template for"
-msgstr "Add zone template for"
+msgstr "Pievienot zonas veidni"
 
 #: templates/modern/edit_perm_templ.html:26
 msgid "Provide a name for your template"
@@ -10575,7 +10575,7 @@ msgstr "Add zone template"
 
 #: templates/modern/add_zone_templ.html:68
 msgid "Template Information"
-msgstr "Template Information"
+msgstr "Informācija par veidni"
 
 #: templates/modern/add_zone_templ.html:73
 msgid "About Templates"
@@ -10779,7 +10779,7 @@ msgstr "Quote TXT record values that contain spaces"
 
 #: templates/modern/bulk_record_add.html:100
 msgid "Record Type Examples"
-msgstr "Record Type Examples"
+msgstr "Ierakstu veidu piemēri"
 
 #: templates/modern/bulk_record_add.html:105
 msgid "Common Records"
@@ -10859,7 +10859,7 @@ msgstr "Add new owner: Transfer ownership to another user"
 
 #: templates/default/delete_user.html:93 templates/modern/delete_user.html:93
 msgid "Yes, delete this user"
-msgstr "Yes, delete this user"
+msgstr "Jā, dzēst šo lietotāju"
 
 #: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
 msgid "No, keep this user"
@@ -10871,7 +10871,7 @@ msgstr "Saglabāt kā veidni"
 
 #: templates/modern/save-zone-template.html:14
 msgid "Save Zone as Template"
-msgstr "Save Zone as Template"
+msgstr "Saglabāt zonu kā veidni"
 
 #: templates/modern/save-zone-template.html:18
 msgid "Source Zone"
@@ -10883,7 +10883,7 @@ msgstr "Template Name"
 
 #: templates/modern/save-zone-template.html:33
 msgid "Provide template name"
-msgstr "Provide template name"
+msgstr "Norādiet veidnes nosaukumu"
 
 #: templates/modern/save-zone-template.html:44
 msgid "Create Template"
@@ -10915,7 +10915,7 @@ msgstr "Datu aizsardzība"
 
 #: templates/modern/user_agreement_content.html:19
 msgid "System Availability"
-msgstr "System Availability"
+msgstr "Sistēmas pieejamība"
 
 #: templates/modern/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -10923,7 +10923,7 @@ msgstr "Limitation of Liability"
 
 #: templates/modern/user_agreement_content.html:25
 msgid "Changes to Agreement"
-msgstr "Changes to Agreement"
+msgstr "Izmaiņas vienošanās"
 
 #: templates/modern/user_agreement_content.html:30
 msgid "Agreement Version:"
@@ -10955,7 +10955,7 @@ msgstr "Yes, regenerate this API key"
 
 #: templates/modern/api_key_regenerate.html:75
 msgid "No, keep current key"
-msgstr "No, keep current key"
+msgstr "Nē, paturēt pašreizējo atslēgu"
 
 #: templates/modern/reset_password.html:84
 msgid "Reset Password"
@@ -10995,7 +10995,7 @@ msgstr "Passwords do not match"
 
 #: templates/modern/add_user.html:133
 msgid "Password Requirements"
-msgstr "Password Requirements"
+msgstr "Paroles prasības"
 
 #: templates/modern/add_user.html:137 templates/modern/change_password.html:79
 msgid "Minimum length"
@@ -11127,7 +11127,7 @@ msgstr "Select bits length"
 
 #: templates/modern/dnssec_add_key.html:142
 msgid "Recommended bits for"
-msgstr "Recommended bits for"
+msgstr "Ieteicamie biti"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
 #: install/helpers/InstallStepHandler.php:175
@@ -11156,7 +11156,7 @@ msgstr "Zone Signing Key - signs all other records in the zone"
 
 #: templates/modern/dnssec_add_key.html:200
 msgid "Recommended Settings"
-msgstr "Recommended Settings"
+msgstr "Ieteicamie iestatījumi"
 
 #: templates/modern/edit_user.html:5 templates/modern/header.html:366
 msgid "Edit profile"
@@ -11238,7 +11238,7 @@ msgstr "Must contain lowercase letters"
 
 #: templates/modern/change_password.html:88
 msgid "Must contain numbers"
-msgstr "Must contain numbers"
+msgstr "Jāietver skaitļi"
 
 #: templates/modern/change_password.html:92
 msgid "Must contain special characters"
@@ -11338,11 +11338,11 @@ msgstr "zonas kopā"
 
 #: templates/modern/confirm_unlink_zones_templ.html:30
 msgid "Zones to be unlinked"
-msgstr "Zones to be unlinked"
+msgstr "Zonas, kuras atsaistīs"
 
 #: templates/modern/confirm_unlink_zones_templ.html:70
 msgid "Yes, unlink this zone"
-msgstr "Yes, unlink this zone"
+msgstr "Jā, atsaistīt šo zonu"
 
 #: templates/modern/confirm_unlink_zones_templ.html:72
 msgid "Yes, unlink these zones"
@@ -11398,15 +11398,15 @@ msgstr "What are Access Templates?"
 
 #: templates/modern/add_perm_templ.html:77
 msgid "How to Use Templates"
-msgstr "How to Use Templates"
+msgstr "Kā izmantot veidnes"
 
 #: templates/modern/edit_perm_templ.html:90
 msgid "Available Permissions"
-msgstr "Available Permissions"
+msgstr "Pieejamās atļaujas"
 
 #: templates/modern/edit_perm_templ.html:93
 msgid "Search permissions..."
-msgstr "Search permissions..."
+msgstr "Meklēt atļaujas..."
 
 #: templates/modern/edit_perm_templ.html:109
 msgid "Zone Permissions"
@@ -11414,7 +11414,7 @@ msgstr "Zonas atļaujas"
 
 #: templates/modern/edit_perm_templ.html:201
 msgid "Template Permissions"
-msgstr "Template Permissions"
+msgstr "Veidnes atļaujas"
 
 #: templates/modern/edit_perm_templ.html:247
 msgid "Other Permissions"
@@ -11559,7 +11559,7 @@ msgstr "PTR Record Information"
 
 #: templates/modern/api_key_add.html:50
 msgid "Important Information"
-msgstr "Important Information"
+msgstr "Svarīga informācija"
 
 #: templates/modern/batch_ptr_record.html:142
 msgid "This tool creates PTR records in bulk. Two modes are available:"
@@ -11944,7 +11944,7 @@ msgstr "Yes, delete this record"
 
 #: templates/modern/delete_zone_templ_record.html:62
 msgid "No, keep this record"
-msgstr "No, keep this record"
+msgstr "Nē, paturēt šo ierakstu"
 
 #: templates/default/mfa_verify.html:6 templates/modern/mfa_verify.html:6
 msgid "Two-Factor Authentication"
@@ -11976,7 +11976,7 @@ msgstr "Pārbaudīt"
 
 #: templates/default/mfa_verify.html:72 templates/modern/mfa_verify.html:72
 msgid "Use a recovery code"
-msgstr "Use a recovery code"
+msgstr "Izmantot atkopšanas kodu"
 
 #: templates/default/mfa_verify.html:86 templates/modern/mfa_verify.html:86
 msgid "Use Recovery Code"
@@ -12012,7 +12012,7 @@ msgstr "Brīdinājumi"
 
 #: templates/modern/database_consistency.html:49
 msgid "Zones Without Owners"
-msgstr "Zones Without Owners"
+msgstr "Zonas bez īpašniekiem"
 
 #: templates/modern/database_consistency.html:259
 msgid "Zone ID"
@@ -12097,7 +12097,7 @@ msgstr "Send Username"
 #: templates/default/add_user.html:43 templates/modern/add_user.html:43
 #: install/templates/step4.html.twig:127
 msgid "Provide user password"
-msgstr "Provide user password"
+msgstr "Norādiet lietotāja paroli"
 
 #: templates/default/add_user.html:51 templates/modern/add_user.html:51
 msgid "Auto-generate password"
@@ -12133,7 +12133,7 @@ msgstr "Provide zone name"
 
 #: templates/modern/add_zone_slave.html:31
 msgid "Example: example.com"
-msgstr "Example: example.com"
+msgstr "Piemērs: example.com"
 
 #: templates/modern/add_zone_master.html:46
 msgid "Zone type (usually NATIVE)"
@@ -12185,7 +12185,7 @@ msgstr "Zone templates for"
 
 #: templates/modern/list_zone_templ.html:20
 msgid "Search templates..."
-msgstr "Search templates..."
+msgstr "Meklēt veidnes..."
 
 #: templates/modern/edit_zone_templ.html:131
 msgid "Template name"
@@ -12213,7 +12213,7 @@ msgstr "globāls"
 
 #: templates/modern/list_zone_templ.html:87
 msgid "Zones need updating"
-msgstr "Zones need updating"
+msgstr "Zonas jāatjaunina"
 
 #: templates/modern/list_zone_templ.html:91
 msgid "All zones are synchronized"
@@ -12253,7 +12253,7 @@ msgstr "jauna parole"
 
 #: templates/modern/change_password.html:43
 msgid "Provide new password"
-msgstr "Provide new password"
+msgstr "Norādiet jaunu paroli"
 
 #: templates/modern/change_password.html:39
 msgid "Repeat password"
@@ -12297,7 +12297,7 @@ msgstr "Set Up Authenticator App"
 
 #: templates/modern/mfa_verify_app.html:19
 msgid "Step 1: Scan QR Code"
-msgstr "Step 1: Scan QR Code"
+msgstr "1. solis: Skenējiet QR kodu"
 
 #: templates/modern/mfa_verify_app.html:20
 msgid "Scan this QR code with your authenticator app"
@@ -12309,7 +12309,7 @@ msgstr "Or manually enter this key in your authenticator app"
 
 #: templates/modern/mfa_verify_app.html:36
 msgid "Step 2: Verify Setup"
-msgstr "Step 2: Verify Setup"
+msgstr "2. solis: Pārbaudiet iestatījumus"
 
 #: templates/modern/mfa_verify_app.html:37
 msgid "Enter the 6-digit code from your authenticator app"
@@ -12325,7 +12325,7 @@ msgstr "Please enter a valid 6-digit verification code."
 
 #: templates/modern/mfa_verify_email.html:40
 msgid "Verify and Enable MFA"
-msgstr "Verify and Enable MFA"
+msgstr "Pārbaudīt un iespējot MFA"
 
 #: templates/modern/mfa_verify_app.html:67
 msgid "Recommended Authenticator Apps"
@@ -12393,7 +12393,7 @@ msgstr "Do you want to continue without adding an SOA record?"
 
 #: templates/modern/edit_zone_templ.html:324
 msgid "Continue Without SOA"
-msgstr "Continue Without SOA"
+msgstr "Turpināt bez SOA"
 
 #: templates/modern/list_supermasters.html:21
 msgid "Search supermasters..."
@@ -12605,7 +12605,7 @@ msgstr "Lejupielādēt"
 
 #: templates/modern/mfa_recovery_codes.html:62
 msgid "Back to MFA Settings"
-msgstr "Back to MFA Settings"
+msgstr "Atpakaļ uz MFA iestatījumiem"
 
 #: templates/modern/mfa_setup.html:52
 msgid "Disable MFA"
@@ -12613,7 +12613,7 @@ msgstr "Atspējot MFA"
 
 #: templates/modern/mfa_recovery_codes.html:71
 msgid "Continue to Dashboard"
-msgstr "Continue to Dashboard"
+msgstr "Turpināt uz informācijas paneli"
 
 #: templates/modern/mfa_recovery_codes.html:100
 msgid "Poweradmin MFA Recovery Codes"
@@ -12701,7 +12701,7 @@ msgstr "Enter the 6-digit code from your email"
 
 #: templates/modern/list_template_zones.html:11
 msgid "Zones using template"
-msgstr "Zones using template"
+msgstr "Zonas, kas izmanto veidni"
 
 #: templates/modern/list_template_zones.html:66
 msgid "No domains using this template"
@@ -12713,7 +12713,7 @@ msgstr "Back to templates"
 
 #: templates/modern/list_template_zones.html:118
 msgid "Unlink selected zones"
-msgstr "Unlink selected zones"
+msgstr "Atsaistīt atlasītās zonas"
 
 #: templates/modern/delete_domain.html:24
 msgid "Delete Zone"
@@ -12729,7 +12729,7 @@ msgstr "Zonas detaļas"
 
 #: templates/modern/delete_domain.html:75
 msgid "Yes, delete this zone"
-msgstr "Yes, delete this zone"
+msgstr "Jā, dzēst šo zonu"
 
 #: templates/modern/delete_domain.html:83
 msgid "No, keep this zone"
@@ -12749,7 +12749,7 @@ msgstr "Zonas opcijas"
 
 #: templates/modern/user_preferences.html:42
 msgid "Zone serial numbers"
-msgstr "Zone serial numbers"
+msgstr "Zonas sērijas numuri"
 
 #: templates/modern/user_preferences.html:43
 msgid "Display serial numbers in zone lists"
@@ -12785,7 +12785,7 @@ msgstr "Display record ID column in edit view"
 
 #: templates/modern/user_preferences.html:101
 msgid "Show add record form"
-msgstr "Show add record form"
+msgstr "Rādīt pievienošanas veidlapu"
 
 #: templates/modern/user_preferences.html:102
 msgid "Display inline add record form in edit view"
@@ -12801,7 +12801,7 @@ msgstr "Display individual edit button per record"
 
 #: templates/modern/user_preferences.html:117
 msgid "Show delete buttons"
-msgstr "Show delete buttons"
+msgstr "Rādīt dzēšanas pogas"
 
 #: templates/modern/user_preferences.html:118
 msgid "Display individual delete button per record"
@@ -12841,7 +12841,7 @@ msgstr "Try different search terms or filters"
 
 #: templates/default/search.html:664 templates/modern/search.html:675
 msgid "Confirm Zone Deletion"
-msgstr "Confirm Zone Deletion"
+msgstr "Apstiprināt zonas dzēšanu"
 
 #: templates/modern/search.html:680 templates/modern/search.html:706
 msgid "Are you sure you want to delete"
@@ -12857,7 +12857,7 @@ msgstr "Confirm Record Deletion"
 
 #: templates/default/search.html:695 templates/modern/search.html:706
 msgid "selected record(s)?"
-msgstr "selected record(s)?"
+msgstr "atlasītos ierakstus?"
 
 #: templates/modern/delete_domains.html:11
 msgid "Delete zones"
@@ -12865,7 +12865,7 @@ msgstr "Dzēst zonas"
 
 #: templates/modern/delete_domains.html:17
 msgid "Delete Multiple Zones"
-msgstr "Delete Multiple Zones"
+msgstr "Dzēst vairākas zonas"
 
 #: templates/modern/delete_domains.html:22
 msgid "You are about to delete multiple zones. This action cannot be undone."
@@ -12885,7 +12885,7 @@ msgstr "Yes, delete these zones"
 
 #: templates/modern/delete_domains.html:87
 msgid "No, keep these zones"
-msgstr "No, keep these zones"
+msgstr "Nē, paturēt šīs zonas"
 
 #: templates/modern/delete_supermaster.html:5
 msgid "Delete supermaster"
@@ -12901,7 +12901,7 @@ msgstr "You are about to delete the supermaster"
 
 #: templates/modern/delete_supermaster.html:22
 msgid "Supermaster Details"
-msgstr "Supermaster Details"
+msgstr "Galvenā detaļas"
 
 #: templates/modern/delete_supermaster.html:53
 msgid "Yes, delete this supermaster"
@@ -12933,7 +12933,7 @@ msgstr "Dzēst veidni"
 
 #: templates/modern/delete_zone_templ.html:18
 msgid "Delete Zone Template"
-msgstr "Delete Zone Template"
+msgstr "Dzēst zonas veidni"
 
 #: templates/modern/delete_zone_templ.html:23
 msgid "You are about to delete the zone template"
@@ -12973,7 +12973,7 @@ msgstr "Template Override Information"
 
 #: templates/modern/email_previews.html:81
 msgid "using custom template"
-msgstr "using custom template"
+msgstr "izmantojot pielāgotu veidni"
 
 #: templates/modern/email_previews.html:88
 msgid "Custom Templates"
@@ -12981,7 +12981,7 @@ msgstr "Pielāgotas veidnes"
 
 #: templates/modern/email_previews.html:94
 msgid "About Email Previews"
-msgstr "About Email Previews"
+msgstr "Par e-pasta priekšskatījumiem"
 
 #: templates/modern/email_previews.html:96
 msgid "Previews use sample data to demonstrate email appearance"
@@ -13306,11 +13306,11 @@ msgstr "Yes, delete this API key"
 
 #: templates/modern/api_key_delete.html:74
 msgid "No, keep this API key"
-msgstr "No, keep this API key"
+msgstr "Nē, paturēt šo API atslēgu"
 
 #: templates/modern/edit_perm_templ.html:19
 msgid "Edit Access Template"
-msgstr "Edit Access Template"
+msgstr "Rediģēt piekļuves veidni"
 
 #: templates/modern/edit_perm_templ.html:68
 msgid "Template Usage Information"
@@ -13318,7 +13318,7 @@ msgstr "Template Usage Information"
 
 #: templates/modern/edit_perm_templ.html:73
 msgid "Template Assignment"
-msgstr "Template Assignment"
+msgstr "Veidnes piešķiršana"
 
 #: templates/default/edit_perm_templ.html:76
 msgid "Users vs Groups"
@@ -13358,7 +13358,7 @@ msgstr "You are about to delete a DNSSEC key (ID"
 
 #: templates/default/add_group.html:35 templates/modern/add_group.html:35
 msgid "Select a template..."
-msgstr "Select a template..."
+msgstr "Atlasiet veidni..."
 
 #: templates/default/add_group.html:46 templates/modern/add_group.html:51
 msgid "Create Group"
@@ -13670,7 +13670,7 @@ msgstr "Begin Installation"
 
 #: install/templates/step4.html.twig:3
 msgid "Configuring database"
-msgstr "Configuring database"
+msgstr "Datubāzes konfigurēšana"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
@@ -13702,7 +13702,7 @@ msgstr "Eksperimentāls"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API Settings"
+msgstr "PowerDNS API iestatījumi"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
@@ -13738,11 +13738,11 @@ msgstr "Database type"
 
 #: install/templates/step4.html.twig:106
 msgid "Database server type."
-msgstr "Database server type."
+msgstr "Datubāzes servera veids."
 
 #: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Norādiet lietotājvārdu"
 
 #: install/templates/step4.html.twig:117
 msgid "Database username with rights to create tables."
@@ -13758,7 +13758,7 @@ msgstr "Avoid quotes, backslashes, and line breaks."
 
 #: install/templates/step4.html.twig:140
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Norādiet resursdatora nosaukumu"
 
 #: install/templates/step4.html.twig:148
 msgid "DB Port"
@@ -13766,11 +13766,11 @@ msgstr "DB ports"
 
 #: install/templates/step4.html.twig:151
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Norādiet datubāzes portu"
 
 #: install/templates/step4.html.twig:154
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Datubāzes servera ports."
 
 #: install/templates/step4.html.twig:162
 msgid "Provide the name of the database"
@@ -13834,7 +13834,7 @@ msgstr "Provide a password"
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
-msgstr "System Requirements"
+msgstr "Sistēmas prasības"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
@@ -13846,7 +13846,7 @@ msgstr "PHP versija"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Requires PHP 8.2.0+"
+msgstr "Nepieciešams PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
@@ -13854,7 +13854,7 @@ msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "nepieciešams vismaz viens"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
@@ -13962,7 +13962,7 @@ msgstr "Primary nameserver for new zones."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
-msgstr "Secondary nameserver"
+msgstr "Sekundārais vārdu serveris"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
@@ -13974,7 +13974,7 @@ msgstr "Secondary nameserver for new zones."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
-msgstr "Tertiary Nameserver"
+msgstr "Terciārais vārdu serveris"
 
 #: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
 msgid "optional"
@@ -13986,7 +13986,7 @@ msgstr "Optional tertiary nameserver for new zones."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
-msgstr "Quaternary Nameserver"
+msgstr "Kvartārais vārdu serveris"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
@@ -13994,7 +13994,7 @@ msgstr "Optional quaternary nameserver for new zones."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
-msgstr "Installation complete"
+msgstr "Instalēšana pabeigta"
 
 #: install/templates/step8.html.twig:12
 msgid "Installation Complete!"
