@@ -5720,7 +5720,7 @@ msgstr "Record created successfully"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:45
 msgid "TLSA Record"
-msgstr "TLSA Record"
+msgstr "TLSA запис"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:46
 msgid "TLS certificate/key authentication (DANE)"
@@ -5736,7 +5736,7 @@ msgstr "Service Configuration"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:148
 msgid "Port Number"
-msgstr "Port Number"
+msgstr "Број порта"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:113
 msgid "Protocol"
@@ -5902,7 +5902,7 @@ msgstr "Invalid hostname format"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:46
 msgid "DMARC Record"
-msgstr "DMARC Record"
+msgstr "DMARC запис"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:47
 msgid "Email authentication policy and reporting configuration"
@@ -6110,7 +6110,7 @@ msgstr "Authorize the domain's A and AAAA records"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:81
 msgid "IP Addresses"
-msgstr "IP Addresses"
+msgstr "IP адресе"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:82
 msgid "Authorized IP addresses and networks (CIDR notation supported)"
@@ -6278,7 +6278,7 @@ msgstr "Заставице"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:135
 msgid "Non-critical"
-msgstr "Non-critical"
+msgstr "Некритично"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:135
 msgid "Allow fallback if not understood"
@@ -6356,7 +6356,7 @@ msgstr "Encryption algorithm for the DKIM public key"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:109
 msgid "Testing Mode"
-msgstr "Testing Mode"
+msgstr "Тест режим"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:116
 msgid "Strict Subdomain Mode"
@@ -6680,7 +6680,7 @@ msgstr "Invalid group ID."
 #: lib/Application/Controller/DeleteGroupController.php:93
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
 msgid "Delete Group"
-msgstr "Delete Group"
+msgstr "Обриши групу"
 
 #: lib/Application/Controller/DeleteGroupController.php:108
 msgid "Group deletion cancelled."
@@ -9777,7 +9777,7 @@ msgstr "Назив:"
 
 #: templates/modern/api_key_regenerated.html:28
 msgid "New API Key:"
-msgstr "New API Key:"
+msgstr "Нови АПИ кључ:"
 
 #: templates/modern/list_log_groups.html:176
 msgid "Copy"
@@ -9829,7 +9829,7 @@ msgstr "Deactivate key"
 
 #: templates/modern/dnssec_edit_key.html:140
 msgid "Activate key"
-msgstr "Activate key"
+msgstr "Активирај кључ"
 
 #: templates/modern/dnssec_edit_key.html:35
 msgid "Deactivate DNSSEC Key"
@@ -9889,7 +9889,7 @@ msgstr "Откажи"
 
 #: templates/modern/api_key_edit.html:6 templates/modern/api_key_edit.html:14
 msgid "Edit API Key"
-msgstr "Edit API Key"
+msgstr "Уреди АПИ кључ"
 
 #: lib/Module/ZoneImportExport/templates/import.html:78
 msgid "Name"
@@ -10021,7 +10021,7 @@ msgstr "Template Placeholders"
 
 #: templates/modern/edit_zone_templ.html:186
 msgid "Placeholder"
-msgstr "Placeholder"
+msgstr "Чувар места"
 
 #: templates/modern/list_perm_templ.html:33
 msgid "Description"
@@ -10105,7 +10105,7 @@ msgstr "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/modern/delete_supermaster.html:4
 msgid "Supermasters"
-msgstr "Supermasters"
+msgstr "Супер главни"
 
 #: templates/modern/edit_supermaster.html:5
 msgid "Edit supermaster"
@@ -10149,7 +10149,7 @@ msgstr "Select the account that will own this supermaster"
 
 #: templates/modern/edit.html:190 templates/modern/edit.html:526
 msgid "Save changes"
-msgstr "Save changes"
+msgstr "Сачувај измене"
 
 #: templates/modern/change_password.html:55
 msgid "All fields are required"
@@ -10185,7 +10185,7 @@ msgstr "Are you sure you want to unsign the zone"
 
 #: templates/default/dnssec.html:21 templates/modern/dnssec.html:21
 msgid "Unsign Zone"
-msgstr "Unsign Zone"
+msgstr "Уклони потпис зоне"
 
 #: templates/modern/dnssec.html:55 templates/modern/dnssec.html:57
 msgid "DNSSEC keys for zone"
@@ -10201,7 +10201,7 @@ msgstr "Show DS and DNSKEY"
 
 #: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
 msgid "Unsign zone"
-msgstr "Unsign zone"
+msgstr "уклони потпис зоне"
 
 #: templates/default/dnssec.html:79 templates/modern/dnssec.html:79
 msgid "ID"
@@ -10285,7 +10285,7 @@ msgstr "Manage members"
 
 #: templates/modern/manage_group_zones.html:6
 msgid "Manage zones"
-msgstr "Manage zones"
+msgstr "Управљај зонама"
 
 #: templates/modern/list_groups.html:63 templates/modern/edit_group.html:5
 msgid "Edit group"
@@ -10349,7 +10349,7 @@ msgstr "Select an access template"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
-msgstr "Update Group"
+msgstr "Ажурирај групу"
 
 #: templates/modern/edit_group.html:74 templates/modern/edit_group.html:118
 msgid "Manage"
@@ -10489,7 +10489,7 @@ msgstr "Zone Operations"
 
 #: templates/default/index.html:120 templates/modern/index.html:120
 msgid "Master Zone"
-msgstr "Master Zone"
+msgstr "Главна зона"
 
 #: templates/default/index.html:130 templates/modern/index.html:130
 msgid "Slave Zone"
@@ -10497,11 +10497,11 @@ msgstr "Секундарна зона"
 
 #: templates/default/index.html:140 templates/modern/index.html:140
 msgid "Supermaster"
-msgstr "Supermaster"
+msgstr "Супер главни"
 
 #: templates/default/index.html:160 templates/modern/index.html:160
 msgid "PTR Records"
-msgstr "PTR Records"
+msgstr "PTR записи"
 
 #: templates/default/index.html:178 templates/modern/index.html:178
 msgid "Administration"
@@ -10531,7 +10531,7 @@ msgstr "Лозинка"
 
 #: templates/modern/index.html:334 templates/modern/header.html:372
 msgid "Preferences"
-msgstr "Preferences"
+msgstr "Поставке"
 
 #: templates/modern/header.html:436
 msgid "Logout"
@@ -10539,7 +10539,7 @@ msgstr "Одјава"
 
 #: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
 msgid "Edit comment"
-msgstr "Edit comment"
+msgstr "Уреди коментар"
 
 #: templates/modern/edit_comment.html:25
 msgid "Edit comment in zone"
@@ -10547,7 +10547,7 @@ msgstr "Edit comment in zone"
 
 #: templates/modern/add_zone_templ.html:12 templates/modern/header.html:271
 msgid "Add template"
-msgstr "Add template"
+msgstr "додај шаблон"
 
 #: templates/modern/add_zone_templ.html:24
 msgid "Add zone template for"
@@ -10667,7 +10667,7 @@ msgstr "Формат"
 
 #: templates/modern/list_log_groups.html:169
 msgid "Log Details"
-msgstr "Log Details"
+msgstr "Детаљи дневника"
 
 #: templates/modern/list_log_groups.html:179
 msgid "Close"
@@ -10739,11 +10739,11 @@ msgstr "Додај записе"
 
 #: templates/modern/bulk_registration.html:104
 msgid "Instructions"
-msgstr "Instructions"
+msgstr "Упутства"
 
 #: templates/modern/bulk_record_add.html:78
 msgid "Input Format"
-msgstr "Input Format"
+msgstr "Улазни формат"
 
 #: templates/modern/bulk_record_add.html:80
 msgid "Enter one record per line using CSV format"
@@ -10875,7 +10875,7 @@ msgstr "Save Zone as Template"
 
 #: templates/modern/save-zone-template.html:18
 msgid "Source Zone"
-msgstr "Source Zone"
+msgstr "Изворна зона"
 
 #: templates/modern/save-zone-template.html:30
 msgid "Template Name"
@@ -10891,7 +10891,7 @@ msgstr "Create Template"
 
 #: templates/modern/user_agreement_content.html:1
 msgid "Terms of Use"
-msgstr "Terms of Use"
+msgstr "Услови коришћења"
 
 #: templates/modern/user_agreement_content.html:4
 msgid "Acceptable Use"
@@ -10979,7 +10979,7 @@ msgstr "Enter your new password for"
 
 #: templates/modern/reset_password.html:45
 msgid "New Password"
-msgstr "New Password"
+msgstr "Нова лозинка"
 
 #: templates/modern/reset_password.html:49 templates/modern/login.html:27
 msgid "Please provide a password"
@@ -11160,7 +11160,7 @@ msgstr "Recommended Settings"
 
 #: templates/modern/edit_user.html:5 templates/modern/header.html:366
 msgid "Edit profile"
-msgstr "Edit profile"
+msgstr "Уреди профил"
 
 #: templates/default/edit_user.html:13 templates/modern/edit_user.html:13
 msgid "Edit user"
@@ -11218,7 +11218,7 @@ msgstr "Use external LDAP directory for authentication"
 
 #: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
 msgid "Back to Home"
-msgstr "Back to Home"
+msgstr "Назад на почетну"
 
 #: templates/default/edit_user.html:121 templates/modern/edit_user.html:121
 msgid "Back to Users"
@@ -11290,7 +11290,7 @@ msgstr "Search available groups..."
 
 #: templates/modern/edit_user.html:254 templates/modern/add_user.html:181
 msgid "Clear search"
-msgstr "Clear search"
+msgstr "Очисти претрагу"
 
 #: templates/modern/edit_perm_templ.html:98
 msgid "Select All"
@@ -11318,7 +11318,7 @@ msgstr "Are you sure you want to remove this user from the group"
 
 #: templates/modern/confirm_unlink_zones_templ.html:6
 msgid "Unlink zones"
-msgstr "Unlink zones"
+msgstr "Одвежи зоне"
 
 #: templates/modern/confirm_unlink_zones_templ.html:12
 msgid "Unlink Zones from Template"
@@ -11334,7 +11334,7 @@ msgstr "You are about to unlink multiple zones from template"
 
 #: templates/modern/confirm_unlink_zones_templ.html:23
 msgid "zones total"
-msgstr "zones total"
+msgstr "зона укупно"
 
 #: templates/modern/confirm_unlink_zones_templ.html:30
 msgid "Zones to be unlinked"
@@ -11386,7 +11386,7 @@ msgstr "Please select a template type"
 
 #: templates/modern/add_perm_templ.html:52
 msgid "Add Template"
-msgstr "Add Template"
+msgstr "Додај шаблон"
 
 #: templates/modern/add_perm_templ.html:68
 msgid "About Access Templates"
@@ -11466,7 +11466,7 @@ msgstr "What is a Supermaster?"
 
 #: templates/modern/add_supermaster.html:79
 msgid "How it works"
-msgstr "How it works"
+msgstr "како ради"
 
 #: templates/modern/add_supermaster.html:83
 msgid "Important Notes"
@@ -11498,7 +11498,7 @@ msgstr "Верзија IP"
 
 #: templates/modern/batch_ptr_record.html:41
 msgid "IPv4 network"
-msgstr "IPv4 network"
+msgstr "IPv4 мрежа"
 
 #: templates/modern/batch_ptr_record.html:42
 msgid "IPv6 (/64 network)"
@@ -11583,11 +11583,11 @@ msgstr "For IPv4, supported networks are:"
 
 #: templates/modern/change_password.html:71
 msgid "Requirements"
-msgstr "Requirements"
+msgstr "Услови"
 
 #: templates/modern/batch_ptr_record.html:165
 msgid "For example:"
-msgstr "For example:"
+msgstr "На пример:"
 
 #: templates/modern/batch_ptr_record.html:177
 msgid "Quick Tips"
@@ -11671,7 +11671,7 @@ msgstr "DNS Record Wizard"
 
 #: templates/modern/dns_wizard_select.html:59
 msgid "Recommended"
-msgstr "Recommended"
+msgstr "Препоручено"
 
 #: templates/modern/dns_wizard_select.html:71
 msgid "Back"
@@ -11763,7 +11763,7 @@ msgstr "Invalid TTL value"
 
 #: templates/modern/edit.html:142 templates/modern/edit.html:695
 msgid "Provide TTL"
-msgstr "Provide TTL"
+msgstr "Унесите TTL"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Edit zone"
@@ -11835,7 +11835,7 @@ msgstr "Увоз"
 
 #: templates/default/edit.html:556 templates/modern/edit.html:556
 msgid "Generate PTR"
-msgstr "Generate PTR"
+msgstr "Генериши PTR"
 
 #: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
@@ -11896,7 +11896,7 @@ msgstr "SAML"
 
 #: templates/modern/users.html:120 templates/modern/users.html:184
 msgid "MFA enabled"
-msgstr "MFA enabled"
+msgstr "MFA омогућен"
 
 #: templates/modern/users.html:122 templates/modern/users.html:186
 msgid "MFA not configured"
@@ -11956,7 +11956,7 @@ msgstr "Enter verification code"
 
 #: templates/modern/mfa_verify_email.html:28
 msgid "Looks good!"
-msgstr "Looks good!"
+msgstr "Изгледа добро!"
 
 #: templates/default/mfa_verify.html:29 templates/modern/mfa_verify.html:29
 msgid "Please enter a valid verification code."
@@ -12024,7 +12024,7 @@ msgstr "Име зоне"
 
 #: templates/modern/database_consistency.html:78
 msgid "Assign owner"
-msgstr "Assign owner"
+msgstr "Додели власника"
 
 #: templates/modern/database_consistency.html:278
 msgid "Fix"
@@ -12193,11 +12193,11 @@ msgstr "Template name"
 
 #: templates/modern/list_zone_templ.html:36
 msgid "Zones linked"
-msgstr "Zones linked"
+msgstr "Повезане зоне"
 
 #: templates/modern/list_zone_templ.html:37
 msgid "Sync Status"
-msgstr "Sync Status"
+msgstr "Статус синхр."
 
 #: templates/modern/list_zone_templ.html:45 templates/modern/search.html:500
 msgid "No results found"
@@ -12249,7 +12249,7 @@ msgstr "Provide current password"
 
 #: templates/modern/change_password.html:31
 msgid "New password"
-msgstr "New password"
+msgstr "нова лозинка"
 
 #: templates/modern/change_password.html:43
 msgid "Provide new password"
@@ -12361,7 +12361,7 @@ msgstr "Прикажи зоне"
 
 #: templates/modern/edit_zone_templ.html:108
 msgid "Update zones"
-msgstr "Update zones"
+msgstr "Ажурирај зоне"
 
 #: templates/modern/edit_zone_templ.html:124
 msgid "Template Settings"
@@ -12413,11 +12413,11 @@ msgstr "Multiple values"
 
 #: templates/modern/edit_zone_metadata.html:42
 msgid "Multi value"
-msgstr "Multi value"
+msgstr "Више вредности"
 
 #: templates/modern/edit_zone_metadata.html:43
 msgid "Single value"
-msgstr "Single value"
+msgstr "Једна вредност"
 
 #: templates/modern/edit_zone_metadata.html:53
 msgid "Kind"
@@ -12433,7 +12433,7 @@ msgstr "Save metadata"
 
 #: templates/modern/edit_zone_metadata.html:112
 msgid "Back to zone"
-msgstr "Back to zone"
+msgstr "Назад на зону"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
@@ -12501,7 +12501,7 @@ msgstr "The chosen owner will have full access to all created zones"
 
 #: templates/modern/bulk_registration.html:113
 msgid "How It Works"
-msgstr "How It Works"
+msgstr "Како ради"
 
 #: templates/modern/bulk_registration.html:122
 msgid "Tips & Recommendations"
@@ -12653,7 +12653,7 @@ msgstr "Works offline"
 
 #: templates/default/mfa_setup.html:78 templates/modern/mfa_setup.html:78
 msgid "More secure"
-msgstr "More secure"
+msgstr "Безбедније"
 
 #: templates/default/mfa_setup.html:79 templates/modern/mfa_setup.html:79
 msgid "Easy to use"
@@ -12725,7 +12725,7 @@ msgstr "You are about to delete the zone"
 
 #: templates/modern/delete_domain.html:41
 msgid "Zone Details"
-msgstr "Zone Details"
+msgstr "Детаљи зоне"
 
 #: templates/modern/delete_domain.html:75
 msgid "Yes, delete this zone"
@@ -12745,7 +12745,7 @@ msgstr "Items per page"
 
 #: templates/modern/user_preferences.html:36
 msgid "Zone Options"
-msgstr "Zone Options"
+msgstr "Опције зоне"
 
 #: templates/modern/user_preferences.html:42
 msgid "Zone serial numbers"
@@ -12765,11 +12765,11 @@ msgstr "Interface Behavior"
 
 #: templates/modern/user_preferences.html:69
 msgid "Record form"
-msgstr "Record form"
+msgstr "Образац записа"
 
 #: templates/modern/user_preferences.html:78
 msgid "Save buttons"
-msgstr "Save buttons"
+msgstr "Дугмад за чување"
 
 #: templates/modern/user_preferences.html:88
 msgid "Edit Zone View"
@@ -12829,7 +12829,7 @@ msgstr "Обрнуто"
 
 #: templates/default/search.html:120 templates/modern/search.html:120
 msgid "Zones found"
-msgstr "Zones found"
+msgstr "Пронађене зоне"
 
 #: templates/default/search.html:316 templates/modern/search.html:316
 msgid "Records found"
@@ -12861,7 +12861,7 @@ msgstr "selected record(s)?"
 
 #: templates/modern/delete_domains.html:11
 msgid "Delete zones"
-msgstr "Delete zones"
+msgstr "Обриши зоне"
 
 #: templates/modern/delete_domains.html:17
 msgid "Delete Multiple Zones"
@@ -13017,11 +13017,11 @@ msgstr "Server Information"
 
 #: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:59
 msgid "PDNS Server"
-msgstr "PDNS Server"
+msgstr "PDNS сервер"
 
 #: templates/default/pdns_status.html:62 templates/modern/pdns_status.html:63
 msgid "Server Name"
-msgstr "Server Name"
+msgstr "Име сервера"
 
 #: templates/default/pdns_status.html:67 templates/modern/pdns_status.html:68
 msgid "Server ID"
@@ -13053,7 +13053,7 @@ msgstr "IP сервера"
 
 #: templates/default/pdns_status.html:116 templates/modern/pdns_status.html:117
 msgid "Last Checked"
-msgstr "Last Checked"
+msgstr "Последња провера"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:126
 #: install/templates/step2.html.twig:18
@@ -13062,7 +13062,7 @@ msgstr "У реду"
 
 #: templates/default/pdns_status.html:127 templates/modern/pdns_status.html:128
 msgid "Unreachable"
-msgstr "Unreachable"
+msgstr "Недоступно"
 
 #: templates/default/pdns_status.html:129 templates/modern/pdns_status.html:130
 msgid "Error"
@@ -13094,11 +13094,11 @@ msgstr "Query Statistics"
 
 #: templates/default/pdns_status.html:243 templates/modern/pdns_status.html:244
 msgid "UDP Queries"
-msgstr "UDP Queries"
+msgstr "UDP упити"
 
 #: templates/default/pdns_status.html:260 templates/modern/pdns_status.html:261
 msgid "TCP Queries"
-msgstr "TCP Queries"
+msgstr "TCP упити"
 
 #: templates/default/pdns_status.html:279 templates/modern/pdns_status.html:280
 msgid "Cache Hits"
@@ -13106,11 +13106,11 @@ msgstr "Погоци кеша"
 
 #: templates/default/pdns_status.html:296 templates/modern/pdns_status.html:297
 msgid "Cache Misses"
-msgstr "Cache Misses"
+msgstr "Промашаји кеша"
 
 #: templates/default/pdns_status.html:331 templates/modern/pdns_status.html:332
 msgid "Toggle View"
-msgstr "Toggle View"
+msgstr "Промени приказ"
 
 #: templates/default/pdns_status.html:336 templates/modern/pdns_status.html:337
 msgid "Refresh"
@@ -13206,7 +13206,7 @@ msgstr "Back to Group"
 
 #: templates/modern/manage_group_zones.html:20
 msgid "Owned Zones"
-msgstr "Owned Zones"
+msgstr "Зоне у власништву"
 
 #: templates/modern/manage_group_zones.html:27
 msgid "This group doesn't own any zones yet"
@@ -13230,7 +13230,7 @@ msgstr "Search zones..."
 
 #: templates/modern/manage_group_members.html:112
 msgid "Add Selected"
-msgstr "Add Selected"
+msgstr "Додај изабрано"
 
 #: templates/modern/manage_group_members.html:133
 msgid "Are you sure you want to remove"
@@ -13362,11 +13362,11 @@ msgstr "Select a template..."
 
 #: templates/default/add_group.html:46 templates/modern/add_group.html:51
 msgid "Create Group"
-msgstr "Create Group"
+msgstr "Креирај групу"
 
 #: templates/default/add_group.html:60 templates/modern/add_group.html:65
 msgid "About Groups"
-msgstr "About Groups"
+msgstr "О групама"
 
 #: templates/default/add_group.html:63 templates/modern/add_group.html:68
 msgid "What are Groups?"
@@ -13442,7 +13442,7 @@ msgstr "user(s) from this group?"
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
-msgstr "Zone Import"
+msgstr "Увоз зоне"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
@@ -13498,7 +13498,7 @@ msgstr "Зона:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:167
 msgid "Target zone"
-msgstr "Target zone"
+msgstr "Циљна зона"
 
 #: lib/Module/ZoneImportExport/templates/import.html:113
 msgid "Conflict strategy"
@@ -13574,7 +13574,7 @@ msgstr "IDN domain names"
 
 #: lib/Module/Whois/templates/whois.html:11
 msgid "WHOIS Lookup"
-msgstr "WHOIS Lookup"
+msgstr "WHOIS претрага"
 
 #: lib/Module/Rdap/templates/rdap.html:21
 msgid "Enter domain name"
@@ -13594,7 +13594,7 @@ msgstr "Please enter a domain name to perform a WHOIS lookup."
 
 #: lib/Module/Rdap/templates/rdap.html:5 lib/Module/Rdap/templates/rdap.html:11
 msgid "RDAP Lookup"
-msgstr "RDAP Lookup"
+msgstr "RDAP претрага"
 
 #: lib/Module/Rdap/templates/rdap.html:27
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
@@ -13698,7 +13698,7 @@ msgstr "PowerDNS REST API"
 
 #: install/templates/step4.html.twig:33
 msgid "Experimental"
-msgstr "Experimental"
+msgstr "Експериментално"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
@@ -13722,7 +13722,7 @@ msgstr "PowerDNS API key (from pdns.conf api-key setting)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
-msgstr "Server name"
+msgstr "име сервера"
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
@@ -13794,7 +13794,7 @@ msgstr "Знаковни скуп БП"
 
 #: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
 msgid "Use default"
-msgstr "Use default"
+msgstr "Користи подразумевано"
 
 #: install/templates/step4.html.twig:185
 msgid "Charset for new tables. Leave empty for database default."
@@ -13802,7 +13802,7 @@ msgstr "Charset for new tables. Leave empty for database default."
 
 #: install/templates/step4.html.twig:190
 msgid "DB collation"
-msgstr "DB collation"
+msgstr "Колација БП"
 
 #: install/templates/step4.html.twig:206
 msgid "PowerDNS Database"
@@ -13842,7 +13842,7 @@ msgstr "System Requirements Check"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
-msgstr "PHP Version"
+msgstr "PHP верзија"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
@@ -13934,7 +13934,7 @@ msgstr "The password for this username."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
-msgstr "DNS Settings"
+msgstr "DNS поставке"
 
 #: install/templates/step5.html.twig:95
 msgid "Hostmaster"
@@ -14058,7 +14058,7 @@ msgstr "Foreign Key Constraint Issues:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"
-msgstr "Suggestions:"
+msgstr "Предлози:"
 
 #: install/helpers/InstallStepHandler.php:218
 msgid "Make sure the SQLite database file exists"

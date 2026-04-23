@@ -186,7 +186,7 @@ msgstr "You need to be logged in to export zone data."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
-msgstr "Zone Import"
+msgstr "Увоз зоне"
 
 #: lib/Module/ZoneImportExport/templates/import.html:131
 msgid "Zone file"
@@ -243,7 +243,7 @@ msgid "Skip duplicates"
 msgstr "Skip duplicates"
 
 msgid "Target zone"
-msgstr "Target zone"
+msgstr "Циљна зона"
 
 msgid "The selected zone does not exist."
 msgstr "The selected zone does not exist."
