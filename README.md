@@ -69,7 +69,7 @@ For detailed installation instructions, please visit [the official documentation
 * **Recommended method - via releases**:
     * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
 * **For specific needs - via Git**:
-    * **Warning**: The master branch is used for pre-release integration testing and may be unstable. For production use, stick with the stable release/4.0.x branch or use the `stable` Docker tag.
+    * **Warning**: The master branch is used for development of the next major release and may be unstable. For production use, stick with the `release/4.2.x` branch or a specific version tag (e.g. `v4.2.1`), or use the `stable` Docker tag.
 
 ### Docker Deployment
 
@@ -104,8 +104,8 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 ## Tested on
 
 **Officially tested versions:**
-- **master (pre-release)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
-- **release/4.0.x (stable)**: PHP 8.2, PowerDNS 4.9.5, MariaDB 10.11, PostgreSQL 16.3
+- **release/4.3.x (pre-release)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
+- **release/4.2.x (stable)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
 
 **User-reported compatibility:**
@@ -119,10 +119,12 @@ Poweradmin maintains multiple release branches:
 
 | Branch | Status | Support |
 |--------|--------|---------|
-| `develop` | Development | Experimental features, unstable |
-| `master` | Pre-release | Integration testing, may be unstable |
-| `release/4.1.x` | Current | Latest release, stabilizing |
-| `release/4.0.x` | Stable | 4.0.x bug fixes and security updates |
+| `develop` | Experimental | 4.5.x experimental features, may be unstable |
+| `master` | Development | 4.4.x next release development |
+| `release/4.3.x` | Pre-release | 4.3.x stabilizing for upcoming release |
+| `release/4.2.x` | Stable | Current stable, patch releases and security updates |
+| `release/4.1.x` | Maintenance | Security updates only |
+| `release/4.0.x` | Maintenance | Security updates only |
 | `release/3.x` | LTS | Bug fixes and security updates until December 2027 |
 
 ### PHP Version Support
