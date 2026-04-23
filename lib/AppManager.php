@@ -33,6 +33,7 @@ use Poweradmin\Infrastructure\Utility\SimpleSizeFormatter;
 use Poweradmin\Infrastructure\Web\BadgeTwigExtension;
 use Poweradmin\Module\ModuleRegistry;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;
 use Psr\Log\LoggerInterface;
@@ -140,11 +141,13 @@ class AppManager
         }
 
         // Allow language override via GET parameter (login page language switcher)
-        if (!empty($_GET['lang']) && is_string($_GET['lang']) && preg_match('/^[a-zA-Z_]+$/', $_GET['lang'])) {
+        $request = Request::createFromGlobals();
+        $requestedLang = $request->query->get('lang');
+        if (is_string($requestedLang) && preg_match('/^[a-zA-Z_]+$/', $requestedLang)) {
             $enabledLanguages = $this->configuration->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
             $supportedLocales = explode(',', $enabledLanguages);
-            if (in_array($_GET['lang'], $supportedLocales, true)) {
-                $interfaceLang = $_GET['lang'];
+            if (in_array($requestedLang, $supportedLocales, true)) {
+                $interfaceLang = $requestedLang;
             }
         }
 
