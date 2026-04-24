@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -124,13 +125,27 @@ class IndexController extends BaseController
         // UI's zero counts / empty lists reflect an upstream failure rather
         // than a real absence of data.
         $apiError = null;
+        $pdnsServerInfo = null;
         if ($permissions['user_is_ueberuser'] && DnsBackendProviderFactory::isApiBackend($this->config)) {
             $apiError = (new ApiStatusService())->getLastError();
+
+            // Detect + cache the PowerDNS server version (5-min session TTL).
+            // Useful for admin diagnostics and for correlating issues against
+            // a known PDNS release in bug reports.
+            $apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+            if ($apiClient !== null) {
+                try {
+                    $pdnsServerInfo = (new PdnsVersionService($apiClient, $this->logger))->detect();
+                } catch (\Throwable $e) {
+                    $this->logger->debug('PowerDNS version detection failed: {error}', ['error' => $e->getMessage()]);
+                }
+            }
         }
 
         $this->render("index.html", [
             'dashboard_stats' => $dashboardStats,
             'api_error' => $apiError,
+            'pdns_server_info' => $pdnsServerInfo,
             'user_name' => $this->userContextService->getDisplayName(),
             'auth_used' => $this->userContextService->getAuthMethod() ?? '',
             'can_change_password' => $canChangePassword,

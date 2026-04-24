@@ -129,6 +129,66 @@ class HttpClientTest extends TestCase
     }
 
     /**
+     * 5xx responses should be classified as transient so a GET retry happens.
+     */
+    public function testIsTransientClassifies5xxAsRetryable(): void
+    {
+        $method = $this->getPrivateMethod('isTransient');
+
+        foreach ([500, 502, 503, 504] as $code) {
+            $ex = new \Poweradmin\Domain\Error\ApiErrorException('boom', $code);
+            $this->assertTrue(
+                $method->invoke($this->httpClient, $ex),
+                "HTTP $code should be classified transient"
+            );
+        }
+    }
+
+    /**
+     * 4xx responses should NOT be classified as transient - they are client
+     * errors and retrying would not change the outcome.
+     */
+    public function testIsTransientClassifies4xxAsNonRetryable(): void
+    {
+        $method = $this->getPrivateMethod('isTransient');
+
+        foreach ([400, 401, 403, 404, 405, 409] as $code) {
+            $ex = new \Poweradmin\Domain\Error\ApiErrorException('boom', $code);
+            $this->assertFalse(
+                $method->invoke($this->httpClient, $ex),
+                "HTTP $code should NOT be classified transient"
+            );
+        }
+    }
+
+    /**
+     * Code-0 exceptions with connection/timeout markers in details should be
+     * transient (covers stream_context failures before a response is received).
+     */
+    public function testIsTransientClassifiesNetworkFailuresAsRetryable(): void
+    {
+        $method = $this->getPrivateMethod('isTransient');
+
+        $markers = [
+            'operation timed out',
+            'Connection refused',
+            'could not resolve host',
+            'Network is unreachable',
+        ];
+        foreach ($markers as $err) {
+            $ex = new \Poweradmin\Domain\Error\ApiErrorException('wrapped', 0, null, ['error' => $err]);
+            $this->assertTrue(
+                $method->invoke($this->httpClient, $ex),
+                "Error message \"$err\" should be classified transient"
+            );
+        }
+
+        // Unknown code-0 errors should NOT retry - could be anything.
+        $ex = new \Poweradmin\Domain\Error\ApiErrorException('wrapped', 0, null, ['error' => 'some unrelated error']);
+        $this->assertFalse($method->invoke($this->httpClient, $ex));
+    }
+
+    /**
      * Helper method to access private methods for testing
      */
     private function getPrivateMethod(string $methodName): ReflectionMethod
