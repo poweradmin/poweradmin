@@ -16,9 +16,13 @@
         </div>
         <div>
             {% if is_api_backend and perm_is_godlike %}
-            <a href="{{ base_url_prefix }}/zones/forward?sync=1" class="btn btn-outline-secondary btn-sm" title="{% trans %}Fetch zones from PowerDNS and reconcile the local table{% endtrans %}">
-                <i class="bi bi-arrow-repeat me-1"></i>{% trans %}Sync from PowerDNS{% endtrans %}
-            </a>
+            <form action="{{ base_url_prefix }}/zones/forward" method="post" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <input type="hidden" name="action" value="sync">
+                <button type="submit" class="btn btn-outline-secondary btn-sm" title="{% trans %}Fetch zones from PowerDNS and reconcile the local table{% endtrans %}">
+                    <i class="bi bi-arrow-repeat me-1"></i>{% trans %}Sync from PowerDNS{% endtrans %}
+                </button>
+            </form>
             {% endif %}
             {% if perm_zone_master_add %}
             <a href="{{ base_url_prefix }}/zones/add/master" class="btn btn-primary btn-sm">

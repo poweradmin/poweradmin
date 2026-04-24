@@ -60,7 +60,8 @@ class ListForwardZonesController extends BaseController
         $this->setCurrentPage('list_forward_zones');
         $this->setPageTitle(_('Forward Zones'));
 
-        if (($_GET['sync'] ?? '') === '1') {
+        if ($this->isPost() && $this->getSafeRequestValue('action') === 'sync') {
+            $this->validateCsrfToken();
             $this->forceSyncFromApi();
             return;
         }
