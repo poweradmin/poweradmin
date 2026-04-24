@@ -115,7 +115,7 @@ msgstr "No valid records found in the uploaded file."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:95
 msgid "Please select a valid zone file to upload."
-msgstr "Please select a valid zone file to upload."
+msgstr "Atlasiet derīgu zonas failu augšupielādei."
 
 #: lib/Module/ZoneImportExport/templates/import.html:70
 msgid "Priority"
@@ -123,7 +123,7 @@ msgstr "Prioritāte"
 
 #: lib/Module/ZoneImportExport/templates/import.html:133
 msgid "Standard BIND zone file format. Max size:"
-msgstr "Standard BIND zone file format. Max size:"
+msgstr "Standarta BIND zonas faila formāts. Maks. lielums:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:169
 msgid "Standard BIND zone files"
@@ -174,7 +174,7 @@ msgstr "Brīdinājumi:"
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:56
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:67
 msgid "You do not have permission to add zones."
-msgstr "You do not have permission to add zones."
+msgstr "Jums nav atļaujas pievienot zonas."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:59
 msgid "You do not have permission to export this zone."
