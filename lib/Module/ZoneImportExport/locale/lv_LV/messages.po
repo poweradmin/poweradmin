@@ -89,7 +89,7 @@ msgstr "Imports veiksmīgi pabeigts."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:175
 msgid "Import session expired. Please upload the file again."
-msgstr "Import session expired. Please upload the file again."
+msgstr "Importa sesija beigusies. Lūdzu, augšupielādējiet failu vēlreiz."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:48
 msgid "Invalid zone ID."

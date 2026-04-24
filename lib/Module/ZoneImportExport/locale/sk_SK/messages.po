@@ -89,7 +89,7 @@ msgstr "Import úspešne dokončený."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:175
 msgid "Import session expired. Please upload the file again."
-msgstr "Import session expired. Please upload the file again."
+msgstr "Relácia importu vypršala. Nahrajte súbor znova."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:48
 msgid "Invalid zone ID."

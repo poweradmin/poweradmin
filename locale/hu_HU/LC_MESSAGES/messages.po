@@ -250,7 +250,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:213
 msgid "Custom CA domain is required when \"Custom\" is selected"
-msgstr "Custom CA domain is required when \"Custom\" is selected"
+msgstr "Az egyéni CA tartomány kötelező \"Egyéni\" választás esetén"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:221
 msgid ""
@@ -839,7 +839,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
-msgstr "For gateway type 0 (No gateway), gateway must be \".\"."
+msgstr "A 0 típusú átjárónál (nincs átjáró) a gateway \".\" legyen."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:248
 msgid ""
@@ -3356,7 +3356,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "Empty value is not allowed. Use \";\" to allow all CAs."
+msgstr "Üres érték nem engedélyezett. Használjon \";\"-t minden CA-hoz."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:273
 msgid ""
@@ -4088,7 +4088,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:85
 msgid "Backslashes must precede all quotes (\") in TXT content"
-msgstr "Backslashes must precede all quotes (\") in TXT content"
+msgstr "Visszaperjel előzze meg az idézőjeleket TXT-ben"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:195
 #, php-format
@@ -4590,7 +4590,7 @@ msgstr ""
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
+msgstr "Az SOA rekord nem a csúcson van. Talált \"%s\", de a zóna \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:133
 msgid ""
@@ -5682,7 +5682,7 @@ msgstr "Zóna nem található."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:80
 msgid "You do not have permission to add records to this zone."
-msgstr "You do not have permission to add records to this zone."
+msgstr "Nincs jogosultsága rekordok hozzáadására ehhez a zónához."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:118
 msgid "Invalid wizard type."
@@ -5787,7 +5787,7 @@ msgstr "3 - Tartomány kibocsátotta tanúsítvány"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:110
 msgid "Certificate must match exactly, bypassing PKI (DANE-EE)"
-msgstr "Certificate must match exactly, bypassing PKI (DANE-EE)"
+msgstr "A tanúsítványnak pontosan egyeznie kell, PKI nélkül (DANE-EE)"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:72
 msgid "Selector"
@@ -5892,7 +5892,7 @@ msgstr "DMARC rekord"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:47
 msgid "Email authentication policy and reporting configuration"
-msgstr "Email authentication policy and reporting configuration"
+msgstr "E-mail hitelesítési házirend és jelentés konfiguráció"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:59
 msgid "Policy Settings"
@@ -5984,11 +5984,11 @@ msgstr "Forenzikus jelentési beállítások"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:125
 msgid "Generate reports if all authentication mechanisms fail"
-msgstr "Generate reports if all authentication mechanisms fail"
+msgstr "Jelentések, ha minden hitelesítés sikertelen"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:126
 msgid "Generate reports if any authentication mechanism fails"
-msgstr "Generate reports if any authentication mechanism fails"
+msgstr "Jelentések, ha bármelyik hitelesítés sikertelen"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:127
 msgid "Generate reports if DKIM check fails"
@@ -6148,7 +6148,7 @@ msgstr "További MX gazdák"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:133
 msgid "Authorize MX records from other domains (one per line)"
-msgstr "Authorize MX records from other domains (one per line)"
+msgstr "Engedélyezze más tartományok MX rekordjait (soronként)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:142
 msgid "Default Action"
@@ -6252,7 +6252,7 @@ msgstr "Jelentési URL"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:119
 msgid "URL or email for incident reports (mailto: or https:)"
-msgstr "URL or email for incident reports (mailto: or https:)"
+msgstr "URL vagy e-mail incidens jelentéshez (mailto: vagy https:)"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:103
 msgid "Advanced Options"
@@ -6485,7 +6485,7 @@ msgstr "Nincs jogosultsága a zóna módosítására."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:235
 msgid "Import session expired. Please upload the file again."
-msgstr "Import session expired. Please upload the file again."
+msgstr "Az import munkamenet lejárt. Töltse fel újra."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:242
 msgid "Invalid import data. Please upload the file again."
@@ -6593,7 +6593,7 @@ msgstr "Nincs törlésre kijelölt rekord."
 
 #: lib/Application/Controller/DeleteRecordsController.php:207
 msgid "No records could be deleted. Please check permissions."
-msgstr "No records could be deleted. Please check permissions."
+msgstr "Egyetlen rekordot sem sikerült törölni. Ellenőrizze a jogosultságot."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:73
 msgid "Invalid or unexpected input given."
@@ -6788,11 +6788,11 @@ msgstr "Nincs jogosultsága szuper elsődlegesek megtekintésére."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:118
 msgid "You do not have the permission to view zone metadata."
-msgstr "You do not have the permission to view zone metadata."
+msgstr "Nincs jogosultsága a zóna metaadatok megtekintésére."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:121
 msgid "You do not have the permission to edit zone metadata."
-msgstr "You do not have the permission to edit zone metadata."
+msgstr "Nincs jogosultsága a zóna metaadatok szerkesztésére."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:150
 msgid "Zone metadata has been updated successfully."
@@ -6919,7 +6919,7 @@ msgstr "Engedély sablon szerkesztése"
 
 #: lib/Application/Controller/EditPermTemplController.php:96
 msgid "The permission template has been updated successfully."
-msgstr "The permission template has been updated successfully."
+msgstr "Az engedély sablon sikeresen frissítve."
 
 #: lib/Application/Controller/ListGroupsController.php:60
 #: templates/modern/manage_group_members.html:4
@@ -6991,7 +6991,7 @@ msgstr "Töltse ki helyesen az összes kötelező mezőt."
 
 #: lib/Domain/Service/Dns/RecordManager.php:396
 msgid "You do not have the permission to delete this record."
-msgstr "You do not have the permission to delete this record."
+msgstr "Nincs jogosultsága a rekord törlésére."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:78
 msgid "The record could not be deleted."
@@ -7021,7 +7021,7 @@ msgstr "Nincs megadva sablon ID."
 
 #: lib/Application/Controller/EditZoneTemplController.php:70
 msgid "You do not have the permission to edit zone templates."
-msgstr "You do not have the permission to edit zone templates."
+msgstr "Nincs jogosultsága zóna sablonok szerkesztésére."
 
 #: lib/Application/Controller/EditZoneTemplController.php:74
 msgid "Edit Zone Template"
@@ -7150,7 +7150,7 @@ msgstr "Zone unsigning requested successfully, but verification failed."
 
 #: lib/Application/Controller/DnssecController.php:116
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
-msgstr "Failed to unsign zone. Check PowerDNS logs for details."
+msgstr "A zóna aláírás eltávolítás sikertelen. Ellenőrizze a logokat."
 
 #: lib/Application/Controller/EditController.php:734
 msgid "Request has expired, please try again."
@@ -7298,7 +7298,7 @@ msgstr "Elsődleges zóna hozzáadása"
 
 #: lib/Application/Controller/AddZoneSlaveController.php:122
 msgid "At least one user or group must be selected as owner."
-msgstr "At least one user or group must be selected as owner."
+msgstr "Legalább egy felhasználót vagy csoportot kell választani."
 
 #: lib/Application/Controller/BulkRegistrationController.php:113
 msgid "There is already a zone with this name."
@@ -7331,7 +7331,7 @@ msgstr "Batch PTR record creation is not available for reverse zones."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
-msgstr "You do not have the permission to view zone templates."
+msgstr "Nincs jogosultsága zóna sablonok megtekintésére."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
@@ -7348,7 +7348,7 @@ msgstr "Csoport hozzáadása"
 
 #: lib/Application/Controller/EditGroupController.php:125
 msgid "Invalid permission template: must be a group template"
-msgstr "Invalid permission template: must be a group template"
+msgstr "Érvénytelen engedély sablon: csoport sablon kell legyen"
 
 #: lib/Application/Controller/AddGroupController.php:140
 msgid "Group has been created successfully."
@@ -7507,7 +7507,7 @@ msgstr "Kijelentkezett."
 
 #: lib/Domain/Model/ZoneTemplate.php:186 lib/Domain/Model/ZoneTemplate.php:626
 msgid "You do not have the permission to add a zone template."
-msgstr "You do not have the permission to add a zone template."
+msgstr "Nincs jogosultsága zóna sablon hozzáadására."
 
 #: lib/Application/Controller/AddZoneTemplController.php:53
 msgid "Add Zone Template"
@@ -7523,7 +7523,7 @@ msgstr "Irányítópult"
 
 #: lib/Application/Controller/EditUserController.php:381
 msgid "You do not have permission to manage group memberships."
-msgstr "You do not have permission to manage group memberships."
+msgstr "Nincs jogosultsága csoport tagságok kezelésére."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:86
 msgid "Invalid user or group ID."
@@ -7559,11 +7559,11 @@ msgstr "A zóna sablon sikeresen törölve."
 
 #: lib/Application/Controller/EditSupermasterController.php:43
 msgid "You do not have the permission to edit a supermaster."
-msgstr "You do not have the permission to edit a supermaster."
+msgstr "Nincs jogosultsága szuper elsődleges szerkesztésére."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:327
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "The supermaster you are trying to edit does not exist."
+msgstr "A szerkeszteni kívánt szuper elsődleges nem létezik."
 
 #: lib/Application/Controller/EditSupermasterController.php:92
 msgid "The supermaster has been updated successfully."
@@ -7625,7 +7625,7 @@ msgstr "Nincs jogosultsága a felhasználó szerkesztésére."
 
 #: lib/Application/Controller/EditUserController.php:242
 msgid "You do not have permission to edit a superuser account."
-msgstr "You do not have permission to edit a superuser account."
+msgstr "Nincs jogosultsága szuperuser fiók szerkesztésére."
 
 #: lib/Application/Controller/EditUserController.php:389
 msgid "Please select at least one group."
@@ -7637,7 +7637,7 @@ msgstr "You do not have the permission to delete permission templates."
 
 #: lib/Application/Controller/DeletePermTemplController.php:88
 msgid "The permission template has been deleted successfully."
-msgstr "The permission template has been deleted successfully."
+msgstr "Az engedély sablon sikeresen törölve."
 
 #: lib/Application/Controller/DeletePermTemplController.php:90
 msgid "The permission template could not be deleted."
@@ -7649,7 +7649,7 @@ msgstr "The PowerDNS status feature is disabled in the system configuration."
 
 #: lib/Application/Controller/ExampleController.php:124
 msgid "You do not have the permission to access this feature."
-msgstr "You do not have the permission to access this feature."
+msgstr "Nincs jogosultsága a funkció eléréséhez."
 
 #: lib/Application/Controller/ExampleController.php:207
 msgid "Operation completed successfully."
@@ -7747,7 +7747,7 @@ msgstr "A csoport sikeresen frissítve."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:47
 msgid "You do not have the permission to delete a supermaster."
-msgstr "You do not have the permission to delete a supermaster."
+msgstr "Nincs jogosultsága szuper elsődleges törlésére."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:80
 msgid "Invalid IP address."
@@ -7835,7 +7835,7 @@ msgstr "Nem"
 
 #: lib/Application/Service/LdapAuthenticator.php:92
 msgid "Account is temporarily locked. Please try again later."
-msgstr "Account is temporarily locked. Please try again later."
+msgstr "A fiók ideiglenesen zárolva. Próbálja újra később."
 
 #: lib/Application/Service/SqlAuthenticator.php:135
 msgid "The user account is disabled."
@@ -7988,7 +7988,7 @@ msgstr "Nem sikerült lekérni a sablont használó zónák listáját: "
 
 #: lib/Domain/Model/ZoneTemplate.php:874
 msgid "You do not have the permission to edit a zone template."
-msgstr "You do not have the permission to edit a zone template."
+msgstr "Nincs jogosultsága zóna sablon szerkesztésére."
 
 #: lib/Domain/Model/ZoneTemplate.php:918
 msgid "Error unlinking zone from template: "
@@ -8057,7 +8057,7 @@ msgstr "%d zóna található SOA rekord nélkül"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:117
 msgid "Priority field for IPSECKEY records must be 0 or empty"
-msgstr "Priority field for IPSECKEY records must be 0 or empty"
+msgstr "Az IPSECKEY rekord prioritás mezője 0 vagy üres legyen"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
 msgid "Invalid characters in IPSECKEY record content."
@@ -8065,7 +8065,7 @@ msgstr "Érvénytelen karakterek az IPSECKEY rekordban."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:175
 msgid "IPSECKEY precedence must be a number between 0 and 255."
-msgstr "IPSECKEY precedence must be a number between 0 and 255."
+msgstr "Az IPSECKEY elsőbbsége 0-255 közötti szám legyen."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:201
 msgid "For gateway type 1, gateway must be a valid IPv4 address."
@@ -8089,11 +8089,11 @@ msgstr "Az IPSECKEY nyilvános kulcsot Base64-nek kell kódolni."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:239
 msgid "RSA keys should follow the format defined in RFC 3110."
-msgstr "RSA keys should follow the format defined in RFC 3110."
+msgstr "Az RSA kulcsok az RFC 3110 formátumát kövessék."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:243
 msgid "DSA keys should follow the format defined in RFC 2536."
-msgstr "DSA keys should follow the format defined in RFC 2536."
+msgstr "A DSA kulcsok az RFC 2536 formátumát kövessék."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:106
 msgid "Invalid characters in hostname."
@@ -8386,7 +8386,7 @@ msgstr "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:237
 msgid "TSIG original ID must be a number between 0 and 65535."
-msgstr "TSIG original ID must be a number between 0 and 65535."
+msgstr "A TSIG eredeti ID 0-65535 közötti szám."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:243
 msgid "TSIG error must be a valid DNS RCODE number between 0 and 23."
@@ -8418,7 +8418,7 @@ msgstr "A ZONEMD séma 0-255 közötti számnak kell lennie."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr "ZONEMD scheme 0 is reserved and not for standard use."
+msgstr "A ZONEMD séma 0 fenntartott, nem szabványos használatra."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
@@ -8494,7 +8494,7 @@ msgstr "Invalid DLV record format. Should contain exactly 4 parts."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:162
 msgid "Invalid key tag. Must be a number between 1 and 65535."
-msgstr "Invalid key tag. Must be a number between 1 and 65535."
+msgstr "Érvénytelen kulcs címke. 1-65535 közötti szám."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
@@ -8586,7 +8586,7 @@ msgstr "Érvénytelen TTL érték. Számnak kell lennie."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:106
 msgid "TTL value cannot be negative. It must be 0 or higher."
-msgstr "TTL value cannot be negative. It must be 0 or higher."
+msgstr "A TTL érték nem lehet negatív. 0 vagy nagyobb."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
@@ -8731,7 +8731,7 @@ msgstr "A RRSIG címkék mezőnek számnak kell lennie."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:234
 msgid "RRSIG labels field must be a reasonable value (0-128)."
-msgstr "RRSIG labels field must be a reasonable value (0-128)."
+msgstr "A RRSIG címkék mező ésszerű érték (0-128) legyen."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:239
 msgid "RRSIG original TTL field must be a numeric value."
@@ -8893,7 +8893,7 @@ msgstr "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
 msgid "SHA-1 digest must be exactly 40 hexadecimal characters"
-msgstr "SHA-1 digest must be exactly 40 hexadecimal characters"
+msgstr "A SHA-1 digest pontosan 40 hexadecimális karakter"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:255
 msgid "SHA-256 digest must be exactly 64 hexadecimal characters"
@@ -8933,7 +8933,7 @@ msgstr "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:113
 msgid "Invalid IPv6 address: more than two consecutive colons."
-msgstr "Invalid IPv6 address: more than two consecutive colons."
+msgstr "Érvénytelen IPv6: több mint két egymást követő kettőspont."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:122
 msgid "Invalid IPv6 address: must have 8 hextets when expanded."
@@ -9027,7 +9027,7 @@ msgstr "CAA property value exceeds maximum length of 512 characters."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:325
 msgid "CAA property value cannot contain NUL (0) characters."
-msgstr "CAA property value cannot contain NUL (0) characters."
+msgstr "A CAA tulajdonság érték nem tartalmazhat NUL (0) karaktereket."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
@@ -9146,7 +9146,7 @@ msgstr "Az SMIMEA használat mezőnek 0-3 közötti számnak kell lennie."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:256
 msgid "SMIMEA certificate data must be a hexadecimal string."
-msgstr "SMIMEA certificate data must be a hexadecimal string."
+msgstr "Az SMIMEA tanúsítvány hexadecimális karakterlánc legyen."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:262
 msgid "SMIMEA SHA-256 certificate data must be 64 characters long."
@@ -9170,7 +9170,7 @@ msgstr "Each hexadecimal group in L64 locator must be 4 or fewer characters."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:121
 msgid "Priority field for CDNSKEY records must be 0 or empty"
-msgstr "Priority field for CDNSKEY records must be 0 or empty"
+msgstr "A CDNSKEY rekord prioritás mezője 0 vagy üres legyen"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:151
 msgid "Invalid characters in CDNSKEY record content."
@@ -9194,7 +9194,7 @@ msgstr "CDNSKEY public key must contain only valid base64 characters."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:241
 msgid "CDNSKEY public key must be valid base64-encoded data."
-msgstr "CDNSKEY public key must be valid base64-encoded data."
+msgstr "A CDNSKEY nyilvános kulcs érvényes base64 kódolt legyen."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:190
 msgid "LUA record content cannot be empty."
@@ -9234,7 +9234,7 @@ msgstr "Az SSHFP SHA-1 ujjlenyomat 40 karakteres legyen."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:217
 msgid "SSHFP SHA-256 fingerprint must be 64 characters long."
-msgstr "SSHFP SHA-256 fingerprint must be 64 characters long."
+msgstr "Az SSHFP SHA-256 ujjlenyomat 64 karakteres legyen."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
@@ -9323,7 +9323,7 @@ msgstr "DMARC reporting interval tag (ri) must be a positive integer"
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
 msgid "DMARC %s tag must contain valid mailto: or https: URIs"
-msgstr "DMARC %s tag must contain valid mailto: or https: URIs"
+msgstr "A DMARC %s címke érvényes mailto: vagy https: URI-t tartalmazzon"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
@@ -9414,7 +9414,7 @@ msgstr "Érvénytelen SRV cél."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:422
 msgid "Invalid value for the priority field of the SRV record."
-msgstr "Invalid value for the priority field of the SRV record."
+msgstr "Érvénytelen érték az SRV rekord prioritás mezőjében."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
@@ -9499,7 +9499,7 @@ msgstr "NAPTR regexp is too long. Maximum length is 1000 characters."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:120
 msgid "Priority field for DNSKEY records must be 0 or empty."
-msgstr "Priority field for DNSKEY records must be 0 or empty."
+msgstr "A DNSKEY rekord prioritás mezője 0 vagy üres legyen."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
@@ -9661,11 +9661,11 @@ msgstr "Nem sikerült hozzáadni a DNS backendhez."
 
 #: lib/Domain/Service/Dns/RecordManager.php:302
 msgid "You do not have the permission to edit this SOA record."
-msgstr "You do not have the permission to edit this SOA record."
+msgstr "Nincs jogosultsága az SOA rekord szerkesztésére."
 
 #: lib/Domain/Service/Dns/RecordManager.php:307
 msgid "You do not have the permission to edit this NS record."
-msgstr "You do not have the permission to edit this NS record."
+msgstr "Nincs jogosultsága az NS rekord szerkesztésére."
 
 #: lib/Domain/Service/Dns/RecordManager.php:356
 msgid "Failed to update record in DNS backend."
@@ -9673,7 +9673,7 @@ msgstr "Nem sikerült frissíteni a rekordot a DNS backendben."
 
 #: lib/Domain/Service/Dns/RecordManager.php:385
 msgid "You do not have the permission to delete SOA records."
-msgstr "You do not have the permission to delete SOA records."
+msgstr "Nincs jogosultsága SOA rekordok törlésére."
 
 #: lib/Domain/Service/Dns/RecordManager.php:390
 msgid "You do not have the permission to delete NS records."
@@ -11134,11 +11134,11 @@ msgstr "Kulcstípusok magyarázata"
 
 #: templates/modern/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
-msgstr "Key Signing Key - signs the DNSKEY records in the zone"
+msgstr "Key Signing Key - aláírja a DNSKEY rekordokat"
 
 #: templates/modern/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
-msgstr "Zone Signing Key - signs all other records in the zone"
+msgstr "Zone Signing Key - aláírja a többi rekordot"
 
 #: templates/modern/dnssec_add_key.html:200
 msgid "Recommended Settings"
@@ -11533,7 +11533,7 @@ msgstr "Közvetlen A/AAAA rekordok létrehozása az elsődleges zónában"
 
 #: templates/modern/batch_ptr_record.html:107
 msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Create PTRs only for existing A records in forward zone"
+msgstr "PTR-ek létrehozása csak meglévő A rekordokhoz"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -11557,7 +11557,7 @@ msgstr "Minden IP"
 
 #: templates/modern/batch_ptr_record.html:144
 msgid "Creates PTR records for every IP in the network range"
-msgstr "Creates PTR records for every IP in the network range"
+msgstr "PTR rekordokat hoz létre a hálózat minden IP-jéhez"
 
 #: templates/modern/batch_ptr_record.html:145
 msgid "Matching only"
@@ -11713,7 +11713,7 @@ msgstr "rekord. Ellenőrizze a rekord formátumát."
 
 #: templates/modern/edit.html:52 templates/modern/edit.html:604
 msgid "Failed to add records. Please check the record format."
-msgstr "Failed to add records. Please check the record format."
+msgstr "Nem sikerült hozzáadni a rekordokat. Ellenőrizze a formátumot."
 
 #: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Content validation failed:"
@@ -12091,7 +12091,7 @@ msgstr "Jelszó automatikus generálása"
 
 #: templates/default/add_user.html:53 templates/modern/add_user.html:53
 msgid "Generate a secure password that meets all requirements"
-msgstr "Generate a secure password that meets all requirements"
+msgstr "Generáljon biztonságos jelszót, amely minden követelménynek megfelel"
 
 #: templates/default/add_user.html:61 templates/modern/add_user.html:61
 msgid "Send password by email"
@@ -12375,7 +12375,7 @@ msgstr "This zone template does not have an SOA (Start of Authority) record."
 
 #: templates/modern/edit_zone_templ.html:318
 msgid "Do you want to continue without adding an SOA record?"
-msgstr "Do you want to continue without adding an SOA record?"
+msgstr "Folytatni szeretné SOA rekord nélkül?"
 
 #: templates/modern/edit_zone_templ.html:324
 msgid "Continue Without SOA"
@@ -12535,7 +12535,7 @@ msgstr "Delete records"
 
 #: templates/modern/delete_records.html:78
 msgid "Also delete corresponding PTR records (if they exist)"
-msgstr "Also delete corresponding PTR records (if they exist)"
+msgstr "Törölje a megfelelő PTR rekordokat is (ha léteznek)"
 
 #: templates/modern/delete_records.html:84
 msgid "Yes, delete these records"
@@ -12655,7 +12655,7 @@ msgstr "E-mail ellenőrzés"
 
 #: templates/default/mfa_setup.html:95 templates/modern/mfa_setup.html:95
 msgid "Receive a verification code via email when you log in."
-msgstr "Receive a verification code via email when you log in."
+msgstr "Kapjon ellenőrző kódot e-mailben bejelentkezéskor."
 
 #: templates/default/mfa_setup.html:97 templates/modern/mfa_setup.html:97
 msgid "No additional app required"
@@ -13268,7 +13268,7 @@ msgstr "Biztosan letiltja az API-kulcsot"
 
 #: templates/default/api_keys.html:117 templates/modern/api_keys.html:118
 msgid "External applications using this key will lose access."
-msgstr "External applications using this key will lose access."
+msgstr "Az ezt a kulcsot használó külső alkalmazások elvesztik a hozzáférést."
 
 #: templates/default/api_keys.html:141 templates/modern/api_keys.html:142
 msgid "Enable API Key"
@@ -13576,7 +13576,7 @@ msgstr "WHOIS eredmények"
 
 #: lib/Module/Whois/templates/whois.html:46
 msgid "Please enter a domain name to perform a WHOIS lookup."
-msgstr "Please enter a domain name to perform a WHOIS lookup."
+msgstr "Adjon meg tartománynevet WHOIS kereséshez."
 
 #: lib/Module/Rdap/templates/rdap.html:5 lib/Module/Rdap/templates/rdap.html:11
 msgid "RDAP Lookup"
@@ -13872,7 +13872,7 @@ msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Ensure URL rewriting is configured for your web server"
+msgstr "Győződjön meg, hogy az URL átírás be van állítva"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
@@ -14060,7 +14060,7 @@ msgstr "Ellenőrizze, hogy az adatbázis hitelesítő adatai helyesek"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Ellenőrizze, hogy az adatbázis felhasználó megfelelő jogokkal rendelkezik"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid "Ensure the database server is running and accessible"

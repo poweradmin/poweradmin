@@ -251,7 +251,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:213
 msgid "Custom CA domain is required when \"Custom\" is selected"
-msgstr "Custom CA domain is required when \"Custom\" is selected"
+msgstr "Prilagođena CA domena je obavezna kad je odabrano \"Prilagođeno\""
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:221
 msgid ""
@@ -853,7 +853,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
-msgstr "For gateway type 0 (No gateway), gateway must be \".\"."
+msgstr "Za tip pristupnika 0 (Bez), pristupnik mora biti \".\"."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:248
 msgid ""
@@ -3370,7 +3370,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "Empty value is not allowed. Use \";\" to allow all CAs."
+msgstr "Prazna vrijednost nije dopuštena. Koristite \";\" za sve CA."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:273
 msgid ""
@@ -4102,7 +4102,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:85
 msgid "Backslashes must precede all quotes (\") in TXT content"
-msgstr "Backslashes must precede all quotes (\") in TXT content"
+msgstr "Obrnute kose crte moraju prethoditi navodnicima u TXT"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:195
 #, php-format
@@ -4604,7 +4604,7 @@ msgstr ""
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
+msgstr "SOA zapis nije na vrhu. Nađen u \"%s\" ali zona je \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:133
 msgid ""
@@ -5696,7 +5696,7 @@ msgstr "Zona nije pronađena."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:80
 msgid "You do not have permission to add records to this zone."
-msgstr "You do not have permission to add records to this zone."
+msgstr "Nemate dozvolu za dodavanje zapisa u ovu zonu."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:118
 msgid "Invalid wizard type."
@@ -5801,7 +5801,7 @@ msgstr "3 - Certifikat izdan od domene"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:110
 msgid "Certificate must match exactly, bypassing PKI (DANE-EE)"
-msgstr "Certificate must match exactly, bypassing PKI (DANE-EE)"
+msgstr "Certifikat se mora točno podudarati, zaobilazeći PKI (DANE-EE)"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:72
 msgid "Selector"
@@ -5906,7 +5906,7 @@ msgstr "DMARC zapis"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:47
 msgid "Email authentication policy and reporting configuration"
-msgstr "Email authentication policy and reporting configuration"
+msgstr "Pravilo autentifikacije e-pošte i konfiguracija izvještavanja"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:59
 msgid "Policy Settings"
@@ -5998,11 +5998,11 @@ msgstr "Opcije forenzičkog izvještavanja"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:125
 msgid "Generate reports if all authentication mechanisms fail"
-msgstr "Generate reports if all authentication mechanisms fail"
+msgstr "Generiraj izvješća ako svi mehanizmi ne uspiju"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:126
 msgid "Generate reports if any authentication mechanism fails"
-msgstr "Generate reports if any authentication mechanism fails"
+msgstr "Generiraj izvješća ako bilo koji mehanizam ne uspije"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:127
 msgid "Generate reports if DKIM check fails"
@@ -6162,7 +6162,7 @@ msgstr "Dodatni MX poslužitelji"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:133
 msgid "Authorize MX records from other domains (one per line)"
-msgstr "Authorize MX records from other domains (one per line)"
+msgstr "Ovlasti MX zapise iz drugih domena (jedan po redu)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:142
 msgid "Default Action"
@@ -6266,7 +6266,7 @@ msgstr "URL za izvještavanje"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:119
 msgid "URL or email for incident reports (mailto: or https:)"
-msgstr "URL or email for incident reports (mailto: or https:)"
+msgstr "URL ili e-pošta za prijave incidenata (mailto: ili https:)"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:103
 msgid "Advanced Options"
@@ -6499,7 +6499,7 @@ msgstr "Nemate dozvolu za izmjenu ove zone."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:235
 msgid "Import session expired. Please upload the file again."
-msgstr "Import session expired. Please upload the file again."
+msgstr "Sesija uvoza je istekla. Ponovno prenesite datoteku."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:242
 msgid "Invalid import data. Please upload the file again."
@@ -6607,7 +6607,7 @@ msgstr "Nema odabranih zapisa za brisanje."
 
 #: lib/Application/Controller/DeleteRecordsController.php:207
 msgid "No records could be deleted. Please check permissions."
-msgstr "No records could be deleted. Please check permissions."
+msgstr "Nijedan zapis se nije mogao obrisati. Provjerite dozvole."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:73
 msgid "Invalid or unexpected input given."
@@ -6802,11 +6802,11 @@ msgstr "Nemate dozvolu za pregled supermastera."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:118
 msgid "You do not have the permission to view zone metadata."
-msgstr "You do not have the permission to view zone metadata."
+msgstr "Nemate dozvolu za pregled metapodataka zone."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:121
 msgid "You do not have the permission to edit zone metadata."
-msgstr "You do not have the permission to edit zone metadata."
+msgstr "Nemate dozvolu za uređivanje metapodataka zone."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:150
 msgid "Zone metadata has been updated successfully."
@@ -6933,7 +6933,7 @@ msgstr "Uredi predložak dozvola"
 
 #: lib/Application/Controller/EditPermTemplController.php:96
 msgid "The permission template has been updated successfully."
-msgstr "The permission template has been updated successfully."
+msgstr "Predložak dozvola je uspješno ažuriran."
 
 #: lib/Application/Controller/ListGroupsController.php:60
 #: templates/modern/manage_group_members.html:4
@@ -7005,7 +7005,7 @@ msgstr "Ispunite sva obavezna polja ispravno."
 
 #: lib/Domain/Service/Dns/RecordManager.php:396
 msgid "You do not have the permission to delete this record."
-msgstr "You do not have the permission to delete this record."
+msgstr "Nemate dozvolu za brisanje ovog zapisa."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:78
 msgid "The record could not be deleted."
@@ -7035,7 +7035,7 @@ msgstr "Nije naveden ID predloška."
 
 #: lib/Application/Controller/EditZoneTemplController.php:70
 msgid "You do not have the permission to edit zone templates."
-msgstr "You do not have the permission to edit zone templates."
+msgstr "Nemate dozvolu za uređivanje predložaka zona."
 
 #: lib/Application/Controller/EditZoneTemplController.php:74
 msgid "Edit Zone Template"
@@ -7164,7 +7164,7 @@ msgstr "Zone unsigning requested successfully, but verification failed."
 
 #: lib/Application/Controller/DnssecController.php:116
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
-msgstr "Failed to unsign zone. Check PowerDNS logs for details."
+msgstr "Neuspjelo uklanjanje potpisa zone. Provjerite PowerDNS zapisnike."
 
 #: lib/Application/Controller/EditController.php:734
 msgid "Request has expired, please try again."
@@ -7312,7 +7312,7 @@ msgstr "Dodaj primarnu zonu"
 
 #: lib/Application/Controller/AddZoneSlaveController.php:122
 msgid "At least one user or group must be selected as owner."
-msgstr "At least one user or group must be selected as owner."
+msgstr "Mora biti odabran barem jedan korisnik ili grupa kao vlasnik."
 
 #: lib/Application/Controller/BulkRegistrationController.php:113
 msgid "There is already a zone with this name."
@@ -7345,7 +7345,7 @@ msgstr "Batch PTR record creation is not available for reverse zones."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
-msgstr "You do not have the permission to view zone templates."
+msgstr "Nemate dozvolu za pregled predložaka zona."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
@@ -7362,7 +7362,7 @@ msgstr "Dodaj grupu"
 
 #: lib/Application/Controller/EditGroupController.php:125
 msgid "Invalid permission template: must be a group template"
-msgstr "Invalid permission template: must be a group template"
+msgstr "Nevažeći predložak dozvola: mora biti grupni predložak"
 
 #: lib/Application/Controller/AddGroupController.php:140
 msgid "Group has been created successfully."
@@ -7521,7 +7521,7 @@ msgstr "Odjavljeni ste."
 
 #: lib/Domain/Model/ZoneTemplate.php:186 lib/Domain/Model/ZoneTemplate.php:626
 msgid "You do not have the permission to add a zone template."
-msgstr "You do not have the permission to add a zone template."
+msgstr "Nemate dozvolu za dodavanje predloška zone."
 
 #: lib/Application/Controller/AddZoneTemplController.php:53
 msgid "Add Zone Template"
@@ -7537,7 +7537,7 @@ msgstr "Nadzorna ploča"
 
 #: lib/Application/Controller/EditUserController.php:381
 msgid "You do not have permission to manage group memberships."
-msgstr "You do not have permission to manage group memberships."
+msgstr "Nemate dozvolu za upravljanje članstvima u grupama."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:86
 msgid "Invalid user or group ID."
@@ -7573,11 +7573,11 @@ msgstr "Predložak zone je uspješno obrisan."
 
 #: lib/Application/Controller/EditSupermasterController.php:43
 msgid "You do not have the permission to edit a supermaster."
-msgstr "You do not have the permission to edit a supermaster."
+msgstr "Nemate dozvolu za uređivanje supermastera."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:327
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "The supermaster you are trying to edit does not exist."
+msgstr "Supermaster koji pokušavate urediti ne postoji."
 
 #: lib/Application/Controller/EditSupermasterController.php:92
 msgid "The supermaster has been updated successfully."
@@ -7639,7 +7639,7 @@ msgstr "Nemate dozvolu za uređivanje ovog korisnika."
 
 #: lib/Application/Controller/EditUserController.php:242
 msgid "You do not have permission to edit a superuser account."
-msgstr "You do not have permission to edit a superuser account."
+msgstr "Nemate dozvolu za uređivanje računa superkorisnika."
 
 #: lib/Application/Controller/EditUserController.php:389
 msgid "Please select at least one group."
@@ -7651,7 +7651,7 @@ msgstr "You do not have the permission to delete permission templates."
 
 #: lib/Application/Controller/DeletePermTemplController.php:88
 msgid "The permission template has been deleted successfully."
-msgstr "The permission template has been deleted successfully."
+msgstr "Predložak dozvola je uspješno obrisan."
 
 #: lib/Application/Controller/DeletePermTemplController.php:90
 msgid "The permission template could not be deleted."
@@ -7663,7 +7663,7 @@ msgstr "The PowerDNS status feature is disabled in the system configuration."
 
 #: lib/Application/Controller/ExampleController.php:124
 msgid "You do not have the permission to access this feature."
-msgstr "You do not have the permission to access this feature."
+msgstr "Nemate dozvolu za pristup ovoj funkciji."
 
 #: lib/Application/Controller/ExampleController.php:207
 msgid "Operation completed successfully."
@@ -7761,7 +7761,7 @@ msgstr "Grupa je uspješno ažurirana."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:47
 msgid "You do not have the permission to delete a supermaster."
-msgstr "You do not have the permission to delete a supermaster."
+msgstr "Nemate dozvolu za brisanje supermastera."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:80
 msgid "Invalid IP address."
@@ -7849,7 +7849,7 @@ msgstr "Ne"
 
 #: lib/Application/Service/LdapAuthenticator.php:92
 msgid "Account is temporarily locked. Please try again later."
-msgstr "Account is temporarily locked. Please try again later."
+msgstr "Račun je privremeno zaključan. Pokušajte kasnije."
 
 #: lib/Application/Service/SqlAuthenticator.php:135
 msgid "The user account is disabled."
@@ -8002,7 +8002,7 @@ msgstr "Neuspjelo dohvaćanje popisa zona koje koriste predložak: "
 
 #: lib/Domain/Model/ZoneTemplate.php:874
 msgid "You do not have the permission to edit a zone template."
-msgstr "You do not have the permission to edit a zone template."
+msgstr "Nemate dozvolu za uređivanje predloška zone."
 
 #: lib/Domain/Model/ZoneTemplate.php:918
 msgid "Error unlinking zone from template: "
@@ -8071,7 +8071,7 @@ msgstr "Pronađeno %d zona bez SOA zapisa"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:117
 msgid "Priority field for IPSECKEY records must be 0 or empty"
-msgstr "Priority field for IPSECKEY records must be 0 or empty"
+msgstr "Polje prioriteta za IPSECKEY zapise mora biti 0 ili prazno"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
 msgid "Invalid characters in IPSECKEY record content."
@@ -8079,7 +8079,7 @@ msgstr "Nevažeći znakovi u sadržaju IPSECKEY zapisa."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:175
 msgid "IPSECKEY precedence must be a number between 0 and 255."
-msgstr "IPSECKEY precedence must be a number between 0 and 255."
+msgstr "IPSECKEY prioritet mora biti broj između 0 i 255."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:201
 msgid "For gateway type 1, gateway must be a valid IPv4 address."
@@ -8103,11 +8103,11 @@ msgstr "IPSECKEY javni ključ mora biti ispravno Base64 kodiran."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:239
 msgid "RSA keys should follow the format defined in RFC 3110."
-msgstr "RSA keys should follow the format defined in RFC 3110."
+msgstr "RSA ključevi trebaju pratiti format iz RFC 3110."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:243
 msgid "DSA keys should follow the format defined in RFC 2536."
-msgstr "DSA keys should follow the format defined in RFC 2536."
+msgstr "DSA ključevi trebaju pratiti format iz RFC 2536."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:106
 msgid "Invalid characters in hostname."
@@ -8400,7 +8400,7 @@ msgstr "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:237
 msgid "TSIG original ID must be a number between 0 and 65535."
-msgstr "TSIG original ID must be a number between 0 and 65535."
+msgstr "TSIG originalni ID mora biti broj između 0 i 65535."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:243
 msgid "TSIG error must be a valid DNS RCODE number between 0 and 23."
@@ -8432,7 +8432,7 @@ msgstr "ZONEMD shema mora biti broj između 0 i 255."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr "ZONEMD scheme 0 is reserved and not for standard use."
+msgstr "ZONEMD shema 0 je rezervirana i nije za standardnu upotrebu."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
@@ -8508,7 +8508,7 @@ msgstr "Invalid DLV record format. Should contain exactly 4 parts."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:162
 msgid "Invalid key tag. Must be a number between 1 and 65535."
-msgstr "Invalid key tag. Must be a number between 1 and 65535."
+msgstr "Nevažeća oznaka ključa. Broj između 1 i 65535."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
@@ -8600,7 +8600,7 @@ msgstr "Nevažeća vrijednost za TTL polje. Mora biti brojčano."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:106
 msgid "TTL value cannot be negative. It must be 0 or higher."
-msgstr "TTL value cannot be negative. It must be 0 or higher."
+msgstr "TTL vrijednost ne može biti negativna. Mora biti 0 ili više."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
@@ -8745,7 +8745,7 @@ msgstr "RRSIG polje oznaka mora biti brojčano."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:234
 msgid "RRSIG labels field must be a reasonable value (0-128)."
-msgstr "RRSIG labels field must be a reasonable value (0-128)."
+msgstr "RRSIG polje oznaka mora biti razumna vrijednost (0-128)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:239
 msgid "RRSIG original TTL field must be a numeric value."
@@ -8907,7 +8907,7 @@ msgstr "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
 msgid "SHA-1 digest must be exactly 40 hexadecimal characters"
-msgstr "SHA-1 digest must be exactly 40 hexadecimal characters"
+msgstr "SHA-1 digest mora biti točno 40 heksadecimalnih znakova"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:255
 msgid "SHA-256 digest must be exactly 64 hexadecimal characters"
@@ -8947,7 +8947,7 @@ msgstr "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:113
 msgid "Invalid IPv6 address: more than two consecutive colons."
-msgstr "Invalid IPv6 address: more than two consecutive colons."
+msgstr "Nevažeća IPv6 adresa: više od dva uzastopna dvotočja."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:122
 msgid "Invalid IPv6 address: must have 8 hextets when expanded."
@@ -9041,7 +9041,7 @@ msgstr "CAA property value exceeds maximum length of 512 characters."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:325
 msgid "CAA property value cannot contain NUL (0) characters."
-msgstr "CAA property value cannot contain NUL (0) characters."
+msgstr "CAA vrijednost svojstva ne može sadržavati NUL (0) znakove."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
@@ -9160,7 +9160,7 @@ msgstr "SMIMEA polje upotrebe mora biti broj između 0 i 3."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:256
 msgid "SMIMEA certificate data must be a hexadecimal string."
-msgstr "SMIMEA certificate data must be a hexadecimal string."
+msgstr "SMIMEA podaci certifikata moraju biti heksadecimalni niz."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:262
 msgid "SMIMEA SHA-256 certificate data must be 64 characters long."
@@ -9184,7 +9184,7 @@ msgstr "Each hexadecimal group in L64 locator must be 4 or fewer characters."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:121
 msgid "Priority field for CDNSKEY records must be 0 or empty"
-msgstr "Priority field for CDNSKEY records must be 0 or empty"
+msgstr "Polje prioriteta za CDNSKEY zapise mora biti 0 ili prazno"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:151
 msgid "Invalid characters in CDNSKEY record content."
@@ -9208,7 +9208,7 @@ msgstr "CDNSKEY public key must contain only valid base64 characters."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:241
 msgid "CDNSKEY public key must be valid base64-encoded data."
-msgstr "CDNSKEY public key must be valid base64-encoded data."
+msgstr "CDNSKEY javni ključ mora biti valjan base64."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:190
 msgid "LUA record content cannot be empty."
@@ -9248,7 +9248,7 @@ msgstr "SSHFP SHA-1 otisak mora biti dugačak 40 znakova."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:217
 msgid "SSHFP SHA-256 fingerprint must be 64 characters long."
-msgstr "SSHFP SHA-256 fingerprint must be 64 characters long."
+msgstr "SSHFP SHA-256 otisak mora biti dugačak 64 znaka."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
@@ -9337,7 +9337,7 @@ msgstr "DMARC reporting interval tag (ri) must be a positive integer"
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
 msgid "DMARC %s tag must contain valid mailto: or https: URIs"
-msgstr "DMARC %s tag must contain valid mailto: or https: URIs"
+msgstr "DMARC %s oznaka mora sadržavati valjane mailto: ili https: URI"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
@@ -9428,7 +9428,7 @@ msgstr "Nevažeći SRV cilj."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:422
 msgid "Invalid value for the priority field of the SRV record."
-msgstr "Invalid value for the priority field of the SRV record."
+msgstr "Nevažeća vrijednost za polje prioriteta SRV zapisa."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
@@ -9513,7 +9513,7 @@ msgstr "NAPTR regexp is too long. Maximum length is 1000 characters."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:120
 msgid "Priority field for DNSKEY records must be 0 or empty."
-msgstr "Priority field for DNSKEY records must be 0 or empty."
+msgstr "Polje prioriteta za DNSKEY zapise mora biti 0 ili prazno."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
@@ -9675,11 +9675,11 @@ msgstr "Dodavanje zapisa u DNS pozadinu nije uspjelo."
 
 #: lib/Domain/Service/Dns/RecordManager.php:302
 msgid "You do not have the permission to edit this SOA record."
-msgstr "You do not have the permission to edit this SOA record."
+msgstr "Nemate dozvolu za uređivanje ovog SOA zapisa."
 
 #: lib/Domain/Service/Dns/RecordManager.php:307
 msgid "You do not have the permission to edit this NS record."
-msgstr "You do not have the permission to edit this NS record."
+msgstr "Nemate dozvolu za uređivanje ovog NS zapisa."
 
 #: lib/Domain/Service/Dns/RecordManager.php:356
 msgid "Failed to update record in DNS backend."
@@ -9687,7 +9687,7 @@ msgstr "Ažuriranje zapisa u DNS pozadini nije uspjelo."
 
 #: lib/Domain/Service/Dns/RecordManager.php:385
 msgid "You do not have the permission to delete SOA records."
-msgstr "You do not have the permission to delete SOA records."
+msgstr "Nemate dozvolu za brisanje SOA zapisa."
 
 #: lib/Domain/Service/Dns/RecordManager.php:390
 msgid "You do not have the permission to delete NS records."
@@ -11148,11 +11148,11 @@ msgstr "Vrste ključeva objašnjene"
 
 #: templates/modern/dnssec_add_key.html:194
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
-msgstr "Key Signing Key - signs the DNSKEY records in the zone"
+msgstr "Key Signing Key - potpisuje DNSKEY zapise u zoni"
 
 #: templates/modern/dnssec_add_key.html:195
 msgid "Zone Signing Key - signs all other records in the zone"
-msgstr "Zone Signing Key - signs all other records in the zone"
+msgstr "Zone Signing Key - potpisuje sve ostale zapise u zoni"
 
 #: templates/modern/dnssec_add_key.html:200
 msgid "Recommended Settings"
@@ -11547,7 +11547,7 @@ msgstr "Stvori direktne A/AAAA zapise u primarnoj zoni"
 
 #: templates/modern/batch_ptr_record.html:107
 msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Create PTRs only for existing A records in forward zone"
+msgstr "Stvori PTR samo za postojeće A zapise u direktnoj zoni"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -11571,7 +11571,7 @@ msgstr "Svi IP"
 
 #: templates/modern/batch_ptr_record.html:144
 msgid "Creates PTR records for every IP in the network range"
-msgstr "Creates PTR records for every IP in the network range"
+msgstr "Stvara PTR zapise za svaku IP u rasponu mreže"
 
 #: templates/modern/batch_ptr_record.html:145
 msgid "Matching only"
@@ -11727,7 +11727,7 @@ msgstr "zapisa. Provjerite format zapisa."
 
 #: templates/modern/edit.html:52 templates/modern/edit.html:604
 msgid "Failed to add records. Please check the record format."
-msgstr "Failed to add records. Please check the record format."
+msgstr "Neuspjelo dodavanje zapisa. Provjerite format."
 
 #: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Content validation failed:"
@@ -12105,7 +12105,7 @@ msgstr "Automatski generiraj lozinku"
 
 #: templates/default/add_user.html:53 templates/modern/add_user.html:53
 msgid "Generate a secure password that meets all requirements"
-msgstr "Generate a secure password that meets all requirements"
+msgstr "Generiraj sigurnu lozinku koja zadovoljava sve zahtjeve"
 
 #: templates/default/add_user.html:61 templates/modern/add_user.html:61
 msgid "Send password by email"
@@ -12389,7 +12389,7 @@ msgstr "This zone template does not have an SOA (Start of Authority) record."
 
 #: templates/modern/edit_zone_templ.html:318
 msgid "Do you want to continue without adding an SOA record?"
-msgstr "Do you want to continue without adding an SOA record?"
+msgstr "Želite li nastaviti bez dodavanja SOA zapisa?"
 
 #: templates/modern/edit_zone_templ.html:324
 msgid "Continue Without SOA"
@@ -12549,7 +12549,7 @@ msgstr "Delete records"
 
 #: templates/modern/delete_records.html:78
 msgid "Also delete corresponding PTR records (if they exist)"
-msgstr "Also delete corresponding PTR records (if they exist)"
+msgstr "Također obriši odgovarajuće PTR zapise (ako postoje)"
 
 #: templates/modern/delete_records.html:84
 msgid "Yes, delete these records"
@@ -12669,7 +12669,7 @@ msgstr "Provjera e-pošte"
 
 #: templates/default/mfa_setup.html:95 templates/modern/mfa_setup.html:95
 msgid "Receive a verification code via email when you log in."
-msgstr "Receive a verification code via email when you log in."
+msgstr "Primite kod za potvrdu e-poštom pri prijavi."
 
 #: templates/default/mfa_setup.html:97 templates/modern/mfa_setup.html:97
 msgid "No additional app required"
@@ -13282,7 +13282,7 @@ msgstr "Jeste li sigurni da želite onemogućiti API ključ"
 
 #: templates/default/api_keys.html:117 templates/modern/api_keys.html:118
 msgid "External applications using this key will lose access."
-msgstr "External applications using this key will lose access."
+msgstr "Vanjske aplikacije koje koriste ovaj ključ izgubit će pristup."
 
 #: templates/default/api_keys.html:141 templates/modern/api_keys.html:142
 msgid "Enable API Key"
@@ -13590,7 +13590,7 @@ msgstr "WHOIS rezultati za"
 
 #: lib/Module/Whois/templates/whois.html:46
 msgid "Please enter a domain name to perform a WHOIS lookup."
-msgstr "Please enter a domain name to perform a WHOIS lookup."
+msgstr "Unesite naziv domene za WHOIS pretragu."
 
 #: lib/Module/Rdap/templates/rdap.html:5 lib/Module/Rdap/templates/rdap.html:11
 msgid "RDAP Lookup"
@@ -13886,7 +13886,7 @@ msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Ensure URL rewriting is configured for your web server"
+msgstr "Osigurajte da je prepisivanje URL-ova konfigurirano"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
@@ -14074,7 +14074,7 @@ msgstr "Provjerite jesu li vjerodajnice baze točne"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Provjerite ima li korisnik baze dovoljne ovlasti"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid "Ensure the database server is running and accessible"

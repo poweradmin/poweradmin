@@ -89,7 +89,7 @@ msgstr "Tuonti valmistui onnistuneesti."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:175
 msgid "Import session expired. Please upload the file again."
-msgstr "Import session expired. Please upload the file again."
+msgstr "Tuontiistunto vanheni. Lataa tiedosto uudelleen."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:48
 msgid "Invalid zone ID."
