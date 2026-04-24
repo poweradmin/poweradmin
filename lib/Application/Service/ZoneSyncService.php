@@ -64,7 +64,12 @@ class ZoneSyncService
     public function syncIfStale(): ?array
     {
         $lastSync = $_SESSION[self::LAST_SYNC_KEY] ?? 0;
-        if (time() - $lastSync < $this->syncInterval) {
+        $age = time() - $lastSync;
+        if ($age < $this->syncInterval) {
+            $this->logger->debug('Zone sync skipped (last ran {age}s ago, interval {interval}s)', [
+                'age' => $age,
+                'interval' => $this->syncInterval,
+            ]);
             return null;
         }
 
@@ -86,8 +91,13 @@ class ZoneSyncService
      */
     public function sync(): array
     {
+        $this->logger->debug('Zone sync starting');
         $apiZones = $this->backendProvider->getZones();
         $localZones = $this->getLocalZones();
+        $this->logger->debug('Zone sync fetched {api} API zones, {local} local zones', [
+            'api' => count($apiZones),
+            'local' => count($localZones),
+        ]);
 
         // When the API is unreachable, getZones() returns [] after catching the
         // exception internally. Without this guard we would delete every local
@@ -95,7 +105,7 @@ class ZoneSyncService
         // that a genuine "delete every zone in PowerDNS" won't auto-sync; an
         // admin must remove the local entries manually in that rare scenario.
         if (empty($apiZones) && !empty($localZones)) {
-            $this->logger->info('Zone sync: API returned empty while local zones exist, skipping removal');
+            $this->logger->warning('Zone sync: API returned empty while local zones exist, skipping removal');
             return ['added' => 0, 'removed' => 0, 'updated' => 0];
         }
 
@@ -103,11 +113,17 @@ class ZoneSyncService
         $removed = $this->removeOrphanedZones($apiZones, $localZones);
         $updated = $this->updateZoneMetadata($apiZones, $localZones);
 
-        return [
+        $result = [
             'added' => $added,
             'removed' => $removed,
             'updated' => $updated,
         ];
+        if ($added || $removed || $updated) {
+            $this->logger->info('Zone sync complete: added={added}, removed={removed}, updated={updated}', $result);
+        } else {
+            $this->logger->debug('Zone sync complete: no changes', $result);
+        }
+        return $result;
     }
 
     /**
