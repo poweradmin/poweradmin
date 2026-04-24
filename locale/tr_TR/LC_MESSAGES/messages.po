@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-23 21:11+0300\n"
+"POT-Creation-Date: 2026-04-24 20:45+0300\n"
 "PO-Revision-Date: 2025-06-05 21:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -1918,7 +1918,7 @@ msgid "The record could not be deleted."
 msgstr "Kayıt silinemedi."
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:219 templates/modern/index.html:219
+#: templates/default/index.html:232 templates/modern/index.html:232
 msgid "Zone Logs"
 msgstr "Zon Kayıtları"
 
@@ -1996,7 +1996,7 @@ msgid "You do not have permission to view this zone."
 msgstr "Bu bölgeyi görüntüleme izniniz bulunmamaktadır."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:229 templates/modern/index.html:229
+#: templates/default/index.html:242 templates/modern/index.html:242
 msgid "User Logs"
 msgstr "Kullanıcı Kayıtları"
 
@@ -2271,7 +2271,7 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC kimlik doğrulama başlatılamadı: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:239 templates/modern/index.html:239
+#: templates/default/index.html:252 templates/modern/index.html:252
 msgid "Group Logs"
 msgstr "Grup Günlükleri"
 
@@ -2410,7 +2410,7 @@ msgstr "Geçersiz SAML sağlayıcısı"
 msgid "SAML authentication failed: "
 msgstr "SAML kimlik doğrulaması başarısız: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:56
+#: lib/Application/Controller/ListForwardZonesController.php:57
 msgid "You do not have sufficient permissions to view this page."
 msgstr "Bu sayfayı görüntülemek için yeterli izniniz yok."
 
@@ -2419,7 +2419,7 @@ msgstr "Bu sayfayı görüntülemek için yeterli izniniz yok."
 msgid "Reverse Zones"
 msgstr "Ters Zonlar"
 
-#: lib/Application/Controller/ListForwardZonesController.php:144
+#: lib/Application/Controller/ListForwardZonesController.php:185
 msgid "You do not have the permission to see any zones."
 msgstr "Hiçbir zonu görme izniniz yok."
 
@@ -2557,7 +2557,7 @@ msgstr "Bölge Şablonu Ekle"
 msgid "Zone template has been added successfully."
 msgstr "Zon şablonu başarıyla eklendi."
 
-#: lib/Application/Controller/IndexController.php:61
+#: lib/Application/Controller/IndexController.php:62
 msgid "Dashboard"
 msgstr "Pano"
 
@@ -2625,10 +2625,27 @@ msgstr "Bölge gruptan başarıyla çıkarıldı."
 msgid "Zone was not owned by this group."
 msgstr "Bölge bu gruba ait değildi."
 
-#: lib/Application/Controller/ListForwardZonesController.php:60
+#: lib/Application/Controller/ListForwardZonesController.php:61
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Düz Zonlar"
+
+#: lib/Application/Controller/ListForwardZonesController.php:79
+#, auto-english-fallback
+msgid "You do not have permission to sync zones from PowerDNS."
+msgstr "You do not have permission to sync zones from PowerDNS."
+
+#: lib/Application/Controller/ListForwardZonesController.php:90
+#, auto-english-fallback
+#, php-format
+msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+
+#: lib/Application/Controller/ListForwardZonesController.php:98
+#, auto-english-fallback
+#, php-format
+msgid "Zone sync failed: %s"
+msgstr "Zone sync failed: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:43
 msgid "You do not have the permission to add a new supermaster."
@@ -2864,7 +2881,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster başarıyla silindi."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:150 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:163 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Toplu Kayıt"
 
@@ -9490,7 +9507,7 @@ msgstr "Çıkar"
 msgid "and"
 msgstr "ve"
 
-#: templates/modern/list_forward_zones.html:169
+#: templates/modern/list_forward_zones.html:174
 msgid "more..."
 msgstr "daha fazla..."
 
@@ -9609,15 +9626,31 @@ msgstr "kullanıcı"
 msgid "groups"
 msgstr "gruplar"
 
-#: templates/default/index.html:22 templates/modern/index.html:22
+#: templates/default/index.html:16 templates/modern/index.html:16
+#, auto-english-fallback
+msgid "PowerDNS API error"
+msgstr "PowerDNS API error"
+
+#: templates/default/index.html:19 templates/modern/index.html:19
+#, auto-english-fallback
+msgid "endpoint"
+msgstr "endpoint"
+
+#: templates/default/index.html:21 templates/modern/index.html:21
+msgid ""
+"Zone counts and lists may be out of date until the API is reachable again. "
+"Check your PowerDNS server log for details."
+msgstr ""
+
+#: templates/default/index.html:35 templates/modern/index.html:35
 msgid "DNS Management"
 msgstr "DNS Yönetimi"
 
-#: templates/modern/index.html:35 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:48 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "Çevrimiçi"
 
-#: templates/modern/index.html:37 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:50 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "Çevrimdışı"
 
@@ -9625,31 +9658,31 @@ msgstr "Çevrimdışı"
 msgid "Templates"
 msgstr "Şablonlar"
 
-#: templates/default/index.html:109 templates/modern/index.html:109
+#: templates/default/index.html:122 templates/modern/index.html:122
 msgid "Zone Operations"
 msgstr "Bölge İşlemleri"
 
-#: templates/default/index.html:120 templates/modern/index.html:120
+#: templates/default/index.html:133 templates/modern/index.html:133
 msgid "Master Zone"
 msgstr "Master Zon"
 
-#: templates/default/index.html:130 templates/modern/index.html:130
+#: templates/default/index.html:143 templates/modern/index.html:143
 msgid "Slave Zone"
 msgstr "Slave Zon"
 
-#: templates/default/index.html:140 templates/modern/index.html:140
+#: templates/default/index.html:153 templates/modern/index.html:153
 msgid "Supermaster"
 msgstr "Süper Master"
 
-#: templates/default/index.html:160 templates/modern/index.html:160
+#: templates/default/index.html:173 templates/modern/index.html:173
 msgid "PTR Records"
 msgstr "PTR Kayıtları"
 
-#: templates/default/index.html:178 templates/modern/index.html:178
+#: templates/default/index.html:191 templates/modern/index.html:191
 msgid "Administration"
 msgstr "Yönetim"
 
-#: templates/modern/index.html:209 templates/modern/header.html:259
+#: templates/modern/index.html:222 templates/modern/header.html:259
 msgid "Access"
 msgstr "Erişim"
 
@@ -9657,12 +9690,12 @@ msgstr "Erişim"
 msgid "Tools"
 msgstr "Araçlar"
 
-#: templates/default/index.html:268 templates/modern/index.html:268
+#: templates/default/index.html:281 templates/modern/index.html:281
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Veritabanı"
 
-#: templates/default/index.html:315 templates/modern/index.html:315
+#: templates/default/index.html:328 templates/modern/index.html:328
 msgid "My Profile"
 msgstr "Profilim"
 
@@ -9671,7 +9704,7 @@ msgstr "Profilim"
 msgid "Password"
 msgstr "Şifre"
 
-#: templates/modern/index.html:334 templates/modern/header.html:372
+#: templates/modern/index.html:347 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "Tercihler"
 
@@ -10325,7 +10358,7 @@ msgstr "Bu listede gösterilecek ters zon bulunmamaktadır."
 msgid "Owner"
 msgstr "Sahip"
 
-#: templates/modern/list_forward_zones.html:88
+#: templates/modern/list_forward_zones.html:93
 msgid "Full name"
 msgstr "Tam ad"
 
@@ -10333,7 +10366,7 @@ msgstr "Tam ad"
 msgid "Associated Forward Zones"
 msgstr "İlişkili Düz Zonlar"
 
-#: templates/modern/list_forward_zones.html:92
+#: templates/modern/list_forward_zones.html:97
 msgid "Serial"
 msgstr "Seri"
 
@@ -11390,15 +11423,25 @@ msgstr "MFA etkin"
 msgid "MFA not configured"
 msgstr "MFA yapılandırılmadı"
 
+#: templates/modern/list_forward_zones.html:19
+#, auto-english-fallback
+msgid "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Fetch zones from PowerDNS and reconcile the local table"
+
+#: templates/modern/list_forward_zones.html:20
+#, auto-english-fallback
+msgid "Sync from PowerDNS"
+msgstr "Sync from PowerDNS"
+
 #: templates/modern/list_template_zones.html:15
 msgid "Total number of zones:"
 msgstr "Toplam zon sayısı:"
 
-#: templates/modern/list_forward_zones.html:57
+#: templates/modern/list_forward_zones.html:62
 msgid "There are no forward zones to show in this listing."
 msgstr "Bu listede gösterilecek ileri zon bulunmuyor."
 
-#: templates/modern/list_forward_zones.html:201
+#: templates/modern/list_forward_zones.html:206
 msgid "PTR"
 msgstr "PTR"
 
@@ -13571,7 +13614,7 @@ msgid ""
 "Please select your preferred language to continue with the installation:"
 msgstr "Kuruluma devam etmek için lütfen tercih ettiğiniz dili seçin:"
 
-#: install/templates/step1.html.twig:287
+#: install/templates/step1.html.twig:391
 msgid "Begin Installation"
 msgstr "Kurulumu Başlat"
 
