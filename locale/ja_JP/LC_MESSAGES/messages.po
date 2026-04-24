@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-24 22:03+0300\n"
+"POT-Creation-Date: 2026-04-24 22:55+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1908,7 +1908,7 @@ msgid "The record could not be deleted."
 msgstr "レコードを削除できませんでした。"
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:242 templates/modern/index.html:242
+#: templates/default/index.html:245 templates/modern/index.html:245
 msgid "Zone Logs"
 msgstr "ゾーンログ"
 
@@ -1987,7 +1987,7 @@ msgid "You do not have permission to view this zone."
 msgstr "このゾーンを表示する権限がありません。"
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:252 templates/modern/index.html:252
+#: templates/default/index.html:255 templates/modern/index.html:255
 msgid "User Logs"
 msgstr "ユーザーログ"
 
@@ -2262,7 +2262,7 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC認証の開始に失敗しました: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:262 templates/modern/index.html:262
+#: templates/default/index.html:265 templates/modern/index.html:265
 msgid "Group Logs"
 msgstr "グループログ"
 
@@ -2412,7 +2412,7 @@ msgstr "このページを表示する十分な権限がありません。"
 msgid "Reverse Zones"
 msgstr "逆引きゾーン"
 
-#: lib/Application/Controller/ListForwardZonesController.php:185
+#: lib/Application/Controller/ListForwardZonesController.php:186
 msgid "You do not have the permission to see any zones."
 msgstr "ゾーンを表示する権限がありません。"
 
@@ -2546,7 +2546,7 @@ msgstr "ゾーンテンプレートを追加"
 msgid "Zone template has been added successfully."
 msgstr "ゾーンテンプレートが正常に追加されました。"
 
-#: lib/Application/Controller/IndexController.php:62
+#: lib/Application/Controller/IndexController.php:63
 msgid "Dashboard"
 msgstr "ダッシュボード"
 
@@ -2619,16 +2619,16 @@ msgstr "ゾーンはこのグループが所有していませんでした。"
 msgid "Forward Zones"
 msgstr "正引きゾーン"
 
-#: lib/Application/Controller/ListForwardZonesController.php:79
+#: lib/Application/Controller/ListForwardZonesController.php:80
 msgid "You do not have permission to sync zones from PowerDNS."
 msgstr "You do not have permission to sync zones from PowerDNS."
 
-#: lib/Application/Controller/ListForwardZonesController.php:90
+#: lib/Application/Controller/ListForwardZonesController.php:91
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 
-#: lib/Application/Controller/ListForwardZonesController.php:98
+#: lib/Application/Controller/ListForwardZonesController.php:99
 #, php-format
 msgid "Zone sync failed: %s"
 msgstr "Zone sync failed: %s"
@@ -2869,7 +2869,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "スーパーマスターが正常に削除されました。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:173 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:176 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "一括登録"
 
@@ -9500,7 +9500,7 @@ msgstr "削除"
 msgid "and"
 msgstr "および"
 
-#: templates/modern/list_forward_zones.html:174
+#: templates/modern/list_forward_zones.html:178
 msgid "more..."
 msgstr "さらに..."
 
@@ -9621,11 +9621,16 @@ msgstr "ユーザー"
 msgid "groups"
 msgstr "グループ"
 
-#: templates/default/index.html:16 templates/modern/index.html:16
+#: templates/default/index.html:10 templates/modern/index.html:10
+#, auto-english-fallback
+msgid "Connected PowerDNS version"
+msgstr "Connected PowerDNS version"
+
+#: templates/default/index.html:19 templates/modern/index.html:19
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/index.html:23 templates/modern/index.html:23
+#: templates/default/index.html:26 templates/modern/index.html:26
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -9633,7 +9638,7 @@ msgstr ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
 
-#: templates/default/index.html:25 templates/modern/index.html:25
+#: templates/default/index.html:28 templates/modern/index.html:28
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -9641,8 +9646,7 @@ msgstr ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
 
-#: templates/default/index.html:27 templates/modern/index.html:27
-#, auto-english-fallback
+#: templates/default/index.html:30 templates/modern/index.html:30
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -9652,7 +9656,7 @@ msgstr ""
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 
-#: templates/default/index.html:29 templates/modern/index.html:29
+#: templates/default/index.html:32 templates/modern/index.html:32
 msgid ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
@@ -9660,15 +9664,15 @@ msgstr ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
 
-#: templates/default/index.html:45 templates/modern/index.html:45
+#: templates/default/index.html:48 templates/modern/index.html:48
 msgid "DNS Management"
 msgstr "DNS管理"
 
-#: templates/modern/index.html:58 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:61 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "オンライン"
 
-#: templates/modern/index.html:60 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:63 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "オフライン"
 
@@ -9676,31 +9680,31 @@ msgstr "オフライン"
 msgid "Templates"
 msgstr "テンプレート"
 
-#: templates/default/index.html:132 templates/modern/index.html:132
+#: templates/default/index.html:135 templates/modern/index.html:135
 msgid "Zone Operations"
 msgstr "ゾーン操作"
 
-#: templates/default/index.html:143 templates/modern/index.html:143
+#: templates/default/index.html:146 templates/modern/index.html:146
 msgid "Master Zone"
 msgstr "マスターゾーン"
 
-#: templates/default/index.html:153 templates/modern/index.html:153
+#: templates/default/index.html:156 templates/modern/index.html:156
 msgid "Slave Zone"
 msgstr "スレーブゾーン"
 
-#: templates/default/index.html:163 templates/modern/index.html:163
+#: templates/default/index.html:166 templates/modern/index.html:166
 msgid "Supermaster"
 msgstr "スーパーマスター"
 
-#: templates/default/index.html:183 templates/modern/index.html:183
+#: templates/default/index.html:186 templates/modern/index.html:186
 msgid "PTR Records"
 msgstr "PTRレコード"
 
-#: templates/default/index.html:201 templates/modern/index.html:201
+#: templates/default/index.html:204 templates/modern/index.html:204
 msgid "Administration"
 msgstr "管理"
 
-#: templates/modern/index.html:232 templates/modern/header.html:259
+#: templates/modern/index.html:235 templates/modern/header.html:259
 msgid "Access"
 msgstr "アクセス"
 
@@ -9708,12 +9712,12 @@ msgstr "アクセス"
 msgid "Tools"
 msgstr "ツール"
 
-#: templates/default/index.html:291 templates/modern/index.html:291
+#: templates/default/index.html:294 templates/modern/index.html:294
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "データベース"
 
-#: templates/default/index.html:338 templates/modern/index.html:338
+#: templates/default/index.html:341 templates/modern/index.html:341
 msgid "My Profile"
 msgstr "マイプロフィール"
 
@@ -9722,7 +9726,7 @@ msgstr "マイプロフィール"
 msgid "Password"
 msgstr "パスワード"
 
-#: templates/modern/index.html:357 templates/modern/header.html:372
+#: templates/modern/index.html:360 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "設定"
 
@@ -10367,7 +10371,7 @@ msgstr "この一覧に表示する逆引きゾーンがありません。"
 msgid "Owner"
 msgstr "所有者"
 
-#: templates/modern/list_forward_zones.html:93
+#: templates/modern/list_forward_zones.html:97
 msgid "Full name"
 msgstr "完全名"
 
@@ -10375,7 +10379,7 @@ msgstr "完全名"
 msgid "Associated Forward Zones"
 msgstr "関連する正引きゾーン"
 
-#: templates/modern/list_forward_zones.html:97
+#: templates/modern/list_forward_zones.html:101
 msgid "Serial"
 msgstr "シリアル"
 
@@ -11426,11 +11430,11 @@ msgstr "MFA有効"
 msgid "MFA not configured"
 msgstr "MFA未構成"
 
-#: templates/modern/list_forward_zones.html:19
+#: templates/modern/list_forward_zones.html:22
 msgid "Fetch zones from PowerDNS and reconcile the local table"
 msgstr "Fetch zones from PowerDNS and reconcile the local table"
 
-#: templates/modern/list_forward_zones.html:20
+#: templates/modern/list_forward_zones.html:23
 msgid "Sync from PowerDNS"
 msgstr "Sync from PowerDNS"
 
@@ -11438,11 +11442,11 @@ msgstr "Sync from PowerDNS"
 msgid "Total number of zones:"
 msgstr "ゾーンの総数："
 
-#: templates/modern/list_forward_zones.html:62
+#: templates/modern/list_forward_zones.html:66
 msgid "There are no forward zones to show in this listing."
 msgstr "この一覧に表示する正引きゾーンがありません。"
 
-#: templates/modern/list_forward_zones.html:206
+#: templates/modern/list_forward_zones.html:210
 msgid "PTR"
 msgstr "PTR"
 
@@ -14227,4 +14231,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNSデータベース\"%s\"に接続できません: %s"
+
 
