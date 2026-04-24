@@ -4838,7 +4838,7 @@ msgstr ""
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr "Tabele lipsă."
+msgstr "Tabele PowerDNS lipsă în baza \"%s\": %s. Verificați instalarea."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
