@@ -3006,7 +3006,7 @@ msgstr "SOA 7 campuri."
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr "SOA %s < %d."
+msgstr "SOA %s valoare (%d) sub minimul RFC 2308 (%d). Permis dar nerecomandat."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:288
 msgid ""
