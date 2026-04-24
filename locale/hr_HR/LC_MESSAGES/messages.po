@@ -8449,7 +8449,7 @@ msgstr "NAPTR regexp mora početi razdjelnikom."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp contains potentially dangerous pattern: "
+msgstr "NAPTR regexp sadrži potencijalno opasan uzorak: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

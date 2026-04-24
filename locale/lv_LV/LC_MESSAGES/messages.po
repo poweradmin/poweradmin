@@ -8267,7 +8267,7 @@ msgstr "NAPTR regexp jāsākas ar atdalītāju."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp contains potentially dangerous pattern: "
+msgstr "NAPTR regexp satur bīstamu rakstu: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

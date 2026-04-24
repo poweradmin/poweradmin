@@ -8229,7 +8229,7 @@ msgstr "NAPTR regexp -on alettava erotinmerkillä."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp contains potentially dangerous pattern: "
+msgstr "NAPTR regexp sisältää vaarallisen kuvion:"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."

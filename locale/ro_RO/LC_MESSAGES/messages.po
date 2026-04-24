@@ -8184,7 +8184,7 @@ msgstr "NAPTR regexp trebuie să înceapă cu delimitator."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp contains potentially dangerous pattern: "
+msgstr "NAPTR regexp periculos: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
