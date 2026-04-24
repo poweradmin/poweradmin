@@ -5539,7 +5539,7 @@ msgstr ""
 
 #: install/templates/step4.html.twig:238
 msgid "Password for \"admin\" username."
-msgstr "Password for \"admin\" username."
+msgstr "Parolă pentru utilizatorul \"admin\"."
 
 #: install/templates/step5.html.twig:57
 msgid ""
@@ -5684,7 +5684,7 @@ msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:57
 msgid "DNS wizards are not enabled."
-msgstr "DNS wizards are not enabled."
+msgstr "Asistenții DNS nu sunt activați."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:48
 msgid "Invalid zone ID."
@@ -5716,7 +5716,7 @@ msgstr "The record was successfully added."
 
 #: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:414
 msgid "Record created successfully"
-msgstr "Record created successfully"
+msgstr "Înregistrare creată cu succes"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:45
 msgid "TLSA Record"
@@ -5857,7 +5857,7 @@ msgstr "Date certificat"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:156
 msgid "Certificate Association Data"
-msgstr "Certificate Association Data"
+msgstr "Date asociere certificat"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:184
 msgid "Record Settings"
@@ -5877,7 +5877,7 @@ msgstr "Port must be between 1 and 65535"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:233
 msgid "Usage must be 0, 1, 2, or 3"
-msgstr "Usage must be 0, 1, 2, or 3"
+msgstr "Utilizarea trebuie să fie 0, 1, 2 sau 3"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:238
 msgid "Selector must be 0 or 1"
@@ -5958,7 +5958,7 @@ msgstr "Niciuna"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:82
 msgid "Monitor only for subdomains"
-msgstr "Monitor only for subdomains"
+msgstr "Monitorizează doar subdomenii"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:83
 msgid "Quarantine suspicious subdomain emails"
@@ -5974,7 +5974,7 @@ msgstr "Policy for emails from subdomains (e.g., mail.example.com)"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:90
 msgid "Policy Application Percentage"
-msgstr "Policy Application Percentage"
+msgstr "Procent aplicare politică"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:101
 msgid "Reporting Settings"
@@ -6062,7 +6062,7 @@ msgstr "Valoare politică invalidă"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:268
 msgid "Invalid subdomain policy value"
-msgstr "Invalid subdomain policy value"
+msgstr "Valoare politică subdomeniu invalidă"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:275
 msgid "Percentage must be between 0 and 100"
@@ -6404,7 +6404,7 @@ msgstr "User Datagram Protocol - connectionless"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:120
 msgid "Transport Layer Security"
-msgstr "Transport Layer Security"
+msgstr "Securitate strat transport"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:123
 msgid "Transport protocol for the service"
@@ -6450,11 +6450,11 @@ msgstr "Service name must contain only alphanumeric characters and hyphens"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:273
 msgid "Target hostname is required"
-msgstr "Target hostname is required"
+msgstr "Nume gazdă țintă obligatoriu"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:277
 msgid "Invalid target hostname format"
-msgstr "Invalid target hostname format"
+msgstr "Format nume gazdă țintă invalid"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:295
 msgid "Priority must be between 0 and 65535"
@@ -6684,7 +6684,7 @@ msgstr "Șterge grup"
 
 #: lib/Application/Controller/DeleteGroupController.php:108
 msgid "Group deletion cancelled."
-msgstr "Group deletion cancelled."
+msgstr "Ștergerea grupului a fost anulată."
 
 #: lib/Application/Controller/DeleteGroupController.php:141
 msgid "Group has been deleted successfully."
@@ -6741,7 +6741,7 @@ msgstr "Configurare MFA"
 
 #: lib/Application/Controller/MfaSetupController.php:210
 msgid "Failed to create MFA record."
-msgstr "Failed to create MFA record."
+msgstr "Crearea înregistrării MFA a eșuat."
 
 #: lib/Application/Controller/MfaSetupController.php:217
 msgid "MFA is already enabled."
@@ -6859,7 +6859,7 @@ msgstr "Chei API"
 
 #: lib/Application/Controller/ApiKeysController.php:250
 msgid "API key name is required."
-msgstr "API key name is required."
+msgstr "Numele cheii API este obligatoriu."
 
 #: lib/Application/Controller/ApiKeysController.php:260
 msgid "Invalid expiration date format."
@@ -6871,11 +6871,11 @@ msgstr "API key not found or you do not have permission to edit it."
 
 #: lib/Application/Controller/ApiKeysController.php:277
 msgid "API key updated successfully."
-msgstr "API key updated successfully."
+msgstr "Cheie API actualizată cu succes."
 
 #: lib/Application/Controller/ApiKeysController.php:318
 msgid "API key deleted successfully."
-msgstr "API key deleted successfully."
+msgstr "Cheie API ștearsă cu succes."
 
 #: lib/Domain/Service/ApiKeyService.php:256
 msgid "API key not found or you do not have permission to delete it."
@@ -6955,7 +6955,7 @@ msgstr "Invalid request method."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:83
 msgid "Invalid group or user ID."
-msgstr "Invalid group or user ID."
+msgstr "ID grup sau utilizator invalid."
 
 #: lib/Application/Controller/QuickRemoveGroupMemberController.php:94
 msgid "Member removed from group successfully."
@@ -7251,7 +7251,7 @@ msgstr "Failed to add any records. They may contain invalid data."
 
 #: lib/Application/Controller/DeleteDomainsController.php:79
 msgid "No zone selected for deletion."
-msgstr "No zone selected for deletion."
+msgstr "Nicio zonă selectată pentru ștergere."
 
 #: lib/Application/Controller/DeleteDomainController.php:141
 msgid "Zone has been deleted successfully."
@@ -7386,7 +7386,7 @@ msgstr "Zone key has been deleted successfully."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:117
 msgid "Failed to delete the zone key."
-msgstr "Failed to delete the zone key."
+msgstr "Ștergerea cheii zonei a eșuat."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:124
 msgid "An error occurred while deleting the DNSSEC key: "
@@ -7410,7 +7410,7 @@ msgstr "Furnizor SAML invalid"
 
 #: lib/Application/Controller/SamlCallbackController.php:126
 msgid "SAML authentication failed: "
-msgstr "SAML authentication failed: "
+msgstr "Autentificare SAML eșuată: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:56
 msgid "You do not have sufficient permissions to view this page."
@@ -7477,7 +7477,7 @@ msgstr "Zone owner assigned successfully"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:101
 msgid "Failed to assign zone owner"
-msgstr "Failed to assign zone owner"
+msgstr "Nu s-a putut atribui proprietarul zonei"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:108
 msgid "Slave zone deleted successfully"
@@ -7485,7 +7485,7 @@ msgstr "Slave zone deleted successfully"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:108
 msgid "Failed to delete slave zone"
-msgstr "Failed to delete slave zone"
+msgstr "Nu s-a putut șterge zona secundară"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:115
 msgid "Orphaned record deleted successfully"
@@ -7683,7 +7683,7 @@ msgstr "Punct final SAML necunoscut"
 
 #: lib/Application/Controller/SamlCallbackController.php:148
 msgid "You have been logged out"
-msgstr "You have been logged out"
+msgstr "Ați fost deconectat"
 
 #: lib/Application/Controller/SamlCallbackController.php:153
 msgid "Logout completed (with warnings): "
@@ -7736,7 +7736,7 @@ msgstr "Zone key has been added successfully."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:165
 msgid "Failed to add new DNSSEC key."
-msgstr "Failed to add new DNSSEC key."
+msgstr "Nu s-a putut adăuga cheia DNSSEC."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:169
 msgid "An error occurred while adding the DNSSEC key: "
@@ -7773,7 +7773,7 @@ msgstr "Nume NS invalid."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:91
 msgid "Super master does not exist."
-msgstr "Super master does not exist."
+msgstr "Supermaster nu există."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:95
 msgid "The supermaster has been deleted successfully."
@@ -7823,7 +7823,7 @@ msgstr "Zone key has been successfully deactivated."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:102
 msgid "Failed to deactivate zone key."
-msgstr "Failed to deactivate zone key."
+msgstr "Dezactivarea cheii zonei a eșuat."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:105
 msgid "Zone key has been successfully activated."
@@ -7831,7 +7831,7 @@ msgstr "Zone key has been successfully activated."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:106
 msgid "Failed to activate zone key."
-msgstr "Failed to activate zone key."
+msgstr "Activarea cheii zonei a eșuat."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:119
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
@@ -7853,7 +7853,7 @@ msgstr "Account is temporarily locked. Please try again later."
 
 #: lib/Application/Service/SqlAuthenticator.php:135
 msgid "The user account is disabled."
-msgstr "The user account is disabled."
+msgstr "Contul utilizatorului este dezactivat."
 
 #: lib/Application/Service/SqlAuthenticator.php:216
 msgid "Authentication failed!"
@@ -7865,7 +7865,7 @@ msgstr "Session expired, please login again."
 
 #: lib/Application/Service/PasswordChangeService.php:66
 msgid "Failed to update password"
-msgstr "Failed to update password"
+msgstr "Nu s-a putut actualiza parola"
 
 #: lib/Application/Service/OidcService.php:183
 msgid "Authentication failed: Invalid state parameter"
@@ -7885,7 +7885,7 @@ msgstr "Authentication failed: Unable to create or update user account"
 
 #: lib/Application/Service/LdapAuthenticator.php:236
 msgid "LDAP Authentication failed!"
-msgstr "LDAP Authentication failed!"
+msgstr "Autentificare LDAP eșuată!"
 
 #: lib/Application/Service/LdapAuthenticator.php:141
 msgid "Failed to connect to LDAP server!"
@@ -7893,7 +7893,7 @@ msgstr "Failed to connect to LDAP server!"
 
 #: lib/Application/Service/LdapAuthenticator.php:157
 msgid "Failed to bind to LDAP server!"
-msgstr "Failed to bind to LDAP server!"
+msgstr "Conectarea la serverul LDAP a eșuat!"
 
 #: lib/Application/Service/LdapAuthenticator.php:185
 msgid "Failed to search LDAP."
@@ -7909,7 +7909,7 @@ msgstr "Authentication failed: Invalid SAML response"
 
 #: lib/Infrastructure/Repository/SqlDomainRepository.php:141
 msgid "This is an invalid zone name."
-msgstr "This is an invalid zone name."
+msgstr "Acesta este un nume de zonă invalid."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
 msgid "This template is assigned to at least one user and one group."
@@ -7938,7 +7938,7 @@ msgstr "LDAP authentication is disabled"
 
 #: lib/Domain/Model/UserManager.php:1015
 msgid "Enter a valid email address."
-msgstr "Enter a valid email address."
+msgstr "Introduceți adresă email validă."
 
 #: lib/Domain/Model/UserManager.php:1007
 msgid "Username exist already, please choose another one."
@@ -7950,7 +7950,7 @@ msgstr "Enter a valid user name."
 
 #: lib/Domain/Model/ZoneTemplate.php:213 lib/Domain/Model/ZoneTemplate.php:682
 msgid "Error creating zone template: "
-msgstr "Error creating zone template: "
+msgstr "Eroare la crearea șablonului: "
 
 #: lib/Domain/Model/ZoneTemplate.php:249
 msgid "Error adding default SOA record to template: "
@@ -7958,7 +7958,7 @@ msgstr "Error adding default SOA record to template: "
 
 #: lib/Domain/Model/ZoneTemplate.php:308
 msgid "Error deleting zone template: "
-msgstr "Error deleting zone template: "
+msgstr "Eroare la ștergerea șablonului: "
 
 #: lib/Domain/Model/ZoneTemplate.php:332
 msgid "Error deleting user zone templates: "
@@ -8031,7 +8031,7 @@ msgstr "Toate zonele au proprietari"
 #: lib/Domain/Service/DatabaseConsistencyService.php:108
 #, php-format
 msgid "%d zones found without owners"
-msgstr "%d zones found without owners"
+msgstr "S-au găsit %d zone fără proprietari"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:159
 msgid "All slave zones have master IP addresses"
@@ -8049,11 +8049,11 @@ msgstr "All records belong to existing zones"
 #: lib/Domain/Service/DatabaseConsistencyService.php:218
 #, php-format
 msgid "%d orphaned records found"
-msgstr "%d orphaned records found"
+msgstr "S-au găsit %d înregistrări orfane"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:273
 msgid "No duplicate SOA records found"
-msgstr "No duplicate SOA records found"
+msgstr "Nu s-au găsit înregistrări SOA duplicate"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:280
 #, php-format
@@ -8319,7 +8319,7 @@ msgstr "ALIAS target must be a fully qualified domain name (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:61
 msgid "Content field cannot be empty."
-msgstr "Content field cannot be empty."
+msgstr "Câmpul conținut nu poate fi gol."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:97
 msgid "NSEC record content cannot be empty."
@@ -8536,7 +8536,7 @@ msgstr "A domain with null MX record must not have any other MX records."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:105
 msgid "Invalid mail server hostname."
-msgstr "Invalid mail server hostname."
+msgstr "Nume server mail invalid."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:112
 msgid "MX records should not point to CNAME records (RFC 2181)."
@@ -8964,7 +8964,7 @@ msgstr "IP address list cannot be empty."
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
 msgid "Invalid IPv6 address in %s: %s"
-msgstr "Invalid IPv6 address in %s: %s"
+msgstr "Adresă IPv6 invalidă în %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:352
 #, php-format
@@ -8979,7 +8979,7 @@ msgstr "Invalid server format: %s (expected IP:port or [IPv6]:port)"
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
 msgid "Invalid IPv4 address in %s: %s"
-msgstr "Invalid IPv4 address in %s: %s"
+msgstr "Adresă IPv4 invalidă în %s: %s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:369
 #, php-format
@@ -9127,7 +9127,7 @@ msgstr "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:265
 #, php-format
 msgid "SOA %s field must be numeric."
-msgstr "SOA %s field must be numeric."
+msgstr "Câmpul SOA %s trebuie să fie numeric."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:271
 #, php-format
@@ -9300,7 +9300,7 @@ msgstr "KEY algorithm must be a number between 0 and 255."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:224
 msgid "KEY public key is required."
-msgstr "KEY public key is required."
+msgstr "Cheia publică KEY este obligatorie."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:231
 msgid "KEY public key must be properly Base64 encoded."
@@ -9364,7 +9364,7 @@ msgstr "TXT record content must be enclosed in quotes."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
-msgstr "Invalid IPv4 address format."
+msgstr "Format adresă IPv4 invalid."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:119
 msgid "Priority field for CDS records must be 0 or empty"
@@ -9420,7 +9420,7 @@ msgstr "Invalid value for the port field of the SRV record. Must be 1-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
-msgstr "SRV target cannot be empty."
+msgstr "Ținta SRV nu poate fi goală."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
@@ -9444,7 +9444,7 @@ msgstr "NSEC3 hash algorithm must be 1 (SHA-1)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:219
 msgid "NSEC3 flags must be 0 or 1."
-msgstr "NSEC3 flags must be 0 or 1."
+msgstr "Indicatoarele NSEC3 trebuie să fie 0 sau 1."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:231
 msgid "NSEC3 iterations must be between 0 and 2500."
@@ -9473,7 +9473,7 @@ msgstr "Add quotes around TXT record content."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:220
 msgid "Invalid domain name format."
-msgstr "Invalid domain name format."
+msgstr "Format nume domeniu invalid."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:208
 msgid "NAPTR record order must be a number between 0 and 65535."
@@ -9575,7 +9575,7 @@ msgstr "Tip înregistrare necunoscut."
 
 #: lib/Domain/Service/ApiKeyService.php:176
 msgid "API functionality is disabled."
-msgstr "API functionality is disabled."
+msgstr "Funcționalitatea API este dezactivată."
 
 #: lib/Domain/Service/ApiKeyService.php:185
 msgid "You do not have permission to create API keys."
@@ -9709,7 +9709,7 @@ msgstr "Failed to create zone in DNS backend."
 #: lib/Domain/Service/Dns/DomainManager.php:301
 #, php-format
 msgid "Failed to create zone: %s"
-msgstr "Failed to create zone: %s"
+msgstr "Eroare la crearea zonei: %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "Failed to create SOA record for zone."
@@ -9957,7 +9957,7 @@ msgstr "Delete API Key"
 
 #: templates/modern/api_key_edit.html:104
 msgid "Permanently removes this key"
-msgstr "Permanently removes this key"
+msgstr "Elimină definitiv această cheie"
 
 #: templates/modern/delete_zone_templ_record.html:11
 msgid "Zone templates"
@@ -9973,7 +9973,7 @@ msgstr "Memento"
 
 #: templates/modern/edit_zone_templ_record.html:32
 msgid "Edit record in zone template"
-msgstr "Edit record in zone template"
+msgstr "Editează înregistrare în șablon"
 
 #: templates/modern/edit_zone_templ_record.html:35
 msgid "Modify the record for this zone template"
@@ -9981,7 +9981,7 @@ msgstr "Modify the record for this zone template"
 
 #: templates/modern/add_zone_templ_record.html:43
 msgid "Provide a name for your record"
-msgstr "Provide a name for your record"
+msgstr "Furnizați un nume pentru înregistrare"
 
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-65535"
@@ -9989,7 +9989,7 @@ msgstr "Interval valid: 0-65535"
 
 #: templates/modern/add_zone_templ_record.html:63
 msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Only for MX, SRV, KX, NAPTR"
+msgstr "Doar pentru MX, SRV, KX, NAPTR"
 
 #: lib/Module/ZoneImportExport/templates/import.html:81
 msgid "TTL"
@@ -10061,7 +10061,7 @@ msgstr "Substituted with 4th name server"
 
 #: templates/modern/edit_zone_templ.html:225
 msgid "Substituted with hostmaster"
-msgstr "Substituted with hostmaster"
+msgstr "Înlocuit cu hostmaster"
 
 #: templates/modern/add_zone_templ_record.html:161
 msgid "Example Records"
@@ -10117,7 +10117,7 @@ msgstr "Editează supermaster"
 
 #: templates/modern/list_supermasters.html:31
 msgid "IP address of supermaster"
-msgstr "IP address of supermaster"
+msgstr "Adresă IP supermaster"
 
 #: templates/modern/add_supermaster.html:22
 msgid "Enter the IP address of the master nameserver"
@@ -10301,7 +10301,7 @@ msgstr "Edit record in zone"
 
 #: templates/default/edit_record.html:35 templates/modern/edit_record.html:35
 msgid "Modify DNS record properties"
-msgstr "Modify DNS record properties"
+msgstr "Modifică proprietățile înregistrării DNS"
 
 #: templates/modern/add_record.html:69
 msgid "Comment"
@@ -10357,7 +10357,7 @@ msgstr "Administrează"
 
 #: templates/default/edit_group.html:81 templates/modern/edit_group.html:81
 msgid "No members in this group yet."
-msgstr "No members in this group yet."
+msgstr "Acest grup nu are membri încă."
 
 #: templates/modern/edit_group.html:138 templates/modern/edit_user.html:228
 msgid "Remove from group"
@@ -10715,7 +10715,7 @@ msgstr "Înregistrări"
 
 #: templates/modern/bulk_record_add.html:44
 msgid "Provide at least one record"
-msgstr "Provide at least one record"
+msgstr "Furnizați cel puțin o înregistrare"
 
 #: templates/modern/bulk_record_add.html:45
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
@@ -10951,7 +10951,7 @@ msgstr "API Key Details"
 
 #: templates/modern/api_key_regenerate.html:72
 msgid "Yes, regenerate this API key"
-msgstr "Yes, regenerate this API key"
+msgstr "Da, regenerează această cheie API"
 
 #: templates/modern/api_key_regenerate.html:75
 msgid "No, keep current key"
@@ -10975,7 +10975,7 @@ msgstr "Password does not meet requirements"
 
 #: templates/modern/reset_password.html:39
 msgid "Enter your new password for"
-msgstr "Enter your new password for"
+msgstr "Introduceți noua parolă pentru"
 
 #: templates/modern/reset_password.html:45
 msgid "New Password"
@@ -11007,11 +11007,11 @@ msgstr "caractere"
 
 #: templates/modern/reset_password.html:68
 msgid "At least one uppercase letter"
-msgstr "At least one uppercase letter"
+msgstr "Cel puțin o literă mare"
 
 #: templates/modern/reset_password.html:71
 msgid "At least one lowercase letter"
-msgstr "At least one lowercase letter"
+msgstr "Cel puțin o literă mică"
 
 #: templates/modern/reset_password.html:74
 msgid "At least one number"
@@ -11019,7 +11019,7 @@ msgstr "At least one number"
 
 #: templates/modern/reset_password.html:77
 msgid "At least one special character"
-msgstr "At least one special character"
+msgstr "Cel puțin un caracter special"
 
 #: templates/modern/add_zone_master.html:11 templates/modern/header.html:156
 msgid "Add master zone"
@@ -11136,7 +11136,7 @@ msgstr "Avertisment:"
 
 #: templates/modern/dnssec_add_key.html:150
 msgid "bits is not recommended for"
-msgstr "bits is not recommended for"
+msgstr "biți nu este recomandat pentru"
 
 #: templates/modern/dnssec_add_key.html:187
 msgid "About DNSSEC Key Types"
@@ -11230,11 +11230,11 @@ msgstr "Account Information"
 
 #: templates/modern/change_password.html:82
 msgid "Must contain uppercase letters"
-msgstr "Must contain uppercase letters"
+msgstr "Trebuie să conțină litere mari"
 
 #: templates/modern/change_password.html:85
 msgid "Must contain lowercase letters"
-msgstr "Must contain lowercase letters"
+msgstr "Trebuie să conțină litere mici"
 
 #: templates/modern/change_password.html:88
 msgid "Must contain numbers"
@@ -11382,7 +11382,7 @@ msgstr "Group Template"
 
 #: templates/modern/edit_perm_templ.html:43
 msgid "Please select a template type"
-msgstr "Please select a template type"
+msgstr "Selectați un tip de șablon"
 
 #: templates/modern/add_perm_templ.html:52
 msgid "Add Template"
@@ -11639,7 +11639,7 @@ msgstr "Adaugă înregistrare"
 
 #: templates/modern/add_zone_templ_record.html:31
 msgid "Add record to zone template"
-msgstr "Add record to zone template"
+msgstr "Adaugă înregistrare în șablon"
 
 #: templates/modern/add_zone_templ_record.html:34
 msgid "Create a new record for this zone template"
@@ -11735,7 +11735,7 @@ msgstr "Validare conținut eșuată:"
 
 #: templates/modern/edit.html:55 templates/modern/edit.html:607
 msgid "Invalid value for record type"
-msgstr "Invalid value for record type"
+msgstr "Valoare invalidă pentru tip înregistrare"
 
 #: templates/modern/edit.html:57 templates/modern/edit.html:609
 msgid "Please provide all required information."
@@ -11924,7 +11924,7 @@ msgstr "You are about to delete a record in zone"
 
 #: templates/modern/delete_zone_templ_record.html:24
 msgid "This action cannot be undone."
-msgstr "This action cannot be undone."
+msgstr "Această acțiune nu poate fi anulată."
 
 #: templates/modern/delete_zone_templ_record.html:29
 msgid "Record Details"
@@ -12072,7 +12072,7 @@ msgstr "Zone fără înregistrări SOA"
 
 #: templates/modern/database_consistency.html:277
 msgid "Create default SOA record"
-msgstr "Create default SOA record"
+msgstr "Creează înregistrare SOA implicită"
 
 #: templates/modern/database_consistency.html:316
 msgid "Are you sure you want to delete the slave zone"
@@ -12289,7 +12289,7 @@ msgstr "Consider using a password manager"
 
 #: templates/modern/header.html:385
 msgid "Multi-Factor Authentication"
-msgstr "Multi-Factor Authentication"
+msgstr "Autentificare cu mai mulți factori"
 
 #: templates/modern/mfa_verify_app.html:14
 msgid "Set Up Authenticator App"
@@ -12333,7 +12333,7 @@ msgstr "Recommended Authenticator Apps"
 
 #: templates/modern/mfa_verify_app.html:97
 msgid "Available for Android and iOS"
-msgstr "Available for Android and iOS"
+msgstr "Disponibil pentru Android și iOS"
 
 #: templates/modern/edit_zone_templ.html:6
 msgid "Edit template"
@@ -12381,7 +12381,7 @@ msgstr "The following placeholders can be used in template records"
 
 #: templates/modern/edit_zone_templ.html:310
 msgid "Warning: Missing SOA Record"
-msgstr "Warning: Missing SOA Record"
+msgstr "Avertisment: înregistrare SOA lipsă"
 
 #: templates/modern/edit_zone_templ.html:316
 msgid "This zone template does not have an SOA (Start of Authority) record."
@@ -12441,7 +12441,7 @@ msgstr "API Key Created"
 
 #: templates/modern/api_key_created.html:12
 msgid "API Key Created Successfully"
-msgstr "API Key Created Successfully"
+msgstr "Cheie API creată cu succes"
 
 #: templates/modern/api_key_created.html:17
 msgid "IMPORTANT: Save your API key now!"
@@ -12473,7 +12473,7 @@ msgstr "Provide a domain name(s)"
 
 #: templates/modern/bulk_registration.html:77
 msgid "Type one domain per line"
-msgstr "Type one domain per line"
+msgstr "Un domeniu pe linie"
 
 #: templates/modern/bulk_registration.html:83
 msgid "Add Zones"
@@ -12617,7 +12617,7 @@ msgstr "Continuă la tablou de bord"
 
 #: templates/modern/mfa_recovery_codes.html:100
 msgid "Poweradmin MFA Recovery Codes"
-msgstr "Poweradmin MFA Recovery Codes"
+msgstr "Coduri recuperare MFA Poweradmin"
 
 #: templates/default/mfa_setup.html:14 templates/modern/mfa_setup.html:14
 msgid "MFA Setup Required"
@@ -12677,7 +12677,7 @@ msgstr "Nu necesită aplicație suplimentară"
 
 #: templates/default/mfa_setup.html:98 templates/modern/mfa_setup.html:98
 msgid "Requires internet connection"
-msgstr "Requires internet connection"
+msgstr "Necesită conexiune la internet"
 
 #: templates/default/mfa_setup.html:99 templates/modern/mfa_setup.html:99
 msgid "Relies on email delivery"
@@ -12705,7 +12705,7 @@ msgstr "Zone folosind șablonul"
 
 #: templates/modern/list_template_zones.html:66
 msgid "No domains using this template"
-msgstr "No domains using this template"
+msgstr "Niciun domeniu nu folosește șablonul"
 
 #: templates/modern/list_template_zones.html:112
 msgid "Back to templates"
@@ -12905,7 +12905,7 @@ msgstr "Detalii supermaster"
 
 #: templates/modern/delete_supermaster.html:53
 msgid "Yes, delete this supermaster"
-msgstr "Yes, delete this supermaster"
+msgstr "Da, șterge acest supermaster"
 
 #: templates/modern/delete_supermaster.html:56
 msgid "No, keep this supermaster"
@@ -12969,7 +12969,7 @@ msgstr "View Dark Mode"
 
 #: templates/modern/email_previews.html:77
 msgid "Template Override Information"
-msgstr "Template Override Information"
+msgstr "Informații suprascriere șablon"
 
 #: templates/modern/email_previews.html:81
 msgid "using custom template"
@@ -13126,7 +13126,7 @@ msgstr "Metrică"
 
 #: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
 msgid "No detailed metrics available."
-msgstr "No detailed metrics available."
+msgstr "Nu sunt metrici detaliate disponibile."
 
 #: templates/default/header.html:104 templates/modern/header.html:144
 msgid "Forward zones"
@@ -13166,7 +13166,7 @@ msgstr "Chei DS și DNS"
 
 #: templates/modern/dnssec_ds_dnskey.html:36
 msgid "DNSSEC public records for zone"
-msgstr "DNSSEC public records for zone"
+msgstr "Înregistrări publice DNSSEC pentru zonă"
 
 #: templates/modern/dnssec_ds_dnskey.html:41
 msgid "Back to DNSSEC keys"
@@ -13238,7 +13238,7 @@ msgstr "Are you sure you want to remove"
 
 #: templates/modern/manage_group_zones.html:211
 msgid "zone(s) from this group?"
-msgstr "zone(s) from this group?"
+msgstr "zonă/zone din acest grup?"
 
 #: templates/modern/manage_group_zones.html:212
 msgid "The zones will remain in the system."
@@ -13302,7 +13302,7 @@ msgstr "You are about to delete the API key"
 
 #: templates/modern/api_key_delete.html:71
 msgid "Yes, delete this API key"
-msgstr "Yes, delete this API key"
+msgstr "Da, șterge această cheie API"
 
 #: templates/modern/api_key_delete.html:74
 msgid "No, keep this API key"
@@ -13406,7 +13406,7 @@ msgstr "Tipuri șablon:"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "templates apply globally"
-msgstr "templates apply globally"
+msgstr "șabloanele se aplică global"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "templates apply only to group-owned zones"
@@ -13426,7 +13426,7 @@ msgstr "Membri actuali"
 
 #: templates/modern/manage_group_members.html:27
 msgid "No members in this group yet"
-msgstr "No members in this group yet"
+msgstr "Acest grup nu are membri încă"
 
 #: templates/modern/manage_group_members.html:70
 msgid "Available Users"
@@ -13438,7 +13438,7 @@ msgstr "All users are already members of this group"
 
 #: templates/modern/manage_group_members.html:133
 msgid "user(s) from this group?"
-msgstr "user(s) from this group?"
+msgstr "utilizator(i) din acest grup?"
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
@@ -13454,7 +13454,7 @@ msgstr "Succes:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:20
 msgid "Import completed successfully."
-msgstr "Import completed successfully."
+msgstr "Import finalizat cu succes."
 
 #: lib/Module/ZoneImportExport/templates/import.html:21
 msgid "records imported."
@@ -13466,11 +13466,11 @@ msgstr "records imported,"
 
 #: lib/Module/ZoneImportExport/templates/import.html:28
 msgid "records skipped (duplicates)."
-msgstr "records skipped (duplicates)."
+msgstr "înregistrări omise (duplicate)."
 
 #: lib/Module/ZoneImportExport/templates/import.html:36
 msgid "records skipped (duplicates),"
-msgstr "records skipped (duplicates),"
+msgstr "înregistrări omise (duplicate),"
 
 #: lib/Module/ZoneImportExport/templates/import.html:38
 msgid "records failed."
@@ -13562,7 +13562,7 @@ msgstr "Exporturi zone Cloudflare"
 
 #: lib/Module/ZoneImportExport/templates/import.html:193
 msgid "$ORIGIN and $TTL directives"
-msgstr "$ORIGIN and $TTL directives"
+msgstr "Directivele $ORIGIN și $TTL"
 
 #: lib/Module/ZoneImportExport/templates/import.html:194
 msgid "Multi-line records"
@@ -13642,7 +13642,7 @@ msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Create configuration file"
+msgstr "Creează fișier de configurare"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
@@ -13654,7 +13654,7 @@ msgstr "Creează fișierul"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "cu următorul conținut:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
@@ -13726,7 +13726,7 @@ msgstr "nume server"
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Database Connection Settings"
+msgstr "Setări conexiune bază date"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
@@ -13814,7 +13814,7 @@ msgstr "Database name"
 
 #: install/templates/step4.html.twig:213
 msgid "Leave empty for same database"
-msgstr "Leave empty for same database"
+msgstr "Lăsați gol pentru aceeași BD"
 
 #: install/templates/step4.html.twig:216
 msgid "MySQL database with PowerDNS tables (if different)."
@@ -13906,7 +13906,7 @@ msgstr "Please install the missing components before continuing."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "Configurează cont și nameservere"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
@@ -14054,7 +14054,7 @@ msgstr "Actualizare bază de date... gata!"
 
 #: install/helpers/InstallStepHandler.php:207
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "Probleme constrângere cheie externă:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"

@@ -17,7 +17,7 @@ msgstr ""
 
 #: lib/Module/ZoneImportExport/templates/import.html:171
 msgid "$ORIGIN and $TTL directives"
-msgstr "$ORIGIN and $TTL directives"
+msgstr "Директиве $ORIGIN и $TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:216
 msgid "A zone with this name already exists."
@@ -85,7 +85,7 @@ msgstr "Import another zone"
 
 #: lib/Module/ZoneImportExport/templates/import.html:19
 msgid "Import completed successfully."
-msgstr "Import completed successfully."
+msgstr "Увоз је успешно завршен."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:175
 msgid "Import session expired. Please upload the file again."
@@ -225,10 +225,10 @@ msgid "records imported."
 msgstr "records imported."
 
 msgid "records skipped (duplicates)."
-msgstr "records skipped (duplicates)."
+msgstr "записа прескочено (дупликати)."
 
 msgid "records skipped (duplicates),"
-msgstr "records skipped (duplicates),"
+msgstr "записа прескочено (дупликати),"
 
 msgid "Add all records"
 msgstr "Add all records"
