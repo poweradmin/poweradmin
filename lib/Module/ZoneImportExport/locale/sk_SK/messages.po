@@ -131,7 +131,7 @@ msgstr "Štandardné súbory zóny BIND"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr "Supported formats"
+msgstr "Podporované formáty"
 
 msgid "Success:"
 msgstr "Úspech:"
@@ -234,7 +234,7 @@ msgid "Add all records"
 msgstr "Pridať všetky záznamy"
 
 msgid "Conflict strategy"
-msgstr "Conflict strategy"
+msgstr "Stratégia konfliktu"
 
 msgid "Replace matching records"
 msgstr "Nahradiť zodpovedajúce záznamy"

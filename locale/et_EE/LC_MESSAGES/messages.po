@@ -5751,7 +5751,7 @@ msgstr "Hostinimi"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
-msgstr "Certificate Usage"
+msgstr "Sertifikaadi kasutus"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:102
 msgid "Usage"
@@ -5759,7 +5759,7 @@ msgstr "Kasutus"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "0 - CA Constraint"
-msgstr "0 - CA Constraint"
+msgstr "0 - CA piirang"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "Certificate must chain to specified CA (PKIX-TA)"
@@ -5767,7 +5767,7 @@ msgstr "Certificate must chain to specified CA (PKIX-TA)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:108
 msgid "1 - Service Certificate"
-msgstr "1 - Service Certificate"
+msgstr "1 - Teenuse sertifikaat"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:108
 msgid "Certificate must match exactly (PKIX-EE)"
@@ -5795,7 +5795,7 @@ msgstr "Valija"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:126
 msgid "0 - Full Certificate"
-msgstr "0 - Full Certificate"
+msgstr "0 - Täielik sertifikaat"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:126
 msgid "Use the entire certificate"
@@ -5815,7 +5815,7 @@ msgstr "Sobitamise tüüp"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:143
 msgid "0 - Exact Match"
-msgstr "0 - Exact Match"
+msgstr "0 - Täpne vaste"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:143
 msgid "Full certificate/key data (very long record)"
@@ -5823,7 +5823,7 @@ msgstr "Full certificate/key data (very long record)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "1 - SHA-256 Hash"
-msgstr "1 - SHA-256 Hash"
+msgstr "1 - SHA-256 räsi"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "SHA-256 hash of certificate/key"
@@ -5831,7 +5831,7 @@ msgstr "Sertifikaadi/võtme SHA-256 räsi"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "2 - SHA-512 Hash"
-msgstr "2 - SHA-512 Hash"
+msgstr "2 - SHA-512 räsi"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
@@ -6641,7 +6641,7 @@ msgstr "You do not have permission to delete records in this zone."
 
 #: lib/Application/Controller/EditRecordController.php:205
 msgid "Record not found."
-msgstr "Record not found."
+msgstr "Kirjet ei leitud."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
 msgid "The record has been deleted successfully."
@@ -6661,7 +6661,7 @@ msgstr "You do not have permission to delete groups."
 
 #: lib/Application/Controller/EditGroupController.php:95
 msgid "Invalid group ID."
-msgstr "Invalid group ID."
+msgstr "Vigane grupi ID."
 
 #: lib/Application/Controller/DeleteGroupController.php:93
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
@@ -7323,7 +7323,7 @@ msgstr "You do not have permission to edit DNS records."
 #: lib/Application/Controller/BatchPtrRecordController.php:84
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:177
 msgid "Batch PTR Records"
-msgstr "Batch PTR Records"
+msgstr "Hulgi PTR kirjed"
 
 #: lib/Application/Controller/BatchPtrRecordController.php:99
 msgid "Batch PTR record creation is not available for reverse zones."
@@ -7511,7 +7511,7 @@ msgstr "You do not have the permission to add a zone template."
 
 #: lib/Application/Controller/AddZoneTemplController.php:53
 msgid "Add Zone Template"
-msgstr "Add Zone Template"
+msgstr "Lisa tsooni mall"
 
 #: lib/Application/Controller/AddZoneTemplController.php:93
 msgid "Zone template has been added successfully."
@@ -7543,7 +7543,7 @@ msgstr "Lisa teisene tsoon"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:315
 msgid "Invalid hostname."
-msgstr "Invalid hostname."
+msgstr "Vigane hostinimi."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:309
 msgid "This is not a valid IPv4 or IPv6 address."
@@ -7768,7 +7768,7 @@ msgstr "The supermaster has been deleted successfully."
 #: lib/Application/Controller/BulkRegistrationController.php:67
 #: templates/modern/index.html:150 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
-msgstr "Bulk Registration"
+msgstr "Hulgiregistreerimine"
 
 #: lib/Application/Controller/BulkRegistrationController.php:128
 msgid "Zones has been added successfully."
@@ -9911,7 +9911,7 @@ msgstr "Uuenda API võtit"
 
 #: templates/modern/edit_perm_templ.html:58
 msgid "* Required fields"
-msgstr "* Required fields"
+msgstr "* Kohustuslikud väljad"
 
 #: templates/default/api_key_edit.html:59 templates/modern/api_key_edit.html:60
 msgid "API Key Information"
@@ -10123,7 +10123,7 @@ msgstr "Enter the hostname as it appears in the NS record"
 
 #: templates/modern/add_supermaster.html:30
 msgid "Provide host name"
-msgstr "Provide host name"
+msgstr "Andke hostinimi"
 
 #: templates/modern/delete_supermaster.html:36 templates/modern/header.html:359
 msgid "Account"
@@ -10207,7 +10207,7 @@ msgstr "Deaktiveeri see võti"
 
 #: templates/default/dnssec.html:119 templates/modern/dnssec.html:119
 msgid "Activate this key"
-msgstr "Activate this key"
+msgstr "Aktiveeri see võti"
 
 #: templates/default/dnssec.html:120 templates/modern/dnssec.html:120
 msgid "Deactivate"
@@ -10347,7 +10347,7 @@ msgstr "Selles grupis pole veel liikmeid."
 
 #: templates/modern/edit_group.html:138 templates/modern/edit_user.html:228
 msgid "Remove from group"
-msgstr "Remove from group"
+msgstr "Eemalda grupist"
 
 #: templates/modern/manage_group_members.html:141
 msgid "Remove"
@@ -10557,7 +10557,7 @@ msgstr "Tee see mall kõigile kasutajatele kättesaadavaks"
 
 #: templates/modern/list_zone_templ.html:13 templates/modern/header.html:296
 msgid "Add zone template"
-msgstr "Add zone template"
+msgstr "lisa tsooni mall"
 
 #: templates/modern/add_zone_templ.html:68
 msgid "Template Information"
@@ -10593,7 +10593,7 @@ msgstr "Näpunäited ja näited"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Activity Logs"
-msgstr "API Activity Logs"
+msgstr "API tegevuste logid"
 
 #: templates/modern/list_log_groups.html:14
 msgid "Total logs"
@@ -10829,7 +10829,7 @@ msgstr "Lisa uus omanik"
 
 #: templates/default/delete_user.html:41 templates/modern/delete_user.html:41
 msgid "Owner to be added"
-msgstr "Owner to be added"
+msgstr "Lisatav omanik"
 
 #: templates/default/delete_user.html:82 templates/modern/delete_user.html:82
 msgid "Delete: The zone will be completely removed from the system"
@@ -11159,7 +11159,7 @@ msgstr "Kasutajanimi"
 
 #: templates/modern/edit_user.html:32 templates/modern/add_user.html:22
 msgid "Provide user name"
-msgstr "Provide user name"
+msgstr "Andke kasutajanimi"
 
 #: templates/modern/users.html:41 templates/modern/add_user.html:26
 msgid "Fullname"
@@ -11171,7 +11171,7 @@ msgstr "Kasutaja täisnimi tuvastamiseks"
 
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:29
 msgid "Provide full name"
-msgstr "Provide full name"
+msgstr "Andke täisnimi"
 
 #: templates/modern/users.html:42 templates/modern/add_user.html:33
 msgid "Email address"
@@ -11252,7 +11252,7 @@ msgstr "No permissions are assigned to this template"
 
 #: templates/modern/edit_user.html:205 templates/modern/add_user.html:172
 msgid "Group Memberships"
-msgstr "Group Memberships"
+msgstr "Grupi liikmesused"
 
 #: templates/default/edit_user.html:212 templates/modern/edit_user.html:209
 msgid "Current Memberships"
@@ -11404,7 +11404,7 @@ msgstr "Malli õigused"
 
 #: templates/modern/edit_perm_templ.html:247
 msgid "Other Permissions"
-msgstr "Other Permissions"
+msgstr "Muud õigused"
 
 #: templates/default/404.html:19 templates/modern/404.html:19
 msgid "The page you are looking for does not exist."
@@ -11653,7 +11653,7 @@ msgstr "Ei, säilita see mall"
 
 #: templates/modern/dns_wizard_select.html:14
 msgid "DNS Record Wizard"
-msgstr "DNS Record Wizard"
+msgstr "DNS-kirje viisard"
 
 #: templates/modern/dns_wizard_select.html:59
 msgid "Recommended"
@@ -11697,7 +11697,7 @@ msgstr "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 
 #: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
-msgstr "Multi-record mode"
+msgstr "Mitme kirje režiim"
 
 #: templates/modern/edit.html:535 templates/modern/edit.html:590
 msgid "Bulk add"
@@ -11745,7 +11745,7 @@ msgstr "Vigane prioriteet"
 
 #: templates/modern/edit.html:140 templates/modern/edit.html:693
 msgid "Invalid TTL value"
-msgstr "Invalid TTL value"
+msgstr "Vigane TTL väärtus"
 
 #: templates/modern/edit.html:142 templates/modern/edit.html:695
 msgid "Provide TTL"
@@ -11785,7 +11785,7 @@ msgstr "Kõik tüübid"
 
 #: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
-msgstr "Filter by content"
+msgstr "Filtreeri sisu järgi"
 
 #: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
@@ -11966,7 +11966,7 @@ msgstr "Kasuta taastekoodi"
 
 #: templates/default/mfa_verify.html:86 templates/modern/mfa_verify.html:86
 msgid "Use Recovery Code"
-msgstr "Use Recovery Code"
+msgstr "Kasuta taastekoodi"
 
 #: templates/default/mfa_verify.html:95 templates/modern/mfa_verify.html:95
 msgid "Recovery Code"
@@ -12026,7 +12026,7 @@ msgstr "Põhi IP"
 
 #: templates/modern/database_consistency.html:129
 msgid "Delete slave zone"
-msgstr "Delete slave zone"
+msgstr "Kustuta teisene tsoon"
 
 #: templates/modern/database_consistency.html:148
 msgid "Records Not Belonging to Any Zone"
@@ -12115,7 +12115,7 @@ msgstr "tsooni nimi"
 
 #: templates/modern/add_zone_slave.html:30
 msgid "Provide zone name"
-msgstr "Provide zone name"
+msgstr "Andke tsooni nimi"
 
 #: templates/modern/add_zone_slave.html:31
 msgid "Example: example.com"
@@ -12303,7 +12303,7 @@ msgstr "Enter the 6-digit code from your authenticator app"
 
 #: templates/modern/mfa_verify_email.html:24
 msgid "Verification Code"
-msgstr "Verification Code"
+msgstr "Kontrollkood"
 
 #: templates/modern/mfa_verify_email.html:31
 msgid "Please enter a valid 6-digit verification code."
@@ -12351,7 +12351,7 @@ msgstr "Uuenda tsoone"
 
 #: templates/modern/edit_zone_templ.html:124
 msgid "Template Settings"
-msgstr "Template Settings"
+msgstr "Malli seaded"
 
 #: templates/modern/edit_zone_templ.html:135
 msgid "To use 'Save As', change the name first"
@@ -12439,7 +12439,7 @@ msgstr "API võti:"
 
 #: templates/modern/header.html:170
 msgid "Bulk registration"
-msgstr "Bulk registration"
+msgstr "hulgiregistreerimine"
 
 #: templates/modern/bulk_registration.html:46
 msgid "Please select an owner"
@@ -12527,7 +12527,7 @@ msgstr "Keeldu ja logi välja"
 
 #: templates/modern/user_agreement.html:45
 msgid "Accept & Continue"
-msgstr "Accept & Continue"
+msgstr "Nõustu ja jätka"
 
 #: templates/modern/delete_records.html:22
 msgid "Delete records"
@@ -12563,7 +12563,7 @@ msgstr "Autentimise meetod:"
 
 #: templates/modern/mfa_setup.html:32
 msgid "Authenticator app"
-msgstr "Authenticator app"
+msgstr "autentimise rakendus"
 
 #: templates/modern/mfa_setup.html:34
 msgid "Email verification"
@@ -12631,7 +12631,7 @@ msgstr "Your account is not protected with multi-factor authentication."
 
 #: templates/default/mfa_setup.html:72 templates/modern/mfa_setup.html:72
 msgid "Authenticator App"
-msgstr "Authenticator App"
+msgstr "Autentimise rakendus"
 
 #: templates/default/mfa_setup.html:77 templates/modern/mfa_setup.html:77
 msgid "Works offline"
@@ -12675,7 +12675,7 @@ msgstr "Seadista e-posti kontroll"
 
 #: templates/modern/mfa_verify_email.html:14
 msgid "Verify Email Code"
-msgstr "Verify Email Code"
+msgstr "Kontrolli e-posti koodi"
 
 #: templates/modern/mfa_verify_email.html:17
 msgid "A verification code has been sent to your email address."
@@ -12695,7 +12695,7 @@ msgstr "Ükski domeen ei kasuta seda malli"
 
 #: templates/modern/list_template_zones.html:112
 msgid "Back to templates"
-msgstr "Back to templates"
+msgstr "Tagasi mallide juurde"
 
 #: templates/modern/list_template_zones.html:118
 msgid "Unlink selected zones"
@@ -12779,7 +12779,7 @@ msgstr "Display inline add record form in edit view"
 
 #: templates/modern/user_preferences.html:109
 msgid "Show edit buttons"
-msgstr "Show edit buttons"
+msgstr "Näita muutmisnuppe"
 
 #: templates/modern/user_preferences.html:110
 msgid "Display individual edit button per record"
@@ -13056,7 +13056,7 @@ msgstr "Viga"
 
 #: templates/default/pdns_status.html:160 templates/modern/pdns_status.html:161
 msgid "Server Statistics"
-msgstr "Server Statistics"
+msgstr "Serveri statistika"
 
 #: templates/default/pdns_status.html:170 templates/modern/pdns_status.html:171
 msgid "Server Health"
@@ -13144,7 +13144,7 @@ msgstr "Tsooni mallide loend"
 
 #: templates/default/header.html:227 templates/modern/header.html:330
 msgid "API Documentation"
-msgstr "API Documentation"
+msgstr "API dokumentatsioon"
 
 #: templates/modern/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
@@ -13312,7 +13312,7 @@ msgstr "Kasutajad vs grupid"
 
 #: templates/modern/edit_perm_templ.html:77
 msgid "Permission Groups"
-msgstr "Permission Groups"
+msgstr "Õiguste grupid"
 
 #: templates/modern/delete_zone_templ_record.html:13
 msgid "Delete record"
@@ -13332,7 +13332,7 @@ msgstr "Kustuta võti"
 
 #: templates/modern/dnssec_delete_key.html:29
 msgid "Delete DNSSEC Key"
-msgstr "Delete DNSSEC Key"
+msgstr "Kustuta DNSSEC võti"
 
 #: templates/modern/dnssec_delete_key.html:36
 msgid "You are about to delete an active DNSSEC key (ID"
@@ -13360,7 +13360,7 @@ msgstr "Mis on grupid?"
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
-msgstr "How to Use Groups"
+msgstr "Kuidas gruppe kasutada"
 
 #: templates/modern/list_perm_templ.html:11
 msgid "Access Templates"
@@ -13488,7 +13488,7 @@ msgstr "Sihttsoon"
 
 #: lib/Module/ZoneImportExport/templates/import.html:113
 msgid "Conflict strategy"
-msgstr "Conflict strategy"
+msgstr "Konflikti strateegia"
 
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Skip duplicates"
@@ -13536,7 +13536,7 @@ msgstr "Lae üles ja eelvaata"
 
 #: lib/Module/ZoneImportExport/templates/import.html:187
 msgid "Supported formats"
-msgstr "Supported formats"
+msgstr "Toetatud formaadid"
 
 #: lib/Module/ZoneImportExport/templates/import.html:191
 msgid "Standard BIND zone files"
@@ -13564,7 +13564,7 @@ msgstr "WHOIS otsing"
 
 #: lib/Module/Rdap/templates/rdap.html:21
 msgid "Enter domain name"
-msgstr "Enter domain name"
+msgstr "Sisestage domeeninimi"
 
 #: lib/Module/Rdap/templates/rdap.html:23
 msgid "Lookup"
@@ -13608,7 +13608,7 @@ msgstr "Piiratud andmebaasi õigused:"
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
-msgstr "Database Commands"
+msgstr "Andmebaasi käsud"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
@@ -13624,7 +13624,7 @@ msgstr "Jätka sammuni"
 
 #: install/templates/base.html.twig:37
 msgid "Installation step"
-msgstr "Installation step"
+msgstr "Paigaldamise samm"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
@@ -13644,7 +13644,7 @@ msgstr "järgmise sisuga:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Valige keel"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
@@ -13792,7 +13792,7 @@ msgstr "Andmebaasi võrdlus"
 
 #: install/templates/step4.html.twig:206
 msgid "PowerDNS Database"
-msgstr "PowerDNS Database"
+msgstr "PowerDNS andmebaas"
 
 #: install/templates/step4.html.twig:210
 msgid "Database name"

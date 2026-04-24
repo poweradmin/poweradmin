@@ -131,7 +131,7 @@ msgstr "Szabványos BIND zónafájlok"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr "Supported formats"
+msgstr "Támogatott formátumok"
 
 msgid "Success:"
 msgstr "Siker:"
@@ -234,7 +234,7 @@ msgid "Add all records"
 msgstr "Összes rekord hozzáadása"
 
 msgid "Conflict strategy"
-msgstr "Conflict strategy"
+msgstr "Ütközés stratégia"
 
 msgid "Replace matching records"
 msgstr "Egyező rekordok cseréje"

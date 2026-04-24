@@ -131,7 +131,7 @@ msgstr "Standardsed BIND tsooni failid"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr "Supported formats"
+msgstr "Toetatud formaadid"
 
 msgid "Success:"
 msgstr "Õnnestus:"
@@ -234,7 +234,7 @@ msgid "Add all records"
 msgstr "Lisa kõik kirjed"
 
 msgid "Conflict strategy"
-msgstr "Conflict strategy"
+msgstr "Konflikti strateegia"
 
 msgid "Replace matching records"
 msgstr "Asenda sobivad kirjed"

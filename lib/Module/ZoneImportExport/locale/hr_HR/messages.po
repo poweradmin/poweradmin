@@ -131,7 +131,7 @@ msgstr "Standardne BIND datoteke zone"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr "Supported formats"
+msgstr "Podržani formati"
 
 msgid "Success:"
 msgstr "Uspjeh:"
@@ -234,7 +234,7 @@ msgid "Add all records"
 msgstr "Dodaj sve zapise"
 
 msgid "Conflict strategy"
-msgstr "Conflict strategy"
+msgstr "Strategija sukoba"
 
 msgid "Replace matching records"
 msgstr "Zamijeni podudarajuće zapise"

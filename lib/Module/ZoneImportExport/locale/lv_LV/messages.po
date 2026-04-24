@@ -131,7 +131,7 @@ msgstr "Standarta BIND zonas faili"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr "Supported formats"
+msgstr "Atbalstītie formāti"
 
 msgid "Success:"
 msgstr "Sekmīgi:"
@@ -234,7 +234,7 @@ msgid "Add all records"
 msgstr "Pievienot visus ierakstus"
 
 msgid "Conflict strategy"
-msgstr "Conflict strategy"
+msgstr "Konflikta stratēģija"
 
 msgid "Replace matching records"
 msgstr "Aizstāt atbilstošus ierakstus"

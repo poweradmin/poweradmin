@@ -131,7 +131,7 @@ msgstr "Vakio BIND-aluetiedostot"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr "Supported formats"
+msgstr "Tuetut muodot"
 
 msgid "Success:"
 msgstr "Onnistui:"
@@ -234,7 +234,7 @@ msgid "Add all records"
 msgstr "Lisää kaikki tietueet"
 
 msgid "Conflict strategy"
-msgstr "Conflict strategy"
+msgstr "Ristiriitastrategia"
 
 msgid "Replace matching records"
 msgstr "Korvaa vastaavat tietueet"

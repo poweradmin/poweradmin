@@ -131,7 +131,7 @@ msgstr "Fișiere zonă BIND standard"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr "Supported formats"
+msgstr "Formate acceptate"
 
 msgid "Success:"
 msgstr "Succes:"
@@ -234,7 +234,7 @@ msgid "Add all records"
 msgstr "Adaugă toate înregistrările"
 
 msgid "Conflict strategy"
-msgstr "Conflict strategy"
+msgstr "Strategie conflict"
 
 msgid "Replace matching records"
 msgstr "Înlocuiește înregistrările"

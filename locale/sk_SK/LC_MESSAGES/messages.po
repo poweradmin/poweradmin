@@ -5764,7 +5764,7 @@ msgstr "Názov hostiteľa"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:98
 msgid "Certificate Usage"
-msgstr "Certificate Usage"
+msgstr "Použitie certifikátu"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:102
 msgid "Usage"
@@ -5772,7 +5772,7 @@ msgstr "Použitie"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "0 - CA Constraint"
-msgstr "0 - CA Constraint"
+msgstr "0 - Obmedzenie CA"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "Certificate must chain to specified CA (PKIX-TA)"
@@ -5780,7 +5780,7 @@ msgstr "Certificate must chain to specified CA (PKIX-TA)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:108
 msgid "1 - Service Certificate"
-msgstr "1 - Service Certificate"
+msgstr "1 - Certifikát služby"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:108
 msgid "Certificate must match exactly (PKIX-EE)"
@@ -5808,7 +5808,7 @@ msgstr "Selektor"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:126
 msgid "0 - Full Certificate"
-msgstr "0 - Full Certificate"
+msgstr "0 - Celý certifikát"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:126
 msgid "Use the entire certificate"
@@ -5828,7 +5828,7 @@ msgstr "Typ zhody"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:143
 msgid "0 - Exact Match"
-msgstr "0 - Exact Match"
+msgstr "0 - Presná zhoda"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:143
 msgid "Full certificate/key data (very long record)"
@@ -5836,7 +5836,7 @@ msgstr "Full certificate/key data (very long record)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "1 - SHA-256 Hash"
-msgstr "1 - SHA-256 Hash"
+msgstr "1 - SHA-256 hash"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "SHA-256 hash of certificate/key"
@@ -5844,7 +5844,7 @@ msgstr "SHA-256 hash certifikátu/kľúča"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "2 - SHA-512 Hash"
-msgstr "2 - SHA-512 Hash"
+msgstr "2 - SHA-512 hash"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "SHA-512 hash of certificate/key (more secure but longer)"
@@ -6654,7 +6654,7 @@ msgstr "You do not have permission to delete records in this zone."
 
 #: lib/Application/Controller/EditRecordController.php:205
 msgid "Record not found."
-msgstr "Record not found."
+msgstr "Záznam sa nenašiel."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
 msgid "The record has been deleted successfully."
@@ -6674,7 +6674,7 @@ msgstr "You do not have permission to delete groups."
 
 #: lib/Application/Controller/EditGroupController.php:95
 msgid "Invalid group ID."
-msgstr "Invalid group ID."
+msgstr "Neplatné ID skupiny."
 
 #: lib/Application/Controller/DeleteGroupController.php:93
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
@@ -7336,7 +7336,7 @@ msgstr "You do not have permission to edit DNS records."
 #: lib/Application/Controller/BatchPtrRecordController.php:84
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:177
 msgid "Batch PTR Records"
-msgstr "Batch PTR Records"
+msgstr "Hromadné PTR záznamy"
 
 #: lib/Application/Controller/BatchPtrRecordController.php:99
 msgid "Batch PTR record creation is not available for reverse zones."
@@ -7524,7 +7524,7 @@ msgstr "You do not have the permission to add a zone template."
 
 #: lib/Application/Controller/AddZoneTemplController.php:53
 msgid "Add Zone Template"
-msgstr "Add Zone Template"
+msgstr "Pridať šablónu zóny"
 
 #: lib/Application/Controller/AddZoneTemplController.php:93
 msgid "Zone template has been added successfully."
@@ -7556,7 +7556,7 @@ msgstr "Pridať sekundárnu zónu"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:315
 msgid "Invalid hostname."
-msgstr "Invalid hostname."
+msgstr "Neplatný názov hostiteľa."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:309
 msgid "This is not a valid IPv4 or IPv6 address."
@@ -7781,7 +7781,7 @@ msgstr "The supermaster has been deleted successfully."
 #: lib/Application/Controller/BulkRegistrationController.php:67
 #: templates/modern/index.html:150 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
-msgstr "Bulk Registration"
+msgstr "Hromadná registrácia"
 
 #: lib/Application/Controller/BulkRegistrationController.php:128
 msgid "Zones has been added successfully."
@@ -9924,7 +9924,7 @@ msgstr "Aktualizovať API kľúč"
 
 #: templates/modern/edit_perm_templ.html:58
 msgid "* Required fields"
-msgstr "* Required fields"
+msgstr "* Povinné polia"
 
 #: templates/default/api_key_edit.html:59 templates/modern/api_key_edit.html:60
 msgid "API Key Information"
@@ -10136,7 +10136,7 @@ msgstr "Enter the hostname as it appears in the NS record"
 
 #: templates/modern/add_supermaster.html:30
 msgid "Provide host name"
-msgstr "Provide host name"
+msgstr "Zadajte názov hostiteľa"
 
 #: templates/modern/delete_supermaster.html:36 templates/modern/header.html:359
 msgid "Account"
@@ -10220,7 +10220,7 @@ msgstr "Deaktivovať tento kľúč"
 
 #: templates/default/dnssec.html:119 templates/modern/dnssec.html:119
 msgid "Activate this key"
-msgstr "Activate this key"
+msgstr "Aktivovať tento kľúč"
 
 #: templates/default/dnssec.html:120 templates/modern/dnssec.html:120
 msgid "Deactivate"
@@ -10360,7 +10360,7 @@ msgstr "V tejto skupine zatiaľ nie sú členovia."
 
 #: templates/modern/edit_group.html:138 templates/modern/edit_user.html:228
 msgid "Remove from group"
-msgstr "Remove from group"
+msgstr "Odstrániť zo skupiny"
 
 #: templates/modern/manage_group_members.html:141
 msgid "Remove"
@@ -10570,7 +10570,7 @@ msgstr "Sprístupniť túto šablónu všetkým používateľom"
 
 #: templates/modern/list_zone_templ.html:13 templates/modern/header.html:296
 msgid "Add zone template"
-msgstr "Add zone template"
+msgstr "pridať šablónu zóny"
 
 #: templates/modern/add_zone_templ.html:68
 msgid "Template Information"
@@ -10606,7 +10606,7 @@ msgstr "Tipy a príklady"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Activity Logs"
-msgstr "API Activity Logs"
+msgstr "Záznamy aktivity API"
 
 #: templates/modern/list_log_groups.html:14
 msgid "Total logs"
@@ -10842,7 +10842,7 @@ msgstr "Pridať nového vlastníka"
 
 #: templates/default/delete_user.html:41 templates/modern/delete_user.html:41
 msgid "Owner to be added"
-msgstr "Owner to be added"
+msgstr "Vlastník, ktorý sa pridá"
 
 #: templates/default/delete_user.html:82 templates/modern/delete_user.html:82
 msgid "Delete: The zone will be completely removed from the system"
@@ -11172,7 +11172,7 @@ msgstr "Používateľské meno"
 
 #: templates/modern/edit_user.html:32 templates/modern/add_user.html:22
 msgid "Provide user name"
-msgstr "Provide user name"
+msgstr "Zadajte používateľské meno"
 
 #: templates/modern/users.html:41 templates/modern/add_user.html:26
 msgid "Fullname"
@@ -11184,7 +11184,7 @@ msgstr "Celé meno používateľa na identifikáciu"
 
 #: templates/modern/edit_user.html:39 templates/modern/add_user.html:29
 msgid "Provide full name"
-msgstr "Provide full name"
+msgstr "Zadajte celé meno"
 
 #: templates/modern/users.html:42 templates/modern/add_user.html:33
 msgid "Email address"
@@ -11265,7 +11265,7 @@ msgstr "No permissions are assigned to this template"
 
 #: templates/modern/edit_user.html:205 templates/modern/add_user.html:172
 msgid "Group Memberships"
-msgstr "Group Memberships"
+msgstr "Členstvá skupín"
 
 #: templates/default/edit_user.html:212 templates/modern/edit_user.html:209
 msgid "Current Memberships"
@@ -11417,7 +11417,7 @@ msgstr "Oprávnenia šablóny"
 
 #: templates/modern/edit_perm_templ.html:247
 msgid "Other Permissions"
-msgstr "Other Permissions"
+msgstr "Ostatné oprávnenia"
 
 #: templates/default/404.html:19 templates/modern/404.html:19
 msgid "The page you are looking for does not exist."
@@ -11666,7 +11666,7 @@ msgstr "Nie, ponechať túto šablónu"
 
 #: templates/modern/dns_wizard_select.html:14
 msgid "DNS Record Wizard"
-msgstr "DNS Record Wizard"
+msgstr "Sprievodca DNS záznamu"
 
 #: templates/modern/dns_wizard_select.html:59
 msgid "Recommended"
@@ -11710,7 +11710,7 @@ msgstr "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 
 #: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
-msgstr "Multi-record mode"
+msgstr "Režim viacerých záznamov"
 
 #: templates/modern/edit.html:535 templates/modern/edit.html:590
 msgid "Bulk add"
@@ -11758,7 +11758,7 @@ msgstr "Neplatná priorita"
 
 #: templates/modern/edit.html:140 templates/modern/edit.html:693
 msgid "Invalid TTL value"
-msgstr "Invalid TTL value"
+msgstr "Neplatná hodnota TTL"
 
 #: templates/modern/edit.html:142 templates/modern/edit.html:695
 msgid "Provide TTL"
@@ -11798,7 +11798,7 @@ msgstr "Všetky typy"
 
 #: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
-msgstr "Filter by content"
+msgstr "Filtrovať podľa obsahu"
 
 #: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
@@ -11979,7 +11979,7 @@ msgstr "Použiť obnovovací kód"
 
 #: templates/default/mfa_verify.html:86 templates/modern/mfa_verify.html:86
 msgid "Use Recovery Code"
-msgstr "Use Recovery Code"
+msgstr "Použiť obnovovací kód"
 
 #: templates/default/mfa_verify.html:95 templates/modern/mfa_verify.html:95
 msgid "Recovery Code"
@@ -12039,7 +12039,7 @@ msgstr "IP hlavného"
 
 #: templates/modern/database_consistency.html:129
 msgid "Delete slave zone"
-msgstr "Delete slave zone"
+msgstr "Odstrániť sekundárnu zónu"
 
 #: templates/modern/database_consistency.html:148
 msgid "Records Not Belonging to Any Zone"
@@ -12128,7 +12128,7 @@ msgstr "názov zóny"
 
 #: templates/modern/add_zone_slave.html:30
 msgid "Provide zone name"
-msgstr "Provide zone name"
+msgstr "Zadajte názov zóny"
 
 #: templates/modern/add_zone_slave.html:31
 msgid "Example: example.com"
@@ -12316,7 +12316,7 @@ msgstr "Enter the 6-digit code from your authenticator app"
 
 #: templates/modern/mfa_verify_email.html:24
 msgid "Verification Code"
-msgstr "Verification Code"
+msgstr "Overovací kód"
 
 #: templates/modern/mfa_verify_email.html:31
 msgid "Please enter a valid 6-digit verification code."
@@ -12364,7 +12364,7 @@ msgstr "Aktualizovať zóny"
 
 #: templates/modern/edit_zone_templ.html:124
 msgid "Template Settings"
-msgstr "Template Settings"
+msgstr "Nastavenia šablóny"
 
 #: templates/modern/edit_zone_templ.html:135
 msgid "To use 'Save As', change the name first"
@@ -12452,7 +12452,7 @@ msgstr "API kľúč:"
 
 #: templates/modern/header.html:170
 msgid "Bulk registration"
-msgstr "Bulk registration"
+msgstr "hromadná registrácia"
 
 #: templates/modern/bulk_registration.html:46
 msgid "Please select an owner"
@@ -12540,7 +12540,7 @@ msgstr "Odmietnuť a odhlásiť"
 
 #: templates/modern/user_agreement.html:45
 msgid "Accept & Continue"
-msgstr "Accept & Continue"
+msgstr "Prijať a pokračovať"
 
 #: templates/modern/delete_records.html:22
 msgid "Delete records"
@@ -12576,7 +12576,7 @@ msgstr "Metóda overenia:"
 
 #: templates/modern/mfa_setup.html:32
 msgid "Authenticator app"
-msgstr "Authenticator app"
+msgstr "overovacia aplikácia"
 
 #: templates/modern/mfa_setup.html:34
 msgid "Email verification"
@@ -12644,7 +12644,7 @@ msgstr "Your account is not protected with multi-factor authentication."
 
 #: templates/default/mfa_setup.html:72 templates/modern/mfa_setup.html:72
 msgid "Authenticator App"
-msgstr "Authenticator App"
+msgstr "Overovacia aplikácia"
 
 #: templates/default/mfa_setup.html:77 templates/modern/mfa_setup.html:77
 msgid "Works offline"
@@ -12688,7 +12688,7 @@ msgstr "Nastaviť overenie e-mailu"
 
 #: templates/modern/mfa_verify_email.html:14
 msgid "Verify Email Code"
-msgstr "Verify Email Code"
+msgstr "Overiť kód e-mailu"
 
 #: templates/modern/mfa_verify_email.html:17
 msgid "A verification code has been sent to your email address."
@@ -12708,7 +12708,7 @@ msgstr "Žiadne domény nepoužívajú šablónu"
 
 #: templates/modern/list_template_zones.html:112
 msgid "Back to templates"
-msgstr "Back to templates"
+msgstr "Späť na šablóny"
 
 #: templates/modern/list_template_zones.html:118
 msgid "Unlink selected zones"
@@ -12792,7 +12792,7 @@ msgstr "Display inline add record form in edit view"
 
 #: templates/modern/user_preferences.html:109
 msgid "Show edit buttons"
-msgstr "Show edit buttons"
+msgstr "Zobraziť tlačidlá úpravy"
 
 #: templates/modern/user_preferences.html:110
 msgid "Display individual edit button per record"
@@ -13069,7 +13069,7 @@ msgstr "Chyba"
 
 #: templates/default/pdns_status.html:160 templates/modern/pdns_status.html:161
 msgid "Server Statistics"
-msgstr "Server Statistics"
+msgstr "Štatistiky servera"
 
 #: templates/default/pdns_status.html:170 templates/modern/pdns_status.html:171
 msgid "Server Health"
@@ -13157,7 +13157,7 @@ msgstr "Zoznam šablón zón"
 
 #: templates/default/header.html:227 templates/modern/header.html:330
 msgid "API Documentation"
-msgstr "API Documentation"
+msgstr "API dokumentácia"
 
 #: templates/modern/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
@@ -13325,7 +13325,7 @@ msgstr "Používatelia vs skupiny"
 
 #: templates/modern/edit_perm_templ.html:77
 msgid "Permission Groups"
-msgstr "Permission Groups"
+msgstr "Skupiny oprávnení"
 
 #: templates/modern/delete_zone_templ_record.html:13
 msgid "Delete record"
@@ -13345,7 +13345,7 @@ msgstr "Odstrániť kľúč"
 
 #: templates/modern/dnssec_delete_key.html:29
 msgid "Delete DNSSEC Key"
-msgstr "Delete DNSSEC Key"
+msgstr "Odstrániť DNSSEC kľúč"
 
 #: templates/modern/dnssec_delete_key.html:36
 msgid "You are about to delete an active DNSSEC key (ID"
@@ -13373,7 +13373,7 @@ msgstr "Čo sú skupiny?"
 
 #: templates/default/add_group.html:65 templates/modern/add_group.html:70
 msgid "How to Use Groups"
-msgstr "How to Use Groups"
+msgstr "Ako používať skupiny"
 
 #: templates/modern/list_perm_templ.html:11
 msgid "Access Templates"
@@ -13501,7 +13501,7 @@ msgstr "Cieľová zóna"
 
 #: lib/Module/ZoneImportExport/templates/import.html:113
 msgid "Conflict strategy"
-msgstr "Conflict strategy"
+msgstr "Stratégia konfliktu"
 
 #: lib/Module/ZoneImportExport/templates/import.html:115
 msgid "Skip duplicates"
@@ -13549,7 +13549,7 @@ msgstr "Nahrať a zobraziť ukážku"
 
 #: lib/Module/ZoneImportExport/templates/import.html:187
 msgid "Supported formats"
-msgstr "Supported formats"
+msgstr "Podporované formáty"
 
 #: lib/Module/ZoneImportExport/templates/import.html:191
 msgid "Standard BIND zone files"
@@ -13577,7 +13577,7 @@ msgstr "WHOIS vyhľadávanie"
 
 #: lib/Module/Rdap/templates/rdap.html:21
 msgid "Enter domain name"
-msgstr "Enter domain name"
+msgstr "Zadajte názov domény"
 
 #: lib/Module/Rdap/templates/rdap.html:23
 msgid "Lookup"
@@ -13621,7 +13621,7 @@ msgstr "Obmedzené práva databázy:"
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
-msgstr "Database Commands"
+msgstr "Databázové príkazy"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
@@ -13637,7 +13637,7 @@ msgstr "Pokračovať na krok"
 
 #: install/templates/base.html.twig:37
 msgid "Installation step"
-msgstr "Installation step"
+msgstr "Krok inštalácie"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
@@ -13657,7 +13657,7 @@ msgstr "s nasledujúcim obsahom:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Vyberte jazyk"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
@@ -13805,7 +13805,7 @@ msgstr "Kolácia DB"
 
 #: install/templates/step4.html.twig:206
 msgid "PowerDNS Database"
-msgstr "PowerDNS Database"
+msgstr "Databáza PowerDNS"
 
 #: install/templates/step4.html.twig:210
 msgid "Database name"
