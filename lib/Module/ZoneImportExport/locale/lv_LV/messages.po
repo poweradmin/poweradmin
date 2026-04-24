@@ -81,7 +81,7 @@ msgstr "Importēt zonas failu"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
 msgid "Import another zone"
-msgstr "Import another zone"
+msgstr "Importēt citu zonu"
 
 #: lib/Module/ZoneImportExport/templates/import.html:19
 msgid "Import completed successfully."
@@ -127,7 +127,7 @@ msgstr "Standard BIND zone file format. Max size:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:169
 msgid "Standard BIND zone files"
-msgstr "Standard BIND zone files"
+msgstr "Standarta BIND zonas faili"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
@@ -162,7 +162,7 @@ msgstr "Tips"
 
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
-msgstr "Upload and preview"
+msgstr "Augšupielādēt un priekšskatīt"
 
 msgid "Warning:"
 msgstr "Brīdinājums:"
@@ -237,7 +237,7 @@ msgid "Conflict strategy"
 msgstr "Conflict strategy"
 
 msgid "Replace matching records"
-msgstr "Replace matching records"
+msgstr "Aizstāt atbilstošus ierakstus"
 
 msgid "Skip duplicates"
 msgstr "Izlaist dublikātus"
