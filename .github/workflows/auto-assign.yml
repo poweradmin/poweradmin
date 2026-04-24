@@ -15,9 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto-assign issue or PR
-        uses: pozil/auto-assign-issue@21ffb634481e75f2557e5f507e359cba97bbc42b # v2
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          assignees: edmondas
-          numOfAssignee: 1
-          abortIfPreviousAssignees: false
+          script: |
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: ['edmondas'],
+            });
