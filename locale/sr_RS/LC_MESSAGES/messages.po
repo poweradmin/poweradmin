@@ -227,9 +227,7 @@ msgstr "Прилагођен CA домен је обавезан када је �
 msgid ""
 "Using \";\" allows ALL certificate authorities to issue certificates. This "
 "defeats the purpose of CAA records."
-msgstr ""
-"Using \";\" allows ALL certificate authorities to issue certificates. This "
-"defeats the purpose of CAA records."
+msgstr "\";\" дозвољава СВИМ CA да издају сертификате, што поништава сврху CAA."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:240
 msgid ""
@@ -265,17 +263,13 @@ msgstr ""
 msgid ""
 "Paste the base64-encoded public key from your mail server. Spaces and "
 "newlines will be automatically removed."
-msgstr ""
-"Paste the base64-encoded public key from your mail server. Spaces and "
-"newlines will be automatically removed."
+msgstr "Налепите base64 јавни кључ из вашег мејл сервера."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:112
 msgid ""
 "Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
 "Use during initial deployment."
-msgstr ""
-"Enable testing mode (t=y). DKIM signatures will be present but not enforced. "
-"Use during initial deployment."
+msgstr "Омогући тест режим (t=y). DKIM потписи постоје али се не примењују."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:119
 msgid ""
@@ -310,8 +304,7 @@ msgid ""
 "Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
 "this once testing is complete."
 msgstr ""
-"Testing mode is enabled (t=y). DKIM signatures will not be enforced. Disable "
-"this once testing is complete."
+"Тест режим је омогућен. DKIM потписи се не примењују. Онемогућите по завршетку."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:100
 msgid "Select a common service or choose \"Custom\" to enter manually"
@@ -327,9 +320,7 @@ msgstr "Име домена (празно за врх зоне @). Пун наз
 msgid ""
 "Hostname of the server providing this service (must be a hostname with an A/"
 "AAAA record, not an IP address)"
-msgstr ""
-"Hostname of the server providing this service (must be a hostname with an A/"
-"AAAA record, not an IP address)"
+msgstr "Име сервера (мора бити име са A/AAAA записом, не IP)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:154
 msgid ""
@@ -824,9 +815,7 @@ msgstr ""
 msgid ""
 "CRITICAL: TLSA records REQUIRE DNSSEC to provide any security benefits. "
 "Ensure your domain is DNSSEC-signed."
-msgstr ""
-"CRITICAL: TLSA records REQUIRE DNSSEC to provide any security benefits. "
-"Ensure your domain is DNSSEC-signed."
+msgstr "КРИТИЧНО: TLSA захтевају DNSSEC. Осигурајте да је домен DNSSEC потписан."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:156
 msgid ""
@@ -878,9 +867,7 @@ msgstr "Usage 0 (PKIX-TA) захтева управљање CA сертифик�
 msgid ""
 "Usage 1 (PKIX-EE) depends on both DANE and traditional PKIX validation. May "
 "break when certificates expire."
-msgstr ""
-"Usage 1 (PKIX-EE) depends on both DANE and traditional PKIX validation. May "
-"break when certificates expire."
+msgstr "Usage 1 (PKIX-EE) зависи од DANE и PKIX. Може се поквариту при истеку."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:270
 msgid ""
@@ -914,8 +901,7 @@ msgid ""
 "Selector 0 (Full certificate) may break when certificate attributes change. "
 "Selector 1 (SPKI) is recommended."
 msgstr ""
-"Selector 0 (Full certificate) may break when certificate attributes change. "
-"Selector 1 (SPKI) is recommended."
+"Селектор 0 (Full cert) може се поквариту. Селектор 1 (SPKI) је препоручен."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:298
 msgid ""
@@ -939,9 +925,7 @@ msgstr "NSEC3PARAM МОРА бити само на врху зоне (root domai
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
 "TTL as the SOA minimum TTL field."
-msgstr ""
-"According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
-"TTL as the SOA minimum TTL field."
+msgstr "По RFC 5155/9077, NSEC3PARAM TTL = SOA minimum."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:146
 msgid ""
@@ -1138,9 +1122,7 @@ msgstr ""
 msgid ""
 "Invalid size, horizontal precision, or vertical precision value. These must "
 "be between 0 and 90000000 meters."
-msgstr ""
-"Invalid size, horizontal precision, or vertical precision value. These must "
-"be between 0 and 90000000 meters."
+msgstr "Неважећа величина или прецизност. 0-90000000 метара."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
@@ -1543,25 +1525,20 @@ msgstr ""
 msgid ""
 "CPU type does not contain any standard values. Consider using a standard CPU "
 "type for better interoperability."
-msgstr ""
-"CPU type does not contain any standard values. Consider using a standard CPU "
-"type for better interoperability."
+msgstr "CPU тип нема стандардне вредности. Користите стандардни."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:262
 msgid ""
 "OS type does not contain any standard values. Consider using a standard OS "
 "type for better interoperability."
 msgstr ""
-"OS type does not contain any standard values. Consider using a standard OS "
-"type for better interoperability."
+"OS тип нема стандардне вредности. Користите стандардни за компатибилност."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:125
 msgid ""
 "TSIG timestamp is more than 24 hours old. This could indicate a replay "
 "attack or clock synchronization issue."
-msgstr ""
-"TSIG timestamp is more than 24 hours old. This could indicate a replay "
-"attack or clock synchronization issue."
+msgstr "TSIG је старији од 24h - могући replay напад или проблем часовника."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:130
 msgid ""
@@ -1573,9 +1550,7 @@ msgstr "TSIG временска ознака је у будућности. Мо�
 msgid ""
 "TSIG provides transaction authentication but not data integrity. Consider "
 "using DNSSEC in addition to TSIG."
-msgstr ""
-"TSIG provides transaction authentication but not data integrity. Consider "
-"using DNSSEC in addition to TSIG."
+msgstr "TSIG пружа аутентификацију, не интегритет. Комбинујте са DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:156
 msgid ""
@@ -1644,9 +1619,7 @@ msgstr "TSIG other-data мора бити важећи base64 или хекс с
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. RFC 8945 recommends using "
 "HMAC-SHA256 or stronger algorithms."
-msgstr ""
-"HMAC-MD5 is considered weak by modern standards. RFC 8945 recommends using "
-"HMAC-SHA256 or stronger algorithms."
+msgstr "HMAC-MD5 је слаб. RFC 8945 препоручује HMAC-SHA256 или јаче."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:317
 msgid ""
@@ -1770,9 +1743,7 @@ msgstr "CERT подаци сме садржати само важеће base64 �
 msgid ""
 "CERT certificate data has invalid base64 padding. Equals signs (=) should "
 "only appear at the end of the data."
-msgstr ""
-"CERT certificate data has invalid base64 padding. Equals signs (=) should "
-"only appear at the end of the data."
+msgstr "CERT има неважеће base64 padding. \"=\" само на крају."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:293
 msgid ""
@@ -2119,9 +2090,7 @@ msgstr "Осигурајте да exchanger хост има исправне for
 msgid ""
 "The key exchanger host should have appropriate A/AAAA records for type A/"
 "AAAA additional section processing."
-msgstr ""
-"The key exchanger host should have appropriate A/AAAA records for type A/"
-"AAAA additional section processing."
+msgstr "Exchanger хост треба имати одговарајуће A/AAAA записе."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:84
 msgid ""
@@ -2142,8 +2111,7 @@ msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
 msgstr ""
-"RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
-"for the responsible mailbox field."
+"RFC 1035: многе мејлинг листе користе \"list-name-request\" за одговорно сандуче."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
@@ -2201,9 +2169,7 @@ msgstr "\"all\" механизам треба да буде последњи (RF
 msgid ""
 "SPF record should have either a terminating \"all\" mechanism or a "
 "\"redirect\" modifier (RFC 7208 Section 4.6.2)."
-msgstr ""
-"SPF record should have either a terminating \"all\" mechanism or a "
-"\"redirect\" modifier (RFC 7208 Section 4.6.2)."
+msgstr "SPF треба да има \"all\" или \"redirect\" (RFC 7208 §4.6.2)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:297
 msgid ""
@@ -2324,9 +2290,7 @@ msgstr ""
 msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
-msgstr ""
-"Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
-"updates as recommended by RFC 4701."
+msgstr "Размотрите DNSSEC или TSIG (RFC 3007) за DHCID ажурирања."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid ""
@@ -2380,9 +2344,7 @@ msgstr ""
 msgid ""
 "Algorithm 10 (RSA/SHA-512) provides strong security but may have "
 "interoperability issues with some validators."
-msgstr ""
-"Algorithm 10 (RSA/SHA-512) provides strong security but may have "
-"interoperability issues with some validators."
+msgstr "Алгоритам 10 (RSA/SHA-512) јак, али интероп."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
 msgid ""
@@ -2400,9 +2362,7 @@ msgstr "Алгоритам 14 (ECDSA P-384/SHA-384) јак, мањи потпи�
 msgid ""
 "Algorithm 15 (ED25519) offers modern security but may have compatibility "
 "issues with older DNSSEC validators."
-msgstr ""
-"Algorithm 15 (ED25519) offers modern security but may have compatibility "
-"issues with older DNSSEC validators."
+msgstr "Алгоритам 15 (ED25519) модерн, компатибилност."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
 msgid ""
@@ -2487,9 +2447,7 @@ msgstr ""
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
-msgstr ""
-"Remember that RRSIG records must be regenerated before their expiration date "
-"to maintain DNSSEC validation."
+msgstr "Запамтите да RRSIG морају бити регенерисани пре истека."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:129
 msgid ""
@@ -2520,9 +2478,7 @@ msgstr ""
 msgid ""
 "The RP record is less commonly used today. Consider using WHOIS records or "
 "other contact mechanisms instead."
-msgstr ""
-"The RP record is less commonly used today. Consider using WHOIS records or "
-"other contact mechanisms instead."
+msgstr "RP записи се ретко користе данас. Размотрите WHOIS или друге механизме."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:195
 msgid ""
@@ -3001,17 +2957,13 @@ msgstr "SOA %s (%d) је испод RFC 2308 минимума (%d)."
 msgid ""
 "SOA retry value should be less than refresh value according to RFC 2308. "
 "This is allowed but not recommended."
-msgstr ""
-"SOA retry value should be less than refresh value according to RFC 2308. "
-"This is allowed but not recommended."
+msgstr "SOA retry треба да буде мањи од refresh (RFC 2308)."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:296
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
-msgstr ""
-"SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
-"excessive according to RFC 2308."
+msgstr "SOA minimum прелази 24 сата (86400), можда превише (RFC 2308)."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
@@ -3278,9 +3230,7 @@ msgstr "CDNSKEY записи се обично објављују на врху 
 msgid ""
 "RFC 7344 recommends that if you publish a CDNSKEY record, you should also "
 "publish a corresponding CDS record."
-msgstr ""
-"RFC 7344 recommends that if you publish a CDNSKEY record, you should also "
-"publish a corresponding CDS record."
+msgstr "RFC 7344: објавите и CDS са CDNSKEY."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:165
 msgid ""
@@ -3533,9 +3483,7 @@ msgstr "DMARC запис мора почети са \"v=DMARC1\""
 msgid ""
 "DMARC record exceeds 255 character limit. For complex policies, consider "
 "simplifying or using URI references."
-msgstr ""
-"DMARC record exceeds 255 character limit. For complex policies, consider "
-"simplifying or using URI references."
+msgstr "DMARC прелази 255 знакова. Поједноставите или користите URI референце."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:200
 msgid ""
@@ -4511,9 +4459,7 @@ msgstr ""
 msgid ""
 "This is the only time your API key will be displayed. Please save it now as "
 "you won't be able to see it again."
-msgstr ""
-"This is the only time your API key will be displayed. Please save it now as "
-"you won't be able to see it again."
+msgstr "Ово је једини пут да се АПИ кључ приказује. Сачувајте га сада."
 
 #: templates/modern/bulk_registration.html:114
 msgid ""
@@ -4959,9 +4905,7 @@ msgstr ""
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
+msgstr "Недостају PowerDNS табеле у бази \"%s\": %s. Осигурајте инсталацију."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
