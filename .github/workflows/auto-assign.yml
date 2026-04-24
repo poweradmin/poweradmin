@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto-assign issue or PR
-        uses: pozil/auto-assign-issue@21ffb634481e75f2557e5f507e359cba97bbc42b # v2
+        uses: pozil/auto-assign-issue@70adb98ca8b3941524e9ecde48e89067c4f96736 # v3.0.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           assignees: edmondas
