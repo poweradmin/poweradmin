@@ -21,7 +21,7 @@ msgstr "$ORIGIN un $TTL direktīvas"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:216
 msgid "A zone with this name already exists."
-msgstr "A zone with this name already exists."
+msgstr "Zona ar šādu nosaukumu jau eksistē."
 
 #: lib/Module/ZoneImportExport/templates/import.html:112
 msgid "Cancel"

@@ -5738,7 +5738,7 @@ msgstr "User Datagram Protocol - for DTLS connections"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:121
 msgid "Stream Control Transmission Protocol"
-msgstr "Stream Control Transmission Protocol"
+msgstr "Virran ohjauksen kuljetusprotokolla"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:85
 msgid "Transport protocol for the TLS connection"
@@ -5916,7 +5916,7 @@ msgstr "Karanteeni"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:69
 msgid "Treat suspicious emails as spam/junk"
-msgstr "Treat suspicious emails as spam/junk"
+msgstr "Käsittele epäilyttävät sähköpostit roskapostina"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:84
 msgid "Reject"
@@ -5992,7 +5992,7 @@ msgstr "Generate reports if any authentication mechanism fails"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:127
 msgid "Generate reports if DKIM check fails"
-msgstr "Generate reports if DKIM check fails"
+msgstr "Luo raportteja, jos DKIM-tarkistus epäonnistuu"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:128
 msgid "Generate reports if SPF check fails"
@@ -6052,7 +6052,7 @@ msgstr "Virheellinen aliverkkokäytännön arvo"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:275
 msgid "Percentage must be between 0 and 100"
-msgstr "Percentage must be between 0 and 100"
+msgstr "Prosentin on oltava välillä 0-100"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:283
 msgid "Invalid aggregate report email address"
@@ -6060,7 +6060,7 @@ msgstr "Invalid aggregate report email address"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:287
 msgid "Invalid forensic report email address"
-msgstr "Invalid forensic report email address"
+msgstr "Virheellinen forensisen raportin sähköpostiosoite"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:48
 msgid "SPF Record"
@@ -6068,7 +6068,7 @@ msgstr "SPF-tietue"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:49
 msgid "Authorized mail server configuration"
-msgstr "Authorized mail server configuration"
+msgstr "Valtuutetun sähköpostipalvelimen määritys"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:61
 msgid "Basic Mechanisms"
@@ -6116,7 +6116,7 @@ msgstr "IPv6 Addresses"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:98
 msgid "One IPv6 address or network per line"
-msgstr "One IPv6 address or network per line"
+msgstr "Yksi IPv6-osoite tai verkko per rivi"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:103
 msgid "Include Mechanisms"
@@ -6124,7 +6124,7 @@ msgstr "Sisällytä mekanismit"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:104
 msgid "Include SPF records from other domains"
-msgstr "Include SPF records from other domains"
+msgstr "Sisällytä SPF-tietueet muilta toimialueilta"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:108
 msgid "Include Domains"
@@ -6330,7 +6330,7 @@ msgstr "Avaimen tyyppi"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:95
 msgid "Widely supported by all mail servers"
-msgstr "Widely supported by all mail servers"
+msgstr "Laajalti tuettu kaikilla sähköpostipalvelimilla"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:96
 msgid "Newer algorithm - not universally supported yet"
@@ -6366,7 +6366,7 @@ msgstr "SRV-tietue"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:69
 msgid "Service location (hostname and port)"
-msgstr "Service location (hostname and port)"
+msgstr "Palvelun sijainti (palvelin ja portti)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:95
 msgid "Service"
@@ -6444,7 +6444,7 @@ msgstr "Virheellinen kohdepalvelimen muoto"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:295
 msgid "Priority must be between 0 and 65535"
-msgstr "Priority must be between 0 and 65535"
+msgstr "Prioriteetin on oltava välillä 0-65535"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:305
 msgid "Weight must be between 0 and 65535"
@@ -6505,7 +6505,7 @@ msgstr "Alueen nimi on pakollinen."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:305
 msgid "A zone with this name already exists."
-msgstr "A zone with this name already exists."
+msgstr "Tämän niminen alue on jo olemassa."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:311
 msgid "Failed to create zone."
@@ -6674,7 +6674,7 @@ msgstr "Ryhmän poisto peruutettu."
 
 #: lib/Application/Controller/DeleteGroupController.php:141
 msgid "Group has been deleted successfully."
-msgstr "Group has been deleted successfully."
+msgstr "Ryhmä on poistettu onnistuneesti."
 
 #: lib/Application/Controller/EditGroupController.php:203
 msgid "Group not found."
@@ -6780,7 +6780,7 @@ msgstr "Sivunumeron on oltava vähintään 1."
 
 #: lib/Application/Controller/ListLogUsersController.php:114
 msgid "Page number exceeds available pages."
-msgstr "Page number exceeds available pages."
+msgstr "Sivunumero ylittää saatavilla olevat sivut."
 
 #: lib/Application/Controller/ListSupermastersController.php:43
 msgid "You do not have the permission to view supermasters."
@@ -6949,7 +6949,7 @@ msgstr "Member removed from group successfully."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:124
 msgid "User was not a member of this group."
-msgstr "User was not a member of this group."
+msgstr "Käyttäjä ei ollut tämän ryhmän jäsen."
 
 #: lib/Domain/Model/UserManager.php:1003
 msgid "You do not have the permission to add a new user."
@@ -7037,7 +7037,7 @@ msgstr "Zone template has been updated successfully."
 
 #: lib/Application/Controller/EditZoneTemplController.php:233
 msgid "Zones have been updated successfully."
-msgstr "Zones have been updated successfully."
+msgstr "Alueet on päivitetty onnistuneesti."
 
 #: lib/Application/Controller/EditZoneTemplController.php:244
 msgid "You do not have permission to create new zone templates."
@@ -7086,7 +7086,7 @@ msgstr "Alueita ei ole valittu."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:119
 msgid "Failed to unlink zones from template."
-msgstr "Failed to unlink zones from template."
+msgstr "Alueiden linkityksen poisto mallista epäonnistui."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:131
 msgid "No valid zones selected."
@@ -7098,7 +7098,7 @@ msgstr "Mallia ei löydy."
 
 #: lib/Application/Controller/UserAgreementController.php:97
 msgid "User agreement accepted successfully."
-msgstr "User agreement accepted successfully."
+msgstr "Käyttäjäsopimus hyväksytty onnistuneesti."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:69
 msgid "Edit Zone"
@@ -7126,7 +7126,7 @@ msgstr "Zone template has been changed successfully."
 
 #: lib/Application/Controller/EditController.php:315
 msgid "DNSSEC is not enabled on the server."
-msgstr "DNSSEC is not enabled on the server."
+msgstr "DNSSEC ei ole käytössä palvelimella."
 
 #: lib/Application/Controller/EditController.php:318
 msgid "Zone is already signed with DNSSEC."
@@ -7142,7 +7142,7 @@ msgstr "Zone is not currently signed with DNSSEC."
 
 #: lib/Application/Controller/DnssecController.php:107
 msgid "Zone has been unsigned successfully."
-msgstr "Zone has been unsigned successfully."
+msgstr "Alueen allekirjoitus poistettu onnistuneesti."
 
 #: lib/Application/Controller/DnssecController.php:112
 msgid "Zone unsigning requested successfully, but verification failed."
@@ -7194,7 +7194,7 @@ msgstr "No MFA record found. Please contact administrator."
 
 #: lib/Application/Controller/MfaVerifyController.php:142
 msgid "An error occurred. Please try again."
-msgstr "An error occurred. Please try again."
+msgstr "Tapahtui virhe. Yritä uudelleen."
 
 #: lib/Application/Controller/MfaVerifyController.php:307
 msgid "A new verification code has been sent to your email."
@@ -7219,7 +7219,7 @@ msgstr "Tietueita ei annettu."
 #: lib/Application/Controller/AddRecordController.php:483
 #, php-format
 msgid "%d record(s) were successfully added."
-msgstr "%d record(s) were successfully added."
+msgstr "%d tietuetta lisätty onnistuneesti."
 
 #: lib/Application/Controller/AddRecordController.php:485
 #, php-format
@@ -7245,7 +7245,7 @@ msgstr "Alue on poistettu onnistuneesti."
 
 #: lib/Application/Controller/DeleteDomainsController.php:156
 msgid "Zones have been deleted successfully."
-msgstr "Zones have been deleted successfully."
+msgstr "Alueet on poistettu onnistuneesti."
 
 #: lib/Domain/Service/Dns/DomainManager.php:667
 msgid "You do not have the permission to delete a zone."
@@ -7352,7 +7352,7 @@ msgstr "Invalid permission template: must be a group template"
 
 #: lib/Application/Controller/AddGroupController.php:140
 msgid "Group has been created successfully."
-msgstr "Group has been created successfully."
+msgstr "Ryhmä on luotu onnistuneesti."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid key ID."
@@ -7475,7 +7475,7 @@ msgstr "Toissijaisen alueen poisto epäonnistui"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:115
 msgid "Orphaned record deleted successfully"
-msgstr "Orphaned record deleted successfully"
+msgstr "Orpotietue poistettu onnistuneesti"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:115
 msgid "Failed to delete orphaned record"
@@ -7531,7 +7531,7 @@ msgstr "Virheellinen käyttäjän tai ryhmän tunnus."
 
 #: lib/Application/Controller/RemoveUserGroupController.php:107
 msgid "User removed from group successfully."
-msgstr "User removed from group successfully."
+msgstr "Käyttäjä poistettu ryhmästä onnistuneesti."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:65
 msgid "You do not have the permission to add a slave zone."
@@ -7579,7 +7579,7 @@ msgstr "Virheellinen ryhmän tai alueen tunnus."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:95
 msgid "Zone removed from group successfully."
-msgstr "Zone removed from group successfully."
+msgstr "Alue poistettu ryhmästä onnistuneesti."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
 msgid "Zone was not owned by this group."
@@ -7718,7 +7718,7 @@ msgstr "RSA algorithms should use 1024 or 2048 bits for adequate security"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:161
 msgid "Zone key has been added successfully."
-msgstr "Zone key has been added successfully."
+msgstr "Alueen avain lisätty onnistuneesti."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:165
 msgid "Failed to add new DNSSEC key."
@@ -7730,7 +7730,7 @@ msgstr "An error occurred while adding the DNSSEC key: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:173
 msgid "Please select both algorithm and bits"
-msgstr "Please select both algorithm and bits"
+msgstr "Valitse sekä algoritmi että bitit"
 
 #: lib/Application/Controller/EditGroupController.php:88
 msgid "You do not have permission to edit groups."
@@ -7743,7 +7743,7 @@ msgstr "Muokkaa ryhmää"
 
 #: lib/Application/Controller/EditGroupController.php:186
 msgid "Group has been updated successfully."
-msgstr "Group has been updated successfully."
+msgstr "Ryhmä on päivitetty onnistuneesti."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:47
 msgid "You do not have the permission to delete a supermaster."
@@ -7784,7 +7784,7 @@ msgstr "Omistaja on lisätty onnistuneesti."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:192
 msgid "Owner has been removed successfully."
-msgstr "Owner has been removed successfully."
+msgstr "Omistaja on poistettu onnistuneesti."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:213
 msgid "You do not have permission to assign this group."
@@ -7796,7 +7796,7 @@ msgstr "Ryhmä on lisätty onnistuneesti."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:229
 msgid "Group has been removed successfully."
-msgstr "Group has been removed successfully."
+msgstr "Ryhmä on poistettu onnistuneesti."
 
 #: lib/Application/Controller/NotFoundController.php:53
 #: templates/default/404.html:14 templates/modern/404.html:14
@@ -7847,7 +7847,7 @@ msgstr "Todennus epäonnistui!"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:192
 msgid "Session expired, please login again."
-msgstr "Session expired, please login again."
+msgstr "Istunto vanheni, kirjaudu uudelleen."
 
 #: lib/Application/Service/PasswordChangeService.php:66
 msgid "Failed to update password"
@@ -7863,7 +7863,7 @@ msgstr "Authentication failed: No authorization code"
 
 #: lib/Application/Service/SamlService.php:188
 msgid "Authentication failed: Invalid session"
-msgstr "Authentication failed: Invalid session"
+msgstr "Todennus epäonnistui: Virheellinen istunto"
 
 #: lib/Application/Service/SamlService.php:347
 msgid "Authentication failed: Unable to create or update user account"
@@ -7887,7 +7887,7 @@ msgstr "LDAP-haku epäonnistui."
 
 #: lib/Application/Service/LdapAuthenticator.php:202
 msgid "Failed to authenticate against LDAP."
-msgstr "Failed to authenticate against LDAP."
+msgstr "Todennus LDAP:ia vastaan epäonnistui."
 
 #: lib/Application/Service/SamlService.php:246
 msgid "Authentication failed: Invalid SAML response"
@@ -7948,7 +7948,7 @@ msgstr "Virhe aluemallin poistossa:"
 
 #: lib/Domain/Model/ZoneTemplate.php:332
 msgid "Error deleting user zone templates: "
-msgstr "Error deleting user zone templates: "
+msgstr "Virhe käyttäjän aluemallien poistossa:"
 
 #: lib/Domain/Model/ZoneTemplate.php:449
 msgid "You do not have the permission to add a record to this zone template."
@@ -7968,11 +7968,11 @@ msgstr "You do not have the permission to edit this record."
 
 #: lib/Domain/Model/ZoneTemplate.php:541
 msgid "Error updating zone template record: "
-msgstr "Error updating zone template record: "
+msgstr "Virhe aluemallin tietueen päivityksessä:"
 
 #: lib/Domain/Model/ZoneTemplate.php:564
 msgid "Error deleting zone template record: "
-msgstr "Error deleting zone template record: "
+msgstr "Virhe aluemallin tietueen poistossa:"
 
 #: lib/Domain/Model/ZoneTemplate.php:587
 msgid "Error checking template ownership: "
@@ -7992,7 +7992,7 @@ msgstr "You do not have the permission to edit a zone template."
 
 #: lib/Domain/Model/ZoneTemplate.php:918
 msgid "Error unlinking zone from template: "
-msgstr "Error unlinking zone from template: "
+msgstr "Virhe alueen linkityksen poistossa mallista:"
 
 #: lib/Domain/Model/ZoneTemplate.php:951 lib/Domain/Model/ZoneTemplate.php:967
 msgid "Error retrieving zones: "
@@ -8030,7 +8030,7 @@ msgstr "%d slave zones found without master IP addresses"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:211
 msgid "All records belong to existing zones"
-msgstr "All records belong to existing zones"
+msgstr "Kaikki tietueet kuuluvat olemassa oleviin alueisiin"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:218
 #, php-format
@@ -8193,7 +8193,7 @@ msgstr "Minutes must be between 0 and 59."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:191
 msgid "Seconds must be between 0 and 59.999."
-msgstr "Seconds must be between 0 and 59.999."
+msgstr "Sekuntien on oltava välillä 0-59.999."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:200
 msgid "Altitude must be between -100000 and 42849672.95 meters."
@@ -8205,7 +8205,7 @@ msgstr "Invalid characters in name field."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:165
 msgid "Invalid characters in content field."
-msgstr "Invalid characters in content field."
+msgstr "Virheellisiä merkkejä sisältökentässä."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:141
 msgid "Priority field for RKEY records must be 0 or empty."
@@ -8213,7 +8213,7 @@ msgstr "Priority field for RKEY records must be 0 or empty."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:168
 msgid "RKEY record content cannot be empty."
-msgstr "RKEY record content cannot be empty."
+msgstr "RKEY-tietueen sisältö ei voi olla tyhjä."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:181
 msgid "RKEY flags field must be a numeric value."
@@ -8241,7 +8241,7 @@ msgstr "Algorithm 10 (RSA/SHA-512) provides strong security."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:251
 msgid "RKEY public key data cannot be empty."
-msgstr "RKEY public key data cannot be empty."
+msgstr "RKEY-julkisen avaimen tiedot eivät voi olla tyhjiä."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:256
 msgid "Public key data should be Base64 encoded according to RFC 4034."
@@ -8269,7 +8269,7 @@ msgstr "Virheellinen IPv4-osoite APL-tietueessa."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:279
 msgid "IPv4 prefix must be between 0 and 32."
-msgstr "IPv4 prefix must be between 0 and 32."
+msgstr "IPv4-etuliitteen on oltava välillä 0-32."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:301
 msgid "Invalid IPv6 address in APL record."
@@ -8277,7 +8277,7 @@ msgstr "Virheellinen IPv6-osoite APL-tietueessa."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:306
 msgid "IPv6 prefix must be between 0 and 128."
-msgstr "IPv6 prefix must be between 0 and 128."
+msgstr "IPv6-etuliitteen on oltava välillä 0-128."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:88
 msgid "NID record content cannot be empty."
@@ -8309,7 +8309,7 @@ msgstr "Sisältökenttä ei voi olla tyhjä."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:97
 msgid "NSEC record content cannot be empty."
-msgstr "NSEC record content cannot be empty."
+msgstr "NSEC-tietueen sisältö ei voi olla tyhjä."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:102
 msgid "NSEC record contains invalid characters."
@@ -8626,7 +8626,7 @@ msgstr "Invalid value for KX preference field. Must be between 0 and 65535."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
-msgstr "MINFO record content cannot be empty."
+msgstr "MINFO-tietueen sisältö ei voi olla tyhjä."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:113
 msgid "Invalid responsible mailbox hostname (RMAILBX)."
@@ -8656,7 +8656,7 @@ msgstr "Invalid IPv6 address or network in ip6 mechanism."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:238
 #, php-format
 msgid "Invalid domain name in %s mechanism."
-msgstr "Invalid domain name in %s mechanism."
+msgstr "Virheellinen toimialuenimi %s-mekanismissa."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:244
 #, php-format
@@ -8669,7 +8669,7 @@ msgstr "Invalid CIDR length in mechanism."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
-msgstr "Invalid domain in redirect modifier."
+msgstr "Virheellinen toimialue redirect-muokkaimessa."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:275
 msgid "Invalid domain in exp modifier."
@@ -8687,7 +8687,7 @@ msgstr "Tuntematon mekanismi: %s"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:280
 msgid "Empty CNAME records are not allowed."
-msgstr "Empty CNAME records are not allowed."
+msgstr "Tyhjiä CNAME-tietueita ei sallita."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -8703,7 +8703,7 @@ msgstr "DHCID record must contain valid base64-encoded data."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
-msgstr "Hostname contains invalid characters."
+msgstr "Palvelimen nimi sisältää virheellisiä merkkejä."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:141
 msgid "Priority field for RRSIG records must be 0 or empty"
@@ -8711,7 +8711,7 @@ msgstr "Priority field for RRSIG records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
-msgstr "RRSIG record content cannot be empty."
+msgstr "RRSIG-tietueen sisältö ei voi olla tyhjä."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:174
 msgid "RRSIG record contains invalid characters."
@@ -8865,7 +8865,7 @@ msgstr "DNAME target must be a valid fully-qualified domain name."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:104
 msgid "DNAME record cannot point to itself."
-msgstr "DNAME record cannot point to itself."
+msgstr "DNAME-tietue ei voi osoittaa itseensä."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:122
 msgid "Priority field for DNAME records must be 0 or empty."
@@ -8913,7 +8913,7 @@ msgstr "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
 msgid "Priority must be 0 for EUI48 records."
-msgstr "Priority must be 0 for EUI48 records."
+msgstr "Prioriteetin on oltava 0 EUI48-tietueille."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:53
 msgid "This is not a valid IPv4 address."
@@ -8998,7 +8998,7 @@ msgstr "Issue tag parameters must be in key=value format."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:221
 msgid "accounturi parameter cannot be empty."
-msgstr "accounturi parameter cannot be empty."
+msgstr "accounturi-parametri ei voi olla tyhjä."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:230
 msgid "Empty validation method specified."
@@ -9080,11 +9080,11 @@ msgstr "Invalid IPv6 prefix length. Must be 0-128."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:209
 msgid "Invalid prefix length. Must be 0-128."
-msgstr "Invalid prefix length. Must be 0-128."
+msgstr "Virheellinen etuliitteen pituus. On oltava 0-128."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:217
 msgid "Given hostname has too many slashes."
-msgstr "Given hostname has too many slashes."
+msgstr "Annetussa palvelimen nimessä on liikaa vinoviivoja."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:222
 msgid "You are using an invalid top level domain."
@@ -9100,7 +9100,7 @@ msgstr "Invalid primary nameserver in SOA record."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:201
 msgid "Invalid email address in SOA record."
-msgstr "Invalid email address in SOA record."
+msgstr "Virheellinen sähköpostiosoite SOA-tietueessa."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:212
 msgid "Serial number must be numeric."
@@ -9178,7 +9178,7 @@ msgstr "Invalid characters in CDNSKEY record content."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:179
 msgid "CDNSKEY flags must be 0, 256, or 257."
-msgstr "CDNSKEY flags must be 0, 256, or 257."
+msgstr "CDNSKEY-lippujen on oltava 0, 256 tai 257."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:189
 msgid "CDNSKEY protocol must be 3."
@@ -9298,7 +9298,7 @@ msgstr "DMARC records must be placed at _dmarc.<domain>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
-msgstr "DMARC version tag (v) must be DMARC1"
+msgstr "DMARC-versiotunnisteen (v) on oltava DMARC1"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:195
 msgid "DMARC policy tag (p) must be one of: none, quarantine, reject"
@@ -9418,7 +9418,7 @@ msgstr "Invalid value for the priority field of the SRV record."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
-msgstr "NSEC3 record content cannot be empty."
+msgstr "NSEC3-tietueen sisältö ei voi olla tyhjä."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:113
 msgid "NSEC3 record contains invalid characters."
@@ -9455,7 +9455,7 @@ msgstr "You cannot use html tags for this type of record."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:105
 msgid "Add quotes around TXT record content."
-msgstr "Add quotes around TXT record content."
+msgstr "Lisää lainausmerkit TXT-tietueen sisällön ympärille."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:220
 msgid "Invalid domain name format."
@@ -9503,7 +9503,7 @@ msgstr "Priority field for DNSKEY records must be 0 or empty."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
-msgstr "DNSKEY flags must be 0, 256, or 257."
+msgstr "DNSKEY-lippujen on oltava 0, 256 tai 257."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:167
 msgid "DNSKEY protocol must be 3."
@@ -9524,7 +9524,7 @@ msgstr "DNSKEY public key must be valid base64-encoded data."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:254
 msgid "Base64 encoding has incorrect padding."
-msgstr "Base64 encoding has incorrect padding."
+msgstr "Base64-koodauksessa on virheellinen täyte."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:259
 msgid "Invalid base64 characters detected."
@@ -9599,7 +9599,7 @@ msgstr "Remove duplicate SOA records, keeping only one."
 
 #: lib/Domain/Service/ZoneValidationService.php:122
 msgid "Move the SOA record to the zone apex."
-msgstr "Move the SOA record to the zone apex."
+msgstr "Siirrä SOA-tietue alueen yläosaan."
 
 #: lib/Domain/Service/ZoneValidationService.php:132
 msgid "SOA record has invalid content format."
@@ -9657,7 +9657,7 @@ msgstr "A record with this hostname, type, and content already exists."
 
 #: lib/Domain/Service/Dns/RecordManager.php:164
 msgid "Failed to add record to DNS backend."
-msgstr "Failed to add record to DNS backend."
+msgstr "Tietueen lisäys DNS-taustajärjestelmään epäonnistui."
 
 #: lib/Domain/Service/Dns/RecordManager.php:302
 msgid "You do not have the permission to edit this SOA record."
@@ -9690,7 +9690,7 @@ msgstr "There is already a supermaster with this IP address and hostname."
 
 #: lib/Domain/Service/Dns/DomainManager.php:132
 msgid "Failed to create zone in DNS backend."
-msgstr "Failed to create zone in DNS backend."
+msgstr "Alueen luonti DNS-taustajärjestelmään epäonnistui."
 
 #: lib/Domain/Service/Dns/DomainManager.php:301
 #, php-format
@@ -9699,12 +9699,12 @@ msgstr "Alueen luonti epäonnistui: %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "Failed to create SOA record for zone."
-msgstr "Failed to create SOA record for zone."
+msgstr "SOA-tietueen luonti alueelle epäonnistui."
 
 #: lib/Domain/Service/Dns/DomainManager.php:260
 #, php-format
 msgid "Failed to create %s record for zone."
-msgstr "Failed to create %s record for zone."
+msgstr "%s-tietueen luonti alueelle epäonnistui."
 
 #: lib/Domain/Service/Dns/DomainManager.php:305
 #, php-format
@@ -9718,7 +9718,7 @@ msgstr "Failed to delete zone from DNS backend."
 #: lib/Domain/Service/Dns/DomainManager.php:375
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
-msgstr "Failed to clean up zone metadata: %s"
+msgstr "Alueen metatietojen siivous epäonnistui: %s"
 
 #: lib/Domain/Service/Dns/DomainManager.php:448
 #, php-format
@@ -9755,7 +9755,7 @@ msgstr "API-avain luotu uudelleen onnistuneesti"
 
 #: templates/modern/api_key_regenerated.html:17
 msgid "IMPORTANT: Save your new API key now!"
-msgstr "IMPORTANT: Save your new API key now!"
+msgstr "TÄRKEÄÄ: Tallenna uusi API-avaimesi nyt!"
 
 #: templates/modern/api_key_created.html:23
 msgid "Name:"
@@ -9991,7 +9991,7 @@ msgstr "Sisältö"
 
 #: templates/modern/add_zone_templ_record.html:78
 msgid "Provide content for your zone record"
-msgstr "Provide content for your zone record"
+msgstr "Anna sisältö aluetietueellesi"
 
 #: templates/modern/edit_zone_templ_record.html:103
 msgid "Update record"
@@ -10235,7 +10235,7 @@ msgstr "Email Address"
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
-msgstr "Please provide a valid email address"
+msgstr "Anna kelvollinen sähköpostiosoite"
 
 #: templates/modern/forgot_password.html:41
 msgid "Send Reset Link"
@@ -10323,7 +10323,7 @@ msgstr "Anna ryhmän nimi"
 
 #: templates/modern/edit_group.html:32 templates/modern/add_group.html:29
 msgid "Optional information about this group"
-msgstr "Optional information about this group"
+msgstr "Valinnaiset tiedot tästä ryhmästä"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
 msgid "Access template"
@@ -10363,7 +10363,7 @@ msgstr "lisää..."
 
 #: templates/default/edit_group.html:125 templates/modern/edit_group.html:125
 msgid "This group doesn't own any zones yet."
-msgstr "This group doesn't own any zones yet."
+msgstr "Tämä ryhmä ei omista vielä yhtään aluetta."
 
 #: templates/default/edit_group.html:176 templates/modern/edit_group.html:176
 msgid "Confirm Member Removal"
@@ -10371,7 +10371,7 @@ msgstr "Vahvista jäsenen poistaminen"
 
 #: templates/default/edit_group.html:181 templates/modern/edit_group.html:181
 msgid "Are you sure you want to remove user"
-msgstr "Are you sure you want to remove user"
+msgstr "Haluatko varmasti poistaa käyttäjän"
 
 #: templates/modern/edit_group.html:181 templates/modern/edit_group.html:207
 msgid "from this group?"
@@ -10383,7 +10383,7 @@ msgstr "Vahvista alueen poistaminen"
 
 #: templates/default/edit_group.html:207 templates/modern/edit_group.html:207
 msgid "Are you sure you want to remove zone"
-msgstr "Are you sure you want to remove zone"
+msgstr "Haluatko varmasti poistaa alueen"
 
 #: templates/default/delete_group.html:16 templates/modern/delete_group.html:16
 msgid "You are about to delete the group"
@@ -10411,7 +10411,7 @@ msgstr "alue menettää tämän ryhmän omistuksen"
 
 #: templates/default/delete_group.html:39 templates/modern/delete_group.html:39
 msgid "zones will lose this group ownership"
-msgstr "zones will lose this group ownership"
+msgstr "alueet menettävät tämän ryhmän omistuksen"
 
 #: templates/default/delete_group.html:49 templates/modern/delete_group.html:49
 msgid "Affected Zones"
@@ -10737,7 +10737,7 @@ msgstr "Enter one record per line using CSV format"
 
 #: templates/modern/bulk_record_add.html:81
 msgid "Required fields: name, type, content"
-msgstr "Required fields: name, type, content"
+msgstr "Pakolliset kentät: nimi, tyyppi, sisältö"
 
 #: templates/modern/bulk_record_add.html:82
 msgid "Optional fields: priority, ttl, comment"
@@ -10745,7 +10745,7 @@ msgstr "Optional fields: priority, ttl, comment"
 
 #: templates/modern/bulk_record_add.html:83
 msgid "Records are validated before creation"
-msgstr "Records are validated before creation"
+msgstr "Tietueet vahvistetaan ennen luontia"
 
 #: templates/modern/bulk_record_add.html:87
 msgid "Best Practices"
@@ -11183,11 +11183,11 @@ msgstr "Provide email"
 
 #: templates/default/edit_user.html:58 templates/modern/edit_user.html:58
 msgid "Leave empty to keep current password"
-msgstr "Leave empty to keep current password"
+msgstr "Jätä tyhjäksi säilyttääksesi nykyisen salasanan"
 
 #: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
 msgid "Optional information about this user"
-msgstr "Optional information about this user"
+msgstr "Valinnaiset tiedot tästä käyttäjästä"
 
 #: templates/modern/users.html:49 templates/modern/add_user.html:94
 #: install/templates/step2.html.twig:113
@@ -11769,7 +11769,7 @@ msgstr "No records match your filter criteria."
 
 #: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "This zone does not have any records."
-msgstr "This zone does not have any records."
+msgstr "Tässä alueessa ei ole yhtään tietuetta."
 
 #: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "Filter:"
@@ -12135,7 +12135,7 @@ msgstr "Enable DNSSEC"
 
 #: templates/modern/add_zone_master.html:68
 msgid "Secure this zone with DNSSEC signing"
-msgstr "Secure this zone with DNSSEC signing"
+msgstr "Suojaa tämä alue DNSSEC-allekirjoituksella"
 
 #: templates/modern/add_zone_slave.html:54
 msgid "Selected:"
@@ -12683,7 +12683,7 @@ msgstr "A verification code has been sent to your email address."
 
 #: templates/modern/mfa_verify_email.html:34
 msgid "Enter the 6-digit code from your email"
-msgstr "Enter the 6-digit code from your email"
+msgstr "Syötä 6-numeroinen koodi sähköpostistasi"
 
 #: templates/modern/list_template_zones.html:11
 msgid "Zones using template"
@@ -12739,7 +12739,7 @@ msgstr "Alueiden sarjanumerot"
 
 #: templates/modern/user_preferences.html:43
 msgid "Display serial numbers in zone lists"
-msgstr "Display serial numbers in zone lists"
+msgstr "Näytä sarjanumerot aluelistauksissa"
 
 #: templates/modern/user_preferences.html:51
 msgid "Display template information in zone lists"
@@ -12767,7 +12767,7 @@ msgstr "Show record ID"
 
 #: templates/modern/user_preferences.html:94
 msgid "Display record ID column in edit view"
-msgstr "Display record ID column in edit view"
+msgstr "Näytä tietueen tunnus -sarake muokkausnäkymässä"
 
 #: templates/modern/user_preferences.html:101
 msgid "Show add record form"
@@ -12799,7 +12799,7 @@ msgstr "Tallenna asetukset"
 
 #: templates/modern/user_preferences.html:139
 msgid "Changes will be applied after saving"
-msgstr "Changes will be applied after saving"
+msgstr "Muutokset otetaan käyttöön tallennuksen jälkeen"
 
 #: templates/default/search.html:14 templates/modern/search.html:14
 msgid "DNS Search"
@@ -12823,7 +12823,7 @@ msgstr "Records found"
 
 #: templates/default/search.html:501 templates/modern/search.html:501
 msgid "Try different search terms or filters"
-msgstr "Try different search terms or filters"
+msgstr "Kokeile muita hakusanoja tai suodattimia"
 
 #: templates/default/search.html:664 templates/modern/search.html:675
 msgid "Confirm Zone Deletion"
@@ -13027,7 +13027,7 @@ msgstr "Käyttöaika"
 
 #: templates/default/pdns_status.html:90 templates/modern/pdns_status.html:91
 msgid "Server information is not available."
-msgstr "Server information is not available."
+msgstr "Palvelimen tiedot eivät ole saatavilla."
 
 #: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:102
 msgid "Slave Servers"
@@ -13176,7 +13176,7 @@ msgstr "Record could not be added. Please check the record data and try again."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
-msgstr "Create a new DNS record in this zone"
+msgstr "Luo uusi DNS-tietue tällä alueella"
 
 #: templates/default/add_record.html:196 templates/modern/add_record.html:196
 msgid "Add another record"
@@ -13196,7 +13196,7 @@ msgstr "Omistetut alueet"
 
 #: templates/modern/manage_group_zones.html:27
 msgid "This group doesn't own any zones yet"
-msgstr "This group doesn't own any zones yet"
+msgstr "Tämä ryhmä ei omista vielä yhtään aluetta"
 
 #: templates/modern/manage_group_members.html:58
 msgid "Remove Selected"
@@ -13228,7 +13228,7 @@ msgstr "alue(et) tästä ryhmästä?"
 
 #: templates/modern/manage_group_zones.html:212
 msgid "The zones will remain in the system."
-msgstr "The zones will remain in the system."
+msgstr "Alueet jäävät järjestelmään."
 
 #: templates/default/api_keys.html:10 templates/modern/api_keys.html:11
 msgid "API Keys Management"
@@ -13876,7 +13876,7 @@ msgstr "Ensure URL rewriting is configured for your web server"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "Kaikki vaaditut komponentit ovat saatavilla."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
@@ -13884,7 +13884,7 @@ msgstr "You can continue with the installation."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "Jotkin vaaditut komponentit puuttuvat."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."

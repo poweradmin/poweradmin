@@ -21,7 +21,7 @@ msgstr "Direktívy $ORIGIN a $TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:216
 msgid "A zone with this name already exists."
-msgstr "A zone with this name already exists."
+msgstr "Zóna s týmto názvom už existuje."
 
 #: lib/Module/ZoneImportExport/templates/import.html:112
 msgid "Cancel"
