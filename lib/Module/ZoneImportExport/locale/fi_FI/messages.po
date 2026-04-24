@@ -33,7 +33,7 @@ msgstr "Cloudflare-alueviennit"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
-msgstr "Confirm import"
+msgstr "Vahvista tuonti"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
@@ -69,11 +69,11 @@ msgstr "IDN-toimialuenimet"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
-msgstr "Import Preview"
+msgstr "Tuonnin esikatselu"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr "Import Results"
+msgstr "Tuonnin tulokset"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
@@ -231,7 +231,7 @@ msgid "records skipped (duplicates),"
 msgstr "tietuetta ohitettu (kaksoiskappaleita),"
 
 msgid "Add all records"
-msgstr "Add all records"
+msgstr "Lisää kaikki tietueet"
 
 msgid "Conflict strategy"
 msgstr "Conflict strategy"

@@ -33,7 +33,7 @@ msgstr "Exporty zón Cloudflare"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
-msgstr "Confirm import"
+msgstr "Potvrdiť import"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
@@ -69,11 +69,11 @@ msgstr "Názvy domén IDN"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
-msgstr "Import Preview"
+msgstr "Náhľad importu"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr "Import Results"
+msgstr "Výsledky importu"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
@@ -231,7 +231,7 @@ msgid "records skipped (duplicates),"
 msgstr "záznamov preskočených (duplikáty),"
 
 msgid "Add all records"
-msgstr "Add all records"
+msgstr "Pridať všetky záznamy"
 
 msgid "Conflict strategy"
 msgstr "Conflict strategy"

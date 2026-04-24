@@ -33,7 +33,7 @@ msgstr "Cloudflare извоз зона"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
-msgstr "Confirm import"
+msgstr "Потврди увоз"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
@@ -69,11 +69,11 @@ msgstr "IDN имена домена"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
-msgstr "Import Preview"
+msgstr "Преглед увоза"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr "Import Results"
+msgstr "Резултати увоза"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
@@ -231,7 +231,7 @@ msgid "records skipped (duplicates),"
 msgstr "записа прескочено (дупликати),"
 
 msgid "Add all records"
-msgstr "Add all records"
+msgstr "Додај све записе"
 
 msgid "Conflict strategy"
 msgstr "Conflict strategy"

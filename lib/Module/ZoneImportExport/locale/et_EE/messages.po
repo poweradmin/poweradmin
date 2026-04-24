@@ -33,7 +33,7 @@ msgstr "Cloudflare tsooni eksport"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
-msgstr "Confirm import"
+msgstr "Kinnita import"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
@@ -69,11 +69,11 @@ msgstr "IDN domeeninimed"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
-msgstr "Import Preview"
+msgstr "Importi eelvaade"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr "Import Results"
+msgstr "Importi tulemused"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
@@ -231,7 +231,7 @@ msgid "records skipped (duplicates),"
 msgstr "kirjet vahele jäetud (duplikaadid),"
 
 msgid "Add all records"
-msgstr "Add all records"
+msgstr "Lisa kõik kirjed"
 
 msgid "Conflict strategy"
 msgstr "Conflict strategy"

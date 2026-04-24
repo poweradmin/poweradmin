@@ -3231,7 +3231,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:244
 msgid "Invalid Type \""
-msgstr "Invalid Type \""
+msgstr "Virheellinen tyyppi \""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:249
 msgid "Type \""
@@ -5803,7 +5803,7 @@ msgstr "Käytä koko varmennetta"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:127
 msgid "1 - Public Key"
-msgstr "1 - Public Key"
+msgstr "1 - Julkinen avain"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:127
 msgid "Use only the Subject Public Key Info (SPKI)"
@@ -5811,7 +5811,7 @@ msgstr "Use only the Subject Public Key Info (SPKI)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:138
 msgid "Matching Type"
-msgstr "Matching Type"
+msgstr "Vastaavuustyyppi"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:143
 msgid "0 - Exact Match"
@@ -5851,7 +5851,7 @@ msgstr "Tietueen asetukset"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:188
 msgid "TTL (seconds)"
-msgstr "TTL (seconds)"
+msgstr "TTL (sekuntia)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:193
 msgid "Time to live - how long DNS resolvers should cache this record"
@@ -6088,7 +6088,7 @@ msgstr "Authorize all servers listed in MX records for this domain"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:73
 msgid "A/AAAA Records"
-msgstr "A/AAAA Records"
+msgstr "A/AAAA-tietueet"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:76
 msgid "Authorize the domain's A and AAAA records"
@@ -6104,7 +6104,7 @@ msgstr "Authorized IP addresses and networks (CIDR notation supported)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:86
 msgid "IPv4 Addresses"
-msgstr "IPv4 Addresses"
+msgstr "IPv4-osoitteet"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:90
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
@@ -6112,7 +6112,7 @@ msgstr "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:94
 msgid "IPv6 Addresses"
-msgstr "IPv6 Addresses"
+msgstr "IPv6-osoitteet"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:98
 msgid "One IPv6 address or network per line"
@@ -6152,7 +6152,7 @@ msgstr "Authorize MX records from other domains (one per line)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:142
 msgid "Default Action"
-msgstr "Default Action"
+msgstr "Oletustoiminto"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:147
 msgid "Pass all - allows anyone to send (insecure)"
@@ -6228,7 +6228,7 @@ msgstr "Authorize issuance of standard certificates"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:107
 msgid "Issue Wildcard"
-msgstr "Issue Wildcard"
+msgstr "Issue-jokerimerkki"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:107
 msgid "Authorize issuance of wildcard certificates (*.example.com)"
@@ -6248,7 +6248,7 @@ msgstr "Valtuutuksen tai raportoinnin tyyppi"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:114
 msgid "Reporting URL"
-msgstr "Reporting URL"
+msgstr "Raportointi-URL"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:119
 msgid "URL or email for incident reports (mailto: or https:)"
@@ -6403,7 +6403,7 @@ msgstr "Toimialue"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
-msgstr "Target Server"
+msgstr "Kohdepalvelin"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:140
 msgid "Target Hostname"
@@ -6456,7 +6456,7 @@ msgstr "Virheellinen toimialueen muoto"
 
 #: lib/Module/EmailPreviews/Controller/EmailPreviewsController.php:58
 msgid "Email Previews"
-msgstr "Email Previews"
+msgstr "Sähköpostin esikatselut"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:74
 msgid "You do not have permission to import zones."
@@ -6810,7 +6810,7 @@ msgstr "Muokkaa alueen metatietoja"
 #: lib/Application/Controller/EditZoneMetadataController.php:177
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
-msgstr "Zone Metadata"
+msgstr "Alueen metatiedot"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:477
 #: templates/modern/pdns_status.html:412
@@ -7057,7 +7057,7 @@ msgstr "You do not have permission to view zone templates."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:43
 msgid "Template Zones"
-msgstr "Template Zones"
+msgstr "Mallin alueet"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:53
 msgid "Invalid template ID."
@@ -7335,7 +7335,7 @@ msgstr "You do not have the permission to view zone templates."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
-msgstr "Zone Templates"
+msgstr "Aluemallit"
 
 #: lib/Application/Controller/AddGroupController.php:76
 msgid "You do not have permission to create groups."
@@ -7405,7 +7405,7 @@ msgstr "You do not have sufficient permissions to view this page."
 #: lib/Application/Controller/ListReverseZonesController.php:78
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
-msgstr "Reverse Zones"
+msgstr "Käänteiset alueet"
 
 #: lib/Application/Controller/ListForwardZonesController.php:144
 msgid "You do not have the permission to see any zones."
@@ -7588,7 +7588,7 @@ msgstr "Tämä alue ei kuulunut tälle ryhmälle."
 #: lib/Application/Controller/ListForwardZonesController.php:60
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
-msgstr "Forward Zones"
+msgstr "Eteenpäin-alueet"
 
 #: lib/Application/Controller/AddSupermasterController.php:43
 msgid "You do not have the permission to add a new supermaster."
@@ -7801,7 +7801,7 @@ msgstr "Ryhmä on poistettu onnistuneesti."
 #: lib/Application/Controller/NotFoundController.php:53
 #: templates/default/404.html:14 templates/modern/404.html:14
 msgid "Page Not Found"
-msgstr "Page Not Found"
+msgstr "Sivua ei löydy"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:101
 msgid "Zone key has been successfully deactivated."
@@ -9811,7 +9811,7 @@ msgstr "DNSSEC"
 
 #: templates/modern/dnssec_edit_key.html:138
 msgid "Deactivate key"
-msgstr "Deactivate key"
+msgstr "Poista avain käytöstä"
 
 #: templates/modern/dnssec_edit_key.html:140
 msgid "Activate key"
@@ -9907,7 +9907,7 @@ msgstr "Disabled keys cannot be used for authentication"
 
 #: templates/default/api_key_edit.html:43 templates/modern/api_key_edit.html:44
 msgid "Update API Key"
-msgstr "Update API Key"
+msgstr "Päivitä API-avain"
 
 #: templates/modern/edit_perm_templ.html:58
 msgid "* Required fields"
@@ -9939,7 +9939,7 @@ msgstr "Creates a new key, invalidating the old one"
 
 #: templates/modern/api_key_delete.html:12
 msgid "Delete API Key"
-msgstr "Delete API Key"
+msgstr "Poista API-avain"
 
 #: templates/modern/api_key_edit.html:104
 msgid "Permanently removes this key"
@@ -9947,7 +9947,7 @@ msgstr "Poistaa tämän avaimen pysyvästi"
 
 #: templates/modern/delete_zone_templ_record.html:11
 msgid "Zone templates"
-msgstr "Zone templates"
+msgstr "aluemallit"
 
 #: templates/modern/edit_record.html:18
 msgid "Edit record"
@@ -10055,7 +10055,7 @@ msgstr "Esimerkkitietueet"
 
 #: templates/modern/add_zone_templ_record.html:166
 msgid "Name Examples"
-msgstr "Name Examples"
+msgstr "Nimiesimerkkejä"
 
 #: templates/modern/add_zone_templ_record.html:168
 msgid "For a subdomain: <code>subdomain.[ZONE]</code>"
@@ -10227,11 +10227,11 @@ msgstr "Unohtunut salasana"
 
 #: templates/modern/forgot_username.html:46
 msgid "Back to Login"
-msgstr "Back to Login"
+msgstr "Takaisin kirjautumiseen"
 
 #: templates/modern/forgot_username.html:27
 msgid "Email Address"
-msgstr "Email Address"
+msgstr "Sähköpostiosoite"
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
@@ -10267,7 +10267,7 @@ msgstr "Alueet"
 
 #: templates/modern/manage_group_members.html:6
 msgid "Manage members"
-msgstr "Manage members"
+msgstr "Hallitse jäseniä"
 
 #: templates/modern/manage_group_zones.html:6
 msgid "Manage zones"
@@ -10327,7 +10327,7 @@ msgstr "Valinnaiset tiedot tästä ryhmästä"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
 msgid "Access template"
-msgstr "Access template"
+msgstr "Käyttöoikeusmalli"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
 msgid "Select an access template"
@@ -10415,7 +10415,7 @@ msgstr "alueet menettävät tämän ryhmän omistuksen"
 
 #: templates/default/delete_group.html:49 templates/modern/delete_group.html:49
 msgid "Affected Zones"
-msgstr "Affected Zones"
+msgstr "Vaikutuksen kohteena olevat alueet"
 
 #: templates/default/delete_group.html:51 templates/modern/delete_group.html:51
 msgid "showing first 20"
@@ -10423,11 +10423,11 @@ msgstr "näytetään ensimmäiset 20"
 
 #: templates/default/delete_group.html:68 templates/modern/delete_group.html:68
 msgid "more zones..."
-msgstr "more zones..."
+msgstr "lisää alueita..."
 
 #: templates/modern/delete_domain.html:66
 msgid "Important Note"
-msgstr "Important Note"
+msgstr "Tärkeä huomautus"
 
 #: templates/default/delete_group.html:85 templates/modern/delete_group.html:85
 msgid "Yes, delete this group"
@@ -10455,7 +10455,7 @@ msgstr "ryhmät"
 
 #: templates/default/index.html:22 templates/modern/index.html:22
 msgid "DNS Management"
-msgstr "DNS Management"
+msgstr "DNS-hallinta"
 
 #: templates/modern/index.html:35 templates/modern/pdns_status.html:173
 msgid "Online"
@@ -10491,7 +10491,7 @@ msgstr "PTR-tietueet"
 
 #: templates/default/index.html:178 templates/modern/index.html:178
 msgid "Administration"
-msgstr "Administration"
+msgstr "Hallinta"
 
 #: templates/modern/index.html:209 templates/modern/header.html:259
 msgid "Access"
@@ -10565,7 +10565,7 @@ msgstr "Mallin tiedot"
 
 #: templates/modern/add_zone_templ.html:73
 msgid "About Templates"
-msgstr "About Templates"
+msgstr "Malleista"
 
 #: templates/modern/add_zone_templ.html:75
 msgid "After creating a template, you can add record templates to it."
@@ -10573,7 +10573,7 @@ msgstr "After creating a template, you can add record templates to it."
 
 #: templates/modern/add_zone_templ.html:78
 msgid "Template Usage"
-msgstr "Template Usage"
+msgstr "Mallin käyttö"
 
 #: templates/modern/add_zone_templ.html:80
 msgid "Apply consistent configurations to multiple zones"
@@ -10665,7 +10665,7 @@ msgstr "Kopioitu"
 
 #: templates/modern/list_log_groups.html:210
 msgid "No logs found"
-msgstr "No logs found"
+msgstr "Lokeja ei löytynyt"
 
 #: templates/modern/list_log_groups.html:211
 msgid "Try different search criteria or check back later"
@@ -10685,7 +10685,7 @@ msgstr "Toimialuenimi"
 
 #: templates/modern/list_log_zones.html:33
 msgid "All operations"
-msgstr "All operations"
+msgstr "Kaikki toiminnot"
 
 #: templates/modern/bulk_record_add.html:18
 msgid "Bulk add records"
@@ -10749,7 +10749,7 @@ msgstr "Tietueet vahvistetaan ennen luontia"
 
 #: templates/modern/bulk_record_add.html:87
 msgid "Best Practices"
-msgstr "Best Practices"
+msgstr "Parhaat käytännöt"
 
 #: templates/modern/bulk_record_add.html:89
 msgid "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
@@ -10769,7 +10769,7 @@ msgstr "Tietuetyyppien esimerkkejä"
 
 #: templates/modern/bulk_record_add.html:105
 msgid "Common Records"
-msgstr "Common Records"
+msgstr "Yleiset tietueet"
 
 #: templates/modern/bulk_record_add.html:114
 msgid "Advanced Records"
@@ -10793,7 +10793,7 @@ msgstr "Warning: Please Review Before Proceeding"
 
 #: templates/modern/dns_wizard_form.html:200
 msgid "Create Record"
-msgstr "Create Record"
+msgstr "Luo tietue"
 
 #: templates/modern/dns_wizard_form.html:203
 msgid "Back to Wizard Selection"
@@ -10825,7 +10825,7 @@ msgstr "Jätä"
 
 #: templates/default/delete_user.html:40 templates/modern/delete_user.html:40
 msgid "Add new owner"
-msgstr "Add new owner"
+msgstr "Lisää uusi omistaja"
 
 #: templates/default/delete_user.html:41 templates/modern/delete_user.html:41
 msgid "Owner to be added"
@@ -10865,7 +10865,7 @@ msgstr "Lähdealue"
 
 #: templates/modern/save-zone-template.html:30
 msgid "Template Name"
-msgstr "Template Name"
+msgstr "Mallin nimi"
 
 #: templates/modern/save-zone-template.html:33
 msgid "Provide template name"
@@ -10881,7 +10881,7 @@ msgstr "Käyttöehdot"
 
 #: templates/modern/user_agreement_content.html:4
 msgid "Acceptable Use"
-msgstr "Acceptable Use"
+msgstr "Hyväksyttävä käyttö"
 
 #: templates/modern/user_agreement_content.html:7
 msgid "You will not attempt to gain unauthorized access to other users' data"
@@ -10917,7 +10917,7 @@ msgstr "Sopimuksen versio:"
 
 #: templates/modern/user_agreement_content.html:31
 msgid "Last Updated:"
-msgstr "Last Updated:"
+msgstr "Viimeksi päivitetty:"
 
 #: templates/modern/user_agreement_content.html:31
 msgid "Please contact your administrator for the last update date"
@@ -10933,7 +10933,7 @@ msgstr "This action will invalidate the existing key!"
 
 #: templates/modern/api_key_delete.html:24
 msgid "API Key Details"
-msgstr "API Key Details"
+msgstr "API-avaimen tiedot"
 
 #: templates/modern/api_key_regenerate.html:72
 msgid "Yes, regenerate this API key"
@@ -10945,7 +10945,7 @@ msgstr "Ei, säilytä nykyinen avain"
 
 #: templates/modern/reset_password.html:84
 msgid "Reset Password"
-msgstr "Reset Password"
+msgstr "Nollaa salasana"
 
 #: templates/modern/reset_password.html:12
 msgid "Go to Login"
@@ -10985,7 +10985,7 @@ msgstr "Salasanan vaatimukset"
 
 #: templates/modern/add_user.html:137 templates/modern/change_password.html:79
 msgid "Minimum length"
-msgstr "Minimum length"
+msgstr "Vähimmäispituus"
 
 #: templates/modern/add_user.html:137 templates/modern/change_password.html:79
 msgid "characters"
@@ -11009,11 +11009,11 @@ msgstr "Vähintään yksi erikoismerkki"
 
 #: templates/modern/add_zone_master.html:11 templates/modern/header.html:156
 msgid "Add master zone"
-msgstr "Add master zone"
+msgstr "Lisää pääalue"
 
 #: templates/modern/add_zone_slave.html:11 templates/modern/header.html:163
 msgid "Add slave zone"
-msgstr "Add slave zone"
+msgstr "Lisää toissijainen alue"
 
 #: templates/modern/list_reverse_zones.html:34
 msgid "Reverse Zone Types"
@@ -11033,7 +11033,7 @@ msgstr "IPv6"
 
 #: templates/modern/list_reverse_zones.html:67
 msgid "Reverse zones:"
-msgstr "Reverse zones:"
+msgstr "Käänteiset alueet:"
 
 #: templates/modern/list_reverse_zones.html:69
 msgid "IPv4 reverse zones:"
@@ -11045,7 +11045,7 @@ msgstr "IPv6-käänteiset alueet:"
 
 #: templates/modern/search.html:123 templates/modern/search.html:319
 msgid "Rows per page:"
-msgstr "Rows per page:"
+msgstr "Rivejä sivulla:"
 
 #: templates/modern/list_reverse_zones.html:93
 msgid "There are no reverse zones to show in this listing."
@@ -11077,7 +11077,7 @@ msgstr "-"
 
 #: templates/modern/search.html:303
 msgid "Delete zone(s)"
-msgstr "Delete zone(s)"
+msgstr "Poista alue(et)"
 
 #: templates/modern/dnssec_add_key.html:91
 msgid "Add key"
@@ -11105,7 +11105,7 @@ msgstr "Valitse algoritmi"
 
 #: templates/modern/dnssec_add_key.html:76
 msgid "Bits in length"
-msgstr "Bits in length"
+msgstr "Pituus bitteinä"
 
 #: templates/modern/dnssec_add_key.html:85
 msgid "Select bits length"
@@ -11175,11 +11175,11 @@ msgstr "Provide full name"
 
 #: templates/modern/users.html:42 templates/modern/add_user.html:33
 msgid "Email address"
-msgstr "Email address"
+msgstr "sähköpostiosoite"
 
 #: templates/modern/edit_user.html:45 templates/modern/add_user.html:35
 msgid "Provide email"
-msgstr "Provide email"
+msgstr "Anna sähköposti"
 
 #: templates/default/edit_user.html:58 templates/modern/edit_user.html:58
 msgid "Leave empty to keep current password"
@@ -11208,7 +11208,7 @@ msgstr "Takaisin etusivulle"
 
 #: templates/default/edit_user.html:121 templates/modern/edit_user.html:121
 msgid "Back to Users"
-msgstr "Back to Users"
+msgstr "Takaisin käyttäjiin"
 
 #: templates/modern/edit_user.html:135 templates/modern/add_user.html:128
 msgid "Account Information"
@@ -11268,7 +11268,7 @@ msgstr "This user is not a member of any groups."
 
 #: templates/modern/edit_user.html:244 templates/modern/add_user.html:175
 msgid "Add to Groups"
-msgstr "Add to Groups"
+msgstr "Lisää ryhmiin"
 
 #: templates/modern/edit_user.html:253 templates/modern/add_user.html:180
 msgid "Search available groups..."
@@ -11356,15 +11356,15 @@ msgstr "Optional: more detailed description of this permission set"
 
 #: templates/modern/edit_perm_templ.html:37
 msgid "Template Type"
-msgstr "Template Type"
+msgstr "Mallin tyyppi"
 
 #: templates/modern/edit_perm_templ.html:39
 msgid "User Template"
-msgstr "User Template"
+msgstr "Käyttäjämalli"
 
 #: templates/modern/edit_perm_templ.html:40
 msgid "Group Template"
-msgstr "Group Template"
+msgstr "Ryhmämalli"
 
 #: templates/modern/edit_perm_templ.html:43
 msgid "Please select a template type"
@@ -11428,7 +11428,7 @@ msgstr "You do not have permission to access this page"
 
 #: templates/default/404.html:45 templates/modern/404.html:45
 msgid "Go to Homepage"
-msgstr "Go to Homepage"
+msgstr "Siirry kotisivulle"
 
 #: templates/default/404.html:49 templates/modern/404.html:49
 msgid "Go Back"
@@ -11436,11 +11436,11 @@ msgstr "Takaisin"
 
 #: templates/modern/list_supermasters.html:13
 msgid "Add supermaster"
-msgstr "Add supermaster"
+msgstr "Lisää supermaster"
 
 #: templates/modern/add_supermaster.html:13
 msgid "Add Supermaster"
-msgstr "Add Supermaster"
+msgstr "Lisää supermaster"
 
 #: templates/modern/add_supermaster.html:70
 msgid "About Supermasters"
@@ -11492,7 +11492,7 @@ msgstr "IPv6 (/64-verkko)"
 
 #: templates/modern/batch_ptr_record.html:47
 msgid "Network Prefix"
-msgstr "Network Prefix"
+msgstr "Verkon etuliite"
 
 #: templates/modern/batch_ptr_record.html:55
 msgid "Select from existing reverse zones"
@@ -11561,7 +11561,7 @@ msgstr "Creates PTR records for every IP in the network range"
 
 #: templates/modern/batch_ptr_record.html:145
 msgid "Matching only"
-msgstr "Matching only"
+msgstr "Vain vastaavuus"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -11593,7 +11593,7 @@ msgstr "Tähän alueeseen ei ole määritetty käyttäjiä."
 
 #: templates/modern/zone-ownership.html:61
 msgid "Add User Owner"
-msgstr "Add User Owner"
+msgstr "Lisää käyttäjäomistaja"
 
 #: templates/modern/manage_group_members.html:85
 msgid "Search users..."
@@ -11669,7 +11669,7 @@ msgstr "Lisää API-avain"
 
 #: templates/default/api_key_add.html:21 templates/modern/api_key_add.html:22
 msgid "My application"
-msgstr "My application"
+msgstr "Oma sovellus"
 
 #: templates/default/api_key_add.html:22 templates/modern/api_key_add.html:23
 msgid "Provide a name for this API key"
@@ -11677,7 +11677,7 @@ msgstr "Anna nimi tälle API-avaimelle"
 
 #: templates/default/api_key_add.html:35 templates/modern/api_key_add.html:36
 msgid "Create API Key"
-msgstr "Create API Key"
+msgstr "Luo API-avain"
 
 #: templates/default/api_key_add.html:53 templates/modern/api_key_add.html:54
 msgid "If you lose the key, you'll need to regenerate it."
@@ -11689,7 +11689,7 @@ msgstr "Muokkaa"
 
 #: templates/modern/edit.html:25 templates/modern/edit.html:577
 msgid "Add new record"
-msgstr "Add new record"
+msgstr "Lisää uusi tietue"
 
 #: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
@@ -11705,7 +11705,7 @@ msgstr "Joukkolisäys"
 
 #: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "Failed to add"
-msgstr "Failed to add"
+msgstr "Lisäys epäonnistui"
 
 #: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "record(s). Please check the record format."
@@ -11761,7 +11761,7 @@ msgstr "Metatiedot"
 
 #: templates/modern/edit.html:227 templates/modern/edit_zone_metadata.html:18
 msgid "View Metadata"
-msgstr "View Metadata"
+msgstr "Näytä metatiedot"
 
 #: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
@@ -11805,7 +11805,7 @@ msgstr "total records"
 
 #: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
-msgstr "Edit selected"
+msgstr "Muokkaa valittua"
 
 #: templates/modern/edit.html:501 templates/modern/search.html:486
 msgid "Delete record(s)"
@@ -11837,7 +11837,7 @@ msgstr "Pää-NS:n IP-osoite"
 
 #: templates/default/edit.html:827 templates/modern/edit.html:827
 msgid "Manage DNSSEC"
-msgstr "Manage DNSSEC"
+msgstr "Hallitse DNSSEC"
 
 #: templates/default/edit.html:834 templates/modern/edit.html:834
 msgid "Sign zone"
@@ -11902,7 +11902,7 @@ msgstr "PTR"
 
 #: templates/modern/delete_record.html:24
 msgid "Delete Record"
-msgstr "Delete Record"
+msgstr "Poista tietue"
 
 #: templates/modern/delete_record.html:32
 msgid "You are about to delete a record in zone"
@@ -11914,7 +11914,7 @@ msgstr "Tätä toimintoa ei voi peruuttaa."
 
 #: templates/modern/delete_zone_templ_record.html:29
 msgid "Record Details"
-msgstr "Record Details"
+msgstr "Tietueen tiedot"
 
 #: templates/modern/delete_record.html:85
 msgid "Also delete corresponding PTR record (if exists)"
@@ -11970,7 +11970,7 @@ msgstr "Use Recovery Code"
 
 #: templates/default/mfa_verify.html:95 templates/modern/mfa_verify.html:95
 msgid "Recovery Code"
-msgstr "Recovery Code"
+msgstr "Palautuskoodi"
 
 #: templates/default/mfa_verify.html:102 templates/modern/mfa_verify.html:102
 msgid "Please enter a valid recovery code."
@@ -11978,7 +11978,7 @@ msgstr "Anna kelvollinen palautuskoodi."
 
 #: templates/modern/database_consistency.html:7
 msgid "Confirm Delete"
-msgstr "Confirm Delete"
+msgstr "Vahvista poisto"
 
 #: templates/modern/database_consistency.html:40
 msgid "Summary"
@@ -12078,7 +12078,7 @@ msgstr "Unohtunut käyttäjänimi"
 
 #: templates/modern/forgot_username.html:41
 msgid "Send Username"
-msgstr "Send Username"
+msgstr "Lähetä käyttäjänimi"
 
 #: templates/default/add_user.html:43 templates/modern/add_user.html:43
 #: install/templates/step4.html.twig:127
@@ -12131,7 +12131,7 @@ msgstr "Optional: Apply predefined records from a template"
 
 #: templates/modern/add_zone_master.html:66
 msgid "Enable DNSSEC"
-msgstr "Enable DNSSEC"
+msgstr "Ota DNSSEC käyttöön"
 
 #: templates/modern/add_zone_master.html:68
 msgid "Secure this zone with DNSSEC signing"
@@ -12143,7 +12143,7 @@ msgstr "Valittu:"
 
 #: templates/modern/add_zone_slave.html:59
 msgid "No user owner"
-msgstr "No user owner"
+msgstr "Ei käyttäjäomistajaa"
 
 #: templates/modern/add_zone_slave.html:60
 msgid "Zone will be owned only by groups"
@@ -12175,7 +12175,7 @@ msgstr "Hae malleja..."
 
 #: templates/modern/edit_zone_templ.html:131
 msgid "Template name"
-msgstr "Template name"
+msgstr "mallin nimi"
 
 #: templates/modern/list_zone_templ.html:36
 msgid "Zones linked"
@@ -12255,7 +12255,7 @@ msgstr "Pakotettu"
 
 #: templates/modern/change_password.html:102
 msgid "Security Tips"
-msgstr "Security Tips"
+msgstr "Turvavinkit"
 
 #: templates/modern/change_password.html:104
 msgid "Use a unique password not used on other sites"
@@ -12323,11 +12323,11 @@ msgstr "Saatavilla Androidille ja iOS:lle"
 
 #: templates/modern/edit_zone_templ.html:6
 msgid "Edit template"
-msgstr "Edit template"
+msgstr "Muokkaa mallia"
 
 #: templates/modern/edit_zone_templ.html:13
 msgid "Sync Required"
-msgstr "Sync Required"
+msgstr "Synkronointi tarvitaan"
 
 #: templates/modern/edit_zone_templ.html:14
 msgid "There are"
@@ -12391,7 +12391,7 @@ msgstr "There are no supermasters to show in this listing."
 
 #: templates/modern/edit_zone_metadata.html:18
 msgid "Edit Metadata"
-msgstr "Edit Metadata"
+msgstr "Muokkaa metatietoja"
 
 #: templates/modern/edit_zone_metadata.html:36
 msgid "Multiple values"
@@ -12415,7 +12415,7 @@ msgstr "Lisää metatietorivi"
 
 #: templates/modern/edit_zone_metadata.html:108
 msgid "Save metadata"
-msgstr "Save metadata"
+msgstr "Tallenna metatiedot"
 
 #: templates/modern/edit_zone_metadata.html:112
 msgid "Back to zone"
@@ -12423,7 +12423,7 @@ msgstr "Takaisin alueelle"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
-msgstr "API Key Created"
+msgstr "API-avain luotu"
 
 #: templates/modern/api_key_created.html:12
 msgid "API Key Created Successfully"
@@ -12511,7 +12511,7 @@ msgstr "Make sure the domain names follow valid DNS naming conventions"
 
 #: templates/modern/user_agreement.html:13
 msgid "User Agreement"
-msgstr "User Agreement"
+msgstr "Käyttäjäsopimus"
 
 #: templates/modern/user_agreement.html:31
 msgid "I have read and agree to the terms outlined above"
@@ -12543,7 +12543,7 @@ msgstr "Kyllä, poista nämä tietueet"
 
 #: templates/modern/mfa_recovery_codes.html:36
 msgid "Recovery Codes"
-msgstr "Recovery Codes"
+msgstr "Palautuskoodit"
 
 #: templates/modern/mfa_recovery_codes.html:14
 msgid "MFA Setup Complete"
@@ -12635,7 +12635,7 @@ msgstr "Authenticator App"
 
 #: templates/default/mfa_setup.html:77 templates/modern/mfa_setup.html:77
 msgid "Works offline"
-msgstr "Works offline"
+msgstr "Toimii ilman yhteyttä"
 
 #: templates/default/mfa_setup.html:78 templates/modern/mfa_setup.html:78
 msgid "More secure"
@@ -12727,7 +12727,7 @@ msgstr "Näyttöasetukset"
 
 #: templates/modern/user_preferences.html:22
 msgid "Items per page"
-msgstr "Items per page"
+msgstr "Kohteita sivulla"
 
 #: templates/modern/user_preferences.html:36
 msgid "Zone Options"
@@ -12759,11 +12759,11 @@ msgstr "Tallennuspainikkeet"
 
 #: templates/modern/user_preferences.html:88
 msgid "Edit Zone View"
-msgstr "Edit Zone View"
+msgstr "Muokkaa alueen näkymää"
 
 #: templates/modern/user_preferences.html:93
 msgid "Show record ID"
-msgstr "Show record ID"
+msgstr "Näytä tietueen tunnus"
 
 #: templates/modern/user_preferences.html:94
 msgid "Display record ID column in edit view"
@@ -12819,7 +12819,7 @@ msgstr "Löytyneet alueet"
 
 #: templates/default/search.html:316 templates/modern/search.html:316
 msgid "Records found"
-msgstr "Records found"
+msgstr "Löydetyt tietueet"
 
 #: templates/default/search.html:501 templates/modern/search.html:501
 msgid "Try different search terms or filters"
@@ -12951,7 +12951,7 @@ msgstr "Näytä vaalea tila"
 
 #: templates/modern/email_previews.html:65
 msgid "View Dark Mode"
-msgstr "View Dark Mode"
+msgstr "Näytä tumma tila"
 
 #: templates/modern/email_previews.html:77
 msgid "Template Override Information"
@@ -12987,11 +12987,11 @@ msgstr "PowerDNS-palvelimen tila"
 
 #: templates/default/pdns_status.html:16 templates/modern/pdns_status.html:17
 msgid "Refresh Status"
-msgstr "Refresh Status"
+msgstr "Päivitä tila"
 
 #: templates/default/pdns_status.html:32 templates/modern/pdns_status.html:33
 msgid "Server Running"
-msgstr "Server Running"
+msgstr "Palvelin on käynnissä"
 
 #: templates/default/pdns_status.html:37 templates/modern/pdns_status.html:38
 msgid "Server Not Running"
@@ -13031,7 +13031,7 @@ msgstr "Palvelimen tiedot eivät ole saatavilla."
 
 #: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:102
 msgid "Slave Servers"
-msgstr "Slave Servers"
+msgstr "Toissijaiset palvelimet"
 
 #: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:115
 msgid "Server IP"
@@ -13060,7 +13060,7 @@ msgstr "Server Statistics"
 
 #: templates/default/pdns_status.html:170 templates/modern/pdns_status.html:171
 msgid "Server Health"
-msgstr "Server Health"
+msgstr "Palvelimen kunto"
 
 #: templates/modern/pdns_status.html:190 templates/modern/api_keys.html:53
 msgid "Unknown"
@@ -13116,11 +13116,11 @@ msgstr "Yksityiskohtaisia mittareita ei ole saatavilla."
 
 #: templates/default/header.html:104 templates/modern/header.html:144
 msgid "Forward zones"
-msgstr "Forward zones"
+msgstr "eteenpäin-alueet"
 
 #: templates/default/header.html:105 templates/modern/header.html:149
 msgid "Reverse zones"
-msgstr "Reverse zones"
+msgstr "käänteiset alueet"
 
 #: templates/default/header.html:142 templates/modern/header.html:203
 msgid "List users"
@@ -13136,7 +13136,7 @@ msgstr "ryhmän lokit"
 
 #: templates/default/header.html:183 templates/modern/header.html:265
 msgid "List templates"
-msgstr "List templates"
+msgstr "Mallien luettelo"
 
 #: templates/default/header.html:200 templates/modern/header.html:290
 msgid "List zone templates"
@@ -13160,7 +13160,7 @@ msgstr "Takaisin DNSSEC-avaimiin"
 
 #: templates/modern/dnssec_ds_dnskey.html:47
 msgid "DNSKEY Records"
-msgstr "DNSKEY Records"
+msgstr "DNSKEY-tietueet"
 
 #: templates/modern/dnssec_ds_dnskey.html:55
 msgid "DS Records"
@@ -13188,7 +13188,7 @@ msgstr "Add records"
 
 #: templates/modern/manage_group_members.html:12
 msgid "Back to Group"
-msgstr "Back to Group"
+msgstr "Takaisin ryhmään"
 
 #: templates/modern/manage_group_zones.html:20
 msgid "Owned Zones"
@@ -13236,7 +13236,7 @@ msgstr "API-avainten hallinta"
 
 #: templates/default/api_keys.html:13 templates/modern/api_keys.html:14
 msgid "Add new API key"
-msgstr "Add new API key"
+msgstr "Lisää uusi API-avain"
 
 #: templates/default/api_keys.html:32 templates/modern/api_keys.html:33
 msgid "Created by"
@@ -13272,7 +13272,7 @@ msgstr "External applications using this key will lose access."
 
 #: templates/default/api_keys.html:141 templates/modern/api_keys.html:142
 msgid "Enable API Key"
-msgstr "Enable API Key"
+msgstr "Ota API-avain käyttöön"
 
 #: templates/default/api_keys.html:146 templates/modern/api_keys.html:147
 msgid "Are you sure you want to enable the API key"
@@ -13416,7 +13416,7 @@ msgstr "Tässä ryhmässä ei ole vielä jäseniä"
 
 #: templates/modern/manage_group_members.html:70
 msgid "Available Users"
-msgstr "Available Users"
+msgstr "Saatavilla olevat käyttäjät"
 
 #: templates/modern/manage_group_members.html:77
 msgid "All users are already members of this group"
@@ -13432,7 +13432,7 @@ msgstr "Alueen tuonti"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr "Import Results"
+msgstr "Tuonnin tulokset"
 
 #: lib/Module/ZoneImportExport/templates/import.html:26
 msgid "Success:"
@@ -13468,7 +13468,7 @@ msgstr "Tuo toinen alue"
 
 #: lib/Module/ZoneImportExport/templates/import.html:54
 msgid "Import Preview"
-msgstr "Import Preview"
+msgstr "Tuonnin esikatselu"
 
 #: lib/Module/ZoneImportExport/templates/import.html:60
 msgid "Warnings:"
@@ -13500,7 +13500,7 @@ msgstr "Korvaa vastaavat tietueet"
 
 #: lib/Module/ZoneImportExport/templates/import.html:117
 msgid "Add all records"
-msgstr "Add all records"
+msgstr "Lisää kaikki tietueet"
 
 #: lib/Module/ZoneImportExport/templates/import.html:128
 msgid "Zone type"
@@ -13516,7 +13516,7 @@ msgstr "Natiivi"
 
 #: lib/Module/ZoneImportExport/templates/import.html:138
 msgid "Confirm import"
-msgstr "Confirm import"
+msgstr "Vahvista tuonti"
 
 #: lib/Module/ZoneImportExport/templates/import.html:153
 msgid "Import Zone File"
@@ -13720,7 +13720,7 @@ msgstr "Tietokannan määritys:"
 
 #: install/templates/step4.html.twig:97
 msgid "Database type"
-msgstr "Database type"
+msgstr "Tietokannan tyyppi"
 
 #: install/templates/step4.html.twig:106
 msgid "Database server type."
@@ -13796,7 +13796,7 @@ msgstr "PowerDNS Database"
 
 #: install/templates/step4.html.twig:210
 msgid "Database name"
-msgstr "Database name"
+msgstr "Tietokannan nimi"
 
 #: install/templates/step4.html.twig:213
 msgid "Leave empty for same database"
@@ -13900,7 +13900,7 @@ msgstr "Määritä tili ja nimipalvelimet"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
-msgstr "Configuration:"
+msgstr "Määritys:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
@@ -13908,7 +13908,7 @@ msgstr "Now we will gather all details for the configuration itself."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
-msgstr "Database User"
+msgstr "Tietokantakäyttäjä"
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
@@ -14004,11 +14004,11 @@ msgstr "Begin configuring your DNS zones and records"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
-msgstr "Getting Ready"
+msgstr "Valmistellaan"
 
 #: install/templates/step3.html.twig:13
 msgid "Prerequisites"
-msgstr "Prerequisites"
+msgstr "Edellytykset"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
@@ -14068,7 +14068,7 @@ msgstr "Ensure the database server is running and accessible"
 
 #: install/helpers/InstallStepHandler.php:233
 msgid "Database Error"
-msgstr "Database Error"
+msgstr "Tietokantavirhe"
 
 #: install/helpers/DatabaseHelper.php:203
 #, php-format

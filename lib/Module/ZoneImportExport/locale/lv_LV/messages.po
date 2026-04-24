@@ -33,7 +33,7 @@ msgstr "Cloudflare zonas eksporti"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
-msgstr "Confirm import"
+msgstr "Apstiprināt importu"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
@@ -69,11 +69,11 @@ msgstr "IDN domēnu vārdi"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
-msgstr "Import Preview"
+msgstr "Importa priekšskatījums"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr "Import Results"
+msgstr "Importa rezultāti"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
@@ -231,7 +231,7 @@ msgid "records skipped (duplicates),"
 msgstr "ieraksti izlaisti (dublikāti),"
 
 msgid "Add all records"
-msgstr "Add all records"
+msgstr "Pievienot visus ierakstus"
 
 msgid "Conflict strategy"
 msgstr "Conflict strategy"

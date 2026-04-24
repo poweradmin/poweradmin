@@ -33,7 +33,7 @@ msgstr "Exporturi zone Cloudflare"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
-msgstr "Confirm import"
+msgstr "Confirmă importul"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
@@ -69,11 +69,11 @@ msgstr "Nume domeniu IDN"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
-msgstr "Import Preview"
+msgstr "Previzualizare import"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr "Import Results"
+msgstr "Rezultate import"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
@@ -231,7 +231,7 @@ msgid "records skipped (duplicates),"
 msgstr "înregistrări omise (duplicate),"
 
 msgid "Add all records"
-msgstr "Add all records"
+msgstr "Adaugă toate înregistrările"
 
 msgid "Conflict strategy"
 msgstr "Conflict strategy"

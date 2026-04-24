@@ -3245,7 +3245,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:244
 msgid "Invalid Type \""
-msgstr "Invalid Type \""
+msgstr "Nevažeća vrsta \""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:249
 msgid "Type \""
@@ -5817,7 +5817,7 @@ msgstr "Koristi cijeli certifikat"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:127
 msgid "1 - Public Key"
-msgstr "1 - Public Key"
+msgstr "1 - Javni ključ"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:127
 msgid "Use only the Subject Public Key Info (SPKI)"
@@ -5825,7 +5825,7 @@ msgstr "Use only the Subject Public Key Info (SPKI)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:138
 msgid "Matching Type"
-msgstr "Matching Type"
+msgstr "Vrsta podudaranja"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:143
 msgid "0 - Exact Match"
@@ -5865,7 +5865,7 @@ msgstr "Postavke zapisa"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:188
 msgid "TTL (seconds)"
-msgstr "TTL (seconds)"
+msgstr "TTL (sekunde)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:193
 msgid "Time to live - how long DNS resolvers should cache this record"
@@ -6102,7 +6102,7 @@ msgstr "Authorize all servers listed in MX records for this domain"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:73
 msgid "A/AAAA Records"
-msgstr "A/AAAA Records"
+msgstr "A/AAAA zapisi"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:76
 msgid "Authorize the domain's A and AAAA records"
@@ -6118,7 +6118,7 @@ msgstr "Authorized IP addresses and networks (CIDR notation supported)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:86
 msgid "IPv4 Addresses"
-msgstr "IPv4 Addresses"
+msgstr "IPv4 adrese"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:90
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
@@ -6126,7 +6126,7 @@ msgstr "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:94
 msgid "IPv6 Addresses"
-msgstr "IPv6 Addresses"
+msgstr "IPv6 adrese"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:98
 msgid "One IPv6 address or network per line"
@@ -6166,7 +6166,7 @@ msgstr "Authorize MX records from other domains (one per line)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:142
 msgid "Default Action"
-msgstr "Default Action"
+msgstr "Zadana akcija"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:147
 msgid "Pass all - allows anyone to send (insecure)"
@@ -6242,7 +6242,7 @@ msgstr "Authorize issuance of standard certificates"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:107
 msgid "Issue Wildcard"
-msgstr "Issue Wildcard"
+msgstr "Wildcard za issue"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:107
 msgid "Authorize issuance of wildcard certificates (*.example.com)"
@@ -6262,7 +6262,7 @@ msgstr "Vrsta autorizacije ili izvještavanja"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:114
 msgid "Reporting URL"
-msgstr "Reporting URL"
+msgstr "URL za izvještavanje"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:119
 msgid "URL or email for incident reports (mailto: or https:)"
@@ -6417,7 +6417,7 @@ msgstr "Domena"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:136
 msgid "Target Server"
-msgstr "Target Server"
+msgstr "Ciljni poslužitelj"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:140
 msgid "Target Hostname"
@@ -6470,7 +6470,7 @@ msgstr "Nevažeći format domene"
 
 #: lib/Module/EmailPreviews/Controller/EmailPreviewsController.php:58
 msgid "Email Previews"
-msgstr "Email Previews"
+msgstr "Pregledi e-pošte"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:74
 msgid "You do not have permission to import zones."
@@ -6824,7 +6824,7 @@ msgstr "Uredi metapodatke zone"
 #: lib/Application/Controller/EditZoneMetadataController.php:177
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
-msgstr "Zone Metadata"
+msgstr "Metapodaci zone"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:477
 #: templates/modern/pdns_status.html:412
@@ -7071,7 +7071,7 @@ msgstr "You do not have permission to view zone templates."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:43
 msgid "Template Zones"
-msgstr "Template Zones"
+msgstr "Zone predloška"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:53
 msgid "Invalid template ID."
@@ -7349,7 +7349,7 @@ msgstr "You do not have the permission to view zone templates."
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
-msgstr "Zone Templates"
+msgstr "Predlošci zona"
 
 #: lib/Application/Controller/AddGroupController.php:76
 msgid "You do not have permission to create groups."
@@ -7419,7 +7419,7 @@ msgstr "You do not have sufficient permissions to view this page."
 #: lib/Application/Controller/ListReverseZonesController.php:78
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
-msgstr "Reverse Zones"
+msgstr "Obrnute zone"
 
 #: lib/Application/Controller/ListForwardZonesController.php:144
 msgid "You do not have the permission to see any zones."
@@ -7602,7 +7602,7 @@ msgstr "Zona nije pripadala ovoj grupi."
 #: lib/Application/Controller/ListForwardZonesController.php:60
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
-msgstr "Forward Zones"
+msgstr "Zone prosljeđivanja"
 
 #: lib/Application/Controller/AddSupermasterController.php:43
 msgid "You do not have the permission to add a new supermaster."
@@ -7815,7 +7815,7 @@ msgstr "Grupa je uspješno uklonjena."
 #: lib/Application/Controller/NotFoundController.php:53
 #: templates/default/404.html:14 templates/modern/404.html:14
 msgid "Page Not Found"
-msgstr "Page Not Found"
+msgstr "Stranica nije pronađena"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:101
 msgid "Zone key has been successfully deactivated."
@@ -9825,7 +9825,7 @@ msgstr "DNSSEC"
 
 #: templates/modern/dnssec_edit_key.html:138
 msgid "Deactivate key"
-msgstr "Deactivate key"
+msgstr "Deaktiviraj ključ"
 
 #: templates/modern/dnssec_edit_key.html:140
 msgid "Activate key"
@@ -9921,7 +9921,7 @@ msgstr "Disabled keys cannot be used for authentication"
 
 #: templates/default/api_key_edit.html:43 templates/modern/api_key_edit.html:44
 msgid "Update API Key"
-msgstr "Update API Key"
+msgstr "Ažuriraj API ključ"
 
 #: templates/modern/edit_perm_templ.html:58
 msgid "* Required fields"
@@ -9953,7 +9953,7 @@ msgstr "Creates a new key, invalidating the old one"
 
 #: templates/modern/api_key_delete.html:12
 msgid "Delete API Key"
-msgstr "Delete API Key"
+msgstr "Obriši API ključ"
 
 #: templates/modern/api_key_edit.html:104
 msgid "Permanently removes this key"
@@ -9961,7 +9961,7 @@ msgstr "Trajno uklanja ovaj ključ"
 
 #: templates/modern/delete_zone_templ_record.html:11
 msgid "Zone templates"
-msgstr "Zone templates"
+msgstr "predlošci zona"
 
 #: templates/modern/edit_record.html:18
 msgid "Edit record"
@@ -10069,7 +10069,7 @@ msgstr "Primjeri zapisa"
 
 #: templates/modern/add_zone_templ_record.html:166
 msgid "Name Examples"
-msgstr "Name Examples"
+msgstr "Primjeri naziva"
 
 #: templates/modern/add_zone_templ_record.html:168
 msgid "For a subdomain: <code>subdomain.[ZONE]</code>"
@@ -10241,11 +10241,11 @@ msgstr "Zaboravljena lozinka"
 
 #: templates/modern/forgot_username.html:46
 msgid "Back to Login"
-msgstr "Back to Login"
+msgstr "Natrag na prijavu"
 
 #: templates/modern/forgot_username.html:27
 msgid "Email Address"
-msgstr "Email Address"
+msgstr "Adresa e-pošte"
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
@@ -10281,7 +10281,7 @@ msgstr "Zone"
 
 #: templates/modern/manage_group_members.html:6
 msgid "Manage members"
-msgstr "Manage members"
+msgstr "Upravljaj članovima"
 
 #: templates/modern/manage_group_zones.html:6
 msgid "Manage zones"
@@ -10341,7 +10341,7 @@ msgstr "Neobavezne informacije o grupi"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
 msgid "Access template"
-msgstr "Access template"
+msgstr "Predložak pristupa"
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
 msgid "Select an access template"
@@ -10429,7 +10429,7 @@ msgstr "zone će izgubiti ovo vlasništvo grupe"
 
 #: templates/default/delete_group.html:49 templates/modern/delete_group.html:49
 msgid "Affected Zones"
-msgstr "Affected Zones"
+msgstr "Zahvaćene zone"
 
 #: templates/default/delete_group.html:51 templates/modern/delete_group.html:51
 msgid "showing first 20"
@@ -10437,11 +10437,11 @@ msgstr "prikazuje prvih 20"
 
 #: templates/default/delete_group.html:68 templates/modern/delete_group.html:68
 msgid "more zones..."
-msgstr "more zones..."
+msgstr "više zona..."
 
 #: templates/modern/delete_domain.html:66
 msgid "Important Note"
-msgstr "Important Note"
+msgstr "Važna napomena"
 
 #: templates/default/delete_group.html:85 templates/modern/delete_group.html:85
 msgid "Yes, delete this group"
@@ -10469,7 +10469,7 @@ msgstr "grupe"
 
 #: templates/default/index.html:22 templates/modern/index.html:22
 msgid "DNS Management"
-msgstr "DNS Management"
+msgstr "Upravljanje DNS-om"
 
 #: templates/modern/index.html:35 templates/modern/pdns_status.html:173
 msgid "Online"
@@ -10505,7 +10505,7 @@ msgstr "PTR zapisi"
 
 #: templates/default/index.html:178 templates/modern/index.html:178
 msgid "Administration"
-msgstr "Administration"
+msgstr "Administracija"
 
 #: templates/modern/index.html:209 templates/modern/header.html:259
 msgid "Access"
@@ -10579,7 +10579,7 @@ msgstr "Informacije o predlošku"
 
 #: templates/modern/add_zone_templ.html:73
 msgid "About Templates"
-msgstr "About Templates"
+msgstr "O predlošcima"
 
 #: templates/modern/add_zone_templ.html:75
 msgid "After creating a template, you can add record templates to it."
@@ -10587,7 +10587,7 @@ msgstr "After creating a template, you can add record templates to it."
 
 #: templates/modern/add_zone_templ.html:78
 msgid "Template Usage"
-msgstr "Template Usage"
+msgstr "Korištenje predloška"
 
 #: templates/modern/add_zone_templ.html:80
 msgid "Apply consistent configurations to multiple zones"
@@ -10679,7 +10679,7 @@ msgstr "Kopirano"
 
 #: templates/modern/list_log_groups.html:210
 msgid "No logs found"
-msgstr "No logs found"
+msgstr "Nema pronađenih zapisnika"
 
 #: templates/modern/list_log_groups.html:211
 msgid "Try different search criteria or check back later"
@@ -10699,7 +10699,7 @@ msgstr "Naziv domene"
 
 #: templates/modern/list_log_zones.html:33
 msgid "All operations"
-msgstr "All operations"
+msgstr "Sve operacije"
 
 #: templates/modern/bulk_record_add.html:18
 msgid "Bulk add records"
@@ -10763,7 +10763,7 @@ msgstr "Zapisi se provjeravaju prije stvaranja"
 
 #: templates/modern/bulk_record_add.html:87
 msgid "Best Practices"
-msgstr "Best Practices"
+msgstr "Najbolje prakse"
 
 #: templates/modern/bulk_record_add.html:89
 msgid "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
@@ -10783,7 +10783,7 @@ msgstr "Primjeri vrsta zapisa"
 
 #: templates/modern/bulk_record_add.html:105
 msgid "Common Records"
-msgstr "Common Records"
+msgstr "Uobičajeni zapisi"
 
 #: templates/modern/bulk_record_add.html:114
 msgid "Advanced Records"
@@ -10807,7 +10807,7 @@ msgstr "Warning: Please Review Before Proceeding"
 
 #: templates/modern/dns_wizard_form.html:200
 msgid "Create Record"
-msgstr "Create Record"
+msgstr "Stvori zapis"
 
 #: templates/modern/dns_wizard_form.html:203
 msgid "Back to Wizard Selection"
@@ -10839,7 +10839,7 @@ msgstr "Ostavi"
 
 #: templates/default/delete_user.html:40 templates/modern/delete_user.html:40
 msgid "Add new owner"
-msgstr "Add new owner"
+msgstr "Dodaj novog vlasnika"
 
 #: templates/default/delete_user.html:41 templates/modern/delete_user.html:41
 msgid "Owner to be added"
@@ -10879,7 +10879,7 @@ msgstr "Izvorna zona"
 
 #: templates/modern/save-zone-template.html:30
 msgid "Template Name"
-msgstr "Template Name"
+msgstr "Naziv predloška"
 
 #: templates/modern/save-zone-template.html:33
 msgid "Provide template name"
@@ -10895,7 +10895,7 @@ msgstr "Uvjeti korištenja"
 
 #: templates/modern/user_agreement_content.html:4
 msgid "Acceptable Use"
-msgstr "Acceptable Use"
+msgstr "Prihvatljiva upotreba"
 
 #: templates/modern/user_agreement_content.html:7
 msgid "You will not attempt to gain unauthorized access to other users' data"
@@ -10931,7 +10931,7 @@ msgstr "Verzija ugovora:"
 
 #: templates/modern/user_agreement_content.html:31
 msgid "Last Updated:"
-msgstr "Last Updated:"
+msgstr "Zadnje ažuriranje:"
 
 #: templates/modern/user_agreement_content.html:31
 msgid "Please contact your administrator for the last update date"
@@ -10947,7 +10947,7 @@ msgstr "This action will invalidate the existing key!"
 
 #: templates/modern/api_key_delete.html:24
 msgid "API Key Details"
-msgstr "API Key Details"
+msgstr "Pojedinosti API ključa"
 
 #: templates/modern/api_key_regenerate.html:72
 msgid "Yes, regenerate this API key"
@@ -10959,7 +10959,7 @@ msgstr "Ne, zadrži trenutni ključ"
 
 #: templates/modern/reset_password.html:84
 msgid "Reset Password"
-msgstr "Reset Password"
+msgstr "Poništi lozinku"
 
 #: templates/modern/reset_password.html:12
 msgid "Go to Login"
@@ -10999,7 +10999,7 @@ msgstr "Zahtjevi za lozinku"
 
 #: templates/modern/add_user.html:137 templates/modern/change_password.html:79
 msgid "Minimum length"
-msgstr "Minimum length"
+msgstr "Minimalna duljina"
 
 #: templates/modern/add_user.html:137 templates/modern/change_password.html:79
 msgid "characters"
@@ -11023,11 +11023,11 @@ msgstr "Barem jedan posebni znak"
 
 #: templates/modern/add_zone_master.html:11 templates/modern/header.html:156
 msgid "Add master zone"
-msgstr "Add master zone"
+msgstr "Dodaj glavnu zonu"
 
 #: templates/modern/add_zone_slave.html:11 templates/modern/header.html:163
 msgid "Add slave zone"
-msgstr "Add slave zone"
+msgstr "Dodaj sekundarnu zonu"
 
 #: templates/modern/list_reverse_zones.html:34
 msgid "Reverse Zone Types"
@@ -11047,7 +11047,7 @@ msgstr "IPv6"
 
 #: templates/modern/list_reverse_zones.html:67
 msgid "Reverse zones:"
-msgstr "Reverse zones:"
+msgstr "Obrnute zone:"
 
 #: templates/modern/list_reverse_zones.html:69
 msgid "IPv4 reverse zones:"
@@ -11059,7 +11059,7 @@ msgstr "IPv6 obrnute zone:"
 
 #: templates/modern/search.html:123 templates/modern/search.html:319
 msgid "Rows per page:"
-msgstr "Rows per page:"
+msgstr "Redova po stranici:"
 
 #: templates/modern/list_reverse_zones.html:93
 msgid "There are no reverse zones to show in this listing."
@@ -11091,7 +11091,7 @@ msgstr "-"
 
 #: templates/modern/search.html:303
 msgid "Delete zone(s)"
-msgstr "Delete zone(s)"
+msgstr "Obriši zonu/e"
 
 #: templates/modern/dnssec_add_key.html:91
 msgid "Add key"
@@ -11119,7 +11119,7 @@ msgstr "Odaberite algoritam"
 
 #: templates/modern/dnssec_add_key.html:76
 msgid "Bits in length"
-msgstr "Bits in length"
+msgstr "Duljina u bitovima"
 
 #: templates/modern/dnssec_add_key.html:85
 msgid "Select bits length"
@@ -11189,11 +11189,11 @@ msgstr "Provide full name"
 
 #: templates/modern/users.html:42 templates/modern/add_user.html:33
 msgid "Email address"
-msgstr "Email address"
+msgstr "adresa e-pošte"
 
 #: templates/modern/edit_user.html:45 templates/modern/add_user.html:35
 msgid "Provide email"
-msgstr "Provide email"
+msgstr "Unesi e-poštu"
 
 #: templates/default/edit_user.html:58 templates/modern/edit_user.html:58
 msgid "Leave empty to keep current password"
@@ -11222,7 +11222,7 @@ msgstr "Natrag na početnu"
 
 #: templates/default/edit_user.html:121 templates/modern/edit_user.html:121
 msgid "Back to Users"
-msgstr "Back to Users"
+msgstr "Natrag na korisnike"
 
 #: templates/modern/edit_user.html:135 templates/modern/add_user.html:128
 msgid "Account Information"
@@ -11282,7 +11282,7 @@ msgstr "This user is not a member of any groups."
 
 #: templates/modern/edit_user.html:244 templates/modern/add_user.html:175
 msgid "Add to Groups"
-msgstr "Add to Groups"
+msgstr "Dodaj u grupe"
 
 #: templates/modern/edit_user.html:253 templates/modern/add_user.html:180
 msgid "Search available groups..."
@@ -11370,15 +11370,15 @@ msgstr "Optional: more detailed description of this permission set"
 
 #: templates/modern/edit_perm_templ.html:37
 msgid "Template Type"
-msgstr "Template Type"
+msgstr "Vrsta predloška"
 
 #: templates/modern/edit_perm_templ.html:39
 msgid "User Template"
-msgstr "User Template"
+msgstr "Predložak korisnika"
 
 #: templates/modern/edit_perm_templ.html:40
 msgid "Group Template"
-msgstr "Group Template"
+msgstr "Predložak grupe"
 
 #: templates/modern/edit_perm_templ.html:43
 msgid "Please select a template type"
@@ -11442,7 +11442,7 @@ msgstr "You do not have permission to access this page"
 
 #: templates/default/404.html:45 templates/modern/404.html:45
 msgid "Go to Homepage"
-msgstr "Go to Homepage"
+msgstr "Idi na početnu"
 
 #: templates/default/404.html:49 templates/modern/404.html:49
 msgid "Go Back"
@@ -11450,11 +11450,11 @@ msgstr "Natrag"
 
 #: templates/modern/list_supermasters.html:13
 msgid "Add supermaster"
-msgstr "Add supermaster"
+msgstr "Dodaj supermastera"
 
 #: templates/modern/add_supermaster.html:13
 msgid "Add Supermaster"
-msgstr "Add Supermaster"
+msgstr "Dodaj supermastera"
 
 #: templates/modern/add_supermaster.html:70
 msgid "About Supermasters"
@@ -11506,7 +11506,7 @@ msgstr "IPv6 (/64 mreža)"
 
 #: templates/modern/batch_ptr_record.html:47
 msgid "Network Prefix"
-msgstr "Network Prefix"
+msgstr "Mrežni prefiks"
 
 #: templates/modern/batch_ptr_record.html:55
 msgid "Select from existing reverse zones"
@@ -11575,7 +11575,7 @@ msgstr "Creates PTR records for every IP in the network range"
 
 #: templates/modern/batch_ptr_record.html:145
 msgid "Matching only"
-msgstr "Matching only"
+msgstr "Samo podudaranja"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -11607,7 +11607,7 @@ msgstr "Nijednog korisnika za ovu zonu."
 
 #: templates/modern/zone-ownership.html:61
 msgid "Add User Owner"
-msgstr "Add User Owner"
+msgstr "Dodaj vlasnika korisnika"
 
 #: templates/modern/manage_group_members.html:85
 msgid "Search users..."
@@ -11683,7 +11683,7 @@ msgstr "Dodaj API ključ"
 
 #: templates/default/api_key_add.html:21 templates/modern/api_key_add.html:22
 msgid "My application"
-msgstr "My application"
+msgstr "Moja aplikacija"
 
 #: templates/default/api_key_add.html:22 templates/modern/api_key_add.html:23
 msgid "Provide a name for this API key"
@@ -11691,7 +11691,7 @@ msgstr "Unesite naziv za ovaj API ključ"
 
 #: templates/default/api_key_add.html:35 templates/modern/api_key_add.html:36
 msgid "Create API Key"
-msgstr "Create API Key"
+msgstr "Stvori API ključ"
 
 #: templates/default/api_key_add.html:53 templates/modern/api_key_add.html:54
 msgid "If you lose the key, you'll need to regenerate it."
@@ -11703,7 +11703,7 @@ msgstr "Uredi"
 
 #: templates/modern/edit.html:25 templates/modern/edit.html:577
 msgid "Add new record"
-msgstr "Add new record"
+msgstr "Dodaj novi zapis"
 
 #: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
@@ -11719,7 +11719,7 @@ msgstr "Skupno dodavanje"
 
 #: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "Failed to add"
-msgstr "Failed to add"
+msgstr "Neuspjelo dodavanje"
 
 #: templates/modern/edit.html:50 templates/modern/edit.html:602
 msgid "record(s). Please check the record format."
@@ -11775,7 +11775,7 @@ msgstr "Metapodaci"
 
 #: templates/modern/edit.html:227 templates/modern/edit_zone_metadata.html:18
 msgid "View Metadata"
-msgstr "View Metadata"
+msgstr "Prikaži metapodatke"
 
 #: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
@@ -11819,7 +11819,7 @@ msgstr "total records"
 
 #: templates/default/edit.html:497 templates/modern/edit.html:497
 msgid "Edit selected"
-msgstr "Edit selected"
+msgstr "Uredi odabrano"
 
 #: templates/modern/edit.html:501 templates/modern/search.html:486
 msgid "Delete record(s)"
@@ -11851,7 +11851,7 @@ msgstr "IP adresa glavnog NS"
 
 #: templates/default/edit.html:827 templates/modern/edit.html:827
 msgid "Manage DNSSEC"
-msgstr "Manage DNSSEC"
+msgstr "Upravljaj DNSSEC"
 
 #: templates/default/edit.html:834 templates/modern/edit.html:834
 msgid "Sign zone"
@@ -11916,7 +11916,7 @@ msgstr "PTR"
 
 #: templates/modern/delete_record.html:24
 msgid "Delete Record"
-msgstr "Delete Record"
+msgstr "Obriši zapis"
 
 #: templates/modern/delete_record.html:32
 msgid "You are about to delete a record in zone"
@@ -11928,7 +11928,7 @@ msgstr "Ova se radnja ne može poništiti."
 
 #: templates/modern/delete_zone_templ_record.html:29
 msgid "Record Details"
-msgstr "Record Details"
+msgstr "Pojedinosti zapisa"
 
 #: templates/modern/delete_record.html:85
 msgid "Also delete corresponding PTR record (if exists)"
@@ -11984,7 +11984,7 @@ msgstr "Use Recovery Code"
 
 #: templates/default/mfa_verify.html:95 templates/modern/mfa_verify.html:95
 msgid "Recovery Code"
-msgstr "Recovery Code"
+msgstr "Kod za oporavak"
 
 #: templates/default/mfa_verify.html:102 templates/modern/mfa_verify.html:102
 msgid "Please enter a valid recovery code."
@@ -11992,7 +11992,7 @@ msgstr "Unesite valjan kod za oporavak."
 
 #: templates/modern/database_consistency.html:7
 msgid "Confirm Delete"
-msgstr "Confirm Delete"
+msgstr "Potvrdi brisanje"
 
 #: templates/modern/database_consistency.html:40
 msgid "Summary"
@@ -12092,7 +12092,7 @@ msgstr "Zaboravljeno korisničko ime"
 
 #: templates/modern/forgot_username.html:41
 msgid "Send Username"
-msgstr "Send Username"
+msgstr "Pošalji korisničko ime"
 
 #: templates/default/add_user.html:43 templates/modern/add_user.html:43
 #: install/templates/step4.html.twig:127
@@ -12145,7 +12145,7 @@ msgstr "Optional: Apply predefined records from a template"
 
 #: templates/modern/add_zone_master.html:66
 msgid "Enable DNSSEC"
-msgstr "Enable DNSSEC"
+msgstr "Omogući DNSSEC"
 
 #: templates/modern/add_zone_master.html:68
 msgid "Secure this zone with DNSSEC signing"
@@ -12157,7 +12157,7 @@ msgstr "Odabrano:"
 
 #: templates/modern/add_zone_slave.html:59
 msgid "No user owner"
-msgstr "No user owner"
+msgstr "Bez korisnika vlasnika"
 
 #: templates/modern/add_zone_slave.html:60
 msgid "Zone will be owned only by groups"
@@ -12189,7 +12189,7 @@ msgstr "Pretraži predloške..."
 
 #: templates/modern/edit_zone_templ.html:131
 msgid "Template name"
-msgstr "Template name"
+msgstr "naziv predloška"
 
 #: templates/modern/list_zone_templ.html:36
 msgid "Zones linked"
@@ -12269,7 +12269,7 @@ msgstr "Primijenjeno"
 
 #: templates/modern/change_password.html:102
 msgid "Security Tips"
-msgstr "Security Tips"
+msgstr "Sigurnosni savjeti"
 
 #: templates/modern/change_password.html:104
 msgid "Use a unique password not used on other sites"
@@ -12337,11 +12337,11 @@ msgstr "Dostupno za Android i iOS"
 
 #: templates/modern/edit_zone_templ.html:6
 msgid "Edit template"
-msgstr "Edit template"
+msgstr "Uredi predložak"
 
 #: templates/modern/edit_zone_templ.html:13
 msgid "Sync Required"
-msgstr "Sync Required"
+msgstr "Potrebna sinkronizacija"
 
 #: templates/modern/edit_zone_templ.html:14
 msgid "There are"
@@ -12405,7 +12405,7 @@ msgstr "There are no supermasters to show in this listing."
 
 #: templates/modern/edit_zone_metadata.html:18
 msgid "Edit Metadata"
-msgstr "Edit Metadata"
+msgstr "Uredi metapodatke"
 
 #: templates/modern/edit_zone_metadata.html:36
 msgid "Multiple values"
@@ -12429,7 +12429,7 @@ msgstr "Dodaj red metapodataka"
 
 #: templates/modern/edit_zone_metadata.html:108
 msgid "Save metadata"
-msgstr "Save metadata"
+msgstr "Spremi metapodatke"
 
 #: templates/modern/edit_zone_metadata.html:112
 msgid "Back to zone"
@@ -12437,7 +12437,7 @@ msgstr "Natrag na zonu"
 
 #: templates/modern/api_key_created.html:6
 msgid "API Key Created"
-msgstr "API Key Created"
+msgstr "API ključ stvoren"
 
 #: templates/modern/api_key_created.html:12
 msgid "API Key Created Successfully"
@@ -12525,7 +12525,7 @@ msgstr "Make sure the domain names follow valid DNS naming conventions"
 
 #: templates/modern/user_agreement.html:13
 msgid "User Agreement"
-msgstr "User Agreement"
+msgstr "Korisnički ugovor"
 
 #: templates/modern/user_agreement.html:31
 msgid "I have read and agree to the terms outlined above"
@@ -12557,7 +12557,7 @@ msgstr "Da, obriši ove zapise"
 
 #: templates/modern/mfa_recovery_codes.html:36
 msgid "Recovery Codes"
-msgstr "Recovery Codes"
+msgstr "Kodovi za oporavak"
 
 #: templates/modern/mfa_recovery_codes.html:14
 msgid "MFA Setup Complete"
@@ -12649,7 +12649,7 @@ msgstr "Authenticator App"
 
 #: templates/default/mfa_setup.html:77 templates/modern/mfa_setup.html:77
 msgid "Works offline"
-msgstr "Works offline"
+msgstr "Radi izvan mreže"
 
 #: templates/default/mfa_setup.html:78 templates/modern/mfa_setup.html:78
 msgid "More secure"
@@ -12741,7 +12741,7 @@ msgstr "Postavke prikaza"
 
 #: templates/modern/user_preferences.html:22
 msgid "Items per page"
-msgstr "Items per page"
+msgstr "Stavki po stranici"
 
 #: templates/modern/user_preferences.html:36
 msgid "Zone Options"
@@ -12773,11 +12773,11 @@ msgstr "Gumbi za spremanje"
 
 #: templates/modern/user_preferences.html:88
 msgid "Edit Zone View"
-msgstr "Edit Zone View"
+msgstr "Uredi prikaz zone"
 
 #: templates/modern/user_preferences.html:93
 msgid "Show record ID"
-msgstr "Show record ID"
+msgstr "Prikaži ID zapisa"
 
 #: templates/modern/user_preferences.html:94
 msgid "Display record ID column in edit view"
@@ -12833,7 +12833,7 @@ msgstr "Pronađene zone"
 
 #: templates/default/search.html:316 templates/modern/search.html:316
 msgid "Records found"
-msgstr "Records found"
+msgstr "Pronađeni zapisi"
 
 #: templates/default/search.html:501 templates/modern/search.html:501
 msgid "Try different search terms or filters"
@@ -12965,7 +12965,7 @@ msgstr "Prikaži svijetli način"
 
 #: templates/modern/email_previews.html:65
 msgid "View Dark Mode"
-msgstr "View Dark Mode"
+msgstr "Prikaži tamni način"
 
 #: templates/modern/email_previews.html:77
 msgid "Template Override Information"
@@ -13001,11 +13001,11 @@ msgstr "Status PowerDNS poslužitelja"
 
 #: templates/default/pdns_status.html:16 templates/modern/pdns_status.html:17
 msgid "Refresh Status"
-msgstr "Refresh Status"
+msgstr "Osvježi status"
 
 #: templates/default/pdns_status.html:32 templates/modern/pdns_status.html:33
 msgid "Server Running"
-msgstr "Server Running"
+msgstr "Poslužitelj radi"
 
 #: templates/default/pdns_status.html:37 templates/modern/pdns_status.html:38
 msgid "Server Not Running"
@@ -13045,7 +13045,7 @@ msgstr "Informacije o poslužitelju nisu dostupne."
 
 #: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:102
 msgid "Slave Servers"
-msgstr "Slave Servers"
+msgstr "Sekundarni poslužitelji"
 
 #: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:115
 msgid "Server IP"
@@ -13074,7 +13074,7 @@ msgstr "Server Statistics"
 
 #: templates/default/pdns_status.html:170 templates/modern/pdns_status.html:171
 msgid "Server Health"
-msgstr "Server Health"
+msgstr "Zdravlje poslužitelja"
 
 #: templates/modern/pdns_status.html:190 templates/modern/api_keys.html:53
 msgid "Unknown"
@@ -13130,11 +13130,11 @@ msgstr "Nema dostupnih detaljnih metrika."
 
 #: templates/default/header.html:104 templates/modern/header.html:144
 msgid "Forward zones"
-msgstr "Forward zones"
+msgstr "zone prosljeđivanja"
 
 #: templates/default/header.html:105 templates/modern/header.html:149
 msgid "Reverse zones"
-msgstr "Reverse zones"
+msgstr "obrnute zone"
 
 #: templates/default/header.html:142 templates/modern/header.html:203
 msgid "List users"
@@ -13150,7 +13150,7 @@ msgstr "zapisnici grupe"
 
 #: templates/default/header.html:183 templates/modern/header.html:265
 msgid "List templates"
-msgstr "List templates"
+msgstr "Popis predložaka"
 
 #: templates/default/header.html:200 templates/modern/header.html:290
 msgid "List zone templates"
@@ -13174,7 +13174,7 @@ msgstr "Natrag na DNSSEC ključeve"
 
 #: templates/modern/dnssec_ds_dnskey.html:47
 msgid "DNSKEY Records"
-msgstr "DNSKEY Records"
+msgstr "DNSKEY zapisi"
 
 #: templates/modern/dnssec_ds_dnskey.html:55
 msgid "DS Records"
@@ -13202,7 +13202,7 @@ msgstr "Add records"
 
 #: templates/modern/manage_group_members.html:12
 msgid "Back to Group"
-msgstr "Back to Group"
+msgstr "Natrag na grupu"
 
 #: templates/modern/manage_group_zones.html:20
 msgid "Owned Zones"
@@ -13250,7 +13250,7 @@ msgstr "Upravljanje API ključevima"
 
 #: templates/default/api_keys.html:13 templates/modern/api_keys.html:14
 msgid "Add new API key"
-msgstr "Add new API key"
+msgstr "Dodaj novi API ključ"
 
 #: templates/default/api_keys.html:32 templates/modern/api_keys.html:33
 msgid "Created by"
@@ -13286,7 +13286,7 @@ msgstr "External applications using this key will lose access."
 
 #: templates/default/api_keys.html:141 templates/modern/api_keys.html:142
 msgid "Enable API Key"
-msgstr "Enable API Key"
+msgstr "Omogući API ključ"
 
 #: templates/default/api_keys.html:146 templates/modern/api_keys.html:147
 msgid "Are you sure you want to enable the API key"
@@ -13430,7 +13430,7 @@ msgstr "U ovoj grupi još nema članova"
 
 #: templates/modern/manage_group_members.html:70
 msgid "Available Users"
-msgstr "Available Users"
+msgstr "Dostupni korisnici"
 
 #: templates/modern/manage_group_members.html:77
 msgid "All users are already members of this group"
@@ -13446,7 +13446,7 @@ msgstr "Uvoz zone"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr "Import Results"
+msgstr "Rezultati uvoza"
 
 #: lib/Module/ZoneImportExport/templates/import.html:26
 msgid "Success:"
@@ -13482,7 +13482,7 @@ msgstr "Uvezi drugu zonu"
 
 #: lib/Module/ZoneImportExport/templates/import.html:54
 msgid "Import Preview"
-msgstr "Import Preview"
+msgstr "Pregled uvoza"
 
 #: lib/Module/ZoneImportExport/templates/import.html:60
 msgid "Warnings:"
@@ -13514,7 +13514,7 @@ msgstr "Zamijeni podudarajuće zapise"
 
 #: lib/Module/ZoneImportExport/templates/import.html:117
 msgid "Add all records"
-msgstr "Add all records"
+msgstr "Dodaj sve zapise"
 
 #: lib/Module/ZoneImportExport/templates/import.html:128
 msgid "Zone type"
@@ -13530,7 +13530,7 @@ msgstr "Izvorni"
 
 #: lib/Module/ZoneImportExport/templates/import.html:138
 msgid "Confirm import"
-msgstr "Confirm import"
+msgstr "Potvrdi uvoz"
 
 #: lib/Module/ZoneImportExport/templates/import.html:153
 msgid "Import Zone File"
@@ -13734,7 +13734,7 @@ msgstr "Konfiguracija baze:"
 
 #: install/templates/step4.html.twig:97
 msgid "Database type"
-msgstr "Database type"
+msgstr "Vrsta baze"
 
 #: install/templates/step4.html.twig:106
 msgid "Database server type."
@@ -13810,7 +13810,7 @@ msgstr "PowerDNS Database"
 
 #: install/templates/step4.html.twig:210
 msgid "Database name"
-msgstr "Database name"
+msgstr "Naziv baze"
 
 #: install/templates/step4.html.twig:213
 msgid "Leave empty for same database"
@@ -13914,7 +13914,7 @@ msgstr "Postavi račun i nameservere"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
-msgstr "Configuration:"
+msgstr "Konfiguracija:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
@@ -13922,7 +13922,7 @@ msgstr "Now we will gather all details for the configuration itself."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
-msgstr "Database User"
+msgstr "Korisnik baze"
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
@@ -14018,11 +14018,11 @@ msgstr "Begin configuring your DNS zones and records"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
-msgstr "Getting Ready"
+msgstr "Priprema"
 
 #: install/templates/step3.html.twig:13
 msgid "Prerequisites"
-msgstr "Prerequisites"
+msgstr "Preduvjeti"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
@@ -14082,7 +14082,7 @@ msgstr "Ensure the database server is running and accessible"
 
 #: install/helpers/InstallStepHandler.php:233
 msgid "Database Error"
-msgstr "Database Error"
+msgstr "Greška baze"
 
 #: install/helpers/DatabaseHelper.php:203
 #, php-format
