@@ -128,8 +128,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:72
 msgid "Start with \"none\" to collect data before enforcing a stricter policy."
-msgstr ""
-"Start with \"none\" to collect data before enforcing a stricter policy."
+msgstr "Alustage \"none\"-iga andmete kogumiseks enne rangema reegli jõustamist."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:96
 msgid ""
@@ -578,8 +577,7 @@ msgstr ""
 
 #: lib/Application/Controller/MfaSetupController.php:352
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
-msgstr ""
-"Recovery codes have been regenerated. Please save them in a safe place."
+msgstr "Taastekoodid on uuesti loodud. Hoidke neid turvalises kohas."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:381
 #, php-format
@@ -597,8 +595,7 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:189 lib/Domain/Model/ZoneTemplate.php:877
 msgid "Zone template with this name already exists, please choose another one."
-msgstr ""
-"Zone template with this name already exists, please choose another one."
+msgstr "Selle nimega tsooni mall on juba olemas, valige teine."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:99
 #, php-format
@@ -937,8 +934,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
-msgstr ""
-"This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
+msgstr "See tundub SMIMEA-kirje (RFC 8162) olevat S/MIME sertifikaatide jaoks."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
@@ -2075,13 +2071,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
 msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
-msgstr ""
-"Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
+msgstr "Vigane SHA-256 pikkus. 64 heksamärki."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
 msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
-msgstr ""
-"Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
+msgstr "Vigane SHA-384 pikkus. 96 heksamärki."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:98
 msgid ""
@@ -2124,7 +2118,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
+msgstr "Tundmatu HTTPS parameetri võti: \"%s\". Vaata RFC 9460."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
@@ -2144,8 +2138,7 @@ msgstr "Vigane IPv6 aadress ipv6hint-is: \"%s\"."
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr ""
-"Parameter \"%s\" is marked as mandatory but not included in the record."
+msgstr "Parameeter \"%s\" on kohustuslik, aga kirjes pole."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
@@ -2311,8 +2304,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr ""
-"Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
+msgstr "Kaaluge LDAPS (LDAP over SSL/TLS) LDAP ühenduste turvamiseks."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:213
 msgid ""
@@ -3103,8 +3095,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
 msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
-msgstr ""
-"%s (algorithm %d) is optional for implementation according to RFC 8624."
+msgstr "%s (algoritm %d) on valikuline vastavalt RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
@@ -4187,8 +4178,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 msgid "CDS records should only be placed at the zone apex (not on subdomains)."
-msgstr ""
-"CDS records should only be placed at the zone apex (not on subdomains)."
+msgstr "CDS-kirjed peavad olema ainult tsooni tipus (mitte alamdomeenides)."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:112
 msgid ""
@@ -4584,8 +4574,7 @@ msgstr ""
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
-msgstr ""
-"No SOA record present, or active, in zone. This is required for DNSSEC."
+msgstr "Tsoonis pole SOA-kirjet. Vajalik DNSSEC jaoks."
 
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
@@ -5083,8 +5072,7 @@ msgstr ""
 
 #: templates/modern/delete_record.html:74
 msgid "You are trying to delete a record that is needed for this zone to work."
-msgstr ""
-"You are trying to delete a record that is needed for this zone to work."
+msgstr "Proovite kustutada kirjet, mis on selle tsooni tööks vajalik."
 
 #: templates/default/mfa_verify.html:105 templates/modern/mfa_verify.html:105
 msgid ""
@@ -5452,8 +5440,7 @@ msgstr ""
 
 #: lib/Module/Whois/templates/whois.html:27
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
-msgstr ""
-"Enter a domain name (e.g., example.com) to lookup its WHOIS information"
+msgstr "Sisestage domeeninimi (nt example.com) WHOIS teabe hankimiseks"
 
 #: install/templates/step6.html.twig:15
 msgid ""
@@ -7146,7 +7133,7 @@ msgstr "Tsooni allkiri on edukalt eemaldatud."
 
 #: lib/Application/Controller/DnssecController.php:112
 msgid "Zone unsigning requested successfully, but verification failed."
-msgstr "Zone unsigning requested successfully, but verification failed."
+msgstr "Allkirja eemaldamise taotlus õnnestus, aga kontroll ebaõnnestus."
 
 #: lib/Application/Controller/DnssecController.php:116
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
@@ -7182,7 +7169,7 @@ msgstr "Kirje edukalt lisatud, aga PTR-kirje loomine ebaõnnestus."
 
 #: lib/Application/Controller/AddRecordController.php:257
 msgid "Record successfully added. A matching A record was also created."
-msgstr "Record successfully added. A matching A record was also created."
+msgstr "Kirje edukalt lisatud. Loodud on ka vastav A-kirje."
 
 #: lib/Application/Controller/MfaVerifyController.php:127
 msgid "Invalid security token. Please try again."
@@ -7600,7 +7587,7 @@ msgstr "Supermaster on edukalt lisatud."
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:74
 msgid "You do not have the permission to add records to zone templates."
-msgstr "You do not have the permission to add records to zone templates."
+msgstr "Teil pole õigust tsooni mallidesse kirjeid lisada."
 
 #: lib/Application/Controller/EditUserController.php:85
 #: templates/default/edit_user.html:22 templates/modern/edit_user.html:22
@@ -7661,7 +7648,7 @@ msgstr "Päringu töötlemine ebaõnnestus. Palun proovige uuesti."
 
 #: lib/Application/Controller/ExampleController.php:218
 msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "An unexpected error occurred. Please contact the administrator."
+msgstr "Tekkis ootamatu viga. Palun võtke ühendust administraatoriga."
 
 #: lib/Application/Controller/SamlCallbackController.php:99
 msgid "Unknown SAML endpoint"
@@ -7952,7 +7939,7 @@ msgstr "Viga kasutaja tsooni mallide kustutamisel: "
 
 #: lib/Domain/Model/ZoneTemplate.php:449
 msgid "You do not have the permission to add a record to this zone template."
-msgstr "You do not have the permission to add a record to this zone template."
+msgstr "Teil pole õigust sellesse tsooni malli kirjet lisada."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
@@ -8233,7 +8220,7 @@ msgstr "RKEY algoritmi väli peab olema kehtiv DNSSEC algoritmi number (0-16)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:224
 msgid "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
-msgstr "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
+msgstr "Algoritm 1 (RSA/MD5) on aegunud (RFC 6725), ÄRGE kasutage."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:234
 msgid "Algorithm 10 (RSA/SHA-512) provides strong security."
@@ -8245,7 +8232,7 @@ msgstr "RKEY avaliku võtme andmed ei tohi olla tühjad."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:256
 msgid "Public key data should be Base64 encoded according to RFC 4034."
-msgstr "Public key data should be Base64 encoded according to RFC 4034."
+msgstr "Avaliku võtme andmed peaksid olema Base64 kodeeritud (RFC 4034)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
@@ -8289,7 +8276,7 @@ msgstr "NID-kirje sisu peab olema täpselt 4 heksagruppi."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
 msgid "A zero NodeID value is unusual and may indicate a configuration error."
-msgstr "A zero NodeID value is unusual and may indicate a configuration error."
+msgstr "Nulli NodeID väärtus on ebatavaline ja võib viidata seadistuse veale."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:273
 msgid "NID record preference must be a number."
@@ -8370,7 +8357,7 @@ msgstr "Vigased jutumärgid HINFO"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
 msgid "TSIG keys should be rotated periodically as a security best practice."
-msgstr "TSIG keys should be rotated periodically as a security best practice."
+msgstr "TSIG võtmeid tuleks perioodiliselt rotatsiooniga vahetada."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:195
 msgid "TSIG timestamp must be a non-negative integer."
@@ -8382,7 +8369,7 @@ msgstr "TSIG fudge peab olema mittenegatiivne täisarv."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
-msgstr "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
+msgstr "TSIG MAC peab olema kehtiv base64 või heksastring."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:237
 msgid "TSIG original ID must be a number between 0 and 65535."
@@ -8406,7 +8393,7 @@ msgstr "TSIG-algoritmi nimi peab olema kehtiv domeeninimi, mis lõpeb punktiga."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
-msgstr "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
+msgstr "RFC 8945 soovitab HMAC-SHA256 standardseks TSIG algoritmiks."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
@@ -8434,7 +8421,7 @@ msgstr "ZONEMD kokkuvõte peab olema kuueteistkümnendsüsteemis string."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:222
 msgid "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
-msgstr "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
+msgstr "ZONEMD kokkuvõte peab olema vähemalt 24 heksamärki (12 okteti)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
@@ -8462,7 +8449,7 @@ msgstr "CERT võtme silt peab olema number 0 kuni 65535."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:221
 msgid "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
-msgstr "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
+msgstr "CERT algoritm peab olema 0-255 või kehtiv mnemoonik."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
@@ -8498,7 +8485,7 @@ msgstr "Vigane võtme silt. Peab olema number 1 kuni 65535."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
-msgstr "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
+msgstr "Vigane algoritm. Peab olema DNSSEC algoritm (1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
@@ -8506,7 +8493,7 @@ msgstr "Vigane kokkuvõtte tüüp. Peab olema 1, 2 või 4."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:215
 msgid "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
-msgstr "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
+msgstr "Vigane SHA-1 kokkuvõtte pikkus. 40 heksamärki."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
 msgid "Digest must contain only hexadecimal characters (0-9, a-f)."
@@ -8518,7 +8505,7 @@ msgstr "Null MX-kirjel (.) peab olema prioriteet 0 (RFC 7505)."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:99
 msgid "A domain with null MX record must not have any other MX records."
-msgstr "A domain with null MX record must not have any other MX records."
+msgstr "Null MX-kirjega domeenil ei tohi olla muid MX-kirjeid."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:105
 msgid "Invalid mail server hostname."
@@ -8570,7 +8557,7 @@ msgstr "Vigased märgid TKEY-kirje sisus."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
-msgstr "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
+msgstr "GSS-API režiim (3) ignoreerib aegu (RFC 3645)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:214
 msgid "GSS-API mode requires key data to contain a GSS-API token."
@@ -8598,7 +8585,7 @@ msgstr "FTP-d peetakse vähem turvaliseks kui SFTP või HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
-msgstr "Phone-related URI schemes may contain sensitive personal information."
+msgstr "Telefoniga seotud URI skeemid võivad sisaldada tundlikku teavet."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
@@ -8751,7 +8738,7 @@ msgstr "RRSIG algus peab olema YYYYMMDDHHmmSS vormingus."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
-msgstr "This signature will expire within the next 30 days. Plan for renewal."
+msgstr "See allkiri aegub 30 päeva jooksul. Planeerige uuendamist."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
@@ -8804,7 +8791,7 @@ msgstr "RP postkasti domeen sisaldab tühja silti."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:261
 msgid "RP mailbox domain label exceeds maximum length of 63 characters."
-msgstr "RP mailbox domain label exceeds maximum length of 63 characters."
+msgstr "RP postkasti silt ületab 63 märki."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:266
 msgid "RP mailbox domain contains invalid characters or format."
@@ -8820,7 +8807,7 @@ msgstr "RP postkasti domeeni osa pole kehtiv domeeninimi."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP TXT domain must be a fully qualified domain name (end with a dot)."
+msgstr "RP TXT peab olema FQDN (lõppeb punktiga)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
@@ -8853,7 +8840,7 @@ msgstr "EUI64 kirjete prioriteedi väli peab olema 0 või tühi."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
-msgstr "This is the all-zeros address, which may not be valid in all contexts."
+msgstr "See on nullaadress, mis ei pruugi olla kehtiv kõigis kontekstides."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:178
 msgid "This appears to be an IANA OUI (00-00-5E) address."
@@ -8889,7 +8876,7 @@ msgstr "Algoritm peab olema: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
-msgstr "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
+msgstr "Kokkuvõtte tüüp peab olema: 1, 2 või 4"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
 msgid "SHA-1 digest must be exactly 40 hexadecimal characters"
@@ -8941,7 +8928,7 @@ msgstr "Vigane IPv6 aadress: laiendatud kujul peab olema 8 hekstetti."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
-msgstr "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
+msgstr "Vigane IPv6 aadress: iga heksett peab olema 4 heksanumbrit."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
 msgid "IP address list cannot be empty."
@@ -9055,7 +9042,7 @@ msgstr "Mitu kaldkriipsu erinevates siltides pole ARPA tsoonides lubatud."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
-msgstr "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
+msgstr "Vigane RFC 2317 vorming. Kasutage: alamvõrk/eesliide (nt 0/26)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
@@ -9130,7 +9117,7 @@ msgstr "Alias režiimis (prioriteet = 0) SvcParams pole lubatud."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr "SVCB parameters must be in key=value format separated by spaces."
+msgstr "SVCB parameetrid peavad olema key=value vormingus tühikutega eraldatud."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:184
 msgid "SMIMEA record content cannot be empty."
@@ -9310,7 +9297,7 @@ msgstr "DMARC DKIM joondamise silt (adkim) peab olema r või s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
+msgstr "DMARC SPF joondamise silt (aspf) peab olema r või s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
@@ -9370,7 +9357,7 @@ msgstr "CDS algoritm peab olema number vahemikus 1 kuni 16."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
+msgstr "CDS kokkuvõtte tüüp peab olema 1, 2 või 4."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
@@ -9398,7 +9385,7 @@ msgstr "Vigane domeeninimi SRV-kirjes."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
-msgstr "Invalid value for the weight field of the SRV record. Must be 0-65535."
+msgstr "Vigane SRV kaalu väärtus. 0-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
@@ -9516,7 +9503,7 @@ msgstr "DNSKEY algoritm peab olema number vahemikus 1 kuni 16."
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
+msgstr "%s (algoritm %d) on MUST algoritm vastavalt RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -10303,7 +10290,7 @@ msgstr "Andke sisu"
 
 #: templates/modern/add_record.html:107 templates/modern/add_record.html:159
 msgid "This record type is deprecated and should not be used for new records."
-msgstr "This record type is deprecated and should not be used for new records."
+msgstr "See kirje tüüp on aegunud ja seda ei tohiks uutele kirjetele kasutada."
 
 #: templates/modern/edit_perm_templ.html:52
 msgid "Update"
@@ -10391,7 +10378,7 @@ msgstr "Kavatsete kustutada grupi"
 
 #: templates/modern/dnssec_delete_key.html:42
 msgid "This action cannot be undone. Are you sure you want to proceed?"
-msgstr "This action cannot be undone. Are you sure you want to proceed?"
+msgstr "Seda tegevust ei saa tagasi võtta. Kas olete kindel?"
 
 #: templates/default/delete_group.html:22 templates/modern/delete_group.html:22
 msgid "Deletion Impact"
@@ -10717,7 +10704,7 @@ msgstr "Kommentaar on valikuline"
 
 #: templates/modern/bulk_record_add.html:50
 msgid "Enter hostnames only - the zone name will be added automatically"
-msgstr "Enter hostnames only - the zone name will be added automatically"
+msgstr "Sisestage ainult hostinimed - tsooni nimi lisatakse automaatselt"
 
 #: templates/modern/bulk_record_add.html:57
 msgid "Add Records"
@@ -10885,7 +10872,7 @@ msgstr "Vastuvõetav kasutus"
 
 #: templates/modern/user_agreement_content.html:7
 msgid "You will not attempt to gain unauthorized access to other users' data"
-msgstr "You will not attempt to gain unauthorized access to other users' data"
+msgstr "Te ei püüa saada loata juurdepääsu teiste kasutajate andmetele"
 
 #: templates/modern/user_agreement_content.html:8
 msgid "You will keep your login credentials secure and confidential"
@@ -11244,7 +11231,7 @@ msgstr "Sellele kasutajale on määratud juurdepääsu mall"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
-msgstr "Based on this template, this user has the following permissions"
+msgstr "Selle malli põhjal on kasutajal järgmised õigused"
 
 #: templates/default/edit_user.html:188 templates/modern/edit_user.html:185
 msgid "No permissions are assigned to this template"
@@ -11549,7 +11536,7 @@ msgstr "Oluline teave"
 
 #: templates/modern/batch_ptr_record.html:142
 msgid "This tool creates PTR records in bulk. Two modes are available:"
-msgstr "This tool creates PTR records in bulk. Two modes are available:"
+msgstr "See tööriist loob PTR-kirjeid hulgi. Saadaval kaks režiimi:"
 
 #: templates/modern/batch_ptr_record.html:144
 msgid "All IPs"
@@ -11693,7 +11680,7 @@ msgstr "Lisa uus kirje"
 
 #: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
-msgstr "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
+msgstr "Juhendatud viisardid DMARC, SPF, DKIM, CAA, TLSA ja SRV kirjete jaoks"
 
 #: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
@@ -12555,7 +12542,7 @@ msgstr "Mitme teguri autentimine on nüüd lubatud"
 
 #: templates/modern/mfa_recovery_codes.html:19
 msgid "Your account is now protected with multi-factor authentication."
-msgstr "Your account is now protected with multi-factor authentication."
+msgstr "Teie konto on nüüd MFA-ga kaitstud."
 
 #: templates/modern/mfa_setup.html:32 templates/modern/mfa_setup.html:34
 msgid "Authentication method:"
@@ -12627,7 +12614,7 @@ msgstr "MFA on hetkel keelatud"
 
 #: templates/default/mfa_setup.html:61 templates/modern/mfa_setup.html:61
 msgid "Your account is not protected with multi-factor authentication."
-msgstr "Your account is not protected with multi-factor authentication."
+msgstr "Teie konto pole kaitstud MFA-ga."
 
 #: templates/default/mfa_setup.html:72 templates/modern/mfa_setup.html:72
 msgid "Authenticator App"
@@ -12855,7 +12842,7 @@ msgstr "Kustuta mitu tsooni"
 
 #: templates/modern/delete_domains.html:22
 msgid "You are about to delete multiple zones. This action cannot be undone."
-msgstr "You are about to delete multiple zones. This action cannot be undone."
+msgstr "Kavatsete kustutada mitu tsooni. Seda ei saa tagasi võtta."
 
 #: templates/modern/delete_domains.html:27
 msgid "Zones to Delete"
@@ -13172,7 +13159,7 @@ msgstr "Lisa kirje tsooni"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Record could not be added. Please check the record data and try again."
+msgstr "Kirjet ei saanud lisada. Palun kontrollige andmeid ja proovige uuesti."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
@@ -13584,7 +13571,7 @@ msgstr "RDAP otsing"
 
 #: lib/Module/Rdap/templates/rdap.html:27
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr "Enter a domain name (e.g., example.com) to lookup its RDAP information"
+msgstr "Sisestage domeeninimi (nt example.com) RDAP teabe hankimiseks"
 
 #: lib/Module/Rdap/templates/rdap.html:35
 msgid "RDAP results for"
@@ -13988,7 +13975,7 @@ msgstr "Paigaldamine lõpetatud!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Õnnitleme! Teie Poweradmin paigaldus on nüüd seadistatud."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
@@ -14032,7 +14019,7 @@ msgstr "Puuduvad PowerDNS tabelid:"
 
 #: install/helpers/InstallStepHandler.php:177
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin vajab korralikuks tööks neid PowerDNS tabeleid."
 
 #: install/helpers/InstallStepHandler.php:185
 msgid "Updating database... done!"

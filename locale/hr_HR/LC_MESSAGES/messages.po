@@ -129,8 +129,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:72
 msgid "Start with \"none\" to collect data before enforcing a stricter policy."
-msgstr ""
-"Start with \"none\" to collect data before enforcing a stricter policy."
+msgstr "Počnite s \"none\" za prikupljanje podataka prije strogog pravila."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:96
 msgid ""
@@ -583,8 +582,7 @@ msgstr ""
 
 #: lib/Application/Controller/MfaSetupController.php:352
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
-msgstr ""
-"Recovery codes have been regenerated. Please save them in a safe place."
+msgstr "Kodovi za oporavak su ponovno generirani. Spremite ih na sigurno."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:381
 #, php-format
@@ -602,8 +600,7 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:189 lib/Domain/Model/ZoneTemplate.php:877
 msgid "Zone template with this name already exists, please choose another one."
-msgstr ""
-"Zone template with this name already exists, please choose another one."
+msgstr "Predložak zone s ovim imenom već postoji, odaberite drugo."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:99
 #, php-format
@@ -951,8 +948,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
-msgstr ""
-"This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
+msgstr "Ovo izgleda kao SMIMEA zapis (RFC 8162) za S/MIME certifikate."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
@@ -2089,13 +2085,11 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
 msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
-msgstr ""
-"Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
+msgstr "Nevažeća dužina za SHA-256. 64 heksadecimalna znaka."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
 msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
-msgstr ""
-"Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
+msgstr "Nevažeća dužina za SHA-384. 96 heksadecimalnih znakova."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:98
 msgid ""
@@ -2138,7 +2132,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
+msgstr "Nepoznat HTTPS parametar: \"%s\". Pogledajte RFC 9460."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
@@ -2158,8 +2152,7 @@ msgstr "Nevažeća IPv6 adresa u ipv6hint: \"%s\"."
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr ""
-"Parameter \"%s\" is marked as mandatory but not included in the record."
+msgstr "Parametar \"%s\" je obavezan ali nije uključen u zapis."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
@@ -2325,8 +2318,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr ""
-"Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
+msgstr "Razmotrite LDAPS (LDAP preko SSL/TLS) za sigurne LDAP veze."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:213
 msgid ""
@@ -3117,8 +3109,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
 msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
-msgstr ""
-"%s (algorithm %d) is optional for implementation according to RFC 8624."
+msgstr "%s (algoritam %d) je opcionalan prema RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
@@ -4201,8 +4192,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 msgid "CDS records should only be placed at the zone apex (not on subdomains)."
-msgstr ""
-"CDS records should only be placed at the zone apex (not on subdomains)."
+msgstr "CDS zapisi trebaju biti samo na vrhu zone (ne na poddomenama)."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:112
 msgid ""
@@ -4598,8 +4588,7 @@ msgstr ""
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
-msgstr ""
-"No SOA record present, or active, in zone. This is required for DNSSEC."
+msgstr "Nema SOA zapisa u zoni. Obavezan za DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
@@ -5097,8 +5086,7 @@ msgstr ""
 
 #: templates/modern/delete_record.html:74
 msgid "You are trying to delete a record that is needed for this zone to work."
-msgstr ""
-"You are trying to delete a record that is needed for this zone to work."
+msgstr "Pokušavate obrisati zapis potreban za rad ove zone."
 
 #: templates/default/mfa_verify.html:105 templates/modern/mfa_verify.html:105
 msgid ""
@@ -5466,8 +5454,7 @@ msgstr ""
 
 #: lib/Module/Whois/templates/whois.html:27
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
-msgstr ""
-"Enter a domain name (e.g., example.com) to lookup its WHOIS information"
+msgstr "Unesite naziv domene (npr. example.com) za WHOIS informacije"
 
 #: install/templates/step6.html.twig:15
 msgid ""
@@ -7160,7 +7147,7 @@ msgstr "Potpis zone je uspješno uklonjen."
 
 #: lib/Application/Controller/DnssecController.php:112
 msgid "Zone unsigning requested successfully, but verification failed."
-msgstr "Zone unsigning requested successfully, but verification failed."
+msgstr "Zahtjev za uklanjanje potpisa uspješan, ali provjera nije uspjela."
 
 #: lib/Application/Controller/DnssecController.php:116
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
@@ -7196,7 +7183,7 @@ msgstr "Zapis je uspješno dodan, ali stvaranje PTR zapisa nije uspjelo."
 
 #: lib/Application/Controller/AddRecordController.php:257
 msgid "Record successfully added. A matching A record was also created."
-msgstr "Record successfully added. A matching A record was also created."
+msgstr "Zapis uspješno dodan. Stvoren je i odgovarajući A zapis."
 
 #: lib/Application/Controller/MfaVerifyController.php:127
 msgid "Invalid security token. Please try again."
@@ -7614,7 +7601,7 @@ msgstr "Supermaster je uspješno dodan."
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:74
 msgid "You do not have the permission to add records to zone templates."
-msgstr "You do not have the permission to add records to zone templates."
+msgstr "Nemate dozvolu za dodavanje zapisa u predloške zona."
 
 #: lib/Application/Controller/EditUserController.php:85
 #: templates/default/edit_user.html:22 templates/modern/edit_user.html:22
@@ -7675,7 +7662,7 @@ msgstr "Obrada zahtjeva nije uspjela. Pokušajte ponovno."
 
 #: lib/Application/Controller/ExampleController.php:218
 msgid "An unexpected error occurred. Please contact the administrator."
-msgstr "An unexpected error occurred. Please contact the administrator."
+msgstr "Došlo je do neočekivane greške. Obratite se administratoru."
 
 #: lib/Application/Controller/SamlCallbackController.php:99
 msgid "Unknown SAML endpoint"
@@ -7966,7 +7953,7 @@ msgstr "Greška pri brisanju korisničkih predložaka zona: "
 
 #: lib/Domain/Model/ZoneTemplate.php:449
 msgid "You do not have the permission to add a record to this zone template."
-msgstr "You do not have the permission to add a record to this zone template."
+msgstr "Nemate dozvolu za dodavanje zapisa u ovaj predložak zone."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
@@ -8247,7 +8234,7 @@ msgstr "RKEY polje algoritma mora biti valjan DNSSEC broj algoritma (0-16)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:224
 msgid "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
-msgstr "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
+msgstr "Algoritam 1 (RSA/MD5) je zastario (RFC 6725) i NE treba se koristiti."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:234
 msgid "Algorithm 10 (RSA/SHA-512) provides strong security."
@@ -8259,7 +8246,7 @@ msgstr "RKEY podaci javnog ključa ne mogu biti prazni."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:256
 msgid "Public key data should be Base64 encoded according to RFC 4034."
-msgstr "Public key data should be Base64 encoded according to RFC 4034."
+msgstr "Podaci javnog ključa trebaju biti Base64 kodirani (RFC 4034)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
@@ -8303,7 +8290,7 @@ msgstr "NID sadržaj mora imati točno 4 grupe heksadecimalnih znamenki."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
 msgid "A zero NodeID value is unusual and may indicate a configuration error."
-msgstr "A zero NodeID value is unusual and may indicate a configuration error."
+msgstr "Nula NodeID vrijednost je neobična i može ukazivati na grešku konfiguracije."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:273
 msgid "NID record preference must be a number."
@@ -8384,7 +8371,7 @@ msgstr "Nevažeći navodnici unutar HINFO "
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
 msgid "TSIG keys should be rotated periodically as a security best practice."
-msgstr "TSIG keys should be rotated periodically as a security best practice."
+msgstr "TSIG ključevi trebaju se periodično rotirati kao sigurnosna praksa."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:195
 msgid "TSIG timestamp must be a non-negative integer."
@@ -8396,7 +8383,7 @@ msgstr "TSIG fudge mora biti nenegativan cijeli broj."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
-msgstr "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
+msgstr "TSIG MAC mora biti valjan base64 ili heksadecimalni niz."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:237
 msgid "TSIG original ID must be a number between 0 and 65535."
@@ -8420,7 +8407,7 @@ msgstr "Ime TSIG algoritma mora biti valjan naziv domene koji završava točkom.
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
-msgstr "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
+msgstr "RFC 8945 preporučuje HMAC-SHA256 kao standardni TSIG algoritam."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
@@ -8448,7 +8435,7 @@ msgstr "ZONEMD digest mora biti heksadecimalni niz."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:222
 msgid "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
-msgstr "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
+msgstr "ZONEMD digest mora biti najmanje 24 heksadecimalna znaka (12 okteta)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
@@ -8476,7 +8463,7 @@ msgstr "CERT oznaka ključa mora biti broj između 0 i 65535."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:221
 msgid "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
-msgstr "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
+msgstr "CERT algoritam mora biti broj 0-255 ili valjani mnemonik."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
@@ -8512,7 +8499,7 @@ msgstr "Nevažeća oznaka ključa. Broj između 1 i 65535."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
-msgstr "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
+msgstr "Nevažeći algoritam. Mora biti jedan od DNSSEC algoritama (1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
@@ -8520,7 +8507,7 @@ msgstr "Nevažeći tip digesta. Mora biti 1, 2 ili 4."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:215
 msgid "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
-msgstr "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
+msgstr "Nevažeća dužina digesta za SHA-1. 40 heksadecimalnih znakova."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
 msgid "Digest must contain only hexadecimal characters (0-9, a-f)."
@@ -8532,7 +8519,7 @@ msgstr "Null MX zapis (.) mora imati prioritet 0 prema RFC 7505."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:99
 msgid "A domain with null MX record must not have any other MX records."
-msgstr "A domain with null MX record must not have any other MX records."
+msgstr "Domena s null MX zapisom ne smije imati druge MX zapise."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:105
 msgid "Invalid mail server hostname."
@@ -8584,7 +8571,7 @@ msgstr "Nevažeći znakovi u sadržaju TKEY zapisa."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
-msgstr "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
+msgstr "GSS-API način (3) ignorira vremena početka i isteka prema RFC 3645."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:214
 msgid "GSS-API mode requires key data to contain a GSS-API token."
@@ -8612,7 +8599,7 @@ msgstr "FTP se smatra manje sigurnim od SFTP ili HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
-msgstr "Phone-related URI schemes may contain sensitive personal information."
+msgstr "Telefonske URI sheme mogu sadržavati osjetljive osobne informacije."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
@@ -8765,7 +8752,7 @@ msgstr "RRSIG početak mora biti u YYYYMMDDHHmmSS formatu."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
 msgid "This signature will expire within the next 30 days. Plan for renewal."
-msgstr "This signature will expire within the next 30 days. Plan for renewal."
+msgstr "Ovaj potpis ističe za 30 dana. Planirajte obnovu."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
@@ -8818,7 +8805,7 @@ msgstr "RP domena poštanskog sandučića sadrži praznu oznaku."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:261
 msgid "RP mailbox domain label exceeds maximum length of 63 characters."
-msgstr "RP mailbox domain label exceeds maximum length of 63 characters."
+msgstr "Oznaka RP domene sandučića prelazi 63 znakova."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:266
 msgid "RP mailbox domain contains invalid characters or format."
@@ -8834,7 +8821,7 @@ msgstr "Dio domene RP sandučića nije valjan."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP TXT domain must be a fully qualified domain name (end with a dot)."
+msgstr "RP TXT domena mora biti FQDN (završava točkom)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
@@ -8867,7 +8854,7 @@ msgstr "Polje prioriteta za EUI64 zapise mora biti 0 ili prazno."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
-msgstr "This is the all-zeros address, which may not be valid in all contexts."
+msgstr "Ovo je adresa svih nula, možda nije valjana u svim kontekstima."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:178
 msgid "This appears to be an IANA OUI (00-00-5E) address."
@@ -8903,7 +8890,7 @@ msgstr "Algoritam mora biti: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
-msgstr "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
+msgstr "Tip digesta mora biti: 1, 2 ili 4"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
 msgid "SHA-1 digest must be exactly 40 hexadecimal characters"
@@ -8955,7 +8942,7 @@ msgstr "Nevažeća IPv6 adresa: mora imati 8 hekstera proširena."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
-msgstr "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
+msgstr "Nevažeća IPv6 adresa: svaki hekstet mora imati 4 heksadecimalne znamenke."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
 msgid "IP address list cannot be empty."
@@ -9069,7 +9056,7 @@ msgstr "Više kosih crta u različitim oznakama nije dopušteno u ARPA zonama."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
-msgstr "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
+msgstr "Nevažeći RFC 2317 format. Koristite: podmreža/prefiks (npr. 0/26)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
@@ -9144,7 +9131,7 @@ msgstr "U Alias načinu (prioritet = 0), SvcParams nisu dopušteni."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr "SVCB parameters must be in key=value format separated by spaces."
+msgstr "SVCB parametri moraju biti u key=value formatu odvojeni razmacima."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:184
 msgid "SMIMEA record content cannot be empty."
@@ -9324,7 +9311,7 @@ msgstr "DMARC DKIM oznaka usklađivanja (adkim) mora biti r ili s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
+msgstr "DMARC SPF oznaka usklađivanja (aspf) mora biti r ili s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
@@ -9384,7 +9371,7 @@ msgstr "CDS algoritam mora biti broj između 1 i 16."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
+msgstr "CDS tip digesta mora biti 1, 2 ili 4."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
@@ -9412,7 +9399,7 @@ msgstr "Nevažeće ime domene u SRV zapisu."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
-msgstr "Invalid value for the weight field of the SRV record. Must be 0-65535."
+msgstr "Nevažeća vrijednost težine SRV zapisa. 0-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
@@ -9530,7 +9517,7 @@ msgstr "DNSKEY algoritam mora biti broj između 1 i 16."
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
+msgstr "%s (algoritam %d) je MUST algoritam prema RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -10317,7 +10304,7 @@ msgstr "Unesite sadržaj"
 
 #: templates/modern/add_record.html:107 templates/modern/add_record.html:159
 msgid "This record type is deprecated and should not be used for new records."
-msgstr "This record type is deprecated and should not be used for new records."
+msgstr "Ova vrsta zapisa je zastarjela i ne bi se trebala koristiti za nove."
 
 #: templates/modern/edit_perm_templ.html:52
 msgid "Update"
@@ -10405,7 +10392,7 @@ msgstr "Obrisat ćete grupu"
 
 #: templates/modern/dnssec_delete_key.html:42
 msgid "This action cannot be undone. Are you sure you want to proceed?"
-msgstr "This action cannot be undone. Are you sure you want to proceed?"
+msgstr "Ova radnja se ne može poništiti. Jeste li sigurni?"
 
 #: templates/default/delete_group.html:22 templates/modern/delete_group.html:22
 msgid "Deletion Impact"
@@ -10731,7 +10718,7 @@ msgstr "Komentar je neobavezan"
 
 #: templates/modern/bulk_record_add.html:50
 msgid "Enter hostnames only - the zone name will be added automatically"
-msgstr "Enter hostnames only - the zone name will be added automatically"
+msgstr "Unesite samo imena poslužitelja - naziv zone će se dodati automatski"
 
 #: templates/modern/bulk_record_add.html:57
 msgid "Add Records"
@@ -10899,7 +10886,7 @@ msgstr "Prihvatljiva upotreba"
 
 #: templates/modern/user_agreement_content.html:7
 msgid "You will not attempt to gain unauthorized access to other users' data"
-msgstr "You will not attempt to gain unauthorized access to other users' data"
+msgstr "Nećete pokušati neovlašten pristup podacima drugih korisnika"
 
 #: templates/modern/user_agreement_content.html:8
 msgid "You will keep your login credentials secure and confidential"
@@ -11258,7 +11245,7 @@ msgstr "Ovom korisniku je dodijeljen predložak pristupa"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
-msgstr "Based on this template, this user has the following permissions"
+msgstr "Na temelju ovog predloška, korisnik ima sljedeće dozvole"
 
 #: templates/default/edit_user.html:188 templates/modern/edit_user.html:185
 msgid "No permissions are assigned to this template"
@@ -11563,7 +11550,7 @@ msgstr "Važne informacije"
 
 #: templates/modern/batch_ptr_record.html:142
 msgid "This tool creates PTR records in bulk. Two modes are available:"
-msgstr "This tool creates PTR records in bulk. Two modes are available:"
+msgstr "Ovaj alat stvara PTR zapise skupno. Dostupna su dva načina:"
 
 #: templates/modern/batch_ptr_record.html:144
 msgid "All IPs"
@@ -11707,7 +11694,7 @@ msgstr "Dodaj novi zapis"
 
 #: templates/modern/edit.html:203 templates/modern/edit.html:581
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
-msgstr "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
+msgstr "Vodeni čarobnjaci za DMARC, SPF, DKIM, CAA, TLSA i SRV zapise"
 
 #: templates/modern/edit.html:35 templates/modern/edit.html:587
 msgid "Multi-record mode"
@@ -12569,7 +12556,7 @@ msgstr "Višefaktorska autentifikacija je omogućena"
 
 #: templates/modern/mfa_recovery_codes.html:19
 msgid "Your account is now protected with multi-factor authentication."
-msgstr "Your account is now protected with multi-factor authentication."
+msgstr "Vaš račun je sada zaštićen MFA."
 
 #: templates/modern/mfa_setup.html:32 templates/modern/mfa_setup.html:34
 msgid "Authentication method:"
@@ -12641,7 +12628,7 @@ msgstr "MFA je trenutno onemogućen"
 
 #: templates/default/mfa_setup.html:61 templates/modern/mfa_setup.html:61
 msgid "Your account is not protected with multi-factor authentication."
-msgstr "Your account is not protected with multi-factor authentication."
+msgstr "Vaš račun nije zaštićen višefaktorskom autentifikacijom."
 
 #: templates/default/mfa_setup.html:72 templates/modern/mfa_setup.html:72
 msgid "Authenticator App"
@@ -12869,7 +12856,7 @@ msgstr "Obriši više zona"
 
 #: templates/modern/delete_domains.html:22
 msgid "You are about to delete multiple zones. This action cannot be undone."
-msgstr "You are about to delete multiple zones. This action cannot be undone."
+msgstr "Obrisat ćete više zona. Ova radnja se ne može poništiti."
 
 #: templates/modern/delete_domains.html:27
 msgid "Zones to Delete"
@@ -13186,7 +13173,7 @@ msgstr "Dodaj zapis u zonu"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Record could not be added. Please check the record data and try again."
+msgstr "Zapis se nije mogao dodati. Provjerite podatke i pokušajte ponovno."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
@@ -13598,7 +13585,7 @@ msgstr "RDAP pretraga"
 
 #: lib/Module/Rdap/templates/rdap.html:27
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr "Enter a domain name (e.g., example.com) to lookup its RDAP information"
+msgstr "Unesite naziv domene (npr. example.com) za RDAP informacije"
 
 #: lib/Module/Rdap/templates/rdap.html:35
 msgid "RDAP results for"
@@ -14002,7 +13989,7 @@ msgstr "Instalacija završena!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Čestitamo! Vaša Poweradmin instalacija je sada konfigurirana."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
@@ -14046,7 +14033,7 @@ msgstr "Nedostaju PowerDNS tablice:"
 
 #: install/helpers/InstallStepHandler.php:177
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin zahtijeva ove PowerDNS tablice za ispravan rad."
 
 #: install/helpers/InstallStepHandler.php:185
 msgid "Updating database... done!"
