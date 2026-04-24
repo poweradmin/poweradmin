@@ -353,7 +353,7 @@ msgstr ""
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:100
 msgid "Select a common service or choose \"Custom\" to enter manually"
-msgstr "Select a common service or choose \"Custom\" to enter manually"
+msgstr "Изаберите уобичајену услугу или \"Прилагођено\" за ручни унос"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:131
 msgid ""
@@ -4467,7 +4467,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
-msgstr "NAPTR record with a regexp must have \".\" as the replacement."
+msgstr "NAPTR запис са regексп мора имати \".\" као замену."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
@@ -4513,7 +4513,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
-msgstr "ENUM records should have the \"U\" flag to indicate URI output."
+msgstr "ENUM записи треба да имају \"U\" заставицу за URI излаз."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:96
 msgid ""
@@ -5869,7 +5869,7 @@ msgstr "TTL (секунде)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:193
 msgid "Time to live - how long DNS resolvers should cache this record"
-msgstr "Time to live - how long DNS resolvers should cache this record"
+msgstr "Време живота - колико дуго DNS резолвери треба да кеширају"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:289
 msgid "Port must be between 1 and 65535"
@@ -6114,7 +6114,7 @@ msgstr "IP адресе"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:82
 msgid "Authorized IP addresses and networks (CIDR notation supported)"
-msgstr "Authorized IP addresses and networks (CIDR notation supported)"
+msgstr "Овлашћене IP адресе и мреже (CIDR нотација подржана)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:86
 msgid "IPv4 Addresses"
@@ -6154,7 +6154,7 @@ msgstr "Додатни A/AAAA хостови"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:125
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
-msgstr "Authorize specific hostnames' A/AAAA records (one per line)"
+msgstr "Овласти A/AAAA записе одређених хостова (један по реду)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:129
 msgid "Additional MX Hosts"
@@ -6246,7 +6246,7 @@ msgstr "Џокер знак за issue"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:107
 msgid "Authorize issuance of wildcard certificates (*.example.com)"
-msgstr "Authorize issuance of wildcard certificates (*.example.com)"
+msgstr "Овласти издавање џокер сертификата (*.example.com)"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:108
 msgid "Incident Reporting"
@@ -6867,7 +6867,7 @@ msgstr "Неважећи формат датума истека."
 
 #: lib/Domain/Service/ApiKeyService.php:314
 msgid "API key not found or you do not have permission to edit it."
-msgstr "API key not found or you do not have permission to edit it."
+msgstr "АПИ кључ није пронађен или немате дозволу за уређивање."
 
 #: lib/Application/Controller/ApiKeysController.php:277
 msgid "API key updated successfully."
@@ -6879,7 +6879,7 @@ msgstr "АПИ кључ успешно обрисан."
 
 #: lib/Domain/Service/ApiKeyService.php:256
 msgid "API key not found or you do not have permission to delete it."
-msgstr "API key not found or you do not have permission to delete it."
+msgstr "АПИ кључ није пронађен или немате дозволу за брисање."
 
 #: lib/Application/Controller/ApiKeysController.php:411
 msgid "disabled"
@@ -6896,7 +6896,7 @@ msgstr "АПИ кључ %s успешно."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:108
 msgid "You do not have the permission to add records to this zone."
-msgstr "You do not have the permission to add records to this zone."
+msgstr "Немате дозволу за додавање записа у ову зону."
 
 #: lib/Application/Controller/BulkRecordAddController.php:118
 msgid "Please provide at least one record."
@@ -6925,7 +6925,7 @@ msgstr "ИД зоне је обавезан."
 
 #: lib/Application/Controller/ListPermTemplController.php:42
 msgid "You do not have the permission to edit permission templates."
-msgstr "You do not have the permission to edit permission templates."
+msgstr "Немате дозволу за уређивање шаблона дозвола."
 
 #: lib/Application/Controller/EditPermTemplController.php:63
 msgid "Edit Permission Template"
@@ -7188,7 +7188,7 @@ msgstr "Record successfully added. A matching PTR record was also created."
 
 #: lib/Application/Controller/AddRecordController.php:249
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "Record successfully added, but PTR record creation failed: "
+msgstr "Запис успешно додат, али креирање PTR записа није успело: "
 
 #: lib/Application/Controller/AddRecordController.php:253
 msgid "The record was successfully added, but PTR record creation failed."
@@ -7220,7 +7220,7 @@ msgstr "Молимо користите код за опоравак."
 
 #: lib/Domain/Service/Dns/RecordManager.php:216
 msgid "You do not have the permission to add a record to this zone."
-msgstr "You do not have the permission to add a record to this zone."
+msgstr "Немате дозволу за додавање записа у ову зону."
 
 #: lib/Application/Controller/AddRecordController.php:241
 msgid "Record successfully added."
@@ -7267,7 +7267,7 @@ msgstr "Немате дозволу за брисање зоне."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:80
 msgid "You do not have the permission to edit zone template records."
-msgstr "You do not have the permission to edit zone template records."
+msgstr "Немате дозволу за уређивање записа шаблона зоне."
 
 #: lib/Application/Controller/OidcLoginController.php:77
 msgid "OIDC authentication is not enabled"
@@ -7341,7 +7341,7 @@ msgstr "Групно PTR записи"
 
 #: lib/Application/Controller/BatchPtrRecordController.php:99
 msgid "Batch PTR record creation is not available for reverse zones."
-msgstr "Batch PTR record creation is not available for reverse zones."
+msgstr "Групно креирање PTR записа није доступно за обрнуте зоне."
 
 #: lib/Application/Controller/ListZoneTemplController.php:57
 msgid "You do not have the permission to view zone templates."
@@ -7439,7 +7439,7 @@ msgstr "Изаберите бар једну зону."
 
 #: lib/Application/Controller/AddPermTemplController.php:59
 msgid "You do not have the permission to add permission templates."
-msgstr "You do not have the permission to add permission templates."
+msgstr "Немате дозволу за додавање шаблона дозвола."
 
 #: lib/Application/Controller/AddPermTemplController.php:63
 msgid "Add Permission Template"
@@ -7647,7 +7647,7 @@ msgstr "Изаберите бар једну групу."
 
 #: lib/Application/Controller/DeletePermTemplController.php:60
 msgid "You do not have the permission to delete permission templates."
-msgstr "You do not have the permission to delete permission templates."
+msgstr "Немате дозволу за брисање шаблона дозвола."
 
 #: lib/Application/Controller/DeletePermTemplController.php:88
 msgid "The permission template has been deleted successfully."
@@ -7881,7 +7881,7 @@ msgstr "Аутентификација није успела: Неважећа �
 
 #: lib/Application/Service/SamlService.php:347
 msgid "Authentication failed: Unable to create or update user account"
-msgstr "Authentication failed: Unable to create or update user account"
+msgstr "Аутентификација није успела: Не може се креирати или ажурирати налог"
 
 #: lib/Application/Service/LdapAuthenticator.php:236
 msgid "LDAP Authentication failed!"
@@ -7913,7 +7913,7 @@ msgstr "Ово је неважеће име зоне."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
 msgid "This template is assigned to at least one user and one group."
-msgstr "This template is assigned to at least one user and one group."
+msgstr "Овај шаблон је додељен најмање једном кориснику и једној групи."
 
 #: lib/Domain/Model/UserManager.php:384
 msgid "This template is assigned to at least one user."
@@ -8135,7 +8135,7 @@ msgstr "TLSA SHA-512 подаци сертификата морају бити 1
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:320
 msgid "TLSA exact match certificate data seems too short to be valid."
-msgstr "TLSA exact match certificate data seems too short to be valid."
+msgstr "TLSA тачно подударање изгледа прекратко да буде важеће."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
@@ -8159,11 +8159,11 @@ msgstr "NSEC3PARAM итерације морају бити између 0 и 25
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:224
 msgid "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
-msgstr "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
+msgstr "NSEC3PARAM со мора бити - или хекс вредност."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
 msgid "LP record must contain preference and FQDN separated by space."
-msgstr "LP record must contain preference and FQDN separated by space."
+msgstr "LP запис мора садржати предност и FQDN одвојене размаком."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:163
 msgid "LP preference must be a number between 0 and 65535."
@@ -8263,7 +8263,7 @@ msgstr "Public key data should be Base64 encoded according to RFC 4034."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
-msgstr "RKEY records are rarely used in modern DNS implementations."
+msgstr "RKEY записи се ретко користе у савременим DNS имплементацијама."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:262
 msgid "Consider using standardized record types for cryptographic purposes."
@@ -8271,11 +8271,11 @@ msgstr "Consider using standardized record types for cryptographic purposes."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:209
 msgid "Empty APL record represents an empty list of address prefixes."
-msgstr "Empty APL record represents an empty list of address prefixes."
+msgstr "Празан APL запис представља празну листу префикса адреса."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:256
 msgid "Invalid APL element format. Expected [!]afi:address/prefix."
-msgstr "Invalid APL element format. Expected [!]afi:address/prefix."
+msgstr "Неважећи APL формат. Очекивано [!]afi:адреса/префикс."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:274
 msgid "Invalid IPv4 address in APL record."
@@ -8368,7 +8368,7 @@ msgstr "HINFO запис мора имати поља типа CPU и ОС."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:175
 msgid "HINFO record must have exactly two fields: CPU type and OS."
-msgstr "HINFO record must have exactly two fields: CPU type and OS."
+msgstr "HINFO запис мора имати тачно два поља: тип CPU и ОС."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:200
 msgid "Invalid quoting in HINFO "
@@ -8404,7 +8404,7 @@ msgstr "TSIG оригинални ИД мора бити број између 0
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:243
 msgid "TSIG error must be a valid DNS RCODE number between 0 and 23."
-msgstr "TSIG error must be a valid DNS RCODE number between 0 and 23."
+msgstr "TSIG грешка мора бити DNS RCODE број 0-23."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
@@ -8440,7 +8440,7 @@ msgstr "ZONEMD хеш алгоритам мора бити број између
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "ZONEMD hash algorithm 0 is reserved and not for standard use."
+msgstr "ZONEMD хеш алгоритам 0 је резервисан."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
@@ -8496,7 +8496,7 @@ msgstr "CERT подаци сертификата морају бити важе�
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:304
 msgid "CERT certificate data must not be empty after base64 decoding."
-msgstr "CERT certificate data must not be empty after base64 decoding."
+msgstr "CERT подаци сертификата не смеју бити празни након base64 декодирања."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:121
 msgid "Priority field for DLV records must be 0 or empty."
@@ -8524,11 +8524,11 @@ msgstr "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
 msgid "Digest must contain only hexadecimal characters (0-9, a-f)."
-msgstr "Digest must contain only hexadecimal characters (0-9, a-f)."
+msgstr "Дигест сме садржати само хексадецималне знакове (0-9, a-f)."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:92
 msgid "Null MX record (.) must have priority 0 according to RFC 7505."
-msgstr "Null MX record (.) must have priority 0 according to RFC 7505."
+msgstr "Нулти MX запис (.) мора имати приоритет 0 (RFC 7505)."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:99
 msgid "A domain with null MX record must not have any other MX records."
@@ -8544,7 +8544,7 @@ msgstr "MX записи не треба да упућују на CNAME запи�
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:116
 msgid "Priority values above 100 are unusual and may be unnecessary."
-msgstr "Priority values above 100 are unusual and may be unnecessary."
+msgstr "Вредности приоритета изнад 100 су необичне и могу бити непотребне."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:169
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
@@ -8552,11 +8552,11 @@ msgstr "Invalid value for MX priority field. Must be between 0 and 65535."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:119
 msgid "HTTPS record must contain at least priority and target values."
-msgstr "HTTPS record must contain at least priority and target values."
+msgstr "HTTPS запис мора садржати бар приоритет и циљне вредности."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:126
 msgid "HTTPS record priority must be a number between 0 and 65535."
-msgstr "HTTPS record priority must be a number between 0 and 65535."
+msgstr "HTTPS приоритет записа мора бити број 0-65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
@@ -8592,7 +8592,7 @@ msgstr "GSS-API режим захтева да подаци кључа садр�
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:224
 msgid "TKEY error must be a valid DNS RCODE number between 0 and 23."
-msgstr "TKEY error must be a valid DNS RCODE number between 0 and 23."
+msgstr "TKEY грешка мора бити DNS RCODE број 0-23."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:99
 msgid "Invalid value for TTL field. It must be numeric."
@@ -8769,7 +8769,7 @@ msgstr "This signature will expire within the next 30 days. Plan for renewal."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
 msgid "Could not parse signature timestamps to check validity period."
-msgstr "Could not parse signature timestamps to check validity period."
+msgstr "Није могуће рашчланити временске ознаке потписа за проверу."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:302
 msgid "RRSIG key tag field must be a numeric value."
@@ -8826,7 +8826,7 @@ msgstr "RP домен сандучета садржи неважеће знак�
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:272
 msgid "RP mailbox domain exceeds maximum length of 253 characters."
-msgstr "RP mailbox domain exceeds maximum length of 253 characters."
+msgstr "RP домен сандучета прелази максималну дужину од 253 знакова."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:277
 msgid "RP mailbox domain part is not a valid domain name."
@@ -8846,7 +8846,7 @@ msgstr "RP TXT домен садржи празну ознаку."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:325
 msgid "RP TXT domain label exceeds maximum length of 63 characters."
-msgstr "RP TXT domain label exceeds maximum length of 63 characters."
+msgstr "Ознака RP TXT домена прелази 63 знака."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:330
 msgid "RP TXT domain contains invalid characters or format."
@@ -8919,7 +8919,7 @@ msgstr "SHA-384 дигест мора бити тачно 96 хексадеци�
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
-msgstr "Invalid Flags in CSYNC record. Flags must be a numeric value."
+msgstr "Неважеће заставице у CSYNC запису. Мора бити нумеричка вредност."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:208
 msgid "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
@@ -8974,7 +8974,7 @@ msgstr "Неважећи број порта: %d (мора бити 1-65535)"
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
-msgstr "Invalid server format: %s (expected IP:port or [IPv6]:port)"
+msgstr "Неважећи формат сервера: %s (очекивано IP:port или [IPv6]:port)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:347
 #, php-format
@@ -9025,7 +9025,7 @@ msgstr "Неважећи CA домен у issuewild ознаци."
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
-msgstr "CAA iodef value must be a URL starting with %s, %s, or %s."
+msgstr "CAA iodef вредност мора бити URL који почиње са %s, %s или %s."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
@@ -9037,7 +9037,7 @@ msgstr "Вредност мора бити у двоструким наводн�
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:319
 msgid "CAA property value exceeds maximum length of 512 characters."
-msgstr "CAA property value exceeds maximum length of 512 characters."
+msgstr "CAA вредност прелази максималну дужину од 512 знакова."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:325
 msgid "CAA property value cannot contain NUL (0) characters."
@@ -9061,7 +9061,7 @@ msgstr "Име хоста не може почети или завршити ц�
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:104
 msgid "Given hostname or one of the labels is too short or too long."
-msgstr "Given hostname or one of the labels is too short or too long."
+msgstr "Дато име хоста или једна од ознака је прекратка или предугачка."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:128
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
@@ -9081,7 +9081,7 @@ msgstr "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
-msgstr "Invalid prefix length in RFC 2317 notation. Must be numeric."
+msgstr "Неважећа дужина префикса у RFC 2317 нотацији. Мора бити нумеричка."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
 #, php-format
@@ -9164,11 +9164,11 @@ msgstr "SMIMEA подаци сертификата морају бити хек�
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:262
 msgid "SMIMEA SHA-256 certificate data must be 64 characters long."
-msgstr "SMIMEA SHA-256 certificate data must be 64 characters long."
+msgstr "SMIMEA SHA-256 подаци морају бити 64 знака."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:264
 msgid "SMIMEA SHA-512 certificate data must be 128 characters long."
-msgstr "SMIMEA SHA-512 certificate data must be 128 characters long."
+msgstr "SMIMEA SHA-512 подаци морају бити 128 знакова."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:152
 msgid "L64 record must contain preference and locator64 separated by space."
@@ -9204,7 +9204,7 @@ msgstr "CDNSKEY алгоритам мора бити број између 1 и 
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
-msgstr "CDNSKEY public key must contain only valid base64 characters."
+msgstr "CDNSKEY јавни кључ сме садржати само важеће base64 знакове."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:241
 msgid "CDNSKEY public key must be valid base64-encoded data."
@@ -9316,7 +9316,7 @@ msgstr "DMARC ознака верзије (v) мора бити DMARC1"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:195
 msgid "DMARC policy tag (p) must be one of: none, quarantine, reject"
-msgstr "DMARC policy tag (p) must be one of: none, quarantine, reject"
+msgstr "DMARC ознака политике (p) мора бити: none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
@@ -9332,7 +9332,7 @@ msgstr "DMARC ознака процента (pct) мора бити између
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
-msgstr "DMARC reporting interval tag (ri) must be a positive integer"
+msgstr "DMARC ознака интервала извештавања (ri) мора бити позитиван цео број"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
@@ -9404,7 +9404,7 @@ msgstr "L32 локатор мора бити потпуно наведена IPv
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "SRV record name must be in format _service._protocol.domain"
+msgstr "SRV име записа мора бити у формату _service._protocol.domain"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -9481,7 +9481,7 @@ msgstr "NAPTR редослед записа мора бити број 0-65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
 msgid "NAPTR record preference must be a number between 0 and 65535."
-msgstr "NAPTR record preference must be a number between 0 and 65535."
+msgstr "NAPTR предност записа мора бити број 0-65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:219
 msgid "NAPTR record flags must be a quoted string."
@@ -9509,7 +9509,7 @@ msgstr "NAPTR regexp contains potentially dangerous pattern: "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
-msgstr "NAPTR regexp is too long. Maximum length is 1000 characters."
+msgstr "NAPTR regексп је предугачак. Максимум 1000 знакова."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:120
 msgid "Priority field for DNSKEY records must be 0 or empty."
@@ -9600,7 +9600,7 @@ msgstr "Немате дозволу за регенерацију АПИ кљу�
 
 #: lib/Domain/Service/ZoneValidationService.php:103
 msgid "Add an SOA record to the zone before attempting to sign it."
-msgstr "Add an SOA record to the zone before attempting to sign it."
+msgstr "Додајте SOA запис зони пре него што покушате да је потпишете."
 
 #: lib/Domain/Service/ZoneValidationService.php:109
 #, php-format
@@ -9667,7 +9667,7 @@ msgstr "Немате дозволу за додавање NS записа."
 
 #: lib/Domain/Service/Dns/RecordManager.php:257
 msgid "A record with this hostname, type, and content already exists."
-msgstr "A record with this hostname, type, and content already exists."
+msgstr "Запис са овим именом хоста, типом и садржајем већ постоји."
 
 #: lib/Domain/Service/Dns/RecordManager.php:164
 msgid "Failed to add record to DNS backend."
@@ -10097,7 +10097,7 @@ msgstr "A запис: <code>192.0.2.10</code>"
 
 #: templates/modern/add_zone_templ_record.html:178
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
+msgstr "CNAME: <code>target.[ZONE]</code> или <code>example.com.</code>"
 
 #: templates/modern/add_zone_templ_record.html:179
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
@@ -10583,7 +10583,7 @@ msgstr "О шаблонима"
 
 #: templates/modern/add_zone_templ.html:75
 msgid "After creating a template, you can add record templates to it."
-msgstr "After creating a template, you can add record templates to it."
+msgstr "Након креирања шаблона, можете додавати записе у њега."
 
 #: templates/modern/add_zone_templ.html:78
 msgid "Template Usage"
@@ -10655,7 +10655,7 @@ msgstr "Извоз дневника"
 
 #: templates/modern/list_log_groups.html:128
 msgid "Export filtered log entries. Current filters will be applied."
-msgstr "Export filtered log entries. Current filters will be applied."
+msgstr "Извези филтриране уносе дневника. Тренутни филтери ће бити примењени."
 
 #: templates/modern/list_log_groups.html:129
 msgid "records to export"
@@ -10847,11 +10847,11 @@ msgstr "Власник за додавање"
 
 #: templates/default/delete_user.html:82 templates/modern/delete_user.html:82
 msgid "Delete: The zone will be completely removed from the system"
-msgstr "Delete: The zone will be completely removed from the system"
+msgstr "Обриши: Зона ће бити потпуно уклоњена са система"
 
 #: templates/default/delete_user.html:83 templates/modern/delete_user.html:83
 msgid "Leave: The zone will remain in the system but without an owner"
-msgstr "Leave: The zone will remain in the system but without an owner"
+msgstr "Остави: Зона остаје у систему али без власника"
 
 #: templates/default/delete_user.html:84 templates/modern/delete_user.html:84
 msgid "Add new owner: Transfer ownership to another user"
@@ -10903,7 +10903,7 @@ msgstr "You will not attempt to gain unauthorized access to other users' data"
 
 #: templates/modern/user_agreement_content.html:8
 msgid "You will keep your login credentials secure and confidential"
-msgstr "You will keep your login credentials secure and confidential"
+msgstr "Чуваћете своје акредитиве за пријаву безбедним и поверљивим"
 
 #: templates/modern/user_agreement_content.html:9
 msgid "You will not use this system for any malicious or illegal activities"
@@ -12493,11 +12493,11 @@ msgstr "Унесите једно име домена по реду у пољу 
 
 #: templates/modern/bulk_registration.html:108
 msgid "Select a zone template to apply standard records to all zones"
-msgstr "Select a zone template to apply standard records to all zones"
+msgstr "Изаберите шаблон зоне за примену стандардних записа"
 
 #: templates/modern/bulk_registration.html:109
 msgid "The chosen owner will have full access to all created zones"
-msgstr "The chosen owner will have full access to all created zones"
+msgstr "Изабрани власник ће имати пун приступ свим креираним зонама"
 
 #: templates/modern/bulk_registration.html:113
 msgid "How It Works"
@@ -12517,11 +12517,11 @@ msgstr "Create a template first if you need standard records for all zones"
 
 #: templates/modern/bulk_registration.html:130
 msgid "You can copy and paste a list of domains from a spreadsheet"
-msgstr "You can copy and paste a list of domains from a spreadsheet"
+msgstr "Можете копирати и налепити листу домена из табеле"
 
 #: templates/modern/bulk_registration.html:131
 msgid "Make sure the domain names follow valid DNS naming conventions"
-msgstr "Make sure the domain names follow valid DNS naming conventions"
+msgstr "Уверите се да имена домена прате важеће DNS конвенције именовања"
 
 #: templates/modern/user_agreement.html:13
 msgid "User Agreement"
@@ -12629,7 +12629,7 @@ msgstr "MFA је тренутно омогућен"
 
 #: templates/default/mfa_setup.html:29 templates/modern/mfa_setup.html:29
 msgid "Your account is protected with multi-factor authentication."
-msgstr "Your account is protected with multi-factor authentication."
+msgstr "Ваш налог је заштићен вишефакторском аутентификацијом."
 
 #: templates/default/mfa_setup.html:45 templates/modern/mfa_setup.html:45
 msgid "Regenerate Recovery Codes"
@@ -12989,11 +12989,11 @@ msgstr "Прегледи користе узорке података за пр�
 
 #: templates/modern/email_previews.html:97
 msgid "Light mode is the default appearance for most email clients"
-msgstr "Light mode is the default appearance for most email clients"
+msgstr "Светли режим је подразумевани изглед за већину имејл клијената"
 
 #: templates/modern/email_previews.html:99
 msgid "These previews reflect the actual templates used in production"
-msgstr "These previews reflect the actual templates used in production"
+msgstr "Ови прегледи одражавају стварне шаблоне у продукцији"
 
 #: templates/modern/pdns_status.html:6 templates/modern/pdns_status.html:12
 msgid "PowerDNS Server Status"
@@ -13222,7 +13222,7 @@ msgstr "Доступне зоне"
 
 #: templates/modern/manage_group_zones.html:79
 msgid "This group already owns all zones or no zones are available"
-msgstr "This group already owns all zones or no zones are available"
+msgstr "Ова група већ поседује све зоне или нема доступних зона"
 
 #: templates/modern/manage_group_zones.html:87
 msgid "Search zones..."
@@ -13882,7 +13882,7 @@ msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Уверите се да је URL преписивање конфигурисано (погледајте nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
@@ -13918,7 +13918,7 @@ msgstr "Конфигурација:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "Сада ћемо прикупити све детаље за саму конфигурацију."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
