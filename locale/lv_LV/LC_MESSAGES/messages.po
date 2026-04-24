@@ -71,8 +71,7 @@ msgid ""
 "What part of the certificate to match. Type 1 (public key) survives "
 "certificate renewal."
 msgstr ""
-"What part of the certificate to match. Type 1 (public key) survives "
-"certificate renewal."
+"Kuru sertifikāta daļu salīdzināt. 1. tips (publiskā atslēga) izdzīvo atjaunošanu."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:147
 msgid ""
@@ -406,18 +405,14 @@ msgstr "Tiek izmantota noklusējuma sesijas atslēga, iestatiet konfigurācijā.
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
-msgstr ""
-"The record has been deleted successfully. Any corresponding PTR records were "
-"also removed."
+msgstr "Ieraksts veiksmīgi dzēsts. Visi atbilstošie PTR ieraksti arī noņemti."
 
 #: lib/Application/Controller/DeleteRecordsController.php:204
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
-msgstr ""
-"%d records have been deleted successfully. Any corresponding PTR records "
-"were also removed."
+msgstr "%d ieraksti veiksmīgi dzēsti. Visi atbilstošie PTR ieraksti arī noņemti."
 
 #: lib/Application/Controller/DeleteRecordsController.php:276
 msgid ""
@@ -533,8 +528,7 @@ msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
 msgstr ""
-"Failed to send verification code. Please try again later or use app-based "
-"authentication."
+"Neizdevās nosūtīt pārbaudes kodu. Mēģiniet vēlāk vai izmantojiet lietotni."
 
 #: lib/Application/Controller/MfaSetupController.php:300
 #: templates/default/mfa_setup.html:38 templates/modern/mfa_setup.html:38
@@ -628,8 +622,7 @@ msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
-"Zone was created successfully, but DNSSEC signing was skipped due to "
-"validation errors:"
+"Zona veiksmīgi izveidota, bet DNSSEC parakstīšana izlaista validācijas dēļ:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:185
 msgid ""
@@ -643,9 +636,7 @@ msgstr ""
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
-msgstr ""
-"Zone was created and signing was requested, but verification failed. Check "
-"DNSSEC keys."
+msgstr "Zona izveidota un parakstīšana pieprasīta, bet pārbaude neizdevās."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:149
 #, php-format
@@ -781,8 +772,7 @@ msgid ""
 "IPSECKEY record must contain precedence, gateway type, algorithm, gateway, "
 "and public key."
 msgstr ""
-"IPSECKEY record must contain precedence, gateway type, algorithm, gateway, "
-"and public key."
+"IPSECKEY ierakstam jāsatur precedence, gateway type, algorithm, gateway un publiskā atslēga."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:181
 msgid ""
@@ -1129,9 +1119,7 @@ msgstr "LP ieraksti jāizmanto tikai ar ILNP."
 msgid ""
 "LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
 "Section 3.4)."
-msgstr ""
-"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
-"Section 3.4)."
+msgstr "LP ieraksti NEDRĪKST būt mezgliem, kas nav ILNP (RFC 6742 §3.4)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:122
 msgid ""
@@ -1161,9 +1149,7 @@ msgstr ""
 msgid ""
 "AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
 "service location."
-msgstr ""
-"AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
-"service location."
+msgstr "AFSDB ir novecojis (RFC 5864) par labu SRV AFS pakalpojumu lokācijai."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
@@ -1336,9 +1322,7 @@ msgstr ""
 msgid ""
 "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
 "SHA-256) or later."
-msgstr ""
-"CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
-"SHA-256) or later."
+msgstr "KRITISKI: Algoritms nav drošs. Izmantojiet algoritmu 8 vai jaunāku."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:260
 msgid ""
@@ -1352,9 +1336,7 @@ msgstr ""
 msgid ""
 "RFC 3123 recommends that trailing zero octets should not be present in APL "
 "address parts."
-msgstr ""
-"RFC 3123 recommends that trailing zero octets should not be present in APL "
-"address parts."
+msgstr "RFC 3123 iesaka, ka APL adresēs nedrīkst būt nulles oktetu beigās."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:156
 msgid ""
@@ -1384,9 +1366,7 @@ msgstr ""
 msgid ""
 "Note: NID records are used for the ILNP protocol, which is experimental (RFC "
 "6740, 6742)."
-msgstr ""
-"Note: NID records are used for the ILNP protocol, which is experimental (RFC "
-"6740, 6742)."
+msgstr "Piezīme: NID ieraksti izmanto ILNP protokolu (eksperimentāls)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:155
 msgid ""
@@ -1457,8 +1437,7 @@ msgid ""
 "According to RFC 4034, NSEC records should have the same TTL as the SOA "
 "minimum TTL field."
 msgstr ""
-"According to RFC 4034, NSEC records should have the same TTL as the SOA "
-"minimum TTL field."
+"Saskaņā ar RFC 4034, NSEC ierakstiem jābūt tādam pašam TTL kā SOA minimum."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
@@ -1551,9 +1530,7 @@ msgstr "RRSIG veids parasti jāiekļauj NSEC bit mapās DNSSEC zonām."
 msgid ""
 "This NSEC record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr ""
-"This NSEC record contains both SOA and NS types, indicating it might be for "
-"a zone apex."
+msgstr "NSEC ieraksts satur SOA un NS, iespējams, zonas virsotnei."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:112
 msgid ""
@@ -1697,9 +1674,7 @@ msgstr ""
 msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
-msgstr ""
-"Accurate system clocks are required on both client and server for TSIG to "
-"work correctly."
+msgstr "Precīzi sistēmas pulksteņi nepieciešami TSIG pareizai darbībai."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
@@ -1783,9 +1758,7 @@ msgstr "Izmanto nestandarta TSIG algoritmu. Var nebūt plaši atbalstīts."
 msgid ""
 "ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
 "all DNS servers."
-msgstr ""
-"ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
-"all DNS servers."
+msgstr "ZONEMD ir definēts RFC 8976 (2021) un var nebūt visur atbalstīts."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:112
 msgid ""
@@ -1803,9 +1776,7 @@ msgstr "Sērijas numuram ZONEMD ierakstā jāatbilst zonas SOA sērijas numuram.
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr ""
-"ZONEMD scheme values 240-255 are reserved for private use and may not be "
-"interoperable."
+msgstr "ZONEMD shēmas 240-255 ir rezervētas privātai lietošanai."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
@@ -1833,8 +1804,7 @@ msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
 msgstr ""
-"ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
-"separated by spaces."
+"ZONEMD ierakstam jāsatur serial, scheme, hash-algorithm un digest ar atstarpēm."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -1871,16 +1841,13 @@ msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
 msgstr ""
-"CERT record must contain type, key-tag, algorithm and certificate-data "
-"separated by spaces."
+"CERT ierakstam jāsatur type, key-tag, algorithm un certificate-data, atdalītus ar atstarpēm."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
 "CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
 "SPKI, PGP, etc.)."
-msgstr ""
-"CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
-"SPKI, PGP, etc.)."
+msgstr "CERT veidam jābūt skaitlim 0-65535 vai derīgam mnemonikam."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:192
 msgid ""
@@ -1894,17 +1861,13 @@ msgstr ""
 msgid ""
 "CERT algorithm must be a number between 0 and 255 or a valid mnemonic "
 "(RSASHA1, DSA, etc.)."
-msgstr ""
-"CERT algorithm must be a number between 0 and 255 or a valid mnemonic "
-"(RSASHA1, DSA, etc.)."
+msgstr "CERT algoritmam jābūt skaitlim 0-255 vai derīgam mnemonikam."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
 "CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
 "0-9, +, /, =)."
-msgstr ""
-"CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
-"0-9, +, /, =)."
+msgstr "CERT datiem jāsatur tikai derīgi base64 simboli."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:285
 msgid ""
@@ -2120,9 +2083,7 @@ msgstr ""
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
 "recommended."
-msgstr ""
-"HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
-"recommended."
+msgstr "HMAC-MD5 ir vājš. Iesakām HMAC-SHA256 vai spēcīgāku."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
@@ -2413,9 +2374,7 @@ msgstr ""
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
-msgstr ""
-"CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
-"level domain."
+msgstr "CNAME mērķim jābūt FQDN ar derīgu TLD."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:107
 msgid ""
@@ -2533,9 +2492,7 @@ msgstr ""
 msgid ""
 "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
 "cryptographic weaknesses."
-msgstr ""
-"Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
-"cryptographic weaknesses."
+msgstr "Algoritms 1 (RSA/MD5) ir novecojis un NEDRĪKST tikt izmantots."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid ""
@@ -2626,9 +2583,7 @@ msgstr ""
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
-msgstr ""
-"CRITICAL: This signature has already expired. It will not be validated by "
-"DNSSEC resolvers."
+msgstr "KRITISKI: Paraksts jau beidzies. DNSSEC risinātāji to nevalidēs."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
@@ -2765,9 +2720,7 @@ msgstr ""
 msgid ""
 "Using \".\" for the TXT domain indicates no additional information TXT "
 "record is available."
-msgstr ""
-"Using \".\" for the TXT domain indicates no additional information TXT "
-"record is available."
+msgstr "\".\" lietošana TXT domēnā norāda, ka nav papildu TXT ieraksta."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:340
 msgid ""
@@ -2867,9 +2820,7 @@ msgstr ""
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr ""
-"According to RFC 6672, DNAME records must be unique at a given owner name "
-"(singleton rule)."
+msgstr "Saskaņā ar RFC 6672, DNAME ieraksti jābūt unikāliem pēc īpašnieka vārda."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
@@ -3035,9 +2986,7 @@ msgstr "CSYNC ierakstiem jābūt prioritātei 0."
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr ""
-"Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
-"(0-4294967295)."
+msgstr "Nederīgs SOA Serial CSYNC ierakstā. Jābūt 32-bit unsigned."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
@@ -3146,9 +3095,7 @@ msgstr ""
 msgid ""
 "Priority field for PTR records should be 0 or empty. The specified value "
 "will be ignored."
-msgstr ""
-"Priority field for PTR records should be 0 or empty. The specified value "
-"will be ignored."
+msgstr "PTR prioritātes laukam jābūt 0 vai tukšam. Vērtība tiks ignorēta."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:166
 msgid ""
@@ -3182,9 +3129,7 @@ msgstr "Tukša vērtība nav atļauta. Izmantojiet \";\" visām CA."
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
-msgstr ""
-"contactphone value must contain only numbers, spaces, and common phone "
-"number punctuation."
+msgstr "contactphone drīkst saturēt tikai ciparus, atstarpes un pieturzīmes."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
 msgid "Backslashes must precede all quotes (\") in value content."
@@ -3208,8 +3153,7 @@ msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
 msgstr ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
+"SOA validācijas parametri nav iestatīti. Izsauciet setSOAParams() vispirms."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:115
 msgid ""
@@ -3557,8 +3501,7 @@ msgid ""
 "CDNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
 msgstr ""
-"CDNSKEY record must contain flags, protocol, algorithm and public-key "
-"separated by spaces."
+"CDNSKEY ierakstam jāsatur flags, protocol, algorithm un public-key, atdalītus ar atstarpēm."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:184
 msgid ""
@@ -3618,9 +3561,7 @@ msgstr ""
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
-msgstr ""
-"WARNING: This LUA record appears to have unbalanced quotes, which may cause "
-"syntax errors."
+msgstr "BRĪDINĀJUMS: LUA ierakstam šķiet nelīdzsvarotas pēdiņas."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""
@@ -3667,8 +3608,7 @@ msgid ""
 "SSHFP record must contain algorithm, fingerprint-type and fingerprint "
 "separated by spaces."
 msgstr ""
-"SSHFP record must contain algorithm, fingerprint-type and fingerprint "
-"separated by spaces."
+"SSHFP ierakstam jāsatur algorithm, fingerprint-type un fingerprint, atdalītus ar atstarpēm."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:179
 msgid ""
@@ -3697,8 +3637,7 @@ msgid ""
 "Ed448 keys offer very high security but may not be supported by all SSH "
 "implementations."
 msgstr ""
-"Ed448 keys offer very high security but may not be supported by all SSH "
-"implementations."
+"Ed448 atslēgas piedāvā augstu drošību, bet nevar atbalstīt visas SSH implementācijas."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:202
 msgid ""
@@ -3712,9 +3651,7 @@ msgstr ""
 msgid ""
 "SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
 "than SHA-1."
-msgstr ""
-"SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
-"than SHA-1."
+msgstr "SHA-256 nospiedumi ieteicami (RFC 6594), drošāki par SHA-1."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
@@ -3738,9 +3675,7 @@ msgstr ""
 msgid ""
 "MR record content (new mailbox) should be a fully qualified domain name (end "
 "with a dot)."
-msgstr ""
-"MR record content (new mailbox) should be a fully qualified domain name (end "
-"with a dot)."
+msgstr "MR saturam (jaunā pastkaste) jābūt FQDN (ar punktu)."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:129
 msgid ""
@@ -4036,9 +3971,7 @@ msgstr ""
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr ""
-"Service name \"%s\" is not in the list of well-known services. This is "
-"allowed but unusual."
+msgstr "Pakalpojuma nosaukums \"%s\" nav zināmu pakalpojumu sarakstā. Atļauts."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
@@ -4162,9 +4095,7 @@ msgstr "RRSIG veids parasti jāiekļauj NSEC3 bit mapās DNSSEC zonām."
 msgid ""
 "This NSEC3 record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr ""
-"This NSEC3 record contains both SOA and NS types, indicating it might be for "
-"a zone apex."
+msgstr "NSEC3 ieraksts satur SOA un NS, iespējams, zonas virsotnei."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
@@ -4243,8 +4174,7 @@ msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
 msgstr ""
-"NAPTR regexp must have the format "
-"delimiter+pattern+delimiter+replacement+delimiter+flags."
+"NAPTR regexp formāts: atdalītājs+raksts+atdalītājs+aizvietojums+atdalītājs+karodziņi."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:396
 msgid ""
@@ -4278,8 +4208,7 @@ msgid ""
 "DNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
 msgstr ""
-"DNSKEY record must contain flags, protocol, algorithm and public-key "
-"separated by spaces."
+"DNSKEY ierakstam jāsatur flags, protocol, algorithm un public-key, atdalītus ar atstarpēm."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:158
 msgid ""
@@ -4333,9 +4262,7 @@ msgstr ""
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr ""
-"Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
-"should not be used."
+msgstr "Algoritms %d NEDRĪKST tikt implementēts saskaņā ar RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:237
 msgid ""
@@ -4523,9 +4450,7 @@ msgstr "Izmantojiet aprakstošus nosaukumus veidņu vieglai identifikācijai"
 msgid ""
 "This user is the owner for the following zones. Please decide what to do "
 "with each zone:"
-msgstr ""
-"This user is the owner for the following zones. Please decide what to do "
-"with each zone:"
+msgstr "Šis lietotājs ir īpašnieks šīm zonām. Izlemiet, ko darīt ar katru zonu:"
 
 #: templates/modern/user_agreement_content.html:2
 msgid ""
@@ -4626,9 +4551,7 @@ msgstr ""
 msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
-msgstr ""
-"Permissions from this template will apply globally across the entire system "
-"for this user"
+msgstr "Veidnes atļaujas darbosies globāli šim lietotājam"
 
 #: templates/default/edit_user.html:248 templates/modern/edit_user.html:245
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
@@ -4754,9 +4677,7 @@ msgstr ""
 msgid ""
 "Use \"Create PTRs only for existing A records\" to populate PTRs based on "
 "your forward zone"
-msgstr ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
+msgstr "Izmantojiet \"Create PTRs only for existing A records\" PTR aizpildei"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""
@@ -4793,9 +4714,7 @@ msgstr ""
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
-msgstr ""
-"DNS wizards are designed for forward zones and may not be appropriate for "
-"reverse zones."
+msgstr "DNS vedņi ir paredzēti turpzonām, ne reversām."
 
 #: templates/default/api_key_add.html:52 templates/modern/api_key_add.html:53
 msgid ""
@@ -4952,8 +4871,7 @@ msgid ""
 "You need to set your email address in your profile before you can use email "
 "verification."
 msgstr ""
-"You need to set your email address in your profile before you can use email "
-"verification."
+"Jums jāiestata e-pasta adrese profilā pirms e-pasta pārbaudes izmantošanas."
 
 #: templates/modern/mfa_verify_email.html:18
 msgid ""
@@ -5017,9 +4935,7 @@ msgstr ""
 msgid ""
 "Standard templates are active. These are the default templates used when "
 "sending emails."
-msgstr ""
-"Standard templates are active. These are the default templates used when "
-"sending emails."
+msgstr "Standarta veidnes ir aktīvas. Noklusējuma veidnes e-pasta sūtīšanai."
 
 #: templates/modern/email_previews.html:78
 msgid ""
@@ -5332,9 +5248,7 @@ msgstr "SQLite fails %s nav rakstāms. Pārbaudiet atļaujas."
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
+msgstr "Konfigurācijas fails nav atrasts. Izveidojiet config/settings.php."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""

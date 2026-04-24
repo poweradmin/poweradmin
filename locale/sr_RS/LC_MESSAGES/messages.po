@@ -71,8 +71,7 @@ msgid ""
 "What part of the certificate to match. Type 1 (public key) survives "
 "certificate renewal."
 msgstr ""
-"What part of the certificate to match. Type 1 (public key) survives "
-"certificate renewal."
+"Који део сертификата треба подударати. Тип 1 (јавни кључ) опстаје при обнови."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:147
 msgid ""
@@ -402,9 +401,7 @@ msgstr "Користи се подразумевани кључ сесије, п
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
-msgstr ""
-"The record has been deleted successfully. Any corresponding PTR records were "
-"also removed."
+msgstr "Запис је успешно обрисан. Све одговарајуће PTR записе су уклоњене."
 
 #: lib/Application/Controller/DeleteRecordsController.php:204
 #, php-format
@@ -412,8 +409,7 @@ msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
 msgstr ""
-"%d records have been deleted successfully. Any corresponding PTR records "
-"were also removed."
+"%d записа је успешно обрисано. Сви одговарајући PTR записи су такође уклоњени."
 
 #: lib/Application/Controller/DeleteRecordsController.php:276
 msgid ""
@@ -529,8 +525,7 @@ msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
 msgstr ""
-"Failed to send verification code. Please try again later or use app-based "
-"authentication."
+"Неуспешно слање кода за верификацију. Покушајте поново или користите апликацију."
 
 #: lib/Application/Controller/MfaSetupController.php:300
 #: templates/default/mfa_setup.html:38 templates/modern/mfa_setup.html:38
@@ -623,9 +618,7 @@ msgstr ""
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
-msgstr ""
-"Zone was created successfully, but DNSSEC signing was skipped due to "
-"validation errors:"
+msgstr "Зона је успешно креирана, али DNSSEC потписивање је прескочено:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:185
 msgid ""
@@ -639,9 +632,7 @@ msgstr ""
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
-msgstr ""
-"Zone was created and signing was requested, but verification failed. Check "
-"DNSSEC keys."
+msgstr "Зона је креирана и захтевано потписивање, али провера није успела."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:149
 #, php-format
@@ -778,8 +769,7 @@ msgid ""
 "IPSECKEY record must contain precedence, gateway type, algorithm, gateway, "
 "and public key."
 msgstr ""
-"IPSECKEY record must contain precedence, gateway type, algorithm, gateway, "
-"and public key."
+"IPSECKEY мора садржати precedence, gateway type, algorithm, gateway, public key."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:181
 msgid ""
@@ -1126,9 +1116,7 @@ msgstr "LP записи се користе само са ILNP протокол�
 msgid ""
 "LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
 "Section 3.4)."
-msgstr ""
-"LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
-"Section 3.4)."
+msgstr "LP НЕ СМЕЈУ бити присутни за не-ILNP чворове (RFC 6742 §3.4)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:122
 msgid ""
@@ -1158,9 +1146,7 @@ msgstr ""
 msgid ""
 "AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
 "service location."
-msgstr ""
-"AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
-"service location."
+msgstr "AFSDB су застарели (RFC 5864) у корист SRV за AFS."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
@@ -1330,9 +1316,7 @@ msgstr ""
 msgid ""
 "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
 "SHA-256) or later."
-msgstr ""
-"CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
-"SHA-256) or later."
+msgstr "КРИТИЧНО: Овај алгоритам није сигуран. Користите 8 или новији."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:260
 msgid ""
@@ -1346,9 +1330,7 @@ msgstr ""
 msgid ""
 "RFC 3123 recommends that trailing zero octets should not be present in APL "
 "address parts."
-msgstr ""
-"RFC 3123 recommends that trailing zero octets should not be present in APL "
-"address parts."
+msgstr "RFC 3123 препоручује да APL не има нула октета на крају."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:156
 msgid ""
@@ -1378,9 +1360,7 @@ msgstr ""
 msgid ""
 "Note: NID records are used for the ILNP protocol, which is experimental (RFC "
 "6740, 6742)."
-msgstr ""
-"Note: NID records are used for the ILNP protocol, which is experimental (RFC "
-"6740, 6742)."
+msgstr "Напомена: NID су за ILNP (експериментално RFC 6740, 6742)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:155
 msgid ""
@@ -1450,9 +1430,7 @@ msgstr "Неважећи приоритет. ALIAS записи морају и�
 msgid ""
 "According to RFC 4034, NSEC records should have the same TTL as the SOA "
 "minimum TTL field."
-msgstr ""
-"According to RFC 4034, NSEC records should have the same TTL as the SOA "
-"minimum TTL field."
+msgstr "По RFC 4034, NSEC треба да имају TTL исти као SOA minimum."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
@@ -1545,9 +1523,7 @@ msgstr "RRSIG тип треба да буде у NSEC type bit maps за DNSSEC 
 msgid ""
 "This NSEC record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr ""
-"This NSEC record contains both SOA and NS types, indicating it might be for "
-"a zone apex."
+msgstr "NSEC запис садржи SOA и NS, вероватно за врх зоне."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:112
 msgid ""
@@ -1690,9 +1666,7 @@ msgstr ""
 msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
-msgstr ""
-"Accurate system clocks are required on both client and server for TSIG to "
-"work correctly."
+msgstr "Тачни часовници клијента и сервера су обавезни за TSIG."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
@@ -1776,9 +1750,7 @@ msgstr "Коришћење нестандардног TSIG алгоритма. �
 msgid ""
 "ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
 "all DNS servers."
-msgstr ""
-"ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
-"all DNS servers."
+msgstr "ZONEMD је дефинисан у RFC 8976 (2021) и можда није свуда подржан."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:112
 msgid ""
@@ -1796,9 +1768,7 @@ msgstr "Серијски број у ZONEMD треба да одговара SOA
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr ""
-"ZONEMD scheme values 240-255 are reserved for private use and may not be "
-"interoperable."
+msgstr "ZONEMD шеме 240-255 су резервисане за приватну употребу."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
@@ -1826,8 +1796,7 @@ msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
 msgstr ""
-"ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
-"separated by spaces."
+"ZONEMD мора садржати serial, scheme, hash-algorithm, digest раздвојене размацима."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
@@ -1864,16 +1833,13 @@ msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
 msgstr ""
-"CERT record must contain type, key-tag, algorithm and certificate-data "
-"separated by spaces."
+"CERT мора садржати type, key-tag, algorithm, certificate-data раздвојене размацима."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
 "CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
 "SPKI, PGP, etc.)."
-msgstr ""
-"CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
-"SPKI, PGP, etc.)."
+msgstr "CERT тип: број 0-65535 или мнемоник (PKIX, SPKI, PGP, итд.)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:192
 msgid ""
@@ -1887,17 +1853,13 @@ msgstr ""
 msgid ""
 "CERT algorithm must be a number between 0 and 255 or a valid mnemonic "
 "(RSASHA1, DSA, etc.)."
-msgstr ""
-"CERT algorithm must be a number between 0 and 255 or a valid mnemonic "
-"(RSASHA1, DSA, etc.)."
+msgstr "CERT алгоритам: број 0-255 или мнемоник (RSASHA1, DSA, итд.)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
 "CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
 "0-9, +, /, =)."
-msgstr ""
-"CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
-"0-9, +, /, =)."
+msgstr "CERT подаци сме садржати само важеће base64 знакове."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:285
 msgid ""
@@ -2113,9 +2075,7 @@ msgstr ""
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
 "recommended."
-msgstr ""
-"HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
-"recommended."
+msgstr "HMAC-MD5 је слаб. Препоручено је HMAC-SHA256."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
@@ -2407,9 +2367,7 @@ msgstr ""
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
-msgstr ""
-"CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
-"level domain."
+msgstr "CNAME циљ мора бити FQDN са важећим TLD."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:107
 msgid ""
@@ -2527,9 +2485,7 @@ msgstr ""
 msgid ""
 "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
 "cryptographic weaknesses."
-msgstr ""
-"Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
-"cryptographic weaknesses."
+msgstr "Алгоритам 1 (RSA/MD5) је застарео и НЕ треба га користити."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid ""
@@ -2621,8 +2577,7 @@ msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
 msgstr ""
-"CRITICAL: This signature has already expired. It will not be validated by "
-"DNSSEC resolvers."
+"КРИТИЧНО: Овај потпис је већ истекао. DNSSEC резолвери га неће валидирати."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid ""
@@ -2758,9 +2713,7 @@ msgstr ""
 msgid ""
 "Using \".\" for the TXT domain indicates no additional information TXT "
 "record is available."
-msgstr ""
-"Using \".\" for the TXT domain indicates no additional information TXT "
-"record is available."
+msgstr "Коришћење \".\" за TXT домен значи да нема додатног TXT записа."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:340
 msgid ""
@@ -2860,9 +2813,7 @@ msgstr ""
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr ""
-"According to RFC 6672, DNAME records must be unique at a given owner name "
-"(singleton rule)."
+msgstr "По RFC 6672, DNAME морају бити јединствени по имену власника."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
@@ -3028,9 +2979,7 @@ msgstr "Неважећи приоритет. CSYNC записи морају и�
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr ""
-"Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
-"(0-4294967295)."
+msgstr "Неважећи SOA Serial у CSYNC. 0-4294967295."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
@@ -3139,9 +3088,7 @@ msgstr ""
 msgid ""
 "Priority field for PTR records should be 0 or empty. The specified value "
 "will be ignored."
-msgstr ""
-"Priority field for PTR records should be 0 or empty. The specified value "
-"will be ignored."
+msgstr "PTR приоритет 0 или празан. Одређена вредност се занемарује."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:166
 msgid ""
@@ -3176,8 +3123,7 @@ msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
 msgstr ""
-"contactphone value must contain only numbers, spaces, and common phone "
-"number punctuation."
+"contactphone сме садржати само цифре, размаке и уобичајену интерпункцију."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
 msgid "Backslashes must precede all quotes (\") in value content."
@@ -3200,9 +3146,7 @@ msgstr ""
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
-msgstr ""
-"SOA validation parameters not set. Call setSOAParams() first or provide them "
-"as arguments."
+msgstr "SOA параметри нису постављени. Позовите setSOAParams() или наведите."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:115
 msgid ""
@@ -3548,8 +3492,7 @@ msgid ""
 "CDNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
 msgstr ""
-"CDNSKEY record must contain flags, protocol, algorithm and public-key "
-"separated by spaces."
+"CDNSKEY мора садржати flags, protocol, algorithm, public-key раздвојене размацима."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:184
 msgid ""
@@ -3609,9 +3552,7 @@ msgstr ""
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
-msgstr ""
-"WARNING: This LUA record appears to have unbalanced quotes, which may cause "
-"syntax errors."
+msgstr "УПОЗОРЕЊЕ: LUA запис изгледа има неизбалансиране наводнике."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""
@@ -3658,8 +3599,7 @@ msgid ""
 "SSHFP record must contain algorithm, fingerprint-type and fingerprint "
 "separated by spaces."
 msgstr ""
-"SSHFP record must contain algorithm, fingerprint-type and fingerprint "
-"separated by spaces."
+"SSHFP мора садржати algorithm, fingerprint-type, fingerprint раздвојене размацима."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:179
 msgid ""
@@ -3687,9 +3627,7 @@ msgstr ""
 msgid ""
 "Ed448 keys offer very high security but may not be supported by all SSH "
 "implementations."
-msgstr ""
-"Ed448 keys offer very high security but may not be supported by all SSH "
-"implementations."
+msgstr "Ed448 нуди високу сигурност, али није свуда подржан у SSH."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:202
 msgid ""
@@ -3703,9 +3641,7 @@ msgstr ""
 msgid ""
 "SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
 "than SHA-1."
-msgstr ""
-"SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
-"than SHA-1."
+msgstr "SHA-256 отисци су препоручени (RFC 6594), бољи од SHA-1."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
@@ -3729,9 +3665,7 @@ msgstr ""
 msgid ""
 "MR record content (new mailbox) should be a fully qualified domain name (end "
 "with a dot)."
-msgstr ""
-"MR record content (new mailbox) should be a fully qualified domain name (end "
-"with a dot)."
+msgstr "MR садржај (ново сандуче) треба FQDN (тачка)."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:129
 msgid ""
@@ -4026,9 +3960,7 @@ msgstr ""
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr ""
-"Service name \"%s\" is not in the list of well-known services. This is "
-"allowed but unusual."
+msgstr "Име услуге \"%s\" није у well-known листи. Дозвољено али необично."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
@@ -4151,9 +4083,7 @@ msgstr "RRSIG тип треба да буде у NSEC3 type bit maps за DNSSEC
 msgid ""
 "This NSEC3 record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr ""
-"This NSEC3 record contains both SOA and NS types, indicating it might be for "
-"a zone apex."
+msgstr "NSEC3 запис садржи SOA и NS, вероватно за врх зоне."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
@@ -4233,8 +4163,7 @@ msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
 msgstr ""
-"NAPTR regexp must have the format "
-"delimiter+pattern+delimiter+replacement+delimiter+flags."
+"NAPTR regексп формат: разделник+обр.+разделник+замена+разделник+заставице."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:396
 msgid ""
@@ -4267,8 +4196,7 @@ msgid ""
 "DNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
 msgstr ""
-"DNSKEY record must contain flags, protocol, algorithm and public-key "
-"separated by spaces."
+"DNSKEY мора садржати flags, protocol, algorithm, public-key раздвојене размацима."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:158
 msgid ""
@@ -4322,9 +4250,7 @@ msgstr ""
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr ""
-"Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
-"should not be used."
+msgstr "Алгоритам %d НЕ СМЕ се користити по RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:237
 msgid ""
@@ -4511,9 +4437,7 @@ msgstr "Користите описна имена и описе да шабло
 msgid ""
 "This user is the owner for the following zones. Please decide what to do "
 "with each zone:"
-msgstr ""
-"This user is the owner for the following zones. Please decide what to do "
-"with each zone:"
+msgstr "Овај корисник је власник следећих зона. Одлучите шта са сваком:"
 
 #: templates/modern/user_agreement_content.html:2
 msgid ""
@@ -4612,9 +4536,7 @@ msgstr ""
 msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
-msgstr ""
-"Permissions from this template will apply globally across the entire system "
-"for this user"
+msgstr "Дозволе из шаблона важе глобално за овог корисника"
 
 #: templates/default/edit_user.html:248 templates/modern/edit_user.html:245
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
@@ -4742,8 +4664,7 @@ msgid ""
 "Use \"Create PTRs only for existing A records\" to populate PTRs based on "
 "your forward zone"
 msgstr ""
-"Use \"Create PTRs only for existing A records\" to populate PTRs based on "
-"your forward zone"
+"Користите \"Create PTRs only for existing A records\" за попуњавање PTR према директној зони"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""
@@ -4779,9 +4700,7 @@ msgstr ""
 msgid ""
 "DNS wizards are designed for forward zones and may not be appropriate for "
 "reverse zones."
-msgstr ""
-"DNS wizards are designed for forward zones and may not be appropriate for "
-"reverse zones."
+msgstr "DNS чаробњаци су за директне зоне, не за обрнуте."
 
 #: templates/default/api_key_add.html:52 templates/modern/api_key_add.html:53
 msgid ""
@@ -4939,9 +4858,7 @@ msgstr "Провера имејла није доступна јер mail servic
 msgid ""
 "You need to set your email address in your profile before you can use email "
 "verification."
-msgstr ""
-"You need to set your email address in your profile before you can use email "
-"verification."
+msgstr "Морате поставити имејл у профилу пре него што користите проверу."
 
 #: templates/modern/mfa_verify_email.html:18
 msgid ""
@@ -5004,9 +4921,7 @@ msgstr ""
 msgid ""
 "Standard templates are active. These are the default templates used when "
 "sending emails."
-msgstr ""
-"Standard templates are active. These are the default templates used when "
-"sending emails."
+msgstr "Активни стандардни шаблони. Подразумевани при слању имејла."
 
 #: templates/modern/email_previews.html:78
 msgid ""
@@ -5319,9 +5234,7 @@ msgstr "SQLite датотека %s није уписива. Проверите �
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
+msgstr "Конфигурациона датотека није пронађена. Креирајте config/settings.php."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
