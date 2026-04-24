@@ -149,8 +149,7 @@ msgstr ""
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:130
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
-msgstr ""
-"When to generate forensic reports (only applies if forensic email is set)"
+msgstr "Kedy generovať forenzné správy"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:277
 #, php-format
@@ -236,8 +235,7 @@ msgstr ""
 #: lib/Module/DnsWizard/Service/CAAWizard.php:92
 msgid ""
 "Enter the CA domain name manually (only shown when \"Custom\" is selected)"
-msgstr ""
-"Enter the CA domain name manually (only shown when \"Custom\" is selected)"
+msgstr "Zadajte doménu CA manuálne (iba pri \"Vlastné\")"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:138
 msgid ""
@@ -308,14 +306,12 @@ msgstr ""
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:119
 msgid ""
 "Enable strict subdomain mode (t=s). Rejects unsigned mail from subdomains."
-msgstr ""
-"Enable strict subdomain mode (t=s). Rejects unsigned mail from subdomains."
+msgstr "Prísny režim subdomén (t=s). Odmieta nepodpísanú poštu."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:200
 msgid ""
 "Selector can only contain alphanumeric characters, hyphens, and underscores"
-msgstr ""
-"Selector can only contain alphanumeric characters, hyphens, and underscores"
+msgstr "Selektor iba alfanumerické, pomlčky, podčiarkovníky"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:216
 msgid ""
@@ -404,8 +400,7 @@ msgstr ""
 #: lib/Module/DnsWizard/Service/SRVWizard.php:299
 msgid ""
 "Priority 0 is valid but unusual. Most services use priority 10 or higher."
-msgstr ""
-"Priority 0 is valid but unusual. Most services use priority 10 or higher."
+msgstr "Priorita 0 je platná, ale neobvyklá. Väčšinou 10 alebo vyššia."
 
 #: lib/BaseController.php:592
 msgid ""
@@ -489,8 +484,7 @@ msgstr ""
 #: lib/Application/Controller/DeleteRecordController.php:227
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
-msgstr ""
-"The record and its corresponding PTR record have been deleted successfully."
+msgstr "Záznam a zodpovedajúci PTR boli úspešne vymazané."
 
 #: lib/Application/Controller/DeleteRecordController.php:229
 msgid ""
@@ -503,8 +497,7 @@ msgstr ""
 #: lib/Application/Controller/DeleteRecordController.php:231
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
-msgstr ""
-"The record has been deleted successfully. No matching PTR record was found."
+msgstr "Záznam úspešne vymazaný. Nenašiel sa PTR."
 
 #: lib/Application/Controller/DeleteRecordController.php:233
 msgid ""
@@ -594,8 +587,7 @@ msgstr ""
 #: templates/modern/edit_zone_metadata.html:153
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
-"Custom metadata kind stored directly in the PowerDNS domainmetadata table."
+msgstr "Vlastné metadáta uložené priamo v tabuľke domainmetadata."
 
 #: lib/Domain/Model/ZoneTemplate.php:189 lib/Domain/Model/ZoneTemplate.php:877
 msgid "Zone template with this name already exists, please choose another one."
@@ -886,8 +878,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
 "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
-msgstr ""
-"3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
+msgstr "3. SRV aj TLSA musia mať DNSSEC status \"secure\""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
@@ -1317,7 +1308,7 @@ msgstr ""
 msgid ""
 "RKEY record must contain flags, protocol, algorithm, and public key data."
 msgstr ""
-"RKEY record must contain flags, protocol, algorithm, and public key data."
+"Záznam RKEY musí obsahovať príznaky, protokol, algoritmus a verejný kľúč."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:189
 msgid ""
@@ -1378,8 +1369,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:207
 msgid ""
 "Algorithm 8 (RSA/SHA-256) is currently recommended for DNSSEC deployments."
-msgstr ""
-"Algorithm 8 (RSA/SHA-256) is currently recommended for DNSSEC deployments."
+msgstr "Algoritmus 8 (RSA/SHA-256) sa odporúča pre DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:236
 msgid ""
@@ -1448,14 +1438,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
 "Invalid value for priority field. APL records must have priority value of 0."
-msgstr ""
-"Invalid value for priority field. APL records must have priority value of 0."
+msgstr "APL priorita 0."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:266
 msgid ""
 "Invalid Address Family Identifier (AFI). Must be 1 for IPv4 or 2 for IPv6."
-msgstr ""
-"Invalid Address Family Identifier (AFI). Must be 1 for IPv4 or 2 for IPv6."
+msgstr "Neplatný AFI. Musí byť 1 pre IPv4 alebo 2 pre IPv6."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:315
 msgid ""
@@ -1524,14 +1512,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:239
 msgid ""
 "An all-ones NodeID value is unusual and may indicate a configuration error."
-msgstr ""
-"An all-ones NodeID value is unusual and may indicate a configuration error."
+msgstr "Hodnota NodeID \"všetky jednotky\" je neobvyklá."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:107
 msgid ""
 "ALIAS target cannot point to itself, as this would create a resolution loop."
-msgstr ""
-"ALIAS target cannot point to itself, as this would create a resolution loop."
+msgstr "ALIAS cieľ nesmie smerovať sám na seba."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:160
 msgid ""
@@ -1737,8 +1723,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:137
 msgid ""
 "Invalid value for priority field. NS records must have priority value of 0."
-msgstr ""
-"Invalid value for priority field. NS records must have priority value of 0."
+msgstr "NS priorita 0."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:118
 msgid ""
@@ -1879,8 +1864,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:337
 msgid ""
 "Using a non-standard TSIG algorithm name. This may not be widely supported."
-msgstr ""
-"Using a non-standard TSIG algorithm name. This may not be widely supported."
+msgstr "Neštandardný TSIG algoritmus. Nemusí byť podporovaný."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:110
 msgid ""
@@ -1917,8 +1901,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
 "SHA-384 (algorithm 1) is the recommended hash algorithm for ZONEMD records."
-msgstr ""
-"SHA-384 (algorithm 1) is the recommended hash algorithm for ZONEMD records."
+msgstr "SHA-384 (1) je odporúčaný pre ZONEMD."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:131
 msgid ""
@@ -2125,8 +2108,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
-"HTTPS record parameters must be in key=value format separated by spaces."
+msgstr "HTTPS parametre v key=value formáte oddelené medzerami."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
@@ -2226,14 +2208,12 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:229
 msgid ""
 "TKEY key data must be valid base64-encoded data or a hexadecimal string."
-msgstr ""
-"TKEY key data must be valid base64-encoded data or a hexadecimal string."
+msgstr "Údaje TKEY musia byť platné base64 alebo hex."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:233
 msgid ""
 "TKEY established keys are associated with DNS servers/resolvers, not zones."
-msgstr ""
-"TKEY established keys are associated with DNS servers/resolvers, not zones."
+msgstr "TKEY kľúče sú viazané na servery, nie zóny."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:234
 msgid ""
@@ -2270,8 +2250,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid ""
 "Invalid value for default TTL. It must be a number between 0 and 2147483647."
-msgstr ""
-"Invalid value for default TTL. It must be a number between 0 and 2147483647."
+msgstr "Neplatné predvolené TTL. 0-2147483647."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:111
 #, php-format
@@ -2486,14 +2465,12 @@ msgstr "Záznam SPF musí začínať \"v=spf1\""
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:166
 msgid ""
 "SPF record exceeds 255 character limit. Split across multiple TXT records."
-msgstr ""
-"SPF record exceeds 255 character limit. Split across multiple TXT records."
+msgstr "SPF prekračuje 255 znakov. Rozdeľte na viacero TXT."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
 "Multiple \"all\" mechanisms found. Only the first one will be effective."
-msgstr ""
-"Multiple \"all\" mechanisms found. Only the first one will be effective."
+msgstr "Viacero \"all\" mechanizmov, iba prvý je platný."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:254
 msgid ""
@@ -2540,20 +2517,17 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:228
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
-msgstr ""
-"This is not a valid CNAME. There already exists a record with this name."
+msgstr "Toto nie je platný CNAME. Záznam s týmto názvom už existuje."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:263
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
-msgstr ""
-"This is not a valid CNAME. Did you assign an MX or NS record to the record?"
+msgstr "Toto nie je platný CNAME. Priradili ste MX alebo NS?"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:319
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
-msgstr ""
-"This is not a valid record. There already exists a CNAME with this name."
+msgstr "Toto nie je platný záznam. CNAME s týmto názvom už existuje."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
 msgid ""
@@ -2762,8 +2736,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:219
 msgid ""
 "Unknown algorithm value. Only algorithms defined in RFCs should be used."
-msgstr ""
-"Unknown algorithm value. Only algorithms defined in RFCs should be used."
+msgstr "Neznáma hodnota algoritmu. Používajte iba tie definované v RFC."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid ""
@@ -2818,8 +2791,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
-msgstr ""
-"RRSIG signer name must be a fully qualified domain name (end with a dot)."
+msgstr "Podpisovateľ RRSIG musí byť FQDN (s bodkou)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
@@ -2904,8 +2876,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:219
 msgid ""
 "RP mailbox domain must be a fully qualified domain name (end with a dot)."
-msgstr ""
-"RP mailbox domain must be a fully qualified domain name (end with a dot)."
+msgstr "RP mailbox musí byť FQDN (s bodkou)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:233
 msgid ""
@@ -3093,8 +3064,7 @@ msgstr ""
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr ""
-"%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
+msgstr "%s (algoritmus %d) je ODPORÚČANÝ podľa RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
@@ -3732,8 +3702,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:86
 msgid ""
 "CDNSKEY records are typically published at the zone apex, not in subdomains."
-msgstr ""
-"CDNSKEY records are typically published at the zone apex, not in subdomains."
+msgstr "CDNSKEY záznamy sa typicky publikujú na vrchole zóny."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:125
 msgid ""
@@ -3964,8 +3933,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:147
 msgid ""
 "Consider using standard mail forwarding mechanisms instead of MR records."
-msgstr ""
-"Consider using standard mail forwarding mechanisms instead of MR records."
+msgstr "Zvážte štandardné preposielanie pošty namiesto MR."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:148
 msgid ""
@@ -4010,8 +3978,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:208
 msgid ""
 "Unusual protocol value. Protocol 3 (DNSSEC) is most common for KEY records."
-msgstr ""
-"Unusual protocol value. Protocol 3 (DNSSEC) is most common for KEY records."
+msgstr "Neobvyklý protokol. 3 (DNSSEC) je bežný pre KEY."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:219
 msgid ""
@@ -4054,8 +4021,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
 "DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
-msgstr ""
-"DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
+msgstr "DMARC sp: none, quarantine alebo reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:234
 #, php-format
@@ -4129,8 +4095,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:136
 msgid ""
 "Invalid value for priority field. A records must have priority value of 0."
-msgstr ""
-"Invalid value for priority field. A records must have priority value of 0."
+msgstr "Neplatná priorita. A záznamy musia mať 0."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:95
 msgid ""
@@ -4662,8 +4627,7 @@ msgstr ""
 #: templates/modern/add_zone_templ_record.html:44
 msgid ""
 "Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
-msgstr ""
-"Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
+msgstr "Príklad: [ZONE] pre zónu, alebo subdomain.[ZONE]"
 
 #: templates/modern/add_record.html:104 templates/modern/add_record.html:156
 msgid ""
@@ -4694,8 +4658,7 @@ msgstr ""
 #: templates/modern/edit_supermaster.html:80
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr ""
-"You can modify the IP address, hostname, or account for this supermaster."
+msgstr "Môžete zmeniť IP, hostiteľa alebo účet supermaster."
 
 #: templates/modern/edit_supermaster.html:84
 msgid ""
@@ -4708,26 +4671,22 @@ msgstr ""
 #: templates/default/dnssec.html:12 templates/modern/dnssec.html:12
 msgid ""
 "This action will remove all DNSSEC keys and disable DNSSEC for this zone."
-msgstr ""
-"This action will remove all DNSSEC keys and disable DNSSEC for this zone."
+msgstr "Odstráni všetky DNSSEC kľúče a vypne DNSSEC pre zónu."
 
 #: templates/modern/forgot_password.html:21
 msgid ""
 "Enter your email address and we'll send you a link to reset your password."
-msgstr ""
-"Enter your email address and we'll send you a link to reset your password."
+msgstr "Zadajte e-mail a pošleme vám odkaz na reset hesla."
 
 #: templates/default/edit_group.html:47
 msgid ""
 "Group members inherit these permissions only for zones owned by this group"
-msgstr ""
-"Group members inherit these permissions only for zones owned by this group"
+msgstr "Členovia skupiny dedia tieto oprávnenia iba pre zóny tejto skupiny"
 
 #: templates/modern/manage_group_members.html:134
 msgid ""
 "This action will immediately revoke any permissions granted by this group."
-msgstr ""
-"This action will immediately revoke any permissions granted by this group."
+msgstr "Táto akcia okamžite odvolá oprávnenia skupiny."
 
 #: templates/default/edit_group.html:208 templates/modern/edit_group.html:208
 msgid ""
@@ -4768,8 +4727,7 @@ msgstr ""
 #: templates/modern/add_zone_templ.html:98
 msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
-msgstr ""
-"Use descriptive names and descriptions to make templates easy to identify"
+msgstr "Používajte opisné názvy pre ľahkú identifikáciu šablón"
 
 #: templates/default/delete_user.html:30 templates/modern/delete_user.html:30
 msgid ""
@@ -4783,13 +4741,12 @@ msgstr ""
 msgid ""
 "By using this Poweradmin installation, you agree to the following terms:"
 msgstr ""
-"By using this Poweradmin installation, you agree to the following terms:"
+"Používaním tejto inštalácie Poweradmin súhlasíte s nasledovnými podmienkami:"
 
 #: templates/modern/user_agreement_content.html:6
 msgid ""
 "You will use this system responsibly and in accordance with applicable laws"
-msgstr ""
-"You will use this system responsibly and in accordance with applicable laws"
+msgstr "Budete používať systém zodpovedne v súlade so zákonmi"
 
 #: templates/modern/user_agreement_content.html:14
 msgid ""
@@ -4802,8 +4759,7 @@ msgstr ""
 #: templates/modern/user_agreement_content.html:15
 msgid ""
 "You are responsible for the accuracy of DNS records you create or modify"
-msgstr ""
-"You are responsible for the accuracy of DNS records you create or modify"
+msgstr "Zodpovedáte za správnosť DNS záznamov"
 
 #: templates/modern/user_agreement_content.html:16
 msgid ""
@@ -4954,14 +4910,12 @@ msgstr ""
 #: templates/modern/add_supermaster.html:85
 msgid ""
 "The hostname must match exactly what appears in the NS record of the zone."
-msgstr ""
-"The hostname must match exactly what appears in the NS record of the zone."
+msgstr "Názov hostiteľa sa musí presne zhodovať s NS záznamom."
 
 #: templates/modern/add_supermaster.html:86
 msgid ""
 "Ensure your firewall allows DNS notifications between masters and slaves."
-msgstr ""
-"Ensure your firewall allows DNS notifications between masters and slaves."
+msgstr "Firewall musí povoliť DNS notifikácie medzi hlavnými a sekundárnymi."
 
 #: templates/modern/batch_ptr_record.html:68
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
@@ -5090,8 +5044,7 @@ msgstr "Pokúšate sa vymazať záznam potrebný pre zónu."
 #: templates/default/mfa_verify.html:105 templates/modern/mfa_verify.html:105
 msgid ""
 "Enter one of your recovery codes. Note that each code can only be used once."
-msgstr ""
-"Enter one of your recovery codes. Note that each code can only be used once."
+msgstr "Zadajte obnovovací kód. Každý iba raz."
 
 #: templates/modern/forgot_username.html:21
 msgid ""
@@ -5260,8 +5213,7 @@ msgstr ""
 #: templates/default/search.html:34 templates/modern/search.html:34
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
-msgstr ""
-"Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
+msgstr "Zadajte doménu, hostiteľa alebo IP"
 
 #: templates/default/search.html:107 templates/modern/search.html:107
 msgid ""
@@ -5334,8 +5286,7 @@ msgstr ""
 #: templates/modern/email_previews.html:98
 msgid ""
 "Dark mode preview shows how emails appear when users have dark mode enabled"
-msgstr ""
-"Dark mode preview shows how emails appear when users have dark mode enabled"
+msgstr "Náhľad tmavého režimu"
 
 #: templates/default/pdns_status.html:25 templates/modern/pdns_status.html:26
 msgid ""
@@ -5476,8 +5427,7 @@ msgstr ""
 #: install/templates/step6.html.twig:40
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
-"After you have added the new user, proceed with this installation procedure."
+msgstr "Po pridaní používateľa pokračujte v inštalácii."
 
 #: install/templates/step6.html.twig:43
 msgid ""
@@ -5490,8 +5440,7 @@ msgstr ""
 #: install/templates/step1.html.twig:12
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
-"Please select your preferred language to continue with the installation:"
+msgstr "Vyberte preferovaný jazyk pre pokračovanie inštalácie:"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
@@ -5520,8 +5469,7 @@ msgstr "Názov hostiteľa servera DB (zvyčajne \"localhost\")."
 #: install/templates/step4.html.twig:197
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
+msgstr "Pravidlá kolácie. Prázdne pre predvolené."
 
 #: install/templates/step4.html.twig:238
 msgid "Password for \"admin\" username."
@@ -5540,8 +5488,7 @@ msgstr ""
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
+msgstr "Používateľ DB s obmedzeným prístupom. Nie pre web UI."
 
 #: install/templates/step8.html.twig:16
 msgid ""
@@ -5574,8 +5521,7 @@ msgstr ""
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
+msgstr "PowerDNS nainštalovaný s tabuľkami (alebo API)"
 
 #: install/templates/step3.html.twig:27
 msgid ""
@@ -5628,15 +5574,13 @@ msgstr ""
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
+msgstr "Súbor SQLite %s nie je čitateľný. Skontrolujte práva."
 
 #: install/helpers/DatabaseHelper.php:191
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
+msgstr "Súbor SQLite %s nie je zapisovateľný."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
 msgid ""
