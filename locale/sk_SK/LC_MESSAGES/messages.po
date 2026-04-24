@@ -9085,7 +9085,7 @@ msgstr "Neplatná dĺžka prefixu v RFC 2317. Musí byť číselná."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
-msgstr "Podsieť %d nie je zarovnaná s prefixom /%d."
+msgstr "Podsieť %d nie je zarovnaná s prefixom /%d. Mala by byť násobkom %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
 msgid "Invalid IPv6 prefix length. Must be 0-128."

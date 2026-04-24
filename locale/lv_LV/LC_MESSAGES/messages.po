@@ -9086,7 +9086,7 @@ msgstr "Nederīgs prefiksa garums RFC 2317 notācijā."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
-msgstr "Apakštīkls %d nav saskaņots ar prefiksu /%d."
+msgstr "Apakštīkls %d nav saskaņots ar prefiksu /%d. Jābūt %d daudzkāršajam."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
 msgid "Invalid IPv6 prefix length. Must be 0-128."

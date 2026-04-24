@@ -9072,7 +9072,7 @@ msgstr "Érvénytelen előtag hossz RFC 2317-ben. Szám legyen."
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
-msgstr "Az %d alhálózat nem igazodik /%d előtaghoz. %d többszöröse."
+msgstr "Az %d alhálózat nem igazodik /%d előtaghoz. %d többszöröse kell legyen."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
 msgid "Invalid IPv6 prefix length. Must be 0-128."
