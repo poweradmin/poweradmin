@@ -158,9 +158,7 @@ msgstr ""
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
-msgstr ""
-"Domains whose SPF records should be included (one per line). Common: "
-"_spf.google.com, spf.protection.outlook.com"
+msgstr "Toimialueet, joiden SPF sisällytetään (yksi per rivi)."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:152
 msgid ""
@@ -540,9 +538,7 @@ msgstr "Alueen allekirjoituspyyntö onnistui, mutta vahvistus epäonnistui."
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
-msgstr ""
-"Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
-"error. Check PowerDNS logs for details."
+msgstr "Alueen allekirjoitus epäonnistui. Validointi ok, mutta API-virhe."
 
 #: lib/Application/Controller/EditController.php:741
 msgid ""
@@ -763,9 +759,7 @@ msgstr "3. Sekä SRV- että TLSA-tietueilla DNSSEC-tilan on oltava \"secure\""
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
-msgstr ""
-"TLSA record name should typically follow the format _port._protocol.hostname "
-"(e.g., _443._tcp.www.example.com)."
+msgstr "TLSA-nimi yleensä muodossa _port._protocol.hostname."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
@@ -934,9 +928,7 @@ msgstr ""
 msgid ""
 "When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
 "generated with the same parameters."
-msgstr ""
-"When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
-"generated with the same parameters."
+msgstr "NSEC3-parametrien päivityksessä molemmat uudelleen."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:181
 msgid ""
@@ -971,9 +963,7 @@ msgstr ""
 msgid ""
 "RFC 9276 recommends using 0 iterations. Additional iterations add "
 "computational cost without enhancing security."
-msgstr ""
-"RFC 9276 recommends using 0 iterations. Additional iterations add "
-"computational cost without enhancing security."
+msgstr "RFC 9276 suosittelee 0 iterointia."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:239
 msgid ""
@@ -1234,9 +1224,7 @@ msgstr "Virheellinen AFI. On oltava 1 (IPv4) tai 2 (IPv6)."
 msgid ""
 "Using APL records for AXFR access control should be combined with other "
 "security measures as noted in RFC 3123."
-msgstr ""
-"Using APL records for AXFR access control should be combined with other "
-"security measures as noted in RFC 3123."
+msgstr "APL:ia AXFR-kontrolliin yhdistettävä muihin turvatoimiin."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:84
 msgid ""
@@ -1260,9 +1248,7 @@ msgstr "NID-sisältö on 64-bittinen heksa-arvo."
 msgid ""
 "NID records should use the RFC 6742 presentation format "
 "(xxxx:xxxx:xxxx:xxxx) with colons for better readability."
-msgstr ""
-"NID records should use the RFC 6742 presentation format "
-"(xxxx:xxxx:xxxx:xxxx) with colons for better readability."
+msgstr "NID-tietueet muodossa xxxx:xxxx:xxxx:xxxx."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:220
 msgid ""
@@ -1314,25 +1300,20 @@ msgstr "RFC 4034:n mukaan NSEC:n TTL on sama kuin SOA minimum."
 msgid ""
 "NSEC records enable \"zone walking\", allowing enumeration of all names in a "
 "zone, which may be a privacy concern."
-msgstr ""
-"NSEC records enable \"zone walking\", allowing enumeration of all names in a "
-"zone, which may be a privacy concern."
+msgstr "NSEC mahdollistaa \"zone walking\" - kaikkien nimien listauksen."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:127
 msgid ""
 "If zone enumeration is a concern, consider using NSEC3 records (RFC 5155) "
 "instead, which use hashed owner names."
-msgstr ""
-"If zone enumeration is a concern, consider using NSEC3 records (RFC 5155) "
-"instead, which use hashed owner names."
+msgstr "Jos alueen enumeraatio huolta, harkitse NSEC3:a (RFC 5155)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:128
 msgid ""
 "NSEC records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
 msgstr ""
-"NSEC records are part of DNSSEC and should only be managed alongside other "
-"DNSSEC records (DNSKEY, RRSIG, etc.)."
+"NSEC-tietueet ovat DNSSEC:n osa, hallitaan muiden DNSSEC-tietueiden kanssa."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:129
 msgid ""
@@ -1731,9 +1712,7 @@ msgstr "CERT virheellinen base64-täyte. \"=\" vain lopussa."
 msgid ""
 "CERT certificate data has invalid base64 length. Base64 data must be a "
 "multiple of 4 characters (with padding)."
-msgstr ""
-"CERT certificate data has invalid base64 length. Base64 data must be a "
-"multiple of 4 characters (with padding)."
+msgstr "CERT virheellinen base64-pituus."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:85
 msgid ""
@@ -1856,9 +1835,7 @@ msgstr ""
 msgid ""
 "TKEY records are not for DNS data authentication, they are for key "
 "establishment between DNS servers/resolvers."
-msgstr ""
-"TKEY records are not for DNS data authentication, they are for key "
-"establishment between DNS servers/resolvers."
+msgstr "TKEY ei ole tietojen todennukseen, vaan avainten muodostukseen."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:173
 msgid ""
@@ -1959,9 +1936,7 @@ msgstr "TTL ylittää enimmäisarvon (%d). RFC 2181 rajoittaa 32-bit:iin."
 msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
 "Low TTL values increase DNS traffic."
-msgstr ""
-"TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
-"Low TTL values increase DNS traffic."
+msgstr "TTL (%d) alle suositellun %d sekunnin (5 min)."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
@@ -2107,9 +2082,7 @@ msgstr "\".\" (juuri) EMAILBX palauttaa virheet lähettäjälle."
 msgid ""
 "The responsible mailbox and error mailbox are identical. Consider using "
 "different mailboxes for these functions."
-msgstr ""
-"The responsible mailbox and error mailbox are identical. Consider using "
-"different mailboxes for these functions."
+msgstr "Vastuullinen ja virhelaatikko samat. Käytä eri."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:159
 msgid ""
@@ -2525,9 +2498,7 @@ msgstr ""
 msgid ""
 "RFC 7043 recommends against publishing EUI-64 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr ""
-"RFC 7043 recommends against publishing EUI-64 addresses in the public DNS "
-"due to potential privacy implications."
+msgstr "RFC 7043 ei suosittele EUI-64:n julkaisua DNS:ssä."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:155
 msgid ""
@@ -2553,9 +2524,7 @@ msgstr "EUI64 pistevärillä. Muoto: xx-xx-xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx "
 "format (where x is a hexadecimal digit)."
-msgstr ""
-"EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx "
-"format (where x is a hexadecimal digit)."
+msgstr "EUI64-tietueen EUI-64 muodossa xx-xx-xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:158
 msgid ""
@@ -2618,9 +2587,7 @@ msgstr ""
 msgid ""
 "DS records should typically be placed at delegation points, not at the zone "
 "apex. Check if this is intentional."
-msgstr ""
-"DS records should typically be placed at delegation points, not at the zone "
-"apex. Check if this is intentional."
+msgstr "DS-tietueet delegointipisteissä."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:282
 msgid ""
@@ -2644,9 +2611,7 @@ msgstr "%s (algoritmi %d) on SUOSITELTU algoritmi RFC 8624:n mukaan."
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr ""
-"%s (algorithm %d) is in common use, but newer algorithms like "
-"ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
+msgstr "%s (algoritmi %d) käytössä, mutta 13/15 suositellaan."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
@@ -2803,9 +2768,7 @@ msgstr ""
 msgid ""
 "RFC 7043 recommends against publishing EUI-48 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr ""
-"RFC 7043 recommends against publishing EUI-48 addresses in the public DNS "
-"due to potential privacy implications."
+msgstr "RFC 7043 ei suosittele EUI-48:n julkaisua DNS:ssä."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:138
 msgid ""
@@ -3144,9 +3107,7 @@ msgstr "VAROITUS: SMIMEA (RFC 8162) on KOKEELLINEN."
 msgid ""
 "CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, "
 "SMIMEA offers NO security benefit."
-msgstr ""
-"CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, "
-"SMIMEA offers NO security benefit."
+msgstr "KRIITTINEN: SMIMEA VAATII DNSSEC:n. Ilman ei turvaa."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:112
 msgid ""
@@ -3359,9 +3320,7 @@ msgstr ""
 msgid ""
 "SHA-1 fingerprints are deprecated. RFC 6594 recommends using SHA-256 "
 "fingerprints (type 2) for better security."
-msgstr ""
-"SHA-1 fingerprints are deprecated. RFC 6594 recommends using SHA-256 "
-"fingerprints (type 2) for better security."
+msgstr "SHA-1 vanhentunut. RFC 6594 suosittelee SHA-256 (tyyppi 2)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
@@ -3395,9 +3354,7 @@ msgstr "MR-sisällön (uusi postilaatikko) on oltava FQDN (pisteellä)."
 msgid ""
 "The new mailbox is the same as the old mailbox. MR records are intended for "
 "redirecting to a different mailbox."
-msgstr ""
-"The new mailbox is the same as the old mailbox. MR records are intended for "
-"redirecting to a different mailbox."
+msgstr "Uusi ja vanha sama. MR on uudelleenohjaukseen."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:146
 msgid ""
@@ -3651,9 +3608,7 @@ msgstr ""
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
-msgstr ""
-"Invalid protocol value in SRV record. Protocol must start with an underscore "
-"followed by alphanumeric characters."
+msgstr "Virheellinen SRV-protokolla. Alkaa _ ja alfanumeerinen."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
 #, php-format
@@ -3724,9 +3679,7 @@ msgstr "RFC 5155/9077:n mukaan NSEC3 TTL = SOA minimum."
 msgid ""
 "NSEC3 records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
-"NSEC3 records are part of DNSSEC and should only be managed alongside other "
-"DNSSEC records (DNSKEY, RRSIG, etc.)."
+msgstr "NSEC3-tietueet ovat DNSSEC:n osa."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:146
 msgid ""
@@ -3740,9 +3693,7 @@ msgstr ""
 msgid ""
 "NSEC3 records require a corresponding NSEC3PARAM record at the zone apex to "
 "indicate the NSEC3 parameters in use."
-msgstr ""
-"NSEC3 records require a corresponding NSEC3PARAM record at the zone apex to "
-"indicate the NSEC3 parameters in use."
+msgstr "NSEC3 vaatii NSEC3PARAM-tietueen juuressa."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:207
 msgid ""
@@ -3856,9 +3807,7 @@ msgstr "NAPTR regexp -liput kolmannen erottimen jälkeen vain \"i\" tai tyhjä."
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
-msgstr ""
-"This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
-"under e164.arpa or a private ENUM tree."
+msgstr "Tämä on ENUM NAPTR (RFC 6116). Varmista e164.arpa."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
@@ -3883,9 +3832,7 @@ msgstr ""
 msgid ""
 "Flag value 0 indicates this key is NOT intended for use as a zone key in "
 "DNSSEC. Make sure this is intentional."
-msgstr ""
-"Flag value 0 indicates this key is NOT intended for use as a zone key in "
-"DNSSEC. Make sure this is intentional."
+msgstr "Lippu 0: ei ole DNSSEC-alueavain."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:160
 msgid ""
@@ -4278,9 +4225,7 @@ msgstr "esim. \"2001:db8:1:1\""
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A records in the specified domain"
-msgstr ""
-"When checked, PTR records will only be created for IPs that have "
-"corresponding A records in the specified domain"
+msgstr "Valittuna PTR luodaan vain A-tietueellisille IP:lle."
 
 #: templates/modern/batch_ptr_record.html:145
 msgid ""
@@ -4304,9 +4249,7 @@ msgstr "Verkko 192.168.1.0/24 tarvitsee käänteisen alueen 1.168.192.in-addr.ar
 msgid ""
 "For larger networks, you will need the corresponding reverse zones (e.g., "
 "168.192.in-addr.arpa for a /16 network)"
-msgstr ""
-"For larger networks, you will need the corresponding reverse zones (e.g., "
-"168.192.in-addr.arpa for a /16 network)"
+msgstr "Suurempiin verkkoihin käänteiset alueet."
 
 #: templates/modern/batch_ptr_record.html:183
 msgid ""
@@ -4824,9 +4767,7 @@ msgstr "Asentaja ei voinut poistaa olemassa olevia tauluja FK-rajoitteiden takia
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
+msgstr "Voi tapahtua uudelleenasennuksessa mukautetuilla rajoitteilla."
 
 #: install/helpers/InstallStepHandler.php:211
 msgid ""
