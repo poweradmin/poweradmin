@@ -55,6 +55,19 @@
       "enabled": false
     },
     {
+      "description": "Skip composer dependency updates on frozen maintenance branches (no user impact, avoids CI churn)",
+      "matchDepTypes": [
+        "require",
+        "require-dev"
+      ],
+      "matchBaseBranches": [
+        "release/4.0.x",
+        "release/4.1.x",
+        "release/4.2.x"
+      ],
+      "enabled": false
+    },
+    {
       "matchDatasources": [
         "docker"
       ],
