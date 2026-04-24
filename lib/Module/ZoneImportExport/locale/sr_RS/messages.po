@@ -12,16 +12,16 @@ msgstr ""
 "Language-Team: Serbian\n"
 "Language: sr_RS\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lib/Module/ZoneImportExport/templates/import.html:171
 msgid "$ORIGIN and $TTL directives"
-msgstr "$ORIGIN and $TTL directives"
+msgstr "Директиве $ORIGIN и $TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:216
 msgid "A zone with this name already exists."
-msgstr "A zone with this name already exists."
+msgstr "Зона са овим именом већ постоји."
 
 #: lib/Module/ZoneImportExport/templates/import.html:112
 msgid "Cancel"
@@ -29,15 +29,15 @@ msgstr "Откажи"
 
 #: lib/Module/ZoneImportExport/templates/import.html:170
 msgid "Cloudflare zone exports"
-msgstr "Cloudflare zone exports"
+msgstr "Cloudflare извоз зона"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
-msgstr "Confirm import"
+msgstr "Потврди увоз"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
-msgstr "Content"
+msgstr "Садржај"
 
 #: lib/Module/ZoneImportExport/templates/import.html:30
 msgid "Edit zone"
@@ -45,19 +45,19 @@ msgstr "Уреди зону"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:222
 msgid "Failed to create zone."
-msgstr "Failed to create zone."
+msgstr "Неуспешно креирање зоне."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:228
 msgid "Failed to retrieve created zone."
-msgstr "Failed to retrieve created zone."
+msgstr "Неуспешно преузимање креиране зоне."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:101
 msgid "File size exceeds the maximum allowed size of %s."
-msgstr "File size exceeds the maximum allowed size of %s."
+msgstr "Величина датотеке прелази максимално дозвољену %s."
 
 #: lib/Module/ZoneImportExport/templates/import.html:58
 msgid "File:"
-msgstr "File:"
+msgstr "Датотека:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:3
 msgid "Home"
@@ -65,42 +65,42 @@ msgstr "Почетна"
 
 #: lib/Module/ZoneImportExport/templates/import.html:173
 msgid "IDN domain names"
-msgstr "IDN domain names"
+msgstr "IDN имена домена"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
-msgstr "Import Preview"
+msgstr "Преглед увоза"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr "Import Results"
+msgstr "Резултати увоза"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
-msgstr "Import Zone File"
+msgstr "Увоз датотеке зоне"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
 msgid "Import another zone"
-msgstr "Import another zone"
+msgstr "Увези другу зону"
 
 #: lib/Module/ZoneImportExport/templates/import.html:19
 msgid "Import completed successfully."
-msgstr "Import completed successfully."
+msgstr "Увоз је успешно завршен."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:175
 msgid "Import session expired. Please upload the file again."
-msgstr "Import session expired. Please upload the file again."
+msgstr "Сесија увоза је истекла. Поново отпремите датотеку."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:48
 msgid "Invalid zone ID."
-msgstr "Invalid zone ID."
+msgstr "Неважећи ИД зоне."
 
 msgid "Master"
 msgstr "Главни"
 
 #: lib/Module/ZoneImportExport/templates/import.html:172
 msgid "Multi-line records"
-msgstr "Multi-line records"
+msgstr "Вишередни записи"
 
 #: lib/Module/ZoneImportExport/templates/import.html:66
 msgid "Name"
@@ -111,11 +111,11 @@ msgstr "Нативни"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:116
 msgid "No valid records found in the uploaded file."
-msgstr "No valid records found in the uploaded file."
+msgstr "У отпремљеној датотеци нема важећих записа."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:95
 msgid "Please select a valid zone file to upload."
-msgstr "Please select a valid zone file to upload."
+msgstr "Изаберите важећу датотеку зоне за отпремање."
 
 #: lib/Module/ZoneImportExport/templates/import.html:70
 msgid "Priority"
@@ -123,18 +123,18 @@ msgstr "Приоритет"
 
 #: lib/Module/ZoneImportExport/templates/import.html:133
 msgid "Standard BIND zone file format. Max size:"
-msgstr "Standard BIND zone file format. Max size:"
+msgstr "Стандардни формат BIND датотеке зоне. Макс. величина:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:169
 msgid "Standard BIND zone files"
-msgstr "Standard BIND zone files"
+msgstr "Стандардне BIND датотеке зоне"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr "Supported formats"
+msgstr "Подржани формати"
 
 msgid "Success:"
-msgstr "Success:"
+msgstr "Успех:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
@@ -142,15 +142,15 @@ msgstr "TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:107
 msgid "The uploaded file is empty or could not be read."
-msgstr "The uploaded file is empty or could not be read."
+msgstr "Отпремљена датотека је празна или се не може прочитати."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:67
 msgid "There is no zone with this ID."
-msgstr "There is no zone with this ID."
+msgstr "Нема зоне са овим ИД-ом."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:79
 msgid "This zone does not have any records to export."
-msgstr "This zone does not have any records to export."
+msgstr "Ова зона нема записа за извоз."
 
 #: lib/Module/ZoneImportExport/templates/import.html:4
 msgid "Tools"
@@ -162,94 +162,94 @@ msgstr "Тип"
 
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
-msgstr "Upload and preview"
+msgstr "Отпреми и прегледај"
 
 msgid "Warning:"
-msgstr "Warning:"
+msgstr "Упозорење:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"
-msgstr "Warnings:"
+msgstr "Упозорења:"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:56
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:67
 msgid "You do not have permission to add zones."
-msgstr "You do not have permission to add zones."
+msgstr "Немате дозволу за додавање зона."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:59
 msgid "You do not have permission to export this zone."
-msgstr "You do not have permission to export this zone."
+msgstr "Немате дозволу за извоз ове зоне."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:42
 msgid "You need to be logged in to export zone data."
-msgstr "You need to be logged in to export zone data."
+msgstr "Морате бити пријављени да бисте извезли податке зоне."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
-msgstr "Zone Import"
+msgstr "Увоз зоне"
 
 #: lib/Module/ZoneImportExport/templates/import.html:131
 msgid "Zone file"
-msgstr "Zone file"
+msgstr "Датотека зоне"
 
 #: lib/Module/ZoneImportExport/templates/import.html:95
 msgid "Zone name"
-msgstr "Zone name"
+msgstr "име зоне"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:211
 msgid "Zone name is required."
-msgstr "Zone name is required."
+msgstr "Име зоне је обавезно."
 
 #: lib/Module/ZoneImportExport/templates/import.html:99
 msgid "Zone type"
-msgstr "Zone type"
+msgstr "тип зоне"
 
 #: lib/Module/ZoneImportExport/templates/import.html:59
 msgid "Zone:"
-msgstr "Zone:"
+msgstr "Зона:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:43
 msgid "records"
-msgstr "records"
+msgstr "записи"
 
 #: lib/Module/ZoneImportExport/templates/import.html:26
 msgid "records failed."
-msgstr "records failed."
+msgstr "записа није успело."
 
 #: lib/Module/ZoneImportExport/templates/import.html:25
 msgid "records imported,"
-msgstr "records imported,"
+msgstr "записа увежено,"
 
 #: lib/Module/ZoneImportExport/templates/import.html:20
 msgid "records imported."
-msgstr "records imported."
+msgstr "записа увежено."
 
 msgid "records skipped (duplicates)."
-msgstr "records skipped (duplicates)."
+msgstr "записа прескочено (дупликати)."
 
 msgid "records skipped (duplicates),"
-msgstr "records skipped (duplicates),"
+msgstr "записа прескочено (дупликати),"
 
 msgid "Add all records"
-msgstr "Add all records"
+msgstr "Додај све записе"
 
 msgid "Conflict strategy"
-msgstr "Conflict strategy"
+msgstr "Стратегија конфликта"
 
 msgid "Replace matching records"
-msgstr "Replace matching records"
+msgstr "Замени подударне записе"
 
 msgid "Skip duplicates"
-msgstr "Skip duplicates"
+msgstr "Прескочи дупликате"
 
 msgid "Target zone"
-msgstr "Target zone"
+msgstr "Циљна зона"
 
 msgid "The selected zone does not exist."
-msgstr "The selected zone does not exist."
+msgstr "Изабрана зона не постоји."
 
 msgid "You do not have permission to modify this zone."
-msgstr "You do not have permission to modify this zone."
+msgstr "Немате дозволу за измену ове зоне."
 
 msgid "You do not have permission to import zones."
-msgstr "You do not have permission to import zones."
+msgstr "Немате дозволу за увоз зона."

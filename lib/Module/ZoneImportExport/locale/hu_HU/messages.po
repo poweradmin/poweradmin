@@ -12,16 +12,16 @@ msgstr ""
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lib/Module/ZoneImportExport/templates/import.html:171
 msgid "$ORIGIN and $TTL directives"
-msgstr "$ORIGIN and $TTL directives"
+msgstr "$ORIGIN és $TTL direktívák"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:216
 msgid "A zone with this name already exists."
-msgstr "A zone with this name already exists."
+msgstr "Ilyen nevű zóna már létezik."
 
 #: lib/Module/ZoneImportExport/templates/import.html:112
 msgid "Cancel"
@@ -29,15 +29,15 @@ msgstr "Mégse"
 
 #: lib/Module/ZoneImportExport/templates/import.html:170
 msgid "Cloudflare zone exports"
-msgstr "Cloudflare zone exports"
+msgstr "Cloudflare zóna exportok"
 
 #: lib/Module/ZoneImportExport/templates/import.html:109
 msgid "Confirm import"
-msgstr "Confirm import"
+msgstr "Importálás megerősítése"
 
 #: lib/Module/ZoneImportExport/templates/import.html:68
 msgid "Content"
-msgstr "Content"
+msgstr "Tartalom"
 
 #: lib/Module/ZoneImportExport/templates/import.html:30
 msgid "Edit zone"
@@ -45,19 +45,19 @@ msgstr "Zóna szerkesztése"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:222
 msgid "Failed to create zone."
-msgstr "Failed to create zone."
+msgstr "Nem sikerült létrehozni a zónát."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:228
 msgid "Failed to retrieve created zone."
-msgstr "Failed to retrieve created zone."
+msgstr "Nem sikerült lekérni a létrehozott zónát."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:101
 msgid "File size exceeds the maximum allowed size of %s."
-msgstr "File size exceeds the maximum allowed size of %s."
+msgstr "A fájl mérete meghaladja a megengedett %s-t."
 
 #: lib/Module/ZoneImportExport/templates/import.html:58
 msgid "File:"
-msgstr "File:"
+msgstr "Fájl:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:3
 msgid "Home"
@@ -65,42 +65,42 @@ msgstr "Kezdőlap"
 
 #: lib/Module/ZoneImportExport/templates/import.html:173
 msgid "IDN domain names"
-msgstr "IDN domain names"
+msgstr "IDN tartománynevek"
 
 #: lib/Module/ZoneImportExport/templates/import.html:42
 msgid "Import Preview"
-msgstr "Import Preview"
+msgstr "Import előnézet"
 
 #: lib/Module/ZoneImportExport/templates/import.html:13
 msgid "Import Results"
-msgstr "Import Results"
+msgstr "Import eredmények"
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Import Zone File"
-msgstr "Import Zone File"
+msgstr "Zóna fájl importálása"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
 msgid "Import another zone"
-msgstr "Import another zone"
+msgstr "Másik zóna importálása"
 
 #: lib/Module/ZoneImportExport/templates/import.html:19
 msgid "Import completed successfully."
-msgstr "Import completed successfully."
+msgstr "Importálás sikeresen befejezve."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:175
 msgid "Import session expired. Please upload the file again."
-msgstr "Import session expired. Please upload the file again."
+msgstr "Az import munkamenet lejárt. Töltse fel újra."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:48
 msgid "Invalid zone ID."
-msgstr "Invalid zone ID."
+msgstr "Érvénytelen zóna azonosító."
 
 msgid "Master"
 msgstr "Elsődleges"
 
 #: lib/Module/ZoneImportExport/templates/import.html:172
 msgid "Multi-line records"
-msgstr "Multi-line records"
+msgstr "Többsoros rekordok"
 
 #: lib/Module/ZoneImportExport/templates/import.html:66
 msgid "Name"
@@ -111,11 +111,11 @@ msgstr "Natív"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:116
 msgid "No valid records found in the uploaded file."
-msgstr "No valid records found in the uploaded file."
+msgstr "Nincsenek érvényes rekordok a feltöltött fájlban."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:95
 msgid "Please select a valid zone file to upload."
-msgstr "Please select a valid zone file to upload."
+msgstr "Válasszon érvényes zóna fájlt a feltöltéshez."
 
 #: lib/Module/ZoneImportExport/templates/import.html:70
 msgid "Priority"
@@ -123,18 +123,18 @@ msgstr "Prioritás"
 
 #: lib/Module/ZoneImportExport/templates/import.html:133
 msgid "Standard BIND zone file format. Max size:"
-msgstr "Standard BIND zone file format. Max size:"
+msgstr "Szabványos BIND zónafájl formátum. Max. méret:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:169
 msgid "Standard BIND zone files"
-msgstr "Standard BIND zone files"
+msgstr "Szabványos BIND zónafájlok"
 
 #: lib/Module/ZoneImportExport/templates/import.html:165
 msgid "Supported formats"
-msgstr "Supported formats"
+msgstr "Támogatott formátumok"
 
 msgid "Success:"
-msgstr "Success:"
+msgstr "Siker:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:69
 msgid "TTL"
@@ -142,15 +142,15 @@ msgstr "TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:107
 msgid "The uploaded file is empty or could not be read."
-msgstr "The uploaded file is empty or could not be read."
+msgstr "A feltöltött fájl üres vagy nem olvasható."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:67
 msgid "There is no zone with this ID."
-msgstr "There is no zone with this ID."
+msgstr "Nincs zóna ezzel az azonosítóval."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:79
 msgid "This zone does not have any records to export."
-msgstr "This zone does not have any records to export."
+msgstr "Nincsenek a zónában exportálható rekordok."
 
 #: lib/Module/ZoneImportExport/templates/import.html:4
 msgid "Tools"
@@ -162,94 +162,94 @@ msgstr "Típus"
 
 #: lib/Module/ZoneImportExport/templates/import.html:155
 msgid "Upload and preview"
-msgstr "Upload and preview"
+msgstr "Feltöltés és előnézet"
 
 msgid "Warning:"
-msgstr "Warning:"
+msgstr "Figyelmeztetés:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:48
 msgid "Warnings:"
-msgstr "Warnings:"
+msgstr "Figyelmeztetések:"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:56
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:67
 msgid "You do not have permission to add zones."
-msgstr "You do not have permission to add zones."
+msgstr "Nincs jogosultsága zónák hozzáadására."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:59
 msgid "You do not have permission to export this zone."
-msgstr "You do not have permission to export this zone."
+msgstr "Nincs jogosultsága a zóna exportálására."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:42
 msgid "You need to be logged in to export zone data."
-msgstr "You need to be logged in to export zone data."
+msgstr "A zóna adatok exportálásához be kell jelentkeznie."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"
-msgstr "Zone Import"
+msgstr "Zóna importálás"
 
 #: lib/Module/ZoneImportExport/templates/import.html:131
 msgid "Zone file"
-msgstr "Zone file"
+msgstr "Zónafájl"
 
 #: lib/Module/ZoneImportExport/templates/import.html:95
 msgid "Zone name"
-msgstr "Zone name"
+msgstr "zóna neve"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:211
 msgid "Zone name is required."
-msgstr "Zone name is required."
+msgstr "A zóna neve kötelező."
 
 #: lib/Module/ZoneImportExport/templates/import.html:99
 msgid "Zone type"
-msgstr "Zone type"
+msgstr "zóna típus"
 
 #: lib/Module/ZoneImportExport/templates/import.html:59
 msgid "Zone:"
-msgstr "Zone:"
+msgstr "Zóna:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:43
 msgid "records"
-msgstr "records"
+msgstr "rekordok"
 
 #: lib/Module/ZoneImportExport/templates/import.html:26
 msgid "records failed."
-msgstr "records failed."
+msgstr "rekord sikertelen."
 
 #: lib/Module/ZoneImportExport/templates/import.html:25
 msgid "records imported,"
-msgstr "records imported,"
+msgstr "rekord importálva,"
 
 #: lib/Module/ZoneImportExport/templates/import.html:20
 msgid "records imported."
-msgstr "records imported."
+msgstr "rekord importálva."
 
 msgid "records skipped (duplicates)."
-msgstr "records skipped (duplicates)."
+msgstr "rekord átugorva (duplikátum)."
 
 msgid "records skipped (duplicates),"
-msgstr "records skipped (duplicates),"
+msgstr "rekord átugorva (duplikátum),"
 
 msgid "Add all records"
-msgstr "Add all records"
+msgstr "Összes rekord hozzáadása"
 
 msgid "Conflict strategy"
-msgstr "Conflict strategy"
+msgstr "Ütközés stratégia"
 
 msgid "Replace matching records"
-msgstr "Replace matching records"
+msgstr "Egyező rekordok cseréje"
 
 msgid "Skip duplicates"
-msgstr "Skip duplicates"
+msgstr "Ismétlődések kihagyása"
 
 msgid "Target zone"
-msgstr "Target zone"
+msgstr "Cél zóna"
 
 msgid "The selected zone does not exist."
-msgstr "The selected zone does not exist."
+msgstr "A kijelölt zóna nem létezik."
 
 msgid "You do not have permission to modify this zone."
-msgstr "You do not have permission to modify this zone."
+msgstr "Nincs jogosultsága a zóna módosítására."
 
 msgid "You do not have permission to import zones."
-msgstr "You do not have permission to import zones."
+msgstr "Nincs jogosultsága zónák importálására."
