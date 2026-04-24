@@ -36,10 +36,7 @@ msgid ""
 "TLSA records require DNSSEC to be enabled for this zone. TLSA records "
 "without DNSSEC will not provide security benefits and may be ignored by "
 "clients."
-msgstr ""
-"TLSA records require DNSSEC to be enabled for this zone. TLSA records "
-"without DNSSEC will not provide security benefits and may be ignored by "
-"clients."
+msgstr "TLSA захтева DNSSEC. Без њега нема сигурности."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:72
 msgid ""
@@ -167,19 +164,14 @@ msgid ""
 "SPF record exceeds the DNS lookup limit (%d/10). This will cause SPF "
 "validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
 "instead."
-msgstr ""
-"SPF record exceeds the DNS lookup limit (%d/10). This will cause SPF "
-"validation to fail. Remove some include/a/mx mechanisms or use ip4/ip6 "
-"instead."
+msgstr "SPF прелази лимит DNS упита (%d/10). Укланите include/a/mx."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:294
 #, php-format
 msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
-msgstr ""
-"SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
-"of include mechanisms, or consolidate includes to stay under the limit."
+msgstr "SPF има %d DNS упита (лимит 10). Користите ip4/ip6 уместо include."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:343
 msgid ""
@@ -654,10 +646,7 @@ msgid ""
 "Users authenticated via Single Sign-On cannot change their password here. "
 "Please contact your administrator or change your password through your "
 "identity provider."
-msgstr ""
-"Users authenticated via Single Sign-On cannot change their password here. "
-"Please contact your administrator or change your password through your "
-"identity provider."
+msgstr "SSO корисници не могу мењати лозинку овде. Контактирајте администратора."
 
 #: lib/Application/Controller/ChangePasswordController.php:95
 msgid ""
@@ -1059,9 +1048,7 @@ msgstr "Нула географска ширина (Екватор). Прове�
 msgid ""
 "Default precision values detected (1m size, 10000m horizontal precision, 10m "
 "vertical precision). Consider using more accurate values if you have them."
-msgstr ""
-"Default precision values detected (1m size, 10000m horizontal precision, 10m "
-"vertical precision). Consider using more accurate values if you have them."
+msgstr "Подразумеване precision вредности. Размотрите прецизније."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:218
 msgid ""
@@ -1353,10 +1340,7 @@ msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr ""
-"OPENPGPKEY records should typically be generated using specialized tools "
-"like GnuPG with the --print-dane-records option, rather than created "
-"manually."
+msgstr "OPENPGPKEY треба генерисати GnuPG --print-dane-records, не ручно."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:221
 msgid ""
@@ -1788,10 +1772,7 @@ msgid ""
 "TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-"
 "Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
 "deletion)."
-msgstr ""
-"TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-"
-"Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
-"deletion)."
+msgstr "TKEY режим 1-5 (1: сервер, 2: DH, 3: GSS-API, 4: резолвер, 5: брисање)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:217
 msgid ""
@@ -2138,9 +2119,7 @@ msgstr "DHCID дигест тип %d није стандардни (1 за SHA-2
 msgid ""
 "DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
 "decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
-msgstr ""
-"DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
-"decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
+msgstr "DHCID са SHA-256 мора имати бар 35 бајтова декодиран."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:207
 msgid ""
@@ -2236,9 +2215,7 @@ msgstr "Непозната вредност алгоритма. Користит
 msgid ""
 "Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
 "are generally preferred for faster recovery in case of key compromise."
-msgstr ""
-"Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
-"are generally preferred for faster recovery in case of key compromise."
+msgstr "Original TTL > 1 дан. За DNSSEC краћи TTL је бољи за опоравак."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:270
 msgid ""
@@ -2271,10 +2248,7 @@ msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
 "of key compromise."
-msgstr ""
-"The signature validity period is over 90 days, which is longer than "
-"recommended practices. Long validity periods increase vulnerability in case "
-"of key compromise."
+msgstr "Период важности потписа је > 90 дана - дужи од препоручене праксе."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
@@ -2437,9 +2411,7 @@ msgstr "Ово изгледа као локално администрирана
 msgid ""
 "This DNAME record appears to be at zone apex. According to RFC 6672, using "
 "DNAME at the zone apex requires special handling for NS and related records."
-msgstr ""
-"This DNAME record appears to be at zone apex. According to RFC 6672, using "
-"DNAME at the zone apex requires special handling for NS and related records."
+msgstr "DNAME на апексу зоне. RFC 6672 захтева посебно руковање."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:109
 msgid ""
@@ -2532,10 +2504,7 @@ msgid ""
 "SHA-384 (digest type 4) is a good choice for higher security requirements, "
 "but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
 "support."
-msgstr ""
-"SHA-384 (digest type 4) is a good choice for higher security requirements, "
-"but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
-"support."
+msgstr "SHA-384 (4) за веће захтеве, SHA-256 (2) довољан за већину."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:266
 msgid ""
@@ -2625,8 +2594,7 @@ msgid ""
 "NS record synchronization requires careful consideration. Parent zones may "
 "have specific NS record policies that can prevent successful synchronization."
 msgstr ""
-"NS record synchronization requires careful consideration. Parent zones may "
-"have specific NS record policies that can prevent successful synchronization."
+"NS синхронизација захтева опрез. Родитељске зоне могу имати политике које спречавају."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:266
 msgid ""
@@ -2881,18 +2849,14 @@ msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
 "PKIX validation rules. Ensure proper intermediate certificates are available."
 msgstr ""
-"PKIX-EE usage (1) requires the end entity certificate to be validated using "
-"PKIX validation rules. Ensure proper intermediate certificates are available."
+"PKIX-EE (1) захтева PKIX валидацију. Осигурајте intermediate сертификате."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:216
 msgid ""
 "DANE-TA usage (2) designates this certificate as a trust anchor for "
 "validating the end entity certificate. Ensure this certificate is properly "
 "secured."
-msgstr ""
-"DANE-TA usage (2) designates this certificate as a trust anchor for "
-"validating the end entity certificate. Ensure this certificate is properly "
-"secured."
+msgstr "DANE-TA (2) означава сертификат као trust anchor за валидацију."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
@@ -2922,9 +2886,7 @@ msgid ""
 "renewal without SMIMEA record updates, as long as the public key stays the "
 "same."
 msgstr ""
-"Selector 1 (SubjectPublicKeyInfo) is recommended as it allows certificate "
-"renewal without SMIMEA record updates, as long as the public key stays the "
-"same."
+"Селектор 1 (SPKI) је препоручен - обнова сертификата не захтева измену SMIMEA."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:241
 msgid ""
@@ -2997,10 +2959,7 @@ msgid ""
 "L64 records for subnetworks (using wildcard DNS entries) are typically used "
 "when the named subnetwork is, was, or might become mobile (RFC 6742 Section "
 "3.2)."
-msgstr ""
-"L64 records for subnetworks (using wildcard DNS entries) are typically used "
-"when the named subnetwork is, was, or might become mobile (RFC 6742 Section "
-"3.2)."
+msgstr "L64 за поддмреже (wildcard DNS) користе се за мобилне мреже."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:164
 msgid ""
@@ -3013,10 +2972,7 @@ msgid ""
 "L64 locator should not use unspecified (0000:0000:0000:0000) or all-ones "
 "(ffff:ffff:ffff:ffff) addresses, as they may not be suitable for ILNP "
 "locators."
-msgstr ""
-"L64 locator should not use unspecified (0000:0000:0000:0000) or all-ones "
-"(ffff:ffff:ffff:ffff) addresses, as they may not be suitable for ILNP "
-"locators."
+msgstr "L64 не треба да користи нуле или све јединице - није за ILNP."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:86
 msgid ""
@@ -3173,10 +3129,7 @@ msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
 "benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
 "attacks."
-msgstr ""
-"CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
-"benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
-"attacks."
+msgstr "КРИТИЧНО: SSHFP захтева DNSSEC. Без њега нема заштите од MITM."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
@@ -3269,10 +3222,7 @@ msgid ""
 "Using \"p=none\" provides visibility into email authentication without "
 "affecting delivery. Consider a stricter policy once you've reviewed the "
 "reports."
-msgstr ""
-"Using \"p=none\" provides visibility into email authentication without "
-"affecting delivery. Consider a stricter policy once you've reviewed the "
-"reports."
+msgstr "\"p=none\" даје видљивост без утицаја на доставу."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
@@ -3489,10 +3439,7 @@ msgid ""
 "NSEC3 record owner names should typically be a Base32hex encoded hash "
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
-msgstr ""
-"NSEC3 record owner names should typically be a Base32hex encoded hash "
-"followed by the zone name (e.g., "
-"\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
+msgstr "NSEC3 власник имена треба да буде Base32hex хеш + име зоне."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:142
 msgid ""
@@ -3833,9 +3780,7 @@ msgstr "Зона остаје у систему али ова група виш�
 msgid ""
 "Members will lose access to all zones owned by this group. Zones without any "
 "remaining owners will still exist but will be inaccessible to regular users."
-msgstr ""
-"Members will lose access to all zones owned by this group. Zones without any "
-"remaining owners will still exist but will be inaccessible to regular users."
+msgstr "Чланови губе приступ зонама. Зоне без власника ће остати али недоступне."
 
 #: templates/modern/index.html:5 templates/modern/delete_zone_templ.html:29
 msgid "zones"
@@ -3907,9 +3852,7 @@ msgid ""
 "are not liable for any damages or losses resulting from the use of this "
 "system."
 msgstr ""
-"This system is provided \"as is\" without any warranties. The administrators "
-"are not liable for any damages or losses resulting from the use of this "
-"system."
+"Систем се пружа \"каква је\" без гаранција. Администратори нису одговорни за штете."
 
 #: templates/modern/user_agreement_content.html:26
 msgid ""
@@ -3984,10 +3927,7 @@ msgid ""
 "Access templates define sets of actions that users and groups can perform in "
 "Poweradmin. They provide a quick way to assign common permission "
 "combinations."
-msgstr ""
-"Access templates define sets of actions that users and groups can perform in "
-"Poweradmin. They provide a quick way to assign common permission "
-"combinations."
+msgstr "Шаблони приступа дефинишу скупове акција за кориснике и групе."
 
 #: templates/modern/add_perm_templ.html:78
 msgid ""
@@ -4107,9 +4047,7 @@ msgstr "DNS чаробњаци су за директне зоне, не за о
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
 "sure to save it in a secure place, as you won't be able to retrieve it later."
-msgstr ""
-"When you create a new API key, you will be shown the key only ONCE. Make "
-"sure to save it in a secure place, as you won't be able to retrieve it later."
+msgstr "Нови АПИ кључ се приказује само ЈЕДНОМ. Сачувајте га сигурно."
 
 #: templates/modern/edit.html:721 templates/modern/add_record.html:207
 msgid ""
@@ -4139,10 +4077,7 @@ msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
 "user."
-msgstr ""
-"When creating a new user, they will receive permissions based on the "
-"selected template. You can modify these permissions later by editing the "
-"user."
+msgstr "При креирању корисника добијају дозволе по изабраном шаблону."
 
 #: templates/modern/list_zone_templ.html:134
 msgid ""
@@ -4163,9 +4098,7 @@ msgstr "зоне које треба ажурирати да одражавај�
 msgid ""
 "This template does not have an SOA record. DNS zones typically require an "
 "SOA record to function properly, and DNSSEC signing may fail without one."
-msgstr ""
-"This template does not have an SOA record. DNS zones typically require an "
-"SOA record to function properly, and DNSSEC signing may fail without one."
+msgstr "Овај шаблон нема SOA. Обично је потребан, DNSSEC може неуспети без њега."
 
 #: templates/modern/edit_zone_templ.html:317
 msgid ""
@@ -4288,10 +4221,7 @@ msgid ""
 "Preview how email templates will appear to users in both light and dark "
 "modes. These previews use sample data to demonstrate the email formatting "
 "and styling."
-msgstr ""
-"Preview how email templates will appear to users in both light and dark "
-"modes. These previews use sample data to demonstrate the email formatting "
-"and styling."
+msgstr "Погледајте како ће имејл шаблони изгледати у светлој и тамној теми."
 
 #: templates/modern/email_previews.html:30
 msgid ""
@@ -4323,9 +4253,7 @@ msgid ""
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
 msgstr ""
-"You can create custom email templates by placing them in <code>templates/"
-"emails/custom/</code> to override these standard templates with your own "
-"designs."
+"Можете креирати прилагођене шаблоне у <code>templates/emails/custom/</code>."
 
 #: templates/modern/email_previews.html:98
 msgid ""
@@ -4422,9 +4350,7 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"This template can be assigned to users to quickly apply its set of "
-"permissions. Changes made here will affect all users who have this template "
-"assigned."
+"Овај шаблон се може доделити корисницима. Промене утичу на све са шаблоном."
 
 #: lib/Module/Whois/templates/whois.html:27
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
