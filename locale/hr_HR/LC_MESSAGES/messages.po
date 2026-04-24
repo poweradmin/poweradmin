@@ -224,8 +224,7 @@ msgid ""
 "Non-critical (0) provides better compatibility. Critical (128) enforces "
 "strict CAA processing."
 msgstr ""
-"Non-critical (0) provides better compatibility. Critical (128) enforces "
-"strict CAA processing."
+"Nekritično (0) pruža bolju kompatibilnost. Kritično (128) strogo CAA procesiranje."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:213
 msgid "Custom CA domain is required when \"Custom\" is selected"
@@ -299,17 +298,13 @@ msgstr "Selektor smije sadržavati samo alfanumeričke znakove, crtice i podvlak
 msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
-msgstr ""
-"Public key seems unusually short. Ensure you copied the complete key from "
-"your mail server."
+msgstr "Javni ključ izgleda prekratak. Osigurajte cjelovitost ključa."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:221
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
-msgstr ""
-"You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
-"your private key!"
+msgstr "Zalijepili ste PRIVATNI ključ. U DNS ide samo JAVNI ključ!"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:225
 msgid ""
@@ -336,8 +331,7 @@ msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
 msgstr ""
-"Domain name (leave empty for zone apex @). Full record name will be: "
-"_service._protocol.domain"
+"Naziv domene (prazno za vrh zone @). Puni naziv: _service._protocol.domain"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:144
 msgid ""
@@ -515,9 +509,7 @@ msgstr "Adresa e-pošte nije dostupna. Ažurirajte je u profilu."
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
-msgstr ""
-"Email verification method is not available because mail service is not "
-"enabled on this system."
+msgstr "Metoda provjere e-pošte nije dostupna jer mail usluga nije omogućena."
 
 #: lib/Application/Controller/MfaSetupController.php:243
 msgid ""
@@ -739,8 +731,7 @@ msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
 msgstr ""
-"Database error: Unable to verify user authentication. Please check your "
-"database configuration."
+"Greška baze: nije moguće provjeriti autentifikaciju korisnika. Provjerite konfiguraciju."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:122
 msgid ""
@@ -838,9 +829,7 @@ msgstr "TLSA zapis koristi nestandardni protokol. Uobičajeni su tcp, udp i sctp
 msgid ""
 "This appears to be a TLSA record for SMTP. Ensure MX records are also "
 "configured correctly."
-msgstr ""
-"This appears to be a TLSA record for SMTP. Ensure MX records are also "
-"configured correctly."
+msgstr "Ovo izgleda kao TLSA zapis za SMTP. Osigurajte ispravne MX zapise."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:145
 msgid ""
@@ -1124,8 +1113,7 @@ msgid ""
 "Warning: The FQDN in an LP record SHOULD NOT have the same value as the "
 "owner name (RFC 6742)."
 msgstr ""
-"Warning: The FQDN in an LP record SHOULD NOT have the same value as the "
-"owner name (RFC 6742)."
+"Upozorenje: FQDN u LP zapisu NE BI TREBAO imati istu vrijednost kao vlasnik."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:127
 msgid ""
@@ -1739,9 +1727,7 @@ msgstr ""
 msgid ""
 "HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
 "most deployments."
-msgstr ""
-"HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
-"most deployments."
+msgstr "HMAC-SHA256 je preporučen (RFC 8945) kao poželjni TSIG algoritam."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:337
 msgid ""
@@ -1819,8 +1805,7 @@ msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
 msgstr ""
-"ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
-"characters (48 octets)."
+"ZONEMD digest za SHA-384 (algoritam 1) mora biti 96 hex znakova (48 okteta)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:108
 msgid ""
@@ -2147,8 +2132,7 @@ msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
 msgstr ""
-"The \"file\" URI scheme may pose security risks and is not recommended for "
-"public DNS records."
+"\"file\" URI shema može predstavljati sigurnosne rizike i nije preporučena."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
@@ -2166,9 +2150,7 @@ msgstr ""
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
-msgstr ""
-"URI uses an uncommon protocol. Consider using a standard URI scheme for "
-"better compatibility."
+msgstr "URI koristi neuobičajeni protokol. Razmotrite standardnu URI shemu."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
@@ -2218,17 +2200,14 @@ msgstr ""
 msgid ""
 "Systems not implementing Secure DNS should ignore KX records entirely "
 "according to RFC 2230."
-msgstr ""
-"Systems not implementing Secure DNS should ignore KX records entirely "
-"according to RFC 2230."
+msgstr "Sustavi bez Secure DNS trebaju ignorirati KX zapise (RFC 2230)."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:129
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
 msgstr ""
-"Ensure that the key exchanger host has appropriate forward and reverse DNS "
-"records configured."
+"Osigurajte da exchanger poslužitelj ima ispravne forward i reverse DNS zapise."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
@@ -2363,9 +2342,7 @@ msgstr "Ovo nije valjan zapis. Već postoji CNAME s ovim imenom."
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr ""
-"CNAME target must be a fully qualified domain name (FQDN). Single-label "
-"names are not allowed."
+msgstr "CNAME cilj mora biti FQDN. Imena s jednom oznakom nisu dopuštena."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:361
 msgid ""
@@ -2495,17 +2472,13 @@ msgstr "Algoritam 1 (RSA/MD5) je zastario i NE treba se koristiti zbog slabosti.
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr ""
-"Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with "
-"stronger algorithms."
+msgstr "Algoritam 3 (DSA/SHA1) smatra se nesigurnim i treba zamijeniti."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr ""
-"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
-"stronger algorithms."
+msgstr "Algoritam 5 (RSA/SHA-1) smatra se nesigurnim i treba zamijeniti."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
@@ -2661,8 +2634,7 @@ msgid ""
 "RP records expose contact information in DNS which can create privacy and "
 "security concerns."
 msgstr ""
-"RP records expose contact information in DNS which can create privacy and "
-"security concerns."
+"RP zapisi izlažu kontakt podatke u DNS što može izazvati brige o privatnosti."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:194
 msgid ""
@@ -2963,16 +2935,14 @@ msgid ""
 "The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
 "processing this record."
 msgstr ""
-"The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
-"processing this record."
+"\"immediate\" zastavica (0x0001) nije postavljena. Agenti mogu odgoditi obradu."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:146
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
 msgstr ""
-"The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
-"may not be enforced."
+"\"soaminimum\" zastavica (0x0002) nije postavljena. Provjera serijskog broja možda neće biti."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
@@ -3109,8 +3079,7 @@ msgid ""
 "Email servers often require properly configured reverse DNS to accept mail "
 "from your server."
 msgstr ""
-"Email servers often require properly configured reverse DNS to accept mail "
-"from your server."
+"Poslužitelji e-pošte često zahtijevaju reverzni DNS za prihvaćanje pošte."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:164
 #, php-format
@@ -3144,9 +3113,7 @@ msgstr "Nevažeća podmreža u RFC 2317. Mora biti heksadecimalno za IPv6."
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
-msgstr ""
-"Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
-"delegation usually 25-31)."
+msgstr "Nevažeća IPv4 dužina prefiksa za RFC 2317. Obično 24-32."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid ""
@@ -3237,9 +3204,7 @@ msgstr "Duplicirani SVCB parametar: \"%s\". Svaki ključ se može pojaviti samo 
 msgid ""
 "Multiple CNAME records with the same name are not allowed. This would create "
 "a DNS violation."
-msgstr ""
-"Multiple CNAME records with the same name are not allowed. This would create "
-"a DNS violation."
+msgstr "Višestruki CNAME zapisi s istim imenom nisu dopušteni - DNS prekršaj."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:120
 #, php-format
@@ -3493,8 +3458,7 @@ msgid ""
 "Using \"0 3 0 0\" format from RFC 8078 erratum, consider using the standard "
 "\"0 3 0 AA==\" format."
 msgstr ""
-"Using \"0 3 0 0\" format from RFC 8078 erratum, consider using the standard "
-"\"0 3 0 AA==\" format."
+"Koristite \"0 3 0 0\" format (RFC 8078), razmotrite \"0 3 0 AA==\" standard."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:172
 msgid ""
@@ -3593,9 +3557,7 @@ msgstr ""
 msgid ""
 "SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
 "systems with OpenSSH."
-msgstr ""
-"SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
-"systems with OpenSSH."
+msgstr "SSHFP zapisi se mogu generirati s \"ssh-keygen -r hostname\" (OpenSSH)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:133
 msgid ""
@@ -3630,9 +3592,7 @@ msgstr ""
 msgid ""
 "Ed25519 keys are recommended for good security and performance with modern "
 "SSH implementations."
-msgstr ""
-"Ed25519 keys are recommended for good security and performance with modern "
-"SSH implementations."
+msgstr "Ed25519 ključevi su preporučeni za dobru sigurnost i performanse."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:191
 msgid ""
@@ -3690,9 +3650,7 @@ msgstr ""
 msgid ""
 "MR records were marked as EXPERIMENTAL in RFC 1035 and are rarely used in "
 "modern mail systems."
-msgstr ""
-"MR records were marked as EXPERIMENTAL in RFC 1035 and are rarely used in "
-"modern mail systems."
+msgstr "MR zapisi su EXPERIMENTAL (RFC 1035) i rijetko se koriste."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:147
 msgid ""
@@ -3703,9 +3661,7 @@ msgstr "Razmotrite standardne mehanizme preusmjeravanja e-pošte umjesto MR."
 msgid ""
 "The MR record indicates that the mail user has moved from the old mailbox to "
 "the new mailbox."
-msgstr ""
-"The MR record indicates that the mail user has moved from the old mailbox to "
-"the new mailbox."
+msgstr "MR zapis označava da je korisnik prešao sa starog na novi sandučić."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:129
 msgid ""
@@ -3830,18 +3786,14 @@ msgstr "TXT sadržaj prelazi maksimalnu duljinu od %d bajtova. Smanjite sadržaj
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
-msgstr ""
-"Each TXT record string must be 255 bytes or less. Split long content into "
-"multiple strings."
+msgstr "Svaki TXT string mora biti 255 bajtova ili manje. Podijelite dugačke."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:225
 #, php-format
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr ""
-"Total TXT record content exceeds maximum length of %d bytes. Please reduce "
-"the content size."
+msgstr "Ukupan TXT sadržaj prelazi maksimum od %d bajtova. Smanjite veličinu."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
@@ -3857,9 +3809,7 @@ msgstr "Nevažeća vrijednost prioriteta. A zapisi moraju imati 0."
 msgid ""
 "CDS records should only be placed at the zone apex, not on subdomains, as "
 "required by RFC 7344."
-msgstr ""
-"CDS records should only be placed at the zone apex, not on subdomains, as "
-"required by RFC 7344."
+msgstr "CDS zapisi trebaju biti samo na vrhu zone, ne na poddomenama (RFC 7344)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:123
 msgid ""
@@ -3980,9 +3930,7 @@ msgstr ""
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
-"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
-"are _tcp and _udp."
+msgstr "Protokol \"%s\" nije u popisu poznatih. Uobičajeni su _tcp i _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid ""
@@ -4084,9 +4032,7 @@ msgstr ""
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the "
 "original owner name."
-msgstr ""
-"Type bit maps should be present to indicate which RR types exist at the "
-"original owner name."
+msgstr "Type bit maps trebaju biti prisutni za označavanje postojećih RR tipova."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:361
 msgid ""
@@ -4104,9 +4050,7 @@ msgstr "NSEC3 zapis sadrži SOA i NS, vjerojatno za vrh zone."
 msgid ""
 "For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
 "along with DNSKEY."
-msgstr ""
-"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
-"along with DNSKEY."
+msgstr "Za vrh zone s NSEC3, NSEC3PARAM tip treba biti prisutan uz DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:115
 msgid ""
@@ -4143,8 +4087,7 @@ msgid ""
 "NAPTR record must contain order, preference, flags, service, regexp, and "
 "replacement values."
 msgstr ""
-"NAPTR record must contain order, preference, flags, service, regexp, and "
-"replacement values."
+"NAPTR zapis mora sadržavati order, preference, flags, service, regexp i replacement."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:276
 msgid ""
@@ -4234,8 +4177,7 @@ msgid ""
 "Flag value 257 indicates this is a Key Signing Key (KSK) with both Zone Key "
 "and SEP bits set."
 msgstr ""
-"Flag value 257 indicates this is a Key Signing Key (KSK) with both Zone Key "
-"and SEP bits set."
+"Vrijednost 257 označava Key Signing Key (KSK) sa Zone Key i SEP bitovima."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:207
 msgid ""
@@ -4271,9 +4213,7 @@ msgstr "Algoritam %d SE NE SMIJE koristiti prema RFC 8624."
 msgid ""
 "RSA key size is less than 2048 bits. RFC 8624 recommends a minimum of 2048 "
 "bits for RSA keys."
-msgstr ""
-"RSA key size is less than 2048 bits. RFC 8624 recommends a minimum of 2048 "
-"bits for RSA keys."
+msgstr "RSA veličina ključa manja je od 2048 bitova. RFC 8624 preporučuje 2048."
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
@@ -4473,8 +4413,7 @@ msgid ""
 "Your login activity and DNS management actions may be logged for security "
 "and audit purposes"
 msgstr ""
-"Your login activity and DNS management actions may be logged for security "
-"and audit purposes"
+"Vaša aktivnost prijave i DNS upravljanja može biti zabilježena iz sigurnosnih razloga"
 
 #: templates/modern/user_agreement_content.html:15
 msgid ""
@@ -4920,8 +4859,7 @@ msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
 msgstr ""
-"IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
-"separated by commas)"
+"IP adresa glavnog nameservera (IPv4/IPv6, više IP-ova razdvojeno zarezima)"
 
 #: templates/modern/email_previews.html:14
 msgid ""
@@ -5009,8 +4947,7 @@ msgid ""
 "If you delete this API key, any applications using it will no longer be able "
 "to authenticate."
 msgstr ""
-"If you delete this API key, any applications using it will no longer be able "
-"to authenticate."
+"Ako obrišete API ključ, aplikacije ga neće moći koristiti za autentifikaciju."
 
 #: templates/default/edit_perm_templ.html:73
 msgid ""
@@ -5033,8 +4970,7 @@ msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
 msgstr ""
-"When assigned to <strong>groups</strong>: Permissions apply only to zones "
-"owned by that group."
+"Kad se dodijeli <strong>grupama</strong>: dozvole važe samo za zone te grupe."
 
 #: templates/modern/edit_perm_templ.html:78
 msgid ""
@@ -5049,8 +4985,7 @@ msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
 msgstr ""
-"Deleting an active key will affect the security of your zone and may cause "
-"validation failures."
+"Brisanje aktivnog ključa utječe na sigurnost zone i može uzrokovati validacijske greške."
 
 #: templates/modern/add_group.html:45
 msgid ""
@@ -5241,9 +5176,7 @@ msgstr ""
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
+msgstr "SQLite datoteka %s ne postoji. Stvorite je prije nastavka."
 
 #: install/helpers/DatabaseHelper.php:183
 #, php-format

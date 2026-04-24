@@ -224,8 +224,7 @@ msgid ""
 "Non-critical (0) provides better compatibility. Critical (128) enforces "
 "strict CAA processing."
 msgstr ""
-"Non-critical (0) provides better compatibility. Critical (128) enforces "
-"strict CAA processing."
+"Mittekriitiline (0) pakub paremat ühilduvust. Kriitiline (128) rangem CAA töötlus."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:213
 msgid "Custom CA domain is required when \"Custom\" is selected"
@@ -301,17 +300,13 @@ msgstr ""
 msgid ""
 "Public key seems unusually short. Ensure you copied the complete key from "
 "your mail server."
-msgstr ""
-"Public key seems unusually short. Ensure you copied the complete key from "
-"your mail server."
+msgstr "Avalik võti tundub liiga lühike. Tagage täielik võti."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:221
 msgid ""
 "You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
 "your private key!"
-msgstr ""
-"You pasted a PRIVATE KEY. Only the PUBLIC KEY should be in DNS. Never share "
-"your private key!"
+msgstr "Liimisite PRIVAATSE võtme. DNS-is peab olema ainult AVALIK võti!"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:225
 msgid ""
@@ -337,9 +332,7 @@ msgstr "Valige tavateenus või \"Kohandatud\" käsitsi sisestamiseks"
 msgid ""
 "Domain name (leave empty for zone apex @). Full record name will be: "
 "_service._protocol.domain"
-msgstr ""
-"Domain name (leave empty for zone apex @). Full record name will be: "
-"_service._protocol.domain"
+msgstr "Domeeninimi (tühi tsooni tipule @)."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:144
 msgid ""
@@ -514,9 +507,7 @@ msgstr "E-posti aadress pole saadaval. Palun uuendage seda profiilis."
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
-msgstr ""
-"Email verification method is not available because mail service is not "
-"enabled on this system."
+msgstr "E-posti kontrolli meetod pole saadaval, kuna posti teenus pole lubatud."
 
 #: lib/Application/Controller/MfaSetupController.php:243
 msgid ""
@@ -729,8 +720,7 @@ msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
 msgstr ""
-"Database error: Unable to verify user authentication. Please check your "
-"database configuration."
+"Andmebaasi viga: kasutaja autentimist ei saa kontrollida. Kontrollige seadistust."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:122
 msgid ""
@@ -830,9 +820,7 @@ msgstr ""
 msgid ""
 "This appears to be a TLSA record for SMTP. Ensure MX records are also "
 "configured correctly."
-msgstr ""
-"This appears to be a TLSA record for SMTP. Ensure MX records are also "
-"configured correctly."
+msgstr "See tundub TLSA kirjeks SMTP jaoks. Tagage MX kirjete õige seadistus."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:145
 msgid ""
@@ -1114,9 +1102,7 @@ msgstr "LP kirjed EI TOHI olla mitte-ILNP sõlmedes (RFC 6742 §3.4)."
 msgid ""
 "Warning: The FQDN in an LP record SHOULD NOT have the same value as the "
 "owner name (RFC 6742)."
-msgstr ""
-"Warning: The FQDN in an LP record SHOULD NOT have the same value as the "
-"owner name (RFC 6742)."
+msgstr "Hoiatus: FQDN LP kirjes EI TOHIKS olla sama nagu omanikunimi (RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:127
 msgid ""
@@ -1735,9 +1721,7 @@ msgstr ""
 msgid ""
 "HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
 "most deployments."
-msgstr ""
-"HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
-"most deployments."
+msgstr "HMAC-SHA256 on RFC 8945 järgi eelistatud TSIG algoritm."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:337
 msgid ""
@@ -1817,8 +1801,7 @@ msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
 msgstr ""
-"ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
-"characters (48 octets)."
+"ZONEMD SHA-384 (algoritm 1) peab olema täpselt 96 heksamärki (48 okteti)."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:108
 msgid ""
@@ -2142,8 +2125,7 @@ msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
 msgstr ""
-"The \"file\" URI scheme may pose security risks and is not recommended for "
-"public DNS records."
+"\"file\" URI skeem võib põhjustada turvariske, pole soovitatud avalikule DNS-ile."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
@@ -2161,9 +2143,7 @@ msgstr ""
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
-msgstr ""
-"URI uses an uncommon protocol. Consider using a standard URI scheme for "
-"better compatibility."
+msgstr "URI kasutab ebatavalist protokolli. Kaaluge standardset URI skeemi."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
@@ -2214,17 +2194,13 @@ msgstr ""
 msgid ""
 "Systems not implementing Secure DNS should ignore KX records entirely "
 "according to RFC 2230."
-msgstr ""
-"Systems not implementing Secure DNS should ignore KX records entirely "
-"according to RFC 2230."
+msgstr "Süsteemid ilma Secure DNS-ita peaksid KX kirjeid ignoreerima (RFC 2230)."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:129
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
-msgstr ""
-"Ensure that the key exchanger host has appropriate forward and reverse DNS "
-"records configured."
+msgstr "Tagage, et exchanger hostil on õiged edastus- ja pöörd-DNS kirjed."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
@@ -2359,9 +2335,7 @@ msgstr "See pole kehtiv kirje. Selle nimega CNAME on juba olemas."
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr ""
-"CNAME target must be a fully qualified domain name (FQDN). Single-label "
-"names are not allowed."
+msgstr "CNAME sihtmärk peab olema FQDN. Ühe sildiga nimed pole lubatud."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:361
 msgid ""
@@ -2492,17 +2466,13 @@ msgstr ""
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr ""
-"Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with "
-"stronger algorithms."
+msgstr "Algoritm 3 (DSA/SHA1) pole turvaline ja tuleb asendada."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr ""
-"Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
-"stronger algorithms."
+msgstr "Algoritm 5 (RSA/SHA-1) pole turvaline ja tuleb asendada."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
@@ -2659,8 +2629,7 @@ msgid ""
 "RP records expose contact information in DNS which can create privacy and "
 "security concerns."
 msgstr ""
-"RP records expose contact information in DNS which can create privacy and "
-"security concerns."
+"RP kirjed avaldavad DNS-is kontaktteavet, mis võib tekitada privaatsusprobleeme."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:194
 msgid ""
@@ -2959,17 +2928,13 @@ msgstr ""
 msgid ""
 "The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
 "processing this record."
-msgstr ""
-"The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
-"processing this record."
+msgstr "\"immediate\" lipp (0x0001) pole seatud. Vanemagendid võivad viivitada."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:146
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr ""
-"The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
-"may not be enforced."
+msgstr "\"soaminimum\" lipp (0x0002) pole seatud."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
@@ -3104,9 +3069,7 @@ msgstr ""
 msgid ""
 "Email servers often require properly configured reverse DNS to accept mail "
 "from your server."
-msgstr ""
-"Email servers often require properly configured reverse DNS to accept mail "
-"from your server."
+msgstr "E-posti serverid nõuavad sageli pöörd-DNS-i õiget seadistust."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:164
 #, php-format
@@ -3140,9 +3103,7 @@ msgstr "Vigane alamvõrk RFC 2317-s. IPv6 - hex."
 msgid ""
 "Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
 "delegation usually 25-31)."
-msgstr ""
-"Invalid IPv4 prefix length for RFC 2317. Typically 24-32 (classless "
-"delegation usually 25-31)."
+msgstr "Vigane IPv4 eesliite pikkus RFC 2317. Tavaliselt 24-32."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid ""
@@ -3234,9 +3195,7 @@ msgstr "Topelt SVCB parameetri võti: \"%s\". Iga võti võib esineda ainult ük
 msgid ""
 "Multiple CNAME records with the same name are not allowed. This would create "
 "a DNS violation."
-msgstr ""
-"Multiple CNAME records with the same name are not allowed. This would create "
-"a DNS violation."
+msgstr "Mitu CNAME sama nimega pole lubatud - DNS rikkumine."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:120
 #, php-format
@@ -3490,9 +3449,7 @@ msgstr ""
 msgid ""
 "Using \"0 3 0 0\" format from RFC 8078 erratum, consider using the standard "
 "\"0 3 0 AA==\" format."
-msgstr ""
-"Using \"0 3 0 0\" format from RFC 8078 erratum, consider using the standard "
-"\"0 3 0 AA==\" format."
+msgstr "\"0 3 0 0\" vorming (RFC 8078), kaaluge \"0 3 0 AA==\" kasutamist."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:172
 msgid ""
@@ -3589,9 +3546,7 @@ msgstr ""
 msgid ""
 "SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
 "systems with OpenSSH."
-msgstr ""
-"SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
-"systems with OpenSSH."
+msgstr "SSHFP kirjeid saab genereerida käsuga \"ssh-keygen -r hostname\"."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:133
 msgid ""
@@ -3626,9 +3581,7 @@ msgstr ""
 msgid ""
 "Ed25519 keys are recommended for good security and performance with modern "
 "SSH implementations."
-msgstr ""
-"Ed25519 keys are recommended for good security and performance with modern "
-"SSH implementations."
+msgstr "Ed25519 võtmeid soovitatakse hea turvalisuse ja jõudluse jaoks."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:191
 msgid ""
@@ -3687,9 +3640,7 @@ msgstr ""
 msgid ""
 "MR records were marked as EXPERIMENTAL in RFC 1035 and are rarely used in "
 "modern mail systems."
-msgstr ""
-"MR records were marked as EXPERIMENTAL in RFC 1035 and are rarely used in "
-"modern mail systems."
+msgstr "MR kirjed on EKSPERIMENTAALSED (RFC 1035), kasutatakse harva."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:147
 msgid ""
@@ -3700,9 +3651,7 @@ msgstr "Kaaluge standardseid meili edasisaatmise mehhanisme MR asemel."
 msgid ""
 "The MR record indicates that the mail user has moved from the old mailbox to "
 "the new mailbox."
-msgstr ""
-"The MR record indicates that the mail user has moved from the old mailbox to "
-"the new mailbox."
+msgstr "MR kirje näitab, et postikasutaja on liikunud vanast uude postkasti."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:129
 msgid ""
@@ -3828,18 +3777,14 @@ msgstr "TXT sisu ületab maksimumi %d baiti. Vähendage sisu suurust."
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
-msgstr ""
-"Each TXT record string must be 255 bytes or less. Split long content into "
-"multiple strings."
+msgstr "Iga TXT string peab olema 255 baiti või vähem. Jagage pikad."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:225
 #, php-format
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr ""
-"Total TXT record content exceeds maximum length of %d bytes. Please reduce "
-"the content size."
+msgstr "Kogu TXT sisu ületab maksimumi %d baiti. Vähendage sisu."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
@@ -3856,8 +3801,7 @@ msgid ""
 "CDS records should only be placed at the zone apex, not on subdomains, as "
 "required by RFC 7344."
 msgstr ""
-"CDS records should only be placed at the zone apex, not on subdomains, as "
-"required by RFC 7344."
+"CDS kirjed peavad olema ainult tsooni tipus, mitte alamdomeenides (RFC 7344)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:123
 msgid ""
@@ -3978,9 +3922,7 @@ msgstr ""
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
-"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
-"are _tcp and _udp."
+msgstr "Protokoll \"%s\" pole tuntud. Tavalised on _tcp ja _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid ""
@@ -4081,9 +4023,7 @@ msgstr ""
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the "
 "original owner name."
-msgstr ""
-"Type bit maps should be present to indicate which RR types exist at the "
-"original owner name."
+msgstr "Type bit mapid peavad näitama olemasolevaid RR tüüpe."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:361
 msgid ""
@@ -4101,9 +4041,7 @@ msgstr "NSEC3 kirje sisaldab SOA ja NS, tõenäoliselt tsooni tipus."
 msgid ""
 "For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
 "along with DNSKEY."
-msgstr ""
-"For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
-"along with DNSKEY."
+msgstr "NSEC3 tsooni tipule peaks NSEC3PARAM tüüp olema koos DNSKEY-ga."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:115
 msgid ""
@@ -4141,8 +4079,7 @@ msgid ""
 "NAPTR record must contain order, preference, flags, service, regexp, and "
 "replacement values."
 msgstr ""
-"NAPTR record must contain order, preference, flags, service, regexp, and "
-"replacement values."
+"NAPTR kirje peab sisaldama order, preference, flags, service, regexp ja replacement."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:276
 msgid ""
@@ -4230,9 +4167,7 @@ msgstr ""
 msgid ""
 "Flag value 257 indicates this is a Key Signing Key (KSK) with both Zone Key "
 "and SEP bits set."
-msgstr ""
-"Flag value 257 indicates this is a Key Signing Key (KSK) with both Zone Key "
-"and SEP bits set."
+msgstr "Väärtus 257 näitab Key Signing Key (KSK) Zone Key ja SEP bittidega."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:207
 msgid ""
@@ -4268,9 +4203,7 @@ msgstr "Algoritmi %d EI TOHI olla implementeeritud RFC 8624 järgi."
 msgid ""
 "RSA key size is less than 2048 bits. RFC 8624 recommends a minimum of 2048 "
 "bits for RSA keys."
-msgstr ""
-"RSA key size is less than 2048 bits. RFC 8624 recommends a minimum of 2048 "
-"bits for RSA keys."
+msgstr "RSA võtme suurus alla 2048 biti. RFC 8624 soovitab vähemalt 2048."
 
 #: lib/Domain/Service/ZoneValidationService.php:102
 msgid "No SOA record present, or active, in zone. This is required for DNSSEC."
@@ -4468,9 +4401,7 @@ msgstr ""
 msgid ""
 "Your login activity and DNS management actions may be logged for security "
 "and audit purposes"
-msgstr ""
-"Your login activity and DNS management actions may be logged for security "
-"and audit purposes"
+msgstr "Teie sisselogimise ja DNS tegevused võidakse turvalisuse huvides logida"
 
 #: templates/modern/user_agreement_content.html:15
 msgid ""
@@ -4910,9 +4841,7 @@ msgstr ""
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
-msgstr ""
-"IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
-"separated by commas)"
+msgstr "Põhi-nimeserveri IP (IPv4/IPv6, mitu IP komadega eraldatud)"
 
 #: templates/modern/email_previews.html:14
 msgid ""
@@ -4999,9 +4928,7 @@ msgstr ""
 msgid ""
 "If you delete this API key, any applications using it will no longer be able "
 "to authenticate."
-msgstr ""
-"If you delete this API key, any applications using it will no longer be able "
-"to authenticate."
+msgstr "Kui kustutate API võtme, ei saa seda kasutavad rakendused autentida."
 
 #: templates/default/edit_perm_templ.html:73
 msgid ""
@@ -5025,8 +4952,7 @@ msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
 msgstr ""
-"When assigned to <strong>groups</strong>: Permissions apply only to zones "
-"owned by that group."
+"Kui määratud <strong>gruppidele</strong>: õigused ainult grupi tsoonidele."
 
 #: templates/modern/edit_perm_templ.html:78
 msgid ""
@@ -5040,9 +4966,7 @@ msgstr ""
 msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
-msgstr ""
-"Deleting an active key will affect the security of your zone and may cause "
-"validation failures."
+msgstr "Aktiivse võtme kustutamine mõjutab tsooni turvalisust."
 
 #: templates/modern/add_group.html:45
 msgid ""
@@ -5229,9 +5153,7 @@ msgstr ""
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
+msgstr "SQLite fail %s ei eksisteeri. Looge fail enne jätkamist."
 
 #: install/helpers/DatabaseHelper.php:183
 #, php-format
