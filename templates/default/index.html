@@ -13,12 +13,22 @@
 {% if api_error %}
 <div class="alert alert-warning alert-dismissible fade show py-2 mb-2" role="alert">
     <i class="bi bi-exclamation-triangle me-2"></i>
-    <strong>{% trans %}PowerDNS API error{% endtrans %}:</strong>
+    <strong>{% trans %}PowerDNS API error{% endtrans %}{% if api_error.context.http_code %} (HTTP {{ api_error.context.http_code }}){% endif %}:</strong>
     {{ api_error.message }}
-    {% if api_error.context.endpoint is defined %}
-    <span class="text-muted small">({% trans %}endpoint{% endtrans %}: {{ api_error.context.endpoint }})</span>
+    {% if api_error.context.url %}
+    <div class="small text-muted">{{ api_error.context.url }}</div>
     {% endif %}
-    <div class="small mt-1">{% trans %}Zone counts and lists may be out of date until the API is reachable again. Check your PowerDNS server log for details.{% endtrans %}</div>
+    <div class="small mt-1">
+        {% if api_error.context.http_code == 401 or api_error.context.http_code == 403 %}
+            {% trans %}Check that pdns_api.key in config/settings.php matches the API key configured in PowerDNS.{% endtrans %}
+        {% elseif api_error.context.http_code == 404 %}
+            {% trans %}Check that pdns_api.server_name matches what PowerDNS reports (default 'localhost').{% endtrans %}
+        {% elseif api_error.context.http_code >= 500 %}
+            {% trans %}PowerDNS rejected the request. Check the PowerDNS server log for the cause - a common trigger after importing zones directly into the PowerDNS database is a single malformed record that fails zone serialization.{% endtrans %}
+        {% else %}
+            {% trans %}Zone counts and lists may be out of date until the API is reachable again. Check your PowerDNS server log for details.{% endtrans %}
+        {% endif %}
+    </div>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {% endif %}

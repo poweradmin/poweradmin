@@ -725,7 +725,11 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             $apiZones = $this->client->getAllZones();
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to get zones from API: {error}', ['error' => $e->getMessage()]);
-            $statusService->recordError($e->getMessage(), ['endpoint' => 'zones']);
+            $statusService->recordError($e->getMessage(), [
+                'endpoint' => 'zones',
+                'http_code' => $e->getDetail('http_code', $e->getCode()),
+                'url' => $e->getDetail('url'),
+            ]);
             return [];
         }
         $statusService->clearError();
