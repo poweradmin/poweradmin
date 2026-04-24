@@ -380,9 +380,7 @@ msgstr "Kehtivaid kirjeid pole valitud või teil pole õigust neid kustutada."
 msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
-msgstr ""
-"The record and its corresponding PTR and A/AAAA records were deleted but the "
-"comment was preserved because similar records exist."
+msgstr "Kirje ja PTR ning A/AAAA kustutati, kommentaar säilitati."
 
 #: lib/Application/Controller/DeleteRecordController.php:217
 msgid ""
@@ -739,9 +737,7 @@ msgstr "Nimi tundub SRV vormingus. TLSA koos SRV-ga (RFC 7673):"
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
-msgstr ""
-"2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
-"$protocol, and $hostname are from the target of SRV lookup"
+msgstr "TLSA: _port._protocol.hostname."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
@@ -902,9 +898,7 @@ msgstr "NSEC3PARAM on DNSSEC osa."
 msgid ""
 "Manually editing NSEC3PARAM records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr ""
-"Manually editing NSEC3PARAM records is not recommended as they are typically "
-"generated automatically by DNSSEC-aware nameservers."
+msgstr "NSEC3PARAM kirjed luuakse automaatselt."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:148
 msgid ""
@@ -955,8 +949,7 @@ msgid ""
 "High iteration values (>100) may cause validating resolvers to reject your "
 "zones. RFC 9276 STRONGLY recommends using 0 iterations."
 msgstr ""
-"High iteration values (>100) may cause validating resolvers to reject your "
-"zones. RFC 9276 STRONGLY recommends using 0 iterations."
+"Kõrged iteratsioonid (>100) võivad tekitada tagasilükkamisi. RFC 9276 soovitab 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:241
 msgid ""
@@ -1004,9 +997,7 @@ msgstr "Hoiatus: FQDN LP kirjes EI TOHIKS olla sama nagu omanikunimi (RFC 6742).
 msgid ""
 "It is recommended to end FQDN values with a trailing dot to ensure they are "
 "treated as absolute domain names rather than relative ones."
-msgstr ""
-"It is recommended to end FQDN values with a trailing dot to ensure they are "
-"treated as absolute domain names rather than relative ones."
+msgstr "FQDN lõpus punkt."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:132
 msgid ""
@@ -1077,9 +1068,7 @@ msgstr "Vigane suurus või täpsus. Peab olema 0-90000000 meetrit."
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
-msgstr ""
-"Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
-"[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
+msgstr "Vigane LOC vorming."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:145
 msgid ""
@@ -1320,9 +1309,7 @@ msgstr ""
 msgid ""
 "If this is the last NSEC record in the zone, the next domain name should be "
 "the zone apex (the owner name of the zone's SOA RR)."
-msgstr ""
-"If this is the last NSEC record in the zone, the next domain name should be "
-"the zone apex (the owner name of the zone's SOA RR)."
+msgstr "Kui see on viimane NSEC, siis järgmine on tipp."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:194
 msgid ""
@@ -1403,17 +1390,13 @@ msgstr ""
 msgid ""
 "The decoded content does not appear to contain a public key packet (tag 6) "
 "or public subkey packet (tag 14) as its first packet."
-msgstr ""
-"The decoded content does not appear to contain a public key packet (tag 6) "
-"or public subkey packet (tag 14) as its first packet."
+msgstr "Dekodeeritud sisu ei sisalda avaliku võtme paketti (tag 6/14)."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:258
 msgid ""
 "OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
 "validation, these records offer no security advantage."
-msgstr ""
-"OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
-"validation, these records offer no security advantage."
+msgstr "OPENPGPKEY NÕUAB DNSSEC-i."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
@@ -1629,9 +1612,7 @@ msgstr ""
 msgid ""
 "Per RFC 4398, consider DNS record size limitations when using CERT records. "
 "Large certificates may cause DNS message fragmentation."
-msgstr ""
-"Per RFC 4398, consider DNS record size limitations when using CERT records. "
-"Large certificates may cause DNS message fragmentation."
+msgstr "RFC 4398 järgi olge tähelepanelik CERT suurusega."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:144
 msgid ""
@@ -2205,9 +2186,7 @@ msgstr "Regulaarne võtme vahetus: ZSK 1-3 kuud, KSK 1-2 aastat."
 msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
-msgstr ""
-"RRSIG record must contain covered-type, algorithm, labels, original TTL, "
-"expiration, inception, key tag, signer name and signature."
+msgstr "RRSIG kirjel peab olema 9 välja."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
 msgid ""
@@ -2232,9 +2211,7 @@ msgstr "Algoritm 5 (RSA/SHA-1) pole turvaline ja tuleb asendada."
 msgid ""
 "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
 "secure. Consider using RSA/SHA-256 or newer algorithms."
-msgstr ""
-"Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
-"secure. Consider using RSA/SHA-256 or newer algorithms."
+msgstr "Algoritm 7 kasutab SHA-1, mis pole turvaline."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
 msgid ""
@@ -2559,9 +2536,7 @@ msgstr "%s (algoritm %d) POLE SOOVITATUD (RFC 8624). Kasutage 13 või 15."
 msgid ""
 "SHA-1 (digest type 1) is NOT RECOMMENDED for use according to RFC 8624. "
 "SHA-256 (digest type 2) is the recommended digest algorithm."
-msgstr ""
-"SHA-1 (digest type 1) is NOT RECOMMENDED for use according to RFC 8624. "
-"SHA-256 (digest type 2) is the recommended digest algorithm."
+msgstr "SHA-1 (1) POLE SOOVITATUD. SHA-256 (2) soovitatud."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
@@ -2599,9 +2574,7 @@ msgstr "CSYNC kirjed ainult tsooni tipus (RFC 7477)."
 msgid ""
 "CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
 "7477). Ensure your zone is properly signed with DNSSEC."
-msgstr ""
-"CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
-"7477). Ensure your zone is properly signed with DNSSEC."
+msgstr "CSYNC nõuab DNSSEC (RFC 7477)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
@@ -2728,9 +2701,7 @@ msgstr ""
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
-msgstr ""
-"The record name does not appear to be a standard reverse DNS zone name "
-"(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
+msgstr "Pole standardne pöörd-DNS nimi."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:162
 msgid ""
@@ -2898,9 +2869,7 @@ msgstr "SMIMEA nimi vormingus: SHA256._smimecert.domain.tld (%s)."
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
-msgstr ""
-"This does not use the standard SMIMEA name format. SMIMEA records should "
-"typically use: SHA256(local-part)._smimecert.domain.tld"
+msgstr "Mittestandardne SMIMEA vorming."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
@@ -2925,9 +2894,7 @@ msgstr ""
 msgid ""
 "PKIX-TA usage (0) requires the CA certificate to be in the certificate "
 "validation path. Ensure this CA is publicly known and trusted."
-msgstr ""
-"PKIX-TA usage (0) requires the CA certificate to be in the certificate "
-"validation path. Ensure this CA is publicly known and trusted."
+msgstr "PKIX-TA (0) nõuab CA valideerimise rajal."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:214
 msgid ""
@@ -2951,9 +2918,7 @@ msgstr ""
 msgid ""
 "DANE-EE usage (3) is recommended as it provides the simplest deployment with "
 "direct certificate usage without additional validation."
-msgstr ""
-"DANE-EE usage (3) is recommended as it provides the simplest deployment with "
-"direct certificate usage without additional validation."
+msgstr "DANE-EE (3) soovitatud."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:225
 msgid ""
@@ -2991,9 +2956,7 @@ msgstr "SMIMEA sobitamise tüüp peab olema 0, 1 või 2."
 msgid ""
 "Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
 "recommended for better performance and compatibility."
-msgstr ""
-"Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
-"recommended for better performance and compatibility."
+msgstr "Matching-type 0 kasutab toormeid andmeid. SHA-256 (1) soovitatud."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
@@ -3047,9 +3010,7 @@ msgstr "Mitte-ILNPv6 host EI TOHI omada L64 kirjeid (RFC 6742 §3.2)."
 msgid ""
 "RFC 6742 recommends very low TTL values for L64 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
-msgstr ""
-"RFC 6742 recommends very low TTL values for L64 records of mobile or "
-"multihomed nodes, as locator values might change frequently."
+msgstr "RFC 6742 soovitab madalat TTL L64 mobiilsetele."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:128
 msgid ""
@@ -3134,25 +3095,19 @@ msgstr "Base64 andmed peavad olema täidetud 4 baidi kordseks \"=\"-märkidega."
 msgid ""
 "WARNING: This LUA record contains potentially unsafe file or system "
 "operations. These may be blocked by PowerDNS security mechanisms."
-msgstr ""
-"WARNING: This LUA record contains potentially unsafe file or system "
-"operations. These may be blocked by PowerDNS security mechanisms."
+msgstr "HOIATUS: LUA sisaldab potentsiaalselt ebaturvalisi operatsioone."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:141
 msgid ""
 "This LUA record uses explicit return mode (starts with semicolon). Ensure "
 "your Lua script explicitly returns the appropriate value."
-msgstr ""
-"This LUA record uses explicit return mode (starts with semicolon). Ensure "
-"your Lua script explicitly returns the appropriate value."
+msgstr "See LUA kasutab explicit return režiimi."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:155
 msgid ""
 "This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
 "sure it returns an appropriate value for the record type."
-msgstr ""
-"This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
-"sure it returns an appropriate value for the record type."
+msgstr "See LUA ei kasuta tavalisi PowerDNS funktsioone."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:163
 msgid ""
@@ -3177,9 +3132,7 @@ msgstr "LUA implicit return: function/end võtmesõnad."
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
-msgstr ""
-"LUA record contains potentially dangerous system access functions. These are "
-"likely to be blocked by PowerDNS security restrictions."
+msgstr "LUA sisaldab potentsiaalselt ohtlikke süsteemifunktsioone."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:130
 msgid ""
@@ -3429,9 +3382,7 @@ msgstr "RFC 8078 järgi peaksid CDS kirjed olema stabiilsed enne vastuvõtmist."
 msgid ""
 "This is a CDS deletion record as defined in RFC 8078. It signals that the "
 "corresponding DS records should be removed from the parent."
-msgstr ""
-"This is a CDS deletion record as defined in RFC 8078. It signals that the "
-"corresponding DS records should be removed from the parent."
+msgstr "See on CDS kustutamise kirje (RFC 8078)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
@@ -3444,9 +3395,7 @@ msgstr ""
 msgid ""
 "SHA-1 (digest type 1) is deprecated for security reasons. Consider using "
 "SHA-256 (digest type 2) or SHA-384 (digest type 4) instead."
-msgstr ""
-"SHA-1 (digest type 1) is deprecated for security reasons. Consider using "
-"SHA-256 (digest type 2) or SHA-384 (digest type 4) instead."
+msgstr "SHA-1 (1) aegunud. Kasutage SHA-256 või SHA-384."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:237
 #, php-format
@@ -3487,9 +3436,7 @@ msgstr "Privaat IP-d (RFC 1918) L32 lokaatoritena võivad piirata kättesaadavus
 msgid ""
 "RFC 6742 recommends very low TTL values for L32 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
-msgstr ""
-"RFC 6742 recommends very low TTL values for L32 records of mobile or "
-"multihomed nodes, as locator values might change frequently."
+msgstr "RFC 6742 soovitab madalat TTL L32 mobiilsetele."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:180
 msgid ""
@@ -4006,9 +3953,7 @@ msgstr "Tingimusi võidakse uuendada. Kasutajad peavad nõustuma muudatustega."
 msgid ""
 "If you regenerate this API key, any applications using it will no longer be "
 "able to authenticate until updated with the new key."
-msgstr ""
-"If you regenerate this API key, any applications using it will no longer be "
-"able to authenticate until updated with the new key."
+msgstr "Kui loote API võtme uuesti, kaotavad rakendused juurdepääsu."
 
 #: templates/modern/api_key_regenerate.html:20
 msgid ""
@@ -4291,9 +4236,7 @@ msgstr "Kas olete kindel, et soovite need kirjed kustutada? Ei saa tagasi võtta
 msgid ""
 "Recovery codes can be used to access your account if you lose access to your "
 "authenticator device. Each code can only be used once."
-msgstr ""
-"Recovery codes can be used to access your account if you lose access to your "
-"authenticator device. Each code can only be used once."
+msgstr "Taastekoode saab kasutada autentimise seadme kaotamisel."
 
 #: templates/modern/mfa_recovery_codes.html:114
 msgid ""
@@ -4511,9 +4454,7 @@ msgstr ""
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
-msgstr ""
-"After creating the group, you can add members and assign zones to it. All "
-"members will automatically get access to the group's zones."
+msgstr "Pärast grupi loomist lisage liikmed ja tsoonid."
 
 #: templates/modern/edit_perm_templ.html:74
 msgid ""
