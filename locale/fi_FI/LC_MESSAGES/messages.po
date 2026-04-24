@@ -96,18 +96,14 @@ msgstr ""
 msgid ""
 "SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
 "correct."
-msgstr ""
-"SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
-"correct."
+msgstr "SHA-256-tiiviste 64 heksaa, saatiin %d."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:263
 #, php-format
 msgid ""
 "SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
 "is correct."
-msgstr ""
-"SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
-"is correct."
+msgstr "SHA-512-tiiviste 128 heksaa, saatiin %d."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:267
 msgid ""
@@ -179,8 +175,7 @@ msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
 msgstr ""
-"Policy for emails not matching any mechanism. Start with ~all (softfail) for "
-"testing."
+"Käytäntö vastaamattomille viesteille. Aloita ~all (softfail) testaukseen."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:289
 #, php-format
@@ -211,9 +206,7 @@ msgstr "Mekanismeja ei valittu. SPF-tietue sisältää vain oletustoiminnon."
 msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
-msgstr ""
-"Using \"+all\" allows anyone to send email as your domain. This is strongly "
-"discouraged."
+msgstr "\"+all\" sallii kaikkien lähettää. Ei suositella."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:83
 msgid ""
@@ -360,9 +353,7 @@ msgstr ""
 msgid ""
 "Port number where the service is listening (automatically filled for common "
 "services)"
-msgstr ""
-"Port number where the service is listening (automatically filled for common "
-"services)"
+msgstr "Palvelun porttinumero (täytetään automaattisesti yleisille palveluille)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:169
 msgid ""
@@ -464,9 +455,7 @@ msgstr "Tietue poistettiin, mutta kommentti säilytettiin samankaltaisten takia.
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
-msgstr ""
-"The record and its corresponding PTR and A/AAAA records have been deleted "
-"successfully."
+msgstr "Tietue ja PTR- ja A/AAAA-tietueet poistettu onnistuneesti."
 
 #: lib/Application/Controller/DeleteRecordController.php:227
 msgid ""
@@ -600,9 +589,7 @@ msgstr ""
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
-msgstr ""
-"Zone saved successfully. No record changes were made, but SOA serial was "
-"incremented."
+msgstr "Alue tallennettu. Ei muutoksia, mutta SOA-sarjanumero kasvatettiin."
 
 #: lib/Application/Controller/MfaVerifyController.php:297
 msgid ""
@@ -760,9 +747,7 @@ msgstr ""
 msgid ""
 "The public key in IPSECKEY records should be regularly rotated for improved "
 "security."
-msgstr ""
-"The public key in IPSECKEY records should be regularly rotated for improved "
-"security."
+msgstr "IPSECKEY-julkinen avain on vaihdettava säännöllisesti."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
@@ -841,9 +826,7 @@ msgstr ""
 msgid ""
 "TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
 "and sctp."
-msgstr ""
-"TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
-"and sctp."
+msgstr "TLSA-tietue käyttää epästandardia protokollaa. Yleiset tcp, udp, sctp."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:143
 msgid ""
@@ -997,9 +980,7 @@ msgstr ""
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
-msgstr ""
-"NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
-"subdomain)."
+msgstr "NSEC3PARAM-tietueiden TULEE olla vain alueen juuressa."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:143
 msgid ""
@@ -1193,8 +1174,7 @@ msgid ""
 "LOC records are rarely used but can be helpful for geographical mapping of "
 "resources."
 msgstr ""
-"LOC records are rarely used but can be helpful for geographical mapping of "
-"resources."
+"LOC-tietueita käytetään harvoin, mutta auttavat maantieteellisessä kartoituksessa."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:128
 msgid ""
@@ -1361,9 +1341,7 @@ msgstr ""
 msgid ""
 "RFC 3123 notes security considerations when using APL records for access "
 "control lists."
-msgstr ""
-"RFC 3123 notes security considerations when using APL records for access "
-"control lists."
+msgstr "RFC 3123 huomauttaa APL-tietueiden turvallisuudesta ACL-käytössä."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
@@ -1548,9 +1526,7 @@ msgstr ""
 msgid ""
 "RRSIG type should typically be present in NSEC type bit maps for DNSSEC-"
 "signed zones."
-msgstr ""
-"RRSIG type should typically be present in NSEC type bit maps for DNSSEC-"
-"signed zones."
+msgstr "RRSIG-tyyppi kuuluu NSEC-bittikarttaan DNSSEC-alueilla."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:281
 msgid ""
@@ -1594,9 +1570,7 @@ msgstr ""
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
-msgstr ""
-"OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
-"public key."
+msgstr "OPENPGPKEY-tietue vaikuttaa liian pieneltä. Varmista kelvollinen avain."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
@@ -1690,8 +1664,7 @@ msgid ""
 "TSIG timestamp is set in the future. This could indicate a clock "
 "synchronization issue."
 msgstr ""
-"TSIG timestamp is set in the future. This could indicate a clock "
-"synchronization issue."
+"TSIG-aikaleima on tulevaisuudessa. Kellonsynkronointiongelma mahdollinen."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:155
 msgid ""
@@ -1721,9 +1694,7 @@ msgstr ""
 msgid ""
 "TSIG algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr ""
-"TSIG algorithm name must be a valid domain name ending with a dot (e.g., "
-"hmac-sha256.)."
+msgstr "TSIG-algoritmin nimen on oltava FQDN (esim. hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:232
 msgid ""
@@ -2000,9 +1971,7 @@ msgstr "Tämä on null-MX-tietue (RFC 7505), toimialue ei vastaanota sähköpost
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
-msgstr ""
-"Priority field should not be used for HTTPS records as priority is part of "
-"the content."
+msgstr "HTTPS-tietueissa prioriteetti on sisällössä, ei erillisessä kentässä."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:135
 msgid ""
@@ -2076,9 +2045,7 @@ msgstr ""
 msgid ""
 "TKEY algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr ""
-"TKEY algorithm name must be a valid domain name ending with a dot (e.g., "
-"hmac-sha256.)."
+msgstr "TKEY-algoritmin nimen on oltava FQDN (esim. hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
@@ -2142,9 +2109,7 @@ msgstr ""
 msgid ""
 "Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
 "security."
-msgstr ""
-"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
-"security."
+msgstr "Havaittu vanhentunut algoritmi. Suositellaan HMAC-SHA256 tai vahvempaa."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:316
 msgid ""
@@ -2164,9 +2129,7 @@ msgstr "Virheellinen oletus-TTL. On oltava 0-2147483647."
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr ""
-"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
-"bit integer."
+msgstr "TTL ylittää enimmäisarvon (%d). RFC 2181 rajoittaa 32-bit:iin."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
@@ -2238,9 +2201,7 @@ msgstr "Tämän protokollan URI:n on sisällettävä \"://\" protokollan nimen j
 msgid ""
 "URI contains backslash characters, which may be interpreted differently "
 "across systems."
-msgstr ""
-"URI contains backslash characters, which may be interpreted differently "
-"across systems."
+msgstr "URI sisältää kenoviivoja, joita tulkitaan eri tavoin."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:305
 msgid ""
@@ -2375,17 +2336,13 @@ msgstr "Useita \"all\"-mekanismeja. Vain ensimmäinen on voimassa."
 msgid ""
 "The ptr mechanism is not recommended due to performance issues (RFC 7208 "
 "Section 5.5)."
-msgstr ""
-"The ptr mechanism is not recommended due to performance issues (RFC 7208 "
-"Section 5.5)."
+msgstr "ptr-mekanismia ei suositella suorituskyvyn takia (RFC 7208 §5.5)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:261
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr ""
-"The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
-"Section 5.1)."
+msgstr "\"all\" on oltava viimeinen (RFC 7208 §5.1)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:292
 msgid ""
@@ -2659,9 +2616,7 @@ msgstr ""
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
-msgstr ""
-"WARNING: This signature will expire within the next 7 days. Consider "
-"renewing it soon."
+msgstr "VAROITUS: Allekirjoitus vanhenee 7 päivässä. Uusi pian."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
@@ -2729,9 +2684,7 @@ msgstr ""
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr ""
-"RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
-"(txt-dname)."
+msgstr "RP-tietue sisältää mailbox-domain ja txt-record-domain."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
@@ -2753,9 +2706,7 @@ msgstr ""
 msgid ""
 "Ensure corresponding TXT records exist for the txt-dname field if not using "
 "a dot (.)."
-msgstr ""
-"Ensure corresponding TXT records exist for the txt-dname field if not using "
-"a dot (.)."
+msgstr "Varmista TXT-tietueet txt-dname-kentälle, jos et käytä pistettä (.)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:213
 msgid ""
@@ -2906,9 +2857,7 @@ msgstr ""
 msgid ""
 "DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
 "Section 2.3)."
-msgstr ""
-"DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
-"Section 2.3)."
+msgstr "DNAME ja CNAME EIVÄT saa esiintyä samanaikaisesti (RFC 6672 §2.3)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:130
 msgid ""
@@ -3205,8 +3154,7 @@ msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
 msgstr ""
-"Critical flag set for unknown tag \"%s\". This may cause certificate "
-"issuance failures."
+"Kriittinen lippu tuntemattomalle tunnisteelle \"%s\". Voi aiheuttaa virheitä."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -3297,8 +3245,7 @@ msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
 msgstr ""
-"SVCB record must start with a priority and target: <priority> <target> "
-"[<params>...]"
+"SVCB alkaa prioriteetilla ja kohteella: <priority> <target> [<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
@@ -3923,9 +3870,7 @@ msgstr "Kenoviivojen on oltava lainausmerkkien edessä TXT-sisällössä"
 msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
-msgstr ""
-"TXT record content exceeds maximum length of %d bytes. Please reduce the "
-"content size."
+msgstr "TXT-sisältö ylittää enimmäispituuden %d tavua. Pienennä sisältöä."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
@@ -3983,8 +3928,7 @@ msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
 msgstr ""
-"CDS record must contain key-tag, algorithm, digest-type and digest separated "
-"by spaces."
+"CDS-tietueessa on oltava key-tag, algorithm, digest-type ja digest välilyönneillä."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:216
 msgid ""
@@ -4005,9 +3949,7 @@ msgstr "CDS-tiivisteen on oltava kelvollinen hex-merkkijono pituudeltaan %d."
 msgid ""
 "CDS records must be accompanied by matching CDNSKEY records as recommended "
 "by RFC 7344."
-msgstr ""
-"CDS records must be accompanied by matching CDNSKEY records as recommended "
-"by RFC 7344."
+msgstr "CDS-tietueiden kanssa vastaavat CDNSKEY-tietueet (RFC 7344)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 msgid "CDS records should only be placed at the zone apex (not on subdomains)."
@@ -4047,17 +3989,14 @@ msgstr ""
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr ""
-"L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
-"255.255.255.255)."
+msgstr "L32 ei voi käyttää broadcast- tai määrittämättömiä osoitteita."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
 "Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
 "or higher."
 msgstr ""
-"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
-"or higher."
+"Prioriteetti 0 on kelvollinen mutta epätavallinen. SRV alkaa yleensä 10:stä."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -4107,8 +4046,7 @@ msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
 msgstr ""
-"Port %d differs from the standard port %d for %s service. This is allowed "
-"but unusual."
+"Portti %d eroaa vakioportista %d palvelulle %s. Sallittu mutta epätavallinen."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
@@ -4119,8 +4057,7 @@ msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
 msgstr ""
-"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
-"records."
+"Määrittämättömiä (::) tai loopback (::1) IPv6-osoitteita ei käytetä AAAA-tietueissa."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
@@ -4202,9 +4139,7 @@ msgstr ""
 msgid ""
 "RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
 "signed zones."
-msgstr ""
-"RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
-"signed zones."
+msgstr "RRSIG-tyyppi kuuluu NSEC3-bittikarttaan DNSSEC-alueilla."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
@@ -4452,9 +4387,7 @@ msgstr ""
 msgid ""
 "Activating this key will make it part of the active DNSSEC signing chain for "
 "this zone."
-msgstr ""
-"Activating this key will make it part of the active DNSSEC signing chain for "
-"this zone."
+msgstr "Avaimen aktivointi liittää sen aktiiviseen DNSSEC-ketjuun."
 
 #: templates/modern/edit_zone_templ_record.html:22
 msgid ""
@@ -4603,9 +4536,7 @@ msgstr "Olet vastuussa luomiesi DNS-tietueiden oikeellisuudesta"
 msgid ""
 "We will protect your personal information in accordance with applicable "
 "privacy laws"
-msgstr ""
-"We will protect your personal information in accordance with applicable "
-"privacy laws"
+msgstr "Suojaamme henkilötietosi sovellettavien tietosuojalakien mukaisesti"
 
 #: templates/modern/user_agreement_content.html:20
 msgid ""
@@ -4647,9 +4578,7 @@ msgstr ""
 msgid ""
 "The new key will be displayed only once after regeneration, so be prepared "
 "to save it."
-msgstr ""
-"The new key will be displayed only once after regeneration, so be prepared "
-"to save it."
+msgstr "Uusi avain näytetään vain kerran, ole valmis tallentamaan."
 
 #: templates/modern/dnssec_add_key.html:44
 msgid ""
@@ -4690,9 +4619,7 @@ msgstr "Valitse ryhmät ja napsauta \"Lisää valitut ryhmät\"."
 msgid ""
 "This will disconnect these zones from their template. Are you sure you want "
 "to proceed?"
-msgstr ""
-"This will disconnect these zones from their template. Are you sure you want "
-"to proceed?"
+msgstr "Tämä irrottaa alueet mallistaan. Haluatko jatkaa?"
 
 #: templates/modern/confirm_unlink_zones_templ.html:56
 msgid ""
@@ -4801,9 +4728,7 @@ msgstr ""
 msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
-msgstr ""
-"Use the dropdown button next to Network Prefix to select from existing "
-"reverse zones"
+msgstr "Käytä Network Prefix -pudotusvalikkoa käänteisten alueiden valintaan"
 
 #: templates/modern/batch_ptr_record.html:184
 msgid ""
@@ -4880,9 +4805,7 @@ msgstr "Syötä yksi palautuskoodeistasi. Jokaista voi käyttää vain kerran."
 msgid ""
 "Enter your email address and we'll send you the username associated with "
 "this account."
-msgstr ""
-"Enter your email address and we'll send you the username associated with "
-"this account."
+msgstr "Syötä sähköpostiosoitteesi, lähetämme tiliin liittyvän käyttäjänimen."
 
 #: templates/default/add_user.html:162 templates/modern/add_user.html:162
 msgid ""
@@ -4989,24 +4912,19 @@ msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
 "or Authy."
 msgstr ""
-"Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
-"or Authy."
+"Käytä Google Authenticator, Microsoft Authenticator tai Authy -sovellusta."
 
 #: templates/default/mfa_setup.html:104 templates/modern/mfa_setup.html:104
 msgid ""
 "Email verification is not available because it has been disabled by the "
 "administrator."
-msgstr ""
-"Email verification is not available because it has been disabled by the "
-"administrator."
+msgstr "Sähköpostivahvistus ei ole käytössä, ylläpitäjä on poistanut sen."
 
 #: templates/default/mfa_setup.html:108 templates/modern/mfa_setup.html:108
 msgid ""
 "Email verification is not available because mail service is not enabled on "
 "this system."
-msgstr ""
-"Email verification is not available because mail service is not enabled on "
-"this system."
+msgstr "Sähköpostivahvistus ei ole käytössä, postipalvelu ei ole päällä."
 
 #: templates/default/mfa_setup.html:112 templates/modern/mfa_setup.html:112
 msgid ""
@@ -5160,9 +5078,7 @@ msgstr ""
 msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
-msgstr ""
-"When assigned to <strong>users</strong>: Permissions apply globally across "
-"the system."
+msgstr "Kun määritetty <strong>käyttäjille</strong>: oikeudet globaalisti."
 
 #: templates/default/edit_perm_templ.html:78
 msgid ""
@@ -5251,9 +5167,7 @@ msgstr "Uuden käyttäjän lisäämisen jälkeen jatka asennusta."
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
+msgstr "SQLite:lla ei tarvita rajoitettua käyttäjää."
 
 #: install/templates/step1.html.twig:12
 msgid ""
@@ -5318,9 +5232,7 @@ msgstr "Poista \"install/\"-kansio Poweradminin juurihakemistosta."
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
+msgstr "Poweradmin ei toimi install-kansion kanssa, turvallisuussyistä."
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
@@ -5343,9 +5255,7 @@ msgstr "PowerDNS asennettu tauluilla (tai API-pääsy määritetty)"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
+msgstr "Määritä tietokantayhteys, luo ylläpitäjätili ja asetustiedosto."
 
 #: install/helpers/InstallStepHandler.php:209
 msgid ""

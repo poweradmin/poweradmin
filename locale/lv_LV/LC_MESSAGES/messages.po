@@ -97,18 +97,14 @@ msgstr ""
 msgid ""
 "SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
 "correct."
-msgstr ""
-"SHA-256 hash should be 64 hexadecimal characters, got %d. Verify the hash is "
-"correct."
+msgstr "SHA-256 hash jābūt 64 hex rakstzīmēm, ir %d."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:263
 #, php-format
 msgid ""
 "SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
 "is correct."
-msgstr ""
-"SHA-512 hash should be 128 hexadecimal characters, got %d. Verify the hash "
-"is correct."
+msgstr "SHA-512 hash jābūt 128 hex rakstzīmēm, ir %d."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:267
 msgid ""
@@ -182,9 +178,7 @@ msgstr ""
 msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
-msgstr ""
-"Policy for emails not matching any mechanism. Start with ~all (softfail) for "
-"testing."
+msgstr "Politika e-pastiem, kas neatbilst. Sāciet ar ~all testēšanai."
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:289
 #, php-format
@@ -215,9 +209,7 @@ msgstr "Nav atlasītu mehānismu. SPF saturēs tikai noklusējuma darbību."
 msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
-msgstr ""
-"Using \"+all\" allows anyone to send email as your domain. This is strongly "
-"discouraged."
+msgstr "\"+all\" ļauj jebkuram sūtīt kā no jūsu domēna. Stingri neiesaka."
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:83
 msgid ""
@@ -364,9 +356,7 @@ msgstr ""
 msgid ""
 "Port number where the service is listening (automatically filled for common "
 "services)"
-msgstr ""
-"Port number where the service is listening (automatically filled for common "
-"services)"
+msgstr "Porta numurs pakalpojumam (automātiski aizpildīts izplatītajiem)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:169
 msgid ""
@@ -468,9 +458,7 @@ msgstr "Ieraksts dzēsts, bet komentārs saglabāts, jo pastāv līdzīgi ieraks
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
-msgstr ""
-"The record and its corresponding PTR and A/AAAA records have been deleted "
-"successfully."
+msgstr "Ieraksts un atbilstošie PTR un A/AAAA ieraksti veiksmīgi dzēsti."
 
 #: lib/Application/Controller/DeleteRecordController.php:227
 msgid ""
@@ -612,8 +600,7 @@ msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr ""
-"Zone saved successfully. No record changes were made, but SOA serial was "
-"incremented."
+"Zona veiksmīgi saglabāta. Bez ierakstu izmaiņām, bet SOA sērijas numurs palielināts."
 
 #: lib/Application/Controller/MfaVerifyController.php:297
 msgid ""
@@ -779,9 +766,7 @@ msgstr ""
 msgid ""
 "The public key in IPSECKEY records should be regularly rotated for improved "
 "security."
-msgstr ""
-"The public key in IPSECKEY records should be regularly rotated for improved "
-"security."
+msgstr "IPSECKEY publiskā atslēga regulāri jārotē drošībai."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
@@ -860,9 +845,7 @@ msgstr ""
 msgid ""
 "TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
 "and sctp."
-msgstr ""
-"TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
-"and sctp."
+msgstr "TLSA izmanto nestandarta protokolu. Parasti tcp, udp un sctp."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:143
 msgid ""
@@ -1016,9 +999,7 @@ msgstr ""
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
-msgstr ""
-"NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
-"subdomain)."
+msgstr "NSEC3PARAM ierakstiem JĀBŪT tikai zonas virsotnē."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:143
 msgid ""
@@ -1211,8 +1192,7 @@ msgid ""
 "LOC records are rarely used but can be helpful for geographical mapping of "
 "resources."
 msgstr ""
-"LOC records are rarely used but can be helpful for geographical mapping of "
-"resources."
+"LOC ieraksti tiek reti izmantoti, bet var būt noderīgi resursu kartēšanai."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:128
 msgid ""
@@ -1380,9 +1360,7 @@ msgstr ""
 msgid ""
 "RFC 3123 notes security considerations when using APL records for access "
 "control lists."
-msgstr ""
-"RFC 3123 notes security considerations when using APL records for access "
-"control lists."
+msgstr "RFC 3123 norāda drošības apsvērumus, lietojot APL ACL sarakstos."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
@@ -1567,9 +1545,7 @@ msgstr ""
 msgid ""
 "RRSIG type should typically be present in NSEC type bit maps for DNSSEC-"
 "signed zones."
-msgstr ""
-"RRSIG type should typically be present in NSEC type bit maps for DNSSEC-"
-"signed zones."
+msgstr "RRSIG veids parasti jāiekļauj NSEC bit mapās DNSSEC zonām."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:281
 msgid ""
@@ -1613,9 +1589,7 @@ msgstr ""
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
-msgstr ""
-"OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
-"public key."
+msgstr "OPENPGPKEY ieraksts ir neparasti mazs. Pārbaudiet, vai tas ir derīgs."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
@@ -1709,8 +1683,7 @@ msgid ""
 "TSIG timestamp is set in the future. This could indicate a clock "
 "synchronization issue."
 msgstr ""
-"TSIG timestamp is set in the future. This could indicate a clock "
-"synchronization issue."
+"TSIG laika zīmogs ir nākotnē. Iespējama pulksteņa sinhronizācijas problēma."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:155
 msgid ""
@@ -1740,9 +1713,7 @@ msgstr ""
 msgid ""
 "TSIG algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr ""
-"TSIG algorithm name must be a valid domain name ending with a dot (e.g., "
-"hmac-sha256.)."
+msgstr "TSIG algoritma nosaukumam jābūt FQDN (piem., hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:232
 msgid ""
@@ -2018,9 +1989,7 @@ msgstr "Šis ir null MX ieraksts (RFC 7505), domēns nepieņem e-pastu."
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
-msgstr ""
-"Priority field should not be used for HTTPS records as priority is part of "
-"the content."
+msgstr "HTTPS ierakstos prioritātes lauku neizmanto - prioritāte ir satura daļa."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:135
 msgid ""
@@ -2094,9 +2063,7 @@ msgstr ""
 msgid ""
 "TKEY algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr ""
-"TKEY algorithm name must be a valid domain name ending with a dot (e.g., "
-"hmac-sha256.)."
+msgstr "TKEY algoritma nosaukumam jābūt FQDN (piem., hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
@@ -2161,9 +2128,7 @@ msgstr ""
 msgid ""
 "Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
 "security."
-msgstr ""
-"Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
-"security."
+msgstr "Konstatēts novecojis algoritms. Ieteicams HMAC-SHA256 vai spēcīgāks."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:316
 msgid ""
@@ -2183,9 +2148,7 @@ msgstr "Nederīga noklusējuma TTL. Jābūt 0-2147483647."
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr ""
-"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
-"bit integer."
+msgstr "TTL pārsniedz maksimumu (%d). RFC 2181 ierobežo to līdz 32-bitu."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
@@ -2257,9 +2220,7 @@ msgstr "URI ar šo protokolu jāsatur \"://\" pēc protokola nosaukuma."
 msgid ""
 "URI contains backslash characters, which may be interpreted differently "
 "across systems."
-msgstr ""
-"URI contains backslash characters, which may be interpreted differently "
-"across systems."
+msgstr "URI satur atpakaļ slīpsvītras, kas var tikt dažādi interpretētas."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:305
 msgid ""
@@ -2393,17 +2354,13 @@ msgstr "Atrasti vairāki \"all\" mehānismi. Tikai pirmais būs spēkā."
 msgid ""
 "The ptr mechanism is not recommended due to performance issues (RFC 7208 "
 "Section 5.5)."
-msgstr ""
-"The ptr mechanism is not recommended due to performance issues (RFC 7208 "
-"Section 5.5)."
+msgstr "ptr mehānisms netiek ieteikts veiktspējas dēļ (RFC 7208 §5.5)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:261
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr ""
-"The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
-"Section 5.1)."
+msgstr "\"all\" mehānismam jābūt pēdējam (RFC 7208 §5.1)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:292
 msgid ""
@@ -2677,9 +2634,7 @@ msgstr ""
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
-msgstr ""
-"WARNING: This signature will expire within the next 7 days. Consider "
-"renewing it soon."
+msgstr "BRĪDINĀJUMS: Paraksts beigsies 7 dienu laikā. Apsveriet atjaunošanu."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
@@ -2747,9 +2702,7 @@ msgstr ""
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr ""
-"RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
-"(txt-dname)."
+msgstr "RP ierakstam jāsatur mailbox-domain un txt-record-domain."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
@@ -2771,9 +2724,7 @@ msgstr ""
 msgid ""
 "Ensure corresponding TXT records exist for the txt-dname field if not using "
 "a dot (.)."
-msgstr ""
-"Ensure corresponding TXT records exist for the txt-dname field if not using "
-"a dot (.)."
+msgstr "Nodrošiniet TXT ierakstus txt-dname laukam, ja nelietojat punktu (.)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:213
 msgid ""
@@ -2924,9 +2875,7 @@ msgstr ""
 msgid ""
 "DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
 "Section 2.3)."
-msgstr ""
-"DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
-"Section 2.3)."
+msgstr "DNAME un CNAME NEDRĪKST pastāvēt vienlaikus (RFC 6672 §2.3)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:130
 msgid ""
@@ -3223,8 +3172,7 @@ msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
 msgstr ""
-"Critical flag set for unknown tag \"%s\". This may cause certificate "
-"issuance failures."
+"Kritisks karodziņš nezināmam tagam \"%s\". Var izraisīt sertifikāta kļūdas."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -3315,8 +3263,7 @@ msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
 msgstr ""
-"SVCB record must start with a priority and target: <priority> <target> "
-"[<params>...]"
+"SVCB ierakstam jāsākas ar prioritāti un mērķi: <priority> <target> [<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid "SVCB target must be either \".\" or a valid hostname."
@@ -3941,9 +3888,7 @@ msgstr "TXT saturā pirms visām pēdiņām jābūt atpakaļ slīpsvītrai"
 msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
-msgstr ""
-"TXT record content exceeds maximum length of %d bytes. Please reduce the "
-"content size."
+msgstr "TXT saturs pārsniedz maksimumu %d baitu. Samaziniet satura lielumu."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
@@ -4001,8 +3946,7 @@ msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
 msgstr ""
-"CDS record must contain key-tag, algorithm, digest-type and digest separated "
-"by spaces."
+"CDS ierakstam jāsatur key-tag, algorithm, digest-type un digest, atdalīti ar atstarpēm."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:216
 msgid ""
@@ -4023,9 +3967,7 @@ msgstr "CDS digestam jābūt derīgai hex virknei ar garumu %d."
 msgid ""
 "CDS records must be accompanied by matching CDNSKEY records as recommended "
 "by RFC 7344."
-msgstr ""
-"CDS records must be accompanied by matching CDNSKEY records as recommended "
-"by RFC 7344."
+msgstr "CDS ieraksti jāpavada ar atbilstošiem CDNSKEY ierakstiem (RFC 7344)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 msgid "CDS records should only be placed at the zone apex (not on subdomains)."
@@ -4065,17 +4007,13 @@ msgstr ""
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr ""
-"L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
-"255.255.255.255)."
+msgstr "L32 lokators nevar izmantot broadcast vai nenoteiktas adreses."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
 "Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
 "or higher."
-msgstr ""
-"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
-"or higher."
+msgstr "Prioritāte 0 derīga, bet neparasta. SRV parasti sākas no 10."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -4125,8 +4063,7 @@ msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
 msgstr ""
-"Port %d differs from the standard port %d for %s service. This is allowed "
-"but unusual."
+"Ports %d atšķiras no standarta %d pakalpojumam %s. Atļauts, bet neparasts."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
@@ -4137,8 +4074,7 @@ msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
 msgstr ""
-"Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
-"records."
+"Nenoteiktas (::) vai loopback (::1) IPv6 adreses nav jālieto AAAA ierakstos."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
@@ -4220,9 +4156,7 @@ msgstr ""
 msgid ""
 "RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
 "signed zones."
-msgstr ""
-"RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
-"signed zones."
+msgstr "RRSIG veids parasti jāiekļauj NSEC3 bit mapās DNSSEC zonām."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
@@ -4471,9 +4405,7 @@ msgstr ""
 msgid ""
 "Activating this key will make it part of the active DNSSEC signing chain for "
 "this zone."
-msgstr ""
-"Activating this key will make it part of the active DNSSEC signing chain for "
-"this zone."
+msgstr "Šīs atslēgas aktivizēšana padarīs to par aktīvās DNSSEC ķēdes daļu."
 
 #: templates/modern/edit_zone_templ_record.html:22
 msgid ""
@@ -4623,9 +4555,7 @@ msgstr "Jūs esat atbildīgs par izveidoto vai mainīto DNS ierakstu precizitāt
 msgid ""
 "We will protect your personal information in accordance with applicable "
 "privacy laws"
-msgstr ""
-"We will protect your personal information in accordance with applicable "
-"privacy laws"
+msgstr "Mēs aizsargāsim jūsu personīgo informāciju saskaņā ar privātuma likumiem"
 
 #: templates/modern/user_agreement_content.html:20
 msgid ""
@@ -4667,9 +4597,7 @@ msgstr ""
 msgid ""
 "The new key will be displayed only once after regeneration, so be prepared "
 "to save it."
-msgstr ""
-"The new key will be displayed only once after regeneration, so be prepared "
-"to save it."
+msgstr "Jaunā atslēga tiks parādīta tikai reizi pēc pārģenerēšanas."
 
 #: templates/modern/dnssec_add_key.html:44
 msgid ""
@@ -4710,9 +4638,7 @@ msgstr "Atlasiet vienu vai vairākas grupas un noklikšķiniet \"Pievienot atlas
 msgid ""
 "This will disconnect these zones from their template. Are you sure you want "
 "to proceed?"
-msgstr ""
-"This will disconnect these zones from their template. Are you sure you want "
-"to proceed?"
+msgstr "Tas atvienos šīs zonas no to veidnes. Vai tiešām turpināt?"
 
 #: templates/modern/confirm_unlink_zones_templ.html:56
 msgid ""
@@ -4822,8 +4748,7 @@ msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
 msgstr ""
-"Use the dropdown button next to Network Prefix to select from existing "
-"reverse zones"
+"Izmantojiet nolaižamo izvēlni blakus Network Prefix, lai atlasītu reversās zonas"
 
 #: templates/modern/batch_ptr_record.html:184
 msgid ""
@@ -4901,9 +4826,7 @@ msgstr "Ievadiet vienu no atkopšanas kodiem. Katru var lietot tikai reizi."
 msgid ""
 "Enter your email address and we'll send you the username associated with "
 "this account."
-msgstr ""
-"Enter your email address and we'll send you the username associated with "
-"this account."
+msgstr "Ievadiet e-pastu un mēs nosūtīsim ar kontu saistīto lietotājvārdu."
 
 #: templates/default/add_user.html:162 templates/modern/add_user.html:162
 msgid ""
@@ -5010,24 +4933,19 @@ msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
 "or Authy."
 msgstr ""
-"Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
-"or Authy."
+"Izmantojiet lietotni kā Google Authenticator, Microsoft Authenticator vai Authy."
 
 #: templates/default/mfa_setup.html:104 templates/modern/mfa_setup.html:104
 msgid ""
 "Email verification is not available because it has been disabled by the "
 "administrator."
-msgstr ""
-"Email verification is not available because it has been disabled by the "
-"administrator."
+msgstr "E-pasta pārbaude nav pieejama, jo administrators to ir atspējojis."
 
 #: templates/default/mfa_setup.html:108 templates/modern/mfa_setup.html:108
 msgid ""
 "Email verification is not available because mail service is not enabled on "
 "this system."
-msgstr ""
-"Email verification is not available because mail service is not enabled on "
-"this system."
+msgstr "E-pasta pārbaude nav pieejama, jo pasta pakalpojums nav iespējots."
 
 #: templates/default/mfa_setup.html:112 templates/modern/mfa_setup.html:112
 msgid ""
@@ -5181,9 +5099,7 @@ msgstr ""
 msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
-msgstr ""
-"When assigned to <strong>users</strong>: Permissions apply globally across "
-"the system."
+msgstr "Kad piešķirts <strong>lietotājiem</strong>: atļaujas darbojas globāli."
 
 #: templates/default/edit_perm_templ.html:78
 msgid ""
@@ -5273,8 +5189,7 @@ msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
+"Tā kā izmantojat SQLite, nav nepieciešams izveidot lietotāju ar ierobežotām tiesībām."
 
 #: install/templates/step1.html.twig:12
 msgid ""
@@ -5340,8 +5255,7 @@ msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
 msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
+"Poweradmin nedarbosies, ja pastāv install direktorijs - drošības pasākums."
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
@@ -5365,8 +5279,7 @@ msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
 msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
+"Konfigurējiet datubāzi, izveidojiet admin kontu un ģenerējiet konfigurāciju."
 
 #: install/helpers/InstallStepHandler.php:209
 msgid ""
