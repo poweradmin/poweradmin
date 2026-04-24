@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\BaseController;
@@ -119,8 +120,17 @@ class IndexController extends BaseController
             $dashboardStats = $this->getDashboardStats();
         }
 
+        // Surface the most recent PowerDNS API error to admins so they know the
+        // UI's zero counts / empty lists reflect an upstream failure rather
+        // than a real absence of data.
+        $apiError = null;
+        if ($permissions['user_is_ueberuser'] && DnsBackendProviderFactory::isApiBackend($this->config)) {
+            $apiError = (new ApiStatusService())->getLastError();
+        }
+
         $this->render("index.html", [
             'dashboard_stats' => $dashboardStats,
+            'api_error' => $apiError,
             'user_name' => $this->userContextService->getDisplayName(),
             'auth_used' => $this->userContextService->getAuthMethod() ?? '',
             'can_change_password' => $canChangePassword,

@@ -23,6 +23,8 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
+use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
@@ -718,12 +720,15 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function getZones(): array
     {
+        $statusService = new ApiStatusService();
         try {
             $apiZones = $this->client->getAllZones();
-        } catch (\Poweradmin\Domain\Error\ApiErrorException $e) {
+        } catch (ApiErrorException $e) {
             $this->logger->error('Failed to get zones from API: {error}', ['error' => $e->getMessage()]);
+            $statusService->recordError($e->getMessage(), ['endpoint' => 'zones']);
             return [];
         }
+        $statusService->clearError();
 
         $zones = [];
         foreach ($apiZones as $zone) {

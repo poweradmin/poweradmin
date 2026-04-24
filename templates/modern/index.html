@@ -10,6 +10,19 @@
     {% endif %}
 </div>
 
+{% if api_error %}
+<div class="alert alert-warning alert-dismissible fade show py-2 mb-2" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    <strong>{% trans %}PowerDNS API error{% endtrans %}:</strong>
+    {{ api_error.message }}
+    {% if api_error.context.endpoint is defined %}
+    <span class="text-muted small">({% trans %}endpoint{% endtrans %}: {{ api_error.context.endpoint }})</span>
+    {% endif %}
+    <div class="small mt-1">{% trans %}Zone counts and lists may be out of date until the API is reachable again. Check your PowerDNS server log for details.{% endtrans %}</div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
 {# --- DNS Management --- #}
 {% set has_dns_management = (permissions['user_is_ueberuser'] and pdns_api_enabled and show_pdns_status)
     or permissions['search']
