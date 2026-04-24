@@ -36,6 +36,7 @@ use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\UserService;
 use Poweradmin\Application\Service\ZoneService;
+use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
@@ -59,7 +60,47 @@ class ListForwardZonesController extends BaseController
         $this->setCurrentPage('list_forward_zones');
         $this->setPageTitle(_('Forward Zones'));
 
+        if (($_GET['sync'] ?? '') === '1') {
+            $this->forceSyncFromApi();
+            return;
+        }
+
         $this->listForwardZones();
+    }
+
+    private function forceSyncFromApi(): void
+    {
+        if (!DnsBackendProviderFactory::isApiBackend($this->getConfig())) {
+            $this->redirect('/zones/forward');
+            return;
+        }
+
+        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+            $this->setMessage('list_forward_zones', 'error', _('You do not have permission to sync zones from PowerDNS.'));
+            $this->redirect('/zones/forward');
+            return;
+        }
+
+        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        $syncService = new ZoneSyncService($this->db, $backendProvider, 300, $this->logger);
+
+        try {
+            $result = $syncService->sync();
+            $this->setMessage('list_forward_zones', 'success', sprintf(
+                _('Zones synced from PowerDNS: %d added, %d updated, %d removed.'),
+                $result['added'],
+                $result['updated'],
+                $result['removed']
+            ));
+        } catch (\Throwable $e) {
+            $this->logger->warning('Forced zone sync failed: {error}', ['error' => $e->getMessage()]);
+            $this->setMessage('list_forward_zones', 'error', sprintf(
+                _('Zone sync failed: %s'),
+                $e->getMessage()
+            ));
+        }
+
+        $this->redirect('/zones/forward');
     }
 
     private function listForwardZones(): void
@@ -166,6 +207,7 @@ class ListForwardZonesController extends BaseController
             'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
             'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'is_api_backend' => DnsBackendProviderFactory::isApiBackend($this->getConfig()),
         ]);
     }
 
