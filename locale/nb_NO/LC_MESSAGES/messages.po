@@ -9573,10 +9573,13 @@ msgid "endpoint"
 msgstr "endpoint"
 
 #: templates/default/index.html:21 templates/modern/index.html:21
+#, auto-english-fallback
 msgid ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
 msgstr ""
+"Zone counts and lists may be out of date until the API is reachable again. "
+"Check your PowerDNS server log for details."
 
 #: templates/default/index.html:35 templates/modern/index.html:35
 msgid "DNS Management"
