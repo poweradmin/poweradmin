@@ -74,18 +74,20 @@ class ZoneSyncService
         }
 
         try {
-            $result = $this->sync();
+            return $this->sync();
         } catch (\Throwable $e) {
             $this->logger->warning('Zone sync failed: {error}', ['error' => $e->getMessage(), 'exception' => $e]);
             return null;
         }
-
-        $_SESSION[self::LAST_SYNC_KEY] = time();
-        return $result;
     }
 
     /**
      * Synchronize zones from PowerDNS API with local zones table.
+     *
+     * On success, records the completion time in the session so that an
+     * immediately following syncIfStale() call (e.g. from the redirected
+     * request after a manual sync) will skip rather than re-run the full
+     * reconciliation.
      *
      * @return array{added: int, removed: int, updated: int}
      */
@@ -106,6 +108,7 @@ class ZoneSyncService
         // admin must remove the local entries manually in that rare scenario.
         if (empty($apiZones) && !empty($localZones)) {
             $this->logger->warning('Zone sync: API returned empty while local zones exist, skipping removal');
+            $_SESSION[self::LAST_SYNC_KEY] = time();
             return ['added' => 0, 'removed' => 0, 'updated' => 0];
         }
 
@@ -123,6 +126,7 @@ class ZoneSyncService
         } else {
             $this->logger->debug('Zone sync complete: no changes', $result);
         }
+        $_SESSION[self::LAST_SYNC_KEY] = time();
         return $result;
     }
 
