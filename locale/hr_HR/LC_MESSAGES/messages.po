@@ -5728,7 +5728,7 @@ msgstr "TLS certificate/key authentication (DANE)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:57
 msgid "DNSSEC Requirement"
-msgstr "DNSSEC Requirement"
+msgstr "DNSSEC zahtjev"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:91
 msgid "Service Configuration"
@@ -5841,7 +5841,7 @@ msgstr "1 - SHA-256 Hash"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:144
 msgid "SHA-256 hash of certificate/key"
-msgstr "SHA-256 hash of certificate/key"
+msgstr "SHA-256 hash certifikata/ključa"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:145
 msgid "2 - SHA-512 Hash"
@@ -5873,7 +5873,7 @@ msgstr "Time to live - how long DNS resolvers should cache this record"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:289
 msgid "Port must be between 1 and 65535"
-msgstr "Port must be between 1 and 65535"
+msgstr "Port mora biti između 1 i 65535"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:233
 msgid "Usage must be 0, 1, 2, or 3"
@@ -5885,7 +5885,7 @@ msgstr "Selektor mora biti 0 ili 1"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:243
 msgid "Matching type must be 0, 1, or 2"
-msgstr "Matching type must be 0, 1, or 2"
+msgstr "Vrsta podudaranja mora biti 0, 1 ili 2"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:248
 msgid "Certificate association data is required"
@@ -6014,7 +6014,7 @@ msgstr "Generate reports if SPF check fails"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:135
 msgid "Alignment Settings"
-msgstr "Alignment Settings"
+msgstr "Postavke usklađivanja"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:136
 msgid "Advanced settings for SPF and DKIM alignment modes"
@@ -6054,7 +6054,7 @@ msgstr "SPF domain must exactly match From: domain"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:261
 msgid "Policy is required"
-msgstr "Policy is required"
+msgstr "Pravilo je obavezno"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:263
 msgid "Invalid policy value"
@@ -6134,7 +6134,7 @@ msgstr "One IPv6 address or network per line"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:103
 msgid "Include Mechanisms"
-msgstr "Include Mechanisms"
+msgstr "Uključi mehanizme"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:104
 msgid "Include SPF records from other domains"
@@ -6221,7 +6221,7 @@ msgstr "CA pružatelj"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:87
 msgid "CA Domain (Custom)"
-msgstr "CA Domain (Custom)"
+msgstr "CA domena (prilagođeno)"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:97
 msgid "Certificate Type"
@@ -6250,7 +6250,7 @@ msgstr "Authorize issuance of wildcard certificates (*.example.com)"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:108
 msgid "Incident Reporting"
-msgstr "Incident Reporting"
+msgstr "Prijava incidenta"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:108
 msgid "URL to report certificate issuance violations"
@@ -6282,7 +6282,7 @@ msgstr "Nekritično"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:135
 msgid "Allow fallback if not understood"
-msgstr "Allow fallback if not understood"
+msgstr "Dopusti fallback ako nije razumljiv"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:136
 msgid "Critical"
@@ -6332,7 +6332,7 @@ msgstr "Informacija"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:68
 msgid "DKIM Configuration"
-msgstr "DKIM Configuration"
+msgstr "DKIM konfiguracija"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:81
 msgid "Public Key"
@@ -6442,7 +6442,7 @@ msgstr "Usluga je obavezna"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:265
 msgid "Custom service name is required"
-msgstr "Custom service name is required"
+msgstr "Prilagođeni naziv usluge je obavezan"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:267
 msgid "Service name must contain only alphanumeric characters and hyphens"
@@ -6527,7 +6527,7 @@ msgstr "Nije uspjelo stvaranje zone."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:317
 msgid "Failed to retrieve created zone."
-msgstr "Failed to retrieve created zone."
+msgstr "Nije uspjelo dohvaćanje stvorene zone."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:38
 msgid "You need to be logged in to export zone data."
@@ -6539,7 +6539,7 @@ msgstr "You do not have permission to export this zone."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:72
 msgid "There is no zone with this ID."
-msgstr "There is no zone with this ID."
+msgstr "Nema zone s ovim ID-om."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:71
 msgid "This zone does not have any records to export."
@@ -6583,7 +6583,7 @@ msgstr "Polje %s je obavezno."
 #: lib/BaseController.php:796
 #, php-format
 msgid "The %s field must be a number."
-msgstr "The %s field must be a number."
+msgstr "Polje %s mora biti broj."
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
 msgid "Previous"
@@ -6647,7 +6647,7 @@ msgstr "The comment has been updated successfully."
 
 #: lib/Application/Controller/EditRecordController.php:95
 msgid "Invalid record ID."
-msgstr "Invalid record ID."
+msgstr "Nevažeći ID zapisa."
 
 #: lib/Application/Controller/DeleteRecordController.php:115
 msgid "You do not have permission to delete records in this zone."
@@ -6667,7 +6667,7 @@ msgstr "You cannot delete records from a SLAVE zone."
 
 #: lib/Application/Controller/EditGroupController.php:80
 msgid "Group management is not enabled."
-msgstr "Group management is not enabled."
+msgstr "Upravljanje grupama nije omogućeno."
 
 #: lib/Application/Controller/DeleteGroupController.php:79
 msgid "You do not have permission to delete groups."
@@ -6701,7 +6701,7 @@ msgstr "Postavke korisnika"
 
 #: lib/Application/Controller/UserPreferencesController.php:100
 msgid "Preferences saved successfully."
-msgstr "Preferences saved successfully."
+msgstr "Postavke uspješno spremljene."
 
 #: lib/Application/Controller/UserPreferencesController.php:108
 msgid "Failed to update preferences. Please try again."
@@ -6729,7 +6729,7 @@ msgstr "Nevažeća akcija."
 
 #: lib/Application/Controller/ManageGroupMembersController.php:197
 msgid "Please select at least one user."
-msgstr "Please select at least one user."
+msgstr "Odaberite barem jednog korisnika."
 
 #: lib/Application/Controller/MfaSetupController.php:59
 msgid "MFA is not enabled on this system."
@@ -6749,7 +6749,7 @@ msgstr "MFA je već omogućen."
 
 #: lib/Application/Controller/MfaSetupController.php:262
 msgid "Verification code is required."
-msgstr "Verification code is required."
+msgstr "Kod za potvrdu je obavezan."
 
 #: lib/Application/Controller/MfaSetupController.php:171
 msgid "MFA has been enabled successfully."
@@ -6790,7 +6790,7 @@ msgstr "Nevažeći broj stranice."
 
 #: lib/Application/Controller/ListLogUsersController.php:95
 msgid "Page number must be at least 1."
-msgstr "Page number must be at least 1."
+msgstr "Broj stranice mora biti najmanje 1."
 
 #: lib/Application/Controller/ListLogUsersController.php:114
 msgid "Page number exceeds available pages."
@@ -6814,12 +6814,12 @@ msgstr "Zone metadata has been updated successfully."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:155
 msgid "Failed to update zone metadata."
-msgstr "Failed to update zone metadata."
+msgstr "Ažuriranje metapodataka zone nije uspjelo."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:177
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
-msgstr "Edit Zone Metadata"
+msgstr "Uredi metapodatke zone"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:177
 #: templates/modern/edit_zone_metadata.html:24
@@ -6863,7 +6863,7 @@ msgstr "Naziv API ključa je obavezan."
 
 #: lib/Application/Controller/ApiKeysController.php:260
 msgid "Invalid expiration date format."
-msgstr "Invalid expiration date format."
+msgstr "Nevažeći format datuma isteka."
 
 #: lib/Domain/Service/ApiKeyService.php:314
 msgid "API key not found or you do not have permission to edit it."
@@ -7009,7 +7009,7 @@ msgstr "You do not have the permission to delete this record."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:78
 msgid "The record could not be deleted."
-msgstr "The record could not be deleted."
+msgstr "Zapis se nije mogao obrisati."
 
 #: lib/Application/Controller/ListLogZonesController.php:62
 #: templates/default/index.html:219 templates/modern/index.html:219
@@ -7039,7 +7039,7 @@ msgstr "You do not have the permission to edit zone templates."
 
 #: lib/Application/Controller/EditZoneTemplController.php:74
 msgid "Edit Zone Template"
-msgstr "Edit Zone Template"
+msgstr "Uredi predložak zone"
 
 #: lib/Application/Controller/EditZoneTemplController.php:90
 msgid "There is no zone template with this ID."
@@ -7096,7 +7096,7 @@ msgstr "You do not have permission to unlink zones from templates."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:48
 msgid "No zones selected."
-msgstr "No zones selected."
+msgstr "Nema odabranih zona."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:119
 msgid "Failed to unlink zones from template."
@@ -7243,7 +7243,7 @@ msgstr "%d matching record(s) were also created."
 #: lib/Application/Controller/AddRecordController.php:488
 #, php-format
 msgid "%d record(s) failed to be added."
-msgstr "%d record(s) failed to be added."
+msgstr "%d zapisa nije dodano."
 
 #: lib/Application/Controller/AddRecordController.php:519
 msgid "Failed to add any records. They may contain invalid data."
@@ -7291,7 +7291,7 @@ msgstr "Zone template has been created successfully."
 
 #: lib/Application/Controller/OidcLoginController.php:89
 msgid "No OIDC providers are configured"
-msgstr "No OIDC providers are configured"
+msgstr "Nema konfiguriranih OIDC pružatelja"
 
 #: lib/Application/Controller/OidcLoginController.php:107
 msgid "Failed to initiate OIDC authentication: "
@@ -7402,7 +7402,7 @@ msgstr "SAML authentication is not enabled"
 
 #: lib/Application/Controller/SamlLoginController.php:89
 msgid "No SAML providers are configured"
-msgstr "No SAML providers are configured"
+msgstr "Nema konfiguriranih SAML pružatelja"
 
 #: lib/Application/Controller/SamlLoginController.php:100
 msgid "Invalid SAML provider"
@@ -7431,11 +7431,11 @@ msgstr "You do not have permission to manage zone ownership."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:96
 msgid "Manage Group Zones"
-msgstr "Manage Group Zones"
+msgstr "Upravljaj zonama grupe"
 
 #: lib/Application/Controller/ManageGroupZonesController.php:214
 msgid "Please select at least one zone."
-msgstr "Please select at least one zone."
+msgstr "Odaberite barem jednu zonu."
 
 #: lib/Application/Controller/AddPermTemplController.php:59
 msgid "You do not have the permission to add permission templates."
@@ -7473,7 +7473,7 @@ msgstr "Provjera konzistentnosti baze"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:101
 msgid "Zone owner assigned successfully"
-msgstr "Zone owner assigned successfully"
+msgstr "Vlasnik zone uspješno dodijeljen"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:101
 msgid "Failed to assign zone owner"
@@ -7481,7 +7481,7 @@ msgstr "Neuspješno dodjeljivanje vlasnika zone"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:108
 msgid "Slave zone deleted successfully"
-msgstr "Slave zone deleted successfully"
+msgstr "Sekundarna zona uspješno obrisana"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:108
 msgid "Failed to delete slave zone"
@@ -7493,7 +7493,7 @@ msgstr "Orphaned record deleted successfully"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:115
 msgid "Failed to delete orphaned record"
-msgstr "Failed to delete orphaned record"
+msgstr "Brisanje zapisa bez roditelja nije uspjelo"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:122
 msgid "Duplicate SOA records fixed successfully"
@@ -7513,7 +7513,7 @@ msgstr "Failed to create default SOA record"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:134
 msgid "Invalid check type"
-msgstr "Invalid check type"
+msgstr "Nevažeća vrsta provjere"
 
 #: lib/Application/Controller/LogoutController.php:131
 msgid "You have logged out."
@@ -7553,7 +7553,7 @@ msgstr "You do not have the permission to add a slave zone."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:69
 msgid "Add Secondary Zone"
-msgstr "Add Secondary Zone"
+msgstr "Dodaj sekundarnu zonu"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:315
 msgid "Invalid hostname."
@@ -7631,7 +7631,7 @@ msgstr "The user has been updated successfully."
 
 #: lib/Application/Controller/EditUserController.php:175
 msgid "The user could not be updated."
-msgstr "The user could not be updated."
+msgstr "Korisnik se ne može ažurirati."
 
 #: lib/Domain/Model/UserManager.php:509 lib/Domain/Model/UserManager.php:983
 msgid "You do not have the permission to edit this user."
@@ -7790,7 +7790,7 @@ msgstr "Zones has been added successfully."
 
 #: lib/Application/Controller/BulkRegistrationController.php:131
 msgid "Some zone(s) could not be added."
-msgstr "Some zone(s) could not be added."
+msgstr "Neke zone se nisu mogle dodati."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:176
 msgid "Owner has been added successfully."
@@ -7930,11 +7930,11 @@ msgstr "reCAPTCHA verification failed. Please try again."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:177
 msgid "An empty password is not allowed"
-msgstr "An empty password is not allowed"
+msgstr "Prazna lozinka nije dopuštena"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:220
 msgid "LDAP authentication is disabled"
-msgstr "LDAP authentication is disabled"
+msgstr "LDAP autentifikacija je onemogućena"
 
 #: lib/Domain/Model/UserManager.php:1015
 msgid "Enter a valid email address."
@@ -8111,7 +8111,7 @@ msgstr "DSA keys should follow the format defined in RFC 2536."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:106
 msgid "Invalid characters in hostname."
-msgstr "Invalid characters in hostname."
+msgstr "Nevažeći znakovi u imenu poslužitelja."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:123
 msgid "1. The entire chain of SRV lookups must be DNSSEC-signed"
@@ -8687,7 +8687,7 @@ msgstr "Invalid domain in redirect modifier."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:275
 msgid "Invalid domain in exp modifier."
-msgstr "Invalid domain in exp modifier."
+msgstr "Nevažeća domena u exp modifikatoru."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
@@ -8785,7 +8785,7 @@ msgstr "RRSIG signer name must be a valid domain name."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
-msgstr "RRSIG signature cannot be empty."
+msgstr "RRSIG potpis ne može biti prazan."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
 msgid "Priority field for RP records must be 0 or empty"
@@ -8793,7 +8793,7 @@ msgstr "Priority field for RP records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:131
 msgid "Type code for RP records is 17."
-msgstr "Type code for RP records is 17."
+msgstr "Kod tipa za RP zapise je 17."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:154
 msgid "RP record content cannot be empty."
@@ -8959,7 +8959,7 @@ msgstr "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
 msgid "IP address list cannot be empty."
-msgstr "IP address list cannot be empty."
+msgstr "Popis IP adresa ne može biti prazan."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
@@ -9004,7 +9004,7 @@ msgstr "CAA tag must only contain ASCII letters and numbers."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:204
 msgid "Invalid CA domain in issue tag."
-msgstr "Invalid CA domain in issue tag."
+msgstr "Nevažeća CA domena u oznaci issue."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:216
 msgid "Issue tag parameters must be in key=value format."
@@ -9118,7 +9118,7 @@ msgstr "Invalid email address in SOA record."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:212
 msgid "Serial number must be numeric."
-msgstr "Serial number must be numeric."
+msgstr "Serijski broj mora biti brojčan."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:218
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
@@ -9356,7 +9356,7 @@ msgstr "Nepoznata DMARC oznaka: %s"
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:293
 #, php-format
 msgid "Required DMARC tag missing: %s"
-msgstr "Required DMARC tag missing: %s"
+msgstr "Nedostaje obavezna DMARC oznaka: %s"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:179
 msgid "TXT record content must be enclosed in quotes."
@@ -9765,7 +9765,7 @@ msgstr "API ključ regeneriran"
 
 #: templates/modern/api_key_regenerated.html:12
 msgid "API Key Regenerated Successfully"
-msgstr "API Key Regenerated Successfully"
+msgstr "API ključ uspješno regeneriran"
 
 #: templates/modern/api_key_regenerated.html:17
 msgid "IMPORTANT: Save your new API key now!"
@@ -9941,7 +9941,7 @@ msgstr "Zadnje korišteno"
 
 #: templates/default/api_key_edit.html:93 templates/modern/api_key_edit.html:94
 msgid "Additional Actions"
-msgstr "Additional Actions"
+msgstr "Dodatne akcije"
 
 #: templates/modern/api_key_regenerate.html:12
 msgid "Regenerate API Key"
@@ -10045,19 +10045,19 @@ msgstr "Substituted with current date and 2 numbers"
 
 #: templates/modern/edit_zone_templ.html:209
 msgid "Substituted with 1st name server"
-msgstr "Substituted with 1st name server"
+msgstr "Zamijenjeno 1. nameserverom"
 
 #: templates/modern/edit_zone_templ.html:213
 msgid "Substituted with 2nd name server"
-msgstr "Substituted with 2nd name server"
+msgstr "Zamijenjeno 2. nameserverom"
 
 #: templates/modern/edit_zone_templ.html:217
 msgid "Substituted with 3rd name server"
-msgstr "Substituted with 3rd name server"
+msgstr "Zamijenjeno 3. nameserverom"
 
 #: templates/modern/edit_zone_templ.html:221
 msgid "Substituted with 4th name server"
-msgstr "Substituted with 4th name server"
+msgstr "Zamijenjeno 4. nameserverom"
 
 #: templates/modern/edit_zone_templ.html:225
 msgid "Substituted with hostmaster"
@@ -10555,7 +10555,7 @@ msgstr "Dodaj predložak zone za"
 
 #: templates/modern/edit_perm_templ.html:26
 msgid "Provide a name for your template"
-msgstr "Provide a name for your template"
+msgstr "Unesite naziv za predložak"
 
 #: templates/modern/edit_zone_templ.html:142
 msgid "Optional description to help identify this template"
@@ -10599,7 +10599,7 @@ msgstr "Save time when creating new domains"
 
 #: templates/modern/add_zone_templ.html:82
 msgid "Maintain standardized DNS setups"
-msgstr "Maintain standardized DNS setups"
+msgstr "Održavaj standardizirane DNS postavke"
 
 #: templates/modern/add_zone_templ.html:91
 msgid "Tips & Examples"
@@ -10659,7 +10659,7 @@ msgstr "Export filtered log entries. Current filters will be applied."
 
 #: templates/modern/list_log_groups.html:129
 msgid "records to export"
-msgstr "records to export"
+msgstr "zapisa za izvoz"
 
 #: templates/modern/list_log_groups.html:131
 msgid "Format"
@@ -10823,7 +10823,7 @@ msgstr "Obriši korisnika"
 
 #: templates/default/delete_user.html:16 templates/modern/delete_user.html:16
 msgid "You are about to delete the user"
-msgstr "You are about to delete the user"
+msgstr "Obrisat ćete korisnika"
 
 #: templates/default/delete_user.html:26 templates/modern/delete_user.html:26
 msgid "Zone Ownership Transfer"
@@ -10863,7 +10863,7 @@ msgstr "Da, obriši ovog korisnika"
 
 #: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
 msgid "No, keep this user"
-msgstr "No, keep this user"
+msgstr "Ne, zadrži ovog korisnika"
 
 #: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
@@ -10927,7 +10927,7 @@ msgstr "Promjene ugovora"
 
 #: templates/modern/user_agreement_content.html:30
 msgid "Agreement Version:"
-msgstr "Agreement Version:"
+msgstr "Verzija ugovora:"
 
 #: templates/modern/user_agreement_content.html:31
 msgid "Last Updated:"
@@ -11242,7 +11242,7 @@ msgstr "Mora sadržavati brojeve"
 
 #: templates/modern/change_password.html:92
 msgid "Must contain special characters"
-msgstr "Must contain special characters"
+msgstr "Mora sadržavati posebne znakove"
 
 #: templates/modern/change_password.html:97
 msgid "No specific password requirements"
@@ -11458,7 +11458,7 @@ msgstr "Add Supermaster"
 
 #: templates/modern/add_supermaster.html:70
 msgid "About Supermasters"
-msgstr "About Supermasters"
+msgstr "O supermasterima"
 
 #: templates/modern/add_supermaster.html:75
 msgid "What is a Supermaster?"
@@ -11502,7 +11502,7 @@ msgstr "IPv4 mreža"
 
 #: templates/modern/batch_ptr_record.html:42
 msgid "IPv6 (/64 network)"
-msgstr "IPv6 (/64 network)"
+msgstr "IPv6 (/64 mreža)"
 
 #: templates/modern/batch_ptr_record.html:47
 msgid "Network Prefix"
@@ -11514,7 +11514,7 @@ msgstr "Select from existing reverse zones"
 
 #: templates/modern/batch_ptr_record.html:67
 msgid "Please provide a network prefix"
-msgstr "Please provide a network prefix"
+msgstr "Unesite mrežni prefiks"
 
 #: templates/modern/batch_ptr_record.html:73
 msgid "Host Prefix"
@@ -11551,7 +11551,7 @@ msgstr "Create PTRs only for existing A records in forward zone"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
-msgstr "Create PTR Records"
+msgstr "Stvori PTR zapise"
 
 #: templates/modern/batch_ptr_record.html:136
 msgid "PTR Record Information"
@@ -11603,7 +11603,7 @@ msgstr "Korisnik-vlasnik"
 
 #: templates/modern/zone-ownership.html:55
 msgid "No users assigned to this zone."
-msgstr "No users assigned to this zone."
+msgstr "Nijednog korisnika za ovu zonu."
 
 #: templates/modern/zone-ownership.html:61
 msgid "Add User Owner"
@@ -11627,7 +11627,7 @@ msgstr "Vlasništvo grupe"
 
 #: templates/modern/zone-ownership.html:127
 msgid "No groups assigned to this zone."
-msgstr "No groups assigned to this zone."
+msgstr "Nijedna grupa nije dodijeljena ovoj zoni."
 
 #: templates/modern/zone-ownership.html:133
 msgid "Add Group Ownership"
@@ -11687,7 +11687,7 @@ msgstr "My application"
 
 #: templates/default/api_key_add.html:22 templates/modern/api_key_add.html:23
 msgid "Provide a name for this API key"
-msgstr "Provide a name for this API key"
+msgstr "Unesite naziv za ovaj API ključ"
 
 #: templates/default/api_key_add.html:35 templates/modern/api_key_add.html:36
 msgid "Create API Key"
@@ -11900,7 +11900,7 @@ msgstr "MFA omogućen"
 
 #: templates/modern/users.html:122 templates/modern/users.html:186
 msgid "MFA not configured"
-msgstr "MFA not configured"
+msgstr "MFA nije konfiguriran"
 
 #: templates/modern/list_template_zones.html:15
 msgid "Total number of zones:"
@@ -12056,7 +12056,7 @@ msgstr "Obriši zapis bez roditelja"
 
 #: templates/modern/database_consistency.html:199
 msgid "Zones with Duplicate SOA Records"
-msgstr "Zones with Duplicate SOA Records"
+msgstr "Zone s dupliciranim SOA zapisima"
 
 #: templates/modern/database_consistency.html:212
 msgid "SOA Count"
@@ -12117,7 +12117,7 @@ msgstr "Send login credentials to user's email address"
 
 #: templates/modern/add_user.html:81
 msgid "Select permissions for this user"
-msgstr "Select permissions for this user"
+msgstr "Odaberite dozvole za korisnika"
 
 #: templates/default/add_user.html:176 templates/modern/add_user.html:176
 msgid "Select groups to add the new user to upon creation."
@@ -12225,11 +12225,11 @@ msgstr "Sinkronizirano"
 
 #: templates/modern/edit_zone_templ.html:107
 msgid "No zones are using this template"
-msgstr "No zones are using this template"
+msgstr "Nijedna zona ne koristi ovaj predložak"
 
 #: templates/modern/list_zone_templ.html:104
 msgid "View zones using this template"
-msgstr "View zones using this template"
+msgstr "Prikaži zone koje koriste ovaj predložak"
 
 #: templates/modern/list_zone_templ.html:133
 msgid "Template Behavior:"
@@ -12329,7 +12329,7 @@ msgstr "Provjeri i omogući MFA"
 
 #: templates/modern/mfa_verify_app.html:67
 msgid "Recommended Authenticator Apps"
-msgstr "Recommended Authenticator Apps"
+msgstr "Preporučene autentifikacijske aplikacije"
 
 #: templates/modern/mfa_verify_app.html:97
 msgid "Available for Android and iOS"
@@ -12561,7 +12561,7 @@ msgstr "Recovery Codes"
 
 #: templates/modern/mfa_recovery_codes.html:14
 msgid "MFA Setup Complete"
-msgstr "MFA Setup Complete"
+msgstr "MFA postavljanje završeno"
 
 #: templates/modern/mfa_recovery_codes.html:18
 msgid "Multi-Factor Authentication is now enabled"
@@ -12581,7 +12581,7 @@ msgstr "Authenticator app"
 
 #: templates/modern/mfa_setup.html:34
 msgid "Email verification"
-msgstr "Email verification"
+msgstr "provjera e-pošte"
 
 #: templates/modern/mfa_recovery_codes.html:29
 msgid "Save Your Recovery Codes"
@@ -12621,7 +12621,7 @@ msgstr "Poweradmin MFA kodovi za oporavak"
 
 #: templates/default/mfa_setup.html:14 templates/modern/mfa_setup.html:14
 msgid "MFA Setup Required"
-msgstr "MFA Setup Required"
+msgstr "Potrebno MFA postavljanje"
 
 #: templates/default/mfa_setup.html:28 templates/modern/mfa_setup.html:28
 msgid "MFA is currently enabled"
@@ -12665,7 +12665,7 @@ msgstr "Postavi autentifikaciju aplikacijom"
 
 #: templates/modern/mfa_verify_email.html:5
 msgid "Email Verification"
-msgstr "Email Verification"
+msgstr "Provjera e-pošte"
 
 #: templates/default/mfa_setup.html:95 templates/modern/mfa_setup.html:95
 msgid "Receive a verification code via email when you log in."
@@ -12721,7 +12721,7 @@ msgstr "Obriši zonu"
 
 #: templates/modern/delete_domain.html:33
 msgid "You are about to delete the zone"
-msgstr "You are about to delete the zone"
+msgstr "Obrisat ćete zonu"
 
 #: templates/modern/delete_domain.html:41
 msgid "Zone Details"
@@ -12733,7 +12733,7 @@ msgstr "Da, obriši ovu zonu"
 
 #: templates/modern/delete_domain.html:83
 msgid "No, keep this zone"
-msgstr "No, keep this zone"
+msgstr "Ne, zadrži ovu zonu"
 
 #: templates/modern/user_preferences.html:17
 msgid "Display Settings"
@@ -12761,7 +12761,7 @@ msgstr "Display template information in zone lists"
 
 #: templates/modern/user_preferences.html:64
 msgid "Interface Behavior"
-msgstr "Interface Behavior"
+msgstr "Ponašanje sučelja"
 
 #: templates/modern/user_preferences.html:69
 msgid "Record form"
@@ -12845,11 +12845,11 @@ msgstr "Potvrdi brisanje zone"
 
 #: templates/modern/search.html:680 templates/modern/search.html:706
 msgid "Are you sure you want to delete"
-msgstr "Are you sure you want to delete"
+msgstr "Jeste li sigurni da želite obrisati"
 
 #: templates/default/search.html:669 templates/modern/search.html:680
 msgid "selected zone(s)?"
-msgstr "selected zone(s)?"
+msgstr "odabranu zonu/e?"
 
 #: templates/default/search.html:690 templates/modern/search.html:701
 msgid "Confirm Record Deletion"
@@ -12889,11 +12889,11 @@ msgstr "Ne, zadrži ove zone"
 
 #: templates/modern/delete_supermaster.html:5
 msgid "Delete supermaster"
-msgstr "Delete supermaster"
+msgstr "obriši supermastera"
 
 #: templates/modern/delete_supermaster.html:11
 msgid "Delete Supermaster"
-msgstr "Delete Supermaster"
+msgstr "Obriši supermastera"
 
 #: templates/modern/delete_supermaster.html:16
 msgid "You are about to delete the supermaster"
@@ -13182,7 +13182,7 @@ msgstr "DS zapisi"
 
 #: templates/modern/add_record.html:27 templates/modern/add_record.html:29
 msgid "Add record to zone"
-msgstr "Add record to zone"
+msgstr "Dodaj zapis u zonu"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
 msgid "Record could not be added. Please check the record data and try again."
@@ -13194,7 +13194,7 @@ msgstr "Create a new DNS record in this zone"
 
 #: templates/default/add_record.html:196 templates/modern/add_record.html:196
 msgid "Add another record"
-msgstr "Add another record"
+msgstr "Dodaj još jedan zapis"
 
 #: templates/default/add_record.html:211 templates/modern/add_record.html:211
 msgid "Add records"
@@ -13234,7 +13234,7 @@ msgstr "Dodaj odabrano"
 
 #: templates/modern/manage_group_members.html:133
 msgid "Are you sure you want to remove"
-msgstr "Are you sure you want to remove"
+msgstr "Jeste li sigurni da želite ukloniti"
 
 #: templates/modern/manage_group_zones.html:211
 msgid "zone(s) from this group?"
@@ -13270,7 +13270,7 @@ msgstr "Onemogući"
 
 #: templates/default/api_keys.html:98 templates/modern/api_keys.html:99
 msgid "No API keys found."
-msgstr "No API keys found."
+msgstr "Nema pronađenih API ključeva."
 
 #: templates/default/api_keys.html:111 templates/modern/api_keys.html:112
 msgid "Disable API Key"
@@ -13458,11 +13458,11 @@ msgstr "Uvoz uspješno završen."
 
 #: lib/Module/ZoneImportExport/templates/import.html:21
 msgid "records imported."
-msgstr "records imported."
+msgstr "zapisa uvezeno."
 
 #: lib/Module/ZoneImportExport/templates/import.html:34
 msgid "records imported,"
-msgstr "records imported,"
+msgstr "zapisa uvezeno,"
 
 #: lib/Module/ZoneImportExport/templates/import.html:28
 msgid "records skipped (duplicates)."
@@ -13566,7 +13566,7 @@ msgstr "Direktive $ORIGIN i $TTL"
 
 #: lib/Module/ZoneImportExport/templates/import.html:194
 msgid "Multi-line records"
-msgstr "Multi-line records"
+msgstr "Višeredni zapisi"
 
 #: lib/Module/ZoneImportExport/templates/import.html:195
 msgid "IDN domain names"
@@ -13586,7 +13586,7 @@ msgstr "Pretraga"
 
 #: lib/Module/Whois/templates/whois.html:35
 msgid "WHOIS results for"
-msgstr "WHOIS results for"
+msgstr "WHOIS rezultati za"
 
 #: lib/Module/Whois/templates/whois.html:46
 msgid "Please enter a domain name to perform a WHOIS lookup."
@@ -13626,7 +13626,7 @@ msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Execute the following commands:"
+msgstr "Izvršite sljedeće naredbe:"
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
 msgid "Note:"
@@ -13666,7 +13666,7 @@ msgstr "Choose a language for installation"
 
 #: install/templates/step1.html.twig:287
 msgid "Begin Installation"
-msgstr "Begin Installation"
+msgstr "Započni instalaciju"
 
 #: install/templates/step4.html.twig:3
 msgid "Configuring database"
@@ -13674,7 +13674,7 @@ msgstr "Konfiguracija baze"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Konfiguracija veze s bazom"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
@@ -13750,7 +13750,7 @@ msgstr "Database username with rights to create tables."
 
 #: install/templates/step4.html.twig:131
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Lozinka za ovog korisnika baze."
 
 #: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
@@ -13774,7 +13774,7 @@ msgstr "Port poslužitelja baze."
 
 #: install/templates/step4.html.twig:162
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Unesite naziv baze podataka"
 
 #: install/templates/step4.html.twig:165
 msgid "Database name (will be used for Poweradmin tables)."
@@ -13822,7 +13822,7 @@ msgstr "MySQL database with PowerDNS tables (if different)."
 
 #: install/templates/step4.html.twig:224
 msgid "Poweradmin Account"
-msgstr "Poweradmin Account"
+msgstr "Poweradmin račun"
 
 #: install/templates/step4.html.twig:228
 msgid "Administrator password"
@@ -13910,7 +13910,7 @@ msgstr "Postavi račun i nameservere"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "Postavi račun i nameservere"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
@@ -13930,7 +13930,7 @@ msgstr "Unesite korisničku lozinku"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "Lozinka za ovo korisničko ime."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
@@ -13954,7 +13954,7 @@ msgstr "Primarni nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "Unesi primarni nameserver"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
@@ -13966,7 +13966,7 @@ msgstr "Sekundarni nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "Unesi sekundarni nameserver"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."

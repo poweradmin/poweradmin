@@ -49,7 +49,7 @@ msgstr "Nije uspjelo stvaranje zone."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:228
 msgid "Failed to retrieve created zone."
-msgstr "Failed to retrieve created zone."
+msgstr "Nije uspjelo dohvaćanje stvorene zone."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:101
 msgid "File size exceeds the maximum allowed size of %s."
@@ -100,7 +100,7 @@ msgstr "Glavni"
 
 #: lib/Module/ZoneImportExport/templates/import.html:172
 msgid "Multi-line records"
-msgstr "Multi-line records"
+msgstr "Višeredni zapisi"
 
 #: lib/Module/ZoneImportExport/templates/import.html:66
 msgid "Name"
@@ -146,7 +146,7 @@ msgstr "The uploaded file is empty or could not be read."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:67
 msgid "There is no zone with this ID."
-msgstr "There is no zone with this ID."
+msgstr "Nema zone s ovim ID-om."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:79
 msgid "This zone does not have any records to export."
@@ -218,11 +218,11 @@ msgstr "zapisa nije uspjelo."
 
 #: lib/Module/ZoneImportExport/templates/import.html:25
 msgid "records imported,"
-msgstr "records imported,"
+msgstr "zapisa uvezeno,"
 
 #: lib/Module/ZoneImportExport/templates/import.html:20
 msgid "records imported."
-msgstr "records imported."
+msgstr "zapisa uvezeno."
 
 msgid "records skipped (duplicates)."
 msgstr "zapisa preskočeno (duplikati)."

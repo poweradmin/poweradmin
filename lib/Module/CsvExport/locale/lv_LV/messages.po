@@ -21,7 +21,7 @@ msgstr "Nederīgs zonas ID."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:64
 msgid "There is no zone with this ID."
-msgstr "There is no zone with this ID."
+msgstr "Nav zonas ar šo ID."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."

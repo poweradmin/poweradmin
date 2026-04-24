@@ -21,7 +21,7 @@ msgstr "Virheellinen alueen tunnus."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:64
 msgid "There is no zone with this ID."
-msgstr "There is no zone with this ID."
+msgstr "Tätä tunnusta vastaavaa aluetta ei ole."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."

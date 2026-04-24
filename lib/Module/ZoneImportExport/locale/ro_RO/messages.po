@@ -49,7 +49,7 @@ msgstr "Nu s-a putut crea zona."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:228
 msgid "Failed to retrieve created zone."
-msgstr "Failed to retrieve created zone."
+msgstr "Obținerea zonei create a eșuat."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:101
 msgid "File size exceeds the maximum allowed size of %s."
@@ -100,7 +100,7 @@ msgstr "Principal"
 
 #: lib/Module/ZoneImportExport/templates/import.html:172
 msgid "Multi-line records"
-msgstr "Multi-line records"
+msgstr "Înregistrări multilinie"
 
 #: lib/Module/ZoneImportExport/templates/import.html:66
 msgid "Name"
@@ -146,7 +146,7 @@ msgstr "The uploaded file is empty or could not be read."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:67
 msgid "There is no zone with this ID."
-msgstr "There is no zone with this ID."
+msgstr "Nu există zonă cu acest ID."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:79
 msgid "This zone does not have any records to export."
@@ -218,11 +218,11 @@ msgstr "înregistrări eșuate."
 
 #: lib/Module/ZoneImportExport/templates/import.html:25
 msgid "records imported,"
-msgstr "records imported,"
+msgstr "înregistrări importate,"
 
 #: lib/Module/ZoneImportExport/templates/import.html:20
 msgid "records imported."
-msgstr "records imported."
+msgstr "înregistrări importate."
 
 msgid "records skipped (duplicates)."
 msgstr "înregistrări omise (duplicate)."
