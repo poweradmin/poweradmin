@@ -53,7 +53,7 @@ msgstr "Luodun alueen haku epäonnistui."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:101
 msgid "File size exceeds the maximum allowed size of %s."
-msgstr "File size exceeds the maximum allowed size of %s."
+msgstr "Tiedoston koko ylittää sallitun enimmäiskoon %s."
 
 #: lib/Module/ZoneImportExport/templates/import.html:58
 msgid "File:"

@@ -53,7 +53,7 @@ msgstr "Неуспешно преузимање креиране зоне."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:101
 msgid "File size exceeds the maximum allowed size of %s."
-msgstr "File size exceeds the maximum allowed size of %s."
+msgstr "Величина датотеке прелази максимално дозвољену %s."
 
 #: lib/Module/ZoneImportExport/templates/import.html:58
 msgid "File:"
