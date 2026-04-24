@@ -65,7 +65,7 @@ class HttpClient implements ApiClient
         // idempotent GET requests. Non-GET methods are not retried to avoid
         // accidentally duplicating side effects.
         $maxAttempts = strtoupper($method) === 'GET' ? 2 : 1;
-        for ($attempt = 1; ; $attempt++) {
+        for ($attempt = 1;; $attempt++) {
             try {
                 return $this->performSingleRequest($url, $method, $options);
             } catch (ApiErrorException $e) {
