@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.4.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-24 20:45+0300\n"
+"POT-Creation-Date: 2026-04-24 22:03+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1796,7 +1796,7 @@ msgid "The record could not be deleted."
 msgstr ""
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:232 templates/modern/index.html:232
+#: templates/default/index.html:242 templates/modern/index.html:242
 msgid "Zone Logs"
 msgstr ""
 
@@ -1874,7 +1874,7 @@ msgid "You do not have permission to view this zone."
 msgstr ""
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:242 templates/modern/index.html:242
+#: templates/default/index.html:252 templates/modern/index.html:252
 msgid "User Logs"
 msgstr ""
 
@@ -2136,7 +2136,7 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr ""
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:252 templates/modern/index.html:252
+#: templates/default/index.html:262 templates/modern/index.html:262
 msgid "Group Logs"
 msgstr ""
 
@@ -2724,7 +2724,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr ""
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:163 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:173 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr ""
 
@@ -8443,25 +8443,40 @@ msgstr ""
 msgid "PowerDNS API error"
 msgstr ""
 
-#: templates/default/index.html:19 templates/modern/index.html:19
-msgid "endpoint"
+#: templates/default/index.html:23 templates/modern/index.html:23
+msgid ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
 msgstr ""
 
-#: templates/default/index.html:21 templates/modern/index.html:21
+#: templates/default/index.html:25 templates/modern/index.html:25
+msgid ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+msgstr ""
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+msgstr ""
+
+#: templates/default/index.html:29 templates/modern/index.html:29
 msgid ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
 msgstr ""
 
-#: templates/default/index.html:35 templates/modern/index.html:35
+#: templates/default/index.html:45 templates/modern/index.html:45
 msgid "DNS Management"
 msgstr ""
 
-#: templates/modern/index.html:48 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:58 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr ""
 
-#: templates/modern/index.html:50 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:60 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr ""
 
@@ -8469,31 +8484,31 @@ msgstr ""
 msgid "Templates"
 msgstr ""
 
-#: templates/default/index.html:122 templates/modern/index.html:122
+#: templates/default/index.html:132 templates/modern/index.html:132
 msgid "Zone Operations"
 msgstr ""
 
-#: templates/default/index.html:133 templates/modern/index.html:133
+#: templates/default/index.html:143 templates/modern/index.html:143
 msgid "Master Zone"
 msgstr ""
 
-#: templates/default/index.html:143 templates/modern/index.html:143
+#: templates/default/index.html:153 templates/modern/index.html:153
 msgid "Slave Zone"
 msgstr ""
 
-#: templates/default/index.html:153 templates/modern/index.html:153
+#: templates/default/index.html:163 templates/modern/index.html:163
 msgid "Supermaster"
 msgstr ""
 
-#: templates/default/index.html:173 templates/modern/index.html:173
+#: templates/default/index.html:183 templates/modern/index.html:183
 msgid "PTR Records"
 msgstr ""
 
-#: templates/default/index.html:191 templates/modern/index.html:191
+#: templates/default/index.html:201 templates/modern/index.html:201
 msgid "Administration"
 msgstr ""
 
-#: templates/modern/index.html:222 templates/modern/header.html:259
+#: templates/modern/index.html:232 templates/modern/header.html:259
 msgid "Access"
 msgstr ""
 
@@ -8501,12 +8516,12 @@ msgstr ""
 msgid "Tools"
 msgstr ""
 
-#: templates/default/index.html:281 templates/modern/index.html:281
+#: templates/default/index.html:291 templates/modern/index.html:291
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr ""
 
-#: templates/default/index.html:328 templates/modern/index.html:328
+#: templates/default/index.html:338 templates/modern/index.html:338
 msgid "My Profile"
 msgstr ""
 
@@ -8515,7 +8530,7 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: templates/modern/index.html:347 templates/modern/header.html:372
+#: templates/modern/index.html:357 templates/modern/header.html:372
 msgid "Preferences"
 msgstr ""
 

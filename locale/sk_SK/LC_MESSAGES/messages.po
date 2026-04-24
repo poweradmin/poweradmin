@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-24 20:45+0300\n"
+"POT-Creation-Date: 2026-04-24 22:03+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Slovak\n"
@@ -1800,7 +1800,7 @@ msgid "The record could not be deleted."
 msgstr "Záznam nebolo možné odstrániť."
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:232 templates/modern/index.html:232
+#: templates/default/index.html:242 templates/modern/index.html:242
 msgid "Zone Logs"
 msgstr "Záznamy zóny"
 
@@ -1878,7 +1878,7 @@ msgid "You do not have permission to view this zone."
 msgstr "Nemáte oprávnenie na zobrazenie tejto zóny."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:242 templates/modern/index.html:242
+#: templates/default/index.html:252 templates/modern/index.html:252
 msgid "User Logs"
 msgstr "Záznamy používateľa"
 
@@ -2142,7 +2142,7 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Nepodarilo sa spustiť overenie OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:252 templates/modern/index.html:252
+#: templates/default/index.html:262 templates/modern/index.html:262
 msgid "Group Logs"
 msgstr "Záznamy skupiny"
 
@@ -2499,18 +2499,15 @@ msgid "Forward Zones"
 msgstr "Dopredné zóny"
 
 #: lib/Application/Controller/ListForwardZonesController.php:79
-#, auto-english-fallback
 msgid "You do not have permission to sync zones from PowerDNS."
 msgstr "You do not have permission to sync zones from PowerDNS."
 
 #: lib/Application/Controller/ListForwardZonesController.php:90
-#, auto-english-fallback
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 
 #: lib/Application/Controller/ListForwardZonesController.php:98
-#, auto-english-fallback
 #, php-format
 msgid "Zone sync failed: %s"
 msgstr "Zone sync failed: %s"
@@ -2742,7 +2739,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster bol úspešne odstránený."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:163 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:173 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Hromadná registrácia"
 
@@ -8461,17 +8458,37 @@ msgid "groups"
 msgstr "skupiny"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
-#, auto-english-fallback
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/index.html:19 templates/modern/index.html:19
-#, auto-english-fallback
-msgid "endpoint"
-msgstr "endpoint"
+#: templates/default/index.html:23 templates/modern/index.html:23
+msgid ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
+msgstr ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
 
-#: templates/default/index.html:21 templates/modern/index.html:21
+#: templates/default/index.html:25 templates/modern/index.html:25
+msgid ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+msgstr ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+
+#: templates/default/index.html:27 templates/modern/index.html:27
 #, auto-english-fallback
+msgid ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+msgstr ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+
+#: templates/default/index.html:29 templates/modern/index.html:29
 msgid ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
@@ -8479,15 +8496,15 @@ msgstr ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
 
-#: templates/default/index.html:35 templates/modern/index.html:35
+#: templates/default/index.html:45 templates/modern/index.html:45
 msgid "DNS Management"
 msgstr "Správa DNS"
 
-#: templates/modern/index.html:48 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:58 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "Online"
 
-#: templates/modern/index.html:50 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:60 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "Offline"
 
@@ -8495,31 +8512,31 @@ msgstr "Offline"
 msgid "Templates"
 msgstr "Šablóny"
 
-#: templates/default/index.html:122 templates/modern/index.html:122
+#: templates/default/index.html:132 templates/modern/index.html:132
 msgid "Zone Operations"
 msgstr "Operácie zóny"
 
-#: templates/default/index.html:133 templates/modern/index.html:133
+#: templates/default/index.html:143 templates/modern/index.html:143
 msgid "Master Zone"
 msgstr "Hlavná zóna"
 
-#: templates/default/index.html:143 templates/modern/index.html:143
+#: templates/default/index.html:153 templates/modern/index.html:153
 msgid "Slave Zone"
 msgstr "Sekundárna zóna"
 
-#: templates/default/index.html:153 templates/modern/index.html:153
+#: templates/default/index.html:163 templates/modern/index.html:163
 msgid "Supermaster"
 msgstr "Supermaster"
 
-#: templates/default/index.html:173 templates/modern/index.html:173
+#: templates/default/index.html:183 templates/modern/index.html:183
 msgid "PTR Records"
 msgstr "PTR záznamy"
 
-#: templates/default/index.html:191 templates/modern/index.html:191
+#: templates/default/index.html:201 templates/modern/index.html:201
 msgid "Administration"
 msgstr "Administrácia"
 
-#: templates/modern/index.html:222 templates/modern/header.html:259
+#: templates/modern/index.html:232 templates/modern/header.html:259
 msgid "Access"
 msgstr "Prístup"
 
@@ -8527,12 +8544,12 @@ msgstr "Prístup"
 msgid "Tools"
 msgstr "Nástroje"
 
-#: templates/default/index.html:281 templates/modern/index.html:281
+#: templates/default/index.html:291 templates/modern/index.html:291
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Databáza"
 
-#: templates/default/index.html:328 templates/modern/index.html:328
+#: templates/default/index.html:338 templates/modern/index.html:338
 msgid "My Profile"
 msgstr "Môj profil"
 
@@ -8541,7 +8558,7 @@ msgstr "Môj profil"
 msgid "Password"
 msgstr "Heslo"
 
-#: templates/modern/index.html:347 templates/modern/header.html:372
+#: templates/modern/index.html:357 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "Predvoľby"
 
@@ -10172,12 +10189,10 @@ msgid "MFA not configured"
 msgstr "MFA nie je nakonfigurované"
 
 #: templates/modern/list_forward_zones.html:19
-#, auto-english-fallback
 msgid "Fetch zones from PowerDNS and reconcile the local table"
 msgstr "Fetch zones from PowerDNS and reconcile the local table"
 
 #: templates/modern/list_forward_zones.html:20
-#, auto-english-fallback
 msgid "Sync from PowerDNS"
 msgstr "Sync from PowerDNS"
 
@@ -12825,5 +12840,4 @@ msgstr "Chýbajú PowerDNS tabuľky v \"%s\": %s."
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nepodarilo sa pripojiť k databáze PowerDNS \"%s\": %s"
-
 

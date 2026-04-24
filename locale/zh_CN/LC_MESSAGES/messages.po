@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-24 20:45+0300\n"
+"POT-Creation-Date: 2026-04-24 22:03+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -1825,7 +1825,7 @@ msgid "The record could not be deleted."
 msgstr "无法删除记录。"
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:232 templates/modern/index.html:232
+#: templates/default/index.html:242 templates/modern/index.html:242
 msgid "Zone Logs"
 msgstr "区域日志"
 
@@ -1903,7 +1903,7 @@ msgid "You do not have permission to view this zone."
 msgstr "您没有权限查看此区域。"
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:242 templates/modern/index.html:242
+#: templates/default/index.html:252 templates/modern/index.html:252
 msgid "User Logs"
 msgstr "用户日志"
 
@@ -2167,7 +2167,7 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "启动 OIDC 身份验证失败："
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:252 templates/modern/index.html:252
+#: templates/default/index.html:262 templates/modern/index.html:262
 msgid "Group Logs"
 msgstr "组日志"
 
@@ -2522,18 +2522,15 @@ msgid "Forward Zones"
 msgstr "正向区域"
 
 #: lib/Application/Controller/ListForwardZonesController.php:79
-#, auto-english-fallback
 msgid "You do not have permission to sync zones from PowerDNS."
 msgstr "You do not have permission to sync zones from PowerDNS."
 
 #: lib/Application/Controller/ListForwardZonesController.php:90
-#, auto-english-fallback
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 
 #: lib/Application/Controller/ListForwardZonesController.php:98
-#, auto-english-fallback
 #, php-format
 msgid "Zone sync failed: %s"
 msgstr "Zone sync failed: %s"
@@ -2762,7 +2759,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "超级主机已成功删除。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:163 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:173 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "批量注册"
 
@@ -8811,17 +8808,37 @@ msgid "groups"
 msgstr "组"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
-#, auto-english-fallback
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/index.html:19 templates/modern/index.html:19
-#, auto-english-fallback
-msgid "endpoint"
-msgstr "endpoint"
+#: templates/default/index.html:23 templates/modern/index.html:23
+msgid ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
+msgstr ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
 
-#: templates/default/index.html:21 templates/modern/index.html:21
+#: templates/default/index.html:25 templates/modern/index.html:25
+msgid ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+msgstr ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+
+#: templates/default/index.html:27 templates/modern/index.html:27
 #, auto-english-fallback
+msgid ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+msgstr ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+
+#: templates/default/index.html:29 templates/modern/index.html:29
 msgid ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
@@ -8829,15 +8846,15 @@ msgstr ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
 
-#: templates/default/index.html:35 templates/modern/index.html:35
+#: templates/default/index.html:45 templates/modern/index.html:45
 msgid "DNS Management"
 msgstr "DNS 管理"
 
-#: templates/modern/index.html:48 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:58 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "在线"
 
-#: templates/modern/index.html:50 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:60 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "离线"
 
@@ -8845,31 +8862,31 @@ msgstr "离线"
 msgid "Templates"
 msgstr "模板"
 
-#: templates/default/index.html:122 templates/modern/index.html:122
+#: templates/default/index.html:132 templates/modern/index.html:132
 msgid "Zone Operations"
 msgstr "区域操作"
 
-#: templates/default/index.html:133 templates/modern/index.html:133
+#: templates/default/index.html:143 templates/modern/index.html:143
 msgid "Master Zone"
 msgstr "主区域"
 
-#: templates/default/index.html:143 templates/modern/index.html:143
+#: templates/default/index.html:153 templates/modern/index.html:153
 msgid "Slave Zone"
 msgstr "从区域"
 
-#: templates/default/index.html:153 templates/modern/index.html:153
+#: templates/default/index.html:163 templates/modern/index.html:163
 msgid "Supermaster"
 msgstr "超级主服务器"
 
-#: templates/default/index.html:173 templates/modern/index.html:173
+#: templates/default/index.html:183 templates/modern/index.html:183
 msgid "PTR Records"
 msgstr "PTR 记录"
 
-#: templates/default/index.html:191 templates/modern/index.html:191
+#: templates/default/index.html:201 templates/modern/index.html:201
 msgid "Administration"
 msgstr "管理"
 
-#: templates/modern/index.html:222 templates/modern/header.html:259
+#: templates/modern/index.html:232 templates/modern/header.html:259
 msgid "Access"
 msgstr "访问"
 
@@ -8877,12 +8894,12 @@ msgstr "访问"
 msgid "Tools"
 msgstr "工具"
 
-#: templates/default/index.html:281 templates/modern/index.html:281
+#: templates/default/index.html:291 templates/modern/index.html:291
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "数据库"
 
-#: templates/default/index.html:328 templates/modern/index.html:328
+#: templates/default/index.html:338 templates/modern/index.html:338
 msgid "My Profile"
 msgstr "我的资料"
 
@@ -8891,7 +8908,7 @@ msgstr "我的资料"
 msgid "Password"
 msgstr "密码"
 
-#: templates/modern/index.html:347 templates/modern/header.html:372
+#: templates/modern/index.html:357 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "首选项"
 
@@ -10549,12 +10566,10 @@ msgid "MFA not configured"
 msgstr "未配置MFA"
 
 #: templates/modern/list_forward_zones.html:19
-#, auto-english-fallback
 msgid "Fetch zones from PowerDNS and reconcile the local table"
 msgstr "Fetch zones from PowerDNS and reconcile the local table"
 
 #: templates/modern/list_forward_zones.html:20
-#, auto-english-fallback
 msgid "Sync from PowerDNS"
 msgstr "Sync from PowerDNS"
 
@@ -13249,5 +13264,4 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "无法连接到PowerDNS数据库\"%s\"：%s"
-
 
