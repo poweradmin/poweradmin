@@ -5680,7 +5680,7 @@ msgstr ""
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Nevar pieslēgties PowerDNS datubāzei \"%s\": %s"
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:57
 msgid "DNS wizards are not enabled."
@@ -5748,7 +5748,7 @@ msgstr "Transmission Control Protocol - most common for HTTPS/TLS"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:82
 msgid "User Datagram Protocol - for DTLS connections"
-msgstr "User Datagram Protocol - for DTLS connections"
+msgstr "User Datagram Protocol - DTLS savienojumiem"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:121
 msgid "Stream Control Transmission Protocol"
@@ -6254,7 +6254,7 @@ msgstr "Incidentu ziņošana"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:108
 msgid "URL to report certificate issuance violations"
-msgstr "URL to report certificate issuance violations"
+msgstr "URL sertifikāta izsniegšanas pārkāpumu ziņošanai"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:110
 msgid "Type of authorization or reporting"
@@ -6290,7 +6290,7 @@ msgstr "Kritisks"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:136
 msgid "Reject if not understood - strict enforcement"
-msgstr "Reject if not understood - strict enforcement"
+msgstr "Noraidīt, ja netiek saprasts - stingra piemērošana"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:204
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
@@ -6531,7 +6531,7 @@ msgstr "Neizdevās iegūt izveidoto zonu."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:38
 msgid "You need to be logged in to export zone data."
-msgstr "You need to be logged in to export zone data."
+msgstr "Lai eksportētu zonas datus, jābūt pieslēgtam."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:55
 msgid "You do not have permission to export this zone."
@@ -6543,7 +6543,7 @@ msgstr "Nav zonas ar šo ID."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:71
 msgid "This zone does not have any records to export."
-msgstr "This zone does not have any records to export."
+msgstr "Šai zonai nav ierakstu eksportēšanai."
 
 #: lib/Module/Whois/Controller/WhoisController.php:55
 msgid "You do not have permission to perform WHOIS lookups."
@@ -6765,7 +6765,7 @@ msgstr "Email verification method is not enabled on this system."
 
 #: lib/Application/Controller/MfaSetupController.php:286
 msgid "MFA has been enabled with email verification."
-msgstr "MFA has been enabled with email verification."
+msgstr "MFA iespējots ar e-pasta pārbaudi."
 
 #: lib/Application/Controller/MfaSetupController.php:309
 msgid "MFA is not enabled."
@@ -6850,7 +6850,7 @@ msgstr "The API feature is disabled in the system configuration."
 
 #: lib/Application/Controller/ApiKeysController.php:83
 msgid "You do not have permission to manage API keys."
-msgstr "You do not have permission to manage API keys."
+msgstr "Jums nav atļaujas pārvaldīt API atslēgas."
 
 #: lib/Application/Controller/ApiKeysController.php:89
 #: templates/modern/api_key_delete.html:5
@@ -6993,7 +6993,7 @@ msgstr "Login details have been sent to the user via email."
 
 #: lib/Application/Controller/AddUserController.php:177
 msgid "NOTE: Failed to send login details via email."
-msgstr "NOTE: Failed to send login details via email."
+msgstr "PIEZĪME: Neizdevās nosūtīt pieteikšanās datus pa e-pastu."
 
 #: lib/Application/Controller/AddUserController.php:183
 msgid "A password was generated but is not displayed for security reasons."
@@ -7001,7 +7001,7 @@ msgstr "A password was generated but is not displayed for security reasons."
 
 #: lib/Application/Controller/EditGroupController.php:274
 msgid "Please fill in all required fields correctly."
-msgstr "Please fill in all required fields correctly."
+msgstr "Aizpildiet visus nepieciešamos laukus pareizi."
 
 #: lib/Domain/Service/Dns/RecordManager.php:396
 msgid "You do not have the permission to delete this record."
@@ -7083,7 +7083,7 @@ msgstr "Veidne neeksistē."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:63
 msgid "You do not have permission to view this zone."
-msgstr "You do not have permission to view this zone."
+msgstr "Jums nav atļaujas skatīt šo zonu."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
 #: templates/default/index.html:229 templates/modern/index.html:229
@@ -7581,7 +7581,7 @@ msgstr "The supermaster you are trying to edit does not exist."
 
 #: lib/Application/Controller/EditSupermasterController.php:92
 msgid "The supermaster has been updated successfully."
-msgstr "The supermaster has been updated successfully."
+msgstr "Galvenais veiksmīgi atjaunināts."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:67
 msgid "You do not have permission to manage group zones."
@@ -7655,7 +7655,7 @@ msgstr "The permission template has been deleted successfully."
 
 #: lib/Application/Controller/DeletePermTemplController.php:90
 msgid "The permission template could not be deleted."
-msgstr "The permission template could not be deleted."
+msgstr "Atļauju veidni nevarēja dzēst."
 
 #: lib/Application/Controller/PdnsStatusController.php:59
 msgid "The PowerDNS status feature is disabled in the system configuration."
@@ -7777,7 +7777,7 @@ msgstr "Galvenais neeksistē."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:95
 msgid "The supermaster has been deleted successfully."
-msgstr "The supermaster has been deleted successfully."
+msgstr "Galvenais veiksmīgi dzēsts."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
 #: templates/modern/index.html:150 templates/modern/bulk_registration.html:23
@@ -7869,7 +7869,7 @@ msgstr "Neizdevās atjaunināt paroli"
 
 #: lib/Application/Service/OidcService.php:183
 msgid "Authentication failed: Invalid state parameter"
-msgstr "Authentication failed: Invalid state parameter"
+msgstr "Autentifikācija neizdevās: Nederīgs state parametrs"
 
 #: lib/Application/Service/OidcService.php:204
 msgid "Authentication failed: No authorization code"
@@ -7954,7 +7954,7 @@ msgstr "Kļūda, veidojot zonas veidni: "
 
 #: lib/Domain/Model/ZoneTemplate.php:249
 msgid "Error adding default SOA record to template: "
-msgstr "Error adding default SOA record to template: "
+msgstr "Kļūda, pievienojot noklusējuma SOA ierakstu veidnei: "
 
 #: lib/Domain/Model/ZoneTemplate.php:308
 msgid "Error deleting zone template: "
@@ -7970,7 +7970,7 @@ msgstr "You do not have the permission to add a record to this zone template."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
-msgstr "Your content field doesnt have a legit value."
+msgstr "Satura laukam nav derīgas vērtības."
 
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
@@ -8075,7 +8075,7 @@ msgstr "Priority field for IPSECKEY records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
 msgid "Invalid characters in IPSECKEY record content."
-msgstr "Invalid characters in IPSECKEY record content."
+msgstr "Nederīgas rakstzīmes IPSECKEY ierakstā."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:175
 msgid "IPSECKEY precedence must be a number between 0 and 255."
@@ -8143,7 +8143,7 @@ msgstr "NSEC3PARAM ieraksta saturs nedrīkst būt tukšs."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:114
 msgid "NSEC3PARAM record contains invalid characters."
-msgstr "NSEC3PARAM record contains invalid characters."
+msgstr "NSEC3PARAM ieraksts satur nederīgas rakstzīmes."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:187
 msgid "NSEC3PARAM hash algorithm must be 1 (SHA-1)."
@@ -8239,7 +8239,7 @@ msgstr "RKEY protokola laukam jābūt skaitliskam."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:213
 msgid "RKEY algorithm field must be a numeric value."
-msgstr "RKEY algorithm field must be a numeric value."
+msgstr "RKEY algoritma laukam jābūt skaitliskam."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:219
 msgid "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
@@ -8364,7 +8364,7 @@ msgstr "Priority field for HINFO records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:159
 msgid "HINFO record must have CPU type and OS fields."
-msgstr "HINFO record must have CPU type and OS fields."
+msgstr "HINFO ierakstam jābūt CPU tipa un OS laukiem."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:175
 msgid "HINFO record must have exactly two fields: CPU type and OS."
@@ -8388,7 +8388,7 @@ msgstr "TSIG keys should be rotated periodically as a security best practice."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:195
 msgid "TSIG timestamp must be a non-negative integer."
-msgstr "TSIG timestamp must be a non-negative integer."
+msgstr "TSIG laika zīmogam jābūt nenegatīvam veselam skaitlim."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
@@ -8408,7 +8408,7 @@ msgstr "TSIG error must be a valid DNS RCODE number between 0 and 23."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
-msgstr "TSIG other-len must be a non-negative integer."
+msgstr "TSIG other-len jābūt nenegatīvam veselam skaitlim."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
@@ -8572,7 +8572,7 @@ msgstr "Port value must be a number between 1 and 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:270
 msgid "DoH path must start with a forward slash (/)."
-msgstr "DoH path must start with a forward slash (/)."
+msgstr "DoH ceļam jāsākas ar slīpsvītru (/)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -8737,7 +8737,7 @@ msgstr "RRSIG covered type must be a valid DNS record type."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:193
 msgid "RRSIG algorithm field must be a numeric value."
-msgstr "RRSIG algorithm field must be a numeric value."
+msgstr "RRSIG algoritma laukam jābūt skaitliskam."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:228
 msgid "RRSIG labels field must be a numeric value."
@@ -8781,7 +8781,7 @@ msgstr "RRSIG key tag must be a valid value between 0 and 65535."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
-msgstr "RRSIG signer name must be a valid domain name."
+msgstr "RRSIG parakstītāja vārdam jābūt derīgam."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
@@ -8939,7 +8939,7 @@ msgstr "Šī nav derīga IPv6 adrese."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:102
 msgid "Invalid IPv4 part in IPv4-mapped IPv6 address."
-msgstr "Invalid IPv4 part in IPv4-mapped IPv6 address."
+msgstr "Nederīga IPv4 daļa IPv4-kartētā IPv6 adresē."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:108
 msgid "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
@@ -8996,7 +8996,7 @@ msgstr "CAA record must contain flags, tag, and value separated by spaces."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
 msgid "CAA flags must be a number between 0 and 255."
-msgstr "CAA flags must be a number between 0 and 255."
+msgstr "CAA karodziņiem jābūt skaitlim no 0 līdz 255."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:141
 msgid "CAA tag must only contain ASCII letters and numbers."
@@ -9053,7 +9053,7 @@ msgstr "Hostnosaukumi ar vienu iezīmi nav atļauti."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:91
 msgid "You have invalid characters in your zone name."
-msgstr "You have invalid characters in your zone name."
+msgstr "Jūsu zonas nosaukumā ir nederīgas rakstzīmes."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:100
 msgid "A hostname can not start or end with a dash."
@@ -9188,7 +9188,7 @@ msgstr "Priority field for CDNSKEY records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:151
 msgid "Invalid characters in CDNSKEY record content."
-msgstr "Invalid characters in CDNSKEY record content."
+msgstr "Nederīgas rakstzīmes CDNSKEY ierakstā."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:179
 msgid "CDNSKEY flags must be 0, 256, or 257."
@@ -9252,7 +9252,7 @@ msgstr "SSHFP SHA-256 fingerprint must be 64 characters long."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
-msgstr "MR record name (old mailbox) cannot be empty."
+msgstr "MR ieraksta nosaukums (vecā pastkaste) nedrīkst būt tukšs."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:97
 msgid "MR record name must be a valid domain name."
@@ -9264,7 +9264,7 @@ msgstr "MR record content (new mailbox) cannot be empty."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:112
 msgid "MR record content must be a valid domain name."
-msgstr "MR record content must be a valid domain name."
+msgstr "MR ieraksta saturam jābūt derīgam domēna vārdam."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:142
 msgid "Priority field for MR records must be 0 or empty."
@@ -9360,7 +9360,7 @@ msgstr "Trūkst obligātā DMARC taga: %s"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:179
 msgid "TXT record content must be enclosed in quotes."
-msgstr "TXT record content must be enclosed in quotes."
+msgstr "TXT ieraksta saturam jābūt pēdiņās."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
@@ -9493,7 +9493,7 @@ msgstr "NAPTR record flags must contain only A, P, S, or U."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:237
 msgid "NAPTR record service must be a quoted string."
-msgstr "NAPTR record service must be a quoted string."
+msgstr "NAPTR pakalpojumam jābūt virknei pēdiņās."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:256
 msgid "NAPTR record regexp must be a quoted string."
@@ -9579,7 +9579,7 @@ msgstr "API funkcionalitāte ir atspējota."
 
 #: lib/Domain/Service/ApiKeyService.php:185
 msgid "You do not have permission to create API keys."
-msgstr "You do not have permission to create API keys."
+msgstr "Jums nav atļaujas izveidot API atslēgas."
 
 #: lib/Domain/Service/ApiKeyService.php:192 templates/default/api_keys.html:21
 #: templates/modern/api_keys.html:22
@@ -9588,11 +9588,11 @@ msgstr "You have reached the maximum number of API keys allowed."
 
 #: lib/Domain/Service/ApiKeyService.php:323
 msgid "You do not have permission to update API keys."
-msgstr "You do not have permission to update API keys."
+msgstr "Jums nav atļaujas atjaunināt API atslēgas."
 
 #: lib/Domain/Service/ApiKeyService.php:265
 msgid "You do not have permission to delete API keys."
-msgstr "You do not have permission to delete API keys."
+msgstr "Jums nav atļaujas dzēst API atslēgas."
 
 #: lib/Domain/Service/ApiKeyService.php:292
 msgid "You do not have permission to regenerate API keys."
@@ -10073,7 +10073,7 @@ msgstr "Vārdu piemēri"
 
 #: templates/modern/add_zone_templ_record.html:168
 msgid "For a subdomain: <code>subdomain.[ZONE]</code>"
-msgstr "For a subdomain: <code>subdomain.[ZONE]</code>"
+msgstr "Apakšdomēnam: <code>subdomain.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:169
 msgid "For a wildcard record: <code>*.[ZONE]</code>"
@@ -10121,7 +10121,7 @@ msgstr "Galvenā IP adrese"
 
 #: templates/modern/add_supermaster.html:22
 msgid "Enter the IP address of the master nameserver"
-msgstr "Enter the IP address of the master nameserver"
+msgstr "Ievadiet galvenā vārdu servera IP adresi"
 
 #: templates/modern/add_supermaster.html:23
 msgid "Provide ip address"
@@ -10943,7 +10943,7 @@ msgstr "Jūs gatavojaties pārģenerēt API atslēgu"
 
 #: templates/modern/api_key_regenerate.html:18
 msgid "This action will invalidate the existing key!"
-msgstr "This action will invalidate the existing key!"
+msgstr "Šī darbība padarīs esošo atslēgu nederīgu!"
 
 #: templates/modern/api_key_delete.html:24
 msgid "API Key Details"
@@ -11214,7 +11214,7 @@ msgstr "LDAP autentifikācija"
 
 #: templates/modern/edit_user.html:103 templates/modern/add_user.html:105
 msgid "Use external LDAP directory for authentication"
-msgstr "Use external LDAP directory for authentication"
+msgstr "Izmantot ārējo LDAP direktoriju autentifikācijai"
 
 #: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
 msgid "Back to Home"
@@ -11438,7 +11438,7 @@ msgstr "Lapa ir pārvietota vai dzēsta"
 
 #: templates/default/404.html:34 templates/modern/404.html:34
 msgid "You do not have permission to access this page"
-msgstr "You do not have permission to access this page"
+msgstr "Jums nav atļaujas piekļūt šai lapai"
 
 #: templates/default/404.html:45 templates/modern/404.html:45
 msgid "Go to Homepage"
@@ -11543,7 +11543,7 @@ msgstr "Izmanto noklusējuma TTL vērtību no konfigurācijas"
 
 #: templates/modern/batch_ptr_record.html:102
 msgid "Create forward A/AAAA records in primary zone"
-msgstr "Create forward A/AAAA records in primary zone"
+msgstr "Izveidot turp A/AAAA ierakstus primārajā zonā"
 
 #: templates/modern/batch_ptr_record.html:107
 msgid "Create PTRs only for existing A records in forward zone"
@@ -12076,7 +12076,7 @@ msgstr "Izveidot noklusējuma SOA ierakstu"
 
 #: templates/modern/database_consistency.html:316
 msgid "Are you sure you want to delete the slave zone"
-msgstr "Are you sure you want to delete the slave zone"
+msgstr "Vai tiešām vēlaties dzēst sekundāro zonu"
 
 #: templates/modern/database_consistency.html:319
 msgid "Are you sure you want to delete the orphaned record"
@@ -12113,7 +12113,7 @@ msgstr "Nosūtīt paroli pa e-pastu"
 
 #: templates/default/add_user.html:63 templates/modern/add_user.html:63
 msgid "Send login credentials to user's email address"
-msgstr "Send login credentials to user's email address"
+msgstr "Nosūtīt pieteikšanās datus uz lietotāja e-pastu"
 
 #: templates/modern/add_user.html:81
 msgid "Select permissions for this user"
@@ -12273,7 +12273,7 @@ msgstr "Drošības padomi"
 
 #: templates/modern/change_password.html:104
 msgid "Use a unique password not used on other sites"
-msgstr "Use a unique password not used on other sites"
+msgstr "Izmantojiet unikālu paroli, kas nav izmantota citur"
 
 #: templates/modern/change_password.html:105
 msgid "Choose a password that is difficult to guess"
@@ -12281,7 +12281,7 @@ msgstr "Izvēlieties paroli, kuru grūti uzminēt"
 
 #: templates/modern/change_password.html:106
 msgid "Include a mix of letters, numbers, and symbols"
-msgstr "Include a mix of letters, numbers, and symbols"
+msgstr "Iekļaujiet burtu, ciparu un simbolu kombināciju"
 
 #: templates/modern/change_password.html:107
 msgid "Consider using a password manager"
@@ -12301,7 +12301,7 @@ msgstr "1. solis: Skenējiet QR kodu"
 
 #: templates/modern/mfa_verify_app.html:20
 msgid "Scan this QR code with your authenticator app"
-msgstr "Scan this QR code with your authenticator app"
+msgstr "Skenējiet šo QR kodu ar autentifikācijas lietotni"
 
 #: templates/modern/mfa_verify_app.html:26
 msgid "Or manually enter this key in your authenticator app"
@@ -12509,7 +12509,7 @@ msgstr "Padomi un ieteikumi"
 
 #: templates/modern/bulk_registration.html:128
 msgid "Use NATIVE zone type for most standard setups"
-msgstr "Use NATIVE zone type for most standard setups"
+msgstr "Lielākajai daļai standarta iestatījumu izmantojiet NATIVE"
 
 #: templates/modern/bulk_registration.html:129
 msgid "Create a template first if you need standard records for all zones"
@@ -13338,7 +13338,7 @@ msgstr "Dzēst veidnes ierakstu"
 
 #: templates/modern/delete_zone_templ_record.html:24
 msgid "You are about to delete a record from template"
-msgstr "You are about to delete a record from template"
+msgstr "Jūs gatavojaties dzēst ierakstu no veidnes"
 
 #: templates/modern/dnssec_delete_key.html:125
 msgid "Delete key"
@@ -13990,7 +13990,7 @@ msgstr "Kvartārais vārdu serveris"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "Neobligāts kvartārais vārdu serveris jaunām zonām."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"

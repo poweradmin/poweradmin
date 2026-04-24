@@ -5679,7 +5679,7 @@ msgstr ""
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Nepodarilo sa pripojiť k databáze PowerDNS \"%s\": %s"
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:57
 msgid "DNS wizards are not enabled."
@@ -5747,7 +5747,7 @@ msgstr "Transmission Control Protocol - most common for HTTPS/TLS"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:82
 msgid "User Datagram Protocol - for DTLS connections"
-msgstr "User Datagram Protocol - for DTLS connections"
+msgstr "User Datagram Protocol - pre DTLS spojenia"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:121
 msgid "Stream Control Transmission Protocol"
@@ -6253,7 +6253,7 @@ msgstr "Hlásenie incidentov"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:108
 msgid "URL to report certificate issuance violations"
-msgstr "URL to report certificate issuance violations"
+msgstr "URL na hlásenie porušení vydania certifikátu"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:110
 msgid "Type of authorization or reporting"
@@ -6289,7 +6289,7 @@ msgstr "Kritické"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:136
 msgid "Reject if not understood - strict enforcement"
-msgstr "Reject if not understood - strict enforcement"
+msgstr "Odmietnuť ak nerozumie - striktné vynútenie"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:204
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
@@ -6530,7 +6530,7 @@ msgstr "Nepodarilo sa získať vytvorenú zónu."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:38
 msgid "You need to be logged in to export zone data."
-msgstr "You need to be logged in to export zone data."
+msgstr "Na export údajov zóny musíte byť prihlásený."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:55
 msgid "You do not have permission to export this zone."
@@ -6542,7 +6542,7 @@ msgstr "Neexistuje zóna s týmto ID."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:71
 msgid "This zone does not have any records to export."
-msgstr "This zone does not have any records to export."
+msgstr "Táto zóna nemá žiadne záznamy na export."
 
 #: lib/Module/Whois/Controller/WhoisController.php:55
 msgid "You do not have permission to perform WHOIS lookups."
@@ -6764,7 +6764,7 @@ msgstr "Email verification method is not enabled on this system."
 
 #: lib/Application/Controller/MfaSetupController.php:286
 msgid "MFA has been enabled with email verification."
-msgstr "MFA has been enabled with email verification."
+msgstr "MFA bolo povolené s overením e-mailu."
 
 #: lib/Application/Controller/MfaSetupController.php:309
 msgid "MFA is not enabled."
@@ -6849,7 +6849,7 @@ msgstr "The API feature is disabled in the system configuration."
 
 #: lib/Application/Controller/ApiKeysController.php:83
 msgid "You do not have permission to manage API keys."
-msgstr "You do not have permission to manage API keys."
+msgstr "Nemáte oprávnenie spravovať API kľúče."
 
 #: lib/Application/Controller/ApiKeysController.php:89
 #: templates/modern/api_key_delete.html:5
@@ -6992,7 +6992,7 @@ msgstr "Login details have been sent to the user via email."
 
 #: lib/Application/Controller/AddUserController.php:177
 msgid "NOTE: Failed to send login details via email."
-msgstr "NOTE: Failed to send login details via email."
+msgstr "POZNÁMKA: Nepodarilo sa odoslať prihlasovacie údaje e-mailom."
 
 #: lib/Application/Controller/AddUserController.php:183
 msgid "A password was generated but is not displayed for security reasons."
@@ -7000,7 +7000,7 @@ msgstr "A password was generated but is not displayed for security reasons."
 
 #: lib/Application/Controller/EditGroupController.php:274
 msgid "Please fill in all required fields correctly."
-msgstr "Please fill in all required fields correctly."
+msgstr "Vyplňte správne všetky povinné polia."
 
 #: lib/Domain/Service/Dns/RecordManager.php:396
 msgid "You do not have the permission to delete this record."
@@ -7082,7 +7082,7 @@ msgstr "Šablóna neexistuje."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:63
 msgid "You do not have permission to view this zone."
-msgstr "You do not have permission to view this zone."
+msgstr "Nemáte oprávnenie na zobrazenie tejto zóny."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
 #: templates/default/index.html:229 templates/modern/index.html:229
@@ -7580,7 +7580,7 @@ msgstr "The supermaster you are trying to edit does not exist."
 
 #: lib/Application/Controller/EditSupermasterController.php:92
 msgid "The supermaster has been updated successfully."
-msgstr "The supermaster has been updated successfully."
+msgstr "Supermaster bol úspešne aktualizovaný."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:67
 msgid "You do not have permission to manage group zones."
@@ -7654,7 +7654,7 @@ msgstr "The permission template has been deleted successfully."
 
 #: lib/Application/Controller/DeletePermTemplController.php:90
 msgid "The permission template could not be deleted."
-msgstr "The permission template could not be deleted."
+msgstr "Šablónu oprávnení sa nepodarilo odstrániť."
 
 #: lib/Application/Controller/PdnsStatusController.php:59
 msgid "The PowerDNS status feature is disabled in the system configuration."
@@ -7776,7 +7776,7 @@ msgstr "Supermaster neexistuje."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:95
 msgid "The supermaster has been deleted successfully."
-msgstr "The supermaster has been deleted successfully."
+msgstr "Supermaster bol úspešne odstránený."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
 #: templates/modern/index.html:150 templates/modern/bulk_registration.html:23
@@ -7868,7 +7868,7 @@ msgstr "Nepodarilo sa aktualizovať heslo"
 
 #: lib/Application/Service/OidcService.php:183
 msgid "Authentication failed: Invalid state parameter"
-msgstr "Authentication failed: Invalid state parameter"
+msgstr "Overenie zlyhalo: Neplatný state parameter"
 
 #: lib/Application/Service/OidcService.php:204
 msgid "Authentication failed: No authorization code"
@@ -7953,7 +7953,7 @@ msgstr "Chyba pri vytváraní šablóny zóny: "
 
 #: lib/Domain/Model/ZoneTemplate.php:249
 msgid "Error adding default SOA record to template: "
-msgstr "Error adding default SOA record to template: "
+msgstr "Chyba pri pridávaní predvoleného SOA záznamu: "
 
 #: lib/Domain/Model/ZoneTemplate.php:308
 msgid "Error deleting zone template: "
@@ -7969,7 +7969,7 @@ msgstr "You do not have the permission to add a record to this zone template."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
-msgstr "Your content field doesnt have a legit value."
+msgstr "Pole obsahu neobsahuje platnú hodnotu."
 
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
@@ -8074,7 +8074,7 @@ msgstr "Priority field for IPSECKEY records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
 msgid "Invalid characters in IPSECKEY record content."
-msgstr "Invalid characters in IPSECKEY record content."
+msgstr "Neplatné znaky v obsahu IPSECKEY záznamu."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:175
 msgid "IPSECKEY precedence must be a number between 0 and 255."
@@ -8142,7 +8142,7 @@ msgstr "Obsah záznamu NSEC3PARAM nemôže byť prázdny."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:114
 msgid "NSEC3PARAM record contains invalid characters."
-msgstr "NSEC3PARAM record contains invalid characters."
+msgstr "Záznam NSEC3PARAM obsahuje neplatné znaky."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:187
 msgid "NSEC3PARAM hash algorithm must be 1 (SHA-1)."
@@ -8238,7 +8238,7 @@ msgstr "Pole protokolu RKEY musí byť číselné."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:213
 msgid "RKEY algorithm field must be a numeric value."
-msgstr "RKEY algorithm field must be a numeric value."
+msgstr "Pole algoritmu RKEY musí byť číselné."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:219
 msgid "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
@@ -8363,7 +8363,7 @@ msgstr "Priority field for HINFO records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:159
 msgid "HINFO record must have CPU type and OS fields."
-msgstr "HINFO record must have CPU type and OS fields."
+msgstr "Záznam HINFO musí mať polia typu CPU a OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:175
 msgid "HINFO record must have exactly two fields: CPU type and OS."
@@ -8387,7 +8387,7 @@ msgstr "TSIG keys should be rotated periodically as a security best practice."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:195
 msgid "TSIG timestamp must be a non-negative integer."
-msgstr "TSIG timestamp must be a non-negative integer."
+msgstr "Časová pečiatka TSIG musí byť nezáporné celé číslo."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
@@ -8407,7 +8407,7 @@ msgstr "TSIG error must be a valid DNS RCODE number between 0 and 23."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
-msgstr "TSIG other-len must be a non-negative integer."
+msgstr "TSIG other-len musí byť nezáporné celé číslo."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
@@ -8571,7 +8571,7 @@ msgstr "Port value must be a number between 1 and 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:270
 msgid "DoH path must start with a forward slash (/)."
-msgstr "DoH path must start with a forward slash (/)."
+msgstr "Cesta DoH musí začínať lomítkom (/)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -8736,7 +8736,7 @@ msgstr "RRSIG covered type must be a valid DNS record type."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:193
 msgid "RRSIG algorithm field must be a numeric value."
-msgstr "RRSIG algorithm field must be a numeric value."
+msgstr "Pole algoritmu RRSIG musí byť číselné."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:228
 msgid "RRSIG labels field must be a numeric value."
@@ -8780,7 +8780,7 @@ msgstr "RRSIG key tag must be a valid value between 0 and 65535."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
-msgstr "RRSIG signer name must be a valid domain name."
+msgstr "Názov podpisovateľa RRSIG musí byť platný."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
@@ -8938,7 +8938,7 @@ msgstr "Toto nie je platná IPv6 adresa."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:102
 msgid "Invalid IPv4 part in IPv4-mapped IPv6 address."
-msgstr "Invalid IPv4 part in IPv4-mapped IPv6 address."
+msgstr "Neplatná časť IPv4 v mapovanej IPv6 adrese."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:108
 msgid "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
@@ -8995,7 +8995,7 @@ msgstr "CAA record must contain flags, tag, and value separated by spaces."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
 msgid "CAA flags must be a number between 0 and 255."
-msgstr "CAA flags must be a number between 0 and 255."
+msgstr "Príznaky CAA musia byť číslo medzi 0 a 255."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:141
 msgid "CAA tag must only contain ASCII letters and numbers."
@@ -9052,7 +9052,7 @@ msgstr "Hostitelia s jednou značkou nie sú povolení."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:91
 msgid "You have invalid characters in your zone name."
-msgstr "You have invalid characters in your zone name."
+msgstr "Máte neplatné znaky v názve zóny."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:100
 msgid "A hostname can not start or end with a dash."
@@ -9187,7 +9187,7 @@ msgstr "Priority field for CDNSKEY records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:151
 msgid "Invalid characters in CDNSKEY record content."
-msgstr "Invalid characters in CDNSKEY record content."
+msgstr "Neplatné znaky v obsahu CDNSKEY záznamu."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:179
 msgid "CDNSKEY flags must be 0, 256, or 257."
@@ -9251,7 +9251,7 @@ msgstr "SSHFP SHA-256 fingerprint must be 64 characters long."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
-msgstr "MR record name (old mailbox) cannot be empty."
+msgstr "Názov záznamu MR (starý mailbox) nemôže byť prázdny."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:97
 msgid "MR record name must be a valid domain name."
@@ -9263,7 +9263,7 @@ msgstr "MR record content (new mailbox) cannot be empty."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:112
 msgid "MR record content must be a valid domain name."
-msgstr "MR record content must be a valid domain name."
+msgstr "Obsah záznamu MR musí byť platný názov domény."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:142
 msgid "Priority field for MR records must be 0 or empty."
@@ -9359,7 +9359,7 @@ msgstr "Chýba povinná DMARC značka: %s"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:179
 msgid "TXT record content must be enclosed in quotes."
-msgstr "TXT record content must be enclosed in quotes."
+msgstr "Obsah záznamu TXT musí byť v úvodzovkách."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
@@ -9492,7 +9492,7 @@ msgstr "NAPTR record flags must contain only A, P, S, or U."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:237
 msgid "NAPTR record service must be a quoted string."
-msgstr "NAPTR record service must be a quoted string."
+msgstr "Služba NAPTR musí byť reťazec v úvodzovkách."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:256
 msgid "NAPTR record regexp must be a quoted string."
@@ -9578,7 +9578,7 @@ msgstr "Funkcionalita API je zakázaná."
 
 #: lib/Domain/Service/ApiKeyService.php:185
 msgid "You do not have permission to create API keys."
-msgstr "You do not have permission to create API keys."
+msgstr "Nemáte oprávnenie vytvárať API kľúče."
 
 #: lib/Domain/Service/ApiKeyService.php:192 templates/default/api_keys.html:21
 #: templates/modern/api_keys.html:22
@@ -9587,11 +9587,11 @@ msgstr "You have reached the maximum number of API keys allowed."
 
 #: lib/Domain/Service/ApiKeyService.php:323
 msgid "You do not have permission to update API keys."
-msgstr "You do not have permission to update API keys."
+msgstr "Nemáte oprávnenie aktualizovať API kľúče."
 
 #: lib/Domain/Service/ApiKeyService.php:265
 msgid "You do not have permission to delete API keys."
-msgstr "You do not have permission to delete API keys."
+msgstr "Nemáte oprávnenie mazať API kľúče."
 
 #: lib/Domain/Service/ApiKeyService.php:292
 msgid "You do not have permission to regenerate API keys."
@@ -10072,7 +10072,7 @@ msgstr "Príklady názvov"
 
 #: templates/modern/add_zone_templ_record.html:168
 msgid "For a subdomain: <code>subdomain.[ZONE]</code>"
-msgstr "For a subdomain: <code>subdomain.[ZONE]</code>"
+msgstr "Pre subdoménu: <code>subdomain.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:169
 msgid "For a wildcard record: <code>*.[ZONE]</code>"
@@ -10120,7 +10120,7 @@ msgstr "IP adresa supermaster"
 
 #: templates/modern/add_supermaster.html:22
 msgid "Enter the IP address of the master nameserver"
-msgstr "Enter the IP address of the master nameserver"
+msgstr "Zadajte IP adresu hlavného nameservera"
 
 #: templates/modern/add_supermaster.html:23
 msgid "Provide ip address"
@@ -10942,7 +10942,7 @@ msgstr "Chystáte sa regenerovať API kľúč"
 
 #: templates/modern/api_key_regenerate.html:18
 msgid "This action will invalidate the existing key!"
-msgstr "This action will invalidate the existing key!"
+msgstr "Táto akcia zneplatní existujúci kľúč!"
 
 #: templates/modern/api_key_delete.html:24
 msgid "API Key Details"
@@ -11213,7 +11213,7 @@ msgstr "LDAP overenie"
 
 #: templates/modern/edit_user.html:103 templates/modern/add_user.html:105
 msgid "Use external LDAP directory for authentication"
-msgstr "Use external LDAP directory for authentication"
+msgstr "Použiť externý LDAP adresár na overenie"
 
 #: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
 msgid "Back to Home"
@@ -11437,7 +11437,7 @@ msgstr "Stránka bola presunutá alebo vymazaná"
 
 #: templates/default/404.html:34 templates/modern/404.html:34
 msgid "You do not have permission to access this page"
-msgstr "You do not have permission to access this page"
+msgstr "Nemáte oprávnenie na prístup k tejto stránke"
 
 #: templates/default/404.html:45 templates/modern/404.html:45
 msgid "Go to Homepage"
@@ -11542,7 +11542,7 @@ msgstr "Používa sa predvolená hodnota TTL z konfigurácie"
 
 #: templates/modern/batch_ptr_record.html:102
 msgid "Create forward A/AAAA records in primary zone"
-msgstr "Create forward A/AAAA records in primary zone"
+msgstr "Vytvoriť dopredné záznamy A/AAAA v primárnej zóne"
 
 #: templates/modern/batch_ptr_record.html:107
 msgid "Create PTRs only for existing A records in forward zone"
@@ -12075,7 +12075,7 @@ msgstr "Vytvoriť predvolený SOA záznam"
 
 #: templates/modern/database_consistency.html:316
 msgid "Are you sure you want to delete the slave zone"
-msgstr "Are you sure you want to delete the slave zone"
+msgstr "Ste si istý, že chcete vymazať sekundárnu zónu"
 
 #: templates/modern/database_consistency.html:319
 msgid "Are you sure you want to delete the orphaned record"
@@ -12112,7 +12112,7 @@ msgstr "Odoslať heslo emailom"
 
 #: templates/default/add_user.html:63 templates/modern/add_user.html:63
 msgid "Send login credentials to user's email address"
-msgstr "Send login credentials to user's email address"
+msgstr "Odoslať prihlasovacie údaje na e-mail používateľa"
 
 #: templates/modern/add_user.html:81
 msgid "Select permissions for this user"
@@ -12272,7 +12272,7 @@ msgstr "Bezpečnostné tipy"
 
 #: templates/modern/change_password.html:104
 msgid "Use a unique password not used on other sites"
-msgstr "Use a unique password not used on other sites"
+msgstr "Použite unikátne heslo, nepoužité inde"
 
 #: templates/modern/change_password.html:105
 msgid "Choose a password that is difficult to guess"
@@ -12280,7 +12280,7 @@ msgstr "Vyberte heslo, ktoré je ťažké uhádnuť"
 
 #: templates/modern/change_password.html:106
 msgid "Include a mix of letters, numbers, and symbols"
-msgstr "Include a mix of letters, numbers, and symbols"
+msgstr "Zahrňte zmes písmen, čísel a symbolov"
 
 #: templates/modern/change_password.html:107
 msgid "Consider using a password manager"
@@ -12300,7 +12300,7 @@ msgstr "Krok 1: Naskenujte QR kód"
 
 #: templates/modern/mfa_verify_app.html:20
 msgid "Scan this QR code with your authenticator app"
-msgstr "Scan this QR code with your authenticator app"
+msgstr "Naskenujte tento QR kód overovacou aplikáciou"
 
 #: templates/modern/mfa_verify_app.html:26
 msgid "Or manually enter this key in your authenticator app"
@@ -12508,7 +12508,7 @@ msgstr "Tipy a odporúčania"
 
 #: templates/modern/bulk_registration.html:128
 msgid "Use NATIVE zone type for most standard setups"
-msgstr "Use NATIVE zone type for most standard setups"
+msgstr "Pre väčšinu štandardných nastavení použite typ NATIVE"
 
 #: templates/modern/bulk_registration.html:129
 msgid "Create a template first if you need standard records for all zones"
@@ -13337,7 +13337,7 @@ msgstr "Odstrániť záznam šablóny"
 
 #: templates/modern/delete_zone_templ_record.html:24
 msgid "You are about to delete a record from template"
-msgstr "You are about to delete a record from template"
+msgstr "Chystáte sa vymazať záznam zo šablóny"
 
 #: templates/modern/dnssec_delete_key.html:125
 msgid "Delete key"
@@ -13989,7 +13989,7 @@ msgstr "Kvartérny nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "Voliteľný kvartérny nameserver pre nové zóny."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"

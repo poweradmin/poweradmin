@@ -25,7 +25,7 @@ msgstr "Nema zone s ovim ID-om."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."
-msgstr "This zone does not have any records to export."
+msgstr "Ova zona nema zapisa za izvoz."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
@@ -33,4 +33,4 @@ msgstr "You do not have permission to export this zone."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."
-msgstr "You need to be logged in to export zone data."
+msgstr "Morate biti prijavljeni za izvoz zone."

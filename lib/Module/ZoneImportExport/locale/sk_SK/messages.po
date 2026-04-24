@@ -150,7 +150,7 @@ msgstr "Neexistuje zóna s týmto ID."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:79
 msgid "This zone does not have any records to export."
-msgstr "This zone does not have any records to export."
+msgstr "Táto zóna nemá žiadne záznamy na export."
 
 #: lib/Module/ZoneImportExport/templates/import.html:4
 msgid "Tools"
@@ -182,7 +182,7 @@ msgstr "You do not have permission to export this zone."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:42
 msgid "You need to be logged in to export zone data."
-msgstr "You need to be logged in to export zone data."
+msgstr "Na export údajov zóny musíte byť prihlásený."
 
 #: lib/Module/ZoneImportExport/templates/import.html:5
 msgid "Zone Import"

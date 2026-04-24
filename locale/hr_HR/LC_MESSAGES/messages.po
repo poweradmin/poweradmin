@@ -5680,7 +5680,7 @@ msgstr ""
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Nije moguće povezivanje s PowerDNS bazom \"%s\": %s"
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:57
 msgid "DNS wizards are not enabled."
@@ -5748,7 +5748,7 @@ msgstr "Transmission Control Protocol - most common for HTTPS/TLS"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:82
 msgid "User Datagram Protocol - for DTLS connections"
-msgstr "User Datagram Protocol - for DTLS connections"
+msgstr "User Datagram Protocol - za DTLS veze"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:121
 msgid "Stream Control Transmission Protocol"
@@ -6254,7 +6254,7 @@ msgstr "Prijava incidenta"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:108
 msgid "URL to report certificate issuance violations"
-msgstr "URL to report certificate issuance violations"
+msgstr "URL za prijavu kršenja izdavanja certifikata"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:110
 msgid "Type of authorization or reporting"
@@ -6290,7 +6290,7 @@ msgstr "Kritično"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:136
 msgid "Reject if not understood - strict enforcement"
-msgstr "Reject if not understood - strict enforcement"
+msgstr "Odbij ako nije razumljiv - strogo"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:204
 msgid "Invalid CAA tag. Must be issue, issuewild, or iodef"
@@ -6531,7 +6531,7 @@ msgstr "Nije uspjelo dohvaćanje stvorene zone."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:38
 msgid "You need to be logged in to export zone data."
-msgstr "You need to be logged in to export zone data."
+msgstr "Morate biti prijavljeni za izvoz zone."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:55
 msgid "You do not have permission to export this zone."
@@ -6543,7 +6543,7 @@ msgstr "Nema zone s ovim ID-om."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:71
 msgid "This zone does not have any records to export."
-msgstr "This zone does not have any records to export."
+msgstr "Ova zona nema zapisa za izvoz."
 
 #: lib/Module/Whois/Controller/WhoisController.php:55
 msgid "You do not have permission to perform WHOIS lookups."
@@ -6765,7 +6765,7 @@ msgstr "Email verification method is not enabled on this system."
 
 #: lib/Application/Controller/MfaSetupController.php:286
 msgid "MFA has been enabled with email verification."
-msgstr "MFA has been enabled with email verification."
+msgstr "MFA je omogućen s provjerom e-pošte."
 
 #: lib/Application/Controller/MfaSetupController.php:309
 msgid "MFA is not enabled."
@@ -6850,7 +6850,7 @@ msgstr "The API feature is disabled in the system configuration."
 
 #: lib/Application/Controller/ApiKeysController.php:83
 msgid "You do not have permission to manage API keys."
-msgstr "You do not have permission to manage API keys."
+msgstr "Nemate dozvolu za upravljanje API ključevima."
 
 #: lib/Application/Controller/ApiKeysController.php:89
 #: templates/modern/api_key_delete.html:5
@@ -6993,7 +6993,7 @@ msgstr "Login details have been sent to the user via email."
 
 #: lib/Application/Controller/AddUserController.php:177
 msgid "NOTE: Failed to send login details via email."
-msgstr "NOTE: Failed to send login details via email."
+msgstr "NAPOMENA: Slanje podataka za prijavu e-poštom nije uspjelo."
 
 #: lib/Application/Controller/AddUserController.php:183
 msgid "A password was generated but is not displayed for security reasons."
@@ -7001,7 +7001,7 @@ msgstr "A password was generated but is not displayed for security reasons."
 
 #: lib/Application/Controller/EditGroupController.php:274
 msgid "Please fill in all required fields correctly."
-msgstr "Please fill in all required fields correctly."
+msgstr "Ispunite sva obavezna polja ispravno."
 
 #: lib/Domain/Service/Dns/RecordManager.php:396
 msgid "You do not have the permission to delete this record."
@@ -7083,7 +7083,7 @@ msgstr "Predložak ne postoji."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:63
 msgid "You do not have permission to view this zone."
-msgstr "You do not have permission to view this zone."
+msgstr "Nemate dozvolu za pregled ove zone."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
 #: templates/default/index.html:229 templates/modern/index.html:229
@@ -7581,7 +7581,7 @@ msgstr "The supermaster you are trying to edit does not exist."
 
 #: lib/Application/Controller/EditSupermasterController.php:92
 msgid "The supermaster has been updated successfully."
-msgstr "The supermaster has been updated successfully."
+msgstr "Supermaster je uspješno ažuriran."
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:67
 msgid "You do not have permission to manage group zones."
@@ -7655,7 +7655,7 @@ msgstr "The permission template has been deleted successfully."
 
 #: lib/Application/Controller/DeletePermTemplController.php:90
 msgid "The permission template could not be deleted."
-msgstr "The permission template could not be deleted."
+msgstr "Predložak dozvola se nije mogao obrisati."
 
 #: lib/Application/Controller/PdnsStatusController.php:59
 msgid "The PowerDNS status feature is disabled in the system configuration."
@@ -7777,7 +7777,7 @@ msgstr "Supermaster ne postoji."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:95
 msgid "The supermaster has been deleted successfully."
-msgstr "The supermaster has been deleted successfully."
+msgstr "Supermaster je uspješno obrisan."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
 #: templates/modern/index.html:150 templates/modern/bulk_registration.html:23
@@ -7869,7 +7869,7 @@ msgstr "Neuspjelo ažuriranje lozinke"
 
 #: lib/Application/Service/OidcService.php:183
 msgid "Authentication failed: Invalid state parameter"
-msgstr "Authentication failed: Invalid state parameter"
+msgstr "Autentifikacija nije uspjela: Nevažeći state parametar"
 
 #: lib/Application/Service/OidcService.php:204
 msgid "Authentication failed: No authorization code"
@@ -7954,7 +7954,7 @@ msgstr "Greška pri stvaranju predloška zone: "
 
 #: lib/Domain/Model/ZoneTemplate.php:249
 msgid "Error adding default SOA record to template: "
-msgstr "Error adding default SOA record to template: "
+msgstr "Greška pri dodavanju zadanog SOA zapisa u predložak: "
 
 #: lib/Domain/Model/ZoneTemplate.php:308
 msgid "Error deleting zone template: "
@@ -7970,7 +7970,7 @@ msgstr "You do not have the permission to add a record to this zone template."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
-msgstr "Your content field doesnt have a legit value."
+msgstr "Polje sadržaja nema valjanu vrijednost."
 
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
@@ -8075,7 +8075,7 @@ msgstr "Priority field for IPSECKEY records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
 msgid "Invalid characters in IPSECKEY record content."
-msgstr "Invalid characters in IPSECKEY record content."
+msgstr "Nevažeći znakovi u sadržaju IPSECKEY zapisa."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:175
 msgid "IPSECKEY precedence must be a number between 0 and 255."
@@ -8143,7 +8143,7 @@ msgstr "Sadržaj NSEC3PARAM zapisa ne može biti prazan."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:114
 msgid "NSEC3PARAM record contains invalid characters."
-msgstr "NSEC3PARAM record contains invalid characters."
+msgstr "NSEC3PARAM zapis sadrži nevažeće znakove."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:187
 msgid "NSEC3PARAM hash algorithm must be 1 (SHA-1)."
@@ -8239,7 +8239,7 @@ msgstr "RKEY polje protokola mora biti brojčano."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:213
 msgid "RKEY algorithm field must be a numeric value."
-msgstr "RKEY algorithm field must be a numeric value."
+msgstr "RKEY polje algoritma mora biti brojčano."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:219
 msgid "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
@@ -8364,7 +8364,7 @@ msgstr "Priority field for HINFO records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:159
 msgid "HINFO record must have CPU type and OS fields."
-msgstr "HINFO record must have CPU type and OS fields."
+msgstr "HINFO zapis mora imati polja CPU i OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:175
 msgid "HINFO record must have exactly two fields: CPU type and OS."
@@ -8388,7 +8388,7 @@ msgstr "TSIG keys should be rotated periodically as a security best practice."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:195
 msgid "TSIG timestamp must be a non-negative integer."
-msgstr "TSIG timestamp must be a non-negative integer."
+msgstr "TSIG vremenska oznaka mora biti nenegativan cijeli broj."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
@@ -8408,7 +8408,7 @@ msgstr "TSIG error must be a valid DNS RCODE number between 0 and 23."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
-msgstr "TSIG other-len must be a non-negative integer."
+msgstr "TSIG other-len mora biti nenegativan cijeli broj."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
@@ -8572,7 +8572,7 @@ msgstr "Port value must be a number between 1 and 65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:270
 msgid "DoH path must start with a forward slash (/)."
-msgstr "DoH path must start with a forward slash (/)."
+msgstr "DoH putanja mora početi s kosom crtom (/)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
@@ -8737,7 +8737,7 @@ msgstr "RRSIG covered type must be a valid DNS record type."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:193
 msgid "RRSIG algorithm field must be a numeric value."
-msgstr "RRSIG algorithm field must be a numeric value."
+msgstr "RRSIG polje algoritma mora biti brojčano."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:228
 msgid "RRSIG labels field must be a numeric value."
@@ -8781,7 +8781,7 @@ msgstr "RRSIG key tag must be a valid value between 0 and 65535."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
 msgid "RRSIG signer name must be a valid domain name."
-msgstr "RRSIG signer name must be a valid domain name."
+msgstr "Ime potpisnika RRSIG mora biti valjan naziv domene."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
@@ -8939,7 +8939,7 @@ msgstr "Ovo nije valjana IPv6 adresa."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:102
 msgid "Invalid IPv4 part in IPv4-mapped IPv6 address."
-msgstr "Invalid IPv4 part in IPv4-mapped IPv6 address."
+msgstr "Nevažeći IPv4 dio u IPv4-mapiranoj IPv6 adresi."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:108
 msgid "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
@@ -8996,7 +8996,7 @@ msgstr "CAA record must contain flags, tag, and value separated by spaces."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
 msgid "CAA flags must be a number between 0 and 255."
-msgstr "CAA flags must be a number between 0 and 255."
+msgstr "CAA zastavice moraju biti broj između 0 i 255."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:141
 msgid "CAA tag must only contain ASCII letters and numbers."
@@ -9053,7 +9053,7 @@ msgstr "Imena poslužitelja s jednom oznakom nisu dopuštena."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:91
 msgid "You have invalid characters in your zone name."
-msgstr "You have invalid characters in your zone name."
+msgstr "Imate nevažeće znakove u nazivu zone."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:100
 msgid "A hostname can not start or end with a dash."
@@ -9188,7 +9188,7 @@ msgstr "Priority field for CDNSKEY records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:151
 msgid "Invalid characters in CDNSKEY record content."
-msgstr "Invalid characters in CDNSKEY record content."
+msgstr "Nevažeći znakovi u sadržaju CDNSKEY zapisa."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:179
 msgid "CDNSKEY flags must be 0, 256, or 257."
@@ -9252,7 +9252,7 @@ msgstr "SSHFP SHA-256 fingerprint must be 64 characters long."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
-msgstr "MR record name (old mailbox) cannot be empty."
+msgstr "Ime MR zapisa (stari sandučić) ne može biti prazno."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:97
 msgid "MR record name must be a valid domain name."
@@ -9264,7 +9264,7 @@ msgstr "MR record content (new mailbox) cannot be empty."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:112
 msgid "MR record content must be a valid domain name."
-msgstr "MR record content must be a valid domain name."
+msgstr "Sadržaj MR zapisa mora biti valjan naziv domene."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:142
 msgid "Priority field for MR records must be 0 or empty."
@@ -9360,7 +9360,7 @@ msgstr "Nedostaje obavezna DMARC oznaka: %s"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:179
 msgid "TXT record content must be enclosed in quotes."
-msgstr "TXT record content must be enclosed in quotes."
+msgstr "Sadržaj TXT zapisa mora biti u navodnicima."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
@@ -9493,7 +9493,7 @@ msgstr "NAPTR record flags must contain only A, P, S, or U."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:237
 msgid "NAPTR record service must be a quoted string."
-msgstr "NAPTR record service must be a quoted string."
+msgstr "NAPTR usluga mora biti niz u navodnicima."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:256
 msgid "NAPTR record regexp must be a quoted string."
@@ -9579,7 +9579,7 @@ msgstr "API funkcionalnost je onemogućena."
 
 #: lib/Domain/Service/ApiKeyService.php:185
 msgid "You do not have permission to create API keys."
-msgstr "You do not have permission to create API keys."
+msgstr "Nemate dozvolu za stvaranje API ključeva."
 
 #: lib/Domain/Service/ApiKeyService.php:192 templates/default/api_keys.html:21
 #: templates/modern/api_keys.html:22
@@ -9588,11 +9588,11 @@ msgstr "You have reached the maximum number of API keys allowed."
 
 #: lib/Domain/Service/ApiKeyService.php:323
 msgid "You do not have permission to update API keys."
-msgstr "You do not have permission to update API keys."
+msgstr "Nemate dozvolu za ažuriranje API ključeva."
 
 #: lib/Domain/Service/ApiKeyService.php:265
 msgid "You do not have permission to delete API keys."
-msgstr "You do not have permission to delete API keys."
+msgstr "Nemate dozvolu za brisanje API ključeva."
 
 #: lib/Domain/Service/ApiKeyService.php:292
 msgid "You do not have permission to regenerate API keys."
@@ -10073,7 +10073,7 @@ msgstr "Primjeri naziva"
 
 #: templates/modern/add_zone_templ_record.html:168
 msgid "For a subdomain: <code>subdomain.[ZONE]</code>"
-msgstr "For a subdomain: <code>subdomain.[ZONE]</code>"
+msgstr "Za poddomenu: <code>subdomain.[ZONE]</code>"
 
 #: templates/modern/add_zone_templ_record.html:169
 msgid "For a wildcard record: <code>*.[ZONE]</code>"
@@ -10121,7 +10121,7 @@ msgstr "IP adresa supermastera"
 
 #: templates/modern/add_supermaster.html:22
 msgid "Enter the IP address of the master nameserver"
-msgstr "Enter the IP address of the master nameserver"
+msgstr "Unesite IP adresu glavnog nameservera"
 
 #: templates/modern/add_supermaster.html:23
 msgid "Provide ip address"
@@ -10943,7 +10943,7 @@ msgstr "Ponovno ćete generirati API ključ"
 
 #: templates/modern/api_key_regenerate.html:18
 msgid "This action will invalidate the existing key!"
-msgstr "This action will invalidate the existing key!"
+msgstr "Ova radnja će poništiti postojeći ključ!"
 
 #: templates/modern/api_key_delete.html:24
 msgid "API Key Details"
@@ -11214,7 +11214,7 @@ msgstr "LDAP autentifikacija"
 
 #: templates/modern/edit_user.html:103 templates/modern/add_user.html:105
 msgid "Use external LDAP directory for authentication"
-msgstr "Use external LDAP directory for authentication"
+msgstr "Koristi vanjski LDAP direktorij za autentifikaciju"
 
 #: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
 msgid "Back to Home"
@@ -11438,7 +11438,7 @@ msgstr "Stranica je premještena ili obrisana"
 
 #: templates/default/404.html:34 templates/modern/404.html:34
 msgid "You do not have permission to access this page"
-msgstr "You do not have permission to access this page"
+msgstr "Nemate dozvolu za pristup ovoj stranici"
 
 #: templates/default/404.html:45 templates/modern/404.html:45
 msgid "Go to Homepage"
@@ -11543,7 +11543,7 @@ msgstr "Koristi se zadana TTL vrijednost iz konfiguracije"
 
 #: templates/modern/batch_ptr_record.html:102
 msgid "Create forward A/AAAA records in primary zone"
-msgstr "Create forward A/AAAA records in primary zone"
+msgstr "Stvori direktne A/AAAA zapise u primarnoj zoni"
 
 #: templates/modern/batch_ptr_record.html:107
 msgid "Create PTRs only for existing A records in forward zone"
@@ -12076,7 +12076,7 @@ msgstr "Stvori zadani SOA zapis"
 
 #: templates/modern/database_consistency.html:316
 msgid "Are you sure you want to delete the slave zone"
-msgstr "Are you sure you want to delete the slave zone"
+msgstr "Jeste li sigurni da želite obrisati sekundarnu zonu"
 
 #: templates/modern/database_consistency.html:319
 msgid "Are you sure you want to delete the orphaned record"
@@ -12113,7 +12113,7 @@ msgstr "Pošalji lozinku e-poštom"
 
 #: templates/default/add_user.html:63 templates/modern/add_user.html:63
 msgid "Send login credentials to user's email address"
-msgstr "Send login credentials to user's email address"
+msgstr "Pošalji vjerodajnice za prijavu na korisnikovu e-poštu"
 
 #: templates/modern/add_user.html:81
 msgid "Select permissions for this user"
@@ -12273,7 +12273,7 @@ msgstr "Sigurnosni savjeti"
 
 #: templates/modern/change_password.html:104
 msgid "Use a unique password not used on other sites"
-msgstr "Use a unique password not used on other sites"
+msgstr "Koristite jedinstvenu lozinku koja se ne koristi drugdje"
 
 #: templates/modern/change_password.html:105
 msgid "Choose a password that is difficult to guess"
@@ -12281,7 +12281,7 @@ msgstr "Odaberite lozinku koju je teško pogoditi"
 
 #: templates/modern/change_password.html:106
 msgid "Include a mix of letters, numbers, and symbols"
-msgstr "Include a mix of letters, numbers, and symbols"
+msgstr "Uključi mješavinu slova, brojeva i simbola"
 
 #: templates/modern/change_password.html:107
 msgid "Consider using a password manager"
@@ -12301,7 +12301,7 @@ msgstr "Korak 1: Skenirajte QR kod"
 
 #: templates/modern/mfa_verify_app.html:20
 msgid "Scan this QR code with your authenticator app"
-msgstr "Scan this QR code with your authenticator app"
+msgstr "Skenirajte ovaj QR kod autentifikacijskom aplikacijom"
 
 #: templates/modern/mfa_verify_app.html:26
 msgid "Or manually enter this key in your authenticator app"
@@ -12509,7 +12509,7 @@ msgstr "Savjeti i preporuke"
 
 #: templates/modern/bulk_registration.html:128
 msgid "Use NATIVE zone type for most standard setups"
-msgstr "Use NATIVE zone type for most standard setups"
+msgstr "Koristite NATIVE tip zone za većinu standardnih postavki"
 
 #: templates/modern/bulk_registration.html:129
 msgid "Create a template first if you need standard records for all zones"
@@ -13338,7 +13338,7 @@ msgstr "Obriši zapis predloška"
 
 #: templates/modern/delete_zone_templ_record.html:24
 msgid "You are about to delete a record from template"
-msgstr "You are about to delete a record from template"
+msgstr "Obrisat ćete zapis iz predloška"
 
 #: templates/modern/dnssec_delete_key.html:125
 msgid "Delete key"
@@ -13990,7 +13990,7 @@ msgstr "Kvaternarni nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "Neobavezan kvaternarni nameserver za nove zone."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
