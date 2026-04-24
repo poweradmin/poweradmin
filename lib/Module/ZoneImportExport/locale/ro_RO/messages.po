@@ -111,7 +111,7 @@ msgstr "Nativ"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:116
 msgid "No valid records found in the uploaded file."
-msgstr "No valid records found in the uploaded file."
+msgstr "Nu sunt înregistrări valide în fișier."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:95
 msgid "Please select a valid zone file to upload."
@@ -252,4 +252,4 @@ msgid "You do not have permission to modify this zone."
 msgstr "You do not have permission to modify this zone."
 
 msgid "You do not have permission to import zones."
-msgstr "You do not have permission to import zones."
+msgstr "Nu aveți permisiunea de a importa zone."
