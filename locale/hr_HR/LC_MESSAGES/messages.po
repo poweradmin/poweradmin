@@ -74,9 +74,7 @@ msgstr ""
 msgid ""
 "How to encode the certificate data. SHA-256 (type 1) provides good balance "
 "of security and length."
-msgstr ""
-"How to encode the certificate data. SHA-256 (type 1) provides good balance "
-"of security and length."
+msgstr "Kako kodirati podatke certifikata. SHA-256 (tip 1) daje dobar balans."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:161
 msgid ""
@@ -682,8 +680,7 @@ msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
 msgstr ""
-"The PowerDNS API feature is not configured. Please set the API URL and key "
-"in the system configuration."
+"Značajka PowerDNS API nije konfigurirana. Postavite URL i ključ u konfiguraciji."
 
 #: lib/Application/Controller/ChangePasswordController.php:93
 msgid ""
@@ -849,8 +846,7 @@ msgid ""
 "If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
 "work correctly (RFC 7671)."
 msgstr ""
-"If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
-"work correctly (RFC 7671)."
+"Kod korištenja CNAME-a, cijeli lanac mora biti DNSSEC potpisan (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
@@ -895,8 +891,7 @@ msgid ""
 "Usage 0 (PKIX-TA) requires proper CA certificate management and may break "
 "when certificates expire."
 msgstr ""
-"Usage 0 (PKIX-TA) requires proper CA certificate management and may break "
-"when certificates expire."
+"Usage 0 (PKIX-TA) zahtijeva upravljanje CA certifikatima i može se pokvariti pri isteku."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:268
 msgid ""
@@ -1189,8 +1184,7 @@ msgid ""
 "RKEY records should be used with caution as they are not widely supported by "
 "DNS servers and resolvers."
 msgstr ""
-"RKEY records should be used with caution as they are not widely supported by "
-"DNS servers and resolvers."
+"RKEY zapisi se trebaju koristiti oprezno - nisu široko podržani od DNS poslužitelja."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:174
 msgid ""
@@ -1249,8 +1243,7 @@ msgid ""
 "Algorithm 13 (ECDSA Curve P-256 with SHA-256) provides good security with "
 "smaller signatures than RSA."
 msgstr ""
-"Algorithm 13 (ECDSA Curve P-256 with SHA-256) provides good security with "
-"smaller signatures than RSA."
+"Algoritam 13 (ECDSA Curve P-256 sa SHA-256) dobra sigurnost i manji potpisi."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:238
 msgid ""
@@ -1265,8 +1258,7 @@ msgid ""
 "Algorithm 15 (Ed25519) offers modern security but may have compatibility "
 "issues with older validators."
 msgstr ""
-"Algorithm 15 (Ed25519) offers modern security but may have compatibility "
-"issues with older validators."
+"Algoritam 15 (Ed25519) nudi modernu sigurnost ali može imati probleme kompatibilnosti."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:242
 msgid ""
@@ -1286,9 +1278,7 @@ msgstr "KRITIČNO: Ovaj algoritam nije siguran. Koristite algoritam 8 ili noviji
 msgid ""
 "RKEY records were never formally standardized as an RFC, only proposed in "
 "draft-reid-dnsext-rkey-00."
-msgstr ""
-"RKEY records were never formally standardized as an RFC, only proposed in "
-"draft-reid-dnsext-rkey-00."
+msgstr "RKEY zapisi nikada nisu formalno standardizirani - samo kao draft."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:295
 msgid ""
@@ -1740,9 +1730,7 @@ msgstr "SHA-384 (algoritam 1) je preporučen hash algoritam za ZONEMD."
 msgid ""
 "SHA-512 (algorithm 2) provides stronger security but requires more "
 "processing resources than SHA-384."
-msgstr ""
-"SHA-512 (algorithm 2) provides stronger security but requires more "
-"processing resources than SHA-384."
+msgstr "SHA-512 (algoritam 2) pruža jaču sigurnost ali zahtijeva više resursa."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:133
 msgid ""
@@ -1876,8 +1864,7 @@ msgid ""
 "The key tag field does not uniquely identify a DNSKEY. More than one key can "
 "have the same key tag."
 msgstr ""
-"The key tag field does not uniquely identify a DNSKEY. More than one key can "
-"have the same key tag."
+"Key tag polje ne identificira jedinstveno DNSKEY - više ključeva može dijeliti isti tag."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
@@ -1919,8 +1906,7 @@ msgid ""
 "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
 "parameters according to RFC 9460."
 msgstr ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
+"HTTPS u AliasMode (prioritet=0) s \".\" ne može imati parametre (RFC 9460)."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
@@ -2007,8 +1993,7 @@ msgid ""
 "Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
 "man-in-the-middle attacks."
 msgstr ""
-"Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
-"man-in-the-middle attacks."
+"Diffie-Hellman način treba biti autentificiran pomoću TSIG ili SIG(0) protiv MITM."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:219
 msgid ""
@@ -2151,8 +2136,7 @@ msgid ""
 "URI contains non-ASCII characters in hostname. Consider using Punycode for "
 "international domain names."
 msgstr ""
-"URI contains non-ASCII characters in hostname. Consider using Punycode for "
-"international domain names."
+"URI sadrži ne-ASCII znakove u imenu poslužitelja. Koristite Punycode za IDN."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:91
 msgid ""
@@ -2194,8 +2178,7 @@ msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
 msgstr ""
-"NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
-"not be universally supported."
+"NAPOMENA: MINFO tip zapisa je EXPERIMENTAL (RFC 1035). Možda nije univerzalno podržan."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:102
 msgid ""
@@ -2218,16 +2201,14 @@ msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
 msgstr ""
-"Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
-"is responsible for itself."
+"Korištenje \".\" za RMAILBX znači da je vlasnik MINFO zapisa odgovoran za sebe."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:141
 msgid ""
 "Using \".\" (root) for EMAILBX indicates that errors should be returned to "
 "the sender of the message."
 msgstr ""
-"Using \".\" (root) for EMAILBX indicates that errors should be returned to "
-"the sender of the message."
+"Korištenje \".\" (root) za EMAILBX znači da se greške vraćaju pošiljatelju."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:146
 msgid ""
@@ -2241,9 +2222,7 @@ msgstr ""
 msgid ""
 "Priority field for MINFO records must be 0 or empty. MINFO does not use "
 "priority values per RFC 1035."
-msgstr ""
-"Priority field for MINFO records must be 0 or empty. MINFO does not use "
-"priority values per RFC 1035."
+msgstr "MINFO prioritet mora biti 0 ili prazan (RFC 1035)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:160
 msgid "SPF record must start with \"v=spf1\""
@@ -2350,17 +2329,13 @@ msgstr "DHCID smije sadržavati samo valjane base64 znakove."
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr ""
-"DHCID record has invalid base64 padding. Equals signs (=) should only appear "
-"at the end of the data."
+msgstr "DHCID ima nevažeći base64 padding. Znakovi \"=\" samo na kraju."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
 "DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
 "characters (with padding)."
-msgstr ""
-"DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
-"characters (with padding)."
+msgstr "DHCID ima nevažeću base64 dužinu. Mora biti višekratnik od 4."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:181
 msgid ""
@@ -2421,9 +2396,7 @@ msgstr ""
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr ""
-"Regular key rollovers are recommended security practice: ZSK every 1-3 "
-"months, KSK every 1-2 years."
+msgstr "Redovita zamjena ključeva: ZSK 1-3 mjeseca, KSK 1-2 godine."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:180
 msgid ""
@@ -2669,9 +2642,7 @@ msgstr ""
 msgid ""
 "This appears to be an EUI-64 address derived from an EUI-48 address "
 "(contains FF-FE in the middle)."
-msgstr ""
-"This appears to be an EUI-64 address derived from an EUI-48 address "
-"(contains FF-FE in the middle)."
+msgstr "Ovo izgleda kao EUI-64 adresa izvedena iz EUI-48 (FF-FE u sredini)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
@@ -2701,9 +2672,7 @@ msgstr ""
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr ""
-"EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
-"with hyphens between octets."
+msgstr "EUI64 zapisu nedostaju razdjelnici. Format: xx-xx-xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
@@ -2883,16 +2852,13 @@ msgid ""
 "Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
 "cause unexpected behavior."
 msgstr ""
-"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
-"cause unexpected behavior."
+"Samo jedan CSYNC zapis po zoni (RFC 7477). Više zapisa može uzrokovati neočekivano ponašanje."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:138
 msgid ""
 "No flags are set in this CSYNC record. The record may not be processed "
 "immediately by parental agents."
-msgstr ""
-"No flags are set in this CSYNC record. The record may not be processed "
-"immediately by parental agents."
+msgstr "Nema zastavica u ovom CSYNC zapisu. Možda neće biti odmah obrađen."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:142
 msgid ""
@@ -2925,9 +2891,7 @@ msgstr ""
 msgid ""
 "Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
 "values are 0, 1, 2, or 3."
-msgstr ""
-"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
-"values are 0, 1, 2, or 3."
+msgstr "Nevažeće zastavice u CSYNC. Vrijednosti su 0, 1, 2 ili 3."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
@@ -3004,9 +2968,7 @@ msgstr "EUI48 izgleda u Cisco formatu. Format mora biti xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr ""
-"EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
-"x is a hexadecimal digit)."
+msgstr "EUI48 zapis mora biti valjana MAC adresa u xx-xx-xx-xx-xx-xx formatu."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -3103,17 +3065,14 @@ msgid ""
 "SOA record must have exactly 7 fields (primary NS, email, serial, refresh, "
 "retry, expire, minimum)."
 msgstr ""
-"SOA record must have exactly 7 fields (primary NS, email, serial, refresh, "
-"retry, expire, minimum)."
+"SOA zapis mora imati točno 7 polja (primary NS, email, serial, refresh, retry, expire, minimum)."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr ""
-"SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
-"allowed but not recommended."
+msgstr "SOA %s vrijednost (%d) ispod RFC 2308 minimuma (%d)."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:288
 msgid ""
@@ -3228,8 +3187,7 @@ msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
 msgstr ""
-"SMIMEA record must contain usage, selector, matching-type, and certificate-"
-"data separated by spaces."
+"SMIMEA zapis mora sadržavati usage, selector, matching-type i certificate-data razdvojene."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:212
 msgid ""
@@ -3447,9 +3405,7 @@ msgstr ""
 msgid ""
 "Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
 "supported for validation."
-msgstr ""
-"Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
-"supported for validation."
+msgstr "Algoritam 10 (RSASHA512) NIJE preporučen za potpisivanje."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:219
 msgid ""
@@ -3708,8 +3664,7 @@ msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
 msgstr ""
-"DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
-"colon-separated combinations"
+"DMARC fo smije sadržavati samo 0, 1, d, s ili kombinacije odvojene dvotočkom"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:299
 msgid ""
@@ -3971,16 +3926,13 @@ msgid ""
 "NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
 "and next hashed owner name."
 msgstr ""
-"NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
-"and next hashed owner name."
+"NSEC3 zapis mora sadržavati hash algoritam, zastavice, iteracije, sol i sljedeće hashirano ime."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:264
 msgid ""
 "NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
 "characters 0-9 and A-V)."
-msgstr ""
-"NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
-"characters 0-9 and A-V)."
+msgstr "NSEC3 sljedeće hashirano ime mora biti valjani Base32hex (0-9, A-V)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:281
 msgid ""
@@ -4024,8 +3976,7 @@ msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
 msgstr ""
-"This record follows RFC 3403. Be aware that some DNS servers may not fully "
-"support all NAPTR features."
+"Ovaj zapis prati RFC 3403. Neki DNS poslužitelji možda ne podržavaju sve NAPTR značajke."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:182
 msgid ""
@@ -4134,9 +4085,7 @@ msgstr ""
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr ""
-"ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
-"signing according to RFC 8624."
+msgstr "ECDSAP256SHA256 (algoritam 13) je PREPORUČEN za DNSSEC prema RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
@@ -4149,9 +4098,7 @@ msgstr "%s (algoritam %d) je opcionalan prema RFC 8624."
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr ""
-"%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
-"algorithm for new deployments."
+msgstr "%s (algoritam %d) je ZASTARIO prema RFC 8624. Ne koristiti."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
@@ -4186,16 +4133,14 @@ msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
 msgstr ""
-"Zone has no NS (Name Server) records at the apex. At least one apex NS "
-"record is required for DNSSEC."
+"Zona nema NS zapisa na vrhu. Barem jedan NS zapis na apexu je potreban za DNSSEC."
 
 #: lib/Domain/Service/BulkRecordParser.php:88
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
 msgstr ""
-"Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
-"name,SRV,target,weight,port,ttl"
+"Nevažeći SRV format. Koristite: name,SRV,\"weight port target\",priority,ttl."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:113
 #, php-format
@@ -4276,9 +4221,7 @@ msgstr ""
 msgid ""
 "Ensure that the hostname matches exactly what appears in NS records, or "
 "slave zone creation may fail."
-msgstr ""
-"Ensure that the hostname matches exactly what appears in NS records, or "
-"slave zone creation may fail."
+msgstr "Osigurajte da se ime poslužitelja točno podudara s NS zapisima."
 
 #: templates/default/dnssec.html:12 templates/modern/dnssec.html:12
 msgid ""
@@ -4598,8 +4541,7 @@ msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
 msgstr ""
-"Select a wizard to help you create complex DNS records with guided forms "
-"instead of manual text entry."
+"Odaberite čarobnjak za stvaranje složenih DNS zapisa pomoću vodenih obrazaca."
 
 #: templates/modern/dns_wizard_select.html:27
 msgid ""

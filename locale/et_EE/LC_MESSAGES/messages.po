@@ -73,9 +73,7 @@ msgstr ""
 msgid ""
 "How to encode the certificate data. SHA-256 (type 1) provides good balance "
 "of security and length."
-msgstr ""
-"How to encode the certificate data. SHA-256 (type 1) provides good balance "
-"of security and length."
+msgstr "Kuidas kodeerida. SHA-256 (tüüp 1) tasakaal."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:161
 msgid ""
@@ -669,9 +667,7 @@ msgstr ""
 msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
-msgstr ""
-"The PowerDNS API feature is not configured. Please set the API URL and key "
-"in the system configuration."
+msgstr "PowerDNS API funktsioon pole seadistatud. Seadistage URL ja võti."
 
 #: lib/Application/Controller/ChangePasswordController.php:93
 msgid ""
@@ -838,9 +834,7 @@ msgstr ""
 msgid ""
 "If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
 "work correctly (RFC 7671)."
-msgstr ""
-"If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
-"work correctly (RFC 7671)."
+msgstr "CNAME puhul peab kogu ahel olema DNSSEC-allkirjastatud (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
@@ -883,9 +877,7 @@ msgstr ""
 msgid ""
 "Usage 0 (PKIX-TA) requires proper CA certificate management and may break "
 "when certificates expire."
-msgstr ""
-"Usage 0 (PKIX-TA) requires proper CA certificate management and may break "
-"when certificates expire."
+msgstr "Kasutus 0 (PKIX-TA) nõuab CA sertifikaatide haldust."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:268
 msgid ""
@@ -1176,9 +1168,7 @@ msgstr ""
 msgid ""
 "RKEY records should be used with caution as they are not widely supported by "
 "DNS servers and resolvers."
-msgstr ""
-"RKEY records should be used with caution as they are not widely supported by "
-"DNS servers and resolvers."
+msgstr "RKEY kirjeid tuleks kasutada ettevaatusega - pole laialt toetatud."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:174
 msgid ""
@@ -1237,9 +1227,7 @@ msgstr "Algoritm 8 (RSA/SHA-256) on praegu DNSSEC jaoks soovitatav."
 msgid ""
 "Algorithm 13 (ECDSA Curve P-256 with SHA-256) provides good security with "
 "smaller signatures than RSA."
-msgstr ""
-"Algorithm 13 (ECDSA Curve P-256 with SHA-256) provides good security with "
-"smaller signatures than RSA."
+msgstr "Algoritm 13 (ECDSA Curve P-256 SHA-256) pakub head turvalisust."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:238
 msgid ""
@@ -1254,8 +1242,7 @@ msgid ""
 "Algorithm 15 (Ed25519) offers modern security but may have compatibility "
 "issues with older validators."
 msgstr ""
-"Algorithm 15 (Ed25519) offers modern security but may have compatibility "
-"issues with older validators."
+"Algoritm 15 (Ed25519) pakub moodsat turvalisust, aga võib olla vanadega probleeme."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:242
 msgid ""
@@ -1276,9 +1263,7 @@ msgstr ""
 msgid ""
 "RKEY records were never formally standardized as an RFC, only proposed in "
 "draft-reid-dnsext-rkey-00."
-msgstr ""
-"RKEY records were never formally standardized as an RFC, only proposed in "
-"draft-reid-dnsext-rkey-00."
+msgstr "RKEY pole kunagi formaalselt standardiseeritud - ainult draft."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:295
 msgid ""
@@ -1735,8 +1720,7 @@ msgid ""
 "SHA-512 (algorithm 2) provides stronger security but requires more "
 "processing resources than SHA-384."
 msgstr ""
-"SHA-512 (algorithm 2) provides stronger security but requires more "
-"processing resources than SHA-384."
+"SHA-512 (algoritm 2) pakub tugevamat turvalisust, aga vajab rohkem ressursse."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:133
 msgid ""
@@ -1866,9 +1850,7 @@ msgstr ""
 msgid ""
 "The key tag field does not uniquely identify a DNSKEY. More than one key can "
 "have the same key tag."
-msgstr ""
-"The key tag field does not uniquely identify a DNSKEY. More than one key can "
-"have the same key tag."
+msgstr "Key tag väli pole DNSKEY jaoks unikaalne."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
@@ -1909,8 +1891,7 @@ msgid ""
 "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
 "parameters according to RFC 9460."
 msgstr ""
-"HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
-"parameters according to RFC 9460."
+"HTTPS AliasMode (prioriteet=0) \".\" sihiga ei tohi olla parameetreid (RFC 9460)."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:199
 msgid ""
@@ -1996,9 +1977,7 @@ msgstr ""
 msgid ""
 "Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
 "man-in-the-middle attacks."
-msgstr ""
-"Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
-"man-in-the-middle attacks."
+msgstr "Diffie-Hellman režiim tuleb TSIG või SIG(0)-ga autentida MITM vastu."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:219
 msgid ""
@@ -2141,9 +2120,7 @@ msgstr "URI sisaldab protsendi märke, mis pole korrektselt kodeeritud."
 msgid ""
 "URI contains non-ASCII characters in hostname. Consider using Punycode for "
 "international domain names."
-msgstr ""
-"URI contains non-ASCII characters in hostname. Consider using Punycode for "
-"international domain names."
+msgstr "URI sisaldab mitte-ASCII märke. Kasutage Punycode IDN jaoks."
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:91
 msgid ""
@@ -2183,9 +2160,7 @@ msgstr ""
 msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
-msgstr ""
-"NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
-"not be universally supported."
+msgstr "MÄRKUS: MINFO kirje on EKSPERIMENTAALNE (RFC 1035)."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:102
 msgid ""
@@ -2207,17 +2182,13 @@ msgstr ""
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr ""
-"Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
-"is responsible for itself."
+msgstr "\".\" RMAILBX tähendab, et MINFO omanik vastutab enda eest."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:141
 msgid ""
 "Using \".\" (root) for EMAILBX indicates that errors should be returned to "
 "the sender of the message."
-msgstr ""
-"Using \".\" (root) for EMAILBX indicates that errors should be returned to "
-"the sender of the message."
+msgstr "\".\" (juur) EMAILBX tähendab, et vead tagastatakse saatjale."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:146
 msgid ""
@@ -2231,9 +2202,7 @@ msgstr ""
 msgid ""
 "Priority field for MINFO records must be 0 or empty. MINFO does not use "
 "priority values per RFC 1035."
-msgstr ""
-"Priority field for MINFO records must be 0 or empty. MINFO does not use "
-"priority values per RFC 1035."
+msgstr "MINFO prioriteedi väli peab olema 0 või tühi (RFC 1035)."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:160
 msgid "SPF record must start with \"v=spf1\""
@@ -2340,17 +2309,13 @@ msgstr "DHCID tohib sisaldada ainult kehtivaid base64 märke."
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr ""
-"DHCID record has invalid base64 padding. Equals signs (=) should only appear "
-"at the end of the data."
+msgstr "DHCID vigane base64 täide. \"=\" ainult lõpus."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
 "DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
 "characters (with padding)."
-msgstr ""
-"DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
-"characters (with padding)."
+msgstr "DHCID vigane base64 pikkus. Peab olema 4 kordne."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:181
 msgid ""
@@ -2411,9 +2376,7 @@ msgstr ""
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr ""
-"Regular key rollovers are recommended security practice: ZSK every 1-3 "
-"months, KSK every 1-2 years."
+msgstr "Regulaarne võtme vahetus: ZSK 1-3 kuud, KSK 1-2 aastat."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:180
 msgid ""
@@ -2660,9 +2623,7 @@ msgstr ""
 msgid ""
 "This appears to be an EUI-64 address derived from an EUI-48 address "
 "(contains FF-FE in the middle)."
-msgstr ""
-"This appears to be an EUI-64 address derived from an EUI-48 address "
-"(contains FF-FE in the middle)."
+msgstr "See tundub EUI-64 aadress EUI-48-st (FF-FE keskel)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
@@ -2692,9 +2653,7 @@ msgstr ""
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr ""
-"EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
-"with hyphens between octets."
+msgstr "EUI64 eraldajad puuduvad. Vorming: xx-xx-xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
@@ -2870,17 +2829,13 @@ msgstr ""
 msgid ""
 "Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
 "cause unexpected behavior."
-msgstr ""
-"Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
-"cause unexpected behavior."
+msgstr "Ainult üks CSYNC kirje tsoonis (RFC 7477)."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:138
 msgid ""
 "No flags are set in this CSYNC record. The record may not be processed "
 "immediately by parental agents."
-msgstr ""
-"No flags are set in this CSYNC record. The record may not be processed "
-"immediately by parental agents."
+msgstr "Sellel CSYNC kirjel pole lippe."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:142
 msgid ""
@@ -2910,9 +2865,7 @@ msgstr "Vigane SOA Serial CSYNC kirjes. Peab olema 32-bit unsigned."
 msgid ""
 "Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
 "values are 0, 1, 2, or 3."
-msgstr ""
-"Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
-"values are 0, 1, 2, or 3."
+msgstr "Vigased CSYNC lipud. Väärtused 0, 1, 2 või 3."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
@@ -2988,9 +2941,7 @@ msgstr "EUI48 tundub Cisco vormingus. Vorming: xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr ""
-"EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
-"x is a hexadecimal digit)."
+msgstr "EUI48 kirje peab olema kehtiv MAC-aadress vormingus xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -3086,18 +3037,14 @@ msgstr ""
 msgid ""
 "SOA record must have exactly 7 fields (primary NS, email, serial, refresh, "
 "retry, expire, minimum)."
-msgstr ""
-"SOA record must have exactly 7 fields (primary NS, email, serial, refresh, "
-"retry, expire, minimum)."
+msgstr "SOA-kirjel peab olema täpselt 7 välja."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr ""
-"SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
-"allowed but not recommended."
+msgstr "SOA %s (%d) on alla RFC 2308 miinimumi (%d)."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:288
 msgid ""
@@ -3212,8 +3159,7 @@ msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
 msgstr ""
-"SMIMEA record must contain usage, selector, matching-type, and certificate-"
-"data separated by spaces."
+"SMIMEA kirje peab sisaldama usage, selector, matching-type ja certificate-data."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:212
 msgid ""
@@ -3430,9 +3376,7 @@ msgstr ""
 msgid ""
 "Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
 "supported for validation."
-msgstr ""
-"Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
-"supported for validation."
+msgstr "Algoritm 10 (RSASHA512) POLE SOOVITATUD allkirjastamiseks."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:219
 msgid ""
@@ -3689,9 +3633,7 @@ msgstr "DMARC reegel kehtib ainult %d%% sõnumile - kasutage kasutuselevõtul."
 msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
-msgstr ""
-"DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
-"colon-separated combinations"
+msgstr "DMARC fo peab sisaldama ainult 0, 1, d, s või kooloniga eraldatud."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:299
 msgid ""
@@ -3951,16 +3893,13 @@ msgid ""
 "NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
 "and next hashed owner name."
 msgstr ""
-"NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
-"and next hashed owner name."
+"NSEC3 kirje peab sisaldama räsi algoritmi, lippe, iteratsioone, soola ja järgmist nime."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:264
 msgid ""
 "NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
 "characters 0-9 and A-V)."
-msgstr ""
-"NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
-"characters 0-9 and A-V)."
+msgstr "NSEC3 järgmine räsitud nimi peab olema kehtiv Base32hex (0-9, A-V)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:281
 msgid ""
@@ -4004,8 +3943,7 @@ msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
 msgstr ""
-"This record follows RFC 3403. Be aware that some DNS servers may not fully "
-"support all NAPTR features."
+"See kirje järgib RFC 3403. Mõned DNS serverid ei toeta kõiki NAPTR funktsioone."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:182
 msgid ""
@@ -4112,9 +4050,7 @@ msgstr "Väärtus 257 näitab Key Signing Key (KSK) Zone Key ja SEP bittidega."
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr ""
-"ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
-"signing according to RFC 8624."
+msgstr "ECDSAP256SHA256 (13) on SOOVITATUD DNSSEC allkirjastamiseks."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
@@ -4127,9 +4063,7 @@ msgstr "%s (algoritm %d) on valikuline RFC 8624 järgi."
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr ""
-"%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
-"algorithm for new deployments."
+msgstr "%s (algoritm %d) on AEGUNUD RFC 8624 järgi."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
@@ -4163,17 +4097,13 @@ msgstr "SOA vorming: primary-ns hostmaster serial refresh retry expire minimum"
 msgid ""
 "Zone has no NS (Name Server) records at the apex. At least one apex NS "
 "record is required for DNSSEC."
-msgstr ""
-"Zone has no NS (Name Server) records at the apex. At least one apex NS "
-"record is required for DNSSEC."
+msgstr "Tsoonil pole NS kirjeid tipus. Vähemalt üks NS DNSSEC jaoks."
 
 #: lib/Domain/Service/BulkRecordParser.php:88
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
-msgstr ""
-"Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
-"name,SRV,target,weight,port,ttl"
+msgstr "Vigane SRV vorming. Kasutage: name,SRV,\"weight port target\"."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:113
 #, php-format
@@ -4252,9 +4182,7 @@ msgstr "Saate muuta supermasteri IP, hostinime või konto."
 msgid ""
 "Ensure that the hostname matches exactly what appears in NS records, or "
 "slave zone creation may fail."
-msgstr ""
-"Ensure that the hostname matches exactly what appears in NS records, or "
-"slave zone creation may fail."
+msgstr "Veenduge, et hostinimi sobib täpselt NS-kirjetega."
 
 #: templates/default/dnssec.html:12 templates/modern/dnssec.html:12
 msgid ""
@@ -4569,9 +4497,7 @@ msgstr ""
 msgid ""
 "Select a wizard to help you create complex DNS records with guided forms "
 "instead of manual text entry."
-msgstr ""
-"Select a wizard to help you create complex DNS records with guided forms "
-"instead of manual text entry."
+msgstr "Valige viisard keeruliste DNS kirjete loomiseks juhendatud vormidega."
 
 #: templates/modern/dns_wizard_select.html:27
 msgid ""
