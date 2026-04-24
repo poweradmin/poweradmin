@@ -145,7 +145,17 @@ class IndexController extends BaseController
         $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
 
         if (DnsBackendProviderFactory::isApiBackend($this->config)) {
-            $zoneCount = (int) $this->db->query("SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL")->fetchColumn();
+            // Count from the PowerDNS API directly. Querying the local zones
+            // table would show a stale count on fresh installs until the zone
+            // sync service has run at least once (which only happens when the
+            // user opens the Forward Zones page).
+            try {
+                $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
+                $zoneCount = count($backendProvider->getZones());
+            } catch (\Throwable $e) {
+                $this->logger->warning('Dashboard zone count via API failed: {error}', ['error' => $e->getMessage()]);
+                $zoneCount = (int) $this->db->query("SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL")->fetchColumn();
+            }
             return [
                 'zones' => $zoneCount,
                 'records' => null,
