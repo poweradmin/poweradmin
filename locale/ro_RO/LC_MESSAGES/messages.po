@@ -5529,7 +5529,7 @@ msgstr ""
 
 #: install/templates/step4.html.twig:143
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr "Nume gazdă server BD (de obicei \"localhost\")."
 
 #: install/templates/step4.html.twig:197
 msgid ""
@@ -5575,7 +5575,7 @@ msgstr ""
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr "Eliminați directorul \"install/\" de pe server"
 
 #: install/templates/step8.html.twig:27
 msgid ""
@@ -5777,7 +5777,7 @@ msgstr "0 - Constrângere CA"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:107
 msgid "Certificate must chain to specified CA (PKIX-TA)"
-msgstr "Certificate must chain to specified CA (PKIX-TA)"
+msgstr "Certificatul trebuie să ducă la CA specificat (PKIX-TA)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:108
 msgid "1 - Service Certificate"
@@ -5893,7 +5893,7 @@ msgstr "Datele de asociere sunt obligatorii"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:253
 msgid "Certificate data must be hexadecimal (0-9, a-f)"
-msgstr "Certificate data must be hexadecimal (0-9, a-f)"
+msgstr "Datele certificat trebuie să fie hexazecimale (0-9, a-f)"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
 #: templates/modern/edit.html:93 templates/modern/edit.html:646
@@ -5986,7 +5986,7 @@ msgstr "Email raport agregat"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:109
 msgid "Email address to receive daily aggregate reports"
-msgstr "Email address to receive daily aggregate reports"
+msgstr "Adresă email rapoarte agregate zilnice"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:113
 msgid "Forensic Report Email"
@@ -6348,7 +6348,7 @@ msgstr "Larg suportat de toate serverele mail"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:96
 msgid "Newer algorithm - not universally supported yet"
-msgstr "Newer algorithm - not universally supported yet"
+msgstr "Algoritm nou - nu universal acceptat"
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:98
 msgid "Encryption algorithm for the DKIM public key"
@@ -6487,7 +6487,7 @@ msgstr "File size exceeds the maximum allowed size of %s."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:128
 msgid "The uploaded file is empty or could not be read."
-msgstr "The uploaded file is empty or could not be read."
+msgstr "Fișierul încărcat este gol sau nu poate fi citit."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:137
 msgid "No valid records found in the uploaded file."
@@ -6495,7 +6495,7 @@ msgstr "Nu sunt înregistrări valide în fișier."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:279
 msgid "You do not have permission to modify this zone."
-msgstr "You do not have permission to modify this zone."
+msgstr "Nu aveți permisiunea de a modifica zona."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:235
 msgid "Import session expired. Please upload the file again."
@@ -6535,7 +6535,7 @@ msgstr "Trebuie autentificat pentru export."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:55
 msgid "You do not have permission to export this zone."
-msgstr "You do not have permission to export this zone."
+msgstr "Nu aveți permisiunea de a exporta zona."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:72
 msgid "There is no zone with this ID."
@@ -6705,7 +6705,7 @@ msgstr "Preferințe salvate cu succes."
 
 #: lib/Application/Controller/UserPreferencesController.php:108
 msgid "Failed to update preferences. Please try again."
-msgstr "Failed to update preferences. Please try again."
+msgstr "Actualizarea preferințelor a eșuat. Încercați din nou."
 
 #: lib/Application/Controller/UserPreferencesController.php:123
 msgid "Top"
@@ -7120,7 +7120,7 @@ msgstr "Editează zona"
 
 #: lib/Application/Controller/ZoneOwnershipController.php:86
 msgid "You do not have permission to access this zone."
-msgstr "You do not have permission to access this zone."
+msgstr "Nu aveți permisiunea de a accesa zona."
 
 #: lib/Infrastructure/Repository/SqlDomainRepository.php:428
 msgid "You do not have the permission to view this zone."
@@ -7263,7 +7263,7 @@ msgstr "Zonele au fost șterse cu succes."
 
 #: lib/Domain/Service/Dns/DomainManager.php:667
 msgid "You do not have the permission to delete a zone."
-msgstr "You do not have the permission to delete a zone."
+msgstr "Nu aveți permisiunea de a șterge zonă."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:80
 msgid "You do not have the permission to edit zone template records."
@@ -7332,7 +7332,7 @@ msgstr "Crearea în masă a înregistrărilor PTR nu este activată."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:79
 msgid "You do not have permission to edit DNS records."
-msgstr "You do not have permission to edit DNS records."
+msgstr "Nu aveți permisiunea de a edita înregistrări."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:84
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:177
@@ -7423,7 +7423,7 @@ msgstr "Zone inverse"
 
 #: lib/Application/Controller/ListForwardZonesController.php:144
 msgid "You do not have the permission to see any zones."
-msgstr "You do not have the permission to see any zones."
+msgstr "Nu aveți permisiunea de a vedea zone."
 
 #: lib/Application/Controller/ManageGroupZonesController.php:82
 msgid "You do not have permission to manage zone ownership."
@@ -7671,7 +7671,7 @@ msgstr "Operațiune finalizată cu succes."
 
 #: lib/Application/Controller/ExampleController.php:211
 msgid "Failed to process the request. Please try again."
-msgstr "Failed to process the request. Please try again."
+msgstr "Procesarea cererii a eșuat. Încercați din nou."
 
 #: lib/Application/Controller/ExampleController.php:218
 msgid "An unexpected error occurred. Please contact the administrator."
@@ -7691,7 +7691,7 @@ msgstr "Deconectare finalizată (cu avertismente): "
 
 #: lib/Application/Controller/EditRecordController.php:108
 msgid "You do not have permission to view this record."
-msgstr "You do not have permission to view this record."
+msgstr "Nu aveți permisiunea de a vedea înregistrarea."
 
 #: lib/Application/Controller/EditRecordController.php:117
 msgid "You cannot edit records in a SLAVE zone."
@@ -7699,7 +7699,7 @@ msgstr "Nu puteți edita înregistrări în zonă SLAVE."
 
 #: lib/Application/Controller/EditRecordController.php:127
 msgid "You do not have permission to edit this record."
-msgstr "You do not have permission to edit this record."
+msgstr "Nu aveți permisiunea de a edita înregistrarea."
 
 #: lib/Application/Controller/EditRecordController.php:330
 msgid "The record has been updated successfully."
@@ -7740,7 +7740,7 @@ msgstr "Nu s-a putut adăuga cheia DNSSEC."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:169
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "An error occurred while adding the DNSSEC key: "
+msgstr "A apărut o eroare la adăugarea cheii DNSSEC: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:173
 msgid "Please select both algorithm and bits"
@@ -7802,7 +7802,7 @@ msgstr "Proprietarul a fost eliminat cu succes."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:213
 msgid "You do not have permission to assign this group."
-msgstr "You do not have permission to assign this group."
+msgstr "Nu aveți permisiunea de a atribui grupul."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:221
 msgid "Group has been added successfully."
@@ -7917,16 +7917,16 @@ msgstr "This template is assigned to at least one user and one group."
 
 #: lib/Domain/Model/UserManager.php:384
 msgid "This template is assigned to at least one user."
-msgstr "This template is assigned to at least one user."
+msgstr "Șablonul este atribuit cel puțin unui utilizator."
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
 msgid "This template is assigned to at least one group."
-msgstr "This template is assigned to at least one group."
+msgstr "Șablonul este atribuit cel puțin unui grup."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
-msgstr "reCAPTCHA verification failed. Please try again."
+msgstr "Verificarea reCAPTCHA a eșuat. Încercați din nou."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:177
 msgid "An empty password is not allowed"
@@ -8040,7 +8040,7 @@ msgstr "Toate zonele secundare au adrese IP master"
 #: lib/Domain/Service/DatabaseConsistencyService.php:166
 #, php-format
 msgid "%d slave zones found without master IP addresses"
-msgstr "%d slave zones found without master IP addresses"
+msgstr "S-au găsit %d zone secundare fără IP"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:211
 msgid "All records belong to existing zones"
@@ -8191,11 +8191,11 @@ msgstr "Grade latitudine trebuie 0-90."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:165
 msgid "Latitude direction must be specified as N or S."
-msgstr "Latitude direction must be specified as N or S."
+msgstr "Direcția latitudinii trebuie N sau S."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:169
 msgid "Longitude direction must be specified as E or W."
-msgstr "Longitude direction must be specified as E or W."
+msgstr "Direcția longitudinii trebuie E sau W."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:176
 msgid "Longitude degrees must be between 0 and 180."
@@ -8336,7 +8336,7 @@ msgstr "NSEC record must contain a valid next domain name."
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:266
 #, php-format
 msgid "NSEC record contains an invalid record type: %s"
-msgstr "NSEC record contains an invalid record type: %s"
+msgstr "Înregistrarea NSEC conține tip invalid: %s"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
@@ -8348,7 +8348,7 @@ msgstr "Conținutul înregistrării OPENPGPKEY nu poate fi gol."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:202
 msgid "Invalid characters in OPENPGPKEY record content."
-msgstr "Invalid characters in OPENPGPKEY record content."
+msgstr "Caractere invalide în conținut OPENPGPKEY."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:208
 msgid "OPENPGPKEY records must contain valid base64-encoded data."
@@ -8356,7 +8356,7 @@ msgstr "OPENPGPKEY records must contain valid base64-encoded data."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:214
 msgid "OPENPGPKEY record contains invalid base64 data."
-msgstr "OPENPGPKEY record contains invalid base64 data."
+msgstr "OPENPGPKEY conține date base64 invalide."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
@@ -8568,7 +8568,7 @@ msgstr "The no-default-alpn parameter must have an empty value."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "Port value must be a number between 1 and 65535."
-msgstr "Port value must be a number between 1 and 65535."
+msgstr "Portul trebuie 1-65535."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:270
 msgid "DoH path must start with a forward slash (/)."
@@ -8596,7 +8596,7 @@ msgstr "TKEY error must be a valid DNS RCODE number between 0 and 23."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:99
 msgid "Invalid value for TTL field. It must be numeric."
-msgstr "Invalid value for TTL field. It must be numeric."
+msgstr "Valoare TTL invalidă. Trebuie numeric."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:106
 msgid "TTL value cannot be negative. It must be 0 or higher."
@@ -8644,7 +8644,7 @@ msgstr "Conținutul înregistrării MINFO nu poate fi gol."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:113
 msgid "Invalid responsible mailbox hostname (RMAILBX)."
-msgstr "Invalid responsible mailbox hostname (RMAILBX)."
+msgstr "Nume mailbox responsabil invalid (RMAILBX)."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
@@ -8789,7 +8789,7 @@ msgstr "Semnătura RRSIG nu poate fi goală."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
 msgid "Priority field for RP records must be 0 or empty"
-msgstr "Priority field for RP records must be 0 or empty"
+msgstr "Prioritate pentru RP trebuie 0 sau gol"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:131
 msgid "Type code for RP records is 17."
@@ -9240,7 +9240,7 @@ msgstr "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
 msgid "SSHFP fingerprint must be a hexadecimal string."
-msgstr "SSHFP fingerprint must be a hexadecimal string."
+msgstr "Amprenta SSHFP trebuie hex."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:215
 msgid "SSHFP SHA-1 fingerprint must be 40 characters long."
@@ -9260,7 +9260,7 @@ msgstr "Numele MR trebuie să fie un nume domeniu valid."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:106
 msgid "MR record content (new mailbox) cannot be empty."
-msgstr "MR record content (new mailbox) cannot be empty."
+msgstr "Conținut MR (mailbox nou) nu poate fi gol."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:112
 msgid "MR record content must be a valid domain name."
@@ -9288,11 +9288,11 @@ msgstr "KEY record must contain flags, protocol, algorithm, and public key."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:190
 msgid "KEY flags must be a number between 0 and 65535."
-msgstr "KEY flags must be a number between 0 and 65535."
+msgstr "Indicatoare KEY trebuie 0-65535."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:202
 msgid "KEY protocol must be a number between 0 and 255."
-msgstr "KEY protocol must be a number between 0 and 255."
+msgstr "Protocol KEY trebuie 0-255."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:213
 msgid "KEY algorithm must be a number between 0 and 255."
@@ -9304,11 +9304,11 @@ msgstr "Cheia publică KEY este obligatorie."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:231
 msgid "KEY public key must be properly Base64 encoded."
-msgstr "KEY public key must be properly Base64 encoded."
+msgstr "Cheia publică KEY trebuie codată Base64."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "DMARC records must be placed at _dmarc.<domain>."
+msgstr "DMARC trebuie plasate la _dmarc.<domain>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
@@ -9380,7 +9380,7 @@ msgstr "CDS key tag must be a number between 0 and 65535."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:175
 msgid "CDS algorithm must be a number between 1 and 16."
-msgstr "CDS algorithm must be a number between 1 and 16."
+msgstr "Algoritm CDS trebuie 1-16."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
@@ -9457,7 +9457,7 @@ msgstr "NSEC3 salt must be - (for empty) or a hexadecimal value."
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
 msgid "NSEC3 record contains an invalid record type: %s"
-msgstr "NSEC3 record contains an invalid record type: %s"
+msgstr "Înregistrarea NSEC3 conține tip invalid: %s"
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
 msgid "Invalid characters have been used in this record."
@@ -9609,7 +9609,7 @@ msgstr "Zone has %d SOA records. Only one SOA record is allowed per zone."
 
 #: lib/Domain/Service/ZoneValidationService.php:110
 msgid "Remove duplicate SOA records, keeping only one."
-msgstr "Remove duplicate SOA records, keeping only one."
+msgstr "Elimină SOA duplicate, păstrând doar unul."
 
 #: lib/Domain/Service/ZoneValidationService.php:122
 msgid "Move the SOA record to the zone apex."
@@ -9629,7 +9629,7 @@ msgstr "DNSSEC signing cannot proceed due to the following errors:"
 
 #: lib/Domain/Service/ZoneValidationService.php:253
 msgid "Additionally, the following warnings were found:"
-msgstr "Additionally, the following warnings were found:"
+msgstr "În plus, s-au găsit următoarele avertismente:"
 
 #: lib/Domain/Service/ZoneValidationService.php:255
 msgid "The following warnings were found:"
@@ -9663,7 +9663,7 @@ msgstr "You do not have the permission to add SOA record."
 
 #: lib/Domain/Service/Dns/RecordManager.php:212
 msgid "You do not have the permission to add NS record."
-msgstr "You do not have the permission to add NS record."
+msgstr "Nu aveți permisiunea de a adăuga NS."
 
 #: lib/Domain/Service/Dns/RecordManager.php:257
 msgid "A record with this hostname, type, and content already exists."
@@ -9901,7 +9901,7 @@ msgstr "Furnizați un nume pentru cheia API"
 
 #: templates/modern/api_key_edit.html:24 templates/modern/api_key_add.html:24
 msgid "A descriptive name to help you identify this key"
-msgstr "A descriptive name to help you identify this key"
+msgstr "Nume descriptiv pentru cheia"
 
 #: templates/modern/api_key_delete.html:44
 msgid "Expires at"
@@ -9917,7 +9917,7 @@ msgstr "Dezactivează cheia API"
 
 #: templates/default/api_key_edit.html:37 templates/modern/api_key_edit.html:38
 msgid "Disabled keys cannot be used for authentication"
-msgstr "Disabled keys cannot be used for authentication"
+msgstr "Cheile dezactivate nu pot fi folosite"
 
 #: templates/default/api_key_edit.html:43 templates/modern/api_key_edit.html:44
 msgid "Update API Key"
@@ -10771,7 +10771,7 @@ msgstr "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
 
 #: templates/modern/bulk_record_add.html:90
 msgid "Use @ for records at the zone apex (root domain)"
-msgstr "Use @ for records at the zone apex (root domain)"
+msgstr "Folosiți @ pentru înregistrări la apex (domeniu rădăcină)"
 
 #: templates/modern/bulk_record_add.html:91
 msgid "Quote TXT record values that contain spaces"
@@ -11254,7 +11254,7 @@ msgstr "Permisiuni utilizator"
 
 #: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
 msgid "This user has been assigned the access template"
-msgstr "This user has been assigned the access template"
+msgstr "Utilizatorului i-a fost atribuit șablonul"
 
 #: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
@@ -11932,7 +11932,7 @@ msgstr "Detalii înregistrare"
 
 #: templates/modern/delete_record.html:85
 msgid "Also delete corresponding PTR record (if exists)"
-msgstr "Also delete corresponding PTR record (if exists)"
+msgstr "Șterge și PTR corespunzător (dacă există)"
 
 #: templates/modern/delete_record.html:94
 msgid "Also delete corresponding A/AAAA record (if exists)"
@@ -12321,7 +12321,7 @@ msgstr "Cod de verificare"
 
 #: templates/modern/mfa_verify_email.html:31
 msgid "Please enter a valid 6-digit verification code."
-msgstr "Please enter a valid 6-digit verification code."
+msgstr "Introduceți un cod de verificare valid de 6 cifre."
 
 #: templates/modern/mfa_verify_email.html:40
 msgid "Verify and Enable MFA"
@@ -13350,7 +13350,7 @@ msgstr "Șterge cheia DNSSEC"
 
 #: templates/modern/dnssec_delete_key.html:36
 msgid "You are about to delete an active DNSSEC key (ID"
-msgstr "You are about to delete an active DNSSEC key (ID"
+msgstr "Sunteți pe cale să ștergeți cheia DNSSEC activă (ID"
 
 #: templates/modern/dnssec_delete_key.html:39
 msgid "You are about to delete a DNSSEC key (ID"
@@ -13746,7 +13746,7 @@ msgstr "Furnizați numele utilizator"
 
 #: install/templates/step4.html.twig:117
 msgid "Database username with rights to create tables."
-msgstr "Database username with rights to create tables."
+msgstr "Utilizator BD cu drepturi de creare tabele."
 
 #: install/templates/step4.html.twig:131
 msgid "Password for this database user."
@@ -14087,7 +14087,7 @@ msgstr "Eroare bază date"
 #: install/helpers/DatabaseHelper.php:203
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "Nu se poate accesa fișierul SQLite %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."

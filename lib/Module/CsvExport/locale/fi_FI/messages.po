@@ -29,7 +29,7 @@ msgstr "Tässä alueessa ei ole tietueita vietäväksi."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
-msgstr "You do not have permission to export this zone."
+msgstr "Sinulla ei ole oikeutta viedä tätä aluetta."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."

@@ -142,7 +142,7 @@ msgstr "TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:107
 msgid "The uploaded file is empty or could not be read."
-msgstr "The uploaded file is empty or could not be read."
+msgstr "A feltöltött fájl üres vagy nem olvasható."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:67
 msgid "There is no zone with this ID."
@@ -178,7 +178,7 @@ msgstr "Nincs jogosultsága zónák hozzáadására."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:59
 msgid "You do not have permission to export this zone."
-msgstr "You do not have permission to export this zone."
+msgstr "Nincs jogosultsága a zóna exportálására."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:42
 msgid "You need to be logged in to export zone data."
@@ -249,7 +249,7 @@ msgid "The selected zone does not exist."
 msgstr "A kijelölt zóna nem létezik."
 
 msgid "You do not have permission to modify this zone."
-msgstr "You do not have permission to modify this zone."
+msgstr "Nincs jogosultsága a zóna módosítására."
 
 msgid "You do not have permission to import zones."
 msgstr "Nincs jogosultsága zónák importálására."

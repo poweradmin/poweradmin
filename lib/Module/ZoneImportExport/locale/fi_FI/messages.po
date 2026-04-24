@@ -142,7 +142,7 @@ msgstr "TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:107
 msgid "The uploaded file is empty or could not be read."
-msgstr "The uploaded file is empty or could not be read."
+msgstr "Ladattu tiedosto on tyhjä tai sitä ei voida lukea."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:67
 msgid "There is no zone with this ID."
@@ -178,7 +178,7 @@ msgstr "Sinulla ei ole oikeutta lisätä alueita."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:59
 msgid "You do not have permission to export this zone."
-msgstr "You do not have permission to export this zone."
+msgstr "Sinulla ei ole oikeutta viedä tätä aluetta."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:42
 msgid "You need to be logged in to export zone data."
@@ -249,7 +249,7 @@ msgid "The selected zone does not exist."
 msgstr "Valittua aluetta ei ole olemassa."
 
 msgid "You do not have permission to modify this zone."
-msgstr "You do not have permission to modify this zone."
+msgstr "Sinulla ei ole oikeutta muuttaa tätä aluetta."
 
 msgid "You do not have permission to import zones."
 msgstr "Sinulla ei ole oikeutta tuoda alueita."

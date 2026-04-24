@@ -142,7 +142,7 @@ msgstr "TTL"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:107
 msgid "The uploaded file is empty or could not be read."
-msgstr "The uploaded file is empty or could not be read."
+msgstr "Отпремљена датотека је празна или се не може прочитати."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:67
 msgid "There is no zone with this ID."
@@ -178,7 +178,7 @@ msgstr "Немате дозволу за додавање зона."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:59
 msgid "You do not have permission to export this zone."
-msgstr "You do not have permission to export this zone."
+msgstr "Немате дозволу за извоз ове зоне."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileExportController.php:42
 msgid "You need to be logged in to export zone data."
@@ -249,7 +249,7 @@ msgid "The selected zone does not exist."
 msgstr "Изабрана зона не постоји."
 
 msgid "You do not have permission to modify this zone."
-msgstr "You do not have permission to modify this zone."
+msgstr "Немате дозволу за измену ове зоне."
 
 msgid "You do not have permission to import zones."
 msgstr "Немате дозволу за увоз зона."

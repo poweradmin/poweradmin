@@ -29,7 +29,7 @@ msgstr "Šai zonai nav ierakstu eksportēšanai."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
-msgstr "You do not have permission to export this zone."
+msgstr "Jums nav atļaujas eksportēt šo zonu."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."

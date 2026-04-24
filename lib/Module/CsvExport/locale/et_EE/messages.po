@@ -29,7 +29,7 @@ msgstr "Sellel tsoonil pole eksporditavaid kirjeid."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
-msgstr "You do not have permission to export this zone."
+msgstr "Teil pole õigust seda tsooni eksportida."
 
 #: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."
