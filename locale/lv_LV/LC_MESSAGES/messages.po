@@ -53,9 +53,7 @@ msgstr "TCP/UDP porta numurs (443 HTTPS, 25 SMTP, 853 DNS-over-TLS)"
 msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
-msgstr ""
-"Hostname for the service (leave empty for zone apex @). Record will be "
-"created at _port._protocol.hostname"
+msgstr "Pakalpojuma resursdators (tukšs = @). _port._protocol.hostname."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:112
 msgid ""
@@ -308,9 +306,7 @@ msgstr "Jūs ielīmējāt PRIVĀTU atslēgu. DNS drīkst tikai PUBLISKĀ atslēg
 msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
-msgstr ""
-"Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
-"content between headers is needed."
+msgstr "Publiskā atslēga satur PEM galvenes. Nepieciešams tikai base64 saturs."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:239
 msgid ""
@@ -355,8 +351,7 @@ msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
 msgstr ""
-"For load balancing among servers with same priority. Higher weight = more "
-"traffic. 0 = no load balancing."
+"Slodzes līdzsvarošanai ar vienādu prioritāti. Lielāks svars = vairāk trafika."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:282
 msgid ""
@@ -675,9 +670,7 @@ msgstr[2] ""
 msgid ""
 "You do not have permission to view PowerDNS server status. Only "
 "administrators can access this feature."
-msgstr ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
+msgstr "Jums nav atļaujas skatīt PowerDNS statusu. Tikai administratori."
 
 #: lib/Application/Controller/PdnsStatusController.php:71
 msgid ""
@@ -823,17 +816,13 @@ msgstr "Šis izskatās pēc TLSA ieraksta SMTP. Pārliecinieties par MX ieraksti
 msgid ""
 "This appears to be a TLSA record for HTTPS. Ensure the certificate matches "
 "the domain in the TLSA record."
-msgstr ""
-"This appears to be a TLSA record for HTTPS. Ensure the certificate matches "
-"the domain in the TLSA record."
+msgstr "Šis izskatās pēc TLSA HTTPS. Pārliecinieties par sertifikāta atbilstību."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
 "This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
 "properly configured for DoT."
-msgstr ""
-"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
-"properly configured for DoT."
+msgstr "Šis izskatās pēc TLSA DoT. Pārliecinieties par DoT konfigurāciju."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:153
 msgid ""
@@ -870,9 +859,7 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"TLSA records should typically be placed at \"_port._protocol.hostname\" "
-"(e.g., \"_443._tcp.www.example.com\")."
+msgstr "TLSA parasti atrodas \"_port._protocol.hostname\"."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -945,9 +932,7 @@ msgstr "TLSA saskaņošanas veidam jābūt 0, 1 vai 2."
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
-"Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
-"better compatibility and security."
+msgstr "Matching-type 0 nav ieteicams. SHA-256 (1) labāks."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:104
 msgid ""
@@ -1051,9 +1036,7 @@ msgstr ""
 msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
-msgstr ""
-"RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
-"operation without reducing security."
+msgstr "RFC 9276 iesaka NEIZMANTOT sāli (\"-\") vienkāršībai."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
@@ -1065,9 +1048,7 @@ msgstr "Garas sāls nesniedz papildu drošību. Izmantojiet īsāku vai bez sāl
 msgid ""
 "NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
 "not a formal IETF standard."
-msgstr ""
-"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
-"not a formal IETF standard."
+msgstr "PIEZĪME: LP ir definēts RFC 6742 kā eksperimentāls protokols."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:112
 msgid ""
@@ -1125,9 +1106,7 @@ msgstr "Nederīgs AFSDB apakštips. Jābūt 1 vai 2."
 msgid ""
 "NOTE: The LOC record type is defined in RFC 1876 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr ""
-"NOTE: The LOC record type is defined in RFC 1876 as an experimental "
-"protocol, not a formal IETF standard."
+msgstr "PIEZĪME: LOC ir definēts RFC 1876 kā eksperimentāls."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:119
 msgid ""
@@ -1247,9 +1226,7 @@ msgstr ""
 msgid ""
 "Algorithm 14 (ECDSA Curve P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr ""
-"Algorithm 14 (ECDSA Curve P-384 with SHA-384) provides strong security with "
-"smaller signatures than RSA."
+msgstr "Algoritms 14 (ECDSA P-384 ar SHA-384) laba drošība."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:240
 msgid ""
@@ -1262,9 +1239,7 @@ msgstr ""
 msgid ""
 "Algorithm 16 (Ed448) offers strong modern security but may have "
 "compatibility issues with older validators."
-msgstr ""
-"Algorithm 16 (Ed448) offers strong modern security but may have "
-"compatibility issues with older validators."
+msgstr "Algoritms 16 (Ed448) moderns, bet saderība."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid ""
@@ -1324,9 +1299,7 @@ msgstr "NID saturs formātā xxxx:xxxx:xxxx:xxxx (4 grupas pa 4 heksa)."
 msgid ""
 "NID record content must be a 64-bit hexadecimal value (16 hex characters or "
 "xxxx:xxxx:xxxx:xxxx format)."
-msgstr ""
-"NID record content must be a 64-bit hexadecimal value (16 hex characters or "
-"xxxx:xxxx:xxxx:xxxx format)."
+msgstr "NID saturam jābūt 64 bitu hex vērtībai."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:181
 msgid ""
@@ -1756,9 +1729,7 @@ msgstr "ZONEMD sērijas numuram jābūt 0-4294967295."
 msgid ""
 "ZONEMD scheme must be 1 (Simple ZONEMD scheme) for standard use. Other "
 "values are reserved or unassigned."
-msgstr ""
-"ZONEMD scheme must be 1 (Simple ZONEMD scheme) for standard use. Other "
-"values are reserved or unassigned."
+msgstr "ZONEMD shēmai jābūt 1 (Simple) standarta lietošanai."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:230
 msgid ""
@@ -2058,9 +2029,7 @@ msgstr ""
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr ""
-"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
-"TTL values delay DNS updates."
+msgstr "TTL (%d) virs ieteicamā maksimuma %d sekundes (1 nedēļa)."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
@@ -2337,9 +2306,7 @@ msgstr "DHCID ir par īsu. Dekodētiem datiem jābūt vismaz 3 baiti."
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr ""
-"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
-"4701 (0x0000, 0x0001, 0x0002)."
+msgstr "DHCID identifikatora tips 0x%04X nav standarta (RFC 4701)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
@@ -2516,9 +2483,7 @@ msgstr "RRSIG parakstītāja nosaukumam jābūt FQDN (beidzas ar punktu)."
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
-msgstr ""
-"The signature does not appear to be valid base64 encoded data. RRSIG "
-"signatures should be base64 encoded."
+msgstr "Paraksts neizskatās pēc derīgiem base64 datiem. RRSIG jābūt base64."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
@@ -2593,9 +2558,7 @@ msgstr "RP pastkastes domēnam jābūt FQDN (beidzas ar punktu)."
 msgid ""
 "RP mailbox local part contains invalid characters. Only characters valid in "
 "email addresses are allowed."
-msgstr ""
-"RP mailbox local part contains invalid characters. Only characters valid in "
-"email addresses are allowed."
+msgstr "RP lokālā daļa satur nederīgas rakstzīmes."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
@@ -2607,9 +2570,7 @@ msgstr "RP pastkastes daļa satur pasvītrojumus, kas nav atļauti."
 msgid ""
 "The mailbox domain should use the same format as the RNAME field in SOA "
 "records, with @ replaced by a dot."
-msgstr ""
-"The mailbox domain should use the same format as the RNAME field in SOA "
-"records, with @ replaced by a dot."
+msgstr "Pastkastes domēnam jāizmanto RNAME formāts no SOA, @ aizstāts ar punktu."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:299
 msgid ""
@@ -2621,9 +2582,7 @@ msgstr "\".\" lietošana TXT domēnā norāda, ka nav papildu TXT ieraksta."
 msgid ""
 "Ensure a TXT record exists at this domain name containing contact "
 "information for the responsible person."
-msgstr ""
-"Ensure a TXT record exists at this domain name containing contact "
-"information for the responsible person."
+msgstr "Pārliecinieties, ka šajā domēnā ir TXT ar kontaktinformāciju."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:191
 msgid ""
@@ -2721,9 +2680,7 @@ msgstr "DNAME un CNAME NEDRĪKST pastāvēt vienlaikus (RFC 6672 §2.3)."
 msgid ""
 "DNAME records MUST NOT appear at the same owner name as NS records, unless "
 "the owner name is the zone apex."
-msgstr ""
-"DNAME records MUST NOT appear at the same owner name as NS records, unless "
-"the owner name is the zone apex."
+msgstr "DNAME NEDRĪKST būt kopā ar NS tajā pašā vārdā, izņemot zonas virsotni."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:133
 msgid ""
@@ -2929,9 +2886,7 @@ msgstr ""
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr ""
-"EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
-"separators (xx-xx-xx-xx-xx-xx)."
+msgstr "EUI48 izmanto kolas, bet vajag domuzīmes."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
@@ -3133,9 +3088,7 @@ msgstr ""
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like %s"
+msgstr "SMIMEA nosaukuma formāts: SHA256._smimecert.domain.tld (%s)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -3155,9 +3108,7 @@ msgstr "SMIMEA ierakstiem jābūt prioritātei 0."
 msgid ""
 "SMIMEA makes email addresses visible in DNS. Consider privacy implications "
 "when publishing SMIMEA records."
-msgstr ""
-"SMIMEA makes email addresses visible in DNS. Consider privacy implications "
-"when publishing SMIMEA records."
+msgstr "SMIMEA padara e-pastu redzamu DNS. Apsveriet privātumu."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:195
 msgid ""
@@ -3280,9 +3231,7 @@ msgstr ""
 msgid ""
 "NOTE: The L64 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr ""
-"NOTE: The L64 record type is defined in RFC 6742 as an experimental "
-"protocol, not a formal IETF standard."
+msgstr "PIEZĪME: L64 ir definēts RFC 6742 kā eksperimentāls protokols."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
@@ -3294,9 +3243,7 @@ msgstr "L64 ieraksti jāizmanto tikai ar ILNP."
 msgid ""
 "An IP host that is NOT ILNPv6-capable MUST NOT have L64 records in its DNS "
 "entries (RFC 6742 Section 3.2)."
-msgstr ""
-"An IP host that is NOT ILNPv6-capable MUST NOT have L64 records in its DNS "
-"entries (RFC 6742 Section 3.2)."
+msgstr "IP, kas nav ILNPv6, NEDRĪKST būt L64 (RFC 6742 §3.2)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:119
 msgid ""
@@ -3422,9 +3369,7 @@ msgstr "BRĪDINĀJUMS: LUA ierakstam šķiet nelīdzsvarotas pēdiņas."
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
-msgstr ""
-"LUA record in explicit return mode (starts with semicolon) must contain at "
-"least one \"return\" statement."
+msgstr "LUA ierakstam explicit return režīmā jābūt vismaz vienam \"return\"."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
@@ -3574,9 +3519,7 @@ msgstr "DNSSEC zonas atslēgām lietojiet DNSKEY, ne KEY."
 msgid ""
 "Unusual flag value. Common values are 0 (authentication prohibited), 256 "
 "(user key), or 257 (zone key)."
-msgstr ""
-"Unusual flag value. Common values are 0 (authentication prohibited), 256 "
-"(user key), or 257 (zone key)."
+msgstr "Neparasta karodziņu vērtība. 0, 256 vai 257."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:208
 msgid ""
@@ -3587,9 +3530,7 @@ msgstr "Neparasta protokola vērtība. Protokols 3 (DNSSEC) ir izplatīts KEY."
 msgid ""
 "Unusual algorithm value. Common values are 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 "
 "(RSA/SHA-1), 8 (RSA/SHA-256)."
-msgstr ""
-"Unusual algorithm value. Common values are 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 "
-"(RSA/SHA-1), 8 (RSA/SHA-256)."
+msgstr "Neparasta algoritma vērtība. Parasti 1, 2, 3, 5, 8."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -3744,9 +3685,7 @@ msgstr "CDS ieraksti jāievieto tikai zonas virsotnē (ne apakšdomēnos)."
 msgid ""
 "NOTE: The L32 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr ""
-"NOTE: The L32 record type is defined in RFC 6742 as an experimental "
-"protocol, not a formal IETF standard."
+msgstr "PIEZĪME: L32 ir definēts RFC 6742 kā eksperimentāls protokols."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
@@ -3814,9 +3753,7 @@ msgstr "Protokols \"%s\" nav zināmu sarakstā. Parasti _tcp un _udp."
 msgid ""
 "SRV record content must have weight, port and target (3 fields). Priority "
 "should be in the priority field."
-msgstr ""
-"SRV record content must have weight, port and target (3 fields). Priority "
-"should be in the priority field."
+msgstr "SRV saturā jābūt svaram, portam un mērķim (3 lauki)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
@@ -3861,9 +3798,7 @@ msgstr ""
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
 "as the SOA minimum TTL field."
-msgstr ""
-"According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
-"as the SOA minimum TTL field."
+msgstr "Saskaņā ar RFC 5155/9077, NSEC3 TTL = SOA min."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:145
 msgid ""
@@ -4575,9 +4510,7 @@ msgstr ""
 msgid ""
 "DNS zones typically require an SOA record to function properly, and DNSSEC "
 "signing may fail without one."
-msgstr ""
-"DNS zones typically require an SOA record to function properly, and DNSSEC "
-"signing may fail without one."
+msgstr "DNS zonām parasti nepieciešams SOA, DNSSEC var neizdoties bez tā."
 
 #: templates/modern/edit_zone_metadata.html:37
 msgid ""
@@ -4629,9 +4562,7 @@ msgstr ""
 msgid ""
 "Your organization requires multi-factor authentication. Please set up MFA to "
 "continue using the system."
-msgstr ""
-"Your organization requires multi-factor authentication. Please set up MFA to "
-"continue using the system."
+msgstr "Organizācija prasa MFA. Iestatiet MFA lai turpinātu."
 
 #: templates/default/mfa_setup.html:24 templates/modern/mfa_setup.html:24
 msgid ""

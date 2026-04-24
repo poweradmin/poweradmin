@@ -54,8 +54,7 @@ msgid ""
 "Hostname for the service (leave empty for zone apex @). Record will be "
 "created at _port._protocol.hostname"
 msgstr ""
-"Hostname for the service (leave empty for zone apex @). Record will be "
-"created at _port._protocol.hostname"
+"Ime poslužitelja za uslugu (prazno za apex @). Zapis: _port._protocol.hostname"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:112
 msgid ""
@@ -306,8 +305,7 @@ msgid ""
 "Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
 "content between headers is needed."
 msgstr ""
-"Public key appears to contain PEM headers (BEGIN/END). Only the base64 "
-"content between headers is needed."
+"Javni ključ izgleda da sadrži PEM zaglavlja. Potreban je samo base64 sadržaj."
 
 #: lib/Module/DnsWizard/Service/DKIMWizard.php:239
 msgid ""
@@ -354,8 +352,7 @@ msgid ""
 "For load balancing among servers with same priority. Higher weight = more "
 "traffic. 0 = no load balancing."
 msgstr ""
-"For load balancing among servers with same priority. Higher weight = more "
-"traffic. 0 = no load balancing."
+"Za uravnoteženje opterećenja između poslužitelja iste prioriteta. Veća težina = više prometa."
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:282
 msgid ""
@@ -671,9 +668,7 @@ msgstr[2] ""
 msgid ""
 "You do not have permission to view PowerDNS server status. Only "
 "administrators can access this feature."
-msgstr ""
-"You do not have permission to view PowerDNS server status. Only "
-"administrators can access this feature."
+msgstr "Nemate dozvolu za pregled PowerDNS statusa. Samo administratori."
 
 #: lib/Application/Controller/PdnsStatusController.php:71
 msgid ""
@@ -821,17 +816,14 @@ msgstr "Ovo izgleda kao TLSA zapis za SMTP. Osigurajte ispravne MX zapise."
 msgid ""
 "This appears to be a TLSA record for HTTPS. Ensure the certificate matches "
 "the domain in the TLSA record."
-msgstr ""
-"This appears to be a TLSA record for HTTPS. Ensure the certificate matches "
-"the domain in the TLSA record."
+msgstr "Ovo izgleda kao TLSA zapis za HTTPS. Osigurajte podudaranje certifikata."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
 "This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
 "properly configured for DoT."
 msgstr ""
-"This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
-"properly configured for DoT."
+"Ovo izgleda kao TLSA zapis za DNS over TLS. Osigurajte DoT konfiguraciju."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:153
 msgid ""
@@ -870,9 +862,7 @@ msgstr ""
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
-msgstr ""
-"TLSA records should typically be placed at \"_port._protocol.hostname\" "
-"(e.g., \"_443._tcp.www.example.com\")."
+msgstr "TLSA zapisi se obično stavljaju na \"_port._protocol.hostname\"."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
@@ -949,8 +939,7 @@ msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
 msgstr ""
-"Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
-"better compatibility and security."
+"Matching-type 0 (Exact) nije preporučen. SHA-256 (1) pruža bolju sigurnost."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:104
 msgid ""
@@ -1055,8 +1044,7 @@ msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
 msgstr ""
-"RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
-"operation without reducing security."
+"RFC 9276 preporučuje NE koristiti sol (\"-\") za jednostavnost bez gubitka sigurnosti."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
@@ -1069,8 +1057,7 @@ msgid ""
 "NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
 "not a formal IETF standard."
 msgstr ""
-"NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
-"not a formal IETF standard."
+"NAPOMENA: LP tip zapisa je definiran u RFC 6742 kao eksperimentalni protokol."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:112
 msgid ""
@@ -1130,8 +1117,7 @@ msgid ""
 "NOTE: The LOC record type is defined in RFC 1876 as an experimental "
 "protocol, not a formal IETF standard."
 msgstr ""
-"NOTE: The LOC record type is defined in RFC 1876 as an experimental "
-"protocol, not a formal IETF standard."
+"NAPOMENA: LOC tip zapisa je definiran u RFC 1876 kao eksperimentalni protokol."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:119
 msgid ""
@@ -1250,8 +1236,7 @@ msgid ""
 "Algorithm 14 (ECDSA Curve P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
 msgstr ""
-"Algorithm 14 (ECDSA Curve P-384 with SHA-384) provides strong security with "
-"smaller signatures than RSA."
+"Algoritam 14 (ECDSA Curve P-384 sa SHA-384) jaka sigurnost i manji potpisi."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:240
 msgid ""
@@ -1265,8 +1250,7 @@ msgid ""
 "Algorithm 16 (Ed448) offers strong modern security but may have "
 "compatibility issues with older validators."
 msgstr ""
-"Algorithm 16 (Ed448) offers strong modern security but may have "
-"compatibility issues with older validators."
+"Algoritam 16 (Ed448) jaka modernija sigurnost ali slabija kompatibilnost."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid ""
@@ -1326,9 +1310,7 @@ msgstr "NID sadržaj u formatu xxxx:xxxx:xxxx:xxxx (4 grupe od 4 heksa)."
 msgid ""
 "NID record content must be a 64-bit hexadecimal value (16 hex characters or "
 "xxxx:xxxx:xxxx:xxxx format)."
-msgstr ""
-"NID record content must be a 64-bit hexadecimal value (16 hex characters or "
-"xxxx:xxxx:xxxx:xxxx format)."
+msgstr "NID sadržaj mora biti 64-bitna hex vrijednost (16 hex znakova)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:181
 msgid ""
@@ -1756,9 +1738,7 @@ msgstr "ZONEMD serijski broj mora biti 0-4294967295."
 msgid ""
 "ZONEMD scheme must be 1 (Simple ZONEMD scheme) for standard use. Other "
 "values are reserved or unassigned."
-msgstr ""
-"ZONEMD scheme must be 1 (Simple ZONEMD scheme) for standard use. Other "
-"values are reserved or unassigned."
+msgstr "ZONEMD shema mora biti 1 (Simple ZONEMD) za standardnu upotrebu."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:230
 msgid ""
@@ -2064,9 +2044,7 @@ msgstr ""
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr ""
-"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
-"TTL values delay DNS updates."
+msgstr "TTL vrijednost (%d) iznad preporučenog maksimuma %d (1 tjedan)."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
@@ -2349,9 +2327,7 @@ msgstr ""
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr ""
-"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
-"4701 (0x0000, 0x0001, 0x0002)."
+msgstr "DHCID tip identifikatora 0x%04X nije standardan (RFC 4701)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
@@ -2530,9 +2506,7 @@ msgstr "Ime potpisnika RRSIG mora biti FQDN (završava točkom)."
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
-msgstr ""
-"The signature does not appear to be valid base64 encoded data. RRSIG "
-"signatures should be base64 encoded."
+msgstr "Potpis ne izgleda kao valjani base64. RRSIG potpisi trebaju biti base64."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:332
 msgid ""
@@ -2607,8 +2581,7 @@ msgid ""
 "RP mailbox local part contains invalid characters. Only characters valid in "
 "email addresses are allowed."
 msgstr ""
-"RP mailbox local part contains invalid characters. Only characters valid in "
-"email addresses are allowed."
+"RP lokalni dio sadrži nevažeće znakove. Dopušteni su samo znakovi valjani u e-pošti."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
@@ -2620,9 +2593,7 @@ msgstr "Dio RP domene sadrži podvlake, što nije dopušteno u nazivima domena."
 msgid ""
 "The mailbox domain should use the same format as the RNAME field in SOA "
 "records, with @ replaced by a dot."
-msgstr ""
-"The mailbox domain should use the same format as the RNAME field in SOA "
-"records, with @ replaced by a dot."
+msgstr "Mailbox domena treba koristiti RNAME format iz SOA, @ zamijenjen točkom."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:299
 msgid ""
@@ -2634,9 +2605,7 @@ msgstr "Korištenje \".\" za TXT domenu znači da nema dodatnog TXT zapisa."
 msgid ""
 "Ensure a TXT record exists at this domain name containing contact "
 "information for the responsible person."
-msgstr ""
-"Ensure a TXT record exists at this domain name containing contact "
-"information for the responsible person."
+msgstr "Osigurajte TXT zapis s kontakt podacima na ovom nazivu domene."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:191
 msgid ""
@@ -2736,9 +2705,7 @@ msgstr "DNAME i CNAME NE SMIJU koegzistirati s istim vlasnikom (RFC 6672 §2.3).
 msgid ""
 "DNAME records MUST NOT appear at the same owner name as NS records, unless "
 "the owner name is the zone apex."
-msgstr ""
-"DNAME records MUST NOT appear at the same owner name as NS records, unless "
-"the owner name is the zone apex."
+msgstr "DNAME zapisi NE SMIJU biti s NS zapisima na istom imenu, osim na apexu."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:133
 msgid ""
@@ -2948,9 +2915,7 @@ msgstr ""
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr ""
-"EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
-"separators (xx-xx-xx-xx-xx-xx)."
+msgstr "EUI48 koristi dvotočke umjesto crtica (xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
@@ -3156,9 +3121,7 @@ msgstr ""
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr ""
-"SMIMEA record name is in the format: SHA256(local-"
-"part)._smimecert.domain.tld for email addresses like %s"
+msgstr "SMIMEA naziv: SHA256(local-part)._smimecert.domain.tld za e-poštu kao %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -3178,9 +3141,7 @@ msgstr "SMIMEA zapisi moraju imati prioritet 0."
 msgid ""
 "SMIMEA makes email addresses visible in DNS. Consider privacy implications "
 "when publishing SMIMEA records."
-msgstr ""
-"SMIMEA makes email addresses visible in DNS. Consider privacy implications "
-"when publishing SMIMEA records."
+msgstr "SMIMEA čini e-pošte vidljivima u DNS. Razmislite o privatnosti."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:195
 msgid ""
@@ -3305,8 +3266,7 @@ msgid ""
 "NOTE: The L64 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
 msgstr ""
-"NOTE: The L64 record type is defined in RFC 6742 as an experimental "
-"protocol, not a formal IETF standard."
+"NAPOMENA: L64 tip zapisa je definiran u RFC 6742 kao eksperimentalni protokol."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
@@ -3318,9 +3278,7 @@ msgstr "L64 zapisi se koriste samo s ILNP protokolom."
 msgid ""
 "An IP host that is NOT ILNPv6-capable MUST NOT have L64 records in its DNS "
 "entries (RFC 6742 Section 3.2)."
-msgstr ""
-"An IP host that is NOT ILNPv6-capable MUST NOT have L64 records in its DNS "
-"entries (RFC 6742 Section 3.2)."
+msgstr "IP host koji NIJE ILNPv6 ne smije imati L64 zapise (RFC 6742 §3.2)."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:119
 msgid ""
@@ -3450,8 +3408,7 @@ msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
 msgstr ""
-"LUA record in explicit return mode (starts with semicolon) must contain at "
-"least one \"return\" statement."
+"LUA zapis u explicit return modu (; na početku) mora imati barem jedan \"return\"."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:250
 msgid ""
@@ -3601,9 +3558,7 @@ msgstr ""
 msgid ""
 "Unusual flag value. Common values are 0 (authentication prohibited), 256 "
 "(user key), or 257 (zone key)."
-msgstr ""
-"Unusual flag value. Common values are 0 (authentication prohibited), 256 "
-"(user key), or 257 (zone key)."
+msgstr "Neobična vrijednost zastavica. Obične su 0, 256 ili 257."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:208
 msgid ""
@@ -3614,9 +3569,7 @@ msgstr "Neobična vrijednost protokola. Protokol 3 (DNSSEC) je uobičajen za KEY
 msgid ""
 "Unusual algorithm value. Common values are 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 "
 "(RSA/SHA-1), 8 (RSA/SHA-256)."
-msgstr ""
-"Unusual algorithm value. Common values are 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 "
-"(RSA/SHA-1), 8 (RSA/SHA-256)."
+msgstr "Neobična vrijednost algoritma. Uobičajene su 1, 2, 3, 5, 8."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -3774,8 +3727,7 @@ msgid ""
 "NOTE: The L32 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
 msgstr ""
-"NOTE: The L32 record type is defined in RFC 6742 as an experimental "
-"protocol, not a formal IETF standard."
+"NAPOMENA: L32 tip zapisa je definiran u RFC 6742 kao eksperimentalni protokol."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
@@ -3846,8 +3798,7 @@ msgid ""
 "SRV record content must have weight, port and target (3 fields). Priority "
 "should be in the priority field."
 msgstr ""
-"SRV record content must have weight, port and target (3 fields). Priority "
-"should be in the priority field."
+"SRV sadržaj mora imati težinu, port i cilj (3 polja). Prioritet ide u polje prioriteta."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
@@ -3893,9 +3844,7 @@ msgstr ""
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
 "as the SOA minimum TTL field."
-msgstr ""
-"According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
-"as the SOA minimum TTL field."
+msgstr "Prema RFC 5155 i 9077, NSEC3 TTL = SOA minimum."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:145
 msgid ""
@@ -4621,8 +4570,7 @@ msgid ""
 "DNS zones typically require an SOA record to function properly, and DNSSEC "
 "signing may fail without one."
 msgstr ""
-"DNS zones typically require an SOA record to function properly, and DNSSEC "
-"signing may fail without one."
+"DNS zone zahtijevaju SOA zapis za ispravno funkcioniranje, DNSSEC može zakazati bez njega."
 
 #: templates/modern/edit_zone_metadata.html:37
 msgid ""
@@ -4674,9 +4622,7 @@ msgstr ""
 msgid ""
 "Your organization requires multi-factor authentication. Please set up MFA to "
 "continue using the system."
-msgstr ""
-"Your organization requires multi-factor authentication. Please set up MFA to "
-"continue using the system."
+msgstr "Vaša organizacija zahtijeva MFA. Postavite MFA za nastavak korištenja."
 
 #: templates/default/mfa_setup.html:24 templates/modern/mfa_setup.html:24
 msgid ""
