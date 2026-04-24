@@ -246,7 +246,7 @@ msgid "Target zone"
 msgstr "Циљна зона"
 
 msgid "The selected zone does not exist."
-msgstr "The selected zone does not exist."
+msgstr "Изабрана зона не постоји."
 
 msgid "You do not have permission to modify this zone."
 msgstr "You do not have permission to modify this zone."

@@ -246,7 +246,7 @@ msgid "Target zone"
 msgstr "Sihttsoon"
 
 msgid "The selected zone does not exist."
-msgstr "The selected zone does not exist."
+msgstr "Valitud tsooni pole olemas."
 
 msgid "You do not have permission to modify this zone."
 msgstr "You do not have permission to modify this zone."

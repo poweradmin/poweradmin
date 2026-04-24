@@ -246,7 +246,7 @@ msgid "Target zone"
 msgstr "Mērķa zona"
 
 msgid "The selected zone does not exist."
-msgstr "The selected zone does not exist."
+msgstr "Atlasītā zona neeksistē."
 
 msgid "You do not have permission to modify this zone."
 msgstr "You do not have permission to modify this zone."

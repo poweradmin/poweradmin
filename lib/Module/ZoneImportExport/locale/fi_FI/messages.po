@@ -246,7 +246,7 @@ msgid "Target zone"
 msgstr "Kohdealue"
 
 msgid "The selected zone does not exist."
-msgstr "The selected zone does not exist."
+msgstr "Valittua aluetta ei ole olemassa."
 
 msgid "You do not have permission to modify this zone."
 msgstr "You do not have permission to modify this zone."

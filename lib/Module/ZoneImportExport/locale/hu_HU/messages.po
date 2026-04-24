@@ -246,7 +246,7 @@ msgid "Target zone"
 msgstr "Cél zóna"
 
 msgid "The selected zone does not exist."
-msgstr "The selected zone does not exist."
+msgstr "A kijelölt zóna nem létezik."
 
 msgid "You do not have permission to modify this zone."
 msgstr "You do not have permission to modify this zone."
