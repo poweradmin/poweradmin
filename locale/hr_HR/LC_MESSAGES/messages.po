@@ -109,9 +109,7 @@ msgstr "Potpuni podaci certifikata izgledaju prekratko. Osigurajte cjelovitost."
 msgid ""
 "CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
 "DNSSEC, TLSA records provide NO security benefit."
-msgstr ""
-"CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without "
-"DNSSEC, TLSA records provide NO security benefit."
+msgstr "KRITIČNO: TLSA zapisi zahtijevaju DNSSEC. Bez DNSSEC nema sigurnosti."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:72
 msgid "Start with \"none\" to collect data before enforcing a stricter policy."
@@ -405,8 +403,7 @@ msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
 msgstr ""
-"The record and its corresponding A/AAAA record were deleted but the comment "
-"was preserved because similar records exist."
+"Zapis i odgovarajući A/AAAA su obrisani ali komentar sačuvan zbog sličnih."
 
 #: lib/Application/Controller/DeleteRecordController.php:221
 msgid ""
@@ -719,8 +716,7 @@ msgid ""
 "When using domain name gateways, ensure both forward and reverse DNS records "
 "exist and are properly secured with DNSSEC."
 msgstr ""
-"When using domain name gateways, ensure both forward and reverse DNS records "
-"exist and are properly secured with DNSSEC."
+"Pri korištenju domain name gatewaya osigurajte forward i reverse DNS sa DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:166
 msgid ""
@@ -755,9 +751,7 @@ msgstr "Kad je algoritam 0 (No key), javni ključ je obično prazan ili zanemare
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
-msgstr ""
-"You can not point a NS or MX record to a CNAME record. Remove or rename the "
-"CNAME record first, or take another name."
+msgstr "NS ili MX ne mogu pokazivati na CNAME. Uklonite ili preimenujte CNAME."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:122
 msgid ""
@@ -936,9 +930,7 @@ msgstr "Prema RFC 5155/9077, NSEC3PARAM TTL = SOA minimum."
 msgid ""
 "NSEC3PARAM records are part of DNSSEC and should only be managed alongside "
 "other DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
-"NSEC3PARAM records are part of DNSSEC and should only be managed alongside "
-"other DNSSEC records (DNSKEY, RRSIG, etc.)."
+msgstr "NSEC3PARAM zapisi su dio DNSSEC i trebaju se upravljati s ostalima."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
@@ -986,9 +978,7 @@ msgstr ""
 msgid ""
 "Flags values greater than 1 are reserved for future use. Current "
 "implementations may not handle these values correctly."
-msgstr ""
-"Flags values greater than 1 are reserved for future use. Current "
-"implementations may not handle these values correctly."
+msgstr "Flag vrijednosti > 1 su rezervirane za buduću uporabu."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:236
 msgid ""
@@ -1290,25 +1280,19 @@ msgstr "NID zapisi trebaju koristiti format xxxx:xxxx:xxxx:xxxx (RFC 6742)."
 msgid ""
 "Invalid NID record: The Group bit (g bit, least significant bit of first "
 "byte) MUST be 0 in ILNP as specified in RFC 6742."
-msgstr ""
-"Invalid NID record: The Group bit (g bit, least significant bit of first "
-"byte) MUST be 0 in ILNP as specified in RFC 6742."
+msgstr "Nevažeći NID: Group bit MORA biti 0 u ILNP prema RFC 6742."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:227
 msgid ""
 "The universal/local bit (u/l bit) is set to universal (0), indicating this "
 "NID is based on a globally unique identifier."
-msgstr ""
-"The universal/local bit (u/l bit) is set to universal (0), indicating this "
-"NID is based on a globally unique identifier."
+msgstr "u/l bit je postavljen na universal (0), NID je globalno jedinstven."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:229
 msgid ""
 "The universal/local bit (u/l bit) is set to local (1), indicating this NID "
 "is locally assigned and not globally unique."
-msgstr ""
-"The universal/local bit (u/l bit) is set to local (1), indicating this NID "
-"is locally assigned and not globally unique."
+msgstr "u/l bit je postavljen na local (1), NID nije globalno jedinstven."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:239
 msgid ""
@@ -1355,9 +1339,7 @@ msgstr ""
 msgid ""
 "Manually editing NSEC records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr ""
-"Manually editing NSEC records is not recommended as they are typically "
-"generated automatically by DNSSEC-aware nameservers."
+msgstr "Ručno uređivanje NSEC nije preporučeno - generiraju se automatski."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:133
 msgid ""
@@ -1390,8 +1372,7 @@ msgid ""
 "Type bit maps should be present to indicate which RR types exist at the NSEC "
 "owner name. An empty type bitmap is unusual."
 msgstr ""
-"Type bit maps should be present to indicate which RR types exist at the NSEC "
-"owner name. An empty type bitmap is unusual."
+"Type bit maps trebaju označavati postojeće RR tipove. Prazan bitmap je neobičan."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:324
 #, php-format
@@ -1404,9 +1385,7 @@ msgstr "Numerički tip \"%s\" treba prikazati u RFC 3597 formatu (TYPE###)."
 msgid ""
 "NSEC type should typically be present in its own type bit map, as each name "
 "in a signed zone should have an NSEC record."
-msgstr ""
-"NSEC type should typically be present in its own type bit map, as each name "
-"in a signed zone should have an NSEC record."
+msgstr "NSEC tip bi trebao biti u vlastitom type bit mapu, svako ime treba NSEC."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:276
 msgid ""
@@ -1607,9 +1586,7 @@ msgstr ""
 msgid ""
 "TSIG error code 22 (BADTRUNC) indicates that the truncated MAC in the TSIG "
 "record is invalid. Check MAC size configuration."
-msgstr ""
-"TSIG error code 22 (BADTRUNC) indicates that the truncated MAC in the TSIG "
-"record is invalid. Check MAC size configuration."
+msgstr "TSIG greška 22 (BADTRUNC) - nevažeći truncated MAC u TSIG zapisu."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
@@ -1727,9 +1704,7 @@ msgstr ""
 msgid ""
 "URL-based certificate types (IPKIX, ISPKI, IPGP, IACPKIX) introduce "
 "additional indirection and potential security concerns."
-msgstr ""
-"URL-based certificate types (IPKIX, ISPKI, IPGP, IACPKIX) introduce "
-"additional indirection and potential security concerns."
+msgstr "URL CERT tipovi uvode dodatnu indirekciju i sigurnosne brige."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:227
 msgid ""
@@ -1770,9 +1745,7 @@ msgstr ""
 msgid ""
 "This name appears to be in a DLV lookup domain. Note that dlv.isc.org, the "
 "main DLV registry, was decommissioned in 2017."
-msgstr ""
-"This name appears to be in a DLV lookup domain. Note that dlv.isc.org, the "
-"main DLV registry, was decommissioned in 2017."
+msgstr "Ovo izgleda kao DLV lookup domena. dlv.isc.org je deaktiviran 2017."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:125
 msgid ""
@@ -1887,8 +1860,7 @@ msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
 msgstr ""
-"TKEY record must contain algorithm-name, inception-time, expiration-time, "
-"mode, error, and key-data separated by spaces."
+"TKEY zapis mora sadržavati algoritam, inception, expiration, mode, error i key-data."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
@@ -1963,8 +1935,7 @@ msgid ""
 "Custom algorithm name detected. Standard algorithm names like \"hmac-"
 "sha256.\" are recommended for better compatibility."
 msgstr ""
-"Custom algorithm name detected. Standard algorithm names like \"hmac-"
-"sha256.\" are recommended for better compatibility."
+"Otkriven nestandardni algoritam. Preporuka je \"hmac-sha256.\" za kompatibilnost."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid ""
@@ -2219,9 +2190,7 @@ msgstr "CNAME cilj mora biti FQDN s valjanim TLD-om."
 msgid ""
 "As per RFC 4701 and RFC 4703, DHCID records should be placed at the same "
 "name as the A or AAAA records they correspond to."
-msgstr ""
-"As per RFC 4701 and RFC 4703, DHCID records should be placed at the same "
-"name as the A or AAAA records they correspond to."
+msgstr "Prema RFC 4701/4703, DHCID zapisi se stavljaju na isto ime kao A/AAAA."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:124
 msgid ""
@@ -2391,8 +2360,7 @@ msgid ""
 "The expiration time must be later than the inception time. This signature "
 "appears to have expired before it became valid."
 msgstr ""
-"The expiration time must be later than the inception time. This signature "
-"appears to have expired before it became valid."
+"Vrijeme isteka mora biti nakon početka. Potpis je istekao prije nego je postao valjan."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
@@ -2553,9 +2521,7 @@ msgstr "RFC 7043 ne preporučuje objavljivanje EUI-64 adresa u javnom DNS."
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr ""
-"EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
-"hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
+msgstr "EUI64 koristi dvotočke umjesto crtica."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
@@ -2870,9 +2836,7 @@ msgstr "PTR prioritet treba biti 0 ili prazan. Vrijednost će biti zanemarena."
 msgid ""
 "PTR records should have corresponding forward (A/AAAA) records to avoid "
 "problems with services that check reverse DNS."
-msgstr ""
-"PTR records should have corresponding forward (A/AAAA) records to avoid "
-"problems with services that check reverse DNS."
+msgstr "PTR zapisi trebaju imati odgovarajuće A/AAAA zapise zbog reverse DNS."
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:167
 msgid ""
@@ -3146,8 +3110,7 @@ msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
 msgstr ""
-"Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
-"(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
+"Preporučena SMIMEA konfiguracija je usage=3, selector=1, matching=1 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
@@ -3354,9 +3317,7 @@ msgstr "SSHFP algoritam mora biti 1, 2, 3, 4 ili 6."
 msgid ""
 "DSA keys are considered weak and are deprecated in many SSH implementations. "
 "Consider using RSA, Ed25519, or Ed448 instead."
-msgstr ""
-"DSA keys are considered weak and are deprecated in many SSH implementations. "
-"Consider using RSA, Ed25519, or Ed448 instead."
+msgstr "DSA ključevi su slabi i zastarjeli. Koristite RSA, Ed25519 ili Ed448."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:189
 msgid ""
@@ -3819,9 +3780,7 @@ msgstr ""
 msgid ""
 "Invalid value for priority field. NAPTR records have priority within the "
 "content field and must have a priority value of 0."
-msgstr ""
-"Invalid value for priority field. NAPTR records have priority within the "
-"content field and must have a priority value of 0."
+msgstr "NAPTR zapisi imaju prioritet u sadržaju, polje mora biti 0."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
 msgid ""
@@ -4098,8 +4057,7 @@ msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
 msgstr ""
-"Zone templates allow you to create predefined sets of DNS records that can "
-"be quickly applied when creating new zones."
+"Predlošci zone omogućuju stvaranje unaprijed definiranih setova DNS zapisa."
 
 #: templates/modern/add_zone_templ.html:97
 msgid ""
@@ -4353,16 +4311,14 @@ msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
 msgstr ""
-"Check \"Create forward A/AAAA records\" to automatically create matching "
-"forward records (disabled when using matching mode)"
+"Označite \"Create forward A/AAAA\" za automatsko stvaranje forward zapisa."
 
 #: templates/modern/add_zone_templ_record.html:21
 msgid ""
 "After adding this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
 msgstr ""
-"After adding this record, remember to update the zones using this template "
-"by clicking \"Update zones\" on the template page."
+"Nakon dodavanja, ažurirajte zone klikom na \"Update zones\" na predlošku."
 
 #: templates/modern/dns_wizard_select.html:21
 msgid ""
@@ -4390,8 +4346,7 @@ msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
 msgstr ""
-"Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
-"automatically. Use '@' for the zone apex/root."
+"Savjet: unesite samo ime (npr. 'www'), zona se dodaje automatski. '@' za apex."
 
 #: templates/modern/delete_record.html:74
 msgid "You are trying to delete a record that is needed for this zone to work."
@@ -4491,9 +4446,7 @@ msgstr ""
 msgid ""
 "Store these codes in a safe place. Each code can be used once to log in if "
 "you lose access to your authenticator device."
-msgstr ""
-"Store these codes in a safe place. Each code can be used once to log in if "
-"you lose access to your authenticator device."
+msgstr "Čuvajte kodove na sigurnom. Svaki se može koristiti jednom za prijavu."
 
 #: templates/default/mfa_setup.html:15 templates/modern/mfa_setup.html:15
 msgid ""
@@ -4585,8 +4538,7 @@ msgid ""
 "Custom templates are active and override the default templates. These are "
 "the templates currently used when sending emails."
 msgstr ""
-"Custom templates are active and override the default templates. These are "
-"the templates currently used when sending emails."
+"Aktivni prilagođeni predlošci zamjenjuju zadane. Koriste se pri slanju e-pošte."
 
 #: templates/modern/email_previews.html:35
 msgid ""
