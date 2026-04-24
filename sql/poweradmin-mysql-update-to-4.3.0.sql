@@ -3,8 +3,10 @@
 -- Make domain_id nullable (API-mode zones don't have a PowerDNS domain ID)
 -- Backfill zone metadata from PowerDNS domains table for existing zones
 --
--- NOTE: If you use a separate database for PowerDNS tables (pdns_db_name config),
--- replace `domains` below with the fully qualified table name (e.g., `pdns.domains`).
+-- NOTE (MySQL/MariaDB only): If pdns_db_name is set (PowerDNS tables in a separate
+-- database), the `domains` reference in the UPDATE below will not resolve. Before
+-- running this script, replace `domains` with the qualified name, e.g. `pdns`.`domains`.
+-- See: https://docs.poweradmin.org/upgrading/v4.3.0/#step-3-run-database-updates
 
 ALTER TABLE `zones` MODIFY `domain_id` int(11) NULL DEFAULT NULL;
 ALTER TABLE `zones` ADD COLUMN `zone_name` varchar(255) DEFAULT NULL;
