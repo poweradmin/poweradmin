@@ -149,23 +149,41 @@ class ZoneSyncService
             return 0;
         }
 
-        $stmt = $this->db->prepare(
+        $insertStmt = $this->db->prepare(
             "INSERT INTO zones (domain_id, owner, zone_templ_id, comment, zone_name, zone_type, zone_master)
              VALUES (NULL, 0, 0, '', :zone_name, :zone_type, :zone_master)"
         );
+        $updateStmt = $this->db->prepare("UPDATE zones SET domain_id = :did WHERE id = :id");
+
+        // Wrap in a single transaction so the initial sync on a large PowerDNS
+        // (thousands of zones) completes in seconds instead of minutes. Without
+        // this each INSERT+UPDATE pair is auto-committed individually.
+        $ownsTransaction = !$this->db->inTransaction();
+        if ($ownsTransaction) {
+            $this->db->beginTransaction();
+        }
 
         $count = 0;
-        foreach ($missing as $name => $zone) {
-            $stmt->bindValue(':zone_name', $name, PDO::PARAM_STR);
-            $stmt->bindValue(':zone_type', $zone['type'] ?? null, PDO::PARAM_STR);
-            $stmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);
-            if ($stmt->execute()) {
-                // Set domain_id = id (self-referencing for API mode compatibility)
-                $id = $this->db->lastInsertId();
-                $this->db->prepare("UPDATE zones SET domain_id = :did WHERE id = :id")
-                    ->execute([':did' => $id, ':id' => $id]);
-                $count++;
+        try {
+            foreach ($missing as $name => $zone) {
+                $insertStmt->bindValue(':zone_name', $name, PDO::PARAM_STR);
+                $insertStmt->bindValue(':zone_type', $zone['type'] ?? null, PDO::PARAM_STR);
+                $insertStmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);
+                if ($insertStmt->execute()) {
+                    // Set domain_id = id (self-referencing for API mode compatibility)
+                    $id = $this->db->lastInsertId();
+                    $updateStmt->execute([':did' => $id, ':id' => $id]);
+                    $count++;
+                }
             }
+            if ($ownsTransaction) {
+                $this->db->commit();
+            }
+        } catch (\Throwable $e) {
+            if ($ownsTransaction && $this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
         }
 
         return $count;
