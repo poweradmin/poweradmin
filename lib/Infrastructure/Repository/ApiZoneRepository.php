@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -83,6 +84,11 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         bool $showSerial = false,
         bool $showTemplate = false
     ) {
+        // Sync local zones table with PowerDNS API before listing so reverse
+        // zones are visible on a fresh install without the user having to open
+        // the Forward Zones page first. Throttled to once per 5 minutes.
+        (new ZoneSyncService($this->db, $this->backendProvider))->syncIfStale();
+
         // Build base query from local zones table
         if ($countOnly) {
             $query = "SELECT COUNT(*) as count FROM (
