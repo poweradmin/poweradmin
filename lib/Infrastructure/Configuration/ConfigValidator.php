@@ -47,6 +47,7 @@ class ConfigValidator
         }
         $this->validatePdnsApiUrl();
         $this->validatePdnsApiKey();
+        $this->validatePdnsApiTimeout();
         $this->validateDnsBackend();
         $this->validatePdnsDbName();
         $this->validatePermissions();
@@ -256,6 +257,25 @@ class ConfigValidator
 
         if (!is_string($apiKey) || empty($apiKey)) {
             $this->errors['pdns_api.key'] = 'PowerDNS API key must be a non-empty string when API URL is configured';
+        }
+    }
+
+    private function validatePdnsApiTimeout(): void
+    {
+        $timeout = $this->getSetting('pdns_api', 'timeout');
+
+        // Absent or default — nothing to validate.
+        if ($timeout === null) {
+            return;
+        }
+
+        if (!is_int($timeout) && !(is_string($timeout) && ctype_digit($timeout))) {
+            $this->errors['pdns_api.timeout'] = 'PowerDNS API timeout must be a positive integer (seconds)';
+            return;
+        }
+
+        if ((int) $timeout < 1) {
+            $this->errors['pdns_api.timeout'] = 'PowerDNS API timeout must be at least 1 second';
         }
     }
 

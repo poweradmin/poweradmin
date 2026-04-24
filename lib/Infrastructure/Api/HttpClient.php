@@ -33,12 +33,14 @@ class HttpClient implements ApiClient
 
     private string $apiUrl;
     private string $apiKey;
+    private int $timeout;
     private LoggerInterface $logger;
 
-    public function __construct(string $baseEndpoint, string $apiKey, ?LoggerInterface $logger = null)
+    public function __construct(string $baseEndpoint, string $apiKey, ?LoggerInterface $logger = null, int $timeout = 10)
     {
         $this->apiUrl = rtrim($baseEndpoint, '/');
         $this->apiKey = $apiKey;
+        $this->timeout = $timeout > 0 ? $timeout : 10;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -51,7 +53,7 @@ class HttpClient implements ApiClient
                     "X-API-Key: $this->apiKey\r\n",
                 'method' => strtoupper($method),
                 'ignore_errors' => true,
-                'timeout' => 10, // Add a reasonable timeout
+                'timeout' => $this->timeout,
             ]
         ];
 
