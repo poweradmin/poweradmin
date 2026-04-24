@@ -61,6 +61,47 @@ class HttpClient implements ApiClient
             $options['http']['content'] = json_encode($data);
         }
 
+        // Retry once on transient failures (5xx, timeout, connection refused) for
+        // idempotent GET requests. Non-GET methods are not retried to avoid
+        // accidentally duplicating side effects.
+        $maxAttempts = strtoupper($method) === 'GET' ? 2 : 1;
+        for ($attempt = 1; ; $attempt++) {
+            try {
+                return $this->performSingleRequest($url, $method, $options);
+            } catch (ApiErrorException $e) {
+                if ($attempt < $maxAttempts && $this->isTransient($e)) {
+                    $this->logger->debug('Transient API error on attempt {attempt}/{max}, retrying: {error}', [
+                        'attempt' => $attempt,
+                        'max' => $maxAttempts,
+                        'error' => $e->getMessage(),
+                    ]);
+                    usleep(200000); // 200ms
+                    continue;
+                }
+                throw $e;
+            }
+        }
+    }
+
+    private function isTransient(ApiErrorException $e): bool
+    {
+        $code = $e->getCode();
+        if (in_array($code, [500, 502, 503, 504], true)) {
+            return true;
+        }
+        if ($code === 0) {
+            $marker = strtolower((string) $e->getDetail('error', $e->getMessage()));
+            foreach (['timed out', 'timeout', 'connection refused', 'could not resolve', 'network is unreachable', 'unreachable'] as $needle) {
+                if (strpos($marker, $needle) !== false) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private function performSingleRequest(string $url, string $method, array $options): array
+    {
         try {
             $context = stream_context_create($options);
             $response = @file_get_contents($url, false, $context);
