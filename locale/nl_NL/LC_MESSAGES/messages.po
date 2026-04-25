@@ -14015,24 +14015,20 @@ msgid "RDAP results for"
 msgstr "RDAP resultaten voor"
 
 #: install/templates/step6.html.twig:3
-#, auto-english-fallback
 msgid "Create limited rights user"
-msgstr "Create limited rights user"
+msgstr "Gebruiker met beperkte rechten aanmaken"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
-#, auto-english-fallback
 msgid "Step"
-msgstr "Step"
+msgstr "Stap"
 
 #: install/templates/step6.html.twig:8
-#, auto-english-fallback
 msgid "Create limited-rights user"
-msgstr "Create limited-rights user"
+msgstr "Gebruiker met beperkte rechten aanmaken"
 
 #: install/templates/step6.html.twig:13
-#, auto-english-fallback
 msgid "Limited Database Rights:"
-msgstr "Limited Database Rights:"
+msgstr "Beperkte databaserechten:"
 
 #: install/templates/step6.html.twig:15
 msgid ""
@@ -14048,14 +14044,12 @@ msgid ""
 msgstr ""
 
 #: install/templates/step6.html.twig:25
-#, auto-english-fallback
 msgid "Database Commands"
-msgstr "Database Commands"
+msgstr "Database-opdrachten"
 
 #: install/templates/step6.html.twig:28
-#, auto-english-fallback
 msgid "Execute the following commands:"
-msgstr "Execute the following commands:"
+msgstr "Voer de volgende opdrachten uit:"
 
 #: install/templates/step6.html.twig:40
 msgid ""
@@ -14063,9 +14057,8 @@ msgid ""
 msgstr ""
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
-#, auto-english-fallback
 msgid "Note:"
-msgstr "Note:"
+msgstr "Let op:"
 
 #: install/templates/step6.html.twig:43
 msgid ""
@@ -14074,44 +14067,36 @@ msgid ""
 msgstr ""
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
-#, auto-english-fallback
 msgid "Continue to step"
-msgstr "Continue to step"
+msgstr "Ga verder naar stap"
 
 #: install/templates/base.html.twig:37
-#, auto-english-fallback
 msgid "Installation step"
-msgstr "Installation step"
+msgstr "Installatiestap"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
-#, auto-english-fallback
 msgid "Create configuration file"
-msgstr "Create configuration file"
+msgstr "Configuratiebestand aanmaken"
 
 #: install/templates/step7.html.twig:12
-#, auto-english-fallback
 msgid "Configuration File:"
-msgstr "Configuration File:"
+msgstr "Configuratiebestand:"
 
 #: install/templates/step7.html.twig:12
-#, auto-english-fallback
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "Maak het bestand aan"
 
 #: install/templates/step7.html.twig:14
-#, auto-english-fallback
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "met de volgende inhoud:"
 
 #: install/templates/step1.html.twig:3
-#, auto-english-fallback
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Kies een taal"
 
 #: install/templates/step1.html.twig:8
-#, auto-english-fallback
 msgid "Choose a language for installation"
-msgstr "Choose a language for installation"
+msgstr "Kies een taal voor de installatie"
 
 #: install/templates/step1.html.twig:12
 msgid ""
@@ -14119,93 +14104,76 @@ msgid ""
 msgstr ""
 
 #: install/templates/step1.html.twig:391
-#, auto-english-fallback
 msgid "Begin Installation"
-msgstr "Begin Installation"
+msgstr "Start installatie"
 
 #: install/templates/step4.html.twig:3
-#, auto-english-fallback
 msgid "Configuring database"
-msgstr "Configuring database"
+msgstr "Database configureren"
 
 #: install/templates/step4.html.twig:8
-#, auto-english-fallback
 msgid "Configuring Database Connection"
-msgstr "Configuring Database Connection"
+msgstr "Databaseverbinding configureren"
 
 #: install/templates/step4.html.twig:17
-#, auto-english-fallback
 msgid "PowerDNS Backend"
-msgstr "PowerDNS Backend"
+msgstr "PowerDNS-backend"
 
 #: install/templates/step4.html.twig:20
-#, auto-english-fallback
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "Kies hoe Poweradmin met PowerDNS communiceert:"
 
 #: install/templates/step4.html.twig:25
-#, auto-english-fallback
 msgid "Direct access to PowerDNS database tables"
-msgstr "Direct access to PowerDNS database tables"
+msgstr "Directe toegang tot PowerDNS-databasetabellen"
 
 #: install/templates/step4.html.twig:32
-#, auto-english-fallback
 msgid "API"
 msgstr "API"
 
 #: install/templates/step4.html.twig:32
-#, auto-english-fallback
 msgid "PowerDNS REST API"
-msgstr "PowerDNS REST API"
+msgstr "PowerDNS REST-API"
 
 #: install/templates/step4.html.twig:33
-#, auto-english-fallback
 msgid "Experimental"
-msgstr "Experimental"
+msgstr "Experimenteel"
 
 #: install/templates/step4.html.twig:42
-#, auto-english-fallback
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API Settings"
+msgstr "PowerDNS API-instellingen"
 
 #: install/templates/step4.html.twig:46
-#, auto-english-fallback
 msgid "API URL"
-msgstr "API URL"
+msgstr "API-URL"
 
 #: install/templates/step4.html.twig:52
-#, auto-english-fallback
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint URL."
+msgstr "URL van het PowerDNS API-eindpunt."
 
 #: install/templates/step4.html.twig:57
-#, auto-english-fallback
 msgid "API Key"
-msgstr "API Key"
+msgstr "API-sleutel"
 
 #: install/templates/step4.html.twig:66
-#, auto-english-fallback
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "PowerDNS API-sleutel (uit de api-key-instelling in pdns.conf)."
 
 #: install/templates/step4.html.twig:71
-#, auto-english-fallback
 msgid "Server name"
-msgstr "Server name"
+msgstr "Servernaam"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
 msgstr ""
 
 #: install/templates/step4.html.twig:86
-#, auto-english-fallback
 msgid "Database Connection Settings"
-msgstr "Database Connection Settings"
+msgstr "Instellingen voor databaseverbinding"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
-#, auto-english-fallback
 msgid "Database Configuration:"
-msgstr "Database Configuration:"
+msgstr "Databaseconfiguratie:"
 
 #: install/templates/step4.html.twig:90
 msgid ""
@@ -14220,98 +14188,81 @@ msgid ""
 msgstr ""
 
 #: install/templates/step4.html.twig:97
-#, auto-english-fallback
 msgid "Database type"
-msgstr "Database type"
+msgstr "Databasetype"
 
 #: install/templates/step4.html.twig:106
-#, auto-english-fallback
 msgid "Database server type."
-msgstr "Database server type."
+msgstr "Type van de databaseserver."
 
 #: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
-#, auto-english-fallback
 msgid "Provide the user name"
-msgstr "Provide the user name"
+msgstr "Geef de gebruikersnaam op"
 
 #: install/templates/step4.html.twig:117
-#, auto-english-fallback
 msgid "Database username with rights to create tables."
-msgstr "Database username with rights to create tables."
+msgstr "Databasegebruiker met rechten om tabellen aan te maken."
 
 #: install/templates/step4.html.twig:131
-#, auto-english-fallback
 msgid "Password for this database user."
-msgstr "Password for this database user."
+msgstr "Wachtwoord voor deze databasegebruiker."
 
 #: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
-#, auto-english-fallback
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Avoid quotes, backslashes, and line breaks."
+msgstr "Vermijd aanhalingstekens, backslashes en regeleindes."
 
 #: install/templates/step4.html.twig:140
-#, auto-english-fallback
 msgid "Provide the hostname"
-msgstr "Provide the hostname"
+msgstr "Geef de hostnaam op"
 
 #: install/templates/step4.html.twig:143
 msgid "Database server hostname (usually \"localhost\")."
 msgstr ""
 
 #: install/templates/step4.html.twig:148
-#, auto-english-fallback
 msgid "DB Port"
-msgstr "DB Port"
+msgstr "DB-poort"
 
 #: install/templates/step4.html.twig:151
-#, auto-english-fallback
 msgid "Provide database port"
-msgstr "Provide database port"
+msgstr "Geef de databasepoort op"
 
 #: install/templates/step4.html.twig:154
-#, auto-english-fallback
 msgid "Database server port."
-msgstr "Database server port."
+msgstr "Poort van de databaseserver."
 
 #: install/templates/step4.html.twig:162
-#, auto-english-fallback
 msgid "Provide the name of the database"
-msgstr "Provide the name of the database"
+msgstr "Geef de naam van de database op"
 
 #: install/templates/step4.html.twig:165
-#, auto-english-fallback
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Database name (will be used for Poweradmin tables)."
+msgstr "Databasenaam (gebruikt voor Poweradmin-tabellen)."
 
 #: install/templates/step4.html.twig:167
-#, auto-english-fallback
 msgid "Full path to SQLite database file"
-msgstr "Full path to SQLite database file"
+msgstr "Volledig pad naar het SQLite-databasebestand"
 
 #: install/templates/step4.html.twig:170
-#, auto-english-fallback
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "File must exist with web server read/write access. Use absolute path."
+msgstr ""
+"Het bestand moet bestaan en lees-/schrijftoegang hebben voor de webserver. Gebruik een absoluut pad."
 
 #: install/templates/step4.html.twig:178
-#, auto-english-fallback
 msgid "DB charset"
-msgstr "DB charset"
+msgstr "DB-tekenset"
 
 #: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
-#, auto-english-fallback
 msgid "Use default"
-msgstr "Use default"
+msgstr "Standaard gebruiken"
 
 #: install/templates/step4.html.twig:185
-#, auto-english-fallback
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "Charset for new tables. Leave empty for database default."
+msgstr "Tekenset voor nieuwe tabellen. Leeg laten voor de databasestandaard."
 
 #: install/templates/step4.html.twig:190
-#, auto-english-fallback
 msgid "DB collation"
-msgstr "DB collation"
+msgstr "DB-sortering"
 
 #: install/templates/step4.html.twig:197
 msgid ""
@@ -14319,158 +14270,128 @@ msgid ""
 msgstr ""
 
 #: install/templates/step4.html.twig:206
-#, auto-english-fallback
 msgid "PowerDNS Database"
-msgstr "PowerDNS Database"
+msgstr "PowerDNS-database"
 
 #: install/templates/step4.html.twig:210
-#, auto-english-fallback
 msgid "Database name"
-msgstr "Database name"
+msgstr "Databasenaam"
 
 #: install/templates/step4.html.twig:213
-#, auto-english-fallback
 msgid "Leave empty for same database"
-msgstr "Leave empty for same database"
+msgstr "Leeg laten voor dezelfde database"
 
 #: install/templates/step4.html.twig:216
-#, auto-english-fallback
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "MySQL database with PowerDNS tables (if different)."
+msgstr "MySQL-database met PowerDNS-tabellen (indien anders)."
 
 #: install/templates/step4.html.twig:224
-#, auto-english-fallback
 msgid "Poweradmin Account"
-msgstr "Poweradmin Account"
+msgstr "Poweradmin-account"
 
 #: install/templates/step4.html.twig:228
-#, auto-english-fallback
 msgid "Administrator password"
-msgstr "Administrator password"
+msgstr "Beheerderswachtwoord"
 
 #: install/templates/step4.html.twig:233
-#, auto-english-fallback
 msgid "Provide a password"
-msgstr "Provide a password"
+msgstr "Geef een wachtwoord op"
 
 #: install/templates/step4.html.twig:238
 msgid "Password for \"admin\" username."
 msgstr ""
 
 #: install/templates/step2.html.twig:3
-#, auto-english-fallback
 msgid "System Requirements"
-msgstr "System Requirements"
+msgstr "Systeemvereisten"
 
 #: install/templates/step2.html.twig:8
-#, auto-english-fallback
 msgid "System Requirements Check"
-msgstr "System Requirements Check"
+msgstr "Controle van systeemvereisten"
 
 #: install/templates/step2.html.twig:13
-#, auto-english-fallback
 msgid "PHP Version"
-msgstr "PHP Version"
+msgstr "PHP-versie"
 
 #: install/templates/step2.html.twig:23
-#, auto-english-fallback
 msgid "Requires PHP 8.2.0+"
-msgstr "Requires PHP 8.2.0+"
+msgstr "Vereist PHP 8.2.0 of nieuwer"
 
 #: install/templates/step2.html.twig:30
-#, auto-english-fallback
 msgid "Database Extensions"
-msgstr "Database Extensions"
+msgstr "Database-extensies"
 
 #: install/templates/step2.html.twig:31
-#, auto-english-fallback
 msgid "at least one required"
-msgstr "at least one required"
+msgstr "ten minste één vereist"
 
 #: install/templates/step2.html.twig:55
-#, auto-english-fallback
 msgid "Required PHP Extensions"
-msgstr "Required PHP Extensions"
+msgstr "Vereiste PHP-extensies"
 
 #: install/templates/step2.html.twig:76
-#, auto-english-fallback
 msgid "Optional Extensions"
-msgstr "Optional Extensions"
+msgstr "Optionele extensies"
 
 #: install/templates/step2.html.twig:97
-#, auto-english-fallback
 msgid "Web Server"
-msgstr "Web Server"
+msgstr "Webserver"
 
 #: install/templates/step2.html.twig:102
-#, auto-english-fallback
 msgid "Server"
 msgstr "Server"
 
 #: install/templates/step2.html.twig:118
-#, auto-english-fallback
 msgid "Not detected — required for URL routing"
-msgstr "Not detected — required for URL routing"
+msgstr "Niet gedetecteerd — vereist voor URL-routing"
 
 #: install/templates/step2.html.twig:124
-#, auto-english-fallback
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
+msgstr "Niet detecteerbaar (PHP-FPM) — zorg dat het is ingeschakeld"
 
 #: install/templates/step2.html.twig:130
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Zorg dat URL-rewriting is geconfigureerd (zie nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
-#, auto-english-fallback
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Ensure URL rewriting is configured for your web server"
+msgstr "Zorg dat URL-rewriting is geconfigureerd voor uw webserver"
 
 #: install/templates/step2.html.twig:149
-#, auto-english-fallback
 msgid "All required components are available."
-msgstr "All required components are available."
+msgstr "Alle vereiste componenten zijn aanwezig."
 
 #: install/templates/step2.html.twig:150
-#, auto-english-fallback
 msgid "You can continue with the installation."
-msgstr "You can continue with the installation."
+msgstr "U kunt de installatie voortzetten."
 
 #: install/templates/step2.html.twig:159
-#, auto-english-fallback
 msgid "Some required components are missing."
-msgstr "Some required components are missing."
+msgstr "Enkele vereiste componenten ontbreken."
 
 #: install/templates/step2.html.twig:160
-#, auto-english-fallback
 msgid "Please install the missing components before continuing."
-msgstr "Please install the missing components before continuing."
+msgstr "Installeer de ontbrekende componenten voordat u verdergaat."
 
 #: install/templates/step5.html.twig:3
-#, auto-english-fallback
 msgid "Setup account and nameservers"
-msgstr "Setup account and nameservers"
+msgstr "Account en nameservers instellen"
 
 #: install/templates/step5.html.twig:8
-#, auto-english-fallback
 msgid "Setup account and name servers"
-msgstr "Setup account and name servers"
+msgstr "Account en nameservers instellen"
 
 #: install/templates/step5.html.twig:12
-#, auto-english-fallback
 msgid "Configuration:"
-msgstr "Configuration:"
+msgstr "Configuratie:"
 
 #: install/templates/step5.html.twig:12
-#, auto-english-fallback
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Now we will gather all details for the configuration itself."
+msgstr "We gaan nu alle gegevens voor de configuratie zelf verzamelen."
 
 #: install/templates/step5.html.twig:52
-#, auto-english-fallback
 msgid "Database User"
-msgstr "Database User"
+msgstr "Databasegebruiker"
 
 #: install/templates/step5.html.twig:57
 msgid ""
@@ -14485,109 +14406,88 @@ msgid ""
 msgstr ""
 
 #: install/templates/step5.html.twig:77
-#, auto-english-fallback
 msgid "Provide the user password"
-msgstr "Provide the user password"
+msgstr "Geef het wachtwoord van de gebruiker op"
 
 #: install/templates/step5.html.twig:81
-#, auto-english-fallback
 msgid "The password for this username."
-msgstr "The password for this username."
+msgstr "Het wachtwoord voor deze gebruikersnaam."
 
 #: install/templates/step5.html.twig:91
-#, auto-english-fallback
 msgid "DNS Settings"
-msgstr "DNS Settings"
+msgstr "DNS-instellingen"
 
 #: install/templates/step5.html.twig:95
-#, auto-english-fallback
 msgid "Hostmaster"
 msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
-#, auto-english-fallback
 msgid "Provide the DNS hostmaster"
-msgstr "Provide the DNS hostmaster"
+msgstr "Geef de DNS-hostmaster op"
 
 #: install/templates/step5.html.twig:102
-#, auto-english-fallback
 msgid "Default hostmaster for SOA records."
-msgstr "Default hostmaster for SOA records."
+msgstr "Standaard-hostmaster voor SOA-records."
 
 #: install/templates/step5.html.twig:107
-#, auto-english-fallback
 msgid "Primary nameserver"
-msgstr "Primary nameserver"
+msgstr "Primaire nameserver"
 
 #: install/templates/step5.html.twig:111
-#, auto-english-fallback
 msgid "Provide the primary nameserver"
-msgstr "Provide the primary nameserver"
+msgstr "Geef de primaire nameserver op"
 
 #: install/templates/step5.html.twig:114
-#, auto-english-fallback
 msgid "Primary nameserver for new zones."
-msgstr "Primary nameserver for new zones."
+msgstr "Primaire nameserver voor nieuwe zones."
 
 #: install/templates/step5.html.twig:119
-#, auto-english-fallback
 msgid "Secondary nameserver"
-msgstr "Secondary nameserver"
+msgstr "Secundaire nameserver"
 
 #: install/templates/step5.html.twig:123
-#, auto-english-fallback
 msgid "Provide the secondary nameserver"
-msgstr "Provide the secondary nameserver"
+msgstr "Geef de secundaire nameserver op"
 
 #: install/templates/step5.html.twig:126
-#, auto-english-fallback
 msgid "Secondary nameserver for new zones."
-msgstr "Secondary nameserver for new zones."
+msgstr "Secundaire nameserver voor nieuwe zones."
 
 #: install/templates/step5.html.twig:132
-#, auto-english-fallback
 msgid "Tertiary Nameserver"
-msgstr "Tertiary Nameserver"
+msgstr "Tertiaire nameserver"
 
 #: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
-#, auto-english-fallback
 msgid "optional"
-msgstr "optional"
+msgstr "optioneel"
 
 #: install/templates/step5.html.twig:139
-#, auto-english-fallback
 msgid "Optional tertiary nameserver for new zones."
-msgstr "Optional tertiary nameserver for new zones."
+msgstr "Optionele tertiaire nameserver voor nieuwe zones."
 
 #: install/templates/step5.html.twig:145
-#, auto-english-fallback
 msgid "Quaternary Nameserver"
-msgstr "Quaternary Nameserver"
+msgstr "Quaternaire nameserver"
 
 #: install/templates/step5.html.twig:152
-#, auto-english-fallback
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Optional quaternary nameserver for new zones."
+msgstr "Optionele quaternaire nameserver voor nieuwe zones."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
-#, auto-english-fallback
 msgid "Installation complete"
-msgstr "Installation complete"
+msgstr "Installatie voltooid"
 
 #: install/templates/step8.html.twig:12
-#, auto-english-fallback
 msgid "Installation Complete!"
-msgstr "Installation Complete!"
+msgstr "Installatie voltooid!"
 
 #: install/templates/step8.html.twig:12
-#, auto-english-fallback
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Gefeliciteerd! Uw Poweradmin-installatie is nu geconfigureerd."
 
 #: install/templates/step8.html.twig:16
-#, auto-english-fallback
 msgid "Important Security Notice:"
-msgstr "Important Security Notice:"
+msgstr "Belangrijke beveiligingsmelding:"
 
 #: install/templates/step8.html.twig:16
 msgid ""
@@ -14602,9 +14502,8 @@ msgid ""
 msgstr ""
 
 #: install/templates/step8.html.twig:22
-#, auto-english-fallback
 msgid "Next Steps"
-msgstr "Next Steps"
+msgstr "Volgende stappen"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
@@ -14617,24 +14516,20 @@ msgid ""
 msgstr ""
 
 #: install/templates/step8.html.twig:28
-#, auto-english-fallback
 msgid "Begin configuring your DNS zones and records"
-msgstr "Begin configuring your DNS zones and records"
+msgstr "Begin met het configureren van uw DNS-zones en -records"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
-#, auto-english-fallback
 msgid "Getting Ready"
-msgstr "Getting Ready"
+msgstr "Voorbereiding"
 
 #: install/templates/step3.html.twig:13
-#, auto-english-fallback
 msgid "Prerequisites"
-msgstr "Prerequisites"
+msgstr "Vereisten"
 
 #: install/templates/step3.html.twig:16
-#, auto-english-fallback
 msgid "Before proceeding, ensure you have:"
-msgstr "Before proceeding, ensure you have:"
+msgstr "Zorg dat u het volgende hebt voordat u verdergaat:"
 
 #: install/templates/step3.html.twig:18
 msgid ""
@@ -14642,19 +14537,16 @@ msgid ""
 msgstr ""
 
 #: install/templates/step3.html.twig:19
-#, auto-english-fallback
 msgid "Database credentials (hostname, username, password)"
-msgstr "Database credentials (hostname, username, password)"
+msgstr "Databasegegevens (hostnaam, gebruikersnaam, wachtwoord)"
 
 #: install/templates/step3.html.twig:20
-#, auto-english-fallback
 msgid "Permission to create tables for Poweradmin"
-msgstr "Permission to create tables for Poweradmin"
+msgstr "Toestemming om tabellen voor Poweradmin aan te maken"
 
 #: install/templates/step3.html.twig:27
-#, auto-english-fallback
 msgid "Next:"
-msgstr "Next:"
+msgstr "Volgende:"
 
 #: install/templates/step3.html.twig:27
 msgid ""
@@ -14663,24 +14555,21 @@ msgid ""
 msgstr ""
 
 #: install/helpers/InstallStepHandler.php:176
-#, auto-english-fallback
 msgid "Missing PowerDNS tables:"
-msgstr "Missing PowerDNS tables:"
+msgstr "Ontbrekende PowerDNS-tabellen:"
 
 #: install/helpers/InstallStepHandler.php:177
-#, auto-english-fallback
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr ""
+"Poweradmin heeft deze PowerDNS-tabellen nodig om goed te kunnen werken."
 
 #: install/helpers/InstallStepHandler.php:185
-#, auto-english-fallback
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "Database bijwerken... klaar!"
 
 #: install/helpers/InstallStepHandler.php:207
-#, auto-english-fallback
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "Problemen met externe-sleutelbeperkingen:"
 
 #: install/helpers/InstallStepHandler.php:209
 msgid ""
@@ -14700,14 +14589,12 @@ msgid ""
 msgstr ""
 
 #: install/helpers/InstallStepHandler.php:224
-#, auto-english-fallback
 msgid "Suggestions:"
-msgstr "Suggestions:"
+msgstr "Suggesties:"
 
 #: install/helpers/InstallStepHandler.php:218
-#, auto-english-fallback
 msgid "Make sure the SQLite database file exists"
-msgstr "Make sure the SQLite database file exists"
+msgstr "Zorg dat het SQLite-databasebestand bestaat"
 
 #: install/helpers/InstallStepHandler.php:219
 msgid ""
@@ -14716,29 +14603,25 @@ msgid ""
 msgstr ""
 
 #: install/helpers/InstallStepHandler.php:220
-#, auto-english-fallback
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Verify the full path to the database file is correct and accessible"
+msgstr ""
+"Controleer of het volledige pad naar het databasebestand correct en toegankelijk is"
 
 #: install/helpers/InstallStepHandler.php:226
-#, auto-english-fallback
 msgid "Verify database credentials are correct"
-msgstr "Verify database credentials are correct"
+msgstr "Controleer of de databasegegevens correct zijn"
 
 #: install/helpers/InstallStepHandler.php:227
-#, auto-english-fallback
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Controleer of de databasegebruiker voldoende rechten heeft"
 
 #: install/helpers/InstallStepHandler.php:228
-#, auto-english-fallback
 msgid "Ensure the database server is running and accessible"
-msgstr "Ensure the database server is running and accessible"
+msgstr "Zorg dat de databaseserver draait en bereikbaar is"
 
 #: install/helpers/InstallStepHandler.php:233
-#, auto-english-fallback
 msgid "Database Error"
-msgstr "Database Error"
+msgstr "Databasefout"
 
 #: install/helpers/DatabaseHelper.php:175
 #, php-format
@@ -14760,20 +14643,17 @@ msgid ""
 msgstr ""
 
 #: install/helpers/DatabaseHelper.php:203
-#, auto-english-fallback
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "Kon het SQLite-databasebestand %s niet benaderen: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
-#, auto-english-fallback
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "PowerDNS API URL is required when using API backend."
+msgstr "PowerDNS API-URL is vereist bij gebruik van de API-backend."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
-#, auto-english-fallback
 msgid "PowerDNS API key is required when using API backend."
-msgstr "PowerDNS API key is required when using API backend."
+msgstr "PowerDNS API-sleutel is vereist bij gebruik van de API-backend."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
 msgid ""
