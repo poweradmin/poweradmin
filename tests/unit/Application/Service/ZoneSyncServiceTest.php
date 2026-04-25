@@ -125,12 +125,15 @@ class ZoneSyncServiceTest extends TestCase
         $this->assertSame(0, $result['updated']);
     }
 
-    public function testSyncSkipsRemovalWhenApiReturnsEmptyButLocalZonesExist(): void
+    public function testSyncRemovesLocalZonesWhenApiCleanlyReturnsEmpty(): void
     {
-        // API returns empty (could be an outage - getZones() catches ApiErrorException)
+        // API returns empty AND ApiStatusService recorded no error - by the
+        // time we get here the upstream throw-on-error guard has already
+        // caught any actual outage, so an empty result is the legitimate
+        // "no zones on this server" state. Sync must reconcile by deleting
+        // the now-stale local rows.
         $this->mockBackend->method('getZones')->willReturn([]);
 
-        // But we have local zones
         $localStmt = $this->createMock(PDOStatement::class);
         $localStmt->method('fetch')->willReturnOnConsecutiveCalls(
             ['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'NATIVE', 'zone_master' => null],
@@ -139,13 +142,15 @@ class ZoneSyncServiceTest extends TestCase
         );
         $this->mockDb->method('query')->willReturn($localStmt);
 
-        // Should NOT call prepare for DELETE
-        $this->mockDb->expects($this->never())->method('prepare');
+        // Reconciliation should issue DELETE prepares for the orphaned rows.
+        $deleteStmt = $this->createMock(PDOStatement::class);
+        $deleteStmt->method('execute')->willReturn(true);
+        $this->mockDb->expects($this->atLeastOnce())->method('prepare')->willReturn($deleteStmt);
 
         $result = $this->service->sync();
 
         $this->assertSame(0, $result['added']);
-        $this->assertSame(0, $result['removed']);
+        $this->assertSame(2, $result['removed']);
         $this->assertSame(0, $result['updated']);
     }
 
@@ -269,27 +274,4 @@ class ZoneSyncServiceTest extends TestCase
         $this->assertSame(['added' => 0, 'removed' => 0, 'updated' => 0], $result);
     }
 
-    /**
-     * The outage guard path (API returned [] with non-empty local) must not
-     * advance the stale-sync throttle, so syncIfStale() keeps retrying on
-     * subsequent requests if PowerDNS recovers quickly.
-     */
-    public function testSyncDoesNotRecordLastSyncOnEmptyApiGuard(): void
-    {
-        $_SESSION = [];
-        $this->mockBackend->method('getZones')->willReturn([]);
-
-        // Local has zones.
-        $localStmt = $this->createMock(PDOStatement::class);
-        $localStmt->method('fetch')->willReturnOnConsecutiveCalls(
-            ['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'NATIVE', 'zone_master' => null],
-            false
-        );
-        $this->mockDb->method('query')->willReturn($localStmt);
-
-        $result = $this->service->sync();
-
-        $this->assertSame(['added' => 0, 'removed' => 0, 'updated' => 0], $result);
-        $this->assertArrayNotHasKey('zone_sync_last', $_SESSION);
-    }
 }

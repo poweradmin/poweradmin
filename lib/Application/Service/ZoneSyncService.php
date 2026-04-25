@@ -125,14 +125,15 @@ class ZoneSyncService
             'local' => count($localZones),
         ]);
 
-        // Defensive guard: if PowerDNS genuinely returned an empty list but we
-        // already track zones locally, refuse to delete all local metadata on
-        // the assumption it is probably an unexpected empty response rather
-        // than the admin having truly deleted every zone. Admins need to
-        // reconcile manually in that rare case.
+        // The error guard above already distinguishes outages from a
+        // genuinely-empty PowerDNS response: anything that gets here came
+        // back as HTTP 200 with an empty list. Reconcile against that empty
+        // result so the local zones table can drop down to zero when an
+        // operator deletes every zone directly in PowerDNS.
         if (empty($apiZones) && !empty($localZones)) {
-            $this->logger->warning('Zone sync: API returned empty while local zones exist, skipping removal');
-            return ['added' => 0, 'removed' => 0, 'updated' => 0];
+            $this->logger->info('Zone sync: PowerDNS reports zero zones, removing {count} stale local row(s)', [
+                'count' => count($localZones),
+            ]);
         }
 
         $added = $this->addMissingZones($apiZones, $localZones);
