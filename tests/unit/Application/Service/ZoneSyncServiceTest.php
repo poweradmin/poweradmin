@@ -273,5 +273,4 @@ class ZoneSyncServiceTest extends TestCase
         $result = $this->service->sync();
         $this->assertSame(['added' => 0, 'removed' => 0, 'updated' => 0], $result);
     }
-
 }
