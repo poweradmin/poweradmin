@@ -79,6 +79,40 @@ class BadgeTwigExtensionTest extends TestCase
         $this->assertSame('Foobar', $this->ext->getZoneTypeLabel('FOOBAR'));
     }
 
+    public function testAutoprimariesLabelUsesModernTermFrom46(): void
+    {
+        $this->setSessionVersion('4.6.0');
+        $this->assertSame('Autoprimaries', $this->ext->getAutoprimariesLabel('plural'));
+        $this->assertSame('Autoprimary', $this->ext->getAutoprimariesLabel('singular'));
+        $this->assertSame('Add autoprimary', $this->ext->getAutoprimariesLabel('add_action'));
+        $this->assertSame('Edit autoprimary', $this->ext->getAutoprimariesLabel('edit_action'));
+        $this->assertSame('Delete autoprimary', $this->ext->getAutoprimariesLabel('delete_action'));
+        $this->assertSame('About Autoprimaries', $this->ext->getAutoprimariesLabel('about_title'));
+        $this->assertSame('IP address of autoprimary', $this->ext->getAutoprimariesLabel('ip_label'));
+    }
+
+    public function testAutoprimariesLabelKeepsLegacyTermBefore46(): void
+    {
+        $this->setSessionVersion('4.5.9');
+        $this->assertSame('Supermasters', $this->ext->getAutoprimariesLabel('plural'));
+        $this->assertSame('Supermaster', $this->ext->getAutoprimariesLabel('singular'));
+        $this->assertSame('Add supermaster', $this->ext->getAutoprimariesLabel('add_action'));
+    }
+
+    public function testAutoprimariesLabelUnknownVersionStaysOnLegacyTerm(): void
+    {
+        // Strict mode: unknown server version means "we don't know it's 4.6+",
+        // so keep the long-standing Supermaster label.
+        $this->assertSame('Supermasters', $this->ext->getAutoprimariesLabel('plural'));
+        $this->assertSame('Supermaster', $this->ext->getAutoprimariesLabel('singular'));
+    }
+
+    public function testAutoprimariesLabelUnknownKeyFallsBackToPlural(): void
+    {
+        $this->setSessionVersion('4.7.0');
+        $this->assertSame('Autoprimaries', $this->ext->getAutoprimariesLabel('something_unrecognized'));
+    }
+
     private function setSessionVersion(string $version): void
     {
         $_SESSION['pdns_server_info'] = [
