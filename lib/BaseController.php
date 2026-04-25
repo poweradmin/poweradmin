@@ -327,7 +327,19 @@ abstract class BaseController
             $this->attemptVersionDetection();
             $info = PdnsVersionService::getCachedInfo();
         }
-        return PdnsCapabilities::fromVersion($info['version'] ?? null);
+        if ($info !== null) {
+            return PdnsCapabilities::fromVersion($info['version'] ?? null);
+        }
+        // SQL/DB backends have no version-detection mechanism. Returning
+        // strict-unknown here would hide every version-gated UI feature
+        // (SVCB records, catalog zones, metadata kinds) on installs that
+        // do support them. Fall back to permissive instead - the strict
+        // mode only makes sense when we know the API exists but couldn't
+        // be reached.
+        if (!DnsBackendProviderFactory::isApiBackend($this->config)) {
+            return PdnsCapabilities::permissive();
+        }
+        return PdnsCapabilities::fromVersion(null);
     }
 
     private function shouldAttemptVersionDetection(): bool
