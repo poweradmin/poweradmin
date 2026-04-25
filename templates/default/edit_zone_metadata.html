@@ -63,7 +63,9 @@
                             <td class="align-top">
                                 <select class="form-select form-select-sm metadata-kind-select" {{ not can_edit_metadata ? 'disabled' : '' }}>
                                     {% for definition in metadata_definitions %}
-                                    <option value="{{ definition.kind }}" {{ row.kind_key == definition.kind ? 'selected' : '' }}>{{ definition.label }}</option>
+                                    <option value="{{ definition.kind }}"
+                                        {{ row.kind_key == definition.kind ? 'selected' : '' }}
+                                        {{ definition.disabled and row.kind_key != definition.kind ? 'disabled' : '' }}>{{ definition.label }}{% if definition.disabled and definition.min_version %} ({% trans %}requires{% endtrans %} {{ definition.min_version }}+){% endif %}</option>
                                     {% endfor %}
                                     <option value="__CUSTOM__" {{ row.kind_key == '__CUSTOM__' ? 'selected' : '' }}>{% trans %}Custom{% endtrans %}</option>
                                 </select>
@@ -122,7 +124,7 @@
         <td class="align-top">
             <select class="form-select form-select-sm metadata-kind-select">
                 {% for definition in metadata_definitions %}
-                <option value="{{ definition.kind }}">{{ definition.label }}</option>
+                <option value="{{ definition.kind }}" {{ definition.disabled ? 'disabled' : '' }}>{{ definition.label }}{% if definition.disabled and definition.min_version %} ({% trans %}requires{% endtrans %} {{ definition.min_version }}+){% endif %}</option>
                 {% endfor %}
                 <option value="__CUSTOM__">{% trans %}Custom{% endtrans %}</option>
             </select>
