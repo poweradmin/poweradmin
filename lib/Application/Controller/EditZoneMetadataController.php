@@ -30,6 +30,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -489,16 +490,8 @@ class EditZoneMetadataController extends BaseController
         }
 
         $minVersion = $definition['min_version'] ?? null;
-        if ($minVersion === null) {
-            return true;
-        }
-
-        $currentVersion = $this->getPowerDnsVersion();
-        if ($currentVersion === '') {
-            return true;
-        }
-
-        return version_compare($currentVersion, $minVersion, '>=');
+        return PdnsCapabilities::fromVersion($this->getPowerDnsVersion())
+            ->supportsMetadataKind(is_string($minVersion) ? $minVersion : null);
     }
 
     /**
