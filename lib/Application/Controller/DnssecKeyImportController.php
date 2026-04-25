@@ -47,9 +47,10 @@ class DnssecKeyImportController extends BaseController
             return;
         }
 
+        $zoneIdInt = (int) $zoneId;
         $permView = Permission::getViewPermission($this->db);
         $permEdit = Permission::getEditPermission($this->db);
-        $userIsZoneOwner = UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId);
+        $userIsZoneOwner = UserManager::verifyUserIsOwnerZoneId($this->db, $zoneIdInt);
 
         if ($permView === 'none' || ($permView === 'own' && !$userIsZoneOwner)) {
             $this->showError(_('You do not have permission to view this zone.'));
@@ -57,7 +58,7 @@ class DnssecKeyImportController extends BaseController
         }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zoneId)) {
+        if (!$dnsRecord->zoneIdExists($zoneIdInt)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
@@ -99,12 +100,12 @@ class DnssecKeyImportController extends BaseController
             return;
         }
 
-        $domainName = $dnsRecord->getDomainNameById($zoneId);
+        $domainName = $dnsRecord->getDomainNameById($zoneIdInt);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
         try {
             if ($dnssecProvider->importZoneKey($domainName, $keyType, $algorithm, $privateKeyPem)) {
-                (new AuditService($this->db))->logDnssecAddKey((int) $zoneId, $domainName, $keyType, 0, $algorithm);
+                (new AuditService($this->db))->logDnssecAddKey($zoneIdInt, $domainName, $keyType, '0', $algorithm);
                 $this->setMessage('dnssec', 'success', _('PEM key imported successfully.'));
             } else {
                 $this->logger->error('Failed to import DNSSEC PEM key: domain={domain}, key_type={key_type}, algorithm={algorithm}', ['domain' => $domainName, 'key_type' => $keyType, 'algorithm' => $algorithm]);

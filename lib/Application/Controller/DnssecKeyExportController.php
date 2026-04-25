@@ -49,9 +49,10 @@ class DnssecKeyExportController extends BaseController
             return;
         }
 
+        $zoneIdInt = (int) $zoneId;
         $permView = Permission::getViewPermission($this->db);
         $permEdit = Permission::getEditPermission($this->db);
-        $userIsZoneOwner = UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId);
+        $userIsZoneOwner = UserManager::verifyUserIsOwnerZoneId($this->db, $zoneIdInt);
 
         if ($permView === 'none' || ($permView === 'own' && !$userIsZoneOwner)) {
             $this->showError(_('You do not have permission to view this zone.'));
@@ -59,7 +60,7 @@ class DnssecKeyExportController extends BaseController
         }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zoneId)) {
+        if (!$dnsRecord->zoneIdExists($zoneIdInt)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
@@ -76,7 +77,7 @@ class DnssecKeyExportController extends BaseController
             return;
         }
 
-        $domainName = $dnsRecord->getDomainNameById($zoneId);
+        $domainName = $dnsRecord->getDomainNameById($zoneIdInt);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
         try {

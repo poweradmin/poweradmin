@@ -54,8 +54,8 @@ class ListNetworksController extends BaseController
         if (!empty($_POST)) {
             $this->validateCsrfToken();
             $action = $this->getSafeRequestValue('action');
-            $cidr = trim((string) $this->getSafeRequestValue('cidr'));
-            $view = trim((string) $this->getSafeRequestValue('view'));
+            $cidr = trim($this->getSafeRequestValue('cidr'));
+            $view = trim($this->getSafeRequestValue('view'));
 
             if (!$this->isValidCidr($cidr)) {
                 $this->setMessage('list_networks', 'error', _('Provide a valid CIDR (e.g. 192.168.0.0/16).'));

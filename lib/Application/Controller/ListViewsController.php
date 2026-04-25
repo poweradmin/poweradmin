@@ -54,8 +54,8 @@ class ListViewsController extends BaseController
         if (!empty($_POST)) {
             $this->validateCsrfToken();
             $action = $this->getSafeRequestValue('action');
-            $view = trim((string) $this->getSafeRequestValue('view'));
-            $zone = trim((string) $this->getSafeRequestValue('zone'));
+            $view = trim($this->getSafeRequestValue('view'));
+            $zone = trim($this->getSafeRequestValue('zone'));
 
             if ($view === '' || $zone === '' || !preg_match('/^[A-Za-z0-9._-]+$/', $view)) {
                 $this->setMessage('list_views', 'error', _('Provide a valid view name and zone identifier.'));
