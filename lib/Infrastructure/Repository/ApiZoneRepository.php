@@ -191,7 +191,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'] ?? 'NATIVE',
-                    'count_records' => $stats['rrset_count'] ?? 0,
+                    'count_records' => $this->resolveRecordCount($stats, (int)$row['id']),
                     'comment' => $row['comment'] ?? '',
                     'secured' => $stats['dnssec'] ?? false,
                     'owners' => [],
@@ -205,6 +205,22 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         }
 
         return $zones;
+    }
+
+    /**
+     * Resolve a zone's record count, falling back to a per-zone API call when
+     * PowerDNS's /zones summary endpoint omits rrset_count (older versions
+     * such as 4.4.x) or returns 0.
+     *
+     * @param array<string, mixed> $stats Stats row from getZoneStats()
+     */
+    private function resolveRecordCount(array $stats, int $zoneId): int
+    {
+        $count = (int)($stats['rrset_count'] ?? 0);
+        if ($count > 0 || $zoneId <= 0) {
+            return $count;
+        }
+        return $this->backendProvider->countZoneRecords($zoneId);
     }
 
     public function getReverseZoneCounts(string $permType, int $userId): array
@@ -302,7 +318,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
-                    'count_records' => $stats['rrset_count'] ?? 0,
+                    'count_records' => $this->resolveRecordCount($stats, (int)$row['id']),
                     'comment' => $row['comment'] ?? '',
                     'secured' => $stats['dnssec'] ?? false,
                     'owners' => [],
