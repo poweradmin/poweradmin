@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -29,8 +30,8 @@ use Psr\Log\LoggerInterface;
 
 class PdnsVersionServiceTest extends TestCase
 {
-    private PowerdnsApiClient $mockClient;
-    private LoggerInterface $mockLogger;
+    private PowerdnsApiClient&MockObject $mockClient;
+    private LoggerInterface&MockObject $mockLogger;
 
     protected function setUp(): void
     {
