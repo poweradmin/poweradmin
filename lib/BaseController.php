@@ -312,16 +312,46 @@ abstract class BaseController
     }
 
     /**
-     * Build a PdnsCapabilities snapshot from the cached PowerDNS version.
+     * Build a PdnsCapabilities snapshot for the connected PowerDNS server.
      *
-     * Reads the session-cached server info populated by PdnsVersionService;
-     * never makes a network call. Returns a strict (unknown-version) instance
-     * if no detection has happened yet, so feature gates fail safe.
+     * Returns the session-cached version when available; otherwise triggers
+     * detection lazily so feature gates work for any authenticated user, not
+     * only ueberusers visiting the dashboard. Detection failures are
+     * rate-limited (one retry per minute) to avoid adding API latency to
+     * every page render when the upstream is briefly unreachable.
      */
     protected function getPdnsCapabilities(): PdnsCapabilities
     {
         $info = PdnsVersionService::getCachedInfo();
+        if ($info === null && $this->shouldAttemptVersionDetection()) {
+            $this->attemptVersionDetection();
+            $info = PdnsVersionService::getCachedInfo();
+        }
         return PdnsCapabilities::fromVersion($info['version'] ?? null);
+    }
+
+    private function shouldAttemptVersionDetection(): bool
+    {
+        if (!DnsBackendProviderFactory::isApiBackend($this->config)) {
+            return false;
+        }
+        $last = $_SESSION['pdns_version_last_attempt'] ?? 0;
+        return (time() - (int) $last) >= 60;
+    }
+
+    private function attemptVersionDetection(): void
+    {
+        $_SESSION['pdns_version_last_attempt'] = time();
+        try {
+            $apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+            if ($apiClient !== null) {
+                (new PdnsVersionService($apiClient, $this->logger))->detect();
+            }
+        } catch (\Throwable $e) {
+            // Detection failures are non-fatal - the UI just falls back to
+            // strict mode. Log at debug to avoid noise during outages.
+            $this->logger->debug('PowerDNS version detection failed: {error}', ['error' => $e->getMessage()]);
+        }
     }
 
     /**
