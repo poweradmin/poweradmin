@@ -261,8 +261,13 @@ class AddZoneMasterController extends BaseController
             $owner_value = $_SESSION['userid'];
         }
 
-        // Safely handle the domain type value
+        // Safely handle the domain type value. Catalog zone kinds (Producer/
+        // Consumer) only appear on PowerDNS 4.7+ - older servers reject them.
         $valid_domain_types = array("MASTER", "NATIVE");
+        if ($this->getPdnsCapabilities()->supportsCatalogZones()) {
+            $valid_domain_types[] = "PRODUCER";
+            $valid_domain_types[] = "CONSUMER";
+        }
         $dom_type_value = isset($_POST['dom_type']) && in_array($_POST['dom_type'], $valid_domain_types) ?
             $_POST['dom_type'] : $this->config->get('dns', 'zone_type_default', 'NATIVE');
 
