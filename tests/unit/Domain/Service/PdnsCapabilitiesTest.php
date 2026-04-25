@@ -61,8 +61,8 @@ class PdnsCapabilitiesTest extends TestCase
         $this->assertFalse(PdnsCapabilities::fromVersion('4.4.3')->prefersPrimarySecondaryTerminology());
         $this->assertTrue(PdnsCapabilities::fromVersion('4.5.0')->prefersPrimarySecondaryTerminology());
         $this->assertTrue(PdnsCapabilities::fromVersion('5.0.0')->prefersPrimarySecondaryTerminology());
-        // Permissive default for unknown - assume modern.
-        $this->assertTrue(PdnsCapabilities::fromVersion(null)->prefersPrimarySecondaryTerminology());
+        // Strict default for unknown - keep legacy terminology.
+        $this->assertFalse(PdnsCapabilities::fromVersion(null)->prefersPrimarySecondaryTerminology());
     }
 
     public function testZoneKindGates(): void
@@ -139,9 +139,36 @@ class PdnsCapabilitiesTest extends TestCase
         $this->assertTrue($caps->supportsMetadataKind(null));
         $this->assertTrue($caps->supportsMetadataKind(''));
 
-        // Unknown server version stays permissive so admins on dev builds
-        // still see the kinds.
+        // Unknown server version is strict - hide kinds whose min_version
+        // can't be confirmed. Kinds with no min_version remain visible.
         $unknown = PdnsCapabilities::fromVersion(null);
-        $this->assertTrue($unknown->supportsMetadataKind('5.1.0'));
+        $this->assertFalse($unknown->supportsMetadataKind('5.1.0'));
+        $this->assertTrue($unknown->supportsMetadataKind(null));
+    }
+
+    /**
+     * Exhaustive check that every feature-visibility method returns false
+     * when the connected version is unknown. The point of strict mode is
+     * that unreachable / unparseable PowerDNS = hide newer features.
+     */
+    public function testUnknownVersionReturnsFalseForAllVisibilityMethods(): void
+    {
+        $caps = PdnsCapabilities::fromVersion(null);
+        $this->assertFalse($caps->prefersPrimarySecondaryTerminology());
+        $this->assertFalse($caps->supportsCatalogZones());
+        $this->assertFalse($caps->supportsViews());
+        $this->assertFalse($caps->supportsRecordType('SVCB'));
+        $this->assertFalse($caps->supportsRecordType('ZONEMD'));
+        $this->assertFalse($caps->supportsRecordType('WALLET'));
+        $this->assertFalse($caps->supportsIndividualRrsetFetch());
+        $this->assertFalse($caps->supportsAutoprimariesApi());
+        $this->assertFalse($caps->supportsRecordTimestamps());
+        $this->assertFalse($caps->supportsDefaultCsk());
+        $this->assertFalse($caps->supportsPemKeyImportExport());
+        $this->assertFalse($caps->supportsRfc9615Bootstrap());
+
+        // Always-supported record types are still allowed even on unknown.
+        $this->assertTrue($caps->supportsRecordType('A'));
+        $this->assertTrue($caps->supportsRecordType('CNAME'));
     }
 }

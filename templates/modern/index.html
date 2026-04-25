@@ -7,7 +7,15 @@
         <span class="text-muted small"><i class="bi bi-people me-1"></i>{{ dashboard_stats.users }} {% trans %}users{% endtrans %}</span>
         <span class="text-muted small"><i class="bi bi-people-fill me-1"></i>{{ dashboard_stats.groups }} {% trans %}groups{% endtrans %}</span>
         {% if pdns_server_info and pdns_server_info.version %}
-        <span class="text-muted small" title="{% trans %}Connected PowerDNS version{% endtrans %}"><i class="bi bi-hdd me-1"></i>PowerDNS {{ pdns_server_info.version }}</span>
+        <span class="text-muted small" data-bs-toggle="tooltip" data-bs-placement="bottom"
+              title="{% trans %}Connected PowerDNS version{% endtrans %}{% if pdns_server_info.daemon_type %} ({{ pdns_server_info.daemon_type }}){% endif %}">
+            <i class="bi bi-hdd me-1"></i>PowerDNS {{ pdns_server_info.version }}
+        </span>
+        {% elseif permissions and permissions.user_is_ueberuser and api_enabled %}
+        <span class="text-muted small" data-bs-toggle="tooltip" data-bs-placement="bottom"
+              title="{% trans %}Could not detect PowerDNS version. Newer features are hidden until the API is reachable.{% endtrans %}">
+            <i class="bi bi-hdd me-1"></i>{% trans %}PowerDNS version unknown{% endtrans %}
+        </span>
         {% endif %}
     </div>
     {% endif %}

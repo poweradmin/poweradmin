@@ -97,7 +97,23 @@ class PdnsVersionService
      */
     public function getCached(): ?array
     {
+        return self::getCachedInfo();
+    }
+
+    /**
+     * Static accessor for the session-cached server info. Useful for callers
+     * (e.g. BaseController) that don't want to construct the service just to
+     * read what IndexController already detected.
+     *
+     * @return array{version: string, daemon_type: string, id: string}|null
+     */
+    public static function getCachedInfo(): ?array
+    {
         $cached = $_SESSION[self::SESSION_KEY] ?? null;
-        return is_array($cached) ? ($cached['info'] ?? null) : null;
+        if (!is_array($cached)) {
+            return null;
+        }
+        $info = $cached['info'] ?? null;
+        return is_array($info) ? $info : null;
     }
 }

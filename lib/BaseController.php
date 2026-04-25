@@ -28,9 +28,11 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaSessionManager;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserAvatarService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
@@ -296,8 +298,30 @@ abstract class BaseController
         // Add base_url_prefix for subfolder deployment support
         $params['base_url_prefix'] = $this->config->get('interface', 'base_url_prefix', '');
 
+        // Expose connected PowerDNS capabilities to every template so views
+        // can adapt (record types, zone kinds, terminology, etc).
+        if (!array_key_exists('pdns_caps', $params)) {
+            $params['pdns_caps'] = $this->getPdnsCapabilities();
+        }
+        if (!array_key_exists('pdns_server_info', $params)) {
+            $params['pdns_server_info'] = PdnsVersionService::getCachedInfo();
+        }
+
         $this->app->render($template, $params);
         $this->renderFooter();
+    }
+
+    /**
+     * Build a PdnsCapabilities snapshot from the cached PowerDNS version.
+     *
+     * Reads the session-cached server info populated by PdnsVersionService;
+     * never makes a network call. Returns a strict (unknown-version) instance
+     * if no detection has happened yet, so feature gates fail safe.
+     */
+    protected function getPdnsCapabilities(): PdnsCapabilities
+    {
+        $info = PdnsVersionService::getCachedInfo();
+        return PdnsCapabilities::fromVersion($info['version'] ?? null);
     }
 
     /**

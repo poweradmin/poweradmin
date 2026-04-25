@@ -28,12 +28,10 @@ namespace Poweradmin\Domain\Service;
  *
  * The version timeline reflected here is taken from the upstream changelog
  * (docs/changelog/4.4.rst .. 5.1.rst). When the connected version is unknown
- * (empty string, or detection failed), each capability method picks the default
- * documented inline:
- *   - "feature visibility" questions default to permissive (true) so users on
- *     unknown/dev builds still see the option
- *   - "should we opt in to newer behaviour by default" questions default to
- *     conservative (false) to avoid surprising users on older servers
+ * (empty string, or detection failed) every capability method returns false
+ * (strict mode): the UI must hide newer features whose support cannot be
+ * confirmed. This is the fail-safe choice - showing options the server then
+ * rejects is worse than briefly hiding them while the API is unreachable.
  */
 final class PdnsCapabilities
 {
@@ -83,7 +81,7 @@ final class PdnsCapabilities
     /** Primary/Secondary aliases were added in 4.5; older servers only know Master/Slave. */
     public function prefersPrimarySecondaryTerminology(): bool
     {
-        return $this->isAtLeast('4.5.0', true);
+        return $this->isAtLeast('4.5.0');
     }
 
     /* ----- Zone kinds -------------------------------------------------- */
@@ -91,13 +89,13 @@ final class PdnsCapabilities
     /** Catalog zones (Producer/Consumer kinds) introduced in 4.7. */
     public function supportsCatalogZones(): bool
     {
-        return $this->isAtLeast('4.7.0', true);
+        return $this->isAtLeast('4.7.0');
     }
 
     /** Per-zone/network Views introduced in 5.0. */
     public function supportsViews(): bool
     {
-        return $this->isAtLeast('5.0.0', true);
+        return $this->isAtLeast('5.0.0');
     }
 
     /* ----- Record types ------------------------------------------------ */
@@ -123,7 +121,7 @@ final class PdnsCapabilities
         if ($minVersion === null) {
             return true;
         }
-        return $this->isAtLeast($minVersion, true);
+        return $this->isAtLeast($minVersion);
     }
 
     /* ----- API endpoints ---------------------------------------------- */
@@ -131,58 +129,57 @@ final class PdnsCapabilities
     /** Individual RRset fetch endpoint added in 4.6. */
     public function supportsIndividualRrsetFetch(): bool
     {
-        return $this->isAtLeast('4.6.0', true);
+        return $this->isAtLeast('4.6.0');
     }
 
     /** Autoprimary management via API added in 4.6. */
     public function supportsAutoprimariesApi(): bool
     {
-        return $this->isAtLeast('4.6.0', true);
+        return $this->isAtLeast('4.6.0');
     }
 
     /** Per-record last-modified timestamps in API responses added in 4.9. */
     public function supportsRecordTimestamps(): bool
     {
-        return $this->isAtLeast('4.9.0', true);
+        return $this->isAtLeast('4.9.0');
     }
 
     /* ----- DNSSEC ----------------------------------------------------- */
 
     /**
      * PowerDNS 4.0+ uses CSK (Combined Signing Key) by default. Older servers
-     * default to KSK+ZSK and the UI should reflect that. This is an opt-in
-     * default behaviour question, so unknown versions return false.
+     * default to KSK+ZSK and the UI should reflect that.
      */
     public function supportsDefaultCsk(): bool
     {
-        return $this->isAtLeast('4.0.0', false);
+        return $this->isAtLeast('4.0.0');
     }
 
     /** PEM import/export of DNSSEC keys added in 4.7. */
     public function supportsPemKeyImportExport(): bool
     {
-        return $this->isAtLeast('4.7.0', true);
+        return $this->isAtLeast('4.7.0');
     }
 
     /** RFC 9615 authenticated DNSSEC bootstrapping added in 5.0. */
     public function supportsRfc9615Bootstrap(): bool
     {
-        return $this->isAtLeast('5.0.0', true);
+        return $this->isAtLeast('5.0.0');
     }
 
     /* ----- Zone metadata ---------------------------------------------- */
 
     /**
      * Whether a metadata kind whose minimum version is $minVersion should be
-     * shown for the connected server. Mirrors the permissive "show by default"
-     * behaviour used by the metadata editor: when the version is unknown we
-     * still show the kind so admins on dev builds aren't blocked.
+     * shown for the connected server. A null/empty minimum means the kind has
+     * always been supported. When the connected version is unknown the kind is
+     * hidden (strict mode) so admins don't get options the server may reject.
      */
     public function supportsMetadataKind(?string $minVersion): bool
     {
         if ($minVersion === null || $minVersion === '') {
             return true;
         }
-        return $this->isAtLeast($minVersion, true);
+        return $this->isAtLeast($minVersion);
     }
 }
