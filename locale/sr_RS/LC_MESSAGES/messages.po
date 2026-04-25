@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-25 17:17+0300\n"
+"POT-Creation-Date: 2026-04-25 18:57+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Serbian\n"
@@ -121,6 +121,7 @@ msgid "Transport protocol for the TLS connection"
 msgstr "Транспортни протокол за TLS везу"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:89
+#: install/templates/step4.html.twig:137
 msgid "Hostname"
 msgstr "Име хоста"
 
@@ -1225,24 +1226,24 @@ msgstr "Неуспешно преузимање RDAP информација са
 msgid "Invalid CSRF token."
 msgstr "Неважећи CSRF токен."
 
-#: lib/BaseController.php:658
+#: lib/BaseController.php:661
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr "<a href=\"install/\">install/</a> постоји, уклоните га."
 
-#: lib/BaseController.php:715
+#: lib/BaseController.php:718
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr "Користи се подразумевани кључ сесије, подесите га у конфигурацији."
 
-#: lib/BaseController.php:854
+#: lib/BaseController.php:857
 #, php-format
 msgid "The %s field is required."
 msgstr "Поље %s је обавезно."
 
-#: lib/BaseController.php:862
+#: lib/BaseController.php:865
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Поље %s мора бити број."
@@ -9057,6 +9058,7 @@ msgid "Tools"
 msgstr "Алати"
 
 #: templates/default/index.html:320 templates/modern/index.html:320
+#: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "База података"
 
@@ -9065,6 +9067,7 @@ msgid "My Profile"
 msgstr "Мој профил"
 
 #: templates/modern/login.html:23 templates/modern/add_user.html:39
+#: install/templates/step4.html.twig:122 install/templates/step5.html.twig:72
 msgid "Password"
 msgstr "Лозинка"
 
@@ -9760,6 +9763,7 @@ msgid "Recommended bits for"
 msgstr "Препоручени битови за"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
+#: install/helpers/InstallStepHandler.php:175
 msgid "Warning:"
 msgstr "Упозорење:"
 
@@ -9810,6 +9814,7 @@ msgid "Edit user"
 msgstr "Уреди корисника"
 
 #: templates/modern/manage_group_members.html:93
+#: install/templates/step4.html.twig:111 install/templates/step5.html.twig:61
 msgid "Username"
 msgstr "Корисничко име"
 
@@ -9852,6 +9857,7 @@ msgid "Optional information about this user"
 msgstr "Опционе информације о кориснику"
 
 #: templates/modern/users.html:49 templates/modern/add_user.html:94
+#: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Омогућено"
 
@@ -10223,6 +10229,7 @@ msgid "Host Prefix"
 msgstr "Префикс хоста"
 
 #: templates/modern/batch_ptr_record.html:73
+#: install/templates/step4.html.twig:206
 msgid "Optional"
 msgstr "Опционо"
 
@@ -10675,6 +10682,7 @@ msgid "MFA"
 msgstr "MFA"
 
 #: templates/modern/users.html:105 templates/modern/users.html:169
+#: install/templates/step4.html.twig:25
 msgid "SQL"
 msgstr "SQL"
 
@@ -10916,6 +10924,7 @@ msgid "Send Username"
 msgstr "Пошаљи корисничко име"
 
 #: templates/default/add_user.html:43 templates/modern/add_user.html:43
+#: install/templates/step4.html.twig:127
 msgid "Provide user password"
 msgstr "Унесите корисничку лозинку"
 
@@ -12080,6 +12089,7 @@ msgid "Last Checked"
 msgstr "Последња провера"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:126
+#: install/templates/step2.html.twig:18
 msgid "OK"
 msgstr "У реду"
 
@@ -12717,558 +12727,789 @@ msgstr "Унесите име домена (нпр. example.com) за RDAP ин�
 msgid "RDAP results for"
 msgstr "RDAP резултати за"
 
-# OBSOLETE: msgid "Create limited rights user"
-# OBSOLETE: msgstr "Креирај корисника са ограниченим правима"
-
-# OBSOLETE: msgid "Step"
-# OBSOLETE: msgstr "Корак"
-
-# OBSOLETE: msgid "Create limited-rights user"
-# OBSOLETE: msgstr "креирај корисника са ограниченим правима"
-
-# OBSOLETE: msgid "Limited Database Rights:"
-# OBSOLETE: msgstr "Ограничена права БП:"
-
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "Create a database user with limited rights (select, insert, update, "
-# OBSOLETE: "delete) for Poweradmin tables only. PowerDNS table access is not required "
-# OBSOLETE: "when using the API backend."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Креирајте корисника БП са ограниченим правима само за Poweradmin табеле."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Create a database user with limited rights (select, insert, update, "
-# OBSOLETE: "delete) for Poweradmin to access PowerDNS tables."
-# OBSOLETE: msgstr "Креирајте корисника БП са ограниченим правима за Poweradmin."
-
-# OBSOLETE: msgid "Database Commands"
-# OBSOLETE: msgstr "Команде БП"
-
-# OBSOLETE: msgid "Execute the following commands:"
-# OBSOLETE: msgstr "Извршите следеће команде:"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "After you have added the new user, proceed with this installation "
-# OBSOLETE: "procedure."
-# OBSOLETE: msgstr "Након што додате новог корисника, наставите са инсталацијом."
-
-# OBSOLETE: msgid "Note:"
-# OBSOLETE: msgstr "Напомена:"
-
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "Since you are using SQLite, there is no need to create a new user with "
-# OBSOLETE: "limited rights."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Пошто користите SQLite, није потребно креирати корисника са ограниченим "
-# OBSOLETE: "правима."
-
-# OBSOLETE: msgid "Continue to step"
-# OBSOLETE: msgstr "Настави на корак"
-
-# OBSOLETE: msgid "Installation step"
-# OBSOLETE: msgstr "Корак инсталације"
-
-# OBSOLETE: msgid "Create configuration file"
-# OBSOLETE: msgstr "Креирај конфигурациону датотеку"
-
-# OBSOLETE: msgid "Configuration File:"
-# OBSOLETE: msgstr "Конфигурациона датотека:"
-
-# OBSOLETE: msgid "Create the file"
-# OBSOLETE: msgstr "Креирај датотеку"
-
-# OBSOLETE: msgid "with the following content:"
-# OBSOLETE: msgstr "са следећим садржајем:"
-
-# OBSOLETE: msgid "Choose a language"
-# OBSOLETE: msgstr "Изаберите језик"
-
-# OBSOLETE: msgid "Choose a language for installation"
-# OBSOLETE: msgstr "Изаберите језик за инсталацију"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Please select your preferred language to continue with the installation:"
-# OBSOLETE: msgstr "Изаберите жељени језик за наставак инсталације:"
-
-# OBSOLETE: msgid "Begin Installation"
-# OBSOLETE: msgstr "Започни инсталацију"
-
-# OBSOLETE: msgid "Configuring database"
-# OBSOLETE: msgstr "Конфигурисање БП"
-
-# OBSOLETE: msgid "Configuring Database Connection"
-# OBSOLETE: msgstr "Конфигурисање везе БП"
-
-# OBSOLETE: msgid "PowerDNS Backend"
-# OBSOLETE: msgstr "PowerDNS позадина"
-
-# OBSOLETE: msgid "Choose how Poweradmin communicates with PowerDNS:"
-# OBSOLETE: msgstr "Изаберите како Poweradmin комуницира са PowerDNS-ом:"
-
-# OBSOLETE: msgid "Direct access to PowerDNS database tables"
-# OBSOLETE: msgstr "Директан приступ PowerDNS табелама БП"
-
-# OBSOLETE: msgid "API"
-# OBSOLETE: msgstr "API"
-
-# OBSOLETE: msgid "PowerDNS REST API"
-# OBSOLETE: msgstr "PowerDNS REST АПИ"
-
-# OBSOLETE: msgid "Experimental"
-# OBSOLETE: msgstr "Експериментално"
-
-# OBSOLETE: msgid "PowerDNS API Settings"
-# OBSOLETE: msgstr "PowerDNS АПИ подешавања"
-
-# OBSOLETE: msgid "API URL"
-# OBSOLETE: msgstr "АПИ URL"
-
-# OBSOLETE: msgid "PowerDNS API endpoint URL."
-# OBSOLETE: msgstr "URL крајње тачке PowerDNS АПИ."
-
-# OBSOLETE: msgid "API Key"
-# OBSOLETE: msgstr "АПИ кључ"
-
-# OBSOLETE: msgid "PowerDNS API key (from pdns.conf api-key setting)."
-# OBSOLETE: msgstr "PowerDNS АПИ кључ (из pdns.conf api-key поставке)."
-
-# OBSOLETE: msgid "Server name"
-# OBSOLETE: msgstr "име сервера"
-
-# OBSOLETE: msgid "PowerDNS server name for API calls (usually \"localhost\")."
-# OBSOLETE: msgstr "Име PowerDNS сервера за АПИ позиве (обично \"localhost\")."
-
-# OBSOLETE: msgid "Database Connection Settings"
-# OBSOLETE: msgstr "Подешавања везе БП"
-
-# OBSOLETE: msgid "Database Configuration:"
-# OBSOLETE: msgstr "Конфигурација БП:"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Configure database connection with table creation rights. PowerDNS "
-# OBSOLETE: "location can be specified separately if needed."
-# OBSOLETE: msgstr "Конфигуришите БП са правима креирања табела."
-
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "Configure database connection for Poweradmin tables (users, permissions, "
-# OBSOLETE: "zones). PowerDNS tables are not required."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Конфигуришите везу БП за Poweradmin табеле. PowerDNS табеле нису обавезне."
-
-# OBSOLETE: msgid "Database type"
-# OBSOLETE: msgstr "Тип БП"
-
-# OBSOLETE: msgid "Database server type."
-# OBSOLETE: msgstr "Тип сервера БП."
-
-# OBSOLETE: msgid "Provide the user name"
-# OBSOLETE: msgstr "Унесите корисничко име"
-
-# OBSOLETE: msgid "Database username with rights to create tables."
-# OBSOLETE: msgstr "Корисничко име БП са правима за креирање табела."
-
-# OBSOLETE: msgid "Password for this database user."
-# OBSOLETE: msgstr "Лозинка за овог корисника БП."
-
-# OBSOLETE: msgid "Avoid quotes, backslashes, and line breaks."
-# OBSOLETE: msgstr "Избегавајте наводнике, обрнуте косе црте и прекиде редова."
-
-# OBSOLETE: msgid "Provide the hostname"
-# OBSOLETE: msgstr "Унесите име хоста"
-
-# OBSOLETE: msgid "Database server hostname (usually \"localhost\")."
-# OBSOLETE: msgstr "Име хоста сервера БП (обично \"localhost\")."
-
-# OBSOLETE: msgid "DB Port"
-# OBSOLETE: msgstr "Порт БП"
-
-# OBSOLETE: msgid "Provide database port"
-# OBSOLETE: msgstr "Унесите порт БП"
-
-# OBSOLETE: msgid "Database server port."
-# OBSOLETE: msgstr "Порт сервера БП."
-
-# OBSOLETE: msgid "Provide the name of the database"
-# OBSOLETE: msgstr "Унесите име базе података"
-
-# OBSOLETE: msgid "Database name (will be used for Poweradmin tables)."
-# OBSOLETE: msgstr "Име базе података (користи се за Poweradmin табеле)."
-
-# OBSOLETE: msgid "Full path to SQLite database file"
-# OBSOLETE: msgstr "Пуна путања до SQLite датотеке БП"
-
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "File must exist with web server read/write access. Use absolute path."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Датотека мора постојати са приступом веб сервера. Користите апсолутну "
-# OBSOLETE: "путању."
-
-# OBSOLETE: msgid "DB charset"
-# OBSOLETE: msgstr "Знаковни скуп БП"
-
-# OBSOLETE: msgid "Use default"
-# OBSOLETE: msgstr "Користи подразумевано"
-
-# OBSOLETE: msgid "Charset for new tables. Leave empty for database default."
-# OBSOLETE: msgstr "Знаковни скуп за нове табеле. Остави празно за подразумевано."
-
-# OBSOLETE: msgid "DB collation"
-# OBSOLETE: msgstr "Колација БП"
-
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "Collation rules for character comparison. Leave empty for database "
-# OBSOLETE: "default."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Правила колације за поређење знакова. Остави празно за подразумевано."
-
-# OBSOLETE: msgid "PowerDNS Database"
-# OBSOLETE: msgstr "PowerDNS база"
-
-# OBSOLETE: msgid "Database name"
-# OBSOLETE: msgstr "Име БП"
-
-# OBSOLETE: msgid "Leave empty for same database"
-# OBSOLETE: msgstr "Остави празно за исту БП"
-
-# OBSOLETE: msgid "MySQL database with PowerDNS tables (if different)."
-# OBSOLETE: msgstr "MySQL база са PowerDNS табелама (ако је другачија)."
-
-# OBSOLETE: msgid "Poweradmin Account"
-# OBSOLETE: msgstr "Poweradmin налог"
-
-# OBSOLETE: msgid "Administrator password"
-# OBSOLETE: msgstr "Лозинка администратора"
-
-# OBSOLETE: msgid "Provide a password"
-# OBSOLETE: msgstr "Унесите лозинку"
-
-# OBSOLETE: msgid "Password for \"admin\" username."
-# OBSOLETE: msgstr "Лозинка за корисника \"admin\"."
-
-# OBSOLETE: msgid "System Requirements"
-# OBSOLETE: msgstr "Системски захтеви"
-
-# OBSOLETE: msgid "System Requirements Check"
-# OBSOLETE: msgstr "Провера системских захтева"
-
-# OBSOLETE: msgid "PHP Version"
-# OBSOLETE: msgstr "PHP верзија"
-
-# OBSOLETE: msgid "Requires PHP 8.2.0+"
-# OBSOLETE: msgstr "Захтева PHP 8.2.0+"
-
-# OBSOLETE: msgid "Database Extensions"
-# OBSOLETE: msgstr "Екстензије БП"
-
-# OBSOLETE: msgid "at least one required"
-# OBSOLETE: msgstr "бар једна је обавезна"
-
-# OBSOLETE: msgid "Required PHP Extensions"
-# OBSOLETE: msgstr "Потребне PHP екстензије"
-
-# OBSOLETE: msgid "Optional Extensions"
-# OBSOLETE: msgstr "Опционе екстензије"
-
-# OBSOLETE: msgid "Web Server"
-# OBSOLETE: msgstr "Веб сервер"
-
-# OBSOLETE: msgid "Server"
-# OBSOLETE: msgstr "Сервер"
-
-# OBSOLETE: msgid "Not detected — required for URL routing"
-# OBSOLETE: msgstr "Not detected — required for URL routing"
-
-# OBSOLETE: msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
-# OBSOLETE: msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
-
-# OBSOLETE: msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Уверите се да је URL преписивање конфигурисано (погледајте "
-# OBSOLETE: "nginx.conf.example)"
-
-# OBSOLETE: msgid "Ensure URL rewriting is configured for your web server"
-# OBSOLETE: msgstr "Уверите се да је URL преписивање конфигурисано на серверу"
-
-# OBSOLETE: msgid "All required components are available."
-# OBSOLETE: msgstr "Све обавезне компоненте су доступне."
-
-# OBSOLETE: msgid "You can continue with the installation."
-# OBSOLETE: msgstr "Можете наставити са инсталацијом."
-
-# OBSOLETE: msgid "Some required components are missing."
-# OBSOLETE: msgstr "Неке обавезне компоненте недостају."
-
-# OBSOLETE: msgid "Please install the missing components before continuing."
-# OBSOLETE: msgstr "Молимо инсталирајте недостајуће компоненте пре настављања."
-
-# OBSOLETE: msgid "Setup account and nameservers"
-# OBSOLETE: msgstr "Подеси налог и сервере имена"
-
-# OBSOLETE: msgid "Setup account and name servers"
-# OBSOLETE: msgstr "Подеси налог и сервере имена"
-
-# OBSOLETE: msgid "Configuration:"
-# OBSOLETE: msgstr "Конфигурација:"
-
-# OBSOLETE: msgid "Now we will gather all details for the configuration itself."
-# OBSOLETE: msgstr "Сада ћемо прикупити све детаље за саму конфигурацију."
-
-# OBSOLETE: msgid "Database User"
-# OBSOLETE: msgstr "Корисник БП"
-
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "Poweradmin keeps its own tables (users, permissions, zone metadata) in "
-# OBSOLETE: "the configured database even when the PowerDNS API backend is selected. "
-# OBSOLETE: "These credentials are for that database, not for PowerDNS."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Poweradmin чува своје табеле у конфигурисаној бази чак и са PowerDNS АПИ "
-# OBSOLETE: "позадином."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Poweradmin database username with restricted access. Not for web UI login."
-# OBSOLETE: msgstr "Корисник БП са ограниченим приступом. Не за веб пријаву."
-
-# OBSOLETE: msgid "Provide the user password"
-# OBSOLETE: msgstr "Унесите корисничку лозинку"
-
-# OBSOLETE: msgid "The password for this username."
-# OBSOLETE: msgstr "Лозинка за ово корисничко име."
-
-# OBSOLETE: msgid "DNS Settings"
-# OBSOLETE: msgstr "DNS поставке"
-
-# OBSOLETE: msgid "Hostmaster"
-# OBSOLETE: msgstr "Хостмастер"
-
-# OBSOLETE: msgid "Provide the DNS hostmaster"
-# OBSOLETE: msgstr "Унесите DNS хостмастер"
-
-# OBSOLETE: msgid "Default hostmaster for SOA records."
-# OBSOLETE: msgstr "Подразумевани хостмастер за SOA записе."
-
-# OBSOLETE: msgid "Primary nameserver"
-# OBSOLETE: msgstr "Главни сервер имена"
-
-# OBSOLETE: msgid "Provide the primary nameserver"
-# OBSOLETE: msgstr "Унесите главни сервер имена"
-
-# OBSOLETE: msgid "Primary nameserver for new zones."
-# OBSOLETE: msgstr "Главни сервер имена за нове зоне."
-
-# OBSOLETE: msgid "Secondary nameserver"
-# OBSOLETE: msgstr "Секундарни сервер имена"
-
-# OBSOLETE: msgid "Provide the secondary nameserver"
-# OBSOLETE: msgstr "Унесите секундарни сервер имена"
-
-# OBSOLETE: msgid "Secondary nameserver for new zones."
-# OBSOLETE: msgstr "Секундарни сервер имена за нове зоне."
-
-# OBSOLETE: msgid "Tertiary Nameserver"
-# OBSOLETE: msgstr "Терцијарни сервер имена"
-
-# OBSOLETE: msgid "optional"
-# OBSOLETE: msgstr "опционо"
-
-# OBSOLETE: msgid "Optional tertiary nameserver for new zones."
-# OBSOLETE: msgstr "Опциони терцијарни сервер имена за нове зоне."
-
-# OBSOLETE: msgid "Quaternary Nameserver"
-# OBSOLETE: msgstr "Кватернарни сервер имена"
-
-# OBSOLETE: msgid "Optional quaternary nameserver for new zones."
-# OBSOLETE: msgstr "Опциони кватернарни сервер имена за нове зоне."
-
-# OBSOLETE: msgid "Installation complete"
-# OBSOLETE: msgstr "Инсталација завршена"
-
-# OBSOLETE: msgid "Installation Complete!"
-# OBSOLETE: msgstr "Инсталација завршена!"
-
-# OBSOLETE: msgid "Congratulations! Your Poweradmin installation is now configured."
-# OBSOLETE: msgstr "Честитамо! Ваша Poweradmin инсталација је сада конфигурисана."
-
-# OBSOLETE: msgid "Important Security Notice:"
-# OBSOLETE: msgstr "Важно безбедносно обавештење:"
-
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "You must remove the \"install/\" directory from the Poweradmin root "
-# OBSOLETE: "directory."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Морате уклонити \"install/\" директоријум из Poweradmin root "
-# OBSOLETE: "директоријума."
-
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "Poweradmin will not function if the install directory exists, as a "
-# OBSOLETE: "security measure."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Poweradmin неће радити ако install директоријум постоји, као безбедносна "
-# OBSOLETE: "мера."
-
-# OBSOLETE: msgid "Next Steps"
-# OBSOLETE: msgstr "Следећи кораци"
-
-# OBSOLETE: msgid "Remove the \"install/\" directory from your server"
-# OBSOLETE: msgstr "Уклоните \"install/\" директоријум са свог сервера"
-
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "Login to <a href=\"../index.php\">Poweradmin</a> using the default "
-# OBSOLETE: "username \"admin\" and the password you set in step 3"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Пријавите се у <a href=\"../index.php\">Poweradmin</a> са \"admin\" и "
-# OBSOLETE: "лозинком из корака 3"
-
-# OBSOLETE: msgid "Begin configuring your DNS zones and records"
-# OBSOLETE: msgstr "Почните конфигурисање DNS зона и записа"
-
-# OBSOLETE: msgid "Getting Ready"
-# OBSOLETE: msgstr "Припрема"
-
-# OBSOLETE: msgid "Prerequisites"
-# OBSOLETE: msgstr "Предуслови"
-
-# OBSOLETE: msgid "Before proceeding, ensure you have:"
-# OBSOLETE: msgstr "Пре наставка, уверите се да имате:"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "PowerDNS installed with database tables created (or API access configured)"
-# OBSOLETE: msgstr "PowerDNS инсталиран са табелама или конфигурисаним АПИ приступом"
-
-# OBSOLETE: msgid "Database credentials (hostname, username, password)"
-# OBSOLETE: msgstr "Акредитиви БП (име хоста, корисничко име, лозинка)"
-
-# OBSOLETE: msgid "Permission to create tables for Poweradmin"
-# OBSOLETE: msgstr "Дозвола за креирање табела за Poweradmin"
-
-# OBSOLETE: msgid "Next:"
-# OBSOLETE: msgstr "Следеће:"
-
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "Configure database connection, create admin account, and generate "
-# OBSOLETE: "configuration file."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Конфигуришите везу БП, креирајте админ налог и генеришите конфигурацију."
-
-# OBSOLETE: msgid "Missing PowerDNS tables:"
-# OBSOLETE: msgstr "Недостајуће PowerDNS табеле:"
-
-# OBSOLETE: msgid "Poweradmin requires these PowerDNS tables to function properly."
-# OBSOLETE: msgstr "Poweradmin захтева ове PowerDNS табеле за исправан рад."
-
-# OBSOLETE: msgid "Updating database... done!"
-# OBSOLETE: msgstr "Ажурирање БП... готово!"
-
-# OBSOLETE: msgid "Foreign Key Constraint Issues:"
-# OBSOLETE: msgstr "Проблеми са ограничењем страног кључа:"
-
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "The installer could not remove existing tables due to foreign key "
-# OBSOLETE: "constraints"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Инсталер није могао уклонити постојеће табеле због ограничења страних "
-# OBSOLETE: "кључева"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "This can happen during reinstallation if you have custom constraints or "
-# OBSOLETE: "if tables are referenced by other tables"
-# OBSOLETE: msgstr "Ово се може десити при реинсталацији ако имате custom constraints."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "You can try manually disabling foreign key checks before running the "
-# OBSOLETE: "installer:"
-# OBSOLETE: msgstr "Можете ручно онемогућити FK провере пре покретања инсталатера:"
-
-# OBSOLETE: msgid "Suggestions:"
-# OBSOLETE: msgstr "Предлози:"
-
-# OBSOLETE: msgid "Make sure the SQLite database file exists"
-# OBSOLETE: msgstr "Уверите се да SQLite датотека БП постоји"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Check that the web server has read and write permissions for the database "
-# OBSOLETE: "file"
-# OBSOLETE: msgstr "Проверите да веб сервер има дозволе читања и писања за датотеку БП"
-
-# OBSOLETE: msgid "Verify the full path to the database file is correct and accessible"
-# OBSOLETE: msgstr "Проверите да је пуна путања до датотеке БП исправна и доступна"
-
-# OBSOLETE: msgid "Verify database credentials are correct"
-# OBSOLETE: msgstr "Проверите да ли су акредитиви БП исправни"
-
-# OBSOLETE: msgid "Check that the database user has sufficient privileges"
-# OBSOLETE: msgstr "Проверите да корисник БП има довољна овлашћења"
-
-# OBSOLETE: msgid "Ensure the database server is running and accessible"
-# OBSOLETE: msgstr "Осигурајте да сервер БП ради и да је доступан"
-
-# OBSOLETE: msgid "Database Error"
-# OBSOLETE: msgstr "Грешка БП"
-
+#: install/templates/step6.html.twig:3
+#, auto-english-fallback
+msgid "Create limited rights user"
+msgstr "Create limited rights user"
+
+#: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
+#, auto-english-fallback
+msgid "Step"
+msgstr "Step"
+
+#: install/templates/step6.html.twig:8
+#, auto-english-fallback
+msgid "Create limited-rights user"
+msgstr "Create limited-rights user"
+
+#: install/templates/step6.html.twig:13
+#, auto-english-fallback
+msgid "Limited Database Rights:"
+msgstr "Limited Database Rights:"
+
+#: install/templates/step6.html.twig:15
+msgid ""
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin tables only. PowerDNS table access is not required when using "
+"the API backend."
+msgstr ""
+
+#: install/templates/step6.html.twig:17
+msgid ""
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin to access PowerDNS tables."
+msgstr ""
+
+#: install/templates/step6.html.twig:25
+#, auto-english-fallback
+msgid "Database Commands"
+msgstr "Database Commands"
+
+#: install/templates/step6.html.twig:28
+#, auto-english-fallback
+msgid "Execute the following commands:"
+msgstr "Execute the following commands:"
+
+#: install/templates/step6.html.twig:40
+msgid ""
+"After you have added the new user, proceed with this installation procedure."
+msgstr ""
+
+#: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
+#, auto-english-fallback
+msgid "Note:"
+msgstr "Note:"
+
+#: install/templates/step6.html.twig:43
+msgid ""
+"Since you are using SQLite, there is no need to create a new user with "
+"limited rights."
+msgstr ""
+
+#: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
+#, auto-english-fallback
+msgid "Continue to step"
+msgstr "Continue to step"
+
+#: install/templates/base.html.twig:37
+#, auto-english-fallback
+msgid "Installation step"
+msgstr "Installation step"
+
+#: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
+#, auto-english-fallback
+msgid "Create configuration file"
+msgstr "Create configuration file"
+
+#: install/templates/step7.html.twig:12
+#, auto-english-fallback
+msgid "Configuration File:"
+msgstr "Configuration File:"
+
+#: install/templates/step7.html.twig:12
+#, auto-english-fallback
+msgid "Create the file"
+msgstr "Create the file"
+
+#: install/templates/step7.html.twig:14
+#, auto-english-fallback
+msgid "with the following content:"
+msgstr "with the following content:"
+
+#: install/templates/step1.html.twig:3
+#, auto-english-fallback
+msgid "Choose a language"
+msgstr "Choose a language"
+
+#: install/templates/step1.html.twig:8
+#, auto-english-fallback
+msgid "Choose a language for installation"
+msgstr "Choose a language for installation"
+
+#: install/templates/step1.html.twig:12
+msgid ""
+"Please select your preferred language to continue with the installation:"
+msgstr ""
+
+#: install/templates/step1.html.twig:391
+#, auto-english-fallback
+msgid "Begin Installation"
+msgstr "Begin Installation"
+
+#: install/templates/step4.html.twig:3
+#, auto-english-fallback
+msgid "Configuring database"
+msgstr "Configuring database"
+
+#: install/templates/step4.html.twig:8
+#, auto-english-fallback
+msgid "Configuring Database Connection"
+msgstr "Configuring Database Connection"
+
+#: install/templates/step4.html.twig:17
+#, auto-english-fallback
+msgid "PowerDNS Backend"
+msgstr "PowerDNS Backend"
+
+#: install/templates/step4.html.twig:20
+#, auto-english-fallback
+msgid "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "Choose how Poweradmin communicates with PowerDNS:"
+
+#: install/templates/step4.html.twig:25
+#, auto-english-fallback
+msgid "Direct access to PowerDNS database tables"
+msgstr "Direct access to PowerDNS database tables"
+
+#: install/templates/step4.html.twig:32
+#, auto-english-fallback
+msgid "API"
+msgstr "API"
+
+#: install/templates/step4.html.twig:32
+#, auto-english-fallback
+msgid "PowerDNS REST API"
+msgstr "PowerDNS REST API"
+
+#: install/templates/step4.html.twig:33
+#, auto-english-fallback
+msgid "Experimental"
+msgstr "Experimental"
+
+#: install/templates/step4.html.twig:42
+#, auto-english-fallback
+msgid "PowerDNS API Settings"
+msgstr "PowerDNS API Settings"
+
+#: install/templates/step4.html.twig:46
+#, auto-english-fallback
+msgid "API URL"
+msgstr "API URL"
+
+#: install/templates/step4.html.twig:52
+#, auto-english-fallback
+msgid "PowerDNS API endpoint URL."
+msgstr "PowerDNS API endpoint URL."
+
+#: install/templates/step4.html.twig:57
+#, auto-english-fallback
+msgid "API Key"
+msgstr "API Key"
+
+#: install/templates/step4.html.twig:66
+#, auto-english-fallback
+msgid "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "PowerDNS API key (from pdns.conf api-key setting)."
+
+#: install/templates/step4.html.twig:71
+#, auto-english-fallback
+msgid "Server name"
+msgstr "Server name"
+
+#: install/templates/step4.html.twig:77
+msgid "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr ""
+
+#: install/templates/step4.html.twig:86
+#, auto-english-fallback
+msgid "Database Connection Settings"
+msgstr "Database Connection Settings"
+
+#: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
+#, auto-english-fallback
+msgid "Database Configuration:"
+msgstr "Database Configuration:"
+
+#: install/templates/step4.html.twig:90
+msgid ""
+"Configure database connection with table creation rights. PowerDNS location "
+"can be specified separately if needed."
+msgstr ""
+
+#: install/templates/step4.html.twig:93
+msgid ""
+"Configure database connection for Poweradmin tables (users, permissions, "
+"zones). PowerDNS tables are not required."
+msgstr ""
+
+#: install/templates/step4.html.twig:97
+#, auto-english-fallback
+msgid "Database type"
+msgstr "Database type"
+
+#: install/templates/step4.html.twig:106
+#, auto-english-fallback
+msgid "Database server type."
+msgstr "Database server type."
+
+#: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
+#, auto-english-fallback
+msgid "Provide the user name"
+msgstr "Provide the user name"
+
+#: install/templates/step4.html.twig:117
+#, auto-english-fallback
+msgid "Database username with rights to create tables."
+msgstr "Database username with rights to create tables."
+
+#: install/templates/step4.html.twig:131
+#, auto-english-fallback
+msgid "Password for this database user."
+msgstr "Password for this database user."
+
+#: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
+#, auto-english-fallback
+msgid "Avoid quotes, backslashes, and line breaks."
+msgstr "Avoid quotes, backslashes, and line breaks."
+
+#: install/templates/step4.html.twig:140
+#, auto-english-fallback
+msgid "Provide the hostname"
+msgstr "Provide the hostname"
+
+#: install/templates/step4.html.twig:143
+msgid "Database server hostname (usually \"localhost\")."
+msgstr ""
+
+#: install/templates/step4.html.twig:148
+#, auto-english-fallback
+msgid "DB Port"
+msgstr "DB Port"
+
+#: install/templates/step4.html.twig:151
+#, auto-english-fallback
+msgid "Provide database port"
+msgstr "Provide database port"
+
+#: install/templates/step4.html.twig:154
+#, auto-english-fallback
+msgid "Database server port."
+msgstr "Database server port."
+
+#: install/templates/step4.html.twig:162
+#, auto-english-fallback
+msgid "Provide the name of the database"
+msgstr "Provide the name of the database"
+
+#: install/templates/step4.html.twig:165
+#, auto-english-fallback
+msgid "Database name (will be used for Poweradmin tables)."
+msgstr "Database name (will be used for Poweradmin tables)."
+
+#: install/templates/step4.html.twig:167
+#, auto-english-fallback
+msgid "Full path to SQLite database file"
+msgstr "Full path to SQLite database file"
+
+#: install/templates/step4.html.twig:170
+#, auto-english-fallback
+msgid "File must exist with web server read/write access. Use absolute path."
+msgstr "File must exist with web server read/write access. Use absolute path."
+
+#: install/templates/step4.html.twig:178
+#, auto-english-fallback
+msgid "DB charset"
+msgstr "DB charset"
+
+#: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
+#, auto-english-fallback
+msgid "Use default"
+msgstr "Use default"
+
+#: install/templates/step4.html.twig:185
+#, auto-english-fallback
+msgid "Charset for new tables. Leave empty for database default."
+msgstr "Charset for new tables. Leave empty for database default."
+
+#: install/templates/step4.html.twig:190
+#, auto-english-fallback
+msgid "DB collation"
+msgstr "DB collation"
+
+#: install/templates/step4.html.twig:197
+msgid ""
+"Collation rules for character comparison. Leave empty for database default."
+msgstr ""
+
+#: install/templates/step4.html.twig:206
+#, auto-english-fallback
+msgid "PowerDNS Database"
+msgstr "PowerDNS Database"
+
+#: install/templates/step4.html.twig:210
+#, auto-english-fallback
+msgid "Database name"
+msgstr "Database name"
+
+#: install/templates/step4.html.twig:213
+#, auto-english-fallback
+msgid "Leave empty for same database"
+msgstr "Leave empty for same database"
+
+#: install/templates/step4.html.twig:216
+#, auto-english-fallback
+msgid "MySQL database with PowerDNS tables (if different)."
+msgstr "MySQL database with PowerDNS tables (if different)."
+
+#: install/templates/step4.html.twig:224
+#, auto-english-fallback
+msgid "Poweradmin Account"
+msgstr "Poweradmin Account"
+
+#: install/templates/step4.html.twig:228
+#, auto-english-fallback
+msgid "Administrator password"
+msgstr "Administrator password"
+
+#: install/templates/step4.html.twig:233
+#, auto-english-fallback
+msgid "Provide a password"
+msgstr "Provide a password"
+
+#: install/templates/step4.html.twig:238
+msgid "Password for \"admin\" username."
+msgstr ""
+
+#: install/templates/step2.html.twig:3
+#, auto-english-fallback
+msgid "System Requirements"
+msgstr "System Requirements"
+
+#: install/templates/step2.html.twig:8
+#, auto-english-fallback
+msgid "System Requirements Check"
+msgstr "System Requirements Check"
+
+#: install/templates/step2.html.twig:13
+#, auto-english-fallback
+msgid "PHP Version"
+msgstr "PHP Version"
+
+#: install/templates/step2.html.twig:23
+#, auto-english-fallback
+msgid "Requires PHP 8.2.0+"
+msgstr "Requires PHP 8.2.0+"
+
+#: install/templates/step2.html.twig:30
+#, auto-english-fallback
+msgid "Database Extensions"
+msgstr "Database Extensions"
+
+#: install/templates/step2.html.twig:31
+#, auto-english-fallback
+msgid "at least one required"
+msgstr "at least one required"
+
+#: install/templates/step2.html.twig:55
+#, auto-english-fallback
+msgid "Required PHP Extensions"
+msgstr "Required PHP Extensions"
+
+#: install/templates/step2.html.twig:76
+#, auto-english-fallback
+msgid "Optional Extensions"
+msgstr "Optional Extensions"
+
+#: install/templates/step2.html.twig:97
+#, auto-english-fallback
+msgid "Web Server"
+msgstr "Web Server"
+
+#: install/templates/step2.html.twig:102
+#, auto-english-fallback
+msgid "Server"
+msgstr "Server"
+
+#: install/templates/step2.html.twig:118
+#, auto-english-fallback
+msgid "Not detected — required for URL routing"
+msgstr "Not detected — required for URL routing"
+
+#: install/templates/step2.html.twig:124
+#, auto-english-fallback
+msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
+msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
+
+#: install/templates/step2.html.twig:130
+#, auto-english-fallback
+msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
+
+#: install/templates/step2.html.twig:135
+#, auto-english-fallback
+msgid "Ensure URL rewriting is configured for your web server"
+msgstr "Ensure URL rewriting is configured for your web server"
+
+#: install/templates/step2.html.twig:149
+#, auto-english-fallback
+msgid "All required components are available."
+msgstr "All required components are available."
+
+#: install/templates/step2.html.twig:150
+#, auto-english-fallback
+msgid "You can continue with the installation."
+msgstr "You can continue with the installation."
+
+#: install/templates/step2.html.twig:159
+#, auto-english-fallback
+msgid "Some required components are missing."
+msgstr "Some required components are missing."
+
+#: install/templates/step2.html.twig:160
+#, auto-english-fallback
+msgid "Please install the missing components before continuing."
+msgstr "Please install the missing components before continuing."
+
+#: install/templates/step5.html.twig:3
+#, auto-english-fallback
+msgid "Setup account and nameservers"
+msgstr "Setup account and nameservers"
+
+#: install/templates/step5.html.twig:8
+#, auto-english-fallback
+msgid "Setup account and name servers"
+msgstr "Setup account and name servers"
+
+#: install/templates/step5.html.twig:12
+#, auto-english-fallback
+msgid "Configuration:"
+msgstr "Configuration:"
+
+#: install/templates/step5.html.twig:12
+#, auto-english-fallback
+msgid "Now we will gather all details for the configuration itself."
+msgstr "Now we will gather all details for the configuration itself."
+
+#: install/templates/step5.html.twig:52
+#, auto-english-fallback
+msgid "Database User"
+msgstr "Database User"
+
+#: install/templates/step5.html.twig:57
+msgid ""
+"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
+"configured database even when the PowerDNS API backend is selected. These "
+"credentials are for that database, not for PowerDNS."
+msgstr ""
+
+#: install/templates/step5.html.twig:67
+msgid ""
+"Poweradmin database username with restricted access. Not for web UI login."
+msgstr ""
+
+#: install/templates/step5.html.twig:77
+#, auto-english-fallback
+msgid "Provide the user password"
+msgstr "Provide the user password"
+
+#: install/templates/step5.html.twig:81
+#, auto-english-fallback
+msgid "The password for this username."
+msgstr "The password for this username."
+
+#: install/templates/step5.html.twig:91
+#, auto-english-fallback
+msgid "DNS Settings"
+msgstr "DNS Settings"
+
+#: install/templates/step5.html.twig:95
+#, auto-english-fallback
+msgid "Hostmaster"
+msgstr "Hostmaster"
+
+#: install/templates/step5.html.twig:99
+#, auto-english-fallback
+msgid "Provide the DNS hostmaster"
+msgstr "Provide the DNS hostmaster"
+
+#: install/templates/step5.html.twig:102
+#, auto-english-fallback
+msgid "Default hostmaster for SOA records."
+msgstr "Default hostmaster for SOA records."
+
+#: install/templates/step5.html.twig:107
+#, auto-english-fallback
+msgid "Primary nameserver"
+msgstr "Primary nameserver"
+
+#: install/templates/step5.html.twig:111
+#, auto-english-fallback
+msgid "Provide the primary nameserver"
+msgstr "Provide the primary nameserver"
+
+#: install/templates/step5.html.twig:114
+#, auto-english-fallback
+msgid "Primary nameserver for new zones."
+msgstr "Primary nameserver for new zones."
+
+#: install/templates/step5.html.twig:119
+#, auto-english-fallback
+msgid "Secondary nameserver"
+msgstr "Secondary nameserver"
+
+#: install/templates/step5.html.twig:123
+#, auto-english-fallback
+msgid "Provide the secondary nameserver"
+msgstr "Provide the secondary nameserver"
+
+#: install/templates/step5.html.twig:126
+#, auto-english-fallback
+msgid "Secondary nameserver for new zones."
+msgstr "Secondary nameserver for new zones."
+
+#: install/templates/step5.html.twig:132
+#, auto-english-fallback
+msgid "Tertiary Nameserver"
+msgstr "Tertiary Nameserver"
+
+#: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
+#, auto-english-fallback
+msgid "optional"
+msgstr "optional"
+
+#: install/templates/step5.html.twig:139
+#, auto-english-fallback
+msgid "Optional tertiary nameserver for new zones."
+msgstr "Optional tertiary nameserver for new zones."
+
+#: install/templates/step5.html.twig:145
+#, auto-english-fallback
+msgid "Quaternary Nameserver"
+msgstr "Quaternary Nameserver"
+
+#: install/templates/step5.html.twig:152
+#, auto-english-fallback
+msgid "Optional quaternary nameserver for new zones."
+msgstr "Optional quaternary nameserver for new zones."
+
+#: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
+#, auto-english-fallback
+msgid "Installation complete"
+msgstr "Installation complete"
+
+#: install/templates/step8.html.twig:12
+#, auto-english-fallback
+msgid "Installation Complete!"
+msgstr "Installation Complete!"
+
+#: install/templates/step8.html.twig:12
+#, auto-english-fallback
+msgid "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Congratulations! Your Poweradmin installation is now configured."
+
+#: install/templates/step8.html.twig:16
+#, auto-english-fallback
+msgid "Important Security Notice:"
+msgstr "Important Security Notice:"
+
+#: install/templates/step8.html.twig:16
+msgid ""
+"You must remove the \"install/\" directory from the Poweradmin root "
+"directory."
+msgstr ""
+
+#: install/templates/step8.html.twig:17
+msgid ""
+"Poweradmin will not function if the install directory exists, as a security "
+"measure."
+msgstr ""
+
+#: install/templates/step8.html.twig:22
+#, auto-english-fallback
+msgid "Next Steps"
+msgstr "Next Steps"
+
+#: install/templates/step8.html.twig:26
+msgid "Remove the \"install/\" directory from your server"
+msgstr ""
+
+#: install/templates/step8.html.twig:27
+msgid ""
+"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
+"\"admin\" and the password you set in step 3"
+msgstr ""
+
+#: install/templates/step8.html.twig:28
+#, auto-english-fallback
+msgid "Begin configuring your DNS zones and records"
+msgstr "Begin configuring your DNS zones and records"
+
+#: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
+#, auto-english-fallback
+msgid "Getting Ready"
+msgstr "Getting Ready"
+
+#: install/templates/step3.html.twig:13
+#, auto-english-fallback
+msgid "Prerequisites"
+msgstr "Prerequisites"
+
+#: install/templates/step3.html.twig:16
+#, auto-english-fallback
+msgid "Before proceeding, ensure you have:"
+msgstr "Before proceeding, ensure you have:"
+
+#: install/templates/step3.html.twig:18
+msgid ""
+"PowerDNS installed with database tables created (or API access configured)"
+msgstr ""
+
+#: install/templates/step3.html.twig:19
+#, auto-english-fallback
+msgid "Database credentials (hostname, username, password)"
+msgstr "Database credentials (hostname, username, password)"
+
+#: install/templates/step3.html.twig:20
+#, auto-english-fallback
+msgid "Permission to create tables for Poweradmin"
+msgstr "Permission to create tables for Poweradmin"
+
+#: install/templates/step3.html.twig:27
+#, auto-english-fallback
+msgid "Next:"
+msgstr "Next:"
+
+#: install/templates/step3.html.twig:27
+msgid ""
+"Configure database connection, create admin account, and generate "
+"configuration file."
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:176
+#, auto-english-fallback
+msgid "Missing PowerDNS tables:"
+msgstr "Missing PowerDNS tables:"
+
+#: install/helpers/InstallStepHandler.php:177
+#, auto-english-fallback
+msgid "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin requires these PowerDNS tables to function properly."
+
+#: install/helpers/InstallStepHandler.php:185
+#, auto-english-fallback
+msgid "Updating database... done!"
+msgstr "Updating database... done!"
+
+#: install/helpers/InstallStepHandler.php:207
+#, auto-english-fallback
+msgid "Foreign Key Constraint Issues:"
+msgstr "Foreign Key Constraint Issues:"
+
+#: install/helpers/InstallStepHandler.php:209
+msgid ""
+"The installer could not remove existing tables due to foreign key constraints"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:210
+msgid ""
+"This can happen during reinstallation if you have custom constraints or if "
+"tables are referenced by other tables"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:211
+msgid ""
+"You can try manually disabling foreign key checks before running the "
+"installer:"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:224
+#, auto-english-fallback
+msgid "Suggestions:"
+msgstr "Suggestions:"
+
+#: install/helpers/InstallStepHandler.php:218
+#, auto-english-fallback
+msgid "Make sure the SQLite database file exists"
+msgstr "Make sure the SQLite database file exists"
+
+#: install/helpers/InstallStepHandler.php:219
+msgid ""
+"Check that the web server has read and write permissions for the database "
+"file"
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:220
+#, auto-english-fallback
+msgid "Verify the full path to the database file is correct and accessible"
+msgstr "Verify the full path to the database file is correct and accessible"
+
+#: install/helpers/InstallStepHandler.php:226
+#, auto-english-fallback
+msgid "Verify database credentials are correct"
+msgstr "Verify database credentials are correct"
+
+#: install/helpers/InstallStepHandler.php:227
+#, auto-english-fallback
+msgid "Check that the database user has sufficient privileges"
+msgstr "Check that the database user has sufficient privileges"
+
+#: install/helpers/InstallStepHandler.php:228
+#, auto-english-fallback
+msgid "Ensure the database server is running and accessible"
+msgstr "Ensure the database server is running and accessible"
+
+#: install/helpers/InstallStepHandler.php:233
+#, auto-english-fallback
+msgid "Database Error"
+msgstr "Database Error"
+
+#: install/helpers/DatabaseHelper.php:175
 #, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "The SQLite database file %s does not exist. Please create the database "
-# OBSOLETE: "file before proceeding."
-# OBSOLETE: msgstr "SQLite датотека %s не постоји. Креирајте је пре наставка."
+msgid ""
+"The SQLite database file %s does not exist. Please create the database file "
+"before proceeding."
+msgstr ""
 
+#: install/helpers/DatabaseHelper.php:183
 #, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "The SQLite database file %s is not readable. Please check file "
-# OBSOLETE: "permissions."
-# OBSOLETE: msgstr "SQLite датотека %s није читљива. Проверите дозволе датотеке."
+msgid ""
+"The SQLite database file %s is not readable. Please check file permissions."
+msgstr ""
 
+#: install/helpers/DatabaseHelper.php:191
 #, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "The SQLite database file %s is not writable. Please check file "
-# OBSOLETE: "permissions."
-# OBSOLETE: msgstr "SQLite датотека %s није уписива. Проверите дозволе."
+msgid ""
+"The SQLite database file %s is not writable. Please check file permissions."
+msgstr ""
 
+#: install/helpers/DatabaseHelper.php:203
+#, auto-english-fallback
 #, php-format
-# OBSOLETE: msgid "Could not access the SQLite database file %s: %s"
-# OBSOLETE: msgstr "Није могуће приступити SQLite датотеци %s: %s"
+msgid "Could not access the SQLite database file %s: %s"
+msgstr "Could not access the SQLite database file %s: %s"
 
-# OBSOLETE: msgid "PowerDNS API URL is required when using API backend."
-# OBSOLETE: msgstr "PowerDNS АПИ URL је обавезан при коришћењу АПИ позадине."
+#: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
+#, auto-english-fallback
+msgid "PowerDNS API URL is required when using API backend."
+msgstr "PowerDNS API URL is required when using API backend."
 
-# OBSOLETE: msgid "PowerDNS API key is required when using API backend."
-# OBSOLETE: msgstr "PowerDNS АПИ кључ је обавезан при коришћењу АПИ позадине."
+#: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
+#, auto-english-fallback
+msgid "PowerDNS API key is required when using API backend."
+msgstr "PowerDNS API key is required when using API backend."
 
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "No configuration file found. Please create the config/settings.php file "
-# OBSOLETE: "before proceeding."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Конфигурациона датотека није пронађена. Креирајте config/settings.php."
+#: install/helpers/Validators/CreateConfigurationFileValidator.php:54
+msgid ""
+"No configuration file found. Please create the config/settings.php file "
+"before proceeding."
+msgstr ""
 
-#, fuzzy
-# OBSOLETE: msgid ""
-# OBSOLETE: "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-# OBSOLETE: "and SQLite, please use the same database."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Одвојене PowerDNS базе подржане само у MySQL. За PostgreSQL/SQLite "
-# OBSOLETE: "користите исту."
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
+msgid ""
+"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+"and SQLite, please use the same database."
+msgstr ""
 
-#, fuzzy
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-# OBSOLETE: "properly installed in this database."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Недостају PowerDNS табеле у бази \"%s\": %s. Осигурајте инсталацију."
+msgid ""
+"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+"properly installed in this database."
+msgstr ""
 
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
-# OBSOLETE: msgid "Cannot connect to PowerDNS database \"%s\": %s"
-# OBSOLETE: msgstr "Није могуће повезати се са PowerDNS базом \"%s\": %s"
-
+msgid "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr ""
 
 
