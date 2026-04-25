@@ -144,4 +144,40 @@ class PdnsVersionServiceTest extends TestCase
 
         $service->detect();
     }
+
+    public function testGetCachedInfoReturnsCachedDataInsideTtl(): void
+    {
+        $_SESSION['pdns_server_info'] = [
+            'info' => ['version' => '4.9.12', 'daemon_type' => 'authoritative', 'id' => 'localhost'],
+            'fetched_at' => time() - 60,
+        ];
+
+        $info = PdnsVersionService::getCachedInfo();
+        $this->assertNotNull($info);
+        $this->assertSame('4.9.12', $info['version']);
+    }
+
+    public function testGetCachedInfoReturnsNullAfterTtlExpiry(): void
+    {
+        $_SESSION['pdns_server_info'] = [
+            'info' => ['version' => '4.9.12', 'daemon_type' => 'authoritative', 'id' => 'localhost'],
+            // 6 minutes ago - the 5-min TTL has expired.
+            'fetched_at' => time() - 360,
+        ];
+
+        // Stale cache must look the same as no cache so BaseController's
+        // lazy-detect path re-fires and the UI can pick up version changes
+        // (e.g. PowerDNS upgrade) within a session.
+        $this->assertNull(PdnsVersionService::getCachedInfo());
+    }
+
+    public function testGetCachedInfoReturnsNullWhenFetchedAtMissing(): void
+    {
+        $_SESSION['pdns_server_info'] = [
+            'info' => ['version' => '4.9.12', 'daemon_type' => 'authoritative', 'id' => 'localhost'],
+            // No fetched_at - treat as expired so we don't trust ancient data.
+        ];
+
+        $this->assertNull(PdnsVersionService::getCachedInfo());
+    }
 }
