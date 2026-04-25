@@ -102,7 +102,7 @@ class EditZoneTemplRecordController extends BaseController
             'zone_templ_id' => $zone_templ_id,
             'record_id' => $record_id,
             'templ_details' => ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id),
-            'record_types' => $this->recordTypeService->getAllTypes(),
+            'record_types' => $this->recordTypeService->getAllTypes($this->getPdnsCapabilities()),
             'zones_linked_count' => $zones_linked_count,
         ]);
     }

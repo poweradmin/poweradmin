@@ -37,9 +37,12 @@ class RecordTypeService
     /**
      * Get all record types.
      *
+     * @param ?PdnsCapabilities $caps Filter out types the connected server
+     *     does not support. Pass null to skip filtering (e.g. from contexts
+     *     that don't have access to the session-cached PowerDNS version).
      * @return array
      */
-    public function getAllTypes(): array
+    public function getAllTypes(?PdnsCapabilities $caps = null): array
     {
         $configuredDomainTypes = $this->configManager->get('dns', 'domain_record_types');
         $configuredReverseTypes = $this->configManager->get('dns', 'reverse_record_types');
@@ -49,7 +52,7 @@ class RecordTypeService
             $types = array_merge($configuredDomainTypes, $configuredReverseTypes);
             $types = array_unique($types);
             sort($types);
-            return $types;
+            return $this->filterByCapabilities($types, $caps);
         }
 
         // If only domain types are configured, merge with default reverse types
@@ -57,7 +60,7 @@ class RecordTypeService
             $types = array_merge($configuredDomainTypes, RecordType::REVERSE_ZONE_COMMON_RECORDS);
             $types = array_unique($types);
             sort($types);
-            return $types;
+            return $this->filterByCapabilities($types, $caps);
         }
 
         // If only reverse types are configured, merge with default domain types
@@ -65,7 +68,7 @@ class RecordTypeService
             $types = array_merge(RecordType::DOMAIN_ZONE_COMMON_RECORDS, $configuredReverseTypes);
             $types = array_unique($types);
             sort($types);
-            return $types;
+            return $this->filterByCapabilities($types, $caps);
         }
 
         // If nothing is configured, use all defaults
@@ -77,47 +80,67 @@ class RecordTypeService
         );
         $types = array_unique($types);
         sort($types);
-        return $types;
+        return $this->filterByCapabilities($types, $caps);
     }
 
     /**
      * Get domain zone record types.
      *
      * @param bool $isDnsSecEnabled
+     * @param ?PdnsCapabilities $caps See getAllTypes().
      * @return array
      */
-    public function getDomainZoneTypes(bool $isDnsSecEnabled): array
+    public function getDomainZoneTypes(bool $isDnsSecEnabled, ?PdnsCapabilities $caps = null): array
     {
         $configuredDomainTypes = $this->configManager->get('dns', 'domain_record_types');
 
         if ($configuredDomainTypes) {
-            return $isDnsSecEnabled ?
+            $types = $isDnsSecEnabled ?
                 $this->mergeDnsSecTypes($configuredDomainTypes, true) :
                 $configuredDomainTypes;
+            return $this->filterByCapabilities($types, $caps);
         }
 
         $types = array_merge(RecordType::DOMAIN_ZONE_COMMON_RECORDS, RecordType::LESS_COMMON_RECORDS);
-        return $this->mergeDnsSecTypes($types, $isDnsSecEnabled);
+        return $this->filterByCapabilities($this->mergeDnsSecTypes($types, $isDnsSecEnabled), $caps);
     }
 
     /**
      * Get reverse zone record types.
      *
      * @param bool $isDnsSecEnabled
+     * @param ?PdnsCapabilities $caps See getAllTypes().
      * @return array
      */
-    public function getReverseZoneTypes(bool $isDnsSecEnabled): array
+    public function getReverseZoneTypes(bool $isDnsSecEnabled, ?PdnsCapabilities $caps = null): array
     {
         $configuredReverseTypes = $this->configManager->get('dns', 'reverse_record_types');
 
         if ($configuredReverseTypes) {
-            return $isDnsSecEnabled ?
+            $types = $isDnsSecEnabled ?
                 $this->mergeDnsSecTypes($configuredReverseTypes, true) :
                 $configuredReverseTypes;
+            return $this->filterByCapabilities($types, $caps);
         }
 
         $types = RecordType::REVERSE_ZONE_COMMON_RECORDS;
-        return $this->mergeDnsSecTypes($types, $isDnsSecEnabled);
+        return $this->filterByCapabilities($this->mergeDnsSecTypes($types, $isDnsSecEnabled), $caps);
+    }
+
+    /**
+     * Drop record types the connected server does not understand.
+     *
+     * @param array<int, string> $types
+     */
+    private function filterByCapabilities(array $types, ?PdnsCapabilities $caps): array
+    {
+        if ($caps === null) {
+            return $types;
+        }
+        return array_values(array_filter(
+            $types,
+            static fn(string $type): bool => $caps->supportsRecordType($type)
+        ));
     }
 
     /**

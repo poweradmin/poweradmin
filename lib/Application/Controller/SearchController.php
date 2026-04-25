@@ -240,7 +240,7 @@ class SearchController extends BaseController
     ): void {
         // Get all record types for the filter dropdown
         $recordTypeService = new RecordTypeService($this->getConfig());
-        $recordTypes = $recordTypeService->getAllTypes();
+        $recordTypes = $recordTypeService->getAllTypes($this->getPdnsCapabilities());
 
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,

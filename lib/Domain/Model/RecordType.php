@@ -84,6 +84,7 @@ class RecordType
     public const TSIG = 'TSIG';
     public const TXT = 'TXT';
     public const URI = 'URI';
+    public const WALLET = 'WALLET';
     public const ZONEMD = 'ZONEMD';
 
     // Common record types for domain zones
@@ -169,6 +170,7 @@ class RecordType
         self::TLSA,
         self::TSIG,
         self::URI,
+        self::WALLET,
     ];
 
     // Private constructor to prevent instantiation
