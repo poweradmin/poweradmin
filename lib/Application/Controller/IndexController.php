@@ -160,27 +160,30 @@ class IndexController extends BaseController
         $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
 
         if (DnsBackendProviderFactory::isApiBackend($this->config)) {
-            // Prefer the constant-time DB count from the local zones table -
-            // the zone-sync service keeps it current during normal use, and
-            // querying every zone over HTTP just to get a count is expensive
-            // on large installs and times out under outages.
-            $zoneCount = (int) $this->db->query(
-                "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL"
-            )->fetchColumn();
-
-            // Only fall back to the API when (a) the local cache is empty,
-            // which on a fresh install means the sync hasn't run yet, AND
-            // (b) the API hasn't been reporting errors. ApiDnsBackendProvider
-            // swallows outages and returns []; without this guard the
-            // dashboard would happily replace a real local count with 0.
-            $apiHealthy = (new ApiStatusService())->getLastError() === null;
-            if ($zoneCount === 0 && $apiHealthy) {
-                try {
-                    $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
-                    $zoneCount = count($backendProvider->getZones());
-                } catch (\Throwable $e) {
-                    $this->logger->warning('Dashboard zone count via API failed: {error}', ['error' => $e->getMessage()]);
+            // Count from the PowerDNS API directly so the dashboard reflects
+            // changes made out-of-band (zones added/removed in PowerDNS
+            // without going through Poweradmin). Trading off a constant-time
+            // DB count for freshness; the local zones table can lag whenever
+            // sync hasn't run yet, and the dashboard is the user's main signal
+            // that something has changed.
+            // Outages are surfaced separately via ApiStatusService - on
+            // failure we fall back to the local count rather than show 0.
+            try {
+                $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
+                $zoneCount = count($backendProvider->getZones());
+                if ($zoneCount === 0 && (new ApiStatusService())->getLastError() !== null) {
+                    // getZones() returned [] because of a swallowed API
+                    // failure - fall back to the local cache so the dashboard
+                    // does not display a misleading 0.
+                    $zoneCount = (int) $this->db->query(
+                        "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL"
+                    )->fetchColumn();
                 }
+            } catch (\Throwable $e) {
+                $this->logger->warning('Dashboard zone count via API failed: {error}', ['error' => $e->getMessage()]);
+                $zoneCount = (int) $this->db->query(
+                    "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL"
+                )->fetchColumn();
             }
             return [
                 'zones' => $zoneCount,
