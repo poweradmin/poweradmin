@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-25 15:52+0300\n"
+"POT-Creation-Date: 2026-04-25 17:17+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Hungarian\n"
@@ -119,7 +119,6 @@ msgid "Transport protocol for the TLS connection"
 msgstr "Szállítási protokoll a TLS kapcsolathoz"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:89
-#: install/templates/step4.html.twig:137
 msgid "Hostname"
 msgstr "Gazdagépnév"
 
@@ -1208,24 +1207,24 @@ msgstr "Nem sikerült RDAP információt lekérni a %s szerverről"
 msgid "Invalid CSRF token."
 msgstr "Érvénytelen CSRF token."
 
-#: lib/BaseController.php:646
+#: lib/BaseController.php:658
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr "<a href=\"install/\">install/</a> törölni kell."
 
-#: lib/BaseController.php:703
+#: lib/BaseController.php:715
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr "Alapértelmezett szessziókulcs, állítsa be a konfigurációt."
 
-#: lib/BaseController.php:842
+#: lib/BaseController.php:854
 #, php-format
 msgid "The %s field is required."
 msgstr "A %s mező kötelező."
 
-#: lib/BaseController.php:850
+#: lib/BaseController.php:862
 #, php-format
 msgid "The %s field must be a number."
 msgstr "A %s mező száma kell legyen."
@@ -2158,7 +2157,8 @@ msgid ""
 "Could not retrieve the PEM key. The server may not expose private key "
 "material for this key."
 msgstr ""
-"A PEM kulcs nem volt lekérhető. Lehet, hogy a kiszolgáló ehhez a kulcshoz nem tesz közzé privát kulcs anyagot."
+"A PEM kulcs nem volt lekérhető. Lehet, hogy a kiszolgáló ehhez a kulcshoz "
+"nem tesz közzé privát kulcs anyagot."
 
 #: lib/Domain/Service/Dns/DomainManager.php:309
 msgid "You do not have the permission to add a master zone."
@@ -2574,7 +2574,8 @@ msgstr "A PEM kulcs importálásához PowerDNS 4.7 vagy újabb szükséges."
 #: lib/Application/Controller/DnssecKeyImportController.php:97
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr ""
-"Adjon meg egy PEM-kódolású privát kulcsot (BEGIN/END jelölőket tartalmaznia kell)."
+"Adjon meg egy PEM-kódolású privát kulcsot (BEGIN/END jelölőket tartalmaznia "
+"kell)."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:108
 msgid "PEM key imported successfully."
@@ -2584,7 +2585,8 @@ msgstr "PEM kulcs sikeresen importálva."
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
 msgstr ""
-"A PEM kulcs importálása nem sikerült. A PowerDNS kiszolgáló elutasíthatta a formátumot."
+"A PEM kulcs importálása nem sikerült. A PowerDNS kiszolgáló elutasíthatta a "
+"formátumot."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:115
 msgid "An error occurred while importing the PEM key: "
@@ -3127,7 +3129,8 @@ msgstr "Szuper elsődlegesek szerkesztéséről"
 msgid ""
 "You can modify the IP address, hostname, or account for this autoprimary."
 msgstr ""
-"Módosíthatja ennek az autoprimary-nak az IP-címét, kiszolgálónevét vagy fiókját."
+"Módosíthatja ennek az autoprimary-nak az IP-címét, kiszolgálónevét vagy "
+"fiókját."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:139
 msgid ""
@@ -8459,7 +8462,9 @@ msgid ""
 "Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
 "key size from the PEM contents - select the matching algorithm and key role."
 msgstr ""
-"Illesszen be egy PEM-kódolású privát kulcsot (RSA vagy ECDSA). A PowerDNS 4.7+ a kulcs méretét a PEM tartalmából vezeti le - válassza ki a megfelelő algoritmust és kulcsszerepet."
+"Illesszen be egy PEM-kódolású privát kulcsot (RSA vagy ECDSA). A PowerDNS "
+"4.7+ a kulcs méretét a PEM tartalmából vezeti le - válassza ki a megfelelő "
+"algoritmust és kulcsszerepet."
 
 #: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:55
 msgid "Key type"
@@ -8478,12 +8483,14 @@ msgid ""
 "Each network maps to a single view. Resolvers in that network receive the "
 "zone variant assigned to that view."
 msgstr ""
-"Minden hálózat egy nézethez tartozik. Az adott hálózatban lévő feloldók a nézethez rendelt zónavariánst kapják."
+"Minden hálózat egy nézethez tartozik. Az adott hálózatban lévő feloldók a "
+"nézethez rendelt zónavariánst kapják."
 
 #: templates/modern/list_networks.html:18
 msgid "No networks configured yet. Map a CIDR to a view below."
 msgstr ""
-"Még nincsenek hálózatok konfigurálva. Rendelje hozzá a CIDR-t egy nézethez alább."
+"Még nincsenek hálózatok konfigurálva. Rendelje hozzá a CIDR-t egy nézethez "
+"alább."
 
 #: templates/modern/list_networks.html:25
 msgid "Network"
@@ -8781,7 +8788,8 @@ msgid ""
 "Could not detect PowerDNS version. Newer features are hidden until the API "
 "is reachable."
 msgstr ""
-"Nem sikerült megállapítani a PowerDNS verzióját. Az újabb funkciók addig rejtve maradnak, amíg az API elérhetővé nem válik."
+"Nem sikerült megállapítani a PowerDNS verzióját. Az újabb funkciók addig "
+"rejtve maradnak, amíg az API elérhetővé nem válik."
 
 #: templates/default/index.html:17 templates/modern/index.html:17
 msgid "PowerDNS version unknown"
@@ -8874,7 +8882,6 @@ msgid "Tools"
 msgstr "Eszközök"
 
 #: templates/default/index.html:320 templates/modern/index.html:320
-#: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Adatbázis"
 
@@ -8883,7 +8890,6 @@ msgid "My Profile"
 msgstr "Saját profil"
 
 #: templates/modern/login.html:23 templates/modern/add_user.html:39
-#: install/templates/step4.html.twig:122 install/templates/step5.html.twig:72
 msgid "Password"
 msgstr "Jelszó"
 
@@ -9550,7 +9556,9 @@ msgid ""
 "This server predates PowerDNS 4.0 and does not create a Combined Signing Key "
 "by default. Pick KSK or ZSK explicitly to add a key here."
 msgstr ""
-"Ez a kiszolgáló a PowerDNS 4.0-nál régebbi, és alapértelmezés szerint nem hoz létre Combined Signing Key-t. Válassza a KSK vagy ZSK opciót kifejezetten, hogy itt kulcsot adjon hozzá."
+"Ez a kiszolgáló a PowerDNS 4.0-nál régebbi, és alapértelmezés szerint nem "
+"hoz létre Combined Signing Key-t. Válassza a KSK vagy ZSK opciót "
+"kifejezetten, hogy itt kulcsot adjon hozzá."
 
 #: templates/modern/dnssec_add_key.html:62
 msgid "Select key type"
@@ -9573,7 +9581,6 @@ msgid "Recommended bits for"
 msgstr "Javasolt bitek ehhez:"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
-#: install/helpers/InstallStepHandler.php:175
 msgid "Warning:"
 msgstr "Figyelmeztetés:"
 
@@ -9622,7 +9629,6 @@ msgid "Edit user"
 msgstr "Felhasználó szerkesztése"
 
 #: templates/modern/manage_group_members.html:93
-#: install/templates/step4.html.twig:111 install/templates/step5.html.twig:61
 msgid "Username"
 msgstr "Felhasználónév"
 
@@ -9665,7 +9671,6 @@ msgid "Optional information about this user"
 msgstr "Opcionális információk a felhasználóról"
 
 #: templates/modern/users.html:49 templates/modern/add_user.html:94
-#: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Engedélyezve"
 
@@ -10032,7 +10037,6 @@ msgid "Host Prefix"
 msgstr "Gazda előtag"
 
 #: templates/modern/batch_ptr_record.html:73
-#: install/templates/step4.html.twig:206
 msgid "Optional"
 msgstr "Választható"
 
@@ -10477,7 +10481,6 @@ msgid "MFA"
 msgstr "MFA"
 
 #: templates/modern/users.html:105 templates/modern/users.html:169
-#: install/templates/step4.html.twig:25
 msgid "SQL"
 msgstr "SQL"
 
@@ -10717,7 +10720,6 @@ msgid "Send Username"
 msgstr "Felhasználónév küldése"
 
 #: templates/default/add_user.html:43 templates/modern/add_user.html:43
-#: install/templates/step4.html.twig:127
 msgid "Provide user password"
 msgstr "Adja meg a jelszót"
 
@@ -11275,7 +11277,7 @@ msgstr "Tárolja ezeket a kódokat biztonságos helyen!"
 msgid "Print"
 msgstr "Nyomtatás"
 
-#: templates/modern/mfa_recovery_codes.html:52
+#: templates/modern/dnssec_ds_dnskey.html:67
 msgid "Copy all"
 msgstr "Összes másolása"
 
@@ -11677,7 +11679,9 @@ msgid ""
 "network mapping. Each variant is identified as zone..variant (for example, "
 "example.com..trusted)."
 msgstr ""
-"A nézetek különböző zónavariánsokat szolgáltatnak különböző klienseknek a hálózati hozzárendelés alapján. Minden variáns zone..variant formában azonosított (pl. example.com..trusted)."
+"A nézetek különböző zónavariánsokat szolgáltatnak különböző klienseknek a "
+"hálózati hozzárendelés alapján. Minden variáns zone..variant formában "
+"azonosított (pl. example.com..trusted)."
 
 #: templates/default/list_views.html:18 templates/modern/list_views.html:18
 msgid "No views configured yet. Add a zone variant below."
@@ -11867,7 +11871,6 @@ msgid "Last Checked"
 msgstr "Utoljára ellenőrizve"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:126
-#: install/templates/step2.html.twig:18
 msgid "OK"
 msgstr "Rendben"
 
@@ -11983,15 +11986,27 @@ msgstr "DNSSEC nyilvános rekordok a zónához"
 msgid "Back to DNSSEC keys"
 msgstr "Vissza a DNSSEC kulcsokhoz"
 
-#: templates/modern/dnssec_ds_dnskey.html:47
+#: templates/modern/dnssec_ds_dnskey.html:48
 msgid "DNSKEY Records"
 msgstr "DNSKEY rekordok"
 
-#: templates/modern/dnssec_ds_dnskey.html:55
+#: templates/modern/dnssec_ds_dnskey.html:51
+msgid "Copy all DNSKEY records to clipboard"
+msgstr "Az összes DNSKEY rekord másolása a vágólapra"
+
+#: templates/modern/dnssec_ds_dnskey.html:71
+msgid "Copy this record"
+msgstr "A rekord másolása"
+
+#: templates/modern/dnssec_ds_dnskey.html:63
 msgid "DS Records"
 msgstr "DS rekordok"
 
-#: templates/modern/dnssec_ds_dnskey.html:62
+#: templates/modern/dnssec_ds_dnskey.html:66
+msgid "Copy all DS records to clipboard"
+msgstr "Az összes DS rekord másolása a vágólapra"
+
+#: templates/modern/dnssec_ds_dnskey.html:76
 msgid ""
 "DS records should be added to the parent zone to establish the chain of "
 "trust."
@@ -12485,685 +12500,521 @@ msgstr "Tartománynevet (pl. example.com) RDAP-hoz"
 msgid "RDAP results for"
 msgstr "RDAP eredmények"
 
-#: install/templates/step6.html.twig:3
-msgid "Create limited rights user"
-msgstr "Korlátozott jogú felhasználó létrehozása"
+# OBSOLETE: msgid "Create limited rights user"
+# OBSOLETE: msgstr "Korlátozott jogú felhasználó létrehozása"
 
-#: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
-msgid "Step"
-msgstr "Lépés"
+# OBSOLETE: msgid "Step"
+# OBSOLETE: msgstr "Lépés"
 
-#: install/templates/step6.html.twig:8
-msgid "Create limited-rights user"
-msgstr "korlátozott jogú felhasználó létrehozása"
+# OBSOLETE: msgid "Create limited-rights user"
+# OBSOLETE: msgstr "korlátozott jogú felhasználó létrehozása"
 
-#: install/templates/step6.html.twig:13
-msgid "Limited Database Rights:"
-msgstr "Korlátozott adatbázis jogok:"
-
-#: install/templates/step6.html.twig:15
-msgid ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
-msgstr "DB user Poweradmin tables."
-
-#: install/templates/step6.html.twig:17
-msgid ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
-msgstr "Korlátozott DB user."
-
-#: install/templates/step6.html.twig:25
-msgid "Database Commands"
-msgstr "Adatbázis parancsok"
-
-#: install/templates/step6.html.twig:28
-msgid "Execute the following commands:"
-msgstr "Futtassa a következő parancsokat:"
-
-#: install/templates/step6.html.twig:40
-msgid ""
-"After you have added the new user, proceed with this installation procedure."
-msgstr "Új felhasználó hozzáadása után folytassa a telepítést."
-
-#: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
-msgid "Note:"
-msgstr "Megjegyzés:"
-
-#: install/templates/step6.html.twig:43
-msgid ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
-msgstr "SQLite esetén nincs szükség korlátozott jogú felhasználóra."
-
-#: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
-msgid "Continue to step"
-msgstr "Folytatás a lépéssel"
-
-#: install/templates/base.html.twig:37
-msgid "Installation step"
-msgstr "Telepítési lépés"
-
-#: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
-msgid "Create configuration file"
-msgstr "Konfigurációs fájl létrehozása"
-
-#: install/templates/step7.html.twig:12
-msgid "Configuration File:"
-msgstr "Konfigurációs fájl:"
-
-#: install/templates/step7.html.twig:12
-msgid "Create the file"
-msgstr "Fájl létrehozása"
-
-#: install/templates/step7.html.twig:14
-msgid "with the following content:"
-msgstr "a következő tartalommal:"
-
-#: install/templates/step1.html.twig:3
-msgid "Choose a language"
-msgstr "Válasszon nyelvet"
-
-#: install/templates/step1.html.twig:8
-msgid "Choose a language for installation"
-msgstr "Válasszon telepítési nyelvet"
-
-#: install/templates/step1.html.twig:12
-msgid ""
-"Please select your preferred language to continue with the installation:"
-msgstr "Válasszon nyelvet a telepítés folytatásához:"
-
-#: install/templates/step1.html.twig:391
-msgid "Begin Installation"
-msgstr "Telepítés kezdése"
-
-#: install/templates/step4.html.twig:3
-msgid "Configuring database"
-msgstr "Adatbázis konfigurálása"
-
-#: install/templates/step4.html.twig:8
-msgid "Configuring Database Connection"
-msgstr "Adatbázis kapcsolat konfigurálása"
-
-#: install/templates/step4.html.twig:17
-msgid "PowerDNS Backend"
-msgstr "PowerDNS backend"
-
-#: install/templates/step4.html.twig:20
-msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Válassza ki, hogyan kommunikál a Poweradmin a PowerDNS-szel:"
-
-#: install/templates/step4.html.twig:25
-msgid "Direct access to PowerDNS database tables"
-msgstr "Közvetlen hozzáférés a PowerDNS adatbázis táblákhoz"
-
-#: install/templates/step4.html.twig:32
-msgid "API"
-msgstr "API"
-
-#: install/templates/step4.html.twig:32
-msgid "PowerDNS REST API"
-msgstr "PowerDNS REST API"
-
-#: install/templates/step4.html.twig:33
-msgid "Experimental"
-msgstr "Kísérleti"
-
-#: install/templates/step4.html.twig:42
-msgid "PowerDNS API Settings"
-msgstr "PowerDNS API beállítások"
-
-#: install/templates/step4.html.twig:46
-msgid "API URL"
-msgstr "API URL"
-
-#: install/templates/step4.html.twig:52
-msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API végpont URL."
-
-#: install/templates/step4.html.twig:57
-msgid "API Key"
-msgstr "API-kulcs"
-
-#: install/templates/step4.html.twig:66
-msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API-kulcs (a pdns.conf api-key beállításból)."
-
-#: install/templates/step4.html.twig:71
-msgid "Server name"
-msgstr "szervernév"
-
-#: install/templates/step4.html.twig:77
-msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS szerver neve API hívásokhoz (általában \"localhost\")."
-
-#: install/templates/step4.html.twig:86
-msgid "Database Connection Settings"
-msgstr "Adatbázis kapcsolat beállítások"
-
-#: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
-msgid "Database Configuration:"
-msgstr "Adatbázis konfiguráció:"
-
-#: install/templates/step4.html.twig:90
-msgid ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
-msgstr "DB jogokkal, PowerDNS külön."
-
-#: install/templates/step4.html.twig:93
-msgid ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
-msgstr "Poweradmin táblák, PowerDNS nem."
-
-#: install/templates/step4.html.twig:97
-msgid "Database type"
-msgstr "Adatbázis típusa"
-
-#: install/templates/step4.html.twig:106
-msgid "Database server type."
-msgstr "Adatbázis szerver típusa."
-
-#: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
-msgid "Provide the user name"
-msgstr "Adja meg a felhasználónevet"
-
-#: install/templates/step4.html.twig:117
-msgid "Database username with rights to create tables."
-msgstr "Adatbázis felhasználó táblák létrehozására jogosult."
-
-#: install/templates/step4.html.twig:131
-msgid "Password for this database user."
-msgstr "Jelszó ehhez az adatbázis felhasználóhoz."
-
-#: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
-msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Kerülje az idézőjeleket, fordított perjeleket és sortöréseket."
-
-#: install/templates/step4.html.twig:140
-msgid "Provide the hostname"
-msgstr "Adja meg a gazdanevet"
-
-#: install/templates/step4.html.twig:143
-msgid "Database server hostname (usually \"localhost\")."
-msgstr "Adatbázis szerver gazdaneve (általában \"localhost\")."
-
-#: install/templates/step4.html.twig:148
-msgid "DB Port"
-msgstr "Adatbázis port"
-
-#: install/templates/step4.html.twig:151
-msgid "Provide database port"
-msgstr "Adja meg az adatbázis portot"
-
-#: install/templates/step4.html.twig:154
-msgid "Database server port."
-msgstr "Adatbázis szerver port."
-
-#: install/templates/step4.html.twig:162
-msgid "Provide the name of the database"
-msgstr "Adja meg az adatbázis nevét"
-
-#: install/templates/step4.html.twig:165
-msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Adatbázis neve (a Poweradmin tábláihoz)."
-
-#: install/templates/step4.html.twig:167
-msgid "Full path to SQLite database file"
-msgstr "Teljes útvonal az SQLite adatbázis fájlhoz"
-
-#: install/templates/step4.html.twig:170
-msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "A fájlnak léteznie kell webszerver hozzáféréssel. Abszolút útvonal."
-
-#: install/templates/step4.html.twig:178
-msgid "DB charset"
-msgstr "Adatbázis kódolása"
-
-#: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
-msgid "Use default"
-msgstr "Alapértelmezett használata"
-
-#: install/templates/step4.html.twig:185
-msgid "Charset for new tables. Leave empty for database default."
-msgstr "Új táblák karakterkészlete. Hagyja üresen az alapértelmezetthez."
-
-#: install/templates/step4.html.twig:190
-msgid "DB collation"
-msgstr "Adatbázis rendezés"
-
-#: install/templates/step4.html.twig:197
-msgid ""
-"Collation rules for character comparison. Leave empty for database default."
-msgstr "Karakter összehasonlítási szabályok. Üresen hagyva alapértelmezett."
-
-#: install/templates/step4.html.twig:206
-msgid "PowerDNS Database"
-msgstr "PowerDNS adatbázis"
-
-#: install/templates/step4.html.twig:210
-msgid "Database name"
-msgstr "Adatbázis neve"
-
-#: install/templates/step4.html.twig:213
-msgid "Leave empty for same database"
-msgstr "Hagyja üresen ugyanahhoz a DB-hez"
-
-#: install/templates/step4.html.twig:216
-msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "MySQL adatbázis PowerDNS táblákkal (ha eltér)."
-
-#: install/templates/step4.html.twig:224
-msgid "Poweradmin Account"
-msgstr "Poweradmin fiók"
-
-#: install/templates/step4.html.twig:228
-msgid "Administrator password"
-msgstr "Adminisztrátor jelszó"
-
-#: install/templates/step4.html.twig:233
-msgid "Provide a password"
-msgstr "Adjon meg jelszót"
-
-#: install/templates/step4.html.twig:238
-msgid "Password for \"admin\" username."
-msgstr "Jelszó az \"admin\" felhasználóhoz."
-
-#: install/templates/step2.html.twig:3
-msgid "System Requirements"
-msgstr "Rendszerkövetelmények"
-
-#: install/templates/step2.html.twig:8
-msgid "System Requirements Check"
-msgstr "Rendszerkövetelmények ellenőrzése"
-
-#: install/templates/step2.html.twig:13
-msgid "PHP Version"
-msgstr "PHP verzió"
-
-#: install/templates/step2.html.twig:23
-msgid "Requires PHP 8.2.0+"
-msgstr "PHP 8.2.0+ szükséges"
-
-#: install/templates/step2.html.twig:30
-msgid "Database Extensions"
-msgstr "Adatbázis kiterjesztések"
-
-#: install/templates/step2.html.twig:31
-msgid "at least one required"
-msgstr "legalább egy kötelező"
-
-#: install/templates/step2.html.twig:55
-msgid "Required PHP Extensions"
-msgstr "Szükséges PHP kiterjesztések"
-
-#: install/templates/step2.html.twig:76
-msgid "Optional Extensions"
-msgstr "Opcionális kiterjesztések"
-
-#: install/templates/step2.html.twig:97
-msgid "Web Server"
-msgstr "Webszerver"
-
-#: install/templates/step2.html.twig:102
-msgid "Server"
-msgstr "Szerver"
-
-#: install/templates/step2.html.twig:118
-msgid "Not detected — required for URL routing"
-msgstr "Not detected — required for URL routing"
-
-#: install/templates/step2.html.twig:124
-msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
-msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
-
-#: install/templates/step2.html.twig:130
-msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "Győződjön meg az URL átírás beállításáról (nginx.conf.example)"
-
-#: install/templates/step2.html.twig:135
-msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Győződjön meg, hogy az URL átírás be van állítva"
-
-#: install/templates/step2.html.twig:149
-msgid "All required components are available."
-msgstr "Minden szükséges komponens elérhető."
-
-#: install/templates/step2.html.twig:150
-msgid "You can continue with the installation."
-msgstr "Folytathatja a telepítést."
-
-#: install/templates/step2.html.twig:159
-msgid "Some required components are missing."
-msgstr "Néhány szükséges komponens hiányzik."
-
-#: install/templates/step2.html.twig:160
-msgid "Please install the missing components before continuing."
-msgstr "Telepítse a hiányzó komponenseket a folytatás előtt."
-
-#: install/templates/step5.html.twig:3
-msgid "Setup account and nameservers"
-msgstr "Fiók és névszerverek beállítása"
-
-#: install/templates/step5.html.twig:8
-msgid "Setup account and name servers"
-msgstr "Fiók és névszerverek beállítása"
-
-#: install/templates/step5.html.twig:12
-msgid "Configuration:"
-msgstr "Konfiguráció:"
-
-#: install/templates/step5.html.twig:12
-msgid "Now we will gather all details for the configuration itself."
-msgstr "Most gyűjtjük össze a konfiguráció részleteit."
-
-#: install/templates/step5.html.twig:52
-msgid "Database User"
-msgstr "Adatbázis felhasználó"
-
-#: install/templates/step5.html.twig:57
-msgid ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
-msgstr "Poweradmin saját táblák DB."
-
-#: install/templates/step5.html.twig:67
-msgid ""
-"Poweradmin database username with restricted access. Not for web UI login."
-msgstr "Korlátozott hozzáférésű adatbázis felhasználó. Nem web UI."
-
-#: install/templates/step5.html.twig:77
-msgid "Provide the user password"
-msgstr "Adja meg a felhasználó jelszavát"
-
-#: install/templates/step5.html.twig:81
-msgid "The password for this username."
-msgstr "A jelszó ehhez a felhasználónévhez."
-
-#: install/templates/step5.html.twig:91
-msgid "DNS Settings"
-msgstr "DNS beállítások"
-
-#: install/templates/step5.html.twig:95
-msgid "Hostmaster"
-msgstr "Kiszolgáló adminisztrátor"
-
-#: install/templates/step5.html.twig:99
-msgid "Provide the DNS hostmaster"
-msgstr "Adja meg a DNS hostmastert"
-
-#: install/templates/step5.html.twig:102
-msgid "Default hostmaster for SOA records."
-msgstr "Alapértelmezett hostmaster SOA rekordokhoz."
-
-#: install/templates/step5.html.twig:107
-msgid "Primary nameserver"
-msgstr "Elsődleges névszerver"
-
-#: install/templates/step5.html.twig:111
-msgid "Provide the primary nameserver"
-msgstr "Adja meg az elsődleges névszervert"
-
-#: install/templates/step5.html.twig:114
-msgid "Primary nameserver for new zones."
-msgstr "Elsődleges névszerver új zónákhoz."
-
-#: install/templates/step5.html.twig:119
-msgid "Secondary nameserver"
-msgstr "Másodlagos névszerver"
-
-#: install/templates/step5.html.twig:123
-msgid "Provide the secondary nameserver"
-msgstr "Adja meg a másodlagos névszervert"
-
-#: install/templates/step5.html.twig:126
-msgid "Secondary nameserver for new zones."
-msgstr "Másodlagos névszerver új zónákhoz."
-
-#: install/templates/step5.html.twig:132
-msgid "Tertiary Nameserver"
-msgstr "Harmadlagos névszerver"
-
-#: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
-msgid "optional"
-msgstr "választható"
-
-#: install/templates/step5.html.twig:139
-msgid "Optional tertiary nameserver for new zones."
-msgstr "Opcionális harmadlagos névszerver új zónákhoz."
-
-#: install/templates/step5.html.twig:145
-msgid "Quaternary Nameserver"
-msgstr "Negyedleges névszerver"
-
-#: install/templates/step5.html.twig:152
-msgid "Optional quaternary nameserver for new zones."
-msgstr "Opcionális negyedleges névszerver új zónákhoz."
-
-#: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
-msgid "Installation complete"
-msgstr "Telepítés befejezve"
-
-#: install/templates/step8.html.twig:12
-msgid "Installation Complete!"
-msgstr "Telepítés befejezve!"
-
-#: install/templates/step8.html.twig:12
-msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Gratulálunk! A Poweradmin telepítése most konfigurált."
-
-#: install/templates/step8.html.twig:16
-msgid "Important Security Notice:"
-msgstr "Fontos biztonsági értesítés:"
-
-#: install/templates/step8.html.twig:16
-msgid ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
-msgstr "Távolítsa el az \"install/\"-t a Poweradmin gyökérből."
-
-#: install/templates/step8.html.twig:17
-msgid ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
-msgstr "A Poweradmin nem működik, ha az install könyvtár létezik."
-
-#: install/templates/step8.html.twig:22
-msgid "Next Steps"
-msgstr "Következő lépések"
-
-#: install/templates/step8.html.twig:26
-msgid "Remove the \"install/\" directory from your server"
-msgstr "Távolítsa el az \"install/\" könyvtárat a szerverről"
-
-#: install/templates/step8.html.twig:27
-msgid ""
-"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
-"\"admin\" and the password you set in step 3"
-msgstr "Bejelentkezés admin-nal és 3. lépés jelszóval."
-
-#: install/templates/step8.html.twig:28
-msgid "Begin configuring your DNS zones and records"
-msgstr "Kezdje el a DNS zónák és rekordok konfigurálását"
-
-#: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
-msgid "Getting Ready"
-msgstr "Előkészítés"
-
-#: install/templates/step3.html.twig:13
-msgid "Prerequisites"
-msgstr "Előfeltételek"
-
-#: install/templates/step3.html.twig:16
-msgid "Before proceeding, ensure you have:"
-msgstr "A folytatás előtt győződjön meg arról, hogy:"
-
-#: install/templates/step3.html.twig:18
-msgid ""
-"PowerDNS installed with database tables created (or API access configured)"
-msgstr "PowerDNS telepítve táblákkal (vagy API)"
-
-#: install/templates/step3.html.twig:19
-msgid "Database credentials (hostname, username, password)"
-msgstr "Adatbázis hitelesítés (gazdanév, felhasználó, jelszó)"
-
-#: install/templates/step3.html.twig:20
-msgid "Permission to create tables for Poweradmin"
-msgstr "Jogosultság Poweradmin táblák létrehozásához"
-
-#: install/templates/step3.html.twig:27
-msgid "Next:"
-msgstr "Következő:"
-
-#: install/templates/step3.html.twig:27
-msgid ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
-msgstr "Adatbázis kapcsolat, admin fiók, konfiguráció."
-
-#: install/helpers/InstallStepHandler.php:176
-msgid "Missing PowerDNS tables:"
-msgstr "Hiányzó PowerDNS táblák:"
-
-#: install/helpers/InstallStepHandler.php:177
-msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "A Poweradminnak szüksége van ezekre a PowerDNS táblákra."
-
-#: install/helpers/InstallStepHandler.php:185
-msgid "Updating database... done!"
-msgstr "Adatbázis frissítése... kész!"
-
-#: install/helpers/InstallStepHandler.php:207
-msgid "Foreign Key Constraint Issues:"
-msgstr "Idegen kulcs kényszer problémák:"
-
-#: install/helpers/InstallStepHandler.php:209
-msgid ""
-"The installer could not remove existing tables due to foreign key constraints"
-msgstr "A telepítő nem tudta eltávolítani a táblákat idegen kulcs miatt"
-
-#: install/helpers/InstallStepHandler.php:210
-msgid ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
-msgstr "Újratelepítéskor, custom constraint."
-
-#: install/helpers/InstallStepHandler.php:211
-msgid ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
-msgstr "Kézzel kikapcsolhatja az FK ellenőrzést:"
-
-#: install/helpers/InstallStepHandler.php:224
-msgid "Suggestions:"
-msgstr "Javaslatok:"
-
-#: install/helpers/InstallStepHandler.php:218
-msgid "Make sure the SQLite database file exists"
-msgstr "Győződjön meg róla, hogy az SQLite fájl létezik"
-
-#: install/helpers/InstallStepHandler.php:219
-msgid ""
-"Check that the web server has read and write permissions for the database "
-"file"
-msgstr "Webszerver olvasási és írási joga az adatbázis fájlhoz"
-
-#: install/helpers/InstallStepHandler.php:220
-msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Ellenőrizze az adatbázis fájl teljes útvonalát"
-
-#: install/helpers/InstallStepHandler.php:226
-msgid "Verify database credentials are correct"
-msgstr "Ellenőrizze, hogy az adatbázis hitelesítő adatai helyesek"
-
-#: install/helpers/InstallStepHandler.php:227
-msgid "Check that the database user has sufficient privileges"
-msgstr ""
-"Ellenőrizze, hogy az adatbázis felhasználó megfelelő jogokkal rendelkezik"
-
-#: install/helpers/InstallStepHandler.php:228
-msgid "Ensure the database server is running and accessible"
-msgstr "Győződjön meg, hogy az adatbázis szerver fut és elérhető"
-
-#: install/helpers/InstallStepHandler.php:233
-msgid "Database Error"
-msgstr "Adatbázis hiba"
-
-#: install/helpers/DatabaseHelper.php:175
-#, php-format
-msgid ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
-msgstr "SQLite %s nem létezik."
-
-#: install/helpers/DatabaseHelper.php:183
-#, php-format
-msgid ""
-"The SQLite database file %s is not readable. Please check file permissions."
-msgstr "Az SQLite fájl %s nem olvasható. Ellenőrizze a jogokat."
-
-#: install/helpers/DatabaseHelper.php:191
-#, php-format
-msgid ""
-"The SQLite database file %s is not writable. Please check file permissions."
-msgstr "Az SQLite fájl %s nem írható."
-
-#: install/helpers/DatabaseHelper.php:203
-#, php-format
-msgid "Could not access the SQLite database file %s: %s"
-msgstr "Nem sikerült elérni az SQLite fájlt %s: %s"
-
-#: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
-msgid "PowerDNS API URL is required when using API backend."
-msgstr "A PowerDNS API URL kötelező API backend esetén."
-
-#: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
-msgid "PowerDNS API key is required when using API backend."
-msgstr "A PowerDNS API-kulcs kötelező API backend esetén."
-
-#: install/helpers/Validators/CreateConfigurationFileValidator.php:54
-msgid ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
-msgstr "Nincs config/settings.php."
-
-#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
-msgid ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
-msgstr "Különálló PowerDNS DB csak MySQL."
-
-#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
-#, php-format
-msgid ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
-msgstr "PowerDNS táblák hiányoznak \"%s\"-ben: %s."
-
-#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
-#, php-format
-msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Nem sikerült csatlakozni a PowerDNS adatbázishoz \"%s\": %s"
-
-# OBSOLETE: msgid "Edit Supermaster"
-# OBSOLETE: msgstr "Szuper elsődleges szerkesztése"
-
-# OBSOLETE: msgid "PowerDNS 4.0+ uses CSK by default"
-# OBSOLETE: msgstr "A PowerDNS 4.0+ alapértelmezetten CSK-t használ"
+# OBSOLETE: msgid "Limited Database Rights:"
+# OBSOLETE: msgstr "Korlátozott adatbázis jogok:"
 
 # OBSOLETE: msgid ""
-# OBSOLETE: "PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by "
-# OBSOLETE: "default. If you select KSK or ZSK, PowerDNS may still create a CSK key."
-# OBSOLETE: msgstr "PowerDNS 4.0+ CSK default."
+# OBSOLETE: "Create a database user with limited rights (select, insert, update, "
+# OBSOLETE: "delete) for Poweradmin tables only. PowerDNS table access is not required "
+# OBSOLETE: "when using the API backend."
+# OBSOLETE: msgstr "DB user Poweradmin tables."
 
-# OBSOLETE: msgid "Add Supermaster"
-# OBSOLETE: msgstr "Szuper elsődleges hozzáadása"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Create a database user with limited rights (select, insert, update, "
+# OBSOLETE: "delete) for Poweradmin to access PowerDNS tables."
+# OBSOLETE: msgstr "Korlátozott DB user."
 
-# OBSOLETE: msgid "Delete Supermaster"
-# OBSOLETE: msgstr "Szuper elsődleges törlése"
+# OBSOLETE: msgid "Database Commands"
+# OBSOLETE: msgstr "Adatbázis parancsok"
+
+# OBSOLETE: msgid "Execute the following commands:"
+# OBSOLETE: msgstr "Futtassa a következő parancsokat:"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "After you have added the new user, proceed with this installation "
+# OBSOLETE: "procedure."
+# OBSOLETE: msgstr "Új felhasználó hozzáadása után folytassa a telepítést."
+
+# OBSOLETE: msgid "Note:"
+# OBSOLETE: msgstr "Megjegyzés:"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Since you are using SQLite, there is no need to create a new user with "
+# OBSOLETE: "limited rights."
+# OBSOLETE: msgstr "SQLite esetén nincs szükség korlátozott jogú felhasználóra."
+
+# OBSOLETE: msgid "Continue to step"
+# OBSOLETE: msgstr "Folytatás a lépéssel"
+
+# OBSOLETE: msgid "Installation step"
+# OBSOLETE: msgstr "Telepítési lépés"
+
+# OBSOLETE: msgid "Create configuration file"
+# OBSOLETE: msgstr "Konfigurációs fájl létrehozása"
+
+# OBSOLETE: msgid "Configuration File:"
+# OBSOLETE: msgstr "Konfigurációs fájl:"
+
+# OBSOLETE: msgid "Create the file"
+# OBSOLETE: msgstr "Fájl létrehozása"
+
+# OBSOLETE: msgid "with the following content:"
+# OBSOLETE: msgstr "a következő tartalommal:"
+
+# OBSOLETE: msgid "Choose a language"
+# OBSOLETE: msgstr "Válasszon nyelvet"
+
+# OBSOLETE: msgid "Choose a language for installation"
+# OBSOLETE: msgstr "Válasszon telepítési nyelvet"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Please select your preferred language to continue with the installation:"
+# OBSOLETE: msgstr "Válasszon nyelvet a telepítés folytatásához:"
+
+# OBSOLETE: msgid "Begin Installation"
+# OBSOLETE: msgstr "Telepítés kezdése"
+
+# OBSOLETE: msgid "Configuring database"
+# OBSOLETE: msgstr "Adatbázis konfigurálása"
+
+# OBSOLETE: msgid "Configuring Database Connection"
+# OBSOLETE: msgstr "Adatbázis kapcsolat konfigurálása"
+
+# OBSOLETE: msgid "PowerDNS Backend"
+# OBSOLETE: msgstr "PowerDNS backend"
+
+# OBSOLETE: msgid "Choose how Poweradmin communicates with PowerDNS:"
+# OBSOLETE: msgstr "Válassza ki, hogyan kommunikál a Poweradmin a PowerDNS-szel:"
+
+# OBSOLETE: msgid "Direct access to PowerDNS database tables"
+# OBSOLETE: msgstr "Közvetlen hozzáférés a PowerDNS adatbázis táblákhoz"
+
+# OBSOLETE: msgid "API"
+# OBSOLETE: msgstr "API"
+
+# OBSOLETE: msgid "PowerDNS REST API"
+# OBSOLETE: msgstr "PowerDNS REST API"
+
+# OBSOLETE: msgid "Experimental"
+# OBSOLETE: msgstr "Kísérleti"
+
+# OBSOLETE: msgid "PowerDNS API Settings"
+# OBSOLETE: msgstr "PowerDNS API beállítások"
+
+# OBSOLETE: msgid "API URL"
+# OBSOLETE: msgstr "API URL"
+
+# OBSOLETE: msgid "PowerDNS API endpoint URL."
+# OBSOLETE: msgstr "PowerDNS API végpont URL."
+
+# OBSOLETE: msgid "API Key"
+# OBSOLETE: msgstr "API-kulcs"
+
+# OBSOLETE: msgid "PowerDNS API key (from pdns.conf api-key setting)."
+# OBSOLETE: msgstr "PowerDNS API-kulcs (a pdns.conf api-key beállításból)."
+
+# OBSOLETE: msgid "Server name"
+# OBSOLETE: msgstr "szervernév"
+
+# OBSOLETE: msgid "PowerDNS server name for API calls (usually \"localhost\")."
+# OBSOLETE: msgstr "PowerDNS szerver neve API hívásokhoz (általában \"localhost\")."
+
+# OBSOLETE: msgid "Database Connection Settings"
+# OBSOLETE: msgstr "Adatbázis kapcsolat beállítások"
+
+# OBSOLETE: msgid "Database Configuration:"
+# OBSOLETE: msgstr "Adatbázis konfiguráció:"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Configure database connection with table creation rights. PowerDNS "
+# OBSOLETE: "location can be specified separately if needed."
+# OBSOLETE: msgstr "DB jogokkal, PowerDNS külön."
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Configure database connection for Poweradmin tables (users, permissions, "
+# OBSOLETE: "zones). PowerDNS tables are not required."
+# OBSOLETE: msgstr "Poweradmin táblák, PowerDNS nem."
+
+# OBSOLETE: msgid "Database type"
+# OBSOLETE: msgstr "Adatbázis típusa"
+
+# OBSOLETE: msgid "Database server type."
+# OBSOLETE: msgstr "Adatbázis szerver típusa."
+
+# OBSOLETE: msgid "Provide the user name"
+# OBSOLETE: msgstr "Adja meg a felhasználónevet"
+
+# OBSOLETE: msgid "Database username with rights to create tables."
+# OBSOLETE: msgstr "Adatbázis felhasználó táblák létrehozására jogosult."
+
+# OBSOLETE: msgid "Password for this database user."
+# OBSOLETE: msgstr "Jelszó ehhez az adatbázis felhasználóhoz."
+
+# OBSOLETE: msgid "Avoid quotes, backslashes, and line breaks."
+# OBSOLETE: msgstr "Kerülje az idézőjeleket, fordított perjeleket és sortöréseket."
+
+# OBSOLETE: msgid "Provide the hostname"
+# OBSOLETE: msgstr "Adja meg a gazdanevet"
+
+# OBSOLETE: msgid "Database server hostname (usually \"localhost\")."
+# OBSOLETE: msgstr "Adatbázis szerver gazdaneve (általában \"localhost\")."
+
+# OBSOLETE: msgid "DB Port"
+# OBSOLETE: msgstr "Adatbázis port"
+
+# OBSOLETE: msgid "Provide database port"
+# OBSOLETE: msgstr "Adja meg az adatbázis portot"
+
+# OBSOLETE: msgid "Database server port."
+# OBSOLETE: msgstr "Adatbázis szerver port."
+
+# OBSOLETE: msgid "Provide the name of the database"
+# OBSOLETE: msgstr "Adja meg az adatbázis nevét"
+
+# OBSOLETE: msgid "Database name (will be used for Poweradmin tables)."
+# OBSOLETE: msgstr "Adatbázis neve (a Poweradmin tábláihoz)."
+
+# OBSOLETE: msgid "Full path to SQLite database file"
+# OBSOLETE: msgstr "Teljes útvonal az SQLite adatbázis fájlhoz"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "File must exist with web server read/write access. Use absolute path."
+# OBSOLETE: msgstr "A fájlnak léteznie kell webszerver hozzáféréssel. Abszolút útvonal."
+
+# OBSOLETE: msgid "DB charset"
+# OBSOLETE: msgstr "Adatbázis kódolása"
+
+# OBSOLETE: msgid "Use default"
+# OBSOLETE: msgstr "Alapértelmezett használata"
+
+# OBSOLETE: msgid "Charset for new tables. Leave empty for database default."
+# OBSOLETE: msgstr "Új táblák karakterkészlete. Hagyja üresen az alapértelmezetthez."
+
+# OBSOLETE: msgid "DB collation"
+# OBSOLETE: msgstr "Adatbázis rendezés"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Collation rules for character comparison. Leave empty for database "
+# OBSOLETE: "default."
+# OBSOLETE: msgstr "Karakter összehasonlítási szabályok. Üresen hagyva alapértelmezett."
+
+# OBSOLETE: msgid "PowerDNS Database"
+# OBSOLETE: msgstr "PowerDNS adatbázis"
+
+# OBSOLETE: msgid "Database name"
+# OBSOLETE: msgstr "Adatbázis neve"
+
+# OBSOLETE: msgid "Leave empty for same database"
+# OBSOLETE: msgstr "Hagyja üresen ugyanahhoz a DB-hez"
+
+# OBSOLETE: msgid "MySQL database with PowerDNS tables (if different)."
+# OBSOLETE: msgstr "MySQL adatbázis PowerDNS táblákkal (ha eltér)."
+
+# OBSOLETE: msgid "Poweradmin Account"
+# OBSOLETE: msgstr "Poweradmin fiók"
+
+# OBSOLETE: msgid "Administrator password"
+# OBSOLETE: msgstr "Adminisztrátor jelszó"
+
+# OBSOLETE: msgid "Provide a password"
+# OBSOLETE: msgstr "Adjon meg jelszót"
+
+# OBSOLETE: msgid "Password for \"admin\" username."
+# OBSOLETE: msgstr "Jelszó az \"admin\" felhasználóhoz."
+
+# OBSOLETE: msgid "System Requirements"
+# OBSOLETE: msgstr "Rendszerkövetelmények"
+
+# OBSOLETE: msgid "System Requirements Check"
+# OBSOLETE: msgstr "Rendszerkövetelmények ellenőrzése"
+
+# OBSOLETE: msgid "PHP Version"
+# OBSOLETE: msgstr "PHP verzió"
+
+# OBSOLETE: msgid "Requires PHP 8.2.0+"
+# OBSOLETE: msgstr "PHP 8.2.0+ szükséges"
+
+# OBSOLETE: msgid "Database Extensions"
+# OBSOLETE: msgstr "Adatbázis kiterjesztések"
+
+# OBSOLETE: msgid "at least one required"
+# OBSOLETE: msgstr "legalább egy kötelező"
+
+# OBSOLETE: msgid "Required PHP Extensions"
+# OBSOLETE: msgstr "Szükséges PHP kiterjesztések"
+
+# OBSOLETE: msgid "Optional Extensions"
+# OBSOLETE: msgstr "Opcionális kiterjesztések"
+
+# OBSOLETE: msgid "Web Server"
+# OBSOLETE: msgstr "Webszerver"
+
+# OBSOLETE: msgid "Server"
+# OBSOLETE: msgstr "Szerver"
+
+# OBSOLETE: msgid "Not detected — required for URL routing"
+# OBSOLETE: msgstr "Not detected — required for URL routing"
+
+# OBSOLETE: msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
+# OBSOLETE: msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
+
+# OBSOLETE: msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
+# OBSOLETE: msgstr "Győződjön meg az URL átírás beállításáról (nginx.conf.example)"
+
+# OBSOLETE: msgid "Ensure URL rewriting is configured for your web server"
+# OBSOLETE: msgstr "Győződjön meg, hogy az URL átírás be van állítva"
+
+# OBSOLETE: msgid "All required components are available."
+# OBSOLETE: msgstr "Minden szükséges komponens elérhető."
+
+# OBSOLETE: msgid "You can continue with the installation."
+# OBSOLETE: msgstr "Folytathatja a telepítést."
+
+# OBSOLETE: msgid "Some required components are missing."
+# OBSOLETE: msgstr "Néhány szükséges komponens hiányzik."
+
+# OBSOLETE: msgid "Please install the missing components before continuing."
+# OBSOLETE: msgstr "Telepítse a hiányzó komponenseket a folytatás előtt."
+
+# OBSOLETE: msgid "Setup account and nameservers"
+# OBSOLETE: msgstr "Fiók és névszerverek beállítása"
+
+# OBSOLETE: msgid "Setup account and name servers"
+# OBSOLETE: msgstr "Fiók és névszerverek beállítása"
+
+# OBSOLETE: msgid "Configuration:"
+# OBSOLETE: msgstr "Konfiguráció:"
+
+# OBSOLETE: msgid "Now we will gather all details for the configuration itself."
+# OBSOLETE: msgstr "Most gyűjtjük össze a konfiguráció részleteit."
+
+# OBSOLETE: msgid "Database User"
+# OBSOLETE: msgstr "Adatbázis felhasználó"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Poweradmin keeps its own tables (users, permissions, zone metadata) in "
+# OBSOLETE: "the configured database even when the PowerDNS API backend is selected. "
+# OBSOLETE: "These credentials are for that database, not for PowerDNS."
+# OBSOLETE: msgstr "Poweradmin saját táblák DB."
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Poweradmin database username with restricted access. Not for web UI login."
+# OBSOLETE: msgstr "Korlátozott hozzáférésű adatbázis felhasználó. Nem web UI."
+
+# OBSOLETE: msgid "Provide the user password"
+# OBSOLETE: msgstr "Adja meg a felhasználó jelszavát"
+
+# OBSOLETE: msgid "The password for this username."
+# OBSOLETE: msgstr "A jelszó ehhez a felhasználónévhez."
+
+# OBSOLETE: msgid "DNS Settings"
+# OBSOLETE: msgstr "DNS beállítások"
+
+# OBSOLETE: msgid "Hostmaster"
+# OBSOLETE: msgstr "Kiszolgáló adminisztrátor"
+
+# OBSOLETE: msgid "Provide the DNS hostmaster"
+# OBSOLETE: msgstr "Adja meg a DNS hostmastert"
+
+# OBSOLETE: msgid "Default hostmaster for SOA records."
+# OBSOLETE: msgstr "Alapértelmezett hostmaster SOA rekordokhoz."
+
+# OBSOLETE: msgid "Primary nameserver"
+# OBSOLETE: msgstr "Elsődleges névszerver"
+
+# OBSOLETE: msgid "Provide the primary nameserver"
+# OBSOLETE: msgstr "Adja meg az elsődleges névszervert"
+
+# OBSOLETE: msgid "Primary nameserver for new zones."
+# OBSOLETE: msgstr "Elsődleges névszerver új zónákhoz."
+
+# OBSOLETE: msgid "Secondary nameserver"
+# OBSOLETE: msgstr "Másodlagos névszerver"
+
+# OBSOLETE: msgid "Provide the secondary nameserver"
+# OBSOLETE: msgstr "Adja meg a másodlagos névszervert"
+
+# OBSOLETE: msgid "Secondary nameserver for new zones."
+# OBSOLETE: msgstr "Másodlagos névszerver új zónákhoz."
+
+# OBSOLETE: msgid "Tertiary Nameserver"
+# OBSOLETE: msgstr "Harmadlagos névszerver"
+
+# OBSOLETE: msgid "optional"
+# OBSOLETE: msgstr "választható"
+
+# OBSOLETE: msgid "Optional tertiary nameserver for new zones."
+# OBSOLETE: msgstr "Opcionális harmadlagos névszerver új zónákhoz."
+
+# OBSOLETE: msgid "Quaternary Nameserver"
+# OBSOLETE: msgstr "Negyedleges névszerver"
+
+# OBSOLETE: msgid "Optional quaternary nameserver for new zones."
+# OBSOLETE: msgstr "Opcionális negyedleges névszerver új zónákhoz."
+
+# OBSOLETE: msgid "Installation complete"
+# OBSOLETE: msgstr "Telepítés befejezve"
+
+# OBSOLETE: msgid "Installation Complete!"
+# OBSOLETE: msgstr "Telepítés befejezve!"
+
+# OBSOLETE: msgid "Congratulations! Your Poweradmin installation is now configured."
+# OBSOLETE: msgstr "Gratulálunk! A Poweradmin telepítése most konfigurált."
+
+# OBSOLETE: msgid "Important Security Notice:"
+# OBSOLETE: msgstr "Fontos biztonsági értesítés:"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "You must remove the \"install/\" directory from the Poweradmin root "
+# OBSOLETE: "directory."
+# OBSOLETE: msgstr "Távolítsa el az \"install/\"-t a Poweradmin gyökérből."
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Poweradmin will not function if the install directory exists, as a "
+# OBSOLETE: "security measure."
+# OBSOLETE: msgstr "A Poweradmin nem működik, ha az install könyvtár létezik."
+
+# OBSOLETE: msgid "Next Steps"
+# OBSOLETE: msgstr "Következő lépések"
+
+# OBSOLETE: msgid "Remove the \"install/\" directory from your server"
+# OBSOLETE: msgstr "Távolítsa el az \"install/\" könyvtárat a szerverről"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Login to <a href=\"../index.php\">Poweradmin</a> using the default "
+# OBSOLETE: "username \"admin\" and the password you set in step 3"
+# OBSOLETE: msgstr "Bejelentkezés admin-nal és 3. lépés jelszóval."
+
+# OBSOLETE: msgid "Begin configuring your DNS zones and records"
+# OBSOLETE: msgstr "Kezdje el a DNS zónák és rekordok konfigurálását"
+
+# OBSOLETE: msgid "Getting Ready"
+# OBSOLETE: msgstr "Előkészítés"
+
+# OBSOLETE: msgid "Prerequisites"
+# OBSOLETE: msgstr "Előfeltételek"
+
+# OBSOLETE: msgid "Before proceeding, ensure you have:"
+# OBSOLETE: msgstr "A folytatás előtt győződjön meg arról, hogy:"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "PowerDNS installed with database tables created (or API access configured)"
+# OBSOLETE: msgstr "PowerDNS telepítve táblákkal (vagy API)"
+
+# OBSOLETE: msgid "Database credentials (hostname, username, password)"
+# OBSOLETE: msgstr "Adatbázis hitelesítés (gazdanév, felhasználó, jelszó)"
+
+# OBSOLETE: msgid "Permission to create tables for Poweradmin"
+# OBSOLETE: msgstr "Jogosultság Poweradmin táblák létrehozásához"
+
+# OBSOLETE: msgid "Next:"
+# OBSOLETE: msgstr "Következő:"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Configure database connection, create admin account, and generate "
+# OBSOLETE: "configuration file."
+# OBSOLETE: msgstr "Adatbázis kapcsolat, admin fiók, konfiguráció."
+
+# OBSOLETE: msgid "Missing PowerDNS tables:"
+# OBSOLETE: msgstr "Hiányzó PowerDNS táblák:"
+
+# OBSOLETE: msgid "Poweradmin requires these PowerDNS tables to function properly."
+# OBSOLETE: msgstr "A Poweradminnak szüksége van ezekre a PowerDNS táblákra."
+
+# OBSOLETE: msgid "Updating database... done!"
+# OBSOLETE: msgstr "Adatbázis frissítése... kész!"
+
+# OBSOLETE: msgid "Foreign Key Constraint Issues:"
+# OBSOLETE: msgstr "Idegen kulcs kényszer problémák:"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "The installer could not remove existing tables due to foreign key "
+# OBSOLETE: "constraints"
+# OBSOLETE: msgstr "A telepítő nem tudta eltávolítani a táblákat idegen kulcs miatt"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "This can happen during reinstallation if you have custom constraints or "
+# OBSOLETE: "if tables are referenced by other tables"
+# OBSOLETE: msgstr "Újratelepítéskor, custom constraint."
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "You can try manually disabling foreign key checks before running the "
+# OBSOLETE: "installer:"
+# OBSOLETE: msgstr "Kézzel kikapcsolhatja az FK ellenőrzést:"
+
+# OBSOLETE: msgid "Suggestions:"
+# OBSOLETE: msgstr "Javaslatok:"
+
+# OBSOLETE: msgid "Make sure the SQLite database file exists"
+# OBSOLETE: msgstr "Győződjön meg róla, hogy az SQLite fájl létezik"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Check that the web server has read and write permissions for the database "
+# OBSOLETE: "file"
+# OBSOLETE: msgstr "Webszerver olvasási és írási joga az adatbázis fájlhoz"
+
+# OBSOLETE: msgid "Verify the full path to the database file is correct and accessible"
+# OBSOLETE: msgstr "Ellenőrizze az adatbázis fájl teljes útvonalát"
+
+# OBSOLETE: msgid "Verify database credentials are correct"
+# OBSOLETE: msgstr "Ellenőrizze, hogy az adatbázis hitelesítő adatai helyesek"
+
+# OBSOLETE: msgid "Check that the database user has sufficient privileges"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Ellenőrizze, hogy az adatbázis felhasználó megfelelő jogokkal rendelkezik"
+
+# OBSOLETE: msgid "Ensure the database server is running and accessible"
+# OBSOLETE: msgstr "Győződjön meg, hogy az adatbázis szerver fut és elérhető"
+
+# OBSOLETE: msgid "Database Error"
+# OBSOLETE: msgstr "Adatbázis hiba"
+
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "The SQLite database file %s does not exist. Please create the database "
+# OBSOLETE: "file before proceeding."
+# OBSOLETE: msgstr "SQLite %s nem létezik."
+
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "The SQLite database file %s is not readable. Please check file "
+# OBSOLETE: "permissions."
+# OBSOLETE: msgstr "Az SQLite fájl %s nem olvasható. Ellenőrizze a jogokat."
+
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "The SQLite database file %s is not writable. Please check file "
+# OBSOLETE: "permissions."
+# OBSOLETE: msgstr "Az SQLite fájl %s nem írható."
+
+#, php-format
+# OBSOLETE: msgid "Could not access the SQLite database file %s: %s"
+# OBSOLETE: msgstr "Nem sikerült elérni az SQLite fájlt %s: %s"
+
+# OBSOLETE: msgid "PowerDNS API URL is required when using API backend."
+# OBSOLETE: msgstr "A PowerDNS API URL kötelező API backend esetén."
+
+# OBSOLETE: msgid "PowerDNS API key is required when using API backend."
+# OBSOLETE: msgstr "A PowerDNS API-kulcs kötelező API backend esetén."
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "No configuration file found. Please create the config/settings.php file "
+# OBSOLETE: "before proceeding."
+# OBSOLETE: msgstr "Nincs config/settings.php."
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+# OBSOLETE: "and SQLite, please use the same database."
+# OBSOLETE: msgstr "Különálló PowerDNS DB csak MySQL."
+
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+# OBSOLETE: "properly installed in this database."
+# OBSOLETE: msgstr "PowerDNS táblák hiányoznak \"%s\"-ben: %s."
+
+#, php-format
+# OBSOLETE: msgid "Cannot connect to PowerDNS database \"%s\": %s"
+# OBSOLETE: msgstr "Nem sikerült csatlakozni a PowerDNS adatbázishoz \"%s\": %s"
 
 
 
