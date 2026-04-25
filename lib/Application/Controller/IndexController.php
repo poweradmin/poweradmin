@@ -158,16 +158,27 @@ class IndexController extends BaseController
         $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
 
         if (DnsBackendProviderFactory::isApiBackend($this->config)) {
-            // Count from the PowerDNS API directly. Querying the local zones
-            // table would show a stale count on fresh installs until the zone
-            // sync service has run at least once (which only happens when the
-            // user opens the Forward Zones page).
-            try {
-                $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
-                $zoneCount = count($backendProvider->getZones());
-            } catch (\Throwable $e) {
-                $this->logger->warning('Dashboard zone count via API failed: {error}', ['error' => $e->getMessage()]);
-                $zoneCount = (int) $this->db->query("SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL")->fetchColumn();
+            // Prefer the constant-time DB count from the local zones table -
+            // the zone-sync service keeps it current during normal use, and
+            // querying every zone over HTTP just to get a count is expensive
+            // on large installs and times out under outages.
+            $zoneCount = (int) $this->db->query(
+                "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL"
+            )->fetchColumn();
+
+            // Only fall back to the API when (a) the local cache is empty,
+            // which on a fresh install means the sync hasn't run yet, AND
+            // (b) the API hasn't been reporting errors. ApiDnsBackendProvider
+            // swallows outages and returns []; without this guard the
+            // dashboard would happily replace a real local count with 0.
+            $apiHealthy = (new ApiStatusService())->getLastError() === null;
+            if ($zoneCount === 0 && $apiHealthy) {
+                try {
+                    $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
+                    $zoneCount = count($backendProvider->getZones());
+                } catch (\Throwable $e) {
+                    $this->logger->warning('Dashboard zone count via API failed: {error}', ['error' => $e->getMessage()]);
+                }
             }
             return [
                 'zones' => $zoneCount,
