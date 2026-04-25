@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Web;
 
+use Poweradmin\Application\Service\PdnsVersionService;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -42,6 +44,8 @@ class BadgeTwigExtension extends AbstractExtension
         'MASTER' => 'bg-success',
         'SLAVE' => 'bg-info',
         'NATIVE' => 'bg-warning',
+        'PRODUCER' => 'bg-success',
+        'CONSUMER' => 'bg-info',
     ];
 
     public function getFunctions(): array
@@ -49,6 +53,7 @@ class BadgeTwigExtension extends AbstractExtension
         return [
             new TwigFunction('record_type_class', [$this, 'getRecordTypeClass']),
             new TwigFunction('zone_type_class', [$this, 'getZoneTypeClass']),
+            new TwigFunction('zone_type_label', [$this, 'getZoneTypeLabel']),
         ];
     }
 
@@ -63,5 +68,51 @@ class BadgeTwigExtension extends AbstractExtension
     public function getZoneTypeClass(string $type): string
     {
         return self::ZONE_TYPE_CLASSES[strtoupper($type)] ?? 'bg-secondary';
+    }
+
+    /**
+     * Translate a raw PowerDNS zone kind to the user-visible label, swapping
+     * Master/Slave for Primary/Secondary on PowerDNS 4.5+ where the upstream
+     * adopted the modern terminology. The internal kind value passed to the
+     * API never changes - this only affects what the UI shows.
+     */
+    public function getZoneTypeLabel(?string $type): string
+    {
+        if ($type === null || $type === '') {
+            return '';
+        }
+
+        $caps = $this->resolveCapabilities();
+        $upper = strtoupper(trim($type));
+
+        if ($caps->prefersPrimarySecondaryTerminology()) {
+            return match ($upper) {
+                'MASTER' => _('Primary'),
+                'SLAVE' => _('Secondary'),
+                'NATIVE' => _('Native'),
+                'PRODUCER' => _('Producer'),
+                'CONSUMER' => _('Consumer'),
+                default => ucfirst(strtolower($upper)),
+            };
+        }
+
+        return match ($upper) {
+            'MASTER' => _('Master'),
+            'SLAVE' => _('Slave'),
+            'NATIVE' => _('Native'),
+            'PRODUCER' => _('Producer'),
+            'CONSUMER' => _('Consumer'),
+            default => ucfirst(strtolower($upper)),
+        };
+    }
+
+    /**
+     * Build a PdnsCapabilities snapshot from the session-cached PowerDNS
+     * version. Indirected so tests can override behaviour by subclassing.
+     */
+    protected function resolveCapabilities(): PdnsCapabilities
+    {
+        $info = PdnsVersionService::getCachedInfo();
+        return PdnsCapabilities::fromVersion($info['version'] ?? null);
     }
 }
