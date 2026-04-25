@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-24 22:55+0300\n"
+"POT-Creation-Date: 2026-04-25 15:52+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -333,7 +333,7 @@ msgstr ""
 "hoàn chỉnh."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:646
+#: templates/modern/edit.html:93 templates/modern/edit.html:667
 msgid "Invalid hostname format"
 msgstr "Định dạng tên máy chủ không hợp lệ"
 
@@ -1301,7 +1301,7 @@ msgstr "Không thể truy xuất thông tin RDAP từ máy chủ %s"
 msgid "Invalid CSRF token."
 msgstr "Token CSRF không hợp lệ."
 
-#: lib/BaseController.php:592
+#: lib/BaseController.php:646
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1309,7 +1309,7 @@ msgstr ""
 "Thư mục <a href=\"install/\">install/</a> vẫn tồn tại, bạn phải xóa nó trước "
 "khi tiếp tục."
 
-#: lib/BaseController.php:649
+#: lib/BaseController.php:703
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1317,12 +1317,12 @@ msgstr ""
 "Khóa mã hóa phiên mặc định đang được sử dụng, vui lòng thiết lập khóa trong "
 "tệp cấu hình của bạn."
 
-#: lib/BaseController.php:788
+#: lib/BaseController.php:842
 #, php-format
 msgid "The %s field is required."
 msgstr "Trường %s là bắt buộc."
 
-#: lib/BaseController.php:796
+#: lib/BaseController.php:850
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Trường %s phải là một số."
@@ -1685,33 +1685,33 @@ msgstr "Số trang vượt quá số trang có sẵn."
 msgid "You do not have the permission to view supermasters."
 msgstr "Bạn không có quyền xem các supermaster."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Application/Controller/EditZoneMetadataController.php:119
 msgid "You do not have the permission to view zone metadata."
 msgstr "Bạn không có quyền xem siêu dữ liệu vùng."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:121
+#: lib/Application/Controller/EditZoneMetadataController.php:122
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Ban khong co quyen chinh sua sieu du lieu vung."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:150
+#: lib/Application/Controller/EditZoneMetadataController.php:151
 msgid "Zone metadata has been updated successfully."
 msgstr "Sieu du lieu vung da duoc cap nhat thanh cong."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:155
+#: lib/Application/Controller/EditZoneMetadataController.php:156
 msgid "Failed to update zone metadata."
 msgstr "Cap nhat sieu du lieu vung that bai."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:178
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr "Chinh sua sieu du lieu vung"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:178
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "Siêu dữ liệu vùng"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:381
+#: lib/Application/Controller/EditZoneMetadataController.php:382
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
@@ -1719,29 +1719,29 @@ msgstr ""
 "Loai sieu du lieu %s chi chap nhan mot gia tri duy nhat. Chi them mot dong "
 "cho loai nay."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:469
-#: templates/modern/edit_zone_metadata.html:153
+#: lib/Application/Controller/EditZoneMetadataController.php:476
+#: templates/modern/edit_zone_metadata.html:155
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
 msgstr ""
 "Loai sieu du lieu tuy chinh duoc luu truc tiep trong bang domainmetadata cua "
 "PowerDNS."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:477
+#: lib/Application/Controller/EditZoneMetadataController.php:484
 #: templates/modern/pdns_status.html:412
 msgid "Value"
 msgstr "Giá trị"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:515
+#: lib/Application/Controller/EditZoneMetadataController.php:538
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "Tùy chỉnh"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:520
+#: lib/Application/Controller/EditZoneMetadataController.php:543
 msgid "Multi"
 msgstr "Nhieu"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:521
+#: lib/Application/Controller/EditZoneMetadataController.php:544
 msgid "Single"
 msgstr "Don"
 
@@ -1803,24 +1803,24 @@ msgstr "Bạn không có quyền thêm bản ghi vào vùng này."
 msgid "Please provide at least one record."
 msgstr "Vui lòng cung cấp ít nhất một bản ghi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:175
+#: lib/Application/Controller/BulkRecordAddController.php:181
 msgid "Invalid record type."
 msgstr "Loại bản ghi không hợp lệ."
 
-#: lib/Application/Controller/BulkRecordAddController.php:213
+#: lib/Application/Controller/BulkRecordAddController.php:219
 msgid "Record could not be added."
 msgstr "Không thể thêm bản ghi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:221
+#: lib/Application/Controller/BulkRecordAddController.php:227
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d bản ghi đã được thêm thành công."
 
-#: lib/Application/Controller/BulkRecordAddController.php:224
+#: lib/Application/Controller/BulkRecordAddController.php:230
 msgid "Some record(s) could not be added."
 msgstr "Một số bản ghi không thể được thêm."
 
-#: lib/Application/Controller/BulkRecordAddController.php:257
+#: lib/Application/Controller/BulkRecordAddController.php:263
 msgid "Zone ID is required."
 msgstr "ID vùng là bắt buộc."
 
@@ -1913,7 +1913,7 @@ msgid "The record could not be deleted."
 msgstr "Không thể xóa bản ghi."
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:245 templates/modern/index.html:245
+#: templates/default/index.html:271 templates/modern/index.html:271
 msgid "Zone Logs"
 msgstr "Không tương thích phiên bản."
 
@@ -1991,7 +1991,7 @@ msgid "You do not have permission to view this zone."
 msgstr "Bạn không có quyền xem vùng này."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:255 templates/modern/index.html:255
+#: templates/default/index.html:281 templates/modern/index.html:281
 msgid "User Logs"
 msgstr "Schema version không khớp."
 
@@ -2082,31 +2082,31 @@ msgstr ""
 "Không thể ký vùng. Xác thực vùng đã thành công, nhưng API PowerDNS trả về "
 "lỗi. Kiểm tra nhật ký PowerDNS để biết chi tiết."
 
-#: lib/Application/Controller/DnssecController.php:95
+#: lib/Application/Controller/DnssecController.php:96
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Vùng hiện chưa được ký bằng DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:107
+#: lib/Application/Controller/DnssecController.php:108
 msgid "Zone has been unsigned successfully."
 msgstr "Vùng đã được hủy ký thành công."
 
-#: lib/Application/Controller/DnssecController.php:112
+#: lib/Application/Controller/DnssecController.php:113
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "Yêu cầu hủy ký vùng thành công, nhưng xác minh thất bại."
 
-#: lib/Application/Controller/DnssecController.php:116
+#: lib/Application/Controller/DnssecController.php:117
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Không thể hủy ký vùng. Kiểm tra nhật ký PowerDNS để biết chi tiết."
 
-#: lib/Application/Controller/EditController.php:734
+#: lib/Application/Controller/EditController.php:736
 msgid "Request has expired, please try again."
 msgstr "Yêu cầu đã hết hạn, vui lòng thử lại."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:741
 msgid "Zone has been updated successfully."
 msgstr "Vùng đã được cập nhật thành công."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:743
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2114,11 +2114,11 @@ msgstr ""
 "Vùng đã được lưu thành công. Không có thay đổi bản ghi nào được thực hiện, "
 "nhưng số serial SOA đã được tăng."
 
-#: lib/Application/Controller/EditController.php:750
+#: lib/Application/Controller/EditController.php:752
 msgid "Zone has not been updated successfully."
 msgstr "Vùng chưa được cập nhật thành công."
 
-#: lib/Application/Controller/EditController.php:778
+#: lib/Application/Controller/EditController.php:780
 msgid "Please provide all required fields."
 msgstr "Vui lòng cung cấp tất cả các trường bắt buộc."
 
@@ -2182,26 +2182,26 @@ msgstr "Bạn không có quyền thêm bản ghi vào vùng này."
 msgid "Record successfully added."
 msgstr "Bản ghi đã được thêm thành công."
 
-#: lib/Application/Controller/AddRecordController.php:429
+#: lib/Application/Controller/AddRecordController.php:431
 msgid "No records were provided."
 msgstr "Không có bản ghi nào được cung cấp."
 
-#: lib/Application/Controller/AddRecordController.php:483
+#: lib/Application/Controller/AddRecordController.php:485
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d bản ghi đã được thêm thành công."
 
-#: lib/Application/Controller/AddRecordController.php:485
+#: lib/Application/Controller/AddRecordController.php:487
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d bản ghi trùng khớp cũng đã được tạo."
 
-#: lib/Application/Controller/AddRecordController.php:488
+#: lib/Application/Controller/AddRecordController.php:490
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d bản ghi thêm thất bại."
 
-#: lib/Application/Controller/AddRecordController.php:493
+#: lib/Application/Controller/AddRecordController.php:495
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2209,7 +2209,7 @@ msgstr ""
 "Một số bản ghi không thể được thêm. Chúng có thể đã tồn tại hoặc chứa dữ "
 "liệu không hợp lệ."
 
-#: lib/Application/Controller/AddRecordController.php:519
+#: lib/Application/Controller/AddRecordController.php:521
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Không thể thêm bất kỳ bản ghi nào. Chúng có thể chứa dữ liệu không hợp lệ."
@@ -2263,9 +2263,28 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Không thể khởi tạo xác thực OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:265 templates/modern/index.html:265
+#: templates/default/index.html:291 templates/modern/index.html:291
 msgid "Group Logs"
 msgstr "Nhật ký nhóm"
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:65
+msgid "You do not have permission to manage DNSSEC for this zone."
+msgstr "Bạn không có quyền quản lý DNSSEC cho vùng này."
+
+#: lib/Application/Controller/DnssecKeyExportController.php:74
+msgid "PEM key export requires PowerDNS 4.7 or newer."
+msgstr "Xuất khóa PEM yêu cầu PowerDNS 4.7 trở lên."
+
+#: lib/Application/Controller/DnssecKeyExportController.php:86
+msgid "An error occurred while exporting the PEM key: "
+msgstr "Đã xảy ra lỗi khi xuất khóa PEM: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php:92
+msgid ""
+"Could not retrieve the PEM key. The server may not expose private key "
+"material for this key."
+msgstr ""
+"Không thể lấy khóa PEM. Máy chủ có thể không công khai vật liệu khóa riêng cho khóa này."
 
 #: lib/Domain/Service/Dns/DomainManager.php:309
 msgid "You do not have the permission to add a master zone."
@@ -2357,13 +2376,50 @@ msgstr "Mẫu quyền hạn không hợp lệ: phải là mẫu nhóm"
 msgid "Group has been created successfully."
 msgstr "Nhóm đã được tạo thành công."
 
+#: lib/Application/Controller/ListViewsController.php:39
+msgid "You do not have permission to manage PowerDNS views."
+msgstr "Bạn không có quyền quản lý view PowerDNS."
+
+#: lib/Application/Controller/ListViewsController.php:44
+msgid "Views require PowerDNS 5.0 or newer."
+msgstr "View yêu cầu PowerDNS 5.0 trở lên."
+
+#: lib/Application/Controller/ListViewsController.php:50
+msgid "Views are only available with the PowerDNS API backend."
+msgstr "View chỉ khả dụng với backend API PowerDNS."
+
+#: lib/Application/Controller/ListViewsController.php:61
+msgid "Provide a valid view name and zone identifier."
+msgstr "Cung cấp tên view và mã định danh vùng hợp lệ."
+
+#: lib/Application/Controller/ListViewsController.php:67
+msgid "Zone assigned to view."
+msgstr "Vùng đã được gán cho view."
+
+#: lib/Application/Controller/ListViewsController.php:67
+msgid "Failed to assign zone to view."
+msgstr "Không thể gán vùng cho view."
+
+#: lib/Application/Controller/ListViewsController.php:74
+msgid "Zone removed from view."
+msgstr "Vùng đã được xóa khỏi view."
+
+#: lib/Application/Controller/ListViewsController.php:74
+msgid "Failed to remove zone from view."
+msgstr "Không thể xóa vùng khỏi view."
+
+#: lib/Application/Controller/ListNetworksController.php:81
+msgid "Unknown action."
+msgstr "Hành động không xác định."
+
+#: lib/Application/Controller/ListViewsController.php:96
+#: templates/modern/list_views.html:4 templates/modern/list_views.html:10
+msgid "Views"
+msgstr "View"
+
 #: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid key ID."
 msgstr "ID khóa không hợp lệ."
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:65
-msgid "You do not have permission to manage DNSSEC for this zone."
-msgstr "Bạn không có quyền quản lý DNSSEC cho vùng này."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:90
 msgid "DNSSEC key not found or no longer exists."
@@ -2544,7 +2600,7 @@ msgstr "Thêm mẫu vùng"
 msgid "Zone template has been added successfully."
 msgstr "Mẫu vùng đã được thêm thành công."
 
-#: lib/Application/Controller/IndexController.php:63
+#: lib/Application/Controller/IndexController.php:62
 msgid "Dashboard"
 msgstr "Bảng điều khiển"
 
@@ -2639,6 +2695,28 @@ msgstr "Bạn không có quyền thêm supermaster mới."
 msgid "The supermaster has been added successfully."
 msgstr "Supermaster đã được thêm thành công."
 
+#: lib/Application/Controller/DnssecKeyImportController.php:72
+msgid "PEM key import requires PowerDNS 4.7 or newer."
+msgstr "Nhập khóa PEM yêu cầu PowerDNS 4.7 trở lên."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:97
+msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+msgstr "Cung cấp khóa riêng được mã hóa PEM (phải chứa các dấu BEGIN/END)."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:108
+msgid "PEM key imported successfully."
+msgstr "Đã nhập khóa PEM thành công."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:111
+msgid ""
+"Failed to import PEM key. The PowerDNS server may have rejected the format."
+msgstr ""
+"Không thể nhập khóa PEM. Máy chủ PowerDNS có thể đã từ chối định dạng."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:115
+msgid "An error occurred while importing the PEM key: "
+msgstr "Đã xảy ra lỗi khi nhập khóa PEM: "
+
 #: lib/Application/Controller/AddZoneTemplRecordController.php:74
 msgid "You do not have the permission to add records to zone templates."
 msgstr "Bạn không có quyền thêm bản ghi vào mẫu vùng."
@@ -2686,6 +2764,47 @@ msgid_plural ""
 msgstr[0] ""
 "Không thể thêm người dùng vào %d nhóm (đã là thành viên hoặc không tìm thấy "
 "nhóm)."
+
+#: lib/Application/Controller/ListNetworksController.php:39
+msgid "You do not have permission to manage network views."
+msgstr "Bạn không có quyền quản lý view mạng."
+
+#: lib/Application/Controller/ListNetworksController.php:44
+msgid "Network views require PowerDNS 5.0 or newer."
+msgstr "View mạng yêu cầu PowerDNS 5.0 trở lên."
+
+#: lib/Application/Controller/ListNetworksController.php:50
+msgid "Network views are only available with the PowerDNS API backend."
+msgstr "View mạng chỉ khả dụng với backend API PowerDNS."
+
+#: lib/Application/Controller/ListNetworksController.php:61
+msgid "Provide a valid CIDR (e.g. 192.168.0.0/16)."
+msgstr "Cung cấp CIDR hợp lệ (ví dụ: 192.168.0.0/16)."
+
+#: lib/Application/Controller/ListNetworksController.php:64
+msgid "Provide a valid view name."
+msgstr "Cung cấp tên view hợp lệ."
+
+#: lib/Application/Controller/ListNetworksController.php:70
+msgid "Network mapping saved."
+msgstr "Đã lưu ánh xạ mạng."
+
+#: lib/Application/Controller/ListNetworksController.php:70
+msgid "Failed to save network mapping."
+msgstr "Không thể lưu ánh xạ mạng."
+
+#: lib/Application/Controller/ListNetworksController.php:78
+msgid "Network mapping removed."
+msgstr "Đã xóa ánh xạ mạng."
+
+#: lib/Application/Controller/ListNetworksController.php:78
+msgid "Failed to remove network mapping."
+msgstr "Không thể xóa ánh xạ mạng."
+
+#: lib/Application/Controller/ListNetworksController.php:93
+#: templates/modern/list_networks.html:4 templates/modern/list_networks.html:10
+msgid "Network views"
+msgstr "View mạng"
 
 #: lib/Application/Controller/DeletePermTemplController.php:60
 msgid "You do not have the permission to delete permission templates."
@@ -2794,41 +2913,41 @@ msgstr ""
 msgid "Change Password"
 msgstr "Đổi mật khẩu"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:117
+#: lib/Application/Controller/DnssecAddKeyController.php:119
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "Thuật toán ECDSA P-256 phải sử dụng 256 bit"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:120
+#: lib/Application/Controller/DnssecAddKeyController.php:122
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "Thuật toán ECDSA P-384 phải sử dụng 384 bit"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:126
+#: lib/Application/Controller/DnssecAddKeyController.php:128
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "Thuật toán ED25519 phải sử dụng 256 bit"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:131
+#: lib/Application/Controller/DnssecAddKeyController.php:133
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr ""
 "Thuật toán ED448 phải sử dụng 456 bit (không được hỗ trợ trong giao diện này)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:138
+#: lib/Application/Controller/DnssecAddKeyController.php:140
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "Thuật toán RSA nên sử dụng 1024 hoặc 2048 bit để đảm bảo an ninh đầy đủ"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:161
+#: lib/Application/Controller/DnssecAddKeyController.php:163
 msgid "Zone key has been added successfully."
 msgstr "Khóa vùng đã được thêm thành công."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:165
+#: lib/Application/Controller/DnssecAddKeyController.php:167
 msgid "Failed to add new DNSSEC key."
 msgstr "Không thể thêm khóa DNSSEC mới."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:169
+#: lib/Application/Controller/DnssecAddKeyController.php:171
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Đã xảy ra lỗi khi thêm khóa DNSSEC: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:173
+#: lib/Application/Controller/DnssecAddKeyController.php:175
 msgid "Please select both algorithm and bits"
 msgstr "Vui lòng chọn cả thuật toán và số bit"
 
@@ -2866,7 +2985,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster đã được xóa thành công."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:176 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:202 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Độ phủ kiểm thử không đủ."
 
@@ -2930,12 +3049,12 @@ msgstr "Không thể kích hoạt khóa vùng."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Đã xảy ra lỗi khi chuyển đổi khóa DNSSEC. Vui lòng thử lại."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Có"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Không"
@@ -3015,6 +3134,175 @@ msgstr "Mẫu này đã được gán cho ít nhất một người dùng."
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
 msgid "This template is assigned to at least one group."
 msgstr "Mẫu này đã được gán cho ít nhất một nhóm."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:91
+msgid "Primary"
+msgstr "Primary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:92
+msgid "Secondary"
+msgstr "Secondary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:103
+#: lib/Module/ZoneImportExport/templates/import.html:131
+msgid "Native"
+msgstr "Hành vi đáng ngờ phát hiện."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:104
+msgid "Producer"
+msgstr "Producer"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:105
+msgid "Consumer"
+msgstr "Consumer"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:101
+#: lib/Module/ZoneImportExport/templates/import.html:130
+msgid "Master"
+msgstr "Cấu hình bảo mật không hợp lệ."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:102
+msgid "Slave"
+msgstr "Slave"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+msgid "Autoprimaries"
+msgstr "Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+msgid "Supermasters"
+msgstr "Tải lên S3 thất bại."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:122
+msgid "Autoprimary"
+msgstr "Autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:122
+msgid "Supermaster"
+msgstr "Assertion thất bại."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:123
+msgid "Add autoprimary"
+msgstr "Thêm autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:123
+msgid "Add supermaster"
+msgstr "Fixture không tìm thấy."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:124
+msgid "Edit autoprimary"
+msgstr "Chỉnh sửa autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:124
+msgid "Edit supermaster"
+msgstr "Tải xuống S3 thất bại."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:125
+msgid "Delete autoprimary"
+msgstr "Xóa autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:125
+msgid "Delete supermaster"
+msgstr "Xóa supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:126
+msgid "About Autoprimaries"
+msgstr "Giới thiệu về Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:126
+msgid "About Supermasters"
+msgstr "Giới thiệu về Supermasters"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:127
+msgid "What is an Autoprimary?"
+msgstr "Autoprimary là gì?"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:127
+msgid "What is a Supermaster?"
+msgstr "Supermaster là gì?"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:128
+msgid "Search autoprimaries..."
+msgstr "Tìm autoprimaries..."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:128
+msgid "Search supermasters..."
+msgstr "Tìm kiếm supermaster..."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:130
+msgid "There are no autoprimaries to show in this listing."
+msgstr "Không có autoprimaries nào để hiển thị trong danh sách này."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:131
+msgid "There are no supermasters to show in this listing."
+msgstr "Không có supermaster nào để hiển thị trong danh sách này."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:132
+msgid "IP address of autoprimary"
+msgstr "Địa chỉ IP của autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:132
+msgid "IP address of supermaster"
+msgstr "Hạn mức S3 vượt quá."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:134
+msgid "Select the account that will own this autoprimary"
+msgstr "Chọn tài khoản sẽ sở hữu autoprimary này"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:135
+msgid "Select the account that will own this supermaster"
+msgstr "Từ chối người gửi SMTP."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:136
+msgid "About Editing Autoprimaries"
+msgstr "Về việc chỉnh sửa Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:136
+msgid "About Editing Supermasters"
+msgstr "Lỗi giao thức SMTP."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:138
+msgid ""
+"You can modify the IP address, hostname, or account for this autoprimary."
+msgstr ""
+"Bạn có thể sửa đổi địa chỉ IP, tên máy chủ hoặc tài khoản cho autoprimary này."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:139
+msgid ""
+"You can modify the IP address, hostname, or account for this supermaster."
+msgstr "Kết nối IMAP thất bại."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:140
+msgid "Autoprimary Details"
+msgstr "Chi tiết Autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:140
+msgid "Supermaster Details"
+msgstr "Chi tiết Supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:142
+msgid "You are about to delete the autoprimary"
+msgstr "Bạn sắp xóa autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:143
+msgid "You are about to delete the supermaster"
+msgstr "Bạn sắp xóa supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:144
+msgid "Yes, delete this autoprimary"
+msgstr "Có, xóa autoprimary này"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:144
+msgid "Yes, delete this supermaster"
+msgstr "Có, xóa supermaster này"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:145
+msgid "No, keep this autoprimary"
+msgstr "Không, giữ autoprimary này"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:145
+msgid "No, keep this supermaster"
+msgstr "Không, giữ supermaster này"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -8689,7 +8977,7 @@ msgstr "Kết nối RabbitMQ thất bại."
 msgid "Update record"
 msgstr "RabbitMQ channel không hợp lệ."
 
-#: templates/modern/edit.html:529 templates/modern/users.html:219
+#: templates/modern/edit.html:550 templates/modern/users.html:219
 msgid "Reset"
 msgstr "RabbitMQ queue không tồn tại."
 
@@ -8787,22 +9075,6 @@ msgstr "S3 object không tìm thấy."
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgstr "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
-#: templates/modern/delete_supermaster.html:4
-msgid "Supermasters"
-msgstr "Tải lên S3 thất bại."
-
-#: templates/modern/edit_supermaster.html:5
-msgid "Edit supermaster"
-msgstr "Tải xuống S3 thất bại."
-
-#: templates/modern/edit_supermaster.html:13
-msgid "Edit Supermaster"
-msgstr "Quyền S3 bị từ chối."
-
-#: templates/modern/list_supermasters.html:31
-msgid "IP address of supermaster"
-msgstr "Hạn mức S3 vượt quá."
-
 #: templates/modern/add_supermaster.html:22
 msgid "Enter the IP address of the master nameserver"
 msgstr "Endpoint S3 không hợp lệ."
@@ -8827,11 +9099,7 @@ msgstr "Máy chủ SMTP không khả dụng."
 msgid "Account"
 msgstr "Từ chối người nhận SMTP."
 
-#: templates/modern/add_supermaster.html:48
-msgid "Select the account that will own this supermaster"
-msgstr "Từ chối người gửi SMTP."
-
-#: templates/modern/edit.html:190 templates/modern/edit.html:526
+#: templates/modern/edit.html:190 templates/modern/edit.html:547
 msgid "Save changes"
 msgstr "Kích thước tin nhắn SMTP vượt quá giới hạn."
 
@@ -8839,18 +9107,9 @@ msgstr "Kích thước tin nhắn SMTP vượt quá giới hạn."
 msgid "All fields are required"
 msgstr "SMTP timeout."
 
-#: templates/modern/edit_supermaster.html:74
-msgid "About Editing Supermasters"
-msgstr "Lỗi giao thức SMTP."
-
 #: templates/modern/edit_supermaster.html:79
 msgid "Update Credentials"
 msgstr "Cấu hình IMAP không hợp lệ."
-
-#: templates/modern/edit_supermaster.html:80
-msgid ""
-"You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Kết nối IMAP thất bại."
 
 #: templates/modern/edit_supermaster.html:83
 msgid "Important"
@@ -8931,9 +9190,75 @@ msgstr "Kết nối SSH thất bại."
 msgid "Activate"
 msgstr "Xác thực SSH thất bại."
 
+#: templates/default/dnssec.html:123 templates/modern/dnssec.html:123
+msgid "Download this key as PEM"
+msgstr "Tải khóa này dưới dạng PEM"
+
+#: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
+msgid "Export PEM"
+msgstr "Xuất PEM"
+
 #: templates/modern/list_perm_templ.html:61
 msgid "Delete"
 msgstr "Khóa SSH không hợp lệ."
+
+#: templates/default/dnssec.html:144 templates/modern/dnssec.html:144
+msgid "Import key from PEM"
+msgstr "Nhập khóa từ PEM"
+
+#: templates/default/dnssec.html:147 templates/modern/dnssec.html:147
+msgid ""
+"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+"key size from the PEM contents - select the matching algorithm and key role."
+msgstr ""
+"Dán khóa riêng được mã hóa PEM (RSA hoặc ECDSA). PowerDNS 4.7+ suy ra kích thước khóa từ nội dung PEM - chọn thuật toán và vai trò khóa phù hợp."
+
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:55
+msgid "Key type"
+msgstr "Loại khóa"
+
+#: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
+msgid "PEM private key"
+msgstr "Khóa riêng PEM"
+
+#: templates/default/dnssec.html:172 templates/modern/dnssec.html:172
+msgid "Import key"
+msgstr "Nhập khóa"
+
+#: templates/modern/list_networks.html:13
+msgid ""
+"Each network maps to a single view. Resolvers in that network receive the "
+"zone variant assigned to that view."
+msgstr ""
+"Mỗi mạng tương ứng với một view. Các resolver trong mạng đó nhận biến thể vùng được gán cho view đó."
+
+#: templates/modern/list_networks.html:18
+msgid "No networks configured yet. Map a CIDR to a view below."
+msgstr "Chưa có mạng nào được cấu hình. Hãy ánh xạ CIDR cho view bên dưới."
+
+#: templates/modern/list_networks.html:25
+msgid "Network"
+msgstr "Mạng"
+
+#: templates/modern/list_networks.html:65
+msgid "View"
+msgstr "View"
+
+#: templates/modern/list_networks.html:40
+msgid "Remove mapping"
+msgstr "Xóa ánh xạ"
+
+#: templates/modern/list_networks.html:54
+msgid "Map network to view"
+msgstr "Ánh xạ mạng cho view"
+
+#: templates/modern/list_networks.html:61
+msgid "CIDR"
+msgstr "CIDR"
+
+#: templates/modern/list_networks.html:79
+msgid "Save"
+msgstr "Lưu"
 
 #: templates/modern/forgot_password.html:4
 msgid "Forgot Password"
@@ -9182,7 +9507,7 @@ msgstr "Kết nối nhân bản thất bại."
 msgid "Welcome"
 msgstr "Độ trễ nhân bản quá cao."
 
-#: templates/modern/index.html:5 templates/modern/delete_zone_templ.html:29
+#: templates/modern/list_views.html:25
 msgid "zones"
 msgstr "vùng"
 
@@ -9198,16 +9523,26 @@ msgstr "người dùng"
 msgid "groups"
 msgstr "nhóm"
 
-#: templates/default/index.html:10 templates/modern/index.html:10
-#, auto-english-fallback
+#: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
 msgstr "Connected PowerDNS version"
 
-#: templates/default/index.html:19 templates/modern/index.html:19
+#: templates/default/index.html:16 templates/modern/index.html:16
+msgid ""
+"Could not detect PowerDNS version. Newer features are hidden until the API "
+"is reachable."
+msgstr ""
+"Không thể phát hiện phiên bản PowerDNS. Các tính năng mới hơn sẽ bị ẩn cho đến khi API có thể truy cập được."
+
+#: templates/default/index.html:17 templates/modern/index.html:17
+msgid "PowerDNS version unknown"
+msgstr "Phiên bản PowerDNS không xác định"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/index.html:26 templates/modern/index.html:26
+#: templates/default/index.html:34 templates/modern/index.html:34
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -9215,7 +9550,7 @@ msgstr ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
 
-#: templates/default/index.html:28 templates/modern/index.html:28
+#: templates/default/index.html:36 templates/modern/index.html:36
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -9223,7 +9558,7 @@ msgstr ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
 
-#: templates/default/index.html:30 templates/modern/index.html:30
+#: templates/default/index.html:38 templates/modern/index.html:38
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -9233,7 +9568,7 @@ msgstr ""
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 
-#: templates/default/index.html:32 templates/modern/index.html:32
+#: templates/default/index.html:40 templates/modern/index.html:40
 msgid ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
@@ -9241,15 +9576,15 @@ msgstr ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
 
-#: templates/default/index.html:48 templates/modern/index.html:48
+#: templates/default/index.html:56 templates/modern/index.html:56
 msgid "DNS Management"
 msgstr "Quản lý DNS"
 
-#: templates/modern/index.html:61 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:69 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "Nhân bản không đồng bộ."
 
-#: templates/modern/index.html:63 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:71 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "Master không khả dụng."
 
@@ -9257,31 +9592,31 @@ msgstr "Master không khả dụng."
 msgid "Templates"
 msgstr "Sử dụng đĩa cao."
 
-#: templates/default/index.html:135 templates/modern/index.html:135
+#: templates/default/index.html:142 templates/modern/index.html:142
+msgid "Networks"
+msgstr "Mạng"
+
+#: templates/default/index.html:161 templates/modern/index.html:161
 msgid "Zone Operations"
 msgstr "Thao tác vùng"
 
-#: templates/default/index.html:146 templates/modern/index.html:146
+#: templates/default/index.html:172 templates/modern/index.html:172
 msgid "Master Zone"
 msgstr "Định dạng log không hợp lệ."
 
-#: templates/default/index.html:156 templates/modern/index.html:156
+#: templates/default/index.html:182 templates/modern/index.html:182
 msgid "Slave Zone"
 msgstr "Breakpoint đạt đến."
 
-#: templates/default/index.html:166 templates/modern/index.html:166
-msgid "Supermaster"
-msgstr "Assertion thất bại."
-
-#: templates/default/index.html:186 templates/modern/index.html:186
+#: templates/default/index.html:212 templates/modern/index.html:212
 msgid "PTR Records"
 msgstr "Môi trường triển khai không hợp lệ."
 
-#: templates/default/index.html:204 templates/modern/index.html:204
+#: templates/default/index.html:230 templates/modern/index.html:230
 msgid "Administration"
 msgstr "Quản trị"
 
-#: templates/modern/index.html:235 templates/modern/header.html:259
+#: templates/modern/index.html:261 templates/modern/header.html:259
 msgid "Access"
 msgstr "Package không tìm thấy."
 
@@ -9289,12 +9624,12 @@ msgstr "Package không tìm thấy."
 msgid "Tools"
 msgstr "Công cụ"
 
-#: templates/default/index.html:294 templates/modern/index.html:294
+#: templates/default/index.html:320 templates/modern/index.html:320
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Cơ sở dữ liệu"
 
-#: templates/default/index.html:341 templates/modern/index.html:341
+#: templates/default/index.html:367 templates/modern/index.html:367
 msgid "My Profile"
 msgstr "Split-brain phát hiện."
 
@@ -9303,7 +9638,7 @@ msgstr "Split-brain phát hiện."
 msgid "Password"
 msgstr "Tải plugin thất bại."
 
-#: templates/modern/index.html:360 templates/modern/header.html:372
+#: templates/modern/index.html:386 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "Khởi tạo plugin thất bại."
 
@@ -9311,7 +9646,7 @@ msgstr "Khởi tạo plugin thất bại."
 msgid "Logout"
 msgstr "Phiên bản package không tương thích."
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:535
 msgid "Edit comment"
 msgstr "Cấu hình mạng không hợp lệ."
 
@@ -9977,7 +10312,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Xóa (các) vùng"
 
-#: templates/modern/dnssec_add_key.html:91
+#: templates/modern/dnssec_add_key.html:93
 msgid "Add key"
 msgstr "Thêm khóa"
 
@@ -9985,39 +10320,34 @@ msgstr "Thêm khóa"
 msgid "Add key for zone"
 msgstr "Thêm khóa cho vùng"
 
-#: templates/modern/dnssec_add_key.html:43
-msgid "PowerDNS 4.0+ uses CSK by default"
-msgstr "PowerDNS 4.0+ sử dụng CSK theo mặc định"
-
 #: templates/modern/dnssec_add_key.html:44
+msgid "Legacy PowerDNS detected"
+msgstr "Đã phát hiện PowerDNS cũ"
+
+#: templates/modern/dnssec_add_key.html:45
 msgid ""
-"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
-"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+"This server predates PowerDNS 4.0 and does not create a Combined Signing Key "
+"by default. Pick KSK or ZSK explicitly to add a key here."
 msgstr ""
-"PowerDNS 4.0 và các phiên bản mới hơn sử dụng Combined Signing Keys (CSK) "
-"theo mặc định. Nếu bạn chọn KSK hoặc ZSK, PowerDNS vẫn có thể tạo khóa CSK."
+"Máy chủ này có trước PowerDNS 4.0 và mặc định không tạo Combined Signing Key. Chọn KSK hoặc ZSK rõ ràng để thêm khóa ở đây."
 
-#: templates/modern/dnssec_add_key.html:53
-msgid "Key type"
-msgstr "Loại khóa"
-
-#: templates/modern/dnssec_add_key.html:60
+#: templates/modern/dnssec_add_key.html:62
 msgid "Select key type"
 msgstr "Chọn loại khóa"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:73
 msgid "Select algorithm"
 msgstr "Chọn thuật toán"
 
-#: templates/modern/dnssec_add_key.html:76
+#: templates/modern/dnssec_add_key.html:78
 msgid "Bits in length"
 msgstr "Số bit"
 
-#: templates/modern/dnssec_add_key.html:85
+#: templates/modern/dnssec_add_key.html:87
 msgid "Select bits length"
 msgstr "Chọn độ dài bit"
 
-#: templates/modern/dnssec_add_key.html:142
+#: templates/modern/dnssec_add_key.html:144
 msgid "Recommended bits for"
 msgstr "Số bit khuyến nghị cho"
 
@@ -10026,19 +10356,19 @@ msgstr "Số bit khuyến nghị cho"
 msgid "Warning:"
 msgstr "Warning:"
 
-#: templates/modern/dnssec_add_key.html:150
+#: templates/modern/dnssec_add_key.html:152
 msgid "bits is not recommended for"
 msgstr "bit không được khuyến nghị cho"
 
-#: templates/modern/dnssec_add_key.html:187
+#: templates/modern/dnssec_add_key.html:189
 msgid "About DNSSEC Key Types"
 msgstr "Giới thiệu về loại khóa DNSSEC"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:193
 msgid "Key Types Explained"
 msgstr "Giải thích các loại khóa"
 
-#: templates/modern/dnssec_add_key.html:193
+#: templates/modern/dnssec_add_key.html:195
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -10046,19 +10376,19 @@ msgstr ""
 "Combined Signing Key - phục vụ như cả KSK và ZSK (khuyến nghị cho PowerDNS "
 "4.0+)"
 
-#: templates/modern/dnssec_add_key.html:194
+#: templates/modern/dnssec_add_key.html:196
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Key Signing Key - ký các bản ghi DNSKEY trong vùng"
 
-#: templates/modern/dnssec_add_key.html:195
+#: templates/modern/dnssec_add_key.html:197
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - ký tất cả các bản ghi khác trong vùng"
 
-#: templates/modern/dnssec_add_key.html:200
+#: templates/modern/dnssec_add_key.html:202
 msgid "Recommended Settings"
 msgstr "Cài đặt khuyến nghị"
 
-#: templates/modern/dnssec_add_key.html:201
+#: templates/modern/dnssec_add_key.html:203
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10288,7 +10618,7 @@ msgstr "Có, hủy liên kết các vùng này"
 msgid "Access templates"
 msgstr "Mẫu truy cập"
 
-#: templates/modern/add_perm_templ.html:6
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
 msgid "Add"
 msgstr "Thêm"
 
@@ -10409,22 +10739,6 @@ msgstr "Đến trang chủ"
 #: templates/default/404.html:49 templates/modern/404.html:49
 msgid "Go Back"
 msgstr "Quay lại"
-
-#: templates/modern/list_supermasters.html:13
-msgid "Add supermaster"
-msgstr "Fixture không tìm thấy."
-
-#: templates/modern/add_supermaster.html:13
-msgid "Add Supermaster"
-msgstr "Thêm Supermaster"
-
-#: templates/modern/add_supermaster.html:70
-msgid "About Supermasters"
-msgstr "Giới thiệu về Supermasters"
-
-#: templates/modern/add_supermaster.html:75
-msgid "What is a Supermaster?"
-msgstr "Supermaster là gì?"
 
 #: templates/modern/add_supermaster.html:76
 msgid ""
@@ -10803,71 +11117,71 @@ msgstr "Nếu bạn mất khóa, bạn sẽ cần tạo lại nó."
 msgid "Edit"
 msgstr "Tên chung chứng chỉ SSL/TLS không khớp."
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:577
+#: templates/modern/edit.html:25 templates/modern/edit.html:598
 msgid "Add new record"
 msgstr "Thêm bản ghi mới"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:581
+#: templates/modern/edit.html:203 templates/modern/edit.html:602
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Trình hướng dẫn cho DMARC, SPF, DKIM, CAA, TLSA và SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:587
+#: templates/modern/edit.html:35 templates/modern/edit.html:608
 msgid "Multi-record mode"
 msgstr "Chế độ nhiều bản ghi"
 
-#: templates/modern/edit.html:535 templates/modern/edit.html:590
+#: templates/modern/edit.html:556 templates/modern/edit.html:611
 msgid "Bulk add"
 msgstr "Thêm hàng loạt"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:623
 msgid "Failed to add"
 msgstr "Không thêm được"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:623
 msgid "record(s). Please check the record format."
 msgstr "(các) bản ghi. Vui lòng kiểm tra định dạng bản ghi."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:604
+#: templates/modern/edit.html:52 templates/modern/edit.html:625
 msgid "Failed to add records. Please check the record format."
 msgstr "Không thêm được bản ghi. Vui lòng kiểm tra định dạng bản ghi."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:628
 msgid "Content validation failed:"
 msgstr "Xác thực nội dung thất bại:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:628
 msgid "Invalid value for record type"
 msgstr "Giá trị không hợp lệ cho loại bản ghi"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:609
+#: templates/modern/edit.html:57 templates/modern/edit.html:630
 msgid "Please provide all required information."
 msgstr "Vui lòng cung cấp tất cả thông tin bắt buộc."
 
-#: templates/modern/edit.html:632 templates/modern/add_record.html:72
+#: templates/modern/edit.html:653 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Thêm PTR"
 
-#: templates/modern/edit.html:635 templates/modern/add_record.html:75
+#: templates/modern/edit.html:656 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Thêm A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:674
+#: templates/modern/edit.html:121 templates/modern/edit.html:695
 msgid "This record already exists"
 msgstr "Bản ghi này đã tồn tại"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:686
+#: templates/modern/edit.html:133 templates/modern/edit.html:707
 msgid "Invalid priority"
 msgstr "Độ ưu tiên không hợp lệ"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:693
+#: templates/modern/edit.html:140 templates/modern/edit.html:714
 msgid "Invalid TTL value"
 msgstr "Giá trị TTL không hợp lệ"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:695
+#: templates/modern/edit.html:142 templates/modern/edit.html:716
 msgid "Provide TTL"
 msgstr "Cung cấp TTL"
 
-#: templates/modern/edit.html:721 templates/modern/add_record.html:207
+#: templates/modern/edit.html:742 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -10927,47 +11241,51 @@ msgstr "trong số"
 msgid "total records"
 msgstr "tổng số bản ghi"
 
-#: templates/default/edit.html:497 templates/modern/edit.html:497
+#: templates/default/edit.html:405 templates/modern/edit.html:405
+msgid "Last modified"
+msgstr "Sửa đổi lần cuối"
+
+#: templates/default/edit.html:518 templates/modern/edit.html:518
 msgid "Edit selected"
 msgstr "Sửa đã chọn"
 
-#: templates/modern/edit.html:501 templates/modern/search.html:486
+#: templates/modern/edit.html:522 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Xóa (các) bản ghi"
 
-#: templates/modern/edit.html:509 templates/modern/search.html:93
+#: templates/modern/edit.html:530 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Ghi chú"
 
-#: templates/default/edit.html:539 templates/modern/edit.html:539
+#: templates/default/edit.html:560 templates/modern/edit.html:560
 msgid "Import"
 msgstr "Nhập"
 
-#: templates/default/edit.html:556 templates/modern/edit.html:556
+#: templates/default/edit.html:577 templates/modern/edit.html:577
 msgid "Generate PTR"
 msgstr "Tạo PTR"
 
-#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:756 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Cấu hình vùng"
 
-#: templates/modern/edit.html:777 templates/modern/edit.html:806
+#: templates/modern/edit.html:798 templates/modern/edit.html:827
 msgid "Change"
 msgstr "Thay đổi"
 
-#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:791 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Địa chỉ IP của NS master"
 
-#: templates/default/edit.html:827 templates/modern/edit.html:827
+#: templates/default/edit.html:848 templates/modern/edit.html:848
 msgid "Manage DNSSEC"
 msgstr "Quản lý DNSSEC"
 
-#: templates/default/edit.html:834 templates/modern/edit.html:834
+#: templates/default/edit.html:855 templates/modern/edit.html:855
 msgid "Sign zone"
 msgstr "Ký vùng"
 
-#: templates/default/edit.html:838 templates/modern/edit.html:838
+#: templates/default/edit.html:859 templates/modern/edit.html:859
 msgid "Not signed"
 msgstr "Chưa ký"
 
@@ -11572,14 +11890,6 @@ msgstr "Bạn có muốn tiếp tục mà không thêm bản ghi SOA?"
 msgid "Continue Without SOA"
 msgstr "Tiếp tục không có SOA"
 
-#: templates/modern/list_supermasters.html:21
-msgid "Search supermasters..."
-msgstr "Tìm kiếm supermaster..."
-
-#: templates/modern/list_supermasters.html:71
-msgid "There are no supermasters to show in this listing."
-msgstr "Không có supermaster nào để hiển thị trong danh sách này."
-
 #: templates/modern/edit_zone_metadata.html:18
 msgid "Edit Metadata"
 msgstr "Chinh sua sieu du lieu"
@@ -11608,15 +11918,19 @@ msgstr "Gia tri don"
 msgid "Kind"
 msgstr "Loai"
 
-#: templates/modern/edit_zone_metadata.html:105
+#: templates/modern/edit_zone_metadata.html:127
+msgid "requires"
+msgstr "yêu cầu"
+
+#: templates/modern/edit_zone_metadata.html:107
 msgid "Add metadata row"
 msgstr "Them dong sieu du lieu"
 
-#: templates/modern/edit_zone_metadata.html:108
+#: templates/modern/edit_zone_metadata.html:110
 msgid "Save metadata"
 msgstr "Luu sieu du lieu"
 
-#: templates/modern/edit_zone_metadata.html:112
+#: templates/modern/edit_zone_metadata.html:114
 msgid "Back to zone"
 msgstr "Quay lai vung"
 
@@ -12188,30 +12502,6 @@ msgstr "Có, xóa các vùng này"
 msgid "No, keep these zones"
 msgstr "Không, giữ các vùng này"
 
-#: templates/modern/delete_supermaster.html:5
-msgid "Delete supermaster"
-msgstr "Xóa supermaster"
-
-#: templates/modern/delete_supermaster.html:11
-msgid "Delete Supermaster"
-msgstr "Xóa Supermaster"
-
-#: templates/modern/delete_supermaster.html:16
-msgid "You are about to delete the supermaster"
-msgstr "Bạn sắp xóa supermaster"
-
-#: templates/modern/delete_supermaster.html:22
-msgid "Supermaster Details"
-msgstr "Chi tiết Supermaster"
-
-#: templates/modern/delete_supermaster.html:53
-msgid "Yes, delete this supermaster"
-msgstr "Có, xóa supermaster này"
-
-#: templates/modern/delete_supermaster.html:56
-msgid "No, keep this supermaster"
-msgstr "Không, giữ supermaster này"
-
 #: templates/modern/list_log_users.html:5 templates/modern/header.html:216
 msgid "User logs"
 msgstr "Nhật ký người dùng"
@@ -12251,6 +12541,34 @@ msgstr "Bạn sắp xóa mẫu vùng"
 #: templates/modern/delete_zone_templ.html:29
 msgid "This template is currently used by"
 msgstr "Mẫu này hiện đang được sử dụng bởi"
+
+#: templates/default/list_views.html:13 templates/modern/list_views.html:13
+msgid ""
+"Views serve different zone variants to different clients based on the "
+"network mapping. Each variant is identified as zone..variant (for example, "
+"example.com..trusted)."
+msgstr ""
+"View phục vụ các biến thể vùng khác nhau cho các client khác nhau dựa trên ánh xạ mạng. Mỗi biến thể được xác định là zone..variant (ví dụ: example.com..trusted)."
+
+#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+msgid "No views configured yet. Add a zone variant below."
+msgstr "Chưa có view nào được cấu hình. Hãy thêm biến thể vùng bên dưới."
+
+#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+msgid "Remove from view"
+msgstr "Xóa khỏi view"
+
+#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+msgid "Assign zone to view"
+msgstr "Gán vùng cho view"
+
+#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+msgid "View name"
+msgstr "Tên view"
+
+#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+msgid "Zone (zone..variant)"
+msgstr "Vùng (zone..variant)"
 
 #: templates/modern/email_previews.html:11
 msgid "Email Template Previews"
@@ -13001,14 +13319,6 @@ msgstr "Thêm tất cả bản ghi"
 #: lib/Module/ZoneImportExport/templates/import.html:128
 msgid "Zone type"
 msgstr "Loại vùng"
-
-#: lib/Module/ZoneImportExport/templates/import.html:130
-msgid "Master"
-msgstr "Cấu hình bảo mật không hợp lệ."
-
-#: lib/Module/ZoneImportExport/templates/import.html:131
-msgid "Native"
-msgstr "Hành vi đáng ngờ phát hiện."
 
 #: lib/Module/ZoneImportExport/templates/import.html:138
 msgid "Confirm import"
@@ -13797,5 +14107,27 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Không thể kết nối với cơ sở dữ liệu PowerDNS \"%s\": %s"
+
+# OBSOLETE: msgid "Edit Supermaster"
+# OBSOLETE: msgstr "Quyền S3 bị từ chối."
+
+# OBSOLETE: msgid "PowerDNS 4.0+ uses CSK by default"
+# OBSOLETE: msgstr "PowerDNS 4.0+ sử dụng CSK theo mặc định"
+
+#, fuzzy
+# OBSOLETE: msgid ""
+# OBSOLETE: "PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by "
+# OBSOLETE: "default. If you select KSK or ZSK, PowerDNS may still create a CSK key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PowerDNS 4.0 và các phiên bản mới hơn sử dụng Combined Signing Keys (CSK) "
+# OBSOLETE: "theo mặc định. Nếu bạn chọn KSK hoặc ZSK, PowerDNS vẫn có thể tạo khóa "
+# OBSOLETE: "CSK."
+
+# OBSOLETE: msgid "Add Supermaster"
+# OBSOLETE: msgstr "Thêm Supermaster"
+
+# OBSOLETE: msgid "Delete Supermaster"
+# OBSOLETE: msgstr "Xóa Supermaster"
+
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-24 22:55+0300\n"
+"POT-Creation-Date: 2026-04-25 15:52+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -333,7 +333,7 @@ msgstr ""
 "sertifikat lengkap."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:646
+#: templates/modern/edit.html:93 templates/modern/edit.html:667
 msgid "Invalid hostname format"
 msgstr "Format nama host tidak valid"
 
@@ -1314,7 +1314,7 @@ msgstr "Gagal mengambil informasi RDAP menggunakan server %s"
 msgid "Invalid CSRF token."
 msgstr "Token CSRF tidak valid."
 
-#: lib/BaseController.php:592
+#: lib/BaseController.php:646
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1322,7 +1322,7 @@ msgstr ""
 "Direktori <a href=\"install/\">install/</a> masih ada, Anda harus "
 "menghapusnya terlebih dahulu sebelum melanjutkan."
 
-#: lib/BaseController.php:649
+#: lib/BaseController.php:703
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1330,12 +1330,12 @@ msgstr ""
 "Kunci enkripsi sesi default sedang digunakan, silakan atur di file "
 "konfigurasi Anda."
 
-#: lib/BaseController.php:788
+#: lib/BaseController.php:842
 #, php-format
 msgid "The %s field is required."
 msgstr "Kolom %s wajib diisi."
 
-#: lib/BaseController.php:796
+#: lib/BaseController.php:850
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Kolom %s harus berupa angka."
@@ -1705,33 +1705,33 @@ msgstr "Nomor halaman melebihi halaman yang tersedia."
 msgid "You do not have the permission to view supermasters."
 msgstr "Anda tidak memiliki izin untuk melihat supermaster."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Application/Controller/EditZoneMetadataController.php:119
 msgid "You do not have the permission to view zone metadata."
 msgstr "Anda tidak memiliki izin untuk melihat metadata zona."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:121
+#: lib/Application/Controller/EditZoneMetadataController.php:122
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Anda tidak memiliki izin untuk mengedit metadata zona."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:150
+#: lib/Application/Controller/EditZoneMetadataController.php:151
 msgid "Zone metadata has been updated successfully."
 msgstr "Metadata zona berhasil diperbarui."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:155
+#: lib/Application/Controller/EditZoneMetadataController.php:156
 msgid "Failed to update zone metadata."
 msgstr "Gagal memperbarui metadata zona."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:178
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr "Edit metadata zona"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:178
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "Metadata Zona"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:381
+#: lib/Application/Controller/EditZoneMetadataController.php:382
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
@@ -1739,29 +1739,29 @@ msgstr ""
 "Jenis metadata %s hanya menerima satu nilai. Tambahkan hanya satu baris "
 "untuk jenis ini."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:469
-#: templates/modern/edit_zone_metadata.html:153
+#: lib/Application/Controller/EditZoneMetadataController.php:476
+#: templates/modern/edit_zone_metadata.html:155
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
 msgstr ""
 "Jenis metadata kustom yang disimpan langsung di tabel domainmetadata "
 "PowerDNS."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:477
+#: lib/Application/Controller/EditZoneMetadataController.php:484
 #: templates/modern/pdns_status.html:412
 msgid "Value"
 msgstr "Nilai"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:515
+#: lib/Application/Controller/EditZoneMetadataController.php:538
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "Kustom"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:520
+#: lib/Application/Controller/EditZoneMetadataController.php:543
 msgid "Multi"
 msgstr "Multi"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:521
+#: lib/Application/Controller/EditZoneMetadataController.php:544
 msgid "Single"
 msgstr "Tunggal"
 
@@ -1825,24 +1825,24 @@ msgstr "Anda tidak memiliki izin untuk menambahkan rekaman ke zona ini."
 msgid "Please provide at least one record."
 msgstr "Silakan berikan setidaknya satu rekaman."
 
-#: lib/Application/Controller/BulkRecordAddController.php:175
+#: lib/Application/Controller/BulkRecordAddController.php:181
 msgid "Invalid record type."
 msgstr "Tipe rekaman tidak valid."
 
-#: lib/Application/Controller/BulkRecordAddController.php:213
+#: lib/Application/Controller/BulkRecordAddController.php:219
 msgid "Record could not be added."
 msgstr "Rekaman tidak dapat ditambahkan."
 
-#: lib/Application/Controller/BulkRecordAddController.php:221
+#: lib/Application/Controller/BulkRecordAddController.php:227
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d rekaman telah berhasil ditambahkan."
 
-#: lib/Application/Controller/BulkRecordAddController.php:224
+#: lib/Application/Controller/BulkRecordAddController.php:230
 msgid "Some record(s) could not be added."
 msgstr "Beberapa rekaman tidak dapat ditambahkan."
 
-#: lib/Application/Controller/BulkRecordAddController.php:257
+#: lib/Application/Controller/BulkRecordAddController.php:263
 msgid "Zone ID is required."
 msgstr "ID zona diperlukan."
 
@@ -1936,7 +1936,7 @@ msgid "The record could not be deleted."
 msgstr "Rekaman tidak dapat dihapus."
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:245 templates/modern/index.html:245
+#: templates/default/index.html:271 templates/modern/index.html:271
 msgid "Zone Logs"
 msgstr "Zone dimodifikasi"
 
@@ -2014,7 +2014,7 @@ msgid "You do not have permission to view this zone."
 msgstr "Anda tidak memiliki izin untuk melihat zona ini."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:255 templates/modern/index.html:255
+#: templates/default/index.html:281 templates/modern/index.html:281
 msgid "User Logs"
 msgstr "DNSSEC enabled"
 
@@ -2108,33 +2108,33 @@ msgstr ""
 "Gagal menandatangani zona. Validasi zona berhasil, tetapi API PowerDNS "
 "mengembalikan kesalahan. Periksa log PowerDNS untuk detailnya."
 
-#: lib/Application/Controller/DnssecController.php:95
+#: lib/Application/Controller/DnssecController.php:96
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Zona saat ini tidak ditandatangani dengan DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:107
+#: lib/Application/Controller/DnssecController.php:108
 msgid "Zone has been unsigned successfully."
 msgstr "Zona telah berhasil dihapus tanda tangannya."
 
-#: lib/Application/Controller/DnssecController.php:112
+#: lib/Application/Controller/DnssecController.php:113
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr ""
 "Penghapusan tanda tangan zona berhasil diminta, tetapi verifikasi gagal."
 
-#: lib/Application/Controller/DnssecController.php:116
+#: lib/Application/Controller/DnssecController.php:117
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Gagal menghapus tanda tangan zona. Periksa log PowerDNS untuk detailnya."
 
-#: lib/Application/Controller/EditController.php:734
+#: lib/Application/Controller/EditController.php:736
 msgid "Request has expired, please try again."
 msgstr "Permintaan telah kedaluwarsa, silakan coba lagi."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:741
 msgid "Zone has been updated successfully."
 msgstr "Zona telah berhasil diperbarui."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:743
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2142,11 +2142,11 @@ msgstr ""
 "Zona berhasil disimpan. Tidak ada perubahan rekaman, tetapi serial SOA telah "
 "dinaikkan."
 
-#: lib/Application/Controller/EditController.php:750
+#: lib/Application/Controller/EditController.php:752
 msgid "Zone has not been updated successfully."
 msgstr "Zona gagal diperbarui."
 
-#: lib/Application/Controller/EditController.php:778
+#: lib/Application/Controller/EditController.php:780
 msgid "Please provide all required fields."
 msgstr "Silakan isi semua kolom yang diperlukan."
 
@@ -2211,26 +2211,26 @@ msgstr "Anda tidak memiliki izin untuk menambahkan rekaman ke zona ini."
 msgid "Record successfully added."
 msgstr "Rekaman berhasil ditambahkan."
 
-#: lib/Application/Controller/AddRecordController.php:429
+#: lib/Application/Controller/AddRecordController.php:431
 msgid "No records were provided."
 msgstr "Tidak ada rekaman yang diberikan."
 
-#: lib/Application/Controller/AddRecordController.php:483
+#: lib/Application/Controller/AddRecordController.php:485
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d rekaman berhasil ditambahkan."
 
-#: lib/Application/Controller/AddRecordController.php:485
+#: lib/Application/Controller/AddRecordController.php:487
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d catatan yang cocok juga dibuat."
 
-#: lib/Application/Controller/AddRecordController.php:488
+#: lib/Application/Controller/AddRecordController.php:490
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d rekaman gagal ditambahkan."
 
-#: lib/Application/Controller/AddRecordController.php:493
+#: lib/Application/Controller/AddRecordController.php:495
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2238,7 +2238,7 @@ msgstr ""
 "Beberapa rekaman tidak dapat ditambahkan. Mungkin sudah ada atau berisi data "
 "yang tidak valid."
 
-#: lib/Application/Controller/AddRecordController.php:519
+#: lib/Application/Controller/AddRecordController.php:521
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Gagal menambahkan rekaman apa pun. Data mungkin tidak valid."
 
@@ -2291,9 +2291,28 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Gagal memulai autentikasi OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:265 templates/modern/index.html:265
+#: templates/default/index.html:291 templates/modern/index.html:291
 msgid "Group Logs"
 msgstr "Log Grup"
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:65
+msgid "You do not have permission to manage DNSSEC for this zone."
+msgstr "Anda tidak memiliki izin untuk mengelola DNSSEC pada zona ini."
+
+#: lib/Application/Controller/DnssecKeyExportController.php:74
+msgid "PEM key export requires PowerDNS 4.7 or newer."
+msgstr "Ekspor kunci PEM memerlukan PowerDNS 4.7 atau yang lebih baru."
+
+#: lib/Application/Controller/DnssecKeyExportController.php:86
+msgid "An error occurred while exporting the PEM key: "
+msgstr "Terjadi kesalahan saat mengekspor kunci PEM: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php:92
+msgid ""
+"Could not retrieve the PEM key. The server may not expose private key "
+"material for this key."
+msgstr ""
+"Tidak dapat mengambil kunci PEM. Server mungkin tidak mengekspos materi kunci pribadi untuk kunci ini."
 
 #: lib/Domain/Service/Dns/DomainManager.php:309
 msgid "You do not have the permission to add a master zone."
@@ -2386,13 +2405,50 @@ msgstr "Template izin tidak valid: harus berupa template grup"
 msgid "Group has been created successfully."
 msgstr "Grup telah berhasil dibuat."
 
+#: lib/Application/Controller/ListViewsController.php:39
+msgid "You do not have permission to manage PowerDNS views."
+msgstr "Anda tidak memiliki izin untuk mengelola view PowerDNS."
+
+#: lib/Application/Controller/ListViewsController.php:44
+msgid "Views require PowerDNS 5.0 or newer."
+msgstr "View memerlukan PowerDNS 5.0 atau yang lebih baru."
+
+#: lib/Application/Controller/ListViewsController.php:50
+msgid "Views are only available with the PowerDNS API backend."
+msgstr "View hanya tersedia dengan backend API PowerDNS."
+
+#: lib/Application/Controller/ListViewsController.php:61
+msgid "Provide a valid view name and zone identifier."
+msgstr "Berikan nama view dan pengenal zona yang valid."
+
+#: lib/Application/Controller/ListViewsController.php:67
+msgid "Zone assigned to view."
+msgstr "Zona ditetapkan ke view."
+
+#: lib/Application/Controller/ListViewsController.php:67
+msgid "Failed to assign zone to view."
+msgstr "Gagal menetapkan zona ke view."
+
+#: lib/Application/Controller/ListViewsController.php:74
+msgid "Zone removed from view."
+msgstr "Zona dihapus dari view."
+
+#: lib/Application/Controller/ListViewsController.php:74
+msgid "Failed to remove zone from view."
+msgstr "Gagal menghapus zona dari view."
+
+#: lib/Application/Controller/ListNetworksController.php:81
+msgid "Unknown action."
+msgstr "Aksi tidak diketahui."
+
+#: lib/Application/Controller/ListViewsController.php:96
+#: templates/modern/list_views.html:4 templates/modern/list_views.html:10
+msgid "Views"
+msgstr "View"
+
 #: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid key ID."
 msgstr "ID kunci tidak valid."
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:65
-msgid "You do not have permission to manage DNSSEC for this zone."
-msgstr "Anda tidak memiliki izin untuk mengelola DNSSEC pada zona ini."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:90
 msgid "DNSSEC key not found or no longer exists."
@@ -2577,7 +2633,7 @@ msgstr "Tambah Templat Zona"
 msgid "Zone template has been added successfully."
 msgstr "Template zona telah berhasil ditambahkan."
 
-#: lib/Application/Controller/IndexController.php:63
+#: lib/Application/Controller/IndexController.php:62
 msgid "Dashboard"
 msgstr "Dasbor"
 
@@ -2672,6 +2728,29 @@ msgstr "Anda tidak memiliki izin untuk menambahkan supermaster baru."
 msgid "The supermaster has been added successfully."
 msgstr "Supermaster telah berhasil ditambahkan."
 
+#: lib/Application/Controller/DnssecKeyImportController.php:72
+msgid "PEM key import requires PowerDNS 4.7 or newer."
+msgstr "Impor kunci PEM memerlukan PowerDNS 4.7 atau yang lebih baru."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:97
+msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+msgstr ""
+"Berikan kunci pribadi yang dikodekan PEM (harus berisi penanda BEGIN/END)."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:108
+msgid "PEM key imported successfully."
+msgstr "Kunci PEM berhasil diimpor."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:111
+msgid ""
+"Failed to import PEM key. The PowerDNS server may have rejected the format."
+msgstr ""
+"Gagal mengimpor kunci PEM. Server PowerDNS mungkin telah menolak format."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:115
+msgid "An error occurred while importing the PEM key: "
+msgstr "Terjadi kesalahan saat mengimpor kunci PEM: "
+
 #: lib/Application/Controller/AddZoneTemplRecordController.php:74
 msgid "You do not have the permission to add records to zone templates."
 msgstr "Anda tidak memiliki izin untuk menambahkan rekaman ke template zona."
@@ -2722,6 +2801,47 @@ msgstr[0] ""
 "ditemukan)."
 msgstr[1] ""
 "Failed to add user to %d groups (already a member or groups not found)."
+
+#: lib/Application/Controller/ListNetworksController.php:39
+msgid "You do not have permission to manage network views."
+msgstr "Anda tidak memiliki izin untuk mengelola view jaringan."
+
+#: lib/Application/Controller/ListNetworksController.php:44
+msgid "Network views require PowerDNS 5.0 or newer."
+msgstr "View jaringan memerlukan PowerDNS 5.0 atau yang lebih baru."
+
+#: lib/Application/Controller/ListNetworksController.php:50
+msgid "Network views are only available with the PowerDNS API backend."
+msgstr "View jaringan hanya tersedia dengan backend API PowerDNS."
+
+#: lib/Application/Controller/ListNetworksController.php:61
+msgid "Provide a valid CIDR (e.g. 192.168.0.0/16)."
+msgstr "Berikan CIDR yang valid (misal: 192.168.0.0/16)."
+
+#: lib/Application/Controller/ListNetworksController.php:64
+msgid "Provide a valid view name."
+msgstr "Berikan nama view yang valid."
+
+#: lib/Application/Controller/ListNetworksController.php:70
+msgid "Network mapping saved."
+msgstr "Pemetaan jaringan disimpan."
+
+#: lib/Application/Controller/ListNetworksController.php:70
+msgid "Failed to save network mapping."
+msgstr "Gagal menyimpan pemetaan jaringan."
+
+#: lib/Application/Controller/ListNetworksController.php:78
+msgid "Network mapping removed."
+msgstr "Pemetaan jaringan dihapus."
+
+#: lib/Application/Controller/ListNetworksController.php:78
+msgid "Failed to remove network mapping."
+msgstr "Gagal menghapus pemetaan jaringan."
+
+#: lib/Application/Controller/ListNetworksController.php:93
+#: templates/modern/list_networks.html:4 templates/modern/list_networks.html:10
+msgid "Network views"
+msgstr "View jaringan"
 
 #: lib/Application/Controller/DeletePermTemplController.php:60
 msgid "You do not have the permission to delete permission templates."
@@ -2830,41 +2950,41 @@ msgstr ""
 msgid "Change Password"
 msgstr "Ubah Kata Sandi"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:117
+#: lib/Application/Controller/DnssecAddKeyController.php:119
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "Algoritma ECDSA P-256 harus menggunakan 256 bit"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:120
+#: lib/Application/Controller/DnssecAddKeyController.php:122
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "Algoritma ECDSA P-384 harus menggunakan 384 bit"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:126
+#: lib/Application/Controller/DnssecAddKeyController.php:128
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "Algoritma ED25519 harus menggunakan 256 bit"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:131
+#: lib/Application/Controller/DnssecAddKeyController.php:133
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "Algoritma ED448 harus menggunakan 456 bit (tidak didukung di UI ini)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:138
+#: lib/Application/Controller/DnssecAddKeyController.php:140
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "Algoritma RSA harus menggunakan 1024 atau 2048 bit untuk keamanan yang "
 "memadai"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:161
+#: lib/Application/Controller/DnssecAddKeyController.php:163
 msgid "Zone key has been added successfully."
 msgstr "Kunci zona telah berhasil ditambahkan."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:165
+#: lib/Application/Controller/DnssecAddKeyController.php:167
 msgid "Failed to add new DNSSEC key."
 msgstr "Gagal menambahkan kunci DNSSEC baru."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:169
+#: lib/Application/Controller/DnssecAddKeyController.php:171
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Terjadi kesalahan saat menambahkan kunci DNSSEC: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:173
+#: lib/Application/Controller/DnssecAddKeyController.php:175
 msgid "Please select both algorithm and bits"
 msgstr "Silakan pilih algoritma dan bit"
 
@@ -2902,7 +3022,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster telah berhasil dihapus."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:176 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:202 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Record modified"
 
@@ -2967,12 +3087,12 @@ msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr ""
 "Terjadi kesalahan saat mengubah status kunci DNSSEC. Silakan coba lagi."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Ya"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Tidak"
@@ -3052,6 +3172,175 @@ msgstr "Template ini ditetapkan ke setidaknya satu pengguna."
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
 msgid "This template is assigned to at least one group."
 msgstr "Template ini ditetapkan ke setidaknya satu grup."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:91
+msgid "Primary"
+msgstr "Primary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:92
+msgid "Secondary"
+msgstr "Secondary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:103
+#: lib/Module/ZoneImportExport/templates/import.html:131
+msgid "Native"
+msgstr "Invalid CNAME configuration."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:104
+msgid "Producer"
+msgstr "Producer"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:105
+msgid "Consumer"
+msgstr "Consumer"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:101
+#: lib/Module/ZoneImportExport/templates/import.html:130
+msgid "Master"
+msgstr "Duplicate records found."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:102
+msgid "Slave"
+msgstr "Slave"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+msgid "Autoprimaries"
+msgstr "Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+msgid "Supermasters"
+msgstr "Quick add record"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:122
+msgid "Autoprimary"
+msgstr "Autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:122
+msgid "Supermaster"
+msgstr "Tidak ada aktivitas yang tercatat."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:123
+msgid "Add autoprimary"
+msgstr "Tambahkan autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:123
+msgid "Add supermaster"
+msgstr "Record ditambahkan"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:124
+msgid "Edit autoprimary"
+msgstr "Edit autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:124
+msgid "Edit supermaster"
+msgstr "Tambah record cepat"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:125
+msgid "Delete autoprimary"
+msgstr "Hapus autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:125
+msgid "Delete supermaster"
+msgstr "Hapus supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:126
+msgid "About Autoprimaries"
+msgstr "Tentang Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:126
+msgid "About Supermasters"
+msgstr "Tentang Supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:127
+msgid "What is an Autoprimary?"
+msgstr "Apa itu Autoprimary?"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:127
+msgid "What is a Supermaster?"
+msgstr "Apa itu Supermaster?"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:128
+msgid "Search autoprimaries..."
+msgstr "Cari autoprimaries..."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:128
+msgid "Search supermasters..."
+msgstr "Cari supermaster..."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:130
+msgid "There are no autoprimaries to show in this listing."
+msgstr "Tidak ada autoprimaries untuk ditampilkan dalam daftar ini."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:131
+msgid "There are no supermasters to show in this listing."
+msgstr "Tidak ada supermaster yang ditampilkan dalam daftar ini."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:132
+msgid "IP address of autoprimary"
+msgstr "Alamat IP autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:132
+msgid "IP address of supermaster"
+msgstr "Pencarian cepat"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:134
+msgid "Select the account that will own this autoprimary"
+msgstr "Pilih akun yang akan memiliki autoprimary ini"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:135
+msgid "Select the account that will own this supermaster"
+msgstr "Add to favorites"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:136
+msgid "About Editing Autoprimaries"
+msgstr "Tentang Penyuntingan Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:136
+msgid "About Editing Supermasters"
+msgstr "Hapus dari favorit"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:138
+msgid ""
+"You can modify the IP address, hostname, or account for this autoprimary."
+msgstr ""
+"Anda dapat memodifikasi alamat IP, hostname, atau akun untuk autoprimary ini."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:139
+msgid ""
+"You can modify the IP address, hostname, or account for this supermaster."
+msgstr "Ditambahkan ke favorit."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:140
+msgid "Autoprimary Details"
+msgstr "Detail Autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:140
+msgid "Supermaster Details"
+msgstr "Detail Supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:142
+msgid "You are about to delete the autoprimary"
+msgstr "Anda akan menghapus autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:143
+msgid "You are about to delete the supermaster"
+msgstr "Anda akan menghapus supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:144
+msgid "Yes, delete this autoprimary"
+msgstr "Ya, hapus autoprimary ini"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:144
+msgid "Yes, delete this supermaster"
+msgstr "Ya, hapus supermaster ini"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:145
+msgid "No, keep this autoprimary"
+msgstr "Tidak, simpan autoprimary ini"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:145
+msgid "No, keep this supermaster"
+msgstr "Tidak, pertahankan supermaster ini"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -8530,7 +8819,7 @@ msgstr "Urutkan turun"
 msgid "Update record"
 msgstr "Zones per page"
 
-#: templates/modern/edit.html:529 templates/modern/users.html:219
+#: templates/modern/edit.html:550 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Zone per halaman"
 
@@ -8629,22 +8918,6 @@ msgstr "Aksi cepat"
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgstr "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
-#: templates/modern/delete_supermaster.html:4
-msgid "Supermasters"
-msgstr "Quick add record"
-
-#: templates/modern/edit_supermaster.html:5
-msgid "Edit supermaster"
-msgstr "Tambah record cepat"
-
-#: templates/modern/edit_supermaster.html:13
-msgid "Edit Supermaster"
-msgstr "Quick search"
-
-#: templates/modern/list_supermasters.html:31
-msgid "IP address of supermaster"
-msgstr "Pencarian cepat"
-
 #: templates/modern/add_supermaster.html:22
 msgid "Enter the IP address of the master nameserver"
 msgstr "Recent zones"
@@ -8669,11 +8942,7 @@ msgstr "Favorite zones"
 msgid "Account"
 msgstr "Zone favorit"
 
-#: templates/modern/add_supermaster.html:48
-msgid "Select the account that will own this supermaster"
-msgstr "Add to favorites"
-
-#: templates/modern/edit.html:190 templates/modern/edit.html:526
+#: templates/modern/edit.html:190 templates/modern/edit.html:547
 msgid "Save changes"
 msgstr "Tambahkan ke favorit"
 
@@ -8681,18 +8950,9 @@ msgstr "Tambahkan ke favorit"
 msgid "All fields are required"
 msgstr "Remove from favorites"
 
-#: templates/modern/edit_supermaster.html:74
-msgid "About Editing Supermasters"
-msgstr "Hapus dari favorit"
-
 #: templates/modern/edit_supermaster.html:79
 msgid "Update Credentials"
 msgstr "Added to favorites."
-
-#: templates/modern/edit_supermaster.html:80
-msgid ""
-"You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Ditambahkan ke favorit."
 
 #: templates/modern/edit_supermaster.html:83
 msgid "Important"
@@ -8773,9 +9033,75 @@ msgstr "Apply filters"
 msgid "Activate"
 msgstr "Terapkan filter"
 
+#: templates/default/dnssec.html:123 templates/modern/dnssec.html:123
+msgid "Download this key as PEM"
+msgstr "Unduh kunci ini sebagai PEM"
+
+#: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
+msgid "Export PEM"
+msgstr "Ekspor PEM"
+
 #: templates/modern/list_perm_templ.html:61
 msgid "Delete"
 msgstr "Clear filters"
+
+#: templates/default/dnssec.html:144 templates/modern/dnssec.html:144
+msgid "Import key from PEM"
+msgstr "Impor kunci dari PEM"
+
+#: templates/default/dnssec.html:147 templates/modern/dnssec.html:147
+msgid ""
+"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+"key size from the PEM contents - select the matching algorithm and key role."
+msgstr ""
+"Tempel kunci pribadi yang dikodekan PEM (RSA atau ECDSA). PowerDNS 4.7+ memperoleh ukuran kunci dari konten PEM - pilih algoritma dan peran kunci yang sesuai."
+
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:55
+msgid "Key type"
+msgstr "Tipe kunci"
+
+#: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
+msgid "PEM private key"
+msgstr "Kunci pribadi PEM"
+
+#: templates/default/dnssec.html:172 templates/modern/dnssec.html:172
+msgid "Import key"
+msgstr "Impor kunci"
+
+#: templates/modern/list_networks.html:13
+msgid ""
+"Each network maps to a single view. Resolvers in that network receive the "
+"zone variant assigned to that view."
+msgstr ""
+"Setiap jaringan memetakan ke satu view. Resolver di jaringan tersebut menerima varian zona yang ditugaskan ke view tersebut."
+
+#: templates/modern/list_networks.html:18
+msgid "No networks configured yet. Map a CIDR to a view below."
+msgstr "Belum ada jaringan yang dikonfigurasi. Petakan CIDR ke view di bawah."
+
+#: templates/modern/list_networks.html:25
+msgid "Network"
+msgstr "Jaringan"
+
+#: templates/modern/list_networks.html:65
+msgid "View"
+msgstr "View"
+
+#: templates/modern/list_networks.html:40
+msgid "Remove mapping"
+msgstr "Hapus pemetaan"
+
+#: templates/modern/list_networks.html:54
+msgid "Map network to view"
+msgstr "Petakan jaringan ke view"
+
+#: templates/modern/list_networks.html:61
+msgid "CIDR"
+msgstr "CIDR"
+
+#: templates/modern/list_networks.html:79
+msgid "Save"
+msgstr "Simpan"
 
 #: templates/modern/forgot_password.html:4
 msgid "Forgot Password"
@@ -9024,7 +9350,7 @@ msgstr "Perbaiki otomatis"
 msgid "Welcome"
 msgstr "Issues fixed successfully."
 
-#: templates/modern/index.html:5 templates/modern/delete_zone_templ.html:29
+#: templates/modern/list_views.html:25
 msgid "zones"
 msgstr "zona"
 
@@ -9040,16 +9366,26 @@ msgstr "pengguna"
 msgid "groups"
 msgstr "grup"
 
-#: templates/default/index.html:10 templates/modern/index.html:10
-#, auto-english-fallback
+#: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
 msgstr "Connected PowerDNS version"
 
-#: templates/default/index.html:19 templates/modern/index.html:19
+#: templates/default/index.html:16 templates/modern/index.html:16
+msgid ""
+"Could not detect PowerDNS version. Newer features are hidden until the API "
+"is reachable."
+msgstr ""
+"Tidak dapat mendeteksi versi PowerDNS. Fitur yang lebih baru disembunyikan sampai API dapat dijangkau."
+
+#: templates/default/index.html:17 templates/modern/index.html:17
+msgid "PowerDNS version unknown"
+msgstr "Versi PowerDNS tidak diketahui"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/index.html:26 templates/modern/index.html:26
+#: templates/default/index.html:34 templates/modern/index.html:34
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -9057,7 +9393,7 @@ msgstr ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
 
-#: templates/default/index.html:28 templates/modern/index.html:28
+#: templates/default/index.html:36 templates/modern/index.html:36
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -9065,7 +9401,7 @@ msgstr ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
 
-#: templates/default/index.html:30 templates/modern/index.html:30
+#: templates/default/index.html:38 templates/modern/index.html:38
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -9075,7 +9411,7 @@ msgstr ""
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 
-#: templates/default/index.html:32 templates/modern/index.html:32
+#: templates/default/index.html:40 templates/modern/index.html:40
 msgid ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
@@ -9083,15 +9419,15 @@ msgstr ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
 
-#: templates/default/index.html:48 templates/modern/index.html:48
+#: templates/default/index.html:56 templates/modern/index.html:56
 msgid "DNS Management"
 msgstr "Manajemen DNS"
 
-#: templates/modern/index.html:61 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:69 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "Masalah berhasil diperbaiki."
 
-#: templates/modern/index.html:63 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:71 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "Failed to fix some issues."
 
@@ -9099,31 +9435,31 @@ msgstr "Failed to fix some issues."
 msgid "Templates"
 msgstr "Run health check"
 
-#: templates/default/index.html:135 templates/modern/index.html:135
+#: templates/default/index.html:142 templates/modern/index.html:142
+msgid "Networks"
+msgstr "Jaringan"
+
+#: templates/default/index.html:161 templates/modern/index.html:161
 msgid "Zone Operations"
 msgstr "Operasi Zona"
 
-#: templates/default/index.html:146 templates/modern/index.html:146
+#: templates/default/index.html:172 templates/modern/index.html:172
 msgid "Master Zone"
 msgstr "Belum pernah diperiksa"
 
-#: templates/default/index.html:156 templates/modern/index.html:156
+#: templates/default/index.html:182 templates/modern/index.html:182
 msgid "Slave Zone"
 msgstr "Log aktivitas"
 
-#: templates/default/index.html:166 templates/modern/index.html:166
-msgid "Supermaster"
-msgstr "Tidak ada aktivitas yang tercatat."
-
-#: templates/default/index.html:186 templates/modern/index.html:186
+#: templates/default/index.html:212 templates/modern/index.html:212
 msgid "PTR Records"
 msgstr "Zone created"
 
-#: templates/default/index.html:204 templates/modern/index.html:204
+#: templates/default/index.html:230 templates/modern/index.html:230
 msgid "Administration"
 msgstr "Administrasi"
 
-#: templates/modern/index.html:235 templates/modern/header.html:259
+#: templates/modern/index.html:261 templates/modern/header.html:259
 msgid "Access"
 msgstr "Owner changed"
 
@@ -9131,12 +9467,12 @@ msgstr "Owner changed"
 msgid "Tools"
 msgstr "Alat"
 
-#: templates/default/index.html:294 templates/modern/index.html:294
+#: templates/default/index.html:320 templates/modern/index.html:320
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Basis Data"
 
-#: templates/default/index.html:341 templates/modern/index.html:341
+#: templates/default/index.html:367 templates/modern/index.html:367
 msgid "My Profile"
 msgstr "Kesehatan zone"
 
@@ -9145,7 +9481,7 @@ msgstr "Kesehatan zone"
 msgid "Password"
 msgstr "DNSSEC dinonaktifkan"
 
-#: templates/modern/index.html:360 templates/modern/header.html:372
+#: templates/modern/index.html:386 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "DNSSEC key deleted"
 
@@ -9153,7 +9489,7 @@ msgstr "DNSSEC key deleted"
 msgid "Logout"
 msgstr "Template applied"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:535
 msgid "Edit comment"
 msgstr "Activity details"
 
@@ -9818,7 +10154,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Hapus zona"
 
-#: templates/modern/dnssec_add_key.html:91
+#: templates/modern/dnssec_add_key.html:93
 msgid "Add key"
 msgstr "Tambah kunci"
 
@@ -9826,40 +10162,34 @@ msgstr "Tambah kunci"
 msgid "Add key for zone"
 msgstr "Tambah kunci untuk zona"
 
-#: templates/modern/dnssec_add_key.html:43
-msgid "PowerDNS 4.0+ uses CSK by default"
-msgstr "PowerDNS 4.0+ menggunakan CSK secara default"
-
 #: templates/modern/dnssec_add_key.html:44
+msgid "Legacy PowerDNS detected"
+msgstr "PowerDNS lama terdeteksi"
+
+#: templates/modern/dnssec_add_key.html:45
 msgid ""
-"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
-"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+"This server predates PowerDNS 4.0 and does not create a Combined Signing Key "
+"by default. Pick KSK or ZSK explicitly to add a key here."
 msgstr ""
-"PowerDNS 4.0 dan versi yang lebih baru menggunakan Combined Signing Keys "
-"(CSK) secara default. Jika Anda memilih KSK atau ZSK, PowerDNS mungkin tetap "
-"membuat kunci CSK."
+"Server ini lebih lama dari PowerDNS 4.0 dan tidak membuat Combined Signing Key secara default. Pilih KSK atau ZSK secara eksplisit untuk menambahkan kunci di sini."
 
-#: templates/modern/dnssec_add_key.html:53
-msgid "Key type"
-msgstr "Tipe kunci"
-
-#: templates/modern/dnssec_add_key.html:60
+#: templates/modern/dnssec_add_key.html:62
 msgid "Select key type"
 msgstr "Pilih tipe kunci"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:73
 msgid "Select algorithm"
 msgstr "Pilih algoritma"
 
-#: templates/modern/dnssec_add_key.html:76
+#: templates/modern/dnssec_add_key.html:78
 msgid "Bits in length"
 msgstr "Panjang bit"
 
-#: templates/modern/dnssec_add_key.html:85
+#: templates/modern/dnssec_add_key.html:87
 msgid "Select bits length"
 msgstr "Pilih panjang bit"
 
-#: templates/modern/dnssec_add_key.html:142
+#: templates/modern/dnssec_add_key.html:144
 msgid "Recommended bits for"
 msgstr "Bit yang direkomendasikan untuk"
 
@@ -9868,19 +10198,19 @@ msgstr "Bit yang direkomendasikan untuk"
 msgid "Warning:"
 msgstr "Warning:"
 
-#: templates/modern/dnssec_add_key.html:150
+#: templates/modern/dnssec_add_key.html:152
 msgid "bits is not recommended for"
 msgstr "bit tidak direkomendasikan untuk"
 
-#: templates/modern/dnssec_add_key.html:187
+#: templates/modern/dnssec_add_key.html:189
 msgid "About DNSSEC Key Types"
 msgstr "Tentang Tipe Kunci DNSSEC"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:193
 msgid "Key Types Explained"
 msgstr "Tipe Kunci Dijelaskan"
 
-#: templates/modern/dnssec_add_key.html:193
+#: templates/modern/dnssec_add_key.html:195
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -9888,19 +10218,19 @@ msgstr ""
 "Combined Signing Key - berfungsi sebagai KSK dan ZSK (direkomendasikan untuk "
 "PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:194
+#: templates/modern/dnssec_add_key.html:196
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Key Signing Key - menandatangani rekod DNSKEY di zona"
 
-#: templates/modern/dnssec_add_key.html:195
+#: templates/modern/dnssec_add_key.html:197
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - menandatangani semua rekod lain di zona"
 
-#: templates/modern/dnssec_add_key.html:200
+#: templates/modern/dnssec_add_key.html:202
 msgid "Recommended Settings"
 msgstr "Pengaturan yang Direkomendasikan"
 
-#: templates/modern/dnssec_add_key.html:201
+#: templates/modern/dnssec_add_key.html:203
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10131,7 +10461,7 @@ msgstr "Ya, lepaskan zona-zona ini"
 msgid "Access templates"
 msgstr "Templat akses"
 
-#: templates/modern/add_perm_templ.html:6
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
 msgid "Add"
 msgstr "Tambah"
 
@@ -10253,22 +10583,6 @@ msgstr "Ke Beranda"
 #: templates/default/404.html:49 templates/modern/404.html:49
 msgid "Go Back"
 msgstr "Kembali"
-
-#: templates/modern/list_supermasters.html:13
-msgid "Add supermaster"
-msgstr "Record ditambahkan"
-
-#: templates/modern/add_supermaster.html:13
-msgid "Add Supermaster"
-msgstr "Tambah Supermaster"
-
-#: templates/modern/add_supermaster.html:70
-msgid "About Supermasters"
-msgstr "Tentang Supermaster"
-
-#: templates/modern/add_supermaster.html:75
-msgid "What is a Supermaster?"
-msgstr "Apa itu Supermaster?"
 
 #: templates/modern/add_supermaster.html:76
 msgid ""
@@ -10647,71 +10961,71 @@ msgstr "Jika Anda kehilangan kunci, Anda perlu meregenerasinya."
 msgid "Edit"
 msgstr "No saved searches found."
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:577
+#: templates/modern/edit.html:25 templates/modern/edit.html:598
 msgid "Add new record"
 msgstr "Tambah rekod baru"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:581
+#: templates/modern/edit.html:203 templates/modern/edit.html:602
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Wizard terpandu untuk rekod DMARC, SPF, DKIM, CAA, TLSA, dan SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:587
+#: templates/modern/edit.html:35 templates/modern/edit.html:608
 msgid "Multi-record mode"
 msgstr "Mode multi-rekod"
 
-#: templates/modern/edit.html:535 templates/modern/edit.html:590
+#: templates/modern/edit.html:556 templates/modern/edit.html:611
 msgid "Bulk add"
 msgstr "Tambah massal"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:623
 msgid "Failed to add"
 msgstr "Gagal menambahkan"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:623
 msgid "record(s). Please check the record format."
 msgstr "rekod. Silakan periksa format rekod."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:604
+#: templates/modern/edit.html:52 templates/modern/edit.html:625
 msgid "Failed to add records. Please check the record format."
 msgstr "Gagal menambahkan rekod. Silakan periksa format rekod."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:628
 msgid "Content validation failed:"
 msgstr "Validasi konten gagal:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:628
 msgid "Invalid value for record type"
 msgstr "Nilai tidak valid untuk tipe rekod"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:609
+#: templates/modern/edit.html:57 templates/modern/edit.html:630
 msgid "Please provide all required information."
 msgstr "Silakan berikan semua informasi yang diperlukan."
 
-#: templates/modern/edit.html:632 templates/modern/add_record.html:72
+#: templates/modern/edit.html:653 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Tambah PTR"
 
-#: templates/modern/edit.html:635 templates/modern/add_record.html:75
+#: templates/modern/edit.html:656 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Tambah A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:674
+#: templates/modern/edit.html:121 templates/modern/edit.html:695
 msgid "This record already exists"
 msgstr "Rekod ini sudah ada"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:686
+#: templates/modern/edit.html:133 templates/modern/edit.html:707
 msgid "Invalid priority"
 msgstr "Prioritas tidak valid"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:693
+#: templates/modern/edit.html:140 templates/modern/edit.html:714
 msgid "Invalid TTL value"
 msgstr "Nilai TTL tidak valid"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:695
+#: templates/modern/edit.html:142 templates/modern/edit.html:716
 msgid "Provide TTL"
 msgstr "Berikan TTL"
 
-#: templates/modern/edit.html:721 templates/modern/add_record.html:207
+#: templates/modern/edit.html:742 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -10771,47 +11085,51 @@ msgstr "dari"
 msgid "total records"
 msgstr "total rekod"
 
-#: templates/default/edit.html:497 templates/modern/edit.html:497
+#: templates/default/edit.html:405 templates/modern/edit.html:405
+msgid "Last modified"
+msgstr "Terakhir diubah"
+
+#: templates/default/edit.html:518 templates/modern/edit.html:518
 msgid "Edit selected"
 msgstr "Edit yang dipilih"
 
-#: templates/modern/edit.html:501 templates/modern/search.html:486
+#: templates/modern/edit.html:522 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Hapus rekod"
 
-#: templates/modern/edit.html:509 templates/modern/search.html:93
+#: templates/modern/edit.html:530 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentar"
 
-#: templates/default/edit.html:539 templates/modern/edit.html:539
+#: templates/default/edit.html:560 templates/modern/edit.html:560
 msgid "Import"
 msgstr "Impor"
 
-#: templates/default/edit.html:556 templates/modern/edit.html:556
+#: templates/default/edit.html:577 templates/modern/edit.html:577
 msgid "Generate PTR"
 msgstr "Buat PTR"
 
-#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:756 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Konfigurasi Zona"
 
-#: templates/modern/edit.html:777 templates/modern/edit.html:806
+#: templates/modern/edit.html:798 templates/modern/edit.html:827
 msgid "Change"
 msgstr "Ubah"
 
-#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:791 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Alamat IP master NS"
 
-#: templates/default/edit.html:827 templates/modern/edit.html:827
+#: templates/default/edit.html:848 templates/modern/edit.html:848
 msgid "Manage DNSSEC"
 msgstr "Kelola DNSSEC"
 
-#: templates/default/edit.html:834 templates/modern/edit.html:834
+#: templates/default/edit.html:855 templates/modern/edit.html:855
 msgid "Sign zone"
 msgstr "Tandatangani zona"
 
-#: templates/default/edit.html:838 templates/modern/edit.html:838
+#: templates/default/edit.html:859 templates/modern/edit.html:859
 msgid "Not signed"
 msgstr "Tidak ditandatangani"
 
@@ -11420,14 +11738,6 @@ msgstr "Apakah Anda ingin melanjutkan tanpa menambahkan rekod SOA?"
 msgid "Continue Without SOA"
 msgstr "Lanjutkan Tanpa SOA"
 
-#: templates/modern/list_supermasters.html:21
-msgid "Search supermasters..."
-msgstr "Cari supermaster..."
-
-#: templates/modern/list_supermasters.html:71
-msgid "There are no supermasters to show in this listing."
-msgstr "Tidak ada supermaster yang ditampilkan dalam daftar ini."
-
 #: templates/modern/edit_zone_metadata.html:18
 msgid "Edit Metadata"
 msgstr "Edit metadata"
@@ -11456,15 +11766,19 @@ msgstr "Nilai tunggal"
 msgid "Kind"
 msgstr "Jenis"
 
-#: templates/modern/edit_zone_metadata.html:105
+#: templates/modern/edit_zone_metadata.html:127
+msgid "requires"
+msgstr "memerlukan"
+
+#: templates/modern/edit_zone_metadata.html:107
 msgid "Add metadata row"
 msgstr "Tambah baris metadata"
 
-#: templates/modern/edit_zone_metadata.html:108
+#: templates/modern/edit_zone_metadata.html:110
 msgid "Save metadata"
 msgstr "Simpan metadata"
 
-#: templates/modern/edit_zone_metadata.html:112
+#: templates/modern/edit_zone_metadata.html:114
 msgid "Back to zone"
 msgstr "Kembali ke zona"
 
@@ -12048,30 +12362,6 @@ msgstr "Ya, hapus zona ini"
 msgid "No, keep these zones"
 msgstr "Tidak, pertahankan zona ini"
 
-#: templates/modern/delete_supermaster.html:5
-msgid "Delete supermaster"
-msgstr "Hapus supermaster"
-
-#: templates/modern/delete_supermaster.html:11
-msgid "Delete Supermaster"
-msgstr "Hapus Supermaster"
-
-#: templates/modern/delete_supermaster.html:16
-msgid "You are about to delete the supermaster"
-msgstr "Anda akan menghapus supermaster"
-
-#: templates/modern/delete_supermaster.html:22
-msgid "Supermaster Details"
-msgstr "Detail Supermaster"
-
-#: templates/modern/delete_supermaster.html:53
-msgid "Yes, delete this supermaster"
-msgstr "Ya, hapus supermaster ini"
-
-#: templates/modern/delete_supermaster.html:56
-msgid "No, keep this supermaster"
-msgstr "Tidak, pertahankan supermaster ini"
-
 #: templates/modern/list_log_users.html:5 templates/modern/header.html:216
 msgid "User logs"
 msgstr "Log pengguna"
@@ -12111,6 +12401,34 @@ msgstr "Anda akan menghapus templat zona"
 #: templates/modern/delete_zone_templ.html:29
 msgid "This template is currently used by"
 msgstr "Templat ini saat ini digunakan oleh"
+
+#: templates/default/list_views.html:13 templates/modern/list_views.html:13
+msgid ""
+"Views serve different zone variants to different clients based on the "
+"network mapping. Each variant is identified as zone..variant (for example, "
+"example.com..trusted)."
+msgstr ""
+"View melayani varian zona yang berbeda ke klien yang berbeda berdasarkan pemetaan jaringan. Setiap varian diidentifikasi sebagai zone..variant (misalnya example.com..trusted)."
+
+#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+msgid "No views configured yet. Add a zone variant below."
+msgstr "Belum ada view yang dikonfigurasi. Tambahkan varian zona di bawah."
+
+#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+msgid "Remove from view"
+msgstr "Hapus dari view"
+
+#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+msgid "Assign zone to view"
+msgstr "Tetapkan zona ke view"
+
+#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+msgid "View name"
+msgstr "Nama view"
+
+#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+msgid "Zone (zone..variant)"
+msgstr "Zona (zone..variant)"
 
 #: templates/modern/email_previews.html:11
 msgid "Email Template Previews"
@@ -12866,14 +13184,6 @@ msgstr "Tambah semua rekaman"
 #: lib/Module/ZoneImportExport/templates/import.html:128
 msgid "Zone type"
 msgstr "Tipe zona"
-
-#: lib/Module/ZoneImportExport/templates/import.html:130
-msgid "Master"
-msgstr "Duplicate records found."
-
-#: lib/Module/ZoneImportExport/templates/import.html:131
-msgid "Native"
-msgstr "Invalid CNAME configuration."
 
 #: lib/Module/ZoneImportExport/templates/import.html:138
 msgid "Confirm import"
@@ -13665,5 +13975,27 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Tidak dapat terhubung ke database PowerDNS \"%s\": %s"
+
+# OBSOLETE: msgid "Edit Supermaster"
+# OBSOLETE: msgstr "Quick search"
+
+# OBSOLETE: msgid "PowerDNS 4.0+ uses CSK by default"
+# OBSOLETE: msgstr "PowerDNS 4.0+ menggunakan CSK secara default"
+
+#, fuzzy
+# OBSOLETE: msgid ""
+# OBSOLETE: "PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by "
+# OBSOLETE: "default. If you select KSK or ZSK, PowerDNS may still create a CSK key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PowerDNS 4.0 dan versi yang lebih baru menggunakan Combined Signing Keys "
+# OBSOLETE: "(CSK) secara default. Jika Anda memilih KSK atau ZSK, PowerDNS mungkin "
+# OBSOLETE: "tetap membuat kunci CSK."
+
+# OBSOLETE: msgid "Add Supermaster"
+# OBSOLETE: msgstr "Tambah Supermaster"
+
+# OBSOLETE: msgid "Delete Supermaster"
+# OBSOLETE: msgstr "Hapus Supermaster"
+
 
 

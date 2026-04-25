@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-24 22:55+0300\n"
+"POT-Creation-Date: 2026-04-25 15:52+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -333,7 +333,7 @@ msgstr ""
 "kompletny certyfikat."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:646
+#: templates/modern/edit.html:93 templates/modern/edit.html:667
 msgid "Invalid hostname format"
 msgstr "Nieprawidłowy format nazwy hosta"
 
@@ -1306,7 +1306,7 @@ msgstr "Nie udało się pobrać informacji RDAP przy użyciu serwera %s"
 msgid "Invalid CSRF token."
 msgstr "Nieprawidłowy token CSRF."
 
-#: lib/BaseController.php:592
+#: lib/BaseController.php:646
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1314,7 +1314,7 @@ msgstr ""
 "Katalog <a href=\"install/\">install/</a> istnieje, musisz go usunąć przed "
 "kontynuowaniem."
 
-#: lib/BaseController.php:649
+#: lib/BaseController.php:703
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1322,12 +1322,12 @@ msgstr ""
 "Używany jest domyślny klucz szyfrowania sesji, ustaw go w pliku "
 "konfiguracyjnym."
 
-#: lib/BaseController.php:788
+#: lib/BaseController.php:842
 #, php-format
 msgid "The %s field is required."
 msgstr "Pole %s jest wymagane."
 
-#: lib/BaseController.php:796
+#: lib/BaseController.php:850
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Pole %s musi być liczbą."
@@ -1704,33 +1704,33 @@ msgstr "Numer strony przekracza dostępne strony."
 msgid "You do not have the permission to view supermasters."
 msgstr "Nie masz uprawnień do przeglądania supermasterów."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Application/Controller/EditZoneMetadataController.php:119
 msgid "You do not have the permission to view zone metadata."
 msgstr "Nie masz uprawnień do przeglądania metadanych strefy."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:121
+#: lib/Application/Controller/EditZoneMetadataController.php:122
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Nie masz uprawnien do edycji metadanych strefy."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:150
+#: lib/Application/Controller/EditZoneMetadataController.php:151
 msgid "Zone metadata has been updated successfully."
 msgstr "Metadane strefy zostaly pomyslnie zaktualizowane."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:155
+#: lib/Application/Controller/EditZoneMetadataController.php:156
 msgid "Failed to update zone metadata."
 msgstr "Nie udalo sie zaktualizowac metadanych strefy."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:178
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr "Edytuj metadane strefy"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:178
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "Metadane strefy"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:381
+#: lib/Application/Controller/EditZoneMetadataController.php:382
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
@@ -1738,29 +1738,29 @@ msgstr ""
 "Rodzaj metadanych %s akceptuje tylko jedna wartosc. Dodaj tylko jeden wiersz "
 "dla tego rodzaju."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:469
-#: templates/modern/edit_zone_metadata.html:153
+#: lib/Application/Controller/EditZoneMetadataController.php:476
+#: templates/modern/edit_zone_metadata.html:155
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
 msgstr ""
 "Niestandardowy rodzaj metadanych przechowywany bezposrednio w tabeli "
 "domainmetadata PowerDNS."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:477
+#: lib/Application/Controller/EditZoneMetadataController.php:484
 #: templates/modern/pdns_status.html:412
 msgid "Value"
 msgstr "Wartość"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:515
+#: lib/Application/Controller/EditZoneMetadataController.php:538
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "Niestandardowe"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:520
+#: lib/Application/Controller/EditZoneMetadataController.php:543
 msgid "Multi"
 msgstr "Wiele"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:521
+#: lib/Application/Controller/EditZoneMetadataController.php:544
 msgid "Single"
 msgstr "Pojedynczy"
 
@@ -1823,24 +1823,24 @@ msgstr "Nie masz uprawnień do dodawania rekordów do tej strefy."
 msgid "Please provide at least one record."
 msgstr "Podaj przynajmniej jeden rekord."
 
-#: lib/Application/Controller/BulkRecordAddController.php:175
+#: lib/Application/Controller/BulkRecordAddController.php:181
 msgid "Invalid record type."
 msgstr "Nieprawidłowy typ rekordu."
 
-#: lib/Application/Controller/BulkRecordAddController.php:213
+#: lib/Application/Controller/BulkRecordAddController.php:219
 msgid "Record could not be added."
 msgstr "Nie można dodać rekordu."
 
-#: lib/Application/Controller/BulkRecordAddController.php:221
+#: lib/Application/Controller/BulkRecordAddController.php:227
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "Pomyślnie dodano %d rekordów."
 
-#: lib/Application/Controller/BulkRecordAddController.php:224
+#: lib/Application/Controller/BulkRecordAddController.php:230
 msgid "Some record(s) could not be added."
 msgstr "Niektóre rekordy nie mogły zostać dodane."
 
-#: lib/Application/Controller/BulkRecordAddController.php:257
+#: lib/Application/Controller/BulkRecordAddController.php:263
 msgid "Zone ID is required."
 msgstr "Identyfikator strefy jest wymagany."
 
@@ -1935,7 +1935,7 @@ msgid "The record could not be deleted."
 msgstr "Nie można usunąć rekordu."
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:245 templates/modern/index.html:245
+#: templates/default/index.html:271 templates/modern/index.html:271
 msgid "Zone Logs"
 msgstr "Logi stref"
 
@@ -2013,7 +2013,7 @@ msgid "You do not have permission to view this zone."
 msgstr "Nie masz uprawnień do przeglądania tej strefy."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:255 templates/modern/index.html:255
+#: templates/default/index.html:281 templates/modern/index.html:281
 msgid "User Logs"
 msgstr "Logi użytkowników"
 
@@ -2109,35 +2109,35 @@ msgstr ""
 "Nie udało się podpisać strefy. Walidacja strefy przeszła pomyślnie, ale "
 "PowerDNS API zwróciło błąd. Sprawdź logi PowerDNS, aby uzyskać szczegóły."
 
-#: lib/Application/Controller/DnssecController.php:95
+#: lib/Application/Controller/DnssecController.php:96
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Strefa nie jest obecnie podpisana DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:107
+#: lib/Application/Controller/DnssecController.php:108
 msgid "Zone has been unsigned successfully."
 msgstr "Podpis strefy został pomyślnie usunięty."
 
-#: lib/Application/Controller/DnssecController.php:112
+#: lib/Application/Controller/DnssecController.php:113
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr ""
 "Żądanie usunięcia podpisu strefy zostało pomyślnie wysłane, ale weryfikacja "
 "nie powiodła się."
 
-#: lib/Application/Controller/DnssecController.php:116
+#: lib/Application/Controller/DnssecController.php:117
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Nie udało się usunąć podpisu strefy. Sprawdź logi PowerDNS, aby uzyskać "
 "szczegóły."
 
-#: lib/Application/Controller/EditController.php:734
+#: lib/Application/Controller/EditController.php:736
 msgid "Request has expired, please try again."
 msgstr "Żądanie wygasło, spróbuj ponownie."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:741
 msgid "Zone has been updated successfully."
 msgstr "Strefa została pomyślnie zaktualizowana."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:743
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2145,11 +2145,11 @@ msgstr ""
 "Strefa została pomyślnie zapisana. Nie dokonano zmian w rekordach, ale numer "
 "seryjny SOA został zwiększony."
 
-#: lib/Application/Controller/EditController.php:750
+#: lib/Application/Controller/EditController.php:752
 msgid "Zone has not been updated successfully."
 msgstr "Strefa nie została pomyślnie zaktualizowana."
 
-#: lib/Application/Controller/EditController.php:778
+#: lib/Application/Controller/EditController.php:780
 msgid "Please provide all required fields."
 msgstr "Podaj wszystkie wymagane pola."
 
@@ -2217,26 +2217,26 @@ msgstr "Nie masz uprawnień do dodawania rekordu do tej strefy."
 msgid "Record successfully added."
 msgstr "Rekord dodany."
 
-#: lib/Application/Controller/AddRecordController.php:429
+#: lib/Application/Controller/AddRecordController.php:431
 msgid "No records were provided."
 msgstr "Nie podano żadnych rekordów."
 
-#: lib/Application/Controller/AddRecordController.php:483
+#: lib/Application/Controller/AddRecordController.php:485
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "Pomyślnie dodano %d rekordów."
 
-#: lib/Application/Controller/AddRecordController.php:485
+#: lib/Application/Controller/AddRecordController.php:487
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Utworzono również %d pasujących rekordów."
 
-#: lib/Application/Controller/AddRecordController.php:488
+#: lib/Application/Controller/AddRecordController.php:490
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Nie udało się dodać %d rekordów."
 
-#: lib/Application/Controller/AddRecordController.php:493
+#: lib/Application/Controller/AddRecordController.php:495
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2244,7 +2244,7 @@ msgstr ""
 "Niektóre rekordy nie mogły zostać dodane. Mogą już istnieć lub zawierać "
 "nieprawidłowe dane."
 
-#: lib/Application/Controller/AddRecordController.php:519
+#: lib/Application/Controller/AddRecordController.php:521
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Nie udało się dodać żadnych rekordów. Mogą zawierać nieprawidłowe dane."
@@ -2298,9 +2298,28 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Nie udało się zainicjować uwierzytelniania OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:265 templates/modern/index.html:265
+#: templates/default/index.html:291 templates/modern/index.html:291
 msgid "Group Logs"
 msgstr "Logi grupy"
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:65
+msgid "You do not have permission to manage DNSSEC for this zone."
+msgstr "Nie masz uprawnień do zarządzania DNSSEC dla tej strefy."
+
+#: lib/Application/Controller/DnssecKeyExportController.php:74
+msgid "PEM key export requires PowerDNS 4.7 or newer."
+msgstr "Eksport kluczy PEM wymaga PowerDNS 4.7 lub nowszego."
+
+#: lib/Application/Controller/DnssecKeyExportController.php:86
+msgid "An error occurred while exporting the PEM key: "
+msgstr "Wystąpił błąd podczas eksportu klucza PEM: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php:92
+msgid ""
+"Could not retrieve the PEM key. The server may not expose private key "
+"material for this key."
+msgstr ""
+"Nie udało się pobrać klucza PEM. Serwer może nie udostępniać materiału klucza prywatnego dla tego klucza."
 
 #: lib/Domain/Service/Dns/DomainManager.php:309
 msgid "You do not have the permission to add a master zone."
@@ -2395,13 +2414,50 @@ msgstr "Nieprawidłowy szablon uprawnień: musi być szablonem grupy"
 msgid "Group has been created successfully."
 msgstr "Grupa została utworzona."
 
+#: lib/Application/Controller/ListViewsController.php:39
+msgid "You do not have permission to manage PowerDNS views."
+msgstr "Brak uprawnień do zarządzania widokami PowerDNS."
+
+#: lib/Application/Controller/ListViewsController.php:44
+msgid "Views require PowerDNS 5.0 or newer."
+msgstr "Widoki wymagają PowerDNS 5.0 lub nowszego."
+
+#: lib/Application/Controller/ListViewsController.php:50
+msgid "Views are only available with the PowerDNS API backend."
+msgstr "Widoki są dostępne tylko z backendem API PowerDNS."
+
+#: lib/Application/Controller/ListViewsController.php:61
+msgid "Provide a valid view name and zone identifier."
+msgstr "Podaj prawidłową nazwę widoku i identyfikator strefy."
+
+#: lib/Application/Controller/ListViewsController.php:67
+msgid "Zone assigned to view."
+msgstr "Strefa przypisana do widoku."
+
+#: lib/Application/Controller/ListViewsController.php:67
+msgid "Failed to assign zone to view."
+msgstr "Nie udało się przypisać strefy do widoku."
+
+#: lib/Application/Controller/ListViewsController.php:74
+msgid "Zone removed from view."
+msgstr "Strefa usunięta z widoku."
+
+#: lib/Application/Controller/ListViewsController.php:74
+msgid "Failed to remove zone from view."
+msgstr "Nie udało się usunąć strefy z widoku."
+
+#: lib/Application/Controller/ListNetworksController.php:81
+msgid "Unknown action."
+msgstr "Nieznana akcja."
+
+#: lib/Application/Controller/ListViewsController.php:96
+#: templates/modern/list_views.html:4 templates/modern/list_views.html:10
+msgid "Views"
+msgstr "Widoki"
+
 #: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid key ID."
 msgstr "Nieprawidłowy identyfikator klucza."
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:65
-msgid "You do not have permission to manage DNSSEC for this zone."
-msgstr "Nie masz uprawnień do zarządzania DNSSEC dla tej strefy."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:90
 msgid "DNSSEC key not found or no longer exists."
@@ -2590,7 +2646,7 @@ msgstr "Dodaj szablon strefy"
 msgid "Zone template has been added successfully."
 msgstr "Szablon strefy został pomyślnie dodany."
 
-#: lib/Application/Controller/IndexController.php:63
+#: lib/Application/Controller/IndexController.php:62
 msgid "Dashboard"
 msgstr "Pulpit"
 
@@ -2685,6 +2741,29 @@ msgstr "Nie masz uprawnień do dodawania nowego supermastera."
 msgid "The supermaster has been added successfully."
 msgstr "Supermaster został pomyślnie dodany."
 
+#: lib/Application/Controller/DnssecKeyImportController.php:72
+msgid "PEM key import requires PowerDNS 4.7 or newer."
+msgstr "Import kluczy PEM wymaga PowerDNS 4.7 lub nowszego."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:97
+msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+msgstr ""
+"Podaj klucz prywatny w formacie PEM (musi zawierać znaczniki BEGIN/END)."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:108
+msgid "PEM key imported successfully."
+msgstr "Klucz PEM zaimportowany pomyślnie."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:111
+msgid ""
+"Failed to import PEM key. The PowerDNS server may have rejected the format."
+msgstr ""
+"Nie udało się zaimportować klucza PEM. Serwer PowerDNS mógł odrzucić format."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:115
+msgid "An error occurred while importing the PEM key: "
+msgstr "Wystąpił błąd podczas importu klucza PEM: "
+
 #: lib/Application/Controller/AddZoneTemplRecordController.php:74
 msgid "You do not have the permission to add records to zone templates."
 msgstr "Nie masz uprawnień do dodawania rekordów do szablonów stref."
@@ -2739,6 +2818,47 @@ msgstr[1] ""
 "zostały znalezione)."
 msgstr[2] ""
 "Failed to add user to %d groups (already a member or groups not found)."
+
+#: lib/Application/Controller/ListNetworksController.php:39
+msgid "You do not have permission to manage network views."
+msgstr "Brak uprawnień do zarządzania widokami sieciowymi."
+
+#: lib/Application/Controller/ListNetworksController.php:44
+msgid "Network views require PowerDNS 5.0 or newer."
+msgstr "Widoki sieciowe wymagają PowerDNS 5.0 lub nowszego."
+
+#: lib/Application/Controller/ListNetworksController.php:50
+msgid "Network views are only available with the PowerDNS API backend."
+msgstr "Widoki sieciowe są dostępne tylko z backendem API PowerDNS."
+
+#: lib/Application/Controller/ListNetworksController.php:61
+msgid "Provide a valid CIDR (e.g. 192.168.0.0/16)."
+msgstr "Podaj prawidłowy CIDR (np. 192.168.0.0/16)."
+
+#: lib/Application/Controller/ListNetworksController.php:64
+msgid "Provide a valid view name."
+msgstr "Podaj prawidłową nazwę widoku."
+
+#: lib/Application/Controller/ListNetworksController.php:70
+msgid "Network mapping saved."
+msgstr "Przypisanie sieci zapisane."
+
+#: lib/Application/Controller/ListNetworksController.php:70
+msgid "Failed to save network mapping."
+msgstr "Nie udało się zapisać przypisania sieci."
+
+#: lib/Application/Controller/ListNetworksController.php:78
+msgid "Network mapping removed."
+msgstr "Przypisanie sieci usunięte."
+
+#: lib/Application/Controller/ListNetworksController.php:78
+msgid "Failed to remove network mapping."
+msgstr "Nie udało się usunąć przypisania sieci."
+
+#: lib/Application/Controller/ListNetworksController.php:93
+#: templates/modern/list_networks.html:4 templates/modern/list_networks.html:10
+msgid "Network views"
+msgstr "Widoki sieciowe"
 
 #: lib/Application/Controller/DeletePermTemplController.php:60
 msgid "You do not have the permission to delete permission templates."
@@ -2847,42 +2967,42 @@ msgstr ""
 msgid "Change Password"
 msgstr "Zmień hasło"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:117
+#: lib/Application/Controller/DnssecAddKeyController.php:119
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "Algorytm ECDSA P-256 musi używać 256 bitów"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:120
+#: lib/Application/Controller/DnssecAddKeyController.php:122
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "Algorytm ECDSA P-384 musi używać 384 bitów"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:126
+#: lib/Application/Controller/DnssecAddKeyController.php:128
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "Algorytm ED25519 musi używać 256 bitów"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:131
+#: lib/Application/Controller/DnssecAddKeyController.php:133
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr ""
 "Algorytm ED448 musi używać 456 bitów (nieobsługiwany w tym interfejsie)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:138
+#: lib/Application/Controller/DnssecAddKeyController.php:140
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "Algorytmy RSA powinny używać 1024 lub 2048 bitów dla odpowiedniego "
 "bezpieczeństwa"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:161
+#: lib/Application/Controller/DnssecAddKeyController.php:163
 msgid "Zone key has been added successfully."
 msgstr "Klucz strefy został pomyślnie dodany."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:165
+#: lib/Application/Controller/DnssecAddKeyController.php:167
 msgid "Failed to add new DNSSEC key."
 msgstr "Nie udało się dodać nowego klucza DNSSEC."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:169
+#: lib/Application/Controller/DnssecAddKeyController.php:171
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Wystąpił błąd podczas dodawania klucza DNSSEC: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:173
+#: lib/Application/Controller/DnssecAddKeyController.php:175
 msgid "Please select both algorithm and bits"
 msgstr "Wybierz zarówno algorytm, jak i liczbę bitów"
 
@@ -2920,7 +3040,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster został pomyślnie usunięty."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:176 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:202 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Rejestracja zbiorcza"
 
@@ -2984,12 +3104,12 @@ msgstr "Nie udało się aktywować klucza strefy."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Wystąpił błąd podczas przełączania klucza DNSSEC. Spróbuj ponownie."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Tak"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Nie"
@@ -3073,6 +3193,175 @@ msgstr "Ten szablon jest przypisany do co najmniej jednego użytkownika."
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
 msgid "This template is assigned to at least one group."
 msgstr "Ten szablon jest przypisany do przynajmniej jednej grupy."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:91
+msgid "Primary"
+msgstr "Primary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:92
+msgid "Secondary"
+msgstr "Secondary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:103
+#: lib/Module/ZoneImportExport/templates/import.html:131
+msgid "Native"
+msgstr "Natywny"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:104
+msgid "Producer"
+msgstr "Producer"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:105
+msgid "Consumer"
+msgstr "Consumer"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:101
+#: lib/Module/ZoneImportExport/templates/import.html:130
+msgid "Master"
+msgstr "Nadrzędny"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:102
+msgid "Slave"
+msgstr "Slave"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+msgid "Autoprimaries"
+msgstr "Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+msgid "Supermasters"
+msgstr "Serwery nadrzędne"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:122
+msgid "Autoprimary"
+msgstr "Autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:122
+msgid "Supermaster"
+msgstr "Serwer nadrzędny"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:123
+msgid "Add autoprimary"
+msgstr "Dodaj autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:123
+msgid "Add supermaster"
+msgstr "Dodaj supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:124
+msgid "Edit autoprimary"
+msgstr "Edytuj autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:124
+msgid "Edit supermaster"
+msgstr "Edytuj serwer nadrzędny"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:125
+msgid "Delete autoprimary"
+msgstr "Usuń autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:125
+msgid "Delete supermaster"
+msgstr "Usuń supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:126
+msgid "About Autoprimaries"
+msgstr "O Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:126
+msgid "About Supermasters"
+msgstr "O Supermasterach"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:127
+msgid "What is an Autoprimary?"
+msgstr "Czym jest Autoprimary?"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:127
+msgid "What is a Supermaster?"
+msgstr "Co to jest Supermaster?"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:128
+msgid "Search autoprimaries..."
+msgstr "Szukaj autoprimaries..."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:128
+msgid "Search supermasters..."
+msgstr "Szukaj supermasterów..."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:130
+msgid "There are no autoprimaries to show in this listing."
+msgstr "Brak autoprimaries do wyświetlenia."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:131
+msgid "There are no supermasters to show in this listing."
+msgstr "Nie ma żadnych supermasterów do wyświetlenia na tej liście."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:132
+msgid "IP address of autoprimary"
+msgstr "Adres IP autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:132
+msgid "IP address of supermaster"
+msgstr "Adres IP serwera nadrzędnego"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:134
+msgid "Select the account that will own this autoprimary"
+msgstr "Wybierz konto, które będzie właścicielem tego autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:135
+msgid "Select the account that will own this supermaster"
+msgstr "Wybierz konto, które będzie właścicielem tego supermastera"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:136
+msgid "About Editing Autoprimaries"
+msgstr "O edytowaniu Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:136
+msgid "About Editing Supermasters"
+msgstr "O edycji supermasterów"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:138
+msgid ""
+"You can modify the IP address, hostname, or account for this autoprimary."
+msgstr "Możesz zmodyfikować adres IP, nazwę hosta lub konto tego autoprimary."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:139
+msgid ""
+"You can modify the IP address, hostname, or account for this supermaster."
+msgstr ""
+"Możesz zmodyfikować adres IP, nazwę hosta lub konto dla tego supermastera."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:140
+msgid "Autoprimary Details"
+msgstr "Szczegóły Autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:140
+msgid "Supermaster Details"
+msgstr "Szczegóły Supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:142
+msgid "You are about to delete the autoprimary"
+msgstr "Zamierzasz usunąć autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:143
+msgid "You are about to delete the supermaster"
+msgstr "Zamierzasz usunąć supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:144
+msgid "Yes, delete this autoprimary"
+msgstr "Tak, usuń ten autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:144
+msgid "Yes, delete this supermaster"
+msgstr "Tak, usuń ten supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:145
+msgid "No, keep this autoprimary"
+msgstr "Nie, zachowaj ten autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:145
+msgid "No, keep this supermaster"
+msgstr "Nie, zachowaj ten supermaster"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -9205,7 +9494,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Zaktualizuj rekord"
 
-#: templates/modern/edit.html:529 templates/modern/users.html:219
+#: templates/modern/edit.html:550 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Resetuj"
 
@@ -9305,22 +9594,6 @@ msgstr "CNAME: <code>cel.[ZONE]</code> lub <code>example.com.</code>"
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgstr "TXT dla SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
-#: templates/modern/delete_supermaster.html:4
-msgid "Supermasters"
-msgstr "Serwery nadrzędne"
-
-#: templates/modern/edit_supermaster.html:5
-msgid "Edit supermaster"
-msgstr "Edytuj serwer nadrzędny"
-
-#: templates/modern/edit_supermaster.html:13
-msgid "Edit Supermaster"
-msgstr "Edytuj serwer nadrzędny"
-
-#: templates/modern/list_supermasters.html:31
-msgid "IP address of supermaster"
-msgstr "Adres IP serwera nadrzędnego"
-
 #: templates/modern/add_supermaster.html:22
 msgid "Enter the IP address of the master nameserver"
 msgstr "Wprowadź adres IP głównego serwera nazw"
@@ -9345,11 +9618,7 @@ msgstr "Podaj nazwę hosta"
 msgid "Account"
 msgstr "Konto"
 
-#: templates/modern/add_supermaster.html:48
-msgid "Select the account that will own this supermaster"
-msgstr "Wybierz konto, które będzie właścicielem tego supermastera"
-
-#: templates/modern/edit.html:190 templates/modern/edit.html:526
+#: templates/modern/edit.html:190 templates/modern/edit.html:547
 msgid "Save changes"
 msgstr "Zapisz zmiany"
 
@@ -9357,19 +9626,9 @@ msgstr "Zapisz zmiany"
 msgid "All fields are required"
 msgstr "Wszystkie pola są wymagane"
 
-#: templates/modern/edit_supermaster.html:74
-msgid "About Editing Supermasters"
-msgstr "O edycji supermasterów"
-
 #: templates/modern/edit_supermaster.html:79
 msgid "Update Credentials"
 msgstr "Aktualizuj dane uwierzytelniające"
-
-#: templates/modern/edit_supermaster.html:80
-msgid ""
-"You can modify the IP address, hostname, or account for this supermaster."
-msgstr ""
-"Możesz zmodyfikować adres IP, nazwę hosta lub konto dla tego supermastera."
 
 #: templates/modern/edit_supermaster.html:83
 msgid "Important"
@@ -9455,9 +9714,75 @@ msgstr "Dezaktywuj"
 msgid "Activate"
 msgstr "Aktywuj"
 
+#: templates/default/dnssec.html:123 templates/modern/dnssec.html:123
+msgid "Download this key as PEM"
+msgstr "Pobierz ten klucz jako PEM"
+
+#: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
+msgid "Export PEM"
+msgstr "Eksportuj PEM"
+
 #: templates/modern/list_perm_templ.html:61
 msgid "Delete"
 msgstr "Usuń"
+
+#: templates/default/dnssec.html:144 templates/modern/dnssec.html:144
+msgid "Import key from PEM"
+msgstr "Importuj klucz z PEM"
+
+#: templates/default/dnssec.html:147 templates/modern/dnssec.html:147
+msgid ""
+"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+"key size from the PEM contents - select the matching algorithm and key role."
+msgstr ""
+"Wklej klucz prywatny zakodowany w PEM (RSA lub ECDSA). PowerDNS 4.7+ wyznacza rozmiar klucza z zawartości PEM - wybierz odpowiedni algorytm i rolę klucza."
+
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:55
+msgid "Key type"
+msgstr "Typ klucza"
+
+#: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
+msgid "PEM private key"
+msgstr "Klucz prywatny PEM"
+
+#: templates/default/dnssec.html:172 templates/modern/dnssec.html:172
+msgid "Import key"
+msgstr "Importuj klucz"
+
+#: templates/modern/list_networks.html:13
+msgid ""
+"Each network maps to a single view. Resolvers in that network receive the "
+"zone variant assigned to that view."
+msgstr ""
+"Każda sieć jest przypisana do jednego widoku. Resolvery w tej sieci otrzymują wariant strefy przypisany do tego widoku."
+
+#: templates/modern/list_networks.html:18
+msgid "No networks configured yet. Map a CIDR to a view below."
+msgstr "Brak skonfigurowanych sieci. Przypisz CIDR do widoku poniżej."
+
+#: templates/modern/list_networks.html:25
+msgid "Network"
+msgstr "Sieć"
+
+#: templates/modern/list_networks.html:65
+msgid "View"
+msgstr "Widok"
+
+#: templates/modern/list_networks.html:40
+msgid "Remove mapping"
+msgstr "Usuń przypisanie"
+
+#: templates/modern/list_networks.html:54
+msgid "Map network to view"
+msgstr "Przypisz sieć do widoku"
+
+#: templates/modern/list_networks.html:61
+msgid "CIDR"
+msgstr "CIDR"
+
+#: templates/modern/list_networks.html:79
+msgid "Save"
+msgstr "Zapisz"
 
 #: templates/modern/forgot_password.html:4
 msgid "Forgot Password"
@@ -9715,7 +10040,7 @@ msgstr "Nie, zachowaj tę grupę"
 msgid "Welcome"
 msgstr "Witaj"
 
-#: templates/modern/index.html:5 templates/modern/delete_zone_templ.html:29
+#: templates/modern/list_views.html:25
 msgid "zones"
 msgstr "stref"
 
@@ -9731,16 +10056,26 @@ msgstr "użytkowników"
 msgid "groups"
 msgstr "grupy"
 
-#: templates/default/index.html:10 templates/modern/index.html:10
-#, auto-english-fallback
+#: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
 msgstr "Connected PowerDNS version"
 
-#: templates/default/index.html:19 templates/modern/index.html:19
+#: templates/default/index.html:16 templates/modern/index.html:16
+msgid ""
+"Could not detect PowerDNS version. Newer features are hidden until the API "
+"is reachable."
+msgstr ""
+"Nie udało się wykryć wersji PowerDNS. Nowsze funkcje są ukryte do czasu dostępności API."
+
+#: templates/default/index.html:17 templates/modern/index.html:17
+msgid "PowerDNS version unknown"
+msgstr "Wersja PowerDNS nieznana"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/index.html:26 templates/modern/index.html:26
+#: templates/default/index.html:34 templates/modern/index.html:34
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -9748,7 +10083,7 @@ msgstr ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
 
-#: templates/default/index.html:28 templates/modern/index.html:28
+#: templates/default/index.html:36 templates/modern/index.html:36
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -9756,7 +10091,7 @@ msgstr ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
 
-#: templates/default/index.html:30 templates/modern/index.html:30
+#: templates/default/index.html:38 templates/modern/index.html:38
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -9766,7 +10101,7 @@ msgstr ""
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 
-#: templates/default/index.html:32 templates/modern/index.html:32
+#: templates/default/index.html:40 templates/modern/index.html:40
 msgid ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
@@ -9774,15 +10109,15 @@ msgstr ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
 
-#: templates/default/index.html:48 templates/modern/index.html:48
+#: templates/default/index.html:56 templates/modern/index.html:56
 msgid "DNS Management"
 msgstr "Zarządzanie DNS"
 
-#: templates/modern/index.html:61 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:69 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "Połączony"
 
-#: templates/modern/index.html:63 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:71 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "Rozłączony"
 
@@ -9790,31 +10125,31 @@ msgstr "Rozłączony"
 msgid "Templates"
 msgstr "Szablony"
 
-#: templates/default/index.html:135 templates/modern/index.html:135
+#: templates/default/index.html:142 templates/modern/index.html:142
+msgid "Networks"
+msgstr "Sieci"
+
+#: templates/default/index.html:161 templates/modern/index.html:161
 msgid "Zone Operations"
 msgstr "Operacje na strefach"
 
-#: templates/default/index.html:146 templates/modern/index.html:146
+#: templates/default/index.html:172 templates/modern/index.html:172
 msgid "Master Zone"
 msgstr "Strefa Master"
 
-#: templates/default/index.html:156 templates/modern/index.html:156
+#: templates/default/index.html:182 templates/modern/index.html:182
 msgid "Slave Zone"
 msgstr "Strefa Slave"
 
-#: templates/default/index.html:166 templates/modern/index.html:166
-msgid "Supermaster"
-msgstr "Serwer nadrzędny"
-
-#: templates/default/index.html:186 templates/modern/index.html:186
+#: templates/default/index.html:212 templates/modern/index.html:212
 msgid "PTR Records"
 msgstr "Rekordy PTR"
 
-#: templates/default/index.html:204 templates/modern/index.html:204
+#: templates/default/index.html:230 templates/modern/index.html:230
 msgid "Administration"
 msgstr "Administracja"
 
-#: templates/modern/index.html:235 templates/modern/header.html:259
+#: templates/modern/index.html:261 templates/modern/header.html:259
 msgid "Access"
 msgstr "Dostęp"
 
@@ -9822,12 +10157,12 @@ msgstr "Dostęp"
 msgid "Tools"
 msgstr "Narzędzia"
 
-#: templates/default/index.html:294 templates/modern/index.html:294
+#: templates/default/index.html:320 templates/modern/index.html:320
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Baza danych"
 
-#: templates/default/index.html:341 templates/modern/index.html:341
+#: templates/default/index.html:367 templates/modern/index.html:367
 msgid "My Profile"
 msgstr "Mój profil"
 
@@ -9836,7 +10171,7 @@ msgstr "Mój profil"
 msgid "Password"
 msgstr "Hasło"
 
-#: templates/modern/index.html:360 templates/modern/header.html:372
+#: templates/modern/index.html:386 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "Preferencje"
 
@@ -9844,7 +10179,7 @@ msgstr "Preferencje"
 msgid "Logout"
 msgstr "Wyloguj"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:535
 msgid "Edit comment"
 msgstr "Edytuj komentarz"
 
@@ -10520,7 +10855,7 @@ msgstr "—"
 msgid "Delete zone(s)"
 msgstr "Usuń strefy"
 
-#: templates/modern/dnssec_add_key.html:91
+#: templates/modern/dnssec_add_key.html:93
 msgid "Add key"
 msgstr "Dodaj klucz"
 
@@ -10528,39 +10863,34 @@ msgstr "Dodaj klucz"
 msgid "Add key for zone"
 msgstr "Dodaj klucz dla strefy"
 
-#: templates/modern/dnssec_add_key.html:43
-msgid "PowerDNS 4.0+ uses CSK by default"
-msgstr "PowerDNS 4.0+ domyślnie używa CSK"
-
 #: templates/modern/dnssec_add_key.html:44
+msgid "Legacy PowerDNS detected"
+msgstr "Wykryto starszego PowerDNS"
+
+#: templates/modern/dnssec_add_key.html:45
 msgid ""
-"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
-"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+"This server predates PowerDNS 4.0 and does not create a Combined Signing Key "
+"by default. Pick KSK or ZSK explicitly to add a key here."
 msgstr ""
-"PowerDNS 4.0 i nowsze wersje domyślnie używają Combined Signing Keys (CSK). "
-"Jeśli wybierzesz KSK lub ZSK, PowerDNS nadal może utworzyć klucz CSK."
+"Ten serwer jest starszy niż PowerDNS 4.0 i domyślnie nie tworzy Combined Signing Key. Wybierz jawnie KSK lub ZSK, aby dodać klucz."
 
-#: templates/modern/dnssec_add_key.html:53
-msgid "Key type"
-msgstr "Typ klucza"
-
-#: templates/modern/dnssec_add_key.html:60
+#: templates/modern/dnssec_add_key.html:62
 msgid "Select key type"
 msgstr "Wybierz typ klucza"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:73
 msgid "Select algorithm"
 msgstr "Wybierz algorytm"
 
-#: templates/modern/dnssec_add_key.html:76
+#: templates/modern/dnssec_add_key.html:78
 msgid "Bits in length"
 msgstr "Długość w bitach"
 
-#: templates/modern/dnssec_add_key.html:85
+#: templates/modern/dnssec_add_key.html:87
 msgid "Select bits length"
 msgstr "Wybierz długość klucza"
 
-#: templates/modern/dnssec_add_key.html:142
+#: templates/modern/dnssec_add_key.html:144
 msgid "Recommended bits for"
 msgstr "Zalecana długość dla"
 
@@ -10569,19 +10899,19 @@ msgstr "Zalecana długość dla"
 msgid "Warning:"
 msgstr "Warning:"
 
-#: templates/modern/dnssec_add_key.html:150
+#: templates/modern/dnssec_add_key.html:152
 msgid "bits is not recommended for"
 msgstr "bitów nie jest zalecane dla"
 
-#: templates/modern/dnssec_add_key.html:187
+#: templates/modern/dnssec_add_key.html:189
 msgid "About DNSSEC Key Types"
 msgstr "O typach kluczy DNSSEC"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:193
 msgid "Key Types Explained"
 msgstr "Objaśnienie typów kluczy"
 
-#: templates/modern/dnssec_add_key.html:193
+#: templates/modern/dnssec_add_key.html:195
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -10589,20 +10919,20 @@ msgstr ""
 "Klucz podpisu kombinowanego - pełni funkcję zarówno KSK jak i ZSK (zalecane "
 "dla PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:194
+#: templates/modern/dnssec_add_key.html:196
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Klucz podpisu klucza (KSK) - podpisuje rekordy DNSKEY w strefie"
 
-#: templates/modern/dnssec_add_key.html:195
+#: templates/modern/dnssec_add_key.html:197
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr ""
 "Klucz podpisu strefy (ZSK) - podpisuje wszystkie inne rekordy w strefie"
 
-#: templates/modern/dnssec_add_key.html:200
+#: templates/modern/dnssec_add_key.html:202
 msgid "Recommended Settings"
 msgstr "Zalecane ustawienia"
 
-#: templates/modern/dnssec_add_key.html:201
+#: templates/modern/dnssec_add_key.html:203
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10833,7 +11163,7 @@ msgstr "Tak, odłącz te strefy"
 msgid "Access templates"
 msgstr "Szablony dostępu"
 
-#: templates/modern/add_perm_templ.html:6
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
 msgid "Add"
 msgstr "Dodaj"
 
@@ -10955,22 +11285,6 @@ msgstr "Przejdź do strony głównej"
 #: templates/default/404.html:49 templates/modern/404.html:49
 msgid "Go Back"
 msgstr "Wróć"
-
-#: templates/modern/list_supermasters.html:13
-msgid "Add supermaster"
-msgstr "Dodaj supermaster"
-
-#: templates/modern/add_supermaster.html:13
-msgid "Add Supermaster"
-msgstr "Dodaj Supermaster"
-
-#: templates/modern/add_supermaster.html:70
-msgid "About Supermasters"
-msgstr "O Supermasterach"
-
-#: templates/modern/add_supermaster.html:75
-msgid "What is a Supermaster?"
-msgstr "Co to jest Supermaster?"
 
 #: templates/modern/add_supermaster.html:76
 msgid ""
@@ -11352,71 +11666,71 @@ msgstr "Jeśli zgubisz klucz, będziesz musiał go wygenerować ponownie."
 msgid "Edit"
 msgstr "Edytuj"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:577
+#: templates/modern/edit.html:25 templates/modern/edit.html:598
 msgid "Add new record"
 msgstr "Dodaj nowy rekord"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:581
+#: templates/modern/edit.html:203 templates/modern/edit.html:602
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Przewodniki kreatorów dla rekordów DMARC, SPF, DKIM, CAA, TLSA i SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:587
+#: templates/modern/edit.html:35 templates/modern/edit.html:608
 msgid "Multi-record mode"
 msgstr "Tryb wielu rekordów"
 
-#: templates/modern/edit.html:535 templates/modern/edit.html:590
+#: templates/modern/edit.html:556 templates/modern/edit.html:611
 msgid "Bulk add"
 msgstr "Dodaj zbiorczo"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:623
 msgid "Failed to add"
 msgstr "Nie udało się dodać"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:623
 msgid "record(s). Please check the record format."
 msgstr "rekordów. Proszę sprawdzić format rekordu."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:604
+#: templates/modern/edit.html:52 templates/modern/edit.html:625
 msgid "Failed to add records. Please check the record format."
 msgstr "Nie udało się dodać rekordów. Proszę sprawdzić format rekordu."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:628
 msgid "Content validation failed:"
 msgstr "Walidacja zawartości nie powiodła się:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:628
 msgid "Invalid value for record type"
 msgstr "Nieprawidłowa wartość dla typu rekordu"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:609
+#: templates/modern/edit.html:57 templates/modern/edit.html:630
 msgid "Please provide all required information."
 msgstr "Proszę podać wszystkie wymagane informacje."
 
-#: templates/modern/edit.html:632 templates/modern/add_record.html:72
+#: templates/modern/edit.html:653 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Dodaj PTR"
 
-#: templates/modern/edit.html:635 templates/modern/add_record.html:75
+#: templates/modern/edit.html:656 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Dodaj A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:674
+#: templates/modern/edit.html:121 templates/modern/edit.html:695
 msgid "This record already exists"
 msgstr "Ten rekord już istnieje"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:686
+#: templates/modern/edit.html:133 templates/modern/edit.html:707
 msgid "Invalid priority"
 msgstr "Nieprawidłowy priorytet"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:693
+#: templates/modern/edit.html:140 templates/modern/edit.html:714
 msgid "Invalid TTL value"
 msgstr "Nieprawidłowa wartość TTL"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:695
+#: templates/modern/edit.html:142 templates/modern/edit.html:716
 msgid "Provide TTL"
 msgstr "Podaj TTL"
 
-#: templates/modern/edit.html:721 templates/modern/add_record.html:207
+#: templates/modern/edit.html:742 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11476,47 +11790,51 @@ msgstr "z"
 msgid "total records"
 msgstr "rekordów łącznie"
 
-#: templates/default/edit.html:497 templates/modern/edit.html:497
+#: templates/default/edit.html:405 templates/modern/edit.html:405
+msgid "Last modified"
+msgstr "Ostatnio zmieniono"
+
+#: templates/default/edit.html:518 templates/modern/edit.html:518
 msgid "Edit selected"
 msgstr "Edytuj wybrane"
 
-#: templates/modern/edit.html:501 templates/modern/search.html:486
+#: templates/modern/edit.html:522 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Usuń rekord(y)"
 
-#: templates/modern/edit.html:509 templates/modern/search.html:93
+#: templates/modern/edit.html:530 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentarze"
 
-#: templates/default/edit.html:539 templates/modern/edit.html:539
+#: templates/default/edit.html:560 templates/modern/edit.html:560
 msgid "Import"
 msgstr "Importuj"
 
-#: templates/default/edit.html:556 templates/modern/edit.html:556
+#: templates/default/edit.html:577 templates/modern/edit.html:577
 msgid "Generate PTR"
 msgstr "Generuj PTR"
 
-#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:756 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Konfiguracja strefy"
 
-#: templates/modern/edit.html:777 templates/modern/edit.html:806
+#: templates/modern/edit.html:798 templates/modern/edit.html:827
 msgid "Change"
 msgstr "Zmień"
 
-#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:791 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Adres IP serwera głównego NS"
 
-#: templates/default/edit.html:827 templates/modern/edit.html:827
+#: templates/default/edit.html:848 templates/modern/edit.html:848
 msgid "Manage DNSSEC"
 msgstr "Zarządzaj DNSSEC"
 
-#: templates/default/edit.html:834 templates/modern/edit.html:834
+#: templates/default/edit.html:855 templates/modern/edit.html:855
 msgid "Sign zone"
 msgstr "Podpisz strefę"
 
-#: templates/default/edit.html:838 templates/modern/edit.html:838
+#: templates/default/edit.html:859 templates/modern/edit.html:859
 msgid "Not signed"
 msgstr "Nie podpisane"
 
@@ -12127,14 +12445,6 @@ msgstr "Czy chcesz kontynuować bez dodawania rekordu SOA?"
 msgid "Continue Without SOA"
 msgstr "Kontynuuj bez SOA"
 
-#: templates/modern/list_supermasters.html:21
-msgid "Search supermasters..."
-msgstr "Szukaj supermasterów..."
-
-#: templates/modern/list_supermasters.html:71
-msgid "There are no supermasters to show in this listing."
-msgstr "Nie ma żadnych supermasterów do wyświetlenia na tej liście."
-
 #: templates/modern/edit_zone_metadata.html:18
 msgid "Edit Metadata"
 msgstr "Edytuj metadane"
@@ -12164,15 +12474,19 @@ msgstr "Pojedyncza wartosc"
 msgid "Kind"
 msgstr "Rodzaj"
 
-#: templates/modern/edit_zone_metadata.html:105
+#: templates/modern/edit_zone_metadata.html:127
+msgid "requires"
+msgstr "wymaga"
+
+#: templates/modern/edit_zone_metadata.html:107
 msgid "Add metadata row"
 msgstr "Dodaj wiersz metadanych"
 
-#: templates/modern/edit_zone_metadata.html:108
+#: templates/modern/edit_zone_metadata.html:110
 msgid "Save metadata"
 msgstr "Zapisz metadane"
 
-#: templates/modern/edit_zone_metadata.html:112
+#: templates/modern/edit_zone_metadata.html:114
 msgid "Back to zone"
 msgstr "Powrot do strefy"
 
@@ -12758,30 +13072,6 @@ msgstr "Tak, usuń te strefy"
 msgid "No, keep these zones"
 msgstr "Nie, zachowaj te strefy"
 
-#: templates/modern/delete_supermaster.html:5
-msgid "Delete supermaster"
-msgstr "Usuń supermaster"
-
-#: templates/modern/delete_supermaster.html:11
-msgid "Delete Supermaster"
-msgstr "Usuń Supermaster"
-
-#: templates/modern/delete_supermaster.html:16
-msgid "You are about to delete the supermaster"
-msgstr "Zamierzasz usunąć supermaster"
-
-#: templates/modern/delete_supermaster.html:22
-msgid "Supermaster Details"
-msgstr "Szczegóły Supermaster"
-
-#: templates/modern/delete_supermaster.html:53
-msgid "Yes, delete this supermaster"
-msgstr "Tak, usuń ten supermaster"
-
-#: templates/modern/delete_supermaster.html:56
-msgid "No, keep this supermaster"
-msgstr "Nie, zachowaj ten supermaster"
-
 #: templates/modern/list_log_users.html:5 templates/modern/header.html:216
 msgid "User logs"
 msgstr "Logi użytkowników"
@@ -12821,6 +13111,34 @@ msgstr "Zamierzasz usunąć szablon strefy"
 #: templates/modern/delete_zone_templ.html:29
 msgid "This template is currently used by"
 msgstr "Ten szablon jest obecnie używany przez"
+
+#: templates/default/list_views.html:13 templates/modern/list_views.html:13
+msgid ""
+"Views serve different zone variants to different clients based on the "
+"network mapping. Each variant is identified as zone..variant (for example, "
+"example.com..trusted)."
+msgstr ""
+"Widoki dostarczają różne warianty stref różnym klientom na podstawie przypisania sieciowego. Każdy wariant jest identyfikowany jako zone..variant (np. example.com..trusted)."
+
+#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+msgid "No views configured yet. Add a zone variant below."
+msgstr "Brak skonfigurowanych widoków. Dodaj wariant strefy poniżej."
+
+#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+msgid "Remove from view"
+msgstr "Usuń z widoku"
+
+#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+msgid "Assign zone to view"
+msgstr "Przypisz strefę do widoku"
+
+#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+msgid "View name"
+msgstr "Nazwa widoku"
+
+#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+msgid "Zone (zone..variant)"
+msgstr "Strefa (zone..wariant)"
 
 #: templates/modern/email_previews.html:11
 msgid "Email Template Previews"
@@ -13575,14 +13893,6 @@ msgstr "Dodaj wszystkie rekordy"
 #: lib/Module/ZoneImportExport/templates/import.html:128
 msgid "Zone type"
 msgstr "Typ strefy"
-
-#: lib/Module/ZoneImportExport/templates/import.html:130
-msgid "Master"
-msgstr "Nadrzędny"
-
-#: lib/Module/ZoneImportExport/templates/import.html:131
-msgid "Native"
-msgstr "Natywny"
 
 #: lib/Module/ZoneImportExport/templates/import.html:138
 msgid "Confirm import"
@@ -14384,5 +14694,27 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nie można połączyć się z bazą danych PowerDNS \"%s\": %s"
+
+# OBSOLETE: msgid "Edit Supermaster"
+# OBSOLETE: msgstr "Edytuj serwer nadrzędny"
+
+# OBSOLETE: msgid "PowerDNS 4.0+ uses CSK by default"
+# OBSOLETE: msgstr "PowerDNS 4.0+ domyślnie używa CSK"
+
+#, fuzzy
+# OBSOLETE: msgid ""
+# OBSOLETE: "PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by "
+# OBSOLETE: "default. If you select KSK or ZSK, PowerDNS may still create a CSK key."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PowerDNS 4.0 i nowsze wersje domyślnie używają Combined Signing Keys "
+# OBSOLETE: "(CSK). Jeśli wybierzesz KSK lub ZSK, PowerDNS nadal może utworzyć klucz "
+# OBSOLETE: "CSK."
+
+# OBSOLETE: msgid "Add Supermaster"
+# OBSOLETE: msgstr "Dodaj Supermaster"
+
+# OBSOLETE: msgid "Delete Supermaster"
+# OBSOLETE: msgstr "Usuń Supermaster"
+
 
 

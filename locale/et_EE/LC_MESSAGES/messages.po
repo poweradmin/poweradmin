@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-24 22:55+0300\n"
+"POT-Creation-Date: 2026-04-25 15:52+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Estonian\n"
@@ -311,7 +311,7 @@ msgstr ""
 "Sertifikaadi andmed tunduvad liiga lühikesed. Tagage täielik sertifikaat."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:646
+#: templates/modern/edit.html:93 templates/modern/edit.html:667
 msgid "Invalid hostname format"
 msgstr "Vigane hostinime vorming"
 
@@ -1225,7 +1225,7 @@ msgstr "RDAP teabe hankimine serverist %s ebaõnnestus"
 msgid "Invalid CSRF token."
 msgstr "Vigane CSRF-märk."
 
-#: lib/BaseController.php:592
+#: lib/BaseController.php:646
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1233,19 +1233,19 @@ msgstr ""
 "<a href=\"install/\">install/</a> kataloog eksisteerib, eemaldage see enne "
 "jätkamist."
 
-#: lib/BaseController.php:649
+#: lib/BaseController.php:703
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
 "Kasutatakse vaikimisi sessiooni krüpteerimise võtit, palun seadistage see."
 
-#: lib/BaseController.php:788
+#: lib/BaseController.php:842
 #, php-format
 msgid "The %s field is required."
 msgstr "Väli %s on kohustuslik."
 
-#: lib/BaseController.php:796
+#: lib/BaseController.php:850
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Väli %s peab olema number."
@@ -1595,62 +1595,62 @@ msgstr "Lehekülje number ületab saadaolevaid lehti."
 msgid "You do not have the permission to view supermasters."
 msgstr "Teil pole õigust supermastereid vaadata."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Application/Controller/EditZoneMetadataController.php:119
 msgid "You do not have the permission to view zone metadata."
 msgstr "Teil pole õigust tsooni metaandmeid vaadata."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:121
+#: lib/Application/Controller/EditZoneMetadataController.php:122
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Teil pole õigust tsooni metaandmeid muuta."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:150
+#: lib/Application/Controller/EditZoneMetadataController.php:151
 msgid "Zone metadata has been updated successfully."
 msgstr "Tsooni metaandmed on edukalt uuendatud."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:155
+#: lib/Application/Controller/EditZoneMetadataController.php:156
 msgid "Failed to update zone metadata."
 msgstr "Tsooni metaandmete uuendamine ebaõnnestus."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:178
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr "Muuda tsooni metaandmeid"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:178
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "Tsooni metaandmed"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:381
+#: lib/Application/Controller/EditZoneMetadataController.php:382
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
 msgstr ""
 "Metaandmete liik %s aktsepteerib ainult üht väärtust. Lisage ainult üks rida."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:469
-#: templates/modern/edit_zone_metadata.html:153
+#: lib/Application/Controller/EditZoneMetadataController.php:476
+#: templates/modern/edit_zone_metadata.html:155
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
 msgstr ""
 "Kohandatud metaandmete liik, mis salvestatakse PowerDNS domainmetadata "
 "tabelisse."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:477
+#: lib/Application/Controller/EditZoneMetadataController.php:484
 #: templates/modern/pdns_status.html:412
 msgid "Value"
 msgstr "Väärtus"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:515
+#: lib/Application/Controller/EditZoneMetadataController.php:538
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "Kohandatud"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:520
+#: lib/Application/Controller/EditZoneMetadataController.php:543
 msgid "Multi"
 msgstr "Mitu"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:521
+#: lib/Application/Controller/EditZoneMetadataController.php:544
 msgid "Single"
 msgstr "Üks"
 
@@ -1712,24 +1712,24 @@ msgstr "Teil pole õigust sellesse tsooni kirjeid lisada."
 msgid "Please provide at least one record."
 msgstr "Palun andke vähemalt üks kirje."
 
-#: lib/Application/Controller/BulkRecordAddController.php:175
+#: lib/Application/Controller/BulkRecordAddController.php:181
 msgid "Invalid record type."
 msgstr "Vigane kirje tüüp."
 
-#: lib/Application/Controller/BulkRecordAddController.php:213
+#: lib/Application/Controller/BulkRecordAddController.php:219
 msgid "Record could not be added."
 msgstr "Kirjet ei saanud lisada."
 
-#: lib/Application/Controller/BulkRecordAddController.php:221
+#: lib/Application/Controller/BulkRecordAddController.php:227
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d kirje on edukalt lisatud."
 
-#: lib/Application/Controller/BulkRecordAddController.php:224
+#: lib/Application/Controller/BulkRecordAddController.php:230
 msgid "Some record(s) could not be added."
 msgstr "Mõnda kirjet ei saanud lisada."
 
-#: lib/Application/Controller/BulkRecordAddController.php:257
+#: lib/Application/Controller/BulkRecordAddController.php:263
 msgid "Zone ID is required."
 msgstr "Tsooni ID on kohustuslik."
 
@@ -1822,7 +1822,7 @@ msgid "The record could not be deleted."
 msgstr "Kirjet ei saanud kustutada."
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:245 templates/modern/index.html:245
+#: templates/default/index.html:271 templates/modern/index.html:271
 msgid "Zone Logs"
 msgstr "Tsooni logid"
 
@@ -1900,7 +1900,7 @@ msgid "You do not have permission to view this zone."
 msgstr "Teil pole õigust seda tsooni vaadata."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:255 templates/modern/index.html:255
+#: templates/default/index.html:281 templates/modern/index.html:281
 msgid "User Logs"
 msgstr "Kasutaja logid"
 
@@ -1992,42 +1992,42 @@ msgstr ""
 "Tsooni allkirjastamine ebaõnnestus. Valideerimine õnnestus, aga API tagastas "
 "vea."
 
-#: lib/Application/Controller/DnssecController.php:95
+#: lib/Application/Controller/DnssecController.php:96
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Tsoon pole praegu DNSSEC-iga allkirjastatud."
 
-#: lib/Application/Controller/DnssecController.php:107
+#: lib/Application/Controller/DnssecController.php:108
 msgid "Zone has been unsigned successfully."
 msgstr "Tsooni allkiri on edukalt eemaldatud."
 
-#: lib/Application/Controller/DnssecController.php:112
+#: lib/Application/Controller/DnssecController.php:113
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "Allkirja eemaldamise taotlus õnnestus, aga kontroll ebaõnnestus."
 
-#: lib/Application/Controller/DnssecController.php:116
+#: lib/Application/Controller/DnssecController.php:117
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Tsooni allkirja eemaldamine ebaõnnestus. Kontrollige logisid."
 
-#: lib/Application/Controller/EditController.php:734
+#: lib/Application/Controller/EditController.php:736
 msgid "Request has expired, please try again."
 msgstr "Päring aegus, palun proovige uuesti."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:741
 msgid "Zone has been updated successfully."
 msgstr "Tsoon on edukalt uuendatud."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:743
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr ""
 "Tsoon edukalt salvestatud. Muudatusi polnud, aga SOA seerianumber suurendati."
 
-#: lib/Application/Controller/EditController.php:750
+#: lib/Application/Controller/EditController.php:752
 msgid "Zone has not been updated successfully."
 msgstr "Tsooni ei uuendatud edukalt."
 
-#: lib/Application/Controller/EditController.php:778
+#: lib/Application/Controller/EditController.php:780
 msgid "Please provide all required fields."
 msgstr "Palun täitke kõik kohustuslikud väljad."
 
@@ -2087,26 +2087,26 @@ msgstr "Teil pole õigust sellesse tsooni kirjet lisada."
 msgid "Record successfully added."
 msgstr "Kirje on edukalt lisatud."
 
-#: lib/Application/Controller/AddRecordController.php:429
+#: lib/Application/Controller/AddRecordController.php:431
 msgid "No records were provided."
 msgstr "Kirjeid ei esitatud."
 
-#: lib/Application/Controller/AddRecordController.php:483
+#: lib/Application/Controller/AddRecordController.php:485
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d kirje edukalt lisatud."
 
-#: lib/Application/Controller/AddRecordController.php:485
+#: lib/Application/Controller/AddRecordController.php:487
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Loodud on ka %d sobivat kirjet."
 
-#: lib/Application/Controller/AddRecordController.php:488
+#: lib/Application/Controller/AddRecordController.php:490
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d kirje lisamine ebaõnnestus."
 
-#: lib/Application/Controller/AddRecordController.php:493
+#: lib/Application/Controller/AddRecordController.php:495
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2114,7 +2114,7 @@ msgstr ""
 "Mõnda kirjet ei saanud lisada. Nad võivad juba eksisteerida või sisaldada "
 "vigaseid andmeid."
 
-#: lib/Application/Controller/AddRecordController.php:519
+#: lib/Application/Controller/AddRecordController.php:521
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Ühtki kirjet ei saanud lisada. Need võivad sisaldada vigaseid andmeid."
 
@@ -2167,9 +2167,28 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC autentimise algatamine ebaõnnestus: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:265 templates/modern/index.html:265
+#: templates/default/index.html:291 templates/modern/index.html:291
 msgid "Group Logs"
 msgstr "Grupi logid"
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:65
+msgid "You do not have permission to manage DNSSEC for this zone."
+msgstr "Teil pole õigust selle tsooni DNSSEC-i hallata."
+
+#: lib/Application/Controller/DnssecKeyExportController.php:74
+msgid "PEM key export requires PowerDNS 4.7 or newer."
+msgstr "PEM-võtme eksport nõuab PowerDNS 4.7 või uuemat."
+
+#: lib/Application/Controller/DnssecKeyExportController.php:86
+msgid "An error occurred while exporting the PEM key: "
+msgstr "PEM-võtme eksportimisel ilmnes viga: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php:92
+msgid ""
+"Could not retrieve the PEM key. The server may not expose private key "
+"material for this key."
+msgstr ""
+"PEM-võtit ei õnnestunud hankida. Server ei pruugi selle võtme jaoks privaatvõtme materjali avaldada."
 
 #: lib/Domain/Service/Dns/DomainManager.php:309
 msgid "You do not have the permission to add a master zone."
@@ -2257,13 +2276,50 @@ msgstr "Vigane õiguste mall: peab olema grupi mall"
 msgid "Group has been created successfully."
 msgstr "Grupp on edukalt loodud."
 
+#: lib/Application/Controller/ListViewsController.php:39
+msgid "You do not have permission to manage PowerDNS views."
+msgstr "Teil pole õigust hallata PowerDNS-i vaateid."
+
+#: lib/Application/Controller/ListViewsController.php:44
+msgid "Views require PowerDNS 5.0 or newer."
+msgstr "Vaated nõuavad PowerDNS 5.0 või uuemat."
+
+#: lib/Application/Controller/ListViewsController.php:50
+msgid "Views are only available with the PowerDNS API backend."
+msgstr "Vaated on saadaval ainult PowerDNS-i API taustaprogrammiga."
+
+#: lib/Application/Controller/ListViewsController.php:61
+msgid "Provide a valid view name and zone identifier."
+msgstr "Esita kehtiv vaate nimi ja tsooni identifikaator."
+
+#: lib/Application/Controller/ListViewsController.php:67
+msgid "Zone assigned to view."
+msgstr "Tsoon määratud vaatele."
+
+#: lib/Application/Controller/ListViewsController.php:67
+msgid "Failed to assign zone to view."
+msgstr "Tsooni vaatele määramine ebaõnnestus."
+
+#: lib/Application/Controller/ListViewsController.php:74
+msgid "Zone removed from view."
+msgstr "Tsoon eemaldatud vaatest."
+
+#: lib/Application/Controller/ListViewsController.php:74
+msgid "Failed to remove zone from view."
+msgstr "Tsooni eemaldamine vaatest ebaõnnestus."
+
+#: lib/Application/Controller/ListNetworksController.php:81
+msgid "Unknown action."
+msgstr "Tundmatu tegevus."
+
+#: lib/Application/Controller/ListViewsController.php:96
+#: templates/modern/list_views.html:4 templates/modern/list_views.html:10
+msgid "Views"
+msgstr "Vaated"
+
 #: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid key ID."
 msgstr "Vigane võtme ID."
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:65
-msgid "You do not have permission to manage DNSSEC for this zone."
-msgstr "Teil pole õigust selle tsooni DNSSEC-i hallata."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:90
 msgid "DNSSEC key not found or no longer exists."
@@ -2448,7 +2504,7 @@ msgstr "Lisa tsooni mall"
 msgid "Zone template has been added successfully."
 msgstr "Tsooni mall on edukalt lisatud."
 
-#: lib/Application/Controller/IndexController.php:63
+#: lib/Application/Controller/IndexController.php:62
 msgid "Dashboard"
 msgstr "Töölaud"
 
@@ -2543,6 +2599,29 @@ msgstr "Teil pole õigust uut supermasterit lisada."
 msgid "The supermaster has been added successfully."
 msgstr "Supermaster on edukalt lisatud."
 
+#: lib/Application/Controller/DnssecKeyImportController.php:72
+msgid "PEM key import requires PowerDNS 4.7 or newer."
+msgstr "PEM-võtme import nõuab PowerDNS 4.7 või uuemat."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:97
+msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+msgstr ""
+"Esita PEM-kodeeringuga privaatvõti (peab sisaldama BEGIN/END märgendeid)."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:108
+msgid "PEM key imported successfully."
+msgstr "PEM-võti edukalt imporditud."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:111
+msgid ""
+"Failed to import PEM key. The PowerDNS server may have rejected the format."
+msgstr ""
+"PEM-võtme importimine ebaõnnestus. PowerDNS-server võis vormingu tagasi lükata."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:115
+msgid "An error occurred while importing the PEM key: "
+msgstr "PEM-võtme importimisel ilmnes viga: "
+
 #: lib/Application/Controller/AddZoneTemplRecordController.php:74
 msgid "You do not have the permission to add records to zone templates."
 msgstr "Teil pole õigust tsooni mallidesse kirjeid lisada."
@@ -2592,6 +2671,47 @@ msgstr[0] ""
 "Failed to add user to %d group (already a member or group not found)."
 msgstr[1] ""
 "Failed to add user to %d groups (already a member or groups not found)."
+
+#: lib/Application/Controller/ListNetworksController.php:39
+msgid "You do not have permission to manage network views."
+msgstr "Teil pole õigust hallata võrguvaateid."
+
+#: lib/Application/Controller/ListNetworksController.php:44
+msgid "Network views require PowerDNS 5.0 or newer."
+msgstr "Võrguvaated nõuavad PowerDNS 5.0 või uuemat."
+
+#: lib/Application/Controller/ListNetworksController.php:50
+msgid "Network views are only available with the PowerDNS API backend."
+msgstr "Võrguvaated on saadaval ainult PowerDNS-i API taustaprogrammiga."
+
+#: lib/Application/Controller/ListNetworksController.php:61
+msgid "Provide a valid CIDR (e.g. 192.168.0.0/16)."
+msgstr "Esita kehtiv CIDR (nt 192.168.0.0/16)."
+
+#: lib/Application/Controller/ListNetworksController.php:64
+msgid "Provide a valid view name."
+msgstr "Esita kehtiv vaate nimi."
+
+#: lib/Application/Controller/ListNetworksController.php:70
+msgid "Network mapping saved."
+msgstr "Võrguseos salvestatud."
+
+#: lib/Application/Controller/ListNetworksController.php:70
+msgid "Failed to save network mapping."
+msgstr "Võrguseose salvestamine ebaõnnestus."
+
+#: lib/Application/Controller/ListNetworksController.php:78
+msgid "Network mapping removed."
+msgstr "Võrguseos eemaldatud."
+
+#: lib/Application/Controller/ListNetworksController.php:78
+msgid "Failed to remove network mapping."
+msgstr "Võrguseose eemaldamine ebaõnnestus."
+
+#: lib/Application/Controller/ListNetworksController.php:93
+#: templates/modern/list_networks.html:4 templates/modern/list_networks.html:10
+msgid "Network views"
+msgstr "Võrguvaated"
 
 #: lib/Application/Controller/DeletePermTemplController.php:60
 msgid "You do not have the permission to delete permission templates."
@@ -2691,40 +2811,40 @@ msgstr "Välisautentimise kasutajad ei saa siin parooli muuta."
 msgid "Change Password"
 msgstr "Muuda parooli"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:117
+#: lib/Application/Controller/DnssecAddKeyController.php:119
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "ECDSA P-256 algoritm peab kasutama 256 bitti"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:120
+#: lib/Application/Controller/DnssecAddKeyController.php:122
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "ECDSA P-384 algoritm peab kasutama 384 bitti"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:126
+#: lib/Application/Controller/DnssecAddKeyController.php:128
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519 algoritm peab kasutama 256 bitti"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:131
+#: lib/Application/Controller/DnssecAddKeyController.php:133
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "ED448 algoritm peab kasutama 456 bitti (UI-s toetuseta)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:138
+#: lib/Application/Controller/DnssecAddKeyController.php:140
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "RSA algoritmid peaksid kasutama 1024 või 2048 bitti piisavaks turvalisuseks"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:161
+#: lib/Application/Controller/DnssecAddKeyController.php:163
 msgid "Zone key has been added successfully."
 msgstr "Tsooni võti edukalt lisatud."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:165
+#: lib/Application/Controller/DnssecAddKeyController.php:167
 msgid "Failed to add new DNSSEC key."
 msgstr "Uue DNSSEC-võtme lisamine ebaõnnestus."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:169
+#: lib/Application/Controller/DnssecAddKeyController.php:171
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "DNSSEC võtme lisamisel tekkis viga: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:173
+#: lib/Application/Controller/DnssecAddKeyController.php:175
 msgid "Please select both algorithm and bits"
 msgstr "Valige nii algoritm kui ka bitid"
 
@@ -2762,7 +2882,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster on edukalt kustutatud."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:176 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:202 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Hulgiregistreerimine"
 
@@ -2826,12 +2946,12 @@ msgstr "Tsooni võtme aktiveerimine ebaõnnestus."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "DNSSEC võtme lülitamisel tekkis viga. Palun proovige uuesti."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Jah"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Ei"
@@ -2911,6 +3031,174 @@ msgstr "See mall on määratud vähemalt ühele kasutajale."
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
 msgid "This template is assigned to at least one group."
 msgstr "See mall on määratud vähemalt ühele grupile."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:91
+msgid "Primary"
+msgstr "Primary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:92
+msgid "Secondary"
+msgstr "Secondary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:103
+#: lib/Module/ZoneImportExport/templates/import.html:131
+msgid "Native"
+msgstr "Sisemine"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:104
+msgid "Producer"
+msgstr "Producer"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:105
+msgid "Consumer"
+msgstr "Consumer"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:101
+#: lib/Module/ZoneImportExport/templates/import.html:130
+msgid "Master"
+msgstr "Põhiline"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:102
+msgid "Slave"
+msgstr "Slave"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+msgid "Autoprimaries"
+msgstr "Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+msgid "Supermasters"
+msgstr "Supermasteri"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:122
+msgid "Autoprimary"
+msgstr "Autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:122
+msgid "Supermaster"
+msgstr "Supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:123
+msgid "Add autoprimary"
+msgstr "Lisa autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:123
+msgid "Add supermaster"
+msgstr "Lisa supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:124
+msgid "Edit autoprimary"
+msgstr "Muuda autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:124
+msgid "Edit supermaster"
+msgstr "muuda supermasterit"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:125
+msgid "Delete autoprimary"
+msgstr "Kustuta autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:125
+msgid "Delete supermaster"
+msgstr "kustuta supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:126
+msgid "About Autoprimaries"
+msgstr "Autoprimaries kohta"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:126
+msgid "About Supermasters"
+msgstr "Supermasteri"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:127
+msgid "What is an Autoprimary?"
+msgstr "Mis on Autoprimary?"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:127
+msgid "What is a Supermaster?"
+msgstr "Mis on supermaster?"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:128
+msgid "Search autoprimaries..."
+msgstr "Otsi autoprimaries..."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:128
+msgid "Search supermasters..."
+msgstr "Otsi supermastereid..."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:130
+msgid "There are no autoprimaries to show in this listing."
+msgstr "Selles loendis pole autoprimaries kirjeid."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:131
+msgid "There are no supermasters to show in this listing."
+msgstr "Selles loendis pole ühtegi supermasterit."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:132
+msgid "IP address of autoprimary"
+msgstr "Autoprimary IP-aadress"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:132
+msgid "IP address of supermaster"
+msgstr "Supermasteri IP-aadress"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:134
+msgid "Select the account that will own this autoprimary"
+msgstr "Vali konto, mis kuulub sellele autoprimary'le"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:135
+msgid "Select the account that will own this supermaster"
+msgstr "Valige konto, kellele supermaster kuulub"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:136
+msgid "About Editing Autoprimaries"
+msgstr "Autoprimary muutmise kohta"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:136
+msgid "About Editing Supermasters"
+msgstr "Supermasteri muutmisest"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:138
+msgid ""
+"You can modify the IP address, hostname, or account for this autoprimary."
+msgstr "Saate muuta selle autoprimary IP-aadressi, hostinime või kontot."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:139
+msgid ""
+"You can modify the IP address, hostname, or account for this supermaster."
+msgstr "Saate muuta supermasteri IP, hostinime või konto."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:140
+msgid "Autoprimary Details"
+msgstr "Autoprimary üksikasjad"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:140
+msgid "Supermaster Details"
+msgstr "Supermasteri üksikasjad"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:142
+msgid "You are about to delete the autoprimary"
+msgstr "Olete kustutamas autoprimary't"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:143
+msgid "You are about to delete the supermaster"
+msgstr "Kavatsete kustutada supermasteri"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:144
+msgid "Yes, delete this autoprimary"
+msgstr "Jah, kustuta see autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:144
+msgid "Yes, delete this supermaster"
+msgstr "Jah, kustuta see supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:145
+msgid "No, keep this autoprimary"
+msgstr "Ei, säilita see autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:145
+msgid "No, keep this supermaster"
+msgstr "Ei, säilita see supermaster"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -8093,7 +8381,7 @@ msgstr "Nõuanne: SOA kirjetele <code>[ZONE]</code> nimena."
 msgid "Update record"
 msgstr "Update record"
 
-#: templates/modern/edit.html:529 templates/modern/users.html:219
+#: templates/modern/edit.html:550 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Lähtesta"
 
@@ -8192,22 +8480,6 @@ msgstr "CNAME: <code>target.[ZONE]</code> või <code>example.com.</code>"
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgstr "TXT SPF jaoks: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
-#: templates/modern/delete_supermaster.html:4
-msgid "Supermasters"
-msgstr "Supermasteri"
-
-#: templates/modern/edit_supermaster.html:5
-msgid "Edit supermaster"
-msgstr "muuda supermasterit"
-
-#: templates/modern/edit_supermaster.html:13
-msgid "Edit Supermaster"
-msgstr "Muuda supermasterit"
-
-#: templates/modern/list_supermasters.html:31
-msgid "IP address of supermaster"
-msgstr "Supermasteri IP-aadress"
-
 #: templates/modern/add_supermaster.html:22
 msgid "Enter the IP address of the master nameserver"
 msgstr "Sisestage põhi-nimeserveri IP-aadress"
@@ -8232,11 +8504,7 @@ msgstr "Andke hostinimi"
 msgid "Account"
 msgstr "Konto"
 
-#: templates/modern/add_supermaster.html:48
-msgid "Select the account that will own this supermaster"
-msgstr "Valige konto, kellele supermaster kuulub"
-
-#: templates/modern/edit.html:190 templates/modern/edit.html:526
+#: templates/modern/edit.html:190 templates/modern/edit.html:547
 msgid "Save changes"
 msgstr "Salvesta muudatused"
 
@@ -8244,18 +8512,9 @@ msgstr "Salvesta muudatused"
 msgid "All fields are required"
 msgstr "Kõik väljad on kohustuslikud"
 
-#: templates/modern/edit_supermaster.html:74
-msgid "About Editing Supermasters"
-msgstr "Supermasteri muutmisest"
-
 #: templates/modern/edit_supermaster.html:79
 msgid "Update Credentials"
 msgstr "Uuenda mandaat"
-
-#: templates/modern/edit_supermaster.html:80
-msgid ""
-"You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Saate muuta supermasteri IP, hostinime või konto."
 
 #: templates/modern/edit_supermaster.html:83
 msgid "Important"
@@ -8336,9 +8595,75 @@ msgstr "Deaktiveeri"
 msgid "Activate"
 msgstr "Aktiveeri"
 
+#: templates/default/dnssec.html:123 templates/modern/dnssec.html:123
+msgid "Download this key as PEM"
+msgstr "Laadi võti alla PEM-vormingus"
+
+#: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
+msgid "Export PEM"
+msgstr "Ekspordi PEM"
+
 #: templates/modern/list_perm_templ.html:61
 msgid "Delete"
 msgstr "Kustuta"
+
+#: templates/default/dnssec.html:144 templates/modern/dnssec.html:144
+msgid "Import key from PEM"
+msgstr "Impordi võti PEM-ist"
+
+#: templates/default/dnssec.html:147 templates/modern/dnssec.html:147
+msgid ""
+"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+"key size from the PEM contents - select the matching algorithm and key role."
+msgstr ""
+"Kleebi PEM-kodeeringuga privaatvõti (RSA või ECDSA). PowerDNS 4.7+ tuletab võtme suuruse PEM-i sisust - vali sobiv algoritm ja võtme roll."
+
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:55
+msgid "Key type"
+msgstr "võtme tüüp"
+
+#: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
+msgid "PEM private key"
+msgstr "PEM privaatvõti"
+
+#: templates/default/dnssec.html:172 templates/modern/dnssec.html:172
+msgid "Import key"
+msgstr "Impordi võti"
+
+#: templates/modern/list_networks.html:13
+msgid ""
+"Each network maps to a single view. Resolvers in that network receive the "
+"zone variant assigned to that view."
+msgstr ""
+"Iga võrk vastab ühele vaatele. Selle võrgu lahendajad saavad sellele vaatele määratud tsoonivariandi."
+
+#: templates/modern/list_networks.html:18
+msgid "No networks configured yet. Map a CIDR to a view below."
+msgstr "Ühtegi võrku pole veel seadistatud. Seo CIDR vaatega allpool."
+
+#: templates/modern/list_networks.html:25
+msgid "Network"
+msgstr "Võrk"
+
+#: templates/modern/list_networks.html:65
+msgid "View"
+msgstr "Vaade"
+
+#: templates/modern/list_networks.html:40
+msgid "Remove mapping"
+msgstr "Eemalda seos"
+
+#: templates/modern/list_networks.html:54
+msgid "Map network to view"
+msgstr "Seo võrk vaatega"
+
+#: templates/modern/list_networks.html:61
+msgid "CIDR"
+msgstr "CIDR"
+
+#: templates/modern/list_networks.html:79
+msgid "Save"
+msgstr "Salvesta"
 
 #: templates/modern/forgot_password.html:4
 msgid "Forgot Password"
@@ -8587,7 +8912,7 @@ msgstr "Ei, säilita see grupp"
 msgid "Welcome"
 msgstr "Tere tulemast"
 
-#: templates/modern/index.html:5 templates/modern/delete_zone_templ.html:29
+#: templates/modern/list_views.html:25
 msgid "zones"
 msgstr "tsoonid"
 
@@ -8603,16 +8928,26 @@ msgstr "kasutajad"
 msgid "groups"
 msgstr "grupid"
 
-#: templates/default/index.html:10 templates/modern/index.html:10
-#, auto-english-fallback
+#: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
 msgstr "Connected PowerDNS version"
 
-#: templates/default/index.html:19 templates/modern/index.html:19
+#: templates/default/index.html:16 templates/modern/index.html:16
+msgid ""
+"Could not detect PowerDNS version. Newer features are hidden until the API "
+"is reachable."
+msgstr ""
+"PowerDNS-i versiooni ei õnnestunud tuvastada. Uuemad funktsioonid on peidetud, kuni API on kättesaadav."
+
+#: templates/default/index.html:17 templates/modern/index.html:17
+msgid "PowerDNS version unknown"
+msgstr "PowerDNS-i versioon teadmata"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/index.html:26 templates/modern/index.html:26
+#: templates/default/index.html:34 templates/modern/index.html:34
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -8620,7 +8955,7 @@ msgstr ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
 
-#: templates/default/index.html:28 templates/modern/index.html:28
+#: templates/default/index.html:36 templates/modern/index.html:36
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -8628,7 +8963,7 @@ msgstr ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
 
-#: templates/default/index.html:30 templates/modern/index.html:30
+#: templates/default/index.html:38 templates/modern/index.html:38
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -8638,7 +8973,7 @@ msgstr ""
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 
-#: templates/default/index.html:32 templates/modern/index.html:32
+#: templates/default/index.html:40 templates/modern/index.html:40
 msgid ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
@@ -8646,15 +8981,15 @@ msgstr ""
 "Zone counts and lists may be out of date until the API is reachable again. "
 "Check your PowerDNS server log for details."
 
-#: templates/default/index.html:48 templates/modern/index.html:48
+#: templates/default/index.html:56 templates/modern/index.html:56
 msgid "DNS Management"
 msgstr "DNS haldamine"
 
-#: templates/modern/index.html:61 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:69 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "Võrgus"
 
-#: templates/modern/index.html:63 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:71 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "Võrguühenduseta"
 
@@ -8662,31 +8997,31 @@ msgstr "Võrguühenduseta"
 msgid "Templates"
 msgstr "Mallid"
 
-#: templates/default/index.html:135 templates/modern/index.html:135
+#: templates/default/index.html:142 templates/modern/index.html:142
+msgid "Networks"
+msgstr "Võrgud"
+
+#: templates/default/index.html:161 templates/modern/index.html:161
 msgid "Zone Operations"
 msgstr "Tsooni tegevused"
 
-#: templates/default/index.html:146 templates/modern/index.html:146
+#: templates/default/index.html:172 templates/modern/index.html:172
 msgid "Master Zone"
 msgstr "Põhitsoon"
 
-#: templates/default/index.html:156 templates/modern/index.html:156
+#: templates/default/index.html:182 templates/modern/index.html:182
 msgid "Slave Zone"
 msgstr "Teisene tsoon"
 
-#: templates/default/index.html:166 templates/modern/index.html:166
-msgid "Supermaster"
-msgstr "Supermaster"
-
-#: templates/default/index.html:186 templates/modern/index.html:186
+#: templates/default/index.html:212 templates/modern/index.html:212
 msgid "PTR Records"
 msgstr "PTR kirjed"
 
-#: templates/default/index.html:204 templates/modern/index.html:204
+#: templates/default/index.html:230 templates/modern/index.html:230
 msgid "Administration"
 msgstr "Haldamine"
 
-#: templates/modern/index.html:235 templates/modern/header.html:259
+#: templates/modern/index.html:261 templates/modern/header.html:259
 msgid "Access"
 msgstr "Juurdepääs"
 
@@ -8694,12 +9029,12 @@ msgstr "Juurdepääs"
 msgid "Tools"
 msgstr "Tööriistad"
 
-#: templates/default/index.html:294 templates/modern/index.html:294
+#: templates/default/index.html:320 templates/modern/index.html:320
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Andmebaas"
 
-#: templates/default/index.html:341 templates/modern/index.html:341
+#: templates/default/index.html:367 templates/modern/index.html:367
 msgid "My Profile"
 msgstr "Minu profiil"
 
@@ -8708,7 +9043,7 @@ msgstr "Minu profiil"
 msgid "Password"
 msgstr "Parool"
 
-#: templates/modern/index.html:360 templates/modern/header.html:372
+#: templates/modern/index.html:386 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "Eelistused"
 
@@ -8716,7 +9051,7 @@ msgstr "Eelistused"
 msgid "Logout"
 msgstr "Logi välja"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:535
 msgid "Edit comment"
 msgstr "Muuda kommentaari"
 
@@ -9360,7 +9695,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Kustuta tsoon(id)"
 
-#: templates/modern/dnssec_add_key.html:91
+#: templates/modern/dnssec_add_key.html:93
 msgid "Add key"
 msgstr "Lisa võti"
 
@@ -9368,37 +9703,34 @@ msgstr "Lisa võti"
 msgid "Add key for zone"
 msgstr "Lisa tsoonile võti"
 
-#: templates/modern/dnssec_add_key.html:43
-msgid "PowerDNS 4.0+ uses CSK by default"
-msgstr "PowerDNS 4.0+ kasutab vaikimisi CSK-d"
-
 #: templates/modern/dnssec_add_key.html:44
+msgid "Legacy PowerDNS detected"
+msgstr "Tuvastati vanem PowerDNS"
+
+#: templates/modern/dnssec_add_key.html:45
 msgid ""
-"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
-"If you select KSK or ZSK, PowerDNS may still create a CSK key."
-msgstr "PowerDNS 4.0+ kasutab vaikimisi CSK-d."
+"This server predates PowerDNS 4.0 and does not create a Combined Signing Key "
+"by default. Pick KSK or ZSK explicitly to add a key here."
+msgstr ""
+"See server on vanem kui PowerDNS 4.0 ja ei loo vaikimisi Combined Signing Key'd. Võtme lisamiseks vali sõnaselgelt KSK või ZSK."
 
-#: templates/modern/dnssec_add_key.html:53
-msgid "Key type"
-msgstr "võtme tüüp"
-
-#: templates/modern/dnssec_add_key.html:60
+#: templates/modern/dnssec_add_key.html:62
 msgid "Select key type"
 msgstr "Valige võtme tüüp"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:73
 msgid "Select algorithm"
 msgstr "Valige algoritm"
 
-#: templates/modern/dnssec_add_key.html:76
+#: templates/modern/dnssec_add_key.html:78
 msgid "Bits in length"
 msgstr "Pikkus bittides"
 
-#: templates/modern/dnssec_add_key.html:85
+#: templates/modern/dnssec_add_key.html:87
 msgid "Select bits length"
 msgstr "Valige bittide pikkus"
 
-#: templates/modern/dnssec_add_key.html:142
+#: templates/modern/dnssec_add_key.html:144
 msgid "Recommended bits for"
 msgstr "Soovitatud bitid"
 
@@ -9407,19 +9739,19 @@ msgstr "Soovitatud bitid"
 msgid "Warning:"
 msgstr "Hoiatus:"
 
-#: templates/modern/dnssec_add_key.html:150
+#: templates/modern/dnssec_add_key.html:152
 msgid "bits is not recommended for"
 msgstr "bitti pole soovitatav"
 
-#: templates/modern/dnssec_add_key.html:187
+#: templates/modern/dnssec_add_key.html:189
 msgid "About DNSSEC Key Types"
 msgstr "DNSSEC võtme tüüpidest"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:193
 msgid "Key Types Explained"
 msgstr "Võtme tüüpide selgitus"
 
-#: templates/modern/dnssec_add_key.html:193
+#: templates/modern/dnssec_add_key.html:195
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -9427,19 +9759,19 @@ msgstr ""
 "Kombineeritud allkirjastamise võti - nii KSK kui ZSK (soovitatud PowerDNS "
 "4.0+)"
 
-#: templates/modern/dnssec_add_key.html:194
+#: templates/modern/dnssec_add_key.html:196
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Key Signing Key - allkirjastab tsoonis DNSKEY-kirjeid"
 
-#: templates/modern/dnssec_add_key.html:195
+#: templates/modern/dnssec_add_key.html:197
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - allkirjastab kõik muud kirjed tsoonis"
 
-#: templates/modern/dnssec_add_key.html:200
+#: templates/modern/dnssec_add_key.html:202
 msgid "Recommended Settings"
 msgstr "Soovitatud seaded"
 
-#: templates/modern/dnssec_add_key.html:201
+#: templates/modern/dnssec_add_key.html:203
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -9661,7 +9993,7 @@ msgstr "Jah, eemalda need tsoonid"
 msgid "Access templates"
 msgstr "juurdepääsu mallid"
 
-#: templates/modern/add_perm_templ.html:6
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
 msgid "Add"
 msgstr "Lisa"
 
@@ -9776,22 +10108,6 @@ msgstr "Mine avalehele"
 #: templates/default/404.html:49 templates/modern/404.html:49
 msgid "Go Back"
 msgstr "Tagasi"
-
-#: templates/modern/list_supermasters.html:13
-msgid "Add supermaster"
-msgstr "Lisa supermaster"
-
-#: templates/modern/add_supermaster.html:13
-msgid "Add Supermaster"
-msgstr "Lisa supermaster"
-
-#: templates/modern/add_supermaster.html:70
-msgid "About Supermasters"
-msgstr "Supermasteri"
-
-#: templates/modern/add_supermaster.html:75
-msgid "What is a Supermaster?"
-msgstr "Mis on supermaster?"
 
 #: templates/modern/add_supermaster.html:76
 msgid ""
@@ -10142,71 +10458,71 @@ msgstr "Kui kaotate võtme, peate selle uuesti looma."
 msgid "Edit"
 msgstr "Muuda"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:577
+#: templates/modern/edit.html:25 templates/modern/edit.html:598
 msgid "Add new record"
 msgstr "Lisa uus kirje"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:581
+#: templates/modern/edit.html:203 templates/modern/edit.html:602
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Juhendatud viisardid DMARC, SPF, DKIM, CAA, TLSA ja SRV kirjete jaoks"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:587
+#: templates/modern/edit.html:35 templates/modern/edit.html:608
 msgid "Multi-record mode"
 msgstr "Mitme kirje režiim"
 
-#: templates/modern/edit.html:535 templates/modern/edit.html:590
+#: templates/modern/edit.html:556 templates/modern/edit.html:611
 msgid "Bulk add"
 msgstr "Hulgi lisamine"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:623
 msgid "Failed to add"
 msgstr "Lisamine ebaõnnestus"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:623
 msgid "record(s). Please check the record format."
 msgstr "kirjet. Palun kontrollige kirje vormingut."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:604
+#: templates/modern/edit.html:52 templates/modern/edit.html:625
 msgid "Failed to add records. Please check the record format."
 msgstr "Kirjete lisamine ebaõnnestus. Palun kontrollige vormingut."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:628
 msgid "Content validation failed:"
 msgstr "Sisu valideerimine ebaõnnestus:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:628
 msgid "Invalid value for record type"
 msgstr "Vigane väärtus kirje tüübile"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:609
+#: templates/modern/edit.html:57 templates/modern/edit.html:630
 msgid "Please provide all required information."
 msgstr "Palun andke kogu vajalik teave."
 
-#: templates/modern/edit.html:632 templates/modern/add_record.html:72
+#: templates/modern/edit.html:653 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Lisa PTR"
 
-#: templates/modern/edit.html:635 templates/modern/add_record.html:75
+#: templates/modern/edit.html:656 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Lisa A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:674
+#: templates/modern/edit.html:121 templates/modern/edit.html:695
 msgid "This record already exists"
 msgstr "See kirje on juba olemas"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:686
+#: templates/modern/edit.html:133 templates/modern/edit.html:707
 msgid "Invalid priority"
 msgstr "Vigane prioriteet"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:693
+#: templates/modern/edit.html:140 templates/modern/edit.html:714
 msgid "Invalid TTL value"
 msgstr "Vigane TTL väärtus"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:695
+#: templates/modern/edit.html:142 templates/modern/edit.html:716
 msgid "Provide TTL"
 msgstr "Anna TTL"
 
-#: templates/modern/edit.html:721 templates/modern/add_record.html:207
+#: templates/modern/edit.html:742 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -10264,47 +10580,51 @@ msgstr "/"
 msgid "total records"
 msgstr "total records"
 
-#: templates/default/edit.html:497 templates/modern/edit.html:497
+#: templates/default/edit.html:405 templates/modern/edit.html:405
+msgid "Last modified"
+msgstr "Viimati muudetud"
+
+#: templates/default/edit.html:518 templates/modern/edit.html:518
 msgid "Edit selected"
 msgstr "Muuda valitut"
 
-#: templates/modern/edit.html:501 templates/modern/search.html:486
+#: templates/modern/edit.html:522 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Kustuta kirje(d)"
 
-#: templates/modern/edit.html:509 templates/modern/search.html:93
+#: templates/modern/edit.html:530 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Kommentaarid"
 
-#: templates/default/edit.html:539 templates/modern/edit.html:539
+#: templates/default/edit.html:560 templates/modern/edit.html:560
 msgid "Import"
 msgstr "Impordi"
 
-#: templates/default/edit.html:556 templates/modern/edit.html:556
+#: templates/default/edit.html:577 templates/modern/edit.html:577
 msgid "Generate PTR"
 msgstr "Loo PTR"
 
-#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:756 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Tsooni seadistus"
 
-#: templates/modern/edit.html:777 templates/modern/edit.html:806
+#: templates/modern/edit.html:798 templates/modern/edit.html:827
 msgid "Change"
 msgstr "Muuda"
 
-#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:791 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Põhi-NS-i IP-aadress"
 
-#: templates/default/edit.html:827 templates/modern/edit.html:827
+#: templates/default/edit.html:848 templates/modern/edit.html:848
 msgid "Manage DNSSEC"
 msgstr "Halda DNSSEC"
 
-#: templates/default/edit.html:834 templates/modern/edit.html:834
+#: templates/default/edit.html:855 templates/modern/edit.html:855
 msgid "Sign zone"
 msgstr "Allkirjasta tsoon"
 
-#: templates/default/edit.html:838 templates/modern/edit.html:838
+#: templates/default/edit.html:859 templates/modern/edit.html:859
 msgid "Not signed"
 msgstr "Allkirjastamata"
 
@@ -10898,14 +11218,6 @@ msgstr "Kas soovite jätkata ilma SOA-kirjet lisamata?"
 msgid "Continue Without SOA"
 msgstr "Jätka SOA-ta"
 
-#: templates/modern/list_supermasters.html:21
-msgid "Search supermasters..."
-msgstr "Otsi supermastereid..."
-
-#: templates/modern/list_supermasters.html:71
-msgid "There are no supermasters to show in this listing."
-msgstr "Selles loendis pole ühtegi supermasterit."
-
 #: templates/modern/edit_zone_metadata.html:18
 msgid "Edit Metadata"
 msgstr "Muuda metaandmeid"
@@ -10932,15 +11244,19 @@ msgstr "Üks väärtus"
 msgid "Kind"
 msgstr "Liik"
 
-#: templates/modern/edit_zone_metadata.html:105
+#: templates/modern/edit_zone_metadata.html:127
+msgid "requires"
+msgstr "nõuab"
+
+#: templates/modern/edit_zone_metadata.html:107
 msgid "Add metadata row"
 msgstr "Lisa metaandmete rida"
 
-#: templates/modern/edit_zone_metadata.html:108
+#: templates/modern/edit_zone_metadata.html:110
 msgid "Save metadata"
 msgstr "Salvesta metaandmed"
 
-#: templates/modern/edit_zone_metadata.html:112
+#: templates/modern/edit_zone_metadata.html:114
 msgid "Back to zone"
 msgstr "Tagasi tsooni juurde"
 
@@ -11493,30 +11809,6 @@ msgstr "Jah, kustuta need tsoonid"
 msgid "No, keep these zones"
 msgstr "Ei, säilita need tsoonid"
 
-#: templates/modern/delete_supermaster.html:5
-msgid "Delete supermaster"
-msgstr "kustuta supermaster"
-
-#: templates/modern/delete_supermaster.html:11
-msgid "Delete Supermaster"
-msgstr "Kustuta supermaster"
-
-#: templates/modern/delete_supermaster.html:16
-msgid "You are about to delete the supermaster"
-msgstr "Kavatsete kustutada supermasteri"
-
-#: templates/modern/delete_supermaster.html:22
-msgid "Supermaster Details"
-msgstr "Supermasteri üksikasjad"
-
-#: templates/modern/delete_supermaster.html:53
-msgid "Yes, delete this supermaster"
-msgstr "Jah, kustuta see supermaster"
-
-#: templates/modern/delete_supermaster.html:56
-msgid "No, keep this supermaster"
-msgstr "Ei, säilita see supermaster"
-
 #: templates/modern/list_log_users.html:5 templates/modern/header.html:216
 msgid "User logs"
 msgstr "kasutaja logid"
@@ -11554,6 +11846,34 @@ msgstr "Kavatsete kustutada tsooni malli"
 #: templates/modern/delete_zone_templ.html:29
 msgid "This template is currently used by"
 msgstr "Seda malli kasutab praegu"
+
+#: templates/default/list_views.html:13 templates/modern/list_views.html:13
+msgid ""
+"Views serve different zone variants to different clients based on the "
+"network mapping. Each variant is identified as zone..variant (for example, "
+"example.com..trusted)."
+msgstr ""
+"Vaated edastavad erinevatele klientidele erinevaid tsoonivariante võrguseose põhjal. Iga variant tähistatakse zone..variant (nt example.com..trusted)."
+
+#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+msgid "No views configured yet. Add a zone variant below."
+msgstr "Ühtegi vaadet pole veel seadistatud. Lisa allpool tsoonivariant."
+
+#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+msgid "Remove from view"
+msgstr "Eemalda vaatest"
+
+#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+msgid "Assign zone to view"
+msgstr "Määra tsoon vaatele"
+
+#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+msgid "View name"
+msgstr "Vaate nimi"
+
+#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+msgid "Zone (zone..variant)"
+msgstr "Tsoon (zone..variant)"
 
 #: templates/modern/email_previews.html:11
 msgid "Email Template Previews"
@@ -12263,14 +12583,6 @@ msgstr "Lisa kõik kirjed"
 #: lib/Module/ZoneImportExport/templates/import.html:128
 msgid "Zone type"
 msgstr "tsooni tüüp"
-
-#: lib/Module/ZoneImportExport/templates/import.html:130
-msgid "Master"
-msgstr "Põhiline"
-
-#: lib/Module/ZoneImportExport/templates/import.html:131
-msgid "Native"
-msgstr "Sisemine"
 
 #: lib/Module/ZoneImportExport/templates/import.html:138
 msgid "Confirm import"
@@ -13019,5 +13331,23 @@ msgstr "Puuduvad PowerDNS tabelid andmebaasis \"%s\": %s."
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS andmebaasiga \"%s\" ei saa ühenduda: %s"
+
+# OBSOLETE: msgid "Edit Supermaster"
+# OBSOLETE: msgstr "Muuda supermasterit"
+
+# OBSOLETE: msgid "PowerDNS 4.0+ uses CSK by default"
+# OBSOLETE: msgstr "PowerDNS 4.0+ kasutab vaikimisi CSK-d"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by "
+# OBSOLETE: "default. If you select KSK or ZSK, PowerDNS may still create a CSK key."
+# OBSOLETE: msgstr "PowerDNS 4.0+ kasutab vaikimisi CSK-d."
+
+# OBSOLETE: msgid "Add Supermaster"
+# OBSOLETE: msgstr "Lisa supermaster"
+
+# OBSOLETE: msgid "Delete Supermaster"
+# OBSOLETE: msgstr "Kustuta supermaster"
+
 
 
