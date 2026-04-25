@@ -856,6 +856,11 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                     'prio' => $prio,
                     'disabled' => ($record['disabled'] ?? false) ? 1 : 0,
                     'api_comment' => $rrsetComment,
+                    // PowerDNS 4.9+ exposes a Unix timestamp per record. Older
+                    // servers, the DB-backed provider, and freshly-created
+                    // records all leave this null; the UI hides the column
+                    // when no record has it.
+                    'modified_at' => isset($record['modified_at']) ? (int)$record['modified_at'] : null,
                 ];
             }
         }

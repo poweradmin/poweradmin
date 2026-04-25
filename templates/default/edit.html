@@ -401,6 +401,9 @@
                                 <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
                             {% endif %}
                         </th>
+                        {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
+                        <th>{% trans %}Last modified{% endtrans %}</th>
+                        {% endif %}
                         {% if iface_show_record_edit_button or iface_show_record_delete_button %}
                         <th class="text-center" style="width: 100px;">{% trans %}Actions{% endtrans %}</th>
                         {% endif %}
@@ -432,6 +435,15 @@
             <td>{{ r['comment'] ?? '-' }}</td>
             {% endif %}
             <td class="text-center">{% if r['disabled'] %}{% trans %}Yes{% endtrans %}{% else %}{% trans %}No{% endtrans %}{% endif %}</td>
+            {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
+            <td class="small text-muted text-nowrap">
+                {% if r['modified_at'] %}
+                    <span title="{{ r['modified_at']|date('Y-m-d H:i:s T') }}">{{ r['modified_at']|date('Y-m-d H:i') }}</span>
+                {% else %}
+                    <span class="text-muted">&mdash;</span>
+                {% endif %}
+            </td>
+            {% endif %}
             {% else %}
             <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
                                         name="record[{{ r['id'] }}][name]" value="{{ r['editable_name'] is defined ? r['editable_name'] : r['name'] }}"></td>
@@ -458,6 +470,15 @@
             <td class="text-center">
                 <input class="form-check-input" type="checkbox" name="record[{{ r['id'] }}][disabled]" {% if r['disabled'] == 1 %}checked{% endif %}>
             </td>
+            {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
+            <td class="small text-muted text-nowrap">
+                {% if r['modified_at'] %}
+                    <span title="{{ r['modified_at']|date('Y-m-d H:i:s T') }}">{{ r['modified_at']|date('Y-m-d H:i') }}</span>
+                {% else %}
+                    <span class="text-muted">&mdash;</span>
+                {% endif %}
+            </td>
+            {% endif %}
             {% endif %}
 
             {% if iface_show_record_edit_button or iface_show_record_delete_button %}
