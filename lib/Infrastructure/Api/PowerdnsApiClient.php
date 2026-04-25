@@ -901,4 +901,138 @@ class PowerdnsApiClient
             return false;
         }
     }
+
+    /* ------- Views (PowerDNS 5.0+) ------------------------------------ */
+
+    /**
+     * List all views configured on the server.
+     *
+     * @return array<int, string>
+     */
+    public function listViews(): array
+    {
+        try {
+            $response = $this->httpClient->makeRequest('GET', $this->buildEndpoint('/views'));
+            if ($response && $response['responseCode'] === 200) {
+                $views = $response['data']['views'] ?? [];
+                return is_array($views) ? array_values(array_filter($views, 'is_string')) : [];
+            }
+            return [];
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to list views: {error}', ['error' => $e->getMessage()]);
+            return [];
+        }
+    }
+
+    /**
+     * List zones assigned to a specific view. Zone strings are returned in the
+     * upstream "zone..variant" form (e.g. "example.com..trusted").
+     *
+     * @return array<int, string>
+     */
+    public function listViewZones(string $view): array
+    {
+        try {
+            $response = $this->httpClient->makeRequest('GET', $this->buildEndpoint('/views/' . rawurlencode($view)));
+            if ($response && $response['responseCode'] === 200) {
+                $zones = $response['data']['zones'] ?? [];
+                return is_array($zones) ? array_values(array_filter($zones, 'is_string')) : [];
+            }
+            return [];
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to list zones for view {view}: {error}', ['view' => $view, 'error' => $e->getMessage()]);
+            return [];
+        }
+    }
+
+    /**
+     * Add a zone (in "zone..variant" form) to a view. Creates the view if it
+     * doesn't exist yet, per upstream behaviour.
+     */
+    public function addZoneToView(string $view, string $zoneName): bool
+    {
+        try {
+            $endpoint = $this->buildEndpoint('/views/' . rawurlencode($view));
+            $response = $this->httpClient->makeRequest('POST', $endpoint, ['name' => $zoneName]);
+            return $response && $response['responseCode'] === 204;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to add zone {zone} to view {view}: {error}', ['zone' => $zoneName, 'view' => $view, 'error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
+    public function removeZoneFromView(string $view, string $zoneName): bool
+    {
+        try {
+            $endpoint = $this->buildEndpoint('/views/' . rawurlencode($view) . '/' . rawurlencode($zoneName));
+            $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+            return $response && $response['responseCode'] === 204;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to remove zone {zone} from view {view}: {error}', ['zone' => $zoneName, 'view' => $view, 'error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
+    /* ------- Networks (PowerDNS 5.0+) --------------------------------- */
+
+    /**
+     * List all network -> view mappings. Each entry is of the form
+     * ['network' => '192.168.0.0/16', 'view' => 'trusted'].
+     *
+     * @return array<int, array{network: string, view: string}>
+     */
+    public function listNetworks(): array
+    {
+        try {
+            $response = $this->httpClient->makeRequest('GET', $this->buildEndpoint('/networks'));
+            if ($response && $response['responseCode'] === 200) {
+                $networks = $response['data']['networks'] ?? [];
+                if (!is_array($networks)) {
+                    return [];
+                }
+                $out = [];
+                foreach ($networks as $entry) {
+                    if (is_array($entry) && isset($entry['network'], $entry['view'])) {
+                        $out[] = [
+                            'network' => (string) $entry['network'],
+                            'view' => (string) $entry['view'],
+                        ];
+                    }
+                }
+                return $out;
+            }
+            return [];
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to list networks: {error}', ['error' => $e->getMessage()]);
+            return [];
+        }
+    }
+
+    /**
+     * Assign a CIDR block to a view. PowerDNS expects the CIDR in path form,
+     * e.g. PUT /networks/192.168.0.0/16.
+     */
+    public function setNetworkView(string $cidr, string $view): bool
+    {
+        try {
+            $endpoint = $this->buildEndpoint('/networks/' . $cidr);
+            $response = $this->httpClient->makeRequest('PUT', $endpoint, ['view' => $view]);
+            return $response && $response['responseCode'] === 204;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to set network {cidr} -> view {view}: {error}', ['cidr' => $cidr, 'view' => $view, 'error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
+    public function deleteNetwork(string $cidr): bool
+    {
+        try {
+            $endpoint = $this->buildEndpoint('/networks/' . $cidr);
+            $response = $this->httpClient->makeRequest('DELETE', $endpoint);
+            return $response && $response['responseCode'] === 204;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to delete network {cidr}: {error}', ['cidr' => $cidr, 'error' => $e->getMessage()]);
+            return false;
+        }
+    }
 }

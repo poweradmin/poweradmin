@@ -407,6 +407,17 @@ dnssec_key_export:
     key_id: '\d+'
   methods: [GET]
 
+# PowerDNS 5.0 Views/Networks management
+list_views:
+  path: /views
+  controller: Poweradmin\Application\Controller\ListViewsController::run
+  methods: [GET, POST]
+
+list_networks:
+  path: /networks
+  controller: Poweradmin\Application\Controller\ListNetworksController::run
+  methods: [GET, POST]
+
 # Search
 search:
   path: /search
