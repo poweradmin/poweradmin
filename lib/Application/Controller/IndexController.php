@@ -122,13 +122,15 @@ class IndexController extends BaseController
 
         // Surface the most recent PowerDNS API error to admins so they know the
         // UI's zero counts / empty lists reflect an upstream failure rather
-        // than a real absence of data. Version detection itself runs from
-        // BaseController for every authenticated user (see
-        // BaseController::getPdnsCapabilities) so feature gates work
-        // consistently across the app, not only on the dashboard.
+        // than a real absence of data. Refresh the connected PowerDNS version
+        // here (rate-limited to once per minute) so the dashboard badge and
+        // capability gates on subsequent pages reflect any version changes.
+        // Other pages read whatever the cache holds without triggering
+        // detection on the render path.
         $apiError = null;
         if ($permissions['user_is_ueberuser'] && DnsBackendProviderFactory::isApiBackend($this->config)) {
             $apiError = (new ApiStatusService())->getLastError();
+            $this->refreshPdnsCapabilities();
         }
 
         $this->render("index.html", [
