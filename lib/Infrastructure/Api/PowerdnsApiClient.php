@@ -294,6 +294,51 @@ class PowerdnsApiClient
     }
 
     /**
+     * Import a DNSSEC key from a PEM-encoded private key. Requires PowerDNS
+     * 4.7+ which accepts the `privatekey` field on POST /cryptokeys
+     * (per docs/changelog/4.7.rst PR #11590). The server derives bits and
+     * picks the right algorithm slot from the PEM contents.
+     */
+    public function importZoneKey(Zone $zone, string $keyType, string $algorithm, string $privateKeyPem): bool
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys");
+            $data = [
+                'keytype' => $keyType,
+                'algorithm' => $algorithm,
+                'privatekey' => $privateKeyPem,
+            ];
+            $response = $this->httpClient->makeRequest('POST', $endpoint, $data);
+
+            return $response && $response['responseCode'] === 201;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to import DNSSEC key into zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
+    /**
+     * Fetch a single cryptokey including its `privatekey` field, which
+     * PowerDNS only returns from the per-key GET endpoint (the list view
+     * omits it). Returns null when the key cannot be retrieved.
+     */
+    public function getZoneKeyWithPrivate(Zone $zone, int $keyId): ?array
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys/{$keyId}");
+            $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+            if ($response && $response['responseCode'] === 200 && isset($response['data'])) {
+                return $response['data'];
+            }
+            return null;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to read DNSSEC key {keyId} from zone {zone}: {error}', ['keyId' => $keyId, 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
+            return null;
+        }
+    }
+
+    /**
      * Activate a DNSSEC key
      *
      * @param Zone $zone

@@ -194,6 +194,29 @@ class DnsSecApiProvider implements DnssecProvider
         return false;
     }
 
+    public function importZoneKey(string $zoneName, string $keyType, string $algorithm, string $privateKeyPem): bool
+    {
+        $zone = new Zone($zoneName);
+        $result = $this->client->importZoneKey($zone, $keyType, $algorithm, $privateKeyPem);
+        $this->logAction('dnssec_import_zone_key', $zoneName, ['type' => $keyType, 'algorithm' => $algorithm, 'result' => $result]);
+        return $result;
+    }
+
+    public function exportZoneKeyPem(string $zoneName, int $keyId): ?string
+    {
+        $zone = new Zone($zoneName);
+        $payload = $this->client->getZoneKeyWithPrivate($zone, $keyId);
+        if ($payload === null) {
+            return null;
+        }
+        $pem = $payload['privatekey'] ?? null;
+        if (!is_string($pem) || $pem === '') {
+            return null;
+        }
+        $this->logAction('dnssec_export_zone_key', $zoneName, ['keyId' => $keyId]);
+        return $pem;
+    }
+
     private function logAction(string $action, string $zoneName, array $context = []): void
     {
         $contextString = [];

@@ -119,6 +119,11 @@
                                 <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/{{ item[0] }}/edit" title="{% if item[5] %}{% trans %}Deactivate this key{% endtrans %}{% else %}{% trans %}Activate this key{% endtrans %}{% endif %}">
                                     <i class="bi bi-{{ button_icon }} text-primary"></i> <span class="d-none d-md-inline text-primary">{% if item[5] %}{% trans %}Deactivate{% endtrans %}{% else %}{% trans %}Activate{% endtrans %}{% endif %}</span>
                                 </a>
+                                {% if pdns_caps and pdns_caps.supportsPemKeyImportExport %}
+                                <a class="btn btn-sm btn-outline-secondary" href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/{{ item[0] }}/export" title="{% trans %}Download this key as PEM{% endtrans %}">
+                                    <i class="bi bi-download text-secondary"></i> <span class="d-none d-md-inline text-secondary">{% trans %}Export PEM{% endtrans %}</span>
+                                </a>
+                                {% endif %}
                                 <a class="btn btn-sm btn-outline-danger" href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/{{ item[0] }}/delete">
                                     <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
                                 </a>
@@ -132,3 +137,42 @@
         </div>
     </div>
 </div>
+
+{% if pdns_caps and pdns_caps.supportsPemKeyImportExport and perm_edit != "none" %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-upload me-2"></i>{% trans %}Import key from PEM{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <p class="text-muted small mb-3">{% trans %}Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the key size from the PEM contents - select the matching algorithm and key role.{% endtrans %}</p>
+        <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/import" class="row g-3">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            <div class="col-md-3">
+                <label for="import_key_type" class="form-label">{% trans %}Key type{% endtrans %}</label>
+                <select class="form-select form-select-sm" id="import_key_type" name="key_type" required>
+                    <option value="csk">CSK</option>
+                    <option value="ksk">KSK</option>
+                    <option value="zsk">ZSK</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="import_algorithm" class="form-label">{% trans %}Algorithm{% endtrans %}</label>
+                <select class="form-select form-select-sm" id="import_algorithm" name="algorithm" required>
+                    {% for alg, name in algorithm_names %}
+                    <option value="{{ alg }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12">
+                <label for="import_pem" class="form-label">{% trans %}PEM private key{% endtrans %}</label>
+                <textarea class="form-control form-control-sm font-monospace" id="import_pem" name="private_key_pem" rows="8" required placeholder="-----BEGIN PRIVATE KEY-----&#10;...&#10;-----END PRIVATE KEY-----"></textarea>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="bi bi-upload text-white me-1"></i>{% trans %}Import key{% endtrans %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
