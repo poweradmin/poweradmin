@@ -149,7 +149,7 @@ class DnssecController extends BaseController
             'zone_template_id' => DnsRecord::getZoneTemplate($this->db, $zone_id),
             'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
-            'algorithm_names' => DnssecAlgorithmName::ALGORITHM_NAMES,
+            'algorithm_names' => DnssecAlgorithmName::getSupportedAlgorithmNamesForCapabilities($this->getPdnsCapabilities()),
             'perm_edit' => $perm_edit,
             'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
         ]);

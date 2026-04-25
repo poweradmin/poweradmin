@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
+use Poweradmin\Domain\Service\PdnsCapabilities;
+
 class DnssecAlgorithmName
 {
     public const RSAMD5 = 'rsamd5';
@@ -53,4 +55,68 @@ class DnssecAlgorithmName
         self::ED25519 => 'ED25519',
         self::ED448 => 'ED448',
     ];
+
+    /**
+     * Algorithms the Poweradmin DNSSEC flows accept on creation/import. The
+     * obsolete ones in ALGORITHM_NAMES (RSAMD5, DH, DSA, ECC, GOST) are
+     * rejected by modern PowerDNS builds and would only frustrate users.
+     */
+    public const SUPPORTED_ALGORITHMS = [
+        self::RSASHA1,
+        self::RSASHA1_NSEC3_SHA1,
+        self::RSASHA256,
+        self::RSASHA512,
+        self::ECDSA256,
+        self::ECDSA384,
+        self::ED25519,
+        self::ED448,
+    ];
+
+    /**
+     * Algorithms that only became available from a particular PowerDNS
+     * release. Anything not listed here has been supported for as long as
+     * the API has existed, so we don't gate it.
+     */
+    private const ALGORITHM_MIN_VERSION = [
+        self::ED448 => '4.5.0',
+    ];
+
+    /**
+     * Algorithm IDs the connected server is expected to accept. Algorithms
+     * with a min PowerDNS version are dropped when the connected server is
+     * too old (or its version cannot be confirmed). Pass null for $caps to
+     * skip version filtering.
+     *
+     * @return array<int, string>
+     */
+    public static function getSupportedAlgorithmsForCapabilities(?PdnsCapabilities $caps): array
+    {
+        if ($caps === null) {
+            return self::SUPPORTED_ALGORITHMS;
+        }
+        $out = [];
+        foreach (self::SUPPORTED_ALGORITHMS as $alg) {
+            $minVer = self::ALGORITHM_MIN_VERSION[$alg] ?? null;
+            if ($minVer === null || $caps->isAtLeast($minVer)) {
+                $out[] = $alg;
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * id => display-name map for use in dropdowns. Mirrors
+     * getSupportedAlgorithmsForCapabilities() so the dropdown and the
+     * controller allowlist never drift.
+     *
+     * @return array<string, string>
+     */
+    public static function getSupportedAlgorithmNamesForCapabilities(?PdnsCapabilities $caps): array
+    {
+        $out = [];
+        foreach (self::getSupportedAlgorithmsForCapabilities($caps) as $alg) {
+            $out[$alg] = self::ALGORITHM_NAMES[$alg];
+        }
+        return $out;
+    }
 }

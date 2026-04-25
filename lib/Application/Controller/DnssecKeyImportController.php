@@ -26,6 +26,7 @@ use Exception;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -66,7 +67,8 @@ class DnssecKeyImportController extends BaseController
             return;
         }
 
-        if (!$this->getPdnsCapabilities()->supportsPemKeyImportExport()) {
+        $caps = $this->getPdnsCapabilities();
+        if (!$caps->supportsPemKeyImportExport()) {
             $this->setMessage('dnssec', 'error', _('PEM key import requires PowerDNS 4.7 or newer.'));
             $this->redirect('/zones/' . $zoneId . '/dnssec');
             return;
@@ -84,7 +86,7 @@ class DnssecKeyImportController extends BaseController
             return;
         }
 
-        $validAlgorithms = ['rsasha1', 'rsasha1-nsec3-sha1', 'rsasha256', 'rsasha512', 'ecdsa256', 'ecdsa384', 'ed25519', 'ed448'];
+        $validAlgorithms = DnssecAlgorithmName::getSupportedAlgorithmsForCapabilities($caps);
         if (!in_array($algorithm, $validAlgorithms, true)) {
             $this->setMessage('dnssec', 'error', _('Invalid or unexpected input given.'));
             $this->redirect('/zones/' . $zoneId . '/dnssec');
