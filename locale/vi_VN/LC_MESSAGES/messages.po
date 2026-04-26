@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:53+0300\n"
+"POT-Creation-Date: 2026-04-26 16:48+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -277,10 +277,9 @@ msgid "TTL (seconds)"
 msgstr "TTL (giây)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:193
+#, auto-english-fallback
 msgid "Time to live - how long DNS resolvers should cache this record"
-msgstr ""
-"Thời gian tồn tại - thời gian các bộ phân giải DNS nên lưu bản ghi này vào "
-"bộ nhớ đệm"
+msgstr "Time to live - how long DNS resolvers should cache this record"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:289
 msgid "Port must be between 1 and 65535"
@@ -2215,9 +2214,9 @@ msgstr ""
 "liệu không hợp lệ."
 
 #: lib/Application/Controller/AddRecordController.php:521
+#, auto-english-fallback
 msgid "Failed to add any records. They may contain invalid data."
-msgstr ""
-"Không thể thêm bất kỳ bản ghi nào. Chúng có thể chứa dữ liệu không hợp lệ."
+msgstr "Failed to add any records. They may contain invalid data."
 
 #: lib/Application/Controller/DeleteDomainsController.php:79
 msgid "No zone selected for deletion."
@@ -2931,14 +2930,14 @@ msgid "ED25519 algorithm must use 256 bits"
 msgstr "Thuật toán ED25519 phải sử dụng 256 bit"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:133
+#, auto-english-fallback
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
-msgstr ""
-"Thuật toán ED448 phải sử dụng 456 bit (không được hỗ trợ trong giao diện này)"
+msgstr "ED448 algorithm must use 456 bits (unsupported in this UI)"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:140
+#, auto-english-fallback
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr ""
-"Thuật toán RSA nên sử dụng 1024 hoặc 2048 bit để đảm bảo an ninh đầy đủ"
+msgstr "RSA algorithms should use 1024 or 2048 bits for adequate security"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:163
 msgid "Zone key has been added successfully."
@@ -3311,16 +3310,18 @@ msgid "No, keep this supermaster"
 msgstr "Không, giữ supermaster này"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
+#, auto-english-fallback
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
+msgstr """Showing connectivity status for the autoprimary servers configured in the ""table below."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:148
+#, auto-english-fallback
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
+msgstr """Showing connectivity status for the supermasters configured in the table ""below."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -4302,9 +4303,9 @@ msgid "RKEY records are rarely used in modern DNS implementations."
 msgstr "Bản ghi RKEY hiếm khi được sử dụng trong triển khai DNS hiện đại."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:262
+#, auto-english-fallback
 msgid "Consider using standardized record types for cryptographic purposes."
-msgstr ""
-"Cân nhắc sử dụng các loại bản ghi đã tiêu chuẩn hóa cho mục đích mật mã."
+msgstr "Consider using standardized record types for cryptographic purposes."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:209
 msgid "Empty APL record represents an empty list of address prefixes."
@@ -4432,9 +4433,9 @@ msgstr ""
 "gán cục bộ và không phải duy nhất toàn cầu."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
+#, auto-english-fallback
 msgid "A zero NodeID value is unusual and may indicate a configuration error."
-msgstr ""
-"Giá trị NodeID bằng không là bất thường và có thể cho thấy lỗi cấu hình."
+msgstr "A zero NodeID value is unusual and may indicate a configuration error."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:239
 msgid ""
@@ -4770,9 +4771,9 @@ msgstr ""
 "đồng bộ đồng hồ."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
+#, auto-english-fallback
 msgid "TSIG keys should be rotated periodically as a security best practice."
-msgstr ""
-"Khóa TSIG nên được xoay vòng định kỳ như một thực hành bảo mật tốt nhất."
+msgstr "TSIG keys should be rotated periodically as a security best practice."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:155
 msgid ""
@@ -4909,9 +4910,9 @@ msgstr ""
 "trợ rộng rãi."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
+#, auto-english-fallback
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
-msgstr ""
-"RFC 8945 khuyến nghị sử dụng HMAC-SHA256 làm thuật toán TSIG tiêu chuẩn."
+msgstr "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:110
 msgid ""
@@ -4922,9 +4923,9 @@ msgstr ""
 "hỗ trợ bởi tất cả máy chủ DNS."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
+#, auto-english-fallback
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
-msgstr ""
-"Bản ghi ZONEMD phải được đặt tại đỉnh vùng (cùng vị trí với bản ghi SOA)."
+msgstr "ZONEMD records must be placed at the zone apex (same as SOA record)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:112
 msgid ""
@@ -4998,19 +4999,18 @@ msgstr ""
 "Các giá trị khác được dành riêng hoặc chưa gán."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
+#, auto-english-fallback
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr ""
-"Lược đồ ZONEMD 0 được dành riêng và không dùng cho mục đích tiêu chuẩn."
+msgstr "ZONEMD scheme 0 is reserved and not for standard use."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
 msgstr "Thuật toán băm ZONEMD phải là số từ 0 đến 255."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
+#, auto-english-fallback
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr ""
-"Thuật toán băm ZONEMD 0 được dành riêng và không dùng cho mục đích tiêu "
-"chuẩn."
+msgstr "ZONEMD hash algorithm 0 is reserved and not for standard use."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
@@ -5195,15 +5195,14 @@ msgstr ""
 "thể có cùng thẻ khóa."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
+#, auto-english-fallback
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
-msgstr ""
-"Thuật toán không hợp lệ. Phải là một trong các thuật toán DNSSEC hợp lệ "
-"(1-16)."
+msgstr "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
+#, auto-english-fallback
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr ""
-"Loại mã hash không hợp lệ. Phải là 1 (SHA-1), 2 (SHA-256) hoặc 4 (SHA-384)."
+msgstr "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
@@ -5255,15 +5254,14 @@ msgid "MX records should not point to CNAME records (RFC 2181)."
 msgstr "Bản ghi MX không nên trỏ đến bản ghi CNAME (RFC 2181)."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:116
+#, auto-english-fallback
 msgid "Priority values above 100 are unusual and may be unnecessary."
-msgstr ""
-"Giá trị ưu tiên trên 100 là không bình thường và có thể không cần thiết."
+msgstr "Priority values above 100 are unusual and may be unnecessary."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:169
+#, auto-english-fallback
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
-msgstr ""
-"Giá trị không hợp lệ cho trường ưu tiên MX. Phải nằm trong khoảng từ 0 đến "
-"65535."
+msgstr "Invalid value for MX priority field. Must be between 0 and 65535."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:90
 msgid ""
@@ -5302,23 +5300,21 @@ msgstr ""
 "Tham số bản ghi HTTPS phải ở định dạng key=value phân tách bằng dấu cách."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
+#, auto-english-fallback
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr ""
-"Khóa tham số HTTPS không xác định: \"%s\". Xem RFC 9460 để biết các khóa hợp "
-"lệ."
+msgstr "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
+#, auto-english-fallback
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
-msgstr ""
-"Khóa tham số HTTPS trùng lặp: \"%s\". Mỗi khóa chỉ có thể xuất hiện một lần."
+msgstr "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
+#, auto-english-fallback
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
-msgstr ""
-"Giá trị ALPN phải là danh sách các định danh giao thức phân tách bằng dấu "
-"phẩy."
+msgstr "ALPN value must be a comma-separated list of protocol identifiers."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
 msgid "The no-default-alpn parameter must have an empty value."
@@ -5540,9 +5536,9 @@ msgid "Consider using HTTPS instead of HTTP for better security."
 msgstr "Trường ưu tiên cho bản ghi URI phải là 0 hoặc rỗng"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:200
+#, auto-english-fallback
 msgid "FTP is considered less secure than alternatives like SFTP or HTTPS."
-msgstr ""
-"Trọng số không hợp lệ cho bản ghi URI. Phải nằm trong khoảng từ 0 đến 65535."
+msgstr "FTP is considered less secure than alternatives like SFTP or HTTPS."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
@@ -5550,10 +5546,9 @@ msgstr ""
 "Ưu tiên không hợp lệ cho bản ghi URI. Phải nằm trong khoảng từ 0 đến 65535."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
+#, auto-english-fallback
 msgid "Phone-related URI schemes may contain sensitive personal information."
-msgstr ""
-"URI không hợp lệ. Phải bắt đầu bằng scheme (ví dụ: http://, https://, "
-"ftp://)."
+msgstr "Phone-related URI schemes may contain sensitive personal information."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:213
 msgid ""
@@ -5564,19 +5559,19 @@ msgstr ""
 "được mã hóa URL đúng cách."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
+#, auto-english-fallback
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr ""
-"Bản ghi NAPTR không nên trỏ đến CNAME. Sử dụng bản ghi A/AAAA thay thế."
+msgstr "URI record must be in the format: <priority> <weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
+#, auto-english-fallback
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr ""
-"Thứ tự không hợp lệ cho bản ghi NAPTR. Phải nằm trong khoảng từ 0 đến 65535."
+msgstr "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:250
+#, auto-english-fallback
 msgid "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr ""
-"Ưu tiên không hợp lệ cho bản ghi NAPTR. Phải nằm trong khoảng từ 0 đến 65535."
+msgstr "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:256
 msgid "URI must not be empty."
@@ -5599,15 +5594,14 @@ msgstr ""
 "delimiter-replacement-delimiter-flags."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
+#, auto-english-fallback
 msgid "URI with this protocol must include \"://\" after the protocol name."
-msgstr ""
-"Replacement không hợp lệ cho bản ghi NAPTR. Phải là tên miền đầy đủ hợp lệ "
-"hoặc '.'."
+msgstr "URI with this protocol must include \"://\" after the protocol name."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:289
+#, auto-english-fallback
 msgid "HTTP/HTTPS URIs must include a hostname."
-msgstr ""
-"Cờ 'S' hoặc 'A' yêu cầu replacement là tên miền đầy đủ, không phải '.'."
+msgstr "HTTP/HTTPS URIs must include a hostname."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:295
 msgid "URI must not contain control characters."
@@ -5673,10 +5667,9 @@ msgid ""
 msgstr "Trường ưu tiên cho bản ghi NAPTR phải là 0 hoặc rỗng"
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:166
+#, auto-english-fallback
 msgid "Invalid value for KX preference field. Must be between 0 and 65535."
-msgstr ""
-"Hàm băm không hợp lệ cho bản ghi SSHFP. Phải nằm trong khoảng từ 1 đến 2 "
-"(1=SHA-1, 2=SHA-256)."
+msgstr "Invalid value for KX preference field. Must be between 0 and 65535."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:84
 msgid ""
@@ -5687,9 +5680,9 @@ msgstr ""
 "(1=RSA, 2=DSA, 3=ECDSA, 4=Ed25519)."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
+#, auto-english-fallback
 msgid "MINFO record content cannot be empty."
-msgstr ""
-"Fingerprint không hợp lệ cho bản ghi SSHFP. Phải là chuỗi thập lục phân."
+msgstr "MINFO record content cannot be empty."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:102
 msgid ""
@@ -5698,10 +5691,9 @@ msgid ""
 msgstr "Độ dài fingerprint không chính xác cho loại hàm băm đã chỉ định."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:113
+#, auto-english-fallback
 msgid "Invalid responsible mailbox hostname (RMAILBX)."
-msgstr ""
-"SHA-1 không còn được khuyến nghị cho mục đích bảo mật. Hãy cân nhắc sử dụng "
-"SHA-256."
+msgstr "Invalid responsible mailbox hostname (RMAILBX)."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:121
 msgid ""
@@ -5748,10 +5740,9 @@ msgid "Priority field for SPF records must be 0 or empty"
 msgstr "Giá trị không hợp lệ cho bản ghi CAA."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:160
+#, auto-english-fallback
 msgid "SPF record must start with \"v=spf1\""
-msgstr ""
-"Tag 'issue' và 'issuewild' phải chỉ định tên miền CA hợp lệ hoặc ';' để cấm "
-"phát hành."
+msgstr "SPF record must start with \"v=spf1\""
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:166
 msgid ""
@@ -5788,10 +5779,9 @@ msgid "CIDR notation is not valid with the %s mechanism."
 msgstr "CIDR notation is not valid with the %s mechanism."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:247
+#, auto-english-fallback
 msgid "Invalid CIDR length in mechanism."
-msgstr ""
-"Bản ghi CAA 'issuewild' của bạn bị ghi đè bởi bản ghi 'issue ;' hoặc "
-"'issuewild ;' nghiêm ngặt hơn."
+msgstr "Invalid CIDR length in mechanism."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:254
 msgid ""
@@ -5808,15 +5798,14 @@ msgid ""
 msgstr "Chứng chỉ wildcard yêu cầu tag 'issuewild', không chỉ 'issue'."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
+#, auto-english-fallback
 msgid "Invalid domain in redirect modifier."
-msgstr ""
-"Giá trị không hợp lệ cho loại chứng chỉ. Phải nằm trong khoảng từ 0 đến 255."
+msgstr "Invalid domain in redirect modifier."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:275
+#, auto-english-fallback
 msgid "Invalid domain in exp modifier."
-msgstr ""
-"Giá trị không hợp lệ cho loại key selector. Phải là 0 (Full cert) hoặc 1 "
-"(SubjectPublicKeyInfo)."
+msgstr "Invalid domain in exp modifier."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
@@ -5867,10 +5856,9 @@ msgstr ""
 "khớp."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:280
+#, auto-english-fallback
 msgid "Empty CNAME records are not allowed."
-msgstr ""
-"Loại chứng chỉ 255 (Private) đang được dùng. Hãy đảm bảo cấu hình tùy chỉnh "
-"của bạn chính xác."
+msgstr "Empty CNAME records are not allowed."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:319
 msgid ""
@@ -5991,10 +5979,9 @@ msgid "Hostname contains invalid characters."
 msgstr "Trường ưu tiên cho bản ghi DS phải là 0 hoặc rỗng"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:141
+#, auto-english-fallback
 msgid "Priority field for RRSIG records must be 0 or empty"
-msgstr ""
-"Có nhiều bản ghi DS với cùng key tag và thuật toán. Đây có thể là cố ý "
-"(nhiều loại digest) hoặc lỗi."
+msgstr "Priority field for RRSIG records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid ""
@@ -6016,9 +6003,9 @@ msgid "RRSIG record content cannot be empty."
 msgstr "Bản ghi DS này phải khớp với bản ghi DNSKEY trong zone con."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:174
+#, auto-english-fallback
 msgid "RRSIG record contains invalid characters."
-msgstr ""
-"Cờ không hợp lệ cho bản ghi DNSKEY. Phải nằm trong khoảng từ 0 đến 65535."
+msgstr "RRSIG record contains invalid characters."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:180
 msgid ""
@@ -6027,15 +6014,14 @@ msgid ""
 msgstr "Giao thức không hợp lệ cho bản ghi DNSKEY. Phải là 3 cho DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
+#, auto-english-fallback
 msgid "RRSIG covered type must be a valid DNS record type."
-msgstr ""
-"Thuật toán không hợp lệ cho bản ghi DNSKEY. Phải nằm trong khoảng từ 1 đến "
-"16."
+msgstr "RRSIG covered type must be a valid DNS record type."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:193
+#, auto-english-fallback
 msgid "RRSIG algorithm field must be a numeric value."
-msgstr ""
-"Khóa công khai không hợp lệ cho bản ghi DNSKEY. Phải là chuỗi base64 hợp lệ."
+msgstr "RRSIG algorithm field must be a numeric value."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
 msgid ""
@@ -6118,9 +6104,9 @@ msgid "RRSIG original TTL field must be a numeric value."
 msgstr "Bản ghi DNSKEY phải khớp với chữ ký RRSIG trong zone."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:244
+#, auto-english-fallback
 msgid "RRSIG original TTL must be a valid positive integer."
-msgstr ""
-"Độ dài khóa công khai quá ngắn để an toàn. Khóa RSA nên ít nhất 2048 bit."
+msgstr "RRSIG original TTL must be a valid positive integer."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid ""
@@ -6131,14 +6117,14 @@ msgstr ""
 "65535."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
+#, auto-english-fallback
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
-msgstr ""
-"Key tag không hợp lệ cho bản ghi CERT. Phải nằm trong khoảng từ 0 đến 65535."
+msgstr "RRSIG expiration must be in YYYYMMDDHHmmSS format."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:258
+#, auto-english-fallback
 msgid "RRSIG inception must be in YYYYMMDDHHmmSS format."
-msgstr ""
-"Thuật toán không hợp lệ cho bản ghi CERT. Phải nằm trong khoảng từ 0 đến 255."
+msgstr "RRSIG inception must be in YYYYMMDDHHmmSS format."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:270
 msgid ""
@@ -6164,10 +6150,9 @@ msgstr ""
 "khai hợp lệ."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
+#, auto-english-fallback
 msgid "This signature will expire within the next 30 days. Plan for renewal."
-msgstr ""
-"Loại chứng chỉ 3 (PGP) đang được dùng. Hãy đảm bảo dữ liệu là khóa PGP hợp "
-"lệ."
+msgstr "This signature will expire within the next 30 days. Plan for renewal."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:286
 msgid ""
@@ -6191,9 +6176,9 @@ msgid "RRSIG key tag field must be a numeric value."
 msgstr "Loại chứng chỉ 7 (ACPKIX) đang được dùng cho chứng chỉ thuộc tính."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:307
+#, auto-english-fallback
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
-msgstr ""
-"Loại chứng chỉ 8 (IACPKIX) đang được dùng cho URL đến chứng chỉ thuộc tính."
+msgstr "RRSIG key tag must be a valid value between 0 and 65535."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:312
 msgid ""
@@ -6202,15 +6187,14 @@ msgstr ""
 "Loại chứng chỉ 253 (URI) đang được dùng. Hãy đảm bảo dữ liệu là URI hợp lệ."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:318
+#, auto-english-fallback
 msgid "RRSIG signer name must be a valid domain name."
-msgstr ""
-"Loại chứng chỉ 254 (OID) đang được dùng. Hãy đảm bảo dữ liệu là OID hợp lệ."
+msgstr "RRSIG signer name must be a valid domain name."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
+#, auto-english-fallback
 msgid "RRSIG signature cannot be empty."
-msgstr ""
-"Loại chứng chỉ không xác định. Hãy tham khảo IANA để biết các loại đã đăng "
-"ký."
+msgstr "RRSIG signature cannot be empty."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
@@ -6232,10 +6216,9 @@ msgid ""
 msgstr "Trường ưu tiên cho bản ghi CERT phải là 0 hoặc rỗng"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
+#, auto-english-fallback
 msgid "Priority field for RP records must be 0 or empty"
-msgstr ""
-"Bản ghi CERT đã lỗi thời và ít được hỗ trợ. Hãy cân nhắc sử dụng TLSA cho "
-"chứng chỉ TLS."
+msgstr "Priority field for RP records must be 0 or empty"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:129
 msgid ""
@@ -6253,21 +6236,19 @@ msgstr ""
 "255."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:131
+#, auto-english-fallback
 msgid "Type code for RP records is 17."
-msgstr ""
-"Nhãn không hợp lệ cho bản ghi RRSIG. Phải nằm trong khoảng từ 0 đến 255."
+msgstr "Type code for RP records is 17."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:154
+#, auto-english-fallback
 msgid "RP record content cannot be empty."
-msgstr ""
-"TTL gốc không hợp lệ cho bản ghi RRSIG. Phải nằm trong khoảng từ 0 đến "
-"2147483647."
+msgstr "RP record content cannot be empty."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:159
+#, auto-english-fallback
 msgid "RP record contains invalid characters."
-msgstr ""
-"Thời gian hết hạn chữ ký không hợp lệ cho bản ghi RRSIG. Phải là dấu thời "
-"gian Unix hợp lệ hoặc định dạng YYYYMMDDHHmmSS."
+msgstr "RP record contains invalid characters."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:165
 msgid ""
@@ -6337,10 +6318,9 @@ msgid "RP mailbox domain label exceeds maximum length of 63 characters."
 msgstr "Số nhãn RRSIG không khớp với số nhãn trong tên chủ."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:266
+#, auto-english-fallback
 msgid "RP mailbox domain contains invalid characters or format."
-msgstr ""
-"Nội dung bản ghi RRSIG phải ở định dạng: typecovered algorithm labels "
-"originalttl expiration inception keytag signer signature."
+msgstr "RP mailbox domain contains invalid characters or format."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:272
 msgid "RP mailbox domain exceeds maximum length of 253 characters."
@@ -6367,10 +6347,9 @@ msgstr ""
 "(nhiều thuật toán)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
+#, auto-english-fallback
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr ""
-"Bản ghi NSEC3PARAM hiện diện. Hãy đảm bảo các bản ghi NSEC3 tương ứng tồn "
-"tại."
+msgstr "RP TXT domain must be a fully qualified domain name (end with a dot)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
@@ -6381,22 +6360,19 @@ msgid "RP TXT domain contains empty label."
 msgstr "Cờ không hợp lệ cho bản ghi NSEC3. Phải là 0 hoặc 1 (opt-out)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:325
+#, auto-english-fallback
 msgid "RP TXT domain label exceeds maximum length of 63 characters."
-msgstr ""
-"Số lần lặp không hợp lệ cho bản ghi NSEC3. Phải nằm trong khoảng từ 0 đến "
-"65535."
+msgstr "RP TXT domain label exceeds maximum length of 63 characters."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:330
+#, auto-english-fallback
 msgid "RP TXT domain contains invalid characters or format."
-msgstr ""
-"Muối không hợp lệ cho bản ghi NSEC3. Phải là chuỗi thập lục phân hoặc '-' "
-"cho không có muối."
+msgstr "RP TXT domain contains invalid characters or format."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:336
+#, auto-english-fallback
 msgid "RP TXT domain exceeds maximum length of 253 characters."
-msgstr ""
-"Hàm băm tên tiếp theo không hợp lệ cho bản ghi NSEC3. Phải là chuỗi "
-"base32hex hợp lệ."
+msgstr "RP TXT domain exceeds maximum length of 253 characters."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:340
 msgid ""
@@ -6476,16 +6452,14 @@ msgid ""
 msgstr "Cờ không hợp lệ cho bản ghi NSEC3PARAM. Phải là 0 hoặc 1."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
+#, auto-english-fallback
 msgid "This is the all-zeros address, which may not be valid in all contexts."
-msgstr ""
-"Số lần lặp không hợp lệ cho bản ghi NSEC3PARAM. Phải nằm trong khoảng từ 0 "
-"đến 65535."
+msgstr "This is the all-zeros address, which may not be valid in all contexts."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:178
+#, auto-english-fallback
 msgid "This appears to be an IANA OUI (00-00-5E) address."
-msgstr ""
-"Muối không hợp lệ cho bản ghi NSEC3PARAM. Phải là chuỗi thập lục phân hoặc "
-"'-' cho không có muối."
+msgstr "This appears to be an IANA OUI (00-00-5E) address."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:91
 msgid ""
@@ -6571,10 +6545,9 @@ msgid "Key tag must be a number between 1 and 65535"
 msgstr "Trường ưu tiên cho bản ghi NSEC phải là 0 hoặc rỗng"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:211
+#, auto-english-fallback
 msgid "Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
-msgstr ""
-"Bản ghi NSEC thường được quản lý tự động bởi phần mềm ký DNSSEC. Không "
-"khuyến khích tạo thủ công."
+msgstr "Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:212
 #, php-format
@@ -6631,10 +6604,9 @@ msgid ""
 msgstr "Trường ưu tiên cho bản ghi RP phải là 0 hoặc rỗng"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
+#, auto-english-fallback
 msgid "SHA-1 digest must be exactly 40 hexadecimal characters"
-msgstr ""
-"Bản ghi RP đã lỗi thời và ít được sử dụng. Hãy cân nhắc thêm thông tin liên "
-"hệ vào bản ghi TXT thay thế."
+msgstr "SHA-1 digest must be exactly 40 hexadecimal characters"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:255
 msgid "SHA-256 digest must be exactly 64 hexadecimal characters"
@@ -6844,29 +6816,27 @@ msgid "This is not a valid IPv6 address."
 msgstr "Tên CNAME không hợp lệ. Phải là tên miền đầy đủ hợp lệ."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:102
+#, auto-english-fallback
 msgid "Invalid IPv4 part in IPv4-mapped IPv6 address."
-msgstr ""
-"Bản ghi CNAME không thể cùng tồn tại với các bản ghi khác cùng tên (RFC "
-"1912)."
+msgstr "Invalid IPv4 part in IPv4-mapped IPv6 address."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:108
 msgid "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
 msgstr "Bản ghi CNAME không nên trỏ đến bản ghi CNAME khác (chuỗi CNAME)."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:113
+#, auto-english-fallback
 msgid "Invalid IPv6 address: more than two consecutive colons."
-msgstr ""
-"Bản ghi CNAME tại đỉnh zone có thể gây vấn đề. Hãy cân nhắc sử dụng bản ghi "
-"ALIAS hoặc ANAME thay thế."
+msgstr "Invalid IPv6 address: more than two consecutive colons."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:122
 msgid "Invalid IPv6 address: must have 8 hextets when expanded."
 msgstr "Bản ghi CNAME trỏ đến chính nó, tạo vòng lặp vô hạn."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
+#, auto-english-fallback
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
-msgstr ""
-"Chuỗi CNAME quá dài có thể gây vấn đề hiệu suất. Hãy cân nhắc rút ngắn."
+msgstr "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
 msgid "IP address list cannot be empty."
@@ -6906,9 +6876,9 @@ msgid "CAA record must contain flags, tag, and value separated by spaces."
 msgstr "Tất cả các máy chủ MX nên có thể truy cập được trên cổng 25."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
+#, auto-english-fallback
 msgid "CAA flags must be a number between 0 and 255."
-msgstr ""
-"Sử dụng máy chủ MX duy nhất không được khuyến nghị để đảm bảo tính khả dụng."
+msgstr "CAA flags must be a number between 0 and 255."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:141
 msgid "CAA tag must only contain ASCII letters and numbers."
@@ -6924,10 +6894,9 @@ msgstr ""
 "issuance failures."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
+#, auto-english-fallback
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr ""
-"Mục tiêu SRV không hợp lệ. Phải là tên miền đầy đủ hợp lệ hoặc '.' cho dịch "
-"vụ không khả dụng."
+msgstr "Empty value is not allowed. Use \";\" to allow all CAs."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:204
 msgid "Invalid CA domain in issue tag."
@@ -6969,10 +6938,9 @@ msgid "Value must be enclosed in double quotes."
 msgstr "Nhiều bản ghi SRV với cùng ưu tiên sử dụng trọng số để cân bằng tải."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
+#, auto-english-fallback
 msgid "Backslashes must precede all quotes (\") in value content."
-msgstr ""
-"Trọng số SRV bằng 0 có nghĩa là máy chủ không được chọn trừ khi tất cả các "
-"máy chủ khác không khả dụng."
+msgstr "Backslashes must precede all quotes (\") in value content."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:319
 msgid "CAA property value exceeds maximum length of 512 characters."
@@ -7003,22 +6971,19 @@ msgid "Given hostname or one of the labels is too short or too long."
 msgstr "Bản ghi TXT DMARC nên bắt đầu bằng 'v=DMARC1'."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:128
+#, auto-english-fallback
 msgid "Multiple slashes in different labels are not allowed in ARPA zones."
-msgstr ""
-"Bản ghi TXT dài có thể gây vấn đề với một số resolver. Hãy giữ ngắn gọn khi "
-"có thể."
+msgstr "Multiple slashes in different labels are not allowed in ARPA zones."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
+#, auto-english-fallback
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
-msgstr ""
-"Primary nameserver không hợp lệ cho bản ghi SOA. Phải là tên miền đầy đủ hợp "
-"lệ."
+msgstr "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
+#, auto-english-fallback
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
-msgstr ""
-"Địa chỉ email admin không hợp lệ cho bản ghi SOA. Phải ở định dạng DNS (dấu "
-"chấm thay vì @)."
+msgstr "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:159
 msgid ""
@@ -7028,16 +6993,14 @@ msgstr ""
 "4294967295."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
+#, auto-english-fallback
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
-msgstr ""
-"Refresh không hợp lệ cho bản ghi SOA. Phải nằm trong khoảng từ 0 đến "
-"2147483647."
+msgstr "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
+#, auto-english-fallback
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
-msgstr ""
-"Retry không hợp lệ cho bản ghi SOA. Phải nằm trong khoảng từ 0 đến "
-"2147483647."
+msgstr "Invalid prefix length in RFC 2317 notation. Must be numeric."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:184
 msgid ""
@@ -7089,10 +7052,9 @@ msgid "Invalid primary nameserver in SOA record."
 msgstr "TTL tối thiểu SOA (TTL mặc định) nên từ 300 đến 86400 giây."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:201
+#, auto-english-fallback
 msgid "Invalid email address in SOA record."
-msgstr ""
-"Số serial SOA nên tăng sau mỗi thay đổi zone. Định dạng khuyến nghị: "
-"YYYYMMDDnn."
+msgstr "Invalid email address in SOA record."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:212
 msgid "Serial number must be numeric."
@@ -9249,13 +9211,14 @@ msgid "Network Mapping:"
 msgstr "Network Mapping:"
 
 #: templates/modern/list_networks.html:15
+#, auto-english-fallback
 msgid ""
 "Each network (CIDR block) maps to exactly one view. Resolvers in that "
 "network receive only the zone variants assigned to the mapped view. PowerDNS "
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
+msgstr """Each network (CIDR block) maps to exactly one view. Resolvers in that ""network receive only the zone variants assigned to the mapped view. PowerDNS ""evaluates networks longest-prefix first, so a more specific subnet (for ""example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match ""a client."
 
 #: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9770,17 +9733,17 @@ msgid "Total logs"
 msgstr "Cấu hình WireGuard không hợp lệ."
 
 #: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
-#, auto-english-fallback
 msgid "API Log Behavior:"
 msgstr "API Log Behavior:"
 
 #: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
+#, auto-english-fallback
 msgid ""
 "Records API key lifecycle events (creation, regeneration, revocation, "
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr ""
+msgstr """Records API key lifecycle events (creation, regeneration, revocation, ""permission changes) and authenticated API requests. Filter by user or ""operation to audit external integration activity. Sensitive values (keys, ""tokens) are never written to this log."
 
 #: templates/modern/list_log_users.html:26
 msgid "All users"
@@ -9863,17 +9826,17 @@ msgid "Zone Change Logs"
 msgstr "Chứng chỉ VPN không hợp lệ."
 
 #: templates/modern/list_log_zones.html:25
-#, auto-english-fallback
 msgid "Zone Log Behavior:"
 msgstr "Zone Log Behavior:"
 
 #: templates/modern/list_log_zones.html:26
+#, auto-english-fallback
 msgid ""
 "This activity feed records every operation performed against zones and "
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr ""
+msgstr """This activity feed records every operation performed against zones and ""records (creates, edits, deletes, DNSSEC actions, imports) as a flat ""key:value event string. For structured before/after snapshots and a diff ""view of record changes, see the Record Change Log."
 
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
@@ -9900,9 +9863,9 @@ msgid "Provide at least one record"
 msgstr "Cung cấp ít nhất một bản ghi"
 
 #: templates/modern/bulk_record_add.html:45
+#, auto-english-fallback
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr ""
-"Định dạng: name,type,content,priority,ttl,comment (một bản ghi mỗi dòng)"
+msgstr "Format: name,type,content,priority,ttl,comment (one record per line)"
 
 #: templates/modern/bulk_record_add.html:46
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -9949,9 +9912,9 @@ msgid "Best Practices"
 msgstr "Thực hành tốt nhất"
 
 #: templates/modern/bulk_record_add.html:89
+#, auto-english-fallback
 msgid "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
-msgstr ""
-"Đối với bản ghi CNAME, MX, SRV, đảm bảo content kết thúc bằng dấu chấm (.)"
+msgstr "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
 
 #: templates/modern/bulk_record_add.html:90
 msgid "Use @ for records at the zone apex (root domain)"
@@ -10103,19 +10066,18 @@ msgstr ""
 "hiện hành"
 
 #: templates/modern/user_agreement_content.html:7
+#, auto-english-fallback
 msgid "You will not attempt to gain unauthorized access to other users' data"
-msgstr ""
-"Bạn sẽ không cố gắng truy cập trái phép vào dữ liệu của người dùng khác"
+msgstr "You will not attempt to gain unauthorized access to other users' data"
 
 #: templates/modern/user_agreement_content.html:8
 msgid "You will keep your login credentials secure and confidential"
 msgstr "Bạn sẽ giữ thông tin đăng nhập của mình an toàn và bảo mật"
 
 #: templates/modern/user_agreement_content.html:9
+#, auto-english-fallback
 msgid "You will not use this system for any malicious or illegal activities"
-msgstr ""
-"Bạn sẽ không sử dụng hệ thống này cho bất kỳ hoạt động độc hại hoặc bất hợp "
-"pháp nào"
+msgstr "You will not use this system for any malicious or illegal activities"
 
 #: templates/modern/user_agreement_content.html:12
 msgid "Data Protection"
@@ -12060,9 +12022,9 @@ msgid "Select a zone template to apply standard records to all zones"
 msgstr "Chọn một mẫu vùng để áp dụng bản ghi chuẩn cho tất cả các vùng"
 
 #: templates/modern/bulk_registration.html:109
+#, auto-english-fallback
 msgid "The chosen owner will have full access to all created zones"
-msgstr ""
-"Chủ sở hữu được chọn sẽ có quyền truy cập đầy đủ vào tất cả các vùng được tạo"
+msgstr "The chosen owner will have full access to all created zones"
 
 #: templates/modern/bulk_registration.html:113
 msgid "How It Works"
@@ -12144,13 +12106,14 @@ msgid "Change Log Behavior:"
 msgstr "Change Log Behavior:"
 
 #: templates/modern/list_record_changes.html:20
+#, auto-english-fallback
 msgid ""
 "Every record add/edit/delete and zone create/delete/metadata-edit captures a "
 "before/after snapshot here, alongside the user and timestamp. Logs never "
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr ""
+msgstr """Every record add/edit/delete and zone create/delete/metadata-edit captures a ""before/after snapshot here, alongside the user and timestamp. Logs never ""expire automatically - prune old rows manually if the table grows large. Use ""the time-window shortcuts to focus on recent activity, or export to CSV/JSON ""to feed external audit systems."
 
 #: templates/modern/list_record_changes.html:34
 msgid "All actions"
@@ -12629,17 +12592,17 @@ msgid "User Activity Logs"
 msgstr "Nhật ký hoạt động người dùng"
 
 #: templates/modern/list_log_users.html:19
-#, auto-english-fallback
 msgid "User Log Behavior:"
 msgstr "User Log Behavior:"
 
 #: templates/modern/list_log_users.html:20
+#, auto-english-fallback
 msgid ""
 "Records user account events such as logins, password changes, group "
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr ""
+msgstr """Records user account events such as logins, password changes, group ""membership updates, and admin actions on user records. Each entry shows the ""action, the actor, the affected user, and a timestamp. Filter by operation ""or user to audit access changes."
 
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
@@ -12678,6 +12641,7 @@ msgid "View Behavior:"
 msgstr "View Behavior:"
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
+#, auto-english-fallback
 msgid ""
 "Views serve different zone variants to different clients based on the "
 "network that queried the resolver. Each variant is named zone..variant (for "
@@ -12685,7 +12649,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
+msgstr """Views serve different zone variants to different clients based on the ""network that queried the resolver. Each variant is named zone..variant (for ""example, example.com..trusted) and must exist as a separate zone in PowerDNS ""before it can be assigned here. Variants share a name but resolve ""differently per view, so the same hostname can answer with different IPs ""depending on the client's network."
 
 #: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
@@ -12812,9 +12776,9 @@ msgstr ""
 "chế độ tối"
 
 #: templates/modern/email_previews.html:99
+#, auto-english-fallback
 msgid "These previews reflect the actual templates used in production"
-msgstr ""
-"Các bản xem trước này phản ánh các mẫu thực tế được sử dụng trong sản xuất"
+msgstr "These previews reflect the actual templates used in production"
 
 #: templates/modern/pdns_status.html:6 templates/modern/pdns_status.html:12
 msgid "PowerDNS Server Status"
@@ -13144,17 +13108,17 @@ msgid "External applications will be able to authenticate using this key."
 msgstr "Các ứng dụng bên ngoài sẽ có thể xác thực bằng khóa này."
 
 #: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
-#, auto-english-fallback
 msgid "API Key Behavior:"
 msgstr "API Key Behavior:"
 
 #: templates/default/api_keys.html:183 templates/modern/api_keys.html:184
+#, auto-english-fallback
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr ""
+msgstr """API keys allow external applications to access the Poweradmin API. Each key ""is linked to your user account and inherits your permissions, so revoking ""your account also revokes all its keys. Treat keys as secrets - they grant ""the same access as logging in as you."
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -13348,17 +13312,17 @@ msgid "Group Activity Logs"
 msgstr "Nhật ký hoạt động nhóm"
 
 #: templates/modern/list_log_groups.html:19
-#, auto-english-fallback
 msgid "Group Log Behavior:"
 msgstr "Group Log Behavior:"
 
 #: templates/modern/list_log_groups.html:20
+#, auto-english-fallback
 msgid ""
 "Records group lifecycle events (create, edit, delete) and membership changes "
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr ""
+msgstr """Records group lifecycle events (create, edit, delete) and membership changes ""(users added or removed). Each entry shows the action, the actor, the ""affected group, and a timestamp. Useful for auditing zone-access changes ""mediated by group ownership."
 
 #: templates/modern/list_log_groups.html:26
 msgid "Group name"
@@ -13572,17 +13536,19 @@ msgid "Limited Database Rights:"
 msgstr "Limited Database Rights:"
 
 #: install/templates/step6.html.twig:15
+#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr ""
+msgstr """Create a database user with limited rights (select, insert, update, delete) ""for Poweradmin tables only. PowerDNS table access is not required when using ""the API backend."
 
 #: install/templates/step6.html.twig:17
+#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr ""
+msgstr """Create a database user with limited rights (select, insert, update, delete) ""for Poweradmin to access PowerDNS tables."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -13593,19 +13559,21 @@ msgid "Execute the following commands:"
 msgstr "Execute the following commands:"
 
 #: install/templates/step6.html.twig:40
+#, auto-english-fallback
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
+msgstr """After you have added the new user, proceed with this installation procedure."
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
 msgid "Note:"
 msgstr "Note:"
 
 #: install/templates/step6.html.twig:43
+#, auto-english-fallback
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
+msgstr """Since you are using SQLite, there is no need to create a new user with ""limited rights."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
@@ -13640,9 +13608,10 @@ msgid "Choose a language for installation"
 msgstr "Choose a language for installation"
 
 #: install/templates/step1.html.twig:12
+#, auto-english-fallback
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
+msgstr """Please select your preferred language to continue with the installation:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
@@ -13705,8 +13674,9 @@ msgid "Server name"
 msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
+#, auto-english-fallback
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr ""
+msgstr "PowerDNS server name for API calls (usually \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
@@ -13717,16 +13687,18 @@ msgid "Database Configuration:"
 msgstr "Database Configuration:"
 
 #: install/templates/step4.html.twig:90
+#, auto-english-fallback
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr ""
+msgstr """Configure database connection with table creation rights. PowerDNS location ""can be specified separately if needed."
 
 #: install/templates/step4.html.twig:93
+#, auto-english-fallback
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr ""
+msgstr """Configure database connection for Poweradmin tables (users, permissions, ""zones). PowerDNS tables are not required."
 
 #: install/templates/step4.html.twig:97
 msgid "Database type"
@@ -13757,8 +13729,9 @@ msgid "Provide the hostname"
 msgstr "Provide the hostname"
 
 #: install/templates/step4.html.twig:143
+#, auto-english-fallback
 msgid "Database server hostname (usually \"localhost\")."
-msgstr ""
+msgstr "Database server hostname (usually \"localhost\")."
 
 #: install/templates/step4.html.twig:148
 msgid "DB Port"
@@ -13805,9 +13778,10 @@ msgid "DB collation"
 msgstr "DB collation"
 
 #: install/templates/step4.html.twig:197
+#, auto-english-fallback
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
+msgstr """Collation rules for character comparison. Leave empty for database default."
 
 #: install/templates/step4.html.twig:206
 msgid "PowerDNS Database"
@@ -13838,8 +13812,9 @@ msgid "Provide a password"
 msgstr "Provide a password"
 
 #: install/templates/step4.html.twig:238
+#, auto-english-fallback
 msgid "Password for \"admin\" username."
-msgstr ""
+msgstr "Password for \"admin\" username."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -13934,16 +13909,18 @@ msgid "Database User"
 msgstr "Database User"
 
 #: install/templates/step5.html.twig:57
+#, auto-english-fallback
 msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
+msgstr """Poweradmin keeps its own tables (users, permissions, zone metadata) in the ""configured database even when the PowerDNS API backend is selected. These ""credentials are for that database, not for PowerDNS."
 
 #: install/templates/step5.html.twig:67
+#, auto-english-fallback
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
+msgstr """Poweradmin database username with restricted access. Not for web UI login."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
@@ -14030,30 +14007,34 @@ msgid "Important Security Notice:"
 msgstr "Important Security Notice:"
 
 #: install/templates/step8.html.twig:16
+#, auto-english-fallback
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr ""
+msgstr """You must remove the \"install/\" directory from the Poweradmin root ""directory."
 
 #: install/templates/step8.html.twig:17
+#, auto-english-fallback
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
+msgstr """Poweradmin will not function if the install directory exists, as a security ""measure."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
 msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
+#, auto-english-fallback
 msgid "Remove the \"install/\" directory from your server"
-msgstr ""
+msgstr "Remove the \"install/\" directory from your server"
 
 #: install/templates/step8.html.twig:27
+#, auto-english-fallback
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
-msgstr ""
+msgstr """Login to <a href=\"../index.php\">Poweradmin</a> using the default username ""\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
@@ -14072,9 +14053,10 @@ msgid "Before proceeding, ensure you have:"
 msgstr "Before proceeding, ensure you have:"
 
 #: install/templates/step3.html.twig:18
+#, auto-english-fallback
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
+msgstr """PowerDNS installed with database tables created (or API access configured)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
@@ -14089,10 +14071,11 @@ msgid "Next:"
 msgstr "Next:"
 
 #: install/templates/step3.html.twig:27
+#, auto-english-fallback
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr ""
+msgstr """Configure database connection, create admin account, and generate ""configuration file."
 
 #: install/helpers/InstallStepHandler.php:176
 msgid "Missing PowerDNS tables:"
@@ -14111,21 +14094,24 @@ msgid "Foreign Key Constraint Issues:"
 msgstr "Foreign Key Constraint Issues:"
 
 #: install/helpers/InstallStepHandler.php:209
+#, auto-english-fallback
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
+msgstr """The installer could not remove existing tables due to foreign key constraints"
 
 #: install/helpers/InstallStepHandler.php:210
+#, auto-english-fallback
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr ""
+msgstr """This can happen during reinstallation if you have custom constraints or if ""tables are referenced by other tables"
 
 #: install/helpers/InstallStepHandler.php:211
+#, auto-english-fallback
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr ""
+msgstr """You can try manually disabling foreign key checks before running the ""installer:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"
@@ -14136,10 +14122,11 @@ msgid "Make sure the SQLite database file exists"
 msgstr "Make sure the SQLite database file exists"
 
 #: install/helpers/InstallStepHandler.php:219
+#, auto-english-fallback
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
+msgstr """Check that the web server has read and write permissions for the database ""file"
 
 #: install/helpers/InstallStepHandler.php:220
 msgid "Verify the full path to the database file is correct and accessible"
@@ -14162,23 +14149,26 @@ msgid "Database Error"
 msgstr "Database Error"
 
 #: install/helpers/DatabaseHelper.php:175
+#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
+msgstr """The SQLite database file %s does not exist. Please create the database file ""before proceeding."
 
 #: install/helpers/DatabaseHelper.php:183
+#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
+msgstr """The SQLite database file %s is not readable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:191
+#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
+msgstr """The SQLite database file %s is not writable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:203
 #, php-format
@@ -14194,37 +14184,30 @@ msgid "PowerDNS API key is required when using API backend."
 msgstr "PowerDNS API key is required when using API backend."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
+#, auto-english-fallback
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
+msgstr """No configuration file found. Please create the config/settings.php file ""before proceeding."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
+#, auto-english-fallback
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr ""
+msgstr """Separate PowerDNS databases are only supported with MySQL. For PostgreSQL ""and SQLite, please use the same database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
+#, auto-english-fallback
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr ""
+msgstr """Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is ""properly installed in this database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
+#, auto-english-fallback
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr ""
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
-# OBSOLETE: "key is linked to your user account and inherits your permissions."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Khóa API cho phép các ứng dụng bên ngoài truy cập vào Poweradmin API. Mỗi "
-# OBSOLETE: "khóa được liên kết với tài khoản người dùng của bạn và kế thừa quyền hạn "
-# OBSOLETE: "của bạn."
-
-
+msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 

@@ -1,5 +1,10 @@
 <?php
 
+// phpcs:disable PSR1.Files.SideEffects -- CLI entry-point script:
+// the SAPI guard is the script's first line on purpose, but PSR-1 disallows
+// mixing side effects with function declarations in the same file. The
+// helpers below are private to this CLI and don't justify a separate file.
+
 // CLI-only guard: block any web SAPI before any output is generated.
 // Placed BEFORE the file header so the response from a web request is a
 // clean 403 with no leaked source.

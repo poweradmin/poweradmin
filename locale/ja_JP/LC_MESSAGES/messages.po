@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:53+0300\n"
+"POT-Creation-Date: 2026-04-26 16:48+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -612,9 +612,9 @@ msgid "IPv4 Addresses"
 msgstr "IPv4アドレス"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:90
+#, auto-english-fallback
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
-msgstr ""
-"1行に1つのIPアドレスまたはネットワーク(例: 192.0.2.1または192.0.2.0/24)"
+msgstr "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:94
 msgid "IPv6 Addresses"
@@ -1220,10 +1220,9 @@ msgid "You do not have permission to modify this zone."
 msgstr "このゾーンを変更する権限がありません。"
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:235
+#, auto-english-fallback
 msgid "Import session expired. Please upload the file again."
-msgstr ""
-"インポートセッションの有効期限が切れました。ファイルを再度アップロードしてく"
-"ださい。"
+msgstr "Import session expired. Please upload the file again."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:242
 msgid "Invalid import data. Please upload the file again."
@@ -2097,10 +2096,9 @@ msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "ゾーン署名解除の要求は成功しましたが、検証に失敗しました。"
 
 #: lib/Application/Controller/DnssecController.php:117
+#, auto-english-fallback
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
-msgstr ""
-"ゾーンの署名解除に失敗しました。詳細についてはPowerDNSログを確認してくださ"
-"い。"
+msgstr "Failed to unsign zone. Check PowerDNS logs for details."
 
 #: lib/Application/Controller/EditController.php:736
 msgid "Request has expired, please try again."
@@ -2214,9 +2212,9 @@ msgstr ""
 "いる可能性があります。"
 
 #: lib/Application/Controller/AddRecordController.php:521
+#, auto-english-fallback
 msgid "Failed to add any records. They may contain invalid data."
-msgstr ""
-"レコードの追加に失敗しました。無効なデータが含まれている可能性があります。"
+msgstr "Failed to add any records. They may contain invalid data."
 
 #: lib/Application/Controller/DeleteDomainsController.php:79
 msgid "No zone selected for deletion."
@@ -2300,10 +2298,9 @@ msgid "Add Primary Zone"
 msgstr "プライマリゾーンを追加"
 
 #: lib/Application/Controller/AddZoneSlaveController.php:122
+#, auto-english-fallback
 msgid "At least one user or group must be selected as owner."
-msgstr ""
-"所有者として少なくとも1人のユーザーまたは1つのグループを選択する必要がありま"
-"す。"
+msgstr "At least one user or group must be selected as owner."
 
 #: lib/Application/Controller/BulkRegistrationController.php:113
 msgid "There is already a zone with this name."
@@ -2708,9 +2705,9 @@ msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr "PEM 鍵のインポートには PowerDNS 4.7 以降が必要です。"
 
 #: lib/Application/Controller/DnssecKeyImportController.php:98
+#, auto-english-fallback
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr ""
-"PEM エンコードされた秘密鍵を入力してください (BEGIN/END マーカーが必要)。"
+msgstr "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:109
 msgid "PEM key imported successfully."
@@ -2935,16 +2932,14 @@ msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519アルゴリズムは256ビットを使用する必要があります"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:133
+#, auto-english-fallback
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
-msgstr ""
-"ED448アルゴリズムは456ビットを使用する必要があります（このUIではサポートされ"
-"ていません）"
+msgstr "ED448 algorithm must use 456 bits (unsupported in this UI)"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:140
+#, auto-english-fallback
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr ""
-"RSAアルゴリズムは適切なセキュリティのために1024または2048ビットを使用する必要"
-"があります"
+msgstr "RSA algorithms should use 1024 or 2048 bits for adequate security"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:163
 msgid "Zone key has been added successfully."
@@ -3134,10 +3129,9 @@ msgid "This is an invalid zone name."
 msgstr "これは無効なゾーン名です。"
 
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
+#, auto-english-fallback
 msgid "This template is assigned to at least one user and one group."
-msgstr ""
-"このテンプレートは少なくとも1人のユーザーと1つのグループに割り当てられていま"
-"す。"
+msgstr "This template is assigned to at least one user and one group."
 
 #: lib/Domain/Model/UserManager.php:384
 msgid "This template is assigned to at least one user."
@@ -3318,16 +3312,18 @@ msgid "No, keep this supermaster"
 msgstr "いいえ、このスーパーマスターを保持します"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
+#, auto-english-fallback
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
+msgstr """Showing connectivity status for the autoprimary servers configured in the ""table below."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:148
+#, auto-english-fallback
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
+msgstr """Showing connectivity status for the supermasters configured in the table ""below."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -3544,28 +3540,24 @@ msgstr ""
 "（Ed25519）のいずれかである必要があります。"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
+#, auto-english-fallback
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
-msgstr ""
-"ゲートウェイタイプ0（ゲートウェイなし）の場合、ゲートウェイは「.」である必要"
-"があります。"
+msgstr "For gateway type 0 (No gateway), gateway must be \".\"."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:201
+#, auto-english-fallback
 msgid "For gateway type 1, gateway must be a valid IPv4 address."
-msgstr ""
-"ゲートウェイタイプ1の場合、ゲートウェイは有効なIPv4アドレスである必要がありま"
-"す。"
+msgstr "For gateway type 1, gateway must be a valid IPv4 address."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:208
+#, auto-english-fallback
 msgid "For gateway type 2, gateway must be a valid IPv6 address."
-msgstr ""
-"ゲートウェイタイプ2の場合、ゲートウェイは有効なIPv6アドレスである必要がありま"
-"す。"
+msgstr "For gateway type 2, gateway must be a valid IPv6 address."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:218
+#, auto-english-fallback
 msgid "For gateway type 3, gateway must be a valid domain name."
-msgstr ""
-"ゲートウェイタイプ3の場合、ゲートウェイは有効なドメイン名である必要がありま"
-"す。"
+msgstr "For gateway type 3, gateway must be a valid domain name."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:227
 msgid "IPSECKEY public key is required when algorithm is not 0."
@@ -4013,10 +4005,9 @@ msgstr ""
 "6742）。"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
+#, auto-english-fallback
 msgid "LP record must contain preference and FQDN separated by space."
-msgstr ""
-"LPレコードには、スペースで区切られた優先度とFQDNが含まれている必要がありま"
-"す。"
+msgstr "LP record must contain preference and FQDN separated by space."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:163
 msgid "LP preference must be a number between 0 and 65535."
@@ -4039,9 +4030,9 @@ msgid "Invalid AFSDB hostname."
 msgstr "無効なAFSDBホスト名です。"
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
+#, auto-english-fallback
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
-msgstr ""
-"AFSDBサーバーホスト名は完全修飾ドメイン名（FQDN）である必要があります。"
+msgstr "AFSDB server hostname must be a fully qualified domain name (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
@@ -4224,16 +4215,14 @@ msgid "RKEY algorithm field must be a numeric value."
 msgstr "RKEYアルゴリズムフィールドは数値である必要があります。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:219
+#, auto-english-fallback
 msgid "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
-msgstr ""
-"RKEYアルゴリズムフィールドは有効なDNSSECアルゴリズム番号（0-16）である必要が"
-"あります。"
+msgstr "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:224
+#, auto-english-fallback
 msgid "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
-msgstr ""
-"アルゴリズム1（RSA/MD5）は廃止されており（RFC 6725）、使用すべきではありませ"
-"ん。"
+msgstr "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:226
 msgid ""
@@ -4314,9 +4303,9 @@ msgid "RKEY public key data cannot be empty."
 msgstr "RKEY公開鍵データは空にできません。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:256
+#, auto-english-fallback
 msgid "Public key data should be Base64 encoded according to RFC 4034."
-msgstr ""
-"公開鍵データはRFC 4034に従ってBase64エンコードされている必要があります。"
+msgstr "Public key data should be Base64 encoded according to RFC 4034."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:260
 msgid ""
@@ -4652,10 +4641,9 @@ msgid "Invalid characters in OPENPGPKEY record content."
 msgstr "OPENPGPKEYレコードの内容に無効な文字があります。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:208
+#, auto-english-fallback
 msgid "OPENPGPKEY records must contain valid base64-encoded data."
-msgstr ""
-"OPENPGPKEYレコードには有効なbase64エンコードデータが含まれている必要がありま"
-"す。"
+msgstr "OPENPGPKEY records must contain valid base64-encoded data."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:214
 msgid "OPENPGPKEY record contains invalid base64 data."
@@ -4800,10 +4788,9 @@ msgstr ""
 "いる可能性があります。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
+#, auto-english-fallback
 msgid "TSIG keys should be rotated periodically as a security best practice."
-msgstr ""
-"TSIGキーはセキュリティのベストプラクティスとして定期的にローテーションする必"
-"要があります。"
+msgstr "TSIG keys should be rotated periodically as a security best practice."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:155
 msgid ""
@@ -4847,10 +4834,9 @@ msgid "TSIG fudge must be a non-negative integer."
 msgstr "TSIGファッジは非負の整数である必要があります。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
+#, auto-english-fallback
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
-msgstr ""
-"TSIG MACは有効なbase64エンコード文字列または16進数文字列である必要がありま"
-"す。"
+msgstr "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:232
 msgid ""
@@ -4933,9 +4919,9 @@ msgid "TSIG algorithm name must end with a dot."
 msgstr "TSIGアルゴリズム名はドットで終わる必要があります。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:333
+#, auto-english-fallback
 msgid "TSIG algorithm name must be a valid domain name ending with a dot."
-msgstr ""
-"TSIGアルゴリズム名はドットで終わる有効なドメイン名である必要があります。"
+msgstr "TSIG algorithm name must be a valid domain name ending with a dot."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:337
 msgid ""
@@ -4945,9 +4931,9 @@ msgstr ""
 "能性があります。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
+#, auto-english-fallback
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
-msgstr ""
-"RFC 8945では標準TSIGアルゴリズムとしてHMAC-SHA256の使用を推奨しています。"
+msgstr "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:110
 msgid ""
@@ -4958,9 +4944,9 @@ msgstr ""
 "されているとは限りません。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
+#, auto-english-fallback
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
-msgstr ""
-"ZONEMDレコードはゾーンの頂点（SOAレコードと同じ）に配置する必要があります。"
+msgstr "ZONEMD records must be placed at the zone apex (same as SOA record)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:112
 msgid ""
@@ -5054,10 +5040,9 @@ msgid "ZONEMD digest must be a hexadecimal string."
 msgstr "ZONEMDダイジェストは16進数文字列である必要があります。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:222
+#, auto-english-fallback
 msgid "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
-msgstr ""
-"ZONEMDダイジェストは少なくとも24個の16進文字（12オクテット）である必要があり"
-"ます。"
+msgstr "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:230
 msgid ""
@@ -5096,10 +5081,9 @@ msgstr ""
 "データが含まれている必要があります。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
+#, auto-english-fallback
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
-msgstr ""
-"CERTタイプは0から65535の間の数値または有効なニーモニックである必要がありま"
-"す。"
+msgstr "CERT type must be a number between 0 and 65535 or a valid mnemonic."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
@@ -5126,10 +5110,9 @@ msgid "CERT key tag must be a number between 0 and 65535."
 msgstr "CERTキータグは0から65535の間の数値である必要があります。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:221
+#, auto-english-fallback
 msgid "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
-msgstr ""
-"CERTアルゴリズムは0から255の間の数値または有効なニーモニックである必要があり"
-"ます。"
+msgstr "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:227
 msgid ""
@@ -5144,9 +5127,9 @@ msgid "Algorithm "
 msgstr "アルゴリズム"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
+#, auto-english-fallback
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
-msgstr ""
-"URLベースのCERTタイプの場合、証明書データは有効なURLである必要があります。"
+msgstr "For URL-based CERT types, the certificate data must be a valid URL."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
@@ -5239,16 +5222,14 @@ msgstr ""
 "つ可能性があります。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
+#, auto-english-fallback
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
-msgstr ""
-"無効なアルゴリズムです。有効なDNSSECアルゴリズム（1-16）のいずれかである必要"
-"があります。"
+msgstr "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
+#, auto-english-fallback
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr ""
-"無効なダイジェストタイプです。1（SHA-1）、2（SHA-256）、4（SHA-384）のいずれ"
-"かである必要があります。"
+msgstr "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
@@ -5317,9 +5298,9 @@ msgstr ""
 "べきではありません。"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:119
+#, auto-english-fallback
 msgid "HTTPS record must contain at least priority and target values."
-msgstr ""
-"HTTPSレコードには少なくとも優先度とターゲット値が含まれている必要があります。"
+msgstr "HTTPS record must contain at least priority and target values."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:126
 msgid "HTTPS record priority must be a number between 0 and 65535."
@@ -5349,11 +5330,10 @@ msgstr ""
 "ります。"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
+#, auto-english-fallback
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr ""
-"未知のHTTPSパラメータキー：「%s」。有効なキーについてはRFC 9460を参照してくだ"
-"さい。"
+msgstr "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
@@ -5462,9 +5442,9 @@ msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
 msgstr "GSS-APIモード（3）はRFC 3645に従って開始時刻と満了時刻を無視します。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:214
+#, auto-english-fallback
 msgid "GSS-API mode requires key data to contain a GSS-API token."
-msgstr ""
-"GSS-APIモードではキーデータにGSS-APIトークンが含まれている必要があります。"
+msgstr "GSS-API mode requires key data to contain a GSS-API token."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:217
 msgid ""
@@ -5584,9 +5564,9 @@ msgstr ""
 "URIレコードは攻撃者による操作を防ぐためにDNSSECで保護する必要があります。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
+#, auto-english-fallback
 msgid "Consider using HTTPS instead of HTTP for better security."
-msgstr ""
-"より良いセキュリティのためにHTTPの代わりにHTTPSの使用を検討してください。"
+msgstr "Consider using HTTPS instead of HTTP for better security."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:200
 msgid "FTP is considered less secure than alternatives like SFTP or HTTPS."
@@ -5610,14 +5590,14 @@ msgstr ""
 "DNSレコードには推奨されません。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
+#, auto-english-fallback
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr ""
-"URIレコードは次の形式である必要があります：<優先度> <重み> \"<対象URI>\""
+msgstr "URI record must be in the format: <priority> <weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
+#, auto-english-fallback
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr ""
-"URI優先度は0から65535（16ビット符号なし整数）の間である必要があります。"
+msgstr "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:250
 msgid "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
@@ -6398,10 +6378,9 @@ msgstr ""
 "では許可されていません。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:245
+#, auto-english-fallback
 msgid "RP mailbox domain must include both local part and domain sections."
-msgstr ""
-"RPメールボックスドメインはローカル部分とドメインセクションの両方を含む必要が"
-"あります。"
+msgstr "RP mailbox domain must include both local part and domain sections."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:256
 msgid "RP mailbox domain contains empty label."
@@ -6440,9 +6419,9 @@ msgstr ""
 "示します。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
+#, auto-english-fallback
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr ""
-"RP TXTドメインは完全修飾ドメイン名（ドットで終わる）である必要があります。"
+msgstr "RP TXT domain must be a fully qualified domain name (end with a dot)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
@@ -6554,9 +6533,9 @@ msgstr ""
 "れている）のようです。"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
+#, auto-english-fallback
 msgid "This is the all-zeros address, which may not be valid in all contexts."
-msgstr ""
-"これは全ゼロアドレスで、すべてのコンテキストで有効ではない可能性があります。"
+msgstr "This is the all-zeros address, which may not be valid in all contexts."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:178
 msgid "This appears to be an IANA OUI (00-00-5E) address."
@@ -6657,10 +6636,9 @@ msgid "Key tag must be a number between 1 and 65535"
 msgstr "キータグは1から65535の間の数値である必要があります"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:211
+#, auto-english-fallback
 msgid "Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
-msgstr ""
-"アルゴリズムは次のいずれかである必要があります：1, 2, 3, 5, 6, 7, 8, 10, 12, "
-"13, 14, 15, 16"
+msgstr "Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:212
 #, php-format
@@ -6693,10 +6671,9 @@ msgstr ""
 "ECDSAP256SHA256（13）またはED25519（15）の使用を検討してください。"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
+#, auto-english-fallback
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
-msgstr ""
-"ダイジェストタイプは次のいずれかである必要があります：1（SHA-1）、2"
-"（SHA-256）、4（SHA-384）"
+msgstr "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:238
 msgid ""
@@ -6814,9 +6791,9 @@ msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
 msgstr "CSYNCレコードで無効なフラグです。フラグは数値である必要があります。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:208
+#, auto-english-fallback
 msgid "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
-msgstr ""
-"CSYNCレコードで無効なフラグです。フラグは0から65535の間である必要があります。"
+msgstr "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
@@ -7016,9 +6993,9 @@ msgid "Priority field for CAA records must be 0 or empty."
 msgstr "CAAレコードの優先度フィールドは0または空である必要があります。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:125
+#, auto-english-fallback
 msgid "CAA record must contain flags, tag, and value separated by spaces."
-msgstr ""
-"CAAレコードはスペースで区切られたフラグ、タグ、値を含む必要があります。"
+msgstr "CAA record must contain flags, tag, and value separated by spaces."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
 msgid "CAA flags must be a number between 0 and 255."
@@ -7038,9 +7015,9 @@ msgstr ""
 "敗を引き起こす可能性があります。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
+#, auto-english-fallback
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr ""
-"空の値は許可されていません。すべてのCAを許可するには「;」を使用してください。"
+msgstr "Empty value is not allowed. Use \";\" to allow all CAs."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:204
 msgid "Invalid CA domain in issue tag."
@@ -7124,10 +7101,9 @@ msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
 msgstr "無効なRFC 2317形式です。形式を使用: subnet/prefix(例: 0/26)。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
+#, auto-english-fallback
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
-msgstr ""
-"RFC 2317表記の無効なサブネット番号です。IPv4の場合は0-255である必要がありま"
-"す。"
+msgstr "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:159
 msgid ""
@@ -7137,9 +7113,9 @@ msgstr ""
 "あります。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
+#, auto-english-fallback
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
-msgstr ""
-"RFC 2317表記の無効なサブネットです。数値または16進数である必要があります。"
+msgstr "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
@@ -7154,11 +7130,10 @@ msgstr ""
 "25-31)。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
+#, auto-english-fallback
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
-msgstr ""
-"サブネット%dはプレフィックス/%dと整列していません。%dの倍数である必要がありま"
-"す。"
+msgstr "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
 msgid "Invalid IPv6 prefix length. Must be 0-128."
@@ -7208,9 +7183,9 @@ msgid "Serial number must be numeric."
 msgstr "シリアル番号は数値である必要があります。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:218
+#, auto-english-fallback
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
-msgstr ""
-"シリアル番号は32ビット符号なし整数（0から4294967295）である必要があります。"
+msgstr "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:231
 msgid ""
@@ -7280,9 +7255,9 @@ msgid "SVCB target must be either \".\" or a valid hostname."
 msgstr "SVCBターゲットは「.」または有効なホスト名である必要があります。ます。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
+#, auto-english-fallback
 msgid "In Alias Mode (priority = 0), the target cannot be \".\"."
-msgstr ""
-"エイリアスモード（優先度 = 0）では、ターゲットを「.」にすることはできません。"
+msgstr "In Alias Mode (priority = 0), the target cannot be \".\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:155
 msgid "In Alias Mode (priority = 0), no SvcParams are allowed."
@@ -7297,9 +7272,9 @@ msgstr ""
 "が必要です。必要です。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
+#, auto-english-fallback
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr ""
-"SVCBパラメータはスペースで区切られたkey=value形式である必要があります。"
+msgstr "SVCB parameters must be in key=value format separated by spaces."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -7567,9 +7542,9 @@ msgstr ""
 "使用されます（RFC 6742セクション3.2）。"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:152
+#, auto-english-fallback
 msgid "L64 record must contain preference and locator64 separated by space."
-msgstr ""
-"L64レコードはスペースで区切られた優先度とlocator64を含む必要があります。"
+msgstr "L64 record must contain preference and locator64 separated by space."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:159
 msgid "L64 preference must be a number between 0 and 65535."
@@ -7824,10 +7799,9 @@ msgstr ""
 "れているわけではありません。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:196
+#, auto-english-fallback
 msgid "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
-msgstr ""
-"SSHFPフィンガープリントタイプは1（SHA-1）または2（SHA-256）である必要がありま"
-"す。"
+msgstr "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:202
 msgid ""
@@ -7945,10 +7919,9 @@ msgstr ""
 "コードを使用してください。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:130
+#, auto-english-fallback
 msgid "KEY records may not be supported by all DNS servers and resolvers."
-msgstr ""
-"KEYレコードは、すべてのDNSサーバーやリゾルバーでサポートされていない可能性が"
-"あります。"
+msgstr "KEY records may not be supported by all DNS servers and resolvers."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:141
 msgid ""
@@ -7971,10 +7944,9 @@ msgid "Invalid characters in KEY record content."
 msgstr "KEYレコードの内容に無効な文字があります。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:181
+#, auto-english-fallback
 msgid "KEY record must contain flags, protocol, algorithm, and public key."
-msgstr ""
-"KEYレコードには、フラグ、プロトコル、アルゴリズム、および公開鍵を含める必要が"
-"あります。"
+msgstr "KEY record must contain flags, protocol, algorithm, and public key."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:190
 msgid "KEY flags must be a number between 0 and 65535."
@@ -8048,10 +8020,9 @@ msgid "DMARC version tag (v) must be DMARC1"
 msgstr "DMARCバージョンタグ（v）はDMARC1である必要があります"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:195
+#, auto-english-fallback
 msgid "DMARC policy tag (p) must be one of: none, quarantine, reject"
-msgstr ""
-"DMARCポリシータグ（p）は次のいずれかである必要があります：none、quarantine、"
-"reject"
+msgstr "DMARC policy tag (p) must be one of: none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:200
 msgid ""
@@ -8070,14 +8041,14 @@ msgstr ""
 "quarantine、reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
+#, auto-english-fallback
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr ""
-"DMARC DKIM整列タグ（adkim）はr（緩和）またはs（厳密）である必要があります"
+msgstr "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
+#, auto-english-fallback
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr ""
-"DMARC SPF整列タグ（aspf）はr（緩和）またはs（厳密）である必要があります"
+msgstr "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
@@ -8244,10 +8215,9 @@ msgid "CDS algorithm must be a number between 1 and 16."
 msgstr "CDSアルゴリズムは1から16の間の数値である必要があります。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
+#, auto-english-fallback
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr ""
-"CDSダイジェストタイプは1（SHA-1）、2（SHA-256）、または4（SHA-384）である必要"
-"があります。"
+msgstr "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:216
 msgid ""
@@ -8313,9 +8283,9 @@ msgstr ""
 "ルチホームノードのL32レコードには非常に低いTTL値を推奨しています。"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
+#, auto-english-fallback
 msgid "L32 record must contain preference and locator separated by space."
-msgstr ""
-"L32レコードには、スペースで区切られた優先度とロケータを含める必要があります。"
+msgstr "L32 record must contain preference and locator separated by space."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:162
 msgid "L32 preference must be a number between 0 and 65535."
@@ -8395,14 +8365,14 @@ msgstr ""
 "優先度は優先度フィールドに入力してください。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
+#, auto-english-fallback
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
-msgstr ""
-"SRVレコードの重みフィールドの値が無効です。0-65535である必要があります。"
+msgstr "Invalid value for the weight field of the SRV record. Must be 0-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
+#, auto-english-fallback
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-msgstr ""
-"SRVレコードのポートフィールドの値が無効です。1-65535である必要があります。"
+msgstr "Invalid value for the port field of the SRV record. Must be 1-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
@@ -8418,10 +8388,9 @@ msgid "SRV target cannot be empty."
 msgstr "SRVターゲットは空にできません。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
+#, auto-english-fallback
 msgid "When target is \".\" (no service), port and weight should both be 0."
-msgstr ""
-"ターゲットが「.」（サービスなし）の場合、ポートと重みの両方が0である必要があ"
-"ります。"
+msgstr "When target is \".\" (no service), port and weight should both be 0."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:399
 msgid "Invalid SRV target."
@@ -8633,9 +8602,9 @@ msgid "NAPTR record order must be a number between 0 and 65535."
 msgstr "NAPTRレコードのオーダーは0から65535の間の数値である必要があります。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
+#, auto-english-fallback
 msgid "NAPTR record preference must be a number between 0 and 65535."
-msgstr ""
-"NAPTRレコードのプリファレンスは0から65535の間の数値である必要があります。"
+msgstr "NAPTR record preference must be a number between 0 and 65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:219
 msgid "NAPTR record flags must be a quoted string."
@@ -8845,9 +8814,9 @@ msgid "There is no managed zone for domain: %s."
 msgstr "ドメイン%sの管理ゾーンがありません。"
 
 #: lib/Domain/Service/DomainRecordCreator.php:89
+#, auto-english-fallback
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
-msgstr ""
-"逆引きゾーンからのIPv6ドメインレコードの追加はまだサポートされていません。"
+msgstr "Adding IPv6 domain records from reverse zones is not supported yet."
 
 #: lib/Domain/Service/DomainRecordCreator.php:129
 msgid "This domain record was not valid and could not be added."
@@ -8901,21 +8870,20 @@ msgid "Add an SOA record to the zone before attempting to sign it."
 msgstr "署名を試みる前にゾーンにSOAレコードを追加してください。"
 
 #: lib/Domain/Service/ZoneValidationService.php:109
+#, auto-english-fallback
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
-msgstr ""
-"ゾーンには%dのSOAレコードがあります。ゾーンごとに1つのSOAレコードのみが許可さ"
-"れます。"
+msgstr "Zone has %d SOA records. Only one SOA record is allowed per zone."
 
 #: lib/Domain/Service/ZoneValidationService.php:110
 msgid "Remove duplicate SOA records, keeping only one."
 msgstr "重複するSOAレコードを削除し、1つだけ保持してください。"
 
 #: lib/Domain/Service/ZoneValidationService.php:121
+#, auto-english-fallback
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr ""
-"SOAレコードが頂点にありません。\"%s\"で見つかりましたが、ゾーンは\"%s\"です。"
+msgstr "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:122
 msgid "Move the SOA record to the zone apex."
@@ -9558,9 +9526,9 @@ msgid "Validation"
 msgstr "検証"
 
 #: templates/modern/edit_supermaster.html:88
+#, auto-english-fallback
 msgid "All fields will be validated to ensure they contain proper values."
-msgstr ""
-"すべてのフィールドが適切な値を含んでいることを確認するために検証されます。"
+msgstr "All fields will be validated to ensure they contain proper values."
 
 #: templates/default/dnssec.html:6 templates/modern/dnssec.html:6
 msgid "Confirm Unsign Zone"
@@ -9667,19 +9635,19 @@ msgid "Network Mapping:"
 msgstr "Network Mapping:"
 
 #: templates/modern/list_networks.html:15
+#, auto-english-fallback
 msgid ""
 "Each network (CIDR block) maps to exactly one view. Resolvers in that "
 "network receive only the zone variants assigned to the mapped view. PowerDNS "
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
+msgstr """Each network (CIDR block) maps to exactly one view. Resolvers in that ""network receive only the zone variants assigned to the mapped view. PowerDNS ""evaluates networks longest-prefix first, so a more specific subnet (for ""example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match ""a client."
 
 #: templates/modern/list_networks.html:21
+#, auto-english-fallback
 msgid "No networks configured yet. Map a CIDR to a view below."
-msgstr ""
-"まだネットワークが設定されていません。下で CIDR をビューにマッピングしてくだ"
-"さい。"
+msgstr "No networks configured yet. Map a CIDR to a view below."
 
 #: templates/modern/list_networks.html:28
 msgid "Network"
@@ -9792,9 +9760,9 @@ msgid "Provide content"
 msgstr "内容を入力してください"
 
 #: templates/modern/add_record.html:107 templates/modern/add_record.html:159
+#, auto-english-fallback
 msgid "This record type is deprecated and should not be used for new records."
-msgstr ""
-"このレコードタイプは非推奨であり、新しいレコードには使用しないでください。"
+msgstr "This record type is deprecated and should not be used for new records."
 
 #: templates/modern/edit_perm_templ.html:52
 msgid "Update"
@@ -10202,17 +10170,17 @@ msgid "Total logs"
 msgstr "総ログ数"
 
 #: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
-#, auto-english-fallback
 msgid "API Log Behavior:"
 msgstr "API Log Behavior:"
 
 #: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
+#, auto-english-fallback
 msgid ""
 "Records API key lifecycle events (creation, regeneration, revocation, "
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr ""
+msgstr """Records API key lifecycle events (creation, regeneration, revocation, ""permission changes) and authenticated API requests. Filter by user or ""operation to audit external integration activity. Sensitive values (keys, ""tokens) are never written to this log."
 
 #: templates/modern/list_log_users.html:26
 msgid "All users"
@@ -10255,10 +10223,9 @@ msgid "Export Logs"
 msgstr "ログをエクスポート"
 
 #: templates/modern/list_log_groups.html:132
+#, auto-english-fallback
 msgid "Export filtered log entries. Current filters will be applied."
-msgstr ""
-"フィルタされたログエントリをエクスポートします。現在のフィルタが適用されま"
-"す。"
+msgstr "Export filtered log entries. Current filters will be applied."
 
 #: templates/modern/list_log_groups.html:133
 msgid "records to export"
@@ -10297,17 +10264,17 @@ msgid "Zone Change Logs"
 msgstr "ゾーン変更ログ"
 
 #: templates/modern/list_log_zones.html:25
-#, auto-english-fallback
 msgid "Zone Log Behavior:"
 msgstr "Zone Log Behavior:"
 
 #: templates/modern/list_log_zones.html:26
+#, auto-english-fallback
 msgid ""
 "This activity feed records every operation performed against zones and "
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr ""
+msgstr """This activity feed records every operation performed against zones and ""records (creates, edits, deletes, DNSSEC actions, imports) as a flat ""key:value event string. For structured before/after snapshots and a diff ""view of record changes, see the Record Change Log."
 
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
@@ -10382,9 +10349,9 @@ msgid "Best Practices"
 msgstr "ベストプラクティス"
 
 #: templates/modern/bulk_record_add.html:89
+#, auto-english-fallback
 msgid "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
-msgstr ""
-"CNAME、MX、SRVレコードの場合、内容がドット（.）で終わることを確認してください"
+msgstr "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
 
 #: templates/modern/bulk_record_add.html:90
 msgid "Use @ for records at the zone apex (root domain)"
@@ -11010,9 +10977,9 @@ msgid "Add to Groups"
 msgstr "グループに追加"
 
 #: templates/default/edit_user.html:248 templates/modern/edit_user.html:245
+#, auto-english-fallback
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
-msgstr ""
-"1つ以上のグループを選択し、\"選択したグループを追加\"ボタンをクリックします。"
+msgstr "Select one or more groups and click \"Add Selected Groups\" button."
 
 #: templates/modern/edit_user.html:253 templates/modern/add_user.html:180
 msgid "Search available groups..."
@@ -12352,9 +12319,9 @@ msgid "Warning: Missing SOA Record"
 msgstr "警告：SOAレコードが不足"
 
 #: templates/modern/edit_zone_templ.html:316
+#, auto-english-fallback
 msgid "This zone template does not have an SOA (Start of Authority) record."
-msgstr ""
-"このゾーンテンプレートにはSOA（Start of Authority）レコードがありません。"
+msgstr "This zone template does not have an SOA (Start of Authority) record."
 
 #: templates/modern/edit_zone_templ.html:317
 msgid ""
@@ -12481,14 +12448,14 @@ msgid "Enter one domain name per line in the Domains field"
 msgstr "ドメインフィールドに1行に1つのドメイン名を入力してください"
 
 #: templates/modern/bulk_registration.html:108
+#, auto-english-fallback
 msgid "Select a zone template to apply standard records to all zones"
-msgstr ""
-"すべてのゾーンに標準レコードを適用するゾーンテンプレートを選択してください"
+msgstr "Select a zone template to apply standard records to all zones"
 
 #: templates/modern/bulk_registration.html:109
+#, auto-english-fallback
 msgid "The chosen owner will have full access to all created zones"
-msgstr ""
-"選択した所有者は、作成されたすべてのゾーンへの完全なアクセス権を持ちます"
+msgstr "The chosen owner will have full access to all created zones"
 
 #: templates/modern/bulk_registration.html:113
 msgid "How It Works"
@@ -12511,10 +12478,9 @@ msgid "Use NATIVE zone type for most standard setups"
 msgstr "ほとんどの標準設定ではNATIVEゾーンタイプを使用してください"
 
 #: templates/modern/bulk_registration.html:129
+#, auto-english-fallback
 msgid "Create a template first if you need standard records for all zones"
-msgstr ""
-"すべてのゾーンに標準レコードが必要な場合は、まずテンプレートを作成してくださ"
-"い"
+msgstr "Create a template first if you need standard records for all zones"
 
 #: templates/modern/bulk_registration.html:130
 msgid "You can copy and paste a list of domains from a spreadsheet"
@@ -12571,13 +12537,14 @@ msgid "Change Log Behavior:"
 msgstr "Change Log Behavior:"
 
 #: templates/modern/list_record_changes.html:20
+#, auto-english-fallback
 msgid ""
 "Every record add/edit/delete and zone create/delete/metadata-edit captures a "
 "before/after snapshot here, alongside the user and timestamp. Logs never "
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr ""
+msgstr """Every record add/edit/delete and zone create/delete/metadata-edit captures a ""before/after snapshot here, alongside the user and timestamp. Logs never ""expire automatically - prune old rows manually if the table grows large. Use ""the time-window shortcuts to focus on recent activity, or export to CSV/JSON ""to feed external audit systems."
 
 #: templates/modern/list_record_changes.html:34
 msgid "All actions"
@@ -13054,17 +13021,17 @@ msgid "User Activity Logs"
 msgstr "ユーザーアクティビティログ"
 
 #: templates/modern/list_log_users.html:19
-#, auto-english-fallback
 msgid "User Log Behavior:"
 msgstr "User Log Behavior:"
 
 #: templates/modern/list_log_users.html:20
+#, auto-english-fallback
 msgid ""
 "Records user account events such as logins, password changes, group "
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr ""
+msgstr """Records user account events such as logins, password changes, group ""membership updates, and admin actions on user records. Each entry shows the ""action, the actor, the affected user, and a timestamp. Filter by operation ""or user to audit access changes."
 
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
@@ -13103,6 +13070,7 @@ msgid "View Behavior:"
 msgstr "View Behavior:"
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
+#, auto-english-fallback
 msgid ""
 "Views serve different zone variants to different clients based on the "
 "network that queried the resolver. Each variant is named zone..variant (for "
@@ -13110,12 +13078,12 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
+msgstr """Views serve different zone variants to different clients based on the ""network that queried the resolver. Each variant is named zone..variant (for ""example, example.com..trusted) and must exist as a separate zone in PowerDNS ""before it can be assigned here. Variants share a name but resolve ""differently per view, so the same hostname can answer with different IPs ""depending on the client's network."
 
 #: templates/default/list_views.html:21 templates/modern/list_views.html:21
+#, auto-english-fallback
 msgid "No views configured yet. Add a zone variant below."
-msgstr ""
-"まだビューが設定されていません。下でゾーンのバリアントを追加してください。"
+msgstr "No views configured yet. Add a zone variant below."
 
 #: templates/default/list_views.html:40 templates/modern/list_views.html:40
 msgid "Remove from view"
@@ -13239,10 +13207,9 @@ msgstr ""
 "示を示します"
 
 #: templates/modern/email_previews.html:99
+#, auto-english-fallback
 msgid "These previews reflect the actual templates used in production"
-msgstr ""
-"これらのプレビューはプロダクションで使用される実際のテンプレートを反映してい"
-"ます"
+msgstr "These previews reflect the actual templates used in production"
 
 #: templates/modern/pdns_status.html:6 templates/modern/pdns_status.html:12
 msgid "PowerDNS Server Status"
@@ -13497,10 +13464,9 @@ msgid "Available Zones"
 msgstr "利用可能なゾーン"
 
 #: templates/modern/manage_group_zones.html:79
+#, auto-english-fallback
 msgid "This group already owns all zones or no zones are available"
-msgstr ""
-"このグループは既にすべてのゾーンを所有しているか、利用可能なゾーンがありませ"
-"ん"
+msgstr "This group already owns all zones or no zones are available"
 
 #: templates/modern/manage_group_zones.html:87
 msgid "Search zones..."
@@ -13575,17 +13541,17 @@ msgid "External applications will be able to authenticate using this key."
 msgstr "外部アプリケーションはこのキーで認証できるようになります。"
 
 #: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
-#, auto-english-fallback
 msgid "API Key Behavior:"
 msgstr "API Key Behavior:"
 
 #: templates/default/api_keys.html:183 templates/modern/api_keys.html:184
+#, auto-english-fallback
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr ""
+msgstr """API keys allow external applications to access the Poweradmin API. Each key ""is linked to your user account and inherits your permissions, so revoking ""your account also revokes all its keys. Treat keys as secrets - they grant ""the same access as logging in as you."
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -13779,17 +13745,17 @@ msgid "Group Activity Logs"
 msgstr "グループアクティビティログ"
 
 #: templates/modern/list_log_groups.html:19
-#, auto-english-fallback
 msgid "Group Log Behavior:"
 msgstr "Group Log Behavior:"
 
 #: templates/modern/list_log_groups.html:20
+#, auto-english-fallback
 msgid ""
 "Records group lifecycle events (create, edit, delete) and membership changes "
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr ""
+msgstr """Records group lifecycle events (create, edit, delete) and membership changes ""(users added or removed). Each entry shows the action, the actor, the ""affected group, and a timestamp. Useful for auditing zone-access changes ""mediated by group ownership."
 
 #: templates/modern/list_log_groups.html:26
 msgid "Group name"
@@ -14003,17 +13969,19 @@ msgid "Limited Database Rights:"
 msgstr "Limited Database Rights:"
 
 #: install/templates/step6.html.twig:15
+#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr ""
+msgstr """Create a database user with limited rights (select, insert, update, delete) ""for Poweradmin tables only. PowerDNS table access is not required when using ""the API backend."
 
 #: install/templates/step6.html.twig:17
+#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr ""
+msgstr """Create a database user with limited rights (select, insert, update, delete) ""for Poweradmin to access PowerDNS tables."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -14024,19 +13992,21 @@ msgid "Execute the following commands:"
 msgstr "Execute the following commands:"
 
 #: install/templates/step6.html.twig:40
+#, auto-english-fallback
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
+msgstr """After you have added the new user, proceed with this installation procedure."
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
 msgid "Note:"
 msgstr "Note:"
 
 #: install/templates/step6.html.twig:43
+#, auto-english-fallback
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
+msgstr """Since you are using SQLite, there is no need to create a new user with ""limited rights."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
@@ -14071,9 +14041,10 @@ msgid "Choose a language for installation"
 msgstr "Choose a language for installation"
 
 #: install/templates/step1.html.twig:12
+#, auto-english-fallback
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
+msgstr """Please select your preferred language to continue with the installation:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
@@ -14136,8 +14107,9 @@ msgid "Server name"
 msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
+#, auto-english-fallback
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr ""
+msgstr "PowerDNS server name for API calls (usually \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
@@ -14148,16 +14120,18 @@ msgid "Database Configuration:"
 msgstr "Database Configuration:"
 
 #: install/templates/step4.html.twig:90
+#, auto-english-fallback
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr ""
+msgstr """Configure database connection with table creation rights. PowerDNS location ""can be specified separately if needed."
 
 #: install/templates/step4.html.twig:93
+#, auto-english-fallback
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr ""
+msgstr """Configure database connection for Poweradmin tables (users, permissions, ""zones). PowerDNS tables are not required."
 
 #: install/templates/step4.html.twig:97
 msgid "Database type"
@@ -14188,8 +14162,9 @@ msgid "Provide the hostname"
 msgstr "Provide the hostname"
 
 #: install/templates/step4.html.twig:143
+#, auto-english-fallback
 msgid "Database server hostname (usually \"localhost\")."
-msgstr ""
+msgstr "Database server hostname (usually \"localhost\")."
 
 #: install/templates/step4.html.twig:148
 msgid "DB Port"
@@ -14236,9 +14211,10 @@ msgid "DB collation"
 msgstr "DB collation"
 
 #: install/templates/step4.html.twig:197
+#, auto-english-fallback
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
+msgstr """Collation rules for character comparison. Leave empty for database default."
 
 #: install/templates/step4.html.twig:206
 msgid "PowerDNS Database"
@@ -14269,8 +14245,9 @@ msgid "Provide a password"
 msgstr "Provide a password"
 
 #: install/templates/step4.html.twig:238
+#, auto-english-fallback
 msgid "Password for \"admin\" username."
-msgstr ""
+msgstr "Password for \"admin\" username."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -14365,16 +14342,18 @@ msgid "Database User"
 msgstr "Database User"
 
 #: install/templates/step5.html.twig:57
+#, auto-english-fallback
 msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
+msgstr """Poweradmin keeps its own tables (users, permissions, zone metadata) in the ""configured database even when the PowerDNS API backend is selected. These ""credentials are for that database, not for PowerDNS."
 
 #: install/templates/step5.html.twig:67
+#, auto-english-fallback
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
+msgstr """Poweradmin database username with restricted access. Not for web UI login."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
@@ -14461,30 +14440,34 @@ msgid "Important Security Notice:"
 msgstr "Important Security Notice:"
 
 #: install/templates/step8.html.twig:16
+#, auto-english-fallback
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr ""
+msgstr """You must remove the \"install/\" directory from the Poweradmin root ""directory."
 
 #: install/templates/step8.html.twig:17
+#, auto-english-fallback
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
+msgstr """Poweradmin will not function if the install directory exists, as a security ""measure."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
 msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
+#, auto-english-fallback
 msgid "Remove the \"install/\" directory from your server"
-msgstr ""
+msgstr "Remove the \"install/\" directory from your server"
 
 #: install/templates/step8.html.twig:27
+#, auto-english-fallback
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
-msgstr ""
+msgstr """Login to <a href=\"../index.php\">Poweradmin</a> using the default username ""\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
@@ -14503,9 +14486,10 @@ msgid "Before proceeding, ensure you have:"
 msgstr "Before proceeding, ensure you have:"
 
 #: install/templates/step3.html.twig:18
+#, auto-english-fallback
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
+msgstr """PowerDNS installed with database tables created (or API access configured)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
@@ -14520,10 +14504,11 @@ msgid "Next:"
 msgstr "Next:"
 
 #: install/templates/step3.html.twig:27
+#, auto-english-fallback
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr ""
+msgstr """Configure database connection, create admin account, and generate ""configuration file."
 
 #: install/helpers/InstallStepHandler.php:176
 msgid "Missing PowerDNS tables:"
@@ -14542,21 +14527,24 @@ msgid "Foreign Key Constraint Issues:"
 msgstr "Foreign Key Constraint Issues:"
 
 #: install/helpers/InstallStepHandler.php:209
+#, auto-english-fallback
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
+msgstr """The installer could not remove existing tables due to foreign key constraints"
 
 #: install/helpers/InstallStepHandler.php:210
+#, auto-english-fallback
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr ""
+msgstr """This can happen during reinstallation if you have custom constraints or if ""tables are referenced by other tables"
 
 #: install/helpers/InstallStepHandler.php:211
+#, auto-english-fallback
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr ""
+msgstr """You can try manually disabling foreign key checks before running the ""installer:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"
@@ -14567,10 +14555,11 @@ msgid "Make sure the SQLite database file exists"
 msgstr "Make sure the SQLite database file exists"
 
 #: install/helpers/InstallStepHandler.php:219
+#, auto-english-fallback
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
+msgstr """Check that the web server has read and write permissions for the database ""file"
 
 #: install/helpers/InstallStepHandler.php:220
 msgid "Verify the full path to the database file is correct and accessible"
@@ -14593,23 +14582,26 @@ msgid "Database Error"
 msgstr "Database Error"
 
 #: install/helpers/DatabaseHelper.php:175
+#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
+msgstr """The SQLite database file %s does not exist. Please create the database file ""before proceeding."
 
 #: install/helpers/DatabaseHelper.php:183
+#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
+msgstr """The SQLite database file %s is not readable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:191
+#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
+msgstr """The SQLite database file %s is not writable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:203
 #, php-format
@@ -14625,36 +14617,30 @@ msgid "PowerDNS API key is required when using API backend."
 msgstr "PowerDNS API key is required when using API backend."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
+#, auto-english-fallback
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
+msgstr """No configuration file found. Please create the config/settings.php file ""before proceeding."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
+#, auto-english-fallback
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr ""
+msgstr """Separate PowerDNS databases are only supported with MySQL. For PostgreSQL ""and SQLite, please use the same database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
+#, auto-english-fallback
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr ""
+msgstr """Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is ""properly installed in this database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
+#, auto-english-fallback
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr ""
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
-# OBSOLETE: "key is linked to your user account and inherits your permissions."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "APIキーは外部アプリケーションがPoweradmin APIにアクセスすることを可能にし"
-# OBSOLETE: "ます。各キーはユーザーアカウントにリンクされ、権限を継承します。"
-
-
+msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
