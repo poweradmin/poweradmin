@@ -942,3 +942,10 @@ input[type=number]::-webkit-outer-spin-button {
     color: #6c757d;
     opacity: 1;
 }
+
+@media (min-width: 1200px) {
+    .row-cols-xl-7 > * { flex: 0 0 auto; width: 14.285714285714286%; }
+}
+@media (min-width: 1400px) {
+    .row-cols-xxl-8 > * { flex: 0 0 auto; width: 12.5%; }
+}

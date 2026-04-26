@@ -281,3 +281,13 @@ input[type=number]::-webkit-outer-spin-button {
     color: #adb5bd;
     opacity: 1;
 }
+
+/* Dashboard tile grid: extend Bootstrap row-cols beyond default 1-6 to fit
+   wider screens without wrapping. Bootstrap 5 ships row-cols-{1..6}; the
+   rules below add 7- and 8-column variants used by the dashboard cards. */
+@media (min-width: 1200px) {
+    .row-cols-xl-7 > * { flex: 0 0 auto; width: 14.285714285714286%; }
+}
+@media (min-width: 1400px) {
+    .row-cols-xxl-8 > * { flex: 0 0 auto; width: 12.5%; }
+}
