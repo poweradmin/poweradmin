@@ -153,6 +153,15 @@ class AuditService
         ), $zoneId);
     }
 
+    public function logDnssecSignZone(int $zoneId, string $zoneName): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:dnssec_sign_zone zone:%s',
+            $this->getContext(),
+            $zoneName
+        ), $zoneId);
+    }
+
     public function logDnssecUnsignZone(int $zoneId, string $zoneName): void
     {
         $this->logger->logInfo(sprintf(
