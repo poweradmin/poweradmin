@@ -392,6 +392,32 @@ dnssec_ds_dnskey:
   requirements:
     id: '\d+'
 
+dnssec_key_import:
+  path: /zones/{id}/dnssec/keys/import
+  controller: Poweradmin\Application\Controller\DnssecKeyImportController::run
+  requirements:
+    id: '\d+'
+  methods: [POST]
+
+dnssec_key_export:
+  path: /zones/{zone_id}/dnssec/keys/{key_id}/export
+  controller: Poweradmin\Application\Controller\DnssecKeyExportController::run
+  requirements:
+    zone_id: '\d+'
+    key_id: '\d+'
+  methods: [GET]
+
+# PowerDNS 5.0 Views/Networks management
+list_views:
+  path: /views
+  controller: Poweradmin\Application\Controller\ListViewsController::run
+  methods: [GET, POST]
+
+list_networks:
+  path: /networks
+  controller: Poweradmin\Application\Controller\ListNetworksController::run
+  methods: [GET, POST]
+
 # Search
 search:
   path: /search

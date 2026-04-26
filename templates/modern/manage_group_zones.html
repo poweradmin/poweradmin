@@ -46,7 +46,7 @@
                                 <td><input type="checkbox" name="domain_ids[]" value="{{ zone.id }}" class="form-check-input owned-checkbox"></td>
                                 <td>{{ zone.name }}</td>
                                 <td>
-                                    <span class="badge {{ zone_type_class(zone.type) }}">{{ zone.type }}</span>
+                                    <span class="badge {{ zone_type_class(zone.type) }}">{{ zone_type_label(zone.type) }}</span>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -102,7 +102,7 @@
                                 <td><input type="checkbox" name="domain_ids[]" value="{{ zone.id }}" class="form-check-input available-checkbox"></td>
                                 <td>{{ zone.name }}</td>
                                 <td>
-                                    <span class="badge {{ zone_type_class(zone.type) }}">{{ zone.type }}</span>
+                                    <span class="badge {{ zone_type_class(zone.type) }}">{{ zone_type_label(zone.type) }}</span>
                                 </td>
                             </tr>
                             {% endfor %}

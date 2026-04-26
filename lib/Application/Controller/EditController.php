@@ -473,7 +473,9 @@ class EditController extends BaseController
             'session_userid' => $this->userContextService->getLoggedInUserId(),
             'dns_ttl' => $this->config->get('dns', 'ttl', 86400),
             'is_reverse_zone' => $isReverseZone,
-            'record_types' => $isReverseZone ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled) : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled),
+            'record_types' => $isReverseZone
+                ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getPdnsCapabilities())
+                : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $this->getPdnsCapabilities()),
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', true),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', true),
             'iface_edit_show_id' => $iface_show_id,

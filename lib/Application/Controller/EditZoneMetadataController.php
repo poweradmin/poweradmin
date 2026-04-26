@@ -30,6 +30,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -393,11 +394,15 @@ class EditZoneMetadataController extends BaseController
     private function getMetadataDefinitionsForTemplate(): array
     {
         $definitions = [];
+        $caps = PdnsCapabilities::fromVersion($this->getPowerDnsVersion());
 
         foreach (MetadataDefinitions::DEFINITIONS as $kind => $definition) {
-            // Hide version-gated metadata kinds when the connected PowerDNS server
-            // is known to be too old to support them.
-            if (!$this->isDefinitionSupportedInCurrentEnvironment($definition)) {
+            $support = $this->classifyDefinitionSupport($definition, $caps);
+            // Strict mode: hide kinds whose support cannot be confirmed (no API
+            // client, or version detection failed). Older known-but-unsupported
+            // kinds remain visible but disabled, so admins can still see what
+            // newer servers add.
+            if ($support === 'unknown') {
                 continue;
             }
 
@@ -408,6 +413,8 @@ class EditZoneMetadataController extends BaseController
                 'placeholder' => $definition['placeholder'],
                 'help' => _($definition['help']),
                 'badges' => $this->buildBadgeDescriptors($kind, $definition),
+                'disabled' => $support === 'unsupported_known',
+                'min_version' => $definition['min_version'] ?? null,
             ];
         }
 
@@ -484,21 +491,37 @@ class EditZoneMetadataController extends BaseController
      */
     private function isDefinitionSupportedInCurrentEnvironment(array $definition): bool
     {
+        $caps = PdnsCapabilities::fromVersion($this->getPowerDnsVersion());
+        return $this->classifyDefinitionSupport($definition, $caps) === 'supported';
+    }
+
+    /**
+     * Tri-state classification used by the metadata editor.
+     *
+     * Returns 'supported' when the kind is known to work on the connected
+     * server, 'unsupported_known' when we have a version and it's too old,
+     * and 'unknown' when there's no way to tell (no API client, or version
+     * detection failed). Templates use this to render disabled options
+     * instead of hiding them outright.
+     *
+     * @param array<string, mixed> $definition
+     */
+    private function classifyDefinitionSupport(array $definition, PdnsCapabilities $caps): string
+    {
         if ($this->apiClient === null) {
-            return true;
+            return 'supported';
         }
 
         $minVersion = $definition['min_version'] ?? null;
-        if ($minVersion === null) {
-            return true;
+        if (!is_string($minVersion) || $minVersion === '') {
+            return 'supported';
         }
 
-        $currentVersion = $this->getPowerDnsVersion();
-        if ($currentVersion === '') {
-            return true;
+        if (!$caps->isKnown()) {
+            return 'unknown';
         }
 
-        return version_compare($currentVersion, $minVersion, '>=');
+        return $caps->supportsMetadataKind($minVersion) ? 'supported' : 'unsupported_known';
     }
 
     /**

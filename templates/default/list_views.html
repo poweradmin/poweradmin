@@ -1,0 +1,74 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Views{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-eye me-2"></i>{% trans %}Views{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <p class="text-muted small mb-3">{% trans %}Views serve different zone variants to different clients based on the network mapping. Each variant is identified as zone..variant (for example, example.com..trusted).{% endtrans %}</p>
+
+        {% if views is empty %}
+        <div class="text-center py-3 text-muted">
+            <i class="bi bi-eye-slash fs-3 d-block mb-2"></i>
+            <p class="mb-0">{% trans %}No views configured yet. Add a zone variant below.{% endtrans %}</p>
+        </div>
+        {% else %}
+        {% for view in views %}
+        <div class="card mb-3">
+            <div class="card-header py-2 d-flex justify-content-between align-items-center">
+                <strong>{{ view.name }}</strong>
+                <span class="badge bg-secondary">{{ view.zones|length }} {% trans %}zones{% endtrans %}</span>
+            </div>
+            {% if view.zones is not empty %}
+            <ul class="list-group list-group-flush">
+                {% for zone in view.zones %}
+                <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                    <span class="font-monospace small">{{ zone }}</span>
+                    <form method="post" action="{{ base_url_prefix }}/views" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="action" value="remove">
+                        <input type="hidden" name="view" value="{{ view.name }}">
+                        <input type="hidden" name="zone" value="{{ zone }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="{% trans %}Remove from view{% endtrans %}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="card border-primary mt-3">
+            <div class="card-header py-2 bg-primary bg-opacity-10">
+                <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Assign zone to view{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ base_url_prefix }}/views" class="row g-2">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="action" value="add">
+                    <div class="col-md-4">
+                        <label for="view-name" class="form-label small">{% trans %}View name{% endtrans %}</label>
+                        <input type="text" class="form-control form-control-sm" id="view-name" name="view" placeholder="trusted" required pattern="[A-Za-z0-9._-]+">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="zone-name" class="form-label small">{% trans %}Zone (zone..variant){% endtrans %}</label>
+                        <input type="text" class="form-control form-control-sm font-monospace" id="zone-name" name="zone" placeholder="example.com..trusted" required>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                            <i class="bi bi-plus-circle me-1"></i>{% trans %}Add{% endtrans %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -28,9 +28,11 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaSessionManager;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserAvatarService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
@@ -296,8 +298,75 @@ abstract class BaseController
         // Add base_url_prefix for subfolder deployment support
         $params['base_url_prefix'] = $this->config->get('interface', 'base_url_prefix', '');
 
+        // Expose connected PowerDNS capabilities to every template so views
+        // can adapt (record types, zone kinds, terminology, etc).
+        if (!array_key_exists('pdns_caps', $params)) {
+            $params['pdns_caps'] = $this->getPdnsCapabilities();
+        }
+        if (!array_key_exists('pdns_server_info', $params)) {
+            $params['pdns_server_info'] = PdnsVersionService::getCachedInfo();
+        }
+
         $this->app->render($template, $params);
         $this->renderFooter();
+    }
+
+    /**
+     * Build a PdnsCapabilities snapshot from the session-cached PowerDNS
+     * version. Constant-time and synchronous - never triggers detection,
+     * never makes a network call. Safe to call from render() on every page.
+     *
+     * Controllers that want a freshly-detected version should call
+     * refreshPdnsCapabilities() explicitly before rendering so they own
+     * the latency cost rather than imposing it on every other page.
+     */
+    protected function getPdnsCapabilities(): PdnsCapabilities
+    {
+        $info = PdnsVersionService::getCachedInfo();
+        if ($info !== null) {
+            return PdnsCapabilities::fromVersion($info['version'] ?? null);
+        }
+        // SQL/DB backends have no version-detection mechanism. Returning
+        // strict-unknown here would hide every version-gated UI feature
+        // (SVCB records, catalog zones, metadata kinds) on installs that
+        // do support them. Fall back to permissive - the strict mode only
+        // makes sense when we know the API exists but couldn't be reached.
+        if (!DnsBackendProviderFactory::isApiBackend($this->config)) {
+            return PdnsCapabilities::permissive();
+        }
+        return PdnsCapabilities::fromVersion(null);
+    }
+
+    /**
+     * Trigger a session-cached refresh of PowerDNS version + capabilities.
+     *
+     * Makes at most one API call per minute (rate-limited via the session
+     * timestamp `pdns_version_last_attempt`) and is a no-op on non-API
+     * backends. Call from controllers that need an up-to-date capability
+     * snapshot - e.g. the dashboard. Page renders that don't call this just
+     * read whatever is already cached.
+     */
+    protected function refreshPdnsCapabilities(): void
+    {
+        if (!DnsBackendProviderFactory::isApiBackend($this->config)) {
+            return;
+        }
+        $last = $_SESSION['pdns_version_last_attempt'] ?? 0;
+        if ((time() - (int) $last) < 60) {
+            return;
+        }
+        $_SESSION['pdns_version_last_attempt'] = time();
+        try {
+            $apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+            if ($apiClient !== null) {
+                (new PdnsVersionService($apiClient, $this->logger))->detect();
+            }
+        } catch (\Throwable $e) {
+            // Detection failures are non-fatal - the UI just falls back to
+            // whatever's already cached (or strict-unknown). Log at debug
+            // to avoid noise during outages.
+            $this->logger->debug('PowerDNS version detection failed: {error}', ['error' => $e->getMessage()]);
+        }
     }
 
     /**

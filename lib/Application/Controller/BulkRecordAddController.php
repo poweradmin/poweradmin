@@ -166,10 +166,16 @@ class BulkRecordAddController extends BaseController
             }
             $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
-            // Validate record type
+            // Validate record type. Filter by the connected server's
+            // capabilities so bulk import matches the add/edit dropdowns -
+            // otherwise users would get the same SVCB/HTTPS/WALLET line
+            // accepted here and rejected by PowerDNS later.
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
             $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
-            $valid_types = $isReverseZone ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled) : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled);
+            $caps = $this->getPdnsCapabilities();
+            $valid_types = $isReverseZone
+                ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $caps)
+                : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $caps);
 
             if (!in_array($type, $valid_types)) {
                 $failed_records[] = $line . " - " . _('Invalid record type.');

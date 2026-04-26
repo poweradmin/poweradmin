@@ -6,9 +6,43 @@
         {% if dashboard_stats.records is not null %}<span class="text-muted small"><i class="bi bi-list-ul me-1"></i>{{ dashboard_stats.records }} {% trans %}records{% endtrans %}</span>{% endif %}
         <span class="text-muted small"><i class="bi bi-people me-1"></i>{{ dashboard_stats.users }} {% trans %}users{% endtrans %}</span>
         <span class="text-muted small"><i class="bi bi-people-fill me-1"></i>{{ dashboard_stats.groups }} {% trans %}groups{% endtrans %}</span>
+        {% if pdns_server_info and pdns_server_info.version %}
+        <span class="text-muted small" data-bs-toggle="tooltip" data-bs-placement="bottom"
+              title="{% trans %}Connected PowerDNS version{% endtrans %}{% if pdns_server_info.daemon_type %} ({{ pdns_server_info.daemon_type }}){% endif %}">
+            <i class="bi bi-hdd me-1"></i>PowerDNS {{ pdns_server_info.version }}
+        </span>
+        {% elseif permissions and permissions.user_is_ueberuser and pdns_api_enabled %}
+        <span class="text-muted small" data-bs-toggle="tooltip" data-bs-placement="bottom"
+              title="{% trans %}Could not detect PowerDNS version. Newer features are hidden until the API is reachable.{% endtrans %}">
+            <i class="bi bi-hdd me-1"></i>{% trans %}PowerDNS version unknown{% endtrans %}
+        </span>
+        {% endif %}
     </div>
     {% endif %}
 </div>
+
+{% if api_error %}
+<div class="alert alert-warning alert-dismissible fade show py-2 mb-2" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    <strong>{% trans %}PowerDNS API error{% endtrans %}{% if api_error.context.http_code %} (HTTP {{ api_error.context.http_code }}){% endif %}:</strong>
+    {{ api_error.message }}
+    {% if api_error.context.url %}
+    <div class="small text-muted">{{ api_error.context.url }}</div>
+    {% endif %}
+    <div class="small mt-1">
+        {% if api_error.context.http_code == 401 or api_error.context.http_code == 403 %}
+            {% trans %}Check that pdns_api.key in config/settings.php matches the API key configured in PowerDNS.{% endtrans %}
+        {% elseif api_error.context.http_code == 404 %}
+            {% trans %}Check that pdns_api.server_name matches what PowerDNS reports (default 'localhost').{% endtrans %}
+        {% elseif api_error.context.http_code >= 500 %}
+            {% trans %}PowerDNS rejected the request. Check the PowerDNS server log for the cause - a common trigger after importing zones directly into the PowerDNS database is a single malformed record that fails zone serialization.{% endtrans %}
+        {% else %}
+            {% trans %}Zone counts and lists may be out of date until the API is reachable again. Check your PowerDNS server log for details.{% endtrans %}
+        {% endif %}
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
 
 {# --- DNS Management --- #}
 {% set has_dns_management = (permissions['user_is_ueberuser'] and pdns_api_enabled and show_pdns_status)
@@ -87,7 +121,25 @@
                     <a href="{{ base_url_prefix }}/supermasters" class="card h-100 text-decoration-none text-body" data-testid="list-supermasters-link">
                         <div class="card-body text-center py-2 px-1">
                             <i class="bi bi-hdd-rack fs-2 d-block mb-1"></i>
-                            <small class="d-block text-truncate">{% trans %}Supermasters{% endtrans %}</small>
+                            <small class="d-block text-truncate">{{ autoprimaries_label('plural') }}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                {% if permissions['user_is_ueberuser'] and pdns_caps and pdns_caps.supportsViews %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/views" class="card h-100 text-decoration-none text-body" data-testid="list-views-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-eye fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Views{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/networks" class="card h-100 text-decoration-none text-body" data-testid="list-networks-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-diagram-3 fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Networks{% endtrans %}</small>
                         </div>
                     </a>
                 </div>
@@ -137,7 +189,7 @@
                     <a href="{{ base_url_prefix }}/supermasters/add" class="card h-100 text-decoration-none text-body" data-testid="add-supermaster-link">
                         <div class="card-body text-center py-2 px-1">
                             <i class="bi bi-hdd-network fs-2 d-block mb-1"></i>
-                            <small class="d-block text-truncate">{% trans %}Supermaster{% endtrans %}</small>
+                            <small class="d-block text-truncate">{{ autoprimaries_label('singular') }}</small>
                         </div>
                     </a>
                 </div>

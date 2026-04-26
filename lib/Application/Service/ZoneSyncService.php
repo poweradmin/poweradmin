@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
+use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -64,50 +65,93 @@ class ZoneSyncService
     public function syncIfStale(): ?array
     {
         $lastSync = $_SESSION[self::LAST_SYNC_KEY] ?? 0;
-        if (time() - $lastSync < $this->syncInterval) {
+        $age = time() - $lastSync;
+        if ($age < $this->syncInterval) {
+            $this->logger->debug('Zone sync skipped (last ran {age}s ago, interval {interval}s)', [
+                'age' => $age,
+                'interval' => $this->syncInterval,
+            ]);
             return null;
         }
 
         try {
-            $result = $this->sync();
+            return $this->sync();
         } catch (\Throwable $e) {
             $this->logger->warning('Zone sync failed: {error}', ['error' => $e->getMessage(), 'exception' => $e]);
             return null;
         }
-
-        $_SESSION[self::LAST_SYNC_KEY] = time();
-        return $result;
     }
 
     /**
      * Synchronize zones from PowerDNS API with local zones table.
      *
+     * On success, records the completion time in the session so that an
+     * immediately following syncIfStale() call (e.g. from the redirected
+     * request after a manual sync) will skip rather than re-run the full
+     * reconciliation.
+     *
      * @return array{added: int, removed: int, updated: int}
      */
     public function sync(): array
     {
-        $apiZones = $this->backendProvider->getZones();
-        $localZones = $this->getLocalZones();
+        $this->logger->debug('Zone sync starting');
 
-        // When the API is unreachable, getZones() returns [] after catching the
-        // exception internally. Without this guard we would delete every local
-        // zone, mistaking an outage for "all zones removed." The trade-off is
-        // that a genuine "delete every zone in PowerDNS" won't auto-sync; an
-        // admin must remove the local entries manually in that rare scenario.
+        $apiStatusService = new ApiStatusService();
+        $syncStartedAt = time();
+
+        $apiZones = $this->backendProvider->getZones();
+
+        // getZones() swallows ApiErrorException into an empty array so that
+        // callers stay simple, but records the failure via ApiStatusService.
+        // If a fresh error was recorded during THIS call, the "sync" did not
+        // actually reach PowerDNS - surface that as a thrown exception so
+        // (a) manual sync callers can show a real error instead of a
+        // misleading "0 added, 0 updated, 0 removed" success, and
+        // (b) the throttle key is not advanced, keeping fast retries open.
+        $error = $apiStatusService->getLastError();
+        if (
+            $error !== null
+            && (($error['context']['endpoint'] ?? null) === 'zones')
+            && isset($error['timestamp']) && $error['timestamp'] >= $syncStartedAt
+        ) {
+            throw new \RuntimeException(
+                sprintf('PowerDNS API unreachable during zone sync: %s', $error['message'])
+            );
+        }
+
+        $localZones = $this->getLocalZones();
+        $this->logger->debug('Zone sync fetched {api} API zones, {local} local zones', [
+            'api' => count($apiZones),
+            'local' => count($localZones),
+        ]);
+
+        // The error guard above already distinguishes outages from a
+        // genuinely-empty PowerDNS response: anything that gets here came
+        // back as HTTP 200 with an empty list. Reconcile against that empty
+        // result so the local zones table can drop down to zero when an
+        // operator deletes every zone directly in PowerDNS.
         if (empty($apiZones) && !empty($localZones)) {
-            $this->logger->info('Zone sync: API returned empty while local zones exist, skipping removal');
-            return ['added' => 0, 'removed' => 0, 'updated' => 0];
+            $this->logger->info('Zone sync: PowerDNS reports zero zones, removing {count} stale local row(s)', [
+                'count' => count($localZones),
+            ]);
         }
 
         $added = $this->addMissingZones($apiZones, $localZones);
         $removed = $this->removeOrphanedZones($apiZones, $localZones);
         $updated = $this->updateZoneMetadata($apiZones, $localZones);
 
-        return [
+        $result = [
             'added' => $added,
             'removed' => $removed,
             'updated' => $updated,
         ];
+        if ($added || $removed || $updated) {
+            $this->logger->info('Zone sync complete: added={added}, removed={removed}, updated={updated}', $result);
+        } else {
+            $this->logger->debug('Zone sync complete: no changes', $result);
+        }
+        $_SESSION[self::LAST_SYNC_KEY] = time();
+        return $result;
     }
 
     /**

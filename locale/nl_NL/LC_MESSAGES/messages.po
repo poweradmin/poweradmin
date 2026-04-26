@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-23 21:11+0300\n"
+"POT-Creation-Date: 2026-04-25 18:57+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -333,7 +333,7 @@ msgstr ""
 "certificaat heeft opgegeven."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:646
+#: templates/modern/edit.html:93 templates/modern/edit.html:667
 msgid "Invalid hostname format"
 msgstr "Ongeldig hostnaam formaat"
 
@@ -1312,7 +1312,7 @@ msgstr "Kan RDAP-informatie niet ophalen met server %s"
 msgid "Invalid CSRF token."
 msgstr "Ongeldig CSRF-token."
 
-#: lib/BaseController.php:592
+#: lib/BaseController.php:661
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1320,7 +1320,7 @@ msgstr ""
 "De <a href=\"install/\">install/</a> map bestaat, u moet deze eerst "
 "verwijderen voordat u doorgaat."
 
-#: lib/BaseController.php:649
+#: lib/BaseController.php:718
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1328,12 +1328,12 @@ msgstr ""
 "De standaard sessie-encryptiesleutel wordt gebruikt, stel deze in in uw "
 "configuratiebestand."
 
-#: lib/BaseController.php:788
+#: lib/BaseController.php:857
 #, php-format
 msgid "The %s field is required."
 msgstr "Het veld %s is verplicht."
 
-#: lib/BaseController.php:796
+#: lib/BaseController.php:865
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Het veld %s moet een getal zijn."
@@ -1708,33 +1708,33 @@ msgstr "Paginanummer overschrijdt beschikbare pagina's."
 msgid "You do not have the permission to view supermasters."
 msgstr "U hebt geen toestemming om supermasters te bekijken."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Application/Controller/EditZoneMetadataController.php:119
 msgid "You do not have the permission to view zone metadata."
 msgstr "U heeft geen toestemming om zone-metadata te bekijken."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:121
+#: lib/Application/Controller/EditZoneMetadataController.php:122
 msgid "You do not have the permission to edit zone metadata."
 msgstr "U heeft geen toestemming om zone-metadata te bewerken."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:150
+#: lib/Application/Controller/EditZoneMetadataController.php:151
 msgid "Zone metadata has been updated successfully."
 msgstr "De zone-metadata is succesvol bijgewerkt."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:155
+#: lib/Application/Controller/EditZoneMetadataController.php:156
 msgid "Failed to update zone metadata."
 msgstr "Bijwerken van zone-metadata mislukt."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:178
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr "Zone-metadata bewerken"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:178
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "Zone-metadata"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:381
+#: lib/Application/Controller/EditZoneMetadataController.php:382
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
@@ -1742,29 +1742,29 @@ msgstr ""
 "Metadatasoort %s accepteert slechts een enkele waarde. Voeg slechts een rij "
 "toe voor dit soort."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:469
-#: templates/modern/edit_zone_metadata.html:153
+#: lib/Application/Controller/EditZoneMetadataController.php:476
+#: templates/modern/edit_zone_metadata.html:155
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
 msgstr ""
 "Aangepaste metadatasoort direct opgeslagen in de PowerDNS domainmetadata-"
 "tabel."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:477
+#: lib/Application/Controller/EditZoneMetadataController.php:484
 #: templates/modern/pdns_status.html:412
 msgid "Value"
 msgstr "Waarde"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:515
+#: lib/Application/Controller/EditZoneMetadataController.php:538
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "Aangepast"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:520
+#: lib/Application/Controller/EditZoneMetadataController.php:543
 msgid "Multi"
 msgstr "Meervoudig"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:521
+#: lib/Application/Controller/EditZoneMetadataController.php:544
 msgid "Single"
 msgstr "Enkelvoudig"
 
@@ -1828,24 +1828,24 @@ msgstr "U hebt geen toestemming om records toe te voegen aan deze zone."
 msgid "Please provide at least one record."
 msgstr "Geef ten minste één record op."
 
-#: lib/Application/Controller/BulkRecordAddController.php:175
+#: lib/Application/Controller/BulkRecordAddController.php:181
 msgid "Invalid record type."
 msgstr "Ongeldig recordtype."
 
-#: lib/Application/Controller/BulkRecordAddController.php:213
+#: lib/Application/Controller/BulkRecordAddController.php:219
 msgid "Record could not be added."
 msgstr "Record kon niet worden toegevoegd."
 
-#: lib/Application/Controller/BulkRecordAddController.php:221
+#: lib/Application/Controller/BulkRecordAddController.php:227
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d record(s) zijn succesvol toegevoegd."
 
-#: lib/Application/Controller/BulkRecordAddController.php:224
+#: lib/Application/Controller/BulkRecordAddController.php:230
 msgid "Some record(s) could not be added."
 msgstr "Sommige record(s) konden niet worden toegevoegd."
 
-#: lib/Application/Controller/BulkRecordAddController.php:257
+#: lib/Application/Controller/BulkRecordAddController.php:263
 msgid "Zone ID is required."
 msgstr "Zone-ID is verplicht."
 
@@ -1940,7 +1940,7 @@ msgid "The record could not be deleted."
 msgstr "Het record kon niet worden verwijderd."
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:219 templates/modern/index.html:219
+#: templates/default/index.html:271 templates/modern/index.html:271
 msgid "Zone Logs"
 msgstr "Zonelogs"
 
@@ -2018,7 +2018,7 @@ msgid "You do not have permission to view this zone."
 msgstr "U heeft geen toestemming om deze zone te bekijken."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:229 templates/modern/index.html:229
+#: templates/default/index.html:281 templates/modern/index.html:281
 msgid "User Logs"
 msgstr "Gebruiker Logs"
 
@@ -2112,33 +2112,33 @@ msgstr ""
 "Kan zone niet ondertekenen. Zonevalidatie geslaagd, maar PowerDNS API "
 "retourneerde een fout. Controleer PowerDNS-logs voor details."
 
-#: lib/Application/Controller/DnssecController.php:95
+#: lib/Application/Controller/DnssecController.php:96
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Zone is momenteel niet ondertekend met DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:107
+#: lib/Application/Controller/DnssecController.php:108
 msgid "Zone has been unsigned successfully."
 msgstr "Zone-ondertekening is succesvol opgeheven."
 
-#: lib/Application/Controller/DnssecController.php:112
+#: lib/Application/Controller/DnssecController.php:113
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr ""
 "Zone-ondertekening opheffen succesvol aangevraagd, maar verificatie mislukt."
 
-#: lib/Application/Controller/DnssecController.php:116
+#: lib/Application/Controller/DnssecController.php:117
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Kan zone-ondertekening niet opheffen. Controleer PowerDNS-logs voor details."
 
-#: lib/Application/Controller/EditController.php:734
+#: lib/Application/Controller/EditController.php:736
 msgid "Request has expired, please try again."
 msgstr "Verzoek is verlopen, probeer het opnieuw."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:741
 msgid "Zone has been updated successfully."
 msgstr "Zone is succesvol bijgewerkt."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:743
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2146,11 +2146,11 @@ msgstr ""
 "Zone succesvol opgeslagen. Er zijn geen recordwijzigingen gemaakt, maar het "
 "SOA-serienummer is verhoogd."
 
-#: lib/Application/Controller/EditController.php:750
+#: lib/Application/Controller/EditController.php:752
 msgid "Zone has not been updated successfully."
 msgstr "Zone is niet succesvol bijgewerkt."
 
-#: lib/Application/Controller/EditController.php:778
+#: lib/Application/Controller/EditController.php:780
 msgid "Please provide all required fields."
 msgstr "Geef alle verplichte velden op."
 
@@ -2216,26 +2216,26 @@ msgstr "U hebt geen toestemming om een record toe te voegen aan deze zone."
 msgid "Record successfully added."
 msgstr "Record toegevoegd."
 
-#: lib/Application/Controller/AddRecordController.php:429
+#: lib/Application/Controller/AddRecordController.php:431
 msgid "No records were provided."
 msgstr "Geen records opgegeven."
 
-#: lib/Application/Controller/AddRecordController.php:483
+#: lib/Application/Controller/AddRecordController.php:485
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d record(s) zijn succesvol toegevoegd."
 
-#: lib/Application/Controller/AddRecordController.php:485
+#: lib/Application/Controller/AddRecordController.php:487
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d overeenkomend(e) record(s) zijn ook aangemaakt."
 
-#: lib/Application/Controller/AddRecordController.php:488
+#: lib/Application/Controller/AddRecordController.php:490
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d record(s) konden niet worden toegevoegd."
 
-#: lib/Application/Controller/AddRecordController.php:493
+#: lib/Application/Controller/AddRecordController.php:495
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2243,7 +2243,7 @@ msgstr ""
 "Sommige records konden niet worden toegevoegd. Ze bestaan mogelijk al of "
 "bevatten ongeldige gegevens."
 
-#: lib/Application/Controller/AddRecordController.php:519
+#: lib/Application/Controller/AddRecordController.php:521
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Kan geen records toevoegen. Ze bevatten mogelijk ongeldige gegevens."
 
@@ -2296,9 +2296,29 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC-authenticatie starten mislukt: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:239 templates/modern/index.html:239
+#: templates/default/index.html:291 templates/modern/index.html:291
 msgid "Group Logs"
 msgstr "Groepslogs"
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:65
+msgid "You do not have permission to manage DNSSEC for this zone."
+msgstr "U heeft geen toestemming om DNSSEC voor deze zone te beheren."
+
+#: lib/Application/Controller/DnssecKeyExportController.php:74
+msgid "PEM key export requires PowerDNS 4.7 or newer."
+msgstr "Het exporteren van PEM-sleutels vereist PowerDNS 4.7 of nieuwer."
+
+#: lib/Application/Controller/DnssecKeyExportController.php:86
+msgid "An error occurred while exporting the PEM key: "
+msgstr "Er is een fout opgetreden bij het exporteren van de PEM-sleutel: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php:92
+msgid ""
+"Could not retrieve the PEM key. The server may not expose private key "
+"material for this key."
+msgstr ""
+"Kan de PEM-sleutel niet ophalen. De server toont mogelijk geen "
+"privésleutelmateriaal voor deze sleutel."
 
 #: lib/Domain/Service/Dns/DomainManager.php:309
 msgid "You do not have the permission to add a master zone."
@@ -2392,13 +2412,50 @@ msgstr "Ongeldige machtigingssjabloon: moet een groepssjabloon zijn"
 msgid "Group has been created successfully."
 msgstr "Groep is aangemaakt."
 
+#: lib/Application/Controller/ListViewsController.php:39
+msgid "You do not have permission to manage PowerDNS views."
+msgstr "U hebt geen rechten om PowerDNS-views te beheren."
+
+#: lib/Application/Controller/ListViewsController.php:44
+msgid "Views require PowerDNS 5.0 or newer."
+msgstr "Views vereisen PowerDNS 5.0 of nieuwer."
+
+#: lib/Application/Controller/ListViewsController.php:50
+msgid "Views are only available with the PowerDNS API backend."
+msgstr "Views zijn alleen beschikbaar met de PowerDNS API-backend."
+
+#: lib/Application/Controller/ListViewsController.php:61
+msgid "Provide a valid view name and zone identifier."
+msgstr "Geef een geldige view-naam en zone-identifier op."
+
+#: lib/Application/Controller/ListViewsController.php:67
+msgid "Zone assigned to view."
+msgstr "Zone toegewezen aan view."
+
+#: lib/Application/Controller/ListViewsController.php:67
+msgid "Failed to assign zone to view."
+msgstr "Zone kon niet aan de view worden toegewezen."
+
+#: lib/Application/Controller/ListViewsController.php:74
+msgid "Zone removed from view."
+msgstr "Zone verwijderd uit view."
+
+#: lib/Application/Controller/ListViewsController.php:74
+msgid "Failed to remove zone from view."
+msgstr "Zone kon niet uit de view worden verwijderd."
+
+#: lib/Application/Controller/ListNetworksController.php:81
+msgid "Unknown action."
+msgstr "Onbekende actie."
+
+#: lib/Application/Controller/ListViewsController.php:96
+#: templates/modern/list_views.html:4 templates/modern/list_views.html:10
+msgid "Views"
+msgstr "Views"
+
 #: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid key ID."
 msgstr "Ongeldig sleutel-ID."
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:65
-msgid "You do not have permission to manage DNSSEC for this zone."
-msgstr "U heeft geen toestemming om DNSSEC voor deze zone te beheren."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:90
 msgid "DNSSEC key not found or no longer exists."
@@ -2437,7 +2494,7 @@ msgstr "Ongeldige SAML-provider"
 msgid "SAML authentication failed: "
 msgstr "SAML-authenticatie mislukt: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:56
+#: lib/Application/Controller/ListForwardZonesController.php:57
 msgid "You do not have sufficient permissions to view this page."
 msgstr "U hebt onvoldoende rechten om deze pagina te bekijken."
 
@@ -2446,7 +2503,7 @@ msgstr "U hebt onvoldoende rechten om deze pagina te bekijken."
 msgid "Reverse Zones"
 msgstr "Omgekeerde Zones"
 
-#: lib/Application/Controller/ListForwardZonesController.php:144
+#: lib/Application/Controller/ListForwardZonesController.php:186
 msgid "You do not have the permission to see any zones."
 msgstr "U hebt geen toestemming om zones te bekijken."
 
@@ -2584,7 +2641,7 @@ msgstr "Zonesjabloon toevoegen"
 msgid "Zone template has been added successfully."
 msgstr "Zonesjabloon is succesvol toegevoegd."
 
-#: lib/Application/Controller/IndexController.php:61
+#: lib/Application/Controller/IndexController.php:62
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -2652,10 +2709,24 @@ msgstr "Zone verwijderd uit groep."
 msgid "Zone was not owned by this group."
 msgstr "Zone was niet eigendom van deze groep."
 
-#: lib/Application/Controller/ListForwardZonesController.php:60
+#: lib/Application/Controller/ListForwardZonesController.php:61
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Doorstuur Zones"
+
+#: lib/Application/Controller/ListForwardZonesController.php:80
+msgid "You do not have permission to sync zones from PowerDNS."
+msgstr "You do not have permission to sync zones from PowerDNS."
+
+#: lib/Application/Controller/ListForwardZonesController.php:91
+#, php-format
+msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+
+#: lib/Application/Controller/ListForwardZonesController.php:99
+#, php-format
+msgid "Zone sync failed: %s"
+msgstr "Zone sync failed: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:43
 msgid "You do not have the permission to add a new supermaster."
@@ -2664,6 +2735,31 @@ msgstr "U hebt geen toestemming om een nieuwe supermaster toe te voegen."
 #: lib/Application/Controller/AddSupermasterController.php:61
 msgid "The supermaster has been added successfully."
 msgstr "De supermaster is succesvol toegevoegd."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:72
+msgid "PEM key import requires PowerDNS 4.7 or newer."
+msgstr "Het importeren van PEM-sleutels vereist PowerDNS 4.7 of nieuwer."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:97
+msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+msgstr ""
+"Geef een PEM-gecodeerde privésleutel op (moet BEGIN/END-markeringen "
+"bevatten)."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:108
+msgid "PEM key imported successfully."
+msgstr "PEM-sleutel met succes geïmporteerd."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:111
+msgid ""
+"Failed to import PEM key. The PowerDNS server may have rejected the format."
+msgstr ""
+"PEM-sleutel kon niet worden geïmporteerd. De PowerDNS-server heeft het "
+"formaat mogelijk geweigerd."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:115
+msgid "An error occurred while importing the PEM key: "
+msgstr "Er is een fout opgetreden bij het importeren van de PEM-sleutel: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:74
 msgid "You do not have the permission to add records to zone templates."
@@ -2715,6 +2811,47 @@ msgstr[0] ""
 msgstr[1] ""
 "Kan gebruiker niet toevoegen aan %d groepen (al lid of groepen niet "
 "gevonden)."
+
+#: lib/Application/Controller/ListNetworksController.php:39
+msgid "You do not have permission to manage network views."
+msgstr "U hebt geen rechten om netwerk-views te beheren."
+
+#: lib/Application/Controller/ListNetworksController.php:44
+msgid "Network views require PowerDNS 5.0 or newer."
+msgstr "Netwerk-views vereisen PowerDNS 5.0 of nieuwer."
+
+#: lib/Application/Controller/ListNetworksController.php:50
+msgid "Network views are only available with the PowerDNS API backend."
+msgstr "Netwerk-views zijn alleen beschikbaar met de PowerDNS API-backend."
+
+#: lib/Application/Controller/ListNetworksController.php:61
+msgid "Provide a valid CIDR (e.g. 192.168.0.0/16)."
+msgstr "Geef een geldig CIDR op (bijv. 192.168.0.0/16)."
+
+#: lib/Application/Controller/ListNetworksController.php:64
+msgid "Provide a valid view name."
+msgstr "Geef een geldige view-naam op."
+
+#: lib/Application/Controller/ListNetworksController.php:70
+msgid "Network mapping saved."
+msgstr "Netwerkkoppeling opgeslagen."
+
+#: lib/Application/Controller/ListNetworksController.php:70
+msgid "Failed to save network mapping."
+msgstr "Netwerkkoppeling kon niet worden opgeslagen."
+
+#: lib/Application/Controller/ListNetworksController.php:78
+msgid "Network mapping removed."
+msgstr "Netwerkkoppeling verwijderd."
+
+#: lib/Application/Controller/ListNetworksController.php:78
+msgid "Failed to remove network mapping."
+msgstr "Netwerkkoppeling kon niet worden verwijderd."
+
+#: lib/Application/Controller/ListNetworksController.php:93
+#: templates/modern/list_networks.html:4 templates/modern/list_networks.html:10
+msgid "Network views"
+msgstr "Netwerk-views"
 
 #: lib/Application/Controller/DeletePermTemplController.php:60
 msgid "You do not have the permission to delete permission templates."
@@ -2824,41 +2961,41 @@ msgstr ""
 msgid "Change Password"
 msgstr "Wachtwoord Wijzigen"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:117
+#: lib/Application/Controller/DnssecAddKeyController.php:119
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "ECDSA P-256 algoritme moet 256 bits gebruiken"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:120
+#: lib/Application/Controller/DnssecAddKeyController.php:122
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "ECDSA P-384 algoritme moet 384 bits gebruiken"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:126
+#: lib/Application/Controller/DnssecAddKeyController.php:128
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519 algoritme moet 256 bits gebruiken"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:131
+#: lib/Application/Controller/DnssecAddKeyController.php:133
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "ED448 algoritme moet 456 bits gebruiken (niet ondersteund in deze UI)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:138
+#: lib/Application/Controller/DnssecAddKeyController.php:140
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "RSA-algoritmen moeten 1024 of 2048 bits gebruiken voor adequate beveiliging"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:161
+#: lib/Application/Controller/DnssecAddKeyController.php:163
 msgid "Zone key has been added successfully."
 msgstr "Zonesleutel is succesvol toegevoegd."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:165
+#: lib/Application/Controller/DnssecAddKeyController.php:167
 msgid "Failed to add new DNSSEC key."
 msgstr "Kan nieuwe DNSSEC-sleutel niet toevoegen."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:169
+#: lib/Application/Controller/DnssecAddKeyController.php:171
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr ""
 "Er is een fout opgetreden tijdens het toevoegen van de DNSSEC-sleutel: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:173
+#: lib/Application/Controller/DnssecAddKeyController.php:175
 msgid "Please select both algorithm and bits"
 msgstr "Selecteer zowel algoritme als bits"
 
@@ -2896,7 +3033,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "De supermaster is succesvol verwijderd."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:150 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:202 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Bulk Registratie"
 
@@ -2963,12 +3100,12 @@ msgstr ""
 "Er is een fout opgetreden bij het schakelen van de DNSSEC-sleutel. Probeer "
 "het opnieuw."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Ja"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Nee"
@@ -3049,6 +3186,177 @@ msgstr "Dit sjabloon is toegewezen aan ten minste één gebruiker."
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
 msgid "This template is assigned to at least one group."
 msgstr "Deze sjabloon is toegewezen aan ten minste één groep."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:91
+msgid "Primary"
+msgstr "Primary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:92
+msgid "Secondary"
+msgstr "Secondary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:103
+#: lib/Module/ZoneImportExport/templates/import.html:131
+msgid "Native"
+msgstr "Natief"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:104
+msgid "Producer"
+msgstr "Producer"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:105
+msgid "Consumer"
+msgstr "Consumer"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:101
+#: lib/Module/ZoneImportExport/templates/import.html:130
+msgid "Master"
+msgstr "Master"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:102
+msgid "Slave"
+msgstr "Slave"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+msgid "Autoprimaries"
+msgstr "Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+msgid "Supermasters"
+msgstr "Supermasters"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:122
+msgid "Autoprimary"
+msgstr "Autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:122
+msgid "Supermaster"
+msgstr "Supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:123
+msgid "Add autoprimary"
+msgstr "Autoprimary toevoegen"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:123
+msgid "Add supermaster"
+msgstr "Supermaster toevoegen"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:124
+msgid "Edit autoprimary"
+msgstr "Autoprimary bewerken"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:124
+msgid "Edit supermaster"
+msgstr "Supermaster bewerken"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:125
+msgid "Delete autoprimary"
+msgstr "Autoprimary verwijderen"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:125
+msgid "Delete supermaster"
+msgstr "Supermaster verwijderen"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:126
+msgid "About Autoprimaries"
+msgstr "Over Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:126
+msgid "About Supermasters"
+msgstr "Over Supermasters"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:127
+msgid "What is an Autoprimary?"
+msgstr "Wat is een Autoprimary?"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:127
+msgid "What is a Supermaster?"
+msgstr "Wat is een Supermaster?"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:128
+msgid "Search autoprimaries..."
+msgstr "Zoek autoprimaries..."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:128
+msgid "Search supermasters..."
+msgstr "Supermasters zoeken..."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:130
+msgid "There are no autoprimaries to show in this listing."
+msgstr "Er zijn geen autoprimaries om in deze lijst te tonen."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:131
+msgid "There are no supermasters to show in this listing."
+msgstr "Er zijn geen supermasters om te tonen in deze lijst."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:132
+msgid "IP address of autoprimary"
+msgstr "IP-adres van autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:132
+msgid "IP address of supermaster"
+msgstr "IP adres van supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:134
+msgid "Select the account that will own this autoprimary"
+msgstr "Selecteer het account dat deze autoprimary bezit"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:135
+msgid "Select the account that will own this supermaster"
+msgstr "Selecteer het account dat eigenaar wordt van deze supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:136
+msgid "About Editing Autoprimaries"
+msgstr "Over het bewerken van Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:136
+msgid "About Editing Supermasters"
+msgstr "Over het Bewerken van Supermasters"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:138
+msgid ""
+"You can modify the IP address, hostname, or account for this autoprimary."
+msgstr ""
+"U kunt het IP-adres, de hostnaam of het account van deze autoprimary "
+"wijzigen."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:139
+msgid ""
+"You can modify the IP address, hostname, or account for this supermaster."
+msgstr ""
+"U kunt het IP adres, hostnaam of account voor deze supermaster wijzigen."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:140
+msgid "Autoprimary Details"
+msgstr "Autoprimary-details"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:140
+msgid "Supermaster Details"
+msgstr "Supermasterdetails"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:142
+msgid "You are about to delete the autoprimary"
+msgstr "U staat op het punt de volgende autoprimary te verwijderen"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:143
+msgid "You are about to delete the supermaster"
+msgstr "U staat op het punt de supermaster te verwijderen"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:144
+msgid "Yes, delete this autoprimary"
+msgstr "Ja, deze autoprimary verwijderen"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:144
+msgid "Yes, delete this supermaster"
+msgstr "Ja, deze supermaster verwijderen"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:145
+msgid "No, keep this autoprimary"
+msgstr "Nee, deze autoprimary behouden"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:145
+msgid "No, keep this supermaster"
+msgstr "Nee, deze supermaster behouden"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -9183,7 +9491,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Record bijwerken"
 
-#: templates/modern/edit.html:529 templates/modern/users.html:219
+#: templates/modern/edit.html:550 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Resetten"
 
@@ -9283,22 +9591,6 @@ msgstr "CNAME: <code>doel.[ZONE]</code> of <code>voorbeeld.com.</code>"
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgstr "TXT voor SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
-#: templates/modern/delete_supermaster.html:4
-msgid "Supermasters"
-msgstr "Supermasters"
-
-#: templates/modern/edit_supermaster.html:5
-msgid "Edit supermaster"
-msgstr "Supermaster bewerken"
-
-#: templates/modern/edit_supermaster.html:13
-msgid "Edit Supermaster"
-msgstr "Supermaster Bewerken"
-
-#: templates/modern/list_supermasters.html:31
-msgid "IP address of supermaster"
-msgstr "IP adres van supermaster"
-
 #: templates/modern/add_supermaster.html:22
 msgid "Enter the IP address of the master nameserver"
 msgstr "Voer het IP adres van de master nameserver in"
@@ -9323,11 +9615,7 @@ msgstr "Geef hostnaam op"
 msgid "Account"
 msgstr "Account"
 
-#: templates/modern/add_supermaster.html:48
-msgid "Select the account that will own this supermaster"
-msgstr "Selecteer het account dat eigenaar wordt van deze supermaster"
-
-#: templates/modern/edit.html:190 templates/modern/edit.html:526
+#: templates/modern/edit.html:190 templates/modern/edit.html:547
 msgid "Save changes"
 msgstr "Wijzigingen opslaan"
 
@@ -9335,19 +9623,9 @@ msgstr "Wijzigingen opslaan"
 msgid "All fields are required"
 msgstr "Alle velden zijn verplicht"
 
-#: templates/modern/edit_supermaster.html:74
-msgid "About Editing Supermasters"
-msgstr "Over het Bewerken van Supermasters"
-
 #: templates/modern/edit_supermaster.html:79
 msgid "Update Credentials"
 msgstr "Inloggegevens Bijwerken"
-
-#: templates/modern/edit_supermaster.html:80
-msgid ""
-"You can modify the IP address, hostname, or account for this supermaster."
-msgstr ""
-"U kunt het IP adres, hostnaam of account voor deze supermaster wijzigen."
 
 #: templates/modern/edit_supermaster.html:83
 msgid "Important"
@@ -9433,9 +9711,79 @@ msgstr "Deactiveren"
 msgid "Activate"
 msgstr "Activeren"
 
+#: templates/default/dnssec.html:123 templates/modern/dnssec.html:123
+msgid "Download this key as PEM"
+msgstr "Deze sleutel als PEM downloaden"
+
+#: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
+msgid "Export PEM"
+msgstr "PEM exporteren"
+
 #: templates/modern/list_perm_templ.html:61
 msgid "Delete"
 msgstr "Verwijderen"
+
+#: templates/default/dnssec.html:144 templates/modern/dnssec.html:144
+msgid "Import key from PEM"
+msgstr "Sleutel uit PEM importeren"
+
+#: templates/default/dnssec.html:147 templates/modern/dnssec.html:147
+msgid ""
+"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+"key size from the PEM contents - select the matching algorithm and key role."
+msgstr ""
+"Plak een PEM-gecodeerde privésleutel (RSA of ECDSA). PowerDNS 4.7+ leidt de "
+"sleutelgrootte af uit de PEM-inhoud - kies het bijbehorende algoritme en de "
+"sleutelrol."
+
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:55
+msgid "Key type"
+msgstr "Sleuteltype"
+
+#: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
+msgid "PEM private key"
+msgstr "PEM privésleutel"
+
+#: templates/default/dnssec.html:172 templates/modern/dnssec.html:172
+msgid "Import key"
+msgstr "Sleutel importeren"
+
+#: templates/modern/list_networks.html:13
+msgid ""
+"Each network maps to a single view. Resolvers in that network receive the "
+"zone variant assigned to that view."
+msgstr ""
+"Elk netwerk verwijst naar één view. Resolvers in dat netwerk ontvangen de "
+"aan die view toegewezen zonevariant."
+
+#: templates/modern/list_networks.html:18
+msgid "No networks configured yet. Map a CIDR to a view below."
+msgstr ""
+"Nog geen netwerken geconfigureerd. Koppel hieronder een CIDR aan een view."
+
+#: templates/modern/list_networks.html:25
+msgid "Network"
+msgstr "Netwerk"
+
+#: templates/modern/list_networks.html:65
+msgid "View"
+msgstr "View"
+
+#: templates/modern/list_networks.html:40
+msgid "Remove mapping"
+msgstr "Koppeling verwijderen"
+
+#: templates/modern/list_networks.html:54
+msgid "Map network to view"
+msgstr "Netwerk aan view koppelen"
+
+#: templates/modern/list_networks.html:61
+msgid "CIDR"
+msgstr "CIDR"
+
+#: templates/modern/list_networks.html:79
+msgid "Save"
+msgstr "Opslaan"
 
 #: templates/modern/forgot_password.html:4
 msgid "Forgot Password"
@@ -9587,7 +9935,7 @@ msgstr "Verwijderen"
 msgid "and"
 msgstr "en"
 
-#: templates/modern/list_forward_zones.html:169
+#: templates/modern/list_forward_zones.html:178
 msgid "more..."
 msgstr "meer..."
 
@@ -9696,7 +10044,7 @@ msgstr "Nee, behoud deze groep"
 msgid "Welcome"
 msgstr "Welkom"
 
-#: templates/modern/index.html:5 templates/modern/delete_zone_templ.html:29
+#: templates/modern/list_views.html:25
 msgid "zones"
 msgstr "zones"
 
@@ -9712,15 +10060,69 @@ msgstr "gebruikers"
 msgid "groups"
 msgstr "groepen"
 
-#: templates/default/index.html:22 templates/modern/index.html:22
+#: templates/default/index.html:11 templates/modern/index.html:11
+msgid "Connected PowerDNS version"
+msgstr "Connected PowerDNS version"
+
+#: templates/default/index.html:16 templates/modern/index.html:16
+msgid ""
+"Could not detect PowerDNS version. Newer features are hidden until the API "
+"is reachable."
+msgstr ""
+"PowerDNS-versie kon niet worden gedetecteerd. Nieuwere functies blijven "
+"verborgen tot de API bereikbaar is."
+
+#: templates/default/index.html:17 templates/modern/index.html:17
+msgid "PowerDNS version unknown"
+msgstr "PowerDNS-versie onbekend"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid "PowerDNS API error"
+msgstr "PowerDNS API error"
+
+#: templates/default/index.html:34 templates/modern/index.html:34
+msgid ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
+msgstr ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
+
+#: templates/default/index.html:36 templates/modern/index.html:36
+msgid ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+msgstr ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+
+#: templates/default/index.html:38 templates/modern/index.html:38
+msgid ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+msgstr ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+
+#: templates/default/index.html:40 templates/modern/index.html:40
+msgid ""
+"Zone counts and lists may be out of date until the API is reachable again. "
+"Check your PowerDNS server log for details."
+msgstr ""
+"Zone counts and lists may be out of date until the API is reachable again. "
+"Check your PowerDNS server log for details."
+
+#: templates/default/index.html:56 templates/modern/index.html:56
 msgid "DNS Management"
 msgstr "DNS-beheer"
 
-#: templates/modern/index.html:35 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:69 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "Online"
 
-#: templates/modern/index.html:37 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:71 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "Offline"
 
@@ -9728,31 +10130,31 @@ msgstr "Offline"
 msgid "Templates"
 msgstr "Sjablonen"
 
-#: templates/default/index.html:109 templates/modern/index.html:109
+#: templates/default/index.html:142 templates/modern/index.html:142
+msgid "Networks"
+msgstr "Netwerken"
+
+#: templates/default/index.html:161 templates/modern/index.html:161
 msgid "Zone Operations"
 msgstr "Zone-operaties"
 
-#: templates/default/index.html:120 templates/modern/index.html:120
+#: templates/default/index.html:172 templates/modern/index.html:172
 msgid "Master Zone"
 msgstr "Primaire Zone"
 
-#: templates/default/index.html:130 templates/modern/index.html:130
+#: templates/default/index.html:182 templates/modern/index.html:182
 msgid "Slave Zone"
 msgstr "Secundaire Zone"
 
-#: templates/default/index.html:140 templates/modern/index.html:140
-msgid "Supermaster"
-msgstr "Supermaster"
-
-#: templates/default/index.html:160 templates/modern/index.html:160
+#: templates/default/index.html:212 templates/modern/index.html:212
 msgid "PTR Records"
 msgstr "PTR-records"
 
-#: templates/default/index.html:178 templates/modern/index.html:178
+#: templates/default/index.html:230 templates/modern/index.html:230
 msgid "Administration"
 msgstr "Beheer"
 
-#: templates/modern/index.html:209 templates/modern/header.html:259
+#: templates/modern/index.html:261 templates/modern/header.html:259
 msgid "Access"
 msgstr "Toegang"
 
@@ -9760,12 +10162,12 @@ msgstr "Toegang"
 msgid "Tools"
 msgstr "Hulpmiddelen"
 
-#: templates/default/index.html:268 templates/modern/index.html:268
+#: templates/default/index.html:320 templates/modern/index.html:320
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Database"
 
-#: templates/default/index.html:315 templates/modern/index.html:315
+#: templates/default/index.html:367 templates/modern/index.html:367
 msgid "My Profile"
 msgstr "Mijn Profiel"
 
@@ -9774,7 +10176,7 @@ msgstr "Mijn Profiel"
 msgid "Password"
 msgstr "Wachtwoord"
 
-#: templates/modern/index.html:334 templates/modern/header.html:372
+#: templates/modern/index.html:386 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "Voorkeuren"
 
@@ -9782,7 +10184,7 @@ msgstr "Voorkeuren"
 msgid "Logout"
 msgstr "Uitloggen"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:535
 msgid "Edit comment"
 msgstr "Opmerking bewerken"
 
@@ -10436,7 +10838,7 @@ msgstr "Er zijn geen reverse zones om te tonen in deze lijst."
 msgid "Owner"
 msgstr "Eigenaar"
 
-#: templates/modern/list_forward_zones.html:88
+#: templates/modern/list_forward_zones.html:97
 msgid "Full name"
 msgstr "Volledige naam"
 
@@ -10444,7 +10846,7 @@ msgstr "Volledige naam"
 msgid "Associated Forward Zones"
 msgstr "Geassocieerde Forward Zones"
 
-#: templates/modern/list_forward_zones.html:92
+#: templates/modern/list_forward_zones.html:101
 msgid "Serial"
 msgstr "Serienummer"
 
@@ -10460,7 +10862,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Zone(s) verwijderen"
 
-#: templates/modern/dnssec_add_key.html:91
+#: templates/modern/dnssec_add_key.html:93
 msgid "Add key"
 msgstr "Sleutel toevoegen"
 
@@ -10468,40 +10870,35 @@ msgstr "Sleutel toevoegen"
 msgid "Add key for zone"
 msgstr "Sleutel toevoegen voor zone"
 
-#: templates/modern/dnssec_add_key.html:43
-msgid "PowerDNS 4.0+ uses CSK by default"
-msgstr "PowerDNS 4.0+ gebruikt standaard CSK"
-
 #: templates/modern/dnssec_add_key.html:44
+msgid "Legacy PowerDNS detected"
+msgstr "Oudere PowerDNS gedetecteerd"
+
+#: templates/modern/dnssec_add_key.html:45
 msgid ""
-"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
-"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+"This server predates PowerDNS 4.0 and does not create a Combined Signing Key "
+"by default. Pick KSK or ZSK explicitly to add a key here."
 msgstr ""
-"PowerDNS 4.0 en nieuwere versies gebruiken standaard Combined Signing Keys "
-"(CSK). Als u KSK of ZSK selecteert, kan PowerDNS alsnog een CSK-sleutel "
-"aanmaken."
+"Deze server is ouder dan PowerDNS 4.0 en maakt standaard geen Combined "
+"Signing Key aan. Kies hier expliciet KSK of ZSK om een sleutel toe te voegen."
 
-#: templates/modern/dnssec_add_key.html:53
-msgid "Key type"
-msgstr "Sleuteltype"
-
-#: templates/modern/dnssec_add_key.html:60
+#: templates/modern/dnssec_add_key.html:62
 msgid "Select key type"
 msgstr "Selecteer sleuteltype"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:73
 msgid "Select algorithm"
 msgstr "Selecteer algoritme"
 
-#: templates/modern/dnssec_add_key.html:76
+#: templates/modern/dnssec_add_key.html:78
 msgid "Bits in length"
 msgstr "Bits in lengte"
 
-#: templates/modern/dnssec_add_key.html:85
+#: templates/modern/dnssec_add_key.html:87
 msgid "Select bits length"
 msgstr "Selecteer bits lengte"
 
-#: templates/modern/dnssec_add_key.html:142
+#: templates/modern/dnssec_add_key.html:144
 msgid "Recommended bits for"
 msgstr "Aanbevolen bits voor"
 
@@ -10510,19 +10907,19 @@ msgstr "Aanbevolen bits voor"
 msgid "Warning:"
 msgstr "Waarschuwing:"
 
-#: templates/modern/dnssec_add_key.html:150
+#: templates/modern/dnssec_add_key.html:152
 msgid "bits is not recommended for"
 msgstr "bits wordt niet aanbevolen voor"
 
-#: templates/modern/dnssec_add_key.html:187
+#: templates/modern/dnssec_add_key.html:189
 msgid "About DNSSEC Key Types"
 msgstr "Over DNSSEC Sleutel Types"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:193
 msgid "Key Types Explained"
 msgstr "Sleutel Types Uitgelegd"
 
-#: templates/modern/dnssec_add_key.html:193
+#: templates/modern/dnssec_add_key.html:195
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -10530,19 +10927,19 @@ msgstr ""
 "Gecombineerde Ondertekenings Sleutel - fungeert als zowel KSK als ZSK "
 "(aanbevolen voor PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:194
+#: templates/modern/dnssec_add_key.html:196
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Key Signing Key - ondertekent de DNSKEY records in de zone"
 
-#: templates/modern/dnssec_add_key.html:195
+#: templates/modern/dnssec_add_key.html:197
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zone Signing Key - ondertekent alle andere records in de zone"
 
-#: templates/modern/dnssec_add_key.html:200
+#: templates/modern/dnssec_add_key.html:202
 msgid "Recommended Settings"
 msgstr "Aanbevolen Instellingen"
 
-#: templates/modern/dnssec_add_key.html:201
+#: templates/modern/dnssec_add_key.html:203
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10776,7 +11173,7 @@ msgstr "Ja, deze zones ontkoppelen"
 msgid "Access templates"
 msgstr "Toegangssjablonen"
 
-#: templates/modern/add_perm_templ.html:6
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
 msgid "Add"
 msgstr "Toevoegen"
 
@@ -10898,22 +11295,6 @@ msgstr "Ga naar Homepage"
 #: templates/default/404.html:49 templates/modern/404.html:49
 msgid "Go Back"
 msgstr "Ga Terug"
-
-#: templates/modern/list_supermasters.html:13
-msgid "Add supermaster"
-msgstr "Supermaster toevoegen"
-
-#: templates/modern/add_supermaster.html:13
-msgid "Add Supermaster"
-msgstr "Supermaster Toevoegen"
-
-#: templates/modern/add_supermaster.html:70
-msgid "About Supermasters"
-msgstr "Over Supermasters"
-
-#: templates/modern/add_supermaster.html:75
-msgid "What is a Supermaster?"
-msgstr "Wat is een Supermaster?"
 
 #: templates/modern/add_supermaster.html:76
 msgid ""
@@ -11296,71 +11677,71 @@ msgstr "Als u de sleutel kwijtraakt, moet u deze regenereren."
 msgid "Edit"
 msgstr "Bewerken"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:577
+#: templates/modern/edit.html:25 templates/modern/edit.html:598
 msgid "Add new record"
 msgstr "Nieuw record toevoegen"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:581
+#: templates/modern/edit.html:203 templates/modern/edit.html:602
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Begeleide wizards voor DMARC, SPF, DKIM, CAA, TLSA en SRV-records"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:587
+#: templates/modern/edit.html:35 templates/modern/edit.html:608
 msgid "Multi-record mode"
 msgstr "Multi-record modus"
 
-#: templates/modern/edit.html:535 templates/modern/edit.html:590
+#: templates/modern/edit.html:556 templates/modern/edit.html:611
 msgid "Bulk add"
 msgstr "Bulk toevoegen"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:623
 msgid "Failed to add"
 msgstr "Toevoegen mislukt"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:623
 msgid "record(s). Please check the record format."
 msgstr "record(s). Controleer het record formaat."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:604
+#: templates/modern/edit.html:52 templates/modern/edit.html:625
 msgid "Failed to add records. Please check the record format."
 msgstr "Records toevoegen mislukt. Controleer het record formaat."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:628
 msgid "Content validation failed:"
 msgstr "Inhoud validatie mislukt:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:628
 msgid "Invalid value for record type"
 msgstr "Ongeldige waarde voor record type"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:609
+#: templates/modern/edit.html:57 templates/modern/edit.html:630
 msgid "Please provide all required information."
 msgstr "Geef alle vereiste informatie op."
 
-#: templates/modern/edit.html:632 templates/modern/add_record.html:72
+#: templates/modern/edit.html:653 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "PTR Toevoegen"
 
-#: templates/modern/edit.html:635 templates/modern/add_record.html:75
+#: templates/modern/edit.html:656 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "A/AAAA Toevoegen"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:674
+#: templates/modern/edit.html:121 templates/modern/edit.html:695
 msgid "This record already exists"
 msgstr "Dit record bestaat al"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:686
+#: templates/modern/edit.html:133 templates/modern/edit.html:707
 msgid "Invalid priority"
 msgstr "Ongeldige prioriteit"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:693
+#: templates/modern/edit.html:140 templates/modern/edit.html:714
 msgid "Invalid TTL value"
 msgstr "Ongeldige TTL waarde"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:695
+#: templates/modern/edit.html:142 templates/modern/edit.html:716
 msgid "Provide TTL"
 msgstr "Geef TTL op"
 
-#: templates/modern/edit.html:721 templates/modern/add_record.html:207
+#: templates/modern/edit.html:742 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11420,47 +11801,51 @@ msgstr "van"
 msgid "total records"
 msgstr "totaal records"
 
-#: templates/default/edit.html:497 templates/modern/edit.html:497
+#: templates/default/edit.html:405 templates/modern/edit.html:405
+msgid "Last modified"
+msgstr "Laatst gewijzigd"
+
+#: templates/default/edit.html:518 templates/modern/edit.html:518
 msgid "Edit selected"
 msgstr "Geselecteerde bewerken"
 
-#: templates/modern/edit.html:501 templates/modern/search.html:486
+#: templates/modern/edit.html:522 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Record(s) verwijderen"
 
-#: templates/modern/edit.html:509 templates/modern/search.html:93
+#: templates/modern/edit.html:530 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Opmerkingen"
 
-#: templates/default/edit.html:539 templates/modern/edit.html:539
+#: templates/default/edit.html:560 templates/modern/edit.html:560
 msgid "Import"
 msgstr "Importeren"
 
-#: templates/default/edit.html:556 templates/modern/edit.html:556
+#: templates/default/edit.html:577 templates/modern/edit.html:577
 msgid "Generate PTR"
 msgstr "Genereer PTR"
 
-#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:756 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Zoneconfiguratie"
 
-#: templates/modern/edit.html:777 templates/modern/edit.html:806
+#: templates/modern/edit.html:798 templates/modern/edit.html:827
 msgid "Change"
 msgstr "Wijzigen"
 
-#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:791 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "IP adres van master NS"
 
-#: templates/default/edit.html:827 templates/modern/edit.html:827
+#: templates/default/edit.html:848 templates/modern/edit.html:848
 msgid "Manage DNSSEC"
 msgstr "DNSSEC beheren"
 
-#: templates/default/edit.html:834 templates/modern/edit.html:834
+#: templates/default/edit.html:855 templates/modern/edit.html:855
 msgid "Sign zone"
 msgstr "Zone ondertekenen"
 
-#: templates/default/edit.html:838 templates/modern/edit.html:838
+#: templates/default/edit.html:859 templates/modern/edit.html:859
 msgid "Not signed"
 msgstr "Niet ondertekend"
 
@@ -11505,15 +11890,23 @@ msgstr "MFA ingeschakeld"
 msgid "MFA not configured"
 msgstr "MFA niet geconfigureerd"
 
+#: templates/modern/list_forward_zones.html:22
+msgid "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Fetch zones from PowerDNS and reconcile the local table"
+
+#: templates/modern/list_forward_zones.html:23
+msgid "Sync from PowerDNS"
+msgstr "Sync from PowerDNS"
+
 #: templates/modern/list_template_zones.html:15
 msgid "Total number of zones:"
 msgstr "Totaal aantal zones:"
 
-#: templates/modern/list_forward_zones.html:57
+#: templates/modern/list_forward_zones.html:66
 msgid "There are no forward zones to show in this listing."
 msgstr "Er zijn geen forward zones om te tonen in deze lijst."
 
-#: templates/modern/list_forward_zones.html:201
+#: templates/modern/list_forward_zones.html:210
 msgid "PTR"
 msgstr "PTR"
 
@@ -12065,14 +12458,6 @@ msgstr "Wilt u doorgaan zonder een SOA record toe te voegen?"
 msgid "Continue Without SOA"
 msgstr "Doorgaan Zonder SOA"
 
-#: templates/modern/list_supermasters.html:21
-msgid "Search supermasters..."
-msgstr "Supermasters zoeken..."
-
-#: templates/modern/list_supermasters.html:71
-msgid "There are no supermasters to show in this listing."
-msgstr "Er zijn geen supermasters om te tonen in deze lijst."
-
 #: templates/modern/edit_zone_metadata.html:18
 msgid "Edit Metadata"
 msgstr "Metadata bewerken"
@@ -12101,15 +12486,19 @@ msgstr "Enkele waarde"
 msgid "Kind"
 msgstr "Soort"
 
-#: templates/modern/edit_zone_metadata.html:105
+#: templates/modern/edit_zone_metadata.html:127
+msgid "requires"
+msgstr "vereist"
+
+#: templates/modern/edit_zone_metadata.html:107
 msgid "Add metadata row"
 msgstr "Metadatarij toevoegen"
 
-#: templates/modern/edit_zone_metadata.html:108
+#: templates/modern/edit_zone_metadata.html:110
 msgid "Save metadata"
 msgstr "Metadata opslaan"
 
-#: templates/modern/edit_zone_metadata.html:112
+#: templates/modern/edit_zone_metadata.html:114
 msgid "Back to zone"
 msgstr "Terug naar zone"
 
@@ -12312,7 +12701,7 @@ msgstr "Bewaar deze codes op een veilige plaats!"
 msgid "Print"
 msgstr "Afdrukken"
 
-#: templates/modern/mfa_recovery_codes.html:52
+#: templates/modern/dnssec_ds_dnskey.html:67
 msgid "Copy all"
 msgstr "Alles kopiëren"
 
@@ -12697,30 +13086,6 @@ msgstr "Ja, deze zones verwijderen"
 msgid "No, keep these zones"
 msgstr "Nee, deze zones behouden"
 
-#: templates/modern/delete_supermaster.html:5
-msgid "Delete supermaster"
-msgstr "Supermaster verwijderen"
-
-#: templates/modern/delete_supermaster.html:11
-msgid "Delete Supermaster"
-msgstr "Supermaster Verwijderen"
-
-#: templates/modern/delete_supermaster.html:16
-msgid "You are about to delete the supermaster"
-msgstr "U staat op het punt de supermaster te verwijderen"
-
-#: templates/modern/delete_supermaster.html:22
-msgid "Supermaster Details"
-msgstr "Supermasterdetails"
-
-#: templates/modern/delete_supermaster.html:53
-msgid "Yes, delete this supermaster"
-msgstr "Ja, deze supermaster verwijderen"
-
-#: templates/modern/delete_supermaster.html:56
-msgid "No, keep this supermaster"
-msgstr "Nee, deze supermaster behouden"
-
 #: templates/modern/list_log_users.html:5 templates/modern/header.html:216
 msgid "User logs"
 msgstr "Gebruikerslogs"
@@ -12760,6 +13125,36 @@ msgstr "U staat op het punt het zone sjabloon te verwijderen"
 #: templates/modern/delete_zone_templ.html:29
 msgid "This template is currently used by"
 msgstr "Dit sjabloon wordt momenteel gebruikt door"
+
+#: templates/default/list_views.html:13 templates/modern/list_views.html:13
+msgid ""
+"Views serve different zone variants to different clients based on the "
+"network mapping. Each variant is identified as zone..variant (for example, "
+"example.com..trusted)."
+msgstr ""
+"Views leveren verschillende zonevarianten aan verschillende clients op basis "
+"van de netwerkkoppeling. Elke variant wordt geïdentificeerd als "
+"zone..variant (bijvoorbeeld example.com..trusted)."
+
+#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+msgid "No views configured yet. Add a zone variant below."
+msgstr "Nog geen views geconfigureerd. Voeg hieronder een zonevariant toe."
+
+#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+msgid "Remove from view"
+msgstr "Uit view verwijderen"
+
+#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+msgid "Assign zone to view"
+msgstr "Zone aan view toewijzen"
+
+#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+msgid "View name"
+msgstr "Naam van de view"
+
+#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+msgid "Zone (zone..variant)"
+msgstr "Zone (zone..variant)"
 
 #: templates/modern/email_previews.html:11
 msgid "Email Template Previews"
@@ -13068,15 +13463,27 @@ msgstr "DNSSEC publieke records voor zone"
 msgid "Back to DNSSEC keys"
 msgstr "Terug naar DNSSEC sleutels"
 
-#: templates/modern/dnssec_ds_dnskey.html:47
+#: templates/modern/dnssec_ds_dnskey.html:48
 msgid "DNSKEY Records"
 msgstr "DNSKEY-records"
 
-#: templates/modern/dnssec_ds_dnskey.html:55
+#: templates/modern/dnssec_ds_dnskey.html:51
+msgid "Copy all DNSKEY records to clipboard"
+msgstr "Alle DNSKEY-records naar klembord kopiëren"
+
+#: templates/modern/dnssec_ds_dnskey.html:71
+msgid "Copy this record"
+msgstr "Dit record kopiëren"
+
+#: templates/modern/dnssec_ds_dnskey.html:63
 msgid "DS Records"
 msgstr "DS-records"
 
-#: templates/modern/dnssec_ds_dnskey.html:62
+#: templates/modern/dnssec_ds_dnskey.html:66
+msgid "Copy all DS records to clipboard"
+msgstr "Alle DS-records naar klembord kopiëren"
+
+#: templates/modern/dnssec_ds_dnskey.html:76
 msgid ""
 "DS records should be added to the parent zone to establish the chain of "
 "trust."
@@ -13523,14 +13930,6 @@ msgstr "Alle records toevoegen"
 msgid "Zone type"
 msgstr "Zonetype"
 
-#: lib/Module/ZoneImportExport/templates/import.html:130
-msgid "Master"
-msgstr "Master"
-
-#: lib/Module/ZoneImportExport/templates/import.html:131
-msgid "Native"
-msgstr "Natief"
-
 #: lib/Module/ZoneImportExport/templates/import.html:138
 msgid "Confirm import"
 msgstr "Import bevestigen"
@@ -13632,54 +14031,56 @@ msgid "Limited Database Rights:"
 msgstr "Beperkte databaserechten:"
 
 #: install/templates/step6.html.twig:15
+#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
 msgstr ""
-"Maak een databasegebruiker aan met beperkte rechten (select, insert, update, "
-"delete) voor alleen Poweradmin-tabellen. Toegang tot PowerDNS-tabellen is "
-"niet vereist bij gebruik van de API-backend.delete) zodat Poweradmin toegang "
-"heeft tot PowerDNS-tabellen."
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin tables only. PowerDNS table access is not required when using "
+"the API backend."
 
 #: install/templates/step6.html.twig:17
+#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Maak een databasegebruiker aan met beperkte rechten (select, insert, update, "
-"delete) zodat Poweradmin toegang heeft tot PowerDNS-tabellen."
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin to access PowerDNS tables."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
-msgstr "Databaseopdrachten"
+msgstr "Database-opdrachten"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Voer de volgende commando's uit:"
+msgstr "Voer de volgende opdrachten uit:"
 
 #: install/templates/step6.html.twig:40
+#, auto-english-fallback
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
 msgstr ""
-"Nadat u de nieuwe gebruiker hebt toegevoegd, gaat u verder met deze "
-"installatieprocedure."
+"After you have added the new user, proceed with this installation procedure."
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
 msgid "Note:"
-msgstr "Opmerking:"
+msgstr "Let op:"
 
 #: install/templates/step6.html.twig:43
+#, auto-english-fallback
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Omdat u SQLite gebruikt, is het niet nodig om een nieuwe gebruiker met "
-"beperkte rechten aan te maken."
+"Since you are using SQLite, there is no need to create a new user with "
+"limited rights."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Doorgaan naar stap"
+msgstr "Ga verder naar stap"
 
 #: install/templates/base.html.twig:37
 msgid "Installation step"
@@ -13710,13 +14111,15 @@ msgid "Choose a language for installation"
 msgstr "Kies een taal voor de installatie"
 
 #: install/templates/step1.html.twig:12
+#, auto-english-fallback
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr "Selecteer uw voorkeurstaal om door te gaan met de installatie:"
+msgstr ""
+"Please select your preferred language to continue with the installation:"
 
-#: install/templates/step1.html.twig:287
+#: install/templates/step1.html.twig:391
 msgid "Begin Installation"
-msgstr "Installatie Beginnen"
+msgstr "Start installatie"
 
 #: install/templates/step4.html.twig:3
 msgid "Configuring database"
@@ -13732,7 +14135,7 @@ msgstr "PowerDNS-backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Kies hoe Poweradmin communiceert met PowerDNS:"
+msgstr "Kies hoe Poweradmin met PowerDNS communiceert:"
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
@@ -13744,7 +14147,7 @@ msgstr "API"
 
 #: install/templates/step4.html.twig:32
 msgid "PowerDNS REST API"
-msgstr "PowerDNS REST API"
+msgstr "PowerDNS REST-API"
 
 #: install/templates/step4.html.twig:33
 msgid "Experimental"
@@ -13756,11 +14159,11 @@ msgstr "PowerDNS API-instellingen"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
-msgstr "API URL"
+msgstr "API-URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API endpoint-URL."
+msgstr "URL van het PowerDNS API-eindpunt."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
@@ -13768,40 +14171,42 @@ msgstr "API-sleutel"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API-sleutel (uit de pdns.conf api-key instelling)."
+msgstr "PowerDNS API-sleutel (uit de api-key-instelling in pdns.conf)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
 msgstr "Servernaam"
 
 #: install/templates/step4.html.twig:77
+#, auto-english-fallback
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS-servernaam voor API-aanroepen (meestal \"localhost\")."
+msgstr "PowerDNS server name for API calls (usually \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Databaseverbindingsinstellingen"
+msgstr "Instellingen voor databaseverbinding"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
 msgstr "Databaseconfiguratie:"
 
 #: install/templates/step4.html.twig:90
+#, auto-english-fallback
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
 msgstr ""
-"Configureer databaseverbinding met rechten voor het maken van tabellen. "
-"PowerDNS-locatie kan indien nodig apart worden opgegeven."
+"Configure database connection with table creation rights. PowerDNS location "
+"can be specified separately if needed."
 
 #: install/templates/step4.html.twig:93
+#, auto-english-fallback
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
 msgstr ""
-"Configureer de databaseverbinding voor Poweradmin-tabellen (gebruikers, "
-"rechten, zones). PowerDNS-tabellen zijn niet vereist.PowerDNS-locatie kan "
-"indien nodig apart worden opgegeven."
+"Configure database connection for Poweradmin tables (users, permissions, "
+"zones). PowerDNS tables are not required."
 
 #: install/templates/step4.html.twig:97
 msgid "Database type"
@@ -13809,7 +14214,7 @@ msgstr "Databasetype"
 
 #: install/templates/step4.html.twig:106
 msgid "Database server type."
-msgstr "Type databaseserver."
+msgstr "Type van de databaseserver."
 
 #: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
 msgid "Provide the user name"
@@ -13817,7 +14222,7 @@ msgstr "Geef de gebruikersnaam op"
 
 #: install/templates/step4.html.twig:117
 msgid "Database username with rights to create tables."
-msgstr "Databasegebruikersnaam met rechten om tabellen te maken."
+msgstr "Databasegebruiker met rechten om tabellen aan te maken."
 
 #: install/templates/step4.html.twig:131
 msgid "Password for this database user."
@@ -13825,15 +14230,16 @@ msgstr "Wachtwoord voor deze databasegebruiker."
 
 #: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Vermijd aanhalingstekens, backslashes en regeleinden."
+msgstr "Vermijd aanhalingstekens, backslashes en regeleindes."
 
 #: install/templates/step4.html.twig:140
 msgid "Provide the hostname"
 msgstr "Geef de hostnaam op"
 
 #: install/templates/step4.html.twig:143
+#, auto-english-fallback
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostnaam (meestal \"localhost\")."
+msgstr "Database server hostname (usually \"localhost\")."
 
 #: install/templates/step4.html.twig:148
 msgid "DB Port"
@@ -13853,17 +14259,16 @@ msgstr "Geef de naam van de database op"
 
 #: install/templates/step4.html.twig:165
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Databasenaam (wordt gebruikt voor Poweradmin-tabellen)."
+msgstr "Databasenaam (gebruikt voor Poweradmin-tabellen)."
 
 #: install/templates/step4.html.twig:167
 msgid "Full path to SQLite database file"
-msgstr "Volledig pad naar SQLite-databasebestand"
+msgstr "Volledig pad naar het SQLite-databasebestand"
 
 #: install/templates/step4.html.twig:170
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr ""
-"Bestand moet bestaan met lees-/schrijftoegang voor de webserver. Gebruik een "
-"absoluut pad."
+"Het bestand moet bestaan en lees-/schrijftoegang hebben voor de webserver. Gebruik een absoluut pad."
 
 #: install/templates/step4.html.twig:178
 msgid "DB charset"
@@ -13871,23 +14276,22 @@ msgstr "DB-tekenset"
 
 #: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
 msgid "Use default"
-msgstr "Gebruik standaard"
+msgstr "Standaard gebruiken"
 
 #: install/templates/step4.html.twig:185
 msgid "Charset for new tables. Leave empty for database default."
-msgstr ""
-"Tekenset voor nieuwe tabellen. Laat leeg voor de standaard van de database."
+msgstr "Tekenset voor nieuwe tabellen. Leeg laten voor de databasestandaard."
 
 #: install/templates/step4.html.twig:190
 msgid "DB collation"
 msgstr "DB-sortering"
 
 #: install/templates/step4.html.twig:197
+#, auto-english-fallback
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
-"Sorteringsregels voor tekenvergelijking. Laat leeg voor de standaard van de "
-"database."
+"Collation rules for character comparison. Leave empty for database default."
 
 #: install/templates/step4.html.twig:206
 msgid "PowerDNS Database"
@@ -13899,7 +14303,7 @@ msgstr "Databasenaam"
 
 #: install/templates/step4.html.twig:213
 msgid "Leave empty for same database"
-msgstr "Laat leeg voor dezelfde database"
+msgstr "Leeg laten voor dezelfde database"
 
 #: install/templates/step4.html.twig:216
 msgid "MySQL database with PowerDNS tables (if different)."
@@ -13918,8 +14322,9 @@ msgid "Provide a password"
 msgstr "Geef een wachtwoord op"
 
 #: install/templates/step4.html.twig:238
+#, auto-english-fallback
 msgid "Password for \"admin\" username."
-msgstr "Wachtwoord voor \"admin\" gebruikersnaam."
+msgstr "Password for \"admin\" username."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -13927,7 +14332,7 @@ msgstr "Systeemvereisten"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "Controle Systeemvereisten"
+msgstr "Controle van systeemvereisten"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
@@ -13935,7 +14340,7 @@ msgstr "PHP-versie"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Vereist PHP 8.2.0+"
+msgstr "Vereist PHP 8.2.0 of nieuwer"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
@@ -13943,7 +14348,7 @@ msgstr "Database-extensies"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "tenminste een vereist"
+msgstr "ten minste één vereist"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
@@ -13967,40 +14372,39 @@ msgstr "Niet gedetecteerd — vereist voor URL-routing"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
-msgstr "Kan niet detecteren (PHP-FPM) — zorg ervoor dat het is ingeschakeld"
+msgstr "Niet detecteerbaar (PHP-FPM) — zorg dat het is ingeschakeld"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr ""
-"Zorg ervoor dat URL-herschrijving is geconfigureerd (zie nginx.conf.example)"
+msgstr "Zorg dat URL-rewriting is geconfigureerd (zie nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "Zorg ervoor dat URL-herschrijving is geconfigureerd voor uw webserver"
+msgstr "Zorg dat URL-rewriting is geconfigureerd voor uw webserver"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "Alle vereiste componenten zijn beschikbaar."
+msgstr "Alle vereiste componenten zijn aanwezig."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "U kunt doorgaan met de installatie."
+msgstr "U kunt de installatie voortzetten."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Sommige vereiste componenten ontbreken."
+msgstr "Enkele vereiste componenten ontbreken."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "Installeer de ontbrekende componenten voordat u doorgaat."
+msgstr "Installeer de ontbrekende componenten voordat u verdergaat."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Account en naamservers instellen"
+msgstr "Account en nameservers instellen"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Account en naamservers instellen"
+msgstr "Account en nameservers instellen"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
@@ -14008,13 +14412,14 @@ msgstr "Configuratie:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Nu verzamelen we alle details voor de configuratie zelf."
+msgstr "We gaan nu alle gegevens voor de configuratie zelf verzamelen."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
-msgstr "Database-gebruiker"
+msgstr "Databasegebruiker"
 
 #: install/templates/step5.html.twig:57
+#, auto-english-fallback
 msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
@@ -14025,15 +14430,15 @@ msgstr ""
 "credentials are for that database, not for PowerDNS."
 
 #: install/templates/step5.html.twig:67
+#, auto-english-fallback
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
-"Poweradmin database gebruikersnaam met beperkte toegang. Niet voor inloggen "
-"op de web UI."
+"Poweradmin database username with restricted access. Not for web UI login."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Geef het gebruikerswachtwoord op"
+msgstr "Geef het wachtwoord van de gebruiker op"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
@@ -14053,15 +14458,15 @@ msgstr "Geef de DNS-hostmaster op"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Standaard hostmaster voor SOA-records."
+msgstr "Standaard-hostmaster voor SOA-records."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
-msgstr "Primaire naamserver"
+msgstr "Primaire nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Geef de primaire naamserver op"
+msgstr "Geef de primaire nameserver op"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
@@ -14069,11 +14474,11 @@ msgstr "Primaire nameserver voor nieuwe zones."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
-msgstr "Secundaire naamserver"
+msgstr "Secundaire nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Geef de secundaire naamserver op"
+msgstr "Geef de secundaire nameserver op"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
@@ -14081,7 +14486,7 @@ msgstr "Secundaire nameserver voor nieuwe zones."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
-msgstr "Tertiaire naamserver"
+msgstr "Tertiaire nameserver"
 
 #: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
 msgid "optional"
@@ -14093,7 +14498,7 @@ msgstr "Optionele tertiaire nameserver voor nieuwe zones."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
-msgstr "Quaternaire naamserver"
+msgstr "Quaternaire nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
@@ -14113,39 +14518,43 @@ msgstr "Gefeliciteerd! Uw Poweradmin-installatie is nu geconfigureerd."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Belangrijke beveiligingsmededeling:"
+msgstr "Belangrijke beveiligingsmelding:"
 
 #: install/templates/step8.html.twig:16
+#, auto-english-fallback
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
 msgstr ""
-"U moet de \"install/\" map verwijderen uit de Poweradmin hoofdmap.directory."
+"You must remove the \"install/\" directory from the Poweradmin root "
+"directory."
 
 #: install/templates/step8.html.twig:17
+#, auto-english-fallback
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
 msgstr ""
-"Poweradmin zal niet functioneren als de installatiemap bestaat, als "
-"beveiligingsmaatregel."
+"Poweradmin will not function if the install directory exists, as a security "
+"measure."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
 msgstr "Volgende stappen"
 
 #: install/templates/step8.html.twig:26
+#, auto-english-fallback
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Verwijder de \"install/\" map van uw server"
+msgstr "Remove the \"install/\" directory from your server"
 
 #: install/templates/step8.html.twig:27
+#, auto-english-fallback
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
 msgstr ""
-"Log in op <a href=\"../index.php\">Poweradmin</a> met de standaard "
-"gebruikersnaam \"admin\" en het wachtwoord dat u in stap 3 hebt "
-"ingesteld\"admin\" and the password you set in step 3"
+"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
+"\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
@@ -14153,7 +14562,7 @@ msgstr "Begin met het configureren van uw DNS-zones en -records"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
-msgstr "Voorbereiden"
+msgstr "Voorbereiding"
 
 #: install/templates/step3.html.twig:13
 msgid "Prerequisites"
@@ -14161,74 +14570,77 @@ msgstr "Vereisten"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "Voordat u doorgaat, zorg ervoor dat u het volgende heeft:"
+msgstr "Zorg dat u het volgende hebt voordat u verdergaat:"
 
 #: install/templates/step3.html.twig:18
+#, auto-english-fallback
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
 msgstr ""
-"PowerDNS geïnstalleerd met databasetabellen aangemaakt (of API-toegang "
-"geconfigureerd)"
+"PowerDNS installed with database tables created (or API access configured)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Database-inloggegevens (hostnaam, gebruikersnaam, wachtwoord)"
+msgstr "Databasegegevens (hostnaam, gebruikersnaam, wachtwoord)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Toestemming om tabellen voor Poweradmin te maken"
+msgstr "Toestemming om tabellen voor Poweradmin aan te maken"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
 msgstr "Volgende:"
 
 #: install/templates/step3.html.twig:27
+#, auto-english-fallback
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
 msgstr ""
-"Configureer databaseverbinding, maak beheerdersaccount aan en genereer "
-"configuratiebestand."
+"Configure database connection, create admin account, and generate "
+"configuration file."
 
 #: install/helpers/InstallStepHandler.php:176
 msgid "Missing PowerDNS tables:"
-msgstr "Ontbrekende PowerDNS tabellen:"
+msgstr "Ontbrekende PowerDNS-tabellen:"
 
 #: install/helpers/InstallStepHandler.php:177
 msgid "Poweradmin requires these PowerDNS tables to function properly."
 msgstr ""
-"Poweradmin heeft deze PowerDNS tabellen nodig om correct te functioneren."
+"Poweradmin heeft deze PowerDNS-tabellen nodig om goed te kunnen werken."
 
 #: install/helpers/InstallStepHandler.php:185
 msgid "Updating database... done!"
-msgstr "Database bijwerken... voltooid!"
+msgstr "Database bijwerken... klaar!"
 
 #: install/helpers/InstallStepHandler.php:207
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Beperking Problemen:"
+msgstr "Problemen met externe-sleutelbeperkingen:"
 
 #: install/helpers/InstallStepHandler.php:209
+#, auto-english-fallback
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
-"De installer kon bestaande tabellen niet verwijderen vanwege foreign key "
-"beperkingen"
+"The installer could not remove existing tables due to foreign key constraints"
 
 #: install/helpers/InstallStepHandler.php:210
+#, auto-english-fallback
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
-"Dit kan gebeuren tijdens herinstallatie als u aangepaste beperkingen hebt of "
-"als tabellen worden gerefereerd door andere tabellen"
+"This can happen during reinstallation if you have custom constraints or if "
+"tables are referenced by other tables"
 
 #: install/helpers/InstallStepHandler.php:211
+#, auto-english-fallback
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
 msgstr ""
-"U kunt proberen foreign key controles handmatig uit te schakelen voordat u "
-"de installer uitvoert:"
+"You can try manually disabling foreign key checks before running the "
+"installer:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"
@@ -14236,67 +14648,68 @@ msgstr "Suggesties:"
 
 #: install/helpers/InstallStepHandler.php:218
 msgid "Make sure the SQLite database file exists"
-msgstr "Zorg ervoor dat het SQLite database bestand bestaat"
+msgstr "Zorg dat het SQLite-databasebestand bestaat"
 
 #: install/helpers/InstallStepHandler.php:219
+#, auto-english-fallback
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
 msgstr ""
-"Controleer of de webserver lees- en schrijfrechten heeft voor het "
-"databasebestand"
+"Check that the web server has read and write permissions for the database "
+"file"
 
 #: install/helpers/InstallStepHandler.php:220
 msgid "Verify the full path to the database file is correct and accessible"
 msgstr ""
-"Controleer of het volledige pad naar het database bestand correct en "
-"toegankelijk is"
+"Controleer of het volledige pad naar het databasebestand correct en toegankelijk is"
 
 #: install/helpers/InstallStepHandler.php:226
 msgid "Verify database credentials are correct"
-msgstr "Controleer of de database inloggegevens correct zijn"
+msgstr "Controleer of de databasegegevens correct zijn"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid "Check that the database user has sufficient privileges"
-msgstr "Controleer of de database gebruiker voldoende rechten heeft"
+msgstr "Controleer of de databasegebruiker voldoende rechten heeft"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid "Ensure the database server is running and accessible"
-msgstr "Zorg ervoor dat de database server actief en toegankelijk is"
+msgstr "Zorg dat de databaseserver draait en bereikbaar is"
 
 #: install/helpers/InstallStepHandler.php:233
 msgid "Database Error"
-msgstr "Database Fout"
+msgstr "Databasefout"
 
 #: install/helpers/DatabaseHelper.php:175
+#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
 msgstr ""
-"Het SQLite-databasebestand %s bestaat niet. Maak het databasebestand aan "
-"voordat u verder gaat."
+"The SQLite database file %s does not exist. Please create the database file "
+"before proceeding."
 
 #: install/helpers/DatabaseHelper.php:183
+#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
 msgstr ""
-"Het SQLite-databasebestand %s is niet leesbaar. Controleer de "
-"bestandsrechten."
+"The SQLite database file %s is not readable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:191
+#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
 msgstr ""
-"Het SQLite-databasebestand %s is niet beschrijfbaar. Controleer de "
-"bestandsrechten."
+"The SQLite database file %s is not writable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:203
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Kon geen toegang krijgen tot het SQLite database bestand %s: %s"
+msgstr "Kon het SQLite-databasebestand %s niet benaderen: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
@@ -14307,33 +14720,36 @@ msgid "PowerDNS API key is required when using API backend."
 msgstr "PowerDNS API-sleutel is vereist bij gebruik van de API-backend."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
+#, auto-english-fallback
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
 msgstr ""
-"Geen configuratiebestand gevonden. Maak het config/settings.php bestand aan "
-"voordat u verder gaat."
+"No configuration file found. Please create the config/settings.php file "
+"before proceeding."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
+#, auto-english-fallback
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"Afzonderlijke PowerDNS-databases worden alleen ondersteund met MySQL. Voor "
-"PostgreSQL en SQLite, gebruik dezelfde database."
+"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+"and SQLite, please use the same database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
+#, auto-english-fallback
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
 msgstr ""
-"Ontbrekende PowerDNS-tabellen in database \"%s\": %s. Zorg ervoor dat "
-"PowerDNS correct is geïnstalleerd in deze database."
+"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+"properly installed in this database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
+#, auto-english-fallback
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Kan geen verbinding maken met PowerDNS-database \"%s\": %s"
-
+msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 

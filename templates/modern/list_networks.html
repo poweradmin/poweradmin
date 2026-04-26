@@ -1,0 +1,86 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Network views{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-diagram-3 me-2"></i>{% trans %}Network views{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <p class="text-muted small mb-3">{% trans %}Each network maps to a single view. Resolvers in that network receive the zone variant assigned to that view.{% endtrans %}</p>
+
+        {% if networks is empty %}
+        <div class="text-center py-3 text-muted">
+            <i class="bi bi-diagram-3 fs-3 d-block mb-2"></i>
+            <p class="mb-0">{% trans %}No networks configured yet. Map a CIDR to a view below.{% endtrans %}</p>
+        </div>
+        {% else %}
+        <div class="table-responsive">
+            <table class="table table-striped table-sm align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>{% trans %}Network{% endtrans %}</th>
+                        <th>{% trans %}View{% endtrans %}</th>
+                        <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in networks %}
+                    <tr>
+                        <td class="font-monospace">{{ entry.network }}</td>
+                        <td><span class="badge bg-secondary">{{ entry.view }}</span></td>
+                        <td class="text-end">
+                            <form method="post" action="{{ base_url_prefix }}/networks" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                <input type="hidden" name="action" value="remove">
+                                <input type="hidden" name="cidr" value="{{ entry.network }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="{% trans %}Remove mapping{% endtrans %}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <div class="card border-primary mt-3">
+            <div class="card-header py-2 bg-primary bg-opacity-10">
+                <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Map network to view{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ base_url_prefix }}/networks" class="row g-2">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="action" value="set">
+                    <div class="col-md-5">
+                        <label for="network-cidr" class="form-label small">{% trans %}CIDR{% endtrans %}</label>
+                        <input type="text" class="form-control form-control-sm font-monospace" id="network-cidr" name="cidr" placeholder="192.168.0.0/16" required>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="network-view" class="form-label small">{% trans %}View{% endtrans %}</label>
+                        {% if available_views is not empty %}
+                        <input list="known-views" type="text" class="form-control form-control-sm" id="network-view" name="view" required pattern="[A-Za-z0-9._-]+">
+                        <datalist id="known-views">
+                            {% for v in available_views %}
+                            <option value="{{ v }}">
+                            {% endfor %}
+                        </datalist>
+                        {% else %}
+                        <input type="text" class="form-control form-control-sm" id="network-view" name="view" required pattern="[A-Za-z0-9._-]+" placeholder="trusted">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                            <i class="bi bi-save me-1"></i>{% trans %}Save{% endtrans %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -100,9 +100,11 @@ class DnssecAddKeyController extends BaseController
         if (isset($_POST["algorithm"])) {
             $algorithm = $_POST["algorithm"];
 
-            // To check the supported DNSSEC algorithms in your build of PowerDNS, run pdnsutil list-algorithms.
-            $valid_algorithm = array('rsasha1', 'rsasha1-nsec3-sha1', 'rsasha256', 'rsasha512', 'ecdsa256', 'ecdsa384', 'ed25519', 'ed448');
-            if (!in_array($algorithm, $valid_algorithm)) {
+            // The dropdown is filtered against the connected server's
+            // capabilities; validate against the same list so the form and
+            // the backend never disagree.
+            $valid_algorithm = DnssecAlgorithmName::getSupportedAlgorithmsForCapabilities($this->getPdnsCapabilities());
+            if (!in_array($algorithm, $valid_algorithm, true)) {
                 $this->logger->warning('Invalid DNSSEC algorithm selected: {algorithm}', ['algorithm' => $algorithm]);
                 $this->showError(_('Invalid or unexpected input given.'));
             }
@@ -205,7 +207,7 @@ class DnssecAddKeyController extends BaseController
             'key_type' => $key_type,
             'bits' => $bits,
             'algorithm' => $algorithm,
-            'algorithm_names' => DnssecAlgorithmName::ALGORITHM_NAMES,
+            'algorithm_names' => DnssecAlgorithmName::getSupportedAlgorithmNamesForCapabilities($this->getPdnsCapabilities()),
         ]);
     }
 }

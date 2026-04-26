@@ -55,7 +55,7 @@
                             {% else %}
                             {% set selected = '' %}
                             {% endif %}
-                            <option value="{{ type }}" {{ selected }}>{{ type | lower }}</option>
+                            <option value="{{ type }}" {{ selected }}>{{ zone_type_label(type) }}</option>
                             {% endfor %}
                         </select>
                     </div>

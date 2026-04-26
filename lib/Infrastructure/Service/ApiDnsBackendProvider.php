@@ -23,6 +23,8 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
+use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
@@ -718,12 +720,19 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function getZones(): array
     {
+        $statusService = new ApiStatusService();
         try {
             $apiZones = $this->client->getAllZones();
-        } catch (\Poweradmin\Domain\Error\ApiErrorException $e) {
+        } catch (ApiErrorException $e) {
             $this->logger->error('Failed to get zones from API: {error}', ['error' => $e->getMessage()]);
+            $statusService->recordError($e->getMessage(), [
+                'endpoint' => 'zones',
+                'http_code' => $e->getDetail('http_code', $e->getCode()),
+                'url' => $e->getDetail('url'),
+            ]);
             return [];
         }
+        $statusService->clearError();
 
         $zones = [];
         foreach ($apiZones as $zone) {
@@ -847,6 +856,11 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                     'prio' => $prio,
                     'disabled' => ($record['disabled'] ?? false) ? 1 : 0,
                     'api_comment' => $rrsetComment,
+                    // PowerDNS 4.9+ exposes a Unix timestamp per record. Older
+                    // servers, the DB-backed provider, and freshly-created
+                    // records all leave this null; the UI hides the column
+                    // when no record has it.
+                    'modified_at' => isset($record['modified_at']) ? (int)$record['modified_at'] : null,
                 ];
             }
         }

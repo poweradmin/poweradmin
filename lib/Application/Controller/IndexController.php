@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\BaseController;
@@ -119,8 +120,22 @@ class IndexController extends BaseController
             $dashboardStats = $this->getDashboardStats();
         }
 
+        // Surface the most recent PowerDNS API error to admins so they know the
+        // UI's zero counts / empty lists reflect an upstream failure rather
+        // than a real absence of data. Refresh the connected PowerDNS version
+        // here (rate-limited to once per minute) so the dashboard badge and
+        // capability gates on subsequent pages reflect any version changes.
+        // Other pages read whatever the cache holds without triggering
+        // detection on the render path.
+        $apiError = null;
+        if ($permissions['user_is_ueberuser'] && DnsBackendProviderFactory::isApiBackend($this->config)) {
+            $apiError = (new ApiStatusService())->getLastError();
+            $this->refreshPdnsCapabilities();
+        }
+
         $this->render("index.html", [
             'dashboard_stats' => $dashboardStats,
+            'api_error' => $apiError,
             'user_name' => $this->userContextService->getDisplayName(),
             'auth_used' => $this->userContextService->getAuthMethod() ?? '',
             'can_change_password' => $canChangePassword,
@@ -145,16 +160,30 @@ class IndexController extends BaseController
         $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
 
         if (DnsBackendProviderFactory::isApiBackend($this->config)) {
-            // Count from the PowerDNS API directly. Querying the local zones
-            // table would show a stale count on fresh installs until the zone
-            // sync service has run at least once (which only happens when the
-            // user opens the Forward Zones page).
+            // Count from the PowerDNS API directly so the dashboard reflects
+            // changes made out-of-band (zones added/removed in PowerDNS
+            // without going through Poweradmin). Trading off a constant-time
+            // DB count for freshness; the local zones table can lag whenever
+            // sync hasn't run yet, and the dashboard is the user's main signal
+            // that something has changed.
+            // Outages are surfaced separately via ApiStatusService - on
+            // failure we fall back to the local count rather than show 0.
             try {
                 $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
                 $zoneCount = count($backendProvider->getZones());
+                if ($zoneCount === 0 && (new ApiStatusService())->getLastError() !== null) {
+                    // getZones() returned [] because of a swallowed API
+                    // failure - fall back to the local cache so the dashboard
+                    // does not display a misleading 0.
+                    $zoneCount = (int) $this->db->query(
+                        "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL"
+                    )->fetchColumn();
+                }
             } catch (\Throwable $e) {
                 $this->logger->warning('Dashboard zone count via API failed: {error}', ['error' => $e->getMessage()]);
-                $zoneCount = (int) $this->db->query("SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL")->fetchColumn();
+                $zoneCount = (int) $this->db->query(
+                    "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL"
+                )->fetchColumn();
             }
             return [
                 'zones' => $zoneCount,

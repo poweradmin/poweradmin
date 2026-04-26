@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-23 21:11+0300\n"
+"POT-Creation-Date: 2026-04-25 18:57+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -331,7 +331,7 @@ msgstr ""
 "visą sertifikatą."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:646
+#: templates/modern/edit.html:93 templates/modern/edit.html:667
 msgid "Invalid hostname format"
 msgstr "Neteisingas serverio vardo formatas"
 
@@ -1312,7 +1312,7 @@ msgstr "Nepavyko gauti RDAP informacijos naudojant serverį %s"
 msgid "Invalid CSRF token."
 msgstr "Netinkamas CSRF žetonas."
 
-#: lib/BaseController.php:592
+#: lib/BaseController.php:661
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1320,7 +1320,7 @@ msgstr ""
 "<a href=\"install/\">install/</a> katalogas egzistuoja, prieš tęsiant turite "
 "jį pašalinti."
 
-#: lib/BaseController.php:649
+#: lib/BaseController.php:718
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1328,12 +1328,12 @@ msgstr ""
 "Naudojamas numatytasis sesijos šifravimo raktas, nustatykite jį savo "
 "konfigūracijos faile."
 
-#: lib/BaseController.php:788
+#: lib/BaseController.php:857
 #, php-format
 msgid "The %s field is required."
 msgstr "Laukas %s yra privalomas."
 
-#: lib/BaseController.php:796
+#: lib/BaseController.php:865
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Laukas %s turi būti skaičius."
@@ -1703,33 +1703,33 @@ msgstr "Puslapio numeris viršija turimus puslapius."
 msgid "You do not have the permission to view supermasters."
 msgstr "Neturite leidimo peržiūrėti supermasters."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:118
+#: lib/Application/Controller/EditZoneMetadataController.php:119
 msgid "You do not have the permission to view zone metadata."
 msgstr "Neturite teisės peržiūrėti zonos metaduomenų."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:121
+#: lib/Application/Controller/EditZoneMetadataController.php:122
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Neturite teises redaguoti zonos metaduomenu."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:150
+#: lib/Application/Controller/EditZoneMetadataController.php:151
 msgid "Zone metadata has been updated successfully."
 msgstr "Zonos metaduomenys sekmingai atnaujinti."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:155
+#: lib/Application/Controller/EditZoneMetadataController.php:156
 msgid "Failed to update zone metadata."
 msgstr "Nepavyko atnaujinti zonos metaduomenu."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:178
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr "Redaguoti zonos metaduomenis"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:178
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "Zonos metaduomenys"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:381
+#: lib/Application/Controller/EditZoneMetadataController.php:382
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
@@ -1737,29 +1737,29 @@ msgstr ""
 "Metaduomenu tipas %s priima tik viena reiksme. Pridekite tik viena eilute "
 "siam tipui."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:469
-#: templates/modern/edit_zone_metadata.html:153
+#: lib/Application/Controller/EditZoneMetadataController.php:476
+#: templates/modern/edit_zone_metadata.html:155
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
 msgstr ""
 "Pasirinktinis metaduomenu tipas, saugomas tiesiogiai PowerDNS domainmetadata "
 "lenteleje."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:477
+#: lib/Application/Controller/EditZoneMetadataController.php:484
 #: templates/modern/pdns_status.html:412
 msgid "Value"
 msgstr "Reikšmė"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:515
+#: lib/Application/Controller/EditZoneMetadataController.php:538
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "Pasirinktinis"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:520
+#: lib/Application/Controller/EditZoneMetadataController.php:543
 msgid "Multi"
 msgstr "Daug"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:521
+#: lib/Application/Controller/EditZoneMetadataController.php:544
 msgid "Single"
 msgstr "Vienas"
 
@@ -1821,24 +1821,24 @@ msgstr "Neturite leidimo pridėti įrašų į šią zoną."
 msgid "Please provide at least one record."
 msgstr "Prašome pateikti bent vieną įrašą."
 
-#: lib/Application/Controller/BulkRecordAddController.php:175
+#: lib/Application/Controller/BulkRecordAddController.php:181
 msgid "Invalid record type."
 msgstr "Neteisingas įrašo tipas."
 
-#: lib/Application/Controller/BulkRecordAddController.php:213
+#: lib/Application/Controller/BulkRecordAddController.php:219
 msgid "Record could not be added."
 msgstr "Įrašo pridėti nepavyko."
 
-#: lib/Application/Controller/BulkRecordAddController.php:221
+#: lib/Application/Controller/BulkRecordAddController.php:227
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d įrašas(-ai) sėkmingai pridėti."
 
-#: lib/Application/Controller/BulkRecordAddController.php:224
+#: lib/Application/Controller/BulkRecordAddController.php:230
 msgid "Some record(s) could not be added."
 msgstr "Kai kurių įrašų pridėti nepavyko."
 
-#: lib/Application/Controller/BulkRecordAddController.php:257
+#: lib/Application/Controller/BulkRecordAddController.php:263
 msgid "Zone ID is required."
 msgstr "Zonos ID būtinas."
 
@@ -1931,7 +1931,7 @@ msgid "The record could not be deleted."
 msgstr "Įrašo ištrinti nepavyko."
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:219 templates/modern/index.html:219
+#: templates/default/index.html:271 templates/modern/index.html:271
 msgid "Zone Logs"
 msgstr "Zonų žurnalai"
 
@@ -2009,7 +2009,7 @@ msgid "You do not have permission to view this zone."
 msgstr "Jūs neturite leidimo peržiūrėti šios zonos."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:229 templates/modern/index.html:229
+#: templates/default/index.html:281 templates/modern/index.html:281
 msgid "User Logs"
 msgstr "Naudotojų žurnalai"
 
@@ -2105,33 +2105,33 @@ msgstr ""
 "Nepavyko pasirašyti zonos. Zonos tikrinimas pavyko, bet PowerDNS API grąžino "
 "klaidą. Patikrinkite PowerDNS žurnalus dėl detalių."
 
-#: lib/Application/Controller/DnssecController.php:95
+#: lib/Application/Controller/DnssecController.php:96
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Zona šiuo metu nepasirašyta su DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:107
+#: lib/Application/Controller/DnssecController.php:108
 msgid "Zone has been unsigned successfully."
 msgstr "Zona sėkmingai atšaukta."
 
-#: lib/Application/Controller/DnssecController.php:112
+#: lib/Application/Controller/DnssecController.php:113
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "Zonos atšaukimo užklausa sėkminga, bet patikrinimas nepavyko."
 
-#: lib/Application/Controller/DnssecController.php:116
+#: lib/Application/Controller/DnssecController.php:117
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Nepavyko atšaukti zonos. Patikrinkite PowerDNS žurnalus dėl išsamesnės "
 "informacijos."
 
-#: lib/Application/Controller/EditController.php:734
+#: lib/Application/Controller/EditController.php:736
 msgid "Request has expired, please try again."
 msgstr "Užklausa pasibaigė, bandykite dar kartą."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:741
 msgid "Zone has been updated successfully."
 msgstr "Zona sėkmingai atnaujinta."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:743
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2139,11 +2139,11 @@ msgstr ""
 "Zona sėkmingai išsaugota. Įrašų keitimai nebuvo atlikti, tačiau SOA "
 "serijinis numeris buvo padidintas."
 
-#: lib/Application/Controller/EditController.php:750
+#: lib/Application/Controller/EditController.php:752
 msgid "Zone has not been updated successfully."
 msgstr "Zona nesėkmingai atnaujinta."
 
-#: lib/Application/Controller/EditController.php:778
+#: lib/Application/Controller/EditController.php:780
 msgid "Please provide all required fields."
 msgstr "Prašome pateikti visus privalomus laukus."
 
@@ -2207,26 +2207,26 @@ msgstr "Neturite leidimo pridėti įrašą į šią zoną."
 msgid "Record successfully added."
 msgstr "Įrašas sėkmingai pridėtas."
 
-#: lib/Application/Controller/AddRecordController.php:429
+#: lib/Application/Controller/AddRecordController.php:431
 msgid "No records were provided."
 msgstr "Nebuvo pateikta įrašų."
 
-#: lib/Application/Controller/AddRecordController.php:483
+#: lib/Application/Controller/AddRecordController.php:485
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d įrašas(-ai) sėkmingai pridėti."
 
-#: lib/Application/Controller/AddRecordController.php:485
+#: lib/Application/Controller/AddRecordController.php:487
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Taip pat sukurta %d atitinkančių įrašų."
 
-#: lib/Application/Controller/AddRecordController.php:488
+#: lib/Application/Controller/AddRecordController.php:490
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d įrašo(-ų) pridėti nepavyko."
 
-#: lib/Application/Controller/AddRecordController.php:493
+#: lib/Application/Controller/AddRecordController.php:495
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2234,7 +2234,7 @@ msgstr ""
 "Kai kurių įrašų pridėti nepavyko. Jie gali jau egzistuoti arba turėti "
 "neteisingų duomenų."
 
-#: lib/Application/Controller/AddRecordController.php:519
+#: lib/Application/Controller/AddRecordController.php:521
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Nepavyko pridėti jokių įrašų. Jie gali turėti neteisingų duomenų."
 
@@ -2287,9 +2287,29 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Nepavyko inicijuoti OIDC autentifikacijos: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:239 templates/modern/index.html:239
+#: templates/default/index.html:291 templates/modern/index.html:291
 msgid "Group Logs"
 msgstr "Grupės žurnalai"
+
+#: lib/Application/Controller/DnssecToggleKeyController.php:65
+msgid "You do not have permission to manage DNSSEC for this zone."
+msgstr "Jūs neturite leidimo valdyti DNSSEC šiai zonai."
+
+#: lib/Application/Controller/DnssecKeyExportController.php:74
+msgid "PEM key export requires PowerDNS 4.7 or newer."
+msgstr "PEM rakto eksportui reikia PowerDNS 4.7 arba naujesnio."
+
+#: lib/Application/Controller/DnssecKeyExportController.php:86
+msgid "An error occurred while exporting the PEM key: "
+msgstr "Eksportuojant PEM raktą įvyko klaida: "
+
+#: lib/Application/Controller/DnssecKeyExportController.php:92
+msgid ""
+"Could not retrieve the PEM key. The server may not expose private key "
+"material for this key."
+msgstr ""
+"Nepavyko gauti PEM rakto. Galbūt serveris šio rakto privačios medžiagos "
+"neatskleidžia."
 
 #: lib/Domain/Service/Dns/DomainManager.php:309
 msgid "You do not have the permission to add a master zone."
@@ -2382,13 +2402,50 @@ msgstr "Netinkamas leidimų šablonas: turi būti grupės šablonas"
 msgid "Group has been created successfully."
 msgstr "Grupė sėkmingai sukurta."
 
+#: lib/Application/Controller/ListViewsController.php:39
+msgid "You do not have permission to manage PowerDNS views."
+msgstr "Neturite teisių valdyti PowerDNS rodinius."
+
+#: lib/Application/Controller/ListViewsController.php:44
+msgid "Views require PowerDNS 5.0 or newer."
+msgstr "Rodiniai reikalauja PowerDNS 5.0 arba naujesnio."
+
+#: lib/Application/Controller/ListViewsController.php:50
+msgid "Views are only available with the PowerDNS API backend."
+msgstr "Rodiniai galimi tik su PowerDNS API."
+
+#: lib/Application/Controller/ListViewsController.php:61
+msgid "Provide a valid view name and zone identifier."
+msgstr "Pateikite tinkamą rodinio pavadinimą ir zonos identifikatorių."
+
+#: lib/Application/Controller/ListViewsController.php:67
+msgid "Zone assigned to view."
+msgstr "Zona priskirta rodiniui."
+
+#: lib/Application/Controller/ListViewsController.php:67
+msgid "Failed to assign zone to view."
+msgstr "Nepavyko priskirti zonos rodiniui."
+
+#: lib/Application/Controller/ListViewsController.php:74
+msgid "Zone removed from view."
+msgstr "Zona pašalinta iš rodinio."
+
+#: lib/Application/Controller/ListViewsController.php:74
+msgid "Failed to remove zone from view."
+msgstr "Nepavyko pašalinti zonos iš rodinio."
+
+#: lib/Application/Controller/ListNetworksController.php:81
+msgid "Unknown action."
+msgstr "Nežinomas veiksmas."
+
+#: lib/Application/Controller/ListViewsController.php:96
+#: templates/modern/list_views.html:4 templates/modern/list_views.html:10
+msgid "Views"
+msgstr "Rodiniai"
+
 #: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid key ID."
 msgstr "Neteisingas rakto ID."
-
-#: lib/Application/Controller/DnssecToggleKeyController.php:65
-msgid "You do not have permission to manage DNSSEC for this zone."
-msgstr "Jūs neturite leidimo valdyti DNSSEC šiai zonai."
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:90
 msgid "DNSSEC key not found or no longer exists."
@@ -2426,7 +2483,7 @@ msgstr "Netinkamas SAML teikėjas"
 msgid "SAML authentication failed: "
 msgstr "SAML autentifikacija nepavyko: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:56
+#: lib/Application/Controller/ListForwardZonesController.php:57
 msgid "You do not have sufficient permissions to view this page."
 msgstr "Neturite pakankamų leidimų peržiūrėti šį puslapį."
 
@@ -2435,7 +2492,7 @@ msgstr "Neturite pakankamų leidimų peržiūrėti šį puslapį."
 msgid "Reverse Zones"
 msgstr "Atvirkštinės zonos"
 
-#: lib/Application/Controller/ListForwardZonesController.php:144
+#: lib/Application/Controller/ListForwardZonesController.php:186
 msgid "You do not have the permission to see any zones."
 msgstr "Neturite leidimo matyti jokių zonų."
 
@@ -2577,7 +2634,7 @@ msgstr "Pridėti zonos šabloną"
 msgid "Zone template has been added successfully."
 msgstr "Zonos šablonas sėkmingai pridėtas."
 
-#: lib/Application/Controller/IndexController.php:61
+#: lib/Application/Controller/IndexController.php:62
 msgid "Dashboard"
 msgstr "Prietaisų skydelis"
 
@@ -2645,10 +2702,24 @@ msgstr "Zona sėkmingai pašalinta iš grupės."
 msgid "Zone was not owned by this group."
 msgstr "Zona nepriklausė šiai grupei."
 
-#: lib/Application/Controller/ListForwardZonesController.php:60
+#: lib/Application/Controller/ListForwardZonesController.php:61
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Tiesioginės zonos"
+
+#: lib/Application/Controller/ListForwardZonesController.php:80
+msgid "You do not have permission to sync zones from PowerDNS."
+msgstr "You do not have permission to sync zones from PowerDNS."
+
+#: lib/Application/Controller/ListForwardZonesController.php:91
+#, php-format
+msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+
+#: lib/Application/Controller/ListForwardZonesController.php:99
+#, php-format
+msgid "Zone sync failed: %s"
+msgstr "Zone sync failed: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:43
 msgid "You do not have the permission to add a new supermaster."
@@ -2657,6 +2728,29 @@ msgstr "Neturite leidimo pridėti naujo supermaster."
 #: lib/Application/Controller/AddSupermasterController.php:61
 msgid "The supermaster has been added successfully."
 msgstr "Supermaster sėkmingai pridėtas."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:72
+msgid "PEM key import requires PowerDNS 4.7 or newer."
+msgstr "PEM rakto importui reikia PowerDNS 4.7 arba naujesnio."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:97
+msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+msgstr ""
+"Pateikite PEM formatu užkoduotą privatųjį raktą (turi būti BEGIN/END žymos)."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:108
+msgid "PEM key imported successfully."
+msgstr "PEM raktas sėkmingai importuotas."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:111
+msgid ""
+"Failed to import PEM key. The PowerDNS server may have rejected the format."
+msgstr ""
+"Nepavyko importuoti PEM rakto. PowerDNS serveris galėjo atmesti formatą."
+
+#: lib/Application/Controller/DnssecKeyImportController.php:115
+msgid "An error occurred while importing the PEM key: "
+msgstr "Importuojant PEM raktą įvyko klaida: "
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:74
 msgid "You do not have the permission to add records to zone templates."
@@ -2710,6 +2804,47 @@ msgstr[1] ""
 "Nepavyko pridėti naudotojo į %d grupes (jau narys arba grupės nerastos)."
 msgstr[2] ""
 "Nepavyko pridėti naudotojo į %d grupių (jau narys arba grupės nerastos)."
+
+#: lib/Application/Controller/ListNetworksController.php:39
+msgid "You do not have permission to manage network views."
+msgstr "Neturite teisių valdyti tinklo rodinius."
+
+#: lib/Application/Controller/ListNetworksController.php:44
+msgid "Network views require PowerDNS 5.0 or newer."
+msgstr "Tinklo rodiniai reikalauja PowerDNS 5.0 arba naujesnio."
+
+#: lib/Application/Controller/ListNetworksController.php:50
+msgid "Network views are only available with the PowerDNS API backend."
+msgstr "Tinklo rodiniai galimi tik su PowerDNS API."
+
+#: lib/Application/Controller/ListNetworksController.php:61
+msgid "Provide a valid CIDR (e.g. 192.168.0.0/16)."
+msgstr "Pateikite tinkamą CIDR (pvz. 192.168.0.0/16)."
+
+#: lib/Application/Controller/ListNetworksController.php:64
+msgid "Provide a valid view name."
+msgstr "Pateikite tinkamą rodinio pavadinimą."
+
+#: lib/Application/Controller/ListNetworksController.php:70
+msgid "Network mapping saved."
+msgstr "Tinklo susiejimas išsaugotas."
+
+#: lib/Application/Controller/ListNetworksController.php:70
+msgid "Failed to save network mapping."
+msgstr "Nepavyko išsaugoti tinklo susiejimo."
+
+#: lib/Application/Controller/ListNetworksController.php:78
+msgid "Network mapping removed."
+msgstr "Tinklo susiejimas pašalintas."
+
+#: lib/Application/Controller/ListNetworksController.php:78
+msgid "Failed to remove network mapping."
+msgstr "Nepavyko pašalinti tinklo susiejimo."
+
+#: lib/Application/Controller/ListNetworksController.php:93
+#: templates/modern/list_networks.html:4 templates/modern/list_networks.html:10
+msgid "Network views"
+msgstr "Tinklo rodiniai"
 
 #: lib/Application/Controller/DeletePermTemplController.php:60
 msgid "You do not have the permission to delete permission templates."
@@ -2818,39 +2953,39 @@ msgstr ""
 msgid "Change Password"
 msgstr "Keisti slaptažodį"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:117
+#: lib/Application/Controller/DnssecAddKeyController.php:119
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "ECDSA P-256 algoritmas turi naudoti 256 bitus"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:120
+#: lib/Application/Controller/DnssecAddKeyController.php:122
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "ECDSA P-384 algoritmas turi naudoti 384 bitus"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:126
+#: lib/Application/Controller/DnssecAddKeyController.php:128
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519 algoritmas turi naudoti 256 bitus"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:131
+#: lib/Application/Controller/DnssecAddKeyController.php:133
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "ED448 algoritmas turi naudoti 456 bitus (nepalaikomas šioje sąsajoje)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:138
+#: lib/Application/Controller/DnssecAddKeyController.php:140
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr "RSA algoritmai turėtų naudoti 1024 arba 2048 bitus pakankamam saugumui"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:161
+#: lib/Application/Controller/DnssecAddKeyController.php:163
 msgid "Zone key has been added successfully."
 msgstr "Zonos raktas sėkmingai pridėtas."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:165
+#: lib/Application/Controller/DnssecAddKeyController.php:167
 msgid "Failed to add new DNSSEC key."
 msgstr "Nepavyko pridėti naujo DNSSEC rakto."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:169
+#: lib/Application/Controller/DnssecAddKeyController.php:171
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Įvyko klaida pridedant DNSSEC raktą: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:173
+#: lib/Application/Controller/DnssecAddKeyController.php:175
 msgid "Please select both algorithm and bits"
 msgstr "Pasirinkite ir algoritmą, ir bitus"
 
@@ -2888,7 +3023,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster sėkmingai ištrintas."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:150 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:202 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Masinis registravimas"
 
@@ -2952,12 +3087,12 @@ msgstr "Nepavyko įjungti zonos rakto."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Įvyko klaida perjungiant DNSSEC raktą. Bandykite dar kartą."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Taip"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Ne"
@@ -3038,6 +3173,176 @@ msgstr "Šis šablonas priskirtas bent vienam vartotojui."
 #: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
 msgid "This template is assigned to at least one group."
 msgstr "Šis šablonas priskirtas bent vienai grupei."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:91
+msgid "Primary"
+msgstr "Primary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:92
+msgid "Secondary"
+msgstr "Secondary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:103
+#: lib/Module/ZoneImportExport/templates/import.html:131
+msgid "Native"
+msgstr "Gimtasis"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:104
+msgid "Producer"
+msgstr "Producer"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:105
+msgid "Consumer"
+msgstr "Consumer"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:101
+#: lib/Module/ZoneImportExport/templates/import.html:130
+msgid "Master"
+msgstr "Pagrindinis"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:102
+msgid "Slave"
+msgstr "Slave"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+msgid "Autoprimaries"
+msgstr "Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+msgid "Supermasters"
+msgstr "Supermasteriai"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:122
+msgid "Autoprimary"
+msgstr "Autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:122
+msgid "Supermaster"
+msgstr "Supermasteris"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:123
+msgid "Add autoprimary"
+msgstr "Pridėti autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:123
+msgid "Add supermaster"
+msgstr "Pridėti supermasterį"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:124
+msgid "Edit autoprimary"
+msgstr "Redaguoti autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:124
+msgid "Edit supermaster"
+msgstr "Redaguoti supermasterį"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:125
+msgid "Delete autoprimary"
+msgstr "Šalinti autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:125
+msgid "Delete supermaster"
+msgstr "Pašalinti supermasterį"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:126
+msgid "About Autoprimaries"
+msgstr "Apie Autoprimaries"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:126
+msgid "About Supermasters"
+msgstr "Apie supermasterius"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:127
+msgid "What is an Autoprimary?"
+msgstr "Kas yra Autoprimary?"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:127
+msgid "What is a Supermaster?"
+msgstr "Kas yra supermaster?"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:128
+msgid "Search autoprimaries..."
+msgstr "Ieškoti autoprimaries..."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:128
+msgid "Search supermasters..."
+msgstr "Ieškoti supermasterių..."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:130
+msgid "There are no autoprimaries to show in this listing."
+msgstr "Šiame sąraše autoprimaries nėra."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:131
+msgid "There are no supermasters to show in this listing."
+msgstr "Šiame sąraše nėra supermasterių, kuriuos būtų galima rodyti."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:132
+msgid "IP address of autoprimary"
+msgstr "Autoprimary IP adresas"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:132
+msgid "IP address of supermaster"
+msgstr "Supermaster IP adresas"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:134
+msgid "Select the account that will own this autoprimary"
+msgstr "Parinkite paskyrą, kuriai priklausys šis autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:135
+msgid "Select the account that will own this supermaster"
+msgstr "Pasirinkite paskyrą, kuri valdys šį supermasterį"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:136
+msgid "About Editing Autoprimaries"
+msgstr "Apie Autoprimaries redagavimą"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:136
+msgid "About Editing Supermasters"
+msgstr "Apie supermasterių redagavimą"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:138
+msgid ""
+"You can modify the IP address, hostname, or account for this autoprimary."
+msgstr ""
+"Galite keisti šio autoprimary IP adresą, pagrindinio kompiuterio vardą ar "
+"paskyrą."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:139
+msgid ""
+"You can modify the IP address, hostname, or account for this supermaster."
+msgstr "Galite keisti šio supermasteio IP adresą, serverio vardą arba paskyrą."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:140
+msgid "Autoprimary Details"
+msgstr "Autoprimary detalės"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:140
+msgid "Supermaster Details"
+msgstr "Supermasterio duomenys"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:142
+msgid "You are about to delete the autoprimary"
+msgstr "Jūs ketinate pašalinti autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:143
+msgid "You are about to delete the supermaster"
+msgstr "Ruošiatės ištrinti supermasterį"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:144
+msgid "Yes, delete this autoprimary"
+msgstr "Taip, šalinti šį autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:144
+msgid "Yes, delete this supermaster"
+msgstr "Taip, ištrinti šį supermasterį"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:145
+msgid "No, keep this autoprimary"
+msgstr "Ne, palikti šį autoprimary"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:145
+msgid "No, keep this supermaster"
+msgstr "Ne, palikti šį supermasterį"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -9121,7 +9426,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Atnaujinti įrašą"
 
-#: templates/modern/edit.html:529 templates/modern/users.html:219
+#: templates/modern/edit.html:550 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Atkurti"
 
@@ -9219,22 +9524,6 @@ msgstr "CNAME: <code>target.[ZONE]</code> arba <code>example.com.</code>"
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 msgstr "TXT SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
-#: templates/modern/delete_supermaster.html:4
-msgid "Supermasters"
-msgstr "Supermasteriai"
-
-#: templates/modern/edit_supermaster.html:5
-msgid "Edit supermaster"
-msgstr "Redaguoti supermasterį"
-
-#: templates/modern/edit_supermaster.html:13
-msgid "Edit Supermaster"
-msgstr "Redaguoti Supermaster"
-
-#: templates/modern/list_supermasters.html:31
-msgid "IP address of supermaster"
-msgstr "Supermaster IP adresas"
-
 #: templates/modern/add_supermaster.html:22
 msgid "Enter the IP address of the master nameserver"
 msgstr "Įveskite pagrindinio vardų serverio IP adresą"
@@ -9259,11 +9548,7 @@ msgstr "Pateikite serverio vardą"
 msgid "Account"
 msgstr "Paskyra"
 
-#: templates/modern/add_supermaster.html:48
-msgid "Select the account that will own this supermaster"
-msgstr "Pasirinkite paskyrą, kuri valdys šį supermasterį"
-
-#: templates/modern/edit.html:190 templates/modern/edit.html:526
+#: templates/modern/edit.html:190 templates/modern/edit.html:547
 msgid "Save changes"
 msgstr "Išsaugoti pakeitimus"
 
@@ -9271,18 +9556,9 @@ msgstr "Išsaugoti pakeitimus"
 msgid "All fields are required"
 msgstr "Visi laukai yra privalomi"
 
-#: templates/modern/edit_supermaster.html:74
-msgid "About Editing Supermasters"
-msgstr "Apie supermasterių redagavimą"
-
 #: templates/modern/edit_supermaster.html:79
 msgid "Update Credentials"
 msgstr "Atnaujinti prisijungimo duomenis"
-
-#: templates/modern/edit_supermaster.html:80
-msgid ""
-"You can modify the IP address, hostname, or account for this supermaster."
-msgstr "Galite keisti šio supermasteio IP adresą, serverio vardą arba paskyrą."
 
 #: templates/modern/edit_supermaster.html:83
 msgid "Important"
@@ -9368,9 +9644,78 @@ msgstr "Išjungti"
 msgid "Activate"
 msgstr "Įjungti"
 
+#: templates/default/dnssec.html:123 templates/modern/dnssec.html:123
+msgid "Download this key as PEM"
+msgstr "Atsisiųsti raktą kaip PEM"
+
+#: templates/default/dnssec.html:124 templates/modern/dnssec.html:124
+msgid "Export PEM"
+msgstr "Eksportuoti PEM"
+
 #: templates/modern/list_perm_templ.html:61
 msgid "Delete"
 msgstr "Pašalinti"
+
+#: templates/default/dnssec.html:144 templates/modern/dnssec.html:144
+msgid "Import key from PEM"
+msgstr "Importuoti raktą iš PEM"
+
+#: templates/default/dnssec.html:147 templates/modern/dnssec.html:147
+msgid ""
+"Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the "
+"key size from the PEM contents - select the matching algorithm and key role."
+msgstr ""
+"Įklijuokite PEM formatu užkoduotą privatųjį raktą (RSA arba ECDSA). PowerDNS "
+"4.7+ rakto dydį nustato iš PEM turinio - parinkite tinkamą algoritmą ir "
+"rakto vaidmenį."
+
+#: templates/modern/dnssec.html:151 templates/modern/dnssec_add_key.html:55
+msgid "Key type"
+msgstr "Rakto tipas"
+
+#: templates/default/dnssec.html:167 templates/modern/dnssec.html:167
+msgid "PEM private key"
+msgstr "Privatusis PEM raktas"
+
+#: templates/default/dnssec.html:172 templates/modern/dnssec.html:172
+msgid "Import key"
+msgstr "Importuoti raktą"
+
+#: templates/modern/list_networks.html:13
+msgid ""
+"Each network maps to a single view. Resolvers in that network receive the "
+"zone variant assigned to that view."
+msgstr ""
+"Kiekvienas tinklas susiejamas su vienu rodiniu. To tinklo skiriamieji DNS "
+"gauna rodiniui priskirtą zonos variantą."
+
+#: templates/modern/list_networks.html:18
+msgid "No networks configured yet. Map a CIDR to a view below."
+msgstr "Tinklų dar nesukonfigūruota. Susiekite CIDR su rodiniu žemiau."
+
+#: templates/modern/list_networks.html:25
+msgid "Network"
+msgstr "Tinklas"
+
+#: templates/modern/list_networks.html:65
+msgid "View"
+msgstr "Rodinys"
+
+#: templates/modern/list_networks.html:40
+msgid "Remove mapping"
+msgstr "Pašalinti susiejimą"
+
+#: templates/modern/list_networks.html:54
+msgid "Map network to view"
+msgstr "Susieti tinklą su rodiniu"
+
+#: templates/modern/list_networks.html:61
+msgid "CIDR"
+msgstr "CIDR"
+
+#: templates/modern/list_networks.html:79
+msgid "Save"
+msgstr "Išsaugoti"
 
 #: templates/modern/forgot_password.html:4
 msgid "Forgot Password"
@@ -9522,7 +9867,7 @@ msgstr "Pašalinti"
 msgid "and"
 msgstr "ir"
 
-#: templates/modern/list_forward_zones.html:169
+#: templates/modern/list_forward_zones.html:178
 msgid "more..."
 msgstr "daugiau..."
 
@@ -9626,7 +9971,7 @@ msgstr "Ne, palikti šią grupę"
 msgid "Welcome"
 msgstr "Sveiki"
 
-#: templates/modern/index.html:5 templates/modern/delete_zone_templ.html:29
+#: templates/modern/list_views.html:25
 msgid "zones"
 msgstr "zonų"
 
@@ -9642,15 +9987,69 @@ msgstr "naudotojams"
 msgid "groups"
 msgstr "grupės"
 
-#: templates/default/index.html:22 templates/modern/index.html:22
+#: templates/default/index.html:11 templates/modern/index.html:11
+msgid "Connected PowerDNS version"
+msgstr "Connected PowerDNS version"
+
+#: templates/default/index.html:16 templates/modern/index.html:16
+msgid ""
+"Could not detect PowerDNS version. Newer features are hidden until the API "
+"is reachable."
+msgstr ""
+"Nepavyko nustatyti PowerDNS versijos. Naujesnės funkcijos paslėptos, kol API "
+"nepasiekiamas."
+
+#: templates/default/index.html:17 templates/modern/index.html:17
+msgid "PowerDNS version unknown"
+msgstr "PowerDNS versija nežinoma"
+
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid "PowerDNS API error"
+msgstr "PowerDNS API error"
+
+#: templates/default/index.html:34 templates/modern/index.html:34
+msgid ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
+msgstr ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
+
+#: templates/default/index.html:36 templates/modern/index.html:36
+msgid ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+msgstr ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+
+#: templates/default/index.html:38 templates/modern/index.html:38
+msgid ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+msgstr ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+
+#: templates/default/index.html:40 templates/modern/index.html:40
+msgid ""
+"Zone counts and lists may be out of date until the API is reachable again. "
+"Check your PowerDNS server log for details."
+msgstr ""
+"Zone counts and lists may be out of date until the API is reachable again. "
+"Check your PowerDNS server log for details."
+
+#: templates/default/index.html:56 templates/modern/index.html:56
 msgid "DNS Management"
 msgstr "DNS valdymas"
 
-#: templates/modern/index.html:35 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:69 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "Prisijungęs"
 
-#: templates/modern/index.html:37 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:71 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "Atsijungęs"
 
@@ -9658,31 +10057,31 @@ msgstr "Atsijungęs"
 msgid "Templates"
 msgstr "Šablonai"
 
-#: templates/default/index.html:109 templates/modern/index.html:109
+#: templates/default/index.html:142 templates/modern/index.html:142
+msgid "Networks"
+msgstr "Tinklai"
+
+#: templates/default/index.html:161 templates/modern/index.html:161
 msgid "Zone Operations"
 msgstr "Zonų operacijos"
 
-#: templates/default/index.html:120 templates/modern/index.html:120
+#: templates/default/index.html:172 templates/modern/index.html:172
 msgid "Master Zone"
 msgstr "Master zona"
 
-#: templates/default/index.html:130 templates/modern/index.html:130
+#: templates/default/index.html:182 templates/modern/index.html:182
 msgid "Slave Zone"
 msgstr "Slave zona"
 
-#: templates/default/index.html:140 templates/modern/index.html:140
-msgid "Supermaster"
-msgstr "Supermasteris"
-
-#: templates/default/index.html:160 templates/modern/index.html:160
+#: templates/default/index.html:212 templates/modern/index.html:212
 msgid "PTR Records"
 msgstr "PTR įrašai"
 
-#: templates/default/index.html:178 templates/modern/index.html:178
+#: templates/default/index.html:230 templates/modern/index.html:230
 msgid "Administration"
 msgstr "Administravimas"
 
-#: templates/modern/index.html:209 templates/modern/header.html:259
+#: templates/modern/index.html:261 templates/modern/header.html:259
 msgid "Access"
 msgstr "Prieiga"
 
@@ -9690,12 +10089,12 @@ msgstr "Prieiga"
 msgid "Tools"
 msgstr "Įrankiai"
 
-#: templates/default/index.html:268 templates/modern/index.html:268
+#: templates/default/index.html:320 templates/modern/index.html:320
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Duomenų bazė"
 
-#: templates/default/index.html:315 templates/modern/index.html:315
+#: templates/default/index.html:367 templates/modern/index.html:367
 msgid "My Profile"
 msgstr "Mano profilis"
 
@@ -9704,7 +10103,7 @@ msgstr "Mano profilis"
 msgid "Password"
 msgstr "Slaptažodis"
 
-#: templates/modern/index.html:334 templates/modern/header.html:372
+#: templates/modern/index.html:386 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "Nuostatos"
 
@@ -9712,7 +10111,7 @@ msgstr "Nuostatos"
 msgid "Logout"
 msgstr "Atsijungti"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:535
 msgid "Edit comment"
 msgstr "Redaguoti komentarą"
 
@@ -10351,7 +10750,7 @@ msgstr "Šiame sąraše nėra atvirkštinių zonų, kurias būtų galima rodyti.
 msgid "Owner"
 msgstr "Savininkas"
 
-#: templates/modern/list_forward_zones.html:88
+#: templates/modern/list_forward_zones.html:97
 msgid "Full name"
 msgstr "Pilnas vardas"
 
@@ -10359,7 +10758,7 @@ msgstr "Pilnas vardas"
 msgid "Associated Forward Zones"
 msgstr "Susietos tiesioginės zonos"
 
-#: templates/modern/list_forward_zones.html:92
+#: templates/modern/list_forward_zones.html:101
 msgid "Serial"
 msgstr "Serijos numeris"
 
@@ -10375,7 +10774,7 @@ msgstr "-"
 msgid "Delete zone(s)"
 msgstr "Pašalinti zoną(as)"
 
-#: templates/modern/dnssec_add_key.html:91
+#: templates/modern/dnssec_add_key.html:93
 msgid "Add key"
 msgstr "Pridėti raktą"
 
@@ -10383,40 +10782,36 @@ msgstr "Pridėti raktą"
 msgid "Add key for zone"
 msgstr "Pridėti raktą zonai"
 
-#: templates/modern/dnssec_add_key.html:43
-msgid "PowerDNS 4.0+ uses CSK by default"
-msgstr "PowerDNS 4.0+ pagal numatytuosius nustatymus naudoja CSK"
-
 #: templates/modern/dnssec_add_key.html:44
+msgid "Legacy PowerDNS detected"
+msgstr "Aptiktas senesnis PowerDNS"
+
+#: templates/modern/dnssec_add_key.html:45
 msgid ""
-"PowerDNS 4.0 and newer versions use Combined Signing Keys (CSK) by default. "
-"If you select KSK or ZSK, PowerDNS may still create a CSK key."
+"This server predates PowerDNS 4.0 and does not create a Combined Signing Key "
+"by default. Pick KSK or ZSK explicitly to add a key here."
 msgstr ""
-"PowerDNS 4.0 ir naujesnės versijos pagal numatytuosius nustatymus naudoja "
-"Combined Signing Keys (CSK). Jei pasirinksite KSK arba ZSK, PowerDNS vis "
-"tiek gali sukurti CSK raktą."
+"Šis serveris yra senesnis nei PowerDNS 4.0 ir pagal numatytuosius nustatymus "
+"nesukuria Combined Signing Key. Norėdami pridėti raktą, aiškiai parinkite "
+"KSK arba ZSK."
 
-#: templates/modern/dnssec_add_key.html:53
-msgid "Key type"
-msgstr "Rakto tipas"
-
-#: templates/modern/dnssec_add_key.html:60
+#: templates/modern/dnssec_add_key.html:62
 msgid "Select key type"
 msgstr "Pasirinkite rakto tipą"
 
-#: templates/modern/dnssec_add_key.html:71
+#: templates/modern/dnssec_add_key.html:73
 msgid "Select algorithm"
 msgstr "Pasirinkite algoritmą"
 
-#: templates/modern/dnssec_add_key.html:76
+#: templates/modern/dnssec_add_key.html:78
 msgid "Bits in length"
 msgstr "Bitų ilgis"
 
-#: templates/modern/dnssec_add_key.html:85
+#: templates/modern/dnssec_add_key.html:87
 msgid "Select bits length"
 msgstr "Pasirinkite bitų ilgį"
 
-#: templates/modern/dnssec_add_key.html:142
+#: templates/modern/dnssec_add_key.html:144
 msgid "Recommended bits for"
 msgstr "Rekomenduojami bitai"
 
@@ -10425,19 +10820,19 @@ msgstr "Rekomenduojami bitai"
 msgid "Warning:"
 msgstr "Įspėjimas:"
 
-#: templates/modern/dnssec_add_key.html:150
+#: templates/modern/dnssec_add_key.html:152
 msgid "bits is not recommended for"
 msgstr "bitai nerekomenduojami"
 
-#: templates/modern/dnssec_add_key.html:187
+#: templates/modern/dnssec_add_key.html:189
 msgid "About DNSSEC Key Types"
 msgstr "Apie DNSSEC raktų tipus"
 
-#: templates/modern/dnssec_add_key.html:191
+#: templates/modern/dnssec_add_key.html:193
 msgid "Key Types Explained"
 msgstr "Raktų tipų paaiškinimas"
 
-#: templates/modern/dnssec_add_key.html:193
+#: templates/modern/dnssec_add_key.html:195
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
@@ -10445,19 +10840,19 @@ msgstr ""
 "Kombinuotas pasirašymo raktas - veikia ir kaip KSK, ir kaip ZSK "
 "(rekomenduojamas PowerDNS 4.0+)"
 
-#: templates/modern/dnssec_add_key.html:194
+#: templates/modern/dnssec_add_key.html:196
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
 msgstr "Rakto pasirašymo raktas - pasirašo DNSKEY įrašus zonoje"
 
-#: templates/modern/dnssec_add_key.html:195
+#: templates/modern/dnssec_add_key.html:197
 msgid "Zone Signing Key - signs all other records in the zone"
 msgstr "Zonos pasirašymo raktas - pasirašo visus kitus įrašus zonoje"
 
-#: templates/modern/dnssec_add_key.html:200
+#: templates/modern/dnssec_add_key.html:202
 msgid "Recommended Settings"
 msgstr "Rekomenduojami nustatymai"
 
-#: templates/modern/dnssec_add_key.html:201
+#: templates/modern/dnssec_add_key.html:203
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
@@ -10687,7 +11082,7 @@ msgstr "Taip, atjungti šias zonas"
 msgid "Access templates"
 msgstr "Prieigos šablonai"
 
-#: templates/modern/add_perm_templ.html:6
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
 msgid "Add"
 msgstr "Pridėti"
 
@@ -10809,22 +11204,6 @@ msgstr "Eiti į pagrindinį puslapį"
 #: templates/default/404.html:49 templates/modern/404.html:49
 msgid "Go Back"
 msgstr "Grįžti atgal"
-
-#: templates/modern/list_supermasters.html:13
-msgid "Add supermaster"
-msgstr "Pridėti supermasterį"
-
-#: templates/modern/add_supermaster.html:13
-msgid "Add Supermaster"
-msgstr "Pridėti supermasterį"
-
-#: templates/modern/add_supermaster.html:70
-msgid "About Supermasters"
-msgstr "Apie supermasterius"
-
-#: templates/modern/add_supermaster.html:75
-msgid "What is a Supermaster?"
-msgstr "Kas yra supermaster?"
 
 #: templates/modern/add_supermaster.html:76
 msgid ""
@@ -11204,71 +11583,71 @@ msgstr "Jei prarasite raktą, turėsite jį generuoti iš naujo."
 msgid "Edit"
 msgstr "Redaguoti"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:577
+#: templates/modern/edit.html:25 templates/modern/edit.html:598
 msgid "Add new record"
 msgstr "Pridėti naują įrašą"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:581
+#: templates/modern/edit.html:203 templates/modern/edit.html:602
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Vadovaujami vedliai DMARC, SPF, DKIM, CAA, TLSA ir SRV įrašams"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:587
+#: templates/modern/edit.html:35 templates/modern/edit.html:608
 msgid "Multi-record mode"
 msgstr "Kelių įrašų režimas"
 
-#: templates/modern/edit.html:535 templates/modern/edit.html:590
+#: templates/modern/edit.html:556 templates/modern/edit.html:611
 msgid "Bulk add"
 msgstr "Masiškai pridėti"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:623
 msgid "Failed to add"
 msgstr "Nepavyko pridėti"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:623
 msgid "record(s). Please check the record format."
 msgstr "įrašų. Patikrinkite įrašo formatą."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:604
+#: templates/modern/edit.html:52 templates/modern/edit.html:625
 msgid "Failed to add records. Please check the record format."
 msgstr "Nepavyko pridėti įrašų. Patikrinkite įrašų formatą."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:628
 msgid "Content validation failed:"
 msgstr "Turinio tikrinimas nepavyko:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:628
 msgid "Invalid value for record type"
 msgstr "Neteisinga reikšmė įrašo tipui"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:609
+#: templates/modern/edit.html:57 templates/modern/edit.html:630
 msgid "Please provide all required information."
 msgstr "Pateikite visą reikalingą informaciją."
 
-#: templates/modern/edit.html:632 templates/modern/add_record.html:72
+#: templates/modern/edit.html:653 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Pridėti PTR"
 
-#: templates/modern/edit.html:635 templates/modern/add_record.html:75
+#: templates/modern/edit.html:656 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Pridėti A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:674
+#: templates/modern/edit.html:121 templates/modern/edit.html:695
 msgid "This record already exists"
 msgstr "Šis įrašas jau egzistuoja"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:686
+#: templates/modern/edit.html:133 templates/modern/edit.html:707
 msgid "Invalid priority"
 msgstr "Neteisingas prioritetas"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:693
+#: templates/modern/edit.html:140 templates/modern/edit.html:714
 msgid "Invalid TTL value"
 msgstr "Neteisinga TTL reikšmė"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:695
+#: templates/modern/edit.html:142 templates/modern/edit.html:716
 msgid "Provide TTL"
 msgstr "Pateikite TTL"
 
-#: templates/modern/edit.html:721 templates/modern/add_record.html:207
+#: templates/modern/edit.html:742 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11328,47 +11707,51 @@ msgstr "iš"
 msgid "total records"
 msgstr "iš viso įrašų"
 
-#: templates/default/edit.html:497 templates/modern/edit.html:497
+#: templates/default/edit.html:405 templates/modern/edit.html:405
+msgid "Last modified"
+msgstr "Paskutinis pakeitimas"
+
+#: templates/default/edit.html:518 templates/modern/edit.html:518
 msgid "Edit selected"
 msgstr "Redaguoti pasirinktus"
 
-#: templates/modern/edit.html:501 templates/modern/search.html:486
+#: templates/modern/edit.html:522 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Pašalinti įrašą(us)"
 
-#: templates/modern/edit.html:509 templates/modern/search.html:93
+#: templates/modern/edit.html:530 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentarai"
 
-#: templates/default/edit.html:539 templates/modern/edit.html:539
+#: templates/default/edit.html:560 templates/modern/edit.html:560
 msgid "Import"
 msgstr "Importuoti"
 
-#: templates/default/edit.html:556 templates/modern/edit.html:556
+#: templates/default/edit.html:577 templates/modern/edit.html:577
 msgid "Generate PTR"
 msgstr "Generuoti PTR"
 
-#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:756 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Zonos konfigūracija"
 
-#: templates/modern/edit.html:777 templates/modern/edit.html:806
+#: templates/modern/edit.html:798 templates/modern/edit.html:827
 msgid "Change"
 msgstr "Keisti"
 
-#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:791 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Master NS IP adresas"
 
-#: templates/default/edit.html:827 templates/modern/edit.html:827
+#: templates/default/edit.html:848 templates/modern/edit.html:848
 msgid "Manage DNSSEC"
 msgstr "Valdyti DNSSEC"
 
-#: templates/default/edit.html:834 templates/modern/edit.html:834
+#: templates/default/edit.html:855 templates/modern/edit.html:855
 msgid "Sign zone"
 msgstr "Pasirašyti zoną"
 
-#: templates/default/edit.html:838 templates/modern/edit.html:838
+#: templates/default/edit.html:859 templates/modern/edit.html:859
 msgid "Not signed"
 msgstr "Nepasirašyta"
 
@@ -11413,15 +11796,23 @@ msgstr "MFA įjungta"
 msgid "MFA not configured"
 msgstr "MFA nesukonfigūruota"
 
+#: templates/modern/list_forward_zones.html:22
+msgid "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Fetch zones from PowerDNS and reconcile the local table"
+
+#: templates/modern/list_forward_zones.html:23
+msgid "Sync from PowerDNS"
+msgstr "Sync from PowerDNS"
+
 #: templates/modern/list_template_zones.html:15
 msgid "Total number of zones:"
 msgstr "Iš viso zonų:"
 
-#: templates/modern/list_forward_zones.html:57
+#: templates/modern/list_forward_zones.html:66
 msgid "There are no forward zones to show in this listing."
 msgstr "Šiame sąraše nėra tiesioginių zonų, kurias būtų galima rodyti."
 
-#: templates/modern/list_forward_zones.html:201
+#: templates/modern/list_forward_zones.html:210
 msgid "PTR"
 msgstr "PTR"
 
@@ -11969,14 +12360,6 @@ msgstr "Ar norite tęsti nepridėdami SOA įrašo?"
 msgid "Continue Without SOA"
 msgstr "Tęsti be SOA"
 
-#: templates/modern/list_supermasters.html:21
-msgid "Search supermasters..."
-msgstr "Ieškoti supermasterių..."
-
-#: templates/modern/list_supermasters.html:71
-msgid "There are no supermasters to show in this listing."
-msgstr "Šiame sąraše nėra supermasterių, kuriuos būtų galima rodyti."
-
 #: templates/modern/edit_zone_metadata.html:18
 msgid "Edit Metadata"
 msgstr "Redaguoti metaduomenis"
@@ -12005,15 +12388,19 @@ msgstr "Viena reiksme"
 msgid "Kind"
 msgstr "Tipas"
 
-#: templates/modern/edit_zone_metadata.html:105
+#: templates/modern/edit_zone_metadata.html:127
+msgid "requires"
+msgstr "reikalauja"
+
+#: templates/modern/edit_zone_metadata.html:107
 msgid "Add metadata row"
 msgstr "Prideti metaduomenu eilute"
 
-#: templates/modern/edit_zone_metadata.html:108
+#: templates/modern/edit_zone_metadata.html:110
 msgid "Save metadata"
 msgstr "Issaugoti metaduomenis"
 
-#: templates/modern/edit_zone_metadata.html:112
+#: templates/modern/edit_zone_metadata.html:114
 msgid "Back to zone"
 msgstr "Grizti i zona"
 
@@ -12211,7 +12598,7 @@ msgstr "Saugokite šiuos kodus saugioje vietoje!"
 msgid "Print"
 msgstr "Spausdinti"
 
-#: templates/modern/mfa_recovery_codes.html:52
+#: templates/modern/dnssec_ds_dnskey.html:67
 msgid "Copy all"
 msgstr "Kopijuoti visus"
 
@@ -12591,30 +12978,6 @@ msgstr "Taip, ištrinti šias zonas"
 msgid "No, keep these zones"
 msgstr "Ne, palikti šias zonas"
 
-#: templates/modern/delete_supermaster.html:5
-msgid "Delete supermaster"
-msgstr "Pašalinti supermasterį"
-
-#: templates/modern/delete_supermaster.html:11
-msgid "Delete Supermaster"
-msgstr "Ištrinti supermasterį"
-
-#: templates/modern/delete_supermaster.html:16
-msgid "You are about to delete the supermaster"
-msgstr "Ruošiatės ištrinti supermasterį"
-
-#: templates/modern/delete_supermaster.html:22
-msgid "Supermaster Details"
-msgstr "Supermasterio duomenys"
-
-#: templates/modern/delete_supermaster.html:53
-msgid "Yes, delete this supermaster"
-msgstr "Taip, ištrinti šį supermasterį"
-
-#: templates/modern/delete_supermaster.html:56
-msgid "No, keep this supermaster"
-msgstr "Ne, palikti šį supermasterį"
-
 #: templates/modern/list_log_users.html:5 templates/modern/header.html:216
 msgid "User logs"
 msgstr "Naudotojų žurnalai"
@@ -12654,6 +13017,36 @@ msgstr "Ruošiatės ištrinti zonos šabloną"
 #: templates/modern/delete_zone_templ.html:29
 msgid "This template is currently used by"
 msgstr "Šis šablonas šiuo metu naudojamas"
+
+#: templates/default/list_views.html:13 templates/modern/list_views.html:13
+msgid ""
+"Views serve different zone variants to different clients based on the "
+"network mapping. Each variant is identified as zone..variant (for example, "
+"example.com..trusted)."
+msgstr ""
+"Rodiniai pateikia skirtingus zonos variantus skirtingiems klientams pagal "
+"tinklo susiejimą. Kiekvienas variantas identifikuojamas kaip zone..variant "
+"(pvz. example.com..trusted)."
+
+#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+msgid "No views configured yet. Add a zone variant below."
+msgstr "Rodinių dar nesukonfigūruota. Pridėkite zonos variantą žemiau."
+
+#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+msgid "Remove from view"
+msgstr "Pašalinti iš rodinio"
+
+#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+msgid "Assign zone to view"
+msgstr "Priskirti zoną rodiniui"
+
+#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+msgid "View name"
+msgstr "Rodinio pavadinimas"
+
+#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+msgid "Zone (zone..variant)"
+msgstr "Zona (zone..variantas)"
 
 #: templates/modern/email_previews.html:11
 msgid "Email Template Previews"
@@ -12957,15 +13350,27 @@ msgstr "DNSSEC viešieji įrašai zonai"
 msgid "Back to DNSSEC keys"
 msgstr "Grįžti į DNSSEC raktus"
 
-#: templates/modern/dnssec_ds_dnskey.html:47
+#: templates/modern/dnssec_ds_dnskey.html:48
 msgid "DNSKEY Records"
 msgstr "DNSKEY įrašai"
 
-#: templates/modern/dnssec_ds_dnskey.html:55
+#: templates/modern/dnssec_ds_dnskey.html:51
+msgid "Copy all DNSKEY records to clipboard"
+msgstr "Kopijuoti visus DNSKEY įrašus į iškarpinę"
+
+#: templates/modern/dnssec_ds_dnskey.html:71
+msgid "Copy this record"
+msgstr "Kopijuoti šį įrašą"
+
+#: templates/modern/dnssec_ds_dnskey.html:63
 msgid "DS Records"
 msgstr "DS įrašai"
 
-#: templates/modern/dnssec_ds_dnskey.html:62
+#: templates/modern/dnssec_ds_dnskey.html:66
+msgid "Copy all DS records to clipboard"
+msgstr "Kopijuoti visus DS įrašus į iškarpinę"
+
+#: templates/modern/dnssec_ds_dnskey.html:76
 msgid ""
 "DS records should be added to the parent zone to establish the chain of "
 "trust."
@@ -13409,14 +13814,6 @@ msgstr "Pridėti visus įrašus"
 msgid "Zone type"
 msgstr "Zonos tipas"
 
-#: lib/Module/ZoneImportExport/templates/import.html:130
-msgid "Master"
-msgstr "Pagrindinis"
-
-#: lib/Module/ZoneImportExport/templates/import.html:131
-msgid "Native"
-msgstr "Gimtasis"
-
 #: lib/Module/ZoneImportExport/templates/import.html:138
 msgid "Confirm import"
 msgstr "Patvirtinti importą"
@@ -13502,124 +13899,130 @@ msgstr "RDAP rezultatai"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Sukurti vartotoją su ribotomis teisėmis"
+msgstr "Create limited rights user"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
-msgstr "Žingsnis"
+msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Sukurti vartotoją su ribotomis teisėmis"
+msgstr "Create limited-rights user"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "Ribotos duomenų bazės teisės:"
+msgstr "Limited Database Rights:"
 
 #: install/templates/step6.html.twig:15
+#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
 msgstr ""
-"Sukurkite duomenų bazės vartotoją su ribotomis teisėmis (select, insert, "
-"update, delete) tik Poweradmin lentelėms. Prieiga prie PowerDNS lentelių "
-"nėra būtina naudojant API posistemę.update, delete), kad Poweradmin galėtų "
-"pasiekti PowerDNS lenteles."
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin tables only. PowerDNS table access is not required when using "
+"the API backend."
 
 #: install/templates/step6.html.twig:17
+#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Sukurkite duomenų bazės vartotoją su ribotomis teisėmis (select, insert, "
-"update, delete), kad Poweradmin galėtų pasiekti PowerDNS lenteles."
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin to access PowerDNS tables."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
-msgstr "Duomenų bazės komandos"
+msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Vykdykite šias komandas:"
+msgstr "Execute the following commands:"
 
 #: install/templates/step6.html.twig:40
+#, auto-english-fallback
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr "Pridėję naują vartotoją, tęskite šią diegimo procedūrą."
+msgstr ""
+"After you have added the new user, proceed with this installation procedure."
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
 msgid "Note:"
-msgstr "Pastaba:"
+msgstr "Note:"
 
 #: install/templates/step6.html.twig:43
+#, auto-english-fallback
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Kadangi naudojate SQLite, nereikia kurti naujo vartotojo su ribotomis "
-"teisėmis."
+"Since you are using SQLite, there is no need to create a new user with "
+"limited rights."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Tęsti į žingsnį"
+msgstr "Continue to step"
 
 #: install/templates/base.html.twig:37
 msgid "Installation step"
-msgstr "Diegimo žingsnis"
+msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Sukurti konfigūracijos failą"
+msgstr "Create configuration file"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
-msgstr "Konfigūracijos failas:"
+msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Sukurkite failą"
+msgstr "Create the file"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "su šiuo turiniu:"
+msgstr "with the following content:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Pasirinkite kalbą"
+msgstr "Choose a language"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Pasirinkite diegimo kalbą"
+msgstr "Choose a language for installation"
 
 #: install/templates/step1.html.twig:12
+#, auto-english-fallback
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr "Pasirinkite norimą kalbą, kad galėtumėte tęsti diegimą:"
+msgstr ""
+"Please select your preferred language to continue with the installation:"
 
-#: install/templates/step1.html.twig:287
+#: install/templates/step1.html.twig:391
 msgid "Begin Installation"
-msgstr "Pradėti diegimą"
+msgstr "Begin Installation"
 
 #: install/templates/step4.html.twig:3
 msgid "Configuring database"
-msgstr "Duomenų bazės konfigūravimas"
+msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Duomenų bazės ryšio konfigūravimas"
+msgstr "Configuring Database Connection"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
-msgstr "PowerDNS posistemė"
+msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Pasirinkite, kaip Poweradmin bendrauja su PowerDNS:"
+msgstr "Choose how Poweradmin communicates with PowerDNS:"
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
-msgstr "Tiesioginė prieiga prie PowerDNS duomenų bazės lentelių"
+msgstr "Direct access to PowerDNS database tables"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
@@ -13631,11 +14034,11 @@ msgstr "PowerDNS REST API"
 
 #: install/templates/step4.html.twig:33
 msgid "Experimental"
-msgstr "Eksperimentinis"
+msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API nustatymai"
+msgstr "PowerDNS API Settings"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
@@ -13643,264 +14046,262 @@ msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API galinio taško URL."
+msgstr "PowerDNS API endpoint URL."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
-msgstr "API raktas"
+msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API raktas (iš pdns.conf api-key nustatymo)."
+msgstr "PowerDNS API key (from pdns.conf api-key setting)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
-msgstr "Serverio pavadinimas"
+msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
+#, auto-english-fallback
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr ""
-"PowerDNS serverio pavadinimas API užklausoms (paprastai \"localhost\")."
+msgstr "PowerDNS server name for API calls (usually \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Duomenų bazės ryšio nustatymai"
+msgstr "Database Connection Settings"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
-msgstr "Duomenų bazės konfiguracija:"
+msgstr "Database Configuration:"
 
 #: install/templates/step4.html.twig:90
+#, auto-english-fallback
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
 msgstr ""
-"Sukonfigurėkite duomenų bazės ryšį su lentelės kūrimo teisėmis. Jei reikia, "
-"PowerDNS vieta gali būti nurodyta atskirai."
+"Configure database connection with table creation rights. PowerDNS location "
+"can be specified separately if needed."
 
 #: install/templates/step4.html.twig:93
+#, auto-english-fallback
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
 msgstr ""
-"Sukonfigurėkite duomenų bazės ryšį Poweradmin lentelėms (vartotojai, "
-"leidimai, zonos). PowerDNS lentelės nėra būtinos.PowerDNS vieta gali būti "
-"nurodyta atskirai."
+"Configure database connection for Poweradmin tables (users, permissions, "
+"zones). PowerDNS tables are not required."
 
 #: install/templates/step4.html.twig:97
 msgid "Database type"
-msgstr "Duomenų bazės tipas"
+msgstr "Database type"
 
 #: install/templates/step4.html.twig:106
 msgid "Database server type."
-msgstr "Duomenų bazės serverio tipas."
+msgstr "Database server type."
 
 #: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "Nurodykite vartotojo vardą"
+msgstr "Provide the user name"
 
 #: install/templates/step4.html.twig:117
 msgid "Database username with rights to create tables."
-msgstr "Duomenų bazės vartotojo vardas su teisėmis kurti lenteles."
+msgstr "Database username with rights to create tables."
 
 #: install/templates/step4.html.twig:131
 msgid "Password for this database user."
-msgstr "Šio duomenų bazės vartotojo slaptažodis."
+msgstr "Password for this database user."
 
 #: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Venkkite kabučių, atgalinų brūkšnių ir eilutės lūžių."
+msgstr "Avoid quotes, backslashes, and line breaks."
 
 #: install/templates/step4.html.twig:140
 msgid "Provide the hostname"
-msgstr "Nurodykite serverio vardą"
+msgstr "Provide the hostname"
 
 #: install/templates/step4.html.twig:143
+#, auto-english-fallback
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Duomenų bazės serverio vardas (paprastai \"localhost\")."
+msgstr "Database server hostname (usually \"localhost\")."
 
 #: install/templates/step4.html.twig:148
 msgid "DB Port"
-msgstr "DB Prievadas"
+msgstr "DB Port"
 
 #: install/templates/step4.html.twig:151
 msgid "Provide database port"
-msgstr "Nurodykite duomenų bazės prievadą"
+msgstr "Provide database port"
 
 #: install/templates/step4.html.twig:154
 msgid "Database server port."
-msgstr "Duomenų bazės serverio prievadas."
+msgstr "Database server port."
 
 #: install/templates/step4.html.twig:162
 msgid "Provide the name of the database"
-msgstr "Nurodykite duomenų bazės pavadinimą"
+msgstr "Provide the name of the database"
 
 #: install/templates/step4.html.twig:165
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Duomenų bazės pavadinimas (bus naudojamas Poweradmin lentelėms)."
+msgstr "Database name (will be used for Poweradmin tables)."
 
 #: install/templates/step4.html.twig:167
 msgid "Full path to SQLite database file"
-msgstr "Pilnas kelias iki SQLite duomenų bazės failo"
+msgstr "Full path to SQLite database file"
 
 #: install/templates/step4.html.twig:170
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr ""
-"Failas turi egzistuoti su žiniatinklio serverio skaitymo/rašymo teisėmis. "
-"Naudokite absoliutų kelią."
+msgstr "File must exist with web server read/write access. Use absolute path."
 
 #: install/templates/step4.html.twig:178
 msgid "DB charset"
-msgstr "DB simbolių rinkinys"
+msgstr "DB charset"
 
 #: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
 msgid "Use default"
-msgstr "Naudoti numatytąjį"
+msgstr "Use default"
 
 #: install/templates/step4.html.twig:185
 msgid "Charset for new tables. Leave empty for database default."
-msgstr ""
-"Simbolių rinkinys naujoms lentelėms. Palikite tuščią, jei norite naudoti "
-"duomenų bazės numatytąjį."
+msgstr "Charset for new tables. Leave empty for database default."
 
 #: install/templates/step4.html.twig:190
 msgid "DB collation"
-msgstr "DB rikiavimas"
+msgstr "DB collation"
 
 #: install/templates/step4.html.twig:197
+#, auto-english-fallback
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
-"Rikiavimo taisyklės simbolių palyginimui. Palikite tuščią, jei norite "
-"naudoti duomenų bazės numatytąjį."
+"Collation rules for character comparison. Leave empty for database default."
 
 #: install/templates/step4.html.twig:206
 msgid "PowerDNS Database"
-msgstr "PowerDNS duomenų bazė"
+msgstr "PowerDNS Database"
 
 #: install/templates/step4.html.twig:210
 msgid "Database name"
-msgstr "Duomenų bazės pavadinimas"
+msgstr "Database name"
 
 #: install/templates/step4.html.twig:213
 msgid "Leave empty for same database"
-msgstr "Palikite tuščią tai pačiai duomenų bazei"
+msgstr "Leave empty for same database"
 
 #: install/templates/step4.html.twig:216
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "MySQL duomenų bazė su PowerDNS lentelėmis (jei skirtinga)."
+msgstr "MySQL database with PowerDNS tables (if different)."
 
 #: install/templates/step4.html.twig:224
 msgid "Poweradmin Account"
-msgstr "Poweradmin paskyra"
+msgstr "Poweradmin Account"
 
 #: install/templates/step4.html.twig:228
 msgid "Administrator password"
-msgstr "Administratoriaus slaptažodis"
+msgstr "Administrator password"
 
 #: install/templates/step4.html.twig:233
 msgid "Provide a password"
-msgstr "Nurodykite slaptažodį"
+msgstr "Provide a password"
 
 #: install/templates/step4.html.twig:238
+#, auto-english-fallback
 msgid "Password for \"admin\" username."
-msgstr "Slaptažodis \"admin\" vartotojo vardui."
+msgstr "Password for \"admin\" username."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
-msgstr "Sistemos Reikalavimai"
+msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "Sistemos Reikalavimų Patikrinimas"
+msgstr "System Requirements Check"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
-msgstr "PHP Versija"
+msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Reikalingas PHP 8.2.0+"
+msgstr "Requires PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
-msgstr "Duomenų bazės plėtiniai"
+msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "reikalingas bent vienas"
+msgstr "at least one required"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
-msgstr "Būtini PHP plėtiniai"
+msgstr "Required PHP Extensions"
 
 #: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
-msgstr "Pasirenkami plėtiniai"
+msgstr "Optional Extensions"
 
 #: install/templates/step2.html.twig:97
 msgid "Web Server"
-msgstr "Interneto serveris"
+msgstr "Web Server"
 
 #: install/templates/step2.html.twig:102
 msgid "Server"
-msgstr "Serveris"
+msgstr "Server"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected — required for URL routing"
-msgstr "Neaptikta — būtina URL maršrutizavimui"
+msgstr "Not detected — required for URL routing"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
-msgstr "Nepavyksta aptikti (PHP-FPM) — įsitikinkite, kad jis įjungtas"
+msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr ""
-"Įsitikinkite, kad URL perrašymas sukonfigūruotas (žr. nginx.conf.example)"
+msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr ""
-"Įsitikinkite, kad URL perrašymas sukonfigūruotas jūsų interneto serveriui"
+msgstr "Ensure URL rewriting is configured for your web server"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "Visi reikalingi komponentai yra prieinami."
+msgstr "All required components are available."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "Galite tęsti diegimą."
+msgstr "You can continue with the installation."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Trūksta kai kurių reikalingų komponentų."
+msgstr "Some required components are missing."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "Prieš tęsdami įdiekite trūkstamus komponentus."
+msgstr "Please install the missing components before continuing."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Paskyros ir vardų serverių nustatymas"
+msgstr "Setup account and nameservers"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Paskyros ir vardų serverių nustatymas"
+msgstr "Setup account and name servers"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
-msgstr "Konfigūracija:"
+msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Dabar surinksime visą informaciją pačiai konfigūracijai."
+msgstr "Now we will gather all details for the configuration itself."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
-msgstr "Duomenų bazės vartotojas"
+msgstr "Database User"
 
 #: install/templates/step5.html.twig:57
+#, auto-english-fallback
 msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
@@ -13911,314 +14312,324 @@ msgstr ""
 "credentials are for that database, not for PowerDNS."
 
 #: install/templates/step5.html.twig:67
+#, auto-english-fallback
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
-"Poweradmin duomenų bazės vartotojo vardas su apribota prieiga. Ne "
-"prisijungimui prie žiniatinklio sąsajos."
+"Poweradmin database username with restricted access. Not for web UI login."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Nurodykite vartotojo slaptažodį"
+msgstr "Provide the user password"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "Šio vartotojo vardo slaptažodis."
+msgstr "The password for this username."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
-msgstr "DNS nustatymai"
+msgstr "DNS Settings"
 
 #: install/templates/step5.html.twig:95
 msgid "Hostmaster"
-msgstr "Pagrindinė stotis"
+msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "Nurodykite DNS pagrindinę stotį"
+msgstr "Provide the DNS hostmaster"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Numatytasis hostmaster SOA įrašams."
+msgstr "Default hostmaster for SOA records."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
-msgstr "Pirminis vardų serveris"
+msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Nurodykite pagrindinį vardų serverį"
+msgstr "Provide the primary nameserver"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
-msgstr "Pirminis vardų serveris naujoms zonoms."
+msgstr "Primary nameserver for new zones."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
-msgstr "Antrinis vardų serveris"
+msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Nurodykite antrinį vardų serverį"
+msgstr "Provide the secondary nameserver"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
-msgstr "Antrinis vardų serveris naujoms zonoms."
+msgstr "Secondary nameserver for new zones."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
-msgstr "Tretinis vardų serveris"
+msgstr "Tertiary Nameserver"
 
 #: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
 msgid "optional"
-msgstr "neprivalomas"
+msgstr "optional"
 
 #: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
-msgstr "Pasirenkamas trečiasis vardų serveris naujoms zonoms."
+msgstr "Optional tertiary nameserver for new zones."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
-msgstr "Ketvirtinis vardų serveris"
+msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Pasirenkamas ketvirtasis vardų serveris naujoms zonoms."
+msgstr "Optional quaternary nameserver for new zones."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
-msgstr "Diegimas baigtas"
+msgstr "Installation complete"
 
 #: install/templates/step8.html.twig:12
 msgid "Installation Complete!"
-msgstr "Diegimas baigtas!"
+msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Sveikiname! Jūsų Poweradmin diegimas dabar sukonfigūruotas."
+msgstr "Congratulations! Your Poweradmin installation is now configured."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Svarbus saugumo pranešimas:"
+msgstr "Important Security Notice:"
 
 #: install/templates/step8.html.twig:16
+#, auto-english-fallback
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
 msgstr ""
-"Turite pašalinti \"install/\" katalogą iš Poweradmin šakninio "
-"katalogo.directory."
+"You must remove the \"install/\" directory from the Poweradmin root "
+"directory."
 
 #: install/templates/step8.html.twig:17
+#, auto-english-fallback
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
 msgstr ""
-"Poweradmin neveiks, jei diegimo katalogas egzistuoja, kaip saugumo priemonė."
+"Poweradmin will not function if the install directory exists, as a security "
+"measure."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
-msgstr "Kiti žingsniai"
+msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
+#, auto-english-fallback
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Pašalinkite \"install/\" katalogą iš serverio"
+msgstr "Remove the \"install/\" directory from your server"
 
 #: install/templates/step8.html.twig:27
+#, auto-english-fallback
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
 msgstr ""
-"Prisijunkite prie <a href=\"../index.php\">Poweradmin</a> naudodami "
-"numatytąjį naudotojo vardą \"admin\" ir slaptažodį, kurį nustatėte 3 "
-"žingsnyje\"admin\" and the password you set in step 3"
+"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
+"\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Pradėkite konfigūruoti DNS zonas ir įrašus"
+msgstr "Begin configuring your DNS zones and records"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
-msgstr "Pasiruošimas"
+msgstr "Getting Ready"
 
 #: install/templates/step3.html.twig:13
 msgid "Prerequisites"
-msgstr "Išankstiniai reikalavimai"
+msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "Prieš tęsdami įsitikinkite, kad turite:"
+msgstr "Before proceeding, ensure you have:"
 
 #: install/templates/step3.html.twig:18
+#, auto-english-fallback
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
 msgstr ""
-"Įdiegtas PowerDNS su sukurtomis duomenų bazės lentelėmis (arba "
-"sukonfigūruota API prieiga)"
+"PowerDNS installed with database tables created (or API access configured)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr ""
-"Duomenų bazės prisijungimo duomenis (serverio pavadinimas, vartotojo vardas, "
-"slaptažodis)"
+msgstr "Database credentials (hostname, username, password)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Leidimą kurti lenteles Poweradmin"
+msgstr "Permission to create tables for Poweradmin"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
-msgstr "Toliau:"
+msgstr "Next:"
 
 #: install/templates/step3.html.twig:27
+#, auto-english-fallback
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
 msgstr ""
-"Sukonfigurėkite duomenų bazės ryšį, sukurkite administratoriaus paskyrą ir "
-"sugeneruokite konfigracijos failą."
+"Configure database connection, create admin account, and generate "
+"configuration file."
 
 #: install/helpers/InstallStepHandler.php:176
 msgid "Missing PowerDNS tables:"
-msgstr "Trūksta PowerDNS lentelių:"
+msgstr "Missing PowerDNS tables:"
 
 #: install/helpers/InstallStepHandler.php:177
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin reikia šių PowerDNS lentelių tinkamam veikimui."
+msgstr "Poweradmin requires these PowerDNS tables to function properly."
 
 #: install/helpers/InstallStepHandler.php:185
 msgid "Updating database... done!"
-msgstr "Atnaujinama duomenų bazė... baigta!"
+msgstr "Updating database... done!"
 
 #: install/helpers/InstallStepHandler.php:207
 msgid "Foreign Key Constraint Issues:"
-msgstr "Užsienio rakto apribojimo problemos:"
+msgstr "Foreign Key Constraint Issues:"
 
 #: install/helpers/InstallStepHandler.php:209
+#, auto-english-fallback
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
-"Diegimo programa negalėjo pašalinti esamų lentelių dėl užsienio raktų "
-"apribojimų"
+"The installer could not remove existing tables due to foreign key constraints"
 
 #: install/helpers/InstallStepHandler.php:210
+#, auto-english-fallback
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
-"Tai gali nutikti pakartotinio diegimo metu, jei turite pasirinktinių "
-"apribojimų arba jei lenteles naudoja kitos lentelės"
+"This can happen during reinstallation if you have custom constraints or if "
+"tables are referenced by other tables"
 
 #: install/helpers/InstallStepHandler.php:211
+#, auto-english-fallback
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
 msgstr ""
-"Galite pabandyti rankiniu būdu išjungti užsienio raktų patikrinimus prieš "
-"paleidžiant diegimo programą:"
+"You can try manually disabling foreign key checks before running the "
+"installer:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"
-msgstr "Pasiūlymai:"
+msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:218
 msgid "Make sure the SQLite database file exists"
-msgstr "Įsitikinkite, kad SQLite duomenų bazės failas egzistuoja"
+msgstr "Make sure the SQLite database file exists"
 
 #: install/helpers/InstallStepHandler.php:219
+#, auto-english-fallback
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
 msgstr ""
-"Patikrinkite, ar žiniatinklio serveris turi skaitymo ir rašymo teises "
-"duomenų bazės failui"
+"Check that the web server has read and write permissions for the database "
+"file"
 
 #: install/helpers/InstallStepHandler.php:220
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr ""
-"Patikrinkite, ar pilnas kelias iki duomenų bazės failo teisingas ir "
-"pasiekiamas"
+msgstr "Verify the full path to the database file is correct and accessible"
 
 #: install/helpers/InstallStepHandler.php:226
 msgid "Verify database credentials are correct"
-msgstr "Patikrinkite, ar duomenų bazės prisijungimo duomenys teisingi"
+msgstr "Verify database credentials are correct"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid "Check that the database user has sufficient privileges"
-msgstr "Patikrinkite, ar duomenų bazės naudotojas turi pakankamai teisių"
+msgstr "Check that the database user has sufficient privileges"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid "Ensure the database server is running and accessible"
-msgstr "Įsitikinkite, kad duomenų bazės serveris veikia ir yra pasiekiamas"
+msgstr "Ensure the database server is running and accessible"
 
 #: install/helpers/InstallStepHandler.php:233
 msgid "Database Error"
-msgstr "Duomenų bazės klaida"
+msgstr "Database Error"
 
 #: install/helpers/DatabaseHelper.php:175
+#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
 msgstr ""
-"SQLite duomenų bazės failas %s neegzistuoja. Prieš tęsdami sukurkite duomenų "
-"bazės failą."
+"The SQLite database file %s does not exist. Please create the database file "
+"before proceeding."
 
 #: install/helpers/DatabaseHelper.php:183
+#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
 msgstr ""
-"SQLite duomenų bazės failas %s nėra skaitomas. Patikrinkite failo teises."
+"The SQLite database file %s is not readable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:191
+#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
 msgstr ""
-"SQLite duomenų bazės failas %s nėra rašomas. Patikrinkite failo teises."
+"The SQLite database file %s is not writable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:203
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Nepavyko pasiekti SQLite duomenų bazės failo %s: %s"
+msgstr "Could not access the SQLite database file %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "PowerDNS API URL yra privalomas naudojant API posistemę."
+msgstr "PowerDNS API URL is required when using API backend."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "PowerDNS API raktas yra privalomas naudojant API posistemę."
+msgstr "PowerDNS API key is required when using API backend."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
+#, auto-english-fallback
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
 msgstr ""
-"Konfigūracijos failas nerastas. Prieš tęsdami sukurkite config/settings.php "
-"failą."
+"No configuration file found. Please create the config/settings.php file "
+"before proceeding."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
+#, auto-english-fallback
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"Atskiros PowerDNS duomenų bazės palaikomos tik su MySQL. PostgreSQL ir "
-"SQLite naudokite tą pačią duomenų bazę."
+"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+"and SQLite, please use the same database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
+#, auto-english-fallback
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
 msgstr ""
-"Trūksta PowerDNS lentelės duomenų bazėje \"%s\": %s. Įsitikinkite, kad "
-"PowerDNS tinkamai įdiegtas šioje duomenų bazėje."
+"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+"properly installed in this database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
+#, auto-english-fallback
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
-
+msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 

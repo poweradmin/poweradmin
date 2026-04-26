@@ -65,7 +65,8 @@ class DnsBackendProviderFactory
                 );
             }
 
-            $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey, $logger);
+            $timeout = (int) $config->get('pdns_api', 'timeout', 10);
+            $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey, $logger, $timeout);
             $serverNameFromConfig = $config->get('pdns_api', 'server_name');
             $serverName = $serverNameFromConfig ?: 'localhost';
             $apiClient = new PowerdnsApiClient($httpClient, $serverName, $logger);
@@ -98,7 +99,8 @@ class DnsBackendProviderFactory
         }
 
         $logger = $logger ?? new NullLogger();
-        $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey, $logger);
+        $timeout = (int) $config->get('pdns_api', 'timeout', 10);
+        $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey, $logger, $timeout);
         $serverName = $config->get('pdns_api', 'server_name') ?: 'localhost';
 
         return new PowerdnsApiClient($httpClient, $serverName, $logger);

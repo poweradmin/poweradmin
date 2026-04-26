@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Exception;
 use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -75,15 +76,7 @@ class DnssecProviderFactory
      */
     public static function supportsDefaultCsk(string $version): bool
     {
-        if (empty($version)) {
-            return false;
-        }
-
-        // Remove any non-numeric prefixes if present
-        $version = preg_replace('/^[^0-9]*/', '', $version);
-
-        // Compare versions - PowerDNS 4.0.0 and higher use CSK by default
-        return version_compare($version, '4.0.0', '>=');
+        return PdnsCapabilities::fromVersion($version)->supportsDefaultCsk();
     }
 
     /**

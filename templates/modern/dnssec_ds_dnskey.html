@@ -44,17 +44,31 @@
             </div>
             <div class="card-body">
                 <div class="mb-4">
-                    <h5 class="border-bottom pb-2 mb-3"><i class="bi bi-key-fill me-2"></i>{% trans %}DNSKEY Records{% endtrans %}</h5>
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                        <h5 class="mb-0"><i class="bi bi-key-fill me-2"></i>{% trans %}DNSKEY Records{% endtrans %}</h5>
+                        <button type="button" class="btn btn-sm btn-secondary copy-block"
+                                data-target="dnskey-block"
+                                title="{% trans %}Copy all DNSKEY records to clipboard{% endtrans %}">
+                            <i class="bi bi-clipboard me-1 text-white"></i>{% trans %}Copy all{% endtrans %}
+                        </button>
+                    </div>
                     <div class="bg-light p-3 rounded">
-                        <pre class="mb-0">{% for record in dnskey_records %}{{ record }}
+                        <pre class="mb-0" id="dnskey-block">{% for record in dnskey_records %}<span class="copy-line-row">{{ record }}<button type="button" class="btn btn-sm btn-link p-0 ms-2 copy-line" data-record="{{ record }}" title="{% trans %}Copy this record{% endtrans %}"><i class="bi bi-clipboard"></i></button></span>
 {% endfor %}</pre>
                     </div>
                 </div>
-                
+
                 <div class="mb-4">
-                    <h5 class="border-bottom pb-2 mb-3"><i class="bi bi-shield-check me-2"></i>{% trans %}DS Records{% endtrans %}</h5>
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                        <h5 class="mb-0"><i class="bi bi-shield-check me-2"></i>{% trans %}DS Records{% endtrans %}</h5>
+                        <button type="button" class="btn btn-sm btn-secondary copy-block"
+                                data-target="ds-block"
+                                title="{% trans %}Copy all DS records to clipboard{% endtrans %}">
+                            <i class="bi bi-clipboard me-1 text-white"></i>{% trans %}Copy all{% endtrans %}
+                        </button>
+                    </div>
                     <div class="bg-light p-3 rounded">
-                        <pre class="mb-0">{% for record in ds_records %}{{ record }}
+                        <pre class="mb-0" id="ds-block">{% for record in ds_records %}<span class="copy-line-row">{{ record }}<button type="button" class="btn btn-sm btn-link p-0 ms-2 copy-line" data-record="{{ record }}" title="{% trans %}Copy this record{% endtrans %}"><i class="bi bi-clipboard"></i></button></span>
 {% endfor %}</pre>
                     </div>
                     <p class="text-muted mt-2 small">
@@ -66,3 +80,53 @@
         </div>
     </div>
 </div>
+
+<script>
+(function () {
+    function flash(button) {
+        const originalHTML = button.innerHTML;
+        const wasSecondary = button.classList.contains('btn-secondary');
+        button.innerHTML = '<i class="bi bi-check2 me-1 text-white"></i>{% trans %}Copied{% endtrans %}';
+        if (wasSecondary) {
+            button.classList.remove('btn-secondary');
+            button.classList.add('btn-success');
+        }
+        setTimeout(function () {
+            button.innerHTML = originalHTML;
+            if (wasSecondary) {
+                button.classList.remove('btn-success');
+                button.classList.add('btn-secondary');
+            }
+        }, 1500);
+    }
+
+    function copy(text, button) {
+        if (!navigator.clipboard) {
+            return;
+        }
+        navigator.clipboard.writeText(text).then(function () { flash(button); });
+    }
+
+    document.querySelectorAll('.copy-block').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const target = document.getElementById(btn.dataset.target);
+            if (!target) return;
+            // Pull just the textual lines without the inline copy-line buttons.
+            const lines = target.querySelectorAll('.copy-line-row');
+            const text = Array.from(lines)
+                .map(function (row) { return row.dataset.record || row.firstChild.textContent.trim(); })
+                .join('\n');
+            copy(text || target.innerText.trim(), btn);
+        });
+    });
+
+    document.querySelectorAll('.copy-line').forEach(function (btn) {
+        // Stash the record text on the wrapper too so .copy-block can read it.
+        const row = btn.closest('.copy-line-row');
+        if (row && !row.dataset.record) {
+            row.dataset.record = btn.dataset.record || '';
+        }
+        btn.addEventListener('click', function () { copy(btn.dataset.record || '', btn); });
+    });
+})();
+</script>

@@ -82,7 +82,7 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertContains('RFC1123-CONFORMANCE', $kinds);
     }
 
-    public function testMetadataDefinitionsHideKindsUnsupportedByDetectedApiVersion(): void
+    public function testMetadataDefinitionsMarkKindsUnsupportedByDetectedApiVersionAsDisabled(): void
     {
         $controller = $this->createControllerWithConfig([
             'pdns_api' => [
@@ -95,12 +95,50 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->setProperty($controller, 'apiClient', $this->createMock(\Poweradmin\Infrastructure\Api\PowerdnsApiClient::class));
 
         $definitions = $this->invokePrivateMethod($controller, 'getMetadataDefinitionsForTemplate');
+        $byKind = [];
+        foreach ($definitions as $definition) {
+            $byKind[$definition['kind']] = $definition;
+        }
+
+        // Kinds whose min_version <= 4.8.3 are visible and enabled.
+        $this->assertArrayHasKey('SLAVE-RENOTIFY', $byKind);
+        $this->assertFalse($byKind['SLAVE-RENOTIFY']['disabled']);
+        $this->assertArrayHasKey('GSS-ALLOW-AXFR-PRINCIPAL', $byKind);
+        $this->assertFalse($byKind['GSS-ALLOW-AXFR-PRINCIPAL']['disabled']);
+
+        // Kinds requiring a newer version are still listed but disabled, with
+        // a min_version exposed for the "Requires X.Y+" hint in the template.
+        $this->assertArrayHasKey('SIGNALING-ZONE', $byKind);
+        $this->assertTrue($byKind['SIGNALING-ZONE']['disabled']);
+        $this->assertSame('5.0.0', $byKind['SIGNALING-ZONE']['min_version']);
+        $this->assertArrayHasKey('RFC1123-CONFORMANCE', $byKind);
+        $this->assertTrue($byKind['RFC1123-CONFORMANCE']['disabled']);
+    }
+
+    public function testMetadataDefinitionsHideUnsupportedKindsWhenVersionIsUnknown(): void
+    {
+        $controller = $this->createControllerWithConfig([
+            'pdns_api' => [
+                'url' => 'http://127.0.0.1:8081/',
+                'key' => 'test-key',
+                'server_name' => 'localhost',
+            ],
+        ]);
+        // Empty version simulates a failed detection - strict mode hides
+        // version-gated kinds entirely so admins don't pick options the
+        // server might reject.
+        $this->setProperty($controller, 'powerDnsVersion', '');
+        $this->setProperty($controller, 'apiClient', $this->createMock(\Poweradmin\Infrastructure\Api\PowerdnsApiClient::class));
+
+        $definitions = $this->invokePrivateMethod($controller, 'getMetadataDefinitionsForTemplate');
         $kinds = array_column($definitions, 'kind');
 
-        $this->assertContains('SLAVE-RENOTIFY', $kinds);
-        $this->assertContains('GSS-ALLOW-AXFR-PRINCIPAL', $kinds);
         $this->assertNotContains('SIGNALING-ZONE', $kinds);
         $this->assertNotContains('RFC1123-CONFORMANCE', $kinds);
+        // Kinds without any declared min_version stay visible even on
+        // unknown server versions - they have always been supported.
+        $this->assertContains('API-RECTIFY', $kinds);
+        $this->assertContains('SOA-EDIT', $kinds);
     }
 
     public function testLoadMetadataReadsFromSqlEvenWhenApiConfigurationExists(): void

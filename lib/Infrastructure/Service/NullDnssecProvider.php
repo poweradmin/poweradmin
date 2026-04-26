@@ -99,4 +99,14 @@ class NullDnssecProvider implements DnssecProvider
     {
         return false;
     }
+
+    public function importZoneKey(string $zoneName, string $keyType, string $algorithm, string $privateKeyPem): bool
+    {
+        return false;
+    }
+
+    public function exportZoneKeyPem(string $zoneName, int $keyId): ?string
+    {
+        return null;
+    }
 }
