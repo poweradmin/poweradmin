@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:32+0300\n"
+"POT-Creation-Date: 2026-04-26 10:53+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1851,7 +1851,7 @@ msgid "You do not have the permission to perform searches."
 msgstr "Du har inte behörighet att utföra sökningar."
 
 #: lib/Application/Controller/SearchController.php:49
-#: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
+#: templates/modern/header.html:127 templates/modern/list_log_groups.html:48
 msgid "Search"
 msgstr "Loggar rensade"
 
@@ -8517,7 +8517,7 @@ msgstr "Markera som oläst"
 msgid "New API Key:"
 msgstr "Säkerhetsvarning markerad som läst"
 
-#: templates/modern/list_log_groups.html:176
+#: templates/modern/list_log_groups.html:180
 msgid "Copy"
 msgstr "Säkerhetsvarning markerad som oläst"
 
@@ -8681,7 +8681,7 @@ msgstr "Testa e-postinställningar"
 msgid "API Key Information"
 msgstr "Test-e-postmeddelande skickat"
 
-#: templates/modern/list_log_groups.html:66
+#: templates/modern/list_log_groups.html:70
 msgid "Created at"
 msgstr "Kunde inte skicka test-e-postmeddelande"
 
@@ -8975,7 +8975,7 @@ msgstr "Meddelandestartdatum"
 msgid "ID"
 msgstr "ID"
 
-#: templates/modern/list_log_groups.html:68
+#: templates/modern/list_log_groups.html:72
 msgid "Actions"
 msgstr "Meddelandeslutdatum"
 
@@ -9037,7 +9037,6 @@ msgid "Import key"
 msgstr "Importera nyckel"
 
 #: templates/modern/list_networks.html:14
-#, auto-english-fallback
 msgid "Network Mapping:"
 msgstr "Network Mapping:"
 
@@ -9562,75 +9561,88 @@ msgstr "API-aktivitetsloggar"
 msgid "Total logs"
 msgstr "Visa ändringslogg"
 
-#: templates/modern/list_log_users.html:22
+#: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
+#, auto-english-fallback
+msgid "API Log Behavior:"
+msgstr "API Log Behavior:"
+
+#: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
+msgid ""
+"Records API key lifecycle events (creation, regeneration, revocation, "
+"permission changes) and authenticated API requests. Filter by user or "
+"operation to audit external integration activity. Sensitive values (keys, "
+"tokens) are never written to this log."
+msgstr ""
+
+#: templates/modern/list_log_users.html:26
 msgid "All users"
 msgstr "Alla användare"
 
-#: templates/modern/list_log_groups.html:27
+#: templates/modern/list_log_groups.html:31
 msgid "All events"
 msgstr "Alla händelser"
 
-#: templates/modern/list_log_groups.html:36
+#: templates/modern/list_log_groups.html:40
 msgid "From date"
 msgstr "Från datum"
 
-#: templates/modern/list_log_groups.html:41
+#: templates/modern/list_log_groups.html:45
 msgid "To date"
 msgstr "Till datum"
 
-#: templates/modern/list_log_groups.html:47
+#: templates/modern/list_log_groups.html:51
 msgid "Clear"
 msgstr "Uppdateringshistorik"
 
-#: templates/modern/list_log_groups.html:64
+#: templates/modern/list_log_groups.html:68
 msgid "Id"
 msgstr "Id"
 
-#: templates/modern/list_log_groups.html:67
+#: templates/modern/list_log_groups.html:71
 msgid "Event"
 msgstr "Händelse"
 
-#: templates/modern/list_log_groups.html:103
+#: templates/modern/list_log_groups.html:107
 msgid "Details"
 msgstr "Detaljer"
 
-#: templates/modern/list_log_groups.html:147
+#: templates/modern/list_log_groups.html:151
 msgid "Export"
 msgstr "Exportera"
 
-#: templates/modern/list_log_groups.html:124
+#: templates/modern/list_log_groups.html:128
 msgid "Export Logs"
 msgstr "Exportera loggar"
 
-#: templates/modern/list_log_groups.html:128
+#: templates/modern/list_log_groups.html:132
 msgid "Export filtered log entries. Current filters will be applied."
 msgstr "Exportera filtrerade loggposter. Aktuella filter tillämpas."
 
-#: templates/modern/list_log_groups.html:129
+#: templates/modern/list_log_groups.html:133
 msgid "records to export"
 msgstr "poster att exportera"
 
-#: templates/modern/list_log_groups.html:131
+#: templates/modern/list_log_groups.html:135
 msgid "Format"
 msgstr "Format"
 
-#: templates/modern/list_log_groups.html:169
+#: templates/modern/list_log_groups.html:173
 msgid "Log Details"
 msgstr "Loggdetaljer"
 
-#: templates/modern/list_log_groups.html:179
+#: templates/modern/list_log_groups.html:183
 msgid "Close"
 msgstr "Stäng"
 
-#: templates/modern/list_log_groups.html:202
+#: templates/modern/list_log_groups.html:206
 msgid "Copied"
 msgstr "Kopierat"
 
-#: templates/modern/list_log_groups.html:210
+#: templates/modern/list_log_groups.html:214
 msgid "No logs found"
 msgstr "Inga loggar hittades"
 
-#: templates/modern/list_log_groups.html:211
+#: templates/modern/list_log_groups.html:215
 msgid "Try different search criteria or check back later"
 msgstr "Prova andra sökkriterier eller kom tillbaka senare"
 
@@ -9642,11 +9654,24 @@ msgstr "Kunde inte kontrollera efter uppdateringar"
 msgid "Zone Change Logs"
 msgstr "Aktuell version"
 
+#: templates/modern/list_log_zones.html:25
+#, auto-english-fallback
+msgid "Zone Log Behavior:"
+msgstr "Zone Log Behavior:"
+
+#: templates/modern/list_log_zones.html:26
+msgid ""
+"This activity feed records every operation performed against zones and "
+"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
+"key:value event string. For structured before/after snapshots and a diff "
+"view of record changes, see the Record Change Log."
+msgstr ""
+
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
 msgstr "Domännamn"
 
-#: templates/modern/list_log_zones.html:33
+#: templates/modern/list_log_zones.html:37
 msgid "All operations"
 msgstr "Alla operationer"
 
@@ -11916,7 +11941,6 @@ msgid "entries"
 msgstr "entries"
 
 #: templates/modern/list_record_changes.html:19
-#, auto-english-fallback
 msgid "Change Log Behavior:"
 msgstr "Change Log Behavior:"
 
@@ -12411,6 +12435,19 @@ msgstr "Användarloggar"
 msgid "User Activity Logs"
 msgstr "Användaraktivitetsloggar"
 
+#: templates/modern/list_log_users.html:19
+#, auto-english-fallback
+msgid "User Log Behavior:"
+msgstr "User Log Behavior:"
+
+#: templates/modern/list_log_users.html:20
+msgid ""
+"Records user account events such as logins, password changes, group "
+"membership updates, and admin actions on user records. Each entry shows the "
+"action, the actor, the affected user, and a timestamp. Filter by operation "
+"or user to audit access changes."
+msgstr ""
+
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
 msgstr "Slavzonkonfiguration"
@@ -12444,7 +12481,6 @@ msgid "This template is currently used by"
 msgstr "Denna mall används för närvarande av"
 
 #: templates/default/list_views.html:14 templates/modern/list_views.html:14
-#, auto-english-fallback
 msgid "View Behavior:"
 msgstr "View Behavior:"
 
@@ -12919,13 +12955,18 @@ msgstr "Är du säker på att du vill aktivera API-nyckeln"
 msgid "External applications will be able to authenticate using this key."
 msgstr "Externa applikationer kan autentisera med denna nyckel."
 
-#: templates/default/api_keys.html:181 templates/modern/api_keys.html:182
+#: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
+#, auto-english-fallback
+msgid "API Key Behavior:"
+msgstr "API Key Behavior:"
+
+#: templates/default/api_keys.html:183 templates/modern/api_keys.html:184
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions."
+"is linked to your user account and inherits your permissions, so revoking "
+"your account also revokes all its keys. Treat keys as secrets - they grant "
+"the same access as logging in as you."
 msgstr ""
-"API-nycklar låter externa applikationer komma åt Poweradmin API. Varje "
-"nyckel är länkad till ditt användarkonto och ärver dina behörigheter."
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -13118,7 +13159,20 @@ msgstr "mallar gäller endast för gruppägda zoner"
 msgid "Group Activity Logs"
 msgstr "Gruppaktivitetsloggar"
 
-#: templates/modern/list_log_groups.html:22
+#: templates/modern/list_log_groups.html:19
+#, auto-english-fallback
+msgid "Group Log Behavior:"
+msgstr "Group Log Behavior:"
+
+#: templates/modern/list_log_groups.html:20
+msgid ""
+"Records group lifecycle events (create, edit, delete) and membership changes "
+"(users added or removed). Each entry shows the action, the actor, the "
+"affected group, and a timestamp. Useful for auditing zone-access changes "
+"mediated by group ownership."
+msgstr ""
+
+#: templates/modern/list_log_groups.html:26
 msgid "Group name"
 msgstr "Gruppnamn"
 
@@ -13980,21 +14034,11 @@ msgstr ""
 
 #, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
-# OBSOLETE: "zone variant assigned to that view."
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Varje nätverk pekar på en enskild vy. Resolvers i det nätverket får "
-# OBSOLETE: "zonvarianten som är kopplad till vyn."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Views serve different zone variants to different clients based on the "
-# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
-# OBSOLETE: "example, example.com..trusted)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Vyer levererar olika zonvarianter till olika klienter baserat på "
-# OBSOLETE: "nätverksmappningen. Varje variant identifieras som zone..variant (t.ex. "
-# OBSOLETE: "example.com..trusted)."
+# OBSOLETE: "API-nycklar låter externa applikationer komma åt Poweradmin API. Varje "
+# OBSOLETE: "nyckel är länkad till ditt användarkonto och ärver dina behörigheter."
 
 
 

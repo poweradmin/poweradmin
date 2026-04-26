@@ -14,6 +14,10 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="text-muted small mb-3">
+            <strong><i class="bi bi-info-circle me-1"></i>{% trans %}API Log Behavior:{% endtrans %}</strong>
+            {% trans %}Records API key lifecycle events (creation, regeneration, revocation, permission changes) and authenticated API requests. Filter by user or operation to audit external integration activity. Sensitive values (keys, tokens) are never written to this log.{% endtrans %}
+        </div>
         <form method="GET" action="{{ base_url_prefix }}/settings/api/logs">
             <div class="row g-2 mb-2">
                 <div class="col-md-3">

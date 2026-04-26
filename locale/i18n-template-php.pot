@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.5.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:32+0300\n"
+"POT-Creation-Date: 2026-04-26 10:53+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1729,7 +1729,7 @@ msgid "You do not have the permission to perform searches."
 msgstr ""
 
 #: lib/Application/Controller/SearchController.php:49
-#: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
+#: templates/modern/header.html:127 templates/modern/list_log_groups.html:48
 msgid "Search"
 msgstr ""
 
@@ -7964,7 +7964,7 @@ msgstr ""
 msgid "New API Key:"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:176
+#: templates/modern/list_log_groups.html:180
 msgid "Copy"
 msgstr ""
 
@@ -8128,7 +8128,7 @@ msgstr ""
 msgid "API Key Information"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:66
+#: templates/modern/list_log_groups.html:70
 msgid "Created at"
 msgstr ""
 
@@ -8421,7 +8421,7 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:68
+#: templates/modern/list_log_groups.html:72
 msgid "Actions"
 msgstr ""
 
@@ -8993,75 +8993,87 @@ msgstr ""
 msgid "Total logs"
 msgstr ""
 
-#: templates/modern/list_log_users.html:22
+#: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
+msgid "API Log Behavior:"
+msgstr ""
+
+#: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
+msgid ""
+"Records API key lifecycle events (creation, regeneration, revocation, "
+"permission changes) and authenticated API requests. Filter by user or "
+"operation to audit external integration activity. Sensitive values (keys, "
+"tokens) are never written to this log."
+msgstr ""
+
+#: templates/modern/list_log_users.html:26
 msgid "All users"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:27
+#: templates/modern/list_log_groups.html:31
 msgid "All events"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:36
+#: templates/modern/list_log_groups.html:40
 msgid "From date"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:41
+#: templates/modern/list_log_groups.html:45
 msgid "To date"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:47
+#: templates/modern/list_log_groups.html:51
 msgid "Clear"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:64
+#: templates/modern/list_log_groups.html:68
 msgid "Id"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:67
+#: templates/modern/list_log_groups.html:71
 msgid "Event"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:103
+#: templates/modern/list_log_groups.html:107
 msgid "Details"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:147
+#: templates/modern/list_log_groups.html:151
 msgid "Export"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:124
+#: templates/modern/list_log_groups.html:128
 msgid "Export Logs"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:128
+#: templates/modern/list_log_groups.html:132
 msgid "Export filtered log entries. Current filters will be applied."
 msgstr ""
 
-#: templates/modern/list_log_groups.html:129
+#: templates/modern/list_log_groups.html:133
 msgid "records to export"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:131
+#: templates/modern/list_log_groups.html:135
 msgid "Format"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:169
+#: templates/modern/list_log_groups.html:173
 msgid "Log Details"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:179
+#: templates/modern/list_log_groups.html:183
 msgid "Close"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:202
+#: templates/modern/list_log_groups.html:206
 msgid "Copied"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:210
+#: templates/modern/list_log_groups.html:214
 msgid "No logs found"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:211
+#: templates/modern/list_log_groups.html:215
 msgid "Try different search criteria or check back later"
 msgstr ""
 
@@ -9073,11 +9085,23 @@ msgstr ""
 msgid "Zone Change Logs"
 msgstr ""
 
+#: templates/modern/list_log_zones.html:25
+msgid "Zone Log Behavior:"
+msgstr ""
+
+#: templates/modern/list_log_zones.html:26
+msgid ""
+"This activity feed records every operation performed against zones and "
+"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
+"key:value event string. For structured before/after snapshots and a diff "
+"view of record changes, see the Record Change Log."
+msgstr ""
+
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
 msgstr ""
 
-#: templates/modern/list_log_zones.html:33
+#: templates/modern/list_log_zones.html:37
 msgid "All operations"
 msgstr ""
 
@@ -11704,6 +11728,18 @@ msgstr ""
 msgid "User Activity Logs"
 msgstr ""
 
+#: templates/modern/list_log_users.html:19
+msgid "User Log Behavior:"
+msgstr ""
+
+#: templates/modern/list_log_users.html:20
+msgid ""
+"Records user account events such as logins, password changes, group "
+"membership updates, and admin actions on user records. Each entry shows the "
+"action, the actor, the affected user, and a timestamp. Filter by operation "
+"or user to audit access changes."
+msgstr ""
+
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
 msgstr ""
@@ -12188,10 +12224,16 @@ msgstr ""
 msgid "External applications will be able to authenticate using this key."
 msgstr ""
 
-#: templates/default/api_keys.html:181 templates/modern/api_keys.html:182
+#: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
+msgid "API Key Behavior:"
+msgstr ""
+
+#: templates/default/api_keys.html:183 templates/modern/api_keys.html:184
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions."
+"is linked to your user account and inherits your permissions, so revoking "
+"your account also revokes all its keys. Treat keys as secrets - they grant "
+"the same access as logging in as you."
 msgstr ""
 
 #: templates/modern/api_key_delete.html:17
@@ -12365,7 +12407,19 @@ msgstr ""
 msgid "Group Activity Logs"
 msgstr ""
 
-#: templates/modern/list_log_groups.html:22
+#: templates/modern/list_log_groups.html:19
+msgid "Group Log Behavior:"
+msgstr ""
+
+#: templates/modern/list_log_groups.html:20
+msgid ""
+"Records group lifecycle events (create, edit, delete) and membership changes "
+"(users added or removed). Each entry shows the action, the actor, the "
+"affected group, and a timestamp. Useful for auditing zone-access changes "
+"mediated by group ownership."
+msgstr ""
+
+#: templates/modern/list_log_groups.html:26
 msgid "Group name"
 msgstr ""
 

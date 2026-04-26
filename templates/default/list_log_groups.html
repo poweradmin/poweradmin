@@ -15,6 +15,10 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="text-muted small mb-3">
+            <strong><i class="bi bi-info-circle me-1"></i>{% trans %}Group Log Behavior:{% endtrans %}</strong>
+            {% trans %}Records group lifecycle events (create, edit, delete) and membership changes (users added or removed). Each entry shows the action, the actor, the affected group, and a timestamp. Useful for auditing zone-access changes mediated by group ownership.{% endtrans %}
+        </div>
         <form method="GET" action="{{ base_url_prefix }}/groups/logs">
             <div class="row g-2 mb-2">
                 <div class="col-md-3">

@@ -15,6 +15,10 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="text-muted small mb-3">
+            <strong><i class="bi bi-info-circle me-1"></i>{% trans %}User Log Behavior:{% endtrans %}</strong>
+            {% trans %}Records user account events such as logins, password changes, group membership updates, and admin actions on user records. Each entry shows the action, the actor, the affected user, and a timestamp. Filter by operation or user to audit access changes.{% endtrans %}
+        </div>
         <form method="GET" action="{{ base_url_prefix }}/users/logs">
             <div class="row g-2 mb-2">
                 <div class="col-md-3">

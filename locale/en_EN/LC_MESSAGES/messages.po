@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:32+0300\n"
+"POT-Creation-Date: 2026-04-26 10:53+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1858,7 +1858,7 @@ msgid "You do not have the permission to perform searches."
 msgstr "You do not have the permission to perform searches."
 
 #: lib/Application/Controller/SearchController.php:49
-#: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
+#: templates/modern/header.html:127 templates/modern/list_log_groups.html:48
 msgid "Search"
 msgstr "Search"
 
@@ -9055,7 +9055,7 @@ msgstr "Name:"
 msgid "New API Key:"
 msgstr "New API Key:"
 
-#: templates/modern/list_log_groups.html:176
+#: templates/modern/list_log_groups.html:180
 msgid "Copy"
 msgstr "Copy"
 
@@ -9223,7 +9223,7 @@ msgstr "* Required fields"
 msgid "API Key Information"
 msgstr "API Key Information"
 
-#: templates/modern/list_log_groups.html:66
+#: templates/modern/list_log_groups.html:70
 msgid "Created at"
 msgstr "Created at"
 
@@ -9529,7 +9529,7 @@ msgstr "Unsign zone"
 msgid "ID"
 msgstr "ID"
 
-#: templates/modern/list_log_groups.html:68
+#: templates/modern/list_log_groups.html:72
 msgid "Actions"
 msgstr "Actions"
 
@@ -10133,75 +10133,91 @@ msgstr "API Activity Logs"
 msgid "Total logs"
 msgstr "Total logs"
 
-#: templates/modern/list_log_users.html:22
+#: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
+msgid "API Log Behavior:"
+msgstr "API Log Behavior:"
+
+#: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
+msgid ""
+"Records API key lifecycle events (creation, regeneration, revocation, "
+"permission changes) and authenticated API requests. Filter by user or "
+"operation to audit external integration activity. Sensitive values (keys, "
+"tokens) are never written to this log."
+msgstr ""
+"Records API key lifecycle events (creation, regeneration, revocation, "
+"permission changes) and authenticated API requests. Filter by user or "
+"operation to audit external integration activity. Sensitive values (keys, "
+"tokens) are never written to this log."
+
+#: templates/modern/list_log_users.html:26
 msgid "All users"
 msgstr "All users"
 
-#: templates/modern/list_log_groups.html:27
+#: templates/modern/list_log_groups.html:31
 msgid "All events"
 msgstr "All events"
 
-#: templates/modern/list_log_groups.html:36
+#: templates/modern/list_log_groups.html:40
 msgid "From date"
 msgstr "From date"
 
-#: templates/modern/list_log_groups.html:41
+#: templates/modern/list_log_groups.html:45
 msgid "To date"
 msgstr "To date"
 
-#: templates/modern/list_log_groups.html:47
+#: templates/modern/list_log_groups.html:51
 msgid "Clear"
 msgstr "Clear"
 
-#: templates/modern/list_log_groups.html:64
+#: templates/modern/list_log_groups.html:68
 msgid "Id"
 msgstr "Id"
 
-#: templates/modern/list_log_groups.html:67
+#: templates/modern/list_log_groups.html:71
 msgid "Event"
 msgstr "Event"
 
-#: templates/modern/list_log_groups.html:103
+#: templates/modern/list_log_groups.html:107
 msgid "Details"
 msgstr "Details"
 
-#: templates/modern/list_log_groups.html:147
+#: templates/modern/list_log_groups.html:151
 msgid "Export"
 msgstr "Export"
 
-#: templates/modern/list_log_groups.html:124
+#: templates/modern/list_log_groups.html:128
 msgid "Export Logs"
 msgstr "Export Logs"
 
-#: templates/modern/list_log_groups.html:128
+#: templates/modern/list_log_groups.html:132
 msgid "Export filtered log entries. Current filters will be applied."
 msgstr "Export filtered log entries. Current filters will be applied."
 
-#: templates/modern/list_log_groups.html:129
+#: templates/modern/list_log_groups.html:133
 msgid "records to export"
 msgstr "records to export"
 
-#: templates/modern/list_log_groups.html:131
+#: templates/modern/list_log_groups.html:135
 msgid "Format"
 msgstr "Format"
 
-#: templates/modern/list_log_groups.html:169
+#: templates/modern/list_log_groups.html:173
 msgid "Log Details"
 msgstr "Log Details"
 
-#: templates/modern/list_log_groups.html:179
+#: templates/modern/list_log_groups.html:183
 msgid "Close"
 msgstr "Close"
 
-#: templates/modern/list_log_groups.html:202
+#: templates/modern/list_log_groups.html:206
 msgid "Copied"
 msgstr "Copied"
 
-#: templates/modern/list_log_groups.html:210
+#: templates/modern/list_log_groups.html:214
 msgid "No logs found"
 msgstr "No logs found"
 
-#: templates/modern/list_log_groups.html:211
+#: templates/modern/list_log_groups.html:215
 msgid "Try different search criteria or check back later"
 msgstr "Try different search criteria or check back later"
 
@@ -10213,11 +10229,27 @@ msgstr "Zone logs"
 msgid "Zone Change Logs"
 msgstr "Zone Change Logs"
 
+#: templates/modern/list_log_zones.html:25
+msgid "Zone Log Behavior:"
+msgstr "Zone Log Behavior:"
+
+#: templates/modern/list_log_zones.html:26
+msgid ""
+"This activity feed records every operation performed against zones and "
+"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
+"key:value event string. For structured before/after snapshots and a diff "
+"view of record changes, see the Record Change Log."
+msgstr ""
+"This activity feed records every operation performed against zones and "
+"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
+"key:value event string. For structured before/after snapshots and a diff "
+"view of record changes, see the Record Change Log."
+
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
 msgstr "Domain name"
 
-#: templates/modern/list_log_zones.html:33
+#: templates/modern/list_log_zones.html:37
 msgid "All operations"
 msgstr "All operations"
 
@@ -12971,6 +13003,22 @@ msgstr "User logs"
 msgid "User Activity Logs"
 msgstr "User Activity Logs"
 
+#: templates/modern/list_log_users.html:19
+msgid "User Log Behavior:"
+msgstr "User Log Behavior:"
+
+#: templates/modern/list_log_users.html:20
+msgid ""
+"Records user account events such as logins, password changes, group "
+"membership updates, and admin actions on user records. Each entry shows the "
+"action, the actor, the affected user, and a timestamp. Filter by operation "
+"or user to audit access changes."
+msgstr ""
+"Records user account events such as logins, password changes, group "
+"membership updates, and admin actions on user records. Each entry shows the "
+"action, the actor, the affected user, and a timestamp. Filter by operation "
+"or user to audit access changes."
+
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
 msgstr "Slave Zone Configuration"
@@ -13482,13 +13530,21 @@ msgstr "Are you sure you want to enable the API key"
 msgid "External applications will be able to authenticate using this key."
 msgstr "External applications will be able to authenticate using this key."
 
-#: templates/default/api_keys.html:181 templates/modern/api_keys.html:182
+#: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
+msgid "API Key Behavior:"
+msgstr "API Key Behavior:"
+
+#: templates/default/api_keys.html:183 templates/modern/api_keys.html:184
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions."
+"is linked to your user account and inherits your permissions, so revoking "
+"your account also revokes all its keys. Treat keys as secrets - they grant "
+"the same access as logging in as you."
 msgstr ""
 "API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions."
+"is linked to your user account and inherits your permissions, so revoking "
+"your account also revokes all its keys. Treat keys as secrets - they grant "
+"the same access as logging in as you."
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -13680,7 +13736,23 @@ msgstr "templates apply only to group-owned zones"
 msgid "Group Activity Logs"
 msgstr "Group Activity Logs"
 
-#: templates/modern/list_log_groups.html:22
+#: templates/modern/list_log_groups.html:19
+msgid "Group Log Behavior:"
+msgstr "Group Log Behavior:"
+
+#: templates/modern/list_log_groups.html:20
+msgid ""
+"Records group lifecycle events (create, edit, delete) and membership changes "
+"(users added or removed). Each entry shows the action, the actor, the "
+"affected group, and a timestamp. Useful for auditing zone-access changes "
+"mediated by group ownership."
+msgstr ""
+"Records group lifecycle events (create, edit, delete) and membership changes "
+"(users added or removed). Each entry shows the action, the actor, the "
+"affected group, and a timestamp. Useful for auditing zone-access changes "
+"mediated by group ownership."
+
+#: templates/modern/list_log_groups.html:26
 msgid "Group name"
 msgstr "Group name"
 
@@ -14582,20 +14654,10 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
 # OBSOLETE: msgid ""
-# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
-# OBSOLETE: "zone variant assigned to that view."
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
-# OBSOLETE: "zone variant assigned to that view.zone variant assigned to that view."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Views serve different zone variants to different clients based on the "
-# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
-# OBSOLETE: "example, example.com..trusted)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Views serve different zone variants to different clients based on the "
-# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
-# OBSOLETE: "example, example.com..trusted).network mapping. Each variant is "
-# OBSOLETE: "identified as zone..variant (for example, example.com..trusted)."
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
 
 

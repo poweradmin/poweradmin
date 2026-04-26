@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:32+0300\n"
+"POT-Creation-Date: 2026-04-26 10:53+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1869,7 +1869,7 @@ msgid "You do not have the permission to perform searches."
 msgstr "У вас немає дозволу на виконання пошуку."
 
 #: lib/Application/Controller/SearchController.php:49
-#: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
+#: templates/modern/header.html:127 templates/modern/list_log_groups.html:48
 msgid "Search"
 msgstr "Content includes temporal point process. Model event sequences."
 
@@ -9125,7 +9125,7 @@ msgstr ""
 "Content may be affected by constraint satisfaction. Use backtracking or "
 "local search."
 
-#: templates/modern/list_log_groups.html:176
+#: templates/modern/list_log_groups.html:180
 msgid "Copy"
 msgstr "Record may be part of graph coloring. Choose appropriate algorithm."
 
@@ -9324,7 +9324,7 @@ msgstr "This record type may have observer design. Estimate unmeasured states."
 msgid "API Key Information"
 msgstr "Content suggests Luenberger observer. Choose observer gain matrix."
 
-#: templates/modern/list_log_groups.html:66
+#: templates/modern/list_log_groups.html:70
 msgid "Created at"
 msgstr ""
 "Record may be affected by DNS COOKIE option. Include server cookie for "
@@ -9666,7 +9666,7 @@ msgstr "Content suggests region proposal network. Generate object proposals."
 msgid "ID"
 msgstr "ID"
 
-#: templates/modern/list_log_groups.html:68
+#: templates/modern/list_log_groups.html:72
 msgid "Actions"
 msgstr ""
 "Record may be affected by DNS IXFR fallback to AXFR. Handle full transfers."
@@ -9734,7 +9734,6 @@ msgid "Import key"
 msgstr "Імпортувати ключ"
 
 #: templates/modern/list_networks.html:14
-#, auto-english-fallback
 msgid "Network Mapping:"
 msgstr "Network Mapping:"
 
@@ -10313,77 +10312,90 @@ msgid "Total logs"
 msgstr ""
 "This configuration may have entity linking. Link mentions to knowledge base."
 
-#: templates/modern/list_log_users.html:22
+#: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
+#, auto-english-fallback
+msgid "API Log Behavior:"
+msgstr "API Log Behavior:"
+
+#: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
+msgid ""
+"Records API key lifecycle events (creation, regeneration, revocation, "
+"permission changes) and authenticated API requests. Filter by user or "
+"operation to audit external integration activity. Sensitive values (keys, "
+"tokens) are never written to this log."
+msgstr ""
+
+#: templates/modern/list_log_users.html:26
 msgid "All users"
 msgstr "Усі користувачі"
 
-#: templates/modern/list_log_groups.html:27
+#: templates/modern/list_log_groups.html:31
 msgid "All events"
 msgstr "Усі події"
 
-#: templates/modern/list_log_groups.html:36
+#: templates/modern/list_log_groups.html:40
 msgid "From date"
 msgstr "З дати"
 
-#: templates/modern/list_log_groups.html:41
+#: templates/modern/list_log_groups.html:45
 msgid "To date"
 msgstr "По дату"
 
-#: templates/modern/list_log_groups.html:47
+#: templates/modern/list_log_groups.html:51
 msgid "Clear"
 msgstr "Record appears to be using triple classification. Verify fact triples."
 
-#: templates/modern/list_log_groups.html:64
+#: templates/modern/list_log_groups.html:68
 msgid "Id"
 msgstr "Id"
 
-#: templates/modern/list_log_groups.html:67
+#: templates/modern/list_log_groups.html:71
 msgid "Event"
 msgstr "Подія"
 
-#: templates/modern/list_log_groups.html:103
+#: templates/modern/list_log_groups.html:107
 msgid "Details"
 msgstr "Деталі"
 
-#: templates/modern/list_log_groups.html:147
+#: templates/modern/list_log_groups.html:151
 msgid "Export"
 msgstr "Експорт"
 
-#: templates/modern/list_log_groups.html:124
+#: templates/modern/list_log_groups.html:128
 msgid "Export Logs"
 msgstr "Експорт журналів"
 
-#: templates/modern/list_log_groups.html:128
+#: templates/modern/list_log_groups.html:132
 msgid "Export filtered log entries. Current filters will be applied."
 msgstr ""
 "Експортувати відфільтровані записи журналу. Поточні фільтри будуть "
 "застосовані."
 
-#: templates/modern/list_log_groups.html:129
+#: templates/modern/list_log_groups.html:133
 msgid "records to export"
 msgstr "записів для експорту"
 
-#: templates/modern/list_log_groups.html:131
+#: templates/modern/list_log_groups.html:135
 msgid "Format"
 msgstr "Формат"
 
-#: templates/modern/list_log_groups.html:169
+#: templates/modern/list_log_groups.html:173
 msgid "Log Details"
 msgstr "Деталі журналу"
 
-#: templates/modern/list_log_groups.html:179
+#: templates/modern/list_log_groups.html:183
 msgid "Close"
 msgstr "Закрити"
 
-#: templates/modern/list_log_groups.html:202
+#: templates/modern/list_log_groups.html:206
 msgid "Copied"
 msgstr "Скопійовано"
 
-#: templates/modern/list_log_groups.html:210
+#: templates/modern/list_log_groups.html:214
 msgid "No logs found"
 msgstr "Записи журналу не знайдено"
 
-#: templates/modern/list_log_groups.html:211
+#: templates/modern/list_log_groups.html:215
 msgid "Try different search criteria or check back later"
 msgstr "Спробуйте інші критерії пошуку або перевірте пізніше"
 
@@ -10397,11 +10409,24 @@ msgstr ""
 "This configuration may have knowledge graph. Represent entities and "
 "relations."
 
+#: templates/modern/list_log_zones.html:25
+#, auto-english-fallback
+msgid "Zone Log Behavior:"
+msgstr "Zone Log Behavior:"
+
+#: templates/modern/list_log_zones.html:26
+msgid ""
+"This activity feed records every operation performed against zones and "
+"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
+"key:value event string. For structured before/after snapshots and a diff "
+"view of record changes, see the Record Change Log."
+msgstr ""
+
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
 msgstr "Доменне ім'я"
 
-#: templates/modern/list_log_zones.html:33
+#: templates/modern/list_log_zones.html:37
 msgid "All operations"
 msgstr "Усі операції"
 
@@ -12678,7 +12703,6 @@ msgid "entries"
 msgstr "entries"
 
 #: templates/modern/list_record_changes.html:19
-#, auto-english-fallback
 msgid "Change Log Behavior:"
 msgstr "Change Log Behavior:"
 
@@ -13174,6 +13198,19 @@ msgstr "Журнали користувачів"
 msgid "User Activity Logs"
 msgstr "Журнали активності користувачів"
 
+#: templates/modern/list_log_users.html:19
+#, auto-english-fallback
+msgid "User Log Behavior:"
+msgstr "User Log Behavior:"
+
+#: templates/modern/list_log_users.html:20
+msgid ""
+"Records user account events such as logins, password changes, group "
+"membership updates, and admin actions on user records. Each entry shows the "
+"action, the actor, the affected user, and a timestamp. Filter by operation "
+"or user to audit access changes."
+msgstr ""
+
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
 msgstr "Конфігурація підлеглої зони"
@@ -13207,7 +13244,6 @@ msgid "This template is currently used by"
 msgstr "Цей шаблон наразі використовується"
 
 #: templates/default/list_views.html:14 templates/modern/list_views.html:14
-#, auto-english-fallback
 msgid "View Behavior:"
 msgstr "View Behavior:"
 
@@ -13687,14 +13723,18 @@ msgstr "Ви впевнені, що хочете увімкнути API ключ
 msgid "External applications will be able to authenticate using this key."
 msgstr "Зовнішні програми зможуть автентифікуватися за допомогою цього ключа."
 
-#: templates/default/api_keys.html:181 templates/modern/api_keys.html:182
+#: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
+#, auto-english-fallback
+msgid "API Key Behavior:"
+msgstr "API Key Behavior:"
+
+#: templates/default/api_keys.html:183 templates/modern/api_keys.html:184
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions."
+"is linked to your user account and inherits your permissions, so revoking "
+"your account also revokes all its keys. Treat keys as secrets - they grant "
+"the same access as logging in as you."
 msgstr ""
-"API-ключі дозволяють зовнішнім програмам отримувати доступ до API "
-"Poweradmin. Кожен ключ пов'язаний з вашим обліковим записом користувача та "
-"успадковує ваші дозволи."
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -13884,7 +13924,20 @@ msgstr "шаблони застосовуються лише до зон, що �
 msgid "Group Activity Logs"
 msgstr "Журнали активності групи"
 
-#: templates/modern/list_log_groups.html:22
+#: templates/modern/list_log_groups.html:19
+#, auto-english-fallback
+msgid "Group Log Behavior:"
+msgstr "Group Log Behavior:"
+
+#: templates/modern/list_log_groups.html:20
+msgid ""
+"Records group lifecycle events (create, edit, delete) and membership changes "
+"(users added or removed). Each entry shows the action, the actor, the "
+"affected group, and a timestamp. Useful for auditing zone-access changes "
+"mediated by group ownership."
+msgstr ""
+
+#: templates/modern/list_log_groups.html:26
 msgid "Group name"
 msgstr "Назва групи"
 
@@ -14746,21 +14799,12 @@ msgstr ""
 
 #, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
-# OBSOLETE: "zone variant assigned to that view."
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Кожна мережа відповідає одному вигляду. Резолвери в цій мережі отримують "
-# OBSOLETE: "варіант зони, призначений цьому вигляду."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Views serve different zone variants to different clients based on the "
-# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
-# OBSOLETE: "example, example.com..trusted)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Вигляди надають різні варіанти зон різним клієнтам на основі мережевого "
-# OBSOLETE: "зіставлення. Кожен варіант ідентифікується як zone..variant (наприклад, "
-# OBSOLETE: "example.com..trusted)."
+# OBSOLETE: "API-ключі дозволяють зовнішнім програмам отримувати доступ до API "
+# OBSOLETE: "Poweradmin. Кожен ключ пов'язаний з вашим обліковим записом користувача "
+# OBSOLETE: "та успадковує ваші дозволи."
 
 
 

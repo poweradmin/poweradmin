@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:32+0300\n"
+"POT-Creation-Date: 2026-04-26 10:53+0300\n"
 "PO-Revision-Date: 2025-06-02 20:30+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Italian\n"
@@ -1877,14 +1877,14 @@ msgid "You do not have the permission to perform searches."
 msgstr "Non si dispone del permesso di eseguire ricerche."
 
 #: lib/Application/Controller/SearchController.php:49
-#: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
+#: templates/modern/header.html:127 templates/modern/list_log_groups.html:48
 msgid "Search"
 msgstr "Cerca"
 
 #: lib/Application/Controller/ListRecordChangesController.php:62
 #: templates/modern/list_record_changes.html:11
 msgid "Record Change Log"
-msgstr "Record Change Log"
+msgstr "Registro modifiche record"
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
 msgid "Invalid request method."
@@ -9323,7 +9323,7 @@ msgstr "Nome:"
 msgid "New API Key:"
 msgstr "Nuova Chiave API:"
 
-#: templates/modern/list_log_groups.html:176
+#: templates/modern/list_log_groups.html:180
 msgid "Copy"
 msgstr "Copia"
 
@@ -9491,7 +9491,7 @@ msgstr "* Campi richiesti"
 msgid "API Key Information"
 msgstr "Informazioni Chiave API"
 
-#: templates/modern/list_log_groups.html:66
+#: templates/modern/list_log_groups.html:70
 msgid "Created at"
 msgstr "Creata il"
 
@@ -9801,7 +9801,7 @@ msgstr "Rimuovi firma zona"
 msgid "ID"
 msgstr "ID"
 
-#: templates/modern/list_log_groups.html:68
+#: templates/modern/list_log_groups.html:72
 msgid "Actions"
 msgstr "Azioni"
 
@@ -9863,9 +9863,8 @@ msgid "Import key"
 msgstr "Importa chiave"
 
 #: templates/modern/list_networks.html:14
-#, auto-english-fallback
 msgid "Network Mapping:"
-msgstr "Network Mapping:"
+msgstr "Mappatura di rete:"
 
 #: templates/modern/list_networks.html:15
 msgid ""
@@ -10193,7 +10192,7 @@ msgstr ""
 
 #: templates/default/index.html:17 templates/modern/index.html:17
 msgid "PowerDNS: unknown"
-msgstr "PowerDNS: unknown"
+msgstr "PowerDNS: sconosciuto"
 
 #: templates/default/index.html:27 templates/modern/index.html:27
 msgid "PowerDNS API error"
@@ -10279,7 +10278,7 @@ msgstr "Accesso"
 
 #: templates/default/index.html:301 templates/modern/index.html:301
 msgid "Record Changes"
-msgstr "Record Changes"
+msgstr "Modifiche record"
 
 #: lib/Module/Rdap/templates/rdap.html:4
 msgid "Tools"
@@ -10406,76 +10405,88 @@ msgstr "Registri attività API"
 msgid "Total logs"
 msgstr "Totale log"
 
-#: templates/modern/list_log_users.html:22
+#: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
+msgid "API Log Behavior:"
+msgstr "Registro API:"
+
+#: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
+msgid ""
+"Records API key lifecycle events (creation, regeneration, revocation, "
+"permission changes) and authenticated API requests. Filter by user or "
+"operation to audit external integration activity. Sensitive values (keys, "
+"tokens) are never written to this log."
+msgstr ""
+
+#: templates/modern/list_log_users.html:26
 msgid "All users"
 msgstr "Tutti gli utenti"
 
-#: templates/modern/list_log_groups.html:27
+#: templates/modern/list_log_groups.html:31
 msgid "All events"
 msgstr "Tutti gli eventi"
 
-#: templates/modern/list_log_groups.html:36
+#: templates/modern/list_log_groups.html:40
 msgid "From date"
 msgstr "Dalla data"
 
-#: templates/modern/list_log_groups.html:41
+#: templates/modern/list_log_groups.html:45
 msgid "To date"
 msgstr "Alla data"
 
-#: templates/modern/list_log_groups.html:47
+#: templates/modern/list_log_groups.html:51
 msgid "Clear"
 msgstr "Pulisci"
 
-#: templates/modern/list_log_groups.html:64
+#: templates/modern/list_log_groups.html:68
 msgid "Id"
 msgstr "ID"
 
-#: templates/modern/list_log_groups.html:67
+#: templates/modern/list_log_groups.html:71
 msgid "Event"
 msgstr "Evento"
 
-#: templates/modern/list_log_groups.html:103
+#: templates/modern/list_log_groups.html:107
 msgid "Details"
 msgstr "Dettagli"
 
-#: templates/modern/list_log_groups.html:147
+#: templates/modern/list_log_groups.html:151
 msgid "Export"
 msgstr "Esporta"
 
-#: templates/modern/list_log_groups.html:124
+#: templates/modern/list_log_groups.html:128
 msgid "Export Logs"
 msgstr "Esporta registri"
 
-#: templates/modern/list_log_groups.html:128
+#: templates/modern/list_log_groups.html:132
 msgid "Export filtered log entries. Current filters will be applied."
 msgstr ""
 "Esporta le voci di registro filtrate. Verranno applicati i filtri correnti."
 
-#: templates/modern/list_log_groups.html:129
+#: templates/modern/list_log_groups.html:133
 msgid "records to export"
 msgstr "record da esportare"
 
-#: templates/modern/list_log_groups.html:131
+#: templates/modern/list_log_groups.html:135
 msgid "Format"
 msgstr "Formato"
 
-#: templates/modern/list_log_groups.html:169
+#: templates/modern/list_log_groups.html:173
 msgid "Log Details"
 msgstr "Dettagli Log"
 
-#: templates/modern/list_log_groups.html:179
+#: templates/modern/list_log_groups.html:183
 msgid "Close"
 msgstr "Chiudi"
 
-#: templates/modern/list_log_groups.html:202
+#: templates/modern/list_log_groups.html:206
 msgid "Copied"
 msgstr "Copiato"
 
-#: templates/modern/list_log_groups.html:210
+#: templates/modern/list_log_groups.html:214
 msgid "No logs found"
 msgstr "Nessun log trovato"
 
-#: templates/modern/list_log_groups.html:211
+#: templates/modern/list_log_groups.html:215
 msgid "Try different search criteria or check back later"
 msgstr "Prova criteri di ricerca diversi o ricontrolla più tardi"
 
@@ -10487,11 +10498,23 @@ msgstr "Log delle zone"
 msgid "Zone Change Logs"
 msgstr "Log delle Modifiche alle Zone"
 
+#: templates/modern/list_log_zones.html:25
+msgid "Zone Log Behavior:"
+msgstr "Registro zone:"
+
+#: templates/modern/list_log_zones.html:26
+msgid ""
+"This activity feed records every operation performed against zones and "
+"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
+"key:value event string. For structured before/after snapshots and a diff "
+"view of record changes, see the Record Change Log."
+msgstr ""
+
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
 msgstr "Nome dominio"
 
-#: templates/modern/list_log_zones.html:33
+#: templates/modern/list_log_zones.html:37
 msgid "All operations"
 msgstr "Tutte le operazioni"
 
@@ -12773,12 +12796,11 @@ msgstr "Sì, elimina questi record"
 
 #: templates/modern/list_record_changes.html:14
 msgid "entries"
-msgstr "entries"
+msgstr "voci"
 
 #: templates/modern/list_record_changes.html:19
-#, auto-english-fallback
 msgid "Change Log Behavior:"
-msgstr "Change Log Behavior:"
+msgstr "Registro delle modifiche:"
 
 #: templates/modern/list_record_changes.html:20
 msgid ""
@@ -12791,7 +12813,7 @@ msgstr ""
 
 #: templates/modern/list_record_changes.html:34
 msgid "All actions"
-msgstr "All actions"
+msgstr "Tutte le azioni"
 
 #: templates/modern/list_record_changes.html:52
 msgid "From"
@@ -12803,11 +12825,11 @@ msgstr "To"
 
 #: templates/modern/list_record_changes.html:75
 msgid "When"
-msgstr "When"
+msgstr "Quando"
 
 #: templates/modern/list_record_changes.html:76
 msgid "Action"
-msgstr "Action"
+msgstr "Azione"
 
 #: templates/modern/list_perm_templ.html:75
 msgid "User"
@@ -12819,19 +12841,19 @@ msgstr "Prio"
 
 #: templates/modern/list_record_changes.html:126
 msgid "before"
-msgstr "before"
+msgstr "prima"
 
 #: templates/modern/list_record_changes.html:127
 msgid "after"
-msgstr "after"
+msgstr "dopo"
 
 #: templates/modern/list_record_changes.html:212
 msgid "No record changes found"
-msgstr "No record changes found"
+msgstr "Nessuna modifica record trovata"
 
 #: templates/modern/list_record_changes.html:213
 msgid "Try a different filter or time window"
-msgstr "Try a different filter or time window"
+msgstr "Prova un filtro diverso o un intervallo di tempo diverso"
 
 #: templates/modern/mfa_recovery_codes.html:36
 msgid "Recovery Codes"
@@ -13273,6 +13295,18 @@ msgstr "Log utenti"
 msgid "User Activity Logs"
 msgstr "Log Attività Utenti"
 
+#: templates/modern/list_log_users.html:19
+msgid "User Log Behavior:"
+msgstr "Registro utenti:"
+
+#: templates/modern/list_log_users.html:20
+msgid ""
+"Records user account events such as logins, password changes, group "
+"membership updates, and admin actions on user records. Each entry shows the "
+"action, the actor, the affected user, and a timestamp. Filter by operation "
+"or user to audit access changes."
+msgstr ""
+
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
 msgstr "Configurazione zona slave"
@@ -13306,9 +13340,8 @@ msgid "This template is currently used by"
 msgstr "Questo modello è attualmente usato da"
 
 #: templates/default/list_views.html:14 templates/modern/list_views.html:14
-#, auto-english-fallback
 msgid "View Behavior:"
-msgstr "View Behavior:"
+msgstr "Viste:"
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid ""
@@ -13786,14 +13819,17 @@ msgstr "Sei sicuro di voler abilitare la chiave API"
 msgid "External applications will be able to authenticate using this key."
 msgstr "Le applicazioni esterne potranno autenticarsi con questa chiave."
 
-#: templates/default/api_keys.html:181 templates/modern/api_keys.html:182
+#: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
+msgid "API Key Behavior:"
+msgstr "Chiavi API:"
+
+#: templates/default/api_keys.html:183 templates/modern/api_keys.html:184
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions."
+"is linked to your user account and inherits your permissions, so revoking "
+"your account also revokes all its keys. Treat keys as secrets - they grant "
+"the same access as logging in as you."
 msgstr ""
-"Le chiavi API permettono ad applicazioni esterne di accedere all'API "
-"Poweradmin. Ogni chiave è collegata al tuo account utente ed eredita i tuoi "
-"permessi."
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -13987,7 +14023,19 @@ msgstr "i template si applicano solo alle zone possedute dal gruppo"
 msgid "Group Activity Logs"
 msgstr "Log attività gruppo"
 
-#: templates/modern/list_log_groups.html:22
+#: templates/modern/list_log_groups.html:19
+msgid "Group Log Behavior:"
+msgstr "Registro gruppi:"
+
+#: templates/modern/list_log_groups.html:20
+msgid ""
+"Records group lifecycle events (create, edit, delete) and membership changes "
+"(users added or removed). Each entry shows the action, the actor, the "
+"affected group, and a timestamp. Useful for auditing zone-access changes "
+"mediated by group ownership."
+msgstr ""
+
+#: templates/modern/list_log_groups.html:26
 msgid "Group name"
 msgstr "Nome del gruppo"
 
@@ -14851,21 +14899,12 @@ msgstr ""
 
 #, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
-# OBSOLETE: "zone variant assigned to that view."
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Ogni rete corrisponde a una singola view. I resolver di quella rete "
-# OBSOLETE: "ricevono la variante di zona assegnata a quella view."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Views serve different zone variants to different clients based on the "
-# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
-# OBSOLETE: "example, example.com..trusted)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Le view servono varianti di zona diverse a client diversi in base alla "
-# OBSOLETE: "mappatura di rete. Ogni variante è identificata come zone..variante (ad "
-# OBSOLETE: "esempio example.com..trusted)."
+# OBSOLETE: "Le chiavi API permettono ad applicazioni esterne di accedere all'API "
+# OBSOLETE: "Poweradmin. Ogni chiave è collegata al tuo account utente ed eredita i "
+# OBSOLETE: "tuoi permessi."
 
 
 

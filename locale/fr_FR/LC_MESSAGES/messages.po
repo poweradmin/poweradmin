@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:32+0300\n"
+"POT-Creation-Date: 2026-04-26 10:53+0300\n"
 "PO-Revision-Date: 2025-06-02 20:15+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: French\n"
@@ -1915,14 +1915,14 @@ msgid "You do not have the permission to perform searches."
 msgstr "Vous n'avez pas la permission d'effectuer des recherches."
 
 #: lib/Application/Controller/SearchController.php:49
-#: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
+#: templates/modern/header.html:127 templates/modern/list_log_groups.html:48
 msgid "Search"
 msgstr "Rechercher"
 
 #: lib/Application/Controller/ListRecordChangesController.php:62
 #: templates/modern/list_record_changes.html:11
 msgid "Record Change Log"
-msgstr "Record Change Log"
+msgstr "Journal des modifications d'enregistrements"
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
 msgid "Invalid request method."
@@ -9493,7 +9493,7 @@ msgstr "Nom :"
 msgid "New API Key:"
 msgstr "Nouvelle Clé API :"
 
-#: templates/modern/list_log_groups.html:176
+#: templates/modern/list_log_groups.html:180
 msgid "Copy"
 msgstr "Copier"
 
@@ -9662,7 +9662,7 @@ msgstr "* Champs obligatoires"
 msgid "API Key Information"
 msgstr "Informations de la Clé API"
 
-#: templates/modern/list_log_groups.html:66
+#: templates/modern/list_log_groups.html:70
 msgid "Created at"
 msgstr "Créé le"
 
@@ -9976,7 +9976,7 @@ msgstr "Désigner la zone"
 msgid "ID"
 msgstr "ID"
 
-#: templates/modern/list_log_groups.html:68
+#: templates/modern/list_log_groups.html:72
 msgid "Actions"
 msgstr "Actions"
 
@@ -10038,9 +10038,8 @@ msgid "Import key"
 msgstr "Importer la clé"
 
 #: templates/modern/list_networks.html:14
-#, auto-english-fallback
 msgid "Network Mapping:"
-msgstr "Network Mapping:"
+msgstr "Mappage réseau :"
 
 #: templates/modern/list_networks.html:15
 msgid ""
@@ -10370,7 +10369,7 @@ msgstr ""
 
 #: templates/default/index.html:17 templates/modern/index.html:17
 msgid "PowerDNS: unknown"
-msgstr "PowerDNS: unknown"
+msgstr "PowerDNS : inconnu"
 
 #: templates/default/index.html:27 templates/modern/index.html:27
 msgid "PowerDNS API error"
@@ -10456,7 +10455,7 @@ msgstr "Accès"
 
 #: templates/default/index.html:301 templates/modern/index.html:301
 msgid "Record Changes"
-msgstr "Record Changes"
+msgstr "Modifications d'enregistrements"
 
 #: lib/Module/Rdap/templates/rdap.html:4
 msgid "Tools"
@@ -10586,77 +10585,89 @@ msgstr "Journaux d'activité API"
 msgid "Total logs"
 msgstr "Total des journaux"
 
-#: templates/modern/list_log_users.html:22
+#: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
+msgid "API Log Behavior:"
+msgstr "Journal de l'API :"
+
+#: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
+msgid ""
+"Records API key lifecycle events (creation, regeneration, revocation, "
+"permission changes) and authenticated API requests. Filter by user or "
+"operation to audit external integration activity. Sensitive values (keys, "
+"tokens) are never written to this log."
+msgstr ""
+
+#: templates/modern/list_log_users.html:26
 msgid "All users"
 msgstr "Tous les utilisateurs"
 
-#: templates/modern/list_log_groups.html:27
+#: templates/modern/list_log_groups.html:31
 msgid "All events"
 msgstr "Tous les événements"
 
-#: templates/modern/list_log_groups.html:36
+#: templates/modern/list_log_groups.html:40
 msgid "From date"
 msgstr "Date de début"
 
-#: templates/modern/list_log_groups.html:41
+#: templates/modern/list_log_groups.html:45
 msgid "To date"
 msgstr "Date de fin"
 
-#: templates/modern/list_log_groups.html:47
+#: templates/modern/list_log_groups.html:51
 msgid "Clear"
 msgstr "Effacer"
 
-#: templates/modern/list_log_groups.html:64
+#: templates/modern/list_log_groups.html:68
 msgid "Id"
 msgstr "ID"
 
-#: templates/modern/list_log_groups.html:67
+#: templates/modern/list_log_groups.html:71
 msgid "Event"
 msgstr "Événement"
 
-#: templates/modern/list_log_groups.html:103
+#: templates/modern/list_log_groups.html:107
 msgid "Details"
 msgstr "Détails"
 
-#: templates/modern/list_log_groups.html:147
+#: templates/modern/list_log_groups.html:151
 msgid "Export"
 msgstr "Exporter"
 
-#: templates/modern/list_log_groups.html:124
+#: templates/modern/list_log_groups.html:128
 msgid "Export Logs"
 msgstr "Exporter les journaux"
 
-#: templates/modern/list_log_groups.html:128
+#: templates/modern/list_log_groups.html:132
 msgid "Export filtered log entries. Current filters will be applied."
 msgstr ""
 "Exporter les entrées de journal filtrées. Les filtres actuels seront "
 "appliqués."
 
-#: templates/modern/list_log_groups.html:129
+#: templates/modern/list_log_groups.html:133
 msgid "records to export"
 msgstr "enregistrements à exporter"
 
-#: templates/modern/list_log_groups.html:131
+#: templates/modern/list_log_groups.html:135
 msgid "Format"
 msgstr "Format"
 
-#: templates/modern/list_log_groups.html:169
+#: templates/modern/list_log_groups.html:173
 msgid "Log Details"
 msgstr "Détails du Journal"
 
-#: templates/modern/list_log_groups.html:179
+#: templates/modern/list_log_groups.html:183
 msgid "Close"
 msgstr "Fermer"
 
-#: templates/modern/list_log_groups.html:202
+#: templates/modern/list_log_groups.html:206
 msgid "Copied"
 msgstr "Copié"
 
-#: templates/modern/list_log_groups.html:210
+#: templates/modern/list_log_groups.html:214
 msgid "No logs found"
 msgstr "Aucun journal trouvé"
 
-#: templates/modern/list_log_groups.html:211
+#: templates/modern/list_log_groups.html:215
 msgid "Try different search criteria or check back later"
 msgstr "Essayez différents critères de recherche ou revérifiez plus tard"
 
@@ -10668,11 +10679,23 @@ msgstr "Journaux de zone"
 msgid "Zone Change Logs"
 msgstr "Journaux de Changements de Zone"
 
+#: templates/modern/list_log_zones.html:25
+msgid "Zone Log Behavior:"
+msgstr "Journal des zones :"
+
+#: templates/modern/list_log_zones.html:26
+msgid ""
+"This activity feed records every operation performed against zones and "
+"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
+"key:value event string. For structured before/after snapshots and a diff "
+"view of record changes, see the Record Change Log."
+msgstr ""
+
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
 msgstr "Nom de domaine"
 
-#: templates/modern/list_log_zones.html:33
+#: templates/modern/list_log_zones.html:37
 msgid "All operations"
 msgstr "Toutes les opérations"
 
@@ -12984,12 +13007,11 @@ msgstr "Oui, supprimer ces enregistrements"
 
 #: templates/modern/list_record_changes.html:14
 msgid "entries"
-msgstr "entries"
+msgstr "entrées"
 
 #: templates/modern/list_record_changes.html:19
-#, auto-english-fallback
 msgid "Change Log Behavior:"
-msgstr "Change Log Behavior:"
+msgstr "Journal des modifications :"
 
 #: templates/modern/list_record_changes.html:20
 msgid ""
@@ -13002,7 +13024,7 @@ msgstr ""
 
 #: templates/modern/list_record_changes.html:34
 msgid "All actions"
-msgstr "All actions"
+msgstr "Toutes les actions"
 
 #: templates/modern/list_record_changes.html:52
 msgid "From"
@@ -13014,7 +13036,7 @@ msgstr "To"
 
 #: templates/modern/list_record_changes.html:75
 msgid "When"
-msgstr "When"
+msgstr "Quand"
 
 #: templates/modern/list_record_changes.html:76
 msgid "Action"
@@ -13030,19 +13052,19 @@ msgstr "Prio"
 
 #: templates/modern/list_record_changes.html:126
 msgid "before"
-msgstr "before"
+msgstr "avant"
 
 #: templates/modern/list_record_changes.html:127
 msgid "after"
-msgstr "after"
+msgstr "après"
 
 #: templates/modern/list_record_changes.html:212
 msgid "No record changes found"
-msgstr "No record changes found"
+msgstr "Aucune modification d'enregistrement trouvée"
 
 #: templates/modern/list_record_changes.html:213
 msgid "Try a different filter or time window"
-msgstr "Try a different filter or time window"
+msgstr "Essayez un autre filtre ou une autre période"
 
 #: templates/modern/mfa_recovery_codes.html:36
 msgid "Recovery Codes"
@@ -13494,6 +13516,18 @@ msgstr "Journaux d'utilisateur"
 msgid "User Activity Logs"
 msgstr "Journaux d'Activité Utilisateur"
 
+#: templates/modern/list_log_users.html:19
+msgid "User Log Behavior:"
+msgstr "Journal des utilisateurs :"
+
+#: templates/modern/list_log_users.html:20
+msgid ""
+"Records user account events such as logins, password changes, group "
+"membership updates, and admin actions on user records. Each entry shows the "
+"action, the actor, the affected user, and a timestamp. Filter by operation "
+"or user to audit access changes."
+msgstr ""
+
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
 msgstr "Configuration de zone esclave"
@@ -13527,9 +13561,8 @@ msgid "This template is currently used by"
 msgstr "Ce modèle est actuellement utilisé par"
 
 #: templates/default/list_views.html:14 templates/modern/list_views.html:14
-#, auto-english-fallback
 msgid "View Behavior:"
-msgstr "View Behavior:"
+msgstr "Vues :"
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid ""
@@ -14009,14 +14042,17 @@ msgstr "Êtes-vous sûr de vouloir activer la clé API"
 msgid "External applications will be able to authenticate using this key."
 msgstr "Les applications externes pourront s'authentifier avec cette clé."
 
-#: templates/default/api_keys.html:181 templates/modern/api_keys.html:182
+#: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
+msgid "API Key Behavior:"
+msgstr "Clés d'API :"
+
+#: templates/default/api_keys.html:183 templates/modern/api_keys.html:184
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions."
+"is linked to your user account and inherits your permissions, so revoking "
+"your account also revokes all its keys. Treat keys as secrets - they grant "
+"the same access as logging in as you."
 msgstr ""
-"Les clés API permettent aux applications externes d'accéder à l'API "
-"Poweradmin. Chaque clé est liée à votre compte utilisateur et hérite de vos "
-"permissions."
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -14211,7 +14247,19 @@ msgstr "modèles s'appliquent uniquement aux zones appartenant aux groupes"
 msgid "Group Activity Logs"
 msgstr "Journaux d'activité du groupe"
 
-#: templates/modern/list_log_groups.html:22
+#: templates/modern/list_log_groups.html:19
+msgid "Group Log Behavior:"
+msgstr "Journal des groupes :"
+
+#: templates/modern/list_log_groups.html:20
+msgid ""
+"Records group lifecycle events (create, edit, delete) and membership changes "
+"(users added or removed). Each entry shows the action, the actor, the "
+"affected group, and a timestamp. Useful for auditing zone-access changes "
+"mediated by group ownership."
+msgstr ""
+
+#: templates/modern/list_log_groups.html:26
 msgid "Group name"
 msgstr "Nom du groupe"
 
@@ -15075,21 +15123,12 @@ msgstr ""
 
 #, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
-# OBSOLETE: "zone variant assigned to that view."
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Chaque réseau correspond à une seule vue. Les résolveurs de ce réseau "
-# OBSOLETE: "reçoivent la variante de zone associée à cette vue."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Views serve different zone variants to different clients based on the "
-# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
-# OBSOLETE: "example, example.com..trusted)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Les vues servent différentes variantes de zone à différents clients en "
-# OBSOLETE: "fonction de l'association réseau. Chaque variante est identifiée par "
-# OBSOLETE: "zone..variante (par exemple example.com..trusted)."
+# OBSOLETE: "Les clés API permettent aux applications externes d'accéder à l'API "
+# OBSOLETE: "Poweradmin. Chaque clé est liée à votre compte utilisateur et hérite de "
+# OBSOLETE: "vos permissions."
 
 
 
