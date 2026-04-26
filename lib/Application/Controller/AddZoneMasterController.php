@@ -190,7 +190,7 @@ class AddZoneMasterController extends BaseController
                             // Verify the zone is now secured
                             if ($dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                                 $this->setMessage($messageKey, 'success', _('Zone has been created and signed with DNSSEC successfully.'));
-                                (new AuditService($this->db))->logDnssecSignZone((int)$zone_id, $zone_name);
+                                (new AuditService($this->db))->logDnssecSignZone($zone_id, $zone_name);
                                 $dnssecMessageSet = true;
                             } else {
                                 $this->setMessage($messageKey, 'warning', _('Zone was created and signing was requested, but verification failed. Check DNSSEC keys.'));
