@@ -44,7 +44,7 @@
  *   --help              Show this help.
  */
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\MailService;

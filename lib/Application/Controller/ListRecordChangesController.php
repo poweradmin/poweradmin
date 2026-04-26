@@ -106,6 +106,25 @@ class ListRecordChangesController extends BaseController
         return $filters;
     }
 
+    /**
+     * Build the URL-safe query-param dict that page links should preserve.
+     * Returns the *raw* user-supplied values (YYYY-MM-DD dates, window keys,
+     * etc.) so that follow-up requests pass the same regex validation that
+     * buildFilters() applies; using the normalized SQL timestamps would
+     * silently drop the filters on page 2 because the regex rejects them.
+     */
+    private function buildUrlFilters(): array
+    {
+        $url = [];
+        foreach (['action', 'user', 'zone_id', 'window', 'date_from', 'date_to'] as $key) {
+            $value = $this->httpRequest->getQueryParam($key);
+            if (is_string($value) && $value !== '') {
+                $url[$key] = $value;
+            }
+        }
+        return $url;
+    }
+
     private function showRecordChanges(): void
     {
         $selectedPage = 1;
@@ -124,6 +143,7 @@ class ListRecordChangesController extends BaseController
         $logsPerPage = (int) $configManager->get('interface', 'rows_per_page', 50);
 
         $filters = $this->buildFilters();
+        $urlFilters = $this->buildUrlFilters();
 
         $exportFormat = $this->httpRequest->getQueryParam('export');
         if (!empty($exportFormat) && in_array($exportFormat, ['csv', 'json'], true)) {
@@ -158,12 +178,12 @@ class ListRecordChangesController extends BaseController
             'date_to' => htmlspecialchars((string) $this->httpRequest->getQueryParam('date_to', '')),
             'selected_page' => $selectedPage,
             'logs_per_page' => $logsPerPage,
-            'pagination' => $this->createAndPresentPagination($totalLogs, $logsPerPage, $filters),
+            'pagination' => $this->createAndPresentPagination($totalLogs, $logsPerPage, $urlFilters),
             'iface_edit_show_id' => $configManager->get('interface', 'show_record_id', false),
         ]);
     }
 
-    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, array $filters = []): string
+    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, array $urlFilters = []): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();
@@ -173,7 +193,7 @@ class ListRecordChangesController extends BaseController
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
 
         $queryParams = '';
-        foreach ($filters as $key => $value) {
+        foreach ($urlFilters as $key => $value) {
             $queryParams .= '&' . urlencode((string) $key) . '=' . urlencode((string) $value);
         }
 
