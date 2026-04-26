@@ -300,9 +300,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 }
             }
 
-            $zones[$name]['owners'][] = $row['username'];
-            $zones[$name]['full_names'][] = $row['fullname'] ?: '';
-            $zones[$name]['users'][] = $row['username'];
+            if ($row['username'] !== null) {
+                $zones[$name]['owners'][] = $row['username'];
+                $zones[$name]['full_names'][] = $row['fullname'] ?: '';
+                $zones[$name]['users'][] = $row['username'];
+            }
         }
 
         // Batch fetch serial numbers (optimization: N+1 -> 1 query)
@@ -492,9 +494,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 ];
             }
 
-            $zones[$name]['owners'][] = $row['username'];
-            $zones[$name]['full_names'][] = $row['fullname'] ?: '';
-            $zones[$name]['users'][] = $row['username'];
+            if ($row['username'] !== null) {
+                $zones[$name]['owners'][] = $row['username'];
+                $zones[$name]['full_names'][] = $row['fullname'] ?: '';
+                $zones[$name]['users'][] = $row['username'];
+            }
         }
 
         // Convert associative array to indexed array for consistent API response
