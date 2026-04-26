@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:04+0300\n"
+"POT-Creation-Date: 2026-04-26 10:26+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -3191,11 +3191,11 @@ msgstr "Master"
 msgid "Slave"
 msgstr "Slave"
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Autoprimaries"
 msgstr "Autoprimaries"
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Supermasters"
 msgstr "Supermasters"
 
@@ -3330,6 +3330,22 @@ msgstr "No, keep this autoprimary"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "No, keep this supermaster"
 msgstr "No, keep this supermaster"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:147
+msgid ""
+"Showing connectivity status for the autoprimary servers configured in the "
+"table below."
+msgstr ""
+"Showing connectivity status for the autoprimary servers configured in the "
+"table below."
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:148
+msgid ""
+"Showing connectivity status for the supermasters configured in the table "
+"below."
+msgstr ""
+"Showing connectivity status for the supermasters configured in the table "
+"below."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -13156,16 +13172,6 @@ msgstr "Uptime"
 msgid "Server information is not available."
 msgstr "Server information is not available."
 
-#: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:102
-msgid "Slave Servers"
-msgstr "Slave Servers"
-
-#: templates/default/pdns_status.html:104 templates/modern/pdns_status.html:105
-msgid ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
-msgstr ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
-
 #: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:115
 msgid "Server IP"
 msgstr "Server IP"
@@ -14537,3 +14543,15 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+# OBSOLETE: msgid "Slave Servers"
+# OBSOLETE: msgstr "Slave Servers"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
+# OBSOLETE: "table."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
+# OBSOLETE: "table."
+
+

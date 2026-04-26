@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:04+0300\n"
+"POT-Creation-Date: 2026-04-26 10:26+0300\n"
 "PO-Revision-Date: 2025-06-05 21:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -3189,11 +3189,11 @@ msgstr "Ana"
 msgid "Slave"
 msgstr "Slave"
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Autoprimaries"
 msgstr "Autoprimaries"
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Supermasters"
 msgstr "Süper Master'lar"
 
@@ -3329,6 +3329,18 @@ msgstr "Hayır, bu autoprimary'yi koru"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "No, keep this supermaster"
 msgstr "Hayır, bu supermaster'ı tut"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:147
+msgid ""
+"Showing connectivity status for the autoprimary servers configured in the "
+"table below."
+msgstr ""
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:148
+msgid ""
+"Showing connectivity status for the supermasters configured in the table "
+"below."
+msgstr ""
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -9974,7 +9986,6 @@ msgstr ""
 "gizlidir."
 
 #: templates/default/index.html:17 templates/modern/index.html:17
-#, auto-english-fallback
 msgid "PowerDNS: unknown"
 msgstr "PowerDNS: unknown"
 
@@ -13254,17 +13265,6 @@ msgstr "Çalışma Süresi"
 msgid "Server information is not available."
 msgstr "Sunucu bilgileri mevcut değil."
 
-#: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:102
-msgid "Slave Servers"
-msgstr "Slave Sunucular"
-
-#: templates/default/pdns_status.html:104 templates/modern/pdns_status.html:105
-msgid ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
-msgstr ""
-"Supermasters tablosunda listelenen DNS sunucuları için bağlantı durumu "
-"gösteriliyor."
-
 #: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:115
 msgid "Server IP"
 msgstr "Sunucu IP"
@@ -14591,5 +14591,17 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr ""
+
+# OBSOLETE: msgid "Slave Servers"
+# OBSOLETE: msgstr "Slave Sunucular"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
+# OBSOLETE: "table."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Supermasters tablosunda listelenen DNS sunucuları için bağlantı durumu "
+# OBSOLETE: "gösteriliyor."
+
 
 

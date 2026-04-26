@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.5.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:04+0300\n"
+"POT-Creation-Date: 2026-04-26 10:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3025,11 +3025,11 @@ msgstr ""
 msgid "Slave"
 msgstr ""
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Autoprimaries"
 msgstr ""
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Supermasters"
 msgstr ""
 
@@ -3161,6 +3161,18 @@ msgstr ""
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "No, keep this supermaster"
+msgstr ""
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:147
+msgid ""
+"Showing connectivity status for the autoprimary servers configured in the "
+"table below."
+msgstr ""
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:148
+msgid ""
+"Showing connectivity status for the supermasters configured in the table "
+"below."
 msgstr ""
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
@@ -11876,15 +11888,6 @@ msgstr ""
 
 #: templates/default/pdns_status.html:90 templates/modern/pdns_status.html:91
 msgid "Server information is not available."
-msgstr ""
-
-#: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:102
-msgid "Slave Servers"
-msgstr ""
-
-#: templates/default/pdns_status.html:104 templates/modern/pdns_status.html:105
-msgid ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
 msgstr ""
 
 #: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:115

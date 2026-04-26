@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:04+0300\n"
+"POT-Creation-Date: 2026-04-26 10:26+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Hungarian\n"
@@ -3034,11 +3034,11 @@ msgstr "Elsődleges"
 msgid "Slave"
 msgstr "Slave"
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Autoprimaries"
 msgstr "Autoprimaries"
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Supermasters"
 msgstr "Szuper elsődlegesek"
 
@@ -3174,6 +3174,18 @@ msgstr "Nem, ezt az autoprimary-t megtartom"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:145
 msgid "No, keep this supermaster"
 msgstr "Nem, szuper elsődleges megtartása"
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:147
+msgid ""
+"Showing connectivity status for the autoprimary servers configured in the "
+"table below."
+msgstr ""
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:148
+msgid ""
+"Showing connectivity status for the supermasters configured in the table "
+"below."
+msgstr ""
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -8798,7 +8810,6 @@ msgstr ""
 "rejtve maradnak, amíg az API elérhetővé nem válik."
 
 #: templates/default/index.html:17 templates/modern/index.html:17
-#, auto-english-fallback
 msgid "PowerDNS: unknown"
 msgstr "PowerDNS: unknown"
 
@@ -11920,15 +11931,6 @@ msgstr "Üzemidő"
 msgid "Server information is not available."
 msgstr "A szerver információk nem elérhetők."
 
-#: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:102
-msgid "Slave Servers"
-msgstr "Másodlagos szerverek"
-
-#: templates/default/pdns_status.html:104 templates/modern/pdns_status.html:105
-msgid ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
-msgstr "DNS szerverek kapcsolati állapota."
-
 #: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:115
 msgid "Server IP"
 msgstr "Szerver IP"
@@ -13229,5 +13231,14 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr ""
+
+# OBSOLETE: msgid "Slave Servers"
+# OBSOLETE: msgstr "Másodlagos szerverek"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
+# OBSOLETE: "table."
+# OBSOLETE: msgstr "DNS szerverek kapcsolati állapota."
+
 
 
