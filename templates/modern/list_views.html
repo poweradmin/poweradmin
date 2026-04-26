@@ -10,7 +10,10 @@
         <strong><i class="bi bi-eye me-2"></i>{% trans %}Views{% endtrans %}</strong>
     </div>
     <div class="card-body">
-        <p class="text-muted small mb-3">{% trans %}Views serve different zone variants to different clients based on the network mapping. Each variant is identified as zone..variant (for example, example.com..trusted).{% endtrans %}</p>
+        <div class="text-muted small mb-3">
+            <strong><i class="bi bi-info-circle me-1"></i>{% trans %}View Behavior:{% endtrans %}</strong>
+            {% trans %}Views serve different zone variants to different clients based on the network that queried the resolver. Each variant is named zone..variant (for example, example.com..trusted) and must exist as a separate zone in PowerDNS before it can be assigned here. Variants share a name but resolve differently per view, so the same hostname can answer with different IPs depending on the client's network.{% endtrans %}
+        </div>
 
         {% if views is empty %}
         <div class="text-center py-3 text-muted">

@@ -184,6 +184,11 @@
                                     <i class="bi bi-list-ul me-2"></i>{% trans %}Zone logs{% endtrans %}
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_record_changes' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/changes">
+                                    <i class="bi bi-clock-history me-2"></i>{% trans %}Record change log{% endtrans %}
+                                </a>
+                            </li>
                             {% endif %}
                         </ul>
                     </li>

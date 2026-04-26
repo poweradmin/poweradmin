@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-25 18:57+0300\n"
+"POT-Creation-Date: 2026-04-26 10:53+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Romanian\n"
@@ -1209,24 +1209,24 @@ msgstr "Eroare RDAP de la serverul %s"
 msgid "Invalid CSRF token."
 msgstr "Token CSRF invalid."
 
-#: lib/BaseController.php:661
+#: lib/BaseController.php:664
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr "<a href=\"install/\">install/</a> lipsește."
 
-#: lib/BaseController.php:718
+#: lib/BaseController.php:721
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr "Set session key."
 
-#: lib/BaseController.php:857
+#: lib/BaseController.php:860
 #, php-format
 msgid "The %s field is required."
 msgstr "Câmpul %s este obligatoriu."
 
-#: lib/BaseController.php:865
+#: lib/BaseController.php:868
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Câmpul %s trebuie să fie un număr."
@@ -1301,7 +1301,7 @@ msgstr "Comentariile zonă dezactivate."
 msgid "You do not have the permission to view this comment."
 msgstr "Nu aveți permisiunea de a vedea comentariul."
 
-#: lib/Domain/Service/Dns/RecordManager.php:450
+#: lib/Domain/Service/Dns/RecordManager.php:534
 msgid "You do not have the permission to edit this comment."
 msgstr "Nu aveți permisiunea de a edita comentariul."
 
@@ -1557,7 +1557,7 @@ msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "Coduri regenerate."
 
 #: lib/Application/Controller/ListLogApiController.php:51
-#: templates/modern/list_log_api.html:4 templates/modern/header.html:323
+#: templates/modern/list_log_api.html:4 templates/modern/header.html:328
 msgid "API Logs"
 msgstr "Jurnale API"
 
@@ -1734,9 +1734,14 @@ msgid "You do not have the permission to perform searches."
 msgstr "Nu aveți permisiunea de a face căutări."
 
 #: lib/Application/Controller/SearchController.php:49
-#: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
+#: templates/modern/header.html:127 templates/modern/list_log_groups.html:48
 msgid "Search"
 msgstr "Căutare"
+
+#: lib/Application/Controller/ListRecordChangesController.php:62
+#: templates/modern/list_record_changes.html:11
+msgid "Record Change Log"
+msgstr "Record Change Log"
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
 msgid "Invalid request method."
@@ -1792,7 +1797,7 @@ msgstr "Parolă generată, nu afișată."
 msgid "Please fill in all required fields correctly."
 msgstr "Completați corect toate câmpurile obligatorii."
 
-#: lib/Domain/Service/Dns/RecordManager.php:396
+#: lib/Domain/Service/Dns/RecordManager.php:480
 msgid "You do not have the permission to delete this record."
 msgstr "Nu aveți permisiunea de a șterge înregistrarea."
 
@@ -2057,7 +2062,7 @@ msgid ""
 "instead."
 msgstr "Cod nefolosibil, use recovery."
 
-#: lib/Domain/Service/Dns/RecordManager.php:216
+#: lib/Domain/Service/Dns/RecordManager.php:242
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Nu aveți permisiunea de a adăuga."
 
@@ -2106,7 +2111,7 @@ msgstr "Zona a fost ștearsă cu succes."
 msgid "Zones have been deleted successfully."
 msgstr "Zonele au fost șterse cu succes."
 
-#: lib/Domain/Service/Dns/DomainManager.php:667
+#: lib/Domain/Service/Dns/DomainManager.php:763
 msgid "You do not have the permission to delete a zone."
 msgstr "Nu aveți permisiunea de a șterge zonă."
 
@@ -2151,15 +2156,15 @@ msgstr "Jurnale grup"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Nu aveți permisiunea de a administra DNSSEC."
 
-#: lib/Application/Controller/DnssecKeyExportController.php:74
+#: lib/Application/Controller/DnssecKeyExportController.php:75
 msgid "PEM key export requires PowerDNS 4.7 or newer."
 msgstr "Exportul cheilor PEM necesită PowerDNS 4.7 sau mai nou."
 
-#: lib/Application/Controller/DnssecKeyExportController.php:86
+#: lib/Application/Controller/DnssecKeyExportController.php:87
 msgid "An error occurred while exporting the PEM key: "
 msgstr "A apărut o eroare la exportul cheii PEM: "
 
-#: lib/Application/Controller/DnssecKeyExportController.php:92
+#: lib/Application/Controller/DnssecKeyExportController.php:93
 msgid ""
 "Could not retrieve the PEM key. The server may not expose private key "
 "material for this key."
@@ -2167,7 +2172,7 @@ msgstr ""
 "Nu s-a putut obține cheia PEM. Este posibil ca serverul să nu expună "
 "materialul cheii private pentru această cheie."
 
-#: lib/Domain/Service/Dns/DomainManager.php:309
+#: lib/Domain/Service/Dns/DomainManager.php:349
 msgid "You do not have the permission to add a master zone."
 msgstr "Nu aveți permisiunea de a adăuga zonă principală."
 
@@ -2410,7 +2415,7 @@ msgid "You do not have the permission to view this page."
 msgstr "Nu aveți permisiunea de a vedea pagina."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:42
-#: templates/default/header.html:232 templates/modern/header.html:337
+#: templates/default/header.html:233 templates/modern/header.html:342
 msgid "Database Consistency"
 msgstr "Consistență bază de date"
 
@@ -2578,28 +2583,28 @@ msgstr "Nu aveți permisiunea de a adăuga supermaster nou."
 msgid "The supermaster has been added successfully."
 msgstr "Supermaster adăugat cu succes."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:72
+#: lib/Application/Controller/DnssecKeyImportController.php:73
 msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr "Importul cheilor PEM necesită PowerDNS 4.7 sau mai nou."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:97
+#: lib/Application/Controller/DnssecKeyImportController.php:98
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr ""
 "Furnizați o cheie privată codificată în PEM (trebuie să conțină marcatori "
 "BEGIN/END)."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:108
+#: lib/Application/Controller/DnssecKeyImportController.php:109
 msgid "PEM key imported successfully."
 msgstr "Cheia PEM a fost importată cu succes."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:111
+#: lib/Application/Controller/DnssecKeyImportController.php:112
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
 msgstr ""
 "Importul cheii PEM a eșuat. Este posibil ca serverul PowerDNS să fi respins "
 "formatul."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:115
+#: lib/Application/Controller/DnssecKeyImportController.php:116
 msgid "An error occurred while importing the PEM key: "
 msgstr "A apărut o eroare la importul cheii PEM: "
 
@@ -3043,11 +3048,11 @@ msgstr "Principal"
 msgid "Slave"
 msgstr "Slave"
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Autoprimaries"
 msgstr "Autoprimaries"
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Supermasters"
 msgstr "Supermaster-e"
 
@@ -3182,6 +3187,18 @@ msgstr "Nu, păstrează acest autoprimary"
 msgid "No, keep this supermaster"
 msgstr "Nu, păstrează acest supermaster"
 
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:147
+msgid ""
+"Showing connectivity status for the autoprimary servers configured in the "
+"table below."
+msgstr ""
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:148
+msgid ""
+"Showing connectivity status for the supermasters configured in the table "
+"below."
+msgstr ""
+
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
@@ -3241,7 +3258,7 @@ msgstr "Câmpul conținut nu are valoare validă."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Prioritate MX/SRV 0-65535."
 
-#: lib/Domain/Service/Dns/RecordManager.php:318
+#: lib/Domain/Service/Dns/RecordManager.php:357
 msgid "You do not have the permission to edit this record."
 msgstr "Nu aveți permisiunea de a edita înregistrarea."
 
@@ -7844,43 +7861,43 @@ msgid ""
 "to: %s. Having multiple PTR records for the same IP is not recommended."
 msgstr "PTR %s → %s exists."
 
-#: lib/Domain/Service/Dns/RecordManager.php:208
+#: lib/Domain/Service/Dns/RecordManager.php:234
 msgid "You do not have the permission to add SOA record."
 msgstr "Nu aveți permisiunea de a adăuga SOA."
 
-#: lib/Domain/Service/Dns/RecordManager.php:212
+#: lib/Domain/Service/Dns/RecordManager.php:238
 msgid "You do not have the permission to add NS record."
 msgstr "Nu aveți permisiunea de a adăuga NS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:257
+#: lib/Domain/Service/Dns/RecordManager.php:283
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Există deja."
 
-#: lib/Domain/Service/Dns/RecordManager.php:164
+#: lib/Domain/Service/Dns/RecordManager.php:178
 msgid "Failed to add record to DNS backend."
 msgstr "Adăugarea înregistrării în backend-ul DNS a eșuat."
 
-#: lib/Domain/Service/Dns/RecordManager.php:302
+#: lib/Domain/Service/Dns/RecordManager.php:341
 msgid "You do not have the permission to edit this SOA record."
 msgstr "Nu aveți permisiunea de a edita SOA."
 
-#: lib/Domain/Service/Dns/RecordManager.php:307
+#: lib/Domain/Service/Dns/RecordManager.php:346
 msgid "You do not have the permission to edit this NS record."
 msgstr "Nu aveți permisiunea de a edita NS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:356
+#: lib/Domain/Service/Dns/RecordManager.php:403
 msgid "Failed to update record in DNS backend."
 msgstr "Actualizarea înregistrării a eșuat."
 
-#: lib/Domain/Service/Dns/RecordManager.php:385
+#: lib/Domain/Service/Dns/RecordManager.php:452
 msgid "You do not have the permission to delete SOA records."
 msgstr "Nu aveți permisiunea de a șterge SOA."
 
-#: lib/Domain/Service/Dns/RecordManager.php:390
+#: lib/Domain/Service/Dns/RecordManager.php:457
 msgid "You do not have the permission to delete NS records."
 msgstr "Nu aveți permisiunea de a șterge NS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:591
+#: lib/Domain/Service/Dns/DomainManager.php:687
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Argument(e) invalid(e) funcției %s %s"
@@ -7889,56 +7906,56 @@ msgstr "Argument(e) invalid(e) funcției %s %s"
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "Există deja supermaster."
 
-#: lib/Domain/Service/Dns/DomainManager.php:132
+#: lib/Domain/Service/Dns/DomainManager.php:146
 msgid "Failed to create zone in DNS backend."
 msgstr "Crearea zonei în backend-ul DNS a eșuat."
 
-#: lib/Domain/Service/Dns/DomainManager.php:301
+#: lib/Domain/Service/Dns/DomainManager.php:341
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "Eroare la crearea zonei: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:213
+#: lib/Domain/Service/Dns/DomainManager.php:236
 msgid "Failed to create SOA record for zone."
 msgstr "Crearea înregistrării SOA pentru zonă a eșuat."
 
-#: lib/Domain/Service/Dns/DomainManager.php:260
+#: lib/Domain/Service/Dns/DomainManager.php:291
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "Crearea înregistrării %s pentru zonă a eșuat."
 
-#: lib/Domain/Service/Dns/DomainManager.php:305
+#: lib/Domain/Service/Dns/DomainManager.php:345
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Argument(e) invalid(e) dat function %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:409
+#: lib/Domain/Service/Dns/DomainManager.php:463
 msgid "Failed to delete zone from DNS backend."
 msgstr "Ștergerea zonei din backend-ul DNS a eșuat."
 
-#: lib/Domain/Service/Dns/DomainManager.php:375
+#: lib/Domain/Service/Dns/DomainManager.php:420
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "Curățarea metadatelor zonei a eșuat: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:506
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "Eroare la ștergerea metadatelor zonei: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:502
+#: lib/Domain/Service/Dns/DomainManager.php:598
 msgid "Failed to update zone type in DNS backend."
 msgstr "Actualizarea tipului zonei în backend a eșuat."
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:618
 msgid "Failed to update zone master in DNS backend."
 msgstr "Actualizarea master zonei a eșuat."
 
-#: lib/Domain/Service/Dns/DomainManager.php:553
+#: lib/Domain/Service/Dns/DomainManager.php:649
 msgid "The selected user already owns the zone."
 msgstr "Utilizatorul selectat deține deja zona."
 
-#: lib/Domain/Service/Dns/DomainManager.php:586
+#: lib/Domain/Service/Dns/DomainManager.php:682
 msgid "There must be at least one owner for a zone."
 msgstr "Trebuie cel puțin un proprietar."
 
@@ -7972,7 +7989,7 @@ msgstr "Nume:"
 msgid "New API Key:"
 msgstr "Cheie API nouă:"
 
-#: templates/modern/list_log_groups.html:176
+#: templates/modern/list_log_groups.html:180
 msgid "Copy"
 msgstr "Copiază"
 
@@ -8136,7 +8153,7 @@ msgstr "* Câmpuri obligatorii"
 msgid "API Key Information"
 msgstr "Informații cheie API"
 
-#: templates/modern/list_log_groups.html:66
+#: templates/modern/list_log_groups.html:70
 msgid "Created at"
 msgstr "Creat la"
 
@@ -8359,7 +8376,7 @@ msgstr "Introduceți numele gazdă din NS"
 msgid "Provide host name"
 msgstr "Furnizați nume gazdă"
 
-#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:359
+#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:364
 msgid "Account"
 msgstr "Cont"
 
@@ -8430,7 +8447,7 @@ msgstr "elimină semnătura zonei"
 msgid "ID"
 msgstr "ID"
 
-#: templates/modern/list_log_groups.html:68
+#: templates/modern/list_log_groups.html:72
 msgid "Actions"
 msgstr "Acțiuni"
 
@@ -8491,40 +8508,45 @@ msgstr "Cheie privată PEM"
 msgid "Import key"
 msgstr "Importă cheia"
 
-#: templates/modern/list_networks.html:13
-msgid ""
-"Each network maps to a single view. Resolvers in that network receive the "
-"zone variant assigned to that view."
-msgstr ""
-"Fiecare rețea este asociată cu o singură vizualizare. Resolverele din acea "
-"rețea primesc varianta de zonă atribuită acelei vizualizări."
+#: templates/modern/list_networks.html:14
+msgid "Network Mapping:"
+msgstr "Network Mapping:"
 
-#: templates/modern/list_networks.html:18
+#: templates/modern/list_networks.html:15
+msgid ""
+"Each network (CIDR block) maps to exactly one view. Resolvers in that "
+"network receive only the zone variants assigned to the mapped view. PowerDNS "
+"evaluates networks longest-prefix first, so a more specific subnet (for "
+"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
+"a client."
+msgstr ""
+
+#: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
 msgstr ""
 "Încă nu sunt configurate rețele. Asociați un CIDR unei vizualizări mai jos."
 
-#: templates/modern/list_networks.html:25
+#: templates/modern/list_networks.html:28
 msgid "Network"
 msgstr "Rețea"
 
-#: templates/modern/list_networks.html:65
+#: templates/modern/list_networks.html:68
 msgid "View"
 msgstr "Vizualizare"
 
-#: templates/modern/list_networks.html:40
+#: templates/modern/list_networks.html:43
 msgid "Remove mapping"
 msgstr "Elimină asocierea"
 
-#: templates/modern/list_networks.html:54
+#: templates/modern/list_networks.html:57
 msgid "Map network to view"
 msgstr "Asociază rețeaua unei vizualizări"
 
-#: templates/modern/list_networks.html:61
+#: templates/modern/list_networks.html:64
 msgid "CIDR"
 msgstr "CIDR"
 
-#: templates/modern/list_networks.html:79
+#: templates/modern/list_networks.html:82
 msgid "Save"
 msgstr "Salvează"
 
@@ -8557,7 +8579,7 @@ msgstr "Trimite link resetare"
 msgid "Group Management"
 msgstr "Administrare grupuri"
 
-#: templates/modern/header.html:240 templates/modern/add_group.html:5
+#: templates/modern/header.html:245 templates/modern/add_group.html:5
 msgid "Add group"
 msgstr "Adaugă grup"
 
@@ -8775,7 +8797,7 @@ msgstr "Nu, păstrează acest grup"
 msgid "Welcome"
 msgstr "Bun venit"
 
-#: templates/modern/list_views.html:25
+#: templates/modern/list_views.html:28
 msgid "zones"
 msgstr "zone"
 
@@ -8804,8 +8826,8 @@ msgstr ""
 "când API-ul este accesibil."
 
 #: templates/default/index.html:17 templates/modern/index.html:17
-msgid "PowerDNS version unknown"
-msgstr "Versiune PowerDNS necunoscută"
+msgid "PowerDNS: unknown"
+msgstr "PowerDNS: unknown"
 
 #: templates/default/index.html:27 templates/modern/index.html:27
 msgid "PowerDNS API error"
@@ -8857,7 +8879,7 @@ msgstr "Online"
 msgid "Offline"
 msgstr "Offline"
 
-#: templates/modern/header.html:259 templates/modern/header.html:284
+#: templates/modern/header.html:264 templates/modern/header.html:289
 msgid "Templates"
 msgstr "Șabloane"
 
@@ -8885,20 +8907,24 @@ msgstr "Înregistrări PTR"
 msgid "Administration"
 msgstr "Administrare"
 
-#: templates/modern/index.html:261 templates/modern/header.html:259
+#: templates/modern/index.html:261 templates/modern/header.html:264
 msgid "Access"
 msgstr "Acces"
+
+#: templates/default/index.html:301 templates/modern/index.html:301
+msgid "Record Changes"
+msgstr "Record Changes"
 
 #: lib/Module/Rdap/templates/rdap.html:4
 msgid "Tools"
 msgstr "Instrumente"
 
-#: templates/default/index.html:320 templates/modern/index.html:320
+#: templates/default/index.html:330 templates/modern/index.html:330
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Bază de date"
 
-#: templates/default/index.html:367 templates/modern/index.html:367
+#: templates/default/index.html:377 templates/modern/index.html:377
 msgid "My Profile"
 msgstr "Profilul meu"
 
@@ -8907,11 +8933,11 @@ msgstr "Profilul meu"
 msgid "Password"
 msgstr "Parolă"
 
-#: templates/modern/index.html:386 templates/modern/header.html:372
+#: templates/modern/index.html:396 templates/modern/header.html:377
 msgid "Preferences"
 msgstr "Preferințe"
 
-#: templates/modern/header.html:436
+#: templates/modern/header.html:441
 msgid "Logout"
 msgstr "Deconectare"
 
@@ -8923,7 +8949,7 @@ msgstr "Editează comentariu"
 msgid "Edit comment in zone"
 msgstr "Editează comentariu în zonă"
 
-#: templates/modern/add_zone_templ.html:12 templates/modern/header.html:271
+#: templates/modern/add_zone_templ.html:12 templates/modern/header.html:276
 msgid "Add template"
 msgstr "adaugă șablon"
 
@@ -8947,7 +8973,7 @@ msgstr "Șablon global"
 msgid "Make this template available to all users"
 msgstr "Face acest șablon disponibil tuturor"
 
-#: templates/modern/list_zone_templ.html:13 templates/modern/header.html:296
+#: templates/modern/list_zone_templ.html:13 templates/modern/header.html:301
 msgid "Add zone template"
 msgstr "adaugă șablon zonă"
 
@@ -9008,75 +9034,88 @@ msgstr "Jurnale activitate API"
 msgid "Total logs"
 msgstr "Total jurnale"
 
-#: templates/modern/list_log_users.html:22
+#: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
+#, auto-english-fallback
+msgid "API Log Behavior:"
+msgstr "API Log Behavior:"
+
+#: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
+msgid ""
+"Records API key lifecycle events (creation, regeneration, revocation, "
+"permission changes) and authenticated API requests. Filter by user or "
+"operation to audit external integration activity. Sensitive values (keys, "
+"tokens) are never written to this log."
+msgstr ""
+
+#: templates/modern/list_log_users.html:26
 msgid "All users"
 msgstr "Toți utilizatorii"
 
-#: templates/modern/list_log_groups.html:27
+#: templates/modern/list_log_groups.html:31
 msgid "All events"
 msgstr "Toate evenimentele"
 
-#: templates/modern/list_log_groups.html:36
+#: templates/modern/list_log_groups.html:40
 msgid "From date"
 msgstr "De la data"
 
-#: templates/modern/list_log_groups.html:41
+#: templates/modern/list_log_groups.html:45
 msgid "To date"
 msgstr "Până acum"
 
-#: templates/modern/list_log_groups.html:47
+#: templates/modern/list_log_groups.html:51
 msgid "Clear"
 msgstr "Șterge"
 
-#: templates/modern/list_log_groups.html:64
+#: templates/modern/list_log_groups.html:68
 msgid "Id"
 msgstr "ID"
 
-#: templates/modern/list_log_groups.html:67
+#: templates/modern/list_log_groups.html:71
 msgid "Event"
 msgstr "Eveniment"
 
-#: templates/modern/list_log_groups.html:103
+#: templates/modern/list_log_groups.html:107
 msgid "Details"
 msgstr "Detalii"
 
-#: templates/modern/list_log_groups.html:147
+#: templates/modern/list_log_groups.html:151
 msgid "Export"
 msgstr "Exportă"
 
-#: templates/modern/list_log_groups.html:124
+#: templates/modern/list_log_groups.html:128
 msgid "Export Logs"
 msgstr "Exportă jurnale"
 
-#: templates/modern/list_log_groups.html:128
+#: templates/modern/list_log_groups.html:132
 msgid "Export filtered log entries. Current filters will be applied."
 msgstr "Exportă jurnale filtrate."
 
-#: templates/modern/list_log_groups.html:129
+#: templates/modern/list_log_groups.html:133
 msgid "records to export"
 msgstr "înregistrări de exportat"
 
-#: templates/modern/list_log_groups.html:131
+#: templates/modern/list_log_groups.html:135
 msgid "Format"
 msgstr "Format"
 
-#: templates/modern/list_log_groups.html:169
+#: templates/modern/list_log_groups.html:173
 msgid "Log Details"
 msgstr "Detalii jurnal"
 
-#: templates/modern/list_log_groups.html:179
+#: templates/modern/list_log_groups.html:183
 msgid "Close"
 msgstr "Închide"
 
-#: templates/modern/list_log_groups.html:202
+#: templates/modern/list_log_groups.html:206
 msgid "Copied"
 msgstr "Copiat"
 
-#: templates/modern/list_log_groups.html:210
+#: templates/modern/list_log_groups.html:214
 msgid "No logs found"
 msgstr "Nu s-au găsit jurnale"
 
-#: templates/modern/list_log_groups.html:211
+#: templates/modern/list_log_groups.html:215
 msgid "Try different search criteria or check back later"
 msgstr "Încercați alte criterii sau reveniți mai târziu"
 
@@ -9088,11 +9127,24 @@ msgstr "jurnale zonă"
 msgid "Zone Change Logs"
 msgstr "Jurnale modificări zonă"
 
+#: templates/modern/list_log_zones.html:25
+#, auto-english-fallback
+msgid "Zone Log Behavior:"
+msgstr "Zone Log Behavior:"
+
+#: templates/modern/list_log_zones.html:26
+msgid ""
+"This activity feed records every operation performed against zones and "
+"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
+"key:value event string. For structured before/after snapshots and a diff "
+"view of record changes, see the Record Change Log."
+msgstr ""
+
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
 msgstr "Nume domeniu"
 
-#: templates/modern/list_log_zones.html:33
+#: templates/modern/list_log_zones.html:37
 msgid "All operations"
 msgstr "Toate operațiile"
 
@@ -9230,7 +9282,7 @@ msgid ""
 "with each zone:"
 msgstr "Utilizator deține zone."
 
-#: templates/modern/delete_records.html:39
+#: templates/modern/list_record_changes.html:78
 msgid "Zone"
 msgstr "Zonă"
 
@@ -9634,7 +9686,7 @@ msgid ""
 "provides strong security with better performance."
 msgstr "ECDSA 13."
 
-#: templates/modern/edit_user.html:5 templates/modern/header.html:366
+#: templates/modern/edit_user.html:5 templates/modern/header.html:371
 msgid "Edit profile"
 msgstr "Editează profil"
 
@@ -9850,7 +9902,7 @@ msgstr "Da, deconectează aceste zone"
 msgid "Access templates"
 msgstr "șabloane de acces"
 
-#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Adaugă"
 
@@ -10484,7 +10536,7 @@ msgstr "Nesemnat"
 msgid "User Management"
 msgstr "Administrare utilizatori"
 
-#: templates/modern/add_user.html:5 templates/modern/header.html:209
+#: templates/modern/add_user.html:5 templates/modern/header.html:214
 msgid "Add user"
 msgstr "Adaugă utilizator"
 
@@ -10650,7 +10702,7 @@ msgstr "Avertismente"
 msgid "Zones Without Owners"
 msgstr "Zone fără proprietari"
 
-#: templates/modern/database_consistency.html:259
+#: templates/modern/list_record_changes.html:49
 msgid "Zone ID"
 msgstr "ID zonă"
 
@@ -10891,7 +10943,7 @@ msgid ""
 "use \"Update Zones\" button when editing templates to apply changes."
 msgstr "Template change."
 
-#: templates/modern/change_password.html:49 templates/modern/header.html:378
+#: templates/modern/change_password.html:49 templates/modern/header.html:383
 msgid "Change password"
 msgstr "Schimbă parola"
 
@@ -10943,7 +10995,7 @@ msgstr "Include mix de litere, numere, simboluri"
 msgid "Consider using a password manager"
 msgstr "Considerați folosirea unui manager parole"
 
-#: templates/modern/header.html:385
+#: templates/modern/header.html:390
 msgid "Multi-Factor Authentication"
 msgstr "Autentificare cu mai mulți factori"
 
@@ -11247,6 +11299,67 @@ msgstr "Șterge și PTR corespunzătoare (dacă există)"
 #: templates/modern/delete_records.html:84
 msgid "Yes, delete these records"
 msgstr "Da, șterge aceste înregistrări"
+
+#: templates/modern/list_record_changes.html:14
+msgid "entries"
+msgstr "entries"
+
+#: templates/modern/list_record_changes.html:19
+msgid "Change Log Behavior:"
+msgstr "Change Log Behavior:"
+
+#: templates/modern/list_record_changes.html:20
+msgid ""
+"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
+"before/after snapshot here, alongside the user and timestamp. Logs never "
+"expire automatically - prune old rows manually if the table grows large. Use "
+"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
+"to feed external audit systems."
+msgstr ""
+
+#: templates/modern/list_record_changes.html:34
+msgid "All actions"
+msgstr "All actions"
+
+#: templates/modern/list_record_changes.html:52
+msgid "From"
+msgstr "From"
+
+#: templates/modern/list_record_changes.html:55
+msgid "To"
+msgstr "To"
+
+#: templates/modern/list_record_changes.html:75
+msgid "When"
+msgstr "When"
+
+#: templates/modern/list_record_changes.html:76
+msgid "Action"
+msgstr "Action"
+
+#: templates/modern/list_perm_templ.html:75
+msgid "User"
+msgstr "Utilizator"
+
+#: templates/modern/list_record_changes.html:83
+msgid "Prio"
+msgstr "Prio"
+
+#: templates/modern/list_record_changes.html:126
+msgid "before"
+msgstr "before"
+
+#: templates/modern/list_record_changes.html:127
+msgid "after"
+msgstr "after"
+
+#: templates/modern/list_record_changes.html:212
+msgid "No record changes found"
+msgstr "No record changes found"
+
+#: templates/modern/list_record_changes.html:213
+msgid "Try a different filter or time window"
+msgstr "Try a different filter or time window"
 
 #: templates/modern/mfa_recovery_codes.html:36
 msgid "Recovery Codes"
@@ -11652,13 +11765,26 @@ msgstr "Da, șterge aceste zone"
 msgid "No, keep these zones"
 msgstr "Nu, păstrează aceste zone"
 
-#: templates/modern/list_log_users.html:5 templates/modern/header.html:216
+#: templates/modern/list_log_users.html:5 templates/modern/header.html:221
 msgid "User logs"
 msgstr "jurnale utilizator"
 
 #: templates/modern/list_log_users.html:11
 msgid "User Activity Logs"
 msgstr "Jurnale activitate utilizator"
+
+#: templates/modern/list_log_users.html:19
+#, auto-english-fallback
+msgid "User Log Behavior:"
+msgstr "User Log Behavior:"
+
+#: templates/modern/list_log_users.html:20
+msgid ""
+"Records user account events such as logins, password changes, group "
+"membership updates, and admin actions on user records. Each entry shows the "
+"action, the actor, the affected user, and a timestamp. Filter by operation "
+"or user to audit access changes."
+msgstr ""
 
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
@@ -11690,34 +11816,38 @@ msgstr "Sunteți pe cale să ștergeți șablonul"
 msgid "This template is currently used by"
 msgstr "Acest șablon este folosit de"
 
-#: templates/default/list_views.html:13 templates/modern/list_views.html:13
+#: templates/default/list_views.html:14 templates/modern/list_views.html:14
+msgid "View Behavior:"
+msgstr "View Behavior:"
+
+#: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid ""
 "Views serve different zone variants to different clients based on the "
-"network mapping. Each variant is identified as zone..variant (for example, "
-"example.com..trusted)."
+"network that queried the resolver. Each variant is named zone..variant (for "
+"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
+"before it can be assigned here. Variants share a name but resolve "
+"differently per view, so the same hostname can answer with different IPs "
+"depending on the client's network."
 msgstr ""
-"Vizualizările servesc diferite variante de zonă diferiților clienți pe baza "
-"asocierii de rețea. Fiecare variantă este identificată ca zone..variant (de "
-"exemplu, example.com..trusted)."
 
-#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+#: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
 msgstr ""
 "Încă nu sunt configurate vizualizări. Adăugați o variantă de zonă mai jos."
 
-#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+#: templates/default/list_views.html:40 templates/modern/list_views.html:40
 msgid "Remove from view"
 msgstr "Elimină din vizualizare"
 
-#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+#: templates/default/list_views.html:54 templates/modern/list_views.html:54
 msgid "Assign zone to view"
 msgstr "Atribuie zona unei vizualizări"
 
-#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+#: templates/default/list_views.html:61 templates/modern/list_views.html:61
 msgid "View name"
 msgstr "Nume vizualizare"
 
-#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+#: templates/default/list_views.html:65 templates/modern/list_views.html:65
 msgid "Zone (zone..variant)"
 msgstr "Zonă (zone..variant)"
 
@@ -11870,15 +12000,6 @@ msgstr "Durată de funcționare"
 msgid "Server information is not available."
 msgstr "Informațiile despre server nu sunt disponibile."
 
-#: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:102
-msgid "Slave Servers"
-msgstr "Servere secundare"
-
-#: templates/default/pdns_status.html:104 templates/modern/pdns_status.html:105
-msgid ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
-msgstr "Status conectivitate."
-
 #: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:115
 msgid "Server IP"
 msgstr "IP server"
@@ -11968,27 +12089,31 @@ msgstr "zone directe"
 msgid "Reverse zones"
 msgstr "zone inverse"
 
-#: templates/default/header.html:142 templates/modern/header.html:203
+#: templates/default/header.html:131 templates/modern/header.html:189
+msgid "Record change log"
+msgstr "Record change log"
+
+#: templates/default/header.html:143 templates/modern/header.html:208
 msgid "List users"
 msgstr "Listă utilizatori"
 
-#: templates/default/header.html:163 templates/modern/header.html:235
+#: templates/default/header.html:164 templates/modern/header.html:240
 msgid "List groups"
 msgstr "Listă grupuri"
 
-#: templates/modern/header.html:246 templates/modern/list_log_groups.html:5
+#: templates/modern/header.html:251 templates/modern/list_log_groups.html:5
 msgid "Group logs"
 msgstr "jurnale grup"
 
-#: templates/default/header.html:183 templates/modern/header.html:265
+#: templates/default/header.html:184 templates/modern/header.html:270
 msgid "List templates"
 msgstr "Listă șabloane"
 
-#: templates/default/header.html:200 templates/modern/header.html:290
+#: templates/default/header.html:201 templates/modern/header.html:295
 msgid "List zone templates"
 msgstr "Listă șabloane zonă"
 
-#: templates/default/header.html:227 templates/modern/header.html:330
+#: templates/default/header.html:228 templates/modern/header.html:335
 msgid "API Documentation"
 msgstr "Documentație API"
 
@@ -12146,11 +12271,18 @@ msgstr "Sigur doriți să activați cheia API"
 msgid "External applications will be able to authenticate using this key."
 msgstr "Aplicațiile externe se pot autentifica."
 
-#: templates/default/api_keys.html:181 templates/modern/api_keys.html:182
+#: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
+#, auto-english-fallback
+msgid "API Key Behavior:"
+msgstr "API Key Behavior:"
+
+#: templates/default/api_keys.html:183 templates/modern/api_keys.html:184
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions."
-msgstr "API keys."
+"is linked to your user account and inherits your permissions, so revoking "
+"your account also revokes all its keys. Treat keys as secrets - they grant "
+"the same access as logging in as you."
+msgstr ""
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -12300,10 +12432,6 @@ msgid "Add access template"
 msgstr "adaugă șablon acces"
 
 #: templates/modern/list_perm_templ.html:75
-msgid "User"
-msgstr "Utilizator"
-
-#: templates/modern/list_perm_templ.html:75
 msgid "Group"
 msgstr "Grup"
 
@@ -12327,7 +12455,20 @@ msgstr "șabloanele se aplică doar zonelor grupului"
 msgid "Group Activity Logs"
 msgstr "Jurnale activitate grup"
 
-#: templates/modern/list_log_groups.html:22
+#: templates/modern/list_log_groups.html:19
+#, auto-english-fallback
+msgid "Group Log Behavior:"
+msgstr "Group Log Behavior:"
+
+#: templates/modern/list_log_groups.html:20
+msgid ""
+"Records group lifecycle events (create, edit, delete) and membership changes "
+"(users added or removed). Each entry shows the action, the actor, the "
+"affected group, and a timestamp. Useful for auditing zone-access changes "
+"mediated by group ownership."
+msgstr ""
+
+#: templates/modern/list_log_groups.html:26
 msgid "Group name"
 msgstr "nume grup"
 
@@ -12535,24 +12676,17 @@ msgid "Limited Database Rights:"
 msgstr "Limited Database Rights:"
 
 #: install/templates/step6.html.twig:15
-#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
 msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
 
 #: install/templates/step6.html.twig:17
-#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -12563,24 +12697,19 @@ msgid "Execute the following commands:"
 msgstr "Execute the following commands:"
 
 #: install/templates/step6.html.twig:40
-#, auto-english-fallback
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
 msgstr ""
-"After you have added the new user, proceed with this installation procedure."
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
 msgid "Note:"
 msgstr "Note:"
 
 #: install/templates/step6.html.twig:43
-#, auto-english-fallback
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
@@ -12615,11 +12744,9 @@ msgid "Choose a language for installation"
 msgstr "Choose a language for installation"
 
 #: install/templates/step1.html.twig:12
-#, auto-english-fallback
 msgid ""
 "Please select your preferred language to continue with the installation:"
 msgstr ""
-"Please select your preferred language to continue with the installation:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
@@ -12682,9 +12809,8 @@ msgid "Server name"
 msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
-#, auto-english-fallback
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr ""
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
@@ -12695,22 +12821,16 @@ msgid "Database Configuration:"
 msgstr "Database Configuration:"
 
 #: install/templates/step4.html.twig:90
-#, auto-english-fallback
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
 msgstr ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
 
 #: install/templates/step4.html.twig:93
-#, auto-english-fallback
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
 msgstr ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
 
 #: install/templates/step4.html.twig:97
 msgid "Database type"
@@ -12741,9 +12861,8 @@ msgid "Provide the hostname"
 msgstr "Provide the hostname"
 
 #: install/templates/step4.html.twig:143
-#, auto-english-fallback
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr ""
 
 #: install/templates/step4.html.twig:148
 msgid "DB Port"
@@ -12790,11 +12909,9 @@ msgid "DB collation"
 msgstr "DB collation"
 
 #: install/templates/step4.html.twig:197
-#, auto-english-fallback
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
 
 #: install/templates/step4.html.twig:206
 msgid "PowerDNS Database"
@@ -12825,9 +12942,8 @@ msgid "Provide a password"
 msgstr "Provide a password"
 
 #: install/templates/step4.html.twig:238
-#, auto-english-fallback
 msgid "Password for \"admin\" username."
-msgstr "Password for \"admin\" username."
+msgstr ""
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -12922,22 +13038,16 @@ msgid "Database User"
 msgstr "Database User"
 
 #: install/templates/step5.html.twig:57
-#, auto-english-fallback
 msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
 msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
 
 #: install/templates/step5.html.twig:67
-#, auto-english-fallback
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
@@ -13024,40 +13134,30 @@ msgid "Important Security Notice:"
 msgstr "Important Security Notice:"
 
 #: install/templates/step8.html.twig:16
-#, auto-english-fallback
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
 msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
 
 #: install/templates/step8.html.twig:17
-#, auto-english-fallback
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
 msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
 msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
-#, auto-english-fallback
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr ""
 
 #: install/templates/step8.html.twig:27
-#, auto-english-fallback
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
 msgstr ""
-"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
-"\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
@@ -13076,11 +13176,9 @@ msgid "Before proceeding, ensure you have:"
 msgstr "Before proceeding, ensure you have:"
 
 #: install/templates/step3.html.twig:18
-#, auto-english-fallback
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
 msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
@@ -13095,13 +13193,10 @@ msgid "Next:"
 msgstr "Next:"
 
 #: install/templates/step3.html.twig:27
-#, auto-english-fallback
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
 msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
 
 #: install/helpers/InstallStepHandler.php:176
 msgid "Missing PowerDNS tables:"
@@ -13120,29 +13215,21 @@ msgid "Foreign Key Constraint Issues:"
 msgstr "Foreign Key Constraint Issues:"
 
 #: install/helpers/InstallStepHandler.php:209
-#, auto-english-fallback
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
 
 #: install/helpers/InstallStepHandler.php:210
-#, auto-english-fallback
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
 
 #: install/helpers/InstallStepHandler.php:211
-#, auto-english-fallback
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
 msgstr ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"
@@ -13153,13 +13240,10 @@ msgid "Make sure the SQLite database file exists"
 msgstr "Make sure the SQLite database file exists"
 
 #: install/helpers/InstallStepHandler.php:219
-#, auto-english-fallback
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
 msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
 
 #: install/helpers/InstallStepHandler.php:220
 msgid "Verify the full path to the database file is correct and accessible"
@@ -13182,30 +13266,23 @@ msgid "Database Error"
 msgstr "Database Error"
 
 #: install/helpers/DatabaseHelper.php:175
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
 msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
 
 #: install/helpers/DatabaseHelper.php:183
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
 msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:191
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
 msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:203
 #, php-format
@@ -13221,36 +13298,33 @@ msgid "PowerDNS API key is required when using API backend."
 msgstr "PowerDNS API key is required when using API backend."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
-#, auto-english-fallback
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
 msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
-#, auto-english-fallback
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
-#, auto-english-fallback
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
 msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
-#, auto-english-fallback
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr ""
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
+# OBSOLETE: msgstr "API keys."
+
+
 

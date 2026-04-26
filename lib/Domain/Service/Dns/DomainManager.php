@@ -34,11 +34,13 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Throwable;
 
 /**
  * Service class for managing domains/zones
@@ -53,6 +55,7 @@ class DomainManager implements DomainManagerInterface
     private IPAddressValidator $ipAddressValidator;
     private DnsBackendProvider $backendProvider;
     private LoggerInterface $logger;
+    private RecordChangeLogger $changeLogger;
 
     /**
      * Constructor
@@ -69,7 +72,8 @@ class DomainManager implements DomainManagerInterface
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
         ?DnsBackendProvider $backendProvider = null,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?RecordChangeLogger $changeLogger = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -79,6 +83,16 @@ class DomainManager implements DomainManagerInterface
         $this->ipAddressValidator = new IPAddressValidator();
         $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $this->logger = $logger ?? new NullLogger();
+        $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
+    }
+
+    private function captureChange(callable $callback): void
+    {
+        try {
+            $callback();
+        } catch (Throwable $e) {
+            $this->logger->warning('Failed to write zone change log: {error}', ['error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -175,6 +189,15 @@ class DomainManager implements DomainManagerInterface
                     if ($type == "SLAVE") {
                         // Master IP is already set by backendProvider->createZone()
                         $db->commit();
+                        $this->captureChange(function () use ($domain_id, $domain, $type, $slave_master, $owner): void {
+                            $this->changeLogger->logZoneCreate([
+                                'id' => $domain_id,
+                                'name' => $domain,
+                                'type' => $type,
+                                'master' => $slave_master,
+                                'owner' => $owner,
+                            ]);
+                        });
                         return true;
                     } else {
                         if ($zone_template == "none" && $domain_id) {
@@ -216,6 +239,14 @@ class DomainManager implements DomainManagerInterface
                             if (!$isApiBackend) {
                                 $db->commit();
                             }
+                            $this->captureChange(function () use ($domain_id, $domain, $type, $owner): void {
+                                $this->changeLogger->logZoneCreate([
+                                    'id' => $domain_id,
+                                    'name' => $domain,
+                                    'type' => $type,
+                                    'owner' => $owner,
+                                ]);
+                            });
                             return true;
                         } elseif ($domain_id && is_numeric($zone_template)) {
                             $isApiBackend = $this->backendProvider->isApiBackend();
@@ -280,6 +311,15 @@ class DomainManager implements DomainManagerInterface
                             if (!$isApiBackend) {
                                 $db->commit();
                             }
+                            $this->captureChange(function () use ($domain_id, $domain, $type, $zone_template, $owner): void {
+                                $this->changeLogger->logZoneCreate([
+                                    'id' => $domain_id,
+                                    'name' => $domain,
+                                    'type' => $type,
+                                    'template_id' => is_numeric($zone_template) ? (int) $zone_template : null,
+                                    'owner' => $owner,
+                                ]);
+                            });
                             return true;
                         } else {
                             $db->rollBack();
@@ -326,6 +366,11 @@ class DomainManager implements DomainManagerInterface
         if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
             // Get zone name for backend deletion.
             $zoneName = $this->domainRepository->getDomainNameById($id);
+
+            // Snapshot zone metadata + record count BEFORE deletion for the audit log.
+            $zoneSnapshot = $this->snapshotZoneForLog($id, $zoneName);
+            $recordCountBefore = $this->countRecordsForZone($id);
+
             if ($zoneName !== null) {
                 // Delete DNS data via backend first (SQL or API).
                 // This must happen before local cleanup so that a failure
@@ -376,6 +421,10 @@ class DomainManager implements DomainManagerInterface
                 return false;
             }
 
+            $this->captureChange(function () use ($zoneSnapshot, $recordCountBefore): void {
+                $this->changeLogger->logZoneDelete($zoneSnapshot, $recordCountBefore);
+            });
+
             return true;
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
@@ -401,6 +450,11 @@ class DomainManager implements DomainManagerInterface
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 // Get zone name for backend deletion.
                 $zoneName = $this->domainRepository->getDomainNameById($id);
+
+                // Snapshot for audit log
+                $zoneSnapshot = $this->snapshotZoneForLog($id, $zoneName);
+                $recordCountBefore = $this->countRecordsForZone($id);
+
                 if ($zoneName !== null) {
                     // Delete DNS data BEFORE the transaction. API deletions are
                     // irreversible, so they must not be inside a transaction that
@@ -441,6 +495,10 @@ class DomainManager implements DomainManagerInterface
                     $stmt->execute([':id' => $id]);
 
                     $this->db->commit();
+
+                    $this->captureChange(function () use ($zoneSnapshot, $recordCountBefore): void {
+                        $this->changeLogger->logZoneDelete($zoneSnapshot, $recordCountBefore);
+                    });
                 } catch (\Exception $e) {
                     if ($this->db->inTransaction()) {
                         $this->db->rollBack();
@@ -487,6 +545,44 @@ class DomainManager implements DomainManagerInterface
             $db->prepare("DELETE FROM zones WHERE domain_id = :did")->execute([':did' => $domainId]);
         } catch (\Exception $e) {
             $this->logger->error('Failed to clean up zone metadata for domain_id {domainId}: {error}', ['domainId' => $domainId, 'error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Capture a minimal zone snapshot suitable for the change log.
+     * Tolerates missing data (out-of-band deletes leave $zoneName null).
+     */
+    private function snapshotZoneForLog(int $domainId, ?string $zoneName): array
+    {
+        $type = null;
+        try {
+            $type = $this->domainRepository->getDomainType($domainId);
+        } catch (Throwable $e) {
+            // Type lookup is best-effort; the log still gets a row with null type.
+        }
+
+        return [
+            'id' => $domainId,
+            'name' => $zoneName,
+            'type' => $type,
+        ];
+    }
+
+    /**
+     * Count records in a zone before deletion. Used to summarize how many
+     * records were removed by a zone delete in the audit log.
+     */
+    private function countRecordsForZone(int $domainId): int
+    {
+        try {
+            $tableNameService = new TableNameService($this->config);
+            $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+            $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table WHERE domain_id = :did");
+            $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+            $stmt->execute();
+            return (int) $stmt->fetchColumn();
+        } catch (Throwable $e) {
+            return 0;
         }
     }
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-25 18:57+0300\n"
+"POT-Creation-Date: 2026-04-26 10:53+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1299,7 +1299,7 @@ msgstr "サーバー %s を使用してRDAP情報の取得に失敗しました"
 msgid "Invalid CSRF token."
 msgstr "無効なCSRFトークンです。"
 
-#: lib/BaseController.php:661
+#: lib/BaseController.php:664
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1307,7 +1307,7 @@ msgstr ""
 "<a href=\"install/\">install/</a>ディレクトリが存在します。続行する前に削除す"
 "る必要があります。first before proceeding."
 
-#: lib/BaseController.php:718
+#: lib/BaseController.php:721
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1315,12 +1315,12 @@ msgstr ""
 "デフォルトのセッション暗号化キーが使用されています。設定ファイルで設定してく"
 "ださい。"
 
-#: lib/BaseController.php:857
+#: lib/BaseController.php:860
 #, php-format
 msgid "The %s field is required."
 msgstr "%sフィールドは必須です。"
 
-#: lib/BaseController.php:865
+#: lib/BaseController.php:868
 #, php-format
 msgid "The %s field must be a number."
 msgstr "%sフィールドは数値である必要があります。"
@@ -1396,7 +1396,7 @@ msgstr "ゾーンコメント機能は設定で無効になっています。"
 msgid "You do not have the permission to view this comment."
 msgstr "このコメントを表示する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:450
+#: lib/Domain/Service/Dns/RecordManager.php:534
 msgid "You do not have the permission to edit this comment."
 msgstr "このコメントを編集する権限がありません。"
 
@@ -1661,7 +1661,7 @@ msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "復旧コードが再生成されました。安全な場所に保存してください。"
 
 #: lib/Application/Controller/ListLogApiController.php:51
-#: templates/modern/list_log_api.html:4 templates/modern/header.html:323
+#: templates/modern/list_log_api.html:4 templates/modern/header.html:328
 msgid "API Logs"
 msgstr "APIログ"
 
@@ -1841,9 +1841,14 @@ msgid "You do not have the permission to perform searches."
 msgstr "検索を実行する権限がありません。"
 
 #: lib/Application/Controller/SearchController.php:49
-#: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
+#: templates/modern/header.html:127 templates/modern/list_log_groups.html:48
 msgid "Search"
 msgstr "検索"
+
+#: lib/Application/Controller/ListRecordChangesController.php:62
+#: templates/modern/list_record_changes.html:11
+msgid "Record Change Log"
+msgstr "Record Change Log"
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
 msgid "Invalid request method."
@@ -1899,7 +1904,7 @@ msgstr "パスワードが生成されましたが、セキュリティ上の理
 msgid "Please fill in all required fields correctly."
 msgstr "すべての必須フィールドを正しく入力してください。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:396
+#: lib/Domain/Service/Dns/RecordManager.php:480
 msgid "You do not have the permission to delete this record."
 msgstr "このレコードを削除する権限がありません。"
 
@@ -2173,7 +2178,7 @@ msgstr ""
 "メールに確認コードを送信できませんでした。代わりに復旧コードを使用してくださ"
 "い。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:216
+#: lib/Domain/Service/Dns/RecordManager.php:242
 msgid "You do not have the permission to add a record to this zone."
 msgstr "このゾーンにレコードを追加する権限がありません。"
 
@@ -2225,7 +2230,7 @@ msgstr "ゾーンが正常に削除されました。"
 msgid "Zones have been deleted successfully."
 msgstr "ゾーンが正常に削除されました。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:667
+#: lib/Domain/Service/Dns/DomainManager.php:763
 msgid "You do not have the permission to delete a zone."
 msgstr "ゾーンを削除する権限がありません。"
 
@@ -2270,15 +2275,15 @@ msgstr "グループログ"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "このゾーンのDNSSECを管理する権限がありません。"
 
-#: lib/Application/Controller/DnssecKeyExportController.php:74
+#: lib/Application/Controller/DnssecKeyExportController.php:75
 msgid "PEM key export requires PowerDNS 4.7 or newer."
 msgstr "PEM 鍵のエクスポートには PowerDNS 4.7 以降が必要です。"
 
-#: lib/Application/Controller/DnssecKeyExportController.php:86
+#: lib/Application/Controller/DnssecKeyExportController.php:87
 msgid "An error occurred while exporting the PEM key: "
 msgstr "PEM 鍵のエクスポート中にエラーが発生しました: "
 
-#: lib/Application/Controller/DnssecKeyExportController.php:92
+#: lib/Application/Controller/DnssecKeyExportController.php:93
 msgid ""
 "Could not retrieve the PEM key. The server may not expose private key "
 "material for this key."
@@ -2286,7 +2291,7 @@ msgstr ""
 "PEM 鍵を取得できませんでした。サーバーがこの鍵の秘密鍵情報を公開していない可"
 "能性があります。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:309
+#: lib/Domain/Service/Dns/DomainManager.php:349
 msgid "You do not have the permission to add a master zone."
 msgstr "マスターゾーンを追加する権限がありません。"
 
@@ -2530,7 +2535,7 @@ msgid "You do not have the permission to view this page."
 msgstr "このページを表示する権限がありません。"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:42
-#: templates/default/header.html:232 templates/modern/header.html:337
+#: templates/default/header.html:233 templates/modern/header.html:342
 msgid "Database Consistency"
 msgstr "データベース整合性"
 
@@ -2698,27 +2703,27 @@ msgstr "新しいスーパーマスターを追加する権限がありません
 msgid "The supermaster has been added successfully."
 msgstr "スーパーマスターが正常に追加されました。"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:72
+#: lib/Application/Controller/DnssecKeyImportController.php:73
 msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr "PEM 鍵のインポートには PowerDNS 4.7 以降が必要です。"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:97
+#: lib/Application/Controller/DnssecKeyImportController.php:98
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr ""
 "PEM エンコードされた秘密鍵を入力してください (BEGIN/END マーカーが必要)。"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:108
+#: lib/Application/Controller/DnssecKeyImportController.php:109
 msgid "PEM key imported successfully."
 msgstr "PEM 鍵を正常にインポートしました。"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:111
+#: lib/Application/Controller/DnssecKeyImportController.php:112
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
 msgstr ""
 "PEM 鍵のインポートに失敗しました。PowerDNS サーバーが形式を拒否した可能性があ"
 "ります。"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:115
+#: lib/Application/Controller/DnssecKeyImportController.php:116
 msgid "An error occurred while importing the PEM key: "
 msgstr "PEM 鍵のインポート中にエラーが発生しました: "
 
@@ -3172,11 +3177,11 @@ msgstr "マスター"
 msgid "Slave"
 msgstr "Slave"
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Autoprimaries"
 msgstr "Autoprimaries"
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Supermasters"
 msgstr "スーパーマスター"
 
@@ -3312,6 +3317,18 @@ msgstr "いいえ、この autoprimary を保持"
 msgid "No, keep this supermaster"
 msgstr "いいえ、このスーパーマスターを保持します"
 
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:147
+msgid ""
+"Showing connectivity status for the autoprimary servers configured in the "
+"table below."
+msgstr ""
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:148
+msgid ""
+"Showing connectivity status for the supermasters configured in the table "
+"below."
+msgstr ""
+
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
@@ -3373,7 +3390,7 @@ msgstr "コンテンツフィールドに有効な値がありません。"
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRVレコードの優先度は0から65535の間の数値である必要があります。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:318
+#: lib/Domain/Service/Dns/RecordManager.php:357
 msgid "You do not have the permission to edit this record."
 msgstr "このレコードを編集する権限がありません。"
 
@@ -8979,43 +8996,43 @@ msgstr ""
 "逆引きレコードが追加されました。警告: %sのPTRレコードが既に存在し、%sを指して"
 "います。同じIPに対して複数のPTRレコードを持つことは推奨されません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:208
+#: lib/Domain/Service/Dns/RecordManager.php:234
 msgid "You do not have the permission to add SOA record."
 msgstr "SOAレコードを追加する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:212
+#: lib/Domain/Service/Dns/RecordManager.php:238
 msgid "You do not have the permission to add NS record."
 msgstr "NSレコードを追加する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:257
+#: lib/Domain/Service/Dns/RecordManager.php:283
 msgid "A record with this hostname, type, and content already exists."
 msgstr "このホスト名、タイプ、内容のレコードが既に存在します。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:164
+#: lib/Domain/Service/Dns/RecordManager.php:178
 msgid "Failed to add record to DNS backend."
 msgstr "DNSバックエンドへのレコードの追加に失敗しました。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:302
+#: lib/Domain/Service/Dns/RecordManager.php:341
 msgid "You do not have the permission to edit this SOA record."
 msgstr "このSOAレコードを編集する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:307
+#: lib/Domain/Service/Dns/RecordManager.php:346
 msgid "You do not have the permission to edit this NS record."
 msgstr "このNSレコードを編集する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:356
+#: lib/Domain/Service/Dns/RecordManager.php:403
 msgid "Failed to update record in DNS backend."
 msgstr "DNSバックエンドのレコードの更新に失敗しました。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:385
+#: lib/Domain/Service/Dns/RecordManager.php:452
 msgid "You do not have the permission to delete SOA records."
 msgstr "SOAレコードを削除する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:390
+#: lib/Domain/Service/Dns/RecordManager.php:457
 msgid "You do not have the permission to delete NS records."
 msgstr "NSレコードを削除する権限がありません。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:591
+#: lib/Domain/Service/Dns/DomainManager.php:687
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "関数%s %sに無効な引数が渡されました"
@@ -9024,56 +9041,56 @@ msgstr "関数%s %sに無効な引数が渡されました"
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "このIPアドレスとホスト名のスーパーマスターが既に存在します。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:132
+#: lib/Domain/Service/Dns/DomainManager.php:146
 msgid "Failed to create zone in DNS backend."
 msgstr "DNSバックエンドでのゾーンの作成に失敗しました。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:301
+#: lib/Domain/Service/Dns/DomainManager.php:341
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "ゾーンの作成に失敗しました: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:213
+#: lib/Domain/Service/Dns/DomainManager.php:236
 msgid "Failed to create SOA record for zone."
 msgstr "ゾーンのSOAレコードの作成に失敗しました。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:260
+#: lib/Domain/Service/Dns/DomainManager.php:291
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "ゾーンの%sレコードの作成に失敗しました。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:305
+#: lib/Domain/Service/Dns/DomainManager.php:345
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "関数%sに無効な引数が渡されました"
 
-#: lib/Domain/Service/Dns/DomainManager.php:409
+#: lib/Domain/Service/Dns/DomainManager.php:463
 msgid "Failed to delete zone from DNS backend."
 msgstr "DNSバックエンドからのゾーンの削除に失敗しました。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:375
+#: lib/Domain/Service/Dns/DomainManager.php:420
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "ゾーンメタデータのクリーンアップに失敗しました: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:506
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "ゾーンメタデータの削除に失敗しました: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:502
+#: lib/Domain/Service/Dns/DomainManager.php:598
 msgid "Failed to update zone type in DNS backend."
 msgstr "DNSバックエンドでのゾーンタイプの更新に失敗しました。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:618
 msgid "Failed to update zone master in DNS backend."
 msgstr "DNSバックエンドでのゾーンマスターの更新に失敗しました。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:553
+#: lib/Domain/Service/Dns/DomainManager.php:649
 msgid "The selected user already owns the zone."
 msgstr "選択されたユーザーは既にゾーンを所有しています。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:586
+#: lib/Domain/Service/Dns/DomainManager.php:682
 msgid "There must be at least one owner for a zone."
 msgstr "ゾーンには少なくとも1人のオーナーが必要です。"
 
@@ -9109,7 +9126,7 @@ msgstr "名前："
 msgid "New API Key:"
 msgstr "新しいAPIキー："
 
-#: templates/modern/list_log_groups.html:176
+#: templates/modern/list_log_groups.html:180
 msgid "Copy"
 msgstr "コピー"
 
@@ -9277,7 +9294,7 @@ msgstr "* 必須フィールド"
 msgid "API Key Information"
 msgstr "APIキー情報"
 
-#: templates/modern/list_log_groups.html:66
+#: templates/modern/list_log_groups.html:70
 msgid "Created at"
 msgstr "作成日時"
 
@@ -9508,7 +9525,7 @@ msgstr "NSレコードに表示されるホスト名を入力してください"
 msgid "Provide host name"
 msgstr "ホスト名を入力してください"
 
-#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:359
+#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:364
 msgid "Account"
 msgstr "アカウント"
 
@@ -9584,7 +9601,7 @@ msgstr "ゾーンの署名を解除"
 msgid "ID"
 msgstr "ID"
 
-#: templates/modern/list_log_groups.html:68
+#: templates/modern/list_log_groups.html:72
 msgid "Actions"
 msgstr "アクション"
 
@@ -9645,41 +9662,46 @@ msgstr "PEM 秘密鍵"
 msgid "Import key"
 msgstr "鍵をインポート"
 
-#: templates/modern/list_networks.html:13
-msgid ""
-"Each network maps to a single view. Resolvers in that network receive the "
-"zone variant assigned to that view."
-msgstr ""
-"各ネットワークは 1 つのビューに対応します。そのネットワークのリゾルバはその"
-"ビューに割り当てられたゾーンのバリアントを受け取ります。"
+#: templates/modern/list_networks.html:14
+msgid "Network Mapping:"
+msgstr "Network Mapping:"
 
-#: templates/modern/list_networks.html:18
+#: templates/modern/list_networks.html:15
+msgid ""
+"Each network (CIDR block) maps to exactly one view. Resolvers in that "
+"network receive only the zone variants assigned to the mapped view. PowerDNS "
+"evaluates networks longest-prefix first, so a more specific subnet (for "
+"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
+"a client."
+msgstr ""
+
+#: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
 msgstr ""
 "まだネットワークが設定されていません。下で CIDR をビューにマッピングしてくだ"
 "さい。"
 
-#: templates/modern/list_networks.html:25
+#: templates/modern/list_networks.html:28
 msgid "Network"
 msgstr "ネットワーク"
 
-#: templates/modern/list_networks.html:65
+#: templates/modern/list_networks.html:68
 msgid "View"
 msgstr "ビュー"
 
-#: templates/modern/list_networks.html:40
+#: templates/modern/list_networks.html:43
 msgid "Remove mapping"
 msgstr "マッピングを削除"
 
-#: templates/modern/list_networks.html:54
+#: templates/modern/list_networks.html:57
 msgid "Map network to view"
 msgstr "ネットワークをビューにマッピング"
 
-#: templates/modern/list_networks.html:61
+#: templates/modern/list_networks.html:64
 msgid "CIDR"
 msgstr "CIDR"
 
-#: templates/modern/list_networks.html:79
+#: templates/modern/list_networks.html:82
 msgid "Save"
 msgstr "保存"
 
@@ -9713,7 +9735,7 @@ msgstr "リセットリンクを送信"
 msgid "Group Management"
 msgstr "グループ管理"
 
-#: templates/modern/header.html:240 templates/modern/add_group.html:5
+#: templates/modern/header.html:245 templates/modern/add_group.html:5
 msgid "Add group"
 msgstr "グループを追加"
 
@@ -9938,7 +9960,7 @@ msgstr "いいえ、このグループを保持します"
 msgid "Welcome"
 msgstr "ようこそ"
 
-#: templates/modern/list_views.html:25
+#: templates/modern/list_views.html:28
 msgid "zones"
 msgstr "のゾーンで使用されています"
 
@@ -9967,8 +9989,8 @@ msgstr ""
 "非表示になります。"
 
 #: templates/default/index.html:17 templates/modern/index.html:17
-msgid "PowerDNS version unknown"
-msgstr "PowerDNS バージョン不明"
+msgid "PowerDNS: unknown"
+msgstr "PowerDNS: unknown"
 
 #: templates/default/index.html:27 templates/modern/index.html:27
 msgid "PowerDNS API error"
@@ -10020,7 +10042,7 @@ msgstr "オンライン"
 msgid "Offline"
 msgstr "オフライン"
 
-#: templates/modern/header.html:259 templates/modern/header.html:284
+#: templates/modern/header.html:264 templates/modern/header.html:289
 msgid "Templates"
 msgstr "テンプレート"
 
@@ -10048,20 +10070,24 @@ msgstr "PTRレコード"
 msgid "Administration"
 msgstr "管理"
 
-#: templates/modern/index.html:261 templates/modern/header.html:259
+#: templates/modern/index.html:261 templates/modern/header.html:264
 msgid "Access"
 msgstr "アクセス"
+
+#: templates/default/index.html:301 templates/modern/index.html:301
+msgid "Record Changes"
+msgstr "Record Changes"
 
 #: lib/Module/Rdap/templates/rdap.html:4
 msgid "Tools"
 msgstr "ツール"
 
-#: templates/default/index.html:320 templates/modern/index.html:320
+#: templates/default/index.html:330 templates/modern/index.html:330
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "データベース"
 
-#: templates/default/index.html:367 templates/modern/index.html:367
+#: templates/default/index.html:377 templates/modern/index.html:377
 msgid "My Profile"
 msgstr "マイプロフィール"
 
@@ -10070,11 +10096,11 @@ msgstr "マイプロフィール"
 msgid "Password"
 msgstr "パスワード"
 
-#: templates/modern/index.html:386 templates/modern/header.html:372
+#: templates/modern/index.html:396 templates/modern/header.html:377
 msgid "Preferences"
 msgstr "設定"
 
-#: templates/modern/header.html:436
+#: templates/modern/header.html:441
 msgid "Logout"
 msgstr "ログアウト"
 
@@ -10086,7 +10112,7 @@ msgstr "コメントを編集"
 msgid "Edit comment in zone"
 msgstr "ゾーンのコメントを編集"
 
-#: templates/modern/add_zone_templ.html:12 templates/modern/header.html:271
+#: templates/modern/add_zone_templ.html:12 templates/modern/header.html:276
 msgid "Add template"
 msgstr "テンプレートを追加"
 
@@ -10110,7 +10136,7 @@ msgstr "グローバルテンプレート"
 msgid "Make this template available to all users"
 msgstr "このテンプレートをすべてのユーザーが利用できるようにする"
 
-#: templates/modern/list_zone_templ.html:13 templates/modern/header.html:296
+#: templates/modern/list_zone_templ.html:13 templates/modern/header.html:301
 msgid "Add zone template"
 msgstr "ゾーンテンプレートを追加"
 
@@ -10175,77 +10201,90 @@ msgstr "APIアクティビティログ"
 msgid "Total logs"
 msgstr "総ログ数"
 
-#: templates/modern/list_log_users.html:22
+#: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
+#, auto-english-fallback
+msgid "API Log Behavior:"
+msgstr "API Log Behavior:"
+
+#: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
+msgid ""
+"Records API key lifecycle events (creation, regeneration, revocation, "
+"permission changes) and authenticated API requests. Filter by user or "
+"operation to audit external integration activity. Sensitive values (keys, "
+"tokens) are never written to this log."
+msgstr ""
+
+#: templates/modern/list_log_users.html:26
 msgid "All users"
 msgstr "すべてのユーザー"
 
-#: templates/modern/list_log_groups.html:27
+#: templates/modern/list_log_groups.html:31
 msgid "All events"
 msgstr "すべてのイベント"
 
-#: templates/modern/list_log_groups.html:36
+#: templates/modern/list_log_groups.html:40
 msgid "From date"
 msgstr "開始日"
 
-#: templates/modern/list_log_groups.html:41
+#: templates/modern/list_log_groups.html:45
 msgid "To date"
 msgstr "終了日"
 
-#: templates/modern/list_log_groups.html:47
+#: templates/modern/list_log_groups.html:51
 msgid "Clear"
 msgstr "クリア"
 
-#: templates/modern/list_log_groups.html:64
+#: templates/modern/list_log_groups.html:68
 msgid "Id"
 msgstr "ID"
 
-#: templates/modern/list_log_groups.html:67
+#: templates/modern/list_log_groups.html:71
 msgid "Event"
 msgstr "イベント"
 
-#: templates/modern/list_log_groups.html:103
+#: templates/modern/list_log_groups.html:107
 msgid "Details"
 msgstr "詳細"
 
-#: templates/modern/list_log_groups.html:147
+#: templates/modern/list_log_groups.html:151
 msgid "Export"
 msgstr "エクスポート"
 
-#: templates/modern/list_log_groups.html:124
+#: templates/modern/list_log_groups.html:128
 msgid "Export Logs"
 msgstr "ログをエクスポート"
 
-#: templates/modern/list_log_groups.html:128
+#: templates/modern/list_log_groups.html:132
 msgid "Export filtered log entries. Current filters will be applied."
 msgstr ""
 "フィルタされたログエントリをエクスポートします。現在のフィルタが適用されま"
 "す。"
 
-#: templates/modern/list_log_groups.html:129
+#: templates/modern/list_log_groups.html:133
 msgid "records to export"
 msgstr "エクスポートするレコード"
 
-#: templates/modern/list_log_groups.html:131
+#: templates/modern/list_log_groups.html:135
 msgid "Format"
 msgstr "形式"
 
-#: templates/modern/list_log_groups.html:169
+#: templates/modern/list_log_groups.html:173
 msgid "Log Details"
 msgstr "ログの詳細"
 
-#: templates/modern/list_log_groups.html:179
+#: templates/modern/list_log_groups.html:183
 msgid "Close"
 msgstr "閉じる"
 
-#: templates/modern/list_log_groups.html:202
+#: templates/modern/list_log_groups.html:206
 msgid "Copied"
 msgstr "コピーしました"
 
-#: templates/modern/list_log_groups.html:210
+#: templates/modern/list_log_groups.html:214
 msgid "No logs found"
 msgstr "ログが見つかりません"
 
-#: templates/modern/list_log_groups.html:211
+#: templates/modern/list_log_groups.html:215
 msgid "Try different search criteria or check back later"
 msgstr "異なる検索条件を試すか、後でもう一度確認してください"
 
@@ -10257,11 +10296,24 @@ msgstr "ゾーンログ"
 msgid "Zone Change Logs"
 msgstr "ゾーン変更ログ"
 
+#: templates/modern/list_log_zones.html:25
+#, auto-english-fallback
+msgid "Zone Log Behavior:"
+msgstr "Zone Log Behavior:"
+
+#: templates/modern/list_log_zones.html:26
+msgid ""
+"This activity feed records every operation performed against zones and "
+"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
+"key:value event string. For structured before/after snapshots and a diff "
+"view of record changes, see the Record Change Log."
+msgstr ""
+
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
 msgstr "ドメイン名"
 
-#: templates/modern/list_log_zones.html:33
+#: templates/modern/list_log_zones.html:37
 msgid "All operations"
 msgstr "すべての操作"
 
@@ -10402,7 +10454,7 @@ msgstr ""
 "このユーザーは以下のゾーンの所有者です。各ゾーンの処理方法を決定してくださ"
 "い："
 
-#: templates/modern/delete_records.html:39
+#: templates/modern/list_record_changes.html:78
 msgid "Zone"
 msgstr "ゾーン"
 
@@ -10823,7 +10875,7 @@ msgstr ""
 "現代の展開では、256ビットのECDSA（アルゴリズム13、ECDSAP256SHA256）が優れたパ"
 "フォーマンスで強力なセキュリティを提供します。"
 
-#: templates/modern/edit_user.html:5 templates/modern/header.html:366
+#: templates/modern/edit_user.html:5 templates/modern/header.html:371
 msgid "Edit profile"
 msgstr "プロフィールを編集"
 
@@ -11045,7 +11097,7 @@ msgstr "はい、これらのゾーンのリンクを解除します"
 msgid "Access templates"
 msgstr "アクセステンプレート"
 
-#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "追加"
 
@@ -11721,7 +11773,7 @@ msgstr "署名なし"
 msgid "User Management"
 msgstr "ユーザー管理"
 
-#: templates/modern/add_user.html:5 templates/modern/header.html:209
+#: templates/modern/add_user.html:5 templates/modern/header.html:214
 msgid "Add user"
 msgstr "ユーザーを追加"
 
@@ -11888,7 +11940,7 @@ msgstr "警告"
 msgid "Zones Without Owners"
 msgstr "所有者のないゾーン"
 
-#: templates/modern/database_consistency.html:259
+#: templates/modern/list_record_changes.html:49
 msgid "Zone ID"
 msgstr "ゾーンID"
 
@@ -12137,7 +12189,7 @@ msgstr ""
 "ンを更新しません - テンプレート編集時に「ゾーンを更新」ボタンを使用して変更を"
 "適用してください。"
 
-#: templates/modern/change_password.html:49 templates/modern/header.html:378
+#: templates/modern/change_password.html:49 templates/modern/header.html:383
 msgid "Change password"
 msgstr "パスワードを変更"
 
@@ -12189,7 +12241,7 @@ msgstr "文字、数字、記号を組み合わせて含める"
 msgid "Consider using a password manager"
 msgstr "パスワードマネージャーの使用を検討"
 
-#: templates/modern/header.html:385
+#: templates/modern/header.html:390
 msgid "Multi-Factor Authentication"
 msgstr "多要素認証"
 
@@ -12509,6 +12561,67 @@ msgstr "対応するPTRレコードも削除（存在する場合）"
 #: templates/modern/delete_records.html:84
 msgid "Yes, delete these records"
 msgstr "はい、これらのレコードを削除します"
+
+#: templates/modern/list_record_changes.html:14
+msgid "entries"
+msgstr "entries"
+
+#: templates/modern/list_record_changes.html:19
+msgid "Change Log Behavior:"
+msgstr "Change Log Behavior:"
+
+#: templates/modern/list_record_changes.html:20
+msgid ""
+"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
+"before/after snapshot here, alongside the user and timestamp. Logs never "
+"expire automatically - prune old rows manually if the table grows large. Use "
+"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
+"to feed external audit systems."
+msgstr ""
+
+#: templates/modern/list_record_changes.html:34
+msgid "All actions"
+msgstr "All actions"
+
+#: templates/modern/list_record_changes.html:52
+msgid "From"
+msgstr "From"
+
+#: templates/modern/list_record_changes.html:55
+msgid "To"
+msgstr "To"
+
+#: templates/modern/list_record_changes.html:75
+msgid "When"
+msgstr "When"
+
+#: templates/modern/list_record_changes.html:76
+msgid "Action"
+msgstr "Action"
+
+#: templates/modern/list_perm_templ.html:75
+msgid "User"
+msgstr "ユーザー"
+
+#: templates/modern/list_record_changes.html:83
+msgid "Prio"
+msgstr "Prio"
+
+#: templates/modern/list_record_changes.html:126
+msgid "before"
+msgstr "before"
+
+#: templates/modern/list_record_changes.html:127
+msgid "after"
+msgstr "after"
+
+#: templates/modern/list_record_changes.html:212
+msgid "No record changes found"
+msgstr "No record changes found"
+
+#: templates/modern/list_record_changes.html:213
+msgid "Try a different filter or time window"
+msgstr "Try a different filter or time window"
 
 #: templates/modern/mfa_recovery_codes.html:36
 msgid "Recovery Codes"
@@ -12932,13 +13045,26 @@ msgstr "はい、これらのゾーンを削除します"
 msgid "No, keep these zones"
 msgstr "いいえ、これらのゾーンを保持します"
 
-#: templates/modern/list_log_users.html:5 templates/modern/header.html:216
+#: templates/modern/list_log_users.html:5 templates/modern/header.html:221
 msgid "User logs"
 msgstr "ユーザーログ"
 
 #: templates/modern/list_log_users.html:11
 msgid "User Activity Logs"
 msgstr "ユーザーアクティビティログ"
+
+#: templates/modern/list_log_users.html:19
+#, auto-english-fallback
+msgid "User Log Behavior:"
+msgstr "User Log Behavior:"
+
+#: templates/modern/list_log_users.html:20
+msgid ""
+"Records user account events such as logins, password changes, group "
+"membership updates, and admin actions on user records. Each entry shows the "
+"action, the actor, the affected user, and a timestamp. Filter by operation "
+"or user to audit access changes."
+msgstr ""
 
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
@@ -12972,34 +13098,38 @@ msgstr "ゾーンテンプレートを削除しようとしています"
 msgid "This template is currently used by"
 msgstr "このテンプレートは現在"
 
-#: templates/default/list_views.html:13 templates/modern/list_views.html:13
+#: templates/default/list_views.html:14 templates/modern/list_views.html:14
+msgid "View Behavior:"
+msgstr "View Behavior:"
+
+#: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid ""
 "Views serve different zone variants to different clients based on the "
-"network mapping. Each variant is identified as zone..variant (for example, "
-"example.com..trusted)."
+"network that queried the resolver. Each variant is named zone..variant (for "
+"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
+"before it can be assigned here. Variants share a name but resolve "
+"differently per view, so the same hostname can answer with different IPs "
+"depending on the client's network."
 msgstr ""
-"ビューはネットワークマッピングに基づいて異なるクライアントに異なるゾーンのバ"
-"リアントを提供します。各バリアントは zone..variant (例: "
-"example.com..trusted) として識別されます。"
 
-#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+#: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
 msgstr ""
 "まだビューが設定されていません。下でゾーンのバリアントを追加してください。"
 
-#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+#: templates/default/list_views.html:40 templates/modern/list_views.html:40
 msgid "Remove from view"
 msgstr "ビューから削除"
 
-#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+#: templates/default/list_views.html:54 templates/modern/list_views.html:54
 msgid "Assign zone to view"
 msgstr "ゾーンをビューに割り当てる"
 
-#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+#: templates/default/list_views.html:61 templates/modern/list_views.html:61
 msgid "View name"
 msgstr "ビュー名"
 
-#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+#: templates/default/list_views.html:65 templates/modern/list_views.html:65
 msgid "Zone (zone..variant)"
 msgstr "ゾーン (zone..variant)"
 
@@ -13170,17 +13300,6 @@ msgstr "稼働時間"
 msgid "Server information is not available."
 msgstr "サーバー情報は利用できません。"
 
-#: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:102
-msgid "Slave Servers"
-msgstr "スレーブサーバー"
-
-#: templates/default/pdns_status.html:104 templates/modern/pdns_status.html:105
-msgid ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
-msgstr ""
-"スーパーマスターテーブルに記載されているDNSサーバーの接続状況を表示していま"
-"す。"
-
 #: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:115
 msgid "Server IP"
 msgstr "サーバーIP"
@@ -13270,27 +13389,31 @@ msgstr "正引きゾーン"
 msgid "Reverse zones"
 msgstr "逆引きゾーン"
 
-#: templates/default/header.html:142 templates/modern/header.html:203
+#: templates/default/header.html:131 templates/modern/header.html:189
+msgid "Record change log"
+msgstr "Record change log"
+
+#: templates/default/header.html:143 templates/modern/header.html:208
 msgid "List users"
 msgstr "ユーザーをリスト"
 
-#: templates/default/header.html:163 templates/modern/header.html:235
+#: templates/default/header.html:164 templates/modern/header.html:240
 msgid "List groups"
 msgstr "グループをリスト"
 
-#: templates/modern/header.html:246 templates/modern/list_log_groups.html:5
+#: templates/modern/header.html:251 templates/modern/list_log_groups.html:5
 msgid "Group logs"
 msgstr "グループログ"
 
-#: templates/default/header.html:183 templates/modern/header.html:265
+#: templates/default/header.html:184 templates/modern/header.html:270
 msgid "List templates"
 msgstr "テンプレートをリスト"
 
-#: templates/default/header.html:200 templates/modern/header.html:290
+#: templates/default/header.html:201 templates/modern/header.html:295
 msgid "List zone templates"
 msgstr "ゾーンテンプレートを一覧表示"
 
-#: templates/default/header.html:227 templates/modern/header.html:330
+#: templates/default/header.html:228 templates/modern/header.html:335
 msgid "API Documentation"
 msgstr "APIドキュメント"
 
@@ -13451,13 +13574,18 @@ msgstr "APIキーを有効にしてよろしいですか"
 msgid "External applications will be able to authenticate using this key."
 msgstr "外部アプリケーションはこのキーで認証できるようになります。"
 
-#: templates/default/api_keys.html:181 templates/modern/api_keys.html:182
+#: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
+#, auto-english-fallback
+msgid "API Key Behavior:"
+msgstr "API Key Behavior:"
+
+#: templates/default/api_keys.html:183 templates/modern/api_keys.html:184
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions."
+"is linked to your user account and inherits your permissions, so revoking "
+"your account also revokes all its keys. Treat keys as secrets - they grant "
+"the same access as logging in as you."
 msgstr ""
-"APIキーは外部アプリケーションがPoweradmin APIにアクセスすることを可能にしま"
-"す。各キーはユーザーアカウントにリンクされ、権限を継承します。"
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -13627,10 +13755,6 @@ msgid "Add access template"
 msgstr "アクセステンプレートを追加"
 
 #: templates/modern/list_perm_templ.html:75
-msgid "User"
-msgstr "ユーザー"
-
-#: templates/modern/list_perm_templ.html:75
 msgid "Group"
 msgstr "グループ"
 
@@ -13654,7 +13778,20 @@ msgstr "テンプレートはグループ所有のゾーンにのみ適用され
 msgid "Group Activity Logs"
 msgstr "グループアクティビティログ"
 
-#: templates/modern/list_log_groups.html:22
+#: templates/modern/list_log_groups.html:19
+#, auto-english-fallback
+msgid "Group Log Behavior:"
+msgstr "Group Log Behavior:"
+
+#: templates/modern/list_log_groups.html:20
+msgid ""
+"Records group lifecycle events (create, edit, delete) and membership changes "
+"(users added or removed). Each entry shows the action, the actor, the "
+"affected group, and a timestamp. Useful for auditing zone-access changes "
+"mediated by group ownership."
+msgstr ""
+
+#: templates/modern/list_log_groups.html:26
 msgid "Group name"
 msgstr "グループ名"
 
@@ -13851,130 +13988,116 @@ msgstr "のRDAP結果"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "制限付きユーザーを作成"
+msgstr "Create limited rights user"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
-msgstr "ステップ"
+msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "制限付きユーザーを作成"
+msgstr "Create limited-rights user"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "制限付きデータベース権限:"
+msgstr "Limited Database Rights:"
 
 #: install/templates/step6.html.twig:15
-#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
 msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
 
 #: install/templates/step6.html.twig:17
-#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
-msgstr "データベースコマンド"
+msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "次のコマンドを実行してください:"
+msgstr "Execute the following commands:"
 
 #: install/templates/step6.html.twig:40
-#, auto-english-fallback
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
 msgstr ""
-"After you have added the new user, proceed with this installation procedure."
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
 msgid "Note:"
-msgstr "注意:"
+msgstr "Note:"
 
 #: install/templates/step6.html.twig:43
-#, auto-english-fallback
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "次のステップに進む"
+msgstr "Continue to step"
 
 #: install/templates/base.html.twig:37
 msgid "Installation step"
-msgstr "インストールステップ"
+msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "設定ファイルを作成"
+msgstr "Create configuration file"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
-msgstr "設定ファイル:"
+msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "ファイルを作成"
+msgstr "Create the file"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "次の内容で:"
+msgstr "with the following content:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "言語を選択"
+msgstr "Choose a language"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "インストール用の言語を選択"
+msgstr "Choose a language for installation"
 
 #: install/templates/step1.html.twig:12
-#, auto-english-fallback
 msgid ""
 "Please select your preferred language to continue with the installation:"
 msgstr ""
-"Please select your preferred language to continue with the installation:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
-msgstr "インストールを開始"
+msgstr "Begin Installation"
 
 #: install/templates/step4.html.twig:3
 msgid "Configuring database"
-msgstr "データベースを設定中"
+msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "データベース接続を設定中"
+msgstr "Configuring Database Connection"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
-msgstr "PowerDNS バックエンド"
+msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Poweradmin が PowerDNS と通信する方法を選択してください:"
+msgstr "Choose how Poweradmin communicates with PowerDNS:"
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
-msgstr "PowerDNS データベーステーブルへの直接アクセス"
+msgstr "Direct access to PowerDNS database tables"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
@@ -13986,11 +14109,11 @@ msgstr "PowerDNS REST API"
 
 #: install/templates/step4.html.twig:33
 msgid "Experimental"
-msgstr "実験的"
+msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "PowerDNS API 設定"
+msgstr "PowerDNS API Settings"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
@@ -13998,289 +14121,272 @@ msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "PowerDNS API エンドポイントの URL。"
+msgstr "PowerDNS API endpoint URL."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
-msgstr "API キー"
+msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "PowerDNS API キー (pdns.conf の api-key 設定から)。"
+msgstr "PowerDNS API key (from pdns.conf api-key setting)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
-msgstr "サーバー名"
+msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
-#, auto-english-fallback
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr ""
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "データベース接続設定"
+msgstr "Database Connection Settings"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
-msgstr "データベース設定:"
+msgstr "Database Configuration:"
 
 #: install/templates/step4.html.twig:90
-#, auto-english-fallback
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
 msgstr ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
 
 #: install/templates/step4.html.twig:93
-#, auto-english-fallback
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
 msgstr ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
 
 #: install/templates/step4.html.twig:97
 msgid "Database type"
-msgstr "データベースの種類"
+msgstr "Database type"
 
 #: install/templates/step4.html.twig:106
 msgid "Database server type."
-msgstr "データベースサーバーの種類。"
+msgstr "Database server type."
 
 #: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "ユーザー名を入力してください"
+msgstr "Provide the user name"
 
 #: install/templates/step4.html.twig:117
 msgid "Database username with rights to create tables."
-msgstr "テーブル作成権限を持つデータベースユーザー。"
+msgstr "Database username with rights to create tables."
 
 #: install/templates/step4.html.twig:131
 msgid "Password for this database user."
-msgstr "このデータベースユーザーのパスワード。"
+msgstr "Password for this database user."
 
 #: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "引用符、バックスラッシュ、改行は避けてください。"
+msgstr "Avoid quotes, backslashes, and line breaks."
 
 #: install/templates/step4.html.twig:140
 msgid "Provide the hostname"
-msgstr "ホスト名を入力してください"
+msgstr "Provide the hostname"
 
 #: install/templates/step4.html.twig:143
-#, auto-english-fallback
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr ""
 
 #: install/templates/step4.html.twig:148
 msgid "DB Port"
-msgstr "DB ポート"
+msgstr "DB Port"
 
 #: install/templates/step4.html.twig:151
 msgid "Provide database port"
-msgstr "データベースポートを入力してください"
+msgstr "Provide database port"
 
 #: install/templates/step4.html.twig:154
 msgid "Database server port."
-msgstr "データベースサーバーのポート。"
+msgstr "Database server port."
 
 #: install/templates/step4.html.twig:162
 msgid "Provide the name of the database"
-msgstr "データベース名を入力してください"
+msgstr "Provide the name of the database"
 
 #: install/templates/step4.html.twig:165
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "データベース名 (Poweradmin テーブルに使用)。"
+msgstr "Database name (will be used for Poweradmin tables)."
 
 #: install/templates/step4.html.twig:167
 msgid "Full path to SQLite database file"
-msgstr "SQLite データベースファイルの完全パス"
+msgstr "Full path to SQLite database file"
 
 #: install/templates/step4.html.twig:170
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr "ファイルが存在し、Web サーバーが読み書きアクセス可能である必要があります。絶対パスを使用してください。"
+msgstr "File must exist with web server read/write access. Use absolute path."
 
 #: install/templates/step4.html.twig:178
 msgid "DB charset"
-msgstr "DB 文字セット"
+msgstr "DB charset"
 
 #: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
 msgid "Use default"
-msgstr "既定値を使用"
+msgstr "Use default"
 
 #: install/templates/step4.html.twig:185
 msgid "Charset for new tables. Leave empty for database default."
-msgstr "新しいテーブルの文字セット。空にするとデータベースの既定値を使用します。"
+msgstr "Charset for new tables. Leave empty for database default."
 
 #: install/templates/step4.html.twig:190
 msgid "DB collation"
-msgstr "DB 照合順序"
+msgstr "DB collation"
 
 #: install/templates/step4.html.twig:197
-#, auto-english-fallback
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
 
 #: install/templates/step4.html.twig:206
 msgid "PowerDNS Database"
-msgstr "PowerDNS データベース"
+msgstr "PowerDNS Database"
 
 #: install/templates/step4.html.twig:210
 msgid "Database name"
-msgstr "データベース名"
+msgstr "Database name"
 
 #: install/templates/step4.html.twig:213
 msgid "Leave empty for same database"
-msgstr "同じデータベースの場合は空のままにします"
+msgstr "Leave empty for same database"
 
 #: install/templates/step4.html.twig:216
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "PowerDNS テーブルを含む MySQL データベース (異なる場合)。"
+msgstr "MySQL database with PowerDNS tables (if different)."
 
 #: install/templates/step4.html.twig:224
 msgid "Poweradmin Account"
-msgstr "Poweradmin アカウント"
+msgstr "Poweradmin Account"
 
 #: install/templates/step4.html.twig:228
 msgid "Administrator password"
-msgstr "管理者パスワード"
+msgstr "Administrator password"
 
 #: install/templates/step4.html.twig:233
 msgid "Provide a password"
-msgstr "パスワードを入力してください"
+msgstr "Provide a password"
 
 #: install/templates/step4.html.twig:238
-#, auto-english-fallback
 msgid "Password for \"admin\" username."
-msgstr "Password for \"admin\" username."
+msgstr ""
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
-msgstr "システム要件"
+msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "システム要件チェック"
+msgstr "System Requirements Check"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
-msgstr "PHP バージョン"
+msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "PHP 8.2.0 以降が必要"
+msgstr "Requires PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
-msgstr "データベース拡張"
+msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "少なくとも 1 つ必要"
+msgstr "at least one required"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
-msgstr "必須の PHP 拡張"
+msgstr "Required PHP Extensions"
 
 #: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
-msgstr "任意の拡張"
+msgstr "Optional Extensions"
 
 #: install/templates/step2.html.twig:97
 msgid "Web Server"
-msgstr "Web サーバー"
+msgstr "Web Server"
 
 #: install/templates/step2.html.twig:102
 msgid "Server"
-msgstr "サーバー"
+msgstr "Server"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected — required for URL routing"
-msgstr "検出されません — URL ルーティングに必要です"
+msgstr "Not detected — required for URL routing"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
-msgstr "検出できません (PHP-FPM) — 有効になっているか確認してください"
+msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr "URL の書き換えが設定されていることを確認してください (nginx.conf.example を参照)"
+msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr "ご使用の Web サーバーで URL の書き換えが設定されていることを確認してください"
+msgstr "Ensure URL rewriting is configured for your web server"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "必要なすべてのコンポーネントが利用可能です。"
+msgstr "All required components are available."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "インストールを続行できます。"
+msgstr "You can continue with the installation."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "必要なコンポーネントの一部が不足しています。"
+msgstr "Some required components are missing."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "続行する前に不足しているコンポーネントをインストールしてください。"
+msgstr "Please install the missing components before continuing."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "アカウントとネームサーバーを設定"
+msgstr "Setup account and nameservers"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "アカウントとネームサーバーを設定"
+msgstr "Setup account and name servers"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
-msgstr "設定:"
+msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "次に、設定そのものに必要な詳細をすべて収集します。"
+msgstr "Now we will gather all details for the configuration itself."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
-msgstr "データベースユーザー"
+msgstr "Database User"
 
 #: install/templates/step5.html.twig:57
-#, auto-english-fallback
 msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
 msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
 
 #: install/templates/step5.html.twig:67
-#, auto-english-fallback
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "ユーザーのパスワードを入力してください"
+msgstr "Provide the user password"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "このユーザー名のパスワード。"
+msgstr "The password for this username."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
-msgstr "DNS 設定"
+msgstr "DNS Settings"
 
 #: install/templates/step5.html.twig:95
 msgid "Hostmaster"
@@ -14288,300 +14394,267 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "DNS hostmaster を入力してください"
+msgstr "Provide the DNS hostmaster"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "SOA レコードの既定の hostmaster。"
+msgstr "Default hostmaster for SOA records."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
-msgstr "プライマリネームサーバー"
+msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "プライマリネームサーバーを入力してください"
+msgstr "Provide the primary nameserver"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
-msgstr "新しいゾーンのプライマリネームサーバー。"
+msgstr "Primary nameserver for new zones."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
-msgstr "セカンダリネームサーバー"
+msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "セカンダリネームサーバーを入力してください"
+msgstr "Provide the secondary nameserver"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
-msgstr "新しいゾーンのセカンダリネームサーバー。"
+msgstr "Secondary nameserver for new zones."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
-msgstr "ターシャリネームサーバー"
+msgstr "Tertiary Nameserver"
 
 #: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
 msgid "optional"
-msgstr "任意"
+msgstr "optional"
 
 #: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
-msgstr "新しいゾーンの任意のターシャリネームサーバー。"
+msgstr "Optional tertiary nameserver for new zones."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
-msgstr "クォータナリネームサーバー"
+msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "新しいゾーンの任意のクォータナリネームサーバー。"
+msgstr "Optional quaternary nameserver for new zones."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
-msgstr "インストール完了"
+msgstr "Installation complete"
 
 #: install/templates/step8.html.twig:12
 msgid "Installation Complete!"
-msgstr "インストール完了!"
+msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "おめでとうございます!Poweradmin のインストールが構成されました。"
+msgstr "Congratulations! Your Poweradmin installation is now configured."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "重要なセキュリティ通知:"
+msgstr "Important Security Notice:"
 
 #: install/templates/step8.html.twig:16
-#, auto-english-fallback
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
 msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
 
 #: install/templates/step8.html.twig:17
-#, auto-english-fallback
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
 msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
-msgstr "次のステップ"
+msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
-#, auto-english-fallback
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr ""
 
 #: install/templates/step8.html.twig:27
-#, auto-english-fallback
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
 msgstr ""
-"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
-"\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "DNS ゾーンとレコードの構成を開始する"
+msgstr "Begin configuring your DNS zones and records"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
-msgstr "準備"
+msgstr "Getting Ready"
 
 #: install/templates/step3.html.twig:13
 msgid "Prerequisites"
-msgstr "前提条件"
+msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "続行する前に、次のものがあることを確認してください:"
+msgstr "Before proceeding, ensure you have:"
 
 #: install/templates/step3.html.twig:18
-#, auto-english-fallback
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
 msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "データベース認証情報 (ホスト名、ユーザー名、パスワード)"
+msgstr "Database credentials (hostname, username, password)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Poweradmin 用にテーブルを作成する権限"
+msgstr "Permission to create tables for Poweradmin"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
-msgstr "次へ:"
+msgstr "Next:"
 
 #: install/templates/step3.html.twig:27
-#, auto-english-fallback
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
 msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
 
 #: install/helpers/InstallStepHandler.php:176
 msgid "Missing PowerDNS tables:"
-msgstr "不足している PowerDNS テーブル:"
+msgstr "Missing PowerDNS tables:"
 
 #: install/helpers/InstallStepHandler.php:177
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin が正しく機能するには、これらの PowerDNS テーブルが必要です。"
+msgstr "Poweradmin requires these PowerDNS tables to function properly."
 
 #: install/helpers/InstallStepHandler.php:185
 msgid "Updating database... done!"
-msgstr "データベースを更新中... 完了!"
+msgstr "Updating database... done!"
 
 #: install/helpers/InstallStepHandler.php:207
 msgid "Foreign Key Constraint Issues:"
-msgstr "外部キー制約の問題:"
+msgstr "Foreign Key Constraint Issues:"
 
 #: install/helpers/InstallStepHandler.php:209
-#, auto-english-fallback
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
 
 #: install/helpers/InstallStepHandler.php:210
-#, auto-english-fallback
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
 
 #: install/helpers/InstallStepHandler.php:211
-#, auto-english-fallback
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
 msgstr ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"
-msgstr "推奨事項:"
+msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:218
 msgid "Make sure the SQLite database file exists"
-msgstr "SQLite データベースファイルが存在することを確認してください"
+msgstr "Make sure the SQLite database file exists"
 
 #: install/helpers/InstallStepHandler.php:219
-#, auto-english-fallback
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
 msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
 
 #: install/helpers/InstallStepHandler.php:220
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "データベースファイルへの完全パスが正しくアクセス可能であることを確認してください"
+msgstr "Verify the full path to the database file is correct and accessible"
 
 #: install/helpers/InstallStepHandler.php:226
 msgid "Verify database credentials are correct"
-msgstr "データベース認証情報が正しいことを確認してください"
+msgstr "Verify database credentials are correct"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid "Check that the database user has sufficient privileges"
-msgstr "データベースユーザーが十分な権限を持っていることを確認してください"
+msgstr "Check that the database user has sufficient privileges"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid "Ensure the database server is running and accessible"
-msgstr "データベースサーバーが実行中でアクセス可能であることを確認してください"
+msgstr "Ensure the database server is running and accessible"
 
 #: install/helpers/InstallStepHandler.php:233
 msgid "Database Error"
-msgstr "データベースエラー"
+msgstr "Database Error"
 
 #: install/helpers/DatabaseHelper.php:175
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
 msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
 
 #: install/helpers/DatabaseHelper.php:183
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
 msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:191
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
 msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:203
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "SQLite データベースファイル %s にアクセスできませんでした: %s"
+msgstr "Could not access the SQLite database file %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "API バックエンドを使用する場合は PowerDNS API URL が必要です。"
+msgstr "PowerDNS API URL is required when using API backend."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "API バックエンドを使用する場合は PowerDNS API キーが必要です。"
+msgstr "PowerDNS API key is required when using API backend."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
-#, auto-english-fallback
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
 msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
-#, auto-english-fallback
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
-#, auto-english-fallback
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
 msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
-#, auto-english-fallback
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr ""
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "APIキーは外部アプリケーションがPoweradmin APIにアクセスすることを可能にし"
+# OBSOLETE: "ます。各キーはユーザーアカウントにリンクされ、権限を継承します。"
+
+
 

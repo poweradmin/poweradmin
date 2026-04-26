@@ -341,14 +341,17 @@ abstract class BaseController
      * Trigger a session-cached refresh of PowerDNS version + capabilities.
      *
      * Makes at most one API call per minute (rate-limited via the session
-     * timestamp `pdns_version_last_attempt`) and is a no-op on non-API
-     * backends. Call from controllers that need an up-to-date capability
-     * snapshot - e.g. the dashboard. Page renders that don't call this just
-     * read whatever is already cached.
+     * timestamp `pdns_version_last_attempt`) and is a no-op when no PowerDNS
+     * API is configured. Runs in both API and SQL backend modes: the
+     * version display is useful in either mode whenever `pdns_api` is
+     * configured, even though capability gates only matter for API mode.
+     * Page renders that don't call this just read whatever is already cached.
      */
     protected function refreshPdnsCapabilities(): void
     {
-        if (!DnsBackendProviderFactory::isApiBackend($this->config)) {
+        $apiUrl = (string) $this->config->get('pdns_api', 'url', '');
+        $apiKey = (string) $this->config->get('pdns_api', 'key', '');
+        if ($apiUrl === '' || $apiKey === '') {
             return;
         }
         $last = $_SESSION['pdns_version_last_attempt'] ?? 0;

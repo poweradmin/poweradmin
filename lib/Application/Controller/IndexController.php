@@ -128,9 +128,17 @@ class IndexController extends BaseController
         // Other pages read whatever the cache holds without triggering
         // detection on the render path.
         $apiError = null;
-        if ($permissions['user_is_ueberuser'] && DnsBackendProviderFactory::isApiBackend($this->config)) {
-            $apiError = (new ApiStatusService())->getLastError();
-            $this->refreshPdnsCapabilities();
+        if ($permissions['user_is_ueberuser']) {
+            // Surface API errors only in API backend mode (where API failures
+            // affect data shown on the dashboard). The version refresh runs
+            // whenever pdns_api is configured, regardless of dns.backend, so
+            // the dashboard can show "PowerDNS: <version>" in SQL mode too.
+            if (DnsBackendProviderFactory::isApiBackend($this->config)) {
+                $apiError = (new ApiStatusService())->getLastError();
+            }
+            if ($pdnsApiEnabled) {
+                $this->refreshPdnsCapabilities();
+            }
         }
 
         $this->render("index.html", [

@@ -143,6 +143,9 @@ class BadgeTwigExtension extends AbstractExtension
                 : _('You are about to delete the supermaster'),
             'delete_yes' => $modern ? _('Yes, delete this autoprimary') : _('Yes, delete this supermaster'),
             'delete_no' => $modern ? _('No, keep this autoprimary') : _('No, keep this supermaster'),
+            'connectivity_help' => $modern
+                ? _('Showing connectivity status for the autoprimary servers configured in the table below.')
+                : _('Showing connectivity status for the supermasters configured in the table below.'),
             default => $modern ? _('Autoprimaries') : _('Supermasters'),
         };
     }

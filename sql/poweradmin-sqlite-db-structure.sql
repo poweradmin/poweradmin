@@ -16,6 +16,24 @@ CREATE TABLE log_groups (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, c
 CREATE INDEX idx_log_groups_group_id ON log_groups(group_id);
 
 
+CREATE TABLE log_record_changes (
+    id integer PRIMARY KEY,
+    zone_id integer,
+    record_id integer,
+    action VARCHAR(32) NOT NULL,
+    user_id integer,
+    username VARCHAR(64) NOT NULL,
+    before_state TEXT,
+    after_state TEXT,
+    client_ip VARCHAR(64),
+    created_at timestamp DEFAULT current_timestamp NOT NULL
+);
+
+CREATE INDEX idx_log_record_changes_created_at ON log_record_changes(created_at);
+CREATE INDEX idx_log_record_changes_zone_id ON log_record_changes(zone_id);
+CREATE INDEX idx_log_record_changes_action ON log_record_changes(action);
+
+
 CREATE TABLE perm_items (id integer PRIMARY KEY, name VARCHAR(64) NOT NULL, descr VARCHAR(1024) NOT NULL);
 
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (41,	'zone_master_add',	'User is allowed to add new master zones.');

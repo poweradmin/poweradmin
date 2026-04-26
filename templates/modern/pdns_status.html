@@ -99,10 +99,10 @@
             <div class="col-md-6">
                 <div class="card h-100 mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0">{% trans %}Slave Servers{% endtrans %} (Supermasters)</h5>
+                        <h5 class="mb-0">{{ autoprimaries_label('plural') }}</h5>
                     </div>
                     <div class="card-body">
-                        <p class="small text-muted mb-3">{% trans %}Showing connectivity status for DNS servers listed in the supermasters table.{% endtrans %}</p>
+                        <p class="small text-muted mb-3">{{ autoprimaries_label('connectivity_help') }}</p>
                         {% if slave_status.error is defined %}
                         <div class="alert alert-danger">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>

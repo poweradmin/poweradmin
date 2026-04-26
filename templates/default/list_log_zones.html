@@ -21,6 +21,10 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="text-muted small mb-3">
+            <strong><i class="bi bi-info-circle me-1"></i>{% trans %}Zone Log Behavior:{% endtrans %}</strong>
+            {% trans %}This activity feed records every operation performed against zones and records (creates, edits, deletes, DNSSEC actions, imports) as a flat key:value event string. For structured before/after snapshots and a diff view of record changes, see the Record Change Log.{% endtrans %}
+        </div>
         <form method="GET" action="{{ base_url_prefix }}/zones/logs">
             <div class="row g-2 mb-2">
                 <div class="col-md-3">

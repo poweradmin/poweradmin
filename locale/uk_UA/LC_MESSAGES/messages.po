@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-25 18:57+0300\n"
+"POT-Creation-Date: 2026-04-26 10:53+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1312,7 +1312,7 @@ msgstr "Не вдалося отримати інформацію RDAP за до
 msgid "Invalid CSRF token."
 msgstr "Недійсний токен CSRF."
 
-#: lib/BaseController.php:661
+#: lib/BaseController.php:664
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1320,7 +1320,7 @@ msgstr ""
 "Каталог <a href=\"install/\">install/</a> існує, ви повинні видалити його "
 "перед продовженням."
 
-#: lib/BaseController.php:718
+#: lib/BaseController.php:721
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1328,12 +1328,12 @@ msgstr ""
 "Використовується стандартний ключ шифрування сесії, будь ласка, встановіть "
 "його у вашому файлі конфігурації."
 
-#: lib/BaseController.php:857
+#: lib/BaseController.php:860
 #, php-format
 msgid "The %s field is required."
 msgstr "Поле %s є обов'язковим."
 
-#: lib/BaseController.php:865
+#: lib/BaseController.php:868
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Поле %s повинно бути числом."
@@ -1412,7 +1412,7 @@ msgstr "Функція коментарів зони вимкнена в кон�
 msgid "You do not have the permission to view this comment."
 msgstr "У вас немає дозволу на перегляд цього коментаря."
 
-#: lib/Domain/Service/Dns/RecordManager.php:450
+#: lib/Domain/Service/Dns/RecordManager.php:534
 msgid "You do not have the permission to edit this comment."
 msgstr "У вас немає дозволу на редагування цього коментаря."
 
@@ -1687,7 +1687,7 @@ msgstr ""
 "безпечному місці."
 
 #: lib/Application/Controller/ListLogApiController.php:51
-#: templates/modern/list_log_api.html:4 templates/modern/header.html:323
+#: templates/modern/list_log_api.html:4 templates/modern/header.html:328
 msgid "API Logs"
 msgstr "Журнали API"
 
@@ -1869,9 +1869,14 @@ msgid "You do not have the permission to perform searches."
 msgstr "У вас немає дозволу на виконання пошуку."
 
 #: lib/Application/Controller/SearchController.php:49
-#: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
+#: templates/modern/header.html:127 templates/modern/list_log_groups.html:48
 msgid "Search"
 msgstr "Content includes temporal point process. Model event sequences."
+
+#: lib/Application/Controller/ListRecordChangesController.php:62
+#: templates/modern/list_record_changes.html:11
+msgid "Record Change Log"
+msgstr "Record Change Log"
 
 #: lib/Application/Controller/QuickRemoveGroupZoneController.php:73
 msgid "Invalid request method."
@@ -1927,7 +1932,7 @@ msgstr "Пароль було згенеровано, але не відобра
 msgid "Please fill in all required fields correctly."
 msgstr "Будь ласка, заповніть усі обов'язкові поля правильно."
 
-#: lib/Domain/Service/Dns/RecordManager.php:396
+#: lib/Domain/Service/Dns/RecordManager.php:480
 msgid "You do not have the permission to delete this record."
 msgstr "У вас немає дозволу на видалення цього запису."
 
@@ -2205,7 +2210,7 @@ msgstr ""
 "Не вдалося надіслати код підтвердження на вашу електронну пошту. "
 "Скористайтеся кодом відновлення."
 
-#: lib/Domain/Service/Dns/RecordManager.php:216
+#: lib/Domain/Service/Dns/RecordManager.php:242
 msgid "You do not have the permission to add a record to this zone."
 msgstr "У вас немає дозволу на додавання запису до цієї зони."
 
@@ -2256,7 +2261,7 @@ msgstr "Зону було успішно видалено."
 msgid "Zones have been deleted successfully."
 msgstr "Зони було успішно видалено."
 
-#: lib/Domain/Service/Dns/DomainManager.php:667
+#: lib/Domain/Service/Dns/DomainManager.php:763
 msgid "You do not have the permission to delete a zone."
 msgstr "У вас немає дозволу на видалення зони."
 
@@ -2301,15 +2306,15 @@ msgstr "Журнали груп"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "У вас немає дозволу на керування DNSSEC для цієї зони."
 
-#: lib/Application/Controller/DnssecKeyExportController.php:74
+#: lib/Application/Controller/DnssecKeyExportController.php:75
 msgid "PEM key export requires PowerDNS 4.7 or newer."
 msgstr "Експорт PEM-ключів потребує PowerDNS 4.7 або новіший."
 
-#: lib/Application/Controller/DnssecKeyExportController.php:86
+#: lib/Application/Controller/DnssecKeyExportController.php:87
 msgid "An error occurred while exporting the PEM key: "
 msgstr "Під час експорту PEM-ключа сталася помилка: "
 
-#: lib/Application/Controller/DnssecKeyExportController.php:92
+#: lib/Application/Controller/DnssecKeyExportController.php:93
 msgid ""
 "Could not retrieve the PEM key. The server may not expose private key "
 "material for this key."
@@ -2317,7 +2322,7 @@ msgstr ""
 "Не вдалося отримати PEM-ключ. Можливо, сервер не надає закритий ключовий "
 "матеріал для цього ключа."
 
-#: lib/Domain/Service/Dns/DomainManager.php:309
+#: lib/Domain/Service/Dns/DomainManager.php:349
 msgid "You do not have the permission to add a master zone."
 msgstr "У вас немає дозволу на додавання головної зони."
 
@@ -2567,7 +2572,7 @@ msgid "You do not have the permission to view this page."
 msgstr "У вас немає дозволу на перегляд цієї сторінки."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:42
-#: templates/default/header.html:232 templates/modern/header.html:337
+#: templates/default/header.html:233 templates/modern/header.html:342
 msgid "Database Consistency"
 msgstr ""
 "Record appears to be using sentiment analysis. Determine opinion polarity."
@@ -2737,24 +2742,24 @@ msgstr "У вас немає дозволу на додавання нового
 msgid "The supermaster has been added successfully."
 msgstr "Суперсервер було успішно додано."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:72
+#: lib/Application/Controller/DnssecKeyImportController.php:73
 msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr "Імпорт PEM-ключів потребує PowerDNS 4.7 або новіший."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:97
+#: lib/Application/Controller/DnssecKeyImportController.php:98
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr "Надайте закритий ключ у форматі PEM (має містити маркери BEGIN/END)."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:108
+#: lib/Application/Controller/DnssecKeyImportController.php:109
 msgid "PEM key imported successfully."
 msgstr "PEM-ключ успішно імпортовано."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:111
+#: lib/Application/Controller/DnssecKeyImportController.php:112
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
 msgstr "Не вдалося імпортувати PEM-ключ. Сервер PowerDNS міг відхилити формат."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:115
+#: lib/Application/Controller/DnssecKeyImportController.php:116
 msgid "An error occurred while importing the PEM key: "
 msgstr "Під час імпорту PEM-ключа сталася помилка: "
 
@@ -3220,11 +3225,11 @@ msgstr ""
 msgid "Slave"
 msgstr "Slave"
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Autoprimaries"
 msgstr "Autoprimaries"
 
-#: lib/Infrastructure/Web/BadgeTwigExtension.php:146
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:149
 msgid "Supermasters"
 msgstr "Content suggests distortion correction. Remove lens distortion."
 
@@ -3363,6 +3368,18 @@ msgstr "Ні, залишити цей autoprimary"
 msgid "No, keep this supermaster"
 msgstr "Ні, залишити цей supermaster"
 
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:147
+msgid ""
+"Showing connectivity status for the autoprimary servers configured in the "
+"table below."
+msgstr ""
+
+#: lib/Infrastructure/Web/BadgeTwigExtension.php:148
+msgid ""
+"Showing connectivity status for the supermasters configured in the table "
+"below."
+msgstr ""
+
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
@@ -3424,7 +3441,7 @@ msgstr "Поле вмісту містить недійсне значення."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Пріоритет для записів MX/SRV повинен бути числом від 0 до 65535."
 
-#: lib/Domain/Service/Dns/RecordManager.php:318
+#: lib/Domain/Service/Dns/RecordManager.php:357
 msgid "You do not have the permission to edit this record."
 msgstr "У вас немає дозволу на редагування цього запису."
 
@@ -8964,50 +8981,50 @@ msgstr ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
 
-#: lib/Domain/Service/Dns/RecordManager.php:208
+#: lib/Domain/Service/Dns/RecordManager.php:234
 msgid "You do not have the permission to add SOA record."
 msgstr ""
 "Content may be affected by Q-learning. Use experience replay and target "
 "network."
 
-#: lib/Domain/Service/Dns/RecordManager.php:212
+#: lib/Domain/Service/Dns/RecordManager.php:238
 msgid "You do not have the permission to add NS record."
 msgstr "Record may be part of actor-critic. Train actor and critic jointly."
 
-#: lib/Domain/Service/Dns/RecordManager.php:257
+#: lib/Domain/Service/Dns/RecordManager.php:283
 msgid "A record with this hostname, type, and content already exists."
 msgstr ""
 "This record type may have advantage function. Reduce variance in estimates."
 
-#: lib/Domain/Service/Dns/RecordManager.php:164
+#: lib/Domain/Service/Dns/RecordManager.php:178
 msgid "Failed to add record to DNS backend."
 msgstr "Не вдалося додати запис до DNS-бекенду."
 
-#: lib/Domain/Service/Dns/RecordManager.php:302
+#: lib/Domain/Service/Dns/RecordManager.php:341
 msgid "You do not have the permission to edit this SOA record."
 msgstr ""
 "Content suggests proximal policy optimization. Clip objective to prevent "
 "large updates."
 
-#: lib/Domain/Service/Dns/RecordManager.php:307
+#: lib/Domain/Service/Dns/RecordManager.php:346
 msgid "You do not have the permission to edit this NS record."
 msgstr ""
 "Record may be affected by DNS root server priming. Keep root hints current."
 
-#: lib/Domain/Service/Dns/RecordManager.php:356
+#: lib/Domain/Service/Dns/RecordManager.php:403
 msgid "Failed to update record in DNS backend."
 msgstr "Не вдалося оновити запис у DNS-бекенді."
 
-#: lib/Domain/Service/Dns/RecordManager.php:385
+#: lib/Domain/Service/Dns/RecordManager.php:452
 msgid "You do not have the permission to delete SOA records."
 msgstr "This configuration may have trust region. Constrain policy updates."
 
-#: lib/Domain/Service/Dns/RecordManager.php:390
+#: lib/Domain/Service/Dns/RecordManager.php:457
 msgid "You do not have the permission to delete NS records."
 msgstr ""
 "Content includes exploration strategy. Use epsilon-greedy or entropy bonus."
 
-#: lib/Domain/Service/Dns/DomainManager.php:591
+#: lib/Domain/Service/Dns/DomainManager.php:687
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Invalid argument(s) given to function %s %s"
@@ -9018,56 +9035,56 @@ msgstr ""
 "This configuration may have contextual bandit. Incorporate context into "
 "decisions."
 
-#: lib/Domain/Service/Dns/DomainManager.php:132
+#: lib/Domain/Service/Dns/DomainManager.php:146
 msgid "Failed to create zone in DNS backend."
 msgstr "Не вдалося створити зону в DNS-бекенді."
 
-#: lib/Domain/Service/Dns/DomainManager.php:301
+#: lib/Domain/Service/Dns/DomainManager.php:341
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "Не вдалося створити зону: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:213
+#: lib/Domain/Service/Dns/DomainManager.php:236
 msgid "Failed to create SOA record for zone."
 msgstr "Не вдалося створити SOA-запис для зони."
 
-#: lib/Domain/Service/Dns/DomainManager.php:260
+#: lib/Domain/Service/Dns/DomainManager.php:291
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "Не вдалося створити %s-запис для зони."
 
-#: lib/Domain/Service/Dns/DomainManager.php:305
+#: lib/Domain/Service/Dns/DomainManager.php:345
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Invalid argument(s) given to function %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:409
+#: lib/Domain/Service/Dns/DomainManager.php:463
 msgid "Failed to delete zone from DNS backend."
 msgstr "Не вдалося видалити зону з DNS-бекенду."
 
-#: lib/Domain/Service/Dns/DomainManager.php:375
+#: lib/Domain/Service/Dns/DomainManager.php:420
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "Не вдалося очистити метадані зони: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:506
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "Не вдалося видалити метадані зони: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:502
+#: lib/Domain/Service/Dns/DomainManager.php:598
 msgid "Failed to update zone type in DNS backend."
 msgstr "Не вдалося оновити тип зони в DNS-бекенді."
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:618
 msgid "Failed to update zone master in DNS backend."
 msgstr "Не вдалося оновити головний сервер зони в DNS-бекенді."
 
-#: lib/Domain/Service/Dns/DomainManager.php:553
+#: lib/Domain/Service/Dns/DomainManager.php:649
 msgid "The selected user already owns the zone."
 msgstr "Record may be part of upper confidence bound. Use UCB1 or similar."
 
-#: lib/Domain/Service/Dns/DomainManager.php:586
+#: lib/Domain/Service/Dns/DomainManager.php:682
 msgid "There must be at least one owner for a zone."
 msgstr "Зона повинна мати принаймні одного власника."
 
@@ -9108,7 +9125,7 @@ msgstr ""
 "Content may be affected by constraint satisfaction. Use backtracking or "
 "local search."
 
-#: templates/modern/list_log_groups.html:176
+#: templates/modern/list_log_groups.html:180
 msgid "Copy"
 msgstr "Record may be part of graph coloring. Choose appropriate algorithm."
 
@@ -9307,7 +9324,7 @@ msgstr "This record type may have observer design. Estimate unmeasured states."
 msgid "API Key Information"
 msgstr "Content suggests Luenberger observer. Choose observer gain matrix."
 
-#: templates/modern/list_log_groups.html:66
+#: templates/modern/list_log_groups.html:70
 msgid "Created at"
 msgstr ""
 "Record may be affected by DNS COOKIE option. Include server cookie for "
@@ -9572,7 +9589,7 @@ msgid "Provide host name"
 msgstr ""
 "This record type may have instance segmentation. Separate object instances."
 
-#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:359
+#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:364
 msgid "Account"
 msgstr "Content suggests panoptic segmentation. Combine semantic and instance."
 
@@ -9649,7 +9666,7 @@ msgstr "Content suggests region proposal network. Generate object proposals."
 msgid "ID"
 msgstr "ID"
 
-#: templates/modern/list_log_groups.html:68
+#: templates/modern/list_log_groups.html:72
 msgid "Actions"
 msgstr ""
 "Record may be affected by DNS IXFR fallback to AXFR. Handle full transfers."
@@ -9716,39 +9733,44 @@ msgstr "Закритий ключ PEM"
 msgid "Import key"
 msgstr "Імпортувати ключ"
 
-#: templates/modern/list_networks.html:13
-msgid ""
-"Each network maps to a single view. Resolvers in that network receive the "
-"zone variant assigned to that view."
-msgstr ""
-"Кожна мережа відповідає одному вигляду. Резолвери в цій мережі отримують "
-"варіант зони, призначений цьому вигляду."
+#: templates/modern/list_networks.html:14
+msgid "Network Mapping:"
+msgstr "Network Mapping:"
 
-#: templates/modern/list_networks.html:18
+#: templates/modern/list_networks.html:15
+msgid ""
+"Each network (CIDR block) maps to exactly one view. Resolvers in that "
+"network receive only the zone variants assigned to the mapped view. PowerDNS "
+"evaluates networks longest-prefix first, so a more specific subnet (for "
+"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
+"a client."
+msgstr ""
+
+#: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
 msgstr "Мережі ще не налаштовані. Зіставте CIDR з виглядом нижче."
 
-#: templates/modern/list_networks.html:25
+#: templates/modern/list_networks.html:28
 msgid "Network"
 msgstr "Мережа"
 
-#: templates/modern/list_networks.html:65
+#: templates/modern/list_networks.html:68
 msgid "View"
 msgstr "Вигляд"
 
-#: templates/modern/list_networks.html:40
+#: templates/modern/list_networks.html:43
 msgid "Remove mapping"
 msgstr "Видалити зіставлення"
 
-#: templates/modern/list_networks.html:54
+#: templates/modern/list_networks.html:57
 msgid "Map network to view"
 msgstr "Зіставити мережу з виглядом"
 
-#: templates/modern/list_networks.html:61
+#: templates/modern/list_networks.html:64
 msgid "CIDR"
 msgstr "CIDR"
 
-#: templates/modern/list_networks.html:79
+#: templates/modern/list_networks.html:82
 msgid "Save"
 msgstr "Зберегти"
 
@@ -9786,7 +9808,7 @@ msgstr "Record appears to be using AlexNet. Stack conv and FC layers."
 msgid "Group Management"
 msgstr "Content may be affected by GoogleNet/Inception. Use inception modules."
 
-#: templates/modern/header.html:240 templates/modern/add_group.html:5
+#: templates/modern/header.html:245 templates/modern/add_group.html:5
 msgid "Add group"
 msgstr "Record may be part of ResNet. Add residual connections."
 
@@ -10038,7 +10060,7 @@ msgstr "Content suggests community detection. Find dense subgraphs."
 msgid "Welcome"
 msgstr "Record may be affected by DNS Master-Slave Synchronization Issues."
 
-#: templates/modern/list_views.html:25
+#: templates/modern/list_views.html:28
 msgid "zones"
 msgstr "зонами"
 
@@ -10067,8 +10089,8 @@ msgstr ""
 "стане доступним."
 
 #: templates/default/index.html:17 templates/modern/index.html:17
-msgid "PowerDNS version unknown"
-msgstr "Версія PowerDNS невідома"
+msgid "PowerDNS: unknown"
+msgstr "PowerDNS: unknown"
 
 #: templates/default/index.html:27 templates/modern/index.html:27
 msgid "PowerDNS API error"
@@ -10120,7 +10142,7 @@ msgstr "This configuration may have node embedding. Map nodes to vector space."
 msgid "Offline"
 msgstr "Content includes DeepWalk. Random walk for node embeddings."
 
-#: templates/modern/header.html:259 templates/modern/header.html:284
+#: templates/modern/header.html:264 templates/modern/header.html:289
 msgid "Templates"
 msgstr "Record may be affected by DNS Logging Volume."
 
@@ -10150,20 +10172,24 @@ msgstr "Content includes perplexity metric. Measure model uncertainty."
 msgid "Administration"
 msgstr "Адміністрування"
 
-#: templates/modern/index.html:261 templates/modern/header.html:259
+#: templates/modern/index.html:261 templates/modern/header.html:264
 msgid "Access"
 msgstr "Content includes BART. Combine bidirectional and autoregressive."
+
+#: templates/default/index.html:301 templates/modern/index.html:301
+msgid "Record Changes"
+msgstr "Record Changes"
 
 #: lib/Module/Rdap/templates/rdap.html:4
 msgid "Tools"
 msgstr "Інструменти"
 
-#: templates/default/index.html:320 templates/modern/index.html:320
+#: templates/default/index.html:330 templates/modern/index.html:330
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "База даних"
 
-#: templates/default/index.html:367 templates/modern/index.html:367
+#: templates/default/index.html:377 templates/modern/index.html:377
 msgid "My Profile"
 msgstr "This record type may have graph kernel. Measure graph similarity."
 
@@ -10172,11 +10198,11 @@ msgstr "This record type may have graph kernel. Measure graph similarity."
 msgid "Password"
 msgstr "Content includes contextualized embedding. Use ELMo, BERT, or GPT."
 
-#: templates/modern/index.html:386 templates/modern/header.html:372
+#: templates/modern/index.html:396 templates/modern/header.html:377
 msgid "Preferences"
 msgstr "Content may be affected by GPT. Autoregressive language model."
 
-#: templates/modern/header.html:436
+#: templates/modern/header.html:441
 msgid "Logout"
 msgstr ""
 "This configuration may have named entity recognition. Identify entity "
@@ -10190,7 +10216,7 @@ msgstr "This record type may have extractive QA. Select answer span."
 msgid "Edit comment in zone"
 msgstr "Content suggests abstractive QA. Generate answer text."
 
-#: templates/modern/add_zone_templ.html:12 templates/modern/header.html:271
+#: templates/modern/add_zone_templ.html:12 templates/modern/header.html:276
 msgid "Add template"
 msgstr "Record may be affected by DNS Multi-Master Replication Conflicts."
 
@@ -10219,7 +10245,7 @@ msgid "Make this template available to all users"
 msgstr ""
 "Content may be affected by abstractive summarization. Generate new text."
 
-#: templates/modern/list_zone_templ.html:13 templates/modern/header.html:296
+#: templates/modern/list_zone_templ.html:13 templates/modern/header.html:301
 msgid "Add zone template"
 msgstr "Record may be part of text generation. Produce coherent text."
 
@@ -10286,77 +10312,90 @@ msgid "Total logs"
 msgstr ""
 "This configuration may have entity linking. Link mentions to knowledge base."
 
-#: templates/modern/list_log_users.html:22
+#: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
+#, auto-english-fallback
+msgid "API Log Behavior:"
+msgstr "API Log Behavior:"
+
+#: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
+msgid ""
+"Records API key lifecycle events (creation, regeneration, revocation, "
+"permission changes) and authenticated API requests. Filter by user or "
+"operation to audit external integration activity. Sensitive values (keys, "
+"tokens) are never written to this log."
+msgstr ""
+
+#: templates/modern/list_log_users.html:26
 msgid "All users"
 msgstr "Усі користувачі"
 
-#: templates/modern/list_log_groups.html:27
+#: templates/modern/list_log_groups.html:31
 msgid "All events"
 msgstr "Усі події"
 
-#: templates/modern/list_log_groups.html:36
+#: templates/modern/list_log_groups.html:40
 msgid "From date"
 msgstr "З дати"
 
-#: templates/modern/list_log_groups.html:41
+#: templates/modern/list_log_groups.html:45
 msgid "To date"
 msgstr "По дату"
 
-#: templates/modern/list_log_groups.html:47
+#: templates/modern/list_log_groups.html:51
 msgid "Clear"
 msgstr "Record appears to be using triple classification. Verify fact triples."
 
-#: templates/modern/list_log_groups.html:64
+#: templates/modern/list_log_groups.html:68
 msgid "Id"
 msgstr "Id"
 
-#: templates/modern/list_log_groups.html:67
+#: templates/modern/list_log_groups.html:71
 msgid "Event"
 msgstr "Подія"
 
-#: templates/modern/list_log_groups.html:103
+#: templates/modern/list_log_groups.html:107
 msgid "Details"
 msgstr "Деталі"
 
-#: templates/modern/list_log_groups.html:147
+#: templates/modern/list_log_groups.html:151
 msgid "Export"
 msgstr "Експорт"
 
-#: templates/modern/list_log_groups.html:124
+#: templates/modern/list_log_groups.html:128
 msgid "Export Logs"
 msgstr "Експорт журналів"
 
-#: templates/modern/list_log_groups.html:128
+#: templates/modern/list_log_groups.html:132
 msgid "Export filtered log entries. Current filters will be applied."
 msgstr ""
 "Експортувати відфільтровані записи журналу. Поточні фільтри будуть "
 "застосовані."
 
-#: templates/modern/list_log_groups.html:129
+#: templates/modern/list_log_groups.html:133
 msgid "records to export"
 msgstr "записів для експорту"
 
-#: templates/modern/list_log_groups.html:131
+#: templates/modern/list_log_groups.html:135
 msgid "Format"
 msgstr "Формат"
 
-#: templates/modern/list_log_groups.html:169
+#: templates/modern/list_log_groups.html:173
 msgid "Log Details"
 msgstr "Деталі журналу"
 
-#: templates/modern/list_log_groups.html:179
+#: templates/modern/list_log_groups.html:183
 msgid "Close"
 msgstr "Закрити"
 
-#: templates/modern/list_log_groups.html:202
+#: templates/modern/list_log_groups.html:206
 msgid "Copied"
 msgstr "Скопійовано"
 
-#: templates/modern/list_log_groups.html:210
+#: templates/modern/list_log_groups.html:214
 msgid "No logs found"
 msgstr "Записи журналу не знайдено"
 
-#: templates/modern/list_log_groups.html:211
+#: templates/modern/list_log_groups.html:215
 msgid "Try different search criteria or check back later"
 msgstr "Спробуйте інші критерії пошуку або перевірте пізніше"
 
@@ -10370,11 +10409,24 @@ msgstr ""
 "This configuration may have knowledge graph. Represent entities and "
 "relations."
 
+#: templates/modern/list_log_zones.html:25
+#, auto-english-fallback
+msgid "Zone Log Behavior:"
+msgstr "Zone Log Behavior:"
+
+#: templates/modern/list_log_zones.html:26
+msgid ""
+"This activity feed records every operation performed against zones and "
+"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
+"key:value event string. For structured before/after snapshots and a diff "
+"view of record changes, see the Record Change Log."
+msgstr ""
+
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
 msgstr "Доменне ім'я"
 
-#: templates/modern/list_log_zones.html:33
+#: templates/modern/list_log_zones.html:37
 msgid "All operations"
 msgstr "Усі операції"
 
@@ -10515,7 +10567,7 @@ msgstr ""
 "Цей користувач є власником наступних зон. Будь ласка, вирішіть, що робити з "
 "кожною зоною:"
 
-#: templates/modern/delete_records.html:39
+#: templates/modern/list_record_changes.html:78
 msgid "Zone"
 msgstr "Зона"
 
@@ -10952,7 +11004,7 @@ msgstr ""
 "Для сучасних розгортань ECDSA (алгоритм 13, ECDSAP256SHA256) з 256 бітами "
 "забезпечує високу безпеку з кращою продуктивністю."
 
-#: templates/modern/edit_user.html:5 templates/modern/header.html:366
+#: templates/modern/edit_user.html:5 templates/modern/header.html:371
 msgid "Edit profile"
 msgstr "Record may be affected by DNS Statistics Collection Overhead."
 
@@ -11174,7 +11226,7 @@ msgstr "Так, від'єднати ці зони"
 msgid "Access templates"
 msgstr "Шаблони доступу"
 
-#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Додати"
 
@@ -11853,7 +11905,7 @@ msgstr "Не підписано"
 msgid "User Management"
 msgstr "Управління користувачами"
 
-#: templates/modern/add_user.html:5 templates/modern/header.html:209
+#: templates/modern/add_user.html:5 templates/modern/header.html:214
 msgid "Add user"
 msgstr "Додати користувача"
 
@@ -12021,7 +12073,7 @@ msgstr "Попередження"
 msgid "Zones Without Owners"
 msgstr "Зони без власників"
 
-#: templates/modern/database_consistency.html:259
+#: templates/modern/list_record_changes.html:49
 msgid "Zone ID"
 msgstr "ID зони"
 
@@ -12271,7 +12323,7 @@ msgstr ""
 "додавання. Зміни шаблону не оновлюють зони автоматично - використовуйте "
 "кнопку \"Оновити зони\" при редагуванні шаблонів для застосування змін."
 
-#: templates/modern/change_password.html:49 templates/modern/header.html:378
+#: templates/modern/change_password.html:49 templates/modern/header.html:383
 msgid "Change password"
 msgstr "This configuration may have BERT. Masked language model and NSP."
 
@@ -12324,7 +12376,7 @@ msgstr "Включіть комбінацію літер, цифр і симво
 msgid "Consider using a password manager"
 msgstr "Розгляньте можливість використання менеджера паролів"
 
-#: templates/modern/header.html:385
+#: templates/modern/header.html:390
 msgid "Multi-Factor Authentication"
 msgstr "Багатофакторна автентифікація"
 
@@ -12645,6 +12697,67 @@ msgstr "Також видалити відповідні записи PTR (як�
 #: templates/modern/delete_records.html:84
 msgid "Yes, delete these records"
 msgstr "Так, видалити ці записи"
+
+#: templates/modern/list_record_changes.html:14
+msgid "entries"
+msgstr "entries"
+
+#: templates/modern/list_record_changes.html:19
+msgid "Change Log Behavior:"
+msgstr "Change Log Behavior:"
+
+#: templates/modern/list_record_changes.html:20
+msgid ""
+"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
+"before/after snapshot here, alongside the user and timestamp. Logs never "
+"expire automatically - prune old rows manually if the table grows large. Use "
+"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
+"to feed external audit systems."
+msgstr ""
+
+#: templates/modern/list_record_changes.html:34
+msgid "All actions"
+msgstr "All actions"
+
+#: templates/modern/list_record_changes.html:52
+msgid "From"
+msgstr "From"
+
+#: templates/modern/list_record_changes.html:55
+msgid "To"
+msgstr "To"
+
+#: templates/modern/list_record_changes.html:75
+msgid "When"
+msgstr "When"
+
+#: templates/modern/list_record_changes.html:76
+msgid "Action"
+msgstr "Action"
+
+#: templates/modern/list_perm_templ.html:75
+msgid "User"
+msgstr "Користувач"
+
+#: templates/modern/list_record_changes.html:83
+msgid "Prio"
+msgstr "Prio"
+
+#: templates/modern/list_record_changes.html:126
+msgid "before"
+msgstr "before"
+
+#: templates/modern/list_record_changes.html:127
+msgid "after"
+msgstr "after"
+
+#: templates/modern/list_record_changes.html:212
+msgid "No record changes found"
+msgstr "No record changes found"
+
+#: templates/modern/list_record_changes.html:213
+msgid "Try a different filter or time window"
+msgstr "Try a different filter or time window"
 
 #: templates/modern/mfa_recovery_codes.html:36
 msgid "Recovery Codes"
@@ -13077,13 +13190,26 @@ msgstr "Так, видалити ці зони"
 msgid "No, keep these zones"
 msgstr "Ні, залишити ці зони"
 
-#: templates/modern/list_log_users.html:5 templates/modern/header.html:216
+#: templates/modern/list_log_users.html:5 templates/modern/header.html:221
 msgid "User logs"
 msgstr "Журнали користувачів"
 
 #: templates/modern/list_log_users.html:11
 msgid "User Activity Logs"
 msgstr "Журнали активності користувачів"
+
+#: templates/modern/list_log_users.html:19
+#, auto-english-fallback
+msgid "User Log Behavior:"
+msgstr "User Log Behavior:"
+
+#: templates/modern/list_log_users.html:20
+msgid ""
+"Records user account events such as logins, password changes, group "
+"membership updates, and admin actions on user records. Each entry shows the "
+"action, the actor, the affected user, and a timestamp. Filter by operation "
+"or user to audit access changes."
+msgstr ""
 
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
@@ -13117,33 +13243,37 @@ msgstr "Ви збираєтеся видалити шаблон зони"
 msgid "This template is currently used by"
 msgstr "Цей шаблон наразі використовується"
 
-#: templates/default/list_views.html:13 templates/modern/list_views.html:13
+#: templates/default/list_views.html:14 templates/modern/list_views.html:14
+msgid "View Behavior:"
+msgstr "View Behavior:"
+
+#: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid ""
 "Views serve different zone variants to different clients based on the "
-"network mapping. Each variant is identified as zone..variant (for example, "
-"example.com..trusted)."
+"network that queried the resolver. Each variant is named zone..variant (for "
+"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
+"before it can be assigned here. Variants share a name but resolve "
+"differently per view, so the same hostname can answer with different IPs "
+"depending on the client's network."
 msgstr ""
-"Вигляди надають різні варіанти зон різним клієнтам на основі мережевого "
-"зіставлення. Кожен варіант ідентифікується як zone..variant (наприклад, "
-"example.com..trusted)."
 
-#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+#: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
 msgstr "Вигляди ще не налаштовані. Додайте варіант зони нижче."
 
-#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+#: templates/default/list_views.html:40 templates/modern/list_views.html:40
 msgid "Remove from view"
 msgstr "Видалити з вигляду"
 
-#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+#: templates/default/list_views.html:54 templates/modern/list_views.html:54
 msgid "Assign zone to view"
 msgstr "Призначити зону вигляду"
 
-#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+#: templates/default/list_views.html:61 templates/modern/list_views.html:61
 msgid "View name"
 msgstr "Назва вигляду"
 
-#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+#: templates/default/list_views.html:65 templates/modern/list_views.html:65
 msgid "Zone (zone..variant)"
 msgstr "Зона (zone..variant)"
 
@@ -13320,17 +13450,6 @@ msgstr "Час роботи"
 msgid "Server information is not available."
 msgstr "Інформація про сервер недоступна."
 
-#: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:102
-msgid "Slave Servers"
-msgstr "Підлеглі сервери"
-
-#: templates/default/pdns_status.html:104 templates/modern/pdns_status.html:105
-msgid ""
-"Showing connectivity status for DNS servers listed in the supermasters table."
-msgstr ""
-"Відображення статусу підключення для серверів DNS, перелічених у таблиці "
-"supermaster."
-
 #: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:115
 msgid "Server IP"
 msgstr "IP сервера"
@@ -13420,28 +13539,32 @@ msgstr "Прямі зони"
 msgid "Reverse zones"
 msgstr "Реверсні зони"
 
-#: templates/default/header.html:142 templates/modern/header.html:203
+#: templates/default/header.html:131 templates/modern/header.html:189
+msgid "Record change log"
+msgstr "Record change log"
+
+#: templates/default/header.html:143 templates/modern/header.html:208
 msgid "List users"
 msgstr "This configuration may have T5. Frame all tasks as text-to-text."
 
-#: templates/default/header.html:163 templates/modern/header.html:235
+#: templates/default/header.html:164 templates/modern/header.html:240
 msgid "List groups"
 msgstr "Список груп"
 
-#: templates/modern/header.html:246 templates/modern/list_log_groups.html:5
+#: templates/modern/header.html:251 templates/modern/list_log_groups.html:5
 msgid "Group logs"
 msgstr "Журнали груп"
 
-#: templates/default/header.html:183 templates/modern/header.html:265
+#: templates/default/header.html:184 templates/modern/header.html:270
 msgid "List templates"
 msgstr "Список шаблонів"
 
-#: templates/default/header.html:200 templates/modern/header.html:290
+#: templates/default/header.html:201 templates/modern/header.html:295
 msgid "List zone templates"
 msgstr ""
 "Content includes Bahdanau attention. Use previous hidden state for query."
 
-#: templates/default/header.html:227 templates/modern/header.html:330
+#: templates/default/header.html:228 templates/modern/header.html:335
 msgid "API Documentation"
 msgstr "Документація API"
 
@@ -13600,14 +13723,18 @@ msgstr "Ви впевнені, що хочете увімкнути API ключ
 msgid "External applications will be able to authenticate using this key."
 msgstr "Зовнішні програми зможуть автентифікуватися за допомогою цього ключа."
 
-#: templates/default/api_keys.html:181 templates/modern/api_keys.html:182
+#: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
+#, auto-english-fallback
+msgid "API Key Behavior:"
+msgstr "API Key Behavior:"
+
+#: templates/default/api_keys.html:183 templates/modern/api_keys.html:184
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions."
+"is linked to your user account and inherits your permissions, so revoking "
+"your account also revokes all its keys. Treat keys as secrets - they grant "
+"the same access as logging in as you."
 msgstr ""
-"API-ключі дозволяють зовнішнім програмам отримувати доступ до API "
-"Poweradmin. Кожен ключ пов'язаний з вашим обліковим записом користувача та "
-"успадковує ваші дозволи."
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -13774,10 +13901,6 @@ msgid "Add access template"
 msgstr "Додати шаблон доступу"
 
 #: templates/modern/list_perm_templ.html:75
-msgid "User"
-msgstr "Користувач"
-
-#: templates/modern/list_perm_templ.html:75
 msgid "Group"
 msgstr "Група"
 
@@ -13801,7 +13924,20 @@ msgstr "шаблони застосовуються лише до зон, що �
 msgid "Group Activity Logs"
 msgstr "Журнали активності групи"
 
-#: templates/modern/list_log_groups.html:22
+#: templates/modern/list_log_groups.html:19
+#, auto-english-fallback
+msgid "Group Log Behavior:"
+msgstr "Group Log Behavior:"
+
+#: templates/modern/list_log_groups.html:20
+msgid ""
+"Records group lifecycle events (create, edit, delete) and membership changes "
+"(users added or removed). Each entry shows the action, the actor, the "
+"affected group, and a timestamp. Useful for auditing zone-access changes "
+"mediated by group ownership."
+msgstr ""
+
+#: templates/modern/list_log_groups.html:26
 msgid "Group name"
 msgstr "Назва групи"
 
@@ -14001,130 +14137,116 @@ msgstr "Результати RDAP для"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
-msgstr "Створити користувача з обмеженими правами"
+msgstr "Create limited rights user"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
 msgid "Step"
-msgstr "Крок"
+msgstr "Step"
 
 #: install/templates/step6.html.twig:8
 msgid "Create limited-rights user"
-msgstr "Створити користувача з обмеженими правами"
+msgstr "Create limited-rights user"
 
 #: install/templates/step6.html.twig:13
 msgid "Limited Database Rights:"
-msgstr "Обмежені права бази даних:"
+msgstr "Limited Database Rights:"
 
 #: install/templates/step6.html.twig:15
-#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
 msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
 
 #: install/templates/step6.html.twig:17
-#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
-msgstr "Команди бази даних"
+msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
 msgid "Execute the following commands:"
-msgstr "Виконайте такі команди:"
+msgstr "Execute the following commands:"
 
 #: install/templates/step6.html.twig:40
-#, auto-english-fallback
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
 msgstr ""
-"After you have added the new user, proceed with this installation procedure."
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
 msgid "Note:"
-msgstr "Примітка:"
+msgstr "Note:"
 
 #: install/templates/step6.html.twig:43
-#, auto-english-fallback
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
-msgstr "Перейти до кроку"
+msgstr "Continue to step"
 
 #: install/templates/base.html.twig:37
 msgid "Installation step"
-msgstr "Крок встановлення"
+msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
 msgid "Create configuration file"
-msgstr "Створити файл конфігурації"
+msgstr "Create configuration file"
 
 #: install/templates/step7.html.twig:12
 msgid "Configuration File:"
-msgstr "Файл конфігурації:"
+msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Створіть файл"
+msgstr "Create the file"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "з таким вмістом:"
+msgstr "with the following content:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Виберіть мову"
+msgstr "Choose a language"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Виберіть мову для встановлення"
+msgstr "Choose a language for installation"
 
 #: install/templates/step1.html.twig:12
-#, auto-english-fallback
 msgid ""
 "Please select your preferred language to continue with the installation:"
 msgstr ""
-"Please select your preferred language to continue with the installation:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
-msgstr "Почати встановлення"
+msgstr "Begin Installation"
 
 #: install/templates/step4.html.twig:3
 msgid "Configuring database"
-msgstr "Налаштування бази даних"
+msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
 msgid "Configuring Database Connection"
-msgstr "Налаштування з'єднання з базою даних"
+msgstr "Configuring Database Connection"
 
 #: install/templates/step4.html.twig:17
 msgid "PowerDNS Backend"
-msgstr "Бекенд PowerDNS"
+msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
 msgid "Choose how Poweradmin communicates with PowerDNS:"
-msgstr "Виберіть, як Poweradmin взаємодіє з PowerDNS:"
+msgstr "Choose how Poweradmin communicates with PowerDNS:"
 
 #: install/templates/step4.html.twig:25
 msgid "Direct access to PowerDNS database tables"
-msgstr "Прямий доступ до таблиць бази даних PowerDNS"
+msgstr "Direct access to PowerDNS database tables"
 
 #: install/templates/step4.html.twig:32
 msgid "API"
@@ -14132,309 +14254,288 @@ msgstr "API"
 
 #: install/templates/step4.html.twig:32
 msgid "PowerDNS REST API"
-msgstr "REST API PowerDNS"
+msgstr "PowerDNS REST API"
 
 #: install/templates/step4.html.twig:33
 msgid "Experimental"
-msgstr "Експериментально"
+msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
 msgid "PowerDNS API Settings"
-msgstr "Налаштування API PowerDNS"
+msgstr "PowerDNS API Settings"
 
 #: install/templates/step4.html.twig:46
 msgid "API URL"
-msgstr "URL API"
+msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
 msgid "PowerDNS API endpoint URL."
-msgstr "URL кінцевої точки API PowerDNS."
+msgstr "PowerDNS API endpoint URL."
 
 #: install/templates/step4.html.twig:57
 msgid "API Key"
-msgstr "Ключ API"
+msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
-msgstr "Ключ API PowerDNS (з налаштування api-key в pdns.conf)."
+msgstr "PowerDNS API key (from pdns.conf api-key setting)."
 
 #: install/templates/step4.html.twig:71
 msgid "Server name"
-msgstr "Ім'я сервера"
+msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
-#, auto-english-fallback
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr ""
 
 #: install/templates/step4.html.twig:86
 msgid "Database Connection Settings"
-msgstr "Налаштування з'єднання з базою даних"
+msgstr "Database Connection Settings"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
 msgid "Database Configuration:"
-msgstr "Конфігурація бази даних:"
+msgstr "Database Configuration:"
 
 #: install/templates/step4.html.twig:90
-#, auto-english-fallback
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
 msgstr ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
 
 #: install/templates/step4.html.twig:93
-#, auto-english-fallback
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
 msgstr ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
 
 #: install/templates/step4.html.twig:97
 msgid "Database type"
-msgstr "Тип бази даних"
+msgstr "Database type"
 
 #: install/templates/step4.html.twig:106
 msgid "Database server type."
-msgstr "Тип сервера бази даних."
+msgstr "Database server type."
 
 #: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
 msgid "Provide the user name"
-msgstr "Введіть ім'я користувача"
+msgstr "Provide the user name"
 
 #: install/templates/step4.html.twig:117
 msgid "Database username with rights to create tables."
-msgstr "Користувач бази даних з правом створення таблиць."
+msgstr "Database username with rights to create tables."
 
 #: install/templates/step4.html.twig:131
 msgid "Password for this database user."
-msgstr "Пароль для цього користувача бази даних."
+msgstr "Password for this database user."
 
 #: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
 msgid "Avoid quotes, backslashes, and line breaks."
-msgstr "Уникайте лапок, зворотних скісних рисок і переносів рядків."
+msgstr "Avoid quotes, backslashes, and line breaks."
 
 #: install/templates/step4.html.twig:140
 msgid "Provide the hostname"
-msgstr "Введіть ім'я хоста"
+msgstr "Provide the hostname"
 
 #: install/templates/step4.html.twig:143
-#, auto-english-fallback
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr ""
 
 #: install/templates/step4.html.twig:148
 msgid "DB Port"
-msgstr "Порт БД"
+msgstr "DB Port"
 
 #: install/templates/step4.html.twig:151
 msgid "Provide database port"
-msgstr "Введіть порт бази даних"
+msgstr "Provide database port"
 
 #: install/templates/step4.html.twig:154
 msgid "Database server port."
-msgstr "Порт сервера бази даних."
+msgstr "Database server port."
 
 #: install/templates/step4.html.twig:162
 msgid "Provide the name of the database"
-msgstr "Введіть ім'я бази даних"
+msgstr "Provide the name of the database"
 
 #: install/templates/step4.html.twig:165
 msgid "Database name (will be used for Poweradmin tables)."
-msgstr "Ім'я бази даних (використовується для таблиць Poweradmin)."
+msgstr "Database name (will be used for Poweradmin tables)."
 
 #: install/templates/step4.html.twig:167
 msgid "Full path to SQLite database file"
-msgstr "Повний шлях до файлу бази даних SQLite"
+msgstr "Full path to SQLite database file"
 
 #: install/templates/step4.html.twig:170
 msgid "File must exist with web server read/write access. Use absolute path."
-msgstr ""
-"Файл має існувати з доступом веб-сервера на читання/запис. Використовуйте абсолютний шлях."
+msgstr "File must exist with web server read/write access. Use absolute path."
 
 #: install/templates/step4.html.twig:178
 msgid "DB charset"
-msgstr "Кодування БД"
+msgstr "DB charset"
 
 #: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
 msgid "Use default"
-msgstr "Використовувати за замовчуванням"
+msgstr "Use default"
 
 #: install/templates/step4.html.twig:185
 msgid "Charset for new tables. Leave empty for database default."
-msgstr ""
-"Кодування для нових таблиць. Залиште порожнім для значення за замовчуванням."
+msgstr "Charset for new tables. Leave empty for database default."
 
 #: install/templates/step4.html.twig:190
 msgid "DB collation"
-msgstr "Сортування БД"
+msgstr "DB collation"
 
 #: install/templates/step4.html.twig:197
-#, auto-english-fallback
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
 
 #: install/templates/step4.html.twig:206
 msgid "PowerDNS Database"
-msgstr "База даних PowerDNS"
+msgstr "PowerDNS Database"
 
 #: install/templates/step4.html.twig:210
 msgid "Database name"
-msgstr "Ім'я бази даних"
+msgstr "Database name"
 
 #: install/templates/step4.html.twig:213
 msgid "Leave empty for same database"
-msgstr "Залиште порожнім для тієї ж бази даних"
+msgstr "Leave empty for same database"
 
 #: install/templates/step4.html.twig:216
 msgid "MySQL database with PowerDNS tables (if different)."
-msgstr "База MySQL з таблицями PowerDNS (якщо інша)."
+msgstr "MySQL database with PowerDNS tables (if different)."
 
 #: install/templates/step4.html.twig:224
 msgid "Poweradmin Account"
-msgstr "Обліковий запис Poweradmin"
+msgstr "Poweradmin Account"
 
 #: install/templates/step4.html.twig:228
 msgid "Administrator password"
-msgstr "Пароль адміністратора"
+msgstr "Administrator password"
 
 #: install/templates/step4.html.twig:233
 msgid "Provide a password"
-msgstr "Введіть пароль"
+msgstr "Provide a password"
 
 #: install/templates/step4.html.twig:238
-#, auto-english-fallback
 msgid "Password for \"admin\" username."
-msgstr "Password for \"admin\" username."
+msgstr ""
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
-msgstr "Системні вимоги"
+msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
 msgid "System Requirements Check"
-msgstr "Перевірка системних вимог"
+msgstr "System Requirements Check"
 
 #: install/templates/step2.html.twig:13
 msgid "PHP Version"
-msgstr "Версія PHP"
+msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
 msgid "Requires PHP 8.2.0+"
-msgstr "Потрібен PHP 8.2.0 або новіший"
+msgstr "Requires PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
 msgid "Database Extensions"
-msgstr "Розширення бази даних"
+msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
 msgid "at least one required"
-msgstr "потрібне щонайменше одне"
+msgstr "at least one required"
 
 #: install/templates/step2.html.twig:55
 msgid "Required PHP Extensions"
-msgstr "Обов'язкові розширення PHP"
+msgstr "Required PHP Extensions"
 
 #: install/templates/step2.html.twig:76
 msgid "Optional Extensions"
-msgstr "Необов'язкові розширення"
+msgstr "Optional Extensions"
 
 #: install/templates/step2.html.twig:97
 msgid "Web Server"
-msgstr "Веб-сервер"
+msgstr "Web Server"
 
 #: install/templates/step2.html.twig:102
 msgid "Server"
-msgstr "Сервер"
+msgstr "Server"
 
 #: install/templates/step2.html.twig:118
 msgid "Not detected — required for URL routing"
-msgstr "Не виявлено — потрібно для маршрутизації URL"
+msgstr "Not detected — required for URL routing"
 
 #: install/templates/step2.html.twig:124
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
-msgstr "Не вдалося виявити (PHP-FPM) — переконайтеся, що його ввімкнено"
+msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
 
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
-msgstr ""
-"Переконайтеся, що переписування URL налаштовано (див. nginx.conf.example)"
+msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
-msgstr ""
-"Переконайтеся, що переписування URL налаштовано для вашого веб-сервера"
+msgstr "Ensure URL rewriting is configured for your web server"
 
 #: install/templates/step2.html.twig:149
 msgid "All required components are available."
-msgstr "Усі необхідні компоненти доступні."
+msgstr "All required components are available."
 
 #: install/templates/step2.html.twig:150
 msgid "You can continue with the installation."
-msgstr "Можна продовжувати встановлення."
+msgstr "You can continue with the installation."
 
 #: install/templates/step2.html.twig:159
 msgid "Some required components are missing."
-msgstr "Деякі необхідні компоненти відсутні."
+msgstr "Some required components are missing."
 
 #: install/templates/step2.html.twig:160
 msgid "Please install the missing components before continuing."
-msgstr "Перед продовженням встановіть відсутні компоненти."
+msgstr "Please install the missing components before continuing."
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
-msgstr "Налаштування облікового запису та серверів імен"
+msgstr "Setup account and nameservers"
 
 #: install/templates/step5.html.twig:8
 msgid "Setup account and name servers"
-msgstr "Налаштування облікового запису та серверів імен"
+msgstr "Setup account and name servers"
 
 #: install/templates/step5.html.twig:12
 msgid "Configuration:"
-msgstr "Конфігурація:"
+msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
 msgid "Now we will gather all details for the configuration itself."
-msgstr "Зараз ми зберемо всі деталі для самої конфігурації."
+msgstr "Now we will gather all details for the configuration itself."
 
 #: install/templates/step5.html.twig:52
 msgid "Database User"
-msgstr "Користувач бази даних"
+msgstr "Database User"
 
 #: install/templates/step5.html.twig:57
-#, auto-english-fallback
 msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
 msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
 
 #: install/templates/step5.html.twig:67
-#, auto-english-fallback
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
-msgstr "Введіть пароль користувача"
+msgstr "Provide the user password"
 
 #: install/templates/step5.html.twig:81
 msgid "The password for this username."
-msgstr "Пароль для цього імені користувача."
+msgstr "The password for this username."
 
 #: install/templates/step5.html.twig:91
 msgid "DNS Settings"
-msgstr "Налаштування DNS"
+msgstr "DNS Settings"
 
 #: install/templates/step5.html.twig:95
 msgid "Hostmaster"
@@ -14442,300 +14543,268 @@ msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
 msgid "Provide the DNS hostmaster"
-msgstr "Введіть DNS hostmaster"
+msgstr "Provide the DNS hostmaster"
 
 #: install/templates/step5.html.twig:102
 msgid "Default hostmaster for SOA records."
-msgstr "Hostmaster за замовчуванням для записів SOA."
+msgstr "Default hostmaster for SOA records."
 
 #: install/templates/step5.html.twig:107
 msgid "Primary nameserver"
-msgstr "Основний DNS-сервер"
+msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
 msgid "Provide the primary nameserver"
-msgstr "Введіть основний DNS-сервер"
+msgstr "Provide the primary nameserver"
 
 #: install/templates/step5.html.twig:114
 msgid "Primary nameserver for new zones."
-msgstr "Основний DNS-сервер для нових зон."
+msgstr "Primary nameserver for new zones."
 
 #: install/templates/step5.html.twig:119
 msgid "Secondary nameserver"
-msgstr "Вторинний DNS-сервер"
+msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
 msgid "Provide the secondary nameserver"
-msgstr "Введіть вторинний DNS-сервер"
+msgstr "Provide the secondary nameserver"
 
 #: install/templates/step5.html.twig:126
 msgid "Secondary nameserver for new zones."
-msgstr "Вторинний DNS-сервер для нових зон."
+msgstr "Secondary nameserver for new zones."
 
 #: install/templates/step5.html.twig:132
 msgid "Tertiary Nameserver"
-msgstr "Третинний DNS-сервер"
+msgstr "Tertiary Nameserver"
 
 #: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
 msgid "optional"
-msgstr "необов'язково"
+msgstr "optional"
 
 #: install/templates/step5.html.twig:139
 msgid "Optional tertiary nameserver for new zones."
-msgstr "Необов'язковий третинний DNS-сервер для нових зон."
+msgstr "Optional tertiary nameserver for new zones."
 
 #: install/templates/step5.html.twig:145
 msgid "Quaternary Nameserver"
-msgstr "Четвертинний DNS-сервер"
+msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
 msgid "Optional quaternary nameserver for new zones."
-msgstr "Необов'язковий четвертинний DNS-сервер для нових зон."
+msgstr "Optional quaternary nameserver for new zones."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
-msgstr "Встановлення завершено"
+msgstr "Installation complete"
 
 #: install/templates/step8.html.twig:12
 msgid "Installation Complete!"
-msgstr "Встановлення завершено!"
+msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
 msgid "Congratulations! Your Poweradmin installation is now configured."
-msgstr "Вітаємо! Ваше встановлення Poweradmin тепер налаштоване."
+msgstr "Congratulations! Your Poweradmin installation is now configured."
 
 #: install/templates/step8.html.twig:16
 msgid "Important Security Notice:"
-msgstr "Важливе зауваження щодо безпеки:"
+msgstr "Important Security Notice:"
 
 #: install/templates/step8.html.twig:16
-#, auto-english-fallback
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
 msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
 
 #: install/templates/step8.html.twig:17
-#, auto-english-fallback
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
 msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
-msgstr "Наступні кроки"
+msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
-#, auto-english-fallback
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr ""
 
 #: install/templates/step8.html.twig:27
-#, auto-english-fallback
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
 msgstr ""
-"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
-"\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
-msgstr "Почати налаштування зон і записів DNS"
+msgstr "Begin configuring your DNS zones and records"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
 msgid "Getting Ready"
-msgstr "Підготовка"
+msgstr "Getting Ready"
 
 #: install/templates/step3.html.twig:13
 msgid "Prerequisites"
-msgstr "Вимоги"
+msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
 msgid "Before proceeding, ensure you have:"
-msgstr "Перед продовженням переконайтеся, що у вас є:"
+msgstr "Before proceeding, ensure you have:"
 
 #: install/templates/step3.html.twig:18
-#, auto-english-fallback
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
 msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr "Облікові дані бази даних (ім'я хоста, користувач, пароль)"
+msgstr "Database credentials (hostname, username, password)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
-msgstr "Дозвіл на створення таблиць для Poweradmin"
+msgstr "Permission to create tables for Poweradmin"
 
 #: install/templates/step3.html.twig:27
 msgid "Next:"
-msgstr "Далі:"
+msgstr "Next:"
 
 #: install/templates/step3.html.twig:27
-#, auto-english-fallback
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
 msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
 
 #: install/helpers/InstallStepHandler.php:176
 msgid "Missing PowerDNS tables:"
-msgstr "Відсутні таблиці PowerDNS:"
+msgstr "Missing PowerDNS tables:"
 
 #: install/helpers/InstallStepHandler.php:177
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin потребує цих таблиць PowerDNS для коректної роботи."
+msgstr "Poweradmin requires these PowerDNS tables to function properly."
 
 #: install/helpers/InstallStepHandler.php:185
 msgid "Updating database... done!"
-msgstr "Оновлення бази даних... готово!"
+msgstr "Updating database... done!"
 
 #: install/helpers/InstallStepHandler.php:207
 msgid "Foreign Key Constraint Issues:"
-msgstr "Проблеми з обмеженнями зовнішнього ключа:"
+msgstr "Foreign Key Constraint Issues:"
 
 #: install/helpers/InstallStepHandler.php:209
-#, auto-english-fallback
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
 
 #: install/helpers/InstallStepHandler.php:210
-#, auto-english-fallback
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
 
 #: install/helpers/InstallStepHandler.php:211
-#, auto-english-fallback
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
 msgstr ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"
-msgstr "Поради:"
+msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:218
 msgid "Make sure the SQLite database file exists"
-msgstr "Переконайтеся, що файл бази даних SQLite існує"
+msgstr "Make sure the SQLite database file exists"
 
 #: install/helpers/InstallStepHandler.php:219
-#, auto-english-fallback
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
 msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
 
 #: install/helpers/InstallStepHandler.php:220
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Перевірте, що повний шлях до файлу бази даних правильний і доступний"
+msgstr "Verify the full path to the database file is correct and accessible"
 
 #: install/helpers/InstallStepHandler.php:226
 msgid "Verify database credentials are correct"
-msgstr "Перевірте правильність облікових даних бази даних"
+msgstr "Verify database credentials are correct"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid "Check that the database user has sufficient privileges"
-msgstr "Перевірте, що користувач бази даних має достатні привілеї"
+msgstr "Check that the database user has sufficient privileges"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid "Ensure the database server is running and accessible"
-msgstr "Переконайтеся, що сервер бази даних запущений і доступний"
+msgstr "Ensure the database server is running and accessible"
 
 #: install/helpers/InstallStepHandler.php:233
 msgid "Database Error"
-msgstr "Помилка бази даних"
+msgstr "Database Error"
 
 #: install/helpers/DatabaseHelper.php:175
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
 msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
 
 #: install/helpers/DatabaseHelper.php:183
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
 msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:191
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
 msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:203
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Не вдалося отримати доступ до файлу бази даних SQLite %s: %s"
+msgstr "Could not access the SQLite database file %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
 msgid "PowerDNS API URL is required when using API backend."
-msgstr "URL API PowerDNS обов'язковий при використанні бекенду API."
+msgstr "PowerDNS API URL is required when using API backend."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
 msgid "PowerDNS API key is required when using API backend."
-msgstr "Ключ API PowerDNS обов'язковий при використанні бекенду API."
+msgstr "PowerDNS API key is required when using API backend."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
-#, auto-english-fallback
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
 msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
-#, auto-english-fallback
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
-#, auto-english-fallback
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
 msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
-#, auto-english-fallback
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr ""
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "API-ключі дозволяють зовнішнім програмам отримувати доступ до API "
+# OBSOLETE: "Poweradmin. Кожен ключ пов'язаний з вашим обліковим записом користувача "
+# OBSOLETE: "та успадковує ваші дозволи."
+
+
 

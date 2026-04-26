@@ -179,4 +179,7 @@ function showEnableModal(actionUrl, keyName) {
 }
 </script>
 
-<p class="text-muted small"><i class="bi bi-info-circle me-1"></i>{% trans %}API keys allow external applications to access the Poweradmin API. Each key is linked to your user account and inherits your permissions.{% endtrans %}</p>
+<div class="text-muted small">
+    <strong><i class="bi bi-info-circle me-1"></i>{% trans %}API Key Behavior:{% endtrans %}</strong>
+    {% trans %}API keys allow external applications to access the Poweradmin API. Each key is linked to your user account and inherits your permissions, so revoking your account also revokes all its keys. Treat keys as secrets - they grant the same access as logging in as you.{% endtrans %}
+</div>

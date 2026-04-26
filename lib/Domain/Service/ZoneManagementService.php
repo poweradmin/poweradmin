@@ -28,9 +28,11 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use PDO;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Throwable;
 
 /**
  * Service for managing DNS zones
@@ -41,17 +43,20 @@ class ZoneManagementService
     private ConfigurationManager $config;
     private PDO $db;
     private LoggerInterface $logger;
+    private RecordChangeLogger $changeLogger;
 
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
         ConfigurationManager $config,
         object $db,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?RecordChangeLogger $changeLogger = null
     ) {
         $this->zoneRepository = $zoneRepository;
         $this->config = $config;
         $this->db = $db;
         $this->logger = $logger ?? new NullLogger();
+        $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
     }
 
     /**
@@ -177,6 +182,14 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Zone not found'];
         }
 
+        // Snapshot before
+        $beforeZone = null;
+        try {
+            $beforeZone = $this->zoneRepository->getZoneById($zoneId);
+        } catch (Throwable $e) {
+            $this->logger->warning('Failed to fetch zone before metadata update for change log: {error}', ['error' => $e->getMessage()]);
+        }
+
         // Update the zone
         try {
             $success = $this->zoneRepository->updateZone($zoneId, $updates);
@@ -186,6 +199,17 @@ class ZoneManagementService
 
         if (!$success) {
             return ['success' => false, 'message' => 'Failed to update zone'];
+        }
+
+        if ($beforeZone !== null) {
+            try {
+                $afterZone = $this->zoneRepository->getZoneById($zoneId);
+                if ($afterZone !== null) {
+                    $this->changeLogger->logZoneMetadataEdit($beforeZone, $afterZone);
+                }
+            } catch (Throwable $e) {
+                $this->logger->warning('Failed to write zone metadata edit log: {error}', ['error' => $e->getMessage()]);
+            }
         }
 
         return ['success' => true, 'message' => 'Zone updated successfully'];

@@ -9,12 +9,12 @@
         {% if pdns_server_info and pdns_server_info.version %}
         <span class="text-muted small" data-bs-toggle="tooltip" data-bs-placement="bottom"
               title="{% trans %}Connected PowerDNS version{% endtrans %}{% if pdns_server_info.daemon_type %} ({{ pdns_server_info.daemon_type }}){% endif %}">
-            <i class="bi bi-hdd me-1"></i>PowerDNS {{ pdns_server_info.version }}
+            <i class="bi bi-hdd me-1"></i>PowerDNS: {{ pdns_server_info.version }}
         </span>
         {% elseif permissions and permissions.user_is_ueberuser and pdns_api_enabled %}
         <span class="text-muted small" data-bs-toggle="tooltip" data-bs-placement="bottom"
               title="{% trans %}Could not detect PowerDNS version. Newer features are hidden until the API is reachable.{% endtrans %}">
-            <i class="bi bi-hdd me-1"></i>{% trans %}PowerDNS version unknown{% endtrans %}
+            <i class="bi bi-hdd me-1"></i>{% trans %}PowerDNS: unknown{% endtrans %}
         </span>
         {% endif %}
     </div>
@@ -58,7 +58,7 @@
     </div>
     <div class="collapse show" id="dns-management">
         <div class="card-body py-2 px-2">
-            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 g-1">
+            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 row-cols-xl-7 row-cols-xxl-8 g-1">
                 {% if permissions['user_is_ueberuser'] and pdns_api_enabled and show_pdns_status %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/tools/pdns-status" class="card h-100 text-decoration-none text-body {% if pdns_server_status is defined %}{% if pdns_server_status.running %}border-success{% else %}border-danger{% endif %}{% endif %}" data-testid="pdns-status-link">
@@ -163,7 +163,7 @@
     </div>
     <div class="collapse show" id="zone-operations">
         <div class="card-body py-2 px-2">
-            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 g-1">
+            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 row-cols-xl-7 row-cols-xxl-8 g-1">
                 {% if permissions['zone_master_add'] %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/zones/add/master" class="card h-100 text-decoration-none text-body" data-testid="add-master-zone-link">
@@ -232,7 +232,7 @@
     </div>
     <div class="collapse show" id="administration">
         <div class="card-body py-2 px-2">
-            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 g-1">
+            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 row-cols-xl-7 row-cols-xxl-8 g-1">
                 {% if permissions['user_view_others'] or permissions['user_edit_others'] or permissions['user_add_new'] or permissions['user_is_ueberuser'] %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/users" class="card h-100 text-decoration-none text-body" data-testid="user-administration-link">
@@ -293,6 +293,16 @@
                     </a>
                 </div>
                 {% endif %}
+                {% if permissions['user_is_ueberuser'] and dblog_use == true %}
+                <div class="col card-item">
+                    <a href="{{ base_url_prefix }}/zones/changes" class="card h-100 text-decoration-none text-body" data-testid="record-changes-link">
+                        <div class="card-body text-center py-2 px-1">
+                            <i class="bi bi-clock-history fs-2 d-block mb-1"></i>
+                            <small class="d-block text-truncate">{% trans %}Record Changes{% endtrans %}</small>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -311,7 +321,7 @@
     </div>
     <div class="collapse show" id="tools-modules">
         <div class="card-body py-2 px-2">
-            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 g-1">
+            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 row-cols-xl-7 row-cols-xxl-8 g-1">
                 {% if permissions['user_is_ueberuser'] and enable_consistency_checks %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/tools/database-consistency" class="card h-100 text-decoration-none text-body" data-testid="database-consistency-link">
@@ -358,7 +368,7 @@
     </div>
     <div class="collapse show" id="account-section">
         <div class="card-body py-2 px-2">
-            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 g-1">
+            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 row-cols-xl-7 row-cols-xxl-8 g-1">
                 {% if is_limited_user and permissions['user_edit_own'] %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/users/{{ user_id }}/edit" class="card h-100 text-decoration-none text-body" data-testid="edit-profile-link">
