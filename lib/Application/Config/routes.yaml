@@ -197,6 +197,10 @@ zones_logs:
   path: /zones/logs
   controller: Poweradmin\Application\Controller\ListLogZonesController::run
 
+record_changes:
+  path: /zones/changes
+  controller: Poweradmin\Application\Controller\ListRecordChangesController::run
+
 zones_templates:
   path: /zones/templates
   controller: Poweradmin\Application\Controller\ListZoneTemplController::run
