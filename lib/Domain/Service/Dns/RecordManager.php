@@ -35,9 +35,11 @@ use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Throwable;
 
 /**
  * Service class for managing DNS records
@@ -53,6 +55,7 @@ class RecordManager implements RecordManagerInterface
     private DomainRepositoryInterface $domainRepository;
     private DnsBackendProvider $backendProvider;
     private LoggerInterface $logger;
+    private RecordChangeLogger $changeLogger;
 
     /**
      * Constructor
@@ -71,7 +74,8 @@ class RecordManager implements RecordManagerInterface
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
         ?DnsBackendProvider $backendProvider = null,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?RecordChangeLogger $changeLogger = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -82,6 +86,16 @@ class RecordManager implements RecordManagerInterface
         $this->domainRepository = $domainRepository;
         $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $this->logger = $logger ?? new NullLogger();
+        $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
+    }
+
+    private function captureChange(callable $callback): void
+    {
+        try {
+            $callback();
+        } catch (Throwable $e) {
+            $this->logger->warning('Failed to write record change log: {error}', ['error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -164,6 +178,18 @@ class RecordManager implements RecordManagerInterface
             $this->messageService->addSystemError(_('Failed to add record to DNS backend.'));
             return false;
         }
+
+        $this->captureChange(function () use ($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio): void {
+            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+            $this->changeLogger->logRecordCreate([
+                'name' => $name,
+                'type' => $type,
+                'content' => $content,
+                'ttl' => $validatedTtl,
+                'prio' => $validatedPrio,
+                'zone_name' => is_string($zone_name) ? $zone_name : null,
+            ], $zone_id);
+        });
 
         if ($type != 'SOA') {
             $this->soaRecordManager->updateSOASerial($zone_id);
@@ -265,6 +291,19 @@ class RecordManager implements RecordManagerInterface
             return null;
         }
 
+        $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio): void {
+            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+            $this->changeLogger->logRecordCreate([
+                'id' => is_int($recordId) ? $recordId : (is_string($recordId) ? $recordId : null),
+                'name' => $name,
+                'type' => $type,
+                'content' => $content,
+                'ttl' => $validatedTtl,
+                'prio' => $validatedPrio,
+                'zone_name' => is_string($zone_name) ? $zone_name : null,
+            ], $zone_id);
+        });
+
         if ($type != 'SOA') {
             $this->soaRecordManager->updateSOASerial($zone_id);
         }
@@ -317,6 +356,14 @@ class RecordManager implements RecordManagerInterface
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
         } else {
+            $beforeRecord = null;
+            try {
+                $recordRepositoryForBefore = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
+                $beforeRecord = $recordRepositoryForBefore->getRecordDetailsFromRecordId($record['rid']);
+            } catch (Throwable $e) {
+                $this->logger->warning('Failed to fetch record before edit for change log: {error}', ['error' => $e->getMessage()]);
+            }
+
             // Normalize the name BEFORE validation
             $zone = $this->domainRepository->getDomainNameById($record['zid']);
             $hostnameValidator = new HostnameValidator($this->config);
@@ -356,6 +403,26 @@ class RecordManager implements RecordManagerInterface
                     $this->messageService->addSystemError(_('Failed to update record in DNS backend.'));
                     return false;
                 }
+
+                if ($beforeRecord !== null) {
+                    $afterRecord = [
+                        'id' => $record['rid'],
+                        'name' => $name,
+                        'type' => $record['type'],
+                        'content' => $content,
+                        'ttl' => $validatedTtl,
+                        'prio' => $validatedPrio,
+                        'disabled' => $record['disabled'] ?? false,
+                        'zone_name' => is_string($zone) ? $zone : null,
+                    ];
+                    $beforeForLog = $beforeRecord;
+                    $beforeForLog['id'] = $record['rid'];
+                    $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
+                    $this->captureChange(function () use ($beforeForLog, $afterRecord, $record): void {
+                        $this->changeLogger->logRecordEdit($beforeForLog, $afterRecord, (int) $record['zid']);
+                    });
+                }
+
                 return true;
             } else {
                 $this->messageService->addSystemError($validationResult->getFirstError());
@@ -391,7 +458,24 @@ class RecordManager implements RecordManagerInterface
                 return false;
             }
 
-            return $this->backendProvider->deleteRecord($rid);
+            $deleted = $this->backendProvider->deleteRecord($rid);
+
+            if ($deleted) {
+                $this->captureChange(function () use ($record, $rid): void {
+                    $zoneId = isset($record['zid']) ? (int) $record['zid'] : null;
+                    $zoneName = null;
+                    if ($zoneId !== null) {
+                        $name = $this->domainRepository->getDomainNameById($zoneId);
+                        $zoneName = is_string($name) ? $name : null;
+                    }
+                    $beforeForLog = $record;
+                    $beforeForLog['id'] = $rid;
+                    $beforeForLog['zone_name'] = $zoneName;
+                    $this->changeLogger->logRecordDelete($beforeForLog, $zoneId);
+                });
+            }
+
+            return $deleted;
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
             return false;
