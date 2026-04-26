@@ -1,5 +1,14 @@
-#!/usr/bin/env php
 <?php
+
+// CLI-only guard: block any web SAPI before any output is generated.
+// Placed BEFORE the file header so the response from a web request is a
+// clean 403 with no leaked source.
+if (PHP_SAPI !== 'cli') {
+    http_response_code(403);
+    header('Content-Type: text/plain; charset=UTF-8');
+    echo "This script can only be invoked from the command line.\n";
+    exit(1);
+}
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
@@ -44,7 +53,7 @@
  *   --help              Show this help.
  */
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\MailService;
