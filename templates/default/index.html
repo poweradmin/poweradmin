@@ -14,7 +14,7 @@
         {% elseif permissions and permissions.user_is_ueberuser and pdns_api_enabled %}
         <span class="text-muted small" data-bs-toggle="tooltip" data-bs-placement="bottom"
               title="{% trans %}Could not detect PowerDNS version. Newer features are hidden until the API is reachable.{% endtrans %}">
-            <i class="bi bi-hdd me-1"></i>PowerDNS: <span class="text-warning">?</span>
+            <i class="bi bi-hdd me-1"></i>{% trans %}PowerDNS: unknown{% endtrans %}
         </span>
         {% endif %}
     </div>

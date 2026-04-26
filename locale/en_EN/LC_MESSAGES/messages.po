@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 09:55+0300\n"
+"POT-Creation-Date: 2026-04-26 10:04+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1301,7 +1301,7 @@ msgstr "Failed to retrieve RDAP information using server %s"
 msgid "Invalid CSRF token."
 msgstr "Invalid CSRF token."
 
-#: lib/BaseController.php:661
+#: lib/BaseController.php:664
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1309,7 +1309,7 @@ msgstr ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 
-#: lib/BaseController.php:718
+#: lib/BaseController.php:721
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1317,12 +1317,12 @@ msgstr ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 
-#: lib/BaseController.php:857
+#: lib/BaseController.php:860
 #, php-format
 msgid "The %s field is required."
 msgstr "The %s field is required."
 
-#: lib/BaseController.php:865
+#: lib/BaseController.php:868
 #, php-format
 msgid "The %s field must be a number."
 msgstr "The %s field must be a number."
@@ -9893,6 +9893,10 @@ msgstr ""
 "Could not detect PowerDNS version. Newer features are hidden until the API "
 "is reachable.is reachable."
 
+#: templates/default/index.html:17 templates/modern/index.html:17
+msgid "PowerDNS: unknown"
+msgstr "PowerDNS: unknown"
+
 #: templates/default/index.html:27 templates/modern/index.html:27
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
@@ -14533,8 +14537,3 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
-
-# OBSOLETE: msgid "PowerDNS version unknown"
-# OBSOLETE: msgstr "PowerDNS version unknown"
-
-

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.5.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 09:55+0300\n"
+"POT-Creation-Date: 2026-04-26 10:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1208,24 +1208,24 @@ msgstr ""
 msgid "Invalid CSRF token."
 msgstr ""
 
-#: lib/BaseController.php:661
+#: lib/BaseController.php:664
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr ""
 
-#: lib/BaseController.php:718
+#: lib/BaseController.php:721
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
 
-#: lib/BaseController.php:857
+#: lib/BaseController.php:860
 #, php-format
 msgid "The %s field is required."
 msgstr ""
 
-#: lib/BaseController.php:865
+#: lib/BaseController.php:868
 #, php-format
 msgid "The %s field must be a number."
 msgstr ""
@@ -8772,6 +8772,10 @@ msgstr ""
 msgid ""
 "Could not detect PowerDNS version. Newer features are hidden until the API "
 "is reachable."
+msgstr ""
+
+#: templates/default/index.html:17 templates/modern/index.html:17
+msgid "PowerDNS: unknown"
 msgstr ""
 
 #: templates/default/index.html:27 templates/modern/index.html:27
