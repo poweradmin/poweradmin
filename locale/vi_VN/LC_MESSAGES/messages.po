@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:26+0300\n"
+"POT-Creation-Date: 2026-04-26 10:32+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -9244,39 +9244,45 @@ msgstr "Khóa riêng PEM"
 msgid "Import key"
 msgstr "Nhập khóa"
 
-#: templates/modern/list_networks.html:13
-msgid ""
-"Each network maps to a single view. Resolvers in that network receive the "
-"zone variant assigned to that view."
-msgstr ""
-"Mỗi mạng tương ứng với một view. Các resolver trong mạng đó nhận biến thể "
-"vùng được gán cho view đó."
+#: templates/modern/list_networks.html:14
+#, auto-english-fallback
+msgid "Network Mapping:"
+msgstr "Network Mapping:"
 
-#: templates/modern/list_networks.html:18
+#: templates/modern/list_networks.html:15
+msgid ""
+"Each network (CIDR block) maps to exactly one view. Resolvers in that "
+"network receive only the zone variants assigned to the mapped view. PowerDNS "
+"evaluates networks longest-prefix first, so a more specific subnet (for "
+"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
+"a client."
+msgstr ""
+
+#: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
 msgstr "Chưa có mạng nào được cấu hình. Hãy ánh xạ CIDR cho view bên dưới."
 
-#: templates/modern/list_networks.html:25
+#: templates/modern/list_networks.html:28
 msgid "Network"
 msgstr "Mạng"
 
-#: templates/modern/list_networks.html:65
+#: templates/modern/list_networks.html:68
 msgid "View"
 msgstr "View"
 
-#: templates/modern/list_networks.html:40
+#: templates/modern/list_networks.html:43
 msgid "Remove mapping"
 msgstr "Xóa ánh xạ"
 
-#: templates/modern/list_networks.html:54
+#: templates/modern/list_networks.html:57
 msgid "Map network to view"
 msgstr "Ánh xạ mạng cho view"
 
-#: templates/modern/list_networks.html:61
+#: templates/modern/list_networks.html:64
 msgid "CIDR"
 msgstr "CIDR"
 
-#: templates/modern/list_networks.html:79
+#: templates/modern/list_networks.html:82
 msgid "Save"
 msgstr "Lưu"
 
@@ -9527,7 +9533,7 @@ msgstr "Kết nối nhân bản thất bại."
 msgid "Welcome"
 msgstr "Độ trễ nhân bản quá cao."
 
-#: templates/modern/list_views.html:25
+#: templates/modern/list_views.html:28
 msgid "zones"
 msgstr "vùng"
 
@@ -9990,7 +9996,7 @@ msgstr ""
 "Người dùng này là chủ sở hữu của các vùng sau. Vui lòng quyết định cách xử "
 "lý với mỗi vùng:"
 
-#: templates/modern/list_record_changes.html:74
+#: templates/modern/list_record_changes.html:78
 msgid "Zone"
 msgstr "Vùng"
 
@@ -10644,7 +10650,7 @@ msgstr "Có, hủy liên kết các vùng này"
 msgid "Access templates"
 msgstr "Mẫu truy cập"
 
-#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Thêm"
 
@@ -11487,7 +11493,7 @@ msgstr "Cảnh báo"
 msgid "Zones Without Owners"
 msgstr "Các vùng không có chủ sở hữu"
 
-#: templates/modern/list_record_changes.html:45
+#: templates/modern/list_record_changes.html:49
 msgid "Zone ID"
 msgstr "ID vùng"
 
@@ -12108,23 +12114,37 @@ msgstr "Có, xóa các bản ghi này"
 msgid "entries"
 msgstr "entries"
 
-#: templates/modern/list_record_changes.html:30
+#: templates/modern/list_record_changes.html:19
+#, auto-english-fallback
+msgid "Change Log Behavior:"
+msgstr "Change Log Behavior:"
+
+#: templates/modern/list_record_changes.html:20
+msgid ""
+"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
+"before/after snapshot here, alongside the user and timestamp. Logs never "
+"expire automatically - prune old rows manually if the table grows large. Use "
+"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
+"to feed external audit systems."
+msgstr ""
+
+#: templates/modern/list_record_changes.html:34
 msgid "All actions"
 msgstr "All actions"
 
-#: templates/modern/list_record_changes.html:48
+#: templates/modern/list_record_changes.html:52
 msgid "From"
 msgstr "From"
 
-#: templates/modern/list_record_changes.html:51
+#: templates/modern/list_record_changes.html:55
 msgid "To"
 msgstr "To"
 
-#: templates/modern/list_record_changes.html:71
+#: templates/modern/list_record_changes.html:75
 msgid "When"
 msgstr "When"
 
-#: templates/modern/list_record_changes.html:72
+#: templates/modern/list_record_changes.html:76
 msgid "Action"
 msgstr "Action"
 
@@ -12132,23 +12152,23 @@ msgstr "Action"
 msgid "User"
 msgstr "Người dùng"
 
-#: templates/modern/list_record_changes.html:79
+#: templates/modern/list_record_changes.html:83
 msgid "Prio"
 msgstr "Prio"
 
-#: templates/modern/list_record_changes.html:122
+#: templates/modern/list_record_changes.html:126
 msgid "before"
 msgstr "before"
 
-#: templates/modern/list_record_changes.html:123
+#: templates/modern/list_record_changes.html:127
 msgid "after"
 msgstr "after"
 
-#: templates/modern/list_record_changes.html:208
+#: templates/modern/list_record_changes.html:212
 msgid "No record changes found"
 msgstr "No record changes found"
 
-#: templates/modern/list_record_changes.html:209
+#: templates/modern/list_record_changes.html:213
 msgid "Try a different filter or time window"
 msgstr "Try a different filter or time window"
 
@@ -12616,33 +12636,38 @@ msgstr "Bạn sắp xóa mẫu vùng"
 msgid "This template is currently used by"
 msgstr "Mẫu này hiện đang được sử dụng bởi"
 
-#: templates/default/list_views.html:13 templates/modern/list_views.html:13
+#: templates/default/list_views.html:14 templates/modern/list_views.html:14
+#, auto-english-fallback
+msgid "View Behavior:"
+msgstr "View Behavior:"
+
+#: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid ""
 "Views serve different zone variants to different clients based on the "
-"network mapping. Each variant is identified as zone..variant (for example, "
-"example.com..trusted)."
+"network that queried the resolver. Each variant is named zone..variant (for "
+"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
+"before it can be assigned here. Variants share a name but resolve "
+"differently per view, so the same hostname can answer with different IPs "
+"depending on the client's network."
 msgstr ""
-"View phục vụ các biến thể vùng khác nhau cho các client khác nhau dựa trên "
-"ánh xạ mạng. Mỗi biến thể được xác định là zone..variant (ví dụ: "
-"example.com..trusted)."
 
-#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+#: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
 msgstr "Chưa có view nào được cấu hình. Hãy thêm biến thể vùng bên dưới."
 
-#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+#: templates/default/list_views.html:40 templates/modern/list_views.html:40
 msgid "Remove from view"
 msgstr "Xóa khỏi view"
 
-#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+#: templates/default/list_views.html:54 templates/modern/list_views.html:54
 msgid "Assign zone to view"
 msgstr "Gán vùng cho view"
 
-#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+#: templates/default/list_views.html:61 templates/modern/list_views.html:61
 msgid "View name"
 msgstr "Tên view"
 
-#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+#: templates/default/list_views.html:65 templates/modern/list_views.html:65
 msgid "Zone (zone..variant)"
 msgstr "Vùng (zone..variant)"
 
@@ -14139,16 +14164,23 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr ""
 
-# OBSOLETE: msgid "Slave Servers"
-# OBSOLETE: msgstr "Máy chủ Slave"
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
+# OBSOLETE: "zone variant assigned to that view."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Mỗi mạng tương ứng với một view. Các resolver trong mạng đó nhận biến thể "
+# OBSOLETE: "vùng được gán cho view đó."
 
 #, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
-# OBSOLETE: "table."
+# OBSOLETE: "Views serve different zone variants to different clients based on the "
+# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
+# OBSOLETE: "example, example.com..trusted)."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Hiển thị trạng thái kết nối cho các máy chủ DNS được liệt kê trong bảng "
-# OBSOLETE: "supermasters."
+# OBSOLETE: "View phục vụ các biến thể vùng khác nhau cho các client khác nhau dựa "
+# OBSOLETE: "trên ánh xạ mạng. Mỗi biến thể được xác định là zone..variant (ví dụ: "
+# OBSOLETE: "example.com..trusted)."
 
 
 

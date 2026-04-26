@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:26+0300\n"
+"POT-Creation-Date: 2026-04-26 10:32+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -8986,39 +8986,45 @@ msgstr "PEM 개인 키"
 msgid "Import key"
 msgstr "키 가져오기"
 
-#: templates/modern/list_networks.html:13
-msgid ""
-"Each network maps to a single view. Resolvers in that network receive the "
-"zone variant assigned to that view."
-msgstr ""
-"각 네트워크는 단일 뷰에 매핑됩니다. 해당 네트워크의 리졸버는 그 뷰에 할당된 "
-"영역 변형을 받습니다."
+#: templates/modern/list_networks.html:14
+#, auto-english-fallback
+msgid "Network Mapping:"
+msgstr "Network Mapping:"
 
-#: templates/modern/list_networks.html:18
+#: templates/modern/list_networks.html:15
+msgid ""
+"Each network (CIDR block) maps to exactly one view. Resolvers in that "
+"network receive only the zone variants assigned to the mapped view. PowerDNS "
+"evaluates networks longest-prefix first, so a more specific subnet (for "
+"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
+"a client."
+msgstr ""
+
+#: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
 msgstr "아직 구성된 네트워크가 없습니다. 아래에서 CIDR을 뷰에 매핑하세요."
 
-#: templates/modern/list_networks.html:25
+#: templates/modern/list_networks.html:28
 msgid "Network"
 msgstr "네트워크"
 
-#: templates/modern/list_networks.html:65
+#: templates/modern/list_networks.html:68
 msgid "View"
 msgstr "뷰"
 
-#: templates/modern/list_networks.html:40
+#: templates/modern/list_networks.html:43
 msgid "Remove mapping"
 msgstr "매핑 제거"
 
-#: templates/modern/list_networks.html:54
+#: templates/modern/list_networks.html:57
 msgid "Map network to view"
 msgstr "네트워크를 뷰에 매핑"
 
-#: templates/modern/list_networks.html:61
+#: templates/modern/list_networks.html:64
 msgid "CIDR"
 msgstr "CIDR"
 
-#: templates/modern/list_networks.html:79
+#: templates/modern/list_networks.html:82
 msgid "Save"
 msgstr "저장"
 
@@ -9269,7 +9275,7 @@ msgstr "코드를 최적화할 수 없습니다."
 msgid "Welcome"
 msgstr "코드를 난독화할 수 없습니다."
 
-#: templates/modern/list_views.html:25
+#: templates/modern/list_views.html:28
 msgid "zones"
 msgstr "존"
 
@@ -9729,7 +9735,7 @@ msgid ""
 msgstr ""
 "이 사용자는 다음 존의 소유자입니다. 각 존에 대해 어떻게 할지 결정하세요:"
 
-#: templates/modern/list_record_changes.html:74
+#: templates/modern/list_record_changes.html:78
 msgid "Zone"
 msgstr "존"
 
@@ -10366,7 +10372,7 @@ msgstr "네, 이러한 존의 연결을 해제합니다"
 msgid "Access templates"
 msgstr "액세스 템플릿"
 
-#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "추가"
 
@@ -11201,7 +11207,7 @@ msgstr "경고"
 msgid "Zones Without Owners"
 msgstr "소유자가 없는 존"
 
-#: templates/modern/list_record_changes.html:45
+#: templates/modern/list_record_changes.html:49
 msgid "Zone ID"
 msgstr "존 ID"
 
@@ -11818,23 +11824,37 @@ msgstr "네, 이러한 레코드를 삭제합니다"
 msgid "entries"
 msgstr "entries"
 
-#: templates/modern/list_record_changes.html:30
+#: templates/modern/list_record_changes.html:19
+#, auto-english-fallback
+msgid "Change Log Behavior:"
+msgstr "Change Log Behavior:"
+
+#: templates/modern/list_record_changes.html:20
+msgid ""
+"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
+"before/after snapshot here, alongside the user and timestamp. Logs never "
+"expire automatically - prune old rows manually if the table grows large. Use "
+"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
+"to feed external audit systems."
+msgstr ""
+
+#: templates/modern/list_record_changes.html:34
 msgid "All actions"
 msgstr "All actions"
 
-#: templates/modern/list_record_changes.html:48
+#: templates/modern/list_record_changes.html:52
 msgid "From"
 msgstr "From"
 
-#: templates/modern/list_record_changes.html:51
+#: templates/modern/list_record_changes.html:55
 msgid "To"
 msgstr "To"
 
-#: templates/modern/list_record_changes.html:71
+#: templates/modern/list_record_changes.html:75
 msgid "When"
 msgstr "When"
 
-#: templates/modern/list_record_changes.html:72
+#: templates/modern/list_record_changes.html:76
 msgid "Action"
 msgstr "Action"
 
@@ -11842,23 +11862,23 @@ msgstr "Action"
 msgid "User"
 msgstr "사용자"
 
-#: templates/modern/list_record_changes.html:79
+#: templates/modern/list_record_changes.html:83
 msgid "Prio"
 msgstr "Prio"
 
-#: templates/modern/list_record_changes.html:122
+#: templates/modern/list_record_changes.html:126
 msgid "before"
 msgstr "before"
 
-#: templates/modern/list_record_changes.html:123
+#: templates/modern/list_record_changes.html:127
 msgid "after"
 msgstr "after"
 
-#: templates/modern/list_record_changes.html:208
+#: templates/modern/list_record_changes.html:212
 msgid "No record changes found"
 msgstr "No record changes found"
 
-#: templates/modern/list_record_changes.html:209
+#: templates/modern/list_record_changes.html:213
 msgid "Try a different filter or time window"
 msgstr "Try a different filter or time window"
 
@@ -12324,32 +12344,38 @@ msgstr "다음 존 템플릿을 삭제하려고 합니다"
 msgid "This template is currently used by"
 msgstr "이 템플릿은 현재 다음에 의해 사용됩니다"
 
-#: templates/default/list_views.html:13 templates/modern/list_views.html:13
+#: templates/default/list_views.html:14 templates/modern/list_views.html:14
+#, auto-english-fallback
+msgid "View Behavior:"
+msgstr "View Behavior:"
+
+#: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid ""
 "Views serve different zone variants to different clients based on the "
-"network mapping. Each variant is identified as zone..variant (for example, "
-"example.com..trusted)."
+"network that queried the resolver. Each variant is named zone..variant (for "
+"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
+"before it can be assigned here. Variants share a name but resolve "
+"differently per view, so the same hostname can answer with different IPs "
+"depending on the client's network."
 msgstr ""
-"뷰는 네트워크 매핑에 따라 서로 다른 클라이언트에 서로 다른 영역 변형을 제공합"
-"니다. 각 변형은 zone..variant (예: example.com..trusted)로 식별됩니다."
 
-#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+#: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
 msgstr "아직 구성된 뷰가 없습니다. 아래에 영역 변형을 추가하세요."
 
-#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+#: templates/default/list_views.html:40 templates/modern/list_views.html:40
 msgid "Remove from view"
 msgstr "뷰에서 제거"
 
-#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+#: templates/default/list_views.html:54 templates/modern/list_views.html:54
 msgid "Assign zone to view"
 msgstr "영역을 뷰에 할당"
 
-#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+#: templates/default/list_views.html:61 templates/modern/list_views.html:61
 msgid "View name"
 msgstr "뷰 이름"
 
-#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+#: templates/default/list_views.html:65 templates/modern/list_views.html:65
 msgid "Zone (zone..variant)"
 msgstr "영역 (zone..variant)"
 
@@ -13838,13 +13864,22 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr ""
 
-# OBSOLETE: msgid "Slave Servers"
-# OBSOLETE: msgstr "슬레이브 서버"
-
+#, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
-# OBSOLETE: "table."
-# OBSOLETE: msgstr "supermaster 테이블에 나열된 DNS 서버의 연결 상태를 표시합니다."
+# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
+# OBSOLETE: "zone variant assigned to that view."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "각 네트워크는 단일 뷰에 매핑됩니다. 해당 네트워크의 리졸버는 그 뷰에 할당"
+# OBSOLETE: "된 영역 변형을 받습니다."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Views serve different zone variants to different clients based on the "
+# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
+# OBSOLETE: "example, example.com..trusted)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "뷰는 네트워크 매핑에 따라 서로 다른 클라이언트에 서로 다른 영역 변형을 제"
+# OBSOLETE: "공합니다. 각 변형은 zone..variant (예: example.com..trusted)로 식별됩니다."
 
 
 

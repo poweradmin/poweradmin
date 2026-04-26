@@ -15,6 +15,10 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="text-muted small mb-3">
+            <strong><i class="bi bi-info-circle me-1"></i>{% trans %}Change Log Behavior:{% endtrans %}</strong>
+            {% trans %}Every record add/edit/delete and zone create/delete/metadata-edit captures a before/after snapshot here, alongside the user and timestamp. Logs never expire automatically - prune old rows manually if the table grows large. Use the time-window shortcuts to focus on recent activity, or export to CSV/JSON to feed external audit systems.{% endtrans %}
+        </div>
         <div class="mb-3 small">
             <a href="{{ base_url_prefix }}/zones/changes" class="me-2 {% if not window_filter and not date_from %}fw-bold{% endif %}">{% trans %}All{% endtrans %}</a>
             {% for w in time_windows %}

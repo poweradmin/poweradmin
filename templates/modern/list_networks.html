@@ -10,7 +10,10 @@
         <strong><i class="bi bi-diagram-3 me-2"></i>{% trans %}Network views{% endtrans %}</strong>
     </div>
     <div class="card-body">
-        <p class="text-muted small mb-3">{% trans %}Each network maps to a single view. Resolvers in that network receive the zone variant assigned to that view.{% endtrans %}</p>
+        <div class="text-muted small mb-3">
+            <strong><i class="bi bi-info-circle me-1"></i>{% trans %}Network Mapping:{% endtrans %}</strong>
+            {% trans %}Each network (CIDR block) maps to exactly one view. Resolvers in that network receive only the zone variants assigned to the mapped view. PowerDNS evaluates networks longest-prefix first, so a more specific subnet (for example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match a client.{% endtrans %}
+        </div>
 
         {% if networks is empty %}
         <div class="text-center py-3 text-muted">

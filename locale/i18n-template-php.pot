@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.5.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:26+0300\n"
+"POT-Creation-Date: 2026-04-26 10:32+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -8479,37 +8479,44 @@ msgstr ""
 msgid "Import key"
 msgstr ""
 
-#: templates/modern/list_networks.html:13
-msgid ""
-"Each network maps to a single view. Resolvers in that network receive the "
-"zone variant assigned to that view."
+#: templates/modern/list_networks.html:14
+msgid "Network Mapping:"
 msgstr ""
 
-#: templates/modern/list_networks.html:18
+#: templates/modern/list_networks.html:15
+msgid ""
+"Each network (CIDR block) maps to exactly one view. Resolvers in that "
+"network receive only the zone variants assigned to the mapped view. PowerDNS "
+"evaluates networks longest-prefix first, so a more specific subnet (for "
+"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
+"a client."
+msgstr ""
+
+#: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
 msgstr ""
 
-#: templates/modern/list_networks.html:25
+#: templates/modern/list_networks.html:28
 msgid "Network"
 msgstr ""
 
-#: templates/modern/list_networks.html:65
+#: templates/modern/list_networks.html:68
 msgid "View"
 msgstr ""
 
-#: templates/modern/list_networks.html:40
+#: templates/modern/list_networks.html:43
 msgid "Remove mapping"
 msgstr ""
 
-#: templates/modern/list_networks.html:54
+#: templates/modern/list_networks.html:57
 msgid "Map network to view"
 msgstr ""
 
-#: templates/modern/list_networks.html:61
+#: templates/modern/list_networks.html:64
 msgid "CIDR"
 msgstr ""
 
-#: templates/modern/list_networks.html:79
+#: templates/modern/list_networks.html:82
 msgid "Save"
 msgstr ""
 
@@ -8760,7 +8767,7 @@ msgstr ""
 msgid "Welcome"
 msgstr ""
 
-#: templates/modern/list_views.html:25
+#: templates/modern/list_views.html:28
 msgid "zones"
 msgstr ""
 
@@ -9208,7 +9215,7 @@ msgid ""
 "with each zone:"
 msgstr ""
 
-#: templates/modern/list_record_changes.html:74
+#: templates/modern/list_record_changes.html:78
 msgid "Zone"
 msgstr ""
 
@@ -9826,7 +9833,7 @@ msgstr ""
 msgid "Access templates"
 msgstr ""
 
-#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr ""
 
@@ -10626,7 +10633,7 @@ msgstr ""
 msgid "Zones Without Owners"
 msgstr ""
 
-#: templates/modern/list_record_changes.html:45
+#: templates/modern/list_record_changes.html:49
 msgid "Zone ID"
 msgstr ""
 
@@ -11228,23 +11235,36 @@ msgstr ""
 msgid "entries"
 msgstr ""
 
-#: templates/modern/list_record_changes.html:30
+#: templates/modern/list_record_changes.html:19
+msgid "Change Log Behavior:"
+msgstr ""
+
+#: templates/modern/list_record_changes.html:20
+msgid ""
+"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
+"before/after snapshot here, alongside the user and timestamp. Logs never "
+"expire automatically - prune old rows manually if the table grows large. Use "
+"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
+"to feed external audit systems."
+msgstr ""
+
+#: templates/modern/list_record_changes.html:34
 msgid "All actions"
 msgstr ""
 
-#: templates/modern/list_record_changes.html:48
+#: templates/modern/list_record_changes.html:52
 msgid "From"
 msgstr ""
 
-#: templates/modern/list_record_changes.html:51
+#: templates/modern/list_record_changes.html:55
 msgid "To"
 msgstr ""
 
-#: templates/modern/list_record_changes.html:71
+#: templates/modern/list_record_changes.html:75
 msgid "When"
 msgstr ""
 
-#: templates/modern/list_record_changes.html:72
+#: templates/modern/list_record_changes.html:76
 msgid "Action"
 msgstr ""
 
@@ -11252,23 +11272,23 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: templates/modern/list_record_changes.html:79
+#: templates/modern/list_record_changes.html:83
 msgid "Prio"
 msgstr ""
 
-#: templates/modern/list_record_changes.html:122
+#: templates/modern/list_record_changes.html:126
 msgid "before"
 msgstr ""
 
-#: templates/modern/list_record_changes.html:123
+#: templates/modern/list_record_changes.html:127
 msgid "after"
 msgstr ""
 
-#: templates/modern/list_record_changes.html:208
+#: templates/modern/list_record_changes.html:212
 msgid "No record changes found"
 msgstr ""
 
-#: templates/modern/list_record_changes.html:209
+#: templates/modern/list_record_changes.html:213
 msgid "Try a different filter or time window"
 msgstr ""
 
@@ -11714,30 +11734,37 @@ msgstr ""
 msgid "This template is currently used by"
 msgstr ""
 
-#: templates/default/list_views.html:13 templates/modern/list_views.html:13
-msgid ""
-"Views serve different zone variants to different clients based on the "
-"network mapping. Each variant is identified as zone..variant (for example, "
-"example.com..trusted)."
+#: templates/default/list_views.html:14 templates/modern/list_views.html:14
+msgid "View Behavior:"
 msgstr ""
 
-#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+#: templates/default/list_views.html:15 templates/modern/list_views.html:15
+msgid ""
+"Views serve different zone variants to different clients based on the "
+"network that queried the resolver. Each variant is named zone..variant (for "
+"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
+"before it can be assigned here. Variants share a name but resolve "
+"differently per view, so the same hostname can answer with different IPs "
+"depending on the client's network."
+msgstr ""
+
+#: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
 msgstr ""
 
-#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+#: templates/default/list_views.html:40 templates/modern/list_views.html:40
 msgid "Remove from view"
 msgstr ""
 
-#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+#: templates/default/list_views.html:54 templates/modern/list_views.html:54
 msgid "Assign zone to view"
 msgstr ""
 
-#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+#: templates/default/list_views.html:61 templates/modern/list_views.html:61
 msgid "View name"
 msgstr ""
 
-#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+#: templates/default/list_views.html:65 templates/modern/list_views.html:65
 msgid "Zone (zone..variant)"
 msgstr ""
 

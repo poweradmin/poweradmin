@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 10:26+0300\n"
+"POT-Creation-Date: 2026-04-26 10:32+0300\n"
 "PO-Revision-Date: 2025-06-02 20:30+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Italian\n"
@@ -9862,39 +9862,45 @@ msgstr "Chiave privata PEM"
 msgid "Import key"
 msgstr "Importa chiave"
 
-#: templates/modern/list_networks.html:13
-msgid ""
-"Each network maps to a single view. Resolvers in that network receive the "
-"zone variant assigned to that view."
-msgstr ""
-"Ogni rete corrisponde a una singola view. I resolver di quella rete ricevono "
-"la variante di zona assegnata a quella view."
+#: templates/modern/list_networks.html:14
+#, auto-english-fallback
+msgid "Network Mapping:"
+msgstr "Network Mapping:"
 
-#: templates/modern/list_networks.html:18
+#: templates/modern/list_networks.html:15
+msgid ""
+"Each network (CIDR block) maps to exactly one view. Resolvers in that "
+"network receive only the zone variants assigned to the mapped view. PowerDNS "
+"evaluates networks longest-prefix first, so a more specific subnet (for "
+"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
+"a client."
+msgstr ""
+
+#: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
 msgstr "Nessuna rete configurata. Mappa un CIDR su una view qui sotto."
 
-#: templates/modern/list_networks.html:25
+#: templates/modern/list_networks.html:28
 msgid "Network"
 msgstr "Rete"
 
-#: templates/modern/list_networks.html:65
+#: templates/modern/list_networks.html:68
 msgid "View"
 msgstr "View"
 
-#: templates/modern/list_networks.html:40
+#: templates/modern/list_networks.html:43
 msgid "Remove mapping"
 msgstr "Rimuovi mappatura"
 
-#: templates/modern/list_networks.html:54
+#: templates/modern/list_networks.html:57
 msgid "Map network to view"
 msgstr "Mappa rete su view"
 
-#: templates/modern/list_networks.html:61
+#: templates/modern/list_networks.html:64
 msgid "CIDR"
 msgstr "CIDR"
 
-#: templates/modern/list_networks.html:79
+#: templates/modern/list_networks.html:82
 msgid "Save"
 msgstr "Salva"
 
@@ -10157,7 +10163,7 @@ msgstr "No, mantieni questo gruppo"
 msgid "Welcome"
 msgstr "Benvenuto"
 
-#: templates/modern/list_views.html:25
+#: templates/modern/list_views.html:28
 msgid "zones"
 msgstr "zone"
 
@@ -10629,7 +10635,7 @@ msgstr ""
 "Questo utente è il proprietario delle seguenti zone. Decidi cosa fare con "
 "ciascuna zona:"
 
-#: templates/modern/list_record_changes.html:74
+#: templates/modern/list_record_changes.html:78
 msgid "Zone"
 msgstr "Zona"
 
@@ -11286,7 +11292,7 @@ msgstr "Sì, scollega queste zone"
 msgid "Access templates"
 msgstr "Template di accesso"
 
-#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:67
+#: templates/modern/add_perm_templ.html:6 templates/modern/list_views.html:70
 msgid "Add"
 msgstr "Aggiungi"
 
@@ -12135,7 +12141,7 @@ msgstr "Avvisi"
 msgid "Zones Without Owners"
 msgstr "Zone Senza Proprietari"
 
-#: templates/modern/list_record_changes.html:45
+#: templates/modern/list_record_changes.html:49
 msgid "Zone ID"
 msgstr "ID Zona"
 
@@ -12769,23 +12775,37 @@ msgstr "Sì, elimina questi record"
 msgid "entries"
 msgstr "entries"
 
-#: templates/modern/list_record_changes.html:30
+#: templates/modern/list_record_changes.html:19
+#, auto-english-fallback
+msgid "Change Log Behavior:"
+msgstr "Change Log Behavior:"
+
+#: templates/modern/list_record_changes.html:20
+msgid ""
+"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
+"before/after snapshot here, alongside the user and timestamp. Logs never "
+"expire automatically - prune old rows manually if the table grows large. Use "
+"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
+"to feed external audit systems."
+msgstr ""
+
+#: templates/modern/list_record_changes.html:34
 msgid "All actions"
 msgstr "All actions"
 
-#: templates/modern/list_record_changes.html:48
+#: templates/modern/list_record_changes.html:52
 msgid "From"
 msgstr "From"
 
-#: templates/modern/list_record_changes.html:51
+#: templates/modern/list_record_changes.html:55
 msgid "To"
 msgstr "To"
 
-#: templates/modern/list_record_changes.html:71
+#: templates/modern/list_record_changes.html:75
 msgid "When"
 msgstr "When"
 
-#: templates/modern/list_record_changes.html:72
+#: templates/modern/list_record_changes.html:76
 msgid "Action"
 msgstr "Action"
 
@@ -12793,23 +12813,23 @@ msgstr "Action"
 msgid "User"
 msgstr "Utente"
 
-#: templates/modern/list_record_changes.html:79
+#: templates/modern/list_record_changes.html:83
 msgid "Prio"
 msgstr "Prio"
 
-#: templates/modern/list_record_changes.html:122
+#: templates/modern/list_record_changes.html:126
 msgid "before"
 msgstr "before"
 
-#: templates/modern/list_record_changes.html:123
+#: templates/modern/list_record_changes.html:127
 msgid "after"
 msgstr "after"
 
-#: templates/modern/list_record_changes.html:208
+#: templates/modern/list_record_changes.html:212
 msgid "No record changes found"
 msgstr "No record changes found"
 
-#: templates/modern/list_record_changes.html:209
+#: templates/modern/list_record_changes.html:213
 msgid "Try a different filter or time window"
 msgstr "Try a different filter or time window"
 
@@ -13285,33 +13305,38 @@ msgstr "Si sta per eliminare il modello di zona"
 msgid "This template is currently used by"
 msgstr "Questo modello è attualmente usato da"
 
-#: templates/default/list_views.html:13 templates/modern/list_views.html:13
+#: templates/default/list_views.html:14 templates/modern/list_views.html:14
+#, auto-english-fallback
+msgid "View Behavior:"
+msgstr "View Behavior:"
+
+#: templates/default/list_views.html:15 templates/modern/list_views.html:15
 msgid ""
 "Views serve different zone variants to different clients based on the "
-"network mapping. Each variant is identified as zone..variant (for example, "
-"example.com..trusted)."
+"network that queried the resolver. Each variant is named zone..variant (for "
+"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
+"before it can be assigned here. Variants share a name but resolve "
+"differently per view, so the same hostname can answer with different IPs "
+"depending on the client's network."
 msgstr ""
-"Le view servono varianti di zona diverse a client diversi in base alla "
-"mappatura di rete. Ogni variante è identificata come zone..variante (ad "
-"esempio example.com..trusted)."
 
-#: templates/default/list_views.html:18 templates/modern/list_views.html:18
+#: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
 msgstr "Nessuna view configurata. Aggiungi una variante di zona qui sotto."
 
-#: templates/default/list_views.html:37 templates/modern/list_views.html:37
+#: templates/default/list_views.html:40 templates/modern/list_views.html:40
 msgid "Remove from view"
 msgstr "Rimuovi dalla view"
 
-#: templates/default/list_views.html:51 templates/modern/list_views.html:51
+#: templates/default/list_views.html:54 templates/modern/list_views.html:54
 msgid "Assign zone to view"
 msgstr "Assegna zona a view"
 
-#: templates/default/list_views.html:58 templates/modern/list_views.html:58
+#: templates/default/list_views.html:61 templates/modern/list_views.html:61
 msgid "View name"
 msgstr "Nome della view"
 
-#: templates/default/list_views.html:62 templates/modern/list_views.html:62
+#: templates/default/list_views.html:65 templates/modern/list_views.html:65
 msgid "Zone (zone..variant)"
 msgstr "Zona (zone..variante)"
 
@@ -14824,16 +14849,23 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr ""
 
-# OBSOLETE: msgid "Slave Servers"
-# OBSOLETE: msgstr "Server Slave"
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
+# OBSOLETE: "zone variant assigned to that view."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Ogni rete corrisponde a una singola view. I resolver di quella rete "
+# OBSOLETE: "ricevono la variante di zona assegnata a quella view."
 
 #, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
-# OBSOLETE: "table."
+# OBSOLETE: "Views serve different zone variants to different clients based on the "
+# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
+# OBSOLETE: "example, example.com..trusted)."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Mostra lo stato di connettività per i server DNS elencati nella tabella "
-# OBSOLETE: "supermasters."
+# OBSOLETE: "Le view servono varianti di zona diverse a client diversi in base alla "
+# OBSOLETE: "mappatura di rete. Ogni variante è identificata come zone..variante (ad "
+# OBSOLETE: "esempio example.com..trusted)."
 
 
 
