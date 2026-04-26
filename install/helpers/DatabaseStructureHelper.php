@@ -822,6 +822,115 @@ class DatabaseStructureHelper
                 )
             ),
             array(
+                'table_name' => 'log_record_changes',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array
+                    (
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'autoincrement' => 1,
+                        'type' => 'integer',
+                        'name' => 'id',
+                        'table' => 'log_record_changes',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'zone_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'zone_id',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'record_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'record_id',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'action' => array(
+                        'notnull' => 1,
+                        'length' => 32,
+                        'type' => 'text',
+                        'name' => 'action',
+                        'table' => 'log_record_changes',
+                        'flags' => 'not_null'
+                    ),
+                    'user_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'user_id',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'username' => array(
+                        'notnull' => 1,
+                        'length' => 64,
+                        'type' => 'text',
+                        'name' => 'username',
+                        'table' => 'log_record_changes',
+                        'flags' => 'not_null'
+                    ),
+                    'before_state' => array(
+                        'notnull' => 0,
+                        'length' => 8192,
+                        'type' => 'text',
+                        'name' => 'before_state',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'after_state' => array(
+                        'notnull' => 0,
+                        'length' => 8192,
+                        'type' => 'text',
+                        'name' => 'after_state',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'client_ip' => array(
+                        'notnull' => 0,
+                        'length' => 64,
+                        'type' => 'text',
+                        'name' => 'client_ip',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'created_at' => array(
+                        'notnull' => 0,
+                        'default' => 'current_timestamp',
+                        'type' => 'timestamp',
+                        'name' => 'created_at',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'log_record_changes_created_at_idx' => array(
+                        'fields' => array(
+                            'created_at' => array()
+                        )
+                    ),
+                    'log_record_changes_zone_id_idx' => array(
+                        'fields' => array(
+                            'zone_id' => array()
+                        )
+                    ),
+                    'log_record_changes_action_idx' => array(
+                        'fields' => array(
+                            'action' => array()
+                        )
+                    )
+                )
+            ),
+            array(
                 'table_name' => 'login_attempts',
                 'options' => array('type' => 'innodb'),
                 'fields' => array(

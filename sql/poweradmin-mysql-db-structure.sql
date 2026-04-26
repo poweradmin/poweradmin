@@ -45,6 +45,23 @@ CREATE TABLE `log_groups` (
                               KEY `idx_log_groups_group_id` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `log_record_changes` (
+                              `id` int(11) NOT NULL AUTO_INCREMENT,
+                              `zone_id` int(11) DEFAULT NULL,
+                              `record_id` int(11) DEFAULT NULL,
+                              `action` varchar(32) NOT NULL,
+                              `user_id` int(11) DEFAULT NULL,
+                              `username` varchar(64) NOT NULL,
+                              `before_state` varchar(8192) DEFAULT NULL,
+                              `after_state` varchar(8192) DEFAULT NULL,
+                              `client_ip` varchar(64) DEFAULT NULL,
+                              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+                              PRIMARY KEY (`id`),
+                              KEY `idx_log_record_changes_created_at` (`created_at`),
+                              KEY `idx_log_record_changes_zone_id` (`zone_id`),
+                              KEY `idx_log_record_changes_action` (`action`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `users` (
                          `id` int(11) NOT NULL AUTO_INCREMENT,
                          `username` varchar(64) NOT NULL,
