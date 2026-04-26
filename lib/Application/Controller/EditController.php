@@ -35,6 +35,7 @@ namespace Poweradmin\Application\Controller;
 use Exception;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Application\Presenter\PaginationPresenter;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\RecordCommentService;
@@ -340,6 +341,7 @@ class EditController extends BaseController
                             $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
                             // Rectify zone to ensure consistency
                             $dnssecProvider->rectifyZone($zone_name);
+                            (new AuditService($this->db))->logDnssecSignZone($zone_id, $zone_name);
                         } else {
                             $this->setMessage('edit', 'warning', _('Zone signing requested successfully, but verification failed. Check DNSSEC keys.'));
                             $this->logger->warning('DNSSEC signing verification failed for zone: {zone} - API returned success but zone not secured', ['zone' => $zone_name]);
