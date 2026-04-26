@@ -881,7 +881,6 @@ class DatabaseStructureHelper
                     ),
                     'before_state' => array(
                         'notnull' => 0,
-                        'length' => 8192,
                         'type' => 'text',
                         'name' => 'before_state',
                         'table' => 'log_record_changes',
@@ -889,7 +888,6 @@ class DatabaseStructureHelper
                     ),
                     'after_state' => array(
                         'notnull' => 0,
-                        'length' => 8192,
                         'type' => 'text',
                         'name' => 'after_state',
                         'table' => 'log_record_changes',
