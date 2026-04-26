@@ -190,14 +190,11 @@ class ApiDomainRepository implements DomainRepositoryInterface
                 'type' => $zone['type'] ?? 'NATIVE',
                 'count_records' => $zone['count_records'] ?? 0,
                 'comment' => $zone['comment'] ?? '',
+                'secured' => $zone['dnssec'] ?? $zone['secured'] ?? false,
                 'owners' => $zone['owners'] ?? [],
                 'full_names' => $zone['full_names'] ?? [],
                 'users' => $zone['owners'] ?? [],
             ];
-
-            if (isset($zone['secured'])) {
-                $result[$name]['secured'] = $zone['secured'];
-            }
 
             if ($iface_zonelist_serial) {
                 $serial = $zoneStats[$name . '.']['serial'] ?? 0;
