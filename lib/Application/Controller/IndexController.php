@@ -120,22 +120,13 @@ class IndexController extends BaseController
             $dashboardStats = $this->getDashboardStats();
         }
 
-        // Surface the most recent PowerDNS API error to admins so they know the
-        // UI's zero counts / empty lists reflect an upstream failure rather
-        // than a real absence of data. Refresh the connected PowerDNS version
-        // here (rate-limited to once per minute) so the dashboard badge and
-        // capability gates on subsequent pages reflect any version changes.
-        // Other pages read whatever the cache holds without triggering
-        // detection on the render path.
-        $apiError = null;
+        // Dashboard owns the version refresh so other pages read from cache only.
         if ($permissions['user_is_ueberuser'] && DnsBackendProviderFactory::isApiBackend($this->config)) {
-            $apiError = (new ApiStatusService())->getLastError();
             $this->refreshPdnsCapabilities();
         }
 
         $this->render("index.html", [
             'dashboard_stats' => $dashboardStats,
-            'api_error' => $apiError,
             'user_name' => $this->userContextService->getDisplayName(),
             'auth_used' => $this->userContextService->getAuthMethod() ?? '',
             'can_change_password' => $canChangePassword,

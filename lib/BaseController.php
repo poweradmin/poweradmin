@@ -23,6 +23,7 @@
 namespace Poweradmin;
 
 use InvalidArgumentException;
+use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
@@ -721,6 +722,11 @@ abstract class BaseController
                 'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
                 'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
             ]);
+
+            // Surface PowerDNS API errors on every page, not just the dashboard.
+            if ($perm_is_godlike && DnsBackendProviderFactory::isApiBackend($this->config)) {
+                $vars['api_error'] = (new ApiStatusService())->getLastError();
+            }
         }
 
         // Add system messages to header template variables
