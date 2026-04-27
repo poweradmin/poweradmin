@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/forward">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ is_reverse_zone ? 'reverse' : 'forward' }}">{% trans %}Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Ownership{% endtrans %}</li>
     </ol>
