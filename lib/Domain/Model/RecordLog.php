@@ -62,7 +62,7 @@ class RecordLog
         $this->record_after = $this->getRecord($rid);
     }
 
-    private function getRecord(int $rid): ?array
+    private function getRecord(int|string $rid): ?array
     {
         $dnsRecord = new DnsRecord($this->db, $this->config);
         return $dnsRecord->getRecordFromId($rid);
