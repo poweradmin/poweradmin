@@ -111,11 +111,19 @@
                     </label>
                 </div>
 
-                <div class="form-check form-switch">
+                <div class="form-check form-switch mb-3">
                     <input class="form-check-input" type="checkbox" id="show_record_delete_button" name="show_record_delete_button" {% if preferences.show_record_delete_button == 'true' %}checked{% endif %}>
                     <label class="form-check-label" for="show_record_delete_button">
                         <strong>{% trans %}Show delete buttons{% endtrans %}</strong>
                         <div class="text-muted small">{% trans %}Display individual delete button per record{% endtrans %}</div>
+                    </label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="display_hostname_only" name="display_hostname_only" {% if preferences.display_hostname_only == 'true' %}checked{% endif %}>
+                    <label class="form-check-label" for="display_hostname_only">
+                        <strong>{% trans %}Hostname-only display{% endtrans %}</strong>
+                        <div class="text-muted small">{% trans %}Strip zone suffix from record names in edit view{% endtrans %}</div>
                     </label>
                 </div>
 

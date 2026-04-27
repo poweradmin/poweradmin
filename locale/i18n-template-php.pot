@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.4.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-25 18:57+0300\n"
+"POT-Creation-Date: 2026-04-27 08:16+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,7 @@ msgstr ""
 msgid "Invalid zone ID."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:95
+#: lib/Application/Controller/ZoneOwnershipController.php:96
 msgid "Zone not found."
 msgstr ""
 
@@ -1272,7 +1272,7 @@ msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:73
+#: lib/Application/Controller/ZoneOwnershipController.php:74
 msgid "Invalid or unexpected input given."
 msgstr ""
 
@@ -1316,7 +1316,7 @@ msgstr ""
 msgid "You do not have permission to delete records in this zone."
 msgstr ""
 
-#: lib/Application/Controller/EditRecordController.php:205
+#: lib/Application/Controller/EditRecordController.php:206
 msgid "Record not found."
 msgstr ""
 
@@ -1414,19 +1414,19 @@ msgstr ""
 msgid "User Preferences"
 msgstr ""
 
-#: lib/Application/Controller/UserPreferencesController.php:100
+#: lib/Application/Controller/UserPreferencesController.php:101
 msgid "Preferences saved successfully."
 msgstr ""
 
-#: lib/Application/Controller/UserPreferencesController.php:108
+#: lib/Application/Controller/UserPreferencesController.php:109
 msgid "Failed to update preferences. Please try again."
 msgstr ""
 
-#: lib/Application/Controller/UserPreferencesController.php:123
+#: lib/Application/Controller/UserPreferencesController.php:124
 msgid "Top"
 msgstr ""
 
-#: lib/Application/Controller/UserPreferencesController.php:124
+#: lib/Application/Controller/UserPreferencesController.php:125
 msgid "Bottom"
 msgstr ""
 
@@ -1703,7 +1703,7 @@ msgstr ""
 msgid "Some record(s) could not be added."
 msgstr ""
 
-#: lib/Application/Controller/BulkRecordAddController.php:263
+#: lib/Application/Controller/BulkRecordAddController.php:265
 msgid "Zone ID is required."
 msgstr ""
 
@@ -1916,11 +1916,11 @@ msgstr ""
 msgid "User agreement accepted successfully."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:69
+#: lib/Application/Controller/ZoneOwnershipController.php:70
 msgid "Edit Zone"
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:86
+#: lib/Application/Controller/ZoneOwnershipController.php:87
 msgid "You do not have permission to access this zone."
 msgstr ""
 
@@ -1928,37 +1928,37 @@ msgstr ""
 msgid "You do not have the permission to view this zone."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:274
+#: lib/Application/Controller/EditController.php:276
 msgid "Zone type has been changed successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:282
+#: lib/Application/Controller/EditController.php:284
 msgid "Slave master has been changed successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:303
+#: lib/Application/Controller/EditController.php:305
 msgid "Zone template has been changed successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:315
+#: lib/Application/Controller/EditController.php:317
 msgid "DNSSEC is not enabled on the server."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:318
+#: lib/Application/Controller/EditController.php:320
 msgid "Zone is already signed with DNSSEC."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:340
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone has been signed successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:344
+#: lib/Application/Controller/EditController.php:347
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:348
+#: lib/Application/Controller/EditController.php:351
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -1980,25 +1980,25 @@ msgstr ""
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:736
+#: lib/Application/Controller/EditController.php:738
 msgid "Request has expired, please try again."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:743
 msgid "Zone has been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:743
+#: lib/Application/Controller/EditController.php:745
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:752
+#: lib/Application/Controller/EditController.php:754
 msgid "Zone has not been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditController.php:780
+#: lib/Application/Controller/EditController.php:782
 msgid "Please provide all required fields."
 msgstr ""
 
@@ -2058,32 +2058,32 @@ msgstr ""
 msgid "Record successfully added."
 msgstr ""
 
-#: lib/Application/Controller/AddRecordController.php:431
+#: lib/Application/Controller/AddRecordController.php:433
 msgid "No records were provided."
-msgstr ""
-
-#: lib/Application/Controller/AddRecordController.php:485
-#, php-format
-msgid "%d record(s) were successfully added."
 msgstr ""
 
 #: lib/Application/Controller/AddRecordController.php:487
 #, php-format
+msgid "%d record(s) were successfully added."
+msgstr ""
+
+#: lib/Application/Controller/AddRecordController.php:489
+#, php-format
 msgid "%d matching record(s) were also created."
 msgstr ""
 
-#: lib/Application/Controller/AddRecordController.php:490
+#: lib/Application/Controller/AddRecordController.php:492
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr ""
 
-#: lib/Application/Controller/AddRecordController.php:495
+#: lib/Application/Controller/AddRecordController.php:497
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr ""
 
-#: lib/Application/Controller/AddRecordController.php:521
+#: lib/Application/Controller/AddRecordController.php:523
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 
@@ -2144,15 +2144,15 @@ msgstr ""
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr ""
 
-#: lib/Application/Controller/DnssecKeyExportController.php:74
+#: lib/Application/Controller/DnssecKeyExportController.php:75
 msgid "PEM key export requires PowerDNS 4.7 or newer."
 msgstr ""
 
-#: lib/Application/Controller/DnssecKeyExportController.php:86
+#: lib/Application/Controller/DnssecKeyExportController.php:87
 msgid "An error occurred while exporting the PEM key: "
 msgstr ""
 
-#: lib/Application/Controller/DnssecKeyExportController.php:92
+#: lib/Application/Controller/DnssecKeyExportController.php:93
 msgid ""
 "Could not retrieve the PEM key. The server may not expose private key "
 "material for this key."
@@ -2162,7 +2162,7 @@ msgstr ""
 msgid "You do not have the permission to add a master zone."
 msgstr ""
 
-#: lib/Application/Controller/AddZoneMasterController.php:71
+#: lib/Application/Controller/AddZoneMasterController.php:72
 msgid "Add Primary Zone"
 msgstr ""
 
@@ -2174,23 +2174,23 @@ msgstr ""
 msgid "There is already a zone with this name."
 msgstr ""
 
-#: lib/Application/Controller/AddZoneMasterController.php:173
+#: lib/Application/Controller/AddZoneMasterController.php:174
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
 
-#: lib/Application/Controller/AddZoneMasterController.php:185
+#: lib/Application/Controller/AddZoneMasterController.php:186
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
 msgstr ""
 
-#: lib/Application/Controller/AddZoneMasterController.php:191
+#: lib/Application/Controller/AddZoneMasterController.php:192
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr ""
 
-#: lib/Application/Controller/AddZoneMasterController.php:194
+#: lib/Application/Controller/AddZoneMasterController.php:196
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2565,24 +2565,24 @@ msgstr ""
 msgid "The supermaster has been added successfully."
 msgstr ""
 
-#: lib/Application/Controller/DnssecKeyImportController.php:72
+#: lib/Application/Controller/DnssecKeyImportController.php:73
 msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr ""
 
-#: lib/Application/Controller/DnssecKeyImportController.php:97
+#: lib/Application/Controller/DnssecKeyImportController.php:98
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr ""
 
-#: lib/Application/Controller/DnssecKeyImportController.php:108
+#: lib/Application/Controller/DnssecKeyImportController.php:109
 msgid "PEM key imported successfully."
 msgstr ""
 
-#: lib/Application/Controller/DnssecKeyImportController.php:111
+#: lib/Application/Controller/DnssecKeyImportController.php:112
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
 msgstr ""
 
-#: lib/Application/Controller/DnssecKeyImportController.php:115
+#: lib/Application/Controller/DnssecKeyImportController.php:116
 msgid "An error occurred while importing the PEM key: "
 msgstr ""
 
@@ -2743,7 +2743,7 @@ msgstr ""
 msgid "You do not have permission to edit this record."
 msgstr ""
 
-#: lib/Application/Controller/EditRecordController.php:330
+#: lib/Application/Controller/EditRecordController.php:331
 msgid "The record has been updated successfully."
 msgstr ""
 
@@ -2853,23 +2853,23 @@ msgstr ""
 msgid "Some zone(s) could not be added."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:176
+#: lib/Application/Controller/ZoneOwnershipController.php:178
 msgid "Owner has been added successfully."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:192
+#: lib/Application/Controller/ZoneOwnershipController.php:194
 msgid "Owner has been removed successfully."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:213
+#: lib/Application/Controller/ZoneOwnershipController.php:215
 msgid "You do not have permission to assign this group."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:221
+#: lib/Application/Controller/ZoneOwnershipController.php:223
 msgid "Group has been added successfully."
 msgstr ""
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:231
 msgid "Group has been removed successfully."
 msgstr ""
 
@@ -11516,11 +11516,19 @@ msgstr ""
 msgid "Display individual delete button per record"
 msgstr ""
 
-#: templates/modern/user_preferences.html:133
+#: templates/modern/user_preferences.html:125
+msgid "Hostname-only display"
+msgstr ""
+
+#: templates/modern/user_preferences.html:126
+msgid "Strip zone suffix from record names in edit view"
+msgstr ""
+
+#: templates/modern/user_preferences.html:141
 msgid "Save Preferences"
 msgstr ""
 
-#: templates/modern/user_preferences.html:139
+#: templates/modern/user_preferences.html:147
 msgid "Changes will be applied after saving"
 msgstr ""
 

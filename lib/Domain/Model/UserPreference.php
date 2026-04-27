@@ -41,6 +41,7 @@ class UserPreference
     public const KEY_SHOW_ADD_RECORD_FORM = 'show_add_record_form';
     public const KEY_SHOW_RECORD_EDIT_BUTTON = 'show_record_edit_button';
     public const KEY_SHOW_RECORD_DELETE_BUTTON = 'show_record_delete_button';
+    public const KEY_DISPLAY_HOSTNAME_ONLY = 'display_hostname_only';
 
     /**
      * Valid preference keys
@@ -58,6 +59,7 @@ class UserPreference
         self::KEY_SHOW_ADD_RECORD_FORM,
         self::KEY_SHOW_RECORD_EDIT_BUTTON,
         self::KEY_SHOW_RECORD_DELETE_BUTTON,
+        self::KEY_DISPLAY_HOSTNAME_ONLY,
     ];
 
     public function __construct(

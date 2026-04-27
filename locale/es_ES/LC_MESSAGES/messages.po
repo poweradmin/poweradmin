@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-25 18:57+0300\n"
+"POT-Creation-Date: 2026-04-27 08:16+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgstr "Los asistentes DNS no están habilitados."
 msgid "Invalid zone ID."
 msgstr "ID de zona inválido."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:95
+#: lib/Application/Controller/ZoneOwnershipController.php:96
 msgid "Zone not found."
 msgstr "Zona no encontrada."
 
@@ -1398,7 +1398,7 @@ msgstr ""
 "No se seleccionaron registros válidos para eliminar o no tiene permisos para "
 "eliminarlos."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:73
+#: lib/Application/Controller/ZoneOwnershipController.php:74
 msgid "Invalid or unexpected input given."
 msgstr "Se ha proporcionado una entrada no válida o inesperada."
 
@@ -1443,7 +1443,7 @@ msgstr "ID de registro inválido."
 msgid "You do not have permission to delete records in this zone."
 msgstr "No tiene permiso para eliminar registros en esta zona."
 
-#: lib/Application/Controller/EditRecordController.php:205
+#: lib/Application/Controller/EditRecordController.php:206
 msgid "Record not found."
 msgstr "Registro no encontrado."
 
@@ -1558,19 +1558,19 @@ msgstr "Grupo no encontrado."
 msgid "User Preferences"
 msgstr "Preferencias de usuario"
 
-#: lib/Application/Controller/UserPreferencesController.php:100
+#: lib/Application/Controller/UserPreferencesController.php:101
 msgid "Preferences saved successfully."
 msgstr "Preferencias guardadas exitosamente."
 
-#: lib/Application/Controller/UserPreferencesController.php:108
+#: lib/Application/Controller/UserPreferencesController.php:109
 msgid "Failed to update preferences. Please try again."
 msgstr "Error al actualizar preferencias. Por favor intente nuevamente."
 
-#: lib/Application/Controller/UserPreferencesController.php:123
+#: lib/Application/Controller/UserPreferencesController.php:124
 msgid "Top"
 msgstr "Arriba"
 
-#: lib/Application/Controller/UserPreferencesController.php:124
+#: lib/Application/Controller/UserPreferencesController.php:125
 msgid "Bottom"
 msgstr "Abajo"
 
@@ -1862,7 +1862,7 @@ msgstr "%d registro(s) se han agregado correctamente."
 msgid "Some record(s) could not be added."
 msgstr "Algunos registros no se pudieron agregar."
 
-#: lib/Application/Controller/BulkRecordAddController.php:263
+#: lib/Application/Controller/BulkRecordAddController.php:265
 msgid "Zone ID is required."
 msgstr "El ID de zona es obligatorio."
 
@@ -2079,11 +2079,11 @@ msgstr "Plantilla no encontrada."
 msgid "User agreement accepted successfully."
 msgstr "Acuerdo de usuario aceptado exitosamente."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:69
+#: lib/Application/Controller/ZoneOwnershipController.php:70
 msgid "Edit Zone"
 msgstr "Editar zona"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:86
+#: lib/Application/Controller/ZoneOwnershipController.php:87
 msgid "You do not have permission to access this zone."
 msgstr "No tiene permiso para acceder a esta zona."
 
@@ -2091,31 +2091,31 @@ msgstr "No tiene permiso para acceder a esta zona."
 msgid "You do not have the permission to view this zone."
 msgstr "No tiene permisos para ver esta zona."
 
-#: lib/Application/Controller/EditController.php:274
+#: lib/Application/Controller/EditController.php:276
 msgid "Zone type has been changed successfully."
 msgstr "El tipo de zona ha sido cambiado exitosamente."
 
-#: lib/Application/Controller/EditController.php:282
+#: lib/Application/Controller/EditController.php:284
 msgid "Slave master has been changed successfully."
 msgstr "El master esclavo ha sido cambiado exitosamente."
 
-#: lib/Application/Controller/EditController.php:303
+#: lib/Application/Controller/EditController.php:305
 msgid "Zone template has been changed successfully."
 msgstr "La plantilla de zona ha sido cambiada exitosamente."
 
-#: lib/Application/Controller/EditController.php:315
+#: lib/Application/Controller/EditController.php:317
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC no está habilitado en el servidor."
 
-#: lib/Application/Controller/EditController.php:318
+#: lib/Application/Controller/EditController.php:320
 msgid "Zone is already signed with DNSSEC."
 msgstr "La zona ya está firmada con DNSSEC."
 
-#: lib/Application/Controller/EditController.php:340
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone has been signed successfully."
 msgstr "La zona se ha firmado correctamente."
 
-#: lib/Application/Controller/EditController.php:344
+#: lib/Application/Controller/EditController.php:347
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2123,7 +2123,7 @@ msgstr ""
 "Firma de zona solicitada correctamente, pero la verificación falló. "
 "Verifique las claves DNSSEC."
 
-#: lib/Application/Controller/EditController.php:348
+#: lib/Application/Controller/EditController.php:351
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2150,15 +2150,15 @@ msgstr ""
 "Error al desfirmar la zona. Verifique los registros de PowerDNS para más "
 "detalles."
 
-#: lib/Application/Controller/EditController.php:736
+#: lib/Application/Controller/EditController.php:738
 msgid "Request has expired, please try again."
 msgstr "La solicitud ha expirado, inténtelo de nuevo."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:743
 msgid "Zone has been updated successfully."
 msgstr "La zona se ha actualizado correctamente."
 
-#: lib/Application/Controller/EditController.php:743
+#: lib/Application/Controller/EditController.php:745
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2166,11 +2166,11 @@ msgstr ""
 "Zona guardada correctamente. No se realizaron cambios en los registros, pero "
 "se incrementó el serial SOA."
 
-#: lib/Application/Controller/EditController.php:752
+#: lib/Application/Controller/EditController.php:754
 msgid "Zone has not been updated successfully."
 msgstr "La zona no se ha actualizado correctamente."
 
-#: lib/Application/Controller/EditController.php:780
+#: lib/Application/Controller/EditController.php:782
 msgid "Please provide all required fields."
 msgstr "Proporcione todos los campos obligatorios."
 
@@ -2238,26 +2238,26 @@ msgstr "No tiene permisos para agregar un registro a esta zona."
 msgid "Record successfully added."
 msgstr "Registro agregado exitosamente."
 
-#: lib/Application/Controller/AddRecordController.php:431
+#: lib/Application/Controller/AddRecordController.php:433
 msgid "No records were provided."
 msgstr "No se proporcionaron registros."
 
-#: lib/Application/Controller/AddRecordController.php:485
+#: lib/Application/Controller/AddRecordController.php:487
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d registro(s) se agregaron correctamente."
 
-#: lib/Application/Controller/AddRecordController.php:487
+#: lib/Application/Controller/AddRecordController.php:489
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "También se crearon %d registro(s) coincidente(s)."
 
-#: lib/Application/Controller/AddRecordController.php:490
+#: lib/Application/Controller/AddRecordController.php:492
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d registro(s) no se pudieron agregar."
 
-#: lib/Application/Controller/AddRecordController.php:495
+#: lib/Application/Controller/AddRecordController.php:497
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2265,7 +2265,7 @@ msgstr ""
 "Algunos registros no se pudieron agregar. Pueden existir ya o contener datos "
 "inválidos."
 
-#: lib/Application/Controller/AddRecordController.php:521
+#: lib/Application/Controller/AddRecordController.php:523
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Error al agregar cualquier registro. Pueden contener datos inválidos."
 
@@ -2326,15 +2326,15 @@ msgstr "Registros de grupo"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "No tiene permiso para gestionar DNSSEC para esta zona."
 
-#: lib/Application/Controller/DnssecKeyExportController.php:74
+#: lib/Application/Controller/DnssecKeyExportController.php:75
 msgid "PEM key export requires PowerDNS 4.7 or newer."
 msgstr "La exportación de claves PEM requiere PowerDNS 4.7 o superior."
 
-#: lib/Application/Controller/DnssecKeyExportController.php:86
+#: lib/Application/Controller/DnssecKeyExportController.php:87
 msgid "An error occurred while exporting the PEM key: "
 msgstr "Se produjo un error al exportar la clave PEM: "
 
-#: lib/Application/Controller/DnssecKeyExportController.php:92
+#: lib/Application/Controller/DnssecKeyExportController.php:93
 msgid ""
 "Could not retrieve the PEM key. The server may not expose private key "
 "material for this key."
@@ -2346,7 +2346,7 @@ msgstr ""
 msgid "You do not have the permission to add a master zone."
 msgstr "No tiene permisos para agregar una zona maestra."
 
-#: lib/Application/Controller/AddZoneMasterController.php:71
+#: lib/Application/Controller/AddZoneMasterController.php:72
 msgid "Add Primary Zone"
 msgstr "Agregar zona primaria"
 
@@ -2358,7 +2358,7 @@ msgstr "Al menos un usuario o grupo debe ser seleccionado como propietario."
 msgid "There is already a zone with this name."
 msgstr "Ya existe una zona con este nombre."
 
-#: lib/Application/Controller/AddZoneMasterController.php:173
+#: lib/Application/Controller/AddZoneMasterController.php:174
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2366,7 +2366,7 @@ msgstr ""
 "La zona fue creada exitosamente, pero la firma DNSSEC fue omitida debido a "
 "errores de validación:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:185
+#: lib/Application/Controller/AddZoneMasterController.php:186
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2375,11 +2375,11 @@ msgstr ""
 "zona pasó, pero la API de PowerDNS devolvió un error. Verifique los "
 "registros de PowerDNS para más detalles."
 
-#: lib/Application/Controller/AddZoneMasterController.php:191
+#: lib/Application/Controller/AddZoneMasterController.php:192
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "La zona ha sido creada y firmada con DNSSEC exitosamente."
 
-#: lib/Application/Controller/AddZoneMasterController.php:194
+#: lib/Application/Controller/AddZoneMasterController.php:196
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2759,28 +2759,28 @@ msgstr "No tiene permisos para agregar un nuevo supermaster."
 msgid "The supermaster has been added successfully."
 msgstr "El supermaster se ha agregado correctamente."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:72
+#: lib/Application/Controller/DnssecKeyImportController.php:73
 msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr "La importación de claves PEM requiere PowerDNS 4.7 o superior."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:97
+#: lib/Application/Controller/DnssecKeyImportController.php:98
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr ""
 "Proporcione una clave privada codificada en PEM (debe contener marcadores "
 "BEGIN/END)."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:108
+#: lib/Application/Controller/DnssecKeyImportController.php:109
 msgid "PEM key imported successfully."
 msgstr "Clave PEM importada correctamente."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:111
+#: lib/Application/Controller/DnssecKeyImportController.php:112
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
 msgstr ""
 "No se pudo importar la clave PEM. Es posible que el servidor PowerDNS haya "
 "rechazado el formato."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:115
+#: lib/Application/Controller/DnssecKeyImportController.php:116
 msgid "An error occurred while importing the PEM key: "
 msgstr "Se produjo un error al importar la clave PEM: "
 
@@ -2952,7 +2952,7 @@ msgstr "No puede editar registros en una zona SLAVE."
 msgid "You do not have permission to edit this record."
 msgstr "No tiene permiso para editar este registro."
 
-#: lib/Application/Controller/EditRecordController.php:330
+#: lib/Application/Controller/EditRecordController.php:331
 msgid "The record has been updated successfully."
 msgstr "El registro ha sido actualizado con éxito."
 
@@ -3069,23 +3069,23 @@ msgstr "Las zonas se han agregado correctamente."
 msgid "Some zone(s) could not be added."
 msgstr "Algunas zonas no se pudieron agregar."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:176
+#: lib/Application/Controller/ZoneOwnershipController.php:178
 msgid "Owner has been added successfully."
 msgstr "El propietario ha sido agregado exitosamente."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:192
+#: lib/Application/Controller/ZoneOwnershipController.php:194
 msgid "Owner has been removed successfully."
 msgstr "El propietario ha sido eliminado exitosamente."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:213
+#: lib/Application/Controller/ZoneOwnershipController.php:215
 msgid "You do not have permission to assign this group."
 msgstr "No tiene permiso para asignar este grupo."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:221
+#: lib/Application/Controller/ZoneOwnershipController.php:223
 msgid "Group has been added successfully."
 msgstr "El grupo ha sido agregado exitosamente."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:231
 msgid "Group has been removed successfully."
 msgstr "El grupo ha sido eliminado exitosamente."
 
@@ -13078,11 +13078,21 @@ msgstr "Mostrar botones de eliminación"
 msgid "Display individual delete button per record"
 msgstr "Mostrar botón de eliminación individual por registro"
 
-#: templates/modern/user_preferences.html:133
+#: templates/modern/user_preferences.html:125
+#, auto-english-fallback
+msgid "Hostname-only display"
+msgstr "Hostname-only display"
+
+#: templates/modern/user_preferences.html:126
+#, auto-english-fallback
+msgid "Strip zone suffix from record names in edit view"
+msgstr "Strip zone suffix from record names in edit view"
+
+#: templates/modern/user_preferences.html:141
 msgid "Save Preferences"
 msgstr "Guardar preferencias"
 
-#: templates/modern/user_preferences.html:139
+#: templates/modern/user_preferences.html:147
 msgid "Changes will be applied after saving"
 msgstr "Los cambios se aplicarán después de guardar"
 
@@ -14122,7 +14132,6 @@ msgid "Limited Database Rights:"
 msgstr "Permisos limitados en la base de datos:"
 
 #: install/templates/step6.html.twig:15
-#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
@@ -14133,7 +14142,6 @@ msgstr ""
 "the API backend."
 
 #: install/templates/step6.html.twig:17
-#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
@@ -14150,7 +14158,6 @@ msgid "Execute the following commands:"
 msgstr "Ejecute los siguientes comandos:"
 
 #: install/templates/step6.html.twig:40
-#, auto-english-fallback
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
 msgstr ""
@@ -14161,7 +14168,6 @@ msgid "Note:"
 msgstr "Nota:"
 
 #: install/templates/step6.html.twig:43
-#, auto-english-fallback
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
@@ -14202,7 +14208,6 @@ msgid "Choose a language for installation"
 msgstr "Elija un idioma para la instalación"
 
 #: install/templates/step1.html.twig:12
-#, auto-english-fallback
 msgid ""
 "Please select your preferred language to continue with the installation:"
 msgstr ""
@@ -14269,7 +14274,6 @@ msgid "Server name"
 msgstr "Nombre del servidor"
 
 #: install/templates/step4.html.twig:77
-#, auto-english-fallback
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
 msgstr "PowerDNS server name for API calls (usually \"localhost\")."
 
@@ -14282,7 +14286,6 @@ msgid "Database Configuration:"
 msgstr "Configuración de la base de datos:"
 
 #: install/templates/step4.html.twig:90
-#, auto-english-fallback
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
@@ -14291,7 +14294,6 @@ msgstr ""
 "can be specified separately if needed."
 
 #: install/templates/step4.html.twig:93
-#, auto-english-fallback
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
@@ -14328,7 +14330,6 @@ msgid "Provide the hostname"
 msgstr "Indique el nombre de host"
 
 #: install/templates/step4.html.twig:143
-#, auto-english-fallback
 msgid "Database server hostname (usually \"localhost\")."
 msgstr "Database server hostname (usually \"localhost\")."
 
@@ -14359,7 +14360,8 @@ msgstr "Ruta completa al archivo de base de datos SQLite"
 #: install/templates/step4.html.twig:170
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr ""
-"El archivo debe existir y tener permisos de lectura/escritura para el servidor web. Use ruta absoluta."
+"El archivo debe existir y tener permisos de lectura/escritura para el "
+"servidor web. Use ruta absoluta."
 
 #: install/templates/step4.html.twig:178
 msgid "DB charset"
@@ -14372,14 +14374,14 @@ msgstr "Usar predeterminado"
 #: install/templates/step4.html.twig:185
 msgid "Charset for new tables. Leave empty for database default."
 msgstr ""
-"Conjunto de caracteres para tablas nuevas. Deje vacío para el predeterminado de la base de datos."
+"Conjunto de caracteres para tablas nuevas. Deje vacío para el predeterminado "
+"de la base de datos."
 
 #: install/templates/step4.html.twig:190
 msgid "DB collation"
 msgstr "Cotejamiento de BD"
 
 #: install/templates/step4.html.twig:197
-#, auto-english-fallback
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
@@ -14414,7 +14416,6 @@ msgid "Provide a password"
 msgstr "Indique una contraseña"
 
 #: install/templates/step4.html.twig:238
-#, auto-english-fallback
 msgid "Password for \"admin\" username."
 msgstr "Password for \"admin\" username."
 
@@ -14469,7 +14470,8 @@ msgstr "No se puede detectar (PHP-FPM) — asegúrese de que esté habilitado"
 #: install/templates/step2.html.twig:130
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
 msgstr ""
-"Asegúrese de que la reescritura de URL esté configurada (véase nginx.conf.example)"
+"Asegúrese de que la reescritura de URL esté configurada (véase "
+"nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
 msgid "Ensure URL rewriting is configured for your web server"
@@ -14513,7 +14515,6 @@ msgid "Database User"
 msgstr "Usuario de la base de datos"
 
 #: install/templates/step5.html.twig:57
-#, auto-english-fallback
 msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
@@ -14524,7 +14525,6 @@ msgstr ""
 "credentials are for that database, not for PowerDNS."
 
 #: install/templates/step5.html.twig:67
-#, auto-english-fallback
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
@@ -14615,7 +14615,6 @@ msgid "Important Security Notice:"
 msgstr "Aviso de seguridad importante:"
 
 #: install/templates/step8.html.twig:16
-#, auto-english-fallback
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
@@ -14624,7 +14623,6 @@ msgstr ""
 "directory."
 
 #: install/templates/step8.html.twig:17
-#, auto-english-fallback
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
@@ -14637,12 +14635,10 @@ msgid "Next Steps"
 msgstr "Pasos siguientes"
 
 #: install/templates/step8.html.twig:26
-#, auto-english-fallback
 msgid "Remove the \"install/\" directory from your server"
 msgstr "Remove the \"install/\" directory from your server"
 
 #: install/templates/step8.html.twig:27
-#, auto-english-fallback
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
@@ -14667,7 +14663,6 @@ msgid "Before proceeding, ensure you have:"
 msgstr "Antes de continuar, asegúrese de tener:"
 
 #: install/templates/step3.html.twig:18
-#, auto-english-fallback
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
 msgstr ""
@@ -14675,8 +14670,7 @@ msgstr ""
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
-msgstr ""
-"Credenciales de la base de datos (nombre de host, usuario, contraseña)"
+msgstr "Credenciales de la base de datos (nombre de host, usuario, contraseña)"
 
 #: install/templates/step3.html.twig:20
 msgid "Permission to create tables for Poweradmin"
@@ -14687,7 +14681,6 @@ msgid "Next:"
 msgstr "Siguiente:"
 
 #: install/templates/step3.html.twig:27
-#, auto-english-fallback
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
@@ -14713,14 +14706,12 @@ msgid "Foreign Key Constraint Issues:"
 msgstr "Problemas con restricciones de clave foránea:"
 
 #: install/helpers/InstallStepHandler.php:209
-#, auto-english-fallback
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
 "The installer could not remove existing tables due to foreign key constraints"
 
 #: install/helpers/InstallStepHandler.php:210
-#, auto-english-fallback
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
@@ -14729,7 +14720,6 @@ msgstr ""
 "tables are referenced by other tables"
 
 #: install/helpers/InstallStepHandler.php:211
-#, auto-english-fallback
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
@@ -14746,7 +14736,6 @@ msgid "Make sure the SQLite database file exists"
 msgstr "Asegúrese de que el archivo de base de datos SQLite exista"
 
 #: install/helpers/InstallStepHandler.php:219
-#, auto-english-fallback
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
@@ -14757,7 +14746,8 @@ msgstr ""
 #: install/helpers/InstallStepHandler.php:220
 msgid "Verify the full path to the database file is correct and accessible"
 msgstr ""
-"Verifique que la ruta completa al archivo de base de datos sea correcta y accesible"
+"Verifique que la ruta completa al archivo de base de datos sea correcta y "
+"accesible"
 
 #: install/helpers/InstallStepHandler.php:226
 msgid "Verify database credentials are correct"
@@ -14778,7 +14768,6 @@ msgid "Database Error"
 msgstr "Error de base de datos"
 
 #: install/helpers/DatabaseHelper.php:175
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
@@ -14788,7 +14777,6 @@ msgstr ""
 "before proceeding."
 
 #: install/helpers/DatabaseHelper.php:183
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
@@ -14796,7 +14784,6 @@ msgstr ""
 "The SQLite database file %s is not readable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:191
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
@@ -14817,7 +14804,6 @@ msgid "PowerDNS API key is required when using API backend."
 msgstr "Se requiere la clave de la API de PowerDNS al usar el backend de API."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
-#, auto-english-fallback
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
@@ -14826,7 +14812,6 @@ msgstr ""
 "before proceeding."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
-#, auto-english-fallback
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
@@ -14835,7 +14820,6 @@ msgstr ""
 "and SQLite, please use the same database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
-#, auto-english-fallback
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
@@ -14845,8 +14829,8 @@ msgstr ""
 "properly installed in this database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
-#, auto-english-fallback
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
 
