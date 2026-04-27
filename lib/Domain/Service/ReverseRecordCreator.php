@@ -99,7 +99,6 @@ class ReverseRecordCreator
             return $this->createErrorResponse(sprintf(_('A PTR record for %s pointing to %s already exists.'), $contentRev, $fqdn_name));
         }
 
-        // Check for existing PTR records pointing to different hostnames (issue #816)
         $existingPtrRecords = $this->getExistingPtrRecords($zoneRevId, $contentRev);
         $hasExistingRecords = !empty($existingPtrRecords);
 

@@ -101,13 +101,8 @@ class ZoneSyncService
 
         $apiZones = $this->backendProvider->getZones();
 
-        // getZones() swallows ApiErrorException into an empty array so that
-        // callers stay simple, but records the failure via ApiStatusService.
-        // If a fresh error was recorded during THIS call, the "sync" did not
-        // actually reach PowerDNS - surface that as a thrown exception so
-        // (a) manual sync callers can show a real error instead of a
-        // misleading "0 added, 0 updated, 0 removed" success, and
-        // (b) the throttle key is not advanced, keeping fast retries open.
+        // getZones() swallows API errors; if one was recorded during this call,
+        // fail the sync so manual callers see it and the throttle stays open.
         $error = $apiStatusService->getLastError();
         if (
             $error !== null
@@ -125,11 +120,8 @@ class ZoneSyncService
             'local' => count($localZones),
         ]);
 
-        // The error guard above already distinguishes outages from a
-        // genuinely-empty PowerDNS response: anything that gets here came
-        // back as HTTP 200 with an empty list. Reconcile against that empty
-        // result so the local zones table can drop down to zero when an
-        // operator deletes every zone directly in PowerDNS.
+        // Reaching here means HTTP 200 with an empty list - reconcile so local zones
+        // can shrink to zero when an operator deletes every zone in PowerDNS directly.
         if (empty($apiZones) && !empty($localZones)) {
             $this->logger->info('Zone sync: PowerDNS reports zero zones, removing {count} stale local row(s)', [
                 'count' => count($localZones),

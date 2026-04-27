@@ -152,21 +152,13 @@ class IndexController extends BaseController
         $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
 
         if (DnsBackendProviderFactory::isApiBackend($this->config)) {
-            // Count from the PowerDNS API directly so the dashboard reflects
-            // changes made out-of-band (zones added/removed in PowerDNS
-            // without going through Poweradmin). Trading off a constant-time
-            // DB count for freshness; the local zones table can lag whenever
-            // sync hasn't run yet, and the dashboard is the user's main signal
-            // that something has changed.
-            // Outages are surfaced separately via ApiStatusService - on
-            // failure we fall back to the local count rather than show 0.
+            // Count via API for freshness (local zones table lags until sync runs);
+            // fall back to local count on API outage rather than showing a misleading 0.
             try {
                 $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
                 $zoneCount = count($backendProvider->getZones());
                 if ($zoneCount === 0 && (new ApiStatusService())->getLastError() !== null) {
-                    // getZones() returned [] because of a swallowed API
-                    // failure - fall back to the local cache so the dashboard
-                    // does not display a misleading 0.
+                    // Empty result was a swallowed API failure - use the local cache instead.
                     $zoneCount = (int) $this->db->query(
                         "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL"
                     )->fetchColumn();
