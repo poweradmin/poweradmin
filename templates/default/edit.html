@@ -408,21 +408,22 @@
                     </thead>
                     <tbody>
         {% for r in records %}
+        {% set record_locked = (r['type'] == "SOA" and perm_edit != "all") or (r['type'] == "NS" and perm_edit == "own_as_client") %}
 
-        {% if not(r['type'] == "SOA" or (r['type'] == "NS" and perm_edit == "own_as_client")) %}
+        {% if not record_locked %}
         <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}">
         <input type="hidden" name="record[{{ r['id'] }}][zid]" value="{{ zone_id }}">
         {% endif %}
         <tr style="font-size: 14px;">
             <td class="text-center">
-                {% if not(r['type'] == "SOA" or (r['type'] == "NS" and perm_edit == "own_as_client")) %}
+                {% if not record_locked %}
                 <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ r['id'] }}" onclick="updateRecordSelectionButtons()">
                 {% endif %}
             </td>
             {% if iface_edit_show_id %}
             <td>{{ r['id'] }}</td>
             {% endif %}
-            {% if r['type'] == "SOA" or r['type'] == "NS" and perm_edit == "own_as_client" %}
+            {% if record_locked %}
             <td class="col-sm-2">{{ r['display_name'] is defined ? r['display_name'] : r['name'] }}</td>
             <td class="text-center"><span class="badge {{ record_type_class(r['type']) }}">{{ r['type'] }}</span></td>
             <td>{{ r['content'] }}</td>
