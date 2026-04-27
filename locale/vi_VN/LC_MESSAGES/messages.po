@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-27 08:16+0300\n"
+"POT-Creation-Date: 2026-04-27 15:38+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -333,7 +333,7 @@ msgstr ""
 "hoàn chỉnh."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:667
+#: templates/modern/edit.html:93 templates/modern/edit.html:668
 msgid "Invalid hostname format"
 msgstr "Định dạng tên máy chủ không hợp lệ"
 
@@ -1301,7 +1301,7 @@ msgstr "Không thể truy xuất thông tin RDAP từ máy chủ %s"
 msgid "Invalid CSRF token."
 msgstr "Token CSRF không hợp lệ."
 
-#: lib/BaseController.php:661
+#: lib/BaseController.php:651
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1309,7 +1309,7 @@ msgstr ""
 "Thư mục <a href=\"install/\">install/</a> vẫn tồn tại, bạn phải xóa nó trước "
 "khi tiếp tục."
 
-#: lib/BaseController.php:718
+#: lib/BaseController.php:708
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1317,12 +1317,12 @@ msgstr ""
 "Khóa mã hóa phiên mặc định đang được sử dụng, vui lòng thiết lập khóa trong "
 "tệp cấu hình của bạn."
 
-#: lib/BaseController.php:857
+#: lib/BaseController.php:852
 #, php-format
 msgid "The %s field is required."
 msgstr "Trường %s là bắt buộc."
 
-#: lib/BaseController.php:865
+#: lib/BaseController.php:860
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Trường %s phải là một số."
@@ -1913,7 +1913,7 @@ msgid "The record could not be deleted."
 msgstr "Không thể xóa bản ghi."
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:271 templates/modern/index.html:271
+#: templates/default/index.html:248 templates/modern/index.html:248
 msgid "Zone Logs"
 msgstr "Không tương thích phiên bản."
 
@@ -1991,7 +1991,7 @@ msgid "You do not have permission to view this zone."
 msgstr "Bạn không có quyền xem vùng này."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:281 templates/modern/index.html:281
+#: templates/default/index.html:258 templates/modern/index.html:258
 msgid "User Logs"
 msgstr "Schema version không khớp."
 
@@ -2263,7 +2263,7 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Không thể khởi tạo xác thực OIDC: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:291 templates/modern/index.html:291
+#: templates/default/index.html:268 templates/modern/index.html:268
 msgid "Group Logs"
 msgstr "Nhật ký nhóm"
 
@@ -2985,7 +2985,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster đã được xóa thành công."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:202 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:179 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Độ phủ kiểm thử không đủ."
 
@@ -3049,12 +3049,12 @@ msgstr "Không thể kích hoạt khóa vùng."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Đã xảy ra lỗi khi chuyển đổi khóa DNSSEC. Vui lòng thử lại."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:438
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Có"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:438
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Không"
@@ -8978,7 +8978,7 @@ msgstr "Kết nối RabbitMQ thất bại."
 msgid "Update record"
 msgstr "RabbitMQ channel không hợp lệ."
 
-#: templates/modern/edit.html:550 templates/modern/users.html:219
+#: templates/modern/edit.html:551 templates/modern/users.html:219
 msgid "Reset"
 msgstr "RabbitMQ queue không tồn tại."
 
@@ -9100,7 +9100,7 @@ msgstr "Máy chủ SMTP không khả dụng."
 msgid "Account"
 msgstr "Từ chối người nhận SMTP."
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:547
+#: templates/modern/edit.html:190 templates/modern/edit.html:548
 msgid "Save changes"
 msgstr "Kích thước tin nhắn SMTP vượt quá giới hạn."
 
@@ -9542,53 +9542,15 @@ msgstr ""
 msgid "PowerDNS version unknown"
 msgstr "Phiên bản PowerDNS không xác định"
 
-#: templates/default/index.html:27 templates/modern/index.html:27
-msgid "PowerDNS API error"
-msgstr "PowerDNS API error"
-
-#: templates/default/index.html:34 templates/modern/index.html:34
-msgid ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
-msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
-
-#: templates/default/index.html:36 templates/modern/index.html:36
-msgid ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
-msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
-
-#: templates/default/index.html:38 templates/modern/index.html:38
-msgid ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
-
-#: templates/default/index.html:40 templates/modern/index.html:40
-msgid ""
-"Zone counts and lists may be out of date until the API is reachable again. "
-"Check your PowerDNS server log for details."
-msgstr ""
-"Zone counts and lists may be out of date until the API is reachable again. "
-"Check your PowerDNS server log for details."
-
-#: templates/default/index.html:56 templates/modern/index.html:56
+#: templates/default/index.html:33 templates/modern/index.html:33
 msgid "DNS Management"
 msgstr "Quản lý DNS"
 
-#: templates/modern/index.html:69 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:46 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "Nhân bản không đồng bộ."
 
-#: templates/modern/index.html:71 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:48 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "Master không khả dụng."
 
@@ -9596,31 +9558,31 @@ msgstr "Master không khả dụng."
 msgid "Templates"
 msgstr "Sử dụng đĩa cao."
 
-#: templates/default/index.html:142 templates/modern/index.html:142
+#: templates/default/index.html:119 templates/modern/index.html:119
 msgid "Networks"
 msgstr "Mạng"
 
-#: templates/default/index.html:161 templates/modern/index.html:161
+#: templates/default/index.html:138 templates/modern/index.html:138
 msgid "Zone Operations"
 msgstr "Thao tác vùng"
 
-#: templates/default/index.html:172 templates/modern/index.html:172
+#: templates/default/index.html:149 templates/modern/index.html:149
 msgid "Master Zone"
 msgstr "Định dạng log không hợp lệ."
 
-#: templates/default/index.html:182 templates/modern/index.html:182
+#: templates/default/index.html:159 templates/modern/index.html:159
 msgid "Slave Zone"
 msgstr "Breakpoint đạt đến."
 
-#: templates/default/index.html:212 templates/modern/index.html:212
+#: templates/default/index.html:189 templates/modern/index.html:189
 msgid "PTR Records"
 msgstr "Môi trường triển khai không hợp lệ."
 
-#: templates/default/index.html:230 templates/modern/index.html:230
+#: templates/default/index.html:207 templates/modern/index.html:207
 msgid "Administration"
 msgstr "Quản trị"
 
-#: templates/modern/index.html:261 templates/modern/header.html:259
+#: templates/modern/index.html:238 templates/modern/header.html:259
 msgid "Access"
 msgstr "Package không tìm thấy."
 
@@ -9628,12 +9590,12 @@ msgstr "Package không tìm thấy."
 msgid "Tools"
 msgstr "Công cụ"
 
-#: templates/default/index.html:320 templates/modern/index.html:320
+#: templates/default/index.html:297 templates/modern/index.html:297
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Cơ sở dữ liệu"
 
-#: templates/default/index.html:367 templates/modern/index.html:367
+#: templates/default/index.html:344 templates/modern/index.html:344
 msgid "My Profile"
 msgstr "Split-brain phát hiện."
 
@@ -9642,7 +9604,7 @@ msgstr "Split-brain phát hiện."
 msgid "Password"
 msgstr "Tải plugin thất bại."
 
-#: templates/modern/index.html:386 templates/modern/header.html:372
+#: templates/modern/index.html:363 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "Khởi tạo plugin thất bại."
 
@@ -9650,7 +9612,7 @@ msgstr "Khởi tạo plugin thất bại."
 msgid "Logout"
 msgstr "Phiên bản package không tương thích."
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:535
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:536
 msgid "Edit comment"
 msgstr "Cấu hình mạng không hợp lệ."
 
@@ -11122,71 +11084,71 @@ msgstr "Nếu bạn mất khóa, bạn sẽ cần tạo lại nó."
 msgid "Edit"
 msgstr "Tên chung chứng chỉ SSL/TLS không khớp."
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:598
+#: templates/modern/edit.html:25 templates/modern/edit.html:599
 msgid "Add new record"
 msgstr "Thêm bản ghi mới"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:602
+#: templates/modern/edit.html:203 templates/modern/edit.html:603
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Trình hướng dẫn cho DMARC, SPF, DKIM, CAA, TLSA và SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:608
+#: templates/modern/edit.html:35 templates/modern/edit.html:609
 msgid "Multi-record mode"
 msgstr "Chế độ nhiều bản ghi"
 
-#: templates/modern/edit.html:556 templates/modern/edit.html:611
+#: templates/modern/edit.html:557 templates/modern/edit.html:612
 msgid "Bulk add"
 msgstr "Thêm hàng loạt"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:623
+#: templates/modern/edit.html:50 templates/modern/edit.html:624
 msgid "Failed to add"
 msgstr "Không thêm được"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:623
+#: templates/modern/edit.html:50 templates/modern/edit.html:624
 msgid "record(s). Please check the record format."
 msgstr "(các) bản ghi. Vui lòng kiểm tra định dạng bản ghi."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:625
+#: templates/modern/edit.html:52 templates/modern/edit.html:626
 msgid "Failed to add records. Please check the record format."
 msgstr "Không thêm được bản ghi. Vui lòng kiểm tra định dạng bản ghi."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:628
+#: templates/modern/edit.html:55 templates/modern/edit.html:629
 msgid "Content validation failed:"
 msgstr "Xác thực nội dung thất bại:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:628
+#: templates/modern/edit.html:55 templates/modern/edit.html:629
 msgid "Invalid value for record type"
 msgstr "Giá trị không hợp lệ cho loại bản ghi"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:630
+#: templates/modern/edit.html:57 templates/modern/edit.html:631
 msgid "Please provide all required information."
 msgstr "Vui lòng cung cấp tất cả thông tin bắt buộc."
 
-#: templates/modern/edit.html:653 templates/modern/add_record.html:72
+#: templates/modern/edit.html:654 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Thêm PTR"
 
-#: templates/modern/edit.html:656 templates/modern/add_record.html:75
+#: templates/modern/edit.html:657 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Thêm A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:695
+#: templates/modern/edit.html:121 templates/modern/edit.html:696
 msgid "This record already exists"
 msgstr "Bản ghi này đã tồn tại"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:707
+#: templates/modern/edit.html:133 templates/modern/edit.html:708
 msgid "Invalid priority"
 msgstr "Độ ưu tiên không hợp lệ"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:714
+#: templates/modern/edit.html:140 templates/modern/edit.html:715
 msgid "Invalid TTL value"
 msgstr "Giá trị TTL không hợp lệ"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:716
+#: templates/modern/edit.html:142 templates/modern/edit.html:717
 msgid "Provide TTL"
 msgstr "Cung cấp TTL"
 
-#: templates/modern/edit.html:742 templates/modern/add_record.html:207
+#: templates/modern/edit.html:743 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11250,47 +11212,47 @@ msgstr "tổng số bản ghi"
 msgid "Last modified"
 msgstr "Sửa đổi lần cuối"
 
-#: templates/default/edit.html:518 templates/modern/edit.html:518
+#: templates/default/edit.html:519 templates/modern/edit.html:519
 msgid "Edit selected"
 msgstr "Sửa đã chọn"
 
-#: templates/modern/edit.html:522 templates/modern/search.html:486
+#: templates/modern/edit.html:523 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Xóa (các) bản ghi"
 
-#: templates/modern/edit.html:530 templates/modern/search.html:93
+#: templates/modern/edit.html:531 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Ghi chú"
 
-#: templates/default/edit.html:560 templates/modern/edit.html:560
+#: templates/default/edit.html:561 templates/modern/edit.html:561
 msgid "Import"
 msgstr "Nhập"
 
-#: templates/default/edit.html:577 templates/modern/edit.html:577
+#: templates/default/edit.html:578 templates/modern/edit.html:578
 msgid "Generate PTR"
 msgstr "Tạo PTR"
 
-#: templates/modern/edit.html:756 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:757 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Cấu hình vùng"
 
-#: templates/modern/edit.html:798 templates/modern/edit.html:827
+#: templates/modern/edit.html:799 templates/modern/edit.html:828
 msgid "Change"
 msgstr "Thay đổi"
 
-#: templates/modern/edit.html:791 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:792 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Địa chỉ IP của NS master"
 
-#: templates/default/edit.html:848 templates/modern/edit.html:848
+#: templates/default/edit.html:849 templates/modern/edit.html:849
 msgid "Manage DNSSEC"
 msgstr "Quản lý DNSSEC"
 
-#: templates/default/edit.html:855 templates/modern/edit.html:855
+#: templates/default/edit.html:856 templates/modern/edit.html:856
 msgid "Sign zone"
 msgstr "Ký vùng"
 
-#: templates/default/edit.html:859 templates/modern/edit.html:859
+#: templates/default/edit.html:860 templates/modern/edit.html:860
 msgid "Not signed"
 msgstr "Chưa ký"
 
@@ -12413,12 +12375,10 @@ msgid "Display individual delete button per record"
 msgstr "Hiển thị nút xóa riêng cho mỗi bản ghi"
 
 #: templates/modern/user_preferences.html:125
-#, auto-english-fallback
 msgid "Hostname-only display"
 msgstr "Hostname-only display"
 
 #: templates/modern/user_preferences.html:126
-#, auto-english-fallback
 msgid "Strip zone suffix from record names in edit view"
 msgstr "Strip zone suffix from record names in edit view"
 
@@ -12875,6 +12835,42 @@ msgstr "Cấu hình logging không hợp lệ."
 #: templates/default/header.html:227 templates/modern/header.html:330
 msgid "API Documentation"
 msgstr "Tài liệu API"
+
+#: templates/default/header.html:320 templates/modern/header.html:491
+msgid "PowerDNS API error"
+msgstr "PowerDNS API error"
+
+#: templates/default/header.html:324 templates/modern/header.html:495
+msgid ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
+msgstr ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
+
+#: templates/default/header.html:326 templates/modern/header.html:497
+msgid ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+msgstr ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+
+#: templates/default/header.html:328 templates/modern/header.html:499
+msgid ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+msgstr ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+
+#: templates/default/header.html:330 templates/modern/header.html:501
+msgid ""
+"Some features may be unavailable until the API is reachable again. Check "
+"your PowerDNS server log for details."
+msgstr "Một số tính năng có thể không khả dụng cho đến khi API có thể truy cập trở lại. Kiểm tra nhật ký máy chủ PowerDNS để biết chi tiết."
 
 #: templates/modern/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
@@ -14134,5 +14130,14 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
+# OBSOLETE: "again. Check your PowerDNS server log for details."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
+# OBSOLETE: "again. Check your PowerDNS server log for details."
+
 
 

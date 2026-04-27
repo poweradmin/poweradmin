@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-27 08:16+0300\n"
+"POT-Creation-Date: 2026-04-27 15:38+0300\n"
 "PO-Revision-Date: 2025-06-02 20:15+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: French\n"
@@ -337,7 +337,7 @@ msgstr ""
 "d'avoir fourni le certificat complet."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:667
+#: templates/modern/edit.html:93 templates/modern/edit.html:668
 msgid "Invalid hostname format"
 msgstr "Format de nom d'hôte invalide"
 
@@ -1337,7 +1337,7 @@ msgstr "Échec de la récupération des informations RDAP via le serveur %s"
 msgid "Invalid CSRF token."
 msgstr "Jeton CSRF invalide."
 
-#: lib/BaseController.php:661
+#: lib/BaseController.php:651
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1345,7 +1345,7 @@ msgstr ""
 "Le répertoire <a href=\"install/\">install/</a> existe, vous devez le "
 "supprimer avant de continuer."
 
-#: lib/BaseController.php:718
+#: lib/BaseController.php:708
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1353,12 +1353,12 @@ msgstr ""
 "La clé de chiffrement de session par défaut est utilisée, veuillez la "
 "définir dans votre fichier de configuration."
 
-#: lib/BaseController.php:857
+#: lib/BaseController.php:852
 #, php-format
 msgid "The %s field is required."
 msgstr "Le champ %s est obligatoire."
 
-#: lib/BaseController.php:865
+#: lib/BaseController.php:860
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Le champ %s doit être un nombre."
@@ -1984,7 +1984,7 @@ msgid "The record could not be deleted."
 msgstr "L'enregistrement n'a pas pu être supprimé."
 
 #: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:271 templates/modern/index.html:271
+#: templates/default/index.html:248 templates/modern/index.html:248
 msgid "Zone Logs"
 msgstr "Journaux de Zone"
 
@@ -2064,7 +2064,7 @@ msgid "You do not have permission to view this zone."
 msgstr "Vous n'avez pas la permission de voir cette zone."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:281 templates/modern/index.html:281
+#: templates/default/index.html:258 templates/modern/index.html:258
 msgid "User Logs"
 msgstr "Journaux Utilisateur"
 
@@ -2354,7 +2354,7 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Échec de l'initiation de l'authentification OIDC : "
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:291 templates/modern/index.html:291
+#: templates/default/index.html:268 templates/modern/index.html:268
 msgid "Group Logs"
 msgstr "Journaux de groupe"
 
@@ -3100,7 +3100,7 @@ msgid "The supermaster has been deleted successfully."
 msgstr "Le supermaître a été supprimé avec succès."
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:202 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:179 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Enregistrement en Masse"
 
@@ -3167,12 +3167,12 @@ msgstr ""
 "Une erreur s'est produite lors de la bascule de la clé DNSSEC. Veuillez "
 "réessayer."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:438
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Oui"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:438
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Non"
@@ -9763,7 +9763,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Mettre à jour l'enregistrement"
 
-#: templates/modern/edit.html:550 templates/modern/users.html:219
+#: templates/modern/edit.html:551 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Réinitialiser"
 
@@ -9886,7 +9886,7 @@ msgstr "Fournissez le nom d'hôte"
 msgid "Account"
 msgstr "Compte"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:547
+#: templates/modern/edit.html:190 templates/modern/edit.html:548
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
@@ -10349,53 +10349,15 @@ msgstr ""
 msgid "PowerDNS version unknown"
 msgstr "Version PowerDNS inconnue"
 
-#: templates/default/index.html:27 templates/modern/index.html:27
-msgid "PowerDNS API error"
-msgstr "PowerDNS API error"
-
-#: templates/default/index.html:34 templates/modern/index.html:34
-msgid ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
-msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
-
-#: templates/default/index.html:36 templates/modern/index.html:36
-msgid ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
-msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
-
-#: templates/default/index.html:38 templates/modern/index.html:38
-msgid ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
-
-#: templates/default/index.html:40 templates/modern/index.html:40
-msgid ""
-"Zone counts and lists may be out of date until the API is reachable again. "
-"Check your PowerDNS server log for details."
-msgstr ""
-"Zone counts and lists may be out of date until the API is reachable again. "
-"Check your PowerDNS server log for details."
-
-#: templates/default/index.html:56 templates/modern/index.html:56
+#: templates/default/index.html:33 templates/modern/index.html:33
 msgid "DNS Management"
 msgstr "Gestion DNS"
 
-#: templates/modern/index.html:69 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:46 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "En ligne"
 
-#: templates/modern/index.html:71 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:48 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "Hors ligne"
 
@@ -10403,31 +10365,31 @@ msgstr "Hors ligne"
 msgid "Templates"
 msgstr "Modèles"
 
-#: templates/default/index.html:142 templates/modern/index.html:142
+#: templates/default/index.html:119 templates/modern/index.html:119
 msgid "Networks"
 msgstr "Réseaux"
 
-#: templates/default/index.html:161 templates/modern/index.html:161
+#: templates/default/index.html:138 templates/modern/index.html:138
 msgid "Zone Operations"
 msgstr "Opérations de zones"
 
-#: templates/default/index.html:172 templates/modern/index.html:172
+#: templates/default/index.html:149 templates/modern/index.html:149
 msgid "Master Zone"
 msgstr "Zone Maître"
 
-#: templates/default/index.html:182 templates/modern/index.html:182
+#: templates/default/index.html:159 templates/modern/index.html:159
 msgid "Slave Zone"
 msgstr "Zone Esclave"
 
-#: templates/default/index.html:212 templates/modern/index.html:212
+#: templates/default/index.html:189 templates/modern/index.html:189
 msgid "PTR Records"
 msgstr "Enregistrements PTR"
 
-#: templates/default/index.html:230 templates/modern/index.html:230
+#: templates/default/index.html:207 templates/modern/index.html:207
 msgid "Administration"
 msgstr "Administration"
 
-#: templates/modern/index.html:261 templates/modern/header.html:259
+#: templates/modern/index.html:238 templates/modern/header.html:259
 msgid "Access"
 msgstr "Accès"
 
@@ -10435,12 +10397,12 @@ msgstr "Accès"
 msgid "Tools"
 msgstr "Outils"
 
-#: templates/default/index.html:320 templates/modern/index.html:320
+#: templates/default/index.html:297 templates/modern/index.html:297
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Base de données"
 
-#: templates/default/index.html:367 templates/modern/index.html:367
+#: templates/default/index.html:344 templates/modern/index.html:344
 msgid "My Profile"
 msgstr "Mon Profil"
 
@@ -10449,7 +10411,7 @@ msgstr "Mon Profil"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: templates/modern/index.html:386 templates/modern/header.html:372
+#: templates/modern/index.html:363 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "Préférences"
 
@@ -10457,7 +10419,7 @@ msgstr "Préférences"
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:535
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:536
 msgid "Edit comment"
 msgstr "Modifier le commentaire"
 
@@ -11967,74 +11929,74 @@ msgstr "Si vous perdez la clé, vous devrez la regénérer."
 msgid "Edit"
 msgstr "Modifier"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:598
+#: templates/modern/edit.html:25 templates/modern/edit.html:599
 msgid "Add new record"
 msgstr "Ajouter un nouvel enregistrement"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:602
+#: templates/modern/edit.html:203 templates/modern/edit.html:603
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr ""
 "Assistants guidés pour les enregistrements DMARC, SPF, DKIM, CAA, TLSA et SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:608
+#: templates/modern/edit.html:35 templates/modern/edit.html:609
 msgid "Multi-record mode"
 msgstr "Mode multi-enregistrements"
 
-#: templates/modern/edit.html:556 templates/modern/edit.html:611
+#: templates/modern/edit.html:557 templates/modern/edit.html:612
 msgid "Bulk add"
 msgstr "Ajout en masse"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:623
+#: templates/modern/edit.html:50 templates/modern/edit.html:624
 msgid "Failed to add"
 msgstr "Échec de l'ajout de"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:623
+#: templates/modern/edit.html:50 templates/modern/edit.html:624
 msgid "record(s). Please check the record format."
 msgstr "enregistrement(s). Veuillez vérifier le format de l'enregistrement."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:625
+#: templates/modern/edit.html:52 templates/modern/edit.html:626
 msgid "Failed to add records. Please check the record format."
 msgstr ""
 "Échec de l'ajout des enregistrements. Veuillez vérifier le format des "
 "enregistrements."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:628
+#: templates/modern/edit.html:55 templates/modern/edit.html:629
 msgid "Content validation failed:"
 msgstr "La validation du contenu a échoué:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:628
+#: templates/modern/edit.html:55 templates/modern/edit.html:629
 msgid "Invalid value for record type"
 msgstr "Valeur invalide pour le type d'enregistrement"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:630
+#: templates/modern/edit.html:57 templates/modern/edit.html:631
 msgid "Please provide all required information."
 msgstr "Veuillez fournir toutes les informations requises."
 
-#: templates/modern/edit.html:653 templates/modern/add_record.html:72
+#: templates/modern/edit.html:654 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Ajouter PTR"
 
-#: templates/modern/edit.html:656 templates/modern/add_record.html:75
+#: templates/modern/edit.html:657 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Ajouter A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:695
+#: templates/modern/edit.html:121 templates/modern/edit.html:696
 msgid "This record already exists"
 msgstr "Cet enregistrement existe déjà"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:707
+#: templates/modern/edit.html:133 templates/modern/edit.html:708
 msgid "Invalid priority"
 msgstr "Priorité invalide"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:714
+#: templates/modern/edit.html:140 templates/modern/edit.html:715
 msgid "Invalid TTL value"
 msgstr "Valeur TTL invalide"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:716
+#: templates/modern/edit.html:142 templates/modern/edit.html:717
 msgid "Provide TTL"
 msgstr "Fournir TTL"
 
-#: templates/modern/edit.html:742 templates/modern/add_record.html:207
+#: templates/modern/edit.html:743 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -12098,47 +12060,47 @@ msgstr "enregistrements au total"
 msgid "Last modified"
 msgstr "Dernière modification"
 
-#: templates/default/edit.html:518 templates/modern/edit.html:518
+#: templates/default/edit.html:519 templates/modern/edit.html:519
 msgid "Edit selected"
 msgstr "Modifier la sélection"
 
-#: templates/modern/edit.html:522 templates/modern/search.html:486
+#: templates/modern/edit.html:523 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Supprimer le/les enregistrement(s)"
 
-#: templates/modern/edit.html:530 templates/modern/search.html:93
+#: templates/modern/edit.html:531 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Commentaires"
 
-#: templates/default/edit.html:560 templates/modern/edit.html:560
+#: templates/default/edit.html:561 templates/modern/edit.html:561
 msgid "Import"
 msgstr "Importer"
 
-#: templates/default/edit.html:577 templates/modern/edit.html:577
+#: templates/default/edit.html:578 templates/modern/edit.html:578
 msgid "Generate PTR"
 msgstr "Générer PTR"
 
-#: templates/modern/edit.html:756 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:757 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Configuration de zone"
 
-#: templates/modern/edit.html:798 templates/modern/edit.html:827
+#: templates/modern/edit.html:799 templates/modern/edit.html:828
 msgid "Change"
 msgstr "Changer"
 
-#: templates/modern/edit.html:791 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:792 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Adresse IP du NS maître"
 
-#: templates/default/edit.html:848 templates/modern/edit.html:848
+#: templates/default/edit.html:849 templates/modern/edit.html:849
 msgid "Manage DNSSEC"
 msgstr "Gérer DNSSEC"
 
-#: templates/default/edit.html:855 templates/modern/edit.html:855
+#: templates/default/edit.html:856 templates/modern/edit.html:856
 msgid "Sign zone"
 msgstr "Signer la zone"
 
-#: templates/default/edit.html:859 templates/modern/edit.html:859
+#: templates/default/edit.html:860 templates/modern/edit.html:860
 msgid "Not signed"
 msgstr "Non signé"
 
@@ -13300,12 +13262,10 @@ msgid "Display individual delete button per record"
 msgstr "Afficher un bouton de suppression individuel par enregistrement"
 
 #: templates/modern/user_preferences.html:125
-#, auto-english-fallback
 msgid "Hostname-only display"
 msgstr "Hostname-only display"
 
 #: templates/modern/user_preferences.html:126
-#, auto-english-fallback
 msgid "Strip zone suffix from record names in edit view"
 msgstr "Strip zone suffix from record names in edit view"
 
@@ -13772,6 +13732,42 @@ msgstr "Lister les modèles de zone"
 #: templates/default/header.html:227 templates/modern/header.html:330
 msgid "API Documentation"
 msgstr "Documentation API"
+
+#: templates/default/header.html:320 templates/modern/header.html:491
+msgid "PowerDNS API error"
+msgstr "PowerDNS API error"
+
+#: templates/default/header.html:324 templates/modern/header.html:495
+msgid ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
+msgstr ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
+
+#: templates/default/header.html:326 templates/modern/header.html:497
+msgid ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+msgstr ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+
+#: templates/default/header.html:328 templates/modern/header.html:499
+msgid ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+msgstr ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+
+#: templates/default/header.html:330 templates/modern/header.html:501
+msgid ""
+"Some features may be unavailable until the API is reachable again. Check "
+"your PowerDNS server log for details."
+msgstr "Certaines fonctionnalités peuvent être indisponibles jusqu'à ce que l'API soit à nouveau accessible. Consultez le journal du serveur PowerDNS pour plus de détails."
 
 #: templates/modern/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
@@ -15060,5 +15056,14 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
+# OBSOLETE: "again. Check your PowerDNS server log for details."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
+# OBSOLETE: "again. Check your PowerDNS server log for details."
+
 
 
