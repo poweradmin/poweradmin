@@ -36,7 +36,6 @@ namespace Poweradmin\Domain\Service;
 final class PdnsCapabilities
 {
     private string $version;
-    private bool $permissive = false;
 
     private function __construct(string $version)
     {
@@ -55,21 +54,6 @@ final class PdnsCapabilities
         return new self($version);
     }
 
-    /**
-     * Build a permissive capability set used when version detection is not
-     * meaningful for the deployment (typically SQL/DB-backed installs where
-     * Poweradmin talks to PowerDNS through the database, not the API). Every
-     * feature gate returns true: hiding catalog zones, SVCB records, or
-     * metadata kinds on a backend we cannot probe would silently regress
-     * modern installs that do support them.
-     */
-    public static function permissive(): self
-    {
-        $instance = new self('');
-        $instance->permissive = true;
-        return $instance;
-    }
-
     public function version(): string
     {
         return $this->version;
@@ -77,19 +61,15 @@ final class PdnsCapabilities
 
     public function isKnown(): bool
     {
-        return $this->permissive || $this->version !== '';
+        return $this->version !== '';
     }
 
     /**
      * True when the connected server is at least $minVersion. When the version
-     * is unknown, returns $whenUnknown (default false - conservative). A
-     * permissive instance returns true regardless.
+     * is unknown, returns $whenUnknown (default false - conservative).
      */
     public function isAtLeast(string $minVersion, bool $whenUnknown = false): bool
     {
-        if ($this->permissive) {
-            return true;
-        }
         if ($this->version === '') {
             return $whenUnknown;
         }
