@@ -9886,7 +9886,7 @@ msgid ""
 "is reachable."
 msgstr ""
 "Could not detect PowerDNS version. Newer features are hidden until the API "
-"is reachable.is reachable."
+"is reachable."
 
 #: templates/default/index.html:17 templates/modern/index.html:17
 msgid "PowerDNS version unknown"
