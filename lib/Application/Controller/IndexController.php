@@ -144,6 +144,7 @@ class IndexController extends BaseController
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', true),
             'api_enabled' => $this->config->get('api', 'enabled', false),
             'pdns_api_enabled' => $pdnsApiEnabled,
+            'is_api_backend' => DnsBackendProviderFactory::isApiBackend($this->config),
             'show_pdns_status' => $showPdnsStatus,
             'pdns_server_status' => $pdnsServerStatus,
             'is_limited_user' => $isLimitedUser,

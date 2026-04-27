@@ -11,7 +11,7 @@
               title="{% trans %}Connected PowerDNS version{% endtrans %}{% if pdns_server_info.daemon_type %} ({{ pdns_server_info.daemon_type }}){% endif %}">
             <i class="bi bi-hdd me-1"></i>PowerDNS {{ pdns_server_info.version }}
         </span>
-        {% elseif permissions and permissions.user_is_ueberuser and pdns_api_enabled %}
+        {% elseif permissions and permissions.user_is_ueberuser and is_api_backend %}
         <span class="text-muted small" data-bs-toggle="tooltip" data-bs-placement="bottom"
               title="{% trans %}Could not detect PowerDNS version. Newer features are hidden until the API is reachable.{% endtrans %}">
             <i class="bi bi-hdd me-1"></i>{% trans %}PowerDNS version unknown{% endtrans %}
@@ -126,7 +126,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if permissions['user_is_ueberuser'] and pdns_caps and pdns_caps.supportsViews %}
+                {% if permissions['user_is_ueberuser'] and is_api_backend and pdns_caps and pdns_caps.supportsViews %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/views" class="card h-100 text-decoration-none text-body" data-testid="list-views-link">
                         <div class="card-body text-center py-2 px-1">
