@@ -41,6 +41,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -153,6 +154,7 @@ class ZoneOwnershipController extends BaseController
         $this->render('zone-ownership.html', [
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
+            'is_reverse_zone' => $zone_name !== null && DnsHelper::isReverseZone($zone_name),
             'users' => $availableUsers,
             'owners' => $owners,
             'group_owners' => $groupOwners,
