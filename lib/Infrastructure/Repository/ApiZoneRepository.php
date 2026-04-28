@@ -199,9 +199,11 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'users' => []
                 ];
             }
-            $zones[$name]['owners'][] = $row['username'];
-            $zones[$name]['full_names'][] = $row['fullname'] ?: '';
-            $zones[$name]['users'][] = $row['username'];
+            if ($row['username'] !== null) {
+                $zones[$name]['owners'][] = $row['username'];
+                $zones[$name]['full_names'][] = $row['fullname'] ?: '';
+                $zones[$name]['users'][] = $row['username'];
+            }
         }
 
         return $zones;
@@ -326,9 +328,11 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'users' => []
                 ];
             }
-            $zones[$name]['owners'][] = $row['username'];
-            $zones[$name]['full_names'][] = $row['fullname'] ?: '';
-            $zones[$name]['users'][] = $row['username'];
+            if ($row['username'] !== null) {
+                $zones[$name]['owners'][] = $row['username'];
+                $zones[$name]['full_names'][] = $row['fullname'] ?: '';
+                $zones[$name]['users'][] = $row['username'];
+            }
         }
         return array_values($zones);
     }
