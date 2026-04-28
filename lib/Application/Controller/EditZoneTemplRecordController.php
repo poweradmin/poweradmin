@@ -92,7 +92,7 @@ class EditZoneTemplRecordController extends BaseController
         $record = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id);
 
         // Get count of zones using this template
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
         $linked_zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
         $zones_linked_count = count($linked_zones);
@@ -135,7 +135,7 @@ class EditZoneTemplRecordController extends BaseController
             return;
         }
 
-        $template = new ZoneTemplate($this->db, $this->getConfig());
+        $template = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
 
         if ($template->editZoneTemplRecord($_POST)) {
             // Mark template as modified to track sync status

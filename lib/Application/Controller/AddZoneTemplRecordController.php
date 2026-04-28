@@ -116,7 +116,7 @@ class AddZoneTemplRecordController extends BaseController
         $dns_ttl = $this->config->get('dns', 'ttl', 3600);
         $ttl = $_POST['ttl'] ?? $dns_ttl;
 
-        $template = new ZoneTemplate($this->db, $this->getConfig());
+        $template = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
 
         if ($template->addZoneTemplRecord($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
             // Mark template as modified to track sync status
@@ -142,7 +142,7 @@ class AddZoneTemplRecordController extends BaseController
         $ttl = $_POST['ttl'] ?? $dns_ttl;
 
         // Get count of zones using this template
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
         $linked_zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
         $zones_linked_count = count($linked_zones);
