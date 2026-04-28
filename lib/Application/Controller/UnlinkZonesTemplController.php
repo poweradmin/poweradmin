@@ -83,7 +83,7 @@ class UnlinkZonesTemplController extends BaseController
                 continue;
             }
 
-            $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+            $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
             if ($zoneTemplate->unlinkZoneFromTemplate($zone_id)) {
                 $auditService = new AuditService($this->db);
                 $auditService->logZoneTemplateUnlink($zone_id);
@@ -141,7 +141,7 @@ class UnlinkZonesTemplController extends BaseController
         }
 
         // Get zone details using ZoneTemplate service
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $zones = $zoneTemplate->getZonesByIds($valid_zone_ids);
 
         $this->render('confirm_unlink_zones_templ.html', [
