@@ -129,9 +129,9 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             return (int)$stmt->fetchColumn();
         }
 
-        // Full results query
-        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.comment,
-                         u.username, u.fullname
+        // Owners are filled in by enrichZonesWithOwnership() so every assigned user
+        // appears in the list, not just the primary owner.
+        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.comment
                   FROM zones z
                   LEFT JOIN users u ON z.owner = u.id
                   WHERE z.zone_name IS NOT NULL";
@@ -199,12 +199,9 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'users' => []
                 ];
             }
-            if ($row['username'] !== null) {
-                $zones[$name]['owners'][] = $row['username'];
-                $zones[$name]['full_names'][] = $row['fullname'] ?: '';
-                $zones[$name]['users'][] = $row['username'];
-            }
         }
+
+        $this->enrichZonesWithOwnership($zones);
 
         return $zones;
     }
@@ -223,6 +220,54 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             return $count;
         }
         return $this->backendProvider->countZoneRecords($zoneId);
+    }
+
+    /**
+     * Fill in every assigned user as an owner for each zone, including
+     * additional users beyond the primary owner. Mutates $zones.
+     */
+    private function enrichZonesWithOwnership(array &$zones): void
+    {
+        if (empty($zones)) {
+            return;
+        }
+
+        $zoneIds = array_values(array_unique(array_map(fn($z) => (int)$z['id'], $zones)));
+        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
+
+        $stmt = $this->db->prepare(
+            "SELECT z.id, z.domain_id, z.zone_name, u.username, u.fullname
+             FROM zones z
+             LEFT JOIN users u ON z.owner = u.id
+             WHERE z.id IN ($placeholders) OR z.domain_id IN ($placeholders)"
+        );
+        $params = array_merge($zoneIds, $zoneIds);
+        foreach ($params as $i => $value) {
+            $stmt->bindValue($i + 1, $value, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $ownership = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $key = $row['zone_name'] !== null ? (int)$row['id'] : (int)$row['domain_id'];
+            if (!isset($ownership[$key])) {
+                $ownership[$key] = ['owners' => [], 'full_names' => []];
+            }
+            if ($row['username'] !== null) {
+                $ownership[$key]['owners'][] = $row['username'];
+                $ownership[$key]['full_names'][] = $row['fullname'] ?: '';
+            }
+        }
+
+        foreach ($zones as &$zone) {
+            $key = (int)$zone['id'];
+            if (isset($ownership[$key])) {
+                $zone['owners'] = $ownership[$key]['owners'];
+                $zone['full_names'] = $ownership[$key]['full_names'];
+                $zone['users'] = $ownership[$key]['owners'];
+            }
+        }
+        unset($zone);
     }
 
     public function getReverseZoneCounts(string $permType, int $userId): array
@@ -273,8 +318,9 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function listZones(?int $userId = null, bool $viewOthers = false, array $filters = [], int $offset = 0, int $limit = 100): array
     {
-        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type,
-                         z.comment, u.username, u.fullname
+        // Owners are filled in by enrichZonesWithOwnership() so every assigned user
+        // appears in the list, not just the primary owner.
+        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.comment
                   FROM zones z
                   LEFT JOIN users u ON z.owner = u.id
                   WHERE z.zone_name IS NOT NULL";
@@ -328,12 +374,10 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'users' => []
                 ];
             }
-            if ($row['username'] !== null) {
-                $zones[$name]['owners'][] = $row['username'];
-                $zones[$name]['full_names'][] = $row['fullname'] ?: '';
-                $zones[$name]['users'][] = $row['username'];
-            }
         }
+
+        $this->enrichZonesWithOwnership($zones);
+
         return array_values($zones);
     }
 
