@@ -36,6 +36,7 @@ use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Network\ProxyContext;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use ReflectionClass;
@@ -377,14 +378,24 @@ class OidcService extends LoggingService
             return null;
         }
 
-        return new GenericProvider([
+        $options = [
             'clientId' => $config['client_id'],
             'clientSecret' => $config['client_secret'],
             'redirectUri' => $this->getCallbackUrl(),
             'urlAuthorize' => $config['authorize_url'],
             'urlAccessToken' => $config['token_url'],
             'urlResourceOwnerDetails' => $config['userinfo_url'],
-        ]);
+        ];
+
+        // AbstractProvider forwards `proxy` (and `timeout`) to the Guzzle
+        // client it builds for token exchange and userinfo fetches. Without
+        // this, those calls bypass HTTPS_PROXY/NO_PROXY in air-gapped setups.
+        $proxyConfig = ProxyContext::guzzleProxyConfig();
+        if ($proxyConfig !== null) {
+            $options['proxy'] = $proxyConfig;
+        }
+
+        return new GenericProvider($options);
     }
 
     private function getUserInfo(GenericProvider $provider, AccessTokenInterface $token, string $providerId): OidcUserInfo

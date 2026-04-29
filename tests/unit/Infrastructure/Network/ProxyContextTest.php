@@ -227,4 +227,53 @@ class ProxyContextTest extends TestCase
         $this->assertSame([], ProxyContext::httpOptionsFor('not a url'));
         $this->assertSame([], ProxyContext::httpOptionsFor(''));
     }
+
+    public function testGuzzleProxyConfigReturnsNullWhenUnset(): void
+    {
+        $this->assertNull(ProxyContext::guzzleProxyConfig());
+    }
+
+    public function testGuzzleProxyConfigPopulatesHttpsKey(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+
+        $config = ProxyContext::guzzleProxyConfig();
+
+        $this->assertSame(['https' => 'tcp://proxy.internal:3128'], $config);
+    }
+
+    public function testGuzzleProxyConfigPopulatesHttpKeyOnlyFromLowercase(): void
+    {
+        putenv('HTTP_PROXY=http://attacker.example:8080');
+        putenv('http_proxy=http://proxy.internal:3128');
+
+        $config = ProxyContext::guzzleProxyConfig();
+
+        $this->assertSame(['http' => 'tcp://proxy.internal:3128'], $config);
+    }
+
+    public function testGuzzleProxyConfigPopulatesAllKeysWhenSet(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('http_proxy=http://proxy.internal:3128');
+        putenv('NO_PROXY=localhost,.example.com');
+
+        $config = ProxyContext::guzzleProxyConfig();
+
+        $this->assertSame([
+            'http' => 'tcp://proxy.internal:3128',
+            'https' => 'tcp://proxy.internal:3128',
+            'no' => ['localhost', '.example.com'],
+        ], $config);
+    }
+
+    public function testGuzzleProxyConfigStripsEmptyNoProxyEntries(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('NO_PROXY=,example.com,,other.com,');
+
+        $config = ProxyContext::guzzleProxyConfig();
+
+        $this->assertSame(['example.com', 'other.com'], $config['no']);
+    }
 }

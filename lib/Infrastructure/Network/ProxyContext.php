@@ -74,6 +74,47 @@ final class ProxyContext
     }
 
     /**
+     * Build a Guzzle-shaped proxy config from the environment, suitable for
+     * passing as the `proxy` option to a Guzzle client (or any consumer that
+     * accepts Guzzle's request options, e.g. `league/oauth2-client`).
+     *
+     * Returns null when no proxy is configured.
+     *
+     * @return array{http?: string, https?: string, no?: list<string>}|null
+     */
+    public static function guzzleProxyConfig(): ?array
+    {
+        $config = [];
+
+        $http = self::env(null, 'http_proxy');
+        if ($http !== null) {
+            $normalized = self::toStreamProxy($http);
+            if ($normalized !== null) {
+                $config['http'] = $normalized;
+            }
+        }
+
+        $https = self::env('HTTPS_PROXY', 'https_proxy');
+        if ($https !== null) {
+            $normalized = self::toStreamProxy($https);
+            if ($normalized !== null) {
+                $config['https'] = $normalized;
+            }
+        }
+
+        $noProxy = self::env('NO_PROXY', 'no_proxy');
+        if ($noProxy !== null) {
+            $entries = preg_split('/\s*,\s*/', trim($noProxy)) ?: [];
+            $entries = array_values(array_filter($entries, static fn(string $entry): bool => $entry !== ''));
+            if ($entries !== []) {
+                $config['no'] = $entries;
+            }
+        }
+
+        return $config === [] ? null : $config;
+    }
+
+    /**
      * Merge proxy options into an existing stream-context options array under
      * the `http` sub-key. Returns the array unchanged when no proxy applies.
      */
