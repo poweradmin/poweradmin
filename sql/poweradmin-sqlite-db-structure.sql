@@ -19,7 +19,7 @@ CREATE INDEX idx_log_groups_group_id ON log_groups(group_id);
 CREATE TABLE log_record_changes (
     id integer PRIMARY KEY,
     zone_id integer,
-    record_id integer,
+    record_id TEXT,
     action VARCHAR(32) NOT NULL,
     user_id integer,
     username VARCHAR(64) NOT NULL,

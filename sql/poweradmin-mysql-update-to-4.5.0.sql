@@ -6,7 +6,7 @@
 CREATE TABLE IF NOT EXISTS `log_record_changes` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `zone_id` int(11) DEFAULT NULL,
-    `record_id` int(11) DEFAULT NULL,
+    `record_id` text DEFAULT NULL,
     `action` varchar(32) NOT NULL,
     `user_id` int(11) DEFAULT NULL,
     `username` varchar(64) NOT NULL,

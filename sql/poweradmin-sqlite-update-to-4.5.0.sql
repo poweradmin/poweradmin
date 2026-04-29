@@ -6,7 +6,7 @@
 CREATE TABLE IF NOT EXISTS log_record_changes (
     id integer PRIMARY KEY,
     zone_id integer,
-    record_id integer,
+    record_id TEXT,
     action VARCHAR(32) NOT NULL,
     user_id integer,
     username VARCHAR(64) NOT NULL,

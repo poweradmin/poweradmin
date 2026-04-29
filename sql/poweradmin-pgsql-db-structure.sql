@@ -55,7 +55,7 @@ CREATE SEQUENCE log_record_changes_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 21474
 CREATE TABLE "public"."log_record_changes" (
                                        "id" integer DEFAULT nextval('log_record_changes_id_seq1') NOT NULL,
                                        "zone_id" integer,
-                                       "record_id" integer,
+                                       "record_id" text,
                                        "action" character varying(32) NOT NULL,
                                        "user_id" integer,
                                        "username" character varying(64) NOT NULL,

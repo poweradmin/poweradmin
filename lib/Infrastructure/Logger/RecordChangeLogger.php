@@ -133,10 +133,14 @@ class RecordChangeLogger
         );
     }
 
+    /**
+     * @param int|string|null $recordId Numeric PK in SQL mode, or the
+     *   base64url-encoded RecordIdentifier in API mode.
+     */
     private function insert(
         string $action,
         ?int $zoneId,
-        ?int $recordId,
+        int|string|null $recordId,
         ?string $beforeState,
         ?string $afterState
     ): void {
@@ -151,7 +155,13 @@ class RecordChangeLogger
         $username = $this->userContext->getLoggedInUsername() ?? 'system';
 
         $stmt->bindValue(':zone_id', $zoneId, $zoneId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
-        $stmt->bindValue(':record_id', $recordId, $recordId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        if ($recordId === null) {
+            $stmt->bindValue(':record_id', null, PDO::PARAM_NULL);
+        } elseif (is_int($recordId)) {
+            $stmt->bindValue(':record_id', $recordId, PDO::PARAM_INT);
+        } else {
+            $stmt->bindValue(':record_id', $recordId, PDO::PARAM_STR);
+        }
         $stmt->bindValue(':action', $action, PDO::PARAM_STR);
         $stmt->bindValue(':user_id', $userId, $userId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
         $stmt->bindValue(':username', $username, PDO::PARAM_STR);

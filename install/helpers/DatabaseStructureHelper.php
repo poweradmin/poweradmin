@@ -847,9 +847,8 @@ class DatabaseStructureHelper
                     ),
                     'record_id' => array(
                         'notnull' => 0,
-                        'unsigned' => 0,
                         'default' => null,
-                        'type' => 'integer',
+                        'type' => 'text',
                         'name' => 'record_id',
                         'table' => 'log_record_changes',
                         'flags' => ''
