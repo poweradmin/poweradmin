@@ -1281,6 +1281,7 @@ return array(
     'Poweradmin\\Infrastructure\\Logger\\NullLogHandler' => $baseDir . '/lib/Infrastructure/Logger/NullLogHandler.php',
     'Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger' => $baseDir . '/lib/Infrastructure/Logger/RecordChangeLogger.php',
     'Poweradmin\\Infrastructure\\Logger\\SyslogLegacyLogger' => $baseDir . '/lib/Infrastructure/Logger/SyslogLegacyLogger.php',
+    'Poweradmin\\Infrastructure\\Network\\ProxyContext' => $baseDir . '/lib/Infrastructure/Network/ProxyContext.php',
     'Poweradmin\\Infrastructure\\Repository\\ApiDomainRepository' => $baseDir . '/lib/Infrastructure/Repository/ApiDomainRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\ApiDynamicDnsRepository' => $baseDir . '/lib/Infrastructure/Repository/ApiDynamicDnsRepository.php',
     'Poweradmin\\Infrastructure\\Repository\\ApiRecordCommentRepository' => $baseDir . '/lib/Infrastructure/Repository/ApiRecordCommentRepository.php',

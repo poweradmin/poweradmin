@@ -1676,6 +1676,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Infrastructure\\Logger\\NullLogHandler' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/NullLogHandler.php',
         'Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/RecordChangeLogger.php',
         'Poweradmin\\Infrastructure\\Logger\\SyslogLegacyLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/SyslogLegacyLogger.php',
+        'Poweradmin\\Infrastructure\\Network\\ProxyContext' => __DIR__ . '/../..' . '/lib/Infrastructure/Network/ProxyContext.php',
         'Poweradmin\\Infrastructure\\Repository\\ApiDomainRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/ApiDomainRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\ApiDynamicDnsRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/ApiDynamicDnsRepository.php',
         'Poweradmin\\Infrastructure\\Repository\\ApiRecordCommentRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/ApiRecordCommentRepository.php',
