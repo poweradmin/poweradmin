@@ -1,0 +1,159 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Psalm\Type\Atomic;
+
+use Override;
+use Psalm\Codebase;
+use Psalm\Internal\Type\TemplateResult;
+use Psalm\Storage\UnserializeMemoryUsageSuppressionTrait;
+use Psalm\Type\Atomic;
+use Psalm\Type\Union;
+
+use function array_map;
+use function implode;
+
+/**
+ * denotes a template parameter that has been previously specified in a `@template` tag.
+ *
+ * @psalm-immutable
+ */
+final class TTemplateParam extends Atomic
+{
+    use UnserializeMemoryUsageSuppressionTrait;
+    use HasIntersectionTrait;
+
+    /**
+     * @param array<string, TNamedObject|TTemplateParam|TIterable|TObjectWithProperties> $extra_types
+     */
+    public function __construct(
+        public string $param_name,
+        public Union $as,
+        public string $defining_class,
+        array $extra_types = [],
+        bool $from_docblock = false,
+    ) {
+        $this->extra_types = $extra_types;
+        parent::__construct($from_docblock);
+    }
+
+    /**
+     * @return static
+     */
+    public function replaceAs(Union $as): self
+    {
+        if ($as === $this->as) {
+            return $this;
+        }
+        $cloned = clone $this;
+        $cloned->as = $as;
+        return $cloned;
+    }
+
+    #[Override]
+    public function getKey(bool $include_extra = true): string
+    {
+        if ($include_extra && $this->extra_types) {
+            return $this->param_name . ':' . $this->defining_class . '&' . implode('&', $this->extra_types);
+        }
+
+        return $this->param_name . ':' . $this->defining_class;
+    }
+
+    #[Override]
+    public function getAssertionString(): string
+    {
+        return $this->as->getId();
+    }
+
+    #[Override]
+    public function getId(bool $exact = true, bool $nested = false): string
+    {
+        if (!$exact) {
+            return $this->param_name;
+        }
+
+        if ($this->extra_types) {
+            return '(' . $this->param_name . ':' . $this->defining_class . ' as ' . $this->as->getId($exact)
+                . ')&' . implode('&', array_map(static fn(Atomic $type): string
+                    => $type->getId($exact, true), $this->extra_types));
+        }
+
+        return ($nested ? '(' : '') . $this->param_name
+            . ':' . $this->defining_class
+            . ' as ' . $this->as->getId($exact) . ($nested ? ')' : '');
+    }
+
+    /**
+     * @param  array<lowercase-string, string> $aliased_classes
+     * @return null
+     */
+    #[Override]
+    public function toPhpString(
+        ?string $namespace,
+        array $aliased_classes,
+        ?string $this_class,
+        int $analysis_php_version_id,
+    ): ?string {
+        return null;
+    }
+
+    /**
+     * @param  array<lowercase-string, string> $aliased_classes
+     */
+    #[Override]
+    public function toNamespacedString(
+        ?string $namespace,
+        array $aliased_classes,
+        ?string $this_class,
+        bool $use_phpdoc_format,
+    ): string {
+        if ($use_phpdoc_format) {
+            return $this->as->toNamespacedString(
+                $namespace,
+                $aliased_classes,
+                $this_class,
+                true,
+            );
+        }
+
+        $intersection_types = $this->getNamespacedIntersectionTypes(
+            $namespace,
+            $aliased_classes,
+            $this_class,
+            false,
+        );
+
+        return $this->param_name . $intersection_types;
+    }
+
+    #[Override]
+    protected function getChildNodeKeys(): array
+    {
+        return ['as', 'extra_types'];
+    }
+
+    #[Override]
+    public function canBeFullyExpressedInPhp(int $analysis_php_version_id): bool
+    {
+        return false;
+    }
+
+    /**
+     * @return static
+     */
+    #[Override]
+    public function replaceTemplateTypesWithArgTypes(
+        TemplateResult $template_result,
+        ?Codebase $codebase,
+    ): self {
+        $intersection = $this->replaceIntersectionTemplateTypesWithArgTypes($template_result, $codebase);
+        if (!$intersection) {
+            return $this;
+        }
+        $cloned = clone $this;
+        $cloned->extra_types = $intersection;
+        return $cloned;
+    }
+}
