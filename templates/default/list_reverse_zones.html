@@ -123,7 +123,9 @@
                         {% if iface_zonelist_fullname %}
                         <th>{% trans %}Full name{% endtrans %}</th>
                         {% endif %}
+                        {% if show_forward_zone_associations %}
                         <th>{% trans %}Associated Forward Zones{% endtrans %}</th>
+                        {% endif %}
 
                         {% if iface_zonelist_serial %}
                         <th>{% trans %}Serial{% endtrans %}</th>
@@ -214,12 +216,13 @@
                             {% endfor %}
                         </td>
                         {% endif %}
+                        {% if show_forward_zone_associations %}
                         <td>
                             {% if associated_forward_zones[zone.id] is defined and associated_forward_zones[zone.id]|length > 0 %}
                                 {% for forward in associated_forward_zones[zone.id] %}
                                     <span class="badge text-dark">
                                         <a href="{{ base_url_prefix }}/zones/{{ forward.id }}/edit" class="text-decoration-none">
-                                            {{ forward.name }} 
+                                            {{ forward.name }}
                                             <span class="badge bg-primary text-white">{{ forward.ptr_records }}</span>
                                         </a>
                                     </span><br>
@@ -228,6 +231,7 @@
                                 <span class="text-muted">{% trans %}-{% endtrans %}</span>
                             {% endif %}
                         </td>
+                        {% endif %}
 
                         {% if iface_zonelist_serial %}
                         <td>{{ zone["serial"] }}</td>
