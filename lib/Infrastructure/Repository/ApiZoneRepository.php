@@ -223,6 +223,28 @@ class ApiZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
+     * Locate the canonical row for the requested zone, even when a different
+     * zone happens to share the same identifier value. Returns null when no
+     * zone matches.
+     */
+    private function resolveCanonicalRow(int $zoneId): ?array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id
+             FROM zones
+             WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL
+             ORDER BY CASE WHEN id = :pref THEN 0 ELSE 1 END
+             LIMIT 1"
+        );
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':pref', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    /**
      * Fill in every assigned user as an owner for each zone, including
      * additional users beyond the primary owner. Mutates $zones.
      */
@@ -307,13 +329,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function getDomainNameById(int $zoneId): ?string
     {
-        $query = "SELECT zone_name FROM zones WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_COLUMN);
-        return $result ?: null;
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        return $canonical['zone_name'] ?? null;
     }
 
     public function listZones(?int $userId = null, bool $viewOthers = false, array $filters = [], int $offset = 0, int $limit = 100): array
@@ -383,38 +400,55 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function zoneExists(int $zoneId, ?int $userId = null): bool
     {
-        $query = "SELECT 1 FROM zones WHERE (id = :id OR domain_id = :did)";
-        if ($userId !== null) {
-            $query .= " AND (owner = :userId
-                OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (zones.id, zones.domain_id) AND z_own.owner = :userId_own AND z_own.zone_name IS NULL)
-                OR EXISTS (
-                    SELECT 1 FROM zones_groups zg
-                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = zones.id AND ugm.user_id = :userId_group
-                ))";
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        if ($canonical === null) {
+            return false;
         }
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
-        if ($userId !== null) {
-            $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-            $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
-            $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
+        if ($userId === null) {
+            return true;
         }
+        $cid = (int)$canonical['id'];
+        $stmt = $this->db->prepare(
+            "SELECT 1 FROM zones z
+             WHERE z.id = :cid AND (
+                 z.owner = :userId
+                 OR EXISTS (
+                     SELECT 1 FROM zones zo
+                     WHERE zo.zone_name IS NULL
+                       AND zo.domain_id = :cid_e
+                       AND zo.owner = :userId_own
+                 )
+                 OR EXISTS (
+                     SELECT 1 FROM zones_groups zg
+                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                     WHERE zg.domain_id = :cid_g AND ugm.user_id = :userId_group
+                 )
+             )"
+        );
+        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_g', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn() !== false;
     }
 
     public function getZone(int $zoneId): ?array
     {
-        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
-                         z.comment, u.username, u.fullname
-                  FROM zones z
-                  LEFT JOIN users u ON z.owner = u.id
-                  WHERE (z.id = :id OR z.domain_id = :did) AND z.zone_name IS NOT NULL";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        if ($canonical === null) {
+            return null;
+        }
+        $stmt = $this->db->prepare(
+            "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
+                    z.comment, u.username, u.fullname
+             FROM zones z
+             LEFT JOIN users u ON z.owner = u.id
+             WHERE z.id = :id"
+        );
+        $stmt->bindValue(':id', (int)$canonical['id'], PDO::PARAM_INT);
         $stmt->execute();
         $zone = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$zone) {
@@ -522,97 +556,90 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function zoneIdExists(int $zoneId): bool
     {
-        $query = "SELECT 1 FROM zones WHERE id = :id OR domain_id = :did";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchColumn() !== false;
+        return $this->resolveCanonicalRow($zoneId) !== null;
     }
 
     public function getDomainType(int $zoneId): string
     {
-        $query = "SELECT zone_type FROM zones WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetchColumn();
-        return $result ?: '';
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        return $canonical['zone_type'] ?? '';
     }
 
     public function getDomainSlaveMaster(int $zoneId): ?string
     {
-        $query = "SELECT zone_master FROM zones WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetchColumn();
-        return $result ?: null;
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        return $canonical['zone_master'] ?? null;
     }
 
     public function getZoneComment(int $zoneId): ?string
     {
-        $query = "SELECT comment FROM zones WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetchColumn();
-        return $result ?: null;
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        return $canonical['comment'] ?? null;
     }
 
     public function updateZoneComment(int $zoneId, string $comment): bool
     {
-        $query = "UPDATE zones SET comment = :comment WHERE id = :id OR domain_id = :did";
-        $stmt = $this->db->prepare($query);
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        if ($canonical === null) {
+            return false;
+        }
+        $stmt = $this->db->prepare("UPDATE zones SET comment = :comment WHERE id = :id");
         $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':id', (int)$canonical['id'], PDO::PARAM_INT);
         return $stmt->execute();
     }
 
     public function getZoneOwners(int $zoneId): array
     {
-        $query = "SELECT DISTINCT u.id, u.username, u.fullname
-                  FROM zones z
-                  JOIN users u ON z.owner = u.id
-                  WHERE z.id = :id OR z.domain_id = :did";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        if ($canonical === null) {
+            return [];
+        }
+        $cid = (int)$canonical['id'];
+        $stmt = $this->db->prepare(
+            "SELECT DISTINCT u.id, u.username, u.fullname
+             FROM zones z
+             JOIN users u ON z.owner = u.id
+             WHERE z.id = :cid
+                OR (z.zone_name IS NULL AND z.domain_id = :cid_e)"
+        );
+        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $cid, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function addOwnerToZone(int $zoneId, int $userId): bool
     {
-        // Get zone_templ_id from an existing zone record for this domain
-        $getMetaQuery = "SELECT zone_templ_id FROM zones WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL LIMIT 1";
-        $getStmt = $this->db->prepare($getMetaQuery);
-        $getStmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $getStmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
-        $getStmt->execute();
-        $metaResult = $getStmt->fetch(PDO::FETCH_ASSOC);
-        $zoneTemplId = $metaResult ? $metaResult['zone_templ_id'] : 0;
-
-        $query = "INSERT INTO zones (domain_id, owner, zone_templ_id)
-                  VALUES (:domain_id, :owner, :zone_templ_id)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        if ($canonical === null) {
+            return false;
+        }
+        $stmt = $this->db->prepare(
+            "INSERT INTO zones (domain_id, owner, zone_templ_id)
+             VALUES (:domain_id, :owner, :zone_templ_id)"
+        );
+        $stmt->bindValue(':domain_id', (int)$canonical['id'], PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':zone_templ_id', $zoneTemplId, PDO::PARAM_INT);
+        $stmt->bindValue(':zone_templ_id', (int)($canonical['zone_templ_id'] ?? 0), PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->rowCount() > 0;
     }
 
     public function removeOwnerFromZone(int $zoneId, int $userId): bool
     {
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        if ($canonical === null) {
+            return false;
+        }
+        $cid = (int)$canonical['id'];
+
         // First try to delete extra ownership rows (zone_name IS NULL) to preserve the canonical row
-        $query = "DELETE FROM zones WHERE domain_id = :did AND owner = :owner AND zone_name IS NULL";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $stmt = $this->db->prepare(
+            "DELETE FROM zones
+             WHERE zone_name IS NULL AND domain_id = :cid AND owner = :owner"
+        );
+        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -621,10 +648,10 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         }
 
         // If the user is on the canonical row, clear the owner instead of deleting the row
-        $query = "UPDATE zones SET owner = 0 WHERE (id = :id OR domain_id = :did) AND owner = :owner AND zone_name IS NOT NULL";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $stmt = $this->db->prepare(
+            "UPDATE zones SET owner = 0 WHERE id = :id AND owner = :owner AND zone_name IS NOT NULL"
+        );
+        $stmt->bindValue(':id', $cid, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->rowCount() > 0;
@@ -632,13 +659,23 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function isUserZoneOwner(int $zoneId, int $userId): bool
     {
-        $query = "SELECT COUNT(id) FROM zones WHERE owner = :user_id AND (id = :id OR domain_id = :did)";
-        $stmt = $this->db->prepare($query);
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        if ($canonical === null) {
+            return false;
+        }
+        $cid = (int)$canonical['id'];
+        $stmt = $this->db->prepare(
+            "SELECT 1 FROM zones z
+             WHERE z.owner = :user_id
+               AND (z.id = :cid
+                    OR (z.zone_name IS NULL AND z.domain_id = :cid_e))
+             LIMIT 1"
+        );
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $cid, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchColumn() > 0;
+        return $stmt->fetchColumn() !== false;
     }
 
     public function getZoneIdByName(string $zoneName): ?int
@@ -657,36 +694,46 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         if ($domainId === false) {
             return false;
         }
-        // createZone already inserts into zones table in API mode
-        // But we need to set the owner
-        $query = "UPDATE zones SET owner = :owner WHERE id = :id OR domain_id = :did";
-        $stmt = $this->db->prepare($query);
+        // createZone already inserts into zones table in API mode; set the owner
+        // on the canonical row only.
+        $canonical = $this->resolveCanonicalRow($domainId);
+        if ($canonical === null) {
+            return false;
+        }
+        $stmt = $this->db->prepare("UPDATE zones SET owner = :owner WHERE id = :id");
         $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
-        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':id', (int)$canonical['id'], PDO::PARAM_INT);
         $stmt->execute();
         return true;
     }
 
     public function deleteZone(int $zoneId): bool
     {
-        // Get zone name for API call
-        $zoneName = $this->getDomainNameById($zoneId);
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        if ($canonical === null) {
+            return false;
+        }
+        $cid = (int)$canonical['id'];
+        $zoneName = $canonical['zone_name'] ?? null;
+
         if ($zoneName) {
             $result = $this->backendProvider->deleteZone($zoneId, $zoneName);
             if (!$result) {
                 return false;
             }
         }
-        // Delete local ownership data
-        $query = "DELETE FROM zones_groups WHERE domain_id = :domain_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        // Delete local group ownership for this zone
+        $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
+        $stmt->bindValue(':domain_id', $cid, PDO::PARAM_INT);
         $stmt->execute();
-        $query = "DELETE FROM zones WHERE id = :id OR domain_id = :did";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        // Delete the canonical row plus any extra ownership rows linked to it
+        $stmt = $this->db->prepare(
+            "DELETE FROM zones
+             WHERE id = :cid
+                OR (zone_name IS NULL AND domain_id = :cid_e)"
+        );
+        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $cid, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
@@ -702,22 +749,25 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             unset($updates['name']);
         }
 
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        if ($canonical === null) {
+            return false;
+        }
+        $cid = (int)$canonical['id'];
+
         $success = true;
         if (isset($updates['type'])) {
             $success = $this->backendProvider->updateZoneType($zoneId, $updates['type']);
-            // Update local cache
-            $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type WHERE id = :id OR domain_id = :did");
+            $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type WHERE id = :id");
             $stmt->bindValue(':type', $updates['type'], PDO::PARAM_STR);
-            $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-            $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+            $stmt->bindValue(':id', $cid, PDO::PARAM_INT);
             $stmt->execute();
         }
         if (isset($updates['master'])) {
             $success = $success && $this->backendProvider->updateZoneMaster($zoneId, $updates['master']);
-            $stmt = $this->db->prepare("UPDATE zones SET zone_master = :master WHERE id = :id OR domain_id = :did");
+            $stmt = $this->db->prepare("UPDATE zones SET zone_master = :master WHERE id = :id");
             $stmt->bindValue(':master', $updates['master'], PDO::PARAM_STR);
-            $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-            $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+            $stmt->bindValue(':id', $cid, PDO::PARAM_INT);
             $stmt->execute();
         }
         return $success;
@@ -833,13 +883,17 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneById(int $zoneId): ?array
     {
-        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
-                         COALESCE(z.owner, 0) as owner
-                  FROM zones z
-                  WHERE (z.id = :id OR z.domain_id = :did) AND z.zone_name IS NOT NULL";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        if ($canonical === null) {
+            return null;
+        }
+        $stmt = $this->db->prepare(
+            "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
+                    COALESCE(z.owner, 0) as owner
+             FROM zones z
+             WHERE z.id = :id"
+        );
+        $stmt->bindValue(':id', (int)$canonical['id'], PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$result) {
