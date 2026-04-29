@@ -228,6 +228,87 @@ class ProxyContextTest extends TestCase
         $this->assertSame([], ProxyContext::httpOptionsFor(''));
     }
 
+    public function testProxyCredentialsBecomeProxyAuthorizationHeader(): void
+    {
+        putenv('HTTPS_PROXY=http://alice:secret@proxy.internal:3128');
+
+        $opts = ProxyContext::httpOptionsFor('https://idp.example.com');
+
+        $this->assertSame('tcp://proxy.internal:3128', $opts['proxy']);
+        $this->assertTrue($opts['request_fulluri']);
+        $this->assertSame(
+            'Proxy-Authorization: Basic ' . base64_encode('alice:secret'),
+            $opts['header']
+        );
+    }
+
+    public function testProxyAuthDecodedFromPercentEncodedUserInfo(): void
+    {
+        putenv('HTTPS_PROXY=http://us%40er:p%40ss@proxy.internal:3128');
+
+        $opts = ProxyContext::httpOptionsFor('https://idp.example.com');
+
+        $this->assertSame(
+            'Proxy-Authorization: Basic ' . base64_encode('us@er:p@ss'),
+            $opts['header']
+        );
+    }
+
+    public function testApplyToAppendsProxyAuthorizationToExistingStringHeader(): void
+    {
+        putenv('HTTPS_PROXY=http://alice:secret@proxy.internal:3128');
+
+        $options = [
+            'http' => [
+                'method' => 'GET',
+                'header' => "X-API-Key: secret\r\n",
+                'timeout' => 10,
+            ],
+        ];
+
+        $merged = ProxyContext::applyTo($options, 'https://api.example.com/zones');
+        $expected = "X-API-Key: secret\r\nProxy-Authorization: Basic " . base64_encode('alice:secret');
+
+        $this->assertSame($expected, $merged['http']['header']);
+        $this->assertSame('GET', $merged['http']['method']);
+        $this->assertSame(10, $merged['http']['timeout']);
+    }
+
+    public function testApplyToAppendsProxyAuthorizationToExistingArrayHeader(): void
+    {
+        putenv('HTTPS_PROXY=http://alice:secret@proxy.internal:3128');
+
+        $options = [
+            'http' => [
+                'header' => ['User-Agent: Foo', 'Accept: application/json'],
+            ],
+        ];
+
+        $merged = ProxyContext::applyTo($options, 'https://api.example.com');
+
+        $this->assertSame([
+            'User-Agent: Foo',
+            'Accept: application/json',
+            'Proxy-Authorization: Basic ' . base64_encode('alice:secret'),
+        ], $merged['http']['header']);
+    }
+
+    public function testApplyToWithoutCredentialsDoesNotAddHeader(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+
+        $options = [
+            'http' => [
+                'header' => 'X-API-Key: secret',
+            ],
+        ];
+
+        $merged = ProxyContext::applyTo($options, 'https://api.example.com');
+
+        $this->assertSame('X-API-Key: secret', $merged['http']['header']);
+        $this->assertSame('tcp://proxy.internal:3128', $merged['http']['proxy']);
+    }
+
     public function testGuzzleProxyConfigReturnsNullWhenUnset(): void
     {
         $this->assertNull(ProxyContext::guzzleProxyConfig());
@@ -239,7 +320,7 @@ class ProxyContextTest extends TestCase
 
         $config = ProxyContext::guzzleProxyConfig();
 
-        $this->assertSame(['https' => 'tcp://proxy.internal:3128'], $config);
+        $this->assertSame(['https' => 'http://proxy.internal:3128'], $config);
     }
 
     public function testGuzzleProxyConfigPopulatesHttpKeyOnlyFromLowercase(): void
@@ -249,7 +330,7 @@ class ProxyContextTest extends TestCase
 
         $config = ProxyContext::guzzleProxyConfig();
 
-        $this->assertSame(['http' => 'tcp://proxy.internal:3128'], $config);
+        $this->assertSame(['http' => 'http://proxy.internal:3128'], $config);
     }
 
     public function testGuzzleProxyConfigPopulatesAllKeysWhenSet(): void
@@ -261,10 +342,38 @@ class ProxyContextTest extends TestCase
         $config = ProxyContext::guzzleProxyConfig();
 
         $this->assertSame([
-            'http' => 'tcp://proxy.internal:3128',
-            'https' => 'tcp://proxy.internal:3128',
+            'http' => 'http://proxy.internal:3128',
+            'https' => 'http://proxy.internal:3128',
             'no' => ['localhost', '.example.com'],
         ], $config);
+    }
+
+    public function testGuzzleProxyConfigPreservesCredentials(): void
+    {
+        putenv('HTTPS_PROXY=http://alice:secret@proxy.internal:3128');
+
+        $config = ProxyContext::guzzleProxyConfig();
+
+        $this->assertSame(['https' => 'http://alice:secret@proxy.internal:3128'], $config);
+    }
+
+    public function testGuzzleProxyConfigPercentEncodesCredentials(): void
+    {
+        putenv('HTTPS_PROXY=http://us%40er:p%40ss@proxy.internal:3128');
+
+        $config = ProxyContext::guzzleProxyConfig();
+
+        // user/pass were already percent-encoded; they round-trip after decode+encode.
+        $this->assertSame(['https' => 'http://us%40er:p%40ss@proxy.internal:3128'], $config);
+    }
+
+    public function testGuzzleProxyConfigPreservesHttpsScheme(): void
+    {
+        putenv('HTTPS_PROXY=https://proxy.internal:8443');
+
+        $config = ProxyContext::guzzleProxyConfig();
+
+        $this->assertSame(['https' => 'https://proxy.internal:8443'], $config);
     }
 
     public function testGuzzleProxyConfigStripsEmptyNoProxyEntries(): void

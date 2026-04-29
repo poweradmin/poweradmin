@@ -33,7 +33,7 @@ final class ProxyContext
      * Build the proxy-related http context options for a target URL, or an
      * empty array when no proxy applies.
      *
-     * @return array{proxy?: string, request_fulluri?: bool}
+     * @return array{proxy?: string, request_fulluri?: bool, header?: string}
      */
     public static function httpOptionsFor(string $url): array
     {
@@ -67,10 +67,20 @@ final class ProxyContext
             return [];
         }
 
-        return [
+        $options = [
             'proxy' => $proxy,
             'request_fulluri' => true,
         ];
+
+        // PHP's stream wrapper proxy URL must be plain `tcp://host:port`. Any
+        // credentials embedded in HTTPS_PROXY/http_proxy have to be sent via a
+        // `Proxy-Authorization` header instead.
+        $auth = self::extractProxyAuth($proxyRaw);
+        if ($auth !== null) {
+            $options['header'] = 'Proxy-Authorization: Basic ' . base64_encode($auth);
+        }
+
+        return $options;
     }
 
     /**
@@ -88,7 +98,7 @@ final class ProxyContext
 
         $http = self::env(null, 'http_proxy');
         if ($http !== null) {
-            $normalized = self::toStreamProxy($http);
+            $normalized = self::toGuzzleProxy($http);
             if ($normalized !== null) {
                 $config['http'] = $normalized;
             }
@@ -96,7 +106,7 @@ final class ProxyContext
 
         $https = self::env('HTTPS_PROXY', 'https_proxy');
         if ($https !== null) {
-            $normalized = self::toStreamProxy($https);
+            $normalized = self::toGuzzleProxy($https);
             if ($normalized !== null) {
                 $config['https'] = $normalized;
             }
@@ -117,6 +127,9 @@ final class ProxyContext
     /**
      * Merge proxy options into an existing stream-context options array under
      * the `http` sub-key. Returns the array unchanged when no proxy applies.
+     * The Proxy-Authorization header is appended to any existing `header`
+     * value rather than overwriting it, so call-site headers (X-API-Key,
+     * Authorization, etc.) are preserved.
      */
     public static function applyTo(array $options, string $url): array
     {
@@ -126,8 +139,34 @@ final class ProxyContext
         }
 
         $http = isset($options['http']) && is_array($options['http']) ? $options['http'] : [];
-        $options['http'] = array_merge($http, $proxyOpts);
+
+        $proxyHeader = $proxyOpts['header'] ?? null;
+        unset($proxyOpts['header']);
+
+        $http = array_merge($http, $proxyOpts);
+
+        if ($proxyHeader !== null) {
+            $http['header'] = self::mergeHeader($http['header'] ?? null, $proxyHeader);
+        }
+
+        $options['http'] = $http;
         return $options;
+    }
+
+    /**
+     * @param string|array<string>|null $existing
+     * @return string|array<string>
+     */
+    private static function mergeHeader(string|array|null $existing, string $additional): string|array
+    {
+        if ($existing === null || $existing === '') {
+            return $additional;
+        }
+        if (is_array($existing)) {
+            $existing[] = $additional;
+            return $existing;
+        }
+        return rtrim($existing, "\r\n") . "\r\n" . $additional;
     }
 
     private static function env(?string $upper, string $lower): ?string
@@ -148,6 +187,61 @@ final class ProxyContext
 
     private static function toStreamProxy(string $raw): ?string
     {
+        $parts = self::parseProxy($raw);
+        if ($parts === null) {
+            return null;
+        }
+        return 'tcp://' . $parts['host'] . ':' . $parts['port'];
+    }
+
+    /**
+     * Build a proxy URL suitable for Guzzle (and curl underneath), preserving
+     * any embedded credentials. curl's CURLOPT_PROXY only recognizes
+     * http/https/socks* schemes - tcp:// is silently ignored - so we always
+     * emit http:// unless the original explicitly used https://.
+     */
+    private static function toGuzzleProxy(string $raw): ?string
+    {
+        $parts = self::parseProxy($raw);
+        if ($parts === null) {
+            return null;
+        }
+
+        $userInfo = '';
+        if ($parts['user'] !== null) {
+            $userInfo = rawurlencode($parts['user']);
+            if ($parts['pass'] !== null) {
+                $userInfo .= ':' . rawurlencode($parts['pass']);
+            }
+            $userInfo .= '@';
+        }
+
+        $scheme = $parts['scheme'] === 'https' ? 'https' : 'http';
+        return $scheme . '://' . $userInfo . $parts['host'] . ':' . $parts['port'];
+    }
+
+    /**
+     * Decode credentials from a proxy URL into a `user:pass` string, or null
+     * when the URL has no auth component.
+     */
+    private static function extractProxyAuth(string $raw): ?string
+    {
+        $parts = self::parseProxy($raw);
+        if ($parts === null || $parts['user'] === null) {
+            return null;
+        }
+        $auth = $parts['user'];
+        if ($parts['pass'] !== null) {
+            $auth .= ':' . $parts['pass'];
+        }
+        return $auth;
+    }
+
+    /**
+     * @return array{scheme: string, host: string, port: int, user: ?string, pass: ?string}|null
+     */
+    private static function parseProxy(string $raw): ?array
+    {
         $raw = trim($raw);
         if ($raw === '') {
             return null;
@@ -162,11 +256,16 @@ final class ProxyContext
             return null;
         }
 
-        $port = $parts['port'] ?? (
-            isset($parts['scheme']) && strtolower($parts['scheme']) === 'https' ? 443 : 80
-        );
+        $scheme = isset($parts['scheme']) ? strtolower($parts['scheme']) : 'tcp';
+        $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
 
-        return 'tcp://' . $parts['host'] . ':' . $port;
+        return [
+            'scheme' => $scheme,
+            'host' => $parts['host'],
+            'port' => (int) $port,
+            'user' => isset($parts['user']) ? rawurldecode($parts['user']) : null,
+            'pass' => isset($parts['pass']) ? rawurldecode($parts['pass']) : null,
+        ];
     }
 
     private static function matchesNoProxy(string $host, ?string $noProxy): bool
