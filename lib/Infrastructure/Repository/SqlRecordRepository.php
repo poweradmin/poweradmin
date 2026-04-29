@@ -70,7 +70,7 @@ class SqlRecordRepository implements RecordRepositoryInterface
     {
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-        $stmt = $this->db->prepare("SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio FROM $records_table WHERE id = :id");
+        $stmt = $this->db->prepare("SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio, disabled FROM $records_table WHERE id = :id");
         $stmt->execute([':id' => $rid]);
         return $stmt->fetch() ?: [];
     }

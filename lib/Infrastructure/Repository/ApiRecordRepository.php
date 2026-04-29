@@ -77,6 +77,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
             'content' => $record['content'],
             'ttl' => $record['ttl'],
             'prio' => $record['prio'],
+            'disabled' => $record['disabled'] ?? 0,
         ];
     }
 
