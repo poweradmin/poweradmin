@@ -168,6 +168,11 @@ class UserPreferenceService
         return $this->getPreference($userId, UserPreference::KEY_SHOW_RECORD_DELETE_BUTTON) === 'true';
     }
 
+    public function getDisplayHostnameOnly(int $userId): bool
+    {
+        return $this->getPreference($userId, UserPreference::KEY_DISPLAY_HOSTNAME_ONLY) === 'true';
+    }
+
     public function clearCache(): void
     {
         $this->cache = [];
@@ -188,6 +193,7 @@ class UserPreferenceService
             UserPreference::KEY_SHOW_ADD_RECORD_FORM => $this->config->get('interface', 'show_add_record_form', false) ? 'true' : 'false',
             UserPreference::KEY_SHOW_RECORD_EDIT_BUTTON => $this->config->get('interface', 'show_record_edit_button', false) ? 'true' : 'false',
             UserPreference::KEY_SHOW_RECORD_DELETE_BUTTON => $this->config->get('interface', 'show_record_delete_button', false) ? 'true' : 'false',
+            UserPreference::KEY_DISPLAY_HOSTNAME_ONLY => $this->config->get('interface', 'display_hostname_only', false) ? 'true' : 'false',
         ];
     }
 

@@ -89,6 +89,7 @@ class UserPreferencesController extends BaseController
                 UserPreference::KEY_SHOW_ADD_RECORD_FORM => isset($_POST['show_add_record_form']) ? 'true' : 'false',
                 UserPreference::KEY_SHOW_RECORD_EDIT_BUTTON => isset($_POST['show_record_edit_button']) ? 'true' : 'false',
                 UserPreference::KEY_SHOW_RECORD_DELETE_BUTTON => isset($_POST['show_record_delete_button']) ? 'true' : 'false',
+                UserPreference::KEY_DISPLAY_HOSTNAME_ONLY => isset($_POST['display_hostname_only']) ? 'true' : 'false',
             ];
 
             foreach ($preferencesToUpdate as $key => $value) {

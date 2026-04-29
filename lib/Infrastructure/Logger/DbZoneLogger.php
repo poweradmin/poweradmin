@@ -175,6 +175,7 @@ class DbZoneLogger
             'delete_zone',
             'dnssec_add_key',
             'dnssec_delete_key',
+            'dnssec_sign_zone',
             'dnssec_toggle_key',
             'dnssec_unsign_zone',
             'edit_record',

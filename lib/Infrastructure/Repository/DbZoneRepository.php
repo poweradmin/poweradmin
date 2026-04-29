@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -293,16 +294,16 @@ class DbZoneRepository implements ZoneRepositoryInterface
                     'users' => []
                 ];
 
-                // Add template information if requested
                 if ($showTemplate) {
-                    // For reverse zones, template info might not be as relevant, but keeping consistency
-                    $zones[$name]['template_name'] = $row['template_name'] ?? '';
+                    $zones[$name]['template'] = ZoneTemplate::getZoneTemplName($this->db, $row['id']);
                 }
             }
 
-            $zones[$name]['owners'][] = $row['username'];
-            $zones[$name]['full_names'][] = $row['fullname'] ?: '';
-            $zones[$name]['users'][] = $row['username'];
+            if ($row['username'] !== null) {
+                $zones[$name]['owners'][] = $row['username'];
+                $zones[$name]['full_names'][] = $row['fullname'] ?: '';
+                $zones[$name]['users'][] = $row['username'];
+            }
         }
 
         // Batch fetch serial numbers (optimization: N+1 -> 1 query)
@@ -492,9 +493,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 ];
             }
 
-            $zones[$name]['owners'][] = $row['username'];
-            $zones[$name]['full_names'][] = $row['fullname'] ?: '';
-            $zones[$name]['users'][] = $row['username'];
+            if ($row['username'] !== null) {
+                $zones[$name]['owners'][] = $row['username'];
+                $zones[$name]['full_names'][] = $row['fullname'] ?: '';
+                $zones[$name]['users'][] = $row['username'];
+            }
         }
 
         // Convert associative array to indexed array for consistent API response

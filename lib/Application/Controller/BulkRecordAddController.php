@@ -252,7 +252,9 @@ class BulkRecordAddController extends BaseController
             'default_ttl' => $this->config->get('dns', 'ttl', 3600),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
             'is_reverse_zone' => $zone_name !== null && DnsHelper::isReverseZone($zone_name),
-            'display_hostname_only' => $this->config->get('interface', 'display_hostname_only', false),
+            'display_hostname_only' => $this->createUserPreferenceService()->getDisplayHostnameOnly(
+                $this->userContextService->getLoggedInUserId()
+            ),
         ]);
     }
 

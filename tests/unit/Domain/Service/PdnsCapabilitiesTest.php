@@ -146,32 +146,6 @@ class PdnsCapabilitiesTest extends TestCase
         $this->assertTrue($unknown->supportsMetadataKind(null));
     }
 
-    public function testPermissiveInstanceReturnsTrueForAllVisibilityMethods(): void
-    {
-        // SQL/DB-backed installs have no version-detection path, so
-        // BaseController hands the UI a permissive instance to avoid
-        // hiding modern features the server actually supports.
-        $caps = PdnsCapabilities::permissive();
-
-        $this->assertTrue($caps->isKnown());
-        $this->assertTrue($caps->prefersPrimarySecondaryTerminology());
-        $this->assertTrue($caps->supportsCatalogZones());
-        $this->assertTrue($caps->supportsViews());
-        $this->assertTrue($caps->supportsRecordType('SVCB'));
-        $this->assertTrue($caps->supportsRecordType('ZONEMD'));
-        $this->assertTrue($caps->supportsRecordType('WALLET'));
-        $this->assertTrue($caps->supportsIndividualRrsetFetch());
-        $this->assertTrue($caps->supportsAutoprimariesApi());
-        $this->assertTrue($caps->supportsRecordTimestamps());
-        $this->assertTrue($caps->supportsDefaultCsk());
-        $this->assertTrue($caps->supportsPemKeyImportExport());
-        $this->assertTrue($caps->supportsRfc9615Bootstrap());
-        $this->assertTrue($caps->supportsMetadataKind('5.1.0'));
-
-        // isAtLeast on a permissive instance is always true.
-        $this->assertTrue($caps->isAtLeast('99.99.99'));
-    }
-
     /**
      * Exhaustive check that every feature-visibility method returns false
      * when the connected version is unknown. The point of strict mode is

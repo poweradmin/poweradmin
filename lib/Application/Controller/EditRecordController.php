@@ -159,8 +159,9 @@ class EditRecordController extends BaseController
             return;
         }
 
-        // Strip zone suffix from record name for display when display_hostname_only is enabled (fix for issue #958)
-        $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
+        $display_hostname_only = $this->createUserPreferenceService()->getDisplayHostnameOnly(
+            $this->userContextService->getLoggedInUserId()
+        );
         if ($display_hostname_only) {
             $record['record_name'] = DnsHelper::stripZoneSuffix($record['name'], $zone_name);
         }

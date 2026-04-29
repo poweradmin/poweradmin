@@ -23,6 +23,7 @@
 namespace Poweradmin;
 
 use InvalidArgumentException;
+use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
@@ -323,18 +324,7 @@ abstract class BaseController
     protected function getPdnsCapabilities(): PdnsCapabilities
     {
         $info = PdnsVersionService::getCachedInfo();
-        if ($info !== null) {
-            return PdnsCapabilities::fromVersion($info['version'] ?? null);
-        }
-        // SQL/DB backends have no version-detection mechanism. Returning
-        // strict-unknown here would hide every version-gated UI feature
-        // (SVCB records, catalog zones, metadata kinds) on installs that
-        // do support them. Fall back to permissive - the strict mode only
-        // makes sense when we know the API exists but couldn't be reached.
-        if (!DnsBackendProviderFactory::isApiBackend($this->config)) {
-            return PdnsCapabilities::permissive();
-        }
-        return PdnsCapabilities::fromVersion(null);
+        return PdnsCapabilities::fromVersion($info['version'] ?? null);
     }
 
     /**
@@ -735,6 +725,11 @@ abstract class BaseController
                 'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
                 'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
             ]);
+
+            // Surface PowerDNS API errors on every page, not just the dashboard.
+            if ($perm_is_godlike && DnsBackendProviderFactory::isApiBackend($this->config)) {
+                $vars['api_error'] = (new ApiStatusService())->getLastError();
+            }
         }
 
         // Add system messages to header template variables

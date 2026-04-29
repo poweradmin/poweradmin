@@ -308,7 +308,9 @@ class AddRecordController extends BaseController
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
-            'display_hostname_only' => $this->config->get('interface', 'display_hostname_only', false),
+            'display_hostname_only' => $this->createUserPreferenceService()->getDisplayHostnameOnly(
+                $this->userContextService->getLoggedInUserId()
+            ),
             'form_data' => $formData,
             'saved_records' => $savedRecords,
         ]);

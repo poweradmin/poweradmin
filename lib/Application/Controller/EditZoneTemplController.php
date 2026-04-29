@@ -127,7 +127,7 @@ class EditZoneTemplController extends BaseController
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
         // Get count of zones using this template
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
         $linked_zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
         $zones_linked_count = count($linked_zones);
@@ -206,7 +206,7 @@ class EditZoneTemplController extends BaseController
             return;
         }
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
         $zoneTemplate->editZoneTempl($_POST, $zone_templ_id, $userId);
         $auditService = new AuditService($this->db);
@@ -217,7 +217,7 @@ class EditZoneTemplController extends BaseController
 
     public function updateZoneRecords(int $zone_templ_id): void
     {
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
         $zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
@@ -261,7 +261,7 @@ class EditZoneTemplController extends BaseController
             return;
         }
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->createDnsBackendProvider());
         $templateExists = $zoneTemplate->zoneTemplNameExists($_POST['templ_name']);
         $currentTemplate = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 

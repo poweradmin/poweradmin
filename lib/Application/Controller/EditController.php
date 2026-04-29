@@ -35,6 +35,7 @@ namespace Poweradmin\Application\Controller;
 use Exception;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Application\Presenter\PaginationPresenter;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\RecordCommentService;
@@ -155,6 +156,7 @@ class EditController extends BaseController
         $iface_show_add_record_form = $userPreferenceService->getShowAddRecordForm($userId);
         $iface_show_record_edit_button = $userPreferenceService->getShowRecordEditButton($userId);
         $iface_show_record_delete_button = $userPreferenceService->getShowRecordDeleteButton($userId);
+        $display_hostname_only = $userPreferenceService->getDisplayHostnameOnly($userId);
 
         $configManager = ConfigurationManager::getInstance();
         $iface_record_comments = $configManager->get('interface', 'show_record_comments', false);
@@ -340,6 +342,7 @@ class EditController extends BaseController
                             $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
                             // Rectify zone to ensure consistency
                             $dnssecProvider->rectifyZone($zone_name);
+                            (new AuditService($this->db))->logDnssecSignZone($zone_id, $zone_name);
                         } else {
                             $this->setMessage('edit', 'warning', _('Zone signing requested successfully, but verification failed. Check DNSSEC keys.'));
                             $this->logger->warning('DNSSEC signing verification failed for zone: {zone} - API returned success but zone not secured', ['zone' => $zone_name]);
@@ -429,7 +432,6 @@ class EditController extends BaseController
         $isReverseZone = $zone_name !== null && DnsHelper::isReverseZone($zone_name);
 
         // Transform records for display using the RecordDisplayService
-        $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
         $recordDisplayService = new RecordDisplayService($display_hostname_only);
 
         $displayRecords = [];

@@ -73,7 +73,7 @@ class ListTemplateZonesController extends BaseController
         $currentPage = $httpParameters->getCurrentPage();
         $offset = ($currentPage - 1) * $itemsPerPage;
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
         // Get zones using this template with pagination

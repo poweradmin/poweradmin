@@ -66,7 +66,7 @@ class DeleteZoneTemplRecordController extends BaseController
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to delete this record."));
 
         if ($confirm == '1') {
-            $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+            $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->createDnsBackendProvider());
             if ($zoneTemplate->deleteZoneTemplRecord($record_id)) {
                 // Mark template as modified to track sync status
                 $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());

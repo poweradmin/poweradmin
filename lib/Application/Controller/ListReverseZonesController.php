@@ -206,6 +206,7 @@ class ListReverseZonesController extends BaseController
             'count_ipv6_zones' => $count_ipv6_zones,
             'count_all_reverse_zones' => $count_all_reverse_zones,
             'associated_forward_zones' => $associatedForwardZones,
+            'show_forward_zone_associations' => $showForwardZoneAssociations,
         ]);
     }
 

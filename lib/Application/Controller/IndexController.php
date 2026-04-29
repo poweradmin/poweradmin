@@ -120,30 +120,15 @@ class IndexController extends BaseController
             $dashboardStats = $this->getDashboardStats();
         }
 
-        // Surface the most recent PowerDNS API error to admins so they know the
-        // UI's zero counts / empty lists reflect an upstream failure rather
-        // than a real absence of data. Refresh the connected PowerDNS version
-        // here (rate-limited to once per minute) so the dashboard badge and
-        // capability gates on subsequent pages reflect any version changes.
-        // Other pages read whatever the cache holds without triggering
-        // detection on the render path.
-        $apiError = null;
-        if ($permissions['user_is_ueberuser']) {
-            // Surface API errors only in API backend mode (where API failures
-            // affect data shown on the dashboard). The version refresh runs
-            // whenever pdns_api is configured, regardless of dns.backend, so
-            // the dashboard can show "PowerDNS: <version>" in SQL mode too.
-            if (DnsBackendProviderFactory::isApiBackend($this->config)) {
-                $apiError = (new ApiStatusService())->getLastError();
-            }
-            if ($pdnsApiEnabled) {
-                $this->refreshPdnsCapabilities();
-            }
+        // Dashboard owns the version refresh so other pages read from cache only.
+        // Refresh runs whenever pdns_api is configured, so SQL mode dashboards
+        // can still show "PowerDNS: <version>".
+        if ($permissions['user_is_ueberuser'] && $pdnsApiEnabled) {
+            $this->refreshPdnsCapabilities();
         }
 
         $this->render("index.html", [
             'dashboard_stats' => $dashboardStats,
-            'api_error' => $apiError,
             'user_name' => $this->userContextService->getDisplayName(),
             'auth_used' => $this->userContextService->getAuthMethod() ?? '',
             'can_change_password' => $canChangePassword,
@@ -152,6 +137,7 @@ class IndexController extends BaseController
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', true),
             'api_enabled' => $this->config->get('api', 'enabled', false),
             'pdns_api_enabled' => $pdnsApiEnabled,
+            'is_api_backend' => DnsBackendProviderFactory::isApiBackend($this->config),
             'show_pdns_status' => $showPdnsStatus,
             'pdns_server_status' => $pdnsServerStatus,
             'is_limited_user' => $isLimitedUser,
@@ -168,21 +154,13 @@ class IndexController extends BaseController
         $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
 
         if (DnsBackendProviderFactory::isApiBackend($this->config)) {
-            // Count from the PowerDNS API directly so the dashboard reflects
-            // changes made out-of-band (zones added/removed in PowerDNS
-            // without going through Poweradmin). Trading off a constant-time
-            // DB count for freshness; the local zones table can lag whenever
-            // sync hasn't run yet, and the dashboard is the user's main signal
-            // that something has changed.
-            // Outages are surfaced separately via ApiStatusService - on
-            // failure we fall back to the local count rather than show 0.
+            // Count via API for freshness (local zones table lags until sync runs);
+            // fall back to local count on API outage rather than showing a misleading 0.
             try {
                 $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
                 $zoneCount = count($backendProvider->getZones());
                 if ($zoneCount === 0 && (new ApiStatusService())->getLastError() !== null) {
-                    // getZones() returned [] because of a swallowed API
-                    // failure - fall back to the local cache so the dashboard
-                    // does not display a misleading 0.
+                    // Empty result was a swallowed API failure - use the local cache instead.
                     $zoneCount = (int) $this->db->query(
                         "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL"
                     )->fetchColumn();
