@@ -575,7 +575,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneOwners(int $zoneId): array
     {
-        $query = "SELECT u.id, u.username, u.fullname
+        $query = "SELECT DISTINCT u.id, u.username, u.fullname
                   FROM zones z
                   JOIN users u ON z.owner = u.id
                   WHERE z.id = :id OR z.domain_id = :did";
