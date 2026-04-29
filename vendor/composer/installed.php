@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'poweradmin/poweradmin',
-        'pretty_version' => 'dev-develop',
-        'version' => 'dev-develop',
-        'reference' => 'df7d06d4715d16b4c72f79b63a1044750c31fc38',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => 'f65b07ba1e422a991c5af741005b1fe9f14e2c99',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -521,9 +521,9 @@
             'dev_requirement' => true,
         ),
         'poweradmin/poweradmin' => array(
-            'pretty_version' => 'dev-develop',
-            'version' => 'dev-develop',
-            'reference' => 'df7d06d4715d16b4c72f79b63a1044750c31fc38',
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => 'f65b07ba1e422a991c5af741005b1fe9f14e2c99',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -1403,9 +1403,9 @@
             'dev_requirement' => true,
         ),
         'zircote/swagger-php' => array(
-            'pretty_version' => '6.1.1',
-            'version' => '6.1.1.0',
-            'reference' => '195a0884d43392baaa4f02334c8118d011144469',
+            'pretty_version' => '6.1.2',
+            'version' => '6.1.2.0',
+            'reference' => 'f66289ab9c9c3a1cf70222e0bebbe7c6c7109f2f',
             'type' => 'library',
             'install_path' => __DIR__ . '/../zircote/swagger-php',
             'aliases' => array(),
