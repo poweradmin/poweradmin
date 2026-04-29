@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Network\ProxyContext;
 
 class RecaptchaService
 {
@@ -75,7 +76,7 @@ class RecaptchaService
             ],
         ];
 
-        $context = stream_context_create($options);
+        $context = stream_context_create(ProxyContext::applyTo($options, $url));
         $result = @file_get_contents($url, false, $context);
 
         if ($result === false) {

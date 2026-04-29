@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Network\ProxyContext;
 use ReflectionClass;
 
 class OidcConfigurationService extends LoggingService
@@ -114,12 +115,14 @@ class OidcConfigurationService extends LoggingService
         try {
             $this->logInfo('Discovering OIDC endpoints for provider: {provider}', ['provider' => $providerId]);
 
-            $context = stream_context_create([
+            $options = [
                 'http' => [
                     'timeout' => 10,
                     'user_agent' => 'Poweradmin OIDC Client'
                 ]
-            ]);
+            ];
+
+            $context = stream_context_create(ProxyContext::applyTo($options, $metadataUrl));
 
             $metadata = @file_get_contents($metadataUrl, false, $context);
 

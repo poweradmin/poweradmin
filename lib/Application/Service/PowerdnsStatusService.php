@@ -27,6 +27,7 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Infrastructure\Api\HttpClient;
+use Poweradmin\Infrastructure\Network\ProxyContext;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -551,18 +552,17 @@ class PowerdnsStatusService
             return false;
         }
 
-        // If Basic Auth credentials are configured, use stream context
+        $options = [];
         if (!empty($this->webserverUsername) && !empty($this->webserverPassword)) {
             $auth = base64_encode($this->webserverUsername . ':' . $this->webserverPassword);
-            $context = stream_context_create([
-                'http' => [
-                    'header' => "Authorization: Basic $auth"
-                ]
-            ]);
-            return @file_get_contents($url, false, $context);
+            $options['http']['header'] = "Authorization: Basic $auth";
         }
 
-        // Fall back to simple file_get_contents without auth
-        return @file_get_contents($url);
+        $options = ProxyContext::applyTo($options, $url);
+        if ($options === []) {
+            return @file_get_contents($url);
+        }
+
+        return @file_get_contents($url, false, stream_context_create($options));
     }
 }

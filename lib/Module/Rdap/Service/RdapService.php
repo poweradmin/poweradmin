@@ -24,6 +24,7 @@ namespace Poweradmin\Module\Rdap\Service;
 
 use Exception;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Infrastructure\Network\ProxyContext;
 
 class RdapService
 {
@@ -167,7 +168,7 @@ class RdapService
             ]
         ];
 
-        $context = stream_context_create($options);
+        $context = stream_context_create(ProxyContext::applyTo($options, $url));
         $response = @file_get_contents($url, false, $context);
 
         return $response !== false ? $response : null;
