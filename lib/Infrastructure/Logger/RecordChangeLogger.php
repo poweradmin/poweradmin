@@ -34,6 +34,17 @@ class RecordChangeLogger
     public const ACTION_ZONE_DELETE = 'zone_delete';
     public const ACTION_ZONE_METADATA_EDIT = 'zone_metadata_edit';
 
+    // Per-field cap on long string values (TXT content, comments). Long values
+    // get truncated in-place with a `_*_truncated` marker so the snapshot stays
+    // valid JSON. 4 KiB comfortably fits the longest reasonable record content.
+    private const MAX_FIELD_LENGTH = 4096;
+
+    // Final safety net for the serialized snapshot. MySQL TEXT holds 65 535
+    // bytes; staying under this leaves room for row metadata. If a payload
+    // somehow still exceeds this after field truncation, we fall back to a
+    // minimal marker payload rather than emit invalid JSON.
+    private const MAX_SNAPSHOT_LENGTH = 60000;
+
     private PDO $db;
     private UserContextService $userContext;
 
@@ -177,6 +188,9 @@ class RecordChangeLogger
             $snapshot['content'] = trim($snapshot['content'], '"');
         }
 
+        $this->truncateField($snapshot, 'content');
+        $this->truncateField($snapshot, 'comment');
+
         return $this->jsonEncode($snapshot);
     }
 
@@ -215,11 +229,35 @@ class RecordChangeLogger
             return null;
         }
 
-        if (strlen($encoded) > 8192) {
-            $encoded = substr($encoded, 0, 8189) . '...';
+        if (strlen($encoded) > self::MAX_SNAPSHOT_LENGTH) {
+            // Per-field truncation already capped content/comment, so reaching
+            // this branch means the rest of the payload is itself oversized
+            // (e.g. unusually large name or zone_name). Drop to a minimal
+            // marker rather than persist invalid JSON.
+            $marker = json_encode([
+                '_oversized' => true,
+                'id' => $payload['id'] ?? null,
+                'type' => $payload['type'] ?? null,
+                'name' => isset($payload['name']) && is_string($payload['name'])
+                    ? substr($payload['name'], 0, 255)
+                    : null,
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            return $marker === false ? null : $marker;
         }
 
         return $encoded;
+    }
+
+    private function truncateField(array &$snapshot, string $key): void
+    {
+        if (!isset($snapshot[$key]) || !is_string($snapshot[$key])) {
+            return;
+        }
+        if (strlen($snapshot[$key]) <= self::MAX_FIELD_LENGTH) {
+            return;
+        }
+        $snapshot[$key] = substr($snapshot[$key], 0, self::MAX_FIELD_LENGTH);
+        $snapshot['_' . $key . '_truncated'] = true;
     }
 
     private function recordsEqual(array $a, array $b): bool

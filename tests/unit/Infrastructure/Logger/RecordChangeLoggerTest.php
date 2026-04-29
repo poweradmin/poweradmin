@@ -174,4 +174,77 @@ class RecordChangeLoggerTest extends TestCase
         $this->assertSame(2, $this->logger->countFiltered(['action' => 'record_create']));
         $this->assertSame(1, $this->logger->countFiltered(['action' => 'record_delete']));
     }
+
+    public function testLongTxtContentTruncatesButKeepsValidJson(): void
+    {
+        $longContent = str_repeat('a', 10000);
+        $this->logger->logRecordCreate(
+            ['id' => 1, 'name' => 'big.example.com', 'type' => 'TXT', 'content' => $longContent, 'ttl' => 300, 'prio' => 0],
+            5
+        );
+
+        $rows = $this->fetchAll();
+        $this->assertCount(1, $rows);
+
+        $decoded = json_decode((string) $rows[0]['after_state'], true);
+        $this->assertIsArray($decoded, 'after_state must remain valid JSON');
+        $this->assertSame(4096, strlen($decoded['content']));
+        $this->assertTrue($decoded['_content_truncated']);
+        $this->assertSame('big.example.com', $decoded['name']);
+        $this->assertSame('TXT', $decoded['type']);
+    }
+
+    public function testLongCommentTruncatesIndependentlyOfContent(): void
+    {
+        $this->logger->logRecordCreate(
+            [
+                'id' => 1,
+                'name' => 'a.example.com',
+                'type' => 'A',
+                'content' => '1.2.3.4',
+                'ttl' => 60,
+                'prio' => 0,
+                'comment' => str_repeat('z', 8000),
+            ],
+            5
+        );
+
+        $decoded = json_decode((string) $this->fetchAll()[0]['after_state'], true);
+        $this->assertIsArray($decoded);
+        $this->assertSame('1.2.3.4', $decoded['content']);
+        $this->assertArrayNotHasKey('_content_truncated', $decoded);
+        $this->assertSame(4096, strlen($decoded['comment']));
+        $this->assertTrue($decoded['_comment_truncated']);
+    }
+
+    public function testShortContentIsNotTruncatedAndCarriesNoMarker(): void
+    {
+        $this->logger->logRecordCreate(
+            ['id' => 1, 'name' => 'a.example.com', 'type' => 'TXT', 'content' => 'v=spf1 include:_spf.example.com ~all', 'ttl' => 300, 'prio' => 0],
+            5
+        );
+
+        $decoded = json_decode((string) $this->fetchAll()[0]['after_state'], true);
+        $this->assertSame('v=spf1 include:_spf.example.com ~all', $decoded['content']);
+        $this->assertArrayNotHasKey('_content_truncated', $decoded);
+    }
+
+    public function testGetFilteredDecodesTruncatedSnapshotsCleanly(): void
+    {
+        $longBefore = str_repeat('b', 9000);
+        $longAfter = str_repeat('c', 9000);
+        $this->logger->logRecordEdit(
+            ['id' => 1, 'name' => 'big.example.com', 'type' => 'TXT', 'content' => $longBefore, 'ttl' => 300, 'prio' => 0, 'disabled' => false],
+            ['id' => 1, 'name' => 'big.example.com', 'type' => 'TXT', 'content' => $longAfter, 'ttl' => 300, 'prio' => 0, 'disabled' => false],
+            5
+        );
+
+        $rows = $this->logger->getFiltered([], 10, 0);
+        $this->assertCount(1, $rows);
+        $this->assertIsArray($rows[0]['before_state_decoded'], 'before snapshot must decode');
+        $this->assertIsArray($rows[0]['after_state_decoded'], 'after snapshot must decode');
+        $this->assertSame(['content'], $rows[0]['changed_fields']);
+        $this->assertTrue($rows[0]['before_state_decoded']['_content_truncated']);
+        $this->assertTrue($rows[0]['after_state_decoded']['_content_truncated']);
+    }
 }
