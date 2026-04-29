@@ -198,6 +198,13 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'full_names' => [],
                     'users' => []
                 ];
+                if ($showSerial) {
+                    $serial = (int)($stats['serial'] ?? 0);
+                    $zones[$name]['serial'] = $serial > 0 ? (string)$serial : '';
+                }
+                if ($showTemplate) {
+                    $zones[$name]['template'] = $this->resolveTemplateName((int)$row['id']);
+                }
             }
         }
 
@@ -220,6 +227,24 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             return $count;
         }
         return $this->backendProvider->countZoneRecords($zoneId);
+    }
+
+    /**
+     * Look up the template name applied to the canonical zones row identified
+     * by $zoneId. Returns an empty string when the zone has no template.
+     */
+    private function resolveTemplateName(int $zoneId): string
+    {
+        $stmt = $this->db->prepare(
+            "SELECT zt.name
+             FROM zones z
+             JOIN zone_templ zt ON zt.id = z.zone_templ_id
+             WHERE z.id = :zone_id AND z.zone_name IS NOT NULL"
+        );
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchColumn();
+        return $result !== false ? (string)$result : '';
     }
 
     /**
