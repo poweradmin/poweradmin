@@ -251,13 +251,30 @@ function renderRowHtml(array $row): string
         return $out;
     }
 
+    if ($action === 'zone_metadata_edit' && is_array($before) && is_array($after)) {
+        $when = htmlspecialchars($row['created_at'] ?? '');
+        $user = htmlspecialchars($row['username'] ?? '');
+        $zone = htmlspecialchars($after['name'] ?? $before['name'] ?? (string) ($row['zone_id'] ?? ''));
+
+        $diffs = describeZoneMetadataDiff($before, $after);
+        $body = $diffs === []
+            ? '(no changes detected)'
+            : implode('<br>', array_map('htmlspecialchars', $diffs));
+
+        return '<tr style="' . $yellow . '">'
+            . '<td>' . $when . '</td>'
+            . '<td>' . htmlspecialchars($action) . '</td>'
+            . '<td>' . $user . '</td>'
+            . '<td>' . $zone . '</td>'
+            . '<td colspan="5">' . $body . '</td>'
+            . '</tr>';
+    }
+
     $bg = '';
     if (in_array($action, ['record_create', 'zone_create'], true)) {
         $bg = $green;
     } elseif (in_array($action, ['record_delete', 'zone_delete'], true)) {
         $bg = $red;
-    } elseif ($action === 'zone_metadata_edit') {
-        $bg = $yellow;
     }
 
     $snap = is_array($after) ? $after : (is_array($before) ? $before : []);
@@ -295,4 +312,60 @@ function renderRowHtml(array $row): string
     }
     $out .= '</tr>';
     return $out;
+}
+
+/**
+ * Build a list of human-readable "field: before -> after" lines describing a
+ * zone_metadata_edit row. Covers the scalar zone fields (type/master/template/owner)
+ * and the kind => values map written by RecordChangeLogger::encodeZoneSnapshot().
+ *
+ * @return list<string>
+ */
+function describeZoneMetadataDiff(array $before, array $after): array
+{
+    $diffs = [];
+
+    foreach (['type', 'master', 'template_id', 'owner'] as $field) {
+        $b = $before[$field] ?? null;
+        $a = $after[$field] ?? null;
+        if ($b !== $a) {
+            $diffs[] = $field . ': ' . formatMetadataDiffScalar($b) . ' -> ' . formatMetadataDiffScalar($a);
+        }
+    }
+
+    $beforeMeta = is_array($before['metadata'] ?? null) ? $before['metadata'] : [];
+    $afterMeta = is_array($after['metadata'] ?? null) ? $after['metadata'] : [];
+    $kinds = array_unique(array_merge(array_keys($beforeMeta), array_keys($afterMeta)));
+    sort($kinds);
+    foreach ($kinds as $kind) {
+        $b = $beforeMeta[$kind] ?? null;
+        $a = $afterMeta[$kind] ?? null;
+        if ($b !== $a) {
+            $diffs[] = 'metadata.' . $kind . ': '
+                . formatMetadataDiffValues($b)
+                . ' -> '
+                . formatMetadataDiffValues($a);
+        }
+    }
+
+    return $diffs;
+}
+
+function formatMetadataDiffScalar($value): string
+{
+    if ($value === null || $value === '') {
+        return '(empty)';
+    }
+    return (string) $value;
+}
+
+function formatMetadataDiffValues($values): string
+{
+    if ($values === null) {
+        return '(removed)';
+    }
+    if (is_array($values)) {
+        return $values === [] ? '(empty)' : implode('; ', $values);
+    }
+    return (string) $values;
 }
