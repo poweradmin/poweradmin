@@ -286,7 +286,8 @@ return [
      *
      * 1. Audit logging (who did what) - controlled by 'database_enabled' and 'syslog_enabled'.
      *    Tracks user, zone, and group changes (create/edit/delete operations, login/logout).
-     *    - database_enabled: writes audit events to log_users, log_zones, and log_groups tables
+     *    - database_enabled: writes audit events to log_users, log_zones, log_groups,
+     *      and log_record_changes (the structured change log with before/after diffs) tables
      *    - syslog_enabled: writes audit events to syslog
      *
      * 2. Diagnostic logging (application errors and debug info) - controlled by 'type' and 'level'.
@@ -299,7 +300,7 @@ return [
         'level' => 'info',                         // Options: 'debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency' (added in 3.9.0)
 
         // Audit logging - tracks user, zone, and group operations
-        'database_enabled' => false,               // Write audit events to database log tables (log_users, log_zones, log_groups) (added in 3.2.0)
+        'database_enabled' => false,               // Write audit events to database log tables (log_users, log_zones, log_groups, log_record_changes) (added in 3.2.0)
 
         // Syslog audit logging
         'syslog_enabled' => false,                 // Write audit events to syslog (added in 2.1.6)

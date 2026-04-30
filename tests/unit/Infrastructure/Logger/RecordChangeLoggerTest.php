@@ -5,6 +5,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Logger;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 
 class RecordChangeLoggerTest extends TestCase
@@ -35,7 +36,15 @@ class RecordChangeLoggerTest extends TestCase
         $userContext->method('getLoggedInUserId')->willReturn(7);
         $userContext->method('getLoggedInUsername')->willReturn('alice');
 
-        $this->logger = new RecordChangeLogger($this->db, $userContext);
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
+            if ($group === 'logging' && $key === 'database_enabled') {
+                return true;
+            }
+            return $default;
+        });
+
+        $this->logger = new RecordChangeLogger($this->db, $userContext, $config);
     }
 
     private function fetchAll(): array
@@ -227,6 +236,29 @@ class RecordChangeLoggerTest extends TestCase
         $decoded = json_decode((string) $this->fetchAll()[0]['after_state'], true);
         $this->assertSame('v=spf1 include:_spf.example.com ~all', $decoded['content']);
         $this->assertArrayNotHasKey('_content_truncated', $decoded);
+    }
+
+    public function testInsertSkippedWhenDatabaseLoggingIsDisabled(): void
+    {
+        $userContext = $this->createMock(UserContextService::class);
+        $userContext->method('getLoggedInUserId')->willReturn(7);
+        $userContext->method('getLoggedInUsername')->willReturn('alice');
+
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
+            if ($group === 'logging' && $key === 'database_enabled') {
+                return false;
+            }
+            return $default;
+        });
+
+        $logger = new RecordChangeLogger($this->db, $userContext, $config);
+        $logger->logRecordCreate(
+            ['id' => 99, 'name' => 'www.example.com', 'type' => 'A', 'content' => '1.2.3.4', 'ttl' => 3600, 'prio' => 0],
+            5
+        );
+
+        $this->assertSame([], $this->fetchAll(), 'no rows must be written when database logging is disabled');
     }
 
     public function testGetFilteredDecodesTruncatedSnapshotsCleanly(): void

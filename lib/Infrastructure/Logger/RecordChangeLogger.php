@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class RecordChangeLogger
 {
@@ -47,11 +48,16 @@ class RecordChangeLogger
 
     private PDO $db;
     private UserContextService $userContext;
+    private ?ConfigurationManager $config;
 
-    public function __construct(PDO $db, ?UserContextService $userContext = null)
-    {
+    public function __construct(
+        PDO $db,
+        ?UserContextService $userContext = null,
+        ?ConfigurationManager $config = null
+    ) {
         $this->db = $db;
         $this->userContext = $userContext ?? new UserContextService();
+        $this->config = $config;
     }
 
     public function logRecordCreate(array $afterRecord, ?int $zoneId): void
@@ -144,6 +150,13 @@ class RecordChangeLogger
         ?string $beforeState,
         ?string $afterState
     ): void {
+        // Honor the same opt-out admins use for the legacy log_users / log_zones
+        // / log_groups tables. When database audit logging is disabled, skip the
+        // change log too rather than retain audit data the operator opted out of.
+        if (!$this->isDatabaseLoggingEnabled()) {
+            return;
+        }
+
         $stmt = $this->db->prepare(
             'INSERT INTO log_record_changes
                 (zone_id, record_id, action, user_id, username, before_state, after_state, client_ip)
@@ -178,6 +191,12 @@ class RecordChangeLogger
             return null;
         }
         return substr($ip, 0, 64);
+    }
+
+    private function isDatabaseLoggingEnabled(): bool
+    {
+        $config = $this->config ?? ConfigurationManager::getInstance();
+        return (bool) $config->get('logging', 'database_enabled', false);
     }
 
     private function encodeRecordSnapshot(array $record): ?string
