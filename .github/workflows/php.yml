@@ -315,70 +315,83 @@ jobs:
 
     steps:
     - name: Check job statuses
+      env:
+        RUNNER_OS: ${{ runner.os }}
+        SYNTAX_RESULT: ${{ needs.syntax-check.result }}
+        SECURITY_RESULT: ${{ needs.security-audit.result }}
+        CODE_STYLE_RESULT: ${{ needs.code-style.result }}
+        PHPSTAN_RESULT: ${{ needs.phpstan.result }}
+        PSALM_RESULT: ${{ needs.psalm.result }}
+        UNIT_TESTS_RESULT: ${{ needs.unit-tests.result }}
+        COMPATIBILITY_RESULT: ${{ needs.compatibility.result }}
+        TWIG_CSRF_RESULT: ${{ needs.twig-csrf-check.result }}
+        LOCALE_RESULT: ${{ needs.locale-check.result }}
+        WORKFLOW_NAME: ${{ github.workflow }}
+        RUN_NUMBER: ${{ github.run_number }}
       run: |
-        echo "### Validation Summary 🚀" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**PHP Version:** 8.4" >> $GITHUB_STEP_SUMMARY
-        echo "**Platform:** ${{ runner.os }}" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Quality Checks:**" >> $GITHUB_STEP_SUMMARY
+        echo "### Validation Summary 🚀" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "**PHP Version:** 8.4" >> "$GITHUB_STEP_SUMMARY"
+        echo "**Platform:** $RUNNER_OS" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "**Quality Checks:**" >> "$GITHUB_STEP_SUMMARY"
 
-        if [ "${{ needs.syntax-check.result }}" == "success" ]; then
-          echo "- ✅ PHP Syntax Validation" >> $GITHUB_STEP_SUMMARY
+        if [ "$SYNTAX_RESULT" = "success" ]; then
+          echo "- ✅ PHP Syntax Validation" >> "$GITHUB_STEP_SUMMARY"
         else
-          echo "- ❌ PHP Syntax Validation" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ PHP Syntax Validation" >> "$GITHUB_STEP_SUMMARY"
         fi
 
-        if [ "${{ needs.security-audit.result }}" == "success" ]; then
-          echo "- ✅ Security Audit" >> $GITHUB_STEP_SUMMARY
+        if [ "$SECURITY_RESULT" = "success" ]; then
+          echo "- ✅ Security Audit" >> "$GITHUB_STEP_SUMMARY"
         else
-          echo "- ❌ Security Audit" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ Security Audit" >> "$GITHUB_STEP_SUMMARY"
         fi
 
-        if [ "${{ needs.code-style.result }}" == "success" ]; then
-          echo "- ✅ Code Style (PHP_CodeSniffer)" >> $GITHUB_STEP_SUMMARY
+        if [ "$CODE_STYLE_RESULT" = "success" ]; then
+          echo "- ✅ Code Style (PHP_CodeSniffer)" >> "$GITHUB_STEP_SUMMARY"
         else
-          echo "- ❌ Code Style (PHP_CodeSniffer)" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ Code Style (PHP_CodeSniffer)" >> "$GITHUB_STEP_SUMMARY"
         fi
 
-        if [ "${{ needs.phpstan.result }}" == "success" ]; then
-          echo "- ✅ Static Analysis (PHPStan level 3)" >> $GITHUB_STEP_SUMMARY
+        if [ "$PHPSTAN_RESULT" = "success" ]; then
+          echo "- ✅ Static Analysis (PHPStan level 3)" >> "$GITHUB_STEP_SUMMARY"
         else
-          echo "- ❌ Static Analysis (PHPStan level 3)" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ Static Analysis (PHPStan level 3)" >> "$GITHUB_STEP_SUMMARY"
         fi
 
-        if [ "${{ needs.psalm.result }}" == "success" ]; then
-          echo "- ✅ Static Analysis (Psalm level 4)" >> $GITHUB_STEP_SUMMARY
+        if [ "$PSALM_RESULT" = "success" ]; then
+          echo "- ✅ Static Analysis (Psalm level 4)" >> "$GITHUB_STEP_SUMMARY"
         else
-          echo "- ❌ Static Analysis (Psalm level 4)" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ Static Analysis (Psalm level 4)" >> "$GITHUB_STEP_SUMMARY"
         fi
 
-        if [ "${{ needs.unit-tests.result }}" == "success" ]; then
-          echo "- ✅ Unit Tests (PHPUnit)" >> $GITHUB_STEP_SUMMARY
+        if [ "$UNIT_TESTS_RESULT" = "success" ]; then
+          echo "- ✅ Unit Tests (PHPUnit)" >> "$GITHUB_STEP_SUMMARY"
         else
-          echo "- ❌ Unit Tests (PHPUnit)" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ Unit Tests (PHPUnit)" >> "$GITHUB_STEP_SUMMARY"
         fi
 
-        if [ "${{ needs.compatibility.result }}" == "success" ]; then
-          echo "- ✅ PHP Compatibility (8.1, 8.2, 8.3, 8.4)" >> $GITHUB_STEP_SUMMARY
+        if [ "$COMPATIBILITY_RESULT" = "success" ]; then
+          echo "- ✅ PHP Compatibility (8.1, 8.2, 8.3, 8.4)" >> "$GITHUB_STEP_SUMMARY"
         else
-          echo "- ❌ PHP Compatibility (8.1, 8.2, 8.3, 8.4)" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ PHP Compatibility (8.1, 8.2, 8.3, 8.4)" >> "$GITHUB_STEP_SUMMARY"
         fi
 
-        if [ "${{ needs.twig-csrf-check.result }}" == "success" ]; then
-          echo "- ✅ Twig CSRF Field Name Check" >> $GITHUB_STEP_SUMMARY
+        if [ "$TWIG_CSRF_RESULT" = "success" ]; then
+          echo "- ✅ Twig CSRF Field Name Check" >> "$GITHUB_STEP_SUMMARY"
         else
-          echo "- ❌ Twig CSRF Field Name Check" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ Twig CSRF Field Name Check" >> "$GITHUB_STEP_SUMMARY"
         fi
 
-        if [ "${{ needs.locale-check.result }}" == "success" ]; then
-          echo "- ✅ Locale Empty Translation Check" >> $GITHUB_STEP_SUMMARY
+        if [ "$LOCALE_RESULT" = "success" ]; then
+          echo "- ✅ Locale Empty Translation Check" >> "$GITHUB_STEP_SUMMARY"
         else
-          echo "- ❌ Locale Empty Translation Check" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ Locale Empty Translation Check" >> "$GITHUB_STEP_SUMMARY"
         fi
 
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Workflow:** ${{ github.workflow }} (#${{ github.run_number }})" >> $GITHUB_STEP_SUMMARY
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "**Workflow:** $WORKFLOW_NAME (#$RUN_NUMBER)" >> "$GITHUB_STEP_SUMMARY"
 
     - name: Fail if any job failed
       if: |
