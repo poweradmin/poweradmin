@@ -110,11 +110,14 @@ $db = (new DatabaseService(new PDODatabaseConnection()))
     ->connect(DatabaseCredentialMapper::mapCredentials($config));
 
 $logger = new RecordChangeLogger($db);
-$rows = $logger->getFiltered(
-    ['date_from' => $since, 'date_to' => $until],
-    100000,
-    0
-);
+$filters = ['date_from' => $since, 'date_to' => $until];
+
+// Cap the body length so very busy windows don't produce multi-MB emails;
+// when the cap kicks in the digest tells the recipient how many rows are
+// missing rather than silently truncating.
+$digestLimit = 100000;
+$totalCount = $logger->countFiltered($filters);
+$rows = $logger->getFiltered($filters, $digestLimit, 0);
 
 if ($rows === []) {
     if ($dryRun) {
@@ -123,7 +126,14 @@ if ($rows === []) {
     exit(0);
 }
 
-$html = renderDigestHtml($rows, $since, $until, $options['header'] ?? '', $options['footer'] ?? '');
+$html = renderDigestHtml(
+    $rows,
+    $since,
+    $until,
+    $options['header'] ?? '',
+    $options['footer'] ?? '',
+    $totalCount
+);
 
 if ($dryRun) {
     fwrite(STDOUT, $html);
@@ -153,9 +163,17 @@ foreach ($recipients as $recipient) {
 
 exit($failed > 0 ? 1 : 0);
 
-function renderDigestHtml(array $rows, string $since, string $until, string $headerHtml, string $footerHtml): string
-{
+function renderDigestHtml(
+    array $rows,
+    string $since,
+    string $until,
+    string $headerHtml,
+    string $footerHtml,
+    ?int $totalCount = null
+): string {
     $count = count($rows);
+    $totalCount = $totalCount ?? $count;
+    $truncated = $totalCount > $count;
     $h = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="font-family:Arial,sans-serif;font-size:13px;color:#333;">';
 
     if ($headerHtml !== '') {
@@ -163,8 +181,16 @@ function renderDigestHtml(array $rows, string $since, string $until, string $hea
     }
 
     $h .= '<h2 style="margin:0 0 8px 0;">Poweradmin record change digest</h2>';
-    $h .= '<p style="margin:0 0 12px 0;color:#666;">' . $count . ' change' . ($count === 1 ? '' : 's')
+    $h .= '<p style="margin:0 0 12px 0;color:#666;">' . $totalCount . ' change' . ($totalCount === 1 ? '' : 's')
         . ' between ' . htmlspecialchars($since) . ' UTC and ' . htmlspecialchars($until) . ' UTC.</p>';
+
+    if ($truncated) {
+        $h .= '<p style="margin:0 0 12px 0;padding:10px;background:#fff3cd;border:1px solid #ffeeba;color:#856404;">'
+            . '<strong>Digest truncated.</strong> Showing the most recent ' . $count . ' of ' . $totalCount
+            . ' changes. The remaining ' . ($totalCount - $count)
+            . ' older entries are not included in this email; query the change-log UI for the full window.'
+            . '</p>';
+    }
 
     $h .= '<table cellpadding="6" cellspacing="0" border="0" style="border-collapse:collapse;width:100%;">';
     $h .= '<thead><tr style="background:#f0f0f0;border-bottom:2px solid #ccc;">';
