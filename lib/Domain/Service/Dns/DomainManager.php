@@ -96,6 +96,38 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
+     * Snapshot a zone's metadata-relevant fields (type and master IP) for the
+     * change log. Distinct from {@see snapshotZoneForLog()}, which only carries
+     * id/name/type and is used for zone create/delete entries.
+     *
+     * Uses the backend provider's lightweight zone lookup rather than the
+     * repository's getZoneInfoFromId(), which aggregates record_count and
+     * would turn a metadata edit into O(records) work on large zones.
+     *
+     * @return array{id:int,name:?string,type:?string,master:?string}|null
+     */
+    private function snapshotZoneMetadataForLog(int $zoneId): ?array
+    {
+        try {
+            $zone = $this->backendProvider->getZoneById($zoneId);
+        } catch (Throwable $e) {
+            $this->logger->warning('Failed to snapshot zone for change log: {error}', ['error' => $e->getMessage()]);
+            return null;
+        }
+
+        if ($zone === null || empty($zone['name'])) {
+            return null;
+        }
+
+        return [
+            'id' => $zoneId,
+            'name' => $zone['name'] ?? null,
+            'type' => $zone['type'] ?? null,
+            'master' => $zone['master'] ?? null,
+        ];
+    }
+
+    /**
      * Add a domain to the database
      *
      * @param object $db Database connection
@@ -594,10 +626,20 @@ class DomainManager implements DomainManagerInterface
      */
     public function changeZoneType(string $type, int $id): bool
     {
+        $beforeZone = $this->snapshotZoneMetadataForLog($id);
+
         if (!$this->backendProvider->updateZoneType($id, $type)) {
             $this->messageService->addSystemError(_('Failed to update zone type in DNS backend.'));
             return false;
         }
+
+        if ($beforeZone !== null) {
+            $afterZone = $this->snapshotZoneMetadataForLog($id) ?? array_merge($beforeZone, ['type' => $type]);
+            $this->captureChange(function () use ($beforeZone, $afterZone): void {
+                $this->changeLogger->logZoneMetadataEdit($beforeZone, $afterZone);
+            });
+        }
+
         return true;
     }
 
@@ -614,9 +656,18 @@ class DomainManager implements DomainManagerInterface
             return false;
         }
 
+        $beforeZone = $this->snapshotZoneMetadataForLog($zone_id);
+
         if (!$this->backendProvider->updateZoneMaster($zone_id, $ip_slave_master)) {
             $this->messageService->addSystemError(_('Failed to update zone master in DNS backend.'));
             return false;
+        }
+
+        if ($beforeZone !== null) {
+            $afterZone = $this->snapshotZoneMetadataForLog($zone_id) ?? array_merge($beforeZone, ['master' => $ip_slave_master]);
+            $this->captureChange(function () use ($beforeZone, $afterZone): void {
+                $this->changeLogger->logZoneMetadataEdit($beforeZone, $afterZone);
+            });
         }
 
         return true;
@@ -748,6 +799,17 @@ class DomainManager implements DomainManagerInterface
                         // template definitions against actual zone records instead.
                         $this->deleteTemplateRecordsViaApi($zone_id, $zone_template_id, $dns_ttl);
                     } else {
+                        // Snapshot template-linked records before the bulk delete
+                        // so the audit log captures every removal.
+                        $selectStmt = $this->db->prepare(
+                            "SELECT r.id, r.name, r.type, r.content, r.ttl, r.prio, r.disabled
+                             FROM $records_table r
+                             INNER JOIN records_zone_templ rzt ON r.id = rzt.record_id
+                             WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id"
+                        );
+                        $selectStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
+                        $templateRecordsRemoved = $selectStmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
                         // SQL mode: delete records and mapping in one query
                         if ($db_type == 'pgsql') {
                             $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
@@ -758,6 +820,14 @@ class DomainManager implements DomainManagerInterface
                         }
                         $stmt = $this->db->prepare($query);
                         $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
+
+                        if ($templateRecordsRemoved !== []) {
+                            $this->captureChange(function () use ($templateRecordsRemoved, $zone_id): void {
+                                foreach ($templateRecordsRemoved as $removed) {
+                                    $this->changeLogger->logRecordDelete($removed, $zone_id);
+                                }
+                            });
+                        }
                     }
                 } else {
                     $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
@@ -789,8 +859,21 @@ class DomainManager implements DomainManagerInterface
                                     continue;
                                 }
                                 // For SOA records, delete existing ones and use updated SOA record
+                                $soaSelect = $this->db->prepare("SELECT id, name, type, content, ttl, prio, disabled FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
+                                $soaSelect->execute([':zone_id' => $zone_id]);
+                                $existingSoaRecords = $soaSelect->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
                                 $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
                                 $stmt->execute([':zone_id' => $zone_id]);
+
+                                if ($existingSoaRecords !== []) {
+                                    $this->captureChange(function () use ($existingSoaRecords, $zone_id): void {
+                                        foreach ($existingSoaRecords as $soaRecord) {
+                                            $this->changeLogger->logRecordDelete($soaRecord, $zone_id);
+                                        }
+                                    });
+                                }
+
                                 $content = $this->soaRecordManager->getUpdatedSOARecord($soa_rec);
                                 if ($content == "") {
                                     $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
@@ -868,6 +951,20 @@ class DomainManager implements DomainManagerInterface
                                         ':zone_template_id' => $zone_template_id
                                     ]);
                                 }
+
+                                $loggedRecordId = $isApiBackend
+                                    ? $record_id
+                                    : ($record_id !== false ? (int) $record_id : null);
+                                $this->captureChange(function () use ($loggedRecordId, $name, $recordType, $content, $ttl, $prio, $zone_id): void {
+                                    $this->changeLogger->logRecordCreate([
+                                        'id' => $loggedRecordId,
+                                        'name' => $name,
+                                        'type' => $recordType,
+                                        'content' => $content,
+                                        'ttl' => (int) $ttl,
+                                        'prio' => $prio,
+                                    ], $zone_id);
+                                });
                             }
                         }
                     }
@@ -943,7 +1040,19 @@ class DomainManager implements DomainManagerInterface
                     && ($record['type'] ?? '') === $expected['type']
                     && ($record['content'] ?? '') === $expected['content']
                 ) {
-                    $this->backendProvider->deleteRecord($record['id']);
+                    if ($this->backendProvider->deleteRecord($record['id'])) {
+                        $this->captureChange(function () use ($record, $zone_id): void {
+                            $this->changeLogger->logRecordDelete([
+                                'id' => $record['id'] ?? null,
+                                'name' => $record['name'] ?? null,
+                                'type' => $record['type'] ?? null,
+                                'content' => $record['content'] ?? null,
+                                'ttl' => isset($record['ttl']) ? (int) $record['ttl'] : null,
+                                'prio' => isset($record['prio']) ? (int) $record['prio'] : null,
+                                'disabled' => $record['disabled'] ?? null,
+                            ], $zone_id);
+                        });
+                    }
                     break;
                 }
             }
