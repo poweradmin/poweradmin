@@ -202,39 +202,87 @@ class ListRecordChangesController extends BaseController
         return $presenter->present();
     }
 
+    /**
+     * Export the filtered change log as CSV or JSON. Streams rows to the
+     * response in fixed-size pages so very large filter results do not need
+     * to fit in memory all at once and there is no artificial row cap.
+     */
     private function exportLogs(array $filters, string $format): void
     {
-        $logs = $this->changeLogger->getFiltered($filters, 100000, 0);
-        $rows = array_map(static function (array $log): array {
-            return [
-                'timestamp' => $log['created_at'],
-                'action' => $log['action'],
-                'username' => $log['username'],
-                'user_id' => $log['user_id'],
-                'zone_id' => $log['zone_id'],
-                'record_id' => $log['record_id'],
-                'client_ip' => $log['client_ip'] ?? null,
-                'before_state' => $log['before_state'],
-                'after_state' => $log['after_state'],
-            ];
-        }, $logs);
+        $pageSize = 5000;
+        $filename = 'record-changes-' . date('Y-m-d');
 
         if ($format === 'json') {
             header('Content-Type: application/json');
-            header('Content-Disposition: attachment; filename="record-changes-' . date('Y-m-d') . '.json"');
-            echo json_encode($rows, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            header('Content-Disposition: attachment; filename="' . $filename . '.json"');
+
+            echo "[\n";
+            $first = true;
+            $offset = 0;
+            while (true) {
+                $logs = $this->changeLogger->getFiltered($filters, $pageSize, $offset);
+                if ($logs === []) {
+                    break;
+                }
+                foreach ($logs as $log) {
+                    $encoded = json_encode($this->buildExportRow($log), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    if ($encoded === false) {
+                        continue;
+                    }
+                    echo ($first ? '' : ",\n") . '  ' . $encoded;
+                    $first = false;
+                }
+                if (count($logs) < $pageSize) {
+                    break;
+                }
+                $offset += $pageSize;
+            }
+            echo "\n]\n";
         } else {
             header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="record-changes-' . date('Y-m-d') . '.csv"');
+            header('Content-Disposition: attachment; filename="' . $filename . '.csv"');
+
             $output = fopen('php://output', 'w');
-            if (!empty($rows)) {
-                fputcsv($output, array_keys($rows[0]));
-                foreach ($rows as $row) {
-                    fputcsv($output, $row);
+            fputcsv($output, [
+                'timestamp', 'action', 'username', 'user_id', 'zone_id',
+                'record_id', 'client_ip', 'before_state', 'after_state',
+            ]);
+
+            $offset = 0;
+            while (true) {
+                $logs = $this->changeLogger->getFiltered($filters, $pageSize, $offset);
+                if ($logs === []) {
+                    break;
                 }
+                foreach ($logs as $log) {
+                    fputcsv($output, $this->buildExportRow($log));
+                }
+                if (count($logs) < $pageSize) {
+                    break;
+                }
+                $offset += $pageSize;
             }
             fclose($output);
         }
         exit;
+    }
+
+    /**
+     * @param array<string, mixed> $log
+     * @return array<string, mixed>
+     */
+    private function buildExportRow(array $log): array
+    {
+        return [
+            'timestamp' => $log['created_at'] ?? '',
+            'action' => $log['action'] ?? '',
+            'username' => $log['username'] ?? '',
+            'user_id' => $log['user_id'] ?? null,
+            'zone_id' => $log['zone_id'] ?? null,
+            'record_id' => $log['record_id'] ?? null,
+            'client_ip' => $log['client_ip'] ?? null,
+            'before_state' => $log['before_state'] ?? '',
+            'after_state' => $log['after_state'] ?? '',
+        ];
     }
 }
