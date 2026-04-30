@@ -238,6 +238,50 @@ class RecordChangeLoggerTest extends TestCase
         $this->assertArrayNotHasKey('_content_truncated', $decoded);
     }
 
+    public function testMetadataEditWritesNormalizedSnapshot(): void
+    {
+        $before = [
+            ['kind' => 'ALLOW-AXFR-FROM', 'content' => '10.0.0.1'],
+        ];
+        $after = [
+            ['kind' => 'ALLOW-AXFR-FROM', 'content' => '10.0.0.2'],
+            ['kind' => 'ALLOW-AXFR-FROM', 'content' => '10.0.0.1'],
+        ];
+
+        $this->logger->logZoneMetadataEdit(
+            ['id' => 5, 'name' => 'example.com', 'metadata' => $before],
+            ['id' => 5, 'name' => 'example.com', 'metadata' => $after]
+        );
+
+        $rows = $this->fetchAll();
+        $this->assertCount(1, $rows);
+        $this->assertSame('zone_metadata_edit', $rows[0]['action']);
+
+        $beforeDecoded = json_decode((string) $rows[0]['before_state'], true);
+        $afterDecoded = json_decode((string) $rows[0]['after_state'], true);
+        $this->assertSame(['ALLOW-AXFR-FROM' => ['10.0.0.1']], $beforeDecoded['metadata']);
+        $this->assertSame(['ALLOW-AXFR-FROM' => ['10.0.0.1', '10.0.0.2']], $afterDecoded['metadata']);
+    }
+
+    public function testMetadataEditSkipsWhenOrderingDiffersButValuesAreSame(): void
+    {
+        $before = [
+            ['kind' => 'ALLOW-AXFR-FROM', 'content' => '10.0.0.1'],
+            ['kind' => 'ALLOW-AXFR-FROM', 'content' => '10.0.0.2'],
+        ];
+        $after = [
+            ['kind' => 'ALLOW-AXFR-FROM', 'content' => '10.0.0.2'],
+            ['kind' => 'ALLOW-AXFR-FROM', 'content' => '10.0.0.1'],
+        ];
+
+        $this->logger->logZoneMetadataEdit(
+            ['id' => 5, 'name' => 'example.com', 'metadata' => $before],
+            ['id' => 5, 'name' => 'example.com', 'metadata' => $after]
+        );
+
+        $this->assertSame([], $this->fetchAll(), 'order-only differences must not log');
+    }
+
     public function testInsertSkippedWhenDatabaseLoggingIsDisabled(): void
     {
         $userContext = $this->createMock(UserContextService::class);

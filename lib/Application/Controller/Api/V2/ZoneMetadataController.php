@@ -38,6 +38,7 @@ use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -325,9 +326,14 @@ class ZoneMetadataController extends PublicApiController
                 return $this->returnApiError('Metadata kind ' . $kind . ' accepts only a single value', 400);
             }
 
+            $beforeMetadata = $this->loadMetadata($zoneId);
+
             if (!$this->saveMetadataKind($zoneId, $kind, $values)) {
                 return $this->returnApiError('Failed to update metadata', 500);
             }
+
+            $afterMetadata = self::replaceMetadataKind($beforeMetadata, $kind, $values);
+            $this->writeMetadataChangeLog($zoneId, $beforeMetadata, $afterMetadata);
 
             return $this->returnApiResponse(null, true, 'Metadata updated successfully');
         } catch (Exception $e) {
@@ -392,9 +398,14 @@ class ZoneMetadataController extends PublicApiController
         }
 
         try {
+            $beforeMetadata = $this->loadMetadata($zoneId);
+
             if (!$this->deleteMetadataKindStorage($zoneId, $kind)) {
                 return $this->returnApiError('Failed to delete metadata', 500);
             }
+
+            $afterMetadata = self::replaceMetadataKind($beforeMetadata, $kind, []);
+            $this->writeMetadataChangeLog($zoneId, $beforeMetadata, $afterMetadata);
 
             return $this->returnApiResponse(null, true, 'Metadata deleted successfully');
         } catch (Exception $e) {
@@ -518,5 +529,45 @@ class ZoneMetadataController extends PublicApiController
         $currentRows = $this->zoneRepository->getDomainMetadata($zoneId);
         $newRows = array_filter($currentRows, fn($row) => strtoupper($row['kind']) !== $kind);
         return $this->zoneRepository->replaceDomainMetadata($zoneId, array_values($newRows));
+    }
+
+    /**
+     * Replace all rows of a given kind in a metadata array. Used to compute the
+     * after-snapshot for the change log without re-fetching from the backend.
+     *
+     * @param array<int, array{kind: string, content: string}> $rows
+     * @param array<int, string> $newValues
+     * @return array<int, array{kind: string, content: string}>
+     */
+    private static function replaceMetadataKind(array $rows, string $kind, array $newValues): array
+    {
+        $kept = [];
+        foreach ($rows as $row) {
+            if (strtoupper($row['kind'] ?? '') !== $kind) {
+                $kept[] = $row;
+            }
+        }
+        foreach ($newValues as $value) {
+            $kept[] = ['kind' => $kind, 'content' => (string) $value];
+        }
+        return $kept;
+    }
+
+    /**
+     * @param array<int, array{kind: string, content: string}> $before
+     * @param array<int, array{kind: string, content: string}> $after
+     */
+    private function writeMetadataChangeLog(int $zoneId, array $before, array $after): void
+    {
+        try {
+            $zone = $this->zoneRepository->getZone($zoneId);
+            $zoneName = is_array($zone) && isset($zone['name']) ? (string) $zone['name'] : null;
+            (new RecordChangeLogger($this->db))->logZoneMetadataEdit(
+                ['id' => $zoneId, 'name' => $zoneName, 'metadata' => $before],
+                ['id' => $zoneId, 'name' => $zoneName, 'metadata' => $after]
+            );
+        } catch (\Throwable $e) {
+            $this->logger->warning('Failed to write zone metadata edit log: {error}', ['error' => $e->getMessage()]);
+        }
     }
 }

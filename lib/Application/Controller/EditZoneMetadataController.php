@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -134,6 +135,10 @@ class EditZoneMetadataController extends BaseController
                 return;
             }
 
+            // Capture the current metadata state for the change-log diff. Done
+            // before the write so we record what was actually replaced.
+            $beforeMetadata = $this->loadMetadata($zoneId, $zone['name']);
+
             $saveResult = $this->saveMetadata($zone, $submittedMetadata);
 
             if ($saveResult['success']) {
@@ -147,6 +152,15 @@ class EditZoneMetadataController extends BaseController
                     $zone['name'],
                     implode(',', $kinds)
                 ), $zoneId);
+
+                try {
+                    (new RecordChangeLogger($this->db))->logZoneMetadataEdit(
+                        ['id' => $zoneId, 'name' => $zone['name'], 'metadata' => $beforeMetadata],
+                        ['id' => $zoneId, 'name' => $zone['name'], 'metadata' => $submittedMetadata]
+                    );
+                } catch (\Throwable $e) {
+                    $this->logger->warning('Failed to write zone metadata edit log: {error}', ['error' => $e->getMessage()]);
+                }
 
                 $this->setMessage('zone_metadata', 'success', _('Zone metadata has been updated successfully.'));
                 $this->redirect('/zones/' . $zoneId . '/metadata');

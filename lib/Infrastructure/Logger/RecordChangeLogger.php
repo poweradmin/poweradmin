@@ -234,7 +234,39 @@ class RecordChangeLogger
             'owner' => $zone['owner'] ?? null,
         ];
 
+        // Optional pdns metadata payload, used by EditZoneMetadataController and
+        // /api/v2/zones/{id}/metadata endpoints. Stored as a kind => sorted-values
+        // map so order-only differences don't trigger spurious diff rows.
+        if (isset($zone['metadata']) && is_array($zone['metadata'])) {
+            $snapshot['metadata'] = self::normalizeMetadataRows($zone['metadata']);
+        }
+
         return $this->jsonEncode($snapshot);
+    }
+
+    /**
+     * @param array<int, array{kind?: string, content?: string}> $rows
+     * @return array<string, list<string>>
+     */
+    public static function normalizeMetadataRows(array $rows): array
+    {
+        $grouped = [];
+        foreach ($rows as $row) {
+            if (!is_array($row)) {
+                continue;
+            }
+            $kind = isset($row['kind']) && is_string($row['kind']) ? $row['kind'] : '';
+            if ($kind === '') {
+                continue;
+            }
+            $content = isset($row['content']) ? (string) $row['content'] : '';
+            $grouped[$kind][] = $content;
+        }
+        ksort($grouped);
+        foreach ($grouped as &$values) {
+            sort($values);
+        }
+        return $grouped;
     }
 
     private function mergeRecordCount(?string $snapshotJson, int $recordCount): ?string
@@ -319,6 +351,13 @@ class RecordChangeLogger
                 return false;
             }
         }
+
+        $aMeta = isset($a['metadata']) && is_array($a['metadata']) ? self::normalizeMetadataRows($a['metadata']) : null;
+        $bMeta = isset($b['metadata']) && is_array($b['metadata']) ? self::normalizeMetadataRows($b['metadata']) : null;
+        if ($aMeta !== $bMeta) {
+            return false;
+        }
+
         return true;
     }
 
