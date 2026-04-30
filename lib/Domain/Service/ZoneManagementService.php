@@ -228,6 +228,18 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Zone not found'];
         }
 
+        // Snapshot the zone for the audit log before any state is touched.
+        $zoneSnapshot = null;
+        $recordCountBefore = 0;
+        try {
+            $zoneSnapshot = $this->zoneRepository->getZoneById($zoneId);
+            if ($zoneSnapshot !== null && isset($zoneSnapshot['record_count'])) {
+                $recordCountBefore = (int) $zoneSnapshot['record_count'];
+            }
+        } catch (Throwable $e) {
+            $this->logger->warning('Failed to snapshot zone before delete: {error}', ['error' => $e->getMessage()]);
+        }
+
         // Clean up zone template sync records before deletion
         $syncService = new ZoneTemplateSyncService($this->db, $this->config);
         $syncService->cleanupZoneSyncRecords($zoneId);
@@ -237,6 +249,14 @@ class ZoneManagementService
 
         if (!$success) {
             return ['success' => false, 'message' => 'Failed to delete zone'];
+        }
+
+        if ($zoneSnapshot !== null) {
+            try {
+                $this->changeLogger->logZoneDelete($zoneSnapshot, $recordCountBefore);
+            } catch (Throwable $e) {
+                $this->logger->warning('Failed to write zone delete log: {error}', ['error' => $e->getMessage()]);
+            }
         }
 
         return ['success' => true, 'message' => 'Zone deleted successfully'];
