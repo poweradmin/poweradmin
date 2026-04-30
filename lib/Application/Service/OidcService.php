@@ -390,14 +390,25 @@ class OidcService extends LoggingService
         // AbstractProvider forwards `proxy` (and `timeout`) to the Guzzle
         // client it builds for token exchange and userinfo fetches. Without
         // this, those calls bypass HTTPS_PROXY/NO_PROXY in air-gapped setups.
-        // Resolve the bypass decision in PHP (Guzzle's NO_PROXY matcher is
-        // suffix-only and doesn't understand CIDR or host:port entries) so
-        // operators with K8s-style or port-pinned bypasses get correct routing.
-        $tokenUrl = $config['token_url'] ?? '';
-        if ($tokenUrl !== '' && ProxyContext::shouldProxy($tokenUrl)) {
-            $proxyConfig = ProxyContext::guzzleProxyConfig();
-            if ($proxyConfig !== null) {
-                $options['proxy'] = $proxyConfig;
+        //
+        // GenericProvider takes a single proxy setting that applies to every
+        // request the provider makes, so we set the proxy if either the token
+        // exchange or the userinfo fetch needs it. Once set, Guzzle's own
+        // NO_PROXY matcher (suffix-only) decides per-request bypass within the
+        // provider; CIDR/host:port entries in NO_PROXY only fully apply to
+        // the stream-wrapper sites in ProxyContext::httpOptionsFor().
+        $serverUrls = array_filter([
+            $config['token_url'] ?? '',
+            $config['userinfo_url'] ?? '',
+        ], static fn(string $url): bool => $url !== '');
+
+        foreach ($serverUrls as $serverUrl) {
+            if (ProxyContext::shouldProxy($serverUrl)) {
+                $proxyConfig = ProxyContext::guzzleProxyConfig();
+                if ($proxyConfig !== null) {
+                    $options['proxy'] = $proxyConfig;
+                }
+                break;
             }
         }
 
