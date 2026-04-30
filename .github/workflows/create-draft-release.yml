@@ -90,8 +90,8 @@ jobs:
         if: steps.check_release.outputs.skip != 'true' && steps.check_changes.outputs.has_changes == 'true'
         id: check_notes
         run: |
-          if [ ! -f RELEASE_NOTES.md ] || [ ! -s RELEASE_NOTES.md ]; then
-            echo "No release notes generated, skipping"
+          if [ ! -f RELEASE_NOTES.md ] || ! grep -qE '\S' RELEASE_NOTES.md; then
+            echo "No user-facing release notes after cliff filtering, skipping draft"
             echo "has_notes=false" >> "$GITHUB_OUTPUT"
           else
             echo "has_notes=true" >> "$GITHUB_OUTPUT"
