@@ -301,6 +301,9 @@ class ZoneTemplate
                 $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE zone_templ_id = :zone_templ_id");
                 $stmt->execute([':zone_templ_id' => $zone_templ_id]);
 
+                $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE zone_templ_id = :zone_templ_id");
+                $stmt->execute([':zone_templ_id' => $zone_templ_id]);
+
                 $this->db->commit();
                 return true;
             } catch (Exception $e) {

@@ -22,3 +22,19 @@ CREATE TABLE IF NOT EXISTS "public"."log_record_changes" (
 CREATE INDEX IF NOT EXISTS "idx_log_record_changes_created_at" ON "public"."log_record_changes" USING btree ("created_at");
 CREATE INDEX IF NOT EXISTS "idx_log_record_changes_zone_id" ON "public"."log_record_changes" USING btree ("zone_id");
 CREATE INDEX IF NOT EXISTS "idx_log_record_changes_action" ON "public"."log_record_changes" USING btree ("action");
+
+-- Mapping table for API-backed zones whose record IDs are encoded strings
+-- (RecordIdentifier base64url) and don't fit in records_zone_templ.record_id
+-- (integer). Populated only when applying templates against PowerDNS via the API.
+CREATE SEQUENCE IF NOT EXISTS records_zone_templ_api_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE IF NOT EXISTS "public"."records_zone_templ_api" (
+    "id" integer DEFAULT nextval('records_zone_templ_api_id_seq') NOT NULL,
+    "domain_id" integer NOT NULL,
+    "record_id" character varying(255) NOT NULL,
+    "zone_templ_id" integer NOT NULL,
+    CONSTRAINT "records_zone_templ_api_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+CREATE INDEX IF NOT EXISTS "idx_records_zone_templ_api_domain_id" ON "public"."records_zone_templ_api" USING btree ("domain_id");
+CREATE INDEX IF NOT EXISTS "idx_records_zone_templ_api_zone_templ_id" ON "public"."records_zone_templ_api" USING btree ("zone_templ_id");

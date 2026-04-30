@@ -618,6 +618,62 @@ class DatabaseStructureHelper
                 )
             ),
             array(
+                'table_name' => 'records_zone_templ_api',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'autoincrement' => 1,
+                        'type' => 'integer',
+                        'name' => 'id',
+                        'table' => 'records_zone_templ_api',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'domain_id' => array(
+                        'notnull' => 1,
+                        'fixed' => 0,
+                        'default' => 0,
+                        'type' => 'integer',
+                        'name' => 'domain_id',
+                        'table' => 'records_zone_templ_api',
+                        'flags' => 'not_null'
+                    ),
+                    'record_id' => array(
+                        'notnull' => 1,
+                        'fixed' => 0,
+                        'default' => '',
+                        'length' => 255,
+                        'type' => 'text',
+                        'name' => 'record_id',
+                        'table' => 'records_zone_templ_api',
+                        'flags' => 'not_null'
+                    ),
+                    'zone_templ_id' => array(
+                        'notnull' => 1,
+                        'fixed' => 0,
+                        'default' => 0,
+                        'type' => 'integer',
+                        'name' => 'zone_templ_id',
+                        'table' => 'records_zone_templ_api',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'records_zone_templ_api_domain_id_idx' => array(
+                        'fields' => array(
+                            'domain_id' => array()
+                        )
+                    ),
+                    'records_zone_templ_api_zone_templ_id_idx' => array(
+                        'fields' => array(
+                            'zone_templ_id' => array()
+                        )
+                    )
+                )
+            ),
+            array(
                 'table_name' => 'log_zones',
                 'options' => array('type' => 'innodb'),
                 'fields' => array(

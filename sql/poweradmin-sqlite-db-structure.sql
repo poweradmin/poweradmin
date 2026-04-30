@@ -125,6 +125,11 @@ CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id
 CREATE INDEX idx_records_zone_templ_domain_id ON records_zone_templ(domain_id);
 CREATE INDEX idx_records_zone_templ_zone_templ_id ON records_zone_templ(zone_templ_id);
 
+CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id integer NOT NULL, record_id text NOT NULL, zone_templ_id integer NOT NULL);
+
+CREATE INDEX idx_records_zone_templ_api_domain_id ON records_zone_templ_api(domain_id);
+CREATE INDEX idx_records_zone_templ_api_zone_templ_id ON records_zone_templ_api(zone_templ_id);
+
 
 CREATE TABLE users (id integer PRIMARY KEY, username VARCHAR(64) NOT NULL, password VARCHAR(128) NOT NULL, fullname VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, description VARCHAR(1024) NOT NULL, perm_templ integer NOT NULL, perm_templ_source VARCHAR(20) NOT NULL DEFAULT 'admin', active integer(1) NOT NULL, use_ldap integer(1) NOT NULL, auth_method VARCHAR(20) NOT NULL DEFAULT 'sql');
 

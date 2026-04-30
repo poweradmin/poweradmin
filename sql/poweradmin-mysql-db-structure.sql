@@ -210,6 +210,16 @@ CREATE TABLE `records_zone_templ` (
                                       KEY `idx_records_zone_templ_zone_templ_id` (`zone_templ_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `records_zone_templ_api` (
+                                          `id` int(11) NOT NULL AUTO_INCREMENT,
+                                          `domain_id` int(11) NOT NULL,
+                                          `record_id` varchar(255) NOT NULL,
+                                          `zone_templ_id` int(11) NOT NULL,
+                                          PRIMARY KEY (`id`),
+                                          KEY `idx_records_zone_templ_api_domain_id` (`domain_id`),
+                                          KEY `idx_records_zone_templ_api_zone_templ_id` (`zone_templ_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `zones` (
                          `id` int(11) NOT NULL AUTO_INCREMENT,
                          `domain_id` int(11) NULL DEFAULT NULL,

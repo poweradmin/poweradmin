@@ -491,8 +491,14 @@ class RecordManager implements RecordManagerInterface
      */
     public static function deleteRecordZoneTempl($db, int|string $rid): bool
     {
+        // SQL record IDs live in records_zone_templ; API record IDs (encoded
+        // RecordIdentifier strings) live in records_zone_templ_api. The two
+        // tables segregate by ID type so at most one DELETE will match.
         $stmt = $db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?");
         $stmt->execute([$rid]);
+
+        $stmt = $db->prepare("DELETE FROM records_zone_templ_api WHERE record_id = ?");
+        $stmt->execute([(string) $rid]);
 
         return true;
     }

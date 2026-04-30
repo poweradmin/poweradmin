@@ -201,6 +201,21 @@ CREATE TABLE "public"."records_zone_templ" (
 
 ALTER SEQUENCE records_zone_templ_id_seq OWNED BY records_zone_templ.id;
 
+CREATE SEQUENCE records_zone_templ_api_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."records_zone_templ_api" (
+                                                   "id" integer DEFAULT nextval('records_zone_templ_api_id_seq') NOT NULL,
+                                                   "domain_id" integer NOT NULL,
+                                                   "record_id" character varying(255) NOT NULL,
+                                                   "zone_templ_id" integer NOT NULL,
+                                                   CONSTRAINT "records_zone_templ_api_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+ALTER SEQUENCE records_zone_templ_api_id_seq OWNED BY records_zone_templ_api.id;
+
+CREATE INDEX "idx_records_zone_templ_api_domain_id" ON "public"."records_zone_templ_api" USING btree ("domain_id");
+CREATE INDEX "idx_records_zone_templ_api_zone_templ_id" ON "public"."records_zone_templ_api" USING btree ("zone_templ_id");
+
 CREATE INDEX "idx_records_zone_templ_domain_id" ON "public"."records_zone_templ" USING btree ("domain_id");
 CREATE INDEX "idx_records_zone_templ_zone_templ_id" ON "public"."records_zone_templ" USING btree ("zone_templ_id");
 

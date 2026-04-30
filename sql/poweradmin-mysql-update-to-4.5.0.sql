@@ -19,3 +19,16 @@ CREATE TABLE IF NOT EXISTS `log_record_changes` (
     KEY `idx_log_record_changes_zone_id` (`zone_id`),
     KEY `idx_log_record_changes_action` (`action`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Mapping table for API-backed zones whose record IDs are encoded strings
+-- (RecordIdentifier base64url) and don't fit in records_zone_templ.record_id
+-- (INT). Populated only when applying templates against PowerDNS via the API.
+CREATE TABLE IF NOT EXISTS `records_zone_templ_api` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `domain_id` int(11) NOT NULL,
+    `record_id` varchar(255) NOT NULL,
+    `zone_templ_id` int(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_records_zone_templ_api_domain_id` (`domain_id`),
+    KEY `idx_records_zone_templ_api_zone_templ_id` (`zone_templ_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

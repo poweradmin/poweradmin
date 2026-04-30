@@ -215,6 +215,9 @@ class DbZoneTemplateRepository
             $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE zone_templ_id = :id");
             $stmt->execute([':id' => $id]);
 
+            $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE zone_templ_id = :id");
+            $stmt->execute([':id' => $id]);
+
             $this->db->commit();
             return true;
         } catch (Exception $e) {

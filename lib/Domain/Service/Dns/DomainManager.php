@@ -327,9 +327,17 @@ class DomainManager implements DomainManagerInterface
                                             $record_id = 0;
                                         }
 
-                                        // Skip template linkage in API mode: record IDs are encoded
-                                        // strings that can't be stored in the integer record_id column.
-                                        if (!$isApiBackend) {
+                                        // Link the record to the template so future template
+                                        // edits can remove it precisely. SQL records use
+                                        // INT-keyed records_zone_templ; API records use
+                                        // string-keyed records_zone_templ_api.
+                                        if ($isApiBackend) {
+                                            $stmt = $db->prepare("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
+                                            $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                                            $stmt->bindValue(':record_id', (string) $record_id, PDO::PARAM_STR);
+                                            $stmt->bindValue(':zone_templ_id', (int) $r['zone_templ_id'], PDO::PARAM_INT);
+                                            $stmt->execute();
+                                        } else {
                                             $stmt = $db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
                                             $stmt->execute([
                                                 ':domain_id' => $domain_id,
@@ -444,6 +452,9 @@ class DomainManager implements DomainManagerInterface
                 $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
                 $stmt->execute([':id' => $id]);
 
+                $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :id");
+                $stmt->execute([':id' => $id]);
+
                 $this->db->commit();
             } catch (\Exception $e) {
                 if ($this->db->inTransaction()) {
@@ -526,6 +537,9 @@ class DomainManager implements DomainManagerInterface
                     $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
                     $stmt->execute([':id' => $id]);
 
+                    $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
+
                     $this->db->commit();
 
                     $this->captureChange(function () use ($zoneSnapshot, $recordCountBefore): void {
@@ -573,6 +587,7 @@ class DomainManager implements DomainManagerInterface
         try {
             $db = $this->db;
             $db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :did")->execute([':did' => $domainId]);
+            $db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :did")->execute([':did' => $domainId]);
             $db->prepare("DELETE FROM zones_groups WHERE domain_id = :did")->execute([':did' => $domainId]);
             $db->prepare("DELETE FROM zones WHERE domain_id = :did")->execute([':did' => $domainId]);
         } catch (\Exception $e) {
@@ -793,10 +808,9 @@ class DomainManager implements DomainManagerInterface
             if ($zone_template_id != 0) {
                 if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                     if ($isApiBackend) {
-                        // In API mode: resolve template records by attributes and delete matches.
-                        // The records_zone_templ mapping table has no entries for API zones
-                        // (encoded string IDs can't be stored in INT column), so we match
-                        // template definitions against actual zone records instead.
+                        // API mode: encoded RecordIdentifier IDs are kept in the
+                        // string-keyed records_zone_templ_api table so we can
+                        // remove only the records this template applied here.
                         $this->deleteTemplateRecordsViaApi($zone_id, $zone_template_id, $dns_ttl);
                     } else {
                         // Snapshot template-linked records before the bulk delete
@@ -941,9 +955,18 @@ class DomainManager implements DomainManagerInterface
                                     }
                                 }
 
-                                // Link the record to the template in the mapping table
-                                // Skip for API-backed records: encoded string IDs can't be stored in INT column
-                                if (!$isApiBackend) {
+                                // Link the record to the template so future template
+                                // changes can remove it precisely. SQL records use the
+                                // INT-keyed records_zone_templ; API records use the
+                                // string-keyed records_zone_templ_api because their
+                                // encoded RecordIdentifier IDs don't fit an INT column.
+                                if ($isApiBackend) {
+                                    $stmt = $this->db->prepare("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
+                                    $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+                                    $stmt->bindValue(':record_id', (string) $record_id, PDO::PARAM_STR);
+                                    $stmt->bindValue(':zone_template_id', $zone_template_id, PDO::PARAM_INT);
+                                    $stmt->execute();
+                                } else {
                                     $stmt = $this->db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
                                     $stmt->execute([
                                         ':zone_id' => $zone_id,
@@ -991,71 +1014,73 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
-     * Delete records that match a zone template's definitions via the API backend.
+     * Delete records that this template applied to a zone, via the API backend.
      *
-     * Since API-mode record IDs are encoded strings that can't be stored in the
-     * integer records_zone_templ.record_id column, this method resolves template
-     * records by attributes (name/type/content) and deletes matches from the backend.
+     * Looks up the encoded RecordIdentifier values stored in records_zone_templ_api
+     * for the given (zone, template) pair and deletes only those records, leaving
+     * any user-authored entries that happen to share name/type/content untouched.
+     *
+     * Pre-existing API zones from before records_zone_templ_api was introduced
+     * have no mapping rows, so their template records are left in place rather
+     * than being matched fuzzily; the operator removes them by hand.
      */
     private function deleteTemplateRecordsViaApi(int $zone_id, int $zone_template_id, int $dns_ttl): void
     {
-        $domain = $this->domainRepository->getDomainNameById($zone_id);
-        if (!is_string($domain)) {
+        $stmt = $this->db->prepare(
+            "SELECT id, record_id
+             FROM records_zone_templ_api
+             WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id"
+        );
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->bindValue(':zone_template_id', $zone_template_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $mappingRows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+        if ($mappingRows === []) {
             return;
         }
 
-        $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
-        if (empty($templ_records)) {
-            return;
-        }
-
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-
-        // Build a set of expected name/type/content tuples from the template
-        $expectedRecords = [];
-        foreach ($templ_records as $r) {
-            $type = $r['type'];
-            if ($type === 'SOA') {
-                continue; // SOA is managed by PowerDNS in API mode
-            }
-            $name = $zoneTemplate->parseTemplateValue($r['name'], $domain);
-            $content = $zoneTemplate->parseTemplateValue($r['content'], $domain);
-            $expectedRecords[] = [
-                'name' => $name,
-                'type' => $type,
-                'content' => $content,
-            ];
-        }
-
-        if (empty($expectedRecords)) {
-            return;
-        }
-
-        // Fetch all zone records from the API and delete matches
-        $zoneRecords = $this->backendProvider->getRecordsByZoneId($zone_id);
-        foreach ($zoneRecords as $record) {
-            foreach ($expectedRecords as $expected) {
-                if (
-                    ($record['name'] ?? '') === $expected['name']
-                    && ($record['type'] ?? '') === $expected['type']
-                    && ($record['content'] ?? '') === $expected['content']
-                ) {
-                    if ($this->backendProvider->deleteRecord($record['id'])) {
-                        $this->captureChange(function () use ($record, $zone_id): void {
-                            $this->changeLogger->logRecordDelete([
-                                'id' => $record['id'] ?? null,
-                                'name' => $record['name'] ?? null,
-                                'type' => $record['type'] ?? null,
-                                'content' => $record['content'] ?? null,
-                                'ttl' => isset($record['ttl']) ? (int) $record['ttl'] : null,
-                                'prio' => isset($record['prio']) ? (int) $record['prio'] : null,
-                                'disabled' => $record['disabled'] ?? null,
-                            ], $zone_id);
-                        });
-                    }
-                    break;
-                }
+        // Index zone records by encoded ID so the audit log can capture full
+        // before-state for each delete. Records that no longer exist in the
+        // backend (e.g. removed out-of-band) are still removed from the mapping
+        // below, but skip the deleteRecord/log call for them.
+        $recordsByEncodedId = [];
+        foreach ($this->backendProvider->getRecordsByZoneId($zone_id) as $record) {
+            if (isset($record['id'])) {
+                $recordsByEncodedId[(string) $record['id']] = $record;
             }
         }
+
+        $deletedMappingIds = [];
+        foreach ($mappingRows as $mapping) {
+            $encodedId = (string) $mapping['record_id'];
+            $record = $recordsByEncodedId[$encodedId] ?? null;
+
+            if ($record !== null && $this->backendProvider->deleteRecord($encodedId)) {
+                $this->captureChange(function () use ($record, $zone_id): void {
+                    $this->changeLogger->logRecordDelete([
+                        'id' => $record['id'] ?? null,
+                        'name' => $record['name'] ?? null,
+                        'type' => $record['type'] ?? null,
+                        'content' => $record['content'] ?? null,
+                        'ttl' => isset($record['ttl']) ? (int) $record['ttl'] : null,
+                        'prio' => isset($record['prio']) ? (int) $record['prio'] : null,
+                        'disabled' => $record['disabled'] ?? null,
+                    ], $zone_id);
+                });
+            }
+            $deletedMappingIds[] = (int) $mapping['id'];
+        }
+
+        if ($deletedMappingIds === []) {
+            return;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($deletedMappingIds), '?'));
+        $cleanup = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE id IN ($placeholders)");
+        foreach ($deletedMappingIds as $i => $id) {
+            $cleanup->bindValue($i + 1, $id, PDO::PARAM_INT);
+        }
+        $cleanup->execute();
     }
 }

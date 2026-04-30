@@ -19,3 +19,16 @@ CREATE TABLE IF NOT EXISTS log_record_changes (
 CREATE INDEX IF NOT EXISTS idx_log_record_changes_created_at ON log_record_changes(created_at);
 CREATE INDEX IF NOT EXISTS idx_log_record_changes_zone_id ON log_record_changes(zone_id);
 CREATE INDEX IF NOT EXISTS idx_log_record_changes_action ON log_record_changes(action);
+
+-- Mapping table for API-backed zones whose record IDs are encoded strings
+-- (RecordIdentifier base64url) and don't fit in records_zone_templ.record_id
+-- (integer). Populated only when applying templates against PowerDNS via the API.
+CREATE TABLE IF NOT EXISTS records_zone_templ_api (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    domain_id integer NOT NULL,
+    record_id text NOT NULL,
+    zone_templ_id integer NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_records_zone_templ_api_domain_id ON records_zone_templ_api(domain_id);
+CREATE INDEX IF NOT EXISTS idx_records_zone_templ_api_zone_templ_id ON records_zone_templ_api(zone_templ_id);
