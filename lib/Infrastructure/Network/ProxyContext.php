@@ -44,7 +44,7 @@ final class ProxyContext
 
         $scheme = strtolower($parsed['scheme']);
         $host = strtolower(self::stripIpv6Brackets($parsed['host']));
-        $port = isset($parsed['port']) ? (int) $parsed['port'] : ($scheme === 'https' ? 443 : 80);
+        $port = $parsed['port'] ?? ($scheme === 'https' ? 443 : 80);
 
         if (self::matchesNoProxy($host, $port, self::env('NO_PROXY', 'no_proxy'))) {
             return [];
@@ -99,7 +99,7 @@ final class ProxyContext
 
         $scheme = strtolower($parsed['scheme']);
         $host = strtolower(self::stripIpv6Brackets($parsed['host']));
-        $port = isset($parsed['port']) ? (int) $parsed['port'] : ($scheme === 'https' ? 443 : 80);
+        $port = $parsed['port'] ?? ($scheme === 'https' ? 443 : 80);
 
         if (self::matchesNoProxy($host, $port, self::env('NO_PROXY', 'no_proxy'))) {
             return false;
@@ -296,7 +296,7 @@ final class ProxyContext
         return [
             'scheme' => $scheme,
             'host' => $parts['host'],
-            'port' => (int) $port,
+            'port' => $port,
             'user' => isset($parts['user']) ? rawurldecode($parts['user']) : null,
             'pass' => isset($parts['pass']) ? rawurldecode($parts['pass']) : null,
         ];
