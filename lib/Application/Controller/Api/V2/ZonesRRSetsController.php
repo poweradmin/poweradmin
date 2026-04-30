@@ -48,6 +48,7 @@ use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -59,6 +60,7 @@ class ZonesRRSetsController extends PublicApiController
     private SOARecordManager $soaRecordManager;
     private ApiPermissionService $permissionService;
     private DnsBackendProvider $backendProvider;
+    private RecordChangeLogger $changeLogger;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -82,6 +84,7 @@ class ZonesRRSetsController extends PublicApiController
             $domainRepository,
             $this->backendProvider
         );
+        $this->changeLogger = new RecordChangeLogger($this->db);
     }
 
     /**
@@ -540,6 +543,7 @@ class ZonesRRSetsController extends PublicApiController
 
                 // Insert validated records
                 $recordsCreated = 0;
+                $createdForLog = [];
                 foreach ($validatedRecords as $vr) {
                     $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $vr['content'], $vr['ttl'], $vr['priority'], $vr['disabled']);
                     if ($newRecordId === null) {
@@ -549,6 +553,24 @@ class ZonesRRSetsController extends PublicApiController
                         return $this->returnApiError('Failed to insert record: ' . $vr['content'], 500);
                     }
                     $recordsCreated++;
+                    $createdForLog[] = ['id' => $newRecordId, 'vr' => $vr];
+                }
+
+                foreach ($createdForLog as $entry) {
+                    try {
+                        $this->changeLogger->logRecordCreate([
+                            'id' => $entry['id'],
+                            'name' => $normalizedName,
+                            'type' => $type,
+                            'content' => $entry['vr']['content'],
+                            'ttl' => $entry['vr']['ttl'],
+                            'prio' => $entry['vr']['priority'],
+                            'disabled' => (bool) $entry['vr']['disabled'],
+                            'zone_name' => $zoneName,
+                        ], $zoneId);
+                    } catch (\Throwable $e) {
+                        $this->logger->warning('Failed to write RRSet record create log: {error}', ['error' => $e->getMessage()]);
+                    }
                 }
 
                 // Update SOA serial

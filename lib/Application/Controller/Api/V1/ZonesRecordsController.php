@@ -47,6 +47,7 @@ use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -59,6 +60,7 @@ class ZonesRecordsController extends PublicApiController
     private ApiPermissionService $permissionService;
     private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
+    private RecordChangeLogger $changeLogger;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -85,6 +87,7 @@ class ZonesRecordsController extends PublicApiController
             $domainRepository,
             $this->backendProvider
         );
+        $this->changeLogger = new RecordChangeLogger($this->db);
     }
 
     /**
@@ -496,6 +499,22 @@ class ZonesRecordsController extends PublicApiController
 
             if ($useTransaction) {
                 $this->db->commit();
+            }
+
+            try {
+                $zoneName = $this->backendProvider->getZoneNameById($zoneId);
+                $this->changeLogger->logRecordCreate([
+                    'id' => $newRecordId,
+                    'name' => $normalizedName,
+                    'type' => $type,
+                    'content' => $content,
+                    'ttl' => $ttl,
+                    'prio' => $priority,
+                    'disabled' => (bool) $disabled,
+                    'zone_name' => is_string($zoneName) ? $zoneName : null,
+                ], $zoneId);
+            } catch (\Throwable $e) {
+                $this->logger->warning('Failed to write record create log: {error}', ['error' => $e->getMessage()]);
             }
 
             $responseData = [

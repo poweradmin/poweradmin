@@ -51,6 +51,7 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -63,6 +64,7 @@ class ZonesRecordsBulkController extends PublicApiController
     private ApiPermissionService $permissionService;
     private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
+    private RecordChangeLogger $changeLogger;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -89,6 +91,7 @@ class ZonesRecordsBulkController extends PublicApiController
             $domainRepository,
             $this->backendProvider
         );
+        $this->changeLogger = new RecordChangeLogger($this->db);
     }
 
     /**
@@ -413,6 +416,22 @@ class ZonesRecordsBulkController extends PublicApiController
         $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $validatedContent, $validatedTtl, $validatedPriority, $disabled);
         if ($newRecordId === null) {
             throw new Exception('Failed to create record');
+        }
+
+        try {
+            $zoneName = $this->backendProvider->getZoneNameById($zoneId);
+            $this->changeLogger->logRecordCreate([
+                'id' => $newRecordId,
+                'name' => $normalizedName,
+                'type' => $type,
+                'content' => $validatedContent,
+                'ttl' => $validatedTtl,
+                'prio' => $validatedPriority,
+                'disabled' => (bool) $disabled,
+                'zone_name' => is_string($zoneName) ? $zoneName : null,
+            ], $zoneId);
+        } catch (\Throwable $e) {
+            $this->logger->warning('Failed to write bulk record create log: {error}', ['error' => $e->getMessage()]);
         }
 
         return $type;

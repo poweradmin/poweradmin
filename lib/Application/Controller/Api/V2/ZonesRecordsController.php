@@ -51,6 +51,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -65,6 +66,7 @@ class ZonesRecordsController extends PublicApiController
     private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
     private LegacyLogger $auditLogger;
+    private RecordChangeLogger $changeLogger;
     private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
@@ -94,6 +96,7 @@ class ZonesRecordsController extends PublicApiController
         );
 
         $this->auditLogger = new LegacyLogger($this->db);
+        $this->changeLogger = new RecordChangeLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
@@ -548,6 +551,22 @@ class ZonesRecordsController extends PublicApiController
 
             if ($useTransaction) {
                 $this->db->commit();
+            }
+
+            try {
+                $zoneName = $this->backendProvider->getZoneNameById($zoneId);
+                $this->changeLogger->logRecordCreate([
+                    'id' => $newRecordId,
+                    'name' => $normalizedName,
+                    'type' => $type,
+                    'content' => $validatedContent,
+                    'ttl' => $validatedTtl,
+                    'prio' => $validatedPriority,
+                    'disabled' => (bool) $disabled,
+                    'zone_name' => is_string($zoneName) ? $zoneName : null,
+                ], $zoneId);
+            } catch (\Throwable $e) {
+                $this->logger->warning('Failed to write record create log: {error}', ['error' => $e->getMessage()]);
             }
 
             // Fetch the newly created record
