@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller\Api;
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
@@ -142,6 +143,16 @@ abstract class PublicApiController extends AbstractApiController
             }
             $response->send();
             exit;
+        }
+
+        // Make the authenticated identity visible to UserContextService so the
+        // change log records the actor (instead of falling back to "system")
+        // for record/zone mutations performed via the API.
+        if ($this->authenticatedUserId > 0) {
+            UserContextService::setApiUserContext(
+                $this->authenticatedUserId,
+                $this->getAuthenticatedUsername()
+            );
         }
     }
 

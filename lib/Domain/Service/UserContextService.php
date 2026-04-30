@@ -24,14 +24,34 @@ namespace Poweradmin\Domain\Service;
 
 class UserContextService
 {
+    // Request-scoped fallback for stateless API requests. Web UI requests use
+    // session-backed values directly; API requests authenticate via API key /
+    // Basic auth and have no $_SESSION user, so PublicApiController seeds these
+    // after authentication succeeds. Both fields are cleared when the request
+    // process ends; tests should reset them in tearDown.
+    private static ?int $apiUserId = null;
+    private static ?string $apiUsername = null;
+
+    public static function setApiUserContext(int $userId, ?string $username): void
+    {
+        self::$apiUserId = $userId > 0 ? $userId : null;
+        self::$apiUsername = ($username !== null && $username !== '') ? $username : null;
+    }
+
+    public static function clearApiUserContext(): void
+    {
+        self::$apiUserId = null;
+        self::$apiUsername = null;
+    }
+
     public function getLoggedInUsername(): ?string
     {
-        return $_SESSION['userlogin'] ?? null;
+        return $_SESSION['userlogin'] ?? self::$apiUsername;
     }
 
     public function getLoggedInUserId(): ?int
     {
-        return $_SESSION['userid'] ?? null;
+        return $_SESSION['userid'] ?? self::$apiUserId;
     }
 
     public function getDisplayName(): ?string
