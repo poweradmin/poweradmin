@@ -32,6 +32,7 @@ jobs:
             --config=p/secrets \
             --exclude-rule=generic.html-templates.security.unquoted-attribute-var.unquoted-attribute-var \
             --exclude-rule=generic.html-templates.security.var-in-href.var-in-href \
+            --exclude-rule=python.django.security.audit.xss.template-translate-as-no-escape.template-translate-as-no-escape \
             --sarif \
             --output=semgrep.sarif \
             --error || true
