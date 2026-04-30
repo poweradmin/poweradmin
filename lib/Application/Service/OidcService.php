@@ -390,9 +390,15 @@ class OidcService extends LoggingService
         // AbstractProvider forwards `proxy` (and `timeout`) to the Guzzle
         // client it builds for token exchange and userinfo fetches. Without
         // this, those calls bypass HTTPS_PROXY/NO_PROXY in air-gapped setups.
-        $proxyConfig = ProxyContext::guzzleProxyConfig();
-        if ($proxyConfig !== null) {
-            $options['proxy'] = $proxyConfig;
+        // Resolve the bypass decision in PHP (Guzzle's NO_PROXY matcher is
+        // suffix-only and doesn't understand CIDR or host:port entries) so
+        // operators with K8s-style or port-pinned bypasses get correct routing.
+        $tokenUrl = $config['token_url'] ?? '';
+        if ($tokenUrl !== '' && ProxyContext::shouldProxy($tokenUrl)) {
+            $proxyConfig = ProxyContext::guzzleProxyConfig();
+            if ($proxyConfig !== null) {
+                $options['proxy'] = $proxyConfig;
+            }
         }
 
         return new GenericProvider($options);

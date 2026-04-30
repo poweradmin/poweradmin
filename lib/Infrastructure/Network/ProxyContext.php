@@ -43,9 +43,10 @@ final class ProxyContext
         }
 
         $scheme = strtolower($parsed['scheme']);
-        $host = strtolower($parsed['host']);
+        $host = strtolower(self::stripIpv6Brackets($parsed['host']));
+        $port = isset($parsed['port']) ? (int) $parsed['port'] : ($scheme === 'https' ? 443 : 80);
 
-        if (self::matchesNoProxy($host, self::env('NO_PROXY', 'no_proxy'))) {
+        if (self::matchesNoProxy($host, $port, self::env('NO_PROXY', 'no_proxy'))) {
             return [];
         }
 
@@ -84,11 +85,44 @@ final class ProxyContext
     }
 
     /**
+     * Decide whether a target URL should be sent through the proxy. Honors
+     * the same env vars and NO_PROXY rules (including CIDR and host:port
+     * entries) as httpOptionsFor(), so callers that build a Guzzle/curl
+     * proxy config can skip configuring it when the target is bypassed.
+     */
+    public static function shouldProxy(string $url): bool
+    {
+        $parsed = parse_url($url);
+        if (!is_array($parsed) || empty($parsed['scheme']) || empty($parsed['host'])) {
+            return false;
+        }
+
+        $scheme = strtolower($parsed['scheme']);
+        $host = strtolower(self::stripIpv6Brackets($parsed['host']));
+        $port = isset($parsed['port']) ? (int) $parsed['port'] : ($scheme === 'https' ? 443 : 80);
+
+        if (self::matchesNoProxy($host, $port, self::env('NO_PROXY', 'no_proxy'))) {
+            return false;
+        }
+
+        $proxyRaw = $scheme === 'https'
+            ? self::env('HTTPS_PROXY', 'https_proxy')
+            : self::env(null, 'http_proxy');
+
+        return $proxyRaw !== null;
+    }
+
+    /**
      * Build a Guzzle-shaped proxy config from the environment, suitable for
      * passing as the `proxy` option to a Guzzle client (or any consumer that
      * accepts Guzzle's request options, e.g. `league/oauth2-client`).
      *
      * Returns null when no proxy is configured.
+     *
+     * Note: Guzzle's own NO_PROXY matcher is suffix-only - CIDR and host:port
+     * entries in NO_PROXY are not understood when Guzzle decides per-request
+     * whether to bypass. Use shouldProxy() to make that decision in PHP and
+     * skip building a config for bypassed targets.
      *
      * @return array{http?: string, https?: string, no?: list<string>}|null
      */
@@ -268,7 +302,7 @@ final class ProxyContext
         ];
     }
 
-    private static function matchesNoProxy(string $host, ?string $noProxy): bool
+    private static function matchesNoProxy(string $host, int $port, ?string $noProxy): bool
     {
         if ($noProxy === null) {
             return false;
@@ -283,18 +317,101 @@ final class ProxyContext
             }
 
             $entry = strtolower($entry);
-            if ($entry[0] === '.') {
-                $bare = substr($entry, 1);
-                if ($host === $bare || str_ends_with($host, $entry)) {
+
+            // CIDR range (e.g. 10.0.0.0/8, 192.168.0.0/16, fd00::/8). Common
+            // for K8s pod networks and corporate RFC1918 ranges. Only matches
+            // when the target host is itself a literal IP address.
+            if (str_contains($entry, '/')) {
+                if (self::ipMatchesCidr($host, $entry)) {
                     return true;
                 }
-            } else {
-                if ($host === $entry || str_ends_with($host, '.' . $entry)) {
-                    return true;
-                }
+                continue;
             }
+
+            // host:port entry (e.g. localhost:8081). Bracketed IPv6 literals
+            // like [::1]:8080 are also supported. The hostname part still
+            // matches with the regular suffix rules below.
+            $entryPort = null;
+            $entryHost = $entry;
+            if (preg_match('/^\[([^\]]+)\](?::(\d+))?$/', $entry, $m)) {
+                $entryHost = $m[1];
+                if (isset($m[2]) && $m[2] !== '') {
+                    $entryPort = (int) $m[2];
+                }
+            } elseif (preg_match('/^([^:]+):(\d+)$/', $entry, $m)) {
+                $entryHost = $m[1];
+                $entryPort = (int) $m[2];
+            }
+
+            if (!self::hostMatchesEntry($host, $entryHost)) {
+                continue;
+            }
+            if ($entryPort !== null && $entryPort !== $port) {
+                continue;
+            }
+            return true;
         }
 
         return false;
+    }
+
+    private static function hostMatchesEntry(string $host, string $entry): bool
+    {
+        if ($entry === '') {
+            return false;
+        }
+        if ($entry[0] === '.') {
+            $bare = substr($entry, 1);
+            return $host === $bare || str_ends_with($host, $entry);
+        }
+        return $host === $entry || str_ends_with($host, '.' . $entry);
+    }
+
+    private static function stripIpv6Brackets(string $host): string
+    {
+        if (strlen($host) >= 2 && $host[0] === '[' && $host[strlen($host) - 1] === ']') {
+            return substr($host, 1, -1);
+        }
+        return $host;
+    }
+
+    private static function ipMatchesCidr(string $host, string $cidr): bool
+    {
+        $slash = strrpos($cidr, '/');
+        if ($slash === false) {
+            return false;
+        }
+        $network = substr($cidr, 0, $slash);
+        $prefix = substr($cidr, $slash + 1);
+        if ($prefix === '' || !ctype_digit($prefix)) {
+            return false;
+        }
+        $prefix = (int) $prefix;
+
+        $hostBin = @inet_pton($host);
+        $netBin = @inet_pton($network);
+        if ($hostBin === false || $netBin === false || strlen($hostBin) !== strlen($netBin)) {
+            return false;
+        }
+
+        $maxBits = strlen($hostBin) * 8;
+        if ($prefix < 0 || $prefix > $maxBits) {
+            return false;
+        }
+        if ($prefix === 0) {
+            return true;
+        }
+
+        $fullBytes = intdiv($prefix, 8);
+        $remBits = $prefix % 8;
+
+        if ($fullBytes > 0 && substr($hostBin, 0, $fullBytes) !== substr($netBin, 0, $fullBytes)) {
+            return false;
+        }
+        if ($remBits === 0) {
+            return true;
+        }
+        $mask = chr((0xFF << (8 - $remBits)) & 0xFF);
+        return (ord($hostBin[$fullBytes]) & ord($mask)) === (ord($netBin[$fullBytes]) & ord($mask));
     }
 }

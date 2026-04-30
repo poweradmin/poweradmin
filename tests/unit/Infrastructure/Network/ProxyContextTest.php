@@ -309,6 +309,126 @@ class ProxyContextTest extends TestCase
         $this->assertSame('tcp://proxy.internal:3128', $merged['http']['proxy']);
     }
 
+    public function testNoProxyIPv4CidrBypassesProxy(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('NO_PROXY=10.0.0.0/8');
+
+        $this->assertSame([], ProxyContext::httpOptionsFor('https://10.5.6.7/api'));
+        $this->assertSame([], ProxyContext::httpOptionsFor('https://10.255.255.254/api'));
+    }
+
+    public function testNoProxyIPv4CidrDoesNotMatchOutsideRange(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('NO_PROXY=10.0.0.0/8');
+
+        $opts = ProxyContext::httpOptionsFor('https://11.0.0.1/api');
+
+        $this->assertSame('tcp://proxy.internal:3128', $opts['proxy']);
+    }
+
+    public function testNoProxySlash24Boundary(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('NO_PROXY=192.168.1.0/24');
+
+        $this->assertSame([], ProxyContext::httpOptionsFor('https://192.168.1.50/api'));
+
+        $opts = ProxyContext::httpOptionsFor('https://192.168.2.50/api');
+        $this->assertSame('tcp://proxy.internal:3128', $opts['proxy']);
+    }
+
+    public function testNoProxyIPv6CidrBypassesProxy(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('NO_PROXY=fd00::/8');
+
+        $this->assertSame([], ProxyContext::httpOptionsFor('https://[fd12:3456::1]/api'));
+    }
+
+    public function testNoProxyHostPortBypassesOnlyMatchingPort(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('NO_PROXY=localhost:8081');
+
+        $this->assertSame([], ProxyContext::httpOptionsFor('https://localhost:8081/api'));
+
+        $opts = ProxyContext::httpOptionsFor('https://localhost:8080/api');
+        $this->assertSame('tcp://proxy.internal:3128', $opts['proxy']);
+    }
+
+    public function testNoProxyEntryWithoutPortMatchesAnyPort(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('NO_PROXY=localhost');
+
+        $this->assertSame([], ProxyContext::httpOptionsFor('https://localhost:8080/api'));
+        $this->assertSame([], ProxyContext::httpOptionsFor('https://localhost:9090/api'));
+    }
+
+    public function testNoProxyMixedCidrAndHostnameEntries(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('NO_PROXY=10.0.0.0/8,.internal.example.com,localhost:8081');
+
+        $this->assertSame([], ProxyContext::httpOptionsFor('https://10.5.6.7/api'));
+        $this->assertSame([], ProxyContext::httpOptionsFor('https://srv.internal.example.com'));
+        $this->assertSame([], ProxyContext::httpOptionsFor('https://localhost:8081/api'));
+
+        $opts = ProxyContext::httpOptionsFor('https://other.example.com');
+        $this->assertSame('tcp://proxy.internal:3128', $opts['proxy']);
+    }
+
+    public function testNoProxyIPv6BracketedHostPort(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('NO_PROXY=[::1]:8081');
+
+        $this->assertSame([], ProxyContext::httpOptionsFor('https://[::1]:8081/api'));
+
+        $opts = ProxyContext::httpOptionsFor('https://[::1]:8080/api');
+        $this->assertSame('tcp://proxy.internal:3128', $opts['proxy']);
+    }
+
+    public function testInvalidCidrEntriesAreIgnored(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('NO_PROXY=10.0.0.0/abc,not-an-ip/24');
+
+        $opts = ProxyContext::httpOptionsFor('https://10.0.0.5/api');
+        $this->assertSame('tcp://proxy.internal:3128', $opts['proxy']);
+    }
+
+    public function testShouldProxyTrueWhenProxyConfiguredAndNoBypass(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+
+        $this->assertTrue(ProxyContext::shouldProxy('https://idp.example.com/.well-known/openid-configuration'));
+    }
+
+    public function testShouldProxyFalseWhenNoProxyMatchesByCidr(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('NO_PROXY=10.0.0.0/8');
+
+        $this->assertFalse(ProxyContext::shouldProxy('https://10.20.30.40/token'));
+    }
+
+    public function testShouldProxyFalseWhenNoProxyMatchesByPort(): void
+    {
+        putenv('HTTPS_PROXY=http://proxy.internal:3128');
+        putenv('NO_PROXY=idp.local:8443');
+
+        $this->assertFalse(ProxyContext::shouldProxy('https://idp.local:8443/token'));
+        $this->assertTrue(ProxyContext::shouldProxy('https://idp.local:443/token'));
+    }
+
+    public function testShouldProxyFalseWhenNoProxyConfigured(): void
+    {
+        $this->assertFalse(ProxyContext::shouldProxy('https://idp.example.com'));
+    }
+
     public function testGuzzleProxyConfigReturnsNullWhenUnset(): void
     {
         $this->assertNull(ProxyContext::guzzleProxyConfig());
