@@ -28,7 +28,7 @@ api:
 
 # === User Interface ===
 ui:
-  - '(user.interface|\bui\b|frontend|css\s|stylesheet|javascript|layout|responsive|button|form.field|modal|dialog|dropdown)'
+  - '(user.interface|\bui\b|frontend|css\s|stylesheet|javascript|layout|responsive|form.field|modal|dialog|dropdown)'
 
 ui-templates:
   - '(twig\s|\.twig\b|theme\s|template.file|rendering|partial)'
