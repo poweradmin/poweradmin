@@ -173,6 +173,49 @@ class HybridPermissionService
     }
 
     /**
+     * Resolve, in two queries, which sources grant the user a given permission.
+     *
+     * Returned shape lets callers decide per-zone eligibility in PHP without
+     * hitting the database again — direct ownership is granted iff
+     * `has_direct` is true and the user is the zone's direct owner; group
+     * ownership is granted iff one of `group_ids` also owns the zone.
+     *
+     * @param int $userId User ID
+     * @param string $permissionName Permission name (e.g., 'zone_delete_own')
+     * @return array{has_direct: bool, group_ids: int[]}
+     */
+    public function getPermissionSourcesForUser(int $userId, string $permissionName): array
+    {
+        $directStmt = $this->db->prepare("
+            SELECT 1
+            FROM perm_templ_items pti
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            INNER JOIN users u ON u.perm_templ = pti.templ_id
+            WHERE u.id = :user_id AND pi.name = :permission
+            LIMIT 1
+        ");
+        $directStmt->execute([':user_id' => $userId, ':permission' => $permissionName]);
+        $hasDirect = (bool) $directStmt->fetchColumn();
+
+        $groupStmt = $this->db->prepare("
+            SELECT DISTINCT ug.id
+            FROM user_group_members ugm
+            INNER JOIN user_groups ug ON ugm.group_id = ug.id
+            INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
+            INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE ugm.user_id = :user_id AND pi.name = :permission
+        ");
+        $groupStmt->execute([':user_id' => $userId, ':permission' => $permissionName]);
+        $groupIds = array_map('intval', $groupStmt->fetchAll(PDO::FETCH_COLUMN));
+
+        return [
+            'has_direct' => $hasDirect,
+            'group_ids' => $groupIds,
+        ];
+    }
+
+    /**
      * Get direct user permissions from zones table
      *
      * @param int $userId User ID
