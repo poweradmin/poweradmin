@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -35,6 +36,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
     private string $comments_table;
     private string $records_table;
     private string $links_table = 'record_comment_links';
+    private string $db_type;
 
     public function __construct(PDO $connection, ConfigurationManager $config)
     {
@@ -42,6 +44,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         $tableNameService = new TableNameService($config);
         $this->comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
         $this->records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+        $this->db_type = (string)$config->get('database', 'type');
     }
 
     public function add(RecordComment $comment): RecordComment
@@ -288,11 +291,14 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         }
 
         // Find all records in the RRset that don't have linked comments (excluding the current record)
+        // Cast records.id so the comparison works regardless of whether the linking table
+        // declares record_id as integer or varchar (PostgreSQL strict typing - issue #1192).
+        $castId = DbCompat::castToString($this->db_type, "r.id");
         $query = "SELECT r.id FROM {$this->records_table} r
                   WHERE r.domain_id = :domain_id AND r.name = :name AND r.type = :type
                   AND r.id != :exclude_record_id
                   AND NOT EXISTS (
-                      SELECT 1 FROM {$this->links_table} rcl WHERE rcl.record_id = r.id
+                      SELECT 1 FROM {$this->links_table} rcl WHERE rcl.record_id = $castId
                   )";
         $stmt = $this->connection->prepare($query);
         $stmt->execute([

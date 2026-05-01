@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Query;
 
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -134,6 +135,9 @@ class RecordSearch extends BaseSearch
         // Uses COALESCE with two subqueries to avoid ORDER BY with outer table
         // references which SQLite does not support in correlated subqueries.
         $links_table = 'record_comment_links';
+        // Cast records.id so the comparison works regardless of whether the linking table
+        // declares record_id as integer or varchar (PostgreSQL strict typing - issue #1192).
+        $castId = DbCompat::castToString($this->db_type, "$records_table.id");
         $commentExpr = '';
         if ($iface_record_comments) {
             $commentExpr = "COALESCE(
@@ -141,7 +145,7 @@ class RecordSearch extends BaseSearch
                     SELECT c.comment
                     FROM $links_table rcl
                     JOIN $comments_table c ON c.id = rcl.comment_id
-                    WHERE rcl.record_id = $records_table.id
+                    WHERE rcl.record_id = $castId
                     LIMIT 1
                 ),
                 (
@@ -334,10 +338,11 @@ class RecordSearch extends BaseSearch
             $tableNameService = new TableNameService($this->config);
             $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
             $links_table = 'record_comment_links';
+            $castId = DbCompat::castToString($this->db_type, "$records_table.id");
             $whereConditions .= " OR EXISTS (
                 SELECT 1 FROM $comments_table c
                 LEFT JOIN $links_table rcl ON rcl.comment_id = c.id
-                WHERE (rcl.record_id = $records_table.id
+                WHERE (rcl.record_id = $castId
                     OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type))
                 AND c.comment LIKE :search_string_comment
             )";
@@ -383,10 +388,11 @@ class RecordSearch extends BaseSearch
             $tableNameService = new TableNameService($this->config);
             $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
             $links_table = 'record_comment_links';
+            $castId = DbCompat::castToString($this->db_type, "$records_table.id");
             $whereConditions .= " OR EXISTS (
                 SELECT 1 FROM $comments_table c
                 LEFT JOIN $links_table rcl ON rcl.comment_id = c.id
-                WHERE (rcl.record_id = $records_table.id
+                WHERE (rcl.record_id = $castId
                     OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type))
                 AND c.comment LIKE :search_string_comment
             )";
