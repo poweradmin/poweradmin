@@ -456,6 +456,15 @@ class DatabaseStructureHelper
                         'name' => 'created_by',
                         'table' => 'zone_templ',
                         'flags' => ''
+                    ),
+                    'is_default' => array
+                    (
+                        'notnull' => 1,
+                        'default' => 0,
+                        'type' => 'boolean',
+                        'name' => 'is_default',
+                        'table' => 'zone_templ',
+                        'flags' => 'not_null'
                     )
                 ),
                 'indexes' => array(

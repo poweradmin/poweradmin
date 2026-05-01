@@ -52,7 +52,7 @@
                     <select data-testid="zone-template-select" class="form-select form-select-sm" id="zone_template" name="zone_template">
                         <option value="none" {% if zone_template_value == 'none' %}selected{% endif %}>none</option>
                         {% for zone_template in zone_templates %}
-                        <option value="{{ zone_template['id'] }}" {% if zone_template_value == zone_template['id'] %}selected{% endif %}>{{ zone_template['name'] }}</option>
+                        <option value="{{ zone_template['id'] }}" {% if zone_template_value == zone_template['id'] %}selected{% endif %}>{{ zone_template['name'] }}{% if default_template_id is defined and default_template_id == zone_template['id'] %} ({% trans %}default{% endtrans %}){% endif %}</option>
                         {% endfor %}
                     </select>
                     <small class="text-muted">{% trans %}Optional: Apply predefined records from a template{% endtrans %}</small>

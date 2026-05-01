@@ -228,6 +228,9 @@ class AddZoneMasterController extends BaseController
         // Keep the submitted zone name if there was an error
         $domain_value = isset($_POST['domain']) ? htmlspecialchars($_POST['domain']) : '';
 
+        // Resolve the system-wide default template (DB flag → config setting → none)
+        $default_template_id = $zone_templates->getDefaultTemplateId();
+
         // Safely handle the zone template value
         if (isset($_POST['zone_template'])) {
             // If it's 'none', keep it as is
@@ -243,7 +246,7 @@ class AddZoneMasterController extends BaseController
                     $template_id : 'none';
             }
         } else {
-            $zone_template_value = 'none';
+            $zone_template_value = $default_template_id !== null ? $default_template_id : 'none';
         }
 
         // Safely handle the owner value - ensure it's an integer or preserve empty selection
@@ -302,6 +305,7 @@ class AddZoneMasterController extends BaseController
             'users' => UserManager::showUsers($this->db),
             'zone_templates' => $templates,
             'can_use_templates' => !empty($templates),
+            'default_template_id' => $default_template_id,
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'NATIVE'),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
             'pdnssec_use' => $pdnssec_use,

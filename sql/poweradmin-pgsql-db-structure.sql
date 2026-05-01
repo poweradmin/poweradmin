@@ -263,6 +263,7 @@ CREATE TABLE "public"."zone_templ" (
                                        "descr" character varying(1024),
                                        "owner" integer,
                                        "created_by" integer,
+                                       "is_default" boolean DEFAULT false NOT NULL,
                                        CONSTRAINT "zone_templ_pkey" PRIMARY KEY ("id"),
                                        CONSTRAINT "fk_zone_templ_users" FOREIGN KEY ("created_by") REFERENCES "users" ("id") ON DELETE SET NULL
 ) WITH (oids = false);

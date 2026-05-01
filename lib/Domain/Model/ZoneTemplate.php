@@ -29,6 +29,7 @@ use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DomainParsingService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PDO;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -142,10 +143,10 @@ class ZoneTemplate
      */
     public function getListZoneTempl(int $userid): array
     {
-        $query = "SELECT zt.id, zt.name, zt.descr, zt.owner, zt.created_by,
-                      owner_user.username as owner_username, 
+        $query = "SELECT zt.id, zt.name, zt.descr, zt.owner, zt.created_by, zt.is_default,
+                      owner_user.username as owner_username,
                       owner_user.fullname as owner_fullname,
-                      creator_user.username as creator_username, 
+                      creator_user.username as creator_username,
                       creator_user.fullname as creator_fullname,
                       COUNT(z.zone_templ_id) as zones_linked
                 FROM zone_templ zt
@@ -159,15 +160,142 @@ class ZoneTemplate
             $params[':userid'] = $userid;
         }
 
-        $query .= " GROUP BY zt.id, zt.name, zt.descr, zt.owner, zt.created_by, 
-                           owner_user.username, owner_user.fullname, 
-                           creator_user.username, creator_user.fullname 
+        $query .= " GROUP BY zt.id, zt.name, zt.descr, zt.owner, zt.created_by, zt.is_default,
+                           owner_user.username, owner_user.fullname,
+                           creator_user.username, creator_user.fullname
                   ORDER BY zt.name";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
 
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Resolve the system-wide default zone template
+     *
+     * Resolution order:
+     *  1. The template with `is_default = 1` (global only, `owner = 0`)
+     *  2. The `dns.default_zone_template` config setting (id or name)
+     *  3. null (no default; the form falls back to "none")
+     *
+     * Names that resolve to multiple templates cause the config setting to be
+     * skipped with a warning logged - operators must use the id or rename one
+     * of the duplicates.
+     *
+     * @return int|null Template id, or null if no default is configured
+     */
+    public function getDefaultTemplateId(): ?int
+    {
+        $db_type = (string) $this->config->get('database', 'type');
+        $boolTrue = DbCompat::boolTrue($db_type);
+        $stmt = $this->db->prepare("SELECT id FROM zone_templ WHERE is_default = $boolTrue AND owner = 0 ORDER BY id LIMIT 1");
+        $stmt->execute();
+        $dbId = $stmt->fetchColumn();
+        if ($dbId !== false && $dbId !== null) {
+            return (int) $dbId;
+        }
+
+        $configured = $this->config->get('dns', 'default_zone_template', null);
+        if ($configured === null || $configured === '') {
+            return null;
+        }
+
+        if (is_int($configured) || (is_string($configured) && ctype_digit($configured))) {
+            $id = (int) $configured;
+            $check = $this->db->prepare("SELECT 1 FROM zone_templ WHERE id = :id AND owner = 0");
+            $check->execute([':id' => $id]);
+            if ($check->fetchColumn() === false) {
+                error_log(sprintf(
+                    'Poweradmin: dns.default_zone_template = %d does not match any global zone template; falling back to "none".',
+                    $id
+                ));
+                return null;
+            }
+            return $id;
+        }
+
+        if (is_string($configured)) {
+            $check = $this->db->prepare("SELECT id FROM zone_templ WHERE name = :name AND owner = 0");
+            $check->execute([':name' => $configured]);
+            $matches = $check->fetchAll(PDO::FETCH_COLUMN);
+            if (count($matches) === 0) {
+                error_log(sprintf(
+                    'Poweradmin: dns.default_zone_template = "%s" does not match any global zone template; falling back to "none".',
+                    $configured
+                ));
+                return null;
+            }
+            if (count($matches) > 1) {
+                error_log(sprintf(
+                    'Poweradmin: dns.default_zone_template = "%s" matches %d global zone templates; ignoring the setting. Use the template id or rename one of the duplicates.',
+                    $configured,
+                    count($matches)
+                ));
+                return null;
+            }
+            return (int) $matches[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * Mark a template as the system-wide default. Clears `is_default` from all
+     * other templates so only one is flagged at a time. Personal templates
+     * (`owner != 0`) cannot be marked default.
+     *
+     * @param int $zone_templ_id Template id to flag default
+     * @return bool True on success, false if the template is not global or does not exist
+     */
+    public function setDefaultTemplate(int $zone_templ_id): bool
+    {
+        $owner = $this->db->prepare("SELECT owner FROM zone_templ WHERE id = :id");
+        $owner->execute([':id' => $zone_templ_id]);
+        $ownerVal = $owner->fetchColumn();
+        if ($ownerVal === false) {
+            $this->messageService->addSystemError(_('Zone template not found.'));
+            return false;
+        }
+        if ((int) $ownerVal !== 0) {
+            $this->messageService->addSystemError(_('Only global zone templates can be set as the default.'));
+            return false;
+        }
+
+        try {
+            // Atomic CASE-WHEN: prevents concurrent writers from each leaving
+            // their chosen row flagged.
+            $db_type = (string) $this->config->get('database', 'type');
+            $boolTrue = DbCompat::boolTrue($db_type);
+            $boolFalse = DbCompat::boolFalse($db_type);
+            $stmt = $this->db->prepare(
+                "UPDATE zone_templ SET is_default = CASE WHEN id = :id THEN $boolTrue ELSE $boolFalse END WHERE owner = 0"
+            );
+            $stmt->execute([':id' => $zone_templ_id]);
+            return true;
+        } catch (Exception $e) {
+            $this->messageService->addSystemError(_('Error setting default zone template: ') . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Clear the system-wide default zone template flag.
+     *
+     * @return bool True on success
+     */
+    public function unsetDefaultTemplate(): bool
+    {
+        try {
+            $db_type = (string) $this->config->get('database', 'type');
+            $boolTrue = DbCompat::boolTrue($db_type);
+            $boolFalse = DbCompat::boolFalse($db_type);
+            $this->db->exec("UPDATE zone_templ SET is_default = $boolFalse WHERE is_default = $boolTrue");
+            return true;
+        } catch (Exception $e) {
+            $this->messageService->addSystemError(_('Error clearing default zone template: ') . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -891,7 +1019,11 @@ class ZoneTemplate
             if (isset($details['templ_global'])) {
                 $query .= ', owner=0';
             } else {
-                $query .= ', owner=:templ_owner';
+                // Private templates cannot be the default; clear the flag to
+                // avoid leaving an orphan that the resolver would then ignore.
+                $db_type = (string) $this->config->get('database', 'type');
+                $boolFalse = DbCompat::boolFalse($db_type);
+                $query .= ', owner=:templ_owner, is_default=' . $boolFalse;
                 $params['templ_owner'] = $user_id;
             }
 

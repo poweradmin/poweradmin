@@ -1,10 +1,14 @@
 /**
- * Zone Template Defaults Tests
+ * Zone Template Defaults Tests (issue #973)
  *
- * Tests for zone template default functionality (GitHub issue #973)
- * - Setting a template as default
- * - Default template auto-selection
- * - Default template persistence
+ * Covers:
+ * - Setting a global template as default via the list-page button
+ * - "(default)" badge appearing on the marked row
+ * - Pre-selection and "(default)" suffix in the add-zone template dropdown
+ * - Unsetting clears the badge and the dropdown reverts to "none"
+ *
+ * Only ueberusers see the set/unset button, and only global templates
+ * (`owner = 0`) can carry the flag.
  */
 
 import { test, expect } from '@playwright/test';
@@ -13,239 +17,122 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
 
-test.describe('Zone Template Defaults (Issue #973)', () => {
-  const testTemplateName = `default-test-${Date.now()}`;
+test.describe('Zone Template Defaults (issue #973)', () => {
+  const templateName = `default-flag-${Date.now()}`;
+  let templateId = null;
 
-  test.describe('Default Template Setting', () => {
-    test('should display default checkbox/option when editing template', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
-      await page.waitForLoadState('networkidle');
+  test.beforeAll(async ({ browser }) => {
+    const ctx = await browser.newContext();
+    const page = await ctx.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      // Find first template edit link in the table body, not in dropdown menus
-      const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        // No templates table, page may just show empty state
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone|no.*template/i);
-        return;
-      }
+    await page.goto('/zones/templates/add');
+    await page.waitForLoadState('networkidle');
 
-      const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-      if (await editLink.count() === 0) {
-        // No templates available to edit
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-        return;
-      }
+    await page.locator('input[name="templ_name"]').fill(templateName);
+    await page.locator('input[name="templ_global"]').check();
 
-      await editLink.click();
-      await page.waitForLoadState('networkidle');
+    await page.locator('button[name="commit"]').click();
+    await page.waitForLoadState('networkidle');
 
-      const bodyText = await page.locator('body').textContent();
-      // Should have default option or page loads without error
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    });
-
-    test('should create template with default option', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates/add');
-      await page.waitForLoadState('networkidle');
-
-      // Fill template name - use more specific selectors
-      const nameInput = page.locator('input[name*="name"], input[name*="templ"]').first();
-      if (await nameInput.count() === 0) {
-        // Page may not have a form - just verify page loaded
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|add|zone/i);
-        return;
-      }
-
-      await nameInput.fill(testTemplateName);
-
-      // Look for default checkbox
-      const defaultCheckbox = page.locator('input[name="default"], input[name*="is_default"]');
-      if (await defaultCheckbox.count() > 0) {
-        await defaultCheckbox.check();
-      }
-
-      // Submit
-      const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-      await submitBtn.click();
-      await page.waitForLoadState('networkidle');
-
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    });
-
-    test('should show default indicator in template list', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
-
-      const bodyText = await page.locator('body').textContent();
-      // Page should load without errors
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    });
-
-    test('should allow changing default template', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
-      await page.waitForLoadState('networkidle');
-
-      // Find a template to edit in the table
-      const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-        return;
-      }
-
-      const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-      if (await editLink.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-        return;
-      }
-
-      await editLink.click();
-      await page.waitForLoadState('networkidle');
-
-      // Toggle default checkbox if available
-      const defaultCheckbox = page.locator('input[name="default"], input[name*="is_default"]');
-      if (await defaultCheckbox.count() > 0) {
-        const isChecked = await defaultCheckbox.isChecked();
-        if (isChecked) {
-          await defaultCheckbox.uncheck();
-        } else {
-          await defaultCheckbox.check();
-        }
-
-        const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-        await submitBtn.click();
-        await page.waitForLoadState('networkidle');
-      }
-
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    });
+    await page.goto('/zones/templates');
+    await page.waitForLoadState('networkidle');
+    const row = page.locator(`tr:has-text("${templateName}")`).first();
+    const editLink = row.locator('a[href*="/edit"]').first();
+    if (await editLink.count() > 0) {
+      const href = await editLink.getAttribute('href');
+      const m = href && href.match(/\/templates\/(\d+)/);
+      if (m) templateId = m[1];
+    }
+    await ctx.close();
   });
 
-  test.describe('Default Template Auto-Selection', () => {
-    test('should pre-select default template when adding zone', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/add/master');
-
-      // Look for template dropdown
-      const templateSelect = page.locator('select[name*="template"]');
-      if (await templateSelect.count() > 0) {
-        const selectedValue = await templateSelect.inputValue();
-        // Template select should exist and potentially have a default selected
-        expect(selectedValue !== undefined).toBeTruthy();
-      }
-
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    });
-
-    test('should allow overriding default template selection', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/add/master');
-
-      const templateSelect = page.locator('select[name*="template"]');
-      if (await templateSelect.count() > 0) {
-        const options = templateSelect.locator('option');
-        const optionCount = await options.count();
-
-        if (optionCount > 1) {
-          // Select a different option
-          const secondOption = await options.nth(1).getAttribute('value');
-          if (secondOption) {
-            await templateSelect.selectOption(secondOption);
-          }
-        }
-      }
-
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    });
-  });
-
-  test.describe('Only One Default Template', () => {
-    test('should only allow one default template at a time', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
-
-      // Count templates marked as default
-      const defaultIndicators = page.locator('tr:has-text("default"), .default-indicator, .is-default');
-      const bodyText = await page.locator('body').textContent();
-
-      // Page should load without errors
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    });
-  });
-
-  test.describe('Default Template Permissions', () => {
-    test('admin should be able to set default template', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
+  test.afterAll(async ({ browser }) => {
+    if (!templateId) return;
+    const ctx = await browser.newContext();
+    const page = await ctx.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto(`/zones/templates/${templateId}/delete`).catch(() => {});
+    await page.waitForLoadState('networkidle');
+    const confirm = page.locator('a[href*="confirm"], button:has-text("Yes"), input[value="Yes"]').first();
+    if (await confirm.count() > 0) {
+      await confirm.click().catch(() => {});
       await page.waitForLoadState('networkidle');
-
-      const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-        return;
-      }
-
-      const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
-
-        // Should have access to default option
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/denied|forbidden/i);
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-      }
-    });
-
-    test('manager should use default template when creating zones', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-      await page.goto('/zones/add/master');
-
-      const templateSelect = page.locator('select[name*="template"]');
-      const bodyText = await page.locator('body').textContent();
-
-      // Manager should be able to create zones and see templates
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    });
+    }
+    await ctx.close();
   });
 
-  test.describe('Template Cleanup', () => {
-    test('should delete test template', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
+  test('admin sets a global template as default and sees the badge', async ({ page }) => {
+    test.skip(!templateId, 'template setup did not produce an id');
 
-      // Find and delete test template
-      const templateRow = page.locator(`tr:has-text("${testTemplateName}")`);
-      if (await templateRow.count() > 0) {
-        const deleteLink = templateRow.locator('a[href*="/delete"]').first();
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-          await page.waitForLoadState('networkidle');
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto('/zones/templates');
+    await page.waitForLoadState('networkidle');
 
-          // Confirm deletion
-          const confirmBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-          if (await confirmBtn.count() > 0) {
-            await confirmBtn.click();
-          }
-        }
-      }
+    const row = page.locator(`tr:has-text("${templateName}")`).first();
+    await expect(row).toBeVisible();
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-    });
+    const setForm = row.locator('form[action*="set-default"]');
+    await expect(setForm).toBeVisible();
+
+    const setBtn = setForm.locator('button[title*="Set as default"]');
+    await expect(setBtn).toBeVisible();
+    await setBtn.click();
+    await page.waitForLoadState('networkidle');
+
+    const reloadedRow = page.locator(`tr:has-text("${templateName}")`).first();
+    await expect(reloadedRow.locator('.badge:has-text("default")')).toBeVisible();
+
+    const unsetBtn = reloadedRow.locator('form[action*="set-default"] button[title*="Unset"]');
+    await expect(unsetBtn).toBeVisible();
+  });
+
+  test('add-zone form pre-selects the default template and labels the option', async ({ page }) => {
+    test.skip(!templateId, 'template setup did not produce an id');
+
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto('/zones/add/master');
+    await page.waitForLoadState('networkidle');
+
+    const select = page.locator('[data-testid="zone-template-select"], select[name*="template"]').first();
+    await expect(select).toBeVisible();
+
+    await expect(select).toHaveValue(String(templateId));
+
+    const selectedText = await select.locator(`option[value="${templateId}"]`).textContent();
+    expect(selectedText).toMatch(/default/i);
+  });
+
+  test('admin unsets the default and the badge disappears', async ({ page }) => {
+    test.skip(!templateId, 'template setup did not produce an id');
+
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto('/zones/templates');
+    await page.waitForLoadState('networkidle');
+
+    const row = page.locator(`tr:has-text("${templateName}")`).first();
+    const unsetBtn = row.locator('form[action*="set-default"] button[title*="Unset"]');
+    await expect(unsetBtn).toBeVisible();
+    await unsetBtn.click();
+    await page.waitForLoadState('networkidle');
+
+    const reloadedRow = page.locator(`tr:has-text("${templateName}")`).first();
+    await expect(reloadedRow.locator('.badge:has-text("default")')).toHaveCount(0);
+
+    await page.goto('/zones/add/master');
+    await page.waitForLoadState('networkidle');
+    const select = page.locator('[data-testid="zone-template-select"], select[name*="template"]').first();
+    await expect(select).toHaveValue('none');
+  });
+
+  test('non-admin users do not see set-default controls', async ({ page }) => {
+    test.skip(!templateId, 'template setup did not produce an id');
+
+    await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    await page.goto('/zones/templates');
+    await page.waitForLoadState('networkidle');
+
+    const setForms = page.locator('form[action*="set-default"]');
+    await expect(setForms).toHaveCount(0);
   });
 });

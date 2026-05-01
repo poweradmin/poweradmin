@@ -36,6 +36,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 class ListZoneTemplController extends BaseController
 {
@@ -76,6 +77,22 @@ class ListZoneTemplController extends BaseController
         $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $syncStatus = $syncService->getTemplateSyncStatus($userId);
 
+        // PostgreSQL returns booleans as 't'/'f' strings, which Twig treats
+        // as truthy. Normalize via boolFromDb so templates can rely on 0/1.
+        foreach ($templatesList as &$row) {
+            $row['is_default'] = DbCompat::boolFromDb($row['is_default'] ?? 0);
+        }
+        unset($row);
+
+        $effectiveDefaultId = $zone_templates->getDefaultTemplateId();
+        $hasDbDefault = false;
+        foreach ($templatesList as $row) {
+            if ($row['is_default'] === 1) {
+                $hasDbDefault = true;
+                break;
+            }
+        }
+
         $this->render('list_zone_templ.html', [
             'perm_zone_templ_add' => $perm_zone_templ_add,
             'perm_zone_templ_edit' => UserManager::verifyPermission($this->db, 'zone_templ_edit'),
@@ -83,6 +100,8 @@ class ListZoneTemplController extends BaseController
             'zone_templates' => $templatesList,
             'sync_status' => $syncStatus,
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'effective_default_id' => $effectiveDefaultId,
+            'has_db_default' => $hasDbDefault,
         ]);
     }
 }
