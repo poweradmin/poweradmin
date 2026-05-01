@@ -81,7 +81,7 @@ class DbUserRepository implements UserRepository
      */
     public function getUserById(int $userId): ?array
     {
-        $stmt = $this->db->prepare('SELECT id, username, fullname, email, description, active, perm_templ FROM users WHERE id = ?');
+        $stmt = $this->db->prepare('SELECT id, username, fullname, email, description, active, perm_templ, use_ldap, auth_method FROM users WHERE id = ?');
         $stmt->execute([$userId]);
 
         $userData = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -416,8 +416,10 @@ class DbUserRepository implements UserRepository
 
     public function createUser(array $userData): ?int
     {
-        $query = "INSERT INTO users (username, password, fullname, email, description, active, perm_templ, use_ldap)
-                  VALUES (:username, :password, :fullname, :email, :description, :active, :perm_templ, :use_ldap)";
+        $useLdap = (int)($userData['use_ldap'] ?? 0);
+
+        $query = "INSERT INTO users (username, password, fullname, email, description, active, perm_templ, use_ldap, auth_method)
+                  VALUES (:username, :password, :fullname, :email, :description, :active, :perm_templ, :use_ldap, :auth_method)";
 
         $stmt = $this->db->prepare($query);
         $result = $stmt->execute([
@@ -428,7 +430,8 @@ class DbUserRepository implements UserRepository
             ':description' => $userData['description'] ?? '',
             ':active' => (int)($userData['active'] ?? 1),
             ':perm_templ' => (int)($userData['perm_templ'] ?? 1),
-            ':use_ldap' => (int)($userData['use_ldap'] ?? 0)
+            ':use_ldap' => $useLdap,
+            ':auth_method' => $useLdap ? 'ldap' : 'sql'
         ]);
 
         if ($result) {
@@ -476,6 +479,22 @@ class DbUserRepository implements UserRepository
                 } else {
                     $params[":{$field}"] = $userData[$field];
                 }
+            }
+        }
+
+        // Keep auth_method in sync with use_ldap; preserve external methods (oidc, saml)
+        // when LDAP is being disabled.
+        if (array_key_exists('use_ldap', $userData)) {
+            $setFields[] = 'auth_method = :auth_method';
+            if ((int)$userData['use_ldap'] === 1) {
+                $params[':auth_method'] = 'ldap';
+            } else {
+                $currentStmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = :id');
+                $currentStmt->execute([':id' => $userId]);
+                $currentAuthMethod = (string)($currentStmt->fetchColumn() ?: 'sql');
+                $params[':auth_method'] = in_array($currentAuthMethod, ['oidc', 'saml'], true)
+                    ? $currentAuthMethod
+                    : 'sql';
             }
         }
 
