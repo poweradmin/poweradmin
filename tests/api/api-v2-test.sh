@@ -1739,6 +1739,49 @@ cleanup_existing_test_zones() {
     done
 }
 
+##############################################################################
+# Test: Users API - use_ldap / auth_method synchronization (gh #1195)
+##############################################################################
+
+cleanup_existing_ldap_test_user() {
+    local user_id
+    user_id=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "ldap_sync_test_user") | .user_id' 2>/dev/null)
+    if [[ -n "$user_id" ]]; then
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+            "${API_BASE_URL}/api/v2/users/${user_id}" >/dev/null 2>&1 || true
+    fi
+}
+
+test_users_ldap_sync() {
+    print_section "Users API - use_ldap / auth_method sync (gh #1195)"
+
+    cleanup_existing_ldap_test_user
+
+    # Create user with use_ldap:true; auth_method must follow.
+    local create_data='{"username":"ldap_sync_test_user","password":"InitialPass123","fullname":"LDAP Sync Test","email":"ldap_sync@example.com","perm_templ":1,"active":true,"use_ldap":true}'
+    if ! api_request_v2 "POST" "/users" "$create_data" 201 "Create user with use_ldap=true"; then
+        print_fail "Failed to create LDAP test user - skipping ldap sync tests"
+        return 1
+    fi
+    local ldap_user_id
+    ldap_user_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')
+
+    # Password update on an LDAP user must be rejected; this only happens when
+    # auth_method was actually persisted as 'ldap' alongside use_ldap.
+    api_request_v2 "PUT" "/users/${ldap_user_id}" '{"password":"NewPass123"}' 400 "Reject password change on LDAP user"
+    if [[ ! "$LAST_RESPONSE_BODY" =~ "LDAP" ]]; then
+        increment_test
+        print_fail "Expected LDAP-related error message, got: $LAST_RESPONSE_BODY"
+    fi
+
+    # Switch user back to SQL; password updates must work again.
+    api_request_v2 "PUT" "/users/${ldap_user_id}" '{"use_ldap":false}' 200 "Disable use_ldap"
+    api_request_v2 "PUT" "/users/${ldap_user_id}" '{"password":"NewPass123"}' 200 "Allow password change after disabling LDAP"
+
+    api_request_v2 "DELETE" "/users/${ldap_user_id}" "" 200 "Delete LDAP test user"
+}
+
 main() {
     print_header "PowerAdmin API v2 Test Suite"
 
@@ -1761,6 +1804,7 @@ main() {
     test_zone_metadata
     test_users_crud
     test_zone_templates
+    test_users_ldap_sync
 
     # Cleanup
     cleanup
