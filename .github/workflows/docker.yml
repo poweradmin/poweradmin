@@ -111,13 +111,18 @@ jobs:
             -e DNS_NS2=ns2.example.com \
             poweradmin:smoke-test
 
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
+            if [ "$(docker inspect -f '{{.State.Status}}' smoke-root 2>/dev/null)" != "running" ]; then
+              echo "Root mode: container exited unexpectedly"
+              docker logs smoke-root
+              exit 1
+            fi
             if curl -sf http://localhost:80/ -o /dev/null 2>/dev/null; then
-              echo "Root mode: container responded on port 80"
+              echo "Root mode: container responded on port 80 (after ${i}s)"
               break
             fi
-            if [ "$i" = "30" ]; then
-              echo "Root mode: container failed to respond"
+            if [ "$i" = "60" ]; then
+              echo "Root mode: container failed to respond within 60s"
               docker logs smoke-root
               exit 1
             fi
@@ -138,13 +143,18 @@ jobs:
             -e DNS_NS2=ns2.example.com \
             poweradmin:smoke-test
 
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
+            if [ "$(docker inspect -f '{{.State.Status}}' smoke-nonroot 2>/dev/null)" != "running" ]; then
+              echo "Non-root mode: container exited unexpectedly"
+              docker logs smoke-nonroot
+              exit 1
+            fi
             if curl -sf http://localhost:8080/ -o /dev/null 2>/dev/null; then
-              echo "Non-root mode: container responded on port 8080"
+              echo "Non-root mode: container responded on port 8080 (after ${i}s)"
               break
             fi
-            if [ "$i" = "30" ]; then
-              echo "Non-root mode: container failed to respond"
+            if [ "$i" = "60" ]; then
+              echo "Non-root mode: container failed to respond within 60s"
               docker logs smoke-nonroot
               exit 1
             fi
