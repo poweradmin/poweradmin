@@ -242,6 +242,55 @@ class DbUserRepositoryTest extends TestCase
     }
 
     #[Test]
+    public function testCreateUserSetsAuthMethodToLdapWhenUseLdapEnabled(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->callback(function ($params) {
+                return ($params[':use_ldap'] ?? null) === 1
+                    && ($params[':auth_method'] ?? null) === 'ldap';
+            }))
+            ->willReturn(true);
+
+        $this->db->method('prepare')
+            ->with($this->stringContains('auth_method'))
+            ->willReturn($stmt);
+        $this->db->method('lastInsertId')->willReturn('43');
+
+        $result = $this->repository->createUser([
+            'username' => 'ldapuser',
+            'password' => 'LDAP_USER',
+            'use_ldap' => 1,
+        ]);
+
+        $this->assertEquals(43, $result);
+    }
+
+    #[Test]
+    public function testCreateUserSetsAuthMethodToSqlWhenUseLdapDisabled(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->callback(function ($params) {
+                return ($params[':use_ldap'] ?? null) === 0
+                    && ($params[':auth_method'] ?? null) === 'sql';
+            }))
+            ->willReturn(true);
+
+        $this->db->method('prepare')->willReturn($stmt);
+        $this->db->method('lastInsertId')->willReturn('44');
+
+        $result = $this->repository->createUser([
+            'username' => 'sqluser',
+            'password' => 'hashed',
+        ]);
+
+        $this->assertEquals(44, $result);
+    }
+
+    #[Test]
     public function testCreateUserReturnsNullOnFailure(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
@@ -283,6 +332,71 @@ class DbUserRepositoryTest extends TestCase
         $result = $this->repository->updateUser(1, []);
 
         $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testUpdateUserSetsAuthMethodToLdapWhenUseLdapEnabled(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->callback(function ($params) {
+                return ($params[':use_ldap'] ?? null) === 1
+                    && ($params[':auth_method'] ?? null) === 'ldap';
+            }))
+            ->willReturn(true);
+
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->logicalAnd(
+                $this->stringContains('UPDATE users SET'),
+                $this->stringContains('auth_method')
+            ))
+            ->willReturn($stmt);
+
+        $this->assertTrue($this->repository->updateUser(1, ['use_ldap' => 1]));
+    }
+
+    #[Test]
+    public function testUpdateUserResetsAuthMethodToSqlWhenUseLdapDisabled(): void
+    {
+        $selectStmt = $this->createMock(PDOStatement::class);
+        $selectStmt->method('execute')->willReturn(true);
+        $selectStmt->method('fetchColumn')->willReturn('sql');
+
+        $updateStmt = $this->createMock(PDOStatement::class);
+        $updateStmt->expects($this->once())
+            ->method('execute')
+            ->with($this->callback(function ($params) {
+                return ($params[':use_ldap'] ?? null) === 0
+                    && ($params[':auth_method'] ?? null) === 'sql';
+            }))
+            ->willReturn(true);
+
+        $this->db->method('prepare')->willReturnOnConsecutiveCalls($selectStmt, $updateStmt);
+
+        $this->assertTrue($this->repository->updateUser(1, ['use_ldap' => 0]));
+    }
+
+    #[Test]
+    public function testUpdateUserPreservesExternalAuthMethodWhenDisablingLdap(): void
+    {
+        $selectStmt = $this->createMock(PDOStatement::class);
+        $selectStmt->method('execute')->willReturn(true);
+        $selectStmt->method('fetchColumn')->willReturn('oidc');
+
+        $updateStmt = $this->createMock(PDOStatement::class);
+        $updateStmt->expects($this->once())
+            ->method('execute')
+            ->with($this->callback(function ($params) {
+                return ($params[':use_ldap'] ?? null) === 0
+                    && ($params[':auth_method'] ?? null) === 'oidc';
+            }))
+            ->willReturn(true);
+
+        $this->db->method('prepare')->willReturnOnConsecutiveCalls($selectStmt, $updateStmt);
+
+        $this->assertTrue($this->repository->updateUser(1, ['use_ldap' => 0]));
     }
 
     #[Test]
