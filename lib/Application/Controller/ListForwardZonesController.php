@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
+use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\UserService;
 use Poweradmin\Application\Service\ZoneService;
@@ -41,6 +42,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\ZoneCountService;
+use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -121,10 +123,21 @@ class ListForwardZonesController extends BaseController
         // Augment zones with group information
         $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
         $userGroupRepo = new DbUserGroupRepository($this->db);
+        $memberRepo = new DbUserGroupMemberRepository($this->db);
         $allGroups = $userGroupRepo->findAll();
+
+        // Resolve where the user can delete (direct vs. which groups grant it). Two
+        // queries up front lets the per-row decision below stay in PHP, instead of
+        // running canUserPerformZoneAction once per rendered zone.
+        $hybridPermissions = new HybridPermissionService($this->db, $userGroupRepo, $memberRepo, $zoneGroupRepo);
+        $deleteSources = $perm_delete === 'own'
+            ? $hybridPermissions->getPermissionSourcesForUser($userId, 'zone_delete_own')
+            : ['has_direct' => false, 'group_ids' => []];
+        $username = $_SESSION['userlogin'];
 
         foreach ($zones as &$zone) {
             $groupOwnerships = $zoneGroupRepo->findByDomainId($zone['id']);
+            $zoneGroupIds = array_map(fn($zg) => $zg->getGroupId(), $groupOwnerships);
             $zone['groups'] = array_map(function ($zg) use ($allGroups) {
                 $groupId = $zg->getGroupId();
                 foreach ($allGroups as $group) {
@@ -134,6 +147,20 @@ class ListForwardZonesController extends BaseController
                 }
                 return 'Group #' . $groupId;
             }, $groupOwnerships);
+
+            // Delete eligibility for the per-row delete control: must mirror the
+            // hybrid check the delete endpoint runs so the button only appears when
+            // the action will actually be permitted.
+            if ($perm_delete === 'all') {
+                $zone['user_can_delete'] = true;
+            } elseif ($perm_delete === 'own') {
+                $directGrants = $deleteSources['has_direct']
+                    && in_array($username, $zone['users'] ?? [], true);
+                $groupGrants = !empty(array_intersect($deleteSources['group_ids'], $zoneGroupIds));
+                $zone['user_can_delete'] = $directGrants || $groupGrants;
+            } else {
+                $zone['user_can_delete'] = false;
+            }
         }
         unset($zone); // Break the reference
 

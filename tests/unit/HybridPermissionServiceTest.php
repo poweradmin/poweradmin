@@ -270,4 +270,78 @@ class HybridPermissionServiceTest extends TestCase
         $this->assertEmpty($result['user_zones']);
         $this->assertEmpty($result['group_zones']);
     }
+
+    // --- getPermissionSourcesForUser ---
+
+    #[Test]
+    public function getPermissionSourcesForUserReturnsDirectAndGroups(): void
+    {
+        $directStmt = $this->createMock(PDOStatement::class);
+        $directStmt->method('execute')->willReturn(true);
+        $directStmt->method('fetchColumn')->willReturn(1);
+
+        $groupStmt = $this->createMock(PDOStatement::class);
+        $groupStmt->method('execute')->willReturn(true);
+        $groupStmt->method('fetchAll')->with(PDO::FETCH_COLUMN)->willReturn(['7', '9']);
+
+        $callCount = 0;
+        $this->db->method('prepare')
+            ->willReturnCallback(function () use ($directStmt, $groupStmt, &$callCount) {
+                $callCount++;
+                return $callCount === 1 ? $directStmt : $groupStmt;
+            });
+
+        $result = $this->service->getPermissionSourcesForUser(1, 'zone_delete_own');
+
+        $this->assertTrue($result['has_direct']);
+        $this->assertSame([7, 9], $result['group_ids']);
+    }
+
+    #[Test]
+    public function getPermissionSourcesForUserNoDirectGroupsOnly(): void
+    {
+        $directStmt = $this->createMock(PDOStatement::class);
+        $directStmt->method('execute')->willReturn(true);
+        $directStmt->method('fetchColumn')->willReturn(false);
+
+        $groupStmt = $this->createMock(PDOStatement::class);
+        $groupStmt->method('execute')->willReturn(true);
+        $groupStmt->method('fetchAll')->with(PDO::FETCH_COLUMN)->willReturn(['2']);
+
+        $callCount = 0;
+        $this->db->method('prepare')
+            ->willReturnCallback(function () use ($directStmt, $groupStmt, &$callCount) {
+                $callCount++;
+                return $callCount === 1 ? $directStmt : $groupStmt;
+            });
+
+        $result = $this->service->getPermissionSourcesForUser(5, 'zone_delete_own');
+
+        $this->assertFalse($result['has_direct']);
+        $this->assertSame([2], $result['group_ids']);
+    }
+
+    #[Test]
+    public function getPermissionSourcesForUserNoSources(): void
+    {
+        $emptyDirect = $this->createMock(PDOStatement::class);
+        $emptyDirect->method('execute')->willReturn(true);
+        $emptyDirect->method('fetchColumn')->willReturn(false);
+
+        $emptyGroup = $this->createMock(PDOStatement::class);
+        $emptyGroup->method('execute')->willReturn(true);
+        $emptyGroup->method('fetchAll')->with(PDO::FETCH_COLUMN)->willReturn([]);
+
+        $callCount = 0;
+        $this->db->method('prepare')
+            ->willReturnCallback(function () use ($emptyDirect, $emptyGroup, &$callCount) {
+                $callCount++;
+                return $callCount === 1 ? $emptyDirect : $emptyGroup;
+            });
+
+        $result = $this->service->getPermissionSourcesForUser(99, 'zone_delete_own');
+
+        $this->assertFalse($result['has_direct']);
+        $this->assertSame([], $result['group_ids']);
+    }
 }
