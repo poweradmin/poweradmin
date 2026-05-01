@@ -220,6 +220,11 @@ zone_template_delete:
     id: '\d+'
   methods: [GET, POST]
 
+zone_template_set_default:
+  path: /zones/templates/set-default
+  controller: Poweradmin\Application\Controller\SetDefaultZoneTemplController::run
+  methods: [POST]
+
 zone_template_record_add:
   path: /zones/templates/{id}/records/add
   controller: Poweradmin\Application\Controller\AddZoneTemplRecordController::run

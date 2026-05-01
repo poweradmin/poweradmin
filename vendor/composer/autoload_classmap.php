@@ -1004,6 +1004,7 @@ return array(
     'Poweradmin\\Application\\Controller\\SamlMetadataController' => $baseDir . '/lib/Application/Controller/SamlMetadataController.php',
     'Poweradmin\\Application\\Controller\\SaveZoneAsTemplateController' => $baseDir . '/lib/Application/Controller/SaveZoneAsTemplateController.php',
     'Poweradmin\\Application\\Controller\\SearchController' => $baseDir . '/lib/Application/Controller/SearchController.php',
+    'Poweradmin\\Application\\Controller\\SetDefaultZoneTemplController' => $baseDir . '/lib/Application/Controller/SetDefaultZoneTemplController.php',
     'Poweradmin\\Application\\Controller\\StaticAssetController' => $baseDir . '/lib/Application/Controller/StaticAssetController.php',
     'Poweradmin\\Application\\Controller\\UnlinkZonesTemplController' => $baseDir . '/lib/Application/Controller/UnlinkZonesTemplController.php',
     'Poweradmin\\Application\\Controller\\UserAgreementController' => $baseDir . '/lib/Application/Controller/UserAgreementController.php',

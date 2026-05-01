@@ -47,7 +47,16 @@
                 {% endif %}
                 {% for template in zone_templates %}
                 <tr class="template-row" data-name="{{ template['name']|lower }}" data-description="{{ template['descr']|default('')|lower }}">
-                    <td>{{ template['name'] }}</td>
+                    <td>
+                        {{ template['name'] }}
+                        {% if effective_default_id is defined and effective_default_id == template['id'] %}
+                            {% if template['is_default'] %}
+                            <span class="badge bg-primary text-white ms-1" title="{% trans %}Pre-selected on the add-zone form{% endtrans %}"><i class="bi bi-star-fill text-white me-1"></i>{% trans %}default{% endtrans %}</span>
+                            {% else %}
+                            <span class="badge bg-primary text-white ms-1" title="{% trans %}Configured via dns.default_zone_template - edit settings.php to change{% endtrans %}"><i class="bi bi-star-fill me-1"></i>{% trans %}default (config){% endtrans %}</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
                     <td>
                         {% if template['descr'] %}
                             {% if template['descr']|length > 30 %}
@@ -99,6 +108,22 @@
                     {% if (perm_zone_templ_edit and template['owner'] != 0) or perm_is_godlike %}
                     <td class="text-end">
                         <div class="d-flex gap-1 justify-content-end flex-nowrap">
+                            {% if perm_is_godlike and (template['owner'] == 0 or template['is_default']) %}
+                            <form method="post" action="{{ base_url_prefix }}/zones/templates/set-default" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                {% if template['is_default'] %}
+                                <input type="hidden" name="action" value="unset">
+                                <button class="btn btn-sm btn-warning" type="submit" title="{% trans %}Unset as default{% endtrans %}">
+                                    <i class="bi bi-star-fill text-white"></i>
+                                </button>
+                                {% else %}
+                                <input type="hidden" name="id" value="{{ template['id'] }}">
+                                <button class="btn btn-sm btn-warning" type="submit" title="{% trans %}Set as default{% endtrans %}">
+                                    <i class="bi bi-star text-white"></i>
+                                </button>
+                                {% endif %}
+                            </form>
+                            {% endif %}
                             <a class="btn btn-sm btn-outline-secondary {% if template['zones_linked'] == '0' %}disabled{% endif %}"
                                href="{% if template['zones_linked'] != '0' %}{{ base_url_prefix }}/zones/templates/{{ template['id'] }}/zones{% else %}#{% endif %}"
                                title="{% if template['zones_linked'] == '0' %}{% trans %}No zones are using this template{% endtrans %}{% else %}{% trans %}View zones using this template{% endtrans %}{% endif %}"

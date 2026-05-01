@@ -26,6 +26,7 @@ use Exception;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 class DbZoneTemplateRepository
 {
@@ -49,7 +50,7 @@ class DbZoneTemplateRepository
      */
     public function listZoneTemplates(?int $userId, bool $isUeberuser): array
     {
-        $query = "SELECT zt.id, zt.name, zt.descr, zt.owner, zt.created_by,
+        $query = "SELECT zt.id, zt.name, zt.descr, zt.owner, zt.created_by, zt.is_default,
                       owner_user.username as owner_username,
                       owner_user.fullname as owner_fullname,
                       creator_user.username as creator_username,
@@ -66,7 +67,7 @@ class DbZoneTemplateRepository
             $params[':userid'] = $userId;
         }
 
-        $query .= " GROUP BY zt.id, zt.name, zt.descr, zt.owner, zt.created_by,
+        $query .= " GROUP BY zt.id, zt.name, zt.descr, zt.owner, zt.created_by, zt.is_default,
                            owner_user.username, owner_user.fullname,
                            creator_user.username, creator_user.fullname
                   ORDER BY zt.name";
@@ -186,6 +187,12 @@ class DbZoneTemplateRepository
         if ($owner !== null) {
             $query .= ', owner = :owner';
             $params[':owner'] = $owner;
+            // Private templates cannot be the default; clear the flag to
+            // avoid leaving an orphan that the resolver would then ignore.
+            if ($owner !== 0) {
+                $db_type = (string) $this->config->get('database', 'type');
+                $query .= ', is_default = ' . DbCompat::boolFalse($db_type);
+            }
         }
 
         $query .= ' WHERE id = :id';

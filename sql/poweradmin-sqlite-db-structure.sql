@@ -132,6 +132,7 @@ CREATE TABLE zone_templ (
     descr VARCHAR(1024) NOT NULL,
     owner integer NOT NULL,
     created_by integer,
+    is_default BOOLEAN NOT NULL DEFAULT 0,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
 

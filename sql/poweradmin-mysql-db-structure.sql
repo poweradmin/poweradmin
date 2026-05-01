@@ -216,6 +216,7 @@ CREATE TABLE `zone_templ` (
                               `descr` varchar(1024) NOT NULL,
                               `owner` int(11) NOT NULL,
                               `created_by` int(11) DEFAULT NULL,
+                              `is_default` tinyint(1) NOT NULL DEFAULT 0,
                               PRIMARY KEY (`id`),
                               KEY `idx_zone_templ_owner` (`owner`),
                               KEY `idx_zone_templ_created_by` (`created_by`),
