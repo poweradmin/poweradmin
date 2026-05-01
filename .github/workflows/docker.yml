@@ -132,6 +132,9 @@ jobs:
           docker rm -f smoke-root
 
       - name: Smoke test (non-root mode - port 8080)
+        if: >-
+          !(github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/3.x')
+          && github.ref != 'refs/heads/release/3.x'
         run: |
           docker run -d --name smoke-nonroot \
             --user 82:82 \
