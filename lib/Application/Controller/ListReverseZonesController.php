@@ -32,7 +32,9 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\PaginationPresenter;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
+use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -40,7 +42,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneSortingService;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
@@ -160,7 +162,17 @@ class ListReverseZonesController extends BaseController
         // Augment zones with group information and shorten IPv6 reverse zones
         $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
         $userGroupRepo = new DbUserGroupRepository($this->db);
+        $memberRepo = new DbUserGroupMemberRepository($this->db);
         $allGroups = $userGroupRepo->findAll();
+
+        // Resolve where the user can delete (direct vs. which groups grant it). Two
+        // queries up front lets the per-row decision below stay in PHP, instead of
+        // running canUserPerformZoneAction once per rendered zone.
+        $hybridPermissions = new HybridPermissionService($this->db, $userGroupRepo, $memberRepo);
+        $deleteSources = $perm_delete === 'own'
+            ? $hybridPermissions->getPermissionSourcesForUser($loggedInUserId, 'zone_delete_own')
+            : ['has_direct' => false, 'group_ids' => []];
+        $loggedInUsername = $this->userContextService->getLoggedInUsername();
 
         foreach ($reverse_zones as &$zone) {
             // Shorten IPv6 reverse zones for display
@@ -170,6 +182,7 @@ class ListReverseZonesController extends BaseController
             }
 
             $groupOwnerships = $zoneGroupRepo->findByDomainId($zone['id']);
+            $zoneGroupIds = array_map(fn($zg) => $zg->getGroupId(), $groupOwnerships);
             $zone['groups'] = array_map(function ($zg) use ($allGroups) {
                 $groupId = $zg->getGroupId();
                 foreach ($allGroups as $group) {
@@ -179,6 +192,20 @@ class ListReverseZonesController extends BaseController
                 }
                 return 'Group #' . $groupId;
             }, $groupOwnerships);
+
+            // Delete eligibility for the per-row delete control: must mirror the
+            // hybrid check the delete endpoint runs so the button only appears when
+            // the action will actually be permitted.
+            if ($perm_delete === 'all') {
+                $zone['user_can_delete'] = true;
+            } elseif ($perm_delete === 'own') {
+                $directGrants = $deleteSources['has_direct']
+                    && in_array($loggedInUsername, $zone['users'] ?? [], true);
+                $groupGrants = !empty(array_intersect($deleteSources['group_ids'], $zoneGroupIds));
+                $zone['user_can_delete'] = $directGrants || $groupGrants;
+            } else {
+                $zone['user_can_delete'] = false;
+            }
         }
         unset($zone); // Break the reference
 
