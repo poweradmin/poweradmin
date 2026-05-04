@@ -35,7 +35,9 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneManagementService;
+use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -369,9 +371,17 @@ class ZonesController extends PublicApiController
                 ),
                 new OA\Property(
                     property: 'owner_user_id',
-                    description: 'User ID to assign as zone owner (defaults to authenticated user). Specifying different user requires zone_content_edit_others permission.',
+                    description: 'User ID to assign as zone owner. Defaults to the authenticated user when omitted (even if group_ids is supplied). Send an explicit null to opt out of user ownership and create a group-only zone (requires zone_ownership_mode that allows groups and a non-empty group_ids). Specifying a different user requires zone_content_edit_others permission.',
                     type: 'integer',
-                    example: 1
+                    example: 1,
+                    nullable: true
+                ),
+                new OA\Property(
+                    property: 'group_ids',
+                    description: 'Optional list of group IDs to assign as zone owners. Requires user_is_ueberuser permission to assign arbitrary groups.',
+                    type: 'array',
+                    items: new OA\Items(type: 'integer'),
+                    example: [2, 5]
                 )
             ]
         )
@@ -465,22 +475,16 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to create zones of this type', 403);
             }
 
-            // Default owner to authenticated user if not specified
-            // Allow specifying different owner only if user has zone_content_edit_others permission
-            $owner = $this->inputInt($input, 'owner_user_id', $userId);
-            if ($owner === null) {
-                return $this->returnApiError('owner_user_id must be a numeric ID', 400);
+            $resolver = new ZoneCreateOwnershipResolver(
+                new ZoneOwnershipModeService($this->getConfig()),
+                $this->permissionService
+            );
+            $resolved = $resolver->resolve($input, $userId);
+            if (isset($resolved['error'])) {
+                return $this->returnApiError($resolved['error'], $resolved['status']);
             }
-
-            if ($owner !== $userId) {
-                // User wants to create zone for a different owner - check if they have permission
-                if (
-                    !$this->permissionService->userHasPermission($userId, 'user_is_ueberuser') &&
-                    !$this->permissionService->userHasPermission($userId, 'zone_content_edit_others')
-                ) {
-                    return $this->returnApiError('You do not have permission to create zones for other users', 403);
-                }
-            }
+            $owner = $resolved['owner'];
+            $groupIds = $resolved['group_ids'];
 
             // Use the zone management service to create zone
             $result = $this->zoneManagementService->createZone(
@@ -489,7 +493,8 @@ class ZonesController extends PublicApiController
                 $owner,
                 $slaveMaster,
                 $zoneTemplate,
-                $enableDnssec
+                $enableDnssec,
+                $groupIds
             );
 
             if (!$result['success']) {

@@ -74,6 +74,7 @@
 
     <!-- Right Column: Ownership -->
     <div class="col-md-6">
+        {% if user_owner_allowed %}
         <!-- User Owner Card -->
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
@@ -84,6 +85,7 @@
                     <div class="alert alert-sm alert-success py-2 mb-2" id="selected_user_indicator" style="display: none;">
                         <small><strong>{% trans %}Selected:{% endtrans %}</strong> <span id="selected_user_name"></span></small>
                     </div>
+                    {% if group_owner_allowed and all_groups is not empty %}
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="owner" id="owner_none" value="" {% if owner_value == '' %}checked{% endif %}>
                         <label class="form-check-label" for="owner_none">
@@ -91,8 +93,9 @@
                             <small class="text-muted d-block">{% trans %}Zone will be owned only by groups{% endtrans %}</small>
                         </label>
                     </div>
+                    {% endif %}
                 </div>
-                <hr class="my-2">
+                {% if group_owner_allowed and all_groups is not empty %}<hr class="my-2">{% endif %}
                 <div class="mb-2">
                     <input type="text" class="form-control form-control-sm" id="user_search" placeholder="{% trans %}Search users...{% endtrans %}" autocomplete="off">
                 </div>
@@ -113,8 +116,9 @@
                 <small class="text-muted mt-2 d-block">{% trans %}Optional: Select a user responsible for this zone{% endtrans %}</small>
             </div>
         </div>
+        {% endif %}
 
-        {% if all_groups is not empty %}
+        {% if group_owner_allowed and all_groups is not empty %}
         <!-- Group Ownership Card -->
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
@@ -178,6 +182,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const ownerRadios = document.querySelectorAll('input[name="owner"]');
 
     function updateSelectedUserIndicator() {
+        if (!selectedIndicator || !selectedUserName) {
+            return;
+        }
         const selectedRadio = document.querySelector('input[name="owner"]:checked');
         if (selectedRadio && selectedRadio.value !== '') {
             const label = document.querySelector(`label[for="${selectedRadio.id}"]`);

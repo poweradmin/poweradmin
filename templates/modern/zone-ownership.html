@@ -9,6 +9,9 @@
 
 <!-- Ownership (Side by Side) -->
 <div class="row">
+    {% set has_user_owners = owners is not empty and owners != "-1" %}
+    {% set has_group_owners = group_owners is not empty %}
+    {% if user_owner_allowed or has_user_owners %}
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
@@ -56,7 +59,7 @@
                 </div>
                 {% endif %}
 
-                {% if meta_edit %}
+                {% if meta_edit and user_owner_allowed %}
                 <hr class="my-3">
                 <h6 class="text-muted mb-3">{% trans %}Add User Owner{% endtrans %}</h6>
                 <div class="mb-2">
@@ -88,7 +91,9 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
+    {% if group_owner_allowed or has_group_owners %}
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
@@ -128,7 +133,7 @@
                 </div>
                 {% endif %}
 
-                {% if meta_edit and all_groups is not empty %}
+                {% if meta_edit and group_owner_allowed and all_groups is not empty %}
                 <hr class="my-3">
                 <h6 class="text-muted mb-3">{% trans %}Add Group Ownership{% endtrans %}</h6>
                 <div class="mb-2">
@@ -157,6 +162,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 
 <script>

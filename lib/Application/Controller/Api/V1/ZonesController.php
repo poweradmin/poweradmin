@@ -42,6 +42,7 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\ZoneManagementService;
+use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -424,6 +425,16 @@ class ZonesController extends PublicApiController
             // Check if user has permission to create zones
             if (!$this->permissionService->canCreateZone($userId, $type)) {
                 return $this->returnApiError('You do not have permission to create zones of this type', 403);
+            }
+
+            // The v1 endpoint only supports user-owner assignment; groups-only mode
+            // can only be satisfied via the web UI or API v2.
+            $ownershipMode = new ZoneOwnershipModeService($this->getConfig());
+            if (!$ownershipMode->isUserOwnerAllowed()) {
+                return $this->returnApiError(
+                    'Zone ownership mode "groups_only" is not supported by API v1. Use the web UI or API v2 to assign group ownership.',
+                    400
+                );
             }
 
             // Default owner to authenticated user if not specified

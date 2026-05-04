@@ -198,6 +198,7 @@ return [
 
         'zone_type_default' => 'MASTER',           // Options: 'MASTER', 'NATIVE' (added in 2.1.9)
         'default_zone_template' => null,           // Pre-selected template on the add-zone form. Template id (int) or name (string); null for "none" (added in 4.4.0)
+        'zone_ownership_mode' => 'both',           // Options: 'both', 'users_only', 'groups_only' (added in 4.4.0)
 
         // Validation Settings
         'strict_tld_check' => false,               // Strict validation of TLDs

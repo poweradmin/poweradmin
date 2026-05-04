@@ -81,6 +81,40 @@ class ApiPermissionService
     }
 
     /**
+     * Return the group IDs the user is a member of.
+     *
+     * @return array<int, int>
+     */
+    public function getUserGroupIds(int $userId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT group_id FROM user_group_members WHERE user_id = :user_id'
+        );
+        $stmt->execute([':user_id' => $userId]);
+
+        $rows = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return array_map('intval', $rows ?: []);
+    }
+
+    /**
+     * Given a list of group IDs, return the subset that actually exists in user_groups.
+     *
+     * @param array<int> $groupIds
+     * @return array<int, int>
+     */
+    public function getExistingGroupIds(array $groupIds): array
+    {
+        if (empty($groupIds)) {
+            return [];
+        }
+        $placeholders = implode(',', array_fill(0, count($groupIds), '?'));
+        $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE id IN ($placeholders)");
+        $stmt->execute(array_values($groupIds));
+        $rows = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return array_map('intval', $rows ?: []);
+    }
+
+    /**
      * Check if user is the owner of a specific zone (stateless)
      *
      * Checks both direct ownership (zones.owner) and group membership

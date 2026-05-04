@@ -74,6 +74,25 @@ class ZoneManagementServiceTest extends TestCase
         $this->db->method('prepare')->willReturn($stmt);
     }
 
+    // ========== createZone validation tests ==========
+
+    #[Test]
+    public function testCreateZoneRejectsWhenOwnerAndGroupsBothMissing(): void
+    {
+        $result = $this->service->createZone(
+            'example.com',
+            'MASTER',
+            null,
+            '',
+            'none',
+            false,
+            []
+        );
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('At least one user or group must be assigned as owner', $result['message']);
+    }
+
     // ========== updateZone tests ==========
 
     #[Test]

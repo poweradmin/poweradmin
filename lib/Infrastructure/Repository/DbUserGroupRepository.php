@@ -79,6 +79,24 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
         return $row ? $this->mapRowToEntity($row) : null;
     }
 
+    /**
+     * Return the subset of supplied IDs that actually exist in user_groups.
+     *
+     * @param array<int> $ids
+     * @return array<int, int>
+     */
+    public function findExistingIds(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE id IN ($placeholders)");
+        $stmt->execute(array_values($ids));
+        $rows = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return array_map('intval', $rows ?: []);
+    }
+
     public function save(UserGroup $group): UserGroup
     {
         if ($group->getId() === null) {

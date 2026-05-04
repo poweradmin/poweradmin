@@ -29,6 +29,8 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneOwnershipModeService;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
@@ -224,6 +226,32 @@ class ZoneFileImportController extends BaseController
             $zoneRepository = $this->createZoneRepository();
             $existingZoneName = $zoneRepository->getDomainNameById($existingZoneId);
             $previewVars['existing_zone_name'] = $existingZoneName ?: '';
+        } else {
+            // For new-zone imports, expose the ownership-mode flags + group list
+            // so the preview step can offer a group picker without inferring all
+            // memberships at execute time.
+            $ownershipMode = new ZoneOwnershipModeService($this->config);
+            $userId = $this->userContextService->getLoggedInUserId();
+            $userGroupRepo = new DbUserGroupRepository($this->db);
+            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+            $availableGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
+
+            // Short-circuit a dead-end preview: in groups_only with no assignable
+            // groups, there is no way to confirm the import. Surface a clear
+            // error now instead of letting the user reach a form with no
+            // ownership controls.
+            if (!$ownershipMode->isUserOwnerAllowed() && empty($availableGroups)) {
+                if ($isAdmin) {
+                    $this->showError(_('Cannot import a new zone: zone_ownership_mode is groups_only but no groups exist. Create a group first.'));
+                } else {
+                    $this->showError(_('Cannot import a new zone: zone_ownership_mode is groups_only and you are not a member of any group. Ask an administrator to add you to a group first.'));
+                }
+                return;
+            }
+
+            $previewVars['user_owner_allowed'] = $ownershipMode->isUserOwnerAllowed();
+            $previewVars['group_owner_allowed'] = $ownershipMode->isGroupOwnerAllowed();
+            $previewVars['available_groups'] = $availableGroups;
         }
 
         $this->showForm($previewVars);
@@ -307,7 +335,40 @@ class ZoneFileImportController extends BaseController
             }
 
             $zoneType = $_POST['zone_type'] ?? 'MASTER';
-            if (!$dnsRecord->addDomain($this->db, $zoneName, $userId, $zoneType, '', 'none')) {
+            $ownershipMode = new ZoneOwnershipModeService($this->config);
+            $noUserOwnerRequested = !empty($_POST['no_user_owner']);
+            if (!$ownershipMode->isUserOwnerAllowed()) {
+                $ownerForCreate = null;
+            } elseif ($ownershipMode->isGroupOwnerAllowed() && $noUserOwnerRequested) {
+                $ownerForCreate = null;
+            } else {
+                $ownerForCreate = $userId;
+            }
+            $groupsForCreate = [];
+            if ($ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups'])) {
+                $groupsForCreate = array_values(array_unique(array_map('intval', $_POST['groups'])));
+                $userGroupRepo = new DbUserGroupRepository($this->db);
+                $existing = $userGroupRepo->findExistingIds($groupsForCreate);
+                $unknown = array_values(array_diff($groupsForCreate, $existing));
+                if (!empty($unknown)) {
+                    $this->showError(sprintf(_('Unknown group ID(s): %s'), implode(',', $unknown)));
+                    return;
+                }
+                if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+                    $allowedIds = array_map(fn($g) => $g->getId(), $userGroupRepo->findByUserId($userId));
+                    $disallowed = array_values(array_diff($existing, $allowedIds));
+                    if (!empty($disallowed)) {
+                        $this->showError(sprintf(_('You can only assign groups you are a member of (disallowed: %s)'), implode(',', $disallowed)));
+                        return;
+                    }
+                }
+                $groupsForCreate = $existing;
+            }
+            if ($ownerForCreate === null && empty($groupsForCreate)) {
+                $this->showError(_('Cannot create a new zone via import: select at least one group, or leave "No user owner" unchecked.'));
+                return;
+            }
+            if (!$dnsRecord->addDomain($this->db, $zoneName, $ownerForCreate, $zoneType, '', 'none', $groupsForCreate)) {
                 $this->showError(_('Failed to create zone.'));
                 return;
             }
