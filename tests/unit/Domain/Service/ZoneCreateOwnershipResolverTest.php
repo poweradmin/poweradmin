@@ -71,7 +71,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
 
         $result = $resolver->resolve([], self::CALLER_ID);
 
-        $this->assertSame(['owner' => self::CALLER_ID, 'group_ids' => []], $result);
+        $this->assertFalse($result->hasError());
+        $this->assertSame(self::CALLER_ID, $result->owner);
+        $this->assertSame([], $result->groupIds);
     }
 
     #[Test]
@@ -81,7 +83,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
 
         $result = $resolver->resolve(['group_ids' => 'nope'], self::CALLER_ID);
 
-        $this->assertSame(['error' => 'group_ids must be an array of integers', 'status' => 400], $result);
+        $this->assertTrue($result->hasError());
+        $this->assertSame('group_ids must be an array of integers', $result->error);
+        $this->assertSame(400, $result->status);
     }
 
     #[Test]
@@ -91,7 +95,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
 
         $result = $resolver->resolve(['group_ids' => [1, 'two']], self::CALLER_ID);
 
-        $this->assertSame(['error' => 'group_ids must be an array of integers', 'status' => 400], $result);
+        $this->assertTrue($result->hasError());
+        $this->assertSame('group_ids must be an array of integers', $result->error);
+        $this->assertSame(400, $result->status);
     }
 
     #[Test]
@@ -104,7 +110,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
 
         $result = $resolver->resolve(['group_ids' => [3, '3', 5]], self::CALLER_ID);
 
-        $this->assertSame([3, 5], $result['group_ids']);
+        $this->assertSame([3, 5], $result->groupIds);
     }
 
     #[Test]
@@ -117,8 +123,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
 
         $result = $resolver->resolve(['group_ids' => [2]], self::CALLER_ID);
 
-        $this->assertSame(400, $result['status']);
-        $this->assertStringContainsString('users_only', $result['error']);
+        $this->assertSame(400, $result->status);
+        $this->assertNotNull($result->error);
+        $this->assertStringContainsString('users_only', $result->error);
     }
 
     #[Test]
@@ -134,8 +141,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
             self::CALLER_ID
         );
 
-        $this->assertSame(400, $result['status']);
-        $this->assertStringContainsString('groups_only', $result['error']);
+        $this->assertSame(400, $result->status);
+        $this->assertNotNull($result->error);
+        $this->assertStringContainsString('groups_only', $result->error);
     }
 
     #[Test]
@@ -148,7 +156,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
 
         $result = $resolver->resolve(['group_ids' => [4]], self::CALLER_ID);
 
-        $this->assertSame(['owner' => null, 'group_ids' => [4]], $result);
+        $this->assertFalse($result->hasError());
+        $this->assertNull($result->owner);
+        $this->assertSame([4], $result->groupIds);
     }
 
     #[Test]
@@ -164,7 +174,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
 
         $result = $resolver->resolve(['group_ids' => [9]], self::CALLER_ID);
 
-        $this->assertSame(['owner' => self::CALLER_ID, 'group_ids' => [9]], $result);
+        $this->assertFalse($result->hasError());
+        $this->assertSame(self::CALLER_ID, $result->owner);
+        $this->assertSame([9], $result->groupIds);
     }
 
     #[Test]
@@ -180,7 +192,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
             self::CALLER_ID
         );
 
-        $this->assertSame(['owner' => null, 'group_ids' => [11]], $result);
+        $this->assertFalse($result->hasError());
+        $this->assertNull($result->owner);
+        $this->assertSame([11], $result->groupIds);
     }
 
     #[Test]
@@ -194,8 +208,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
         // groups_only forces owner=null and groups stay empty -> nothing assigned.
         $result = $resolver->resolve([], self::CALLER_ID);
 
-        $this->assertSame(400, $result['status']);
-        $this->assertStringContainsString('At least one', $result['error']);
+        $this->assertSame(400, $result->status);
+        $this->assertNotNull($result->error);
+        $this->assertStringContainsString('At least one', $result->error);
     }
 
     #[Test]
@@ -208,8 +223,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
 
         $result = $resolver->resolve(['owner_user_id' => 99], self::CALLER_ID);
 
-        $this->assertSame(403, $result['status']);
-        $this->assertStringContainsString('other users', $result['error']);
+        $this->assertSame(403, $result->status);
+        $this->assertNotNull($result->error);
+        $this->assertStringContainsString('other users', $result->error);
     }
 
     #[Test]
@@ -225,7 +241,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
             self::CALLER_ID
         );
 
-        $this->assertSame(['owner' => self::CALLER_ID, 'group_ids' => [42]], $result);
+        $this->assertFalse($result->hasError());
+        $this->assertSame(self::CALLER_ID, $result->owner);
+        $this->assertSame([42], $result->groupIds);
     }
 
     #[Test]
@@ -239,7 +257,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
         $result = $resolver->resolve(['group_ids' => [3, 4]], self::CALLER_ID);
 
         // owner_user_id omitted -> caller stays as user owner (backward-compat default)
-        $this->assertSame(['owner' => self::CALLER_ID, 'group_ids' => [3, 4]], $result);
+        $this->assertFalse($result->hasError());
+        $this->assertSame(self::CALLER_ID, $result->owner);
+        $this->assertSame([3, 4], $result->groupIds);
     }
 
     #[Test]
@@ -253,8 +273,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
 
         $result = $resolver->resolve(['owner_user_id' => 0], self::CALLER_ID);
 
-        $this->assertSame(400, $result['status']);
-        $this->assertStringContainsString('At least one', $result['error']);
+        $this->assertSame(400, $result->status);
+        $this->assertNotNull($result->error);
+        $this->assertStringContainsString('At least one', $result->error);
     }
 
     #[Test]
@@ -270,7 +291,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
             self::CALLER_ID
         );
 
-        $this->assertSame(['owner' => null, 'group_ids' => [9]], $result);
+        $this->assertFalse($result->hasError());
+        $this->assertNull($result->owner);
+        $this->assertSame([9], $result->groupIds);
     }
 
     #[Test]
@@ -283,8 +306,9 @@ class ZoneCreateOwnershipResolverTest extends TestCase
 
         $result = $resolver->resolve(['group_ids' => [3, 99]], self::CALLER_ID);
 
-        $this->assertSame(404, $result['status']);
-        $this->assertStringContainsString('99', $result['error']);
+        $this->assertSame(404, $result->status);
+        $this->assertNotNull($result->error);
+        $this->assertStringContainsString('99', $result->error);
     }
 
     #[Test]
@@ -297,7 +321,8 @@ class ZoneCreateOwnershipResolverTest extends TestCase
 
         $result = $resolver->resolve(['group_ids' => [3, 9]], self::CALLER_ID);
 
-        $this->assertSame(403, $result['status']);
-        $this->assertStringContainsString('9', $result['error']);
+        $this->assertSame(403, $result->status);
+        $this->assertNotNull($result->error);
+        $this->assertStringContainsString('9', $result->error);
     }
 }

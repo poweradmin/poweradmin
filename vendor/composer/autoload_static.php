@@ -1627,6 +1627,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Domain\\Service\\ZoneCreateOwnershipResolver' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneCreateOwnershipResolver.php',
         'Poweradmin\\Domain\\Service\\ZoneManagementService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneManagementService.php',
         'Poweradmin\\Domain\\Service\\ZoneOwnershipModeService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneOwnershipModeService.php',
+        'Poweradmin\\Domain\\Service\\ZoneOwnershipResolution' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneOwnershipResolution.php',
         'Poweradmin\\Domain\\Service\\ZoneSortingService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneSortingService.php',
         'Poweradmin\\Domain\\Service\\ZoneTemplateSyncService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneTemplateSyncService.php',
         'Poweradmin\\Domain\\Service\\ZoneValidationService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneValidationService.php',
