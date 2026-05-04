@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -71,12 +72,37 @@ class AddZoneMasterController extends BaseController
         $this->setCurrentPage('add_zone_master');
         $this->setPageTitle(_('Add Primary Zone'));
 
+        $blocker = $this->getOwnerOptionsBlocker();
+        if ($blocker !== null) {
+            $this->showError($blocker);
+            return;
+        }
+
         if ($this->isPost()) {
             $this->validateCsrfToken();
             $this->addZone();
         } else {
             $this->showForm();
         }
+    }
+
+    private function getOwnerOptionsBlocker(): ?string
+    {
+        $ownershipMode = new ZoneOwnershipModeService($this->config);
+        if ($ownershipMode->isUserOwnerAllowed()) {
+            return null;
+        }
+        $userGroupRepo = new DbUserGroupRepository($this->db);
+        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+            if (empty($userGroupRepo->findAll())) {
+                return _('Zone ownership mode is groups_only but no groups exist. Create a group before adding zones.');
+            }
+            return null;
+        }
+        if (empty($userGroupRepo->findByUserId($this->userContext->getLoggedInUserId()))) {
+            return _('Zone ownership mode is groups_only but you are not a member of any group. Ask an administrator to add you to a group before creating zones.');
+        }
+        return null;
     }
 
     private function addZone(): void
@@ -102,11 +128,13 @@ class AddZoneMasterController extends BaseController
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
         $dns_third_level_check = $this->config->get('dns', 'third_level_check', false);
 
+        $ownershipMode = new ZoneOwnershipModeService($this->config);
+
         $zone_name = DnsIdnService::toPunycode(trim($_POST['domain']));
         $dom_type = $_POST["dom_type"];
-        $owner = !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
+        $owner = $ownershipMode->isUserOwnerAllowed() && !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
         $zone_template = $_POST['zone_template'] ?? "none";
-        $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
+        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups']) ?
             array_map('intval', $_POST['groups']) : [];
 
         // Validate: at least one owner (user or group) must be selected
@@ -116,18 +144,37 @@ class AddZoneMasterController extends BaseController
             return;
         }
 
+        // Block assigning a zone to a different user without elevated permission
+        $callerId = $this->userContext->getLoggedInUserId();
+        if ($owner !== null && $owner !== $callerId) {
+            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+            if (!$isAdmin && !UserManager::verifyPermission($this->db, 'zone_content_edit_others')) {
+                $this->setMessage('add_zone_master', 'error', _('You do not have permission to create zones for other users.'));
+                $this->showForm();
+                return;
+            }
+        }
+
         // Validate submitted group IDs against user's allowed groups
         if (!empty($selected_groups)) {
+            $userGroupRepo = new DbUserGroupRepository($this->db);
+            $existing = $userGroupRepo->findExistingIds($selected_groups);
+            $unknown = array_values(array_diff($selected_groups, $existing));
+            if (!empty($unknown)) {
+                $this->setMessage('add_zone_master', 'error', sprintf(_('Unknown group ID(s): %s'), implode(',', $unknown)));
+                $this->showForm();
+                return;
+            }
+            $selected_groups = $existing;
+
             $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
             if (!$isAdmin) {
                 $userId = $this->userContext->getLoggedInUserId();
-                $userGroupRepo = new DbUserGroupRepository($this->db);
                 $allowedGroups = $userGroupRepo->findByUserId($userId);
                 $allowedGroupIds = array_map(fn($g) => $g->getId(), $allowedGroups);
-                $selected_groups = array_values(array_intersect($selected_groups, $allowedGroupIds));
-
-                if (empty($selected_groups) && $owner === null) {
-                    $this->setMessage('add_zone_master', 'error', _('At least one user or group must be selected as owner.'));
+                $disallowed = array_values(array_diff($selected_groups, $allowedGroupIds));
+                if (!empty($disallowed)) {
+                    $this->setMessage('add_zone_master', 'error', sprintf(_('You can only assign groups you are a member of (disallowed: %s)'), implode(',', $disallowed)));
                     $this->showForm();
                     return;
                 }
@@ -298,6 +345,8 @@ class AddZoneMasterController extends BaseController
         $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
             array_map('intval', $_POST['groups']) : [];
 
+        $ownershipMode = new ZoneOwnershipModeService($this->config);
+
         $this->render('add_zone_master.html', [
             'perm_view_others' => $perm_view_others,
             'session_user_id' => $userId,
@@ -318,6 +367,8 @@ class AddZoneMasterController extends BaseController
             'all_groups' => $allGroups,
             'group_member_counts' => $memberCounts,
             'selected_groups' => $selected_groups,
+            'user_owner_allowed' => $ownershipMode->isUserOwnerAllowed(),
+            'group_owner_allowed' => $ownershipMode->isGroupOwnerAllowed(),
             // Don't pass raw POST data to the template for security
         ]);
     }

@@ -63,15 +63,31 @@ class DatabaseConsistencyService
             foreach ($allZones as $z) {
                 $zoneId = (int)($z['id'] ?? 0);
                 $zoneName = $z['name'] ?? '';
-                // Check Poweradmin's zones table for ownership
-                $stmt = $this->db->prepare("SELECT owner FROM zones WHERE domain_id = ?");
-                $stmt->execute([$zoneId]);
-                $owner = $stmt->fetchColumn();
-                if ($owner === false || (int)$owner === 0) {
+                // A zone may have multiple `zones` rows (one per direct owner)
+                // plus optional zones_groups entries; treat it as orphaned only
+                // when no row carries a real owner and there is no group link.
+                // Anchor on the canonical zones row (unique by zone_name) and
+                // aggregate ownership tied to its surrogate id. Avoids matching
+                // unrelated rows whose id or domain_id collides numerically.
+                $stmt = $this->db->prepare(
+                    'SELECT
+                        (SELECT COUNT(*) FROM zones z
+                         WHERE (z.id = c.id OR z.domain_id = c.id)
+                           AND z.owner IS NOT NULL AND z.owner <> 0) AS owner_count,
+                        (SELECT COUNT(*) FROM zones_groups zg WHERE zg.domain_id = c.id) AS group_count
+                     FROM zones c
+                     WHERE c.zone_name = ? AND c.zone_name IS NOT NULL
+                     LIMIT 1'
+                );
+                $stmt->execute([rtrim($zoneName, '.')]);
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $hasOwner = $row !== false && (int)($row['owner_count'] ?? 0) > 0;
+                $hasGroups = $row !== false && (int)($row['group_count'] ?? 0) > 0;
+                if (!$hasOwner && !$hasGroups) {
                     $orphanedZones[] = [
                         'id' => $zoneId,
                         'name' => rtrim($zoneName, '.'),
-                        'owner' => $owner ?: null
+                        'owner' => null,
                     ];
                 }
             }
@@ -79,10 +95,15 @@ class DatabaseConsistencyService
             $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
             $stmt = $this->db->query("
-                SELECT d.id, d.name, z.owner
+                SELECT d.id, d.name
                 FROM $domains_table d
-                LEFT JOIN zones z ON d.id = z.domain_id
-                WHERE z.owner IS NULL OR z.owner = 0
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM zones z
+                    WHERE z.domain_id = d.id AND z.owner IS NOT NULL AND z.owner <> 0
+                )
+                  AND NOT EXISTS (
+                    SELECT 1 FROM zones_groups zg WHERE zg.domain_id = d.id
+                )
             ");
 
             $orphanedZones = [];
@@ -90,7 +111,7 @@ class DatabaseConsistencyService
                 $orphanedZones[] = [
                     'id' => $row['id'],
                     'name' => $row['name'],
-                    'owner' => $row['owner']
+                    'owner' => null,
                 ];
             }
         }

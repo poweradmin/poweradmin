@@ -59,20 +59,26 @@ class ZoneManagementService
      *
      * @param string $domain Domain name
      * @param string $type Zone type (MASTER, SLAVE, NATIVE)
-     * @param int $owner Owner user ID
+     * @param int|null $owner Owner user ID, or null when only group ownership is set
      * @param string $slaveMaster Master IP for slave zones
      * @param string $zoneTemplate Zone template to use
      * @param bool $enableDnssec Whether to enable DNSSEC
+     * @param array<int> $groupIds Optional list of group IDs to assign as owners
      * @return array Result array with success status and zone ID or error message
      */
     public function createZone(
         string $domain,
         string $type,
-        int $owner,
+        ?int $owner,
         string $slaveMaster = '',
         string $zoneTemplate = 'none',
-        bool $enableDnssec = false
+        bool $enableDnssec = false,
+        array $groupIds = []
     ): array {
+        if ($owner === null && empty($groupIds)) {
+            return ['success' => false, 'message' => 'At least one user or group must be assigned as owner'];
+        }
+
         // Validate domain name
         $hostnameValidator = new HostnameValidator($this->config);
         if (!$hostnameValidator->isValid($domain)) {
@@ -124,10 +130,13 @@ class ZoneManagementService
             }
         }
 
-        $this->logger->info('[ZoneManagementService] Creating zone: {domain}, Type: {type}, Owner: {owner}', ['domain' => $domain, 'type' => $type, 'owner' => $owner]);
+        $this->logger->info(
+            '[ZoneManagementService] Creating zone: {domain}, Type: {type}, Owner: {owner}, Groups: {groups}',
+            ['domain' => $domain, 'type' => $type, 'owner' => $owner ?? 'none', 'groups' => implode(',', $groupIds) ?: 'none']
+        );
 
         // Create the domain using DnsRecord service for now (to maintain compatibility)
-        $success = $dnsRecord->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate);
+        $success = $dnsRecord->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds);
 
         if (!$success) {
             return ['success' => false, 'message' => 'Failed to create zone'];

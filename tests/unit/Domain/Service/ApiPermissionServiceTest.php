@@ -517,4 +517,61 @@ class ApiPermissionServiceTest extends TestCase
         $result = $this->service->canEditZoneMeta(4, 100);
         $this->assertFalse($result);
     }
+
+    #[Test]
+    public function testGetUserGroupIdsReturnsIntegerList(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with([':user_id' => 7])
+            ->willReturn(true);
+        $stmt->method('fetchAll')->with(PDO::FETCH_COLUMN)->willReturn(['3', '5', '7']);
+
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->stringContains('user_group_members'))
+            ->willReturn($stmt);
+
+        $this->assertSame([3, 5, 7], $this->service->getUserGroupIds(7));
+    }
+
+    #[Test]
+    public function testGetUserGroupIdsReturnsEmptyArrayWhenNoMemberships(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchAll')->willReturn([]);
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $this->assertSame([], $this->service->getUserGroupIds(99));
+    }
+
+    #[Test]
+    public function testGetExistingGroupIdsShortCircuitsOnEmptyInput(): void
+    {
+        $this->db->expects($this->never())->method('prepare');
+
+        $this->assertSame([], $this->service->getExistingGroupIds([]));
+    }
+
+    #[Test]
+    public function testGetExistingGroupIdsBindsOnePlaceholderPerId(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with([3, 5, 8])
+            ->willReturn(true);
+        $stmt->method('fetchAll')->with(PDO::FETCH_COLUMN)->willReturn(['3', '8']);
+
+        // Three IDs in -> three placeholders + IN clause.
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->matchesRegularExpression('/IN \(\?,\?,\?\)/'))
+            ->willReturn($stmt);
+
+        $this->assertSame([3, 8], $this->service->getExistingGroupIds([3, 5, 8]));
+    }
 }

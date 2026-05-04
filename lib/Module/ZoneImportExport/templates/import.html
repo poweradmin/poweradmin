@@ -132,6 +132,39 @@
                     </select>
                 </div>
             </div>
+            {% if group_owner_allowed is defined and group_owner_allowed and available_groups is defined and available_groups is not empty %}
+            <div class="mb-3">
+                <label class="form-label">
+                    {% trans %}Group ownership{% endtrans %}
+                    {% if user_owner_allowed is defined and not user_owner_allowed %} <span class="text-danger">*</span>{% endif %}
+                </label>
+                <div class="border rounded p-2" style="max-height: 160px; overflow-y: auto;">
+                    {% for group in available_groups %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="groups[]" id="import_group_{{ group.id }}" value="{{ group.id }}">
+                        <label class="form-check-label" for="import_group_{{ group.id }}">
+                            {{ group.name }}{% if group.description %} <small class="text-muted">{{ group.description }}</small>{% endif %}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <small class="text-muted">
+                    {% if user_owner_allowed is defined and not user_owner_allowed %}
+                    {% trans %}Required: select at least one group.{% endtrans %}
+                    {% else %}
+                    {% trans %}Optional: select one or more groups.{% endtrans %}
+                    {% endif %}
+                </small>
+                {% if user_owner_allowed is defined and user_owner_allowed %}
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="no_user_owner" name="no_user_owner" value="1">
+                    <label class="form-check-label" for="no_user_owner">
+                        {% trans %}No user owner — zone is owned only by the selected groups{% endtrans %}
+                    </label>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
             {% endif %}
 
             <button type="submit" class="btn btn-primary btn-sm">

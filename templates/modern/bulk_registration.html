@@ -26,25 +26,40 @@
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/bulk-registration" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
+                    {% if user_owner_allowed %}
                     <div class="mb-3">
-                        <label for="owner" class="form-label">{% trans %}Owner{% endtrans %} <span class="text-danger">*</span></label>
-                        <select class="form-select form-select-sm" id="owner" name="owner" required>
-                            {% set default_user_set = false %}
+                        <label for="owner" class="form-label">{% trans %}Owner{% endtrans %}{% if not group_owner_allowed %} <span class="text-danger">*</span>{% endif %}</label>
+                        <select class="form-select form-select-sm" id="owner" name="owner"{% if not group_owner_allowed %} required{% endif %}>
+                            {% if group_owner_allowed and all_groups is not empty %}
+                            <option value="" {% if owner_value == '' %}selected{% endif %}>{% trans %}No user owner{% endtrans %}</option>
+                            {% endif %}
                             {% for user in users %}
-                                {% if user['id'] == userid %}
-                                    <option value="{{ user['id'] }}" selected>
-                                        {% if user['fullname'] %}{{ user['fullname'] }} ({{ user['username'] }}){% else %}{{ user['username'] }}{% endif %}
-                                    </option>
-                                    {% set default_user_set = true %}
-                                {% elseif perm_view_others %}
-                                    <option value="{{ user['id'] }}">
-                                        {% if user['fullname'] %}{{ user['fullname'] }} ({{ user['username'] }}){% else %}{{ user['username'] }}{% endif %}
-                                    </option>
+                                {% if perm_view_others or user['id'] == userid %}
+                                <option value="{{ user['id'] }}" {% if user['id'] == owner_value %}selected{% endif %}>
+                                    {% if user['fullname'] %}{{ user['fullname'] }} ({{ user['username'] }}){% else %}{{ user['username'] }}{% endif %}
+                                </option>
                                 {% endif %}
                             {% endfor %}
                         </select>
-                        <div class="invalid-feedback">{% trans %}Please select an owner{% endtrans %}</div>
                     </div>
+                    {% endif %}
+
+                    {% if group_owner_allowed and all_groups is not empty %}
+                    <div class="mb-3">
+                        <label class="form-label">{% trans %}Group ownership{% endtrans %}</label>
+                        <div class="border rounded p-2" style="max-height: 160px; overflow-y: auto;">
+                            {% for group in all_groups %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="groups[]" id="group_{{ group.id }}" value="{{ group.id }}" {% if group.id in selected_groups %}checked{% endif %}>
+                                <label class="form-check-label" for="group_{{ group.id }}">
+                                    {{ group.name }}{% if group.description %} <small class="text-muted">{{ group.description }}</small>{% endif %}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <small class="text-muted">{% trans %}Optional: Select one or more groups{% endtrans %}</small>
+                    </div>
+                    {% endif %}
 
                     <div class="mb-3">
                         <label for="dom_type" class="form-label">{% trans %}Zone Type{% endtrans %}</label>
