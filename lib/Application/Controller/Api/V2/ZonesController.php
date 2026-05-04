@@ -371,7 +371,10 @@ class ZonesController extends PublicApiController
                 ),
                 new OA\Property(
                     property: 'owner_user_id',
-                    description: 'User ID to assign as zone owner. Defaults to the authenticated user when omitted (even if group_ids is supplied). Send an explicit null to opt out of user ownership and create a group-only zone (requires zone_ownership_mode that allows groups and a non-empty group_ids). Specifying a different user requires zone_content_edit_others permission.',
+                    description: 'User ID to assign as zone owner. Defaults to the authenticated user when omitted '
+                        . '(even if group_ids is supplied). Send an explicit null to opt out of user ownership and '
+                        . 'create a group-only zone (requires zone_ownership_mode that allows groups and a non-empty '
+                        . 'group_ids). Specifying a different user requires zone_content_edit_others permission.',
                     type: 'integer',
                     example: 1,
                     nullable: true
@@ -480,11 +483,11 @@ class ZonesController extends PublicApiController
                 $this->permissionService
             );
             $resolved = $resolver->resolve($input, $userId);
-            if (isset($resolved['error'])) {
-                return $this->returnApiError($resolved['error'], $resolved['status']);
+            if ($resolved->hasError()) {
+                return $this->returnApiError($resolved->error, $resolved->status);
             }
-            $owner = $resolved['owner'];
-            $groupIds = $resolved['group_ids'];
+            $owner = $resolved->owner;
+            $groupIds = $resolved->groupIds;
 
             // Use the zone management service to create zone
             $result = $this->zoneManagementService->createZone(
