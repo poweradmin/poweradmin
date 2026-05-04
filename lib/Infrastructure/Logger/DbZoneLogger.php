@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Logger;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 class DbZoneLogger
 {
@@ -195,13 +196,59 @@ class DbZoneLogger
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function countFilteredLogs(array $filters): int
+    /**
+     * Distinct usernames that appear inside log_zones events for the given zone IDs.
+     * Empty zone list short-circuits to [] to avoid IN ().
+     *
+     * @param int[] $zoneIds Domain IDs to scope the search to
+     * @return string[]
+     */
+    public function getDistinctUsersForZones(array $zoneIds): array
     {
+        if (empty($zoneIds)) {
+            return [];
+        }
+
+        $values = array_values($zoneIds);
+        $placeholders = [];
+        foreach ($values as $i => $_zid) {
+            $placeholders[] = ':z' . $i;
+        }
+
+        $dbType = $this->config->get('database', 'type', 'mysql');
+        $userPattern = DbCompat::concat($dbType, ["'%user:'", 'u.username', "' %'"]);
+
+        $sql = "SELECT DISTINCT u.username FROM users u
+                WHERE EXISTS (
+                    SELECT 1 FROM log_zones lz
+                    WHERE lz.zone_id IN (" . implode(', ', $placeholders) . ")
+                      AND lz.event LIKE " . $userPattern . "
+                )
+                ORDER BY u.username";
+
+        $stmt = $this->db->prepare($sql);
+        foreach ($values as $i => $zid) {
+            $stmt->bindValue(':z' . $i, (int) $zid, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * @param int[]|null $zoneIds Optional whitelist of log_zones.zone_id values.
+     *   null = no filter (admin); [] = no zones (returns 0); non-empty = restrict to listed IDs.
+     */
+    public function countFilteredLogs(array $filters, ?array $zoneIds = null): int
+    {
+        if ($zoneIds !== null && empty($zoneIds)) {
+            return 0;
+        }
+
         $query = "SELECT COUNT(*) AS number_of_logs FROM log_zones";
         $conditions = [];
         $params = [];
 
-        $this->buildFilterConditions($filters, $query, $conditions, $params);
+        $this->buildFilterConditions($filters, $query, $conditions, $params, $zoneIds);
 
         if (!empty($conditions)) {
             $query .= " WHERE " . implode(" AND ", $conditions);
@@ -215,13 +262,21 @@ class DbZoneLogger
         return (int) $stmt->fetch()['number_of_logs'];
     }
 
-    public function getFilteredLogs(array $filters, int $limit, int $offset): array
+    /**
+     * @param int[]|null $zoneIds Optional whitelist of log_zones.zone_id values.
+     *   null = no filter (admin); [] = no zones (returns []); non-empty = restrict to listed IDs.
+     */
+    public function getFilteredLogs(array $filters, int $limit, int $offset, ?array $zoneIds = null): array
     {
+        if ($zoneIds !== null && empty($zoneIds)) {
+            return [];
+        }
+
         $query = "SELECT log_zones.id, log_zones.event, log_zones.created_at FROM log_zones";
         $conditions = [];
         $params = [];
 
-        $this->buildFilterConditions($filters, $query, $conditions, $params);
+        $this->buildFilterConditions($filters, $query, $conditions, $params, $zoneIds);
 
         if (!empty($conditions)) {
             $query .= " WHERE " . implode(" AND ", $conditions);
@@ -241,7 +296,7 @@ class DbZoneLogger
         return $this->processFetchedLogs($records);
     }
 
-    private function buildFilterConditions(array $filters, string &$query, array &$conditions, array &$params): void
+    private function buildFilterConditions(array $filters, string &$query, array &$conditions, array &$params, ?array $zoneIds = null): void
     {
         if (!empty($filters['name'])) {
             if ($this->isApiBackend()) {
@@ -274,6 +329,16 @@ class DbZoneLogger
         if (!empty($filters['date_to'])) {
             $conditions[] = "log_zones.created_at <= :date_to";
             $params[':date_to'] = [$filters['date_to'] . " 23:59:59", PDO::PARAM_STR];
+        }
+
+        if ($zoneIds !== null && !empty($zoneIds)) {
+            $placeholders = [];
+            foreach (array_values($zoneIds) as $i => $zid) {
+                $key = ':zone_owner_id_' . $i;
+                $placeholders[] = $key;
+                $params[$key] = [(int) $zid, PDO::PARAM_INT];
+            }
+            $conditions[] = 'log_zones.zone_id IN (' . implode(', ', $placeholders) . ')';
         }
     }
 

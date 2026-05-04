@@ -12,6 +12,12 @@
     </ol>
 </nav>
 
+{% if is_owner_view %}
+<div class="alert alert-info py-2 small mb-3" role="alert">
+    <i class="bi bi-info-circle me-1"></i>{% trans %}Showing logs for zones you own.{% endtrans %}
+</div>
+{% endif %}
+
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-list-ul me-2"></i>{% trans %}Zone Change Logs{% endtrans %}</strong>
@@ -26,6 +32,9 @@
             {% trans %}This activity feed records every operation performed against zones and records (creates, edits, deletes, DNSSEC actions, imports) as a flat key:value event string. For structured before/after snapshots and a diff view of record changes, see the Record Change Log.{% endtrans %}
         </div>
         <form method="GET" action="{{ base_url_prefix }}/zones/logs">
+            {% if zone_id_filter %}
+            <input type="hidden" name="zone_id" value="{{ zone_id_filter }}">
+            {% endif %}
             <div class="row g-2 mb-2">
                 <div class="col-md-3">
                     <input name="name" type="text" class="form-control form-control-sm"
@@ -62,7 +71,7 @@
                     <button type="submit" class="btn btn-primary btn-sm" title="{% trans %}Search{% endtrans %}">
                         <i class="bi bi-search text-white"></i>
                     </button>
-                    <a href="{{ base_url_prefix }}/zones/logs" class="btn btn-outline-secondary btn-sm" title="{% trans %}Clear{% endtrans %}">
+                    <a href="{{ base_url_prefix }}/zones/logs{% if zone_id_filter %}?zone_id={{ zone_id_filter }}{% endif %}" class="btn btn-outline-secondary btn-sm" title="{% trans %}Clear{% endtrans %}">
                         <i class="bi bi-x-circle text-secondary"></i>
                     </a>
                 </div>

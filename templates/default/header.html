@@ -123,10 +123,12 @@
                                href="{{ base_url_prefix }}/zones/batch-ptr"><i class="bi bi-arrow-repeat me-2"></i>{% trans %}Batch PTR Records{% endtrans %}</a>
                         </li>
                         {% endif %}
-                        {% if perm_is_godlike and dblog_use == true %}
+                        {% if (perm_is_godlike or perm_view_zone_own or perm_view_zone_other) and dblog_use == true %}
+                        {% if perm_is_godlike %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
+                        {% endif %}
                         <li><a class="dropdown-item {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/logs"><i class="bi bi-journal-text me-2"></i>{% trans %}Zone logs{% endtrans %}</a></li>
                         <li><a class="dropdown-item {{ current_page == 'list_record_changes' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/changes"><i class="bi bi-clock-history me-2"></i>{% trans %}Record change log{% endtrans %}</a></li>
                         {% endif %}

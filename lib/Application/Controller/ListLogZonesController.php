@@ -31,10 +31,12 @@
 
 namespace Poweradmin\Application\Controller;
 
+use PDO;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
@@ -55,13 +57,24 @@ class ListLogZonesController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
+        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $canViewOwn = UserManager::verifyPermission($this->db, 'zone_content_view_own');
+        $canViewOthers = UserManager::verifyPermission($this->db, 'zone_content_view_others');
+
+        if (!$isAdmin && !$canViewOwn && !$canViewOthers) {
+            // Existing deny path: logs the access denial via AuditService and halts.
+            $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
+            return;
+        }
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('list_log_zones');
         $this->setPageTitle(_('Zone Logs'));
 
-        $this->showListLogZones();
+        // Owner-only filter applies when the user can see their own zones but not others'.
+        // Users with view_others (delegated staff) see the full log set, like admins.
+        $applyOwnerFilter = !$isAdmin && !$canViewOthers && $canViewOwn;
+        $this->showListLogZones($applyOwnerFilter);
     }
 
     private function buildFilters(): array
@@ -90,7 +103,7 @@ class ListLogZonesController extends BaseController
         return $filters;
     }
 
-    private function showListLogZones(): void
+    private function showListLogZones(bool $applyOwnerFilter): void
     {
         $selected_page = 1;
         $start = $this->httpRequest->getQueryParam('start');
@@ -105,21 +118,38 @@ class ListLogZonesController extends BaseController
         $logs_per_page = $configManager->get('interface', 'rows_per_page', 50);
 
         $filters = $this->buildFilters();
+        $ownedZoneIds = $applyOwnerFilter ? $this->resolveOwnedZoneIds() : null;
+
+        // Exact zone scope from the per-zone "Logs" button on edit.html.
+        // Intersect with the ownership filter so non-admins cannot peek at zones
+        // they don't own by guessing IDs.
+        $zoneIdParam = $this->httpRequest->getQueryParam('zone_id');
+        $requestedZoneId = (is_numeric($zoneIdParam) && (int) $zoneIdParam > 0) ? (int) $zoneIdParam : null;
+        if ($requestedZoneId !== null) {
+            if ($ownedZoneIds !== null) {
+                $ownedZoneIds = in_array($requestedZoneId, $ownedZoneIds, true) ? [$requestedZoneId] : [];
+            } else {
+                $ownedZoneIds = [$requestedZoneId];
+            }
+            // DbZoneLogger ignores unknown filter keys; including zone_id here only
+            // affects pagination URL generation in createAndPresentPagination().
+            $filters['zone_id'] = (string) $requestedZoneId;
+        }
 
         // Handle export
         $exportFormat = $this->httpRequest->getQueryParam('export');
         if (!empty($exportFormat) && in_array($exportFormat, ['csv', 'json'])) {
-            $this->exportLogs($filters, $exportFormat);
+            $this->exportLogs($filters, $exportFormat, $ownedZoneIds);
             return;
         }
 
-        $number_of_logs = $this->dbZoneLogger->countFilteredLogs($filters);
+        $number_of_logs = $this->dbZoneLogger->countFilteredLogs($filters, $ownedZoneIds);
         $number_of_pages = ceil($number_of_logs / $logs_per_page);
         if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
             die(_('Page number exceeds available pages.'));
         }
         $offset = ($selected_page - 1) * $logs_per_page;
-        $logs = $this->dbZoneLogger->getFilteredLogs($filters, $logs_per_page, $offset);
+        $logs = $this->dbZoneLogger->getFilteredLogs($filters, $logs_per_page, $offset, $ownedZoneIds);
 
         $this->render('list_log_zones.html', [
             'number_of_logs' => $number_of_logs,
@@ -128,14 +158,51 @@ class ListLogZonesController extends BaseController
             'user_filter' => htmlspecialchars($this->httpRequest->getQueryParam('user', '')),
             'date_from' => htmlspecialchars($this->httpRequest->getQueryParam('date_from', '')),
             'date_to' => htmlspecialchars($this->httpRequest->getQueryParam('date_to', '')),
+            'zone_id_filter' => $requestedZoneId,
             'operations' => $this->dbZoneLogger->getDistinctOperations(),
-            'users' => $this->dbZoneLogger->getDistinctUsers(),
+            'users' => $applyOwnerFilter
+                ? $this->dbZoneLogger->getDistinctUsersForZones($ownedZoneIds ?? [])
+                : $this->dbZoneLogger->getDistinctUsers(),
             'data' => $logs,
             'selected_page' => $selected_page,
             'logs_per_page' => $logs_per_page,
             'pagination' => $this->createAndPresentPagination($number_of_logs, $logs_per_page, $filters),
             'iface_edit_show_id' => $configManager->get('interface', 'show_record_id', false),
+            'is_owner_view' => $applyOwnerFilter,
         ]);
+    }
+
+    /**
+     * IDs that match log_zones.zone_id for zones the current non-admin user owns.
+     *
+     * The logger keys log rows by COALESCE(zones.domain_id, zones.id), so API-mode
+     * zones with a NULL zones.domain_id must be matched on zones.id. zones_groups
+     * already stores the same COALESCE value, so it needs no additional translation.
+     *
+     * @return int[]
+     */
+    private function resolveOwnedZoneIds(): array
+    {
+        $userId = (int) ($this->getCurrentUserId() ?? 0);
+        if ($userId <= 0) {
+            return [];
+        }
+
+        $stmt = $this->db->prepare(
+            "SELECT DISTINCT COALESCE(z.domain_id, z.id) AS log_zone_id
+             FROM zones z
+             WHERE z.owner = :uid
+             UNION
+             SELECT DISTINCT zg.domain_id AS log_zone_id
+             FROM zones_groups zg
+             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+             WHERE ugm.user_id = :uid2"
+        );
+        $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
     private function createAndPresentPagination(int $totalItems, int $itemsPerPage, array $filters = []): string
@@ -157,9 +224,9 @@ class ListLogZonesController extends BaseController
         return $presenter->present();
     }
 
-    private function exportLogs(array $filters, string $format): void
+    private function exportLogs(array $filters, string $format, ?array $zoneIds): void
     {
-        $logs = $this->dbZoneLogger->getFilteredLogs($filters, 100000, 0);
+        $logs = $this->dbZoneLogger->getFilteredLogs($filters, 100000, 0, $zoneIds);
         $parsed = $this->parseLogEvents($logs);
 
         if ($format === 'json') {

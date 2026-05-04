@@ -178,7 +178,7 @@
                                 </a>
                             </li>
                             {% endif %}
-                            {% if perm_is_godlike and dblog_use == true %}
+                            {% if (perm_is_godlike or perm_view_zone_own or perm_view_zone_other) and dblog_use == true %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/logs">
                                     <i class="bi bi-list-ul me-2"></i>{% trans %}Zone logs{% endtrans %}
