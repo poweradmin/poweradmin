@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-27 15:38+0300\n"
+"POT-Creation-Date: 2026-05-05 07:01+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgstr "DNSウィザードが有効になっていません。"
 msgid "Invalid zone ID."
 msgstr "無効なゾーンIDです。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:96
+#: lib/Application/Controller/ZoneOwnershipController.php:97
 msgid "Zone not found."
 msgstr "ゾーンが見つかりません。"
 
@@ -328,7 +328,7 @@ msgstr ""
 "ださい。"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:668
+#: templates/modern/edit.html:93 templates/modern/edit.html:673
 msgid "Invalid hostname format"
 msgstr "ホスト名の形式が無効です"
 
@@ -1194,62 +1194,90 @@ msgstr "無効なドメイン形式です"
 msgid "Email Previews"
 msgstr "メールプレビュー"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:74
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:76
 msgid "You do not have permission to import zones."
 msgstr "ゾーンをインポートする権限がありません。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:116
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:118
 msgid "Please select a valid zone file to upload."
 msgstr "アップロードする有効なゾーンファイルを選択してください。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:122
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:124
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
 msgstr "ファイルサイズが最大許容サイズ %s を超えています。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:128
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:130
 msgid "The uploaded file is empty or could not be read."
 msgstr "アップロードされたファイルが空であるか、読み取れませんでした。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:137
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:139
 msgid "No valid records found in the uploaded file."
 msgstr "アップロードされたファイルに有効なレコードが見つかりませんでした。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:279
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
 msgid "You do not have permission to modify this zone."
 msgstr "このゾーンを変更する権限がありません。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:235
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:245
+msgid ""
+"Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
+"exist. Create a group first."
+msgstr ""
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:247
+msgid ""
+"Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
+"a member of any group. Ask an administrator to add you to a group first."
+msgstr ""
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:263
 msgid "Import session expired. Please upload the file again."
 msgstr ""
 "インポートセッションの有効期限が切れました。ファイルを再度アップロードしてく"
 "ださい。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:242
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:270
 msgid "Invalid import data. Please upload the file again."
 msgstr "無効なインポートデータです。ファイルを再度アップロードしてください。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:269
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:297
 msgid "The selected zone does not exist."
 msgstr "選択されたゾーンは存在しません。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:295
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:323
 msgid "You do not have permission to add zones."
 msgstr "ゾーンを追加する権限がありません。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:300
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:328
 msgid "Zone name is required."
 msgstr "ゾーン名は必須です。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:305
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:333
 msgid "A zone with this name already exists."
 msgstr "この名前のゾーンは既に存在します。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:311
+#: lib/Application/Controller/BulkRegistrationController.php:151
+#, php-format
+msgid "Unknown group ID(s): %s"
+msgstr "不明なグループID: %s"
+
+#: lib/Application/Controller/BulkRegistrationController.php:163
+#, php-format
+msgid "You can only assign groups you are a member of (disallowed: %s)"
+msgstr "メンバーであるグループのみ割り当てられます (不許可: %s)"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:368
+msgid ""
+"Cannot create a new zone via import: select at least one group, or leave "
+"\"No user owner\" unchecked."
+msgstr ""
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:372
 msgid "Failed to create zone."
 msgstr "ゾーンの作成に失敗しました。"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:317
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:378
 msgid "Failed to retrieve created zone."
 msgstr "作成されたゾーンの取得に失敗しました。"
 
@@ -1368,7 +1396,7 @@ msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr "削除する有効なレコードが選択されていないか、削除権限がありません。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:74
+#: lib/Application/Controller/ZoneOwnershipController.php:75
 msgid "Invalid or unexpected input given."
 msgstr "無効または予期しない入力が提供されました。"
 
@@ -1907,7 +1935,7 @@ msgstr "このレコードを削除する権限がありません。"
 msgid "The record could not be deleted."
 msgstr "レコードを削除できませんでした。"
 
-#: lib/Application/Controller/ListLogZonesController.php:62
+#: lib/Application/Controller/ListLogZonesController.php:72
 #: templates/default/index.html:248 templates/modern/index.html:248
 msgid "Zone Logs"
 msgstr "ゾーンログ"
@@ -1953,7 +1981,7 @@ msgstr "ゾーンが正常に更新されました。"
 msgid "You do not have permission to create new zone templates."
 msgstr "新しいゾーンテンプレートを作成する権限がありません。"
 
-#: lib/Domain/Model/ZoneTemplate.php:189 lib/Domain/Model/ZoneTemplate.php:877
+#: lib/Domain/Model/ZoneTemplate.php:317 lib/Domain/Model/ZoneTemplate.php:1005
 msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 "この名前のゾーンテンプレートは既に存在します。別の名前を選択してください。"
@@ -2027,11 +2055,11 @@ msgstr "テンプレートが見つかりません。"
 msgid "User agreement accepted successfully."
 msgstr "ユーザー規約が正常に承諾されました。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:70
+#: lib/Application/Controller/ZoneOwnershipController.php:71
 msgid "Edit Zone"
 msgstr "ゾーンの編集"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:87
+#: lib/Application/Controller/ZoneOwnershipController.php:88
 msgid "You do not have permission to access this zone."
 msgstr "このゾーンにアクセスする権限がありません。"
 
@@ -2290,21 +2318,37 @@ msgstr ""
 msgid "You do not have the permission to add a master zone."
 msgstr "マスターゾーンを追加する権限がありません。"
 
-#: lib/Application/Controller/AddZoneMasterController.php:72
+#: lib/Application/Controller/AddZoneMasterController.php:73
 msgid "Add Primary Zone"
 msgstr "プライマリゾーンを追加"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:122
+#: lib/Application/Controller/BulkRegistrationController.php:94
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before adding zones."
+msgstr ""
+
+#: lib/Application/Controller/BulkRegistrationController.php:99
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before creating zones."
+msgstr ""
+
+#: lib/Application/Controller/BulkRegistrationController.php:171
 msgid "At least one user or group must be selected as owner."
 msgstr ""
 "所有者として少なくとも1人のユーザーまたは1つのグループを選択する必要がありま"
 "す。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:113
+#: lib/Application/Controller/BulkRegistrationController.php:181
+msgid "You do not have permission to create zones for other users."
+msgstr "他のユーザー用にゾーンを作成する権限がありません。"
+
+#: lib/Application/Controller/BulkRegistrationController.php:194
 msgid "There is already a zone with this name."
 msgstr "この名前のゾーンは既に存在します。"
 
-#: lib/Application/Controller/AddZoneMasterController.php:174
+#: lib/Application/Controller/AddZoneMasterController.php:221
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2312,7 +2356,7 @@ msgstr ""
 "ゾーンは正常に作成されましたが、検証エラーのためDNSSEC署名がスキップされまし"
 "た:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:186
+#: lib/Application/Controller/AddZoneMasterController.php:233
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2321,11 +2365,11 @@ msgstr ""
 "ましたが、PowerDNS APIがエラーを返しました。詳細はPowerDNSログを確認してくだ"
 "さい。"
 
-#: lib/Application/Controller/AddZoneMasterController.php:192
+#: lib/Application/Controller/AddZoneMasterController.php:239
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "ゾーンが正常に作成され、DNSSECで署名されました。"
 
-#: lib/Application/Controller/AddZoneMasterController.php:196
+#: lib/Application/Controller/AddZoneMasterController.php:243
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2333,7 +2377,7 @@ msgstr ""
 "ゾーンは作成され、署名が要求されましたが、検証に失敗しました。DNSSECキーを確"
 "認してください。"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:161
+#: lib/Application/Controller/AddZoneSlaveController.php:208
 msgid "Zone has been added successfully."
 msgstr "ゾーンが正常に追加されました。"
 
@@ -2354,11 +2398,11 @@ msgstr "PTRレコードの一括処理"
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "逆引きゾーンではバッチPTRレコード作成は利用できません。"
 
-#: lib/Application/Controller/ListZoneTemplController.php:57
+#: lib/Application/Controller/ListZoneTemplController.php:58
 msgid "You do not have the permission to view zone templates."
 msgstr "ゾーンテンプレートを表示する権限がありません。"
 
-#: lib/Application/Controller/ListZoneTemplController.php:61
+#: lib/Application/Controller/ListZoneTemplController.php:62
 msgid "Zone Templates"
 msgstr "ゾーンテンプレート"
 
@@ -2460,16 +2504,16 @@ msgstr "無効なSAMLプロバイダーです"
 msgid "SAML authentication failed: "
 msgstr "SAML認証に失敗しました: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:57
+#: lib/Application/Controller/ListForwardZonesController.php:59
 msgid "You do not have sufficient permissions to view this page."
 msgstr "このページを表示する十分な権限がありません。"
 
-#: lib/Application/Controller/ListReverseZonesController.php:78
+#: lib/Application/Controller/ListReverseZonesController.php:80
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
 msgstr "逆引きゾーン"
 
-#: lib/Application/Controller/ListForwardZonesController.php:186
+#: lib/Application/Controller/ListForwardZonesController.php:213
 msgid "You do not have the permission to see any zones."
 msgstr "ゾーンを表示する権限がありません。"
 
@@ -2530,7 +2574,7 @@ msgid "You do not have the permission to view this page."
 msgstr "このページを表示する権限がありません。"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:42
-#: templates/default/header.html:232 templates/modern/header.html:337
+#: templates/default/header.html:234 templates/modern/header.html:337
 msgid "Database Consistency"
 msgstr "データベース整合性"
 
@@ -2591,7 +2635,7 @@ msgstr "無効なチェックタイプです"
 msgid "You have logged out."
 msgstr "ログアウトしました。"
 
-#: lib/Domain/Model/ZoneTemplate.php:186 lib/Domain/Model/ZoneTemplate.php:626
+#: lib/Domain/Model/ZoneTemplate.php:314 lib/Domain/Model/ZoneTemplate.php:754
 msgid "You do not have the permission to add a zone template."
 msgstr "ゾーンテンプレートを追加する権限がありません。"
 
@@ -2619,11 +2663,11 @@ msgstr "無効なユーザーまたはグループIDです。"
 msgid "User removed from group successfully."
 msgstr "ユーザーがグループから正常に削除されました。"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:65
+#: lib/Application/Controller/AddZoneSlaveController.php:66
 msgid "You do not have the permission to add a slave zone."
 msgstr "スレーブゾーンを追加する権限がありません。"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:69
+#: lib/Application/Controller/AddZoneSlaveController.php:70
 msgid "Add Secondary Zone"
 msgstr "セカンダリゾーンを追加"
 
@@ -2635,7 +2679,7 @@ msgstr "無効なホスト名です。"
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "これは有効なIPv4またはIPv6アドレスではありません。"
 
-#: lib/Domain/Model/ZoneTemplate.php:286 lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:414 lib/Domain/Model/ZoneTemplate.php:452
 msgid "You do not have the permission to delete zone templates."
 msgstr "ゾーンテンプレートを削除する権限がありません。"
 
@@ -2671,21 +2715,21 @@ msgstr "ゾーンがグループから正常に削除されました。"
 msgid "Zone was not owned by this group."
 msgstr "ゾーンはこのグループが所有していませんでした。"
 
-#: lib/Application/Controller/ListForwardZonesController.php:61
+#: lib/Application/Controller/ListForwardZonesController.php:63
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "正引きゾーン"
 
-#: lib/Application/Controller/ListForwardZonesController.php:80
+#: lib/Application/Controller/ListForwardZonesController.php:82
 msgid "You do not have permission to sync zones from PowerDNS."
 msgstr "You do not have permission to sync zones from PowerDNS."
 
-#: lib/Application/Controller/ListForwardZonesController.php:91
+#: lib/Application/Controller/ListForwardZonesController.php:93
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 
-#: lib/Application/Controller/ListForwardZonesController.php:99
+#: lib/Application/Controller/ListForwardZonesController.php:101
 #, php-format
 msgid "Zone sync failed: %s"
 msgstr "Zone sync failed: %s"
@@ -2990,38 +3034,110 @@ msgstr "スーパーマスターが存在しません。"
 msgid "The supermaster has been deleted successfully."
 msgstr "スーパーマスターが正常に削除されました。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:67
+#: lib/Application/Controller/BulkRegistrationController.php:69
 #: templates/modern/index.html:179 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "一括登録"
 
-#: lib/Application/Controller/BulkRegistrationController.php:128
+#: lib/Application/Controller/BulkRegistrationController.php:132
+msgid "Owner must be a numeric user ID."
+msgstr "所有者は数値のユーザーIDである必要があります。"
+
+#: lib/Application/Controller/BulkRegistrationController.php:209
 msgid "Zones has been added successfully."
 msgstr "ゾーンが正常に追加されました。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:131
+#: lib/Application/Controller/BulkRegistrationController.php:212
 msgid "Some zone(s) could not be added."
 msgstr "一部のゾーンを追加できませんでした。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:178
+#: lib/Application/Controller/SetDefaultZoneTemplController.php:37
+msgid "You do not have the permission to change the default zone template."
+msgstr "デフォルトのゾーンテンプレートを変更する権限がありません。"
+
+#: lib/Application/Controller/SetDefaultZoneTemplController.php:51
+msgid ""
+"Default flag cleared, but the dns.default_zone_template config setting is "
+"still active."
+msgstr ""
+
+#: lib/Application/Controller/SetDefaultZoneTemplController.php:54
+msgid "Default zone template cleared."
+msgstr "デフォルトのゾーンテンプレートをクリアしました。"
+
+#: lib/Application/Controller/SetDefaultZoneTemplController.php:76
+msgid "Default zone template updated."
+msgstr "デフォルトのゾーンテンプレートを更新しました。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:181
+msgid "User-owner assignment is disabled by the current zone ownership mode."
+msgstr "現在のゾーン所有モードではユーザー所有者の割り当てが無効になっています。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:188
 msgid "Owner has been added successfully."
 msgstr "所有者が正常に追加されました。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:194
+#: lib/Application/Controller/ZoneOwnershipController.php:291
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr ""
+
+#: lib/Application/Controller/ZoneOwnershipController.php:223
+msgid ""
+"Cannot remove the last user owner: zone ownership mode is users_only and "
+"requires at least one user owner. Add another user owner first."
+msgstr ""
+
+#: lib/Application/Controller/ZoneOwnershipController.php:229
+msgid ""
+"Cannot remove user owner: zone ownership mode is groups_only and the zone "
+"has no group owners. Add a group first."
+msgstr ""
+
+#: lib/Application/Controller/ZoneOwnershipController.php:236
 msgid "Owner has been removed successfully."
 msgstr "所有者が正常に削除されました。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:215
+#: lib/Application/Controller/ZoneOwnershipController.php:249
+msgid ""
+"Group-ownership assignment is disabled by the current zone ownership mode."
+msgstr ""
+
+#: lib/Application/Controller/ZoneOwnershipController.php:261
 msgid "You do not have permission to assign this group."
 msgstr "このグループを割り当てる権限がありません。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:223
+#: lib/Application/Controller/ZoneOwnershipController.php:269
 msgid "Group has been added successfully."
 msgstr "グループが正常に追加されました。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:231
+#: lib/Application/Controller/ZoneOwnershipController.php:297
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr ""
+
+#: lib/Application/Controller/ZoneOwnershipController.php:303
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr ""
+
+#: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid "Group has been removed successfully."
 msgstr "グループが正常に削除されました。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:331
+msgid "Add another owner or a group first."
+msgstr "最初に別の所有者またはグループを追加してください。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:334
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr "最初に別のユーザー所有者を追加してください (ゾーン所有モードは users_only です)。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:336
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr "最初にグループを追加してください (ゾーン所有モードは groups_only です)。"
 
 #: lib/Application/Controller/NotFoundController.php:53
 #: templates/default/404.html:14 templates/modern/404.html:14
@@ -3054,12 +3170,12 @@ msgstr "ゾーンキーの有効化に失敗しました。"
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "DNSSECキーの切り替え中にエラーが発生しました。もう一度お試しください。"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:438
+#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "はい"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:438
+#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "いいえ"
@@ -3345,23 +3461,39 @@ msgstr "ユーザー名は既に存在します。別のものを選択してく
 msgid "Enter a valid user name."
 msgstr "有効なユーザー名を入力してください。"
 
-#: lib/Domain/Model/ZoneTemplate.php:213 lib/Domain/Model/ZoneTemplate.php:682
+#: lib/Domain/Model/ZoneTemplate.php:257
+msgid "Zone template not found."
+msgstr "ゾーンテンプレートが見つかりません。"
+
+#: lib/Domain/Model/ZoneTemplate.php:261
+msgid "Only global zone templates can be set as the default."
+msgstr "デフォルトとして設定できるのはグローバルなゾーンテンプレートのみです。"
+
+#: lib/Domain/Model/ZoneTemplate.php:277
+msgid "Error setting default zone template: "
+msgstr "デフォルトのゾーンテンプレートの設定中にエラーが発生しました: "
+
+#: lib/Domain/Model/ZoneTemplate.php:296
+msgid "Error clearing default zone template: "
+msgstr "デフォルトのゾーンテンプレートのクリア中にエラーが発生しました: "
+
+#: lib/Domain/Model/ZoneTemplate.php:341 lib/Domain/Model/ZoneTemplate.php:810
 msgid "Error creating zone template: "
 msgstr "ゾーンテンプレートの作成エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:249
+#: lib/Domain/Model/ZoneTemplate.php:377
 msgid "Error adding default SOA record to template: "
 msgstr "テンプレートへのデフォルトSOAレコード追加エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:436
 msgid "Error deleting zone template: "
 msgstr "ゾーンテンプレートの削除エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:332
+#: lib/Domain/Model/ZoneTemplate.php:460
 msgid "Error deleting user zone templates: "
 msgstr "ユーザーゾーンテンプレートの削除エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:449
+#: lib/Domain/Model/ZoneTemplate.php:577
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "このゾーンテンプレートにレコードを追加する権限がありません。"
 
@@ -3377,91 +3509,91 @@ msgstr "MX/SRVレコードの優先度は0から65535の間の数値である必
 msgid "You do not have the permission to edit this record."
 msgstr "このレコードを編集する権限がありません。"
 
-#: lib/Domain/Model/ZoneTemplate.php:541
+#: lib/Domain/Model/ZoneTemplate.php:669
 msgid "Error updating zone template record: "
 msgstr "ゾーンテンプレートレコードの更新エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:564
+#: lib/Domain/Model/ZoneTemplate.php:692
 msgid "Error deleting zone template record: "
 msgstr "ゾーンテンプレートレコードの削除エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:587
+#: lib/Domain/Model/ZoneTemplate.php:715
 msgid "Error checking template ownership: "
 msgstr "テンプレート所有権の確認エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:714 lib/Domain/Model/ZoneTemplate.php:756
+#: lib/Domain/Model/ZoneTemplate.php:842 lib/Domain/Model/ZoneTemplate.php:884
 msgid "Error retrieving zones using template: "
 msgstr "テンプレートを使用するゾーンの取得エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:812 lib/Domain/Model/ZoneTemplate.php:856
+#: lib/Domain/Model/ZoneTemplate.php:940 lib/Domain/Model/ZoneTemplate.php:984
 msgid "Failed to get list of zones using template: "
 msgstr "テンプレートを使用するゾーンのリスト取得に失敗しました："
 
-#: lib/Domain/Model/ZoneTemplate.php:874
+#: lib/Domain/Model/ZoneTemplate.php:1002
 msgid "You do not have the permission to edit a zone template."
 msgstr "ゾーンテンプレートを編集する権限がありません。"
 
-#: lib/Domain/Model/ZoneTemplate.php:918
+#: lib/Domain/Model/ZoneTemplate.php:1050
 msgid "Error unlinking zone from template: "
 msgstr "テンプレートからのゾーン解除エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:951 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:1099
 msgid "Error retrieving zones: "
 msgstr "ゾーンの取得エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:986
+#: lib/Domain/Model/ZoneTemplate.php:1118
 msgid "Error checking template name existence: "
 msgstr "テンプレート名の存在確認エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:1007
+#: lib/Domain/Model/ZoneTemplate.php:1139
 msgid "Error looking up template by name: "
 msgstr "テンプレート名による検索エラー: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1030
+#: lib/Domain/Model/ZoneTemplate.php:1162
 msgid "Error checking template existence: "
 msgstr "テンプレートの存在確認エラー："
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:101
+#: lib/Domain/Service/DatabaseConsistencyService.php:122
 msgid "All zones have owners"
 msgstr "すべてのゾーンに所有者がいます"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:108
+#: lib/Domain/Service/DatabaseConsistencyService.php:129
 #, php-format
 msgid "%d zones found without owners"
 msgstr "%d個のゾーンに所有者がいません"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:159
+#: lib/Domain/Service/DatabaseConsistencyService.php:180
 msgid "All slave zones have master IP addresses"
 msgstr "すべてのスレーブゾーンにマスターIPアドレスが設定されています"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:166
+#: lib/Domain/Service/DatabaseConsistencyService.php:187
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "%d個のスレーブゾーンにマスターIPアドレスが設定されていません"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:211
+#: lib/Domain/Service/DatabaseConsistencyService.php:232
 msgid "All records belong to existing zones"
 msgstr "すべてのレコードは既存のゾーンに属しています"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:218
+#: lib/Domain/Service/DatabaseConsistencyService.php:239
 #, php-format
 msgid "%d orphaned records found"
 msgstr "%d個の孤立したレコードが見つかりました"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:273
+#: lib/Domain/Service/DatabaseConsistencyService.php:294
 msgid "No duplicate SOA records found"
 msgstr "重複するSOAレコードは見つかりませんでした"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:280
+#: lib/Domain/Service/DatabaseConsistencyService.php:301
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d個のゾーンに重複するSOAレコードがあります"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:334
+#: lib/Domain/Service/DatabaseConsistencyService.php:355
 msgid "All zones have SOA records"
 msgstr "すべてのゾーンにSOAレコードがあります"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:341
+#: lib/Domain/Service/DatabaseConsistencyService.php:362
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "%d個のゾーンにSOAレコードがありません"
@@ -8970,7 +9102,7 @@ msgstr "%sに一致する逆引きゾーンがありません。"
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "%sから%sを指すPTRレコードが既に存在します。"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:113
+#: lib/Domain/Service/ReverseRecordCreator.php:112
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
@@ -9229,7 +9361,7 @@ msgstr "ステータス"
 msgid "Inactive"
 msgstr "非有効"
 
-#: lib/Module/ZoneImportExport/templates/import.html:141
+#: lib/Module/ZoneImportExport/templates/import.html:174
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -9390,7 +9522,7 @@ msgstr ""
 msgid "Update record"
 msgstr "レコードを更新"
 
-#: templates/modern/edit.html:551 templates/modern/users.html:219
+#: templates/modern/edit.html:556 templates/modern/users.html:219
 msgid "Reset"
 msgstr "リセット"
 
@@ -9512,7 +9644,7 @@ msgstr "ホスト名を入力してください"
 msgid "Account"
 msgstr "アカウント"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:548
+#: templates/modern/edit.html:190 templates/modern/edit.html:553
 msgid "Save changes"
 msgstr "変更を保存"
 
@@ -9721,7 +9853,7 @@ msgstr "グループを追加"
 msgid "No groups found"
 msgstr "グループが見つかりません"
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:98
 msgid "Search groups..."
 msgstr "グループを検索..."
 
@@ -9833,7 +9965,7 @@ msgstr "削除"
 msgid "and"
 msgstr "および"
 
-#: templates/modern/list_forward_zones.html:178
+#: templates/modern/list_forward_zones.html:174
 msgid "more..."
 msgstr "さらに..."
 
@@ -10040,7 +10172,7 @@ msgstr "設定"
 msgid "Logout"
 msgstr "ログアウト"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:536
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:541
 msgid "Edit comment"
 msgstr "コメントを編集"
 
@@ -10216,6 +10348,10 @@ msgid "Zone logs"
 msgstr "ゾーンログ"
 
 #: templates/modern/list_log_zones.html:17
+msgid "Showing logs for zones you own."
+msgstr "あなたが所有するゾーンのログを表示しています。"
+
+#: templates/modern/list_log_zones.html:23
 msgid "Zone Change Logs"
 msgstr "ゾーン変更ログ"
 
@@ -10223,7 +10359,7 @@ msgstr "ゾーン変更ログ"
 msgid "Domain name"
 msgstr "ドメイン名"
 
-#: templates/modern/list_log_zones.html:33
+#: templates/modern/list_log_zones.html:42
 msgid "All operations"
 msgstr "すべての操作"
 
@@ -10263,7 +10399,7 @@ msgstr "ホスト名のみを入力してください - ゾーン名は自動的
 msgid "Add Records"
 msgstr "レコードを追加"
 
-#: templates/modern/bulk_registration.html:104
+#: templates/modern/bulk_registration.html:119
 msgid "Instructions"
 msgstr "手順"
 
@@ -10400,7 +10536,7 @@ msgstr "はい、このユーザーを削除します"
 msgid "No, keep this user"
 msgstr "いいえ、このユーザーを保持します"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:237
 msgid "Save as Template"
 msgstr "テンプレートとして保存"
 
@@ -10681,7 +10817,7 @@ msgstr "所有者"
 msgid "Full name"
 msgstr "完全名"
 
-#: templates/modern/list_reverse_zones.html:126
+#: templates/modern/list_reverse_zones.html:127
 msgid "Associated Forward Zones"
 msgstr "関連する正引きゾーン"
 
@@ -10689,11 +10825,11 @@ msgstr "関連する正引きゾーン"
 msgid "Serial"
 msgstr "シリアル"
 
-#: templates/modern/bulk_registration.html:64
+#: templates/modern/bulk_registration.html:79
 msgid "Template"
 msgstr "テンプレート"
 
-#: templates/modern/list_reverse_zones.html:228
+#: templates/modern/list_reverse_zones.html:227
 msgid "-"
 msgstr "−"
 
@@ -10936,7 +11072,7 @@ msgstr "検索をクリア"
 msgid "Select All"
 msgstr "すべて選択"
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:102
 msgid "Clear All"
 msgstr "すべてクリア"
 
@@ -11371,15 +11507,15 @@ msgstr ""
 msgid "Ownership"
 msgstr "所有権"
 
-#: templates/modern/add_zone_slave.html:49
+#: templates/modern/add_zone_slave.html:50
 msgid "User Owner"
 msgstr "ユーザー所有者"
 
-#: templates/modern/zone-ownership.html:55
+#: templates/modern/zone-ownership.html:58
 msgid "No users assigned to this zone."
 msgstr "このゾーンに割り当てられたユーザーはいません。"
 
-#: templates/modern/zone-ownership.html:61
+#: templates/modern/zone-ownership.html:64
 msgid "Add User Owner"
 msgstr "ユーザー所有者を追加"
 
@@ -11387,23 +11523,23 @@ msgstr "ユーザー所有者を追加"
 msgid "Search users..."
 msgstr "ユーザーを検索..."
 
-#: templates/modern/add_zone_slave.html:76
+#: templates/modern/add_zone_slave.html:79
 msgid "You"
 msgstr "あなた"
 
-#: templates/modern/zone-ownership.html:83
+#: templates/modern/zone-ownership.html:86
 msgid "Add Owner"
 msgstr "所有者を追加"
 
-#: templates/modern/add_zone_slave.html:90
+#: templates/modern/add_zone_slave.html:94
 msgid "Group Ownership"
 msgstr "グループ所有権"
 
-#: templates/modern/zone-ownership.html:127
+#: templates/modern/zone-ownership.html:132
 msgid "No groups assigned to this zone."
 msgstr "このゾーンに割り当てられたグループはありません。"
 
-#: templates/modern/zone-ownership.html:133
+#: templates/modern/zone-ownership.html:138
 msgid "Add Group Ownership"
 msgstr "グループ所有権を追加"
 
@@ -11507,71 +11643,71 @@ msgstr "キーを紛失した場合は、再生成する必要があります。
 msgid "Edit"
 msgstr "編集"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:599
+#: templates/modern/edit.html:25 templates/modern/edit.html:604
 msgid "Add new record"
 msgstr "新しいレコードを追加"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:603
+#: templates/modern/edit.html:203 templates/modern/edit.html:608
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "DMARC、SPF、DKIM、CAA、TLSA、SRVレコード用のガイド付きウィザード"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:609
+#: templates/modern/edit.html:35 templates/modern/edit.html:614
 msgid "Multi-record mode"
 msgstr "マルチレコードモード"
 
-#: templates/modern/edit.html:557 templates/modern/edit.html:612
+#: templates/modern/edit.html:562 templates/modern/edit.html:617
 msgid "Bulk add"
 msgstr "一括追加"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:624
+#: templates/modern/edit.html:50 templates/modern/edit.html:629
 msgid "Failed to add"
 msgstr "追加に失敗しました"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:624
+#: templates/modern/edit.html:50 templates/modern/edit.html:629
 msgid "record(s). Please check the record format."
 msgstr "レコード。レコード形式を確認してください。"
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:626
+#: templates/modern/edit.html:52 templates/modern/edit.html:631
 msgid "Failed to add records. Please check the record format."
 msgstr "レコードの追加に失敗しました。レコード形式を確認してください。"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:629
+#: templates/modern/edit.html:55 templates/modern/edit.html:634
 msgid "Content validation failed:"
 msgstr "内容の検証に失敗しました："
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:629
+#: templates/modern/edit.html:55 templates/modern/edit.html:634
 msgid "Invalid value for record type"
 msgstr "レコードタイプの値が無効です"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:631
+#: templates/modern/edit.html:57 templates/modern/edit.html:636
 msgid "Please provide all required information."
 msgstr "必要な情報をすべて入力してください。"
 
-#: templates/modern/edit.html:654 templates/modern/add_record.html:72
+#: templates/modern/edit.html:659 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "PTRを追加"
 
-#: templates/modern/edit.html:657 templates/modern/add_record.html:75
+#: templates/modern/edit.html:662 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "A/AAAAを追加"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:696
+#: templates/modern/edit.html:121 templates/modern/edit.html:701
 msgid "This record already exists"
 msgstr "このレコードは既に存在します"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:708
+#: templates/modern/edit.html:133 templates/modern/edit.html:713
 msgid "Invalid priority"
 msgstr "優先度が無効です"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:715
+#: templates/modern/edit.html:140 templates/modern/edit.html:720
 msgid "Invalid TTL value"
 msgstr "TTL値が無効です"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:717
+#: templates/modern/edit.html:142 templates/modern/edit.html:722
 msgid "Provide TTL"
 msgstr "TTLを入力してください"
 
-#: templates/modern/edit.html:743 templates/modern/add_record.html:207
+#: templates/modern/edit.html:748 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11591,91 +11727,95 @@ msgstr "メタデータ"
 msgid "View Metadata"
 msgstr "メタデータを表示"
 
-#: templates/default/edit.html:243 templates/modern/edit.html:243
+#: templates/default/edit.html:232 templates/modern/edit.html:232
+msgid "Logs"
+msgstr "ログ"
+
+#: templates/default/edit.html:248 templates/modern/edit.html:248
 msgid "No records match your filter criteria."
 msgstr "フィルタ条件に一致するレコードがありません。"
 
-#: templates/default/edit.html:251 templates/modern/edit.html:251
+#: templates/default/edit.html:256 templates/modern/edit.html:256
 msgid "This zone does not have any records."
 msgstr "このゾーンにはレコードがありません。"
 
-#: templates/default/edit.html:263 templates/modern/edit.html:263
+#: templates/default/edit.html:268 templates/modern/edit.html:268
 msgid "Filter:"
 msgstr "フィルタ："
 
-#: templates/default/edit.html:269 templates/modern/edit.html:269
+#: templates/default/edit.html:274 templates/modern/edit.html:274
 msgid "Search by name or content"
 msgstr "名前または内容で検索"
 
-#: templates/default/edit.html:275 templates/modern/edit.html:275
+#: templates/default/edit.html:280 templates/modern/edit.html:280
 msgid "All Types"
 msgstr "すべてのタイプ"
 
-#: templates/default/edit.html:285 templates/modern/edit.html:285
+#: templates/default/edit.html:290 templates/modern/edit.html:290
 msgid "Filter by content"
 msgstr "内容でフィルタ"
 
-#: templates/default/edit.html:291 templates/modern/edit.html:291
+#: templates/default/edit.html:296 templates/modern/edit.html:296
 msgid "Apply"
 msgstr "適用"
 
-#: templates/default/edit.html:327 templates/modern/edit.html:327
+#: templates/default/edit.html:332 templates/modern/edit.html:332
 msgid "Showing"
 msgstr "表示中"
 
-#: templates/default/edit.html:327 templates/modern/edit.html:327
+#: templates/default/edit.html:332 templates/modern/edit.html:332
 msgid "of"
 msgstr "/"
 
-#: templates/default/edit.html:327 templates/modern/edit.html:327
+#: templates/default/edit.html:332 templates/modern/edit.html:332
 msgid "total records"
 msgstr "レコードの合計"
 
-#: templates/default/edit.html:405 templates/modern/edit.html:405
+#: templates/default/edit.html:410 templates/modern/edit.html:410
 msgid "Last modified"
 msgstr "最終更新"
 
-#: templates/default/edit.html:519 templates/modern/edit.html:519
+#: templates/default/edit.html:524 templates/modern/edit.html:524
 msgid "Edit selected"
 msgstr "選択項目を編集"
 
-#: templates/modern/edit.html:523 templates/modern/search.html:486
+#: templates/modern/edit.html:528 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "レコードを削除"
 
-#: templates/modern/edit.html:531 templates/modern/search.html:93
+#: templates/modern/edit.html:536 templates/modern/search.html:93
 msgid "Comments"
 msgstr "コメント"
 
-#: templates/default/edit.html:561 templates/modern/edit.html:561
+#: templates/default/edit.html:566 templates/modern/edit.html:566
 msgid "Import"
 msgstr "インポート"
 
-#: templates/default/edit.html:578 templates/modern/edit.html:578
+#: templates/default/edit.html:583 templates/modern/edit.html:583
 msgid "Generate PTR"
 msgstr "PTRを生成"
 
-#: templates/modern/edit.html:757 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "ゾーン構成"
 
-#: templates/modern/edit.html:799 templates/modern/edit.html:828
+#: templates/modern/edit.html:804 templates/modern/edit.html:833
 msgid "Change"
 msgstr "変更"
 
-#: templates/modern/edit.html:792 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "マスターNSのIPアドレス"
 
-#: templates/default/edit.html:849 templates/modern/edit.html:849
+#: templates/default/edit.html:854 templates/modern/edit.html:854
 msgid "Manage DNSSEC"
 msgstr "DNSSECを管理"
 
-#: templates/default/edit.html:856 templates/modern/edit.html:856
+#: templates/default/edit.html:861 templates/modern/edit.html:861
 msgid "Sign zone"
 msgstr "ゾーンの署名"
 
-#: templates/default/edit.html:860 templates/modern/edit.html:860
+#: templates/default/edit.html:865 templates/modern/edit.html:865
 msgid "Not signed"
 msgstr "署名なし"
 
@@ -11736,7 +11876,7 @@ msgstr "ゾーンの総数："
 msgid "There are no forward zones to show in this listing."
 msgstr "この一覧に表示する正引きゾーンがありません。"
 
-#: templates/modern/list_forward_zones.html:210
+#: templates/modern/list_forward_zones.html:206
 msgid "PTR"
 msgstr "PTR"
 
@@ -11992,6 +12132,10 @@ msgstr "例：example.com"
 msgid "Zone type (usually NATIVE)"
 msgstr "ゾーンタイプ（通常はNATIVE）"
 
+#: templates/modern/list_zone_templ.html:54
+msgid "default"
+msgstr "デフォルト"
+
 #: templates/modern/add_zone_master.html:58
 msgid "Optional: Apply predefined records from a template"
 msgstr "任意：テンプレートから事前定義されたレコードを適用"
@@ -12004,31 +12148,31 @@ msgstr "DNSSECを有効化"
 msgid "Secure this zone with DNSSEC signing"
 msgstr "DNSSEC署名でこのゾーンを保護"
 
-#: templates/modern/add_zone_slave.html:54
+#: templates/modern/add_zone_slave.html:55
 msgid "Selected:"
 msgstr "選択済み:"
 
-#: templates/modern/add_zone_slave.html:59
+#: templates/modern/add_zone_slave.html:61
 msgid "No user owner"
 msgstr "ユーザー所有者なし"
 
-#: templates/modern/add_zone_slave.html:60
+#: templates/modern/add_zone_slave.html:62
 msgid "Zone will be owned only by groups"
 msgstr "ゾーンはグループのみが所有します"
 
-#: templates/modern/add_zone_slave.html:82
+#: templates/modern/add_zone_slave.html:85
 msgid "Optional: Select a user responsible for this zone"
 msgstr "オプション: このゾーンの責任者となるユーザーを選択"
 
-#: templates/modern/add_zone_slave.html:105
+#: templates/modern/add_zone_slave.html:109
 msgid "members"
 msgstr "メンバー"
 
-#: templates/modern/add_zone_slave.html:111
+#: templates/modern/add_zone_slave.html:115
 msgid "Optional: Select one or more groups"
 msgstr "オプション: 1つ以上のグループを選択"
 
-#: templates/modern/add_zone_slave.html:126
+#: templates/modern/add_zone_slave.html:130
 msgid "Add zone"
 msgstr "ゾーンを追加"
 
@@ -12056,39 +12200,59 @@ msgstr "同期状態"
 msgid "No results found"
 msgstr "結果が見つかりません"
 
-#: templates/modern/list_zone_templ.html:77
+#: templates/modern/list_zone_templ.html:54
+msgid "Pre-selected on the add-zone form"
+msgstr "ゾーン追加フォームで事前選択されます"
+
+#: templates/modern/list_zone_templ.html:56
+msgid "Configured via dns.default_zone_template - edit settings.php to change"
+msgstr "dns.default_zone_template で設定されています - 変更するには settings.php を編集してください"
+
+#: templates/modern/list_zone_templ.html:56
+msgid "default (config)"
+msgstr "デフォルト (設定)"
+
+#: templates/modern/list_zone_templ.html:86
 msgid "private"
 msgstr "プライベート"
 
-#: templates/modern/list_zone_templ.html:79
+#: templates/modern/list_zone_templ.html:88
 msgid "global"
 msgstr "グローバル"
 
-#: templates/modern/list_zone_templ.html:87
+#: templates/modern/list_zone_templ.html:96
 msgid "Zones need updating"
 msgstr "ゾーンの更新が必要"
 
-#: templates/modern/list_zone_templ.html:91
+#: templates/modern/list_zone_templ.html:100
 msgid "All zones are synchronized"
 msgstr "すべてのゾーンが同期されています"
 
-#: templates/modern/list_zone_templ.html:92
+#: templates/modern/list_zone_templ.html:101
 msgid "Synced"
 msgstr "同期済み"
+
+#: templates/modern/list_zone_templ.html:116
+msgid "Unset as default"
+msgstr "デフォルトを解除"
+
+#: templates/modern/list_zone_templ.html:121
+msgid "Set as default"
+msgstr "デフォルトに設定"
 
 #: templates/modern/edit_zone_templ.html:107
 msgid "No zones are using this template"
 msgstr "このテンプレートを使用しているゾーンはありません"
 
-#: templates/modern/list_zone_templ.html:104
+#: templates/modern/list_zone_templ.html:129
 msgid "View zones using this template"
 msgstr "このテンプレートを使用するゾーンを表示"
 
-#: templates/modern/list_zone_templ.html:133
+#: templates/modern/list_zone_templ.html:158
 msgid "Template Behavior:"
 msgstr "テンプレートの動作:"
 
-#: templates/modern/list_zone_templ.html:134
+#: templates/modern/list_zone_templ.html:159
 msgid ""
 "Changing a zone's template overwrites template-based records but preserves "
 "manual additions. Template modifications don't automatically update zones - "
@@ -12354,57 +12518,57 @@ msgstr "APIキー："
 msgid "Bulk registration"
 msgstr "一括登録"
 
-#: templates/modern/bulk_registration.html:46
-msgid "Please select an owner"
-msgstr "所有者を選択してください"
+#: lib/Module/ZoneImportExport/templates/import.html:138
+msgid "Group ownership"
+msgstr "グループ所有"
 
-#: templates/modern/bulk_registration.html:50
+#: templates/modern/bulk_registration.html:65
 msgid "Zone Type"
 msgstr "ゾーンタイプ"
 
-#: templates/modern/bulk_registration.html:74
+#: templates/modern/bulk_registration.html:89
 msgid "Domains"
 msgstr "ドメイン"
 
-#: templates/modern/bulk_registration.html:76
+#: templates/modern/bulk_registration.html:91
 msgid "Provide a domain name(s)"
 msgstr "ドメイン名を入力"
 
-#: templates/modern/bulk_registration.html:77
+#: templates/modern/bulk_registration.html:92
 msgid "Type one domain per line"
 msgstr "1行に1つのドメインを入力"
 
-#: templates/modern/bulk_registration.html:83
+#: templates/modern/bulk_registration.html:98
 msgid "Add Zones"
 msgstr "ゾーンを追加"
 
-#: templates/modern/bulk_registration.html:99
+#: templates/modern/bulk_registration.html:114
 msgid "About Bulk Registration"
 msgstr "一括登録について"
 
-#: templates/modern/bulk_registration.html:105
+#: templates/modern/bulk_registration.html:120
 msgid "This tool allows you to create multiple DNS zones at once."
 msgstr "このツールを使用すると、複数のDNSゾーンを一度に作成できます。"
 
-#: templates/modern/bulk_registration.html:107
+#: templates/modern/bulk_registration.html:122
 msgid "Enter one domain name per line in the Domains field"
 msgstr "ドメインフィールドに1行に1つのドメイン名を入力してください"
 
-#: templates/modern/bulk_registration.html:108
+#: templates/modern/bulk_registration.html:123
 msgid "Select a zone template to apply standard records to all zones"
 msgstr ""
 "すべてのゾーンに標準レコードを適用するゾーンテンプレートを選択してください"
 
-#: templates/modern/bulk_registration.html:109
+#: templates/modern/bulk_registration.html:124
 msgid "The chosen owner will have full access to all created zones"
 msgstr ""
 "選択した所有者は、作成されたすべてのゾーンへの完全なアクセス権を持ちます"
 
-#: templates/modern/bulk_registration.html:113
+#: templates/modern/bulk_registration.html:128
 msgid "How It Works"
 msgstr "動作原理"
 
-#: templates/modern/bulk_registration.html:114
+#: templates/modern/bulk_registration.html:129
 msgid ""
 "The system will attempt to create each zone with the same settings. Failed "
 "domains will be displayed so you can correct any issues and try again."
@@ -12412,25 +12576,25 @@ msgstr ""
 "システムは同じ設定で各ゾーンの作成を試行します。失敗したドメインが表示される"
 "ので、問題を修正して再試行できます。"
 
-#: templates/modern/bulk_registration.html:122
+#: templates/modern/bulk_registration.html:137
 msgid "Tips & Recommendations"
 msgstr "ヒントと推奨事項"
 
-#: templates/modern/bulk_registration.html:128
+#: templates/modern/bulk_registration.html:143
 msgid "Use NATIVE zone type for most standard setups"
 msgstr "ほとんどの標準設定ではNATIVEゾーンタイプを使用してください"
 
-#: templates/modern/bulk_registration.html:129
+#: templates/modern/bulk_registration.html:144
 msgid "Create a template first if you need standard records for all zones"
 msgstr ""
 "すべてのゾーンに標準レコードが必要な場合は、まずテンプレートを作成してくださ"
 "い"
 
-#: templates/modern/bulk_registration.html:130
+#: templates/modern/bulk_registration.html:145
 msgid "You can copy and paste a list of domains from a spreadsheet"
 msgstr "スプレッドシートからドメインのリストをコピー&ペーストできます"
 
-#: templates/modern/bulk_registration.html:131
+#: templates/modern/bulk_registration.html:146
 msgid "Make sure the domain names follow valid DNS naming conventions"
 msgstr "ドメイン名が有効なDNS命名規則に従っていることを確認してください"
 
@@ -13240,11 +13404,11 @@ msgstr "正引きゾーン"
 msgid "Reverse zones"
 msgstr "逆引きゾーン"
 
-#: templates/default/header.html:142 templates/modern/header.html:203
+#: templates/default/header.html:144 templates/modern/header.html:203
 msgid "List users"
 msgstr "ユーザーをリスト"
 
-#: templates/default/header.html:163 templates/modern/header.html:235
+#: templates/default/header.html:165 templates/modern/header.html:235
 msgid "List groups"
 msgstr "グループをリスト"
 
@@ -13252,23 +13416,23 @@ msgstr "グループをリスト"
 msgid "Group logs"
 msgstr "グループログ"
 
-#: templates/default/header.html:183 templates/modern/header.html:265
+#: templates/default/header.html:185 templates/modern/header.html:265
 msgid "List templates"
 msgstr "テンプレートをリスト"
 
-#: templates/default/header.html:200 templates/modern/header.html:290
+#: templates/default/header.html:202 templates/modern/header.html:290
 msgid "List zone templates"
 msgstr "ゾーンテンプレートを一覧表示"
 
-#: templates/default/header.html:227 templates/modern/header.html:330
+#: templates/default/header.html:229 templates/modern/header.html:330
 msgid "API Documentation"
 msgstr "APIドキュメント"
 
-#: templates/default/header.html:320 templates/modern/header.html:491
+#: templates/default/header.html:322 templates/modern/header.html:491
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:324 templates/modern/header.html:495
+#: templates/default/header.html:326 templates/modern/header.html:495
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -13276,7 +13440,7 @@ msgstr ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
 
-#: templates/default/header.html:326 templates/modern/header.html:497
+#: templates/default/header.html:328 templates/modern/header.html:497
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -13284,7 +13448,7 @@ msgstr ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
 
-#: templates/default/header.html:328 templates/modern/header.html:499
+#: templates/default/header.html:330 templates/modern/header.html:499
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -13294,11 +13458,13 @@ msgstr ""
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 
-#: templates/default/header.html:330 templates/modern/header.html:501
+#: templates/default/header.html:332 templates/modern/header.html:501
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
-msgstr "APIが再び到達可能になるまで、一部の機能を利用できない場合があります。詳細についてはPowerDNSサーバーログを確認してください。"
+msgstr ""
+"APIが再び到達可能になるまで、一部の機能を利用できない場合があります。詳細につ"
+"いてはPowerDNSサーバーログを確認してください。"
 
 #: templates/modern/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
@@ -13751,7 +13917,7 @@ msgstr "ファイル:"
 msgid "Zone:"
 msgstr "ゾーン:"
 
-#: lib/Module/ZoneImportExport/templates/import.html:167
+#: lib/Module/ZoneImportExport/templates/import.html:200
 msgid "Target zone"
 msgstr "対象ゾーン"
 
@@ -13775,47 +13941,59 @@ msgstr "すべてのレコードを追加"
 msgid "Zone type"
 msgstr "ゾーンタイプ"
 
-#: lib/Module/ZoneImportExport/templates/import.html:138
+#: lib/Module/ZoneImportExport/templates/import.html:153
+msgid "Required: select at least one group."
+msgstr "必須: 少なくとも1つのグループを選択してください。"
+
+#: lib/Module/ZoneImportExport/templates/import.html:155
+msgid "Optional: select one or more groups."
+msgstr "任意: 1つ以上のグループを選択してください。"
+
+#: lib/Module/ZoneImportExport/templates/import.html:162
+msgid "No user owner — zone is owned only by the selected groups"
+msgstr "ユーザー所有者なし - ゾーンは選択されたグループのみが所有しています"
+
+#: lib/Module/ZoneImportExport/templates/import.html:171
 msgid "Confirm import"
 msgstr "インポートの確認"
 
-#: lib/Module/ZoneImportExport/templates/import.html:153
+#: lib/Module/ZoneImportExport/templates/import.html:186
 msgid "Import Zone File"
 msgstr "ゾーンファイルのインポート"
 
-#: lib/Module/ZoneImportExport/templates/import.html:160
+#: lib/Module/ZoneImportExport/templates/import.html:193
 msgid "Zone file"
 msgstr "ゾーンファイル"
 
-#: lib/Module/ZoneImportExport/templates/import.html:162
+#: lib/Module/ZoneImportExport/templates/import.html:195
 msgid "Standard BIND zone file format. Max size:"
 msgstr "標準 BIND ゾーンファイル形式。最大サイズ:"
 
-#: lib/Module/ZoneImportExport/templates/import.html:177
+#: lib/Module/ZoneImportExport/templates/import.html:210
 msgid "Upload and preview"
 msgstr "アップロードしてプレビュー"
 
-#: lib/Module/ZoneImportExport/templates/import.html:187
+#: lib/Module/ZoneImportExport/templates/import.html:220
 msgid "Supported formats"
 msgstr "対応フォーマット"
 
-#: lib/Module/ZoneImportExport/templates/import.html:191
+#: lib/Module/ZoneImportExport/templates/import.html:224
 msgid "Standard BIND zone files"
 msgstr "標準 BIND ゾーンファイル"
 
-#: lib/Module/ZoneImportExport/templates/import.html:192
+#: lib/Module/ZoneImportExport/templates/import.html:225
 msgid "Cloudflare zone exports"
 msgstr "Cloudflare ゾーンエクスポート"
 
-#: lib/Module/ZoneImportExport/templates/import.html:193
+#: lib/Module/ZoneImportExport/templates/import.html:226
 msgid "$ORIGIN and $TTL directives"
 msgstr "$ORIGIN および $TTL ディレクティブ"
 
-#: lib/Module/ZoneImportExport/templates/import.html:194
+#: lib/Module/ZoneImportExport/templates/import.html:227
 msgid "Multi-line records"
 msgstr "複数行レコード"
 
-#: lib/Module/ZoneImportExport/templates/import.html:195
+#: lib/Module/ZoneImportExport/templates/import.html:228
 msgid "IDN domain names"
 msgstr "IDN ドメイン名"
 
@@ -14570,13 +14748,8 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
-# OBSOLETE: "again. Check your PowerDNS server log for details."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
-# OBSOLETE: "again. Check your PowerDNS server log for details."
+# OBSOLETE: msgid "Please select an owner"
+# OBSOLETE: msgstr "所有者を選択してください"
 
 
 

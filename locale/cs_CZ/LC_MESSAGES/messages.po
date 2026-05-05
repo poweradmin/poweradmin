@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-27 15:38+0300\n"
+"POT-Creation-Date: 2026-05-05 07:01+0300\n"
 "PO-Revision-Date: 2025-06-02 07:22+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -34,7 +34,7 @@ msgstr "Průvodci DNS nejsou povoleni."
 msgid "Invalid zone ID."
 msgstr "Neplatné ID zóny."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:96
+#: lib/Application/Controller/ZoneOwnershipController.php:97
 msgid "Zone not found."
 msgstr "Zóna nebyla nalezena."
 
@@ -333,7 +333,7 @@ msgstr ""
 "celý certifikát."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:668
+#: templates/modern/edit.html:93 templates/modern/edit.html:673
 msgid "Invalid hostname format"
 msgstr "Neplatný formát názvu hostitele"
 
@@ -1199,60 +1199,88 @@ msgstr "Neplatný formát domény"
 msgid "Email Previews"
 msgstr "Náhledy e-mailů"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:74
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:76
 msgid "You do not have permission to import zones."
 msgstr "Nemáte oprávnění importovat zóny."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:116
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:118
 msgid "Please select a valid zone file to upload."
 msgstr "Vyberte prosím platný zónový soubor k nahrání."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:122
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:124
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
 msgstr "Velikost souboru překračuje maximální povolenou velikost %s."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:128
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:130
 msgid "The uploaded file is empty or could not be read."
 msgstr "Nahraný soubor je prázdný nebo jej nelze přečíst."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:137
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:139
 msgid "No valid records found in the uploaded file."
 msgstr "V nahraném souboru nebyly nalezeny žádné platné záznamy."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:279
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
 msgid "You do not have permission to modify this zone."
 msgstr "Nemáte oprávnění upravovat tuto zónu."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:235
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:245
+msgid ""
+"Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
+"exist. Create a group first."
+msgstr ""
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:247
+msgid ""
+"Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
+"a member of any group. Ask an administrator to add you to a group first."
+msgstr ""
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:263
 msgid "Import session expired. Please upload the file again."
 msgstr "Relace importu vypršela. Nahrajte prosím soubor znovu."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:242
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:270
 msgid "Invalid import data. Please upload the file again."
 msgstr "Neplatná data importu. Nahrajte prosím soubor znovu."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:269
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:297
 msgid "The selected zone does not exist."
 msgstr "Vybraná zóna neexistuje."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:295
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:323
 msgid "You do not have permission to add zones."
 msgstr "Nemáte oprávnění přidávat zóny."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:300
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:328
 msgid "Zone name is required."
 msgstr "Název zóny je povinný."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:305
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:333
 msgid "A zone with this name already exists."
 msgstr "Zóna s tímto názvem již existuje."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:311
+#: lib/Application/Controller/BulkRegistrationController.php:151
+#, php-format
+msgid "Unknown group ID(s): %s"
+msgstr "Neznámé ID skupiny: %s"
+
+#: lib/Application/Controller/BulkRegistrationController.php:163
+#, php-format
+msgid "You can only assign groups you are a member of (disallowed: %s)"
+msgstr "Můžete přiřazovat pouze skupiny, jichž jste členem (nepovoleno: %s)"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:368
+msgid ""
+"Cannot create a new zone via import: select at least one group, or leave "
+"\"No user owner\" unchecked."
+msgstr ""
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:372
 msgid "Failed to create zone."
 msgstr "Nepodařilo se vytvořit zónu."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:317
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:378
 msgid "Failed to retrieve created zone."
 msgstr "Nepodařilo se načíst vytvořenou zónu."
 
@@ -1376,7 +1404,7 @@ msgstr ""
 "Žádné platné záznamy nebyly vybrány ke smazání nebo nemáte oprávnění je "
 "smazat."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:74
+#: lib/Application/Controller/ZoneOwnershipController.php:75
 msgid "Invalid or unexpected input given."
 msgstr "Neplatný nebo neočekávaný vstup."
 
@@ -1922,7 +1950,7 @@ msgstr "Nemáte oprávnění smazat tento záznam."
 msgid "The record could not be deleted."
 msgstr "Záznam nemohl být smazán."
 
-#: lib/Application/Controller/ListLogZonesController.php:62
+#: lib/Application/Controller/ListLogZonesController.php:72
 #: templates/default/index.html:248 templates/modern/index.html:248
 msgid "Zone Logs"
 msgstr "Protokoly zón"
@@ -1968,7 +1996,7 @@ msgstr "Zóny byly úspěšně aktualizovány."
 msgid "You do not have permission to create new zone templates."
 msgstr "Nemáte oprávnění vytvářet nové šablony zón."
 
-#: lib/Domain/Model/ZoneTemplate.php:189 lib/Domain/Model/ZoneTemplate.php:877
+#: lib/Domain/Model/ZoneTemplate.php:317 lib/Domain/Model/ZoneTemplate.php:1005
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Šablona zóny s tímto názvem již existuje, vyberte prosím jinou."
 
@@ -2045,11 +2073,11 @@ msgstr "Šablona nenalezena."
 msgid "User agreement accepted successfully."
 msgstr "Uživatelská smlouva byla úspěšně přijata."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:70
+#: lib/Application/Controller/ZoneOwnershipController.php:71
 msgid "Edit Zone"
 msgstr "Upravit zónu"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:87
+#: lib/Application/Controller/ZoneOwnershipController.php:88
 msgid "You do not have permission to access this zone."
 msgstr "Nemáte oprávnění přistupovat k této zóně."
 
@@ -2305,19 +2333,35 @@ msgstr ""
 msgid "You do not have the permission to add a master zone."
 msgstr "Nemáte oprávnění přidat hlavní zónu."
 
-#: lib/Application/Controller/AddZoneMasterController.php:72
+#: lib/Application/Controller/AddZoneMasterController.php:73
 msgid "Add Primary Zone"
 msgstr "Přidat primární zónu"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:122
+#: lib/Application/Controller/BulkRegistrationController.php:94
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before adding zones."
+msgstr ""
+
+#: lib/Application/Controller/BulkRegistrationController.php:99
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before creating zones."
+msgstr ""
+
+#: lib/Application/Controller/BulkRegistrationController.php:171
 msgid "At least one user or group must be selected as owner."
 msgstr "Alespoň jeden uživatel nebo skupina musí být vybrán jako vlastník."
 
-#: lib/Application/Controller/BulkRegistrationController.php:113
+#: lib/Application/Controller/BulkRegistrationController.php:181
+msgid "You do not have permission to create zones for other users."
+msgstr "Nemáte oprávnění vytvářet zóny pro jiné uživatele."
+
+#: lib/Application/Controller/BulkRegistrationController.php:194
 msgid "There is already a zone with this name."
 msgstr "Zóna s tímto názvem již existuje."
 
-#: lib/Application/Controller/AddZoneMasterController.php:174
+#: lib/Application/Controller/AddZoneMasterController.php:221
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2325,7 +2369,7 @@ msgstr ""
 "Zóna byla úspěšně vytvořena, ale podepsání DNSSEC bylo přeskočeno kvůli "
 "chybám ověření:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:186
+#: lib/Application/Controller/AddZoneMasterController.php:233
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2334,11 +2378,11 @@ msgstr ""
 "zóny proběhlo úspěšně, ale PowerDNS API vrátilo chybu. Zkontrolujte logy "
 "PowerDNS pro podrobnosti."
 
-#: lib/Application/Controller/AddZoneMasterController.php:192
+#: lib/Application/Controller/AddZoneMasterController.php:239
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zóna byla úspěšně vytvořena a podepsána pomocí DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:196
+#: lib/Application/Controller/AddZoneMasterController.php:243
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2346,7 +2390,7 @@ msgstr ""
 "Zóna byla vytvořena a podepsání bylo vyžádáno, ale ověření se nezdařilo. "
 "Zkontrolujte klíče DNSSEC."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:161
+#: lib/Application/Controller/AddZoneSlaveController.php:208
 msgid "Zone has been added successfully."
 msgstr "Zóna byla úspěšně přidána."
 
@@ -2367,11 +2411,11 @@ msgstr "Dávkové PTR záznamy"
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Dávkové vytváření PTR záznamů není dostupné pro reverzní zóny."
 
-#: lib/Application/Controller/ListZoneTemplController.php:57
+#: lib/Application/Controller/ListZoneTemplController.php:58
 msgid "You do not have the permission to view zone templates."
 msgstr "Nemáte oprávnění zobrazit šablony zón."
 
-#: lib/Application/Controller/ListZoneTemplController.php:61
+#: lib/Application/Controller/ListZoneTemplController.php:62
 msgid "Zone Templates"
 msgstr "Šablony zón"
 
@@ -2473,16 +2517,16 @@ msgstr "Neplatný poskytovatel SAML"
 msgid "SAML authentication failed: "
 msgstr "Ověření SAML se nezdařilo: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:57
+#: lib/Application/Controller/ListForwardZonesController.php:59
 msgid "You do not have sufficient permissions to view this page."
 msgstr "Nemáte dostatečná oprávnění k zobrazení této stránky."
 
-#: lib/Application/Controller/ListReverseZonesController.php:78
+#: lib/Application/Controller/ListReverseZonesController.php:80
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
 msgstr "Reverzní zóny"
 
-#: lib/Application/Controller/ListForwardZonesController.php:186
+#: lib/Application/Controller/ListForwardZonesController.php:213
 msgid "You do not have the permission to see any zones."
 msgstr "Nemáte oprávnění zobrazit žádné zóny."
 
@@ -2551,7 +2595,7 @@ msgid "You do not have the permission to view this page."
 msgstr "Nemáte oprávnění zobrazit tuto stránku."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:42
-#: templates/default/header.html:232 templates/modern/header.html:337
+#: templates/default/header.html:234 templates/modern/header.html:337
 msgid "Database Consistency"
 msgstr "Konzistence databáze"
 
@@ -2612,7 +2656,7 @@ msgstr "Neplatný typ kontroly"
 msgid "You have logged out."
 msgstr "Byli jste odhlášeni."
 
-#: lib/Domain/Model/ZoneTemplate.php:186 lib/Domain/Model/ZoneTemplate.php:626
+#: lib/Domain/Model/ZoneTemplate.php:314 lib/Domain/Model/ZoneTemplate.php:754
 msgid "You do not have the permission to add a zone template."
 msgstr "Nemáte oprávnění přidat šablonu zóny."
 
@@ -2640,11 +2684,11 @@ msgstr "Neplatné ID uživatele nebo skupiny."
 msgid "User removed from group successfully."
 msgstr "Uživatel byl úspěšně odebrán ze skupiny."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:65
+#: lib/Application/Controller/AddZoneSlaveController.php:66
 msgid "You do not have the permission to add a slave zone."
 msgstr "Nemáte oprávnění přidat podřízenou zónu."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:69
+#: lib/Application/Controller/AddZoneSlaveController.php:70
 msgid "Add Secondary Zone"
 msgstr "Přidat sekundární zónu"
 
@@ -2656,7 +2700,7 @@ msgstr "Neplatné jméno hostitele."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Toto není platná IPv4 nebo IPv6 adresa."
 
-#: lib/Domain/Model/ZoneTemplate.php:286 lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:414 lib/Domain/Model/ZoneTemplate.php:452
 msgid "You do not have the permission to delete zone templates."
 msgstr "Nemáte oprávnění mazat šablony zón."
 
@@ -2692,21 +2736,21 @@ msgstr "Zóna byla úspěšně odebrána ze skupiny."
 msgid "Zone was not owned by this group."
 msgstr "Zóna nebyla vlastněna touto skupinou."
 
-#: lib/Application/Controller/ListForwardZonesController.php:61
+#: lib/Application/Controller/ListForwardZonesController.php:63
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Dopředné zóny"
 
-#: lib/Application/Controller/ListForwardZonesController.php:80
+#: lib/Application/Controller/ListForwardZonesController.php:82
 msgid "You do not have permission to sync zones from PowerDNS."
 msgstr "You do not have permission to sync zones from PowerDNS."
 
-#: lib/Application/Controller/ListForwardZonesController.php:91
+#: lib/Application/Controller/ListForwardZonesController.php:93
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 
-#: lib/Application/Controller/ListForwardZonesController.php:99
+#: lib/Application/Controller/ListForwardZonesController.php:101
 #, php-format
 msgid "Zone sync failed: %s"
 msgstr "Zone sync failed: %s"
@@ -3015,38 +3059,110 @@ msgstr "Super master neexistuje."
 msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster byl úspěšně smazán."
 
-#: lib/Application/Controller/BulkRegistrationController.php:67
+#: lib/Application/Controller/BulkRegistrationController.php:69
 #: templates/modern/index.html:179 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Hromadná registrace"
 
-#: lib/Application/Controller/BulkRegistrationController.php:128
+#: lib/Application/Controller/BulkRegistrationController.php:132
+msgid "Owner must be a numeric user ID."
+msgstr "Vlastník musí být číselné ID uživatele."
+
+#: lib/Application/Controller/BulkRegistrationController.php:209
 msgid "Zones has been added successfully."
 msgstr "Zóny byly úspěšně přidány."
 
-#: lib/Application/Controller/BulkRegistrationController.php:131
+#: lib/Application/Controller/BulkRegistrationController.php:212
 msgid "Some zone(s) could not be added."
 msgstr "Některé zóny nemohly být přidány."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:178
+#: lib/Application/Controller/SetDefaultZoneTemplController.php:37
+msgid "You do not have the permission to change the default zone template."
+msgstr "Nemáte oprávnění měnit výchozí šablonu zóny."
+
+#: lib/Application/Controller/SetDefaultZoneTemplController.php:51
+msgid ""
+"Default flag cleared, but the dns.default_zone_template config setting is "
+"still active."
+msgstr ""
+
+#: lib/Application/Controller/SetDefaultZoneTemplController.php:54
+msgid "Default zone template cleared."
+msgstr "Výchozí šablona zóny byla zrušena."
+
+#: lib/Application/Controller/SetDefaultZoneTemplController.php:76
+msgid "Default zone template updated."
+msgstr "Výchozí šablona zóny byla aktualizována."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:181
+msgid "User-owner assignment is disabled by the current zone ownership mode."
+msgstr "Přiřazení uživatele jako vlastníka je zakázáno aktuálním režimem vlastnictví zóny."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:188
 msgid "Owner has been added successfully."
 msgstr "Vlastník byl úspěšně přidán."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:194
+#: lib/Application/Controller/ZoneOwnershipController.php:291
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr ""
+
+#: lib/Application/Controller/ZoneOwnershipController.php:223
+msgid ""
+"Cannot remove the last user owner: zone ownership mode is users_only and "
+"requires at least one user owner. Add another user owner first."
+msgstr ""
+
+#: lib/Application/Controller/ZoneOwnershipController.php:229
+msgid ""
+"Cannot remove user owner: zone ownership mode is groups_only and the zone "
+"has no group owners. Add a group first."
+msgstr ""
+
+#: lib/Application/Controller/ZoneOwnershipController.php:236
 msgid "Owner has been removed successfully."
 msgstr "Vlastník byl úspěšně odebrán."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:215
+#: lib/Application/Controller/ZoneOwnershipController.php:249
+msgid ""
+"Group-ownership assignment is disabled by the current zone ownership mode."
+msgstr ""
+
+#: lib/Application/Controller/ZoneOwnershipController.php:261
 msgid "You do not have permission to assign this group."
 msgstr "Nemáte oprávnění přiřadit tuto skupinu."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:223
+#: lib/Application/Controller/ZoneOwnershipController.php:269
 msgid "Group has been added successfully."
 msgstr "Skupina byla úspěšně přidána."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:231
+#: lib/Application/Controller/ZoneOwnershipController.php:297
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr ""
+
+#: lib/Application/Controller/ZoneOwnershipController.php:303
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr ""
+
+#: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid "Group has been removed successfully."
 msgstr "Skupina byla úspěšně odebrána."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:331
+msgid "Add another owner or a group first."
+msgstr "Nejprve přidejte dalšího vlastníka nebo skupinu."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:334
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr "Nejprve přidejte dalšího uživatele jako vlastníka (režim vlastnictví zóny je users_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:336
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr "Nejprve přidejte skupinu (režim vlastnictví zóny je groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:53
 #: templates/default/404.html:14 templates/modern/404.html:14
@@ -3080,12 +3196,12 @@ msgstr "Nepodařilo se aktivovat klíč zóny."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Při přepínání klíče DNSSEC došlo k chybě. Zkuste to prosím znovu."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:438
+#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Ano"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:438
+#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Ne"
@@ -3368,23 +3484,39 @@ msgstr "Uživatelské jméno již existuje, vyberte prosím jiné."
 msgid "Enter a valid user name."
 msgstr "Zadejte platné uživatelské jméno."
 
-#: lib/Domain/Model/ZoneTemplate.php:213 lib/Domain/Model/ZoneTemplate.php:682
+#: lib/Domain/Model/ZoneTemplate.php:257
+msgid "Zone template not found."
+msgstr "Šablona zóny nebyla nalezena."
+
+#: lib/Domain/Model/ZoneTemplate.php:261
+msgid "Only global zone templates can be set as the default."
+msgstr "Jako výchozí lze nastavit pouze globální šablony zóny."
+
+#: lib/Domain/Model/ZoneTemplate.php:277
+msgid "Error setting default zone template: "
+msgstr "Chyba při nastavování výchozí šablony zóny: "
+
+#: lib/Domain/Model/ZoneTemplate.php:296
+msgid "Error clearing default zone template: "
+msgstr "Chyba při rušení výchozí šablony zóny: "
+
+#: lib/Domain/Model/ZoneTemplate.php:341 lib/Domain/Model/ZoneTemplate.php:810
 msgid "Error creating zone template: "
 msgstr "Chyba při vytváření šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:249
+#: lib/Domain/Model/ZoneTemplate.php:377
 msgid "Error adding default SOA record to template: "
 msgstr "Chyba při přidávání výchozího SOA záznamu do šablony: "
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:436
 msgid "Error deleting zone template: "
 msgstr "Chyba při mazání šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:332
+#: lib/Domain/Model/ZoneTemplate.php:460
 msgid "Error deleting user zone templates: "
 msgstr "Chyba při mazání uživatelských šablon zón: "
 
-#: lib/Domain/Model/ZoneTemplate.php:449
+#: lib/Domain/Model/ZoneTemplate.php:577
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Nemáte oprávnění přidat záznam do této šablony zóny."
 
@@ -3400,91 +3532,91 @@ msgstr "Priorita pro MX/SRV záznamy musí být číslo mezi 0 a 65535."
 msgid "You do not have the permission to edit this record."
 msgstr "Nemáte oprávnění upravit tento záznam."
 
-#: lib/Domain/Model/ZoneTemplate.php:541
+#: lib/Domain/Model/ZoneTemplate.php:669
 msgid "Error updating zone template record: "
 msgstr "Chyba při aktualizaci záznamu šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:564
+#: lib/Domain/Model/ZoneTemplate.php:692
 msgid "Error deleting zone template record: "
 msgstr "Chyba při mazání záznamu šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:587
+#: lib/Domain/Model/ZoneTemplate.php:715
 msgid "Error checking template ownership: "
 msgstr "Chyba při kontrole vlastnictví šablony: "
 
-#: lib/Domain/Model/ZoneTemplate.php:714 lib/Domain/Model/ZoneTemplate.php:756
+#: lib/Domain/Model/ZoneTemplate.php:842 lib/Domain/Model/ZoneTemplate.php:884
 msgid "Error retrieving zones using template: "
 msgstr "Chyba při získávání zón používajících šablonu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:812 lib/Domain/Model/ZoneTemplate.php:856
+#: lib/Domain/Model/ZoneTemplate.php:940 lib/Domain/Model/ZoneTemplate.php:984
 msgid "Failed to get list of zones using template: "
 msgstr "Nepodařilo se získat seznam zón používajících šablonu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:874
+#: lib/Domain/Model/ZoneTemplate.php:1002
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nemáte oprávnění upravovat šablonu zóny."
 
-#: lib/Domain/Model/ZoneTemplate.php:918
+#: lib/Domain/Model/ZoneTemplate.php:1050
 msgid "Error unlinking zone from template: "
 msgstr "Chyba při odpojování zóny od šablony: "
 
-#: lib/Domain/Model/ZoneTemplate.php:951 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:1099
 msgid "Error retrieving zones: "
 msgstr "Chyba při získávání zón: "
 
-#: lib/Domain/Model/ZoneTemplate.php:986
+#: lib/Domain/Model/ZoneTemplate.php:1118
 msgid "Error checking template name existence: "
 msgstr "Chyba při kontrole existence názvu šablony: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1007
+#: lib/Domain/Model/ZoneTemplate.php:1139
 msgid "Error looking up template by name: "
 msgstr "Chyba při vyhledávání šablony podle názvu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1030
+#: lib/Domain/Model/ZoneTemplate.php:1162
 msgid "Error checking template existence: "
 msgstr "Chyba při kontrole existence šablony: "
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:101
+#: lib/Domain/Service/DatabaseConsistencyService.php:122
 msgid "All zones have owners"
 msgstr "Všechny zóny mají vlastníky"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:108
+#: lib/Domain/Service/DatabaseConsistencyService.php:129
 #, php-format
 msgid "%d zones found without owners"
 msgstr "Nalezeno %d zón bez vlastníků"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:159
+#: lib/Domain/Service/DatabaseConsistencyService.php:180
 msgid "All slave zones have master IP addresses"
 msgstr "Všechny podřízené zóny mají hlavní IP adresy"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:166
+#: lib/Domain/Service/DatabaseConsistencyService.php:187
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "Nalezeno %d podřízených zón bez hlavních IP adres"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:211
+#: lib/Domain/Service/DatabaseConsistencyService.php:232
 msgid "All records belong to existing zones"
 msgstr "Všechny záznamy patří do existujících zón"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:218
+#: lib/Domain/Service/DatabaseConsistencyService.php:239
 #, php-format
 msgid "%d orphaned records found"
 msgstr "Nalezeno %d osamocených záznamů"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:273
+#: lib/Domain/Service/DatabaseConsistencyService.php:294
 msgid "No duplicate SOA records found"
 msgstr "Nebyly nalezeny žádné duplicitní SOA záznamy"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:280
+#: lib/Domain/Service/DatabaseConsistencyService.php:301
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d zón má duplicitní SOA záznamy"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:334
+#: lib/Domain/Service/DatabaseConsistencyService.php:355
 msgid "All zones have SOA records"
 msgstr "Všechny zóny mají SOA záznamy"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:341
+#: lib/Domain/Service/DatabaseConsistencyService.php:362
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "Nalezeno %d zón bez SOA záznamů"
@@ -8931,7 +9063,7 @@ msgstr "Neexistuje odpovídající reverzní zóna pro: %s."
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "PTR záznam pro %s směřující na %s již existuje."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:113
+#: lib/Domain/Service/ReverseRecordCreator.php:112
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
@@ -9190,7 +9322,7 @@ msgstr "Stav"
 msgid "Inactive"
 msgstr "Neaktivní"
 
-#: lib/Module/ZoneImportExport/templates/import.html:141
+#: lib/Module/ZoneImportExport/templates/import.html:174
 msgid "Cancel"
 msgstr "Zrušit"
 
@@ -9351,7 +9483,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Aktualizovat záznam"
 
-#: templates/modern/edit.html:551 templates/modern/users.html:219
+#: templates/modern/edit.html:556 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Resetovat"
 
@@ -9473,7 +9605,7 @@ msgstr "Zadejte název hostitele"
 msgid "Account"
 msgstr "Účet"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:548
+#: templates/modern/edit.html:190 templates/modern/edit.html:553
 msgid "Save changes"
 msgstr "Uložit změny"
 
@@ -9678,7 +9810,7 @@ msgstr "Přidat skupinu"
 msgid "No groups found"
 msgstr "Nebyly nalezeny žádné skupiny"
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:98
 msgid "Search groups..."
 msgstr "Hledat skupiny..."
 
@@ -9789,7 +9921,7 @@ msgstr "Odebrat"
 msgid "and"
 msgstr "a"
 
-#: templates/modern/list_forward_zones.html:178
+#: templates/modern/list_forward_zones.html:174
 msgid "more..."
 msgstr "více..."
 
@@ -9995,7 +10127,7 @@ msgstr "Předvolby"
 msgid "Logout"
 msgstr "Odhlásit"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:536
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:541
 msgid "Edit comment"
 msgstr "Upravit komentář"
 
@@ -10170,6 +10302,10 @@ msgid "Zone logs"
 msgstr "Protokoly zón"
 
 #: templates/modern/list_log_zones.html:17
+msgid "Showing logs for zones you own."
+msgstr "Zobrazují se protokoly zón, které vlastníte."
+
+#: templates/modern/list_log_zones.html:23
 msgid "Zone Change Logs"
 msgstr "Protokoly změn zón"
 
@@ -10177,7 +10313,7 @@ msgstr "Protokoly změn zón"
 msgid "Domain name"
 msgstr "Název domény"
 
-#: templates/modern/list_log_zones.html:33
+#: templates/modern/list_log_zones.html:42
 msgid "All operations"
 msgstr "Všechny operace"
 
@@ -10217,7 +10353,7 @@ msgstr "Zadejte pouze názvy hostů - název zóny bude přidán automaticky"
 msgid "Add Records"
 msgstr "Přidat záznamy"
 
-#: templates/modern/bulk_registration.html:104
+#: templates/modern/bulk_registration.html:119
 msgid "Instructions"
 msgstr "Pokyny"
 
@@ -10353,7 +10489,7 @@ msgstr "Ano, smazat tohoto uživatele"
 msgid "No, keep this user"
 msgstr "Ne, ponechat tohoto uživatele"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:237
 msgid "Save as Template"
 msgstr "Uložit jako šablonu"
 
@@ -10640,7 +10776,7 @@ msgstr "Vlastník"
 msgid "Full name"
 msgstr "Celé jméno"
 
-#: templates/modern/list_reverse_zones.html:126
+#: templates/modern/list_reverse_zones.html:127
 msgid "Associated Forward Zones"
 msgstr "Přidružené přímé zóny"
 
@@ -10648,11 +10784,11 @@ msgstr "Přidružené přímé zóny"
 msgid "Serial"
 msgstr "Sériové číslo"
 
-#: templates/modern/bulk_registration.html:64
+#: templates/modern/bulk_registration.html:79
 msgid "Template"
 msgstr "Šablona"
 
-#: templates/modern/list_reverse_zones.html:228
+#: templates/modern/list_reverse_zones.html:227
 msgid "-"
 msgstr "-"
 
@@ -10897,7 +11033,7 @@ msgstr "Vymazat hledání"
 msgid "Select All"
 msgstr "Vybrat vše"
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:102
 msgid "Clear All"
 msgstr "Vymazat vše"
 
@@ -11334,15 +11470,15 @@ msgstr ""
 msgid "Ownership"
 msgstr "Vlastnictví"
 
-#: templates/modern/add_zone_slave.html:49
+#: templates/modern/add_zone_slave.html:50
 msgid "User Owner"
 msgstr "Vlastník – uživatel"
 
-#: templates/modern/zone-ownership.html:55
+#: templates/modern/zone-ownership.html:58
 msgid "No users assigned to this zone."
 msgstr "K této zóně nejsou přiřazeni žádní uživatelé."
 
-#: templates/modern/zone-ownership.html:61
+#: templates/modern/zone-ownership.html:64
 msgid "Add User Owner"
 msgstr "Přidat vlastníka – uživatele"
 
@@ -11350,23 +11486,23 @@ msgstr "Přidat vlastníka – uživatele"
 msgid "Search users..."
 msgstr "Hledat uživatele..."
 
-#: templates/modern/add_zone_slave.html:76
+#: templates/modern/add_zone_slave.html:79
 msgid "You"
 msgstr "Vy"
 
-#: templates/modern/zone-ownership.html:83
+#: templates/modern/zone-ownership.html:86
 msgid "Add Owner"
 msgstr "Přidat vlastníka"
 
-#: templates/modern/add_zone_slave.html:90
+#: templates/modern/add_zone_slave.html:94
 msgid "Group Ownership"
 msgstr "Vlastnictví skupiny"
 
-#: templates/modern/zone-ownership.html:127
+#: templates/modern/zone-ownership.html:132
 msgid "No groups assigned to this zone."
 msgstr "K této zóně nejsou přiřazeny žádné skupiny."
 
-#: templates/modern/zone-ownership.html:133
+#: templates/modern/zone-ownership.html:138
 msgid "Add Group Ownership"
 msgstr "Přidat vlastnictví skupiny"
 
@@ -11470,71 +11606,71 @@ msgstr "Pokud klíč ztratíte, budete ho muset obnovit."
 msgid "Edit"
 msgstr "Upravit"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:599
+#: templates/modern/edit.html:25 templates/modern/edit.html:604
 msgid "Add new record"
 msgstr "Přidat nový záznam"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:603
+#: templates/modern/edit.html:203 templates/modern/edit.html:608
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Průvodci pro záznamy DMARC, SPF, DKIM, CAA, TLSA a SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:609
+#: templates/modern/edit.html:35 templates/modern/edit.html:614
 msgid "Multi-record mode"
 msgstr "Režim více záznamů"
 
-#: templates/modern/edit.html:557 templates/modern/edit.html:612
+#: templates/modern/edit.html:562 templates/modern/edit.html:617
 msgid "Bulk add"
 msgstr "Hromadné přidání"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:624
+#: templates/modern/edit.html:50 templates/modern/edit.html:629
 msgid "Failed to add"
 msgstr "Nepodařilo se přidat"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:624
+#: templates/modern/edit.html:50 templates/modern/edit.html:629
 msgid "record(s). Please check the record format."
 msgstr "záznam(y). Zkontrolujte prosím formát záznamu."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:626
+#: templates/modern/edit.html:52 templates/modern/edit.html:631
 msgid "Failed to add records. Please check the record format."
 msgstr "Nepodařilo se přidat záznamy. Zkontrolujte prosím formát záznamu."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:629
+#: templates/modern/edit.html:55 templates/modern/edit.html:634
 msgid "Content validation failed:"
 msgstr "Ověření obsahu selhalo:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:629
+#: templates/modern/edit.html:55 templates/modern/edit.html:634
 msgid "Invalid value for record type"
 msgstr "Neplatná hodnota pro typ záznamu"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:631
+#: templates/modern/edit.html:57 templates/modern/edit.html:636
 msgid "Please provide all required information."
 msgstr "Zadejte prosím všechny požadované informace."
 
-#: templates/modern/edit.html:654 templates/modern/add_record.html:72
+#: templates/modern/edit.html:659 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Přidat PTR"
 
-#: templates/modern/edit.html:657 templates/modern/add_record.html:75
+#: templates/modern/edit.html:662 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Přidat A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:696
+#: templates/modern/edit.html:121 templates/modern/edit.html:701
 msgid "This record already exists"
 msgstr "Tento záznam již existuje"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:708
+#: templates/modern/edit.html:133 templates/modern/edit.html:713
 msgid "Invalid priority"
 msgstr "Neplatná priorita"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:715
+#: templates/modern/edit.html:140 templates/modern/edit.html:720
 msgid "Invalid TTL value"
 msgstr "Neplatná hodnota TTL"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:717
+#: templates/modern/edit.html:142 templates/modern/edit.html:722
 msgid "Provide TTL"
 msgstr "Zadejte TTL"
 
-#: templates/modern/edit.html:743 templates/modern/add_record.html:207
+#: templates/modern/edit.html:748 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11554,91 +11690,95 @@ msgstr "Metadata"
 msgid "View Metadata"
 msgstr "Zobrazit metadata"
 
-#: templates/default/edit.html:243 templates/modern/edit.html:243
+#: templates/default/edit.html:232 templates/modern/edit.html:232
+msgid "Logs"
+msgstr "Protokoly"
+
+#: templates/default/edit.html:248 templates/modern/edit.html:248
 msgid "No records match your filter criteria."
 msgstr "Žádné záznamy neodpovídají vašim filtrovacím kritériím."
 
-#: templates/default/edit.html:251 templates/modern/edit.html:251
+#: templates/default/edit.html:256 templates/modern/edit.html:256
 msgid "This zone does not have any records."
 msgstr "Tato zóna nemá žádné záznamy."
 
-#: templates/default/edit.html:263 templates/modern/edit.html:263
+#: templates/default/edit.html:268 templates/modern/edit.html:268
 msgid "Filter:"
 msgstr "Filtr:"
 
-#: templates/default/edit.html:269 templates/modern/edit.html:269
+#: templates/default/edit.html:274 templates/modern/edit.html:274
 msgid "Search by name or content"
 msgstr "Hledat podle názvu nebo obsahu"
 
-#: templates/default/edit.html:275 templates/modern/edit.html:275
+#: templates/default/edit.html:280 templates/modern/edit.html:280
 msgid "All Types"
 msgstr "Všechny typy"
 
-#: templates/default/edit.html:285 templates/modern/edit.html:285
+#: templates/default/edit.html:290 templates/modern/edit.html:290
 msgid "Filter by content"
 msgstr "Filtrovat podle obsahu"
 
-#: templates/default/edit.html:291 templates/modern/edit.html:291
+#: templates/default/edit.html:296 templates/modern/edit.html:296
 msgid "Apply"
 msgstr "Použít"
 
-#: templates/default/edit.html:327 templates/modern/edit.html:327
+#: templates/default/edit.html:332 templates/modern/edit.html:332
 msgid "Showing"
 msgstr "Zobrazuje se"
 
-#: templates/default/edit.html:327 templates/modern/edit.html:327
+#: templates/default/edit.html:332 templates/modern/edit.html:332
 msgid "of"
 msgstr "z"
 
-#: templates/default/edit.html:327 templates/modern/edit.html:327
+#: templates/default/edit.html:332 templates/modern/edit.html:332
 msgid "total records"
 msgstr "celkem záznamů"
 
-#: templates/default/edit.html:405 templates/modern/edit.html:405
+#: templates/default/edit.html:410 templates/modern/edit.html:410
 msgid "Last modified"
 msgstr "Poslední změna"
 
-#: templates/default/edit.html:519 templates/modern/edit.html:519
+#: templates/default/edit.html:524 templates/modern/edit.html:524
 msgid "Edit selected"
 msgstr "Upravit vybrané"
 
-#: templates/modern/edit.html:523 templates/modern/search.html:486
+#: templates/modern/edit.html:528 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Smazat záznam(y)"
 
-#: templates/modern/edit.html:531 templates/modern/search.html:93
+#: templates/modern/edit.html:536 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentáře"
 
-#: templates/default/edit.html:561 templates/modern/edit.html:561
+#: templates/default/edit.html:566 templates/modern/edit.html:566
 msgid "Import"
 msgstr "Importovat"
 
-#: templates/default/edit.html:578 templates/modern/edit.html:578
+#: templates/default/edit.html:583 templates/modern/edit.html:583
 msgid "Generate PTR"
 msgstr "Generovat PTR"
 
-#: templates/modern/edit.html:757 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Konfigurace zóny"
 
-#: templates/modern/edit.html:799 templates/modern/edit.html:828
+#: templates/modern/edit.html:804 templates/modern/edit.html:833
 msgid "Change"
 msgstr "Změnit"
 
-#: templates/modern/edit.html:792 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "IP adresa hlavního NS"
 
-#: templates/default/edit.html:849 templates/modern/edit.html:849
+#: templates/default/edit.html:854 templates/modern/edit.html:854
 msgid "Manage DNSSEC"
 msgstr "Spravovat DNSSEC"
 
-#: templates/default/edit.html:856 templates/modern/edit.html:856
+#: templates/default/edit.html:861 templates/modern/edit.html:861
 msgid "Sign zone"
 msgstr "Podepsat zónu"
 
-#: templates/default/edit.html:860 templates/modern/edit.html:860
+#: templates/default/edit.html:865 templates/modern/edit.html:865
 msgid "Not signed"
 msgstr "Nepodepsáno"
 
@@ -11699,7 +11839,7 @@ msgstr "Celkový počet zón:"
 msgid "There are no forward zones to show in this listing."
 msgstr "V tomto seznamu nejsou žádné přímé zóny k zobrazení."
 
-#: templates/modern/list_forward_zones.html:210
+#: templates/modern/list_forward_zones.html:206
 msgid "PTR"
 msgstr "PTR"
 
@@ -11956,6 +12096,10 @@ msgstr "Příklad: example.com"
 msgid "Zone type (usually NATIVE)"
 msgstr "Typ zóny (obvykle NATIVE)"
 
+#: templates/modern/list_zone_templ.html:54
+msgid "default"
+msgstr "výchozí"
+
 #: templates/modern/add_zone_master.html:58
 msgid "Optional: Apply predefined records from a template"
 msgstr "Volitelné: Aplikovat předdefinované záznamy ze šablony"
@@ -11968,31 +12112,31 @@ msgstr "Povolit DNSSEC"
 msgid "Secure this zone with DNSSEC signing"
 msgstr "Zabezpečit tuto zónu pomocí DNSSEC podpisu"
 
-#: templates/modern/add_zone_slave.html:54
+#: templates/modern/add_zone_slave.html:55
 msgid "Selected:"
 msgstr "Vybráno:"
 
-#: templates/modern/add_zone_slave.html:59
+#: templates/modern/add_zone_slave.html:61
 msgid "No user owner"
 msgstr "Žádný vlastník – uživatel"
 
-#: templates/modern/add_zone_slave.html:60
+#: templates/modern/add_zone_slave.html:62
 msgid "Zone will be owned only by groups"
 msgstr "Zóna bude vlastněna pouze skupinami"
 
-#: templates/modern/add_zone_slave.html:82
+#: templates/modern/add_zone_slave.html:85
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Volitelné: Vyberte uživatele zodpovědného za tuto zónu"
 
-#: templates/modern/add_zone_slave.html:105
+#: templates/modern/add_zone_slave.html:109
 msgid "members"
 msgstr "členů"
 
-#: templates/modern/add_zone_slave.html:111
+#: templates/modern/add_zone_slave.html:115
 msgid "Optional: Select one or more groups"
 msgstr "Volitelné: Vyberte jednu nebo více skupin"
 
-#: templates/modern/add_zone_slave.html:126
+#: templates/modern/add_zone_slave.html:130
 msgid "Add zone"
 msgstr "Přidat zónu"
 
@@ -12020,39 +12164,59 @@ msgstr "Stav synchronizace"
 msgid "No results found"
 msgstr "Nebyly nalezeny žádné výsledky"
 
-#: templates/modern/list_zone_templ.html:77
+#: templates/modern/list_zone_templ.html:54
+msgid "Pre-selected on the add-zone form"
+msgstr "Předvybráno ve formuláři pro přidání zóny"
+
+#: templates/modern/list_zone_templ.html:56
+msgid "Configured via dns.default_zone_template - edit settings.php to change"
+msgstr "Nastaveno přes dns.default_zone_template - upravte settings.php pro změnu"
+
+#: templates/modern/list_zone_templ.html:56
+msgid "default (config)"
+msgstr "výchozí (konfig)"
+
+#: templates/modern/list_zone_templ.html:86
 msgid "private"
 msgstr "soukromé"
 
-#: templates/modern/list_zone_templ.html:79
+#: templates/modern/list_zone_templ.html:88
 msgid "global"
 msgstr "globální"
 
-#: templates/modern/list_zone_templ.html:87
+#: templates/modern/list_zone_templ.html:96
 msgid "Zones need updating"
 msgstr "Zóny potřebují aktualizaci"
 
-#: templates/modern/list_zone_templ.html:91
+#: templates/modern/list_zone_templ.html:100
 msgid "All zones are synchronized"
 msgstr "Všechny zóny jsou synchronizovány"
 
-#: templates/modern/list_zone_templ.html:92
+#: templates/modern/list_zone_templ.html:101
 msgid "Synced"
 msgstr "Synchronizováno"
+
+#: templates/modern/list_zone_templ.html:116
+msgid "Unset as default"
+msgstr "Zrušit jako výchozí"
+
+#: templates/modern/list_zone_templ.html:121
+msgid "Set as default"
+msgstr "Nastavit jako výchozí"
 
 #: templates/modern/edit_zone_templ.html:107
 msgid "No zones are using this template"
 msgstr "Žádné zóny nepoužívají tuto šablonu"
 
-#: templates/modern/list_zone_templ.html:104
+#: templates/modern/list_zone_templ.html:129
 msgid "View zones using this template"
 msgstr "Zobrazit zóny používající tuto šablonu"
 
-#: templates/modern/list_zone_templ.html:133
+#: templates/modern/list_zone_templ.html:158
 msgid "Template Behavior:"
 msgstr "Chování šablony:"
 
-#: templates/modern/list_zone_templ.html:134
+#: templates/modern/list_zone_templ.html:159
 msgid ""
 "Changing a zone's template overwrites template-based records but preserves "
 "manual additions. Template modifications don't automatically update zones - "
@@ -12316,55 +12480,55 @@ msgstr "API klíč:"
 msgid "Bulk registration"
 msgstr "Hromadná registrace"
 
-#: templates/modern/bulk_registration.html:46
-msgid "Please select an owner"
-msgstr "Prosím vyberte vlastníka"
+#: lib/Module/ZoneImportExport/templates/import.html:138
+msgid "Group ownership"
+msgstr "Vlastnictví skupinou"
 
-#: templates/modern/bulk_registration.html:50
+#: templates/modern/bulk_registration.html:65
 msgid "Zone Type"
 msgstr "Typ zóny"
 
-#: templates/modern/bulk_registration.html:74
+#: templates/modern/bulk_registration.html:89
 msgid "Domains"
 msgstr "Domény"
 
-#: templates/modern/bulk_registration.html:76
+#: templates/modern/bulk_registration.html:91
 msgid "Provide a domain name(s)"
 msgstr "Zadejte název domény/domén"
 
-#: templates/modern/bulk_registration.html:77
+#: templates/modern/bulk_registration.html:92
 msgid "Type one domain per line"
 msgstr "Zadejte jednu doménu na řádek"
 
-#: templates/modern/bulk_registration.html:83
+#: templates/modern/bulk_registration.html:98
 msgid "Add Zones"
 msgstr "Přidat zóny"
 
-#: templates/modern/bulk_registration.html:99
+#: templates/modern/bulk_registration.html:114
 msgid "About Bulk Registration"
 msgstr "O hromadné registraci"
 
-#: templates/modern/bulk_registration.html:105
+#: templates/modern/bulk_registration.html:120
 msgid "This tool allows you to create multiple DNS zones at once."
 msgstr "Tento nástroj umožňuje vytvořit více DNS zón najednou."
 
-#: templates/modern/bulk_registration.html:107
+#: templates/modern/bulk_registration.html:122
 msgid "Enter one domain name per line in the Domains field"
 msgstr "Zadejte jeden název domény na řádek do pole Domény"
 
-#: templates/modern/bulk_registration.html:108
+#: templates/modern/bulk_registration.html:123
 msgid "Select a zone template to apply standard records to all zones"
 msgstr "Vyberte šablonu zóny pro aplikaci standardních záznamů na všechny zóny"
 
-#: templates/modern/bulk_registration.html:109
+#: templates/modern/bulk_registration.html:124
 msgid "The chosen owner will have full access to all created zones"
 msgstr "Vybraný vlastník bude mít plný přístup ke všem vytvořeným zónám"
 
-#: templates/modern/bulk_registration.html:113
+#: templates/modern/bulk_registration.html:128
 msgid "How It Works"
 msgstr "Jak to funguje"
 
-#: templates/modern/bulk_registration.html:114
+#: templates/modern/bulk_registration.html:129
 msgid ""
 "The system will attempt to create each zone with the same settings. Failed "
 "domains will be displayed so you can correct any issues and try again."
@@ -12373,25 +12537,25 @@ msgstr ""
 "domény budou zobrazeny, abyste mohli opravit případné problémy a zkusit to "
 "znovu."
 
-#: templates/modern/bulk_registration.html:122
+#: templates/modern/bulk_registration.html:137
 msgid "Tips & Recommendations"
 msgstr "Tipy a doporučení"
 
-#: templates/modern/bulk_registration.html:128
+#: templates/modern/bulk_registration.html:143
 msgid "Use NATIVE zone type for most standard setups"
 msgstr "Používejte typ zóny NATIVE pro většinu standardních nastavení"
 
-#: templates/modern/bulk_registration.html:129
+#: templates/modern/bulk_registration.html:144
 msgid "Create a template first if you need standard records for all zones"
 msgstr ""
 "Nejprve vytvořte šablonu, pokud potřebujete standardní záznamy pro všechny "
 "zóny"
 
-#: templates/modern/bulk_registration.html:130
+#: templates/modern/bulk_registration.html:145
 msgid "You can copy and paste a list of domains from a spreadsheet"
 msgstr "Můžete zkopírovat a vložit seznam domén z tabulky"
 
-#: templates/modern/bulk_registration.html:131
+#: templates/modern/bulk_registration.html:146
 msgid "Make sure the domain names follow valid DNS naming conventions"
 msgstr "Ujistěte se, že názvy domén dodržují platné konvence pojmenovávání DNS"
 
@@ -13204,11 +13368,11 @@ msgstr "Přímé zóny"
 msgid "Reverse zones"
 msgstr "Reverzní zóny"
 
-#: templates/default/header.html:142 templates/modern/header.html:203
+#: templates/default/header.html:144 templates/modern/header.html:203
 msgid "List users"
 msgstr "Seznam uživatelů"
 
-#: templates/default/header.html:163 templates/modern/header.html:235
+#: templates/default/header.html:165 templates/modern/header.html:235
 msgid "List groups"
 msgstr "Seznam skupin"
 
@@ -13216,23 +13380,23 @@ msgstr "Seznam skupin"
 msgid "Group logs"
 msgstr "Protokoly skupin"
 
-#: templates/default/header.html:183 templates/modern/header.html:265
+#: templates/default/header.html:185 templates/modern/header.html:265
 msgid "List templates"
 msgstr "Seznam šablon"
 
-#: templates/default/header.html:200 templates/modern/header.html:290
+#: templates/default/header.html:202 templates/modern/header.html:290
 msgid "List zone templates"
 msgstr "Seznam šablon zón"
 
-#: templates/default/header.html:227 templates/modern/header.html:330
+#: templates/default/header.html:229 templates/modern/header.html:330
 msgid "API Documentation"
 msgstr "API dokumentace"
 
-#: templates/default/header.html:320 templates/modern/header.html:491
+#: templates/default/header.html:322 templates/modern/header.html:491
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:324 templates/modern/header.html:495
+#: templates/default/header.html:326 templates/modern/header.html:495
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -13240,7 +13404,7 @@ msgstr ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
 
-#: templates/default/header.html:326 templates/modern/header.html:497
+#: templates/default/header.html:328 templates/modern/header.html:497
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -13248,7 +13412,7 @@ msgstr ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
 
-#: templates/default/header.html:328 templates/modern/header.html:499
+#: templates/default/header.html:330 templates/modern/header.html:499
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -13258,11 +13422,13 @@ msgstr ""
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 
-#: templates/default/header.html:330 templates/modern/header.html:501
+#: templates/default/header.html:332 templates/modern/header.html:501
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
-msgstr "Některé funkce nemusí být dostupné, dokud nebude API znovu dostupné. Podrobnosti najdete v protokolu serveru PowerDNS."
+msgstr ""
+"Některé funkce nemusí být dostupné, dokud nebude API znovu dostupné. "
+"Podrobnosti najdete v protokolu serveru PowerDNS."
 
 #: templates/modern/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
@@ -13714,7 +13880,7 @@ msgstr "Soubor:"
 msgid "Zone:"
 msgstr "Zóna:"
 
-#: lib/Module/ZoneImportExport/templates/import.html:167
+#: lib/Module/ZoneImportExport/templates/import.html:200
 msgid "Target zone"
 msgstr "Cílová zóna"
 
@@ -13738,47 +13904,59 @@ msgstr "Přidat všechny záznamy"
 msgid "Zone type"
 msgstr "Typ zóny"
 
-#: lib/Module/ZoneImportExport/templates/import.html:138
+#: lib/Module/ZoneImportExport/templates/import.html:153
+msgid "Required: select at least one group."
+msgstr "Povinné: vyberte alespoň jednu skupinu."
+
+#: lib/Module/ZoneImportExport/templates/import.html:155
+msgid "Optional: select one or more groups."
+msgstr "Volitelné: vyberte jednu nebo více skupin."
+
+#: lib/Module/ZoneImportExport/templates/import.html:162
+msgid "No user owner — zone is owned only by the selected groups"
+msgstr "Žádný uživatel jako vlastník - zónu vlastní pouze vybrané skupiny"
+
+#: lib/Module/ZoneImportExport/templates/import.html:171
 msgid "Confirm import"
 msgstr "Potvrdit import"
 
-#: lib/Module/ZoneImportExport/templates/import.html:153
+#: lib/Module/ZoneImportExport/templates/import.html:186
 msgid "Import Zone File"
 msgstr "Importovat zónový soubor"
 
-#: lib/Module/ZoneImportExport/templates/import.html:160
+#: lib/Module/ZoneImportExport/templates/import.html:193
 msgid "Zone file"
 msgstr "Zónový soubor"
 
-#: lib/Module/ZoneImportExport/templates/import.html:162
+#: lib/Module/ZoneImportExport/templates/import.html:195
 msgid "Standard BIND zone file format. Max size:"
 msgstr "Standardní formát zónového souboru BIND. Maximální velikost:"
 
-#: lib/Module/ZoneImportExport/templates/import.html:177
+#: lib/Module/ZoneImportExport/templates/import.html:210
 msgid "Upload and preview"
 msgstr "Nahrát a zobrazit náhled"
 
-#: lib/Module/ZoneImportExport/templates/import.html:187
+#: lib/Module/ZoneImportExport/templates/import.html:220
 msgid "Supported formats"
 msgstr "Podporované formáty"
 
-#: lib/Module/ZoneImportExport/templates/import.html:191
+#: lib/Module/ZoneImportExport/templates/import.html:224
 msgid "Standard BIND zone files"
 msgstr "Standardní zónové soubory BIND"
 
-#: lib/Module/ZoneImportExport/templates/import.html:192
+#: lib/Module/ZoneImportExport/templates/import.html:225
 msgid "Cloudflare zone exports"
 msgstr "Exporty zón z Cloudflare"
 
-#: lib/Module/ZoneImportExport/templates/import.html:193
+#: lib/Module/ZoneImportExport/templates/import.html:226
 msgid "$ORIGIN and $TTL directives"
 msgstr "Direktivy $ORIGIN a $TTL"
 
-#: lib/Module/ZoneImportExport/templates/import.html:194
+#: lib/Module/ZoneImportExport/templates/import.html:227
 msgid "Multi-line records"
 msgstr "Víceřádkové záznamy"
 
-#: lib/Module/ZoneImportExport/templates/import.html:195
+#: lib/Module/ZoneImportExport/templates/import.html:228
 msgid "IDN domain names"
 msgstr "IDN doménová jména"
 
@@ -14530,13 +14708,8 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
-# OBSOLETE: "again. Check your PowerDNS server log for details."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
-# OBSOLETE: "again. Check your PowerDNS server log for details."
+# OBSOLETE: msgid "Please select an owner"
+# OBSOLETE: msgstr "Prosím vyberte vlastníka"
 
 
 
