@@ -61,7 +61,7 @@ class DnssecToggleKeyController extends BaseController
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        if ($perm_edit == "none" || ($perm_edit == "own" && !$user_is_zone_owner)) {
+        if ($perm_edit !== "all" && !($perm_edit === "own" && $user_is_zone_owner)) {
             $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
             return;
         }

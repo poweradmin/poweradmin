@@ -83,8 +83,7 @@ class DnssecEditKeyController extends BaseController
             return;
         }
 
-        // Check DNSSEC management permission (requires edit access)
-        if ($perm_edit == "none" || ($perm_edit == "own" && !$user_is_zone_owner)) {
+        if ($perm_edit !== "all" && !($perm_edit === "own" && $user_is_zone_owner)) {
             $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
             return;
         }
