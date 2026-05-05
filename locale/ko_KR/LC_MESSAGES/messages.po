@@ -12362,14 +12362,12 @@ msgid "Display individual delete button per record"
 msgstr "레코드당 개별 삭제 버튼 표시"
 
 #: templates/modern/user_preferences.html:125
-#, auto-english-fallback
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "호스트 이름만 표시"
 
 #: templates/modern/user_preferences.html:126
-#, auto-english-fallback
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "편집 보기에서 레코드 이름에서 영역 접미사 제거"
 
 #: templates/modern/user_preferences.html:141
 msgid "Save Preferences"
@@ -14162,7 +14160,6 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
-#, auto-english-fallback
 # OBSOLETE: msgid ""
 # OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
 # OBSOLETE: "again. Check your PowerDNS server log for details."

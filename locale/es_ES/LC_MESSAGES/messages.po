@@ -13145,14 +13145,12 @@ msgid "Display individual delete button per record"
 msgstr "Mostrar botón de eliminación individual por registro"
 
 #: templates/modern/user_preferences.html:125
-#, auto-english-fallback
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Mostrar solo el nombre de host"
 
 #: templates/modern/user_preferences.html:126
-#, auto-english-fallback
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "Quitar el sufijo de zona de los nombres de registro en la vista de edición"
 
 #: templates/modern/user_preferences.html:141
 msgid "Save Preferences"
@@ -14962,7 +14960,6 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
-#, auto-english-fallback
 # OBSOLETE: msgid ""
 # OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
 # OBSOLETE: "again. Check your PowerDNS server log for details."

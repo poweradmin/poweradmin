@@ -12557,14 +12557,12 @@ msgid "Display individual delete button per record"
 msgstr "Hiển thị nút xóa riêng cho mỗi bản ghi"
 
 #: templates/modern/user_preferences.html:125
-#, auto-english-fallback
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Chỉ hiển thị tên máy chủ"
 
 #: templates/modern/user_preferences.html:126
-#, auto-english-fallback
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "Bỏ hậu tố vùng khỏi tên bản ghi trong chế độ chỉnh sửa"
 
 #: templates/modern/user_preferences.html:141
 msgid "Save Preferences"
@@ -14364,7 +14362,6 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
-#, auto-english-fallback
 # OBSOLETE: msgid ""
 # OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
 # OBSOLETE: "again. Check your PowerDNS server log for details."

@@ -11804,14 +11804,12 @@ msgid "Display individual delete button per record"
 msgstr "Egyedi törlés gomb megjelenítése rekordonként"
 
 #: templates/modern/user_preferences.html:125
-#, auto-english-fallback
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Csak gazdanév megjelenítése"
 
 #: templates/modern/user_preferences.html:126
-#, auto-english-fallback
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "Zónautótag eltávolítása a rekordnevekből a szerkesztési nézetben"
 
 #: templates/modern/user_preferences.html:141
 msgid "Save Preferences"
@@ -13566,7 +13564,6 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
-#, auto-english-fallback
 # OBSOLETE: msgid ""
 # OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
 # OBSOLETE: "again. Check your PowerDNS server log for details."
