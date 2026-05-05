@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-26 16:48+0300\n"
+"POT-Creation-Date: 2026-05-05 07:21+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgstr "DNS vedliai neįjungti."
 msgid "Invalid zone ID."
 msgstr "Neteisingas zonos ID."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:95
+#: lib/Application/Controller/ZoneOwnershipController.php:97
 msgid "Zone not found."
 msgstr "Zona nerasta."
 
@@ -331,7 +331,7 @@ msgstr ""
 "visą sertifikatą."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:667
+#: templates/modern/edit.html:93 templates/modern/edit.html:673
 msgid "Invalid hostname format"
 msgstr "Neteisingas serverio vardo formatas"
 
@@ -466,7 +466,6 @@ msgid "Generate reports if all authentication mechanisms fail"
 msgstr "Generuoti ataskaitas, jei visi autentifikacijos mechanizmai nepavyksta"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:126
-#, auto-english-fallback
 msgid "Generate reports if any authentication mechanism fails"
 msgstr "Generate reports if any authentication mechanism fails"
 
@@ -617,7 +616,6 @@ msgid "IPv4 Addresses"
 msgstr "IPv4 adresai"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:90
-#, auto-english-fallback
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 msgstr "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 
@@ -870,7 +868,6 @@ msgid "CA provider is required"
 msgstr "CA teikėjas yra privalomas"
 
 #: lib/Module/DnsWizard/Service/CAAWizard.php:213
-#, auto-english-fallback
 msgid "Custom CA domain is required when \"Custom\" is selected"
 msgstr "Custom CA domain is required when \"Custom\" is selected"
 
@@ -1061,7 +1058,6 @@ msgid "Service"
 msgstr "Paslauga"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:100
-#, auto-english-fallback
 msgid "Select a common service or choose \"Custom\" to enter manually"
 msgstr "Select a common service or choose \"Custom\" to enter manually"
 
@@ -1164,7 +1160,6 @@ msgid "Custom service name is required"
 msgstr "Pasirinktinis paslaugos pavadinimas yra privalomas"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:267
-#, auto-english-fallback
 msgid "Service name must contain only alphanumeric characters and hyphens"
 msgstr "Service name must contain only alphanumeric characters and hyphens"
 
@@ -1207,60 +1202,88 @@ msgstr "Netinkamas domeno formatas"
 msgid "Email Previews"
 msgstr "El. pašto peržiūros"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:74
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:76
 msgid "You do not have permission to import zones."
 msgstr "Neturite leidimo importuoti zonų."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:116
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:118
 msgid "Please select a valid zone file to upload."
 msgstr "Pasirinkite tinkamą zonos failą įkėlimui."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:122
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:124
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
 msgstr "Failo dydis viršija maksimalų leistiną dydį %s."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:128
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:130
 msgid "The uploaded file is empty or could not be read."
 msgstr "Įkeltas failas yra tuščias arba jo nepavyko perskaityti."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:137
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:139
 msgid "No valid records found in the uploaded file."
 msgstr "Įkeltame faile nerasta tinkamų įrašų."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:279
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
 msgid "You do not have permission to modify this zone."
 msgstr "Neturite leidimo keisti šios zonos."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:235
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:245
+msgid ""
+"Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
+"exist. Create a group first."
+msgstr "Nepavyksta importuoti naujos zonos: zone_ownership_mode yra groups_only, bet grupių nėra. Pirmiausia sukurkite grupę."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:247
+msgid ""
+"Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
+"a member of any group. Ask an administrator to add you to a group first."
+msgstr "Nepavyksta importuoti naujos zonos: zone_ownership_mode yra groups_only, o jūs nesate jokios grupės narys. Paprašykite administratoriaus pirmiausia įtraukti jus į grupę."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:263
 msgid "Import session expired. Please upload the file again."
 msgstr "Importo sesija pasibaigė. Įkelkite failą iš naujo."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:242
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:270
 msgid "Invalid import data. Please upload the file again."
 msgstr "Neteisingi importo duomenys. Įkelkite failą iš naujo."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:269
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:297
 msgid "The selected zone does not exist."
 msgstr "Pasirinkta zona neegzistuoja."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:295
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:323
 msgid "You do not have permission to add zones."
 msgstr "Neturite leidimo pridėti zonų."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:300
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:328
 msgid "Zone name is required."
 msgstr "Zonos pavadinimas yra privalomas."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:305
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:333
 msgid "A zone with this name already exists."
 msgstr "Zona su šiuo pavadinimu jau egzistuoja."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:311
+#: lib/Application/Controller/BulkRegistrationController.php:151
+#, php-format
+msgid "Unknown group ID(s): %s"
+msgstr "Nežinomas grupės ID: %s"
+
+#: lib/Application/Controller/BulkRegistrationController.php:163
+#, php-format
+msgid "You can only assign groups you are a member of (disallowed: %s)"
+msgstr "Galite priskirti tik tas grupes, kurioms priklausote (neleidžiama: %s)"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:368
+msgid ""
+"Cannot create a new zone via import: select at least one group, or leave "
+"\"No user owner\" unchecked."
+msgstr "Nepavyksta sukurti naujos zonos importavimu: pasirinkite bent vieną grupę arba palikite \"Nėra naudotojo savininko\" nepažymėtą."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:372
 msgid "Failed to create zone."
 msgstr "Nepavyko sukurti zonos."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:317
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:378
 msgid "Failed to retrieve created zone."
 msgstr "Nepavyko gauti sukurtos zonos."
 
@@ -1310,7 +1333,7 @@ msgstr "Nepavyko gauti RDAP informacijos naudojant serverį %s"
 msgid "Invalid CSRF token."
 msgstr "Netinkamas CSRF žetonas."
 
-#: lib/BaseController.php:664
+#: lib/BaseController.php:654
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -1318,7 +1341,7 @@ msgstr ""
 "<a href=\"install/\">install/</a> katalogas egzistuoja, prieš tęsiant turite "
 "jį pašalinti."
 
-#: lib/BaseController.php:721
+#: lib/BaseController.php:711
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1326,12 +1349,12 @@ msgstr ""
 "Naudojamas numatytasis sesijos šifravimo raktas, nustatykite jį savo "
 "konfigūracijos faile."
 
-#: lib/BaseController.php:860
+#: lib/BaseController.php:855
 #, php-format
 msgid "The %s field is required."
 msgstr "Laukas %s yra privalomas."
 
-#: lib/BaseController.php:868
+#: lib/BaseController.php:863
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Laukas %s turi būti skaičius."
@@ -1382,7 +1405,7 @@ msgstr ""
 "Nėra pasirinktų tinkamių įrašų ištrinimui arba neturite leidimo juos "
 "ištrinti."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:73
+#: lib/Application/Controller/ZoneOwnershipController.php:75
 msgid "Invalid or unexpected input given."
 msgstr "Netinkamas arba nenumatytas įvestis."
 
@@ -1410,7 +1433,7 @@ msgstr "Zonų komentaru funkcija išjungta konfiguracijoje."
 msgid "You do not have the permission to view this comment."
 msgstr "Neturite leidimo peržiūrėti šį komentaarą."
 
-#: lib/Domain/Service/Dns/RecordManager.php:534
+#: lib/Domain/Service/Dns/RecordManager.php:540
 msgid "You do not have the permission to edit this comment."
 msgstr "Neturite leidimo redaguoti šį komentaarą."
 
@@ -1426,7 +1449,7 @@ msgstr "Neteisingas įrašo ID."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Jūs neturite leidimo trinti įrašų šioje zonoje."
 
-#: lib/Application/Controller/EditRecordController.php:205
+#: lib/Application/Controller/EditRecordController.php:206
 msgid "Record not found."
 msgstr "Įrašas nerastas."
 
@@ -1532,19 +1555,19 @@ msgstr "Grupė nerasta."
 msgid "User Preferences"
 msgstr "Vartotojo nuostatos"
 
-#: lib/Application/Controller/UserPreferencesController.php:100
+#: lib/Application/Controller/UserPreferencesController.php:101
 msgid "Preferences saved successfully."
 msgstr "Nuostatos sėkmingai išsaugotos."
 
-#: lib/Application/Controller/UserPreferencesController.php:108
+#: lib/Application/Controller/UserPreferencesController.php:109
 msgid "Failed to update preferences. Please try again."
 msgstr "Nepavyko atnaujinti nuostatų. Bandykite dar kartą."
 
-#: lib/Application/Controller/UserPreferencesController.php:123
+#: lib/Application/Controller/UserPreferencesController.php:124
 msgid "Top"
 msgstr "Viršus"
 
-#: lib/Application/Controller/UserPreferencesController.php:124
+#: lib/Application/Controller/UserPreferencesController.php:125
 msgid "Bottom"
 msgstr "Apačia"
 
@@ -1701,33 +1724,33 @@ msgstr "Puslapio numeris viršija turimus puslapius."
 msgid "You do not have the permission to view supermasters."
 msgstr "Neturite leidimo peržiūrėti supermasters."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:119
+#: lib/Application/Controller/EditZoneMetadataController.php:120
 msgid "You do not have the permission to view zone metadata."
 msgstr "Neturite teisės peržiūrėti zonos metaduomenų."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:122
+#: lib/Application/Controller/EditZoneMetadataController.php:123
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Neturite teises redaguoti zonos metaduomenu."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:151
+#: lib/Application/Controller/EditZoneMetadataController.php:165
 msgid "Zone metadata has been updated successfully."
 msgstr "Zonos metaduomenys sekmingai atnaujinti."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:156
+#: lib/Application/Controller/EditZoneMetadataController.php:170
 msgid "Failed to update zone metadata."
 msgstr "Nepavyko atnaujinti zonos metaduomenu."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:178
+#: lib/Application/Controller/EditZoneMetadataController.php:192
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr "Redaguoti zonos metaduomenis"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:178
+#: lib/Application/Controller/EditZoneMetadataController.php:192
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "Zonos metaduomenys"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:382
+#: lib/Application/Controller/EditZoneMetadataController.php:396
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
@@ -1735,7 +1758,7 @@ msgstr ""
 "Metaduomenu tipas %s priima tik viena reiksme. Pridekite tik viena eilute "
 "siam tipui."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:476
+#: lib/Application/Controller/EditZoneMetadataController.php:490
 #: templates/modern/edit_zone_metadata.html:155
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
@@ -1743,21 +1766,21 @@ msgstr ""
 "Pasirinktinis metaduomenu tipas, saugomas tiesiogiai PowerDNS domainmetadata "
 "lenteleje."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:484
+#: lib/Application/Controller/EditZoneMetadataController.php:498
 #: templates/modern/pdns_status.html:412
 msgid "Value"
 msgstr "Reikšmė"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:538
+#: lib/Application/Controller/EditZoneMetadataController.php:552
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "Pasirinktinis"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:543
+#: lib/Application/Controller/EditZoneMetadataController.php:557
 msgid "Multi"
 msgstr "Daug"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:544
+#: lib/Application/Controller/EditZoneMetadataController.php:558
 msgid "Single"
 msgstr "Vienas"
 
@@ -1836,7 +1859,7 @@ msgstr "%d įrašas(-ai) sėkmingai pridėti."
 msgid "Some record(s) could not be added."
 msgstr "Kai kurių įrašų pridėti nepavyko."
 
-#: lib/Application/Controller/BulkRecordAddController.php:263
+#: lib/Application/Controller/BulkRecordAddController.php:265
 msgid "Zone ID is required."
 msgstr "Zonos ID būtinas."
 
@@ -1933,8 +1956,8 @@ msgstr "Neturite leidimo ištrinti šio įrašo."
 msgid "The record could not be deleted."
 msgstr "Įrašo ištrinti nepavyko."
 
-#: lib/Application/Controller/ListLogZonesController.php:62
-#: templates/default/index.html:271 templates/modern/index.html:271
+#: lib/Application/Controller/ListLogZonesController.php:72
+#: templates/default/index.html:248 templates/modern/index.html:248
 msgid "Zone Logs"
 msgstr "Zonų žurnalai"
 
@@ -1979,7 +2002,7 @@ msgstr "Zonos sėkmingai atnaujintos."
 msgid "You do not have permission to create new zone templates."
 msgstr "Neturite leidimo kurti naujų zonų šablonų."
 
-#: lib/Domain/Model/ZoneTemplate.php:189 lib/Domain/Model/ZoneTemplate.php:877
+#: lib/Domain/Model/ZoneTemplate.php:317 lib/Domain/Model/ZoneTemplate.php:1008
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Zonos šablonas su šiuo pavadinimu jau egzistuoja, pasirinkite kitą."
 
@@ -2012,7 +2035,7 @@ msgid "You do not have permission to view this zone."
 msgstr "Jūs neturite leidimo peržiūrėti šios zonos."
 
 #: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:281 templates/modern/index.html:281
+#: templates/default/index.html:258 templates/modern/index.html:258
 msgid "User Logs"
 msgstr "Naudotojų žurnalai"
 
@@ -2056,11 +2079,11 @@ msgstr "Šablonas nerastas."
 msgid "User agreement accepted successfully."
 msgstr "Naudotojo sutartis sėkmingai priimta."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:69
+#: lib/Application/Controller/ZoneOwnershipController.php:71
 msgid "Edit Zone"
 msgstr "Redaguoti zoną"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:86
+#: lib/Application/Controller/ZoneOwnershipController.php:88
 msgid "You do not have permission to access this zone."
 msgstr "Jūs neturite leidimo prisijungti prie šios zonos."
 
@@ -2068,31 +2091,31 @@ msgstr "Jūs neturite leidimo prisijungti prie šios zonos."
 msgid "You do not have the permission to view this zone."
 msgstr "Neturite leidimo peržiūrėti šios zonos."
 
-#: lib/Application/Controller/EditController.php:274
+#: lib/Application/Controller/EditController.php:276
 msgid "Zone type has been changed successfully."
 msgstr "Zonos tipas sėkmingai pakeistas."
 
-#: lib/Application/Controller/EditController.php:282
+#: lib/Application/Controller/EditController.php:284
 msgid "Slave master has been changed successfully."
 msgstr "Slave master sėkmingai pakeistas."
 
-#: lib/Application/Controller/EditController.php:303
+#: lib/Application/Controller/EditController.php:305
 msgid "Zone template has been changed successfully."
 msgstr "Zonos šablonas sėkmingai pakeistas."
 
-#: lib/Application/Controller/EditController.php:315
+#: lib/Application/Controller/EditController.php:317
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC neįjungtas serveryje."
 
-#: lib/Application/Controller/EditController.php:318
+#: lib/Application/Controller/EditController.php:320
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zona jau pasirašyta su DNSSEC."
 
-#: lib/Application/Controller/EditController.php:340
+#: lib/Application/Controller/EditController.php:342
 msgid "Zone has been signed successfully."
 msgstr "Zona sėkmingai pasirašyta."
 
-#: lib/Application/Controller/EditController.php:344
+#: lib/Application/Controller/EditController.php:347
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2100,7 +2123,7 @@ msgstr ""
 "Zonos pasirašymo užklausa sėkminga, bet patikrinimas nepavyko. Patikrinkite "
 "DNSSEC raktus."
 
-#: lib/Application/Controller/EditController.php:348
+#: lib/Application/Controller/EditController.php:351
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2121,19 +2144,18 @@ msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "Zonos atšaukimo užklausa sėkminga, bet patikrinimas nepavyko."
 
 #: lib/Application/Controller/DnssecController.php:117
-#, auto-english-fallback
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Failed to unsign zone. Check PowerDNS logs for details."
 
-#: lib/Application/Controller/EditController.php:736
+#: lib/Application/Controller/EditController.php:738
 msgid "Request has expired, please try again."
 msgstr "Užklausa pasibaigė, bandykite dar kartą."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:743
 msgid "Zone has been updated successfully."
 msgstr "Zona sėkmingai atnaujinta."
 
-#: lib/Application/Controller/EditController.php:743
+#: lib/Application/Controller/EditController.php:745
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2141,11 +2163,11 @@ msgstr ""
 "Zona sėkmingai išsaugota. Įrašų keitimai nebuvo atlikti, tačiau SOA "
 "serijinis numeris buvo padidintas."
 
-#: lib/Application/Controller/EditController.php:752
+#: lib/Application/Controller/EditController.php:754
 msgid "Zone has not been updated successfully."
 msgstr "Zona nesėkmingai atnaujinta."
 
-#: lib/Application/Controller/EditController.php:780
+#: lib/Application/Controller/EditController.php:782
 msgid "Please provide all required fields."
 msgstr "Prašome pateikti visus privalomus laukus."
 
@@ -2209,26 +2231,26 @@ msgstr "Neturite leidimo pridėti įrašą į šią zoną."
 msgid "Record successfully added."
 msgstr "Įrašas sėkmingai pridėtas."
 
-#: lib/Application/Controller/AddRecordController.php:431
+#: lib/Application/Controller/AddRecordController.php:433
 msgid "No records were provided."
 msgstr "Nebuvo pateikta įrašų."
 
-#: lib/Application/Controller/AddRecordController.php:485
+#: lib/Application/Controller/AddRecordController.php:487
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d įrašas(-ai) sėkmingai pridėti."
 
-#: lib/Application/Controller/AddRecordController.php:487
+#: lib/Application/Controller/AddRecordController.php:489
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Taip pat sukurta %d atitinkančių įrašų."
 
-#: lib/Application/Controller/AddRecordController.php:490
+#: lib/Application/Controller/AddRecordController.php:492
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d įrašo(-ų) pridėti nepavyko."
 
-#: lib/Application/Controller/AddRecordController.php:495
+#: lib/Application/Controller/AddRecordController.php:497
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2236,7 +2258,7 @@ msgstr ""
 "Kai kurių įrašų pridėti nepavyko. Jie gali jau egzistuoti arba turėti "
 "neteisingų duomenų."
 
-#: lib/Application/Controller/AddRecordController.php:521
+#: lib/Application/Controller/AddRecordController.php:523
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Nepavyko pridėti jokių įrašų. Jie gali turėti neteisingų duomenų."
 
@@ -2252,7 +2274,7 @@ msgstr "Zona sėkmingai ištrinta."
 msgid "Zones have been deleted successfully."
 msgstr "Zonos sėkmingai ištrintos."
 
-#: lib/Domain/Service/Dns/DomainManager.php:763
+#: lib/Domain/Service/Dns/DomainManager.php:847
 msgid "You do not have the permission to delete a zone."
 msgstr "Neturite leidimo ištrinti zoną."
 
@@ -2289,7 +2311,7 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "Nepavyko inicijuoti OIDC autentifikacijos: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:291 templates/modern/index.html:291
+#: templates/default/index.html:268 templates/modern/index.html:268
 msgid "Group Logs"
 msgstr "Grupės žurnalai"
 
@@ -2313,24 +2335,39 @@ msgstr ""
 "Nepavyko gauti PEM rakto. Galbūt serveris šio rakto privačios medžiagos "
 "neatskleidžia."
 
-#: lib/Domain/Service/Dns/DomainManager.php:349
+#: lib/Domain/Service/Dns/DomainManager.php:389
 msgid "You do not have the permission to add a master zone."
 msgstr "Neturite leidimo pridėti pagrindinę zoną."
 
-#: lib/Application/Controller/AddZoneMasterController.php:71
+#: lib/Application/Controller/AddZoneMasterController.php:73
 msgid "Add Primary Zone"
 msgstr "Pridėti pirminę zoną"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:122
-#, auto-english-fallback
+#: lib/Application/Controller/BulkRegistrationController.php:94
+msgid ""
+"Zone ownership mode is groups_only but no groups exist. Create a group "
+"before adding zones."
+msgstr "Zonos nuosavybės režimas yra groups_only, bet grupių nėra. Prieš pridėdami zonas, sukurkite grupę."
+
+#: lib/Application/Controller/BulkRegistrationController.php:99
+msgid ""
+"Zone ownership mode is groups_only but you are not a member of any group. "
+"Ask an administrator to add you to a group before creating zones."
+msgstr "Zonos nuosavybės režimas yra groups_only, o jūs nesate jokios grupės narys. Prieš kurdami zonas, paprašykite administratoriaus įtraukti jus į grupę."
+
+#: lib/Application/Controller/BulkRegistrationController.php:171
 msgid "At least one user or group must be selected as owner."
 msgstr "At least one user or group must be selected as owner."
 
-#: lib/Application/Controller/BulkRegistrationController.php:113
+#: lib/Application/Controller/BulkRegistrationController.php:181
+msgid "You do not have permission to create zones for other users."
+msgstr "Neturite teisių kurti zonas kitiems naudotojams."
+
+#: lib/Application/Controller/BulkRegistrationController.php:194
 msgid "There is already a zone with this name."
 msgstr "Jau egzistuoja zona su šiuo pavadinimu."
 
-#: lib/Application/Controller/AddZoneMasterController.php:173
+#: lib/Application/Controller/AddZoneMasterController.php:221
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2338,7 +2375,7 @@ msgstr ""
 "Zona sėkmingai sukurta, bet DNSSEC pasirašymas praleistas dėl tikrinimo "
 "klaidų:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:185
+#: lib/Application/Controller/AddZoneMasterController.php:233
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2346,11 +2383,11 @@ msgstr ""
 "Zona sukurta, bet apsaugoti ją su DNSSEC nepavyko. Zonos tikrinimas pavyko, "
 "bet PowerDNS API grąžino klaidą. Patikrinkite PowerDNS žurnalus dėl detalių."
 
-#: lib/Application/Controller/AddZoneMasterController.php:191
+#: lib/Application/Controller/AddZoneMasterController.php:239
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zona sėkmingai sukurta ir pasirašyta su DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:194
+#: lib/Application/Controller/AddZoneMasterController.php:243
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2358,7 +2395,7 @@ msgstr ""
 "Zona sukurta ir pasirašymas užklaustas, bet patikrinimas nepavyko. "
 "Patikrinkite DNSSEC raktus."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:161
+#: lib/Application/Controller/AddZoneSlaveController.php:208
 msgid "Zone has been added successfully."
 msgstr "Zona sėkmingai pridėta."
 
@@ -2379,11 +2416,11 @@ msgstr "Masiniai PTR įrašai"
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Masinis PTR įrašų kūrimas neprieinamas reverse zonoms."
 
-#: lib/Application/Controller/ListZoneTemplController.php:57
+#: lib/Application/Controller/ListZoneTemplController.php:58
 msgid "You do not have the permission to view zone templates."
 msgstr "Neturite leidimo peržiūrėti zonų šablonų."
 
-#: lib/Application/Controller/ListZoneTemplController.php:61
+#: lib/Application/Controller/ListZoneTemplController.php:62
 msgid "Zone Templates"
 msgstr "Zonų šablonai"
 
@@ -2485,16 +2522,16 @@ msgstr "Netinkamas SAML teikėjas"
 msgid "SAML authentication failed: "
 msgstr "SAML autentifikacija nepavyko: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:57
+#: lib/Application/Controller/ListForwardZonesController.php:59
 msgid "You do not have sufficient permissions to view this page."
 msgstr "Neturite pakankamų leidimų peržiūrėti šį puslapį."
 
-#: lib/Application/Controller/ListReverseZonesController.php:78
+#: lib/Application/Controller/ListReverseZonesController.php:80
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
 msgstr "Atvirkštinės zonos"
 
-#: lib/Application/Controller/ListForwardZonesController.php:186
+#: lib/Application/Controller/ListForwardZonesController.php:213
 msgid "You do not have the permission to see any zones."
 msgstr "Neturite leidimo matyti jokių zonų."
 
@@ -2563,7 +2600,7 @@ msgid "You do not have the permission to view this page."
 msgstr "Neturite leidimo peržiūrėti šį puslapį."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:42
-#: templates/default/header.html:233 templates/modern/header.html:342
+#: templates/default/header.html:235 templates/modern/header.html:342
 msgid "Database Consistency"
 msgstr "Duomenų bazės suderinamumas"
 
@@ -2624,7 +2661,7 @@ msgstr "Neteisingas patikrinimo tipas"
 msgid "You have logged out."
 msgstr "Jūs atsijungėte."
 
-#: lib/Domain/Model/ZoneTemplate.php:186 lib/Domain/Model/ZoneTemplate.php:626
+#: lib/Domain/Model/ZoneTemplate.php:314 lib/Domain/Model/ZoneTemplate.php:757
 msgid "You do not have the permission to add a zone template."
 msgstr "Neturite leidimo pridėti zonos šablono."
 
@@ -2652,11 +2689,11 @@ msgstr "Netinkamas vartotojo arba grupės ID."
 msgid "User removed from group successfully."
 msgstr "Vartotojas sėkmingai pašalintas iš grupės."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:65
+#: lib/Application/Controller/AddZoneSlaveController.php:66
 msgid "You do not have the permission to add a slave zone."
 msgstr "Neturite leidimo pridėti slave zonos."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:69
+#: lib/Application/Controller/AddZoneSlaveController.php:70
 msgid "Add Secondary Zone"
 msgstr "Pridėti antrinę zoną"
 
@@ -2668,7 +2705,7 @@ msgstr "Neteisingas serverio vardas."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Tai nėra teisingas IPv4 ar IPv6 adresas."
 
-#: lib/Domain/Model/ZoneTemplate.php:286 lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:414 lib/Domain/Model/ZoneTemplate.php:455
 msgid "You do not have the permission to delete zone templates."
 msgstr "Neturite leidimo ištrinti zonų šablonų."
 
@@ -2704,21 +2741,21 @@ msgstr "Zona sėkmingai pašalinta iš grupės."
 msgid "Zone was not owned by this group."
 msgstr "Zona nepriklausė šiai grupei."
 
-#: lib/Application/Controller/ListForwardZonesController.php:61
+#: lib/Application/Controller/ListForwardZonesController.php:63
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Tiesioginės zonos"
 
-#: lib/Application/Controller/ListForwardZonesController.php:80
+#: lib/Application/Controller/ListForwardZonesController.php:82
 msgid "You do not have permission to sync zones from PowerDNS."
 msgstr "You do not have permission to sync zones from PowerDNS."
 
-#: lib/Application/Controller/ListForwardZonesController.php:91
+#: lib/Application/Controller/ListForwardZonesController.php:93
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 
-#: lib/Application/Controller/ListForwardZonesController.php:99
+#: lib/Application/Controller/ListForwardZonesController.php:101
 #, php-format
 msgid "Zone sync failed: %s"
 msgstr "Zone sync failed: %s"
@@ -2736,7 +2773,6 @@ msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr "PEM rakto importui reikia PowerDNS 4.7 arba naujesnio."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:98
-#, auto-english-fallback
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 
@@ -2920,7 +2956,7 @@ msgstr "Negalite redaguoti įrašų SLAVE zonoje."
 msgid "You do not have permission to edit this record."
 msgstr "Jūs neturite leidimo redaguoti šio įrašo."
 
-#: lib/Application/Controller/EditRecordController.php:330
+#: lib/Application/Controller/EditRecordController.php:331
 msgid "The record has been updated successfully."
 msgstr "Įrašas sėkmingai atnaujintas."
 
@@ -3024,38 +3060,110 @@ msgstr "Super master neegzistuoja."
 msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster sėkmingai ištrintas."
 
-#: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:202 templates/modern/bulk_registration.html:23
+#: lib/Application/Controller/BulkRegistrationController.php:69
+#: templates/modern/index.html:179 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Masinis registravimas"
 
-#: lib/Application/Controller/BulkRegistrationController.php:128
+#: lib/Application/Controller/BulkRegistrationController.php:132
+msgid "Owner must be a numeric user ID."
+msgstr "Savininkas turi būti skaitinis naudotojo ID."
+
+#: lib/Application/Controller/BulkRegistrationController.php:209
 msgid "Zones has been added successfully."
 msgstr "Zonos sėkmingai pridėtos."
 
-#: lib/Application/Controller/BulkRegistrationController.php:131
+#: lib/Application/Controller/BulkRegistrationController.php:212
 msgid "Some zone(s) could not be added."
 msgstr "Kai kurių zonų pridėti nepavyko."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:176
+#: lib/Application/Controller/SetDefaultZoneTemplController.php:37
+msgid "You do not have the permission to change the default zone template."
+msgstr "Neturite teisių keisti numatytąjį zonos šabloną."
+
+#: lib/Application/Controller/SetDefaultZoneTemplController.php:51
+msgid ""
+"Default flag cleared, but the dns.default_zone_template config setting is "
+"still active."
+msgstr "Numatytoji žyma pašalinta, bet konfigūracijos parametras dns.default_zone_template vis dar aktyvus."
+
+#: lib/Application/Controller/SetDefaultZoneTemplController.php:54
+msgid "Default zone template cleared."
+msgstr "Numatytasis zonos šablonas pašalintas."
+
+#: lib/Application/Controller/SetDefaultZoneTemplController.php:76
+msgid "Default zone template updated."
+msgstr "Numatytasis zonos šablonas atnaujintas."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:181
+msgid "User-owner assignment is disabled by the current zone ownership mode."
+msgstr "Naudotojo savininko priskyrimas išjungtas dabartiniame zonos nuosavybės režime."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:188
 msgid "Owner has been added successfully."
 msgstr "Savininkas sėkmingai pridėtas."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:192
+#: lib/Application/Controller/ZoneOwnershipController.php:291
+msgid ""
+"Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "Nepavyksta pašalinti paskutinio savininko: zona liktų be savininko."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:223
+msgid ""
+"Cannot remove the last user owner: zone ownership mode is users_only and "
+"requires at least one user owner. Add another user owner first."
+msgstr "Nepavyksta pašalinti paskutinio naudotojo savininko: zonos nuosavybės režimas yra users_only ir reikalauja bent vieno naudotojo savininko. Pirmiausia pridėkite kitą."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:229
+msgid ""
+"Cannot remove user owner: zone ownership mode is groups_only and the zone "
+"has no group owners. Add a group first."
+msgstr "Nepavyksta pašalinti naudotojo savininko: zonos nuosavybės režimas yra groups_only, o zona neturi grupės savininkų. Pirmiausia pridėkite grupę."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:236
 msgid "Owner has been removed successfully."
 msgstr "Savininkas sėkmingai pašalintas."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:213
+#: lib/Application/Controller/ZoneOwnershipController.php:249
+msgid ""
+"Group-ownership assignment is disabled by the current zone ownership mode."
+msgstr "Grupės nuosavybės priskyrimas išjungtas dabartiniame zonos nuosavybės režime."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:261
 msgid "You do not have permission to assign this group."
 msgstr "Neturite leidimo priskirti šios grupės."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:221
+#: lib/Application/Controller/ZoneOwnershipController.php:269
 msgid "Group has been added successfully."
 msgstr "Grupė sėkmingai pridėta."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:297
+msgid ""
+"Cannot remove the last group: zone ownership mode is groups_only and "
+"requires at least one group. Add another group first."
+msgstr "Nepavyksta pašalinti paskutinės grupės: zonos nuosavybės režimas yra groups_only ir reikalauja bent vienos grupės. Pirmiausia pridėkite kitą grupę."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:303
+msgid ""
+"Cannot remove group: zone ownership mode is users_only and the zone has no "
+"user owners. Add a user owner first."
+msgstr "Nepavyksta pašalinti grupės: zonos nuosavybės režimas yra users_only, o zona neturi naudotojų savininkų. Pirmiausia pridėkite naudotoją kaip savininką."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid "Group has been removed successfully."
 msgstr "Grupė sėkmingai pašalinta."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:331
+msgid "Add another owner or a group first."
+msgstr "Pirmiausia pridėkite kitą savininką arba grupę."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:334
+msgid "Add another user owner first (zone ownership mode is users_only)."
+msgstr "Pirmiausia pridėkite kitą naudotoją kaip savininką (zonos nuosavybės režimas yra users_only)."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:336
+msgid "Add a group first (zone ownership mode is groups_only)."
+msgstr "Pirmiausia pridėkite grupę (zonos nuosavybės režimas yra groups_only)."
 
 #: lib/Application/Controller/NotFoundController.php:53
 #: templates/default/404.html:14 templates/modern/404.html:14
@@ -3089,12 +3197,12 @@ msgstr "Nepavyko įjungti zonos rakto."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Įvyko klaida perjungiant DNSSEC raktą. Bandykite dar kartą."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
+#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Taip"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:437
+#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Ne"
@@ -3119,11 +3227,11 @@ msgstr "Sesija pasibaigė, prisijunkite iš naujo."
 msgid "Failed to update password"
 msgstr "Nepavyko atnaujinti slaptažodžio"
 
-#: lib/Application/Service/OidcService.php:183
+#: lib/Application/Service/OidcService.php:184
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Autentifikacija nepavyko: Neteisingas būsenos parametras"
 
-#: lib/Application/Service/OidcService.php:204
+#: lib/Application/Service/OidcService.php:205
 msgid "Authentication failed: No authorization code"
 msgstr "Autentifikacija nepavyko: Nėra autorizacijos kodo"
 
@@ -3132,7 +3240,6 @@ msgid "Authentication failed: Invalid session"
 msgstr "Autentifikacija nepavyko: Neteisinga sesija"
 
 #: lib/Application/Service/SamlService.php:347
-#, auto-english-fallback
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Authentication failed: Unable to create or update user account"
 
@@ -3347,18 +3454,20 @@ msgid "No, keep this supermaster"
 msgstr "Ne, palikti šį supermasterį"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:147
-#, auto-english-fallback
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr """Showing connectivity status for the autoprimary servers configured in the ""table below."
+msgstr ""
+"Showing connectivity status for the autoprimary servers configured in the "
+"table below."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:148
-#, auto-english-fallback
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr """Showing connectivity status for the supermasters configured in the table ""below."
+msgstr ""
+"Showing connectivity status for the supermasters configured in the table "
+"below."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -3393,23 +3502,39 @@ msgstr "Vartotojo vardas jau egzistuoja, pasirinkite kitą."
 msgid "Enter a valid user name."
 msgstr "Įveskite teisingą vartotojo vardą."
 
-#: lib/Domain/Model/ZoneTemplate.php:213 lib/Domain/Model/ZoneTemplate.php:682
+#: lib/Domain/Model/ZoneTemplate.php:257
+msgid "Zone template not found."
+msgstr "Zonos šablonas nerastas."
+
+#: lib/Domain/Model/ZoneTemplate.php:261
+msgid "Only global zone templates can be set as the default."
+msgstr "Numatytuoju gali būti nustatyti tik visuotiniai zonos šablonai."
+
+#: lib/Domain/Model/ZoneTemplate.php:277
+msgid "Error setting default zone template: "
+msgstr "Klaida nustatant numatytąjį zonos šabloną: "
+
+#: lib/Domain/Model/ZoneTemplate.php:296
+msgid "Error clearing default zone template: "
+msgstr "Klaida šalinant numatytąjį zonos šabloną: "
+
+#: lib/Domain/Model/ZoneTemplate.php:341 lib/Domain/Model/ZoneTemplate.php:813
 msgid "Error creating zone template: "
 msgstr "Klaida kuriant zonos šabloną: "
 
-#: lib/Domain/Model/ZoneTemplate.php:249
+#: lib/Domain/Model/ZoneTemplate.php:377
 msgid "Error adding default SOA record to template: "
 msgstr "Klaida pridedant numatytąjį SOA įrašą į šabloną: "
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:439
 msgid "Error deleting zone template: "
 msgstr "Klaida trinant zonos šabloną: "
 
-#: lib/Domain/Model/ZoneTemplate.php:332
+#: lib/Domain/Model/ZoneTemplate.php:463
 msgid "Error deleting user zone templates: "
 msgstr "Klaida trinant vartotojo zonų šablonus: "
 
-#: lib/Domain/Model/ZoneTemplate.php:449
+#: lib/Domain/Model/ZoneTemplate.php:580
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Neturite leidimo pridėti įrašo į šį zonos šabloną."
 
@@ -3425,91 +3550,91 @@ msgstr "MX/SRV įrašų prioritetas turi būti skaičius tarp 0 ir 65535."
 msgid "You do not have the permission to edit this record."
 msgstr "Neturite leidimo redaguoti šį įrašą."
 
-#: lib/Domain/Model/ZoneTemplate.php:541
+#: lib/Domain/Model/ZoneTemplate.php:672
 msgid "Error updating zone template record: "
 msgstr "Klaida atnaujinant zonos šablono įrašą: "
 
-#: lib/Domain/Model/ZoneTemplate.php:564
+#: lib/Domain/Model/ZoneTemplate.php:695
 msgid "Error deleting zone template record: "
 msgstr "Klaida trinant zonos šablono įrašą: "
 
-#: lib/Domain/Model/ZoneTemplate.php:587
+#: lib/Domain/Model/ZoneTemplate.php:718
 msgid "Error checking template ownership: "
 msgstr "Klaida tikrinant šablono priklausomybę: "
 
-#: lib/Domain/Model/ZoneTemplate.php:714 lib/Domain/Model/ZoneTemplate.php:756
+#: lib/Domain/Model/ZoneTemplate.php:845 lib/Domain/Model/ZoneTemplate.php:887
 msgid "Error retrieving zones using template: "
 msgstr "Klaida gaunant zonas, naudojančias šabloną: "
 
-#: lib/Domain/Model/ZoneTemplate.php:812 lib/Domain/Model/ZoneTemplate.php:856
+#: lib/Domain/Model/ZoneTemplate.php:943 lib/Domain/Model/ZoneTemplate.php:987
 msgid "Failed to get list of zones using template: "
 msgstr "Nepavyko gauti zonų, naudojančių šabloną, sąrašo: "
 
-#: lib/Domain/Model/ZoneTemplate.php:874
+#: lib/Domain/Model/ZoneTemplate.php:1005
 msgid "You do not have the permission to edit a zone template."
 msgstr "Neturite leidimo redaguoti zonos šablono."
 
-#: lib/Domain/Model/ZoneTemplate.php:918
+#: lib/Domain/Model/ZoneTemplate.php:1053
 msgid "Error unlinking zone from template: "
 msgstr "Klaida atskiriant zoną nuo šablono: "
 
-#: lib/Domain/Model/ZoneTemplate.php:951 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:1102
 msgid "Error retrieving zones: "
 msgstr "Klaida gaunant zonas: "
 
-#: lib/Domain/Model/ZoneTemplate.php:986
+#: lib/Domain/Model/ZoneTemplate.php:1121
 msgid "Error checking template name existence: "
 msgstr "Klaida tikrinant šablono pavadinimo egzistavimą: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1007
+#: lib/Domain/Model/ZoneTemplate.php:1142
 msgid "Error looking up template by name: "
 msgstr "Klaida ieškant šablono pagal pavadinimą: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1030
+#: lib/Domain/Model/ZoneTemplate.php:1165
 msgid "Error checking template existence: "
 msgstr "Klaida tikrinant šablono egzistavimą: "
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:101
+#: lib/Domain/Service/DatabaseConsistencyService.php:122
 msgid "All zones have owners"
 msgstr "Visos zonos turi savininkus"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:108
+#: lib/Domain/Service/DatabaseConsistencyService.php:129
 #, php-format
 msgid "%d zones found without owners"
 msgstr "%d zonų rasta be savininkų"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:159
+#: lib/Domain/Service/DatabaseConsistencyService.php:180
 msgid "All slave zones have master IP addresses"
 msgstr "Visos slave zonos turi master IP adresus"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:166
+#: lib/Domain/Service/DatabaseConsistencyService.php:187
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "%d slave zonų rasta be master IP adresų"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:211
+#: lib/Domain/Service/DatabaseConsistencyService.php:232
 msgid "All records belong to existing zones"
 msgstr "Visi įrašai priklauso egzistuojančioms zonoms"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:218
+#: lib/Domain/Service/DatabaseConsistencyService.php:239
 #, php-format
 msgid "%d orphaned records found"
 msgstr "%d našlaičių įrašų rasta"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:273
+#: lib/Domain/Service/DatabaseConsistencyService.php:294
 msgid "No duplicate SOA records found"
 msgstr "Dubliuotų SOA įrašų nerasta"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:280
+#: lib/Domain/Service/DatabaseConsistencyService.php:301
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d zonos turi dubliuotų SOA įrašų"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:334
+#: lib/Domain/Service/DatabaseConsistencyService.php:355
 msgid "All zones have SOA records"
 msgstr "Visos zonos turi SOA įrašus"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:341
+#: lib/Domain/Service/DatabaseConsistencyService.php:362
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "%d zonų rasta be SOA įrašų"
@@ -3576,22 +3701,18 @@ msgstr ""
 "arba 4 (Ed25519)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
-#, auto-english-fallback
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
 msgstr "For gateway type 0 (No gateway), gateway must be \".\"."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:201
-#, auto-english-fallback
 msgid "For gateway type 1, gateway must be a valid IPv4 address."
 msgstr "For gateway type 1, gateway must be a valid IPv4 address."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:208
-#, auto-english-fallback
 msgid "For gateway type 2, gateway must be a valid IPv6 address."
 msgstr "For gateway type 2, gateway must be a valid IPv6 address."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:218
-#, auto-english-fallback
 msgid "For gateway type 3, gateway must be a valid domain name."
 msgstr "For gateway type 3, gateway must be a valid domain name."
 
@@ -3845,7 +3966,6 @@ msgid "TLSA SHA-512 certificate data must be 128 characters long."
 msgstr "TLSA SHA-512 sertifikato duomenys turi būti 128 simbolių ilgio."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:320
-#, auto-english-fallback
 msgid "TLSA exact match certificate data seems too short to be valid."
 msgstr "TLSA exact match certificate data seems too short to be valid."
 
@@ -4066,7 +4186,6 @@ msgid "Invalid AFSDB hostname."
 msgstr "Neteisingas AFSDB serverio vardas."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
-#, auto-english-fallback
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
 msgstr "AFSDB server hostname must be a fully qualified domain name (FQDN)."
 
@@ -4252,12 +4371,10 @@ msgid "RKEY algorithm field must be a numeric value."
 msgstr "RKEY algoritmo laukas turi būti skaitinė reikšmė."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:219
-#, auto-english-fallback
 msgid "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
 msgstr "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:224
-#, auto-english-fallback
 msgid "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
 msgstr "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
 
@@ -4355,7 +4472,6 @@ msgid "RKEY records are rarely used in modern DNS implementations."
 msgstr "RKEY įrašai retai naudojami šiuolaikiniuose DNS įgyvendinimuose."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:262
-#, auto-english-fallback
 msgid "Consider using standardized record types for cryptographic purposes."
 msgstr "Consider using standardized record types for cryptographic purposes."
 
@@ -4442,7 +4558,6 @@ msgstr ""
 "šešioliktainius skaitmenis."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
-#, auto-english-fallback
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
 msgstr "NID record content must have exactly 4 groups of hexadecimal digits."
 
@@ -4831,7 +4946,6 @@ msgstr ""
 "sinchronizacijos problemą."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
-#, auto-english-fallback
 msgid "TSIG keys should be rotated periodically as a security best practice."
 msgstr "TSIG keys should be rotated periodically as a security best practice."
 
@@ -4876,7 +4990,6 @@ msgid "TSIG fudge must be a non-negative integer."
 msgstr "TSIG nuokrypis turi būti neneigiamas sveikasis skaičius."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
-#, auto-english-fallback
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
 msgstr "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
 
@@ -4960,7 +5073,6 @@ msgid "TSIG algorithm name must end with a dot."
 msgstr "TSIG algoritmo pavadinimas turi baigtis tašku."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:333
-#, auto-english-fallback
 msgid "TSIG algorithm name must be a valid domain name ending with a dot."
 msgstr "TSIG algorithm name must be a valid domain name ending with a dot."
 
@@ -4972,7 +5084,6 @@ msgstr ""
 "neplaičiai palaikoma."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
-#, auto-english-fallback
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
 msgstr "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
 
@@ -4985,7 +5096,6 @@ msgstr ""
 "DNS serverių."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
-#, auto-english-fallback
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
 msgstr "ZONEMD records must be placed at the zone apex (same as SOA record)."
 
@@ -5070,7 +5180,6 @@ msgid "ZONEMD hash algorithm must be a number between 0 and 255."
 msgstr "ZONEMD hash algoritmas turi būti skaičius tarp 0 ir 255."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
-#, auto-english-fallback
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
 msgstr "ZONEMD hash algorithm 0 is reserved and not for standard use."
 
@@ -5079,7 +5188,6 @@ msgid "ZONEMD digest must be a hexadecimal string."
 msgstr "ZONEMD santrauka turi būti šešioliktainė eilutė."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:222
-#, auto-english-fallback
 msgid "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
 msgstr "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
 
@@ -5148,7 +5256,6 @@ msgid "CERT key tag must be a number between 0 and 65535."
 msgstr "CERT rakto žymė turi būti skaičius tarp 0 ir 65535."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:221
-#, auto-english-fallback
 msgid "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
 msgstr "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
 
@@ -5165,7 +5272,6 @@ msgid "Algorithm "
 msgstr "Algoritmas "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
-#, auto-english-fallback
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
 msgstr "For URL-based CERT types, the certificate data must be a valid URL."
 
@@ -5260,12 +5366,10 @@ msgstr ""
 "vienas raktas gali turėti tą pačią rakto žymę."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
-#, auto-english-fallback
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
 msgstr "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
-#, auto-english-fallback
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
 msgstr "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
 
@@ -5278,7 +5382,6 @@ msgstr ""
 "Apsvarstykite SHA-256 (tipas 2) arba SHA-384 (tipas 4) naudojimą vietoj to."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:215
-#, auto-english-fallback
 msgid "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
 msgstr "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
 
@@ -5323,7 +5426,6 @@ msgid "MX records should not point to CNAME records (RFC 2181)."
 msgstr "MX įrašai neturėtų nurodyti į CNAME įrašus (RFC 2181)."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:116
-#, auto-english-fallback
 msgid "Priority values above 100 are unusual and may be unnecessary."
 msgstr "Priority values above 100 are unusual and may be unnecessary."
 
@@ -5369,19 +5471,16 @@ msgstr ""
 "HTTPS įrašo parametrai turi būti raktas=reikšmė formatu, atskirti tarpais."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
-#, auto-english-fallback
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 msgstr "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
-#, auto-english-fallback
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 msgstr "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
-#, auto-english-fallback
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
 msgstr "ALPN value must be a comma-separated list of protocol identifiers."
 
@@ -5478,7 +5577,6 @@ msgstr ""
 "Rakto šalinimas)."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
-#, auto-english-fallback
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
 msgstr "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
 
@@ -5621,7 +5719,6 @@ msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
 msgstr "Apsvarstykite LDAPS (LDAP per SSL/TLS) naudojimą LDAP ryšių apsaugai."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
-#, auto-english-fallback
 msgid "Phone-related URI schemes may contain sensitive personal information."
 msgstr "Phone-related URI schemes may contain sensitive personal information."
 
@@ -5638,12 +5735,10 @@ msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
 msgstr "URI įrašas turi būti formatu: <prioritetas> <svoris> \"<tikslo URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
-#, auto-english-fallback
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
 msgstr "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:250
-#, auto-english-fallback
 msgid "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
 msgstr "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
 
@@ -5843,7 +5938,6 @@ msgid ""
 msgstr "Rasta keletas \"visi\" mechanizmų. Tik pirmas bus veiksmingas."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
-#, auto-english-fallback
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
 msgstr "Duplicate %s modifier found. Each modifier can appear at most once."
@@ -6253,7 +6347,6 @@ msgstr ""
 "greitą atnaujinimą."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:281
-#, auto-english-fallback
 msgid "This signature will expire within the next 30 days. Plan for renewal."
 msgstr "This signature will expire within the next 30 days. Plan for renewal."
 
@@ -6276,7 +6369,6 @@ msgstr ""
 "kompromitavimo atveju."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:297
-#, auto-english-fallback
 msgid "Could not parse signature timestamps to check validity period."
 msgstr "Could not parse signature timestamps to check validity period."
 
@@ -6425,7 +6517,6 @@ msgstr ""
 "varduose."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:245
-#, auto-english-fallback
 msgid "RP mailbox domain must include both local part and domain sections."
 msgstr "RP mailbox domain must include both local part and domain sections."
 
@@ -6579,7 +6670,6 @@ msgstr ""
 "mažiausiai reikšmingas bitas nustatytas į 1)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
-#, auto-english-fallback
 msgid "This is the all-zeros address, which may not be valid in all contexts."
 msgstr "This is the all-zeros address, which may not be valid in all contexts."
 
@@ -6684,7 +6774,6 @@ msgid "Key tag must be a number between 1 and 65535"
 msgstr "Rakto žymė turi būti skaičius tarp 1 ir 65535"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:211
-#, auto-english-fallback
 msgid "Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
 msgstr "Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
 
@@ -6719,7 +6808,6 @@ msgstr ""
 "Apsvarstykite ECDSAP256SHA256 (13) arba ED25519 (15) naudojimą vietoj to."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
-#, auto-english-fallback
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
 msgstr "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
 
@@ -7002,7 +7090,6 @@ msgid "Invalid IPv6 address: must have 8 hextets when expanded."
 msgstr "Neteisingas IPv6 adresas: turi turėti 8 hekstetus išplėtus."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
-#, auto-english-fallback
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
 msgstr "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
 
@@ -7021,7 +7108,6 @@ msgid "Invalid port number: %d (must be 1-65535)"
 msgstr "Netinkamas prievado numeris: %d (turi būti 1-65535)"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:337
-#, auto-english-fallback
 #, php-format
 msgid "Invalid server format: %s (expected IP:port or [IPv6]:port)"
 msgstr "Invalid server format: %s (expected IP:port or [IPv6]:port)"
@@ -7107,7 +7193,6 @@ msgid "Value must be enclosed in double quotes."
 msgstr "Reikšmė turi būti įdėta į dvigubas kabutes."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
-#, auto-english-fallback
 msgid "Backslashes must precede all quotes (\") in value content."
 msgstr "Backslashes must precede all quotes (\") in value content."
 
@@ -7144,7 +7229,6 @@ msgid "Multiple slashes in different labels are not allowed in ARPA zones."
 msgstr "Keli pasvirukai skirtingose etiketėse nėra leidžiami ARPA zonose."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:138
-#, auto-english-fallback
 msgid "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
 msgstr "Invalid RFC 2317 format. Use format: subnet/prefix (e.g., 0/26)."
 
@@ -7160,7 +7244,6 @@ msgstr ""
 "IPv6."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:164
-#, auto-english-fallback
 msgid "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
 msgstr "Invalid subnet in RFC 2317 notation. Must be numeric or hexadecimal."
 
@@ -7177,7 +7260,6 @@ msgstr ""
 "paprastai 25-31)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:193
-#, auto-english-fallback
 #, php-format
 msgid "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 msgstr "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
@@ -7230,7 +7312,6 @@ msgid "Serial number must be numeric."
 msgstr "Serijos numeris turi būti skaitinis."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:218
-#, auto-english-fallback
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
 msgstr "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
 
@@ -7327,7 +7408,6 @@ msgid "Unknown SVCB parameter key: \"%s\"."
 msgstr "Nežinomas SVCB parametro raktas: \"%s\"."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
-#, auto-english-fallback
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
@@ -7617,7 +7697,6 @@ msgstr ""
 "lokatoriams."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:179
-#, auto-english-fallback
 msgid "Each hexadecimal group in L64 locator must be 4 or fewer characters."
 msgstr "Each hexadecimal group in L64 locator must be 4 or fewer characters."
 
@@ -7759,7 +7838,6 @@ msgid "LUA record has mismatched parentheses. Check your syntax."
 msgstr "LUA įrašas turi nesutampančias skliaustas. Patikrinkite sintaksę."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
-#, auto-english-fallback
 msgid "LUA record has mismatched braces. Check your syntax."
 msgstr "LUA record has mismatched braces. Check your syntax."
 
@@ -7993,7 +8071,6 @@ msgid "Invalid characters in KEY record content."
 msgstr "KEY įrašo turinyje yra neteisingi simboliai."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:181
-#, auto-english-fallback
 msgid "KEY record must contain flags, protocol, algorithm, and public key."
 msgstr "KEY record must contain flags, protocol, algorithm, and public key."
 
@@ -8090,12 +8167,10 @@ msgstr ""
 "reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
-#, auto-english-fallback
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
 msgstr "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
-#, auto-english-fallback
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
 msgstr "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
 
@@ -8113,7 +8188,6 @@ msgstr ""
 "politikos diegimo metu."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
-#, auto-english-fallback
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
 msgstr "DMARC reporting interval tag (ri) must be a positive integer"
 
@@ -8265,7 +8339,6 @@ msgid "CDS algorithm must be a number between 1 and 16."
 msgstr "CDS algoritmas turi būti skaičius tarp 1 ir 16."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
-#, auto-english-fallback
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
 msgstr "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
 
@@ -8436,7 +8509,6 @@ msgid "SRV target cannot be empty."
 msgstr "SRV tikslas negali būti tuščias."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
-#, auto-english-fallback
 msgid "When target is \".\" (no service), port and weight should both be 0."
 msgstr "When target is \".\" (no service), port and weight should both be 0."
 
@@ -8803,7 +8875,6 @@ msgstr ""
 "pasirašymui pagal RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
-#, auto-english-fallback
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
 msgstr "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
@@ -8954,7 +9025,6 @@ msgstr ""
 "įrašas yra būtinas DNSSEC."
 
 #: lib/Domain/Service/ZoneValidationService.php:185
-#, auto-english-fallback
 msgid "Add NS records at the zone apex for your authoritative name servers."
 msgstr "Add NS records at the zone apex for your authoritative name servers."
 
@@ -9000,7 +9070,7 @@ msgstr "Nėra atitinkamos atvirkštinės zonos: %s."
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "PTR įrašas %s nukreipiantis į %s jau egzistuoja."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:113
+#: lib/Domain/Service/ReverseRecordCreator.php:112
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
@@ -9046,7 +9116,7 @@ msgstr "Neturite leidimo šalinti SOA įrašų."
 msgid "You do not have the permission to delete NS records."
 msgstr "Neturite leidimo šalinti NS įrašų."
 
-#: lib/Domain/Service/Dns/DomainManager.php:687
+#: lib/Domain/Service/Dns/DomainManager.php:753
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Neteisingi argumentai pateikti funkcijai %s %s"
@@ -9055,56 +9125,56 @@ msgstr "Neteisingi argumentai pateikti funkcijai %s %s"
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "Jau yra supermaster su šiuo IP adresu ir hostname."
 
-#: lib/Domain/Service/Dns/DomainManager.php:146
+#: lib/Domain/Service/Dns/DomainManager.php:178
 msgid "Failed to create zone in DNS backend."
 msgstr "Nepavyko sukurti zonos DNS posistemėje."
 
-#: lib/Domain/Service/Dns/DomainManager.php:341
+#: lib/Domain/Service/Dns/DomainManager.php:381
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "Nepavyko sukurti zonos: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:236
+#: lib/Domain/Service/Dns/DomainManager.php:268
 msgid "Failed to create SOA record for zone."
 msgstr "Nepavyko sukurti SOA įrašo zonai."
 
-#: lib/Domain/Service/Dns/DomainManager.php:291
+#: lib/Domain/Service/Dns/DomainManager.php:323
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "Nepavyko sukurti %s įrašo zonai."
 
-#: lib/Domain/Service/Dns/DomainManager.php:345
+#: lib/Domain/Service/Dns/DomainManager.php:385
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Neteisingi argumentai pateikti funkcijai %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:463
+#: lib/Domain/Service/Dns/DomainManager.php:506
 msgid "Failed to delete zone from DNS backend."
 msgstr "Nepavyko ištrinti zonos iš DNS posistemės."
 
-#: lib/Domain/Service/Dns/DomainManager.php:420
+#: lib/Domain/Service/Dns/DomainManager.php:463
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "Nepavyko išvalyti zonos metaduomenų: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:506
+#: lib/Domain/Service/Dns/DomainManager.php:552
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "Nepavyko ištrinti zonos metaduomenų: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:598
+#: lib/Domain/Service/Dns/DomainManager.php:647
 msgid "Failed to update zone type in DNS backend."
 msgstr "Nepavyko atnaujinti zonos tipo DNS posistemėje."
 
-#: lib/Domain/Service/Dns/DomainManager.php:618
+#: lib/Domain/Service/Dns/DomainManager.php:677
 msgid "Failed to update zone master in DNS backend."
 msgstr "Nepavyko atnaujinti zonos pagrindinio serverio DNS posistemėje."
 
-#: lib/Domain/Service/Dns/DomainManager.php:649
+#: lib/Domain/Service/Dns/DomainManager.php:715
 msgid "The selected user already owns the zone."
 msgstr "Pasirinktas naudotojas jau valdo zoną."
 
-#: lib/Domain/Service/Dns/DomainManager.php:682
+#: lib/Domain/Service/Dns/DomainManager.php:748
 msgid "There must be at least one owner for a zone."
 msgstr "Zona turi turėti bent vieną savininką."
 
@@ -9260,7 +9330,7 @@ msgstr "Būsena"
 msgid "Inactive"
 msgstr "Neaktyvus"
 
-#: lib/Module/ZoneImportExport/templates/import.html:141
+#: lib/Module/ZoneImportExport/templates/import.html:174
 msgid "Cancel"
 msgstr "Atšaukti"
 
@@ -9421,7 +9491,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Atnaujinti įrašą"
 
-#: templates/modern/edit.html:550 templates/modern/users.html:219
+#: templates/modern/edit.html:556 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Atkurti"
 
@@ -9543,7 +9613,7 @@ msgstr "Pateikite serverio vardą"
 msgid "Account"
 msgstr "Paskyra"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:547
+#: templates/modern/edit.html:190 templates/modern/edit.html:553
 msgid "Save changes"
 msgstr "Išsaugoti pakeitimus"
 
@@ -9572,7 +9642,6 @@ msgid "Validation"
 msgstr "Tikrinimas"
 
 #: templates/modern/edit_supermaster.html:88
-#, auto-english-fallback
 msgid "All fields will be validated to ensure they contain proper values."
 msgstr "All fields will be validated to ensure they contain proper values."
 
@@ -9680,14 +9749,18 @@ msgid "Network Mapping:"
 msgstr "Network Mapping:"
 
 #: templates/modern/list_networks.html:15
-#, auto-english-fallback
 msgid ""
 "Each network (CIDR block) maps to exactly one view. Resolvers in that "
 "network receive only the zone variants assigned to the mapped view. PowerDNS "
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr """Each network (CIDR block) maps to exactly one view. Resolvers in that ""network receive only the zone variants assigned to the mapped view. PowerDNS ""evaluates networks longest-prefix first, so a more specific subnet (for ""example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match ""a client."
+msgstr ""
+"Each network (CIDR block) maps to exactly one view. Resolvers in that "
+"network receive only the zone variants assigned to the mapped view. PowerDNS "
+"evaluates networks longest-prefix first, so a more specific subnet (for "
+"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
+"a client."
 
 #: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9756,7 +9829,7 @@ msgstr "Pridėti grupę"
 msgid "No groups found"
 msgstr "Grupių nerasta"
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:98
 msgid "Search groups..."
 msgstr "Ieškoti grupių..."
 
@@ -9805,7 +9878,6 @@ msgid "Provide content"
 msgstr "Pateikite turinį"
 
 #: templates/modern/add_record.html:107 templates/modern/add_record.html:159
-#, auto-english-fallback
 msgid "This record type is deprecated and should not be used for new records."
 msgstr "This record type is deprecated and should not be used for new records."
 
@@ -9867,7 +9939,7 @@ msgstr "Pašalinti"
 msgid "and"
 msgstr "ir"
 
-#: templates/modern/list_forward_zones.html:178
+#: templates/modern/list_forward_zones.html:174
 msgid "more..."
 msgstr "daugiau..."
 
@@ -10003,53 +10075,15 @@ msgstr ""
 msgid "PowerDNS: unknown"
 msgstr "PowerDNS: unknown"
 
-#: templates/default/index.html:27 templates/modern/index.html:27
-msgid "PowerDNS API error"
-msgstr "PowerDNS API error"
-
-#: templates/default/index.html:34 templates/modern/index.html:34
-msgid ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
-msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
-"configured in PowerDNS."
-
-#: templates/default/index.html:36 templates/modern/index.html:36
-msgid ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
-msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
-"'localhost')."
-
-#: templates/default/index.html:38 templates/modern/index.html:38
-msgid ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
-msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
-"a common trigger after importing zones directly into the PowerDNS database "
-"is a single malformed record that fails zone serialization."
-
-#: templates/default/index.html:40 templates/modern/index.html:40
-msgid ""
-"Zone counts and lists may be out of date until the API is reachable again. "
-"Check your PowerDNS server log for details."
-msgstr ""
-"Zone counts and lists may be out of date until the API is reachable again. "
-"Check your PowerDNS server log for details."
-
-#: templates/default/index.html:56 templates/modern/index.html:56
+#: templates/default/index.html:33 templates/modern/index.html:33
 msgid "DNS Management"
 msgstr "DNS valdymas"
 
-#: templates/modern/index.html:69 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:46 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "Prisijungęs"
 
-#: templates/modern/index.html:71 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:48 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "Atsijungęs"
 
@@ -10057,35 +10091,35 @@ msgstr "Atsijungęs"
 msgid "Templates"
 msgstr "Šablonai"
 
-#: templates/default/index.html:142 templates/modern/index.html:142
+#: templates/default/index.html:119 templates/modern/index.html:119
 msgid "Networks"
 msgstr "Tinklai"
 
-#: templates/default/index.html:161 templates/modern/index.html:161
+#: templates/default/index.html:138 templates/modern/index.html:138
 msgid "Zone Operations"
 msgstr "Zonų operacijos"
 
-#: templates/default/index.html:172 templates/modern/index.html:172
+#: templates/default/index.html:149 templates/modern/index.html:149
 msgid "Master Zone"
 msgstr "Master zona"
 
-#: templates/default/index.html:182 templates/modern/index.html:182
+#: templates/default/index.html:159 templates/modern/index.html:159
 msgid "Slave Zone"
 msgstr "Slave zona"
 
-#: templates/default/index.html:212 templates/modern/index.html:212
+#: templates/default/index.html:189 templates/modern/index.html:189
 msgid "PTR Records"
 msgstr "PTR įrašai"
 
-#: templates/default/index.html:230 templates/modern/index.html:230
+#: templates/default/index.html:207 templates/modern/index.html:207
 msgid "Administration"
 msgstr "Administravimas"
 
-#: templates/modern/index.html:261 templates/modern/header.html:264
+#: templates/modern/index.html:238 templates/modern/header.html:264
 msgid "Access"
 msgstr "Prieiga"
 
-#: templates/default/index.html:301 templates/modern/index.html:301
+#: templates/default/index.html:278 templates/modern/index.html:278
 msgid "Record Changes"
 msgstr "Record Changes"
 
@@ -10093,12 +10127,12 @@ msgstr "Record Changes"
 msgid "Tools"
 msgstr "Įrankiai"
 
-#: templates/default/index.html:330 templates/modern/index.html:330
+#: templates/default/index.html:307 templates/modern/index.html:307
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Duomenų bazė"
 
-#: templates/default/index.html:377 templates/modern/index.html:377
+#: templates/default/index.html:354 templates/modern/index.html:354
 msgid "My Profile"
 msgstr "Mano profilis"
 
@@ -10107,7 +10141,7 @@ msgstr "Mano profilis"
 msgid "Password"
 msgstr "Slaptažodis"
 
-#: templates/modern/index.html:396 templates/modern/header.html:377
+#: templates/modern/index.html:373 templates/modern/header.html:377
 msgid "Preferences"
 msgstr "Nuostatos"
 
@@ -10115,7 +10149,7 @@ msgstr "Nuostatos"
 msgid "Logout"
 msgstr "Atsijungti"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:535
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:541
 msgid "Edit comment"
 msgstr "Redaguoti komentarą"
 
@@ -10219,13 +10253,16 @@ msgid "API Log Behavior:"
 msgstr "API Log Behavior:"
 
 #: templates/default/list_log_api.html:19 templates/modern/list_log_api.html:19
-#, auto-english-fallback
 msgid ""
 "Records API key lifecycle events (creation, regeneration, revocation, "
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr """Records API key lifecycle events (creation, regeneration, revocation, ""permission changes) and authenticated API requests. Filter by user or ""operation to audit external integration activity. Sensitive values (keys, ""tokens) are never written to this log."
+msgstr ""
+"Records API key lifecycle events (creation, regeneration, revocation, "
+"permission changes) and authenticated API requests. Filter by user or "
+"operation to audit external integration activity. Sensitive values (keys, "
+"tokens) are never written to this log."
 
 #: templates/modern/list_log_users.html:26
 msgid "All users"
@@ -10304,27 +10341,34 @@ msgid "Zone logs"
 msgstr "Zonų žurnalai"
 
 #: templates/modern/list_log_zones.html:17
+msgid "Showing logs for zones you own."
+msgstr "Rodomi jūsų valdomų zonų žurnalai."
+
+#: templates/modern/list_log_zones.html:23
 msgid "Zone Change Logs"
 msgstr "Zonų pakeitimų žurnalai"
 
-#: templates/modern/list_log_zones.html:25
+#: templates/modern/list_log_zones.html:31
 msgid "Zone Log Behavior:"
 msgstr "Zone Log Behavior:"
 
-#: templates/modern/list_log_zones.html:26
-#, auto-english-fallback
+#: templates/modern/list_log_zones.html:32
 msgid ""
 "This activity feed records every operation performed against zones and "
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr """This activity feed records every operation performed against zones and ""records (creates, edits, deletes, DNSSEC actions, imports) as a flat ""key:value event string. For structured before/after snapshots and a diff ""view of record changes, see the Record Change Log."
+msgstr ""
+"This activity feed records every operation performed against zones and "
+"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
+"key:value event string. For structured before/after snapshots and a diff "
+"view of record changes, see the Record Change Log."
 
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
 msgstr "Domeno pavadinimas"
 
-#: templates/modern/list_log_zones.html:37
+#: templates/modern/list_log_zones.html:46
 msgid "All operations"
 msgstr "Visos operacijos"
 
@@ -10345,7 +10389,6 @@ msgid "Provide at least one record"
 msgstr "Pateikite bent vieną įrašą"
 
 #: templates/modern/bulk_record_add.html:45
-#, auto-english-fallback
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
 msgstr "Format: name,type,content,priority,ttl,comment (one record per line)"
 
@@ -10358,7 +10401,6 @@ msgid "Comment is optional"
 msgstr "Komentaras yra neprivalomas"
 
 #: templates/modern/bulk_record_add.html:50
-#, auto-english-fallback
 msgid "Enter hostnames only - the zone name will be added automatically"
 msgstr "Enter hostnames only - the zone name will be added automatically"
 
@@ -10366,7 +10408,7 @@ msgstr "Enter hostnames only - the zone name will be added automatically"
 msgid "Add Records"
 msgstr "Pridėti įrašus"
 
-#: templates/modern/bulk_registration.html:104
+#: templates/modern/bulk_registration.html:119
 msgid "Instructions"
 msgstr "Instrukcijos"
 
@@ -10502,7 +10544,7 @@ msgstr "Taip, pašalinti šį naudotoją"
 msgid "No, keep this user"
 msgstr "Ne, palikti šį naudotoją"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:237
 msgid "Save as Template"
 msgstr "Išsaugoti kaip šabloną"
 
@@ -10783,7 +10825,7 @@ msgstr "Savininkas"
 msgid "Full name"
 msgstr "Pilnas vardas"
 
-#: templates/modern/list_reverse_zones.html:126
+#: templates/modern/list_reverse_zones.html:127
 msgid "Associated Forward Zones"
 msgstr "Susietos tiesioginės zonos"
 
@@ -10791,11 +10833,11 @@ msgstr "Susietos tiesioginės zonos"
 msgid "Serial"
 msgstr "Serijos numeris"
 
-#: templates/modern/bulk_registration.html:64
+#: templates/modern/bulk_registration.html:79
 msgid "Template"
 msgstr "Šablonas"
 
-#: templates/modern/list_reverse_zones.html:228
+#: templates/modern/list_reverse_zones.html:227
 msgid "-"
 msgstr "-"
 
@@ -11023,7 +11065,6 @@ msgid "Add to Groups"
 msgstr "Pridėti į grupes"
 
 #: templates/default/edit_user.html:248 templates/modern/edit_user.html:245
-#, auto-english-fallback
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr "Select one or more groups and click \"Add Selected Groups\" button."
 
@@ -11039,7 +11080,7 @@ msgstr "Išvalyti paiešką"
 msgid "Select All"
 msgstr "Pasirinkti visus"
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:102
 msgid "Clear All"
 msgstr "Išvalyti viską"
 
@@ -11475,15 +11516,15 @@ msgstr ""
 msgid "Ownership"
 msgstr "Nuosavybė"
 
-#: templates/modern/add_zone_slave.html:49
+#: templates/modern/add_zone_slave.html:50
 msgid "User Owner"
 msgstr "Vartotojo savininkas"
 
-#: templates/modern/zone-ownership.html:55
+#: templates/modern/zone-ownership.html:58
 msgid "No users assigned to this zone."
 msgstr "Šiai zonai nepriskirti jokie vartotojai."
 
-#: templates/modern/zone-ownership.html:61
+#: templates/modern/zone-ownership.html:64
 msgid "Add User Owner"
 msgstr "Pridėti vartotojo savininką"
 
@@ -11491,23 +11532,23 @@ msgstr "Pridėti vartotojo savininką"
 msgid "Search users..."
 msgstr "Ieškoti vartotojų..."
 
-#: templates/modern/add_zone_slave.html:76
+#: templates/modern/add_zone_slave.html:79
 msgid "You"
 msgstr "Jūs"
 
-#: templates/modern/zone-ownership.html:83
+#: templates/modern/zone-ownership.html:86
 msgid "Add Owner"
 msgstr "Pridėti savininką"
 
-#: templates/modern/add_zone_slave.html:90
+#: templates/modern/add_zone_slave.html:94
 msgid "Group Ownership"
 msgstr "Grupės nuosavybė"
 
-#: templates/modern/zone-ownership.html:127
+#: templates/modern/zone-ownership.html:132
 msgid "No groups assigned to this zone."
 msgstr "Šiai zonai nepriskirtos jokios grupės."
 
-#: templates/modern/zone-ownership.html:133
+#: templates/modern/zone-ownership.html:138
 msgid "Add Group Ownership"
 msgstr "Pridėti grupės nuosavybę"
 
@@ -11611,71 +11652,71 @@ msgstr "Jei prarasite raktą, turėsite jį generuoti iš naujo."
 msgid "Edit"
 msgstr "Redaguoti"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:598
+#: templates/modern/edit.html:25 templates/modern/edit.html:604
 msgid "Add new record"
 msgstr "Pridėti naują įrašą"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:602
+#: templates/modern/edit.html:203 templates/modern/edit.html:608
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Vadovaujami vedliai DMARC, SPF, DKIM, CAA, TLSA ir SRV įrašams"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:608
+#: templates/modern/edit.html:35 templates/modern/edit.html:614
 msgid "Multi-record mode"
 msgstr "Kelių įrašų režimas"
 
-#: templates/modern/edit.html:556 templates/modern/edit.html:611
+#: templates/modern/edit.html:562 templates/modern/edit.html:617
 msgid "Bulk add"
 msgstr "Masiškai pridėti"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:623
+#: templates/modern/edit.html:50 templates/modern/edit.html:629
 msgid "Failed to add"
 msgstr "Nepavyko pridėti"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:623
+#: templates/modern/edit.html:50 templates/modern/edit.html:629
 msgid "record(s). Please check the record format."
 msgstr "įrašų. Patikrinkite įrašo formatą."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:625
+#: templates/modern/edit.html:52 templates/modern/edit.html:631
 msgid "Failed to add records. Please check the record format."
 msgstr "Nepavyko pridėti įrašų. Patikrinkite įrašų formatą."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:628
+#: templates/modern/edit.html:55 templates/modern/edit.html:634
 msgid "Content validation failed:"
 msgstr "Turinio tikrinimas nepavyko:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:628
+#: templates/modern/edit.html:55 templates/modern/edit.html:634
 msgid "Invalid value for record type"
 msgstr "Neteisinga reikšmė įrašo tipui"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:630
+#: templates/modern/edit.html:57 templates/modern/edit.html:636
 msgid "Please provide all required information."
 msgstr "Pateikite visą reikalingą informaciją."
 
-#: templates/modern/edit.html:653 templates/modern/add_record.html:72
+#: templates/modern/edit.html:659 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Pridėti PTR"
 
-#: templates/modern/edit.html:656 templates/modern/add_record.html:75
+#: templates/modern/edit.html:662 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Pridėti A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:695
+#: templates/modern/edit.html:121 templates/modern/edit.html:701
 msgid "This record already exists"
 msgstr "Šis įrašas jau egzistuoja"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:707
+#: templates/modern/edit.html:133 templates/modern/edit.html:713
 msgid "Invalid priority"
 msgstr "Neteisingas prioritetas"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:714
+#: templates/modern/edit.html:140 templates/modern/edit.html:720
 msgid "Invalid TTL value"
 msgstr "Neteisinga TTL reikšmė"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:716
+#: templates/modern/edit.html:142 templates/modern/edit.html:722
 msgid "Provide TTL"
 msgstr "Pateikite TTL"
 
-#: templates/modern/edit.html:742 templates/modern/add_record.html:207
+#: templates/modern/edit.html:748 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11695,91 +11736,95 @@ msgstr "Metaduomenys"
 msgid "View Metadata"
 msgstr "Peržiūrėti metaduomenis"
 
-#: templates/default/edit.html:243 templates/modern/edit.html:243
+#: templates/default/edit.html:232 templates/modern/edit.html:232
+msgid "Logs"
+msgstr "Žurnalai"
+
+#: templates/default/edit.html:248 templates/modern/edit.html:248
 msgid "No records match your filter criteria."
 msgstr "Jokie įrašai neatitinka jūsų filtro kriterijų."
 
-#: templates/default/edit.html:251 templates/modern/edit.html:251
+#: templates/default/edit.html:256 templates/modern/edit.html:256
 msgid "This zone does not have any records."
 msgstr "Ši zona neturi jokių įrašų."
 
-#: templates/default/edit.html:263 templates/modern/edit.html:263
+#: templates/default/edit.html:268 templates/modern/edit.html:268
 msgid "Filter:"
 msgstr "Filtras:"
 
-#: templates/default/edit.html:269 templates/modern/edit.html:269
+#: templates/default/edit.html:274 templates/modern/edit.html:274
 msgid "Search by name or content"
 msgstr "Ieškoti pagal vardą arba turinį"
 
-#: templates/default/edit.html:275 templates/modern/edit.html:275
+#: templates/default/edit.html:280 templates/modern/edit.html:280
 msgid "All Types"
 msgstr "Visi tipai"
 
-#: templates/default/edit.html:285 templates/modern/edit.html:285
+#: templates/default/edit.html:290 templates/modern/edit.html:290
 msgid "Filter by content"
 msgstr "Filtruoti pagal turinį"
 
-#: templates/default/edit.html:291 templates/modern/edit.html:291
+#: templates/default/edit.html:296 templates/modern/edit.html:296
 msgid "Apply"
 msgstr "Taikyti"
 
-#: templates/default/edit.html:327 templates/modern/edit.html:327
+#: templates/default/edit.html:332 templates/modern/edit.html:332
 msgid "Showing"
 msgstr "Rodoma"
 
-#: templates/default/edit.html:327 templates/modern/edit.html:327
+#: templates/default/edit.html:332 templates/modern/edit.html:332
 msgid "of"
 msgstr "iš"
 
-#: templates/default/edit.html:327 templates/modern/edit.html:327
+#: templates/default/edit.html:332 templates/modern/edit.html:332
 msgid "total records"
 msgstr "iš viso įrašų"
 
-#: templates/default/edit.html:405 templates/modern/edit.html:405
+#: templates/default/edit.html:410 templates/modern/edit.html:410
 msgid "Last modified"
 msgstr "Paskutinis pakeitimas"
 
-#: templates/default/edit.html:518 templates/modern/edit.html:518
+#: templates/default/edit.html:524 templates/modern/edit.html:524
 msgid "Edit selected"
 msgstr "Redaguoti pasirinktus"
 
-#: templates/modern/edit.html:522 templates/modern/search.html:486
+#: templates/modern/edit.html:528 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Pašalinti įrašą(us)"
 
-#: templates/modern/edit.html:530 templates/modern/search.html:93
+#: templates/modern/edit.html:536 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentarai"
 
-#: templates/default/edit.html:560 templates/modern/edit.html:560
+#: templates/default/edit.html:566 templates/modern/edit.html:566
 msgid "Import"
 msgstr "Importuoti"
 
-#: templates/default/edit.html:577 templates/modern/edit.html:577
+#: templates/default/edit.html:583 templates/modern/edit.html:583
 msgid "Generate PTR"
 msgstr "Generuoti PTR"
 
-#: templates/modern/edit.html:756 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Zonos konfigūracija"
 
-#: templates/modern/edit.html:798 templates/modern/edit.html:827
+#: templates/modern/edit.html:804 templates/modern/edit.html:833
 msgid "Change"
 msgstr "Keisti"
 
-#: templates/modern/edit.html:791 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Master NS IP adresas"
 
-#: templates/default/edit.html:848 templates/modern/edit.html:848
+#: templates/default/edit.html:854 templates/modern/edit.html:854
 msgid "Manage DNSSEC"
 msgstr "Valdyti DNSSEC"
 
-#: templates/default/edit.html:855 templates/modern/edit.html:855
+#: templates/default/edit.html:861 templates/modern/edit.html:861
 msgid "Sign zone"
 msgstr "Pasirašyti zoną"
 
-#: templates/default/edit.html:859 templates/modern/edit.html:859
+#: templates/default/edit.html:865 templates/modern/edit.html:865
 msgid "Not signed"
 msgstr "Nepasirašyta"
 
@@ -11840,7 +11885,7 @@ msgstr "Iš viso zonų:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Šiame sąraše nėra tiesioginių zonų, kurias būtų galima rodyti."
 
-#: templates/modern/list_forward_zones.html:210
+#: templates/modern/list_forward_zones.html:206
 msgid "PTR"
 msgstr "PTR"
 
@@ -12078,7 +12123,6 @@ msgstr ""
 "leidimus galite keisti vėliau redaguodami naudotoją."
 
 #: templates/default/add_user.html:176 templates/modern/add_user.html:176
-#, auto-english-fallback
 msgid "Select groups to add the new user to upon creation."
 msgstr "Select groups to add the new user to upon creation."
 
@@ -12098,6 +12142,10 @@ msgstr "Pavyzdys: example.com"
 msgid "Zone type (usually NATIVE)"
 msgstr "Zonos tipas (paprastai NATIVE)"
 
+#: templates/modern/list_zone_templ.html:54
+msgid "default"
+msgstr "numatytasis"
+
 #: templates/modern/add_zone_master.html:58
 msgid "Optional: Apply predefined records from a template"
 msgstr "Neprivaloma: pritaikyti iš anksto apibrėžtus įrašus iš šablono"
@@ -12110,31 +12158,31 @@ msgstr "Įjungti DNSSEC"
 msgid "Secure this zone with DNSSEC signing"
 msgstr "Apsaugoti šią zoną DNSSEC pasirašymu"
 
-#: templates/modern/add_zone_slave.html:54
+#: templates/modern/add_zone_slave.html:55
 msgid "Selected:"
 msgstr "Pasirinkta:"
 
-#: templates/modern/add_zone_slave.html:59
+#: templates/modern/add_zone_slave.html:61
 msgid "No user owner"
 msgstr "Nėra vartotojo savininko"
 
-#: templates/modern/add_zone_slave.html:60
+#: templates/modern/add_zone_slave.html:62
 msgid "Zone will be owned only by groups"
 msgstr "Zona priklausys tik grupėms"
 
-#: templates/modern/add_zone_slave.html:82
+#: templates/modern/add_zone_slave.html:85
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Neprivaloma: Pasirinkite už šią zoną atsakingą vartotoją"
 
-#: templates/modern/add_zone_slave.html:105
+#: templates/modern/add_zone_slave.html:109
 msgid "members"
 msgstr "nariai"
 
-#: templates/modern/add_zone_slave.html:111
+#: templates/modern/add_zone_slave.html:115
 msgid "Optional: Select one or more groups"
 msgstr "Neprivaloma: Pasirinkite vieną ar daugiau grupių"
 
-#: templates/modern/add_zone_slave.html:126
+#: templates/modern/add_zone_slave.html:130
 msgid "Add zone"
 msgstr "Pridėti zoną"
 
@@ -12162,39 +12210,59 @@ msgstr "Sinchronizavimo būsena"
 msgid "No results found"
 msgstr "Rezultatų nerasta"
 
-#: templates/modern/list_zone_templ.html:77
+#: templates/modern/list_zone_templ.html:54
+msgid "Pre-selected on the add-zone form"
+msgstr "Iš anksto pasirinkta zonos pridėjimo formoje"
+
+#: templates/modern/list_zone_templ.html:56
+msgid "Configured via dns.default_zone_template - edit settings.php to change"
+msgstr "Nustatyta per dns.default_zone_template - redaguokite settings.php, kad pakeistumėte"
+
+#: templates/modern/list_zone_templ.html:56
+msgid "default (config)"
+msgstr "numatytasis (konfig.)"
+
+#: templates/modern/list_zone_templ.html:86
 msgid "private"
 msgstr "privatūs"
 
-#: templates/modern/list_zone_templ.html:79
+#: templates/modern/list_zone_templ.html:88
 msgid "global"
 msgstr "globalūs"
 
-#: templates/modern/list_zone_templ.html:87
+#: templates/modern/list_zone_templ.html:96
 msgid "Zones need updating"
 msgstr "Zonos reikia atnaujinti"
 
-#: templates/modern/list_zone_templ.html:91
+#: templates/modern/list_zone_templ.html:100
 msgid "All zones are synchronized"
 msgstr "Visos zonos sinchronizuotos"
 
-#: templates/modern/list_zone_templ.html:92
+#: templates/modern/list_zone_templ.html:101
 msgid "Synced"
 msgstr "Sinchronizuota"
+
+#: templates/modern/list_zone_templ.html:116
+msgid "Unset as default"
+msgstr "Atšaukti kaip numatytąjį"
+
+#: templates/modern/list_zone_templ.html:121
+msgid "Set as default"
+msgstr "Nustatyti numatytuoju"
 
 #: templates/modern/edit_zone_templ.html:107
 msgid "No zones are using this template"
 msgstr "Jokios zonos nenaudoja šio šablono"
 
-#: templates/modern/list_zone_templ.html:104
+#: templates/modern/list_zone_templ.html:129
 msgid "View zones using this template"
 msgstr "Peržiūrėti zonas, naudojančias šį šabloną"
 
-#: templates/modern/list_zone_templ.html:133
+#: templates/modern/list_zone_templ.html:158
 msgid "Template Behavior:"
 msgstr "Šablono elgesys:"
 
-#: templates/modern/list_zone_templ.html:134
+#: templates/modern/list_zone_templ.html:159
 msgid ""
 "Changing a zone's template overwrites template-based records but preserves "
 "manual additions. Template modifications don't automatically update zones - "
@@ -12460,55 +12528,55 @@ msgstr "API raktas:"
 msgid "Bulk registration"
 msgstr "Masinis registravimas"
 
-#: templates/modern/bulk_registration.html:46
-msgid "Please select an owner"
-msgstr "Pasirinkite savininką"
+#: lib/Module/ZoneImportExport/templates/import.html:138
+msgid "Group ownership"
+msgstr "Grupės nuosavybė"
 
-#: templates/modern/bulk_registration.html:50
+#: templates/modern/bulk_registration.html:65
 msgid "Zone Type"
 msgstr "Zonos tipas"
 
-#: templates/modern/bulk_registration.html:74
+#: templates/modern/bulk_registration.html:89
 msgid "Domains"
 msgstr "Domenai"
 
-#: templates/modern/bulk_registration.html:76
+#: templates/modern/bulk_registration.html:91
 msgid "Provide a domain name(s)"
 msgstr "Pateikite domeno pavadinimą(-us)"
 
-#: templates/modern/bulk_registration.html:77
+#: templates/modern/bulk_registration.html:92
 msgid "Type one domain per line"
 msgstr "Įveskite po vieną domeną eilutėje"
 
-#: templates/modern/bulk_registration.html:83
+#: templates/modern/bulk_registration.html:98
 msgid "Add Zones"
 msgstr "Pridėti zonas"
 
-#: templates/modern/bulk_registration.html:99
+#: templates/modern/bulk_registration.html:114
 msgid "About Bulk Registration"
 msgstr "Apie masinį registravimą"
 
-#: templates/modern/bulk_registration.html:105
+#: templates/modern/bulk_registration.html:120
 msgid "This tool allows you to create multiple DNS zones at once."
 msgstr "Šis įrankis leidžia sukurti kelias DNS zonas vienu metu."
 
-#: templates/modern/bulk_registration.html:107
+#: templates/modern/bulk_registration.html:122
 msgid "Enter one domain name per line in the Domains field"
 msgstr "Įveskite po vieną domeno pavadinimą eilutėje domenų lauke"
 
-#: templates/modern/bulk_registration.html:108
+#: templates/modern/bulk_registration.html:123
 msgid "Select a zone template to apply standard records to all zones"
 msgstr "Pasirinkite zonos šabloną standartiniams įrašams taikyti visoms zonoms"
 
-#: templates/modern/bulk_registration.html:109
+#: templates/modern/bulk_registration.html:124
 msgid "The chosen owner will have full access to all created zones"
 msgstr "Pasirinktas savininkas turės pilną prieigą prie visų sukurtų zonų"
 
-#: templates/modern/bulk_registration.html:113
+#: templates/modern/bulk_registration.html:128
 msgid "How It Works"
 msgstr "Kaip tai veikia"
 
-#: templates/modern/bulk_registration.html:114
+#: templates/modern/bulk_registration.html:129
 msgid ""
 "The system will attempt to create each zone with the same settings. Failed "
 "domains will be displayed so you can correct any issues and try again."
@@ -12516,25 +12584,23 @@ msgstr ""
 "Sistema bandys sukurti kiekvieną zoną su tais pačiais nustatymais. Nepavykę "
 "domenai bus rodomi, kad galėtumėte ištaisyti problemas ir bandyti dar kartą."
 
-#: templates/modern/bulk_registration.html:122
+#: templates/modern/bulk_registration.html:137
 msgid "Tips & Recommendations"
 msgstr "Patarimai ir rekomendacijos"
 
-#: templates/modern/bulk_registration.html:128
+#: templates/modern/bulk_registration.html:143
 msgid "Use NATIVE zone type for most standard setups"
 msgstr "Naudokite NATIVE zonos tipą daugumai standartinių nustatymų"
 
-#: templates/modern/bulk_registration.html:129
-#, auto-english-fallback
+#: templates/modern/bulk_registration.html:144
 msgid "Create a template first if you need standard records for all zones"
 msgstr "Create a template first if you need standard records for all zones"
 
-#: templates/modern/bulk_registration.html:130
+#: templates/modern/bulk_registration.html:145
 msgid "You can copy and paste a list of domains from a spreadsheet"
 msgstr "Galite nukopijuoti ir įklijuoti domenų sąrašą iš skaičiuoklės"
 
-#: templates/modern/bulk_registration.html:131
-#, auto-english-fallback
+#: templates/modern/bulk_registration.html:146
 msgid "Make sure the domain names follow valid DNS naming conventions"
 msgstr "Make sure the domain names follow valid DNS naming conventions"
 
@@ -12585,14 +12651,18 @@ msgid "Change Log Behavior:"
 msgstr "Change Log Behavior:"
 
 #: templates/modern/list_record_changes.html:20
-#, auto-english-fallback
 msgid ""
 "Every record add/edit/delete and zone create/delete/metadata-edit captures a "
 "before/after snapshot here, alongside the user and timestamp. Logs never "
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr """Every record add/edit/delete and zone create/delete/metadata-edit captures a ""before/after snapshot here, alongside the user and timestamp. Logs never ""expire automatically - prune old rows manually if the table grows large. Use ""the time-window shortcuts to focus on recent activity, or export to CSV/JSON ""to feed external audit systems."
+msgstr ""
+"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
+"before/after snapshot here, alongside the user and timestamp. Logs never "
+"expire automatically - prune old rows manually if the table grows large. Use "
+"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
+"to feed external audit systems."
 
 #: templates/modern/list_record_changes.html:34
 msgid "All actions"
@@ -12971,11 +13041,21 @@ msgstr "Rodyti ištrynimo mygtukus"
 msgid "Display individual delete button per record"
 msgstr "Rodyti atskirą ištrynimo mygtuką kiekvienam įrašui"
 
-#: templates/modern/user_preferences.html:133
+#: templates/modern/user_preferences.html:125
+#, auto-english-fallback
+msgid "Hostname-only display"
+msgstr "Hostname-only display"
+
+#: templates/modern/user_preferences.html:126
+#, auto-english-fallback
+msgid "Strip zone suffix from record names in edit view"
+msgstr "Strip zone suffix from record names in edit view"
+
+#: templates/modern/user_preferences.html:141
 msgid "Save Preferences"
 msgstr "Išsaugoti nuostatas"
 
-#: templates/modern/user_preferences.html:139
+#: templates/modern/user_preferences.html:147
 msgid "Changes will be applied after saving"
 msgstr "Pakeitimai bus pritaikyti po išsaugojimo"
 
@@ -13080,13 +13160,16 @@ msgid "User Log Behavior:"
 msgstr "User Log Behavior:"
 
 #: templates/modern/list_log_users.html:20
-#, auto-english-fallback
 msgid ""
 "Records user account events such as logins, password changes, group "
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr """Records user account events such as logins, password changes, group ""membership updates, and admin actions on user records. Each entry shows the ""action, the actor, the affected user, and a timestamp. Filter by operation ""or user to audit access changes."
+msgstr ""
+"Records user account events such as logins, password changes, group "
+"membership updates, and admin actions on user records. Each entry shows the "
+"action, the actor, the affected user, and a timestamp. Filter by operation "
+"or user to audit access changes."
 
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
@@ -13125,7 +13208,6 @@ msgid "View Behavior:"
 msgstr "View Behavior:"
 
 #: templates/default/list_views.html:15 templates/modern/list_views.html:15
-#, auto-english-fallback
 msgid ""
 "Views serve different zone variants to different clients based on the "
 "network that queried the resolver. Each variant is named zone..variant (for "
@@ -13133,7 +13215,13 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr """Views serve different zone variants to different clients based on the ""network that queried the resolver. Each variant is named zone..variant (for ""example, example.com..trusted) and must exist as a separate zone in PowerDNS ""before it can be assigned here. Variants share a name but resolve ""differently per view, so the same hostname can answer with different IPs ""depending on the client's network."
+msgstr ""
+"Views serve different zone variants to different clients based on the "
+"network that queried the resolver. Each variant is named zone..variant (for "
+"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
+"before it can be assigned here. Variants share a name but resolve "
+"differently per view, so the same hostname can answer with different IPs "
+"depending on the client's network."
 
 #: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
@@ -13247,7 +13335,6 @@ msgid "About Email Previews"
 msgstr "Apie el. pašto peržiūras"
 
 #: templates/modern/email_previews.html:96
-#, auto-english-fallback
 msgid "Previews use sample data to demonstrate email appearance"
 msgstr "Previews use sample data to demonstrate email appearance"
 
@@ -13411,15 +13498,15 @@ msgstr "Tiesioginės zonos"
 msgid "Reverse zones"
 msgstr "Atvirkštinės zonos"
 
-#: templates/default/header.html:131 templates/modern/header.html:189
+#: templates/default/header.html:133 templates/modern/header.html:189
 msgid "Record change log"
 msgstr "Record change log"
 
-#: templates/default/header.html:143 templates/modern/header.html:208
+#: templates/default/header.html:145 templates/modern/header.html:208
 msgid "List users"
 msgstr "Vartotojų sąrašas"
 
-#: templates/default/header.html:164 templates/modern/header.html:240
+#: templates/default/header.html:166 templates/modern/header.html:240
 msgid "List groups"
 msgstr "Grupių sąrašas"
 
@@ -13427,17 +13514,53 @@ msgstr "Grupių sąrašas"
 msgid "Group logs"
 msgstr "Grupės žurnalai"
 
-#: templates/default/header.html:184 templates/modern/header.html:270
+#: templates/default/header.html:186 templates/modern/header.html:270
 msgid "List templates"
 msgstr "Šablonų sąrašas"
 
-#: templates/default/header.html:201 templates/modern/header.html:295
+#: templates/default/header.html:203 templates/modern/header.html:295
 msgid "List zone templates"
 msgstr "Rodyti zonų šablonus"
 
-#: templates/default/header.html:228 templates/modern/header.html:335
+#: templates/default/header.html:230 templates/modern/header.html:335
 msgid "API Documentation"
 msgstr "API dokumentacija"
+
+#: templates/default/header.html:323 templates/modern/header.html:496
+msgid "PowerDNS API error"
+msgstr "PowerDNS API error"
+
+#: templates/default/header.html:327 templates/modern/header.html:500
+msgid ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
+msgstr ""
+"Check that pdns_api.key in config/settings.php matches the API key "
+"configured in PowerDNS."
+
+#: templates/default/header.html:329 templates/modern/header.html:502
+msgid ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+msgstr ""
+"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"'localhost')."
+
+#: templates/default/header.html:331 templates/modern/header.html:504
+msgid ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+msgstr ""
+"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"a common trigger after importing zones directly into the PowerDNS database "
+"is a single malformed record that fails zone serialization."
+
+#: templates/default/header.html:333 templates/modern/header.html:506
+msgid ""
+"Some features may be unavailable until the API is reachable again. Check "
+"your PowerDNS server log for details."
+msgstr "Kai kurios funkcijos gali būti nepasiekiamos, kol API vėl bus pasiekiama. Daugiau informacijos rasite PowerDNS serverio žurnale."
 
 #: templates/modern/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
@@ -13484,7 +13607,6 @@ msgid "Add record to zone"
 msgstr "Pridėti įrašą į zoną"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
-#, auto-english-fallback
 msgid "Record could not be added. Please check the record data and try again."
 msgstr "Record could not be added. Please check the record data and try again."
 
@@ -13601,13 +13723,16 @@ msgid "API Key Behavior:"
 msgstr "API Key Behavior:"
 
 #: templates/default/api_keys.html:183 templates/modern/api_keys.html:184
-#, auto-english-fallback
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr """API keys allow external applications to access the Poweradmin API. Each key ""is linked to your user account and inherits your permissions, so revoking ""your account also revokes all its keys. Treat keys as secrets - they grant ""the same access as logging in as you."
+msgstr ""
+"API keys allow external applications to access the Poweradmin API. Each key "
+"is linked to your user account and inherits your permissions, so revoking "
+"your account also revokes all its keys. Treat keys as secrets - they grant "
+"the same access as logging in as you."
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -13805,13 +13930,16 @@ msgid "Group Log Behavior:"
 msgstr "Group Log Behavior:"
 
 #: templates/modern/list_log_groups.html:20
-#, auto-english-fallback
 msgid ""
 "Records group lifecycle events (create, edit, delete) and membership changes "
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr """Records group lifecycle events (create, edit, delete) and membership changes ""(users added or removed). Each entry shows the action, the actor, the ""affected group, and a timestamp. Useful for auditing zone-access changes ""mediated by group ownership."
+msgstr ""
+"Records group lifecycle events (create, edit, delete) and membership changes "
+"(users added or removed). Each entry shows the action, the actor, the "
+"affected group, and a timestamp. Useful for auditing zone-access changes "
+"mediated by group ownership."
 
 #: templates/modern/list_log_groups.html:26
 msgid "Group name"
@@ -13904,7 +14032,7 @@ msgstr "Failas:"
 msgid "Zone:"
 msgstr "Zona:"
 
-#: lib/Module/ZoneImportExport/templates/import.html:167
+#: lib/Module/ZoneImportExport/templates/import.html:200
 msgid "Target zone"
 msgstr "Tikslinė zona"
 
@@ -13928,47 +14056,59 @@ msgstr "Pridėti visus įrašus"
 msgid "Zone type"
 msgstr "Zonos tipas"
 
-#: lib/Module/ZoneImportExport/templates/import.html:138
+#: lib/Module/ZoneImportExport/templates/import.html:153
+msgid "Required: select at least one group."
+msgstr "Privaloma: pasirinkite bent vieną grupę."
+
+#: lib/Module/ZoneImportExport/templates/import.html:155
+msgid "Optional: select one or more groups."
+msgstr "Neprivaloma: pasirinkite vieną ar daugiau grupių."
+
+#: lib/Module/ZoneImportExport/templates/import.html:162
+msgid "No user owner — zone is owned only by the selected groups"
+msgstr "Nėra naudotojo savininko - zoną valdo tik pasirinktos grupės"
+
+#: lib/Module/ZoneImportExport/templates/import.html:171
 msgid "Confirm import"
 msgstr "Patvirtinti importą"
 
-#: lib/Module/ZoneImportExport/templates/import.html:153
+#: lib/Module/ZoneImportExport/templates/import.html:186
 msgid "Import Zone File"
 msgstr "Importuoti zonos failą"
 
-#: lib/Module/ZoneImportExport/templates/import.html:160
+#: lib/Module/ZoneImportExport/templates/import.html:193
 msgid "Zone file"
 msgstr "Zonos failas"
 
-#: lib/Module/ZoneImportExport/templates/import.html:162
+#: lib/Module/ZoneImportExport/templates/import.html:195
 msgid "Standard BIND zone file format. Max size:"
 msgstr "Standartinis BIND zonos failo formatas. Maks. dydis:"
 
-#: lib/Module/ZoneImportExport/templates/import.html:177
+#: lib/Module/ZoneImportExport/templates/import.html:210
 msgid "Upload and preview"
 msgstr "Įkelti ir peržiūrėti"
 
-#: lib/Module/ZoneImportExport/templates/import.html:187
+#: lib/Module/ZoneImportExport/templates/import.html:220
 msgid "Supported formats"
 msgstr "Palaikomi formatai"
 
-#: lib/Module/ZoneImportExport/templates/import.html:191
+#: lib/Module/ZoneImportExport/templates/import.html:224
 msgid "Standard BIND zone files"
 msgstr "Standartiniai BIND zonos failai"
 
-#: lib/Module/ZoneImportExport/templates/import.html:192
+#: lib/Module/ZoneImportExport/templates/import.html:225
 msgid "Cloudflare zone exports"
 msgstr "Cloudflare zonų eksportai"
 
-#: lib/Module/ZoneImportExport/templates/import.html:193
+#: lib/Module/ZoneImportExport/templates/import.html:226
 msgid "$ORIGIN and $TTL directives"
 msgstr "$ORIGIN ir $TTL direktyvos"
 
-#: lib/Module/ZoneImportExport/templates/import.html:194
+#: lib/Module/ZoneImportExport/templates/import.html:227
 msgid "Multi-line records"
 msgstr "Kelių eilučių įrašai"
 
-#: lib/Module/ZoneImportExport/templates/import.html:195
+#: lib/Module/ZoneImportExport/templates/import.html:228
 msgid "IDN domain names"
 msgstr "IDN domenų vardai"
 
@@ -14002,7 +14142,6 @@ msgid "RDAP Lookup"
 msgstr "RDAP paieška"
 
 #: lib/Module/Rdap/templates/rdap.html:27
-#, auto-english-fallback
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
 msgstr "Enter a domain name (e.g., example.com) to lookup its RDAP information"
 
@@ -14027,19 +14166,22 @@ msgid "Limited Database Rights:"
 msgstr "Limited Database Rights:"
 
 #: install/templates/step6.html.twig:15
-#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr """Create a database user with limited rights (select, insert, update, delete) ""for Poweradmin tables only. PowerDNS table access is not required when using ""the API backend."
+msgstr ""
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin tables only. PowerDNS table access is not required when using "
+"the API backend."
 
 #: install/templates/step6.html.twig:17
-#, auto-english-fallback
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr """Create a database user with limited rights (select, insert, update, delete) ""for Poweradmin to access PowerDNS tables."
+msgstr ""
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin to access PowerDNS tables."
 
 #: install/templates/step6.html.twig:25
 msgid "Database Commands"
@@ -14050,21 +14192,22 @@ msgid "Execute the following commands:"
 msgstr "Execute the following commands:"
 
 #: install/templates/step6.html.twig:40
-#, auto-english-fallback
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr """After you have added the new user, proceed with this installation procedure."
+msgstr ""
+"After you have added the new user, proceed with this installation procedure."
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
 msgid "Note:"
 msgstr "Note:"
 
 #: install/templates/step6.html.twig:43
-#, auto-english-fallback
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr """Since you are using SQLite, there is no need to create a new user with ""limited rights."
+msgstr ""
+"Since you are using SQLite, there is no need to create a new user with "
+"limited rights."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 msgid "Continue to step"
@@ -14099,10 +14242,10 @@ msgid "Choose a language for installation"
 msgstr "Choose a language for installation"
 
 #: install/templates/step1.html.twig:12
-#, auto-english-fallback
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr """Please select your preferred language to continue with the installation:"
+msgstr ""
+"Please select your preferred language to continue with the installation:"
 
 #: install/templates/step1.html.twig:391
 msgid "Begin Installation"
@@ -14165,7 +14308,6 @@ msgid "Server name"
 msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
-#, auto-english-fallback
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
 msgstr "PowerDNS server name for API calls (usually \"localhost\")."
 
@@ -14178,18 +14320,20 @@ msgid "Database Configuration:"
 msgstr "Database Configuration:"
 
 #: install/templates/step4.html.twig:90
-#, auto-english-fallback
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr """Configure database connection with table creation rights. PowerDNS location ""can be specified separately if needed."
+msgstr ""
+"Configure database connection with table creation rights. PowerDNS location "
+"can be specified separately if needed."
 
 #: install/templates/step4.html.twig:93
-#, auto-english-fallback
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr """Configure database connection for Poweradmin tables (users, permissions, ""zones). PowerDNS tables are not required."
+msgstr ""
+"Configure database connection for Poweradmin tables (users, permissions, "
+"zones). PowerDNS tables are not required."
 
 #: install/templates/step4.html.twig:97
 msgid "Database type"
@@ -14220,7 +14364,6 @@ msgid "Provide the hostname"
 msgstr "Provide the hostname"
 
 #: install/templates/step4.html.twig:143
-#, auto-english-fallback
 msgid "Database server hostname (usually \"localhost\")."
 msgstr "Database server hostname (usually \"localhost\")."
 
@@ -14269,10 +14412,10 @@ msgid "DB collation"
 msgstr "DB collation"
 
 #: install/templates/step4.html.twig:197
-#, auto-english-fallback
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr """Collation rules for character comparison. Leave empty for database default."
+msgstr ""
+"Collation rules for character comparison. Leave empty for database default."
 
 #: install/templates/step4.html.twig:206
 msgid "PowerDNS Database"
@@ -14303,7 +14446,6 @@ msgid "Provide a password"
 msgstr "Provide a password"
 
 #: install/templates/step4.html.twig:238
-#, auto-english-fallback
 msgid "Password for \"admin\" username."
 msgstr "Password for \"admin\" username."
 
@@ -14400,18 +14542,20 @@ msgid "Database User"
 msgstr "Database User"
 
 #: install/templates/step5.html.twig:57
-#, auto-english-fallback
 msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr """Poweradmin keeps its own tables (users, permissions, zone metadata) in the ""configured database even when the PowerDNS API backend is selected. These ""credentials are for that database, not for PowerDNS."
+msgstr ""
+"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
+"configured database even when the PowerDNS API backend is selected. These "
+"credentials are for that database, not for PowerDNS."
 
 #: install/templates/step5.html.twig:67
-#, auto-english-fallback
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr """Poweradmin database username with restricted access. Not for web UI login."
+msgstr ""
+"Poweradmin database username with restricted access. Not for web UI login."
 
 #: install/templates/step5.html.twig:77
 msgid "Provide the user password"
@@ -14498,34 +14642,36 @@ msgid "Important Security Notice:"
 msgstr "Important Security Notice:"
 
 #: install/templates/step8.html.twig:16
-#, auto-english-fallback
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr """You must remove the \"install/\" directory from the Poweradmin root ""directory."
+msgstr ""
+"You must remove the \"install/\" directory from the Poweradmin root "
+"directory."
 
 #: install/templates/step8.html.twig:17
-#, auto-english-fallback
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr """Poweradmin will not function if the install directory exists, as a security ""measure."
+msgstr ""
+"Poweradmin will not function if the install directory exists, as a security "
+"measure."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
 msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
-#, auto-english-fallback
 msgid "Remove the \"install/\" directory from your server"
 msgstr "Remove the \"install/\" directory from your server"
 
 #: install/templates/step8.html.twig:27
-#, auto-english-fallback
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
-msgstr """Login to <a href=\"../index.php\">Poweradmin</a> using the default username ""\"admin\" and the password you set in step 3"
+msgstr ""
+"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
+"\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
@@ -14544,10 +14690,10 @@ msgid "Before proceeding, ensure you have:"
 msgstr "Before proceeding, ensure you have:"
 
 #: install/templates/step3.html.twig:18
-#, auto-english-fallback
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr """PowerDNS installed with database tables created (or API access configured)"
+msgstr ""
+"PowerDNS installed with database tables created (or API access configured)"
 
 #: install/templates/step3.html.twig:19
 msgid "Database credentials (hostname, username, password)"
@@ -14562,11 +14708,12 @@ msgid "Next:"
 msgstr "Next:"
 
 #: install/templates/step3.html.twig:27
-#, auto-english-fallback
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr """Configure database connection, create admin account, and generate ""configuration file."
+msgstr ""
+"Configure database connection, create admin account, and generate "
+"configuration file."
 
 #: install/helpers/InstallStepHandler.php:176
 msgid "Missing PowerDNS tables:"
@@ -14585,24 +14732,26 @@ msgid "Foreign Key Constraint Issues:"
 msgstr "Foreign Key Constraint Issues:"
 
 #: install/helpers/InstallStepHandler.php:209
-#, auto-english-fallback
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr """The installer could not remove existing tables due to foreign key constraints"
+msgstr ""
+"The installer could not remove existing tables due to foreign key constraints"
 
 #: install/helpers/InstallStepHandler.php:210
-#, auto-english-fallback
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr """This can happen during reinstallation if you have custom constraints or if ""tables are referenced by other tables"
+msgstr ""
+"This can happen during reinstallation if you have custom constraints or if "
+"tables are referenced by other tables"
 
 #: install/helpers/InstallStepHandler.php:211
-#, auto-english-fallback
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr """You can try manually disabling foreign key checks before running the ""installer:"
+msgstr ""
+"You can try manually disabling foreign key checks before running the "
+"installer:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"
@@ -14613,11 +14762,12 @@ msgid "Make sure the SQLite database file exists"
 msgstr "Make sure the SQLite database file exists"
 
 #: install/helpers/InstallStepHandler.php:219
-#, auto-english-fallback
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr """Check that the web server has read and write permissions for the database ""file"
+msgstr ""
+"Check that the web server has read and write permissions for the database "
+"file"
 
 #: install/helpers/InstallStepHandler.php:220
 msgid "Verify the full path to the database file is correct and accessible"
@@ -14640,26 +14790,27 @@ msgid "Database Error"
 msgstr "Database Error"
 
 #: install/helpers/DatabaseHelper.php:175
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr """The SQLite database file %s does not exist. Please create the database file ""before proceeding."
+msgstr ""
+"The SQLite database file %s does not exist. Please create the database file "
+"before proceeding."
 
 #: install/helpers/DatabaseHelper.php:183
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr """The SQLite database file %s is not readable. Please check file permissions."
+msgstr ""
+"The SQLite database file %s is not readable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:191
-#, auto-english-fallback
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr """The SQLite database file %s is not writable. Please check file permissions."
+msgstr ""
+"The SQLite database file %s is not writable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:203
 #, php-format
@@ -14675,30 +14826,45 @@ msgid "PowerDNS API key is required when using API backend."
 msgstr "PowerDNS API key is required when using API backend."
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:54
-#, auto-english-fallback
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr """No configuration file found. Please create the config/settings.php file ""before proceeding."
+msgstr ""
+"No configuration file found. Please create the config/settings.php file "
+"before proceeding."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
-#, auto-english-fallback
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr """Separate PowerDNS databases are only supported with MySQL. For PostgreSQL ""and SQLite, please use the same database."
+msgstr ""
+"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+"and SQLite, please use the same database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
-#, auto-english-fallback
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr """Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is ""properly installed in this database."
+msgstr ""
+"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+"properly installed in this database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
-#, auto-english-fallback
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
+# OBSOLETE: "again. Check your PowerDNS server log for details."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
+# OBSOLETE: "again. Check your PowerDNS server log for details."
+
+# OBSOLETE: msgid "Please select an owner"
+# OBSOLETE: msgstr "Pasirinkite savininką"
+
+
 
