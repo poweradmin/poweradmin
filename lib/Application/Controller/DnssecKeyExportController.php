@@ -66,7 +66,7 @@ class DnssecKeyExportController extends BaseController
         }
 
         // Exporting private key material is an edit-equivalent operation.
-        if ($permEdit === 'none' || ($permEdit === 'own' && !$userIsZoneOwner)) {
+        if ($permEdit !== 'all' && !($permEdit === 'own' && $userIsZoneOwner)) {
             $this->showError(_('You do not have permission to manage DNSSEC for this zone.'));
             return;
         }
