@@ -63,7 +63,7 @@ class DnssecKeyImportController extends BaseController
             return;
         }
 
-        if ($permEdit === 'none' || ($permEdit === 'own' && !$userIsZoneOwner)) {
+        if ($permEdit !== 'all' && !($permEdit === 'own' && $userIsZoneOwner)) {
             $this->showError(_('You do not have permission to manage DNSSEC for this zone.'));
             return;
         }
