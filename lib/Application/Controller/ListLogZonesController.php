@@ -183,7 +183,7 @@ class ListLogZonesController extends BaseController
      */
     private function resolveOwnedZoneIds(): array
     {
-        $userId = (int) ($this->getCurrentUserId() ?? 0);
+        $userId = $this->getCurrentUserId() ?? 0;
         if ($userId <= 0) {
             return [];
         }
