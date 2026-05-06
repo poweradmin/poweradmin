@@ -1,0 +1,2 @@
+#!/bin/sh
+php -d auto_prepend_file=tests/no_git_checkout.php vendor/bin/phpunit
