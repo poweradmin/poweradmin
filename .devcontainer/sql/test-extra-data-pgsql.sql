@@ -4,7 +4,7 @@
 -- Requires: test-users-permissions-pgsql.sql and test-reverse-zones-templates-pgsql.sql first
 --
 -- This script creates:
--- - 4 new zones (group-only, viewer, slave, native)
+-- - 8 new zones (group-only, viewer, slave, native, disabled-forward, disabled-reverse, no-soa-forward, no-soa-reverse)
 -- - 3 supermaster records (IPv4 + IPv6)
 -- - 1 expired API key
 -- - 2 zone template sync entries
@@ -32,6 +32,20 @@ ON CONFLICT (name) DO NOTHING;
 INSERT INTO domains (name, type) VALUES ('native-zone.example.com', 'NATIVE')
 ON CONFLICT (name) DO NOTHING;
 
+-- Disabled zone (SOA disabled = entire zone disabled per PowerDNS semantics)
+INSERT INTO domains (name, type) VALUES ('disabled-zone.example.com', 'MASTER')
+ON CONFLICT (name) DO NOTHING;
+
+-- Disabled reverse zone (forward + reverse coverage for the disabled marker)
+INSERT INTO domains (name, type) VALUES ('99.in-addr.arpa', 'MASTER')
+ON CONFLICT (name) DO NOTHING;
+
+-- Zones with no SOA at all (broken state - PowerDNS cannot serve them)
+INSERT INTO domains (name, type) VALUES ('no-soa-zone.example.com', 'MASTER')
+ON CONFLICT (name) DO NOTHING;
+INSERT INTO domains (name, type) VALUES ('100.in-addr.arpa', 'MASTER')
+ON CONFLICT (name) DO NOTHING;
+
 -- Add SOA records for MASTER and NATIVE zones (not SLAVE)
 INSERT INTO records (domain_id, name, type, content, ttl, prio)
 SELECT d.id, d.name, 'SOA',
@@ -39,6 +53,15 @@ SELECT d.id, d.name, 'SOA',
        86400, 0
 FROM domains d
 WHERE d.name IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
+  AND NOT EXISTS (SELECT 1 FROM records r WHERE r.domain_id = d.id AND r.type = 'SOA');
+
+-- Disabled SOA for disabled-zone (PowerDNS treats SOA disabled=true as zone-wide disable)
+INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, d.name, 'SOA',
+       'ns1.example.com. hostmaster.example.com. ' || EXTRACT(EPOCH FROM NOW())::bigint || ' 10800 3600 604800 86400',
+       86400, 0, true
+FROM domains d
+WHERE d.name IN ('disabled-zone.example.com', '99.in-addr.arpa')
   AND NOT EXISTS (SELECT 1 FROM records r WHERE r.domain_id = d.id AND r.type = 'SOA');
 
 -- Add NS records for MASTER and NATIVE zones
@@ -104,6 +127,13 @@ INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name)
 SELECT d.id, u.id, 0, d.name
 FROM domains d, users u
 WHERE d.name = 'native-zone.example.com' AND u.username = 'admin'
+  AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
+
+-- Admin owns the disabled and no-SOA fixtures (forward + reverse)
+INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name)
+SELECT d.id, u.id, 0, d.name
+FROM domains d, users u
+WHERE d.name IN ('disabled-zone.example.com', '99.in-addr.arpa', 'no-soa-zone.example.com', '100.in-addr.arpa') AND u.username = 'admin'
   AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
 -- group-only-zone.example.com has NO direct owner (only group ownership)
@@ -198,7 +228,7 @@ SELECT setval('login_attempts_id_seq', COALESCE((SELECT MAX(id) FROM login_attem
 -- Verify new zones
 SELECT d.name, d.type, d.master
 FROM domains d
-WHERE d.name IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'slave-zone.example.com', 'native-zone.example.com')
+WHERE d.name IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'slave-zone.example.com', 'native-zone.example.com', 'disabled-zone.example.com', '99.in-addr.arpa', 'no-soa-zone.example.com', '100.in-addr.arpa')
 ORDER BY d.name;
 
 -- Verify supermasters
@@ -211,7 +241,7 @@ SELECT d.name, u.username AS owner
 FROM zones z
 JOIN domains d ON z.domain_id = d.id
 LEFT JOIN users u ON z.owner = u.id
-WHERE d.name IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'slave-zone.example.com', 'native-zone.example.com')
+WHERE d.name IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'slave-zone.example.com', 'native-zone.example.com', 'disabled-zone.example.com', '99.in-addr.arpa', 'no-soa-zone.example.com', '100.in-addr.arpa')
 ORDER BY d.name;
 
 -- Verify API keys

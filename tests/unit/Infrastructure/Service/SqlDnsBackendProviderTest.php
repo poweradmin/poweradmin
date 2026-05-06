@@ -378,4 +378,61 @@ class SqlDnsBackendProviderTest extends TestCase
 
         $this->assertTrue($result);
     }
+
+    // ---------------------------------------------------------------
+    // SOA health (disabled / missing) - issue #805
+    // ---------------------------------------------------------------
+
+    public function testGetZoneSoaHealthSlaveZonesShortCircuit(): void
+    {
+        // No prepare() call - SLAVE zones legitimately lack SOA, no need to query.
+        $this->mockDb->expects($this->never())->method('prepare');
+
+        $result = $this->provider->getZoneSoaHealth('slave.example.com', 'SLAVE');
+
+        $this->assertSame(['is_disabled' => false, 'is_missing_soa' => false], $result);
+    }
+
+    public function testGetZoneSoaHealthReportsDisabledWhenAnySoaRowIsDisabled(): void
+    {
+        // EXISTS predicate aggregates across SOA rows: any disabled SOA disables
+        // the zone, matching the inline subquery used in zone-list queries.
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with([':name' => 'disabled.example.com', ':name2' => 'disabled.example.com']);
+        $stmt->method('fetch')->willReturn(['has_soa' => 1, 'soa_disabled' => 1]);
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->getZoneSoaHealth('disabled.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => true, 'is_missing_soa' => false], $result);
+    }
+
+    public function testGetZoneSoaHealthReportsMissingSoaWhenZoneHasNoSoa(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetch')->willReturn(['has_soa' => 0, 'soa_disabled' => 0]);
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->getZoneSoaHealth('broken.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => false, 'is_missing_soa' => true], $result);
+    }
+
+    public function testGetZoneSoaHealthHealthyZoneReturnsBothFalse(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetch')->willReturn(['has_soa' => 1, 'soa_disabled' => 0]);
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->getZoneSoaHealth('healthy.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => false, 'is_missing_soa' => false], $result);
+    }
 }

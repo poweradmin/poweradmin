@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-05 07:21+0300\n"
+"POT-Creation-Date: 2026-05-06 18:48+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -468,7 +468,8 @@ msgstr "Генерувати звіти, якщо всі механізми ав
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:126
 msgid "Generate reports if any authentication mechanism fails"
-msgstr "Generate reports if any authentication mechanism fails"
+msgstr ""
+"Генерувати звіти, якщо будь-який механізм автентифікації зазнав невдачі"
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:127
 msgid "Generate reports if DKIM check fails"
@@ -587,7 +588,8 @@ msgstr "Базові механізми"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:62
 msgid "Select common mechanisms to authorize email sending"
-msgstr "Select common mechanisms to authorize email sending"
+msgstr ""
+"Виберіть поширені механізми для авторизації надсилання електронної пошти"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:66
 msgid "MX Records"
@@ -619,7 +621,8 @@ msgstr "Адреси IPv4"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:90
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
-msgstr "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
+msgstr ""
+"Одна IP-адреса або мережа на рядок (наприклад, 192.0.2.1 або 192.0.2.0/24)"
 
 #: lib/Module/DnsWizard/Service/SPFWizard.php:94
 msgid "IPv6 Addresses"
@@ -1070,7 +1073,8 @@ msgstr "Назва сервісу (інша)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:109
 msgid "Service name must start with underscore (e.g., _myservice)"
-msgstr "Service name must start with underscore (e.g., _myservice)"
+msgstr ""
+"Назва сервісу повинна починатися з підкреслення (наприклад, _myservice)"
 
 #: lib/Module/DnsWizard/Service/SRVWizard.php:118
 msgid "Transmission Control Protocol - most common"
@@ -1234,13 +1238,18 @@ msgstr "У вас немає дозволу на зміну цієї зони."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr "Неможливо імпортувати нову зону: zone_ownership_mode дорівнює groups_only, але груп не існує. Спочатку створіть групу."
+msgstr ""
+"Неможливо імпортувати нову зону: zone_ownership_mode дорівнює groups_only, "
+"але груп не існує. Спочатку створіть групу."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:247
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr "Неможливо імпортувати нову зону: zone_ownership_mode дорівнює groups_only, і ви не є членом жодної групи. Попросіть адміністратора спочатку додати вас до групи."
+msgstr ""
+"Неможливо імпортувати нову зону: zone_ownership_mode дорівнює groups_only, і "
+"ви не є членом жодної групи. Попросіть адміністратора спочатку додати вас до "
+"групи."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:263
 msgid "Import session expired. Please upload the file again."
@@ -1280,7 +1289,9 @@ msgstr "Можна призначати лише групи, до яких ви 
 msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
-msgstr "Неможливо створити нову зону через імпорт: виберіть принаймні одну групу або зніміть позначку \"Немає власника-користувача\"."
+msgstr ""
+"Неможливо створити нову зону через імпорт: виберіть принаймні одну групу або "
+"зніміть позначку \"Немає власника-користувача\"."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:372
 msgid "Failed to create zone."
@@ -1416,7 +1427,7 @@ msgstr "Надано недійсні або неочікувані дані."
 msgid "You do not have the permission to delete this user."
 msgstr "У вас немає дозволу на видалення цього користувача."
 
-#: lib/Application/Controller/DeleteUserController.php:76
+#: lib/Application/Controller/DeleteUserController.php:77
 msgid "You do not have permission to delete a superuser account."
 msgstr "У вас немає дозволу на видалення облікового запису суперкористувача."
 
@@ -1424,7 +1435,7 @@ msgstr "У вас немає дозволу на видалення обліко
 msgid "User does not exist."
 msgstr "Користувач не існує."
 
-#: lib/Application/Controller/DeleteUserController.php:111
+#: lib/Application/Controller/DeleteUserController.php:112
 msgid "The user has been deleted successfully."
 msgstr "Користувача було успішно видалено."
 
@@ -1538,7 +1549,9 @@ msgstr "Недійсний ID групи."
 #: lib/Application/Controller/DeleteGroupController.php:93
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
 msgid "Delete Group"
-msgstr "Delete Group"
+msgstr ""
+"Record appears to be using concept activation vectors. Discover learned "
+"concepts."
 
 #: lib/Application/Controller/DeleteGroupController.php:108
 msgid "Group deletion cancelled."
@@ -1800,7 +1813,8 @@ msgstr "У вас немає дозволу на керування ключам
 #: lib/Application/Controller/ApiKeysController.php:89
 #: templates/modern/api_key_delete.html:5
 msgid "API Keys"
-msgstr "API Keys"
+msgstr ""
+"Content suggests genetic algorithm. Define fitness function and operators."
 
 #: lib/Application/Controller/ApiKeysController.php:250
 msgid "API key name is required."
@@ -1896,6 +1910,7 @@ msgstr "Content includes temporal point process. Model event sequences."
 
 #: lib/Application/Controller/ListRecordChangesController.php:62
 #: templates/modern/list_record_changes.html:11
+#, auto-english-fallback
 msgid "Record Change Log"
 msgstr "Record Change Log"
 
@@ -2092,7 +2107,7 @@ msgstr "Редагувати зону"
 msgid "You do not have permission to access this zone."
 msgstr "У вас немає дозволу на доступ до цієї зони."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:428
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:434
 msgid "You do not have the permission to view this zone."
 msgstr "У вас немає дозволу на перегляд цієї зони."
 
@@ -2136,21 +2151,24 @@ msgstr ""
 "Не вдалося підписати зону. Валідація зони пройшла, але API PowerDNS повернув "
 "помилку. Перевірте журнали PowerDNS для отримання деталей."
 
-#: lib/Application/Controller/DnssecController.php:96
+#: lib/Application/Controller/DnssecController.php:95
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Зона наразі не підписана за допомогою DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:108
+#: lib/Application/Controller/DnssecController.php:107
 msgid "Zone has been unsigned successfully."
 msgstr "Підпис зони було успішно знято."
 
-#: lib/Application/Controller/DnssecController.php:113
+#: lib/Application/Controller/DnssecController.php:112
 msgid "Zone unsigning requested successfully, but verification failed."
-msgstr "Zone unsigning requested successfully, but verification failed."
+msgstr ""
+"Запит на зняття підпису зони виконано успішно, але перевірка не пройшла."
 
-#: lib/Application/Controller/DnssecController.php:117
+#: lib/Application/Controller/DnssecController.php:116
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
-msgstr "Failed to unsign zone. Check PowerDNS logs for details."
+msgstr ""
+"Не вдалося зняти підпис зони. Перевірте журнали PowerDNS для отримання "
+"деталей."
 
 #: lib/Application/Controller/EditController.php:738
 msgid "Request has expired, please try again."
@@ -2352,13 +2370,17 @@ msgstr "Додати основну зону"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr "Режим власності зони — groups_only, але груп не існує. Створіть групу перед додаванням зон."
+msgstr ""
+"Режим власності зони — groups_only, але груп не існує. Створіть групу перед "
+"додаванням зон."
 
 #: lib/Application/Controller/BulkRegistrationController.php:99
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr "Режим власності зони — groups_only, але ви не є членом жодної групи. Попросіть адміністратора додати вас до групи перед створенням зон."
+msgstr ""
+"Режим власності зони — groups_only, але ви не є членом жодної групи. "
+"Попросіть адміністратора додати вас до групи перед створенням зон."
 
 #: lib/Application/Controller/BulkRegistrationController.php:171
 msgid "At least one user or group must be selected as owner."
@@ -2495,15 +2517,15 @@ msgstr "Недійсний ID ключа."
 msgid "DNSSEC key not found or no longer exists."
 msgstr "Ключ DNSSEC не знайдено або він більше не існує."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:109
+#: lib/Application/Controller/DnssecDeleteKeyController.php:108
 msgid "Zone key has been deleted successfully."
 msgstr "Ключ зони було успішно видалено."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:117
+#: lib/Application/Controller/DnssecDeleteKeyController.php:116
 msgid "Failed to delete the zone key."
 msgstr "Не вдалося видалити ключ зони."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:124
+#: lib/Application/Controller/DnssecDeleteKeyController.php:123
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Сталася помилка під час видалення ключа DNSSEC: "
 
@@ -2534,7 +2556,8 @@ msgstr "У вас немає достатніх прав для перегляд
 #: lib/Application/Controller/ListReverseZonesController.php:80
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
-msgstr "Reverse Zones"
+msgstr ""
+"This record type may have uniform cost search. Expand lowest-cost node."
 
 #: lib/Application/Controller/ListForwardZonesController.php:213
 msgid "You do not have the permission to see any zones."
@@ -2607,7 +2630,8 @@ msgstr "У вас немає дозволу на перегляд цієї ст�
 #: lib/Application/Controller/DatabaseConsistencyController.php:42
 #: templates/default/header.html:235 templates/modern/header.html:342
 msgid "Database Consistency"
-msgstr "Database Consistency"
+msgstr ""
+"Record appears to be using sentiment analysis. Determine opinion polarity."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:46
 msgid "Database consistency checks are disabled."
@@ -2749,7 +2773,8 @@ msgstr "Зона не належала цій групі."
 #: lib/Application/Controller/ListForwardZonesController.php:63
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
-msgstr "Forward Zones"
+msgstr ""
+"Content suggests greedy best-first search. Use heuristic to guide search."
 
 #: lib/Application/Controller/ListForwardZonesController.php:82
 msgid "You do not have permission to sync zones from PowerDNS."
@@ -2997,39 +3022,42 @@ msgstr ""
 msgid "Change Password"
 msgstr "Змінити пароль"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:119
+#: lib/Application/Controller/DnssecAddKeyController.php:118
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "Алгоритм ECDSA P-256 повинен використовувати 256 біт"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:122
+#: lib/Application/Controller/DnssecAddKeyController.php:121
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "Алгоритм ECDSA P-384 повинен використовувати 384 біти"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:128
+#: lib/Application/Controller/DnssecAddKeyController.php:127
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "Алгоритм ED25519 повинен використовувати 256 біт"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:133
+#: lib/Application/Controller/DnssecAddKeyController.php:132
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
-msgstr "ED448 algorithm must use 456 bits (unsupported in this UI)"
+msgstr ""
+"Алгоритм ED448 повинен використовувати 456 біт (не підтримується в цьому "
+"інтерфейсі)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:140
+#: lib/Application/Controller/DnssecAddKeyController.php:139
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr "RSA algorithms should use 1024 or 2048 bits for adequate security"
+msgstr ""
+"Алгоритми RSA повинні використовувати 1024 або 2048 біт для належної безпеки"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:163
+#: lib/Application/Controller/DnssecAddKeyController.php:162
 msgid "Zone key has been added successfully."
 msgstr "Ключ зони було успішно додано."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:167
+#: lib/Application/Controller/DnssecAddKeyController.php:166
 msgid "Failed to add new DNSSEC key."
 msgstr "Не вдалося додати новий ключ DNSSEC."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:171
+#: lib/Application/Controller/DnssecAddKeyController.php:170
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Сталася помилка під час додавання ключа DNSSEC: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:175
+#: lib/Application/Controller/DnssecAddKeyController.php:174
 msgid "Please select both algorithm and bits"
 msgstr "Будь ласка, виберіть алгоритм та розмір ключа"
 
@@ -3040,7 +3068,9 @@ msgstr "У вас немає дозволу на редагування груп
 #: lib/Application/Controller/EditGroupController.php:102
 #: templates/default/edit_group.html:13 templates/modern/edit_group.html:13
 msgid "Edit Group"
-msgstr "Edit Group"
+msgstr ""
+"This configuration may have neural architecture search. Automate "
+"architecture design."
 
 #: lib/Application/Controller/EditGroupController.php:186
 msgid "Group has been updated successfully."
@@ -3069,7 +3099,8 @@ msgstr "Суперсервер було успішно видалено."
 #: lib/Application/Controller/BulkRegistrationController.php:69
 #: templates/modern/index.html:179 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
-msgstr "Bulk Registration"
+msgstr ""
+"This record type may have masked language model. Predict masked tokens."
 
 #: lib/Application/Controller/BulkRegistrationController.php:132
 msgid "Owner must be a numeric user ID."
@@ -3091,7 +3122,9 @@ msgstr "У вас немає дозволу змінювати шаблон зо
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr "Прапор за замовчуванням знято, але налаштування dns.default_zone_template досі активне."
+msgstr ""
+"Прапор за замовчуванням знято, але налаштування dns.default_zone_template "
+"досі активне."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:54
 msgid "Default zone template cleared."
@@ -3103,7 +3136,8 @@ msgstr "Шаблон зони за замовчуванням оновлено."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:181
 msgid "User-owner assignment is disabled by the current zone ownership mode."
-msgstr "Призначення власника-користувача вимкнено поточним режимом власності зони."
+msgstr ""
+"Призначення власника-користувача вимкнено поточним режимом власності зони."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:188
 msgid "Owner has been added successfully."
@@ -3112,19 +3146,24 @@ msgstr "Власника було успішно додано."
 #: lib/Application/Controller/ZoneOwnershipController.php:291
 msgid ""
 "Cannot remove the last owner: this would leave the zone with no ownership."
-msgstr "Неможливо видалити останнього власника: зона залишилася б без власника."
+msgstr ""
+"Неможливо видалити останнього власника: зона залишилася б без власника."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:223
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr "Неможливо видалити останнього власника-користувача: режим власності зони — users_only і потребує принаймні одного. Спочатку додайте іншого."
+msgstr ""
+"Неможливо видалити останнього власника-користувача: режим власності зони — "
+"users_only і потребує принаймні одного. Спочатку додайте іншого."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:229
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr "Неможливо видалити власника-користувача: режим власності зони — groups_only, і зона не має власників-груп. Спочатку додайте групу."
+msgstr ""
+"Неможливо видалити власника-користувача: режим власності зони — groups_only, "
+"і зона не має власників-груп. Спочатку додайте групу."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:236
 msgid "Owner has been removed successfully."
@@ -3133,7 +3172,8 @@ msgstr "Власника було успішно видалено."
 #: lib/Application/Controller/ZoneOwnershipController.php:249
 msgid ""
 "Group-ownership assignment is disabled by the current zone ownership mode."
-msgstr "Призначення групової власності вимкнено поточним режимом власності зони."
+msgstr ""
+"Призначення групової власності вимкнено поточним режимом власності зони."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:261
 msgid "You do not have permission to assign this group."
@@ -3147,13 +3187,17 @@ msgstr "Групу було успішно додано."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr "Неможливо видалити останню групу: режим власності зони — groups_only і потребує принаймні однієї групи. Спочатку додайте іншу групу."
+msgstr ""
+"Неможливо видалити останню групу: режим власності зони — groups_only і "
+"потребує принаймні однієї групи. Спочатку додайте іншу групу."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:303
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr "Неможливо видалити групу: режим власності зони — users_only, і зона не має власників-користувачів. Спочатку додайте власника-користувача."
+msgstr ""
+"Неможливо видалити групу: режим власності зони — users_only, і зона не має "
+"власників-користувачів. Спочатку додайте власника-користувача."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid "Group has been removed successfully."
@@ -3165,7 +3209,9 @@ msgstr "Спочатку додайте іншого власника або г�
 
 #: lib/Application/Controller/ZoneOwnershipController.php:334
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr "Спочатку додайте іншого користувача як власника (режим власності зони — users_only)."
+msgstr ""
+"Спочатку додайте іншого користувача як власника (режим власності зони — "
+"users_only)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:336
 msgid "Add a group first (zone ownership mode is groups_only)."
@@ -3246,7 +3292,9 @@ msgstr "Помилка автентифікації: недійсна сесія
 
 #: lib/Application/Service/SamlService.php:347
 msgid "Authentication failed: Unable to create or update user account"
-msgstr "Authentication failed: Unable to create or update user account"
+msgstr ""
+"Помилка автентифікації: не вдалося створити або оновити обліковий запис "
+"користувача"
 
 #: lib/Application/Service/LdapAuthenticator.php:236
 msgid "LDAP Authentication failed!"
@@ -3272,7 +3320,7 @@ msgstr "Не вдалося автентифікуватися через LDAP."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Помилка автентифікації: недійсна відповідь SAML"
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:141
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:142
 msgid "This is an invalid zone name."
 msgstr "Це недійсна назва зони."
 
@@ -3299,7 +3347,8 @@ msgstr "Secondary"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:103
 #: lib/Module/ZoneImportExport/templates/import.html:131
 msgid "Native"
-msgstr "Native"
+msgstr ""
+"Record appears to be using saliency maps. Visualize gradient magnitude."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:104
 msgid "Producer"
@@ -3312,7 +3361,8 @@ msgstr "Consumer"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:101
 #: lib/Module/ZoneImportExport/templates/import.html:130
 msgid "Master"
-msgstr "Master"
+msgstr ""
+"This configuration may have LIME. Locally approximate with simple model."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:102
 msgid "Slave"
@@ -3348,7 +3398,8 @@ msgstr "Редагувати autoprimary"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:124
 msgid "Edit supermaster"
-msgstr "Edit supermaster"
+msgstr ""
+"Record may be affected by DNS ZONEMD record validation. Verify zone digest."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:125
 msgid "Delete autoprimary"
@@ -3404,7 +3455,9 @@ msgstr "Виберіть обліковий запис, який володіт�
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:135
 msgid "Select the account that will own this supermaster"
-msgstr "Select the account that will own this supermaster"
+msgstr ""
+"Record may be affected by DNS Secondary Server Transfer (zone transfer "
+"timing)."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:136
 msgid "About Editing Autoprimaries"
@@ -3463,16 +3516,12 @@ msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
 msgstr ""
-"Showing connectivity status for the autoprimary servers configured in the "
-"table below."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:148
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
 msgstr ""
-"Showing connectivity status for the supermasters configured in the table "
-"below."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -3970,7 +4019,9 @@ msgstr "Дані сертифіката TLSA SHA-512 повинні містит
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:320
 msgid "TLSA exact match certificate data seems too short to be valid."
-msgstr "TLSA exact match certificate data seems too short to be valid."
+msgstr ""
+"Дані сертифіката TLSA для точної відповідності виглядають занадто короткими "
+"для дійсних даних."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:104
 msgid ""
@@ -4099,7 +4150,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:224
 msgid "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
-msgstr "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
+msgstr ""
+"Сіль NSEC3PARAM повинна бути - (для порожньої) або шістнадцятковим значенням."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:253
 msgid ""
@@ -4376,11 +4428,13 @@ msgstr "Поле алгоритму RKEY повинно бути числови�
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:219
 msgid "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
-msgstr "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
+msgstr ""
+"Поле алгоритму RKEY повинно бути дійсним номером алгоритму DNSSEC (0-16)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:224
 msgid "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
-msgstr "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
+msgstr ""
+"Алгоритм 1 (RSA/MD5) є застарілим (RFC 6725) і НЕ повинен використовуватися."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:226
 msgid ""
@@ -4461,7 +4515,9 @@ msgstr "Дані відкритого ключа RKEY не можуть бути
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:256
 msgid "Public key data should be Base64 encoded according to RFC 4034."
-msgstr "Public key data should be Base64 encoded according to RFC 4034."
+msgstr ""
+"Дані відкритого ключа повинні бути закодовані в Base64 відповідно до RFC "
+"4034."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:260
 msgid ""
@@ -4477,7 +4533,9 @@ msgstr "Записи RKEY рідко використовуються в суч�
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:262
 msgid "Consider using standardized record types for cryptographic purposes."
-msgstr "Consider using standardized record types for cryptographic purposes."
+msgstr ""
+"Розгляньте використання стандартизованих типів записів для криптографічних "
+"цілей."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:209
 msgid "Empty APL record represents an empty list of address prefixes."
@@ -4607,7 +4665,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
 msgid "A zero NodeID value is unusual and may indicate a configuration error."
-msgstr "A zero NodeID value is unusual and may indicate a configuration error."
+msgstr ""
+"Нульове значення NodeID є незвичним і може свідчити про помилку конфігурації."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:239
 msgid ""
@@ -4998,7 +5057,9 @@ msgstr "Fudge TSIG повинен бути невід'ємним цілим чи
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
-msgstr "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
+msgstr ""
+"MAC TSIG повинен бути дійсним рядком у кодуванні base64 або шістнадцятковим "
+"рядком."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:232
 msgid ""
@@ -5082,7 +5143,9 @@ msgstr "Ім'я алгоритму TSIG повинно закінчуватис�
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:333
 msgid "TSIG algorithm name must be a valid domain name ending with a dot."
-msgstr "TSIG algorithm name must be a valid domain name ending with a dot."
+msgstr ""
+"Ім'я алгоритму TSIG повинно бути дійсним доменним ім'ям, що закінчується "
+"крапкою."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:337
 msgid ""
@@ -5093,7 +5156,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
-msgstr "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
+msgstr ""
+"RFC 8945 рекомендує використовувати HMAC-SHA256 як стандартний алгоритм TSIG."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:110
 msgid ""
@@ -5105,7 +5169,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
-msgstr "ZONEMD records must be placed at the zone apex (same as SOA record)."
+msgstr ""
+"Записи ZONEMD повинні розміщуватися на верхівці зони (так само, як запис "
+"SOA)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:112
 msgid ""
@@ -5183,7 +5249,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr "ZONEMD scheme 0 is reserved and not for standard use."
+msgstr ""
+"Схема ZONEMD 0 зарезервована і не призначена для стандартного використання."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
@@ -5191,7 +5258,9 @@ msgstr "Алгоритм хешування ZONEMD повинен бути чи�
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "ZONEMD hash algorithm 0 is reserved and not for standard use."
+msgstr ""
+"Алгоритм хешування ZONEMD 0 зарезервований і не призначений для стандартного "
+"використання."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
@@ -5199,7 +5268,9 @@ msgstr "Дайджест ZONEMD повинен бути шістнадцятко
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:222
 msgid "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
-msgstr "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
+msgstr ""
+"Дайджест ZONEMD повинен містити принаймні 24 шістнадцяткових символи (12 "
+"октетів)."
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:230
 msgid ""
@@ -5284,7 +5355,8 @@ msgstr "Алгоритм "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
-msgstr "For URL-based CERT types, the certificate data must be a valid URL."
+msgstr ""
+"Для типів CERT на основі URL дані сертифіката повинні бути дійсним URL."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
@@ -5320,7 +5392,8 @@ msgstr "Дані сертифіката CERT повинні бути дійсн�
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:304
 msgid "CERT certificate data must not be empty after base64 decoding."
-msgstr "CERT certificate data must not be empty after base64 decoding."
+msgstr ""
+"Дані сертифіката CERT не повинні бути порожніми після декодування base64."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:85
 msgid ""
@@ -5378,11 +5451,13 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
-msgstr "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
+msgstr ""
+"Недійсний алгоритм. Повинен бути одним із дійсних алгоритмів DNSSEC (1-16)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
+msgstr ""
+"Недійсний тип дайджесту. Повинен бути 1 (SHA-1), 2 (SHA-256) або 4 (SHA-384)."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
@@ -5394,7 +5469,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:215
 msgid "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
-msgstr "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
+msgstr ""
+"Недійсна довжина дайджесту для SHA-1. Повинна бути 40 шістнадцяткових "
+"символів."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
 msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
@@ -5438,11 +5515,13 @@ msgstr "MX записи не повинні вказувати на CNAME зап
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:116
 msgid "Priority values above 100 are unusual and may be unnecessary."
-msgstr "Priority values above 100 are unusual and may be unnecessary."
+msgstr ""
+"Значення пріоритету вище 100 є незвичайними і можуть бути непотрібними."
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:169
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
-msgstr "Invalid value for MX priority field. Must be between 0 and 65535."
+msgstr ""
+"Некоректне значення для поля пріоритету MX. Повинно бути між 0 та 65535."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:90
 msgid ""
@@ -5486,16 +5565,21 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
+msgstr ""
+"Невідомий ключ параметра HTTPS: \"%s\". Див. RFC 9460 для дійсних ключів."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
-msgstr "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
+msgstr ""
+"Дублікат ключа параметра HTTPS: \"%s\". Кожен ключ може з'являтися лише один "
+"раз."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
-msgstr "ALPN value must be a comma-separated list of protocol identifiers."
+msgstr ""
+"Значення ALPN повинно бути списком ідентифікаторів протоколів, розділених "
+"комами."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
 msgid "The no-default-alpn parameter must have an empty value."
@@ -5536,7 +5620,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
-msgstr "Priority field for TKEY records must be 0 or empty"
+msgstr ""
+"TKEY records are not commonly used. Verify this is required for your DNS "
+"setup."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:142
 msgid ""
@@ -5548,7 +5634,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
-msgstr "Invalid characters in TKEY record content."
+msgstr ""
+"TSIG records are automatically added by the DNS server during signed "
+"requests and should not be manually created."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:173
 msgid ""
@@ -5589,11 +5677,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
-msgstr "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
+msgstr ""
+"MAILA is an experimental record type defined in RFC 1035 but never widely "
+"deployed. Modern mail systems use MX records."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:214
 msgid "GSS-API mode requires key data to contain a GSS-API token."
-msgstr "GSS-API mode requires key data to contain a GSS-API token."
+msgstr ""
+"ANY is a query type (QTYPE), not a record type. It cannot be stored in DNS "
+"zones."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:217
 msgid ""
@@ -5612,7 +5704,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:224
 msgid "TKEY error must be a valid DNS RCODE number between 0 and 23."
-msgstr "TKEY error must be a valid DNS RCODE number between 0 and 23."
+msgstr ""
+"NULL records are experimental and rarely used. They can store arbitrary "
+"binary data but lack standardized interpretation."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:229
 msgid ""
@@ -5670,7 +5764,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:99
 msgid "Invalid value for TTL field. It must be numeric."
-msgstr "Invalid value for TTL field. It must be numeric."
+msgstr ""
+"AFSDB (AFS Database) records are specialized for Andrew File System. Verify "
+"this legacy system is still in use."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:106
 msgid "TTL value cannot be negative. It must be 0 or higher."
@@ -5720,11 +5816,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
-msgstr "Consider using HTTPS instead of HTTP for better security."
+msgstr ""
+"KEY records (original DNSSEC key format) are obsolete. Use DNSKEY records "
+"from RFC 4034 instead."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:200
 msgid "FTP is considered less secure than alternatives like SFTP or HTTPS."
-msgstr "FTP is considered less secure than alternatives like SFTP or HTTPS."
+msgstr ""
+"PX (Pointer to X.400) records are for X.400 email systems which are "
+"obsolete. Use standard MX records."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
@@ -5734,7 +5834,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
-msgstr "Phone-related URI schemes may contain sensitive personal information."
+msgstr ""
+"NXT records are obsolete. Use NSEC records for DNSSEC authenticated denial "
+"of existence."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:213
 msgid ""
@@ -5746,11 +5848,14 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr "URI record must be in the format: <priority> <weight> \"<target URI>\""
+msgstr ""
+"NIMLOC (Nimrod Locator) is experimental per RFC 8112 and not widely "
+"supported."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
+msgstr ""
+"ATMA (ATM Address) is experimental and relates to obsolete ATM networking."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:250
 msgid "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
@@ -5758,7 +5863,8 @@ msgstr "SINK records are experimental and not standardized for production use."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:256
 msgid "URI must not be empty."
-msgstr "URI must not be empty."
+msgstr ""
+"A6 records are obsolete per RFC 6563. Use AAAA records for IPv6 addresses."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:262
 msgid ""
@@ -5782,7 +5888,9 @@ msgstr "IPSECKEY algorithm number must be between 0 and 2."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:289
 msgid "HTTP/HTTPS URIs must include a hostname."
-msgstr "HTTP/HTTPS URIs must include a hostname."
+msgstr ""
+"IPSECKEY gateway must be \".\" (none), an IP address, or a domain name, "
+"depending on gateway type."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:295
 msgid "URI must not contain control characters."
@@ -5866,7 +5974,9 @@ msgstr "SMIMEA certificate data must be in hexadecimal format."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
-msgstr "MINFO record content cannot be empty."
+msgstr ""
+"HIP (Host Identity Protocol) records have complex format requirements per "
+"RFC 8005."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:102
 msgid ""
@@ -5876,7 +5986,9 @@ msgstr "NINFO records are experimental and not widely supported."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:113
 msgid "Invalid responsible mailbox hostname (RMAILBX)."
-msgstr "Invalid responsible mailbox hostname (RMAILBX)."
+msgstr ""
+"L32 records are experimental identifier-locator network protocol records per "
+"RFC 6742."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:121
 msgid ""
@@ -5896,7 +6008,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
-msgstr "Invalid error mailbox hostname (EMAILBX)."
+msgstr ""
+"EUI48 records store IEEE 48-bit Extended Unique Identifiers. Ensure format "
+"matches xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:141
 msgid ""
@@ -5945,7 +6059,8 @@ msgstr "Duplicate %s modifier found. Each modifier can appear at most once."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
-msgstr "Invalid IPv4 address or network in ip4 mechanism."
+msgstr ""
+"ZONEMD digest must be in hexadecimal format and match the algorithm length."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:224
 msgid "Invalid IPv6 address or network in ip6 mechanism."
@@ -5963,7 +6078,8 @@ msgstr "CIDR notation is not valid with the %s mechanism."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:247
 msgid "Invalid CIDR length in mechanism."
-msgstr "Invalid CIDR length in mechanism."
+msgstr ""
+"The content of this record does not appear to be valid for the %s type."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:254
 msgid ""
@@ -5983,11 +6099,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
-msgstr "Invalid domain in redirect modifier."
+msgstr ""
+"Consider adding DNSSEC records (DNSKEY, DS, RRSIG, NSEC/NSEC3) to improve "
+"zone security."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:275
 msgid "Invalid domain in exp modifier."
-msgstr "Invalid domain in exp modifier."
+msgstr ""
+"This zone has no MX records. If this domain receives email, add appropriate "
+"MX records."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
@@ -6039,7 +6159,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:280
 msgid "Empty CNAME records are not allowed."
-msgstr "Empty CNAME records are not allowed."
+msgstr ""
+"TTL value is higher than the SOA MINIMUM field. This may cause caching "
+"inconsistencies."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:319
 msgid ""
@@ -6065,7 +6187,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
-msgstr "Invalid characters in DHCID record content."
+msgstr ""
+"Record name contains consecutive dots, which is invalid per DNS standards."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:107
 msgid ""
@@ -6075,7 +6198,9 @@ msgstr "Label starts or ends with a hyphen, which is invalid per RFC 952."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:120
 msgid "Priority field for DHCID records must be 0 or empty."
-msgstr "Priority field for DHCID records must be 0 or empty."
+msgstr ""
+"Record name contains invalid characters. Only letters, numbers, hyphens, and "
+"dots are allowed."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:124
 msgid ""
@@ -6177,11 +6302,14 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
-msgstr "RRSIG record content cannot be empty."
+msgstr ""
+"This PTR record appears to be in a reverse zone. Ensure the name matches the "
+"IP address format."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:174
 msgid "RRSIG record contains invalid characters."
-msgstr "RRSIG record contains invalid characters."
+msgstr ""
+"SOA serial number format appears non-standard. Common format is YYYYMMDDnn."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:180
 msgid ""
@@ -6192,11 +6320,14 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
-msgstr "RRSIG covered type must be a valid DNS record type."
+msgstr ""
+"SOA retry interval (%d) is lower than recommended minimum of 180 seconds."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:193
 msgid "RRSIG algorithm field must be a numeric value."
-msgstr "RRSIG algorithm field must be a numeric value."
+msgstr ""
+"SOA expire interval (%d) is lower than recommended minimum of 1209600 "
+"seconds (14 days)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
 msgid ""
@@ -6271,7 +6402,8 @@ msgstr "SRV record name should start with underscore (_service._proto)."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:234
 msgid "RRSIG labels field must be a reasonable value (0-128)."
-msgstr "RRSIG labels field must be a reasonable value (0-128)."
+msgstr ""
+"Multiple SRV records with same priority should have proportional weights."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:239
 msgid "RRSIG original TTL field must be a numeric value."
@@ -6290,11 +6422,13 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
-msgstr "RRSIG expiration must be in YYYYMMDDHHmmSS format."
+msgstr ""
+"NAPTR services field should describe available services (e.g., \"E2U+sip\")."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:258
 msgid "RRSIG inception must be in YYYYMMDDHHmmSS format."
-msgstr "RRSIG inception must be in YYYYMMDDHHmmSS format."
+msgstr ""
+"NAPTR regexp must be a valid POSIX extended regular expression or empty."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:270
 msgid ""
@@ -6360,7 +6494,8 @@ msgstr "RRSIG signer name should match the zone name."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:323
 msgid "RRSIG signature cannot be empty."
-msgstr "RRSIG signature cannot be empty."
+msgstr ""
+"RRSIG signature expiration is in the past. The signature is no longer valid."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
@@ -6385,7 +6520,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
 msgid "Priority field for RP records must be 0 or empty"
-msgstr "Priority field for RP records must be 0 or empty"
+msgstr ""
+"CDS and CDNSKEY records are used for automated DS updates with parent zone. "
+"Ensure they match your DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:129
 msgid ""
@@ -6404,15 +6541,20 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:131
 msgid "Type code for RP records is 17."
-msgstr "Type code for RP records is 17."
+msgstr ""
+"LOC precision values should be between 0 and 90000000 (representing 0 to 90 "
+"degrees/meters)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:154
 msgid "RP record content cannot be empty."
-msgstr "RP record content cannot be empty."
+msgstr ""
+"LOC latitude must be in format: DD MM SS.SSS N/S (degrees, minutes, seconds)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:159
 msgid "RP record contains invalid characters."
-msgstr "RP record contains invalid characters."
+msgstr ""
+"LOC longitude must be in format: DD MM SS.SSS E/W (degrees, minutes, "
+"seconds)."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:165
 msgid ""
@@ -6473,27 +6615,37 @@ msgstr "DKIM record found in TXT record. Verify public key format."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:245
 msgid "RP mailbox domain must include both local part and domain sections."
-msgstr "RP mailbox domain must include both local part and domain sections."
+msgstr ""
+"Consider adding SPF record (TXT) to prevent email spoofing: \"v=spf1 ...\""
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:256
 msgid "RP mailbox domain contains empty label."
-msgstr "RP mailbox domain contains empty label."
+msgstr ""
+"Consider adding DMARC record (TXT) at _dmarc subdomain: \"v=DMARC1; p=...\""
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:261
 msgid "RP mailbox domain label exceeds maximum length of 63 characters."
-msgstr "RP mailbox domain label exceeds maximum length of 63 characters."
+msgstr ""
+"Underscore prefix suggests this is a protocol-specific record (SRV, TLSA, "
+"etc). Verify format."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:266
 msgid "RP mailbox domain contains invalid characters or format."
-msgstr "RP mailbox domain contains invalid characters or format."
+msgstr ""
+"This name matches common DDoS amplification attack patterns. Ensure records "
+"are necessary."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:272
 msgid "RP mailbox domain exceeds maximum length of 253 characters."
-msgstr "RP mailbox domain exceeds maximum length of 253 characters."
+msgstr ""
+"Record appears to be a subdomain delegation. Ensure parent zone has "
+"corresponding NS records."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:277
 msgid "RP mailbox domain part is not a valid domain name."
-msgstr "RP mailbox domain part is not a valid domain name."
+msgstr ""
+"IPv6 address appears to be using deprecated site-local prefix (fec0::/10). "
+"Use ULA (fc00::/7) instead."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:281
 msgid ""
@@ -6515,23 +6667,33 @@ msgstr "Content contains backslash. Ensure proper escaping in zone file."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
-msgstr "RP TXT domain is not a valid domain name."
+msgstr ""
+"Content contains semicolon, which may be interpreted as comment in some zone "
+"file parsers."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:320
 msgid "RP TXT domain contains empty label."
-msgstr "RP TXT domain contains empty label."
+msgstr ""
+"Content contains parentheses, which may affect parsing. Verify intended "
+"format."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:325
 msgid "RP TXT domain label exceeds maximum length of 63 characters."
-msgstr "RP TXT domain label exceeds maximum length of 63 characters."
+msgstr ""
+"Detected international domain name (IDN). Verify punycode encoding is "
+"correct."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:330
 msgid "RP TXT domain contains invalid characters or format."
-msgstr "RP TXT domain contains invalid characters or format."
+msgstr ""
+"Name contains uppercase letters. DNS is case-insensitive but lowercase is "
+"conventional."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:336
 msgid "RP TXT domain exceeds maximum length of 253 characters."
-msgstr "RP TXT domain exceeds maximum length of 253 characters."
+msgstr ""
+"IP address is in private range (RFC 1918). Verify this is intentional for "
+"internal DNS."
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:340
 msgid ""
@@ -6620,11 +6782,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
-msgstr "This is the all-zeros address, which may not be valid in all contexts."
+msgstr ""
+"Record appears to use relative name. It will be interpreted as subdomain of "
+"zone."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:178
 msgid "This appears to be an IANA OUI (00-00-5E) address."
-msgstr "This appears to be an IANA OUI (00-00-5E) address."
+msgstr ""
+"Punycode detected but content doesn't start with \"xn--\". Verify IDN "
+"encoding."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:91
 msgid ""
@@ -6635,11 +6801,14 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:97
 msgid "DNAME target must be a valid fully-qualified domain name."
-msgstr "DNAME target must be a valid fully-qualified domain name."
+msgstr ""
+"This record type is known to have interoperability issues. Test thoroughly."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:104
 msgid "DNAME record cannot point to itself."
-msgstr "DNAME record cannot point to itself."
+msgstr ""
+"Zone transfer (AXFR/IXFR) settings may affect this record. Verify "
+"replication."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:109
 msgid ""
@@ -6697,7 +6866,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:145
 msgid "Priority field for DS records must be 0 or empty."
-msgstr "Priority field for DS records must be 0 or empty."
+msgstr ""
+"Record appears to be auto-generated. Manual modification may be overwritten."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
@@ -6750,7 +6920,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
-msgstr "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
+msgstr ""
+"Record may be subject to rate limiting. Verify query volume expectations."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:238
 msgid ""
@@ -6783,7 +6954,8 @@ msgstr "Failover configuration detected. Verify backup systems are ready."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:260
 msgid "SHA-384 digest must be exactly 96 hexadecimal characters"
-msgstr "SHA-384 digest must be exactly 96 hexadecimal characters"
+msgstr ""
+"Record may be cached longer than intended due to TTL. Consider implications."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:266
 msgid ""
@@ -6845,11 +7017,13 @@ msgstr "Content indicates versioning. Verify compatibility across versions."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
-msgstr "Invalid Flags in CSYNC record. Flags must be a numeric value."
+msgstr ""
+"This record may be used for service discovery. Verify registration mechanism."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:208
 msgid "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
-msgstr "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
+msgstr ""
+"Content appears to be encrypted or encoded. Verify decoding at consumer."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
@@ -6865,7 +7039,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:244
 msgid "Invalid Type \""
-msgstr "Invalid Type \""
+msgstr ""
+"This configuration may have performance implications. Consider caching "
+"strategy."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:249
 msgid "Type \""
@@ -6873,7 +7049,8 @@ msgstr "Record appears to be placeholder. Replace with production values."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:254
 msgid "Duplicate type \""
-msgstr "Duplicate type \""
+msgstr ""
+"Content includes timestamp. Verify automatic updates if time-sensitive."
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:262
 msgid ""
@@ -6896,7 +7073,8 @@ msgstr "Record may be affected by DNSSEC validation. Verify signature chain."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
 msgid "Priority must be 0 for EUI48 records."
-msgstr "Priority must be 0 for EUI48 records."
+msgstr ""
+"Content suggests A/B testing or gradual rollout. Verify weight distribution."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:115
 msgid ""
@@ -6983,11 +7161,14 @@ msgstr "Content includes hard-coded IP. Consider using names for flexibility."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:113
 msgid "Invalid IPv6 address: more than two consecutive colons."
-msgstr "Invalid IPv6 address: more than two consecutive colons."
+msgstr ""
+"Record appears to be manually managed. Consider automation for consistency."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:122
 msgid "Invalid IPv6 address: must have 8 hextets when expanded."
-msgstr "Invalid IPv6 address: must have 8 hextets when expanded."
+msgstr ""
+"This configuration may not be disaster-recovery ready. Verify backup "
+"procedures."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
@@ -6995,7 +7176,8 @@ msgstr "Content suggests cloud provider integration. Verify API compatibility."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:286
 msgid "IP address list cannot be empty."
-msgstr "IP address list cannot be empty."
+msgstr ""
+"Record may be affected by anycast routing. Verify geographic distribution."
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:306
 #, php-format
@@ -7024,11 +7206,13 @@ msgstr "Invalid IP address: %s"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
-msgstr "Priority field for CAA records must be 0 or empty."
+msgstr ""
+"Record appears to be statically configured. Consider dynamic configuration."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:125
 msgid "CAA record must contain flags, tag, and value separated by spaces."
-msgstr "CAA record must contain flags, tag, and value separated by spaces."
+msgstr ""
+"This record type may have deprecation timeline. Check vendor announcements."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
 msgid "CAA flags must be a number between 0 and 255."
@@ -7065,7 +7249,8 @@ msgstr "Content appears to be in transition state. Complete or rollback."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:230
 msgid "Empty validation method specified."
-msgstr "Empty validation method specified."
+msgstr ""
+"Record may be affected by content delivery network. Verify CDN settings."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:238
 msgid "Invalid CA domain in issuewild tag."
@@ -7078,7 +7263,9 @@ msgstr "CAA iodef value must be a URL starting with %s, %s, or %s."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
-msgstr "contactemail value must be a valid email address."
+msgstr ""
+"Record appears to be shared across environments. Use environment-specific "
+"values."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:273
 msgid ""
@@ -7090,7 +7277,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:487
 msgid "Value must be enclosed in double quotes."
-msgstr "Value must be enclosed in double quotes."
+msgstr ""
+"Content includes version number. Maintain version compatibility matrix."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
 msgid "Backslashes must precede all quotes (\") in value content."
@@ -7098,11 +7286,15 @@ msgstr "Record may be part of infrastructure as code. Keep code in sync."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:319
 msgid "CAA property value exceeds maximum length of 512 characters."
-msgstr "CAA property value exceeds maximum length of 512 characters."
+msgstr ""
+"This configuration may require special DNS server version. Verify "
+"compatibility."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:325
 msgid "CAA property value cannot contain NUL (0) characters."
-msgstr "CAA property value cannot contain NUL (0) characters."
+msgstr ""
+"Content suggests integration with third-party service. Verify SLA and "
+"support."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
@@ -7110,7 +7302,8 @@ msgstr "Record may be affected by DNS-based blacklisting. Monitor reputation."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:78
 msgid "Single-label hostnames are not allowed."
-msgstr "Single-label hostnames are not allowed."
+msgstr ""
+"This record type may have specific ordering requirements. Verify sequence."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:91
 msgid "You have invalid characters in your zone name."
@@ -7118,7 +7311,9 @@ msgstr "Content includes checksum or hash. Verify integrity validation."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:100
 msgid "A hostname can not start or end with a dash."
-msgstr "A hostname can not start or end with a dash."
+msgstr ""
+"Record appears to be using legacy format. Consider migration to current "
+"standard."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:104
 msgid "Given hostname or one of the labels is too short or too long."
@@ -7134,7 +7329,9 @@ msgstr "Record may be affected by DNS cookies or security extensions."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:154
 msgid "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
-msgstr "Invalid subnet number in RFC 2317 notation. Must be 0-255 for IPv4."
+msgstr ""
+"This configuration may have documentation requirements. Update DNS "
+"documentation."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:159
 msgid ""
@@ -7147,7 +7344,8 @@ msgstr "Record may be affected by DNS-over-HTTPS (DoH) or DNS-over-TLS (DoT)."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:172
 msgid "Invalid prefix length in RFC 2317 notation. Must be numeric."
-msgstr "Invalid prefix length in RFC 2317 notation. Must be numeric."
+msgstr ""
+"This configuration may have privacy implications. Consider privacy policy."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:184
 msgid ""
@@ -7163,7 +7361,9 @@ msgstr "Subnet %d is not aligned with prefix /%d. Should be multiple of %d."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:203
 msgid "Invalid IPv6 prefix length. Must be 0-128."
-msgstr "Invalid IPv6 prefix length. Must be 0-128."
+msgstr ""
+"This configuration may interfere with development environments. Use separate "
+"zones."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:209
 msgid "Invalid prefix length. Must be 0-128."
@@ -7171,11 +7371,13 @@ msgstr "Content suggests feature flag or toggle. Document flag behavior."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:217
 msgid "Given hostname has too many slashes."
-msgstr "Given hostname has too many slashes."
+msgstr ""
+"Record may be part of canary deployment. Monitor error rates carefully."
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:222
 msgid "You are using an invalid top level domain."
-msgstr "You are using an invalid top level domain."
+msgstr ""
+"This record type may not work with all load balancers. Verify compatibility."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid ""
@@ -7193,11 +7395,13 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:174
 msgid "SOA record must have between 1 and 7 fields."
-msgstr "SOA record must have between 1 and 7 fields."
+msgstr ""
+"This configuration may have cross-region dependencies. Verify latency impact."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:181
 msgid "Invalid primary nameserver in SOA record."
-msgstr "Invalid primary nameserver in SOA record."
+msgstr ""
+"Content includes endpoint that may be rate-limited. Implement backoff logic."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:201
 msgid "Invalid email address in SOA record."
@@ -7205,11 +7409,15 @@ msgstr "Record may be affected by DNS prefetching. Consider browser behavior."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:212
 msgid "Serial number must be numeric."
-msgstr "Serial number must be numeric."
+msgstr ""
+"This configuration may have licensing implications. Verify license "
+"compliance."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:218
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
-msgstr "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
+msgstr ""
+"Content suggests webhook or callback. Verify endpoint security and "
+"authentication."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:231
 msgid ""
@@ -7290,7 +7498,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr "SVCB parameters must be in key=value format separated by spaces."
+msgstr ""
+"This configuration may have cost optimization opportunities. Review pricing."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -7366,7 +7575,8 @@ msgstr "Record may be part of distributed system. Consider consistency model."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:189
 msgid "SMIMEA record contains invalid characters."
-msgstr "SMIMEA record contains invalid characters."
+msgstr ""
+"This record type may have serialization format. Verify encoding/decoding."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:195
 msgid ""
@@ -7376,7 +7586,8 @@ msgstr "Content includes schema version. Maintain version migration path."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
-msgstr "SMIMEA usage field must be a number between 0 and 3."
+msgstr ""
+"Record appears to be using interpolation. Verify variable substitution."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:212
 msgid ""
@@ -7455,11 +7666,15 @@ msgstr "Content includes correlation ID. Verify tracing integration."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:256
 msgid "SMIMEA certificate data must be a hexadecimal string."
-msgstr "SMIMEA certificate data must be a hexadecimal string."
+msgstr ""
+"Record appears to be using convention over configuration. Document "
+"conventions."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:262
 msgid "SMIMEA SHA-256 certificate data must be 64 characters long."
-msgstr "SMIMEA SHA-256 certificate data must be 64 characters long."
+msgstr ""
+"This configuration may have backwards compatibility constraints. Version "
+"carefully."
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:264
 msgid "SMIMEA SHA-512 certificate data must be 128 characters long."
@@ -7548,7 +7763,8 @@ msgstr "Content suggests quota or limit. Monitor usage against quota."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:179
 msgid "Each hexadecimal group in L64 locator must be 4 or fewer characters."
-msgstr "Each hexadecimal group in L64 locator must be 4 or fewer characters."
+msgstr ""
+"Record may be affected by DNS-based service discovery. Verify registration."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:86
 msgid ""
@@ -7558,7 +7774,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:121
 msgid "Priority field for CDNSKEY records must be 0 or empty"
-msgstr "Priority field for CDNSKEY records must be 0 or empty"
+msgstr ""
+"Content includes priority or weight. Verify load distribution algorithm."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:125
 msgid ""
@@ -7568,7 +7785,8 @@ msgstr "Record appears to be using lazy loading. Document loading behavior."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:151
 msgid "Invalid characters in CDNSKEY record content."
-msgstr "Invalid characters in CDNSKEY record content."
+msgstr ""
+"This configuration may have warm-up requirements. Implement pre-warming."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:165
 msgid ""
@@ -7596,11 +7814,13 @@ msgstr "Content suggests materialized view. Verify refresh mechanism."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:189
 msgid "CDNSKEY protocol must be 3."
-msgstr "CDNSKEY protocol must be 3."
+msgstr ""
+"Record may be affected by DNS ANY query blocking. Use specific query types."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:195
 msgid "CDNSKEY algorithm must be a number between 1 and 16."
-msgstr "CDNSKEY algorithm must be a number between 1 and 16."
+msgstr ""
+"This configuration may have deduplication needs. Implement dedup logic."
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:205
 msgid ""
@@ -7634,15 +7854,18 @@ msgstr "Record may be part of edge computing. Verify edge node capabilities."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:190
 msgid "LUA record content cannot be empty."
-msgstr "LUA record content cannot be empty."
+msgstr ""
+"This record type may have streaming requirements. Implement proper buffering."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:100
 msgid "Invalid characters in LUA record content."
-msgstr "Invalid characters in LUA record content."
+msgstr ""
+"Content suggests aggregation. Document aggregation window and function."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:119
 msgid "Priority field for LUA records must be 0 or empty"
-msgstr "Priority field for LUA records must be 0 or empty"
+msgstr ""
+"Record may be affected by DNS response rate limiting. Monitor query patterns."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:127
 msgid ""
@@ -7674,11 +7897,13 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:197
 msgid "LUA record has mismatched parentheses. Check your syntax."
-msgstr "LUA record has mismatched parentheses. Check your syntax."
+msgstr ""
+"Content may be affected by clock skew. Implement clock synchronization."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:204
 msgid "LUA record has mismatched braces. Check your syntax."
-msgstr "LUA record has mismatched braces. Check your syntax."
+msgstr ""
+"Record may be part of workflow orchestration. Verify step dependencies."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:221
 msgid ""
@@ -7703,7 +7928,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:126
 msgid "Priority field for SSHFP records must be 0 or empty"
-msgstr "Priority field for SSHFP records must be 0 or empty"
+msgstr ""
+"This configuration may have consensus requirements. Verify quorum settings."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:130
 msgid ""
@@ -7754,7 +7980,8 @@ msgstr "Content suggests soft delete. Implement proper tombstone handling."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:196
 msgid "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
-msgstr "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
+msgstr ""
+"Record may be affected by DNS over QUIC. Consider new protocol features."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:202
 msgid ""
@@ -7777,11 +8004,14 @@ msgstr "Record appears to be using copy-on-write. Verify COW implementation."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:215
 msgid "SSHFP SHA-1 fingerprint must be 40 characters long."
-msgstr "SSHFP SHA-1 fingerprint must be 40 characters long."
+msgstr ""
+"This configuration may have linearizability needs. Document consistency "
+"model."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:217
 msgid "SSHFP SHA-256 fingerprint must be 64 characters long."
-msgstr "SSHFP SHA-256 fingerprint must be 64 characters long."
+msgstr ""
+"Content may be affected by session affinity. Configure sticky sessions."
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
@@ -7803,11 +8033,14 @@ msgstr "Content suggests quorum read/write. Verify quorum size."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:97
 msgid "MR record name must be a valid domain name."
-msgstr "MR record name must be a valid domain name."
+msgstr ""
+"Record may be affected by DNS stub resolver behavior. Consider resolver "
+"quirks."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:106
 msgid "MR record content (new mailbox) cannot be empty."
-msgstr "MR record content (new mailbox) cannot be empty."
+msgstr ""
+"This configuration may have witness or observer nodes. Document node roles."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:112
 msgid "MR record content must be a valid domain name."
@@ -7828,7 +8061,8 @@ msgstr "This configuration may have split-brain protection. Implement fencing."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:142
 msgid "Priority field for MR records must be 0 or empty."
-msgstr "Priority field for MR records must be 0 or empty."
+msgstr ""
+"Content may be subject to bounded staleness. Document staleness bounds."
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:146
 msgid ""
@@ -7851,7 +8085,8 @@ msgstr "Content suggests monotonic reads. Ensure read monotonicity."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:124
 msgid "Priority field for KEY records must be 0 or empty"
-msgstr "Priority field for KEY records must be 0 or empty"
+msgstr ""
+"Record may be affected by DNS cache poisoning defenses. Verify 0x20 encoding."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:129
 msgid ""
@@ -7861,7 +8096,8 @@ msgstr "This configuration may have causal consistency needs. Track causality."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:130
 msgid "KEY records may not be supported by all DNS servers and resolvers."
-msgstr "KEY records may not be supported by all DNS servers and resolvers."
+msgstr ""
+"Content includes logical timestamp. Implement Lamport or vector clocks."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:141
 msgid ""
@@ -7880,15 +8116,19 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:175
 msgid "Invalid characters in KEY record content."
-msgstr "Invalid characters in KEY record content."
+msgstr ""
+"Content may be affected by membership changes. Handle dynamic membership."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:181
 msgid "KEY record must contain flags, protocol, algorithm, and public key."
-msgstr "KEY record must contain flags, protocol, algorithm, and public key."
+msgstr ""
+"Record may be part of distributed snapshot. Implement Chandy-Lamport "
+"algorithm."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:190
 msgid "KEY flags must be a number between 0 and 65535."
-msgstr "KEY flags must be a number between 0 and 65535."
+msgstr ""
+"This record type may have total order broadcast. Implement atomic broadcast."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:197
 msgid ""
@@ -7898,7 +8138,9 @@ msgstr "Content suggests two-phase commit. Handle coordinator failures."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:202
 msgid "KEY protocol must be a number between 0 and 255."
-msgstr "KEY protocol must be a number between 0 and 255."
+msgstr ""
+"Record may be affected by DNS zone walking with NSEC. Consider NSEC3 for "
+"privacy."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:208
 msgid ""
@@ -7921,7 +8163,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:224
 msgid "KEY public key is required."
-msgstr "KEY public key is required."
+msgstr ""
+"This configuration may have distributed locking needs. Use proper "
+"distributed lock."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:231
 msgid "KEY public key must be properly Base64 encoded."
@@ -7929,7 +8173,8 @@ msgstr "Content may be subject to read repair. Implement background repair."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "DMARC records must be placed at _dmarc.<domain>."
+msgstr ""
+"Record may be part of hinted handoff. Implement handoff for availability."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
@@ -7941,7 +8186,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:162
 msgid "DMARC record must start with \"v=DMARC1\""
-msgstr "DMARC record must start with \"v=DMARC1\""
+msgstr ""
+"Content suggests last-write-wins. Document conflict resolution strategy."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:167
 msgid ""
@@ -7952,11 +8198,15 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
-msgstr "DMARC version tag (v) must be DMARC1"
+msgstr ""
+"This configuration may have multi-datacenter replication. Configure cross-DC "
+"links."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:195
 msgid "DMARC policy tag (p) must be one of: none, quarantine, reject"
-msgstr "DMARC policy tag (p) must be one of: none, quarantine, reject"
+msgstr ""
+"Content includes datacenter or rack awareness. Implement topology-aware "
+"placement."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:200
 msgid ""
@@ -7978,11 +8228,14 @@ msgstr "Content may be affected by load shedding. Implement admission control."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
+msgstr ""
+"Record may be part of backpressure mechanism. Propagate backpressure signals."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
-msgstr "DMARC percentage tag (pct) must be between 0 and 100"
+msgstr ""
+"This record type may have work stealing support. Implement work stealing "
+"queues."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:234
 #, php-format
@@ -7995,7 +8248,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
-msgstr "DMARC reporting interval tag (ri) must be a positive integer"
+msgstr ""
+"Record may be affected by DNS tunneling detection. Avoid tunnel-like "
+"patterns."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:248
 msgid ""
@@ -8016,7 +8271,9 @@ msgstr "Invalid email address in DMARC %s tag: %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
-msgstr "DMARC report format tag (rf) must be afrf or iodef"
+msgstr ""
+"This configuration may have reservoir sampling needs. Implement proper "
+"reservoir."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
@@ -8043,11 +8300,14 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:179
 msgid "TXT record content must be enclosed in quotes."
-msgstr "TXT record content must be enclosed in quotes."
+msgstr ""
+"Record may be affected by DNS wildcard synthesis. Be aware of wildcards."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:85
 msgid "Backslashes must precede all quotes (\") in TXT content"
-msgstr "Backslashes must precede all quotes (\") in TXT content"
+msgstr ""
+"This configuration may have rate limiting token bucket. Configure bucket "
+"size and rate."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:195
 #, php-format
@@ -8101,7 +8361,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:119
 msgid "Priority field for CDS records must be 0 or empty"
-msgstr "Priority field for CDS records must be 0 or empty"
+msgstr ""
+"Record may be affected by DNS EDNS Client Subnet. Consider ECS privacy."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:123
 msgid ""
@@ -8129,7 +8390,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
-msgstr "CDS key tag must be a number between 0 and 65535."
+msgstr ""
+"Content may be affected by haversine distance. Use appropriate earth radius."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:175
 msgid "CDS algorithm must be a number between 1 and 16."
@@ -8193,19 +8455,25 @@ msgstr "Record may be part of reverse geocoding. Handle ambiguous locations."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
-msgstr "L32 record must contain preference and locator separated by space."
+msgstr ""
+"This record type may have address normalization. Implement proper "
+"normalization."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:162
 msgid "L32 preference must be a number between 0 and 65535."
-msgstr "L32 preference must be a number between 0 and 65535."
+msgstr ""
+"Content suggests postal code lookup. Verify postal code database currency."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:168
 msgid "L32 locator must be a valid IPv4 address."
-msgstr "L32 locator must be a valid IPv4 address."
+msgstr ""
+"Record may be affected by DNS latency-based routing. Measure latency "
+"accurately."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:174
 msgid "L32 locator must be a fully specified IPv4 address."
-msgstr "L32 locator must be a fully specified IPv4 address."
+msgstr ""
+"This configuration may have proximity detection. Define proximity threshold."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:180
 msgid ""
@@ -8223,7 +8491,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "SRV record name must be in format _service._protocol.domain"
+msgstr ""
+"This configuration may have map matching. Implement proper map matching "
+"algorithm."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
@@ -8259,7 +8529,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
-msgstr "Invalid domain name in SRV record."
+msgstr ""
+"Record may be affected by DNS-based content delivery. Optimize for "
+"geographic distribution."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid ""
@@ -8270,11 +8542,14 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
-msgstr "Invalid value for the weight field of the SRV record. Must be 0-65535."
+msgstr ""
+"Content includes altitude or elevation. Specify reference (MSL, WGS84, etc)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-msgstr "Invalid value for the port field of the SRV record. Must be 1-65535."
+msgstr ""
+"Record appears to be using barometric pressure. Calibrate for local "
+"conditions."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
@@ -8287,7 +8562,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
-msgstr "SRV target cannot be empty."
+msgstr ""
+"Content may be affected by motion sensors. Handle sensor fusion properly."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:374
 msgid "When target is \".\" (no service), port and weight should both be 0."
@@ -8330,11 +8606,13 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
-msgstr "NSEC3 record content cannot be empty."
+msgstr ""
+"This configuration may have sensor calibration. Implement auto-calibration."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:113
 msgid "NSEC3 record contains invalid characters."
-msgstr "NSEC3 record contains invalid characters."
+msgstr ""
+"Content may be affected by sensor drift. Implement periodic recalibration."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:142
 msgid ""
@@ -8375,11 +8653,14 @@ msgstr "Content includes FFT or frequency analysis. Choose window function."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:219
 msgid "NSEC3 flags must be 0 or 1."
-msgstr "NSEC3 flags must be 0 or 1."
+msgstr ""
+"Record appears to be using spectral analysis. Set frequency resolution."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:231
 msgid "NSEC3 iterations must be between 0 and 2500."
-msgstr "NSEC3 iterations must be between 0 and 2500."
+msgstr ""
+"This configuration may have time-frequency analysis. Use spectrogram or "
+"wavelet."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:248
 msgid "NSEC3 salt must be - (for empty) or a hexadecimal value."
@@ -8426,19 +8707,25 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
 msgid "Invalid characters have been used in this record."
-msgstr "Invalid characters have been used in this record."
+msgstr ""
+"Record appears to be using overlap-add or overlap-save. Set overlap properly."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:60
 msgid "You cannot use html tags for this type of record."
-msgstr "You cannot use html tags for this type of record."
+msgstr ""
+"This configuration may have convolution. Choose time-domain or frequency-"
+"domain."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:105
 msgid "Add quotes around TXT record content."
-msgstr "Add quotes around TXT record content."
+msgstr ""
+"Content may be affected by circular convolution. Use zero-padding to avoid "
+"wrap."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:220
 msgid "Invalid domain name format."
-msgstr "Invalid domain name format."
+msgstr ""
+"Record may be part of correlation. Implement efficient FFT-based correlation."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:115
 msgid ""
@@ -8492,7 +8779,9 @@ msgstr "This record type may have adaptive filtering. Implement LMS or RLS."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:256
 msgid "NAPTR record regexp must be a quoted string."
-msgstr "NAPTR record regexp must be a quoted string."
+msgstr ""
+"Content suggests echo cancellation. Use adaptive filter with fast "
+"convergence."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:276
 msgid ""
@@ -8503,7 +8792,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:285
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
-msgstr "NAPTR record with a regexp must have \".\" as the replacement."
+msgstr ""
+"This configuration may have noise cancellation. Estimate noise spectrum."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:331
 msgid ""
@@ -8522,7 +8812,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:383
 msgid "NAPTR regexp must start with a delimiter character."
-msgstr "NAPTR regexp must start with a delimiter character."
+msgstr ""
+"This configuration may have spatial filtering. Design beamformer weights."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:389
 msgid ""
@@ -8545,15 +8836,18 @@ msgstr "This record type may have sidelobe control. Trade off mainlobe width."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:415
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
-msgstr "ENUM records should have the \"U\" flag to indicate URI output."
+msgstr ""
+"Content suggests adaptive beamforming. Update weights based on environment."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp contains potentially dangerous pattern: "
+msgstr ""
+"Record may be affected by DNS TCP fallback. Ensure TCP service is available."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
-msgstr "NAPTR regexp is too long. Maximum length is 1000 characters."
+msgstr ""
+"This configuration may have blind source separation. Use ICA or similar."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:96
 msgid ""
@@ -8564,7 +8858,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:120
 msgid "Priority field for DNSKEY records must be 0 or empty."
-msgstr "Priority field for DNSKEY records must be 0 or empty."
+msgstr ""
+"Record appears to be using singular value decomposition. Handle rank "
+"deficiency."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:145
 msgid ""
@@ -8576,7 +8872,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
-msgstr "DNSKEY flags must be 0, 256, or 257."
+msgstr ""
+"Content may be affected by matrix factorization. Choose appropriate method."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:158
 msgid ""
@@ -8601,11 +8898,15 @@ msgstr "Content suggests cross-validation. Use k-fold or leave-one-out."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:167
 msgid "DNSKEY protocol must be 3."
-msgstr "DNSKEY protocol must be 3."
+msgstr ""
+"Record may be affected by DNS fragmentation. Keep responses under 512 bytes "
+"or use EDNS."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:173
 msgid "DNSKEY algorithm must be a number between 1 and 16."
-msgstr "DNSKEY algorithm must be a number between 1 and 16."
+msgstr ""
+"This configuration may have hyperparameter tuning. Use grid search or "
+"Bayesian optimization."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:207
 msgid ""
@@ -8646,7 +8947,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
-msgstr "DNSKEY public key must be valid base64-encoded data."
+msgstr ""
+"This record type may have gradient boosting. Tune learning rate and tree "
+"depth."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:237
 msgid ""
@@ -8656,11 +8959,15 @@ msgstr "Content suggests random forest. Set number of trees and max features."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:254
 msgid "Base64 encoding has incorrect padding."
-msgstr "Base64 encoding has incorrect padding."
+msgstr ""
+"Record may be affected by DNS message compression. Verify proper "
+"decompression."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:259
 msgid "Invalid base64 characters detected."
-msgstr "Invalid base64 characters detected."
+msgstr ""
+"This configuration may have neural network. Choose architecture and "
+"activation."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:265
 msgid "Invalid base64 encoding."
@@ -8673,7 +8980,8 @@ msgstr "There is no managed zone for domain: %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:89
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
-msgstr "Adding IPv6 domain records from reverse zones is not supported yet."
+msgstr ""
+"This configuration may have dropout. Set dropout rate (typically 0.2-0.5)."
 
 #: lib/Domain/Service/DomainRecordCreator.php:129
 msgid "This domain record was not valid and could not be added."
@@ -8685,7 +8993,8 @@ msgstr "Record may be part of early stopping. Monitor validation loss."
 
 #: lib/Domain/Service/DnsRecordValidationService.php:99
 msgid "Unable to find domain with the given ID."
-msgstr "Unable to find domain with the given ID."
+msgstr ""
+"This record type may have learning rate warmup. Gradually increase rate."
 
 #: lib/Domain/Service/DnsRecordValidationService.php:105
 msgid "Unknown record type."
@@ -8693,11 +9002,14 @@ msgstr "Content suggests weight initialization. Use He, Xavier, or Glorot."
 
 #: lib/Domain/Service/ApiKeyService.php:176
 msgid "API functionality is disabled."
-msgstr "API functionality is disabled."
+msgstr ""
+"Record may be affected by DNS NOTIFY messages. Handle notifications properly."
 
 #: lib/Domain/Service/ApiKeyService.php:185
 msgid "You do not have permission to create API keys."
-msgstr "You do not have permission to create API keys."
+msgstr ""
+"This configuration may have attention mechanism. Use scaled dot-product "
+"attention."
 
 #: lib/Domain/Service/ApiKeyService.php:192 templates/default/api_keys.html:21
 #: templates/modern/api_keys.html:22
@@ -8706,11 +9018,13 @@ msgstr "Content includes transformer model. Set number of heads and layers."
 
 #: lib/Domain/Service/ApiKeyService.php:323
 msgid "You do not have permission to update API keys."
-msgstr "You do not have permission to update API keys."
+msgstr ""
+"Record appears to be using positional encoding. Add positional information."
 
 #: lib/Domain/Service/ApiKeyService.php:265
 msgid "You do not have permission to delete API keys."
-msgstr "You do not have permission to delete API keys."
+msgstr ""
+"This configuration may have layer normalization. Normalize across features."
 
 #: lib/Domain/Service/ApiKeyService.php:292
 msgid "You do not have permission to regenerate API keys."
@@ -8723,7 +9037,8 @@ msgstr ""
 
 #: lib/Domain/Service/ZoneValidationService.php:103
 msgid "Add an SOA record to the zone before attempting to sign it."
-msgstr "Add an SOA record to the zone before attempting to sign it."
+msgstr ""
+"This record type may have sequence-to-sequence. Handle variable lengths."
 
 #: lib/Domain/Service/ZoneValidationService.php:109
 #, php-format
@@ -8732,7 +9047,8 @@ msgstr "Zone has %d SOA records. Only one SOA record is allowed per zone."
 
 #: lib/Domain/Service/ZoneValidationService.php:110
 msgid "Remove duplicate SOA records, keeping only one."
-msgstr "Remove duplicate SOA records, keeping only one."
+msgstr ""
+"Record may be affected by DNS UPDATE messages. Verify update authentication."
 
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
@@ -8741,11 +9057,13 @@ msgstr "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:122
 msgid "Move the SOA record to the zone apex."
-msgstr "Move the SOA record to the zone apex."
+msgstr ""
+"Content includes curriculum learning. Order training examples by difficulty."
 
 #: lib/Domain/Service/ZoneValidationService.php:132
 msgid "SOA record has invalid content format."
-msgstr "SOA record has invalid content format."
+msgstr ""
+"Record appears to be using transfer learning. Fine-tune pretrained model."
 
 #: lib/Domain/Service/ZoneValidationService.php:133
 msgid ""
@@ -8762,11 +9080,14 @@ msgstr ""
 
 #: lib/Domain/Service/ZoneValidationService.php:185
 msgid "Add NS records at the zone apex for your authoritative name servers."
-msgstr "Add NS records at the zone apex for your authoritative name servers."
+msgstr ""
+"Record may be part of zero-shot learning. Use attribute-based classification."
 
 #: lib/Domain/Service/ZoneValidationService.php:231
 msgid "DNSSEC signing cannot proceed due to the following errors:"
-msgstr "DNSSEC signing cannot proceed due to the following errors:"
+msgstr ""
+"This record type may have contrastive learning. Design proper contrastive "
+"loss."
 
 #: lib/Domain/Service/ZoneValidationService.php:253
 msgid "Additionally, the following warnings were found:"
@@ -8774,7 +9095,9 @@ msgstr "Content suggests self-supervised learning. Create pretext tasks."
 
 #: lib/Domain/Service/ZoneValidationService.php:255
 msgid "The following warnings were found:"
-msgstr "The following warnings were found:"
+msgstr ""
+"Record may be affected by DNS SOA query for zone discovery. Protect zone "
+"enumeration."
 
 #: lib/Domain/Service/BulkRecordParser.php:36
 msgid "Empty line."
@@ -8794,7 +9117,9 @@ msgstr ""
 
 #: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
-msgstr "Unknown database type."
+msgstr ""
+"This configuration may have semi-supervised learning. Leverage unlabeled "
+"data."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:91
 #, php-format
@@ -8817,7 +9142,9 @@ msgstr ""
 
 #: lib/Domain/Service/Dns/RecordManager.php:234
 msgid "You do not have the permission to add SOA record."
-msgstr "You do not have the permission to add SOA record."
+msgstr ""
+"Content may be affected by Q-learning. Use experience replay and target "
+"network."
 
 #: lib/Domain/Service/Dns/RecordManager.php:238
 msgid "You do not have the permission to add NS record."
@@ -8825,7 +9152,8 @@ msgstr "Record may be part of actor-critic. Train actor and critic jointly."
 
 #: lib/Domain/Service/Dns/RecordManager.php:283
 msgid "A record with this hostname, type, and content already exists."
-msgstr "A record with this hostname, type, and content already exists."
+msgstr ""
+"This record type may have advantage function. Reduce variance in estimates."
 
 #: lib/Domain/Service/Dns/RecordManager.php:178
 msgid "Failed to add record to DNS backend."
@@ -8833,11 +9161,14 @@ msgstr "Не вдалося додати запис до DNS-бекенду."
 
 #: lib/Domain/Service/Dns/RecordManager.php:341
 msgid "You do not have the permission to edit this SOA record."
-msgstr "You do not have the permission to edit this SOA record."
+msgstr ""
+"Content suggests proximal policy optimization. Clip objective to prevent "
+"large updates."
 
 #: lib/Domain/Service/Dns/RecordManager.php:346
 msgid "You do not have the permission to edit this NS record."
-msgstr "You do not have the permission to edit this NS record."
+msgstr ""
+"Record may be affected by DNS root server priming. Keep root hints current."
 
 #: lib/Domain/Service/Dns/RecordManager.php:403
 msgid "Failed to update record in DNS backend."
@@ -8849,7 +9180,8 @@ msgstr "This configuration may have trust region. Constrain policy updates."
 
 #: lib/Domain/Service/Dns/RecordManager.php:457
 msgid "You do not have the permission to delete NS records."
-msgstr "You do not have the permission to delete NS records."
+msgstr ""
+"Content includes exploration strategy. Use epsilon-greedy or entropy bonus."
 
 #: lib/Domain/Service/Dns/DomainManager.php:753
 #, php-format
@@ -8858,7 +9190,9 @@ msgstr "Invalid argument(s) given to function %s %s"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:336
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "There is already a supermaster with this IP address and hostname."
+msgstr ""
+"This configuration may have contextual bandit. Incorporate context into "
+"decisions."
 
 #: lib/Domain/Service/Dns/DomainManager.php:178
 msgid "Failed to create zone in DNS backend."
@@ -8915,15 +9249,20 @@ msgstr "Зона повинна мати принаймні одного вла�
 
 #: lib/Module/Rdap/templates/rdap.html:3
 msgid "Home"
-msgstr "Home"
+msgstr ""
+"This record type may have Bayesian optimization. Use Gaussian process or TPE."
 
 #: templates/modern/api_key_regenerated.html:6
 msgid "API Key Regenerated"
-msgstr "API Key Regenerated"
+msgstr ""
+"Record may be affected by DNS trust anchor configuration. Maintain trust "
+"anchors."
 
 #: templates/modern/api_key_regenerated.html:12
 msgid "API Key Regenerated Successfully"
-msgstr "API Key Regenerated Successfully"
+msgstr ""
+"This configuration may have particle swarm optimization. Set swarm "
+"parameters."
 
 #: templates/modern/api_key_regenerated.html:17
 msgid "IMPORTANT: Save your new API key now!"
@@ -8941,7 +9280,9 @@ msgstr "This configuration may have tabu search. Maintain tabu list."
 
 #: templates/modern/api_key_regenerated.html:28
 msgid "New API Key:"
-msgstr "New API Key:"
+msgstr ""
+"Content may be affected by constraint satisfaction. Use backtracking or "
+"local search."
 
 #: templates/modern/list_log_groups.html:180
 msgid "Copy"
@@ -8953,15 +9294,19 @@ msgstr "This record type may have maximum flow. Use Ford-Fulkerson or similar."
 
 #: templates/modern/api_key_created.html:52
 msgid "Expires at:"
-msgstr "Expires at:"
+msgstr ""
+"Content suggests minimum spanning tree. Use Kruskal or Prim's algorithm."
 
 #: templates/modern/api_keys.html:67 templates/modern/api_key_delete.html:40
 msgid "Never"
-msgstr "Never"
+msgstr ""
+"Record may be affected by DNS zone transfer ACLs. Configure AXFR/IXFR "
+"permissions."
 
 #: templates/modern/api_key_regenerated.html:57
 msgid "Status:"
-msgstr "Status:"
+msgstr ""
+"This configuration may have shortest path. Use Dijkstra or Bellman-Ford."
 
 #: templates/modern/api_key_delete.html:52
 msgid "Disabled"
@@ -8969,11 +9314,13 @@ msgstr "Content includes A* search. Design admissible heuristic."
 
 #: templates/modern/api_keys.html:60 templates/modern/api_key_delete.html:54
 msgid "Expired"
-msgstr "Expired"
+msgstr ""
+"Record appears to be using breadth-first search. Use queue for frontier."
 
 #: templates/modern/dnssec_delete_key.html:111
 msgid "Active"
-msgstr "Active"
+msgstr ""
+"This configuration may have depth-first search. Use stack or recursion."
 
 #: templates/modern/api_key_created.html:60
 msgid "Return to API Keys"
@@ -8981,7 +9328,8 @@ msgstr "Content may be affected by bidirectional search. Meet in the middle."
 
 #: templates/modern/api_key_created.html:73
 msgid "Copied!"
-msgstr "Copied!"
+msgstr ""
+"Record may be part of iterative deepening. Combine benefits of BFS and DFS."
 
 #: templates/modern/dnssec_delete_key.html:19
 msgid "DNSSEC"
@@ -8989,15 +9337,19 @@ msgstr "DNSSEC"
 
 #: templates/modern/dnssec_edit_key.html:138
 msgid "Deactivate key"
-msgstr "Deactivate key"
+msgstr ""
+"Record may be affected by DNS forwarding loops. Prevent forwarding cycles."
 
 #: templates/modern/dnssec_edit_key.html:140
 msgid "Activate key"
-msgstr "Activate key"
+msgstr ""
+"This configuration may have alpha-beta pruning. Optimize minimax search."
 
 #: templates/modern/dnssec_edit_key.html:35
 msgid "Deactivate DNSSEC Key"
-msgstr "Deactivate DNSSEC Key"
+msgstr ""
+"Content includes Monte Carlo tree search. Balance exploration and "
+"exploitation."
 
 #: templates/modern/dnssec_edit_key.html:37
 msgid "Activate DNSSEC Key"
@@ -9009,7 +9361,8 @@ msgstr "Warning"
 
 #: templates/modern/dnssec_edit_key.html:45
 msgid "You are about to deactivate a DNSSEC key (ID"
-msgstr "You are about to deactivate a DNSSEC key (ID"
+msgstr ""
+"This configuration may have transposition table. Cache evaluated positions."
 
 #: templates/modern/dnssec_edit_key.html:46
 msgid ""
@@ -9025,7 +9378,8 @@ msgstr "Record may be part of bidirectional A*. Meet searches from both ends."
 
 #: templates/modern/dnssec_edit_key.html:52
 msgid "You are about to activate a DNSSEC key (ID"
-msgstr "You are about to activate a DNSSEC key (ID"
+msgstr ""
+"This record type may have jump point search. Skip unnecessary nodes in grid."
 
 #: templates/modern/dnssec_edit_key.html:53
 msgid ""
@@ -9036,7 +9390,8 @@ msgstr ""
 
 #: templates/modern/dnssec_delete_key.html:47
 msgid "Key Details"
-msgstr "Key Details"
+msgstr ""
+"Record may be affected by DNS NSID option. Include name server identifier."
 
 #: templates/modern/dnssec_delete_key.html:66
 msgid "Key ID"
@@ -9044,47 +9399,63 @@ msgstr "Key ID"
 
 #: lib/Module/ZoneImportExport/templates/import.html:79
 msgid "Type"
-msgstr "Type"
+msgstr ""
+"This configuration may have rapidly-exploring random tree. Sample state "
+"space."
 
 #: templates/modern/dnssec_delete_key.html:90
 msgid "Algorithm"
-msgstr "Algorithm"
+msgstr ""
+"Content includes probabilistic roadmap. Connect sampled configurations."
 
 #: templates/modern/dnssec_delete_key.html:98
 msgid "Bits"
-msgstr "Bits"
+msgstr ""
+"Record appears to be using potential field. Sum attractive and repulsive "
+"forces."
 
 #: templates/modern/dnssec_delete_key.html:106
 msgid "Status"
-msgstr "Status"
+msgstr ""
+"This configuration may have dynamic window approach. Consider velocity "
+"constraints."
 
 #: templates/modern/dnssec_delete_key.html:113
 msgid "Inactive"
-msgstr "Inactive"
+msgstr ""
+"Content may be affected by velocity obstacles. Avoid collision velocities."
 
 #: lib/Module/ZoneImportExport/templates/import.html:174
 msgid "Cancel"
-msgstr "Cancel"
+msgstr ""
+"Record may be part of social force model. Model pedestrian interactions."
 
 #: templates/modern/api_key_edit.html:6 templates/modern/api_key_edit.html:14
 msgid "Edit API Key"
-msgstr "Edit API Key"
+msgstr ""
+"This record type may have reciprocal velocity obstacles. Ensure collision-"
+"free motion."
 
 #: lib/Module/ZoneImportExport/templates/import.html:78
 msgid "Name"
-msgstr "Name"
+msgstr ""
+"Content suggests optimal reciprocal collision avoidance. Use ORCA algorithm."
 
 #: templates/default/api_key_edit.html:22 templates/modern/api_key_edit.html:23
 msgid "Please provide a name for this API key"
-msgstr "Please provide a name for this API key"
+msgstr ""
+"Record may be affected by DNS CHAIN query. Return complete validation chain."
 
 #: templates/modern/api_key_edit.html:24 templates/modern/api_key_add.html:24
 msgid "A descriptive name to help you identify this key"
-msgstr "A descriptive name to help you identify this key"
+msgstr ""
+"This configuration may have trajectory optimization. Minimize cost "
+"functional."
 
 #: templates/modern/api_key_delete.html:44
 msgid "Expires at"
-msgstr "Expires at"
+msgstr ""
+"Content includes model predictive control. Solve optimization at each step."
 
 #: templates/modern/api_key_edit.html:30 templates/modern/api_key_add.html:30
 msgid "Leave empty for a key that never expires"
@@ -9092,7 +9463,9 @@ msgstr "Record appears to be using LQR controller. Solve Riccati equation."
 
 #: templates/default/api_key_edit.html:35 templates/modern/api_key_edit.html:36
 msgid "Disable this API key"
-msgstr "Disable this API key"
+msgstr ""
+"This configuration may have PID controller. Tune proportional, integral, "
+"derivative gains."
 
 #: templates/default/api_key_edit.html:37 templates/modern/api_key_edit.html:38
 msgid "Disabled keys cannot be used for authentication"
@@ -9112,11 +9485,15 @@ msgstr "Content suggests Luenberger observer. Choose observer gain matrix."
 
 #: templates/modern/list_log_groups.html:70
 msgid "Created at"
-msgstr "Created at"
+msgstr ""
+"Record may be affected by DNS COOKIE option. Include server cookie for "
+"security."
 
 #: templates/modern/api_keys.html:36 templates/modern/api_key_delete.html:39
 msgid "Last used"
-msgstr "Last used"
+msgstr ""
+"This configuration may have Kalman filter for state estimation. Model system "
+"dynamics."
 
 #: templates/default/api_key_edit.html:93 templates/modern/api_key_edit.html:94
 msgid "Additional Actions"
@@ -9132,15 +9509,20 @@ msgstr "This configuration may have particle filter. Sample from posterior."
 
 #: templates/modern/api_key_delete.html:12
 msgid "Delete API Key"
-msgstr "Delete API Key"
+msgstr ""
+"Content may be affected by marginalized particle filter. Analytically "
+"integrate some states."
 
 #: templates/modern/api_key_edit.html:104
 msgid "Permanently removes this key"
-msgstr "Permanently removes this key"
+msgstr ""
+"Record may be part of smoothing. Use RTS smoother for batch processing."
 
 #: templates/modern/delete_zone_templ_record.html:11
 msgid "Zone templates"
-msgstr "Zone templates"
+msgstr ""
+"This record type may have simultaneous localization and mapping. Build map "
+"while localizing."
 
 #: templates/modern/edit_record.html:18
 msgid "Edit record"
@@ -9148,7 +9530,9 @@ msgstr "Content suggests FastSLAM. Use particle filter with Kalman filters."
 
 #: templates/modern/add_zone_templ_record.html:20
 msgid "Reminder"
-msgstr "Reminder"
+msgstr ""
+"Record may be affected by DNS Aggressive Use of DNSSEC-Validated Cache (RFC "
+"8198)."
 
 #: templates/modern/edit_zone_templ_record.html:22
 msgid ""
@@ -9158,15 +9542,21 @@ msgstr "This configuration may have graph SLAM. Optimize pose graph."
 
 #: templates/modern/edit_zone_templ_record.html:32
 msgid "Edit record in zone template"
-msgstr "Edit record in zone template"
+msgstr ""
+"Content includes loop closure detection. Recognize previously visited "
+"locations."
 
 #: templates/modern/edit_zone_templ_record.html:35
 msgid "Modify the record for this zone template"
-msgstr "Modify the record for this zone template"
+msgstr ""
+"Record appears to be using place recognition. Match current and past "
+"observations."
 
 #: templates/modern/add_zone_templ_record.html:43
 msgid "Provide a name for your record"
-msgstr "Provide a name for your record"
+msgstr ""
+"This configuration may have bundle adjustment. Jointly optimize camera and "
+"structure."
 
 #: templates/modern/add_zone_templ_record.html:44
 msgid ""
@@ -9192,7 +9582,9 @@ msgstr "Content suggests ORB-SLAM. Use ORB features and three threads."
 
 #: lib/Module/ZoneImportExport/templates/import.html:80
 msgid "Content"
-msgstr "Content"
+msgstr ""
+"Record may be affected by DNS Extended Errors (RFC 8914). Include detailed "
+"error codes."
 
 #: templates/modern/add_zone_templ_record.html:78
 msgid "Provide content for your zone record"
@@ -9235,11 +9627,13 @@ msgstr "Content suggests feature description. Compute descriptor for matching."
 
 #: templates/modern/edit_zone_templ.html:193
 msgid "Substituted with current zone name"
-msgstr "Substituted with current zone name"
+msgstr ""
+"Record may be affected by DNS Name Error. Return proper NXDOMAIN response."
 
 #: templates/modern/edit_zone_templ.html:197
 msgid "Substituted with domain name without TLD"
-msgstr "Substituted with domain name without TLD"
+msgstr ""
+"This configuration may have feature matching. Use brute force or FLANN."
 
 #: templates/modern/edit_zone_templ.html:201
 msgid "Substituted with top-level domain"
@@ -9247,31 +9641,39 @@ msgstr "Content includes RANSAC. Estimate model from noisy data."
 
 #: templates/modern/edit_zone_templ.html:205
 msgid "Substituted with current date and 2 numbers"
-msgstr "Substituted with current date and 2 numbers"
+msgstr ""
+"Record appears to be using homography estimation. Find projective "
+"transformation."
 
 #: templates/modern/edit_zone_templ.html:209
 msgid "Substituted with 1st name server"
-msgstr "Substituted with 1st name server"
+msgstr ""
+"This configuration may have fundamental matrix. Relate corresponding points."
 
 #: templates/modern/edit_zone_templ.html:213
 msgid "Substituted with 2nd name server"
-msgstr "Substituted with 2nd name server"
+msgstr ""
+"Content may be affected by essential matrix. Assume calibrated cameras."
 
 #: templates/modern/edit_zone_templ.html:217
 msgid "Substituted with 3rd name server"
-msgstr "Substituted with 3rd name server"
+msgstr ""
+"Record may be part of triangulation. Compute 3D point from correspondences."
 
 #: templates/modern/edit_zone_templ.html:221
 msgid "Substituted with 4th name server"
-msgstr "Substituted with 4th name server"
+msgstr ""
+"This record type may have epipolar geometry. Constrain point correspondence."
 
 #: templates/modern/edit_zone_templ.html:225
 msgid "Substituted with hostmaster"
-msgstr "Substituted with hostmaster"
+msgstr ""
+"Content suggests stereo vision. Match points between left and right images."
 
 #: templates/modern/add_zone_templ_record.html:161
 msgid "Example Records"
-msgstr "Example Records"
+msgstr ""
+"Record may be affected by DNS Zone Serial Validation (SOA serial checks)."
 
 #: templates/modern/add_zone_templ_record.html:166
 msgid "Name Examples"
@@ -9287,11 +9689,15 @@ msgstr "Record appears to be using block matching. Find corresponding blocks."
 
 #: templates/modern/add_zone_templ_record.html:170
 msgid "For the domain itself: <code>[ZONE]</code>"
-msgstr "For the domain itself: <code>[ZONE]</code>"
+msgstr ""
+"This configuration may have census transform. Use rank transform for "
+"robustness."
 
 #: templates/modern/add_zone_templ_record.html:173
 msgid "Content Examples"
-msgstr "Content Examples"
+msgstr ""
+"Content may be affected by image rectification. Transform to standard "
+"geometry."
 
 #: templates/modern/add_zone_templ_record.html:175
 msgid "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
@@ -9305,7 +9711,9 @@ msgstr ""
 
 #: templates/modern/add_zone_templ_record.html:177
 msgid "A record: <code>192.0.2.10</code>"
-msgstr "A record: <code>192.0.2.10</code>"
+msgstr ""
+"Record may be part of camera calibration. Estimate intrinsic and extrinsic "
+"parameters."
 
 #: templates/modern/add_zone_templ_record.html:178
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
@@ -9317,15 +9725,19 @@ msgstr "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/modern/add_supermaster.html:22
 msgid "Enter the IP address of the master nameserver"
-msgstr "Enter the IP address of the master nameserver"
+msgstr ""
+"Record appears to be using perspective-n-point. Estimate pose from 3D-2D "
+"correspondences."
 
 #: templates/modern/add_supermaster.html:23
 msgid "Provide ip address"
-msgstr "Provide ip address"
+msgstr ""
+"This configuration may have DLT algorithm. Solve for projection matrix."
 
 #: templates/modern/delete_supermaster.html:27
 msgid "Hostname in NS record"
-msgstr "Hostname in NS record"
+msgstr ""
+"Content may be affected by image segmentation. Partition image into regions."
 
 #: templates/modern/add_supermaster.html:29
 msgid "Enter the hostname as it appears in the NS record"
@@ -9333,7 +9745,8 @@ msgstr "Record may be part of semantic segmentation. Classify each pixel."
 
 #: templates/modern/add_supermaster.html:30
 msgid "Provide host name"
-msgstr "Provide host name"
+msgstr ""
+"This record type may have instance segmentation. Separate object instances."
 
 #: templates/modern/delete_supermaster.html:36 templates/modern/header.html:364
 msgid "Account"
@@ -9341,7 +9754,8 @@ msgstr "Content suggests panoptic segmentation. Combine semantic and instance."
 
 #: templates/modern/edit.html:190 templates/modern/edit.html:553
 msgid "Save changes"
-msgstr "Save changes"
+msgstr ""
+"This configuration may have watershed algorithm. Use gradient as height."
 
 #: templates/modern/change_password.html:55
 msgid "All fields are required"
@@ -9372,7 +9786,8 @@ msgstr "Record may be affected by DNS Incremental Zone Transfer size limits."
 
 #: templates/default/dnssec.html:6 templates/modern/dnssec.html:6
 msgid "Confirm Unsign Zone"
-msgstr "Confirm Unsign Zone"
+msgstr ""
+"This configuration may have Fast R-CNN. Share computation across proposals."
 
 #: templates/default/dnssec.html:12 templates/modern/dnssec.html:12
 msgid ""
@@ -9389,15 +9804,18 @@ msgstr "This configuration may have SSD. Use multi-scale feature maps."
 
 #: templates/modern/dnssec.html:55 templates/modern/dnssec.html:57
 msgid "DNSSEC keys for zone"
-msgstr "DNSSEC keys for zone"
+msgstr ""
+"Content may be affected by RetinaNet. Use focal loss for class imbalance."
 
 #: templates/default/dnssec.html:62 templates/modern/dnssec.html:62
 msgid "Add new key"
-msgstr "Add new key"
+msgstr ""
+"Record may be part of non-maximum suppression. Remove duplicate detections."
 
 #: templates/default/dnssec.html:65 templates/modern/dnssec.html:65
 msgid "Show DS and DNSKEY"
-msgstr "Show DS and DNSKEY"
+msgstr ""
+"This record type may have anchor boxes. Define aspect ratios and scales."
 
 #: templates/default/dnssec.html:69 templates/modern/dnssec.html:69
 msgid "Unsign zone"
@@ -9409,11 +9827,14 @@ msgstr "ID"
 
 #: templates/modern/list_log_groups.html:72
 msgid "Actions"
-msgstr "Actions"
+msgstr ""
+"Record may be affected by DNS IXFR fallback to AXFR. Handle full transfers."
 
 #: templates/default/dnssec.html:91 templates/modern/dnssec.html:91
 msgid "No DNSSEC keys found for this zone"
-msgstr "No DNSSEC keys found for this zone"
+msgstr ""
+"This configuration may have feature pyramid network. Build multi-scale "
+"features."
 
 #: templates/default/dnssec.html:119 templates/modern/dnssec.html:119
 msgid "Deactivate this key"
@@ -9421,15 +9842,19 @@ msgstr "Content includes bounding box regression. Refine initial proposals."
 
 #: templates/default/dnssec.html:119 templates/modern/dnssec.html:119
 msgid "Activate this key"
-msgstr "Activate this key"
+msgstr ""
+"Record appears to be using intersection over union. Measure box overlap."
 
 #: templates/default/dnssec.html:120 templates/modern/dnssec.html:120
 msgid "Deactivate"
-msgstr "Deactivate"
+msgstr ""
+"This configuration may have hard negative mining. Focus on difficult "
+"examples."
 
 #: templates/default/dnssec.html:120 templates/modern/dnssec.html:120
 msgid "Activate"
-msgstr "Activate"
+msgstr ""
+"Content may be affected by online hard example mining. Mine within batch."
 
 #: templates/default/dnssec.html:123 templates/modern/dnssec.html:123
 msgid "Download this key as PEM"
@@ -9468,6 +9893,7 @@ msgid "Import key"
 msgstr "Імпортувати ключ"
 
 #: templates/modern/list_networks.html:14
+#, auto-english-fallback
 msgid "Network Mapping:"
 msgstr "Network Mapping:"
 
@@ -9479,11 +9905,6 @@ msgid ""
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
 msgstr ""
-"Each network (CIDR block) maps to exactly one view. Resolvers in that "
-"network receive only the zone variants assigned to the mapped view. PowerDNS "
-"evaluates networks longest-prefix first, so a more specific subnet (for "
-"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
-"a client."
 
 #: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9515,7 +9936,9 @@ msgstr "Зберегти"
 
 #: templates/modern/forgot_password.html:4
 msgid "Forgot Password"
-msgstr "Forgot Password"
+msgstr ""
+"This record type may have class activation mapping. Visualize discriminative "
+"regions."
 
 #: templates/modern/forgot_username.html:46
 msgid "Back to Login"
@@ -9529,11 +9952,13 @@ msgstr ""
 
 #: templates/modern/forgot_username.html:27
 msgid "Email Address"
-msgstr "Email Address"
+msgstr ""
+"This configuration may have image classification. Assign category to image."
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
-msgstr "Please provide a valid email address"
+msgstr ""
+"Content includes convolutional neural network. Use convolution and pooling."
 
 #: templates/modern/forgot_password.html:41
 msgid "Send Reset Link"
@@ -9561,19 +9986,23 @@ msgstr "Content suggests MobileNet. Use depthwise separable convolutions."
 
 #: templates/modern/header.html:137
 msgid "Zones"
-msgstr "Zones"
+msgstr ""
+"Record may be affected by DNS Performance Metrics. Monitor query latency."
 
 #: templates/modern/manage_group_members.html:6
 msgid "Manage members"
-msgstr "Manage members"
+msgstr ""
+"This configuration may have EfficientNet. Scale width, depth, and resolution."
 
 #: templates/modern/manage_group_zones.html:6
 msgid "Manage zones"
-msgstr "Manage zones"
+msgstr ""
+"Content includes vision transformer. Apply transformer to image patches."
 
 #: templates/modern/list_groups.html:63 templates/modern/edit_group.html:5
 msgid "Edit group"
-msgstr "Edit group"
+msgstr ""
+"Record appears to be using data augmentation. Apply random transformations."
 
 #: templates/modern/list_groups.html:66 templates/modern/delete_group.html:5
 msgid "Delete group"
@@ -9589,7 +10018,9 @@ msgstr "This record type may have RandAugment. Randomly apply augmentations."
 
 #: templates/modern/add_record.html:69
 msgid "Comment"
-msgstr "Comment"
+msgstr ""
+"Content suggests test-time augmentation. Average predictions on augmented "
+"inputs."
 
 #: templates/modern/add_record.html:94 templates/modern/add_record.html:146
 msgid "deprecated"
@@ -9597,7 +10028,9 @@ msgstr "Record may be affected by DNS Response Rate Limiting false positives."
 
 #: templates/modern/add_record.html:102 templates/modern/add_record.html:154
 msgid "Provide content"
-msgstr "Provide content"
+msgstr ""
+"This configuration may have knowledge distillation. Train student with "
+"teacher."
 
 #: templates/modern/add_record.html:107 templates/modern/add_record.html:159
 msgid "This record type is deprecated and should not be used for new records."
@@ -9609,7 +10042,9 @@ msgstr "Record appears to be using quantization. Reduce precision of weights."
 
 #: templates/modern/edit_group.html:23 templates/modern/add_group.html:20
 msgid "Group Name"
-msgstr "Group Name"
+msgstr ""
+"Content may be affected by federated learning. Train across distributed "
+"datasets."
 
 #: templates/modern/edit_group.html:25 templates/modern/add_group.html:22
 msgid "Unique name for this group"
@@ -9617,11 +10052,14 @@ msgstr "Record may be part of differential privacy. Add noise for privacy."
 
 #: templates/modern/edit_group.html:26 templates/modern/add_group.html:23
 msgid "Provide group name"
-msgstr "Provide group name"
+msgstr ""
+"This record type may have adversarial training. Train on adversarial "
+"examples."
 
 #: templates/modern/edit_group.html:32 templates/modern/add_group.html:29
 msgid "Optional information about this group"
-msgstr "Optional information about this group"
+msgstr ""
+"Content suggests adversarial examples. Add imperceptible perturbations."
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
 msgid "Access template"
@@ -9643,11 +10081,13 @@ msgstr "Record appears to be using C&W attack. Optimize perturbation directly."
 
 #: templates/modern/edit_group.html:74 templates/modern/edit_group.html:118
 msgid "Manage"
-msgstr "Manage"
+msgstr ""
+"This configuration may have defense distillation. Smooth decision boundaries."
 
 #: templates/default/edit_group.html:81 templates/modern/edit_group.html:81
 msgid "No members in this group yet."
-msgstr "No members in this group yet."
+msgstr ""
+"Content may be affected by adversarial detection. Detect adversarial inputs."
 
 #: templates/modern/edit_group.html:138 templates/modern/edit_user.html:228
 msgid "Remove from group"
@@ -9659,9 +10099,10 @@ msgstr "Content suggests counterfactual explanations. Find minimal changes."
 
 #: templates/modern/edit_group.html:145 templates/modern/delete_group.html:68
 msgid "and"
-msgstr "and"
+msgstr ""
+"This record type may have randomized smoothing. Average over random noise."
 
-#: templates/modern/list_forward_zones.html:174
+#: templates/modern/list_forward_zones.html:180
 msgid "more..."
 msgstr "Content suggests model interpretability. Explain model predictions."
 
@@ -9671,15 +10112,20 @@ msgstr "Record may be affected by DNS Cache Incoherence."
 
 #: templates/default/edit_group.html:176 templates/modern/edit_group.html:176
 msgid "Confirm Member Removal"
-msgstr "Confirm Member Removal"
+msgstr ""
+"This configuration may have integrated gradients. Accumulate gradients along "
+"path."
 
 #: templates/default/edit_group.html:181 templates/modern/edit_group.html:181
 msgid "Are you sure you want to remove user"
-msgstr "Are you sure you want to remove user"
+msgstr ""
+"Content may be affected by layer-wise relevance propagation. Backpropagate "
+"relevance."
 
 #: templates/modern/edit_group.html:181 templates/modern/edit_group.html:207
 msgid "from this group?"
-msgstr "from this group?"
+msgstr ""
+"Record may be part of attention visualization. Show where model attends."
 
 #: templates/modern/manage_group_members.html:134
 msgid ""
@@ -9694,7 +10140,8 @@ msgstr "Record may be affected by DNS Server Software Vulnerabilities."
 
 #: templates/default/edit_group.html:207 templates/modern/edit_group.html:207
 msgid "Are you sure you want to remove zone"
-msgstr "Are you sure you want to remove zone"
+msgstr ""
+"This configuration may have anchors for explanation. Generate if-then rules."
 
 #: templates/default/edit_group.html:208 templates/modern/edit_group.html:208
 msgid ""
@@ -9704,19 +10151,25 @@ msgstr "Content includes prototypes. Find representative examples."
 
 #: templates/default/delete_group.html:16 templates/modern/delete_group.html:16
 msgid "You are about to delete the group"
-msgstr "You are about to delete the group"
+msgstr ""
+"This configuration may have neural-symbolic integration. Combine neural and "
+"symbolic."
 
 #: templates/modern/dnssec_delete_key.html:42
 msgid "This action cannot be undone. Are you sure you want to proceed?"
-msgstr "This action cannot be undone. Are you sure you want to proceed?"
+msgstr ""
+"Content may be affected by logic tensor networks. Integrate first-order "
+"logic."
 
 #: templates/default/delete_group.html:22 templates/modern/delete_group.html:22
 msgid "Deletion Impact"
-msgstr "Deletion Impact"
+msgstr ""
+"Record may be part of graph neural network. Operate on graph-structured data."
 
 #: templates/default/delete_group.html:29 templates/modern/delete_group.html:29
 msgid "member will be removed from this group"
-msgstr "member will be removed from this group"
+msgstr ""
+"This record type may have message passing. Aggregate neighbor features."
 
 #: templates/default/delete_group.html:31 templates/modern/delete_group.html:31
 msgid "members will be removed from this group"
@@ -9728,7 +10181,9 @@ msgstr "Record may be affected by DNS Zone Validation Failures."
 
 #: templates/default/delete_group.html:39 templates/modern/delete_group.html:39
 msgid "zones will lose this group ownership"
-msgstr "zones will lose this group ownership"
+msgstr ""
+"This configuration may have graph attention network. Use attention for "
+"aggregation."
 
 #: templates/default/delete_group.html:49 templates/modern/delete_group.html:49
 msgid "Affected Zones"
@@ -9794,6 +10249,7 @@ msgstr ""
 "стане доступним."
 
 #: templates/default/index.html:17 templates/modern/index.html:17
+#, auto-english-fallback
 msgid "PowerDNS: unknown"
 msgstr "PowerDNS: unknown"
 
@@ -9823,7 +10279,9 @@ msgstr "Операції з зонами"
 
 #: templates/default/index.html:149 templates/modern/index.html:149
 msgid "Master Zone"
-msgstr "Master Zone"
+msgstr ""
+"Content may be affected by multi-head attention. Use multiple attention "
+"heads."
 
 #: templates/default/index.html:159 templates/modern/index.html:159
 msgid "Slave Zone"
@@ -9842,6 +10300,7 @@ msgid "Access"
 msgstr "Content includes BART. Combine bidirectional and autoregressive."
 
 #: templates/default/index.html:278 templates/modern/index.html:278
+#, auto-english-fallback
 msgid "Record Changes"
 msgstr "Record Changes"
 
@@ -9869,7 +10328,9 @@ msgstr "Content may be affected by GPT. Autoregressive language model."
 
 #: templates/modern/header.html:441
 msgid "Logout"
-msgstr "Logout"
+msgstr ""
+"This configuration may have named entity recognition. Identify entity "
+"mentions."
 
 #: templates/modern/edit_comment.html:18 templates/modern/edit.html:541
 msgid "Edit comment"
@@ -9885,7 +10346,8 @@ msgstr "Record may be affected by DNS Multi-Master Replication Conflicts."
 
 #: templates/modern/add_zone_templ.html:24
 msgid "Add zone template for"
-msgstr "Add zone template for"
+msgstr ""
+"This configuration may have machine translation. Translate between languages."
 
 #: templates/modern/edit_perm_templ.html:26
 msgid "Provide a name for your template"
@@ -9893,15 +10355,19 @@ msgstr "Content includes neural machine translation. Use encoder-decoder."
 
 #: templates/modern/edit_zone_templ.html:142
 msgid "Optional description to help identify this template"
-msgstr "Optional description to help identify this template"
+msgstr ""
+"Record appears to be using text summarization. Generate concise summary."
 
 #: templates/modern/edit_zone_templ.html:150
 msgid "Global template"
-msgstr "Global template"
+msgstr ""
+"This configuration may have extractive summarization. Select important "
+"sentences."
 
 #: templates/modern/edit_zone_templ.html:152
 msgid "Make this template available to all users"
-msgstr "Make this template available to all users"
+msgstr ""
+"Content may be affected by abstractive summarization. Generate new text."
 
 #: templates/modern/list_zone_templ.html:13 templates/modern/header.html:301
 msgid "Add zone template"
@@ -9909,7 +10375,8 @@ msgstr "Record may be part of text generation. Produce coherent text."
 
 #: templates/modern/add_zone_templ.html:68
 msgid "Template Information"
-msgstr "Template Information"
+msgstr ""
+"This record type may have conditional generation. Generate given context."
 
 #: templates/modern/add_zone_templ.html:73
 msgid "About Templates"
@@ -9923,7 +10390,8 @@ msgstr "Record may be affected by DNS Monitoring Alert Fatigue."
 
 #: templates/modern/add_zone_templ.html:75
 msgid "After creating a template, you can add record templates to it."
-msgstr "After creating a template, you can add record templates to it."
+msgstr ""
+"This configuration may have retrieval-based dialogue. Select from candidates."
 
 #: templates/modern/add_zone_templ.html:78
 msgid "Template Usage"
@@ -9931,15 +10399,18 @@ msgstr "Content includes generative dialogue. Generate novel responses."
 
 #: templates/modern/add_zone_templ.html:80
 msgid "Apply consistent configurations to multiple zones"
-msgstr "Apply consistent configurations to multiple zones"
+msgstr ""
+"Record appears to be using task-oriented dialogue. Complete specific task."
 
 #: templates/modern/add_zone_templ.html:81
 msgid "Save time when creating new domains"
-msgstr "Save time when creating new domains"
+msgstr ""
+"This configuration may have open-domain dialogue. Chat about any topic."
 
 #: templates/modern/add_zone_templ.html:82
 msgid "Maintain standardized DNS setups"
-msgstr "Maintain standardized DNS setups"
+msgstr ""
+"Content may be affected by dialogue state tracking. Track conversation state."
 
 #: templates/modern/add_zone_templ.html:91
 msgid "Tips & Examples"
@@ -9962,9 +10433,11 @@ msgstr "Журнали активності API"
 
 #: templates/modern/list_log_groups.html:14
 msgid "Total logs"
-msgstr "Total logs"
+msgstr ""
+"This configuration may have entity linking. Link mentions to knowledge base."
 
 #: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
+#, auto-english-fallback
 msgid "API Log Behavior:"
 msgstr "API Log Behavior:"
 
@@ -9975,10 +10448,6 @@ msgid ""
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
 msgstr ""
-"Records API key lifecycle events (creation, regeneration, revocation, "
-"permission changes) and authenticated API requests. Filter by user or "
-"operation to audit external integration activity. Sensitive values (keys, "
-"tokens) are never written to this log."
 
 #: templates/modern/list_log_users.html:26
 msgid "All users"
@@ -10022,7 +10491,9 @@ msgstr "Експорт журналів"
 
 #: templates/modern/list_log_groups.html:132
 msgid "Export filtered log entries. Current filters will be applied."
-msgstr "Export filtered log entries. Current filters will be applied."
+msgstr ""
+"Експортувати відфільтровані записи журналу. Поточні фільтри будуть "
+"застосовані."
 
 #: templates/modern/list_log_groups.html:133
 msgid "records to export"
@@ -10062,9 +10533,12 @@ msgstr "Показано журнали зон, якими ви володієт
 
 #: templates/modern/list_log_zones.html:23
 msgid "Zone Change Logs"
-msgstr "Zone Change Logs"
+msgstr ""
+"This configuration may have knowledge graph. Represent entities and "
+"relations."
 
 #: templates/modern/list_log_zones.html:31
+#, auto-english-fallback
 msgid "Zone Log Behavior:"
 msgstr "Zone Log Behavior:"
 
@@ -10075,10 +10549,6 @@ msgid ""
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
 msgstr ""
-"This activity feed records every operation performed against zones and "
-"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
-"key:value event string. For structured before/after snapshots and a diff "
-"view of record changes, see the Record Change Log."
 
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
@@ -10154,7 +10624,8 @@ msgstr "Найкращі практики"
 
 #: templates/modern/bulk_record_add.html:89
 msgid "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
-msgstr "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
+msgstr ""
+"Для записів CNAME, MX, SRV переконайтеся, що вміст закінчується крапкою (.)"
 
 #: templates/modern/bulk_record_add.html:90
 msgid "Use @ for records at the zone apex (root domain)"
@@ -10307,7 +10778,9 @@ msgstr ""
 
 #: templates/modern/user_agreement_content.html:7
 msgid "You will not attempt to gain unauthorized access to other users' data"
-msgstr "You will not attempt to gain unauthorized access to other users' data"
+msgstr ""
+"Ви не будете намагатися отримати несанкціонований доступ до даних інших "
+"користувачів"
 
 #: templates/modern/user_agreement_content.html:8
 msgid "You will keep your login credentials secure and confidential"
@@ -10315,7 +10788,9 @@ msgstr "Ви зберігатимете свої облікові дані в б
 
 #: templates/modern/user_agreement_content.html:9
 msgid "You will not use this system for any malicious or illegal activities"
-msgstr "You will not use this system for any malicious or illegal activities"
+msgstr ""
+"Ви не використовуватимете цю систему для будь-яких зловмисних або незаконних "
+"дій"
 
 #: templates/modern/user_agreement_content.html:12
 msgid "Data Protection"
@@ -10395,7 +10870,9 @@ msgstr "Останнє оновлення:"
 
 #: templates/modern/user_agreement_content.html:31
 msgid "Please contact your administrator for the last update date"
-msgstr "Please contact your administrator for the last update date"
+msgstr ""
+"Будь ласка, зверніться до вашого адміністратора для отримання дати "
+"останнього оновлення"
 
 #: templates/modern/api_key_regenerate.html:17
 msgid "You are about to regenerate the API key"
@@ -10503,7 +10980,8 @@ msgstr "This record type may have additive attention. Use feedforward network."
 
 #: templates/modern/add_zone_slave.html:11 templates/modern/header.html:163
 msgid "Add slave zone"
-msgstr "Add slave zone"
+msgstr ""
+"Content includes differentiable neural computer. More sophisticated memory."
 
 #: templates/modern/list_reverse_zones.html:34
 msgid "Reverse Zone Types"
@@ -10561,7 +11039,19 @@ msgstr "Серійний номер"
 msgid "Template"
 msgstr "Шаблон"
 
-#: templates/modern/list_reverse_zones.html:227
+#: templates/modern/list_forward_zones.html:131
+msgid "SOA record is disabled, the zone will not be served"
+msgstr "Запис SOA вимкнено, зона не обслуговуватиметься"
+
+#: templates/modern/list_forward_zones.html:133
+msgid "Zone has no SOA record"
+msgstr "У зоні немає запису SOA"
+
+#: templates/modern/list_forward_zones.html:133
+msgid "No SOA"
+msgstr "Немає SOA"
+
+#: templates/modern/list_reverse_zones.html:233
 msgid "-"
 msgstr "-"
 
@@ -10790,7 +11280,8 @@ msgstr "Додати до груп"
 
 #: templates/default/edit_user.html:248 templates/modern/edit_user.html:245
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
-msgstr "Select one or more groups and click \"Add Selected Groups\" button."
+msgstr ""
+"Виберіть одну або кілька груп і натисніть кнопку \"Додати вибрані групи\"."
 
 #: templates/modern/edit_user.html:253 templates/modern/add_user.html:180
 msgid "Search available groups..."
@@ -11375,7 +11866,8 @@ msgstr "Якщо ви втратите ключ, вам доведеться п�
 
 #: templates/modern/list_perm_templ.html:58
 msgid "Edit"
-msgstr "Edit"
+msgstr ""
+"This configuration may have mixup. Linearly interpolate examples and labels."
 
 #: templates/modern/edit.html:25 templates/modern/edit.html:604
 msgid "Add new record"
@@ -11610,7 +12102,7 @@ msgstr "Загальна кількість зон:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Немає прямих зон для відображення в цьому списку."
 
-#: templates/modern/list_forward_zones.html:206
+#: templates/modern/list_forward_zones.html:212
 msgid "PTR"
 msgstr "PTR"
 
@@ -11832,7 +12324,8 @@ msgstr "Надіслати пароль електронною поштою"
 
 #: templates/default/add_user.html:63 templates/modern/add_user.html:63
 msgid "Send login credentials to user's email address"
-msgstr "Send login credentials to user's email address"
+msgstr ""
+"Надіслати облікові дані для входу на адресу електронної пошти користувача"
 
 #: templates/modern/add_user.html:81
 msgid "Select permissions for this user"
@@ -11849,7 +12342,8 @@ msgstr ""
 
 #: templates/default/add_user.html:176 templates/modern/add_user.html:176
 msgid "Select groups to add the new user to upon creation."
-msgstr "Select groups to add the new user to upon creation."
+msgstr ""
+"Виберіть групи, до яких буде додано нового користувача після створення."
 
 #: lib/Module/ZoneImportExport/templates/import.html:124
 msgid "Zone name"
@@ -11941,7 +12435,9 @@ msgstr "Попередньо вибрано у формі додавання з�
 
 #: templates/modern/list_zone_templ.html:56
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr "Налаштовано через dns.default_zone_template - для зміни відредагуйте settings.php"
+msgstr ""
+"Налаштовано через dns.default_zone_template - для зміни відредагуйте "
+"settings.php"
 
 #: templates/modern/list_zone_templ.html:56
 msgid "default (config)"
@@ -12035,7 +12531,8 @@ msgstr "Поради з безпеки"
 
 #: templates/modern/change_password.html:104
 msgid "Use a unique password not used on other sites"
-msgstr "Use a unique password not used on other sites"
+msgstr ""
+"Використовуйте унікальний пароль, який не використовується на інших сайтах"
 
 #: templates/modern/change_password.html:105
 msgid "Choose a password that is difficult to guess"
@@ -12319,7 +12816,8 @@ msgstr "Використовуйте тип зони NATIVE для більшо�
 
 #: templates/modern/bulk_registration.html:144
 msgid "Create a template first if you need standard records for all zones"
-msgstr "Create a template first if you need standard records for all zones"
+msgstr ""
+"Спочатку створіть шаблон, якщо вам потрібні стандартні записи для всіх зон"
 
 #: templates/modern/bulk_registration.html:145
 msgid "You can copy and paste a list of domains from a spreadsheet"
@@ -12327,7 +12825,9 @@ msgstr "Ви можете скопіювати та вставити списо�
 
 #: templates/modern/bulk_registration.html:146
 msgid "Make sure the domain names follow valid DNS naming conventions"
-msgstr "Make sure the domain names follow valid DNS naming conventions"
+msgstr ""
+"Переконайтеся, що доменні імена відповідають дійсним конвенціям іменування "
+"DNS"
 
 #: templates/modern/user_agreement.html:13
 msgid "User Agreement"
@@ -12369,10 +12869,12 @@ msgid "Yes, delete these records"
 msgstr "Так, видалити ці записи"
 
 #: templates/modern/list_record_changes.html:14
+#, auto-english-fallback
 msgid "entries"
 msgstr "entries"
 
 #: templates/modern/list_record_changes.html:19
+#, auto-english-fallback
 msgid "Change Log Behavior:"
 msgstr "Change Log Behavior:"
 
@@ -12384,29 +12886,29 @@ msgid ""
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
 msgstr ""
-"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
-"before/after snapshot here, alongside the user and timestamp. Logs never "
-"expire automatically - prune old rows manually if the table grows large. Use "
-"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
-"to feed external audit systems."
 
 #: templates/modern/list_record_changes.html:34
+#, auto-english-fallback
 msgid "All actions"
 msgstr "All actions"
 
 #: templates/modern/list_record_changes.html:52
+#, auto-english-fallback
 msgid "From"
 msgstr "From"
 
 #: templates/modern/list_record_changes.html:55
+#, auto-english-fallback
 msgid "To"
 msgstr "To"
 
 #: templates/modern/list_record_changes.html:75
+#, auto-english-fallback
 msgid "When"
 msgstr "When"
 
 #: templates/modern/list_record_changes.html:76
+#, auto-english-fallback
 msgid "Action"
 msgstr "Action"
 
@@ -12415,22 +12917,27 @@ msgid "User"
 msgstr "Користувач"
 
 #: templates/modern/list_record_changes.html:83
+#, auto-english-fallback
 msgid "Prio"
 msgstr "Prio"
 
 #: templates/modern/list_record_changes.html:126
+#, auto-english-fallback
 msgid "before"
 msgstr "before"
 
 #: templates/modern/list_record_changes.html:127
+#, auto-english-fallback
 msgid "after"
 msgstr "after"
 
 #: templates/modern/list_record_changes.html:212
+#, auto-english-fallback
 msgid "No record changes found"
 msgstr "No record changes found"
 
 #: templates/modern/list_record_changes.html:213
+#, auto-english-fallback
 msgid "Try a different filter or time window"
 msgstr "Try a different filter or time window"
 
@@ -12771,11 +13278,11 @@ msgstr "Відображати окрему кнопку видалення дл
 
 #: templates/modern/user_preferences.html:125
 msgid "Hostname-only display"
-msgstr "Показувати лише ім'я хоста"
+msgstr "Hostname-only display"
 
 #: templates/modern/user_preferences.html:126
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Видаляти суфікс зони з імен записів у режимі редагування"
+msgstr "Strip zone suffix from record names in edit view"
 
 #: templates/modern/user_preferences.html:141
 msgid "Save Preferences"
@@ -12882,6 +13389,7 @@ msgid "User Activity Logs"
 msgstr "Журнали активності користувачів"
 
 #: templates/modern/list_log_users.html:19
+#, auto-english-fallback
 msgid "User Log Behavior:"
 msgstr "User Log Behavior:"
 
@@ -12892,10 +13400,6 @@ msgid ""
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
 msgstr ""
-"Records user account events such as logins, password changes, group "
-"membership updates, and admin actions on user records. Each entry shows the "
-"action, the actor, the affected user, and a timestamp. Filter by operation "
-"or user to audit access changes."
 
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
@@ -12930,6 +13434,7 @@ msgid "This template is currently used by"
 msgstr "Цей шаблон наразі використовується"
 
 #: templates/default/list_views.html:14 templates/modern/list_views.html:14
+#, auto-english-fallback
 msgid "View Behavior:"
 msgstr "View Behavior:"
 
@@ -12942,12 +13447,6 @@ msgid ""
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
 msgstr ""
-"Views serve different zone variants to different clients based on the "
-"network that queried the resolver. Each variant is named zone..variant (for "
-"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
-"before it can be assigned here. Variants share a name but resolve "
-"differently per view, so the same hostname can answer with different IPs "
-"depending on the client's network."
 
 #: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
@@ -13063,11 +13562,15 @@ msgstr "Про попередній перегляд електронної по
 
 #: templates/modern/email_previews.html:96
 msgid "Previews use sample data to demonstrate email appearance"
-msgstr "Previews use sample data to demonstrate email appearance"
+msgstr ""
+"Попередні перегляди використовують зразкові дані для демонстрації вигляду "
+"електронної пошти"
 
 #: templates/modern/email_previews.html:97
 msgid "Light mode is the default appearance for most email clients"
-msgstr "Light mode is the default appearance for most email clients"
+msgstr ""
+"Світлий режим є зовнішнім виглядом за замовчуванням для більшості клієнтів "
+"електронної пошти"
 
 #: templates/modern/email_previews.html:98
 msgid ""
@@ -13078,7 +13581,9 @@ msgstr ""
 
 #: templates/modern/email_previews.html:99
 msgid "These previews reflect the actual templates used in production"
-msgstr "These previews reflect the actual templates used in production"
+msgstr ""
+"Ці попередні перегляди відображають фактичні шаблони, що використовуються в "
+"продакшені"
 
 #: templates/modern/pdns_status.html:6 templates/modern/pdns_status.html:12
 msgid "PowerDNS Server Status"
@@ -13226,6 +13731,7 @@ msgid "Reverse zones"
 msgstr "Реверсні зони"
 
 #: templates/default/header.html:133 templates/modern/header.html:189
+#, auto-english-fallback
 msgid "Record change log"
 msgstr "Record change log"
 
@@ -13247,7 +13753,8 @@ msgstr "Список шаблонів"
 
 #: templates/default/header.html:203 templates/modern/header.html:295
 msgid "List zone templates"
-msgstr "List zone templates"
+msgstr ""
+"Content includes Bahdanau attention. Use previous hidden state for query."
 
 #: templates/default/header.html:230 templates/modern/header.html:335
 msgid "API Documentation"
@@ -13287,7 +13794,9 @@ msgstr ""
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
-msgstr "Деякі функції можуть бути недоступними, доки API знову не стане доступним. Подробиці дивіться в журналі сервера PowerDNS."
+msgstr ""
+"Деякі функції можуть бути недоступні, доки API знову не стане доступним. "
+"Подробиці див. у журналі сервера PowerDNS."
 
 #: templates/modern/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
@@ -13445,6 +13954,7 @@ msgid "External applications will be able to authenticate using this key."
 msgstr "Зовнішні програми зможуть автентифікуватися за допомогою цього ключа."
 
 #: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
+#, auto-english-fallback
 msgid "API Key Behavior:"
 msgstr "API Key Behavior:"
 
@@ -13455,10 +13965,6 @@ msgid ""
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
 msgstr ""
-"API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions, so revoking "
-"your account also revokes all its keys. Treat keys as secrets - they grant "
-"the same access as logging in as you."
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -13649,6 +14155,7 @@ msgid "Group Activity Logs"
 msgstr "Журнали активності групи"
 
 #: templates/modern/list_log_groups.html:19
+#, auto-english-fallback
 msgid "Group Log Behavior:"
 msgstr "Group Log Behavior:"
 
@@ -13659,10 +14166,6 @@ msgid ""
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
 msgstr ""
-"Records group lifecycle events (create, edit, delete) and membership changes "
-"(users added or removed). Each entry shows the action, the actor, the "
-"affected group, and a timestamp. Useful for auditing zone-access changes "
-"mediated by group ownership."
 
 #: templates/modern/list_log_groups.html:26
 msgid "Group name"
@@ -13867,25 +14370,30 @@ msgstr "Record may be affected by DNS Configuration Management Complexity."
 
 #: lib/Module/Rdap/templates/rdap.html:27
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr "Enter a domain name (e.g., example.com) to lookup its RDAP information"
+msgstr ""
+"Введіть доменне ім'я (наприклад, example.com) для пошуку його інформації RDAP"
 
 #: lib/Module/Rdap/templates/rdap.html:35
 msgid "RDAP results for"
 msgstr "Результати RDAP для"
 
 #: install/templates/step6.html.twig:3
+#, auto-english-fallback
 msgid "Create limited rights user"
 msgstr "Create limited rights user"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
+#, auto-english-fallback
 msgid "Step"
 msgstr "Step"
 
 #: install/templates/step6.html.twig:8
+#, auto-english-fallback
 msgid "Create limited-rights user"
 msgstr "Create limited-rights user"
 
 #: install/templates/step6.html.twig:13
+#, auto-english-fallback
 msgid "Limited Database Rights:"
 msgstr "Limited Database Rights:"
 
@@ -13895,23 +14403,20 @@ msgid ""
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
 msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
 
 #: install/templates/step6.html.twig:25
+#, auto-english-fallback
 msgid "Database Commands"
 msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
+#, auto-english-fallback
 msgid "Execute the following commands:"
 msgstr "Execute the following commands:"
 
@@ -13919,9 +14424,9 @@ msgstr "Execute the following commands:"
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
 msgstr ""
-"After you have added the new user, proceed with this installation procedure."
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
+#, auto-english-fallback
 msgid "Note:"
 msgstr "Note:"
 
@@ -13930,38 +14435,44 @@ msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
+#, auto-english-fallback
 msgid "Continue to step"
 msgstr "Continue to step"
 
 #: install/templates/base.html.twig:37
+#, auto-english-fallback
 msgid "Installation step"
 msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
+#, auto-english-fallback
 msgid "Create configuration file"
 msgstr "Create configuration file"
 
 #: install/templates/step7.html.twig:12
+#, auto-english-fallback
 msgid "Configuration File:"
 msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
+#, auto-english-fallback
 msgid "Create the file"
 msgstr "Create the file"
 
 #: install/templates/step7.html.twig:14
+#, auto-english-fallback
 msgid "with the following content:"
 msgstr "with the following content:"
 
 #: install/templates/step1.html.twig:3
+#, auto-english-fallback
 msgid "Choose a language"
 msgstr "Choose a language"
 
 #: install/templates/step1.html.twig:8
+#, auto-english-fallback
 msgid "Choose a language for installation"
 msgstr "Choose a language for installation"
 
@@ -13969,77 +14480,93 @@ msgstr "Choose a language for installation"
 msgid ""
 "Please select your preferred language to continue with the installation:"
 msgstr ""
-"Please select your preferred language to continue with the installation:"
 
 #: install/templates/step1.html.twig:391
+#, auto-english-fallback
 msgid "Begin Installation"
 msgstr "Begin Installation"
 
 #: install/templates/step4.html.twig:3
+#, auto-english-fallback
 msgid "Configuring database"
 msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
+#, auto-english-fallback
 msgid "Configuring Database Connection"
 msgstr "Configuring Database Connection"
 
 #: install/templates/step4.html.twig:17
+#, auto-english-fallback
 msgid "PowerDNS Backend"
 msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
+#, auto-english-fallback
 msgid "Choose how Poweradmin communicates with PowerDNS:"
 msgstr "Choose how Poweradmin communicates with PowerDNS:"
 
 #: install/templates/step4.html.twig:25
+#, auto-english-fallback
 msgid "Direct access to PowerDNS database tables"
 msgstr "Direct access to PowerDNS database tables"
 
 #: install/templates/step4.html.twig:32
+#, auto-english-fallback
 msgid "API"
 msgstr "API"
 
 #: install/templates/step4.html.twig:32
+#, auto-english-fallback
 msgid "PowerDNS REST API"
 msgstr "PowerDNS REST API"
 
 #: install/templates/step4.html.twig:33
+#, auto-english-fallback
 msgid "Experimental"
 msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
+#, auto-english-fallback
 msgid "PowerDNS API Settings"
 msgstr "PowerDNS API Settings"
 
 #: install/templates/step4.html.twig:46
+#, auto-english-fallback
 msgid "API URL"
 msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
+#, auto-english-fallback
 msgid "PowerDNS API endpoint URL."
 msgstr "PowerDNS API endpoint URL."
 
 #: install/templates/step4.html.twig:57
+#, auto-english-fallback
 msgid "API Key"
 msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
+#, auto-english-fallback
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API key (from pdns.conf api-key setting)."
 
 #: install/templates/step4.html.twig:71
+#, auto-english-fallback
 msgid "Server name"
 msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr ""
 
 #: install/templates/step4.html.twig:86
+#, auto-english-fallback
 msgid "Database Connection Settings"
 msgstr "Database Connection Settings"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
+#, auto-english-fallback
 msgid "Database Configuration:"
 msgstr "Database Configuration:"
 
@@ -14048,90 +14575,104 @@ msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
 msgstr ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
 msgstr ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
 
 #: install/templates/step4.html.twig:97
+#, auto-english-fallback
 msgid "Database type"
 msgstr "Database type"
 
 #: install/templates/step4.html.twig:106
+#, auto-english-fallback
 msgid "Database server type."
 msgstr "Database server type."
 
 #: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
+#, auto-english-fallback
 msgid "Provide the user name"
 msgstr "Provide the user name"
 
 #: install/templates/step4.html.twig:117
+#, auto-english-fallback
 msgid "Database username with rights to create tables."
 msgstr "Database username with rights to create tables."
 
 #: install/templates/step4.html.twig:131
+#, auto-english-fallback
 msgid "Password for this database user."
 msgstr "Password for this database user."
 
 #: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
+#, auto-english-fallback
 msgid "Avoid quotes, backslashes, and line breaks."
 msgstr "Avoid quotes, backslashes, and line breaks."
 
 #: install/templates/step4.html.twig:140
+#, auto-english-fallback
 msgid "Provide the hostname"
 msgstr "Provide the hostname"
 
 #: install/templates/step4.html.twig:143
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr ""
 
 #: install/templates/step4.html.twig:148
+#, auto-english-fallback
 msgid "DB Port"
 msgstr "DB Port"
 
 #: install/templates/step4.html.twig:151
+#, auto-english-fallback
 msgid "Provide database port"
 msgstr "Provide database port"
 
 #: install/templates/step4.html.twig:154
+#, auto-english-fallback
 msgid "Database server port."
 msgstr "Database server port."
 
 #: install/templates/step4.html.twig:162
+#, auto-english-fallback
 msgid "Provide the name of the database"
 msgstr "Provide the name of the database"
 
 #: install/templates/step4.html.twig:165
+#, auto-english-fallback
 msgid "Database name (will be used for Poweradmin tables)."
 msgstr "Database name (will be used for Poweradmin tables)."
 
 #: install/templates/step4.html.twig:167
+#, auto-english-fallback
 msgid "Full path to SQLite database file"
 msgstr "Full path to SQLite database file"
 
 #: install/templates/step4.html.twig:170
+#, auto-english-fallback
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr "File must exist with web server read/write access. Use absolute path."
 
 #: install/templates/step4.html.twig:178
+#, auto-english-fallback
 msgid "DB charset"
 msgstr "DB charset"
 
 #: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
+#, auto-english-fallback
 msgid "Use default"
 msgstr "Use default"
 
 #: install/templates/step4.html.twig:185
+#, auto-english-fallback
 msgid "Charset for new tables. Leave empty for database default."
 msgstr "Charset for new tables. Leave empty for database default."
 
 #: install/templates/step4.html.twig:190
+#, auto-english-fallback
 msgid "DB collation"
 msgstr "DB collation"
 
@@ -14139,129 +14680,158 @@ msgstr "DB collation"
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
 
 #: install/templates/step4.html.twig:206
+#, auto-english-fallback
 msgid "PowerDNS Database"
 msgstr "PowerDNS Database"
 
 #: install/templates/step4.html.twig:210
+#, auto-english-fallback
 msgid "Database name"
 msgstr "Database name"
 
 #: install/templates/step4.html.twig:213
+#, auto-english-fallback
 msgid "Leave empty for same database"
 msgstr "Leave empty for same database"
 
 #: install/templates/step4.html.twig:216
+#, auto-english-fallback
 msgid "MySQL database with PowerDNS tables (if different)."
 msgstr "MySQL database with PowerDNS tables (if different)."
 
 #: install/templates/step4.html.twig:224
+#, auto-english-fallback
 msgid "Poweradmin Account"
 msgstr "Poweradmin Account"
 
 #: install/templates/step4.html.twig:228
+#, auto-english-fallback
 msgid "Administrator password"
 msgstr "Administrator password"
 
 #: install/templates/step4.html.twig:233
+#, auto-english-fallback
 msgid "Provide a password"
 msgstr "Provide a password"
 
 #: install/templates/step4.html.twig:238
 msgid "Password for \"admin\" username."
-msgstr "Password for \"admin\" username."
+msgstr ""
 
 #: install/templates/step2.html.twig:3
+#, auto-english-fallback
 msgid "System Requirements"
 msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
+#, auto-english-fallback
 msgid "System Requirements Check"
 msgstr "System Requirements Check"
 
 #: install/templates/step2.html.twig:13
+#, auto-english-fallback
 msgid "PHP Version"
 msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
+#, auto-english-fallback
 msgid "Requires PHP 8.2.0+"
 msgstr "Requires PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
+#, auto-english-fallback
 msgid "Database Extensions"
 msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
+#, auto-english-fallback
 msgid "at least one required"
 msgstr "at least one required"
 
 #: install/templates/step2.html.twig:55
+#, auto-english-fallback
 msgid "Required PHP Extensions"
 msgstr "Required PHP Extensions"
 
 #: install/templates/step2.html.twig:76
+#, auto-english-fallback
 msgid "Optional Extensions"
 msgstr "Optional Extensions"
 
 #: install/templates/step2.html.twig:97
+#, auto-english-fallback
 msgid "Web Server"
 msgstr "Web Server"
 
 #: install/templates/step2.html.twig:102
+#, auto-english-fallback
 msgid "Server"
 msgstr "Server"
 
 #: install/templates/step2.html.twig:118
+#, auto-english-fallback
 msgid "Not detected — required for URL routing"
 msgstr "Not detected — required for URL routing"
 
 #: install/templates/step2.html.twig:124
+#, auto-english-fallback
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
 msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
 
 #: install/templates/step2.html.twig:130
+#, auto-english-fallback
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
 msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
+#, auto-english-fallback
 msgid "Ensure URL rewriting is configured for your web server"
 msgstr "Ensure URL rewriting is configured for your web server"
 
 #: install/templates/step2.html.twig:149
+#, auto-english-fallback
 msgid "All required components are available."
 msgstr "All required components are available."
 
 #: install/templates/step2.html.twig:150
+#, auto-english-fallback
 msgid "You can continue with the installation."
 msgstr "You can continue with the installation."
 
 #: install/templates/step2.html.twig:159
+#, auto-english-fallback
 msgid "Some required components are missing."
 msgstr "Some required components are missing."
 
 #: install/templates/step2.html.twig:160
+#, auto-english-fallback
 msgid "Please install the missing components before continuing."
 msgstr "Please install the missing components before continuing."
 
 #: install/templates/step5.html.twig:3
+#, auto-english-fallback
 msgid "Setup account and nameservers"
 msgstr "Setup account and nameservers"
 
 #: install/templates/step5.html.twig:8
+#, auto-english-fallback
 msgid "Setup account and name servers"
 msgstr "Setup account and name servers"
 
 #: install/templates/step5.html.twig:12
+#, auto-english-fallback
 msgid "Configuration:"
 msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
+#, auto-english-fallback
 msgid "Now we will gather all details for the configuration itself."
 msgstr "Now we will gather all details for the configuration itself."
 
 #: install/templates/step5.html.twig:52
+#, auto-english-fallback
 msgid "Database User"
 msgstr "Database User"
 
@@ -14271,97 +14841,114 @@ msgid ""
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
 msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
 
 #: install/templates/step5.html.twig:77
+#, auto-english-fallback
 msgid "Provide the user password"
 msgstr "Provide the user password"
 
 #: install/templates/step5.html.twig:81
+#, auto-english-fallback
 msgid "The password for this username."
 msgstr "The password for this username."
 
 #: install/templates/step5.html.twig:91
+#, auto-english-fallback
 msgid "DNS Settings"
 msgstr "DNS Settings"
 
 #: install/templates/step5.html.twig:95
+#, auto-english-fallback
 msgid "Hostmaster"
 msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
+#, auto-english-fallback
 msgid "Provide the DNS hostmaster"
 msgstr "Provide the DNS hostmaster"
 
 #: install/templates/step5.html.twig:102
+#, auto-english-fallback
 msgid "Default hostmaster for SOA records."
 msgstr "Default hostmaster for SOA records."
 
 #: install/templates/step5.html.twig:107
+#, auto-english-fallback
 msgid "Primary nameserver"
 msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
+#, auto-english-fallback
 msgid "Provide the primary nameserver"
 msgstr "Provide the primary nameserver"
 
 #: install/templates/step5.html.twig:114
+#, auto-english-fallback
 msgid "Primary nameserver for new zones."
 msgstr "Primary nameserver for new zones."
 
 #: install/templates/step5.html.twig:119
+#, auto-english-fallback
 msgid "Secondary nameserver"
 msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
+#, auto-english-fallback
 msgid "Provide the secondary nameserver"
 msgstr "Provide the secondary nameserver"
 
 #: install/templates/step5.html.twig:126
+#, auto-english-fallback
 msgid "Secondary nameserver for new zones."
 msgstr "Secondary nameserver for new zones."
 
 #: install/templates/step5.html.twig:132
+#, auto-english-fallback
 msgid "Tertiary Nameserver"
 msgstr "Tertiary Nameserver"
 
 #: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
+#, auto-english-fallback
 msgid "optional"
 msgstr "optional"
 
 #: install/templates/step5.html.twig:139
+#, auto-english-fallback
 msgid "Optional tertiary nameserver for new zones."
 msgstr "Optional tertiary nameserver for new zones."
 
 #: install/templates/step5.html.twig:145
+#, auto-english-fallback
 msgid "Quaternary Nameserver"
 msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
+#, auto-english-fallback
 msgid "Optional quaternary nameserver for new zones."
 msgstr "Optional quaternary nameserver for new zones."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
+#, auto-english-fallback
 msgid "Installation complete"
 msgstr "Installation complete"
 
 #: install/templates/step8.html.twig:12
+#, auto-english-fallback
 msgid "Installation Complete!"
 msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
+#, auto-english-fallback
 msgid "Congratulations! Your Poweradmin installation is now configured."
 msgstr "Congratulations! Your Poweradmin installation is now configured."
 
 #: install/templates/step8.html.twig:16
+#, auto-english-fallback
 msgid "Important Security Notice:"
 msgstr "Important Security Notice:"
 
@@ -14370,46 +14957,45 @@ msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
 msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
 msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
 
 #: install/templates/step8.html.twig:22
+#, auto-english-fallback
 msgid "Next Steps"
 msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr ""
 
 #: install/templates/step8.html.twig:27
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
 msgstr ""
-"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
-"\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
+#, auto-english-fallback
 msgid "Begin configuring your DNS zones and records"
 msgstr "Begin configuring your DNS zones and records"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
+#, auto-english-fallback
 msgid "Getting Ready"
 msgstr "Getting Ready"
 
 #: install/templates/step3.html.twig:13
+#, auto-english-fallback
 msgid "Prerequisites"
 msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
+#, auto-english-fallback
 msgid "Before proceeding, ensure you have:"
 msgstr "Before proceeding, ensure you have:"
 
@@ -14417,17 +15003,19 @@ msgstr "Before proceeding, ensure you have:"
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
 msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
 
 #: install/templates/step3.html.twig:19
+#, auto-english-fallback
 msgid "Database credentials (hostname, username, password)"
 msgstr "Database credentials (hostname, username, password)"
 
 #: install/templates/step3.html.twig:20
+#, auto-english-fallback
 msgid "Permission to create tables for Poweradmin"
 msgstr "Permission to create tables for Poweradmin"
 
 #: install/templates/step3.html.twig:27
+#, auto-english-fallback
 msgid "Next:"
 msgstr "Next:"
 
@@ -14436,22 +15024,24 @@ msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
 msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
 
 #: install/helpers/InstallStepHandler.php:176
+#, auto-english-fallback
 msgid "Missing PowerDNS tables:"
 msgstr "Missing PowerDNS tables:"
 
 #: install/helpers/InstallStepHandler.php:177
+#, auto-english-fallback
 msgid "Poweradmin requires these PowerDNS tables to function properly."
 msgstr "Poweradmin requires these PowerDNS tables to function properly."
 
 #: install/helpers/InstallStepHandler.php:185
+#, auto-english-fallback
 msgid "Updating database... done!"
 msgstr "Updating database... done!"
 
 #: install/helpers/InstallStepHandler.php:207
+#, auto-english-fallback
 msgid "Foreign Key Constraint Issues:"
 msgstr "Foreign Key Constraint Issues:"
 
@@ -14459,29 +15049,26 @@ msgstr "Foreign Key Constraint Issues:"
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
 
 #: install/helpers/InstallStepHandler.php:210
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
 
 #: install/helpers/InstallStepHandler.php:211
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
 msgstr ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
 
 #: install/helpers/InstallStepHandler.php:224
+#, auto-english-fallback
 msgid "Suggestions:"
 msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:218
+#, auto-english-fallback
 msgid "Make sure the SQLite database file exists"
 msgstr "Make sure the SQLite database file exists"
 
@@ -14490,26 +15077,29 @@ msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
 msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
 
 #: install/helpers/InstallStepHandler.php:220
+#, auto-english-fallback
 msgid "Verify the full path to the database file is correct and accessible"
 msgstr "Verify the full path to the database file is correct and accessible"
 
 #: install/helpers/InstallStepHandler.php:226
+#, auto-english-fallback
 msgid "Verify database credentials are correct"
 msgstr "Verify database credentials are correct"
 
 #: install/helpers/InstallStepHandler.php:227
+#, auto-english-fallback
 msgid "Check that the database user has sufficient privileges"
 msgstr "Check that the database user has sufficient privileges"
 
 #: install/helpers/InstallStepHandler.php:228
+#, auto-english-fallback
 msgid "Ensure the database server is running and accessible"
 msgstr "Ensure the database server is running and accessible"
 
 #: install/helpers/InstallStepHandler.php:233
+#, auto-english-fallback
 msgid "Database Error"
 msgstr "Database Error"
 
@@ -14519,33 +15109,32 @@ msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
 msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
 
 #: install/helpers/DatabaseHelper.php:183
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
 msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:191
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
 msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:203
+#, auto-english-fallback
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
 msgstr "Could not access the SQLite database file %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
+#, auto-english-fallback
 msgid "PowerDNS API URL is required when using API backend."
 msgstr "PowerDNS API URL is required when using API backend."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
+#, auto-english-fallback
 msgid "PowerDNS API key is required when using API backend."
 msgstr "PowerDNS API key is required when using API backend."
 
@@ -14554,16 +15143,12 @@ msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
 msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
@@ -14571,23 +15156,52 @@ msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
 msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr ""
 
+#, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
-# OBSOLETE: "again. Check your PowerDNS server log for details."
+# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
+# OBSOLETE: "zone variant assigned to that view."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
-# OBSOLETE: "again. Check your PowerDNS server log for details."
+# OBSOLETE: "Кожна мережа відповідає одному вигляду. Резолвери в цій мережі отримують "
+# OBSOLETE: "варіант зони, призначений цьому вигляду."
 
-# OBSOLETE: msgid "Please select an owner"
-# OBSOLETE: msgstr "Будь ласка, виберіть власника"
+# OBSOLETE: msgid "PowerDNS version unknown"
+# OBSOLETE: msgstr "Версія PowerDNS невідома"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Views serve different zone variants to different clients based on the "
+# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
+# OBSOLETE: "example, example.com..trusted)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Вигляди надають різні варіанти зон різним клієнтам на основі мережевого "
+# OBSOLETE: "зіставлення. Кожен варіант ідентифікується як zone..variant (наприклад, "
+# OBSOLETE: "example.com..trusted)."
+
+# OBSOLETE: msgid "Slave Servers"
+# OBSOLETE: msgstr "Підлеглі сервери"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
+# OBSOLETE: "table."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Відображення статусу підключення для серверів DNS, перелічених у таблиці "
+# OBSOLETE: "supermaster."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "API-ключі дозволяють зовнішнім програмам отримувати доступ до API "
+# OBSOLETE: "Poweradmin. Кожен ключ пов'язаний з вашим обліковим записом користувача "
+# OBSOLETE: "та успадковує ваші дозволи."
 
 
 

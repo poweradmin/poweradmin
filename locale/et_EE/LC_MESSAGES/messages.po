@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-05 07:21+0300\n"
+"POT-Creation-Date: 2026-05-06 18:48+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Estonian\n"
@@ -1151,13 +1151,17 @@ msgstr "Teil pole õigust seda tsooni muuta."
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
-msgstr "Uut tsooni ei saa importida: zone_ownership_mode on groups_only, kuid gruppe pole. Looge esmalt grupp."
+msgstr ""
+"Uut tsooni ei saa importida: zone_ownership_mode on groups_only, kuid gruppe "
+"pole. Looge esmalt grupp."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:247
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
-msgstr "Uut tsooni ei saa importida: zone_ownership_mode on groups_only ja te pole ühegi grupi liige. Paluge administraatorit teid esmalt gruppi lisada."
+msgstr ""
+"Uut tsooni ei saa importida: zone_ownership_mode on groups_only ja te pole "
+"ühegi grupi liige. Paluge administraatorit teid esmalt gruppi lisada."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:263
 msgid "Import session expired. Please upload the file again."
@@ -1197,7 +1201,9 @@ msgstr "Saate määrata ainult gruppe, mille liige te olete (keelatud: %s)"
 msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
-msgstr "Uut tsooni ei saa importimisega luua: valige vähemalt üks grupp või jätke \"Kasutaja-omanikku pole\" märkimata."
+msgstr ""
+"Uut tsooni ei saa importimisega luua: valige vähemalt üks grupp või jätke "
+"\"Kasutaja-omanikku pole\" märkimata."
 
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:372
 msgid "Failed to create zone."
@@ -1328,7 +1334,7 @@ msgstr "Vigane või ootamatu sisend."
 msgid "You do not have the permission to delete this user."
 msgstr "Teil pole õigust seda kasutajat kustutada."
 
-#: lib/Application/Controller/DeleteUserController.php:76
+#: lib/Application/Controller/DeleteUserController.php:77
 msgid "You do not have permission to delete a superuser account."
 msgstr "Teil pole õigust superkasutaja kontot kustutada."
 
@@ -1336,7 +1342,7 @@ msgstr "Teil pole õigust superkasutaja kontot kustutada."
 msgid "User does not exist."
 msgstr "Kasutajat ei ole."
 
-#: lib/Application/Controller/DeleteUserController.php:111
+#: lib/Application/Controller/DeleteUserController.php:112
 msgid "The user has been deleted successfully."
 msgstr "Kasutaja on edukalt kustutatud."
 
@@ -1789,6 +1795,7 @@ msgstr "Otsing"
 
 #: lib/Application/Controller/ListRecordChangesController.php:62
 #: templates/modern/list_record_changes.html:11
+#, auto-english-fallback
 msgid "Record Change Log"
 msgstr "Record Change Log"
 
@@ -1983,7 +1990,7 @@ msgstr "Muuda tsooni"
 msgid "You do not have permission to access this zone."
 msgstr "Teil pole õigust sellele tsoonile juurde pääseda."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:428
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:434
 msgid "You do not have the permission to view this zone."
 msgstr "Teil pole õigust seda tsooni vaadata."
 
@@ -2025,19 +2032,19 @@ msgstr ""
 "Tsooni allkirjastamine ebaõnnestus. Valideerimine õnnestus, aga API tagastas "
 "vea."
 
-#: lib/Application/Controller/DnssecController.php:96
+#: lib/Application/Controller/DnssecController.php:95
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Tsoon pole praegu DNSSEC-iga allkirjastatud."
 
-#: lib/Application/Controller/DnssecController.php:108
+#: lib/Application/Controller/DnssecController.php:107
 msgid "Zone has been unsigned successfully."
 msgstr "Tsooni allkiri on edukalt eemaldatud."
 
-#: lib/Application/Controller/DnssecController.php:113
+#: lib/Application/Controller/DnssecController.php:112
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "Allkirja eemaldamise taotlus õnnestus, aga kontroll ebaõnnestus."
 
-#: lib/Application/Controller/DnssecController.php:117
+#: lib/Application/Controller/DnssecController.php:116
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Tsooni allkirja eemaldamine ebaõnnestus. Kontrollige logisid."
 
@@ -2236,13 +2243,17 @@ msgstr "Lisa esmane tsoon"
 msgid ""
 "Zone ownership mode is groups_only but no groups exist. Create a group "
 "before adding zones."
-msgstr "Tsooni omandi režiim on groups_only, kuid gruppe pole. Looge grupp enne tsoonide lisamist."
+msgstr ""
+"Tsooni omandi režiim on groups_only, kuid gruppe pole. Looge grupp enne "
+"tsoonide lisamist."
 
 #: lib/Application/Controller/BulkRegistrationController.php:99
 msgid ""
 "Zone ownership mode is groups_only but you are not a member of any group. "
 "Ask an administrator to add you to a group before creating zones."
-msgstr "Tsooni omandi režiim on groups_only, kuid te pole ühegi grupi liige. Paluge administraatorit teid gruppi lisada enne tsoonide loomist."
+msgstr ""
+"Tsooni omandi režiim on groups_only, kuid te pole ühegi grupi liige. Paluge "
+"administraatorit teid gruppi lisada enne tsoonide loomist."
 
 #: lib/Application/Controller/BulkRegistrationController.php:171
 msgid "At least one user or group must be selected as owner."
@@ -2375,15 +2386,15 @@ msgstr "Vigane võtme ID."
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC võtit ei leitud või see ei eksisteeri enam."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:109
+#: lib/Application/Controller/DnssecDeleteKeyController.php:108
 msgid "Zone key has been deleted successfully."
 msgstr "Tsooni võti edukalt kustutatud."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:117
+#: lib/Application/Controller/DnssecDeleteKeyController.php:116
 msgid "Failed to delete the zone key."
 msgstr "Tsooni võtme kustutamine ebaõnnestus."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:124
+#: lib/Application/Controller/DnssecDeleteKeyController.php:123
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "DNSSEC võtme kustutamisel tekkis viga: "
 
@@ -2655,7 +2666,8 @@ msgstr "PEM-võtme import nõuab PowerDNS 4.7 või uuemat."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:98
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
-msgstr "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
+msgstr ""
+"Esita PEM-kodeeringuga privaatvõti (peab sisaldama BEGIN/END märgendeid)."
 
 #: lib/Application/Controller/DnssecKeyImportController.php:109
 msgid "PEM key imported successfully."
@@ -2861,39 +2873,40 @@ msgstr "Välisautentimise kasutajad ei saa siin parooli muuta."
 msgid "Change Password"
 msgstr "Muuda parooli"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:119
+#: lib/Application/Controller/DnssecAddKeyController.php:118
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "ECDSA P-256 algoritm peab kasutama 256 bitti"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:122
+#: lib/Application/Controller/DnssecAddKeyController.php:121
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "ECDSA P-384 algoritm peab kasutama 384 bitti"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:128
+#: lib/Application/Controller/DnssecAddKeyController.php:127
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519 algoritm peab kasutama 256 bitti"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:133
+#: lib/Application/Controller/DnssecAddKeyController.php:132
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "ED448 algoritm peab kasutama 456 bitti (UI-s toetuseta)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:140
+#: lib/Application/Controller/DnssecAddKeyController.php:139
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr "RSA algorithms should use 1024 or 2048 bits for adequate security"
+msgstr ""
+"RSA algoritmid peaksid kasutama 1024 või 2048 bitti piisavaks turvalisuseks"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:163
+#: lib/Application/Controller/DnssecAddKeyController.php:162
 msgid "Zone key has been added successfully."
 msgstr "Tsooni võti edukalt lisatud."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:167
+#: lib/Application/Controller/DnssecAddKeyController.php:166
 msgid "Failed to add new DNSSEC key."
 msgstr "Uue DNSSEC-võtme lisamine ebaõnnestus."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:171
+#: lib/Application/Controller/DnssecAddKeyController.php:170
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "DNSSEC võtme lisamisel tekkis viga: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:175
+#: lib/Application/Controller/DnssecAddKeyController.php:174
 msgid "Please select both algorithm and bits"
 msgstr "Valige nii algoritm kui ka bitid"
 
@@ -2955,7 +2968,9 @@ msgstr "Teil pole õigust muuta vaikimisi tsoonimalli."
 msgid ""
 "Default flag cleared, but the dns.default_zone_template config setting is "
 "still active."
-msgstr "Vaikimisi lipp eemaldatud, kuid konfiguratsiooniseade dns.default_zone_template on endiselt aktiivne."
+msgstr ""
+"Vaikimisi lipp eemaldatud, kuid konfiguratsiooniseade "
+"dns.default_zone_template on endiselt aktiivne."
 
 #: lib/Application/Controller/SetDefaultZoneTemplController.php:54
 msgid "Default zone template cleared."
@@ -2967,7 +2982,8 @@ msgstr "Vaikimisi tsoonimall uuendatud."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:181
 msgid "User-owner assignment is disabled by the current zone ownership mode."
-msgstr "Kasutaja-omaniku määramine on praeguses tsooni omandi režiimis keelatud."
+msgstr ""
+"Kasutaja-omaniku määramine on praeguses tsooni omandi režiimis keelatud."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:188
 msgid "Owner has been added successfully."
@@ -2982,13 +2998,17 @@ msgstr "Viimast omanikku ei saa eemaldada: tsoon jääks ilma omanikuta."
 msgid ""
 "Cannot remove the last user owner: zone ownership mode is users_only and "
 "requires at least one user owner. Add another user owner first."
-msgstr "Viimast kasutaja-omanikku ei saa eemaldada: tsooni omandi režiim on users_only ja nõuab vähemalt ühte kasutaja-omanikku. Lisage esmalt teine."
+msgstr ""
+"Viimast kasutaja-omanikku ei saa eemaldada: tsooni omandi režiim on "
+"users_only ja nõuab vähemalt ühte kasutaja-omanikku. Lisage esmalt teine."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:229
 msgid ""
 "Cannot remove user owner: zone ownership mode is groups_only and the zone "
 "has no group owners. Add a group first."
-msgstr "Kasutaja-omanikku ei saa eemaldada: tsooni omandi režiim on groups_only ja tsoonil pole grupi-omanikke. Lisage esmalt grupp."
+msgstr ""
+"Kasutaja-omanikku ei saa eemaldada: tsooni omandi režiim on groups_only ja "
+"tsoonil pole grupi-omanikke. Lisage esmalt grupp."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:236
 msgid "Owner has been removed successfully."
@@ -3011,13 +3031,17 @@ msgstr "Grupp on edukalt lisatud."
 msgid ""
 "Cannot remove the last group: zone ownership mode is groups_only and "
 "requires at least one group. Add another group first."
-msgstr "Viimast gruppi ei saa eemaldada: tsooni omandi režiim on groups_only ja nõuab vähemalt ühte gruppi. Lisage esmalt teine grupp."
+msgstr ""
+"Viimast gruppi ei saa eemaldada: tsooni omandi režiim on groups_only ja "
+"nõuab vähemalt ühte gruppi. Lisage esmalt teine grupp."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:303
 msgid ""
 "Cannot remove group: zone ownership mode is users_only and the zone has no "
 "user owners. Add a user owner first."
-msgstr "Gruppi ei saa eemaldada: tsooni omandi režiim on users_only ja tsoonil pole kasutaja-omanikke. Lisage esmalt kasutaja-omanik."
+msgstr ""
+"Gruppi ei saa eemaldada: tsooni omandi režiim on users_only ja tsoonil pole "
+"kasutaja-omanikke. Lisage esmalt kasutaja-omanik."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:308
 msgid "Group has been removed successfully."
@@ -3029,7 +3053,8 @@ msgstr "Lisage kõigepealt teine omanik või grupp."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:334
 msgid "Add another user owner first (zone ownership mode is users_only)."
-msgstr "Lisage kõigepealt teine kasutaja-omanik (tsooni omandi režiim on users_only)."
+msgstr ""
+"Lisage kõigepealt teine kasutaja-omanik (tsooni omandi režiim on users_only)."
 
 #: lib/Application/Controller/ZoneOwnershipController.php:336
 msgid "Add a group first (zone ownership mode is groups_only)."
@@ -3137,7 +3162,7 @@ msgstr "LDAP-i vastu autentimine ebaõnnestus."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Autentimine ebaõnnestus: Vigane SAML vastus"
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:141
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:142
 msgid "This is an invalid zone name."
 msgstr "See on vigane tsooni nimi."
 
@@ -3326,16 +3351,12 @@ msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
 msgstr ""
-"Showing connectivity status for the autoprimary servers configured in the "
-"table below."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:148
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
 msgstr ""
-"Showing connectivity status for the supermasters configured in the table "
-"below."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -4201,7 +4222,8 @@ msgstr "RKEY-kirjeid kasutatakse moodsas DNS-is harva."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:262
 msgid "Consider using standardized record types for cryptographic purposes."
-msgstr "Consider using standardized record types for cryptographic purposes."
+msgstr ""
+"Kaaluge standardsete kirje tüüpide kasutamist krüptograafilistel eesmärkidel."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:209
 msgid "Empty APL record represents an empty list of address prefixes."
@@ -4329,7 +4351,8 @@ msgstr "NID-kirje eelistus peab olema 0 kuni 65535."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:102
 msgid "ALIAS target must be a fully qualified domain name (FQDN)."
-msgstr "ALIAS target must be a fully qualified domain name (FQDN)."
+msgstr ""
+"ALIAS sihtmärk peab olema täielikult kvalifitseeritud domeeninimi (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:107
 msgid ""
@@ -4903,7 +4926,8 @@ msgstr "CERT sertifikaadi andmed peavad olema kehtiv base64."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:304
 msgid "CERT certificate data must not be empty after base64 decoding."
-msgstr "CERT certificate data must not be empty after base64 decoding."
+msgstr ""
+"CERT sertifikaadi andmed ei tohi pärast base64 dekodeerimist olla tühjad."
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:85
 msgid ""
@@ -5054,7 +5078,9 @@ msgstr "Topelt HTTPS parameetri võti: \"%s\". Iga võti üks kord."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
-msgstr "ALPN value must be a comma-separated list of protocol identifiers."
+msgstr ""
+"ALPN väärtus peab olema komadega eraldatud protokolli identifikaatorite "
+"loend."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
 msgid "The no-default-alpn parameter must have an empty value."
@@ -6067,7 +6093,8 @@ msgstr "DNAME tipus nõuab erikohtlemist (RFC 6672)."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:97
 msgid "DNAME target must be a valid fully-qualified domain name."
-msgstr "DNAME target must be a valid fully-qualified domain name."
+msgstr ""
+"DNAME sihtmärk peab olema kehtiv täielikult kvalifitseeritud domeeninimi."
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:104
 msgid "DNAME record cannot point to itself."
@@ -6438,7 +6465,8 @@ msgstr "CAA kirjete prioriteedi väli peab olema 0 või tühi."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:125
 msgid "CAA record must contain flags, tag, and value separated by spaces."
-msgstr "CAA record must contain flags, tag, and value separated by spaces."
+msgstr ""
+"CAA-kirje peab sisaldama lippe, silti ja väärtust tühikutega eraldatuna."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
 msgid "CAA flags must be a number between 0 and 255."
@@ -6694,7 +6722,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr "SVCB parameters must be in key=value format separated by spaces."
+msgstr ""
+"SVCB parameetrid peavad olema key=value vormingus tühikutega eraldatud."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
@@ -6704,7 +6733,8 @@ msgstr "Tundmatu SVCB parameetri võti: \"%s\"."
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
+msgstr ""
+"Topelt SVCB parameetri võti: \"%s\". Iga võti võib esineda ainult üks kord."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:109
 msgid ""
@@ -6909,7 +6939,8 @@ msgstr "L64 alamvõrkudele (wildcard) mobiilsetele."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:152
 msgid "L64 record must contain preference and locator64 separated by space."
-msgstr "L64 record must contain preference and locator64 separated by space."
+msgstr ""
+"L64-kirje peab sisaldama eelistust ja locator64-te tühikuga eraldatuna."
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:159
 msgid "L64 preference must be a number between 0 and 65535."
@@ -7245,7 +7276,8 @@ msgstr "Vigased märgid KEY-kirje sisus."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:181
 msgid "KEY record must contain flags, protocol, algorithm, and public key."
-msgstr "KEY record must contain flags, protocol, algorithm, and public key."
+msgstr ""
+"KEY-kirje peab sisaldama lippe, protokolli, algoritmi ja avalikku võtit."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:190
 msgid "KEY flags must be a number between 0 and 65535."
@@ -8774,6 +8806,7 @@ msgid "Import key"
 msgstr "Impordi võti"
 
 #: templates/modern/list_networks.html:14
+#, auto-english-fallback
 msgid "Network Mapping:"
 msgstr "Network Mapping:"
 
@@ -8785,11 +8818,6 @@ msgid ""
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
 msgstr ""
-"Each network (CIDR block) maps to exactly one view. Resolvers in that "
-"network receive only the zone variants assigned to the mapped view. PowerDNS "
-"evaluates networks longest-prefix first, so a more specific subnet (for "
-"example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
-"a client."
 
 #: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -8965,7 +8993,7 @@ msgstr "Eemalda"
 msgid "and"
 msgstr "ja"
 
-#: templates/modern/list_forward_zones.html:174
+#: templates/modern/list_forward_zones.html:180
 msgid "more..."
 msgstr "veel..."
 
@@ -9095,6 +9123,7 @@ msgstr ""
 "peidetud, kuni API on kättesaadav."
 
 #: templates/default/index.html:17 templates/modern/index.html:17
+#, auto-english-fallback
 msgid "PowerDNS: unknown"
 msgstr "PowerDNS: unknown"
 
@@ -9143,6 +9172,7 @@ msgid "Access"
 msgstr "Juurdepääs"
 
 #: templates/default/index.html:278 templates/modern/index.html:278
+#, auto-english-fallback
 msgid "Record Changes"
 msgstr "Record Changes"
 
@@ -9266,6 +9296,7 @@ msgid "Total logs"
 msgstr "Logisid kokku"
 
 #: templates/default/list_log_api.html:18 templates/modern/list_log_api.html:18
+#, auto-english-fallback
 msgid "API Log Behavior:"
 msgstr "API Log Behavior:"
 
@@ -9276,10 +9307,6 @@ msgid ""
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
 msgstr ""
-"Records API key lifecycle events (creation, regeneration, revocation, "
-"permission changes) and authenticated API requests. Filter by user or "
-"operation to audit external integration activity. Sensitive values (keys, "
-"tokens) are never written to this log."
 
 #: templates/modern/list_log_users.html:26
 msgid "All users"
@@ -9366,6 +9393,7 @@ msgid "Zone Change Logs"
 msgstr "Tsooni muudatuste logid"
 
 #: templates/modern/list_log_zones.html:31
+#, auto-english-fallback
 msgid "Zone Log Behavior:"
 msgstr "Zone Log Behavior:"
 
@@ -9376,10 +9404,6 @@ msgid ""
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
 msgstr ""
-"This activity feed records every operation performed against zones and "
-"records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
-"key:value event string. For structured before/after snapshots and a diff "
-"view of record changes, see the Record Change Log."
 
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
@@ -9407,7 +9431,8 @@ msgstr "Andke vähemalt üks kirje"
 
 #: templates/modern/bulk_record_add.html:45
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Format: name,type,content,priority,ttl,comment (one record per line)"
+msgstr ""
+"Vorming: nimi,tüüp,sisu,prioriteet,ttl,kommentaar (üks kirje rea kohta)"
 
 #: templates/modern/bulk_record_add.html:46
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -9614,7 +9639,8 @@ msgstr "Hoiate oma sisselogimismandaadid turvaliselt ja konfidentsiaalselt"
 
 #: templates/modern/user_agreement_content.html:9
 msgid "You will not use this system for any malicious or illegal activities"
-msgstr "You will not use this system for any malicious or illegal activities"
+msgstr ""
+"Te ei kasuta seda süsteemi pahatahtlikeks või ebaseaduslikeks tegevusteks"
 
 #: templates/modern/user_agreement_content.html:12
 msgid "Data Protection"
@@ -9842,7 +9868,19 @@ msgstr "Seeria"
 msgid "Template"
 msgstr "Mall"
 
-#: templates/modern/list_reverse_zones.html:227
+#: templates/modern/list_forward_zones.html:131
+msgid "SOA record is disabled, the zone will not be served"
+msgstr "SOA-kirje on keelatud, tsoon ei ole kasutatav"
+
+#: templates/modern/list_forward_zones.html:133
+msgid "Zone has no SOA record"
+msgstr "Tsoonil pole SOA-kirjet"
+
+#: templates/modern/list_forward_zones.html:133
+msgid "No SOA"
+msgstr "SOA puudub"
+
+#: templates/modern/list_reverse_zones.html:233
 msgid "-"
 msgstr "-"
 
@@ -10845,7 +10883,7 @@ msgstr "Tsoonide koguarv:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Selles loendis pole edastustsoone."
 
-#: templates/modern/list_forward_zones.html:206
+#: templates/modern/list_forward_zones.html:212
 msgid "PTR"
 msgstr "PTR"
 
@@ -11171,7 +11209,9 @@ msgstr "Eelvalitud tsooni lisamise vormil"
 
 #: templates/modern/list_zone_templ.html:56
 msgid "Configured via dns.default_zone_template - edit settings.php to change"
-msgstr "Seadistatud kaudu dns.default_zone_template - muutmiseks redigeerige settings.php"
+msgstr ""
+"Seadistatud kaudu dns.default_zone_template - muutmiseks redigeerige "
+"settings.php"
 
 #: templates/modern/list_zone_templ.html:56
 msgid "default (config)"
@@ -11534,7 +11574,8 @@ msgstr "Kasutage enamike tavasüsteemide jaoks NATIVE tsooni tüüpi"
 
 #: templates/modern/bulk_registration.html:144
 msgid "Create a template first if you need standard records for all zones"
-msgstr "Create a template first if you need standard records for all zones"
+msgstr ""
+"Kõigepealt looge mall, kui vajate kõigile tsoonidele standardseid kirjeid"
 
 #: templates/modern/bulk_registration.html:145
 msgid "You can copy and paste a list of domains from a spreadsheet"
@@ -11584,10 +11625,12 @@ msgid "Yes, delete these records"
 msgstr "Jah, kustuta need kirjed"
 
 #: templates/modern/list_record_changes.html:14
+#, auto-english-fallback
 msgid "entries"
 msgstr "entries"
 
 #: templates/modern/list_record_changes.html:19
+#, auto-english-fallback
 msgid "Change Log Behavior:"
 msgstr "Change Log Behavior:"
 
@@ -11599,29 +11642,29 @@ msgid ""
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
 msgstr ""
-"Every record add/edit/delete and zone create/delete/metadata-edit captures a "
-"before/after snapshot here, alongside the user and timestamp. Logs never "
-"expire automatically - prune old rows manually if the table grows large. Use "
-"the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
-"to feed external audit systems."
 
 #: templates/modern/list_record_changes.html:34
+#, auto-english-fallback
 msgid "All actions"
 msgstr "All actions"
 
 #: templates/modern/list_record_changes.html:52
+#, auto-english-fallback
 msgid "From"
 msgstr "From"
 
 #: templates/modern/list_record_changes.html:55
+#, auto-english-fallback
 msgid "To"
 msgstr "To"
 
 #: templates/modern/list_record_changes.html:75
+#, auto-english-fallback
 msgid "When"
 msgstr "When"
 
 #: templates/modern/list_record_changes.html:76
+#, auto-english-fallback
 msgid "Action"
 msgstr "Action"
 
@@ -11630,22 +11673,27 @@ msgid "User"
 msgstr "Kasutaja"
 
 #: templates/modern/list_record_changes.html:83
+#, auto-english-fallback
 msgid "Prio"
 msgstr "Prio"
 
 #: templates/modern/list_record_changes.html:126
+#, auto-english-fallback
 msgid "before"
 msgstr "before"
 
 #: templates/modern/list_record_changes.html:127
+#, auto-english-fallback
 msgid "after"
 msgstr "after"
 
 #: templates/modern/list_record_changes.html:212
+#, auto-english-fallback
 msgid "No record changes found"
 msgstr "No record changes found"
 
 #: templates/modern/list_record_changes.html:213
+#, auto-english-fallback
 msgid "Try a different filter or time window"
 msgstr "Try a different filter or time window"
 
@@ -11968,11 +12016,11 @@ msgstr "Kuva individuaalne kustutamise nupp iga kirje kohta"
 
 #: templates/modern/user_preferences.html:125
 msgid "Hostname-only display"
-msgstr "Ainult hostinime kuvamine"
+msgstr "Hostname-only display"
 
 #: templates/modern/user_preferences.html:126
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Eemalda tsooni sufiks kirjete nimedest redigeerimisvaates"
+msgstr "Strip zone suffix from record names in edit view"
 
 #: templates/modern/user_preferences.html:141
 msgid "Save Preferences"
@@ -12075,6 +12123,7 @@ msgid "User Activity Logs"
 msgstr "Kasutaja tegevuste logid"
 
 #: templates/modern/list_log_users.html:19
+#, auto-english-fallback
 msgid "User Log Behavior:"
 msgstr "User Log Behavior:"
 
@@ -12085,10 +12134,6 @@ msgid ""
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
 msgstr ""
-"Records user account events such as logins, password changes, group "
-"membership updates, and admin actions on user records. Each entry shows the "
-"action, the actor, the affected user, and a timestamp. Filter by operation "
-"or user to audit access changes."
 
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
@@ -12121,6 +12166,7 @@ msgid "This template is currently used by"
 msgstr "Seda malli kasutab praegu"
 
 #: templates/default/list_views.html:14 templates/modern/list_views.html:14
+#, auto-english-fallback
 msgid "View Behavior:"
 msgstr "View Behavior:"
 
@@ -12133,12 +12179,6 @@ msgid ""
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
 msgstr ""
-"Views serve different zone variants to different clients based on the "
-"network that queried the resolver. Each variant is named zone..variant (for "
-"example, example.com..trusted) and must exist as a separate zone in PowerDNS "
-"before it can be assigned here. Variants share a name but resolve "
-"differently per view, so the same hostname can answer with different IPs "
-"depending on the client's network."
 
 #: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
@@ -12400,6 +12440,7 @@ msgid "Reverse zones"
 msgstr "pöördtsoonid"
 
 #: templates/default/header.html:133 templates/modern/header.html:189
+#, auto-english-fallback
 msgid "Record change log"
 msgstr "Record change log"
 
@@ -12461,7 +12502,9 @@ msgstr ""
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
-msgstr "Mõned funktsioonid võivad olla saadavalmatud, kuni API on uuesti kättesaadav. Üksikasjad leiate PowerDNS-serveri logist."
+msgstr ""
+"Mõned funktsioonid ei pruugi olla saadaval, kuni API on taas kättesaadav. "
+"Üksikasjade saamiseks vaadake PowerDNS-serveri logi."
 
 #: templates/modern/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
@@ -12618,6 +12661,7 @@ msgid "External applications will be able to authenticate using this key."
 msgstr "Välised rakendused saavad selle võtmega autentida."
 
 #: templates/default/api_keys.html:182 templates/modern/api_keys.html:183
+#, auto-english-fallback
 msgid "API Key Behavior:"
 msgstr "API Key Behavior:"
 
@@ -12628,10 +12672,6 @@ msgid ""
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
 msgstr ""
-"API keys allow external applications to access the Poweradmin API. Each key "
-"is linked to your user account and inherits your permissions, so revoking "
-"your account also revokes all its keys. Treat keys as secrets - they grant "
-"the same access as logging in as you."
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -12807,6 +12847,7 @@ msgid "Group Activity Logs"
 msgstr "Grupi tegevuste logid"
 
 #: templates/modern/list_log_groups.html:19
+#, auto-english-fallback
 msgid "Group Log Behavior:"
 msgstr "Group Log Behavior:"
 
@@ -12817,10 +12858,6 @@ msgid ""
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
 msgstr ""
-"Records group lifecycle events (create, edit, delete) and membership changes "
-"(users added or removed). Each entry shows the action, the actor, the "
-"affected group, and a timestamp. Useful for auditing zone-access changes "
-"mediated by group ownership."
 
 #: templates/modern/list_log_groups.html:26
 msgid "Group name"
@@ -13026,18 +13063,22 @@ msgid "RDAP results for"
 msgstr "RDAP tulemused"
 
 #: install/templates/step6.html.twig:3
+#, auto-english-fallback
 msgid "Create limited rights user"
 msgstr "Create limited rights user"
 
 #: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
+#, auto-english-fallback
 msgid "Step"
 msgstr "Step"
 
 #: install/templates/step6.html.twig:8
+#, auto-english-fallback
 msgid "Create limited-rights user"
 msgstr "Create limited-rights user"
 
 #: install/templates/step6.html.twig:13
+#, auto-english-fallback
 msgid "Limited Database Rights:"
 msgstr "Limited Database Rights:"
 
@@ -13047,23 +13088,20 @@ msgid ""
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
 msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin tables only. PowerDNS table access is not required when using "
-"the API backend."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Create a database user with limited rights (select, insert, update, delete) "
-"for Poweradmin to access PowerDNS tables."
 
 #: install/templates/step6.html.twig:25
+#, auto-english-fallback
 msgid "Database Commands"
 msgstr "Database Commands"
 
 #: install/templates/step6.html.twig:28
+#, auto-english-fallback
 msgid "Execute the following commands:"
 msgstr "Execute the following commands:"
 
@@ -13071,9 +13109,9 @@ msgstr "Execute the following commands:"
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
 msgstr ""
-"After you have added the new user, proceed with this installation procedure."
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
+#, auto-english-fallback
 msgid "Note:"
 msgstr "Note:"
 
@@ -13082,38 +13120,44 @@ msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Since you are using SQLite, there is no need to create a new user with "
-"limited rights."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
+#, auto-english-fallback
 msgid "Continue to step"
 msgstr "Continue to step"
 
 #: install/templates/base.html.twig:37
+#, auto-english-fallback
 msgid "Installation step"
 msgstr "Installation step"
 
 #: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
+#, auto-english-fallback
 msgid "Create configuration file"
 msgstr "Create configuration file"
 
 #: install/templates/step7.html.twig:12
+#, auto-english-fallback
 msgid "Configuration File:"
 msgstr "Configuration File:"
 
 #: install/templates/step7.html.twig:12
+#, auto-english-fallback
 msgid "Create the file"
 msgstr "Create the file"
 
 #: install/templates/step7.html.twig:14
+#, auto-english-fallback
 msgid "with the following content:"
 msgstr "with the following content:"
 
 #: install/templates/step1.html.twig:3
+#, auto-english-fallback
 msgid "Choose a language"
 msgstr "Choose a language"
 
 #: install/templates/step1.html.twig:8
+#, auto-english-fallback
 msgid "Choose a language for installation"
 msgstr "Choose a language for installation"
 
@@ -13121,77 +13165,93 @@ msgstr "Choose a language for installation"
 msgid ""
 "Please select your preferred language to continue with the installation:"
 msgstr ""
-"Please select your preferred language to continue with the installation:"
 
 #: install/templates/step1.html.twig:391
+#, auto-english-fallback
 msgid "Begin Installation"
 msgstr "Begin Installation"
 
 #: install/templates/step4.html.twig:3
+#, auto-english-fallback
 msgid "Configuring database"
 msgstr "Configuring database"
 
 #: install/templates/step4.html.twig:8
+#, auto-english-fallback
 msgid "Configuring Database Connection"
 msgstr "Configuring Database Connection"
 
 #: install/templates/step4.html.twig:17
+#, auto-english-fallback
 msgid "PowerDNS Backend"
 msgstr "PowerDNS Backend"
 
 #: install/templates/step4.html.twig:20
+#, auto-english-fallback
 msgid "Choose how Poweradmin communicates with PowerDNS:"
 msgstr "Choose how Poweradmin communicates with PowerDNS:"
 
 #: install/templates/step4.html.twig:25
+#, auto-english-fallback
 msgid "Direct access to PowerDNS database tables"
 msgstr "Direct access to PowerDNS database tables"
 
 #: install/templates/step4.html.twig:32
+#, auto-english-fallback
 msgid "API"
 msgstr "API"
 
 #: install/templates/step4.html.twig:32
+#, auto-english-fallback
 msgid "PowerDNS REST API"
 msgstr "PowerDNS REST API"
 
 #: install/templates/step4.html.twig:33
+#, auto-english-fallback
 msgid "Experimental"
 msgstr "Experimental"
 
 #: install/templates/step4.html.twig:42
+#, auto-english-fallback
 msgid "PowerDNS API Settings"
 msgstr "PowerDNS API Settings"
 
 #: install/templates/step4.html.twig:46
+#, auto-english-fallback
 msgid "API URL"
 msgstr "API URL"
 
 #: install/templates/step4.html.twig:52
+#, auto-english-fallback
 msgid "PowerDNS API endpoint URL."
 msgstr "PowerDNS API endpoint URL."
 
 #: install/templates/step4.html.twig:57
+#, auto-english-fallback
 msgid "API Key"
 msgstr "API Key"
 
 #: install/templates/step4.html.twig:66
+#, auto-english-fallback
 msgid "PowerDNS API key (from pdns.conf api-key setting)."
 msgstr "PowerDNS API key (from pdns.conf api-key setting)."
 
 #: install/templates/step4.html.twig:71
+#, auto-english-fallback
 msgid "Server name"
 msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr ""
 
 #: install/templates/step4.html.twig:86
+#, auto-english-fallback
 msgid "Database Connection Settings"
 msgstr "Database Connection Settings"
 
 #: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
+#, auto-english-fallback
 msgid "Database Configuration:"
 msgstr "Database Configuration:"
 
@@ -13200,90 +13260,104 @@ msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
 msgstr ""
-"Configure database connection with table creation rights. PowerDNS location "
-"can be specified separately if needed."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
 msgstr ""
-"Configure database connection for Poweradmin tables (users, permissions, "
-"zones). PowerDNS tables are not required."
 
 #: install/templates/step4.html.twig:97
+#, auto-english-fallback
 msgid "Database type"
 msgstr "Database type"
 
 #: install/templates/step4.html.twig:106
+#, auto-english-fallback
 msgid "Database server type."
 msgstr "Database server type."
 
 #: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
+#, auto-english-fallback
 msgid "Provide the user name"
 msgstr "Provide the user name"
 
 #: install/templates/step4.html.twig:117
+#, auto-english-fallback
 msgid "Database username with rights to create tables."
 msgstr "Database username with rights to create tables."
 
 #: install/templates/step4.html.twig:131
+#, auto-english-fallback
 msgid "Password for this database user."
 msgstr "Password for this database user."
 
 #: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
+#, auto-english-fallback
 msgid "Avoid quotes, backslashes, and line breaks."
 msgstr "Avoid quotes, backslashes, and line breaks."
 
 #: install/templates/step4.html.twig:140
+#, auto-english-fallback
 msgid "Provide the hostname"
 msgstr "Provide the hostname"
 
 #: install/templates/step4.html.twig:143
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr ""
 
 #: install/templates/step4.html.twig:148
+#, auto-english-fallback
 msgid "DB Port"
 msgstr "DB Port"
 
 #: install/templates/step4.html.twig:151
+#, auto-english-fallback
 msgid "Provide database port"
 msgstr "Provide database port"
 
 #: install/templates/step4.html.twig:154
+#, auto-english-fallback
 msgid "Database server port."
 msgstr "Database server port."
 
 #: install/templates/step4.html.twig:162
+#, auto-english-fallback
 msgid "Provide the name of the database"
 msgstr "Provide the name of the database"
 
 #: install/templates/step4.html.twig:165
+#, auto-english-fallback
 msgid "Database name (will be used for Poweradmin tables)."
 msgstr "Database name (will be used for Poweradmin tables)."
 
 #: install/templates/step4.html.twig:167
+#, auto-english-fallback
 msgid "Full path to SQLite database file"
 msgstr "Full path to SQLite database file"
 
 #: install/templates/step4.html.twig:170
+#, auto-english-fallback
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr "File must exist with web server read/write access. Use absolute path."
 
 #: install/templates/step4.html.twig:178
+#, auto-english-fallback
 msgid "DB charset"
 msgstr "DB charset"
 
 #: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
+#, auto-english-fallback
 msgid "Use default"
 msgstr "Use default"
 
 #: install/templates/step4.html.twig:185
+#, auto-english-fallback
 msgid "Charset for new tables. Leave empty for database default."
 msgstr "Charset for new tables. Leave empty for database default."
 
 #: install/templates/step4.html.twig:190
+#, auto-english-fallback
 msgid "DB collation"
 msgstr "DB collation"
 
@@ -13291,129 +13365,158 @@ msgstr "DB collation"
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
-"Collation rules for character comparison. Leave empty for database default."
 
 #: install/templates/step4.html.twig:206
+#, auto-english-fallback
 msgid "PowerDNS Database"
 msgstr "PowerDNS Database"
 
 #: install/templates/step4.html.twig:210
+#, auto-english-fallback
 msgid "Database name"
 msgstr "Database name"
 
 #: install/templates/step4.html.twig:213
+#, auto-english-fallback
 msgid "Leave empty for same database"
 msgstr "Leave empty for same database"
 
 #: install/templates/step4.html.twig:216
+#, auto-english-fallback
 msgid "MySQL database with PowerDNS tables (if different)."
 msgstr "MySQL database with PowerDNS tables (if different)."
 
 #: install/templates/step4.html.twig:224
+#, auto-english-fallback
 msgid "Poweradmin Account"
 msgstr "Poweradmin Account"
 
 #: install/templates/step4.html.twig:228
+#, auto-english-fallback
 msgid "Administrator password"
 msgstr "Administrator password"
 
 #: install/templates/step4.html.twig:233
+#, auto-english-fallback
 msgid "Provide a password"
 msgstr "Provide a password"
 
 #: install/templates/step4.html.twig:238
 msgid "Password for \"admin\" username."
-msgstr "Password for \"admin\" username."
+msgstr ""
 
 #: install/templates/step2.html.twig:3
+#, auto-english-fallback
 msgid "System Requirements"
 msgstr "System Requirements"
 
 #: install/templates/step2.html.twig:8
+#, auto-english-fallback
 msgid "System Requirements Check"
 msgstr "System Requirements Check"
 
 #: install/templates/step2.html.twig:13
+#, auto-english-fallback
 msgid "PHP Version"
 msgstr "PHP Version"
 
 #: install/templates/step2.html.twig:23
+#, auto-english-fallback
 msgid "Requires PHP 8.2.0+"
 msgstr "Requires PHP 8.2.0+"
 
 #: install/templates/step2.html.twig:30
+#, auto-english-fallback
 msgid "Database Extensions"
 msgstr "Database Extensions"
 
 #: install/templates/step2.html.twig:31
+#, auto-english-fallback
 msgid "at least one required"
 msgstr "at least one required"
 
 #: install/templates/step2.html.twig:55
+#, auto-english-fallback
 msgid "Required PHP Extensions"
 msgstr "Required PHP Extensions"
 
 #: install/templates/step2.html.twig:76
+#, auto-english-fallback
 msgid "Optional Extensions"
 msgstr "Optional Extensions"
 
 #: install/templates/step2.html.twig:97
+#, auto-english-fallback
 msgid "Web Server"
 msgstr "Web Server"
 
 #: install/templates/step2.html.twig:102
+#, auto-english-fallback
 msgid "Server"
 msgstr "Server"
 
 #: install/templates/step2.html.twig:118
+#, auto-english-fallback
 msgid "Not detected — required for URL routing"
 msgstr "Not detected — required for URL routing"
 
 #: install/templates/step2.html.twig:124
+#, auto-english-fallback
 msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
 msgstr "Cannot detect (PHP-FPM) — ensure it is enabled"
 
 #: install/templates/step2.html.twig:130
+#, auto-english-fallback
 msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
 msgstr "Ensure URL rewriting is configured (see nginx.conf.example)"
 
 #: install/templates/step2.html.twig:135
+#, auto-english-fallback
 msgid "Ensure URL rewriting is configured for your web server"
 msgstr "Ensure URL rewriting is configured for your web server"
 
 #: install/templates/step2.html.twig:149
+#, auto-english-fallback
 msgid "All required components are available."
 msgstr "All required components are available."
 
 #: install/templates/step2.html.twig:150
+#, auto-english-fallback
 msgid "You can continue with the installation."
 msgstr "You can continue with the installation."
 
 #: install/templates/step2.html.twig:159
+#, auto-english-fallback
 msgid "Some required components are missing."
 msgstr "Some required components are missing."
 
 #: install/templates/step2.html.twig:160
+#, auto-english-fallback
 msgid "Please install the missing components before continuing."
 msgstr "Please install the missing components before continuing."
 
 #: install/templates/step5.html.twig:3
+#, auto-english-fallback
 msgid "Setup account and nameservers"
 msgstr "Setup account and nameservers"
 
 #: install/templates/step5.html.twig:8
+#, auto-english-fallback
 msgid "Setup account and name servers"
 msgstr "Setup account and name servers"
 
 #: install/templates/step5.html.twig:12
+#, auto-english-fallback
 msgid "Configuration:"
 msgstr "Configuration:"
 
 #: install/templates/step5.html.twig:12
+#, auto-english-fallback
 msgid "Now we will gather all details for the configuration itself."
 msgstr "Now we will gather all details for the configuration itself."
 
 #: install/templates/step5.html.twig:52
+#, auto-english-fallback
 msgid "Database User"
 msgstr "Database User"
 
@@ -13423,97 +13526,114 @@ msgid ""
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
 msgstr ""
-"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
-"configured database even when the PowerDNS API backend is selected. These "
-"credentials are for that database, not for PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
-"Poweradmin database username with restricted access. Not for web UI login."
 
 #: install/templates/step5.html.twig:77
+#, auto-english-fallback
 msgid "Provide the user password"
 msgstr "Provide the user password"
 
 #: install/templates/step5.html.twig:81
+#, auto-english-fallback
 msgid "The password for this username."
 msgstr "The password for this username."
 
 #: install/templates/step5.html.twig:91
+#, auto-english-fallback
 msgid "DNS Settings"
 msgstr "DNS Settings"
 
 #: install/templates/step5.html.twig:95
+#, auto-english-fallback
 msgid "Hostmaster"
 msgstr "Hostmaster"
 
 #: install/templates/step5.html.twig:99
+#, auto-english-fallback
 msgid "Provide the DNS hostmaster"
 msgstr "Provide the DNS hostmaster"
 
 #: install/templates/step5.html.twig:102
+#, auto-english-fallback
 msgid "Default hostmaster for SOA records."
 msgstr "Default hostmaster for SOA records."
 
 #: install/templates/step5.html.twig:107
+#, auto-english-fallback
 msgid "Primary nameserver"
 msgstr "Primary nameserver"
 
 #: install/templates/step5.html.twig:111
+#, auto-english-fallback
 msgid "Provide the primary nameserver"
 msgstr "Provide the primary nameserver"
 
 #: install/templates/step5.html.twig:114
+#, auto-english-fallback
 msgid "Primary nameserver for new zones."
 msgstr "Primary nameserver for new zones."
 
 #: install/templates/step5.html.twig:119
+#, auto-english-fallback
 msgid "Secondary nameserver"
 msgstr "Secondary nameserver"
 
 #: install/templates/step5.html.twig:123
+#, auto-english-fallback
 msgid "Provide the secondary nameserver"
 msgstr "Provide the secondary nameserver"
 
 #: install/templates/step5.html.twig:126
+#, auto-english-fallback
 msgid "Secondary nameserver for new zones."
 msgstr "Secondary nameserver for new zones."
 
 #: install/templates/step5.html.twig:132
+#, auto-english-fallback
 msgid "Tertiary Nameserver"
 msgstr "Tertiary Nameserver"
 
 #: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
+#, auto-english-fallback
 msgid "optional"
 msgstr "optional"
 
 #: install/templates/step5.html.twig:139
+#, auto-english-fallback
 msgid "Optional tertiary nameserver for new zones."
 msgstr "Optional tertiary nameserver for new zones."
 
 #: install/templates/step5.html.twig:145
+#, auto-english-fallback
 msgid "Quaternary Nameserver"
 msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:152
+#, auto-english-fallback
 msgid "Optional quaternary nameserver for new zones."
 msgstr "Optional quaternary nameserver for new zones."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
+#, auto-english-fallback
 msgid "Installation complete"
 msgstr "Installation complete"
 
 #: install/templates/step8.html.twig:12
+#, auto-english-fallback
 msgid "Installation Complete!"
 msgstr "Installation Complete!"
 
 #: install/templates/step8.html.twig:12
+#, auto-english-fallback
 msgid "Congratulations! Your Poweradmin installation is now configured."
 msgstr "Congratulations! Your Poweradmin installation is now configured."
 
 #: install/templates/step8.html.twig:16
+#, auto-english-fallback
 msgid "Important Security Notice:"
 msgstr "Important Security Notice:"
 
@@ -13522,46 +13642,45 @@ msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
 msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
-"directory."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
 msgstr ""
-"Poweradmin will not function if the install directory exists, as a security "
-"measure."
 
 #: install/templates/step8.html.twig:22
+#, auto-english-fallback
 msgid "Next Steps"
 msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr ""
 
 #: install/templates/step8.html.twig:27
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
 msgstr ""
-"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
-"\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
+#, auto-english-fallback
 msgid "Begin configuring your DNS zones and records"
 msgstr "Begin configuring your DNS zones and records"
 
 #: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
+#, auto-english-fallback
 msgid "Getting Ready"
 msgstr "Getting Ready"
 
 #: install/templates/step3.html.twig:13
+#, auto-english-fallback
 msgid "Prerequisites"
 msgstr "Prerequisites"
 
 #: install/templates/step3.html.twig:16
+#, auto-english-fallback
 msgid "Before proceeding, ensure you have:"
 msgstr "Before proceeding, ensure you have:"
 
@@ -13569,17 +13688,19 @@ msgstr "Before proceeding, ensure you have:"
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
 msgstr ""
-"PowerDNS installed with database tables created (or API access configured)"
 
 #: install/templates/step3.html.twig:19
+#, auto-english-fallback
 msgid "Database credentials (hostname, username, password)"
 msgstr "Database credentials (hostname, username, password)"
 
 #: install/templates/step3.html.twig:20
+#, auto-english-fallback
 msgid "Permission to create tables for Poweradmin"
 msgstr "Permission to create tables for Poweradmin"
 
 #: install/templates/step3.html.twig:27
+#, auto-english-fallback
 msgid "Next:"
 msgstr "Next:"
 
@@ -13588,22 +13709,24 @@ msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
 msgstr ""
-"Configure database connection, create admin account, and generate "
-"configuration file."
 
 #: install/helpers/InstallStepHandler.php:176
+#, auto-english-fallback
 msgid "Missing PowerDNS tables:"
 msgstr "Missing PowerDNS tables:"
 
 #: install/helpers/InstallStepHandler.php:177
+#, auto-english-fallback
 msgid "Poweradmin requires these PowerDNS tables to function properly."
 msgstr "Poweradmin requires these PowerDNS tables to function properly."
 
 #: install/helpers/InstallStepHandler.php:185
+#, auto-english-fallback
 msgid "Updating database... done!"
 msgstr "Updating database... done!"
 
 #: install/helpers/InstallStepHandler.php:207
+#, auto-english-fallback
 msgid "Foreign Key Constraint Issues:"
 msgstr "Foreign Key Constraint Issues:"
 
@@ -13611,29 +13734,26 @@ msgstr "Foreign Key Constraint Issues:"
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
-"The installer could not remove existing tables due to foreign key constraints"
 
 #: install/helpers/InstallStepHandler.php:210
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
-"This can happen during reinstallation if you have custom constraints or if "
-"tables are referenced by other tables"
 
 #: install/helpers/InstallStepHandler.php:211
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
 msgstr ""
-"You can try manually disabling foreign key checks before running the "
-"installer:"
 
 #: install/helpers/InstallStepHandler.php:224
+#, auto-english-fallback
 msgid "Suggestions:"
 msgstr "Suggestions:"
 
 #: install/helpers/InstallStepHandler.php:218
+#, auto-english-fallback
 msgid "Make sure the SQLite database file exists"
 msgstr "Make sure the SQLite database file exists"
 
@@ -13642,26 +13762,29 @@ msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
 msgstr ""
-"Check that the web server has read and write permissions for the database "
-"file"
 
 #: install/helpers/InstallStepHandler.php:220
+#, auto-english-fallback
 msgid "Verify the full path to the database file is correct and accessible"
 msgstr "Verify the full path to the database file is correct and accessible"
 
 #: install/helpers/InstallStepHandler.php:226
+#, auto-english-fallback
 msgid "Verify database credentials are correct"
 msgstr "Verify database credentials are correct"
 
 #: install/helpers/InstallStepHandler.php:227
+#, auto-english-fallback
 msgid "Check that the database user has sufficient privileges"
 msgstr "Check that the database user has sufficient privileges"
 
 #: install/helpers/InstallStepHandler.php:228
+#, auto-english-fallback
 msgid "Ensure the database server is running and accessible"
 msgstr "Ensure the database server is running and accessible"
 
 #: install/helpers/InstallStepHandler.php:233
+#, auto-english-fallback
 msgid "Database Error"
 msgstr "Database Error"
 
@@ -13671,33 +13794,32 @@ msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
 msgstr ""
-"The SQLite database file %s does not exist. Please create the database file "
-"before proceeding."
 
 #: install/helpers/DatabaseHelper.php:183
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
 msgstr ""
-"The SQLite database file %s is not readable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:191
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
 msgstr ""
-"The SQLite database file %s is not writable. Please check file permissions."
 
 #: install/helpers/DatabaseHelper.php:203
+#, auto-english-fallback
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
 msgstr "Could not access the SQLite database file %s: %s"
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
+#, auto-english-fallback
 msgid "PowerDNS API URL is required when using API backend."
 msgstr "PowerDNS API URL is required when using API backend."
 
 #: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
+#, auto-english-fallback
 msgid "PowerDNS API key is required when using API backend."
 msgstr "PowerDNS API key is required when using API backend."
 
@@ -13706,16 +13828,12 @@ msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
 msgstr ""
-"No configuration file found. Please create the config/settings.php file "
-"before proceeding."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
-"and SQLite, please use the same database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
@@ -13723,23 +13841,49 @@ msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
 msgstr ""
-"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
-"properly installed in this database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr ""
 
+#, auto-english-fallback
 # OBSOLETE: msgid ""
-# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
-# OBSOLETE: "again. Check your PowerDNS server log for details."
+# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
+# OBSOLETE: "zone variant assigned to that view."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
-# OBSOLETE: "again. Check your PowerDNS server log for details."
+# OBSOLETE: "Iga võrk vastab ühele vaatele. Selle võrgu lahendajad saavad sellele "
+# OBSOLETE: "vaatele määratud tsoonivariandi."
 
-# OBSOLETE: msgid "Please select an owner"
-# OBSOLETE: msgstr "Valige omanik"
+# OBSOLETE: msgid "PowerDNS version unknown"
+# OBSOLETE: msgstr "PowerDNS-i versioon teadmata"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Views serve different zone variants to different clients based on the "
+# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
+# OBSOLETE: "example, example.com..trusted)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Vaated edastavad erinevatele klientidele erinevaid tsoonivariante "
+# OBSOLETE: "võrguseose põhjal. Iga variant tähistatakse zone..variant (nt "
+# OBSOLETE: "example.com..trusted)."
+
+# OBSOLETE: msgid "Slave Servers"
+# OBSOLETE: msgstr "Teisesed serverid"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
+# OBSOLETE: "table."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Kuvab ühenduvuse oleku supermaster tabelis olevate DNS-serverite jaoks."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "API võtmed võimaldavad välistel rakendustel pääseda Poweradmin API-le."
 
 
 

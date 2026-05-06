@@ -279,8 +279,9 @@ class BatchPtrRecordController extends BaseController
         $perm_view = Permission::getViewPermission($this->db);
         $userId = $this->userContextService->getLoggedInUserId();
 
-        // Get all reverse zones (using a high limit to get all zones for the dropdown)
-        $reverseZonesResult = $zoneRepository->getReverseZones($perm_view, $userId, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC');
+        // Get all reverse zones (using a high limit to get all zones for the dropdown).
+        // No badges are rendered here, so skip the per-zone SOA-health probe.
+        $reverseZonesResult = $zoneRepository->getReverseZones($perm_view, $userId, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, false, false, false);
 
         $reverseZones = [];
         foreach ($reverseZonesResult as $zone) {

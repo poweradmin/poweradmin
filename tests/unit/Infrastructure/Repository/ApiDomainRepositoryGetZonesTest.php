@@ -30,6 +30,8 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             zone_name TEXT,
             zone_type TEXT,
             zone_master TEXT,
+            is_disabled INTEGER NOT NULL DEFAULT 0,
+            is_missing_soa INTEGER NOT NULL DEFAULT 0,
             last_synced_at INTEGER
         )");
         $this->db->exec("CREATE TABLE users (
@@ -82,5 +84,33 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertTrue($result['signed.example.com']['secured']);
+    }
+
+    #[Test]
+    public function getZonesReadsSoaHealthPerVisibleZoneInApiMode(): void
+    {
+        // API mode has no cache; getZones must call getZoneSoaHealth for each
+        // visible zone after pagination.
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('getZones')->willReturn([
+            ['id' => 100, 'name' => 'signed.example.com',   'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
+            ['id' => 101, 'name' => 'unsigned.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
+        ]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('countZoneRecords')->willReturn(0);
+        $backend->method('getZoneStats')->willReturn([]);
+        $backend->method('getZoneSoaHealth')->willReturnCallback(fn(string $name) => match ($name) {
+            'signed.example.com' => ['is_disabled' => true, 'is_missing_soa' => false],
+            'unsigned.example.com' => ['is_disabled' => false, 'is_missing_soa' => true],
+            default => ['is_disabled' => false, 'is_missing_soa' => false],
+        });
+
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
+
+        $this->assertTrue($result['signed.example.com']['is_disabled']);
+        $this->assertFalse($result['signed.example.com']['is_missing_soa']);
+        $this->assertFalse($result['unsigned.example.com']['is_disabled']);
+        $this->assertTrue($result['unsigned.example.com']['is_missing_soa']);
     }
 }

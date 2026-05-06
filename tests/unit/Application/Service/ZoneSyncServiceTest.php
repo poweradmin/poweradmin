@@ -61,7 +61,7 @@ class ZoneSyncServiceTest extends TestCase
             ['name' => 'kept.com', 'type' => 'NATIVE', 'master' => null],
         ]);
 
-        // Local has two zones, one not in API
+        // Local has two zones, one not in API. SOA flags 0/0 = already backfilled.
         $localStmt = $this->createMock(PDOStatement::class);
         $localStmt->method('fetch')->willReturnOnConsecutiveCalls(
             ['id' => 1, 'zone_name' => 'kept.com', 'zone_type' => 'NATIVE', 'zone_master' => null],
@@ -89,7 +89,7 @@ class ZoneSyncServiceTest extends TestCase
             ['name' => 'example.com', 'type' => 'MASTER', 'master' => null],
         ]);
 
-        // Local has same zone but different type
+        // Local has same zone but different type. SOA flags 0/0 = already backfilled.
         $localStmt = $this->createMock(PDOStatement::class);
         $localStmt->method('fetch')->willReturnOnConsecutiveCalls(
             ['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'NATIVE', 'zone_master' => null],
@@ -160,6 +160,7 @@ class ZoneSyncServiceTest extends TestCase
             ['name' => 'example.com', 'type' => 'NATIVE', 'master' => null],
         ]);
 
+        // SOA flags 0/0 = already backfilled, so the "in sync" branch fully short-circuits.
         $localStmt = $this->createMock(PDOStatement::class);
         $localStmt->method('fetch')->willReturnOnConsecutiveCalls(
             ['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'NATIVE', 'zone_master' => null],

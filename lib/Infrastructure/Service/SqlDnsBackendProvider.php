@@ -396,6 +396,40 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return (int)($stmt->fetchColumn() ?: 0);
     }
 
+    public function getZoneSoaHealth(string $zoneName, string $kind): ?array
+    {
+        if (strtoupper($kind) === 'SLAVE') {
+            return ['is_disabled' => false, 'is_missing_soa' => false];
+        }
+
+        // Match ZoneHealthSql / API impl: only an SOA at the zone apex makes
+        // the zone authoritative. r.name = d.name filters out stray sub-SOAs.
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $stmt = $this->db->prepare(
+            "SELECT
+                EXISTS (
+                    SELECT 1 FROM $recordsTable r
+                    INNER JOIN $domainsTable d ON d.id = r.domain_id
+                    WHERE d.name = :name AND r.type = 'SOA' AND r.name = d.name
+                ) AS has_soa,
+                EXISTS (
+                    SELECT 1 FROM $recordsTable r
+                    INNER JOIN $domainsTable d ON d.id = r.domain_id
+                    WHERE d.name = :name2 AND r.type = 'SOA' AND r.name = d.name AND r.disabled
+                ) AS soa_disabled"
+        );
+        $stmt->execute([':name' => $zoneName, ':name2' => $zoneName]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row === false) {
+            return ['is_disabled' => false, 'is_missing_soa' => true];
+        }
+        return [
+            'is_disabled' => !empty($row['soa_disabled']),
+            'is_missing_soa' => empty($row['has_soa']),
+        ];
+    }
+
     public function recordExists(int $domainId, string $name, string $type, string $content): bool
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);

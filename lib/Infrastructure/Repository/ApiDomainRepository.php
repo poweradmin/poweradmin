@@ -112,7 +112,8 @@ class ApiDomainRepository implements DomainRepositoryInterface
         string $sortDirection = 'ASC',
         bool $excludeReverse = false,
         ?bool $showSerial = null,
-        ?bool $showTemplate = null
+        ?bool $showTemplate = null,
+        bool $includeHealth = true
     ): array {
         $allowedSortColumns = ['name', 'type', 'count_records', 'owner'];
         $tableNameService = new TableNameService($this->config);
@@ -183,12 +184,20 @@ class ApiDomainRepository implements DomainRepositoryInterface
             $utf8Name = DnsIdnService::toUtf8($name);
             $zoneId = (int)($zone['id'] ?? 0);
 
+            // Per-visible-zone API call - bounded by page size. Skipped for callers
+            // that don't render badges (DeleteUser, log iteration, etc).
+            $soaHealth = $includeHealth
+                ? $this->backendProvider->getZoneSoaHealth($name, $zone['type'] ?? 'NATIVE')
+                : null;
+
             $result[$name] = [
                 'id' => $zoneId,
                 'name' => $name,
                 'utf8_name' => $utf8Name,
                 'type' => $zone['type'] ?? 'NATIVE',
                 'count_records' => $zone['count_records'] ?? 0,
+                'is_disabled' => $soaHealth['is_disabled'] ?? false,
+                'is_missing_soa' => $soaHealth['is_missing_soa'] ?? false,
                 'comment' => $zone['comment'] ?? '',
                 'secured' => $zone['dnssec'] ?? $zone['secured'] ?? false,
                 'owners' => $zone['owners'] ?? [],

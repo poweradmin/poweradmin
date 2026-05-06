@@ -126,7 +126,13 @@
                         </td>
                         <td><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ zone['comment'] }}">
                             {{ zone["utf8_name"] }}
-                            </span></td>
+                            </span>
+                            {% if zone["is_disabled"]|default(false) %}
+                            <span class="badge bg-danger ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}SOA record is disabled, the zone will not be served{% endtrans %}">{% trans %}Disabled{% endtrans %}</span>
+                            {% elseif zone["is_missing_soa"]|default(false) %}
+                            <span class="badge bg-warning text-dark ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}Zone has no SOA record{% endtrans %}"><i class="bi bi-exclamation-triangle-fill"></i> {% trans %}No SOA{% endtrans %}</span>
+                            {% endif %}
+                        </td>
                         <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone_type_label(zone['type']) }}</span></td>
                         <td>{{ zone["count_records"] }}</td>
 

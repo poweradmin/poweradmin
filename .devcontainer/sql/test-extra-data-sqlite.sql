@@ -4,7 +4,7 @@
 -- Requires: test-users-permissions-sqlite.sql and test-reverse-zones-templates-sqlite.sql first
 --
 -- This script creates:
--- - 4 new zones (group-only, viewer, slave, native)
+-- - 8 new zones (group-only, viewer, slave, native, disabled-forward, disabled-reverse, no-soa-forward, no-soa-reverse)
 -- - 3 supermaster records (IPv4 + IPv6)
 -- - 1 expired API key
 -- - 2 zone template sync entries
@@ -37,6 +37,19 @@ INSERT OR IGNORE INTO pdns."domains" ("name", "type", "master") VALUES
 INSERT OR IGNORE INTO pdns."domains" ("name", "type") VALUES
 ('native-zone.example.com', 'NATIVE');
 
+-- Disabled zone (SOA disabled = entire zone disabled per PowerDNS semantics)
+INSERT OR IGNORE INTO pdns."domains" ("name", "type") VALUES
+('disabled-zone.example.com', 'MASTER');
+
+-- Disabled reverse zone (forward + reverse coverage for the disabled marker)
+INSERT OR IGNORE INTO pdns."domains" ("name", "type") VALUES
+('99.in-addr.arpa', 'MASTER');
+
+-- Zones with no SOA at all (broken state - PowerDNS cannot serve them)
+INSERT OR IGNORE INTO pdns."domains" ("name", "type") VALUES
+('no-soa-zone.example.com', 'MASTER'),
+('100.in-addr.arpa', 'MASTER');
+
 -- Add SOA records for MASTER and NATIVE zones (not SLAVE)
 INSERT INTO pdns."records" ("domain_id", "name", "type", "content", "ttl", "prio")
 SELECT d."id", d."name", 'SOA',
@@ -44,6 +57,15 @@ SELECT d."id", d."name", 'SOA',
        86400, 0
 FROM pdns."domains" d
 WHERE d."name" IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
+  AND NOT EXISTS (SELECT 1 FROM pdns."records" r WHERE r."domain_id" = d."id" AND r."type" = 'SOA');
+
+-- Disabled SOA for disabled-zone (PowerDNS treats SOA disabled=1 as zone-wide disable)
+INSERT INTO pdns."records" ("domain_id", "name", "type", "content", "ttl", "prio", "disabled")
+SELECT d."id", d."name", 'SOA',
+       'ns1.example.com. hostmaster.example.com. ' || CAST(strftime('%s', 'now') AS INTEGER) || ' 10800 3600 604800 86400',
+       86400, 0, 1
+FROM pdns."domains" d
+WHERE d."name" IN ('disabled-zone.example.com', '99.in-addr.arpa')
   AND NOT EXISTS (SELECT 1 FROM pdns."records" r WHERE r."domain_id" = d."id" AND r."type" = 'SOA');
 
 -- Add NS records for MASTER and NATIVE zones
@@ -105,6 +127,13 @@ INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
 SELECT d."id", u."id", 0, d."name"
 FROM pdns."domains" d, "users" u
 WHERE d."name" = 'native-zone.example.com' AND u."username" = 'admin'
+  AND NOT EXISTS (SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id");
+
+-- Admin owns the disabled and no-SOA fixtures (forward + reverse)
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id", "zone_name")
+SELECT d."id", u."id", 0, d."name"
+FROM pdns."domains" d, "users" u
+WHERE d."name" IN ('disabled-zone.example.com', '99.in-addr.arpa', 'no-soa-zone.example.com', '100.in-addr.arpa') AND u."username" = 'admin'
   AND NOT EXISTS (SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id");
 
 -- group-only-zone.example.com has NO direct owner (only group ownership)
@@ -190,7 +219,7 @@ WHERE u."username" = 'admin'
 -- Verify new zones
 SELECT d."name", d."type", d."master"
 FROM pdns."domains" d
-WHERE d."name" IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'slave-zone.example.com', 'native-zone.example.com')
+WHERE d."name" IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'slave-zone.example.com', 'native-zone.example.com', 'disabled-zone.example.com', '99.in-addr.arpa', 'no-soa-zone.example.com', '100.in-addr.arpa')
 ORDER BY d."name";
 
 -- Verify supermasters
@@ -203,7 +232,7 @@ SELECT d."name", u."username" AS "owner"
 FROM "zones" z
 JOIN pdns."domains" d ON z."domain_id" = d."id"
 LEFT JOIN "users" u ON z."owner" = u."id"
-WHERE d."name" IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'slave-zone.example.com', 'native-zone.example.com')
+WHERE d."name" IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'slave-zone.example.com', 'native-zone.example.com', 'disabled-zone.example.com', '99.in-addr.arpa', 'no-soa-zone.example.com', '100.in-addr.arpa')
 ORDER BY d."name";
 
 -- Verify API keys

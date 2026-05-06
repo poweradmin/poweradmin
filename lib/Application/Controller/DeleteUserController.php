@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
@@ -121,7 +122,7 @@ class DeleteUserController extends BaseController
         }
         $repositoryFactory = $this->getRepositoryFactory();
         $domainRepository = $repositoryFactory->createDomainRepository();
-        $zones = $domainRepository->getZones("own", (int)$uid);
+        $zones = $domainRepository->getZones("own", (int)$uid, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false);
 
         $users = [];
         if (count($zones) > 0) {

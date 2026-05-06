@@ -4,7 +4,7 @@
 -- Requires: test-users-permissions-mysql-combined.sql and test-reverse-zones-templates-mysql.sql first
 --
 -- This script creates:
--- - 4 new zones (group-only, viewer, slave, native)
+-- - 8 new zones (group-only, viewer, slave, native, disabled-forward, disabled-reverse, no-soa-forward, no-soa-reverse)
 -- - 3 supermaster records (IPv4 + IPv6)
 -- - 1 expired API key
 -- - 2 zone template sync entries
@@ -34,6 +34,19 @@ INSERT IGNORE INTO `domains` (`name`, `type`, `master`) VALUES
 INSERT IGNORE INTO `domains` (`name`, `type`) VALUES
 ('native-zone.example.com', 'NATIVE');
 
+-- Disabled zone (SOA disabled = entire zone disabled per PowerDNS semantics)
+INSERT IGNORE INTO `domains` (`name`, `type`) VALUES
+('disabled-zone.example.com', 'MASTER');
+
+-- Disabled reverse zone (forward + reverse coverage for the disabled marker)
+INSERT IGNORE INTO `domains` (`name`, `type`) VALUES
+('99.in-addr.arpa', 'MASTER');
+
+-- Zones with no SOA at all (broken state - PowerDNS cannot serve them)
+INSERT IGNORE INTO `domains` (`name`, `type`) VALUES
+('no-soa-zone.example.com', 'MASTER'),
+('100.in-addr.arpa', 'MASTER');
+
 -- Add SOA records for MASTER and NATIVE zones (not SLAVE - those get records from master)
 INSERT INTO `records` (`domain_id`, `name`, `type`, `content`, `ttl`, `prio`)
 SELECT
@@ -45,6 +58,22 @@ SELECT
     0
 FROM `domains` d
 WHERE d.`name` IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'native-zone.example.com')
+  AND NOT EXISTS (
+    SELECT 1 FROM `records` r WHERE r.`domain_id` = d.`id` AND r.`type` = 'SOA'
+  );
+
+-- Disabled SOA for disabled-zone (PowerDNS treats SOA disabled=1 as zone-wide disable)
+INSERT INTO `records` (`domain_id`, `name`, `type`, `content`, `ttl`, `prio`, `disabled`)
+SELECT
+    d.`id`,
+    d.`name`,
+    'SOA',
+    CONCAT('ns1.example.com. hostmaster.example.com. ', UNIX_TIMESTAMP(), ' 10800 3600 604800 86400'),
+    86400,
+    0,
+    1
+FROM `domains` d
+WHERE d.`name` IN ('disabled-zone.example.com', '99.in-addr.arpa')
   AND NOT EXISTS (
     SELECT 1 FROM `records` r WHERE r.`domain_id` = d.`id` AND r.`type` = 'SOA'
   );
@@ -123,6 +152,16 @@ SELECT d.`id`, u.`id`, 0, d.`name`
 FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = 'native-zone.example.com' AND u.`username` = 'admin'
+  AND NOT EXISTS (
+    SELECT 1 FROM poweradmin.`zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
+  );
+
+-- Admin owns the disabled and no-SOA fixtures (forward + reverse)
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
+SELECT d.`id`, u.`id`, 0, d.`name`
+FROM pdns.`domains` d
+CROSS JOIN poweradmin.`users` u
+WHERE d.`name` IN ('disabled-zone.example.com', '99.in-addr.arpa', 'no-soa-zone.example.com', '100.in-addr.arpa') AND u.`username` = 'admin'
   AND NOT EXISTS (
     SELECT 1 FROM poweradmin.`zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
   );
@@ -227,7 +266,7 @@ WHERE u.`username` = 'admin'
 -- Verify new zones
 SELECT d.`name`, d.`type`, d.`master`
 FROM pdns.`domains` d
-WHERE d.`name` IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'slave-zone.example.com', 'native-zone.example.com')
+WHERE d.`name` IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'slave-zone.example.com', 'native-zone.example.com', 'disabled-zone.example.com', '99.in-addr.arpa', 'no-soa-zone.example.com', '100.in-addr.arpa')
 ORDER BY d.`name`;
 
 -- Verify supermasters
@@ -240,7 +279,7 @@ SELECT d.`name`, u.`username` AS `owner`
 FROM poweradmin.`zones` z
 JOIN pdns.`domains` d ON z.`domain_id` = d.`id`
 LEFT JOIN poweradmin.`users` u ON z.`owner` = u.`id`
-WHERE d.`name` IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'slave-zone.example.com', 'native-zone.example.com')
+WHERE d.`name` IN ('group-only-zone.example.com', 'viewer-zone.example.com', 'slave-zone.example.com', 'native-zone.example.com', 'disabled-zone.example.com', '99.in-addr.arpa', 'no-soa-zone.example.com', '100.in-addr.arpa')
 ORDER BY d.`name`;
 
 -- Verify API keys
@@ -274,6 +313,10 @@ ORDER BY la.`timestamp`;
 -- viewer-zone.example.com      | MASTER | viewer  | Viewer has a zone to view
 -- slave-zone.example.com       | SLAVE  | admin   | Slave zone type testing
 -- native-zone.example.com      | NATIVE | admin   | Native zone type testing
+-- disabled-zone.example.com    | MASTER | admin   | SOA disabled (zone-wide disable)
+-- 99.in-addr.arpa              | MASTER | admin   | SOA disabled reverse zone
+-- no-soa-zone.example.com      | MASTER | admin   | No SOA record (broken state)
+-- 100.in-addr.arpa             | MASTER | admin   | No SOA record reverse zone
 --
 -- Supermasters:
 -- -------------

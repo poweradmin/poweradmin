@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-05 07:21+0300\n"
+"POT-Creation-Date: 2026-05-06 18:48+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -1416,7 +1416,7 @@ msgstr "Invalid or unexpected input given."
 msgid "You do not have the permission to delete this user."
 msgstr "You do not have the permission to delete this user."
 
-#: lib/Application/Controller/DeleteUserController.php:76
+#: lib/Application/Controller/DeleteUserController.php:77
 msgid "You do not have permission to delete a superuser account."
 msgstr "You do not have permission to delete a superuser account."
 
@@ -1424,7 +1424,7 @@ msgstr "You do not have permission to delete a superuser account."
 msgid "User does not exist."
 msgstr "User does not exist."
 
-#: lib/Application/Controller/DeleteUserController.php:111
+#: lib/Application/Controller/DeleteUserController.php:112
 msgid "The user has been deleted successfully."
 msgstr "The user has been deleted successfully."
 
@@ -2093,7 +2093,7 @@ msgstr "Edit Zone"
 msgid "You do not have permission to access this zone."
 msgstr "You do not have permission to access this zone."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:428
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:434
 msgid "You do not have the permission to view this zone."
 msgstr "You do not have the permission to view this zone."
 
@@ -2137,19 +2137,19 @@ msgstr ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
 
-#: lib/Application/Controller/DnssecController.php:96
+#: lib/Application/Controller/DnssecController.php:95
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Zone is not currently signed with DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:108
+#: lib/Application/Controller/DnssecController.php:107
 msgid "Zone has been unsigned successfully."
 msgstr "Zone has been unsigned successfully."
 
-#: lib/Application/Controller/DnssecController.php:113
+#: lib/Application/Controller/DnssecController.php:112
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "Zone unsigning requested successfully, but verification failed."
 
-#: lib/Application/Controller/DnssecController.php:117
+#: lib/Application/Controller/DnssecController.php:116
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Failed to unsign zone. Check PowerDNS logs for details."
 
@@ -2500,15 +2500,15 @@ msgstr "Invalid key ID."
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC key not found or no longer exists."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:109
+#: lib/Application/Controller/DnssecDeleteKeyController.php:108
 msgid "Zone key has been deleted successfully."
 msgstr "Zone key has been deleted successfully."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:117
+#: lib/Application/Controller/DnssecDeleteKeyController.php:116
 msgid "Failed to delete the zone key."
 msgstr "Failed to delete the zone key."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:124
+#: lib/Application/Controller/DnssecDeleteKeyController.php:123
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "An error occurred while deleting the DNSSEC key: "
 
@@ -2994,39 +2994,39 @@ msgstr ""
 msgid "Change Password"
 msgstr "Change Password"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:119
+#: lib/Application/Controller/DnssecAddKeyController.php:118
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "ECDSA P-256 algorithm must use 256 bits"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:122
+#: lib/Application/Controller/DnssecAddKeyController.php:121
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "ECDSA P-384 algorithm must use 384 bits"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:128
+#: lib/Application/Controller/DnssecAddKeyController.php:127
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519 algorithm must use 256 bits"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:133
+#: lib/Application/Controller/DnssecAddKeyController.php:132
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "ED448 algorithm must use 456 bits (unsupported in this UI)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:140
+#: lib/Application/Controller/DnssecAddKeyController.php:139
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr "RSA algorithms should use 1024 or 2048 bits for adequate security"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:163
+#: lib/Application/Controller/DnssecAddKeyController.php:162
 msgid "Zone key has been added successfully."
 msgstr "Zone key has been added successfully."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:167
+#: lib/Application/Controller/DnssecAddKeyController.php:166
 msgid "Failed to add new DNSSEC key."
 msgstr "Failed to add new DNSSEC key."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:171
+#: lib/Application/Controller/DnssecAddKeyController.php:170
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "An error occurred while adding the DNSSEC key: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:175
+#: lib/Application/Controller/DnssecAddKeyController.php:174
 msgid "Please select both algorithm and bits"
 msgstr "Please select both algorithm and bits"
 
@@ -3283,7 +3283,7 @@ msgstr "Failed to authenticate against LDAP."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Authentication failed: Invalid SAML response"
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:141
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:142
 msgid "This is an invalid zone name."
 msgstr "This is an invalid zone name."
 
@@ -9939,7 +9939,7 @@ msgstr "Remove"
 msgid "and"
 msgstr "and"
 
-#: templates/modern/list_forward_zones.html:174
+#: templates/modern/list_forward_zones.html:180
 msgid "more..."
 msgstr "more..."
 
@@ -10071,7 +10071,7 @@ msgid ""
 "is reachable."
 msgstr ""
 "Could not detect PowerDNS version. Newer features are hidden until the API "
-"is reachable.is reachable."
+"is reachable."
 
 #: templates/default/index.html:17 templates/modern/index.html:17
 msgid "PowerDNS: unknown"
@@ -10843,7 +10843,19 @@ msgstr "Serial"
 msgid "Template"
 msgstr "Template"
 
-#: templates/modern/list_reverse_zones.html:227
+#: templates/modern/list_forward_zones.html:131
+msgid "SOA record is disabled, the zone will not be served"
+msgstr "SOA record is disabled, the zone will not be served"
+
+#: templates/modern/list_forward_zones.html:133
+msgid "Zone has no SOA record"
+msgstr "Zone has no SOA record"
+
+#: templates/modern/list_forward_zones.html:133
+msgid "No SOA"
+msgstr "No SOA"
+
+#: templates/modern/list_reverse_zones.html:233
 msgid "-"
 msgstr "-"
 
@@ -11891,7 +11903,7 @@ msgstr "Total number of zones:"
 msgid "There are no forward zones to show in this listing."
 msgstr "There are no forward zones to show in this listing."
 
-#: templates/modern/list_forward_zones.html:206
+#: templates/modern/list_forward_zones.html:212
 msgid "PTR"
 msgstr "PTR"
 
@@ -14860,13 +14872,40 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
 # OBSOLETE: msgid ""
-# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
-# OBSOLETE: "again. Check your PowerDNS server log for details."
+# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
+# OBSOLETE: "zone variant assigned to that view."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Zone counts and lists may be out of date until the API is reachable "
-# OBSOLETE: "again. Check your PowerDNS server log for details."
+# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
+# OBSOLETE: "zone variant assigned to that view.zone variant assigned to that view."
 
-# OBSOLETE: msgid "Please select an owner"
-# OBSOLETE: msgstr "Please select an owner"
+# OBSOLETE: msgid "PowerDNS version unknown"
+# OBSOLETE: msgstr "PowerDNS version unknown"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Views serve different zone variants to different clients based on the "
+# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
+# OBSOLETE: "example, example.com..trusted)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Views serve different zone variants to different clients based on the "
+# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
+# OBSOLETE: "example, example.com..trusted).network mapping. Each variant is "
+# OBSOLETE: "identified as zone..variant (for example, example.com..trusted)."
+
+# OBSOLETE: msgid "Slave Servers"
+# OBSOLETE: msgstr "Slave Servers"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
+# OBSOLETE: "table."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
+# OBSOLETE: "table."
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
+# OBSOLETE: "key is linked to your user account and inherits your permissions."
 
 
