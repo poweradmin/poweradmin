@@ -804,6 +804,54 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         ];
     }
 
+    public function getZoneSoaHealth(string $zoneName, string $kind): ?array
+    {
+        // Optimization hint only - skip the API call when the caller is sure
+        // the zone is SLAVE. The post-fetch check below is the correctness gate.
+        if (strtoupper($kind) === 'SLAVE') {
+            return ['is_disabled' => false, 'is_missing_soa' => false];
+        }
+
+        $apiName = self::ensureTrailingDot($zoneName);
+        $zoneData = $this->client->getZone($apiName);
+        if ($zoneData === null) {
+            return null;
+        }
+
+        // Re-check kind from the authoritative API response: a caller's stale
+        // local cache may report MASTER for what's now SLAVE in PowerDNS.
+        if (strtoupper($zoneData['kind'] ?? '') === 'SLAVE') {
+            return ['is_disabled' => false, 'is_missing_soa' => false];
+        }
+
+        foreach ($zoneData['rrsets'] ?? [] as $rrset) {
+            if (($rrset['type'] ?? '') !== 'SOA') {
+                continue;
+            }
+            // Only SOA at the zone apex makes the zone authoritative; an SOA
+            // under a subname doesn't, and shouldn't drive the badge state.
+            if (($rrset['name'] ?? '') !== $apiName) {
+                continue;
+            }
+            // Aggregate across all SOA records: any disabled SOA disables the
+            // zone, matching PowerDNS auth-server behavior and the SQL backend.
+            $records = $rrset['records'] ?? [];
+            if (empty($records)) {
+                continue;
+            }
+            $isDisabled = false;
+            foreach ($records as $record) {
+                if (!empty($record['disabled'])) {
+                    $isDisabled = true;
+                    break;
+                }
+            }
+            return ['is_disabled' => $isDisabled, 'is_missing_soa' => false];
+        }
+
+        return ['is_disabled' => false, 'is_missing_soa' => true];
+    }
+
     // ---------------------------------------------------------------
     // Record read operations
     // ---------------------------------------------------------------

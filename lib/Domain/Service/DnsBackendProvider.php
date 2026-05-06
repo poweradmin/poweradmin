@@ -310,6 +310,21 @@ interface DnsBackendProvider
     public function countZoneRecords(int $domainId): int;
 
     /**
+     * Report SOA-record presence and disabled state for a zone, used by zone-list
+     * UIs to render "Disabled" / "No SOA" badges. SLAVE zones legitimately have
+     * no SOA (records arrive via AXFR), so callers may pass the zone kind to skip
+     * unnecessary lookups; implementations must return is_missing_soa=false for SLAVE.
+     *
+     * Returns null on transient backend failure so callers can preserve any
+     * previously-cached state instead of overwriting it with an inferred default.
+     *
+     * @param string $zoneName Zone name (without trailing dot)
+     * @param string $kind Zone kind ('MASTER', 'NATIVE', 'SLAVE', 'PRODUCER', 'CONSUMER')
+     * @return array{is_disabled: bool, is_missing_soa: bool}|null
+     */
+    public function getZoneSoaHealth(string $zoneName, string $kind): ?array;
+
+    /**
      * Check if a record with given attributes exists.
      *
      * @param int $domainId Domain ID

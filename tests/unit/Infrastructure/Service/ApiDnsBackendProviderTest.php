@@ -145,13 +145,11 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testUpdateZoneTypeCallsApiWithCorrectData(): void
     {
-        // Mock getZoneNameByLocalId: SELECT zone_name FROM zones WHERE id = :id OR domain_id = :did
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
         $stmt->method('fetchColumn')->willReturn('example.com');
         $stmt->method('bindValue');
 
-        // Second prepare for UPDATE zones SET zone_type
         $stmtUpdate = $this->createMock(PDOStatement::class);
         $stmtUpdate->method('bindValue');
         $stmtUpdate->method('execute');
@@ -1242,5 +1240,153 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertEquals(5, $result[0]['id']);
         $this->assertEquals('example.com', $result[0]['name']);
         $this->assertEquals('NATIVE', $result[0]['type']);
+    }
+
+    // ---------------------------------------------------------------
+    // SOA health (disabled / missing) - issue #805
+    // ---------------------------------------------------------------
+
+    public function testGetZoneSoaHealthSlaveZonesAreNeverFlagged(): void
+    {
+        // SLAVE zones receive records via AXFR; absent local SOA is normal,
+        // and we must not waste an API call to verify that.
+        $this->mockClient->expects($this->never())->method('getZone');
+
+        $result = $this->provider->getZoneSoaHealth('slave.example.com', 'SLAVE');
+
+        $this->assertSame(['is_disabled' => false, 'is_missing_soa' => false], $result);
+    }
+
+    public function testGetZoneSoaHealthReportsDisabledWhenSoaRecordHasDisabledFlag(): void
+    {
+        $this->mockClient->expects($this->once())
+            ->method('getZone')
+            ->with('disabled.example.com.')
+            ->willReturn([
+                'name' => 'disabled.example.com.',
+                'rrsets' => [
+                    [
+                        'name' => 'disabled.example.com.',
+                        'type' => 'SOA',
+                        'records' => [
+                            ['content' => 'ns1 hostmaster 1 10800 3600 604800 86400', 'disabled' => true],
+                        ],
+                    ],
+                    ['name' => 'disabled.example.com.', 'type' => 'NS', 'records' => [['content' => 'ns1.', 'disabled' => false]]],
+                ],
+            ]);
+
+        $result = $this->provider->getZoneSoaHealth('disabled.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => true, 'is_missing_soa' => false], $result);
+    }
+
+    public function testGetZoneSoaHealthReportsMissingSoaWhenZoneHasNoSoaRrset(): void
+    {
+        $this->mockClient->expects($this->once())
+            ->method('getZone')
+            ->with('broken.example.com.')
+            ->willReturn([
+                'name' => 'broken.example.com.',
+                'rrsets' => [
+                    ['type' => 'NS', 'records' => [['content' => 'ns1.', 'disabled' => false]]],
+                ],
+            ]);
+
+        $result = $this->provider->getZoneSoaHealth('broken.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => false, 'is_missing_soa' => true], $result);
+    }
+
+    public function testGetZoneSoaHealthHealthyZoneReturnsBothFalse(): void
+    {
+        $this->mockClient->expects($this->once())
+            ->method('getZone')
+            ->with('healthy.example.com.')
+            ->willReturn([
+                'name' => 'healthy.example.com.',
+                'rrsets' => [
+                    [
+                        'name' => 'healthy.example.com.',
+                        'type' => 'SOA',
+                        'records' => [
+                            ['content' => 'ns1 hostmaster 1 10800 3600 604800 86400', 'disabled' => false],
+                        ],
+                    ],
+                ],
+            ]);
+
+        $result = $this->provider->getZoneSoaHealth('healthy.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => false, 'is_missing_soa' => false], $result);
+    }
+
+    public function testGetZoneSoaHealthRespectsAuthoritativeApiKindOverStaleCallerHint(): void
+    {
+        // Caller's local cache says MASTER, but PowerDNS reports SLAVE - we must
+        // not flag a legitimate SLAVE as "No SOA" just because the caller's
+        // syncIfStale() window hasn't refreshed yet.
+        $this->mockClient->method('getZone')
+            ->willReturn(['kind' => 'Slave', 'rrsets' => []]);
+
+        $result = $this->provider->getZoneSoaHealth('reverse.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => false, 'is_missing_soa' => false], $result);
+    }
+
+    public function testGetZoneSoaHealthIgnoresSoaRrsetsAtNonApexNames(): void
+    {
+        // A stray SOA at sub.example.com. doesn't make example.com. authoritative,
+        // and a disabled SOA there shouldn't disable the parent zone either.
+        $this->mockClient->method('getZone')
+            ->willReturn([
+                'rrsets' => [
+                    [
+                        'name' => 'sub.example.com.',
+                        'type' => 'SOA',
+                        'records' => [['content' => 'ns1 host 1 1 1 1 1', 'disabled' => true]],
+                    ],
+                ],
+            ]);
+
+        $result = $this->provider->getZoneSoaHealth('example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => false, 'is_missing_soa' => true], $result);
+    }
+
+    public function testGetZoneSoaHealthFlagsZoneAsDisabledWhenAnyOfMultipleApexSoaRowsIsDisabled(): void
+    {
+        // PowerDNS rrsets normally hold one SOA, but malformed/imported zones
+        // can have multiples. Mirror the SQL backend: any disabled SOA at the
+        // apex disables the zone, regardless of which record appears first.
+        $this->mockClient->method('getZone')
+            ->willReturn([
+                'rrsets' => [
+                    [
+                        'name' => 'example.com.',
+                        'type' => 'SOA',
+                        'records' => [
+                            ['content' => 'ns1 host 1 1 1 1 1', 'disabled' => false],
+                            ['content' => 'ns2 host 2 2 2 2 2', 'disabled' => true],
+                        ],
+                    ],
+                ],
+            ]);
+
+        $result = $this->provider->getZoneSoaHealth('example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => true, 'is_missing_soa' => false], $result);
+    }
+
+    public function testGetZoneSoaHealthReturnsNullOnApiFailureSoCallersPreserveCache(): void
+    {
+        // null signals the caller (sync, refreshZoneSoaCache) to leave the
+        // existing cached flags alone - clobbering them would clear a real
+        // Disabled / No SOA badge until a later sync recovers.
+        $this->mockClient->method('getZone')->willReturn(null);
+
+        $result = $this->provider->getZoneSoaHealth('unreachable.example.com', 'MASTER');
+
+        $this->assertNull($result);
     }
 }

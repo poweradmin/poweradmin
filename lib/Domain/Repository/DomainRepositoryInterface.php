@@ -113,7 +113,8 @@ interface DomainRepositoryInterface
         string $sortDirection = 'ASC',
         bool $excludeReverse = false,
         ?bool $showSerial = null,
-        ?bool $showTemplate = null
+        ?bool $showTemplate = null,
+        bool $includeHealth = true
     ): array;
 
     /**

@@ -82,7 +82,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         string $sortDirection = 'ASC',
         bool $countOnly = false,
         bool $showSerial = false,
-        bool $showTemplate = false
+        bool $showTemplate = false,
+        bool $includeHealth = true
     ) {
         // Sync local zones table with PowerDNS API before listing so reverse
         // zones are visible on a fresh install without the user having to open
@@ -186,12 +187,21 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             if (!isset($zones[$name])) {
                 $apiName = $name . '.';
                 $stats = $zoneStats[$apiName] ?? [];
+                $kind = $row['type'] ?? 'NATIVE';
+                // Per-visible-zone API call - bounded by page size. Skipped for
+                // callers that don't render badges (e.g. PTR batch dropdown).
+                $soaHealth = $includeHealth
+                    ? $this->backendProvider->getZoneSoaHealth($name, $kind)
+                    : null;
+
                 $zones[$name] = [
                     'id' => $row['id'],
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
-                    'type' => $row['type'] ?? 'NATIVE',
+                    'type' => $kind,
                     'count_records' => $this->resolveRecordCount($stats, (int)$row['id']),
+                    'is_disabled' => $soaHealth['is_disabled'] ?? false,
+                    'is_missing_soa' => $soaHealth['is_missing_soa'] ?? false,
                     'comment' => $row['comment'] ?? '',
                     'secured' => $stats['dnssec'] ?? false,
                     'owners' => [],

@@ -74,7 +74,8 @@ interface ZoneRepositoryInterface
         string $sortDirection = 'ASC',
         bool $countOnly = false,
         bool $showSerial = false,
-        bool $showTemplate = false
+        bool $showTemplate = false,
+        bool $includeHealth = true
     );
 
     /**

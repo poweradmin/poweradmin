@@ -28,6 +28,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Database\ZoneHealthSql;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Utility\NaturalSorting;
@@ -122,7 +123,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         string $sortDirection = 'ASC',
         bool $countOnly = false,
         bool $showSerial = false,
-        bool $showTemplate = false
+        bool $showTemplate = false,
+        bool $includeHealth = true
     ) {
 
         // Validate sort parameters
@@ -190,6 +192,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
                            $domains_table.name,
                            $domains_table.type,
                            COUNT($records_table.id) AS count_records,
+                           " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                            users.username,
                            users.fullname,
                            COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured,
@@ -287,6 +290,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
                     'count_records' => $row['count_records'],
+                    'is_disabled' => !empty($row['is_disabled'] ?? null),
+                    'is_missing_soa' => !empty($row['is_missing_soa'] ?? null),
                     'comment' => $row['comment'] ?? '',
                     'secured' => $row['secured'],
                     'owners' => [],

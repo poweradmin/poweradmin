@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Database\ZoneHealthSql;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -158,7 +159,8 @@ class SqlDomainRepository implements DomainRepositoryInterface
         string $sortDirection = 'ASC',
         bool $excludeReverse = false,
         ?bool $showSerial = null,
-        ?bool $showTemplate = null
+        ?bool $showTemplate = null,
+        bool $includeHealth = true
     ): array {
         $allowedSortColumns = ['name', 'type', 'count_records', 'owner'];
         $sortby = $this->tableNameService->validateOrderBy($sortby, $allowedSortColumns);
@@ -310,6 +312,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                             $domains_table.name,
                             $domains_table.type,
                             COUNT(DISTINCT $records_table.id) AS count_records,
+                            " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                             users.username,
                             users.fullname
                             " . ($pdnssec_use ? ", MAX(CASE WHEN $cryptokeys_table.id IS NOT NULL OR $domainmetadata_table.id IS NOT NULL THEN 1 ELSE 0 END) AS secured" : "") . "
@@ -345,6 +348,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                             $domains_table.name,
                             $domains_table.type,
                             COUNT($records_table.id) AS count_records,
+                            " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                             users.username,
                             users.fullname
                             " . ($pdnssec_use ? ", COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured" : "") . "
@@ -385,6 +389,8 @@ class SqlDomainRepository implements DomainRepositoryInterface
             $ret[$domainName]["utf8_name"] = $utf8Name;
             $ret[$domainName]["type"] = $r["type"];
             $ret[$domainName]["count_records"] = $r["count_records"];
+            $ret[$domainName]["is_disabled"] = !empty($r["is_disabled"] ?? null);
+            $ret[$domainName]["is_missing_soa"] = !empty($r["is_missing_soa"] ?? null);
             $ret[$domainName]["comment"] = $r["comment"] ?? '';
 
             if ($r["username"] !== null) {
