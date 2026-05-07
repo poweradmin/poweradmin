@@ -42,7 +42,19 @@ final class ZoneHealthSql
         // The SOA must live at the zone apex (records.name = domains.name).
         // A stray SOA under a subname doesn't make the zone served, and an
         // off-apex disabled SOA doesn't disable it either.
-        return "CASE WHEN EXISTS (SELECT 1 FROM $recordsTable r_soa WHERE r_soa.domain_id = $domainsTable.id AND r_soa.type = 'SOA' AND r_soa.name = $domainsTable.name AND r_soa.disabled) THEN 1 ELSE 0 END AS is_disabled,
-                CASE WHEN ($domainsTable.type IS NULL OR UPPER($domainsTable.type) <> 'SLAVE') AND NOT EXISTS (SELECT 1 FROM $recordsTable r_soa_any WHERE r_soa_any.domain_id = $domainsTable.id AND r_soa_any.type = 'SOA' AND r_soa_any.name = $domainsTable.name) THEN 1 ELSE 0 END AS is_missing_soa";
+        $disabledExists = "SELECT 1 FROM $recordsTable r_soa"
+            . " WHERE r_soa.domain_id = $domainsTable.id"
+            . " AND r_soa.type = 'SOA'"
+            . " AND r_soa.name = $domainsTable.name"
+            . " AND r_soa.disabled";
+
+        $missingSoaExists = "SELECT 1 FROM $recordsTable r_soa_any"
+            . " WHERE r_soa_any.domain_id = $domainsTable.id"
+            . " AND r_soa_any.type = 'SOA'"
+            . " AND r_soa_any.name = $domainsTable.name";
+
+        return "CASE WHEN EXISTS ($disabledExists) THEN 1 ELSE 0 END AS is_disabled,"
+            . " CASE WHEN ($domainsTable.type IS NULL OR UPPER($domainsTable.type) <> 'SLAVE')"
+            . " AND NOT EXISTS ($missingSoaExists) THEN 1 ELSE 0 END AS is_missing_soa";
     }
 }
