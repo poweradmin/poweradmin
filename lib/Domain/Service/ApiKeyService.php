@@ -361,9 +361,12 @@ class ApiKeyService
      */
     private function authenticateWithKey(string $secretKey): bool
     {
-        // Check for a direct database match using BINARY comparison for exact matching
+        // Use case-sensitive comparison to avoid collation-based false matches on MySQL.
+        // PostgreSQL and SQLite are byte-exact by default; MySQL needs the BINARY operator.
         try {
-            $stmt = $this->db->prepare("SELECT id, name, created_by, disabled, expires_at FROM api_keys WHERE BINARY secret_key = ?");
+            $dbType = $this->config->get('database', 'type', 'mysql');
+            $matchExpr = ($dbType === 'mysql' || $dbType === 'mysqli') ? 'BINARY secret_key' : 'secret_key';
+            $stmt = $this->db->prepare("SELECT id, name, created_by, disabled, expires_at FROM api_keys WHERE $matchExpr = ?");
             $stmt->execute([$secretKey]);
             $keyData = $stmt->fetch(PDO::FETCH_ASSOC);
 
