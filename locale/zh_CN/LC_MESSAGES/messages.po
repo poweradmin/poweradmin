@@ -3334,13 +3334,13 @@ msgstr "不，保留此超级主服务器"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
+msgstr "显示下表中配置的 autoprimary 服务器的连接状态。"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:148
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
+msgstr "显示下表中配置的 supermaster 的连接状态。"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -9007,7 +9007,7 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
+msgstr "每个网络 (CIDR 块) 只能映射到一个 view。该网络中的解析器仅会收到分配给所映射 view 的区域变体。PowerDNS 优先按最长前缀匹配,因此当两者都匹配某客户端时,更具体的子网 (例如 10.0.1.0/24) 会覆盖较宽的范围 (10.0.0.0/8)。"
 
 #: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -9497,7 +9497,7 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr ""
+msgstr "记录 API 密钥的生命周期事件 (创建、重新生成、吊销、权限变更) 以及经过身份验证的 API 请求。按用户或操作筛选以审计外部集成活动。敏感值 (密钥、令牌) 永远不会写入此日志。"
 
 #: templates/modern/list_log_users.html:26
 msgid "All users"
@@ -9594,7 +9594,7 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr ""
+msgstr "此活动日志将针对区域和记录的每次操作 (创建、编辑、删除、DNSSEC 操作、导入) 记录为扁平的 key:value 事件字符串。如需结构化的前/后快照以及记录变更的差异视图,请查看“记录变更日志”。"
 
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
@@ -11850,7 +11850,7 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr ""
+msgstr "每次记录的添加/编辑/删除以及区域的创建/删除/元数据编辑都会在此记录前/后快照,并附带用户和时间戳。日志不会自动过期 - 当表过大时请手动清理旧行。使用时间窗口快捷方式查看最近活动,或导出为 CSV/JSON 以提供给外部审计系统。"
 
 #: templates/modern/list_record_changes.html:34
 #, auto-english-fallback
@@ -12347,7 +12347,7 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr ""
+msgstr "记录用户账户事件,如登录、密码修改、组成员更新以及对用户记录的管理操作。每条记录显示操作、执行者、受影响用户和时间戳。按操作或用户筛选以审计访问变更。"
 
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
@@ -12392,7 +12392,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
+msgstr "View 会根据查询解析器的客户端网络向不同客户端提供不同的区域变体。每个变体命名为 zone..variant (例如 example.com..trusted),必须先在 PowerDNS 中作为独立区域存在,然后才能在此分配。变体共用名称但在每个 view 中解析不同,因此同一主机名可根据客户端网络返回不同 IP。"
 
 #: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
@@ -12889,7 +12889,7 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr ""
+msgstr "API 密钥允许外部应用程序访问 Poweradmin API。每个密钥与您的用户账户绑定并继承您的权限,因此撤销账户也会撤销其所有密钥。请将密钥视为机密信息 - 它们提供与以您身份登录相同的访问权限。"
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -13078,7 +13078,7 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr ""
+msgstr "记录组的生命周期事件 (创建、编辑、删除) 以及成员变更 (添加或移除用户)。每条记录显示操作、执行者、受影响组和时间戳。可用于审计通过组所有权介导的区域访问变更。"
 
 #: templates/modern/list_log_groups.html:26
 msgid "Group name"
@@ -13310,13 +13310,13 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr ""
+msgstr "为 Poweradmin 表创建仅具有有限权限 (SELECT、INSERT、UPDATE、DELETE) 的数据库用户。使用 API 后端时无需访问 PowerDNS 表。"
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr ""
+msgstr "创建一个具有有限权限 (SELECT、INSERT、UPDATE、DELETE) 的数据库用户,使 Poweradmin 能访问 PowerDNS 表。"
 
 #: install/templates/step6.html.twig:25
 #, auto-english-fallback
@@ -13331,7 +13331,7 @@ msgstr "Execute the following commands:"
 #: install/templates/step6.html.twig:40
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
+msgstr "添加新用户后,继续执行此安装过程。"
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
 #, auto-english-fallback
@@ -13342,7 +13342,7 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
+msgstr "由于您使用的是 SQLite,无需创建具有有限权限的新用户。"
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 #, auto-english-fallback
@@ -13387,7 +13387,7 @@ msgstr "Choose a language for installation"
 #: install/templates/step1.html.twig:12
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
+msgstr "请选择您喜欢的语言以继续安装:"
 
 #: install/templates/step1.html.twig:391
 #, auto-english-fallback
@@ -13466,7 +13466,7 @@ msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr ""
+msgstr "用于 API 调用的 PowerDNS 服务器名称 (通常为 \"localhost\")。"
 
 #: install/templates/step4.html.twig:86
 #, auto-english-fallback
@@ -13482,13 +13482,13 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr ""
+msgstr "配置具有建表权限的数据库连接。如有需要,可单独指定 PowerDNS 的位置。"
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr ""
+msgstr "为 Poweradmin 表 (用户、权限、区域) 配置数据库连接。无需 PowerDNS 表。"
 
 #: install/templates/step4.html.twig:97
 #, auto-english-fallback
@@ -13527,7 +13527,7 @@ msgstr "Provide the hostname"
 
 #: install/templates/step4.html.twig:143
 msgid "Database server hostname (usually \"localhost\")."
-msgstr ""
+msgstr "数据库服务器主机名 (通常为 \"localhost\")。"
 
 #: install/templates/step4.html.twig:148
 #, auto-english-fallback
@@ -13587,7 +13587,7 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:197
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
+msgstr "字符比较的排序规则。留空则使用数据库默认值。"
 
 #: install/templates/step4.html.twig:206
 #, auto-english-fallback
@@ -13626,7 +13626,7 @@ msgstr "Provide a password"
 
 #: install/templates/step4.html.twig:238
 msgid "Password for \"admin\" username."
-msgstr ""
+msgstr "用户名 \"admin\" 的密码。"
 
 #: install/templates/step2.html.twig:3
 #, auto-english-fallback
@@ -13748,12 +13748,12 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
+msgstr "即使选择了 PowerDNS API 后端,Poweradmin 仍会在已配置的数据库中维护自己的表 (用户、权限、区域元数据)。此处凭据用于该数据库,而非 PowerDNS。"
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
+msgstr "具有受限访问权限的 Poweradmin 数据库用户名。不用于 Web 界面登录。"
 
 #: install/templates/step5.html.twig:77
 #, auto-english-fallback
@@ -13864,13 +13864,13 @@ msgstr "Important Security Notice:"
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr ""
+msgstr "您必须从 Poweradmin 根目录中删除 \"install/\" 目录。"
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
+msgstr "出于安全考虑,只要安装目录存在,Poweradmin 就不会正常运行。"
 
 #: install/templates/step8.html.twig:22
 #, auto-english-fallback
@@ -13879,13 +13879,13 @@ msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr ""
+msgstr "从您的服务器中删除 \"install/\" 目录"
 
 #: install/templates/step8.html.twig:27
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
-msgstr ""
+msgstr "使用默认用户名 \"admin\" 和您在步骤 3 中设置的密码登录 <a href=\"../index.php\">Poweradmin</a>"
 
 #: install/templates/step8.html.twig:28
 #, auto-english-fallback
@@ -13910,7 +13910,7 @@ msgstr "Before proceeding, ensure you have:"
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
+msgstr "已安装 PowerDNS 并创建数据库表 (或已配置 API 访问)"
 
 #: install/templates/step3.html.twig:19
 #, auto-english-fallback
@@ -13931,7 +13931,7 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr ""
+msgstr "配置数据库连接,创建管理员账户,并生成配置文件。"
 
 #: install/helpers/InstallStepHandler.php:176
 #, auto-english-fallback
@@ -13956,19 +13956,19 @@ msgstr "Foreign Key Constraint Issues:"
 #: install/helpers/InstallStepHandler.php:209
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
+msgstr "由于外键约束,安装程序无法删除现有表"
 
 #: install/helpers/InstallStepHandler.php:210
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr ""
+msgstr "如果您有自定义约束或表被其他表引用,在重新安装时可能会发生这种情况"
 
 #: install/helpers/InstallStepHandler.php:211
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr ""
+msgstr "您可以在运行安装程序前尝试手动禁用外键检查:"
 
 #: install/helpers/InstallStepHandler.php:224
 #, auto-english-fallback
@@ -13984,7 +13984,7 @@ msgstr "Make sure the SQLite database file exists"
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
+msgstr "检查 Web 服务器是否对数据库文件具有读写权限"
 
 #: install/helpers/InstallStepHandler.php:220
 #, auto-english-fallback
@@ -14016,19 +14016,19 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
+msgstr "SQLite 数据库文件 %s 不存在。请在继续之前创建该文件。"
 
 #: install/helpers/DatabaseHelper.php:183
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
+msgstr "SQLite 数据库文件 %s 不可读。请检查文件权限。"
 
 #: install/helpers/DatabaseHelper.php:191
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
+msgstr "SQLite 数据库文件 %s 不可写。请检查文件权限。"
 
 #: install/helpers/DatabaseHelper.php:203
 #, auto-english-fallback
@@ -14050,58 +14050,23 @@ msgstr "PowerDNS API key is required when using API backend."
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
+msgstr "未找到配置文件。请在继续之前创建 config/settings.php 文件。"
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr ""
+msgstr "仅 MySQL 支持单独的 PowerDNS 数据库。对于 PostgreSQL 和 SQLite,请使用同一个数据库。"
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr ""
+msgstr "数据库 \"%s\" 中缺少 PowerDNS 表: %s。请确保 PowerDNS 在该数据库中已正确安装。"
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr ""
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
-# OBSOLETE: "zone variant assigned to that view."
-# OBSOLETE: msgstr "每个网络对应一个视图。该网络中的解析器接收分配给该视图的区域变体。"
-
-# OBSOLETE: msgid "PowerDNS version unknown"
-# OBSOLETE: msgstr "PowerDNS 版本未知"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Views serve different zone variants to different clients based on the "
-# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
-# OBSOLETE: "example, example.com..trusted)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "视图根据网络映射向不同客户端提供不同的区域变体。每个变体标识为 "
-# OBSOLETE: "zone..variant (例如 example.com..trusted)。"
-
-# OBSOLETE: msgid "Slave Servers"
-# OBSOLETE: msgstr "从服务器"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
-# OBSOLETE: "table."
-# OBSOLETE: msgstr "显示超级主服务器表中列出的 DNS 服务器的连接状态。"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
-# OBSOLETE: "key is linked to your user account and inherits your permissions."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "API 密钥允许外部应用程序访问 Poweradmin API。每个密钥都链接到您的用户账户"
-# OBSOLETE: "并继承您的权限。"
-
-
+msgstr "无法连接到 PowerDNS 数据库 \"%s\": %s"
 

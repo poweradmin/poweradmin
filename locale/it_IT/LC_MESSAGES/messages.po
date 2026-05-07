@@ -3536,13 +3536,13 @@ msgstr "No, mantieni questo supermaster"
 msgid ""
 "Showing connectivity status for the autoprimary servers configured in the "
 "table below."
-msgstr ""
+msgstr "Stato di connettività dei server autoprimary configurati nella tabella sottostante."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:148
 msgid ""
 "Showing connectivity status for the supermasters configured in the table "
 "below."
-msgstr ""
+msgstr "Stato di connettività dei supermaster configurati nella tabella sottostante."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:139 templates/modern/login.html:138
@@ -10042,7 +10042,7 @@ msgid ""
 "evaluates networks longest-prefix first, so a more specific subnet (for "
 "example 10.0.1.0/24) overrides a broader range (10.0.0.0/8) when both match "
 "a client."
-msgstr ""
+msgstr "Ogni rete (blocco CIDR) è mappata a esattamente una view. I resolver di quella rete ricevono solo le varianti di zona assegnate alla view mappata. PowerDNS valuta le reti per prefisso più lungo: una sottorete più specifica (ad es. 10.0.1.0/24) prevale su un intervallo più ampio (10.0.0.0/8) quando entrambi corrispondono a un client."
 
 #: templates/modern/list_networks.html:21
 msgid "No networks configured yet. Map a CIDR to a view below."
@@ -10549,7 +10549,7 @@ msgid ""
 "permission changes) and authenticated API requests. Filter by user or "
 "operation to audit external integration activity. Sensitive values (keys, "
 "tokens) are never written to this log."
-msgstr ""
+msgstr "Registra gli eventi del ciclo di vita delle chiavi API (creazione, rigenerazione, revoca, modifiche di permessi) e le richieste API autenticate. Filtra per utente o operazione per controllare l'attività delle integrazioni esterne. I valori sensibili (chiavi, token) non vengono mai scritti in questo log."
 
 #: templates/modern/list_log_users.html:26
 msgid "All users"
@@ -10647,7 +10647,7 @@ msgid ""
 "records (creates, edits, deletes, DNSSEC actions, imports) as a flat "
 "key:value event string. For structured before/after snapshots and a diff "
 "view of record changes, see the Record Change Log."
-msgstr ""
+msgstr "Questo feed di attività registra ogni operazione effettuata su zone e record (creazioni, modifiche, eliminazioni, azioni DNSSEC, importazioni) come stringa piatta chiave:valore. Per snapshot strutturati prima/dopo e una vista diff delle modifiche ai record, consulta il Registro modifiche record."
 
 #: templates/modern/list_template_zones.html:54
 msgid "Domain name"
@@ -12992,7 +12992,7 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr ""
+msgstr "Ogni aggiunta, modifica o eliminazione di record e ogni creazione, eliminazione o modifica dei metadati di zona acquisisce qui uno snapshot prima/dopo, insieme all'utente e all'orario. I log non scadono automaticamente - rimuovi manualmente le righe vecchie se la tabella cresce molto. Usa le scorciatoie a finestra temporale per concentrarti sull'attività recente, oppure esporta in CSV/JSON per alimentare sistemi di audit esterni."
 
 #: templates/modern/list_record_changes.html:34
 #, auto-english-fallback
@@ -13507,7 +13507,7 @@ msgid ""
 "membership updates, and admin actions on user records. Each entry shows the "
 "action, the actor, the affected user, and a timestamp. Filter by operation "
 "or user to audit access changes."
-msgstr ""
+msgstr "Registra eventi degli account utente come accessi, cambi password, aggiornamenti di appartenenza ai gruppi e azioni amministrative sui record utente. Ogni voce mostra l'azione, l'attore, l'utente interessato e un timestamp. Filtra per operazione o utente per controllare le modifiche di accesso."
 
 #: templates/modern/add_zone_slave.html:24
 msgid "Slave Zone Configuration"
@@ -13554,7 +13554,7 @@ msgid ""
 "before it can be assigned here. Variants share a name but resolve "
 "differently per view, so the same hostname can answer with different IPs "
 "depending on the client's network."
-msgstr ""
+msgstr "Le view servono varianti di zona diverse a client diversi in base alla rete che ha interrogato il resolver. Ogni variante si chiama zona..variant (ad es. example.com..trusted) e deve esistere come zona separata in PowerDNS prima di poter essere assegnata qui. Le varianti condividono il nome ma si risolvono diversamente per ciascuna view: lo stesso hostname può rispondere con IP diversi in base alla rete del client."
 
 #: templates/default/list_views.html:21 templates/modern/list_views.html:21
 msgid "No views configured yet. Add a zone variant below."
@@ -14073,7 +14073,7 @@ msgid ""
 "is linked to your user account and inherits your permissions, so revoking "
 "your account also revokes all its keys. Treat keys as secrets - they grant "
 "the same access as logging in as you."
-msgstr ""
+msgstr "Le chiavi API permettono ad applicazioni esterne di accedere all'API di Poweradmin. Ogni chiave è collegata al tuo account utente e ne eredita i permessi: revocare l'account revoca anche tutte le sue chiavi. Tratta le chiavi come segreti - garantiscono lo stesso accesso del tuo login."
 
 #: templates/modern/api_key_delete.html:17
 msgid "You are about to delete the API key"
@@ -14278,7 +14278,7 @@ msgid ""
 "(users added or removed). Each entry shows the action, the actor, the "
 "affected group, and a timestamp. Useful for auditing zone-access changes "
 "mediated by group ownership."
-msgstr ""
+msgstr "Registra gli eventi del ciclo di vita dei gruppi (creazione, modifica, eliminazione) e le variazioni di appartenenza (utenti aggiunti o rimossi). Ogni voce mostra l'azione, l'attore, il gruppo interessato e un timestamp. Utile per controllare le modifiche di accesso alle zone mediate dalla proprietà di gruppo."
 
 #: templates/modern/list_log_groups.html:26
 msgid "Group name"
@@ -14518,13 +14518,13 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin tables only. PowerDNS table access is not required when using "
 "the API backend."
-msgstr ""
+msgstr "Crea un utente del database con diritti limitati (SELECT, INSERT, UPDATE, DELETE) solo per le tabelle di Poweradmin. L'accesso alle tabelle PowerDNS non è richiesto quando si usa il backend API."
 
 #: install/templates/step6.html.twig:17
 msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
-msgstr ""
+msgstr "Crea un utente del database con diritti limitati (SELECT, INSERT, UPDATE, DELETE) affinché Poweradmin possa accedere alle tabelle PowerDNS."
 
 #: install/templates/step6.html.twig:25
 #, auto-english-fallback
@@ -14539,7 +14539,7 @@ msgstr "Execute the following commands:"
 #: install/templates/step6.html.twig:40
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
-msgstr ""
+msgstr "Dopo aver aggiunto il nuovo utente, prosegui con questa procedura di installazione."
 
 #: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
 #, auto-english-fallback
@@ -14550,7 +14550,7 @@ msgstr "Note:"
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
-msgstr ""
+msgstr "Dato che stai usando SQLite, non è necessario creare un nuovo utente con diritti limitati."
 
 #: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
 #, auto-english-fallback
@@ -14595,7 +14595,7 @@ msgstr "Choose a language for installation"
 #: install/templates/step1.html.twig:12
 msgid ""
 "Please select your preferred language to continue with the installation:"
-msgstr ""
+msgstr "Seleziona la lingua preferita per continuare l'installazione:"
 
 #: install/templates/step1.html.twig:391
 #, auto-english-fallback
@@ -14674,7 +14674,7 @@ msgstr "Server name"
 
 #: install/templates/step4.html.twig:77
 msgid "PowerDNS server name for API calls (usually \"localhost\")."
-msgstr ""
+msgstr "Nome del server PowerDNS per le chiamate API (di solito \"localhost\")."
 
 #: install/templates/step4.html.twig:86
 #, auto-english-fallback
@@ -14690,13 +14690,13 @@ msgstr "Database Configuration:"
 msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
-msgstr ""
+msgstr "Configura la connessione al database con permessi di creazione tabelle. La posizione di PowerDNS può essere specificata separatamente se necessario."
 
 #: install/templates/step4.html.twig:93
 msgid ""
 "Configure database connection for Poweradmin tables (users, permissions, "
 "zones). PowerDNS tables are not required."
-msgstr ""
+msgstr "Configura la connessione al database per le tabelle Poweradmin (utenti, permessi, zone). Le tabelle PowerDNS non sono richieste."
 
 #: install/templates/step4.html.twig:97
 #, auto-english-fallback
@@ -14735,7 +14735,7 @@ msgstr "Provide the hostname"
 
 #: install/templates/step4.html.twig:143
 msgid "Database server hostname (usually \"localhost\")."
-msgstr ""
+msgstr "Hostname del server di database (di solito \"localhost\")."
 
 #: install/templates/step4.html.twig:148
 #, auto-english-fallback
@@ -14795,7 +14795,7 @@ msgstr "DB collation"
 #: install/templates/step4.html.twig:197
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
-msgstr ""
+msgstr "Regole di confronto per il confronto dei caratteri. Lascia vuoto per il valore predefinito del database."
 
 #: install/templates/step4.html.twig:206
 #, auto-english-fallback
@@ -14834,7 +14834,7 @@ msgstr "Provide a password"
 
 #: install/templates/step4.html.twig:238
 msgid "Password for \"admin\" username."
-msgstr ""
+msgstr "Password per l'utente \"admin\"."
 
 #: install/templates/step2.html.twig:3
 #, auto-english-fallback
@@ -14956,12 +14956,12 @@ msgid ""
 "Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
 "configured database even when the PowerDNS API backend is selected. These "
 "credentials are for that database, not for PowerDNS."
-msgstr ""
+msgstr "Poweradmin mantiene tabelle proprie (utenti, permessi, metadati di zona) nel database configurato anche quando è selezionato il backend API di PowerDNS. Queste credenziali si riferiscono a quel database, non a PowerDNS."
 
 #: install/templates/step5.html.twig:67
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
-msgstr ""
+msgstr "Nome utente del database Poweradmin con accesso limitato. Non per il login alla UI web."
 
 #: install/templates/step5.html.twig:77
 #, auto-english-fallback
@@ -15072,13 +15072,13 @@ msgstr "Important Security Notice:"
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr ""
+msgstr "Devi rimuovere la directory \"install/\" dalla directory principale di Poweradmin."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
-msgstr ""
+msgstr "Per motivi di sicurezza, Poweradmin non funzionerà se la directory di installazione è presente."
 
 #: install/templates/step8.html.twig:22
 #, auto-english-fallback
@@ -15087,13 +15087,13 @@ msgstr "Next Steps"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr ""
+msgstr "Rimuovi la directory \"install/\" dal tuo server"
 
 #: install/templates/step8.html.twig:27
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
-msgstr ""
+msgstr "Accedi a <a href=\"../index.php\">Poweradmin</a> con l'utente predefinito \"admin\" e la password impostata al passo 3"
 
 #: install/templates/step8.html.twig:28
 #, auto-english-fallback
@@ -15118,7 +15118,7 @@ msgstr "Before proceeding, ensure you have:"
 #: install/templates/step3.html.twig:18
 msgid ""
 "PowerDNS installed with database tables created (or API access configured)"
-msgstr ""
+msgstr "PowerDNS installato con tabelle del database create (o accesso API configurato)"
 
 #: install/templates/step3.html.twig:19
 #, auto-english-fallback
@@ -15139,7 +15139,7 @@ msgstr "Next:"
 msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
-msgstr ""
+msgstr "Configura la connessione al database, crea l'account amministratore e genera il file di configurazione."
 
 #: install/helpers/InstallStepHandler.php:176
 #, auto-english-fallback
@@ -15164,19 +15164,19 @@ msgstr "Foreign Key Constraint Issues:"
 #: install/helpers/InstallStepHandler.php:209
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
-msgstr ""
+msgstr "L'installer non è riuscito a rimuovere le tabelle esistenti a causa di vincoli di chiave esterna"
 
 #: install/helpers/InstallStepHandler.php:210
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
-msgstr ""
+msgstr "Può accadere durante la reinstallazione se hai vincoli personalizzati o se le tabelle sono referenziate da altre tabelle"
 
 #: install/helpers/InstallStepHandler.php:211
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
-msgstr ""
+msgstr "Puoi provare a disabilitare manualmente i controlli sulle chiavi esterne prima di avviare l'installer:"
 
 #: install/helpers/InstallStepHandler.php:224
 #, auto-english-fallback
@@ -15192,7 +15192,7 @@ msgstr "Make sure the SQLite database file exists"
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
-msgstr ""
+msgstr "Verifica che il server web abbia permessi di lettura e scrittura sul file del database"
 
 #: install/helpers/InstallStepHandler.php:220
 #, auto-english-fallback
@@ -15224,19 +15224,19 @@ msgstr "Database Error"
 msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
-msgstr ""
+msgstr "Il file di database SQLite %s non esiste. Crea il file di database prima di proseguire."
 
 #: install/helpers/DatabaseHelper.php:183
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
-msgstr ""
+msgstr "Il file di database SQLite %s non è leggibile. Controlla i permessi del file."
 
 #: install/helpers/DatabaseHelper.php:191
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
-msgstr ""
+msgstr "Il file di database SQLite %s non è scrivibile. Controlla i permessi del file."
 
 #: install/helpers/DatabaseHelper.php:203
 #, auto-english-fallback
@@ -15258,66 +15258,23 @@ msgstr "PowerDNS API key is required when using API backend."
 msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
-msgstr ""
+msgstr "Nessun file di configurazione trovato. Crea il file config/settings.php prima di proseguire."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
 msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
-msgstr ""
+msgstr "Database PowerDNS separati sono supportati solo con MySQL. Per PostgreSQL e SQLite usa lo stesso database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
 #, php-format
 msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
-msgstr ""
+msgstr "Tabelle PowerDNS mancanti nel database \"%s\": %s. Assicurati che PowerDNS sia installato correttamente in questo database."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
-msgstr ""
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Each network maps to a single view. Resolvers in that network receive the "
-# OBSOLETE: "zone variant assigned to that view."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ogni rete corrisponde a una singola view. I resolver di quella rete "
-# OBSOLETE: "ricevono la variante di zona assegnata a quella view."
-
-# OBSOLETE: msgid "PowerDNS version unknown"
-# OBSOLETE: msgstr "Versione di PowerDNS sconosciuta"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Views serve different zone variants to different clients based on the "
-# OBSOLETE: "network mapping. Each variant is identified as zone..variant (for "
-# OBSOLETE: "example, example.com..trusted)."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Le view servono varianti di zona diverse a client diversi in base alla "
-# OBSOLETE: "mappatura di rete. Ogni variante è identificata come zone..variante (ad "
-# OBSOLETE: "esempio example.com..trusted)."
-
-# OBSOLETE: msgid "Slave Servers"
-# OBSOLETE: msgstr "Server Slave"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Showing connectivity status for DNS servers listed in the supermasters "
-# OBSOLETE: "table."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Mostra lo stato di connettività per i server DNS elencati nella tabella "
-# OBSOLETE: "supermasters."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "API keys allow external applications to access the Poweradmin API. Each "
-# OBSOLETE: "key is linked to your user account and inherits your permissions."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Le chiavi API permettono ad applicazioni esterne di accedere all'API "
-# OBSOLETE: "Poweradmin. Ogni chiave è collegata al tuo account utente ed eredita i "
-# OBSOLETE: "tuoi permessi."
-
-
+msgstr "Impossibile connettersi al database PowerDNS \"%s\": %s"
 
