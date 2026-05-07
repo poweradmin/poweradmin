@@ -14083,11 +14083,3 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
-# OBSOLETE: msgid "Requirements Check:"
-# OBSOLETE: msgstr "Requirements Check:"
-
-# OBSOLETE: msgid "Verifying that your server meets all requirements to run Poweradmin."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Verifying that your server meets all requirements to run Poweradmin."
-
-

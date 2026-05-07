@@ -13601,13 +13601,3 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Tidak dapat terhubung ke database PowerDNS \"%s\": %s"
 
-# OBSOLETE: msgid "Requirements Check:"
-# OBSOLETE: msgstr "Pemeriksaan Persyaratan:"
-
-# OBSOLETE: msgid "Verifying that your server meets all requirements to run Poweradmin."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Memverifikasi bahwa server Anda memenuhi semua persyaratan untuk "
-# OBSOLETE: "menjalankan Poweradmin."
-
-
-

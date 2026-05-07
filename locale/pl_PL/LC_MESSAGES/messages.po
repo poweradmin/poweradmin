@@ -14320,13 +14320,3 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nie można połączyć się z bazą danych PowerDNS \"%s\": %s"
 
-# OBSOLETE: msgid "Requirements Check:"
-# OBSOLETE: msgstr "Sprawdzanie Wymagań:"
-
-# OBSOLETE: msgid "Verifying that your server meets all requirements to run Poweradmin."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Weryfikacja, czy serwer spełnia wszystkie wymagania do uruchomienia "
-# OBSOLETE: "Poweradmin."
-
-
-

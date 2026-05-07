@@ -13423,12 +13423,3 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS 데이터베이스 \"%s\"에 연결할 수 없습니다: %s"
 
-# OBSOLETE: msgid "Requirements Check:"
-# OBSOLETE: msgstr "요구 사항 확인:"
-
-# OBSOLETE: msgid "Verifying that your server meets all requirements to run Poweradmin."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "서버가 Poweradmin을 실행하기 위한 모든 요구 사항을 충족하는지 확인합니다."
-
-
-

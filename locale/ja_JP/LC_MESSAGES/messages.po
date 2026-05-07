@@ -14167,13 +14167,3 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNSデータベース\"%s\"に接続できません: %s"
 
-# OBSOLETE: msgid "Requirements Check:"
-# OBSOLETE: msgstr "要件チェック："
-
-# OBSOLETE: msgid "Verifying that your server meets all requirements to run Poweradmin."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "サーバーがPoweradminを実行するための全ての要件を満たしていることを確認して"
-# OBSOLETE: "います。"
-
-
-

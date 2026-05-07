@@ -14221,13 +14221,3 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
 
-# OBSOLETE: msgid "Requirements Check:"
-# OBSOLETE: msgstr "Reikalavimų Patikrinimas:"
-
-# OBSOLETE: msgid "Verifying that your server meets all requirements to run Poweradmin."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Tikrinama, ar jūsų serveris atitinka visus Poweradmin paleidimo "
-# OBSOLETE: "reikalavimus."
-
-
-
