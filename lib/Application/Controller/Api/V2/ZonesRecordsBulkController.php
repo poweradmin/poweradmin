@@ -200,8 +200,9 @@ class ZonesRecordsBulkController extends PublicApiController
                 return $this->returnApiError('Zone not found', 404);
             }
 
-            // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZone($userId, $zoneId)) {
+            // Check if user has permission to edit records in this zone
+            $zoneType = $zone['type'] ?? null;
+            if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zoneType)) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
@@ -241,7 +242,7 @@ class ZonesRecordsBulkController extends PublicApiController
                     try {
                         switch ($action) {
                             case 'create':
-                                $recordType = $this->performCreateOperation($zoneId, $operation);
+                                $recordType = $this->performCreateOperation($zoneId, $operation, $zoneType);
                                 $results['created']++;
                                 if ($recordType !== 'SOA') {
                                     $nonSOARecordModified = true;
@@ -249,7 +250,7 @@ class ZonesRecordsBulkController extends PublicApiController
                                 break;
 
                             case 'update':
-                                $recordType = $this->performUpdateOperation($zoneId, $operation);
+                                $recordType = $this->performUpdateOperation($zoneId, $operation, $zoneType);
                                 $results['updated']++;
                                 if ($recordType !== 'SOA') {
                                     $nonSOARecordModified = true;
@@ -257,7 +258,7 @@ class ZonesRecordsBulkController extends PublicApiController
                                 break;
 
                             case 'delete':
-                                $recordType = $this->performDeleteOperation($zoneId, $operation);
+                                $recordType = $this->performDeleteOperation($zoneId, $operation, $zoneType);
                                 $results['deleted']++;
                                 if ($recordType !== 'SOA') {
                                     $nonSOARecordModified = true;
@@ -328,7 +329,7 @@ class ZonesRecordsBulkController extends PublicApiController
      * @return string The record type that was created
      * @throws Exception If operation fails
      */
-    private function performCreateOperation(int $zoneId, array $operation): string
+    private function performCreateOperation(int $zoneId, array $operation, ?string $zoneType = null): string
     {
         // Validate required fields
         $requiredFields = ['name', 'type', 'content'];
@@ -348,6 +349,11 @@ class ZonesRecordsBulkController extends PublicApiController
 
         if ($ttl === null || $priority === null || $disabled === null) {
             throw new ApiErrorException('Fields ttl, priority, and disabled must be numeric', 400);
+        }
+
+        // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
+        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, $type, $zoneType)) {
+            throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }
 
         // Validate TTL
@@ -426,7 +432,7 @@ class ZonesRecordsBulkController extends PublicApiController
      * @return string The record type that was updated
      * @throws Exception If operation fails
      */
-    private function performUpdateOperation(int $zoneId, array $operation): string
+    private function performUpdateOperation(int $zoneId, array $operation, ?string $zoneType = null): string
     {
         if (!isset($operation['id'])) {
             throw new ApiErrorException("Field 'id' is required for update operation", 400);
@@ -438,6 +444,19 @@ class ZonesRecordsBulkController extends PublicApiController
         $existingRecord = $this->recordRepository->getRecordById($recordId);
         if (!$existingRecord || $existingRecord['domain_id'] != $zoneId) {
             throw new ApiErrorException("Record not found in this zone", 404);
+        }
+
+        // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
+        $userId = $this->getAuthenticatedUserId();
+        if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zoneType)) {
+            throw new ApiErrorException('You do not have permission to edit this record type', 403);
+        }
+        $newType = strtoupper(trim((string)($operation['type'] ?? $existingRecord['type'])));
+        if (
+            $newType !== strtoupper((string)$existingRecord['type'])
+            && !$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zoneType)
+        ) {
+            throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }
 
         // Prepare record data for update
@@ -477,7 +496,7 @@ class ZonesRecordsBulkController extends PublicApiController
      * @return string The record type that was deleted
      * @throws Exception If operation fails
      */
-    private function performDeleteOperation(int $zoneId, array $operation): string
+    private function performDeleteOperation(int $zoneId, array $operation, ?string $zoneType = null): string
     {
         if (!isset($operation['id'])) {
             throw new ApiErrorException("Field 'id' is required for delete operation", 400);
@@ -493,6 +512,11 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Store record type before deletion (for SOA serial update logic)
         $recordType = $existingRecord['type'];
+
+        // Block SOA/NS deletes for users limited to zone_content_edit_own_as_client
+        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, (string)$recordType, $zoneType)) {
+            throw new ApiErrorException('You do not have permission to delete this record type', 403);
+        }
 
         // Use RecordManager to delete the record
         if (!$this->recordManager->deleteRecord($recordId)) {

@@ -180,6 +180,73 @@ class ApiPermissionService
     }
 
     /**
+     * Check if user can edit records (content) inside a specific zone (stateless)
+     *
+     * Broader than canEditZone(): also accepts zone_content_edit_own_as_client, which
+     * is restricted to record edits and must NOT grant zone-level metadata changes
+     * (name/type/master). Zone-level updates remain gated by canEditZone().
+     *
+     * Record-type restrictions for own_as_client (SOA, NS) are enforced by
+     * canEditZoneRecord().
+     *
+     * SLAVE zones cannot be content-edited via Poweradmin (records are owned by
+     * the master); pass the zone type from the caller to enforce this in the
+     * API write paths that bypass RecordManager. ApiPermissionService never
+     * queries PowerDNS tables itself, so the zone type must be supplied.
+     *
+     * @param int $userId User ID to check
+     * @param int $zoneId Zone ID (domain_id in PowerDNS)
+     * @param string|null $zoneType Zone type (MASTER, SLAVE, NATIVE) when known
+     * @return bool True if user can edit records in the zone
+     */
+    public function canEditZoneContent(int $userId, int $zoneId, ?string $zoneType = null): bool
+    {
+        if ($zoneType !== null && strtoupper($zoneType) === 'SLAVE') {
+            return false;
+        }
+
+        if ($this->canEditZone($userId, $zoneId)) {
+            return true;
+        }
+
+        if ($this->userHasPermission($userId, 'zone_content_edit_own_as_client')) {
+            return $this->userOwnsZone($userId, $zoneId);
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user can edit a specific record type within a zone (stateless)
+     *
+     * Mirrors the web UI behavior in RecordManager: users holding only
+     * zone_content_edit_own_as_client may edit records in their own zones except
+     * for SOA and NS records, which require zone_content_edit_own (or higher).
+     * SLAVE zones are rejected outright (when $zoneType is provided) so API
+     * create paths that bypass RecordManager keep the same restriction as the UI.
+     *
+     * @param int $userId User ID to check
+     * @param int $zoneId Zone ID (domain_id in PowerDNS)
+     * @param string $recordType DNS record type (e.g. "A", "TXT", "SOA", "NS")
+     * @param string|null $zoneType Zone type (MASTER, SLAVE, NATIVE) when known
+     * @return bool True if user can edit records of this type in this zone
+     */
+    public function canEditZoneRecord(int $userId, int $zoneId, string $recordType, ?string $zoneType = null): bool
+    {
+        if (!$this->canEditZoneContent($userId, $zoneId, $zoneType)) {
+            return false;
+        }
+
+        $restrictedTypes = ['SOA', 'NS'];
+        if (!in_array(strtoupper($recordType), $restrictedTypes, true)) {
+            return true;
+        }
+
+        // SOA/NS edits require a stronger permission than own_as_client
+        return $this->canEditZone($userId, $zoneId);
+    }
+
+    /**
      * Check if user can delete a specific zone (stateless)
      *
      * @param int $userId User ID to check

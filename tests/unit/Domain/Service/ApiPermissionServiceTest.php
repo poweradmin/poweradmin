@@ -214,6 +214,111 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanEditZoneRejectsEditOwnAsClient(): void
+    {
+        // canEditZone is strict: own_as_client must NOT pass (zone-meta gate).
+        // Sequence: ueberuser=0, edit_others=0, edit_own=0
+        $this->setupPermissionMock([0, 0, 0]);
+
+        $result = $this->service->canEditZone(3, 100);
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneContentWithEditOwnAsClientAndOwnership(): void
+    {
+        // canEditZone: ueberuser=0, edit_others=0, edit_own=0 -> false
+        // own_as_client=1, owns direct=1 -> true
+        $this->setupPermissionMock([0, 0, 0, 1, 1]);
+
+        $result = $this->service->canEditZoneContent(3, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneContentWithEditOwnAsClientWithoutOwnership(): void
+    {
+        // canEditZone: ueberuser=0, edit_others=0, edit_own=0 -> false
+        // own_as_client=1, owns direct=0, owns group=0 -> false
+        $this->setupPermissionMock([0, 0, 0, 1, 0, 0]);
+
+        $result = $this->service->canEditZoneContent(3, 100);
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordAllowsNonRestrictedTypeForEditOwnAsClient(): void
+    {
+        // canEditZoneContent: canEditZone(0,0,0) false, own_as_client=1, owns=1 -> true
+        // Non-SOA/NS short-circuits to true.
+        $this->setupPermissionMock([0, 0, 0, 1, 1]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'TXT');
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordBlocksSOAForEditOwnAsClient(): void
+    {
+        // canEditZoneContent: canEditZone(0,0,0) false, own_as_client=1, owns=1 -> true
+        // SOA branch re-runs canEditZone: ueberuser=0, edit_others=0, edit_own=0 -> deny
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'SOA');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordBlocksNSForEditOwnAsClient(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'NS');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordAllowsSOAForEditOwn(): void
+    {
+        // canEditZoneContent: canEditZone(ueberuser=0, edit_others=0, edit_own=1, owns=1) -> true
+        // SOA branch re-runs canEditZone: ueberuser=0, edit_others=0, edit_own=1, owns=1 -> true
+        $this->setupPermissionMock([0, 0, 1, 1, 0, 0, 1, 1]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'SOA');
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneContentBlocksSlaveZone(): void
+    {
+        // No permission queries should be made: SLAVE short-circuits to false.
+        $this->db->expects($this->never())->method('prepare');
+
+        $result = $this->service->canEditZoneContent(1, 100, 'SLAVE');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordBlocksSlaveZoneEvenForUberuser(): void
+    {
+        // SLAVE rejection happens in canEditZoneContent, before any permission lookups.
+        $this->db->expects($this->never())->method('prepare');
+
+        $result = $this->service->canEditZoneRecord(1, 100, 'A', 'SLAVE');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneContentAllowsMasterZoneWhenZoneTypeProvided(): void
+    {
+        // ueberuser=0, edit_others=0, edit_own=1, owns=1
+        $this->setupPermissionMock([0, 0, 1, 1]);
+
+        $result = $this->service->canEditZoneContent(2, 100, 'MASTER');
+        $this->assertTrue($result);
+    }
+
+    #[Test]
     public function testCanDeleteZoneAsUberuser(): void
     {
         $this->setupPermissionMock([1]); // user_is_ueberuser = true
