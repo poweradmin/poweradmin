@@ -2966,39 +2966,3 @@ msgstr ""
 msgid "Please select a language to proceed with the installation."
 msgstr "Selezionare una lingua per procedere con l'installazione."
 
-#~ msgid "You cannot use html tags for this type of record."
-#~ msgstr "Non è possibile utilizzare tag HTML per questo tipo di record."
-
-#, php-format
-#~ msgid "There is no matching reverse-zone for: %s."
-#~ msgstr "Non c'è una zona inversa corrispondente per: %s."
-
-#~ msgid "Delete key"
-#~ msgstr "Elimina chiave"
-
-#~ msgid ""
-#~ "Failed to set locale. Selected locale may be unsupported on this system. "
-#~ "Please contact your administrator."
-#~ msgstr ""
-#~ "Impossibile impostare il locale. Il locale selezionato potrebbe non "
-#~ "essere supportato su questo sistema. Contatta l'amministratore."
-
-#~ msgid "Add also reverse record"
-#~ msgstr "Aggiungere anche il record inverso"
-
-#~ msgid ""
-#~ "Finally, if you see any errors during the installation process, a problem "
-#~ "report would be appreciated. You can report problems (and ask for help) "
-#~ "on the <a href=https://github.com/poweradmin/poweradmin/issues "
-#~ "target=blank>poweradmin</a> issues."
-#~ msgstr ""
-#~ "Infine, se riscontri degli errori durante il processo di installazione, "
-#~ "ti saremmo grati se ci segnalassi un problema. Puoi segnalare i problemi "
-#~ "(e chiedere aiuto) sui problemi di <a href=https://github.com/poweradmin/"
-#~ "poweradmin/issues target=blank>poweradmin</a>."
-
-#~ msgid ""
-#~ "The username for Poweradmin. This new user will have limited rights only."
-#~ msgstr ""
-#~ "Il nome utente per Poweradmin. Questo nuovo utente avrà solo diritti "
-#~ "limitati."
