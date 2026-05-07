@@ -388,13 +388,19 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZone($userId, $zoneId)) {
+            if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
             $input = json_decode($this->request->getContent(), true);
             if (!$input) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
+            }
+
+            // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
+            $requestedType = strtoupper(trim((string)($input['type'] ?? '')));
+            if ($requestedType !== '' && !$this->permissionService->canEditZoneRecord($userId, $zoneId, $requestedType, $zone['type'] ?? null)) {
+                return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
 
             // Validate required fields
@@ -580,7 +586,7 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZone($userId, $zoneId)) {
+            if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
@@ -590,9 +596,23 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Record not found in this zone', 404);
             }
 
+            // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
+            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zone['type'] ?? null)) {
+                return $this->returnApiError('You do not have permission to edit this record type', 403);
+            }
+
             $input = json_decode($this->request->getContent(), true);
             if (!$input) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
+            }
+
+            // Block changing the record into a restricted type
+            $newType = strtoupper(trim((string)($input['type'] ?? $existingRecord['type'])));
+            if (
+                $newType !== strtoupper((string)$existingRecord['type'])
+                && !$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zone['type'] ?? null)
+            ) {
+                return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
 
             // Prepare record data for update - use existing values if not provided
@@ -710,7 +730,7 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZone($userId, $zoneId)) {
+            if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
@@ -722,6 +742,11 @@ class ZonesRecordsController extends PublicApiController
 
             // Get record type before deletion (for SOA serial update logic)
             $recordType = $existingRecord['type'];
+
+            // Block SOA/NS deletes for users limited to zone_content_edit_own_as_client
+            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$recordType, $zone['type'] ?? null)) {
+                return $this->returnApiError('You do not have permission to delete this record type', 403);
+            }
 
             // Use RecordManager to delete the record
             $success = $this->recordManager->deleteRecord($recordId);

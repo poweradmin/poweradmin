@@ -401,13 +401,19 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZone($userId, $zoneId)) {
+            if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
             $input = json_decode($this->request->getContent(), true);
             if (!$input) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
+            }
+
+            // Block SOA/NS RRSet edits for users limited to zone_content_edit_own_as_client
+            $rrsetTypeRaw = strtoupper(trim((string)($input['type'] ?? '')));
+            if ($rrsetTypeRaw !== '' && !$this->permissionService->canEditZoneRecord($userId, $zoneId, $rrsetTypeRaw, $zone['type'] ?? null)) {
+                return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
 
             // Validate required fields
@@ -649,8 +655,13 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZone($userId, $zoneId)) {
+            if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
+            }
+
+            // Block SOA/NS RRSet deletes for users limited to zone_content_edit_own_as_client
+            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null)) {
+                return $this->returnApiError('You do not have permission to delete this record type', 403);
             }
 
             // Get zone name
