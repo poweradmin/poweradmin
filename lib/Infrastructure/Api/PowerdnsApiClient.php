@@ -162,6 +162,33 @@ class PowerdnsApiClient
     }
 
     /**
+     * Get zone kind/masters for all zones in a single API call. Used to keep the
+     * local zones-table cache aligned with PowerDNS when zone kinds change
+     * outside Poweradmin (e.g. via pdnsutil set-kind).
+     *
+     * @return array<string, array{kind: string, masters: array<int, string>}>
+     */
+    public function getAllZoneKinds(): array
+    {
+        $endpoint = $this->buildEndpoint("/zones");
+        $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+        $kinds = [];
+        if ($response && $response['responseCode'] === 200) {
+            foreach ($response['data'] as $zoneData) {
+                $name = $zoneData['name'] ?? '';
+                $masters = $zoneData['masters'] ?? [];
+                $kinds[$name] = [
+                    'kind' => strtoupper((string)($zoneData['kind'] ?? '')),
+                    'masters' => is_array($masters) ? array_values(array_map('strval', $masters)) : [],
+                ];
+            }
+        }
+
+        return $kinds;
+    }
+
+    /**
      * Create a new zone
      *
      * @param Zone $zone

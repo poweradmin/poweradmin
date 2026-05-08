@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
+use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
@@ -720,53 +721,59 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     {
         try {
             $apiZones = $this->client->getAllZones();
-        } catch (\Poweradmin\Domain\Error\ApiErrorException $e) {
+        } catch (ApiErrorException $e) {
             $this->logger->error('Failed to get zones from API: {error}', ['error' => $e->getMessage()]);
             return [];
         }
 
-        $zones = [];
-        foreach ($apiZones as $zone) {
-            $name = rtrim($zone->getName(), '.');
-            $zones[] = [
-                'id' => 0,
-                'name' => $name,
-                'type' => '',
-                'master' => '',
-                'dnssec' => $zone->isSecured(),
-            ];
+        // Pull kind/masters from the same /zones list response so type stays in
+        // sync when changed externally (e.g. pdnsutil set-kind). Reading the
+        // local zones cache here would lock in stale values and prevent
+        // ZoneSyncService from ever detecting the drift.
+        $apiKinds = null;
+        try {
+            $apiKinds = $this->client->getAllZoneKinds();
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to get zone kinds from API: {error}', ['error' => $e->getMessage()]);
         }
 
-        // Enrich with local zone data (id, type, master) from zones table
-        if (!empty($zones)) {
+        // Always read the local cache: it provides id mapping, plus a fallback
+        // for type/master if the kinds call failed. Without that fallback, an
+        // empty type would feed back into ZoneSyncService and wipe valid
+        // cached metadata on the next sync.
+        $localZones = [];
+        if (!empty($apiZones)) {
             $stmt = $this->db->query("SELECT id, domain_id, zone_name, zone_type, zone_master FROM zones WHERE zone_name IS NOT NULL");
-            $localZones = [];
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $localZones[$row['zone_name']] = $row;
             }
+        }
 
-            foreach ($zones as &$zone) {
-                if (isset($localZones[$zone['name']])) {
-                    $local = $localZones[$zone['name']];
-                    $zone['id'] = (int)($local['domain_id'] ?: $local['id']);
-                    $zone['type'] = strtoupper($local['zone_type'] ?? '');
-                    $zone['master'] = $local['zone_master'] ?? '';
-                }
-            }
-            unset($zone);
+        $zones = [];
+        foreach ($apiZones as $zone) {
+            $apiName = $zone->getName();
+            $name = rtrim($apiName, '.');
+            $local = $localZones[$name] ?? null;
+            $kind = $apiKinds[$apiName] ?? null;
 
-            // For zones without local data, fetch type from API
-            foreach ($zones as &$zone) {
-                if (empty($zone['type']) && $zone['id'] === 0) {
-                    $apiName = self::ensureTrailingDot($zone['name']);
-                    $zoneData = $this->client->getZone($apiName);
-                    if ($zoneData !== null) {
-                        $zone['type'] = strtoupper($zoneData['kind'] ?? '');
-                        $zone['master'] = implode(',', $zoneData['masters'] ?? []);
-                    }
-                }
+            if ($kind !== null) {
+                $type = $kind['kind'];
+                $master = implode(',', $kind['masters']);
+            } else {
+                // Bulk kinds call failed - keep last-known values from cache so
+                // a transient API blip doesn't propagate empty values back into
+                // the cache via ZoneSyncService.
+                $type = strtoupper((string)($local['zone_type'] ?? ''));
+                $master = (string)($local['zone_master'] ?? '');
             }
-            unset($zone);
+
+            $zones[] = [
+                'id' => $local !== null ? (int)($local['domain_id'] ?: $local['id']) : 0,
+                'name' => $name,
+                'type' => $type,
+                'master' => $master,
+                'dnssec' => $zone->isSecured(),
+            ];
         }
 
         return $zones;

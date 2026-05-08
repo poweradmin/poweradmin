@@ -6,6 +6,7 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -1217,21 +1218,23 @@ class ApiDnsBackendProviderTest extends TestCase
     }
 
     // ---------------------------------------------------------------
-    // getZones enriches with local data
+    // getZones returns API kind regardless of local cache
     // ---------------------------------------------------------------
 
-    public function testGetZonesEnrichesWithLocalZonesData(): void
+    public function testGetZonesUsesApiKindAndMapsLocalId(): void
     {
         $mockZone = $this->createMock(\Poweradmin\Domain\Model\Zone::class);
         $mockZone->method('getName')->willReturn('example.com.');
         $mockZone->method('isSecured')->willReturn(false);
 
         $this->mockClient->method('getAllZones')->willReturn([$mockZone]);
+        $this->mockClient->method('getAllZoneKinds')->willReturn([
+            'example.com.' => ['kind' => 'NATIVE', 'masters' => []],
+        ]);
 
-        // Mock local zones query
         $stmtZones = $this->createMock(PDOStatement::class);
         $stmtZones->method('fetch')->willReturnOnConsecutiveCalls(
-            ['id' => 5, 'domain_id' => 5, 'zone_name' => 'example.com', 'zone_type' => 'NATIVE', 'zone_master' => ''],
+            ['id' => 5, 'domain_id' => 5, 'zone_name' => 'example.com'],
             false
         );
         $this->mockDb->method('query')->willReturn($stmtZones);
@@ -1242,5 +1245,85 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertEquals(5, $result[0]['id']);
         $this->assertEquals('example.com', $result[0]['name']);
         $this->assertEquals('NATIVE', $result[0]['type']);
+    }
+
+    public function testGetZonesPrefersApiKindOverStaleLocalCache(): void
+    {
+        // Regression for #1208: pdnsutil set-kind changes domains.type but the
+        // local zones.zone_type cache stays NATIVE. getZones() must surface the
+        // API value so ZoneSyncService can detect the drift.
+        $mockZone = $this->createMock(\Poweradmin\Domain\Model\Zone::class);
+        $mockZone->method('getName')->willReturn('example.com.');
+        $mockZone->method('isSecured')->willReturn(false);
+
+        $this->mockClient->method('getAllZones')->willReturn([$mockZone]);
+        $this->mockClient->method('getAllZoneKinds')->willReturn([
+            'example.com.' => ['kind' => 'MASTER', 'masters' => []],
+        ]);
+
+        $stmtZones = $this->createMock(PDOStatement::class);
+        $stmtZones->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 5, 'domain_id' => 5, 'zone_name' => 'example.com'],
+            false
+        );
+        $this->mockDb->method('query')->willReturn($stmtZones);
+
+        $result = $this->provider->getZones();
+
+        $this->assertEquals('MASTER', $result[0]['type']);
+    }
+
+    public function testGetZonesFallsBackToLocalCacheWhenKindLookupFails(): void
+    {
+        // Transient failure on the second /zones call must not propagate empty
+        // type/master values - those would feed back through ZoneSyncService
+        // and wipe the local cache.
+        $mockZone = $this->createMock(\Poweradmin\Domain\Model\Zone::class);
+        $mockZone->method('getName')->willReturn('example.com.');
+        $mockZone->method('isSecured')->willReturn(false);
+
+        $this->mockClient->method('getAllZones')->willReturn([$mockZone]);
+        $this->mockClient->method('getAllZoneKinds')->willThrowException(
+            new ApiErrorException('boom')
+        );
+
+        $stmtZones = $this->createMock(PDOStatement::class);
+        $stmtZones->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 5, 'domain_id' => 5, 'zone_name' => 'example.com', 'zone_type' => 'MASTER', 'zone_master' => '10.0.0.1'],
+            false
+        );
+        $this->mockDb->method('query')->willReturn($stmtZones);
+
+        $result = $this->provider->getZones();
+
+        $this->assertEquals('MASTER', $result[0]['type']);
+        $this->assertEquals('10.0.0.1', $result[0]['master']);
+    }
+
+    public function testGetZonesPopulatesTypeWhenLocalCacheIsEmpty(): void
+    {
+        // Test fixtures (and pre-sync installs) inserted rows with NULL
+        // zone_type. Without API kind enrichment those rows render with an
+        // empty Type column in the zone list.
+        $mockZone = $this->createMock(\Poweradmin\Domain\Model\Zone::class);
+        $mockZone->method('getName')->willReturn('legacy.example.');
+        $mockZone->method('isSecured')->willReturn(false);
+
+        $this->mockClient->method('getAllZones')->willReturn([$mockZone]);
+        $this->mockClient->method('getAllZoneKinds')->willReturn([
+            'legacy.example.' => ['kind' => 'SLAVE', 'masters' => ['10.0.0.1', '10.0.0.2']],
+        ]);
+
+        $stmtZones = $this->createMock(PDOStatement::class);
+        $stmtZones->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 7, 'domain_id' => 7, 'zone_name' => 'legacy.example'],
+            false
+        );
+        $this->mockDb->method('query')->willReturn($stmtZones);
+
+        $result = $this->provider->getZones();
+
+        $this->assertEquals('SLAVE', $result[0]['type']);
+        $this->assertEquals('10.0.0.1,10.0.0.2', $result[0]['master']);
     }
 }
