@@ -60,7 +60,7 @@
                     <tr>
                         <td>{{record['name']}}</td>
                         <td><span class="badge {{ record_type_class(record['type']) }}">{{ record['type'] }}</span></td>
-                        <td><code class="text-break">{{record['content']}}</code></td>
+                        <td><code class="text-break" style="white-space: pre-wrap;">{{record['content']}}</code></td>
                         {% if (record['type'] == "MX") or (record['type'] == "SRV") %}
                         <td>{{record['prio']}}</td>
                         {% else %}

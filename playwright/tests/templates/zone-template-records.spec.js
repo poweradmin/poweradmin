@@ -244,6 +244,34 @@ test.describe('Zone Template Records', () => {
     });
   });
 
+  test.describe('Regressions', () => {
+    test('preserves multiple consecutive spaces in content listing (#1212)', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      expect(templateId).toBeTruthy();
+
+      const spacedContent = '1       465           smtp.test.loc';
+
+      await page.goto(`/zones/templates/${templateId}/records/add`);
+      await page.locator('select[name*="type"]').first().selectOption('TXT');
+      await page.locator('input[name*="name"]').first().fill('spaced');
+      await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill(spacedContent);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await page.waitForLoadState('networkidle');
+
+      await page.goto(`/zones/templates/${templateId}/edit`);
+      await page.waitForLoadState('networkidle');
+
+      const codeCell = page.locator(`table code:has-text("smtp.test.loc")`).first();
+      await expect(codeCell).toHaveCount(1);
+
+      const text = await codeCell.textContent();
+      expect(text).toBe(spacedContent);
+
+      const whiteSpace = await codeCell.evaluate(el => getComputedStyle(el).whiteSpace);
+      expect(['pre', 'pre-wrap', 'pre-line', 'break-spaces']).toContain(whiteSpace);
+    });
+  });
+
   test.describe('Template Record Permissions', () => {
     test('admin should manage template records', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
