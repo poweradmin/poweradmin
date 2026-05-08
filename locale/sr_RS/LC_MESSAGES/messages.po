@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-05 09:08+0300\n"
+"POT-Creation-Date: 2026-05-07 22:58+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Serbian\n"
@@ -121,6 +121,7 @@ msgid "Transport protocol for the TLS connection"
 msgstr "Транспортни протокол за TLS везу"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:89
+#: install/templates/step4.html.twig:137
 msgid "Hostname"
 msgstr "Име хоста"
 
@@ -1333,7 +1334,7 @@ msgstr "Дат је неважећи или неочекивани унос."
 msgid "You do not have the permission to delete this user."
 msgstr "Немате дозволу за брисање овог корисника."
 
-#: lib/Application/Controller/DeleteUserController.php:76
+#: lib/Application/Controller/DeleteUserController.php:77
 msgid "You do not have permission to delete a superuser account."
 msgstr "Немате дозволу за брисање суперкорисничког налога."
 
@@ -1341,7 +1342,7 @@ msgstr "Немате дозволу за брисање суперкорисни
 msgid "User does not exist."
 msgstr "Корисник не постоји."
 
-#: lib/Application/Controller/DeleteUserController.php:111
+#: lib/Application/Controller/DeleteUserController.php:112
 msgid "The user has been deleted successfully."
 msgstr "Корисник је успешно обрисан."
 
@@ -2645,17 +2646,18 @@ msgstr "Директне зоне"
 
 #: lib/Application/Controller/ListForwardZonesController.php:82
 msgid "You do not have permission to sync zones from PowerDNS."
-msgstr "You do not have permission to sync zones from PowerDNS."
+msgstr "Nemate dozvolu da sinhronizujete zone iz PowerDNS-a."
 
 #: lib/Application/Controller/ListForwardZonesController.php:93
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr ""
+"Zone sinhronizovane iz PowerDNS-a: %d dodato, %d ažurirano, %d uklonjeno."
 
 #: lib/Application/Controller/ListForwardZonesController.php:101
 #, php-format
 msgid "Zone sync failed: %s"
-msgstr "Zone sync failed: %s"
+msgstr "Sinhronizacija zone nije uspela: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:43
 msgid "You do not have the permission to add a new supermaster."
@@ -3173,7 +3175,7 @@ msgstr "Неуспешна аутентификација против LDAP."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Аутентификација није успела: Неважећи SAML одговор"
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:141
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:142
 msgid "This is an invalid zone name."
 msgstr "Ово је неважеће име зоне."
 
@@ -3191,11 +3193,11 @@ msgstr "Овај шаблон је додељен најмање једној г
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:91
 msgid "Primary"
-msgstr "Primary"
+msgstr "Primarni"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:92
 msgid "Secondary"
-msgstr "Secondary"
+msgstr "Sekundarni"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:103
 #: lib/Module/ZoneImportExport/templates/import.html:131
@@ -9115,7 +9117,7 @@ msgstr "групе"
 
 #: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
-msgstr "Connected PowerDNS version"
+msgstr "Povezana verzija PowerDNS-a"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
 msgid ""
@@ -9178,6 +9180,7 @@ msgid "Tools"
 msgstr "Алати"
 
 #: templates/default/index.html:297 templates/modern/index.html:297
+#: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "База података"
 
@@ -9186,6 +9189,7 @@ msgid "My Profile"
 msgstr "Мој профил"
 
 #: templates/modern/login.html:23 templates/modern/add_user.html:39
+#: install/templates/step4.html.twig:122 install/templates/step5.html.twig:72
 msgid "Password"
 msgstr "Лозинка"
 
@@ -9897,6 +9901,7 @@ msgid "Recommended bits for"
 msgstr "Препоручени битови за"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
+#: install/helpers/InstallStepHandler.php:175
 msgid "Warning:"
 msgstr "Упозорење:"
 
@@ -9947,6 +9952,7 @@ msgid "Edit user"
 msgstr "Уреди корисника"
 
 #: templates/modern/manage_group_members.html:93
+#: install/templates/step4.html.twig:111 install/templates/step5.html.twig:61
 msgid "Username"
 msgstr "Корисничко име"
 
@@ -9989,6 +9995,7 @@ msgid "Optional information about this user"
 msgstr "Опционе информације о кориснику"
 
 #: templates/modern/users.html:49 templates/modern/add_user.html:94
+#: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Омогућено"
 
@@ -10360,6 +10367,7 @@ msgid "Host Prefix"
 msgstr "Префикс хоста"
 
 #: templates/modern/batch_ptr_record.html:73
+#: install/templates/step4.html.twig:206
 msgid "Optional"
 msgstr "Опционо"
 
@@ -10816,6 +10824,7 @@ msgid "MFA"
 msgstr "MFA"
 
 #: templates/modern/users.html:105 templates/modern/users.html:169
+#: install/templates/step4.html.twig:25
 msgid "SQL"
 msgstr "SQL"
 
@@ -10841,11 +10850,11 @@ msgstr "MFA није конфигурисан"
 
 #: templates/modern/list_forward_zones.html:22
 msgid "Fetch zones from PowerDNS and reconcile the local table"
-msgstr "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Preuzmi zone iz PowerDNS-a i uskladi sa lokalnom tabelom"
 
 #: templates/modern/list_forward_zones.html:23
 msgid "Sync from PowerDNS"
-msgstr "Sync from PowerDNS"
+msgstr "Sinhronizuj iz PowerDNS-a"
 
 #: templates/modern/list_template_zones.html:15
 msgid "Total number of zones:"
@@ -11057,6 +11066,7 @@ msgid "Send Username"
 msgstr "Пошаљи корисничко име"
 
 #: templates/default/add_user.html:43 templates/modern/add_user.html:43
+#: install/templates/step4.html.twig:127
 msgid "Provide user password"
 msgstr "Унесите корисничку лозинку"
 
@@ -11918,11 +11928,11 @@ msgstr "Прикажи појединачно дугме за брисање"
 
 #: templates/modern/user_preferences.html:125
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Prikaži samo ime hosta"
 
 #: templates/modern/user_preferences.html:126
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "Ukloni sufiks zone iz imena zapisa u prikazu za uređivanje"
 
 #: templates/modern/user_preferences.html:141
 msgid "Save Preferences"
@@ -12254,6 +12264,7 @@ msgid "Last Checked"
 msgstr "Последња провера"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:126
+#: install/templates/step2.html.twig:18
 msgid "OK"
 msgstr "У реду"
 
@@ -12366,7 +12377,7 @@ msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
 msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
+"Proverite da li pdns_api.key u config/settings.php odgovara API ključu konfigurisanom u PowerDNS-u."
 "configured in PowerDNS."
 
 #: templates/default/header.html:328 templates/modern/header.html:497
@@ -12374,7 +12385,7 @@ msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
 msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"Proverite da li pdns_api.server_name odgovara onome što PowerDNS prijavljuje (podrazumevano 'localhost')."
 "'localhost')."
 
 #: templates/default/header.html:330 templates/modern/header.html:499
@@ -12383,7 +12394,7 @@ msgid ""
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"PowerDNS je odbio zahtev. Razlog proverite u dnevniku PowerDNS servera - čest uzrok nakon direktnog uvoza zona u PowerDNS bazu podataka je jedan neispravan zapis koji onemogućava serijalizaciju zone."
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 
@@ -12940,4 +12951,690 @@ msgstr "Унесите име домена (нпр. example.com) за RDAP ин�
 #: lib/Module/Rdap/templates/rdap.html:35
 msgid "RDAP results for"
 msgstr "RDAP резултати за"
+
+#: install/templates/step6.html.twig:3
+msgid "Create limited rights user"
+msgstr "Kreiraj korisnika sa ograničenim pravima"
+
+#: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
+msgid "Step"
+msgstr "Korak"
+
+#: install/templates/step6.html.twig:8
+msgid "Create limited-rights user"
+msgstr "Kreiraj korisnika sa ograničenim pravima"
+
+#: install/templates/step6.html.twig:13
+msgid "Limited Database Rights:"
+msgstr "Ograničena prava nad bazom podataka:"
+
+#: install/templates/step6.html.twig:15
+msgid ""
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin tables only. PowerDNS table access is not required when using "
+"the API backend."
+msgstr ""
+"Kreirajte korisnika baze podataka sa ograničenim pravima (select, insert, update, delete) samo za Poweradmin tabele. Pristup PowerDNS tabelama nije potreban kada se koristi API pozadinski sistem."
+
+#: install/templates/step6.html.twig:17
+msgid ""
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin to access PowerDNS tables."
+msgstr ""
+"Kreirajte korisnika baze podataka sa ograničenim pravima (select, insert, update, delete) kako bi Poweradmin mogao da pristupi PowerDNS tabelama."
+
+#: install/templates/step6.html.twig:25
+msgid "Database Commands"
+msgstr "Komande baze podataka"
+
+#: install/templates/step6.html.twig:28
+msgid "Execute the following commands:"
+msgstr "Izvršite sledeće komande:"
+
+#: install/templates/step6.html.twig:40
+msgid ""
+"After you have added the new user, proceed with this installation procedure."
+msgstr ""
+"Nakon što ste dodali novog korisnika, nastavite sa ovom instalacionom procedurom."
+
+#: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
+msgid "Note:"
+msgstr "Napomena:"
+
+#: install/templates/step6.html.twig:43
+msgid ""
+"Since you are using SQLite, there is no need to create a new user with "
+"limited rights."
+msgstr ""
+"Pošto koristite SQLite, nije potrebno kreirati novog korisnika sa ograničenim pravima."
+
+#: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
+msgid "Continue to step"
+msgstr "Nastavi na korak"
+
+#: install/templates/base.html.twig:37
+msgid "Installation step"
+msgstr "Korak instalacije"
+
+#: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
+msgid "Create configuration file"
+msgstr "Kreiraj konfiguracioni fajl"
+
+#: install/templates/step7.html.twig:12
+msgid "Configuration File:"
+msgstr "Konfiguracioni fajl:"
+
+#: install/templates/step7.html.twig:12
+msgid "Create the file"
+msgstr "Kreiraj fajl"
+
+#: install/templates/step7.html.twig:14
+msgid "with the following content:"
+msgstr "sa sledećim sadržajem:"
+
+#: install/templates/step1.html.twig:3
+msgid "Choose a language"
+msgstr "Izaberite jezik"
+
+#: install/templates/step1.html.twig:8
+msgid "Choose a language for installation"
+msgstr "Izaberite jezik instalacije"
+
+#: install/templates/step1.html.twig:12
+msgid ""
+"Please select your preferred language to continue with the installation:"
+msgstr "Izaberite željeni jezik da biste nastavili instalaciju:"
+
+#: install/templates/step1.html.twig:391
+msgid "Begin Installation"
+msgstr "Započni instalaciju"
+
+#: install/templates/step4.html.twig:3
+msgid "Configuring database"
+msgstr "Konfigurisanje baze podataka"
+
+#: install/templates/step4.html.twig:8
+msgid "Configuring Database Connection"
+msgstr "Konfigurisanje veze sa bazom podataka"
+
+#: install/templates/step4.html.twig:17
+msgid "PowerDNS Backend"
+msgstr "PowerDNS pozadinski sistem"
+
+#: install/templates/step4.html.twig:20
+msgid "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "Izaberite kako Poweradmin komunicira sa PowerDNS:"
+
+#: install/templates/step4.html.twig:25
+msgid "Direct access to PowerDNS database tables"
+msgstr "Direktan pristup tabelama PowerDNS baze podataka"
+
+#: install/templates/step4.html.twig:32
+msgid "API"
+msgstr "API"
+
+#: install/templates/step4.html.twig:32
+msgid "PowerDNS REST API"
+msgstr "PowerDNS REST API"
+
+#: install/templates/step4.html.twig:33
+msgid "Experimental"
+msgstr "Eksperimentalno"
+
+#: install/templates/step4.html.twig:42
+msgid "PowerDNS API Settings"
+msgstr "PowerDNS API postavke"
+
+#: install/templates/step4.html.twig:46
+msgid "API URL"
+msgstr "API URL"
+
+#: install/templates/step4.html.twig:52
+msgid "PowerDNS API endpoint URL."
+msgstr "URL krajnje tačke PowerDNS API."
+
+#: install/templates/step4.html.twig:57
+msgid "API Key"
+msgstr "API ključ"
+
+#: install/templates/step4.html.twig:66
+msgid "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "PowerDNS API ključ (iz postavke api-key u pdns.conf)."
+
+#: install/templates/step4.html.twig:71
+msgid "Server name"
+msgstr "Ime servera"
+
+#: install/templates/step4.html.twig:77
+msgid "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr "Ime PowerDNS servera za API pozive (obično \"localhost\")."
+
+#: install/templates/step4.html.twig:86
+msgid "Database Connection Settings"
+msgstr "Postavke veze sa bazom podataka"
+
+#: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
+msgid "Database Configuration:"
+msgstr "Konfiguracija baze podataka:"
+
+#: install/templates/step4.html.twig:90
+msgid ""
+"Configure database connection with table creation rights. PowerDNS location "
+"can be specified separately if needed."
+msgstr ""
+"Konfigurišite vezu sa bazom podataka sa pravima za kreiranje tabela. Lokacija PowerDNS-a se po potrebi može navesti odvojeno."
+
+#: install/templates/step4.html.twig:93
+msgid ""
+"Configure database connection for Poweradmin tables (users, permissions, "
+"zones). PowerDNS tables are not required."
+msgstr ""
+"Konfigurišite vezu sa bazom podataka za Poweradmin tabele (korisnici, dozvole, zone). PowerDNS tabele nisu potrebne."
+
+#: install/templates/step4.html.twig:97
+msgid "Database type"
+msgstr "Tip baze podataka"
+
+#: install/templates/step4.html.twig:106
+msgid "Database server type."
+msgstr "Tip servera baze podataka."
+
+#: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
+msgid "Provide the user name"
+msgstr "Unesite korisničko ime"
+
+#: install/templates/step4.html.twig:117
+msgid "Database username with rights to create tables."
+msgstr "Korisničko ime baze podataka sa pravima kreiranja tabela."
+
+#: install/templates/step4.html.twig:131
+msgid "Password for this database user."
+msgstr "Lozinka za ovog korisnika baze podataka."
+
+#: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
+msgid "Avoid quotes, backslashes, and line breaks."
+msgstr "Izbegavajte navodnike, obrnute kose crte i prelome redova."
+
+#: install/templates/step4.html.twig:140
+msgid "Provide the hostname"
+msgstr "Unesite ime računara"
+
+#: install/templates/step4.html.twig:143
+msgid "Database server hostname (usually \"localhost\")."
+msgstr "Ime hosta servera baze podataka (obično \"localhost\")."
+
+#: install/templates/step4.html.twig:148
+msgid "DB Port"
+msgstr "Port baze"
+
+#: install/templates/step4.html.twig:151
+msgid "Provide database port"
+msgstr "Unesite port baze podataka"
+
+#: install/templates/step4.html.twig:154
+msgid "Database server port."
+msgstr "Port servera baze podataka."
+
+#: install/templates/step4.html.twig:162
+msgid "Provide the name of the database"
+msgstr "Unesite ime baze podataka"
+
+#: install/templates/step4.html.twig:165
+msgid "Database name (will be used for Poweradmin tables)."
+msgstr "Ime baze podataka (koristiće se za Poweradmin tabele)."
+
+#: install/templates/step4.html.twig:167
+msgid "Full path to SQLite database file"
+msgstr "Puna putanja do SQLite fajla baze podataka"
+
+#: install/templates/step4.html.twig:170
+msgid "File must exist with web server read/write access. Use absolute path."
+msgstr "Fajl mora postojati sa pravima čitanja/pisanja za web server. Koristite apsolutnu putanju."
+
+#: install/templates/step4.html.twig:178
+msgid "DB charset"
+msgstr "Skup znakova baze"
+
+#: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
+msgid "Use default"
+msgstr "Koristi podrazumevano"
+
+#: install/templates/step4.html.twig:185
+msgid "Charset for new tables. Leave empty for database default."
+msgstr "Skup znakova za nove tabele. Ostavite prazno za podrazumevanu vrednost baze."
+
+#: install/templates/step4.html.twig:190
+msgid "DB collation"
+msgstr "Pravilo poređenja baze"
+
+#: install/templates/step4.html.twig:197
+msgid ""
+"Collation rules for character comparison. Leave empty for database default."
+msgstr ""
+"Pravila razvrstavanja za poređenje znakova. Ostavite prazno za podrazumevanu vrednost baze podataka."
+
+#: install/templates/step4.html.twig:206
+msgid "PowerDNS Database"
+msgstr "PowerDNS baza podataka"
+
+#: install/templates/step4.html.twig:210
+msgid "Database name"
+msgstr "Ime baze podataka"
+
+#: install/templates/step4.html.twig:213
+msgid "Leave empty for same database"
+msgstr "Ostavite prazno za istu bazu podataka"
+
+#: install/templates/step4.html.twig:216
+msgid "MySQL database with PowerDNS tables (if different)."
+msgstr "MySQL baza podataka sa PowerDNS tabelama (ako je drugačija)."
+
+#: install/templates/step4.html.twig:224
+msgid "Poweradmin Account"
+msgstr "Poweradmin nalog"
+
+#: install/templates/step4.html.twig:228
+msgid "Administrator password"
+msgstr "Lozinka administratora"
+
+#: install/templates/step4.html.twig:233
+msgid "Provide a password"
+msgstr "Unesite lozinku"
+
+#: install/templates/step4.html.twig:238
+msgid "Password for \"admin\" username."
+msgstr "Lozinka za korisničko ime \"admin\"."
+
+#: install/templates/step2.html.twig:3
+msgid "System Requirements"
+msgstr "Sistemski zahtevi"
+
+#: install/templates/step2.html.twig:8
+msgid "System Requirements Check"
+msgstr "Provera sistemskih zahteva"
+
+#: install/templates/step2.html.twig:13
+msgid "PHP Version"
+msgstr "PHP verzija"
+
+#: install/templates/step2.html.twig:23
+msgid "Requires PHP 8.2.0+"
+msgstr "Zahteva PHP 8.2.0+"
+
+#: install/templates/step2.html.twig:30
+msgid "Database Extensions"
+msgstr "Proširenja baze podataka"
+
+#: install/templates/step2.html.twig:31
+msgid "at least one required"
+msgstr "potrebno najmanje jedno"
+
+#: install/templates/step2.html.twig:55
+msgid "Required PHP Extensions"
+msgstr "Obavezna PHP proširenja"
+
+#: install/templates/step2.html.twig:76
+msgid "Optional Extensions"
+msgstr "Opciona proširenja"
+
+#: install/templates/step2.html.twig:97
+msgid "Web Server"
+msgstr "Web server"
+
+#: install/templates/step2.html.twig:102
+msgid "Server"
+msgstr "Server"
+
+#: install/templates/step2.html.twig:118
+msgid "Not detected — required for URL routing"
+msgstr "Nije otkriveno - potrebno za URL rutiranje"
+
+#: install/templates/step2.html.twig:124
+msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
+msgstr "Ne može se otkriti (PHP-FPM) - proverite da li je omogućeno"
+
+#: install/templates/step2.html.twig:130
+msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Proverite da li je URL prepisivanje konfigurisano (pogledajte nginx.conf.example)"
+
+#: install/templates/step2.html.twig:135
+msgid "Ensure URL rewriting is configured for your web server"
+msgstr "Proverite da li je URL prepisivanje konfigurisano za vaš web server"
+
+#: install/templates/step2.html.twig:149
+msgid "All required components are available."
+msgstr "Sve potrebne komponente su dostupne."
+
+#: install/templates/step2.html.twig:150
+msgid "You can continue with the installation."
+msgstr "Možete nastaviti sa instalacijom."
+
+#: install/templates/step2.html.twig:159
+msgid "Some required components are missing."
+msgstr "Nedostaju neke potrebne komponente."
+
+#: install/templates/step2.html.twig:160
+msgid "Please install the missing components before continuing."
+msgstr "Instalirajte komponente koje nedostaju pre nastavka."
+
+#: install/templates/step5.html.twig:3
+msgid "Setup account and nameservers"
+msgstr "Podesi nalog i imenske servere"
+
+#: install/templates/step5.html.twig:8
+msgid "Setup account and name servers"
+msgstr "Podesi nalog i imenske servere"
+
+#: install/templates/step5.html.twig:12
+msgid "Configuration:"
+msgstr "Konfiguracija:"
+
+#: install/templates/step5.html.twig:12
+msgid "Now we will gather all details for the configuration itself."
+msgstr "Sada ćemo prikupiti sve detalje za samu konfiguraciju."
+
+#: install/templates/step5.html.twig:52
+msgid "Database User"
+msgstr "Korisnik baze podataka"
+
+#: install/templates/step5.html.twig:57
+msgid ""
+"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
+"configured database even when the PowerDNS API backend is selected. These "
+"credentials are for that database, not for PowerDNS."
+msgstr ""
+"Poweradmin čuva svoje tabele (korisnici, dozvole, metapodaci zona) u konfigurisanoj bazi podataka čak i kada je odabran PowerDNS API pozadinski sistem. Ovi pristupni podaci se odnose na tu bazu, a ne na PowerDNS."
+
+#: install/templates/step5.html.twig:67
+msgid ""
+"Poweradmin database username with restricted access. Not for web UI login."
+msgstr ""
+"Poweradmin korisničko ime baze podataka sa ograničenim pristupom. Nije za prijavu u veb interfejs."
+
+#: install/templates/step5.html.twig:77
+msgid "Provide the user password"
+msgstr "Unesite korisničku lozinku"
+
+#: install/templates/step5.html.twig:81
+msgid "The password for this username."
+msgstr "Lozinka za ovo korisničko ime."
+
+#: install/templates/step5.html.twig:91
+msgid "DNS Settings"
+msgstr "DNS postavke"
+
+#: install/templates/step5.html.twig:95
+msgid "Hostmaster"
+msgstr "Hostmaster"
+
+#: install/templates/step5.html.twig:99
+msgid "Provide the DNS hostmaster"
+msgstr "Unesite DNS hostmaster"
+
+#: install/templates/step5.html.twig:102
+msgid "Default hostmaster for SOA records."
+msgstr "Podrazumevani hostmaster za SOA zapise."
+
+#: install/templates/step5.html.twig:107
+msgid "Primary nameserver"
+msgstr "Primarni imenski server"
+
+#: install/templates/step5.html.twig:111
+msgid "Provide the primary nameserver"
+msgstr "Unesite primarni imenski server"
+
+#: install/templates/step5.html.twig:114
+msgid "Primary nameserver for new zones."
+msgstr "Primarni imenski server za nove zone."
+
+#: install/templates/step5.html.twig:119
+msgid "Secondary nameserver"
+msgstr "Sekundarni imenski server"
+
+#: install/templates/step5.html.twig:123
+msgid "Provide the secondary nameserver"
+msgstr "Unesite sekundarni imenski server"
+
+#: install/templates/step5.html.twig:126
+msgid "Secondary nameserver for new zones."
+msgstr "Sekundarni imenski server za nove zone."
+
+#: install/templates/step5.html.twig:132
+msgid "Tertiary Nameserver"
+msgstr "Tercijarni imenski server"
+
+#: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
+msgid "optional"
+msgstr "opciono"
+
+#: install/templates/step5.html.twig:139
+msgid "Optional tertiary nameserver for new zones."
+msgstr "Opcioni tercijarni imenski server za nove zone."
+
+#: install/templates/step5.html.twig:145
+msgid "Quaternary Nameserver"
+msgstr "Kvaternarni imenski server"
+
+#: install/templates/step5.html.twig:152
+msgid "Optional quaternary nameserver for new zones."
+msgstr "Opcioni kvaternarni imenski server za nove zone."
+
+#: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
+msgid "Installation complete"
+msgstr "Instalacija završena"
+
+#: install/templates/step8.html.twig:12
+msgid "Installation Complete!"
+msgstr "Instalacija završena!"
+
+#: install/templates/step8.html.twig:12
+msgid "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Čestitamo! Vaša Poweradmin instalacija je sada konfigurisana."
+
+#: install/templates/step8.html.twig:16
+msgid "Important Security Notice:"
+msgstr "Važno bezbednosno obaveštenje:"
+
+#: install/templates/step8.html.twig:16
+msgid ""
+"You must remove the \"install/\" directory from the Poweradmin root "
+"directory."
+msgstr ""
+"Morate ukloniti direktorijum \"install/\" iz korenskog direktorijuma Poweradmin-a."
+
+#: install/templates/step8.html.twig:17
+msgid ""
+"Poweradmin will not function if the install directory exists, as a security "
+"measure."
+msgstr ""
+"Iz bezbednosnih razloga, Poweradmin neće raditi dok god instalacioni direktorijum postoji."
+
+#: install/templates/step8.html.twig:22
+msgid "Next Steps"
+msgstr "Sledeći koraci"
+
+#: install/templates/step8.html.twig:26
+msgid "Remove the \"install/\" directory from your server"
+msgstr "Uklonite direktorijum \"install/\" sa svog servera"
+
+#: install/templates/step8.html.twig:27
+msgid ""
+"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
+"\"admin\" and the password you set in step 3"
+msgstr ""
+"Prijavite se na <a href=\"../index.php\">Poweradmin</a> koristeći podrazumevano korisničko ime \"admin\" i lozinku koju ste postavili u 3. koraku"
+
+#: install/templates/step8.html.twig:28
+msgid "Begin configuring your DNS zones and records"
+msgstr "Započnite konfigurisanje vaših DNS zona i zapisa"
+
+#: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
+msgid "Getting Ready"
+msgstr "Pripreme"
+
+#: install/templates/step3.html.twig:13
+msgid "Prerequisites"
+msgstr "Preduslovi"
+
+#: install/templates/step3.html.twig:16
+msgid "Before proceeding, ensure you have:"
+msgstr "Pre nastavka, osigurajte da imate:"
+
+#: install/templates/step3.html.twig:18
+msgid ""
+"PowerDNS installed with database tables created (or API access configured)"
+msgstr ""
+"PowerDNS instaliran sa kreiranim tabelama baze podataka (ili konfigurisanim API pristupom)"
+
+#: install/templates/step3.html.twig:19
+msgid "Database credentials (hostname, username, password)"
+msgstr "Akreditive baze podataka (ime računara, korisničko ime, lozinka)"
+
+#: install/templates/step3.html.twig:20
+msgid "Permission to create tables for Poweradmin"
+msgstr "Dozvolu za kreiranje tabela za Poweradmin"
+
+#: install/templates/step3.html.twig:27
+msgid "Next:"
+msgstr "Sledeće:"
+
+#: install/templates/step3.html.twig:27
+msgid ""
+"Configure database connection, create admin account, and generate "
+"configuration file."
+msgstr ""
+"Konfigurišite vezu sa bazom podataka, kreirajte administratorski nalog i generišite konfiguracioni fajl."
+
+#: install/helpers/InstallStepHandler.php:176
+msgid "Missing PowerDNS tables:"
+msgstr "Nedostaju PowerDNS tabele:"
+
+#: install/helpers/InstallStepHandler.php:177
+msgid "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin zahteva ove PowerDNS tabele za pravilan rad."
+
+#: install/helpers/InstallStepHandler.php:185
+msgid "Updating database... done!"
+msgstr "Ažuriranje baze podataka... završeno!"
+
+#: install/helpers/InstallStepHandler.php:207
+msgid "Foreign Key Constraint Issues:"
+msgstr "Problemi sa ograničenjima stranog ključa:"
+
+#: install/helpers/InstallStepHandler.php:209
+msgid ""
+"The installer could not remove existing tables due to foreign key constraints"
+msgstr ""
+"Instalater nije mogao da ukloni postojeće tabele zbog ograničenja stranog ključa"
+
+#: install/helpers/InstallStepHandler.php:210
+msgid ""
+"This can happen during reinstallation if you have custom constraints or if "
+"tables are referenced by other tables"
+msgstr ""
+"Ovo se može desiti tokom ponovne instalacije ako imate prilagođena ograničenja ili ako na tabele upućuju druge tabele"
+
+#: install/helpers/InstallStepHandler.php:211
+msgid ""
+"You can try manually disabling foreign key checks before running the "
+"installer:"
+msgstr ""
+"Pre pokretanja instalatera možete pokušati ručno da onemogućite provere stranih ključeva:"
+
+#: install/helpers/InstallStepHandler.php:224
+msgid "Suggestions:"
+msgstr "Predlozi:"
+
+#: install/helpers/InstallStepHandler.php:218
+msgid "Make sure the SQLite database file exists"
+msgstr "Proverite da li SQLite fajl baze podataka postoji"
+
+#: install/helpers/InstallStepHandler.php:219
+msgid ""
+"Check that the web server has read and write permissions for the database "
+"file"
+msgstr ""
+"Proverite da li veb server ima dozvole za čitanje i pisanje fajla baze podataka"
+
+#: install/helpers/InstallStepHandler.php:220
+msgid "Verify the full path to the database file is correct and accessible"
+msgstr "Proverite da li je puna putanja do fajla baze podataka ispravna i dostupna"
+
+#: install/helpers/InstallStepHandler.php:226
+msgid "Verify database credentials are correct"
+msgstr "Proverite da li su akreditivi baze podataka tačni"
+
+#: install/helpers/InstallStepHandler.php:227
+msgid "Check that the database user has sufficient privileges"
+msgstr "Proverite da li korisnik baze podataka ima dovoljno privilegija"
+
+#: install/helpers/InstallStepHandler.php:228
+msgid "Ensure the database server is running and accessible"
+msgstr "Proverite da li server baze podataka radi i da li je dostupan"
+
+#: install/helpers/InstallStepHandler.php:233
+msgid "Database Error"
+msgstr "Greška baze podataka"
+
+#: install/helpers/DatabaseHelper.php:175
+#, php-format
+msgid ""
+"The SQLite database file %s does not exist. Please create the database file "
+"before proceeding."
+msgstr ""
+"SQLite fajl baze podataka %s ne postoji. Kreirajte fajl baze podataka pre nego što nastavite."
+
+#: install/helpers/DatabaseHelper.php:183
+#, php-format
+msgid ""
+"The SQLite database file %s is not readable. Please check file permissions."
+msgstr "SQLite fajl baze podataka %s nije čitljiv. Proverite dozvole fajla."
+
+#: install/helpers/DatabaseHelper.php:191
+#, php-format
+msgid ""
+"The SQLite database file %s is not writable. Please check file permissions."
+msgstr ""
+"U SQLite fajl baze podataka %s nije moguće pisati. Proverite dozvole fajla."
+
+#: install/helpers/DatabaseHelper.php:203
+#, php-format
+msgid "Could not access the SQLite database file %s: %s"
+msgstr "Nije moguće pristupiti SQLite fajlu baze podataka %s: %s"
+
+#: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
+msgid "PowerDNS API URL is required when using API backend."
+msgstr "PowerDNS API URL je potreban pri korišćenju API pozadinskog sistema."
+
+#: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
+msgid "PowerDNS API key is required when using API backend."
+msgstr "PowerDNS API ključ je potreban pri korišćenju API pozadinskog sistema."
+
+#: install/helpers/Validators/CreateConfigurationFileValidator.php:54
+msgid ""
+"No configuration file found. Please create the config/settings.php file "
+"before proceeding."
+msgstr ""
+"Konfiguracioni fajl nije pronađen. Kreirajte fajl config/settings.php pre nego što nastavite."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
+msgid ""
+"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+"and SQLite, please use the same database."
+msgstr ""
+"Odvojene PowerDNS baze podataka podržane su samo sa MySQL-om. Za PostgreSQL i SQLite koristite istu bazu podataka."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
+#, php-format
+msgid ""
+"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+"properly installed in this database."
+msgstr ""
+"U bazi podataka \"%s\" nedostaju PowerDNS tabele: %s. Proverite da li je PowerDNS pravilno instaliran u ovoj bazi podataka."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
+#, php-format
+msgid "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Nije moguće povezati se sa PowerDNS bazom podataka \"%s\": %s"
+
 

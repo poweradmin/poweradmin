@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-05 09:08+0300\n"
+"POT-Creation-Date: 2026-05-07 22:58+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -126,6 +126,7 @@ msgid "Transport protocol for the TLS connection"
 msgstr "Transporto protokolas TLS ryšiui"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:89
+#: install/templates/step4.html.twig:137
 msgid "Hostname"
 msgstr "Serverio vardas"
 
@@ -1426,7 +1427,7 @@ msgstr "Netinkamas arba nenumatytas įvestis."
 msgid "You do not have the permission to delete this user."
 msgstr "Neturite leidimo ištrinti šį vartotoją."
 
-#: lib/Application/Controller/DeleteUserController.php:76
+#: lib/Application/Controller/DeleteUserController.php:77
 msgid "You do not have permission to delete a superuser account."
 msgstr "Neturite leidimo ištrinti supervartotojo paskyros."
 
@@ -1434,7 +1435,7 @@ msgstr "Neturite leidimo ištrinti supervartotojo paskyros."
 msgid "User does not exist."
 msgstr "Vartotojas neegzistuoja."
 
-#: lib/Application/Controller/DeleteUserController.php:111
+#: lib/Application/Controller/DeleteUserController.php:112
 msgid "The user has been deleted successfully."
 msgstr "Vartotojas sėkmingai ištrintas."
 
@@ -2763,17 +2764,18 @@ msgstr "Tiesioginės zonos"
 
 #: lib/Application/Controller/ListForwardZonesController.php:82
 msgid "You do not have permission to sync zones from PowerDNS."
-msgstr "You do not have permission to sync zones from PowerDNS."
+msgstr "Neturite teisės sinchronizuoti zonų iš PowerDNS."
 
 #: lib/Application/Controller/ListForwardZonesController.php:93
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
-msgstr "Zones synced from PowerDNS: %d added, %d updated, %d removed."
+msgstr ""
+"Zonos sinchronizuotos iš PowerDNS: %d pridėta, %d atnaujinta, %d pašalinta."
 
 #: lib/Application/Controller/ListForwardZonesController.php:101
 #, php-format
 msgid "Zone sync failed: %s"
-msgstr "Zone sync failed: %s"
+msgstr "Zonos sinchronizavimas nepavyko: %s"
 
 #: lib/Application/Controller/AddSupermasterController.php:43
 msgid "You do not have the permission to add a new supermaster."
@@ -3301,7 +3303,7 @@ msgstr "Nepavyko autentifikuoti su LDAP."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Autentifikacija nepavyko: Netinkamas SAML atsakymas"
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:141
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:142
 msgid "This is an invalid zone name."
 msgstr "Tai neteisingas zonos pavadinimas."
 
@@ -3319,11 +3321,11 @@ msgstr "Šis šablonas priskirtas bent vienai grupei."
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:91
 msgid "Primary"
-msgstr "Primary"
+msgstr "Pirminis"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:92
 msgid "Secondary"
-msgstr "Secondary"
+msgstr "Antrinis"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:103
 #: lib/Module/ZoneImportExport/templates/import.html:131
@@ -10148,7 +10150,7 @@ msgstr "grupės"
 
 #: templates/default/index.html:11 templates/modern/index.html:11
 msgid "Connected PowerDNS version"
-msgstr "Connected PowerDNS version"
+msgstr "Prijungto PowerDNS versija"
 
 #: templates/default/index.html:16 templates/modern/index.html:16
 msgid ""
@@ -10211,6 +10213,7 @@ msgid "Tools"
 msgstr "Įrankiai"
 
 #: templates/default/index.html:297 templates/modern/index.html:297
+#: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Duomenų bazė"
 
@@ -10219,6 +10222,7 @@ msgid "My Profile"
 msgstr "Mano profilis"
 
 #: templates/modern/login.html:23 templates/modern/add_user.html:39
+#: install/templates/step4.html.twig:122 install/templates/step5.html.twig:72
 msgid "Password"
 msgstr "Slaptažodis"
 
@@ -10951,6 +10955,7 @@ msgid "Recommended bits for"
 msgstr "Rekomenduojami bitai"
 
 #: lib/Module/ZoneImportExport/templates/import.html:33
+#: install/helpers/InstallStepHandler.php:175
 msgid "Warning:"
 msgstr "Įspėjimas:"
 
@@ -11003,6 +11008,7 @@ msgid "Edit user"
 msgstr "Redaguoti naudotoją"
 
 #: templates/modern/manage_group_members.html:93
+#: install/templates/step4.html.twig:111 install/templates/step5.html.twig:61
 msgid "Username"
 msgstr "Vartotojo vardas"
 
@@ -11046,6 +11052,7 @@ msgid "Optional information about this user"
 msgstr "Neprivaloma informacija apie šį naudotoją"
 
 #: templates/modern/users.html:49 templates/modern/add_user.html:94
+#: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Įjungta"
 
@@ -11431,6 +11438,7 @@ msgid "Host Prefix"
 msgstr "Serverio prefiksas"
 
 #: templates/modern/batch_ptr_record.html:73
+#: install/templates/step4.html.twig:206
 msgid "Optional"
 msgstr "Neprivaloma"
 
@@ -11907,6 +11915,7 @@ msgid "MFA"
 msgstr "MFA"
 
 #: templates/modern/users.html:105 templates/modern/users.html:169
+#: install/templates/step4.html.twig:25
 msgid "SQL"
 msgstr "SQL"
 
@@ -11932,11 +11941,11 @@ msgstr "MFA nesukonfigūruota"
 
 #: templates/modern/list_forward_zones.html:22
 msgid "Fetch zones from PowerDNS and reconcile the local table"
-msgstr "Fetch zones from PowerDNS and reconcile the local table"
+msgstr "Gauti zonas iš PowerDNS ir suderinti su vietine lentele"
 
 #: templates/modern/list_forward_zones.html:23
 msgid "Sync from PowerDNS"
-msgstr "Sync from PowerDNS"
+msgstr "Sinchronizuoti iš PowerDNS"
 
 #: templates/modern/list_template_zones.html:15
 msgid "Total number of zones:"
@@ -12150,6 +12159,7 @@ msgid "Send Username"
 msgstr "Siųsti vartotojo vardą"
 
 #: templates/default/add_user.html:43 templates/modern/add_user.html:43
+#: install/templates/step4.html.twig:127
 msgid "Provide user password"
 msgstr "Nurodykite vartotojo slaptažodį"
 
@@ -13043,11 +13053,11 @@ msgstr "Rodyti atskirą ištrynimo mygtuką kiekvienam įrašui"
 
 #: templates/modern/user_preferences.html:125
 msgid "Hostname-only display"
-msgstr "Hostname-only display"
+msgstr "Rodyti tik serverio vardą"
 
 #: templates/modern/user_preferences.html:126
 msgid "Strip zone suffix from record names in edit view"
-msgstr "Strip zone suffix from record names in edit view"
+msgstr "Pašalinti zonos priesagą iš įrašų pavadinimų redagavimo rodinyje"
 
 #: templates/modern/user_preferences.html:141
 msgid "Save Preferences"
@@ -13401,6 +13411,7 @@ msgid "Last Checked"
 msgstr "Paskutinis patikrinimas"
 
 #: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:126
+#: install/templates/step2.html.twig:18
 msgid "OK"
 msgstr "Gerai"
 
@@ -13513,7 +13524,7 @@ msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
 msgstr ""
-"Check that pdns_api.key in config/settings.php matches the API key "
+"Patikrinkite, ar pdns_api.key faile config/settings.php sutampa su PowerDNS sukonfigūruotu API raktu."
 "configured in PowerDNS."
 
 #: templates/default/header.html:328 templates/modern/header.html:497
@@ -13521,7 +13532,7 @@ msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
 msgstr ""
-"Check that pdns_api.server_name matches what PowerDNS reports (default "
+"Patikrinkite, ar pdns_api.server_name sutampa su tuo, ką praneša PowerDNS (numatytasis 'localhost')."
 "'localhost')."
 
 #: templates/default/header.html:330 templates/modern/header.html:499
@@ -13530,7 +13541,7 @@ msgid ""
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 msgstr ""
-"PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
+"PowerDNS atmetė užklausą. Priežastį patikrinkite PowerDNS serverio žurnale - dažniausia priežastis po tiesioginio zonų importo į PowerDNS duomenų bazę yra vienas netinkamas įrašas, dėl kurio nepavyksta serializuoti zonos."
 "a common trigger after importing zones directly into the PowerDNS database "
 "is a single malformed record that fails zone serialization."
 
@@ -14112,4 +14123,691 @@ msgstr ""
 #: lib/Module/Rdap/templates/rdap.html:35
 msgid "RDAP results for"
 msgstr "RDAP rezultatai"
+
+#: install/templates/step6.html.twig:3
+msgid "Create limited rights user"
+msgstr "Sukurti riboto teisių vartotoją"
+
+#: install/templates/step8.html.twig:8 install/templates/step3.html.twig:8
+msgid "Step"
+msgstr "Žingsnis"
+
+#: install/templates/step6.html.twig:8
+msgid "Create limited-rights user"
+msgstr "Sukurti riboto teisių vartotoją"
+
+#: install/templates/step6.html.twig:13
+msgid "Limited Database Rights:"
+msgstr "Ribotos duomenų bazės teisės:"
+
+#: install/templates/step6.html.twig:15
+msgid ""
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin tables only. PowerDNS table access is not required when using "
+"the API backend."
+msgstr ""
+"Sukurkite duomenų bazės vartotoją su ribotomis teisėmis (select, insert, update, delete) tik Poweradmin lentelėms. Naudojant API serverį, prieiga prie PowerDNS lentelių nereikalinga."
+
+#: install/templates/step6.html.twig:17
+msgid ""
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin to access PowerDNS tables."
+msgstr ""
+"Sukurkite duomenų bazės vartotoją su ribotomis teisėmis (select, insert, update, delete), kad Poweradmin galėtų pasiekti PowerDNS lenteles."
+
+#: install/templates/step6.html.twig:25
+msgid "Database Commands"
+msgstr "Duomenų bazės komandos"
+
+#: install/templates/step6.html.twig:28
+msgid "Execute the following commands:"
+msgstr "Vykdykite šias komandas:"
+
+#: install/templates/step6.html.twig:40
+msgid ""
+"After you have added the new user, proceed with this installation procedure."
+msgstr "Pridėję naują vartotoją, tęskite šią diegimo procedūrą."
+
+#: install/templates/step6.html.twig:43 install/templates/step4.html.twig:170
+msgid "Note:"
+msgstr "Pastaba:"
+
+#: install/templates/step6.html.twig:43
+msgid ""
+"Since you are using SQLite, there is no need to create a new user with "
+"limited rights."
+msgstr ""
+"Kadangi naudojate SQLite, naujo vartotojo su ribotomis teisėmis kurti nereikia."
+
+#: install/templates/step5.html.twig:176 install/templates/step3.html.twig:38
+msgid "Continue to step"
+msgstr "Tęsti į žingsnį"
+
+#: install/templates/base.html.twig:37
+msgid "Installation step"
+msgstr "Diegimo žingsnis"
+
+#: install/templates/step7.html.twig:3 install/templates/step7.html.twig:8
+msgid "Create configuration file"
+msgstr "Sukurti konfigūracijos failą"
+
+#: install/templates/step7.html.twig:12
+msgid "Configuration File:"
+msgstr "Konfigūracijos failas:"
+
+#: install/templates/step7.html.twig:12
+msgid "Create the file"
+msgstr "Sukurti failą"
+
+#: install/templates/step7.html.twig:14
+msgid "with the following content:"
+msgstr "su šiuo turiniu:"
+
+#: install/templates/step1.html.twig:3
+msgid "Choose a language"
+msgstr "Pasirinkite kalbą"
+
+#: install/templates/step1.html.twig:8
+msgid "Choose a language for installation"
+msgstr "Pasirinkite diegimo kalbą"
+
+#: install/templates/step1.html.twig:12
+msgid ""
+"Please select your preferred language to continue with the installation:"
+msgstr "Pasirinkite pageidaujamą kalbą, kad galėtumėte tęsti diegimą:"
+
+#: install/templates/step1.html.twig:391
+msgid "Begin Installation"
+msgstr "Pradėti diegimą"
+
+#: install/templates/step4.html.twig:3
+msgid "Configuring database"
+msgstr "Duomenų bazės konfigūravimas"
+
+#: install/templates/step4.html.twig:8
+msgid "Configuring Database Connection"
+msgstr "Duomenų bazės jungimosi konfigūravimas"
+
+#: install/templates/step4.html.twig:17
+msgid "PowerDNS Backend"
+msgstr "PowerDNS galinis serveris"
+
+#: install/templates/step4.html.twig:20
+msgid "Choose how Poweradmin communicates with PowerDNS:"
+msgstr "Pasirinkite, kaip Poweradmin bendrauja su PowerDNS:"
+
+#: install/templates/step4.html.twig:25
+msgid "Direct access to PowerDNS database tables"
+msgstr "Tiesioginė prieiga prie PowerDNS duomenų bazės lentelių"
+
+#: install/templates/step4.html.twig:32
+msgid "API"
+msgstr "API"
+
+#: install/templates/step4.html.twig:32
+msgid "PowerDNS REST API"
+msgstr "PowerDNS REST API"
+
+#: install/templates/step4.html.twig:33
+msgid "Experimental"
+msgstr "Eksperimentinis"
+
+#: install/templates/step4.html.twig:42
+msgid "PowerDNS API Settings"
+msgstr "PowerDNS API nustatymai"
+
+#: install/templates/step4.html.twig:46
+msgid "API URL"
+msgstr "API URL"
+
+#: install/templates/step4.html.twig:52
+msgid "PowerDNS API endpoint URL."
+msgstr "PowerDNS API galinio taško URL."
+
+#: install/templates/step4.html.twig:57
+msgid "API Key"
+msgstr "API raktas"
+
+#: install/templates/step4.html.twig:66
+msgid "PowerDNS API key (from pdns.conf api-key setting)."
+msgstr "PowerDNS API raktas (iš pdns.conf api-key nustatymo)."
+
+#: install/templates/step4.html.twig:71
+msgid "Server name"
+msgstr "Serverio vardas"
+
+#: install/templates/step4.html.twig:77
+msgid "PowerDNS server name for API calls (usually \"localhost\")."
+msgstr ""
+"PowerDNS serverio pavadinimas API užklausoms (paprastai \"localhost\")."
+
+#: install/templates/step4.html.twig:86
+msgid "Database Connection Settings"
+msgstr "Duomenų bazės jungimosi nustatymai"
+
+#: install/templates/step4.html.twig:90 install/templates/step4.html.twig:93
+msgid "Database Configuration:"
+msgstr "Duomenų bazės konfigūracija:"
+
+#: install/templates/step4.html.twig:90
+msgid ""
+"Configure database connection with table creation rights. PowerDNS location "
+"can be specified separately if needed."
+msgstr ""
+"Sukonfigūruokite duomenų bazės ryšį su lentelių kūrimo teisėmis. Esant poreikiui, PowerDNS vietą galima nurodyti atskirai."
+
+#: install/templates/step4.html.twig:93
+msgid ""
+"Configure database connection for Poweradmin tables (users, permissions, "
+"zones). PowerDNS tables are not required."
+msgstr ""
+"Sukonfigūruokite duomenų bazės ryšį Poweradmin lentelėms (vartotojai, teisės, zonos). PowerDNS lentelės nereikalingos."
+
+#: install/templates/step4.html.twig:97
+msgid "Database type"
+msgstr "Duomenų bazės tipas"
+
+#: install/templates/step4.html.twig:106
+msgid "Database server type."
+msgstr "Duomenų bazės serverio tipas."
+
+#: install/templates/step4.html.twig:114 install/templates/step5.html.twig:64
+msgid "Provide the user name"
+msgstr "Įveskite vartotojo vardą"
+
+#: install/templates/step4.html.twig:117
+msgid "Database username with rights to create tables."
+msgstr "Duomenų bazės vartotojo vardas su teisėmis kurti lenteles."
+
+#: install/templates/step4.html.twig:131
+msgid "Password for this database user."
+msgstr "Slaptažodis šiam duomenų bazės vartotojui."
+
+#: install/templates/step4.html.twig:132 install/templates/step5.html.twig:82
+msgid "Avoid quotes, backslashes, and line breaks."
+msgstr "Venkite kabučių, atgalinių brūkšnių ir eilučių pertraukų."
+
+#: install/templates/step4.html.twig:140
+msgid "Provide the hostname"
+msgstr "Įveskite kompiuterio vardą"
+
+#: install/templates/step4.html.twig:143
+msgid "Database server hostname (usually \"localhost\")."
+msgstr "Duomenų bazės serverio adresas (paprastai \"localhost\")."
+
+#: install/templates/step4.html.twig:148
+msgid "DB Port"
+msgstr "DB prievadas"
+
+#: install/templates/step4.html.twig:151
+msgid "Provide database port"
+msgstr "Įveskite duomenų bazės prievadą"
+
+#: install/templates/step4.html.twig:154
+msgid "Database server port."
+msgstr "Duomenų bazės serverio prievadas."
+
+#: install/templates/step4.html.twig:162
+msgid "Provide the name of the database"
+msgstr "Įveskite duomenų bazės pavadinimą"
+
+#: install/templates/step4.html.twig:165
+msgid "Database name (will be used for Poweradmin tables)."
+msgstr "Duomenų bazės pavadinimas (bus naudojamas Poweradmin lentelėms)."
+
+#: install/templates/step4.html.twig:167
+msgid "Full path to SQLite database file"
+msgstr "Pilnas kelias iki SQLite duomenų bazės failo"
+
+#: install/templates/step4.html.twig:170
+msgid "File must exist with web server read/write access. Use absolute path."
+msgstr "Failas turi egzistuoti su žiniatinklio serverio skaitymo/rašymo prieiga. Naudokite absoliutų kelią."
+
+#: install/templates/step4.html.twig:178
+msgid "DB charset"
+msgstr "DB simbolių kodavimas"
+
+#: install/templates/step4.html.twig:273 install/templates/step4.html.twig:281
+msgid "Use default"
+msgstr "Naudoti numatytąjį"
+
+#: install/templates/step4.html.twig:185
+msgid "Charset for new tables. Leave empty for database default."
+msgstr "Simbolių kodavimas naujoms lentelėms. Palikite tuščią duomenų bazės numatytajam."
+
+#: install/templates/step4.html.twig:190
+msgid "DB collation"
+msgstr "DB rikiavimo taisyklės"
+
+#: install/templates/step4.html.twig:197
+msgid ""
+"Collation rules for character comparison. Leave empty for database default."
+msgstr ""
+"Simbolių palyginimo taisyklės. Palikite tuščią, kad būtų naudojama duomenų bazės numatytoji reikšmė."
+
+#: install/templates/step4.html.twig:206
+msgid "PowerDNS Database"
+msgstr "PowerDNS duomenų bazė"
+
+#: install/templates/step4.html.twig:210
+msgid "Database name"
+msgstr "Duomenų bazės pavadinimas"
+
+#: install/templates/step4.html.twig:213
+msgid "Leave empty for same database"
+msgstr "Palikite tuščią tai pačiai duomenų bazei"
+
+#: install/templates/step4.html.twig:216
+msgid "MySQL database with PowerDNS tables (if different)."
+msgstr "MySQL duomenų bazė su PowerDNS lentelėmis (jei skiriasi)."
+
+#: install/templates/step4.html.twig:224
+msgid "Poweradmin Account"
+msgstr "Poweradmin paskyra"
+
+#: install/templates/step4.html.twig:228
+msgid "Administrator password"
+msgstr "Administratoriaus slaptažodis"
+
+#: install/templates/step4.html.twig:233
+msgid "Provide a password"
+msgstr "Įveskite slaptažodį"
+
+#: install/templates/step4.html.twig:238
+msgid "Password for \"admin\" username."
+msgstr "Vartotojo \"admin\" slaptažodis."
+
+#: install/templates/step2.html.twig:3
+msgid "System Requirements"
+msgstr "Sistemos reikalavimai"
+
+#: install/templates/step2.html.twig:8
+msgid "System Requirements Check"
+msgstr "Sistemos reikalavimų patikrinimas"
+
+#: install/templates/step2.html.twig:13
+msgid "PHP Version"
+msgstr "PHP versija"
+
+#: install/templates/step2.html.twig:23
+msgid "Requires PHP 8.2.0+"
+msgstr "Reikalingas PHP 8.2.0+"
+
+#: install/templates/step2.html.twig:30
+msgid "Database Extensions"
+msgstr "Duomenų bazės plėtiniai"
+
+#: install/templates/step2.html.twig:31
+msgid "at least one required"
+msgstr "reikalingas bent vienas"
+
+#: install/templates/step2.html.twig:55
+msgid "Required PHP Extensions"
+msgstr "Reikalingi PHP plėtiniai"
+
+#: install/templates/step2.html.twig:76
+msgid "Optional Extensions"
+msgstr "Pasirenkami plėtiniai"
+
+#: install/templates/step2.html.twig:97
+msgid "Web Server"
+msgstr "Žiniatinklio serveris"
+
+#: install/templates/step2.html.twig:102
+msgid "Server"
+msgstr "Serveris"
+
+#: install/templates/step2.html.twig:118
+msgid "Not detected — required for URL routing"
+msgstr "Nerasta - reikalinga URL maršrutizavimui"
+
+#: install/templates/step2.html.twig:124
+msgid "Cannot detect (PHP-FPM) — ensure it is enabled"
+msgstr "Negalima aptikti (PHP-FPM) - įsitikinkite, kad jis įjungtas"
+
+#: install/templates/step2.html.twig:130
+msgid "Ensure URL rewriting is configured (see nginx.conf.example)"
+msgstr "Įsitikinkite, kad URL perrašymas yra sukonfigūruotas (žr. nginx.conf.example)"
+
+#: install/templates/step2.html.twig:135
+msgid "Ensure URL rewriting is configured for your web server"
+msgstr "Įsitikinkite, kad URL perrašymas yra sukonfigūruotas jūsų žiniatinklio serveriui"
+
+#: install/templates/step2.html.twig:149
+msgid "All required components are available."
+msgstr "Visi reikalingi komponentai yra prieinami."
+
+#: install/templates/step2.html.twig:150
+msgid "You can continue with the installation."
+msgstr "Galite tęsti diegimą."
+
+#: install/templates/step2.html.twig:159
+msgid "Some required components are missing."
+msgstr "Trūksta kai kurių reikalingų komponentų."
+
+#: install/templates/step2.html.twig:160
+msgid "Please install the missing components before continuing."
+msgstr "Prieš tęsdami įdiekite trūkstamus komponentus."
+
+#: install/templates/step5.html.twig:3
+msgid "Setup account and nameservers"
+msgstr "Nustatyti paskyrą ir vardų serverius"
+
+#: install/templates/step5.html.twig:8
+msgid "Setup account and name servers"
+msgstr "Nustatyti paskyrą ir vardų serverius"
+
+#: install/templates/step5.html.twig:12
+msgid "Configuration:"
+msgstr "Konfigūracija:"
+
+#: install/templates/step5.html.twig:12
+msgid "Now we will gather all details for the configuration itself."
+msgstr "Dabar surinksime visas konfigūracijos detales."
+
+#: install/templates/step5.html.twig:52
+msgid "Database User"
+msgstr "Duomenų bazės vartotojas"
+
+#: install/templates/step5.html.twig:57
+msgid ""
+"Poweradmin keeps its own tables (users, permissions, zone metadata) in the "
+"configured database even when the PowerDNS API backend is selected. These "
+"credentials are for that database, not for PowerDNS."
+msgstr ""
+"Poweradmin savo lenteles (vartotojai, teisės, zonų metaduomenys) saugo sukonfigūruotoje duomenų bazėje net tada, kai pasirinktas PowerDNS API serveris. Šie prisijungimo duomenys skirti tai duomenų bazei, ne PowerDNS."
+
+#: install/templates/step5.html.twig:67
+msgid ""
+"Poweradmin database username with restricted access. Not for web UI login."
+msgstr ""
+"Poweradmin duomenų bazės vartotojas su ribota prieiga. Ne prisijungimui prie žiniatinklio sąsajos."
+
+#: install/templates/step5.html.twig:77
+msgid "Provide the user password"
+msgstr "Įveskite vartotojo slaptažodį"
+
+#: install/templates/step5.html.twig:81
+msgid "The password for this username."
+msgstr "Slaptažodis šiam vartotojo vardui."
+
+#: install/templates/step5.html.twig:91
+msgid "DNS Settings"
+msgstr "DNS nustatymai"
+
+#: install/templates/step5.html.twig:95
+msgid "Hostmaster"
+msgstr "Hostmaster"
+
+#: install/templates/step5.html.twig:99
+msgid "Provide the DNS hostmaster"
+msgstr "Įveskite DNS hostmaster"
+
+#: install/templates/step5.html.twig:102
+msgid "Default hostmaster for SOA records."
+msgstr "Numatytasis hostmaster SOA įrašams."
+
+#: install/templates/step5.html.twig:107
+msgid "Primary nameserver"
+msgstr "Pirminis vardų serveris"
+
+#: install/templates/step5.html.twig:111
+msgid "Provide the primary nameserver"
+msgstr "Įveskite pirminį vardų serverį"
+
+#: install/templates/step5.html.twig:114
+msgid "Primary nameserver for new zones."
+msgstr "Pirminis vardų serveris naujoms zonoms."
+
+#: install/templates/step5.html.twig:119
+msgid "Secondary nameserver"
+msgstr "Antrinis vardų serveris"
+
+#: install/templates/step5.html.twig:123
+msgid "Provide the secondary nameserver"
+msgstr "Įveskite antrinį vardų serverį"
+
+#: install/templates/step5.html.twig:126
+msgid "Secondary nameserver for new zones."
+msgstr "Antrinis vardų serveris naujoms zonoms."
+
+#: install/templates/step5.html.twig:132
+msgid "Tertiary Nameserver"
+msgstr "Tretinis vardų serveris"
+
+#: install/templates/step5.html.twig:132 install/templates/step5.html.twig:145
+msgid "optional"
+msgstr "pasirenkamas"
+
+#: install/templates/step5.html.twig:139
+msgid "Optional tertiary nameserver for new zones."
+msgstr "Pasirenkamas tretinis vardų serveris naujoms zonoms."
+
+#: install/templates/step5.html.twig:145
+msgid "Quaternary Nameserver"
+msgstr "Ketvirtinis vardų serveris"
+
+#: install/templates/step5.html.twig:152
+msgid "Optional quaternary nameserver for new zones."
+msgstr "Pasirenkamas ketvirtinis vardų serveris naujoms zonoms."
+
+#: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
+msgid "Installation complete"
+msgstr "Diegimas baigtas"
+
+#: install/templates/step8.html.twig:12
+msgid "Installation Complete!"
+msgstr "Diegimas baigtas!"
+
+#: install/templates/step8.html.twig:12
+msgid "Congratulations! Your Poweradmin installation is now configured."
+msgstr "Sveikiname! Jūsų Poweradmin diegimas dabar sukonfigūruotas."
+
+#: install/templates/step8.html.twig:16
+msgid "Important Security Notice:"
+msgstr "Svarbus saugumo pranešimas:"
+
+#: install/templates/step8.html.twig:16
+msgid ""
+"You must remove the \"install/\" directory from the Poweradmin root "
+"directory."
+msgstr ""
+"Iš Poweradmin šakninio katalogo turite pašalinti katalogą \"install/\"."
+
+#: install/templates/step8.html.twig:17
+msgid ""
+"Poweradmin will not function if the install directory exists, as a security "
+"measure."
+msgstr ""
+"Saugumo sumetimais Poweradmin neveiks, kol egzistuoja diegimo katalogas."
+
+#: install/templates/step8.html.twig:22
+msgid "Next Steps"
+msgstr "Tolesni žingsniai"
+
+#: install/templates/step8.html.twig:26
+msgid "Remove the \"install/\" directory from your server"
+msgstr "Pašalinkite katalogą \"install/\" iš savo serverio"
+
+#: install/templates/step8.html.twig:27
+msgid ""
+"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
+"\"admin\" and the password you set in step 3"
+msgstr ""
+"Prisijunkite prie <a href=\"../index.php\">Poweradmin</a> naudodami numatytąjį vartotojo vardą \"admin\" ir slaptažodį, kurį nustatėte 3 žingsnyje"
+
+#: install/templates/step8.html.twig:28
+msgid "Begin configuring your DNS zones and records"
+msgstr "Pradėkite konfigūruoti savo DNS zonas ir įrašus"
+
+#: install/templates/step3.html.twig:3 install/templates/step3.html.twig:8
+msgid "Getting Ready"
+msgstr "Pasiruošimas"
+
+#: install/templates/step3.html.twig:13
+msgid "Prerequisites"
+msgstr "Reikalavimai"
+
+#: install/templates/step3.html.twig:16
+msgid "Before proceeding, ensure you have:"
+msgstr "Prieš tęsdami įsitikinkite, kad turite:"
+
+#: install/templates/step3.html.twig:18
+msgid ""
+"PowerDNS installed with database tables created (or API access configured)"
+msgstr ""
+"PowerDNS įdiegtas su sukurtomis duomenų bazės lentelėmis (arba sukonfigūruota API prieiga)"
+
+#: install/templates/step3.html.twig:19
+msgid "Database credentials (hostname, username, password)"
+msgstr "Duomenų bazės prisijungimo duomenis (kompiuterio vardą, vartotojo vardą, slaptažodį)"
+
+#: install/templates/step3.html.twig:20
+msgid "Permission to create tables for Poweradmin"
+msgstr "Leidimą kurti lenteles Poweradmin"
+
+#: install/templates/step3.html.twig:27
+msgid "Next:"
+msgstr "Toliau:"
+
+#: install/templates/step3.html.twig:27
+msgid ""
+"Configure database connection, create admin account, and generate "
+"configuration file."
+msgstr ""
+"Sukonfigūruokite duomenų bazės ryšį, sukurkite administratoriaus paskyrą ir sugeneruokite konfigūracijos failą."
+
+#: install/helpers/InstallStepHandler.php:176
+msgid "Missing PowerDNS tables:"
+msgstr "Trūkstamos PowerDNS lentelės:"
+
+#: install/helpers/InstallStepHandler.php:177
+msgid "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin reikia šių PowerDNS lentelių, kad tinkamai veiktų."
+
+#: install/helpers/InstallStepHandler.php:185
+msgid "Updating database... done!"
+msgstr "Atnaujinama duomenų bazė... atlikta!"
+
+#: install/helpers/InstallStepHandler.php:207
+msgid "Foreign Key Constraint Issues:"
+msgstr "Išorinio rakto apribojimų problemos:"
+
+#: install/helpers/InstallStepHandler.php:209
+msgid ""
+"The installer could not remove existing tables due to foreign key constraints"
+msgstr ""
+"Diegimo programa negalėjo pašalinti esamų lentelių dėl išorinių raktų apribojimų"
+
+#: install/helpers/InstallStepHandler.php:210
+msgid ""
+"This can happen during reinstallation if you have custom constraints or if "
+"tables are referenced by other tables"
+msgstr ""
+"Tai gali nutikti pakartotinio diegimo metu, jei turite pasirinktinių apribojimų arba jei į lenteles nukreipia kitos lentelės"
+
+#: install/helpers/InstallStepHandler.php:211
+msgid ""
+"You can try manually disabling foreign key checks before running the "
+"installer:"
+msgstr ""
+"Prieš paleisdami diegimo programą galite pabandyti rankiniu būdu išjungti išorinių raktų tikrinimus:"
+
+#: install/helpers/InstallStepHandler.php:224
+msgid "Suggestions:"
+msgstr "Pasiūlymai:"
+
+#: install/helpers/InstallStepHandler.php:218
+msgid "Make sure the SQLite database file exists"
+msgstr "Įsitikinkite, kad SQLite duomenų bazės failas egzistuoja"
+
+#: install/helpers/InstallStepHandler.php:219
+msgid ""
+"Check that the web server has read and write permissions for the database "
+"file"
+msgstr ""
+"Patikrinkite, ar žiniatinklio serveris turi skaitymo ir rašymo teises į duomenų bazės failą"
+
+#: install/helpers/InstallStepHandler.php:220
+msgid "Verify the full path to the database file is correct and accessible"
+msgstr "Patikrinkite, ar pilnas kelias iki duomenų bazės failo yra teisingas ir pasiekiamas"
+
+#: install/helpers/InstallStepHandler.php:226
+msgid "Verify database credentials are correct"
+msgstr "Patikrinkite, ar duomenų bazės prisijungimo duomenys yra teisingi"
+
+#: install/helpers/InstallStepHandler.php:227
+msgid "Check that the database user has sufficient privileges"
+msgstr "Patikrinkite, ar duomenų bazės vartotojas turi pakankamai privilegijų"
+
+#: install/helpers/InstallStepHandler.php:228
+msgid "Ensure the database server is running and accessible"
+msgstr "Įsitikinkite, kad duomenų bazės serveris veikia ir yra pasiekiamas"
+
+#: install/helpers/InstallStepHandler.php:233
+msgid "Database Error"
+msgstr "Duomenų bazės klaida"
+
+#: install/helpers/DatabaseHelper.php:175
+#, php-format
+msgid ""
+"The SQLite database file %s does not exist. Please create the database file "
+"before proceeding."
+msgstr ""
+"SQLite duomenų bazės failas %s neegzistuoja. Prieš tęsdami sukurkite duomenų bazės failą."
+
+#: install/helpers/DatabaseHelper.php:183
+#, php-format
+msgid ""
+"The SQLite database file %s is not readable. Please check file permissions."
+msgstr ""
+"SQLite duomenų bazės failas %s neperskaitomas. Patikrinkite failo teises."
+
+#: install/helpers/DatabaseHelper.php:191
+#, php-format
+msgid ""
+"The SQLite database file %s is not writable. Please check file permissions."
+msgstr ""
+"Į SQLite duomenų bazės failą %s negalima rašyti. Patikrinkite failo teises."
+
+#: install/helpers/DatabaseHelper.php:203
+#, php-format
+msgid "Could not access the SQLite database file %s: %s"
+msgstr "Nepavyko pasiekti SQLite duomenų bazės failo %s: %s"
+
+#: install/helpers/Validators/ConfiguringDatabaseValidator.php:72
+msgid "PowerDNS API URL is required when using API backend."
+msgstr "PowerDNS API URL yra būtinas naudojant API galinį serverį."
+
+#: install/helpers/Validators/ConfiguringDatabaseValidator.php:75
+msgid "PowerDNS API key is required when using API backend."
+msgstr "PowerDNS API raktas yra būtinas naudojant API galinį serverį."
+
+#: install/helpers/Validators/CreateConfigurationFileValidator.php:54
+msgid ""
+"No configuration file found. Please create the config/settings.php file "
+"before proceeding."
+msgstr ""
+"Konfigūracijos failas nerastas. Prieš tęsdami sukurkite failą config/settings.php."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:52
+msgid ""
+"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+"and SQLite, please use the same database."
+msgstr ""
+"Atskiros PowerDNS duomenų bazės palaikomos tik su MySQL. PostgreSQL ir SQLite atveju naudokite tą pačią duomenų bazę."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:80
+#, php-format
+msgid ""
+"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+"properly installed in this database."
+msgstr ""
+"Duomenų bazėje \"%s\" trūksta PowerDNS lentelių: %s. Įsitikinkite, kad PowerDNS šioje duomenų bazėje įdiegtas tinkamai."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:87
+#, php-format
+msgid "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
+
 
