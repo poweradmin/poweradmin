@@ -56,13 +56,14 @@
   "autoload": {
     "psr-4": {
       "Poweradmin\\": "lib/",
-      "PoweradminInstall\\": "install/helpers",
-      "TestHelpers\\": "tests/helpers"
+      "PoweradminInstall\\": "install/helpers"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "unit\\": "tests/unit/"
+      "unit\\": "tests/unit/",
+      "integration\\": "tests/integration/",
+      "TestHelpers\\": "tests/helpers"
     }
   },
   "require-dev": {
