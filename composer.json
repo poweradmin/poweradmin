@@ -61,8 +61,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "unit\\": "tests/unit/",
-      "integration\\": "tests/integration/",
+      "Poweradmin\\Tests\\Unit\\": "tests/unit/",
+      "Poweradmin\\Tests\\Integration\\": "tests/integration/",
       "TestHelpers\\": "tests/helpers"
     }
   },

@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace integration;
+namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Domain\Model\ZoneTemplate;

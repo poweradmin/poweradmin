@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Api\V2;
+namespace Poweradmin\Tests\Unit\Api\V2;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\V2\ZoneTemplatesController;

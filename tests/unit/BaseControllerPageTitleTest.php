@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace unit;
+namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\BaseController;

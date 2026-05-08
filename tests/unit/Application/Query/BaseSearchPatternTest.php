@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Query\BaseSearch;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use unit\Application\Query\TestableBaseSearch;
+use Poweradmin\Tests\Unit\Application\Query\TestableBaseSearch;
 
 /**
  * Test Search Pattern Handling and Wildcard Functionality

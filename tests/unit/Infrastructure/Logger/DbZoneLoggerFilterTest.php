@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Infrastructure\Logger;
+namespace Poweradmin\Tests\Unit\Infrastructure\Logger;
 
 use PDO;
 use PDOStatement;

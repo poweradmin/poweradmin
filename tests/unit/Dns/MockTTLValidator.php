@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Dns;
+namespace Poweradmin\Tests\Unit\Dns;
 
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;

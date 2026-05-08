@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Tests\Unit\Domain\Utility;
+namespace Poweradmin\Tests\Unit\Domain\Utility;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Utility\IpHelper;

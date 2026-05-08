@@ -1,6 +1,6 @@
 <?php
 
-namespace integration;
+namespace Poweradmin\Tests\Integration;
 
 use PDO;
 use PDOException;

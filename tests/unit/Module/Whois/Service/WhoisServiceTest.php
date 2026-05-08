@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace unit\Module\Whois\Service;
+namespace Poweradmin\Tests\Unit\Module\Whois\Service;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Module\Whois\Service\WhoisService;

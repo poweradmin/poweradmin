@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Dns;
+namespace Poweradmin\Tests\Unit\Dns;
 
 use TestHelpers\BaseDnsTest;
 use Poweradmin\Domain\Service\DnsValidation\StringValidator;

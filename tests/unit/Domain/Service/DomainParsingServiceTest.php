@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DomainParsingService;

@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Unit\Domain\Model;
+namespace Poweradmin\Tests\Unit\Domain\Model;
 
 use PDO;
 use PDOStatement;

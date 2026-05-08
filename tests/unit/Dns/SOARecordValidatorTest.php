@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace unit\Dns;
+namespace Poweradmin\Tests\Unit\Dns;
 
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
