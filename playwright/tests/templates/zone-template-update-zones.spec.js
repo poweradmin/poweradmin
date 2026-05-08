@@ -2,16 +2,22 @@
  * Zone Template Update Zones Tests
  *
  * Tests for "Update zones from template" functionality.
- * Verifies the fix for GitHub issues #944 and #945.
+ * Verifies the fix for GitHub issues #944, #945, and #1210.
  */
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Patterns rendered by PHP/PDO when a query, type assertion, or FK constraint
+// blows up inside the template update path. Issue #1210 surfaces as
+// "SQLSTATE[23503]: Foreign key violation" / "violates foreign key constraint";
+// keep the prior #944/#945 patterns too.
+const FATAL_ERROR_PATTERN = /fatal|exception|TypeError|null given|SQLSTATE|foreign key|constraint violation|integrity constraint/i;
+
 test.describe.configure({ mode: 'serial' });
 
-test.describe('Zone Template - Update Zones (Issues #944, #945)', () => {
+test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
   const templateName = `update-zones-test-${Date.now()}`;
   const zoneName = `update-test-${Date.now()}.example.com`;
   let templateId = null;
@@ -122,7 +128,7 @@ test.describe('Zone Template - Update Zones (Issues #944, #945)', () => {
       const hasUpdateBtn = await updateBtn.count() > 0;
 
       const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
     });
 
     test('should add a new record to template', async ({ page }) => {
@@ -144,7 +150,7 @@ test.describe('Zone Template - Update Zones (Issues #944, #945)', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
     });
 
     test('should update zones from template without fatal error (issue #944/#945)', async ({ page }) => {
@@ -162,7 +168,7 @@ test.describe('Zone Template - Update Zones (Issues #944, #945)', () => {
         await page.waitForLoadState('networkidle');
 
         const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception|TypeError|null given/i);
+        expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
 
         const hasSuccess = bodyText.toLowerCase().includes('success') ||
                           bodyText.toLowerCase().includes('updated') ||
@@ -172,7 +178,7 @@ test.describe('Zone Template - Update Zones (Issues #944, #945)', () => {
         expect(hasSuccess || stayedOnPage).toBeTruthy();
       } else {
         const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
         test.info().annotations.push({
           type: 'note',
           description: 'No update zones button found - zone may not be linked to template'
@@ -187,7 +193,7 @@ test.describe('Zone Template - Update Zones (Issues #944, #945)', () => {
       await page.goto(`/zones/${zoneId}/edit`);
 
       const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
 
       await expect(page).toHaveURL(/.*zones.*edit/);
     });
@@ -214,7 +220,7 @@ test.describe('Zone Template - Update Zones (Issues #944, #945)', () => {
           await editLink.click();
 
           const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
+          expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
         }
 
         // Clean up
@@ -266,7 +272,7 @@ test.describe('Zone Template - Update Zones (Issues #944, #945)', () => {
         await page.waitForLoadState('networkidle');
 
         const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception|TypeError|null given/i);
+        expect(bodyText).not.toMatch(FATAL_ERROR_PATTERN);
       }
 
       // Clean up second zone

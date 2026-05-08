@@ -219,16 +219,18 @@ class EditZoneTemplController extends BaseController
     {
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
-        $zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
+        $zones = $zoneTemplate->getZoneAndDomainIdsByTemplate($zone_templ_id, $userId);
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
 
-        foreach ($zones as $zone_id) {
-            $dnsRecord->updateZoneRecords($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone_id, $zone_templ_id);
+        $syncedZoneIds = [];
+        foreach ($zones as $zone) {
+            // PowerDNS record updates use domain_id; sync tracking uses Poweradmin zones.id.
+            $dnsRecord->updateZoneRecords($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone['domain_id'], $zone_templ_id);
+            $syncedZoneIds[] = $zone['zone_id'];
         }
 
-        // Mark all zones as synced
-        $syncService->markZonesAsSynced($zones, $zone_templ_id);
+        $syncService->markZonesAsSynced($syncedZoneIds, $zone_templ_id);
 
         $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
         $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
