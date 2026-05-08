@@ -407,8 +407,13 @@ class RecordManager implements RecordManagerInterface
      */
     public static function deleteRecordZoneTempl($db, int|string $rid): bool
     {
+        // records_zone_templ.record_id is integer-only and never references API-mode encoded IDs.
+        if (!is_int($rid) && !ctype_digit((string)$rid)) {
+            return true;
+        }
+
         $stmt = $db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?");
-        $stmt->execute([$rid]);
+        $stmt->execute([(int)$rid]);
 
         return true;
     }
