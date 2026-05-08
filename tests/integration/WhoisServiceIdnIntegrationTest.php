@@ -1,6 +1,6 @@
 <?php
 
-namespace Poweradmin\Tests\Integration;
+namespace integration;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
