@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Module;
+namespace Poweradmin\Tests\Unit\Module;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;

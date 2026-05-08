@@ -1,6 +1,6 @@
 <?php
 
-namespace unit;
+namespace Poweradmin\Tests\Unit;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 

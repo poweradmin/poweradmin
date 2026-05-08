@@ -1,6 +1,6 @@
 <?php
 
-namespace integration;
+namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Module\Whois\Service\WhoisService;

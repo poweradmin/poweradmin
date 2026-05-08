@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Utility;
+namespace Poweradmin\Tests\Unit\Utility;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;

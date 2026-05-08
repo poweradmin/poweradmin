@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace unit\Domain\Model;
+namespace Poweradmin\Tests\Unit\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\TopLevelDomain;

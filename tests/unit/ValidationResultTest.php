@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Test\Unit;
+namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Validation\ValidationResult;

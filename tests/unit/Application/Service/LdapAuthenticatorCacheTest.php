@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace unit\Application\Service;
+namespace Poweradmin\Tests\Unit\Application\Service;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\LdapAuthenticator;

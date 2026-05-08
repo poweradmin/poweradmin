@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Api\V1;
+namespace Poweradmin\Tests\Unit\Api\V1;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;

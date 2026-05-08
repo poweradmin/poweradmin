@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Infrastructure\Repository;
+namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;

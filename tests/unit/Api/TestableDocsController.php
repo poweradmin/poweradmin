@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Api;
+namespace Poweradmin\Tests\Unit\Api;
 
 use Poweradmin\Application\Controller\Api\DocsController;
 use ReflectionClass;

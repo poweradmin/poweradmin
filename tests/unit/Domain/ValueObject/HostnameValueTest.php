@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Domain\ValueObject;
+namespace Poweradmin\Tests\Unit\Domain\ValueObject;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\ValueObject\HostnameValue;

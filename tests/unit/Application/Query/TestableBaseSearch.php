@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace unit\Application\Query;
+namespace Poweradmin\Tests\Unit\Application\Query;
 
 use Poweradmin\Application\Query\BaseSearch;
 

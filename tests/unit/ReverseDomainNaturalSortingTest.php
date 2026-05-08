@@ -1,6 +1,6 @@
 <?php
 
-namespace unit;
+namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Utility\ReverseDomainNaturalSorting;

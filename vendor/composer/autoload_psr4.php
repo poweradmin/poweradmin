@@ -6,9 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'unit\\' => array($baseDir . '/tests/unit'),
     'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-docblock/src', $vendorDir . '/phpdocumentor/type-resolver/src', $vendorDir . '/phpdocumentor/reflection-common/src'),
-    'integration\\' => array($baseDir . '/tests/integration'),
     'XdgBaseDir\\' => array($vendorDir . '/dnoegel/php-xdg-base-dir/src'),
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
     'Twig\\' => array($vendorDir . '/twig/twig/src'),
@@ -77,6 +75,8 @@ return array(
     'Psr\\Clock\\' => array($vendorDir . '/psr/clock/src'),
     'Psalm\\' => array($vendorDir . '/vimeo/psalm/src/Psalm'),
     'PragmaRX\\Google2FA\\' => array($vendorDir . '/pragmarx/google2fa/src'),
+    'Poweradmin\\Tests\\Unit\\' => array($baseDir . '/tests/unit'),
+    'Poweradmin\\Tests\\Integration\\' => array($baseDir . '/tests/integration'),
     'Poweradmin\\' => array($baseDir . '/lib'),
     'PoweradminInstall\\' => array($baseDir . '/install/helpers'),
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),

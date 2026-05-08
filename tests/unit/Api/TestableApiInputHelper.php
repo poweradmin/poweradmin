@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Api;
+namespace Poweradmin\Tests\Unit\Api;
 
 /**
  * Mirrors the input helper methods from AbstractApiController for unit testing.

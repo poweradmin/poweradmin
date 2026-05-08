@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Api\V1;
+namespace Poweradmin\Tests\Unit\Api\V1;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\V1\PermissionsController;
