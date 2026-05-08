@@ -53,12 +53,15 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Regenerate autoloader
+      run: composer dump-autoload --no-interaction
+
     - name: Fix vendor binary permissions
       run: chmod +x vendor/bin/*
 
     - name: Generate cache key
       id: cache-key
-      run: echo "key=${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}" >> $GITHUB_OUTPUT
+      run: echo "key=${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock', '**/composer.json') }}" >> $GITHUB_OUTPUT
 
     - name: Cache vendor directory
       uses: actions/cache@v5
