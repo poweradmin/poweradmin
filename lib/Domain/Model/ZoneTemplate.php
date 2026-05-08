@@ -890,6 +890,63 @@ class ZoneTemplate
     }
 
     /**
+     * Get id pairs for zones using a template.
+     *
+     * Returns rows of ['zone_id' => zones.id, 'domain_id' => zones.domain_id] so callers
+     * can pass the right value to PowerDNS-side operations (domain_id) and to
+     * Poweradmin-native sync tracking (zone_id). On SQL backends the result is
+     * inner-joined against the PowerDNS domains table to skip orphaned mappings
+     * whose domain_id no longer exists (those would crash later in updateZoneRecords).
+     *
+     * @param int $zone_templ_id zone template id
+     * @param int $userid user id
+     *
+     * @return array<int, array{zone_id:int, domain_id:int}>
+     */
+    public function getZoneAndDomainIdsByTemplate(int $zone_templ_id, int $userid): array
+    {
+        $perm_edit = Permission::getEditPermission($this->db);
+        $params = [':zone_templ_id' => $zone_templ_id];
+
+        if ($this->isApiBackend()) {
+            $sql_add = '';
+            if ($perm_edit != "all") {
+                $sql_add = " AND owner = :userid";
+                $params[':userid'] = $userid;
+            }
+            $query = "SELECT id AS zone_id, domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
+        } else {
+            $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+            $sql_add = '';
+            if ($perm_edit != "all") {
+                $sql_add = " AND zones.owner = :userid";
+                $params[':userid'] = $userid;
+            }
+            $query = "SELECT zones.id AS zone_id, zones.domain_id
+                      FROM zones
+                      INNER JOIN $domains_table ON $domains_table.id = zones.domain_id
+                      WHERE zones.zone_templ_id = :zone_templ_id" . $sql_add;
+        }
+
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute($params);
+
+            $rows = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $rows[] = [
+                    'zone_id' => (int) $row['zone_id'],
+                    'domain_id' => (int) $row['domain_id'],
+                ];
+            }
+            return $rows;
+        } catch (Exception $e) {
+            $this->messageService->addSystemError(_('Error retrieving zones using template: ') . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
      * Get detailed information about zones using a specific template
      *
      * @param int $zone_templ_id zone template id
