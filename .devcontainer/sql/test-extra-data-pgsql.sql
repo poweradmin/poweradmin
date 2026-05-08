@@ -92,9 +92,13 @@ FROM domains d, users u
 WHERE d.name = 'viewer-zone.example.com' AND u.username = 'viewer'
   AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
 
--- Admin owns slave-zone.example.com
+-- Admin owns slave-zone.example.com, linked to "Standard Web Zone" template.
+-- This zone is intentionally seeded with mismatched zones.id != zones.domain_id
+-- (it's inserted after viewer-zone, which separates the two id sequences) so the
+-- "Update zones from template" flow can catch regressions like #1210, where the
+-- code accidentally writes domain_id into zone_template_sync.zone_id (FK to zones.id).
 INSERT INTO zones (domain_id, owner, zone_templ_id)
-SELECT d.id, u.id, 0
+SELECT d.id, u.id, COALESCE((SELECT id FROM zone_templ WHERE name = 'Standard Web Zone'), 0)
 FROM domains d, users u
 WHERE d.name = 'slave-zone.example.com' AND u.username = 'admin'
   AND NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id AND z.owner = u.id);
@@ -135,7 +139,7 @@ SELECT setval('api_keys_id_seq', COALESCE((SELECT MAX(id) FROM api_keys), 1));
 
 -- Link Standard Web Zone template to admin-zone (synced)
 INSERT INTO zone_template_sync (zone_id, zone_templ_id, last_synced, needs_sync)
-SELECT z.id, zt.id, NOW(), 0
+SELECT z.id, zt.id, NOW(), false
 FROM zones z
 JOIN domains d ON z.domain_id = d.id
 CROSS JOIN zone_templ zt
@@ -145,11 +149,23 @@ LIMIT 1;
 
 -- Link Standard Web Zone template to manager-zone (needs sync)
 INSERT INTO zone_template_sync (zone_id, zone_templ_id, last_synced, needs_sync)
-SELECT z.id, zt.id, NOW() - INTERVAL '7 days', 1
+SELECT z.id, zt.id, NOW() - INTERVAL '7 days', true
 FROM zones z
 JOIN domains d ON z.domain_id = d.id
 CROSS JOIN zone_templ zt
 WHERE d.name = 'manager-zone.example.com' AND zt.name = 'Standard Web Zone'
+  AND NOT EXISTS (SELECT 1 FROM zone_template_sync zts WHERE zts.zone_id = z.id AND zts.zone_templ_id = zt.id)
+LIMIT 1;
+
+-- Link Standard Web Zone template to slave-zone (needs sync). slave-zone has
+-- zones.id != domain_id, so an "Update zones" run on this template exercises
+-- the id mapping path that issue #1210 broke.
+INSERT INTO zone_template_sync (zone_id, zone_templ_id, last_synced, needs_sync)
+SELECT z.id, zt.id, NOW() - INTERVAL '1 day', true
+FROM zones z
+JOIN domains d ON z.domain_id = d.id
+CROSS JOIN zone_templ zt
+WHERE d.name = 'slave-zone.example.com' AND zt.name = 'Standard Web Zone'
   AND NOT EXISTS (SELECT 1 FROM zone_template_sync zts WHERE zts.zone_id = z.id AND zts.zone_templ_id = zt.id)
 LIMIT 1;
 

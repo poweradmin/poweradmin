@@ -779,7 +779,7 @@ main() {
         echo ""
         echo -e "${BLUE}Additional Data:${NC}"
         echo "  - Expired API key: 'Expired Testing Key' (expired 2024-01-01)"
-        echo "  - Zone template sync: admin-zone (synced), manager-zone (needs sync)"
+        echo "  - Zone template sync: admin-zone (synced), manager-zone (needs sync), slave-zone (needs sync; zones.id != domain_id - regression trap for #1210)"
         echo "  - Login attempts: 2 successful, 3 failed"
         echo "  - Group audit logs: 4 entries"
         echo ""
