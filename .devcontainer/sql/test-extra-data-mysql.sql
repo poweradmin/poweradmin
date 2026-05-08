@@ -107,9 +107,13 @@ WHERE d.`name` = 'viewer-zone.example.com' AND u.`username` = 'viewer'
     SELECT 1 FROM poweradmin.`zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
   );
 
--- Admin owns slave-zone.example.com
+-- Admin owns slave-zone.example.com, linked to "Standard Web Zone" template.
+-- This zone is intentionally seeded with mismatched zones.id != zones.domain_id
+-- (it's inserted after viewer-zone, which separates the two id sequences) so the
+-- "Update zones from template" flow can catch regressions like #1210, where the
+-- code accidentally writes domain_id into zone_template_sync.zone_id (FK to zones.id).
 INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
-SELECT d.`id`, u.`id`, 0, d.`name`
+SELECT d.`id`, u.`id`, COALESCE((SELECT `id` FROM poweradmin.`zone_templ` WHERE `name` = 'Standard Web Zone'), 0), d.`name`
 FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = 'slave-zone.example.com' AND u.`username` = 'admin'
@@ -170,6 +174,20 @@ FROM `zones` z
 JOIN pdns.`domains` d ON z.`domain_id` = d.`id`
 CROSS JOIN `zone_templ` zt
 WHERE d.`name` = 'manager-zone.example.com' AND zt.`name` = 'Standard Web Zone'
+  AND NOT EXISTS (
+    SELECT 1 FROM `zone_template_sync` zts WHERE zts.`zone_id` = z.`id` AND zts.`zone_templ_id` = zt.`id`
+  )
+LIMIT 1;
+
+-- Link Standard Web Zone template to slave-zone (needs sync). slave-zone has
+-- zones.id != domain_id, so an "Update zones" run on this template exercises
+-- the id mapping path that issue #1210 broke.
+INSERT INTO `zone_template_sync` (`zone_id`, `zone_templ_id`, `last_synced`, `needs_sync`)
+SELECT z.`id`, zt.`id`, DATE_SUB(NOW(), INTERVAL 1 DAY), 1
+FROM `zones` z
+JOIN pdns.`domains` d ON z.`domain_id` = d.`id`
+CROSS JOIN `zone_templ` zt
+WHERE d.`name` = 'slave-zone.example.com' AND zt.`name` = 'Standard Web Zone'
   AND NOT EXISTS (
     SELECT 1 FROM `zone_template_sync` zts WHERE zts.`zone_id` = z.`id` AND zts.`zone_templ_id` = zt.`id`
   )
