@@ -22,12 +22,9 @@
 
 namespace integration;
 
-use PDO;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
-use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
+use TestHelpers\SqliteIntegrationTestCase;
 
 /**
  * Regression tests for ZoneTemplate::getZoneAndDomainIdsByTemplate().
@@ -43,41 +40,11 @@ use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
  * Each test runs in its own process to keep the static permission cache inside
  * UserManager::verifyPermission from leaking across cases.
  */
-class ZoneTemplateGetZoneAndDomainIdsTest extends TestCase
+class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
 {
-    private const ADMIN_USER_ID = 1;
-
-    private PDO $db;
-    private FakeConfiguration $config;
-
     protected function setUp(): void
     {
-        $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-        $this->bootstrapSchema();
-        $this->seedAdminWithUeberuser();
-
-        $this->config = new FakeConfiguration([
-            'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
-        ]);
-
-        $_SESSION['userid'] = self::ADMIN_USER_ID;
-    }
-
-    protected function tearDown(): void
-    {
-        unset($_SESSION['userid']);
-    }
-
-    private function bootstrapSchema(): void
-    {
-        // Tables Permission::getEditPermission walks: users -> perm_templ ->
-        // perm_templ_items -> perm_items, plus the user_group_* UNION branch.
-        $this->db->exec("CREATE TABLE perm_items (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '')");
-        $this->db->exec("CREATE TABLE perm_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '')");
-        $this->db->exec("CREATE TABLE perm_templ_items (id INTEGER PRIMARY KEY, templ_id INTEGER NOT NULL, perm_id INTEGER NOT NULL)");
-        $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT NOT NULL, perm_templ INTEGER NOT NULL)");
-        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT NOT NULL, perm_templ INTEGER)");
-        $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
+        parent::setUp();
 
         // PowerDNS domains table - only the columns the tested query references.
         $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL)");
@@ -85,14 +52,6 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends TestCase
         // Poweradmin zones / template tables.
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, owner INTEGER)");
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
-    }
-
-    private function seedAdminWithUeberuser(): void
-    {
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (53, 'user_is_ueberuser'), (47, 'zone_content_edit_others')");
-        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (1, 'Administrator')");
-        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (1, 53), (1, 47)");
-        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::ADMIN_USER_ID . ", 'admin', 1)");
     }
 
     private function makeTemplate(string $name = 'phpunit-template'): int
@@ -118,13 +77,6 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends TestCase
         return (int) $this->db->lastInsertId();
     }
 
-    private function apiBackendStub(bool $isApi): DnsBackendProvider
-    {
-        $mock = $this->createMock(DnsBackendProvider::class);
-        $mock->method('isApiBackend')->willReturn($isApi);
-        return $mock;
-    }
-
     #[RunInSeparateProcess]
     public function testReturnsBothZoneIdAndDomainIdForLinkedZone(): void
     {
@@ -137,7 +89,7 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends TestCase
         $domainId = $this->makeDomain('example.com');
         $zoneId = $this->linkZone($domainId, $templateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->apiBackendStub(false));
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false));
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -156,7 +108,7 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends TestCase
         // Orphan: domains row never inserted, so INNER JOIN must drop this one.
         $orphanZoneId = $this->linkZone(99999, $templateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->apiBackendStub(false));
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false));
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -176,7 +128,7 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends TestCase
         $templateId = $this->makeTemplate();
         $apiZoneId = $this->linkZone(99999, $templateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->apiBackendStub(true));
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(true));
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -197,7 +149,7 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends TestCase
         $targetZoneId = $this->linkZone($targetDomainId, $targetTemplateId);
         $this->linkZone($otherDomainId, $otherTemplateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->apiBackendStub(false));
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false));
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($targetTemplateId, self::ADMIN_USER_ID);
 
