@@ -495,12 +495,12 @@ class RecordManager implements RecordManagerInterface
         // RecordIdentifier strings) live in records_zone_templ_api. PostgreSQL
         // rejects encoded strings against the integer record_id column, so
         // dispatch by ID type instead of probing both tables.
-        if (is_int($rid) || ctype_digit((string)$rid)) {
+        if (is_int($rid) || ctype_digit($rid)) {
             $stmt = $db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?");
             $stmt->execute([(int)$rid]);
         } else {
             $stmt = $db->prepare("DELETE FROM records_zone_templ_api WHERE record_id = ?");
-            $stmt->execute([(string)$rid]);
+            $stmt->execute([$rid]);
         }
 
         return true;
