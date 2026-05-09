@@ -201,9 +201,9 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     {
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', 100);
-            $isNewRecord = is_int($rid) && $rid <= 0;
+            $isNewRecord = is_numeric($rid) && (int)$rid <= 0;
             foreach ($result['records'] ?? [] as $r) {
-                if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($isNewRecord || ($r['id'] ?? 0) !== $rid)) {
+                if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
                     return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
                 }
             }
@@ -212,11 +212,11 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-        // Check if there are any records with this name
-        if (is_int($rid) && $rid > 0) {
+        // Existing-record edit: exclude the row being edited from the duplicate check.
+        if (is_numeric($rid) && (int)$rid > 0) {
             $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE != 'CNAME' AND id != ?";
             $stmt = $this->db->prepare($query);
-            $stmt->execute([$name, $rid]);
+            $stmt->execute([$name, (int)$rid]);
         } else {
             $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE != 'CNAME'";
             $stmt = $this->db->prepare($query);
@@ -304,10 +304,11 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-        if (is_int($rid) && $rid > 0) {
+        // Existing-record edit: exclude the row being edited from the duplicate check.
+        if (is_numeric($rid) && (int)$rid > 0) {
             $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME' AND id != ?";
             $stmt = $this->db->prepare($query);
-            $stmt->execute([$name, $rid]);
+            $stmt->execute([$name, (int)$rid]);
         } else {
             $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME'";
             $stmt = $this->db->prepare($query);
