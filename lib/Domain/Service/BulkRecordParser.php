@@ -36,7 +36,9 @@ class BulkRecordParser
             return _('Empty line.');
         }
 
-        $parts = str_getcsv($line);
+        // Pass $escape explicitly: PHP 8.4 deprecates omitting it and the default
+        // changes to "" in PHP 9.0. Mirror PHP 8.3's behavior with a backslash.
+        $parts = str_getcsv($line, ',', '"', '\\');
 
         if (count($parts) < 3) {
             return _('Invalid format. Expected at least: name,type,content');
