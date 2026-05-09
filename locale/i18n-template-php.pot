@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.5.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-06 18:48+0300\n"
+"POT-Creation-Date: 2026-05-09 11:02+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1328,7 +1328,7 @@ msgstr ""
 msgid "You do not have the permission to view this comment."
 msgstr ""
 
-#: lib/Domain/Service/Dns/RecordManager.php:540
+#: lib/Domain/Service/Dns/RecordManager.php:543
 msgid "You do not have the permission to edit this comment."
 msgstr ""
 
@@ -1866,23 +1866,23 @@ msgstr ""
 msgid "Zone template has been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplController.php:233
+#: lib/Application/Controller/EditZoneTemplController.php:235
 msgid "Zones have been updated successfully."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplController.php:244
+#: lib/Application/Controller/EditZoneTemplController.php:246
 msgid "You do not have permission to create new zone templates."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:317 lib/Domain/Model/ZoneTemplate.php:1008
+#: lib/Domain/Model/ZoneTemplate.php:317 lib/Domain/Model/ZoneTemplate.php:1065
 msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplController.php:275
+#: lib/Application/Controller/EditZoneTemplController.php:277
 msgid "Please enter a different name when using Save As."
 msgstr ""
 
-#: lib/Application/Controller/EditZoneTemplController.php:299
+#: lib/Application/Controller/EditZoneTemplController.php:301
 msgid "Zone template has been copied successfully."
 msgstr ""
 
@@ -2995,7 +2995,7 @@ msgid "Add a group first (zone ownership mode is groups_only)."
 msgstr ""
 
 #: lib/Application/Controller/NotFoundController.php:53
-#: templates/default/404.html:14 templates/modern/404.html:14
+#: templates/default/404.html:11 templates/modern/404.html:11
 msgid "Page Not Found"
 msgstr ""
 
@@ -3382,35 +3382,35 @@ msgstr ""
 msgid "Error checking template ownership: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:845 lib/Domain/Model/ZoneTemplate.php:887
+#: lib/Domain/Model/ZoneTemplate.php:944
 msgid "Error retrieving zones using template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:943 lib/Domain/Model/ZoneTemplate.php:987
+#: lib/Domain/Model/ZoneTemplate.php:1044
 msgid "Failed to get list of zones using template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1005
+#: lib/Domain/Model/ZoneTemplate.php:1062
 msgid "You do not have the permission to edit a zone template."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1053
+#: lib/Domain/Model/ZoneTemplate.php:1110
 msgid "Error unlinking zone from template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1102
+#: lib/Domain/Model/ZoneTemplate.php:1159
 msgid "Error retrieving zones: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1121
+#: lib/Domain/Model/ZoneTemplate.php:1178
 msgid "Error checking template name existence: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1142
+#: lib/Domain/Model/ZoneTemplate.php:1199
 msgid "Error looking up template by name: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1165
+#: lib/Domain/Model/ZoneTemplate.php:1222
 msgid "Error checking template existence: "
 msgstr ""
 
@@ -5429,18 +5429,18 @@ msgstr ""
 msgid "Empty CNAME records are not allowed."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:319
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:320
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:348
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:361
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:362
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
@@ -9248,7 +9248,7 @@ msgstr ""
 msgid "Add Records"
 msgstr ""
 
-#: templates/modern/bulk_registration.html:119
+#: templates/modern/bulk_record_add.html:73
 msgid "Instructions"
 msgstr ""
 
@@ -10063,31 +10063,31 @@ msgstr ""
 msgid "Other Permissions"
 msgstr ""
 
-#: templates/default/404.html:19 templates/modern/404.html:19
+#: templates/default/404.html:15 templates/modern/404.html:15
 msgid "The page you are looking for does not exist."
 msgstr ""
 
-#: templates/default/404.html:22 templates/modern/404.html:22
+#: templates/default/404.html:18 templates/modern/404.html:18
 msgid "This could be because:"
 msgstr ""
 
-#: templates/default/404.html:26 templates/modern/404.html:26
+#: templates/default/404.html:22 templates/modern/404.html:22
 msgid "The URL is incorrect or has been mistyped"
 msgstr ""
 
-#: templates/default/404.html:30 templates/modern/404.html:30
+#: templates/default/404.html:26 templates/modern/404.html:26
 msgid "The page has been moved or deleted"
 msgstr ""
 
-#: templates/default/404.html:34 templates/modern/404.html:34
+#: templates/default/404.html:30 templates/modern/404.html:30
 msgid "You do not have permission to access this page"
 msgstr ""
 
-#: templates/default/404.html:45 templates/modern/404.html:45
+#: templates/default/404.html:40 templates/modern/404.html:40
 msgid "Go to Homepage"
 msgstr ""
 
-#: templates/default/404.html:49 templates/modern/404.html:49
+#: templates/default/404.html:44 templates/modern/404.html:44
 msgid "Go Back"
 msgstr ""
 
@@ -11314,54 +11314,22 @@ msgstr ""
 msgid "Add Zones"
 msgstr ""
 
-#: templates/modern/bulk_registration.html:114
-msgid "About Bulk Registration"
+#: templates/modern/bulk_registration.html:115
+msgid "After Creation"
 msgstr ""
 
 #: templates/modern/bulk_registration.html:120
-msgid "This tool allows you to create multiple DNS zones at once."
+msgid "Change zone owner"
 msgstr ""
 
-#: templates/modern/bulk_registration.html:122
-msgid "Enter one domain name per line in the Domains field"
+#: templates/modern/bulk_registration.html:121
+msgid ""
+"You can transfer zone ownership to another user from the user list at any "
+"time."
 msgstr ""
 
 #: templates/modern/bulk_registration.html:123
-msgid "Select a zone template to apply standard records to all zones"
-msgstr ""
-
-#: templates/modern/bulk_registration.html:124
-msgid "The chosen owner will have full access to all created zones"
-msgstr ""
-
-#: templates/modern/bulk_registration.html:128
-msgid "How It Works"
-msgstr ""
-
-#: templates/modern/bulk_registration.html:129
-msgid ""
-"The system will attempt to create each zone with the same settings. Failed "
-"domains will be displayed so you can correct any issues and try again."
-msgstr ""
-
-#: templates/modern/bulk_registration.html:137
-msgid "Tips & Recommendations"
-msgstr ""
-
-#: templates/modern/bulk_registration.html:143
-msgid "Use NATIVE zone type for most standard setups"
-msgstr ""
-
-#: templates/modern/bulk_registration.html:144
-msgid "Create a template first if you need standard records for all zones"
-msgstr ""
-
-#: templates/modern/bulk_registration.html:145
-msgid "You can copy and paste a list of domains from a spreadsheet"
-msgstr ""
-
-#: templates/modern/bulk_registration.html:146
-msgid "Make sure the domain names follow valid DNS naming conventions"
+msgid "Manage users"
 msgstr ""
 
 #: templates/modern/user_agreement.html:13
