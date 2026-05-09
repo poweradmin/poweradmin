@@ -571,4 +571,84 @@ class CNAMERecordValidatorTest extends TestCase
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('CNAME target must be a fully qualified domain name', $result->getFirstError());
     }
+
+    /**
+     * Editing a CNAME from the GUI passes the record ID as a numeric string
+     * (it comes from $_POST). The duplicate check must still exclude the row
+     * being edited - regression test for issue #1202.
+     */
+    public function testValidateCnameExistenceWithStringRidAppliesIdFilter()
+    {
+        $db = $this->createMock(PDO::class);
+        $stmt = $this->createMock(\PDOStatement::class);
+        $stmt->method('fetchColumn')->willReturn(false);
+
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->equalTo(['alias.example.com', 123]));
+
+        $db->expects($this->once())
+            ->method('prepare')
+            ->with($this->stringContains('AND id != ?'))
+            ->willReturn($stmt);
+
+        $validator = new CNAMERecordValidator($this->configMock, $db);
+
+        $reflection = new \ReflectionClass(CNAMERecordValidator::class);
+        $method = $reflection->getMethod('validateCnameExistence');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($validator, 'alias.example.com', '123');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateCnameUniqueWithStringRidAppliesIdFilter()
+    {
+        $db = $this->createMock(PDO::class);
+        $stmt = $this->createMock(\PDOStatement::class);
+        $stmt->method('fetchColumn')->willReturn(false);
+
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->equalTo(['alias.example.com', 123]));
+
+        $db->expects($this->once())
+            ->method('prepare')
+            ->with($this->stringContains('AND id != ?'))
+            ->willReturn($stmt);
+
+        $validator = new CNAMERecordValidator($this->configMock, $db);
+
+        $reflection = new \ReflectionClass(CNAMERecordValidator::class);
+        $method = $reflection->getMethod('validateCnameUnique');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($validator, 'alias.example.com', '123');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateCnameExistenceWithNewRecordSentinelSkipsIdFilter()
+    {
+        $db = $this->createMock(PDO::class);
+        $stmt = $this->createMock(\PDOStatement::class);
+        $stmt->method('fetchColumn')->willReturn(false);
+
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->equalTo(['alias.example.com']));
+
+        $db->expects($this->once())
+            ->method('prepare')
+            ->with($this->logicalNot($this->stringContains('AND id != ?')))
+            ->willReturn($stmt);
+
+        $validator = new CNAMERecordValidator($this->configMock, $db);
+
+        $reflection = new \ReflectionClass(CNAMERecordValidator::class);
+        $method = $reflection->getMethod('validateCnameExistence');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($validator, 'alias.example.com', -1);
+        $this->assertTrue($result->isValid());
+    }
 }
