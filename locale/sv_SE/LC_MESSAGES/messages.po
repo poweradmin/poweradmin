@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-03-12 09:58+0200\n"
+"POT-Creation-Date: 2026-05-09 10:51+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/AppInitializer.php:82
+#: lib/AppInitializer.php:81
 #, php-format
 msgid ""
 "No configuration file found at %s. Please use the <a href=\"install/"
@@ -43,19 +43,19 @@ msgstr "Zonen hittades inte."
 msgid "You do not have permission to add records to this zone."
 msgstr "Du har inte behörighet att lägga till poster i denna zon."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:114
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:115
 msgid "Invalid wizard type."
 msgstr "Ogiltig guidetyp."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:200
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:201
 msgid "Validation failed:"
 msgstr "Validering misslyckades:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:224
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:225
 msgid "Failed to generate record:"
 msgstr "Kunde inte generera post:"
 
-#: lib/Application/Controller/AddRecordController.php:170
+#: lib/Application/Controller/AddRecordController.php:175
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
@@ -63,7 +63,7 @@ msgstr ""
 "Posten var inte giltig och kunde inte läggas till. Den kanske redan finns "
 "eller innehåller ogiltiga data."
 
-#: lib/Application/Controller/AddRecordController.php:248
+#: lib/Application/Controller/AddRecordController.php:253
 msgid "The record was successfully added."
 msgstr "Posten lades till."
 
@@ -332,7 +332,7 @@ msgstr ""
 "certifikatet."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:627
+#: templates/modern/edit.html:93 templates/modern/edit.html:634
 msgid "Invalid hostname format"
 msgstr "Ogiltigt värdnamnsformat"
 
@@ -1202,60 +1202,60 @@ msgstr "Ogiltigt domänformat"
 msgid "Email Previews"
 msgstr "E-postförhandsvisningar"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:76
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:77
 msgid "You do not have permission to import zones."
 msgstr "Du har inte behörighet att importera zoner."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:118
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:119
 msgid "Please select a valid zone file to upload."
 msgstr "Välj en giltig zonfil att ladda upp."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:124
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:125
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
 msgstr "Filstorleken överskrider den maximalt tillåtna storleken på %s."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:130
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:131
 msgid "The uploaded file is empty or could not be read."
 msgstr "Den uppladdade filen är tom eller kunde inte läsas."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:139
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:140
 msgid "No valid records found in the uploaded file."
 msgstr "Inga giltiga poster hittades i den uppladdade filen."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:280
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:281
 msgid "You do not have permission to modify this zone."
 msgstr "Du har inte behörighet att ändra denna zon."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:237
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:238
 msgid "Import session expired. Please upload the file again."
 msgstr "Importsessionen har gått ut. Ladda upp filen igen."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:244
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:245
 msgid "Invalid import data. Please upload the file again."
 msgstr "Ogiltiga importdata. Ladda upp filen igen."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:270
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:271
 msgid "The selected zone does not exist."
 msgstr "Den valda zonen finns inte."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:296
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:297
 msgid "You do not have permission to add zones."
 msgstr "Du har inte behörighet att lägga till zoner."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:301
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:302
 msgid "Zone name is required."
 msgstr "Zonnamn krävs."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:306
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
 msgid "A zone with this name already exists."
 msgstr "En zon med detta namn finns redan."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:312
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:313
 msgid "Failed to create zone."
 msgstr "Kunde inte skapa zonen."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:318
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:319
 msgid "Failed to retrieve created zone."
 msgstr "Kunde inte hämta den skapade zonen."
 
@@ -1301,7 +1301,7 @@ msgstr "RDAP"
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Kunde inte hämta RDAP-information med server %s"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:134
+#: lib/Infrastructure/Service/SessionAuthenticator.php:135
 msgid "Invalid CSRF token."
 msgstr "Ogiltig CSRF-token."
 
@@ -1313,7 +1313,7 @@ msgstr ""
 "Katalogen <a href=\"install/\">install/</a> finns kvar, du måste ta bort den "
 "innan du fortsätter."
 
-#: lib/BaseController.php:574
+#: lib/BaseController.php:575
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1321,12 +1321,12 @@ msgstr ""
 "Standardkrypteringsnyckeln för sessioner används, vänligen ange en i din "
 "konfigurationsfil."
 
-#: lib/BaseController.php:711
+#: lib/BaseController.php:712
 #, php-format
 msgid "The %s field is required."
 msgstr "Fältet %s är obligatoriskt."
 
-#: lib/BaseController.php:719
+#: lib/BaseController.php:720
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Fältet %s måste vara ett nummer."
@@ -1347,18 +1347,18 @@ msgstr "Visa zoner som börjar med"
 msgid "Show all"
 msgstr "Visa alla"
 
-#: lib/Application/Controller/DeleteRecordsController.php:76
+#: lib/Application/Controller/DeleteRecordsController.php:77
 msgid "No records selected for deletion."
 msgstr "Inga poster valda för radering."
 
-#: lib/Application/Controller/DeleteRecordsController.php:192
+#: lib/Application/Controller/DeleteRecordsController.php:193
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr ""
 "Posten har raderats. Eventuella motsvarande PTR-poster togs också bort."
 
-#: lib/Application/Controller/DeleteRecordsController.php:194
+#: lib/Application/Controller/DeleteRecordsController.php:195
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1366,11 +1366,11 @@ msgid ""
 msgstr ""
 "%d poster har raderats. Eventuella motsvarande PTR-poster togs också bort."
 
-#: lib/Application/Controller/DeleteRecordsController.php:197
+#: lib/Application/Controller/DeleteRecordsController.php:198
 msgid "No records could be deleted. Please check permissions."
 msgstr "Inga poster kunde raderas. Kontrollera behörigheterna."
 
-#: lib/Application/Controller/DeleteRecordsController.php:263
+#: lib/Application/Controller/DeleteRecordsController.php:264
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
@@ -1385,7 +1385,7 @@ msgstr "Ogiltiga eller oväntade indata angavs."
 msgid "You do not have the permission to delete this user."
 msgstr "Du har inte behörighet att radera denna användare."
 
-#: lib/Application/Controller/DeleteUserController.php:62
+#: lib/Application/Controller/DeleteUserController.php:74
 msgid "You do not have permission to delete a superuser account."
 msgstr "Du har inte behörighet att radera ett superanvändarkonto."
 
@@ -1393,7 +1393,7 @@ msgstr "Du har inte behörighet att radera ett superanvändarkonto."
 msgid "User does not exist."
 msgstr "Användaren finns inte."
 
-#: lib/Application/Controller/DeleteUserController.php:87
+#: lib/Application/Controller/DeleteUserController.php:109
 msgid "The user has been deleted successfully."
 msgstr "Användaren har raderats."
 
@@ -1413,19 +1413,19 @@ msgstr "Du har inte behörighet att redigera denna kommentar."
 msgid "The comment has been updated successfully."
 msgstr "Kommentaren har uppdaterats."
 
-#: lib/Application/Controller/EditRecordController.php:87
+#: lib/Application/Controller/EditRecordController.php:88
 msgid "Invalid record ID."
 msgstr "Ogiltigt post-ID."
 
-#: lib/Application/Controller/DeleteRecordController.php:106
+#: lib/Application/Controller/DeleteRecordController.php:107
 msgid "You do not have permission to delete records in this zone."
 msgstr "Du har inte behörighet att radera poster i denna zon."
 
-#: lib/Application/Controller/EditRecordController.php:197
+#: lib/Application/Controller/EditRecordController.php:198
 msgid "Record not found."
 msgstr "Posten hittades inte."
 
-#: lib/Application/Controller/DeleteRecordController.php:206
+#: lib/Application/Controller/DeleteRecordController.php:207
 msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
@@ -1433,7 +1433,7 @@ msgstr ""
 "Posten och dess motsvarande PTR- och A/AAAA-poster raderades men kommentaren "
 "bevarades eftersom liknande poster finns."
 
-#: lib/Application/Controller/DeleteRecordController.php:208
+#: lib/Application/Controller/DeleteRecordController.php:209
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
@@ -1441,7 +1441,7 @@ msgstr ""
 "Posten och dess motsvarande PTR-post raderades men kommentaren bevarades "
 "eftersom liknande poster finns."
 
-#: lib/Application/Controller/DeleteRecordController.php:210
+#: lib/Application/Controller/DeleteRecordController.php:211
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
@@ -1449,36 +1449,36 @@ msgstr ""
 "Posten och dess motsvarande A/AAAA-post raderades men kommentaren bevarades "
 "eftersom liknande poster finns."
 
-#: lib/Application/Controller/DeleteRecordController.php:212
+#: lib/Application/Controller/DeleteRecordController.php:213
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
 msgstr ""
 "Posten raderades men kommentaren bevarades eftersom liknande poster finns."
 
-#: lib/Application/Controller/DeleteRecordController.php:216
+#: lib/Application/Controller/DeleteRecordController.php:217
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
 msgstr "Posten och dess motsvarande PTR- och A/AAAA-poster har raderats."
 
-#: lib/Application/Controller/DeleteRecordController.php:218
+#: lib/Application/Controller/DeleteRecordController.php:219
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr "Posten och dess motsvarande PTR-post har raderats."
 
-#: lib/Application/Controller/DeleteRecordController.php:220
+#: lib/Application/Controller/DeleteRecordController.php:221
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr "Posten och dess motsvarande A/AAAA-post har raderats."
 
-#: lib/Application/Controller/DeleteRecordController.php:222
+#: lib/Application/Controller/DeleteRecordController.php:223
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr "Posten har raderats. Ingen matchande PTR-post hittades."
 
-#: lib/Application/Controller/DeleteRecordController.php:224
+#: lib/Application/Controller/DeleteRecordController.php:225
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -1488,7 +1488,7 @@ msgstr "Posten har raderats. Ingen matchande A/AAAA-post hittades."
 msgid "The record has been deleted successfully."
 msgstr "Posten har raderats."
 
-#: lib/Application/Controller/DeleteRecordController.php:239
+#: lib/Application/Controller/DeleteRecordController.php:240
 msgid "You cannot delete records from a SLAVE zone."
 msgstr "Du kan inte radera poster från en SLAVE-zon."
 
@@ -1721,36 +1721,36 @@ msgstr "aktiverad"
 msgid "API key %s successfully."
 msgstr "API-nyckel %s."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:107
+#: lib/Application/Controller/BatchPtrRecordController.php:108
 msgid "You do not have the permission to add records to this zone."
 msgstr "Du har inte behörighet att lägga till poster i denna zon."
 
-#: lib/Application/Controller/BulkRecordAddController.php:112
+#: lib/Application/Controller/BulkRecordAddController.php:113
 msgid "Please provide at least one record."
 msgstr "Ange minst en post."
 
-#: lib/Application/Controller/BulkRecordAddController.php:140
+#: lib/Application/Controller/BulkRecordAddController.php:141
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Ogiltigt format. Förväntat minst: namn,typ,innehåll"
 
-#: lib/Application/Controller/BulkRecordAddController.php:190
+#: lib/Application/Controller/BulkRecordAddController.php:194
 msgid "Invalid record type."
 msgstr "Ogiltig posttyp."
 
-#: lib/Application/Controller/BulkRecordAddController.php:227
+#: lib/Application/Controller/BulkRecordAddController.php:231
 msgid "Record could not be added."
 msgstr "Posten kunde inte läggas till."
 
-#: lib/Application/Controller/BulkRecordAddController.php:235
+#: lib/Application/Controller/BulkRecordAddController.php:239
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d post(er) har lagts till."
 
-#: lib/Application/Controller/BulkRecordAddController.php:238
+#: lib/Application/Controller/BulkRecordAddController.php:242
 msgid "Some record(s) could not be added."
 msgstr "Vissa post(er) kunde inte läggas till."
 
-#: lib/Application/Controller/BulkRecordAddController.php:271
+#: lib/Application/Controller/BulkRecordAddController.php:275
 msgid "Zone ID is required."
 msgstr "Zon-ID krävs."
 
@@ -1800,7 +1800,7 @@ msgstr "Användaren var inte medlem i denna grupp."
 msgid "You do not have the permission to add a new user."
 msgstr "Du har inte behörighet att lägga till en ny användare."
 
-#: lib/Application/Controller/AddUserController.php:88
+#: lib/Application/Controller/AddUserController.php:92
 #: templates/modern/add_user.html:13 templates/modern/add_user.html:112
 msgid "Add User"
 msgstr "Lägg till användare"
@@ -1809,24 +1809,24 @@ msgstr "Lägg till användare"
 msgid "Invalid permission template: must be a user template"
 msgstr "Ogiltig behörighetsmall: måste vara en användarmall"
 
-#: lib/Application/Controller/AddUserController.php:133
+#: lib/Application/Controller/AddUserController.php:137
 msgid "The user has been created successfully."
 msgstr "Användaren har skapats."
 
-#: lib/Application/Controller/AddUserController.php:148
+#: lib/Application/Controller/AddUserController.php:152
 #, php-format
 msgid "Generated password: %s"
 msgstr "Genererat lösenord: %s"
 
-#: lib/Application/Controller/AddUserController.php:164
+#: lib/Application/Controller/AddUserController.php:168
 msgid "Login details have been sent to the user via email."
 msgstr "Inloggningsuppgifter har skickats till användaren via e-post."
 
-#: lib/Application/Controller/AddUserController.php:166
+#: lib/Application/Controller/AddUserController.php:170
 msgid "NOTE: Failed to send login details via email."
 msgstr "OBS: Kunde inte skicka inloggningsuppgifter via e-post."
 
-#: lib/Application/Controller/AddUserController.php:172
+#: lib/Application/Controller/AddUserController.php:176
 msgid "A password was generated but is not displayed for security reasons."
 msgstr "Ett lösenord genererades men visas inte av säkerhetsskäl."
 
@@ -1892,23 +1892,23 @@ msgstr "Det finns ingen zonmall med detta ID."
 msgid "Zone template has been updated successfully."
 msgstr "Zonmallen har uppdaterats."
 
-#: lib/Application/Controller/EditZoneTemplController.php:229
+#: lib/Application/Controller/EditZoneTemplController.php:232
 msgid "Zones have been updated successfully."
 msgstr "Zonerna har uppdaterats."
 
-#: lib/Application/Controller/EditZoneTemplController.php:240
+#: lib/Application/Controller/EditZoneTemplController.php:243
 msgid "You do not have permission to create new zone templates."
 msgstr "Du har inte behörighet att skapa nya zonmallar."
 
-#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:803
+#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:851
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "En zonmall med detta namn finns redan, välj ett annat."
 
-#: lib/Application/Controller/EditZoneTemplController.php:271
+#: lib/Application/Controller/EditZoneTemplController.php:274
 msgid "Please enter a different name when using Save As."
 msgstr "Ange ett annat namn när du använder Spara som."
 
-#: lib/Application/Controller/EditZoneTemplController.php:295
+#: lib/Application/Controller/EditZoneTemplController.php:298
 msgid "Zone template has been copied successfully."
 msgstr "Zonmallen har kopierats."
 
@@ -1987,31 +1987,31 @@ msgstr "Du har inte behörighet att komma åt denna zon."
 msgid "You do not have the permission to view this zone."
 msgstr "Du har inte behörighet att visa denna zon."
 
-#: lib/Application/Controller/EditController.php:268
+#: lib/Application/Controller/EditController.php:269
 msgid "Zone type has been changed successfully."
 msgstr "Zontypen har ändrats."
 
-#: lib/Application/Controller/EditController.php:275
+#: lib/Application/Controller/EditController.php:276
 msgid "Slave master has been changed successfully."
 msgstr "Slave-master har ändrats."
 
-#: lib/Application/Controller/EditController.php:295
+#: lib/Application/Controller/EditController.php:296
 msgid "Zone template has been changed successfully."
 msgstr "Zonmallen har ändrats."
 
-#: lib/Application/Controller/EditController.php:307
+#: lib/Application/Controller/EditController.php:308
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC är inte aktiverat på servern."
 
-#: lib/Application/Controller/EditController.php:310
+#: lib/Application/Controller/EditController.php:311
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zonen är redan signerad med DNSSEC."
 
-#: lib/Application/Controller/EditController.php:332
+#: lib/Application/Controller/EditController.php:333
 msgid "Zone has been signed successfully."
 msgstr "Zonen har signerats."
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:337
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2019,7 +2019,7 @@ msgstr ""
 "Zonsignering begärdes men verifieringen misslyckades. Kontrollera DNSSEC-"
 "nycklarna."
 
-#: lib/Application/Controller/EditController.php:340
+#: lib/Application/Controller/EditController.php:341
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2027,58 +2027,58 @@ msgstr ""
 "Kunde inte signera zonen. Zonvalidering godkändes men PowerDNS API "
 "returnerade ett fel. Kontrollera PowerDNS-loggarna för detaljer."
 
-#: lib/Application/Controller/DnssecController.php:93
+#: lib/Application/Controller/DnssecController.php:94
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Zonen är för närvarande inte signerad med DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:103
+#: lib/Application/Controller/DnssecController.php:104
 msgid "Zone has been unsigned successfully."
 msgstr "Zonen har avsignerats."
 
-#: lib/Application/Controller/DnssecController.php:108
+#: lib/Application/Controller/DnssecController.php:109
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "Avsignering av zonen begärdes men verifieringen misslyckades."
 
-#: lib/Application/Controller/DnssecController.php:112
+#: lib/Application/Controller/DnssecController.php:113
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Kunde inte avsignera zonen. Kontrollera PowerDNS-loggarna för detaljer."
 
-#: lib/Application/Controller/EditController.php:732
+#: lib/Application/Controller/EditController.php:734
 msgid "Request has expired, please try again."
 msgstr "Förfrågan har gått ut, försök igen."
 
-#: lib/Application/Controller/EditController.php:737
+#: lib/Application/Controller/EditController.php:739
 msgid "Zone has been updated successfully."
 msgstr "Zonen har uppdaterats."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:741
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr "Zonen sparades. Inga poständringar gjordes men SOA-serienumret ökades."
 
-#: lib/Application/Controller/EditController.php:748
+#: lib/Application/Controller/EditController.php:750
 msgid "Zone has not been updated successfully."
 msgstr "Zonen kunde inte uppdateras."
 
-#: lib/Application/Controller/EditController.php:776
+#: lib/Application/Controller/EditController.php:778
 msgid "Please provide all required fields."
 msgstr "Ange alla obligatoriska fält."
 
-#: lib/Application/Controller/AddRecordController.php:230
+#: lib/Application/Controller/AddRecordController.php:235
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Posten lades till. En matchande PTR-post skapades också."
 
-#: lib/Application/Controller/AddRecordController.php:235
+#: lib/Application/Controller/AddRecordController.php:240
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Posten lades till men skapande av PTR-post misslyckades: "
 
-#: lib/Application/Controller/AddRecordController.php:239
+#: lib/Application/Controller/AddRecordController.php:244
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Posten lades till men skapande av PTR-post misslyckades."
 
-#: lib/Application/Controller/AddRecordController.php:245
+#: lib/Application/Controller/AddRecordController.php:250
 msgid "Record successfully added. A matching A record was also created."
 msgstr "Posten lades till. En matchande A-post skapades också."
 
@@ -2122,25 +2122,31 @@ msgstr ""
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Du har inte behörighet att lägga till en post i denna zon."
 
-#: lib/Application/Controller/AddRecordController.php:227
+#: lib/Application/Controller/AddRecordController.php:232
 msgid "Record successfully added."
 msgstr "Posten lades till."
 
-#: lib/Application/Controller/AddRecordController.php:400
+#: lib/Application/Controller/AddRecordController.php:422
 msgid "No records were provided."
 msgstr "Inga poster angavs."
 
-#: lib/Application/Controller/AddRecordController.php:448
+#: lib/Application/Controller/AddRecordController.php:478
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d post(er) lades till."
 
-#: lib/Application/Controller/AddRecordController.php:450
+#: lib/Application/Controller/AddRecordController.php:480
+#, auto-english-fallback
+#, php-format
+msgid "%d matching record(s) were also created."
+msgstr "%d matching record(s) were also created."
+
+#: lib/Application/Controller/AddRecordController.php:483
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d post(er) kunde inte läggas till."
 
-#: lib/Application/Controller/AddRecordController.php:455
+#: lib/Application/Controller/AddRecordController.php:488
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2148,23 +2154,23 @@ msgstr ""
 "Vissa poster kunde inte läggas till. De kanske redan finns eller innehåller "
 "ogiltiga data."
 
-#: lib/Application/Controller/AddRecordController.php:481
+#: lib/Application/Controller/AddRecordController.php:514
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Kunde inte lägga till några poster. De kan innehålla ogiltiga data."
 
-#: lib/Application/Controller/DeleteDomainsController.php:75
+#: lib/Application/Controller/DeleteDomainsController.php:76
 msgid "No zone selected for deletion."
 msgstr "Ingen zon vald för radering."
 
-#: lib/Application/Controller/DeleteDomainController.php:137
+#: lib/Application/Controller/DeleteDomainController.php:138
 msgid "Zone has been deleted successfully."
 msgstr "Zonen har raderats."
 
-#: lib/Application/Controller/DeleteDomainsController.php:152
+#: lib/Application/Controller/DeleteDomainsController.php:153
 msgid "Zones have been deleted successfully."
 msgstr "Zonerna har raderats."
 
-#: lib/Domain/Service/Dns/DomainManager.php:530
+#: lib/Domain/Service/Dns/DomainManager.php:529
 msgid "You do not have the permission to delete a zone."
 msgstr "Du har inte behörighet att radera en zon."
 
@@ -2176,7 +2182,7 @@ msgstr "Du har inte behörighet att redigera zonmallsposter."
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC-autentisering är inte aktiverad"
 
-#: lib/Application/Service/SamlService.php:379
+#: lib/Application/Service/SamlService.php:386
 msgid "Authentication failed: "
 msgstr "Autentisering misslyckades: "
 
@@ -2204,30 +2210,30 @@ msgstr "Kunde inte initiera OIDC-autentisering: "
 msgid "Group Logs"
 msgstr "Grupploggar"
 
-#: lib/Domain/Service/Dns/DomainManager.php:234
+#: lib/Domain/Service/Dns/DomainManager.php:233
 msgid "You do not have the permission to add a master zone."
 msgstr "Du har inte behörighet att lägga till en masterzon."
 
-#: lib/Application/Controller/AddZoneMasterController.php:68
+#: lib/Application/Controller/AddZoneMasterController.php:69
 msgid "Add Primary Zone"
 msgstr "Lägg till primär zon"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:116
+#: lib/Application/Controller/AddZoneSlaveController.php:117
 msgid "At least one user or group must be selected as owner."
 msgstr "Minst en användare eller grupp måste väljas som ägare."
 
-#: lib/Application/Controller/BulkRegistrationController.php:107
+#: lib/Application/Controller/BulkRegistrationController.php:108
 msgid "There is already a zone with this name."
 msgstr "Det finns redan en zon med detta namn."
 
-#: lib/Application/Controller/AddZoneMasterController.php:170
+#: lib/Application/Controller/AddZoneMasterController.php:171
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
 "Zonen skapades men DNSSEC-signering hoppades över på grund av valideringsfel:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:182
+#: lib/Application/Controller/AddZoneMasterController.php:183
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2235,11 +2241,11 @@ msgstr ""
 "Zonen skapades men DNSSEC-säkring misslyckades. Zonvalidering godkändes men "
 "PowerDNS API returnerade ett fel. Kontrollera PowerDNS-loggarna för detaljer."
 
-#: lib/Application/Controller/AddZoneMasterController.php:188
+#: lib/Application/Controller/AddZoneMasterController.php:189
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zonen har skapats och signerats med DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:191
+#: lib/Application/Controller/AddZoneMasterController.php:192
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2247,24 +2253,24 @@ msgstr ""
 "Zonen skapades och signering begärdes men verifieringen misslyckades. "
 "Kontrollera DNSSEC-nycklarna."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:155
+#: lib/Application/Controller/AddZoneSlaveController.php:156
 msgid "Zone has been added successfully."
 msgstr "Zonen har lagts till."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:71
+#: lib/Application/Controller/BatchPtrRecordController.php:72
 msgid "Batch PTR record creation is not enabled."
 msgstr "Batch-skapande av PTR-poster är inte aktiverat."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:78
+#: lib/Application/Controller/BatchPtrRecordController.php:79
 msgid "You do not have permission to edit DNS records."
 msgstr "Du har inte behörighet att redigera DNS-poster."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:83
+#: lib/Application/Controller/BatchPtrRecordController.php:84
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:147
 msgid "Batch PTR Records"
 msgstr "Aktiva API-begäranden"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:98
+#: lib/Application/Controller/BatchPtrRecordController.php:99
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Batch-skapande av PTR-poster är inte tillgängligt för omvända zoner."
 
@@ -2337,16 +2343,16 @@ msgstr "Ogiltig SAML-leverantör"
 msgid "SAML authentication failed: "
 msgstr "SAML-autentisering misslyckades: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:59
+#: lib/Application/Controller/ListForwardZonesController.php:61
 msgid "You do not have sufficient permissions to view this page."
 msgstr "Du har inte tillräcklig behörighet att visa denna sida."
 
-#: lib/Application/Controller/ListReverseZonesController.php:80
+#: lib/Application/Controller/ListReverseZonesController.php:82
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
 msgstr "Rapporttyp"
 
-#: lib/Application/Controller/ListForwardZonesController.php:141
+#: lib/Application/Controller/ListForwardZonesController.php:168
 msgid "You do not have the permission to see any zones."
 msgstr "Du har inte behörighet att se några zoner."
 
@@ -2500,11 +2506,11 @@ msgstr "Ogiltigt användar- eller grupp-ID."
 msgid "User removed from group successfully."
 msgstr "Användare borttagen från gruppen."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:59
+#: lib/Application/Controller/AddZoneSlaveController.php:60
 msgid "You do not have the permission to add a slave zone."
 msgstr "Du har inte behörighet att lägga till en slave-zon."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:63
+#: lib/Application/Controller/AddZoneSlaveController.php:64
 msgid "Add Secondary Zone"
 msgstr "Lägg till sekundär zon"
 
@@ -2552,7 +2558,7 @@ msgstr "Zon borttagen från gruppen."
 msgid "Zone was not owned by this group."
 msgstr "Zonen ägdes inte av denna grupp."
 
-#: lib/Application/Controller/ListForwardZonesController.php:63
+#: lib/Application/Controller/ListForwardZonesController.php:65
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Rapportperiod"
@@ -2673,23 +2679,23 @@ msgstr "Du har loggats ut"
 msgid "Logout completed (with warnings): "
 msgstr "Utloggning slutförd (med varningar): "
 
-#: lib/Application/Controller/EditRecordController.php:100
+#: lib/Application/Controller/EditRecordController.php:101
 msgid "You do not have permission to view this record."
 msgstr "Du har inte behörighet att visa denna post."
 
-#: lib/Application/Controller/EditRecordController.php:109
+#: lib/Application/Controller/EditRecordController.php:110
 msgid "You cannot edit records in a SLAVE zone."
 msgstr "Du kan inte redigera poster i en SLAVE-zon."
 
-#: lib/Application/Controller/EditRecordController.php:119
+#: lib/Application/Controller/EditRecordController.php:120
 msgid "You do not have permission to edit this record."
 msgstr "Du har inte behörighet att redigera denna post."
 
-#: lib/Application/Controller/EditRecordController.php:228
+#: lib/Application/Controller/EditRecordController.php:237
 msgid "Failed to retrieve updated record information."
 msgstr "Kunde inte hämta uppdaterad postinformation."
 
-#: lib/Application/Controller/EditRecordController.php:307
+#: lib/Application/Controller/EditRecordController.php:316
 msgid "The record has been updated successfully."
 msgstr "Posten har uppdaterats."
 
@@ -2794,16 +2800,16 @@ msgstr "Supermastern finns inte."
 msgid "The supermaster has been deleted successfully."
 msgstr "Supermastern har raderats."
 
-#: lib/Application/Controller/BulkRegistrationController.php:61
+#: lib/Application/Controller/BulkRegistrationController.php:62
 #: templates/modern/index.html:169 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Övervakningsinstrumentpanel"
 
-#: lib/Application/Controller/BulkRegistrationController.php:122
+#: lib/Application/Controller/BulkRegistrationController.php:123
 msgid "Zones has been added successfully."
 msgstr "Zonerna har lagts till."
 
-#: lib/Application/Controller/BulkRegistrationController.php:125
+#: lib/Application/Controller/BulkRegistrationController.php:126
 msgid "Some zone(s) could not be added."
 msgstr "Vissa zon(er) kunde inte läggas till."
 
@@ -2828,7 +2834,7 @@ msgid "Group has been removed successfully."
 msgstr "Grupp har tagits bort."
 
 #: lib/Application/Controller/NotFoundController.php:53
-#: templates/default/404.html:14 templates/modern/404.html:14
+#: templates/default/404.html:11 templates/modern/404.html:11
 msgid "Page Not Found"
 msgstr "Sidan hittades inte"
 
@@ -2872,7 +2878,7 @@ msgstr "Användarkontot är inaktiverat."
 msgid "Authentication failed!"
 msgstr "Autentisering misslyckades!"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:188
+#: lib/Infrastructure/Service/SessionAuthenticator.php:189
 msgid "Session expired, please login again."
 msgstr "Sessionen har gått ut, logga in igen."
 
@@ -2880,19 +2886,19 @@ msgstr "Sessionen har gått ut, logga in igen."
 msgid "Failed to update password"
 msgstr "Kunde inte uppdatera lösenordet"
 
-#: lib/Application/Service/OidcService.php:180
+#: lib/Application/Service/OidcService.php:182
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Autentisering misslyckades: Ogiltig state-parameter"
 
-#: lib/Application/Service/OidcService.php:201
+#: lib/Application/Service/OidcService.php:203
 msgid "Authentication failed: No authorization code"
 msgstr "Autentisering misslyckades: Ingen auktoriseringskod"
 
-#: lib/Application/Service/SamlService.php:185
+#: lib/Application/Service/SamlService.php:187
 msgid "Authentication failed: Invalid session"
 msgstr "Autentisering misslyckades: Ogiltig session"
 
-#: lib/Application/Service/SamlService.php:339
+#: lib/Application/Service/SamlService.php:346
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Autentisering misslyckades: Kunde inte skapa eller uppdatera användarkonto"
@@ -2917,16 +2923,16 @@ msgstr "LDAP-sökning misslyckades."
 msgid "Failed to authenticate against LDAP."
 msgstr "Kunde inte autentisera mot LDAP."
 
-#: lib/Application/Service/SamlService.php:243
+#: lib/Application/Service/SamlService.php:245
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Autentisering misslyckades: Ogiltigt SAML-svar"
 
-#: lib/Application/Query/RecordSearch.php:197 templates/modern/edit.html:415
+#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:422
 #: templates/modern/users.html:185
 msgid "Yes"
 msgstr "Ja"
 
-#: lib/Application/Query/RecordSearch.php:197 templates/modern/edit.html:415
+#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:422
 #: templates/modern/users.html:187
 msgid "No"
 msgstr "Nej"
@@ -2943,20 +2949,20 @@ msgstr "Denna mall är tilldelad till minst en användare."
 msgid "This template is assigned to at least one group."
 msgstr "Denna mall är tilldelad till minst en grupp."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:153
+#: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:143 templates/modern/login.html:143
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "reCAPTCHA-verifiering misslyckades. Försök igen."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:176
+#: lib/Infrastructure/Service/SessionAuthenticator.php:177
 msgid "An empty password is not allowed"
 msgstr "Ett tomt lösenord är inte tillåtet"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:216
+#: lib/Infrastructure/Service/SessionAuthenticator.php:217
 msgid "LDAP authentication is disabled"
 msgstr "LDAP-autentisering är inaktiverad"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:400
+#: lib/Infrastructure/Service/SessionAuthenticator.php:403
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
@@ -3024,35 +3030,35 @@ msgstr "Fel vid radering av zonmallspost: "
 msgid "Error checking template ownership: "
 msgstr "Fel vid kontroll av mallägarskap: "
 
-#: lib/Domain/Model/ZoneTemplate.php:728
+#: lib/Domain/Model/ZoneTemplate.php:728 lib/Domain/Model/ZoneTemplate.php:776
 msgid "Error retrieving zones using template: "
 msgstr "Fel vid hämtning av zoner som använder mallen: "
 
-#: lib/Domain/Model/ZoneTemplate.php:782
+#: lib/Domain/Model/ZoneTemplate.php:830
 msgid "Failed to get list of zones using template: "
 msgstr "Kunde inte hämta lista över zoner som använder mallen: "
 
-#: lib/Domain/Model/ZoneTemplate.php:800
+#: lib/Domain/Model/ZoneTemplate.php:848
 msgid "You do not have the permission to edit a zone template."
 msgstr "Du har inte behörighet att redigera en zonmall."
 
-#: lib/Domain/Model/ZoneTemplate.php:844
+#: lib/Domain/Model/ZoneTemplate.php:892
 msgid "Error unlinking zone from template: "
 msgstr "Fel vid bortkoppling av zon från mall: "
 
-#: lib/Domain/Model/ZoneTemplate.php:872
+#: lib/Domain/Model/ZoneTemplate.php:920
 msgid "Error retrieving zones: "
 msgstr "Fel vid hämtning av zoner: "
 
-#: lib/Domain/Model/ZoneTemplate.php:891
+#: lib/Domain/Model/ZoneTemplate.php:939
 msgid "Error checking template name existence: "
 msgstr "Fel vid kontroll av mallnamn: "
 
-#: lib/Domain/Model/ZoneTemplate.php:912
+#: lib/Domain/Model/ZoneTemplate.php:960
 msgid "Error looking up template by name: "
 msgstr "Fel vid sökning av mall efter namn: "
 
-#: lib/Domain/Model/ZoneTemplate.php:935
+#: lib/Domain/Model/ZoneTemplate.php:983
 msgid "Error checking template existence: "
 msgstr "Fel vid kontroll av mallens existens: "
 
@@ -4968,7 +4974,8 @@ msgstr "Du måste ange en TLSA-matchningstyp för en TLSA-post."
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:280
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr "Parameter \"%s\" is marked as mandatory but not included in the record."
+msgstr ""
+"Parameter \"%s\" is marked as mandatory but not included in the record."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
@@ -5095,27 +5102,34 @@ msgstr "Du måste ange en SMIMEA-väljare för en SMIMEA-post."
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-bit integer."
+msgstr ""
+"TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
+"bit integer."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
 msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
 "Low TTL values increase DNS traffic."
-msgstr "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). Low TTL values increase DNS traffic."
+msgstr ""
+"TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
+"Low TTL values increase DNS traffic."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High TTL values delay DNS updates."
+msgstr ""
+"TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
+"TTL values delay DNS updates."
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
 msgid ""
 "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
-msgstr "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
+msgstr ""
+"SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:132
 msgid ""
@@ -5482,14 +5496,18 @@ msgstr "Ta bort post"
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr "DHCID identifier type 0x%04X is not one of the standard types defined in RFC 4701 (0x0000, 0x0001, 0x0002)."
+msgstr ""
+"DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
+"4701 (0x0000, 0x0001, 0x0002)."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC 4701."
+msgstr ""
+"DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
+"4701."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
@@ -6020,26 +6038,32 @@ msgstr "DNSSEC-nyckel uppdaterad"
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
+msgstr ""
+"%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr "%s (algorithm %d) is in common use, but newer algorithms like ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
+msgstr ""
+"%s (algorithm %d) is in common use, but newer algorithms like "
+"ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
 msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
-msgstr "%s (algorithm %d) is optional for implementation according to RFC 8624."
+msgstr ""
+"%s (algorithm %d) is optional for implementation according to RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
 msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
-msgstr "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider using ECDSAP256SHA256 (13) or ED25519 (15) instead."
+msgstr ""
+"%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
+"using ECDSAP256SHA256 (13) or ED25519 (15) instead."
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
@@ -6322,7 +6346,9 @@ msgstr "Uppdatera NSEC3-parametrar"
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr "Critical flag set for unknown tag \"%s\". This may cause certificate issuance failures."
+msgstr ""
+"Critical flag set for unknown tag \"%s\". This may cause certificate "
+"issuance failures."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
@@ -6510,7 +6536,9 @@ msgstr "SOA %s field must be a positive integer."
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is allowed but not recommended."
+msgstr ""
+"SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
+"allowed but not recommended."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:288
 msgid ""
@@ -6578,7 +6606,9 @@ msgstr "API-dokumentation"
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr "A CNAME record cannot coexist with other record types for the same name. Found existing %s record."
+msgstr ""
+"A CNAME record cannot coexist with other record types for the same name. "
+"Found existing %s record."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:255
 msgid ""
@@ -6597,7 +6627,9 @@ msgstr "Metod"
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like %s"
-msgstr "SMIMEA record name is in the format: SHA256(local-part)._smimecert.domain.tld for email addresses like %s"
+msgstr ""
+"SMIMEA record name is in the format: SHA256(local-"
+"part)._smimecert.domain.tld for email addresses like %s"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
@@ -7190,7 +7222,9 @@ msgstr "API-webhooken finns redan"
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr "DMARC policy is applied to only %d%% of messages. This should only be used during policy rollout."
+msgstr ""
+"DMARC policy is applied to only %d%% of messages. This should only be used "
+"during policy rollout."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
@@ -7251,7 +7285,9 @@ msgstr "Webhook-timeout"
 msgid ""
 "TXT record content exceeds maximum length of %d bytes. Please reduce the "
 "content size."
-msgstr "TXT record content exceeds maximum length of %d bytes. Please reduce the content size."
+msgstr ""
+"TXT record content exceeds maximum length of %d bytes. Please reduce the "
+"content size."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:216
 msgid ""
@@ -7264,7 +7300,9 @@ msgstr "Testa webhook"
 msgid ""
 "Total TXT record content exceeds maximum length of %d bytes. Please reduce "
 "the content size."
-msgstr "Total TXT record content exceeds maximum length of %d bytes. Please reduce the content size."
+msgstr ""
+"Total TXT record content exceeds maximum length of %d bytes. Please reduce "
+"the content size."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:284
 msgid ""
@@ -7335,7 +7373,9 @@ msgstr "Lyckades"
 msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
-msgstr "CDS digest must be a valid hex string of length %d for the selected digest type."
+msgstr ""
+"CDS digest must be a valid hex string of length %d for the selected digest "
+"type."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
@@ -7420,14 +7460,18 @@ msgstr "Händelsedata"
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr "Service name \"%s\" is not in the list of well-known services. This is allowed but unusual."
+msgstr ""
+"Service name \"%s\" is not in the list of well-known services. This is "
+"allowed but unusual."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr "Protocol \"%s\" is not in the list of well-known protocols. Common protocols are _tcp and _udp."
+msgstr ""
+"Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
+"are _tcp and _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
@@ -7452,7 +7496,9 @@ msgstr "Exportera granskningslogg"
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr "Port %d differs from the standard port %d for %s service. This is allowed but unusual."
+msgstr ""
+"Port %d differs from the standard port %d for %s service. This is allowed "
+"but unusual."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
@@ -7770,21 +7816,26 @@ msgstr "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
+msgstr ""
+"%s (algorithm %d) is specified as optional for implementation in RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this algorithm for new deployments."
+msgstr ""
+"%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
+"algorithm for new deployments."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr "Algorithm %d MUST NOT be implemented according to RFC 8624. This value should not be used."
+msgstr ""
+"Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
+"should not be used."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
@@ -7817,11 +7868,11 @@ msgstr "There is no managed zone for domain: %s."
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
 msgstr "Är du säker på att du vill ta bort denna IP-vitlista?"
 
-#: lib/Domain/Service/DomainRecordCreator.php:112
+#: lib/Domain/Service/DomainRecordCreator.php:114
 msgid "This domain record was not valid and could not be added."
 msgstr "IP-vitlista uppdaterad"
 
-#: lib/Domain/Service/DomainRecordCreator.php:108
+#: lib/Domain/Service/DomainRecordCreator.php:110
 msgid "The domain record was successfully added."
 msgstr "Kunde inte uppdatera IP-vitlista"
 
@@ -7920,22 +7971,24 @@ msgstr "Säkerhetshändelse"
 msgid "Unknown database type."
 msgstr "Händelseseveritet"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:69
+#: lib/Domain/Service/ReverseRecordCreator.php:70
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "There is no matching reverse-zone for: %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:77
+#: lib/Domain/Service/ReverseRecordCreator.php:78
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "A PTR record for %s pointing to %s already exists."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:91
+#: lib/Domain/Service/ReverseRecordCreator.php:92
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
-msgstr "Reverse record added. Warning: A PTR record for %s already exists pointing to: %s. Having multiple PTR records for the same IP is not recommended."
+msgstr ""
+"Reverse record added. Warning: A PTR record for %s already exists pointing "
+"to: %s. Having multiple PTR records for the same IP is not recommended."
 
 #: lib/Domain/Service/Dns/RecordManager.php:215
 msgid "You do not have the permission to add SOA record."
@@ -7965,7 +8018,7 @@ msgstr "Misstänkt aktivitet"
 msgid "You do not have the permission to delete NS records."
 msgstr "Brutit mot policy"
 
-#: lib/Domain/Service/Dns/DomainManager.php:465
+#: lib/Domain/Service/Dns/DomainManager.php:464
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Invalid argument(s) given to function %s %s"
@@ -7974,17 +8027,17 @@ msgstr "Invalid argument(s) given to function %s %s"
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "Säkerhetsvarning"
 
-#: lib/Domain/Service/Dns/DomainManager.php:226
+#: lib/Domain/Service/Dns/DomainManager.php:225
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "Kunde inte skapa zonen: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:230
+#: lib/Domain/Service/Dns/DomainManager.php:229
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Invalid argument(s) given to function %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:428
+#: lib/Domain/Service/Dns/DomainManager.php:427
 msgid "The selected user already owns the zone."
 msgstr "Skapa säkerhetsvarning"
 
@@ -8269,7 +8322,7 @@ msgstr "E-postköer"
 msgid "Provide content for your zone record"
 msgstr "E-postköpost"
 
-#: templates/modern/add_record.html:93
+#: templates/modern/add_record.html:104 templates/modern/add_record.html:156
 msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
 "and may cause issues. SOA and NS records are required at the domain root and "
@@ -8287,7 +8340,7 @@ msgstr "Mottagare"
 msgid "Update record"
 msgstr "Ämne"
 
-#: templates/modern/edit.html:510 templates/modern/users.html:211
+#: templates/modern/edit.html:517 templates/modern/users.html:211
 msgid "Reset"
 msgstr "Skickad"
 
@@ -8429,7 +8482,7 @@ msgstr "Systemmeddelande"
 msgid "Select the account that will own this supermaster"
 msgstr "Lägg till systemmeddelande"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:507
+#: templates/modern/edit.html:190 templates/modern/edit.html:514
 msgid "Save changes"
 msgstr "Systemmeddelande tillagt"
 
@@ -8606,19 +8659,19 @@ msgstr "Systemsäkerhetskopiering"
 msgid "Modify DNS record properties"
 msgstr "Säkerhetskopieringar"
 
-#: templates/modern/add_record.html:58
+#: templates/modern/add_record.html:69
 msgid "Comment"
 msgstr "Skapa säkerhetskopia"
 
-#: templates/modern/edit_record.html:92 templates/modern/add_record.html:83
+#: templates/modern/add_record.html:94 templates/modern/add_record.html:146
 msgid "deprecated"
 msgstr "Säkerhetskopia skapad"
 
-#: templates/modern/edit.html:657 templates/modern/add_record.html:91
+#: templates/modern/add_record.html:102 templates/modern/add_record.html:154
 msgid "Provide content"
 msgstr "Kunde inte skapa säkerhetskopia"
 
-#: templates/modern/edit_record.html:109 templates/modern/add_record.html:96
+#: templates/modern/add_record.html:107 templates/modern/add_record.html:159
 msgid "This record type is deprecated and should not be used for new records."
 msgstr "Ta bort säkerhetskopia"
 
@@ -8679,7 +8732,7 @@ msgstr "Säkerhetskopieringstid"
 msgid "and"
 msgstr "Inaktivera automatisk säkerhetskopiering"
 
-#: templates/modern/list_forward_zones.html:169
+#: templates/modern/list_forward_zones.html:165
 msgid "more..."
 msgstr "Automatisk säkerhetskopiering aktiverad"
 
@@ -9013,7 +9066,7 @@ msgstr "Systemtimezone"
 msgid "Check DB"
 msgstr "Systemspråk"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:495
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:502
 msgid "Edit comment"
 msgstr "Debug-läge"
 
@@ -9182,7 +9235,7 @@ msgstr "Ange endast värdnamn - zonnamnet läggs till automatiskt"
 msgid "Add Records"
 msgstr "Lägg till poster"
 
-#: templates/modern/bulk_registration.html:104
+#: templates/modern/bulk_record_add.html:73
 msgid "Instructions"
 msgstr "Instruktioner"
 
@@ -9315,7 +9368,7 @@ msgstr "Ja, ta bort denna användare"
 msgid "No, keep this user"
 msgstr "Nej, behåll denna användare"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:213
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:220
 msgid "Save as Template"
 msgstr "Spara som mall"
 
@@ -9612,7 +9665,7 @@ msgstr "Serienummer"
 msgid "Template"
 msgstr "Mall"
 
-#: templates/modern/list_reverse_zones.html:228
+#: templates/modern/list_reverse_zones.html:224
 msgid "-"
 msgstr "-"
 
@@ -10025,31 +10078,31 @@ msgstr "Mallbehörigheter"
 msgid "Other Permissions"
 msgstr "Andra behörigheter"
 
-#: templates/default/404.html:19 templates/modern/404.html:19
+#: templates/default/404.html:15 templates/modern/404.html:15
 msgid "The page you are looking for does not exist."
 msgstr "Sidan du letar efter finns inte."
 
-#: templates/default/404.html:22 templates/modern/404.html:22
+#: templates/default/404.html:18 templates/modern/404.html:18
 msgid "This could be because:"
 msgstr "Detta kan bero på:"
 
-#: templates/default/404.html:26 templates/modern/404.html:26
+#: templates/default/404.html:22 templates/modern/404.html:22
 msgid "The URL is incorrect or has been mistyped"
 msgstr "URL:en är felaktig eller har stavats fel"
 
-#: templates/default/404.html:30 templates/modern/404.html:30
+#: templates/default/404.html:26 templates/modern/404.html:26
 msgid "The page has been moved or deleted"
 msgstr "Sidan har flyttats eller tagits bort"
 
-#: templates/default/404.html:34 templates/modern/404.html:34
+#: templates/default/404.html:30 templates/modern/404.html:30
 msgid "You do not have permission to access this page"
 msgstr "Du har inte behörighet att komma åt denna sida"
 
-#: templates/default/404.html:45 templates/modern/404.html:45
+#: templates/default/404.html:40 templates/modern/404.html:40
 msgid "Go to Homepage"
 msgstr "Gå till startsidan"
 
-#: templates/default/404.html:49 templates/modern/404.html:49
+#: templates/default/404.html:44 templates/modern/404.html:44
 msgid "Go Back"
 msgstr "Gå tillbaka"
 
@@ -10145,52 +10198,52 @@ msgstr "Nätverksprefix"
 msgid "Select from existing reverse zones"
 msgstr "Välj från befintliga reverse-zoner"
 
-#: templates/modern/batch_ptr_record.html:65
+#: templates/modern/batch_ptr_record.html:67
 msgid "Please provide a network prefix"
 msgstr "Vänligen ange ett nätverksprefix"
 
-#: templates/modern/batch_ptr_record.html:66
+#: templates/modern/batch_ptr_record.html:68
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
 msgstr "t.ex. \"192.168.1.0/24\" eller \"10.0.0.0/20\""
 
-#: templates/modern/batch_ptr_record.html:67
+#: templates/modern/batch_ptr_record.html:69
 msgid "e.g., \"2001:db8:1:1\""
 msgstr "t.ex. \"2001:db8:1:1\""
 
-#: templates/modern/batch_ptr_record.html:71
+#: templates/modern/batch_ptr_record.html:73
 msgid "Host Prefix"
 msgstr "Värdprefix"
 
-#: templates/modern/batch_ptr_record.html:71
+#: templates/modern/batch_ptr_record.html:73
 #: install/templates/step4.html.twig:133
 msgid "Optional"
 msgstr "Valfritt"
 
-#: templates/modern/batch_ptr_record.html:73
+#: templates/modern/batch_ptr_record.html:75
 msgid "Leave empty to use just the domain for PTR records"
 msgstr "Lämna tomt för att använda bara domänen för PTR-poster"
 
-#: templates/modern/batch_ptr_record.html:79
+#: templates/modern/batch_ptr_record.html:81
 msgid "Required"
 msgstr "Obligatoriskt"
 
-#: templates/modern/batch_ptr_record.html:83
+#: templates/modern/batch_ptr_record.html:85
 msgid "IPv6 Count"
 msgstr "IPv6-antal"
 
-#: templates/modern/batch_ptr_record.html:88
+#: templates/modern/batch_ptr_record.html:90
 msgid "Using default TTL value from configuration"
 msgstr "Använder standard-TTL-värde från konfigurationen"
 
-#: templates/modern/batch_ptr_record.html:100
+#: templates/modern/batch_ptr_record.html:102
 msgid "Create forward A/AAAA records in primary zone"
 msgstr "Skapa forward A/AAAA-poster i primär zon"
 
-#: templates/modern/batch_ptr_record.html:105
+#: templates/modern/batch_ptr_record.html:107
 msgid "Create PTRs only for existing A records in forward zone"
 msgstr "Skapa PTR endast för befintliga A-poster i forward-zon"
 
-#: templates/modern/batch_ptr_record.html:106
+#: templates/modern/batch_ptr_record.html:108
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A records in the specified domain"
@@ -10198,11 +10251,11 @@ msgstr ""
 "När markerad kommer PTR-poster endast att skapas för IP-adresser som har "
 "motsvarande A-poster i den angivna domänen"
 
-#: templates/modern/batch_ptr_record.html:112
+#: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
 msgstr "Skapa PTR-poster"
 
-#: templates/modern/batch_ptr_record.html:134
+#: templates/modern/batch_ptr_record.html:136
 msgid "PTR Record Information"
 msgstr "PTR-postinformation"
 
@@ -10210,23 +10263,23 @@ msgstr "PTR-postinformation"
 msgid "Important Information"
 msgstr "Viktig information"
 
-#: templates/modern/batch_ptr_record.html:140
+#: templates/modern/batch_ptr_record.html:142
 msgid "This tool creates PTR records in bulk. Two modes are available:"
 msgstr "Detta verktyg skapar PTR-poster i bulk. Två lägen finns tillgängliga:"
 
-#: templates/modern/batch_ptr_record.html:142
+#: templates/modern/batch_ptr_record.html:144
 msgid "All IPs"
 msgstr "Alla IP-adresser"
 
-#: templates/modern/batch_ptr_record.html:142
+#: templates/modern/batch_ptr_record.html:144
 msgid "Creates PTR records for every IP in the network range"
 msgstr "Skapar PTR-poster för varje IP-adress i nätverksområdet"
 
-#: templates/modern/batch_ptr_record.html:143
+#: templates/modern/batch_ptr_record.html:145
 msgid "Matching only"
 msgstr "Endast matchande"
 
-#: templates/modern/batch_ptr_record.html:143
+#: templates/modern/batch_ptr_record.html:145
 msgid ""
 "Creates PTR records only for IPs that have existing A records in the forward "
 "zone"
@@ -10234,7 +10287,7 @@ msgstr ""
 "Skapar PTR-poster endast för IP-adresser som har befintliga A-poster i "
 "forward-zonen"
 
-#: templates/modern/batch_ptr_record.html:145
+#: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
 msgstr "För IPv4 stöds följande nätverk:"
 
@@ -10242,7 +10295,7 @@ msgstr "För IPv4 stöds följande nätverk:"
 msgid "Requirements"
 msgstr "Krav"
 
-#: templates/modern/batch_ptr_record.html:162
+#: templates/modern/batch_ptr_record.html:164
 msgid ""
 "You must have the appropriate reverse zone already created in PowerDNS "
 "before using this feature."
@@ -10250,11 +10303,11 @@ msgstr ""
 "Du måste redan ha skapat lämplig reverse-zon i PowerDNS innan du använder "
 "denna funktion."
 
-#: templates/modern/batch_ptr_record.html:163
+#: templates/modern/batch_ptr_record.html:165
 msgid "For example:"
 msgstr "Till exempel:"
 
-#: templates/modern/batch_ptr_record.html:165
+#: templates/modern/batch_ptr_record.html:167
 msgid ""
 "For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-"
 "addr.arpa"
@@ -10262,7 +10315,7 @@ msgstr ""
 "För nätverk 192.168.1.0/24 behöver du en reverse-zon för 1.168.192.in-"
 "addr.arpa"
 
-#: templates/modern/batch_ptr_record.html:166
+#: templates/modern/batch_ptr_record.html:168
 msgid ""
 "For larger networks, you will need the corresponding reverse zones (e.g., "
 "168.192.in-addr.arpa for a /16 network)"
@@ -10270,11 +10323,11 @@ msgstr ""
 "För större nätverk behöver du motsvarande reverse-zoner (t.ex. 168.192.in-"
 "addr.arpa för ett /16-nätverk)"
 
-#: templates/modern/batch_ptr_record.html:175
+#: templates/modern/batch_ptr_record.html:177
 msgid "Quick Tips"
 msgstr "Snabbtips"
 
-#: templates/modern/batch_ptr_record.html:181
+#: templates/modern/batch_ptr_record.html:183
 msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
@@ -10282,7 +10335,7 @@ msgstr ""
 "Använd rullgardinsknappen bredvid Nätverksprefix för att välja från "
 "befintliga reverse-zoner"
 
-#: templates/modern/batch_ptr_record.html:182
+#: templates/modern/batch_ptr_record.html:184
 msgid ""
 "Use \"Create PTRs only for existing A records\" to populate PTRs based on "
 "your forward zone"
@@ -10290,7 +10343,7 @@ msgstr ""
 "Använd \"Skapa PTR endast för befintliga A-poster\" för att fylla i PTR "
 "baserat på din forward-zon"
 
-#: templates/modern/batch_ptr_record.html:183
+#: templates/modern/batch_ptr_record.html:185
 msgid ""
 "Use the Host Prefix field to add a prefix to all hostnames when creating all "
 "IPs"
@@ -10298,7 +10351,7 @@ msgstr ""
 "Använd fältet Värdprefix för att lägga till ett prefix till alla värdnamn "
 "när du skapar alla IP-adresser"
 
-#: templates/modern/batch_ptr_record.html:184
+#: templates/modern/batch_ptr_record.html:186
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
@@ -10306,7 +10359,7 @@ msgstr ""
 "Markera \"Skapa forward A/AAAA-poster\" för att automatiskt skapa matchande "
 "forward-poster (inaktiverad när matchande läge används)"
 
-#: templates/modern/zone-ownership.html:6 templates/modern/edit.html:209
+#: templates/modern/zone-ownership.html:6 templates/modern/edit.html:216
 msgid "Ownership"
 msgstr "Ägarskap"
 
@@ -10451,71 +10504,71 @@ msgstr "Om du förlorar nyckeln måste du generera om den."
 msgid "Edit"
 msgstr "Schemalagd underhållsstart"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:558
+#: templates/modern/edit.html:25 templates/modern/edit.html:565
 msgid "Add new record"
 msgstr "Lägg till ny post"
 
-#: templates/modern/edit.html:29 templates/modern/edit.html:562
+#: templates/modern/edit.html:203 templates/modern/edit.html:569
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Guidade guider för DMARC, SPF, DKIM, CAA, TLSA och SRV-poster"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:568
+#: templates/modern/edit.html:35 templates/modern/edit.html:575
 msgid "Multi-record mode"
 msgstr "Flerpostsläge"
 
-#: templates/modern/edit.html:516 templates/modern/edit.html:571
+#: templates/modern/edit.html:523 templates/modern/edit.html:578
 msgid "Bulk add"
 msgstr "Massinlägg"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:583
+#: templates/modern/edit.html:50 templates/modern/edit.html:590
 msgid "Failed to add"
 msgstr "Misslyckades att lägga till"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:583
+#: templates/modern/edit.html:50 templates/modern/edit.html:590
 msgid "record(s). Please check the record format."
 msgstr "post(er). Vänligen kontrollera postformatet."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:585
+#: templates/modern/edit.html:52 templates/modern/edit.html:592
 msgid "Failed to add records. Please check the record format."
 msgstr "Misslyckades att lägga till poster. Vänligen kontrollera postformatet."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:588
+#: templates/modern/edit.html:55 templates/modern/edit.html:595
 msgid "Content validation failed:"
 msgstr "Innehållsvalidering misslyckades:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:588
+#: templates/modern/edit.html:55 templates/modern/edit.html:595
 msgid "Invalid value for record type"
 msgstr "Ogiltigt värde för posttyp"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:590
+#: templates/modern/edit.html:57 templates/modern/edit.html:597
 msgid "Please provide all required information."
 msgstr "Vänligen ange all nödvändig information."
 
-#: templates/modern/edit.html:613 templates/modern/add_record.html:61
+#: templates/modern/edit.html:620 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Lägg till PTR"
 
-#: templates/modern/edit.html:616 templates/modern/add_record.html:64
+#: templates/modern/edit.html:623 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Lägg till A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:655
+#: templates/modern/edit.html:121 templates/modern/edit.html:662
 msgid "This record already exists"
 msgstr "Denna post finns redan"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:667
+#: templates/modern/edit.html:133 templates/modern/edit.html:674
 msgid "Invalid priority"
 msgstr "Ogiltig prioritet"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:674
+#: templates/modern/edit.html:140 templates/modern/edit.html:681
 msgid "Invalid TTL value"
 msgstr "Ogiltigt TTL-värde"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:676
+#: templates/modern/edit.html:142 templates/modern/edit.html:683
 msgid "Provide TTL"
 msgstr "Ange TTL"
 
-#: templates/modern/edit.html:702 templates/modern/add_record.html:142
+#: templates/modern/edit.html:709 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -10527,91 +10580,91 @@ msgstr ""
 msgid "Edit zone"
 msgstr "Redigera zon"
 
-#: templates/default/edit.html:224 templates/modern/edit.html:224
+#: templates/default/edit.html:231 templates/modern/edit.html:231
 msgid "No records match your filter criteria."
 msgstr "Inga poster matchar dina filterkriterier."
 
-#: templates/default/edit.html:232 templates/modern/edit.html:232
+#: templates/default/edit.html:239 templates/modern/edit.html:239
 msgid "This zone does not have any records."
 msgstr "Denna zon har inga poster."
 
-#: templates/default/edit.html:244 templates/modern/edit.html:244
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "Filter:"
 msgstr "Filter:"
 
-#: templates/default/edit.html:250 templates/modern/edit.html:250
+#: templates/default/edit.html:257 templates/modern/edit.html:257
 msgid "Search by name or content"
 msgstr "Sök efter namn eller innehåll"
 
-#: templates/default/edit.html:256 templates/modern/edit.html:256
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "All Types"
 msgstr "Alla typer"
 
-#: templates/default/edit.html:266 templates/modern/edit.html:266
+#: templates/default/edit.html:273 templates/modern/edit.html:273
 msgid "Filter by content"
 msgstr "Filtrera efter innehåll"
 
-#: templates/default/edit.html:272 templates/modern/edit.html:272
+#: templates/default/edit.html:279 templates/modern/edit.html:279
 msgid "Apply"
 msgstr "Använd"
 
-#: templates/default/edit.html:308 templates/modern/edit.html:308
+#: templates/default/edit.html:315 templates/modern/edit.html:315
 msgid "Showing"
 msgstr "Visar"
 
-#: templates/default/edit.html:308 templates/modern/edit.html:308
+#: templates/default/edit.html:315 templates/modern/edit.html:315
 msgid "of"
 msgstr "av"
 
-#: templates/default/edit.html:308 templates/modern/edit.html:308
+#: templates/default/edit.html:315 templates/modern/edit.html:315
 msgid "total records"
 msgstr "totalt antal poster"
 
-#: templates/default/edit.html:478 templates/modern/edit.html:478
+#: templates/default/edit.html:485 templates/modern/edit.html:485
 msgid "Edit selected"
 msgstr "Redigera valda"
 
-#: templates/modern/edit.html:482 templates/modern/search.html:486
+#: templates/modern/edit.html:489 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Ta bort post(er)"
 
-#: templates/modern/edit.html:490 templates/modern/search.html:93
+#: templates/modern/edit.html:497 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Kommentarer"
 
-#: templates/default/edit.html:520 templates/modern/edit.html:520
+#: templates/default/edit.html:527 templates/modern/edit.html:527
 msgid "Import"
 msgstr "Importera"
 
-#: templates/default/edit.html:526 templates/modern/edit.html:526
+#: templates/default/edit.html:533 templates/modern/edit.html:533
 msgid "Export"
 msgstr "Exportera"
 
-#: templates/default/edit.html:537 templates/modern/edit.html:537
+#: templates/default/edit.html:544 templates/modern/edit.html:544
 msgid "Generate PTR"
 msgstr "Generera PTR"
 
-#: templates/modern/edit.html:716 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:723 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Zonkonfiguration"
 
-#: templates/modern/edit.html:756 templates/modern/edit.html:785
+#: templates/modern/edit.html:763 templates/modern/edit.html:792
 msgid "Change"
 msgstr "Ändra"
 
-#: templates/modern/edit.html:749 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:756 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "IP-adress för master NS"
 
-#: templates/default/edit.html:806 templates/modern/edit.html:806
+#: templates/default/edit.html:813 templates/modern/edit.html:813
 msgid "Manage DNSSEC"
 msgstr "Hantera DNSSEC"
 
-#: templates/default/edit.html:813 templates/modern/edit.html:813
+#: templates/default/edit.html:820 templates/modern/edit.html:820
 msgid "Sign zone"
 msgstr "Signera zon"
 
-#: templates/default/edit.html:817 templates/modern/edit.html:817
+#: templates/default/edit.html:824 templates/modern/edit.html:824
 msgid "Not signed"
 msgstr "Inte signerad"
 
@@ -10663,7 +10716,7 @@ msgstr "Totalt antal zoner:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Det finns inga forward-zoner att visa i denna lista."
 
-#: templates/modern/list_forward_zones.html:217
+#: templates/modern/list_forward_zones.html:213
 msgid "PTR"
 msgstr "PTR"
 
@@ -11262,57 +11315,43 @@ msgid "Add Zones"
 msgstr "Lägg till zoner"
 
 #: templates/modern/bulk_registration.html:99
-msgid "About Bulk Registration"
-msgstr "Om massregistrering"
+#, auto-english-fallback
+msgid "After Creation"
+msgstr "Efter skapande"
+
+#: templates/modern/bulk_registration.html:104
+#, auto-english-fallback
+msgid "Assign zones to a group"
+msgstr "Tilldela zoner till en grupp"
 
 #: templates/modern/bulk_registration.html:105
-msgid "This tool allows you to create multiple DNS zones at once."
-msgstr "Detta verktyg låter dig skapa flera DNS-zoner på en gång."
+msgid ""
+"Bulk registration assigns ownership to a single user. To share access with a "
+"group, open the group and add the newly created zones."
+msgstr ""
+"Massregistrering tilldelar ägarskap till en enskild användare. För att dela åtkomst med en grupp, öppna gruppen och lägg till de nyligen skapade zonerna."
 
 #: templates/modern/bulk_registration.html:107
-msgid "Enter one domain name per line in the Domains field"
-msgstr "Ange ett domännamn per rad i fältet Domäner"
+#, auto-english-fallback
+msgid "Manage groups"
+msgstr "Hantera grupper"
 
-#: templates/modern/bulk_registration.html:108
-msgid "Select a zone template to apply standard records to all zones"
-msgstr "Välj en zonmall för att tillämpa standardposter på alla zoner"
-
-#: templates/modern/bulk_registration.html:109
-msgid "The chosen owner will have full access to all created zones"
-msgstr "Den valda ägaren kommer att ha full åtkomst till alla skapade zoner"
+#: templates/modern/bulk_registration.html:112
+#, auto-english-fallback
+msgid "Change zone owner"
+msgstr "Ändra zonägare"
 
 #: templates/modern/bulk_registration.html:113
-msgid "How It Works"
-msgstr "Hur det fungerar"
-
-#: templates/modern/bulk_registration.html:114
 msgid ""
-"The system will attempt to create each zone with the same settings. Failed "
-"domains will be displayed so you can correct any issues and try again."
+"You can transfer zone ownership to another user from the user list at any "
+"time."
 msgstr ""
-"Systemet kommer att försöka skapa varje zon med samma inställningar. "
-"Misslyckade domäner visas så att du kan korrigera eventuella problem och "
-"försöka igen."
+"Du kan när som helst överföra ägarskap av en zon till en annan användare från användarlistan."
 
-#: templates/modern/bulk_registration.html:122
-msgid "Tips & Recommendations"
-msgstr "Tips och rekommendationer"
-
-#: templates/modern/bulk_registration.html:128
-msgid "Use NATIVE zone type for most standard setups"
-msgstr "Använd NATIVE-zontyp för de flesta standardkonfigurationer"
-
-#: templates/modern/bulk_registration.html:129
-msgid "Create a template first if you need standard records for all zones"
-msgstr "Skapa en mall först om du behöver standardposter för alla zoner"
-
-#: templates/modern/bulk_registration.html:130
-msgid "You can copy and paste a list of domains from a spreadsheet"
-msgstr "Du kan kopiera och klistra in en lista med domäner från ett kalkylblad"
-
-#: templates/modern/bulk_registration.html:131
-msgid "Make sure the domain names follow valid DNS naming conventions"
-msgstr "Se till att domännamnen följer giltiga DNS-namnkonventioner"
+#: templates/modern/bulk_registration.html:115
+#, auto-english-fallback
+msgid "Manage users"
+msgstr "Hantera användare"
 
 #: templates/modern/user_agreement.html:13
 msgid "User Agreement"
@@ -12186,15 +12225,20 @@ msgstr ""
 msgid "Add record to zone"
 msgstr "Lägg till post i zon"
 
-#: templates/default/add_record.html:35 templates/modern/add_record.html:35
+#: templates/default/add_record.html:41 templates/modern/add_record.html:41
+#, auto-english-fallback
+msgid "Record could not be added. Please check the record data and try again."
+msgstr "Record could not be added. Please check the record data and try again."
+
+#: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
 msgstr "Skapa en ny DNS-post i denna zon"
 
-#: templates/default/add_record.html:131 templates/modern/add_record.html:131
+#: templates/default/add_record.html:196 templates/modern/add_record.html:196
 msgid "Add another record"
 msgstr "Lägg till ytterligare en post"
 
-#: templates/default/add_record.html:146 templates/modern/add_record.html:146
+#: templates/default/add_record.html:211 templates/modern/add_record.html:211
 msgid "Add records"
 msgstr "Lägg till poster"
 
@@ -13342,3 +13386,50 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan inte ansluta till PowerDNS-databasen \"%s\": %s"
+
+# OBSOLETE: msgid "About Bulk Registration"
+# OBSOLETE: msgstr "Om massregistrering"
+
+# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
+# OBSOLETE: msgstr "Detta verktyg låter dig skapa flera DNS-zoner på en gång."
+
+# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
+# OBSOLETE: msgstr "Ange ett domännamn per rad i fältet Domäner"
+
+# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
+# OBSOLETE: msgstr "Välj en zonmall för att tillämpa standardposter på alla zoner"
+
+# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
+# OBSOLETE: msgstr "Den valda ägaren kommer att ha full åtkomst till alla skapade zoner"
+
+# OBSOLETE: msgid "How It Works"
+# OBSOLETE: msgstr "Hur det fungerar"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "The system will attempt to create each zone with the same settings. "
+# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
+# OBSOLETE: "again."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Systemet kommer att försöka skapa varje zon med samma inställningar. "
+# OBSOLETE: "Misslyckade domäner visas så att du kan korrigera eventuella problem och "
+# OBSOLETE: "försöka igen."
+
+# OBSOLETE: msgid "Tips & Recommendations"
+# OBSOLETE: msgstr "Tips och rekommendationer"
+
+# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
+# OBSOLETE: msgstr "Använd NATIVE-zontyp för de flesta standardkonfigurationer"
+
+# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
+# OBSOLETE: msgstr "Skapa en mall först om du behöver standardposter för alla zoner"
+
+# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Du kan kopiera och klistra in en lista med domäner från ett kalkylblad"
+
+# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
+# OBSOLETE: msgstr "Se till att domännamnen följer giltiga DNS-namnkonventioner"
+
+
+

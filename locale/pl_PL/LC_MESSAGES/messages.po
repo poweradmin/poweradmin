@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-03-12 09:58+0200\n"
+"POT-Creation-Date: 2026-05-09 10:51+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -15,9 +15,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
 
-#: lib/AppInitializer.php:82
+#: lib/AppInitializer.php:81
 #, php-format
 msgid ""
 "No configuration file found at %s. Please use the <a href=\"install/"
@@ -42,19 +43,19 @@ msgstr "Strefa nie znaleziona."
 msgid "You do not have permission to add records to this zone."
 msgstr "Nie masz uprawnień do dodawania rekordów do tej strefy."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:114
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:115
 msgid "Invalid wizard type."
 msgstr "Nieprawidłowy typ kreatora."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:200
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:201
 msgid "Validation failed:"
 msgstr "Walidacja nie powiodła się:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:224
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:225
 msgid "Failed to generate record:"
 msgstr "Nie udało się wygenerować rekordu:"
 
-#: lib/Application/Controller/AddRecordController.php:170
+#: lib/Application/Controller/AddRecordController.php:175
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
@@ -62,7 +63,7 @@ msgstr ""
 "Ten rekord był nieprawidłowy i nie mógł zostać dodany. Może już istnieć lub "
 "zawierać nieprawidłowe dane."
 
-#: lib/Application/Controller/AddRecordController.php:248
+#: lib/Application/Controller/AddRecordController.php:253
 msgid "The record was successfully added."
 msgstr "Rekord został pomyślnie dodany."
 
@@ -332,7 +333,7 @@ msgstr ""
 "kompletny certyfikat."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:627
+#: templates/modern/edit.html:93 templates/modern/edit.html:634
 msgid "Invalid hostname format"
 msgstr "Nieprawidłowy format nazwy hosta"
 
@@ -1202,60 +1203,60 @@ msgstr "Nieprawidłowy format domeny"
 msgid "Email Previews"
 msgstr "Podglądy e-mail"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:76
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:77
 msgid "You do not have permission to import zones."
 msgstr "Nie masz uprawnień do importowania stref."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:118
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:119
 msgid "Please select a valid zone file to upload."
 msgstr "Proszę wybrać prawidłowy plik strefy do przesłania."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:124
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:125
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
 msgstr "Rozmiar pliku przekracza maksymalny dozwolony rozmiar %s."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:130
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:131
 msgid "The uploaded file is empty or could not be read."
 msgstr "Przesłany plik jest pusty lub nie można go odczytać."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:139
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:140
 msgid "No valid records found in the uploaded file."
 msgstr "Nie znaleziono prawidłowych rekordów w przesłanym pliku."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:280
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:281
 msgid "You do not have permission to modify this zone."
 msgstr "Nie masz uprawnień do modyfikowania tej strefy."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:237
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:238
 msgid "Import session expired. Please upload the file again."
 msgstr "Sesja importu wygasła. Proszę przesłać plik ponownie."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:244
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:245
 msgid "Invalid import data. Please upload the file again."
 msgstr "Nieprawidłowe dane importu. Proszę przesłać plik ponownie."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:270
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:271
 msgid "The selected zone does not exist."
 msgstr "Wybrana strefa nie istnieje."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:296
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:297
 msgid "You do not have permission to add zones."
 msgstr "Nie masz uprawnień do dodawania stref."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:301
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:302
 msgid "Zone name is required."
 msgstr "Nazwa strefy jest wymagana."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:306
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
 msgid "A zone with this name already exists."
 msgstr "Strefa o tej nazwie już istnieje."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:312
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:313
 msgid "Failed to create zone."
 msgstr "Nie udało się utworzyć strefy."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:318
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:319
 msgid "Failed to retrieve created zone."
 msgstr "Nie udało się pobrać utworzonej strefy."
 
@@ -1301,7 +1302,7 @@ msgstr "RDAP"
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Nie udało się pobrać informacji RDAP przy użyciu serwera %s"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:134
+#: lib/Infrastructure/Service/SessionAuthenticator.php:135
 msgid "Invalid CSRF token."
 msgstr "Nieprawidłowy token CSRF."
 
@@ -1313,7 +1314,7 @@ msgstr ""
 "Katalog <a href=\"install/\">install/</a> istnieje, musisz go usunąć przed "
 "kontynuowaniem."
 
-#: lib/BaseController.php:574
+#: lib/BaseController.php:575
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1321,12 +1322,12 @@ msgstr ""
 "Używany jest domyślny klucz szyfrowania sesji, ustaw go w pliku "
 "konfiguracyjnym."
 
-#: lib/BaseController.php:711
+#: lib/BaseController.php:712
 #, php-format
 msgid "The %s field is required."
 msgstr "Pole %s jest wymagane."
 
-#: lib/BaseController.php:719
+#: lib/BaseController.php:720
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Pole %s musi być liczbą."
@@ -1347,11 +1348,11 @@ msgstr "Pokaż strefy rozpoczynające się od"
 msgid "Show all"
 msgstr "Pokaż wszystkie"
 
-#: lib/Application/Controller/DeleteRecordsController.php:76
+#: lib/Application/Controller/DeleteRecordsController.php:77
 msgid "No records selected for deletion."
 msgstr "Nie wybrano rekordów do usunięcia."
 
-#: lib/Application/Controller/DeleteRecordsController.php:192
+#: lib/Application/Controller/DeleteRecordsController.php:193
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
@@ -1359,7 +1360,7 @@ msgstr ""
 "Rekord został pomyślnie usunięty. Usunięto również odpowiadające mu rekordy "
 "PTR."
 
-#: lib/Application/Controller/DeleteRecordsController.php:194
+#: lib/Application/Controller/DeleteRecordsController.php:195
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1368,11 +1369,11 @@ msgstr ""
 "%d rekordów zostało pomyślnie usuniętych. Usunięto również odpowiadające im "
 "rekordy PTR."
 
-#: lib/Application/Controller/DeleteRecordsController.php:197
+#: lib/Application/Controller/DeleteRecordsController.php:198
 msgid "No records could be deleted. Please check permissions."
 msgstr "Nie można usunąć żadnych rekordów. Sprawdź uprawnienia."
 
-#: lib/Application/Controller/DeleteRecordsController.php:263
+#: lib/Application/Controller/DeleteRecordsController.php:264
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
@@ -1387,7 +1388,7 @@ msgstr "Podano nieprawidłowe lub nieoczekiwane dane wejściowe."
 msgid "You do not have the permission to delete this user."
 msgstr "Nie masz uprawnień do usunięcia tego użytkownika."
 
-#: lib/Application/Controller/DeleteUserController.php:62
+#: lib/Application/Controller/DeleteUserController.php:74
 msgid "You do not have permission to delete a superuser account."
 msgstr "Nie masz uprawnień do usunięcia konta superużytkownika."
 
@@ -1395,7 +1396,7 @@ msgstr "Nie masz uprawnień do usunięcia konta superużytkownika."
 msgid "User does not exist."
 msgstr "Użytkownik nie istnieje."
 
-#: lib/Application/Controller/DeleteUserController.php:87
+#: lib/Application/Controller/DeleteUserController.php:109
 msgid "The user has been deleted successfully."
 msgstr "Użytkownik został pomyślnie usunięty."
 
@@ -1415,19 +1416,19 @@ msgstr "Nie masz uprawnień do edycji tego komentarza."
 msgid "The comment has been updated successfully."
 msgstr "Komentarz został pomyślnie zaktualizowany."
 
-#: lib/Application/Controller/EditRecordController.php:87
+#: lib/Application/Controller/EditRecordController.php:88
 msgid "Invalid record ID."
 msgstr "Nieprawidłowe ID rekordu."
 
-#: lib/Application/Controller/DeleteRecordController.php:106
+#: lib/Application/Controller/DeleteRecordController.php:107
 msgid "You do not have permission to delete records in this zone."
 msgstr "Nie masz uprawnień do usuwania rekordów w tej strefie."
 
-#: lib/Application/Controller/EditRecordController.php:197
+#: lib/Application/Controller/EditRecordController.php:198
 msgid "Record not found."
 msgstr "Rekord nie znaleziony."
 
-#: lib/Application/Controller/DeleteRecordController.php:206
+#: lib/Application/Controller/DeleteRecordController.php:207
 msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
@@ -1435,7 +1436,7 @@ msgstr ""
 "Rekord oraz odpowiadające mu rekordy PTR i A/AAAA zostały usunięte, ale "
 "komentarz zostały zachowany, ponieważ istnieją podobne rekordy."
 
-#: lib/Application/Controller/DeleteRecordController.php:208
+#: lib/Application/Controller/DeleteRecordController.php:209
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
@@ -1443,7 +1444,7 @@ msgstr ""
 "Rekord i odpowiadający mu rekord PTR zostały usunięte, ale komentarz został "
 "zachowany, ponieważ istnieją podobne rekordy."
 
-#: lib/Application/Controller/DeleteRecordController.php:210
+#: lib/Application/Controller/DeleteRecordController.php:211
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
@@ -1451,7 +1452,7 @@ msgstr ""
 "Rekord oraz odpowiadający mu rekord A/AAAA zostały usunięte, ale komentarz "
 "został zachowany, ponieważ istnieją podobne rekordy."
 
-#: lib/Application/Controller/DeleteRecordController.php:212
+#: lib/Application/Controller/DeleteRecordController.php:213
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
@@ -1459,31 +1460,31 @@ msgstr ""
 "Rekord został usunięty, ale komentarz został zachowany, ponieważ istnieją "
 "podobne rekordy."
 
-#: lib/Application/Controller/DeleteRecordController.php:216
+#: lib/Application/Controller/DeleteRecordController.php:217
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
 msgstr ""
 "Rekord oraz odpowiadające mu rekordy PTR i A/AAAA zostały pomyślnie usunięte."
 
-#: lib/Application/Controller/DeleteRecordController.php:218
+#: lib/Application/Controller/DeleteRecordController.php:219
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr "Rekord i odpowiadający mu rekord PTR zostały pomyślnie usunięte."
 
-#: lib/Application/Controller/DeleteRecordController.php:220
+#: lib/Application/Controller/DeleteRecordController.php:221
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr "Rekord oraz odpowiadający mu rekord A/AAAA zostały pomyślnie usunięte."
 
-#: lib/Application/Controller/DeleteRecordController.php:222
+#: lib/Application/Controller/DeleteRecordController.php:223
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr ""
 "Rekord został pomyślnie usunięty. Nie znaleziono odpowiadającego rekordu PTR."
 
-#: lib/Application/Controller/DeleteRecordController.php:224
+#: lib/Application/Controller/DeleteRecordController.php:225
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -1494,7 +1495,7 @@ msgstr ""
 msgid "The record has been deleted successfully."
 msgstr "Rekord został pomyślnie usunięty."
 
-#: lib/Application/Controller/DeleteRecordController.php:239
+#: lib/Application/Controller/DeleteRecordController.php:240
 msgid "You cannot delete records from a SLAVE zone."
 msgstr "Nie możesz usuwać rekordów ze strefy SLAVE."
 
@@ -1733,36 +1734,36 @@ msgstr "włączony"
 msgid "API key %s successfully."
 msgstr "Klucz API został %s pomyślnie."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:107
+#: lib/Application/Controller/BatchPtrRecordController.php:108
 msgid "You do not have the permission to add records to this zone."
 msgstr "Nie masz uprawnień do dodawania rekordów do tej strefy."
 
-#: lib/Application/Controller/BulkRecordAddController.php:112
+#: lib/Application/Controller/BulkRecordAddController.php:113
 msgid "Please provide at least one record."
 msgstr "Podaj przynajmniej jeden rekord."
 
-#: lib/Application/Controller/BulkRecordAddController.php:140
+#: lib/Application/Controller/BulkRecordAddController.php:141
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Nieprawidłowy format. Oczekiwano przynajmniej: nazwa,typ,zawartość"
 
-#: lib/Application/Controller/BulkRecordAddController.php:190
+#: lib/Application/Controller/BulkRecordAddController.php:194
 msgid "Invalid record type."
 msgstr "Nieprawidłowy typ rekordu."
 
-#: lib/Application/Controller/BulkRecordAddController.php:227
+#: lib/Application/Controller/BulkRecordAddController.php:231
 msgid "Record could not be added."
 msgstr "Nie można dodać rekordu."
 
-#: lib/Application/Controller/BulkRecordAddController.php:235
+#: lib/Application/Controller/BulkRecordAddController.php:239
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "Pomyślnie dodano %d rekordów."
 
-#: lib/Application/Controller/BulkRecordAddController.php:238
+#: lib/Application/Controller/BulkRecordAddController.php:242
 msgid "Some record(s) could not be added."
 msgstr "Niektóre rekordy nie mogły zostać dodane."
 
-#: lib/Application/Controller/BulkRecordAddController.php:271
+#: lib/Application/Controller/BulkRecordAddController.php:275
 msgid "Zone ID is required."
 msgstr "Identyfikator strefy jest wymagany."
 
@@ -1812,7 +1813,7 @@ msgstr "Użytkownik nie był członkiem tej grupy."
 msgid "You do not have the permission to add a new user."
 msgstr "Nie masz uprawnień do dodawania nowego użytkownika."
 
-#: lib/Application/Controller/AddUserController.php:88
+#: lib/Application/Controller/AddUserController.php:92
 #: templates/modern/add_user.html:13 templates/modern/add_user.html:112
 msgid "Add User"
 msgstr "Dodaj użytkownika"
@@ -1821,24 +1822,24 @@ msgstr "Dodaj użytkownika"
 msgid "Invalid permission template: must be a user template"
 msgstr "Nieprawidłowy szablon uprawnień: musi być szablonem użytkownika"
 
-#: lib/Application/Controller/AddUserController.php:133
+#: lib/Application/Controller/AddUserController.php:137
 msgid "The user has been created successfully."
 msgstr "Użytkownik został pomyślnie utworzony."
 
-#: lib/Application/Controller/AddUserController.php:148
+#: lib/Application/Controller/AddUserController.php:152
 #, php-format
 msgid "Generated password: %s"
 msgstr "Wygenerowane hasło: %s"
 
-#: lib/Application/Controller/AddUserController.php:164
+#: lib/Application/Controller/AddUserController.php:168
 msgid "Login details have been sent to the user via email."
 msgstr "Dane logowania zostały wysłane do użytkownika przez e-mail."
 
-#: lib/Application/Controller/AddUserController.php:166
+#: lib/Application/Controller/AddUserController.php:170
 msgid "NOTE: Failed to send login details via email."
 msgstr "UWAGA: Nie udało się wysłać danych logowania przez e-mail."
 
-#: lib/Application/Controller/AddUserController.php:172
+#: lib/Application/Controller/AddUserController.php:176
 msgid "A password was generated but is not displayed for security reasons."
 msgstr ""
 "Hasło zostało wygenerowane, ale nie jest wyświetlane ze względów "
@@ -1906,23 +1907,23 @@ msgstr "Nie ma szablonu strefy o tym identyfikatorze."
 msgid "Zone template has been updated successfully."
 msgstr "Szablon strefy został pomyślnie zaktualizowany."
 
-#: lib/Application/Controller/EditZoneTemplController.php:229
+#: lib/Application/Controller/EditZoneTemplController.php:232
 msgid "Zones have been updated successfully."
 msgstr "Strefy zostały pomyślnie zaktualizowane."
 
-#: lib/Application/Controller/EditZoneTemplController.php:240
+#: lib/Application/Controller/EditZoneTemplController.php:243
 msgid "You do not have permission to create new zone templates."
 msgstr "Nie masz uprawnień do tworzenia nowych szablonów stref."
 
-#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:803
+#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:851
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Szablon strefy o tej nazwie już istnieje, proszę wybrać inną."
 
-#: lib/Application/Controller/EditZoneTemplController.php:271
+#: lib/Application/Controller/EditZoneTemplController.php:274
 msgid "Please enter a different name when using Save As."
 msgstr "Wprowadź inną nazwę podczas używania opcji \"Zapisz jako\"."
 
-#: lib/Application/Controller/EditZoneTemplController.php:295
+#: lib/Application/Controller/EditZoneTemplController.php:298
 msgid "Zone template has been copied successfully."
 msgstr "Szablon strefy został pomyślnie skopiowany."
 
@@ -2003,31 +2004,31 @@ msgstr "Nie masz uprawnień do dostępu do tej strefy."
 msgid "You do not have the permission to view this zone."
 msgstr "Nie masz uprawnień do przeglądania tej strefy."
 
-#: lib/Application/Controller/EditController.php:268
+#: lib/Application/Controller/EditController.php:269
 msgid "Zone type has been changed successfully."
 msgstr "Typ strefy został zmieniony."
 
-#: lib/Application/Controller/EditController.php:275
+#: lib/Application/Controller/EditController.php:276
 msgid "Slave master has been changed successfully."
 msgstr "Master slave został zmieniony."
 
-#: lib/Application/Controller/EditController.php:295
+#: lib/Application/Controller/EditController.php:296
 msgid "Zone template has been changed successfully."
 msgstr "Szablon strefy został zmieniony."
 
-#: lib/Application/Controller/EditController.php:307
+#: lib/Application/Controller/EditController.php:308
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC nie jest włączone na serwerze."
 
-#: lib/Application/Controller/EditController.php:310
+#: lib/Application/Controller/EditController.php:311
 msgid "Zone is already signed with DNSSEC."
 msgstr "Strefa jest już podpisana DNSSEC."
 
-#: lib/Application/Controller/EditController.php:332
+#: lib/Application/Controller/EditController.php:333
 msgid "Zone has been signed successfully."
 msgstr "Strefa została pomyślnie podpisana."
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:337
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2035,7 +2036,7 @@ msgstr ""
 "Żądanie podpisania strefy zostało pomyślnie wysłane, ale weryfikacja nie "
 "powiodła się. Sprawdź klucze DNSSEC."
 
-#: lib/Application/Controller/EditController.php:340
+#: lib/Application/Controller/EditController.php:341
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2043,35 +2044,35 @@ msgstr ""
 "Nie udało się podpisać strefy. Walidacja strefy przeszła pomyślnie, ale "
 "PowerDNS API zwróciło błąd. Sprawdź logi PowerDNS, aby uzyskać szczegóły."
 
-#: lib/Application/Controller/DnssecController.php:93
+#: lib/Application/Controller/DnssecController.php:94
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Strefa nie jest obecnie podpisana DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:103
+#: lib/Application/Controller/DnssecController.php:104
 msgid "Zone has been unsigned successfully."
 msgstr "Podpis strefy został pomyślnie usunięty."
 
-#: lib/Application/Controller/DnssecController.php:108
+#: lib/Application/Controller/DnssecController.php:109
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr ""
 "Żądanie usunięcia podpisu strefy zostało pomyślnie wysłane, ale weryfikacja "
 "nie powiodła się."
 
-#: lib/Application/Controller/DnssecController.php:112
+#: lib/Application/Controller/DnssecController.php:113
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Nie udało się usunąć podpisu strefy. Sprawdź logi PowerDNS, aby uzyskać "
 "szczegóły."
 
-#: lib/Application/Controller/EditController.php:732
+#: lib/Application/Controller/EditController.php:734
 msgid "Request has expired, please try again."
 msgstr "Żądanie wygasło, spróbuj ponownie."
 
-#: lib/Application/Controller/EditController.php:737
+#: lib/Application/Controller/EditController.php:739
 msgid "Zone has been updated successfully."
 msgstr "Strefa została pomyślnie zaktualizowana."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:741
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2079,30 +2080,30 @@ msgstr ""
 "Strefa została pomyślnie zapisana. Nie dokonano zmian w rekordach, ale numer "
 "seryjny SOA został zwiększony."
 
-#: lib/Application/Controller/EditController.php:748
+#: lib/Application/Controller/EditController.php:750
 msgid "Zone has not been updated successfully."
 msgstr "Strefa nie została pomyślnie zaktualizowana."
 
-#: lib/Application/Controller/EditController.php:776
+#: lib/Application/Controller/EditController.php:778
 msgid "Please provide all required fields."
 msgstr "Podaj wszystkie wymagane pola."
 
-#: lib/Application/Controller/AddRecordController.php:230
+#: lib/Application/Controller/AddRecordController.php:235
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr ""
 "Rekord został pomyślnie dodany. Utworzono również odpowiadający rekord PTR."
 
-#: lib/Application/Controller/AddRecordController.php:235
+#: lib/Application/Controller/AddRecordController.php:240
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr ""
 "Rekord został pomyślnie dodany, ale utworzenie rekordu PTR nie powiodło się: "
 
-#: lib/Application/Controller/AddRecordController.php:239
+#: lib/Application/Controller/AddRecordController.php:244
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr ""
 "Rekord został pomyślnie dodany, ale utworzenie rekordu PTR nie powiodło się."
 
-#: lib/Application/Controller/AddRecordController.php:245
+#: lib/Application/Controller/AddRecordController.php:250
 msgid "Record successfully added. A matching A record was also created."
 msgstr ""
 "Rekord został pomyślnie dodany. Utworzono również odpowiadający rekord A."
@@ -2147,25 +2148,31 @@ msgstr ""
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Nie masz uprawnień do dodawania rekordu do tej strefy."
 
-#: lib/Application/Controller/AddRecordController.php:227
+#: lib/Application/Controller/AddRecordController.php:232
 msgid "Record successfully added."
 msgstr "Rekord dodany."
 
-#: lib/Application/Controller/AddRecordController.php:400
+#: lib/Application/Controller/AddRecordController.php:422
 msgid "No records were provided."
 msgstr "Nie podano żadnych rekordów."
 
-#: lib/Application/Controller/AddRecordController.php:448
+#: lib/Application/Controller/AddRecordController.php:478
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "Pomyślnie dodano %d rekordów."
 
-#: lib/Application/Controller/AddRecordController.php:450
+#: lib/Application/Controller/AddRecordController.php:480
+#, auto-english-fallback
+#, php-format
+msgid "%d matching record(s) were also created."
+msgstr "%d matching record(s) were also created."
+
+#: lib/Application/Controller/AddRecordController.php:483
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Nie udało się dodać %d rekordów."
 
-#: lib/Application/Controller/AddRecordController.php:455
+#: lib/Application/Controller/AddRecordController.php:488
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2173,24 +2180,24 @@ msgstr ""
 "Niektóre rekordy nie mogły zostać dodane. Mogą już istnieć lub zawierać "
 "nieprawidłowe dane."
 
-#: lib/Application/Controller/AddRecordController.php:481
+#: lib/Application/Controller/AddRecordController.php:514
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Nie udało się dodać żadnych rekordów. Mogą zawierać nieprawidłowe dane."
 
-#: lib/Application/Controller/DeleteDomainsController.php:75
+#: lib/Application/Controller/DeleteDomainsController.php:76
 msgid "No zone selected for deletion."
 msgstr "Nie wybrano strefy do usunięcia."
 
-#: lib/Application/Controller/DeleteDomainController.php:137
+#: lib/Application/Controller/DeleteDomainController.php:138
 msgid "Zone has been deleted successfully."
 msgstr "Strefa została pomyślnie usunięta."
 
-#: lib/Application/Controller/DeleteDomainsController.php:152
+#: lib/Application/Controller/DeleteDomainsController.php:153
 msgid "Zones have been deleted successfully."
 msgstr "Strefy zostały pomyślnie usunięte."
 
-#: lib/Domain/Service/Dns/DomainManager.php:530
+#: lib/Domain/Service/Dns/DomainManager.php:529
 msgid "You do not have the permission to delete a zone."
 msgstr "Nie masz uprawnień do usunięcia strefy."
 
@@ -2202,7 +2209,7 @@ msgstr "Nie masz uprawnień do edycji rekordów szablonu strefy."
 msgid "OIDC authentication is not enabled"
 msgstr "Uwierzytelnianie OIDC nie jest włączone"
 
-#: lib/Application/Service/SamlService.php:379
+#: lib/Application/Service/SamlService.php:386
 msgid "Authentication failed: "
 msgstr "Uwierzytelnianie nie powiodło się: "
 
@@ -2230,24 +2237,24 @@ msgstr "Nie udało się zainicjować uwierzytelniania OIDC: "
 msgid "Group Logs"
 msgstr "Logi grupy"
 
-#: lib/Domain/Service/Dns/DomainManager.php:234
+#: lib/Domain/Service/Dns/DomainManager.php:233
 msgid "You do not have the permission to add a master zone."
 msgstr "Nie masz uprawnień do dodawania strefy głównej."
 
-#: lib/Application/Controller/AddZoneMasterController.php:68
+#: lib/Application/Controller/AddZoneMasterController.php:69
 msgid "Add Primary Zone"
 msgstr "Dodaj strefę główną"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:116
+#: lib/Application/Controller/AddZoneSlaveController.php:117
 msgid "At least one user or group must be selected as owner."
 msgstr ""
 "Przynajmniej jeden użytkownik lub grupa musi być wybrany jako właściciel."
 
-#: lib/Application/Controller/BulkRegistrationController.php:107
+#: lib/Application/Controller/BulkRegistrationController.php:108
 msgid "There is already a zone with this name."
 msgstr "Istnieje już strefa o tej nazwie."
 
-#: lib/Application/Controller/AddZoneMasterController.php:170
+#: lib/Application/Controller/AddZoneMasterController.php:171
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2255,7 +2262,7 @@ msgstr ""
 "Strefa została utworzona, ale podpisywanie DNSSEC zostało pominięte z powodu "
 "błędów walidacji:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:182
+#: lib/Application/Controller/AddZoneMasterController.php:183
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2264,11 +2271,11 @@ msgstr ""
 "Walidacja strefy przeszła pomyślnie, ale PowerDNS API zwróciło błąd. Sprawdź "
 "logi PowerDNS, aby uzyskać szczegóły."
 
-#: lib/Application/Controller/AddZoneMasterController.php:188
+#: lib/Application/Controller/AddZoneMasterController.php:189
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Strefa została utworzona i podpisana DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:191
+#: lib/Application/Controller/AddZoneMasterController.php:192
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2276,24 +2283,24 @@ msgstr ""
 "Strefa została utworzona i zażądano podpisania, ale weryfikacja nie powiodła "
 "się. Sprawdź klucze DNSSEC."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:155
+#: lib/Application/Controller/AddZoneSlaveController.php:156
 msgid "Zone has been added successfully."
 msgstr "Strefa została pomyślnie dodana."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:71
+#: lib/Application/Controller/BatchPtrRecordController.php:72
 msgid "Batch PTR record creation is not enabled."
 msgstr "Tworzenie pakietowych rekordów PTR nie jest włączone."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:78
+#: lib/Application/Controller/BatchPtrRecordController.php:79
 msgid "You do not have permission to edit DNS records."
 msgstr "Nie masz uprawnień do edycji rekordów DNS."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:83
+#: lib/Application/Controller/BatchPtrRecordController.php:84
 #: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:147
 msgid "Batch PTR Records"
 msgstr "Zbiorcze rekordy PTR"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:98
+#: lib/Application/Controller/BatchPtrRecordController.php:99
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr ""
 "Tworzenie pakietowych rekordów PTR nie jest dostępne dla stref odwrotnych."
@@ -2367,16 +2374,16 @@ msgstr "Nieprawidłowy dostawca SAML"
 msgid "SAML authentication failed: "
 msgstr "Uwierzytelnianie SAML nie powiodło się: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:59
+#: lib/Application/Controller/ListForwardZonesController.php:61
 msgid "You do not have sufficient permissions to view this page."
 msgstr "Nie masz wystarczających uprawnień do przeglądania tej strony."
 
-#: lib/Application/Controller/ListReverseZonesController.php:80
+#: lib/Application/Controller/ListReverseZonesController.php:82
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
 msgstr "Strefy odwrotne"
 
-#: lib/Application/Controller/ListForwardZonesController.php:141
+#: lib/Application/Controller/ListForwardZonesController.php:168
 msgid "You do not have the permission to see any zones."
 msgstr "Nie masz uprawnień do przeglądania żadnych stref."
 
@@ -2534,11 +2541,11 @@ msgstr "Nieprawidłowy identyfikator użytkownika lub grupy."
 msgid "User removed from group successfully."
 msgstr "Użytkownik usunięty z grupy."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:59
+#: lib/Application/Controller/AddZoneSlaveController.php:60
 msgid "You do not have the permission to add a slave zone."
 msgstr "Nie masz uprawnień do dodawania strefy podrzędnej."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:63
+#: lib/Application/Controller/AddZoneSlaveController.php:64
 msgid "Add Secondary Zone"
 msgstr "Dodaj strefę podrzędną"
 
@@ -2586,7 +2593,7 @@ msgstr "Strefa usunięta z grupy."
 msgid "Zone was not owned by this group."
 msgstr "Strefa nie należała do tej grupy."
 
-#: lib/Application/Controller/ListForwardZonesController.php:63
+#: lib/Application/Controller/ListForwardZonesController.php:65
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Strefy wprost"
@@ -2651,7 +2658,8 @@ msgstr[0] ""
 msgstr[1] ""
 "Nie udało się dodać użytkownika do %d grup (już jest członkiem lub grupy nie "
 "zostały znalezione)."
-msgstr[2] "Failed to add user to %d groups (already a member or groups not found)."
+msgstr[2] ""
+"Failed to add user to %d groups (already a member or groups not found)."
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 msgid "You do not have the permission to delete permission templates."
@@ -2709,23 +2717,23 @@ msgstr "Zostałeś wylogowany"
 msgid "Logout completed (with warnings): "
 msgstr "Wylogowanie zakończone (z ostrzeżeniami): "
 
-#: lib/Application/Controller/EditRecordController.php:100
+#: lib/Application/Controller/EditRecordController.php:101
 msgid "You do not have permission to view this record."
 msgstr "Nie masz uprawnień do przeglądania tego rekordu."
 
-#: lib/Application/Controller/EditRecordController.php:109
+#: lib/Application/Controller/EditRecordController.php:110
 msgid "You cannot edit records in a SLAVE zone."
 msgstr "Nie możesz edytować rekordów w strefie SLAVE."
 
-#: lib/Application/Controller/EditRecordController.php:119
+#: lib/Application/Controller/EditRecordController.php:120
 msgid "You do not have permission to edit this record."
 msgstr "Nie masz uprawnień do edycji tego rekordu."
 
-#: lib/Application/Controller/EditRecordController.php:228
+#: lib/Application/Controller/EditRecordController.php:237
 msgid "Failed to retrieve updated record information."
 msgstr "Nie udało się pobrać zaktualizowanych informacji o rekordzie."
 
-#: lib/Application/Controller/EditRecordController.php:307
+#: lib/Application/Controller/EditRecordController.php:316
 msgid "The record has been updated successfully."
 msgstr "Rekord został pomyślnie zaktualizowany."
 
@@ -2832,16 +2840,16 @@ msgstr "Supermaster nie istnieje."
 msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster został pomyślnie usunięty."
 
-#: lib/Application/Controller/BulkRegistrationController.php:61
+#: lib/Application/Controller/BulkRegistrationController.php:62
 #: templates/modern/index.html:169 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "Rejestracja zbiorcza"
 
-#: lib/Application/Controller/BulkRegistrationController.php:122
+#: lib/Application/Controller/BulkRegistrationController.php:123
 msgid "Zones has been added successfully."
 msgstr "Strefy zostały pomyślnie dodane."
 
-#: lib/Application/Controller/BulkRegistrationController.php:125
+#: lib/Application/Controller/BulkRegistrationController.php:126
 msgid "Some zone(s) could not be added."
 msgstr "Niektóre strefy nie mogły zostać dodane."
 
@@ -2866,7 +2874,7 @@ msgid "Group has been removed successfully."
 msgstr "Grupa została usunięta."
 
 #: lib/Application/Controller/NotFoundController.php:53
-#: templates/default/404.html:14 templates/modern/404.html:14
+#: templates/default/404.html:11 templates/modern/404.html:11
 msgid "Page Not Found"
 msgstr "Strona nie została znaleziona"
 
@@ -2909,7 +2917,7 @@ msgstr "Konto użytkownika jest wyłączone."
 msgid "Authentication failed!"
 msgstr "Uwierzytelnienie nie powiodło się!"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:188
+#: lib/Infrastructure/Service/SessionAuthenticator.php:189
 msgid "Session expired, please login again."
 msgstr "Sesja wygasła, zaloguj się ponownie."
 
@@ -2917,19 +2925,19 @@ msgstr "Sesja wygasła, zaloguj się ponownie."
 msgid "Failed to update password"
 msgstr "Nie udało się zaktualizować hasła"
 
-#: lib/Application/Service/OidcService.php:180
+#: lib/Application/Service/OidcService.php:182
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Uwierzytelnianie nie powiodło się: Nieprawidłowy parametr stanu"
 
-#: lib/Application/Service/OidcService.php:201
+#: lib/Application/Service/OidcService.php:203
 msgid "Authentication failed: No authorization code"
 msgstr "Uwierzytelnianie nie powiodło się: Brak kodu autoryzacji"
 
-#: lib/Application/Service/SamlService.php:185
+#: lib/Application/Service/SamlService.php:187
 msgid "Authentication failed: Invalid session"
 msgstr "Uwierzytelnianie nie powiodło się: Nieprawidłowa sesja"
 
-#: lib/Application/Service/SamlService.php:339
+#: lib/Application/Service/SamlService.php:346
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Uwierzytelnianie nie powiodło się: Nie można utworzyć lub zaktualizować "
@@ -2955,16 +2963,16 @@ msgstr "Nie udało się przeszukać LDAP."
 msgid "Failed to authenticate against LDAP."
 msgstr "Nie udało się uwierzytelnić w LDAP."
 
-#: lib/Application/Service/SamlService.php:243
+#: lib/Application/Service/SamlService.php:245
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Uwierzytelnianie nie powiodło się: Nieprawidłowa odpowiedź SAML"
 
-#: lib/Application/Query/RecordSearch.php:197 templates/modern/edit.html:415
+#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:422
 #: templates/modern/users.html:185
 msgid "Yes"
 msgstr "Tak"
 
-#: lib/Application/Query/RecordSearch.php:197 templates/modern/edit.html:415
+#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:422
 #: templates/modern/users.html:187
 msgid "No"
 msgstr "Nie"
@@ -2983,20 +2991,20 @@ msgstr "Ten szablon jest przypisany do co najmniej jednego użytkownika."
 msgid "This template is assigned to at least one group."
 msgstr "Ten szablon jest przypisany do przynajmniej jednej grupy."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:153
+#: lib/Infrastructure/Service/SessionAuthenticator.php:154
 #: templates/default/login.html:143 templates/modern/login.html:143
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "Weryfikacja reCAPTCHA nie powiodła się. Spróbuj ponownie."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:176
+#: lib/Infrastructure/Service/SessionAuthenticator.php:177
 msgid "An empty password is not allowed"
 msgstr "Puste hasło nie jest dozwolone"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:216
+#: lib/Infrastructure/Service/SessionAuthenticator.php:217
 msgid "LDAP authentication is disabled"
 msgstr "Uwierzytelnianie LDAP jest wyłączone"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:400
+#: lib/Infrastructure/Service/SessionAuthenticator.php:403
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
@@ -3064,35 +3072,35 @@ msgstr "Błąd usuwania rekordu szablonu strefy: "
 msgid "Error checking template ownership: "
 msgstr "Błąd sprawdzania własności szablonu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:728
+#: lib/Domain/Model/ZoneTemplate.php:728 lib/Domain/Model/ZoneTemplate.php:776
 msgid "Error retrieving zones using template: "
 msgstr "Błąd pobierania stref używających szablonu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:782
+#: lib/Domain/Model/ZoneTemplate.php:830
 msgid "Failed to get list of zones using template: "
 msgstr "Nie udało się pobrać listy stref używających szablonu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:800
+#: lib/Domain/Model/ZoneTemplate.php:848
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nie masz uprawnień do edycji szablonu strefy."
 
-#: lib/Domain/Model/ZoneTemplate.php:844
+#: lib/Domain/Model/ZoneTemplate.php:892
 msgid "Error unlinking zone from template: "
 msgstr "Błąd odłączania strefy od szablonu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:872
+#: lib/Domain/Model/ZoneTemplate.php:920
 msgid "Error retrieving zones: "
 msgstr "Błąd pobierania stref: "
 
-#: lib/Domain/Model/ZoneTemplate.php:891
+#: lib/Domain/Model/ZoneTemplate.php:939
 msgid "Error checking template name existence: "
 msgstr "Błąd sprawdzania istnienia nazwy szablonu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:912
+#: lib/Domain/Model/ZoneTemplate.php:960
 msgid "Error looking up template by name: "
 msgstr "Błąd wyszukiwania szablonu według nazwy: "
 
-#: lib/Domain/Model/ZoneTemplate.php:935
+#: lib/Domain/Model/ZoneTemplate.php:983
 msgid "Error checking template existence: "
 msgstr "Błąd sprawdzania istnienia szablonu: "
 
@@ -8556,11 +8564,11 @@ msgstr ""
 "Dodawanie rekordów domen IPv6 ze stref odwrotnych nie jest jeszcze "
 "obsługiwane."
 
-#: lib/Domain/Service/DomainRecordCreator.php:112
+#: lib/Domain/Service/DomainRecordCreator.php:114
 msgid "This domain record was not valid and could not be added."
 msgstr "Ten rekord domeny był nieprawidłowy i nie mógł zostać dodany."
 
-#: lib/Domain/Service/DomainRecordCreator.php:108
+#: lib/Domain/Service/DomainRecordCreator.php:110
 msgid "The domain record was successfully added."
 msgstr "Rekord domeny został pomyślnie dodany."
 
@@ -8669,17 +8677,17 @@ msgstr "Znaleziono następujące ostrzeżenia:"
 msgid "Unknown database type."
 msgstr "Nieznany typ bazy danych."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:69
+#: lib/Domain/Service/ReverseRecordCreator.php:70
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "Nie ma pasującej strefy odwrotnej dla: %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:77
+#: lib/Domain/Service/ReverseRecordCreator.php:78
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "Rekord PTR dla %s wskazujący na %s już istnieje."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:91
+#: lib/Domain/Service/ReverseRecordCreator.php:92
 #, php-format
 msgid ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
@@ -8717,7 +8725,7 @@ msgstr "Nie masz uprawnień do usuwania rekordów SOA."
 msgid "You do not have the permission to delete NS records."
 msgstr "Nie masz uprawnień do usuwania rekordów NS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:465
+#: lib/Domain/Service/Dns/DomainManager.php:464
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Nieprawidłowy argument(y) przekazane do funkcji %s %s"
@@ -8726,17 +8734,17 @@ msgstr "Nieprawidłowy argument(y) przekazane do funkcji %s %s"
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "Już istnieje supermaster z tym adresem IP i nazwą hosta."
 
-#: lib/Domain/Service/Dns/DomainManager.php:226
+#: lib/Domain/Service/Dns/DomainManager.php:225
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "Nie udało się utworzyć strefy: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:230
+#: lib/Domain/Service/Dns/DomainManager.php:229
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Nieprawidłowy argument(y) przekazane do funkcji %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:428
+#: lib/Domain/Service/Dns/DomainManager.php:427
 msgid "The selected user already owns the zone."
 msgstr "Wybrany użytkownik już jest właścicielem strefy."
 
@@ -9029,7 +9037,7 @@ msgstr "Zawartość"
 msgid "Provide content for your zone record"
 msgstr "Podaj zawartość dla Twojego rekordu strefy"
 
-#: templates/modern/add_record.html:93
+#: templates/modern/add_record.html:104 templates/modern/add_record.html:156
 msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
 "and may cause issues. SOA and NS records are required at the domain root and "
@@ -9054,7 +9062,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Zaktualizuj rekord"
 
-#: templates/modern/edit.html:510 templates/modern/users.html:211
+#: templates/modern/edit.html:517 templates/modern/users.html:211
 msgid "Reset"
 msgstr "Resetuj"
 
@@ -9198,7 +9206,7 @@ msgstr "Konto"
 msgid "Select the account that will own this supermaster"
 msgstr "Wybierz konto, które będzie właścicielem tego supermastera"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:507
+#: templates/modern/edit.html:190 templates/modern/edit.html:514
 msgid "Save changes"
 msgstr "Zapisz zmiany"
 
@@ -9381,19 +9389,19 @@ msgstr "Edytuj rekord w strefie"
 msgid "Modify DNS record properties"
 msgstr "Modyfikuj właściwości rekordu DNS"
 
-#: templates/modern/add_record.html:58
+#: templates/modern/add_record.html:69
 msgid "Comment"
 msgstr "Komentarz"
 
-#: templates/modern/edit_record.html:92 templates/modern/add_record.html:83
+#: templates/modern/add_record.html:94 templates/modern/add_record.html:146
 msgid "deprecated"
 msgstr "przestarzały"
 
-#: templates/modern/edit.html:657 templates/modern/add_record.html:91
+#: templates/modern/add_record.html:102 templates/modern/add_record.html:154
 msgid "Provide content"
 msgstr "Podaj zawartość"
 
-#: templates/modern/edit_record.html:109 templates/modern/add_record.html:96
+#: templates/modern/add_record.html:107 templates/modern/add_record.html:159
 msgid "This record type is deprecated and should not be used for new records."
 msgstr ""
 "Ten typ rekordu jest przestarzały i nie powinien być używany do nowych "
@@ -9458,7 +9466,7 @@ msgstr "Usuń"
 msgid "and"
 msgstr "i"
 
-#: templates/modern/list_forward_zones.html:169
+#: templates/modern/list_forward_zones.html:165
 msgid "more..."
 msgstr "więcej..."
 
@@ -9797,7 +9805,7 @@ msgstr "Sprawdź bazę danych"
 msgid "Check DB"
 msgstr "Sprawdź BD"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:495
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:502
 msgid "Edit comment"
 msgstr "Edytuj komentarz"
 
@@ -9973,7 +9981,7 @@ msgstr ""
 msgid "Add Records"
 msgstr "Dodaj rekordy"
 
-#: templates/modern/bulk_registration.html:104
+#: templates/modern/bulk_record_add.html:73
 msgid "Instructions"
 msgstr "Instrukcje"
 
@@ -10106,7 +10114,7 @@ msgstr "Tak, usuń tego użytkownika"
 msgid "No, keep this user"
 msgstr "Nie, zachowaj tego użytkownika"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:213
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:220
 msgid "Save as Template"
 msgstr "Zapisz jako szablon"
 
@@ -10404,7 +10412,7 @@ msgstr "Numer seryjny"
 msgid "Template"
 msgstr "Szablon"
 
-#: templates/modern/list_reverse_zones.html:228
+#: templates/modern/list_reverse_zones.html:224
 msgid "-"
 msgstr "—"
 
@@ -10816,31 +10824,31 @@ msgstr "Uprawnienia szablonu"
 msgid "Other Permissions"
 msgstr "Inne uprawnienia"
 
-#: templates/default/404.html:19 templates/modern/404.html:19
+#: templates/default/404.html:15 templates/modern/404.html:15
 msgid "The page you are looking for does not exist."
 msgstr "Strona, której szukasz, nie istnieje."
 
-#: templates/default/404.html:22 templates/modern/404.html:22
+#: templates/default/404.html:18 templates/modern/404.html:18
 msgid "This could be because:"
 msgstr "Może to być spowodowane:"
 
-#: templates/default/404.html:26 templates/modern/404.html:26
+#: templates/default/404.html:22 templates/modern/404.html:22
 msgid "The URL is incorrect or has been mistyped"
 msgstr "URL jest nieprawidłowy lub został błędnie wpisany"
 
-#: templates/default/404.html:30 templates/modern/404.html:30
+#: templates/default/404.html:26 templates/modern/404.html:26
 msgid "The page has been moved or deleted"
 msgstr "Strona została przeniesiona lub usunięta"
 
-#: templates/default/404.html:34 templates/modern/404.html:34
+#: templates/default/404.html:30 templates/modern/404.html:30
 msgid "You do not have permission to access this page"
 msgstr "Nie masz uprawnień do dostępu do tej strony"
 
-#: templates/default/404.html:45 templates/modern/404.html:45
+#: templates/default/404.html:40 templates/modern/404.html:40
 msgid "Go to Homepage"
 msgstr "Przejdź do strony głównej"
 
-#: templates/default/404.html:49 templates/modern/404.html:49
+#: templates/default/404.html:44 templates/modern/404.html:44
 msgid "Go Back"
 msgstr "Wróć"
 
@@ -10938,52 +10946,52 @@ msgstr "Prefiks sieci"
 msgid "Select from existing reverse zones"
 msgstr "Wybierz z istniejących stref odwrotnych"
 
-#: templates/modern/batch_ptr_record.html:65
+#: templates/modern/batch_ptr_record.html:67
 msgid "Please provide a network prefix"
 msgstr "Proszę podać prefiks sieci"
 
-#: templates/modern/batch_ptr_record.html:66
+#: templates/modern/batch_ptr_record.html:68
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
 msgstr "np. \"192.168.1.0/24\" lub \"10.0.0.0/20\""
 
-#: templates/modern/batch_ptr_record.html:67
+#: templates/modern/batch_ptr_record.html:69
 msgid "e.g., \"2001:db8:1:1\""
 msgstr "np. \"2001:db8:1:1\""
 
-#: templates/modern/batch_ptr_record.html:71
+#: templates/modern/batch_ptr_record.html:73
 msgid "Host Prefix"
 msgstr "Prefiks hosta"
 
-#: templates/modern/batch_ptr_record.html:71
+#: templates/modern/batch_ptr_record.html:73
 #: install/templates/step4.html.twig:133
 msgid "Optional"
 msgstr "Opcjonalne"
 
-#: templates/modern/batch_ptr_record.html:73
+#: templates/modern/batch_ptr_record.html:75
 msgid "Leave empty to use just the domain for PTR records"
 msgstr "Pozostaw puste, aby używać tylko domeny dla rekordów PTR"
 
-#: templates/modern/batch_ptr_record.html:79
+#: templates/modern/batch_ptr_record.html:81
 msgid "Required"
 msgstr "Wymagane"
 
-#: templates/modern/batch_ptr_record.html:83
+#: templates/modern/batch_ptr_record.html:85
 msgid "IPv6 Count"
 msgstr "Liczba IPv6"
 
-#: templates/modern/batch_ptr_record.html:88
+#: templates/modern/batch_ptr_record.html:90
 msgid "Using default TTL value from configuration"
 msgstr "Używanie domyślnej wartości TTL z konfiguracji"
 
-#: templates/modern/batch_ptr_record.html:100
+#: templates/modern/batch_ptr_record.html:102
 msgid "Create forward A/AAAA records in primary zone"
 msgstr "Utwórz rekordy A/AAAA w strefie głównej"
 
-#: templates/modern/batch_ptr_record.html:105
+#: templates/modern/batch_ptr_record.html:107
 msgid "Create PTRs only for existing A records in forward zone"
 msgstr "Utwórz PTR tylko dla istniejących rekordów A w strefie głównej"
 
-#: templates/modern/batch_ptr_record.html:106
+#: templates/modern/batch_ptr_record.html:108
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A records in the specified domain"
@@ -10991,11 +10999,11 @@ msgstr ""
 "Gdy zaznaczone, rekordy PTR będą tworzone tylko dla IP, które mają "
 "odpowiadające rekordy A w określonej domenie"
 
-#: templates/modern/batch_ptr_record.html:112
+#: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
 msgstr "Utwórz rekordy PTR"
 
-#: templates/modern/batch_ptr_record.html:134
+#: templates/modern/batch_ptr_record.html:136
 msgid "PTR Record Information"
 msgstr "Informacje o rekordzie PTR"
 
@@ -11003,23 +11011,23 @@ msgstr "Informacje o rekordzie PTR"
 msgid "Important Information"
 msgstr "Ważne informacje"
 
-#: templates/modern/batch_ptr_record.html:140
+#: templates/modern/batch_ptr_record.html:142
 msgid "This tool creates PTR records in bulk. Two modes are available:"
 msgstr "To narzędzie tworzy rekordy PTR zbiorczo. Dostępne są dwa tryby:"
 
-#: templates/modern/batch_ptr_record.html:142
+#: templates/modern/batch_ptr_record.html:144
 msgid "All IPs"
 msgstr "Wszystkie IP"
 
-#: templates/modern/batch_ptr_record.html:142
+#: templates/modern/batch_ptr_record.html:144
 msgid "Creates PTR records for every IP in the network range"
 msgstr "Tworzy rekordy PTR dla każdego IP w zakresie sieciowym"
 
-#: templates/modern/batch_ptr_record.html:143
+#: templates/modern/batch_ptr_record.html:145
 msgid "Matching only"
 msgstr "Tylko dopasowane"
 
-#: templates/modern/batch_ptr_record.html:143
+#: templates/modern/batch_ptr_record.html:145
 msgid ""
 "Creates PTR records only for IPs that have existing A records in the forward "
 "zone"
@@ -11027,7 +11035,7 @@ msgstr ""
 "Tworzy rekordy PTR tylko dla IP, które mają istniejące rekordy A w strefie "
 "głównej"
 
-#: templates/modern/batch_ptr_record.html:145
+#: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
 msgstr "Dla IPv4 obsługiwane sieci to:"
 
@@ -11035,7 +11043,7 @@ msgstr "Dla IPv4 obsługiwane sieci to:"
 msgid "Requirements"
 msgstr "Wymagania"
 
-#: templates/modern/batch_ptr_record.html:162
+#: templates/modern/batch_ptr_record.html:164
 msgid ""
 "You must have the appropriate reverse zone already created in PowerDNS "
 "before using this feature."
@@ -11043,11 +11051,11 @@ msgstr ""
 "Musisz mieć odpowiednią strefę odwrotną już utworzoną w PowerDNS przed "
 "użyciem tej funkcji."
 
-#: templates/modern/batch_ptr_record.html:163
+#: templates/modern/batch_ptr_record.html:165
 msgid "For example:"
 msgstr "Na przykład:"
 
-#: templates/modern/batch_ptr_record.html:165
+#: templates/modern/batch_ptr_record.html:167
 msgid ""
 "For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-"
 "addr.arpa"
@@ -11055,7 +11063,7 @@ msgstr ""
 "Dla sieci 192.168.1.0/24 potrzebujesz strefy odwrotnej dla 1.168.192.in-"
 "addr.arpa"
 
-#: templates/modern/batch_ptr_record.html:166
+#: templates/modern/batch_ptr_record.html:168
 msgid ""
 "For larger networks, you will need the corresponding reverse zones (e.g., "
 "168.192.in-addr.arpa for a /16 network)"
@@ -11063,11 +11071,11 @@ msgstr ""
 "Dla większych sieci będziesz potrzebować odpowiednich stref odwrotnych (np. "
 "168.192.in-addr.arpa dla sieci /16)"
 
-#: templates/modern/batch_ptr_record.html:175
+#: templates/modern/batch_ptr_record.html:177
 msgid "Quick Tips"
 msgstr "Szybkie wskazówki"
 
-#: templates/modern/batch_ptr_record.html:181
+#: templates/modern/batch_ptr_record.html:183
 msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
@@ -11075,7 +11083,7 @@ msgstr ""
 "Użyj przycisku rozwijanego obok Prefiksu sieci, aby wybrać z istniejących "
 "stref odwrotnych"
 
-#: templates/modern/batch_ptr_record.html:182
+#: templates/modern/batch_ptr_record.html:184
 msgid ""
 "Use \"Create PTRs only for existing A records\" to populate PTRs based on "
 "your forward zone"
@@ -11083,7 +11091,7 @@ msgstr ""
 "Użyj \"Utwórz PTR tylko dla istniejących rekordów A\", aby wypełnić PTR na "
 "podstawie twojej strefy głównej"
 
-#: templates/modern/batch_ptr_record.html:183
+#: templates/modern/batch_ptr_record.html:185
 msgid ""
 "Use the Host Prefix field to add a prefix to all hostnames when creating all "
 "IPs"
@@ -11091,7 +11099,7 @@ msgstr ""
 "Użyj pola Prefiks hosta, aby dodać prefiks do wszystkich nazw hostów podczas "
 "tworzenia wszystkich IP"
 
-#: templates/modern/batch_ptr_record.html:184
+#: templates/modern/batch_ptr_record.html:186
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
@@ -11099,7 +11107,7 @@ msgstr ""
 "Zaznacz \"Utwórz rekordy A/AAAA\", aby automatycznie utworzyć dopasowane "
 "rekordy główne (wyłączone w trybie dopasowania)"
 
-#: templates/modern/zone-ownership.html:6 templates/modern/edit.html:209
+#: templates/modern/zone-ownership.html:6 templates/modern/edit.html:216
 msgid "Ownership"
 msgstr "Własność"
 
@@ -11244,71 +11252,71 @@ msgstr "Jeśli zgubisz klucz, będziesz musiał go wygenerować ponownie."
 msgid "Edit"
 msgstr "Edytuj"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:558
+#: templates/modern/edit.html:25 templates/modern/edit.html:565
 msgid "Add new record"
 msgstr "Dodaj nowy rekord"
 
-#: templates/modern/edit.html:29 templates/modern/edit.html:562
+#: templates/modern/edit.html:203 templates/modern/edit.html:569
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Przewodniki kreatorów dla rekordów DMARC, SPF, DKIM, CAA, TLSA i SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:568
+#: templates/modern/edit.html:35 templates/modern/edit.html:575
 msgid "Multi-record mode"
 msgstr "Tryb wielu rekordów"
 
-#: templates/modern/edit.html:516 templates/modern/edit.html:571
+#: templates/modern/edit.html:523 templates/modern/edit.html:578
 msgid "Bulk add"
 msgstr "Dodaj zbiorczo"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:583
+#: templates/modern/edit.html:50 templates/modern/edit.html:590
 msgid "Failed to add"
 msgstr "Nie udało się dodać"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:583
+#: templates/modern/edit.html:50 templates/modern/edit.html:590
 msgid "record(s). Please check the record format."
 msgstr "rekordów. Proszę sprawdzić format rekordu."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:585
+#: templates/modern/edit.html:52 templates/modern/edit.html:592
 msgid "Failed to add records. Please check the record format."
 msgstr "Nie udało się dodać rekordów. Proszę sprawdzić format rekordu."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:588
+#: templates/modern/edit.html:55 templates/modern/edit.html:595
 msgid "Content validation failed:"
 msgstr "Walidacja zawartości nie powiodła się:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:588
+#: templates/modern/edit.html:55 templates/modern/edit.html:595
 msgid "Invalid value for record type"
 msgstr "Nieprawidłowa wartość dla typu rekordu"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:590
+#: templates/modern/edit.html:57 templates/modern/edit.html:597
 msgid "Please provide all required information."
 msgstr "Proszę podać wszystkie wymagane informacje."
 
-#: templates/modern/edit.html:613 templates/modern/add_record.html:61
+#: templates/modern/edit.html:620 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Dodaj PTR"
 
-#: templates/modern/edit.html:616 templates/modern/add_record.html:64
+#: templates/modern/edit.html:623 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Dodaj A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:655
+#: templates/modern/edit.html:121 templates/modern/edit.html:662
 msgid "This record already exists"
 msgstr "Ten rekord już istnieje"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:667
+#: templates/modern/edit.html:133 templates/modern/edit.html:674
 msgid "Invalid priority"
 msgstr "Nieprawidłowy priorytet"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:674
+#: templates/modern/edit.html:140 templates/modern/edit.html:681
 msgid "Invalid TTL value"
 msgstr "Nieprawidłowa wartość TTL"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:676
+#: templates/modern/edit.html:142 templates/modern/edit.html:683
 msgid "Provide TTL"
 msgstr "Podaj TTL"
 
-#: templates/modern/edit.html:702 templates/modern/add_record.html:142
+#: templates/modern/edit.html:709 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11320,91 +11328,91 @@ msgstr ""
 msgid "Edit zone"
 msgstr "Edytuj strefę"
 
-#: templates/default/edit.html:224 templates/modern/edit.html:224
+#: templates/default/edit.html:231 templates/modern/edit.html:231
 msgid "No records match your filter criteria."
 msgstr "Żadne rekordy nie spełniają kryteriów filtra."
 
-#: templates/default/edit.html:232 templates/modern/edit.html:232
+#: templates/default/edit.html:239 templates/modern/edit.html:239
 msgid "This zone does not have any records."
 msgstr "Ta strefa nie zawiera żadnych rekordów."
 
-#: templates/default/edit.html:244 templates/modern/edit.html:244
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "Filter:"
 msgstr "Filtr:"
 
-#: templates/default/edit.html:250 templates/modern/edit.html:250
+#: templates/default/edit.html:257 templates/modern/edit.html:257
 msgid "Search by name or content"
 msgstr "Szukaj według nazwy lub zawartości"
 
-#: templates/default/edit.html:256 templates/modern/edit.html:256
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "All Types"
 msgstr "Wszystkie typy"
 
-#: templates/default/edit.html:266 templates/modern/edit.html:266
+#: templates/default/edit.html:273 templates/modern/edit.html:273
 msgid "Filter by content"
 msgstr "Filtruj według zawartości"
 
-#: templates/default/edit.html:272 templates/modern/edit.html:272
+#: templates/default/edit.html:279 templates/modern/edit.html:279
 msgid "Apply"
 msgstr "Zastosuj"
 
-#: templates/default/edit.html:308 templates/modern/edit.html:308
+#: templates/default/edit.html:315 templates/modern/edit.html:315
 msgid "Showing"
 msgstr "Wyświetlanie"
 
-#: templates/default/edit.html:308 templates/modern/edit.html:308
+#: templates/default/edit.html:315 templates/modern/edit.html:315
 msgid "of"
 msgstr "z"
 
-#: templates/default/edit.html:308 templates/modern/edit.html:308
+#: templates/default/edit.html:315 templates/modern/edit.html:315
 msgid "total records"
 msgstr "rekordów łącznie"
 
-#: templates/default/edit.html:478 templates/modern/edit.html:478
+#: templates/default/edit.html:485 templates/modern/edit.html:485
 msgid "Edit selected"
 msgstr "Edytuj wybrane"
 
-#: templates/modern/edit.html:482 templates/modern/search.html:486
+#: templates/modern/edit.html:489 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Usuń rekord(y)"
 
-#: templates/modern/edit.html:490 templates/modern/search.html:93
+#: templates/modern/edit.html:497 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentarze"
 
-#: templates/default/edit.html:520 templates/modern/edit.html:520
+#: templates/default/edit.html:527 templates/modern/edit.html:527
 msgid "Import"
 msgstr "Importuj"
 
-#: templates/default/edit.html:526 templates/modern/edit.html:526
+#: templates/default/edit.html:533 templates/modern/edit.html:533
 msgid "Export"
 msgstr "Eksportuj"
 
-#: templates/default/edit.html:537 templates/modern/edit.html:537
+#: templates/default/edit.html:544 templates/modern/edit.html:544
 msgid "Generate PTR"
 msgstr "Generuj PTR"
 
-#: templates/modern/edit.html:716 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:723 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Konfiguracja strefy"
 
-#: templates/modern/edit.html:756 templates/modern/edit.html:785
+#: templates/modern/edit.html:763 templates/modern/edit.html:792
 msgid "Change"
 msgstr "Zmień"
 
-#: templates/modern/edit.html:749 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:756 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "Adres IP serwera głównego NS"
 
-#: templates/default/edit.html:806 templates/modern/edit.html:806
+#: templates/default/edit.html:813 templates/modern/edit.html:813
 msgid "Manage DNSSEC"
 msgstr "Zarządzaj DNSSEC"
 
-#: templates/default/edit.html:813 templates/modern/edit.html:813
+#: templates/default/edit.html:820 templates/modern/edit.html:820
 msgid "Sign zone"
 msgstr "Podpisz strefę"
 
-#: templates/default/edit.html:817 templates/modern/edit.html:817
+#: templates/default/edit.html:824 templates/modern/edit.html:824
 msgid "Not signed"
 msgstr "Nie podpisane"
 
@@ -11456,7 +11464,7 @@ msgstr "Łączna liczba stref:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Brak stref przesyłania do wyświetlenia w tym wykazie."
 
-#: templates/modern/list_forward_zones.html:217
+#: templates/modern/list_forward_zones.html:213
 msgid "PTR"
 msgstr "PTR"
 
@@ -12059,64 +12067,43 @@ msgid "Add Zones"
 msgstr "Dodaj strefy"
 
 #: templates/modern/bulk_registration.html:99
-msgid "About Bulk Registration"
-msgstr "O rejestracji masowej"
+#, auto-english-fallback
+msgid "After Creation"
+msgstr "Po utworzeniu"
+
+#: templates/modern/bulk_registration.html:104
+#, auto-english-fallback
+msgid "Assign zones to a group"
+msgstr "Przypisz strefy do grupy"
 
 #: templates/modern/bulk_registration.html:105
-msgid "This tool allows you to create multiple DNS zones at once."
-msgstr "To narzędzie pozwala na utworzenie wielu stref DNS jednocześnie."
+msgid ""
+"Bulk registration assigns ownership to a single user. To share access with a "
+"group, open the group and add the newly created zones."
+msgstr ""
+"Rejestracja zbiorcza przypisuje własność do jednego użytkownika. Aby udostępnić dostęp grupie, otwórz grupę i dodaj nowo utworzone strefy."
 
 #: templates/modern/bulk_registration.html:107
-msgid "Enter one domain name per line in the Domains field"
-msgstr "Wprowadź jedną nazwę domeny w każdej linii w polu Domeny"
+#, auto-english-fallback
+msgid "Manage groups"
+msgstr "Zarządzaj grupami"
 
-#: templates/modern/bulk_registration.html:108
-msgid "Select a zone template to apply standard records to all zones"
-msgstr ""
-"Wybierz szablon strefy, aby zastosować standardowe rekordy do wszystkich "
-"stref"
-
-#: templates/modern/bulk_registration.html:109
-msgid "The chosen owner will have full access to all created zones"
-msgstr ""
-"Wybrany właściciel będzie miał pełny dostęp do wszystkich utworzonych stref"
+#: templates/modern/bulk_registration.html:112
+#, auto-english-fallback
+msgid "Change zone owner"
+msgstr "Zmień właściciela strefy"
 
 #: templates/modern/bulk_registration.html:113
-msgid "How It Works"
-msgstr "Jak to działa"
-
-#: templates/modern/bulk_registration.html:114
 msgid ""
-"The system will attempt to create each zone with the same settings. Failed "
-"domains will be displayed so you can correct any issues and try again."
+"You can transfer zone ownership to another user from the user list at any "
+"time."
 msgstr ""
-"System spróbuje utworzyć każdą strefę z tymi samymi ustawieniami. Nieudane "
-"domeny zostaną wyświetlone, abyś mógł poprawić wszelkie problemy i spróbować "
-"ponownie."
+"Własność strefy możesz w dowolnym momencie przenieść na innego użytkownika z listy użytkowników."
 
-#: templates/modern/bulk_registration.html:122
-msgid "Tips & Recommendations"
-msgstr "Wskazówki i zalecenia"
-
-#: templates/modern/bulk_registration.html:128
-msgid "Use NATIVE zone type for most standard setups"
-msgstr "Używaj typu strefy NATIVE dla większości standardowych konfiguracji"
-
-#: templates/modern/bulk_registration.html:129
-msgid "Create a template first if you need standard records for all zones"
-msgstr ""
-"Utwórz najpierw szablon, jeśli potrzebujesz standardowych rekordów dla "
-"wszystkich stref"
-
-#: templates/modern/bulk_registration.html:130
-msgid "You can copy and paste a list of domains from a spreadsheet"
-msgstr "Możesz skopiować i wkleić listę domen z arkusza kalkulacyjnego"
-
-#: templates/modern/bulk_registration.html:131
-msgid "Make sure the domain names follow valid DNS naming conventions"
-msgstr ""
-"Upewnij się, że nazwy domen przestrzegają prawidłowych konwencji nazewnictwa "
-"DNS"
+#: templates/modern/bulk_registration.html:115
+#, auto-english-fallback
+msgid "Manage users"
+msgstr "Zarządzaj użytkownikami"
 
 #: templates/modern/user_agreement.html:13
 msgid "User Agreement"
@@ -12989,15 +12976,20 @@ msgstr ""
 msgid "Add record to zone"
 msgstr "Dodaj rekord do strefy"
 
-#: templates/default/add_record.html:35 templates/modern/add_record.html:35
+#: templates/default/add_record.html:41 templates/modern/add_record.html:41
+#, auto-english-fallback
+msgid "Record could not be added. Please check the record data and try again."
+msgstr "Record could not be added. Please check the record data and try again."
+
+#: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
 msgstr "Utwórz nowy rekord DNS w tej strefie"
 
-#: templates/default/add_record.html:131 templates/modern/add_record.html:131
+#: templates/default/add_record.html:196 templates/modern/add_record.html:196
 msgid "Add another record"
 msgstr "Dodaj kolejny rekord"
 
-#: templates/default/add_record.html:146 templates/modern/add_record.html:146
+#: templates/default/add_record.html:211 templates/modern/add_record.html:211
 msgid "Add records"
 msgstr "Dodaj rekordy"
 
@@ -14154,3 +14146,57 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nie można połączyć się z bazą danych PowerDNS \"%s\": %s"
+
+# OBSOLETE: msgid "About Bulk Registration"
+# OBSOLETE: msgstr "O rejestracji masowej"
+
+# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
+# OBSOLETE: msgstr "To narzędzie pozwala na utworzenie wielu stref DNS jednocześnie."
+
+# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
+# OBSOLETE: msgstr "Wprowadź jedną nazwę domeny w każdej linii w polu Domeny"
+
+# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Wybierz szablon strefy, aby zastosować standardowe rekordy do wszystkich "
+# OBSOLETE: "stref"
+
+# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Wybrany właściciel będzie miał pełny dostęp do wszystkich utworzonych "
+# OBSOLETE: "stref"
+
+# OBSOLETE: msgid "How It Works"
+# OBSOLETE: msgstr "Jak to działa"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "The system will attempt to create each zone with the same settings. "
+# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
+# OBSOLETE: "again."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "System spróbuje utworzyć każdą strefę z tymi samymi ustawieniami. "
+# OBSOLETE: "Nieudane domeny zostaną wyświetlone, abyś mógł poprawić wszelkie problemy "
+# OBSOLETE: "i spróbować ponownie."
+
+# OBSOLETE: msgid "Tips & Recommendations"
+# OBSOLETE: msgstr "Wskazówki i zalecenia"
+
+# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
+# OBSOLETE: msgstr "Używaj typu strefy NATIVE dla większości standardowych konfiguracji"
+
+# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Utwórz najpierw szablon, jeśli potrzebujesz standardowych rekordów dla "
+# OBSOLETE: "wszystkich stref"
+
+# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
+# OBSOLETE: msgstr "Możesz skopiować i wkleić listę domen z arkusza kalkulacyjnego"
+
+# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Upewnij się, że nazwy domen przestrzegają prawidłowych konwencji "
+# OBSOLETE: "nazewnictwa DNS"
+
+
+
