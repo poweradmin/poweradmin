@@ -184,9 +184,11 @@
                     </thead>
                     <tbody>
                     {% for zone in found_zones %}
+                    {% set user_can_edit_zone = zone['user_can_edit']|default(false) %}
+                    {% set user_can_delete_zone = zone['user_can_delete']|default(false) %}
                     <tr>
                         <td>
-                            {% if delete_permission == 'all' or ((delete_permission == 'own' or delete_permission == 'own_as_client') and zone['user_id'] == user_id) %}
+                            {% if user_can_delete_zone %}
                             <input class="form-check-input" type="checkbox" name="zone_id[]" value="{{ zone['id'] }}">
                             {% endif %}
                         </td>
@@ -228,13 +230,13 @@
                                 </a>
                                 {% endfor %}
                                 {% endif %}
-                                {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and zone['user_id'] == user_id) %}
+                                {% if user_can_edit_zone %}
                                 <a class="btn btn-sm btn-outline-primary"
                                 href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/edit">
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 {% endif %}
-                                {% if delete_permission == 'all' or ((delete_permission == 'own' or delete_permission == 'own_as_client') and zone['user_id'] == user_id) %}
+                                {% if user_can_delete_zone %}
                                 <a class="btn btn-sm btn-outline-danger"
                                 href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/delete">
                                     <i class="bi bi-trash text-danger"></i>
@@ -396,9 +398,10 @@
                     </thead>
                     <tbody>
                     {% for record in found_records %}
+                    {% set user_can_edit_record = record['user_can_edit']|default(false) %}
                     <tr>
                         <td>
-                            {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and record['user_id'] == user_id) %}
+                            {% if user_can_edit_record %}
                             <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ record['id'] }}">
                             {% endif %}
                         </td>
@@ -412,7 +415,7 @@
                             <td>{{ record['comment'] }}</td>
                         {% endif %}
                         <td class="text-end">
-                            {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and record['user_id'] == user_id) %}
+                            {% if user_can_edit_record %}
                             <div class="d-flex gap-2 justify-content-end">
                                 <a class="btn btn-sm btn-outline-primary"
                                 href="{{ base_url_prefix }}/zones/{{ record['domain_id'] }}/records/{{ record['id'] }}/edit">
