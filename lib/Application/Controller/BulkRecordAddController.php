@@ -134,7 +134,9 @@ class BulkRecordAddController extends BaseController
                 continue;
             }
 
-            $parts = str_getcsv($line);
+            // Pass $escape explicitly: PHP 8.4 deprecates omitting it and the default
+            // changes to "" in PHP 9.0. Mirror PHP 8.3's behavior with a backslash.
+            $parts = str_getcsv($line, ',', '"', '\\');
 
             // Expected format: name,type,content,priority,ttl
             if (count($parts) < 3) {
