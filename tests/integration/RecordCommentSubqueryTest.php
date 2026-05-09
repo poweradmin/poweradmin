@@ -315,11 +315,17 @@ class RecordCommentSubqueryTest extends TestCase
 
     public function testSQLiteOldPatternFailsWithOuterTableReference(): void
     {
-        // The old pattern references records.id in the ORDER BY of a correlated
-        // subquery, which SQLite does not support.
-        $this->expectException(\PDOException::class);
-        $this->expectExceptionMessageMatches('/no such column/i');
-        $this->executeOldPattern($this->sqliteConnection);
+        // Older SQLite versions reject outer-table references in a correlated
+        // subquery's ORDER BY; newer versions accept them. The COALESCE fix is
+        // still required for the older deployments we support, so probe at
+        // runtime and skip when the host SQLite no longer reproduces the bug.
+        try {
+            $this->executeOldPattern($this->sqliteConnection);
+            $version = $this->sqliteConnection->query('SELECT sqlite_version()')->fetchColumn();
+            $this->markTestSkipped("SQLite $version accepts correlated outer references; old pattern only fails on older SQLite");
+        } catch (PDOException $e) {
+            $this->assertMatchesRegularExpression('/no such column/i', $e->getMessage());
+        }
     }
 
     public function testSQLiteNewPatternWorks(): void
