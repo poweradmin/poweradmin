@@ -38,30 +38,38 @@ class IpAddressRetriever
     /**
      * Get the client IP address.
      *
+     * Forwarded-IP headers (Client-IP, X-Forwarded-For, X-Real-IP) are only honored
+     * when the immediate peer (REMOTE_ADDR) is a private/loopback address - i.e. a
+     * reverse proxy on the same host or internal network. Direct-internet peers
+     * cannot be trusted to send accurate headers, so their values are ignored to
+     * prevent audit-log spoofing and per-IP rate-limit bypass.
+     *
      * @return string
      */
     public function getClientIp(): string
     {
         $remoteAddr = $this->server['REMOTE_ADDR'] ?? '';
 
-        $proxyHeaders = [
-            'HTTP_CLIENT_IP',
-            'HTTP_X_FORWARDED_FOR',
-            'HTTP_X_REAL_IP',
-        ];
+        if ($remoteAddr !== '' && $this->isPrivateOrReserved($remoteAddr)) {
+            $proxyHeaders = [
+                'HTTP_CLIENT_IP',
+                'HTTP_X_FORWARDED_FOR',
+                'HTTP_X_REAL_IP',
+            ];
 
-        foreach ($proxyHeaders as $header) {
-            if (!empty($this->server[$header])) {
-                $ips = array_values(array_filter(
-                    array_map('trim', explode(',', $this->server[$header])),
-                    function (string $ip) use ($remoteAddr): bool {
-                        return $ip !== $remoteAddr
-                            && ($this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip));
+            foreach ($proxyHeaders as $header) {
+                if (!empty($this->server[$header])) {
+                    $ips = array_values(array_filter(
+                        array_map('trim', explode(',', $this->server[$header])),
+                        function (string $ip) use ($remoteAddr): bool {
+                            return $ip !== $remoteAddr
+                                && ($this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip));
+                        }
+                    ));
+
+                    if (!empty($ips)) {
+                        return $ips[0];
                     }
-                ));
-
-                if (!empty($ips)) {
-                    return $ips[0];
                 }
             }
         }
@@ -71,5 +79,18 @@ class IpAddressRetriever
         }
 
         return '';
+    }
+
+    private function isPrivateOrReserved(string $ip): bool
+    {
+        if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
+            return false;
+        }
+
+        return filter_var(
+            $ip,
+            FILTER_VALIDATE_IP,
+            FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+        ) === false;
     }
 }
