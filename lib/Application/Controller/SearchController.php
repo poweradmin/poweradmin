@@ -31,13 +31,18 @@
 
 namespace Poweradmin\Application\Controller;
 
+use PDO;
 use Poweradmin\Application\Query\RecordSearch;
 use Poweradmin\Application\Query\ZoneSearch;
+use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Module\ModuleRegistry;
 
 class SearchController extends BaseController
@@ -206,6 +211,19 @@ class SearchController extends BaseController
             $searchResultRecords = $this->shortenIPv6InRecords($searchResultRecords);
         }
 
+        $editPermission = Permission::getEditPermission($this->db);
+        $deletePermission = Permission::getDeletePermission($this->db);
+
+        // Per-row eligibility must include group ownership; otherwise zones owned only
+        // via a group lose their edit/delete buttons even when the user has the action.
+        [$searchResultZones, $searchResultRecords] = $this->attachPermissionFlags(
+            $searchResultZones,
+            $searchResultRecords,
+            $userId,
+            $editPermission,
+            $deletePermission
+        );
+
         $this->showSearchForm(
             $parameters,
             $searchResultZones,
@@ -221,7 +239,9 @@ class SearchController extends BaseController
             $zone_rowamount,
             $record_rowamount,
             $iface_zone_comments,
-            $iface_record_comments
+            $iface_record_comments,
+            $editPermission,
+            $deletePermission
         );
     }
 
@@ -240,7 +260,9 @@ class SearchController extends BaseController
         $zone_rowamount,
         $record_rowamount,
         $iface_zone_comments,
-        $iface_record_comments
+        $iface_record_comments,
+        string $editPermission,
+        string $deletePermission
     ): void {
         // Get all record types for the filter dropdown
         $recordTypeService = new RecordTypeService($this->getConfig());
@@ -271,8 +293,8 @@ class SearchController extends BaseController
             'record_rowamount' => $record_rowamount,
             'iface_zone_comments' => $iface_zone_comments,
             'iface_record_comments' => $iface_record_comments,
-            'edit_permission' => Permission::getEditPermission($this->db),
-            'delete_permission' => Permission::getDeletePermission($this->db),
+            'edit_permission' => $editPermission,
+            'delete_permission' => $deletePermission,
             'user_id' => $_SESSION['userid'],
             'whois_action_patterns' => $this->getModuleActionPatterns('whois_lookup'),
             'rdap_action_patterns' => $this->getModuleActionPatterns('rdap_lookup'),
@@ -286,6 +308,173 @@ class SearchController extends BaseController
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
         return $registry->getCapabilityData($capability, [], $isAdmin);
+    }
+
+    /**
+     * Stamp `user_can_edit` / `user_can_delete` onto each search result so the
+     * template can render per-row controls without re-running permission checks.
+     *
+     * Direct ownership and group ownership are both honored: a user with
+     * `*_own` permission via a group whose zone is listed must still see the
+     * edit/delete controls. Two upfront SQL queries (zone-group ownership +
+     * direct owners) replace per-row hybrid lookups.
+     *
+     * @return array{0: array, 1: array} Augmented zones and records.
+     */
+    private function attachPermissionFlags(
+        array $zones,
+        array $records,
+        int $userId,
+        string $editPermission,
+        string $deletePermission
+    ): array {
+        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $memberRepo = new DbUserGroupMemberRepository($this->db);
+        $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
+        $hybridPermissions = new HybridPermissionService(
+            $this->db,
+            $userGroupRepo,
+            $memberRepo,
+            $zoneGroupRepo
+        );
+
+        // 'own' and 'own_as_client' may come from different sources (e.g. direct
+        // template grants one, a group template the other). Union both so a zone
+        // is editable whenever any source grants any *_edit_own permission.
+        $editSources = ($editPermission === 'own' || $editPermission === 'own_as_client')
+            ? $this->mergePermissionSources(
+                $hybridPermissions->getPermissionSourcesForUser($userId, 'zone_content_edit_own'),
+                $hybridPermissions->getPermissionSourcesForUser($userId, 'zone_content_edit_own_as_client')
+            )
+            : ['has_direct' => false, 'group_ids' => []];
+        $deleteSources = $deletePermission === 'own'
+            ? $hybridPermissions->getPermissionSourcesForUser($userId, 'zone_delete_own')
+            : ['has_direct' => false, 'group_ids' => []];
+
+        $zoneIds = array_values(array_unique(array_filter(array_merge(
+            array_map(fn($z) => (int)($z['id'] ?? 0), $zones),
+            array_map(fn($r) => (int)($r['domain_id'] ?? 0), $records)
+        ))));
+        $zoneGroupMap = $this->fetchZoneGroupOwnership($zoneIds);
+        $zoneOwnerMap = $this->fetchDirectZoneOwners($zoneIds);
+
+        foreach ($zones as &$zone) {
+            $domainId = (int)($zone['id'] ?? 0);
+            $zone['user_can_edit'] = $this->canActOnZone(
+                $domainId,
+                $userId,
+                $editPermission,
+                $editSources,
+                $zoneOwnerMap,
+                $zoneGroupMap
+            );
+            $zone['user_can_delete'] = $this->canActOnZone(
+                $domainId,
+                $userId,
+                $deletePermission,
+                $deleteSources,
+                $zoneOwnerMap,
+                $zoneGroupMap
+            );
+        }
+        unset($zone);
+
+        foreach ($records as &$record) {
+            $domainId = (int)($record['domain_id'] ?? 0);
+            $record['user_can_edit'] = $this->canActOnZone(
+                $domainId,
+                $userId,
+                $editPermission,
+                $editSources,
+                $zoneOwnerMap,
+                $zoneGroupMap
+            );
+        }
+        unset($record);
+
+        return [$zones, $records];
+    }
+
+    /**
+     * @param array{has_direct: bool, group_ids: int[]} $a
+     * @param array{has_direct: bool, group_ids: int[]} $b
+     * @return array{has_direct: bool, group_ids: int[]}
+     */
+    private function mergePermissionSources(array $a, array $b): array
+    {
+        return [
+            'has_direct' => $a['has_direct'] || $b['has_direct'],
+            'group_ids' => array_values(array_unique(array_merge($a['group_ids'], $b['group_ids']))),
+        ];
+    }
+
+    /**
+     * @param int[] $zoneIds
+     * @return array<int, int[]> Map of domain_id => list of group_ids that own it.
+     */
+    private function fetchZoneGroupOwnership(array $zoneIds): array
+    {
+        if (empty($zoneIds)) {
+            return [];
+        }
+        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
+        $stmt = $this->db->prepare(
+            "SELECT domain_id, group_id FROM zones_groups WHERE domain_id IN ($placeholders)"
+        );
+        $stmt->execute($zoneIds);
+        $map = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $map[(int)$row['domain_id']][] = (int)$row['group_id'];
+        }
+        return $map;
+    }
+
+    /**
+     * @param int[] $zoneIds
+     * @return array<int, int[]> Map of domain_id => list of direct owner user_ids.
+     */
+    private function fetchDirectZoneOwners(array $zoneIds): array
+    {
+        if (empty($zoneIds)) {
+            return [];
+        }
+        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
+        $stmt = $this->db->prepare(
+            "SELECT domain_id, owner FROM zones WHERE domain_id IN ($placeholders)"
+        );
+        $stmt->execute($zoneIds);
+        $map = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $map[(int)$row['domain_id']][] = (int)$row['owner'];
+        }
+        return $map;
+    }
+
+    /**
+     * @param array{has_direct: bool, group_ids: int[]} $permissionSources
+     * @param array<int, int[]> $zoneOwnerMap
+     * @param array<int, int[]> $zoneGroupMap
+     */
+    private function canActOnZone(
+        int $domainId,
+        int $userId,
+        string $permission,
+        array $permissionSources,
+        array $zoneOwnerMap,
+        array $zoneGroupMap
+    ): bool {
+        if ($permission === 'all') {
+            return true;
+        }
+        if ($permission !== 'own' && $permission !== 'own_as_client') {
+            return false;
+        }
+        $isDirectOwner = in_array($userId, $zoneOwnerMap[$domainId] ?? [], true);
+        if ($permissionSources['has_direct'] && $isDirectOwner) {
+            return true;
+        }
+        $zoneGroupIds = $zoneGroupMap[$domainId] ?? [];
+        return !empty(array_intersect($permissionSources['group_ids'], $zoneGroupIds));
     }
 
     private function getSortOrder(string $name, array $allowedValues): array
