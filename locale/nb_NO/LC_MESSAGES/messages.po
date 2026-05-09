@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-04-23 19:29+0300\n"
+"POT-Creation-Date: 2026-05-09 10:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgstr "DNS-veivisere er ikke aktivert."
 msgid "Invalid zone ID."
 msgstr "Ugyldig sone-ID."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:95
+#: lib/Application/Controller/ZoneOwnershipController.php:96
 msgid "Zone not found."
 msgstr "Sone ikke funnet."
 
@@ -332,7 +332,7 @@ msgstr ""
 "sertifikatet."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:646
+#: templates/modern/edit.html:93 templates/modern/edit.html:647
 msgid "Invalid hostname format"
 msgstr "Ugyldig vertsnavnformat"
 
@@ -1381,7 +1381,7 @@ msgstr ""
 "Ingen gyldige poster valgt for sletting eller du mangler tillatelse til å "
 "slette dem."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:73
+#: lib/Application/Controller/ZoneOwnershipController.php:74
 msgid "Invalid or unexpected input given."
 msgstr "Ugyldig eller uventet inndata gitt."
 
@@ -1409,7 +1409,7 @@ msgstr "Sonekommentarer er deaktivert i konfigurasjonen."
 msgid "You do not have the permission to view this comment."
 msgstr "Du har ikke tillatelse til å se denne kommentaren."
 
-#: lib/Domain/Service/Dns/RecordManager.php:450
+#: lib/Domain/Service/Dns/RecordManager.php:455
 msgid "You do not have the permission to edit this comment."
 msgstr "Du har ikke tillatelse til å redigere denne kommentaren."
 
@@ -1963,23 +1963,23 @@ msgstr "Det finnes ingen sonemal med denne ID-en."
 msgid "Zone template has been updated successfully."
 msgstr "Sonemal har blitt oppdatert."
 
-#: lib/Application/Controller/EditZoneTemplController.php:233
+#: lib/Application/Controller/EditZoneTemplController.php:235
 msgid "Zones have been updated successfully."
 msgstr "Soner har blitt oppdatert."
 
-#: lib/Application/Controller/EditZoneTemplController.php:244
+#: lib/Application/Controller/EditZoneTemplController.php:246
 msgid "You do not have permission to create new zone templates."
 msgstr "Du har ikke tillatelse til å opprette nye sonemaler."
 
-#: lib/Domain/Model/ZoneTemplate.php:189 lib/Domain/Model/ZoneTemplate.php:877
+#: lib/Domain/Model/ZoneTemplate.php:189 lib/Domain/Model/ZoneTemplate.php:934
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Sonemal med dette navnet eksisterer allerede, vennligst velg et annet."
 
-#: lib/Application/Controller/EditZoneTemplController.php:275
+#: lib/Application/Controller/EditZoneTemplController.php:277
 msgid "Please enter a different name when using Save As."
 msgstr "Vennligst oppgi et annet navn når du bruker Lagre som."
 
-#: lib/Application/Controller/EditZoneTemplController.php:299
+#: lib/Application/Controller/EditZoneTemplController.php:301
 msgid "Zone template has been copied successfully."
 msgstr "Sonemal har blitt kopiert."
 
@@ -2046,11 +2046,11 @@ msgstr "Mal ikke funnet."
 msgid "User agreement accepted successfully."
 msgstr "Brukeravtalen ble akseptert."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:69
+#: lib/Application/Controller/ZoneOwnershipController.php:70
 msgid "Edit Zone"
 msgstr "Rediger sone"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:86
+#: lib/Application/Controller/ZoneOwnershipController.php:87
 msgid "You do not have permission to access this zone."
 msgstr "Du har ikke tillatelse til å få tilgang til denne sonen."
 
@@ -2058,38 +2058,38 @@ msgstr "Du har ikke tillatelse til å få tilgang til denne sonen."
 msgid "You do not have the permission to view this zone."
 msgstr "Du har ikke tillatelse til å se denne sonen."
 
-#: lib/Application/Controller/EditController.php:274
+#: lib/Application/Controller/EditController.php:275
 msgid "Zone type has been changed successfully."
 msgstr "Sonetype er endret."
 
-#: lib/Application/Controller/EditController.php:282
+#: lib/Application/Controller/EditController.php:283
 msgid "Slave master has been changed successfully."
 msgstr "Slave-master er endret."
 
-#: lib/Application/Controller/EditController.php:303
+#: lib/Application/Controller/EditController.php:304
 msgid "Zone template has been changed successfully."
 msgstr "Sonemal er endret."
 
-#: lib/Application/Controller/EditController.php:315
+#: lib/Application/Controller/EditController.php:316
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC er ikke aktivert på serveren."
 
-#: lib/Application/Controller/EditController.php:318
+#: lib/Application/Controller/EditController.php:319
 msgid "Zone is already signed with DNSSEC."
 msgstr "Sonen er allerede signert med DNSSEC."
 
-#: lib/Application/Controller/EditController.php:340
+#: lib/Application/Controller/EditController.php:341
 msgid "Zone has been signed successfully."
 msgstr "Sonen har blitt signert."
 
-#: lib/Application/Controller/EditController.php:344
+#: lib/Application/Controller/EditController.php:346
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr ""
 "Sone-signering forespurt, men verifisering mislyktes. Sjekk DNSSEC-nøkler."
 
-#: lib/Application/Controller/EditController.php:348
+#: lib/Application/Controller/EditController.php:350
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2113,15 +2113,15 @@ msgstr "Sone-usignering forespurt, men verifisering mislyktes."
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Kunne ikke usignere sone. Sjekk PowerDNS-logger for detaljer."
 
-#: lib/Application/Controller/EditController.php:734
+#: lib/Application/Controller/EditController.php:736
 msgid "Request has expired, please try again."
 msgstr "Forespørselen har utløpt, vennligst prøv igjen."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:741
 msgid "Zone has been updated successfully."
 msgstr "Sonen har blitt oppdatert."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:743
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2129,11 +2129,11 @@ msgstr ""
 "Sone lagret vellykket. Ingen postandringer ble gjort, men SOA-serienummeret "
 "ble økt."
 
-#: lib/Application/Controller/EditController.php:750
+#: lib/Application/Controller/EditController.php:752
 msgid "Zone has not been updated successfully."
 msgstr "Sonen har ikke blitt oppdatert."
 
-#: lib/Application/Controller/EditController.php:778
+#: lib/Application/Controller/EditController.php:780
 msgid "Please provide all required fields."
 msgstr "Vennligst oppgi alle påkrevde felt."
 
@@ -2240,7 +2240,7 @@ msgstr "Sonen har blitt slettet."
 msgid "Zones have been deleted successfully."
 msgstr "Soner har blitt slettet."
 
-#: lib/Domain/Service/Dns/DomainManager.php:667
+#: lib/Domain/Service/Dns/DomainManager.php:671
 msgid "You do not have the permission to delete a zone."
 msgstr "Du har ikke tillatelse til å slette en sone."
 
@@ -2285,7 +2285,7 @@ msgstr "Gruppelogger"
 msgid "You do not have the permission to add a master zone."
 msgstr "Du har ikke tillatelse til å legge til en hovedsone."
 
-#: lib/Application/Controller/AddZoneMasterController.php:71
+#: lib/Application/Controller/AddZoneMasterController.php:72
 msgid "Add Primary Zone"
 msgstr "Legg til primærsone"
 
@@ -2297,7 +2297,7 @@ msgstr "Minst én bruker eller gruppe må velges som eier."
 msgid "There is already a zone with this name."
 msgstr "Det finnes allerede en sone med dette navnet."
 
-#: lib/Application/Controller/AddZoneMasterController.php:173
+#: lib/Application/Controller/AddZoneMasterController.php:174
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2305,7 +2305,7 @@ msgstr ""
 "Sonen ble opprettet, men DNSSEC-signering ble hoppet over på grunn av "
 "valideringsfeil:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:185
+#: lib/Application/Controller/AddZoneMasterController.php:186
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2314,11 +2314,11 @@ msgstr ""
 "godkjent, men PowerDNS API returnerte en feil. Sjekk PowerDNS-logger for "
 "detaljer."
 
-#: lib/Application/Controller/AddZoneMasterController.php:191
+#: lib/Application/Controller/AddZoneMasterController.php:192
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Sonen er opprettet og signert med DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:194
+#: lib/Application/Controller/AddZoneMasterController.php:196
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2417,16 +2417,16 @@ msgstr "Ugyldig SAML-leverandør"
 msgid "SAML authentication failed: "
 msgstr "SAML-autentisering mislyktes: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:56
+#: lib/Application/Controller/ListForwardZonesController.php:58
 msgid "You do not have sufficient permissions to view this page."
 msgstr "Du har ikke tilstrekkelige tillatelser for å se denne siden."
 
-#: lib/Application/Controller/ListReverseZonesController.php:78
+#: lib/Application/Controller/ListReverseZonesController.php:80
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
 msgstr "Reverse soner"
 
-#: lib/Application/Controller/ListForwardZonesController.php:144
+#: lib/Application/Controller/ListForwardZonesController.php:171
 msgid "You do not have the permission to see any zones."
 msgstr "Du har ikke tillatelse til å se noen soner."
 
@@ -2632,7 +2632,7 @@ msgstr "Sone fjernet fra gruppe."
 msgid "Zone was not owned by this group."
 msgstr "Sonen var ikke eid av denne gruppen."
 
-#: lib/Application/Controller/ListForwardZonesController.php:60
+#: lib/Application/Controller/ListForwardZonesController.php:62
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Forward soner"
@@ -2886,28 +2886,28 @@ msgstr "Soner har blitt lagt til."
 msgid "Some zone(s) could not be added."
 msgstr "Noen soner kunne ikke legges til."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:176
+#: lib/Application/Controller/ZoneOwnershipController.php:178
 msgid "Owner has been added successfully."
 msgstr "Eier er lagt til."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:192
+#: lib/Application/Controller/ZoneOwnershipController.php:194
 msgid "Owner has been removed successfully."
 msgstr "Eier er fjernet."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:213
+#: lib/Application/Controller/ZoneOwnershipController.php:215
 msgid "You do not have permission to assign this group."
 msgstr "Du har ikke tillatelse til å tilordne denne gruppen."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:221
+#: lib/Application/Controller/ZoneOwnershipController.php:223
 msgid "Group has been added successfully."
 msgstr "Gruppen er lagt til."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:229
+#: lib/Application/Controller/ZoneOwnershipController.php:231
 msgid "Group has been removed successfully."
 msgstr "Gruppen er fjernet."
 
 #: lib/Application/Controller/NotFoundController.php:53
-#: templates/default/404.html:14 templates/modern/404.html:14
+#: templates/default/404.html:11 templates/modern/404.html:11
 msgid "Page Not Found"
 msgstr "Side ikke funnet"
 
@@ -2939,12 +2939,12 @@ msgstr "Kunne ikke aktivere sonenøkkel."
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "En feil oppstod ved veksling av DNSSEC-nøkkel. Vennligst prøv igjen."
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:435
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Ja"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:434
+#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:435
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Nei"
@@ -3102,35 +3102,35 @@ msgstr "Feil ved sletting av sonemalpost: "
 msgid "Error checking template ownership: "
 msgstr "Feil ved kontroll av maleierskap: "
 
-#: lib/Domain/Model/ZoneTemplate.php:714 lib/Domain/Model/ZoneTemplate.php:756
+#: lib/Domain/Model/ZoneTemplate.php:813
 msgid "Error retrieving zones using template: "
 msgstr "Feil ved henting av soner som bruker mal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:812 lib/Domain/Model/ZoneTemplate.php:856
+#: lib/Domain/Model/ZoneTemplate.php:869 lib/Domain/Model/ZoneTemplate.php:913
 msgid "Failed to get list of zones using template: "
 msgstr "Kunne ikke hente liste over soner som bruker mal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:874
+#: lib/Domain/Model/ZoneTemplate.php:931
 msgid "You do not have the permission to edit a zone template."
 msgstr "Du har ikke tillatelse til å redigere en sonemal."
 
-#: lib/Domain/Model/ZoneTemplate.php:918
+#: lib/Domain/Model/ZoneTemplate.php:975
 msgid "Error unlinking zone from template: "
 msgstr "Feil ved frakobling av sone fra mal: "
 
-#: lib/Domain/Model/ZoneTemplate.php:951 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:1024
 msgid "Error retrieving zones: "
 msgstr "Feil ved henting av soner: "
 
-#: lib/Domain/Model/ZoneTemplate.php:986
+#: lib/Domain/Model/ZoneTemplate.php:1043
 msgid "Error checking template name existence: "
 msgstr "Feil ved kontroll av malnavn eksistens: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1007
+#: lib/Domain/Model/ZoneTemplate.php:1064
 msgid "Error looking up template by name: "
 msgstr "Feil ved oppslag av mal etter navn: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1030
+#: lib/Domain/Model/ZoneTemplate.php:1087
 msgid "Error checking template existence: "
 msgstr "Feil ved kontroll av mal eksistens: "
 
@@ -5569,13 +5569,13 @@ msgstr ""
 msgid "Empty CNAME records are not allowed."
 msgstr "Tomme CNAME poster er ikke tillatt."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:319
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:320
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
 msgstr ""
 "Dette er ikke en gyldig post. Det finnes allerede en CNAME med dette navnet."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:348
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
@@ -5583,7 +5583,7 @@ msgstr ""
 "CNAME-mål må være et fullstendig kvalifisert domenenavn (FQDN). Enkelt-"
 "etikett navn er ikke tillatt."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:361
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:362
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
@@ -9020,7 +9020,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Oppdater post"
 
-#: templates/modern/edit.html:529 templates/modern/users.html:219
+#: templates/modern/edit.html:530 templates/modern/users.html:219
 msgid "Reset"
 msgstr "Nullstill"
 
@@ -9162,7 +9162,7 @@ msgstr "Konto"
 msgid "Select the account that will own this supermaster"
 msgstr "Velg kontoen som skal eie denne overordnede serveren"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:526
+#: templates/modern/edit.html:190 templates/modern/edit.html:527
 msgid "Save changes"
 msgstr "Lagre endringer"
 
@@ -9422,7 +9422,7 @@ msgstr "Fjern"
 msgid "and"
 msgstr "og"
 
-#: templates/modern/list_forward_zones.html:169
+#: templates/modern/list_forward_zones.html:165
 msgid "more..."
 msgstr "mer..."
 
@@ -9615,7 +9615,7 @@ msgstr "Innstillinger"
 msgid "Logout"
 msgstr "Logg ut"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:514
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:515
 msgid "Edit comment"
 msgstr "Rediger kommentar"
 
@@ -9837,7 +9837,7 @@ msgstr "Skriv bare vertsnavn - sonenavnet legges til automatisk"
 msgid "Add Records"
 msgstr "Legg til poster"
 
-#: templates/modern/bulk_registration.html:104
+#: templates/modern/bulk_record_add.html:73
 msgid "Instructions"
 msgstr "Instruksjoner"
 
@@ -10259,7 +10259,7 @@ msgstr "Eier"
 msgid "Full name"
 msgstr "Fullt navn"
 
-#: templates/modern/list_reverse_zones.html:126
+#: templates/modern/list_reverse_zones.html:127
 msgid "Associated Forward Zones"
 msgstr "Tilknyttede normale soner"
 
@@ -10271,7 +10271,7 @@ msgstr "Serienummer"
 msgid "Template"
 msgstr "Mal"
 
-#: templates/modern/list_reverse_zones.html:228
+#: templates/modern/list_reverse_zones.html:227
 msgid "-"
 msgstr "-"
 
@@ -10686,31 +10686,31 @@ msgstr "Maltillatelser"
 msgid "Other Permissions"
 msgstr "Andre tillatelser"
 
-#: templates/default/404.html:19 templates/modern/404.html:19
+#: templates/default/404.html:15 templates/modern/404.html:15
 msgid "The page you are looking for does not exist."
 msgstr "Siden du leter etter finnes ikke."
 
-#: templates/default/404.html:22 templates/modern/404.html:22
+#: templates/default/404.html:18 templates/modern/404.html:18
 msgid "This could be because:"
 msgstr "Dette kan skyldes:"
 
-#: templates/default/404.html:26 templates/modern/404.html:26
+#: templates/default/404.html:22 templates/modern/404.html:22
 msgid "The URL is incorrect or has been mistyped"
 msgstr "URL-en er feil eller har blitt skrevet feil"
 
-#: templates/default/404.html:30 templates/modern/404.html:30
+#: templates/default/404.html:26 templates/modern/404.html:26
 msgid "The page has been moved or deleted"
 msgstr "Siden har blitt flyttet eller slettet"
 
-#: templates/default/404.html:34 templates/modern/404.html:34
+#: templates/default/404.html:30 templates/modern/404.html:30
 msgid "You do not have permission to access this page"
 msgstr "Du har ikke tillatelse til å få tilgang til denne siden"
 
-#: templates/default/404.html:45 templates/modern/404.html:45
+#: templates/default/404.html:40 templates/modern/404.html:40
 msgid "Go to Homepage"
 msgstr "Gå til hjemmeside"
 
-#: templates/default/404.html:49 templates/modern/404.html:49
+#: templates/default/404.html:44 templates/modern/404.html:44
 msgid "Go Back"
 msgstr "Gå tilbake"
 
@@ -11108,71 +11108,71 @@ msgstr "Hvis du mister nøkkelen, må du regenerere den."
 msgid "Edit"
 msgstr "Rediger"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:577
+#: templates/modern/edit.html:25 templates/modern/edit.html:578
 msgid "Add new record"
 msgstr "Legg til ny post"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:581
+#: templates/modern/edit.html:203 templates/modern/edit.html:582
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Veiledede veivisere for DMARC, SPF, DKIM, CAA, TLSA og SRV-poster"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:587
+#: templates/modern/edit.html:35 templates/modern/edit.html:588
 msgid "Multi-record mode"
 msgstr "Flerpost-modus"
 
-#: templates/modern/edit.html:535 templates/modern/edit.html:590
+#: templates/modern/edit.html:536 templates/modern/edit.html:591
 msgid "Bulk add"
 msgstr "Masseinnlegging"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:603
 msgid "Failed to add"
 msgstr "Kunne ikke legge til"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:602
+#: templates/modern/edit.html:50 templates/modern/edit.html:603
 msgid "record(s). Please check the record format."
 msgstr "post(er). Vennligst sjekk postformatet."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:604
+#: templates/modern/edit.html:52 templates/modern/edit.html:605
 msgid "Failed to add records. Please check the record format."
 msgstr "Kunne ikke legge til poster. Vennligst sjekk postformatet."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:608
 msgid "Content validation failed:"
 msgstr "Innholdsvalidering feilet:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:607
+#: templates/modern/edit.html:55 templates/modern/edit.html:608
 msgid "Invalid value for record type"
 msgstr "Ugyldig verdi for posttype"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:609
+#: templates/modern/edit.html:57 templates/modern/edit.html:610
 msgid "Please provide all required information."
 msgstr "Vennligst oppgi all nødvendig informasjon."
 
-#: templates/modern/edit.html:632 templates/modern/add_record.html:72
+#: templates/modern/edit.html:633 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Legg til PTR"
 
-#: templates/modern/edit.html:635 templates/modern/add_record.html:75
+#: templates/modern/edit.html:636 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Legg til A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:674
+#: templates/modern/edit.html:121 templates/modern/edit.html:675
 msgid "This record already exists"
 msgstr "Denne posten eksisterer allerede"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:686
+#: templates/modern/edit.html:133 templates/modern/edit.html:687
 msgid "Invalid priority"
 msgstr "Ugyldig prioritet"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:693
+#: templates/modern/edit.html:140 templates/modern/edit.html:694
 msgid "Invalid TTL value"
 msgstr "Ugyldig TTL-verdi"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:695
+#: templates/modern/edit.html:142 templates/modern/edit.html:696
 msgid "Provide TTL"
 msgstr "Oppgi TTL"
 
-#: templates/modern/edit.html:721 templates/modern/add_record.html:207
+#: templates/modern/edit.html:722 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11232,47 +11232,47 @@ msgstr "av"
 msgid "total records"
 msgstr "poster totalt"
 
-#: templates/default/edit.html:497 templates/modern/edit.html:497
+#: templates/default/edit.html:498 templates/modern/edit.html:498
 msgid "Edit selected"
 msgstr "Rediger valgte"
 
-#: templates/modern/edit.html:501 templates/modern/search.html:486
+#: templates/modern/edit.html:502 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Slett post(er)"
 
-#: templates/modern/edit.html:509 templates/modern/search.html:93
+#: templates/modern/edit.html:510 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Kommentarer"
 
-#: templates/default/edit.html:539 templates/modern/edit.html:539
+#: templates/default/edit.html:540 templates/modern/edit.html:540
 msgid "Import"
 msgstr "Importer"
 
-#: templates/default/edit.html:556 templates/modern/edit.html:556
+#: templates/default/edit.html:557 templates/modern/edit.html:557
 msgid "Generate PTR"
 msgstr "Generer PTR"
 
-#: templates/modern/edit.html:735 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:736 templates/modern/add_zone_master.html:24
 msgid "Zone Configuration"
 msgstr "Sonekonfigurasjon"
 
-#: templates/modern/edit.html:777 templates/modern/edit.html:806
+#: templates/modern/edit.html:778 templates/modern/edit.html:807
 msgid "Change"
 msgstr "Endre"
 
-#: templates/modern/edit.html:770 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:771 templates/modern/add_zone_slave.html:35
 msgid "IP address of master NS"
 msgstr "IP-adresse til master NS"
 
-#: templates/default/edit.html:827 templates/modern/edit.html:827
+#: templates/default/edit.html:828 templates/modern/edit.html:828
 msgid "Manage DNSSEC"
 msgstr "Administrer DNSSEC"
 
-#: templates/default/edit.html:834 templates/modern/edit.html:834
+#: templates/default/edit.html:835 templates/modern/edit.html:835
 msgid "Sign zone"
 msgstr "Signer sone"
 
-#: templates/default/edit.html:838 templates/modern/edit.html:838
+#: templates/default/edit.html:839 templates/modern/edit.html:839
 msgid "Not signed"
 msgstr "Ikke signert"
 
@@ -11325,7 +11325,7 @@ msgstr "Totalt antall soner:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Det er ingen fremover-soner å vise i denne listen."
 
-#: templates/modern/list_forward_zones.html:201
+#: templates/modern/list_forward_zones.html:197
 msgid "PTR"
 msgstr "PTR"
 
@@ -11971,58 +11971,38 @@ msgid "Add Zones"
 msgstr "Legg til soner"
 
 #: templates/modern/bulk_registration.html:99
-msgid "About Bulk Registration"
-msgstr "Om masseregistrering"
+msgid "After Creation"
+msgstr "Etter opprettelse"
+
+#: templates/modern/bulk_registration.html:104
+msgid "Assign zones to a group"
+msgstr "Tildel soner til en gruppe"
 
 #: templates/modern/bulk_registration.html:105
-msgid "This tool allows you to create multiple DNS zones at once."
-msgstr "Dette verktøyet lar deg opprette flere DNS-soner på en gang."
+msgid ""
+"Bulk registration assigns ownership to a single user. To share access with a "
+"group, open the group and add the newly created zones."
+msgstr ""
+"Massiv registrering tildeler eierskap til én enkelt bruker. For å dele tilgang med en gruppe, åpne gruppen og legg til de nyopprettede sonene."
 
 #: templates/modern/bulk_registration.html:107
-msgid "Enter one domain name per line in the Domains field"
-msgstr "Oppgi ett domenenavn per linje i domenefeltet"
+msgid "Manage groups"
+msgstr "Administrer grupper"
 
-#: templates/modern/bulk_registration.html:108
-msgid "Select a zone template to apply standard records to all zones"
-msgstr "Velg en sonemal for å legge til standardoppføringer i alle soner"
+#: templates/modern/bulk_registration.html:111
+msgid "Change zone owner"
+msgstr "Endre soneier"
 
-#: templates/modern/bulk_registration.html:109
-msgid "The chosen owner will have full access to all created zones"
-msgstr "Den valgte eieren vil ha full tilgang til alle opprettede soner"
-
-#: templates/modern/bulk_registration.html:113
-msgid "How It Works"
-msgstr "Slik fungerer det"
+#: templates/modern/bulk_registration.html:112
+msgid ""
+"You can transfer zone ownership to another user from the user list at any "
+"time."
+msgstr ""
+"Du kan når som helst overføre eierskap av en sone til en annen bruker fra brukerlisten."
 
 #: templates/modern/bulk_registration.html:114
-msgid ""
-"The system will attempt to create each zone with the same settings. Failed "
-"domains will be displayed so you can correct any issues and try again."
-msgstr ""
-"Systemet vil forsøke å opprette hver sone med de samme innstillingene. "
-"Mislykkede domener vil bli vist slik at du kan rette opp eventuelle "
-"problemer og prøve igjen."
-
-#: templates/modern/bulk_registration.html:122
-msgid "Tips & Recommendations"
-msgstr "Tips og anbefalinger"
-
-#: templates/modern/bulk_registration.html:128
-msgid "Use NATIVE zone type for most standard setups"
-msgstr "Bruk NATIVE sonetype for de fleste standardoppsett"
-
-#: templates/modern/bulk_registration.html:129
-msgid "Create a template first if you need standard records for all zones"
-msgstr ""
-"Opprett en mal først hvis du trenger standardoppføringer for alle soner"
-
-#: templates/modern/bulk_registration.html:130
-msgid "You can copy and paste a list of domains from a spreadsheet"
-msgstr "Du kan kopiere og lime inn en liste med domener fra et regneark"
-
-#: templates/modern/bulk_registration.html:131
-msgid "Make sure the domain names follow valid DNS naming conventions"
-msgstr "Sørg for at domenenavnene følger gyldige DNS-navnekonvensjoner"
+msgid "Manage users"
+msgstr "Administrer brukere"
 
 #: templates/modern/user_agreement.html:13
 msgid "User Agreement"
@@ -14112,4 +14092,5 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan ikke koble til PowerDNS-database \"%s\": %s"
+
 
