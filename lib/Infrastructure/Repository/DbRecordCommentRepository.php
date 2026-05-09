@@ -291,14 +291,16 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         }
 
         // Find all records in the RRset that don't have linked comments (excluding the current record)
-        // Cast records.id so the comparison works regardless of whether the linking table
-        // declares record_id as integer or varchar (PostgreSQL strict typing - issue #1192).
+        // Cast both sides to string so the comparison works whether the linking table
+        // declares record_id as integer (default 4.2.x) or varchar (PostgreSQL strict
+        // typing on widened schemas - issue #1192).
         $castId = DbCompat::castToString($this->db_type, "r.id");
+        $castLinkId = DbCompat::castToString($this->db_type, "rcl.record_id");
         $query = "SELECT r.id FROM {$this->records_table} r
                   WHERE r.domain_id = :domain_id AND r.name = :name AND r.type = :type
                   AND r.id != :exclude_record_id
                   AND NOT EXISTS (
-                      SELECT 1 FROM {$this->links_table} rcl WHERE rcl.record_id = $castId
+                      SELECT 1 FROM {$this->links_table} rcl WHERE $castLinkId = $castId
                   )";
         $stmt = $this->connection->prepare($query);
         $stmt->execute([

@@ -196,16 +196,18 @@ class RecordRepository implements RecordRepositoryInterface
         // then falls back to RRset-based comment. This avoids ORDER BY with outer table
         // references which SQLite does not support in correlated subqueries.
         $links_table = 'record_comment_links';
-        // Cast records.id so the comparison works regardless of whether the linking table
-        // declares record_id as integer or varchar (PostgreSQL strict typing - issue #1192).
+        // Cast both sides to string so the comparison works whether the linking table
+        // declares record_id as integer (default 4.2.x) or varchar (PostgreSQL strict
+        // typing on widened schemas - issue #1192).
         $castId = DbCompat::castToString($db_type, "$records_table.id");
+        $castLinkId = DbCompat::castToString($db_type, "rcl.record_id");
         $query = "SELECT $records_table.*,
             " . ($fetchComments ? "COALESCE(
                 (
                     SELECT c.comment
                     FROM $links_table rcl
                     JOIN $comments_table c ON c.id = rcl.comment_id
-                    WHERE rcl.record_id = $castId
+                    WHERE $castLinkId = $castId
                     LIMIT 1
                 ),
                 (
@@ -574,10 +576,12 @@ class RecordRepository implements RecordRepositoryInterface
         // Uses COALESCE with two subqueries to avoid ORDER BY with outer table
         // references which SQLite does not support in correlated subqueries.
         $links_table = 'record_comment_links';
-        // Cast records.id so the comparison works regardless of whether the linking table
-        // declares record_id as integer or varchar (PostgreSQL strict typing - issue #1192).
+        // Cast both sides to string so the comparison works whether the linking table
+        // declares record_id as integer (default 4.2.x) or varchar (PostgreSQL strict
+        // typing on widened schemas - issue #1192).
         $db_type = $this->config->get('database', 'type');
         $castId = DbCompat::castToString($db_type, "$records_table.id");
+        $castLinkId = DbCompat::castToString($db_type, "rcl.record_id");
         $query = "SELECT $records_table.id, $records_table.domain_id, $records_table.name, $records_table.type,
                  $records_table.content, $records_table.ttl, $records_table.prio, $records_table.disabled, $records_table.auth";
 
@@ -588,7 +592,7 @@ class RecordRepository implements RecordRepositoryInterface
                     SELECT c.comment
                     FROM $links_table rcl
                     JOIN $comments_table c ON c.id = rcl.comment_id
-                    WHERE rcl.record_id = $castId
+                    WHERE $castLinkId = $castId
                     LIMIT 1
                 ),
                 (
