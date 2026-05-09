@@ -93,6 +93,7 @@
         </div>
     </div>
 
+    {% if groups_enabled or perm_view_others or perm_edit_others %}
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
@@ -100,6 +101,7 @@
             </div>
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
+                    {% if groups_enabled %}
                     <div class="list-group-item">
                         <h6 class="mb-1"><i class="bi bi-people text-primary me-2"></i>{% trans %}Assign zones to a group{% endtrans %}</h6>
                         <p class="small mb-2">{% trans %}Bulk registration assigns ownership to a single user. To share access with a group, open the group and add the newly created zones.{% endtrans %}</p>
@@ -107,6 +109,8 @@
                             <i class="bi bi-people me-1"></i>{% trans %}Manage groups{% endtrans %}
                         </a>
                     </div>
+                    {% endif %}
+                    {% if perm_view_others or perm_edit_others %}
                     <div class="list-group-item">
                         <h6 class="mb-1"><i class="bi bi-person-gear text-success me-2"></i>{% trans %}Change zone owner{% endtrans %}</h6>
                         <p class="small mb-2">{% trans %}You can transfer zone ownership to another user from the user list at any time.{% endtrans %}</p>
@@ -114,10 +118,12 @@
                             <i class="bi bi-person-gear me-1"></i>{% trans %}Manage users{% endtrans %}
                         </a>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 
 <script src="{{ base_url_prefix }}/assets/textareaAutoResize.js?time={{ file_version }}"></script>
