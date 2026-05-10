@@ -27,6 +27,7 @@ use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Zone;
+use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
@@ -53,9 +54,10 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
     private const PDNS_API_KEY = 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA';
     private const DB_HOST = '127.0.0.1';
     private const DB_PORT = '3306';
-    private const DB_NAME = 'pdns';
+    private const DB_NAME = 'poweradmin';
     private const DB_USER = 'pdns';
     private const DB_PASS = 'poweradmin';
+    private const PDNS_DB_NAME = 'pdns';
 
     protected function setUp(): void
     {
@@ -100,7 +102,7 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
                 'backend' => 'api',
             ],
             'database' => [
-                'pdns_db_name' => '',
+                'pdns_db_name' => self::PDNS_DB_NAME,
             ],
         ]);
 
@@ -139,18 +141,51 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
     }
 
     /**
+     * The provider returns the Poweradmin-native zones.id (a synthetic id that
+     * equals zones.domain_id but is decoupled from the real PowerDNS domains.id).
+     * Tests that query pdns.domains/pdns.records by id must use the real PowerDNS id,
+     * which we resolve from the zone name.
+     */
+    private function resolvePdnsDomainId(string $zoneName): int
+    {
+        $apiName = str_ends_with($zoneName, '.') ? $zoneName : $zoneName . '.';
+        $stmt = $this->db->prepare("SELECT id FROM " . self::PDNS_DB_NAME . ".domains WHERE name = :name OR name = :api_name");
+        $stmt->bindValue(':name', $zoneName);
+        $stmt->bindValue(':api_name', $apiName);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Translate a synthetic zones.id to the real pdns.domains.id by joining via zone_name.
+     * Used by the wait helpers so callers can keep passing the provider-returned synthetic id.
+     */
+    private function pdnsDomainIdFromSynthetic(int $syntheticId): int
+    {
+        $stmt = $this->db->prepare(
+            "SELECT d.id FROM zones z JOIN " . self::PDNS_DB_NAME . ".domains d "
+            . "ON d.name = z.zone_name OR d.name = CONCAT(z.zone_name, '.') "
+            . "WHERE z.id = :id"
+        );
+        $stmt->bindValue(':id', $syntheticId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
      * Poll the DB until a specific record appears, using exponential backoff.
      * Returns the matching row or null on timeout.
      */
     private function waitForDbRecord(int $domainId, string $name, string $type, string $content, int $timeoutMs = 3000): ?array
     {
+        $pdnsDomainId = $this->pdnsDomainIdFromSynthetic($domainId);
         $sleepUs = 50000; // 50ms initial
         $elapsedUs = 0;
         $limitUs = $timeoutMs * 1000;
 
         while ($elapsedUs < $limitUs) {
-            $stmt = $this->db->prepare("SELECT id, content, ttl, prio FROM records WHERE domain_id = :did AND name = :name AND type = :type AND content = :content");
-            $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+            $stmt = $this->db->prepare("SELECT id, content, ttl, prio FROM " . self::PDNS_DB_NAME . ".records WHERE domain_id = :did AND name = :name AND type = :type AND content = :content");
+            $stmt->bindValue(':did', $pdnsDomainId, PDO::PARAM_INT);
             $stmt->bindValue(':name', $name, PDO::PARAM_STR);
             $stmt->bindValue(':type', $type, PDO::PARAM_STR);
             $stmt->bindValue(':content', $content, PDO::PARAM_STR);
@@ -175,14 +210,15 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
      */
     private function waitForDbRecordCount(int $domainId, string $name, string $type, int $expectedCount, int $timeoutMs = 3000): array
     {
+        $pdnsDomainId = $this->pdnsDomainIdFromSynthetic($domainId);
         $sleepUs = 50000;
         $elapsedUs = 0;
         $limitUs = $timeoutMs * 1000;
         $records = [];
 
         while ($elapsedUs < $limitUs) {
-            $stmt = $this->db->prepare("SELECT content FROM records WHERE domain_id = :did AND name = :name AND type = :type ORDER BY content");
-            $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+            $stmt = $this->db->prepare("SELECT content FROM " . self::PDNS_DB_NAME . ".records WHERE domain_id = :did AND name = :name AND type = :type ORDER BY content");
+            $stmt->bindValue(':did', $pdnsDomainId, PDO::PARAM_INT);
             $stmt->bindValue(':name', $name, PDO::PARAM_STR);
             $stmt->bindValue(':type', $type, PDO::PARAM_STR);
             $stmt->execute();
@@ -205,13 +241,14 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
      */
     private function waitForDbRecordAbsent(int $domainId, string $name, string $type, string $content, int $timeoutMs = 3000): bool
     {
+        $pdnsDomainId = $this->pdnsDomainIdFromSynthetic($domainId);
         $sleepUs = 50000;
         $elapsedUs = 0;
         $limitUs = $timeoutMs * 1000;
 
         while ($elapsedUs < $limitUs) {
-            $stmt = $this->db->prepare("SELECT id FROM records WHERE domain_id = :did AND name = :name AND type = :type AND content = :content");
-            $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+            $stmt = $this->db->prepare("SELECT id FROM " . self::PDNS_DB_NAME . ".records WHERE domain_id = :did AND name = :name AND type = :type AND content = :content");
+            $stmt->bindValue(':did', $pdnsDomainId, PDO::PARAM_INT);
             $stmt->bindValue(':name', $name, PDO::PARAM_STR);
             $stmt->bindValue(':type', $type, PDO::PARAM_STR);
             $stmt->bindValue(':content', $content, PDO::PARAM_STR);
@@ -243,9 +280,9 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $this->assertIsInt($domainId);
         $this->assertGreaterThan(0, $domainId);
 
-        // Verify zone exists in database
-        $stmt = $this->db->prepare("SELECT name, type FROM domains WHERE id = :id");
-        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+        // Verify zone exists in database (look up by name, since provider returns synthetic zones.id)
+        $stmt = $this->db->prepare("SELECT name, type FROM " . self::PDNS_DB_NAME . ".domains WHERE name = :name");
+        $stmt->bindValue(':name', $zone, PDO::PARAM_STR);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -413,18 +450,17 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $this->assertIsInt($domainId);
 
         $recordId = $this->provider->addRecordGetId($domainId, "test.$zone", 'A', '192.0.2.2', 300, 0);
-        $this->assertIsInt($recordId);
-        $this->assertGreaterThan(0, $recordId);
+        $this->assertNotEmpty($recordId);
 
-        // Verify the returned ID points to the correct record
-        $stmt = $this->db->prepare("SELECT name, content FROM records WHERE id = :id");
-        $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        // In API mode the returned id is an encoded composite key; verify it decodes
+        // to the inserted record and that the underlying row exists in pdns.records.
+        $decoded = RecordIdentifier::decode((string)$recordId);
+        $this->assertEquals("test.$zone", $decoded['name']);
+        $this->assertEquals('192.0.2.2', $decoded['content']);
+        $this->assertEquals('A', $decoded['type']);
 
-        $this->assertNotFalse($row);
-        $this->assertEquals("test.$zone", $row['name']);
-        $this->assertEquals('192.0.2.2', $row['content']);
+        $row = $this->waitForDbRecord($domainId, "test.$zone", 'A', '192.0.2.2');
+        $this->assertNotNull($row, 'A record should appear in DB after addRecordGetId');
     }
 
     public function testCreateRecordAtomic(): void
@@ -437,24 +473,15 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
 
         // Create a normal (enabled) record
         $recordId = $this->provider->createRecordAtomic($domainId, "atomic.$zone", 'A', '192.0.2.10', 3600, 0);
-        $this->assertIsInt($recordId);
-        $this->assertGreaterThan(0, $recordId);
+        $this->assertNotEmpty($recordId);
 
-        // Verify via database
-        $stmt = $this->db->prepare("SELECT name, content, disabled FROM records WHERE id = :id");
-        $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $this->assertNotFalse($row);
-        $this->assertEquals("atomic.$zone", $row['name']);
-        $this->assertEquals('192.0.2.10', $row['content']);
-        $this->assertEquals(0, (int)$row['disabled']);
+        // Verify via database (poll because API write is asynchronous)
+        $row = $this->waitForDbRecord($domainId, "atomic.$zone", 'A', '192.0.2.10');
+        $this->assertNotNull($row, 'A record should appear in DB after createRecordAtomic');
 
         // Create a disabled record
         $disabledId = $this->provider->createRecordAtomic($domainId, "disabled.$zone", 'A', '192.0.2.11', 3600, 0, 1);
-        $this->assertIsInt($disabledId);
-        $this->assertGreaterThan(0, $disabledId);
+        $this->assertNotEmpty($disabledId);
 
         // Verify disabled state via API (editRecord patches API, not local DB directly)
         $apiZone = $this->client->getZone($zone . '.');
@@ -505,9 +532,9 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
 
         // Add record
         $recordId = $this->provider->addRecordGetId($domainId, "edit.$zone", 'A', '192.0.2.1', 3600, 0);
-        $this->assertIsInt($recordId);
+        $this->assertNotEmpty($recordId);
 
-        // Edit it
+        // Edit it (recordId is the encoded composite key in API mode)
         $result = $this->provider->editRecord($recordId, "edit.$zone", 'A', '192.0.2.99', 7200, 0, 0);
         $this->assertTrue($result);
 
@@ -527,9 +554,9 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
 
         // Add record
         $recordId = $this->provider->addRecordGetId($domainId, "del.$zone", 'A', '192.0.2.1', 3600, 0);
-        $this->assertIsInt($recordId);
+        $this->assertNotEmpty($recordId);
 
-        // Delete it
+        // Delete it (recordId is the encoded composite key in API mode)
         $result = $this->provider->deleteRecord($recordId);
         $this->assertTrue($result);
 
@@ -552,13 +579,12 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $this->provider->addRecordGetId($domainId, "rrset.$zone", 'A', '192.0.2.1', 3600, 0);
         $this->provider->addRecordGetId($domainId, "rrset.$zone", 'A', '192.0.2.2', 3600, 0);
 
-        // PowerDNS REPLACE invalidates old record IDs. Re-lookup by content.
-        $row = $this->waitForDbRecord($domainId, "rrset.$zone", 'A', '192.0.2.1');
-        $this->assertNotNull($row, 'First A record should exist in DB');
-        $currentId1 = (int)$row['id'];
+        // Wait for both rows to land in PowerDNS DB
+        $this->assertNotNull($this->waitForDbRecord($domainId, "rrset.$zone", 'A', '192.0.2.1'));
 
-        // Delete first, second should remain
-        $result = $this->provider->deleteRecord($currentId1);
+        // Delete first via encoded composite key (API-mode contract); second should remain.
+        $encodedId = RecordIdentifier::encode($zone, "rrset.$zone", 'A', '192.0.2.1', 0);
+        $result = $this->provider->deleteRecord($encodedId);
         $this->assertTrue($result);
 
         // Poll DB until only one record remains
@@ -581,9 +607,9 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $domainId = $this->provider->createZone($zone, 'NATIVE');
         $this->assertIsInt($domainId, 'Zone creation should return domain ID');
 
-        // 2. Add A record
+        // 2. Add A record (returns encoded composite key in API mode)
         $aRecordId = $this->provider->addRecordGetId($domainId, "www.$zone", 'A', '198.51.100.1', 3600, 0);
-        $this->assertIsInt($aRecordId, 'A record should be created and ID returned');
+        $this->assertNotEmpty($aRecordId, 'A record should be created and ID returned');
 
         // 3. Add AAAA record
         $this->assertTrue(
@@ -597,13 +623,15 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
             'CNAME record should be added successfully'
         );
 
-        // 5. Edit A record - re-lookup current ID since REPLACE invalidates old IDs
-        $row = $this->waitForDbRecord($domainId, "www.$zone", 'A', '198.51.100.1');
-        $this->assertNotNull($row, 'A record should exist before edit');
-        $currentAId = (int)$row['id'];
+        // 5. Edit A record via encoded composite key (API-mode contract).
+        $this->assertNotNull(
+            $this->waitForDbRecord($domainId, "www.$zone", 'A', '198.51.100.1'),
+            'A record should exist before edit'
+        );
+        $encodedAId = RecordIdentifier::encode($zone, "www.$zone", 'A', '198.51.100.1', 0);
 
         $this->assertTrue(
-            $this->provider->editRecord($currentAId, "www.$zone", 'A', '198.51.100.2', 7200, 0, 0),
+            $this->provider->editRecord($encodedAId, "www.$zone", 'A', '198.51.100.2', 7200, 0, 0),
             'A record should be edited successfully'
         );
 
@@ -612,12 +640,14 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $this->assertNotNull($editedRow, 'Edited A record should appear in DB');
         $this->assertEquals(7200, (int)$editedRow['ttl']);
 
-        // 6. Delete CNAME - PowerDNS stores CNAME content without trailing dot in DB
-        $cnameRow = $this->waitForDbRecord($domainId, "alias.$zone", 'CNAME', "www.$zone");
-        $this->assertNotNull($cnameRow, 'CNAME record should exist');
+        // 6. Delete CNAME via encoded composite key (PowerDNS stores CNAME content without trailing dot).
+        $this->assertNotNull(
+            $this->waitForDbRecord($domainId, "alias.$zone", 'CNAME', "www.$zone"),
+            'CNAME record should exist'
+        );
 
         $this->assertTrue(
-            $this->provider->deleteRecord((int)$cnameRow['id']),
+            $this->provider->deleteRecord(RecordIdentifier::encode($zone, "alias.$zone", 'CNAME', "www.$zone.", 0)),
             'CNAME record should be deleted'
         );
 
@@ -627,8 +657,8 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
             'CNAME should be gone from DB'
         );
 
-        $stmt = $this->db->prepare("SELECT type, content FROM records WHERE domain_id = :did AND type IN ('A', 'AAAA', 'CNAME') ORDER BY type");
-        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+        $stmt = $this->db->prepare("SELECT type, content FROM " . self::PDNS_DB_NAME . ".records WHERE domain_id = :did AND type IN ('A', 'AAAA', 'CNAME') ORDER BY type");
+        $stmt->bindValue(':did', $this->pdnsDomainIdFromSynthetic($domainId), PDO::PARAM_INT);
         $stmt->execute();
         $remaining = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
