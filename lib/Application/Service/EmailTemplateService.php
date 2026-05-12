@@ -172,13 +172,13 @@ class EmailTemplateService
      *
      * @param string $name User's name
      * @param array $usernames Usernames associated with the email
-     * @param string $loginUrl URL to the login page
+     * @param string|null $loginUrl URL to the login page, or null to omit the link
      * @return array ['html' => string, 'text' => string, 'subject' => string]
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function renderUsernameRecoveryEmail(string $name, array $usernames, string $loginUrl): array
+    public function renderUsernameRecoveryEmail(string $name, array $usernames, ?string $loginUrl): array
     {
         $greeting = $name ? "Hi $name," : "Hi,";
 

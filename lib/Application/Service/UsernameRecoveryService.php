@@ -243,14 +243,18 @@ class UsernameRecoveryService
     }
 
     /**
-     * Get login page URL
+     * Get login page URL for use in the recovery email
      *
-     * @return string Full URL to login page
+     * Prefers interface.application_url; falls back to SERVER_NAME (set by the
+     * web server config, not the request) so deployments without a configured
+     * URL still get a usable link. HTTP_HOST is never consulted.
+     *
+     * @return string|null Login URL, or null if neither application_url nor SERVER_NAME is available
      */
-    private function getLoginUrl(): string
+    private function getLoginUrl(): ?string
     {
-        $urlService = new UrlService($this->config);
-        return $urlService->getLoginUrl();
+        $urlService = new UrlService($this->config, $this->logger);
+        return $urlService->getEmailUrlWithServerFallback('/login');
     }
 
     /**

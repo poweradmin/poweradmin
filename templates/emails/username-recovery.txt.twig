@@ -24,7 +24,7 @@ You can use this username to log in to your account.
 You can use any of these usernames to log in to your account.
 {% endif %}
 
-Login page: {{ loginUrl }}
+{% if loginUrl %}Login page: {{ loginUrl }}{% endif %}
 
 SECURITY NOTICE:
 - If you did not request username recovery, please ignore this email.

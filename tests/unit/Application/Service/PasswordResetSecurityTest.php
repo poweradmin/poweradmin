@@ -69,6 +69,9 @@ class PasswordResetSecurityTest extends TestCase
                     'rate_limit_window' => 3600,
                     'min_time_between_requests' => 300
                 ]
+            ],
+            'interface' => [
+                'application_url' => 'https://test.example'
             ]
         ]);
 
