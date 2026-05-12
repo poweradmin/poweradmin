@@ -1,8 +1,0 @@
-linters:
-  phpcs:
-    standard: './phpcs.xml.dist'
-    extensions: '.php'
-    tab_width: 4
-    ignore: 'src/test/resources/*'
-branches:
-    ignore: ['1.5.x']
