@@ -252,6 +252,148 @@ class UrlServiceHostValidationTest extends TestCase
         $this->assertStringStartsWith('https://', $url);
     }
 
+    public function testGetEmailUrlIgnoresForgedHostWhenApplicationUrlConfigured(): void
+    {
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => 'https://dns.legitimate.example',
+                'base_url_prefix' => ''
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+        $url = $urlService->getEmailUrl('/password/reset?token=abc');
+
+        $this->assertSame('https://dns.legitimate.example/password/reset?token=abc', $url);
+        $this->assertStringNotContainsString('evil.attacker.test', (string) $url);
+    }
+
+    public function testGetEmailUrlReturnsNullWhenApplicationUrlEmpty(): void
+    {
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => '',
+                'base_url_prefix' => ''
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $this->assertNull($urlService->getEmailUrl('/password/reset?token=abc'));
+    }
+
+    public function testGetEmailUrlWithServerFallbackPrefersApplicationUrl(): void
+    {
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['SERVER_NAME'] = 'server.example';
+        $_SERVER['HTTPS'] = 'on';
+
+        $config = $this->createMockConfig([
+            'interface' => ['application_url' => 'https://configured.example']
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $this->assertSame(
+            'https://configured.example/login',
+            $urlService->getEmailUrlWithServerFallback('/login')
+        );
+    }
+
+    public function testGetEmailUrlWithServerFallbackUsesServerNameWhenApplicationUrlEmpty(): void
+    {
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+        $_SERVER['SERVER_NAME'] = 'server.example';
+        $_SERVER['SERVER_PORT'] = '443';
+        $_SERVER['HTTPS'] = 'on';
+
+        $config = $this->createMockConfig([
+            'interface' => ['application_url' => '', 'base_url_prefix' => '']
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $url = $urlService->getEmailUrlWithServerFallback('/login');
+        $this->assertSame('https://server.example/login', $url);
+        $this->assertStringNotContainsString('evil.attacker.test', (string) $url);
+    }
+
+    public function testGetEmailUrlWithServerFallbackHonorsForwardedProtoForTlsTerminatingProxy(): void
+    {
+        // Reverse proxy terminates TLS; PHP-FPM sees plain HTTP with X-Forwarded-Proto=https.
+        // Host is pinned to SERVER_NAME (server-config), so honoring the protocol header
+        // is safe and produces correct https links instead of broken http ones.
+        $_SERVER['SERVER_NAME'] = 'server.example';
+        $_SERVER['SERVER_PORT'] = '80';
+        unset($_SERVER['HTTPS']);
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+
+        $config = $this->createMockConfig([
+            'interface' => ['application_url' => '', 'base_url_prefix' => '']
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $this->assertSame(
+            'https://server.example/login',
+            $urlService->getEmailUrlWithServerFallback('/login')
+        );
+    }
+
+    public function testGetEmailUrlWithServerFallbackDropsBackendPort(): void
+    {
+        // SERVER_PORT is the backend port - omitting it avoids leaking internal ports
+        // into emails when the deployment is behind a reverse proxy.
+        $_SERVER['SERVER_NAME'] = 'server.example';
+        $_SERVER['SERVER_PORT'] = '8443';
+        $_SERVER['HTTPS'] = 'on';
+
+        $config = $this->createMockConfig([
+            'interface' => ['application_url' => '', 'base_url_prefix' => '']
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $this->assertSame(
+            'https://server.example/login',
+            $urlService->getEmailUrlWithServerFallback('/login')
+        );
+    }
+
+    public function testGetEmailUrlWithServerFallbackReturnsNullWhenBothEmpty(): void
+    {
+        $_SERVER['HTTP_HOST'] = 'attacker.test';
+        unset($_SERVER['SERVER_NAME']);
+
+        $config = $this->createMockConfig([
+            'interface' => ['application_url' => '']
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $this->assertNull($urlService->getEmailUrlWithServerFallback('/login'));
+    }
+
+    public function testGetEmailUrlNormalizesSlashes(): void
+    {
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => 'https://dns.legitimate.example/',
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $this->assertSame('https://dns.legitimate.example/x', $urlService->getEmailUrl('/x'));
+        $this->assertSame('https://dns.legitimate.example/x', $urlService->getEmailUrl('x'));
+    }
+
     public function testProtocolDetectionDefaultsToHttp(): void
     {
         // No HTTPS indicators

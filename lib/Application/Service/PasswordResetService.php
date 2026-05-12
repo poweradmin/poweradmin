@@ -114,6 +114,16 @@ class PasswordResetService
             return false;
         }
 
+        // Bail before persistence so a misconfigured application_url
+        // doesn't burn rate-limit budget on tokens that can't be emailed.
+        if (empty($this->config->get('interface', 'application_url', ''))) {
+            $this->logger->error('Password reset email NOT sent: interface.application_url must be configured to build a trustworthy reset link', [
+                'email' => $email,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return true;
+        }
+
         // Clean up expired tokens before processing new request
         $this->cleanupExpiredTokens();
 
@@ -233,11 +243,14 @@ class PasswordResetService
 
     /**
      * Get password reset URL
+     *
+     * Built strictly from interface.application_url so the link in the email
+     * is never influenced by the Host header of the requesting client.
      */
     private function getResetUrl(string $token): string
     {
-        $urlService = new UrlService($this->config);
-        return $urlService->getAbsoluteUrl('/password/reset?token=' . urlencode($token));
+        $urlService = new UrlService($this->config, $this->logger);
+        return $urlService->getEmailUrl('/password/reset?token=' . urlencode($token)) ?? '';
     }
 
     /**
