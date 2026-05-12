@@ -14,7 +14,7 @@
     "release/4.3.x"
   ],
   "constraints": {
-    "php": ">=8.2 <8.3"
+    "php": "<8.6"
   },
   "postUpdateOptions": [],
   "packageRules": [
