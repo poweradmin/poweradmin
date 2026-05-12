@@ -1,0 +1,66 @@
+{
+  "name": "phpmd/phpmd",
+  "description": "PHPMD is a spin-off project of PHP Depend and aims to be a PHP equivalent of the well known Java tool PMD.",
+  "keywords": [
+    "dev",
+    "phpmd",
+    "pdepend",
+    "pmd",
+    "mess detection",
+    "mess detector"
+  ],
+  "type": "library",
+  "license": "BSD-3-Clause",
+  "homepage": "https://phpmd.org/",
+  "authors": [
+    {
+      "name": "Manuel Pichler",
+      "homepage": "https://github.com/manuelpichler",
+      "email": "github@manuel-pichler.de",
+      "role": "Project Founder"
+    },
+    {
+      "name": "Marc Würth",
+      "homepage": "https://github.com/ravage84",
+      "email": "ravage@bluewin.ch",
+      "role": "Project Maintainer"
+    },
+    {
+      "name": "Other contributors",
+      "homepage": "https://github.com/phpmd/phpmd/graphs/contributors",
+      "role": "Contributors"
+    }
+  ],
+  "support": {
+    "irc": "irc://irc.freenode.org/phpmd"
+  },
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=5.3.9",
+    "ext-xml": "*",
+    "composer/xdebug-handler": "^1.0 || ^2.0 || ^3.0",
+    "pdepend/pdepend": "^2.16.1"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^2.9.2 || ^3.7.2",
+    "mikey179/vfsstream": "^1.6.8",
+    "gregwar/rst": "^1.0",
+    "ext-simplexml": "*",
+    "ext-json": "*",
+    "easy-doc/easy-doc": "0.0.0 || ^1.3.2"
+  },
+  "autoload": {
+    "psr-0": {
+      "PHPMD\\": "src/main/php"
+    }
+  },
+  "bin": [
+    "src/bin/phpmd"
+  ],
+  "scripts": {
+    "test": "php src/test/php/install-test-vendor.php && php src/test/vendor/bin/phpunit --no-coverage",
+    "cs-check": "phpcs -p --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1",
+    "cs-fix": "phpcbf -p --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1",
+    "build-website": "easy-doc build src/site/config.php --verbose"
+  }
+}
