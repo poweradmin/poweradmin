@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -51,6 +52,7 @@ class AddZoneSlaveController extends BaseController
     private IPAddressValidator $ipAddressValidator;
     private IpAddressRetriever $ipAddressRetriever;
     private UserContextService $userContextService;
+    private Request $request;
 
     public function __construct(array $request)
     {
@@ -59,6 +61,7 @@ class AddZoneSlaveController extends BaseController
         $this->ipAddressValidator = new IPAddressValidator();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->userContextService = new UserContextService();
+        $this->request = new Request();
     }
 
     public function run(): void
@@ -115,8 +118,9 @@ class AddZoneSlaveController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        $postData = $this->request->getPostParams();
+        if (!$this->doValidateRequest($postData)) {
+            $this->showFirstValidationError($postData);
         }
 
         $dns_third_level_check = $this->config->get('dns', 'third_level_check', false);
@@ -124,11 +128,13 @@ class AddZoneSlaveController extends BaseController
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         $type = "SLAVE";
-        $owner = $ownershipMode->isUserOwnerAllowed() && !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
-        $master = $_POST['slave_master'];
-        $zone = DnsIdnService::toPunycode(trim($_POST['domain']));
-        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups']) ?
-            array_map('intval', $_POST['groups']) : [];
+        $ownerInput = $this->request->getPostParam('owner');
+        $owner = $ownershipMode->isUserOwnerAllowed() && !empty($ownerInput) ? (int)$ownerInput : null;
+        $master = (string)$this->request->getPostParam('slave_master', '');
+        $zone = DnsIdnService::toPunycode(trim((string)$this->request->getPostParam('domain', '')));
+        $groupsInput = $this->request->getPostParam('groups');
+        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && is_array($groupsInput) ?
+            array_map('intval', $groupsInput) : [];
 
         // Validate: at least one owner (user or group) must be selected
         if ($owner === null && empty($selected_groups)) {
@@ -215,16 +221,19 @@ class AddZoneSlaveController extends BaseController
     private function showForm(): void
     {
         // Keep the submitted values if there was an error
-        $domain_value = isset($_POST['domain']) ? htmlspecialchars($_POST['domain']) : '';
-        $slave_master_value = isset($_POST['slave_master']) ? htmlspecialchars($_POST['slave_master']) : '';
+        $domainInput = $this->request->getPostParam('domain');
+        $domain_value = $domainInput !== null ? htmlspecialchars($domainInput) : '';
+        $slaveMasterInput = $this->request->getPostParam('slave_master');
+        $slave_master_value = $slaveMasterInput !== null ? htmlspecialchars($slaveMasterInput) : '';
 
         // Safely handle the owner value - ensure it's an integer or preserve empty selection
-        if (isset($_POST['owner'])) {
-            if ($_POST['owner'] === '') {
+        $ownerInput = $this->request->getPostParam('owner');
+        if ($ownerInput !== null) {
+            if ($ownerInput === '') {
                 // Empty value means "no user owner" was explicitly selected
                 $owner_value = '';
             } else {
-                $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
+                $owner_id = filter_var($ownerInput, FILTER_VALIDATE_INT);
                 // Verify that the owner ID exists among valid users
                 $valid_users = UserManager::showUsers($this->db);
                 $valid_owner_ids = array_column($valid_users, 'id');
@@ -235,7 +244,7 @@ class AddZoneSlaveController extends BaseController
             $owner_value = $_SESSION['userid'];
         }
 
-        $is_post_request = !empty($_POST);
+        $is_post_request = !empty($this->request->getPostParams());
 
         // Fetch groups for the dropdown - admins see all, others see only their own
         $userGroupRepo = new DbUserGroupRepository($this->db);
@@ -247,14 +256,14 @@ class AddZoneSlaveController extends BaseController
         $memberCounts = $userGroupRepo->getMemberCountsByGroupIds($groupIds);
 
         // Handle selected groups on error re-render
-        $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
-            array_map('intval', $_POST['groups']) : [];
+        $groupsInput = $this->request->getPostParam('groups');
+        $selected_groups = is_array($groupsInput) ? array_map('intval', $groupsInput) : [];
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         // Preserve reverse-zone context so the form returns to the reverse list
-        $is_reverse_zone = (isset($_GET['type']) && $_GET['type'] === 'reverse')
-            || (isset($_POST['type']) && $_POST['type'] === 'reverse');
+        $is_reverse_zone = $this->request->getQueryParam('type') === 'reverse'
+            || $this->request->getPostParam('type') === 'reverse';
 
         $this->render('add_zone_slave.html', [
             'is_reverse_zone' => $is_reverse_zone,

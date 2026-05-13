@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
@@ -54,6 +55,7 @@ class AddZoneMasterController extends BaseController
     private LegacyLogger $auditLogger;
     private UserContextService $userContext;
     private IpAddressRetriever $ipAddressRetriever;
+    private Request $request;
 
     public function __construct(array $request)
     {
@@ -62,6 +64,7 @@ class AddZoneMasterController extends BaseController
         $this->auditLogger = new LegacyLogger($this->db);
         $this->userContext = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->request = new Request();
     }
 
     public function run(): void
@@ -121,8 +124,9 @@ class AddZoneMasterController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        $postData = $this->request->getPostParams();
+        if (!$this->doValidateRequest($postData)) {
+            $this->showFirstValidationError($postData);
         }
 
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
@@ -130,12 +134,14 @@ class AddZoneMasterController extends BaseController
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
-        $zone_name = DnsIdnService::toPunycode(trim($_POST['domain']));
-        $dom_type = $_POST["dom_type"];
-        $owner = $ownershipMode->isUserOwnerAllowed() && !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
-        $zone_template = $_POST['zone_template'] ?? "none";
-        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups']) ?
-            array_map('intval', $_POST['groups']) : [];
+        $zone_name = DnsIdnService::toPunycode(trim((string)$this->request->getPostParam('domain', '')));
+        $dom_type = $this->request->getPostParam('dom_type', '');
+        $ownerInput = $this->request->getPostParam('owner');
+        $owner = $ownershipMode->isUserOwnerAllowed() && !empty($ownerInput) ? (int)$ownerInput : null;
+        $zone_template = $this->request->getPostParam('zone_template', 'none');
+        $groupsInput = $this->request->getPostParam('groups');
+        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && is_array($groupsInput) ?
+            array_map('intval', $groupsInput) : [];
 
         // Validate: at least one owner (user or group) must be selected
         if ($owner === null && empty($selected_groups)) {
@@ -209,7 +215,7 @@ class AddZoneMasterController extends BaseController
             if ($pdnssec_use) {
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
-                if (isset($_POST['dnssec']) && $dnssecProvider->isDnssecEnabled()) {
+                if ($this->request->getPostParam('dnssec') !== null && $dnssecProvider->isDnssecEnabled()) {
                     // Pre-flight zone validation before DNSSEC signing
                     $zoneValidator = new ZoneValidationService($this->getRepositoryFactory()->createRecordRepository());
                     $validation = $zoneValidator->validateZoneForDnssec($zone_id, $zone_name);
@@ -273,19 +279,21 @@ class AddZoneMasterController extends BaseController
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
 
         // Keep the submitted zone name if there was an error
-        $domain_value = isset($_POST['domain']) ? htmlspecialchars($_POST['domain']) : '';
+        $domainInput = $this->request->getPostParam('domain');
+        $domain_value = $domainInput !== null ? htmlspecialchars($domainInput) : '';
 
         // Resolve the system-wide default template (DB flag → config setting → none)
         $default_template_id = $zone_templates->getDefaultTemplateId();
 
         // Safely handle the zone template value
-        if (isset($_POST['zone_template'])) {
+        $zoneTemplateInput = $this->request->getPostParam('zone_template');
+        if ($zoneTemplateInput !== null) {
             // If it's 'none', keep it as is
-            if ($_POST['zone_template'] === 'none') {
+            if ($zoneTemplateInput === 'none') {
                 $zone_template_value = 'none';
             } else {
                 // Otherwise, ensure it's a valid integer
-                $template_id = filter_var($_POST['zone_template'], FILTER_VALIDATE_INT);
+                $template_id = filter_var($zoneTemplateInput, FILTER_VALIDATE_INT);
                 // Get the list of valid template IDs
                 $templates = $zone_templates->getListZoneTempl($_SESSION['userid']);
                 $valid_template_ids = array_column($templates, 'id');
@@ -297,12 +305,13 @@ class AddZoneMasterController extends BaseController
         }
 
         // Safely handle the owner value - ensure it's an integer or preserve empty selection
-        if (isset($_POST['owner'])) {
-            if ($_POST['owner'] === '') {
+        $ownerInput = $this->request->getPostParam('owner');
+        if ($ownerInput !== null) {
+            if ($ownerInput === '') {
                 // Empty value means "no user owner" was explicitly selected
                 $owner_value = '';
             } else {
-                $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
+                $owner_id = filter_var($ownerInput, FILTER_VALIDATE_INT);
                 // Verify that the owner ID exists among valid users
                 $valid_users = UserManager::showUsers($this->db);
                 $valid_owner_ids = array_column($valid_users, 'id');
@@ -320,13 +329,14 @@ class AddZoneMasterController extends BaseController
             $valid_domain_types[] = "PRODUCER";
             $valid_domain_types[] = "CONSUMER";
         }
-        $dom_type_value = isset($_POST['dom_type']) && in_array($_POST['dom_type'], $valid_domain_types) ?
-            $_POST['dom_type'] : $this->config->get('dns', 'zone_type_default', 'NATIVE');
+        $domTypeInput = $this->request->getPostParam('dom_type');
+        $dom_type_value = $domTypeInput !== null && in_array($domTypeInput, $valid_domain_types) ?
+            $domTypeInput : $this->config->get('dns', 'zone_type_default', 'NATIVE');
 
-        $is_post_request = !empty($_POST);
+        $is_post_request = !empty($this->request->getPostParams());
 
         // Create a sanitized version of the DNSSEC checkbox status
-        $dnssec_checked = isset($_POST['dnssec']) && $_POST['dnssec'] == '1';
+        $dnssec_checked = $this->request->getPostParam('dnssec') == '1';
 
         // Get available templates for this user
         $userId = $this->userContext->getLoggedInUserId();
@@ -342,14 +352,14 @@ class AddZoneMasterController extends BaseController
         $memberCounts = $userGroupRepo->getMemberCountsByGroupIds($groupIds);
 
         // Handle selected groups on error re-render
-        $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
-            array_map('intval', $_POST['groups']) : [];
+        $groupsInput = $this->request->getPostParam('groups');
+        $selected_groups = is_array($groupsInput) ? array_map('intval', $groupsInput) : [];
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         // Preserve reverse-zone context so the form returns to the reverse list
-        $is_reverse_zone = (isset($_GET['type']) && $_GET['type'] === 'reverse')
-            || (isset($_POST['type']) && $_POST['type'] === 'reverse');
+        $is_reverse_zone = $this->request->getQueryParam('type') === 'reverse'
+            || $this->request->getPostParam('type') === 'reverse';
 
         $this->render('add_zone_master.html', [
             'is_reverse_zone' => $is_reverse_zone,
