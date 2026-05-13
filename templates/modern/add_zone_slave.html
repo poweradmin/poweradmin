@@ -12,8 +12,9 @@
     </ol>
 </nav>
 
-<form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/add/slave" novalidate>
+<form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/add/slave{% if is_reverse_zone %}?type=reverse{% endif %}" novalidate>
     <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {% if is_reverse_zone %}<input type="hidden" name="type" value="reverse">{% endif %}
 
 <!-- Two Column Layout -->
 <div class="row">
@@ -125,7 +126,7 @@
                         <button class="btn btn-primary btn-sm" type="submit" name="submit">
                             <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone{% endtrans %}
                         </button>
-                        <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-secondary btn-sm">
+                        <a href="{{ base_url_prefix }}/zones/{{ is_reverse_zone ? 'reverse' : 'forward' }}" class="btn btn-secondary btn-sm">
                             <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                         </a>
                     </div>
