@@ -203,7 +203,12 @@ class AddZoneSlaveController extends BaseController
         $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
             array_map('intval', $_POST['groups']) : [];
 
+        // Preserve reverse-zone context so the form returns to the reverse list
+        $is_reverse_zone = (isset($_GET['type']) && $_GET['type'] === 'reverse')
+            || (isset($_POST['type']) && $_POST['type'] === 'reverse');
+
         $this->render('add_zone_slave.html', [
+            'is_reverse_zone' => $is_reverse_zone,
             'users' => UserManager::showUsers($this->db),
             'session_user_id' => $_SESSION['userid'],
             'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),

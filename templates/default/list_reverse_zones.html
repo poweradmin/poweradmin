@@ -16,12 +16,12 @@
         </div>
         <div>
             {% if perm_zone_master_add %}
-            <a href="{{ base_url_prefix }}/zones/add/master" class="btn btn-primary btn-sm">
+            <a href="{{ base_url_prefix }}/zones/add/master?type=reverse" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add master zone{% endtrans %}
             </a>
             {% endif %}
             {% if perm_zone_slave_add %}
-            <a href="{{ base_url_prefix }}/zones/add/slave" class="btn btn-secondary btn-sm">
+            <a href="{{ base_url_prefix }}/zones/add/slave?type=reverse" class="btn btn-secondary btn-sm">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add slave zone{% endtrans %}
             </a>
             {% endif %}
