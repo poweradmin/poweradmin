@@ -1,8 +1,0 @@
---- tests/Core/Fixer/Fixtures/GenerateDiffTest-LineAdded.inc
-+++ PHP_CodeSniffer
-@@ -1,4 +1,5 @@
- <?php
-+// Comment with 2 spaces trailing whitespace.  
- $var = FALSE;
- 
- if ($var) {
