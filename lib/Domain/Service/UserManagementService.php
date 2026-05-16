@@ -271,6 +271,19 @@ class UserManagementService
             ];
         }
 
+        // Reject invalid permission template ids; missing/null is allowed (repo defaults to 1).
+        // Group templates are rejected to match the web UI flow.
+        if (array_key_exists('perm_templ', $userData) && $userData['perm_templ'] !== null) {
+            $permTemplId = $this->normalizePermTemplId($userData['perm_templ']);
+            if ($permTemplId === null || !$this->permissionTemplateExists($permTemplId, 'user')) {
+                return [
+                    'success' => false,
+                    'message' => 'Permission template not found'
+                ];
+            }
+            $userData['perm_templ'] = $permTemplId;
+        }
+
         try {
             // Hash the password before storing
             $userData['password'] = password_hash($userData['password'], PASSWORD_DEFAULT);
@@ -334,6 +347,21 @@ class UserManagementService
                     'message' => 'Email already exists'
                 ];
             }
+        }
+
+        // Reject invalid permission template ids; on update path null also fails (no repo default).
+        // Group templates are rejected to match the web UI flow.
+        if (array_key_exists('perm_templ', $userData)) {
+            $permTemplId = $userData['perm_templ'] === null
+                ? null
+                : $this->normalizePermTemplId($userData['perm_templ']);
+            if ($permTemplId === null || !$this->permissionTemplateExists($permTemplId, 'user')) {
+                return [
+                    'success' => false,
+                    'message' => 'Permission template not found'
+                ];
+            }
+            $userData['perm_templ'] = $permTemplId;
         }
 
         // Check if trying to disable the last remaining uberuser
@@ -524,13 +552,34 @@ class UserManagementService
     }
 
     /**
-     * Check if a permission template exists
+     * Check if a permission template exists, optionally restricted to a template type
      *
      * @param int $permTemplId Permission template ID
-     * @return bool True if the permission template exists
+     * @param string|null $templateType Optional template_type filter ('user' or 'group')
+     * @return bool True if the permission template exists (and matches type when set)
      */
-    private function permissionTemplateExists(int $permTemplId): bool
+    private function permissionTemplateExists(int $permTemplId, ?string $templateType = null): bool
     {
-        return $this->userRepository->permissionTemplateExists($permTemplId);
+        return $this->userRepository->permissionTemplateExists($permTemplId, $templateType);
+    }
+
+    /**
+     * Coerce an API-supplied perm_templ to a positive int, or null if invalid.
+     * Accepts ints and numeric strings; rejects malformed strings like "2foo"
+     * (which (int) would silently truncate to 2).
+     *
+     * @param mixed $value
+     * @return int|null
+     */
+    private function normalizePermTemplId(mixed $value): ?int
+    {
+        if (is_int($value)) {
+            return $value > 0 ? $value : null;
+        }
+        if (is_string($value) && $value !== '' && ctype_digit($value)) {
+            $intValue = (int)$value;
+            return $intValue > 0 ? $intValue : null;
+        }
+        return null;
     }
 }

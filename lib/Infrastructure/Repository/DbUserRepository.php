@@ -525,12 +525,20 @@ class DbUserRepository implements UserRepository
      * Check if a permission template exists
      *
      * @param int $permTemplId Permission template ID
-     * @return bool True if the permission template exists
+     * @param string|null $templateType Optional template_type filter ('user' or 'group')
+     * @return bool True if the permission template exists (and matches type when set)
      */
-    public function permissionTemplateExists(int $permTemplId): bool
+    public function permissionTemplateExists(int $permTemplId, ?string $templateType = null): bool
     {
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM perm_templ WHERE id = :permTemplId");
-        $stmt->execute([':permTemplId' => $permTemplId]);
+        if ($templateType !== null && in_array($templateType, ['user', 'group'], true)) {
+            $stmt = $this->db->prepare(
+                "SELECT COUNT(*) FROM perm_templ WHERE id = :permTemplId AND template_type = :templateType"
+            );
+            $stmt->execute([':permTemplId' => $permTemplId, ':templateType' => $templateType]);
+        } else {
+            $stmt = $this->db->prepare("SELECT COUNT(*) FROM perm_templ WHERE id = :permTemplId");
+            $stmt->execute([':permTemplId' => $permTemplId]);
+        }
         return (int)$stmt->fetchColumn() > 0;
     }
 }
