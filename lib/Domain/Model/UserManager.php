@@ -184,6 +184,7 @@ class UserManager
      * Useful for setting a secure default when creating new users
      *
      * @param object $db Database connection
+     * @param string|null $templateType Restrict to 'user' or 'group' templates; null = no filter
      * @return int|null Template ID with minimal permissions, or null if no templates exist
      */
     public static function getMinimalPermissionTemplateId($db, ?string $templateType = null): ?int
@@ -631,7 +632,12 @@ class UserManager
             $sql_add = "AND users.id = :userid";
         }
 
-        $query = "SELECT COUNT(*) FROM users, perm_templ WHERE users.perm_templ = perm_templ.id " . $sql_add;
+        // Restrict the join to user-type templates so users assigned to a group
+        // template (legacy state) are still counted, falling under the broken-row branch.
+        $query = "SELECT COUNT(*) FROM users
+                  LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
+                       AND perm_templ.template_type = 'user'
+                  WHERE 1=1 " . $sql_add;
 
         $stmt = $db->prepare($query);
 
@@ -682,11 +688,16 @@ class UserManager
             $query .= "use_ldap,";
         }
 
+        // Restrict the join to user-type templates so users pointed at a deleted
+        // template or a group template are surfaced with a NULL tpl_id and routed
+        // through the broken-row fallback below.
         $query .= "perm_templ.id AS tpl_id,
         perm_templ.name AS tpl_name,
         perm_templ.descr AS tpl_descr
-        FROM users, perm_templ
-        WHERE users.perm_templ = perm_templ.id " . $sql_add . "
+        FROM users
+        LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
+             AND perm_templ.template_type = 'user'
+        WHERE 1=1 " . $sql_add . "
         ORDER BY username";
 
         if ($limit !== null) {
@@ -715,8 +726,33 @@ class UserManager
         // Fetch MFA status in a separate query
         $mfaStatus = self::getUserMfaStatusMap($db);
 
+        // Resolve the fallback template only when at least one row has a dangling perm_templ.
+        // Using the minimum-permission user template keeps the dropdown's <option selected>
+        // pointing somewhere safe: a stale save lands on minimum permissions rather than
+        // letting the browser auto-pick the first <option> (which is typically Administrator).
+        $fallbackTplId = null;
+        $fallbackTplName = null;
+        foreach ($response as $user) {
+            if ($user['tpl_id'] === null) {
+                $fallbackTplId = self::getMinimalPermissionTemplateId($db, 'user');
+                if ($fallbackTplId !== null) {
+                    $fallbackTplName = self::getPermissionTemplateName($db, $fallbackTplId);
+                }
+                break;
+            }
+        }
+
         $userList = array();
         foreach ($response as $user) {
+            $tplId = $user['tpl_id'];
+            $tplName = $user['tpl_name'];
+            $tplDescr = $user['tpl_descr'];
+            if ($tplId === null && $fallbackTplId !== null) {
+                $tplId = $fallbackTplId;
+                $tplName = $fallbackTplName;
+                $tplDescr = null;
+            }
+
             $userList[] = array(
                 "uid" => $user['uid'],
                 "username" => $user['username'],
@@ -726,9 +762,9 @@ class UserManager
                 "active" => $user['active'],
                 "use_ldap" => $user['use_ldap'] ?? 0,
                 "auth_type" => $user['auth_method'] ?? 'sql',
-                "tpl_id" => $user['tpl_id'],
-                "tpl_name" => $user['tpl_name'],
-                "tpl_descr" => $user['tpl_descr'],
+                "tpl_id" => $tplId,
+                "tpl_name" => $tplName,
+                "tpl_descr" => $tplDescr,
                 "groups" => $userGroups[$user['uid']] ?? [],
                 "mfa_enabled" => $mfaStatus[$user['uid']] ?? false
             );
@@ -754,6 +790,17 @@ class UserManager
         }
 
         return 'sql';
+    }
+
+    /**
+     * Look up a permission template's display name by ID
+     */
+    private static function getPermissionTemplateName($db, int $templId): ?string
+    {
+        $stmt = $db->prepare("SELECT name FROM perm_templ WHERE id = :id");
+        $stmt->execute([':id' => $templId]);
+        $name = $stmt->fetchColumn();
+        return $name === false ? null : (string)$name;
     }
 
     /**
