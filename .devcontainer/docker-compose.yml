@@ -445,7 +445,7 @@ services:
       start_period: 10s
 
   ldapadmin:
-    image: phpldapadmin/phpldapadmin:2.3.10
+    image: phpldapadmin/phpldapadmin:2.3.11
     container_name: ldapadmin
     networks:
       - internal
