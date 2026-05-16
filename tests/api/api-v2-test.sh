@@ -1343,6 +1343,91 @@ test_users_ldap_sync() {
     api_request_v2 "DELETE" "/users/${ldap_user_id}" "" 200 "Delete LDAP test user"
 }
 
+##############################################################################
+# Test: Users API - perm_templ validation on create/update (gh #1219)
+##############################################################################
+
+cleanup_existing_perm_templ_test_users() {
+    local usernames=("perm_templ_valid_user" "perm_templ_omitted_user")
+    for uname in "${usernames[@]}"; do
+        local user_id
+        user_id=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+            "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r ".data[]? | select(.username == \"${uname}\") | .user_id" 2>/dev/null)
+        if [[ -n "$user_id" ]]; then
+            curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+                "${API_BASE_URL}/api/v2/users/${user_id}" >/dev/null 2>&1 || true
+        fi
+    done
+}
+
+test_users_perm_templ_validation() {
+    print_section "Users API - perm_templ validation (gh #1219)"
+
+    cleanup_existing_perm_templ_test_users
+
+    # Invalid perm_templ on create must 400, not silently store a broken user.
+    api_request_v2 "POST" "/users" \
+        '{"username":"perm_templ_zero","password":"P0werAdmin1","perm_templ":0}' \
+        400 "Reject create with perm_templ=0"
+
+    api_request_v2 "POST" "/users" \
+        '{"username":"perm_templ_unknown","password":"P0werAdmin1","perm_templ":99999}' \
+        400 "Reject create with unknown perm_templ id"
+
+    api_request_v2 "POST" "/users" \
+        '{"username":"perm_templ_str","password":"P0werAdmin1","perm_templ":"admin"}' \
+        400 "Reject create with non-numeric perm_templ"
+
+    api_request_v2 "POST" "/users" \
+        '{"username":"perm_templ_malformed","password":"P0werAdmin1","perm_templ":"2foo"}' \
+        400 "Reject create with malformed numeric perm_templ"
+
+    # Group templates exist in the seed data starting at id 6; users must not use them.
+    api_request_v2 "POST" "/users" \
+        '{"username":"perm_templ_group","password":"P0werAdmin1","perm_templ":6}' \
+        400 "Reject create with group-typed perm_templ"
+
+    # Valid perm_templ still works.
+    local valid_data='{"username":"perm_templ_valid_user","password":"P0werAdmin1","fullname":"Perm Templ Valid","email":"perm_templ_valid@example.com","perm_templ":1,"active":true}'
+    if ! api_request_v2 "POST" "/users" "$valid_data" 201 "Create with valid perm_templ"; then
+        print_fail "Failed to create user with valid perm_templ - skipping follow-ups"
+        return 1
+    fi
+    local valid_id
+    valid_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')
+
+    # Listing must include the freshly created user (the JOIN fix surfaces broken rows too).
+    api_request_v2 "GET" "/users" "" 200 "List users after create"
+    if ! echo "$LAST_RESPONSE_BODY" | jq -e '.data[] | select(.username == "perm_templ_valid_user")' >/dev/null 2>&1; then
+        increment_test
+        print_fail "Created user not present in GET /users response"
+    fi
+
+    # Omitted perm_templ on create stays accepted (repo default keeps existing behavior).
+    api_request_v2 "POST" "/users" \
+        '{"username":"perm_templ_omitted_user","password":"P0werAdmin1","fullname":"Perm Templ Omitted","email":"perm_templ_omitted@example.com","active":true}' \
+        201 "Allow create with perm_templ omitted (repo default)"
+    local omitted_id
+    omitted_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')
+
+    # Update path must reject the same invalid values - including explicit null,
+    # because the repo update path has no default fallback.
+    api_request_v2 "PUT" "/users/${valid_id}" '{"perm_templ":0}' \
+        400 "Reject update with perm_templ=0"
+    api_request_v2 "PUT" "/users/${valid_id}" '{"perm_templ":99999}' \
+        400 "Reject update with unknown perm_templ id"
+    api_request_v2 "PUT" "/users/${valid_id}" '{"perm_templ":null}' \
+        400 "Reject update with perm_templ=null"
+    api_request_v2 "PUT" "/users/${valid_id}" '{"perm_templ":2}' \
+        200 "Accept update with valid perm_templ"
+
+    # Cleanup
+    api_request_v2 "DELETE" "/users/${valid_id}" "" 200 "Delete perm_templ valid test user"
+    if [[ -n "$omitted_id" && "$omitted_id" != "null" ]]; then
+        api_request_v2 "DELETE" "/users/${omitted_id}" "" 200 "Delete perm_templ omitted test user"
+    fi
+}
+
 main() {
     print_header "PowerAdmin API v2 Test Suite"
 
@@ -1362,6 +1447,7 @@ main() {
     test_zone_owners
     test_zone_templates
     test_users_ldap_sync
+    test_users_perm_templ_validation
 
     # Cleanup
     cleanup
