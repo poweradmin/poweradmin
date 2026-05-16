@@ -460,6 +460,164 @@ class UserManagementServiceTest extends TestCase
         $this->assertStringContainsString('Database error', $result['message']);
     }
 
+    #[Test]
+    public function testCreateUserRejectsZeroPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->service->createUser([
+            'username' => 'baduser',
+            'password' => 'test123',
+            'perm_templ' => 0,
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsUnknownPermissionTemplateId(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->method('permissionTemplateExists')->with(999, 'user')->willReturn(false);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->service->createUser([
+            'username' => 'baduser',
+            'password' => 'test123',
+            'perm_templ' => 999,
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsNonNumericPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->service->createUser([
+            'username' => 'baduser',
+            'password' => 'test123',
+            'perm_templ' => 'admin',
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsMalformedNumericString(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->expects($this->never())->method('permissionTemplateExists');
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->service->createUser([
+            'username' => 'baduser',
+            'password' => 'test123',
+            'perm_templ' => '2foo',
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+    }
+
+    #[Test]
+    public function testCreateUserAcceptsNumericStringPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->method('permissionTemplateExists')->with(3, 'user')->willReturn(true);
+        $this->userRepository->expects($this->once())
+            ->method('createUser')
+            ->with($this->callback(function ($userData) {
+                return isset($userData['perm_templ']) && $userData['perm_templ'] === 3;
+            }))
+            ->willReturn(13);
+
+        $result = $this->service->createUser([
+            'username' => 'gooduser',
+            'password' => 'test123',
+            'perm_templ' => '3',
+        ]);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsGroupTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        // Template id 6 exists as a group template; the type=user check makes it fail.
+        $this->userRepository->method('permissionTemplateExists')->with(6, 'user')->willReturn(false);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->service->createUser([
+            'username' => 'baduser',
+            'password' => 'test123',
+            'perm_templ' => 6,
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+    }
+
+    #[Test]
+    public function testCreateUserAcceptsValidPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->method('permissionTemplateExists')->with(2, 'user')->willReturn(true);
+        $this->userRepository->expects($this->once())
+            ->method('createUser')
+            ->with($this->callback(function ($userData) {
+                return isset($userData['perm_templ']) && $userData['perm_templ'] === 2;
+            }))
+            ->willReturn(42);
+
+        $result = $this->service->createUser([
+            'username' => 'gooduser',
+            'password' => 'test123',
+            'perm_templ' => 2,
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals(42, $result['user_id']);
+    }
+
+    #[Test]
+    public function testCreateUserAllowsOmittedPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->expects($this->never())->method('permissionTemplateExists');
+        $this->userRepository->method('createUser')->willReturn(7);
+
+        $result = $this->service->createUser([
+            'username' => 'newuser',
+            'password' => 'test123',
+        ]);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testCreateUserAllowsNullPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->expects($this->never())->method('permissionTemplateExists');
+        $this->userRepository->method('createUser')->willReturn(8);
+
+        $result = $this->service->createUser([
+            'username' => 'newuser',
+            'password' => 'test123',
+            'perm_templ' => null,
+        ]);
+
+        $this->assertTrue($result['success']);
+    }
+
     // ========== updateUser tests ==========
 
     #[Test]
@@ -597,6 +755,92 @@ class UserManagementServiceTest extends TestCase
         $result = $this->service->updateUser(1, ['password' => 'newpassword']);
 
         $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsZeroPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->service->updateUser(1, ['perm_templ' => 0]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsUnknownPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->with(999, 'user')->willReturn(false);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->service->updateUser(1, ['perm_templ' => 999]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsNullPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->service->updateUser(1, ['perm_templ' => null]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+    }
+
+    #[Test]
+    public function testUpdateUserAcceptsValidPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->with(2, 'user')->willReturn(true);
+        $this->userRepository->expects($this->once())
+            ->method('updateUser')
+            ->with(1, $this->callback(function ($userData) {
+                return isset($userData['perm_templ']) && $userData['perm_templ'] === 2;
+            }))
+            ->willReturn(true);
+
+        $result = $this->service->updateUser(1, ['perm_templ' => 2]);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsGroupTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->with(6, 'user')->willReturn(false);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->service->updateUser(1, ['perm_templ' => 6]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsMalformedNumericString(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->expects($this->never())->method('permissionTemplateExists');
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->service->updateUser(1, ['perm_templ' => '2foo']);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
     }
 
     // ========== deleteUser tests ==========

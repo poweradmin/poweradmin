@@ -186,7 +186,8 @@ interface UserRepository
      * Check if a permission template exists
      *
      * @param int $permTemplId Permission template ID
-     * @return bool True if the permission template exists
+     * @param string|null $templateType Optional template_type filter ('user' or 'group')
+     * @return bool True if the permission template exists (and matches type when set)
      */
-    public function permissionTemplateExists(int $permTemplId): bool;
+    public function permissionTemplateExists(int $permTemplId, ?string $templateType = null): bool;
 }
