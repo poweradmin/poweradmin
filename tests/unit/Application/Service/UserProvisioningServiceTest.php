@@ -428,4 +428,64 @@ class UserProvisioningServiceTest extends TestCase
             'SAML user should be detected as SAML regardless of provider ID conflicts'
         );
     }
+
+    /**
+     * Existing single-string mapping format must keep working:
+     *   'team1' => 'Administrators'
+     */
+    public function testNormalizeMappedGroupNamesAcceptsLegacyStringValue(): void
+    {
+        $invoker = $this->getPrivateMethodInvoker('normalizeMappedGroupNames');
+
+        $this->assertSame(['Administrators'], $invoker('Administrators'));
+    }
+
+    /**
+     * New 1:n format from issue #1148:
+     *   'team1' => ['lab1', 'lab2', 'customer1']
+     */
+    public function testNormalizeMappedGroupNamesExpandsArrayValue(): void
+    {
+        $invoker = $this->getPrivateMethodInvoker('normalizeMappedGroupNames');
+
+        $this->assertSame(
+            ['lab1', 'lab2', 'customer1'],
+            $invoker(['lab1', 'lab2', 'customer1'])
+        );
+    }
+
+    /**
+     * An empty mapping value (legacy '' or modern []) should resolve to no groups
+     * so existing configs without an entry don't trigger spurious group lookups.
+     */
+    public function testNormalizeMappedGroupNamesIgnoresEmptyValues(): void
+    {
+        $invoker = $this->getPrivateMethodInvoker('normalizeMappedGroupNames');
+
+        $this->assertSame([], $invoker(''));
+        $this->assertSame([], $invoker([]));
+        $this->assertSame([], $invoker(null));
+    }
+
+    /**
+     * Array form drops empty strings but keeps the order of remaining names,
+     * so a misconfigured entry like ['lab1', '', 'lab2'] still maps the valid ones.
+     */
+    public function testNormalizeMappedGroupNamesFiltersEmptyStringsInArrays(): void
+    {
+        $invoker = $this->getPrivateMethodInvoker('normalizeMappedGroupNames');
+
+        $this->assertSame(['lab1', 'lab2'], $invoker(['lab1', '', 'lab2']));
+    }
+
+    /**
+     * Non-string array entries (numbers, nested arrays, objects) are skipped
+     * rather than blowing up the group lookup with a TypeError.
+     */
+    public function testNormalizeMappedGroupNamesSkipsNonStringEntries(): void
+    {
+        $invoker = $this->getPrivateMethodInvoker('normalizeMappedGroupNames');
+
+        $this->assertSame(['lab1'], $invoker(['lab1', 42, ['nested'], new \stdClass()]));
+    }
 }

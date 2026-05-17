@@ -914,14 +914,19 @@ class UserProvisioningService extends LoggingService
             'groups' => $externalGroups
         ]);
 
-        // Determine which Poweradmin groups the user should be in based on external groups
+        // Determine which Poweradmin groups the user should be in based on external groups.
+        // Each mapping value may be a single group name (legacy format) or a list of
+        // group names, letting one external group grant access to several Poweradmin groups.
         $targetGroupIds = [];
         $targetGroupNames = [];
-        foreach ($groupMapping as $externalGroupName => $poweradminGroupName) {
-            if (in_array($externalGroupName, $externalGroups, true)) {
+        foreach ($groupMapping as $externalGroupName => $mappedValue) {
+            if (!in_array($externalGroupName, $externalGroups, true)) {
+                continue;
+            }
+            foreach ($this->normalizeMappedGroupNames($mappedValue) as $poweradminGroupName) {
                 $groupId = $this->findGroupByName($poweradminGroupName);
                 if ($groupId) {
-                    $targetGroupIds[] = $groupId;
+                    $targetGroupIds[$groupId] = $groupId;
                     $targetGroupNames[$groupId] = $poweradminGroupName;
                 } else {
                     $this->logWarning('Poweradmin group {group} not found for mapping from external group {external}', [
@@ -931,17 +936,21 @@ class UserProvisioningService extends LoggingService
                 }
             }
         }
+        $targetGroupIds = array_values($targetGroupIds);
 
         // Get all mapped Poweradmin group IDs (regardless of current external groups)
         $allMappedGroupIds = [];
         $allMappedGroupNames = [];
-        foreach ($groupMapping as $poweradminGroupName) {
-            $groupId = $this->findGroupByName($poweradminGroupName);
-            if ($groupId) {
-                $allMappedGroupIds[] = $groupId;
-                $allMappedGroupNames[$groupId] = $poweradminGroupName;
+        foreach ($groupMapping as $mappedValue) {
+            foreach ($this->normalizeMappedGroupNames($mappedValue) as $poweradminGroupName) {
+                $groupId = $this->findGroupByName($poweradminGroupName);
+                if ($groupId) {
+                    $allMappedGroupIds[$groupId] = $groupId;
+                    $allMappedGroupNames[$groupId] = $poweradminGroupName;
+                }
             }
         }
+        $allMappedGroupIds = array_values($allMappedGroupIds);
 
         // Remove user from mapped groups they should no longer be in
         $groupsToRemove = array_diff($allMappedGroupIds, $targetGroupIds);
@@ -970,6 +979,32 @@ class UserProvisioningService extends LoggingService
         } else {
             $this->logInfo('User {userId} not a member of any mapped groups', ['userId' => $userId]);
         }
+    }
+
+    /**
+     * Normalize a group_mapping value into a list of Poweradmin group names.
+     * Accepts the legacy single-string form ('team1' => 'Administrators') and the
+     * 1:n array form ('team1' => ['lab1', 'lab2']) so existing configs keep working.
+     *
+     * @param mixed $value Raw mapping value from configuration
+     * @return string[] Non-empty Poweradmin group names
+     */
+    private function normalizeMappedGroupNames(mixed $value): array
+    {
+        if (is_string($value)) {
+            return $value === '' ? [] : [$value];
+        }
+        if (!is_array($value)) {
+            return [];
+        }
+
+        $names = [];
+        foreach ($value as $entry) {
+            if (is_string($entry) && $entry !== '') {
+                $names[] = $entry;
+            }
+        }
+        return $names;
     }
 
     /**

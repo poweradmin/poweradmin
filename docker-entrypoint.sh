@@ -633,10 +633,12 @@ generate_config() {
 
     # Helper: convert key=value or key:value mapping to PHP associative array
     # Supports both = and : as delimiters (= preferred, : for backward compatibility)
+    # Pipe (|) in a value produces a PHP array literal so a single external group
+    # can map to multiple Poweradmin groups (e.g. 'team1=Editors|Viewers').
     # Single quotes are escaped, whitespace around commas/delimiters is trimmed
     parse_mapping() {
         local input="$1"
-        echo "$input" | sed "s/'/\\\\'/g" | sed 's/ *, */,/g' | sed 's/ *= */=/g' | sed 's/ *: */:/g' | \
+        echo "$input" | sed "s/'/\\\\'/g" | sed 's/ *, */,/g' | sed 's/ *= */=/g' | sed 's/ *: */:/g' | sed 's/ *| */|/g' | \
             awk -F',' '{
                 for (i=1; i<=NF; i++) {
                     # Try = first, then :
@@ -659,7 +661,17 @@ generate_config() {
                         }
                     }
                     if (i > 1) printf ","
-                    printf "'\''%s'\'' => '\''%s'\''", key, val
+                    if (index(val, "|") > 0) {
+                        n = split(val, parts, "|")
+                        printf "'\''%s'\'' => [", key
+                        for (k=1; k<=n; k++) {
+                            if (k > 1) printf ", "
+                            printf "'\''%s'\''", parts[k]
+                        }
+                        printf "]"
+                    } else {
+                        printf "'\''%s'\'' => '\''%s'\''", key, val
+                    }
                 }
             }'
     }
