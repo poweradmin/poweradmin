@@ -155,7 +155,7 @@
                             {% set owner_count = zone['owners']|length %}
                             {% for key, owner in zone['owners'] %}
                                 {% if loop.index0 < 2 %}
-                                <div><i class="bi bi-person text-secondary"></i>
+                                <div>
                                     {% if zone['full_names'][key] %}
                                         {{ zone['full_names'][key] }} <small class="text-muted">({{ owner }})</small>
                                     {% else %}
@@ -183,7 +183,7 @@
                             {% if group_count > 0 %}
                                 {% for group in zone['groups'] %}
                                     {% if loop.index0 < 2 %}
-                                    <div class="text-muted"><i class="bi bi-people"></i> {{ group }}</div>
+                                    <div class="text-muted">{{ group }}</div>
                                     {% endif %}
                                 {% endfor %}
                                 {% if group_count > 2 %}
