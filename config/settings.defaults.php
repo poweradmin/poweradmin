@@ -401,6 +401,9 @@ return [
         // Maps OIDC groups to Poweradmin groups (users can belong to multiple groups)
         // Configure your actual group mappings in config/settings.php
         //
+        // Each value can be a single group name or a list of group names so one
+        // OIDC group can grant access to several Poweradmin groups (1:n mapping).
+        //
         // Predefined Poweradmin groups:
         //   - 'Administrators' - Full administrative access to all system functions
         //   - 'Zone Managers' - Full zone management including creation, editing, and deletion
@@ -409,11 +412,12 @@ return [
         //   - 'Guests' - Temporary group with no permissions (awaiting approval)
         'group_mapping' => [
             // Examples (configure your actual mappings in settings.php):
-            // 'poweradmin-admins' => 'Administrators',   // Map to Administrators group
-            // 'dns-managers' => 'Zone Managers',         // Map to Zone Managers group
-            // 'dns-editors' => 'Editors',                // Map to Editors group
-            // 'dns-viewers' => 'Viewers',                // Map to Viewers group
-            // 'dns-guests' => 'Guests',                  // Map to Guests group
+            // 'poweradmin-admins' => 'Administrators',         // Single mapping
+            // 'dns-managers' => 'Zone Managers',
+            // 'dns-editors' => 'Editors',
+            // 'dns-viewers' => 'Viewers',
+            // 'dns-guests' => 'Guests',
+            // 'team1' => ['Editors', 'Viewers'],               // 1:n mapping (added in 4.4.0)
         ],
 
         // Provider configurations
@@ -617,6 +621,9 @@ return [
         // Maps SAML groups/roles to Poweradmin groups (users can belong to multiple groups)
         // Configure your actual group mappings in config/settings.php
         //
+        // Each value can be a single group name or a list of group names so one
+        // SAML group can grant access to several Poweradmin groups (1:n mapping).
+        //
         // Predefined Poweradmin groups:
         //   - 'Administrators' - Full administrative access to all system functions
         //   - 'Zone Managers' - Full zone management including creation, editing, and deletion
@@ -625,11 +632,12 @@ return [
         //   - 'Guests' - Temporary group with no permissions (awaiting approval)
         'group_mapping' => [
             // Examples (configure your actual mappings in settings.php):
-            // 'poweradmin-admins' => 'Administrators',   // Map to Administrators group
-            // 'dns-managers' => 'Zone Managers',         // Map to Zone Managers group
-            // 'dns-editors' => 'Editors',                // Map to Editors group
-            // 'dns-viewers' => 'Viewers',                // Map to Viewers group
-            // 'dns-guests' => 'Guests',                  // Map to Guests group
+            // 'poweradmin-admins' => 'Administrators',         // Single mapping
+            // 'dns-managers' => 'Zone Managers',
+            // 'dns-editors' => 'Editors',
+            // 'dns-viewers' => 'Viewers',
+            // 'dns-guests' => 'Guests',
+            // 'team1' => ['Editors', 'Viewers'],               // 1:n mapping (added in 4.4.0)
         ],
 
         // Service Provider (SP) Settings - Your PowerAdmin instance
