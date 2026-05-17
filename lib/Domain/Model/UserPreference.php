@@ -131,11 +131,6 @@ class UserPreference
         if ($timezone === '') {
             return false;
         }
-        try {
-            new \DateTimeZone($timezone);
-            return true;
-        } catch (\Exception) {
-            return false;
-        }
+        return @timezone_open($timezone) !== false;
     }
 }
