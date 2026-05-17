@@ -293,4 +293,74 @@ class OidcConfigurationServiceTest extends TestCase
 
         $this->assertNull($result, 'Should return null when required fields are missing');
     }
+
+    public function testDescribeProviderConfigErrorReportsMissingProvider(): void
+    {
+        $this->configManager
+            ->method('get')
+            ->with('oidc', 'providers', [])
+            ->willReturn([]);
+
+        $this->assertSame(
+            "provider 'azure' is not defined in oidc.providers",
+            $this->service->describeProviderConfigError('azure')
+        );
+    }
+
+    public function testDescribeProviderConfigErrorReportsMissingClientSecret(): void
+    {
+        $this->configManager
+            ->method('get')
+            ->with('oidc', 'providers', [])
+            ->willReturn([
+                'azure' => [
+                    'client_id' => 'abc',
+                    'auto_discovery' => true,
+                    // client_secret missing
+                ],
+            ]);
+
+        $this->assertSame(
+            "missing required field 'client_secret'",
+            $this->service->describeProviderConfigError('azure')
+        );
+    }
+
+    public function testDescribeProviderConfigErrorReportsMissingEndpointWhenDiscoveryDisabled(): void
+    {
+        $this->configManager
+            ->method('get')
+            ->with('oidc', 'providers', [])
+            ->willReturn([
+                'azure' => [
+                    'client_id' => 'abc',
+                    'client_secret' => 'shh',
+                    'auto_discovery' => false,
+                    // No endpoint URLs and no discovery to fill them in
+                ],
+            ]);
+
+        $this->assertSame(
+            "missing required field 'authorize_url' (auto_discovery is disabled)",
+            $this->service->describeProviderConfigError('azure')
+        );
+    }
+
+    public function testDescribeProviderConfigErrorAcceptsAutoDiscoveryWithoutEndpoints(): void
+    {
+        // With auto_discovery enabled the endpoint URLs are discovered at flow
+        // time, so listing must not insist on them up-front.
+        $this->configManager
+            ->method('get')
+            ->with('oidc', 'providers', [])
+            ->willReturn([
+                'azure' => [
+                    'client_id' => 'abc',
+                    'client_secret' => 'shh',
+                    'auto_discovery' => true,
+                ],
+            ]);
+
+        $this->assertNull($this->service->describeProviderConfigError('azure'));
+    }
 }

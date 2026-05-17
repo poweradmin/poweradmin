@@ -49,18 +49,18 @@ class SamlConfigurationService extends LoggingService
                 return null;
             }
 
-            $config = $providers[$providerId];
+            $config = $this->processUrlTemplates($providers[$providerId]);
 
-            // Process URL templates before validation
-            $config = $this->processUrlTemplates($config);
-
-            // Validate required fields
-            if (empty($config['entity_id']) || empty($config['sso_url'])) {
-                $this->logError('Missing required SAML configuration for provider: {provider}', ['provider' => $providerId]);
+            $error = $this->describeConfigError($config);
+            if ($error !== null) {
+                $this->logError('Invalid SAML configuration for provider {provider}: {error}', [
+                    'provider' => $providerId,
+                    'error' => $error,
+                ]);
                 return null;
             }
 
-            return $this->validateProviderConfig($config) ? $config : null;
+            return $config;
         } catch (\Exception $e) {
             $this->logError('Error getting SAML provider config for {provider}: {error}', [
                 'provider' => $providerId,
@@ -68,6 +68,39 @@ class SamlConfigurationService extends LoggingService
             ]);
             return null;
         }
+    }
+
+    /**
+     * Return a human-readable reason why the SAML provider configuration is
+     * unusable, or null if it passes all checks. Mirrors the validation
+     * performed by getProviderConfig() so callers can surface the actual cause
+     * (missing entity_id, malformed x509cert, ...) to end users instead of a
+     * generic "not found or not configured" message.
+     */
+    public function describeProviderConfigError(string $providerId): ?string
+    {
+        $providers = $this->configManager->get('saml', 'providers', []);
+
+        if (!isset($providers[$providerId])) {
+            return sprintf("provider '%s' is not defined in saml.providers", $providerId);
+        }
+
+        return $this->describeConfigError($this->processUrlTemplates($providers[$providerId]));
+    }
+
+    private function describeConfigError(array $config): ?string
+    {
+        foreach (['entity_id', 'sso_url'] as $field) {
+            if (empty($config[$field])) {
+                return sprintf("missing required field '%s'", $field);
+            }
+        }
+
+        if (!empty($config['x509cert']) && !$this->isValidX509Certificate($config['x509cert'])) {
+            return "x509cert is not a valid X.509 certificate";
+        }
+
+        return null;
     }
 
     public function getAllProviderConfigs(): array
@@ -178,48 +211,37 @@ class SamlConfigurationService extends LoggingService
 
     private function validateProviderConfig(array $config): bool
     {
-        $required = ['entity_id', 'sso_url'];
-
-        foreach ($required as $field) {
-            if (empty($config[$field])) {
-                $this->logError('Missing required SAML field: {field}', ['field' => $field]);
-                return false;
-            }
-        }
-
-        // Validate certificate format if provided
-        if (!empty($config['x509cert']) && !$this->isValidX509Certificate($config['x509cert'])) {
-            $this->logError('Invalid X.509 certificate format');
-            return false;
-        }
-
-        return true;
+        return $this->describeConfigError($config) === null;
     }
 
     private function isValidX509Certificate(string $cert): bool
     {
-        // Remove any whitespace and check if it looks like a certificate
         $cert = trim($cert);
 
         if (empty($cert)) {
             return false;
         }
 
-        // Check if it's already in proper format or just the certificate data
-        if (strpos($cert, '-----BEGIN CERTIFICATE-----') === false) {
-            // Assume it's just the certificate data without headers/footers
-            $cert = "-----BEGIN CERTIFICATE-----\n" .
-                    chunk_split($cert, 64, "\n") .
-                    "-----END CERTIFICATE-----";
-        }
-
-        // Try to parse the certificate
-        $resource = openssl_x509_read($cert);
-        if ($resource !== false) {
+        // Accept the cert as-is (covers PEM-with-headers, including any line
+        // ending style openssl already understands).
+        if (@openssl_x509_read($cert) !== false) {
             return true;
         }
 
-        return false;
+        // The headerless format admins typically paste from IdP downloads has
+        // a base64 body with arbitrary whitespace. Strip everything that isn't
+        // base64 and rewrap so we don't double-fold lines that already had
+        // CRLF/LF line breaks (closes #1218).
+        $stripped = preg_replace('/[^A-Za-z0-9+\/=]/', '', $cert) ?? '';
+        if ($stripped === '') {
+            return false;
+        }
+
+        $pem = "-----BEGIN CERTIFICATE-----\n" .
+               chunk_split($stripped, 64, "\n") .
+               "-----END CERTIFICATE-----\n";
+
+        return @openssl_x509_read($pem) !== false;
     }
 
     public function validatePermissionTemplateMapping(): array
