@@ -105,13 +105,27 @@ class OidcService extends LoggingService
         $availableProviders = [];
 
         foreach ($providers as $providerId => $config) {
-            if ($this->isProviderEnabled($providerId, $config)) {
-                $availableProviders[$providerId] = [
-                    'id' => $providerId,
-                    'name' => $config['name'] ?? ucfirst($providerId),
-                    'display_name' => $config['display_name'] ?? $config['name'] ?? ucfirst($providerId),
-                ];
+            if (!$this->isProviderEnabled($providerId, $config)) {
+                continue;
             }
+
+            // Apply the same static validation initiateAuthFlow() runs later
+            // so we don't render a button for a provider whose click would
+            // fail with a generic error (closes #1218).
+            $configError = $this->oidcConfigurationService->describeProviderConfigError($providerId);
+            if ($configError !== null) {
+                $this->logWarning('Hiding OIDC provider {provider}: {error}', [
+                    'provider' => $providerId,
+                    'error' => $configError,
+                ]);
+                continue;
+            }
+
+            $availableProviders[$providerId] = [
+                'id' => $providerId,
+                'name' => $config['name'] ?? ucfirst($providerId),
+                'display_name' => $config['display_name'] ?? $config['name'] ?? ucfirst($providerId),
+            ];
         }
 
         return $availableProviders;
@@ -133,8 +147,17 @@ class OidcService extends LoggingService
 
             $provider = $this->createProvider($providerId);
             if (!$provider) {
-                $this->logError('Failed to create OIDC provider: {provider}', ['provider' => $providerId]);
-                throw new \RuntimeException("Provider {$providerId} not found or not configured");
+                $configError = $this->oidcConfigurationService->describeProviderConfigError($providerId);
+                $reason = $configError ?? 'provider could not be initialised';
+                $this->logError('Failed to create OIDC provider {provider}: {reason}', [
+                    'provider' => $providerId,
+                    'reason' => $reason,
+                ]);
+                throw new \RuntimeException(sprintf(
+                    "OIDC provider '%s' is not usable: %s",
+                    $providerId,
+                    $reason
+                ));
             }
 
             // Generate state parameter for security

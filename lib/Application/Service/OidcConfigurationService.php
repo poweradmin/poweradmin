@@ -49,14 +49,14 @@ class OidcConfigurationService extends LoggingService
                 return null;
             }
 
-            $config = $providers[$providerId];
+            $config = $this->processUrlTemplates($providers[$providerId]);
 
-            // Process URL templates before validation
-            $config = $this->processUrlTemplates($config);
-
-            // Validate required fields before processing
-            if (empty($config['client_id']) || empty($config['client_secret'])) {
-                $this->logError('Missing required OIDC configuration for provider: {provider}', ['provider' => $providerId]);
+            $staticError = $this->describeStaticConfigError($config);
+            if ($staticError !== null) {
+                $this->logError('Invalid OIDC configuration for provider {provider}: {error}', [
+                    'provider' => $providerId,
+                    'error' => $staticError,
+                ]);
                 return null;
             }
 
@@ -77,6 +77,45 @@ class OidcConfigurationService extends LoggingService
             ]);
             return null;
         }
+    }
+
+    /**
+     * Return a human-readable reason why the OIDC provider configuration is
+     * unusable on the basis of static settings, or null if those static checks
+     * pass. Does not perform discovery network calls, so this is safe to call
+     * during provider listing (closes #1218).
+     */
+    public function describeProviderConfigError(string $providerId): ?string
+    {
+        $providers = $this->configManager->get('oidc', 'providers', []);
+
+        if (!isset($providers[$providerId])) {
+            return sprintf("provider '%s' is not defined in oidc.providers", $providerId);
+        }
+
+        return $this->describeStaticConfigError($this->processUrlTemplates($providers[$providerId]));
+    }
+
+    private function describeStaticConfigError(array $config): ?string
+    {
+        foreach (['client_id', 'client_secret'] as $field) {
+            if (empty($config[$field])) {
+                return sprintf("missing required field '%s'", $field);
+            }
+        }
+
+        // When auto_discovery is disabled the endpoint URLs must be supplied
+        // explicitly. With discovery enabled the URLs are filled in at flow
+        // time, so we deliberately don't fail listing on them here.
+        if (empty($config['auto_discovery'])) {
+            foreach (['authorize_url', 'token_url', 'userinfo_url'] as $field) {
+                if (empty($config[$field])) {
+                    return sprintf("missing required field '%s' (auto_discovery is disabled)", $field);
+                }
+            }
+        }
+
+        return null;
     }
 
     public function getAllProviderConfigs(): array

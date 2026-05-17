@@ -105,13 +105,27 @@ class SamlService extends LoggingService
         $availableProviders = [];
 
         foreach ($providers as $providerId => $config) {
-            if ($this->isProviderEnabled($providerId, $config)) {
-                $availableProviders[$providerId] = [
-                    'id' => $providerId,
-                    'name' => $config['name'] ?? ucfirst($providerId),
-                    'display_name' => $config['display_name'] ?? $config['name'] ?? ucfirst($providerId),
-                ];
+            if (!$this->isProviderEnabled($providerId, $config)) {
+                continue;
             }
+
+            // Apply the same validation initiateAuthFlow() applies later, so
+            // a button is never rendered for a provider whose click would
+            // immediately fail (closes #1218).
+            $configError = $this->samlConfigurationService->describeProviderConfigError($providerId);
+            if ($configError !== null) {
+                $this->logWarning('Hiding SAML provider {provider}: {error}', [
+                    'provider' => $providerId,
+                    'error' => $configError,
+                ]);
+                continue;
+            }
+
+            $availableProviders[$providerId] = [
+                'id' => $providerId,
+                'name' => $config['name'] ?? ucfirst($providerId),
+                'display_name' => $config['display_name'] ?? $config['name'] ?? ucfirst($providerId),
+            ];
         }
 
         return $availableProviders;
@@ -133,8 +147,17 @@ class SamlService extends LoggingService
 
             $auth = $this->createAuth($providerId);
             if (!$auth) {
-                $this->logError('Failed to create SAML auth for provider: {provider}', ['provider' => $providerId]);
-                throw new \RuntimeException("Provider {$providerId} not found or not configured");
+                $configError = $this->samlConfigurationService->describeProviderConfigError($providerId);
+                $reason = $configError ?? 'provider could not be initialised';
+                $this->logError('Failed to create SAML auth for {provider}: {reason}', [
+                    'provider' => $providerId,
+                    'reason' => $reason,
+                ]);
+                throw new \RuntimeException(sprintf(
+                    "SAML provider '%s' is not usable: %s",
+                    $providerId,
+                    $reason
+                ));
             }
 
             // Store provider ID for callback processing
