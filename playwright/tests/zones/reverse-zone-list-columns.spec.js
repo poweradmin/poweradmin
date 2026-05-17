@@ -73,4 +73,17 @@ test.describe('Reverse Zone List Columns (Issue #1186)', () => {
       expect(cell.length, `template cell unexpectedly empty: ${JSON.stringify(cells)}`).toBeGreaterThan(0);
     }
   });
+
+  test('Group column is sortable (Issue #1051)', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto('/zones/reverse');
+    await page.waitForLoadState('networkidle');
+
+    const groupHeader = page.locator('th a[href*="zone_sort_by=group"]');
+    expect(await groupHeader.count(), 'Group header must expose a sort link').toBeGreaterThan(0);
+
+    await page.goto('/zones/reverse?zone_sort_by=group&zone_sort_by_direction=ASC');
+    await page.waitForLoadState('networkidle');
+    expect(await page.locator('.alert-danger:has-text("invalid")').count()).toBe(0);
+  });
 });

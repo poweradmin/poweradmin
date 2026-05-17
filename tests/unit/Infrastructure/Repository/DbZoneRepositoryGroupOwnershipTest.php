@@ -212,4 +212,54 @@ class DbZoneRepositoryGroupOwnershipTest extends TestCase
         $this->assertStringContainsString('zones_groups', $capturedQuery, 'Count query must check zones_groups for group ownership');
         $this->assertStringContainsString('user_group_members', $capturedQuery, 'Count query must check user_group_members for group membership');
     }
+
+    #[Test]
+    public function getReverseZonesSortByGroupJoinsUserGroupsAndOrdersByName(): void
+    {
+        $this->setupConfig();
+
+        $capturedQuery = '';
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchAll')->willReturn([]);
+        $stmt->method('bindValue')->willReturn(true);
+
+        $this->db->method('prepare')
+            ->willReturnCallback(function ($query) use ($stmt, &$capturedQuery) {
+                $capturedQuery = $query;
+                return $stmt;
+            });
+
+        $repository = new DbZoneRepository($this->db, $this->config);
+        $repository->getReverseZones('all', 5, 'all', 0, 25, 'group', 'ASC');
+
+        $this->assertStringContainsString('LEFT JOIN zones_groups', $capturedQuery, 'Group-sort query must join zones_groups');
+        $this->assertStringContainsString('LEFT JOIN user_groups', $capturedQuery, 'Group-sort query must join user_groups');
+        $this->assertStringContainsString('ORDER BY MIN(user_groups.name) ASC', $capturedQuery, 'Query must aggregate group name in ORDER BY');
+        $this->assertStringContainsString('COUNT(DISTINCT', $capturedQuery, 'Group join multiplies record rows, so DISTINCT is required to keep counts accurate');
+    }
+
+    #[Test]
+    public function getReverseZonesSortByOwnerDoesNotJoinUserGroups(): void
+    {
+        $this->setupConfig();
+
+        $capturedQuery = '';
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchAll')->willReturn([]);
+        $stmt->method('bindValue')->willReturn(true);
+
+        $this->db->method('prepare')
+            ->willReturnCallback(function ($query) use ($stmt, &$capturedQuery) {
+                $capturedQuery = $query;
+                return $stmt;
+            });
+
+        $repository = new DbZoneRepository($this->db, $this->config);
+        $repository->getReverseZones('all', 5, 'all', 0, 25, 'owner', 'ASC');
+
+        $this->assertStringNotContainsString('LEFT JOIN user_groups', $capturedQuery, 'Non-group sort must not join user_groups');
+        $this->assertStringContainsString('ORDER BY users.username', $capturedQuery, 'Owner sort must order by users.username');
+    }
 }

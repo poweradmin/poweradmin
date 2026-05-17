@@ -41,6 +41,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -111,7 +112,22 @@ class ListReverseZonesController extends BaseController
         $count_zones_edit = $this->dnsDataService->countZones($perm_edit, 'all', 'reverse');
         $count_zones_delete = $this->dnsDataService->countZones($perm_delete, 'all', 'reverse');
 
-        list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'owner']);
+        $ownershipMode = new ZoneOwnershipModeService($this->getConfig());
+        $isUserOwnerAllowed = $ownershipMode->isUserOwnerAllowed();
+        // Group sort relies on JOINs against Poweradmin tables, which the API-backed repository can't perform
+        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
+        $isGroupOwnerAllowed = $ownershipMode->isGroupOwnerAllowed();
+        $isGroupSortSupported = $isGroupOwnerAllowed && !$isApiBackend;
+
+        $allowedSort = ['name', 'type', 'count_records'];
+        if ($isUserOwnerAllowed) {
+            $allowedSort[] = 'owner';
+        }
+        if ($isGroupSortSupported) {
+            $allowedSort[] = 'group';
+        }
+
+        list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder('zone_sort_by', $allowedSort);
 
         if ($perm_view == 'none') {
             $this->showError(_('You do not have the permission to see any zones.'));
@@ -220,6 +236,9 @@ class ListReverseZonesController extends BaseController
             'iface_zonelist_serial' => $iface_zonelist_serial,
             'iface_zonelist_template' => $iface_zonelist_template,
             'iface_zonelist_fullname' => $iface_zonelist_fullname,
+            'is_user_owner_allowed' => $isUserOwnerAllowed,
+            'is_group_owner_allowed' => $isGroupOwnerAllowed,
+            'is_group_sort_supported' => $isGroupSortSupported,
             'pdnssec_use' => $pdnssec_use,
             'pagination' => $this->createAndPresentPagination($pagination_count, $iface_rowamount),
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),

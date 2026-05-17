@@ -162,7 +162,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
         ?bool $showTemplate = null,
         bool $includeHealth = true
     ): array {
-        $allowedSortColumns = ['name', 'type', 'count_records', 'owner'];
+        $allowedSortColumns = ['name', 'type', 'count_records', 'owner', 'group'];
         $sortby = $this->tableNameService->validateOrderBy($sortby, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
 
@@ -212,6 +212,8 @@ class SqlDomainRepository implements DomainRepositoryInterface
             $sortby = 'users.username';
         } elseif ($sortby == 'count_records') {
             $sortby = "COUNT($records_table.id)";
+        } elseif ($sortby == 'group') {
+            $sortby = "MIN(user_groups.name)";
         } else {
             $sortby = "$domains_table.$sortby";
         }
@@ -255,7 +257,18 @@ class SqlDomainRepository implements DomainRepositoryInterface
                 $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
                 $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
             } else {
-                if ($db_type === 'mysql' && (strpos($sql_sortby, 'users.username') !== false || strpos($sql_sortby, 'COUNT(') !== false)) {
+                $sortByGroupInner = strpos($sql_sortby, 'user_groups.name') !== false;
+                $sortUsesAggregateOrJoin = strpos($sql_sortby, 'users.username') !== false
+                    || strpos($sql_sortby, 'COUNT(') !== false
+                    || $sortByGroupInner;
+
+                if ($sortByGroupInner) {
+                    // Aggregate on user_groups.name so paginating a group-sorted page picks the right zones globally
+                    $id_query = "SELECT $domains_table.id, $domains_table.name
+                                FROM $domains_table
+                                LEFT JOIN zones_groups ON zones_groups.domain_id = $domains_table.id
+                                LEFT JOIN user_groups ON user_groups.id = zones_groups.group_id";
+                } elseif ($db_type === 'mysql' && $sortUsesAggregateOrJoin) {
                     $id_query = "SELECT DISTINCT $domains_table.id, $domains_table.name
                                 FROM $domains_table";
                 } else {
@@ -297,9 +310,12 @@ class SqlDomainRepository implements DomainRepositoryInterface
                     $id_query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
                 }
 
-                if ($db_type === 'mysql' && (strpos($sql_sortby, 'users.username') !== false || strpos($sql_sortby, 'COUNT(') !== false)) {
+                if ($sortByGroupInner) {
+                    $id_query .= " GROUP BY $domains_table.id, $domains_table.name"
+                        . " ORDER BY MIN(user_groups.name) " . $sortDirection . ", $domains_table.name";
+                } elseif ($db_type === 'mysql' && $sortUsesAggregateOrJoin) {
                     $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
-                } elseif (strpos($sql_sortby, 'users.username') === false && strpos($sql_sortby, 'COUNT(') === false) {
+                } elseif (!$sortUsesAggregateOrJoin) {
                     $id_query .= " ORDER BY " . $sql_sortby;
                 } else {
                     $id_query .= " ORDER BY $domains_table.name";
@@ -307,6 +323,8 @@ class SqlDomainRepository implements DomainRepositoryInterface
 
                 $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
             }
+
+            $sortByGroup = strpos($sql_sortby, 'user_groups.name') !== false;
 
             $query = "SELECT $domains_table.id,
                             $domains_table.name,
@@ -322,6 +340,11 @@ class SqlDomainRepository implements DomainRepositoryInterface
                         LEFT JOIN zones ON $domains_table.id=zones.domain_id
                         LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL
                         LEFT JOIN users ON users.id=zones.owner";
+
+            if ($sortByGroup) {
+                $query .= " LEFT JOIN zones_groups ON zones_groups.domain_id = $domains_table.id
+                            LEFT JOIN user_groups ON user_groups.id = zones_groups.group_id";
+            }
 
             if ($pdnssec_use) {
                 $query .= " LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
@@ -344,10 +367,14 @@ class SqlDomainRepository implements DomainRepositoryInterface
         } else {
             $originalSqlMode = DbCompat::handleSqlMode($this->db, $db_type);
 
+            $sortByGroup = strpos($sql_sortby, 'user_groups.name') !== false;
+            // Group join multiplies record rows per group, so DISTINCT keeps the count accurate
+            $recordCountExpr = $sortByGroup ? "COUNT(DISTINCT $records_table.id)" : "COUNT($records_table.id)";
+
             $query = "SELECT $domains_table.id,
                             $domains_table.name,
                             $domains_table.type,
-                            COUNT($records_table.id) AS count_records,
+                            $recordCountExpr AS count_records,
                             " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                             users.username,
                             users.fullname
@@ -357,6 +384,11 @@ class SqlDomainRepository implements DomainRepositoryInterface
                             LEFT JOIN zones ON $domains_table.id=zones.domain_id
                             LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL
                             LEFT JOIN users ON users.id=zones.owner";
+
+            if ($sortByGroup) {
+                $query .= " LEFT JOIN zones_groups ON zones_groups.domain_id = $domains_table.id
+                            LEFT JOIN user_groups ON user_groups.id = zones_groups.group_id";
+            }
 
             if ($pdnssec_use) {
                 $query .= " LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active

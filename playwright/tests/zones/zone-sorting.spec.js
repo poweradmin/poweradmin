@@ -58,6 +58,15 @@ test.describe('Zone List Sorting', () => {
 
       expect(hasSortableRecordsHeader).toBeTruthy();
     });
+
+    test('should have sortable group column header', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/zones/forward?letter=all');
+      await page.waitForLoadState('networkidle');
+
+      const groupHeader = page.locator('th a[href*="zone_sort_by=group"]');
+      expect(await groupHeader.count()).toBeGreaterThan(0);
+    });
   });
 
   test.describe('Sort Direction', () => {
@@ -121,6 +130,35 @@ test.describe('Zone List Sorting', () => {
       // Page should load successfully
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/zone|forward/i);
+    });
+  });
+
+  test.describe('Sort by Group', () => {
+    test('should allow sorting zones by group ASC and DESC', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+      await page.goto('/zones/forward?letter=all&zone_sort_by=group&zone_sort_by_direction=ASC');
+      await page.waitForLoadState('networkidle');
+      const bodyAsc = await page.locator('body').textContent();
+      expect(bodyAsc.toLowerCase()).toMatch(/zone|forward/i);
+      expect(await page.locator('.alert-danger:has-text("invalid")').count()).toBe(0);
+
+      await page.goto('/zones/forward?letter=all&zone_sort_by=group&zone_sort_by_direction=DESC');
+      await page.waitForLoadState('networkidle');
+      const bodyDesc = await page.locator('body').textContent();
+      expect(bodyDesc.toLowerCase()).toMatch(/zone|forward/i);
+    });
+
+    test('clicking group sort link toggles direction', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/zones/forward?letter=all');
+      await page.waitForLoadState('networkidle');
+
+      const groupSortLink = page.locator('th a[href*="zone_sort_by=group"]').first();
+      await groupSortLink.click();
+      await page.waitForLoadState('networkidle');
+
+      expect(page.url()).toMatch(/zone_sort_by=group/);
     });
   });
 
