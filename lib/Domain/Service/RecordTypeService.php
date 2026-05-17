@@ -52,7 +52,7 @@ class RecordTypeService
             $types = array_merge($configuredDomainTypes, $configuredReverseTypes);
             $types = array_unique($types);
             sort($types);
-            return $this->filterByCapabilities($types, $caps);
+            return $this->applyTopOrder($this->filterByCapabilities($types, $caps));
         }
 
         // If only domain types are configured, merge with default reverse types
@@ -60,7 +60,7 @@ class RecordTypeService
             $types = array_merge($configuredDomainTypes, RecordType::REVERSE_ZONE_COMMON_RECORDS);
             $types = array_unique($types);
             sort($types);
-            return $this->filterByCapabilities($types, $caps);
+            return $this->applyTopOrder($this->filterByCapabilities($types, $caps));
         }
 
         // If only reverse types are configured, merge with default domain types
@@ -68,7 +68,7 @@ class RecordTypeService
             $types = array_merge(RecordType::DOMAIN_ZONE_COMMON_RECORDS, $configuredReverseTypes);
             $types = array_unique($types);
             sort($types);
-            return $this->filterByCapabilities($types, $caps);
+            return $this->applyTopOrder($this->filterByCapabilities($types, $caps));
         }
 
         // If nothing is configured, use all defaults
@@ -80,7 +80,7 @@ class RecordTypeService
         );
         $types = array_unique($types);
         sort($types);
-        return $this->filterByCapabilities($types, $caps);
+        return $this->applyTopOrder($this->filterByCapabilities($types, $caps));
     }
 
     /**
@@ -98,11 +98,11 @@ class RecordTypeService
             $types = $isDnsSecEnabled ?
                 $this->mergeDnsSecTypes($configuredDomainTypes, true) :
                 $configuredDomainTypes;
-            return $this->filterByCapabilities($types, $caps);
+            return $this->applyTopOrder($this->filterByCapabilities($types, $caps));
         }
 
         $types = array_merge(RecordType::DOMAIN_ZONE_COMMON_RECORDS, RecordType::LESS_COMMON_RECORDS);
-        return $this->filterByCapabilities($this->mergeDnsSecTypes($types, $isDnsSecEnabled), $caps);
+        return $this->applyTopOrder($this->filterByCapabilities($this->mergeDnsSecTypes($types, $isDnsSecEnabled), $caps));
     }
 
     /**
@@ -120,11 +120,11 @@ class RecordTypeService
             $types = $isDnsSecEnabled ?
                 $this->mergeDnsSecTypes($configuredReverseTypes, true) :
                 $configuredReverseTypes;
-            return $this->filterByCapabilities($types, $caps);
+            return $this->applyTopOrder($this->filterByCapabilities($types, $caps));
         }
 
         $types = RecordType::REVERSE_ZONE_COMMON_RECORDS;
-        return $this->filterByCapabilities($this->mergeDnsSecTypes($types, $isDnsSecEnabled), $caps);
+        return $this->applyTopOrder($this->filterByCapabilities($this->mergeDnsSecTypes($types, $isDnsSecEnabled), $caps));
     }
 
     /**
@@ -167,5 +167,31 @@ class RecordTypeService
         }
         sort($types);
         return $types;
+    }
+
+    /**
+     * Move admin-pinned record types to the front of the list (in given order),
+     * leaving the rest in their current order. No-op when 'dns.top_record_types'
+     * is unset, empty, or contains no types present in $types.
+     *
+     * @param array<int, string> $types
+     * @return array<int, string>
+     */
+    private function applyTopOrder(array $types): array
+    {
+        $top = $this->configManager->get('dns', 'top_record_types');
+        if (!is_array($top) || $top === []) {
+            return $types;
+        }
+
+        // array_unique drops accidental duplicates in the configured list
+        // (e.g. ['A', 'A', 'TXT']) so they don't render twice in the selector.
+        $present = array_values(array_unique(array_intersect($top, $types)));
+        if ($present === []) {
+            return $types;
+        }
+
+        $rest = array_values(array_diff($types, $present));
+        return array_merge($present, $rest);
     }
 }

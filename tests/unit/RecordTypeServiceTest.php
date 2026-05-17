@@ -291,4 +291,145 @@ class RecordTypeServiceTest extends TestCase
         $this->assertContains('DNSKEY', $result); // DNSSEC type should be included
         $this->assertContains('DS', $result); // DNSSEC type should be included
     }
+
+    public function testTopRecordTypesPinsDomainTypesToFront(): void
+    {
+        $this->configManagerMock->method('get')
+            ->willReturnCallback(function ($section, $key) {
+                if ($section === 'dns' && $key === 'top_record_types') {
+                    return ['A', 'AAAA', 'CNAME', 'TXT', 'MX'];
+                }
+                return null;
+            });
+
+        $result = $this->service->getDomainZoneTypes(false);
+
+        $this->assertSame(['A', 'AAAA', 'CNAME', 'TXT', 'MX'], array_slice($result, 0, 5));
+        $rest = array_slice($result, 5);
+        $sortedRest = $rest;
+        sort($sortedRest);
+        $this->assertSame($sortedRest, $rest);
+    }
+
+    public function testTopRecordTypesPreservesGivenOrder(): void
+    {
+        // Pin in a non-alphabetical order to prove order is honoured
+        $this->configManagerMock->method('get')
+            ->willReturnCallback(function ($section, $key) {
+                if ($section === 'dns' && $key === 'top_record_types') {
+                    return ['MX', 'TXT', 'A', 'CNAME'];
+                }
+                return null;
+            });
+
+        $result = $this->service->getDomainZoneTypes(false);
+
+        $this->assertSame(['MX', 'TXT', 'A', 'CNAME'], array_slice($result, 0, 4));
+    }
+
+    public function testTopRecordTypesAppliesToReverseZone(): void
+    {
+        // Only types actually present in reverse zone list should be pinned
+        $this->configManagerMock->method('get')
+            ->willReturnCallback(function ($section, $key) {
+                if ($section === 'dns' && $key === 'top_record_types') {
+                    return ['A', 'AAAA', 'CNAME', 'TXT', 'MX'];
+                }
+                return null;
+            });
+
+        $result = $this->service->getReverseZoneTypes(false);
+
+        // A, AAAA, MX are not reverse zone types and should be filtered out
+        $this->assertSame(['CNAME', 'TXT'], array_slice($result, 0, 2));
+        $this->assertNotContains('A', $result);
+        $this->assertNotContains('AAAA', $result);
+        $this->assertNotContains('MX', $result);
+    }
+
+    public function testTopRecordTypesIgnoresUnknownTypes(): void
+    {
+        $this->configManagerMock->method('get')
+            ->willReturnCallback(function ($section, $key) {
+                if ($section === 'dns' && $key === 'top_record_types') {
+                    return ['XYZ', 'A', 'NOTREAL', 'TXT'];
+                }
+                return null;
+            });
+
+        $result = $this->service->getDomainZoneTypes(false);
+
+        // Unknown types silently dropped, valid pins still applied in given order
+        $this->assertSame(['A', 'TXT'], array_slice($result, 0, 2));
+        $this->assertNotContains('XYZ', $result);
+        $this->assertNotContains('NOTREAL', $result);
+    }
+
+    public function testTopRecordTypesEmptyArrayIsNoOp(): void
+    {
+        $this->configManagerMock->method('get')
+            ->willReturnCallback(function ($section, $key) {
+                if ($section === 'dns' && $key === 'top_record_types') {
+                    return [];
+                }
+                return null;
+            });
+
+        $result = $this->service->getDomainZoneTypes(false);
+        $sortedResult = $result;
+        sort($sortedResult);
+        $this->assertSame($sortedResult, $result);
+    }
+
+    public function testTopRecordTypesAppliesAfterRestrictedDomainTypes(): void
+    {
+        // Pinning composes with the existing domain_record_types restriction
+        $this->configManagerMock->method('get')
+            ->willReturnCallback(function ($section, $key) {
+                if ($section === 'dns' && $key === 'domain_record_types') {
+                    return ['A', 'AAAA', 'CNAME', 'MX', 'TXT', 'NS', 'SRV'];
+                }
+                if ($section === 'dns' && $key === 'top_record_types') {
+                    return ['CNAME', 'TXT'];
+                }
+                return null;
+            });
+
+        $result = $this->service->getDomainZoneTypes(false);
+
+        $this->assertSame(['CNAME', 'TXT'], array_slice($result, 0, 2));
+        $this->assertCount(7, $result);
+    }
+
+    public function testTopRecordTypesDeduplicatesConfiguredEntries(): void
+    {
+        // Misconfigured duplicates should not render twice in the selector
+        $this->configManagerMock->method('get')
+            ->willReturnCallback(function ($section, $key) {
+                if ($section === 'dns' && $key === 'top_record_types') {
+                    return ['A', 'A', 'TXT', 'TXT', 'CNAME'];
+                }
+                return null;
+            });
+
+        $result = $this->service->getDomainZoneTypes(false);
+
+        $this->assertSame(['A', 'TXT', 'CNAME'], array_slice($result, 0, 3));
+        $this->assertSame(count(array_unique($result)), count($result));
+    }
+
+    public function testTopRecordTypesAppliesToGetAllTypes(): void
+    {
+        $this->configManagerMock->method('get')
+            ->willReturnCallback(function ($section, $key) {
+                if ($section === 'dns' && $key === 'top_record_types') {
+                    return ['A', 'AAAA', 'CNAME', 'TXT'];
+                }
+                return null;
+            });
+
+        $result = $this->service->getAllTypes();
+
+        $this->assertSame(['A', 'AAAA', 'CNAME', 'TXT'], array_slice($result, 0, 4));
+    }
 }

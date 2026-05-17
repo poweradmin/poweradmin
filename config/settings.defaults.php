@@ -224,6 +224,11 @@ return [
 
         // Example to restrict reverse types: uncomment and adjust as needed
         //'reverse_record_types' => ['PTR', 'NS', 'SOA', 'TXT', 'CNAME'],
+
+        // Pin selected types to the top of record type selectors (added in 4.4.0)
+        // Listed types appear first in the given order; the rest stays alphabetical
+        'top_record_types' => null,                 // null = alphabetical only
+        //'top_record_types' => ['A', 'AAAA', 'CNAME', 'TXT', 'MX'],
     ],
 
 
