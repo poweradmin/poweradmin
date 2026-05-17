@@ -37,6 +37,7 @@ use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserAvatarService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
+use Poweradmin\Domain\Service\UserTimezoneService;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -468,6 +469,11 @@ abstract class BaseController
         $db_type = $this->config->get('database', 'type');
         $repository = new DbUserPreferenceRepository($this->db, $db_type);
         return new UserPreferenceService($repository, $this->config);
+    }
+
+    protected function createUserTimezoneService(): UserTimezoneService
+    {
+        return new UserTimezoneService($this->createUserPreferenceService(), $this->config);
     }
 
     /**

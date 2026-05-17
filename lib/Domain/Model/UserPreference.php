@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ class UserPreference
     public const KEY_SHOW_RECORD_EDIT_BUTTON = 'show_record_edit_button';
     public const KEY_SHOW_RECORD_DELETE_BUTTON = 'show_record_delete_button';
     public const KEY_DISPLAY_HOSTNAME_ONLY = 'display_hostname_only';
+    public const KEY_TIMEZONE = 'timezone';
 
     /**
      * Valid preference keys
@@ -60,6 +61,7 @@ class UserPreference
         self::KEY_SHOW_RECORD_EDIT_BUTTON,
         self::KEY_SHOW_RECORD_DELETE_BUTTON,
         self::KEY_DISPLAY_HOSTNAME_ONLY,
+        self::KEY_TIMEZONE,
     ];
 
     public function __construct(
@@ -102,5 +104,38 @@ class UserPreference
     public static function isValidKey(string $key): bool
     {
         return in_array($key, self::VALID_KEYS, true);
+    }
+
+    /**
+     * Strict check used when storing the per-user timezone preference.
+     * Only canonical IANA identifiers are accepted so the UI selector
+     * (built from DateTimeZone::listIdentifiers()) can always round-trip
+     * the stored value back into its dropdowns.
+     */
+    public static function isValidTimezone(string $timezone): bool
+    {
+        if ($timezone === '') {
+            return false;
+        }
+        return in_array($timezone, \DateTimeZone::listIdentifiers(), true);
+    }
+
+    /**
+     * Permissive check used by UserTimezoneService when reading the global
+     * misc.timezone fallback - it must accept the same aliases (GMT, US/Eastern)
+     * that PHP's date_default_timezone_set() accepts so admin-configured values
+     * continue to work in MFA emails.
+     */
+    public static function isAcceptableTimezone(string $timezone): bool
+    {
+        if ($timezone === '') {
+            return false;
+        }
+        try {
+            new \DateTimeZone($timezone);
+            return true;
+        } catch (\Exception) {
+            return false;
+        }
     }
 }

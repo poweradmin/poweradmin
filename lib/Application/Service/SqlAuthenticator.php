@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
+use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
@@ -69,7 +70,13 @@ class SqlAuthenticator extends LoggingService
         // Initialize MFA service
         $userMfaRepository = new DbUserMfaRepository($connection, $configManager);
         $mailService = new MailService($configManager);
-        $this->mfaService = new MfaService($userMfaRepository, $configManager, $mailService);
+        $this->mfaService = new MfaService(
+            $userMfaRepository,
+            $configManager,
+            $mailService,
+            null,
+            UserTimezoneService::createDefault($connection, $configManager)
+        );
     }
 
     public function authenticate(): void

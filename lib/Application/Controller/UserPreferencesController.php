@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -61,12 +61,16 @@ class UserPreferencesController extends BaseController
         // Get available options
         $availableRowsPerPageOptions = $this->getAvailableRowsPerPageOptions();
         $availablePositions = $this->getAvailablePositions();
+        $timezoneOptions = $this->getTimezoneOptions();
 
         // Prepare template variables
         $templateVars = [
             'preferences' => $preferences,
             'available_rows_per_page' => $availableRowsPerPageOptions,
             'available_positions' => $availablePositions,
+            'timezone_regions' => $timezoneOptions['regions'],
+            'timezone_cities' => $timezoneOptions['cities'],
+            'current_timezone' => $preferences[UserPreference::KEY_TIMEZONE] ?? '',
         ];
 
         $this->render('user_preferences.html', $templateVars);
@@ -98,6 +102,18 @@ class UserPreferencesController extends BaseController
                 }
             }
 
+            $submittedTimezone = $_POST['timezone'] ?? null;
+            if ($submittedTimezone !== null) {
+                $submittedTimezone = trim((string)$submittedTimezone);
+                if ($submittedTimezone === '' || UserPreference::isValidTimezone($submittedTimezone)) {
+                    $userPreferenceService->setPreference(
+                        $userId,
+                        UserPreference::KEY_TIMEZONE,
+                        $submittedTimezone === '' ? null : $submittedTimezone
+                    );
+                }
+            }
+
             $this->messageService->addMessage('user_preferences', 'success', _('Preferences saved successfully.'));
 
             // Redirect to prevent form resubmission and apply changes
@@ -124,5 +140,36 @@ class UserPreferencesController extends BaseController
             'top' => _('Top'),
             'bottom' => _('Bottom'),
         ];
+    }
+
+    /**
+     * Build region and city lists for the cascading timezone selector.
+     * cities is a flat list of {id, region, city} entries; the template
+     * filters by selected region client-side.
+     */
+    private function getTimezoneOptions(): array
+    {
+        $identifiers = \DateTimeZone::listIdentifiers();
+        $regions = [];
+        $cities = [];
+
+        foreach ($identifiers as $id) {
+            $slash = strpos($id, '/');
+            $region = $slash === false ? $id : substr($id, 0, $slash);
+            $city = $slash === false ? $id : substr($id, $slash + 1);
+
+            $regions[$region] = true;
+            $cities[] = [
+                'id' => $id,
+                'region' => $region,
+                'city' => $city,
+            ];
+        }
+
+        $regionList = array_keys($regions);
+        sort($regionList);
+        usort($cities, fn(array $a, array $b): int => strcmp($a['id'], $b['id']));
+
+        return ['regions' => $regionList, 'cities' => $cities];
     }
 }
