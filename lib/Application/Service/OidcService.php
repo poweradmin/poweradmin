@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
@@ -81,7 +82,13 @@ class OidcService extends LoggingService
         // Initialize MFA service
         $userMfaRepository = new DbUserMfaRepository($db, $configManager);
         $mailService = new MailService($configManager);
-        $this->mfaService = new MfaService($userMfaRepository, $configManager, $mailService);
+        $this->mfaService = new MfaService(
+            $userMfaRepository,
+            $configManager,
+            $mailService,
+            null,
+            UserTimezoneService::createDefault($db, $configManager)
+        );
     }
 
     public function isEnabled(): bool

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -145,14 +145,17 @@ class EmailTemplateService
      *
      * @param string $verificationCode Verification code
      * @param int $expiresAt Expiration timestamp
+     * @param string|null $timezone Optional IANA timezone for the recipient; falls back to the global default
      * @return array ['html' => string, 'text' => string, 'subject' => string]
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function renderMfaVerificationEmail(string $verificationCode, int $expiresAt): array
+    public function renderMfaVerificationEmail(string $verificationCode, int $expiresAt, ?string $timezone = null): array
     {
-        $expireTime = date('H:i:s', $expiresAt);
+        $dt = (new \DateTimeImmutable('@' . $expiresAt))
+            ->setTimezone(new \DateTimeZone($timezone ?? date_default_timezone_get()));
+        $expireTime = $dt->format('H:i:s');
 
         $variables = [
             'verificationCode' => $verificationCode,

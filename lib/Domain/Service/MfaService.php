@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@ class MfaService
     private MailService $mailService;
     private EmailTemplateService $templateService;
     private LoggerInterface $logger;
+    private ?UserTimezoneService $userTimezoneService;
 
     /**
      * MfaService constructor
@@ -60,7 +61,8 @@ class MfaService
         UserMfaRepositoryInterface $userMfaRepository,
         ConfigurationManager $configManager,
         MailService $mailService,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?UserTimezoneService $userTimezoneService = null
     ) {
         $this->google2fa = new Google2FA();
         $this->userMfaRepository = $userMfaRepository;
@@ -68,6 +70,7 @@ class MfaService
         $this->mailService = $mailService;
         $this->templateService = new EmailTemplateService($configManager);
         $this->logger = $logger ?? new NullLogger();
+        $this->userTimezoneService = $userTimezoneService;
     }
 
     /**
@@ -473,8 +476,9 @@ class MfaService
         // Log the action
         $this->logger->info('New email verification code generated for user {userId} - expires at {expiresAt}', ['userId' => $userId, 'expiresAt' => date('Y-m-d H:i:s', $expiresAt)]);
 
-        // Send the code via email
-        $templates = $this->templateService->renderMfaVerificationEmail($verificationCode, $expiresAt);
+        $timezone = $this->userTimezoneService?->getEffectiveTimezone($userId);
+
+        $templates = $this->templateService->renderMfaVerificationEmail($verificationCode, $expiresAt, $timezone);
 
         $this->mailService->sendMail($email, $templates['subject'], $templates['html'], $templates['text']);
 

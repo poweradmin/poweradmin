@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -299,7 +300,9 @@ class SessionAuthenticator extends LoggingService
         $mfaService = new MfaService(
             new DbUserMfaRepository($this->db, $this->configManager),
             $this->configManager,
-            new MailService($this->configManager)
+            new MailService($this->configManager),
+            null,
+            UserTimezoneService::createDefault($this->db, $this->configManager)
         );
 
         // Check if MFA setup is required for this user

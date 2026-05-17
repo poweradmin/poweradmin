@@ -70,6 +70,15 @@ class UserPreferenceService
             throw new InvalidArgumentException("Invalid preference key: {$key}");
         }
 
+        if (
+            $key === UserPreference::KEY_TIMEZONE
+            && $value !== null
+            && $value !== ''
+            && !UserPreference::isValidTimezone($value)
+        ) {
+            throw new InvalidArgumentException("Invalid timezone: {$value}");
+        }
+
         $this->repository->createOrUpdate($userId, $key, $value);
 
         $cacheKey = $userId . '_' . $key;

@@ -30,6 +30,65 @@
             </div>
         </div>
 
+        <!-- Timezone Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0"><i class="bi bi-clock me-2"></i>{% trans %}Timezone{% endtrans %}</h6>
+            </div>
+            <div class="card-body">
+                {% set current_region = '' %}
+                {% if current_timezone %}
+                    {% set tz_parts = current_timezone|split('/', 2) %}
+                    {% set current_region = tz_parts[0] %}
+                {% endif %}
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label for="timezone_region" class="form-label small">{% trans %}Region{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="timezone_region">
+                            <option value="">{% trans %}Inherit global setting{% endtrans %}</option>
+                            {% for region in timezone_regions %}
+                            <option value="{{ region }}" {% if current_region == region %}selected{% endif %}>{{ region }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="timezone" class="form-label small">{% trans %}City{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="timezone" name="timezone">
+                            <option value="">&mdash;</option>
+                            {% for city in timezone_cities %}
+                            <option value="{{ city.id }}" data-region="{{ city.region }}" {% if current_timezone == city.id %}selected{% endif %}>{{ city.city ?: city.id }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-text small mt-2">{% trans %}Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits the global server timezone.{% endtrans %}</div>
+            </div>
+        </div>
+        <script>
+        (function() {
+            var region = document.getElementById('timezone_region');
+            var city = document.getElementById('timezone');
+            if (!region || !city) return;
+            function filterCities() {
+                var r = region.value;
+                var firstVisible = null;
+                var keep = false;
+                for (var i = 0; i < city.options.length; i++) {
+                    var opt = city.options[i];
+                    if (!opt.value) { opt.hidden = !!r; continue; }
+                    var match = opt.getAttribute('data-region') === r;
+                    opt.hidden = !match;
+                    if (match && !firstVisible) firstVisible = opt;
+                    if (match && opt.selected) keep = true;
+                }
+                if (!r) { city.value = ''; }
+                else if (!keep && firstVisible) { city.value = firstVisible.value; }
+            }
+            region.addEventListener('change', filterCities);
+            filterCities();
+        })();
+        </script>
+
         <!-- Zone Options Card -->
         <div class="card shadow-sm">
             <div class="card-header">
